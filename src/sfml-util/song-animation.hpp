@@ -80,10 +80,7 @@ namespace animation
     //Responsible for drawing emitted sparks
     class SongAnimation : public sf::Drawable
     {
-        //prevent copy construction
         SongAnimation(const SongAnimation &);
-
-        //prevent copy assignment
         SongAnimation & operator=(const SongAnimation &);
 
     public:

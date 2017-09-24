@@ -54,7 +54,6 @@ namespace box
     //Assumes corner images are symmetrical
     class Box : public GuiEntity
     {
-        //prevent copy construction and copy assignment
         Box(const Box &) =delete;
         Box & operator=(const Box &) =delete;
 

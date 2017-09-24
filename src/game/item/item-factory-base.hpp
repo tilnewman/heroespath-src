@@ -42,10 +42,7 @@ namespace item
     //A base class for all item factories.
     class FactoryBase
     {
-        //prevent copy construction
         FactoryBase(const FactoryBase &) =delete;
-
-        //prevent copy assignment
         FactoryBase & operator=(const FactoryBase &) =delete;
 
     public:

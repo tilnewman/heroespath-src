@@ -50,13 +50,10 @@ namespace creature
         using FontSizePair_t = std::pair<sfml_util::FontPtr_t, unsigned int>;
         using FontSizeToWidthMap_t = std::map<FontSizePair_t, float>;
 
-        //prevent copy construction
         NameInfo(const NameInfo &) =delete;
-
-        //prevent copy assignment
         NameInfo & operator=(const NameInfo &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         NameInfo();
 
     public:

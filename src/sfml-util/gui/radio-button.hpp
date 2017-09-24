@@ -112,10 +112,7 @@ namespace gui
     //Represents a set of radio buttons
     class RadioButtonSet : public GuiEntity
     {
-        //prevent copy construction
         RadioButtonSet(const RadioButtonSet &) =delete;
-
-        //prevent copy assignment
         RadioButtonSet & operator=(const RadioButtonSet &) =delete;
 
     public:

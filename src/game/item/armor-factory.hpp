@@ -49,13 +49,10 @@ namespace armor
     //A singleton class responsible for creating armor objects.
     class ArmorFactory : public FactoryBase
     {
-        //prevent copy construction
         ArmorFactory(const ArmorFactory &) =delete;
-
-        //prevent copy assignment
         ArmorFactory & operator=(const ArmorFactory &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         ArmorFactory();
 
     public:

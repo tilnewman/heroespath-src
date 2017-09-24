@@ -60,10 +60,7 @@ namespace stage
         public popup::IPopupHandler_t,
         public sfml_util::callback::IRadioButtonSetCallbackHandler_t
     {
-        //prevent copy construction
         SettingsStage(const SettingsStage &) =delete;
-
-        //prevent copy assignment
         SettingsStage & operator=(const SettingsStage &) =delete;
 
     public:

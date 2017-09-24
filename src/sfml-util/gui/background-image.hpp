@@ -44,10 +44,7 @@ namespace gui
     //If both path.empty() and textureSPtr.get==nullptr, then a simple rectangle will be drawn and filled with the given color.
     class BackgroundImage : public sf::Drawable
     {
-        //prevent copy construction
         BackgroundImage(const BackgroundImage &) =delete;
-
-        //prevent copy assignment
         BackgroundImage & operator=(const BackgroundImage &) =delete;
 
     public:

@@ -47,10 +47,7 @@ namespace combat
     //represents a node in the CombatTree
     class CombatNode : public sfml_util::gui::GuiEntity
     {
-        //prevent copy construction
         CombatNode(const CombatNode &) =delete;
-
-        //prevent copy assignment
         CombatNode & operator=(const CombatNode &) =delete;
 
     public:

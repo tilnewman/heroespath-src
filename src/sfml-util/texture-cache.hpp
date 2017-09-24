@@ -45,10 +45,7 @@ namespace sfml_util
     //stores textures in a single location and makes them available by index
     class TextureCache
     {
-        //prevent copy construction
         TextureCache(const TextureCache &);
-
-        //prevent copy assignment
         TextureCache & operator=(const TextureCache &);
 
     public:

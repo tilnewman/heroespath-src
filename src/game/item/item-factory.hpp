@@ -44,13 +44,10 @@ namespace item
     //Responsible for making new (and properly stored) item objects from fat ItemProfiles.
     class ItemFactory
     {
-        //prevent copy construction
         ItemFactory(const ItemFactory &) =delete;
-
-        //prevent copy assignment
         ItemFactory & operator=(const ItemFactory &) = delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         ItemFactory();
 
     public:

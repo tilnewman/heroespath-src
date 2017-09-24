@@ -40,10 +40,7 @@ namespace stage
     //A simple Stage class that displays the intro title
     class IntroStage : public sfml_util::Stage
     {
-        //prevent copy construction
         IntroStage(const IntroStage &) =delete;
-
-        //prevent copy assignment
         IntroStage & operator=(const IntroStage &) =delete;
 
     public:

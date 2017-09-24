@@ -51,13 +51,10 @@ namespace misc
     //A singleton class responsible for making misc item objects.
     class MiscItemFactory : public FactoryBase
     {
-        //prevent copy construction
         MiscItemFactory(const MiscItemFactory &) =delete;
-
-        //prevent copy assignment
         MiscItemFactory & operator=(const MiscItemFactory &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         MiscItemFactory();
 
     public:

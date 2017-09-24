@@ -65,13 +65,10 @@ namespace ownership
     //that will equip non-player characters.
     class InventoryFactory
     {
-        //prevent copy construction
         InventoryFactory(const InventoryFactory &) =delete;
-
-        //prevent copy assignment
         InventoryFactory & operator=(const InventoryFactory &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         InventoryFactory();
 
     public:

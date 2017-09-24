@@ -45,13 +45,10 @@ namespace gui
     //Loads images and delivers sf::Textures to them on demand.
     class SpellImageManager
     {
-        //prevent copy construction
         SpellImageManager(const SpellImageManager &) =delete;
-
-        //prevent copy assignment
         SpellImageManager & operator=(const SpellImageManager &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         SpellImageManager();
 
     public:

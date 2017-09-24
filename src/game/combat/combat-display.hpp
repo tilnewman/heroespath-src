@@ -106,10 +106,7 @@ namespace combat
     //Handles drawing the combat tree
     class CombatDisplay : public sfml_util::Stage
     {
-        //prevent copy constructions/
         CombatDisplay(const CombatDisplay &) =delete;
-
-        //prevent copy assignment
         CombatDisplay & operator=(const CombatDisplay &) =delete;
 
     public:

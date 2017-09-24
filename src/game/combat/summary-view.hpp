@@ -83,10 +83,7 @@ namespace combat
     //the infomation that displays when the mouse cursor is held over an enemy
     class SummaryView
     {
-        //prevent copy construction
         SummaryView(const SummaryView &) =delete;
-
-        //prevent copy assignment
         SummaryView & operator=(const SummaryView &) =delete;
 
     public:

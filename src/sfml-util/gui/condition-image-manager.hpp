@@ -45,13 +45,10 @@ namespace gui
     //Loads images and delivers sf::Textures to them on demand.
     class ConditionImageManager
     {
-        //prevent copy construction
         ConditionImageManager(const ConditionImageManager &) =delete;
-
-        //prevent copy assignment
         ConditionImageManager & operator=(const ConditionImageManager &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         ConditionImageManager();
 
     public:

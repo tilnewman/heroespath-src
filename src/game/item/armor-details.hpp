@@ -72,13 +72,10 @@ namespace armor
     //A singleton class that loads detailed armor info from the GameDataFile.
     class ArmorDetailLoader
     {
-        //prevent copy assignment
         ArmorDetailLoader & operator=(const ArmorDetailLoader &) =delete;
-
-        //prevent copy construction
         ArmorDetailLoader(const ArmorDetailLoader &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         ArmorDetailLoader();
 
     public:

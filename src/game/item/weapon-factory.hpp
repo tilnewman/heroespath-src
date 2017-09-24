@@ -58,13 +58,10 @@ namespace weapon
     //A singleton class that creates weapon objects.
     class WeaponFactory : public FactoryBase
     {
-        //prevent copy construction
         WeaponFactory(const WeaponFactory &) =delete;
-
-        //prevent copy assignment
         WeaponFactory & operator=(const WeaponFactory &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         WeaponFactory();
 
     public:

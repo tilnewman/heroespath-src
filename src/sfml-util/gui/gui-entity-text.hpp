@@ -52,10 +52,7 @@ namespace gui
     //Base class for gui text that can be in any of MouseState::Enum states.
     class GuiText : public GuiEntity
     {
-        //prevent copy construction
         GuiText(const GuiText &) =delete;
-
-        //prevent copy assignment
         GuiText & operator=(const GuiText &) =delete;
 
     public:

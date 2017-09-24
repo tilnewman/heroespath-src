@@ -53,10 +53,7 @@ namespace creature
     //base class for all conditions
     class Condition
     {
-        //prevent copy construction
         Condition(const Condition &) =delete;
-
-        //prevent copy assignment
         Condition & operator=(const Condition &) =delete;
 
     public:

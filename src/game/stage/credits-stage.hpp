@@ -49,10 +49,7 @@ namespace stage
     //A simple class that displays the credits
     class CreditsStage : public sfml_util::Stage
     {
-        //prevent copy construction
         CreditsStage(const CreditsStage &) =delete;
-
-        //prevent copy assignment
         CreditsStage & operator=(const CreditsStage &) =delete;
 
     public:

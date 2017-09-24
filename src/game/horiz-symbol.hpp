@@ -37,10 +37,7 @@ namespace game
     //draws the horizontal symbols at the bottom of menu stages
     class BottomSymbol
     {
-        //prevent copy construction
         BottomSymbol(const BottomSymbol &) =delete;
-
-        //prevent copy assignment
         BottomSymbol & operator=(const BottomSymbol &) =delete;
 
     public:

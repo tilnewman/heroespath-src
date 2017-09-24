@@ -49,13 +49,10 @@ namespace item
     //This class does not new the objects, but it does delete them.
     class ItemWarehouse
     {
-        //prevent copy constructor
         ItemWarehouse(const ItemWarehouse &) =delete;
-
-        //prevent copy assignment
         ItemWarehouse & operator=(const ItemWarehouse &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         ItemWarehouse();
 
     public:

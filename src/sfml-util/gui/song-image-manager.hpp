@@ -45,13 +45,10 @@ namespace gui
     //Loads images and delivers sf::Textures to them on demand.
     class SongImageManager
     {
-        //prevent copy construction
         SongImageManager(const SongImageManager &) =delete;
-
-        //prevent copy assignment
         SongImageManager & operator=(const SongImageManager &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         SongImageManager();
 
     public:

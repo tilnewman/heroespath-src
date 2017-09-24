@@ -48,10 +48,7 @@ namespace game
     template<typename T>
     class Warehouse
     {
-        //prevent copy constructor
         Warehouse(const Warehouse &) =delete;
-
-        //prevent copy assignment
         Warehouse & operator=(const Warehouse &) =delete;
 
     public:

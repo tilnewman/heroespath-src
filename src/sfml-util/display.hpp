@@ -66,13 +66,10 @@ namespace sfml_util
     //A singleton that retains details pertaining to an sfml application.
     class Display
     {
-        //prevent copy construction
         Display(const Display &) =delete;
-
-        //prevent copy assignment
         Display & operator=(const Display &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         Display();
 
     public:

@@ -59,7 +59,6 @@ namespace gui
     //Encapsulates a single line of user type-able text with a blinking cursor
     class TextEntryBox : public GuiEntity
     {
-        //prevent copy construction and copy assignment
         TextEntryBox(const TextEntryBox &) =delete;
         TextEntryBox & operator=(const TextEntryBox &) =delete;
 

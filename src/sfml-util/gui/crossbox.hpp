@@ -51,7 +51,6 @@ namespace box
     //A box drawing class for when the box is segmented into four parts.
     class CrossBox : public Box
     {
-        //prevent copy construction and copy assignment
         CrossBox(const CrossBox &) =delete;
         CrossBox & operator=(const CrossBox &) =delete;
 

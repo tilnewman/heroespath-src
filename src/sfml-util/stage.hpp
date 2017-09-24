@@ -58,10 +58,7 @@ namespace sfml_util
     //A base class for types that hold and draw a group of on screen resources.
     class Stage : public IStage
     {
-        //prevent copy construction
         Stage(const Stage &) =delete;
-
-        //prevent copy assignment
         Stage & operator=(const Stage &) =delete;
 
     public:

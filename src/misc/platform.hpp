@@ -82,13 +82,10 @@ namespace misc
     //singleton responsible for detecting, logging, and storing the system platform
     class Platform
     {
-        //prevent copy construction
         Platform(const Platform &) =delete;
-
-        //prevent copy assingment
         Platform & operator=(const Platform &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         Platform();
 
     public:

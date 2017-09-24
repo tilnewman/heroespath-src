@@ -53,10 +53,7 @@ namespace stage
     //A Stage class that allows visualizing testing info
     class TestingStage : public sfml_util::Stage
     {
-        //prevent copy construction
         TestingStage(const TestingStage &) =delete;
-
-        //prevent copy assignment
         TestingStage & operator=(const TestingStage &) =delete;
 
     public:

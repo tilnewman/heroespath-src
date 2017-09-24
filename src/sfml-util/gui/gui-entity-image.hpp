@@ -43,7 +43,6 @@ namespace gui
     //Encapsulates a GuiEntity that manages three images based on entityMouseState_.
     class GuiImage : public GuiEntity
     {
-        //prevent copy construction and copy assignment
         GuiImage(const GuiImage &) =delete;
         GuiImage & operator=(const GuiImage &) =delete;
 

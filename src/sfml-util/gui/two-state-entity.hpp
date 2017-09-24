@@ -48,10 +48,7 @@ namespace gui
     //Prevents using guiImage_.overSprite, but guiText_.overTextInfo_ is allowed.
     class TwoStateEntity : public GuiEntity
     {
-        //prevent copy construction
         TwoStateEntity(const TwoStateEntity &) =delete;
-
-        //prevent copy assignment
         TwoStateEntity & operator=(const TwoStateEntity &) =delete;
 
     public:

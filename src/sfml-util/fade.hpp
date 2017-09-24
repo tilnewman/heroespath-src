@@ -40,10 +40,7 @@ namespace sfml_util
     //A class allowing simple fading in and out of a color to any part of the screen.
     class Fade : public sf::Drawable
     {
-        //prevent copy construction
         Fade(const Fade &) =delete;
-
-        //prevent copy assignment
         Fade & operator=(const Fade &) =delete;
 
     public:

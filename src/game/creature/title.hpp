@@ -55,10 +55,7 @@ namespace creature
     //Once earned, a Title changes the player that earned it.  (see ..._BONUS)
     class Title
     {
-        //prevent copy construction
         Title(const Title &) =delete;
-
-        //prevent copy assignment
         Title & operator=(const Title &) =delete;
 
     public:

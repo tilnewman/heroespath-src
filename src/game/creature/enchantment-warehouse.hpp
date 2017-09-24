@@ -51,7 +51,7 @@ namespace creature
         EnchantmentWarehouse(const EnchantmentWarehouse &) =delete;
         EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         EnchantmentWarehouse();
 
     public:

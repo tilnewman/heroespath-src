@@ -54,13 +54,10 @@ namespace creature
     //storing them in the EnchantmentWarehouse for safe keeping.
     class EnchantmentFactory
     {
-        //prevent copy construction
         EnchantmentFactory(const EnchantmentFactory &) =delete;
-
-        //prevent copy assignment
         EnchantmentFactory & operator=(const EnchantmentFactory &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         EnchantmentFactory();
 
     public:

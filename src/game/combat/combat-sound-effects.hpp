@@ -63,10 +63,7 @@ namespace combat
     //interface to play them.
     class CombatSoundEffects
     {
-        //prevent copy assignment
         CombatSoundEffects & operator=(const CombatSoundEffects &) =delete;
-
-        //prevent copy construction
         CombatSoundEffects(const CombatSoundEffects &) =delete;
 
     public:

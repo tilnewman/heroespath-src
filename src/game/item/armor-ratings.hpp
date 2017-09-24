@@ -46,13 +46,10 @@ namespace item
 
     class ArmorRatings
     {
-        //prevent copy construction
         ArmorRatings(const ArmorRatings &) = delete;
-
-        //prevent copy assignment
         ArmorRatings & operator=(const ArmorRatings &) = delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         ArmorRatings();
 
     public:

@@ -40,13 +40,10 @@ namespace game
     //Singleton class that manages a simple configuration file
     class SettingsFile : public appbase::ConfigBase
     {
-        //prevent copy assignment
         SettingsFile(const SettingsFile &) =delete;
-
-        //prevent copy assignment
         SettingsFile & operator=(const SettingsFile &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         SettingsFile();
 
     public:

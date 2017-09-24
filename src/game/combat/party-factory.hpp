@@ -51,13 +51,10 @@ namespace combat
     //Creates partys of creatures that confront the player characters
     class PartyFactory
     {
-        //prevent copy construction
         PartyFactory(const PartyFactory &) =delete;
-
-        //prevent copy assignment
         PartyFactory & operator=(const PartyFactory &) =delete;
 
-        //prevent non-singletone instantiation
+        //singleton construction only
         PartyFactory();
 
     public:

@@ -44,14 +44,11 @@ namespace gui
 
     //singleton responsible for loading and dispensing combat image sf::Textures
     class CombatImageManager
-    {
-        //prevent copy assignment
-        CombatImageManager & operator=(const CombatImageManager &) =delete;
+    {        CombatImageManager & operator=(const CombatImageManager &) =delete;
 
-        //prevent copy construction
         CombatImageManager(const CombatImageManager &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         CombatImageManager();
 
     public:

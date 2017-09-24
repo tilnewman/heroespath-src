@@ -48,13 +48,10 @@ namespace player
     //Singleton responsible for the lifetimes of player::Character objects.
     class CharacterWarehouse
     {
-        //prevent copy constructor
         CharacterWarehouse(const CharacterWarehouse &) =delete;
-
-        //prevent copy assignment
         CharacterWarehouse & operator=(const CharacterWarehouse &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         CharacterWarehouse();
 
     public:

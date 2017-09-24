@@ -72,10 +72,7 @@ namespace player
 
     class Character : public creature::Creature
     {
-        //prevent copy constrution
         Character(const Character &) =delete;
-
-        //prevent copy assignment
         Character & operator=(const Character &) =delete;
 
     public:

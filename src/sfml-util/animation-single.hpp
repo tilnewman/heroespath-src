@@ -40,10 +40,7 @@ namespace sfml_util
     //An animation that is sourced from a single texture
     class AnimationSingleTexture : public Animation
     {
-        //prevent copy construction
         AnimationSingleTexture(const AnimationSingleTexture &) =delete;
-
-        //prevent copy assignment
         AnimationSingleTexture & operator=(const AnimationSingleTexture &) =delete;
 
     public:

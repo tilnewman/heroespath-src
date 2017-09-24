@@ -40,9 +40,10 @@ namespace game
     //Singleton class that logs to a file and std out
     class Logger : public appbase::logbase::LogBase
     {
-        //prevent copy assignment, copy construction, and non-singleton construction
         Logger(const Logger &) =delete;
         Logger & operator=(const Logger &) =delete;
+        
+        //singleton construction only
         Logger();
 
     public:

@@ -117,10 +117,7 @@ namespace combat
         using VertexListIter_t  = VertexList_t::iterator;
         using VertexListCIter_t = VertexList_t::const_iterator;
 
-        //prevent copy construction
         CombatTree(const CombatTree &) =delete;
-
-        //prevent copy assignment
         CombatTree & operator=(const CombatTree &) =delete;
 
     public:

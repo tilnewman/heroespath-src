@@ -42,10 +42,7 @@ namespace sfml_util
 
     class Animation : public gui::GuiEntity
     {
-        //prevent copy construction
         Animation(const Animation &) = delete;
-
-        //prevent copy assignment
         Animation & operator=(const Animation &) = delete;
 
     public:

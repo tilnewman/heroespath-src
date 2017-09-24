@@ -62,10 +62,7 @@ namespace gui
         public GuiEntity,
         public callback::ISliderBarCallbackHandler_t
     {
-        //prevent copy construction
         TextRegion(const TextRegion &) =delete;
-
-        //prevent copy assignment
         TextRegion & operator=(const TextRegion &) =delete;
 
     public:

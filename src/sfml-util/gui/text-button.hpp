@@ -58,10 +58,7 @@ namespace gui
     //Base class for a text button that has different text styles for mouse positions
     class TextButton : public GuiText
     {
-        //prevent copy construction
         TextButton(const TextButton &) =delete;
-
-        //prevent copy assignment
         TextButton & operator=(const TextButton &) =delete;
 
     public:

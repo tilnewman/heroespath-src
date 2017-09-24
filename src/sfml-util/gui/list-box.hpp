@@ -116,10 +116,8 @@ namespace gui
         public GuiEntity,
         public callback::ISliderBarCallbackHandler_t
     {
-        //prevent copy construction
         ListBox(const ListBox &) =delete;
 
-        //prevent copy construction
         ListBox & operator=(const ListBox &) =delete;
 
     public:

@@ -49,13 +49,10 @@ namespace non_player
     //This class does not new the objects, but it does delete them.
     class CharacterWarehouse
     {
-        //prevent copy constructor
         CharacterWarehouse(const CharacterWarehouse &) =delete;
-
-        //prevent copy assignment
         CharacterWarehouse & operator=(const CharacterWarehouse &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         CharacterWarehouse();
 
     public:

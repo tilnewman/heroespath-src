@@ -49,10 +49,7 @@ namespace animation
     //Responsible for drawing emitted sparks
     class TextAnimation : public sf::Drawable
     {
-        //prevent copy construction
         TextAnimation(const TextAnimation &);
-
-        //prevent copy assignment
         TextAnimation & operator=(const TextAnimation &);
 
     public:

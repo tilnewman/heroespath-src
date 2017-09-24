@@ -64,13 +64,10 @@ namespace strategy
     //loads strategy details from GameDataFile and stores them per race and role
     class ChanceFactory
     {
-        //prevent copy construction
         ChanceFactory(const ChanceFactory &) =delete;
-
-        //prevent copy assignment
         ChanceFactory & operator=(const ChanceFactory &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         ChanceFactory();
 
     public:

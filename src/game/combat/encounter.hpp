@@ -67,13 +67,10 @@ namespace combat
     //Manages an encounter with the player party
     class Encounter
     {
-        //prevent copy construction
         Encounter(const Encounter &) =delete;
-
-        //prevent copy assignment
         Encounter & operator=(const Encounter &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         Encounter();
 
     public:

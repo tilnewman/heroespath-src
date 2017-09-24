@@ -47,10 +47,7 @@ namespace gui_demo
         public popup::IPopupHandler_t,
         public sfml_util::gui::RadioButtonSet
     {
-        //prevent copy construction
         RadioButtonSet_DisplayChange(const RadioButtonSet_DisplayChange &) =delete;
-
-        //prevent copy assignment
         RadioButtonSet_DisplayChange & operator=(const RadioButtonSet_DisplayChange &) =delete;
 
     public:

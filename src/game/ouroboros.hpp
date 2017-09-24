@@ -41,10 +41,7 @@ namespace game
     //manages an animated snake image that spins, grows/shrinks, and fades in/out
     class Ouroboros : public sfml_util::gui::GuiEntity
     {
-        //prevent copy construction
         Ouroboros(const Ouroboros &) =delete;
-
-        //prevent copy assignment
         Ouroboros & operator=(const Ouroboros &) =delete;
 
     public:

@@ -155,10 +155,7 @@ namespace map
     //collision detection quad-tree
     class QuadTree
     {
-        //prevent copy construction
         QuadTree(const QuadTree &) =delete;
-
-        //prevent copy assignment
         QuadTree & operator=(const QuadTree &) =delete;
 
     public:
@@ -189,10 +186,7 @@ namespace map
     //Encapsulates a tiled map, along with the player's position.
     class TileMap
     {
-        //prevent copy construction
         TileMap(const TileMap &) =delete;
-
-        //prevent copy assignment
         TileMap & operator=(const TileMap &) =delete;
 
     public:

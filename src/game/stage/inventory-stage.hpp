@@ -137,10 +137,7 @@ namespace stage
         //used to remember which view each character was last using
         using CharViewMap_t = std::map<std::size_t, ViewType>;
 
-        //prevent copy construction
         InventoryStage(const InventoryStage &) =delete;
-
-        //prevent copy assignment
         InventoryStage & operator=(const InventoryStage &) =delete;
 
     public:

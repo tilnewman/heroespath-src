@@ -49,7 +49,6 @@ namespace sfml_util
     //Encapsulates a gui sliderbar with a label that controls the music volume.
     class SliderBarLabeled_Music : public gui::SliderBarLabeled
     {
-        //prevent copy construction and copy assignment
         SliderBarLabeled_Music(const SliderBarLabeled_Music &) =delete;
         SliderBarLabeled_Music & operator=(const SliderBarLabeled_Music &) =delete;
 

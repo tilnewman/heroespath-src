@@ -46,13 +46,10 @@ namespace game
     //Singleton class that provides access to all game information
     class Game
     {
-        //prevent copy construction
         Game(const Game &) =delete;
-
-        //prevent copy assignment
         Game & operator=(const Game &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         Game();
 
     public:

@@ -66,10 +66,7 @@ namespace gui
     //A simple button class
     class FourStateButton : public GuiEntity
     {
-        //prevent copy construction
         FourStateButton(const FourStateButton &) =delete;
-
-        //prevent copy assignment
         FourStateButton & operator=(const FourStateButton &) =delete;
 
     public:

@@ -42,13 +42,10 @@ namespace sfml_util
     //A class that loads, stores, and distributes fonts by style.
     class FontManager
     {
-        //prevent copy construction
         FontManager(const FontManager &) =delete;
-
-        //prevent copy assignment
         FontManager & operator=(const FontManager &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         FontManager();
 
         //Note:  Keep order in sync with FontManager constructor

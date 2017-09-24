@@ -113,10 +113,7 @@ namespace creature
     //base class for all creatures
     class Creature
     {
-        //prevent copy construction
         Creature(const Creature &) =delete;
-
-        //prevent copy assignment
         Creature & operator=(const Creature &) =delete;
 
     public:

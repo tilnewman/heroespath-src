@@ -80,10 +80,7 @@ namespace animation
     //Responsible for drawing emitted sparks
     class CloudAnimation : public sf::Drawable
     {
-        //prevent copy construction
         CloudAnimation(const CloudAnimation &);
-
-        //prevent copy assignment
         CloudAnimation & operator=(const CloudAnimation &);
 
     public:

@@ -75,10 +75,7 @@ namespace stage
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t,
         public popup::IPopupHandler_t
     {
-        //prevent copy construction
         PartyStage(const PartyStage &) =delete;
-
-        //prevent copy assignment
         PartyStage & operator=(const PartyStage &) =delete;
 
     public:

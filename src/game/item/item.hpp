@@ -51,10 +51,7 @@ namespace item
     //A base class for all items.
     class Item
     {
-        //prevent copy construction
         Item(const Item &) =delete;
-
-        //prevent copy assignment
         Item & operator=(const Item &) =delete;
 
     public:

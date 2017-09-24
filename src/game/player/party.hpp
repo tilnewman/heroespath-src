@@ -56,10 +56,7 @@ namespace player
     //encapsulates a set of Characters under control of the user
     class Party
     {
-        //prevent copy construction
         Party(const Party &) =delete;
-
-        //prevent copy assignment
         Party & operator=(const Party &) =delete;
 
     public:

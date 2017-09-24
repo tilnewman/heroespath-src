@@ -63,10 +63,7 @@ namespace state
     //Encapsulates everything about a saved game.
     class GameState
     {
-        //prevent copy construction
         GameState(const GameState &) =delete;
-
-        //prevent copy assignment
         GameState & operator=(const GameState &) =delete;
 
     public:

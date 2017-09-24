@@ -62,10 +62,7 @@ namespace stage
         public sfml_util::Stage,
         public popup::IPopupHandler_t
     {
-        //prevent copy construction
         CampStage(const CampStage &) =delete;
-
-        //prevent copy assignment
         CampStage & operator=(const CampStage &) =delete;
 
     public:

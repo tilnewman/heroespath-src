@@ -61,13 +61,10 @@ namespace game
     //Singleton class that keeps track of the game state
     class LoopManager
     {
-        //prevent copy construction
         LoopManager(const LoopManager &) =delete;
-
-        //prevent copy assignment
         LoopManager & operator=(const LoopManager &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         LoopManager();
 
     public:

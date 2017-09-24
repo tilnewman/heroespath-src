@@ -55,10 +55,7 @@ namespace sfml_util
     //A type that manages an event/draw loop
     class Loop
     {
-        //prevent copy construction
         Loop(const Loop &) =delete;
-
-        //prevent copy assignment
         Loop & operator=(const Loop &) =delete;
 
     public:

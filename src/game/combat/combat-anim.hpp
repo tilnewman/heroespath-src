@@ -121,10 +121,7 @@ namespace combat
     //Responsible for displaying combat related animations.
     class CombatAnimation
     {
-        //prevent copy construction
         CombatAnimation(const CombatAnimation &) =delete;
-
-        //prevent copy assignment
         CombatAnimation & operator=(const CombatAnimation &) =delete;
 
     public:

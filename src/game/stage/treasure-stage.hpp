@@ -62,10 +62,7 @@ namespace stage
         public sfml_util::Stage,
         public popup::IPopupHandler_t
     {
-        //prevent copy construction
         TreasureStage(const TreasureStage &) =delete;
-
-        //prevent copy assignment
         TreasureStage & operator=(const TreasureStage &) =delete;
 
         enum Phase

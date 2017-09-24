@@ -47,10 +47,7 @@ namespace gui
     //Encapsulates the basics of everything needed by a clickable gui element.
     class GuiEntity : public IGuiEntity
     {
-        //prevent copy construction
         GuiEntity(const GuiEntity &) =delete;
-
-        //prevent copy assignment
         GuiEntity & operator=(const GuiEntity &) =delete;
 
     public:

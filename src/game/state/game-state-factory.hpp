@@ -59,15 +59,12 @@ namespace state
 
     //Creates game states either new or from a previous save to disc.
     class GameStateFactory
-    {
-        //prevent all but singleton construction
-        GameStateFactory();
-
-        //prevent copy construction
+    {   
         GameStateFactory(const GameStateFactory &) =delete;
-
-        //prevent copy assignment
         GameStateFactory & operator=(const GameStateFactory &) =delete;
+
+        //singleton construction only
+        GameStateFactory();
 
     public:
         ~GameStateFactory();

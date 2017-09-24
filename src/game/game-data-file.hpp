@@ -43,13 +43,10 @@ namespace game
     //Singleton class that manages a simple configuration file
     class GameDataFile : public appbase::ConfigBase
     {
-        //prevent copy construction
         GameDataFile(const GameDataFile &) =delete;
-
-        //prevent copy assignment
         GameDataFile & operator=(const GameDataFile &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         GameDataFile();
 
     public:

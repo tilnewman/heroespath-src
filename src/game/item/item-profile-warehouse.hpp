@@ -47,13 +47,10 @@ namespace item
     //Responsible for storing an ItemProfile for each possible item in the game.
     class ItemProfileWarehouse
     {
-        //prevent copy construction
         ItemProfileWarehouse(const ItemProfileWarehouse &) =delete;
-
-        //prevent copy assignment
         ItemProfileWarehouse & operator=(const ItemProfileWarehouse &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         ItemProfileWarehouse();
 
     public:

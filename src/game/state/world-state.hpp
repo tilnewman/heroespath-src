@@ -41,10 +41,7 @@ namespace state
     //Encapsulates everything about the game world.
     class WorldState
     {
-        //prevent copy construction
         WorldState(const WorldState &) =delete;
-
-        //prevent copy assignment
         WorldState & operator=(const WorldState &) =delete;
 
     public:

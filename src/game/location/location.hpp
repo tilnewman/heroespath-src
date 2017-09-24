@@ -46,10 +46,7 @@ namespace location
     //a base class for common code with all Location objects
     class Location : public ILocation
     {
-        //prevent copy construction
         Location(const Location &) =delete;
-
-        //prevent copy assignment
         Location & operator=(const Location &) =delete;
 
     public:

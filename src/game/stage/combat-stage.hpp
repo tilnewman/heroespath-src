@@ -124,10 +124,7 @@ namespace stage
         public sfml_util::gui::callback::IListBoxCallbackHandler,
         public sfml_util::gui::callback::ISliderBarCallbackHandler_t
     {
-        //prevent copy construction
         CombatStage(const CombatStage &) =delete;
-
-        //prevent copy assignment
         CombatStage & operator=(const CombatStage &) =delete;
 
         //defines what phase of the initial zoom and pan currently in

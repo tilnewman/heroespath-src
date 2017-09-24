@@ -166,10 +166,7 @@ namespace stage
         public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
-        //prevent copy construction
         CharacterStage(const CharacterStage &) =delete;
-
-        //prevent copy assignment
         CharacterStage & operator=(const CharacterStage &) =delete;
 
     public:

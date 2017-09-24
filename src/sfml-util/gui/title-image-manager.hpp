@@ -53,13 +53,10 @@ namespace gui
     //A class that loads, stores, and distributes creature images.
     class TitleImageManager
     {
-        //prevent copy construction
         TitleImageManager(const TitleImageManager &) =delete;
-
-        //prevent copy assignment
         TitleImageManager & operator=(const TitleImageManager &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         TitleImageManager();
 
     public:

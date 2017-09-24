@@ -55,10 +55,7 @@ namespace gui
     //Encapsulates a gui sliderbar with mouse clickable increment arrows and a slider pad.
     class SliderBar : public GuiEntity
     {
-        //prevent copy construction
         SliderBar(const SliderBar &) =delete;
-
-        //prevent copy assignment
         SliderBar & operator=(const SliderBar &) =delete;
 
     public:

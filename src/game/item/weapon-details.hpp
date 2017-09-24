@@ -75,13 +75,10 @@ namespace weapon
     //A singleton class that loads detailed weapon info from the GameDataFile.
     class WeaponDetailLoader
     {
-        //prevent copy assignment
         WeaponDetailLoader & operator=(const WeaponDetailLoader &) =delete;
-
-        //prevent copy construction
         WeaponDetailLoader(const WeaponDetailLoader &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         WeaponDetailLoader();
 
     public:

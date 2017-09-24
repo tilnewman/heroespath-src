@@ -39,10 +39,7 @@ namespace stage
 
     class AdventureStage : public sfml_util::Stage
     {
-        //prevent copy construction
         AdventureStage(const AdventureStage &) = delete;
-
-        //prevent copy assignment
         AdventureStage & operator=(const AdventureStage &) = delete;
 
     public:

@@ -66,10 +66,7 @@ namespace sfml_util
     //A type that performs some action on a Loop
     class LoopCmd : public ILoopCmd
     {
-        //prevent copy construction
         LoopCmd(const LoopCmd &) =delete;
-
-        //prevent copy assignment
         LoopCmd & operator=(const LoopCmd &) =delete;
 
     public:

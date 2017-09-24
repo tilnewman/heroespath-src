@@ -100,7 +100,6 @@ namespace gui
     //Represents a set of radio buttons
     class CheckBoxSet : public GuiEntity
     {
-        //prevent copy construction and copy assignment
         CheckBoxSet(const CheckBoxSet &) =delete;
         CheckBoxSet & operator=(const CheckBoxSet &) =delete;
 

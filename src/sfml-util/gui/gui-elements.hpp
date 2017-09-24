@@ -41,13 +41,10 @@ namespace gui
     //Manages a set of sprites relating to gui drawing elements.
     class GuiElements
     {
-        //prevent copy construction
         GuiElements(const GuiElements &) =delete;
-
-        //prevent copy assignment
         GuiElements & operator=(const GuiElements &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         GuiElements();
 
     public:

@@ -46,10 +46,7 @@ namespace gui
     //A simple line drawing gui entity
     class Line : public GuiEntity
     {
-        //prevent copy construction
         Line(const Line &) =delete;
-
-        //prevent copy assignment
         Line & operator=(const Line &) =delete;
 
     public:

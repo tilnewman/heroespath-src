@@ -86,13 +86,10 @@ namespace ownership
 
         using WeaponSetVec_t = std::vector<WeaponSet>;
 
-        //prevent copy construction
         ChanceFactory(const ChanceFactory &) =delete;
-
-        //prevent copy assignment
         ChanceFactory & operator=(const ChanceFactory &) =delete;
 
-        //prevent non-singleton construction
+        //singleton construction only
         ChanceFactory();
 
     public:
