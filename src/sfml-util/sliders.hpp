@@ -82,8 +82,8 @@ namespace sliders
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (misc::IsRealZero(INITIAL) ||
-                    misc::IsRealOne(INITIAL) ||
-                    (INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1))),
+                 misc::IsRealOne(INITIAL) ||
+                 ((INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1))) ),
                 "sfml_util::sliders::ZeroSliderOnce::Constructor() given initial value of "
                 << INITIAL << ", which is not within [0,1].");
 
@@ -104,7 +104,7 @@ namespace sliders
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (misc::IsRealZero(INITIAL) ||
                  misc::IsRealOne(INITIAL) ||
-                 (INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1))),
+                 ((INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1))) ),
                 "sfml_util::sliders::ZeroSliderOnce::Reset() given initial value of "
                 << INITIAL << ", which is not within [0,1].");
 
