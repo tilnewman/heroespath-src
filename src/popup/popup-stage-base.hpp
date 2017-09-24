@@ -37,6 +37,8 @@
 
 #include "popup/popup-info.hpp"
 
+#include <string>
+
 
 namespace popup
 {
@@ -55,21 +57,21 @@ namespace popup
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageBase();
 
-        inline virtual const std::string HandlerName() const override { return GetStageName(); }
+        inline const std::string HandlerName() const override { return GetStageName(); }
 
-        virtual bool HandleCallback(
+        bool HandleCallback(
             const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
-        virtual bool HandleCallback(
+        bool HandleCallback(
             const sfml_util::gui::callback::TextButtonCallbackPackage_t &) override;
 
-        virtual void Setup() override;
+        void Setup() override;
 
-        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
 
         void DrawRedX(sf::RenderTarget &, const sf::RenderStates &);
 
-        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     protected:
         inline float ButtonTextHeight() const { return buttonTextHeight_; }

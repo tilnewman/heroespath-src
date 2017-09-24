@@ -28,11 +28,11 @@
 // Test-stuff.cpp
 //  Tests of the test_stuff helper functions functions()
 //
-#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
+#include "Test-stuff.hpp"
 
+#define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
 #include <boost/test/unit_test.hpp>
 
-#include "Test-stuff.hpp"
 
 namespace ts = test_stuff;
 

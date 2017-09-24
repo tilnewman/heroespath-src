@@ -33,6 +33,8 @@
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
 
+#include <string>
+
 
 namespace popup
 {
@@ -52,26 +54,26 @@ namespace popup
 
         using PopupStageBase::HandleCallback;
 
-        inline virtual const std::string HandlerName() const override
+        inline const std::string HandlerName() const override
         {
             return PopupStageBase::HandlerName();
         }
 
-        virtual bool HandleCallback(
+        bool HandleCallback(
             const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
         bool HandleCallback(
             const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &) override;
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
-        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
         void SetupInfoText(const std::string &);
         int GetSelectNumber() const;
         bool ProcessSelectNumber();
-        virtual void SetupSliderbar() override;
+        void SetupSliderbar() override;
 
     private:
         static const int NUMBER_SELECT_INVALID_;

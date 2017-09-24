@@ -66,20 +66,6 @@ namespace item
     }
 
 
-    TreasureInfo & TreasureInfo::operator=(const TreasureInfo & RHS)
-    {
-        if (this != & RHS)
-        {
-            coin_ = RHS.coin_;
-            gem_ = RHS.gem_;
-            magic_ = RHS.magic_;
-            religious_ = RHS.religious_;
-        }
-
-        return * this;
-    }
-
-
     TreasureInfo & TreasureInfo::operator+=(const TreasureInfo & RHS)
     {
         coin_ += RHS.coin_;

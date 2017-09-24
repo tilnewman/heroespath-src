@@ -69,7 +69,7 @@ namespace sfml_util
     class LoopCmd_RemoveStage_Popup : public LoopCmd
     {
     public:
-        explicit LoopCmd_RemoveStage_Popup();
+        LoopCmd_RemoveStage_Popup();
         virtual ~LoopCmd_RemoveStage_Popup();
         virtual bool Execute();
     };

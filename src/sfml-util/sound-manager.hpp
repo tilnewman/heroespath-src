@@ -122,8 +122,6 @@ namespace sfml_util
 
         void CacheMusicInfo_CombatIntro();
 
-        inline std::size_t CombatMusicCount() const { return combatIntroMusicInfoVec_.size(); }
-
         MusicOperator MakeAndStartMusicOperator(const music::Enum MUSIC_ENUM,
                                                 const float       FADE_MULT,
                                                 const float       VOLUME) const;

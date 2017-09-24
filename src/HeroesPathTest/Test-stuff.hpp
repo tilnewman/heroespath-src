@@ -44,7 +44,7 @@ namespace test_stuff
 
     struct Constants
     {
-        Constants(
+        explicit Constants(
             const int    RANDOM_RETRY_COUNT_PARAM     = 1000,
             const double CLOSE_ENOUGH_EPSILON_PARAM   = 0.000001,
             const float  CLOSE_ENOUGH_EPSILON_F_PARAM = 0.000001f)

@@ -51,18 +51,18 @@ namespace popup
         using PopupStageBase::HandlerName;
         using PopupStageBase::HandleCallback;
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
 
     private:
-        virtual std::size_t CountMax() const override;
-        virtual void SetupContent(const bool WILL_ERASE) override;
-        virtual bool HandleNumberKeys(const sf::Event::KeyEvent &) override;
-        virtual void InvalidateSelectionIfCurrentIsInvalid() override;
+        std::size_t CountMax() const override;
+        void SetupContent(const bool WILL_ERASE) override;
+        bool HandleNumberKeys(const sf::Event::KeyEvent &) override;
+        void InvalidateSelectionIfCurrentIsInvalid() override;
         void HandleNumberKeySelection(const std::size_t) const;
         void SetupCharacterSelectDetailText(const bool WILL_ERASE);
         void SetupCharacterSelectionRejectImage(const bool WILL_ERASE);
-        virtual void SetCurrentTexture(const std::size_t IMAGE_INDEX) override;
+        void SetCurrentTexture(const std::size_t IMAGE_INDEX) override;
 
     private:
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;

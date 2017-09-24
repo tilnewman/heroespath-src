@@ -32,14 +32,13 @@
 #include "sfml-util/loop-cmd-popup.hpp"
 #include "sfml-util/loop.hpp"
 
+#include "popup/popup-info.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-res-change.hpp"
 
-#include "game/game-data-file.hpp"
 #include "game/log-macros.hpp"
-#include "game/stage/loop-cmd-addstage.hpp"
+#include "game/game-data-file.hpp"
 #include "game/creature/creature.hpp"
-#include "popup/popup-info.hpp"
 #include "game/stage/loop-cmd-addstage.hpp"
 
 #include "misc/assertlogandthrow.hpp"

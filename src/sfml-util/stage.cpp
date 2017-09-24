@@ -170,24 +170,15 @@ namespace sfml_util
         isMouseHeldDown_ = false;
         isMouseHeldDownAndMoving_ = false;
 
-        bool foundFocus(false);
-
-        std::for_each(
-            entityPVec_.begin(),
-            entityPVec_.end(),
-            [&](auto entityPtr)
+        for(auto entityPtr : entityPVec_)
+        {
+            if ((entityPtr->MouseUp(MOUSE_POS_V)) && entityPtr->WillAcceptFocus())
             {
-                if (entityPtr->MouseUp(MOUSE_POS_V))
-                {
-                    //can only find one entity with focus
-                    if ((entityPtr->WillAcceptFocus()) && (false == foundFocus))
-                    {
-                        foundFocus = true;
-                        entityPtr->SetHasFocus(true);
-                        entityWithFocusPtr_ = entityPtr;
-                    }
-                }
-            });
+                entityPtr->SetHasFocus(true);
+                entityWithFocusPtr_ = entityPtr;
+                break;//can only find one entity with focus
+            }
+        }
 
         return entityWithFocusPtr_;
     }

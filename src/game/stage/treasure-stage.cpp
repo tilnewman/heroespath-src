@@ -40,7 +40,6 @@
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "game/game.hpp"
-#include "game/state/game-state.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/non-player/party.hpp"
 #include "game/non-player/character.hpp"

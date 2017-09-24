@@ -37,6 +37,8 @@
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/color-slider.hpp"
 
+#include <string>
+
 
 namespace game
 {
@@ -63,7 +65,7 @@ namespace popup
         explicit PopupStageMusicSheet(const popup::PopupInfo &);
         virtual ~PopupStageMusicSheet();
 
-        inline virtual const std::string HandlerName() const override
+        inline const std::string HandlerName() const override
         {
             return PopupStageBase::HandlerName();
         }
@@ -72,12 +74,12 @@ namespace popup
 
         using PopupStageBase::HandleCallback;
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
-        virtual void SetupOuterAndInnerRegion() override;
+        void SetupOuterAndInnerRegion() override;
 
     private:
         void SetupRegions();

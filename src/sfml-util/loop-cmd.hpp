@@ -70,7 +70,7 @@ namespace sfml_util
         LoopCmd & operator=(const LoopCmd &) =delete;
 
     public:
-        LoopCmd(const std::string & NAME);
+        explicit LoopCmd(const std::string & NAME);
         virtual ~LoopCmd();
 
         virtual const std::string GetName() const { return NAME_; }
@@ -87,7 +87,7 @@ namespace sfml_util
     class LoopCmd_Execute : public LoopCmd
     {
     public:
-        explicit LoopCmd_Execute()
+        LoopCmd_Execute()
         :
             LoopCmd("Execute")
         {}
@@ -104,7 +104,7 @@ namespace sfml_util
     class LoopCmd_StateChange : public LoopCmd
     {
     public:
-        LoopCmd_StateChange(const game::LoopState::Enum STATE_NUM)
+        explicit LoopCmd_StateChange(const game::LoopState::Enum STATE_NUM)
         :
             LoopCmd("LoopStateChange"),
             STATE_ (STATE_NUM)
@@ -132,7 +132,7 @@ namespace sfml_util
     class LoopCmd_SetMouseVisibility : public LoopCmd
     {
     public:
-        LoopCmd_SetMouseVisibility(const bool IS_VISIBLE)
+        explicit LoopCmd_SetMouseVisibility(const bool IS_VISIBLE)
         :
             LoopCmd    ("SetMouseVisibility"),
             IS_VISIBLE_(IS_VISIBLE)
@@ -160,7 +160,7 @@ namespace sfml_util
     class LoopCmd_StartMusic : public LoopCmd
     {
     public:
-        LoopCmd_StartMusic(
+        explicit LoopCmd_StartMusic(
             const music::Enum MUSIC_TO_START,
             const float       SPEED_MULT     = MusicOperator::FADE_MULT_DEFAULT_IN_,
             const float       TARGET_VOLUME  = MusicOperator::VOLUME_USE_GLOBAL_)
@@ -205,8 +205,9 @@ namespace sfml_util
     class LoopCmd_StopMusic : public LoopCmd
     {
     public:
-        LoopCmd_StopMusic(const music::Enum   MUSIC_TO_STOP,
-                          const float         SPEED_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_)
+        explicit LoopCmd_StopMusic(
+            const music::Enum   MUSIC_TO_STOP,
+            const float         SPEED_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_)
         :
             LoopCmd       ("StopMusic"),
             MUSIC_TO_STOP_(MUSIC_TO_STOP),
@@ -243,7 +244,7 @@ namespace sfml_util
     class LoopCmd_AddStage_Default : public LoopCmd
     {
     public:
-        explicit LoopCmd_AddStage_Default()
+        LoopCmd_AddStage_Default()
         :
             LoopCmd("AddStageDefault")
         {}
@@ -260,7 +261,7 @@ namespace sfml_util
     class LoopCmd_SetHoldTime : public LoopCmd
     {
     public:
-        LoopCmd_SetHoldTime(const float SECONDS)
+        explicit LoopCmd_SetHoldTime(const float SECONDS)
         :
             LoopCmd("SetHoldTime"),
             TIME_  (SECONDS)
@@ -288,7 +289,7 @@ namespace sfml_util
     class LoopCmd_RemoveAllStages : public LoopCmd
     {
     public:
-        explicit LoopCmd_RemoveAllStages()
+        LoopCmd_RemoveAllStages()
         :
             LoopCmd("RemoveAllStages")
         {}
@@ -305,7 +306,7 @@ namespace sfml_util
     class LoopCmd_ExitAfterFade : public LoopCmd
     {
     public:
-        explicit LoopCmd_ExitAfterFade()
+        LoopCmd_ExitAfterFade()
         :
             LoopCmd("ExitAfterFade")
         {}
@@ -398,7 +399,7 @@ namespace sfml_util
     class LoopCmd_ExitAfterKeypress : public LoopCmd
     {
     public:
-        LoopCmd_ExitAfterKeypress(const bool WILL_EXIT_ON_KEYSTROKE)
+        explicit LoopCmd_ExitAfterKeypress(const bool WILL_EXIT_ON_KEYSTROKE)
         :
             LoopCmd("ExitOnKeypress"),
             WILL_EXIT_ON_KEYSTROKE_(WILL_EXIT_ON_KEYSTROKE)
@@ -427,7 +428,7 @@ namespace sfml_util
     class LoopCmd_ExitAfterMouseclick : public LoopCmd
     {
     public:
-        LoopCmd_ExitAfterMouseclick(const bool WILL_EXIT_ON_MOUSECLICK)
+        explicit LoopCmd_ExitAfterMouseclick(const bool WILL_EXIT_ON_MOUSECLICK)
         :
             LoopCmd("ExitOnMouseclick"),
             WILL_EXIT_ON_MOUSECLICK_(WILL_EXIT_ON_MOUSECLICK)
@@ -456,7 +457,7 @@ namespace sfml_util
     class LoopCmd_RemoveFocus : public LoopCmd
     {
     public:
-        explicit LoopCmd_RemoveFocus()
+        LoopCmd_RemoveFocus()
         :
             LoopCmd("RemoveFocus")
         {}
@@ -473,7 +474,7 @@ namespace sfml_util
     class LoopCmd_IgnoreMouse : public LoopCmd
     {
     public:
-        LoopCmd_IgnoreMouse(const bool WILL_IGNORE_MOUSE)
+        explicit LoopCmd_IgnoreMouse(const bool WILL_IGNORE_MOUSE)
         :
             LoopCmd("IgnoreMouse"),
             WILL_IGNORE_MOUSE_(WILL_IGNORE_MOUSE)
@@ -493,8 +494,8 @@ namespace sfml_util
     class LoopCmd_IgnoreKeystrokes : public LoopCmd
     {
     public:
-        LoopCmd_IgnoreKeystrokes(const bool WILL_IGNORE_KEYSTROKES)
-            :
+        explicit LoopCmd_IgnoreKeystrokes(const bool WILL_IGNORE_KEYSTROKES)
+        :
             LoopCmd("IgnoreKeystrokes"),
             WILL_IGNORE_KEYSTROKES_(WILL_IGNORE_KEYSTROKES)
         {}
@@ -513,8 +514,8 @@ namespace sfml_util
     class LoopCmd_FakeMouseClick : public LoopCmd
     {
     public:
-        LoopCmd_FakeMouseClick(const sf::Vector2f & MOUSE_POS_V)
-            :
+        explicit LoopCmd_FakeMouseClick(const sf::Vector2f & MOUSE_POS_V)
+        :
             LoopCmd("FakeMouseClick"),
             MOUSE_CLICK_POS_(MOUSE_POS_V)
         {}

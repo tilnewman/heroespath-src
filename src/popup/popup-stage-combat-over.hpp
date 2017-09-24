@@ -46,8 +46,8 @@ namespace popup
         explicit PopupStageCombatOver(const PopupInfo &);
         virtual ~PopupStageCombatOver();
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
 
     private:
         sf::Texture bgTexture_;

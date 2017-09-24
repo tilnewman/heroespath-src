@@ -50,6 +50,7 @@
 
 #include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
 
+#include <string>
 #include <memory>
 
 
@@ -67,7 +68,7 @@ namespace stage
     class LoopCmd_AddStage : public sfml_util::LoopCmd
     {
     public:
-        explicit LoopCmd_AddStage()
+        LoopCmd_AddStage()
         :
             LoopCmd(std::string("AddStage_").
                 append(boost::typeindex::type_id<StageType_t>().pretty_name()))
@@ -91,7 +92,7 @@ namespace stage
         LoopCmd_AddStage_Combat & operator=(const LoopCmd_AddStage_Combat &) = delete;
 
     public:
-        LoopCmd_AddStage_Combat(const bool WILL_ADVANCE_TURN)
+        explicit LoopCmd_AddStage_Combat(const bool WILL_ADVANCE_TURN)
         :
             LoopCmd("AddStage_Combat"),
             willAdvanceTurn_(WILL_ADVANCE_TURN)
@@ -111,9 +112,6 @@ namespace stage
         bool willAdvanceTurn_;
     };
 
-
-    using LoopCmd_AddStage_CombatSPtr_t =
-        std::shared_ptr<LoopCmd_AddStage_Combat>;
 
 
     class LoopCmd_AddStage_Inventory : public sfml_util::LoopCmd
@@ -159,46 +157,6 @@ namespace stage
         creature::CreaturePtr_t inventoryCreaturePtr;
         Phase::Enum currentPhase_;
     };
-
-
-    using LoopCmd_AddStage_InventorySPtr_t =
-        std::shared_ptr<LoopCmd_AddStage_Inventory>;
-
-    using LoopCmd_AddStage_AdentureSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<AdventureStage> >;
-
-    using LoopCmd_AddStage_TreasureSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<TreasureStage> >;
-
-    using LoopCmd_AddStage_CampSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<CampStage> >;
-
-    using LoopCmd_AddStage_SettingsSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<SettingsStage> >;
-
-    using LoopCmd_AddStage_Party_CreationSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<PartyStage> >;
-
-    using LoopCmd_AddStage_MainMenuSPtr_t =
-        std::shared_ptr < LoopCmd_AddStage<MainMenuStage> > ;
-
-    using LoopCmd_AddStage_LoadGameMenuSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<LoadGameStage> >;
-
-    using LoopCmd_AddStage_IntroSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<IntroStage> >;
-
-    using LoopCmd_AddStage_InnSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<InnStage> >;
-
-    using LoopCmd_AddStage_CreditsSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<CreditsStage> >;
-
-    using LoopCmd_AddStage_Character_CreationSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<CharacterStage> >;
-
-    using LoopCmd_AddStage_TestSPtr_t =
-        std::shared_ptr< LoopCmd_AddStage<TestingStage> >;
 
 }
 }

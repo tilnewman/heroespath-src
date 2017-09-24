@@ -38,6 +38,7 @@
 #include "misc/random.hpp"
 #include "misc/boost-string-includes.hpp"
 
+#include <string>
 #include <algorithm>
 
 

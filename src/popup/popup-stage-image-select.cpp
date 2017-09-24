@@ -33,6 +33,8 @@
 
 #include "sfml-util/sound-manager.hpp"
 
+#include <algorithm>
+
 
 namespace popup
 {

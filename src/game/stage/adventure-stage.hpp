@@ -46,11 +46,9 @@ namespace stage
         AdventureStage();
         virtual ~AdventureStage();
 
-        virtual void Setup() override;
-
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        void Setup() override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
     };
 
 }

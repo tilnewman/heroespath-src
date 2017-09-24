@@ -46,7 +46,7 @@ namespace sfml_util
         SfxWrapper & operator=(const SfxWrapper &) =delete;
 
     public:
-        SfxWrapper(
+        explicit SfxWrapper(
             const sound_effect::Enum ENUM        = sound_effect::Count,
             SoundUPtr_t              soundUPtr   = SoundUPtr_t(),
             SoundBufferUPtr_t        BUFFER_UPTR = SoundBufferUPtr_t());
