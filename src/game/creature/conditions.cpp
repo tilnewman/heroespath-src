@@ -168,22 +168,22 @@ namespace condition
         if (creature::Stats::Test(
                 creaturePtr,
                 stats::Traits::Strength,
-                0.0f,
                 static_cast<creature::Stats::With>(
                     creature::Stats::With::Luck |
                     creature::Stats::With::RaceRoleBonus)))
         {
             creaturePtr->ConditionRemove(Conditions::Pounced);
 
-            const ContentAndNamePos CNP(" gets up after being pounced on.",
-                                        NamePosition::TargetBefore);
+            const ContentAndNamePos CNP(
+                " gets up after being pounced on.", NamePosition::TargetBefore);
 
-            hitInfoVec.push_back( combat::HitInfo(false,
-                                                  Which(),
-                                                  CNP,
-                                                  0,
-                                                  {},
-                                                  { Conditions::Pounced }) );
+            hitInfoVec.push_back( combat::HitInfo(
+                false,
+                Which(),
+                CNP,
+                0,
+                {},
+                { Conditions::Pounced }) );
 
             hasTurnBeenConsumed = true;
         }
@@ -230,14 +230,14 @@ namespace condition
     }
 
 
-    void Poisoned::PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                 combat::HitInfoVec_t & hitInfoVec,
-                                 bool &) const
+    void Poisoned::PerTurnEffect(
+        CreaturePtr_t          creaturePtr,
+        combat::HitInfoVec_t & hitInfoVec,
+        bool &) const
     {
         if (creature::Stats::Test(
                 creaturePtr,
                 stats::Traits::Strength,
-                0.0f,
                 static_cast<creature::Stats::With>(
                     creature::Stats::With::Luck |
                     creature::Stats::With::RaceRoleBonus)) &&

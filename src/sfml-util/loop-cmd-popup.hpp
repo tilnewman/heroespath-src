@@ -30,6 +30,8 @@
 //
 #include "sfml-util/loop-cmd.hpp"
 
+#include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
+
 #include <memory>
 
 
@@ -44,7 +46,8 @@ namespace sfml_util
             sfml_util::Loop & loop,
             const popup::PopupInfo & POPUP_INFO)
         :
-            LoopCmd("AddStage_Popup_Specific"),
+            LoopCmd("AddStage_Popup_Specific_" +
+                boost::typeindex::type_id<PopupType_t>().pretty_name()),
             loop_(loop),
             popupInfo_(POPUP_INFO)
         {}

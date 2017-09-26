@@ -33,7 +33,10 @@
 
 #include "game/log-macros.hpp"
 
+#include "misc/vectors.hpp"
 #include "misc/assertlogandthrow.hpp"
+
+#include <algorithm>
 
 
 namespace game
@@ -58,19 +61,14 @@ namespace trap
             1, 1,
             3, 8,
             sfml_util::sound_effect::TrapMetalBang,
-            "The lock bursts in the lock picker's hands!"));
+            "A metal spike pops out from the",
+            "!"));
 
         traps_.push_back(Trap(
             1, 3,
             4, 9,
             sfml_util::sound_effect::TrapMetal,
             "Sharp metal pieces burst out and tear through the party!"));
-
-        traps_.push_back(Trap(
-            1, 3,
-            6, 12,
-            sfml_util::sound_effect::TrapSplutter,
-            "The lock oozes with toxic black sludge!"));
 
         traps_.push_back(Trap(
             1, 3,
@@ -151,58 +149,58 @@ namespace trap
             sfml_util::sound_effect::TrapChiaowahh,
             "You hear horrible wailing and a ghostly red light shines from the ",
             "  searing the party!"));
-
+        
         traps_.push_back(Trap(
-            1, 3,
+            1, 4,
             12, 18,
             sfml_util::sound_effect::TrapGasExhale,
             "Noxious gas hisses from vents in the ",
             "!"));
-
+        
         traps_.push_back(Trap(
             2, 6,
             16, 24,
             sfml_util::sound_effect::TrapGasLeak,
             "A deadly chemical mist escapes!"));
-
+        
         traps_.push_back(Trap(
-            1, 2,
+            2, 4,
             8, 14,
             sfml_util::sound_effect::TrapSparksHiss,
             "Sparks spray out from the ",
             "!"));
-
+        
         traps_.push_back(Trap(
-            2, 4,
+            3, 6,
             12, 24,
             sfml_util::sound_effect::TrapSparksAhh,
             "A torrent of molten metal showers the party!"));
-
+        
         traps_.push_back(Trap(
             1, 1,
             25, 50,
             sfml_util::sound_effect::TrapSpiritShortHiss,
             "A spectral skeleton hand reaches out and strikes at the lock picker!"));
-
+        
         traps_.push_back(Trap(
             2, 4,
-            30, 60,
+            30, 50,
             sfml_util::sound_effect::TrapGhost2,
             "The raging ghost of a murdered witch emerges and slashes the party with ghostly claws!"));
-
+        
         traps_.push_back(Trap(
             4, 6,
-            40, 80,
+            20, 40,
             sfml_util::sound_effect::TrapGhost2,
-            "Spirits/Specters/Phantoms/Phantasms/Wraiths emerge and tear through the party!"));
-
+            "Evil spirits emerge and tear through the party!"));
+        
         std::sort(
             std::begin(traps_),
             std::end(traps_),
             [](auto const & A, auto const & B)
-            {
-                return A.Severity() < B.Severity();
-            });
+        {
+            return A.Severity() < B.Severity();
+        });
     }
 
 
@@ -221,54 +219,78 @@ namespace trap
     }
 
 
-    const TrapVec_t Warehouse::GetWithSevertiyLessThanOrEqualTo(const int SEVERITY)
+    int Warehouse::GetMinSeverity()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((traps_.empty() == false),
-            "game::trap::Warehouse::GetWithSevertiyLessThanOrEqualTo() called before "
+            "game::trap::Warehouse::GetWithMinSeverity() called before warehouse was Fill()ed.");
+
+        return traps_[0].Severity();
+    }
+
+
+    int Warehouse::GetMaxSeverity()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((traps_.empty() == false),
+            "game::trap::Warehouse::GetWithMinSeverity() called before warehouse was Fill()ed.");
+
+        return traps_[traps_.size() - 1].Severity();
+    }
+
+
+    const TrapVec_t Warehouse::GetWithSeverityRatioBetween(
+        const float THE_MIN,
+        const float THE_MAX)
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS((traps_.empty() == false),
+            "game::trap::Warehouse::GetWithSeverityRatio() called before "
             << "warehouse was Fill()ed.");
 
-        TrapVec_t trapsWithMatchingSeverity;
+        auto const SEVERITY_MAX_F{ static_cast<float>(GetMaxSeverity()) };
 
-        std::copy_if(
-            std::begin(traps_),
-            std::end(traps_),
-            std::back_inserter(trapsWithMatchingSeverity),
-            [SEVERITY](auto const & TRAP)
+        TrapVec_t trapsWithSeverityWithinRange;
+
+        for (auto const & TRAP : traps_)
+        {
+            auto const SEVERITY_RATIO{ static_cast<float>(TRAP.Severity()) / SEVERITY_MAX_F };
+
+            if (((SEVERITY_RATIO > THE_MIN) &&
+                 (SEVERITY_RATIO < THE_MAX)) ||
+                misc::IsRealClose(SEVERITY_RATIO, THE_MIN) ||
+                misc::IsRealClose(SEVERITY_RATIO, THE_MAX))
             {
-                return TRAP.Severity() <= SEVERITY;
-            });
+                trapsWithSeverityWithinRange.push_back(TRAP);
+            }
+        }
 
-        return trapsWithMatchingSeverity;
+        if (trapsWithSeverityWithinRange.empty())
+        {
+            M_HP_LOG_ERR("game::trap::Warehouse::GetWithSeverityRatioBetween(min=" << THE_MIN 
+                << ", max=" << THE_MAX << ") "
+                << "resulted in no traps, so the default weakest trap is being used.");
+
+            trapsWithSeverityWithinRange.push_back(traps_[0]);
+        }
+
+        return trapsWithSeverityWithinRange;
     }
 
 
-    const TrapVec_t Warehouse::GetWithSeverityRatioLessThanOrEqualTo(const float SEVERITY_RATIO)
+    const Trap Warehouse::SelectRandomWithSeverityRatioNear(const float SEVERITY_RATIO)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((traps_.empty() == false),
-            "game::trap::Warehouse::GetWithSevertiyLessThanOrEqualTo() called before "
-            << "warehouse was Fill()ed.");
+        auto severityRatioMin{ SEVERITY_RATIO - 0.333f };
+        if (severityRatioMin < 0.0f)
+        {
+            severityRatioMin = 0.0f;
+        }
 
-        auto const SEVERITY_MAX_F{ static_cast<float>(GetWithMaxSeverity().Severity()) };
-        auto const SEVERITY{ static_cast<int>(SEVERITY_MAX_F * SEVERITY_RATIO) };
-        return GetWithSevertiyLessThanOrEqualTo(SEVERITY);
-    }
+        auto severityRatioMax{ SEVERITY_RATIO + 0.1f };
+        if (severityRatioMax > 1.0f)
+        {
+            severityRatioMax = 1.0f;
+        }
 
-
-    const Trap Warehouse::GetWithMinSeverity()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((traps_.empty() == false),
-            "game::trap::Warehouse::GetWithMinSeverity() called before warehouse was Fill()ed.");
-
-        return traps_[0];
-    }
-
-
-    const Trap Warehouse::GetWithMaxSeverity()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((traps_.empty() == false),
-            "game::trap::Warehouse::GetWithMinSeverity() called before warehouse was Fill()ed.");
-
-        return traps_[traps_.size() - 1];
+        return misc::Vector::SelectRandom(
+            GetWithSeverityRatioBetween(severityRatioMin, severityRatioMax));
     }
 
 }

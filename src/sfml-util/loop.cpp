@@ -37,6 +37,7 @@
 
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
+
 #include "popup/i-popup-callback.hpp"
 
 #include "misc/vectors.hpp"
@@ -132,8 +133,9 @@ namespace sfml_util
     }
 
 
-    void Loop::AssignPopupCallbackHandlerInfo(popup::IPopupHandler_t * const HANDLER_PTR,
-                                              const popup::PopupInfo &                 POPUP_INFO)
+    void Loop::AssignPopupCallbackHandlerInfo(
+        popup::IPopupHandler_t * const HANDLER_PTR,
+        const popup::PopupInfo & POPUP_INFO)
     {
         popupInfo_ = POPUP_INFO;
         popupCallbackPtr_ = HANDLER_PTR;

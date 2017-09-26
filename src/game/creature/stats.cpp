@@ -142,19 +142,16 @@ namespace creature
 
     bool Stats::Test(const CreaturePtr_t       CREATURE_PTR,
                      const stats::Traits::Enum TRAIT_ENUM,
-                     const float               RANK_BONUS_RATIO,
                      const With                OPTIONS)
     {
         return Test(CREATURE_PTR,
                     stats::TraitsVec_t(1, TRAIT_ENUM),
-                    RANK_BONUS_RATIO,
                     OPTIONS);
     }
 
 
     bool Stats::Test(const CreaturePtr_t        CREATURE_PTR,
                      const stats::TraitsVec_t & TRAIT_ENUM_VEC,
-                     const float                RANK_BONUS_RATIO,
                      const With                 OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CREATURE_PTR != nullptr),
@@ -163,35 +160,52 @@ namespace creature
         M_ASSERT_OR_LOGANDTHROW_SS((TRAIT_ENUM_VEC.empty() == false),
             "game::creature::Stats::Test() called with TRAIT_ENUM_VEC empty.");
 
-        stats::Trait_t rollBaseSum{ 0 };
+        stats::Trait_t rollChance{ 0 };
         for (auto const NEXT_TRAIT_ENUM : TRAIT_ENUM_VEC)
         {
             auto const TRAIT_WORKING{ CREATURE_PTR->TraitWorking(NEXT_TRAIT_ENUM) };
-            rollBaseSum += TRAIT_WORKING;
+            rollChance += TRAIT_WORKING;
 
             if (OPTIONS & With::Luck)
             {
-                rollBaseSum += LuckBonus(CREATURE_PTR);
+                rollChance += LuckBonus(CREATURE_PTR);
             }
 
             if (OPTIONS & With::RaceRoleBonus)
             {
-                rollBaseSum += RollBonusByRace(TRAIT_WORKING,
-                                               NEXT_TRAIT_ENUM,
-                                               CREATURE_PTR->Race());
+                rollChance += RollBonusByRace(
+                    TRAIT_WORKING,
+                    NEXT_TRAIT_ENUM,
+                    CREATURE_PTR->Race());
 
-                rollBaseSum += RollBonusByRole(TRAIT_WORKING,
-                                               NEXT_TRAIT_ENUM,
-                                               CREATURE_PTR->Role());
+                rollChance += RollBonusByRole(
+                    TRAIT_WORKING,
+                    NEXT_TRAIT_ENUM,
+                    CREATURE_PTR->Role());
+            }
+
+            if (OPTIONS & With::StandardBonus)
+            {
+                rollChance += static_cast<stats::Trait_t>(
+                    static_cast<float>(stats::Trait::STAT_MAX_ESTIMATED_) *
+                    (static_cast<float>(CREATURE_PTR->TraitBonusCurrent(NEXT_TRAIT_ENUM)) -
+                        100.0f));
             }
         }
 
-        rollBaseSum /= static_cast<int>(TRAIT_ENUM_VEC.size());
+        rollChance /= static_cast<int>(TRAIT_ENUM_VEC.size());
 
-        auto const RANK_BONUS{ static_cast<stats::Trait_t>(
-            static_cast<float>(CREATURE_PTR->Rank()) * RANK_BONUS_RATIO) };
+        if (OPTIONS & With::RankBonus)
+        {
+            auto const RANK_BONUS{ static_cast<stats::Trait_t>(
+                static_cast<float>(CREATURE_PTR->Rank()) *
+                    GameDataFile::Instance()->GetCopyFloat(
+                        "heroespath-fight-stats-rank-bonus-ratio")) };
+        
+            rollChance += RANK_BONUS;
+        }
 
-        return (misc::random::Int(stats::Trait::STAT_MAX_ESTIMATED_) < (rollBaseSum + RANK_BONUS));
+        return (misc::random::Int(stats::Trait::STAT_MAX_ESTIMATED_) < rollChance);
     }
 
 

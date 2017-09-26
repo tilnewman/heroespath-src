@@ -45,7 +45,11 @@
 namespace popup
 {
 
-    const sf::Uint8 PopupStageBase::ACCENT_IMAGE_ALPHA_{ 24 };
+    //This value was found by experiment to be faded enough to avoid interfering with foreground.
+    const sf::Uint8 PopupStageBase::ACCENT_IMAGE_ALPHA_{ 19 };
+
+    //This value was found by experiment to make a good looking empty border around the image.
+    const float PopupStageBase::ACCENT_IMAGE_SCALEDOWN_RATIO_{ 0.85f };
 
 
     PopupStageBase::PopupStageBase(const PopupInfo & POPUP_INFO)
@@ -76,7 +80,8 @@ namespace popup
         gradient_(),
         buttonTextHeight_(0.0f),
         buttonVertPos_(0.0f),
-        xSymbolTexture_()
+        xSymbolTexture_(),
+        keepAliveTimerSec_(POPUP_INFO.KeepAliveSec())
     {}
 
 
@@ -273,6 +278,19 @@ namespace popup
         }
 
         return Stage::KeyRelease(KEY_EVENT);
+    }
+
+
+    void PopupStageBase::UpdateTime(const float ELAPSED_TIME_SECONDS)
+    {
+        if (keepAliveTimerSec_ > 0.0f)
+        {
+            keepAliveTimerSec_ -= ELAPSED_TIME_SECONDS;
+            if (keepAliveTimerSec_ < 0.0f)
+            {
+                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
+            }
+        }
     }
 
 
@@ -546,6 +564,17 @@ namespace popup
     }
 
 
+    void PopupStageBase::SetupTextRegion()
+    {
+        textRegion_.left = StageRegionLeft() + innerRegion_.left;
+        textRegion_.top = StageRegionTop() + innerRegion_.top;
+        textRegion_.width = innerRegion_.width;
+
+        auto const TEXT_TO_BUTTON_SPACER{ 12.0f }; //found by experiment
+        textRegion_.height = (innerRegion_.height - ButtonTextHeight()) - TEXT_TO_BUTTON_SPACER;
+    }
+
+
     void PopupStageBase::SetupText()
     {
         sf::FloatRect tempRect(textRegion_);
@@ -568,17 +597,6 @@ namespace popup
                 tempRect,
                 this);
         }
-    }
-
-
-    void PopupStageBase::SetupTextRegion()
-    {
-        textRegion_.left = StageRegionLeft() + innerRegion_.left;
-        textRegion_.top = StageRegionTop() + innerRegion_.top;
-        textRegion_.width = innerRegion_.width;
-
-        auto const TEXT_TO_BUTTON_SPACER{ 12.0f }; //found by experiment
-        textRegion_.height = (innerRegion_.height - ButtonTextHeight()) - TEXT_TO_BUTTON_SPACER;
     }
 
 
@@ -607,34 +625,11 @@ namespace popup
             PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
             accentSprite1_.setTexture(accentTexture1_, true);
 
-            auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };//found by experiment
-
-            auto const SCALE_VERT{
-                (textRegion_.height * SIZE_RATIO) / accentSprite1_.getLocalBounds().height };
-
-            accentSprite1_.setScale(SCALE_VERT, SCALE_VERT);
-
-            if (accentSprite1_.getGlobalBounds().width > (textRegion_.width * SIZE_RATIO))
-            {
-                auto const SCALE_HORIZ{
-                    (textRegion_.width * SIZE_RATIO) / accentSprite1_.getLocalBounds().width };
-
-                if (SCALE_HORIZ < SCALE_VERT)
-                {
-                    accentSprite1_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-                }
-            }
-
-            //always center the accent sprite image
-            auto const ACCENT_POS_LEFT{
-                (textRegion_.left + (textRegion_.width * 0.5f)) -
-                    (accentSprite1_.getGlobalBounds().width * 0.5f) };
-
-            auto const ACCENT_POS_TOP{
-                (textRegion_.top + (textRegion_.height * 0.5f)) -
-                    (accentSprite1_.getGlobalBounds().height * 0.5f) };
-
-            accentSprite1_.setPosition(ACCENT_POS_LEFT, ACCENT_POS_TOP);
+            sfml_util::CenterAndScaleSpriteToFit(
+                accentSprite1_,
+                textRegion_,
+                ACCENT_IMAGE_SCALEDOWN_RATIO_);
+            
             accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
     }

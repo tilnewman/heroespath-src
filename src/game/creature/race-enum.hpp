@@ -125,6 +125,7 @@ namespace creature
         static bool RaceRoleMatch(const race::Enum, const role::Enum);
         static const OriginTypeVec_t OriginTypes(const race::Enum, const role::Enum);
         static const item::TreasureInfo TreasureScore(const race::Enum, const role::Enum);
+        static const item::TreasureInfo TreasureScoreMax();
         static const std::string RaceRoleName(const race::Enum, const role::Enum);
         static const stats::TraitPair_t RaceRoleRanks(const race::Enum, const role::Enum);
     };

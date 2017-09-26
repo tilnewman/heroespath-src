@@ -48,25 +48,27 @@ namespace popup
     const float PopupInfo::IMAGE_FADE_SPEED_DEFAULT_(-1.0f);//any negative value will work here
 
 
-    PopupInfo::PopupInfo(const std::string &                 NAME,
-                         const sfml_util::gui::TextInfo &    TEXT_INFO,
-                         const PopupButtons::Enum            BUTTONS,
-                         const PopupImage::Enum              IMAGE,
-                         const float                         IMAGE_SCALE,
-                         const sfml_util::sound_effect::Enum SOUND_EFFECT,
-                         const PopupButtonColor::Enum        BUTTON_COLOR,
-                         const bool                          WILL_ADD_RAND_IMAGE,
-                         const std::vector<std::size_t> &    INVALID_CHAR_NUM_VEC,
-                         const sfml_util::TextureVec_t &     TEXTURE_VEC,
-                         const std::vector<std::string> &    TEXT_VEC,
-                         const float                         IMAGE_FADE_SPEED,
-                         const game::creature::CreaturePtr_t CREATURE_CPTR,
-                         const std::size_t                   INITIAL_SELECTION,
-                         const bool                          ARE_IMAGES_CREATURES,
-                         const std::string &                 TITLE_TEXT,
-                         const std::string &                 DESC_TEXT,
-                         const game::creature::TitlePtr_t    FROM_TITLE_PTR,
-                         const game::creature::TitlePtr_t    TO_TITLE_PTR)
+    PopupInfo::PopupInfo(
+        const std::string &                 NAME,
+        const sfml_util::gui::TextInfo &    TEXT_INFO,
+        const PopupButtons::Enum            BUTTONS,
+        const PopupImage::Enum              IMAGE,
+        const float                         IMAGE_SCALE,
+        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const PopupButtonColor::Enum        BUTTON_COLOR,
+        const bool                          WILL_ADD_RAND_IMAGE,
+        const std::vector<std::size_t> &    INVALID_CHAR_NUM_VEC,
+        const sfml_util::TextureVec_t &     TEXTURE_VEC,
+        const std::vector<std::string> &    TEXT_VEC,
+        const float                         IMAGE_FADE_SPEED,
+        const game::creature::CreaturePtr_t CREATURE_CPTR,
+        const std::size_t                   INITIAL_SELECTION,
+        const bool                          ARE_IMAGES_CREATURES,
+        const std::string &                 TITLE_TEXT,
+        const std::string &                 DESC_TEXT,
+        const game::creature::TitlePtr_t    FROM_TITLE_PTR,
+        const game::creature::TitlePtr_t    TO_TITLE_PTR,
+        const float                         KEEP_ALIVE_SECONDS)
     :
         name_            (NAME),
         textInfo_        (TEXT_INFO),
@@ -93,7 +95,8 @@ namespace popup
         titleToPtr_      (TO_TITLE_PTR),
         titleText_       (TITLE_TEXT),
         descText_        (DESC_TEXT),
-        willIncludeItems_(false)
+        willIncludeItems_(false),
+        keepAliveSeconds_(KEEP_ALIVE_SECONDS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.text.empty() == false),
             "popup::PopupInfo(name=\"" << name_ << "\", buttons="
@@ -162,7 +165,8 @@ namespace popup
         titleToPtr_      (nullptr),
         titleText_       (""),
         descText_        (""),
-        willIncludeItems_(false)
+        willIncludeItems_(false),
+        keepAliveSeconds_(-1.0f)//any negative will work here
     {}
 
 
@@ -200,7 +204,8 @@ namespace popup
         titleToPtr_      (nullptr),
         titleText_       (""),
         descText_        (""),
-        willIncludeItems_(false)
+        willIncludeItems_(false),
+        keepAliveSeconds_(-1.0f)//any negative will work here
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             ((INITIAL_SELECTION < textureVec_.size()) ||
@@ -242,7 +247,8 @@ namespace popup
         titleToPtr_      (nullptr),
         titleText_       (""),
         descText_        (""),
-        willIncludeItems_(false)
+        willIncludeItems_(false),
+        keepAliveSeconds_(-1.0f)//any negative will work here
     {}
 
 
@@ -277,7 +283,8 @@ namespace popup
         titleToPtr_      (nullptr),
         titleText_       (""),
         descText_        (""),
-        willIncludeItems_(false)
+        willIncludeItems_(false),
+        keepAliveSeconds_(-1.0f)//any negative will work here
     {}
 
 
@@ -316,7 +323,8 @@ namespace popup
         titleToPtr_      (PI.titleToPtr_),
         titleText_       (PI.titleText_),
         descText_        (PI.descText_),
-        willIncludeItems_(PI.willIncludeItems_)
+        willIncludeItems_(PI.willIncludeItems_),
+        keepAliveSeconds_(PI.keepAliveSeconds_)
     {}
 
 
@@ -354,6 +362,7 @@ namespace popup
             titleText_        = PI.titleText_;
             descText_         = PI.descText_;
             willIncludeItems_ = PI.willIncludeItems_;
+            keepAliveSeconds_ = PI.keepAliveSeconds_;
         }
 
         return * this;

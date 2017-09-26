@@ -51,7 +51,8 @@ namespace creature
             Luck              = 1 << 0,
             RaceRoleBonus     = 1 << 1,
             RankBonus         = 1 << 2,
-            PlayerNaturalWins = 1 << 3
+            PlayerNaturalWins = 1 << 3,
+            StandardBonus     = 1 << 4
         };
 
         static float Ratio(
@@ -79,14 +80,12 @@ namespace creature
         static bool Test(
             const CreaturePtr_t       CREATURE_PTR,
             const stats::Traits::Enum TRAIT_ENUM,
-            const float               RANK_BONUS_RATIO = 0.0f,
-            const With                OPTIONS          = With::None);
+            const With                OPTIONS = With::None);
 
         static bool Test(
             const CreaturePtr_t        CREATURE_PTR,
             const stats::TraitsVec_t & TRAIT_ENUM_VEC,
-            const float                RANK_BONUS_RATIO = 0.0f,
-            const With                 OPTIONS          = With::None);
+            const With                 OPTIONS = With::None);
 
         //You can leave DEFENDER_STAT stats::Traits::Count to mean the same as CHALLENGER_STAT
         static bool Versus(

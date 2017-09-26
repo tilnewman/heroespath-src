@@ -70,6 +70,23 @@ namespace sfml_util
     }
 
 
+    void ScaleSpriteToFit(
+        sf::Sprite & s,
+        const float WIDTH,
+        const float HEIGHT,
+        const float RESIZE_RATIO)
+    {
+        auto const VERT_SCALE{ RESIZE_RATIO * (HEIGHT / s.getGlobalBounds().height) };
+        s.setScale(VERT_SCALE, VERT_SCALE);
+
+        if (s.getGlobalBounds().width > WIDTH)
+        {
+            auto const HORIZ_SCALE{ RESIZE_RATIO * (WIDTH / s.getGlobalBounds().width) };
+            s.setScale(HORIZ_SCALE, HORIZ_SCALE);
+        }
+    }
+
+
     float GetAngleInDegrees(const sf::Vector2f & BEGIN_POS_V, const sf::Vector2f & END_POS_V)
     {
         auto const ANGLE_RADIANS{ std::atan((std::max(BEGIN_POS_V.y, END_POS_V.y) -

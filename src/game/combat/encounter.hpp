@@ -132,9 +132,6 @@ namespace combat
             const item::ItemCache & ITEM_CACHE_WORN,
             const item::ItemCache & ITEM_CACHE_OWNED);
 
-        void HandleRunawayPlayer(const creature::CreaturePtr_t);
-        void HandleRunawayNonPlayer(const creature::CreaturePtr_t);
-
         item::ItemCache TakeDeadNonPlayerItemsHeldCache();
         item::ItemCache TakeDeadNonPlayerItemsLockboxCache();
 
@@ -149,6 +146,8 @@ namespace combat
         {
             lockPickCreaturePtr_ = NEW_CREATURE_PTR;
         }
+
+        float DefeatedPartyTreasureRatioPer() const;
 
     private:
         void GenerateFirstEncounter();

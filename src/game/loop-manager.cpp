@@ -489,8 +489,10 @@ namespace game
     {
         while (false == cmdQueue_.empty())
         {
-            sfml_util::ILoopCmdSPtr_t cmdSPtr{ cmdQueue_.front() };
+            auto cmdSPtr{ cmdQueue_.front() };
             cmdQueue_.pop();
+
+            //M_HP_LOG("LoopManager::Execute() executing: " << cmdSPtr->GetName() );
 
             cmdSPtr->Execute();
 

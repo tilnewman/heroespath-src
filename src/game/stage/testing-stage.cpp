@@ -788,7 +788,8 @@ namespace stage
             "media-images-bones-skull-orc",
             "media-images-bones-skull-snake",
             "media-images-bones-three-headed-hound",
-            "media-images-bones-wolfen"
+            "media-images-bones-wolfen",
+            "media-images-trap"
         };
 
         static std::size_t imageIndex{ 0 };
@@ -839,6 +840,7 @@ namespace stage
             "heroespath-fight-stats-amazing-ratio",
             "heroespath-fight-stats-base-high-val",
             "heroespath-fight-stats-value-floor",
+            "heroespath-fight-stats-rank-bonus-ratio",
             "heroespath-fight-hit-critical-chance-ratio",
             "heroespath-fight-hit-power-chance-ratio",
             "heroespath-fight-damage-strength-bonus-ratio",

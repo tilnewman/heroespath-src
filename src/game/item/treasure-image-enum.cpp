@@ -60,7 +60,7 @@ namespace item
     }
 
 
-    const std::string TreasureImage::ToKey(const TreasureImage::Enum E)
+    const std::string TreasureImage::ToImageKey(const TreasureImage::Enum E)
     {
         switch (E)
         {
@@ -91,6 +91,19 @@ namespace item
                 ss << "game::combat::TreasureImage::ToKey(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
+        }
+    }
+
+
+    const std::string TreasureImage::ToContainerName(const TreasureImage::Enum E)
+    {
+        if ((E == ChestClosed) || (E == ChestOpen))
+        {
+            return "chest";
+        }
+        else
+        {
+            return "lockbox";
         }
     }
 

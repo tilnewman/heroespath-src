@@ -73,6 +73,8 @@ namespace popup
 
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+
     protected:
         inline float ButtonTextHeight() const { return buttonTextHeight_; }
 
@@ -100,8 +102,9 @@ namespace popup
 
         virtual inline bool WillPressingCKeyClosePopup() const { return false; }
 
-    private:
+    protected:
         static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
+        static const float ACCENT_IMAGE_SCALEDOWN_RATIO_;
 
     protected:
         PopupInfo popupInfo_;
@@ -132,6 +135,7 @@ namespace popup
         float buttonTextHeight_;
         float buttonVertPos_;
         sf::Texture xSymbolTexture_;
+        float keepAliveTimerSec_;
     };
 
 }

@@ -65,7 +65,6 @@ namespace song
             auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Test(
                 creaturePlayingPtr,
                 { stats::Traits::Intelligence, stats::Traits::Charm },
-                0.5f,
                 static_cast<creature::Stats::With>(
                     creature::Stats::With::Luck |
                     creature::Stats::With::RaceRoleBonus)) };
@@ -371,7 +370,6 @@ namespace song
             auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Test(
                 creaturePlayingPtr,
                 { stats::Traits::Intelligence, stats::Traits::Charm },
-                0.5f,
                 static_cast<creature::Stats::With>(
                     creature::Stats::With::Luck |
                     creature::Stats::With::RaceRoleBonus)) };

@@ -98,6 +98,39 @@ namespace item
     }
 
 
+    float TreasureFactory::TreasureRatioPer(const non_player::CharacterPVec_t & CHARACTER_PVEC)
+    {
+        item::TreasureInfo tScoresSum;
+
+        for (auto const NEXT_CHARACTER_PTR : CHARACTER_PVEC)
+        {
+            tScoresSum += creature::race::TreasureScore(
+                NEXT_CHARACTER_PTR->Race(), NEXT_CHARACTER_PTR->Role());
+        }
+
+        auto const COIN_AVG{
+            static_cast<float>(tScoresSum.Coin()) / static_cast<float>(CHARACTER_PVEC.size()) };
+
+        auto const GEM_AVG{
+            static_cast<float>(tScoresSum.Gem()) / static_cast<float>(CHARACTER_PVEC.size()) };
+
+        auto const MAGIC_AVG{
+            static_cast<float>(tScoresSum.Magic()) / static_cast<float>(CHARACTER_PVEC.size()) };
+
+        auto const RELIGIOUS_AVG{
+          static_cast<float>(tScoresSum.Religious()) / static_cast<float>(CHARACTER_PVEC.size()) };
+
+        auto const T_SCORES_MAX{ creature::race::TreasureScoreMax() };
+
+        auto const COIN_RATIO{ COIN_AVG / static_cast<float>(T_SCORES_MAX.Coin()) };
+        auto const GEM_RATIO{ GEM_AVG / static_cast<float>(T_SCORES_MAX.Gem()) };
+        auto const MAGIC_RATIO{ MAGIC_AVG / static_cast<float>(T_SCORES_MAX.Magic()) };
+        auto const RELIGIOUS_RATIO{ RELIGIOUS_AVG / static_cast<float>(T_SCORES_MAX.Religious()) };
+
+        return (COIN_RATIO + GEM_RATIO + MAGIC_RATIO + RELIGIOUS_RATIO) / 4.0f;
+    }
+
+
     const item::TreasureInfo TreasureFactory::MakeRandTreasureInfo(
         const non_player::CharacterPVec_t & CHARACTER_PVEC)
     {

@@ -36,6 +36,7 @@
 #include "game/item/treasure-image-enum.hpp"
 #include "game/item/item-cache.hpp"
 #include "game/item/treasure-available-enum.hpp"
+#include "game/trap.hpp"
 
 #include "misc/handy-types.hpp"
 
@@ -93,8 +94,13 @@ namespace stage
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
     private:
-        void SetupTreasureImage(const item::TreasureImage::Enum);
-        const std::string GetCorpseImageKeyFromEnemyParty() const;
+        const sf::Vector2f SetupTreasureImage(const item::TreasureImage::Enum);
+
+        void SetupCoinsImage(
+            const item::TreasureImage::Enum,
+            const sf::Vector2f & TREASURE_IMAGE_POS_V);
+        
+            const std::string GetCorpseImageKeyFromEnemyParty() const;
         const misc::StrVec_t GetCorpseImageKeyFromRace(const creature::race::Enum) const;
         void SetupAfterDelay();
         void SetupCoinsImage();
@@ -123,6 +129,14 @@ namespace stage
         void PromptPlayerWithLockPickPopup(
             const std::size_t CHARACTER_INDEX_WHO_IS_PICKING_THE_LOCK);
 
+        bool DetermineIfLockPickingSucceeded(const std::size_t CHAR_INDEX_WHO_IS_ATTEMPTING) const;
+
+        sfml_util::sound_effect::Enum SelectRandomLockPickingSfx() const;
+        sfml_util::sound_effect::Enum SelectRandomTreasureOpeningSfx() const;
+
+        void LockPickSuccess();
+        void LockPickFailure();
+
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
         static const std::string POPUP_NAME_ALL_ENEMIES_RAN_;
@@ -131,6 +145,9 @@ namespace stage
         static const std::string POPUP_NAME_LOCKBOX_AND_HELD_;
         static const std::string POPUP_NAME_CHAR_SELECT_;
         static const std::string POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_;
+        static const std::string POPUP_NAME_LOCK_PICK_ATTEMPT_;
+        static const std::string POPUP_NAME_LOCK_PICK_SUCCESS_;
+        static const std::string POPUP_NAME_LOCK_PICK_FAILURE_;
 
     private:
         int setupCountdown_;
@@ -148,6 +165,8 @@ namespace stage
         item::ItemCache itemCacheHeld_;
         item::ItemCache itemCacheLockbox_;
         item::TreasureAvailable::Enum treasureAvailable_;
+        std::size_t charIndexPickingTheLock_;
+        game::Trap trap_;
     };
 
 }

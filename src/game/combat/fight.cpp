@@ -734,10 +734,10 @@ namespace combat
         auto const STRENGTH_TEST{ creature::Stats::Test(
             creatureAttackingPtrC,
             stats::Traits::Strength,
-            0.25f,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::Luck |
-                creature::Stats::With::RaceRoleBonus)) };
+                creature::Stats::With::RaceRoleBonus |
+                creature::Stats::With::RankBonus)) };
 
         auto const POWER_HIT_CHANCE_RATIO{ GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-hit-power-chance-ratio") };
@@ -751,18 +751,18 @@ namespace combat
         auto const ACCURACY_TEST{ creature::Stats::Test(
             creatureAttackingPtrC,
             stats::Traits::Accuracy,
-            0.25f,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::Luck |
-                creature::Stats::With::RaceRoleBonus)) };
+                creature::Stats::With::RaceRoleBonus |
+                creature::Stats::With::RankBonus)) };
 
         auto const LUCK_TEST{ creature::Stats::Test(
             creatureAttackingPtrC,
             stats::Traits::Luck,
-            0.25f,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::Luck |
-                creature::Stats::With::RaceRoleBonus)) };
+                creature::Stats::With::RaceRoleBonus |
+                creature::Stats::With::RankBonus)) };
 
         auto const CRITICAL_HIT_CHANCE_RATIO{ GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-hit-critical-chance-ratio") };

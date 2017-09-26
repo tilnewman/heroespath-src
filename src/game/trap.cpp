@@ -43,6 +43,17 @@
 namespace game
 {
 
+    Trap::Trap()
+    :
+        playerCountRange_(0, 0),
+        damageRange_(0, 0),
+        soundEffect_(sfml_util::sound_effect::None),
+        descPrefix_(""),
+        descPostfix_(""),
+        willDescUseContainerName_(false)
+    {}
+
+
     Trap::Trap(
         const std::size_t PLAYER_COUNT_MIN,
         const std::size_t PLAYER_COUNT_MAX,
@@ -123,11 +134,11 @@ namespace game
     int Trap::Severity() const
     {
         auto const SQRT_AVG_PLAYER_COUNT{
-            std::sqrt(static_cast<double>(playerCountRange_.Mid())) };
+            std::sqrt(static_cast<double>(playerCountRange_.Mid()) * 10.0) };
 
-        auto const AVG_DAMAGE{ static_cast<double>(damageRange_.Mid()) };
+        auto const SQRT_AVG_DAMAGE{ std::sqrt(static_cast<double>(damageRange_.Mid()) * 10.0) };
 
-        return static_cast<int>(SQRT_AVG_PLAYER_COUNT * AVG_DAMAGE);
+        return static_cast<int>(SQRT_AVG_PLAYER_COUNT * SQRT_AVG_DAMAGE);
     }
 
 

@@ -301,34 +301,12 @@ namespace popup
         PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
         accentSprite1_.setTexture(accentTexture1_);
 
-        auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
+        sfml_util::CenterAndScaleSpriteToFit(
+            accentSprite1_,
+            pageRectLeft_,
+            ACCENT_IMAGE_SCALEDOWN_RATIO_);
 
-        const float SCALE_VERT((pageRectLeft_.height * SIZE_RATIO) /
-            accentSprite1_.getLocalBounds().height);
-
-        accentSprite1_.setScale(SCALE_VERT, SCALE_VERT);
-
-        if (accentSprite1_.getGlobalBounds().width > (pageRectLeft_.width * SIZE_RATIO))
-        {
-            const float SCALE_HORIZ((pageRectLeft_.width * SIZE_RATIO) /
-                accentSprite1_.getLocalBounds().width);
-
-            if (SCALE_HORIZ < SCALE_VERT)
-            {
-                accentSprite1_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-            }
-        }
-
-        //always center the accent sprite image
-        const float ACCENT1_POS_LEFT((pageRectLeft_.left + (pageRectLeft_.width  * 0.5f)) -
-            (accentSprite1_.getGlobalBounds().width * 0.5f));
-
-        const float ACCENT1_POS_TOP ((pageRectLeft_.top  + (pageRectLeft_.height * 0.5f)) -
-            (accentSprite1_.getGlobalBounds().height * 0.5f));
-
-        accentSprite1_.setPosition(ACCENT1_POS_LEFT, ACCENT1_POS_TOP);
-
-        accentSprite1_.setColor(sf::Color(255, 255, 255, 16));
+        accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
 
 
@@ -337,34 +315,12 @@ namespace popup
         PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
         accentSprite2_.setTexture(accentTexture2_);
 
-        auto const SIZE_RATIO{ misc::random::Float(0.65f, 0.85f) };
+        sfml_util::CenterAndScaleSpriteToFit(
+            accentSprite2_,
+            pageRectRight_,
+            ACCENT_IMAGE_SCALEDOWN_RATIO_);
 
-        const float SCALE_VERT((pageRectRight_.height * SIZE_RATIO) /
-            accentSprite2_.getLocalBounds().height);
-
-        accentSprite2_.setScale(SCALE_VERT, SCALE_VERT);
-
-        if (accentSprite2_.getGlobalBounds().width > (pageRectRight_.width * SIZE_RATIO))
-        {
-            const float SCALE_HORIZ((pageRectRight_.width * SIZE_RATIO) /
-                accentSprite2_.getLocalBounds().width);
-
-            if (SCALE_HORIZ < SCALE_VERT)
-            {
-                accentSprite2_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-            }
-        }
-
-        //always center the accent sprite image
-        auto const ACCENT2_POS_LEFT{ (pageRectRight_.left + (pageRectRight_.width  * 0.5f))
-            - (accentSprite2_.getGlobalBounds().width * 0.5f) };
-
-        auto const ACCENT2_POS_TOP{ (pageRectRight_.top + (pageRectRight_.height * 0.5f))
-            - (accentSprite2_.getGlobalBounds().height * 0.5f) };
-
-        accentSprite2_.setPosition(ACCENT2_POS_LEFT, ACCENT2_POS_TOP);
-
-        accentSprite2_.setColor(sf::Color(255, 255, 255, 16));
+        accentSprite2_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
 
 

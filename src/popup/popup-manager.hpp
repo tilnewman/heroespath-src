@@ -260,6 +260,21 @@ namespace popup
         const PopupInfo CreateItemProfilePleaseWaitPopupInfo(
             const std::string & POPUP_NAME) const;
 
+        //'KeepAlive' popups only stay on the screen for as long as is specified.
+        const PopupInfo CreateKeepAlivePopupInfo(
+            const std::string & POPUP_NAME,
+            const std::string & PROMPT_TEXT,
+            const float KEEP_ALIVE_SECONDS,
+            const unsigned int FONT_SIZE,
+            const PopupImage::Enum IMAGE = PopupImage::Banner,
+            const sfml_util::sound_effect::Enum SOUND_EFFECT =
+                sfml_util::sound_effect::PromptGeneric) const;
+
+        const PopupInfo CreateTrapPopupInfo(
+            const std::string & POPUP_NAME,
+            const std::string & TRAP_DESCRIPTION,
+            const sfml_util::sound_effect::Enum SOUND_EFFECT) const;
+
         void LoadRandomAccentImage(sf::Texture &) const;
 
         void LoadAccentImagePaths();

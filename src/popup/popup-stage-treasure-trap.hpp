@@ -22,37 +22,49 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_TREASUREIMAGEENUM_HPP_INCLUDED
-#define GAME_ITEM_TREASUREIMAGEENUM_HPP_INCLUDED
+#ifndef POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED
+#define POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED
 //
-// treasure-image-enum.hpp
+// popup-stage-treasure-trap.hpp
 //
+#include "popup/popup-stage-base.hpp"
+
+#include "sfml-util/gui/text-region.hpp"
+
 #include <string>
 
 
-namespace game
+namespace popup
 {
-namespace item
-{
-
-    struct TreasureImage
+    //Responsible for implementing a treasure trap popup window stage.
+    class PopupStageTreasureTrap : public PopupStageBase
     {
-        enum Enum
-        {
-            BonePile = 0,
-            ChestClosed,
-            ChestOpen,
-            LockboxClosed,
-            LockboxOpen,
-            Count
-        };
+        PopupStageTreasureTrap(const PopupStageTreasureTrap &) =delete;
+        PopupStageTreasureTrap & operator=(const PopupStageTreasureTrap &) =delete;
 
-        static const std::string ToString(const TreasureImage::Enum);
-        static const std::string ToImageKey(const TreasureImage::Enum);
-        static const std::string ToContainerName(const TreasureImage::Enum);
+    public:
+        explicit PopupStageTreasureTrap(const PopupInfo & POPUP_INFO);
+        virtual ~PopupStageTreasureTrap();
+
+        inline const std::string HandlerName() const override
+        {
+            return PopupStageBase::HandlerName();
+        }
+
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+
+    private:
+        void SetupTitleText();
+        void SetupDescriptionText();
+        void SetupAccentImage();
+
+    private:
+        sf::Texture trapTexture_;
+        sf::Sprite trapSprite_;
+        sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
 
 }
-}
 
-#endif //GAME_ITEM_TREASUREIMAGEENUM_HPP_INCLUDED
+#endif //POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED

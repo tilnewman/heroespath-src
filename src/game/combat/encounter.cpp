@@ -235,6 +235,43 @@ namespace combat
     }
 
 
+    void Encounter::HandleKilledCreature(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    {
+        //make sure no TurnInfo objects refer to a killed creature
+        for (auto & nextCreatureTurnInfoPair : turnInfoMap_)
+        {
+            nextCreatureTurnInfoPair.second.RemoveDeadCreatureTasks(CREATURE_CPTRC);
+        }
+
+        //no need to remove from turnOverPVec_
+
+        //no need to null out turnCreaturePtr_
+
+        //move from the enemyParty to the deadNonPlayerParty for later use by the Treasure Stage
+        if (CREATURE_CPTRC->IsPlayerCharacter() == false)
+        {
+            auto killedCharacterPtr{ nonPlayerPartyUPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
+            nonPlayerPartyUPtr_->Remove(killedCharacterPtr, false);
+            deadNonPlayerPartyUPtr_->Add(killedCharacterPtr, false);
+        }
+    }
+
+
+    void Encounter::IncrementTurn()
+    {
+        ++roundCounter_;
+
+        if (turnCreaturePtr_ != nullptr)
+        {
+            turnOverPVec_.push_back(turnCreaturePtr_);
+        }
+
+        //re-sort by speed every turn because spells/conditions/etc could have changed
+        //creature speed during any given turn
+        SortAndSetTurnCreature();
+    }
+
+
     void Encounter::BeginCombatTasks()
     {
         //nonPlayerPartyUPtr_ must be left alone because it will have already been populated
@@ -373,40 +410,32 @@ namespace combat
     }
 
 
-    void Encounter::HandleKilledCreature(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    item::ItemCache Encounter::TakeDeadNonPlayerItemsHeldCache()
     {
-        //make sure no TurnInfo objects refer to a killed creature
-        for (auto & nextCreatureTurnInfoPair : turnInfoMap_)
-        {
-            nextCreatureTurnInfoPair.second.RemoveDeadCreatureTasks(CREATURE_CPTRC);
-        }
-
-        //no need to remove from turnOverPVec_
-
-        //no need to null out turnCreaturePtr_
-
-        //move from the enemyParty to the deadNonPlayerParty for later use by the Treasure Stage
-        if (CREATURE_CPTRC->IsPlayerCharacter() == false)
-        {
-            auto killedCharacterPtr{ nonPlayerPartyUPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
-            nonPlayerPartyUPtr_->Remove(killedCharacterPtr, false);
-            deadNonPlayerPartyUPtr_->Add(killedCharacterPtr, false);
-        }
+        item::ItemCache copy{ deadNonPlayerItemsHeld_ };
+        deadNonPlayerItemsHeld_ = item::ItemCache();
+        return copy;
     }
 
 
-    void Encounter::IncrementTurn()
+    item::ItemCache Encounter::TakeDeadNonPlayerItemsLockboxCache()
     {
-        ++roundCounter_;
+        item::ItemCache copy{ deadNonPlayerItemsLockbox_ };
+        deadNonPlayerItemsLockbox_ = item::ItemCache();
+        return copy;
+    }
 
-        if (turnCreaturePtr_ != nullptr)
-        {
-            turnOverPVec_.push_back(turnCreaturePtr_);
-        }
 
-        //re-sort by speed every turn because spells/conditions/etc could have changed
-        //creature speed during any given turn
-        SortAndSetTurnCreature();
+    bool Encounter::DidAllEnemiesRunAway() const
+    {
+        return ((runawayNonPlayerPartyUPtr_->Characters().empty() == false) &&
+            deadNonPlayerPartyUPtr_->Characters().empty());
+    }
+
+
+    float Encounter::DefeatedPartyTreasureRatioPer() const
+    {
+        return item::TreasureFactory::TreasureRatioPer(deadNonPlayerPartyUPtr_->Characters());
     }
 
 
@@ -509,29 +538,6 @@ namespace combat
         }
 
         nonPlayerPartyUPtr = std::make_unique<non_player::Party>();
-    }
-
-
-    item::ItemCache Encounter::TakeDeadNonPlayerItemsHeldCache()
-    {
-        item::ItemCache copy{ deadNonPlayerItemsHeld_ };
-        deadNonPlayerItemsHeld_ = item::ItemCache();
-        return copy;
-    }
-
-
-    item::ItemCache Encounter::TakeDeadNonPlayerItemsLockboxCache()
-    {
-        item::ItemCache copy{ deadNonPlayerItemsLockbox_ };
-        deadNonPlayerItemsLockbox_ = item::ItemCache();
-        return copy;
-    }
-
-
-    bool Encounter::DidAllEnemiesRunAway() const
-    {
-        return ((runawayNonPlayerPartyUPtr_->Characters().empty() == false) &&
-                deadNonPlayerPartyUPtr_->Characters().empty());
     }
 
 }

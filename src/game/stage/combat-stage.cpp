@@ -3013,24 +3013,25 @@ namespace stage
             if ((creature::Stats::Test(
                     turnCreaturePtr_,
                     stats::Traits::Speed,
-                    0.0f,
                     static_cast<creature::Stats::With>(
                         creature::Stats::With::Luck |
-                        creature::Stats::With::RaceRoleBonus))) ||
+                        creature::Stats::With::RaceRoleBonus |
+                        creature::Stats::With::StandardBonus))) ||
                 (combat::Encounter::Instance()->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying()))
             {
                 SetUserActionAllowed(false);
 
                 turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::Run);
 
-                combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_,
-                                                                 turnActionInfo_);
+                combat::Encounter::Instance()->SetTurnActionInfo(
+                    turnCreaturePtr_, turnActionInfo_);
 
-                AppendStatusMessage(combat::Text::ActionText(turnCreaturePtr_,
-                                                             turnActionInfo_,
-                                                             fightResult_,
-                                                             true,
-                                                             true), false);
+                AppendStatusMessage(combat::Text::ActionText(
+                    turnCreaturePtr_,
+                    turnActionInfo_,
+                    fightResult_,
+                    true,
+                    true), false);
 
                 SetTurnActionPhase(TurnActionPhase::Run);
                 StartPerformAnim();

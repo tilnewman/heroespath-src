@@ -16,6 +16,7 @@ heroespath-fight-stats-luck-adj-ratio=                      0.2
 heroespath-fight-stats-amazing-ratio=                       0.9
 heroespath-fight-stats-base-high-val=                       20
 heroespath-fight-stats-value-floor=                         10
+heroespath-fight-stats-rank-bonus-ratio=                    0.25
 heroespath-fight-hit-critical-chance-ratio=                 0.2
 heroespath-fight-hit-power-chance-ratio=                    0.2
 heroespath-fight-hit-special-damage-min=                    4
@@ -175,6 +176,7 @@ media-images-bones-skull-orc=               image/treasure-stage/bones/skull-orc
 media-images-bones-skull-snake=             image/treasure-stage/bones/skull-snake.png
 media-images-bones-three-headed-hound=      image/treasure-stage/bones/three-headed-hound.png
 media-images-bones-wolfen=                  image/treasure-stage/bones/wolfen.png
+media-images-trap=                          image/treasure-stage/trap.png
 
 #Race Stat Modifiers
 heroespath-creature-race-stat-modifiers-Human=    2,  2,   2, -6,  0,  0

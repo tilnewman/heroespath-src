@@ -47,6 +47,8 @@ namespace game
     class Trap
     {
     public:
+        Trap();
+
         Trap(
             const std::size_t PLAYER_COUNT_MIN,
             const std::size_t PLAYER_COUNT_MAX,

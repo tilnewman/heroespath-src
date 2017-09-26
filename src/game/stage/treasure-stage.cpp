@@ -34,17 +34,21 @@
 #include "sfml-util/gui/text-region.hpp"
 
 #include "popup/popup-manager.hpp"
-#include "popup/popup-stage-item-profile-wait.hpp"
 #include "popup/popup-stage-char-select.hpp"
+#include "popup/popup-stage-treasure-trap.hpp"
+#include "popup/popup-stage-item-profile-wait.hpp"
 
-#include "game/game-data-file.hpp"
-#include "game/loop-manager.hpp"
 #include "game/game.hpp"
+#include "game/loop-manager.hpp"
+#include "game/game-data-file.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/non-player/party.hpp"
 #include "game/non-player/character.hpp"
+#include "game/player/character.hpp"
 #include "game/creature/algorithms.hpp"
+#include "game/creature/stats.hpp"
 #include "game/item/item-profile-warehouse.hpp"
+#include "game/trap-warehouse.hpp"
 
 //TODO TEMP REMOVE -once done testing
 #include "game/player/party.hpp"
@@ -57,6 +61,7 @@
 #include "misc/assertlogandthrow.hpp"
 
 #include <string>
+#include <vector>
 #include <sstream>
 #include <exception>
 #include <algorithm>
@@ -89,6 +94,14 @@ namespace stage
     const std::string TreasureStage::POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_{
         "PopupName_NoCharactersCanAttemptToPickTheLock" };
 
+    const std::string TreasureStage::POPUP_NAME_LOCK_PICK_ATTEMPT_{
+        "PopupName_LockPickAttempt" };
+
+    const std::string TreasureStage::POPUP_NAME_LOCK_PICK_SUCCESS_{
+        "PopupName_LockPickSuccess" };
+
+    const std::string TreasureStage::POPUP_NAME_LOCK_PICK_FAILURE_{
+        "PopupName_LockPickFailure" };
 
 
     TreasureStage::TreasureStage()
@@ -108,7 +121,9 @@ namespace stage
         blurbTextRegionUPtr_(),
         itemCacheHeld_      (),
         itemCacheLockbox_   (),
-        treasureAvailable_  (item::TreasureAvailable::Count)
+        treasureAvailable_  (item::TreasureAvailable::Count),
+        charIndexPickingTheLock_(0),
+        trap_               ()
     {}
 
 
@@ -167,7 +182,9 @@ namespace stage
                     game::combat::Encounter::Instance()->LockPickCreaturePtr(
                         Game::Instance()->State().Party().GetAtOrderPos(SELECTION));
 
-                    PromptPlayerWithLockPickPopup(SELECTION);
+                    charIndexPickingTheLock_ = SELECTION;
+
+                    PromptPlayerWithLockPickPopup(charIndexPickingTheLock_);
                     return false;
                 }
                 else
@@ -199,6 +216,32 @@ namespace stage
         {
             SetupStageForTreasureCollectionWithoutLockbox();
             return true;
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCK_PICK_ATTEMPT_)
+        {
+            if (DetermineIfLockPickingSucceeded(charIndexPickingTheLock_))
+            {
+                LockPickSuccess();
+            }
+            else
+            {
+                LockPickFailure();
+            }
+
+            return false;
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCK_PICK_SUCCESS_)
+        {
+            SetupStageForTreasureCollection();
+            return true;
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCK_PICK_FAILURE_)
+        {
+            //TODO popup windows informing the player of character injuries as a result of the trap
+            return false;
         }
 
         return true;
@@ -260,33 +303,26 @@ namespace stage
     }
 
 
-    void TreasureStage::SetupTreasureImage(const item::TreasureImage::Enum E)
+    const sf::Vector2f TreasureStage::SetupTreasureImage(const item::TreasureImage::Enum E)
     {
-        //treasure image
         sfml_util::LoadTexture(treasureTexture_,
-            GameDataFile::Instance()->GetMediaPath(item::TreasureImage::ToKey(E)));
+            GameDataFile::Instance()->GetMediaPath(item::TreasureImage::ToImageKey(E)));
 
         treasureSprite_.setTexture(treasureTexture_);
 
         auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
         auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
 
+        //these values found by experiment to look good at various resolutions
         auto const TREASURE_IMAGE_MAX_WIDTH{ (SCREEN_WIDTH * 0.5f) };
         auto const TREASURE_IMAGE_MAX_HEIGHT{ (SCREEN_HEIGHT * 0.333f) };
 
-        auto const SCALE_HORIZ{ TREASURE_IMAGE_MAX_WIDTH /
-            treasureSprite_.getLocalBounds().width };
+        sfml_util::ScaleSpriteToFit(
+            treasureSprite_,
+            TREASURE_IMAGE_MAX_WIDTH,
+            TREASURE_IMAGE_MAX_HEIGHT);
 
-        treasureSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-
-        if (treasureSprite_.getGlobalBounds().height > TREASURE_IMAGE_MAX_HEIGHT)
-        {
-            auto const SCALE_VERT{ TREASURE_IMAGE_MAX_HEIGHT /
-                treasureSprite_.getLocalBounds().height };
-
-            treasureSprite_.setScale(SCALE_VERT, SCALE_VERT);
-        }
-
+        //these values found by experiment to look good at various resolutions
         auto const TREASURE_IMAGE_LEFT{ sfml_util::MapByRes(100.0f, 300.0f) };
 
         auto const TREASURE_IMAGE_TOP{
@@ -296,21 +332,31 @@ namespace stage
         treasureSprite_.setPosition(TREASURE_IMAGE_LEFT, TREASURE_IMAGE_TOP);
         treasureSprite_.setColor(sf::Color(255, 255, 255, 192));
 
-        //coins image
-        if ((E == item::TreasureImage::ChestOpen) ||
-            (E == item::TreasureImage::LockboxOpen))
+        return treasureSprite_.getPosition();
+    }
+
+
+    void TreasureStage::SetupCoinsImage(
+        const item::TreasureImage::Enum E,
+        const sf::Vector2f & TREASURE_IMAGE_POS_V)
+    {
+        if (E == item::TreasureImage::BonePile)
         {
-            auto const COINS_LEFT{ TREASURE_IMAGE_LEFT +
-                (treasureSprite_.getGlobalBounds().width * 0.80f) };
+            auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
+            auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
 
-            auto const COINS_TOP{ TREASURE_IMAGE_TOP +
-                (treasureSprite_.getGlobalBounds().height * 0.75f) };
-
-            coinsSprite_.setPosition(COINS_LEFT, COINS_TOP);
+            coinsSprite_.setPosition(SCREEN_WIDTH + 1.0f, SCREEN_HEIGHT + 1.0f);
         }
         else
         {
-            coinsSprite_.setPosition(SCREEN_WIDTH + 1.0f, SCREEN_HEIGHT + 1.0f);
+            //these values found by experiment to look good at various resolutions
+            auto const COINS_LEFT{ TREASURE_IMAGE_POS_V.x +
+                (treasureSprite_.getGlobalBounds().width * 0.80f) };
+
+            auto const COINS_TOP{ TREASURE_IMAGE_POS_V.y +
+                (treasureSprite_.getGlobalBounds().height * 0.75f) };
+
+            coinsSprite_.setPosition(COINS_LEFT, COINS_TOP);
         }
     }
 
@@ -525,7 +571,8 @@ namespace stage
         itemCacheLockbox_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsLockboxCache();
 
         SetupCorpseImage();
-        SetupTreasureImage(treasureImageType_);
+        auto const TREASURE_IMAGE_POS_V{ SetupTreasureImage(treasureImageType_) };
+        SetupCoinsImage(treasureImageType_, TREASURE_IMAGE_POS_V);
         treasureAvailable_ = DetermineTreasureAvailableState(itemCacheHeld_, itemCacheLockbox_);
         PromptUserBasedonTreasureAvailability(treasureAvailable_, treasureImageType_);
     }
@@ -620,7 +667,7 @@ namespace stage
             case item::TreasureAvailable::NoTreasure:
             {
                 std::ostringstream ss;
-                ss << "\nYour enemies are wearing no possessions and they carried no lockbox.  "
+                ss << "\nYour enemies had no possessions on them and they carried no lockbox.  "
                     << "Click Continue to return to the Adventure screen.";
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
@@ -635,7 +682,7 @@ namespace stage
             case item::TreasureAvailable::HeldOnly:
             {
                 std::ostringstream ss;
-                ss << "\nYour enemies are wearing possessions but they carried no lockbox.  "
+                ss << "\nYour enemies were wearing possessions but they carried no lockbox.  "
                     << "Click Continue to search what they left behind.";
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
@@ -648,30 +695,17 @@ namespace stage
                 break;
             }
             case item::TreasureAvailable::LockboxOnly:
-            {
-                std::ostringstream ss;
-                ss << "\nYour enemies are wearing no possessions but they carried a "
-                    << ((TREASURE_IMAGE == item::TreasureImage::ChestClosed) ? "chest" : "lockbox")
-                    << ".  Attempt to pick the lock?";
-
-                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
-                    POPUP_NAME_LOCKBOX_ONLY_,
-                    ss.str(),
-                    popup::PopupButtons::YesNo,
-                    popup::PopupImage::Regular) };
-
-                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
-                break;
-            }
             case item::TreasureAvailable::HeldAndLockbox:
             {
                 std::ostringstream ss;
-                ss << "\nYour enemies are wearing possessions and they also carried a "
-                    << ((TREASURE_IMAGE == item::TreasureImage::ChestClosed) ? "chest" : "lockbox")
+                ss << "\nYour enemies carried a "
+                    << game::item::TreasureImage::ToContainerName(TREASURE_IMAGE)
                     << ".  Attempt to pick the lock?";
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
-                    POPUP_NAME_LOCKBOX_AND_HELD_,
+                    ((TREASURE_AVAILABLE == item::TreasureAvailable::LockboxOnly) ?
+                        POPUP_NAME_LOCKBOX_ONLY_ :
+                        POPUP_NAME_LOCKBOX_AND_HELD_),
                     ss.str(),
                     popup::PopupButtons::YesNo,
                     popup::PopupImage::Regular) };
@@ -812,9 +846,103 @@ namespace stage
 
 
     void TreasureStage::PromptPlayerWithLockPickPopup(
-        const std::size_t /*CHARACTER_INDEX_WHO_IS_PICKING_THE_LOCK*/)
+        const std::size_t CHARACTER_INDEX_WHO_IS_PICKING_THE_LOCK)
     {
-        //TODO
+        auto const CHARACTER_WHO_IS_PICKING_NAME{
+            Game::Instance()->State().Party().Characters()[
+                CHARACTER_INDEX_WHO_IS_PICKING_THE_LOCK]->Name() };
+
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
+            POPUP_NAME_LOCK_PICK_ATTEMPT_,
+            CHARACTER_WHO_IS_PICKING_NAME + " is attempting to pick the lock...",
+            4.0f,//the duration of the longest lockpick sfx
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            popup::PopupImage::Regular,
+            SelectRandomLockPickingSfx()) };
+
+        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
+            this, POPUP_INFO);
+    }
+
+
+    bool TreasureStage::DetermineIfLockPickingSucceeded(
+        const std::size_t CHAR_INDEX_WHO_IS_ATTEMPTING) const
+    {
+        return creature::Stats::Test(
+            Game::Instance()->State().Party().Characters()[CHAR_INDEX_WHO_IS_ATTEMPTING],
+            stats::Traits::Luck,
+            static_cast<creature::Stats::With>(
+                creature::Stats::With::RaceRoleBonus |
+                creature::Stats::With::StandardBonus));
+    }
+
+
+    sfml_util::sound_effect::Enum TreasureStage::SelectRandomLockPickingSfx() const
+    {
+        std::vector<sfml_util::sound_effect::Enum> lockPickingSfx = {
+            sfml_util::sound_effect::TreasurePicking1,
+            sfml_util::sound_effect::TreasurePicking2,
+            sfml_util::sound_effect::TreasurePicking3,
+            sfml_util::sound_effect::TreasurePicking4,
+            sfml_util::sound_effect::TreasurePicking5,
+            sfml_util::sound_effect::TreasurePicking6,
+            sfml_util::sound_effect::TreasurePicking7 };
+
+        return misc::Vector::SelectRandom(lockPickingSfx);
+    }
+
+
+    sfml_util::sound_effect::Enum TreasureStage::SelectRandomTreasureOpeningSfx() const
+    {
+        std::vector<sfml_util::sound_effect::Enum> treasureOpeningSfx = {
+            sfml_util::sound_effect::TreasureOpen1,
+            sfml_util::sound_effect::TreasureOpen2,
+            sfml_util::sound_effect::TreasureOpen3,
+            sfml_util::sound_effect::TreasureOpen4,
+            sfml_util::sound_effect::TreasureOpen5,
+            sfml_util::sound_effect::TreasureOpen6,
+            sfml_util::sound_effect::TreasureOpen7,
+            sfml_util::sound_effect::TreasureOpen8,
+            sfml_util::sound_effect::TreasureOpen9 };
+
+        return misc::Vector::SelectRandom(treasureOpeningSfx);
+    }
+
+
+    void TreasureStage::LockPickSuccess()
+    {
+        sfml_util::SoundManager::Instance()->SoundEffectPlay(
+            sfml_util::sound_effect::TreasureUnlock);
+
+        sfml_util::SoundManager::Instance()->SoundEffectPlay(
+            SelectRandomTreasureOpeningSfx(),
+            1.0f);
+
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
+            POPUP_NAME_LOCK_PICK_SUCCESS_,
+            "Success!",
+            3.0f,
+            sfml_util::FontManager::Instance()->Size_Large(),
+            popup::PopupImage::Banner,
+            sfml_util::sound_effect::None) };
+
+        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
+            this, POPUP_INFO);
+    }
+
+
+    void TreasureStage::LockPickFailure()
+    {
+        trap_ = trap::Warehouse::SelectRandomWithSeverityRatioNear(
+            combat::Encounter::Instance()->DefeatedPartyTreasureRatioPer());
+
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTrapPopupInfo(
+            POPUP_NAME_LOCK_PICK_FAILURE_,
+            trap_.Description(item::TreasureImage::ToContainerName(treasureImageType_)),
+            trap_.SoundEffect()) };
+
+        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageTreasureTrap>(
+            this, POPUP_INFO);
     }
 
 }

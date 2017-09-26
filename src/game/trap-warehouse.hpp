@@ -45,10 +45,14 @@ namespace trap
         static void Empty();
 
         static const TrapVec_t Get();
-        static const TrapVec_t GetWithSevertiyLessThanOrEqualTo(const int);
-        static const TrapVec_t GetWithSeverityRatioLessThanOrEqualTo(const float);
-        static const Trap GetWithMinSeverity();
-        static const Trap GetWithMaxSeverity();
+        static int GetMinSeverity();
+        static int GetMaxSeverity();
+
+        static const TrapVec_t GetWithSeverityRatioBetween(
+            const float THE_MIN,
+            const float THE_MAX);
+
+        static const Trap SelectRandomWithSeverityRatioNear(const float);
 
     private:
         static TrapVec_t traps_;

@@ -74,6 +74,40 @@ namespace sfml_util
     const sf::FloatRect MakeMinimalSquareAndCenter(const sf::FloatRect & REGION);
 
 
+    inline void CenterSprite(sf::Sprite & s, const sf::FloatRect & R)
+    {
+        s.setPosition(
+            (R.left + (R.width * 0.5f)) - (s.getGlobalBounds().width * 0.5f),
+            (R.top + (R.height * 0.5f)) - (s.getGlobalBounds().height * 0.5f));
+    }
+
+
+    void ScaleSpriteToFit(
+        sf::Sprite & s,
+        const float WIDTH,
+        const float HEIGHT,
+        const float RESIZE_RATIO = 1.0f);
+
+
+    inline void ScaleSpriteToFit(
+        sf::Sprite & s,
+        const sf::FloatRect & R,
+        const float RESIZE_RATIO = 1.0f)
+    {
+        ScaleSpriteToFit(s, R.width, R.height, RESIZE_RATIO);
+    }
+
+
+    inline void CenterAndScaleSpriteToFit(
+        sf::Sprite & s,
+        const sf::FloatRect & R,
+        const float RESIZE_RATIO = 1.0f)
+    {
+        ScaleSpriteToFit(s, R, RESIZE_RATIO);
+        CenterSprite(s, R);
+    }
+
+
     //assumes 'facing right'
     float GetAngleInDegrees(const sf::Vector2f & BEGIN_POS_V,
                             const sf::Vector2f & END_POS_V);

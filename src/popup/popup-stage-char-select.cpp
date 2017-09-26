@@ -69,13 +69,7 @@ namespace popup
         auto const SYM_SCALE{ sfml_util::MapByRes(0.5f, 2.0f) };
         xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
 
-        auto const X_SYM_POS_TOP{ (imagesRect_.top + (imagesRect_.height * 0.5f)) -
-            (xSymbolSprite_.getGlobalBounds().height * 0.5f) };
-
-        auto const X_SYM_POS_LEFT{ (imagesRect_.left + (imagesRect_.width * 0.5f)) -
-            (xSymbolSprite_.getGlobalBounds().width * 0.5f) };
-
-        xSymbolSprite_.setPosition(X_SYM_POS_LEFT, X_SYM_POS_TOP);
+        sfml_util::CenterSprite(xSymbolSprite_, imagesRect_);
 
         sf::FloatRect charDetailsTextRegion(textRegion_);
 

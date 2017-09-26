@@ -64,6 +64,8 @@ namespace item
             const non_player::CharacterPVec_t & CHARACTER_PVEC,
             ItemCache &                         items_OutParam);
 
+        static float TreasureRatioPer(const non_player::CharacterPVec_t &);
+
     private:
         static const item::TreasureInfo MakeRandTreasureInfo(
             const non_player::CharacterPVec_t &);

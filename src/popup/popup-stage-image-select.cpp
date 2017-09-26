@@ -554,7 +554,7 @@ namespace popup
     {
         std::size_t i{ CURRENT_INDEX };
 
-        do
+        while (i != TARGET_INDEX)
         {
             if (TARGET_INDEX < CURRENT_INDEX)
             {
@@ -564,7 +564,7 @@ namespace popup
             {
                 imageMoveQueue_.push(++i);
             }
-        } while (i != TARGET_INDEX);
+        }
     }
 
 }

@@ -43,6 +43,7 @@
 #include "popup/popup-stage-generic.hpp"
 
 #include "misc/random.hpp"
+#include "misc/vectors.hpp"
 
 #include <boost/algorithm/algorithm.hpp>
 #include <boost/algorithm/string.hpp>
@@ -504,6 +505,38 @@ namespace popup
     }
 
 
+    const PopupInfo PopupManager::CreateKeepAlivePopupInfo(
+        const std::string & POPUP_NAME,
+        const std::string & PROMPT_TEXT,
+        const float KEEP_ALIVE_SECONDS,
+        const unsigned int FONT_SIZE,
+        const PopupImage::Enum IMAGE,
+        const sfml_util::sound_effect::Enum SOUND_EFFECT) const
+    {
+        return PopupInfo(
+            POPUP_NAME,
+            TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
+            popup::PopupButtons::None,
+            IMAGE,
+            1.0f,
+            SOUND_EFFECT,
+            popup::PopupButtonColor::Dark,
+            false,
+            std::vector<std::size_t>(),
+            sfml_util::TextureVec_t(),
+            std::vector<std::string>(),
+            popup::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
+            nullptr,
+            0,
+            false,
+            "",
+            "",
+            nullptr,
+            nullptr,
+            KEEP_ALIVE_SECONDS);
+    }
+
+
     const PopupInfo PopupManager::CreateInventoryPromptPopupInfo(
         const std::string &                 POPUP_NAME,
         const std::string &                 PROMPT_TEXT,
@@ -526,6 +559,22 @@ namespace popup
 
         return popupInfo;
     }
+
+
+    const PopupInfo PopupManager::CreateTrapPopupInfo(
+        const std::string & POPUP_NAME,
+        const std::string & TRAP_DESCRIPTION,
+        const sfml_util::sound_effect::Enum SOUND_EFFECT) const
+    {
+        return CreatePopupInfo(
+            POPUP_NAME,
+            TRAP_DESCRIPTION,
+            popup::PopupButtons::Continue,
+            popup::PopupImage::Regular,
+            sfml_util::Justified::Center,
+            SOUND_EFFECT);
+    }
+
 
 
     void PopupManager::LoadRandomAccentImage(sf::Texture & texture) const
