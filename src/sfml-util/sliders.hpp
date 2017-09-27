@@ -72,11 +72,6 @@ namespace sliders
             val_(0),
             willContinue_(true)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((std::is_floating_point<T>::value),
-                "sfml_util::sliders::ZeroSliderOnce<"
-                << boost::typeindex::type_id<T>().pretty_name()
-                << ">::Constructor() created, which is not a floating point type.");
-
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "sfml_util::sliders::ZeroSliderOnce::Constructor() given speed of zero.");
 
@@ -171,12 +166,6 @@ namespace sliders
             diff_  (0.0),
             slider_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((std::is_floating_point<Math_t>::value),
-                "sfml_util::sliders::SliderOnce<Value_t="
-                << boost::typeindex::type_id<Value_t>().pretty_name() << ", Math_t="
-                << boost::typeindex::type_id<Math_t>().pretty_name()
-                << ">::Constructor() created, but Math_t is not a floating point type.");
-
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "sfml_util::sliders::SliderOnce::Constructor() given speed of zero.");
 
@@ -256,12 +245,6 @@ namespace sliders
             isIncreasing_(true),
             slider_      ()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((std::is_floating_point<Speed_t>::value),
-                "sfml_util::sliders::Slider<Value_t="
-                << boost::typeindex::type_id<Value_t>().pretty_name() << ", Speed_t="
-                << boost::typeindex::type_id<Speed_t>().pretty_name()
-                << ">::Constructor() created, but Speed_t is not a floating point type.");
-
             M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(speed_) == false),
                 "sfml_util::sliders::Slider::Constructor given SPEED of zero.");
 
@@ -357,12 +340,6 @@ namespace sliders
             isIncreasing_(true),
             slider_      ()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((std::is_floating_point<Speed_t>::value),
-                "sfml_util::sliders::Drifter<Value_t="
-                << boost::typeindex::type_id<Value_t>().pretty_name() << ", Speed_t="
-                << boost::typeindex::type_id<Speed_t>().pretty_name()
-                << ">::Constructor() created, but Speed_t is not a floating point type.");
-
             Reset(THE_MIN, THE_MAX, SPEED_MIN, SPEED_MAX, RandRange(), RandRange());
         }
 
