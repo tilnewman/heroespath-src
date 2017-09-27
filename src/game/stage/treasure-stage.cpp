@@ -977,7 +977,7 @@ namespace stage
                 ignored) };
 
             auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
-                POPUP_NAME_DAMAGE_REPORT_,
+                "\n" + POPUP_NAME_DAMAGE_REPORT_,
                 DAMAGE_TEXT,
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Regular) };
