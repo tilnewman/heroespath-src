@@ -68,12 +68,17 @@ namespace random
         }
         else
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX), "misc::random::Real(min=" << THE_MIN << ", max=" << THE_MAX << ")  The min was not less than the max.");
+            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
+                "misc::random::Real(min=" << THE_MIN
+                << ", max=" << THE_MAX
+                << ")  The min was not less than the max.");
 
             //uniform_real_distribution is [x,y) so the nextafter() call is needed
-            std::uniform_real_distribution<T> uniform_dist(THE_MIN, std::nextafter(THE_MAX, std::numeric_limits<T>::max()));
+            std::uniform_real_distribution<T> uniformDist(
+                THE_MIN,
+                std::nextafter(THE_MAX, std::numeric_limits<T>::max()));
 
-            return uniform_dist(MersenneTwister::engine);
+            return uniformDist(MersenneTwister::engine);
         }
     }
 

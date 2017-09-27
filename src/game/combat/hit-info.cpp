@@ -58,6 +58,7 @@ namespace combat
             case Pounce:    { return "Pounce"; }
             case Roar:      { return "Roar"; }
             case Condition: { return "Condition"; }
+            case Trap:      { return "Trap"; }
             case Count:
             default:
             {
@@ -71,7 +72,7 @@ namespace combat
 
     HitInfo::HitInfo(const bool                      WAS_HIT,
                      const item::ItemPtr_t           ITEM_PTR,
-                     const stats::Trait_t           DAMAGE,
+                     const stats::Trait_t            DAMAGE,
                      const bool                      IS_CRITICAL_HIT,
                      const bool                      IS_POWER_HIT,
                      const bool                      DID_ARMOR_ABSORB,
@@ -99,7 +100,7 @@ namespace combat
     HitInfo::HitInfo(const bool                      WAS_HIT,
                      const spell::SpellPtr_t         SPELL_CPTR,
                      const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                     const stats::Trait_t           DAMAGE,
+                     const stats::Trait_t            DAMAGE,
                      const creature::CondEnumVec_t & CONDS_ADDED_VEC,
                      const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
     :
@@ -123,7 +124,7 @@ namespace combat
     HitInfo::HitInfo(const bool                      WAS_HIT,
                      const song::SongPtr_t           SONG_CPTR,
                      const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                     const stats::Trait_t           DAMAGE,
+                     const stats::Trait_t            DAMAGE,
                      const creature::CondEnumVec_t & CONDS_ADDED_VEC,
                      const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
     :
@@ -147,7 +148,7 @@ namespace combat
     HitInfo::HitInfo(const bool                       WAS_HIT,
                      const creature::Conditions::Enum COND_ENUM,
                      const ContentAndNamePos &        ACTION_PHRASE_CNP,
-                     const stats::Trait_t            DAMAGE,
+                     const stats::Trait_t             DAMAGE,
                      const creature::CondEnumVec_t &  CONDS_ADDED_VEC,
                      const creature::CondEnumVec_t &  CONDS_REMOVED_VEC)
     :
@@ -171,7 +172,7 @@ namespace combat
     HitInfo::HitInfo(const bool                      WAS_HIT,
                      const HitType::Enum             HIT_TYPE,
                      const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                     const stats::Trait_t           DAMAGE,
+                     const stats::Trait_t            DAMAGE,
                      const creature::CondEnumVec_t & CONDS_ADDED_VEC,
                      const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
     :
@@ -206,6 +207,29 @@ namespace combat
         actionVerb_     (""),
         spellPtr_       (nullptr),
         actionPhraseCNP_(ACTION_PHRASE_CNP),
+        songPtr_        (nullptr),
+        didArmorAbsorb_ (false),
+        conditionPtr_   (nullptr)
+    {}
+
+
+    HitInfo::HitInfo(
+        const stats::Trait_t            DAMAGE,
+        const std::string &             ACTION_VERB,
+        const creature::CondEnumVec_t & CONDS_ADDED_VEC,
+        const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
+    :
+        wasHit_         (true),
+        hitType_        (HitType::Trap),
+        weaponPtr_      (nullptr),
+        damage_         (DAMAGE),
+        isCritical_     (false),
+        isPower_        (false),
+        condsAddedVec_  (CONDS_ADDED_VEC),
+        condsRemovedVec_(CONDS_REMOVED_VEC),
+        actionVerb_     (ACTION_VERB),
+        spellPtr_       (nullptr),
+        actionPhraseCNP_(),
         songPtr_        (nullptr),
         didArmorAbsorb_ (false),
         conditionPtr_   (nullptr)
@@ -369,6 +393,11 @@ namespace combat
                 return ((conditionPtr_ != nullptr) &&
                         (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
+            case HitType::Trap:
+            {
+                return ((actionVerb_.empty() == false) &&
+                        (damage_ != 0));
+            }
             case HitType::Count:
             default:
             {
@@ -449,6 +478,7 @@ namespace combat
             }
             case HitType::Pounce:
             case HitType::Roar:
+            case HitType::Trap:
             case HitType::Count:
             default:
             {

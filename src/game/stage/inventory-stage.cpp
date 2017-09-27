@@ -3631,12 +3631,14 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         combatSoundEffectsUPtr_->PlaySpell(spellBeingCastPtr_);
 
-        turnActionInfo_ = combat::TurnActionInfo(spellBeingCastPtr_,
-                                                      TARGET_CREATURES_PVEC);
+        turnActionInfo_ = combat::TurnActionInfo(
+            spellBeingCastPtr_,
+            TARGET_CREATURES_PVEC);
 
-        fightResult_ = combat::FightClub::Cast(spellBeingCastPtr_,
-                                                    creaturePtr_,
-                                                    TARGET_CREATURES_PVEC);
+        fightResult_ = combat::FightClub::Cast(
+            spellBeingCastPtr_,
+            creaturePtr_,
+            TARGET_CREATURES_PVEC);
 
         SetupCreatureDetails(false);
         SetupCreatureStats();

@@ -191,6 +191,12 @@ namespace combat
             const std::size_t             HIT_INDEX,
             bool &                        wasCollapsed);
 
+        static const std::string TrapDescriptionFullVersion(
+            const creature::CreaturePtr_t CREATURE_UNLOCKING_PTR,
+            const FightResult &           FIGHT_RESULT,
+            const std::size_t             EFFECT_INDEX,
+            const std::size_t             HIT_INDEX);
+
         static const std::string WeaponActionVerbList(
             const HitInfoVec_t & HIT_INFO_VEC,
             const bool           WILL_SKIP_MISSES);

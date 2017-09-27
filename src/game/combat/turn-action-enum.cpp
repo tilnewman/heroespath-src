@@ -55,6 +55,7 @@ namespace combat
             case Roar:          { return "Roar"; }
             case ChangeWeapon:  { return "ChangeWeapon"; }
             case Run:           { return "Run"; }
+            case TreasureUnlock:{ return "TreasureUnlock"; }
             case Count:
             default:
             {
@@ -84,6 +85,7 @@ namespace combat
             case Roar:          { return "Roars"; }
             case ChangeWeapon:  { return "Changes Weapons"; }
             case Run:           { return "Runs Away"; }
+            case TreasureUnlock:{ return "Springs the trap"; }
             case Count:
             default:
             {

@@ -54,6 +54,7 @@ namespace game
             const std::size_t PLAYER_COUNT_MAX,
             const stats::Trait_t DAMAGE_MIN,
             const stats::Trait_t DAMAGE_MAX,
+            const std::string & HIT_VERB,
             const sfml_util::sound_effect::Enum SOUND_EFFECT,
             const std::string & DESCRIPTION);
 
@@ -62,6 +63,7 @@ namespace game
             const std::size_t PLAYER_COUNT_MAX,
             const stats::Trait_t DAMAGE_MIN,
             const stats::Trait_t DAMAGE_MAX,
+            const std::string & HIT_VERB,
             const sfml_util::sound_effect::Enum SOUND_EFFECT,
             const std::string & DESC_PREFIX,
             const std::string & DES_POSTFIX);
@@ -76,6 +78,8 @@ namespace game
 
         std::size_t RandomEffectedPlayersCount() const;
 
+        inline const std::string HitVerb() const { return hitVerb_; }
+
     private:
         stats::Trait_t FindAveragePlayerRank() const;
 
@@ -86,6 +90,7 @@ namespace game
         std::string descPrefix_;
         std::string descPostfix_;
         bool willDescUseContainerName_;
+        std::string hitVerb_;
     };
 
 

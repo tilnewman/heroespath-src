@@ -50,7 +50,8 @@ namespace game
         soundEffect_(sfml_util::sound_effect::None),
         descPrefix_(""),
         descPostfix_(""),
-        willDescUseContainerName_(false)
+        willDescUseContainerName_(false),
+        hitVerb_("")
     {}
 
 
@@ -59,6 +60,7 @@ namespace game
         const std::size_t PLAYER_COUNT_MAX,
         const stats::Trait_t DAMAGE_MIN,
         const stats::Trait_t DAMAGE_MAX,
+        const std::string & HIT_VERB,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const std::string & DESCRIPTION)
     :
@@ -67,7 +69,8 @@ namespace game
         soundEffect_(SOUND_EFFECT),
         descPrefix_(DESCRIPTION),
         descPostfix_(""),
-        willDescUseContainerName_(false)
+        willDescUseContainerName_(false),
+        hitVerb_(HIT_VERB)
     {}
 
 
@@ -76,16 +79,18 @@ namespace game
         const std::size_t PLAYER_COUNT_MAX,
         const stats::Trait_t DAMAGE_MIN,
         const stats::Trait_t DAMAGE_MAX,
+        const std::string & HIT_VERB,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const std::string & DESC_PREFIX,
         const std::string & DES_POSTFIX)
-        :
+    :
         playerCountRange_(PLAYER_COUNT_MIN, PLAYER_COUNT_MAX),
         damageRange_(DAMAGE_MIN, DAMAGE_MAX),
         soundEffect_(SOUND_EFFECT),
         descPrefix_(DESC_PREFIX),
         descPostfix_(DES_POSTFIX),
-        willDescUseContainerName_(true)
+        willDescUseContainerName_(true),
+        hitVerb_(HIT_VERB)
     {}
 
 

@@ -42,6 +42,8 @@
 #include "game/loop-manager.hpp"
 #include "game/game-data-file.hpp"
 #include "game/combat/encounter.hpp"
+#include "game/combat/fight.hpp"
+#include "game/combat/combat-text.hpp"
 #include "game/non-player/party.hpp"
 #include "game/non-player/character.hpp"
 #include "game/player/character.hpp"
@@ -103,6 +105,9 @@ namespace stage
     const std::string TreasureStage::POPUP_NAME_LOCK_PICK_FAILURE_{
         "PopupName_LockPickFailure" };
 
+    const std::string TreasureStage::POPUP_NAME_DAMAGE_REPORT_{
+        "PopupName_DamageReport" };
+
 
     TreasureStage::TreasureStage()
     :
@@ -122,8 +127,9 @@ namespace stage
         itemCacheHeld_      (),
         itemCacheLockbox_   (),
         treasureAvailable_  (item::TreasureAvailable::Count),
-        charIndexPickingTheLock_(0),
-        trap_               ()
+        trap_               (),
+        fightResult_        (),
+        creatureEffectIndex_(0)
     {}
 
 
@@ -146,7 +152,7 @@ namespace stage
 
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ALL_ENEMIES_RAN_)
         {
-            game::LoopManager::Instance()->TransitionTo_Adventure();
+            LoopManager::Instance()->TransitionTo_Adventure();
             return false;
         }
 
@@ -179,12 +185,12 @@ namespace stage
 
                 if (SELECTION < Game::Instance()->State().Party().Characters().size())
                 {
-                    game::combat::Encounter::Instance()->LockPickCreaturePtr(
-                        Game::Instance()->State().Party().GetAtOrderPos(SELECTION));
+                    auto const LOCK_PICKING_CREATURE_PTR{
+                        Game::Instance()->State().Party().GetAtOrderPos(SELECTION) };
 
-                    charIndexPickingTheLock_ = SELECTION;
+                    combat::Encounter::Instance()->LockPickCreaturePtr(LOCK_PICKING_CREATURE_PTR);
 
-                    PromptPlayerWithLockPickPopup(charIndexPickingTheLock_);
+                    PromptPlayerWithLockPickPopup(LOCK_PICKING_CREATURE_PTR->Name());
                     return false;
                 }
                 else
@@ -199,7 +205,7 @@ namespace stage
                 {
                     //Since the player is choosing to skip the lockbox and there is no
                     //held treasure, then simply return to the Adventure Stage.
-                    game::LoopManager::Instance()->TransitionTo_Adventure();
+                    LoopManager::Instance()->TransitionTo_Adventure();
                     return false;
                 }
                 else if (item::TreasureAvailable::HeldAndLockbox == treasureAvailable_)
@@ -220,7 +226,8 @@ namespace stage
 
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCK_PICK_ATTEMPT_)
         {
-            if (DetermineIfLockPickingSucceeded(charIndexPickingTheLock_))
+            if (DetermineIfLockPickingSucceeded(
+                combat::Encounter::Instance()->LockPickCreaturePtr()))
             {
                 LockPickSuccess();
             }
@@ -238,10 +245,18 @@ namespace stage
             return true;
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCK_PICK_FAILURE_)
+        if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCK_PICK_FAILURE_) ||
+            (POPUP_RESPONSE.Info().Name() == POPUP_NAME_DAMAGE_REPORT_))
         {
-            //TODO popup windows informing the player of character injuries as a result of the trap
-            return false;
+            if (DisplayCharacterDamagePopups() == DamagePopup::Displayed)
+            {
+                return false;
+            }
+            else
+            {
+                SetupStageForTreasureCollection();
+                return true;
+            }
         }
 
         return true;
@@ -266,7 +281,7 @@ namespace stage
             bgSprite_.setScale(SCALE_HORIZ, SCALE_VERT);
         }
 
-        if (game::item::ItemProfileWarehouse::Instance()->Count() == 0)
+        if (item::ItemProfileWarehouse::Instance()->Count() == 0)
         {
             //This 20 was found by experiment to be a good number of draw frames to allow the
             //background image to fade in a little bit before displaying the 'Please Wait' popup.
@@ -379,7 +394,7 @@ namespace stage
 
         if (DEAD_ENEMY_CHARACTERS_PVEC.empty() || corpseKeyStrVec.empty())
         {
-            M_HP_LOG_ERR("game::stage::TreasureStage::GetCorpseImageKeyFromEnemyParty() "
+            M_HP_LOG_ERR("stage::TreasureStage::GetCorpseImageKeyFromEnemyParty() "
                 << "was unable to gather any key strings.  Using default image.  "
                 << "DEAD_ENEMY_CHARACTERS_PVEC.size()=" << DEAD_ENEMY_CHARACTERS_PVEC.size()
                 << ", corpseKeyStrVec.size()=" << corpseKeyStrVec.size());
@@ -539,7 +554,7 @@ namespace stage
             default:
             {
                 std::ostringstream ss;
-                ss << "game::stage::TreasureStage::GetImageKeyFromRace(" << E << ")_InvalidValueError.";
+                ss << "stage::TreasureStage::GetImageKeyFromRace(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
@@ -552,7 +567,7 @@ namespace stage
 
         //TEMP TODO REMOVE -once done testing
         //create a party of characters to work with during testing
-        state::GameStateFactory::Instance()->NewGame(game::player::FakeParty::Make());
+        state::GameStateFactory::Instance()->NewGame(player::FakeParty::Make());
 
         //TODO TEMP REMOVE -once finished testing
         //create a fake collection of dead creatures, using the predetermined initial encounter
@@ -676,7 +691,7 @@ namespace stage
                     popup::PopupButtons::Continue,
                     popup::PopupImage::Regular) };
 
-                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
             }
             case item::TreasureAvailable::HeldOnly:
@@ -691,7 +706,7 @@ namespace stage
                     popup::PopupButtons::Continue,
                     popup::PopupImage::Regular) };
 
-                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
             }
             case item::TreasureAvailable::LockboxOnly:
@@ -699,7 +714,7 @@ namespace stage
             {
                 std::ostringstream ss;
                 ss << "\nYour enemies carried a "
-                    << game::item::TreasureImage::ToContainerName(TREASURE_IMAGE)
+                    << item::TreasureImage::ToContainerName(TREASURE_IMAGE)
                     << ".  Attempt to pick the lock?";
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
@@ -710,14 +725,14 @@ namespace stage
                     popup::PopupButtons::YesNo,
                     popup::PopupImage::Regular) };
 
-                game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+                LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
             }
             case item::TreasureAvailable::Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "game::stage::TreasureStage::PromptUserBasedonTreasureAvailability("
+                ss << "stage::TreasureStage::PromptUserBasedonTreasureAvailability("
                     << treasureAvailable_ << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());
@@ -753,7 +768,7 @@ namespace stage
                 INVALID_MSGS,
                 FindCharacterIndexWhoPrevAttemptedLockPicking()) };
 
-            game::LoopManager::Instance()->
+            LoopManager::Instance()->
                 PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(this, POPUP_INFO);
         }
         else
@@ -768,7 +783,7 @@ namespace stage
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Regular) };
 
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         }
     }
 
@@ -778,7 +793,7 @@ namespace stage
         auto const NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
 
         auto const PREV_LOCKPICK_CREATURE_PTR{
-            game::combat::Encounter::Instance()->LockPickCreaturePtr() };
+            combat::Encounter::Instance()->LockPickCreaturePtr() };
 
         if (PREV_LOCKPICK_CREATURE_PTR != nullptr)
         {
@@ -791,7 +806,7 @@ namespace stage
                 }
             }
 
-            game::combat::Encounter::Instance()->LockPickCreaturePtr(nullptr);
+            combat::Encounter::Instance()->LockPickCreaturePtr(nullptr);
         }
 
         return 0;
@@ -846,30 +861,26 @@ namespace stage
 
 
     void TreasureStage::PromptPlayerWithLockPickPopup(
-        const std::size_t CHARACTER_INDEX_WHO_IS_PICKING_THE_LOCK)
+        const std::string & CHAR_PICKING_NAME)
     {
-        auto const CHARACTER_WHO_IS_PICKING_NAME{
-            Game::Instance()->State().Party().Characters()[
-                CHARACTER_INDEX_WHO_IS_PICKING_THE_LOCK]->Name() };
-
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
             POPUP_NAME_LOCK_PICK_ATTEMPT_,
-            CHARACTER_WHO_IS_PICKING_NAME + " is attempting to pick the lock...",
+            CHAR_PICKING_NAME + " is attempting to pick the lock...",
             4.0f,//the duration of the longest lockpick sfx
             sfml_util::FontManager::Instance()->Size_Normal(),
             popup::PopupImage::Regular,
             SelectRandomLockPickingSfx()) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
+        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
             this, POPUP_INFO);
     }
 
 
     bool TreasureStage::DetermineIfLockPickingSucceeded(
-        const std::size_t CHAR_INDEX_WHO_IS_ATTEMPTING) const
+        const creature::CreaturePtr_t CHAR_WHO_IS_PICKING_THE_LOCK_PTR) const
     {
         return creature::Stats::Test(
-            Game::Instance()->State().Party().Characters()[CHAR_INDEX_WHO_IS_ATTEMPTING],
+            CHAR_WHO_IS_PICKING_THE_LOCK_PTR,
             stats::Traits::Luck,
             static_cast<creature::Stats::With>(
                 creature::Stats::With::RaceRoleBonus |
@@ -926,7 +937,7 @@ namespace stage
             popup::PopupImage::Banner,
             sfml_util::sound_effect::None) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
+        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
             this, POPUP_INFO);
     }
 
@@ -936,13 +947,50 @@ namespace stage
         trap_ = trap::Warehouse::SelectRandomWithSeverityRatioNear(
             combat::Encounter::Instance()->DefeatedPartyTreasureRatioPer());
 
+        fightResult_ = combat::FightClub::TreasureTrap(
+            trap_,
+            combat::Encounter::Instance()->LockPickCreaturePtr());
+
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTrapPopupInfo(
             POPUP_NAME_LOCK_PICK_FAILURE_,
             trap_.Description(item::TreasureImage::ToContainerName(treasureImageType_)),
             trap_.SoundEffect()) };
 
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageTreasureTrap>(
+        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageTreasureTrap>(
             this, POPUP_INFO);
+    }
+
+
+    TreasureStage::DamagePopup TreasureStage::DisplayCharacterDamagePopups()
+    {
+        if (creatureEffectIndex_ < fightResult_.Effects().size())
+        {
+            bool ignored{ false };
+
+            auto const DAMAGE_TEXT{ combat::Text::ActionTextIndexed(
+                combat::Encounter::Instance()->LockPickCreaturePtr(),
+                combat::TurnActionInfo(combat::TurnAction::TreasureUnlock),
+                fightResult_,
+                false,
+                creatureEffectIndex_,
+                0,
+                ignored) };
+
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME_DAMAGE_REPORT_,
+                DAMAGE_TEXT,
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Regular) };
+
+            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+
+            ++creatureEffectIndex_;
+            return DamagePopup::Displayed;
+        }
+        else
+        {
+            return DamagePopup::AllFinished;
+        }
     }
 
 }

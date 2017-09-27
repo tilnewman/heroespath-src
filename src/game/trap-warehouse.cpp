@@ -54,12 +54,14 @@ namespace trap
         traps_.push_back(Trap(
             1, 1,
             2, 6,
+            "blasted",
             sfml_util::sound_effect::TrapPop,
             "The lock bursts in the lock picker's hands!"));
 
         traps_.push_back(Trap(
             1, 1,
             3, 8,
+            "blasted",
             sfml_util::sound_effect::TrapMetalBang,
             "A metal spike pops out from the",
             "!"));
@@ -67,18 +69,21 @@ namespace trap
         traps_.push_back(Trap(
             1, 3,
             4, 9,
+            "sliced",
             sfml_util::sound_effect::TrapMetal,
             "Sharp metal pieces burst out and tear through the party!"));
 
         traps_.push_back(Trap(
             1, 3,
             6, 12,
+            "poisoned",
             sfml_util::sound_effect::TrapSplutter,
             "The lock oozes with toxic black sludge!"));
 
         traps_.push_back(Trap(
             3, 6,
             8, 14,
+            "sickened",
             sfml_util::sound_effect::TrapSplatDunk,
             "Green slime spits out from holes in the ",
             "!"));
@@ -86,12 +91,14 @@ namespace trap
         traps_.push_back(Trap(
             2, 4,
             6, 12,
+            "blasted",
             sfml_util::sound_effect::TrapBang,
             "The lock detonates!"));
 
         traps_.push_back(Trap(
             3, 6,
             8, 16,
+            "blasted",
             sfml_util::sound_effect::TrapBoom,
             "The ",
             "  blows apart!"));
@@ -99,6 +106,7 @@ namespace trap
         traps_.push_back(Trap(
             4, 6,
             10, 20,
+            "blasted",
             sfml_util::sound_effect::TrapChungSplutter,
             "The ",
             "  explodes!"));
@@ -106,12 +114,14 @@ namespace trap
         traps_.push_back(Trap(
             1, 1,
             8, 14,
+            "burned",
             sfml_util::sound_effect::TrapFire,
             "The lock becomes scalding and burns the lock picker!"));
 
         traps_.push_back(Trap(
             1, 3,
             10, 15,
+            "burned",
             sfml_util::sound_effect::TrapInferno,
             "The whole ",
             "  erupts into a raging inferno!"));
@@ -119,12 +129,14 @@ namespace trap
         traps_.push_back(Trap(
             4, 6,
             15, 20,
+            "burned",
             sfml_util::sound_effect::TrapFireball,
             "A fireball engulfs the party!"));
 
         traps_.push_back(Trap(
             6, 6,
             8, 14,
+            "burned",
             sfml_util::sound_effect::TrapChiaowahh,
             "You hear haunting moans and a ghostly yellow light shines from the ",
             "  searing the party!"));
@@ -132,6 +144,7 @@ namespace trap
         traps_.push_back(Trap(
             6, 6,
             11, 18,
+            "burned",
             sfml_util::sound_effect::TrapChiaowahh,
             "You hear cries of pain and a ghostly green light shines from the ",
             "  searing the party!"));
@@ -139,6 +152,7 @@ namespace trap
         traps_.push_back(Trap(
             6, 6,
             14, 24,
+            "burned",
             sfml_util::sound_effect::TrapChiaowahh,
             "You hear frightful screams and a ghostly blue light shines from the ",
             "  searing the party!"));
@@ -146,6 +160,7 @@ namespace trap
         traps_.push_back(Trap(
             6, 6,
             17, 28,
+            "burned",
             sfml_util::sound_effect::TrapChiaowahh,
             "You hear horrible wailing and a ghostly red light shines from the ",
             "  searing the party!"));
@@ -153,6 +168,7 @@ namespace trap
         traps_.push_back(Trap(
             1, 4,
             12, 18,
+            "poisoned",
             sfml_util::sound_effect::TrapGasExhale,
             "Noxious gas hisses from vents in the ",
             "!"));
@@ -160,12 +176,14 @@ namespace trap
         traps_.push_back(Trap(
             2, 6,
             16, 24,
+            "poisoned",
             sfml_util::sound_effect::TrapGasLeak,
             "A deadly chemical mist escapes!"));
         
         traps_.push_back(Trap(
             2, 4,
             8, 14,
+            "burned",
             sfml_util::sound_effect::TrapSparksHiss,
             "Sparks spray out from the ",
             "!"));
@@ -173,24 +191,28 @@ namespace trap
         traps_.push_back(Trap(
             3, 6,
             12, 24,
+            "sliced",
             sfml_util::sound_effect::TrapSparksAhh,
             "A torrent of molten metal showers the party!"));
         
         traps_.push_back(Trap(
             1, 1,
             25, 50,
+            "sliced",
             sfml_util::sound_effect::TrapSpiritShortHiss,
             "A spectral skeleton hand reaches out and strikes at the lock picker!"));
         
         traps_.push_back(Trap(
             2, 4,
             30, 50,
+            "sliced",
             sfml_util::sound_effect::TrapGhost2,
             "The raging ghost of a murdered witch emerges and slashes the party with ghostly claws!"));
         
         traps_.push_back(Trap(
             4, 6,
             20, 40,
+            "sliced",
             sfml_util::sound_effect::TrapGhost2,
             "Evil spirits emerge and tear through the party!"));
         

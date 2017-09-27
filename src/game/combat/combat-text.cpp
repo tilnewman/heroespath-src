@@ -473,6 +473,7 @@ namespace combat
             case combat::TurnAction::Retreat:
             case combat::TurnAction::Block:
             case combat::TurnAction::Run:
+            case combat::TurnAction::TreasureUnlock:
             {
                 ss << combat::TurnAction::Name(TURN_ACTION_INFO.Action());
                 break;
@@ -556,6 +557,14 @@ namespace combat
                                               EFFECT_INDEX,
                                               HIT_INDEX,
                                               wasCollapsed);
+        }
+        else if (TURN_ACTION == combat::TurnAction::TreasureUnlock)
+        {
+            return TrapDescriptionFullVersion(
+                CREATURE_ATTACKING_PTR,
+                FIGHT_RESULT,
+                EFFECT_INDEX,
+                HIT_INDEX);
         }
         else
         {
@@ -1127,6 +1136,43 @@ namespace combat
 
         ss << HIT_INFO.ActionPhrase().Compose(CREATURE_ROARING_PTR->Name(),
             CREATURE_EFFECT.GetCreature()->Name());
+
+        return ss.str();
+    }
+
+
+    const std::string Text::TrapDescriptionFullVersion(
+        const creature::CreaturePtr_t CREATURE_UNLOCKING_PTR,
+        const FightResult &           FIGHT_RESULT,
+        const std::size_t             EFFECT_INDEX,
+        const std::size_t             HIT_INDEX)
+    {
+        auto const CREATURE_EFFECTS{ FIGHT_RESULT.Effects() };
+
+        M_ASSERT_OR_LOGANDTHROW_SS((EFFECT_INDEX < CREATURE_EFFECTS.size()),
+            "game::combat::Text::TrapDescriptionFullVersion(creature="
+            << CREATURE_UNLOCKING_PTR->NameAndRaceAndRole()
+            << ", effect_index=" << EFFECT_INDEX
+            << ", hit_index=" << HIT_INDEX
+            << ") but there were only " << CREATURE_EFFECTS.size() << " creature effects.");
+
+        auto const CREATURE_EFFECT{ CREATURE_EFFECTS.at(EFFECT_INDEX) };
+
+        auto const HIT_INFOS{ CREATURE_EFFECT.GetHitInfoVec() };
+        
+        M_ASSERT_OR_LOGANDTHROW_SS((HIT_INDEX < HIT_INFOS.size()),
+            "game::combat::Text::TrapDescriptionFullVersion(creature="
+            << CREATURE_UNLOCKING_PTR->NameAndRaceAndRole()
+            << ", effect_index=" << EFFECT_INDEX
+            << ", hit_index=" << HIT_INDEX
+            << ") but there were only " << HIT_INFOS.size() << " hit infos.");
+        
+        auto const HIT_INFO{ HIT_INFOS.at(HIT_INDEX) };
+
+        std::ostringstream ss;
+        ss << CREATURE_UNLOCKING_PTR->Name() << " is " << HIT_INFO.ActionVerb()
+            << " for " << std::abs(HIT_INFO.Damage()) << " damage"
+            << AttackConditionsSummaryList(CREATURE_EFFECT);
 
         return ss.str();
     }

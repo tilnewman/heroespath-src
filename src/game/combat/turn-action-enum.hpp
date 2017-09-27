@@ -53,6 +53,7 @@ namespace combat
             Roar,
             ChangeWeapon,
             Run,
+            TreasureUnlock,
             Count
         };
 

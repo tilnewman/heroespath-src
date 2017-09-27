@@ -32,6 +32,9 @@
 #include "sfml-util/stage.hpp"
 
 #include "popup/i-popup-callback.hpp"
+
+#include "game/combat/turn-action-info.hpp"
+#include "game/combat/fight-results.hpp"
 #include "game/creature/race-enum.hpp"
 #include "game/item/treasure-image-enum.hpp"
 #include "game/item/item-cache.hpp"
@@ -126,16 +129,22 @@ namespace stage
 
         bool AreAnyStringsEmpty(const misc::StrVec_t & INVALID_MSGS) const;
 
-        void PromptPlayerWithLockPickPopup(
-            const std::size_t CHARACTER_INDEX_WHO_IS_PICKING_THE_LOCK);
+        void PromptPlayerWithLockPickPopup(const std::string & CHAR_PICKING_NAME);
 
-        bool DetermineIfLockPickingSucceeded(const std::size_t CHAR_INDEX_WHO_IS_ATTEMPTING) const;
+        bool DetermineIfLockPickingSucceeded(const creature::CreaturePtr_t) const;
 
         sfml_util::sound_effect::Enum SelectRandomLockPickingSfx() const;
         sfml_util::sound_effect::Enum SelectRandomTreasureOpeningSfx() const;
 
         void LockPickSuccess();
         void LockPickFailure();
+
+        enum class DamagePopup
+        {
+            Displayed,
+            AllFinished
+        };
+        DamagePopup DisplayCharacterDamagePopups();
 
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
@@ -148,6 +157,7 @@ namespace stage
         static const std::string POPUP_NAME_LOCK_PICK_ATTEMPT_;
         static const std::string POPUP_NAME_LOCK_PICK_SUCCESS_;
         static const std::string POPUP_NAME_LOCK_PICK_FAILURE_;
+        static const std::string POPUP_NAME_DAMAGE_REPORT_;
 
     private:
         int setupCountdown_;
@@ -165,8 +175,11 @@ namespace stage
         item::ItemCache itemCacheHeld_;
         item::ItemCache itemCacheLockbox_;
         item::TreasureAvailable::Enum treasureAvailable_;
-        std::size_t charIndexPickingTheLock_;
         game::Trap trap_;
+
+        //members supporting trap damage
+        combat::FightResult fightResult_;
+        std::size_t creatureEffectIndex_;
     };
 
 }

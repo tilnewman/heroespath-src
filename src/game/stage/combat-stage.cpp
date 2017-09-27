@@ -2366,7 +2366,7 @@ namespace stage
 
                 return TurnActionPhase::PauseAndReport;
             }
-
+            case combat::TurnAction::TreasureUnlock:
             default:
             {
                 std::ostringstream ss;

@@ -35,6 +35,8 @@
 
 namespace game
 {
+    class Trap;
+
 namespace spell
 {
     class Spell;
@@ -134,7 +136,15 @@ namespace combat
             creature::CreaturePtrC_t creatureAttackingtrC,
             CombatDisplayCPtrC_t     COMBAT_DISPLAY_CPTRC);
 
+        static const FightResult TreasureTrap(
+            const Trap & TRAP,
+            creature::CreaturePtrC_t creaturePickingTheLockPtr_C);
+
     private:
+        static const creature::CreaturePVec_t RandomSelectWhoIsHurtByTrap(
+            const Trap & TRAP,
+            creature::CreaturePtrC_t creaturePickingTheLockPtr_C);
+
         static const HitInfoVec_t AttackWithAllWeapons(
             creature::CreaturePtrC_t creatureAttackingPtrC,
             creature::CreaturePtrC_t creatureDefendingPtrC,
