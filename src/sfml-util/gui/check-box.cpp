@@ -33,9 +33,9 @@
 #include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/sound-manager.hpp"
 
-#include <sstream>
-
 #include "misc/assertlogandthrow.hpp"
+
+#include <sstream>
 
 
 namespace sfml_util
@@ -51,7 +51,7 @@ namespace gui
                         const sf::Sprite &     SPRITE_DOWN,
                         const MouseTextInfo &  MOUSE_TEXT_INFO,
                         const bool             IS_CHECKED,
-                        const bool             IS_INVALID)//TODO why no call to Setup() in this constructor?  zTn 2016-10-9
+                        const bool             IS_INVALID)
     :
         TwoStateEntity( std::string(NAME).append("_CheckBox"),
                         POS_LEFT,
@@ -61,7 +61,9 @@ namespace gui
                         MOUSE_TEXT_INFO)
     {
         if (IS_CHECKED)
+        {
             SetIsInFirstState(false);
+        }
 
         SetupSprites(BRIGHTNESS);
         Setup(POS_LEFT, POS_TOP, IS_INVALID);
@@ -74,7 +76,7 @@ namespace gui
                         const float            POS_TOP,
                         const MouseTextInfo &  MOUSE_TEXT_INFO,
                         const bool             IS_CHECKED,
-                        const bool             IS_INVALID)//TODO why no call to Setup() in this constructor?  zTn 2016-10-9
+                        const bool             IS_INVALID)
     :
         TwoStateEntity( std::string(NAME).append("_CheckBox"),
                         POS_LEFT,
@@ -82,7 +84,9 @@ namespace gui
                         MOUSE_TEXT_INFO )
     {
         if (IS_CHECKED)
+        {
             SetIsInFirstState(false);
+        }
 
         SetupSprites(BRIGHTNESS);
         Setup(POS_LEFT, POS_TOP, IS_INVALID);
@@ -95,7 +99,7 @@ namespace gui
                        const float            POS_TOP,
                        const TextInfo &       TEXT_INFO_UP,
                        const bool             IS_CHECKED,
-                       const bool             IS_INVALID)//TODO why no call to Setup() in this constructor?  zTn 2016-10-9
+                       const bool             IS_INVALID)
     :
         TwoStateEntity( std::string(NAME).append("_CheckBox"),
                         POS_LEFT,
@@ -103,7 +107,9 @@ namespace gui
                         MouseTextInfo(TEXT_INFO_UP) )
     {
         if (IS_CHECKED)
+        {
             SetIsInFirstState(false);
+        }
 
         SetupSprites(BRIGHTNESS);
         Setup(POS_LEFT, POS_TOP, IS_INVALID);
@@ -198,13 +204,20 @@ namespace gui
         box_                 (std::string(GetEntityName()).append("'s")),
         invalidSelectionsVec_(INVALID_SEL_VEC)
     {
-        const std::size_t NUM_CHECKBOXES(TEXT_INFO_VEC.size());
+        auto const NUM_CHECKBOXES{ TEXT_INFO_VEC.size() };
 
         if (currentSelections_.empty())
+        {
             currentSelections_.resize(NUM_CHECKBOXES, false);
+        }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((NUM_CHECKBOXES > 0), entityName_ << " given an empty vector of TextInfo objects.");
-        M_ASSERT_OR_LOGANDTHROW_SS((currentSelections_.size() == NUM_CHECKBOXES), entityName_ << " given an initial selections vector with more or less values (" << currentSelections_.size() << ") than there are check boxes (" << NUM_CHECKBOXES << ").");
+        M_ASSERT_OR_LOGANDTHROW_SS((NUM_CHECKBOXES > 0),
+            entityName_ << " given an empty vector of TextInfo objects.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((currentSelections_.size() == NUM_CHECKBOXES),
+            entityName_ << " given an initial selections vector with more or less values ("
+            << currentSelections_.size() << ") than there are check boxes ("
+            << NUM_CHECKBOXES << ").");
 
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
         {
@@ -246,13 +259,20 @@ namespace gui
         box_                 (std::string(GetEntityName()).append("'s")),
         invalidSelectionsVec_(INVALID_SEL_VEC)
     {
-        const std::size_t NUM_CHECKBOXES(TEXT_INFO_VEC.size());
+        auto const NUM_CHECKBOXES{ TEXT_INFO_VEC.size() };
 
         if (currentSelections_.empty())
+        {
             currentSelections_.resize(NUM_CHECKBOXES, false);
+        }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((NUM_CHECKBOXES > 0), entityName_ << " given an empty vector of TextInfo objects.");
-        M_ASSERT_OR_LOGANDTHROW_SS((currentSelections_.size() == NUM_CHECKBOXES), entityName_ << " given an initial selections vector with more or less values (" << currentSelections_.size() << ") than there are check boxes (" << NUM_CHECKBOXES << ").");
+        M_ASSERT_OR_LOGANDTHROW_SS((NUM_CHECKBOXES > 0),
+            entityName_ << " given an empty vector of TextInfo objects.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((currentSelections_.size() == NUM_CHECKBOXES),
+            entityName_ << " given an initial selections vector with more or less values ("
+            << currentSelections_.size() << ") than there are check boxes ("
+            << NUM_CHECKBOXES << ").");
 
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
         {
@@ -294,10 +314,12 @@ namespace gui
         box_                 (std::string(GetEntityName()).append("'s")),
         invalidSelectionsVec_(INVALID_SEL_VEC)
     {
-        const std::size_t NUM_CHECKBOXES(LABEL_VEC.size());
+        auto const NUM_CHECKBOXES{ LABEL_VEC.size() };
 
         if (currentSelections_.empty())
+        {
             currentSelections_.resize(NUM_CHECKBOXES, false);
+        }
 
         M_ASSERT_OR_LOGANDTHROW_SS((NUM_CHECKBOXES > 0),
             entityName_ << " given an empty vector of string labels.");
@@ -333,10 +355,14 @@ namespace gui
 
     void CheckBoxSet::SetupInitialSelections()
     {
-        const std::size_t NUM_SELECTIONS( currentSelections_.size() );
+        auto const NUM_SELECTIONS{ currentSelections_.size() };
         for (std::size_t i(0); i < NUM_SELECTIONS; ++i)
+        {
             if (currentSelections_[i] == true)
+            {
                 checkBoxSVec_[i]->SetIsInFirstState(false);
+            }
+        }
     }
 
 
@@ -344,10 +370,14 @@ namespace gui
     {
         std::vector<std::size_t> checkedBoxNumbers;
 
-        const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
+        auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
+        {
             if (false == checkBoxSVec_[i]->IsInFirstState())
+            {
                 checkedBoxNumbers.push_back(i);
+            }
+        }
 
         return checkedBoxNumbers;
     }
@@ -357,7 +387,7 @@ namespace gui
     {
         CheckBoxSVec_t checkedBoxes;
 
-        const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
+        auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
         {
             if (false == checkBoxSVec_[i]->IsInFirstState())
@@ -372,12 +402,16 @@ namespace gui
 
     bool CheckBoxSet::MouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
-        const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
+        auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
         {
-            if ((false == IsInvalid(i)) && (checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V) && (downInWhichRegion_ == i)))
+            if ((false == IsInvalid(i)) &&
+                (checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V) &&
+                (downInWhichRegion_ == i)))
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+                SoundManager::Instance()->
+                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+
                 currentSelections_[i] = ! currentSelections_[i];
                 checkBoxSVec_[i]->SetIsInFirstState( ! checkBoxSVec_[i]->IsInFirstState());
                 return true;
@@ -390,10 +424,11 @@ namespace gui
 
     bool CheckBoxSet::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
+        auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
         {
-            if ((false == IsInvalid(i)) && (checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V)))
+            if ((false == IsInvalid(i)) &&
+                (checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V)))
             {
                 downInWhichRegion_ = i;
                 return true;
@@ -409,18 +444,23 @@ namespace gui
     {
         bool wereAnyStatesChanged(false);
 
-        const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
+        auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
         {
-            const MouseState::Enum MOUSE_STATE(checkBoxSVec_[i]->GetMouseState());
-            const bool IS_IN_REGION(checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V));
+            auto const MOUSE_STATE{ checkBoxSVec_[i]->GetMouseState() };
+
+            auto const IS_IN_REGION{
+                checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V) };
 
             if (IS_IN_REGION                      &&
                 (MOUSE_STATE != MouseState::Down) &&
                 (currentSelections_[i] == false))
             {
                 if (checkBoxSVec_[i]->GetMouseState() != MouseState::Over)
-                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                {
+                    SoundManager::Instance()->
+                        Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                }
 
                 checkBoxSVec_[i]->SetMouseState(MouseState::Over);
                 wereAnyStatesChanged = true;
@@ -442,7 +482,7 @@ namespace gui
 
     bool CheckBoxSet::IsInvalid(const std::size_t INDEX)
     {
-        const std::size_t NUM_INVALIDS(invalidSelectionsVec_.size());
+        auto const NUM_INVALIDS{ invalidSelectionsVec_.size() };
         for (std::size_t i(0); i < NUM_INVALIDS; ++i)
         {
             if (invalidSelectionsVec_[i] == INDEX)
@@ -476,7 +516,7 @@ namespace gui
 
         checkBoxSVec_[0]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(0));
 
-        const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
+        auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
         for (std::size_t i(1); i < NUM_CHECKBOXES; ++i)
         {
             posY += checkBoxSVec_[i - 1]->GetEntityRegion().height + betweenPad_;
@@ -499,7 +539,7 @@ namespace gui
     {
         target.draw(box_, states);
 
-        const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
+        auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
         {
             checkBoxSVec_[i]->draw(target, states);
@@ -516,9 +556,7 @@ namespace gui
     void CheckBoxSet::SetEntityPos(const float POS_LEFT, const float POS_TOP)
     {
         GuiEntity::SetEntityPos(POS_LEFT, POS_TOP);
-
         SetCheckboxPositions(POS_LEFT, POS_TOP);
-
         box_.SetEntityPos(POS_LEFT, POS_TOP);
     }
 
@@ -527,7 +565,7 @@ namespace gui
     {
         GuiEntity::MoveEntityPos(HORIZ, VERT);
 
-        const std::size_t NUM_CHECKBOXES(checkBoxSVec_.size());
+        auto const NUM_CHECKBOXES{ checkBoxSVec_.size() };
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
         {
             checkBoxSVec_[i]->MoveEntityPos(HORIZ, VERT);
