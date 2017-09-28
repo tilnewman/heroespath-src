@@ -252,7 +252,7 @@ namespace gui
         sfml_util::callback::RadioButtonCallbackHandlerPtrSet_t callbackHandlerPtrSet_;
     };
 
-    using RadioButtonSetSPtr_t = std::shared_ptr<RadioButtonSet>;
+    using RadioButtonSetUPtr_t = std::unique_ptr<RadioButtonSet>;
     using RadioButtonSVec_t = std::vector<RadioButtonSPtr_t>;
 }
 }

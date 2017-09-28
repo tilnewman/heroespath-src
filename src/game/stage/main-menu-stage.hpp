@@ -78,11 +78,11 @@ namespace stage
         sf::Texture                                     titleTexture_;
         sf::Sprite                                      titleSprite_;
         sfml_util::GradientRect                         gradient_;
-        main_menu_buttons::ResumeButtonSPtr_t           resumeButtonSPtr_;
-        main_menu_buttons::CreateCharactersButtonSPtr_t createButtonSPtr_;
-        main_menu_buttons::SettingsButtonSPtr_t         settingsButtonSPtr_;
-        main_menu_buttons::CreditsButtonSPtr_t          creditsButtonSPtr_;
-        main_menu_buttons::ExitButtonSPtr_t             exitButtonSPtr_;
+        main_menu_buttons::ResumeButtonUPtr_t           resumeButtonUPtr_;
+        main_menu_buttons::CreateCharactersButtonUPtr_t createButtonUPtr_;
+        main_menu_buttons::SettingsButtonUPtr_t         settingsButtonUPtr_;
+        main_menu_buttons::CreditsButtonUPtr_t          creditsButtonUPtr_;
+        main_menu_buttons::ExitButtonUPtr_t             exitButtonUPtr_;
         OuroborosUPtr_t                                 ouroborosUPtr_;
         BottomSymbol                                    bottomSymbol_;
         sfml_util::gui::BackgroundImage                 backgroundImage_;

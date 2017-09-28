@@ -123,9 +123,9 @@ namespace stage
         const float SCREEN_HEIGHT_;
         MainMenuTitle mainMenuTitle_;
         sfml_util::gui::BackgroundImage backgroundImage_;
-        sfml_util::gui::FourStateButtonSPtr_t backButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t startButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t deleteButtonSPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t backButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t startButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t deleteButtonUPtr_;
         sfml_util::gui::ListBoxUPtr_t characterListBoxUPtr_;
         sfml_util::gui::ListBoxUPtr_t partyListBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;

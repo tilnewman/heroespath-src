@@ -102,7 +102,7 @@ namespace stage
         //
         MainMenuTitle mainMenuTitle_;
         sfml_util::gui::BackgroundImage backgroundImage_;
-        sfml_util::gui::FourStateButtonSPtr_t backButtonSPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t backButtonUPtr_;
         sfml_util::gui::ListBoxUPtr_t gsListBoxUPtr_;
         //
         sfml_util::gui::TextRegionUPtr_t locTextRegionUPtr_;

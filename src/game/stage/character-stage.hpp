@@ -103,7 +103,7 @@ namespace stage
         virtual void OnClick(const sf::Vector2f &);
         CharacterStage * stagePtr_;
     };
-    using MenuButtonSPtr_t = std::shared_ptr<MenuButton>;
+    using MenuButtonUPtr_t = std::unique_ptr<MenuButton>;
 
 
     //encapsulates a stat modifier that is drawn to the screen
@@ -280,10 +280,10 @@ namespace stage
         sfml_util::gui::BackgroundImage    backgroundImage_;
         sfml_util::AnimationUPtr_t         smokeAnimUPtr_;
         //
-        MenuButtonSPtr_t backButtonSPtr_;
-        MenuButtonSPtr_t saveButtonSPtr_;
-        MenuButtonSPtr_t helpButtonSPtr_;
-        MenuButtonSPtr_t nextButtonSPtr_;
+        MenuButtonUPtr_t backButtonUPtr_;
+        MenuButtonUPtr_t saveButtonUPtr_;
+        MenuButtonUPtr_t helpButtonUPtr_;
+        MenuButtonUPtr_t nextButtonUPtr_;
         //
         stats::StatSet statSetBase_;
         stats::StatSet statSetRace_;
@@ -329,12 +329,12 @@ namespace stage
         float dragStartY_;
         stats::Traits::Enum closestDragStat_;
         //
-        sfml_util::gui::RadioButtonSetSPtr_t raceRadioButtonSPtr_;
+        sfml_util::gui::RadioButtonSetUPtr_t raceRadioButtonUPtr_;
         sfml_util::gui::TextRegionUPtr_t     racetDescTextRegionUPtr_;
-        sfml_util::gui::RadioButtonSetSPtr_t roleRadioButtonSPtr_;
+        sfml_util::gui::RadioButtonSetUPtr_t roleRadioButtonSPtr_;
         sfml_util::gui::TextRegionUPtr_t     roletDescTextRegionUPtr_;
-        sfml_util::gui::RadioButtonSetSPtr_t sexRadioButtonSPtr_;
-        sfml_util::gui::TextEntryBoxSPtr_t   nameTextEntryBoxSPtr_;
+        sfml_util::gui::RadioButtonSetUPtr_t sexRadioButtonUPtr_;
+        sfml_util::gui::TextEntryBoxUPtr_t   nameTextEntryBoxUPtr_;
         //
         sfml_util::gui::TextRegionUPtr_t attrDescTextRegionUPtr_;
         //

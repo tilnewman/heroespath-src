@@ -77,9 +77,9 @@ namespace popup
 
     private:
         static const int NUMBER_SELECT_INVALID_;
-
+        //
         sfml_util::gui::TextRegionUPtr_t msgTextRegionUPtr_;
-        sfml_util::gui::TextEntryBoxSPtr_t textEntryBoxSPtr_;
+        sfml_util::gui::TextEntryBoxUPtr_t textEntryBoxUPtr_;
         bool willSliderbarUpdate_;
         bool willTextBoxUpdate_;
     };

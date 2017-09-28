@@ -51,7 +51,7 @@ namespace popup
     :
         PopupStageBase(POPUP_INFO),
         msgTextRegionUPtr_(),
-        textEntryBoxSPtr_(),
+        textEntryBoxUPtr_(),
         willSliderbarUpdate_(true),
         willTextBoxUpdate_(true)
     {}
@@ -85,10 +85,10 @@ namespace popup
             numStr = minNumSS.str();
         }
 
-        if ((textEntryBoxSPtr_.get() != nullptr) && willSliderbarUpdate_)
+        if ((textEntryBoxUPtr_.get() != nullptr) && willSliderbarUpdate_)
         {
             willTextBoxUpdate_ = false;
-            textEntryBoxSPtr_->SetText(numStr);
+            textEntryBoxUPtr_->SetText(numStr);
             willTextBoxUpdate_ = true;
             SetupInfoText("");
         }
@@ -165,7 +165,7 @@ namespace popup
             sfml_util::gui::ColorSet(sf::Color::White),
             TEXTENTRY_BG_INFO);
 
-        textEntryBoxSPtr_ = std::make_shared<sfml_util::gui::TextEntryBox>(
+        textEntryBoxUPtr_ = std::make_unique<sfml_util::gui::TextEntryBox>(
             "PopupStage's",
             TEXTENTRY_REGION,
             TEXTENTRY_TEXT_INFO,
@@ -173,12 +173,12 @@ namespace popup
             TEXTENTRY_BOX_INFO,
             this);
 
-        textEntryBoxSPtr_->SetText(minNumSS.str());
-        EntityAdd(textEntryBoxSPtr_.get());
+        textEntryBoxUPtr_->SetText(minNumSS.str());
+        EntityAdd(textEntryBoxUPtr_.get());
 
         RemoveFocus();
-        SetFocus(textEntryBoxSPtr_.get());
-        textEntryBoxSPtr_->SetHasFocus(true);
+        SetFocus(textEntryBoxUPtr_.get());
+        textEntryBoxUPtr_->SetHasFocus(true);
     }
 
 
@@ -245,12 +245,12 @@ namespace popup
 
     int PopupStageNumberSelect::GetSelectNumber() const
     {
-        if (textEntryBoxSPtr_.get() == nullptr)
+        if (textEntryBoxUPtr_.get() == nullptr)
         {
             return NUMBER_SELECT_INVALID_;
         }
 
-        auto const TEXT{ boost::algorithm::trim_copy(textEntryBoxSPtr_->GetText()) };
+        auto const TEXT{ boost::algorithm::trim_copy(textEntryBoxUPtr_->GetText()) };
 
         int num(NUMBER_SELECT_INVALID_);
         try

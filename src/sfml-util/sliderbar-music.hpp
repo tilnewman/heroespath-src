@@ -71,8 +71,7 @@ namespace sfml_util
         virtual void SetCurrentValueFromScreenCoords(const sf::Vector2f & NEW_COORD_V);
     };
 
-    using SliderBarLabeled_MusicSPtr_t = std::shared_ptr<SliderBarLabeled_Music>;
-    using SliderBarLabeled_MusicSVec_t = std::vector<SliderBarLabeled_MusicSPtr_t>;
+    using SliderBarLabeled_MusicUPtr_t = std::unique_ptr<SliderBarLabeled_Music>;
 
 }
 

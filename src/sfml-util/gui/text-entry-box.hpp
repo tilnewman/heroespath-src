@@ -112,7 +112,7 @@ namespace gui
         callback::ITextEntryBoxCallbackHandler_t * callbackHandlerPtr_;
     };
 
-    using TextEntryBoxSPtr_t = std::shared_ptr<TextEntryBox>;
+    using TextEntryBoxUPtr_t = std::unique_ptr<TextEntryBox>;
 }
 }
 #endif //SFMLUTIL_GUI_TEXTENTRYBOX_INCLUDED

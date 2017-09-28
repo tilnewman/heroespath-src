@@ -50,7 +50,7 @@ namespace main_menu_buttons
         virtual void OnClick(const sf::Vector2f &);
     };
 
-    using ResumeButtonSPtr_t = std::shared_ptr<ResumeButton>;
+    using ResumeButtonUPtr_t = std::unique_ptr<ResumeButton>;
 
 
 
@@ -68,7 +68,7 @@ namespace main_menu_buttons
         virtual void OnClick(const sf::Vector2f &);
     };
 
-    using StartGameButtonSPtr_t = std::shared_ptr<StartGameButton>;
+    using StartGameButtonUPtr_t = std::unique_ptr<StartGameButton>;
 
 
 
@@ -86,7 +86,7 @@ namespace main_menu_buttons
         virtual void OnClick(const sf::Vector2f &);
     };
 
-    using CreateCharactersButtonSPtr_t = std::shared_ptr<CreateCharactersButton>;
+    using CreateCharactersButtonUPtr_t = std::unique_ptr<CreateCharactersButton>;
 
 
 
@@ -104,7 +104,7 @@ namespace main_menu_buttons
         virtual void OnClick(const sf::Vector2f &);
     };
 
-    using SettingsButtonSPtr_t = std::shared_ptr<SettingsButton>;
+    using SettingsButtonUPtr_t = std::unique_ptr<SettingsButton>;
 
 
 
@@ -122,7 +122,7 @@ namespace main_menu_buttons
         virtual void OnClick(const sf::Vector2f &);
     };
 
-    using CreditsButtonSPtr_t = std::shared_ptr<CreditsButton>;
+    using CreditsButtonUPtr_t = std::unique_ptr<CreditsButton>;
 
 
 
@@ -140,7 +140,7 @@ namespace main_menu_buttons
         virtual void OnClick(const sf::Vector2f &);
     };
 
-    using ExitButtonSPtr_t = std::shared_ptr<ExitButton>;
+    using ExitButtonUPtr_t = std::unique_ptr<ExitButton>;
 
 
 
@@ -158,7 +158,7 @@ namespace main_menu_buttons
         virtual void OnClick(const sf::Vector2f &);
     };
 
-    using BackButtonSPtr_t = std::shared_ptr<BackButton>;
+    using BackButtonUPtr_t = std::unique_ptr<BackButton>;
 
 
 
@@ -176,7 +176,7 @@ namespace main_menu_buttons
         virtual void OnClick(const sf::Vector2f &);
     };
 
-    using DeleteButtonSPtr_t = std::shared_ptr<DeleteButton>;
+    using DeleteButtonUPtr_t = std::unique_ptr<DeleteButton>;
 
 }
 }

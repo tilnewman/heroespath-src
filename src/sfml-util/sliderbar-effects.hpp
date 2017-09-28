@@ -72,8 +72,7 @@ namespace sfml_util
         float timeSinceLastPlaySec_;
     };
 
-    using SliderBarLabeled_EffectsSPtr_t = std::shared_ptr<SliderBarLabeled_Effects>;
-    using SliderBarLabeled_EffectsSVec_t = std::vector<SliderBarLabeled_EffectsSPtr_t>;
+    using SliderBarLabeled_EffectsUPtr_t = std::unique_ptr<SliderBarLabeled_Effects>;
 
 }
 

@@ -66,7 +66,7 @@ namespace stage
         SCREEN_HEIGHT_          (sfml_util::Display::Instance()->GetWinHeight()),
         mainMenuTitle_          ("resume_button_normal.png"),
         backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
-        backButtonSPtr_         (),
+        backButtonUPtr_         (),
         gsListBoxUPtr_          (),
         locTextRegionUPtr_      (),
         charTextRegionUVec_     (),
@@ -96,7 +96,7 @@ namespace stage
 
     bool LoadGameStage::HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
     {
-        if (PACKAGE.PTR_ == backButtonSPtr_.get())
+        if (PACKAGE.PTR_ == backButtonUPtr_.get())
         {
             LoopManager::Instance()->TransitionTo_MainMenu();
             return true;
@@ -126,7 +126,7 @@ namespace stage
 
         //back button
         const std::string BUTTONS_PATH(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir"));
-        backButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        backButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "Back",
             200.0f,
             SCREEN_HEIGHT_ - 100.0f,
@@ -134,8 +134,8 @@ namespace stage
             "",
             std::string(BUTTONS_PATH).append("back_button_lit.png"));
 
-        backButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(backButtonSPtr_.get());
+        backButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(backButtonUPtr_.get());
 
         //GameState ListBox
         //
@@ -334,7 +334,7 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
-            backButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
+            backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
             sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             LoopManager::Instance()->TransitionTo_MainMenu();
             return true;

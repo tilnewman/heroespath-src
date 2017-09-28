@@ -62,11 +62,11 @@ namespace stage
         titleTexture_      (),
         titleSprite_       (),
         gradient_          (),
-        resumeButtonSPtr_  ( std::make_shared<main_menu_buttons::ResumeButton>(0.0f, 0.0f, BUTTON_SCALE_, false) ),
-        createButtonSPtr_  ( std::make_shared<main_menu_buttons::CreateCharactersButton>(0.0f, 0.0f, BUTTON_SCALE_, false) ),
-        settingsButtonSPtr_( std::make_shared<main_menu_buttons::SettingsButton>(0.0f, 0.0f, BUTTON_SCALE_, false) ),
-        creditsButtonSPtr_ ( std::make_shared<main_menu_buttons::CreditsButton>(0.0f, 0.0f, BUTTON_SCALE_, false) ),
-        exitButtonSPtr_    ( std::make_shared<main_menu_buttons::ExitButton>(0.0f, 0.0f, BUTTON_SCALE_, false) ),
+        resumeButtonUPtr_  ( std::make_unique<main_menu_buttons::ResumeButton>(0.0f, 0.0f, BUTTON_SCALE_, false) ),
+        createButtonUPtr_  ( std::make_unique<main_menu_buttons::CreateCharactersButton>(0.0f, 0.0f, BUTTON_SCALE_, false) ),
+        settingsButtonUPtr_( std::make_unique<main_menu_buttons::SettingsButton>(0.0f, 0.0f, BUTTON_SCALE_, false) ),
+        creditsButtonUPtr_ ( std::make_unique<main_menu_buttons::CreditsButton>(0.0f, 0.0f, BUTTON_SCALE_, false) ),
+        exitButtonUPtr_    ( std::make_unique<main_menu_buttons::ExitButton>(0.0f, 0.0f, BUTTON_SCALE_, false) ),
         ouroborosUPtr_     (),
         bottomSymbol_      (),
         backgroundImage_   ("media-images-backgrounds-tile-darkknot")
@@ -82,7 +82,7 @@ namespace stage
     bool MainMenuStage::HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
     {
 
-        if (PACKAGE.PTR_ == resumeButtonSPtr_.get())
+        if (PACKAGE.PTR_ == resumeButtonUPtr_.get())
         {
             LoopManager::Instance()->TransitionTo_LoadGameMenu();
             return true;
@@ -111,34 +111,34 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         //buttons
-        resumeButtonSPtr_->SetScaleToRes();
-        createButtonSPtr_->SetScaleToRes();
-        settingsButtonSPtr_->SetScaleToRes();
-        creditsButtonSPtr_->SetScaleToRes();
-        exitButtonSPtr_->SetScaleToRes();
+        resumeButtonUPtr_->SetScaleToRes();
+        createButtonUPtr_->SetScaleToRes();
+        settingsButtonUPtr_->SetScaleToRes();
+        creditsButtonUPtr_->SetScaleToRes();
+        exitButtonUPtr_->SetScaleToRes();
         //
         const float SPACE_BETWEEN_BUTTONS(sfml_util::MapByRes(8.0f, 50.0f));
         const float TITLE_TO_BUTTONS_SPACER(sfml_util::MapByRes(160.0f, 1000.0f));
         //
-        resumeButtonSPtr_->SetEntityPos  ((SCREEN_WIDTH_ * 0.5f) - (resumeButtonSPtr_->GetEntityRegion().width   * 0.5f), titleSprite_.getGlobalBounds().top + titleSprite_.getGlobalBounds().height + TITLE_TO_BUTTONS_SPACER);
-        createButtonSPtr_->SetEntityPos  ((SCREEN_WIDTH_ * 0.5f) - (createButtonSPtr_->GetEntityRegion().width   * 0.5f), resumeButtonSPtr_->GetEntityRegion().top   + resumeButtonSPtr_->GetEntityRegion().height   + SPACE_BETWEEN_BUTTONS);
-        settingsButtonSPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (settingsButtonSPtr_->GetEntityRegion().width * 0.5f), createButtonSPtr_->GetEntityRegion().top   + createButtonSPtr_->GetEntityRegion().height   + SPACE_BETWEEN_BUTTONS);
-        creditsButtonSPtr_->SetEntityPos ((SCREEN_WIDTH_ * 0.5f) - (creditsButtonSPtr_->GetEntityRegion().width  * 0.5f), settingsButtonSPtr_->GetEntityRegion().top + settingsButtonSPtr_->GetEntityRegion().height + SPACE_BETWEEN_BUTTONS);
-        exitButtonSPtr_->SetEntityPos    ((SCREEN_WIDTH_ * 0.5f) - (exitButtonSPtr_->GetEntityRegion().width     * 0.5f), creditsButtonSPtr_->GetEntityRegion().top  + creditsButtonSPtr_->GetEntityRegion().height  + SPACE_BETWEEN_BUTTONS);
+        resumeButtonUPtr_->SetEntityPos  ((SCREEN_WIDTH_ * 0.5f) - (resumeButtonUPtr_->GetEntityRegion().width   * 0.5f), titleSprite_.getGlobalBounds().top + titleSprite_.getGlobalBounds().height + TITLE_TO_BUTTONS_SPACER);
+        createButtonUPtr_->SetEntityPos  ((SCREEN_WIDTH_ * 0.5f) - (createButtonUPtr_->GetEntityRegion().width   * 0.5f), resumeButtonUPtr_->GetEntityRegion().top   + resumeButtonUPtr_->GetEntityRegion().height   + SPACE_BETWEEN_BUTTONS);
+        settingsButtonUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (settingsButtonUPtr_->GetEntityRegion().width * 0.5f), createButtonUPtr_->GetEntityRegion().top   + createButtonUPtr_->GetEntityRegion().height   + SPACE_BETWEEN_BUTTONS);
+        creditsButtonUPtr_->SetEntityPos ((SCREEN_WIDTH_ * 0.5f) - (creditsButtonUPtr_->GetEntityRegion().width  * 0.5f), settingsButtonUPtr_->GetEntityRegion().top + settingsButtonUPtr_->GetEntityRegion().height + SPACE_BETWEEN_BUTTONS);
+        exitButtonUPtr_->SetEntityPos    ((SCREEN_WIDTH_ * 0.5f) - (exitButtonUPtr_->GetEntityRegion().width     * 0.5f), creditsButtonUPtr_->GetEntityRegion().top  + creditsButtonUPtr_->GetEntityRegion().height  + SPACE_BETWEEN_BUTTONS);
         //
-        EntityAdd(resumeButtonSPtr_.get());
-        EntityAdd(createButtonSPtr_.get());
-        EntityAdd(settingsButtonSPtr_.get());
-        EntityAdd(creditsButtonSPtr_.get());
-        EntityAdd(exitButtonSPtr_.get());
+        EntityAdd(resumeButtonUPtr_.get());
+        EntityAdd(createButtonUPtr_.get());
+        EntityAdd(settingsButtonUPtr_.get());
+        EntityAdd(creditsButtonUPtr_.get());
+        EntityAdd(exitButtonUPtr_.get());
         //
-        resumeButtonSPtr_->SetCallbackHandler(this);
+        resumeButtonUPtr_->SetCallbackHandler(this);
 
         //determine if there are saved games to load
         auto const GAMESTATE_PSET{ state::GameStateFactory::Instance()->LoadAllGames() };
         if (GAMESTATE_PSET.empty())
         {
-            resumeButtonSPtr_->SetIsDisabled(true);
+            resumeButtonUPtr_->SetIsDisabled(true);
         }
         else
         {
@@ -169,7 +169,7 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::M)
         {
-            createButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
+            createButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
 
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Switch).PlayRandom();
@@ -179,7 +179,7 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
-            settingsButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
+            settingsButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
 
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Switch).PlayRandom();
@@ -189,7 +189,7 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::C)
         {
-            creditsButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
+            creditsButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
 
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Switch).PlayRandom();
@@ -200,7 +200,7 @@ namespace stage
         else if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
                  (KEY_EVENT.code == sf::Keyboard::E))
         {
-            exitButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
+            exitButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
 
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::Switch).PlayRandom();
@@ -210,9 +210,9 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::R)
         {
-            if (false == resumeButtonSPtr_->IsDisabled())
+            if (false == resumeButtonUPtr_->IsDisabled())
             {
-                resumeButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
+                resumeButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
 
                 sfml_util::SoundManager::Instance()->Getsound_effect_set(
                     sfml_util::sound_effect_set::Switch).PlayRandom();

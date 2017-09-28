@@ -79,9 +79,9 @@ namespace stage
         SCREEN_HEIGHT_          (sfml_util::Display::Instance()->GetWinHeight()),
         mainMenuTitle_          ("create_party_normal.png"),
         backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
-        backButtonSPtr_         ( std::make_shared<sfml_util::gui::FourStateButton>("PartyStage'sBack",      0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_normal.png"),      "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_lit.png")) ),
-        startButtonSPtr_        ( std::make_shared<sfml_util::gui::FourStateButton>("PartyStage'sStartGame", 0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_normal.png"), "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_lit.png")) ),
-        deleteButtonSPtr_       ( std::make_shared<sfml_util::gui::FourStateButton>("PartyStage'sDelete",    0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_normal.png"),    "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_lit.png")) ),
+        backButtonUPtr_         ( std::make_unique<sfml_util::gui::FourStateButton>("PartyStage'sBack",      0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_normal.png"),      "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_lit.png")) ),
+        startButtonUPtr_        ( std::make_unique<sfml_util::gui::FourStateButton>("PartyStage'sStartGame", 0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_normal.png"), "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_lit.png")) ),
+        deleteButtonUPtr_       ( std::make_unique<sfml_util::gui::FourStateButton>("PartyStage'sDelete",    0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_normal.png"),    "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_lit.png")) ),
         characterListBoxUPtr_   (),
         partyListBoxUPtr_       (),
         insTextRegionUPtr_      (),
@@ -167,13 +167,13 @@ namespace stage
     {
         ResetMouseOverPopupState();
 
-        if (PACKAGE.PTR_ == backButtonSPtr_.get())
+        if (PACKAGE.PTR_ == backButtonUPtr_.get())
             return HandleCallback_BackButton();
 
-        if (PACKAGE.PTR_ == startButtonSPtr_.get())
+        if (PACKAGE.PTR_ == startButtonUPtr_.get())
             return HandleCallback_StartButton();
 
-        if (PACKAGE.PTR_ == deleteButtonSPtr_.get())
+        if (PACKAGE.PTR_ == deleteButtonUPtr_.get())
             return HandleCallback_DeleteButton();
 
         return false;
@@ -324,22 +324,22 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         //back button
-        backButtonSPtr_->SetScaleToRes();
-        backButtonSPtr_->SetVertPositionToBottomOfScreenByRes(sfml_util::MapByRes(75.0f, 800.0f));
-        backButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(backButtonSPtr_.get());
+        backButtonUPtr_->SetScaleToRes();
+        backButtonUPtr_->SetVertPositionToBottomOfScreenByRes(sfml_util::MapByRes(75.0f, 800.0f));
+        backButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(backButtonUPtr_.get());
 
         //start game button
-        startButtonSPtr_->SetScaleToRes();
-        startButtonSPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) + 110.0f);
-        startButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(startButtonSPtr_.get());
+        startButtonUPtr_->SetScaleToRes();
+        startButtonUPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) + 110.0f);
+        startButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(startButtonUPtr_.get());
 
         //delete game button
-        deleteButtonSPtr_->SetScaleToRes();
-        deleteButtonSPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) - 325.0f);
-        deleteButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(deleteButtonSPtr_.get());
+        deleteButtonUPtr_->SetScaleToRes();
+        deleteButtonUPtr_->SetVertPositionToBottomOfScreenByRes((SCREEN_WIDTH_ * 0.5f) - 325.0f);
+        deleteButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(deleteButtonUPtr_.get());
 
         //top instruction text
         {
@@ -757,7 +757,7 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
-            backButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
+            backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
             sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             willShowMouseOverPopup_ = false;
             HandleCallback_BackButton();
@@ -765,7 +765,7 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::D)
         {
-            deleteButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
+            deleteButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
             sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             willShowMouseOverPopup_ = false;
             HandleCallback_DeleteButton();
@@ -773,7 +773,7 @@ namespace stage
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
-            startButtonSPtr_->SetMouseState(sfml_util::MouseState::Over);
+            startButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
             sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             willShowMouseOverPopup_ = false;
             HandleCallback_StartButton();

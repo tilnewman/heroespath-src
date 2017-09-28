@@ -217,7 +217,7 @@ namespace stage
 
         combatAnimationUPtr_        ( std::make_unique<combat::CombatAnimation>(
                                         combatDisplayStagePtr_) ),
-        settingsButtonSPtr_         (),
+        settingsButtonUPtr_         (),
         pauseDurationSec_           (0.0f),
 
         //anything greater than pauseTimeDurationSecs_ will work here
@@ -244,18 +244,18 @@ namespace stage
         enemyActionTBoxRegionUPtr_  (),
         enemyCondsTBoxRegionUPtr_   (),
         zoomLabelTextRegionUPtr_    (),
-        attackTBoxButtonSPtr_       (),
-        fightTBoxButtonSPtr_        (),
-        castTBoxButtonSPtr_         (),
-        advanceTBoxButtonSPtr_      (),
-        retreatTBoxButtonSPtr_      (),
-        blockTBoxButtonSPtr_        (),
-        skipTBoxButtonSPtr_         (),
-        flyTBoxButtonSPtr_          (),
-        landTBoxButtonSPtr_         (),
-        roarTBoxButtonSPtr_         (),
-        pounceTBoxButtonSPtr_       (),
-        runTBoxButtonSPtr_          (),
+        attackTBoxButtonUPtr_       (),
+        fightTBoxButtonUPtr_        (),
+        castTBoxButtonUPtr_         (),
+        advanceTBoxButtonUPtr_      (),
+        retreatTBoxButtonUPtr_      (),
+        blockTBoxButtonUPtr_        (),
+        skipTBoxButtonUPtr_         (),
+        flyTBoxButtonUPtr_          (),
+        landTBoxButtonUPtr_         (),
+        roarTBoxButtonUPtr_         (),
+        pounceTBoxButtonUPtr_       (),
+        runTBoxButtonUPtr_          (),
 
         //anything greater than STATUSMSG_ANIM_PAUSE_SEC_ will work here
         statusMsgAnimTimerSec_      (STATUSMSG_ANIM_PAUSE_SEC_ + 1.0f),
@@ -298,17 +298,17 @@ namespace stage
             return false;
         }
 
-        if (PACKAGE.PTR_ == attackTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == attackTBoxButtonUPtr_.get())
         {
             return HandleAttack();
         }
 
-        if (PACKAGE.PTR_ == fightTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == fightTBoxButtonUPtr_.get())
         {
             return HandleFight();
         }
 
-        if (PACKAGE.PTR_ == castTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == castTBoxButtonUPtr_.get())
         {
             if (turnCreaturePtr_ == nullptr)
             {
@@ -327,42 +327,42 @@ namespace stage
             }
         }
 
-        if (PACKAGE.PTR_ == advanceTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == advanceTBoxButtonUPtr_.get())
         {
             return HandleAdvance();
         }
 
-        if (PACKAGE.PTR_ == retreatTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == retreatTBoxButtonUPtr_.get())
         {
             return HandleRetreat();
         }
 
-        if (PACKAGE.PTR_ == blockTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == blockTBoxButtonUPtr_.get())
         {
             return HandleBlock();
         }
 
-        if (PACKAGE.PTR_ == skipTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == skipTBoxButtonUPtr_.get())
         {
             return HandleSkip();
         }
 
-        if (PACKAGE.PTR_ == flyTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == flyTBoxButtonUPtr_.get())
         {
             return HandleFly();
         }
 
-        if (PACKAGE.PTR_ == landTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == landTBoxButtonUPtr_.get())
         {
             return HandleLand();
         }
 
-        if (PACKAGE.PTR_ == roarTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == roarTBoxButtonUPtr_.get())
         {
             return HandleRoar();
         }
 
-        if (PACKAGE.PTR_ == pounceTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == pounceTBoxButtonUPtr_.get())
         {
             auto isSkyPounce(false);
             if ((TurnPhase::NotATurn != turnPhase_) && (turnCreaturePtr_ != nullptr))
@@ -374,14 +374,14 @@ namespace stage
             return HandlePounce(isSkyPounce);
         }
 
-        if (PACKAGE.PTR_ == settingsButtonSPtr_.get())
+        if (PACKAGE.PTR_ == settingsButtonUPtr_.get())
         {
             restoreInfo_.PrepareForStageChange(combatDisplayStagePtr_);
             game::LoopManager::Instance()->TransitionTo_Settings();
             return true;
         }
 
-        if (PACKAGE.PTR_ == runTBoxButtonSPtr_.get())
+        if (PACKAGE.PTR_ == runTBoxButtonUPtr_.get())
         {
             return HandleRun();
         }
@@ -670,7 +670,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        attackTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        attackTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sAttack",
             0.0f,
             0.0f,
@@ -680,12 +680,12 @@ namespace stage
             "",
             ATTACKBUTTON_MOUSETEXTINFO, turnButtonTextInfoDisabled);
 
-        attackTBoxButtonSPtr_->SetCallbackHandler(this);
+        attackTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        attackTBoxButtonSPtr_->SetMouseHoverText(
+        attackTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
 
-        EntityAdd(attackTBoxButtonSPtr_.get());
+        EntityAdd(attackTBoxButtonUPtr_.get());
 
         //fight button
         turnButtonTextInfo.text = "(F)ight";
@@ -695,7 +695,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        fightTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        fightTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sAttack",
             0.0f,
             0.0f,
@@ -706,12 +706,12 @@ namespace stage
             FIGHTBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        fightTBoxButtonSPtr_->SetCallbackHandler(this);
+        fightTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        fightTBoxButtonSPtr_->SetMouseHoverText(
+        fightTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
 
-        EntityAdd(fightTBoxButtonSPtr_.get());
+        EntityAdd(fightTBoxButtonUPtr_.get());
 
         //spell/song button
         turnButtonTextInfo.text = "(S)pell";
@@ -721,7 +721,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        castTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        castTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sCast",
             0.0f,
             0.0f,
@@ -732,12 +732,12 @@ namespace stage
             CASTBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        castTBoxButtonSPtr_->SetCallbackHandler(this);
+        castTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        castTBoxButtonSPtr_->SetMouseHoverText(
+        castTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
 
-        EntityAdd(castTBoxButtonSPtr_.get());
+        EntityAdd(castTBoxButtonUPtr_.get());
 
         //advance button
         turnButtonTextInfo.text = "A(d)vance";
@@ -747,7 +747,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        advanceTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        advanceTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sAdvance",
             0.0f,
             0.0f,
@@ -758,12 +758,12 @@ namespace stage
             ADVANCEBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        advanceTBoxButtonSPtr_->SetCallbackHandler(this);
+        advanceTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        advanceTBoxButtonSPtr_->SetMouseHoverText(
+        advanceTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
 
-        EntityAdd(advanceTBoxButtonSPtr_.get());
+        EntityAdd(advanceTBoxButtonUPtr_.get());
 
         //retreat button
         turnButtonTextInfo.text = "R(e)treat";
@@ -773,7 +773,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        retreatTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        retreatTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sRetreat",
             0.0f,
             0.0f,
@@ -784,12 +784,12 @@ namespace stage
             RETREATBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        retreatTBoxButtonSPtr_->SetCallbackHandler(this);
+        retreatTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        retreatTBoxButtonSPtr_->SetMouseHoverText(
+        retreatTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
 
-        EntityAdd(retreatTBoxButtonSPtr_.get());
+        EntityAdd(retreatTBoxButtonUPtr_.get());
 
         //block button
         turnButtonTextInfo.text = "(B)lock";
@@ -799,7 +799,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        blockTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        blockTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sBlock",
             0.0f,
             0.0f,
@@ -810,12 +810,12 @@ namespace stage
             BLOCKBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        blockTBoxButtonSPtr_->SetCallbackHandler(this);
+        blockTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        blockTBoxButtonSPtr_->SetMouseHoverText(
+        blockTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
 
-        EntityAdd(blockTBoxButtonSPtr_.get());
+        EntityAdd(blockTBoxButtonUPtr_.get());
 
         //skip button
         turnButtonTextInfo.text = "S(k)ip";
@@ -825,7 +825,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        skipTBoxButtonSPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
+        skipTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sSkip",
             0.0f,
             0.0f,
@@ -836,12 +836,12 @@ namespace stage
             SKIPBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        skipTBoxButtonSPtr_->SetCallbackHandler(this);
+        skipTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        skipTBoxButtonSPtr_->SetMouseHoverText(
+        skipTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
 
-        EntityAdd(skipTBoxButtonSPtr_.get());
+        EntityAdd(skipTBoxButtonUPtr_.get());
 
         //fly button
         turnButtonTextInfo.text = "Fl(y)";
@@ -851,7 +851,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        flyTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        flyTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sFly",
             0.0f,
             0.0f,
@@ -862,12 +862,12 @@ namespace stage
             FLYBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        flyTBoxButtonSPtr_->SetCallbackHandler(this);
+        flyTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        flyTBoxButtonSPtr_->SetMouseHoverText(
+        flyTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
 
-        EntityAdd(flyTBoxButtonSPtr_.get());
+        EntityAdd(flyTBoxButtonUPtr_.get());
 
         //land button
         turnButtonTextInfo.text = "(L)and";
@@ -877,7 +877,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        landTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        landTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sLand",
             0.0f,
             0.0f,
@@ -888,9 +888,9 @@ namespace stage
             LANDBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        landTBoxButtonSPtr_->SetCallbackHandler(this);
-        landTBoxButtonSPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
-        EntityAdd(landTBoxButtonSPtr_.get());
+        landTBoxButtonUPtr_->SetCallbackHandler(this);
+        landTBoxButtonUPtr_->SetMouseHoverText(combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
+        EntityAdd(landTBoxButtonUPtr_.get());
 
         //roar button
         turnButtonTextInfo.text = "(R)oar";
@@ -900,7 +900,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        roarTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        roarTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sRoar",
             0.0f,
             0.0f,
@@ -911,12 +911,12 @@ namespace stage
             ROARBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        roarTBoxButtonSPtr_->SetCallbackHandler(this);
+        roarTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        roarTBoxButtonSPtr_->SetMouseHoverText(
+        roarTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
 
-        EntityAdd(roarTBoxButtonSPtr_.get());
+        EntityAdd(roarTBoxButtonUPtr_.get());
 
         //pounce button
         turnButtonTextInfo.text = "(P)ounce";
@@ -926,7 +926,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        pounceTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        pounceTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sPounce",
             0.0f,
             0.0f,
@@ -937,12 +937,12 @@ namespace stage
             POUNCEBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        pounceTBoxButtonSPtr_->SetCallbackHandler(this);
+        pounceTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        pounceTBoxButtonSPtr_->SetMouseHoverText(
+        pounceTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
 
-        EntityAdd(pounceTBoxButtonSPtr_.get());
+        EntityAdd(pounceTBoxButtonUPtr_.get());
 
         //run button
         turnButtonTextInfo.text = "R(u)n";
@@ -952,7 +952,7 @@ namespace stage
             sfml_util::FontManager::Color_Light(),
             sf::Color::White);
 
-        runTBoxButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        runTBoxButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sRun",
             0.0f,
             0.0f,
@@ -963,16 +963,16 @@ namespace stage
             RUNBUTTON_MOUSETEXTINFO,
             turnButtonTextInfoDisabled);
 
-        runTBoxButtonSPtr_->SetCallbackHandler(this);
+        runTBoxButtonUPtr_->SetCallbackHandler(this);
 
-        runTBoxButtonSPtr_->SetMouseHoverText(
+        runTBoxButtonUPtr_->SetMouseHoverText(
             combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_);
 
-        EntityAdd(runTBoxButtonSPtr_.get());
+        EntityAdd(runTBoxButtonUPtr_.get());
 
         //settings button (gears symbol)
         const float COMMAND_REGION_PAD(10.0f);
-        settingsButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+        settingsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "CombatStage'sSettingsGears",
             0.0f,
             0.0f,
@@ -988,12 +988,12 @@ namespace stage
             sfml_util::MapByRes(0.6f, 2.0f),
             false);
 
-        settingsButtonSPtr_->SetEntityPos(((COMMAND_REGION_LEFT + COMMAND_REGION_WIDTH) -
-            settingsButtonSPtr_->GetEntityRegion().width) - COMMAND_REGION_PAD,
+        settingsButtonUPtr_->SetEntityPos(((COMMAND_REGION_LEFT + COMMAND_REGION_WIDTH) -
+            settingsButtonUPtr_->GetEntityRegion().width) - COMMAND_REGION_PAD,
             COMMAND_REGION_TOP + COMMAND_REGION_PAD);
 
-        settingsButtonSPtr_->SetCallbackHandler(this);
-        EntityAdd(settingsButtonSPtr_.get());
+        settingsButtonUPtr_->SetCallbackHandler(this);
+        EntityAdd(settingsButtonUPtr_.get());
 
         //position turn buttons
         auto const LEFT_ALIGN_PAD{ COMMAND_REGION.width * 0.25f };
@@ -1001,58 +1001,58 @@ namespace stage
         auto const COLUMN_2_LEFT{ COMMAND_REGION.left + (LEFT_ALIGN_PAD * 2.0f) };
         auto const COLUMN_3_LEFT{ (COMMAND_REGION.left + (LEFT_ALIGN_PAD * 3.0f)) + 15.0f };
 
-        auto const COLUMN_TOP{ settingsButtonSPtr_->GetEntityPos().y +
-                               settingsButtonSPtr_->GetEntityRegion().height -
+        auto const COLUMN_TOP{ settingsButtonUPtr_->GetEntityPos().y +
+                               settingsButtonUPtr_->GetEntityRegion().height -
                                sfml_util::MapByRes(10.0f, 75.0f) };
 
-        auto const COLUMN_VERT_PAD{ attackTBoxButtonSPtr_->GetEntityRegion().height / 1.5f};
+        auto const COLUMN_VERT_PAD{ attackTBoxButtonUPtr_->GetEntityRegion().height / 1.5f};
 
-        attackTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_1_LEFT - (attackTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        attackTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_1_LEFT - (attackTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 0.0f));
 
-        fightTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_1_LEFT - (fightTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        fightTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_1_LEFT - (fightTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 1.0f));
 
-        castTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_1_LEFT - (castTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        castTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_1_LEFT - (castTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 2.0f));
 
-        runTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_1_LEFT - (runTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        runTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_1_LEFT - (runTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 3.0f));
 
-        advanceTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_2_LEFT - (advanceTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        advanceTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_2_LEFT - (advanceTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 0.0f));
 
-        retreatTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_2_LEFT - (retreatTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        retreatTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_2_LEFT - (retreatTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 1.0f));
 
-        landTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_2_LEFT - (landTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        landTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_2_LEFT - (landTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 2.0f));
 
-        flyTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_2_LEFT - (flyTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        flyTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_2_LEFT - (flyTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 3.0f));
 
-        pounceTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_3_LEFT - (pounceTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        pounceTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_3_LEFT - (pounceTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 0.0f));
 
-        roarTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_3_LEFT - (roarTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        roarTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_3_LEFT - (roarTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 1.0f));
 
-        skipTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_3_LEFT - (skipTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        skipTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_3_LEFT - (skipTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 2.0f));
 
-        blockTBoxButtonSPtr_->SetEntityPos(
-            COLUMN_3_LEFT - (blockTBoxButtonSPtr_->GetEntityRegion().width * 0.5f),
+        blockTBoxButtonUPtr_->SetEntityPos(
+            COLUMN_3_LEFT - (blockTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 3.0f));
 
         //TODO TEMP REMOVE
@@ -1130,7 +1130,7 @@ namespace stage
             COMMAND_REGION_LEFT + COMMAND_REGION_PAD,
             zoomLabelTextRegionUPtr_->GetEntityRegion().top +
             zoomLabelTextRegionUPtr_->GetEntityRegion().height,
-            (settingsButtonSPtr_->GetEntityPos().x - COMMAND_REGION_LEFT) -
+            (settingsButtonUPtr_->GetEntityPos().x - COMMAND_REGION_LEFT) -
                 (COMMAND_REGION_PAD * 2.0f),
             sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz), this);
 
@@ -1176,20 +1176,20 @@ namespace stage
             enemyActionTBoxRegionUPtr_->draw(target, STATES);
             enemyCondsTBoxRegionUPtr_->draw(target, STATES);
 
-            attackTBoxButtonSPtr_->draw(target, STATES);
-            fightTBoxButtonSPtr_->draw(target, STATES);
-            castTBoxButtonSPtr_->draw(target, STATES);
-            runTBoxButtonSPtr_->draw(target, STATES);
+            attackTBoxButtonUPtr_->draw(target, STATES);
+            fightTBoxButtonUPtr_->draw(target, STATES);
+            castTBoxButtonUPtr_->draw(target, STATES);
+            runTBoxButtonUPtr_->draw(target, STATES);
 
-            advanceTBoxButtonSPtr_->draw(target, STATES);
-            retreatTBoxButtonSPtr_->draw(target, STATES);
-            flyTBoxButtonSPtr_->draw(target, STATES);
-            landTBoxButtonSPtr_->draw(target, STATES);
+            advanceTBoxButtonUPtr_->draw(target, STATES);
+            retreatTBoxButtonUPtr_->draw(target, STATES);
+            flyTBoxButtonUPtr_->draw(target, STATES);
+            landTBoxButtonUPtr_->draw(target, STATES);
 
-            blockTBoxButtonSPtr_->draw(target, STATES);
-            skipTBoxButtonSPtr_->draw(target, STATES);
-            roarTBoxButtonSPtr_->draw(target, STATES);
-            pounceTBoxButtonSPtr_->draw(target, STATES);
+            blockTBoxButtonUPtr_->draw(target, STATES);
+            skipTBoxButtonUPtr_->draw(target, STATES);
+            roarTBoxButtonUPtr_->draw(target, STATES);
+            pounceTBoxButtonUPtr_->draw(target, STATES);
         }
 
         if (false == hasCombatEnded_)
@@ -2828,7 +2828,7 @@ namespace stage
 
     bool CombatStage::HandleSkip()
     {
-        if (skipTBoxButtonSPtr_->IsDisabled())
+        if (skipTBoxButtonUPtr_->IsDisabled())
             return false;
 
         SetUserActionAllowed(false);
@@ -3073,146 +3073,146 @@ namespace stage
                 combat::Text::MouseOverTextAttackStr(CREATURE_CPTRC,
                     combatDisplayStagePtr_));
 
-            attackTBoxButtonSPtr_->SetIsDisabled(MOT_ATTACK_STR !=
+            attackTBoxButtonUPtr_->SetIsDisabled(MOT_ATTACK_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_);
 
-            attackTBoxButtonSPtr_->SetMouseHoverText(MOT_ATTACK_STR);
+            attackTBoxButtonUPtr_->SetMouseHoverText(MOT_ATTACK_STR);
 
             //fight button
             auto const MOT_FIGHT_STR(combat::Text::MouseOverTextFightStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            fightTBoxButtonSPtr_->SetIsDisabled(MOT_FIGHT_STR !=
+            fightTBoxButtonUPtr_->SetIsDisabled(MOT_FIGHT_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_);
 
-            fightTBoxButtonSPtr_->SetMouseHoverText(MOT_FIGHT_STR);
+            fightTBoxButtonUPtr_->SetMouseHoverText(MOT_FIGHT_STR);
 
             //cast/play button
             if ((turnCreaturePtr_ != nullptr) &&
                 (turnCreaturePtr_->Role() == creature::role::Bard))
             {
-                castTBoxButtonSPtr_->SetText("(S)ong");
+                castTBoxButtonUPtr_->SetText("(S)ong");
 
                 auto const MOT_PLAY_STR(combat::Text::MouseOverTextPlayStr(
                     CREATURE_CPTRC, combatDisplayStagePtr_));
 
-                castTBoxButtonSPtr_->SetIsDisabled(MOT_PLAY_STR !=
+                castTBoxButtonUPtr_->SetIsDisabled(MOT_PLAY_STR !=
                     combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_);
 
-                castTBoxButtonSPtr_->SetMouseHoverText(MOT_PLAY_STR);
+                castTBoxButtonUPtr_->SetMouseHoverText(MOT_PLAY_STR);
             }
             else
             {
-                castTBoxButtonSPtr_->SetText("(S)pell");
+                castTBoxButtonUPtr_->SetText("(S)pell");
 
                 auto const MOT_CAST_STR(combat::Text::MouseOverTextCastStr(
                     CREATURE_CPTRC, combatDisplayStagePtr_));
 
-                castTBoxButtonSPtr_->SetIsDisabled(MOT_CAST_STR !=
+                castTBoxButtonUPtr_->SetIsDisabled(MOT_CAST_STR !=
                     combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_);
 
-                castTBoxButtonSPtr_->SetMouseHoverText(MOT_CAST_STR);
+                castTBoxButtonUPtr_->SetMouseHoverText(MOT_CAST_STR);
             }
 
             //advance button
             auto const MOT_ADVANCE_STR(combat::Text::MouseOverTextAdvanceStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            advanceTBoxButtonSPtr_->SetIsDisabled(MOT_ADVANCE_STR !=
+            advanceTBoxButtonUPtr_->SetIsDisabled(MOT_ADVANCE_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_);
 
-            advanceTBoxButtonSPtr_->SetMouseHoverText(MOT_ADVANCE_STR);
+            advanceTBoxButtonUPtr_->SetMouseHoverText(MOT_ADVANCE_STR);
 
             //retreat button
             auto const MOT_RETREAT_STR(combat::Text::MouseOverTextRetreatStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            retreatTBoxButtonSPtr_->SetIsDisabled(MOT_RETREAT_STR !=
+            retreatTBoxButtonUPtr_->SetIsDisabled(MOT_RETREAT_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_);
 
-            retreatTBoxButtonSPtr_->SetMouseHoverText(MOT_RETREAT_STR);
+            retreatTBoxButtonUPtr_->SetMouseHoverText(MOT_RETREAT_STR);
 
             //block button
             const std::string MOT_BLOCK_STR(combat::Text::MouseOverTextBlockStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            blockTBoxButtonSPtr_->SetIsDisabled(MOT_BLOCK_STR !=
+            blockTBoxButtonUPtr_->SetIsDisabled(MOT_BLOCK_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_);
 
-            blockTBoxButtonSPtr_->SetMouseHoverText(MOT_BLOCK_STR);
+            blockTBoxButtonUPtr_->SetMouseHoverText(MOT_BLOCK_STR);
 
             //fly button
             auto const MOT_FLY_STR(combat::Text::MouseOverTextFlyStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            flyTBoxButtonSPtr_->SetIsDisabled(MOT_FLY_STR !=
+            flyTBoxButtonUPtr_->SetIsDisabled(MOT_FLY_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_);
 
-            flyTBoxButtonSPtr_->SetMouseHoverText(MOT_FLY_STR);
+            flyTBoxButtonUPtr_->SetMouseHoverText(MOT_FLY_STR);
 
             //land
             auto const MOT_LAND_STR(combat::Text::MouseOverTextLandStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            landTBoxButtonSPtr_->SetIsDisabled(MOT_LAND_STR !=
+            landTBoxButtonUPtr_->SetIsDisabled(MOT_LAND_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_);
 
-            landTBoxButtonSPtr_->SetMouseHoverText(MOT_LAND_STR);
+            landTBoxButtonUPtr_->SetMouseHoverText(MOT_LAND_STR);
 
             //roar button
             auto const MOT_ROAR_STR(combat::Text::MouseOverTextRoarStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            roarTBoxButtonSPtr_->SetIsDisabled(MOT_ROAR_STR !=
+            roarTBoxButtonUPtr_->SetIsDisabled(MOT_ROAR_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_);
 
-            roarTBoxButtonSPtr_->SetMouseHoverText(MOT_ROAR_STR);
+            roarTBoxButtonUPtr_->SetMouseHoverText(MOT_ROAR_STR);
 
             //pounce button
             auto const MOT_POUNCE_STR(combat::Text::MouseOverTextPounceStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            pounceTBoxButtonSPtr_->SetIsDisabled(MOT_POUNCE_STR !=
+            pounceTBoxButtonUPtr_->SetIsDisabled(MOT_POUNCE_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_);
 
-            pounceTBoxButtonSPtr_->SetMouseHoverText(MOT_POUNCE_STR);
+            pounceTBoxButtonUPtr_->SetMouseHoverText(MOT_POUNCE_STR);
 
             //skip button
             auto const MOT_SKIP_STR(combat::Text::MouseOverTextSkipStr(
                 CREATURE_CPTRC, combatDisplayStagePtr_));
 
-            skipTBoxButtonSPtr_->SetIsDisabled(MOT_SKIP_STR !=
+            skipTBoxButtonUPtr_->SetIsDisabled(MOT_SKIP_STR !=
                 combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_);
 
-            skipTBoxButtonSPtr_->SetMouseHoverText(MOT_SKIP_STR);
+            skipTBoxButtonUPtr_->SetMouseHoverText(MOT_SKIP_STR);
         }
         else
         {
-            attackTBoxButtonSPtr_->SetIsDisabled(true);
-            fightTBoxButtonSPtr_->SetIsDisabled(true);
-            castTBoxButtonSPtr_->SetIsDisabled(true);
-            runTBoxButtonSPtr_->SetIsDisabled(true);
-            advanceTBoxButtonSPtr_->SetIsDisabled(true);
-            retreatTBoxButtonSPtr_->SetIsDisabled(true);
-            landTBoxButtonSPtr_->SetIsDisabled(true);
-            flyTBoxButtonSPtr_->SetIsDisabled(true);
-            pounceTBoxButtonSPtr_->SetIsDisabled(true);
-            roarTBoxButtonSPtr_->SetIsDisabled(true);
-            skipTBoxButtonSPtr_->SetIsDisabled(true);
-            blockTBoxButtonSPtr_->SetIsDisabled(true);
+            attackTBoxButtonUPtr_->SetIsDisabled(true);
+            fightTBoxButtonUPtr_->SetIsDisabled(true);
+            castTBoxButtonUPtr_->SetIsDisabled(true);
+            runTBoxButtonUPtr_->SetIsDisabled(true);
+            advanceTBoxButtonUPtr_->SetIsDisabled(true);
+            retreatTBoxButtonUPtr_->SetIsDisabled(true);
+            landTBoxButtonUPtr_->SetIsDisabled(true);
+            flyTBoxButtonUPtr_->SetIsDisabled(true);
+            pounceTBoxButtonUPtr_->SetIsDisabled(true);
+            roarTBoxButtonUPtr_->SetIsDisabled(true);
+            skipTBoxButtonUPtr_->SetIsDisabled(true);
+            blockTBoxButtonUPtr_->SetIsDisabled(true);
 
-            attackTBoxButtonSPtr_->SetMouseHoverText("");
-            fightTBoxButtonSPtr_->SetMouseHoverText("");
-            castTBoxButtonSPtr_->SetMouseHoverText("");
-            runTBoxButtonSPtr_->SetMouseHoverText("");
-            advanceTBoxButtonSPtr_->SetMouseHoverText("");
-            retreatTBoxButtonSPtr_->SetMouseHoverText("");
-            landTBoxButtonSPtr_->SetMouseHoverText("");
-            flyTBoxButtonSPtr_->SetMouseHoverText("");
-            pounceTBoxButtonSPtr_->SetMouseHoverText("");
-            roarTBoxButtonSPtr_->SetMouseHoverText("");
-            blockTBoxButtonSPtr_->SetMouseHoverText("");
-            skipTBoxButtonSPtr_->SetMouseHoverText("");
+            attackTBoxButtonUPtr_->SetMouseHoverText("");
+            fightTBoxButtonUPtr_->SetMouseHoverText("");
+            castTBoxButtonUPtr_->SetMouseHoverText("");
+            runTBoxButtonUPtr_->SetMouseHoverText("");
+            advanceTBoxButtonUPtr_->SetMouseHoverText("");
+            retreatTBoxButtonUPtr_->SetMouseHoverText("");
+            landTBoxButtonUPtr_->SetMouseHoverText("");
+            flyTBoxButtonUPtr_->SetMouseHoverText("");
+            pounceTBoxButtonUPtr_->SetMouseHoverText("");
+            roarTBoxButtonUPtr_->SetMouseHoverText("");
+            blockTBoxButtonUPtr_->SetMouseHoverText("");
+            skipTBoxButtonUPtr_->SetMouseHoverText("");
         }
     }
 

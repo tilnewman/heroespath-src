@@ -191,8 +191,7 @@ namespace gui
     using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
     using FourStateButtonUVec_t = std::vector<FourStateButtonUPtr_t>;
     //
-    using FourStateButtonSPtr_t = std::shared_ptr<FourStateButton>;
-    using FourStateButtonSVec_t = std::vector<FourStateButtonSPtr_t>;
+    using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
 
 }
 }

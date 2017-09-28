@@ -449,7 +449,7 @@ namespace stage
         //this member controls combat related animations
         combat::CombatAnimationUPtr_t combatAnimationUPtr_;
 
-        sfml_util::gui::FourStateButtonSPtr_t settingsButtonSPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t settingsButtonUPtr_;
 
         //members that control pausing the CombatStage
         float pauseDurationSec_;
@@ -474,18 +474,18 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t enemyActionTBoxRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t enemyCondsTBoxRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t zoomLabelTextRegionUPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t attackTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t fightTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t castTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t advanceTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t retreatTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t blockTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t skipTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t flyTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t landTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t roarTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t pounceTBoxButtonSPtr_;
-        sfml_util::gui::FourStateButtonSPtr_t runTBoxButtonSPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t attackTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t fightTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t castTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t advanceTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t retreatTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t blockTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t skipTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t flyTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t landTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t roarTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t pounceTBoxButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t runTBoxButtonUPtr_;
 
         //members that manage the status message animations
         float statusMsgAnimTimerSec_;
