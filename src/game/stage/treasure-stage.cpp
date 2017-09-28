@@ -113,7 +113,6 @@ namespace stage
     :
         Stage               ("Treasure"),
         setupCountdown_     (0),
-        phase_              (Phase::PreSetupDelay),
         bgTexture_          (),
         bgSprite_           (),
         corpseTexture_      (),
@@ -123,7 +122,6 @@ namespace stage
         coinsTexture_       (),
         coinsSprite_        (),
         treasureImageType_  (item::TreasureImage::Count),
-        blurbTextRegionUPtr_(),
         itemCacheHeld_      (),
         itemCacheLockbox_   (),
         treasureAvailable_  (item::TreasureAvailable::Count),
@@ -265,27 +263,13 @@ namespace stage
 
     void TreasureStage::Setup()
     {
-        auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
-        auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
-
-        //background image
-        {
-            sfml_util::LoadTexture(bgTexture_,
-                GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2b"));
-
-            bgSprite_.setTexture(bgTexture_);
-            bgSprite_.setPosition(0.0f, 0.0f);
-
-            auto const SCALE_HORIZ{ SCREEN_WIDTH / bgSprite_.getLocalBounds().width };
-            auto const SCALE_VERT{ SCREEN_HEIGHT / bgSprite_.getLocalBounds().height };
-            bgSprite_.setScale(SCALE_HORIZ, SCALE_VERT);
-        }
-
+        SetupBackgroundImage();
+        
         if (item::ItemProfileWarehouse::Instance()->Count() == 0)
         {
-            //This 20 was found by experiment to be a good number of draw frames to allow the
+            //This number was found by experiment to be a good number of draw frames to allow the
             //background image to fade in a little bit before displaying the 'Please Wait' popup.
-            setupCountdown_ = 40;
+            setupCountdown_ = 60;
         }
         else
         {
@@ -296,6 +280,17 @@ namespace stage
 
 
     void TreasureStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    {
+        HandleCountdownAndPleaseWaitPopup();
+        target.draw(bgSprite_, STATES);
+        target.draw(corpseSprite_, STATES);
+        target.draw(treasureSprite_, STATES);
+        target.draw(coinsSprite_, STATES);
+        Stage::Draw(target, STATES);
+    }
+
+
+    void TreasureStage::HandleCountdownAndPleaseWaitPopup()
     {
         //If the ItemProfileWarehouse needs to be setup, then wait for the background
         //to fade in a little before displaying the 'Please Wait' popup.
@@ -309,12 +304,20 @@ namespace stage
                         POPUP_NAME_ITEMPROFILE_PLEASEWAIT_));
             }
         }
+    }
 
-        target.draw(bgSprite_, STATES);
-        target.draw(corpseSprite_, STATES);
-        target.draw(treasureSprite_, STATES);
-        target.draw(coinsSprite_, STATES);
-        Stage::Draw(target, STATES);
+
+    void TreasureStage::SetupBackgroundImage()
+    {
+        sfml_util::LoadTexture(bgTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2b"));
+
+        bgSprite_.setTexture(bgTexture_);
+        bgSprite_.setPosition(0.0f, 0.0f);
+
+        bgSprite_.setScale(
+            sfml_util::Display::Instance()->GetWinWidth() / bgSprite_.getLocalBounds().width,
+            sfml_util::Display::Instance()->GetWinHeight() / bgSprite_.getLocalBounds().height);
     }
 
 
@@ -563,8 +566,6 @@ namespace stage
 
     void TreasureStage::SetupAfterDelay()
     {
-        phase_ = Phase::InitialSetup;
-
         //TEMP TODO REMOVE -once done testing
         //create a party of characters to work with during testing
         state::GameStateFactory::Instance()->NewGame(player::FakeParty::Make());
@@ -738,12 +739,6 @@ namespace stage
                 throw std::range_error(ss.str());
             }
         }
-    }
-
-
-    void TreasureStage::SetupStageForTreasureCollection()
-    {
-        //TODO
     }
 
 
@@ -991,6 +986,12 @@ namespace stage
         {
             return DamagePopup::AllFinished;
         }
+    }
+
+
+    void TreasureStage::SetupStageForTreasureCollection()
+    {
+        //TODO
     }
 
 }

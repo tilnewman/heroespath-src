@@ -69,23 +69,6 @@ namespace stage
         TreasureStage(const TreasureStage &) =delete;
         TreasureStage & operator=(const TreasureStage &) =delete;
 
-        enum Phase
-        {
-            PreSetupDelay = 0,
-            InitialSetup,
-            InitialImagesFadeIn,
-            AwardExperience,
-            AwardTitles,
-            WaitWithoutTreasure,
-            WaitWithTreasure,
-            LockPickerSelection,
-            Picking,
-            Trap,
-            Open,
-            TakeSelection,
-            Count
-        };
-
     public:
         TreasureStage();
         virtual ~TreasureStage();
@@ -97,13 +80,15 @@ namespace stage
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
     private:
+        void HandleCountdownAndPleaseWaitPopup();
+        void SetupBackgroundImage();
         const sf::Vector2f SetupTreasureImage(const item::TreasureImage::Enum);
 
         void SetupCoinsImage(
             const item::TreasureImage::Enum,
             const sf::Vector2f & TREASURE_IMAGE_POS_V);
         
-            const std::string GetCorpseImageKeyFromEnemyParty() const;
+        const std::string GetCorpseImageKeyFromEnemyParty() const;
         const misc::StrVec_t GetCorpseImageKeyFromRace(const creature::race::Enum) const;
         void SetupAfterDelay();
         void SetupCoinsImage();
@@ -117,20 +102,12 @@ namespace stage
         void PromptUserBasedonTreasureAvailability(
             const item::TreasureAvailable::Enum, const item::TreasureImage::Enum);
 
-        void SetupStageForTreasureCollection();
-
         void SetupStageForTreasureCollectionWithoutLockbox();
-
         void PromptPlayerWhichCharacterWillPickLock();
-
         std::size_t FindCharacterIndexWhoPrevAttemptedLockPicking() const;
-
         const misc::StrVec_t MakeInvalidLockPickCharacterMessages() const;
-
         bool AreAnyStringsEmpty(const misc::StrVec_t & INVALID_MSGS) const;
-
         void PromptPlayerWithLockPickPopup(const std::string & CHAR_PICKING_NAME);
-
         bool DetermineIfLockPickingSucceeded(const creature::CreaturePtr_t) const;
 
         sfml_util::sound_effect::Enum SelectRandomLockPickingSfx() const;
@@ -144,7 +121,10 @@ namespace stage
             Displayed,
             AllFinished
         };
+
         DamagePopup DisplayCharacterDamagePopups();
+
+        void SetupStageForTreasureCollection();
 
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
@@ -161,7 +141,6 @@ namespace stage
 
     private:
         int setupCountdown_;
-        Phase phase_;
         sf::Texture bgTexture_;
         sf::Sprite  bgSprite_;
         sf::Texture corpseTexture_;
@@ -171,13 +150,10 @@ namespace stage
         sf::Texture coinsTexture_;
         sf::Sprite  coinsSprite_;
         item::TreasureImage::Enum treasureImageType_;
-        sfml_util::gui::TextRegionUPtr_t blurbTextRegionUPtr_;
         item::ItemCache itemCacheHeld_;
         item::ItemCache itemCacheLockbox_;
         item::TreasureAvailable::Enum treasureAvailable_;
         game::Trap trap_;
-
-        //members supporting trap damage
         combat::FightResult fightResult_;
         std::size_t creatureEffectIndex_;
     };
