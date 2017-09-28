@@ -61,7 +61,7 @@ namespace trap
         traps_.push_back(Trap(
             1, 1,
             3, 8,
-            "blasted",
+            "stabbed",
             sfml_util::sound_effect::TrapMetalBang,
             "A metal spike pops out from the",
             "!"));
