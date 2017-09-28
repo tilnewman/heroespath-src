@@ -57,10 +57,8 @@ namespace creature
         EnchantmentFactory(const EnchantmentFactory &) =delete;
         EnchantmentFactory & operator=(const EnchantmentFactory &) =delete;
 
-        //singleton construction only
-        EnchantmentFactory();
-
     public:
+        EnchantmentFactory();
         ~EnchantmentFactory();
 
         static EnchantmentFactory * Instance();

@@ -54,10 +54,8 @@ namespace misc
         MiscItemFactory(const MiscItemFactory &) =delete;
         MiscItemFactory & operator=(const MiscItemFactory &) =delete;
 
-        //singleton construction only
-        MiscItemFactory();
-
     public:
+        MiscItemFactory();
         virtual ~MiscItemFactory();
 
         static MiscItemFactory * Instance();

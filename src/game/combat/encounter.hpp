@@ -70,10 +70,8 @@ namespace combat
         Encounter(const Encounter &) =delete;
         Encounter & operator=(const Encounter &) =delete;
 
-        //singleton construction only
-        Encounter();
-
     public:
+        Encounter();
         ~Encounter();
 
         static Encounter * Instance();

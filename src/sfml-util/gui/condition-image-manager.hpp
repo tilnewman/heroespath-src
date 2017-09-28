@@ -48,10 +48,8 @@ namespace gui
         ConditionImageManager(const ConditionImageManager &) =delete;
         ConditionImageManager & operator=(const ConditionImageManager &) =delete;
 
-        //singleton construction only
-        ConditionImageManager();
-
     public:
+        ConditionImageManager();
         ~ConditionImageManager();
 
         static ConditionImageManager * Instance();

@@ -54,10 +54,8 @@ namespace gui
         CreatureImageManager(const CreatureImageManager &) =delete;
         CreatureImageManager & operator=(const CreatureImageManager &) =delete;
 
-        //singleton construction only
-        CreatureImageManager();
-
     public:
+        CreatureImageManager();
         virtual ~CreatureImageManager();
 
         static CreatureImageManager * Instance();

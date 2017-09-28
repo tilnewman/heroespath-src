@@ -84,7 +84,7 @@ namespace weapon
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new WeaponDetailLoader);
+            instanceUPtr_ = std::make_unique<WeaponDetailLoader>();
         }
         else
         {

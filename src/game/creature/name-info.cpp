@@ -77,7 +77,7 @@ namespace creature
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new NameInfo);
+            instanceUPtr_ = std::make_unique<NameInfo>();
         }
         else
         {

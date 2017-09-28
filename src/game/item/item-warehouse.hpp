@@ -52,10 +52,8 @@ namespace item
         ItemWarehouse(const ItemWarehouse &) =delete;
         ItemWarehouse & operator=(const ItemWarehouse &) =delete;
 
-        //singleton construction only
-        ItemWarehouse();
-
     public:
+        ItemWarehouse();
         ~ItemWarehouse();
 
         static ItemWarehouse * Instance();

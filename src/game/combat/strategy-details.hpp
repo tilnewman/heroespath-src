@@ -67,10 +67,8 @@ namespace strategy
         ChanceFactory(const ChanceFactory &) =delete;
         ChanceFactory & operator=(const ChanceFactory &) =delete;
 
-        //singleton construction only
-        ChanceFactory();
-
     public:
+        ChanceFactory();
         virtual ~ChanceFactory();
         static DetailsSPtr_t Instance();
         void Initialize();

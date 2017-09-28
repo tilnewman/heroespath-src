@@ -152,7 +152,7 @@ namespace gui
 
         if (boxUPtr_.get() == nullptr)
         {
-            boxUPtr_.reset(new sfml_util::gui::box::Box("ListBox's", BOX_INFO));
+            boxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("ListBox's", BOX_INFO);
             stagePtr->EntityAdd(boxUPtr_.get());
         }
         else

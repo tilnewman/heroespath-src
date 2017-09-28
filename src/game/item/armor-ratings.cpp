@@ -82,7 +82,7 @@ namespace item
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new ArmorRatings);
+            instanceUPtr_ = std::make_unique<ArmorRatings>();
         }
         else
         {

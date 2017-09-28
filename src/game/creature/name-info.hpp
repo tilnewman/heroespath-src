@@ -53,10 +53,8 @@ namespace creature
         NameInfo(const NameInfo &) =delete;
         NameInfo & operator=(const NameInfo &) =delete;
 
-        //singleton construction only
-        NameInfo();
-
     public:
+        NameInfo();
         ~NameInfo();
 
         static NameInfo * Instance();

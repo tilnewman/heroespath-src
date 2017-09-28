@@ -632,8 +632,10 @@ namespace stage
 
         sfml_util::gui::TextInfo turnBoxArmorTextInfo(turnBoxWeaponTextInfo);
 
-        armorTBoxTextRegionUPtr_.reset(new sfml_util::gui::TextRegion(
-            "TurnBox'sArmor", turnBoxWeaponTextInfo, turnBoxTitleTextRegion));
+        armorTBoxTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "TurnBox'sArmor",
+            turnBoxWeaponTextInfo,
+            turnBoxTitleTextRegion);
 
         sfml_util::gui::TextInfo turnButtonTextInfo(
             " ",

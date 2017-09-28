@@ -49,10 +49,8 @@ namespace game
         Game(const Game &) =delete;
         Game & operator=(const Game &) =delete;
 
-        //singleton construction only
-        Game();
-
     public:
+        Game();
         ~Game();
 
         static Game * Instance();

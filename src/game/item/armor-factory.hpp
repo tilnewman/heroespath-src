@@ -52,10 +52,8 @@ namespace armor
         ArmorFactory(const ArmorFactory &) =delete;
         ArmorFactory & operator=(const ArmorFactory &) =delete;
 
-        //singleton construction only
-        ArmorFactory();
-
     public:
+        ArmorFactory();
         virtual ~ArmorFactory();
 
         static ArmorFactory * Instance();

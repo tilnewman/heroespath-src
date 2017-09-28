@@ -75,7 +75,7 @@ namespace combat
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new PartyFactory);
+            instanceUPtr_ = std::make_unique<PartyFactory>();
         }
         else
         {

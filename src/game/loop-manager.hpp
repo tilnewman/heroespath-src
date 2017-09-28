@@ -64,10 +64,8 @@ namespace game
         LoopManager(const LoopManager &) =delete;
         LoopManager & operator=(const LoopManager &) =delete;
 
-        //singleton construction only
-        LoopManager();
-
     public:
+        LoopManager();
         ~LoopManager();
 
         static LoopManager * Instance();

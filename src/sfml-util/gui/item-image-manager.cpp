@@ -90,7 +90,7 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new ItemImageManager);
+            instanceUPtr_ = std::make_unique<ItemImageManager>();
         }
         else
         {

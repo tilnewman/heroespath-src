@@ -81,10 +81,8 @@ namespace popup
         PopupManager(const PopupManager &) =delete;
         PopupManager & operator=(const PopupManager &) =delete;
 
-        //singleton construction only
-        PopupManager();
-
     public:
+        PopupManager();
         ~PopupManager();
 
         static PopupManager * Instance();

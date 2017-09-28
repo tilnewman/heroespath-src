@@ -77,7 +77,7 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new CombatImageManager);
+            instanceUPtr_ = std::make_unique<CombatImageManager>();
         }
         else
         {

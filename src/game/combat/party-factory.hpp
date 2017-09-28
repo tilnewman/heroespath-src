@@ -54,10 +54,8 @@ namespace combat
         PartyFactory(const PartyFactory &) =delete;
         PartyFactory & operator=(const PartyFactory &) =delete;
 
-        //singleton construction only
-        PartyFactory();
-
     public:
+        PartyFactory();
         ~PartyFactory();
 
         static PartyFactory * Instance();

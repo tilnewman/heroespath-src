@@ -49,10 +49,8 @@ namespace item
         ArmorRatings(const ArmorRatings &) = delete;
         ArmorRatings & operator=(const ArmorRatings &) = delete;
 
-        //singleton construction only
-        ArmorRatings();
-
     public:
+        ArmorRatings();
         ~ArmorRatings();
 
         static ArmorRatings * Instance();

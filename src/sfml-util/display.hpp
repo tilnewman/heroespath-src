@@ -69,10 +69,8 @@ namespace sfml_util
         Display(const Display &) =delete;
         Display & operator=(const Display &) =delete;
 
-        //singleton construction only
-        Display();
-
     public:
+        Display();
         ~Display();
 
         static Display * Instance();

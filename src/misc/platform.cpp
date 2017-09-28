@@ -93,7 +93,7 @@ namespace misc
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new Platform);
+            instanceUPtr_ = std::make_unique<Platform>();
         }
         else
         {

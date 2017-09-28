@@ -75,10 +75,8 @@ namespace armor
         ArmorDetailLoader & operator=(const ArmorDetailLoader &) =delete;
         ArmorDetailLoader(const ArmorDetailLoader &) =delete;
 
-        //singleton construction only
-        ArmorDetailLoader();
-
     public:
+        ArmorDetailLoader();
         ~ArmorDetailLoader();
 
         static ArmorDetailLoader * Instance();

@@ -98,7 +98,7 @@ namespace popup
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new PopupManager);
+            instanceUPtr_ = std::make_unique<PopupManager>();
         }
         else
         {

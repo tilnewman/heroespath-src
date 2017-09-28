@@ -89,10 +89,8 @@ namespace ownership
         ChanceFactory(const ChanceFactory &) =delete;
         ChanceFactory & operator=(const ChanceFactory &) =delete;
 
-        //singleton construction only
-        ChanceFactory();
-
     public:
+        ChanceFactory();
         ~ChanceFactory();
 
         static ChanceFactory * Instance();

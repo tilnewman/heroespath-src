@@ -86,7 +86,7 @@ namespace misc
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new MiscItemFactory);
+            instanceUPtr_ = std::make_unique<MiscItemFactory>();
         }
         else
         {

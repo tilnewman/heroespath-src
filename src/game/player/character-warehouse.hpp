@@ -51,10 +51,8 @@ namespace player
         CharacterWarehouse(const CharacterWarehouse &) =delete;
         CharacterWarehouse & operator=(const CharacterWarehouse &) =delete;
 
-        //singleton construction only
-        CharacterWarehouse();
-
     public:
+        CharacterWarehouse();
         ~CharacterWarehouse();
 
         static CharacterWarehouse * Instance();

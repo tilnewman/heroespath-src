@@ -324,21 +324,26 @@ namespace gui
 
         const std::size_t NUM_BUTTONS(TEXT_INFO_VEC.size());
 
-        M_ASSERT_OR_LOGANDTHROW_SS((NUM_BUTTONS > 0), entityName_ << " given an empty vector of TextInfo objects.");
-        M_ASSERT_OR_LOGANDTHROW_SS((INITIAL_SELECTION < NUM_BUTTONS), entityName_ << " given an initial selection value larger than the number of buttons=" << NUM_BUTTONS << ".");
+        M_ASSERT_OR_LOGANDTHROW_SS((NUM_BUTTONS > 0),
+            entityName_ << " given an empty vector of TextInfo objects.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((INITIAL_SELECTION < NUM_BUTTONS),
+            entityName_ << " given an initial selection value larger than the number of buttons="
+            << NUM_BUTTONS << ".");
 
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
         {
             std::ostringstream ss;
             ss << GetEntityName() << "'s #" << i + 1;
-            buttonSVec_.push_back( RadioButtonSPtr_t( new RadioButton(ss.str(),
-                                                                      BRIGHTNESS,
-                                                                      POS_LEFT + OUTER_PAD,
-                                                                      POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
-                                                                      TEXT_INFO_VEC[i],
-                                                                      ((INITIAL_SELECTION == i) ? true : false),
-                                                                      IsInvalid(i)) ) );
 
+            buttonSVec_.push_back( std::make_shared<RadioButton>(
+                ss.str(),
+                BRIGHTNESS,
+                POS_LEFT + OUTER_PAD,
+                POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
+                TEXT_INFO_VEC[i],
+                ((INITIAL_SELECTION == i) ? true : false),
+                IsInvalid(i)) );
         }
 
         buttonSVec_[INITIAL_SELECTION]->SetIsInFirstState(false);
@@ -374,13 +379,14 @@ namespace gui
         {
             std::ostringstream ss;
             ss << GetEntityName() << "'s #" << i + 1;
-            buttonSVec_.push_back(RadioButtonSPtr_t(new RadioButton(ss.str(),
-                                                                    BRIGHTNESS,
-                                                                    POS_LEFT + OUTER_PAD,
-                                                                    POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
-                                                                    MouseTextInfo(MOUSE_TEXT_INFO_VEC[i].up, MOUSE_TEXT_INFO_VEC[i].down, MOUSE_TEXT_INFO_VEC[i].over),
-                                                                    ((INITIAL_SELECTION == i) ? true : false),
-                                                                    IsInvalid(i)) ) );
+            buttonSVec_.push_back( std::make_shared<RadioButton>(
+                ss.str(),
+                BRIGHTNESS,
+                POS_LEFT + OUTER_PAD,
+                POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
+                MouseTextInfo(MOUSE_TEXT_INFO_VEC[i].up, MOUSE_TEXT_INFO_VEC[i].down, MOUSE_TEXT_INFO_VEC[i].over),
+                ((INITIAL_SELECTION == i) ? true : false),
+                IsInvalid(i)) );
         }
 
         buttonSVec_[INITIAL_SELECTION]->SetIsInFirstState(false);
@@ -421,13 +427,14 @@ namespace gui
             sfml_util::gui::TextInfo nextTextInfo(TEXT_INFO);
             nextTextInfo.text = LABEL_VEC[i];
 
-            buttonSVec_.push_back( RadioButtonSPtr_t( new RadioButton(ss.str(),
-                                                                      BRIGHTNESS,
-                                                                      POS_LEFT + OUTER_PAD,
-                                                                      POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
-                                                                      nextTextInfo,
-                                                                      ((INITIAL_SELECTION == i) ? true : false),
-                                                                      IsInvalid(i)) ) );
+            buttonSVec_.push_back( std::make_shared<RadioButton>(
+                ss.str(),
+                BRIGHTNESS,
+                POS_LEFT + OUTER_PAD,
+                POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
+                nextTextInfo,
+                ((INITIAL_SELECTION == i) ? true : false),
+                IsInvalid(i)) );
         }
 
         buttonSVec_[INITIAL_SELECTION]->SetIsInFirstState(false);

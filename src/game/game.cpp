@@ -75,7 +75,7 @@ namespace game
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new Game);
+            instanceUPtr_ = std::make_unique<Game>();
         }
         else
         {

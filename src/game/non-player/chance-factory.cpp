@@ -95,7 +95,7 @@ namespace ownership
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new ChanceFactory);
+            instanceUPtr_ = std::make_unique<ChanceFactory>();
         }
         else
         {

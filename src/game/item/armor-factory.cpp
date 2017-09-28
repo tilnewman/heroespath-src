@@ -75,7 +75,7 @@ namespace armor
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new ArmorFactory);
+            instanceUPtr_ = std::make_unique<ArmorFactory>();
         }
         else
         {

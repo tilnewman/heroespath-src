@@ -71,7 +71,7 @@ namespace player
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new CharacterWarehouse);
+            instanceUPtr_ = std::make_unique<CharacterWarehouse>();
         }
         else
         {

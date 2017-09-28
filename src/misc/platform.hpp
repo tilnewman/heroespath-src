@@ -85,10 +85,8 @@ namespace misc
         Platform(const Platform &) =delete;
         Platform & operator=(const Platform &) =delete;
 
-        //singleton construction only
-        Platform();
-
     public:
+        Platform();
         ~Platform();
 
         static Platform * Instance();

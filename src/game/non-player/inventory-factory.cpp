@@ -83,7 +83,7 @@ namespace ownership
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new InventoryFactory);
+            instanceUPtr_ = std::make_unique<InventoryFactory>();
         }
         else
         {

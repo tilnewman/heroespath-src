@@ -73,7 +73,7 @@ namespace creature
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new EnchantmentFactory);
+            instanceUPtr_ = std::make_unique<EnchantmentFactory>();
         }
         else
         {

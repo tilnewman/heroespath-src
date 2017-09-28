@@ -58,10 +58,8 @@ namespace sfml_util
         SoundManager(const SoundManager &) =delete;
         SoundManager & operator=(const SoundManager &) =delete;
 
-        //singleton construction only
-        SoundManager();
-
     public:
+        SoundManager();
         ~SoundManager();
 
         static SoundManager * Instance();

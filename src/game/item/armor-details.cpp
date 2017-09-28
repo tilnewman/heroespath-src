@@ -80,7 +80,7 @@ namespace armor
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new ArmorDetailLoader);
+            instanceUPtr_ = std::make_unique<ArmorDetailLoader>();
         }
         else
         {

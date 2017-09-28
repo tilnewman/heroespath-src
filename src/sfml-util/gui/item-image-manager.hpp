@@ -61,10 +61,8 @@ namespace gui
         ItemImageManager(const ItemImageManager &) =delete;
         ItemImageManager & operator=(const ItemImageManager &) =delete;
 
-        //singleton construction only
-        ItemImageManager();
-
     public:
+        ItemImageManager();
         ~ItemImageManager();
 
         static ItemImageManager * Instance();

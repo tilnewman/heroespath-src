@@ -82,7 +82,7 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new CreatureImageManager);
+            instanceUPtr_ = std::make_unique<CreatureImageManager>();
         }
         else
         {

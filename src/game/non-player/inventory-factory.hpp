@@ -68,10 +68,8 @@ namespace ownership
         InventoryFactory(const InventoryFactory &) =delete;
         InventoryFactory & operator=(const InventoryFactory &) =delete;
 
-        //singleton construction only
-        InventoryFactory();
-
     public:
+        InventoryFactory();
         ~InventoryFactory();
 
         static InventoryFactory * Instance();

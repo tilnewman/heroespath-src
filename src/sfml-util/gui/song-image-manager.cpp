@@ -78,7 +78,7 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new SongImageManager);
+            instanceUPtr_ = std::make_unique<SongImageManager>();
         }
         else
         {

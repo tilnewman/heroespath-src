@@ -78,10 +78,8 @@ namespace weapon
         WeaponDetailLoader & operator=(const WeaponDetailLoader &) =delete;
         WeaponDetailLoader(const WeaponDetailLoader &) =delete;
 
-        //singleton construction only
-        WeaponDetailLoader();
-
     public:
+        WeaponDetailLoader();
         ~WeaponDetailLoader();
 
         static WeaponDetailLoader * Instance();

@@ -100,7 +100,7 @@ namespace game
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new LoopManager);
+            instanceUPtr_ = std::make_unique<LoopManager>();
         }
         else
         {

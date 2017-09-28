@@ -97,7 +97,7 @@ namespace sfml_util
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new FontManager);
+            instanceUPtr_ = std::make_unique<FontManager>();
         }
         else
         {

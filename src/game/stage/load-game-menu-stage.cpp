@@ -126,12 +126,13 @@ namespace stage
 
         //back button
         const std::string BUTTONS_PATH(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir"));
-        backButtonSPtr_.reset( new sfml_util::gui::FourStateButton("Back",
-                                                                   200.0f,
-                                                                   SCREEN_HEIGHT_ - 100.0f,
-                                                                   std::string(BUTTONS_PATH).append("back_button_normal.png"),
-                                                                   "",
-                                                                   std::string(BUTTONS_PATH).append("back_button_lit.png")) );
+        backButtonSPtr_ = std::make_shared<sfml_util::gui::FourStateButton>(
+            "Back",
+            200.0f,
+            SCREEN_HEIGHT_ - 100.0f,
+            std::string(BUTTONS_PATH).append("back_button_normal.png"),
+            "",
+            std::string(BUTTONS_PATH).append("back_button_lit.png"));
 
         backButtonSPtr_->SetCallbackHandler(this);
         EntityAdd(backButtonSPtr_.get());

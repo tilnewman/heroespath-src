@@ -50,10 +50,8 @@ namespace item
         ItemProfileWarehouse(const ItemProfileWarehouse &) =delete;
         ItemProfileWarehouse & operator=(const ItemProfileWarehouse &) =delete;
 
-        //singleton construction only
-        ItemProfileWarehouse();
-
     public:
+        ItemProfileWarehouse();
         ~ItemProfileWarehouse();
 
         static ItemProfileWarehouse * Instance();

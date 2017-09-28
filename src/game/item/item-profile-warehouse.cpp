@@ -83,7 +83,7 @@ namespace item
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new ItemProfileWarehouse);
+            instanceUPtr_ = std::make_unique<ItemProfileWarehouse>();
         }
         else
         {

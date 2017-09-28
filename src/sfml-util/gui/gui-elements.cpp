@@ -147,7 +147,7 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new GuiElements);
+            instanceUPtr_ = std::make_unique<GuiElements>();
         }
         else
         {

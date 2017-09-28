@@ -56,10 +56,8 @@ namespace gui
         TitleImageManager(const TitleImageManager &) =delete;
         TitleImageManager & operator=(const TitleImageManager &) =delete;
 
-        //singleton construction only
-        TitleImageManager();
-
     public:
+        TitleImageManager();
         ~TitleImageManager();
 
         static TitleImageManager * Instance();

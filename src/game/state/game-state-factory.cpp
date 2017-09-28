@@ -92,7 +92,7 @@ namespace state
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new GameStateFactory);
+            instanceUPtr_ = std::make_unique<GameStateFactory>();
         }
         else
         {

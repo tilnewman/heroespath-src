@@ -48,10 +48,8 @@ namespace gui
         SpellImageManager(const SpellImageManager &) =delete;
         SpellImageManager & operator=(const SpellImageManager &) =delete;
 
-        //singleton construction only
-        SpellImageManager();
-
     public:
+        SpellImageManager();
         ~SpellImageManager();
 
         static SpellImageManager * Instance();

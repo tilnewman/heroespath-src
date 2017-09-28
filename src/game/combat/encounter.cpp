@@ -112,7 +112,7 @@ namespace combat
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new Encounter);
+            instanceUPtr_ = std::make_unique<Encounter>();
         }
         else
         {

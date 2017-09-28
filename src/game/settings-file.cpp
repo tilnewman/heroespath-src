@@ -82,7 +82,7 @@ namespace game
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new SettingsFile);
+            instanceUPtr_ = std::make_unique<SettingsFile>();
         }
         else
         {

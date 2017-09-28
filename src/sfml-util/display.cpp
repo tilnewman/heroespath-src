@@ -99,7 +99,7 @@ namespace sfml_util
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new Display);
+            instanceUPtr_ = std::make_unique<Display>();
             instanceUPtr_->OpenRenderWindow(TITLE, STYLE, ANTIALIAS_LEVEL);
         }
         else

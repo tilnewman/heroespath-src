@@ -71,7 +71,7 @@ namespace item
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new ItemWarehouse);
+            instanceUPtr_ = std::make_unique<ItemWarehouse>();
         }
         else
         {

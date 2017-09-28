@@ -79,9 +79,9 @@ namespace stage
         SCREEN_HEIGHT_          (sfml_util::Display::Instance()->GetWinHeight()),
         mainMenuTitle_          ("create_party_normal.png"),
         backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
-        backButtonSPtr_         ( new sfml_util::gui::FourStateButton("PartyStage'sBack",      0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_normal.png"),      "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_lit.png")) ),
-        startButtonSPtr_        ( new sfml_util::gui::FourStateButton("PartyStage'sStartGame", 0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_normal.png"), "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_lit.png")) ),
-        deleteButtonSPtr_       ( new sfml_util::gui::FourStateButton("PartyStage'sDelete",    0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_normal.png"),    "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_lit.png")) ),
+        backButtonSPtr_         ( std::make_shared<sfml_util::gui::FourStateButton>("PartyStage'sBack",      0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_normal.png"),      "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_lit.png")) ),
+        startButtonSPtr_        ( std::make_shared<sfml_util::gui::FourStateButton>("PartyStage'sStartGame", 0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_normal.png"), "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_lit.png")) ),
+        deleteButtonSPtr_       ( std::make_shared<sfml_util::gui::FourStateButton>("PartyStage'sDelete",    0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_normal.png"),    "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_lit.png")) ),
         characterListBoxUPtr_   (),
         partyListBoxUPtr_       (),
         insTextRegionUPtr_      (),
@@ -351,7 +351,11 @@ namespace stage
                                                  sf::Text::Italic,
                                                  sfml_util::Justified::Left);
 
-            insTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("Instructions", insTextInfo, sf::FloatRect()) );
+            insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "Instructions",
+                insTextInfo,
+                sf::FloatRect());
+
             insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 125.0f, mainMenuTitle_.LowerPosition() - 45.0f);
             EntityAdd(insTextRegionUPtr_.get());
         }
@@ -470,24 +474,34 @@ namespace stage
 
         //unplayed character label text
         {
-            sfml_util::gui::TextInfo labelTextInfo("Unplayed Characters",
-                                                   sfml_util::FontManager::Instance()->Font_Default2(),
-                                                   sfml_util::FontManager::Instance()->Size_Largeish(),
-                                                   sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
+            sfml_util::gui::TextInfo labelTextInfo(
+                "Unplayed Characters",
+                sfml_util::FontManager::Instance()->Font_Default2(),
+                sfml_util::FontManager::Instance()->Size_Largeish(),
+                sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
 
-            upTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("CharacterLabel", labelTextInfo, sf::FloatRect()) );
+            upTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "CharacterLabel",
+                labelTextInfo,
+                sf::FloatRect());
+
             upTextRegionUPtr_->SetEntityPos(characterListBoxUPtr_->GetEntityRegion().left + 50.0f, (characterListBoxUPtr_->GetEntityRegion().top - upTextRegionUPtr_->GetEntityRegion().height));
             EntityAdd(upTextRegionUPtr_.get());
         }
 
         //party label text
         {
-            sfml_util::gui::TextInfo labelTextInfo("New Party",
-                                                   sfml_util::FontManager::Instance()->Font_Default2(),
-                                                   sfml_util::FontManager::Instance()->Size_Largeish(),
-                                                   sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
+            sfml_util::gui::TextInfo labelTextInfo(
+                "New Party",
+                sfml_util::FontManager::Instance()->Font_Default2(),
+                sfml_util::FontManager::Instance()->Size_Largeish(),
+                sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
 
-            partyTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PartyLabel", labelTextInfo, sf::FloatRect()) );
+            partyTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "PartyLabel",
+                labelTextInfo,
+                sf::FloatRect());
+
             partyTextRegionUPtr_->SetEntityPos(partyListBoxUPtr_->GetEntityRegion().left + 50.0f, (partyListBoxUPtr_->GetEntityRegion().top - partyTextRegionUPtr_->GetEntityRegion().height));
             EntityAdd(partyTextRegionUPtr_.get());
         }
@@ -495,16 +509,23 @@ namespace stage
         //warning instruction text
         {
             std::ostringstream ss;
-            ss << "(There are not enough characters to make a party of " << player::Party::MAX_CHARACTER_COUNT_ << ".  Go back and create more.)";
-            warningTextInfo_ = sfml_util::gui::TextInfo(ss.str(),
-                                                        sfml_util::FontManager::Instance()->Font_Typical(),
-                                                        sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                        sf::Color(255, 200, 200),
-                                                        sf::BlendAlpha,
-                                                        sf::Text::Italic,
-                                                        sfml_util::Justified::Left);
+            ss << "(There are not enough characters to make a party of "
+                << player::Party::MAX_CHARACTER_COUNT_ << ".  Go back and create more.)";
+            
+            warningTextInfo_ = sfml_util::gui::TextInfo(
+                ss.str(),
+                sfml_util::FontManager::Instance()->Font_Typical(),
+                sfml_util::FontManager::Instance()->Size_Smallish(),
+                sf::Color(255, 200, 200),
+                sf::BlendAlpha,
+                sf::Text::Italic,
+                sfml_util::Justified::Left);
 
-            warningTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("WarningsText", warningTextInfo_, sf::FloatRect()) );
+            warningTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "WarningsText",
+                warningTextInfo_,
+                sf::FloatRect());
+
             warningTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (warningTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 110.0f,
                                                  (insTextRegionUPtr_->GetEntityRegion().top + insTextRegionUPtr_->GetEntityRegion().height) - sfml_util::MapByRes(0.0f, 20.0f));
         }
@@ -658,18 +679,26 @@ namespace stage
                    << "Speed:            "     << mouseOverCharPtr_->Speed() << "\n"
                    << "Intelligence:    "      << mouseOverCharPtr_->Intelligence();
 
-                const sf::FloatRect TEXT_RECT(MOUSE_OVER_POPUP_POS_LEFT_ + MOUSE_OVER_IMAGE_PAD_ + mouseOverSprite_.getGlobalBounds().width + MOUSE_OVER_IMAGE_PAD_,
-                                              MOUSE_OVER_POPUP_POS_TOP_ + (MOUSE_OVER_IMAGE_PAD_ * 2.0f),
-                                              mouseOverBoxWidth_,
-                                              mouseOverBoxHeight_);
+                const sf::FloatRect TEXT_RECT(
+                    MOUSE_OVER_POPUP_POS_LEFT_ +
+                        MOUSE_OVER_IMAGE_PAD_ +
+                        mouseOverSprite_.getGlobalBounds().width +
+                        MOUSE_OVER_IMAGE_PAD_,
+                    MOUSE_OVER_POPUP_POS_TOP_ + (MOUSE_OVER_IMAGE_PAD_ * 2.0f),
+                    mouseOverBoxWidth_,
+                    mouseOverBoxHeight_);
 
-                const sfml_util::gui::TextInfo TEXT_INFO(ss.str(),
-                                                         sfml_util::FontManager::Instance()->Font_Typical(),
-                                                         sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                         sfml_util::FontManager::Color_Light(),
-                                                         sfml_util::Justified::Left);
+                const sfml_util::gui::TextInfo TEXT_INFO(
+                    ss.str(),
+                    sfml_util::FontManager::Instance()->Font_Typical(),
+                    sfml_util::FontManager::Instance()->Size_Smallish(),
+                    sfml_util::FontManager::Color_Light(),
+                    sfml_util::Justified::Left);
 
-                mouseOverTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PartyStage'sMouseOverPopup", TEXT_INFO, TEXT_RECT) );
+                mouseOverTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                    "PartyStage'sMouseOverPopup",
+                    TEXT_INFO,
+                    TEXT_RECT);
             }
         }
     }

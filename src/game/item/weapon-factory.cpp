@@ -81,7 +81,7 @@ namespace weapon
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new WeaponFactory);
+            instanceUPtr_ = std::make_unique<WeaponFactory>();
         }
         else
         {

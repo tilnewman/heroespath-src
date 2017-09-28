@@ -94,7 +94,7 @@ namespace sfml_util
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new SoundManager);
+            instanceUPtr_ = std::make_unique<SoundManager>();
         }
         else
         {

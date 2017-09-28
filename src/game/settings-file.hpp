@@ -43,10 +43,8 @@ namespace game
         SettingsFile(const SettingsFile &) =delete;
         SettingsFile & operator=(const SettingsFile &) =delete;
 
-        //singleton construction only
-        SettingsFile();
-
     public:
+        SettingsFile();
         virtual ~SettingsFile();
         static SettingsFile * Instance();
         static void Acquire();

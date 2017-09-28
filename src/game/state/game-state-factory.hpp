@@ -63,10 +63,8 @@ namespace state
         GameStateFactory(const GameStateFactory &) =delete;
         GameStateFactory & operator=(const GameStateFactory &) =delete;
 
-        //singleton construction only
-        GameStateFactory();
-
     public:
+        GameStateFactory();
         ~GameStateFactory();
 
         static GameStateFactory * Instance();

@@ -117,7 +117,14 @@ namespace gui
         {
             sf::FloatRect r(innerRegion_);
             r.width = 0.0f;
-            textRegionUPtr_.reset( new TextRegion(std::string(GetEntityName()).append("'s"), textInfo_, r, gui::TextRegion::DEFAULT_NO_RESIZE_, gui::box::Info()) );
+
+            textRegionUPtr_ = std::make_unique<TextRegion>(
+                std::string(GetEntityName()).append("'s"),
+                textInfo_,
+                r,
+                gui::TextRegion::DEFAULT_NO_RESIZE_,
+                gui::box::Info());
+
             cursorRect_.left = innerRegion_.left + textRegionUPtr_->GetEntityRegion().width + 3.0f;
         }
         else

@@ -67,7 +67,7 @@ namespace game
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new Logger);
+            instanceUPtr_ = std::make_unique<Logger>();
         }
     }
 

@@ -43,10 +43,8 @@ namespace game
         Logger(const Logger &) =delete;
         Logger & operator=(const Logger &) =delete;
 
-        //singleton construction only
-        Logger();
-
     public:
+        Logger();
         virtual ~Logger();
 
         static Logger * Instance();

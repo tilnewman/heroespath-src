@@ -85,7 +85,7 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new TitleImageManager);
+            instanceUPtr_ = std::make_unique<TitleImageManager>();
         }
         else
         {

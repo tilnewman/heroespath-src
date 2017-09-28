@@ -78,7 +78,7 @@ namespace gui
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new ConditionImageManager);
+            instanceUPtr_ = std::make_unique<ConditionImageManager>();
         }
         else
         {

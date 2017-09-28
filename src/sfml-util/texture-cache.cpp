@@ -83,7 +83,7 @@ namespace sfml_util
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            instanceUPtr_.reset(new TextureCache);
+            instanceUPtr_ = std::make_unique<TextureCache>();
         }
         else
         {

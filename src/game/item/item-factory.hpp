@@ -47,10 +47,8 @@ namespace item
         ItemFactory(const ItemFactory &) =delete;
         ItemFactory & operator=(const ItemFactory &) = delete;
 
-        //singleton construction only
-        ItemFactory();
-
     public:
+        ItemFactory();
         virtual ~ItemFactory();
 
         static ItemFactory * Instance();

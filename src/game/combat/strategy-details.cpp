@@ -70,7 +70,9 @@ namespace strategy
     DetailsSPtr_t ChanceFactory::Instance()
     {
         if (instance_.get() == nullptr)
-            instance_.reset(new ChanceFactory());
+        {
+            instance_ = std::make_unique<ChanceFactory>();
+        }
 
         return instance_;
     }

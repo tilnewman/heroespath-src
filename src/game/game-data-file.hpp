@@ -46,10 +46,8 @@ namespace game
         GameDataFile(const GameDataFile &) =delete;
         GameDataFile & operator=(const GameDataFile &) =delete;
 
-        //singleton construction only
-        GameDataFile();
-
     public:
+        GameDataFile();
         virtual ~GameDataFile();
         static GameDataFile * Instance();
         static void Acquire();

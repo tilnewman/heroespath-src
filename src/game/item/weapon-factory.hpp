@@ -61,10 +61,8 @@ namespace weapon
         WeaponFactory(const WeaponFactory &) =delete;
         WeaponFactory & operator=(const WeaponFactory &) =delete;
 
-        //singleton construction only
-        WeaponFactory();
-
     public:
+        WeaponFactory();
         virtual ~WeaponFactory();
 
         static WeaponFactory * Instance();

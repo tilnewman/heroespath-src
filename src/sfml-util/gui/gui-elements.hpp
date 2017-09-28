@@ -44,10 +44,8 @@ namespace gui
         GuiElements(const GuiElements &) =delete;
         GuiElements & operator=(const GuiElements &) =delete;
 
-        //singleton construction only
-        GuiElements();
-
     public:
+        GuiElements();
         ~GuiElements();
 
         static GuiElements * Instance();

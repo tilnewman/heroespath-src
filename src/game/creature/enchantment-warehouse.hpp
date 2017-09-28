@@ -51,10 +51,8 @@ namespace creature
         EnchantmentWarehouse(const EnchantmentWarehouse &) =delete;
         EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) =delete;
 
-        //singleton construction only
-        EnchantmentWarehouse();
-
     public:
+        EnchantmentWarehouse();
         ~EnchantmentWarehouse();
 
         static EnchantmentWarehouse * Instance();

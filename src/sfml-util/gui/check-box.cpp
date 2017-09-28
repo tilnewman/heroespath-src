@@ -210,13 +210,15 @@ namespace gui
         {
             std::ostringstream ss;
             ss << NAME << "'s #" << i + 1;
-            checkBoxSVec_.push_back( CheckBoxSPtr_t( new CheckBox(ss.str(),
-                                                                  BRIGHTNESS,
-                                                                  POS_LEFT + OUTER_PAD,
-                                                                  POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
-                                                                  TEXT_INFO_VEC[i],
-                                                                  currentSelections_[i],
-                                                                  IsInvalid(i)) ) );
+
+            checkBoxSVec_.push_back( std::make_shared<CheckBox>(
+                ss.str(),
+                BRIGHTNESS,
+                POS_LEFT + OUTER_PAD,
+                POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
+                TEXT_INFO_VEC[i],
+                currentSelections_[i],
+                IsInvalid(i)) );
         }
 
         SetupInitialSelections();
@@ -256,13 +258,14 @@ namespace gui
         {
             std::ostringstream ss;
             ss << NAME << "'s #" << i + 1;
-            checkBoxSVec_.push_back(CheckBoxSPtr_t(new CheckBox(ss.str(),
-                                                                BRIGHTNESS,
-                                                                POS_LEFT + OUTER_PAD,
-                                                                POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
-                                                                MouseTextInfo(TEXT_INFO_VEC[i].up, TEXT_INFO_VEC[i].down, TEXT_INFO_VEC[i].over),
-                                                                currentSelections_[i],
-                                                                IsInvalid(i)) ) );
+            checkBoxSVec_.push_back( std::make_shared<CheckBox>(
+                ss.str(),
+                BRIGHTNESS,
+                POS_LEFT + OUTER_PAD,
+                POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
+                MouseTextInfo(TEXT_INFO_VEC[i].up, TEXT_INFO_VEC[i].down, TEXT_INFO_VEC[i].over),
+                currentSelections_[i],
+                IsInvalid(i)) );
         }
 
         SetupInitialSelections();
@@ -296,20 +299,27 @@ namespace gui
         if (currentSelections_.empty())
             currentSelections_.resize(NUM_CHECKBOXES, false);
 
-        M_ASSERT_OR_LOGANDTHROW_SS((NUM_CHECKBOXES > 0), entityName_ << " given an empty vector of string labels.");
-        M_ASSERT_OR_LOGANDTHROW_SS((currentSelections_.size() == NUM_CHECKBOXES), entityName_ << " given an initial selections vector with more or less values (" << currentSelections_.size() << ") than there are check boxes (" << NUM_CHECKBOXES << ").");
+        M_ASSERT_OR_LOGANDTHROW_SS((NUM_CHECKBOXES > 0),
+            entityName_ << " given an empty vector of string labels.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((currentSelections_.size() == NUM_CHECKBOXES),
+            entityName_ << " given an initial selections vector with more or less values ("
+            << currentSelections_.size() << ") than there are check boxes ("
+            << NUM_CHECKBOXES << ").");
 
         for (std::size_t i(0); i < NUM_CHECKBOXES; ++i)
         {
             std::ostringstream ss;
             ss << NAME << "'s #" << i + 1;
-            checkBoxSVec_.push_back( CheckBoxSPtr_t( new CheckBox(ss.str(),
-                                                                  BRIGHTNESS,
-                                                                  POS_LEFT + OUTER_PAD,
-                                                                  POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
-                                                                  TEXT_INFO,
-                                                                  currentSelections_[i],
-                                                                  IsInvalid(i)) ) );
+
+            checkBoxSVec_.push_back( std::make_shared<CheckBox>(
+                ss.str(),
+                BRIGHTNESS,
+                POS_LEFT + OUTER_PAD,
+                POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
+                TEXT_INFO,
+                currentSelections_[i],
+                IsInvalid(i)) );
         }
 
         SetupInitialSelections();

@@ -48,10 +48,8 @@ namespace gui
         SongImageManager(const SongImageManager &) =delete;
         SongImageManager & operator=(const SongImageManager &) =delete;
 
-        //singleton construction only
-        SongImageManager();
-
     public:
+        SongImageManager();
         ~SongImageManager();
 
         static SongImageManager * Instance();
