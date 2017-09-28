@@ -329,8 +329,8 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t statsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t eqTitleTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t unEqTitleTextRegionUPtr_;
-        sfml_util::gui::ListBoxSPtr_t    equippedListBoxSPtr_;
-        sfml_util::gui::ListBoxSPtr_t    unEquipListBoxSPtr_;
+        sfml_util::gui::ListBoxUPtr_t    equippedListBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t    unEquipListBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
         sfml_util::gui::box::BoxUPtr_t   descBoxUPtr_;

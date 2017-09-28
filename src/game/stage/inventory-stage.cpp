@@ -190,8 +190,8 @@ namespace stage
         statsTextRegionUPtr_       (),
         eqTitleTextRegionUPtr_     (),
         unEqTitleTextRegionUPtr_   (),
-        equippedListBoxSPtr_       (),
-        unEquipListBoxSPtr_        (),
+        equippedListBoxUPtr_       (),
+        unEquipListBoxUPtr_        (),
         insTextRegionUPtr_         (),
         descTextRegionUPtr_        (),
         descBoxUPtr_               (),
@@ -273,7 +273,7 @@ namespace stage
             else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
                      (PACKAGE.keypress_event.code == sf::Keyboard::Return))
             {
-                if (PACKAGE.package.PTR_ == equippedListBoxSPtr_.get())
+                if (PACKAGE.package.PTR_ == equippedListBoxUPtr_.get())
                 {
                     if (view_ == ViewType::Items)
                     {
@@ -290,7 +290,7 @@ namespace stage
                         return HandleUnequip();
                     }
                 }
-                else if (PACKAGE.package.PTR_ == unEquipListBoxSPtr_.get())
+                else if (PACKAGE.package.PTR_ == unEquipListBoxUPtr_.get())
                 {
                     if (view_ == ViewType::Items)
                     {
@@ -426,7 +426,7 @@ namespace stage
                     return false;
                 }
 
-                listBoxItemToGiveSPtr_ = unEquipListBoxSPtr_->GetSelected();
+                listBoxItemToGiveSPtr_ = unEquipListBoxUPtr_->GetSelected();
 
                 if (listBoxItemToGiveSPtr_.get() != nullptr)
                 {
@@ -790,11 +790,11 @@ namespace stage
 
         //equipped item list box
         SetupListBox();
-        EntityAdd(equippedListBoxSPtr_.get());
+        EntityAdd(equippedListBoxUPtr_.get());
 
         //UnEquipped item list box
         SetupDescBox(false);
-        EntityAdd(unEquipListBoxSPtr_.get());
+        EntityAdd(unEquipListBoxUPtr_.get());
 
         //first listbox title text
         SetupFirstListBoxTitle();
@@ -1377,17 +1377,17 @@ namespace stage
 
                     if (isSlidingLeft_)
                     {
-                        equippedListBoxSPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO), equippedListBoxSPtr_->GetEntityPos().y);
+                        equippedListBoxUPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO), equippedListBoxUPtr_->GetEntityPos().y);
                     }
                     else
                     {
-                        equippedListBoxSPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), equippedListBoxSPtr_->GetEntityPos().y);
+                        equippedListBoxUPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), equippedListBoxUPtr_->GetEntityPos().y);
                     }
 
                     if (listBoxSlider_.IsDone())
                     {
                         SetupListBox();
-                        equippedListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, equippedListBoxSPtr_->GetEntityPos().y);
+                        equippedListBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, equippedListBoxUPtr_->GetEntityPos().y);
                         hasListBoxChanged_ = true;
                         listBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
                     }
@@ -1398,11 +1398,11 @@ namespace stage
 
                     if (isSlidingLeft_)
                     {
-                        equippedListBoxSPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), equippedListBoxSPtr_->GetEntityPos().y);
+                        equippedListBoxUPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), equippedListBoxUPtr_->GetEntityPos().y);
                     }
                     else
                     {
-                        equippedListBoxSPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO), equippedListBoxSPtr_->GetEntityPos().y);
+                        equippedListBoxUPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO), equippedListBoxUPtr_->GetEntityPos().y);
                     }
 
                     if (listBoxSlider_.IsDone())
@@ -1426,11 +1426,11 @@ namespace stage
                     {
                         if (isSlidingLeft_)
                         {
-                            unEquipListBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, unEquipListBoxSPtr_->GetEntityPos().y);
+                            unEquipListBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, unEquipListBoxUPtr_->GetEntityPos().y);
                         }
                         else
                         {
-                            unEquipListBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, unEquipListBoxSPtr_->GetEntityPos().y);
+                            unEquipListBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, unEquipListBoxUPtr_->GetEntityPos().y);
                         }
                     }
                     else
@@ -1450,7 +1450,7 @@ namespace stage
                     if (descBoxSlider_.IsDone())
                     {
                         SetupDescBox(true);
-                        unEquipListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, unEquipListBoxSPtr_->GetEntityPos().y);
+                        unEquipListBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, unEquipListBoxUPtr_->GetEntityPos().y);
                         descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
                         descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
                         hasDescBoxChanged_ = true;
@@ -1467,11 +1467,11 @@ namespace stage
                     {
                         if (isSlidingLeft_)
                         {
-                            unEquipListBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, unEquipListBoxSPtr_->GetEntityPos().y);
+                            unEquipListBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, unEquipListBoxUPtr_->GetEntityPos().y);
                         }
                         else
                         {
-                            unEquipListBoxSPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, unEquipListBoxSPtr_->GetEntityPos().y);
+                            unEquipListBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, unEquipListBoxUPtr_->GetEntityPos().y);
                         }
                     }
                     else
@@ -1700,7 +1700,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         if (ViewType::Items != view_)
         {
-            SetDescBoxTextFromListBoxItem(equippedListBoxSPtr_->GetSelected());
+            SetDescBoxTextFromListBoxItem(equippedListBoxUPtr_->GetSelected());
         }
 
         SetupFirstListBoxTitle();
@@ -1823,16 +1823,16 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         if (ViewType::Items == view_)
         {
-            auto selectedItemPtr{ unEquipListBoxSPtr_->GetSelected() };
+            auto selectedItemPtr{ unEquipListBoxUPtr_->GetSelected() };
 
             if ((selectedItemPtr != nullptr) &&
                 (selectedItemPtr->ITEM_CPTR != nullptr) &&
                 (selectedItemPtr->ITEM_CPTR->Name().empty() == false))
             {
                 equipButtonUPtr_->SetIsDisabled(false);
-                equipButtonUPtr_->SetMouseHoverText("Click here or press 'e' to equip the " + unEquipListBoxSPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
+                equipButtonUPtr_->SetMouseHoverText("Click here or press 'e' to equip the " + unEquipListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
                 dropButtonUPtr_->SetIsDisabled(false);
-                dropButtonUPtr_->SetMouseHoverText("(Click here or press 'd' to drop the " + unEquipListBoxSPtr_->GetSelected()->ITEM_CPTR->Name() + ")");
+                dropButtonUPtr_->SetMouseHoverText("(Click here or press 'd' to drop the " + unEquipListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ")");
             }
             else
             {
@@ -1860,12 +1860,12 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         if (ViewType::Items == view_)
         {
-            if ((equippedListBoxSPtr_->GetSelected().get() != nullptr) &&
-                (equippedListBoxSPtr_->GetSelected()->ITEM_CPTR != nullptr) &&
-                (equippedListBoxSPtr_->GetSelected()->ITEM_CPTR->Name().empty() == false))
+            if ((equippedListBoxUPtr_->GetSelected().get() != nullptr) &&
+                (equippedListBoxUPtr_->GetSelected()->ITEM_CPTR != nullptr) &&
+                (equippedListBoxUPtr_->GetSelected()->ITEM_CPTR->Name().empty() == false))
             {
                 unequipButtonUPtr_->SetIsDisabled(false);
-                unequipButtonUPtr_->SetMouseHoverText("Click here or press 'u' to unequip the " + equippedListBoxSPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
+                unequipButtonUPtr_->SetMouseHoverText("Click here or press 'u' to unequip the " + equippedListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
             }
             else
             {
@@ -1935,7 +1935,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
-            auto const LISTBOX_ITEM_SPTR(unEquipListBoxSPtr_->GetSelected());
+            auto const LISTBOX_ITEM_SPTR(unEquipListBoxUPtr_->GetSelected());
 
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
                 (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
@@ -1945,8 +1945,8 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                 if (EQUIP_RESULT.empty())
                 {
                     sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-                    unEquipListBoxSPtr_->Remove(LISTBOX_ITEM_SPTR);
-                    equippedListBoxSPtr_->Add(LISTBOX_ITEM_SPTR);
+                    unEquipListBoxUPtr_->Remove(LISTBOX_ITEM_SPTR);
+                    equippedListBoxUPtr_->Add(LISTBOX_ITEM_SPTR);
                     SetupButtons();
                     return true;
                 }
@@ -1975,7 +1975,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         if ((ViewType::Items == view_) && (unequipButtonUPtr_->IsDisabled() == false))
         {
-            auto const LISTBOX_ITEM_SPTR(equippedListBoxSPtr_->GetSelected());
+            auto const LISTBOX_ITEM_SPTR(equippedListBoxUPtr_->GetSelected());
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
                 if (LISTBOX_ITEM_SPTR->ITEM_CPTR->IsBodypart())
@@ -1988,8 +1988,8 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                     sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
                     const item::ItemPtr_t IITEM_PTR(LISTBOX_ITEM_SPTR->ITEM_CPTR);
                     creaturePtr_->ItemUnEquip(IITEM_PTR);
-                    equippedListBoxSPtr_->Remove(LISTBOX_ITEM_SPTR);
-                    unEquipListBoxSPtr_->Add(LISTBOX_ITEM_SPTR);
+                    equippedListBoxUPtr_->Remove(LISTBOX_ITEM_SPTR);
+                    unEquipListBoxUPtr_->Add(LISTBOX_ITEM_SPTR);
                     SetupButtons();
                     return true;
                 }
@@ -2043,7 +2043,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
-            auto const LISTBOX_ITEM_SPTR(unEquipListBoxSPtr_->GetSelected());
+            auto const LISTBOX_ITEM_SPTR(unEquipListBoxUPtr_->GetSelected());
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
                 (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
@@ -2451,14 +2451,14 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             }
         }
 
-        const bool IS_ALREADY_INSTANTIATED(equippedListBoxSPtr_.get() != nullptr);
+        const bool IS_ALREADY_INSTANTIATED(equippedListBoxUPtr_.get() != nullptr);
 
         if (IS_ALREADY_INSTANTIATED)
         {
-            EntityRemove(equippedListBoxSPtr_.get());
+            EntityRemove(equippedListBoxUPtr_.get());
         }
 
-        equippedListBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
+        equippedListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "InventoryStage'sLeftListBox",
             LISTBOX_REGION_,
             listBoxItemsSList,
@@ -2472,11 +2472,11 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         if (IS_ALREADY_INSTANTIATED)
         {
-            EntityAdd(equippedListBoxSPtr_.get());
+            EntityAdd(equippedListBoxUPtr_.get());
         }
 
-        equippedListBoxSPtr_->SetSelectedIndex(0);
-        equippedListBoxSPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
+        equippedListBoxUPtr_->SetSelectedIndex(0);
+        equippedListBoxUPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
     }
 
 
@@ -2504,16 +2504,16 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                                                          LISTBOX_COLORSET_,
                                                          LISTBOX_BG_INFO_);
 
-        const bool IS_EQ_ALREADY_INSTANTIATED(unEquipListBoxSPtr_.get() != nullptr);
+        const bool IS_EQ_ALREADY_INSTANTIATED(unEquipListBoxUPtr_.get() != nullptr);
 
         sf::Vector2f origPosV(OUT_OF_SIGHT_POS_, OUT_OF_SIGHT_POS_);
         if (IS_EQ_ALREADY_INSTANTIATED)
         {
-            origPosV = unEquipListBoxSPtr_->GetEntityPos();
-            EntityRemove(unEquipListBoxSPtr_.get());
+            origPosV = unEquipListBoxUPtr_->GetEntityPos();
+            EntityRemove(unEquipListBoxUPtr_.get());
         }
 
-        unEquipListBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
+        unEquipListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "InventoryStage'sUnEquipped",
             DESCBOX_REGION_,
             unEquipItemsSList,
@@ -2527,22 +2527,22 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         if (IS_EQ_ALREADY_INSTANTIATED)
         {
-            EntityAdd(unEquipListBoxSPtr_.get());
+            EntityAdd(unEquipListBoxUPtr_.get());
         }
 
-        unEquipListBoxSPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
-        unEquipListBoxSPtr_->SetSelectedIndex(0);
+        unEquipListBoxUPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
+        unEquipListBoxUPtr_->SetSelectedIndex(0);
 
         if (IS_EQ_ALREADY_INSTANTIATED)
         {
             if (WILL_MOVE_OFFSCREEN)
             {
-                unEquipListBoxSPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f,
-                                                  unEquipListBoxSPtr_->GetEntityPos().y);
+                unEquipListBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f,
+                                                  unEquipListBoxUPtr_->GetEntityPos().y);
             }
             else
             {
-                unEquipListBoxSPtr_->SetEntityPos(origPosV.x, origPosV.y);
+                unEquipListBoxUPtr_->SetEntityPos(origPosV.x, origPosV.y);
             }
         }
 
@@ -3142,13 +3142,13 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         {
             sfml_util::gui::ListBoxItemSPtr_t listBoxItemPtr;
 
-            if (unEquipListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            if (unEquipListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
-                listBoxItemPtr = unEquipListBoxSPtr_->GetAtPosition(MOUSE_POS_V);
+                listBoxItemPtr = unEquipListBoxUPtr_->GetAtPosition(MOUSE_POS_V);
             }
-            else if (equippedListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            else if (equippedListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
-                listBoxItemPtr = equippedListBoxSPtr_->GetAtPosition(MOUSE_POS_V);
+                listBoxItemPtr = equippedListBoxUPtr_->GetAtPosition(MOUSE_POS_V);
             }
 
             if (listBoxItemPtr.get() != nullptr)
@@ -3167,13 +3167,13 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         {
             sfml_util::gui::ListBoxItemSPtr_t listBoxItemPtr;
 
-            if (unEquipListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            if (unEquipListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
-                return unEquipListBoxSPtr_->GetRectAtLocation(MOUSE_POS_V);
+                return unEquipListBoxUPtr_->GetRectAtLocation(MOUSE_POS_V);
             }
-            else if (equippedListBoxSPtr_->GetEntityRegion().contains(MOUSE_POS_V))
+            else if (equippedListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
-                return equippedListBoxSPtr_->GetRectAtLocation(MOUSE_POS_V);
+                return equippedListBoxUPtr_->GetRectAtLocation(MOUSE_POS_V);
             }
         }
 
@@ -3710,17 +3710,17 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
     void InventoryStage::ForceSelectionAndDrawOfListBox()
     {
-        equippedListBoxSPtr_->WillPlaySoundEffects(false);
+        equippedListBoxUPtr_->WillPlaySoundEffects(false);
 
         sf::Event::KeyEvent keyEvent;
 
         keyEvent.code = sf::Keyboard::Down;
-        equippedListBoxSPtr_->KeyRelease(keyEvent);
+        equippedListBoxUPtr_->KeyRelease(keyEvent);
 
         keyEvent.code = sf::Keyboard::Up;
-        equippedListBoxSPtr_->KeyRelease(keyEvent);
+        equippedListBoxUPtr_->KeyRelease(keyEvent);
 
-        equippedListBoxSPtr_->WillPlaySoundEffects(true);
+        equippedListBoxUPtr_->WillPlaySoundEffects(true);
     }
 
 

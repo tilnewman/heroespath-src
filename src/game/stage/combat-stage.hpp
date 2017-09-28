@@ -411,7 +411,7 @@ namespace stage
         const float SCREEN_HEIGHT_;
         //
         sfml_util::gui::box::BoxUPtr_t   commandBoxUPtr_;
-        sfml_util::gui::ListBoxSPtr_t    statusBoxSPtr_;
+        sfml_util::gui::ListBoxUPtr_t    statusBoxUPtr_;
         sfml_util::gui::TextInfo         statusBoxTextInfo_;
         sfml_util::gui::SliderBarUPtr_t  zoomSliderBarUPtr_;
         sfml_util::gui::box::BoxUPtr_t   turnBoxUPtr_;

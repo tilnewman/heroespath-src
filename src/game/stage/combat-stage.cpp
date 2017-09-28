@@ -177,7 +177,7 @@ namespace stage
         SCREEN_WIDTH_               (sfml_util::Display::Instance()->GetWinWidth()),
         SCREEN_HEIGHT_              (sfml_util::Display::Instance()->GetWinHeight()),
         commandBoxUPtr_             (),
-        statusBoxSPtr_              (),
+        statusBoxUPtr_              (),
 
         statusBoxTextInfo_          (" ",
                                      sfml_util::FontManager::Instance()->Font_Typical(),
@@ -523,7 +523,7 @@ namespace stage
         const sfml_util::gui::ColorSet STATUS_COLORSET(LISTBOX_SELECTED_COLOR_, LISTBOX_NOTSELECTED_COLOR_);
         const sfml_util::gui::box::Info STATUS_BOX_INFO(true, STATUS_REGION, STATUS_COLORSET, STATUS_BACKGROUNDINFO);
 
-        statusBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
+        statusBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "ComabtStage'sStatus",
             STATUS_REGION,
             sfml_util::gui::ListBoxItemSLst_t(),
@@ -535,8 +535,8 @@ namespace stage
             sfml_util::gui::ListBox::NO_LIMIT_,
             this);
 
-        statusBoxSPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
-        EntityAdd(statusBoxSPtr_.get());
+        statusBoxUPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
+        EntityAdd(statusBoxUPtr_.get());
 
         //command box
         const float COMMAND_REGION_HORIZ_SPACER(25.0f);
@@ -1158,7 +1158,7 @@ namespace stage
     {
         target.draw( * commandBoxUPtr_, STATES);
         Stage::Draw(target, STATES);
-        statusBoxSPtr_->draw(target, STATES);
+        statusBoxUPtr_->draw(target, STATES);
 
         if (((turnPhase_ >= TurnPhase::Determine) &&
                 (turnPhase_ <= TurnPhase::PostPerformPause)) ||
@@ -1457,11 +1457,11 @@ namespace stage
         if (willClrShkInitStatusMsg_ || (TurnPhase::StatusAnim == turnPhase_))
         {
             statusMsgAnimTimerSec_ += ELAPSED_TIME_SEC;
-            statusBoxSPtr_->SetHighlightColor( statusMsgAnimColorShaker_.Update(ELAPSED_TIME_SEC) );
+            statusBoxUPtr_->SetHighlightColor( statusMsgAnimColorShaker_.Update(ELAPSED_TIME_SEC) );
 
             if (statusMsgAnimTimerSec_ > STATUSMSG_ANIM_PAUSE_SEC_)
             {
-                statusBoxSPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
+                statusBoxUPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
                 combatDisplayStagePtr_->SetIsStatusMessageAnimating(false);
 
                 if (willClrShkInitStatusMsg_)
@@ -1848,7 +1848,7 @@ namespace stage
             << combat::Encounter::Instance()->LivingNonPlayerParty().Summary() << "!";
 
         statusBoxTextInfo_.text = ss.str();
-        statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
+        statusBoxUPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
             "CombatStageStatusMsg", statusBoxTextInfo_), true);
 
         MoveTurnBoxObjectsOffScreen();
@@ -1864,7 +1864,7 @@ namespace stage
     void CombatStage::AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM)
     {
         statusBoxTextInfo_.text = MSG_STR;
-        statusBoxSPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
+        statusBoxUPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
             "CombatStageStatusMsg", statusBoxTextInfo_), true);
 
         if (WILL_ANIM)

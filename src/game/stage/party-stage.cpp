@@ -82,8 +82,8 @@ namespace stage
         backButtonSPtr_         ( new sfml_util::gui::FourStateButton("PartyStage'sBack",      0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_normal.png"),      "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_lit.png")) ),
         startButtonSPtr_        ( new sfml_util::gui::FourStateButton("PartyStage'sStartGame", 0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_normal.png"), "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_lit.png")) ),
         deleteButtonSPtr_       ( new sfml_util::gui::FourStateButton("PartyStage'sDelete",    0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_normal.png"),    "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_lit.png")) ),
-        characterListBoxSPtr_   (),
-        partyListBoxSPtr_       (),
+        characterListBoxUPtr_   (),
+        partyListBoxUPtr_       (),
         insTextRegionUPtr_      (),
         upTextRegionUPtr_       (),
         partyTextRegionUPtr_    (),
@@ -134,26 +134,26 @@ namespace stage
 
         //handle double-clicks by moving items from one ListBox to the other
 
-        if (PACKAGE.package.PTR_ == characterListBoxSPtr_.get())
+        if (PACKAGE.package.PTR_ == characterListBoxUPtr_.get())
         {
-            sfml_util::gui::ListBoxItemSPtr_t itemSPtr(characterListBoxSPtr_->GetAtPosition(PACKAGE.mouse_pos));
+            sfml_util::gui::ListBoxItemSPtr_t itemSPtr(characterListBoxUPtr_->GetAtPosition(PACKAGE.mouse_pos));
 
-            if ((partyListBoxSPtr_->GetCount() < partyListBoxSPtr_->GetLimit()) && (itemSPtr.get() != nullptr))
+            if ((partyListBoxUPtr_->GetCount() < partyListBoxUPtr_->GetLimit()) && (itemSPtr.get() != nullptr))
             {
-                partyListBoxSPtr_->Add(itemSPtr);
-                characterListBoxSPtr_->Remove(itemSPtr);
+                partyListBoxUPtr_->Add(itemSPtr);
+                characterListBoxUPtr_->Remove(itemSPtr);
             }
 
             return true;
         }
-        else if (PACKAGE.package.PTR_ == partyListBoxSPtr_.get())
+        else if (PACKAGE.package.PTR_ == partyListBoxUPtr_.get())
         {
-            sfml_util::gui::ListBoxItemSPtr_t itemSPtr(partyListBoxSPtr_->GetAtPosition(PACKAGE.mouse_pos));
+            sfml_util::gui::ListBoxItemSPtr_t itemSPtr(partyListBoxUPtr_->GetAtPosition(PACKAGE.mouse_pos));
 
             if (itemSPtr.get() != nullptr)
             {
-                characterListBoxSPtr_->Add(itemSPtr);
-                partyListBoxSPtr_->Remove(itemSPtr);
+                characterListBoxUPtr_->Add(itemSPtr);
+                partyListBoxUPtr_->Remove(itemSPtr);
             }
 
             return false;
@@ -201,8 +201,8 @@ namespace stage
                         << " unable to delete character \"" << characterPtr->Name() << "\" file.");
                 }
 
-                characterListBoxSPtr_->Remove(selectedItemSPtr);
-                partyListBoxSPtr_->Remove(selectedItemSPtr);
+                characterListBoxUPtr_->Remove(selectedItemSPtr);
+                partyListBoxUPtr_->Remove(selectedItemSPtr);
                 //actual Character object will be free'd when the PartyStage object is destroyed
             }
         }
@@ -220,10 +220,10 @@ namespace stage
 
     bool PartyStage::HandleCallback_StartButton()
     {
-        if (partyListBoxSPtr_->GetCount() != player::Party::MAX_CHARACTER_COUNT_)
+        if (partyListBoxUPtr_->GetCount() != player::Party::MAX_CHARACTER_COUNT_)
         {
             std::ostringstream ss;
-            ss << "There are " << partyListBoxSPtr_->GetCount() << " characters in your party.  You need exactly " << player::Party::MAX_CHARACTER_COUNT_ << " characters to start the game.";
+            ss << "There are " << partyListBoxUPtr_->GetCount() << " characters in your party.  You need exactly " << player::Party::MAX_CHARACTER_COUNT_ << " characters to start the game.";
             auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
                 ss.str(),
@@ -239,11 +239,11 @@ namespace stage
         {
             //determine if any beasts are in the party
             bool isAnyCharacterBeast(false);
-            const std::size_t NUM_CHARACTERS( partyListBoxSPtr_->GetCount() );
+            const std::size_t NUM_CHARACTERS( partyListBoxUPtr_->GetCount() );
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
                 const creature::race::Enum NEXT_CHAR_RACE(
-                    partyListBoxSPtr_->At(i)->CHARACTER_CPTR->Race());
+                    partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Race());
 
                 if ((creature::race::Dragon == NEXT_CHAR_RACE) ||
                     (creature::race::Wolfen == NEXT_CHAR_RACE))
@@ -258,7 +258,7 @@ namespace stage
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
                 const creature::role::Enum NEXT_CHAR_ROLE(
-                    partyListBoxSPtr_->At(i)->CHARACTER_CPTR->Role());
+                    partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Role());
 
                 if (NEXT_CHAR_ROLE == creature::role::Beastmaster)
                 {
@@ -410,28 +410,36 @@ namespace stage
                                            CHAR_LIST_WIDTH,
                                            CHAR_LIST_HEIGHT);
         //
-        const sf::Color BG_COLOR(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220));
+        auto const BG_COLOR{
+            sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220) };
+
         sfml_util::gui::BackgroundInfo bgInfo(BG_COLOR);
-        sfml_util::gui::box::Info boxInfo(1,
-                                          true,
-                                          CHAR_LIST_RECT,
-                                          sfml_util::gui::ColorSet(sfml_util::FontManager::Color_Orange(),
-                                                                   BG_COLOR,
-                                                                   sfml_util::FontManager::Color_Orange() - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
-                                                                   BG_COLOR - sf::Color(40,40,40,0)),
-                                          bgInfo);
+
+        sfml_util::gui::box::Info boxInfo(
+            1,
+            true,
+            CHAR_LIST_RECT,
+            sfml_util::gui::ColorSet(
+                sfml_util::FontManager::Color_Orange(),
+                BG_COLOR,
+                sfml_util::FontManager::Color_Orange() -
+                    sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
+                BG_COLOR - sf::Color(40,40,40,0)),
+            bgInfo);
         //
-        characterListBoxSPtr_.reset( new sfml_util::gui::ListBox("PartyStage'sCharacter",
-                                                                 CHAR_LIST_RECT,
-                                                                 itemSList,
-                                                                 this,
-                                                                 10.0f,
-                                                                 6.0f,
-                                                                 boxInfo,
-                                                                 sfml_util::FontManager::Color_Orange(),
-                                                                 sfml_util::gui::ListBox::NO_LIMIT_,
-                                                                 this) );
-        EntityAdd(characterListBoxSPtr_.get());
+        characterListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+            "PartyStage'sCharacter",
+            CHAR_LIST_RECT,
+            itemSList,
+            this,
+            10.0f,
+            6.0f,
+            boxInfo,
+            sfml_util::FontManager::Color_Orange(),
+            sfml_util::gui::ListBox::NO_LIMIT_,
+            this);
+
+        EntityAdd(characterListBoxUPtr_.get());
 
         //party list box
         const float PARTY_LIST_POS_LEFT ((SCREEN_WIDTH_ * 0.55f) - 25.0f);
@@ -445,17 +453,20 @@ namespace stage
                                             PARTY_LIST_HEIGHT);
         //
         boxInfo.SetBoxAndBackgroundRegion(PARTY_LIST_RECT);
-        partyListBoxSPtr_.reset( new sfml_util::gui::ListBox("PartyStage'sParty",
-                                                             PARTY_LIST_RECT,
-                                                             sfml_util::gui::ListBoxItemSLst_t(),
-                                                             this,
-                                                             10.0f,
-                                                             6.0f,
-                                                             boxInfo,
-                                                             sfml_util::FontManager::Color_Orange(),
-                                                             player::Party::MAX_CHARACTER_COUNT_,
-                                                             this) );
-        EntityAdd(partyListBoxSPtr_.get());
+
+        partyListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+            "PartyStage'sParty",
+            PARTY_LIST_RECT,
+            sfml_util::gui::ListBoxItemSLst_t(),
+            this,
+            10.0f,
+            6.0f,
+            boxInfo,
+            sfml_util::FontManager::Color_Orange(),
+            player::Party::MAX_CHARACTER_COUNT_,
+            this);
+
+        EntityAdd(partyListBoxUPtr_.get());
 
         //unplayed character label text
         {
@@ -465,7 +476,7 @@ namespace stage
                                                    sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
 
             upTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("CharacterLabel", labelTextInfo, sf::FloatRect()) );
-            upTextRegionUPtr_->SetEntityPos(characterListBoxSPtr_->GetEntityRegion().left + 50.0f, (characterListBoxSPtr_->GetEntityRegion().top - upTextRegionUPtr_->GetEntityRegion().height));
+            upTextRegionUPtr_->SetEntityPos(characterListBoxUPtr_->GetEntityRegion().left + 50.0f, (characterListBoxUPtr_->GetEntityRegion().top - upTextRegionUPtr_->GetEntityRegion().height));
             EntityAdd(upTextRegionUPtr_.get());
         }
 
@@ -477,7 +488,7 @@ namespace stage
                                                    sfml_util::FontManager::Color_Orange() + sf::Color(0, 30, 30, 0));
 
             partyTextRegionUPtr_.reset( new sfml_util::gui::TextRegion("PartyLabel", labelTextInfo, sf::FloatRect()) );
-            partyTextRegionUPtr_->SetEntityPos(partyListBoxSPtr_->GetEntityRegion().left + 50.0f, (partyListBoxSPtr_->GetEntityRegion().top - partyTextRegionUPtr_->GetEntityRegion().height));
+            partyTextRegionUPtr_->SetEntityPos(partyListBoxUPtr_->GetEntityRegion().left + 50.0f, (partyListBoxUPtr_->GetEntityRegion().top - partyTextRegionUPtr_->GetEntityRegion().height));
             EntityAdd(partyTextRegionUPtr_.get());
         }
 
@@ -527,19 +538,19 @@ namespace stage
 
     std::size_t PartyStage::NumCharactersInTheParty() const
     {
-        return partyListBoxSPtr_->GetCount();
+        return partyListBoxUPtr_->GetCount();
     }
 
 
     sfml_util::gui::ListBoxItemSPtr_t PartyStage::GetSelectedItemSPtr() const
     {
-        if (partyListBoxSPtr_->HasFocus())
+        if (partyListBoxUPtr_->HasFocus())
         {
-            return partyListBoxSPtr_->GetSelected();
+            return partyListBoxUPtr_->GetSelected();
         }
         else
         {
-            return characterListBoxSPtr_->GetSelected();
+            return characterListBoxUPtr_->GetSelected();
         }
     }
 
@@ -561,7 +572,7 @@ namespace stage
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
 
-        willDisplayCharacterCountWarningText_ = ((characterListBoxSPtr_->GetCount() + partyListBoxSPtr_->GetCount()) < player::Party::MAX_CHARACTER_COUNT_);
+        willDisplayCharacterCountWarningText_ = ((characterListBoxUPtr_->GetCount() + partyListBoxUPtr_->GetCount()) < player::Party::MAX_CHARACTER_COUNT_);
 
         //oscillate the warning text color
         if (willDisplayCharacterCountWarningText_)
@@ -578,11 +589,11 @@ namespace stage
         if ((mouseOverPopupTimerSec_ > MOUSE_OVER_POPUP_DELAY_SEC_) &&
             (false == isMouseOverTexture_))
         {
-            auto itemSPtr(characterListBoxSPtr_->GetItemAtLocation(mouseOverPosV_));
+            auto itemSPtr(characterListBoxUPtr_->GetItemAtLocation(mouseOverPosV_));
 
             if (itemSPtr.get() == nullptr)
             {
-                itemSPtr = partyListBoxSPtr_->GetItemAtLocation(mouseOverPosV_);
+                itemSPtr = partyListBoxUPtr_->GetItemAtLocation(mouseOverPosV_);
             }
 
             if ((itemSPtr.get() != nullptr) &&
@@ -678,9 +689,9 @@ namespace stage
         //create a new party structure
         player::CharacterPVec_t charPVec;
         {
-            for (std::size_t i(0); i < partyListBoxSPtr_->GetCount(); ++i)
+            for (std::size_t i(0); i < partyListBoxUPtr_->GetCount(); ++i)
             {
-                auto characterPtr{ partyListBoxSPtr_->At(i)->CHARACTER_CPTR };
+                auto characterPtr{ partyListBoxUPtr_->At(i)->CHARACTER_CPTR };
                 charPVec.push_back(characterPtr);
 
                 charactersPSet_.erase(characterPtr);
@@ -701,7 +712,7 @@ namespace stage
         //Don't bother clearing the party ListBox because it flashes the
         //"not engouh characters" text, and since we are immediately transitioning
         //to the Camp Stage anyway.
-        //partyListBoxSPtr_->Clear();
+        //partyListBoxUPtr_->Clear();
 
         LoopManager::Instance()->TransitionTo_Camp();
     }
@@ -740,7 +751,9 @@ namespace stage
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 

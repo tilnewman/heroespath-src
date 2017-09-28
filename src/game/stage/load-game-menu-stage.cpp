@@ -67,7 +67,7 @@ namespace stage
         mainMenuTitle_          ("resume_button_normal.png"),
         backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
         backButtonSPtr_         (),
-        gsListBoxSPtr_          (),
+        gsListBoxUPtr_          (),
         locTextRegionUPtr_      (),
         charTextRegionUVec_     (),
         charLabelTextRegionUPtr_(),
@@ -182,32 +182,37 @@ namespace stage
         listBoxItemSLst.sort();
         //
         //establish the boxing options
-        const sf::Color BG_COLOR(sfml_util::FontManager::Color_Orange() -
-            sf::Color(100, 100, 100, 220));
+        const sf::Color BG_COLOR(
+            sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220));
 
         const sfml_util::gui::BackgroundInfo BG_INFO(BG_COLOR);
+
         const sfml_util::gui::box::Info BOX_INFO(
             1,
             true,
             GS_LB_RECT,
-            sfml_util::gui::ColorSet(sfml_util::FontManager::Color_Orange(),
-                                     BG_COLOR,
-                                     sfml_util::FontManager::Color_Orange() -
-                                        sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
-                                     BG_COLOR - sf::Color(40,40,40,0)),
+            sfml_util::gui::ColorSet(
+                sfml_util::FontManager::Color_Orange(),
+                BG_COLOR,
+                sfml_util::FontManager::Color_Orange() -
+                    sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
+                BG_COLOR - sf::Color(40,40,40,0)),
             BG_INFO);
+
         //reate the ListBox
-        gsListBoxSPtr_.reset( new sfml_util::gui::ListBox("GameStateToLoad",
-                                                          GS_LB_RECT,
-                                                          listBoxItemSLst,
-                                                          this,
-                                                          10.0f,
-                                                          6.0f,
-                                                          BOX_INFO,
-                                                          sfml_util::FontManager::Color_Orange(),
-                                                          0,
-                                                          this) );
-        EntityAdd(gsListBoxSPtr_.get());
+        gsListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+            "GameStateToLoad",
+            GS_LB_RECT,
+            listBoxItemSLst,
+            this,
+            10.0f,
+            6.0f,
+            BOX_INFO,
+            sfml_util::FontManager::Color_Orange(),
+            0,
+            this);
+
+        EntityAdd(gsListBoxUPtr_.get());
 
         SetupGameInfoDisplay();
     }
@@ -225,12 +230,12 @@ namespace stage
 
         //establish which item is selected and get the player list from that
         //GameState's Party object
-        if (gsListBoxSPtr_->Empty())
+        if (gsListBoxUPtr_->Empty())
         {
             return;
         }
 
-        auto listBoxItemSPtr{ gsListBoxSPtr_->GetSelected() };
+        auto listBoxItemSPtr{ gsListBoxUPtr_->GetSelected() };
         M_ASSERT_OR_LOGANDTHROW_SS((listBoxItemSPtr.get() != nullptr),
             "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
             << " returned a nullptr.");

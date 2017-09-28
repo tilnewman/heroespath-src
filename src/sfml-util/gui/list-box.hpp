@@ -62,7 +62,7 @@ namespace gui
 
     //types required for the ListBoxPtrPackage_t and IListBoxCallbackHandler below
     class ListBox;
-    using ListBoxSPtr_t = std::shared_ptr<ListBox>;
+    using ListBoxUPtr_t = std::unique_ptr<ListBox>;
 
     using ImageMap_t      = std::map<ListBoxItemSPtr_t, std::pair<sf::Texture, sf::Sprite> >;
     using ImageMapIter_t  = ImageMap_t::iterator;

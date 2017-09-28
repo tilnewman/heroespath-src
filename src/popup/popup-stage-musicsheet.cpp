@@ -60,7 +60,7 @@ namespace popup
         currentSongPtr_(nullptr),
         charDetailsTextRegionUPtr_(),
         listBoxLabelTextRegionUPtr_(),
-        listBoxSPtr_(),
+        listBoxUPtr_(),
         playerTexture_(),
         playerSprite_(),
         pageRectLeft_(),
@@ -156,19 +156,19 @@ namespace popup
 
         //Force song listbox to take focus so that user up/down
         //keystrokes work without having to click on the listbox.
-        SetFocus(listBoxSPtr_.get());
+        SetFocus(listBoxUPtr_.get());
 
         //Force song listbox selection up and down to force colors to correct.
-        listBoxSPtr_->WillPlaySoundEffects(false);
+        listBoxUPtr_->WillPlaySoundEffects(false);
         sf::Event::KeyEvent keyEvent;
         keyEvent.code = sf::Keyboard::Down;
-        listBoxSPtr_->KeyRelease(keyEvent);
+        listBoxUPtr_->KeyRelease(keyEvent);
         keyEvent.code = sf::Keyboard::Up;
-        listBoxSPtr_->KeyRelease(keyEvent);
-        listBoxSPtr_->WillPlaySoundEffects(true);
+        listBoxUPtr_->KeyRelease(keyEvent);
+        listBoxUPtr_->WillPlaySoundEffects(true);
 
         //setup initial values for songbook page right text and colors
-        currentSongPtr_ = listBoxSPtr_->At(0)->SONG_CPTRC;
+        currentSongPtr_ = listBoxUPtr_->At(0)->SONG_CPTRC;
         SetupPageRightText(currentSongPtr_);
     }
 
@@ -456,7 +456,7 @@ namespace popup
             listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
         }
 
-        listBoxSPtr_ = std::make_shared<sfml_util::gui::ListBox>(
+        listBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "PopupStage'sMusicListBox",
             LISTBOX_RECT,
             listBoxItemsSList,
@@ -468,9 +468,9 @@ namespace popup
             sfml_util::gui::ListBox::NO_LIMIT_,
             this);
 
-        EntityAdd(listBoxSPtr_.get());
-        listBoxSPtr_->SetSelectedIndex(0);
-        listBoxSPtr_->SetImageColor(LISTBOX_IMAGE_COLOR_);
+        EntityAdd(listBoxUPtr_.get());
+        listBoxUPtr_->SetSelectedIndex(0);
+        listBoxUPtr_->SetImageColor(LISTBOX_IMAGE_COLOR_);
     }
 
 
@@ -743,7 +743,7 @@ namespace popup
 
     bool PopupStageMusicSheet::HandleSongPlay()
     {
-        if (CanPlaySong(listBoxSPtr_->GetSelected()->SONG_CPTRC))
+        if (CanPlaySong(listBoxUPtr_->GetSelected()->SONG_CPTRC))
         {
             if (currentSongPtr_ != nullptr)
             {
@@ -760,7 +760,7 @@ namespace popup
             }
 
             game::LoopManager::Instance()->PopupWaitEnd(
-                ResponseTypes::Select, listBoxSPtr_->GetSelectedIndex());
+                ResponseTypes::Select, listBoxUPtr_->GetSelectedIndex());
 
             return true;
         }

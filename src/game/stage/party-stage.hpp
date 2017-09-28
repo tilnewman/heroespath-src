@@ -126,8 +126,8 @@ namespace stage
         sfml_util::gui::FourStateButtonSPtr_t backButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t startButtonSPtr_;
         sfml_util::gui::FourStateButtonSPtr_t deleteButtonSPtr_;
-        sfml_util::gui::ListBoxSPtr_t characterListBoxSPtr_;
-        sfml_util::gui::ListBoxSPtr_t partyListBoxSPtr_;
+        sfml_util::gui::ListBoxUPtr_t characterListBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t partyListBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t upTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t partyTextRegionUPtr_;

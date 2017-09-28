@@ -120,7 +120,7 @@ namespace popup
         sf::FloatRect           pageRectRight_;
         sfml_util::gui::TextRegionUPtr_t   charDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t   listBoxLabelTextRegionUPtr_;
-        sfml_util::gui::ListBoxSPtr_t      listBoxSPtr_;
+        sfml_util::gui::ListBoxUPtr_t      listBoxUPtr_;
         const sf::Color         LISTBOX_IMAGE_COLOR_;
         const sf::Color         LISTBOX_LINE_COLOR_;
         const sf::Color         LISTBOX_COLOR_FG_;
