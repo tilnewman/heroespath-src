@@ -40,8 +40,6 @@ using namespace sfml_util;
 BOOST_AUTO_TEST_CASE(TextureCache_InvalidFunctionCallsAfterDefaultConstruction)
 {
     TextureCache tc;
-    tc.Acquire();
-
     auto const INVALID_PATH_OR_KEY{ "xyz" };
 
     BOOST_CHECK_THROW(tc.AddByKey(INVALID_PATH_OR_KEY), std::exception);
@@ -50,94 +48,87 @@ BOOST_AUTO_TEST_CASE(TextureCache_InvalidFunctionCallsAfterDefaultConstruction)
     BOOST_CHECK_THROW(tc.AddAllInDirectoryByPath(INVALID_PATH_OR_KEY), std::exception);
     BOOST_CHECK_THROW(tc.RemoveByKey(INVALID_PATH_OR_KEY), std::exception);
     BOOST_CHECK_THROW(tc.RemoveByPath(INVALID_PATH_OR_KEY), std::exception);
-    BOOST_CHECK_THROW(tc.GetPtrByIndex(0), std::exception);
-    BOOST_CHECK_THROW(tc.GetByIndex(0), std::exception);
-
-    BOOST_CHECK_THROW(tc.RemoveByIndex(0), std::exception);
-    BOOST_CHECK_THROW(tc.RemoveByIndexVec({ 0 }), std::exception);
+    
+    BOOST_REQUIRE_NO_THROW(tc.GetByIndex(0));
+    
+    BOOST_REQUIRE_NO_THROW(tc.RemoveByIndex(0));
+    
+    BOOST_REQUIRE_NO_THROW(tc.RemoveByIndexVec({ 0 }));
 
     //empty vectors result in no operations, so no exception is raised
     BOOST_REQUIRE_NO_THROW(tc.RemoveByIndexVec({}));
 
     //RemoveAll() should never throw
     BOOST_REQUIRE_NO_THROW(tc.RemoveAll());
-
-    tc.Release();
 }
 
 
-BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle)
+BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveBykey_and_RemoveByIndex_and_CheckSlotReuse)
 {
     TextureCache tc;
-    tc.Acquire();
-
     auto const KEY{ "media-images-gui-elements" };
-
-    //add and remove with RemoveByKey()
     auto const ID0{ tc.AddByKey(KEY) };
-    BOOST_CHECK(ID0 == 0);
-    BOOST_CHECK(tc.GetPtrByIndex(ID0) != nullptr);
+    BOOST_CHECK(ID0 == 1);
     BOOST_CHECK(tc.GetByIndex(ID0).getSize().x > 0.0f);
     BOOST_CHECK(tc.GetByIndex(ID0).isSmooth() == true);
     BOOST_REQUIRE_NO_THROW(tc.RemoveByKey(KEY));
-    BOOST_CHECK_THROW(tc.GetPtrByIndex(ID0), std::exception);
-    BOOST_CHECK_THROW(tc.GetByIndex(ID0), std::exception);
-
-    //add and remove with RemoveByIndex()
+    BOOST_CHECK(tc.GetByIndex(ID0).getSize().x < 1.0f);
     auto const ID1{ tc.AddByKey(KEY, false) };
-    BOOST_CHECK_MESSAGE(ID1 == 0, "the first/original slot should be reused");
-    BOOST_CHECK(tc.GetPtrByIndex(ID1) != nullptr);
+    BOOST_CHECK_MESSAGE(ID1 == 1, "the first/original slot should be reused");
     BOOST_CHECK(tc.GetByIndex(ID1).getSize().x > 0.0f);
     BOOST_CHECK(tc.GetByIndex(ID1).isSmooth() == false);
     BOOST_REQUIRE_NO_THROW(tc.RemoveByIndex(ID1));
-    BOOST_CHECK_THROW(tc.GetPtrByIndex(ID1), std::exception);
-    BOOST_CHECK_THROW(tc.GetByIndex(ID1), std::exception);
+    BOOST_CHECK(tc.GetByIndex(ID1).getSize().x < 1.0f);
+}
 
-    //add and remove with RemoveByPath()
+
+BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByPath)
+{
+    TextureCache tc;
+    auto const KEY{ "media-images-gui-elements" };
     auto const ID2{ tc.AddByKey(KEY) };
     auto const PATH{ game::GameDataFile::Instance()->GetMediaPath(KEY) };
-    BOOST_CHECK_MESSAGE(ID2 == 0, "the first/original slot should be reused");
-    BOOST_CHECK(tc.GetPtrByIndex(ID2) != nullptr);
+    BOOST_CHECK(ID2 == 1);
     BOOST_CHECK(tc.GetByIndex(ID2).getSize().x > 0.0f);
     BOOST_REQUIRE_NO_THROW(tc.RemoveByPath(PATH));
-    BOOST_CHECK_THROW(tc.GetPtrByIndex(ID2), std::exception);
-    BOOST_CHECK_THROW(tc.GetByIndex(ID2), std::exception);
+    BOOST_CHECK(tc.GetByIndex(ID2).getSize().x < 1.0f);
+}
 
-    //add and remove with RemoveByIndexVec()
+
+BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByIndexVec)
+{
+    TextureCache tc;
+    auto const KEY{ "media-images-gui-elements" };
     auto const ID3{ tc.AddByKey(KEY) };
-    BOOST_CHECK_MESSAGE(ID3 == 0, "the first/original slot should be reused");
-    BOOST_CHECK(tc.GetPtrByIndex(ID3) != nullptr);
+    BOOST_CHECK(ID3 == 1);
     BOOST_CHECK(tc.GetByIndex(ID3).getSize().x > 0.0f);
     BOOST_REQUIRE_NO_THROW(tc.RemoveByIndexVec({ ID3 }));
-    BOOST_CHECK_THROW(tc.GetPtrByIndex(ID3), std::exception);
-    BOOST_CHECK_THROW(tc.GetByIndex(ID3), std::exception);
+    BOOST_CHECK(tc.GetByIndex(ID3).getSize().x < 1.0f);
+}
 
-    //add and remove with RemoveAll()
+
+BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveAll)
+{
+    TextureCache tc;
+    auto const KEY{ "media-images-gui-elements" };
     auto const ID4{ tc.AddByKey(KEY) };
-    BOOST_CHECK_MESSAGE(ID4 == 0, "the first/original slot should be reused");
-    BOOST_CHECK(tc.GetPtrByIndex(ID4) != nullptr);
+    BOOST_CHECK(ID4 == 1);
     BOOST_CHECK(tc.GetByIndex(ID4).getSize().x > 0.0f);
     BOOST_REQUIRE_NO_THROW(tc.RemoveAll());
-    BOOST_CHECK_THROW(tc.GetPtrByIndex(ID4), std::exception);
-    BOOST_CHECK_THROW(tc.GetByIndex(ID4), std::exception);
-
-    tc.Release();
+    BOOST_CHECK(tc.GetByIndex(ID4).getSize().x < 1.0f);
 }
 
 
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveIndividually)
 {
     TextureCache tc;
-    tc.Acquire();
-
     auto const KEY{ "media-anim-images-dir-inferno" };
-
     auto const IDS{ tc.AddAllInDirectoryByKey(KEY) };
     auto const IDS_SIZE{ IDS.size() };
     BOOST_CHECK(IDS_SIZE > 0);
 
-    //verify the IDs supplied started at zero and didn't skip any
-    for (std::size_t i(0); i < IDS_SIZE; ++i)
+    //verify the IDs supplied started at one and didn't skip any
+    for (std::size_t i(1); i <= IDS_SIZE; ++i)
     {
         BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
     }
@@ -146,7 +137,6 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveIndividually)
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
-        BOOST_CHECK(tc.GetPtrByIndex(ID) != nullptr);
         BOOST_CHECK(tc.GetByIndex(ID).getSize().x > 0.0f);
         BOOST_REQUIRE_NO_THROW(tc.RemoveByIndex(ID));
     }
@@ -154,26 +144,21 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveIndividually)
     //verify they are all removed
     for (auto const ID : IDS)
     {
-        BOOST_CHECK_THROW(tc.GetByIndex(ID), std::exception);
+        BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
     }
-
-    tc.Release();
 }
 
 
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveAll)
 {
     TextureCache tc;
-    tc.Acquire();
-
     auto const KEY{ "media-anim-images-dir-inferno" };
-
     auto const IDS{ tc.AddAllInDirectoryByKey(KEY) };
     auto const IDS_SIZE{ IDS.size() };
     BOOST_CHECK(IDS_SIZE > 0);
 
-    //verify the IDs supplied started at zero and didn't skip any
-    for (std::size_t i(0); i < IDS_SIZE; ++i)
+    //verify the IDs supplied started at one and didn't skip any
+    for (std::size_t i(1); i <= IDS_SIZE; ++i)
     {
         BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
     }
@@ -182,7 +167,6 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveAll)
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
-        BOOST_CHECK(tc.GetPtrByIndex(ID) != nullptr);
         BOOST_CHECK(tc.GetByIndex(ID).getSize().x > 0.0f);
     }
 
@@ -191,26 +175,21 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveAll)
     //verify they are all removed
     for (auto const ID : IDS)
     {
-        BOOST_CHECK_THROW(tc.GetByIndex(ID), std::exception);
+        BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
     }
-
-    tc.Release();
 }
 
 
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByIndexVec)
 {
     TextureCache tc;
-    tc.Acquire();
-
     auto const KEY{ "media-anim-images-dir-inferno" };
-
     auto const IDS{ tc.AddAllInDirectoryByKey(KEY) };
     auto const IDS_SIZE{ IDS.size() };
     BOOST_CHECK(IDS_SIZE > 0);
 
-    //verify the IDs supplied started at zero and didn't skip any
-    for (std::size_t i(0); i < IDS_SIZE; ++i)
+    //verify the IDs supplied started at one and didn't skip any
+    for (std::size_t i(1); i <= IDS_SIZE; ++i)
     {
         BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
     }
@@ -219,7 +198,6 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByIndexVec)
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
-        BOOST_CHECK(tc.GetPtrByIndex(ID) != nullptr);
         BOOST_CHECK(tc.GetByIndex(ID).getSize().x > 0.0f);
     }
 
@@ -228,26 +206,21 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByIndexVec)
     //verify they are all removed
     for (auto const ID : IDS)
     {
-        BOOST_CHECK_THROW(tc.GetByIndex(ID), std::exception);
+        BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
     }
-
-    tc.Release();
 }
 
 
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByKey)
 {
     TextureCache tc;
-    tc.Acquire();
-
     auto const KEY{ "media-anim-images-dir-inferno" };
-
     auto const IDS{ tc.AddAllInDirectoryByKey(KEY) };
     auto const IDS_SIZE{ IDS.size() };
     BOOST_CHECK(IDS_SIZE > 0);
 
-    //verify the IDs supplied started at zero and didn't skip any
-    for (std::size_t i(0); i < IDS_SIZE; ++i)
+    //verify the IDs supplied started at one and didn't skip any
+    for (std::size_t i(1); i <= IDS_SIZE; ++i)
     {
         BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
     }
@@ -256,7 +229,6 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByKey)
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
-        BOOST_CHECK(tc.GetPtrByIndex(ID) != nullptr);
         BOOST_CHECK(tc.GetByIndex(ID).getSize().x > 0.0f);
     }
 
@@ -265,8 +237,6 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByKey)
     //verify they are all removed
     for (auto const ID : IDS)
     {
-        BOOST_CHECK_THROW(tc.GetByIndex(ID), std::exception);
+        BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
     }
-
-    tc.Release();
 }

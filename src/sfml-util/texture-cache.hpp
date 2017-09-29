@@ -42,7 +42,9 @@ namespace sfml_util
     using StrToSizetVecMap_t = std::map<std::string, misc::SizetVec_t>;
 
 
-    //stores textures in a single location and makes them available by index
+    //stores textures in a single location and makes them available by index.
+    //Index zero is always invalid.  Attempting to use index zero in these
+    //functions will result in an error log, not an exception.
     class TextureCache
     {
         TextureCache(const TextureCache &);
@@ -79,8 +81,6 @@ namespace sfml_util
         void RemoveByIndexVec(const misc::SizetVec_t & INDEX_VEC);
 
         void RemoveAll();
-
-        TexturePtr_t GetPtrByIndex(const std::size_t INDEX) const;
 
         const sf::Texture & GetByIndex(const std::size_t INDEX) const;
 

@@ -58,6 +58,9 @@ namespace sfml_util
         //Any value greater than (about) a thousand will work here.
         //Even an aggressize stage should not exceed 500.
         cacheUVec_.reserve(1024);
+
+        //put an empty image at index zero so there is something to return by default
+        cacheUVec_.push_back(std::make_unique<sf::Texture>());
     }
 
 
@@ -250,6 +253,14 @@ namespace sfml_util
 
     void TextureCache::RemoveByIndex(const std::size_t INDEX)
     {
+        if (INDEX == 0)
+        {
+            M_HP_LOG_ERR("sfml_util::TextureCache::RemoveByIndex(0) "
+                << "failed because zero is invalid.");
+
+            return;
+        }
+
         M_ASSERT_OR_LOGANDTHROW_SS((INDEX < cacheUVec_.size()), "sfml_util::TextureCache::"
             << "RemoveByIndex(" << INDEX << "\") failed because that index is out of range."
             << "(size=" << cacheUVec_.size() << ")");
@@ -277,9 +288,20 @@ namespace sfml_util
 
     void TextureCache::RemoveByIndexVec(const misc::SizetVec_t & INDEX_VEC)
     {
-        for (auto const NEXT_INDEX : INDEX_VEC)
+        auto const NUM_INDEXES{ INDEX_VEC.size() };
+        for (std::size_t i(0); i < NUM_INDEXES; ++i)
         {
-            RemoveByIndex(NEXT_INDEX);
+            auto const NEXT_INDEX{ INDEX_VEC[i] };
+            if (NEXT_INDEX == 0)
+            {
+                M_HP_LOG_ERR("sfml_util::TextureCache::RemoveByIndexVec(INDEX_VEC.size()="
+                    << NUM_INDEXES << ") failed at INDEX_VEC[" << i
+                    << "] because it contained zero.");
+            }
+            else
+            {
+                RemoveByIndex(NEXT_INDEX);
+            }
         }
     }
 
@@ -292,32 +314,48 @@ namespace sfml_util
         }
 
         strToVecMap_.clear();
-    }
 
-
-    TexturePtr_t TextureCache::GetPtrByIndex(const std::size_t INDEX) const
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < cacheUVec_.size()), "sfml_util::TextureCache::"
-            << "GetPtr(" << INDEX << "\") failed because that index is out of range."
-            << "(size=" << cacheUVec_.size() << ")");
-
-        M_ASSERT_OR_LOGANDTHROW_SS((cacheUVec_[INDEX].get() != nullptr),"sfml_util::TextureCache::"
-            << "GetPtr(" << INDEX << "\") failed because that pointer was null.");
-
-        return cacheUVec_[INDEX].get();
+        cacheUVec_[0] = std::make_unique<sf::Texture>();
     }
 
 
     const sf::Texture & TextureCache::GetByIndex(const std::size_t INDEX) const
     {
-        return * GetPtrByIndex(INDEX);
+        if (INDEX == 0)
+        {
+            M_HP_LOG_ERR("sfml_util::TextureCache::GetByIndex(0"
+                << "\") failed because zero is always an invalid index.");
+
+            return * cacheUVec_[0];
+        }
+
+        if (INDEX >= cacheUVec_.size())
+        {
+            M_HP_LOG_ERR("sfml_util::TextureCache::GetByIndex(" << INDEX
+                << "\") failed because that index is out of range."
+                << "(size=" << cacheUVec_.size() << ")");
+
+            return * cacheUVec_[0];
+        }
+
+        if (cacheUVec_[INDEX].get() == nullptr)
+        {
+            M_HP_LOG_ERR("sfml_util::TextureCache::GetByIndex(" << INDEX
+                << "\") failed because the pointer at that index is null.");
+        
+            return * cacheUVec_[0];
+        }
+
+        return * cacheUVec_[INDEX];
     }
 
 
     std::size_t TextureCache::EstablishNextAvailableIndex()
     {
         auto const NUM_TEXTURES{ cacheUVec_.size() };
-        for (std::size_t i(0); i < NUM_TEXTURES; ++i)
+
+        //start at one because zero is always an invalid index
+        for (std::size_t i(1); i < NUM_TEXTURES; ++i)
         {
             if (cacheUVec_[i].get() == nullptr)
             {
