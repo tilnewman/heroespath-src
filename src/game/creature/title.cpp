@@ -111,7 +111,6 @@ namespace creature
             << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
             << ") was given a valid AchievementType but the achievement count was zero.");
 
-        //construct filename
         std::ostringstream ss;
 
         if ((ACHIEVEMENT_TYPE == AchievementType::Count) ||
@@ -124,10 +123,12 @@ namespace creature
             ss << AchievementType::ToString(ACHIEVEMENT_TYPE);
 
             if (ACHIEVEMENT_INDEX > 0)
+            {
                 ss << ACHIEVEMENT_INDEX;
+            }
         }
 
-        ss << sfml_util::gui::TitleImageManager::FileNameExt();
+        ss << ".png";
         fileName_ = ss.str();
     }
 

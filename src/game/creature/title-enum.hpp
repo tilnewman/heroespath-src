@@ -37,9 +37,9 @@ namespace game
 namespace creature
 {
 
-    //Note:  Keep order in sync with game::creature::title::Warehouse::Fill()
-    namespace Titles
+    struct Titles
     {
+        //Note:  Keep order in sync with game::creature::title::Warehouse::Fill()
         enum Enum
         {
             ProtectorOfThornberry = 0,
@@ -220,10 +220,18 @@ namespace creature
             Count
         };
 
-        const std::string ToString(const Enum);//straight name with no spaces that matches the enum
-        const std::string Name(const Enum);//human readable
-        const std::string Desc(const Enum);//pulled from the game data file
-    }
+        //returns the straight name with no spaces that matches the enum name
+        static const std::string ToString(const Enum);
+
+        //returns the human readable (GUI) version with spaces
+        static const std::string Name(const Enum);
+
+        //returns the value from the game data file
+        static const std::string Desc(const Enum);
+
+        //returns the filename and extension only, not a complete path
+        static const std::string ImageFilename(const Enum);
+    };
 
     using TitleEnumVec_t = std::vector<Titles::Enum>;
 

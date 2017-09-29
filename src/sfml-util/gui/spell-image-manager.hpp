@@ -27,13 +27,10 @@
 //
 // spell-image-manager.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/gui/image-manager-base.hpp"
 
 #include "game/spell/spell-enum.hpp"
 
-#include <boost/filesystem/path.hpp>
-
-#include <string>
 #include <memory>
 
 
@@ -43,32 +40,21 @@ namespace gui
 {
 
     //Loads images and delivers sf::Textures to them on demand.
-    class SpellImageManager
+    class SpellImageManager : public ImageManagerBase<game::spell::Spells>
     {
         SpellImageManager(const SpellImageManager &) =delete;
         SpellImageManager & operator=(const SpellImageManager &) =delete;
 
     public:
         SpellImageManager();
-        ~SpellImageManager();
+        virtual ~SpellImageManager();
 
         static SpellImageManager * Instance();
         static void Acquire();
         static void Release();
 
-        inline static void SetImagesDirectory(const std::string & S)    { spellImagesDirectory_ = S; }
-        inline static float Dimmension()                                { return 256.0f; }
-        static bool Test();
-
-        void Get(sf::Texture & texture, game::spell::Spells::Enum) const;
-
-    private:
-        const std::string MakeFilename(const game::spell::Spells::Enum) const;
-        const boost::filesystem::path MakeFilepath(const game::spell::Spells::Enum) const;
     private:
         static std::unique_ptr<SpellImageManager> instanceUPtr_;
-        static std::string spellImagesDirectory_;
-        static const std::string filenameExtension_;
     };
 
 }

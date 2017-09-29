@@ -30,14 +30,8 @@
 #include "spell-image-manager.hpp"
 
 #include "game/log-macros.hpp"
-#include "game/loop-manager.hpp"
-
-#include "sfml-util/loaders.hpp"
 
 #include "misc/assertlogandthrow.hpp"
-#include "misc/boost-string-includes.hpp"
-
-#include <boost/filesystem.hpp>
 
 
 namespace sfml_util
@@ -46,8 +40,6 @@ namespace gui
 {
 
     std::unique_ptr<SpellImageManager> SpellImageManager::instanceUPtr_{ nullptr };
-    std::string SpellImageManager::spellImagesDirectory_{ "" };
-    const std::string SpellImageManager::filenameExtension_{ ".png" };
 
 
     SpellImageManager::SpellImageManager()
@@ -89,56 +81,10 @@ namespace gui
 
     void SpellImageManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "game::SpellImageManager::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "game::SpellImageManager::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
-    }
-
-
-    bool SpellImageManager::Test()
-    {
-        static auto hasInitialPrompt{ false };
-        if (false == hasInitialPrompt)
-        {
-            hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::SpellImageManager::Test() Starting Tests...");
-        }
-
-        auto simPtr{ SpellImageManager::Instance() };
-
-        static auto spellIndex{ 0 };
-        if (spellIndex < game::spell::Spells::Count)
-        {
-            auto const ENUM{ static_cast<game::spell::Spells::Enum>(spellIndex) };
-            auto const ENUM_STR{ game::spell::Spells::ToString(ENUM) };
-            sf::Texture texture;
-            simPtr->Get(texture, ENUM);
-            game::LoopManager::Instance()->TestingImageSet(texture);
-            game::LoopManager::Instance()->TestingStrAppend("SpellImageManager Tested " + ENUM_STR);
-            ++spellIndex;
-            return false;
-        }
-
-        game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::SpellImageManager::Test()  ALL TESTS PASSED.");
-        return true;
-    }
-
-
-    void SpellImageManager::Get(sf::Texture & texture, game::spell::Spells::Enum ENUM) const
-    {
-        sfml_util::LoadTexture(texture, MakeFilepath(ENUM).string());
-    }
-
-
-    const std::string SpellImageManager::MakeFilename(const game::spell::Spells::Enum ENUM) const
-    {
-        return boost::algorithm::to_lower_copy(game::spell::Spells::ToString(ENUM)) + filenameExtension_;
-    }
-
-
-    const boost::filesystem::path SpellImageManager::MakeFilepath(const game::spell::Spells::Enum ENUM) const
-    {
-        namespace bfs = boost::filesystem;
-        return bfs::system_complete( bfs::path(spellImagesDirectory_) / bfs::path(MakeFilename(ENUM)) );
     }
 
 }

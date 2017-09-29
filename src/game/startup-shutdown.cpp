@@ -312,19 +312,19 @@ namespace game
         sfml_util::gui::CreatureImageManager::SetCreatureImageDirectory(
             game::GameDataFile::Instance()->GetMediaPath("media-images-creatures-dir"));
 
-        sfml_util::gui::TitleImageManager::SetTitleImageDirectory(
+        sfml_util::gui::TitleImageManager::PathToImages(
             game::GameDataFile::Instance()->GetMediaPath("media-images-titles-dir"));
 
-        sfml_util::gui::SpellImageManager::SetImagesDirectory(
+        sfml_util::gui::SpellImageManager::PathToImages(
             game::GameDataFile::Instance()->GetMediaPath("media-images-spells-dir"));
 
-        sfml_util::gui::SongImageManager::SetImagesDirectory(
+        sfml_util::gui::SongImageManager::PathToImages(
             game::GameDataFile::Instance()->GetMediaPath("media-images-songs-dir"));
 
-        sfml_util::gui::ConditionImageManager::SetImagesDirectory(
+        sfml_util::gui::ConditionImageManager::PathToImages(
             game::GameDataFile::Instance()->GetMediaPath("media-images-conditions-dir"));
 
-        sfml_util::gui::CombatImageManager::SetImagesDirectory(
+        sfml_util::gui::CombatImageManager::PathToImages(
             game::GameDataFile::Instance()->GetMediaPath("media-images-combat-dir"));
     }
 

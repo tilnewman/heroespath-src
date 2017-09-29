@@ -27,13 +27,10 @@
 //
 // condition-image-manager.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/gui/image-manager-base.hpp"
 
 #include "game/creature/condition-enum.hpp"
 
-#include <boost/filesystem/path.hpp>
-
-#include <string>
 #include <memory>
 
 
@@ -43,41 +40,21 @@ namespace gui
 {
 
     //Loads images and delivers sf::Textures to them on demand.
-    class ConditionImageManager
+    class ConditionImageManager : public ImageManagerBase<game::creature::Conditions>
     {
         ConditionImageManager(const ConditionImageManager &) =delete;
         ConditionImageManager & operator=(const ConditionImageManager &) =delete;
 
     public:
         ConditionImageManager();
-        ~ConditionImageManager();
+        virtual ~ConditionImageManager();
 
         static ConditionImageManager * Instance();
         static void Acquire();
         static void Release();
 
-        inline static void SetImagesDirectory(const std::string & S)
-        {
-            conditionImagesDirectory_ = S;
-        }
-
-        inline static float Dimmension()
-        {
-            return 256.0f;
-        }
-
-        static bool Test();
-
-        void Get(sf::Texture & texture, game::creature::Conditions::Enum) const;
-
-    private:
-        const std::string MakeFilename(const game::creature::Conditions::Enum) const;
-        const boost::filesystem::path MakeFilepath(const game::creature::Conditions::Enum) const;
-
     private:
         static std::unique_ptr<ConditionImageManager> instanceUPtr_;
-        static std::string conditionImagesDirectory_;
-        static const std::string filenameExtension_;
     };
 }
 }

@@ -27,13 +27,10 @@
 //
 // song-image-manager.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/gui/image-manager-base.hpp"
 
 #include "game/song/song-enum.hpp"
 
-#include <boost/filesystem/path.hpp>
-
-#include <string>
 #include <memory>
 
 
@@ -43,41 +40,21 @@ namespace gui
 {
 
     //Loads images and delivers sf::Textures to them on demand.
-    class SongImageManager
+    class SongImageManager : public ImageManagerBase<game::song::Songs>
     {
         SongImageManager(const SongImageManager &) =delete;
         SongImageManager & operator=(const SongImageManager &) =delete;
 
     public:
         SongImageManager();
-        ~SongImageManager();
+        virtual ~SongImageManager();
 
         static SongImageManager * Instance();
         static void Acquire();
         static void Release();
 
-        inline static void SetImagesDirectory(const std::string & S)
-        {
-            songImagesDirectory_ = S;
-        }
-
-        inline static float Dimmension()
-        {
-            return 256.0f;
-        }
-
-        static bool Test();
-
-        void Get(sf::Texture & texture, game::song::Songs::Enum) const;
-
-    private:
-        const std::string MakeFilename(const game::song::Songs::Enum) const;
-        const boost::filesystem::path MakeFilepath(const game::song::Songs::Enum) const;
-
     private:
         static std::unique_ptr<SongImageManager> instanceUPtr_;
-        static std::string songImagesDirectory_;
-        static const std::string filenameExtension_;
     };
 
 }

@@ -29,15 +29,9 @@
 //
 #include "combat-image-manager.hpp"
 
-#include "game/loop-manager.hpp"
-
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/loaders.hpp"
+#include "game/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
-
-#include <boost/filesystem.hpp>
 
 
 namespace sfml_util
@@ -46,7 +40,6 @@ namespace gui
 {
 
     std::unique_ptr<CombatImageManager> CombatImageManager::instanceUPtr_{ nullptr };
-    std::string CombatImageManager::imagesDirectoryPath_{ "" };
 
 
     CombatImageManager::CombatImageManager()
@@ -88,65 +81,10 @@ namespace gui
 
     void CombatImageManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::CombatImageManager::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "sfml_util::gui::CombatImageManager::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
-    }
-
-
-    bool CombatImageManager::Test()
-    {
-        static auto hasInitialPrompt{ false };
-        if (false == hasInitialPrompt)
-        {
-            hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::CombatImageManager::Test()  Starting Tests...");
-        }
-
-        static auto willFlip{ true };
-        static auto imageIndex{ 0 };
-        if (imageIndex < CombatImageType::Count)
-        {
-            auto const ENUM{ static_cast<CombatImageType::Enum>(imageIndex) };
-            auto const FILENAME{ CombatImageType::Filename(ENUM) };
-            sf::Texture texture;
-            Get(texture, ENUM);
-
-            willFlip = ! willFlip;
-
-            if (willFlip)
-            {
-                sfml_util::FlipHoriz(texture);
-                game::LoopManager::Instance()->TestingImageSet(texture);
-                game::LoopManager::Instance()->TestingStrAppend("CombatImageManager Tested " + FILENAME);
-            }
-            else
-            {
-                game::LoopManager::Instance()->TestingImageSet(texture);
-                game::LoopManager::Instance()->TestingStrAppend("CombatImageManager Tested " + FILENAME);
-                return false;
-            }
-
-            ++imageIndex;
-            return false;
-        }
-
-        game::LoopManager::Instance()->TestingStrAppend("sfml_util::gui::CombatImageManager::Test()  ALL TESTS PASSED.");
-        return true;
-    }
-
-
-    void CombatImageManager::Get(sf::Texture & texture, const CombatImageType::Enum E, const bool WILL_FLIP_HORIZ) const
-    {
-        namespace bfs = boost::filesystem;
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(imagesDirectoryPath_) /
-            bfs::path(CombatImageType::Filename(E))));
-
-        sfml_util::LoadTexture(texture, PATH_OBJ.string());
-
-        if (WILL_FLIP_HORIZ)
-        {
-            sfml_util::FlipHoriz(texture);
-        }
     }
 
 }

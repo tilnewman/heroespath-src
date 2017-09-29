@@ -62,12 +62,13 @@ namespace spell
         };
 
         //straight name without spaces
-        static const std::string ToString(const Spells::Enum);
+        static const std::string ToString(const Enum);
 
         //human readable with spaces
-        static const std::string Name(const Spells::Enum);
-        static const std::string ShortDesc(const Spells::Enum);
-        static const std::string ExtraDesc(const Spells::Enum);
+        static const std::string Name(const Enum);
+        static const std::string ShortDesc(const Enum);
+        static const std::string ExtraDesc(const Enum);
+        static const std::string ImageFilename(const Enum);
     };
 
     using SpellVec_t = std::vector<Spells::Enum>;

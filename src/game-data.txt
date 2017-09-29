@@ -177,6 +177,7 @@ media-images-bones-skull-snake=             image/treasure-stage/bones/skull-sna
 media-images-bones-three-headed-hound=      image/treasure-stage/bones/three-headed-hound.png
 media-images-bones-wolfen=                  image/treasure-stage/bones/wolfen.png
 media-images-trap=                          image/treasure-stage/trap.png
+media-images-placeholder=                   image/misc/placeholder.png
 
 #Race Stat Modifiers
 heroespath-creature-race-stat-modifiers-Human=    2,  2,   2, -6,  0,  0

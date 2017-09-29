@@ -27,9 +27,9 @@
 //
 // combat-image-manager.hpp
 //
-#include <sfml-util/gui/combat-image-enum.hpp>
+#include "sfml-util/gui/combat-image-enum.hpp"
+#include "sfml-util/gui/image-manager-base.hpp"
 
-#include <string>
 #include <memory>
 
 
@@ -43,30 +43,21 @@ namespace gui
 {
 
     //singleton responsible for loading and dispensing combat image sf::Textures
-    class CombatImageManager
+    class CombatImageManager : public ImageManagerBase<CombatImageType>
     {
         CombatImageManager & operator=(const CombatImageManager &) =delete;
         CombatImageManager(const CombatImageManager &) =delete;
 
     public:
         CombatImageManager();
-        ~CombatImageManager();
+        virtual ~CombatImageManager();
 
         static CombatImageManager * Instance();
         static void Acquire();
         static void Release();
 
-        inline static void SetImagesDirectory(const std::string & S) { imagesDirectoryPath_ = S; }
-
-        bool Test();
-
-        void Get(sf::Texture &,
-                 const CombatImageType::Enum,
-                 const bool WILL_FLIP_HORIZ = false) const;
-
     private:
         static std::unique_ptr<CombatImageManager> instanceUPtr_;
-        static std::string imagesDirectoryPath_;
     };
 
 }

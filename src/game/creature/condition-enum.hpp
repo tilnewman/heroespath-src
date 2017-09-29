@@ -72,6 +72,7 @@ namespace creature
         static const std::string Name(const Enum);
         static const std::string ToString(const Enum);
         static const std::string Desc(const Enum);
+        static const std::string ImageFilename(const Enum);
     };
 
     using CondEnumVec_t      = std::vector<Conditions::Enum>;

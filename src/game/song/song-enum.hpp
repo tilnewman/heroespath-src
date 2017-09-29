@@ -53,6 +53,7 @@ namespace song
         static const std::string Name(const Enum);
         static const std::string ShortDesc(const Enum);
         static const std::string ExtraDesc(const Enum);
+        static const std::string ImageFilename(const Enum);
     };
 
     using SongVec_t = std::vector<Songs::Enum>;

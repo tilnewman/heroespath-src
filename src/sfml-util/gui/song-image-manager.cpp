@@ -30,14 +30,8 @@
 #include "song-image-manager.hpp"
 
 #include "game/log-macros.hpp"
-#include "game/loop-manager.hpp"
-
-#include "sfml-util/loaders.hpp"
 
 #include "misc/assertlogandthrow.hpp"
-#include "misc/boost-string-includes.hpp"
-
-#include <boost/filesystem.hpp>
 
 
 namespace sfml_util
@@ -46,8 +40,6 @@ namespace gui
 {
 
     std::unique_ptr<SongImageManager> SongImageManager::instanceUPtr_{ nullptr };
-    std::string SongImageManager::songImagesDirectory_{ "" };
-    const std::string SongImageManager::filenameExtension_{ ".png" };
 
 
     SongImageManager::SongImageManager()
@@ -93,60 +85,6 @@ namespace gui
             "game::SongImageManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
-    }
-
-
-    bool SongImageManager::Test()
-    {
-        static auto hasInitialPrompt{ false };
-        if (false == hasInitialPrompt)
-        {
-            hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "sfml_util::gui::SongImageManager::Test() Starting Tests...");
-        }
-
-        auto simPtr{ SongImageManager::Instance() };
-
-        static auto songIndex{ 0 };
-        if (songIndex < game::song::Songs::Count)
-        {
-            auto const ENUM{ static_cast<game::song::Songs::Enum>(songIndex) };
-            auto const ENUM_STR{ game::song::Songs::ToString(ENUM) };
-            sf::Texture texture;
-            simPtr->Get(texture, ENUM);
-            game::LoopManager::Instance()->TestingImageSet(texture);
-            game::LoopManager::Instance()->TestingStrAppend("SongImageManager Tested " + ENUM_STR);
-            ++songIndex;
-            return false;
-        }
-
-        game::LoopManager::Instance()->TestingStrAppend(
-            "sfml_util::gui::SongImageManager::Test()  ALL TESTS PASSED.");
-
-        return true;
-    }
-
-
-    void SongImageManager::Get(sf::Texture & texture, game::song::Songs::Enum ENUM) const
-    {
-        sfml_util::LoadTexture(texture, MakeFilepath(ENUM).string());
-    }
-
-
-    const std::string SongImageManager::MakeFilename(const game::song::Songs::Enum ENUM) const
-    {
-        return boost::algorithm::to_lower_copy(
-            game::song::Songs::ToString(ENUM)) + filenameExtension_;
-    }
-
-
-    const boost::filesystem::path SongImageManager::MakeFilepath(
-        const game::song::Songs::Enum ENUM) const
-    {
-        namespace bfs = boost::filesystem;
-        return bfs::system_complete( bfs::path(songImagesDirectory_) /
-            bfs::path(MakeFilename(ENUM)) );
     }
 
 }

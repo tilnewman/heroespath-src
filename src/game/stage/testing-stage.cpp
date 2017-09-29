@@ -45,7 +45,6 @@
 #include "popup/popup-manager.hpp"
 
 #include "game/log-macros.hpp"
-#include "game/loop-manager.hpp"
 #include "game/game-data-file.hpp"
 #include "game/creature/title-warehouse.hpp"
 #include "game/creature/conditions.hpp"
@@ -359,8 +358,9 @@ namespace stage
         static auto hasTestingCompleted_SpellsImageManager{ false };
         if (false == hasTestingCompleted_SpellsImageManager)
         {
-            hasTestingCompleted_SpellsImageManager =
-                sfml_util::gui::SpellImageManager::Instance()->Test();
+            hasTestingCompleted_SpellsImageManager = 
+                TestImageManager<sfml_util::gui::SpellImageManager, spell::Spells>();
+
             return;
         }
 
@@ -374,8 +374,9 @@ namespace stage
         static auto hasTestingCompleted_SongsImageManager{ false };
         if (false == hasTestingCompleted_SongsImageManager)
         {
-            hasTestingCompleted_SongsImageManager =
-                sfml_util::gui::SongImageManager::Instance()->Test();
+            hasTestingCompleted_SongsImageManager = 
+                TestImageManager<sfml_util::gui::SongImageManager, song::Songs>();
+
             return;
         }
 
@@ -389,8 +390,9 @@ namespace stage
         static auto hasTestingCompleted_ConditionImageManager{ false };
         if (false == hasTestingCompleted_ConditionImageManager)
         {
-            hasTestingCompleted_ConditionImageManager =
-                sfml_util::gui::ConditionImageManager::Instance()->Test();
+            hasTestingCompleted_ConditionImageManager = 
+                TestImageManager<sfml_util::gui::ConditionImageManager, creature::Conditions>();
+
             return;
         }
 
@@ -404,24 +406,9 @@ namespace stage
         static auto hasTestingCompleted_TitleImageManager{ false };
         if (false == hasTestingCompleted_TitleImageManager)
         {
-            hasTestingCompleted_TitleImageManager =
-                sfml_util::gui::TitleImageManager::Instance()->Test();
-            return;
-        }
+            hasTestingCompleted_TitleImageManager = 
+                TestImageManager<sfml_util::gui::TitleImageManager, creature::Titles>();
 
-        static auto hasTestingCompleted_SongImageManager{ false };
-        if (false == hasTestingCompleted_SongImageManager)
-        {
-            hasTestingCompleted_SongImageManager =
-                sfml_util::gui::SpellImageManager::Instance()->Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_SpellImageManager{ false };
-        if (false == hasTestingCompleted_SpellImageManager)
-        {
-            hasTestingCompleted_SpellImageManager =
-                sfml_util::gui::SpellImageManager::Instance()->Test();
             return;
         }
 
@@ -436,8 +423,9 @@ namespace stage
         static auto hasTestingCompleted_CombatImageManager{ false };
         if (false == hasTestingCompleted_CombatImageManager)
         {
-            hasTestingCompleted_CombatImageManager =
-                sfml_util::gui::CombatImageManager::Instance()->Test();
+            hasTestingCompleted_CombatImageManager = TestImageManager<
+                sfml_util::gui::CombatImageManager, sfml_util::gui::CombatImageType>();
+
             return;
         }
 

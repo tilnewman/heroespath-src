@@ -28,72 +28,34 @@
 // title-image-manager.hpp
 //  Code that manages loading and lifetime of title images.
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/gui/image-manager-base.hpp"
 
-#include "game/creature/title-warehouse.hpp"
+#include "game/creature/title-enum.hpp"
 
-#include <boost/filesystem/path.hpp>
-
-#include <string>
+#include <memory>
 
 
-namespace game
-{
-namespace creature
-{
-    class Title;
-    using TitleCPtr_t = const Title *;
-}
-}
 namespace sfml_util
 {
 namespace gui
 {
 
     //A class that loads, stores, and distributes creature images.
-    class TitleImageManager
+    class TitleImageManager : public ImageManagerBase<game::creature::Titles>
     {
         TitleImageManager(const TitleImageManager &) =delete;
         TitleImageManager & operator=(const TitleImageManager &) =delete;
 
     public:
         TitleImageManager();
-        ~TitleImageManager();
+        virtual ~TitleImageManager();
 
         static TitleImageManager * Instance();
         static void Acquire();
         static void Release();
-        static void SetTitleImageDirectory(const std::string & PATH);
-        static bool Test();
-
-        inline static const std::string PlaceholderFileName()
-        {
-            return "placeholder" + FileNameExt();
-        }
-
-        inline static float DimmensionMax()
-        {
-            return 256.0f;
-        }
-
-        inline static const std::string FileNameExt()
-        {
-            return ".png";
-        }
-
-        void Get(sf::Texture & texture, game::creature::TitlePtr_t TITLE_PTR) const;
-
-        //this function will throw if the given enum is invalid
-        inline void Get(sf::Texture & t, game::creature::Titles::Enum E) const
-        {
-            Get(t, game::creature::title::Warehouse::Get(E));
-        }
 
     private:
-        static std::string imagesDirectoryPath_;
         static std::unique_ptr<TitleImageManager> instanceUPtr_;
-        //
-        boost::filesystem::path placeHlderFilePathObj_;
     };
 
 }

@@ -53,7 +53,7 @@ namespace gui
         };
 
         static const std::string ToString(const Enum);
-        static const std::string Filename(const Enum);
+        static const std::string ImageFilename(const Enum);
     };
 
 }

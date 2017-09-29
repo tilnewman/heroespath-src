@@ -30,6 +30,8 @@
 #include "title-enum.hpp"
 
 #include "game/game-data-file.hpp"
+#include "game/creature/title.hpp"
+#include "game/creature/title-warehouse.hpp"
 
 #include <exception>
 #include <sstream>
@@ -425,6 +427,12 @@ namespace creature
         std::ostringstream keySS;
         keySS << "heroespath-creature-title-" << ToString(E) << "-desc";
         return boost::algorithm::trim_copy(GameDataFile::Instance()->GetCopyStr(keySS.str()));
+    }
+
+
+    const std::string Titles::ImageFilename(const Titles::Enum E)
+    {
+        return title::Warehouse::Get(E)->ImageFilename();
     }
 
 }

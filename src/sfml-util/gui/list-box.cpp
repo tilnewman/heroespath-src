@@ -842,7 +842,7 @@ namespace gui
         {
             sfml_util::gui::TitleImageManager::Instance()->Get(
                 texture,
-                listBoxItemSPtr->TITLE_CPTRC);
+                listBoxItemSPtr->TITLE_CPTRC->Which());
 
             didLoadTexture = true;
         }

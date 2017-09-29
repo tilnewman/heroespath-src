@@ -31,6 +31,8 @@
 
 #include "game/game-data-file.hpp"
 
+#include "misc/boost-string-includes.hpp"
+
 #include <exception>
 #include <sstream>
 
@@ -93,6 +95,12 @@ namespace creature
         std::ostringstream keySS;
         keySS << "heroespath-creature-condition-" << ToString(E) << "-desc";
         return GameDataFile::Instance()->GetCopyStr(keySS.str());
+    }
+
+
+    const std::string Conditions::ImageFilename(const Conditions::Enum E)
+    {
+        return boost::algorithm::to_lower_copy(ToString(E) + ".png");
     }
 
 

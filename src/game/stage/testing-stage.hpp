@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_TESTINGSTAGE_INCLUDED
-#define GAME_TESTINGSTAGE_INCLUDED
+#ifndef GAME_STAGE_TESTINGSTAGE_HPP_INCLUDED
+#define GAME_STAGE_TESTINGSTAGE_HPP_INCLUDED
 //
 // testing-stage.hpp
 //  A Stage class that allows visualization of testing routines.
@@ -32,13 +32,17 @@
 #include "sfml-util/stage.hpp"
 #include "sfml-util/animation-factory.hpp"
 
+#include "game/loop-manager.hpp"
 #include "game/ouroboros.hpp"
 #include "game/stats/stat-set.hpp"
+
+#include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
 
 #include <memory>
 #include <string>
 #include <vector>
 #include <utility>
+#include <sstream>
 
 
 namespace game
@@ -83,6 +87,54 @@ namespace stage
         bool TestAnimations();
         bool TestInventoryFactory();
 
+        template<typename ManagerType_t, typename EnumType_t>
+        bool TestImageManager()
+        {
+            std::ostringstream managerTypeNameSS;
+            managerTypeNameSS
+                << boost::typeindex::type_id<ManagerType_t>().pretty_name()
+                << "<" << boost::typeindex::type_id<EnumType_t>().pretty_name()
+                << ">";
+
+            static auto hasInitialPrompt{ false };
+            if (false == hasInitialPrompt)
+            {
+                hasInitialPrompt = true;
+
+                game::LoopManager::Instance()->TestingStrAppend(
+                    managerTypeNameSS.str() + "  Starting Tests...");
+            }
+
+            static auto willFlip{ false };
+            static auto imageIndex{ 0 };
+            if (imageIndex < EnumType_t::Count)
+            {
+                auto const ENUM{ static_cast<typename EnumType_t::Enum>(imageIndex) };
+                sf::Texture texture;
+                ManagerType_t::Instance()->Get(texture, ENUM, willFlip);
+
+                game::LoopManager::Instance()->TestingImageSet(texture);
+
+                game::LoopManager::Instance()->TestingStrAppend(
+                    managerTypeNameSS.str() + " Tested "
+                    + EnumType_t::ImageFilename(ENUM)
+                    + ((willFlip) ? "HORIZ_FLIPPED" : ""));
+
+                if (willFlip)
+                {
+                    ++imageIndex;
+                }
+
+                willFlip = ! willFlip;
+                return false;
+            }
+
+            game::LoopManager::Instance()->TestingStrAppend(
+                managerTypeNameSS.str() + "  All Test Passed");
+
+            return true;
+        }
+
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;
         static sfml_util::AnimationUPtr_t animUPtr_;
@@ -103,5 +155,5 @@ namespace stage
 
 }
 }
-#endif //GAME_TESTINGSTAGE_INCLUDED
+#endif //GAME_STAGE_TESTINGSTAGE_HPP_INCLUDED
 

@@ -63,7 +63,7 @@ namespace gui
     }
 
 
-    const std::string CombatImageType::Filename(const Enum E)
+    const std::string CombatImageType::ImageFilename(const Enum E)
     {
         switch (E)
         {
@@ -81,7 +81,7 @@ namespace gui
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::CombatImageType::Filename(" << E << ")_InvalidValueError.";
+                ss << "sfml_util::CombatImageType::ImageFilename(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }

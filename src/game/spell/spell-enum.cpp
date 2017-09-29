@@ -31,6 +31,8 @@
 
 #include "game/game-data-file.hpp"
 
+#include "misc/boost-string-includes.hpp"
+
 #include <sstream>
 #include <exception>
 
@@ -107,6 +109,12 @@ namespace spell
         std::ostringstream keySS;
         keySS << "heroespath-spell-" << ToString(E) << "-extra-desc";
         return GameDataFile::Instance()->GetCopyStr(keySS.str());
+    }
+
+
+    const std::string Spells::ImageFilename(const Spells::Enum E)
+    {
+        return boost::algorithm::to_lower_copy(ToString(E) + ".png");
     }
 
 }
