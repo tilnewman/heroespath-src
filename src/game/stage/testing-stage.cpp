@@ -987,10 +987,8 @@ namespace stage
                         rankIndex,
                         static_cast<stats::Trait_t>(rankIndex * 10000) );
 
-                    non_player::ownership::InventoryFactory::Instance()->PopulateCreatureInventory(
+                    non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(
                         characterUPtr.get());
-
-                    characterUPtr->SetCurrentWeaponsToBest();
                 }
 
                 std::ostringstream ss;

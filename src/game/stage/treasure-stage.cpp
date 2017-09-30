@@ -601,9 +601,7 @@ namespace stage
 
         coinsSprite_.setTexture(coinsTexture_);
 
-        auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
-
-        auto const COINS_IMAGE_WIDTH{ (SCREEN_WIDTH * 0.25f) };
+        auto const COINS_IMAGE_WIDTH{ (sfml_util::Display::Instance()->GetWinWidth() * 0.25f) };
 
         auto const COINS_SCALE{ (COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width) /
             2.0f };

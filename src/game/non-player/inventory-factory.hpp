@@ -76,7 +76,7 @@ namespace ownership
         static void Acquire();
         static void Release();
 
-        static void PopulateCreatureInventory(
+        static void SetupCreatureInventory(
             non_player::CharacterPtr_t creaturePtr);
 
         static const IItemPVecPair_t MakeItemSet(

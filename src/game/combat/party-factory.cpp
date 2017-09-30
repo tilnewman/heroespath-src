@@ -99,50 +99,95 @@ namespace combat
 
         for (std::size_t i(0); i < 10; ++i)
         {
-            partyPtr->Add( MakeCreature_GoblinGrunt() );
+            partyPtr->Add( MakeCharacter_GoblinGrunt() );
         }
 
         return partyPtr;
     }
 
 
-    non_player::CharacterPtr_t PartyFactory::MakeCreature_GoblinGrunt() const
+    non_player::CharacterPtr_t PartyFactory::MakeCharacter_GoblinGrunt() const
     {
-        const stats::StatSet GOBLIN_STATS( 13 + misc::random::Int(5),  //str
-                                           13 + misc::random::Int(5),  //acc
-                                           5  + misc::random::Int(5),  //cha
-                                           5  + misc::random::Int(5),  //lck
-                                           13 + misc::random::Int(5),  //spd
-                                           3  + misc::random::Int(5) );//int
+        const stats::StatSet STATS(
+            13 + misc::random::Int(5),  //str
+            13 + misc::random::Int(5),  //acc
+            5  + misc::random::Int(5),  //cha
+            5  + misc::random::Int(5),  //lck
+            13 + misc::random::Int(5),  //spd
+            3  + misc::random::Int(5) );//int
 
-        const stats::Trait_t GOBLIN_HEALTH(10 + misc::random::Int(10));
-
-        const creature::sex::Enum GOBLIN_SEX((misc::random::Int(100) < 75) ?
-            creature::sex::Male : creature::sex::Female);
-
-        auto goblinGruntPtr( new non_player::Character(
-            creature::race::Name(creature::race::Goblin),
-            GOBLIN_SEX,
-            creature::BodyType::Make_FromRaceAndRole(creature::race::Goblin,
-                                                     creature::role::Grunt),
+        auto characterPtr{ MakeCharacter(
+            STATS,
+            10, 20,
+            ((misc::random::Int(100) < 75) ? creature::sex::Male : creature::sex::Female),
             creature::race::Goblin,
-            creature::role::Grunt,
-            GOBLIN_STATS,
-            GOBLIN_HEALTH) );
-
-        goblinGruntPtr->ImageFilename(
-            sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
-                creature::race::Goblin,
-                creature::role::Grunt,
-                GOBLIN_SEX,
-                true) );
+            creature::role::Grunt) };
 
         non_player::ownership::InventoryFactory::Instance()->
-            PopulateCreatureInventory(goblinGruntPtr);
+            SetupCreatureInventory(characterPtr);
 
-        goblinGruntPtr->SetCurrentWeaponsToBest();
+        return characterPtr;
+    }
 
-        return goblinGruntPtr;
+
+    non_player::CharacterPtr_t PartyFactory::MakeCharacter_Boar() const
+    {
+        const stats::StatSet STATS(
+            13 + misc::random::Int(3),  //str
+            10 + misc::random::Int(2),  //acc
+            4  + misc::random::Int(2),  //cha
+            5  + misc::random::Int(5),  //lck
+            13 + misc::random::Int(5),  //spd
+            1 );                        //int
+
+        return MakeCharacter(
+            STATS,
+            13, 18,
+            ((misc::random::Bool()) ? creature::sex::Male : creature::sex::Female),
+            creature::race::Boar,
+            creature::role::Boar);
+    }
+
+
+    non_player::CharacterPtr_t PartyFactory::MakeCharacter(
+        const stats::StatSet & STATS,
+        const stats::Trait_t HEALTH_MIN,
+        const stats::Trait_t HEALTH_MAX,
+        const creature::sex::Enum SEX,
+        const creature::race::Enum RACE,
+        const creature::role::Enum ROLE,
+        const stats::Trait_t RANK,
+        const stats::Trait_t EXPERIENCE,
+        const stats::Trait_t MANA) const
+    {
+        auto characterPtr{ new non_player::Character(
+            creature::race::Name(RACE),
+            SEX,
+            creature::BodyType::Make_FromRaceAndRole(RACE, ROLE),
+            RACE,
+            ROLE,
+            STATS,
+            misc::random::Int(HEALTH_MIN, HEALTH_MAX),
+            RANK,
+            EXPERIENCE,
+            creature::CondEnumVec_t(),
+            creature::TitleEnumVec_t(),
+            item::Inventory(),
+            sfml_util::DateTime(),
+            "",
+            spell::SpellVec_t(),
+            MANA) };
+
+        characterPtr->ImageFilename(
+            sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
+                RACE,
+                ROLE,
+                SEX,
+                true,
+                characterPtr->WolfenClass(),
+                characterPtr->DragonClass()) );
+
+        return characterPtr;
     }
 
 }

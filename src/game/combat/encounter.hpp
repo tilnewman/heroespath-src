@@ -26,7 +26,8 @@
 #define GAME_COMBAT_ENCOUNTER_INCLUDED
 //
 // encounter.hpp
-//  Code that orchestrates an encounter from start to finish, and owns the pointers to the non-player party.
+//  Code that orchestrates an encounter from start to finish,
+//  and owns the pointers to the non-player party.
 //
 #include "game/combat/turn-action-enum.hpp"
 #include "game/combat/turn-info.hpp"

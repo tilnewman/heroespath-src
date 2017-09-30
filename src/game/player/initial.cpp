@@ -68,12 +68,12 @@ namespace player
     {
         if (characterPtrC->ImageFilename().empty())
         {
-             const std::string FILENAME(sfml_util::gui::CreatureImageManager::Instance()->GetFilename(characterPtrC->Race(),
-                                                                                                      characterPtrC->Role(),
-                                                                                                      characterPtrC->Sex(),
-                                                                                                      true));
-
-             characterPtrC->ImageFilename(FILENAME);
+            characterPtrC->ImageFilename(sfml_util::gui::CreatureImageManager::Instance()->
+                GetFilename(
+                    characterPtrC->Race(),
+                    characterPtrC->Role(),
+                    characterPtrC->Sex(),
+                    true));
         }
     }
 

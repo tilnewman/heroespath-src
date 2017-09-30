@@ -102,7 +102,7 @@ namespace ownership
     }
 
 
-    void InventoryFactory::PopulateCreatureInventory(non_player::CharacterPtr_t creaturePtr)
+    void InventoryFactory::SetupCreatureInventory(non_player::CharacterPtr_t creaturePtr)
     {
         auto const INVENTORY_CHANCES{ ChanceFactory::Make(creaturePtr) };
         creaturePtr->CoinsAdj( Make_Coins(INVENTORY_CHANCES) );
@@ -150,6 +150,8 @@ namespace ownership
                     << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
             }
         }
+
+        creaturePtr->SetCurrentWeaponsToBest();
     }
 
 

@@ -29,6 +29,12 @@
 //  A singleton class that creates parties of creatures that confront the player characters.
 //
 #include "game/stats/types.hpp"
+#include "game/stats/stat-set.hpp"
+#include "game/creature/sex-enum.hpp"
+#include "game/creature/race-enum.hpp"
+#include "game/creature/role-enum.hpp"
+#include "game/creature/wolfen-class-enum.hpp"
+#include "game/creature/dragon-class-enum.hpp"
 
 #include <memory>
 #include <vector>
@@ -65,7 +71,19 @@ namespace combat
         non_player::PartyPtr_t MakeParty_FirstEncounter() const;
 
     private:
-        non_player::CharacterPtr_t MakeCreature_GoblinGrunt() const;
+        non_player::CharacterPtr_t MakeCharacter_GoblinGrunt() const;
+        non_player::CharacterPtr_t MakeCharacter_Boar() const;
+
+        non_player::CharacterPtr_t MakeCharacter(
+            const stats::StatSet & STATS,
+            const stats::Trait_t HEALTH_MIN,
+            const stats::Trait_t HEALTH_MAX,
+            const creature::sex::Enum SEX,
+            const creature::race::Enum RACE,
+            const creature::role::Enum ROLE,
+            const stats::Trait_t RANK = 1,
+            const stats::Trait_t EXPERIENCE = 0,
+            const stats::Trait_t MANA = 0) const;
 
     private:
         static std::unique_ptr<PartyFactory> instanceUPtr_;
