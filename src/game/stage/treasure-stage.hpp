@@ -117,9 +117,14 @@ namespace stage
             AllFinished
         };
 
-        DamagePopup DisplayCharacterDamagePopups();
+        DamagePopup PromptPlayerWithDamagePopups();
 
+        //returns true if all characters were killed by the trap
+        bool CheckAndHandleAllKilledByTrap();
+
+        void LockboxOpen();
         void SetupStageForTreasureCollection();
+
 
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
@@ -130,9 +135,10 @@ namespace stage
         static const std::string POPUP_NAME_CHAR_SELECT_;
         static const std::string POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_;
         static const std::string POPUP_NAME_LOCK_PICK_ATTEMPT_;
-        static const std::string POPUP_NAME_LOCK_PICK_SUCCESS_;
         static const std::string POPUP_NAME_LOCK_PICK_FAILURE_;
         static const std::string POPUP_NAME_DAMAGE_REPORT_;
+        static const std::string POPUP_NAME_LOCKBOX_OPEN_;
+        static const std::string POPUP_NAME_ALL_CHARACTERS_DIED_;
 
     private:
         int setupCountdown_;

@@ -37,6 +37,7 @@
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-treasure-trap.hpp"
 #include "popup/popup-stage-item-profile-wait.hpp"
+#include "popup/popup-stage-combat-over.hpp"
 
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
@@ -99,14 +100,17 @@ namespace stage
     const std::string TreasureStage::POPUP_NAME_LOCK_PICK_ATTEMPT_{
         "PopupName_LockPickAttempt" };
 
-    const std::string TreasureStage::POPUP_NAME_LOCK_PICK_SUCCESS_{
-        "PopupName_LockPickSuccess" };
-
     const std::string TreasureStage::POPUP_NAME_LOCK_PICK_FAILURE_{
         "PopupName_LockPickFailure" };
 
     const std::string TreasureStage::POPUP_NAME_DAMAGE_REPORT_{
         "PopupName_DamageReport" };
+
+    const std::string TreasureStage::POPUP_NAME_LOCKBOX_OPEN_{
+        "PopupName_LockboxOpen" };
+
+    const std::string TreasureStage::POPUP_NAME_ALL_CHARACTERS_DIED_{
+        "PopupName_AllCharactersDied" };
 
 
     TreasureStage::TreasureStage()
@@ -238,24 +242,28 @@ namespace stage
             return false;
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCK_PICK_SUCCESS_)
-        {
-            SetupStageForTreasureCollection();
-            return true;
-        }
-
         if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCK_PICK_FAILURE_) ||
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_DAMAGE_REPORT_))
         {
-            if (DisplayCharacterDamagePopups() == DamagePopup::Displayed)
+            if (PromptPlayerWithDamagePopups() == DamagePopup::Displayed)
             {
                 return false;
             }
             else
             {
-                SetupStageForTreasureCollection();
-                return true;
+                if (CheckAndHandleAllKilledByTrap() == false)
+                {
+                    LockboxOpen();
+                }
+
+                return false;
             }
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_OPEN_)
+        {
+            SetupStageForTreasureCollection();
+            return true;
         }
 
         return true;
@@ -917,20 +925,7 @@ namespace stage
         sfml_util::SoundManager::Instance()->SoundEffectPlay(
             sfml_util::sound_effect::TreasureUnlock);
 
-        sfml_util::SoundManager::Instance()->SoundEffectPlay(
-            SelectRandomTreasureOpeningSfx(),
-            1.0f);
-
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
-            POPUP_NAME_LOCK_PICK_SUCCESS_,
-            "Success!",
-            3.0f,
-            sfml_util::FontManager::Instance()->Size_Large(),
-            popup::PopupImage::Banner,
-            sfml_util::sound_effect::None) };
-
-        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
-            this, POPUP_INFO);
+        LockboxOpen();
     }
 
 
@@ -953,7 +948,7 @@ namespace stage
     }
 
 
-    TreasureStage::DamagePopup TreasureStage::DisplayCharacterDamagePopups()
+    TreasureStage::DamagePopup TreasureStage::PromptPlayerWithDamagePopups()
     {
         if (creatureEffectIndex_ < fightResult_.Effects().size())
         {
@@ -969,8 +964,8 @@ namespace stage
                 ignored) };
 
             auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
-                "\n" + POPUP_NAME_DAMAGE_REPORT_,
-                DAMAGE_TEXT,
+                POPUP_NAME_DAMAGE_REPORT_,
+                "\n" + DAMAGE_TEXT,
                 popup::PopupButtons::Continue,
                 popup::PopupImage::Regular) };
 
@@ -983,6 +978,46 @@ namespace stage
         {
             return DamagePopup::AllFinished;
         }
+    }
+
+
+    bool TreasureStage::CheckAndHandleAllKilledByTrap()
+    {
+        auto const ALL_LIVING_PVEC{ creature::Algorithms::PlayersByType(
+            creature::Algorithms::TypeOpt::Player, creature::Algorithms::PlayerOpt::Living) };
+
+        if (ALL_LIVING_PVEC.empty())
+        {
+            game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCombatOver>(
+                this,
+                popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
+                    POPUP_NAME_ALL_CHARACTERS_DIED_, combat::CombatEnd::Lose));
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    void TreasureStage::LockboxOpen()
+    {
+        sfml_util::SoundManager::Instance()->SoundEffectPlay(
+            SelectRandomTreasureOpeningSfx(),
+            0.5f);
+
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
+            POPUP_NAME_LOCKBOX_OPEN_,
+            "\nThe " + item::TreasureImage::ToContainerName(treasureImageType_) + " Opens!",
+            4.0f,
+            sfml_util::FontManager::Instance()->Size_Large(),
+            popup::PopupImage::Regular,
+            sfml_util::sound_effect::None) };
+
+        LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
+            this, POPUP_INFO);
     }
 
 
