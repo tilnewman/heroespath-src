@@ -83,15 +83,10 @@ namespace stage
         void HandleCountdownAndPleaseWaitPopup();
         void SetupBackgroundImage();
         const sf::Vector2f SetupTreasureImage(const item::TreasureImage::Enum);
-
-        void SetupCoinsImage(
-            const item::TreasureImage::Enum,
-            const sf::Vector2f & TREASURE_IMAGE_POS_V);
-        
+        void SetupCoinsImage(const sf::Vector2f & TREASURE_IMAGE_POS_V);
         const std::string GetCorpseImageKeyFromEnemyParty() const;
         const misc::StrVec_t GetCorpseImageKeyFromRace(const creature::race::Enum) const;
         void SetupAfterDelay();
-        void SetupCoinsImage();
 
         item::TreasureAvailable::Enum DetermineTreasureAvailableState(
             const item::ItemCache & CACHE_HELD,
@@ -156,6 +151,7 @@ namespace stage
         game::Trap trap_;
         combat::FightResult fightResult_;
         std::size_t creatureEffectIndex_;
+        bool willShowCoinsImage_;
     };
 
 }

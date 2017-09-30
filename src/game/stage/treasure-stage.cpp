@@ -127,7 +127,8 @@ namespace stage
         treasureAvailable_  (item::TreasureAvailable::Count),
         trap_               (),
         fightResult_        (),
-        creatureEffectIndex_(0)
+        creatureEffectIndex_(0),
+        willShowCoinsImage_ (false)
     {}
 
 
@@ -285,7 +286,12 @@ namespace stage
         target.draw(bgSprite_, STATES);
         target.draw(corpseSprite_, STATES);
         target.draw(treasureSprite_, STATES);
-        target.draw(coinsSprite_, STATES);
+        
+        if (willShowCoinsImage_)
+        {
+            target.draw(coinsSprite_, STATES);
+        }
+
         Stage::Draw(target, STATES);
     }
 
@@ -323,8 +329,14 @@ namespace stage
 
     const sf::Vector2f TreasureStage::SetupTreasureImage(const item::TreasureImage::Enum E)
     {
+        auto const TREASURE_IMAGE_KEY{ item::TreasureImage::ToImageKey(E) };
+
+        auto const TREASURE_IMAGE_SCALE_NEED_REDUCTION{
+            (TREASURE_IMAGE_KEY == "media-images-bones-bone-pile-1") ||
+            (TREASURE_IMAGE_KEY == "media-images-bones-bone-pile-2") };
+
         sfml_util::LoadTexture(treasureTexture_,
-            GameDataFile::Instance()->GetMediaPath(item::TreasureImage::ToImageKey(E)));
+            GameDataFile::Instance()->GetMediaPath(TREASURE_IMAGE_KEY));
 
         treasureSprite_.setTexture(treasureTexture_);
 
@@ -332,8 +344,14 @@ namespace stage
         auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
 
         //these values found by experiment to look good at various resolutions
-        auto const TREASURE_IMAGE_MAX_WIDTH{ (SCREEN_WIDTH * 0.5f) };
-        auto const TREASURE_IMAGE_MAX_HEIGHT{ (SCREEN_HEIGHT * 0.333f) };
+        auto const TREASURE_IMAGE_SCALE_ADJ{
+            ((TREASURE_IMAGE_SCALE_NEED_REDUCTION) ? 0.75f : 1.0f) };
+
+        auto const TREASURE_IMAGE_MAX_WIDTH{
+            (SCREEN_WIDTH * 0.5f * TREASURE_IMAGE_SCALE_ADJ) };
+        
+        auto const TREASURE_IMAGE_MAX_HEIGHT{
+            (SCREEN_HEIGHT * 0.333f * TREASURE_IMAGE_SCALE_ADJ) };
 
         sfml_util::ScaleSpriteToFit(
             treasureSprite_,
@@ -354,28 +372,27 @@ namespace stage
     }
 
 
-    void TreasureStage::SetupCoinsImage(
-        const item::TreasureImage::Enum E,
-        const sf::Vector2f & TREASURE_IMAGE_POS_V)
+    void TreasureStage::SetupCoinsImage(const sf::Vector2f & TREASURE_IMAGE_POS_V)
     {
-        if (E == item::TreasureImage::BonePile)
-        {
-            auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
-            auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
+        sfml_util::LoadTexture(coinsTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-coins"));
 
-            coinsSprite_.setPosition(SCREEN_WIDTH + 1.0f, SCREEN_HEIGHT + 1.0f);
-        }
-        else
-        {
-            //these values found by experiment to look good at various resolutions
-            auto const COINS_LEFT{ TREASURE_IMAGE_POS_V.x +
-                (treasureSprite_.getGlobalBounds().width * 0.80f) };
+        coinsSprite_.setTexture(coinsTexture_);
 
-            auto const COINS_TOP{ TREASURE_IMAGE_POS_V.y +
-                (treasureSprite_.getGlobalBounds().height * 0.75f) };
+        auto const COINS_IMAGE_WIDTH{ (sfml_util::Display::Instance()->GetWinWidth() * 0.125f) };
+        auto const COINS_SCALE{ COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width };
+        coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
 
-            coinsSprite_.setPosition(COINS_LEFT, COINS_TOP);
-        }
+        coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
+
+        //these values found by experiment to look good at various resolutions
+        auto const COINS_LEFT{ TREASURE_IMAGE_POS_V.x +
+            (treasureSprite_.getGlobalBounds().width * 0.80f) };
+
+        auto const COINS_TOP{ TREASURE_IMAGE_POS_V.y +
+            (treasureSprite_.getGlobalBounds().height * 0.75f) };
+
+        coinsSprite_.setPosition(COINS_LEFT, COINS_TOP);
     }
 
 
@@ -588,27 +605,9 @@ namespace stage
 
         SetupCorpseImage();
         auto const TREASURE_IMAGE_POS_V{ SetupTreasureImage(treasureImageType_) };
-        SetupCoinsImage(treasureImageType_, TREASURE_IMAGE_POS_V);
+        SetupCoinsImage(TREASURE_IMAGE_POS_V);
         treasureAvailable_ = DetermineTreasureAvailableState(itemCacheHeld_, itemCacheLockbox_);
         PromptUserBasedonTreasureAvailability(treasureAvailable_, treasureImageType_);
-    }
-
-
-    void TreasureStage::SetupCoinsImage()
-    {
-        sfml_util::LoadTexture(coinsTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-coins"));
-
-        coinsSprite_.setTexture(coinsTexture_);
-
-        auto const COINS_IMAGE_WIDTH{ (sfml_util::Display::Instance()->GetWinWidth() * 0.25f) };
-
-        auto const COINS_SCALE{ (COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width) /
-            2.0f };
-
-        coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
-
-        coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
     }
 
 
