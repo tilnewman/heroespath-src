@@ -150,7 +150,9 @@ namespace game
     std::size_t Trap::RandomEffectedPlayersCount() const
     {
         return static_cast<std::size_t>(
-            misc::random::Int(damageRange_.Min(), damageRange_.Max()));
+            misc::random::Int(
+                static_cast<int>(playerCountRange_.Min()),
+                static_cast<int>(playerCountRange_.Max()) ) );
     }
 
 
