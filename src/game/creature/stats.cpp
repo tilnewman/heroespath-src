@@ -29,6 +29,7 @@
 //
 #include "stats.hpp"
 
+#include "game/log-macros.hpp"
 #include "game/game-data-file.hpp"
 #include "game/creature/creature.hpp"
 
@@ -161,16 +162,12 @@ namespace creature
             "game::creature::Stats::Test() called with TRAIT_ENUM_VEC empty.");
 
         stats::Trait_t rollChance{ 0 };
+        
         for (auto const NEXT_TRAIT_ENUM : TRAIT_ENUM_VEC)
         {
             auto const TRAIT_WORKING{ CREATURE_PTR->TraitWorking(NEXT_TRAIT_ENUM) };
             rollChance += TRAIT_WORKING;
-
-            if (OPTIONS & With::Luck)
-            {
-                rollChance += LuckBonus(CREATURE_PTR);
-            }
-
+            
             if (OPTIONS & With::RaceRoleBonus)
             {
                 rollChance += RollBonusByRace(
@@ -186,14 +183,26 @@ namespace creature
 
             if (OPTIONS & With::StandardBonus)
             {
-                rollChance += static_cast<stats::Trait_t>(
+                auto const STD_BONUS{ static_cast<stats::Trait_t>(
                     static_cast<float>(stats::Trait::STAT_MAX_ESTIMATED_) *
-                    (static_cast<float>(CREATURE_PTR->TraitBonusCurrent(NEXT_TRAIT_ENUM)) -
-                        100.0f));
+                    (static_cast<float>(CREATURE_PTR->TraitBonusCurrent(NEXT_TRAIT_ENUM)) /
+                        100.0f)) };
+
+                rollChance += STD_BONUS;
             }
         }
 
+        if (rollChance < 0)
+        {
+            rollChance = 0;
+        }
+
         rollChance /= static_cast<int>(TRAIT_ENUM_VEC.size());
+        
+        if (OPTIONS & With::Luck)
+        {
+            rollChance += LuckBonus(CREATURE_PTR);
+        }
 
         if (OPTIONS & With::RankBonus)
         {
@@ -201,10 +210,10 @@ namespace creature
                 static_cast<float>(CREATURE_PTR->Rank()) *
                     GameDataFile::Instance()->GetCopyFloat(
                         "heroespath-fight-stats-rank-bonus-ratio")) };
-        
+
             rollChance += RANK_BONUS;
         }
-
+        
         return (misc::random::Int(stats::Trait::STAT_MAX_ESTIMATED_) < rollChance);
     }
 

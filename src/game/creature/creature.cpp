@@ -104,13 +104,13 @@ namespace creature
         bonusSet_         (),
         enchantmentsPVec_ ()
     {
-        actualSet_.Get(stats::Traits::Mana).NormalSet(MANA);
-        actualSet_.Get(stats::Traits::Strength).NormalSet(STATS.Str());
-        actualSet_.Get(stats::Traits::Accuracy).NormalSet(STATS.Acc());
-        actualSet_.Get(stats::Traits::Charm).NormalSet(STATS.Cha());
-        actualSet_.Get(stats::Traits::Luck).NormalSet(STATS.Lck());
-        actualSet_.Get(stats::Traits::Speed).NormalSet(STATS.Spd());
-        actualSet_.Get(stats::Traits::Intelligence).NormalSet(STATS.Int());
+        actualSet_.Get(stats::Traits::Mana).CurrAndNormSet(MANA);
+        actualSet_.Get(stats::Traits::Strength).CurrAndNormSet(STATS.Str());
+        actualSet_.Get(stats::Traits::Accuracy).CurrAndNormSet(STATS.Acc());
+        actualSet_.Get(stats::Traits::Charm).CurrAndNormSet(STATS.Cha());
+        actualSet_.Get(stats::Traits::Luck).CurrAndNormSet(STATS.Lck());
+        actualSet_.Get(stats::Traits::Speed).CurrAndNormSet(STATS.Spd());
+        actualSet_.Get(stats::Traits::Intelligence).CurrAndNormSet(STATS.Int());
 
         //verify valid RACE and ROLE combination
         auto const ROLE_VEC{ race::Roles(race_) };
