@@ -134,7 +134,7 @@ namespace stage
         LISTBOX_COLORSET_          (LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_),
         LISTBOX_BG_INFO_           (LISTBOX_COLOR_BG_),
         mainMenuTitle_             ("inventory_button.png", true, 1.0f, 0.75f),
-        CREATURE_IMAGE_POS_TOP_    (mainMenuTitle_.LowerPosition(false)),
+        CREATURE_IMAGE_POS_TOP_    (mainMenuTitle_.Bottom(false)),
         LISTBOX_POS_TOP_           (CREATURE_IMAGE_POS_TOP_ + CREATURE_IMAGE_HEIGHT_MAX_ + (LISTBOX_HEIGHT_REDUCTION_ * 0.5f)),
         LISTBOX_HEIGHT_            ((SCREEN_HEIGHT_ - LISTBOX_POS_TOP_) - LISTBOX_HEIGHT_REDUCTION_),
         LISTBOX_REGION_            (FIRST_LISTBOX_POS_LEFT_, LISTBOX_POS_TOP_, LISTBOX_WIDTH_, LISTBOX_HEIGHT_),
@@ -768,7 +768,7 @@ namespace stage
         insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "InventoryStage'sInstruction",
             INSTR_TEXT_INFO,
-            sf::FloatRect(0.0f, mainMenuTitle_.LowerPosition(false) - 10.0f, 0.0f, 0.0f));
+            sf::FloatRect(0.0f, mainMenuTitle_.Bottom(false) - 10.0f, 0.0f, 0.0f));
 
             insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f, insTextRegionUPtr_->GetEntityPos().y);
         EntityAdd(insTextRegionUPtr_.get());
@@ -2301,10 +2301,11 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        const sf::FloatRect STATS_TEXT_RECT(STATS_POS_LEFT_,
-                                            mainMenuTitle_.LowerPosition(false) + 20.0f,
-                                            0.0f,
-                                            0.0f);
+        const sf::FloatRect STATS_TEXT_RECT(
+            STATS_POS_LEFT_,
+            mainMenuTitle_.Bottom(false) + 20.0f,
+            0.0f,
+            0.0f);
 
         if (statsTextRegionUPtr_.get() == nullptr)
         {
@@ -2339,7 +2340,7 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         const sf::FloatRect CENTER_TEXT_RECT(
             0.0f,
-            mainMenuTitle_.LowerPosition(true) + sfml_util::MapByRes(5.0f, 30.0f),
+            mainMenuTitle_.Bottom(true) + sfml_util::MapByRes(5.0f, 30.0f),
             0.0f,
             0.0f);
 

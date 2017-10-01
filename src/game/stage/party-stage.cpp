@@ -343,20 +343,26 @@ namespace stage
 
         //top instruction text
         {
-            sfml_util::gui::TextInfo insTextInfo("(double-click or use the arrow keys and enter to move characters back and forth)",
-                                                 sfml_util::FontManager::Instance()->Font_Typical(),
-                                                 sfml_util::FontManager::Instance()->Size_Smallish(),
-                                                 sfml_util::FontManager::Color_GrayLight(),
-                                                 sf::BlendAlpha,
-                                                 sf::Text::Italic,
-                                                 sfml_util::Justified::Left);
+            sfml_util::gui::TextInfo insTextInfo(
+                "(double-click or use the arrow keys and enter to move characters back and forth)",
+                sfml_util::FontManager::Instance()->Font_Typical(),
+                sfml_util::FontManager::Instance()->Size_Smallish(),
+                sfml_util::FontManager::Color_GrayLight(),
+                sf::BlendAlpha,
+                sf::Text::Italic,
+                sfml_util::Justified::Left);
 
             insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "Instructions",
                 insTextInfo,
                 sf::FloatRect());
 
-            insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 125.0f, mainMenuTitle_.LowerPosition() - 45.0f);
+            auto const HALF_INSTR_TEXT_WIDTH{ insTextRegionUPtr_->GetEntityRegion().width * 0.5f };
+
+            insTextRegionUPtr_->SetEntityPos(
+                ((SCREEN_WIDTH_ * 0.5f) - HALF_INSTR_TEXT_WIDTH) + 125.0f,
+                mainMenuTitle_.Bottom() - 45.0f);
+
             EntityAdd(insTextRegionUPtr_.get());
         }
 

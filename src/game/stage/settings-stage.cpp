@@ -143,10 +143,24 @@ namespace stage
         //establish screen positions
         const sf::FloatRect NEW_STAGE_REGION(0.0f, 0.0f, sfml_util::Display::Instance()->GetWinWidth(), sfml_util::Display::Instance()->GetWinHeight());
         StageRegionSet(NEW_STAGE_REGION);
-        const float BOX_POS_LEFT((StageRegionWidth() - BOX_WIDTH_) - ((StageRegionWidth() - BOX_WIDTH_) * 0.5f));
-        const float BOX_POS_TOP(mainMenuTitle_.LowerPosition());
-        const sf::FloatRect BOX_RECT(BOX_POS_LEFT, BOX_POS_TOP, BOX_WIDTH_, BOX_HEIGHT_);
-        const sf::FloatRect BOX_RECT_INNER(BOX_POS_LEFT + BOX_INNER_PAD_, BOX_POS_TOP + BOX_INNER_PAD_, BOX_WIDTH_ - (BOX_INNER_PAD_ * 2.0f), BOX_HEIGHT_ - (BOX_INNER_PAD_ * 2.0f));
+
+        auto const BOX_POS_LEFT{
+            (StageRegionWidth() - BOX_WIDTH_) - ((StageRegionWidth() - BOX_WIDTH_) * 0.5f) };
+        
+        auto const BOX_POS_TOP{ mainMenuTitle_.Bottom() };
+
+        const sf::FloatRect BOX_RECT(
+            BOX_POS_LEFT,
+            BOX_POS_TOP,
+            BOX_WIDTH_,
+            BOX_HEIGHT_);
+
+        const sf::FloatRect BOX_RECT_INNER(
+            BOX_POS_LEFT + BOX_INNER_PAD_,
+            BOX_POS_TOP + BOX_INNER_PAD_,
+            BOX_WIDTH_ - (BOX_INNER_PAD_ * 2.0f),
+            BOX_HEIGHT_ - (BOX_INNER_PAD_ * 2.0f));
+
         boxTop_ = BOX_POS_TOP;
 
         //background box

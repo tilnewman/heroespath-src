@@ -809,7 +809,7 @@ namespace stage
 
             const sf::FloatRect REGION(
                 sfml_util::MapByRes(40.0f, 1525.0f),
-                mainMenuTitle_.LowerPosition(),
+                mainMenuTitle_.Bottom(),
                 0.0f,
                 0.0f);
 
@@ -891,8 +891,11 @@ namespace stage
 
         //name label
         {
-            const sf::FloatRect REGION((SCREEN_WIDTH_ * 0.5f) - 150.0f,
-                mainMenuTitle_.LowerPosition() - 20.0f, 0.0f, 0.0f);
+            const sf::FloatRect REGION(
+                (SCREEN_WIDTH_ * 0.5f) - 150.0f,
+                mainMenuTitle_.Bottom() - 20.0f,
+                0.0f,
+                0.0f);
 
             const sfml_util::gui::TextInfo NAME_LABEL_TEXT_INFO(
                 "(name your character here)",

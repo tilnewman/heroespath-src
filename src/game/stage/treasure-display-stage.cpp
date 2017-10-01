@@ -105,7 +105,7 @@ namespace treasure
         Stage("TreasureDisplay", false),
         treasureStagePtr_(treasureStagePtr),
         ouroborosUPtr_(),
-        listboxMoverUPtr_(),
+        //listboxMoverUPtr_(),
         backgroundTexture_(),
         backgroundSprite_(),
         corpseTexture_(),
