@@ -161,7 +161,7 @@ namespace stage
 
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_WORN_ONLY_)
         {
-            SetupStageForTreasureCollection();
+            SetupForCollection();
             return true;
         }
 
@@ -175,7 +175,7 @@ namespace stage
             }
             else
             {
-                SetupStageForTreasureCollection();
+                SetupForCollection();
                 return true;
             }
         }
@@ -262,7 +262,7 @@ namespace stage
 
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_OPEN_)
         {
-            SetupStageForTreasureCollection();
+            SetupForCollection();
             return true;
         }
 
@@ -750,7 +750,7 @@ namespace stage
     void TreasureStage::SetupStageForTreasureCollectionWithoutLockbox()
     {
         treasureAvailable_ = item::TreasureAvailable::HeldOnly;
-        SetupStageForTreasureCollection();
+        SetupForCollection();
     }
 
 
@@ -1004,6 +1004,15 @@ namespace stage
 
     void TreasureStage::LockboxOpen()
     {
+        if (item::TreasureImage::ChestClosed == treasureImageType_)
+        {
+            treasureImageType_ = item::TreasureImage::ChestOpen;
+        }
+        else if (item::TreasureImage::LockboxClosed == treasureImageType_)
+        {
+            treasureImageType_ = item::TreasureImage::LockboxOpen;
+        }
+
         sfml_util::SoundManager::Instance()->SoundEffectPlay(
             SelectRandomTreasureOpeningSfx(),
             0.5f);
@@ -1021,9 +1030,37 @@ namespace stage
     }
 
 
-    void TreasureStage::SetupStageForTreasureCollection()
+    void TreasureStage::SetupForCollection()
     {
+        SetupForCollection_UpdateTreasureImage();
         //TODO
+    }
+
+
+    void TreasureStage::SetupForCollection_UpdateTreasureImage()
+    {
+        if (item::TreasureImage::ChestOpen == treasureImageType_)
+        {
+            sfml_util::LoadTexture(
+                treasureTexture_,
+                GameDataFile::Instance()->GetMediaPath("media-images-chest-open"));
+
+            willShowCoinsImage_ = true;
+        }
+        else if (item::TreasureImage::LockboxOpen == treasureImageType_)
+        {
+            sfml_util::LoadTexture(
+                treasureTexture_,
+                GameDataFile::Instance()->GetMediaPath("media-images-lockbox-open"));
+
+            willShowCoinsImage_ = true;
+        }
+    }
+
+
+    void SetupForCollection_SetupTreasureListbox()
+    {
+
     }
 
 }

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_SUMMARY_VIEW_INCLUDED
-#define GAME_SUMMARY_VIEW_INCLUDED
+#ifndef GAME_SUMMARY_VIEW_HPP_INCLUDED
+#define GAME_SUMMARY_VIEW_HPP_INCLUDED
 //
 // summary-view.hpp
 //  A collection of classes that are responsible for displaying creature details on the Combat Display
@@ -157,4 +157,4 @@ namespace combat
 }
 }
 
-#endif //GAME_SUMMARY_VIEW_INCLUDED
+#endif //GAME_SUMMARY_VIEW_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_ARMORFACTORY_INCLUDED
-#define GAME_ITEM_ARMORFACTORY_INCLUDED
+#ifndef GAME_ITEM_ARMORFACTORY_HPP_INCLUDED
+#define GAME_ITEM_ARMORFACTORY_HPP_INCLUDED
 //
 // armor-factory.hpp
 //  Code that is responsible for making armor objects.
@@ -117,4 +117,4 @@ namespace armor
 }
 }
 
-#endif //GAME_ITEM_ARMORFACTORY_INCLUDED
+#endif //GAME_ITEM_ARMORFACTORY_HPP_INCLUDED

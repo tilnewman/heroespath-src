@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_CONDITION_INCLUDED
-#define GAME_CREATURE_CONDITION_INCLUDED
+#ifndef GAME_CREATURE_CONDITION_HPP_INCLUDED
+#define GAME_CREATURE_CONDITION_HPP_INCLUDED
 //
 // condition.hpp
 //  Code that places a Creature under a temporary condition.
@@ -104,4 +104,4 @@ namespace creature
 
 }
 }
-#endif //GAME_CREATURE_CONDITION_INCLUDED
+#endif //GAME_CREATURE_CONDITION_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_ITEMTYPEENUM_INCLUDED
-#define GAME_ITEM_ITEMTYPEENUM_INCLUDED
+#ifndef GAME_ITEM_ITEMTYPEENUM_HPP_INCLUDED
+#define GAME_ITEM_ITEMTYPEENUM_HPP_INCLUDED
 //
 // item-type-enum.hpp
 //  Enumerations for all of an Item's various types.
@@ -732,4 +732,4 @@ namespace item
 
 }
 }
-#endif //GAME_ITEM_ITEMTYPEENUM_INCLUDED
+#endif //GAME_ITEM_ITEMTYPEENUM_HPP_INCLUDED

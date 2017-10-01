@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_CROSSBOX_INCLUDED
-#define SFMLUTIL_GUI_CROSSBOX_INCLUDED
+#ifndef SFMLUTIL_GUI_CROSSBOX_HPP_INCLUDED
+#define SFMLUTIL_GUI_CROSSBOX_HPP_INCLUDED
 //
 // crossbox.hpp
 //  A crossed box drawing utility class
@@ -119,4 +119,4 @@ namespace box
 }
 }
 }
-#endif //SFMLUTIL_GUI_CROSSBOX_INCLUDED
+#endif //SFMLUTIL_GUI_CROSSBOX_HPP_INCLUDED

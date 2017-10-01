@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_Title_INCLUDED
-#define GAME_CREATURE_Title_INCLUDED
+#ifndef GAME_CREATURE_Title_HPP_INCLUDED
+#define GAME_CREATURE_Title_HPP_INCLUDED
 //
 // title.hpp
 //  Code that grants a player status and bonuses after a number of Achievements.
@@ -131,4 +131,4 @@ namespace creature
 
 }
 }
-#endif //GAME_CREATURE_Title_INCLUDED
+#endif //GAME_CREATURE_Title_HPP_INCLUDED

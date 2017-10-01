@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_ICALLBACKHANDLER_INCLUDED
-#define SFMLUTIL_ICALLBACKHANDLER_INCLUDED
+#ifndef SFMLUTIL_ICALLBACKHANDLER_HPP_INCLUDED
+#define SFMLUTIL_ICALLBACKHANDLER_HPP_INCLUDED
 //
 // i-callback-handler.hpp
 //  Pure virtual interface for all callback handler objects
@@ -86,4 +86,4 @@ namespace callback
 
 }
 }
-#endif //SFMLUTIL_ICALLBACKHANDLER_INCLUDED
+#endif //SFMLUTIL_ICALLBACKHANDLER_HPP_INCLUDED

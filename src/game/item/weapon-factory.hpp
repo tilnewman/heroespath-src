@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_WEAPONFACTORY_INCLUDED
-#define GAME_ITEM_WEAPONFACTORY_INCLUDED
+#ifndef GAME_ITEM_WEAPONFACTORY_HPP_INCLUDED
+#define GAME_ITEM_WEAPONFACTORY_HPP_INCLUDED
 //
 // weapons-factory.hpp
 //  Code responsible for creating weapon objects.
@@ -122,4 +122,4 @@ namespace weapon
 }
 }
 }
-#endif //GAME_ITEM_WEAPONFACTORY_INCLUDED
+#endif //GAME_ITEM_WEAPONFACTORY_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef MISC_PLATFORM_INCLUDED
-#define MISC_PLATFORM_INCLUDED
+#ifndef MISC_PLATFORM_HPP_INCLUDED
+#define MISC_PLATFORM_HPP_INCLUDED
 //
 // platform.hpp
 //  Code that detects the platform and stores it.
@@ -113,4 +113,4 @@ namespace misc
     };
 
 }
-#endif //MISC_PLATFORM_INCLUDED
+#endif //MISC_PLATFORM_HPP_INCLUDED

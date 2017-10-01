@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_COMBAT_ENCOUNTER_INCLUDED
-#define GAME_COMBAT_ENCOUNTER_INCLUDED
+#ifndef GAME_COMBAT_ENCOUNTER_HPP_INCLUDED
+#define GAME_COMBAT_ENCOUNTER_HPP_INCLUDED
 //
 // encounter.hpp
 //  Code that orchestrates an encounter from start to finish,
@@ -192,4 +192,4 @@ namespace combat
 
 }
 }
-#endif //GAME_COMBAT_ENCOUNTER_INCLUDED
+#endif //GAME_COMBAT_ENCOUNTER_HPP_INCLUDED

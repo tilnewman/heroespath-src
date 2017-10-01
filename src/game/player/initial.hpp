@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_PLAYER_INITIAL_INCLUDED
-#define GAME_PLAYER_INITIAL_INCLUDED
+#ifndef GAME_PLAYER_INITIAL_HPP_INCLUDED
+#define GAME_PLAYER_INITIAL_HPP_INCLUDED
 //
 // initial.hpp
 //  A collection of functions that performs initial setup of a player character
@@ -61,4 +61,4 @@ namespace player
 
 }
 }
-#endif //GAME_PLAYER_INITIAL_INCLUDED
+#endif //GAME_PLAYER_INITIAL_HPP_INCLUDED

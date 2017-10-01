@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_COMBAT_COMBATTREE_INCLUDED
-#define GAME_COMBAT_COMBATTREE_INCLUDED
+#ifndef GAME_COMBAT_COMBATTREE_HPP_INCLUDED
+#define GAME_COMBAT_COMBATTREE_HPP_INCLUDED
 //
 // combat-tree.hpp
 //  A class that manages an undirected graph of verticies with Id_t IDs called the combat tree.
@@ -260,4 +260,4 @@ namespace combat
 
 }
 }
-#endif //GAME_COMBAT_COMBATTREE_INCLUDED
+#endif //GAME_COMBAT_COMBATTREE_HPP_INCLUDED

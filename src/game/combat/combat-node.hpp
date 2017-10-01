@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_COMBAT_COMBATNODE_INCLUDED
-#define GAME_COMBAT_COMBATNODE_INCLUDED
+#ifndef GAME_COMBAT_COMBATNODE_HPP_INCLUDED
+#define GAME_COMBAT_COMBATNODE_HPP_INCLUDED
 //
 // combat-node.hpp
 //  A class that handles drawing nodes on the combat tree.
@@ -200,4 +200,4 @@ namespace combat
 
 }
 }
-#endif //GAME_COMBAT_COMBATNODE_INCLUDED
+#endif //GAME_COMBAT_COMBATNODE_HPP_INCLUDED

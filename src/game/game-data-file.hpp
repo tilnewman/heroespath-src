@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_GAMEDATAFILE_INCLUDED
-#define GAME_GAMEDATAFILE_INCLUDED
+#ifndef GAME_GAMEDATAFILE_HPP_INCLUDED
+#define GAME_GAMEDATAFILE_HPP_INCLUDED
 //
 // game-data-file.hpp
 //  A singleton config file that contains game data
@@ -62,4 +62,4 @@ namespace game
     };
 
 }
-#endif //GAME_GAMEDATAFILE_INCLUDED
+#endif //GAME_GAMEDATAFILE_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_MAINMENUSTAGE_INCLUDED
-#define GAME_MAINMENUSTAGE_INCLUDED
+#ifndef GAME_MAINMENUSTAGE_HPP_INCLUDED
+#define GAME_MAINMENUSTAGE_HPP_INCLUDED
 //
 // credits-stage.hpp
 //  A Stage class that displays the rolling credits of the app.
@@ -92,4 +92,4 @@ namespace stage
 
 }
 }
-#endif //GAME_MAINMENUSTAGE_INCLUDED
+#endif //GAME_MAINMENUSTAGE_HPP_INCLUDED

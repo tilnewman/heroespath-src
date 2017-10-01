@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CONDITIONENUM_INCLUDED
-#define GAME_CONDITIONENUM_INCLUDED
+#ifndef GAME_CONDITIONENUM_HPP_INCLUDED
+#define GAME_CONDITIONENUM_HPP_INCLUDED
 //
 // condition-enum.hpp
 //  An enumeration defining each type of Condition.
@@ -109,4 +109,4 @@ namespace condition
 }
 }
 
-#endif //GAME_CONDITIONENUM_INCLUDED
+#endif //GAME_CONDITIONENUM_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_BACKGROUNDIMAGE_INCLUDED
-#define SFMLUTIL_BACKGROUNDIMAGE_INCLUDED
+#ifndef SFMLUTIL_BACKGROUNDIMAGE_HPP_INCLUDED
+#define SFMLUTIL_BACKGROUNDIMAGE_HPP_INCLUDED
 //
 // background-image.hpp
 //
@@ -98,4 +98,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_BACKGROUNDIMAGE_INCLUDED
+#endif //SFMLUTIL_BACKGROUNDIMAGE_HPP_INCLUDED

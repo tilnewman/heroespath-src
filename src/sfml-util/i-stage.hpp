@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_ISTAGE_INCLUDED
-#define SFMLUTIL_ISTAGE_INCLUDED
+#ifndef SFMLUTIL_ISTAGE_HPP_INCLUDED
+#define SFMLUTIL_ISTAGE_HPP_INCLUDED
 //
 // i-stage.hpp
 //  Interface for all Stage objects.
@@ -107,4 +107,4 @@ namespace sfml_util
 
 }
 
-#endif //SFMLUTIL_ISTAGE_INCLUDED
+#endif //SFMLUTIL_ISTAGE_HPP_INCLUDED

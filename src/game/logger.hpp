@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_LOGGER_INCLUDED
-#define GAME_LOGGER_INCLUDED
+#ifndef GAME_LOGGER_HPP_INCLUDED
+#define GAME_LOGGER_HPP_INCLUDED
 //
 // logger.hpp
 //  A singleton logging class.
@@ -56,4 +56,4 @@ namespace game
     };
 
 }
-#endif //GAME_LOGGER_INCLUDED
+#endif //GAME_LOGGER_HPP_INCLUDED

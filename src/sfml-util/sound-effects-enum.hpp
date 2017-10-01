@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SOUNDEFFECTSENUM_INCLUDED
-#define SFMLUTIL_SOUNDEFFECTSENUM_INCLUDED
+#ifndef SFMLUTIL_SOUNDEFFECTSENUM_HPP_INCLUDED
+#define SFMLUTIL_SOUNDEFFECTSENUM_HPP_INCLUDED
 //
 // sound-effects-enum.hpp
 //  An enum defining the various sound effects
@@ -356,4 +356,4 @@ namespace sfml_util
     using SfxEnumVec_t = std::vector<sound_effect::Enum>;
 
 }
-#endif //SFMLUTIL_SOUNDEFFECTSENUM_INCLUDED
+#endif //SFMLUTIL_SOUNDEFFECTSENUM_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_RADIOBUTTONDISPLAY_INCLUDED
-#define SFMLUTIL_RADIOBUTTONDISPLAY_INCLUDED
+#ifndef SFMLUTIL_RADIOBUTTONDISPLAY_HPP_INCLUDED
+#define SFMLUTIL_RADIOBUTTONDISPLAY_HPP_INCLUDED
 //
 // radio-button-display.hpp
 //  A specific RadioButtonSet for changing the display resolution.
@@ -78,4 +78,4 @@ namespace gui_demo
 
     using RadioButtonSet_DisplayChangeSPtr_t = std::shared_ptr<RadioButtonSet_DisplayChange>;
 }
-#endif //SFMLUTIL_RADIOBUTTONDISPLAY_INCLUDED
+#endif //SFMLUTIL_RADIOBUTTONDISPLAY_HPP_INCLUDED

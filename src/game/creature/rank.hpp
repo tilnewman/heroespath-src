@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_RANK_INCLUDED
-#define GAME_CREATURE_RANK_INCLUDED
+#ifndef GAME_CREATURE_RANK_HPP_INCLUDED
+#define GAME_CREATURE_RANK_HPP_INCLUDED
 //
 // rank.hpp
 //  Code that gives meaning to all possible rank values.
@@ -62,4 +62,4 @@ namespace creature
 
 }
 }
-#endif //GAME_CREATURE_RANK_INCLUDED
+#endif //GAME_CREATURE_RANK_HPP_INCLUDED

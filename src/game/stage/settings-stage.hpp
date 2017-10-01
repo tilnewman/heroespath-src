@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_SETTINGSSTAGE_INCLUDED
-#define GAME_SETTINGSSTAGE_INCLUDED
+#ifndef GAME_SETTINGSSTAGE_HPP_INCLUDED
+#define GAME_SETTINGSSTAGE_HPP_INCLUDED
 //
 // settings-stage.hpp
 //  A Stage class that allows changing system and game settings.
@@ -110,4 +110,4 @@ namespace stage
 
 }
 }
-#endif //GAME_SETTINGSSTAGE_INCLUDED
+#endif //GAME_SETTINGSSTAGE_HPP_INCLUDED

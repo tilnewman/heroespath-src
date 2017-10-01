@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_ITEMIMAGEMANAGER_INCLUDED
-#define SFMLUTIL_GUI_ITEMIMAGEMANAGER_INCLUDED
+#ifndef SFMLUTIL_GUI_ITEMIMAGEMANAGER_HPP_INCLUDED
+#define SFMLUTIL_GUI_ITEMIMAGEMANAGER_HPP_INCLUDED
 //
 // item-image-manager.hpp
 //  Code that manages loading and lifetime of item images.
@@ -123,4 +123,4 @@ namespace gui
 
 }
 }
-#endif //SFMLUTIL_GUI_ITEMIMAGEMANAGER_INCLUDED
+#endif //SFMLUTIL_GUI_ITEMIMAGEMANAGER_HPP_INCLUDED

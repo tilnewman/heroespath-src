@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_INNSTAGE_INCLUDED
-#define GAME_INNSTAGE_INCLUDED
+#ifndef GAME_INNSTAGE_HPP_INCLUDED
+#define GAME_INNSTAGE_HPP_INCLUDED
 //
 // inn-stage.hpp
 //  A Stage class that allows starting the game
@@ -83,4 +83,4 @@ namespace stage
 
 }
 }
-#endif //GAME_INNSTAGE_INCLUDED
+#endif //GAME_INNSTAGE_HPP_INCLUDED

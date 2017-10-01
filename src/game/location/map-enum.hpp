@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_LOCATION_MAPENUM_INCLUDED
-#define GAME_LOCATION_MAPENUM_INCLUDED
+#ifndef GAME_LOCATION_MAPENUM_HPP_INCLUDED
+#define GAME_LOCATION_MAPENUM_HPP_INCLUDED
 //
 // map-enum.hpp
 //  An enumeration defining each mapped location in the game.
@@ -54,4 +54,4 @@ namespace location
 
 }
 }
-#endif //GAME_LOCATION_MAPENUM_INCLUDED
+#endif //GAME_LOCATION_MAPENUM_HPP_INCLUDED

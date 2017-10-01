@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_INTROSTAGE_INCLUDED
-#define GAME_INTROSTAGE_INCLUDED
+#ifndef GAME_INTROSTAGE_HPP_INCLUDED
+#define GAME_INTROSTAGE_HPP_INCLUDED
 //
 // intro-stage.hpp
 //  A simple Stage class to display the intro title and start playing the theme music.
@@ -62,4 +62,4 @@ namespace stage
 
 }
 }
-#endif //GAME_INTROSTAGE_INCLUDED
+#endif //GAME_INTROSTAGE_HPP_INCLUDED

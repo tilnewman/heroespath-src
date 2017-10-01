@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_BACKGROUNDINFO_INCLUDED
-#define SFMLUTIL_BACKGROUNDINFO_INCLUDED
+#ifndef SFMLUTIL_BACKGROUNDINFO_HPP_INCLUDED
+#define SFMLUTIL_BACKGROUNDINFO_HPP_INCLUDED
 //
 // background-info.hpp
 //
@@ -89,4 +89,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_BACKGROUNDINFO_INCLUDED
+#endif //SFMLUTIL_BACKGROUNDINFO_HPP_INCLUDED

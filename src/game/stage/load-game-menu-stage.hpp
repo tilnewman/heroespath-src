@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_STAGE_LOADGAMEMENU_INCLUDED
-#define GAME_STAGE_LOADGAMEMENU_INCLUDED
+#ifndef GAME_STAGE_LOADGAMEMENU_HPP_INCLUDED
+#define GAME_STAGE_LOADGAMEMENU_HPP_INCLUDED
 //
 // load-game-menu-stage.hpp
 //  A Stage class that allows players to load previous games
@@ -123,4 +123,4 @@ namespace stage
 }
 }
 
-#endif //GAME_STAGE_LOADGAMEMENU_INCLUDED
+#endif //GAME_STAGE_LOADGAMEMENU_HPP_INCLUDED

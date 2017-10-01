@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_PARTYSTAGE_INCLUDED
-#define GAME_PARTYSTAGE_INCLUDED
+#ifndef GAME_PARTYSTAGE_HPP_INCLUDED
+#define GAME_PARTYSTAGE_HPP_INCLUDED
 //
 // party-stage.hpp
 //  A Stage class that allows grouping of saved characters into a party.
@@ -159,4 +159,4 @@ namespace stage
 }
 }
 
-#endif //GAME_PARTYSTAGE_INCLUDED
+#endif //GAME_PARTYSTAGE_HPP_INCLUDED

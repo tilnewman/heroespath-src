@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_ITEMFACTORYBASE_INCLUDED
-#define GAME_ITEM_ITEMFACTORYBASE_INCLUDED
+#ifndef GAME_ITEM_ITEMFACTORYBASE_HPP_INCLUDED
+#define GAME_ITEM_ITEMFACTORYBASE_HPP_INCLUDED
 //
 // item-factory-base.hpp
 //  Code that is common to all item factory classes.
@@ -100,4 +100,4 @@ namespace item
 }//namespace item
 }//namespace game
 
-#endif //GAME_ITEM_ITEMFACTORYBASE_INCLUDED
+#endif //GAME_ITEM_ITEMFACTORYBASE_HPP_INCLUDED

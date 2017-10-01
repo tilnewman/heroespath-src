@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_GUI_ENTITY_SLIDER_INCLUDED
-#define SFMLUTIL_GUI_GUI_ENTITY_SLIDER_INCLUDED
+#ifndef SFMLUTIL_GUI_GUI_ENTITY_SLIDER_HPP_INCLUDED
+#define SFMLUTIL_GUI_GUI_ENTITY_SLIDER_HPP_INCLUDED
 //
 //  gui-entity-slider.hpp
 //
@@ -72,4 +72,4 @@ namespace gui
 }
 
 
-#endif //SFMLUTIL_GUI_GUI_ENTITY_SLIDER_INCLUDED
+#endif //SFMLUTIL_GUI_GUI_ENTITY_SLIDER_HPP_INCLUDED

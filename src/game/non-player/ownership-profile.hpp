@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_NONPLAYER_OWNERSHIPPROFILE_INCLUDED
-#define GAME_NONPLAYER_OWNERSHIPPROFILE_INCLUDED
+#ifndef GAME_NONPLAYER_OWNERSHIPPROFILE_HPP_INCLUDED
+#define GAME_NONPLAYER_OWNERSHIPPROFILE_HPP_INCLUDED
 //
 // ownership-profile.hpp
 //  Code that defines the ownership traits of a creature that
@@ -161,4 +161,4 @@ namespace ownership
 }
 }
 
-#endif //GAME_NONPLAYER_OWNERSHIPPROFILE_INCLUDED
+#endif //GAME_NONPLAYER_OWNERSHIPPROFILE_HPP_INCLUDED

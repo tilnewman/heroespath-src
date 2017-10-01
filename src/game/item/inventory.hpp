@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_INVENTORY_INCLUDED
-#define GAME_ITEM_INVENTORY_INCLUDED
+#ifndef GAME_ITEM_INVENTORY_HPP_INCLUDED
+#define GAME_ITEM_INVENTORY_HPP_INCLUDED
 //
 // inventory.hpp
 //  A class that encapsolates a collection of Items.
@@ -148,4 +148,4 @@ namespace item
 
 }
 }
-#endif //GAME_ITEM_INVENTORY_INCLUDED
+#endif //GAME_ITEM_INVENTORY_HPP_INCLUDED

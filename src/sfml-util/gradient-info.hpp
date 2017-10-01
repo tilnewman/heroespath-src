@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GRADIENTINFO_INCLUDED
-#define SFMLUTIL_GRADIENTINFO_INCLUDED
+#ifndef SFMLUTIL_GRADIENTINFO_HPP_INCLUDED
+#define SFMLUTIL_GRADIENTINFO_HPP_INCLUDED
 //
 // gradient-info.hpp
 //  Gradient drawing helper struct.
@@ -61,4 +61,4 @@ namespace sfml_util
     }
 
 }
-#endif //SFMLUTIL_GRADIENTINFO_INCLUDED
+#endif //SFMLUTIL_GRADIENTINFO_HPP_INCLUDED

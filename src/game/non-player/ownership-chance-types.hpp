@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_NONPLAYER_OWNERSHIPCHANCETYPES_INCLUDED
-#define GAME_NONPLAYER_OWNERSHIPCHANCETYPES_INCLUDED
+#ifndef GAME_NONPLAYER_OWNERSHIPCHANCETYPES_HPP_INCLUDED
+#define GAME_NONPLAYER_OWNERSHIPCHANCETYPES_HPP_INCLUDED
 //
 // ownership-chance-types.hpp
 //  A collection of types that define chances to items that might be
@@ -460,4 +460,4 @@ namespace chance
 }
 }
 }
-#endif //GAME_NONPLAYER_OWNERSHIPCHANCETYPES_INCLUDED
+#endif //GAME_NONPLAYER_OWNERSHIPCHANCETYPES_HPP_INCLUDED

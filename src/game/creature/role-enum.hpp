@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_ROLEENUM_INCLUDED
-#define GAME_CREATURE_ROLEENUM_INCLUDED
+#ifndef GAME_CREATURE_ROLEENUM_HPP_INCLUDED
+#define GAME_CREATURE_ROLEENUM_HPP_INCLUDED
 //
 // role-enum.hpp
 //  An enumeration defining each Role of creature, both player and non_player.
@@ -105,4 +105,4 @@ namespace creature
 
 }
 }
-#endif //GAME_CREATURE_ROLEENUM_INCLUDED
+#endif //GAME_CREATURE_ROLEENUM_HPP_INCLUDED

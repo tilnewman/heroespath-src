@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_ROLESTATS_INCLUDED
-#define GAME_CREATURE_ROLESTATS_INCLUDED
+#ifndef GAME_CREATURE_ROLESTATS_HPP_INCLUDED
+#define GAME_CREATURE_ROLESTATS_HPP_INCLUDED
 //
 // role-stats.hpp
 //  Specific creature role stat modifiers.
@@ -56,4 +56,4 @@ namespace creature
 }
 }
 
-#endif //GAME_CREATURE_ROLESTATS_INCLUDED
+#endif //GAME_CREATURE_ROLESTATS_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CHARACTERSTAGEANIMNUM_INCLUDED
-#define GAME_CHARACTERSTAGEANIMNUM_INCLUDED
+#ifndef GAME_CHARACTERSTAGEANIMNUM_HPP_INCLUDED
+#define GAME_CHARACTERSTAGEANIMNUM_HPP_INCLUDED
 //
 // character-stage-anim-num.hpp
 //  An animated number that is used on the CharacterCreation Stage
@@ -139,4 +139,4 @@ namespace stage
 
 }
 }
-#endif //GAME_CHARACTERSTAGEANIMNUM_INCLUDED
+#endif //GAME_CHARACTERSTAGEANIMNUM_HPP_INCLUDED

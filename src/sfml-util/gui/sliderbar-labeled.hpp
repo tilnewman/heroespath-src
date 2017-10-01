@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_SLIDERBARLABELED_INCLUDED
-#define SFMLUTIL_GUI_SLIDERBARLABELED_INCLUDED
+#ifndef SFMLUTIL_GUI_SLIDERBARLABELED_HPP_INCLUDED
+#define SFMLUTIL_GUI_SLIDERBARLABELED_HPP_INCLUDED
 //
 // sliderbar-labeled.hpp
 //  A SliderBar that also displays the current value.
@@ -92,7 +92,7 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUI_SLIDERBARLABELED_INCLUDED
+#endif //SFMLUTIL_GUI_SLIDERBARLABELED_HPP_INCLUDED
 
 
 

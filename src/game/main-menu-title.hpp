@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_MAINMENUTITLE_INCLUDED
-#define GAME_MAINMENUTITLE_INCLUDED
+#ifndef GAME_MAINMENUTITLE_HPP_INCLUDED
+#define GAME_MAINMENUTITLE_HPP_INCLUDED
 //
 // main-menu-title.hpp
 //  Code that draws the title symbol and title text at the top of a main menu screen
@@ -70,4 +70,4 @@ namespace game
 
 }
 
-#endif //GAME_MAINMENUTITLE_INCLUDED
+#endif //GAME_MAINMENUTITLE_HPP_INCLUDED

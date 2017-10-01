@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_FOURSTATEBUTTON_INCLUDED
-#define SFMLUTIL_GUI_FOURSTATEBUTTON_INCLUDED
+#ifndef SFMLUTIL_GUI_FOURSTATEBUTTON_HPP_INCLUDED
+#define SFMLUTIL_GUI_FOURSTATEBUTTON_HPP_INCLUDED
 //
 // four-state-button.hpp
 //  Drawing and handling code for a button type that has four visual and four text states.
@@ -195,4 +195,4 @@ namespace gui
 
 }
 }
-#endif //SFMLUTIL_GUI_FOURSTATEBUTTON_INCLUDED
+#endif //SFMLUTIL_GUI_FOURSTATEBUTTON_HPP_INCLUDED

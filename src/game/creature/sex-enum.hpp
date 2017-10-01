@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_SEXENUM_INCLUDED
-#define GAME_CREATURE_SEXENUM_INCLUDED
+#ifndef GAME_CREATURE_SEXENUM_HPP_INCLUDED
+#define GAME_CREATURE_SEXENUM_HPP_INCLUDED
 //
 // sex-enum.hpp
 //  An enumeration of all sexes.
@@ -61,4 +61,4 @@ namespace creature
 
 }
 }
-#endif //GAME_CREATURE_SEXENUM_INCLUDED
+#endif //GAME_CREATURE_SEXENUM_HPP_INCLUDED

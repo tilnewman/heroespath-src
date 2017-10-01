@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_LOCATION_ILOCATION_INCLUDED
-#define GAME_LOCATION_ILOCATION_INCLUDED
+#ifndef GAME_LOCATION_ILOCATION_HPP_INCLUDED
+#define GAME_LOCATION_ILOCATION_HPP_INCLUDED
 //
 // i-location.hpp
 //  An interface for all Location objects
@@ -58,4 +58,4 @@ namespace location
 
 }
 }
-#endif //GAME_LOCATION_ILOCATION_INCLUDED
+#endif //GAME_LOCATION_ILOCATION_HPP_INCLUDED

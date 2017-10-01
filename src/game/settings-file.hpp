@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_SETTINGSFILE_INCLUDED
-#define GAME_SETTINGSFILE_INCLUDED
+#ifndef GAME_SETTINGSFILE_HPP_INCLUDED
+#define GAME_SETTINGSFILE_HPP_INCLUDED
 //
 // settings-file.hpp
 //  A singleton config file class that saves game settings.  (i.e. volume, resolution, etc.)
@@ -67,4 +67,4 @@ namespace game
     };
 
 }
-#endif //GAME_SETTINGSFILE_INCLUDED
+#endif //GAME_SETTINGSFILE_HPP_INCLUDED

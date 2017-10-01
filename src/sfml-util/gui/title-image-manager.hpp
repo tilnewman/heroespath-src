@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_TITLEIMAGEMANAGER_INCLUDED
-#define SFMLUTIL_GUI_TITLEIMAGEMANAGER_INCLUDED
+#ifndef SFMLUTIL_GUI_TITLEIMAGEMANAGER_HPP_INCLUDED
+#define SFMLUTIL_GUI_TITLEIMAGEMANAGER_HPP_INCLUDED
 //
 // title-image-manager.hpp
 //  Code that manages loading and lifetime of title images.
@@ -60,4 +60,4 @@ namespace gui
 
 }
 }
-#endif //SFMLUTIL_GUI_TITLEIMAGEMANAGER_INCLUDED
+#endif //SFMLUTIL_GUI_TITLEIMAGEMANAGER_HPP_INCLUDED

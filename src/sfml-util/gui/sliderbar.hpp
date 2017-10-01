@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SLIDERBAR_INCLUDED
-#define SFMLUTIL_SLIDERBAR_INCLUDED
+#ifndef SFMLUTIL_SLIDERBAR_HPP_INCLUDED
+#define SFMLUTIL_SLIDERBAR_HPP_INCLUDED
 //
 // sliderbar.hpp
 //  Code that draws a sliderbar with buttons at either end and a carrot in the center that can be dragged.
@@ -114,4 +114,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_SLIDERBAR_INCLUDED
+#endif //SFMLUTIL_SLIDERBAR_HPP_INCLUDED

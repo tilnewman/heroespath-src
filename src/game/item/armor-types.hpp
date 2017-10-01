@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_ARMORTYPES_INCLUDED
-#define GAME_ITEM_ARMORTYPES_INCLUDED
+#ifndef GAME_ITEM_ARMORTYPES_HPP_INCLUDED
+#define GAME_ITEM_ARMORTYPES_HPP_INCLUDED
 //
 // armor-types.hpp
 //  A set of enumerations that define a piece of armor.
@@ -110,4 +110,4 @@ namespace armor
 }//namespace item
 }//namespace game
 
-#endif //GAME_ITEM_ARMORTYPES_INCLUDED
+#endif //GAME_ITEM_ARMORTYPES_HPP_INCLUDED

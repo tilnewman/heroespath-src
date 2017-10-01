@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_PLAYER_PARTY_INCLUDED
-#define GAME_PLAYER_PARTY_INCLUDED
+#ifndef GAME_PLAYER_PARTY_HPP_INCLUDED
+#define GAME_PLAYER_PARTY_HPP_INCLUDED
 //
 // party.hpp (player)
 //  A collection of characters under control of the user.
@@ -123,4 +123,4 @@ namespace player
 }
 }
 
-#endif //GAME_PLAYER_PARTY_INCLUDED
+#endif //GAME_PLAYER_PARTY_HPP_INCLUDED

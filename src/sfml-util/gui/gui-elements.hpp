@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUIELEMENTS_INCLUDED
-#define SFMLUTIL_GUIELEMENTS_INCLUDED
+#ifndef SFMLUTIL_GUIELEMENTS_HPP_INCLUDED
+#define SFMLUTIL_GUIELEMENTS_HPP_INCLUDED
 //
 // gui-elements.hpp
 //
@@ -212,4 +212,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUIELEMENTS_INCLUDED
+#endif //SFMLUTIL_GUIELEMENTS_HPP_INCLUDED

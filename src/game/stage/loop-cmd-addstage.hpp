@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GUIDEMO_LOOPCOMMANDADDSTAGE_INCLUDED
-#define GUIDEMO_LOOPCOMMANDADDSTAGE_INCLUDED
+#ifndef GUIDEMO_LOOPCOMMANDADDSTAGE_HPP_INCLUDED
+#define GUIDEMO_LOOPCOMMANDADDSTAGE_HPP_INCLUDED
 //
 // loop-cmd-addstage.hpp
 //  A common header for all loop-add-stage commands.
@@ -160,4 +160,4 @@ namespace stage
 
 }
 }
-#endif //GUIDEMO_LOOPCOMMANDADDSTAGE_INCLUDED
+#endif //GUIDEMO_LOOPCOMMANDADDSTAGE_HPP_INCLUDED

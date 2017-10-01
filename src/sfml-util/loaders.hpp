@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_LOADERS_INCLUDED
-#define SFMLUTIL_LOADERS_INCLUDED
+#ifndef SFMLUTIL_LOADERS_HPP_INCLUDED
+#define SFMLUTIL_LOADERS_HPP_INCLUDED
 //
 // loaders.hpp
 //  Functions that help load assests and media.
@@ -55,4 +55,4 @@ namespace sfml_util
     MusicUPtr_t LoadMusic(const std::string & PATH_STR);
 
 }
-#endif //SFMLUTIL_LOADERS_INCLUDED
+#endif //SFMLUTIL_LOADERS_HPP_INCLUDED

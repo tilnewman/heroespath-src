@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SOUNDEFFECTSSET_INCLUDED
-#define SFMLUTIL_SOUNDEFFECTSSET_INCLUDED
+#ifndef SFMLUTIL_SOUNDEFFECTSSET_HPP_INCLUDED
+#define SFMLUTIL_SOUNDEFFECTSSET_HPP_INCLUDED
 //
 // sound-effects-set.hpp
 //  Simple wrapper of sound effects
@@ -67,4 +67,4 @@ namespace sfml_util
     using SfxSetVec_t = std::vector<SfxSet>;
 
 }
-#endif //SFMLUTIL_SOUNDEFFECTSSET_INCLUDED
+#endif //SFMLUTIL_SOUNDEFFECTSSET_HPP_INCLUDED

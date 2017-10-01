@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SLIDERS_INCLUDED
-#define SFMLUTIL_SLIDERS_INCLUDED
+#ifndef SFMLUTIL_SLIDERS_HPP_INCLUDED
+#define SFMLUTIL_SLIDERS_HPP_INCLUDED
 //
 // sliders.hpp
 //
@@ -459,4 +459,4 @@ namespace sliders
 }
 }
 
-#endif //SFMLUTIL_SLIDERS_INCLUDED
+#endif //SFMLUTIL_SLIDERS_HPP_INCLUDED

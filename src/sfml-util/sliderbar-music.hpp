@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SLIDERBARMUSIC_INCLUDED
-#define SFMLUTIL_SLIDERBARMUSIC_INCLUDED
+#ifndef SFMLUTIL_SLIDERBARMUSIC_HPP_INCLUDED
+#define SFMLUTIL_SLIDERBARMUSIC_HPP_INCLUDED
 //
 // sliderbar-music.hpp
 //  A SliderBar that controls the music volume.
@@ -75,4 +75,4 @@ namespace sfml_util
 
 }
 
-#endif //SFMLUTIL_SLIDERBARMUSIC_INCLUDED
+#endif //SFMLUTIL_SLIDERBARMUSIC_HPP_INCLUDED

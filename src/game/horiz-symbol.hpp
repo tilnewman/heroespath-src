@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_HORIZSYMBOL_INCLUDED
-#define GAME_HORIZSYMBOL_INCLUDED
+#ifndef GAME_HORIZSYMBOL_HPP_INCLUDED
+#define GAME_HORIZSYMBOL_HPP_INCLUDED
 //
 // horiz-symbol.hpp
 //  A symbol drawn at the bottom of menu screens
@@ -82,4 +82,4 @@ namespace game
     };
 
 }
-#endif //GAME_HORIZSYMBOL_INCLUDED
+#endif //GAME_HORIZSYMBOL_HPP_INCLUDED

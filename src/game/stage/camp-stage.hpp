@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CAMPTAGE_INCLUDED
-#define GAME_CAMPTAGE_INCLUDED
+#ifndef GAME_CAMPTAGE_HPP_INCLUDED
+#define GAME_CAMPTAGE_HPP_INCLUDED
 //
 // camp-stage.hpp
 //  A Stage class that allows characters to camp the game
@@ -106,5 +106,5 @@ namespace stage
 
 }
 }
-#endif //GAME_CAMPTAGE_INCLUDED
+#endif //GAME_CAMPTAGE_HPP_INCLUDED
 

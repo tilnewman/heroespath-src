@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_INCLUDED
-#define GAME_CREATURE_INCLUDED
+#ifndef GAME_CREATURE_HPP_INCLUDED
+#define GAME_CREATURE_HPP_INCLUDED
 //
 // creature.hpp
 //  A base class for all creatures
@@ -605,4 +605,4 @@ namespace creature
 }
 }
 
-#endif //GAME_CREATURE_INCLUDED
+#endif //GAME_CREATURE_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_STATE_GAMESTATE_INCLUDED
-#define GAME_STATE_GAMESTATE_INCLUDED
+#ifndef GAME_STATE_GAMESTATE_HPP_INCLUDED
+#define GAME_STATE_GAMESTATE_HPP_INCLUDED
 //
 // game-state.hpp
 //  A class that represents a game in play.
@@ -158,4 +158,4 @@ namespace state
 
 }
 }
-#endif //GAME_STATE_GAMESTATE_INCLUDED
+#endif //GAME_STATE_GAMESTATE_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_CONDITIONS_INCLUDED
-#define GAME_CREATURE_CONDITIONS_INCLUDED
+#ifndef GAME_CREATURE_CONDITIONS_HPP_INCLUDED
+#define GAME_CREATURE_CONDITIONS_HPP_INCLUDED
 //
 // conditions.hpp
 //  Instances and base classes of specific Conditions.
@@ -288,4 +288,4 @@ namespace condition
 }
 }
 }
-#endif //GAME_CREATURE_CONDITIONS_INCLUDED
+#endif //GAME_CREATURE_CONDITIONS_HPP_INCLUDED

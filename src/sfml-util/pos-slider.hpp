@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_POS_SLIDER_INCLUDED
-#define SFMLUTIL_POS_SLIDER_INCLUDED
+#ifndef SFMLUTIL_POS_SLIDER_HPP_INCLUDED
+#define SFMLUTIL_POS_SLIDER_HPP_INCLUDED
 //
 //  pos-slider.hpp
 //
@@ -92,4 +92,4 @@ namespace sliders
 }
 }
 
-#endif //SFMLUTIL_POS_SLIDER_INCLUDED
+#endif //SFMLUTIL_POS_SLIDER_HPP_INCLUDED

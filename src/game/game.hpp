@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_GAME_INCLUDED
-#define GAME_GAME_INCLUDED
+#ifndef GAME_GAME_HPP_INCLUDED
+#define GAME_GAME_HPP_INCLUDED
 //
 // game.hpp
 //  A class that provides access to all game information.
@@ -66,4 +66,4 @@ namespace game
     };
 
 }
-#endif //GAME_STATE_GAMESTATE_INCLUDED
+#endif //GAME_STATE_GAMESTATE_HPP_INCLUDED

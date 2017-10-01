@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_MAINMENUBUTTONS_INCLUDED
-#define GAME_MAINMENUBUTTONS_INCLUDED
+#ifndef GAME_MAINMENUBUTTONS_HPP_INCLUDED
+#define GAME_MAINMENUBUTTONS_HPP_INCLUDED
 //
 // main-menu-buttons.hpp
 //  A set of FourStateButton classes for the heroespath main menu.
@@ -180,4 +180,4 @@ namespace main_menu_buttons
 
 }
 }
-#endif //GAME_MAINMENUBUTTONS_INCLUDED
+#endif //GAME_MAINMENUBUTTONS_HPP_INCLUDED

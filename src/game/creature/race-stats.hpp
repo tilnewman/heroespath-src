@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_RACESTATS_INCLUDED
-#define GAME_CREATURE_RACESTATS_INCLUDED
+#ifndef GAME_CREATURE_RACESTATS_HPP_INCLUDED
+#define GAME_CREATURE_RACESTATS_HPP_INCLUDED
 //
 // race-stats.hpp
 //  Race specific attribute stat modifiers.
@@ -56,4 +56,4 @@ namespace creature
 }
 }
 
-#endif //GAME_CREATURE_RACESTATS_INCLUDED
+#endif //GAME_CREATURE_RACESTATS_HPP_INCLUDED

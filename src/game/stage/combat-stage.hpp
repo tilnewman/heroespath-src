@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_COMBATSTAGE_INCLUDED
-#define GAME_COMBATSTAGE_INCLUDED
+#ifndef GAME_COMBATSTAGE_HPP_INCLUDED
+#define GAME_COMBATSTAGE_HPP_INCLUDED
 //
 // combat-stage.hpp
 //  A Stage class that enables combat.
@@ -510,4 +510,4 @@ namespace stage
 }
 }
 
-#endif //GAME_COMBATSTAGE_INCLUDED
+#endif //GAME_COMBATSTAGE_HPP_INCLUDED

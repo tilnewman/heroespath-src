@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_STATE_GAMESTATEFACTORY_INCLUDED
-#define GAME_STATE_GAMESTATEFACTORY_INCLUDED
+#ifndef GAME_STATE_GAMESTATEFACTORY_HPP_INCLUDED
+#define GAME_STATE_GAMESTATEFACTORY_HPP_INCLUDED
 //
 // game-state-factory.hpp
 //  Code that marshals GameState objects on and off disk, and creates new states.
@@ -107,4 +107,4 @@ namespace state
 
 }
 }
-#endif //GAME_STATE_GAMESTATEFACTORY_INCLUDED
+#endif //GAME_STATE_GAMESTATEFACTORY_HPP_INCLUDED

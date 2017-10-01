@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_STAGE_CREDIT_INCLUDED
-#define GAME_STAGE_CREDIT_INCLUDED
+#ifndef GAME_STAGE_CREDIT_HPP_INCLUDED
+#define GAME_STAGE_CREDIT_HPP_INCLUDED
 //
 // credit.hpp
 //
@@ -126,4 +126,4 @@ namespace stage
 }
 }
 
-#endif //GAME_STAGE_CREDIT_INCLUDED
+#endif //GAME_STAGE_CREDIT_HPP_INCLUDED

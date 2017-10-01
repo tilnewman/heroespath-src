@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_TEXTINFO_INCLUDED
-#define SFMLUTIL_GUI_TEXTINFO_INCLUDED
+#ifndef SFMLUTIL_GUI_TEXTINFO_HPP_INCLUDED
+#define SFMLUTIL_GUI_TEXTINFO_HPP_INCLUDED
 //
 // text-info.hpp
 //  Code regarding the details about drawn text.
@@ -104,4 +104,4 @@ namespace gui
 
 }
 }
-#endif //SFMLUTIL_GUI_TEXTINFO_INCLUDED
+#endif //SFMLUTIL_GUI_TEXTINFO_HPP_INCLUDED

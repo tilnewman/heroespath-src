@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_MUSICINFO_INCLUDED
-#define SFMLUTIL_MUSICINFO_INCLUDED
+#ifndef SFMLUTIL_MUSICINFO_HPP_INCLUDED
+#define SFMLUTIL_MUSICINFO_HPP_INCLUDED
 //
 // music-info.hpp
 //  A class that completely defines a piece of music.
@@ -89,4 +89,4 @@ namespace sfml_util
 
 }
 
-#endif //SFMLUTIL_MUSICINFO_INCLUDED
+#endif //SFMLUTIL_MUSICINFO_HPP_INCLUDED

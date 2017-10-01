@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_TEXTRENDERING_INCLUDED
-#define SFMLUTIL_TEXTRENDERING_INCLUDED
+#ifndef SFMLUTIL_TEXTRENDERING_HPP_INCLUDED
+#define SFMLUTIL_TEXTRENDERING_HPP_INCLUDED
 //
 // text-rendering.hpp
 //  Code that draws text to an off-screen texture one character at a time.
@@ -256,4 +256,4 @@ namespace text_render
 }
 }
 
-#endif //SFMLUTIL_TEXTRENDERING_INCLUDED
+#endif //SFMLUTIL_TEXTRENDERING_HPP_INCLUDED

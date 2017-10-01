@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_OUROBOROS_INCLUDED
-#define GAME_OUROBOROS_INCLUDED
+#ifndef GAME_OUROBOROS_HPP_INCLUDED
+#define GAME_OUROBOROS_HPP_INCLUDED
 //
 // ouroboros.hpp
 //  An animated snake eating its own tail for the background of main menu screens.
@@ -66,4 +66,4 @@ namespace game
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
 }
-#endif //GAME_OUROBOROS_INCLUDED
+#endif //GAME_OUROBOROS_HPP_INCLUDED

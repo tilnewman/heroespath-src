@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_LOOPMANAGER_INCLUDED
-#define GAME_LOOPMANAGER_INCLUDED
+#ifndef GAME_LOOPMANAGER_HPP_INCLUDED
+#define GAME_LOOPMANAGER_HPP_INCLUDED
 //
 // loop-manager.hpp
 //  A class that controls the running game loop with a queue of commands
@@ -259,4 +259,4 @@ namespace game
     };
 
 }
-#endif //GAME_LOOPMANAGER_INCLUDED
+#endif //GAME_LOOPMANAGER_HPP_INCLUDED

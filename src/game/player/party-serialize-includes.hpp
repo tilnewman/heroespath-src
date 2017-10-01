@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_PLAYER_PARTYSERIALIZEINCLUDES_INCLUDED
-#define GAME_PLAYER_PARTYSERIALIZEINCLUDES_INCLUDED
+#ifndef GAME_PLAYER_PARTYSERIALIZEINCLUDES_HPP_INCLUDED
+#define GAME_PLAYER_PARTYSERIALIZEINCLUDES_HPP_INCLUDED
 //
 // party-serialize-includes.hpp
 //  A collection of includes that allows boost serialization of Character and Party objects.
@@ -49,4 +49,4 @@ BOOST_CLASS_EXPORT(game::player::Character)
 #include "game/player/party.hpp"
 BOOST_CLASS_EXPORT(game::player::Party)
 
-#endif //GAME_PLAYER_PARTYSERIALIZEINCLUDES_INCLUDED
+#endif //GAME_PLAYER_PARTYSERIALIZEINCLUDES_HPP_INCLUDED

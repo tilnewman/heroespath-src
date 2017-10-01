@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_MOUSETEXTINFO_INCLUDED
-#define SFMLUTIL_GUI_MOUSETEXTINFO_INCLUDED
+#ifndef SFMLUTIL_GUI_MOUSETEXTINFO_HPP_INCLUDED
+#define SFMLUTIL_GUI_MOUSETEXTINFO_HPP_INCLUDED
 //
 // mouse-text-info.hpp
 //  A handy wrapper struct that holds three colors relating to mouse position.
@@ -93,4 +93,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUI_MOUSETEXTINFO_INCLUDED
+#endif //SFMLUTIL_GUI_MOUSETEXTINFO_HPP_INCLUDED

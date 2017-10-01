@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_CREATUREIMAGEMANAGER_INCLUDED
-#define SFMLUTIL_GUI_CREATUREIMAGEMANAGER_INCLUDED
+#ifndef SFMLUTIL_GUI_CREATUREIMAGEMANAGER_HPP_INCLUDED
+#define SFMLUTIL_GUI_CREATUREIMAGEMANAGER_HPP_INCLUDED
 //
 // creature-image-manager.hpp
 //  Code that manages loading and lifetime of creature images.
@@ -106,4 +106,4 @@ namespace gui
 
 }
 }
-#endif //SFMLUTIL_GUI_CREATUREIMAGEMANAGER_INCLUDED
+#endif //SFMLUTIL_GUI_CREATUREIMAGEMANAGER_HPP_INCLUDED

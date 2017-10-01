@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_WOLFENCLASSENUM_INCLUDED
-#define GAME_CREATURE_WOLFENCLASSENUM_INCLUDED
+#ifndef GAME_CREATURE_WOLFENCLASSENUM_HPP_INCLUDED
+#define GAME_CREATURE_WOLFENCLASSENUM_HPP_INCLUDED
 //
 // wolfen-class-enum.hpp
 //  An enumeration of all Wolfen classes as determined by Rank.
@@ -58,4 +58,4 @@ namespace creature
 
 }
 }
-#endif //GAME_CREATURE_WOLFENCLASSENUM_INCLUDED
+#endif //GAME_CREATURE_WOLFENCLASSENUM_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_NAME_INFO_INCLUDED
-#define GAME_CREATURE_NAME_INFO_INCLUDED
+#ifndef GAME_CREATURE_NAME_INFO_HPP_INCLUDED
+#define GAME_CREATURE_NAME_INFO_HPP_INCLUDED
 //
 // name-info.hpp
 //  Information about creature names and thier displayed characteristics.
@@ -97,4 +97,4 @@ namespace creature
 }
 }
 
-#endif //GAME_CREATURE_NAME_INFO_INCLUDED
+#endif //GAME_CREATURE_NAME_INFO_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_IPOOPUPCALLBACK_INCLUDED
-#define POPUP_IPOOPUPCALLBACK_INCLUDED
+#ifndef POPUP_IPOOPUPCALLBACK_HPP_INCLUDED
+#define POPUP_IPOOPUPCALLBACK_HPP_INCLUDED
 //
 // i-popup-callback.hpp
 //  Interface for all objects that can handle popup button responses.
@@ -44,4 +44,4 @@ namespace popup
 
 }
 
-#endif //POPUP_IPOOPUPCALLBACK_INCLUDED
+#endif //POPUP_IPOOPUPCALLBACK_HPP_INCLUDED

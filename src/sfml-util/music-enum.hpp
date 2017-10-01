@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_MUSICENUM_INCLUDED
-#define SFMLUTIL_MUSICENUM_INCLUDED
+#ifndef SFMLUTIL_MUSICENUM_HPP_INCLUDED
+#define SFMLUTIL_MUSICENUM_HPP_INCLUDED
 //
 // music-enum.hpp
 //  An enum defining the various background music files
@@ -68,4 +68,4 @@ namespace sfml_util
     using MusicEnumSet_t = std::set<music::Enum>;
 
 }
-#endif //SFMLUTIL_MUSICENUM_INCLUDED
+#endif //SFMLUTIL_MUSICENUM_HPP_INCLUDED

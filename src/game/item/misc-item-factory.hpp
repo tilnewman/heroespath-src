@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_MISCITEMFACTORY_INCLUDED
-#define GAME_ITEM_MISCITEMFACTORY_INCLUDED
+#ifndef GAME_ITEM_MISCITEMFACTORY_HPP_INCLUDED
+#define GAME_ITEM_MISCITEMFACTORY_HPP_INCLUDED
 //
 // misc-item-factory.hpp
 //  Responsible for making individual item objects.
@@ -120,4 +120,4 @@ namespace misc
 }
 }
 
-#endif //GAME_ITEM_MISCITEMFACTORY_INCLUDED
+#endif //GAME_ITEM_MISCITEMFACTORY_HPP_INCLUDED

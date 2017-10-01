@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SLIDERBAREFFECTS_INCLUDED
-#define SFMLUTIL_SLIDERBAREFFECTS_INCLUDED
+#ifndef SFMLUTIL_SLIDERBAREFFECTS_HPP_INCLUDED
+#define SFMLUTIL_SLIDERBAREFFECTS_HPP_INCLUDED
 //
 // sliderbar-effects.hpp
 //  A SliderBar that controls the sound effects volume.
@@ -76,4 +76,4 @@ namespace sfml_util
 
 }
 
-#endif //SFMLUTIL_SLIDERBAREFFECTS_INCLUDED
+#endif //SFMLUTIL_SLIDERBAREFFECTS_HPP_INCLUDED

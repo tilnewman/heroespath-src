@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_LOCATION_LOCATION_INCLUDED
-#define GAME_LOCATION_LOCATION_INCLUDED
+#ifndef GAME_LOCATION_LOCATION_HPP_INCLUDED
+#define GAME_LOCATION_LOCATION_HPP_INCLUDED
 //
 // location.hpp
 //  A base class for all location objects.
@@ -88,4 +88,4 @@ namespace location
 
 }
 }
-#endif //GAME_LOCATION_LOCATION_INCLUDED
+#endif //GAME_LOCATION_LOCATION_HPP_INCLUDED

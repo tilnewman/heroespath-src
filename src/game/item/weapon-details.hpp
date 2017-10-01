@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_WEAPONFDETAILS_INCLUDED
-#define GAME_ITEM_WEAPONFDETAILS_INCLUDED
+#ifndef GAME_ITEM_WEAPONFDETAILS_HPP_INCLUDED
+#define GAME_ITEM_WEAPONFDETAILS_HPP_INCLUDED
 //
 // weapons-details.hpp
 //  Code that loads detailed weapon data from the GameDataFile.
@@ -102,4 +102,4 @@ namespace weapon
 }
 }
 }
-#endif //GAME_ITEM_WEAPONFDETAILS_INCLUDED
+#endif //GAME_ITEM_WEAPONFDETAILS_HPP_INCLUDED

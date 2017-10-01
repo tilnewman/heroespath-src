@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_FONTMANAGER_INCLUDED
-#define SFMLUTIL_FONTMANAGER_INCLUDED
+#ifndef SFMLUTIL_FONTMANAGER_HPP_INCLUDED
+#define SFMLUTIL_FONTMANAGER_HPP_INCLUDED
 //
 // font-manager.hpp
 //  Font specific gui code.
@@ -141,4 +141,4 @@ namespace sfml_util
     };
 
 }
-#endif //SFMLUTIL_FONTMANAGER_INCLUDED
+#endif //SFMLUTIL_FONTMANAGER_HPP_INCLUDED

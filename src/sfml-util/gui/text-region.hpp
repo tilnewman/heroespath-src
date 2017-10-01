@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_TEXTREGION_INCLUDED
-#define SFMLUTIL_GUI_TEXTREGION_INCLUDED
+#ifndef SFMLUTIL_GUI_TEXTREGION_HPP_INCLUDED
+#define SFMLUTIL_GUI_TEXTREGION_HPP_INCLUDED
 //
 // text-region.hpp
 //  A class that encapsulates text drawn to a bounded region that may need a scrollbar.
@@ -153,4 +153,4 @@ namespace gui
 
 }
 }
-#endif //SFMLUTIL_GUI_TEXTREGION_INCLUDED
+#endif //SFMLUTIL_GUI_TEXTREGION_HPP_INCLUDED

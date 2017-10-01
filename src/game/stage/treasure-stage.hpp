@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_TREASURESTAGE_INCLUDED
-#define GAME_TREASURESTAGE_INCLUDED
+#ifndef GAME_TREASURESTAGE_HPP_INCLUDED
+#define GAME_TREASURESTAGE_HPP_INCLUDED
 //
 // treasure-stage.hpp
 //  A Stage class that allows finding treasure and advancing after combat.
@@ -123,8 +123,9 @@ namespace stage
         bool CheckAndHandleAllKilledByTrap();
 
         void LockboxOpen();
-        void SetupStageForTreasureCollection();
-
+        void SetupForCollection();
+        void SetupForCollection_UpdateTreasureImage();
+        void SetupForCollection_SetupTreasureListbox();
 
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
@@ -162,4 +163,4 @@ namespace stage
 
 }
 }
-#endif //GAME_TREASURESTAGE_INCLUDED
+#endif //GAME_TREASURESTAGE_HPP_INCLUDED

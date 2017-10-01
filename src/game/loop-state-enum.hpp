@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_LOOPSTATE_INCLUDED
-#define GAME_LOOPSTATE_INCLUDED
+#ifndef GAME_LOOPSTATE_HPP_INCLUDED
+#define GAME_LOOPSTATE_HPP_INCLUDED
 //
 // loop-state-enum.hpp
 //  An enum describing the game loop state.
@@ -64,4 +64,4 @@ namespace game
     };
 
 }
-#endif //GAME_LOOPSTATE_INCLUDED
+#endif //GAME_LOOPSTATE_HPP_INCLUDED

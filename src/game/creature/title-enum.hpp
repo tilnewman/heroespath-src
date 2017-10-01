@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_TITLEENUM_INCLUDED
-#define GAME_CREATURE_TITLEENUM_INCLUDED
+#ifndef GAME_CREATURE_TITLEENUM_HPP_INCLUDED
+#define GAME_CREATURE_TITLEENUM_HPP_INCLUDED
 //
 // title-enum.hpp
 //  An enumeration defining each type of Title.
@@ -237,4 +237,4 @@ namespace creature
 
 }
 }
-#endif //GAME_CREATURE_TITLEENUM_INCLUDED
+#endif //GAME_CREATURE_TITLEENUM_HPP_INCLUDED

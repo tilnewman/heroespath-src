@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_FADE_INCLUDED
-#define SFMLUTIL_FADE_INCLUDED
+#ifndef SFMLUTIL_FADE_HPP_INCLUDED
+#define SFMLUTIL_FADE_HPP_INCLUDED
 //
 // fade.hpp
 //  Helper classes and functions for fading the screen in and out.
@@ -99,4 +99,4 @@ namespace sfml_util
     using FadeSVec_t = std::vector<FadeSPtr_t>;
 
 }
-#endif //SFMLUTIL_FADE_INCLUDED
+#endif //SFMLUTIL_FADE_HPP_INCLUDED

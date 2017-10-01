@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_BOXINFO_INCLUDED
-#define SFMLUTIL_GUI_BOXINFO_INCLUDED
+#ifndef SFMLUTIL_GUI_BOXINFO_HPP_INCLUDED
+#define SFMLUTIL_GUI_BOXINFO_HPP_INCLUDED
 //
 // box-info.hpp
 //
@@ -119,4 +119,4 @@ namespace box
 }
 }
 
-#endif //SFMLUTIL_GUI_BOXINFO_INCLUDED
+#endif //SFMLUTIL_GUI_BOXINFO_HPP_INCLUDED

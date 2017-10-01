@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_NONPLAYER_INVENTORYFACTORY_INCLUDED
-#define GAME_NONPLAYER_INVENTORYFACTORY_INCLUDED
+#ifndef GAME_NONPLAYER_INVENTORYFACTORY_HPP_INCLUDED
+#define GAME_NONPLAYER_INVENTORYFACTORY_HPP_INCLUDED
 //
 // inventory-factory.hpp
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
@@ -183,4 +183,4 @@ namespace ownership
 }
 }
 }
-#endif //GAME_NONPLAYER_INVENTORYFACTORY_INCLUDED
+#endif //GAME_NONPLAYER_INVENTORYFACTORY_HPP_INCLUDED

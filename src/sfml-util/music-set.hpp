@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_MUSICSET_INCLUDED
-#define SFMLUTIL_MUSICSET_INCLUDED
+#ifndef SFMLUTIL_MUSICSET_HPP_INCLUDED
+#define SFMLUTIL_MUSICSET_HPP_INCLUDED
 //
 // music-set.hpp
 //  A class that keeps a set of songs and presents an interface to interact with them.
@@ -110,4 +110,4 @@ namespace sfml_util
 
 }
 
-#endif //SFMLUTIL_MUSICSET_INCLUDED
+#endif //SFMLUTIL_MUSICSET_HPP_INCLUDED

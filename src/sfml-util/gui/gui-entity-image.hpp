@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUIIMAGE_INCLUDED
-#define SFMLUTIL_GUIIMAGE_INCLUDED
+#ifndef SFMLUTIL_GUIIMAGE_HPP_INCLUDED
+#define SFMLUTIL_GUIIMAGE_HPP_INCLUDED
 //
 // gui-entity-image.hpp
 //
@@ -88,4 +88,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUIIMAGE_INCLUDED
+#endif //SFMLUTIL_GUIIMAGE_HPP_INCLUDED

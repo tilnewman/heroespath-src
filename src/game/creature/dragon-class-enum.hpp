@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_CREATURE_DRAGONCLASSENUM_INCLUDED
-#define GAME_CREATURE_DRAGONCLASSENUM_INCLUDED
+#ifndef GAME_CREATURE_DRAGONCLASSENUM_HPP_INCLUDED
+#define GAME_CREATURE_DRAGONCLASSENUM_HPP_INCLUDED
 //
 // dragon-class-enum.hpp
 //  An enumeration of all Dragon classes as determined by Rank.
@@ -65,4 +65,4 @@ namespace creature
 
 }
 }
-#endif //GAME_CREATURE_DRAGONCLASSENUM_INCLUDED
+#endif //GAME_CREATURE_DRAGONCLASSENUM_HPP_INCLUDED

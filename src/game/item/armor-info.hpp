@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_ARMORINFO_INCLUDED
-#define GAME_ITEM_ARMORINFO_INCLUDED
+#ifndef GAME_ITEM_ARMORINFO_HPP_INCLUDED
+#define GAME_ITEM_ARMORINFO_HPP_INCLUDED
 //
 // armor-info.hpp
 //  Code that completely describes a singl piece of armor.
@@ -149,4 +149,4 @@ namespace armor
 }//namespace item
 }//namespace game
 
-#endif //GAME_ITEM_ARMORINFO_INCLUDED
+#endif //GAME_ITEM_ARMORINFO_HPP_INCLUDED

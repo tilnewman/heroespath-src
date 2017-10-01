@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SFMLUTIL_INCLUDED
-#define SFMLUTIL_SFMLUTIL_INCLUDED
+#ifndef SFMLUTIL_SFMLUTIL_HPP_INCLUDED
+#define SFMLUTIL_SFMLUTIL_HPP_INCLUDED
 //
 // sfml-util.hpp
 //
@@ -405,4 +405,4 @@ namespace sfml_util
 
 }//end of namespace sfml_util
 
-#endif //SFMLUTIL_SFMLUTIL_INCLUDED
+#endif //SFMLUTIL_SFMLUTIL_HPP_INCLUDED

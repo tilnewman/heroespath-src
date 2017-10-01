@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_TILE_INCLUDED
-#define SFMLUTIL_TILE_INCLUDED
+#ifndef SFMLUTIL_TILE_HPP_INCLUDED
+#define SFMLUTIL_TILE_HPP_INCLUDED
 //
 // tile.hpp
 //  Tile drawing utility functions
@@ -179,4 +179,4 @@ namespace sfml_util
     }
 
 }
-#endif //SFMLUTIL_TILE_INCLUDED
+#endif //SFMLUTIL_TILE_HPP_INCLUDED

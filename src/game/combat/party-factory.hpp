@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_COMBAT_PARTYFACTORY_INCLUDED
-#define GAME_COMBAT_PARTYFACTORY_INCLUDED
+#ifndef GAME_COMBAT_PARTYFACTORY_HPP_INCLUDED
+#define GAME_COMBAT_PARTYFACTORY_HPP_INCLUDED
 //
 // party-factory.hpp
 //  A singleton class that creates parties of creatures that confront the player characters.
@@ -91,4 +91,4 @@ namespace combat
 
 }
 }
-#endif //GAME_COMBAT_PARTYFACTORY_INCLUDED
+#endif //GAME_COMBAT_PARTYFACTORY_HPP_INCLUDED

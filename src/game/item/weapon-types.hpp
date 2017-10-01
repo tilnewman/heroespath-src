@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_WEAPONTYPES_INCLUDED
-#define GAME_ITEM_WEAPONTYPES_INCLUDED
+#ifndef GAME_ITEM_WEAPONTYPES_HPP_INCLUDED
+#define GAME_ITEM_WEAPONTYPES_HPP_INCLUDED
 //
 // weapons-types.hpp
 //  A set of enumerations that together define a weapon.
@@ -140,4 +140,4 @@ namespace weapon
 }
 }
 }
-#endif //GAME_ITEM_WEAPONTYPES_INCLUDED
+#endif //GAME_ITEM_WEAPONTYPES_HPP_INCLUDED

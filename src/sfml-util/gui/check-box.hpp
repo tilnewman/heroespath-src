@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_CHECKBOX_INCLUDED
-#define SFMLUTIL_CHECKBOX_INCLUDED
+#ifndef SFMLUTIL_CHECKBOX_HPP_INCLUDED
+#define SFMLUTIL_CHECKBOX_HPP_INCLUDED
 //
 // check-box.hpp
 //  Check box drawing and handling code.
@@ -192,4 +192,4 @@ namespace gui
     using CheckBoxSetSVec_t = std::vector<CheckBoxSetSPtr_t>;
 }
 }
-#endif //SFMLUTIL_CHECKBOX_INCLUDED
+#endif //SFMLUTIL_CHECKBOX_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_WEAPONFINFO_INCLUDED
-#define GAME_ITEM_WEAPONFINFO_INCLUDED
+#ifndef GAME_ITEM_WEAPONFINFO_HPP_INCLUDED
+#define GAME_ITEM_WEAPONFINFO_HPP_INCLUDED
 //
 // weapons-info.hpp
 //  Describes a specific or general weapon.
@@ -204,4 +204,4 @@ namespace weapon
 }
 }
 }
-#endif //GAME_ITEM_WEAPONFINFO_INCLUDED
+#endif //GAME_ITEM_WEAPONFINFO_HPP_INCLUDED

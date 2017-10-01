@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_STATS_TYPES_INCLUDED
-#define GAME_STATS_TYPES_INCLUDED
+#ifndef GAME_STATS_TYPES_HPP_INCLUDED
+#define GAME_STATS_TYPES_HPP_INCLUDED
 //
 // types.hpp
 //
@@ -40,4 +40,4 @@ namespace stats
 
 }
 }
-#endif //GAME_STATS_TYPES_INCLUDED
+#endif //GAME_STATS_TYPES_HPP_INCLUDED

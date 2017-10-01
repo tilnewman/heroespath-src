@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_ARMORDETAILS_INCLUDED
-#define GAME_ITEM_ARMORDETAILS_INCLUDED
+#ifndef GAME_ITEM_ARMORDETAILS_HPP_INCLUDED
+#define GAME_ITEM_ARMORDETAILS_HPP_INCLUDED
 //
 // armor-details.hpp
 //  Code that loads detailed armor data from the GameDataFile.
@@ -100,4 +100,4 @@ namespace armor
 }
 }
 
-#endif //GAME_ITEM_ARMORDETAILS_INCLUDED
+#endif //GAME_ITEM_ARMORDETAILS_HPP_INCLUDED

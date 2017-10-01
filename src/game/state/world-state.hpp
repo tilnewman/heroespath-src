@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_STATE_WORLDSTATE_INCLUDED
-#define GAME_STATE_WORLDSTATE_INCLUDED
+#ifndef GAME_STATE_WORLDSTATE_HPP_INCLUDED
+#define GAME_STATE_WORLDSTATE_HPP_INCLUDED
 //
 // world-state.hpp
 //  A class that represents the entire state of the game world.
@@ -71,4 +71,4 @@ namespace state
 
 }
 }
-#endif //GAME_STATE_WORLDSTATE_INCLUDED
+#endif //GAME_STATE_WORLDSTATE_HPP_INCLUDED

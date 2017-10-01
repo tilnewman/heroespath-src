@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SOUNDMANAGER_INCLUDED
-#define SFMLUTIL_SOUNDMANAGER_INCLUDED
+#ifndef SFMLUTIL_SOUNDMANAGER_HPP_INCLUDED
+#define SFMLUTIL_SOUNDMANAGER_HPP_INCLUDED
 //
 // sound-manager.hpp
 //  Aound managing class that handles both sf::Sound and sf::Music instances.
@@ -148,4 +148,4 @@ namespace sfml_util
     };
 
 }
-#endif //SFMLUTIL_SOUNDMANAGER_INCLUDED
+#endif //SFMLUTIL_SOUNDMANAGER_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GRADIENT_INCLUDED
-#define SFMLUTIL_GRADIENT_INCLUDED
+#ifndef SFMLUTIL_GRADIENT_HPP_INCLUDED
+#define SFMLUTIL_GRADIENT_HPP_INCLUDED
 //
 // gradient.hpp
 //  Gradient drawing helper code.
@@ -72,4 +72,4 @@ namespace sfml_util
     using GradientRectSVec_t = std::vector<GradientRectSPtr_t>;
 
 }
-#endif //SFMLUTIL_GRADIENT_INCLUDED
+#endif //SFMLUTIL_GRADIENT_HPP_INCLUDED

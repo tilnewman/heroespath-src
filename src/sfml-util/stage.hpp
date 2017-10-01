@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_STAGE_INCLUDED
-#define SFMLUTIL_STAGE_INCLUDED
+#ifndef SFMLUTIL_STAGE_HPP_INCLUDED
+#define SFMLUTIL_STAGE_HPP_INCLUDED
 //
 // stage.hpp
 //  Helper classes and functions for managing GuiEntity's in a collection on screen.
@@ -152,4 +152,4 @@ namespace sfml_util
     };
 
 }
-#endif //SFMLUTIL_STAGE_INCLUDED
+#endif //SFMLUTIL_STAGE_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_ITEM_ITEM_INCLUDED
-#define GAME_ITEM_ITEM_INCLUDED
+#ifndef GAME_ITEM_ITEM_HPP_INCLUDED
+#define GAME_ITEM_ITEM_HPP_INCLUDED
 //
 // item.hpp
 //  A base class for all items.
@@ -307,4 +307,4 @@ namespace item
 
 }
 }
-#endif //GAME_ITEM_ITEM_INCLUDED
+#endif //GAME_ITEM_ITEM_HPP_INCLUDED
