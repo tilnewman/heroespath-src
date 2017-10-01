@@ -35,40 +35,25 @@
 
 #include "game/game-data-file.hpp"
 
-#include <string>
-
 
 namespace game
 {
-    const float     BottomSymbol::DEFAULT_INVALID_DIMM_(-1.0f);//any value less than zero will work as a default value
-    const float     BottomSymbol::DEFAULT_HORIZ_POS_(-1.0f);//see above
-    const float     BottomSymbol::DEFAULT_VERT_POS_OFFSET_(20.0f);
-    const sf::Color BottomSymbol::DEFAULT_COLOR_(sf::Color(255, 255, 255, 127));
+
+    const sf::Color BottomSymbol::DEFAULT_COLOR_{ sf::Color(255, 255, 255, 127) };
 
 
-    BottomSymbol::BottomSymbol(const float       VERT_SCALE,
-                               const bool        WILL_INVERT_COLOR,
-                               const float       SCREEN_WIDTH,
-                               const float       SCREEN_HEIGHT,
-                               const float       HORIZ_POS,
-                               const float       VERT_POS_OFFSET,
-                               const sf::Color & COLOR)
+    BottomSymbol::BottomSymbol(
+        const float       VERT_SCALE,
+        const bool        WILL_INVERT_COLOR,
+        const sf::Color & COLOR)
     :
-        halfScreenWidth_(0.0f), //all members initialized in Setup() below
-        screenHeight_   (0.0f),
-        horizPos_       (0.0f),
-        vertPosOffset_  (0.0f),
-        sprite_         (),
-        texture_        (),
-        posTop_         (0.0f)
+        sprite1_(),
+        sprite2_(),
+        sprite3_(),
+        sprite4_(),
+        texture_()
     {
-        Setup(VERT_SCALE,
-              WILL_INVERT_COLOR,
-              SCREEN_WIDTH,
-              SCREEN_HEIGHT,
-              HORIZ_POS,
-              VERT_POS_OFFSET,
-              COLOR);
+        Setup(VERT_SCALE, WILL_INVERT_COLOR, COLOR);
     }
 
 
@@ -76,54 +61,19 @@ namespace game
     {}
 
 
-    void BottomSymbol::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void BottomSymbol::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        //don't use horizPos_ and center symbols if negative
-        if (horizPos_ < 0.0f)
-        {
-            sprite_.setPosition(((halfScreenWidth_ - sprite_.getGlobalBounds().width) + 8.0f), posTop_);
-            target.draw(sprite_, STATES);
-
-            sprite_.setPosition((halfScreenWidth_ - 8.0f), posTop_);
-            target.draw(sprite_, STATES);
-
-            sprite_.setPosition(((halfScreenWidth_ - (sprite_.getGlobalBounds().width * 2.0f)) + 24.0f), posTop_);
-            target.draw(sprite_, STATES);
-
-            sprite_.setPosition(((halfScreenWidth_ + sprite_.getGlobalBounds().width) - 24.0f), posTop_);
-            target.draw(sprite_, STATES);
-        }
-        else
-        {
-            float posX(horizPos_);
-            sprite_.setPosition(posX, posTop_);
-            target.draw(sprite_, STATES);
-
-            posX += sprite_.getGlobalBounds().width;
-            posX -= 16.0f;
-            sprite_.setPosition(posX, posTop_);
-            target.draw(sprite_, STATES);
-
-            posX += sprite_.getGlobalBounds().width;
-            posX -= 16.0f;
-            sprite_.setPosition(posX, posTop_);
-            target.draw(sprite_, STATES);
-
-            posX += sprite_.getGlobalBounds().width;
-            posX -= 16.0f;
-            sprite_.setPosition(posX, posTop_);
-            target.draw(sprite_, STATES);
-        }
+        target.draw(sprite1_, states);
+        target.draw(sprite2_, states);
+        target.draw(sprite3_, states);
+        target.draw(sprite4_, states);
     }
 
 
-    void BottomSymbol::Setup(const float       VERT_SCALE,
-                             const bool        WILL_INVERT_COLOR,
-                             const float       SCREEN_WIDTH,
-                             const float       SCREEN_HEIGHT,
-                             const float       HORIZ_POS,
-                             const float       VERT_POS_OFFSET,
-                             const sf::Color & COLOR)
+    void BottomSymbol::Setup(
+        const float       VERT_SCALE,
+        const bool        WILL_INVERT_COLOR,
+        const sf::Color & COLOR)
     {
         sfml_util::LoadTexture(texture_,
             GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol1"));
@@ -133,29 +83,38 @@ namespace game
             sfml_util::Invert(texture_);
         }
 
-        sprite_.setTexture(texture_);
+        sprite1_.setTexture(texture_);
+        sprite2_.setTexture(texture_);
+        sprite3_.setTexture(texture_);
+        sprite4_.setTexture(texture_);
 
-        float widthToUse(SCREEN_WIDTH);
-        if (widthToUse < 0.0f)
-        {
-            widthToUse = sfml_util::Display::Instance()->GetWinWidth();
-        }
+        sprite1_.setColor(COLOR);
+        sprite2_.setColor(COLOR);
+        sprite3_.setColor(COLOR);
+        sprite4_.setColor(COLOR);
 
-        float heightToUse(SCREEN_HEIGHT);
-        if (heightToUse < 0.0f)
-        {
-            heightToUse = sfml_util::Display::Instance()->GetWinHeight();
-        }
+        auto const SCALE{ sfml_util::MapByRes(1.0f, 5.0f) };
+        sprite1_.setScale(SCALE, SCALE * VERT_SCALE);
+        sprite2_.setScale(SCALE, SCALE * VERT_SCALE);
+        sprite3_.setScale(SCALE, SCALE * VERT_SCALE);
+        sprite4_.setScale(SCALE, SCALE * VERT_SCALE);
+        
+        auto const TOP{
+            sfml_util::Display::Instance()->GetWinHeight() - sprite1_.getGlobalBounds().height };
 
-        halfScreenWidth_ = (widthToUse * 0.5f);
-        screenHeight_ = heightToUse;
-        vertPosOffset_ = VERT_POS_OFFSET;
-        horizPos_ = HORIZ_POS;
-        sprite_.setColor(COLOR);
-        const float SCALE(sfml_util::MapByRes(1.0f, 5.0f));
-        sprite_.setScale(SCALE, SCALE * VERT_SCALE);
-        posTop_ = (screenHeight_ - sprite_.getGlobalBounds().height) - vertPosOffset_;
-        sprite_.setPosition(0.0f, posTop_);
+        auto const PAD{ 8.0f };
+        auto const THREE_PADS{ PAD * 3.0f };
+        auto const HALF_SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() * 0.5f };
+
+        sprite1_.setPosition(((HALF_SCREEN_WIDTH - sprite1_.getGlobalBounds().width) + PAD), TOP);
+
+        sprite2_.setPosition((HALF_SCREEN_WIDTH - PAD), TOP);
+
+        sprite3_.setPosition(
+            ((HALF_SCREEN_WIDTH - (sprite1_.getGlobalBounds().width * 2.0f)) + THREE_PADS), TOP);
+
+        sprite4_.setPosition(
+            ((HALF_SCREEN_WIDTH + sprite1_.getGlobalBounds().width) - THREE_PADS), TOP);
     }
 
 }

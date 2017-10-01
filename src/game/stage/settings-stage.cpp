@@ -526,7 +526,7 @@ namespace stage
         revisionTextRegionUPtr_->SetEntityPos(BOX_RECT_INNER.left, ((BOX_RECT_INNER.top + BOX_RECT_INNER.height) - revisionTextRegionUPtr_->GetEntityRegion().height));
 
         //symbols at the bottom of the screen
-        bottomSymbol_.Setup(1.0f, false, StageRegionWidth(), StageRegionHeight());
+        bottomSymbol_.Setup();
     }
 
 
@@ -534,7 +534,7 @@ namespace stage
     {
         target.draw(backgroundImage_, STATES);
         target.draw(mainMenuTitle_, STATES);
-        bottomSymbol_.Draw(target, STATES);
+        target.draw(bottomSymbol_, STATES);
         target.draw(box_, STATES);
         Stage::Draw(target, STATES);
     }

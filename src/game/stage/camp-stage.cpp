@@ -173,7 +173,7 @@ namespace stage
         target.draw(backgroundImage_, STATES);
         target.draw(mainMenuTitle_, STATES);
         target.draw(campfireSprite_, STATES);
-        botSymbol_.Draw(target, STATES);
+        target.draw(botSymbol_, STATES);
         Stage::Draw(target, STATES);
     }
 

@@ -33,6 +33,8 @@
 #include "sfml-util/gui/background-info.hpp"
 
 #include "game/ouroboros.hpp"
+#include "game/horiz-symbol.hpp"
+#include "game/main-menu-title.hpp"
 #include "game/stage/treasure-stage-listbox-mover.hpp"
 #include "game/item/treasure-image-enum.hpp"
 
@@ -123,6 +125,8 @@ namespace treasure
         
     private:
         TreasureStage * treasureStagePtr_;
+        MainMenuTitle titleImage_;
+        BottomSymbol bottomImage_;
         OuroborosUPtr_t ouroborosUPtr_;
         treasure::ListboxMoverUPtr_t listboxMoverUPtr_;
 

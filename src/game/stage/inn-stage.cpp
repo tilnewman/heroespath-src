@@ -103,7 +103,7 @@ namespace stage
     void InnStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(backgroundImage_, STATES);
-        bottomSymbol_.Draw(target, STATES);
+        target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);
     }
 

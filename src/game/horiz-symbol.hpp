@@ -35,50 +35,39 @@ namespace game
 {
 
     //draws the horizontal symbols at the bottom of menu stages
-    class BottomSymbol
+    class BottomSymbol : public sf::Drawable
     {
         BottomSymbol(const BottomSymbol &) =delete;
         BottomSymbol & operator=(const BottomSymbol &) =delete;
 
     public:
-        explicit BottomSymbol(const float       VERT_SCALE        = 1.0f,
-                              const bool        WILL_INVERT_COLOR = false,
-                              const float       SCREEN_WIDTH      = DEFAULT_INVALID_DIMM_,
-                              const float       SCREEN_HEIGHT     = DEFAULT_INVALID_DIMM_,
-                              const float       HORIZ_POS         = DEFAULT_HORIZ_POS_,
-                              const float       VERT_POS_OFFSET   = DEFAULT_VERT_POS_OFFSET_,
-                              const sf::Color & COLOR             = DEFAULT_COLOR_);
+        explicit BottomSymbol(
+            const float       VERT_SCALE        = 1.0f,
+            const bool        WILL_INVERT_COLOR = false,
+            const sf::Color & COLOR             = DEFAULT_COLOR_);
 
         virtual ~BottomSymbol();
 
-        void Setup(const float       VERT_SCALE        = 1.0f,
-                   const bool        WILL_INVERT_COLOR = false,
-                   const float       SCREEN_WIDTH      = DEFAULT_INVALID_DIMM_,
-                   const float       SCREEN_HEIGHT     = DEFAULT_INVALID_DIMM_,
-                   const float       HORIZ_POS         = DEFAULT_HORIZ_POS_,
-                   const float       VERT_POS_OFFSET   = DEFAULT_VERT_POS_OFFSET_,
-                   const sf::Color & COLOR             = DEFAULT_COLOR_);
+        void Setup(
+            const float       VERT_SCALE        = 1.0f,
+            const bool        WILL_INVERT_COLOR = false,
+            const sf::Color & COLOR             = DEFAULT_COLOR_);
 
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        //these functions must be called after Setup() to return the correct values
-        inline float VertPosTop() const        { return posTop_; }
-        inline float VertPosMiddle() const     { return posTop_ + (sprite_.getGlobalBounds().height * 0.5f); }
-        inline float VertPosBottom() const     { return posTop_ + sprite_.getGlobalBounds().height; }
+        inline float Top() const { return sprite1_.getGlobalBounds().top; }
+        inline float Middle() const { return Top() + ((Bottom() - Top()) * 0.5f); }
+        inline float Bottom() const { return Top() + sprite1_.getGlobalBounds().height; }
 
     public:
-        static const float     DEFAULT_INVALID_DIMM_;
-        static const float     DEFAULT_HORIZ_POS_;
-        static const float     DEFAULT_VERT_POS_OFFSET_;
         static const sf::Color DEFAULT_COLOR_;
+
     private:
-        float       halfScreenWidth_;
-        float       screenHeight_;
-        float       horizPos_;
-        float       vertPosOffset_;
-        sf::Sprite  sprite_;
+        sf::Sprite sprite1_;
+        sf::Sprite sprite2_;
+        sf::Sprite sprite3_;
+        sf::Sprite sprite4_;
         sf::Texture texture_;
-        float       posTop_;
     };
 
 }

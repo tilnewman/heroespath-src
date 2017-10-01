@@ -79,7 +79,8 @@ namespace stage
     }
 
 
-    bool MainMenuStage::HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
+    bool MainMenuStage::HandleCallback(
+        const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
     {
 
         if (PACKAGE.PTR_ == resumeButtonUPtr_.get())
@@ -156,7 +157,7 @@ namespace stage
         target.draw(backgroundImage_, STATES);
         target.draw(gradient_);
         target.draw(titleSprite_, STATES);
-        bottomSymbol_.Draw(target, STATES);
+        target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);
     }
 

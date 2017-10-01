@@ -1937,7 +1937,7 @@ namespace stage
     {
         target.draw(backgroundImage_, STATES);
         target.draw(mainMenuTitle_, STATES);
-        bottomSymbol_.Draw(target, STATES);
+        target.draw(bottomSymbol_, STATES);
 
         Stage::Draw(target, STATES);
 

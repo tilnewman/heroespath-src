@@ -35,9 +35,10 @@
 #include "sfml-util/tile.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
-#include "popup/popup-manager.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-region.hpp"
+
+#include "popup/popup-manager.hpp"
 
 #include "game/ouroboros.hpp"
 #include "game/game-data-file.hpp"
@@ -321,7 +322,7 @@ namespace stage
     {
         target.draw(backgroundImage_, STATES);
         target.draw(mainMenuTitle_, STATES);
-        bottomSymbol_.Draw(target, STATES);
+        target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);
     }
 

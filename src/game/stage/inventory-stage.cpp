@@ -147,7 +147,7 @@ namespace stage
         DETAILVIEW_POS_TOP_        (sfml_util::MapByRes(35.0f, 100.0f)),
         listBoxItemTextInfo_       (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left),
         creaturePtr_               (INVENTORY_CREATURE_PTR),
-        bottomSymbol_              (0.75f, true, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_INVALID_DIMM_, BottomSymbol::DEFAULT_HORIZ_POS_, 0.0f, sf::Color::White),
+        bottomSymbol_              (0.75f, true, sf::Color::White),
         paperBgTexture_            (),
         paperBgSprite_             (),
         ouroborosUPtr_             (),
@@ -823,7 +823,7 @@ namespace stage
         buttonTextInfoDisabled.text = "(B)ack";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_BACK(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         backButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sBack", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_BACK, buttonTextInfoDisabled);
-        backButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.085f * INNER_RECT_.width)) - backButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (backButtonUPtr_->GetEntityRegion().height * 0.5f));
+        backButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.085f * INNER_RECT_.width)) - backButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (backButtonUPtr_->GetEntityRegion().height * 0.5f));
         backButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(backButtonUPtr_.get());
         buttonPVec_.push_back(backButtonUPtr_.get());
@@ -832,7 +832,7 @@ namespace stage
         buttonTextInfoDisabled.text = "(I)tems";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_ITEMS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         itemsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sItems", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_ITEMS, buttonTextInfoDisabled);
-        itemsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.155f * INNER_RECT_.width)) - itemsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (itemsButtonUPtr_->GetEntityRegion().height * 0.5f));
+        itemsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.155f * INNER_RECT_.width)) - itemsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (itemsButtonUPtr_->GetEntityRegion().height * 0.5f));
         itemsButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(itemsButtonUPtr_.get());
         buttonPVec_.push_back(itemsButtonUPtr_.get());
@@ -841,7 +841,7 @@ namespace stage
         buttonTextInfoDisabled.text = "(T)itles";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_TITLES(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         titlesButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sTitles", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_TITLES, buttonTextInfoDisabled);
-        titlesButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.225f * INNER_RECT_.width)) - titlesButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (titlesButtonUPtr_->GetEntityRegion().height * 0.5f));
+        titlesButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.225f * INNER_RECT_.width)) - titlesButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (titlesButtonUPtr_->GetEntityRegion().height * 0.5f));
         titlesButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(titlesButtonUPtr_.get());
         buttonPVec_.push_back(titlesButtonUPtr_.get());
@@ -850,7 +850,7 @@ namespace stage
         buttonTextInfoDisabled.text = "(C)onditions";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_CONDITIONS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         condsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sConditions", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_CONDITIONS, buttonTextInfoDisabled);
-        condsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.34f * INNER_RECT_.width)) - condsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (condsButtonUPtr_->GetEntityRegion().height * 0.5f));
+        condsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.34f * INNER_RECT_.width)) - condsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (condsButtonUPtr_->GetEntityRegion().height * 0.5f));
         condsButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(condsButtonUPtr_.get());
         buttonPVec_.push_back(condsButtonUPtr_.get());
@@ -859,7 +859,7 @@ namespace stage
         buttonTextInfoDisabled.text = "(S)pells";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_SPELLS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         spellsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sSpells", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SPELLS, buttonTextInfoDisabled);
-        spellsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.42f * INNER_RECT_.width)) - spellsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (spellsButtonUPtr_->GetEntityRegion().height * 0.5f));
+        spellsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.42f * INNER_RECT_.width)) - spellsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (spellsButtonUPtr_->GetEntityRegion().height * 0.5f));
         spellsButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(spellsButtonUPtr_.get());
         buttonPVec_.push_back(spellsButtonUPtr_.get());
@@ -868,7 +868,7 @@ namespace stage
         buttonTextInfoDisabled.text = "(G)ive";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_GIVE(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         giveButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sGive", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GIVE, buttonTextInfoDisabled);
-        giveButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.49f * INNER_RECT_.width)) - giveButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (giveButtonUPtr_->GetEntityRegion().height * 0.5f));
+        giveButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.49f * INNER_RECT_.width)) - giveButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (giveButtonUPtr_->GetEntityRegion().height * 0.5f));
         giveButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(giveButtonUPtr_.get());
         buttonPVec_.push_back(giveButtonUPtr_.get());
@@ -877,7 +877,7 @@ namespace stage
         buttonTextInfoDisabled.text = "S(h)are";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_SHARE(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         shareButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sShare", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SHARE, buttonTextInfoDisabled);
-        shareButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.57f * INNER_RECT_.width)) - shareButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (shareButtonUPtr_->GetEntityRegion().height * 0.5f));
+        shareButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.57f * INNER_RECT_.width)) - shareButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (shareButtonUPtr_->GetEntityRegion().height * 0.5f));
         shareButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(shareButtonUPtr_.get());
         buttonPVec_.push_back(shareButtonUPtr_.get());
@@ -886,7 +886,7 @@ namespace stage
         buttonTextInfoDisabled.text = "Gathe(r)";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_GATHER(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         gatherButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sGather", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GATHER, buttonTextInfoDisabled);
-        gatherButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.667f * INNER_RECT_.width)) - gatherButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (gatherButtonUPtr_->GetEntityRegion().height * 0.5f));
+        gatherButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.667f * INNER_RECT_.width)) - gatherButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (gatherButtonUPtr_->GetEntityRegion().height * 0.5f));
         gatherButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(gatherButtonUPtr_.get());
         buttonPVec_.push_back(gatherButtonUPtr_.get());
@@ -895,7 +895,7 @@ namespace stage
         buttonTextInfoDisabled.text = "(E)quip";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_EQUIP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         equipButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sEquip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_EQUIP, buttonTextInfoDisabled);
-        equipButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.76f * INNER_RECT_.width)) - equipButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (equipButtonUPtr_->GetEntityRegion().height * 0.5f));
+        equipButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.76f * INNER_RECT_.width)) - equipButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (equipButtonUPtr_->GetEntityRegion().height * 0.5f));
         equipButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(equipButtonUPtr_.get());
         buttonPVec_.push_back(equipButtonUPtr_.get());
@@ -904,7 +904,7 @@ namespace stage
         buttonTextInfoDisabled.text = "(U)nequip";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_UNEQUIP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         unequipButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sUnequip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_UNEQUIP, buttonTextInfoDisabled);
-        unequipButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.865f * INNER_RECT_.width)) - unequipButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (unequipButtonUPtr_->GetEntityRegion().height * 0.5f));
+        unequipButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.865f * INNER_RECT_.width)) - unequipButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (unequipButtonUPtr_->GetEntityRegion().height * 0.5f));
         unequipButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(unequipButtonUPtr_.get());
         buttonPVec_.push_back(unequipButtonUPtr_.get());
@@ -913,7 +913,7 @@ namespace stage
         buttonTextInfoDisabled.text = "(D)rop";
         const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_DROP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
         dropButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sDrop", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_DROP, buttonTextInfoDisabled);
-        dropButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.94f * INNER_RECT_.width)) - dropButtonUPtr_->GetEntityRegion().width, bottomSymbol_.VertPosMiddle() - (dropButtonUPtr_->GetEntityRegion().height * 0.5f));
+        dropButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.94f * INNER_RECT_.width)) - dropButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (dropButtonUPtr_->GetEntityRegion().height * 0.5f));
         dropButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(dropButtonUPtr_.get());
         buttonPVec_.push_back(dropButtonUPtr_.get());
@@ -928,7 +928,7 @@ namespace stage
     {
         target.draw(paperBgSprite_, STATES);
         target.draw(mainMenuTitle_, STATES);
-        bottomSymbol_.Draw(target, STATES);
+        target.draw(bottomSymbol_, STATES);
         target.draw(creatureSprite_, STATES);
         Stage::Draw(target, STATES);
 

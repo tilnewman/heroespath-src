@@ -104,8 +104,10 @@ namespace treasure
     :
         Stage("TreasureDisplay", false),
         treasureStagePtr_(treasureStagePtr),
+        titleImage_("treasure-button.png", true, 1.0f, 0.75f),
+        bottomImage_(0.85f, true, sf::Color::White),
         ouroborosUPtr_(),
-        //listboxMoverUPtr_(),
+        listboxMoverUPtr_(),
         backgroundTexture_(),
         backgroundSprite_(),
         corpseTexture_(),
@@ -133,6 +135,8 @@ namespace treasure
     void TreasureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(backgroundSprite_, STATES);
+        target.draw(titleImage_, STATES);
+        target.draw(bottomImage_, STATES);
         target.draw(corpseSprite_, STATES);
         target.draw(treasureSprite_, STATES);
 
@@ -199,27 +203,16 @@ namespace treasure
         auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
         auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
 
-        auto const CORPSE_IMAGE_MAX_WIDTH{ (SCREEN_WIDTH * 0.75f) };
-        auto const CORPSE_IMAGE_MAX_HEIGHT{ (SCREEN_HEIGHT * 0.5f) };
+        sfml_util::ScaleSpriteToFit(
+            corpseSprite_,
+            (SCREEN_WIDTH * 0.75f),
+            (SCREEN_HEIGHT * 0.5f));
 
-        auto const SCALE_HORIZ{ CORPSE_IMAGE_MAX_WIDTH /
-            corpseSprite_.getLocalBounds().width };
+        auto const CORPSE_IMAGE_LEFT{
+            (SCREEN_WIDTH * 0.5f) - (corpseSprite_.getGlobalBounds().width * 0.5f) };
 
-        corpseSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-
-        if (corpseSprite_.getGlobalBounds().height > CORPSE_IMAGE_MAX_HEIGHT)
-        {
-            auto const SCALE_VERT{ CORPSE_IMAGE_MAX_HEIGHT /
-                corpseSprite_.getLocalBounds().height };
-
-            corpseSprite_.setScale(SCALE_VERT, SCALE_VERT);
-        }
-
-        auto const CORPSE_IMAGE_LEFT{ (SCREEN_WIDTH * 0.5f) -
-            (corpseSprite_.getGlobalBounds().width * 0.5f) };
-
-        auto const CORPSE_IMAGE_TOP{ SCREEN_HEIGHT - (sfml_util::MapByRes(50.0f, 150.0f) +
-            corpseSprite_.getGlobalBounds().height) };
+        auto const CORPSE_IMAGE_TOP{
+            bottomImage_.Top() - corpseSprite_.getGlobalBounds().height };
 
         corpseSprite_.setPosition(CORPSE_IMAGE_LEFT, CORPSE_IMAGE_TOP);
         corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
