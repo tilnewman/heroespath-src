@@ -52,6 +52,7 @@
 #include "game/creature/stats.hpp"
 #include "game/item/item-profile-warehouse.hpp"
 #include "game/trap-warehouse.hpp"
+#include "game/stage/treasure-display-stage.hpp"
 
 //TODO TEMP REMOVE -once done testing
 #include "game/player/party.hpp"
@@ -116,23 +117,15 @@ namespace stage
     TreasureStage::TreasureStage()
     :
         Stage               ("Treasure"),
+        displayStagePtr_    (nullptr),
         setupCountdown_     (0),
-        bgTexture_          (),
-        bgSprite_           (),
-        corpseTexture_      (),
-        corpseSprite_       (),
-        treasureTexture_    (),
-        treasureSprite_     (),
-        coinsTexture_       (),
-        coinsSprite_        (),
         treasureImageType_  (item::TreasureImage::Count),
         itemCacheHeld_      (),
         itemCacheLockbox_   (),
         treasureAvailable_  (item::TreasureAvailable::Count),
         trap_               (),
         fightResult_        (),
-        creatureEffectIndex_(0),
-        willShowCoinsImage_ (false)
+        creatureEffectIndex_(0)
     {}
 
 
@@ -272,8 +265,12 @@ namespace stage
 
     void TreasureStage::Setup()
     {
-        SetupBackgroundImage();
-        
+        displayStagePtr_ = new TreasureDisplayStage(this);
+        displayStagePtr_->Setup();
+
+        //give control of the TreasureDispayStage object lifetime to the Loop class
+        LoopManager::Instance()->AddStage(displayStagePtr_);
+
         if (item::ItemProfileWarehouse::Instance()->Count() == 0)
         {
             //This number was found by experiment to be a good number of draw frames to allow the
@@ -290,16 +287,8 @@ namespace stage
 
     void TreasureStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
+        displayStagePtr_->Draw(target, STATES);
         HandleCountdownAndPleaseWaitPopup();
-        target.draw(bgSprite_, STATES);
-        target.draw(corpseSprite_, STATES);
-        target.draw(treasureSprite_, STATES);
-        
-        if (willShowCoinsImage_)
-        {
-            target.draw(coinsSprite_, STATES);
-        }
-
         Stage::Draw(target, STATES);
     }
 
@@ -316,274 +305,6 @@ namespace stage
                     this,
                     popup::PopupManager::Instance()->CreateItemProfilePleaseWaitPopupInfo(
                         POPUP_NAME_ITEMPROFILE_PLEASEWAIT_));
-            }
-        }
-    }
-
-
-    void TreasureStage::SetupBackgroundImage()
-    {
-        sfml_util::LoadTexture(bgTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2b"));
-
-        bgSprite_.setTexture(bgTexture_);
-        bgSprite_.setPosition(0.0f, 0.0f);
-
-        bgSprite_.setScale(
-            sfml_util::Display::Instance()->GetWinWidth() / bgSprite_.getLocalBounds().width,
-            sfml_util::Display::Instance()->GetWinHeight() / bgSprite_.getLocalBounds().height);
-    }
-
-
-    const sf::Vector2f TreasureStage::SetupTreasureImage(const item::TreasureImage::Enum E)
-    {
-        auto const TREASURE_IMAGE_KEY{ item::TreasureImage::ToImageKey(E) };
-
-        auto const TREASURE_IMAGE_SCALE_NEED_REDUCTION{
-            (TREASURE_IMAGE_KEY == "media-images-bones-bone-pile-1") ||
-            (TREASURE_IMAGE_KEY == "media-images-bones-bone-pile-2") };
-
-        sfml_util::LoadTexture(treasureTexture_,
-            GameDataFile::Instance()->GetMediaPath(TREASURE_IMAGE_KEY));
-
-        treasureSprite_.setTexture(treasureTexture_);
-
-        auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
-        auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
-
-        //these values found by experiment to look good at various resolutions
-        auto const TREASURE_IMAGE_SCALE_ADJ{
-            ((TREASURE_IMAGE_SCALE_NEED_REDUCTION) ? 0.75f : 1.0f) };
-
-        auto const TREASURE_IMAGE_MAX_WIDTH{
-            (SCREEN_WIDTH * 0.5f * TREASURE_IMAGE_SCALE_ADJ) };
-        
-        auto const TREASURE_IMAGE_MAX_HEIGHT{
-            (SCREEN_HEIGHT * 0.333f * TREASURE_IMAGE_SCALE_ADJ) };
-
-        sfml_util::ScaleSpriteToFit(
-            treasureSprite_,
-            TREASURE_IMAGE_MAX_WIDTH,
-            TREASURE_IMAGE_MAX_HEIGHT);
-
-        //these values found by experiment to look good at various resolutions
-        auto const TREASURE_IMAGE_LEFT{ sfml_util::MapByRes(100.0f, 300.0f) };
-
-        auto const TREASURE_IMAGE_TOP{
-            (sfml_util::MapByRes(50.0f, 150.0f) + (SCREEN_HEIGHT * 0.166f)) -
-            (treasureSprite_.getGlobalBounds().height * 0.5f) };
-
-        treasureSprite_.setPosition(TREASURE_IMAGE_LEFT, TREASURE_IMAGE_TOP);
-        treasureSprite_.setColor(sf::Color(255, 255, 255, 192));
-
-        return treasureSprite_.getPosition();
-    }
-
-
-    void TreasureStage::SetupCoinsImage(const sf::Vector2f & TREASURE_IMAGE_POS_V)
-    {
-        sfml_util::LoadTexture(coinsTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-coins"));
-
-        coinsSprite_.setTexture(coinsTexture_);
-
-        auto const COINS_IMAGE_WIDTH{ (sfml_util::Display::Instance()->GetWinWidth() * 0.125f) };
-        auto const COINS_SCALE{ COINS_IMAGE_WIDTH / coinsSprite_.getLocalBounds().width };
-        coinsSprite_.setScale(COINS_SCALE, COINS_SCALE);
-
-        coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
-
-        //these values found by experiment to look good at various resolutions
-        auto const COINS_LEFT{ TREASURE_IMAGE_POS_V.x +
-            (treasureSprite_.getGlobalBounds().width * 0.80f) };
-
-        auto const COINS_TOP{ TREASURE_IMAGE_POS_V.y +
-            (treasureSprite_.getGlobalBounds().height * 0.75f) };
-
-        coinsSprite_.setPosition(COINS_LEFT, COINS_TOP);
-    }
-
-
-    const std::string TreasureStage::GetCorpseImageKeyFromEnemyParty() const
-    {
-        auto const DEAD_ENEMY_CHARACTERS_PVEC{
-            combat::Encounter::Instance()->DeadNonPlayerParty().Characters() };
-
-        misc::StrVec_t corpseKeyStrVec;
-        for (auto const NEXT_ENEMY_CHARACTER_PTR : DEAD_ENEMY_CHARACTERS_PVEC)
-        {
-            auto const CORPSE_KEY_STR_VEC{ GetCorpseImageKeyFromRace(
-                NEXT_ENEMY_CHARACTER_PTR->Race()) };
-
-            std::copy(CORPSE_KEY_STR_VEC.begin(),
-                      CORPSE_KEY_STR_VEC.end(),
-                      std::back_inserter(corpseKeyStrVec));
-        }
-
-        if (DEAD_ENEMY_CHARACTERS_PVEC.empty() || corpseKeyStrVec.empty())
-        {
-            M_HP_LOG_ERR("stage::TreasureStage::GetCorpseImageKeyFromEnemyParty() "
-                << "was unable to gather any key strings.  Using default image.  "
-                << "DEAD_ENEMY_CHARACTERS_PVEC.size()=" << DEAD_ENEMY_CHARACTERS_PVEC.size()
-                << ", corpseKeyStrVec.size()=" << corpseKeyStrVec.size());
-
-            auto const DEFAULT_CORPSE_KEY_STR_VEC{
-                GetCorpseImageKeyFromRace(creature::race::Human) };
-
-            return DEFAULT_CORPSE_KEY_STR_VEC.at(static_cast<std::size_t>(
-                misc::random::Int(static_cast<int>(DEFAULT_CORPSE_KEY_STR_VEC.size()) - 1)));
-        }
-        else
-        {
-            //Allow duplicates in corpseKeyStrVec so that the more a race was faced
-            //during combat means the more likely that corpse image is shown.
-            return corpseKeyStrVec.at(static_cast<std::size_t>(
-                misc::random::Int(static_cast<int>(corpseKeyStrVec.size()) - 1)));
-        }
-    }
-
-
-    const misc::StrVec_t TreasureStage::GetCorpseImageKeyFromRace(const creature::race::Enum E) const
-    {
-        switch (E)
-        {
-            case creature::race::Shade:
-            case creature::race::Ghoul:
-            case creature::race::Human:
-            case creature::race::Gnome:
-            case creature::race::Pixie:
-            case creature::race::Witch:
-            case creature::race::Halfling:
-            case creature::race::Skeleton:
-            {
-                return { "media-images-bones-skull-humaniod",
-                         "media-images-bones-skull-humaniod-pile-1",
-                         "media-images-bones-skull-humaniod-pile-2",
-                         "media-images-bones-skull-humaniod-pile-3" };
-            }
-
-            case creature::race::Wyvern:
-            case creature::race::Dragon:
-            case creature::race::Hydra:
-            {
-                return { "media-images-bones-skull-dragon-1",
-                         "media-images-bones-skull-dragon-2",
-                         "media-images-bones-skull-dragon-3",
-                         "media-images-bones-skull-dragon-4" };
-            }
-
-            case creature::race::Orc:
-            case creature::race::Goblin:
-            {
-                return { "media-images-bones-skull-goblin" };
-            }
-
-            case creature::race::Pug:
-            case creature::race::Newt:
-            {
-                return { "media-images-bones-skull-animal-2" };
-            }
-
-            case creature::race::Naga:
-            case creature::race::LizardWalker:
-            {
-                //the orc skull looked better as a naga/lizard skull
-                return { "media-images-bones-skull-orc" };
-            }
-
-            case creature::race::Bog:
-            {
-                return { "media-images-bones-skull-bog" };
-            }
-
-            case creature::race::Spider:
-            case creature::race::CaveCrawler:
-            {
-                return { "media-images-bones-cave-crawler" };
-            }
-
-            case creature::race::Minotaur:
-            {
-                return { "media-images-bones-skull-minotaur" };
-            }
-
-            case creature::race::Plant:
-            {
-                return { "media-images-bones-skull-animal-1" };
-            }
-
-            case creature::race::Beetle:
-            {
-                return { "media-images-bones-beetle" };
-            }
-
-            case creature::race::Demon:
-            {
-                return { "media-images-bones-skull-demon" };
-            }
-
-            case creature::race::Griffin:
-            {
-                return { "media-images-bones-griffin" };
-            }
-
-            case creature::race::Boar:
-            case creature::race::LionBoar:
-            case creature::race::Ramonaut:
-            case creature::race::Wereboar:
-            {
-                return { "media-images-bones-skull-animal-3" };
-            }
-
-            case creature::race::Wolfen:
-            case creature::race::Lion:
-            case creature::race::Werebear:
-            case creature::race::Werewolf:
-            {
-                return { "media-images-bones-wolfen" };
-            }
-
-            case creature::race::Serpent:
-            case creature::race::Cobra:
-            {
-                return { "media-images-bones-skull-snake" };
-            }
-
-            case creature::race::Werecat:
-            {
-                return { "media-images-bones-cat" };
-            }
-
-            case creature::race::Ogre:
-            case creature::race::Golem:
-            case creature::race::Troll:
-            case creature::race::Giant:
-            {
-                return { "media-images-bones-skull-giant" };
-            }
-
-            case creature::race::Bat:
-            case creature::race::Werebat:
-            {
-                return { "media-images-bones-bat" };
-            }
-
-            case creature::race::Harpy:
-            {
-                return { "media-images-bones-harpy" };
-            }
-
-            case creature::race::ThreeHeadedHound:
-            {
-                return { "media-images-bones-three-headed-hound" };
-            }
-
-            case creature::race::Count:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "stage::TreasureStage::GetImageKeyFromRace(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
             }
         }
     }
@@ -611,9 +332,7 @@ namespace stage
         itemCacheHeld_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsHeldCache();
         itemCacheLockbox_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsLockboxCache();
 
-        SetupCorpseImage();
-        auto const TREASURE_IMAGE_POS_V{ SetupTreasureImage(treasureImageType_) };
-        SetupCoinsImage(TREASURE_IMAGE_POS_V);
+        displayStagePtr_->SetupAfterPleaseWait(treasureImageType_);
         treasureAvailable_ = DetermineTreasureAvailableState(itemCacheHeld_, itemCacheLockbox_);
         PromptUserBasedonTreasureAvailability(treasureAvailable_, treasureImageType_);
     }
@@ -639,43 +358,6 @@ namespace stage
         {
             return item::TreasureAvailable::HeldAndLockbox;
         }
-    }
-
-
-    void TreasureStage::SetupCorpseImage()
-    {
-        sfml_util::LoadTexture(corpseTexture_,
-            GameDataFile::Instance()->GetMediaPath(GetCorpseImageKeyFromEnemyParty()));
-
-        corpseSprite_.setTexture(corpseTexture_);
-
-        auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
-        auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
-
-        auto const CORPSE_IMAGE_MAX_WIDTH{ (SCREEN_WIDTH * 0.75f) };
-        auto const CORPSE_IMAGE_MAX_HEIGHT{ (SCREEN_HEIGHT * 0.5f) };
-
-        auto const SCALE_HORIZ{ CORPSE_IMAGE_MAX_WIDTH /
-            corpseSprite_.getLocalBounds().width };
-
-        corpseSprite_.setScale(SCALE_HORIZ, SCALE_HORIZ);
-
-        if (corpseSprite_.getGlobalBounds().height > CORPSE_IMAGE_MAX_HEIGHT)
-        {
-            auto const SCALE_VERT{ CORPSE_IMAGE_MAX_HEIGHT /
-                corpseSprite_.getLocalBounds().height };
-
-            corpseSprite_.setScale(SCALE_VERT, SCALE_VERT);
-        }
-
-        auto const CORPSE_IMAGE_LEFT{ (SCREEN_WIDTH * 0.5f) -
-            (corpseSprite_.getGlobalBounds().width * 0.5f) };
-
-        auto const CORPSE_IMAGE_TOP{ SCREEN_HEIGHT - (sfml_util::MapByRes(50.0f, 150.0f) +
-            corpseSprite_.getGlobalBounds().height) };
-
-        corpseSprite_.setPosition(CORPSE_IMAGE_LEFT, CORPSE_IMAGE_TOP);
-        corpseSprite_.setColor(sf::Color(255, 255, 255, 50));
     }
 
 
@@ -1032,35 +714,8 @@ namespace stage
 
     void TreasureStage::SetupForCollection()
     {
-        SetupForCollection_UpdateTreasureImage();
+        displayStagePtr_->SetupForCollection(treasureImageType_);
         //TODO
-    }
-
-
-    void TreasureStage::SetupForCollection_UpdateTreasureImage()
-    {
-        if (item::TreasureImage::ChestOpen == treasureImageType_)
-        {
-            sfml_util::LoadTexture(
-                treasureTexture_,
-                GameDataFile::Instance()->GetMediaPath("media-images-chest-open"));
-
-            willShowCoinsImage_ = true;
-        }
-        else if (item::TreasureImage::LockboxOpen == treasureImageType_)
-        {
-            sfml_util::LoadTexture(
-                treasureTexture_,
-                GameDataFile::Instance()->GetMediaPath("media-images-lockbox-open"));
-
-            willShowCoinsImage_ = true;
-        }
-    }
-
-
-    void SetupForCollection_SetupTreasureListbox()
-    {
-
     }
 
 }

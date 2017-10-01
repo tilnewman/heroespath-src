@@ -30,6 +30,8 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/gui-entity-slider.hpp"
 
+#include <memory>
+
 
 namespace sfml_util
 {
@@ -43,7 +45,7 @@ namespace game
 {
 namespace stage
 {
-namespace TreasureStage
+namespace treasure
 {
 
     enum class SourceType
@@ -80,7 +82,7 @@ namespace TreasureStage
         inline SourceType Source() const { return sourceType_; }
         inline std::size_t TargetNumber() const { return targetNumber_; }
 
-        TreasureStage::SourceType SourceChange();
+        SourceType SourceChange();
         std::size_t TargetChangeInc();
         std::size_t TargetChangeDec();
 
@@ -101,10 +103,12 @@ namespace TreasureStage
         //
         std::size_t targetNumber_;
         std::size_t targetNumberMax_;
-        TreasureStage::SourceType sourceType_;
+        SourceType sourceType_;
         sfml_util::gui::GuiEntitySlider sourceSlider_;
         sfml_util::gui::GuiEntitySlider targetSlider_;
     };
+
+    using ListboxMoverUPtr_t = std::unique_ptr<ListboxMover>;
 
 }
 }

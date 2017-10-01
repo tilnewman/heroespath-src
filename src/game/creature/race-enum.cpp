@@ -1058,5 +1058,151 @@ namespace creature
         return std::make_pair(min, max);
     }
 
+
+    const misc::StrVec_t race::CorpseImageKeys(const race::Enum E)
+    {
+        switch (E)
+        {
+            case race::Shade:
+            case race::Ghoul:
+            case race::Human:
+            case race::Gnome:
+            case race::Pixie:
+            case race::Witch:
+            case race::Halfling:
+            case race::Skeleton:
+            {
+                return { "media-images-bones-skull-humaniod",
+                         "media-images-bones-skull-humaniod-pile-1",
+                         "media-images-bones-skull-humaniod-pile-2",
+                         "media-images-bones-skull-humaniod-pile-3" };
+            }
+
+            case race::Wyvern:
+            case race::Dragon:
+            case race::Hydra:
+            {
+                return { "media-images-bones-skull-dragon-1",
+                         "media-images-bones-skull-dragon-2",
+                         "media-images-bones-skull-dragon-3",
+                         "media-images-bones-skull-dragon-4" };
+            }
+
+            case race::Orc:
+            case race::Goblin:
+            {
+                return { "media-images-bones-skull-goblin" };
+            }
+
+            case race::Pug:
+            case race::Newt:
+            {
+                return { "media-images-bones-skull-animal-2" };
+            }
+
+            case race::Naga:
+            case race::LizardWalker:
+            {
+                //the orc skull looked better as a naga/lizard skull
+                return { "media-images-bones-skull-orc" };
+            }
+
+            case race::Bog:
+            {
+                return { "media-images-bones-skull-bog" };
+            }
+
+            case race::Spider:
+            case race::CaveCrawler:
+            {
+                return { "media-images-bones-cave-crawler" };
+            }
+
+            case race::Minotaur:
+            {
+                return { "media-images-bones-skull-minotaur" };
+            }
+
+            case race::Plant:
+            {
+                return { "media-images-bones-skull-animal-1" };
+            }
+
+            case race::Beetle:
+            {
+                return { "media-images-bones-beetle" };
+            }
+
+            case race::Demon:
+            {
+                return { "media-images-bones-skull-demon" };
+            }
+
+            case race::Griffin:
+            {
+                return { "media-images-bones-griffin" };
+            }
+
+            case race::Boar:
+            case race::LionBoar:
+            case race::Ramonaut:
+            case race::Wereboar:
+            {
+                return { "media-images-bones-skull-animal-3" };
+            }
+
+            case race::Wolfen:
+            case race::Lion:
+            case race::Werebear:
+            case race::Werewolf:
+            {
+                return { "media-images-bones-wolfen" };
+            }
+
+            case race::Serpent:
+            case race::Cobra:
+            {
+                return { "media-images-bones-skull-snake" };
+            }
+
+            case race::Werecat:
+            {
+                return { "media-images-bones-cat" };
+            }
+
+            case race::Ogre:
+            case race::Golem:
+            case race::Troll:
+            case race::Giant:
+            {
+                return { "media-images-bones-skull-giant" };
+            }
+
+            case race::Bat:
+            case race::Werebat:
+            {
+                return { "media-images-bones-bat" };
+            }
+
+            case race::Harpy:
+            {
+                return { "media-images-bones-harpy" };
+            }
+
+            case race::ThreeHeadedHound:
+            {
+                return { "media-images-bones-three-headed-hound" };
+            }
+
+            case race::Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "game::creature::race::CorpseImageKeys(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
 }
 }

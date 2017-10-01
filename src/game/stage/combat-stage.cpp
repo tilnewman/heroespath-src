@@ -1055,10 +1055,6 @@ namespace stage
             COLUMN_3_LEFT - (blockTBoxButtonUPtr_->GetEntityRegion().width * 0.5f),
             COLUMN_TOP + (COLUMN_VERT_PAD * 3.0f));
 
-        //TODO TEMP REMOVE
-        //fake player characters until loading games starts working
-
-
         if (restoreInfo_.HasRestored())
         {
             preTurnPhase_ = PreTurnPhase::End;

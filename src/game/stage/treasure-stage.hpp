@@ -60,6 +60,9 @@ namespace game
 namespace stage
 {
 
+    class TreasureDisplayStage;
+
+
     //A Stage class that allows starting the game
     class TreasureStage
     :
@@ -81,18 +84,11 @@ namespace stage
 
     private:
         void HandleCountdownAndPleaseWaitPopup();
-        void SetupBackgroundImage();
-        const sf::Vector2f SetupTreasureImage(const item::TreasureImage::Enum);
-        void SetupCoinsImage(const sf::Vector2f & TREASURE_IMAGE_POS_V);
-        const std::string GetCorpseImageKeyFromEnemyParty() const;
-        const misc::StrVec_t GetCorpseImageKeyFromRace(const creature::race::Enum) const;
         void SetupAfterDelay();
 
         item::TreasureAvailable::Enum DetermineTreasureAvailableState(
             const item::ItemCache & CACHE_HELD,
             const item::ItemCache & CACHE_LOCKBOX);
-
-        void SetupCorpseImage();
 
         void PromptUserBasedonTreasureAvailability(
             const item::TreasureAvailable::Enum, const item::TreasureImage::Enum);
@@ -124,9 +120,7 @@ namespace stage
 
         void LockboxOpen();
         void SetupForCollection();
-        void SetupForCollection_UpdateTreasureImage();
-        void SetupForCollection_SetupTreasureListbox();
-
+        
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
         static const std::string POPUP_NAME_ALL_ENEMIES_RAN_;
@@ -142,15 +136,8 @@ namespace stage
         static const std::string POPUP_NAME_ALL_CHARACTERS_DIED_;
 
     private:
+        TreasureDisplayStage * displayStagePtr_;
         int setupCountdown_;
-        sf::Texture bgTexture_;
-        sf::Sprite  bgSprite_;
-        sf::Texture corpseTexture_;
-        sf::Sprite  corpseSprite_;
-        sf::Texture treasureTexture_;
-        sf::Sprite  treasureSprite_;
-        sf::Texture coinsTexture_;
-        sf::Sprite  coinsSprite_;
         item::TreasureImage::Enum treasureImageType_;
         item::ItemCache itemCacheHeld_;
         item::ItemCache itemCacheLockbox_;
@@ -158,7 +145,6 @@ namespace stage
         game::Trap trap_;
         combat::FightResult fightResult_;
         std::size_t creatureEffectIndex_;
-        bool willShowCoinsImage_;
     };
 
 }

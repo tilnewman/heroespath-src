@@ -36,7 +36,7 @@ namespace game
 {
 namespace stage
 {
-namespace TreasureStage
+namespace treasure
 {
 
     const float ListboxMover::SLIDE_SPEED_{ 50.0f };
@@ -70,7 +70,7 @@ namespace TreasureStage
     }
 
 
-    TreasureStage::SourceType ListboxMover::SourceChange()
+    SourceType ListboxMover::SourceChange()
     {
         sourceSlider_.ChangeDirection();
         sourceSlider_.Start();

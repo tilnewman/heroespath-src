@@ -34,6 +34,8 @@
 #include "game/item/treasure-info.hpp"
 #include "game/creature/role-enum.hpp"
 
+#include "misc/handy-types.hpp"
+
 #include <tuple>
 #include <string>
 #include <vector>
@@ -128,6 +130,7 @@ namespace creature
         static const item::TreasureInfo TreasureScoreMax();
         static const std::string RaceRoleName(const race::Enum, const role::Enum);
         static const stats::TraitPair_t RaceRoleRanks(const race::Enum, const role::Enum);
+        static const misc::StrVec_t CorpseImageKeys(const race::Enum);
     };
 
 
