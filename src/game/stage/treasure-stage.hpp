@@ -30,6 +30,7 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
+#include "sfml-util/gui/list-box.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
@@ -76,11 +77,16 @@ namespace stage
         TreasureStage();
         virtual ~TreasureStage();
 
-        inline virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const popup::PopupResponse &);
+        inline const std::string HandlerName() const override { return GetStageName(); }
+        bool HandleCallback(const popup::PopupResponse &) override;
 
-        virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+
+        bool HandleListboxCallback(
+            const sfml_util::gui::ListBox * const TREASURE_LISTBOX_PTR,
+            const sfml_util::gui::ListBox * const CHAR_INV_LISTBOX_PTR,
+            const sfml_util::gui::callback::ListBoxEventPackage &);
 
     private:
         void HandleCountdownAndPleaseWaitPopup();
@@ -120,7 +126,7 @@ namespace stage
 
         void LockboxOpen();
         void SetupForCollection();
-        
+
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
         static const std::string POPUP_NAME_ALL_ENEMIES_RAN_;

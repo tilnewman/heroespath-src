@@ -68,6 +68,7 @@ namespace treasure
     public:
         ListboxMover(
             const std::size_t NUM_PLAYERS,
+            const SourceType SOURCE,
             sfml_util::gui::IGuiEntityPtr_t sourceListboxGEPtr,
             const sf::Vector2f & SOURCE_ONSCREEN_POS_V,
             const sf::Vector2f & SOURCE_OFFSCREEN_POS_V,

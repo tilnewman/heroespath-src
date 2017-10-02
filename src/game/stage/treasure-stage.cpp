@@ -293,6 +293,15 @@ namespace stage
     }
 
 
+    bool TreasureStage::HandleListboxCallback(
+        const sfml_util::gui::ListBox * const,
+        const sfml_util::gui::ListBox * const,
+        const sfml_util::gui::callback::ListBoxEventPackage &)
+    {
+        return true;
+    }
+
+
     void TreasureStage::HandleCountdownAndPleaseWaitPopup()
     {
         //If the ItemProfileWarehouse needs to be setup, then wait for the background
@@ -714,7 +723,12 @@ namespace stage
 
     void TreasureStage::SetupForCollection()
     {
-        displayStagePtr_->SetupForCollection(treasureImageType_);
+        displayStagePtr_->SetupForCollection(
+            treasureAvailable_,
+            treasureImageType_,
+            itemCacheHeld_,
+            itemCacheLockbox_);
+
         //TODO
     }
 

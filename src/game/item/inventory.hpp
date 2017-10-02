@@ -62,9 +62,9 @@ namespace item
 
         ~Inventory();
 
-        inline stats::Trait_t Coins() const             { return coins_; }
-        inline stats::Trait_t MeteorShards() const    { return meteorShards_; }
-        inline stats::Trait_t Gems() const               { return gems_; }
+        inline stats::Trait_t Coins() const         { return coins_; }
+        inline stats::Trait_t MeteorShards() const  { return meteorShards_; }
+        inline stats::Trait_t Gems() const          { return gems_; }
 
         //these functions return false if attempt to reduce below zero
         bool CoinsAdj(const stats::Trait_t A);

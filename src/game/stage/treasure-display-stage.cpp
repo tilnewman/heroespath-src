@@ -29,18 +29,23 @@
 //
 #include "treasure-display-stage.hpp"
 
+#include "game/game.hpp"
+#include "game/state/game-state.hpp"
 #include "game/game-data-file.hpp"
 #include "game/combat/encounter.hpp"
 #include "game/stage/treasure-stage.hpp"
 #include "game/non-player/party.hpp"
 #include "game/non-player/character.hpp"
+#include "game/player/party.hpp"
 #include "game/player/character.hpp"
+#include "game/item/item.hpp"
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/list-box-item.hpp"
 
 #include "misc/vectors.hpp"
 
@@ -59,12 +64,11 @@ namespace treasure
         foreground(line),
         background(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220)),
         title(sfml_util::FontManager::Color_Orange() - sf::Color(130, 130, 130, 0)),
-        colorSet(foreground, background),
-        backgroundInfo(background)
+        colorSet(foreground, background)
     {}
 
 
-    DisplayMeasurements::DisplayMeasurements()
+    DisplayMeasurements::DisplayMeasurements(const float COINS_IMAGE_BOTTOM)
     :
         screenWidth(sfml_util::Display::Instance()->GetWinWidth()),
         screenHeight(sfml_util::Display::Instance()->GetWinHeight()),
@@ -83,31 +87,38 @@ namespace treasure
         listboxBetweenSpacer(sfml_util::MapByRes(65.0f, 200.0f)),
         listboxWidth(
             ((innerRect.width - (2.0f * listboxScreenEdgeMargin)) - listboxBetweenSpacer) * 0.5f),
-        offScreenPos((listboxWidth + sfml_util::MapByRes(100.0f, 300.0f)) * -1.0f),
         treasureListboxLeft(innerRect.left + listboxScreenEdgeMargin),
         inventoryListboxLeft(treasureListboxLeft + listboxWidth + listboxBetweenSpacer),
-        listboxTop(
-            /* TODO CREATURE_IMAGE_POS_TOP_ +*/ creatureImageHeight + (listboxHeightReduction * 0.5f)),
+        listboxTop(COINS_IMAGE_BOTTOM + (listboxHeightReduction * 0.5f)),
         listboxHeight(
             (screenHeight - listboxTop) - listboxHeightReduction),
-        listboxRegion(
+        treasureListboxRegion(
             treasureListboxLeft,
             listboxTop,
             listboxWidth,
-            listboxHeight)
+            listboxHeight),
+        inventoryListboxRegion(
+            inventoryListboxLeft,
+            listboxTop,
+            listboxWidth,
+            listboxHeight),
+        listboxMargin(10.0f),
+        listboxItemSpacer(6.0f)
     {}
 
 }//end of namespace treasure
 
 
-    TreasureDisplayStage::TreasureDisplayStage(TreasureStage *)
+    TreasureDisplayStage::TreasureDisplayStage(TreasureStage * treasureStagePtr)
     :
         Stage("TreasureDisplay", false),
-        //treasureStagePtr_(treasureStagePtr),
+        treasureStagePtr_(treasureStagePtr),
         titleImage_("treasure-button.png", true, 1.0f, 0.75f),
         bottomImage_(0.85f, true, sf::Color::White),
         ouroborosUPtr_(),
         listboxMoverUPtr_(),
+        treasureListboxUPtr_(),
+        inventoryListboxUPtr_(),
         backgroundTexture_(),
         backgroundSprite_(),
         corpseTexture_(),
@@ -116,8 +127,18 @@ namespace treasure
         treasureSprite_(),
         coinsTexture_(),
         coinsSprite_(),
-        willShowCoins_(false)
+        treasureAvailable_(item::TreasureAvailable::NoTreasure)
     {}
+
+
+    bool TreasureDisplayStage::HandleCallback(
+        const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
+    {
+        return treasureStagePtr_->HandleListboxCallback(
+            treasureListboxUPtr_.get(),
+            inventoryListboxUPtr_.get(),
+            PACKAGE);
+    }
 
 
     void TreasureDisplayStage::Setup()
@@ -139,8 +160,9 @@ namespace treasure
         target.draw(bottomImage_, STATES);
         target.draw(corpseSprite_, STATES);
         target.draw(treasureSprite_, STATES);
+        //target.draw(characterSprite_, STATES);
 
-        if (willShowCoins_)
+        if (item::TreasureAvailable::NoTreasure != treasureAvailable_)
         {
             target.draw(coinsSprite_, STATES);
         }
@@ -164,11 +186,78 @@ namespace treasure
     }
 
 
-    void TreasureDisplayStage::SetupForCollection(const item::TreasureImage::Enum WHICH_IMAGE)
+    void TreasureDisplayStage::SetupForCollection(
+        const item::TreasureAvailable::Enum TREASURE_AVAILABLE,
+        const item::TreasureImage::Enum WHICH_IMAGE,
+        const item::ItemCache & HELD_CACHE,
+        const item::ItemCache & LOCKBOX_CACHE)
     {
+        treasureAvailable_ = TREASURE_AVAILABLE;
+        
         SetupForCollection_TreasureImage(WHICH_IMAGE);
-        SetupForCollection_TreasureListbox();
+
+        SetupListbox(
+            treasure::WhichListbox::Treasure,
+            treasureListboxUPtr_,
+            WhichTreasureItemsAreDisplayed(listboxMoverUPtr_, HELD_CACHE, LOCKBOX_CACHE));
+
+        auto characterPtr{ WhichCharacterInventoryIsDisplayed(listboxMoverUPtr_) };
+
+        SetupListbox(
+            treasure::WhichListbox::Inventory,
+            inventoryListboxUPtr_,
+            characterPtr->Inventory().Items());
+
         //TODO
+    }
+
+
+    item::ItemPVec_t TreasureDisplayStage::WhichTreasureItemsAreDisplayed(
+        const treasure::ListboxMoverUPtr_t & LISTBOX_MOVER_UPTR,
+        const item::ItemCache & HELD_CACHE,
+        const item::ItemCache & LOCKBOX_CACHE) const
+    {
+        if (LISTBOX_MOVER_UPTR.get() == nullptr)
+        {
+            if (LOCKBOX_CACHE.items_pvec.empty() == false)
+            {
+                return LOCKBOX_CACHE.items_pvec;
+            }
+            else
+            {
+                return HELD_CACHE.items_pvec;
+            }
+        }
+        else
+        {
+            if (LISTBOX_MOVER_UPTR->Source() == game::stage::treasure::SourceType::Held)
+            {
+                return HELD_CACHE.items_pvec;
+            }
+            else
+            {
+                return LOCKBOX_CACHE.items_pvec;
+            }
+        }
+    }
+
+
+    creature::CreaturePtr_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayed(
+        const treasure::ListboxMoverUPtr_t & LISTBOX_MOVER_UPTR)
+    {
+        auto const CHARACTER_INDEX{ [&]() -> std::size_t
+            {
+                if (LISTBOX_MOVER_UPTR.get() == nullptr)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return LISTBOX_MOVER_UPTR->TargetNumber();
+                }
+            }() };
+
+        return Game::Instance()->State().Party().GetAtOrderPos(CHARACTER_INDEX);
     }
 
 
@@ -367,23 +456,85 @@ namespace treasure
             sfml_util::LoadTexture(
                 treasureTexture_,
                 GameDataFile::Instance()->GetMediaPath("media-images-chest-open"));
-
-            willShowCoins_ = true;
         }
         else if (item::TreasureImage::LockboxOpen == WHICH_IMAGE)
         {
             sfml_util::LoadTexture(
                 treasureTexture_,
                 GameDataFile::Instance()->GetMediaPath("media-images-lockbox-open"));
-
-            willShowCoins_ = true;
         }
     }
 
 
-    void TreasureDisplayStage::SetupForCollection_TreasureListbox()
+    void TreasureDisplayStage::SetupListbox(
+        const treasure::WhichListbox WHICH_LISTBOX,
+        sfml_util::gui::ListBoxUPtr_t & listboxUPtr,
+        const item::ItemPVec_t & ITEMS_PVEC)
     {
+        sfml_util::gui::TextInfo listboxTextInfo(
+            " ",
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Left);
 
+        sfml_util::gui::ListBoxItemSLst_t listboxItemsSList;
+
+        for (auto const ITEM_PTR : ITEMS_PVEC)
+        {
+            listboxTextInfo.text = ITEM_PTR->Name();
+
+            listboxItemsSList.push_back( std::make_shared<sfml_util::gui::ListBoxItem>(
+                "TreasureDisplayStage_CharacterInventoryListboxItem_" + ITEM_PTR->Name(),
+                listboxTextInfo,
+                ITEM_PTR) );
+
+            M_HP_LOG_DBG("\t********** " << ((WHICH_LISTBOX == treasure::WhichListbox::Inventory) ? "Inventory" : "treasure") << "  " << ITEM_PTR->Name());
+        }
+        
+        const bool IS_ALREADY_INSTANTIATED(listboxUPtr.get() != nullptr);
+
+        if (IS_ALREADY_INSTANTIATED)
+        {
+            EntityRemove(listboxUPtr.get());
+        }
+
+        treasure::ListboxColors listboxColors;
+
+        treasure::DisplayMeasurements measurements(
+            coinsSprite_.getPosition().y + coinsSprite_.getGlobalBounds().height);
+
+        auto const LISTBOX_REGION{
+            ((WHICH_LISTBOX == treasure::WhichListbox::Treasure) ?
+                measurements.treasureListboxRegion :
+                measurements.inventoryListboxRegion) };
+
+        const sfml_util::gui::box::Info LISTBOX_BOXINFO(
+            1,
+            true,
+            LISTBOX_REGION,
+            listboxColors.colorSet,
+            sfml_util::gui::BackgroundInfo(listboxColors.background));
+
+        listboxUPtr = std::make_unique<sfml_util::gui::ListBox>(
+            "TreasureDisplayStage's_CharacterInventoryListBox",
+            LISTBOX_REGION,
+            listboxItemsSList,
+            this,
+            measurements.listboxMargin,
+            measurements.listboxItemSpacer,
+            LISTBOX_BOXINFO,
+            listboxColors.line,
+            sfml_util::gui::ListBox::NO_LIMIT_,
+            this);
+
+        if (IS_ALREADY_INSTANTIATED)
+        {
+            EntityAdd(listboxUPtr.get());
+        }
+
+        listboxUPtr->SetSelectedIndex(0);
+        listboxUPtr->SetImageColor(listboxColors.image);
     }
 
 }

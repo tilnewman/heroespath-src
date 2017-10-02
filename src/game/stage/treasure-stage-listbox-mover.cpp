@@ -44,6 +44,7 @@ namespace treasure
 
     ListboxMover::ListboxMover(
         const std::size_t NUM_PLAYERS,
+        const SourceType SOURCE,
         sfml_util::gui::IGuiEntityPtr_t sourceListboxPtr,
         const sf::Vector2f & SOURCE_ONSCREEN_POS_V,
         const sf::Vector2f & SOURCE_OFFSCREEN_POS_V,
@@ -53,7 +54,7 @@ namespace treasure
     :
         targetNumber_(0),
         targetNumberMax_(NUM_PLAYERS),
-        sourceType_(SourceType::Held),
+        sourceType_(SOURCE),
         sourceSlider_(
             sourceListboxPtr,
             SOURCE_OFFSCREEN_POS_V,

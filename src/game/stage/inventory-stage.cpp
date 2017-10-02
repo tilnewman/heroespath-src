@@ -145,7 +145,12 @@ namespace stage
         DETAILVIEW_HEIGHT_         (SCREEN_HEIGHT_ * 0.85f),
         DETAILVIEW_POS_LEFT_       ((SCREEN_WIDTH_ * 0.5f) - (DETAILVIEW_WIDTH_ * 0.5f)),
         DETAILVIEW_POS_TOP_        (sfml_util::MapByRes(35.0f, 100.0f)),
-        listBoxItemTextInfo_       (" ", sfml_util::FontManager::Instance()->Font_Default2(), sfml_util::FontManager::Instance()->Size_Smallish(), sfml_util::FontManager::Color_GrayDarker(), sfml_util::Justified::Left),
+        listBoxItemTextInfo_       (
+            " ",
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Left),
         creaturePtr_               (INVENTORY_CREATURE_PTR),
         bottomSymbol_              (0.75f, true, sf::Color::White),
         paperBgTexture_            (),
@@ -261,51 +266,53 @@ namespace stage
     bool InventoryStage::HandleCallback(
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
-        if (PACKAGE.package.PTR_ != nullptr)
+        if (PACKAGE.package.PTR_ == nullptr)
         {
-            if ((PACKAGE.gui_event == sfml_util::GuiEvent::Click) ||
-                (PACKAGE.gui_event == sfml_util::GuiEvent::SelectionChange) ||
-                (PACKAGE.keypress_event.code == sf::Keyboard::Up) ||
-                (PACKAGE.keypress_event.code == sf::Keyboard::Down))
+            return false;
+        }
+
+        if ((PACKAGE.gui_event == sfml_util::GuiEvent::Click) ||
+            (PACKAGE.gui_event == sfml_util::GuiEvent::SelectionChange) ||
+            (PACKAGE.keypress_event.code == sf::Keyboard::Up) ||
+            (PACKAGE.keypress_event.code == sf::Keyboard::Down))
+        {
+            SetDescBoxTextFromListBoxItem(PACKAGE.package.PTR_->GetSelected());
+        }
+        else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
+                 (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+        {
+            if (PACKAGE.package.PTR_ == equippedListBoxUPtr_.get())
             {
-                SetDescBoxTextFromListBoxItem(PACKAGE.package.PTR_->GetSelected());
-            }
-            else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
-                     (PACKAGE.keypress_event.code == sf::Keyboard::Return))
-            {
-                if (PACKAGE.package.PTR_ == equippedListBoxUPtr_.get())
+                if (view_ == ViewType::Items)
                 {
-                    if (view_ == ViewType::Items)
+                    if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
                     {
-                        if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
-                        {
-                            std::ostringstream ss;
-                            ss << "\nDuring combat, only the character whose turn it is may "
-                                << "unequip items.";
+                        std::ostringstream ss;
+                        ss << "\nDuring combat, only the character whose turn it is may "
+                            << "unequip items.";
 
-                            PopupRejectionWindow(ss.str(), true);
-                            return false;
-                        }
-
-                        return HandleUnequip();
+                        PopupRejectionWindow(ss.str(), true);
+                        return false;
                     }
+
+                    return HandleUnequip();
                 }
-                else if (PACKAGE.package.PTR_ == unEquipListBoxUPtr_.get())
+            }
+            else if (PACKAGE.package.PTR_ == unEquipListBoxUPtr_.get())
+            {
+                if (view_ == ViewType::Items)
                 {
-                    if (view_ == ViewType::Items)
+                    if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
                     {
-                        if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
-                        {
-                            std::ostringstream ss;
-                            ss << "\nDuring combat, only the character whose turn it is may "
-                                << "equip items.";
+                        std::ostringstream ss;
+                        ss << "\nDuring combat, only the character whose turn it is may "
+                            << "equip items.";
 
-                            PopupRejectionWindow(ss.str(), true);
-                            return false;
-                        }
-
-                        return HandleEquip();
+                        PopupRejectionWindow(ss.str(), true);
+                        return false;
                     }
+
+                    return HandleEquip();
                 }
             }
         }
