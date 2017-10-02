@@ -50,7 +50,7 @@ namespace treasure
 
     enum class SourceType
     {
-        Worn,
+        Held,
         Container
     };
 
@@ -90,6 +90,16 @@ namespace treasure
         //moving offscreen and its contents need to be updated.
         bool UpdateTimeSource(const float ELAPSED_TIME_SECONDS);
         bool UpdateTimeTarget(const float ELAPSED_TIME_SECONDS);
+
+        inline void SetSourceEntity(const sfml_util::gui::IGuiEntityPtr_t PTR)
+        {
+            sourceSlider_.SetEntity(PTR);
+        }
+
+        inline void SetTargetEntity(const sfml_util::gui::IGuiEntityPtr_t PTR)
+        {
+            targetSlider_.SetEntity(PTR);
+        }
 
     private:
         void TargetChange();

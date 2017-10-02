@@ -53,7 +53,7 @@ namespace treasure
     :
         targetNumber_(0),
         targetNumberMax_(NUM_PLAYERS),
-        sourceType_(SourceType::Worn),
+        sourceType_(SourceType::Held),
         sourceSlider_(
             sourceListboxPtr,
             SOURCE_OFFSCREEN_POS_V,
@@ -74,13 +74,13 @@ namespace treasure
     {
         sourceSlider_.ChangeDirection();
         sourceSlider_.Start();
-        if (SourceType::Worn == sourceType_)
+        if (SourceType::Held == sourceType_)
         {
             sourceType_ = SourceType::Container;
         }
         else
         {
-            sourceType_ = SourceType::Worn;
+            sourceType_ = SourceType::Held;
         }
 
         return sourceType_;

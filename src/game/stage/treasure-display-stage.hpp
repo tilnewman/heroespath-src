@@ -29,6 +29,7 @@
 //
 #include "sfml-util/stage.hpp"
 #include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/background-info.hpp"
 
@@ -37,7 +38,6 @@
 #include "game/main-menu-title.hpp"
 #include "game/stage/treasure-stage-listbox-mover.hpp"
 #include "game/item/treasure-image-enum.hpp"
-
 
 namespace game
 {
@@ -108,6 +108,10 @@ namespace treasure
         void SetupAfterPleaseWait(const item::TreasureImage::Enum);
         void SetupForCollection(const item::TreasureImage::Enum);
 
+        bool IsShowingHeldItems() const;
+        std::size_t CharacterIndexShowingInventory() const;
+        bool IsAnythingAnimating() const;
+
     private:
         void SetupInitial_BackgroundImage();
         void SetupInitial_Ouroboros();
@@ -121,10 +125,8 @@ namespace treasure
         void SetupForCollection_TreasureImage(const item::TreasureImage::Enum);
         void SetupForCollection_TreasureListbox();
 
-        
-        
     private:
-        TreasureStage * treasureStagePtr_;
+        //TreasureStage * treasureStagePtr_;
         MainMenuTitle titleImage_;
         BottomSymbol bottomImage_;
         OuroborosUPtr_t ouroborosUPtr_;

@@ -100,10 +100,10 @@ namespace treasure
 }//end of namespace treasure
 
 
-    TreasureDisplayStage::TreasureDisplayStage(TreasureStage * treasureStagePtr)
+    TreasureDisplayStage::TreasureDisplayStage(TreasureStage *)
     :
         Stage("TreasureDisplay", false),
-        treasureStagePtr_(treasureStagePtr),
+        //treasureStagePtr_(treasureStagePtr),
         titleImage_("treasure-button.png", true, 1.0f, 0.75f),
         bottomImage_(0.85f, true, sf::Color::White),
         ouroborosUPtr_(),
@@ -169,6 +169,38 @@ namespace treasure
         SetupForCollection_TreasureImage(WHICH_IMAGE);
         SetupForCollection_TreasureListbox();
         //TODO
+    }
+
+
+    bool TreasureDisplayStage::IsShowingHeldItems() const
+    {
+        if (nullptr == listboxMoverUPtr_.get())
+        {
+            return false;
+        }
+        else
+        {
+            return listboxMoverUPtr_->Source() == game::stage::treasure::SourceType::Held;
+        }
+    }
+
+
+    std::size_t TreasureDisplayStage::CharacterIndexShowingInventory() const
+    {
+        if (nullptr == listboxMoverUPtr_.get())
+        {
+            return 0;
+        }
+        else
+        {
+            return listboxMoverUPtr_->TargetNumber();
+        }
+    }
+
+
+    bool TreasureDisplayStage::IsAnythingAnimating() const
+    {
+        return ((nullptr != listboxMoverUPtr_.get()) && listboxMoverUPtr_->IsEitherMoving());
     }
 
 
@@ -351,7 +383,7 @@ namespace treasure
 
     void TreasureDisplayStage::SetupForCollection_TreasureListbox()
     {
-        //TODO
+
     }
 
 }

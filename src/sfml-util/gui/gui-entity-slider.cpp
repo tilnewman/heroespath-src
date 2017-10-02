@@ -36,10 +36,11 @@ namespace sfml_util
 namespace gui
 {
 
-    GuiEntitySlider::GuiEntitySlider(IGuiEntityPtr_t      guiEntityPtr,
-                                     const sf::Vector2f & FROM_POS_V,
-                                     const sf::Vector2f & TO_POS_V,
-                                     const float          SLIDER_SPEED)
+    GuiEntitySlider::GuiEntitySlider(
+        IGuiEntityPtr_t      guiEntityPtr,
+        const sf::Vector2f & FROM_POS_V,
+        const sf::Vector2f & TO_POS_V,
+        const float          SLIDER_SPEED)
     :
         PosSlider    (FROM_POS_V, TO_POS_V, SLIDER_SPEED),
         guiEntityPtr_(guiEntityPtr)
@@ -49,15 +50,14 @@ namespace gui
 
 
     GuiEntitySlider::~GuiEntitySlider()
-    {
-        ReleasePointer();
-    }
+    {}
 
 
-    void GuiEntitySlider::Setup(IGuiEntityPtr_t      guiEntityPtr,
-                                const sf::Vector2f & FROM_POS_V,
-                                const sf::Vector2f & TO_POS_V,
-                                const float          SLIDER_SPEED)
+    void GuiEntitySlider::Setup(
+        IGuiEntityPtr_t      guiEntityPtr,
+        const sf::Vector2f & FROM_POS_V,
+        const sf::Vector2f & TO_POS_V,
+        const float          SLIDER_SPEED)
     {
         guiEntityPtr_ = guiEntityPtr;
         PosSlider::Setup(FROM_POS_V, TO_POS_V, SLIDER_SPEED);

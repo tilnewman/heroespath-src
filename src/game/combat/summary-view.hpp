@@ -125,8 +125,9 @@ namespace combat
         inline void ReleaseCombatNodePointer()
         {
             combatNodePtr_ = nullptr;
-            geSlider_.ReleasePointer();
+            geSlider_.SetEntity(nullptr);
         }
+
     public:
         static const float BACKGROUND_COLOR_ALPHA_;
         static const float SLIDER_SPEED_;

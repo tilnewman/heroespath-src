@@ -2367,11 +2367,12 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
     void InventoryStage::SetupListBox()
     {
-        const sfml_util::gui::box::Info LISTBOX_BOX_INFO(1,
-                                                         true,
-                                                         LISTBOX_REGION_,
-                                                         LISTBOX_COLORSET_,
-                                                         LISTBOX_BG_INFO_);
+        const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
+            1,
+            true,
+            LISTBOX_REGION_,
+            LISTBOX_COLORSET_,
+            LISTBOX_BG_INFO_);
 
         sfml_util::gui::ListBoxItemSLst_t listBoxItemsSList;
 
