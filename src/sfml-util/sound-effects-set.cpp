@@ -32,6 +32,7 @@
 #include "sfml-util/sound-manager.hpp"
 
 #include "misc/random.hpp"
+#include "misc/vectors.hpp"
 
 
 namespace sfml_util
@@ -147,6 +148,19 @@ namespace sfml_util
         {
             PlayAt(static_cast<std::size_t>(
                 misc::random::Int(static_cast<int>(sfxEnums_.size()) - 1)));
+        }
+    }
+
+
+    sound_effect::Enum SfxSet::SelectRandom() const
+    {
+        if (sfxEnums_.empty())
+        {
+            return sound_effect::None;
+        }
+        else
+        {
+            return misc::Vector::SelectRandom(sfxEnums_);
         }
     }
 

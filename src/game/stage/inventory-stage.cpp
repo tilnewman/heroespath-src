@@ -2973,13 +2973,14 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
     void InventoryStage::HandleCoinsShare()
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Coin).PlayRandom();
+        sfml_util::SoundManager::Instance()->Getsound_effect_set(
+            sfml_util::sound_effect_set::Coin).PlayRandom();
 
         HandleCoinsGather(false);
 
         const stats::Trait_t COINS_TOTAL(creaturePtr_->Inventory().Coins());
 
-        const stats::Trait_t HUMANOID_COUNT(static_cast<stats::Trait_t>(
+        auto const HUMANOID_COUNT(static_cast<stats::Trait_t>(
             Game::Instance()->State().Party().GetNumHumanoid()));
 
         const stats::Trait_t COINS_TO_SHARE(COINS_TOTAL / HUMANOID_COUNT);

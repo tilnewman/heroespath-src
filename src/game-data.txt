@@ -35,13 +35,13 @@ heroespath-fight-chance-panicked-will-retreat=              0.666
 
 heroespath-treasure-coin-base=      0.005
 heroespath-treasure-coin-mult=      0.025
-heroespath-treasure-gem-base=       0.01
+heroespath-treasure-gem-base=       0.005
 heroespath-treasure-gem-mult=       0.01
 heroespath-treasure-magic-base=     0.075
 heroespath-treasure-magic-mult=     0.025
 heroespath-treasure-religious-base= 0.05
 heroespath-treasure-religious-mult= 0.01
-heroespath-treasure-lockbox-coin-max=3000
+heroespath-treasure-lockbox-coin-max=1500
 
 #directories (assume all are relative to media except for system-media-dir) (always leave a trailing slash)
 system-media-dir-linux=../../heroespath-media/

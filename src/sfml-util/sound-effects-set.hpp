@@ -60,6 +60,8 @@ namespace sfml_util
 
         inline bool IsValid() const { return ! sfxEnums_.empty(); }
 
+        sound_effect::Enum SelectRandom() const;
+
     private:
         SfxEnumVec_t sfxEnums_;
     };

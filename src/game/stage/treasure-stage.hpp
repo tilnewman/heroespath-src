@@ -99,7 +99,7 @@ namespace stage
         void PromptUserBasedonTreasureAvailability(
             const item::TreasureAvailable::Enum, const item::TreasureImage::Enum);
 
-        void SetupStageForTreasureCollectionWithoutLockbox();
+        void SetupForCollectionWithoutLockbox();
         void PromptPlayerWhichCharacterWillPickLock();
         std::size_t FindCharacterIndexWhoPrevAttemptedLockPicking() const;
         const misc::StrVec_t MakeInvalidLockPickCharacterMessages() const;
@@ -125,6 +125,18 @@ namespace stage
         bool CheckAndHandleAllKilledByTrap();
 
         void LockboxOpen();
+
+        enum class ShareType
+        {
+            Coins,
+            Gems
+        };
+
+        //returns true if a popup was displayed
+        bool ShareAndShowPopupIfNeeded(const ShareType);
+        
+        stats::Trait_t Share(const ShareType);
+
         void SetupForCollection();
 
     private:
@@ -140,6 +152,8 @@ namespace stage
         static const std::string POPUP_NAME_DAMAGE_REPORT_;
         static const std::string POPUP_NAME_LOCKBOX_OPEN_;
         static const std::string POPUP_NAME_ALL_CHARACTERS_DIED_;
+        static const std::string POPUP_NAME_COIN_SHARE_;
+        static const std::string POPUP_NAME_GEM_SHARE_;
 
     private:
         TreasureDisplayStage * displayStagePtr_;

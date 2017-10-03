@@ -76,7 +76,7 @@ namespace game
 namespace stage
 {
 
-    //all of these names must be unique
+    //all of these popup names must be unique
     const std::string TreasureStage::POPUP_NAME_ITEMPROFILE_PLEASEWAIT_{
         "PopupName_ItemProfilePleaseWait" };
 
@@ -112,6 +112,12 @@ namespace stage
 
     const std::string TreasureStage::POPUP_NAME_ALL_CHARACTERS_DIED_{
         "PopupName_AllCharactersDied" };
+
+    const std::string TreasureStage::POPUP_NAME_COIN_SHARE_{
+        "PopupName_CoinShare" };
+
+    const std::string TreasureStage::POPUP_NAME_GEM_SHARE_{
+        "PopupName_GemShare" };
 
 
     TreasureStage::TreasureStage()
@@ -191,7 +197,7 @@ namespace stage
                 }
                 else
                 {
-                    SetupStageForTreasureCollectionWithoutLockbox();
+                    SetupForCollectionWithoutLockbox();
                     return true;
                 }
             }
@@ -208,7 +214,7 @@ namespace stage
                 {
                     //Since the player is choosing to skip the lockbox,
                     //then prevent from searching the lockbox.
-                    SetupStageForTreasureCollectionWithoutLockbox();
+                    SetupForCollectionWithoutLockbox();
                     return true;
                 }
             }
@@ -216,7 +222,7 @@ namespace stage
 
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_)
         {
-            SetupStageForTreasureCollectionWithoutLockbox();
+            SetupForCollectionWithoutLockbox();
             return true;
         }
 
@@ -254,6 +260,39 @@ namespace stage
         }
 
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_OPEN_)
+        {
+            if (ShareAndShowPopupIfNeeded(ShareType::Coins))
+            {
+                return false;
+            }
+            else
+            {
+                if (ShareAndShowPopupIfNeeded(ShareType::Gems))
+                {
+                    return false;
+                }
+                else
+                {
+                    SetupForCollection();
+                    return true;
+                }
+            }
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_COIN_SHARE_)
+        {
+            if (ShareAndShowPopupIfNeeded(ShareType::Gems))
+            {
+                return false;
+            }
+            else
+            {
+                SetupForCollection();
+                return true;
+            }
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_GEM_SHARE_)
         {
             SetupForCollection();
             return true;
@@ -438,7 +477,7 @@ namespace stage
     }
 
 
-    void TreasureStage::SetupStageForTreasureCollectionWithoutLockbox()
+    void TreasureStage::SetupForCollectionWithoutLockbox()
     {
         treasureAvailable_ = item::TreasureAvailable::HeldOnly;
         SetupForCollection();
@@ -718,6 +757,102 @@ namespace stage
 
         LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
             this, POPUP_INFO);
+    }
+
+
+    bool TreasureStage::ShareAndShowPopupIfNeeded(const ShareType WHAT_IS_SHARED)
+    {
+        auto const TOTAL_SHARED{ Share(WHAT_IS_SHARED) };
+        if (TOTAL_SHARED == 0)
+        {
+            return false;
+        }
+        else
+        {
+            std::ostringstream ss;
+            ss << "\nThe party finds and shares " << TOTAL_SHARED << " "
+                << ((WHAT_IS_SHARED == ShareType::Coins) ? "coins" : "gems" ) << ".";
+
+            auto const POPUP_NAME{
+                ((WHAT_IS_SHARED == ShareType::Coins) ?
+                    POPUP_NAME_COIN_SHARE_ :
+                    POPUP_NAME_GEM_SHARE_) };
+
+            auto const SOUND_EFFECT_SET{
+                ((WHAT_IS_SHARED == ShareType::Coins) ?
+                    sfml_util::sound_effect_set::Coin :
+                    sfml_util::sound_effect_set::Gem) };
+
+            auto const SOUND_EFFECT{ sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(SOUND_EFFECT_SET).SelectRandom() };
+
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME,
+                ss.str(),
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Regular,
+                sfml_util::Justified::Center,
+                SOUND_EFFECT,
+                sfml_util::FontManager::Instance()->Size_Normal()) };
+
+            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            return true;
+        }
+    }
+
+
+    stats::Trait_t TreasureStage::Share(const ShareType WHAT_IS_SHARED)
+    {
+        auto const TOTAL{
+            ((WHAT_IS_SHARED == ShareType::Coins) ?
+                (itemCacheHeld_.coins + itemCacheLockbox_.coins) :
+                (itemCacheHeld_.gems + itemCacheLockbox_.gems)) };
+
+        if (TOTAL <= 0)
+        {
+            return 0;
+        }
+
+        auto const HUMANOID_COUNT(static_cast<stats::Trait_t>(
+            Game::Instance()->State().Party().GetNumHumanoid()));
+
+        const stats::Trait_t SHARED_AMOUNT(TOTAL / HUMANOID_COUNT);
+        const stats::Trait_t LEFTOVER_AMOUNT(TOTAL % HUMANOID_COUNT);
+
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
+        {
+            if (nextCreaturePtr->Body().IsHumanoid())
+            {
+                if (WHAT_IS_SHARED == ShareType::Coins)
+                {
+                    nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * -1);
+                    nextCreaturePtr->CoinsAdj(SHARED_AMOUNT);
+                }
+                else
+                {
+                    nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * -1);
+                    nextCreaturePtr->GemsAdj(SHARED_AMOUNT);
+                }
+            }
+        }
+
+        stats::Trait_t toHandOut(LEFTOVER_AMOUNT);
+        for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
+        {
+            if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
+            {
+                if (WHAT_IS_SHARED == ShareType::Coins)
+                {
+                    nextCreaturePtr->CoinsAdj(1);
+                }
+                else
+                {
+                    nextCreaturePtr->GemsAdj(1);
+                }
+            }
+        }
+
+        return TOTAL;
     }
 
 

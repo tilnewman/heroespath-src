@@ -69,7 +69,7 @@ namespace item
             ForceItemSelection(itemCache_OutParam);
         }
         
-        DetermineWhichTreasureImage(TREASURE_SUMS);
+        return DetermineWhichTreasureImage(TREASURE_SUMS);
     }
 
 
@@ -246,7 +246,8 @@ namespace item
             RemoveTreasureScoresHigherThan(amount, profiles, IS_RELIGIOUS);
             ++count;
 
-            if (IS_RELIGIOUS && (count > 9))
+            // no more than five religious items will be allowed
+            if (IS_RELIGIOUS && (count > 5))
             {
                 break;
             }
