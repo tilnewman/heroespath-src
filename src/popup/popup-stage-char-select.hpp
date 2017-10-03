@@ -54,12 +54,13 @@ namespace popup
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
 
+    protected:
+        bool HandleSelect() override;
+        
     private:
+        void PlayRejectionSfx() const;
         std::size_t CountMax() const override;
         void SetupContent(const bool WILL_ERASE) override;
-        bool HandleNumberKeys(const sf::Event::KeyEvent &) override;
-        void InvalidateSelectionIfCurrentIsInvalid() override;
-        void HandleNumberKeySelection(const std::size_t) const;
         void SetupCharacterSelectDetailText(const bool WILL_ERASE);
         void SetupCharacterSelectionRejectImage(const bool WILL_ERASE);
         void SetCurrentTexture(const std::size_t IMAGE_INDEX) override;

@@ -271,15 +271,9 @@ namespace popup
             return KeyReleaseHandeRight();
         }
 
-        if (HandleNumberKeys(KEY_EVENT) == true)
-        {
-            return true;
-        }
-
         if ((popupInfo_.Buttons() & PopupButtons::Select) &&
             (KEY_EVENT.code == sf::Keyboard::S))
         {
-            InvalidateSelectionIfCurrentIsInvalid();
             return HandleSelect();
         }
 
@@ -565,6 +559,22 @@ namespace popup
                 imageMoveQueue_.push(++i);
             }
         }
+    }
+
+
+    bool PopupStageImageSelect::HandleSelect()
+    {
+        //attempt to select the value most recently enqueued
+        if (imageMoveQueue_.empty() == false)
+        {
+            selection_ = static_cast<int>(imageMoveQueue_.back());
+        }
+        else
+        {
+            selection_ = static_cast<int>(imageIndex_);
+        }
+
+        return PopupStageBase::HandleSelect();
     }
 
 }

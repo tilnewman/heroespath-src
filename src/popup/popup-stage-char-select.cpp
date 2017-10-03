@@ -130,70 +130,54 @@ namespace popup
     }
 
 
+    bool PopupStageCharacterSelect::HandleSelect()
+    {
+        //attempt to select the value most recently enqueued
+        if (imageMoveQueue_.empty() == false)
+        {
+            if (popupInfo_.TextVec()[imageMoveQueue_.back()].empty() == false)
+            {
+                PlayRejectionSfx();
+                return false;
+            }
+            else
+            {
+                selection_ = static_cast<int>(imageMoveQueue_.back());
+            }
+        }
+        else
+        {
+            selection_ = static_cast<int>(imageIndex_);
+        }
+
+        if ((selection_ < 0) ||
+            (selection_ >= static_cast<int>(popupInfo_.TextVec().size())))
+        {
+            PlayRejectionSfx();
+            return false;
+        }
+
+        if (popupInfo_.TextVec()[static_cast<std::size_t>(selection_)].empty() == false)
+        {
+            PlayRejectionSfx();
+            return false;
+        }
+        
+        return PopupStageBase::HandleSelect();
+    }
+
+
+    void PopupStageCharacterSelect::PlayRejectionSfx() const
+    {
+        sfml_util::SoundManager::Instance()->
+            SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+    }
+
+
     void PopupStageCharacterSelect::SetupContent(const bool WILL_ERASE)
     {
         SetupCharacterSelectDetailText(WILL_ERASE);
         SetupCharacterSelectionRejectImage(WILL_ERASE);
-    }
-
-
-    bool PopupStageCharacterSelect::HandleNumberKeys(const sf::Event::KeyEvent & KEY_EVENT)
-    {
-        if ((KEY_EVENT.code == sf::Keyboard::Num1) && (popupInfo_.IsNumberValid(0)))
-        {
-            HandleNumberKeySelection(0);
-            return true;
-        }
-        else if ((KEY_EVENT.code == sf::Keyboard::Num2) && (popupInfo_.IsNumberValid(1)))
-        {
-            HandleNumberKeySelection(1);
-            return true;
-        }
-        else if ((KEY_EVENT.code == sf::Keyboard::Num3) && (popupInfo_.IsNumberValid(2)))
-        {
-            HandleNumberKeySelection(2);
-            return true;
-        }
-        else if ((KEY_EVENT.code == sf::Keyboard::Num4) && (popupInfo_.IsNumberValid(3)))
-        {
-            HandleNumberKeySelection(3);
-            return true;
-        }
-        else if ((KEY_EVENT.code == sf::Keyboard::Num5) && (popupInfo_.IsNumberValid(4)))
-        {
-            HandleNumberKeySelection(4);
-            return true;
-        }
-        else if ((KEY_EVENT.code == sf::Keyboard::Num6) && (popupInfo_.IsNumberValid(5)))
-        {
-            HandleNumberKeySelection(5);
-            return true;
-        }
-
-        return false;
-    }
-
-
-    void PopupStageCharacterSelect::InvalidateSelectionIfCurrentIsInvalid()
-    {
-        auto const TEXT{ popupInfo_.TextVec()[imageIndex_] };
-        if (TEXT.empty())
-        {
-            selection_ = static_cast<int>(imageIndex_);
-        }
-        else
-        {
-            selection_ = -1;//any negative value will work here
-        }
-    }
-
-
-    void PopupStageCharacterSelect::HandleNumberKeySelection(const std::size_t SELECTION) const
-    {
-        sfml_util::SoundManager::Instance()->
-            Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-
-        game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Select, SELECTION);
     }
 
 

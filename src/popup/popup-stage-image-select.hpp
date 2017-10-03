@@ -70,8 +70,6 @@ namespace popup
 
         virtual std::size_t CountMax() const;
         inline virtual void SetupContent(const bool) {}
-        inline virtual bool HandleNumberKeys(const sf::Event::KeyEvent &) { return false; }
-        inline virtual void InvalidateSelectionIfCurrentIsInvalid() {}
         virtual void SetCurrentTexture(const std::size_t IMAGE_INDEX);
 
         bool KeyReleaseHandleNumbers(const sf::Event::KeyEvent &);
@@ -84,6 +82,8 @@ namespace popup
         void EnqueueImagesFromCurrentToTarget(
             const std::size_t CURRENT_INDEX,
             const std::size_t TARGET_INDEX);
+
+        bool HandleSelect() override;
 
     protected:
         static const float IMAGE_SLIDER_SPEED_;
