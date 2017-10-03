@@ -62,18 +62,26 @@ namespace item
         //items_OutParam is empty when Make is called.
         static TreasureImage::Enum Make(
             const non_player::CharacterPVec_t & CHARACTER_PVEC,
-            ItemCache &                         items_OutParam);
+            ItemCache & items_OutParam);
 
         static float TreasureRatioPer(const non_player::CharacterPVec_t &);
 
     private:
+        static TreasureImage::Enum DetermineWhichTreasureImage(const TreasureInfo &);
+
+        //uses a TreasureInfo object to hold/return sum values
+        static TreasureInfo CalculateTreasureSums(
+            const non_player::CharacterPVec_t &);
+
         static const item::TreasureInfo MakeRandTreasureInfo(
             const non_player::CharacterPVec_t &);
 
-        static void SelectItems(
+        static std::size_t SelectItems(
             const stats::Trait_t TREASURE_SCORE,
-            const bool           IS_RELIGIOUS,
-            ItemCache &          items_OutParam);
+            const bool IS_RELIGIOUS,
+            ItemCache & items_OutParam);
+
+        static void ForceItemSelection(ItemCache & items_OutParam);
 
         static void RemoveTreasureScoresHigherThan(
             const stats::Trait_t,

@@ -367,7 +367,6 @@ namespace combat
             }
         }
 
-        //create cached treasure
         return item::TreasureFactory::Make(
             deadNonPlayerPartyUPtr_->Characters(), deadNonPlayerItemsLockbox_);
     }

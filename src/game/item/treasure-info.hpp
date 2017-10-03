@@ -62,6 +62,14 @@ namespace item
         inline stats::Trait_t AdjustMagic(const stats::Trait_t X)       { return magic_ += X; }
         inline stats::Trait_t AdjustReligious(const stats::Trait_t X)   { return religious_ += X; }
 
+        inline bool IsEmpty() const
+        {
+            return ((0 == coin_) &&
+                    (0 == gem_) &&
+                    (0 == magic_) &&
+                    (0 == religious_));
+        }
+
         TreasureInfo & operator+=(const TreasureInfo &);
         TreasureInfo & operator-=(const TreasureInfo &);
         TreasureInfo & operator*=(const TreasureInfo &);

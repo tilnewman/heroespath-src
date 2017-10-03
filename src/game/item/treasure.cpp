@@ -53,37 +53,48 @@ namespace item
 
     TreasureImage::Enum TreasureFactory::Make(
         const non_player::CharacterPVec_t & CHARACTER_PVEC,
-        ItemCache &                         items_OutParam)
+        ItemCache &                         itemCache_OutParam)
     {
-        auto areAllDeadEnemiesNonCarriers{ true };
+        auto const TREASURE_SUMS{ CalculateTreasureSums(CHARACTER_PVEC) };
 
-        stats::Trait_t coinSum{ 0 };
+        itemCache_OutParam.coins = TREASURE_SUMS.Coin();
+        itemCache_OutParam.gems = TREASURE_SUMS.Gem();
+
+        SelectItems(TREASURE_SUMS.Magic(), false, itemCache_OutParam);
+        SelectItems(TREASURE_SUMS.Religious(), true, itemCache_OutParam);
+            
+        if (itemCache_OutParam.items_pvec.empty() &&
+            ((TREASURE_SUMS.Magic() > 0) || (TREASURE_SUMS.Religious() > 0)))
+        {
+            ForceItemSelection(itemCache_OutParam);
+        }
+        
+        DetermineWhichTreasureImage(TREASURE_SUMS);
+    }
+
+
+    TreasureInfo TreasureFactory::CalculateTreasureSums(
+        const non_player::CharacterPVec_t & CHARACTER_PVEC)
+    {
+        TreasureInfo sums;
+
         for (auto const NEXT_CHARACTER_PTR : CHARACTER_PVEC)
         {
-            auto const OWNERSHIP_COMPLEXITY{
-                non_player::ownership::complexity_type::FromCreature(NEXT_CHARACTER_PTR) };
-
-            if (OWNERSHIP_COMPLEXITY == non_player::ownership::complexity_type::Animal)
+            using namespace non_player::ownership;
+            if (complexity_type::FromCreature(NEXT_CHARACTER_PTR) != complexity_type::Animal)
             {
-                continue;
+                sums += MakeRandTreasureInfo(CHARACTER_PVEC);
             }
-            else
-            {
-                areAllDeadEnemiesNonCarriers = false;
-            }
-
-            auto const TREASURE_INFO{ MakeRandTreasureInfo(CHARACTER_PVEC) };
-
-            coinSum += TREASURE_INFO.Coin();
-
-            items_OutParam.coins = TREASURE_INFO.Coin();
-            items_OutParam.gems = TREASURE_INFO.Gem();
-
-            SelectItems(TREASURE_INFO.Magic(), false, items_OutParam);
-            SelectItems(TREASURE_INFO.Religious(), true, items_OutParam);
         }
 
-        if (areAllDeadEnemiesNonCarriers)
+        return sums;
+    }
+
+
+    TreasureImage::Enum TreasureFactory::DetermineWhichTreasureImage(
+        const TreasureInfo & TREASURE_INFO_SUM)
+    {
+        if (TREASURE_INFO_SUM.IsEmpty())
         {
             return TreasureImage::BonePile;
         }
@@ -92,7 +103,7 @@ namespace item
             const stats::Trait_t LOCKBOX_COIN_SUM_MAX{
                 GameDataFile::Instance()->GetCopyInt("heroespath-treasure-lockbox-coin-max") };
 
-            return ((coinSum > LOCKBOX_COIN_SUM_MAX) ?
+            return ((TREASURE_INFO_SUM.Coin() > LOCKBOX_COIN_SUM_MAX) ?
                 TreasureImage::ChestClosed : TreasureImage::LockboxClosed);
         }
     }
@@ -186,10 +197,16 @@ namespace item
     }
 
 
-    void TreasureFactory::SelectItems(const stats::Trait_t TREASURE_SCORE,
-                                      const bool           IS_RELIGIOUS,
-                                      ItemCache &          items_OutParam)
+    std::size_t TreasureFactory::SelectItems(
+        const stats::Trait_t TREASURE_SCORE,
+        const bool           IS_RELIGIOUS,
+        ItemCache &          itemCache_OutParam)
     {
+        if (TREASURE_SCORE == 0)
+        {
+            return 0;
+        }
+
         //This 'amount' variable works both as an amount of treasure still to be acquired and
         //as a measure of how rare items can possibly be
         auto amount{ TREASURE_SCORE };
@@ -212,20 +229,59 @@ namespace item
 
         RemoveSetItemsAlreadyOwned(profiles);
 
+        std::size_t count{ 0 };
         while (profiles.empty() == false)
         {
             auto const NEXT_ITEM_TO_ADD_PROFILE{ profiles[SelectRandomWeighted(profiles)] };
 
-            profiles.erase(std::remove(profiles.begin(),
-                                       profiles.end(),
-                                       NEXT_ITEM_TO_ADD_PROFILE), profiles.end());
+            profiles.erase(std::remove(
+                profiles.begin(),
+                profiles.end(),
+                NEXT_ITEM_TO_ADD_PROFILE), profiles.end());
 
-            items_OutParam.items_pvec.push_back( item::ItemFactory::Instance()->Make(
+            itemCache_OutParam.items_pvec.push_back( item::ItemFactory::Instance()->Make(
                 NEXT_ITEM_TO_ADD_PROFILE));
 
             amount -= NEXT_ITEM_TO_ADD_PROFILE.TreasureScore();
             RemoveTreasureScoresHigherThan(amount, profiles, IS_RELIGIOUS);
+            ++count;
+
+            if (IS_RELIGIOUS && (count > 9))
+            {
+                break;
+            }
         }
+
+        return count;
+    }
+
+
+    void TreasureFactory::ForceItemSelection(ItemCache & itemCache_OutParam)
+    {
+        auto profiles{ item::ItemProfileWarehouse::Instance()->Get() };
+
+        std::sort(
+            profiles.begin(),
+            profiles.end(),
+            [](const auto & A, const auto & B)
+        {
+            return (A.TreasureScore() < B.TreasureScore());
+        });
+
+        auto const MAX_TREASURE_SCORE{ profiles[0].TreasureScore() * 2 };
+
+        profiles.erase(std::remove_if(
+            profiles.begin(),
+            profiles.end(),
+            [MAX_TREASURE_SCORE](const auto & PROFILE)
+            {
+                return (PROFILE.TreasureScore() > MAX_TREASURE_SCORE);
+            }), profiles.end());
+
+        auto const ITEM_PTR{ item::ItemFactory::Instance()->
+            Make(::misc::Vector::SelectRandom(profiles)) };
+
+        itemCache_OutParam.items_pvec.push_back( ITEM_PTR );
     }
 
 
@@ -256,12 +312,13 @@ namespace item
 
         auto profiles{ PROFILES_ORIG };
 
-        std::sort(profiles.begin(),
-                  profiles.end(),
-                  [](const auto & A, const auto & B)
-                    {
-                        return (A.TreasureScore() < B.TreasureScore());
-                    });
+        std::sort(
+            profiles.begin(),
+            profiles.end(),
+            [](const auto & A, const auto & B)
+            {
+                return (A.TreasureScore() < B.TreasureScore());
+            });
 
         double weightSum{ 0.0 };
 

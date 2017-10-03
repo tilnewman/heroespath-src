@@ -73,9 +73,9 @@ namespace item
             {
                 //at this point we know MATERIAL_SEC is either silver/gold/platinum/pearl/obsidian
                 ssName << "and "
-                    << RandomAdornedAdjective()
-                    << " "
                     << material::ToReadableString(MATERIAL_SEC)
+                    << " "
+                    << RandomAdornedAdjective()
                     << " ";
             }
             else if (material::IsLiquid(MATERIAL_SEC))
@@ -103,7 +103,7 @@ namespace item
 
         if (IS_PIXIE_ITEM)
         {
-            ssName << " Pixie ";
+            ssName << "Pixie ";
         }
 
         ssName << baseNameToUse;
@@ -381,7 +381,7 @@ namespace item
         }
         else
         {
-            return "trimmed with";
+            return "trimmed";
         }
     }
 
