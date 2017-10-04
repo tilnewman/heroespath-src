@@ -86,6 +86,9 @@ namespace popup
 
         virtual void SetupSliderbar();
 
+        void PlayValidKeypressSoundEffect() const;
+        void PlayInvalidKeypressSoundEffect() const;
+
     private:
         void SetupBackgroundImage();
         void SetupVariousButtonPositionValues();

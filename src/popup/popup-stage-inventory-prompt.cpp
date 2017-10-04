@@ -60,8 +60,7 @@ namespace popup
     {
         if ((KEY_EVENT.code == sf::Keyboard::I) && popupInfo_.WillIncludeItems())
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
+            PlayValidKeypressSoundEffect();
 
             game::LoopManager::Instance()->PopupWaitEnd(
                 ResponseTypes::Select, PopupInfo::ContentNum_Item());
@@ -70,8 +69,7 @@ namespace popup
         }
         else if (KEY_EVENT.code == sf::Keyboard::C)
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
+            PlayValidKeypressSoundEffect();
 
             game::LoopManager::Instance()->PopupWaitEnd(
                 ResponseTypes::Select, PopupInfo::ContentNum_Coins());
@@ -80,8 +78,7 @@ namespace popup
         }
         else if (KEY_EVENT.code == sf::Keyboard::G)
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
+            PlayValidKeypressSoundEffect();
 
             game::LoopManager::Instance()->PopupWaitEnd(
                 ResponseTypes::Select, PopupInfo::ContentNum_Gems());
@@ -90,8 +87,7 @@ namespace popup
         }
         else if (KEY_EVENT.code == sf::Keyboard::M)
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
+            PlayValidKeypressSoundEffect();
 
             game::LoopManager::Instance()->PopupWaitEnd(
                 ResponseTypes::Select, PopupInfo::ContentNum_MeteorShards());

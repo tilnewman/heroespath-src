@@ -195,8 +195,7 @@ namespace popup
         {
             if (ProcessSelectNumber())
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::Thock).PlayRandom();
+                PlayValidKeypressSoundEffect();
 
                 game::LoopManager::Instance()->PopupWaitEnd(
                     ResponseTypes::Select, static_cast<std::size_t>(GetSelectNumber()));

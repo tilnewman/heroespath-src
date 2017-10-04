@@ -107,41 +107,31 @@ namespace popup
         }
         else if (PACKAGE.PTR_ == buttonYesUPtr_.get())
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
-
+            PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Yes);
             return true;
         }
         else if (PACKAGE.PTR_ == buttonNoUPtr_.get())
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
-
+            PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::No);
             return true;
         }
         else if (PACKAGE.PTR_ == buttonCancelUPtr_.get())
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
-
+            PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel);
             return true;
         }
         else if (PACKAGE.PTR_ == buttonContinueUPtr_.get())
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
-
+            PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
             return true;
         }
         else if (PACKAGE.PTR_ == buttonOkayUPtr_.get())
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
-
+            PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Okay);
             return true;
         }
@@ -213,9 +203,7 @@ namespace popup
                 (KEY_EVENT.code == sf::Keyboard::Return) ||
                 (KEY_EVENT.code == sf::Keyboard::Escape))
             {
-                sfml_util::SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-
+                PlayValidKeypressSoundEffect();
                 game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
                 return true;
             }
@@ -228,19 +216,16 @@ namespace popup
                 (KEY_EVENT.code == sf::Keyboard::Return) ||
                 (KEY_EVENT.code == sf::Keyboard::Escape))
             {
-                sfml_util::SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-
+                PlayValidKeypressSoundEffect();
                 game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Okay);
                 return true;
             }
         }
 
-        if ((popupInfo_.Buttons() & ResponseTypes::Yes) && (KEY_EVENT.code == sf::Keyboard::Y))
+        if ((popupInfo_.Buttons() & ResponseTypes::Yes) &&
+            (KEY_EVENT.code == sf::Keyboard::Y))
         {
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-
+            PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Yes);
             return true;
         }
@@ -248,9 +233,7 @@ namespace popup
         if ((popupInfo_.Buttons() & ResponseTypes::No) &&
             ((KEY_EVENT.code == sf::Keyboard::N) || (KEY_EVENT.code == sf::Keyboard::Escape)))
         {
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-
+            PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::No);
             return true;
         }
@@ -263,17 +246,16 @@ namespace popup
                 ((KEY_EVENT.code == sf::Keyboard::Return) &&
                  (popupInfo_.Buttons() == PopupButtons::Cancel)))
             {
-                sfml_util::SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-
+                PlayValidKeypressSoundEffect();
                 game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel);
                 return true;
             }
         }
 
         if ((popupInfo_.Buttons() & ResponseTypes::Select) &&
-            (KEY_EVENT.code == sf::Keyboard::Return))
+            ((KEY_EVENT.code == sf::Keyboard::Return) || (KEY_EVENT.code == sf::Keyboard::S)))
         {
+            //sound effects played by HandleSelect()
             return HandleSelect();
         }
 
@@ -298,21 +280,32 @@ namespace popup
     {
         if (selection_ < 0)
         {
-            sfml_util::SoundManager::Instance()->SoundEffectPlay(
-                sfml_util::sound_effect::PromptWarn);
-
+            PlayInvalidKeypressSoundEffect();
             return false;
         }
         else
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
+            PlayValidKeypressSoundEffect();
 
             game::LoopManager::Instance()->PopupWaitEnd(
                 ResponseTypes::Select, static_cast<std::size_t>(selection_));
 
             return true;
         }
+    }
+
+
+    void PopupStageBase::PlayValidKeypressSoundEffect() const
+    {
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+    }
+
+
+    void PopupStageBase::PlayInvalidKeypressSoundEffect() const
+    {
+        sfml_util::SoundManager::Instance()->
+            SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
     }
 
 

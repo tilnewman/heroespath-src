@@ -58,7 +58,6 @@ namespace popup
         bool HandleSelect() override;
         
     private:
-        void PlayRejectionSfx() const;
         std::size_t CountMax() const override;
         void SetupContent(const bool WILL_ERASE) override;
         void SetupCharacterSelectDetailText(const bool WILL_ERASE);

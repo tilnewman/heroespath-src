@@ -34,6 +34,7 @@
 #include "game/loop-manager.hpp"
 
 #include "popup/popup-manager.hpp"
+
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/song-image-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -234,9 +235,7 @@ namespace popup
         if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
             (KEY_EVENT.code == sf::Keyboard::Space))
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Thock).PlayRandom();
-
+            PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel, 0);
             return true;
         }

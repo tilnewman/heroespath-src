@@ -260,21 +260,18 @@ namespace popup
         if ((KEY_EVENT.code >= sf::Keyboard::Num1) &&
             (KEY_EVENT.code <= sf::Keyboard::Num9))
         {
+            PlayValidKeypressSoundEffect();
             return KeyReleaseHandleNumbers(KEY_EVENT);
         }
         else if (KEY_EVENT.code == sf::Keyboard::Left)
         {
+            PlayValidKeypressSoundEffect();
             return KeyReleaseHandleLeft();
         }
         else if (KEY_EVENT.code == sf::Keyboard::Right)
         {
+            PlayValidKeypressSoundEffect();
             return KeyReleaseHandeRight();
-        }
-
-        if ((popupInfo_.Buttons() & PopupButtons::Select) &&
-            (KEY_EVENT.code == sf::Keyboard::S))
-        {
-            return HandleSelect();
         }
 
         return PopupStageBase::KeyRelease(KEY_EVENT);

@@ -137,7 +137,7 @@ namespace popup
         {
             if (popupInfo_.TextVec()[imageMoveQueue_.back()].empty() == false)
             {
-                PlayRejectionSfx();
+                PlayInvalidKeypressSoundEffect();
                 return false;
             }
             else
@@ -153,24 +153,17 @@ namespace popup
         if ((selection_ < 0) ||
             (selection_ >= static_cast<int>(popupInfo_.TextVec().size())))
         {
-            PlayRejectionSfx();
+            PlayInvalidKeypressSoundEffect();
             return false;
         }
 
         if (popupInfo_.TextVec()[static_cast<std::size_t>(selection_)].empty() == false)
         {
-            PlayRejectionSfx();
+            PlayInvalidKeypressSoundEffect();
             return false;
         }
         
         return PopupStageBase::HandleSelect();
-    }
-
-
-    void PopupStageCharacterSelect::PlayRejectionSfx() const
-    {
-        sfml_util::SoundManager::Instance()->
-            SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
     }
 
 
