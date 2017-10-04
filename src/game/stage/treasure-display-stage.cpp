@@ -89,9 +89,9 @@ namespace treasure
             ((innerRect.width - (2.0f * listboxScreenEdgeMargin)) - listboxBetweenSpacer) * 0.5f),
         treasureListboxLeft(innerRect.left + listboxScreenEdgeMargin),
         inventoryListboxLeft(treasureListboxLeft + listboxWidth + listboxBetweenSpacer),
-        listboxTop(COINS_IMAGE_BOTTOM + (listboxHeightReduction * 0.5f)),
+        listboxTop(COINS_IMAGE_BOTTOM + (listboxHeightReduction * 0.25f)),
         listboxHeight(
-            (screenHeight - listboxTop) - listboxHeightReduction),
+            ((screenHeight - listboxTop) - listboxHeightReduction) - 20.0f),
         treasureListboxRegion(
             treasureListboxLeft,
             listboxTop,
@@ -114,7 +114,7 @@ namespace treasure
         Stage("TreasureDisplay", false),
         treasureStagePtr_(treasureStagePtr),
         titleImage_("treasure-button.png", true, 1.0f, 0.75f),
-        bottomImage_(0.85f, true, sf::Color::White),
+        bottomImage_(0.8f, true, sf::Color::White),
         ouroborosUPtr_(),
         listboxMoverUPtr_(),
         treasureListboxUPtr_(),
@@ -181,21 +181,36 @@ namespace treasure
     void TreasureDisplayStage::SetupAfterPleaseWait(const item::TreasureImage::Enum WHICH_IMAGE)
     {
         SetupAfterPleaseWait_CorpseImage();
-        auto const TREASURE_IMAGE_POS_V{ SetupAfterPleaseWait_TreasureImage(WHICH_IMAGE) };
-        SetupAfterPleaseWait_CoinsImage(TREASURE_IMAGE_POS_V);
+        SetupAfterPleaseWait_TreasureImage(WHICH_IMAGE);
+        SetupAfterPleaseWait_CoinsImage();
+    }
+
+
+    void TreasureDisplayStage::UpdateTreasureImage(
+        const item::TreasureImage::Enum WHICH_IMAGE)
+    {
+        if (item::TreasureImage::ChestOpen == WHICH_IMAGE)
+        {
+            sfml_util::LoadTexture(
+                treasureTexture_,
+                GameDataFile::Instance()->GetMediaPath("media-images-chest-open"));
+        }
+        else if (item::TreasureImage::LockboxOpen == WHICH_IMAGE)
+        {
+            sfml_util::LoadTexture(
+                treasureTexture_,
+                GameDataFile::Instance()->GetMediaPath("media-images-lockbox-open"));
+        }
     }
 
 
     void TreasureDisplayStage::SetupForCollection(
         const item::TreasureAvailable::Enum TREASURE_AVAILABLE,
-        const item::TreasureImage::Enum WHICH_IMAGE,
         const item::ItemCache & HELD_CACHE,
         const item::ItemCache & LOCKBOX_CACHE)
     {
         treasureAvailable_ = TREASURE_AVAILABLE;
         
-        SetupForCollection_TreasureImage(WHICH_IMAGE);
-
         SetupListbox(
             treasure::WhichListbox::Treasure,
             treasureListboxUPtr_,
@@ -340,7 +355,8 @@ namespace treasure
     }
 
 
-    const sf::Vector2f TreasureDisplayStage::SetupAfterPleaseWait_TreasureImage(
+    //The scales/colors/positions found by experiment to look good at various resolutions.
+    void TreasureDisplayStage::SetupAfterPleaseWait_TreasureImage(
         const item::TreasureImage::Enum WHICH_IMAGE)
     {
         auto const TREASURE_IMAGE_KEY{ item::TreasureImage::ToImageKey(WHICH_IMAGE) };
@@ -357,7 +373,6 @@ namespace treasure
         auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
         auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
 
-        //these values found by experiment to look good at various resolutions
         auto const TREASURE_IMAGE_SCALE_ADJ{
             ((TREASURE_IMAGE_SCALE_NEED_REDUCTION) ? 0.75f : 1.0f) };
 
@@ -372,22 +387,16 @@ namespace treasure
             TREASURE_IMAGE_MAX_WIDTH,
             TREASURE_IMAGE_MAX_HEIGHT);
 
-        //these values found by experiment to look good at various resolutions
-        auto const TREASURE_IMAGE_LEFT{ sfml_util::MapByRes(100.0f, 300.0f) };
+        treasureSprite_.setPosition(
+            sfml_util::MapByRes(100.0f, 300.0f),
+            titleImage_.Bottom() - sfml_util::MapByRes(100.0f, 325.0f));
 
-        auto const TREASURE_IMAGE_TOP{
-            (sfml_util::MapByRes(50.0f, 150.0f) + (SCREEN_HEIGHT * 0.166f)) -
-            (treasureSprite_.getGlobalBounds().height * 0.5f) };
-
-        treasureSprite_.setPosition(TREASURE_IMAGE_LEFT, TREASURE_IMAGE_TOP);
         treasureSprite_.setColor(sf::Color(255, 255, 255, 192));
-
-        return treasureSprite_.getPosition();
     }
 
 
-    void TreasureDisplayStage::SetupAfterPleaseWait_CoinsImage(
-        const sf::Vector2f & TREASURE_IMAGE_POS_V)
+    //The scales/colors/positions found by experiment to look good at various resolutions.
+    void TreasureDisplayStage::SetupAfterPleaseWait_CoinsImage()
     {
         sfml_util::LoadTexture(coinsTexture_,
             GameDataFile::Instance()->GetMediaPath("media-images-coins"));
@@ -400,11 +409,10 @@ namespace treasure
 
         coinsSprite_.setColor(sf::Color(255, 255, 255, 192));
 
-        //these values found by experiment to look good at various resolutions
-        auto const COINS_LEFT{ TREASURE_IMAGE_POS_V.x +
+        auto const COINS_LEFT{ treasureSprite_.getPosition().x +
             (treasureSprite_.getGlobalBounds().width * 0.80f) };
 
-        auto const COINS_TOP{ TREASURE_IMAGE_POS_V.y +
+        auto const COINS_TOP{ treasureSprite_.getPosition().y +
             (treasureSprite_.getGlobalBounds().height * 0.75f) };
 
         coinsSprite_.setPosition(COINS_LEFT, COINS_TOP);
@@ -444,24 +452,6 @@ namespace treasure
             //Allow duplicates in corpseKeyStrVec so that the more a race was faced
             //during combat means the more likely that corpse image is shown.
             return misc::Vector::SelectRandom(corpseKeyStrVec);
-        }
-    }
-
-
-    void TreasureDisplayStage::SetupForCollection_TreasureImage(
-        const item::TreasureImage::Enum WHICH_IMAGE)
-    {
-        if (item::TreasureImage::ChestOpen == WHICH_IMAGE)
-        {
-            sfml_util::LoadTexture(
-                treasureTexture_,
-                GameDataFile::Instance()->GetMediaPath("media-images-chest-open"));
-        }
-        else if (item::TreasureImage::LockboxOpen == WHICH_IMAGE)
-        {
-            sfml_util::LoadTexture(
-                treasureTexture_,
-                GameDataFile::Instance()->GetMediaPath("media-images-lockbox-open"));
         }
     }
 

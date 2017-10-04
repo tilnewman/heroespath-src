@@ -261,6 +261,8 @@ namespace stage
 
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_OPEN_)
         {
+            displayStagePtr_->UpdateTreasureImage(treasureImageType_);
+
             if (ShareAndShowPopupIfNeeded(ShareType::Coins))
             {
                 return false;
@@ -742,7 +744,7 @@ namespace stage
         {
             treasureImageType_ = item::TreasureImage::LockboxOpen;
         }
-
+        
         sfml_util::SoundManager::Instance()->SoundEffectPlay(
             SelectRandomTreasureOpeningSfx(),
             0.5f);
@@ -860,7 +862,6 @@ namespace stage
     {
         displayStagePtr_->SetupForCollection(
             treasureAvailable_,
-            treasureImageType_,
             itemCacheHeld_,
             itemCacheLockbox_);
 

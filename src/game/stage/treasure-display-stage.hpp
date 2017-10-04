@@ -132,9 +132,10 @@ namespace treasure
         void SetupInitial();
         void SetupAfterPleaseWait(const item::TreasureImage::Enum);
 
+        void UpdateTreasureImage(const item::TreasureImage::Enum);
+
         void SetupForCollection(
             const item::TreasureAvailable::Enum,
-            const item::TreasureImage::Enum,
             const item::ItemCache & HELD_CACHE,
             const item::ItemCache & LOCKBOX_CACHE);
 
@@ -147,13 +148,11 @@ namespace treasure
         void SetupInitial_Ouroboros();
 
         void SetupAfterPleaseWait_CorpseImage();
-        const sf::Vector2f SetupAfterPleaseWait_TreasureImage(const item::TreasureImage::Enum);
-        void SetupAfterPleaseWait_CoinsImage(const sf::Vector2f & TREASURE_IMAGE_POS_V);
+        void SetupAfterPleaseWait_TreasureImage(const item::TreasureImage::Enum);
+        void SetupAfterPleaseWait_CoinsImage();
 
         const std::string CorpseImageKeyFromEnemyParty() const;
         
-        void SetupForCollection_TreasureImage(const item::TreasureImage::Enum);
-
         item::ItemPVec_t WhichTreasureItemsAreDisplayed(
             const treasure::ListboxMoverUPtr_t & LISTBOX_MOVER_UPTR,
             const item::ItemCache & HELD_CACHE,
