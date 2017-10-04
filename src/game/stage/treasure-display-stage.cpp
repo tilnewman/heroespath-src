@@ -44,8 +44,9 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/gui/creature-image-manager.hpp"
 
 #include "misc/vectors.hpp"
 
@@ -68,7 +69,9 @@ namespace treasure
     {}
 
 
-    DisplayMeasurements::DisplayMeasurements(const float COINS_IMAGE_BOTTOM)
+    DisplayMeasurements::DisplayMeasurements(
+        const float COINS_IMAGE_BOTTOM,
+        const float BOTTOM_SYMBOL_HEIGHT)
     :
         screenWidth(sfml_util::Display::Instance()->GetWinWidth()),
         screenHeight(sfml_util::Display::Instance()->GetWinHeight()),
@@ -82,16 +85,14 @@ namespace treasure
         creatureImageScale(sfml_util::MapByRes(0.75f, 3.25f)),
         creatureImageHeight(
             sfml_util::gui::CreatureImageManager::DimmensionMax() * creatureImageScale),
-        listboxHeightReduction(sfml_util::MapByRes(100.0f, 400.0f)),
         listboxScreenEdgeMargin(sfml_util::MapByRes(35.0f, 100.0f)),
         listboxBetweenSpacer(sfml_util::MapByRes(65.0f, 200.0f)),
         listboxWidth(
             ((innerRect.width - (2.0f * listboxScreenEdgeMargin)) - listboxBetweenSpacer) * 0.5f),
         treasureListboxLeft(innerRect.left + listboxScreenEdgeMargin),
         inventoryListboxLeft(treasureListboxLeft + listboxWidth + listboxBetweenSpacer),
-        listboxTop(COINS_IMAGE_BOTTOM + (listboxHeightReduction * 0.25f)),
-        listboxHeight(
-            ((screenHeight - listboxTop) - listboxHeightReduction) - 20.0f),
+        listboxTop(COINS_IMAGE_BOTTOM + sfml_util::MapByRes(30.0f, 70.0f)),
+        listboxHeight((screenHeight - listboxTop) - BOTTOM_SYMBOL_HEIGHT),
         treasureListboxRegion(
             treasureListboxLeft,
             listboxTop,
@@ -114,7 +115,7 @@ namespace treasure
         Stage("TreasureDisplay", false),
         treasureStagePtr_(treasureStagePtr),
         titleImage_("treasure-button.png", true, 1.0f, 0.75f),
-        bottomImage_(0.8f, true, sf::Color::White),
+        bottomImage_(0.8f, true, sf::Color::White, 0.4f),
         ouroborosUPtr_(),
         listboxMoverUPtr_(),
         treasureListboxUPtr_(),
@@ -377,10 +378,10 @@ namespace treasure
             ((TREASURE_IMAGE_SCALE_NEED_REDUCTION) ? 0.75f : 1.0f) };
 
         auto const TREASURE_IMAGE_MAX_WIDTH{
-            (SCREEN_WIDTH * 0.5f * TREASURE_IMAGE_SCALE_ADJ) };
+            (SCREEN_WIDTH * 0.36f * TREASURE_IMAGE_SCALE_ADJ) };
         
         auto const TREASURE_IMAGE_MAX_HEIGHT{
-            (SCREEN_HEIGHT * 0.333f * TREASURE_IMAGE_SCALE_ADJ) };
+            (SCREEN_HEIGHT * 0.275f * TREASURE_IMAGE_SCALE_ADJ) };
 
         sfml_util::ScaleSpriteToFit(
             treasureSprite_,
@@ -388,8 +389,8 @@ namespace treasure
             TREASURE_IMAGE_MAX_HEIGHT);
 
         treasureSprite_.setPosition(
-            sfml_util::MapByRes(100.0f, 300.0f),
-            titleImage_.Bottom() - sfml_util::MapByRes(100.0f, 325.0f));
+            sfml_util::MapByRes(50.0f, 350.0f),
+            titleImage_.Bottom() - sfml_util::MapByRes(50.0f, 275.0f));
 
         treasureSprite_.setColor(sf::Color(255, 255, 255, 192));
     }
@@ -490,7 +491,8 @@ namespace treasure
         treasure::ListboxColors listboxColors;
 
         treasure::DisplayMeasurements measurements(
-            coinsSprite_.getPosition().y + coinsSprite_.getGlobalBounds().height);
+            coinsSprite_.getPosition().y + coinsSprite_.getGlobalBounds().height,
+            bottomImage_.Height());
 
         auto const LISTBOX_REGION{
             ((WHICH_LISTBOX == treasure::WhichListbox::Treasure) ?

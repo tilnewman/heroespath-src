@@ -41,7 +41,17 @@
 #include "game/item/treasure-available-enum.hpp"
 #include "game/item/item-cache.hpp"
 
+#include <memory>
 
+
+namespace sfml_util
+{
+namespace gui
+{
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+}
+}
 namespace game
 {
 namespace creature
@@ -82,7 +92,9 @@ namespace treasure
     //Responsible for calculating and wrapping positions used by TreasureDisplayStage.
     struct DisplayMeasurements
     {
-        DisplayMeasurements(const float COINS_IMAGE_BOTTOM);
+        DisplayMeasurements(
+            const float COINS_IMAGE_BOTTOM,
+            const float BOTTOM_SYMBOL_HEIGHT);
 
         float screenWidth;
         float screenHeight;
@@ -91,7 +103,6 @@ namespace treasure
         float creatureImageLeft;
         float creatureImageScale;
         float creatureImageHeight;
-        float listboxHeightReduction;
         float listboxScreenEdgeMargin;
         float listboxBetweenSpacer;
         float listboxWidth;
@@ -174,6 +185,8 @@ namespace treasure
         treasure::ListboxMoverUPtr_t listboxMoverUPtr_;
         sfml_util::gui::ListBoxUPtr_t treasureListboxUPtr_;
         sfml_util::gui::ListBoxUPtr_t inventoryListboxUPtr_;
+        //sfml_util::gui::TextRegionUPtr_t treasureLabelUPtr_;
+        //sfml_util::gui::TextRegionUPtr_t inventoryLabelUPtr_;
 
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;

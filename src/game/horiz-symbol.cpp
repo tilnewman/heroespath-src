@@ -45,7 +45,8 @@ namespace game
     BottomSymbol::BottomSymbol(
         const float       VERT_SCALE,
         const bool        WILL_INVERT_COLOR,
-        const sf::Color & COLOR)
+        const sf::Color & COLOR,
+        const float       VERT_OFFSET_RATIO)
     :
         sprite1_(),
         sprite2_(),
@@ -53,7 +54,7 @@ namespace game
         sprite4_(),
         texture_()
     {
-        Setup(VERT_SCALE, WILL_INVERT_COLOR, COLOR);
+        Setup(VERT_SCALE, WILL_INVERT_COLOR, COLOR, VERT_OFFSET_RATIO);
     }
 
 
@@ -73,7 +74,8 @@ namespace game
     void BottomSymbol::Setup(
         const float       VERT_SCALE,
         const bool        WILL_INVERT_COLOR,
-        const sf::Color & COLOR)
+        const sf::Color & COLOR,
+        const float       VERT_OFFSET_RATIO)
     {
         sfml_util::LoadTexture(texture_,
             GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol1"));
@@ -98,9 +100,12 @@ namespace game
         sprite2_.setScale(SCALE, SCALE * VERT_SCALE);
         sprite3_.setScale(SCALE, SCALE * VERT_SCALE);
         sprite4_.setScale(SCALE, SCALE * VERT_SCALE);
+
+        auto const VERT_OFFSET{ sprite1_.getGlobalBounds().height * VERT_OFFSET_RATIO };
         
         auto const TOP{
-            sfml_util::Display::Instance()->GetWinHeight() - sprite1_.getGlobalBounds().height };
+            (sfml_util::Display::Instance()->GetWinHeight() - sprite1_.getGlobalBounds().height) +
+                VERT_OFFSET };
 
         auto const PAD{ 8.0f };
         auto const THREE_PADS{ PAD * 3.0f };
@@ -115,6 +120,12 @@ namespace game
 
         sprite4_.setPosition(
             ((HALF_SCREEN_WIDTH + sprite1_.getGlobalBounds().width) - THREE_PADS), TOP);
+    }
+
+
+    float BottomSymbol::Bottom() const
+    {
+        return sfml_util::Display::Instance()->GetWinHeight();
     }
 
 }

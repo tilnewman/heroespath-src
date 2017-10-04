@@ -34,7 +34,10 @@
 namespace game
 {
 
-    //draws the horizontal symbols at the bottom of menu stages
+    //Responsible for drawing the horizontal symbols at the bottom of Stages.
+    //A positive VERT_OFFSET_RATIO will move the symbols down, negative moves them up.
+    //The Bottom() of the symbol is always the bottom of the screen, even if
+    //VERT_OFFSET_RATIO is > 0 and some of the symbol is offscreen.
     class BottomSymbol : public sf::Drawable
     {
         BottomSymbol(const BottomSymbol &) =delete;
@@ -44,21 +47,24 @@ namespace game
         explicit BottomSymbol(
             const float       VERT_SCALE        = 1.0f,
             const bool        WILL_INVERT_COLOR = false,
-            const sf::Color & COLOR             = DEFAULT_COLOR_);
+            const sf::Color & COLOR             = DEFAULT_COLOR_,
+            const float       VERT_OFFSET_RATIO = 0.0f);
 
         virtual ~BottomSymbol();
 
         void Setup(
             const float       VERT_SCALE        = 1.0f,
             const bool        WILL_INVERT_COLOR = false,
-            const sf::Color & COLOR             = DEFAULT_COLOR_);
+            const sf::Color & COLOR             = DEFAULT_COLOR_,
+            const float       VERT_OFFSET_RATIO = 0.0f);
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        inline float Top() const { return sprite1_.getGlobalBounds().top; }
-        inline float Middle() const { return Top() + ((Bottom() - Top()) * 0.5f); }
-        inline float Bottom() const { return Top() + sprite1_.getGlobalBounds().height; }
-
+        inline float Height() const { return Bottom() - Top(); }
+        inline float Top() const    { return sprite1_.getGlobalBounds().top; }
+        inline float Middle() const { return Top() + (Height() * 0.5f); }
+        float Bottom() const;
+        
     public:
         static const sf::Color DEFAULT_COLOR_;
 

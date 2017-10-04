@@ -34,6 +34,7 @@
 
 #include "game/game.hpp"
 #include "game/log-macros.hpp"
+#include "game/loop-manager.hpp"
 #include "game/player/party.hpp"
 #include "game/player/character.hpp"
 #include "game/non-player/party.hpp"
@@ -282,7 +283,10 @@ namespace combat
         //TODO move this to the adventure stage
         //TODO Encounter will need a function that plays combat music and that takes a bool
         //     for whether or not to play the same music or to pick new music.
-        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::CombatIntro);
+        if (LoopManager::Instance()->GetPhase() == game::Phase::Combat)
+        {
+            sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::CombatIntro);
+        }
 
         //TODO This will need to be triggered by the Adventure stage and moved to it's own
         //     object responsible for creating random sets of creatures for each fight.
