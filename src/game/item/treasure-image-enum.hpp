@@ -49,7 +49,10 @@ namespace item
 
         static const std::string ToString(const TreasureImage::Enum);
         static const std::string ToImageKey(const TreasureImage::Enum);
-        static const std::string ToContainerName(const TreasureImage::Enum);
+
+        static const std::string ToContainerName(
+            const TreasureImage::Enum,
+            const bool WILL_CAPITALIZE = false);
     };
 
 }

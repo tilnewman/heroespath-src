@@ -3200,11 +3200,22 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
         }
 
         sfml_util::gui::ItemImageManager::Instance()->Load(detailViewTexture_, IITEM_PTR);
+
         detailViewSprite_.setTexture(detailViewTexture_);
-        detailViewSprite_.setTextureRect(sf::IntRect(0, 0, static_cast<int>(detailViewTexture_.getSize().x), static_cast<int>(detailViewTexture_.getSize().y)));
+        
+        detailViewSprite_.setTextureRect(sf::IntRect(
+            0,
+            0,
+            static_cast<int>(detailViewTexture_.getSize().x),
+            static_cast<int>(detailViewTexture_.getSize().y)));
+
         const float DETAILVIEW_IMAGE_SCALE(sfml_util::MapByRes(0.75f, 1.25f));
+
         detailViewSprite_.setScale(DETAILVIEW_IMAGE_SCALE, DETAILVIEW_IMAGE_SCALE);
-        detailViewSprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f), DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_);
+        
+        detailViewSprite_.setPosition(
+            (SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f),
+            DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_);
 
         std::ostringstream ss;
         ss << IITEM_PTR->Name() << "\n"
@@ -3213,7 +3224,8 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         if (IITEM_PTR->ExclusiveRole() != creature::role::Count)
         {
-            ss << "(can only be used by " << creature::role::ToString(IITEM_PTR->ExclusiveRole()) << "s)\n";
+            ss << "(can only be used by "
+                << creature::role::ToString(IITEM_PTR->ExclusiveRole()) << "s)\n";
         }
 
         ss << "\n";
@@ -3232,16 +3244,29 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         ss << "\n\n";
 
-        const sfml_util::gui::TextInfo TEXT_INFO(ss.str(),
-                                                 sfml_util::FontManager::Instance()->Font_Default1(),
-                                                 sfml_util::FontManager::Instance()->Size_Normal(),
-                                                 sf::Color::White,
-                                                 sfml_util::Justified::Center);
+        const sfml_util::gui::TextInfo TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            sf::Color::White,
+            sfml_util::Justified::Center);
 
-        const sf::FloatRect TEXT_RECT(DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_,
-                                      detailViewSprite_.getGlobalBounds().top + detailViewSprite_.getGlobalBounds().height + DETAILVIEW_INNER_PAD_,
-                                      DETAILVIEW_WIDTH_ - (2.0f * DETAILVIEW_INNER_PAD_),
-                                      (DETAILVIEW_HEIGHT_ - (detailViewSprite_.getGlobalBounds().top + detailViewSprite_.getGlobalBounds().height)) - (2.0f * DETAILVIEW_INNER_PAD_));
+        auto const LEFT{ DETAILVIEW_POS_LEFT_ + DETAILVIEW_INNER_PAD_ };
+
+        auto const TOP{ detailViewSprite_.getGlobalBounds().top +
+            detailViewSprite_.getGlobalBounds().height +
+            DETAILVIEW_INNER_PAD_ };
+
+        auto const DOUBLE_INNER_PAD{ 2.0f * DETAILVIEW_INNER_PAD_ };
+
+        auto const WIDTH{ DETAILVIEW_WIDTH_ - DOUBLE_INNER_PAD };
+
+        auto const DETAILVIEW_SPRITE_BOTTOM{
+            detailViewSprite_.getGlobalBounds().top + detailViewSprite_.getGlobalBounds().height };
+
+        auto const HEIGHT{ (DETAILVIEW_HEIGHT_ - DETAILVIEW_SPRITE_BOTTOM) - DOUBLE_INNER_PAD };
+
+        const sf::FloatRect TEXT_RECT(LEFT, TOP, WIDTH, HEIGHT);
 
         detailViewTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "InventoryStage'sDetailViewForItems", TEXT_INFO, TEXT_RECT);

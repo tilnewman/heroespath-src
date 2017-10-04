@@ -50,7 +50,7 @@ namespace treasure
 
     enum class SourceType
     {
-        Held,
+        Held = 0,
         Container
     };
 

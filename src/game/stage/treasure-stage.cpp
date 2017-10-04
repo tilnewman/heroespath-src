@@ -174,7 +174,7 @@ namespace stage
             }
             else
             {
-                SetupForCollection();
+                SetupForCollectionWithoutLockbox();
                 return true;
             }
         }
@@ -864,6 +864,7 @@ namespace stage
     {
         displayStagePtr_->SetupForCollection(
             treasureAvailable_,
+            treasureImageType_,
             itemCacheHeld_,
             itemCacheLockbox_);
 

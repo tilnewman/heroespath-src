@@ -95,15 +95,35 @@ namespace item
     }
 
 
-    const std::string TreasureImage::ToContainerName(const TreasureImage::Enum E)
+    const std::string TreasureImage::ToContainerName(
+        const TreasureImage::Enum E,
+        const bool WILL_CAPITALIZE)
     {
         if ((E == ChestClosed) || (E == ChestOpen))
         {
-            return "chest";
+            if (WILL_CAPITALIZE)
+            {
+                return "Chest";
+            }
+            else
+            {
+                return "chest";
+            }
+        }
+        else if ((E == LockboxClosed) || (E == LockboxOpen))
+        {
+            if (WILL_CAPITALIZE)
+            {
+                return "Lockbox";
+            }
+            else
+            {
+                return "lockbox";
+            }
         }
         else
         {
-            return "lockbox";
+            return "";
         }
     }
 

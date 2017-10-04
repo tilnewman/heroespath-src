@@ -147,6 +147,7 @@ namespace treasure
 
         void SetupForCollection(
             const item::TreasureAvailable::Enum,
+            const item::TreasureImage::Enum,
             const item::ItemCache & HELD_CACHE,
             const item::ItemCache & LOCKBOX_CACHE);
 
@@ -155,6 +156,8 @@ namespace treasure
         bool IsAnythingAnimating() const;
 
     private:
+        treasure::DisplayMeasurements CreateDisplayMeasurements() const;
+
         void SetupInitial_BackgroundImage();
         void SetupInitial_Ouroboros();
 
@@ -164,18 +167,22 @@ namespace treasure
 
         const std::string CorpseImageKeyFromEnemyParty() const;
         
-        item::ItemPVec_t WhichTreasureItemsAreDisplayed(
-            const treasure::ListboxMoverUPtr_t & LISTBOX_MOVER_UPTR,
-            const item::ItemCache & HELD_CACHE,
-            const item::ItemCache & LOCKBOX_CACHE) const;
-        
         creature::CreaturePtr_t WhichCharacterInventoryIsDisplayed(
             const treasure::ListboxMoverUPtr_t & LISTBOX_MOVER_UPTR);
+
+        void SetupListboxMover(const stage::treasure::SourceType);
 
         void SetupListbox(
             const treasure::WhichListbox WHICH_LISTBOX,
             sfml_util::gui::ListBoxUPtr_t & listboxUPtr,
             const item::ItemPVec_t &);
+
+        void SetupTreasureListboxLabel(const stage::treasure::SourceType);
+        void SetupInventoryListboxLabel();
+        void SetupCharacterImage();
+        void SetupCharacterDetailText();
+
+        stage::treasure::SourceType TreasureSource() const;
 
     private:
         TreasureStage * treasureStagePtr_;
@@ -185,8 +192,8 @@ namespace treasure
         treasure::ListboxMoverUPtr_t listboxMoverUPtr_;
         sfml_util::gui::ListBoxUPtr_t treasureListboxUPtr_;
         sfml_util::gui::ListBoxUPtr_t inventoryListboxUPtr_;
-        //sfml_util::gui::TextRegionUPtr_t treasureLabelUPtr_;
-        //sfml_util::gui::TextRegionUPtr_t inventoryLabelUPtr_;
+        sfml_util::gui::TextRegionUPtr_t treasureLabelUPtr_;
+        sfml_util::gui::TextRegionUPtr_t inventoryLabelUPtr_;
 
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;
@@ -196,9 +203,10 @@ namespace treasure
         sf::Sprite treasureSprite_;
         sf::Texture coinsTexture_;
         sf::Sprite coinsSprite_;
-        //sf::Texture characterTexture_;
-        //sf::Sprite characterSprite_;
+        sf::Texture characterTexture_;
+        sf::Sprite characterSprite_;
         item::TreasureAvailable::Enum treasureAvailable_;
+        item::TreasureImage::Enum treasureImage_;
     };
 
 }
