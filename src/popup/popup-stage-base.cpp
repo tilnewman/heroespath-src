@@ -203,6 +203,7 @@ namespace popup
                 (KEY_EVENT.code == sf::Keyboard::Return) ||
                 (KEY_EVENT.code == sf::Keyboard::Escape))
             {
+                EndKeepAliveTimer();
                 PlayValidKeypressSoundEffect();
                 game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
                 return true;
@@ -216,6 +217,7 @@ namespace popup
                 (KEY_EVENT.code == sf::Keyboard::Return) ||
                 (KEY_EVENT.code == sf::Keyboard::Escape))
             {
+                EndKeepAliveTimer();
                 PlayValidKeypressSoundEffect();
                 game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Okay);
                 return true;
@@ -225,6 +227,7 @@ namespace popup
         if ((popupInfo_.Buttons() & ResponseTypes::Yes) &&
             (KEY_EVENT.code == sf::Keyboard::Y))
         {
+            EndKeepAliveTimer();
             PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Yes);
             return true;
@@ -246,6 +249,7 @@ namespace popup
                 ((KEY_EVENT.code == sf::Keyboard::Return) &&
                  (popupInfo_.Buttons() == PopupButtons::Cancel)))
             {
+                EndKeepAliveTimer();
                 PlayValidKeypressSoundEffect();
                 game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel);
                 return true;
@@ -306,6 +310,15 @@ namespace popup
     {
         sfml_util::SoundManager::Instance()->
             SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+    }
+
+
+    void PopupStageBase::EndKeepAliveTimer()
+    {
+        if (keepAliveTimerSec_ > 0.0f)
+        {
+            keepAliveTimerSec_ = 0.001f;
+        }
     }
 
 

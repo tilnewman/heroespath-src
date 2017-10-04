@@ -600,6 +600,7 @@ namespace stage
             CHAR_PICKING_NAME + " is attempting to pick the lock...",
             4.0f,//the duration of the longest lockpick sfx
             sfml_util::FontManager::Instance()->Size_Normal(),
+            popup::PopupButtons::None,
             popup::PopupImage::Regular,
             SelectRandomLockPickingSfx()) };
 
@@ -754,6 +755,7 @@ namespace stage
             "\nThe " + item::TreasureImage::ToContainerName(treasureImageType_) + " Opens!",
             4.0f,
             sfml_util::FontManager::Instance()->Size_Large(),
+            popup::PopupButtons::Continue,
             popup::PopupImage::Regular,
             sfml_util::sound_effect::None) };
 

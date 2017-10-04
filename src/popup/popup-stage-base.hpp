@@ -89,6 +89,8 @@ namespace popup
         void PlayValidKeypressSoundEffect() const;
         void PlayInvalidKeypressSoundEffect() const;
 
+        void EndKeepAliveTimer();
+
     private:
         void SetupBackgroundImage();
         void SetupVariousButtonPositionValues();

@@ -264,6 +264,7 @@ namespace popup
             const std::string & PROMPT_TEXT,
             const float KEEP_ALIVE_SECONDS,
             const unsigned int FONT_SIZE,
+            const PopupButtons::Enum BUTTONS = PopupButtons::None,
             const PopupImage::Enum IMAGE = PopupImage::Banner,
             const sfml_util::sound_effect::Enum SOUND_EFFECT =
                 sfml_util::sound_effect::PromptGeneric) const;

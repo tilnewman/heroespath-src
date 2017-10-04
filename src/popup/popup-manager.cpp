@@ -510,13 +510,14 @@ namespace popup
         const std::string & PROMPT_TEXT,
         const float KEEP_ALIVE_SECONDS,
         const unsigned int FONT_SIZE,
+        const PopupButtons::Enum BUTTONS,
         const PopupImage::Enum IMAGE,
         const sfml_util::sound_effect::Enum SOUND_EFFECT) const
     {
         return PopupInfo(
             POPUP_NAME,
             TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
-            popup::PopupButtons::None,
+            BUTTONS,
             IMAGE,
             1.0f,
             SOUND_EFFECT,
