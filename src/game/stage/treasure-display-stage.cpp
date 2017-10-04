@@ -478,8 +478,6 @@ namespace treasure
                 "TreasureDisplayStage_CharacterInventoryListboxItem_" + ITEM_PTR->Name(),
                 listboxTextInfo,
                 ITEM_PTR) );
-
-            M_HP_LOG_DBG("\t********** " << ((WHICH_LISTBOX == treasure::WhichListbox::Inventory) ? "Inventory" : "treasure") << "  " << ITEM_PTR->Name());
         }
         
         const bool IS_ALREADY_INSTANTIATED(listboxUPtr.get() != nullptr);
@@ -518,11 +516,8 @@ namespace treasure
             sfml_util::gui::ListBox::NO_LIMIT_,
             this);
 
-        if (IS_ALREADY_INSTANTIATED)
-        {
-            EntityAdd(listboxUPtr.get());
-        }
-
+        EntityAdd(listboxUPtr.get());
+        
         listboxUPtr->SetSelectedIndex(0);
         listboxUPtr->SetImageColor(listboxColors.image);
     }

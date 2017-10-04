@@ -381,7 +381,7 @@ namespace stage
         treasureImageType_ = combat::Encounter::Instance()->BeginTreasureStageTasks();
         itemCacheHeld_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsHeldCache();
         itemCacheLockbox_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsLockboxCache();
-
+        
         displayStagePtr_->SetupAfterPleaseWait(treasureImageType_);
         treasureAvailable_ = DetermineTreasureAvailableState(itemCacheHeld_, itemCacheLockbox_);
         PromptUserBasedonTreasureAvailability(treasureAvailable_, treasureImageType_);
