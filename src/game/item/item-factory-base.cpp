@@ -352,18 +352,13 @@ namespace item
 
     const std::string FactoryBase::RandomJeweledAdjective()
     {
-        auto const RAND{ misc::random::Int(2) };
-        if (RAND == 0)
+        if (misc::random::Bool())
         {
             return "jeweled";
         }
-        else if (RAND == 1)
-        {
-            return "gemmed";
-        }
         else
         {
-            return "bejeweled";
+            return "gemmed";
         }
     }
 
