@@ -629,10 +629,10 @@ namespace sfml_util
 
         if (POPUP_RESPONSE_ENUM != popup::ResponseTypes::None)
         {
-            M_HP_LOG(NAME_ << "::ProcessPopupCallback() found response=\""
-                            << popup::ResponseTypes::ToString(POPUP_RESPONSE_ENUM)
-                            << "\" with selection=" << POPUP_SELECTION << " to popup "
-                            << popupInfo_.ToStringShort(true) << ".");
+            M_HP_LOG("PopupCallback resp=\""
+                << popup::ResponseTypes::ToString(POPUP_RESPONSE_ENUM)
+                << "\" with selection=" << POPUP_SELECTION
+                << " to popup=\"" << popupInfo_.Name() << "\"");
 
             const popup::PopupResponse POPUP_RESPONSE_OBJ(
                 popupInfo_,
