@@ -39,7 +39,7 @@ namespace stage
 namespace treasure
 {
 
-    const float ListboxMover::SLIDE_SPEED_{ 50.0f };
+    const float ListboxMover::SLIDE_SPEED_{ 4.0f };
 
 
     ListboxMover::ListboxMover(

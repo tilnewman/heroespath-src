@@ -100,9 +100,6 @@ namespace treasure
         float screenHeight;
         float innerPad;
         sf::FloatRect innerRect;
-        float creatureImageLeft;
-        float creatureImageScale;
-        float creatureImageHeight;
         float listboxScreenEdgeMargin;
         float listboxBetweenSpacer;
         float listboxWidth;
@@ -114,6 +111,8 @@ namespace treasure
         sf::FloatRect inventoryListboxRegion;
         float listboxMargin;
         float listboxItemSpacer;
+        float characterImageLeft;
+        float characterImageScale;
     };
 }
 
@@ -139,7 +138,8 @@ namespace treasure
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
-        
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+
         void SetupInitial();
         void SetupAfterPleaseWait(const item::TreasureImage::Enum);
 
@@ -147,13 +147,18 @@ namespace treasure
 
         void SetupForCollection(
             const item::TreasureAvailable::Enum,
-            const item::TreasureImage::Enum,
-            const item::ItemCache & HELD_CACHE,
-            const item::ItemCache & LOCKBOX_CACHE);
+            const item::TreasureImage::Enum);
 
         bool IsShowingHeldItems() const;
         std::size_t CharacterIndexShowingInventory() const;
         bool IsAnythingAnimating() const;
+
+        bool CanTreasureSourceChange() const;
+        void TreasureSourceChange() const;
+
+        void UpdateItemCaches(
+            const item::ItemCache & HELD_CACHE,
+            const item::ItemCache & LOCKBOX_CACHE);
 
     private:
         treasure::DisplayMeasurements CreateDisplayMeasurements() const;
@@ -167,8 +172,7 @@ namespace treasure
 
         const std::string CorpseImageKeyFromEnemyParty() const;
         
-        creature::CreaturePtr_t WhichCharacterInventoryIsDisplayed(
-            const treasure::ListboxMoverUPtr_t & LISTBOX_MOVER_UPTR);
+        creature::CreaturePtr_t WhichCharacterInventoryIsDisplayed();
 
         void SetupListboxMover(const stage::treasure::SourceType);
 
@@ -177,12 +181,16 @@ namespace treasure
             sfml_util::gui::ListBoxUPtr_t & listboxUPtr,
             const item::ItemPVec_t &);
 
-        void SetupTreasureListboxLabel(const stage::treasure::SourceType);
+        void SetupTreasureListboxLabel();
         void SetupInventoryListboxLabel();
         void SetupCharacterImage();
-        void SetupCharacterDetailText();
+        void SetupInventoryWeightText();
 
         stage::treasure::SourceType TreasureSource() const;
+
+        void UpdateTreasureVisuals();
+        void UpdateInventoryVisuals();
+        
 
     private:
         TreasureStage * treasureStagePtr_;
@@ -194,6 +202,7 @@ namespace treasure
         sfml_util::gui::ListBoxUPtr_t inventoryListboxUPtr_;
         sfml_util::gui::TextRegionUPtr_t treasureLabelUPtr_;
         sfml_util::gui::TextRegionUPtr_t inventoryLabelUPtr_;
+        sfml_util::gui::TextRegionUPtr_t weightLabelUPtr_;
 
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;
@@ -207,6 +216,10 @@ namespace treasure
         sf::Sprite characterSprite_;
         item::TreasureAvailable::Enum treasureAvailable_;
         item::TreasureImage::Enum treasureImage_;
+
+        //These members are copies of the real data in TreasureStage
+        item::ItemCache heldCache_;
+        item::ItemCache lockboxCache_;
     };
 
 }

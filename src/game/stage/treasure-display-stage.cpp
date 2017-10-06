@@ -81,10 +81,6 @@ namespace treasure
             innerPad,
             screenWidth - (2.0f * innerPad),
             screenWidth - (2.0f * innerPad)),
-        creatureImageLeft(innerRect.left + sfml_util::MapByRes(35.0f, 100.0f)),
-        creatureImageScale(sfml_util::MapByRes(0.75f, 3.25f)),
-        creatureImageHeight(
-            sfml_util::gui::CreatureImageManager::DimmensionMax() * creatureImageScale),
         listboxScreenEdgeMargin(sfml_util::MapByRes(35.0f, 100.0f)),
         listboxBetweenSpacer(sfml_util::MapByRes(65.0f, 200.0f)),
         listboxWidth(
@@ -104,7 +100,9 @@ namespace treasure
             listboxWidth,
             listboxHeight),
         listboxMargin(10.0f),
-        listboxItemSpacer(6.0f)
+        listboxItemSpacer(6.0f),
+        characterImageLeft(inventoryListboxRegion.left),
+        characterImageScale(sfml_util::MapByRes(0.75f, 3.25f))
     {}
 
 }//end of namespace treasure
@@ -120,6 +118,9 @@ namespace treasure
         listboxMoverUPtr_(),
         treasureListboxUPtr_(),
         inventoryListboxUPtr_(),
+        treasureLabelUPtr_(),
+        inventoryLabelUPtr_(),
+        weightLabelUPtr_(),
         backgroundTexture_(),
         backgroundSprite_(),
         corpseTexture_(),
@@ -162,7 +163,7 @@ namespace treasure
         target.draw(bottomImage_, STATES);
         target.draw(corpseSprite_, STATES);
         target.draw(treasureSprite_, STATES);
-        //target.draw(characterSprite_, STATES);
+        target.draw(characterSprite_, STATES);
 
         if (item::TreasureAvailable::NoTreasure != treasureAvailable_)
         {
@@ -170,6 +171,23 @@ namespace treasure
         }
 
         Stage::Draw(target, STATES);
+    }
+
+
+    void TreasureDisplayStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
+    {
+        if (listboxMoverUPtr_.get() != nullptr)
+        {
+            if (listboxMoverUPtr_->UpdateTimeSource(ELAPSED_TIME_SECONDS))
+            {
+                UpdateTreasureVisuals();
+            }
+
+            if (listboxMoverUPtr_->UpdateTimeTarget(ELAPSED_TIME_SECONDS))
+            {
+                UpdateInventoryVisuals();
+            }
+        }
     }
 
 
@@ -208,34 +226,32 @@ namespace treasure
 
     void TreasureDisplayStage::SetupForCollection(
         const item::TreasureAvailable::Enum TREASURE_AVAILABLE,
-        const item::TreasureImage::Enum TREASURE_IMAGE,
-        const item::ItemCache & HELD_CACHE,
-        const item::ItemCache & LOCKBOX_CACHE)
+        const item::TreasureImage::Enum TREASURE_IMAGE)
     {
         treasureAvailable_ = TREASURE_AVAILABLE;
         treasureImage_ = TREASURE_IMAGE;
-
+        
         auto const TREASURE_SOURCE{ TreasureSource() };
-        M_HP_LOG_DBG("\t *********** avail=" << item::TreasureAvailable::ToString(treasureAvailable_) << ", TREASURE_SOURCE=" << (int) TREASURE_SOURCE);
+        
         SetupListbox(
             treasure::WhichListbox::Treasure,
             treasureListboxUPtr_,
             ((TREASURE_SOURCE == stage::treasure::SourceType::Container) ?
-                LOCKBOX_CACHE.items_pvec :
-                HELD_CACHE.items_pvec));
-
+                lockboxCache_.items_pvec :
+                heldCache_.items_pvec));
+        
         SetupListbox(
             treasure::WhichListbox::Inventory,
             inventoryListboxUPtr_,
-            WhichCharacterInventoryIsDisplayed(listboxMoverUPtr_)->Inventory().Items());
-
+            WhichCharacterInventoryIsDisplayed()->Inventory().Items());
+        
         SetupListboxMover(TREASURE_SOURCE);
-
-        SetupTreasureListboxLabel(TREASURE_SOURCE);
+        
+        SetupTreasureListboxLabel();
+        
         SetupInventoryListboxLabel();
-
         SetupCharacterImage();
-        SetupCharacterDetailText();
+        SetupInventoryWeightText();
     }
 
     
@@ -268,6 +284,30 @@ namespace treasure
     bool TreasureDisplayStage::IsAnythingAnimating() const
     {
         return ((nullptr != listboxMoverUPtr_.get()) && listboxMoverUPtr_->IsEitherMoving());
+    }
+
+
+    bool TreasureDisplayStage::CanTreasureSourceChange() const
+    {
+        return (item::TreasureAvailable::HeldAndLockbox == treasureAvailable_);
+    }
+
+
+    void TreasureDisplayStage::TreasureSourceChange() const
+    {
+        if (listboxMoverUPtr_.get() != nullptr)
+        {
+            listboxMoverUPtr_->SourceChange();
+        }
+    }
+
+
+    void TreasureDisplayStage::UpdateItemCaches(
+        const item::ItemCache & HELD_CACHE,
+        const item::ItemCache & LOCKBOX_CACHE)
+    {
+        heldCache_ = HELD_CACHE;
+        lockboxCache_ = LOCKBOX_CACHE;
     }
 
 
@@ -427,18 +467,17 @@ namespace treasure
     }
 
 
-    creature::CreaturePtr_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayed(
-        const treasure::ListboxMoverUPtr_t & LISTBOX_MOVER_UPTR)
+    creature::CreaturePtr_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayed()
     {
         auto const CHARACTER_INDEX{ [&]() -> std::size_t
             {
-                if (LISTBOX_MOVER_UPTR.get() == nullptr)
+                if (listboxMoverUPtr_.get() == nullptr)
                 {
                     return 0;
                 }
                 else
                 {
-                    return LISTBOX_MOVER_UPTR->TargetNumber();
+                    return listboxMoverUPtr_->TargetNumber();
                 }
             }() };
 
@@ -546,21 +585,33 @@ namespace treasure
         
         listboxUPtr->SetSelectedIndex(0);
         listboxUPtr->SetImageColor(listboxColors.image);
+
+        if (listboxMoverUPtr_.get() != nullptr)
+        {
+            if (WHICH_LISTBOX == stage::treasure::WhichListbox::Treasure)
+            {
+                listboxMoverUPtr_->SetSourceEntity(listboxUPtr.get());
+            }
+            else
+            {
+                listboxMoverUPtr_->SetTargetEntity(listboxUPtr.get());
+            }
+        }
     }
 
 
-    void TreasureDisplayStage::SetupTreasureListboxLabel(
-        const stage::treasure::SourceType TREASURE_SOURCE)
+    void TreasureDisplayStage::SetupTreasureListboxLabel()
     {
         auto const LABEL_TEXT{ [&]() -> std::string
             {
-                if (TREASURE_SOURCE == stage::treasure::SourceType::Held)
+                if (TreasureSource() == stage::treasure::SourceType::Held)
                 {
-                    return "Items Worn";
+                    return "Items Worn by Enemies";
                 }
                 else
                 {
-                    return item::TreasureImage::ToContainerName(treasureImage_, true) + " Items";
+                    return "Items in the " +
+                        item::TreasureImage::ToContainerName(treasureImage_, true);
                 }
             }() };
 
@@ -597,11 +648,19 @@ namespace treasure
 
     void TreasureDisplayStage::SetupInventoryListboxLabel()
     {
+        auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
+
+        auto const IS_BEAST{ CREATURE_PTR->IsBeast() };
+
+        std::ostringstream ss;
+        ss << CREATURE_PTR->Name()
+            << ((IS_BEAST) ? " cannot carry items" : "'s Inventory");
+
         const sfml_util::gui::TextInfo TEXT_INFO(
-            WhichCharacterInventoryIsDisplayed(listboxMoverUPtr_)->Name() + "'s Inventory",
+            ss.str(),
             sfml_util::FontManager::Instance()->Font_Default2(),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sf::Color::Black,
+            ((IS_BEAST) ? sf::Color(100, 0, 0) : sf::Color::Black),
             sfml_util::Justified::Left);
 
         if (inventoryLabelUPtr_.get() != nullptr)
@@ -630,25 +689,77 @@ namespace treasure
 
     void TreasureDisplayStage::SetupCharacterImage()
     {
-        //TODO
+        auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
+        
+        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
+            characterTexture_,
+            CREATURE_PTR->ImageFilename(),
+            true);
+        
+        sfml_util::Invert(characterTexture_);
+        sfml_util::Mask(characterTexture_, sf::Color::White);
 
-        /*
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(creatureTexture_,
-                                                                   creaturePtr_->ImageFilename(),
-                                                                   true);
+        characterSprite_.setTexture(characterTexture_, true);
 
-        sfml_util::Invert(creatureTexture_);
-        sfml_util::Mask(creatureTexture_, sf::Color::White);
-        creatureSprite_.setTexture(creatureTexture_, true);
-        creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_, CREATURE_IMAGE_POS_TOP_);
-        creatureSprite_.setColor(sf::Color(255, 255, 255, 127));
-        creatureSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);*/
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+        
+        characterSprite_.setScale(
+            MEASUREMENTS.characterImageScale, MEASUREMENTS.characterImageScale);
+
+        characterSprite_.setPosition(
+            MEASUREMENTS.characterImageLeft,
+            inventoryLabelUPtr_->GetEntityPos().y - characterSprite_.getGlobalBounds().height);
+
+        characterSprite_.setColor(sf::Color(255, 255, 255, 127));
     }
 
 
-    void TreasureDisplayStage::SetupCharacterDetailText()
+    void TreasureDisplayStage::SetupInventoryWeightText()
     {
-        //TODO
+        auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
+
+        std::ostringstream ss;
+
+        if (CREATURE_PTR->IsBeast())
+        {
+            ss << " ";
+        }
+        else
+        {
+            ss << "Weight: " << CREATURE_PTR->Inventory().Weight() << "/"
+                << CREATURE_PTR->WeightCanCarry();
+        }
+
+        const sfml_util::gui::TextInfo TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Largeish(),
+            sf::Color::Black,
+            sfml_util::Justified::Left);
+
+        if (weightLabelUPtr_.get() != nullptr)
+        {
+            EntityRemove(weightLabelUPtr_.get());
+        }
+
+        //initial position doesn't matter since the position must be set after rendering
+        auto const EMPTY_RECT{ sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
+
+        weightLabelUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "TreasureStage'sInventoryweightLabel", TEXT_INFO, EMPTY_RECT);
+
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+
+        auto const LEFT{
+           (MEASUREMENTS.inventoryListboxRegion.left + MEASUREMENTS.inventoryListboxRegion.width) -
+                weightLabelUPtr_->GetEntityRegion().width};
+
+        auto const TOP{ (MEASUREMENTS.inventoryListboxRegion.top -
+            weightLabelUPtr_->GetEntityRegion().height) + 10.0f };
+
+        weightLabelUPtr_->SetEntityPos(LEFT, TOP);
+
+        EntityAdd(weightLabelUPtr_.get());
     }
 
 
@@ -666,6 +777,32 @@ namespace treasure
         {
             return listboxMoverUPtr_->Source();
         }
+    }
+
+
+    void TreasureDisplayStage::UpdateTreasureVisuals()
+    {
+        SetupListbox(
+            treasure::WhichListbox::Treasure,
+            treasureListboxUPtr_,
+            ((TreasureSource() == stage::treasure::SourceType::Container) ?
+                lockboxCache_.items_pvec :
+                heldCache_.items_pvec));
+
+        SetupTreasureListboxLabel();
+    }
+
+
+    void TreasureDisplayStage::UpdateInventoryVisuals()
+    {
+        SetupListbox(
+            treasure::WhichListbox::Inventory,
+            inventoryListboxUPtr_,
+            WhichCharacterInventoryIsDisplayed()->Inventory().Items());
+
+        SetupInventoryListboxLabel();
+        SetupCharacterImage();
+        SetupInventoryWeightText();
     }
 
 }

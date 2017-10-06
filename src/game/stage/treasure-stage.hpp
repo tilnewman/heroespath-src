@@ -82,6 +82,7 @@ namespace stage
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
         bool HandleListboxCallback(
             const sfml_util::gui::ListBox * const TREASURE_LISTBOX_PTR,
@@ -138,6 +139,11 @@ namespace stage
         stats::Trait_t Share(const ShareType);
 
         void SetupForCollection();
+
+        bool HandleKeypress_Space();
+
+        void PlaySoundEffect_KeypressValid() const;
+        void PlaySoundEffect_KeypressInvalid() const;
 
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;

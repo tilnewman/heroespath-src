@@ -334,6 +334,17 @@ namespace stage
     }
 
 
+    bool TreasureStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
+    {
+        if (KEY_EVENT.code == sf::Keyboard::Space)
+        {
+            return HandleKeypress_Space();
+        }
+
+        return false;
+    }
+
+
     bool TreasureStage::HandleListboxCallback(
         const sfml_util::gui::ListBox * const,
         const sfml_util::gui::ListBox * const,
@@ -862,14 +873,44 @@ namespace stage
 
     void TreasureStage::SetupForCollection()
     {
-        displayStagePtr_->SetupForCollection(
-            treasureAvailable_,
-            treasureImageType_,
-            itemCacheHeld_,
-            itemCacheLockbox_);
+        if (displayStagePtr_ != nullptr)
+        {
+            displayStagePtr_->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
+            displayStagePtr_->SetupForCollection(treasureAvailable_, treasureImageType_);
+        }
 
         //TODO
     }
 
+
+    bool TreasureStage::HandleKeypress_Space()
+    {
+        if (displayStagePtr_ != nullptr)
+        {
+            if (displayStagePtr_->CanTreasureSourceChange())
+            {
+                displayStagePtr_->TreasureSourceChange();
+                PlaySoundEffect_KeypressValid();
+                return true;
+            }
+        }
+
+        PlaySoundEffect_KeypressInvalid();
+        return false;
+    }
+
+
+    void TreasureStage::PlaySoundEffect_KeypressValid() const
+    {
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+    }
+
+
+    void TreasureStage::PlaySoundEffect_KeypressInvalid() const
+    {
+        sfml_util::SoundManager::Instance()->
+            SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+    }
 }
 }
