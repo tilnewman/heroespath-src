@@ -78,33 +78,34 @@ namespace gui
 
         virtual bool KeyPress(const sf::Event::KeyEvent &) = 0;
         virtual bool KeyRelease(const sf::Event::KeyEvent &) = 0;
+
+        virtual bool UpdateTime(const float ELAPSED_TIME_SEC) = 0;
+
     protected:
         virtual void OnColorChange() = 0;
 
-        //The only member equired by sf::Drawable.
+        //The only member required by sf::Drawable.
     public:
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const = 0;
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override = 0;
 
         //IClickable
-        virtual MouseState::Enum GetMouseState() const = 0;
-        virtual void SetMouseState(const MouseState::Enum) = 0;
-        //
-        virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V) = 0;
-        virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V) = 0;
-        virtual bool IsHeldDown() const = 0;
-        virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) = 0;
-        virtual bool UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION) = 0;
-        virtual bool UpdateTime(const float ELAPSED_TIME_SEC) = 0;
-        virtual bool HasFocus() const = 0;
-        virtual bool SetHasFocus(const bool) = 0;
-        virtual bool WillAcceptFocus() const = 0;
-        virtual void SetWillAcceptFocus(const bool) = 0;
-        virtual void FakeColorSetAsIfFocusIs(const bool) = 0;
-        virtual const std::string GetMouseHoverText() = 0;
-        virtual void SetMouseHoverText(const std::string &) = 0;
+        MouseState::Enum GetMouseState() const override = 0;
+        void SetMouseState(const MouseState::Enum) override = 0;
+        bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override = 0;
+        bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override = 0;
+        bool IsHeldDown() const override = 0;
+        bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override = 0;
+        bool UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION) override = 0;
+        bool HasFocus() const override = 0;
+        bool SetHasFocus(const bool) override = 0;
+        bool WillAcceptFocus() const override = 0;
+        void SetWillAcceptFocus(const bool) override = 0;
+        void FakeColorSetAsIfFocusIs(const bool) override = 0;
+        const std::string GetMouseHoverText() override = 0;
+        void SetMouseHoverText(const std::string &) override = 0;
     protected:
-        virtual void OnClick(const sf::Vector2f &) = 0;
-        virtual void OnDoubleClick(const sf::Vector2f &) = 0;
+        void OnClick(const sf::Vector2f &) override = 0;
+        void OnDoubleClick(const sf::Vector2f &) override = 0;
     };
 
     using IGuiEntityPtr_t = IGuiEntity *;
