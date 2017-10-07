@@ -36,7 +36,7 @@
 #include "game/ouroboros.hpp"
 #include "game/horiz-symbol.hpp"
 #include "game/main-menu-title.hpp"
-#include "game/stage/treasure-stage-listbox-mover.hpp"
+#include "game/stage/treasure-stage-mover.hpp"
 #include "game/item/treasure-image-enum.hpp"
 #include "game/item/treasure-available-enum.hpp"
 #include "game/item/item-cache.hpp"
@@ -174,19 +174,24 @@ namespace treasure
         
         creature::CreaturePtr_t WhichCharacterInventoryIsDisplayed();
 
-        void SetupListboxMover(const stage::treasure::SourceType);
+        void SetupForCollection_TreasureListbox(const stage::treasure::Type);
+        void SetupForCollection_InventoryListbox();
+        void SetupForCollection_TreasureListboxLabel();
+        void SetupForCollection_InventoryListboxLabel();
+        void SetupForCollection_CharacterImage();
+        void SetupForCollection_InventoryWeightText();
 
         void SetupListbox(
             const treasure::WhichListbox WHICH_LISTBOX,
             sfml_util::gui::ListBoxUPtr_t & listboxUPtr,
             const item::ItemPVec_t &);
-
+        
         void SetupTreasureListboxLabel();
         void SetupInventoryListboxLabel();
         void SetupCharacterImage();
         void SetupInventoryWeightText();
 
-        stage::treasure::SourceType TreasureSource() const;
+        stage::treasure::Type TreasureSource() const;
 
         void UpdateTreasureVisuals();
         void UpdateInventoryVisuals();
@@ -197,7 +202,7 @@ namespace treasure
         MainMenuTitle titleImage_;
         BottomSymbol bottomImage_;
         OuroborosUPtr_t ouroborosUPtr_;
-        treasure::ListboxMoverUPtr_t listboxMoverUPtr_;
+        treasure::StageMoverUPtr_t stageMoverUPtr_;
         sfml_util::gui::ListBoxUPtr_t treasureListboxUPtr_;
         sfml_util::gui::ListBoxUPtr_t inventoryListboxUPtr_;
         sfml_util::gui::TextRegionUPtr_t treasureLabelUPtr_;
@@ -213,7 +218,7 @@ namespace treasure
         sf::Texture coinsTexture_;
         sf::Sprite coinsSprite_;
         sf::Texture characterTexture_;
-        sf::Sprite characterSprite_;
+        sfml_util::gui::GuiImageUPtr_t characterImageUPtr_;
         item::TreasureAvailable::Enum treasureAvailable_;
         item::TreasureImage::Enum treasureImage_;
 

@@ -115,7 +115,7 @@ namespace treasure
         titleImage_("treasure-button.png", true, 1.0f, 0.75f),
         bottomImage_(0.8f, true, sf::Color::White, 0.4f),
         ouroborosUPtr_(),
-        listboxMoverUPtr_(),
+        stageMoverUPtr_(),
         treasureListboxUPtr_(),
         inventoryListboxUPtr_(),
         treasureLabelUPtr_(),
@@ -129,6 +129,8 @@ namespace treasure
         treasureSprite_(),
         coinsTexture_(),
         coinsSprite_(),
+        characterTexture_(),
+        characterImageUPtr_(),
         treasureAvailable_(item::TreasureAvailable::NoTreasure),
         treasureImage_(item::TreasureImage::Count)
     {}
@@ -163,7 +165,11 @@ namespace treasure
         target.draw(bottomImage_, STATES);
         target.draw(corpseSprite_, STATES);
         target.draw(treasureSprite_, STATES);
-        target.draw(characterSprite_, STATES);
+        
+        if (characterImageUPtr_.get() != nullptr)
+        {
+            target.draw( * characterImageUPtr_, STATES);
+        }
 
         if (item::TreasureAvailable::NoTreasure != treasureAvailable_)
         {
@@ -176,14 +182,14 @@ namespace treasure
 
     void TreasureDisplayStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        if (listboxMoverUPtr_.get() != nullptr)
+        if (stageMoverUPtr_.get() != nullptr)
         {
-            if (listboxMoverUPtr_->UpdateTimeSource(ELAPSED_TIME_SECONDS))
+            if (stageMoverUPtr_->UpdateTimeTreasure(ELAPSED_TIME_SECONDS))
             {
                 UpdateTreasureVisuals();
             }
 
-            if (listboxMoverUPtr_->UpdateTimeTarget(ELAPSED_TIME_SECONDS))
+            if (stageMoverUPtr_->UpdateTimeInventory(ELAPSED_TIME_SECONDS))
             {
                 UpdateInventoryVisuals();
             }
@@ -233,57 +239,46 @@ namespace treasure
         
         auto const TREASURE_SOURCE{ TreasureSource() };
         
-        SetupListbox(
-            treasure::WhichListbox::Treasure,
-            treasureListboxUPtr_,
-            ((TREASURE_SOURCE == stage::treasure::SourceType::Container) ?
-                lockboxCache_.items_pvec :
-                heldCache_.items_pvec));
-        
-        SetupListbox(
-            treasure::WhichListbox::Inventory,
-            inventoryListboxUPtr_,
-            WhichCharacterInventoryIsDisplayed()->Inventory().Items());
-        
-        SetupListboxMover(TREASURE_SOURCE);
-        
-        SetupTreasureListboxLabel();
-        
-        SetupInventoryListboxLabel();
-        SetupCharacterImage();
-        SetupInventoryWeightText();
+        stageMoverUPtr_ = std::make_unique<stage::treasure::StageMover>(TREASURE_SOURCE);
+
+        SetupForCollection_TreasureListbox(TREASURE_SOURCE);
+        SetupForCollection_InventoryListbox();
+        SetupForCollection_TreasureListboxLabel();
+        SetupForCollection_InventoryListboxLabel();
+        SetupForCollection_CharacterImage();
+        SetupForCollection_InventoryWeightText();
     }
 
     
     bool TreasureDisplayStage::IsShowingHeldItems() const
     {
-        if (nullptr == listboxMoverUPtr_.get())
+        if (nullptr == stageMoverUPtr_.get())
         {
             return false;
         }
         else
         {
-            return listboxMoverUPtr_->Source() == game::stage::treasure::SourceType::Held;
+            return stageMoverUPtr_->Source() == game::stage::treasure::Type::Held;
         }
     }
 
 
     std::size_t TreasureDisplayStage::CharacterIndexShowingInventory() const
     {
-        if (nullptr == listboxMoverUPtr_.get())
+        if (nullptr == stageMoverUPtr_.get())
         {
             return 0;
         }
         else
         {
-            return listboxMoverUPtr_->TargetNumber();
+            return stageMoverUPtr_->InventoryCharacterIndex();
         }
     }
 
 
     bool TreasureDisplayStage::IsAnythingAnimating() const
     {
-        return ((nullptr != listboxMoverUPtr_.get()) && listboxMoverUPtr_->IsEitherMoving());
+        return ((nullptr != stageMoverUPtr_.get()) && stageMoverUPtr_->IsEitherMoving());
     }
 
 
@@ -295,9 +290,9 @@ namespace treasure
 
     void TreasureDisplayStage::TreasureSourceChange() const
     {
-        if (listboxMoverUPtr_.get() != nullptr)
+        if (stageMoverUPtr_.get() != nullptr)
         {
-            listboxMoverUPtr_->SourceChange();
+            stageMoverUPtr_->TreasureSwitch();
         }
     }
 
@@ -471,13 +466,13 @@ namespace treasure
     {
         auto const CHARACTER_INDEX{ [&]() -> std::size_t
             {
-                if (listboxMoverUPtr_.get() == nullptr)
+                if (stageMoverUPtr_.get() == nullptr)
                 {
                     return 0;
                 }
                 else
                 {
-                    return listboxMoverUPtr_->TargetNumber();
+                    return stageMoverUPtr_->InventoryCharacterIndex();
                 }
             }() };
 
@@ -485,9 +480,16 @@ namespace treasure
     }
 
 
-    void TreasureDisplayStage::SetupListboxMover(
-        const stage::treasure::SourceType TREASURE_SOURCE)
+    void TreasureDisplayStage::SetupForCollection_TreasureListbox(
+        const stage::treasure::Type TREASURE_SOURCE)
     {
+        SetupListbox(
+            treasure::WhichListbox::Treasure,
+            treasureListboxUPtr_,
+            ((TREASURE_SOURCE == stage::treasure::Type::Container) ?
+                lockboxCache_.items_pvec :
+                heldCache_.items_pvec));
+        
         auto const MEASUREMENTS{ CreateDisplayMeasurements() };
 
         auto const TREASURE_ONSCREEN_POS_V{
@@ -500,6 +502,22 @@ namespace treasure
                 (MEASUREMENTS.treasureListboxRegion.width * -1.0f) - 10.0f,
                 MEASUREMENTS.treasureListboxRegion.top) };
 
+        stageMoverUPtr_->AddTreasureObject(
+            treasureListboxUPtr_.get(),
+            TREASURE_ONSCREEN_POS_V,
+            TREASURE_OFFSCREEN_POS_V);
+    }
+
+
+    void TreasureDisplayStage::SetupForCollection_InventoryListbox()
+    {
+        SetupListbox(
+            treasure::WhichListbox::Inventory,
+            inventoryListboxUPtr_,
+            WhichCharacterInventoryIsDisplayed()->Inventory().Items());
+     
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+
         auto const INVENTORY_ONSCREEN_POS_V{
             sf::Vector2f(
                 MEASUREMENTS.inventoryListboxRegion.left,
@@ -509,16 +527,85 @@ namespace treasure
             sf::Vector2f(
                 (MEASUREMENTS.screenWidth + 10.0f),
                 MEASUREMENTS.inventoryListboxRegion.top) };
-    
-        listboxMoverUPtr_ = std::make_unique<stage::treasure::ListboxMover>(
-            Game::Instance()->State().Party().Characters().size(),
-            TREASURE_SOURCE,
-            treasureListboxUPtr_.get(),
-            TREASURE_ONSCREEN_POS_V,
-            TREASURE_OFFSCREEN_POS_V,
+        
+        stageMoverUPtr_->AddTreasureObject(
             inventoryListboxUPtr_.get(),
             INVENTORY_ONSCREEN_POS_V,
             INVENTORY_OFFSCREEN_POS_V);
+    }
+
+
+    void TreasureDisplayStage::SetupForCollection_TreasureListboxLabel()
+    {
+        SetupTreasureListboxLabel();
+
+        auto const TREASURE_LABEL_ONSCREEN_POS{ treasureLabelUPtr_->GetEntityPos() };
+
+        auto const TREASURE_LABEL_OFFSCREEN_POS{ sf::Vector2f(
+            -750.0f, //this value is big enough for both possible labels
+            TREASURE_LABEL_ONSCREEN_POS.y) };
+
+        stageMoverUPtr_->AddTreasureObject(
+            treasureLabelUPtr_.get(),
+            TREASURE_LABEL_ONSCREEN_POS,
+            TREASURE_LABEL_OFFSCREEN_POS);
+    }
+
+
+    void TreasureDisplayStage::SetupForCollection_InventoryListboxLabel()
+    {
+        SetupInventoryListboxLabel();
+
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+        auto const OFFSCREEN_POS_RIGHT{ MEASUREMENTS.screenWidth + 1.0f };
+        auto const INVENTORY_LABEL_ONSCREEN_POS{ inventoryLabelUPtr_->GetEntityPos() };
+
+        auto const INVENTORY_LABEL_OFFSCREEN_POS{ sf::Vector2f(
+            OFFSCREEN_POS_RIGHT,
+            INVENTORY_LABEL_ONSCREEN_POS.y) };
+
+        stageMoverUPtr_->AddTreasureObject(
+            inventoryLabelUPtr_.get(),
+            INVENTORY_LABEL_ONSCREEN_POS,
+            INVENTORY_LABEL_OFFSCREEN_POS);
+    }
+
+
+    void TreasureDisplayStage::SetupForCollection_CharacterImage()
+    {
+        SetupCharacterImage();
+
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+        auto const OFFSCREEN_POS_RIGHT{ MEASUREMENTS.screenWidth + 1.0f };
+        auto const CHARACTER_IMAGE_ONSCREEN_POS{ characterImageUPtr_->GetEntityPos() };
+
+        auto const CHARACTER_IMAGE_OFFSCREEN_POS{ sf::Vector2f(
+            OFFSCREEN_POS_RIGHT,
+            CHARACTER_IMAGE_ONSCREEN_POS.y) };
+
+        stageMoverUPtr_->AddTreasureObject(
+            characterImageUPtr_.get(),
+            CHARACTER_IMAGE_ONSCREEN_POS,
+            CHARACTER_IMAGE_OFFSCREEN_POS);
+    }
+
+
+    void TreasureDisplayStage::SetupForCollection_InventoryWeightText()
+    {
+        SetupInventoryWeightText();
+
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+        auto const OFFSCREEN_POS_RIGHT{ MEASUREMENTS.screenWidth + 1.0f };
+        auto const INVENTORY_WEIGHT_ONSCREEN_POS{ weightLabelUPtr_->GetEntityPos() };
+
+        auto const INVENTORY_WEIGHT_OFFSCREEN_POS{ sf::Vector2f(
+            OFFSCREEN_POS_RIGHT,
+            INVENTORY_WEIGHT_ONSCREEN_POS.y) };
+
+        stageMoverUPtr_->AddTreasureObject(
+            weightLabelUPtr_.get(),
+            INVENTORY_WEIGHT_ONSCREEN_POS,
+            INVENTORY_WEIGHT_OFFSCREEN_POS);
     }
 
 
@@ -546,11 +633,11 @@ namespace treasure
                 ITEM_PTR) );
         }
         
-        const bool IS_ALREADY_INSTANTIATED(listboxUPtr.get() != nullptr);
+        auto const PREV_ENTITY_PTR{ listboxUPtr.get() };
 
-        if (IS_ALREADY_INSTANTIATED)
+        if (PREV_ENTITY_PTR != nullptr)
         {
-            EntityRemove(listboxUPtr.get());
+            EntityRemove(PREV_ENTITY_PTR);
         }
 
         treasure::ListboxColors listboxColors;
@@ -586,16 +673,10 @@ namespace treasure
         listboxUPtr->SetSelectedIndex(0);
         listboxUPtr->SetImageColor(listboxColors.image);
 
-        if (listboxMoverUPtr_.get() != nullptr)
+        if ((stageMoverUPtr_.get() != nullptr) &&
+            (PREV_ENTITY_PTR != nullptr))
         {
-            if (WHICH_LISTBOX == stage::treasure::WhichListbox::Treasure)
-            {
-                listboxMoverUPtr_->SetSourceEntity(listboxUPtr.get());
-            }
-            else
-            {
-                listboxMoverUPtr_->SetTargetEntity(listboxUPtr.get());
-            }
+            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, listboxUPtr.get());
         }
     }
 
@@ -604,7 +685,7 @@ namespace treasure
     {
         auto const LABEL_TEXT{ [&]() -> std::string
             {
-                if (TreasureSource() == stage::treasure::SourceType::Held)
+                if (TreasureSource() == stage::treasure::Type::Held)
                 {
                     return "Items Worn by Enemies";
                 }
@@ -622,9 +703,11 @@ namespace treasure
             sf::Color::Black,
             sfml_util::Justified::Left);
 
-        if (treasureLabelUPtr_.get() != nullptr)
+        auto const PREV_ENTITY_PTR{ treasureLabelUPtr_.get() };
+        
+        if (PREV_ENTITY_PTR != nullptr)
         {
-            EntityRemove(treasureLabelUPtr_.get());
+            EntityRemove(PREV_ENTITY_PTR);
         }
         
         //initial position doesn't matter since the position must be set after rendering
@@ -643,6 +726,12 @@ namespace treasure
         treasureLabelUPtr_->SetEntityPos(LEFT, TOP);
         
         EntityAdd(treasureLabelUPtr_.get());
+
+        if ((stageMoverUPtr_.get() != nullptr) &&
+            (PREV_ENTITY_PTR != nullptr))
+        {
+            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, treasureLabelUPtr_.get());
+        }
     }
 
 
@@ -663,9 +752,11 @@ namespace treasure
             ((IS_BEAST) ? sf::Color(100, 0, 0) : sf::Color::Black),
             sfml_util::Justified::Left);
 
-        if (inventoryLabelUPtr_.get() != nullptr)
+        auto const PREV_ENTITY_PTR{ inventoryLabelUPtr_.get() };
+
+        if (PREV_ENTITY_PTR != nullptr)
         {
-            EntityRemove(inventoryLabelUPtr_.get());
+            EntityRemove(PREV_ENTITY_PTR);
         }
 
         //initial position doesn't matter since the position must be set after rendering
@@ -684,6 +775,12 @@ namespace treasure
         inventoryLabelUPtr_->SetEntityPos(LEFT, TOP);
 
         EntityAdd(inventoryLabelUPtr_.get());
+
+        if ((stageMoverUPtr_.get() != nullptr) &&
+            (PREV_ENTITY_PTR != nullptr))
+        {
+            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, inventoryLabelUPtr_.get());
+        }
     }
 
 
@@ -699,18 +796,39 @@ namespace treasure
         sfml_util::Invert(characterTexture_);
         sfml_util::Mask(characterTexture_, sf::Color::White);
 
-        characterSprite_.setTexture(characterTexture_, true);
+        sf::Sprite sprite;
+        sprite.setTexture(characterTexture_, true);
 
         auto const MEASUREMENTS{ CreateDisplayMeasurements() };
         
-        characterSprite_.setScale(
+        sprite.setScale(
             MEASUREMENTS.characterImageScale, MEASUREMENTS.characterImageScale);
 
-        characterSprite_.setPosition(
+        sprite.setPosition(
             MEASUREMENTS.characterImageLeft,
-            inventoryLabelUPtr_->GetEntityPos().y - characterSprite_.getGlobalBounds().height);
+            inventoryLabelUPtr_->GetEntityPos().y - sprite.getGlobalBounds().height);
 
-        characterSprite_.setColor(sf::Color(255, 255, 255, 127));
+        sprite.setColor(sf::Color(255, 255, 255, 127));
+
+        auto const PREV_ENTITY_PTR{ characterImageUPtr_.get() };
+
+        if (PREV_ENTITY_PTR != nullptr)
+        {
+            EntityRemove(PREV_ENTITY_PTR);
+        }
+
+        characterImageUPtr_ = std::make_unique<sfml_util::gui::GuiImage>(
+            "TreasureDisplayStage's_CharacterImage",
+            sprite.getGlobalBounds(),
+            sprite);
+
+        EntityAdd(characterImageUPtr_.get());
+
+        if ((stageMoverUPtr_.get() != nullptr) &&
+            (PREV_ENTITY_PTR != nullptr))
+        {
+            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, characterImageUPtr_.get());
+        }
     }
 
 
@@ -737,7 +855,9 @@ namespace treasure
             sf::Color::Black,
             sfml_util::Justified::Left);
 
-        if (weightLabelUPtr_.get() != nullptr)
+        auto const PREV_ENTITY_PTR{ weightLabelUPtr_.get() };
+
+        if (PREV_ENTITY_PTR != nullptr)
         {
             EntityRemove(weightLabelUPtr_.get());
         }
@@ -760,22 +880,28 @@ namespace treasure
         weightLabelUPtr_->SetEntityPos(LEFT, TOP);
 
         EntityAdd(weightLabelUPtr_.get());
+
+        if ((stageMoverUPtr_.get() != nullptr) &&
+            (PREV_ENTITY_PTR != nullptr))
+        {
+            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, weightLabelUPtr_.get());
+        }
     }
 
 
-    stage::treasure::SourceType TreasureDisplayStage::TreasureSource() const
+    stage::treasure::Type TreasureDisplayStage::TreasureSource() const
     {
-        if (listboxMoverUPtr_.get() == nullptr)
+        if (stageMoverUPtr_.get() == nullptr)
         {
             return (
                 ((treasureAvailable_ == item::TreasureAvailable::HeldAndLockbox) ||
                  (treasureAvailable_ == item::TreasureAvailable::LockboxOnly)) ?
-                    stage::treasure::SourceType::Container :
-                    stage::treasure::SourceType::Held);
+                    stage::treasure::Type::Container :
+                    stage::treasure::Type::Held);
         }
         else
         {
-            return listboxMoverUPtr_->Source();
+            return stageMoverUPtr_->Source();
         }
     }
 
@@ -785,7 +911,7 @@ namespace treasure
         SetupListbox(
             treasure::WhichListbox::Treasure,
             treasureListboxUPtr_,
-            ((TreasureSource() == stage::treasure::SourceType::Container) ?
+            ((TreasureSource() == stage::treasure::Type::Container) ?
                 lockboxCache_.items_pvec :
                 heldCache_.items_pvec));
 

@@ -44,9 +44,6 @@ namespace gui
     //Responsible for moving a GuiEntity back and forth between two points using the slider method.
     class GuiEntitySlider : public sliders::PosSlider
     {
-        GuiEntitySlider(const GuiEntitySlider &) =delete;
-        GuiEntitySlider & operator=(const GuiEntitySlider &) =delete;
-
     public:
         explicit GuiEntitySlider(
             IGuiEntityPtr_t      guiEntityPtr = nullptr,
@@ -64,9 +61,12 @@ namespace gui
 
         virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS);
 
+        inline IGuiEntityPtr_t GetEntity() const { return guiEntityPtr_; }
         inline void SetEntity(const IGuiEntityPtr_t PTR) { guiEntityPtr_ = PTR; }
 
     private:
+
+        //This is an observer pointer that does not control the lifetime of the object.
         IGuiEntityPtr_t guiEntityPtr_;
     };
 

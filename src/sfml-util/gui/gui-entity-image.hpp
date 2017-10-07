@@ -43,22 +43,21 @@ namespace gui
     //Encapsulates a GuiEntity that manages three images based on entityMouseState_.
     class GuiImage : public GuiEntity
     {
-        GuiImage(const GuiImage &) =delete;
-        GuiImage & operator=(const GuiImage &) =delete;
-
     public:
-        GuiImage(const std::string &   NAME,
-                 const sf::FloatRect & SCREEN_REGION,
-                 const sf::Sprite &    SPRITE_UP   = sf::Sprite(),
-                 const sf::Sprite &    SPRITE_DOWN = sf::Sprite(),
-                 const sf::Sprite &    SPRITE_OVER = sf::Sprite());
+        GuiImage(
+            const std::string &   NAME,
+            const sf::FloatRect & SCREEN_REGION,
+            const sf::Sprite &    SPRITE_UP   = sf::Sprite(),
+            const sf::Sprite &    SPRITE_DOWN = sf::Sprite(),
+            const sf::Sprite &    SPRITE_OVER = sf::Sprite());
 
-        GuiImage(const std::string & NAME,
-                 const float         POS_LEFT,
-                 const float         POS_TOP,
-                 const sf::Sprite &  SPRITE_UP   = sf::Sprite(),
-                 const sf::Sprite &  SPRITE_DOWN = sf::Sprite(),
-                 const sf::Sprite &  SPRITE_OVER = sf::Sprite());
+        GuiImage(
+            const std::string & NAME,
+            const float         POS_LEFT,
+            const float         POS_TOP,
+            const sf::Sprite &  SPRITE_UP   = sf::Sprite(),
+            const sf::Sprite &  SPRITE_DOWN = sf::Sprite(),
+            const sf::Sprite &  SPRITE_OVER = sf::Sprite());
 
         virtual ~GuiImage();
 
@@ -84,6 +83,8 @@ namespace gui
         sf::Sprite downSprite_;
         sf::Sprite overSprite_;
     };
+
+    using GuiImageUPtr_t = std::unique_ptr<GuiImage>;
 
 }
 }

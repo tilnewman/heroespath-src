@@ -35,11 +35,12 @@ namespace sfml_util
 namespace gui
 {
 
-    GuiImage::GuiImage( const std::string &   NAME,
-                        const sf::FloatRect & SCREEN_REGION,
-                        const sf::Sprite &    SPRITE_UP,
-                        const sf::Sprite &    SPRITE_DOWN,
-                        const sf::Sprite &    SPRITE_OVER )
+    GuiImage::GuiImage(
+        const std::string &   NAME,
+        const sf::FloatRect & SCREEN_REGION,
+        const sf::Sprite &    SPRITE_UP,
+        const sf::Sprite &    SPRITE_DOWN,
+        const sf::Sprite &    SPRITE_OVER )
     :
         GuiEntity  (std::string(NAME).append("_GuiImage"), SCREEN_REGION),
         upSprite_  (SPRITE_UP),
@@ -50,12 +51,13 @@ namespace gui
     }
 
 
-    GuiImage::GuiImage( const std::string & NAME,
-                        const float         POS_LEFT,
-                        const float         POS_TOP,
-                        const sf::Sprite &  SPRITE_UP,
-                        const sf::Sprite &  SPRITE_DOWN,
-                        const sf::Sprite &  SPRITE_OVER )
+    GuiImage::GuiImage(
+        const std::string & NAME,
+        const float         POS_LEFT,
+        const float         POS_TOP,
+        const sf::Sprite &  SPRITE_UP,
+        const sf::Sprite &  SPRITE_DOWN,
+        const sf::Sprite &  SPRITE_OVER )
     :
         GuiEntity  (std::string(NAME).append("GuiImage"), POS_LEFT, POS_TOP),
         upSprite_  (SPRITE_UP),
@@ -79,13 +81,21 @@ namespace gui
         if (upSprite_.getTexture() != nullptr)
         {
             if (downSprite_.getTexture() == nullptr)
+            {
                 downSprite_ = upSprite_;
+            }
 
             if (overSprite_.getTexture() == nullptr)
+            {
                 overSprite_ = upSprite_;
+            }
         }
 
-        SetEntityRegion( sf::FloatRect(POS_LEFT, POS_TOP, upSprite_.getLocalBounds().width, upSprite_.getLocalBounds().height) );
+        SetEntityRegion( sf::FloatRect(
+            POS_LEFT,
+            POS_TOP,
+            upSprite_.getLocalBounds().width,
+            upSprite_.getLocalBounds().height) );
     }
 
 
@@ -103,16 +113,24 @@ namespace gui
             if (MouseState::Over == entityMouseState_)
             {
                 if (overSprite_.getTexture() == nullptr)
+                {
                     target.draw(upSprite_, states);
+                }
                 else
+                {
                     target.draw(overSprite_, states);
+                }
             }
             else
             {
                 if (downSprite_.getTexture() == nullptr)
+                {
                     target.draw(upSprite_, states);
+                }
                 else
+                {
                     target.draw(downSprite_, states);
+                }
             }
         }
     }
