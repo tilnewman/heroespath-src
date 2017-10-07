@@ -341,6 +341,18 @@ namespace stage
             return HandleKeypress_Space();
         }
 
+        if ((KEY_EVENT.code >= sf::Keyboard::Num1) &&
+            (KEY_EVENT.code <= sf::Keyboard::Num6))
+        {
+            return HandleKeypress_Number(KEY_EVENT.code);
+        }
+
+        if ((KEY_EVENT.code == sf::Keyboard::Left) ||
+            (KEY_EVENT.code == sf::Keyboard::Right))
+        {
+            return HandleKeypress_LeftRight(KEY_EVENT.code);
+        }
+        
         return false;
     }
 
@@ -887,15 +899,91 @@ namespace stage
     {
         if (displayStagePtr_ != nullptr)
         {
-            if (displayStagePtr_->CanTreasureSourceChange())
+            if (displayStagePtr_->CanTreasureChange())
             {
-                displayStagePtr_->TreasureSourceChange();
+                displayStagePtr_->TreasureChange();
                 PlaySoundEffect_KeypressValid();
                 return true;
             }
         }
 
         PlaySoundEffect_KeypressInvalid();
+        return false;
+    }
+
+
+    bool TreasureStage::HandleKeypress_Number(const sf::Keyboard::Key KEY)
+    {
+        if (displayStagePtr_ != nullptr)
+        {
+            PlaySoundEffect_KeypressValid();
+
+            auto characterIndex{ [KEY]() -> std::size_t
+            {
+                if (KEY == sf::Keyboard::Num1) return 0;
+                else if (KEY == sf::Keyboard::Num2) return 1;
+                else if (KEY == sf::Keyboard::Num3) return 2;
+                else if (KEY == sf::Keyboard::Num4) return 3;
+                else if (KEY == sf::Keyboard::Num5) return 4;
+                else return 5;
+            }() };
+
+            auto const CHARACTER_INDEX_MAX{ displayStagePtr_->CharacterIndexMax() };
+            if (characterIndex > CHARACTER_INDEX_MAX)
+            {
+                characterIndex = CHARACTER_INDEX_MAX;
+            }
+
+            displayStagePtr_->InventoryChange(characterIndex);
+            return true;
+        }
+
+        return false;
+    }
+
+
+    bool TreasureStage::HandleKeypress_LeftRight(const sf::Keyboard::Key KEY)
+    {
+        if ((KEY == sf::Keyboard::Left) && (displayStagePtr_ != nullptr))
+        {
+            PlaySoundEffect_KeypressValid();
+
+            auto characterIndex{ displayStagePtr_->CharacterIndex() };
+
+            if (0 == characterIndex)
+            {
+                characterIndex = displayStagePtr_->CharacterIndexMax();
+            }
+            else
+            {
+                --characterIndex;
+            }
+
+            displayStagePtr_->InventoryChange(characterIndex);
+
+            return true;
+        }
+
+        if ((KEY == sf::Keyboard::Right) && (displayStagePtr_ != nullptr))
+        {
+            PlaySoundEffect_KeypressValid();
+
+            auto characterIndex{ displayStagePtr_->CharacterIndex() };
+
+            if (displayStagePtr_->CharacterIndexMax() == characterIndex)
+            {
+                characterIndex = 0;
+            }
+            else
+            {
+                ++characterIndex;
+            }
+
+            displayStagePtr_->InventoryChange(characterIndex);
+
+            return true;
+        }
+
         return false;
     }
 

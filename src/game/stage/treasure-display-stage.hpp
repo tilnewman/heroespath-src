@@ -153,12 +153,18 @@ namespace treasure
         std::size_t CharacterIndexShowingInventory() const;
         bool IsAnythingAnimating() const;
 
-        bool CanTreasureSourceChange() const;
-        void TreasureSourceChange() const;
+        bool CanTreasureChange() const;
+        void TreasureChange() const;
 
         void UpdateItemCaches(
             const item::ItemCache & HELD_CACHE,
             const item::ItemCache & LOCKBOX_CACHE);
+
+        std::size_t CharacterIndex() const;
+
+        std::size_t CharacterIndexMax() const;
+        
+        void InventoryChange(const std::size_t);
 
     private:
         treasure::DisplayMeasurements CreateDisplayMeasurements() const;

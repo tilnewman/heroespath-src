@@ -204,7 +204,8 @@ namespace treasure
     }
 
 
-    void TreasureDisplayStage::SetupAfterPleaseWait(const item::TreasureImage::Enum WHICH_IMAGE)
+    void TreasureDisplayStage::SetupAfterPleaseWait(
+        const item::TreasureImage::Enum WHICH_IMAGE)
     {
         SetupAfterPleaseWait_CorpseImage();
         SetupAfterPleaseWait_TreasureImage(WHICH_IMAGE);
@@ -284,13 +285,13 @@ namespace treasure
     }
 
 
-    bool TreasureDisplayStage::CanTreasureSourceChange() const
+    bool TreasureDisplayStage::CanTreasureChange() const
     {
         return (item::TreasureAvailable::HeldAndLockbox == treasureAvailable_);
     }
 
 
-    void TreasureDisplayStage::TreasureSourceChange() const
+    void TreasureDisplayStage::TreasureChange() const
     {
         if (stageMoverUPtr_.get() != nullptr)
         {
@@ -305,6 +306,35 @@ namespace treasure
     {
         heldCache_ = HELD_CACHE;
         lockboxCache_ = LOCKBOX_CACHE;
+    }
+
+
+    std::size_t TreasureDisplayStage::CharacterIndex() const
+    {
+        if (stageMoverUPtr_.get() == nullptr)
+        {
+            return 0;
+        }
+        else
+        {
+            return stageMoverUPtr_->InventoryCharacterIndex();
+        }
+    }
+
+
+    std::size_t TreasureDisplayStage::CharacterIndexMax() const
+    {
+        return Game::Instance()->State().Party().Characters().size() - 1;
+    }
+
+
+    void TreasureDisplayStage::InventoryChange(const std::size_t CHARACTER_INDEX)
+    {
+        if (stageMoverUPtr_.get() != nullptr)
+        {
+            UpdateInventoryVisuals();
+            stageMoverUPtr_->InventoryIndexSet(CHARACTER_INDEX);
+        }
     }
 
 
@@ -808,7 +838,8 @@ namespace treasure
 
         sprite.setPosition(
             MEASUREMENTS.characterImageLeft,
-            inventoryLabelUPtr_->GetEntityPos().y - sprite.getGlobalBounds().height);
+            (inventoryLabelUPtr_->GetEntityPos().y - sprite.getGlobalBounds().height) -
+                sfml_util::MapByRes(30.0f, 60.0f));
 
         sprite.setColor(sf::Color(255, 255, 255, 127));
 

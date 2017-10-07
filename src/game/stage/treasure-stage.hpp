@@ -141,6 +141,8 @@ namespace stage
         void SetupForCollection();
 
         bool HandleKeypress_Space();
+        bool HandleKeypress_Number(const sf::Keyboard::Key);
+        bool HandleKeypress_LeftRight(const sf::Keyboard::Key);
 
         void PlaySoundEffect_KeypressValid() const;
         void PlaySoundEffect_KeypressInvalid() const;
