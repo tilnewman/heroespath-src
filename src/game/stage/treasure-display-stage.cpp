@@ -247,6 +247,8 @@ namespace treasure
         SetupForCollection_InventoryListboxLabel();
         SetupForCollection_CharacterImage();
         SetupForCollection_InventoryWeightText();
+
+        stageMoverUPtr_->StartAll();
     }
 
     
@@ -528,7 +530,7 @@ namespace treasure
                 (MEASUREMENTS.screenWidth + 10.0f),
                 MEASUREMENTS.inventoryListboxRegion.top) };
         
-        stageMoverUPtr_->AddTreasureObject(
+        stageMoverUPtr_->AddInventoryObject(
             inventoryListboxUPtr_.get(),
             INVENTORY_ONSCREEN_POS_V,
             INVENTORY_OFFSCREEN_POS_V);
@@ -564,7 +566,7 @@ namespace treasure
             OFFSCREEN_POS_RIGHT,
             INVENTORY_LABEL_ONSCREEN_POS.y) };
 
-        stageMoverUPtr_->AddTreasureObject(
+        stageMoverUPtr_->AddInventoryObject(
             inventoryLabelUPtr_.get(),
             INVENTORY_LABEL_ONSCREEN_POS,
             INVENTORY_LABEL_OFFSCREEN_POS);
@@ -583,7 +585,7 @@ namespace treasure
             OFFSCREEN_POS_RIGHT,
             CHARACTER_IMAGE_ONSCREEN_POS.y) };
 
-        stageMoverUPtr_->AddTreasureObject(
+        stageMoverUPtr_->AddInventoryObject(
             characterImageUPtr_.get(),
             CHARACTER_IMAGE_ONSCREEN_POS,
             CHARACTER_IMAGE_OFFSCREEN_POS);
@@ -602,7 +604,7 @@ namespace treasure
             OFFSCREEN_POS_RIGHT,
             INVENTORY_WEIGHT_ONSCREEN_POS.y) };
 
-        stageMoverUPtr_->AddTreasureObject(
+        stageMoverUPtr_->AddInventoryObject(
             weightLabelUPtr_.get(),
             INVENTORY_WEIGHT_ONSCREEN_POS,
             INVENTORY_WEIGHT_OFFSCREEN_POS);

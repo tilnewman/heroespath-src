@@ -29,6 +29,8 @@
 //
 #include "treasure-stage-mover.hpp"
 
+#include "game/log-macros.hpp"
+
 #include "sfml-util/gui/gui-entity.hpp"
 
 
@@ -183,7 +185,7 @@ namespace treasure
                 areAnyFinished = true;
             }
         }
-
+        
         if (areAnyFinished)
         {
             for (auto & slider : treasureSliders_)
@@ -230,6 +232,7 @@ namespace treasure
             if (slider.GetEntity() == FROM)
             {
                 slider.SetEntity(TO);
+                TO->SetEntityPos(slider.Position());
             }
         }
 
@@ -238,6 +241,7 @@ namespace treasure
             if (slider.GetEntity() == FROM)
              {
                 slider.SetEntity(TO);
+                TO->SetEntityPos(slider.Position());
             }
         }
     }
@@ -247,8 +251,8 @@ namespace treasure
         sfml_util::gui::GuiEntitySlider & slider,
         const float ELAPSED_TIME_SECONDS)
     {
-        auto const DID_FINISH_MOVING{ slider.UpdateTime(ELAPSED_TIME_SECONDS) };
-        return DID_FINISH_MOVING && (slider.Direction() == sfml_util::Moving::Away);
+        auto const IS_STILL_MOVING{ slider.UpdateTime(ELAPSED_TIME_SECONDS) };
+        return (IS_STILL_MOVING == false) && (slider.Direction() == sfml_util::Moving::Away);
     }
 
 }

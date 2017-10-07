@@ -28,6 +28,7 @@
 //  gui-entity-slider.cpp
 //
 #include "gui-entity-slider.hpp"
+
 #include "sfml-util/gui/i-gui-entity.hpp"
 
 

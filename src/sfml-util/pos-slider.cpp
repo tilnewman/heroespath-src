@@ -29,6 +29,8 @@
 //
 #include "pos-slider.hpp"
 
+#include "game/log-macros.hpp"
+
 
 namespace sfml_util
 {
@@ -65,9 +67,10 @@ namespace sliders
     }
 
 
-    void PosSlider::Setup(const sf::Vector2f & FROM_POS_V,
-                          const sf::Vector2f & TO_POS_V,
-                          const float          SLIDER_SPEED)
+    void PosSlider::Setup(
+        const sf::Vector2f & FROM_POS_V,
+        const sf::Vector2f & TO_POS_V,
+        const float          SLIDER_SPEED)
     {
         origFromPosV_ = FROM_POS_V;
         origToPosV_ = TO_POS_V;
