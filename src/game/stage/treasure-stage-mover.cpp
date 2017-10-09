@@ -44,10 +44,12 @@ namespace treasure
     const float StageMover::SLIDE_SPEED_{ 4.0f };
 
 
-    StageMover::StageMover(const Type TREASURE_TYPE)
+    StageMover::StageMover(
+        const Type INITIAL_TREASURE_TYPE,
+        const std::size_t INITIAL_CHARACTER_INDEX)
     :
-        inventoryCharIndex_(0),
-        treasureType_(TREASURE_TYPE),
+        inventoryCharIndex_(INITIAL_CHARACTER_INDEX),
+        treasureType_(INITIAL_TREASURE_TYPE),
         treasureSliders_(),
         inventorySliders_()
     {}

@@ -178,6 +178,8 @@ namespace treasure
 
         const std::string CorpseImageKeyFromEnemyParty() const;
         
+        std::size_t WhichCharacterInventoryIsDisplayedIndex();
+
         creature::CreaturePtr_t WhichCharacterInventoryIsDisplayed();
 
         void SetupForCollection_TreasureListbox(const stage::treasure::Type);
@@ -189,6 +191,7 @@ namespace treasure
         void SetupForCollection_InventoryGemsText();
         void SetupForCollection_InventoryWeightText();
         void SetupForCollection_InventoryRedXImage();
+        void SetupForCollection_InstructionsText();
 
         void SetupListbox(
             const treasure::WhichListbox WHICH_LISTBOX,
@@ -202,6 +205,7 @@ namespace treasure
         void SetupInventory_GemsText();
         void SetupInventory_WeightText();
         void SetupInventory_RedXImage();
+        
 
         stage::treasure::Type TreasureSource() const;
 
@@ -222,6 +226,11 @@ namespace treasure
         }
 
         float CalculateInventoryTextPosLeft() const;
+
+        float CalculateInventoryTextVertShift() const
+        {
+            return sfml_util::MapByRes(10.0f, 70.0f);
+        }
         
     private:
         TreasureStage * treasureStagePtr_;
@@ -236,6 +245,7 @@ namespace treasure
         sfml_util::gui::TextRegionUPtr_t coinsTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t gemsTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t weightTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t instrTextUPtr_;
 
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;

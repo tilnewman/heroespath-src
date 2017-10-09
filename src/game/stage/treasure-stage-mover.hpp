@@ -71,7 +71,9 @@ namespace treasure
         StageMover() =delete;
 
     public:
-        StageMover(const treasure::Type INITIAL_TREASURE_SOURCE);
+        StageMover(
+            const treasure::Type INITIAL_TREASURE_SOURCE,
+            const std::size_t INITIAL_CHARACTER_INDEX);
 
         void StartAll();
         void StopAll();

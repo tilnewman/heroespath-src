@@ -754,9 +754,16 @@ namespace stage
     void InventoryStage::Setup()
     {
         //paper background
-        sfml_util::LoadTexture(paperBgTexture_, GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
+        sfml_util::LoadTexture(
+            paperBgTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
+
         paperBgSprite_.setTexture(paperBgTexture_);
-        paperBgSprite_.setScale(SCREEN_WIDTH_ / static_cast<float>(paperBgTexture_.getSize().x), SCREEN_HEIGHT_ / static_cast<float>(paperBgTexture_.getSize().y));
+
+        paperBgSprite_.setScale(
+            SCREEN_WIDTH_ / static_cast<float>(paperBgTexture_.getSize().x),
+            SCREEN_HEIGHT_ / static_cast<float>(paperBgTexture_.getSize().y));
+
         paperBgSprite_.setPosition(0.0f, 0.0f);
 
         //ouroboros
@@ -764,20 +771,24 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         //instruction text
-        const sfml_util::gui::TextInfo INSTR_TEXT_INFO("(use arrows or numbers to change characters, press 'a' to see achievements)",
-                                                       sfml_util::FontManager::Instance()->Font_Default1(),
-                                                       sfml_util::FontManager::Instance()->Size_Small(),
-                                                       sfml_util::FontManager::Color_GrayDark(),
-                                                       sf::BlendAlpha,
-                                                       sf::Text::Italic,
-                                                       sfml_util::Justified::Left);
+        const sfml_util::gui::TextInfo INSTR_TEXT_INFO(
+            "(use arrows or numbers to change characters, press 'a' to see achievements)",
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_GrayDark(),
+            sf::BlendAlpha,
+            sf::Text::Italic,
+            sfml_util::Justified::Left);
 
         insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "InventoryStage'sInstruction",
             INSTR_TEXT_INFO,
             sf::FloatRect(0.0f, mainMenuTitle_.Bottom(false) - 10.0f, 0.0f, 0.0f));
 
-            insTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f, insTextRegionUPtr_->GetEntityPos().y);
+        insTextRegionUPtr_->SetEntityPos(
+            (SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f,
+            insTextRegionUPtr_->GetEntityPos().y);
+
         EntityAdd(insTextRegionUPtr_.get());
 
         //player character image in the top left corner

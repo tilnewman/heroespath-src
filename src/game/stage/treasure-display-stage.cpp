@@ -123,6 +123,7 @@ namespace treasure
         coinsTextUPtr_(),
         gemsTextUPtr_(),
         weightTextUPtr_(),
+        instrTextUPtr_(),
         backgroundTexture_(),
         backgroundSprite_(),
         corpseTexture_(),
@@ -172,6 +173,11 @@ namespace treasure
         target.draw(corpseSprite_, STATES);
         target.draw(treasureSprite_, STATES);
         
+        if (instrTextUPtr_.get() != nullptr)
+        {
+            target.draw( * instrTextUPtr_, STATES);
+        }
+
         if (characterImageUPtr_.get() != nullptr)
         {
             target.draw( * characterImageUPtr_, STATES);
@@ -251,10 +257,11 @@ namespace treasure
         
         auto const TREASURE_SOURCE{ TreasureSource() };
         
-        stageMoverUPtr_ = std::make_unique<stage::treasure::StageMover>(TREASURE_SOURCE);
+        stageMoverUPtr_ = std::make_unique<stage::treasure::StageMover>(
+            TREASURE_SOURCE,
+            WhichCharacterInventoryIsDisplayedIndex());
         
         SetupForCollection_TreasureListbox(TREASURE_SOURCE);
-
         SetupForCollection_InventoryListbox();
         
         SetupForCollection_TreasureListboxLabel();
@@ -265,6 +272,8 @@ namespace treasure
         SetupForCollection_InventoryGemsText();
         SetupForCollection_InventoryWeightText();
         SetupForCollection_InventoryRedXImage();
+
+        SetupForCollection_InstructionsText();
         
         stageMoverUPtr_->StartAll();
     }
@@ -511,21 +520,34 @@ namespace treasure
     }
 
 
+    std::size_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayedIndex()
+    {
+        if (stageMoverUPtr_.get() == nullptr)
+        {
+            auto const NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
+
+            for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+            {
+                if (Game::Instance()->State().Party().GetAtOrderPos(i)->IsBeast() == false)
+                {
+                    return i;
+                }
+            }
+
+            //should never reach this code since one party member must be non-beast
+            return 0;
+        }
+        else
+        {
+            return stageMoverUPtr_->InventoryCharacterIndex();
+        }
+    }
+
+
     creature::CreaturePtr_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayed()
     {
-        auto const CHARACTER_INDEX{ [&]() -> std::size_t
-            {
-                if (stageMoverUPtr_.get() == nullptr)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return stageMoverUPtr_->InventoryCharacterIndex();
-                }
-            }() };
-
-        return Game::Instance()->State().Party().GetAtOrderPos(CHARACTER_INDEX);
+        return Game::Instance()->
+            State().Party().GetAtOrderPos(WhichCharacterInventoryIsDisplayedIndex());
     }
 
 
@@ -661,6 +683,33 @@ namespace treasure
     }
 
 
+    void TreasureDisplayStage::SetupForCollection_InstructionsText()
+    {
+        const sfml_util::gui::TextInfo TEXT_INFO(
+            "(press spacebar to change treasure, use arrows or numbers to change characters)",
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_GrayDark(),
+            sf::BlendAlpha,
+            sf::Text::Italic,
+            sfml_util::Justified::Left);
+
+        //initial position doesn't matter since the position must be set after rendering
+        auto const EMPTY_RECT{ sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
+
+        instrTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "TreasureStage'sInstructionText", TEXT_INFO, EMPTY_RECT);
+
+        //the +93 and -10 were found by experiment to look better
+        instrTextUPtr_->SetEntityPos(
+            (CreateDisplayMeasurements().screenWidth * 0.5f) -
+            (instrTextUPtr_->GetEntityRegion().width * 0.5f) + 93.0f,
+            titleImage_.Bottom(false) - 10.0f);
+
+        EntityAdd(instrTextUPtr_.get());
+    }
+
+
     void TreasureDisplayStage::SetupListbox(
         const treasure::WhichListbox WHICH_LISTBOX,
         sfml_util::gui::ListBoxUPtr_t & listboxUPtr,
@@ -752,7 +801,7 @@ namespace treasure
             LABEL_TEXT,
             sfml_util::FontManager::Instance()->Font_Default2(),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sf::Color::Black,
+            sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
         auto const PREV_ENTITY_PTR{ treasureLabelUPtr_.get() };
@@ -845,9 +894,9 @@ namespace treasure
         SetupInventoryText(
             inventoryLabelUPtr_,
             "ListboxLabel",
-            ((IS_BEAST) ? "Beasts cannot carry items" : CREATURE_PTR->Name() + "'s Inventory"),
+            ((IS_BEAST) ? "(beasts cannot carry items)" : CREATURE_PTR->Name()),
             CalculateInventoryTextPosLeft(),
-            characterImageUPtr_->GetEntityPos().y,
+            characterImageUPtr_->GetEntityPos().y + sfml_util::MapByRes(25.0f, 50.0f),
             sfml_util::FontManager::Instance()->Size_Large());
     }
 
@@ -880,7 +929,8 @@ namespace treasure
             "CoinsText",
             ss.str(),
             CalculateInventoryTextPosLeft(),
-            inventoryLabelUPtr_->GetEntityPos().y + inventoryLabelUPtr_->GetEntityRegion().height,
+            (inventoryLabelUPtr_->GetEntityPos().y + inventoryLabelUPtr_->GetEntityRegion().height) -
+                CalculateInventoryTextVertShift(),
             sfml_util::FontManager::Instance()->Size_Normal());
     }
 
@@ -913,7 +963,8 @@ namespace treasure
             "GemsText",
             ss.str(),
             CalculateInventoryTextPosLeft(),
-            coinsTextUPtr_->GetEntityPos().y + coinsTextUPtr_->GetEntityRegion().height,
+            (coinsTextUPtr_->GetEntityPos().y + coinsTextUPtr_->GetEntityRegion().height) -
+                CalculateInventoryTextVertShift(),
             sfml_util::FontManager::Instance()->Size_Normal());
     }
 
@@ -942,7 +993,8 @@ namespace treasure
             "WeightText",
             ss.str(),
             CalculateInventoryTextPosLeft(),
-            gemsTextUPtr_->GetEntityPos().y + gemsTextUPtr_->GetEntityRegion().height,
+            (gemsTextUPtr_->GetEntityPos().y + gemsTextUPtr_->GetEntityRegion().height) -
+                CalculateInventoryTextVertShift(),
             sfml_util::FontManager::Instance()->Size_Normal());
     }
 
@@ -1044,7 +1096,7 @@ namespace treasure
             TEXT,
             sfml_util::FontManager::Instance()->Font_Default2(),
             FONT_SIZE,
-            sf::Color::Black,
+            sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
         auto const PREV_ENTITY_PTR{ textRegionUPtr.get() };
