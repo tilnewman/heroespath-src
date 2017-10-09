@@ -120,7 +120,9 @@ namespace treasure
         inventoryListboxUPtr_(),
         treasureLabelUPtr_(),
         inventoryLabelUPtr_(),
-        weightLabelUPtr_(),
+        coinsTextUPtr_(),
+        gemsTextUPtr_(),
+        weightTextUPtr_(),
         backgroundTexture_(),
         backgroundSprite_(),
         corpseTexture_(),
@@ -132,7 +134,11 @@ namespace treasure
         characterTexture_(),
         characterImageUPtr_(),
         treasureAvailable_(item::TreasureAvailable::NoTreasure),
-        treasureImage_(item::TreasureImage::Count)
+        treasureImage_(item::TreasureImage::Count),
+        redXTexture_(),
+        redXImageUPtr_(),
+        heldCache_(),
+        lockboxCache_()
     {}
 
 
@@ -177,6 +183,11 @@ namespace treasure
         }
 
         Stage::Draw(target, STATES);
+
+        if (redXImageUPtr_.get() != nullptr)
+        {
+            target.draw( * redXImageUPtr_, STATES);
+        }
     }
 
 
@@ -241,14 +252,20 @@ namespace treasure
         auto const TREASURE_SOURCE{ TreasureSource() };
         
         stageMoverUPtr_ = std::make_unique<stage::treasure::StageMover>(TREASURE_SOURCE);
-
+        
         SetupForCollection_TreasureListbox(TREASURE_SOURCE);
-        SetupForCollection_InventoryListbox();
-        SetupForCollection_TreasureListboxLabel();
-        SetupForCollection_InventoryListboxLabel();
-        SetupForCollection_CharacterImage();
-        SetupForCollection_InventoryWeightText();
 
+        SetupForCollection_InventoryListbox();
+        
+        SetupForCollection_TreasureListboxLabel();
+        
+        SetupForCollection_InventoryCharacterImage();
+        SetupForCollection_InventoryListboxLabel();
+        SetupForCollection_InventoryCoinsText();
+        SetupForCollection_InventoryGemsText();
+        SetupForCollection_InventoryWeightText();
+        SetupForCollection_InventoryRedXImage();
+        
         stageMoverUPtr_->StartAll();
     }
 
@@ -557,7 +574,7 @@ namespace treasure
 
         auto const INVENTORY_OFFSCREEN_POS_V{
             sf::Vector2f(
-                (MEASUREMENTS.screenWidth + 10.0f),
+                CalculateHorizOffscreenPos(),
                 MEASUREMENTS.inventoryListboxRegion.top) };
         
         stageMoverUPtr_->AddInventoryObject(
@@ -569,75 +586,78 @@ namespace treasure
 
     void TreasureDisplayStage::SetupForCollection_TreasureListboxLabel()
     {
-        SetupTreasureListboxLabel();
-
-        auto const TREASURE_LABEL_ONSCREEN_POS{ treasureLabelUPtr_->GetEntityPos() };
-
-        auto const TREASURE_LABEL_OFFSCREEN_POS{ sf::Vector2f(
-            -750.0f, //this value is big enough for both possible labels
-            TREASURE_LABEL_ONSCREEN_POS.y) };
+        SetupTreasure_ListboxLabel();
 
         stageMoverUPtr_->AddTreasureObject(
             treasureLabelUPtr_.get(),
-            TREASURE_LABEL_ONSCREEN_POS,
-            TREASURE_LABEL_OFFSCREEN_POS);
+            treasureLabelUPtr_->GetEntityPos(),
+            sf::Vector2f(-750.0f, treasureLabelUPtr_->GetEntityPos().y) );
     }
 
 
     void TreasureDisplayStage::SetupForCollection_InventoryListboxLabel()
     {
-        SetupInventoryListboxLabel();
-
-        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
-        auto const OFFSCREEN_POS_RIGHT{ MEASUREMENTS.screenWidth + 1.0f };
-        auto const INVENTORY_LABEL_ONSCREEN_POS{ inventoryLabelUPtr_->GetEntityPos() };
-
-        auto const INVENTORY_LABEL_OFFSCREEN_POS{ sf::Vector2f(
-            OFFSCREEN_POS_RIGHT,
-            INVENTORY_LABEL_ONSCREEN_POS.y) };
+        SetupInventory_ListboxLabel();
 
         stageMoverUPtr_->AddInventoryObject(
             inventoryLabelUPtr_.get(),
-            INVENTORY_LABEL_ONSCREEN_POS,
-            INVENTORY_LABEL_OFFSCREEN_POS);
+            inventoryLabelUPtr_->GetEntityPos(),
+            sf::Vector2f(CalculateHorizOffscreenPos(), inventoryLabelUPtr_->GetEntityPos().y) );
     }
 
 
-    void TreasureDisplayStage::SetupForCollection_CharacterImage()
+    void TreasureDisplayStage::SetupForCollection_InventoryCoinsText()
     {
-        SetupCharacterImage();
+        SetupInventory_CoinsText();
 
-        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
-        auto const OFFSCREEN_POS_RIGHT{ MEASUREMENTS.screenWidth + 1.0f };
-        auto const CHARACTER_IMAGE_ONSCREEN_POS{ characterImageUPtr_->GetEntityPos() };
+        stageMoverUPtr_->AddInventoryObject(
+            coinsTextUPtr_.get(),
+            coinsTextUPtr_->GetEntityPos(),
+            sf::Vector2f(CalculateHorizOffscreenPos(), coinsTextUPtr_->GetEntityPos().y) );
+    }
 
-        auto const CHARACTER_IMAGE_OFFSCREEN_POS{ sf::Vector2f(
-            OFFSCREEN_POS_RIGHT,
-            CHARACTER_IMAGE_ONSCREEN_POS.y) };
+
+    void TreasureDisplayStage::SetupForCollection_InventoryGemsText()
+    {
+        SetupInventory_GemsText();
+
+        stageMoverUPtr_->AddInventoryObject(
+            gemsTextUPtr_.get(),
+            gemsTextUPtr_->GetEntityPos(),
+            sf::Vector2f(CalculateHorizOffscreenPos(), gemsTextUPtr_->GetEntityPos().y));
+    }
+
+
+    void TreasureDisplayStage::SetupForCollection_InventoryCharacterImage()
+    {
+        SetupInventory_CharacterImage();
 
         stageMoverUPtr_->AddInventoryObject(
             characterImageUPtr_.get(),
-            CHARACTER_IMAGE_ONSCREEN_POS,
-            CHARACTER_IMAGE_OFFSCREEN_POS);
+            characterImageUPtr_->GetEntityPos(),
+            sf::Vector2f(CalculateHorizOffscreenPos(), characterImageUPtr_->GetEntityPos().y) );
     }
 
 
     void TreasureDisplayStage::SetupForCollection_InventoryWeightText()
     {
-        SetupInventoryWeightText();
-
-        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
-        auto const OFFSCREEN_POS_RIGHT{ MEASUREMENTS.screenWidth + 1.0f };
-        auto const INVENTORY_WEIGHT_ONSCREEN_POS{ weightLabelUPtr_->GetEntityPos() };
-
-        auto const INVENTORY_WEIGHT_OFFSCREEN_POS{ sf::Vector2f(
-            OFFSCREEN_POS_RIGHT,
-            INVENTORY_WEIGHT_ONSCREEN_POS.y) };
+        SetupInventory_WeightText();
 
         stageMoverUPtr_->AddInventoryObject(
-            weightLabelUPtr_.get(),
-            INVENTORY_WEIGHT_ONSCREEN_POS,
-            INVENTORY_WEIGHT_OFFSCREEN_POS);
+            weightTextUPtr_.get(),
+            weightTextUPtr_->GetEntityPos(),
+            sf::Vector2f(CalculateHorizOffscreenPos(), weightTextUPtr_->GetEntityPos().y));
+    }
+
+
+    void TreasureDisplayStage::SetupForCollection_InventoryRedXImage()
+    {
+        SetupInventory_RedXImage();
+
+        stageMoverUPtr_->AddInventoryObject(
+            redXImageUPtr_.get(),
+            inventoryListboxUPtr_->GetEntityPos(),
+            sf::Vector2f(CalculateHorizOffscreenPos(), inventoryListboxUPtr_->GetEntityPos().y) );
     }
 
 
@@ -713,7 +733,7 @@ namespace treasure
     }
 
 
-    void TreasureDisplayStage::SetupTreasureListboxLabel()
+    void TreasureDisplayStage::SetupTreasure_ListboxLabel()
     {
         auto const LABEL_TEXT{ [&]() -> std::string
             {
@@ -767,56 +787,7 @@ namespace treasure
     }
 
 
-    void TreasureDisplayStage::SetupInventoryListboxLabel()
-    {
-        auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
-
-        auto const IS_BEAST{ CREATURE_PTR->IsBeast() };
-
-        std::ostringstream ss;
-        ss << CREATURE_PTR->Name()
-            << ((IS_BEAST) ? " cannot carry items" : "'s Inventory");
-
-        const sfml_util::gui::TextInfo TEXT_INFO(
-            ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default2(),
-            sfml_util::FontManager::Instance()->Size_Large(),
-            ((IS_BEAST) ? sf::Color(100, 0, 0) : sf::Color::Black),
-            sfml_util::Justified::Left);
-
-        auto const PREV_ENTITY_PTR{ inventoryLabelUPtr_.get() };
-
-        if (PREV_ENTITY_PTR != nullptr)
-        {
-            EntityRemove(PREV_ENTITY_PTR);
-        }
-
-        //initial position doesn't matter since the position must be set after rendering
-        auto const EMPTY_RECT{ sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
-
-        inventoryLabelUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "TreasureStage'sInventoryListboxLabel", TEXT_INFO, EMPTY_RECT);
-
-        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
-
-        auto const LEFT{ MEASUREMENTS.inventoryListboxRegion.left };
-
-        auto const TOP{ (MEASUREMENTS.inventoryListboxRegion.top -
-            inventoryLabelUPtr_->GetEntityRegion().height) + 10.0f };
-
-        inventoryLabelUPtr_->SetEntityPos(LEFT, TOP);
-
-        EntityAdd(inventoryLabelUPtr_.get());
-
-        if ((stageMoverUPtr_.get() != nullptr) &&
-            (PREV_ENTITY_PTR != nullptr))
-        {
-            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, inventoryLabelUPtr_.get());
-        }
-    }
-
-
-    void TreasureDisplayStage::SetupCharacterImage()
+    void TreasureDisplayStage::SetupInventory_CharacterImage()
     {
         auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
         
@@ -838,8 +809,9 @@ namespace treasure
 
         sprite.setPosition(
             MEASUREMENTS.characterImageLeft,
-            (inventoryLabelUPtr_->GetEntityPos().y - sprite.getGlobalBounds().height) -
-                sfml_util::MapByRes(30.0f, 60.0f));
+            inventoryListboxUPtr_->GetEntityPos().y -
+                (sfml_util::gui::CreatureImageManager::Instance()->DimmensionMax() *
+                    MEASUREMENTS.characterImageScale));
 
         sprite.setColor(sf::Color(255, 255, 255, 127));
 
@@ -865,59 +837,151 @@ namespace treasure
     }
 
 
-    void TreasureDisplayStage::SetupInventoryWeightText()
+    void TreasureDisplayStage::SetupInventory_ListboxLabel()
     {
         auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
+        auto const IS_BEAST{ CREATURE_PTR->IsBeast() };
 
+        SetupInventoryText(
+            inventoryLabelUPtr_,
+            "ListboxLabel",
+            ((IS_BEAST) ? "Beasts cannot carry items" : CREATURE_PTR->Name() + "'s Inventory"),
+            CalculateInventoryTextPosLeft(),
+            characterImageUPtr_->GetEntityPos().y,
+            sfml_util::FontManager::Instance()->Size_Large());
+    }
+
+
+    void TreasureDisplayStage::SetupInventory_CoinsText()
+    {
         std::ostringstream ss;
+        ss << "Coins: ";
 
+        auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
         if (CREATURE_PTR->IsBeast())
         {
-            ss << " ";
+            ss << "NA";
         }
         else
         {
-            ss << "Weight: " << CREATURE_PTR->Inventory().Weight() << "/"
-                << CREATURE_PTR->WeightCanCarry();
+            ss << CREATURE_PTR->Inventory().Coins() << "/";
+
+            stats::Trait_t coinSum{ 0 };
+            for (auto const NEXT_CREATURE_PTR : Game::Instance()->State().Party().Characters())
+            {
+                coinSum += NEXT_CREATURE_PTR->Inventory().Coins();
+            }
+
+            ss << coinSum;
         }
 
-        const sfml_util::gui::TextInfo TEXT_INFO(
+        SetupInventoryText(
+            coinsTextUPtr_,
+            "CoinsText",
             ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default2(),
-            sfml_util::FontManager::Instance()->Size_Largeish(),
-            sf::Color::Black,
-            sfml_util::Justified::Left);
+            CalculateInventoryTextPosLeft(),
+            inventoryLabelUPtr_->GetEntityPos().y + inventoryLabelUPtr_->GetEntityRegion().height,
+            sfml_util::FontManager::Instance()->Size_Normal());
+    }
 
-        auto const PREV_ENTITY_PTR{ weightLabelUPtr_.get() };
+
+    void TreasureDisplayStage::SetupInventory_GemsText()
+    {
+        std::ostringstream ss;
+        ss << "Gems: ";
+
+        auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
+        if (CREATURE_PTR->IsBeast())
+        {
+            ss << "NA";
+        }
+        else
+        {
+            ss << CREATURE_PTR->Inventory().Gems() << "/";
+
+            stats::Trait_t gemSum{ 0 };
+            for (auto const NEXT_CREATURE_PTR : Game::Instance()->State().Party().Characters())
+            {
+                gemSum += NEXT_CREATURE_PTR->Inventory().Gems();
+            }
+
+            ss << gemSum;
+        }
+
+        SetupInventoryText(
+            gemsTextUPtr_,
+            "GemsText",
+            ss.str(),
+            CalculateInventoryTextPosLeft(),
+            coinsTextUPtr_->GetEntityPos().y + coinsTextUPtr_->GetEntityRegion().height,
+            sfml_util::FontManager::Instance()->Size_Normal());
+    }
+
+
+    void TreasureDisplayStage::SetupInventory_WeightText()
+    {
+        std::ostringstream ss;
+        ss << "Weight: ";
+
+        auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
+        if (CREATURE_PTR->IsBeast())
+        {
+            ss << "NA";
+        }
+        else
+        {
+            ss << CREATURE_PTR->Inventory().Weight() << "/" << CREATURE_PTR->WeightCanCarry()
+                << "  ("
+                << static_cast<int>(static_cast<float>(CREATURE_PTR->Inventory().Weight()) /
+                        static_cast<float>(CREATURE_PTR->WeightCanCarry()) * 100.0f)
+                << "%)";
+        }
+
+        SetupInventoryText(
+            weightTextUPtr_,
+            "WeightText",
+            ss.str(),
+            CalculateInventoryTextPosLeft(),
+            gemsTextUPtr_->GetEntityPos().y + gemsTextUPtr_->GetEntityRegion().height,
+            sfml_util::FontManager::Instance()->Size_Normal());
+    }
+
+
+    void TreasureDisplayStage::SetupInventory_RedXImage()
+    {
+        if (WhichCharacterInventoryIsDisplayed()->IsBeast())
+        {
+            sfml_util::LoadTexture(
+                redXTexture_,
+                GameDataFile::Instance()->GetMediaPath("media-images-misc-x"));
+        }
+        else
+        {
+            redXTexture_ = sf::Texture();
+        }
+
+        sf::Sprite sprite(redXTexture_);
+        sprite.setColor(sf::Color(192, 0, 0, 100));
+
+        auto const INVENTORY_RECT{ inventoryListboxUPtr_->GetEntityRegion() };
+        sfml_util::CenterAndScaleSpriteToFit(sprite, INVENTORY_RECT);
+
+        auto const PREV_ENTITY_PTR{ redXImageUPtr_.get() };
 
         if (PREV_ENTITY_PTR != nullptr)
         {
-            EntityRemove(weightLabelUPtr_.get());
+            EntityRemove(PREV_ENTITY_PTR);
         }
 
-        //initial position doesn't matter since the position must be set after rendering
-        auto const EMPTY_RECT{ sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
-
-        weightLabelUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "TreasureStage'sInventoryweightLabel", TEXT_INFO, EMPTY_RECT);
-
-        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
-
-        auto const LEFT{
-           (MEASUREMENTS.inventoryListboxRegion.left + MEASUREMENTS.inventoryListboxRegion.width) -
-                weightLabelUPtr_->GetEntityRegion().width};
-
-        auto const TOP{ (MEASUREMENTS.inventoryListboxRegion.top -
-            weightLabelUPtr_->GetEntityRegion().height) + 10.0f };
-
-        weightLabelUPtr_->SetEntityPos(LEFT, TOP);
-
-        EntityAdd(weightLabelUPtr_.get());
+        redXImageUPtr_ = std::make_unique<sfml_util::gui::GuiImage>(
+            "TreasureDisplayStage's_RedXImage",
+            INVENTORY_RECT,
+            sprite);
 
         if ((stageMoverUPtr_.get() != nullptr) &&
             (PREV_ENTITY_PTR != nullptr))
         {
-            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, weightLabelUPtr_.get());
+            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, redXImageUPtr_.get());
         }
     }
 
@@ -948,7 +1012,7 @@ namespace treasure
                 lockboxCache_.items_pvec :
                 heldCache_.items_pvec));
 
-        SetupTreasureListboxLabel();
+        SetupTreasure_ListboxLabel();
     }
 
 
@@ -959,9 +1023,60 @@ namespace treasure
             inventoryListboxUPtr_,
             WhichCharacterInventoryIsDisplayed()->Inventory().Items());
 
-        SetupInventoryListboxLabel();
-        SetupCharacterImage();
-        SetupInventoryWeightText();
+        SetupInventory_ListboxLabel();
+        SetupInventory_CharacterImage();
+        SetupInventory_CoinsText();
+        SetupInventory_GemsText();
+        SetupInventory_WeightText();
+        SetupInventory_RedXImage();
+    }
+
+
+    void TreasureDisplayStage::SetupInventoryText(
+        sfml_util::gui::TextRegionUPtr_t & textRegionUPtr,
+        const std::string & NAME,
+        const std::string & TEXT,
+        const float HORIZ_POS,
+        const float VERT_POS,
+        const unsigned int FONT_SIZE)
+    {
+        const sfml_util::gui::TextInfo TEXT_INFO(
+            TEXT,
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            FONT_SIZE,
+            sf::Color::Black,
+            sfml_util::Justified::Left);
+
+        auto const PREV_ENTITY_PTR{ textRegionUPtr.get() };
+
+        if (PREV_ENTITY_PTR != nullptr)
+        {
+            EntityRemove(PREV_ENTITY_PTR);
+        }
+
+        //initial position doesn't matter since the position must be set after rendering
+        auto const EMPTY_RECT{ sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
+
+        textRegionUPtr = std::make_unique<sfml_util::gui::TextRegion>(
+            "TreasureStage'sInventory" + NAME, TEXT_INFO, EMPTY_RECT);
+
+        textRegionUPtr->SetEntityPos(HORIZ_POS, VERT_POS);
+
+        EntityAdd(textRegionUPtr.get());
+
+        if ((stageMoverUPtr_.get() != nullptr) &&
+            (PREV_ENTITY_PTR != nullptr))
+        {
+            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, textRegionUPtr.get());
+        }
+    }
+
+
+    float TreasureDisplayStage::CalculateInventoryTextPosLeft() const
+    {
+        return characterImageUPtr_->GetEntityPos().x +
+            (sfml_util::gui::CreatureImageManager::Instance()->DimmensionMax() *
+                CreateDisplayMeasurements().characterImageScale);
     }
 
 }

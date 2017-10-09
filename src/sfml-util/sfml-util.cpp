@@ -76,12 +76,26 @@ namespace sfml_util
         const float HEIGHT,
         const float RESIZE_RATIO)
     {
-        auto const VERT_SCALE{ RESIZE_RATIO * (HEIGHT / s.getGlobalBounds().height) };
+        auto origHeight{ s.getGlobalBounds().height };
+
+        if (origHeight < 1.0f)
+        {
+            origHeight = 1.0f;
+        }
+
+        auto const VERT_SCALE{ RESIZE_RATIO * (HEIGHT / origHeight) };
         s.setScale(VERT_SCALE, VERT_SCALE);
 
         if (s.getGlobalBounds().width > WIDTH)
         {
-            auto const HORIZ_SCALE{ RESIZE_RATIO * (WIDTH / s.getGlobalBounds().width) };
+            auto origWidth{ s.getGlobalBounds().width };
+
+            if (origWidth < 1.0f)
+            {
+                origWidth = 1.0f;
+            }
+
+            auto const HORIZ_SCALE{ RESIZE_RATIO * (WIDTH / origWidth) };
             s.setScale(HORIZ_SCALE, HORIZ_SCALE);
         }
     }

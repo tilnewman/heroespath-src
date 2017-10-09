@@ -32,6 +32,7 @@
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/background-info.hpp"
+#include "sfml-util/gui/gui-entity-image.hpp"
 
 #include "game/ouroboros.hpp"
 #include "game/horiz-symbol.hpp"
@@ -161,7 +162,6 @@ namespace treasure
             const item::ItemCache & LOCKBOX_CACHE);
 
         std::size_t CharacterIndex() const;
-
         std::size_t CharacterIndexMax() const;
         
         void InventoryChange(const std::size_t);
@@ -183,26 +183,46 @@ namespace treasure
         void SetupForCollection_TreasureListbox(const stage::treasure::Type);
         void SetupForCollection_InventoryListbox();
         void SetupForCollection_TreasureListboxLabel();
+        void SetupForCollection_InventoryCharacterImage();
         void SetupForCollection_InventoryListboxLabel();
-        void SetupForCollection_CharacterImage();
+        void SetupForCollection_InventoryCoinsText();
+        void SetupForCollection_InventoryGemsText();
         void SetupForCollection_InventoryWeightText();
+        void SetupForCollection_InventoryRedXImage();
 
         void SetupListbox(
             const treasure::WhichListbox WHICH_LISTBOX,
             sfml_util::gui::ListBoxUPtr_t & listboxUPtr,
             const item::ItemPVec_t &);
         
-        void SetupTreasureListboxLabel();
-        void SetupInventoryListboxLabel();
-        void SetupCharacterImage();
-        void SetupInventoryWeightText();
+        void SetupTreasure_ListboxLabel();
+        void SetupInventory_CharacterImage();
+        void SetupInventory_ListboxLabel();
+        void SetupInventory_CoinsText();
+        void SetupInventory_GemsText();
+        void SetupInventory_WeightText();
+        void SetupInventory_RedXImage();
 
         stage::treasure::Type TreasureSource() const;
 
         void UpdateTreasureVisuals();
         void UpdateInventoryVisuals();
-        
 
+        void SetupInventoryText(
+            sfml_util::gui::TextRegionUPtr_t & textRegionUPtr,
+            const std::string & NAME,
+            const std::string & TEXT,
+            const float HORIZ_POS,
+            const float VERT_POS,
+            const unsigned int FONT_SIZE);
+
+        inline float CalculateHorizOffscreenPos() const
+        {
+            return CreateDisplayMeasurements().screenWidth + 1.0f;
+        }
+
+        float CalculateInventoryTextPosLeft() const;
+        
     private:
         TreasureStage * treasureStagePtr_;
         MainMenuTitle titleImage_;
@@ -213,7 +233,9 @@ namespace treasure
         sfml_util::gui::ListBoxUPtr_t inventoryListboxUPtr_;
         sfml_util::gui::TextRegionUPtr_t treasureLabelUPtr_;
         sfml_util::gui::TextRegionUPtr_t inventoryLabelUPtr_;
-        sfml_util::gui::TextRegionUPtr_t weightLabelUPtr_;
+        sfml_util::gui::TextRegionUPtr_t coinsTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t gemsTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t weightTextUPtr_;
 
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;
@@ -227,6 +249,8 @@ namespace treasure
         sfml_util::gui::GuiImageUPtr_t characterImageUPtr_;
         item::TreasureAvailable::Enum treasureAvailable_;
         item::TreasureImage::Enum treasureImage_;
+        sf::Texture redXTexture_;
+        sfml_util::gui::GuiImageUPtr_t redXImageUPtr_;
 
         //These members are copies of the real data in TreasureStage
         item::ItemCache heldCache_;
