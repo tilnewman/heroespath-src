@@ -336,6 +336,12 @@ namespace stage
 
     bool TreasureStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
+        if ((displayStagePtr_ != nullptr) &&
+            (displayStagePtr_->IsItemDetailMovingOrShowing()))
+        {
+            return false;
+        }
+
         if (KEY_EVENT.code == sf::Keyboard::Space)
         {
             return HandleKeypress_Space();
@@ -890,8 +896,6 @@ namespace stage
             displayStagePtr_->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
             displayStagePtr_->SetupForCollection(treasureAvailable_, treasureImageType_);
         }
-
-        //TODO
     }
 
 

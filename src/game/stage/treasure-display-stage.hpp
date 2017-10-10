@@ -193,6 +193,11 @@ namespace treasure
         
         void InventoryChange(const std::size_t);
 
+        inline bool IsItemDetailMovingOrShowing() const
+        {
+            return itemDetailViewer_.IsMovingOrShowing();
+        }
+
     private:
         treasure::DisplayMeasurements CreateDisplayMeasurements() const;
 

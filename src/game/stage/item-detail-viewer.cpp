@@ -66,7 +66,8 @@ namespace stage
         sourceRect(),
         itemPtr_(nullptr),
         willShowImage_(false),
-        isBeforeAnyChange_(true)
+        isBeforeAnyChange_(true),
+        isShowing_(false)
     {
         slider_.Setup(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1.0f, 1.0f), SLIDER_SPEED_);
         slider_.ChangeDirection();
@@ -122,6 +123,7 @@ namespace stage
         {
             SetupImage(itemPtr_);
             SetupText(itemPtr_);
+            isShowing_ = true;
         }
     }
 
@@ -148,6 +150,8 @@ namespace stage
         {
             SetupImage(nullptr);
             SetupText(nullptr);
+
+            isShowing_ = false;
 
             slider_.ChangeDirection();
             slider_.Start();
