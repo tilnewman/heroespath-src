@@ -950,7 +950,8 @@ namespace stage
         target.draw(creatureSprite_, STATES);
         Stage::Draw(target, STATES);
 
-        //always draw because it is a fast operation and will be fully transparent when should not be drawn
+        //Always draw because it is a fast operation and will
+        //be fully transparent when should not be drawn.
         target.draw(detailViewQuads_, STATES);
 
         if (detailViewTextUPtr_.get() != nullptr)
@@ -1547,15 +1548,17 @@ namespace stage
 
                 if (detailViewTimerSec_ >= DETAILVIEW_TIMER_DURATION_SEC_)
                 {
-                    sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
-detailViewSourceRect_ = GetItemRectMouseIsOver(mousePosV_);
-if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
-{
-    isAchievementDisplaying_ = false;
-    isDetailViewFadingIn_ = true;
-    detailViewTimerSec_ = 0.0f;
-    detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
-}
+                    sfml_util::SoundManager::Instance()->
+                        Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+
+                    detailViewSourceRect_ = GetItemRectMouseIsOver(mousePosV_);
+                    if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
+                    {
+                        isAchievementDisplaying_ = false;
+                        isDetailViewFadingIn_ = true;
+                        detailViewTimerSec_ = 0.0f;
+                        detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
+                    }
                 }
             }
 
@@ -1603,7 +1606,14 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
                     }
                 }
 
-                const sf::Color NEW_COLOR(0, 0, 0, static_cast<sf::Uint8>(DETAILVIEW_COLOR_ALPHA_START_ + ((DETAILVIEW_COLOR_ALPHA_END_ - DETAILVIEW_COLOR_ALPHA_START_) * detailViewSliderRatio_)));
+                const sf::Color NEW_COLOR{
+                    0,
+                    0,
+                    0,
+                    static_cast<sf::Uint8>(DETAILVIEW_COLOR_ALPHA_START_ +
+                        ((DETAILVIEW_COLOR_ALPHA_END_ - DETAILVIEW_COLOR_ALPHA_START_) *
+                            detailViewSliderRatio_)) };
+
                 detailViewQuads_[0].color = NEW_COLOR;
                 detailViewQuads_[1].color = NEW_COLOR;
                 detailViewQuads_[2].color = NEW_COLOR;
@@ -3186,8 +3196,6 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
     {
         if (view_ == ViewType::Items)
         {
-            sfml_util::gui::ListBoxItemSPtr_t listBoxItemPtr;
-
             if (unEquipListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
                 return unEquipListBoxUPtr_->GetRectAtLocation(MOUSE_POS_V);
@@ -3212,14 +3220,8 @@ if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
 
         sfml_util::gui::ItemImageManager::Instance()->Load(detailViewTexture_, IITEM_PTR);
 
-        detailViewSprite_.setTexture(detailViewTexture_);
+        detailViewSprite_.setTexture(detailViewTexture_, true);
         
-        detailViewSprite_.setTextureRect(sf::IntRect(
-            0,
-            0,
-            static_cast<int>(detailViewTexture_.getSize().x),
-            static_cast<int>(detailViewTexture_.getSize().y)));
-
         const float DETAILVIEW_IMAGE_SCALE(sfml_util::MapByRes(0.75f, 1.25f));
 
         detailViewSprite_.setScale(DETAILVIEW_IMAGE_SCALE, DETAILVIEW_IMAGE_SCALE);

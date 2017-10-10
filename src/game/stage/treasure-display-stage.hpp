@@ -37,6 +37,7 @@
 #include "game/ouroboros.hpp"
 #include "game/horiz-symbol.hpp"
 #include "game/main-menu-title.hpp"
+#include "game/stage/item-detail-viewer.hpp"
 #include "game/stage/treasure-stage-mover.hpp"
 #include "game/item/treasure-image-enum.hpp"
 #include "game/item/treasure-available-enum.hpp"
@@ -115,6 +116,29 @@ namespace treasure
         float characterImageLeft;
         float characterImageScale;
     };
+
+
+    //Responsible for wrapping all the info needed to display item details.
+    struct ItemDetails
+    {
+        ItemDetails(
+            const sf::FloatRect & RECT = sfml_util::gui::ListBox::ERROR_RECT_,
+            const item::ItemPtr_t ITEM_PTR = nullptr)
+        :
+            rect(RECT),
+            item_ptr(ITEM_PTR)
+        {}
+
+        inline bool IsValid() const
+        {
+            return (
+                (sfml_util::gui::ListBox::ERROR_RECT_ != rect) &&
+                (nullptr != item_ptr) );
+        }
+
+        sf::FloatRect rect;
+        item::ItemPtr_t item_ptr;
+    };
 }
 
 
@@ -140,6 +164,9 @@ namespace treasure
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
+        void UpdateMousePos(const sf::Vector2i &) override;
+        void UpdateMouseDown(const sf::Vector2f &) override;
 
         void SetupInitial();
         void SetupAfterPleaseWait(const item::TreasureImage::Enum);
@@ -206,7 +233,6 @@ namespace treasure
         void SetupInventory_WeightText();
         void SetupInventory_RedXImage();
         
-
         stage::treasure::Type TreasureSource() const;
 
         void UpdateTreasureVisuals();
@@ -231,8 +257,15 @@ namespace treasure
         {
             return sfml_util::MapByRes(10.0f, 70.0f);
         }
+
+        void ItemViewerInterruption();
+
+        const treasure::ItemDetails MouseOverListboxItemDetails(
+            const sf::Vector2f & MOUSE_POS) const;
         
     private:
+        static const float ITEM_DETAIL_TIMEOUT_SEC_;
+
         TreasureStage * treasureStagePtr_;
         MainMenuTitle titleImage_;
         BottomSymbol bottomImage_;
@@ -261,6 +294,9 @@ namespace treasure
         item::TreasureImage::Enum treasureImage_;
         sf::Texture redXTexture_;
         sfml_util::gui::GuiImageUPtr_t redXImageUPtr_;
+        float itemDetailTimer_;
+        stage::ItemDetailViewer itemDetailViewer_;
+        sf::Vector2f mousePos_;
 
         //These members are copies of the real data in TreasureStage
         item::ItemCache heldCache_;

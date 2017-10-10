@@ -108,6 +108,10 @@ namespace treasure
 }//end of namespace treasure
 
 
+
+    const float TreasureDisplayStage::ITEM_DETAIL_TIMEOUT_SEC_{ 3.0f };
+
+
     TreasureDisplayStage::TreasureDisplayStage(TreasureStage * treasureStagePtr)
     :
         Stage("TreasureDisplay", false),
@@ -138,6 +142,9 @@ namespace treasure
         treasureImage_(item::TreasureImage::Count),
         redXTexture_(),
         redXImageUPtr_(),
+        itemDetailTimer_(0.0f),
+        itemDetailViewer_(),
+        mousePos_(0.0f, 0.0f),
         heldCache_(),
         lockboxCache_()
     {}
@@ -194,6 +201,8 @@ namespace treasure
         {
             target.draw( * redXImageUPtr_, STATES);
         }
+
+        target.draw(itemDetailViewer_, STATES);
     }
 
 
@@ -211,6 +220,50 @@ namespace treasure
                 UpdateInventoryVisuals();
             }
         }
+
+        itemDetailViewer_.UpdateTime(ELAPSED_TIME_SECONDS);
+
+        itemDetailTimer_ += ELAPSED_TIME_SECONDS;
+        if (itemDetailTimer_ > ITEM_DETAIL_TIMEOUT_SEC_)
+        {
+            itemDetailTimer_ = 0;
+
+            auto const ITEM_DETAILS{ MouseOverListboxItemDetails(mousePos_) };
+
+            if (ITEM_DETAILS.IsValid())
+            {
+                itemDetailViewer_.FadeIn(ITEM_DETAILS.item_ptr, ITEM_DETAILS.rect);
+            }
+        }
+    }
+
+
+    bool TreasureDisplayStage::KeyRelease(const sf::Event::KeyEvent &)
+    {
+        ItemViewerInterruption();
+        return false;
+    }
+
+
+    void TreasureDisplayStage::UpdateMousePos(const sf::Vector2i & MOUSE_POS_V)
+    {
+        auto const NEW_MOUSE_POS{ sfml_util::ConvertVector<int, float>(MOUSE_POS_V) };
+
+        auto const MAX_DIFF{ 3.0f };
+        auto const DIFF_VECTOR{ mousePos_ - NEW_MOUSE_POS };
+        if ((std::abs(DIFF_VECTOR.x) > MAX_DIFF) ||
+            (std::abs(DIFF_VECTOR.y) > MAX_DIFF))
+        {
+            ItemViewerInterruption();
+        }
+
+        mousePos_ = NEW_MOUSE_POS;
+    }
+
+
+    void TreasureDisplayStage::UpdateMouseDown(const sf::Vector2f &)
+    {
+        ItemViewerInterruption();
     }
 
 
@@ -1129,6 +1182,47 @@ namespace treasure
         return characterImageUPtr_->GetEntityPos().x +
             (sfml_util::gui::CreatureImageManager::Instance()->DimmensionMax() *
                 CreateDisplayMeasurements().characterImageScale);
+    }
+
+
+    void TreasureDisplayStage::ItemViewerInterruption()
+    {
+        itemDetailTimer_ = 0.0f;
+        itemDetailViewer_.FadeOut();
+    }
+
+
+    const treasure::ItemDetails TreasureDisplayStage::MouseOverListboxItemDetails(
+        const sf::Vector2f & MOUSE_POS) const
+    {
+        if ((treasureListboxUPtr_.get() != nullptr) &&
+            (inventoryListboxUPtr_.get() != nullptr))
+        {
+            if (treasureListboxUPtr_->GetEntityRegion().contains(MOUSE_POS))
+            {
+                auto const LISTBOX_ITEM_SPTR{ treasureListboxUPtr_->GetAtPosition(MOUSE_POS) };
+                if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
+                    (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+                {
+                    return treasure::ItemDetails(
+                        treasureListboxUPtr_->GetRectAtLocation(MOUSE_POS),
+                        LISTBOX_ITEM_SPTR->ITEM_CPTR);
+                }
+            }
+            else if (inventoryListboxUPtr_->GetEntityRegion().contains(MOUSE_POS))
+            {
+                auto const LISTBOX_ITEM_SPTR{ inventoryListboxUPtr_->GetAtPosition(MOUSE_POS) };
+                if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
+                    (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+                {
+                    return treasure::ItemDetails(
+                        inventoryListboxUPtr_->GetRectAtLocation(MOUSE_POS),
+                        LISTBOX_ITEM_SPTR->ITEM_CPTR);
+                }
+            }
+        }
+
+        return treasure::ItemDetails();
     }
 
 }
