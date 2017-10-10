@@ -328,7 +328,6 @@ namespace stage
 
     void TreasureStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        displayStagePtr_->Draw(target, STATES);
         HandleCountdownAndPleaseWaitPopup();
         Stage::Draw(target, STATES);
     }
