@@ -145,6 +145,7 @@ namespace treasure
         itemDetailTimer_(0.0f),
         itemDetailViewer_(),
         mousePos_(0.0f, 0.0f),
+        canDisplayItemDetail_(true),
         heldCache_(),
         lockboxCache_()
     {}
@@ -153,10 +154,12 @@ namespace treasure
     bool TreasureDisplayStage::HandleCallback(
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
+        M_HP_LOG_DBG("\t ********** TreasureDisplayStage::HandleCallback() begin");
         return treasureStagePtr_->HandleListboxCallback(
             treasureListboxUPtr_.get(),
             inventoryListboxUPtr_.get(),
             PACKAGE);
+        M_HP_LOG_DBG("\t ********** TreasureDisplayStage::HandleCallback() end");
     }
 
 
@@ -206,44 +209,10 @@ namespace treasure
     }
 
 
-    void TreasureDisplayStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
-    {
-        if (stageMoverUPtr_.get() != nullptr)
-        {
-            if (stageMoverUPtr_->UpdateTimeTreasure(ELAPSED_TIME_SECONDS))
-            {
-                UpdateTreasureVisuals();
-            }
-
-            if (stageMoverUPtr_->UpdateTimeInventory(ELAPSED_TIME_SECONDS))
-            {
-                UpdateInventoryVisuals();
-            }
-        }
-
-        itemDetailViewer_.UpdateTime(ELAPSED_TIME_SECONDS);
-
-        itemDetailTimer_ += ELAPSED_TIME_SECONDS;
-        if (itemDetailTimer_ > ITEM_DETAIL_TIMEOUT_SEC_)
-        {
-            itemDetailTimer_ = 0;
-
-            auto const ITEM_DETAILS{ MouseOverListboxItemDetails(mousePos_) };
-
-            if (ITEM_DETAILS.IsValid())
-            {
-                itemDetailViewer_.FadeIn(ITEM_DETAILS.item_ptr, ITEM_DETAILS.rect);
-            }
-        }
-
-        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
-    }
-
-
-    bool TreasureDisplayStage::KeyRelease(const sf::Event::KeyEvent &)
+    bool TreasureDisplayStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
         ItemViewerInterruption();
-        return false;
+        return Stage::KeyRelease(KEY_EVENT);
     }
 
 
@@ -265,9 +234,62 @@ namespace treasure
     }
 
 
-    void TreasureDisplayStage::UpdateMouseDown(const sf::Vector2f &)
+    void TreasureDisplayStage::UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
         ItemViewerInterruption();
+        Stage::UpdateMouseDown(MOUSE_POS_V);
+    }
+
+
+    void TreasureDisplayStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
+    {
+        UpdateTime_StageMover(ELAPSED_TIME_SECONDS);
+        UpdateTime_ItemDetailViewer(ELAPSED_TIME_SECONDS);
+        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
+    }
+
+
+    void TreasureDisplayStage::UpdateTime_StageMover(const float ELAPSED_TIME_SECONDS)
+    {
+        if (stageMoverUPtr_.get() != nullptr)
+        {
+            if (stageMoverUPtr_->UpdateTimeTreasure(ELAPSED_TIME_SECONDS))
+            {
+                UpdateTreasureVisuals();
+            }
+
+            if (stageMoverUPtr_->UpdateTimeInventory(ELAPSED_TIME_SECONDS))
+            {
+                UpdateInventoryVisuals();
+            }
+        }
+    }
+
+
+    void TreasureDisplayStage::UpdateTime_ItemDetailViewer(const float ELAPSED_TIME_SECONDS)
+    {
+        itemDetailViewer_.UpdateTime(ELAPSED_TIME_SECONDS);
+
+        if (canDisplayItemDetail_)
+        {
+            itemDetailTimer_ += ELAPSED_TIME_SECONDS;
+        }
+        else
+        {
+            itemDetailTimer_ = 0;
+        }
+
+        if (itemDetailTimer_ > ITEM_DETAIL_TIMEOUT_SEC_)
+        {
+            itemDetailTimer_ = 0;
+
+            auto const ITEM_DETAILS{ MouseOverListboxItemDetails(mousePos_) };
+
+            if (ITEM_DETAILS.IsValid() && canDisplayItemDetail_)
+            {
+                itemDetailViewer_.FadeIn(ITEM_DETAILS.item_ptr, ITEM_DETAILS.rect);
+            }
+        }
     }
 
 
@@ -284,24 +306,6 @@ namespace treasure
         SetupAfterPleaseWait_CorpseImage();
         SetupAfterPleaseWait_TreasureImage(WHICH_IMAGE);
         SetupAfterPleaseWait_CoinsImage();
-    }
-
-
-    void TreasureDisplayStage::UpdateTreasureImage(
-        const item::TreasureImage::Enum WHICH_IMAGE)
-    {
-        if (item::TreasureImage::ChestOpen == WHICH_IMAGE)
-        {
-            sfml_util::LoadTexture(
-                treasureTexture_,
-                GameDataFile::Instance()->GetMediaPath("media-images-chest-open"));
-        }
-        else if (item::TreasureImage::LockboxOpen == WHICH_IMAGE)
-        {
-            sfml_util::LoadTexture(
-                treasureTexture_,
-                GameDataFile::Instance()->GetMediaPath("media-images-lockbox-open"));
-        }
     }
 
 
@@ -333,6 +337,24 @@ namespace treasure
         SetupForCollection_InstructionsText();
         
         stageMoverUPtr_->StartAll();
+    }
+
+
+    void TreasureDisplayStage::UpdateTreasureImage(
+        const item::TreasureImage::Enum WHICH_IMAGE)
+    {
+        if (item::TreasureImage::ChestOpen == WHICH_IMAGE)
+        {
+            sfml_util::LoadTexture(
+                treasureTexture_,
+                GameDataFile::Instance()->GetMediaPath("media-images-chest-open"));
+        }
+        else if (item::TreasureImage::LockboxOpen == WHICH_IMAGE)
+        {
+            sfml_util::LoadTexture(
+                treasureTexture_,
+                GameDataFile::Instance()->GetMediaPath("media-images-lockbox-open"));
+        }
     }
 
     
@@ -418,6 +440,44 @@ namespace treasure
             UpdateInventoryVisuals();
             stageMoverUPtr_->InventoryIndexSet(CHARACTER_INDEX);
         }
+    }
+
+
+    std::size_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayedIndex()
+    {
+        if (stageMoverUPtr_.get() == nullptr)
+        {
+            auto const NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
+
+            for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+            {
+                if (Game::Instance()->State().Party().GetAtOrderPos(i)->IsBeast() == false)
+                {
+                    return i;
+                }
+            }
+
+            //should never reach this code since one party member must be non-beast
+            return 0;
+        }
+        else
+        {
+            return stageMoverUPtr_->InventoryCharacterIndex();
+        }
+    }
+
+
+    creature::CreaturePtr_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayed()
+    {
+        return Game::Instance()->
+            State().Party().GetAtOrderPos(WhichCharacterInventoryIsDisplayedIndex());
+    }
+
+
+    void TreasureDisplayStage::RefreshAfterCacheUpdate()
+    {
+        UpdateTreasureVisuals();
+        UpdateInventoryVisuals();
     }
 
 
@@ -574,37 +634,6 @@ namespace treasure
             //during combat means the more likely that corpse image is shown.
             return misc::Vector::SelectRandom(corpseKeyStrVec);
         }
-    }
-
-
-    std::size_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayedIndex()
-    {
-        if (stageMoverUPtr_.get() == nullptr)
-        {
-            auto const NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
-
-            for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
-            {
-                if (Game::Instance()->State().Party().GetAtOrderPos(i)->IsBeast() == false)
-                {
-                    return i;
-                }
-            }
-
-            //should never reach this code since one party member must be non-beast
-            return 0;
-        }
-        else
-        {
-            return stageMoverUPtr_->InventoryCharacterIndex();
-        }
-    }
-
-
-    creature::CreaturePtr_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayed()
-    {
-        return Game::Instance()->
-            State().Party().GetAtOrderPos(WhichCharacterInventoryIsDisplayedIndex());
     }
 
 

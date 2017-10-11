@@ -32,6 +32,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/gui/list-box-item.hpp"
 
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"
@@ -50,6 +51,7 @@
 #include "game/player/character.hpp"
 #include "game/creature/algorithms.hpp"
 #include "game/creature/stats.hpp"
+#include "game/item/item.hpp"
 #include "game/item/item-profile-warehouse.hpp"
 #include "game/trap-warehouse.hpp"
 #include "game/stage/treasure-display-stage.hpp"
@@ -119,6 +121,9 @@ namespace stage
     const std::string TreasureStage::POPUP_NAME_GEM_SHARE_{
         "PopupName_GemShare" };
 
+    const std::string TreasureStage::POPUP_NAME_ITEM_TAKE_REJECTION_{
+        "PopupName_ItemTakeRejection" };
+
 
     TreasureStage::TreasureStage()
     :
@@ -131,7 +136,8 @@ namespace stage
         treasureAvailable_  (item::TreasureAvailable::Count),
         trap_               (),
         fightResult_        (),
-        creatureEffectIndex_(0)
+        creatureEffectIndex_(0),
+        updateItemDisplayNeeded_(false)
     {}
 
 
@@ -300,6 +306,12 @@ namespace stage
             return true;
         }
 
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ITEM_TAKE_REJECTION_)
+        {
+            displayStagePtr_->CanDisplayItemDetail(true);
+            return true;
+        }
+
         return true;
     }
 
@@ -330,6 +342,12 @@ namespace stage
     {
         HandleCountdownAndPleaseWaitPopup();
         Stage::Draw(target, STATES);
+
+        if (updateItemDisplayNeeded_)
+        {
+            updateItemDisplayNeeded_ = false;
+            UpdateItemDisplay();
+        }
     }
 
 
@@ -358,15 +376,36 @@ namespace stage
             return HandleKeypress_LeftRight(KEY_EVENT.code);
         }
         
-        return false;
+        return Stage::KeyRelease(KEY_EVENT);
     }
 
 
     bool TreasureStage::HandleListboxCallback(
-        const sfml_util::gui::ListBox * const,
-        const sfml_util::gui::ListBox * const,
-        const sfml_util::gui::callback::ListBoxEventPackage &)
+        const sfml_util::gui::ListBox * const TREASURE_LISTBOX_PTR,
+        const sfml_util::gui::ListBox * const INVENTORY_LISTBOX_PTR,
+        const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
+        auto const LISTBOX_ITEM_SPTR{ PACKAGE.package.PTR_->GetSelected() };
+
+        if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
+            (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+        {
+            if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
+                (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+            {
+                if (PACKAGE.package.PTR_ == TREASURE_LISTBOX_PTR)
+                {
+                    TakeItem(LISTBOX_ITEM_SPTR->ITEM_CPTR);
+                }
+                else if (PACKAGE.package.PTR_ == INVENTORY_LISTBOX_PTR)
+                {
+                    PutItemBack(LISTBOX_ITEM_SPTR->ITEM_CPTR);
+                }
+            }
+
+            return true;
+        }
+
         return true;
     }
 
@@ -1003,5 +1042,94 @@ namespace stage
         sfml_util::SoundManager::Instance()->
             SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
     }
+
+
+    void TreasureStage::TakeItem(const item::ItemPtr_t ITEM_PTR)
+    {
+        if (nullptr == displayStagePtr_)
+        {
+            return;
+        }
+
+        auto creaturePtr{ displayStagePtr_->WhichCharacterInventoryIsDisplayed() };
+        auto const IS_ITEM_ADD_ALLOWED_STR{ creaturePtr->ItemIsAddAllowed(ITEM_PTR) };
+
+        if (IS_ITEM_ADD_ALLOWED_STR.empty())
+        {
+            sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
+            creaturePtr->ItemAdd(ITEM_PTR);
+
+            if (displayStagePtr_->IsShowingHeldItems())
+            {
+                itemCacheHeld_.items_pvec.erase( std::remove(
+                    itemCacheHeld_.items_pvec.begin(),
+                    itemCacheHeld_.items_pvec.end(), ITEM_PTR), itemCacheHeld_.items_pvec.end());
+            }
+            else
+            {
+                itemCacheLockbox_.items_pvec.erase(std::remove(
+                    itemCacheLockbox_.items_pvec.begin(),
+                    itemCacheLockbox_.items_pvec.end(), ITEM_PTR), itemCacheLockbox_.items_pvec.end());
+            }
+
+            //Can't update display now because it would invalidate the this pointer.
+            updateItemDisplayNeeded_ = true;
+        }
+        else
+        {
+            displayStagePtr_->CanDisplayItemDetail(false);
+
+            std::ostringstream ss;
+            ss << creaturePtr->Name() << " can't take the " << ITEM_PTR->Name() << " because:  "
+                << IS_ITEM_ADD_ALLOWED_STR;
+
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME_ITEM_TAKE_REJECTION_,
+                ss.str(),
+                popup::PopupButtons::Cancel,
+                popup::PopupImage::Regular,
+                sfml_util::Justified::Center,
+                sfml_util::sound_effect::PromptWarn,
+                sfml_util::FontManager::Instance()->Size_Largeish()) };
+
+            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        }
+    }
+
+
+    void TreasureStage::PutItemBack(const item::ItemPtr_t ITEM_PTR)
+    {
+        if (nullptr == displayStagePtr_)
+        {
+            return;
+        }
+
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::ItemDrop).PlayRandom();
+
+        displayStagePtr_->WhichCharacterInventoryIsDisplayed()->ItemRemove(ITEM_PTR);
+
+        if (displayStagePtr_->IsShowingHeldItems())
+        {
+            itemCacheHeld_.items_pvec.push_back(ITEM_PTR);
+        }
+        else
+        {
+            itemCacheLockbox_.items_pvec.push_back(ITEM_PTR);
+        }
+
+        //Can't update display now because it would invalidate the this pointer.
+        updateItemDisplayNeeded_ = true;
+    }
+
+
+    void TreasureStage::UpdateItemDisplay()
+    {
+        displayStagePtr_->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
+        displayStagePtr_->RefreshAfterCacheUpdate();
+    }
+
 }
 }

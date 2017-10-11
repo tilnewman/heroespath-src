@@ -177,7 +177,7 @@ namespace stage
     }
 
 
-    void ItemDetailViewer::SetupBackgroundQuadPositions(const float PROGRESS_RATIO)
+    void ItemDetailViewer::SetupBackgroundQuadPositions(const float RATIO)
     {
         auto const SOURCE_LEFT{ sourceRect.left };
         auto const SOURCE_RIGHT{ sourceRect.left + sourceRect.width };
@@ -188,19 +188,19 @@ namespace stage
         auto const TARGET_RIGHT{ TARGET_RECT_.left + TARGET_RECT_.width };
         auto const TARGET_TOP{ TARGET_RECT_.top };
         auto const TARGET_BOT{ TARGET_RECT_.top + TARGET_RECT_.height };
-              
-        auto const LEFT_MORE{ SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * PROGRESS_RATIO) };
-        auto const LEFT_LESS{ SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * PROGRESS_RATIO) };
+
+        auto const LEFT_MORE{ SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * RATIO) };
+        auto const LEFT_LESS{ SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * RATIO) };
         auto const LEFT{ ((SOURCE_LEFT > TARGET_LEFT) ? LEFT_MORE : LEFT_LESS) };
-             
-        auto const RIGHT_MORE{ SOURCE_RIGHT - ((SOURCE_RIGHT - TARGET_RIGHT) * PROGRESS_RATIO) };
-        auto const RIGHT_LESS{ SOURCE_RIGHT + ((TARGET_RIGHT - SOURCE_RIGHT) * PROGRESS_RATIO) };
+
+        auto const RIGHT_MORE{ SOURCE_RIGHT - ((SOURCE_RIGHT - TARGET_RIGHT) * RATIO) };
+        auto const RIGHT_LESS{ SOURCE_RIGHT + ((TARGET_RIGHT - SOURCE_RIGHT) * RATIO) };
         auto const RIGHT{ (SOURCE_RIGHT > TARGET_RIGHT) ? RIGHT_MORE : RIGHT_LESS };
-             
-        auto const TOP{ SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * PROGRESS_RATIO) };
-             
-        auto const BOT_MORE{ SOURCE_BOT - ((SOURCE_BOT - TARGET_BOT) * PROGRESS_RATIO) };
-        auto const BOT_LESS{ SOURCE_BOT + ((TARGET_BOT - SOURCE_BOT) * PROGRESS_RATIO) };
+
+        auto const TOP{ SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * RATIO) };
+
+        auto const BOT_MORE{ SOURCE_BOT - ((SOURCE_BOT - TARGET_BOT) * RATIO) };
+        auto const BOT_LESS{ SOURCE_BOT + ((TARGET_BOT - SOURCE_BOT) * RATIO) };
         auto const BOT{ (SOURCE_BOT > TARGET_BOT) ? BOT_MORE : BOT_LESS };
 
         backgroundQuads_[0].position = sf::Vector2f(LEFT, TOP);

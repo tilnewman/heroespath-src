@@ -163,19 +163,23 @@ namespace treasure
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
-        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         bool KeyRelease(const sf::Event::KeyEvent &) override;
         void UpdateMousePos(const sf::Vector2i &) override;
         void UpdateMouseDown(const sf::Vector2f &) override;
 
-        void SetupInitial();
-        void SetupAfterPleaseWait(const item::TreasureImage::Enum);
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        void UpdateTime_StageMover(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_ItemDetailViewer(const float ELAPSED_TIME_SECONDS);
 
-        void UpdateTreasureImage(const item::TreasureImage::Enum);
+        void SetupInitial();
+
+        void SetupAfterPleaseWait(const item::TreasureImage::Enum);
 
         void SetupForCollection(
             const item::TreasureAvailable::Enum,
             const item::TreasureImage::Enum);
+
+        void UpdateTreasureImage(const item::TreasureImage::Enum);
 
         bool IsShowingHeldItems() const;
         std::size_t CharacterIndexShowingInventory() const;
@@ -198,6 +202,14 @@ namespace treasure
             return itemDetailViewer_.IsMovingOrShowing();
         }
 
+        std::size_t WhichCharacterInventoryIsDisplayedIndex();
+
+        creature::CreaturePtr_t WhichCharacterInventoryIsDisplayed();
+
+        void RefreshAfterCacheUpdate();
+
+        inline void CanDisplayItemDetail(const bool CAN) { canDisplayItemDetail_ = CAN; }
+
     private:
         treasure::DisplayMeasurements CreateDisplayMeasurements() const;
 
@@ -210,10 +222,6 @@ namespace treasure
 
         const std::string CorpseImageKeyFromEnemyParty() const;
         
-        std::size_t WhichCharacterInventoryIsDisplayedIndex();
-
-        creature::CreaturePtr_t WhichCharacterInventoryIsDisplayed();
-
         void SetupForCollection_TreasureListbox(const stage::treasure::Type);
         void SetupForCollection_InventoryListbox();
         void SetupForCollection_TreasureListboxLabel();
@@ -229,7 +237,7 @@ namespace treasure
             const treasure::WhichListbox WHICH_LISTBOX,
             sfml_util::gui::ListBoxUPtr_t & listboxUPtr,
             const item::ItemPVec_t &);
-        
+
         void SetupTreasure_ListboxLabel();
         void SetupInventory_CharacterImage();
         void SetupInventory_ListboxLabel();
@@ -302,6 +310,7 @@ namespace treasure
         float itemDetailTimer_;
         stage::ItemDetailViewer itemDetailViewer_;
         sf::Vector2f mousePos_;
+        bool canDisplayItemDetail_;
 
         //These members are copies of the real data in TreasureStage
         item::ItemCache heldCache_;

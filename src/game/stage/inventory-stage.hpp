@@ -220,6 +220,7 @@ namespace stage
         bool HandleSpellsOrSongs();
         bool HandleSong_Step1_Play(const song::SongPtr_t);
         bool HandleSong_Step2_DisplayResults();
+
         void SystemErrorPopup(const std::string & GENERAL_ERROR_MSG,
                               const std::string & TECH_ERROR_MSG,
                               const std::string & TITLE_MSG = "");

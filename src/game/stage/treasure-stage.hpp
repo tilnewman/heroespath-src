@@ -86,8 +86,8 @@ namespace stage
 
         bool HandleListboxCallback(
             const sfml_util::gui::ListBox * const TREASURE_LISTBOX_PTR,
-            const sfml_util::gui::ListBox * const CHAR_INV_LISTBOX_PTR,
-            const sfml_util::gui::callback::ListBoxEventPackage &);
+            const sfml_util::gui::ListBox * const INVENTORY_LISTBOX_PTR,
+            const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE);
 
     private:
         void HandleCountdownAndPleaseWaitPopup();
@@ -147,6 +147,11 @@ namespace stage
         void PlaySoundEffect_KeypressValid() const;
         void PlaySoundEffect_KeypressInvalid() const;
 
+        void TakeItem(const item::ItemPtr_t);
+        void PutItemBack(const item::ItemPtr_t);
+
+        void UpdateItemDisplay();
+
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
         static const std::string POPUP_NAME_ALL_ENEMIES_RAN_;
@@ -162,6 +167,7 @@ namespace stage
         static const std::string POPUP_NAME_ALL_CHARACTERS_DIED_;
         static const std::string POPUP_NAME_COIN_SHARE_;
         static const std::string POPUP_NAME_GEM_SHARE_;
+        static const std::string POPUP_NAME_ITEM_TAKE_REJECTION_;
 
     private:
         TreasureDisplayStage * displayStagePtr_;
@@ -173,6 +179,7 @@ namespace stage
         game::Trap trap_;
         combat::FightResult fightResult_;
         std::size_t creatureEffectIndex_;
+        bool updateItemDisplayNeeded_;
     };
 
 }
