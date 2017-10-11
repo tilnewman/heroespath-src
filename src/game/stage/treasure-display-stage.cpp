@@ -235,6 +235,8 @@ namespace treasure
                 itemDetailViewer_.FadeIn(ITEM_DETAILS.item_ptr, ITEM_DETAILS.rect);
             }
         }
+
+        Stage::UpdateTime(ELAPSED_TIME_SECONDS);
     }
 
 
@@ -258,6 +260,8 @@ namespace treasure
         }
 
         mousePos_ = NEW_MOUSE_POS;
+
+        Stage::UpdateMousePos(MOUSE_POS_V);
     }
 
 
