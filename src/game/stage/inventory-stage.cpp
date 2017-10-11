@@ -1630,29 +1630,7 @@ namespace stage
                     detailViewQuads_[3].color = sf::Color::Transparent;
                 }
 
-                const float SOURCE_RECT_LEFT(detailViewSourceRect_.left);
-                const float SOURCE_RECT_RIGHT(detailViewSourceRect_.left + detailViewSourceRect_.width);
-                const float SOURCE_RECT_TOP(detailViewSourceRect_.top);
-                const float SOURCE_RECT_BOTTOM(detailViewSourceRect_.top + detailViewSourceRect_.height);
-
-                const float POS_LEFT_MOUSEX_MORE(SOURCE_RECT_LEFT - ((SOURCE_RECT_LEFT - DETAILVIEW_POS_LEFT_) * detailViewSliderRatio_));
-                const float POS_LEFT_MOUSEX_LESS(SOURCE_RECT_LEFT + ((DETAILVIEW_POS_LEFT_ - SOURCE_RECT_LEFT) * detailViewSliderRatio_));
-                const float POS_LEFT((SOURCE_RECT_LEFT > DETAILVIEW_POS_LEFT_) ? POS_LEFT_MOUSEX_MORE : POS_LEFT_MOUSEX_LESS);
-
-                const float POS_RIGHT_MOUSEX_MORE(SOURCE_RECT_RIGHT - ((SOURCE_RECT_RIGHT - (DETAILVIEW_POS_LEFT_ + DETAILVIEW_WIDTH_)) * detailViewSliderRatio_));
-                const float POS_RIGHT_MOUSEX_LESS(SOURCE_RECT_RIGHT + (((DETAILVIEW_POS_LEFT_ + DETAILVIEW_WIDTH_) - SOURCE_RECT_RIGHT) * detailViewSliderRatio_));
-                const float POS_RIGHT((SOURCE_RECT_RIGHT > (DETAILVIEW_POS_LEFT_ + DETAILVIEW_WIDTH_)) ? POS_RIGHT_MOUSEX_MORE : POS_RIGHT_MOUSEX_LESS);
-
-                const float POS_TOP(SOURCE_RECT_TOP - ((SOURCE_RECT_TOP - DETAILVIEW_POS_TOP_) * detailViewSliderRatio_));
-
-                const float POS_BOTTOM_MOUSEY_MORE(SOURCE_RECT_BOTTOM - ((SOURCE_RECT_BOTTOM - (DETAILVIEW_POS_TOP_ + DETAILVIEW_HEIGHT_)) * detailViewSliderRatio_));
-                const float POS_BOTTOM_MOUSEY_LESS(SOURCE_RECT_BOTTOM + (((DETAILVIEW_POS_TOP_ + DETAILVIEW_HEIGHT_) - SOURCE_RECT_BOTTOM) * detailViewSliderRatio_));
-                const float POS_BOTTOM((SOURCE_RECT_BOTTOM > (DETAILVIEW_POS_TOP_ + DETAILVIEW_HEIGHT_)) ? POS_BOTTOM_MOUSEY_MORE : POS_BOTTOM_MOUSEY_LESS);
-
-                detailViewQuads_[0].position = sf::Vector2f(POS_LEFT, POS_TOP);
-                detailViewQuads_[1].position = sf::Vector2f(POS_RIGHT, POS_TOP);
-                detailViewQuads_[2].position = sf::Vector2f(POS_RIGHT, POS_BOTTOM);
-                detailViewQuads_[3].position = sf::Vector2f(POS_LEFT, POS_BOTTOM);
+                SetDetailViewQuads();
             }
 
             if (sparkleAnimUPtr_.get() != nullptr)
@@ -3976,6 +3954,41 @@ namespace stage
         LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->
                 CreateSystemErrorPopupInfo("Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG,
                     TECH_ERROR_MSG, TITLE_MSG));
+    }
+
+
+    void InventoryStage::SetDetailViewQuads()
+    {
+        auto const SOURCE_LEFT{ detailViewSourceRect_.left };
+        auto const SOURCE_RGT{ detailViewSourceRect_.left + detailViewSourceRect_.width };
+        auto const SOURCE_TOP{ detailViewSourceRect_.top };
+        auto const SOURCE_BOTTOM{ detailViewSourceRect_.top + detailViewSourceRect_.height };
+
+        auto const TARGET_LEFT{ DETAILVIEW_POS_LEFT_ };
+        auto const TARGET_RGT{ DETAILVIEW_POS_LEFT_ + DETAILVIEW_WIDTH_ };
+        auto const TARGET_TOP{ DETAILVIEW_POS_TOP_ };
+        auto const TARGET_BOTTOM{ DETAILVIEW_POS_TOP_ + DETAILVIEW_HEIGHT_ };
+
+        auto const RATIO{ detailViewSliderRatio_ };
+
+        auto const LEFT_MORE{ SOURCE_LEFT - ((SOURCE_LEFT - TARGET_LEFT) * RATIO) };
+        auto const LEFT_LESS{ SOURCE_LEFT + ((TARGET_LEFT - SOURCE_LEFT) * RATIO) };
+        auto const LEFT{ (SOURCE_LEFT > TARGET_LEFT) ? LEFT_MORE : LEFT_LESS };
+
+        auto const RGT_MORE{ SOURCE_RGT - ((SOURCE_RGT - TARGET_RGT) * RATIO) };
+        auto const RGT_LESS{ SOURCE_RGT + ((TARGET_RGT - SOURCE_RGT) * RATIO) };
+        auto const RGT{ (SOURCE_RGT > TARGET_RGT) ? RGT_MORE : RGT_LESS };
+
+        auto const TOP{ SOURCE_TOP - ((SOURCE_TOP - TARGET_TOP) * RATIO) };
+
+        auto const BOTTOM_MORE{ SOURCE_BOTTOM - ((SOURCE_BOTTOM - TARGET_BOTTOM) * RATIO) };
+        auto const BOTTOM_LESS{ SOURCE_BOTTOM + ((TARGET_BOTTOM - SOURCE_BOTTOM) * RATIO) };
+        auto const BOTTOM{ (SOURCE_BOTTOM > TARGET_BOTTOM) ? BOTTOM_MORE : BOTTOM_LESS };
+
+        detailViewQuads_[0].position = sf::Vector2f(LEFT, TOP);
+        detailViewQuads_[1].position = sf::Vector2f(RGT, TOP);
+        detailViewQuads_[2].position = sf::Vector2f(RGT, BOTTOM);
+        detailViewQuads_[3].position = sf::Vector2f(LEFT, BOTTOM);
     }
 
 }

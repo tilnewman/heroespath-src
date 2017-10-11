@@ -224,6 +224,8 @@ namespace stage
                               const std::string & TECH_ERROR_MSG,
                               const std::string & TITLE_MSG = "");
 
+        void SetDetailViewQuads();
+
     public:
         static const float VIEW_CHANGE_SLIDER_SPEED_;
         static const float VIEW_CHANGE_BETWEEN_TIME_SEC_;
