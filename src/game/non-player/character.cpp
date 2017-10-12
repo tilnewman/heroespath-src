@@ -54,7 +54,7 @@ namespace non_player
                          const stats::StatSet &           STATS,
                          const stats::Trait_t             HEALTH,
                          const stats::Trait_t             RANK,
-                         const stats::Trait_t             EXPERIENCE,
+                         const Experience_t               EXPERIENCE,
                          const creature::CondEnumVec_t &  CONDITIONS_VEC,
                          const creature::TitleEnumVec_t & TITLES_VEC,
                          const item::Inventory &          INVENTORY,

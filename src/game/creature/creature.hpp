@@ -30,6 +30,7 @@
 //
 #include "sfml-util/date-time.hpp"
 
+#include "game/types.hpp"
 #include "game/effect-type-enum.hpp"
 #include "game/stats/types.hpp"
 #include "game/stats/traits-set.hpp"
@@ -126,7 +127,7 @@ namespace creature
                           const stats::StatSet &      STATS           = stats::StatSet(),
                           const stats::Trait_t        HEALTH          = 0,
                           const stats::Trait_t        RANK            = 1,
-                          const stats::Trait_t        EXPERIENCE      = 0,
+                          const Experience_t          EXPERIENCE      = 0_exp,
                           const CondEnumVec_t &       CONDITIONS_VEC  = CondEnumVec_t(),
                           const TitleEnumVec_t &      TITLES_VEC      = TitleEnumVec_t(),
                           const item::Inventory &     INVENTORY       = item::Inventory(),
@@ -197,13 +198,8 @@ namespace creature
             return rank_;
         }
 
-        inline stats::Trait_t Exp() const                       { return experience_; }
-
-        inline stats::Trait_t IncreaseExp(const stats::Trait_t E)
-        {
-            experience_ += E;
-            return experience_;
-        }
+        inline Experience_t Exp() const                         { return experience_; }
+        inline Experience_t IncreaseExp(const Experience_t E)   { return experience_ += E; }
 
         inline stats::Trait_t HealthCurrent() const             { return healthCurrent_; }
         inline void HealthCurrentSet(const stats::Trait_t X)    { healthCurrent_ = X; }
@@ -511,7 +507,8 @@ namespace creature
         stats::Trait_t      healthCurrent_;
         stats::Trait_t      healthNormal_;
         stats::Trait_t      rank_;
-        stats::Trait_t      experience_;
+        Experience_t        experience_;
+
 
         //
         //actualSet_.Normal   -The non-percent, non-bonus, positive, standing value,

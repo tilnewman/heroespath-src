@@ -314,7 +314,7 @@ namespace stage
                 statSetFinal,
                 0,
                 1,
-                0,
+                0_exp,
                 game::creature::CondEnumVec_t(),
                 game::creature::TitleEnumVec_t(),
                 game::item::Inventory(),

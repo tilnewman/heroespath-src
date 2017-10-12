@@ -69,7 +69,7 @@ namespace creature
                        const stats::StatSet &      STATS,
                        const stats::Trait_t        HEALTH,
                        const stats::Trait_t        RANK,
-                       const stats::Trait_t        EXPERIENCE,
+                       const Experience_t          EXPERIENCE,
                        const CondEnumVec_t &       CONDITIONS_VEC,
                        const TitleEnumVec_t &      TITLE_VEC,
                        const item::Inventory &     INVENTORY,

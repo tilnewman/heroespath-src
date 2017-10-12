@@ -44,6 +44,7 @@
 
 #include "popup/popup-manager.hpp"
 
+#include "game/types.hpp"
 #include "game/log-macros.hpp"
 #include "game/game-data-file.hpp"
 #include "game/creature/title-warehouse.hpp"
@@ -985,7 +986,7 @@ namespace stage
                         STATS,
                         10,
                         rankIndex,
-                        static_cast<stats::Trait_t>(rankIndex * 10000) );
+                        Experience_t(static_cast<int>(rankIndex) * 10000) );
 
                     non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(
                         characterUPtr.get());

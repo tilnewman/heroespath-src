@@ -30,8 +30,10 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
+#include "game/types.hpp"
 #include "game/spell/spell-enum.hpp"
 #include "game/song/song-enum.hpp"
+#include "game/types.hpp"
 #include "game/creature/sex-enum.hpp"
 #include "game/creature/creature.hpp"
 #include "game/creature/title-enum.hpp"
@@ -84,7 +86,7 @@ namespace non_player
                            const stats::StatSet &           STATS          = stats::StatSet(),
                            const stats::Trait_t             HEALTH         = 0,
                            const stats::Trait_t             RANK           = 1,
-                           const stats::Trait_t             EXPERIENCE     = 0,
+                           const Experience_t               EXPERIENCE     = 0_exp,
                            const creature::CondEnumVec_t &  CONDITIONS_VEC = creature::CondEnumVec_t(),
                            const creature::TitleEnumVec_t & TITLES_VEC     = creature::TitleEnumVec_t(),
                            const item::Inventory &          INVENTORY      = item::Inventory(),

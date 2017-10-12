@@ -35,6 +35,7 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/box-info.hpp"
 
+#include "game/types.hpp"
 #include "game/log-macros.hpp"
 #include "game/loop-manager.hpp"
 #include "game/creature/title.hpp"
@@ -297,6 +298,9 @@ namespace popup
         const sf::Texture * const           FROM_IMAGE_PTR,
         const sf::Texture * const           TO_IMAGE_PTR) const
     {
+        using namespace game;
+        using namespace misc;
+
         M_ASSERT_OR_LOGANDTHROW_SS((TO_IMAGE_PTR != nullptr),
             "popup::PopupManager::CreateImageFadePopupInfo(\""
             << POPUP_NAME << "\")  TO_IMAGE_PTR was null.");
@@ -325,7 +329,7 @@ namespace popup
         descSS << "  This title comes with the following stats bonus: "
             << TO_TITLE_PTR->StatBonus().ToString(false) << ".";
 
-        if (TO_TITLE_PTR->ExpBonus() > 0)
+        if (TO_TITLE_PTR->ExpBonus() > 0_exp)
         {
             descSS << "  There is also an experience bonus of " << TO_TITLE_PTR->ExpBonus()
                 << "!  " << CREATURE_PTR->Name() << "'s experience is now " << CREATURE_PTR->Exp()

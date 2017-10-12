@@ -27,6 +27,8 @@
 //
 // types.hpp
 //
+#include "misc/strong-type.hpp"
+
 #include <utility>
 
 
@@ -35,9 +37,11 @@ namespace game
 namespace stats
 {
 
+    //custom types //TODO replace this with a StrongType
     using Trait_t = int;
-    using TraitPair_t = std::pair<Trait_t, Trait_t>;
+    using TraitPair_t = std::pair<Trait_t, Trait_t>;//TODO replace this with a custom struct
 
 }
 }
+
 #endif //GAME_STATS_TYPES_HPP_INCLUDED

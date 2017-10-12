@@ -67,7 +67,7 @@ namespace creature
                  const RoleVec_t &           ROLES_VEC,
                  const stats::StatSet &      STATS_BONUS,
                  const stats::Trait_t        RANK_BONUS,
-                 const stats::Trait_t        EXPERIENCE_BONUS,
+                 const Experience_t          EXPERIENCE_BONUS,
                  const stats::Trait_t        HEALTH_BONUS)
     :
         title_           (TITLE),
@@ -174,7 +174,7 @@ namespace creature
             ss << "rank_bonus=" << rankBonus_ << SEP_STR;
         }
 
-        if (0 != expBonus_)
+        if (0_exp != expBonus_)
         {
             ss << "exp_bonus=" << expBonus_ << SEP_STR;
         }
@@ -245,7 +245,7 @@ namespace creature
 
         ss << ", your health by " << healthBonus_ << ", ";
 
-        if (0 == expBonus_)
+        if (0_exp == expBonus_)
         {
             ss << "and does not increase your experience";
         }

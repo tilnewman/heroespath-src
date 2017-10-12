@@ -28,6 +28,7 @@
 // party-factory.hpp
 //  A singleton class that creates parties of creatures that confront the player characters.
 //
+#include "game/types.hpp"
 #include "game/stats/types.hpp"
 #include "game/stats/stat-set.hpp"
 #include "game/creature/sex-enum.hpp"
@@ -82,7 +83,7 @@ namespace combat
             const creature::race::Enum RACE,
             const creature::role::Enum ROLE,
             const stats::Trait_t RANK = 1,
-            const stats::Trait_t EXPERIENCE = 0,
+            const Experience_t EXPERIENCE = 0_exp,
             const stats::Trait_t MANA = 0) const;
 
     private:

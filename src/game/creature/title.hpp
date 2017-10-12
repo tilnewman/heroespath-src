@@ -28,6 +28,7 @@
 // title.hpp
 //  Code that grants a player status and bonuses after a number of Achievements.
 //
+#include "game/types.hpp"
 #include "game/stats/stat-set.hpp"
 #include "game/creature/role-enum.hpp"
 #include "game/creature/title-enum.hpp"
@@ -69,7 +70,7 @@ namespace creature
                        const RoleVec_t &      ROLES_VEC             = RoleVec_t(),
                        const stats::StatSet & STATS_BONUS           = stats::StatSet(),
                        const stats::Trait_t   RANK_BONUS            = 0,
-                       const stats::Trait_t   EXPERIENCE_BONUS      = 0,
+                       const Experience_t     EXPERIENCE_BONUS      = 0_exp,
                        const stats::Trait_t   HEALTH_BONUS          = 0);
 
         virtual ~Title();
@@ -86,7 +87,7 @@ namespace creature
         inline virtual bool IsRoleInList(const role::Enum E) const      { return (std::find(rolesVec_.begin(), rolesVec_.end(), E) != rolesVec_.end()); }
         inline virtual const std::string ImageFilename() const          { return fileName_; }
         inline virtual stats::Trait_t RankBonus() const                 { return rankBonus_; }
-        inline virtual stats::Trait_t ExpBonus() const                  { return expBonus_; }
+        inline virtual Experience_t ExpBonus() const                    { return expBonus_; }
         inline virtual stats::Trait_t HealthBonus() const               { return healthBonus_; }
 
         virtual const std::string ToString() const;
@@ -108,7 +109,7 @@ namespace creature
         std::size_t           achievementIndex_;
         RoleVec_t             rolesVec_;
         stats::Trait_t        rankBonus_;
-        stats::Trait_t        expBonus_;
+        Experience_t          expBonus_;
         stats::StatSet        statBonus_;
         std::string           fileName_;
         stats::Trait_t        healthBonus_;
