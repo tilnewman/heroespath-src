@@ -386,7 +386,7 @@ namespace player
         {
             auto const SKIN_ITEM_PTR{ item::armor::ArmorFactory::Instance()->Make_Skin(
                 ((ROLE_ENUM == creature::role::Wolfen) ?
-                    item::material::Hide : item::material::Scale), 1, false) };
+                    item::material::Hide : item::material::Scale), 1_rank, false) };
 
             characterPtrC->ItemAdd(SKIN_ITEM_PTR);
             characterPtrC->ItemEquip(SKIN_ITEM_PTR);
@@ -480,25 +480,25 @@ namespace player
     }
 
 
-    stats::Trait_t Initial::GetStartingHealth(CharacterCPtrC_t CHARACTER_CPTRC)
+    Health_t Initial::GetStartingHealth(CharacterCPtrC_t CHARACTER_CPTRC)
     {
         std::ostringstream ss;
         ss << "heroespath-player-race-health-initial-"
             << creature::race::ToString(CHARACTER_CPTRC->Race());
 
-        const stats::Trait_t HEALTH_BASE( GameDataFile::Instance()->GetCopyInt(ss.str()) );
+        auto const HEALTH_BASE{ Health_t(GameDataFile::Instance()->GetCopyInt(ss.str())) };
 
         ss.str("");
         ss << "heroespath-player-role-health-adjustment-initial-"
             << creature::role::ToString(CHARACTER_CPTRC->Role());
 
-        return HEALTH_BASE + GameDataFile::Instance()->GetCopyInt(ss.str());
+        return HEALTH_BASE + Health_t(GameDataFile::Instance()->GetCopyInt(ss.str()));
     }
 
 
     void Initial::SetStartingHealth(CharacterPtrC_t characterPtrC)
     {
-        const stats::Trait_t STARTING_HEALTH(GetStartingHealth(characterPtrC));
+        auto const STARTING_HEALTH{ GetStartingHealth(characterPtrC) };
         characterPtrC->HealthNormalSet(STARTING_HEALTH);
         characterPtrC->HealthCurrentSet(STARTING_HEALTH);
     }

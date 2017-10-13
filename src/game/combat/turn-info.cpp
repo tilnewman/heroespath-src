@@ -28,6 +28,7 @@
 // turn-info.cpp
 //
 #include "turn-info.hpp"
+
 #include <tuple>
 
 
@@ -151,7 +152,7 @@ namespace combat
 
         if (mostDamagePair_.second == CREATURE_CPTRC)
         {
-            mostDamagePair_ = std::make_pair(0, nullptr);
+            mostDamagePair_ = std::make_pair(0_health, nullptr);
         }
     }
 

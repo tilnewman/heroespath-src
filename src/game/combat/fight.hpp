@@ -27,6 +27,7 @@
 //
 // fight.hpp
 //
+#include "game/types.hpp"
 #include "game/combat/fight-results.hpp"
 
 #include <memory>
@@ -86,14 +87,14 @@ namespace combat
         static void HandleDamage(
             creature::CreaturePtrC_t  creatureDefendingPtrC,
             HitInfoVec_t &            hitInfoVec,
-            const stats::Trait_t      HEALTH_ADJ,
+            const Health_t            HEALTH_ADJ,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             const bool                CAN_ADD_CONDITIONS = true);
 
         static void AddConditionsBasedOnDamage(
             creature::CreaturePtrC_t  creatureDefendingPtrC,
-            const stats::Trait_t      DAMAGE_ABS,
+            const Health_t            DAMAGE_ABS,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             HitInfoVec_t &            hitInfoVec);
@@ -157,7 +158,7 @@ namespace combat
             creature::CreaturePtrC_t creatureDefendingPtrC,
             const bool               WILL_FORCE_HIT = false);
 
-        static stats::Trait_t DetermineDamage(
+        static Health_t DetermineDamage(
             const item::ItemPtr_t    WEAPON_PTR,
             creature::CreaturePtrC_t creatureAttackingPtrC,
             creature::CreaturePtrC_t creatureDefendingPtrC,

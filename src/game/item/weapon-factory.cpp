@@ -100,22 +100,22 @@ namespace weapon
 
     ItemPtr_t WeaponFactory::Make_Fists()
     {
-        WeaponInfo weaponInfo(weapon_type::Fists);
+        WeaponInfo weaponInfo{ weapon_type::Fists };
         weaponInfo.is_fists = true;
 
-        const WeaponDetails FISTS_DETAILS(
-            WeaponDetailLoader::Instance()->LookupWeaponDetails("Fists") );
+        const WeaponDetails FISTS_DETAILS{
+            WeaponDetailLoader::Instance()->LookupWeaponDetails("Fists") };
 
-        auto itemPtr{ ItemWarehouse::Instance()->Store(
-            new Item(FISTS_DETAILS.name,
+        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+            FISTS_DETAILS.name,
             FISTS_DETAILS.description,
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        category::TwoHanded |
-                                        category::BodyPart),
+            static_cast<category::Enum>(
+                category::Weapon |
+                category::Equippable |
+                category::TwoHanded |
+                category::BodyPart),
             misc_type::NotMisc,
-            static_cast<weapon_type::Enum>(weapon_type::Melee |
-                                           weapon_type::Fists),
+            static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Fists),
             armor_type::NotArmor,
             material::Bone,
             material::Flesh,
@@ -128,8 +128,8 @@ namespace weapon
             creature::role::Count,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
@@ -137,7 +137,7 @@ namespace weapon
 
     ItemPtr_t WeaponFactory::Make_Claws(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        WeaponInfo weaponInfo(weapon_type::Claws);
+        WeaponInfo weaponInfo{ weapon_type::Claws };
         weaponInfo.is_claws = true;
 
         const WeaponDetails CLAWS_DETAILS(
@@ -152,13 +152,13 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             ssName.str(),
             ssDesc.str(),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        category::TwoHanded |
-                                        category::BodyPart),
+            static_cast<category::Enum>(
+                category::Weapon |
+                category::Equippable |
+                category::TwoHanded |
+                category::BodyPart),
             misc_type::NotMisc,
-            static_cast<weapon_type::Enum>(weapon_type::Melee |
-                                           weapon_type::Claws),
+            static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Claws),
             armor_type::NotArmor,
             material::Claw,
             material::Nothing,
@@ -171,8 +171,8 @@ namespace weapon
             creature::role::Count,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
@@ -180,7 +180,7 @@ namespace weapon
 
     ItemPtr_t WeaponFactory::Make_Tendrils(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        WeaponInfo weaponInfo(weapon_type::Tendrils);
+        WeaponInfo weaponInfo{ weapon_type::Tendrils };
         weaponInfo.is_tendrils = true;
 
         const WeaponDetails TENDRIL_DETAILS(
@@ -195,10 +195,11 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store(
             new Item(ssName.str(),
             ssDesc.str(),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        category::TwoHanded |
-                                        category::BodyPart),
+            static_cast<category::Enum>(
+                category::Weapon |
+                category::Equippable |
+                category::TwoHanded |
+                category::BodyPart),
             misc_type::NotMisc,
             static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Tendrils),
             armor_type::NotArmor,
@@ -213,8 +214,8 @@ namespace weapon
             creature::role::Count,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
@@ -222,7 +223,7 @@ namespace weapon
 
     ItemPtr_t WeaponFactory::Make_Bite(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        WeaponInfo weaponInfo(weapon_type::Bite);
+        WeaponInfo weaponInfo{ weapon_type::Bite };
         weaponInfo.is_bite = true;
 
         const WeaponDetails BITE_DETAILS(
@@ -237,9 +238,10 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store(
             new Item(ssName.str(),
             ssDesc.str(),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        category::BodyPart),
+            static_cast<category::Enum>(
+                category::Weapon |
+                category::Equippable |
+                category::BodyPart),
             misc_type::NotMisc,
             static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Bite),
             armor_type::NotArmor,
@@ -254,8 +256,8 @@ namespace weapon
             creature::role::Count,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
@@ -263,7 +265,7 @@ namespace weapon
 
     ItemPtr_t WeaponFactory::Make_Breath(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        WeaponInfo weaponInfo(weapon_type::Breath);
+        WeaponInfo weaponInfo{ weapon_type::Breath };
         weaponInfo.is_breath = true;
 
         //Hydras and other dragons use the Firebrand breath weapon.
@@ -290,9 +292,10 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store(
             new Item(ssName.str(),
             ssDesc.str(),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        category::BodyPart),
+            static_cast<category::Enum>(
+                category::Weapon |
+                category::Equippable |
+                category::BodyPart),
             misc_type::NotMisc,
             static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Breath),
             armor_type::NotArmor,
@@ -307,70 +310,74 @@ namespace weapon
             creature::role::Count,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
 
 
-    ItemPtr_t WeaponFactory::Make_Knife(const bool                  IS_DAGGER,
-                                        const sfml_util::Size::Enum SIZE,
-                                        const material::Enum        MATERIAL_PRI,
-                                        const material::Enum        MATERIAL_SEC,
-                                        const bool                  IS_PIXIE_ITEM)
+    ItemPtr_t WeaponFactory::Make_Knife(
+        const bool                  IS_DAGGER,
+        const sfml_util::Size::Enum SIZE,
+        const material::Enum        MATERIAL_PRI,
+        const material::Enum        MATERIAL_SEC,
+        const bool                  IS_PIXIE_ITEM)
     {
-        WeaponInfo weaponInfo(weapon_type::Knife);
+        WeaponInfo weaponInfo{ weapon_type::Knife };
         weaponInfo.is_dagger = IS_DAGGER;
         weaponInfo.is_knife = ! IS_DAGGER;
         weaponInfo.knife_size = SIZE;
 
-        const WeaponDetails KNIFE_DETAILS(
-            WeaponDetailLoader::Instance()->LookupWeaponDetails("Knife") );
+        const WeaponDetails KNIFE_DETAILS{
+            WeaponDetailLoader::Instance()->LookupWeaponDetails("Knife") };
 
         stats::Trait_t price(KNIFE_DETAILS.price + material::PriceAdj(MATERIAL_PRI, MATERIAL_SEC));
 
-        stats::Trait_t weight(static_cast<stats::Trait_t>(static_cast<float>(KNIFE_DETAILS.weight) *
-            material::WeightMult(MATERIAL_PRI, MATERIAL_SEC)));
+        stats::Trait_t weight{ static_cast<stats::Trait_t>(
+            static_cast<float>(KNIFE_DETAILS.weight) *
+                material::WeightMult(MATERIAL_PRI, MATERIAL_SEC)) };
 
-        stats::Trait_t damageMin(KNIFE_DETAILS.damage_min);
-        stats::Trait_t damageMax(KNIFE_DETAILS.damage_max);
-        std::string nameDescriptor("");
+        Health_t damageMin{ KNIFE_DETAILS.damage_min };
+        Health_t damageMax{ KNIFE_DETAILS.damage_max };
+
+        std::string nameDescriptor{ "" };
+
         if (SIZE == sfml_util::Size::Large)
         {
             nameDescriptor = "Large ";
             weight *= 2;
             price += 10;
-            damageMin += 1;
-            damageMax += 1;
+            damageMin += 1_health;
+            damageMax += 1_health;
         }
         else if (SIZE == sfml_util::Size::Small)
         {
             nameDescriptor = "Small ";
             weight /= 2;
             price -= 10;
-            damageMin -= 1;
-            damageMax -= 1;
+            damageMin -= 1_health;
+            damageMax -= 1_health;
         }
 
         std::string baseName("");
         if (IS_DAGGER)
         {
             baseName = "Dagger";
-            damageMin += 1;
-            damageMax += 1;
+            damageMin += 1_health;
+            damageMax += 1_health;
         }
         else
         {
             baseName = "Knife";
-            damageMin -= 1;
-            damageMax -= 1;
+            damageMin -= 1_health;
+            damageMax -= 1_health;
         }
 
         if (IS_PIXIE_ITEM)
         {
-            damageMin = 1;
-            damageMax = 2;
+            damageMin = 1_health;
+            damageMax = 2_health;
         }
 
         std::ostringstream ssName;
@@ -382,14 +389,16 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(ssName.str(), MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
             Make_Desc(ssDesc.str(), MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
-            static_cast<category::Enum>(category::Equippable |
-                                        category::Weapon |
-                                        category::OneHanded),
+            static_cast<category::Enum>(
+                category::Equippable |
+                category::Weapon |
+                category::OneHanded),
             misc_type::NotMisc,
-            static_cast<weapon_type::Enum>(weapon_type::Bladed |
-                                           weapon_type::Knife |
-                                           weapon_type::Melee |
-                                           weapon_type::Pointed),
+            static_cast<weapon_type::Enum>(
+                weapon_type::Bladed |
+                weapon_type::Knife |
+                weapon_type::Melee |
+                weapon_type::Pointed),
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
@@ -404,18 +413,19 @@ namespace weapon
             armor::ArmorInfo(),
             IS_PIXIE_ITEM) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
 
 
-    ItemPtr_t WeaponFactory::Make_Sword(const sword_type::Enum SWORD_TYPE,
-                                        const material::Enum   MATERIAL_PRI,
-                                        const material::Enum   MATERIAL_SEC)
+    ItemPtr_t WeaponFactory::Make_Sword(
+        const sword_type::Enum SWORD_TYPE,
+        const material::Enum   MATERIAL_PRI,
+        const material::Enum   MATERIAL_SEC)
     {
-        WeaponInfo weaponInfo(weapon_type::Sword);
+        WeaponInfo weaponInfo{ weapon_type::Sword };
         weaponInfo.sword = SWORD_TYPE;
 
         creature::role::Enum exclusiveRole(creature::role::Count);
@@ -428,8 +438,8 @@ namespace weapon
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(sword_type::ToString(SWORD_TYPE)) };
 
-        stats::Trait_t price(DETAILS.price);
-        stats::Trait_t weight(DETAILS.weight);
+        stats::Trait_t price{ DETAILS.price };
+        stats::Trait_t weight{ DETAILS.weight };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -437,14 +447,16 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        DETAILS.handedness),
+            static_cast<category::Enum>(
+                category::Weapon |
+                category::Equippable |
+                DETAILS.handedness),
             misc_type::NotMisc,
-            static_cast<weapon_type::Enum>(weapon_type::Melee |
-                                           weapon_type::Bladed |
-                                           weapon_type::Pointed |
-                                           weapon_type::Sword),
+            static_cast<weapon_type::Enum>(
+                weapon_type::Melee |
+                weapon_type::Bladed |
+                weapon_type::Pointed |
+                weapon_type::Sword),
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
@@ -457,25 +469,26 @@ namespace weapon
             exclusiveRole,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
 
 
-    ItemPtr_t WeaponFactory::Make_Axe(const axe_type::Enum AXE_TYPE,
-                                      const material::Enum MATERIAL_PRI,
-                                      const material::Enum MATERIAL_SEC)
+    ItemPtr_t WeaponFactory::Make_Axe(
+        const axe_type::Enum AXE_TYPE,
+        const material::Enum MATERIAL_PRI,
+        const material::Enum MATERIAL_SEC)
     {
-        WeaponInfo weaponInfo(weapon_type::Axe);
+        WeaponInfo weaponInfo{ weapon_type::Axe };
         weaponInfo.axe = AXE_TYPE;
 
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(axe_type::ToString(AXE_TYPE)) };
 
-        stats::Trait_t price(DETAILS.price);
-        stats::Trait_t weight(DETAILS.weight);
+        stats::Trait_t price{ DETAILS.price };
+        stats::Trait_t weight{ DETAILS.weight };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -483,13 +496,11 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        DETAILS.handedness),
+            static_cast<category::Enum>(
+                category::Weapon | category::Equippable | DETAILS.handedness),
             misc_type::NotMisc,
-            static_cast<weapon_type::Enum>(weapon_type::Melee |
-                                           weapon_type::Bladed |
-                                           weapon_type::Axe),
+            static_cast<weapon_type::Enum>(
+                weapon_type::Melee | weapon_type::Bladed | weapon_type::Axe),
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
@@ -502,25 +513,26 @@ namespace weapon
             creature::role::Count,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
 
 
-    ItemPtr_t WeaponFactory::Make_Club(const club_type::Enum CLUB_TYPE,
-                                       const material::Enum  MATERIAL_PRI,
-                                       const material::Enum  MATERIAL_SEC)
+    ItemPtr_t WeaponFactory::Make_Club(
+        const club_type::Enum CLUB_TYPE,
+        const material::Enum  MATERIAL_PRI,
+        const material::Enum  MATERIAL_SEC)
     {
-        WeaponInfo weaponInfo(weapon_type::Club);
+        WeaponInfo weaponInfo{ weapon_type::Club };
         weaponInfo.club = CLUB_TYPE;
 
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(club_type::ToString(CLUB_TYPE)) };
 
-        stats::Trait_t price(DETAILS.price);
-        stats::Trait_t weight(DETAILS.weight);
+        stats::Trait_t price{ DETAILS.price };
+        stats::Trait_t weight{ DETAILS.weight };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -528,9 +540,8 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        DETAILS.handedness),
+            static_cast<category::Enum>(
+                category::Weapon | category::Equippable | DETAILS.handedness),
             misc_type::NotMisc,
             static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Club),
             armor_type::NotArmor,
@@ -545,25 +556,26 @@ namespace weapon
             creature::role::Count,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
 
 
-    ItemPtr_t WeaponFactory::Make_Whip(const whip_type::Enum WHIP_TYPE,
-                                       const material::Enum  MATERIAL_PRI,
-                                       const material::Enum  MATERIAL_SEC)
+    ItemPtr_t WeaponFactory::Make_Whip(
+        const whip_type::Enum WHIP_TYPE,
+        const material::Enum  MATERIAL_PRI,
+        const material::Enum  MATERIAL_SEC)
     {
-        WeaponInfo weaponInfo(weapon_type::Whip);
+        WeaponInfo weaponInfo{ weapon_type::Whip };
         weaponInfo.whip = WHIP_TYPE;
 
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(whip_type::ToString(WHIP_TYPE)) };
 
-        stats::Trait_t price(DETAILS.price);
-        stats::Trait_t weight(DETAILS.weight);
+        stats::Trait_t price{ DETAILS.price };
+        stats::Trait_t weight{ DETAILS.weight };
 
         material::Enum materialPri(material::Count);
 
@@ -600,9 +612,8 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, materialPri, MATERIAL_SEC),
             Make_Desc(DETAILS.description, materialPri, MATERIAL_SEC, "handle"),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        DETAILS.handedness),
+            static_cast<category::Enum>(
+                category::Weapon | category::Equippable | DETAILS.handedness),
             misc_type::NotMisc,
             static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Whip),
             armor_type::NotArmor,
@@ -617,27 +628,28 @@ namespace weapon
             creature::role::Count,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
 
 
-    ItemPtr_t WeaponFactory::Make_Projectile(const projectile_type::Enum PROJ_TYPE,
-                                             const material::Enum        MATERIAL_PRI,
-                                             const material::Enum        MATERIAL_SEC)
+    ItemPtr_t WeaponFactory::Make_Projectile(
+        const projectile_type::Enum PROJ_TYPE,
+        const material::Enum        MATERIAL_PRI,
+        const material::Enum        MATERIAL_SEC)
     {
-        WeaponInfo weaponInfo(weapon_type::Projectile);
+        WeaponInfo weaponInfo{ weapon_type::Projectile };
         weaponInfo.projectile = PROJ_TYPE;
 
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(projectile_type::ToString(PROJ_TYPE)) };
 
-        stats::Trait_t price(DETAILS.price);
-        stats::Trait_t weight(DETAILS.weight);
+        stats::Trait_t price{ DETAILS.price };
+        stats::Trait_t weight{ DETAILS.weight };
 
-        weapon_type::Enum weaponType(weapon_type::NotAWeapon);
+        auto weaponType{ weapon_type::NotAWeapon };
 
         switch (PROJ_TYPE)
         {
@@ -683,10 +695,11 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "grip"),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::TwoHanded |
-                                        category::Equippable |
-                                        DETAILS.handedness),
+            static_cast<category::Enum>(
+                category::Weapon |
+                category::TwoHanded |
+                category::Equippable |
+                DETAILS.handedness),
             misc_type::NotMisc,
             static_cast<weapon_type::Enum>(weapon_type::Projectile | weaponType),
             armor_type::NotArmor,
@@ -701,41 +714,42 @@ namespace weapon
             creature::role::Count,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
 
 
-    ItemPtr_t WeaponFactory::Make_Staff(const bool           IS_QUARTERSTAFF,
-                                        const material::Enum MATERIAL_PRI,
-                                        const material::Enum MATERIAL_SEC,
-                                        const bool           IS_PIXIE_ITEM)
+    ItemPtr_t WeaponFactory::Make_Staff(
+        const bool           IS_QUARTERSTAFF,
+        const material::Enum MATERIAL_PRI,
+        const material::Enum MATERIAL_SEC,
+        const bool           IS_PIXIE_ITEM)
     {
-        WeaponInfo weaponInfo(weapon_type::Staff);
-        weaponInfo.is_staff = ! IS_QUARTERSTAFF;
+        WeaponInfo weaponInfo{ weapon_type::Staff };
+        weaponInfo.is_staff = !IS_QUARTERSTAFF;
         weaponInfo.is_quarterstaff = IS_QUARTERSTAFF;
 
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(((IS_QUARTERSTAFF) ? "Quarterstaff" : "Staff")) };
 
-        stats::Trait_t price(DETAILS.price);
-        stats::Trait_t weight(DETAILS.weight);
+        stats::Trait_t price{ DETAILS.price };
+        stats::Trait_t weight{ DETAILS.weight };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
-            Make_Desc(std::string("A ").append(DETAILS.name),
-                      MATERIAL_PRI,
-                      MATERIAL_SEC,
-                      "",
-                      IS_PIXIE_ITEM),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        DETAILS.handedness),
+            Make_Desc(
+                std::string("A ").append(DETAILS.name),
+                MATERIAL_PRI,
+                MATERIAL_SEC,
+                "",
+                IS_PIXIE_ITEM),
+            static_cast<category::Enum>(
+                category::Weapon | category::Equippable | DETAILS.handedness),
             misc_type::NotMisc,
             static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Staff),
             armor_type::NotArmor,
@@ -752,33 +766,35 @@ namespace weapon
             armor::ArmorInfo(),
             IS_PIXIE_ITEM) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
 
 
-    ItemPtr_t WeaponFactory::Make_BladedStaff(const bladedstaff_type::Enum STAFF_TYPE,
-                                              const material::Enum         MATERIAL_PRI,
-                                              const material::Enum         MATERIAL_SEC)
-
+    ItemPtr_t WeaponFactory::Make_BladedStaff(
+        const bladedstaff_type::Enum STAFF_TYPE,
+        const material::Enum         MATERIAL_PRI,
+        const material::Enum         MATERIAL_SEC)
     {
-        WeaponInfo weaponInfo(weapon_type::BladedStaff);
+        WeaponInfo weaponInfo{ weapon_type::BladedStaff };
         weaponInfo.bladedstaff = STAFF_TYPE;
 
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(bladedstaff_type::ToString(STAFF_TYPE)) };
 
-        stats::Trait_t price(DETAILS.price);
-        stats::Trait_t weight(DETAILS.weight);
+        stats::Trait_t price{ DETAILS.price };
+        stats::Trait_t weight{ DETAILS.weight };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
-        weapon_type::Enum spearWeapon(weapon_type::BladedStaff);
-        auto const IS_SPEAR{ ((STAFF_TYPE == bladedstaff_type::Spear) ||
-                              (STAFF_TYPE == bladedstaff_type::ShortSpear)) };
+        auto spearWeapon{ weapon_type::BladedStaff };
+
+        auto const IS_SPEAR{
+            ((STAFF_TYPE == bladedstaff_type::Spear) ||
+             (STAFF_TYPE == bladedstaff_type::ShortSpear)) };
 
         if (IS_SPEAR)
         {
@@ -788,13 +804,11 @@ namespace weapon
         auto itemPtr{ ItemWarehouse::Instance()->Store( new Item(
             Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc_BladdedStaff(DETAILS.name, IS_SPEAR, MATERIAL_PRI, MATERIAL_SEC),
-            static_cast<category::Enum>(category::Weapon |
-                                        category::Equippable |
-                                        DETAILS.handedness),
+            static_cast<category::Enum>(
+                category::Weapon | category::Equippable | DETAILS.handedness),
             misc_type::NotMisc,
-            static_cast<weapon_type::Enum>(weapon_type::Melee |
-                                           weapon_type::BladedStaff |
-                                           spearWeapon),
+            static_cast<weapon_type::Enum>(
+                weapon_type::Melee | weapon_type::BladedStaff | spearWeapon),
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
@@ -807,8 +821,8 @@ namespace weapon
             creature::role::Count,
             weaponInfo) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }

@@ -57,6 +57,12 @@ namespace misc
 
         inline T Mid() const { return Min() + (Diff() / T(2)); }
 
+        inline T Avg() const { return (a_ + b_) / T(2); }
+
+        inline float AvgFloat() const { return static_cast<float>(a_ + b_) * 0.5f; }
+
+        inline double AvgDouble() const { return static_cast<double>(a_ + b_) * 0.5; }
+
     private:
         T a_;
         T b_;

@@ -206,10 +206,9 @@ namespace creature
 
         if (OPTIONS & With::RankBonus)
         {
-            auto const RANK_BONUS{ static_cast<stats::Trait_t>(
-                static_cast<float>(CREATURE_PTR->Rank()) *
-                    GameDataFile::Instance()->GetCopyFloat(
-                        "heroespath-fight-stats-rank-bonus-ratio")) };
+            auto const RANK_BONUS{ static_cast<int>(
+                CREATURE_PTR->Rank().AsFloat() * GameDataFile::Instance()->GetCopyFloat(
+                    "heroespath-fight-stats-rank-bonus-ratio")) };
 
             rollChance += RANK_BONUS;
         }
@@ -218,34 +217,37 @@ namespace creature
     }
 
 
-    bool Stats::Versus(const CreaturePtr_t       CHALLENGER_PTR,
-                       const stats::Traits::Enum CHALLENGER_TRAIT,
-                       const CreaturePtr_t       DEFENDER_PTR,
-                       const stats::Traits::Enum DEFENDER_TRAIT_PARAM,
-                       const stats::Trait_t      CHALLENGER_BONUS_PER,
-                       const stats::Trait_t      DEFENDER_BONUS_PER,
-                       const With                OPTIONS)
+    bool Stats::Versus(
+        const CreaturePtr_t       CHALLENGER_PTR,
+        const stats::Traits::Enum CHALLENGER_TRAIT,
+        const CreaturePtr_t       DEFENDER_PTR,
+        const stats::Traits::Enum DEFENDER_TRAIT_PARAM,
+        const stats::Trait_t      CHALLENGER_BONUS_PER,
+        const stats::Trait_t      DEFENDER_BONUS_PER,
+        const With                OPTIONS)
     {
         auto const DEFENDER_TRAIT{ ((DEFENDER_TRAIT_PARAM == stats::Traits::Count) ?
             CHALLENGER_TRAIT : DEFENDER_TRAIT_PARAM) };
 
-        return Versus(CHALLENGER_PTR,
-                      stats::TraitsVec_t(1, CHALLENGER_TRAIT),
-                      DEFENDER_PTR,
-                      stats::TraitsVec_t(1, DEFENDER_TRAIT),
-                      CHALLENGER_BONUS_PER,
-                      DEFENDER_BONUS_PER,
-                      OPTIONS);
+        return Versus(
+            CHALLENGER_PTR,
+            stats::TraitsVec_t(1, CHALLENGER_TRAIT),
+            DEFENDER_PTR,
+            stats::TraitsVec_t(1, DEFENDER_TRAIT),
+            CHALLENGER_BONUS_PER,
+            DEFENDER_BONUS_PER,
+            OPTIONS);
     }
 
 
-    bool Stats::Versus(const CreaturePtr_t        CHALLENGER_PTR,
-                       const stats::TraitsVec_t & CHALLENGER_TRAIT_VEC,
-                       const CreaturePtr_t        DEFENDER_PTR,
-                       const stats::TraitsVec_t & DEFENDER_TRAIT_VEC_PARAM,
-                       const stats::Trait_t       CHALLENGER_BONUS_PER,
-                       const stats::Trait_t       DEFENDER_BONUS_PER,
-                       const With                 OPTIONS)
+    bool Stats::Versus(
+        const CreaturePtr_t        CHALLENGER_PTR,
+        const stats::TraitsVec_t & CHALLENGER_TRAIT_VEC,
+        const CreaturePtr_t        DEFENDER_PTR,
+        const stats::TraitsVec_t & DEFENDER_TRAIT_VEC_PARAM,
+        const stats::Trait_t       CHALLENGER_BONUS_PER,
+        const stats::Trait_t       DEFENDER_BONUS_PER,
+        const With                 OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((CHALLENGER_PTR != nullptr),
             "game::creature::Stats::Versus() called with a null CHALLENGER_PTR.");
@@ -296,7 +298,7 @@ namespace creature
         }
 
         auto const CHALLENGER_ROLL{ chaRandSum + ((OPTIONS & With::RankBonus) ?
-            static_cast<stats::Trait_t>(CHALLENGER_PTR->Rank()) : 0 ) };
+            CHALLENGER_PTR->Rank().AsInt() : 0 ) };
 
         auto const DEFENDER_TRAIT_VEC{ ((DEFENDER_TRAIT_VEC_PARAM.empty()) ?
             CHALLENGER_TRAIT_VEC : DEFENDER_TRAIT_VEC_PARAM) };
@@ -341,16 +343,13 @@ namespace creature
         }
 
         auto const DEFENDER_ROLL{ defRandSum + ((OPTIONS & With::RankBonus) ?
-            static_cast<stats::Trait_t>(DEFENDER_PTR->Rank()) : 0 ) };
+            DEFENDER_PTR->Rank().AsInt() : 0 ) };
 
         //handle roll tie
         if (CHALLENGER_ROLL == DEFENDER_ROLL)
         {
-            auto const CHA_NORMAL_PLUS_RANK{ chaNormalSum +
-                static_cast<stats::Trait_t>(CHALLENGER_PTR->Rank()) };
-
-            auto const DEF_NORMAL_PLUS_RANK{ defNormalSum +
-                static_cast<stats::Trait_t>(DEFENDER_PTR->Rank()) };
+            auto const CHA_NORMAL_PLUS_RANK{ chaNormalSum + CHALLENGER_PTR->Rank().AsInt() };
+            auto const DEF_NORMAL_PLUS_RANK{ defNormalSum + DEFENDER_PTR->Rank().AsInt() };
 
             //handle normal+rank tie
             if (CHA_NORMAL_PLUS_RANK == DEF_NORMAL_PLUS_RANK)
@@ -559,7 +558,7 @@ namespace creature
         auto x{ static_cast<int>(
             static_cast<float>(RAND_SPREAD) * (RAND_RATIO + TRAIT_BONUS_RATIO)) };
 
-        x += static_cast<int>(static_cast<float>(CREATURE_PTR->Rank()) * RANK_BONUS_MULT);
+        x += static_cast<int>(CREATURE_PTR->Rank().AsFloat() * RANK_BONUS_MULT);
 
         return x;
     }

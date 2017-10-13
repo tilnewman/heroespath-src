@@ -138,14 +138,15 @@ namespace ownership
     }
 
 
-    void ChanceFactory::Make_Coins(const Profile & PROFILE,
-                                   stats::Trait_t &  coinsMin_OutParam,
-                                   stats::Trait_t &  coinsMax_OutParam)
+    void ChanceFactory::Make_Coins(
+        const Profile & PROFILE,
+        stats::Trait_t & coinsMin_OutParam,
+        stats::Trait_t & coinsMax_OutParam)
     {
-        const std::string KEY_STR("heroespath-nonplayer-coins-bounds-"
-            + wealth_type::ToString(PROFILE.wealthType) );
+        auto const KEY_STR{
+            "heroespath-nonplayer-coins-bounds-" + wealth_type::ToString(PROFILE.wealthType) };
 
-        const std::string VALUE_STR( GameDataFile::Instance()->GetCopyStr(KEY_STR) );
+        auto const VALUE_STR{ GameDataFile::Instance()->GetCopyStr(KEY_STR) };
 
         using StrVec_t = std::vector<std::string>;
         StrVec_t strVec;
@@ -190,7 +191,7 @@ namespace ownership
 
 
     const chance::ClothingChances ChanceFactory::Make_ClothingChances(
-        const Profile &                  PROFILE,
+        const Profile & PROFILE,
         const non_player::CharacterPtr_t CHARACTER_PTR)
     {
         using namespace item;
@@ -789,10 +790,12 @@ namespace ownership
                 << "\") found value-str=\"" << VALUE_STR
                 << "\" which failed to be parsed into the required 2  or more comma sep fields.");
 
-            const std::string ARMOR_NAME_STR(piecesVec[0]);
+            auto const ARMOR_NAME_STR{ piecesVec[0] };
 
-            const std::string ARMOR_CHANCE_STR(piecesVec[piecesVec.size()-1]);
-            float armorChanceVal(-1.0f);
+            auto const ARMOR_CHANCE_STR{ piecesVec[piecesVec.size() - 1] };
+
+            auto armorChanceVal{ -1.0f };
+
             try
             {
                 armorChanceVal = boost::lexical_cast<float>(ARMOR_CHANCE_STR);
@@ -818,8 +821,9 @@ namespace ownership
             using namespace item::armor;
 
             const bool HAS_TYPE_STR(piecesVec.size() > 2);
-            const std::string ARMOR_TYPE_STR(piecesVec[1]);
-            const base_type::Enum ARMOR_TYPE( base_type::FromString(ARMOR_TYPE_STR) );
+            auto const ARMOR_TYPE_STR{ piecesVec[1] };
+            auto const ARMOR_TYPE{ base_type::FromString(ARMOR_TYPE_STR) };
+
             if (HAS_TYPE_STR)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS((ARMOR_TYPE != base_type::Count),
@@ -837,8 +841,8 @@ namespace ownership
                     << "to be parsed as a valid non-Plain item::armor::base_type::Enum.");
             }
 
-            const std::string ARMOR_NAME_COMPLETE_STR(((HAS_TYPE_STR) ?
-                ARMOR_TYPE_STR : "") + ARMOR_NAME_STR);
+            const std::string ARMOR_NAME_COMPLETE_STR{ ((HAS_TYPE_STR) ?
+                ARMOR_TYPE_STR : "") + ARMOR_NAME_STR };
 
             if (ARMOR_NAME_STR == "Shirt")
             {
@@ -1010,11 +1014,11 @@ namespace ownership
 
         using StrVec_t = std::vector<std::string>;
 
-        const std::string ROLE_STR(creature::role::ToString(ROLE));
+        auto const ROLE_STR{ creature::role::ToString(ROLE) };
         const std::string KEY_STR("heroespath-nonplayer-weapon-chances-role-" + ROLE_STR);
 
-        const std::string VALUE_STR_LOWER(to_lower_copy(
-            GameDataFile::Instance()->GetCopyStr(KEY_STR)) );
+        auto const VALUE_STR_LOWER{ to_lower_copy(
+            GameDataFile::Instance()->GetCopyStr(KEY_STR)) };
 
         StrVec_t weaponSetVec;
         appbase::stringhelp::SplitByChars(VALUE_STR_LOWER, weaponSetVec, "{}", true, true);
@@ -1088,8 +1092,8 @@ namespace ownership
                         << "\" but was unable to parse as at least two strings separated by "
                         << "a comma.");
 
-                    const std::string WEAPON_NAME(partsVec[0]);
-                    const std::string CHANCE_STR(partsVec[1]);
+                    auto const WEAPON_NAME{ partsVec[0] };
+                    auto const CHANCE_STR{ partsVec[1] };
 
                     //parse weapon name and type
                     const item::weapon::WeaponInfo WEAPON_INFO(item::weapon_type::NotAWeapon,
@@ -1127,10 +1131,9 @@ namespace ownership
                                                   const float         MIN,
                                                   const float         MAX)
     {
-        const std::string MIN_STR("min");
-        const std::string MAX_STR("max");
-        const std::string REMAINING_STR("remaining");
-
+        const std::string MIN_STR{ "min" };
+        const std::string MAX_STR{ "max" };
+        const std::string REMAINING_STR{ "remaining" };
         const std::string VALUE_STR( GameDataFile::Instance()->GetCopyStr(KEY) );
 
         if (VALUE_STR == MIN_STR)
@@ -1185,20 +1188,21 @@ namespace ownership
         ss << "heroespath-inventory-clothing-" << wealth_type::ToString(PROFILE.wealthType)
             << "-chances";
 
-        const std::string WEARABLE_STR_BASE(ss.str());
+        auto const WEARABLE_STR_BASE{ ss.str() };
 
         //find the chance-subtotal and the material that will have the remaining chance
-        float chanceSubTotal(0.0f);
+        auto chanceSubTotal(0.0f);
         item::material::Enum materialWithChanceRemaining(item::material::Nothing);
-        const float CHANCE_MIN(GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-inventory-clothing-chance-min"));
+        auto const CHANCE_MIN{ GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-inventory-clothing-chance-min") };
 
-        const float CHANCE_MAX(GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-inventory-clothing-chance-max"));
+        auto const CHANCE_MAX{ GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-inventory-clothing-chance-max") };
 
-        clothChance = GetFloatFromGameDataFile(WEARABLE_STR_BASE + "-wearable-cloth",
-                                               CHANCE_MIN,
-                                               CHANCE_MAX);
+        clothChance = GetFloatFromGameDataFile(
+            WEARABLE_STR_BASE + "-wearable-cloth",
+            CHANCE_MIN,
+            CHANCE_MAX);
 
         if (clothChance < 0.0f)
         {
@@ -1209,9 +1213,10 @@ namespace ownership
             chanceSubTotal += clothChance;
         }
 
-        softleatherChance = GetFloatFromGameDataFile(WEARABLE_STR_BASE + "-wearable-soft-leather",
-                                                     CHANCE_MIN,
-                                                     CHANCE_MAX);
+        softleatherChance = GetFloatFromGameDataFile(
+            WEARABLE_STR_BASE + "-wearable-soft-leather",
+            CHANCE_MIN,
+            CHANCE_MAX);
 
         if (softleatherChance < 0.0f)
         {
@@ -1222,9 +1227,10 @@ namespace ownership
             chanceSubTotal += softleatherChance;
         }
 
-        hardleatherChance = GetFloatFromGameDataFile(WEARABLE_STR_BASE + "-wearable-hard-leather",
-                                                     CHANCE_MIN,
-                                                     CHANCE_MAX);
+        hardleatherChance = GetFloatFromGameDataFile(
+            WEARABLE_STR_BASE + "-wearable-hard-leather",
+            CHANCE_MIN,
+            CHANCE_MAX);
 
         if (hardleatherChance < 0.0f)
         {
@@ -1254,8 +1260,8 @@ namespace ownership
 
         //adjust chances by rank, where higher rank means a higher
         //chance of more valuable materials
-        const float RANK_RATIO(static_cast<float>(CHARACTER_PTR->Rank()) /
-            GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax"));
+        auto const RANK_RATIO{ CHARACTER_PTR->Rank().AsFloat() /
+            GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax") };
 
         hardleatherChance += RANK_RATIO;
         softleatherChance += RANK_RATIO * 0.5f;
@@ -1281,16 +1287,17 @@ namespace ownership
 
         //determine the final chances for each possible primary material type,
         //which for clothing are restricted to cloth, soft leather, and hard leather
-        float clothChance(0.0f);
-        float softleatherChance(0.0f);
-        float hardleatherChance(0.0f);
-        //
-        LookupClothingMaterialChances(PROFILE,
-                                      CHARACTER_PTR,
-                                      clothChance,
-                                      softleatherChance,
-                                      hardleatherChance);
-        //
+        auto clothChance(0.0f);
+        auto softleatherChance(0.0f);
+        auto hardleatherChance(0.0f);
+        
+        LookupClothingMaterialChances(
+            PROFILE,
+            CHARACTER_PTR,
+            clothChance,
+            softleatherChance,
+            hardleatherChance);
+        
         itemChancesBase.mat_map_pri[item::material::Cloth] = clothChance;
         itemChancesBase.mat_map_pri[item::material::SoftLeather] = softleatherChance;
         itemChancesBase.mat_map_pri[item::material::HardLeather] = hardleatherChance;
@@ -1305,25 +1312,25 @@ namespace ownership
         chance::MaterialChanceMap_t &       materialsMap_OutParam)
     {
         //establish the base chances for a special primary material
-        float chanceCool    (1.0f / GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-material-primary-chance-base-Cool-onein"));
+        auto chanceCool{ 1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-primary-chance-base-Cool-onein") };
 
-        float chanceMetal   (1.0f / GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-material-primary-chance-base-Metal-onein"));
+        auto chanceMetal{ 1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-primary-chance-base-Metal-onein") };
 
-        float chancePrecious(1.0f / GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-material-primary-chance-base-Precious-onein"));
+        auto chancePrecious{ 1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-primary-chance-base-Precious-onein") };
 
-        //
-        chance::MaterialChanceMap_t chanceMapCool(Make_MaterialChanceMapCool());
-        chance::MaterialChanceMap_t chanceMapMetal(Make_MaterialChanceMapMetal());
-        chance::MaterialChanceMap_t chanceMapPrecious(Make_MaterialChanceMapPrecious());
+        auto chanceMapCool{ Make_MaterialChanceMapCool() };
+        auto chanceMapMetal{ Make_MaterialChanceMapMetal() };
+        auto chanceMapPrecious{ Make_MaterialChanceMapPrecious() };
 
         //adjustments that make higher ranks more likely to have special materials
-        const float RANK_DIVISOR(static_cast<float>(GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-rankclass-Master-rankmax")));
+        auto const RANK_DIVISOR_F{
+            GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax") };
 
-        const float RANK_CHANCE_INCREASE(static_cast<float>(CHARACTER_PTR->Rank()) / RANK_DIVISOR);
+        auto const RANK_CHANCE_INCREASE{ CHARACTER_PTR->Rank().AsFloat() / RANK_DIVISOR_F };
+
         chanceCool += RANK_CHANCE_INCREASE;
         chanceMetal += RANK_CHANCE_INCREASE;
         chancePrecious += RANK_CHANCE_INCREASE;
@@ -1345,9 +1352,10 @@ namespace ownership
         }
 
         //adjustments that make more wealth equal better chances for special materials
-        const float WEALTH_CHANCE_ADJUSTMENT(GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-material-wealth-chance-base-adjustment-" +
-            wealth_type::ToString(PROFILE.wealthType)));
+        auto const WEALTH_CHANCE_ADJUSTMENT{
+            GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-wealth-chance-base-adjustment-" +
+                    wealth_type::ToString(PROFILE.wealthType)) };
 
         chanceCool += WEALTH_CHANCE_ADJUSTMENT;
         chanceMetal += WEALTH_CHANCE_ADJUSTMENT;
@@ -1383,24 +1391,24 @@ namespace ownership
                 "heroespath-material-collector-chance-base-increase-Precious");
 
             //adjustments that make collector's already acquired special materials more rare
-            const float CHANCE_DIV_COOL(GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-per-divisor-Cool"));
+            auto const CHANCE_DIV_COOL{ GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Cool") };
 
             for (auto & nextMapPair : chanceMapCool)
             {
                 nextMapPair.second /= CHANCE_DIV_COOL;
             }
 
-            const float CHANCE_DIV_METAL(GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-per-divisor-Metal"));
+            auto const CHANCE_DIV_METAL{ GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Metal") };
 
             for (auto & nextMapPair : chanceMapMetal)
             {
                 nextMapPair.second /= CHANCE_DIV_METAL;
             }
 
-            const float CHANCE_DIV_PRECIOUS(GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-per-divisor-Precious"));
+            auto const CHANCE_DIV_PRECIOUS{ GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Precious") };
 
             for (auto & nextMapPair : chanceMapPrecious)
             {
@@ -1409,7 +1417,7 @@ namespace ownership
         }
 
         //adjust for item weight that can make special materials less likely
-        const float WEIGHT_CHANCE_ADJUSTMENT(static_cast<float>(ITEM_WEIGHT) / 2500.0f);
+        auto const WEIGHT_CHANCE_ADJUSTMENT{ static_cast<float>(ITEM_WEIGHT) / 2500.0f };
         chanceCool -= WEIGHT_CHANCE_ADJUSTMENT;
         chanceMetal -= WEIGHT_CHANCE_ADJUSTMENT;
         chancePrecious -= WEIGHT_CHANCE_ADJUSTMENT;
@@ -1420,17 +1428,18 @@ namespace ownership
         ForceMin(chancePrecious);
 
         //adjust material chances based on creture PROFILE.complexity
-        RestrictMaterialsByComplexity(PROFILE.complexityType,
-                                      chanceCool,
-                                      chanceMapCool,
-                                      chanceMetal,
-                                      chanceMapMetal,
-                                      chancePrecious,
-                                      chanceMapPrecious);
+        RestrictMaterialsByComplexity(
+            PROFILE.complexityType,
+            chanceCool,
+            chanceMapCool,
+            chanceMetal,
+            chanceMapMetal,
+            chancePrecious,
+            chanceMapPrecious);
 
         //final determination of which material will be secondary
-        const float SUBTOTAL(chanceCool + chanceMetal + chancePrecious);
-        const float RAND(misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)));
+        auto const SUBTOTAL{ chanceCool + chanceMetal + chancePrecious };
+        auto const RAND{ misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) };
 
         if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
         {
@@ -1475,24 +1484,24 @@ namespace ownership
         chance::MaterialChanceMap_t &    materialsMap_OutParam)
     {
         //establish the base chances for a secondary material
-        float chanceCool(    1.0f / GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-material-secondary-chance-base-Cool-onein") );
+        auto chanceCool{ 1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-secondary-chance-base-Cool-onein") };
 
-        float chanceMetal(   1.0f / GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-material-secondary-chance-base-Metal-onein"));
+        auto chanceMetal{ 1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-secondary-chance-base-Metal-onein") };
 
-        float chancePrecious(1.0f / GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-material-secondary-chance-base-Precious-onein"));
+        auto chancePrecious{ 1.0f / GameDataFile::Instance()->GetCopyFloat(
+            "heroespath-material-secondary-chance-base-Precious-onein") };
 
-        chance::MaterialChanceMap_t chanceMapCool( Make_MaterialChanceMapCool() );
-        chance::MaterialChanceMap_t chanceMapMetal( Make_MaterialChanceMapMetal() );
-        chance::MaterialChanceMap_t chanceMapPrecious( Make_MaterialChanceMapPrecious() );
+        auto chanceMapCool{ Make_MaterialChanceMapCool() };
+        auto chanceMapMetal{ Make_MaterialChanceMapMetal() };
+        auto chanceMapPrecious{ Make_MaterialChanceMapPrecious() };
 
         //adjustments that make higher ranks more likely to have special materials
-        const float RANK_DIVISOR( static_cast<float>(GameDataFile::Instance()->GetCopyFloat(
-            "heroespath-rankclass-Master-rankmax")) );
+        auto const RANK_DIVISOR{ static_cast<float>(
+            GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax")) };
 
-        const float RANK_CHANCE_INCREASE(static_cast<float>(CHARACTER_PTR->Rank()) / RANK_DIVISOR);
+        auto const RANK_CHANCE_INCREASE{ CHARACTER_PTR->Rank().AsFloat() / RANK_DIVISOR };
         chanceCool += RANK_CHANCE_INCREASE;
         chanceMetal += RANK_CHANCE_INCREASE;
         chancePrecious += RANK_CHANCE_INCREASE;
@@ -1514,9 +1523,9 @@ namespace ownership
         }
 
         //adjustments that make more wealth equal better chances for special materials
-        const float WEALTH_CHANCE_ADJUSTMENT( GameDataFile::Instance()->GetCopyFloat(
+        auto const WEALTH_CHANCE_ADJUSTMENT( GameDataFile::Instance()->GetCopyFloat(
             "heroespath-material-wealth-chance-base-adjustment-" +
-            wealth_type::ToString(PROFILE.wealthType)) );
+                wealth_type::ToString(PROFILE.wealthType)) );
 
         chanceCool += WEALTH_CHANCE_ADJUSTMENT;
         chanceMetal += WEALTH_CHANCE_ADJUSTMENT;
@@ -1552,24 +1561,24 @@ namespace ownership
                 "heroespath-material-collector-chance-base-increase-Precious");
 
             //adjustments that make collector's already acquired special materials more rare
-            const float CHANCE_DIV_COOL(GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-per-divisor-Cool"));
+            auto const CHANCE_DIV_COOL{ GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Cool") };
 
             for (auto & nextMapPair : chanceMapCool)
             {
                 nextMapPair.second /= CHANCE_DIV_COOL;
             }
 
-            const float CHANCE_DIV_METAL(GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-per-divisor-Metal"));
+            auto const CHANCE_DIV_METAL{ GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Metal") };
 
             for (auto & nextMapPair : chanceMapMetal)
             {
                 nextMapPair.second /= CHANCE_DIV_METAL;
             }
 
-            const float CHANCE_DIV_PRECIOUS(GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-material-collector-chance-per-divisor-Precious"));
+            auto const CHANCE_DIV_PRECIOUS{ GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-material-collector-chance-per-divisor-Precious") };
 
             for (auto & nextMapPair : chanceMapPrecious)
             {
@@ -1577,18 +1586,18 @@ namespace ownership
             }
         }
 
-        RestrictMaterialsByComplexity(PROFILE.complexityType,
-                                      chanceCool,
-                                      chanceMapCool,
-                                      chanceMetal,
-                                      chanceMapMetal,
-                                      chancePrecious,
-                                      chanceMapPrecious);
-
+        RestrictMaterialsByComplexity(
+            PROFILE.complexityType,
+            chanceCool,
+            chanceMapCool,
+            chanceMetal,
+            chanceMapMetal,
+            chancePrecious,
+            chanceMapPrecious);
 
         //final determination of which material will be secondary
-        const float SUBTOTAL(chanceCool + chanceMetal + chancePrecious);
-        const float RAND( misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) );
+        auto const SUBTOTAL{ chanceCool + chanceMetal + chancePrecious };
+        auto const RAND{ misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) };
 
         if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
         {
@@ -1625,18 +1634,18 @@ namespace ownership
 
 
     const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMap(
-        const std::string &           PREFIX,
-        const std::string &           POSTFIX,
+        const std::string & PREFIX,
+        const std::string & POSTFIX,
         const chance::MaterialVec_t & MATERIALS_VEC)
     {
-        float cumulativeChance(0.0f);
+        auto cumulativeChance{ 0.0f };
         chance::MaterialChanceMap_t materialChanceMap;
-        item::material::Enum materialWithRemainingChance(item::material::Nothing);
+        auto materialWithRemainingChance(item::material::Nothing);
 
         for (auto const NEXT_MATERIAL : MATERIALS_VEC)
         {
-            const std::string NEXT_VALUE_STR(GameDataFile::Instance()->GetCopyStr(
-                PREFIX + item::material::ToString(NEXT_MATERIAL) + POSTFIX));
+            auto const NEXT_VALUE_STR{ GameDataFile::Instance()->GetCopyStr(
+                PREFIX + item::material::ToString(NEXT_MATERIAL) + POSTFIX) };
 
             if (NEXT_VALUE_STR == "remaining")
             {
@@ -1644,12 +1653,12 @@ namespace ownership
             }
             else
             {
-                const float NEXT_VALUE_FLOAT(GameDataFile::Instance()->GetCopyFloat(
-                    PREFIX + item::material::ToString(NEXT_MATERIAL) + POSTFIX));
+                auto const NEXT_VALUE_FLOAT{ GameDataFile::Instance()->GetCopyFloat(
+                    PREFIX + item::material::ToString(NEXT_MATERIAL) + POSTFIX) };
 
                 if (false == misc::IsRealClose(0.0f, NEXT_VALUE_FLOAT))
                 {
-                    const float NEXT_CHANCE(1.0f / NEXT_VALUE_FLOAT);
+                    auto const NEXT_CHANCE{ 1.0f / NEXT_VALUE_FLOAT };
                     materialChanceMap[NEXT_MATERIAL] = NEXT_CHANCE;
                     cumulativeChance += NEXT_CHANCE;
                 }
@@ -1669,17 +1678,18 @@ namespace ownership
     {
         if (materialChanceMapCool_.empty())
         {
-            const chance::MaterialVec_t MATERIAL_VEC = { item::material::Stone,
-                                                         item::material::Bone,
-                                                         item::material::Horn,
-                                                         item::material::Tooth,
-                                                         item::material::Bronze,
-                                                         item::material::Jade,
-                                                         item::material::Obsidian,
-                                                         item::material::Scale,
-                                                         item::material::Lazuli,
-                                                         item::material::Gold,
-                                                         item::material::Pearl };
+            const chance::MaterialVec_t MATERIAL_VEC =
+            { item::material::Stone,
+              item::material::Bone,
+              item::material::Horn,
+              item::material::Tooth,
+              item::material::Bronze,
+              item::material::Jade,
+              item::material::Obsidian,
+              item::material::Scale,
+              item::material::Lazuli,
+              item::material::Gold,
+              item::material::Pearl };
 
             materialChanceMapCool_ = Make_MaterialChanceMap(
                 "heroespath-material-chance-base-cool-", "-onein", MATERIAL_VEC);
@@ -1693,17 +1703,18 @@ namespace ownership
     {
         if (materialChanceMapPrecious_.empty())
         {
-            const chance::MaterialVec_t MATERIAL_VEC = { item::material::Jade,
-                                                         item::material::Amethyst,
-                                                         item::material::Emerald,
-                                                         item::material::Silver,
-                                                         item::material::Lazuli,
-                                                         item::material::Gold,
-                                                         item::material::Platinum,
-                                                         item::material::Ruby,
-                                                         item::material::Pearl,
-                                                         item::material::Sapphire,
-                                                         item::material::Diamond };
+            const chance::MaterialVec_t MATERIAL_VEC =
+            { item::material::Jade,
+              item::material::Amethyst,
+              item::material::Emerald,
+              item::material::Silver,
+              item::material::Lazuli,
+              item::material::Gold,
+              item::material::Platinum,
+              item::material::Ruby,
+              item::material::Pearl,
+              item::material::Sapphire,
+              item::material::Diamond };
 
             materialChanceMapPrecious_ = Make_MaterialChanceMap(
                 "heroespath-material-chance-base-precious-", "-onein", MATERIAL_VEC);
@@ -1717,13 +1728,14 @@ namespace ownership
     {
         if (materialChanceMapMetal_.empty())
         {
-            const chance::MaterialVec_t MATERIAL_VEC = { item::material::Tin,
-                                                         item::material::Bronze,
-                                                         item::material::Iron,
-                                                         item::material::Steel,
-                                                         item::material::Silver,
-                                                         item::material::Gold,
-                                                         item::material::Platinum };
+            const chance::MaterialVec_t MATERIAL_VEC =
+            { item::material::Tin,
+              item::material::Bronze,
+              item::material::Iron,
+              item::material::Steel,
+              item::material::Silver,
+              item::material::Gold,
+              item::material::Platinum };
 
             materialChanceMapMetal_ = Make_MaterialChanceMap(
                 "heroespath-material-chance-base-metal-", "-onein", MATERIAL_VEC);
@@ -1734,7 +1746,7 @@ namespace ownership
 
 
     const chance::ClothingChances ChanceFactory::Make_ClothingMaterialChances(
-        const Profile &                  PROFILE,
+        const Profile & PROFILE,
         const non_player::CharacterPtr_t CHARACTER_PTR)
     {
         chance::ItemChances itemChancesBase;
@@ -1742,12 +1754,12 @@ namespace ownership
         Make_MaterialChancesSecondary(PROFILE, CHARACTER_PTR, itemChancesBase.mat_map_sec);
 
         std::ostringstream ss;
-        const std::string KEY_BASE("heroespath-inventory-clothing-");
+        const std::string KEY_BASE{ "heroespath-inventory-clothing-" };
         ss << KEY_BASE << wealth_type::ToString(PROFILE.wealthType) << "-chances-";
-        const std::string WEARABLE_STR_BASE(ss.str());
+        auto const WEARABLE_STR_BASE{ ss.str() };
 
-        const float MIN_VAL( GameDataFile::Instance()->GetCopyFloat(KEY_BASE + "chance-min") );
-        const float MAX_VAL( GameDataFile::Instance()->GetCopyFloat(KEY_BASE + "chance-max") );
+        auto const MIN_VAL{ GameDataFile::Instance()->GetCopyFloat(KEY_BASE + "chance-min") };
+        auto const MAX_VAL{ GameDataFile::Instance()->GetCopyFloat(KEY_BASE + "chance-max") };
 
         //the final resulting object that will hold the chances for all clothing articles
         chance::ClothingChances clothingChances;
@@ -1790,7 +1802,7 @@ namespace ownership
 
     void ChanceFactory::Make_KnifeOrDaggerSizeChances(
         const creature::rank_class::Enum RANK_CLASS,
-        chance::SizeChanceMap_t &        sizeChanceMap_OutParam)
+        chance::SizeChanceMap_t & sizeChanceMap_OutParam)
     {
         switch (RANK_CLASS)
         {
@@ -1840,34 +1852,38 @@ namespace ownership
         chance::MaterialChanceMap_t &       materialsMapPri,
         chance::MaterialChanceMap_t &       materialsMapSec)
     {
-        const item::weapon::WeaponDetails WEAPON_DETAILS(
-            item::weapon::WeaponDetailLoader::Instance()->LookupWeaponDetails(WEAPON_NAME));
+        auto const WEAPON_DETAILS{
+            item::weapon::WeaponDetailLoader::Instance()->LookupWeaponDetails(WEAPON_NAME) };
 
-        PopulatMaterials(TYPICAL_PRI_MATERIALS,
-                         PROFILE,
-                         CREATURE_PTR,
-                         materialsMapPri,
-                         materialsMapSec,
-                         WEAPON_DETAILS.weight);
+        PopulatMaterials(
+            TYPICAL_PRI_MATERIALS,
+            PROFILE,
+            CREATURE_PTR,
+            materialsMapPri,
+            materialsMapSec,
+            WEAPON_DETAILS.weight);
     }
 
 
-    void ChanceFactory::PopulatMaterials(const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
-                                         const Profile &                     PROFILE,
-                                         const non_player::CharacterPtr_t    CREATURE_PTR,
-                                         chance::MaterialChanceMap_t &       materialsMapPri,
-                                         chance::MaterialChanceMap_t &       materialsMapSec,
-                                         const stats::Trait_t                WEIGHT)
+    void ChanceFactory::PopulatMaterials(
+        const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
+        const Profile &                     PROFILE,
+        const non_player::CharacterPtr_t    CREATURE_PTR,
+        chance::MaterialChanceMap_t &       materialsMapPri,
+        chance::MaterialChanceMap_t &       materialsMapSec,
+        const stats::Trait_t                WEIGHT)
     {
-        Make_MaterialChancesPrimary(PROFILE,
-                                    CREATURE_PTR,
-                                    TYPICAL_PRI_MATERIALS,
-                                    WEIGHT,
-                                    materialsMapPri);
+        Make_MaterialChancesPrimary(
+            PROFILE,
+            CREATURE_PTR,
+            TYPICAL_PRI_MATERIALS,
+            WEIGHT,
+            materialsMapPri);
 
-        Make_MaterialChancesSecondary(PROFILE,
-                                      CREATURE_PTR,
-                                      materialsMapSec);
+        Make_MaterialChancesSecondary(
+            PROFILE,
+            CREATURE_PTR,
+            materialsMapSec);
     }
 
 
@@ -1915,8 +1931,8 @@ namespace ownership
         const std::string &         WEAPON_NAME,
         const complexity_type::Enum CREATURE_COMPLEXITY)
     {
-        const item::weapon::WeaponDetails WEAPON_DETAILS(
-            item::weapon::WeaponDetailLoader::Instance()->LookupWeaponDetails(WEAPON_NAME));
+        auto const WEAPON_DETAILS{
+            item::weapon::WeaponDetailLoader::Instance()->LookupWeaponDetails(WEAPON_NAME) };
 
         return (WEAPON_DETAILS.complexity <= CREATURE_COMPLEXITY);
     }
@@ -1962,8 +1978,8 @@ namespace ownership
         const non_player::CharacterPtr_t   CREATURE_PTR,
         const bool                         WILL_MATERIALS_INCLUDED_WOOD)
     {
-        const item::armor::ArmorDetails DETAILS(
-            item::armor::ArmorDetailLoader::Instance()->LookupArmorDetails(COMPLETE_NAME));
+        auto const DETAILS{
+            item::armor::ArmorDetailLoader::Instance()->LookupArmorDetails(COMPLETE_NAME) };
 
         if (PROFILE.complexityType < DETAILS.complexity)
         {
@@ -1975,14 +1991,16 @@ namespace ownership
             armorItemChances.SetCountChanceIncrementAndEquip(CHANCE);
             armorItemChances.type_map[TYPE] = CHANCE;
 
-            PopulatMaterials(MakeTypicalArmorMaterials(PROFILE,
-                                                       CREATURE_PTR,
-                                                       WILL_MATERIALS_INCLUDED_WOOD),
-                             PROFILE,
-                             CREATURE_PTR,
-                             armorItemChances.mat_map_pri,
-                             armorItemChances.mat_map_sec,
-                             DETAILS.weight);
+            PopulatMaterials(
+                MakeTypicalArmorMaterials(
+                    PROFILE,
+                    CREATURE_PTR,
+                    WILL_MATERIALS_INCLUDED_WOOD),
+                PROFILE,
+                CREATURE_PTR,
+                armorItemChances.mat_map_pri,
+                armorItemChances.mat_map_sec,
+                DETAILS.weight);
         }
     }
 
@@ -1995,8 +2013,8 @@ namespace ownership
         const non_player::CharacterPtr_t CHARACTER_PTR,
         const bool                       WILL_MATERIALS_INCLUDED_WOOD)
     {
-        const item::armor::ArmorDetails DETAILS(
-            item::armor::ArmorDetailLoader::Instance()->LookupArmorDetails(COMPLETE_NAME) );
+        auto const DETAILS{
+            item::armor::ArmorDetailLoader::Instance()->LookupArmorDetails(COMPLETE_NAME) };
 
         if (PROFILE.complexityType < DETAILS.complexity)
         {
@@ -2005,14 +2023,16 @@ namespace ownership
         else
         {
             itemChances.SetCountChanceIncrementAndEquip(CHANCE);
-            PopulatMaterials(MakeTypicalArmorMaterials(PROFILE,
-                                                       CHARACTER_PTR,
-                                                       WILL_MATERIALS_INCLUDED_WOOD),
-                             PROFILE,
-                             CHARACTER_PTR,
-                             itemChances.mat_map_pri,
-                             itemChances.mat_map_sec,
-                             DETAILS.weight);
+            PopulatMaterials(
+                MakeTypicalArmorMaterials(
+                    PROFILE,
+                    CHARACTER_PTR,
+                    WILL_MATERIALS_INCLUDED_WOOD),
+                PROFILE,
+                CHARACTER_PTR,
+                itemChances.mat_map_pri,
+                itemChances.mat_map_sec,
+                DETAILS.weight);
         }
     }
 

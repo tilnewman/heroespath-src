@@ -937,27 +937,27 @@ namespace stage
                 auto const ROLE_ENUM{ ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
                 auto const ROLE_STR{ creature::role::ToString(ROLE_ENUM) };
 
-                const std::size_t RANK_BASE{ 50 };
-                const std::size_t RANK_MAX{ [&]()
+                const int RANK_BASE{ 50 };
+                const int RANK_MAX{ [&]()
                     {
                         if (RACE_ENUM == creature::race::Dragon)
                         {
-                            return RANK_BASE + GameDataFile::Instance()->GetCopySizet(
+                            return RANK_BASE + GameDataFile::Instance()->GetCopyInt(
                                 "heroespath-creature-dragon-class-rank-min-Elder");
                         }
                         else if (RACE_ENUM == creature::race::Wolfen)
                         {
-                            return RANK_BASE + GameDataFile::Instance()->GetCopySizet(
+                            return RANK_BASE + GameDataFile::Instance()->GetCopyInt(
                                 "heroespath-creature-wolfen-class-rank-min-Elder");
                         }
                         else
                         {
-                            return RANK_BASE + GameDataFile::Instance()->GetCopySizet(
+                            return RANK_BASE + GameDataFile::Instance()->GetCopyInt(
                                 "heroespath-rankclass-Master-rankmax");
                         }
                     }() };
 
-                for(std::size_t rankIndex(1); rankIndex <= RANK_MAX; ++rankIndex)
+                for(int rankIndex(1); rankIndex <= RANK_MAX; ++rankIndex)
                 {
                     std::ostringstream ss;
                     ss << " InventoryFactory Testing rank=" << rankIndex << " with race="
@@ -984,9 +984,9 @@ namespace stage
                         RACE_ENUM,
                         ROLE_ENUM,
                         STATS,
-                        10,
-                        rankIndex,
-                        Experience_t(static_cast<int>(rankIndex) * 10000) );
+                        10_health,
+                        Rank_t(rankIndex),
+                        Experience_t(rankIndex * 10000) );
 
                     non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(
                         characterUPtr.get());

@@ -48,9 +48,10 @@ namespace creature
 namespace condition
 {
 
-    void AsleepMagical::PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                      combat::HitInfoVec_t & hitInfoVec,
-                                      bool &) const
+    void AsleepMagical::PerTurnEffect(
+        CreaturePtr_t          creaturePtr,
+        combat::HitInfoVec_t & hitInfoVec,
+        bool &) const
     {
         //if previous condition slept the creature, then don't wake
         for (auto const & NEXT_HIT_INFO : hitInfoVec)
@@ -62,26 +63,28 @@ namespace condition
             }
         }
 
-        if (misc::random::Int(100) < (8 + static_cast<int>(creaturePtr->Rank())))
+        if (misc::random::Int(100) < (8 + creaturePtr->Rank().AsInt()))
         {
             creaturePtr->ConditionRemove(Conditions::AsleepMagical);
 
-            const ContentAndNamePos CNP(" wakes from a magical sleep.",
-                                        NamePosition::TargetBefore);
+            const ContentAndNamePos CNP(
+                " wakes from a magical sleep.", NamePosition::TargetBefore);
 
-            hitInfoVec.push_back( combat::HitInfo(false,
-                                                  Which(),
-                                                  CNP,
-                                                  0,
-                                                  {},
-                                                  { Conditions::AsleepMagical }) );
+            hitInfoVec.push_back( combat::HitInfo(
+                false,
+                Which(),
+                CNP,
+                0_health,
+                {},
+                { Conditions::AsleepMagical }) );
         }
     }
 
 
-    void AsleepNatural::PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                      combat::HitInfoVec_t & hitInfoVec,
-                                      bool &) const
+    void AsleepNatural::PerTurnEffect(
+        CreaturePtr_t          creaturePtr,
+        combat::HitInfoVec_t & hitInfoVec,
+        bool &) const
     {
         //if previous condition slept the creature, then don't wake
         for (auto const & NEXT_HIT_INFO : hitInfoVec)
@@ -93,26 +96,28 @@ namespace condition
             }
         }
 
-        if (misc::random::Int(100) < (15 + static_cast<int>(creaturePtr->Rank())))
+        if (misc::random::Int(100) < (15 + creaturePtr->Rank().AsInt()))
         {
             creaturePtr->ConditionRemove(Conditions::AsleepNatural);
 
-            const ContentAndNamePos CNP(" wakes from a natural sleep.",
-                                        NamePosition::TargetBefore);
+            const ContentAndNamePos CNP(
+                " wakes from a natural sleep.", NamePosition::TargetBefore);
 
-            hitInfoVec.push_back( combat::HitInfo(false,
-                                                  Which(),
-                                                  CNP,
-                                                  0,
-                                                  {},
-                                                  { Conditions::AsleepNatural }) );
+            hitInfoVec.push_back( combat::HitInfo(
+                false,
+                Which(),
+                CNP,
+                0_health,
+                {},
+                { Conditions::AsleepNatural }) );
         }
     }
 
 
-    void Dazed::PerTurnEffect(CreaturePtr_t          creaturePtr,
-                              combat::HitInfoVec_t & hitInfoVec,
-                              bool &) const
+    void Dazed::PerTurnEffect(
+        CreaturePtr_t          creaturePtr,
+        combat::HitInfoVec_t & hitInfoVec,
+        bool &) const
     {
         //if previous condition Dazed the creature, then don't clear
         for (auto const & NEXT_HIT_INFO : hitInfoVec)
@@ -123,26 +128,28 @@ namespace condition
             }
         }
 
-        if (misc::random::Int(100) < (10 + static_cast<int>(creaturePtr->Rank())))
+        if (misc::random::Int(100) < (10 + creaturePtr->Rank().AsInt()))
         {
             creaturePtr->ConditionRemove(Conditions::Dazed);
 
-            const ContentAndNamePos CNP("'s mind clears an is not Dazed anymore.",
-                                        NamePosition::TargetBefore);
+            const ContentAndNamePos CNP(
+                "'s mind clears an is not Dazed anymore.", NamePosition::TargetBefore);
 
-            hitInfoVec.push_back( combat::HitInfo(false,
-                                                  Which(),
-                                                  CNP,
-                                                  0,
-                                                  {},
-                                                  { Conditions::Dazed }) );
+            hitInfoVec.push_back( combat::HitInfo(
+                false,
+                Which(),
+                CNP,
+                0_health,
+                {},
+                { Conditions::Dazed }) );
         }
     }
 
 
-    void Pounced::PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                combat::HitInfoVec_t & hitInfoVec,
-                                bool &                 hasTurnBeenConsumed) const
+    void Pounced::PerTurnEffect(
+        CreaturePtr_t          creaturePtr,
+        combat::HitInfoVec_t & hitInfoVec,
+        bool &                 hasTurnBeenConsumed) const
     {
         //can't spend turn getting up if turn already consumed/spent
         if (hasTurnBeenConsumed)
@@ -181,7 +188,7 @@ namespace condition
                 false,
                 Which(),
                 CNP,
-                0,
+                0_health,
                 {},
                 { Conditions::Pounced }) );
 
@@ -190,9 +197,10 @@ namespace condition
     }
 
 
-    void Tripped::PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                combat::HitInfoVec_t & hitInfoVec,
-                                bool &                 hasTurnBeenConsumed) const
+    void Tripped::PerTurnEffect(
+        CreaturePtr_t          creaturePtr,
+        combat::HitInfoVec_t & hitInfoVec,
+        bool &                 hasTurnBeenConsumed) const
     {
         //can't spend turn getting up if turn already consumed/spent
         if (hasTurnBeenConsumed)
@@ -217,14 +225,16 @@ namespace condition
 
         creaturePtr->ConditionRemove(Conditions::Tripped);
 
-        const ContentAndNamePos CNP(" gets up after being tripped.", NamePosition::TargetBefore);
+        const ContentAndNamePos CNP(
+            " gets up after being tripped.", NamePosition::TargetBefore);
 
-        hitInfoVec.push_back( combat::HitInfo(false,
-                                              Which(),
-                                              CNP,
-                                              0,
-                                              {},
-                                              { Conditions::Tripped }) );
+        hitInfoVec.push_back( combat::HitInfo(
+            false,
+            Which(),
+            CNP,
+            0_health,
+            {},
+            { Conditions::Tripped }) );
 
         hasTurnBeenConsumed = true;
     }
@@ -245,10 +255,11 @@ namespace condition
         {
             creature::CondEnumVec_t condsRemoved;
 
-            combat::FightClub::RemoveAddedCondition(creature::Conditions::Poisoned,
-                                                    creaturePtr,
-                                                    hitInfoVec,
-                                                    condsRemoved);
+            combat::FightClub::RemoveAddedCondition(
+                creature::Conditions::Poisoned,
+                creaturePtr,
+                hitInfoVec,
+                condsRemoved);
 
             std::ostringstream ss;
             ss << "The poison has left ";
@@ -258,46 +269,55 @@ namespace condition
                 ss << "the ";
             }
 
-            auto const CONTENT_NAME_POS{ ContentAndNamePos(ss.str(), "'s body.", "",
-                NamePosition::TargetBefore) };
+            auto const CONTENT_NAME_POS{
+                ContentAndNamePos(ss.str(), "'s body.", "", NamePosition::TargetBefore) };
 
-            hitInfoVec.push_back(combat::HitInfo(false,
-                                                 Which(),
-                                                 CONTENT_NAME_POS,
-                                                 0,
-                                                 {},
-                                                 condsRemoved) );
+            hitInfoVec.push_back(combat::HitInfo(
+                false,
+                Which(),
+                CONTENT_NAME_POS,
+                0_health,
+                {},
+                condsRemoved) );
         }
         else
         {
-            const stats::Trait_t DAMAGE_BASE{ ((creaturePtr->IsPixie()) ?
-                0 : misc::random::Int(1, 5)) };
+            const stats::Trait_t DAMAGE_BASE{
+                ((creaturePtr->IsPixie()) ? 0 : misc::random::Int(1, 5)) };
 
             auto const DAMAGE_RAND_MAX{ std::max(1, static_cast<int>(
-                static_cast<float>(creaturePtr->HealthNormal()) * 0.1f)) };
+                creaturePtr->HealthNormal().AsFloat() * 0.1f)) };
 
             auto const DAMAGE_FROM_HEALTH_NORMAL{ misc::random::Int(1, DAMAGE_RAND_MAX) };
 
-            const stats::Trait_t DAMAGE_FINAL{ -1 * (DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL) };
+            const Health_t DAMAGE_FINAL{
+                Health_t(-1 * (DAMAGE_BASE + DAMAGE_FROM_HEALTH_NORMAL)) };
 
             CondEnumVec_t condsAddedVec;
             CondEnumVec_t condsRemovedVec;
 
-            combat::FightClub::HandleDamage(creaturePtr,
-                                            hitInfoVec,
-                                            DAMAGE_FINAL,
-                                            condsAddedVec,
-                                            condsRemovedVec,
-                                            false);
+            combat::FightClub::HandleDamage(
+                creaturePtr,
+                hitInfoVec,
+                DAMAGE_FINAL,
+                condsAddedVec,
+                condsRemovedVec,
+                false);
 
             std::ostringstream ss;
             ss << " hurts " << creature::sex::HimHerIt(creaturePtr->Sex(), false)
-                << " for " << std::abs(DAMAGE_FINAL) << " damage.";
+                << " for " << DAMAGE_FINAL.Abs() << " damage.";
 
-            const ContentAndNamePos CNP("The poison in ", ss.str(), "", NamePosition::TargetBefore);
+            const ContentAndNamePos CNP(
+                "The poison in ", ss.str(), "", NamePosition::TargetBefore);
 
-            hitInfoVec.push_back(combat::HitInfo(true, Which(), CNP, DAMAGE_FINAL,
-                condsAddedVec, condsRemovedVec));
+            hitInfoVec.push_back(combat::HitInfo(
+                true,
+                Which(),
+                CNP,
+                DAMAGE_FINAL,
+                condsAddedVec,
+                condsRemovedVec));
         }
     }
 

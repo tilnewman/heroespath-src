@@ -27,17 +27,16 @@
 //
 // types.hpp
 //
+#include "game/stats/types.hpp"
+
 #include "misc/strong-type.hpp"
+#include "misc/strong-numeric-type.hpp"
 
 #include <utility>
 
 
 namespace game
 {
-
-    //custom types //TODO change this into a StrongType named Trait_t
-    using Trait_t = int;
-
 
     //phantom type tags
     struct NameTag {};
@@ -47,6 +46,27 @@ namespace game
     struct ExperienceTag {};
     struct HealthTag {};
     struct RankTag {};
+    struct ManaTag {};
+
+    /*
+    //Responsible for wrapping a health value and providing health functions.
+    struct StrongNumericTypeHealth : misc::StrongNumericType<stats::Trait_t, HealthTag>
+    {
+        template<typename T, typename Parameter>
+        explicit StrongNumericTypeHealth(const misc::StrongNumericType<T, Parameter> STRONG_TYPE_VALUE)
+        :
+            StrongNumericType(STRONG_TYPE_VALUE.Get())
+        {}
+
+        explicit StrongNumericTypeHealth(const stats::Trait_t VALUE)
+        :
+            StrongNumericType(VALUE)
+        {}
+
+        inline bool IsDamage() const { return m_value < 0; }
+        inline bool IsHealing() const { return m_value > 0; }
+    };
+    */
 
 
     //strong types
@@ -57,39 +77,45 @@ namespace game
     using Experience_t =    misc::StrongNumericType<int, ExperienceTag>;
     using Health_t =        misc::StrongNumericType<int, HealthTag>;
     using Rank_t =          misc::StrongNumericType<int, RankTag>;
+    using Mana_t =          misc::StrongNumericType<int, ManaTag>;
 
 
     //user defined literals for strong types
     inline Coin_t operator"" _coin(unsigned long long coins)
     {
-        return Coin_t(static_cast<int>(coins));
+        return Coin_t(static_cast<Coin_t::type>(coins));
     }
 
     inline Gem_t operator"" _gem(unsigned long long gems)
     {
-        return Gem_t(static_cast<int>(gems));
+        return Gem_t(static_cast<Gem_t::type>(gems));
     }
 
     inline MeteorShard_t operator"" _mshard(unsigned long long mshards)
     {
-        return MeteorShard_t(static_cast<int>(mshards));
+        return MeteorShard_t(static_cast<MeteorShard_t::type>(mshards));
     }
     
     inline Experience_t operator"" _exp(unsigned long long exp)
     {
-        return Experience_t(static_cast<int>(exp));
+        return Experience_t(static_cast<Experience_t::type>(exp));
     }
     
     inline Health_t operator"" _health(unsigned long long health)
     {
-        return Health_t(static_cast<int>(health));
+        return Health_t(static_cast<Health_t::type>(health));
     }
 
     inline Rank_t operator"" _rank(unsigned long long rank)
     {
-        return Rank_t(static_cast<int>(rank));
+        return Rank_t(static_cast<Rank_t::type>(rank));
+    }
+
+    inline Mana_t operator"" _mana(unsigned long long mana)
+    {
+        return Mana_t(static_cast<Mana_t::type>(mana));
     }
     
-}
+}   
 
 #endif //GAME_TYPES_HPP_INCLUDED

@@ -926,136 +926,137 @@ namespace creature
     }
 
 
-    const stats::TraitPair_t race::RaceRoleRanks(
+    const RankRange_t race::RaceRoleRanks(
         const race::Enum RACE_ENUM, const role::Enum ROLE_ENUM)
     {
-        stats::Trait_t min{ 1 }, max{ 1 };
+        Rank_t min{ 1_rank };
+        Rank_t max{ 1_rank };
 
         switch (RACE_ENUM)
         {
-            case race::Human:            { min += 0;  max += 99; break; }
-            case race::Orc:              { min += 4;  max += 19; break; }
-            case race::Minotaur:         { min += 9;  max += 99; break; }
-            case race::Ogre:             { min += 5;  max += 99; break; }
-            case race::Halfling:         { min += 0;  max += 19; break; }
-            case race::Pug:              { min += 0;  max += 9;  break; }
-            case race::Giant:            { min += 11; max += 99; break; }
-            case race::Wolfen:           { min += 14; max += 99; break; }
-            case race::Lion:             { min += 0;  max += 9;  break; }
-            case race::LionBoar:         { min += 4;  max += 19; break; }
-            case race::Ramonaut:         { min += 7;  max += 19; break; }
-            case race::Boar:             { min += 0;  max += 7;  break; }
-            case race::Demon:            { min += 19; max += 99; break; }
-            case race::Gnome:            { min += 0;  max += 19; break; }
-            case race::Newt:             { min += 0;  max += 19; break; }
-            case race::Bog:              { min += 0;  max += 19; break; }
-            case race::Plant:            { min += 2;  max += 19; break; }
-            case race::Pixie:            { min += 1;  max += 49; break; }
-            case race::Goblin:           { min += 0;  max += 19; break; }
-            case race::Troll:            { min += 4;  max += 49; break; }
-            case race::Hydra:            { min += 19; max += 99; break; }
-            case race::LizardWalker:     { min += 2;  max += 49; break; }
-            case race::Naga:             { min += 9;  max += 59; break; }
-            case race::Harpy:            { min += 0;  max += 49; break; }
-            case race::Dragon:           { min += 49; max += 99; break; }
-            case race::Griffin:          { min += 9;  max += 39; break; }
-            case race::Serpent:          { min += 9;  max += 49; break; }
-            case race::Cobra:            { min += 0;  max += 9;  break; }
-            case race::Wyvern:           { min += 9;  max += 49; break; }
-            case race::Shade:            { min += 11; max += 99; break; }
-            case race::Skeleton:         { min += 0;  max += 29; break; }
-            case race::Witch:            { min += 9;  max += 49; break; }
-            case race::Golem:            { min += 29; max += 99; break; }
-            case race::Ghoul:            { min += 0;  max += 19; break; }
-            case race::Spider:           { min += 0;  max += 9;  break; }
-            case race::CaveCrawler:      { min += 4;  max += 24; break; }
-            case race::Werebear:         { min += 9;  max += 49; break; }
-            case race::Wereboar:         { min += 7;  max += 19; break; }
-            case race::Werecat:          { min += 0;  max += 9;  break; }
-            case race::Werewolf:         { min += 9;  max += 49; break; }
-            case race::Werebat:          { min += 3;  max += 19; break; }
-            case race::Beetle:           { min += 0;  max += 12; break; }
-            case race::Bat:              { min += 0;  max += 9;  break; }
-            case race::ThreeHeadedHound: { min += 14; max += 39; break; }
+            case race::Human:            { min +=  0_rank; max += 99_rank; break; }
+            case race::Orc:              { min +=  4_rank; max += 19_rank; break; }
+            case race::Minotaur:         { min +=  9_rank; max += 99_rank; break; }
+            case race::Ogre:             { min +=  5_rank; max += 99_rank; break; }
+            case race::Halfling:         { min +=  0_rank; max += 19_rank; break; }
+            case race::Pug:              { min +=  0_rank; max +=  9_rank; break; }
+            case race::Giant:            { min += 11_rank; max += 99_rank; break; }
+            case race::Wolfen:           { min += 14_rank; max += 99_rank; break; }
+            case race::Lion:             { min +=  0_rank; max +=  9_rank; break; }
+            case race::LionBoar:         { min +=  4_rank; max += 19_rank; break; }
+            case race::Ramonaut:         { min +=  7_rank; max += 19_rank; break; }
+            case race::Boar:             { min +=  0_rank; max +=  7_rank; break; }
+            case race::Demon:            { min += 19_rank; max += 99_rank; break; }
+            case race::Gnome:            { min +=  0_rank; max += 19_rank; break; }
+            case race::Newt:             { min +=  0_rank; max += 19_rank; break; }
+            case race::Bog:              { min +=  0_rank; max += 19_rank; break; }
+            case race::Plant:            { min +=  2_rank; max += 19_rank; break; }
+            case race::Pixie:            { min +=  1_rank; max += 49_rank; break; }
+            case race::Goblin:           { min +=  0_rank; max += 19_rank; break; }
+            case race::Troll:            { min +=  4_rank; max += 49_rank; break; }
+            case race::Hydra:            { min += 19_rank; max += 99_rank; break; }
+            case race::LizardWalker:     { min +=  2_rank; max += 49_rank; break; }
+            case race::Naga:             { min +=  9_rank; max += 59_rank; break; }
+            case race::Harpy:            { min +=  0_rank; max += 49_rank; break; }
+            case race::Dragon:           { min += 49_rank; max += 99_rank; break; }
+            case race::Griffin:          { min +=  9_rank; max += 39_rank; break; }
+            case race::Serpent:          { min +=  9_rank; max += 49_rank; break; }
+            case race::Cobra:            { min +=  0_rank; max +=  9_rank; break; }
+            case race::Wyvern:           { min +=  9_rank; max += 49_rank; break; }
+            case race::Shade:            { min += 11_rank; max += 99_rank; break; }
+            case race::Skeleton:         { min +=  0_rank; max += 29_rank; break; }
+            case race::Witch:            { min +=  9_rank; max += 49_rank; break; }
+            case race::Golem:            { min += 29_rank; max += 99_rank; break; }
+            case race::Ghoul:            { min +=  0_rank; max += 19_rank; break; }
+            case race::Spider:           { min +=  0_rank; max +=  9_rank; break; }
+            case race::CaveCrawler:      { min +=  4_rank; max += 24_rank; break; }
+            case race::Werebear:         { min +=  9_rank; max += 49_rank; break; }
+            case race::Wereboar:         { min +=  7_rank; max += 19_rank; break; }
+            case race::Werecat:          { min +=  0_rank; max +=  9_rank; break; }
+            case race::Werewolf:         { min +=  9_rank; max += 49_rank; break; }
+            case race::Werebat:          { min +=  3_rank; max += 19_rank; break; }
+            case race::Beetle:           { min +=  0_rank; max += 12_rank; break; }
+            case race::Bat:              { min +=  0_rank; max +=  9_rank; break; }
+            case race::ThreeHeadedHound: { min += 14_rank; max += 39_rank; break; }
             case race::Count:
             default:                     { break; }
         }
 
         switch (ROLE_ENUM)
         {
-            case role::Archer:        { min += 1;  max += 0;  break; }
-            case role::Bard:          { min += 0;  max += 0;  break; }
-            case role::Beastmaster:   { min += 0;  max += 0;  break; }
-            case role::Cleric:        { min += 2;  max += 20; break; }
-            case role::Knight:        { min += 2;  max += 5;  break; }
-            case role::Sorcerer:      { min += 2;  max += 20; break; }
-            case role::Thief:         { min += 0;  max += 0;  break; }
-            case role::Firebrand:     { min += 0;  max += 0;  break; }
-            case role::Sylavin:       { min += 0;  max += 0;  break; }
-            case role::Wolfen:        { min += 0;  max += 0;  break; }
-            case role::Thug:          { min += 0;  max += 3;  break; }
-            case role::Mugger:        { min += 1;  max += 6;  break; }
-            case role::Drunk:         { min += 0;  max += 0;  break; }
-            case role::Grunt:         { min += 1;  max += 10; break; }
-            case role::Brute:         { min += 3;  max += 0;  break; }
-            case role::Berserker:     { min += 4;  max += 0;  break; }
-            case role::Mountain:      { min += 4;  max += 10; break; }
-            case role::Captain:       { min += 3;  max += 10; break; }
-            case role::Chieftain:     { min += 6;  max += 15; break; }
-            case role::Trader:        { min += 0;  max += 0;  break; }
-            case role::Warlord:       { min += 9;  max += 20; break; }
-            case role::Shaman:        { min += 8;  max += 10; break; }
-            case role::Smasher:       { min += 2;  max += 2;  break; }
-            case role::Strangler:     { min += 1;  max += 0;  break; }
-            case role::Soldier:       { min += 2;  max -= 5;  break; }
-            case role::TwoHeaded:     { min += 5;  max += 0;  break; }
-            case role::Giant:         { min += 1;  max += 0;  break; }
-            case role::Elder:         { min += 11; max += 20; break; }
-            case role::FourArmed:     { min += 4;  max += 0;  break; }
-            case role::Tendrilus:     { min += 0;  max += 0;  break; }
-            case role::Wing:          { min -= 1;  max -= 5;  break; }
-            case role::Whelp:         { min -= 1;  max -= 5;  break; }
-            case role::Pod:           { min += 0;  max += 0;  break; }
-            case role::Spike:         { min += 4;  max += 0;  break; }
-            case role::Skeleton:      { min += 0;  max += 0;  break; }
-            case role::Ranger:        { min += 4;  max += 0;  break; }
-            case role::Water:         { min += 0;  max += 0;  break; }
-            case role::Blacksmith:    { min += 0;  max += 0;  break; }
-            case role::Spider:        { min += 0;  max += 0;  break; }
-            case role::Beetle:        { min += 0;  max += 0;  break; }
-            case role::Boar:          { min += 0;  max += 0;  break; }
-            case role::Lion:          { min += 0;  max += 0;  break; }
-            case role::Ramonaut:      { min += 0;  max += 0;  break; }
-            case role::Serpent:       { min += 0;  max += 0;  break; }
-            case role::Bat:           { min += 0;  max += 0;  break; }
-            case role::Ghost:         { min += 5;  max += 0;  break; }
-            case role::Cat:           { min += 0;  max += 0;  break; }
-            case role::Wolf:          { min += 1;  max += 0;  break; }
-            case role::Count:         { min += 0;  max += 0;  break; }
+            case role::Archer:        { min +=  1_rank;  max +=  0_rank; break; }
+            case role::Bard:          { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Beastmaster:   { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Cleric:        { min +=  2_rank;  max += 20_rank; break; }
+            case role::Knight:        { min +=  2_rank;  max +=  5_rank; break; }
+            case role::Sorcerer:      { min +=  2_rank;  max += 20_rank; break; }
+            case role::Thief:         { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Firebrand:     { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Sylavin:       { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Wolfen:        { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Thug:          { min +=  0_rank;  max +=  3_rank; break; }
+            case role::Mugger:        { min +=  1_rank;  max +=  6_rank; break; }
+            case role::Drunk:         { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Grunt:         { min +=  1_rank;  max += 10_rank; break; }
+            case role::Brute:         { min +=  3_rank;  max +=  0_rank; break; }
+            case role::Berserker:     { min +=  4_rank;  max +=  0_rank; break; }
+            case role::Mountain:      { min +=  4_rank;  max += 10_rank; break; }
+            case role::Captain:       { min +=  3_rank;  max += 10_rank; break; }
+            case role::Chieftain:     { min +=  6_rank;  max += 15_rank; break; }
+            case role::Trader:        { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Warlord:       { min +=  9_rank;  max += 20_rank; break; }
+            case role::Shaman:        { min +=  8_rank;  max += 10_rank; break; }
+            case role::Smasher:       { min +=  2_rank;  max +=  2_rank; break; }
+            case role::Strangler:     { min +=  1_rank;  max +=  0_rank; break; }
+            case role::Soldier:       { min +=  2_rank;  max -=  5_rank; break; }
+            case role::TwoHeaded:     { min +=  5_rank;  max +=  0_rank; break; }
+            case role::Giant:         { min +=  1_rank;  max +=  0_rank; break; }
+            case role::Elder:         { min += 11_rank;  max += 20_rank; break; }
+            case role::FourArmed:     { min +=  4_rank;  max +=  0_rank; break; }
+            case role::Tendrilus:     { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Wing:          { min -=  1_rank;  max -=  5_rank; break; }
+            case role::Whelp:         { min -=  1_rank;  max -=  5_rank; break; }
+            case role::Pod:           { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Spike:         { min +=  4_rank;  max +=  0_rank; break; }
+            case role::Skeleton:      { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Ranger:        { min +=  4_rank;  max +=  0_rank; break; }
+            case role::Water:         { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Blacksmith:    { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Spider:        { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Beetle:        { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Boar:          { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Lion:          { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Ramonaut:      { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Serpent:       { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Bat:           { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Ghost:         { min +=  5_rank;  max +=  0_rank; break; }
+            case role::Cat:           { min +=  0_rank;  max +=  0_rank; break; }
+            case role::Wolf:          { min +=  1_rank;  max +=  0_rank; break; }
+            case role::Count:         { min +=  0_rank;  max +=  0_rank; break; }
             default: { break; }
         }
 
-        if (min < 1)
+        if (min < 1_rank)
         {
-            min = 1;
+            min = 1_rank;
         }
 
-        if (min > 199)
+        if (min > 199_rank)
         {
-            min = 199;
+            min = 199_rank;
         }
 
-        if (max > 200)
+        if (max > 200_rank)
         {
-            max = 200;
+            max = 200_rank;
         }
 
         if (max <= min)
         {
-            max = min + 1;
+            max = min + 1_rank;
         }
 
-        return std::make_pair(min, max);
+        return RankRange_t(min, max);
     }
 
 

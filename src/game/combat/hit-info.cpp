@@ -72,7 +72,7 @@ namespace combat
 
     HitInfo::HitInfo(const bool                      WAS_HIT,
                      const item::ItemPtr_t           ITEM_PTR,
-                     const stats::Trait_t            DAMAGE,
+                     const Health_t                  DAMAGE,
                      const bool                      IS_CRITICAL_HIT,
                      const bool                      IS_POWER_HIT,
                      const bool                      DID_ARMOR_ABSORB,
@@ -100,7 +100,7 @@ namespace combat
     HitInfo::HitInfo(const bool                      WAS_HIT,
                      const spell::SpellPtr_t         SPELL_CPTR,
                      const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                     const stats::Trait_t            DAMAGE,
+                     const Health_t                  DAMAGE,
                      const creature::CondEnumVec_t & CONDS_ADDED_VEC,
                      const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
     :
@@ -124,7 +124,7 @@ namespace combat
     HitInfo::HitInfo(const bool                      WAS_HIT,
                      const song::SongPtr_t           SONG_CPTR,
                      const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                     const stats::Trait_t            DAMAGE,
+                     const Health_t                  DAMAGE,
                      const creature::CondEnumVec_t & CONDS_ADDED_VEC,
                      const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
     :
@@ -148,7 +148,7 @@ namespace combat
     HitInfo::HitInfo(const bool                       WAS_HIT,
                      const creature::Conditions::Enum COND_ENUM,
                      const ContentAndNamePos &        ACTION_PHRASE_CNP,
-                     const stats::Trait_t             DAMAGE,
+                     const Health_t                   DAMAGE,
                      const creature::CondEnumVec_t &  CONDS_ADDED_VEC,
                      const creature::CondEnumVec_t &  CONDS_REMOVED_VEC)
     :
@@ -172,7 +172,7 @@ namespace combat
     HitInfo::HitInfo(const bool                      WAS_HIT,
                      const HitType::Enum             HIT_TYPE,
                      const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                     const stats::Trait_t            DAMAGE,
+                     const Health_t                  DAMAGE,
                      const creature::CondEnumVec_t & CONDS_ADDED_VEC,
                      const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
     :
@@ -214,7 +214,7 @@ namespace combat
 
 
     HitInfo::HitInfo(
-        const stats::Trait_t            DAMAGE,
+        const Health_t                  DAMAGE,
         const std::string &             ACTION_VERB,
         const creature::CondEnumVec_t & CONDS_ADDED_VEC,
         const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
@@ -396,7 +396,7 @@ namespace combat
             case HitType::Trap:
             {
                 return ((actionVerb_.empty() == false) &&
-                        (damage_ != 0));
+                        (damage_ != 0_health));
             }
             case HitType::Count:
             default:

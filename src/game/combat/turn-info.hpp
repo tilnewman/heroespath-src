@@ -27,10 +27,11 @@
 //
 // turn-info.hpp
 //
+#include "game/types.hpp"
+#include "game/stats/types.hpp"
 #include "game/combat/strategy-info.hpp"
 #include "game/combat/turn-action-info.hpp"
 #include "game/combat/turn-action-enum.hpp"
-#include "game/stats/types.hpp"
 
 #include <map>
 #include <utility>
@@ -51,7 +52,7 @@ namespace combat
 {
 
     //stores the abs of the damage
-    using DamageCreaturePair_t = std::pair<stats::Trait_t, creature::CreaturePtr_t>;
+    using DamageCreaturePair_t = std::pair<Health_t, creature::CreaturePtr_t>;
 
 
     //Everything needed to decide what a creature will do during their turn in combat.

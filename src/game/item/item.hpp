@@ -30,6 +30,7 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
+#include "game/types.hpp"
 #include "game/stats/types.hpp"
 #include "game/item/item-type-enum.hpp"
 #include "game/item/weapon-info.hpp"
@@ -66,8 +67,8 @@ namespace item
                       const std::string &          IMAGE_FILENAME     = "",
                       const stats::Trait_t         PRICE              = stats::Trait_t(0),
                       const stats::Trait_t         WEIGHT             = stats::Trait_t(0),
-                      const stats::Trait_t         DAMAGE_MIN         = 0,
-                      const stats::Trait_t         DAMAGE_MAX         = 0,
+                      const Health_t               DAMAGE_MIN         = 0_health,
+                      const Health_t               DAMAGE_MAX         = 0_health,
                       const stats::Trait_t         ARMOR_RATING       = 0,
                       const creature::role::Enum   EXCLUSIVE_TO_ROLE  = creature::role::Count,
                       const weapon::WeaponInfo &   WEAPON_INFO        = weapon::WeaponInfo(),
@@ -109,8 +110,8 @@ namespace item
         inline stats::Trait_t Price() const                         { return price_; }
         inline stats::Trait_t Weight() const                        { return weight_; }
 
-        inline stats::Trait_t DamageMin() const                     { return damageMin_; }
-        inline stats::Trait_t DamageMax() const                     { return damageMax_; }
+        inline Health_t DamageMin() const                           { return damageMin_; }
+        inline Health_t DamageMax() const                           { return damageMax_; }
         inline stats::Trait_t ArmorRating() const                   { return armorRating_; }
 
         inline bool IsBroken() const        { return (category_ == category::Broken); }
@@ -233,8 +234,8 @@ namespace item
         std::string          desc_;
         stats::Trait_t       price_;
         stats::Trait_t       weight_;
-        stats::Trait_t       damageMin_;
-        stats::Trait_t       damageMax_;
+        Health_t             damageMin_;
+        Health_t             damageMax_;
         stats::Trait_t       armorRating_;
         creature::role::Enum exclusiveToRole_;
         armor_type::Enum     armorType_;

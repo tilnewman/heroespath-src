@@ -69,29 +69,35 @@ namespace creature
     }
 
 
-    dragon_class::Enum dragon_class::ClassFromRank(const stats::Trait_t RANK)
+    dragon_class::Enum dragon_class::ClassFromRank(const Rank_t RANK)
     {
-        if (RANK >= GameDataFile::Instance()->GetCopyInt("heroespath-creature-dragon-class-rank-min-Elder"))
+        if (RANK >= Rank_t(GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-dragon-class-rank-min-Elder")))
         {
             return dragon_class::Elder;
         }
-        else if (RANK >= GameDataFile::Instance()->GetCopyInt("heroespath-creature-dragon-class-rank-min-Skycaster"))
+        else if (RANK >= Rank_t(GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-dragon-class-rank-min-Skycaster")))
         {
             return dragon_class::Skycaster;
         }
-        else if (RANK >= GameDataFile::Instance()->GetCopyInt("heroespath-creature-dragon-class-rank-min-Wyrm"))
+        else if (RANK >= Rank_t(GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-dragon-class-rank-min-Wyrm")))
         {
             return dragon_class::Wyrm;
         }
-        else if (RANK >= GameDataFile::Instance()->GetCopyInt("heroespath-creature-dragon-class-rank-min-Adult"))
+        else if (RANK >= Rank_t(GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-dragon-class-rank-min-Adult")))
         {
             return dragon_class::Adult;
         }
-        else if (RANK >= GameDataFile::Instance()->GetCopyInt("heroespath-creature-dragon-class-rank-min-Juvenile"))
+        else if (RANK >= Rank_t(GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-dragon-class-rank-min-Juvenile")))
         {
             return dragon_class::Juvenile;
         }
-        else if (RANK >= GameDataFile::Instance()->GetCopyInt("heroespath-creature-dragon-class-rank-min-Fledgling"))
+        else if (RANK >= Rank_t(GameDataFile::Instance()->
+            GetCopyInt("heroespath-creature-dragon-class-rank-min-Fledgling")))
         {
             return dragon_class::Fledgling;
         }

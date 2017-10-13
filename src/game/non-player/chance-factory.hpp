@@ -215,39 +215,39 @@ namespace ownership
                 //return false;
             }
 
-            const float WEAPON_NUM_FLOAT  ( static_cast<float>(WEAPON_ENUM) );
-            const float WEAPON_COUNT_FLOAT( static_cast<float>(T::Count) );
-
-            float chance(CHANCE_BASE);
+            auto const WEAPON_NUM_FLOAT  { static_cast<float>(WEAPON_ENUM) };
+            auto const WEAPON_COUNT_FLOAT{ static_cast<float>(T::Count) };
+            auto const ENUM_RATIO{ WEAPON_NUM_FLOAT / WEAPON_COUNT_FLOAT };
 
             //...minus a small amount depending on how valuable/rare the
             //weapon is that is defined by its position in the enum
-            const float ENUM_RATIO(WEAPON_NUM_FLOAT / WEAPON_COUNT_FLOAT);
-            chance -= (ENUM_RATIO * CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_);
+            auto chance{ (ENUM_RATIO * CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_) };
 
             //...adjust based on creature rank, where higher rank means higher
             //chance of the more rare/valuable items
-            const float ENUM_RATIO_INVERSE((WEAPON_COUNT_FLOAT + 1.0f) /
-                (WEAPON_NUM_FLOAT + 1.0f));//add ones to prevent division by zero
+            //add ones to prevent division by zero
+            auto const ENUM_RATIO_INVERSE{
+                (WEAPON_COUNT_FLOAT + 1.0f) / (WEAPON_NUM_FLOAT + 1.0f) };
 
-            const float RANK(static_cast<float>(CHARACTER_PTR->Rank()));
+            auto const RANK_F{ CHARACTER_PTR->Rank().AsFloat() };
 
-            const float RANK_GRANDMASTER(GameDataFile::Instance()->
-                GetCopyFloat("heroespath-rankclass-Master-rankmax") + 1);
+            auto const RANK_GRANDMASTER_F{ GameDataFile::Instance()->
+                GetCopyFloat("heroespath-rankclass-Master-rankmax") + 1.0f };
 
-            const float RANK_RATIO(RANK / RANK_GRANDMASTER);
-            chance += ((ENUM_RATIO_INVERSE * CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_)
-                * RANK_RATIO);
+            auto const RANK_RATIO{ RANK_F / RANK_GRANDMASTER_F };
+
+            chance += ((ENUM_RATIO_INVERSE * CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_) * RANK_RATIO);
 
             ChanceFactory::ForceMinMax(chance, CHANCE_MINIMUM_, 1.0f);
             weaponChanceMap[WEAPON_ENUM].SetCountChanceIncrementAndEquip(chance);
 
-            PopulateWeaponMaterials(WEAPON_NAME,
-                                    MATERIALS_TYPICAL,
-                                    PROFILE,
-                                    CHARACTER_PTR,
-                                    weaponChanceMap[WEAPON_ENUM].mat_map_pri,
-                                    weaponChanceMap[WEAPON_ENUM].mat_map_sec);
+            PopulateWeaponMaterials(
+                WEAPON_NAME,
+                MATERIALS_TYPICAL,
+                PROFILE,
+                CHARACTER_PTR,
+                weaponChanceMap[WEAPON_ENUM].mat_map_pri,
+                weaponChanceMap[WEAPON_ENUM].mat_map_sec);
 
             return true;
         }

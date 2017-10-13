@@ -31,6 +31,7 @@
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/animation-enum.hpp"
 
+#include "game/types.hpp"
 #include "game/stats/types.hpp"
 
 #include <vector>
@@ -240,11 +241,11 @@ namespace combat
         bool SparkleAnimIsDone();
         void SparkleAnimStop();
 
-        void TextAnimStart(const stats::Trait_t &       DAMAGE,
+        void TextAnimStart(const Health_t & DAMAGE,
                            const combat::CombatNodePtr_t TARGET_PTR);
 
-        void TextAnimStart(const std::vector<stats::Trait_t> & DAMAGE_VEC,
-                           const combat::CombatNodePVec_t &     TARGETS_PVEC);
+        void TextAnimStart(const std::vector<Health_t> & DAMAGE_VEC,
+                           const combat::CombatNodePVec_t & TARGETS_PVEC);
 
         void TextAnimStop();
 

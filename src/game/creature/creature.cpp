@@ -67,8 +67,8 @@ namespace creature
                        const race::Enum &          RACE,
                        const role::Enum &          ROLE,
                        const stats::StatSet &      STATS,
-                       const stats::Trait_t        HEALTH,
-                       const stats::Trait_t        RANK,
+                       const Health_t              HEALTH,
+                       const Rank_t                RANK,
                        const Experience_t          EXPERIENCE,
                        const CondEnumVec_t &       CONDITIONS_VEC,
                        const TitleEnumVec_t &      TITLE_VEC,
@@ -114,9 +114,11 @@ namespace creature
 
         //verify valid RACE and ROLE combination
         auto const ROLE_VEC{ race::Roles(race_) };
-        M_ASSERT_OR_LOGANDTHROW_SS((std::find(ROLE_VEC.begin(),
-                                              ROLE_VEC.end(),
-                                              role_) != ROLE_VEC.end()),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (std::find(
+                ROLE_VEC.begin(),
+                ROLE_VEC.end(),
+                role_) != ROLE_VEC.end()),
             "game::creature::Creature::Constructor(race=" << RaceName()
             << ", role=" << RoleName() << ") invalid race/role combination.");
 
@@ -205,10 +207,10 @@ namespace creature
 
     float Creature::RankRatio() const
     {
-        const float GRANDMASTER_RANK(GameDataFile::Instance()->
-            GetCopyFloat("heroespath-rankclass-Master-rankmax") + 1.0f);
+        const float GRANDMASTER_RANK_F{
+            GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax") + 1.0f };
 
-        auto rankRatio{ static_cast<float>(Rank()) / GRANDMASTER_RANK };
+        auto rankRatio{ rank_.AsFloat() / GRANDMASTER_RANK_F };
         if (rankRatio > 1.0f)
         {
             rankRatio = 1.0f;
@@ -218,13 +220,13 @@ namespace creature
     }
 
 
-    stats::Trait_t Creature::HealthCurrentAdj(const stats::Trait_t X)
+    Health_t Creature::HealthCurrentAdj(const Health_t HEALTH_ADJ)
     {
-        healthCurrent_ += X;
+        healthCurrent_ += HEALTH_ADJ;
 
-        if (healthCurrent_ < 0)
+        if (healthCurrent_ < 0_health)
         {
-            healthCurrent_ = 0;
+            healthCurrent_ = 0_health;
         }
 
         if (healthCurrent_ > healthNormal_)
@@ -236,13 +238,13 @@ namespace creature
     }
 
 
-    stats::Trait_t Creature::HealthNormalAdj(const stats::Trait_t X)
+    Health_t Creature::HealthNormalAdj(const Health_t HEALTH_ADJ)
     {
-        healthNormal_ += X;
+        healthNormal_ += HEALTH_ADJ;
 
-        if (healthNormal_ < 1)
+        if (healthNormal_ < 1_health)
         {
-            healthNormal_ = 1;
+            healthNormal_ = 1_health;
         }
 
         if (healthNormal_ < healthCurrent_)
@@ -1166,14 +1168,15 @@ namespace creature
         //sort by 'most damage'
         if (tempPVec.size() > 1)
         {
-            std::sort(tempPVec.begin(),
-                      tempPVec.end(),
-                      []
-                      (const item::ItemPtr_t A, const item::ItemPtr_t & B)
-                      {
-                        return (A->DamageMin() + A->DamageMax()) >
-                               (B->DamageMin() + B->DamageMax());
-                      });
+            std::sort(
+                tempPVec.begin(),
+                tempPVec.end(),
+                []
+                (const item::ItemPtr_t A, const item::ItemPtr_t & B)
+                {
+                  return (A->DamageMin() + A->DamageMax()) >
+                         (B->DamageMin() + B->DamageMax());
+                });
         }
 
         std::ostringstream ss;

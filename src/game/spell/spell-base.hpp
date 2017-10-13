@@ -27,6 +27,7 @@
 //
 // spell-base.hpp
 //
+#include "game/types.hpp"
 #include "game/stats/types.hpp"
 #include "game/spell/spell-enum.hpp"
 #include "game/effect-type-enum.hpp"
@@ -68,7 +69,7 @@ namespace spell
               const EffectType::Enum EFFECT_TYPE,
               const Phase::Enum      VALID_PHASES,
               const stats::Trait_t   MANA_COST,
-              const stats::Trait_t   RANK,
+              const Rank_t           RANK,
               const TargetType::Enum TARGET_TYPE,
               const std::string &    VERB_THIRD_PERSON,
               const std::string &    VERB_PAST_TENSE);
@@ -91,7 +92,7 @@ namespace spell
         inline EffectType::Enum Effect() const  { return effectType_; }
         inline Phase::Enum ValidPhases() const  { return validPhases_; }
         inline stats::Trait_t ManaCost() const  { return manaCost_; }
-        inline stats::Trait_t Rank() const      { return rank_; }
+        inline Rank_t Rank() const              { return rank_; }
         inline TargetType::Enum Target() const  { return targetType_; }
 
         //Allows the spell to change the target creature.
@@ -100,14 +101,15 @@ namespace spell
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const = 0;
 
         //Allows the spell to change the target item.
-        virtual const std::string EffectItem(creature::CreaturePtr_t,
-                                             item::ItemPtr_t) const;
+        virtual const std::string EffectItem(
+            creature::CreaturePtr_t,
+            item::ItemPtr_t) const;
 
         friend bool operator<(const Spell & L, const Spell & R);
         friend bool operator==(const Spell & L, const Spell & R);
@@ -118,7 +120,7 @@ namespace spell
 
     protected:
         Spells::Enum     which_;
-        stats::Trait_t   rank_;
+        Rank_t           rank_;
         EffectType::Enum effectType_;
         Phase::Enum      validPhases_;
         stats::Trait_t   manaCost_;

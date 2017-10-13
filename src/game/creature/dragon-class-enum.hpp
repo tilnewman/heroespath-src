@@ -28,8 +28,9 @@
 // dragon-class-enum.hpp
 //  An enumeration of all Dragon classes as determined by Rank.
 //
+#include "game/types.hpp"
+
 #include <string>
-#include "game/stats/types.hpp" //for stats::Trait_t
 
 
 namespace game
@@ -60,7 +61,7 @@ namespace creature
             return Name(E);
         }
 
-        static dragon_class::Enum ClassFromRank(const stats::Trait_t);
+        static dragon_class::Enum ClassFromRank(const Rank_t);
     };
 
 }

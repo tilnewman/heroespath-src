@@ -118,7 +118,7 @@ namespace combat
 
         auto characterPtr{ MakeCharacter(
             STATS,
-            10, 20,
+            10_health, 20_health,
             ((misc::random::Int(100) < 75) ? creature::sex::Male : creature::sex::Female),
             creature::race::Goblin,
             creature::role::Grunt) };
@@ -142,7 +142,7 @@ namespace combat
 
         return MakeCharacter(
             STATS,
-            13, 18,
+            13_health, 18_health,
             ((misc::random::Bool()) ? creature::sex::Male : creature::sex::Female),
             creature::race::Boar,
             creature::role::Boar);
@@ -151,12 +151,12 @@ namespace combat
 
     non_player::CharacterPtr_t PartyFactory::MakeCharacter(
         const stats::StatSet & STATS,
-        const stats::Trait_t HEALTH_MIN,
-        const stats::Trait_t HEALTH_MAX,
+        const Health_t HEALTH_MIN,
+        const Health_t HEALTH_MAX,
         const creature::sex::Enum SEX,
         const creature::race::Enum RACE,
         const creature::role::Enum ROLE,
-        const stats::Trait_t RANK,
+        const Rank_t RANK,
         const Experience_t EXPERIENCE,
         const stats::Trait_t MANA) const
     {
@@ -167,7 +167,7 @@ namespace combat
             RACE,
             ROLE,
             STATS,
-            misc::random::Int(HEALTH_MIN, HEALTH_MAX),
+            Health_t(misc::random::Int(HEALTH_MIN.AsInt(), HEALTH_MAX.AsInt())),
             RANK,
             EXPERIENCE,
             creature::CondEnumVec_t(),

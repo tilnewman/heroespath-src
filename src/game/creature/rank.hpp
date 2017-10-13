@@ -28,7 +28,10 @@
 // rank.hpp
 //  Code that gives meaning to all possible rank values.
 //
+#include "game/types.hpp"
 #include "game/stats/types.hpp"
+
+#include "misc/range.hpp"
 
 #include <string>
 #include <utility>
@@ -39,8 +42,13 @@ namespace game
 namespace creature
 {
 
-    struct rank_class
+    using RankRange_t = misc::Range<Rank_t>;
+
+
+    class rank_class
     {
+    public:
+
         enum Enum
         {
             Novice = 0,
@@ -52,10 +60,10 @@ namespace creature
             Count
         };
 
-        static rank_class::Enum FromRank(const stats::Trait_t RANK);
+        static rank_class::Enum FromRank(const Rank_t RANK);
 
         //returns a second/max of zero to represent limitless
-        static std::pair<stats::Trait_t, stats::Trait_t> RankRangeByClass(const rank_class::Enum E);
+        static const RankRange_t RankRangeByClass(const rank_class::Enum E);
 
         static const std::string ToString(const rank_class::Enum E);
     };

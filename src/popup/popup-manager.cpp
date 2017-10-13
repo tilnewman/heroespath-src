@@ -336,14 +336,14 @@ namespace popup
                 << "!!";
         }
 
-        if (TO_TITLE_PTR->HealthBonus() > 0)
+        if (TO_TITLE_PTR->HealthBonus() > 0_health)
         {
             descSS << "  There is also a health bonus of " << TO_TITLE_PTR->HealthBonus() << "!  "
                 << CREATURE_PTR->Name() << "'s maximum health is now "
                 << CREATURE_PTR->HealthNormal() << "!!";
         }
 
-        if (TO_TITLE_PTR->RankBonus() > 0)
+        if (TO_TITLE_PTR->RankBonus() > 0_rank)
         {
             descSS << "  There is even a rank bonus of " << TO_TITLE_PTR->RankBonus() << "!  "
                 << CREATURE_PTR->Name() << "'s rank is now " << CREATURE_PTR->Rank() << "!!";

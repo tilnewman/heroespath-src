@@ -28,9 +28,9 @@
 // armor-factory.hpp
 //  Code that is responsible for making armor objects.
 //
+#include "game/types.hpp"
 #include "game/item/item-factory-base.hpp"
 #include "game/item/armor-types.hpp"
-#include "game/stats/types.hpp"
 
 #include <memory>
 #include <string>
@@ -61,53 +61,63 @@ namespace armor
         static void Release();
 
         //primary material can be wood, secondary material can be Nothing
-        static ItemPtr_t Make_Shield(const shield_type::Enum TYPE,
-                                     const material::Enum    MATERIAL_PRI,
-                                     const material::Enum    MATERIAL_SEC = material::Nothing);
+        static ItemPtr_t Make_Shield(
+            const shield_type::Enum TYPE,
+            const material::Enum    MATERIAL_PRI,
+            const material::Enum    MATERIAL_SEC = material::Nothing);
 
-        static ItemPtr_t Make_Helm(const helm_type::Enum TYPE,
-                                   const material::Enum  MATERIAL_PRI,
-                                   const material::Enum  MATERIAL_SEC = material::Nothing);
+        static ItemPtr_t Make_Helm(
+            const helm_type::Enum TYPE,
+            const material::Enum  MATERIAL_PRI,
+            const material::Enum  MATERIAL_SEC = material::Nothing);
 
-        static ItemPtr_t Make_Gauntlets(const base_type::Enum TYPE,
-                                        const material::Enum  MATERIAL_PRI,
-                                        const material::Enum  MATERIAL_SEC  = material::Nothing,
-                                        const bool            IS_PIXIE_ITEM = false);
+        static ItemPtr_t Make_Gauntlets(
+            const base_type::Enum TYPE,
+            const material::Enum  MATERIAL_PRI,
+            const material::Enum  MATERIAL_SEC  = material::Nothing,
+            const bool            IS_PIXIE_ITEM = false);
 
-        static ItemPtr_t Make_Pants(const base_type::Enum TYPE,
-                                    const material::Enum  MATERIAL_PRI,
-                                    const material::Enum  MATERIAL_SEC = material::Nothing,
-                                    const bool            IS_PIXIE_ITEM = false);
+        static ItemPtr_t Make_Pants(
+            const base_type::Enum TYPE,
+            const material::Enum  MATERIAL_PRI,
+            const material::Enum  MATERIAL_SEC = material::Nothing,
+            const bool            IS_PIXIE_ITEM = false);
 
-        static ItemPtr_t Make_Boots(const base_type::Enum TYPE,
-                                    const material::Enum  MATERIAL_PRI,
-                                    const material::Enum  MATERIAL_SEC  = material::Nothing,
-                                    const bool            IS_PIXIE_ITEM = false);
+        static ItemPtr_t Make_Boots(
+            const base_type::Enum TYPE,
+            const material::Enum  MATERIAL_PRI,
+            const material::Enum  MATERIAL_SEC  = material::Nothing,
+            const bool            IS_PIXIE_ITEM = false);
 
-        static ItemPtr_t Make_Shirt(const base_type::Enum TYPE,
-                                    const material::Enum  MATERIAL_PRI  = material::Cloth,
-                                    const material::Enum  MATERIAL_SEC  = material::Nothing,
-                                    const bool            IS_PIXIE_ITEM = false);
+        static ItemPtr_t Make_Shirt(
+            const base_type::Enum TYPE,
+            const material::Enum  MATERIAL_PRI  = material::Cloth,
+            const material::Enum  MATERIAL_SEC  = material::Nothing,
+            const bool            IS_PIXIE_ITEM = false);
 
-        static ItemPtr_t Make_Bracer(const base_type::Enum TYPE,
-                                     const material::Enum  MATERIAL_PRI,
-                                     const material::Enum  MATERIAL_SEC  = material::Nothing,
-                                     const bool            IS_PIXIE_ITEM = false);
+        static ItemPtr_t Make_Bracer(
+            const base_type::Enum TYPE,
+            const material::Enum  MATERIAL_PRI,
+            const material::Enum  MATERIAL_SEC  = material::Nothing,
+            const bool            IS_PIXIE_ITEM = false);
 
-        static ItemPtr_t Make_Aventail(const base_type::Enum TYPE,
-                                       const material::Enum  MATERIAL_PRI,
-                                       const material::Enum  MATERIAL_SEC = material::Nothing);
+        static ItemPtr_t Make_Aventail(
+            const base_type::Enum TYPE,
+            const material::Enum  MATERIAL_PRI,
+            const material::Enum  MATERIAL_SEC = material::Nothing);
 
         //primary material should always be either cloth/softleather/hardleather
-        static ItemPtr_t Make_Cover(const cover_type::Enum TYPE,
-                                    const material::Enum   MATERIAL_PRI,
-                                    const material::Enum   MATERIAL_SEC  = material::Nothing,
-                                    const bool             IS_PIXIE_ITEM = false);
+        static ItemPtr_t Make_Cover(
+            const cover_type::Enum TYPE,
+            const material::Enum   MATERIAL_PRI,
+            const material::Enum   MATERIAL_SEC  = material::Nothing,
+            const bool             IS_PIXIE_ITEM = false);
 
         //material must be plant, flesh, scale, hide, fur, or featers
-        static ItemPtr_t Make_Skin(const material::Enum MATERIAL,
-                                   const stats::Trait_t CREATURE_RANK,
-                                   const bool           IS_PIXIE_ITEM);
+        static ItemPtr_t Make_Skin(
+            const material::Enum MATERIAL,
+            const Rank_t         CREATURE_RANK,
+            const bool           IS_PIXIE_ITEM);
 
     private:
         static std::unique_ptr<ArmorFactory> instanceUPtr_;

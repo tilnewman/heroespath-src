@@ -46,7 +46,7 @@ namespace game
     Trap::Trap()
     :
         playerCountRange_(0, 0),
-        damageRange_(0, 0),
+        damageRange_(0_health, 0_health),
         soundEffect_(sfml_util::sound_effect::None),
         descPrefix_(""),
         descPostfix_(""),
@@ -58,8 +58,8 @@ namespace game
     Trap::Trap(
         const std::size_t PLAYER_COUNT_MIN,
         const std::size_t PLAYER_COUNT_MAX,
-        const stats::Trait_t DAMAGE_MIN,
-        const stats::Trait_t DAMAGE_MAX,
+        const Health_t DAMAGE_MIN,
+        const Health_t DAMAGE_MAX,
         const std::string & HIT_VERB,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const std::string & DESCRIPTION)
@@ -77,8 +77,8 @@ namespace game
     Trap::Trap(
         const std::size_t PLAYER_COUNT_MIN,
         const std::size_t PLAYER_COUNT_MAX,
-        const stats::Trait_t DAMAGE_MIN,
-        const stats::Trait_t DAMAGE_MAX,
+        const Health_t DAMAGE_MIN,
+        const Health_t DAMAGE_MAX,
         const std::string & HIT_VERB,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const std::string & DESC_PREFIX,
@@ -107,16 +107,18 @@ namespace game
     }
 
 
-    stats::Trait_t Trap::RandomDamage() const
+    Health_t Trap::RandomDamage() const
     {
         auto const RANDOM_DAMAGE{
-            static_cast<double>(misc::random::Int(damageRange_.Min(), damageRange_.Max())) };
+            static_cast<double>(misc::random::Int(
+                damageRange_.Min().Get(),
+                damageRange_.Max().Get())) };
 
         auto const SQRT_RANDOM_DAMAGE{ std::sqrt(static_cast<double>(RANDOM_DAMAGE)) };
 
         auto const AVG_PLAYER_RANK_MINUS_ONE{ [&]()
             {
-                auto const AVG_PLAYER_RANK{ static_cast<double>(FindAveragePlayerRank()) };
+                auto const AVG_PLAYER_RANK{ FindAveragePlayerRank().AsDouble() };
                 if (AVG_PLAYER_RANK < 2.0)
                 {
                     return 1.0;
@@ -132,7 +134,7 @@ namespace game
         auto const TOTAL_DAMAGE{
             RANDOM_DAMAGE + (SQRT_RANDOM_DAMAGE * SQRT_AVG_PLAYER_RANK_MINUS_ONE) };
 
-        return static_cast<stats::Trait_t>(TOTAL_DAMAGE);
+        return Health_t(static_cast<Health_t::type>(TOTAL_DAMAGE));
     }
 
 
@@ -141,7 +143,7 @@ namespace game
         auto const SQRT_AVG_PLAYER_COUNT{
             std::sqrt(static_cast<double>(playerCountRange_.Mid()) * 10.0) };
 
-        auto const SQRT_AVG_DAMAGE{ std::sqrt(static_cast<double>(damageRange_.Mid()) * 10.0) };
+        auto const SQRT_AVG_DAMAGE{ std::sqrt(damageRange_.Mid().AsFloat() * 10.0) };
 
         return static_cast<int>(SQRT_AVG_PLAYER_COUNT * SQRT_AVG_DAMAGE);
     }
@@ -156,16 +158,16 @@ namespace game
     }
 
 
-    stats::Trait_t Trap::FindAveragePlayerRank() const
+    Rank_t Trap::FindAveragePlayerRank() const
     {
-        stats::Trait_t rankSum{ 0 };
+        Rank_t rankSum{ 0_rank };
         auto const CHARACTER_PTRS{ Game::Instance()->State().Party().Characters() };
         for (auto const CHARACTER_PTR : CHARACTER_PTRS)
         {
             rankSum += CHARACTER_PTR->Rank();
         }
 
-        return rankSum / static_cast<int>(CHARACTER_PTRS.size());
+        return rankSum / Rank_t(CHARACTER_PTRS.size());
     }
 
 }

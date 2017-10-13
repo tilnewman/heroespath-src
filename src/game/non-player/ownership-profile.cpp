@@ -76,25 +76,25 @@ namespace ownership
     }
 
 
-    wealth_type::Enum wealth_type::FromRankType(const creature::rank_class::Enum RANK_TYPE)
+    wealth_type::Enum wealth_type::FromRankType(const creature::rank_class::Enum RANK_CLASS)
     {
-        const std::string RANK_TYPE_STR(creature::rank_class::ToString(RANK_TYPE));
+        auto const RANK_CLASS_STR{ creature::rank_class::ToString(RANK_CLASS) };
 
         using WealthTypeChanceMap_t = std::map<wealth_type::Enum, float>;
         WealthTypeChanceMap_t wealthChanceMap;
 
-        wealth_type::Enum wealthTypeChanceRemaining(wealth_type::Count);
+        auto wealthTypeChanceRemaining(wealth_type::Count);
 
         for (std::size_t i(0); i < wealth_type::Count; ++i)
         {
-            const wealth_type::Enum NEXT_WEALTH_TYPE( static_cast<wealth_type::Enum>(i) );
-            const std::string NEXT_WEALTH_TYPE_NAME( wealth_type::ToString(NEXT_WEALTH_TYPE) );
+            auto const NEXT_WEALTH_TYPE{ static_cast<wealth_type::Enum>(i) };
+            auto const NEXT_WEALTH_TYPE_NAME{ wealth_type::ToString(NEXT_WEALTH_TYPE) };
 
             std::ostringstream ss;
-            ss << "heroespath-wealthtype-chance-" << RANK_TYPE_STR << "-"
+            ss << "heroespath-wealthtype-chance-" << RANK_CLASS_STR << "-"
                 << NEXT_WEALTH_TYPE_NAME << "-one-in";
 
-            const std::string NEXT_VALUE_STR( GameDataFile::Instance()->GetCopyStr(ss.str()) );
+            auto const NEXT_VALUE_STR{ GameDataFile::Instance()->GetCopyStr(ss.str()) };
 
             if (NEXT_VALUE_STR == "remaining")
             {
@@ -111,12 +111,12 @@ namespace ownership
                 nextChanceValue = -1.0f;
             }
 
-            wealthChanceMap[NEXT_WEALTH_TYPE] = ((nextChanceValue > 0.0f) ?
-                (1.0f / nextChanceValue) : (0.0f));
+            wealthChanceMap[NEXT_WEALTH_TYPE] =
+                ((nextChanceValue > 0.0f) ? (1.0f / nextChanceValue) : (0.0f));
         }
 
-        float cumulative(0.0f);
-        const float RAND(misc::random::Float());
+        auto cumulative{ 0.0f };
+        auto const RAND{ misc::random::Float() };
         for (auto const & NEXT_TYPECHANCE_PAIR : wealthChanceMap)
         {
             if (NEXT_TYPECHANCE_PAIR.first != wealthTypeChanceRemaining)
@@ -134,9 +134,9 @@ namespace ownership
     }
 
 
-    wealth_type::Enum wealth_type::FromRank(const stats::Trait_t RANK_VALUE)
+    wealth_type::Enum wealth_type::FromRank(const Rank_t RANK)
     {
-        return FromRankType( creature::rank_class::FromRank(RANK_VALUE) );
+        return FromRankType( creature::rank_class::FromRank(RANK) );
     }
 
 

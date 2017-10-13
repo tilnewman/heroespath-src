@@ -27,6 +27,7 @@
 //
 // trap.hpp
 //
+#include "game/types.hpp"
 #include "game/stats/trait.hpp"
 
 #include "sfml-util/sound-effects-enum.hpp"
@@ -36,11 +37,12 @@
 #include <string>
 #include <vector>
 
+
 namespace game
 {
 
     using SizeRange_t = misc::Range<std::size_t>;
-    using TraitRange_t = misc::Range<stats::Trait_t>;
+    using HealthRange_t = misc::Range<Health_t>;
 
 
     //Responsible for wrapping common state and operations of traps.
@@ -52,8 +54,8 @@ namespace game
         Trap(
             const std::size_t PLAYER_COUNT_MIN,
             const std::size_t PLAYER_COUNT_MAX,
-            const stats::Trait_t DAMAGE_MIN,
-            const stats::Trait_t DAMAGE_MAX,
+            const Health_t DAMAGE_MIN,
+            const Health_t DAMAGE_MAX,
             const std::string & HIT_VERB,
             const sfml_util::sound_effect::Enum SOUND_EFFECT,
             const std::string & DESCRIPTION);
@@ -61,18 +63,18 @@ namespace game
         Trap(
             const std::size_t PLAYER_COUNT_MIN,
             const std::size_t PLAYER_COUNT_MAX,
-            const stats::Trait_t DAMAGE_MIN,
-            const stats::Trait_t DAMAGE_MAX,
+            const Health_t DAMAGE_MIN,
+            const Health_t DAMAGE_MAX,
             const std::string & HIT_VERB,
             const sfml_util::sound_effect::Enum SOUND_EFFECT,
             const std::string & DESC_PREFIX,
             const std::string & DES_POSTFIX);
 
-        inline sfml_util::sound_effect::Enum SoundEffect() const    { return soundEffect_; }
+        inline sfml_util::sound_effect::Enum SoundEffect() const { return soundEffect_; }
 
         const std::string Description(const std::string & CONTAINER_NAME) const;
 
-        stats::Trait_t RandomDamage() const;
+        Health_t RandomDamage() const;
 
         int Severity() const;
 
@@ -81,11 +83,11 @@ namespace game
         inline const std::string HitVerb() const { return hitVerb_; }
 
     private:
-        stats::Trait_t FindAveragePlayerRank() const;
+        Rank_t FindAveragePlayerRank() const;
 
     private:
         SizeRange_t playerCountRange_;
-        TraitRange_t damageRange_;
+        HealthRange_t damageRange_;
         sfml_util::sound_effect::Enum soundEffect_;
         std::string descPrefix_;
         std::string descPostfix_;

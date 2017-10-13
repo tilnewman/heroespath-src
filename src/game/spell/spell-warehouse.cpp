@@ -77,7 +77,8 @@ namespace spell
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            LoopManager::Instance()->TestingStrAppend("game::spell::Warehouse::Test() Starting Tests...");
+            LoopManager::Instance()->TestingStrAppend(
+                "game::spell::Warehouse::Test() Starting Tests...");
         }
 
         static auto spellIndex{ 0 };
@@ -85,27 +86,59 @@ namespace spell
         {
             auto const NEXT_ENUM{ static_cast<Spells::Enum>(spellIndex) };
             auto spellPtr{ Get(NEXT_ENUM) };
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr),                         "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") Get() resulted in a nullptr being returned.");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Name().empty() == false),           "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in an empty Name().");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Desc().empty() == false),           "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in an empty Desc().");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->DescExtra().empty() == false),      "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in an empty DescExtra().");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->ManaCost() != 0),                   "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in a zero Mana cost.");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Rank() != 0),                       "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") resulted in a zero Rank.");
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Name() == Spells::Name(NEXT_ENUM)), "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM) << "\") Spell is out of order.");
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr),
+                "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
+                << "\") Get() resulted in a nullptr being returned.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Name().empty() == false),
+                "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
+                << "\") resulted in an empty Name().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Desc().empty() == false),
+                "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
+                << "\") resulted in an empty Desc().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->DescExtra().empty() == false),
+                "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
+                << "\") resulted in an empty DescExtra().");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->ManaCost() != 0),
+                "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
+                << "\") resulted in a zero Mana cost.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Rank() != 0_rank),
+                "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
+                << "\") resulted in a zero Rank.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Name() == Spells::Name(NEXT_ENUM)),
+                "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
+                << "\") Spell is out of order.");
+
             ++spellIndex;
-            LoopManager::Instance()->TestingStrIncrement("Spell Test \"" + spellPtr->Name() + "\"");
+            
+            LoopManager::Instance()->TestingStrIncrement(
+                "Spell Test \"" + spellPtr->Name() + "\"");
+
             return false;
         }
 
-        LoopManager::Instance()->TestingStrAppend("game::spell::Warehouse::Test()  ALL TESTS PASSED.");
+        LoopManager::Instance()->TestingStrAppend(
+            "game::spell::Warehouse::Test()  ALL TESTS PASSED.");
+
         return true;
     }
 
 
     SpellPtr_t Warehouse::Get(const Spells::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((spellsUVec_.empty() == false), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") was called before Setup().");
-        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < spellsUVec_.size()), "game::spell::Warehouse::Get(" << Spells::ToString(E) << ") found insuff sized spellsUVec_, probably from a bug in Setup().");
+        M_ASSERT_OR_LOGANDTHROW_SS((spellsUVec_.empty() == false),
+            "game::spell::Warehouse::Get(" << Spells::ToString(E)
+            << ") was called before Setup().");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < spellsUVec_.size()),
+            "game::spell::Warehouse::Get(" << Spells::ToString(E)
+            << ") found insuff sized spellsUVec_, probably from a bug in Setup().");
+
         return spellsUVec_.at(static_cast<std::size_t>(E)).get();
     }
 

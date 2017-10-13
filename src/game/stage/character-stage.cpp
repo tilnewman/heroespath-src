@@ -299,10 +299,11 @@ namespace stage
 
             //get all image filenames possible for the character
             std::vector<std::string> characterImageFilenamesVec;
-            sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(characterImageFilenamesVec,
-                                                                           RACE_ENUM,
-                                                                           ROLE_ENUM,
-                                                                           SEX_ENUM);
+            sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(
+                characterImageFilenamesVec,
+                RACE_ENUM,
+                ROLE_ENUM,
+                SEX_ENUM);
 
             //create the new character
             auto newCharacterUPtr = std::make_unique<player::Character>(
@@ -312,8 +313,8 @@ namespace stage
                 RACE_ENUM,
                 ROLE_ENUM,
                 statSetFinal,
-                0,
-                1,
+                0_health,
+                1_rank,
                 0_exp,
                 game::creature::CondEnumVec_t(),
                 game::creature::TitleEnumVec_t(),

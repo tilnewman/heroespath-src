@@ -27,6 +27,7 @@
 //
 // songs.hpp
 //
+#include "game/types.hpp"
 #include "game/song/song-enum.hpp"
 #include "game/song/song-type-enum.hpp"
 #include "game/song/song.hpp"
@@ -61,15 +62,16 @@ namespace song
     class RallyDrum : public Song
     {
     public:
-        RallyDrum() : Song(Songs::RallyDrum,
-                           SongType::Drum,
-                           EffectType::CreatureHelpMisc,
-                           static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
-                           1,
-                           1,
-                           TargetType::AllCompanions,
-                           "emboldens",
-                           "emboldened")
+        RallyDrum() : Song(
+            Songs::RallyDrum,
+            SongType::Drum,
+            EffectType::CreatureHelpMisc,
+            static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
+            1,
+            1_rank,
+            TargetType::AllCompanions,
+            "emboldens",
+            "emboldened")
         {}
 
         virtual ~RallyDrum() {}
@@ -77,7 +79,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -87,15 +89,16 @@ namespace song
     class SpiritResonance : public Song
     {
     public:
-        SpiritResonance() : Song(Songs::SpiritResonance,
-                                 SongType::Guitar,
-                                 EffectType::CreatureHelpMisc,
-                                 static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
-                                 5,
-                                 1,
-                                 TargetType::AllCompanions,
-                                 "recharges",
-                                 "recharged")
+        SpiritResonance() : Song(
+            Songs::SpiritResonance,
+            SongType::Guitar,
+            EffectType::CreatureHelpMisc,
+            static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
+            5,
+            1_rank,
+            TargetType::AllCompanions,
+            "recharges",
+            "recharged")
         {}
 
         virtual ~SpiritResonance() {}
@@ -103,7 +106,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -113,15 +116,16 @@ namespace song
     class RousingRhythm : public Song
     {
     public:
-        RousingRhythm() : Song(Songs::RousingRhythm,
-                               SongType::Drum,
-                               EffectType::CreatureHelpMisc,
-                               static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
-                               3,
-                               1,
-                               TargetType::AllCompanions,
-                               "rouses",
-                               "roused")
+        RousingRhythm() : Song(
+            Songs::RousingRhythm,
+            SongType::Drum,
+            EffectType::CreatureHelpMisc,
+            static_cast<Phase::Enum>(Phase::Combat | Phase::Inventory),
+            3,
+            1_rank,
+            TargetType::AllCompanions,
+            "rouses",
+            "roused")
         {}
 
         virtual ~RousingRhythm() {}
@@ -129,7 +133,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -139,15 +143,16 @@ namespace song
     class TripBeat : public Song
     {
     public:
-        TripBeat() : Song(Songs::TripBeat,
-                          SongType::Drum,
-                          EffectType::CreatureHarmMisc,
-                          Phase::Combat,
-                          1,
-                          1,
-                          TargetType::AllOpponents,
-                          "trips",
-                          "tripped")
+        TripBeat() : Song(
+            Songs::TripBeat,
+            SongType::Drum,
+            EffectType::CreatureHarmMisc,
+            Phase::Combat,
+            1,
+            1_rank,
+            TargetType::AllOpponents,
+            "trips",
+            "tripped")
         {}
 
         virtual ~TripBeat() {}
@@ -155,7 +160,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -165,15 +170,16 @@ namespace song
     class PanicStrings : public Song
     {
     public:
-        PanicStrings() : Song(Songs::PanicStrings,
-                              SongType::Guitar,
-                              EffectType::CreatureHarmMisc,
-                              Phase::Combat,
-                              2,
-                              1,
-                              TargetType::AllOpponents,
-                              "panics",
-                              "panicked")
+        PanicStrings() : Song(
+            Songs::PanicStrings,
+            SongType::Guitar,
+            EffectType::CreatureHarmMisc,
+            Phase::Combat,
+            2,
+            1_rank,
+            TargetType::AllOpponents,
+            "panics",
+            "panicked")
         {}
 
         virtual ~PanicStrings() {}
@@ -181,7 +187,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -191,15 +197,16 @@ namespace song
     class Lullaby : public Song
     {
     public:
-        Lullaby() : Song(Songs::Lullaby,
-                         SongType::Guitar,
-                         EffectType::CreatureHarmMisc,
-                         Phase::Combat,
-                         2,
-                         1,
-                         TargetType::AllOpponents,
-                         "sleeps",
-                         "slept")
+        Lullaby() : Song(
+            Songs::Lullaby,
+            SongType::Guitar,
+            EffectType::CreatureHarmMisc,
+            Phase::Combat,
+            2,
+            1_rank,
+            TargetType::AllOpponents,
+            "sleeps",
+            "slept")
         {}
 
         virtual ~Lullaby() {}
@@ -207,7 +214,7 @@ namespace song
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;

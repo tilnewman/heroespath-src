@@ -29,9 +29,10 @@
 //  Code that defines the ownership traits of a creature that
 //  are used to predict the chance of having particular items/coins/etc.
 //
-#include "game/non-player/ownership-chance-types.hpp"
+#include "game/types.hpp"
 #include "game/creature/rank.hpp"
 #include "game/item/item-type-enum.hpp"
+#include "game/non-player/ownership-chance-types.hpp"
 
 #include <utility>
 #include <vector>
@@ -64,8 +65,8 @@ namespace ownership
         };
 
         static const std::string ToString(const wealth_type::Enum);
-        static wealth_type::Enum FromRankType(const creature::rank_class::Enum RANK_TYPE);
-        static wealth_type::Enum FromRank(const stats::Trait_t RANK_VALUE);
+        static wealth_type::Enum FromRankType(const creature::rank_class::Enum RANK_CLASS);
+        static wealth_type::Enum FromRank(const Rank_t RANK);
         static wealth_type::Enum FromCreature(const CharacterPtr_t CHARACTER_PTR);
     };
 

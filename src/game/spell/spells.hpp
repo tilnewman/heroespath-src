@@ -53,21 +53,22 @@ namespace spell
     class Sparks : public Spell
     {
     public:
-        Sparks() : Spell(Spells::Sparks,
-                         EffectType::CreatureHarmDamage,
-                         Phase::Combat,
-                         1,
-                         1,
-                         TargetType::SingleOpponent,
-                         "sprays with sparks",
-                         "sprayed with sparks") {}
+        Sparks() : Spell(
+            Spells::Sparks,
+            EffectType::CreatureHarmDamage,
+            Phase::Combat,
+            1,
+            1_rank,
+            TargetType::SingleOpponent,
+            "sprays with sparks",
+            "sprayed with sparks") {}
 
         virtual ~Sparks() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &          healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -80,23 +81,25 @@ namespace spell
     class Bandage : public Spell
     {
     public:
-        Bandage() : Spell(Spells::Bandage,
-                          EffectType::CreatureHelpHeal,
-                          static_cast<Phase::Enum>(Phase::Combat |
-                                                   Phase::Exploring |
-                                                   Phase::Inventory),
-                          1,
-                          1,
-                          TargetType::SingleCompanion,
-                          "bandages",
-                          "bandaged") {}
+        Bandage() : Spell(
+            Spells::Bandage,
+            EffectType::CreatureHelpHeal,
+            static_cast<Phase::Enum>(
+                Phase::Combat |
+                Phase::Exploring |
+                Phase::Inventory),
+            1,
+            1_rank,
+            TargetType::SingleCompanion,
+            "bandages",
+            "bandaged") {}
 
         virtual ~Bandage() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -109,21 +112,22 @@ namespace spell
     class Sleep : public Spell
     {
     public:
-        Sleep() : Spell(Spells::Sleep,
-                        EffectType::CreatureHarmMisc,
-                        Phase::Combat,
-                        1,
-                        1,
-                        TargetType::SingleOpponent,
-                        "sleeps",
-                        "slept") {}
+        Sleep() : Spell(
+            Spells::Sleep,
+            EffectType::CreatureHarmMisc,
+            Phase::Combat,
+            1,
+            1_rank,
+            TargetType::SingleOpponent,
+            "sleeps",
+            "slept") {}
 
         virtual ~Sleep() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -136,23 +140,25 @@ namespace spell
     class Awaken : public Spell
     {
     public:
-        Awaken() : Spell(Spells::Awaken,
-                         EffectType::CreatureHelpMisc,
-                         static_cast<Phase::Enum>(Phase::Combat |
-                                                  Phase::Exploring |
-                                                  Phase::Inventory),
-                         1,
-                         1,
-                         TargetType::SingleCompanion,
-                         "awakens",
-                         "awakened") {}
+        Awaken() : Spell(
+            Spells::Awaken,
+            EffectType::CreatureHelpMisc,
+            static_cast<Phase::Enum>(
+                Phase::Combat |
+                Phase::Exploring |
+                Phase::Inventory),
+            1,
+            1_rank,
+            TargetType::SingleCompanion,
+            "awakens",
+            "awakened") {}
 
         virtual ~Awaken() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -165,21 +171,22 @@ namespace spell
     class Trip : public Spell
     {
     public:
-        Trip() : Spell(Spells::Trip,
-                       EffectType::CreatureHarmMisc,
-                       Phase::Combat,
-                       1,
-                       1,
-                       TargetType::SingleOpponent,
-                       "trips",
-                       "tripped") {}
+        Trip() : Spell(
+            Spells::Trip,
+            EffectType::CreatureHarmMisc,
+            Phase::Combat,
+            1,
+            1_rank,
+            TargetType::SingleOpponent,
+            "trips",
+            "tripped") {}
 
         virtual ~Trip() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -192,23 +199,25 @@ namespace spell
     class Lift : public Spell
     {
     public:
-        Lift() : Spell(Spells::Lift,
-                       EffectType::CreatureHelpMisc,
-                       static_cast<Phase::Enum>(Phase::Combat |
-                                                Phase::Exploring |
-                                                Phase::Inventory),
-                       1,
-                       1,
-                       TargetType::SingleCompanion,
-                       "lifts",
-                       "lifted") {}
+        Lift() : Spell(
+            Spells::Lift,
+            EffectType::CreatureHelpMisc,
+            static_cast<Phase::Enum>(
+                Phase::Combat |
+                Phase::Exploring |
+                Phase::Inventory),
+            1,
+            1_rank,
+            TargetType::SingleCompanion,
+            "lifts",
+            "lifted") {}
 
         virtual ~Lift() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -222,21 +231,22 @@ namespace spell
     class Daze : public Spell
     {
     public:
-        Daze() : Spell(Spells::Daze,
-                       EffectType::CreatureHarmMisc,
-                       Phase::Combat,
-                       1,
-                       1,
-                       TargetType::SingleOpponent,
-                       "dazes",
-                       "dazed") {}
+        Daze() : Spell(
+            Spells::Daze,
+            EffectType::CreatureHarmMisc,
+            Phase::Combat,
+            1,
+            1_rank,
+            TargetType::SingleOpponent,
+            "dazes",
+            "dazed") {}
 
         virtual ~Daze() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -249,21 +259,22 @@ namespace spell
     class Panic : public Spell
     {
     public:
-        Panic() : Spell(Spells::Panic,
-                        EffectType::CreatureHarmMisc,
-                        Phase::Combat,
-                        1,
-                        1,
-                        TargetType::SingleOpponent,
-                        "panics",
-                        "panicked") {}
+        Panic() : Spell(
+            Spells::Panic,
+            EffectType::CreatureHarmMisc,
+            Phase::Combat,
+            1,
+            1_rank,
+            TargetType::SingleOpponent,
+            "panics",
+            "panicked") {}
 
         virtual ~Panic() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -276,23 +287,25 @@ namespace spell
     class ClearMind : public Spell
     {
     public:
-        ClearMind() : Spell(Spells::ClearMind,
-                            EffectType::CreatureHelpMisc,
-                            static_cast<Phase::Enum>(Phase::Combat |
-                                                     Phase::Exploring |
-                                                     Phase::Inventory),
-                            1,
-                            1,
-                            TargetType::SingleCompanion,
-                            "clears the mind",
-                            "clear headed") {}
+        ClearMind() : Spell(
+            Spells::ClearMind,
+            EffectType::CreatureHelpMisc,
+            static_cast<Phase::Enum>(
+                Phase::Combat |
+                Phase::Exploring |
+                Phase::Inventory),
+            1,
+            1_rank,
+            TargetType::SingleCompanion,
+            "clears the mind",
+            "clear headed") {}
 
         virtual ~ClearMind() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -305,21 +318,22 @@ namespace spell
     class Poison : public Spell
     {
     public:
-        Poison() : Spell(Spells::Poison,
-                         EffectType::CreatureHarmMisc,
-                         Phase::Combat,
-                         1,
-                         1,
-                         TargetType::SingleOpponent,
-                         "poisons",
-                         "poisoned") {}
+        Poison() : Spell(
+            Spells::Poison,
+            EffectType::CreatureHarmMisc,
+            Phase::Combat,
+            1,
+            1_rank,
+            TargetType::SingleOpponent,
+            "poisons",
+            "poisoned") {}
 
         virtual ~Poison() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -332,23 +346,25 @@ namespace spell
     class Antidote : public Spell
     {
     public:
-        Antidote() : Spell(Spells::Antidote,
-                           EffectType::CreatureHelpMisc,
-                           static_cast<Phase::Enum>(Phase::Combat |
-                                                    Phase::Exploring |
-                                                    Phase::Inventory),
-                           1,
-                           1,
-                           TargetType::SingleCompanion,
-                           "cures",
-                           "cured") {}
+        Antidote() : Spell(
+            Spells::Antidote,
+            EffectType::CreatureHelpMisc,
+            static_cast<Phase::Enum>(
+                Phase::Combat |
+                Phase::Exploring |
+                Phase::Inventory),
+            1,
+            1_rank,
+            TargetType::SingleCompanion,
+            "cures",
+            "cured") {}
 
         virtual ~Antidote() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &        healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;
@@ -361,21 +377,22 @@ namespace spell
     class PoisonCloud : public Spell
     {
     public:
-        PoisonCloud() : Spell(Spells::PoisonCloud,
-                              EffectType::CreatureHarmMisc,
-                              Phase::Combat,
-                              3,
-                              1,
-                              TargetType::AllOpponents,
-                              "poisons",
-                              "poisoned") {}
+        PoisonCloud() : Spell(
+            Spells::PoisonCloud,
+            EffectType::CreatureHarmMisc,
+            Phase::Combat,
+            3,
+            1_rank,
+            TargetType::AllOpponents,
+            "poisons",
+            "poisoned") {}
 
         virtual ~PoisonCloud() {}
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t   castingCreaturePtr,
             creature::CreaturePtr_t   creatureCastUponPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const;

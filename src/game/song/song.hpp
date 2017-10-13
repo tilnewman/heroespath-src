@@ -27,6 +27,7 @@
 //
 // song.hpp
 //
+#include "game/types.hpp"
 #include "game/stats/types.hpp"
 #include "game/song/song-enum.hpp"
 #include "game/song/song-type-enum.hpp"
@@ -69,39 +70,39 @@ namespace song
              const SongType::Enum   SONG_TYPE,
              const EffectType::Enum EFFECT_TYPE,
              const Phase::Enum      VALID_PHASES,
-             const stats::Trait_t    MANA_COST,
-             const stats::Trait_t    RANK,
+             const stats::Trait_t   MANA_COST,
+             const Rank_t           RANK,
              const TargetType::Enum TARGET_TYPE,
              const std::string &    VERB_THIRD_PERSON,
              const std::string &    VERB_PAST_TENSE);
 
         virtual ~Song();
 
-        inline const std::string Name() const       { return Songs::Name(which_); }
+        inline const std::string Name() const { return Songs::Name(which_); }
 
         const std::string ToString() const;
 
         inline const std::string VerbThirdPerson() const { return verbThirdPerson_; }
         inline const std::string VerbPastTense() const { return verbPastTense_; }
 
-        inline const std::string Desc() const       { return Songs::ShortDesc(which_); }
-        inline const std::string DescExtra() const  { return Songs::ExtraDesc(which_); }
+        inline const std::string Desc() const { return Songs::ShortDesc(which_); }
+        inline const std::string DescExtra() const { return Songs::ExtraDesc(which_); }
         const std::string DescDetails() const;
         const std::string DescComplete() const;
 
-        inline Songs::Enum Which() const            { return which_; }
-        inline SongType::Enum Type() const          { return type_; }
+        inline Songs::Enum Which() const        { return which_; }
+        inline SongType::Enum Type() const      { return type_; }
         inline EffectType::Enum Effect() const  { return effectType_; }
-        inline Phase::Enum ValidPhases() const      { return validPhases_; }
-        inline stats::Trait_t ManaCost() const       { return manaCost_; }
-        inline stats::Trait_t Rank() const           { return rank_; }
-        inline TargetType::Enum Target() const      { return targetType_; }
+        inline Phase::Enum ValidPhases() const  { return validPhases_; }
+        inline stats::Trait_t ManaCost() const  { return manaCost_; }
+        inline Rank_t Rank() const              { return rank_; }
+        inline TargetType::Enum Target() const  { return targetType_; }
 
         //Allows the spell to change the target creature.
         virtual bool EffectCreature(
             creature::CreaturePtr_t   creaturePlayingPtr,
             creature::CreaturePtr_t   creatureListeningPtr,
-            stats::Trait_t &         healthAdj,
+            Health_t &                healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             ContentAndNamePos &       actionPhraseCNP) const = 0;
@@ -124,9 +125,9 @@ namespace song
         Songs::Enum      which_;
         SongType::Enum   type_;
         EffectType::Enum effectType_;
-        stats::Trait_t    rank_;
+        Rank_t           rank_;
         Phase::Enum      validPhases_;
-        stats::Trait_t    manaCost_;
+        stats::Trait_t   manaCost_;
         TargetType::Enum targetType_;
         std::string      verbThirdPerson_;
         std::string      verbPastTense_;

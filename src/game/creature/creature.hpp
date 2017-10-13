@@ -125,8 +125,8 @@ namespace creature
                           const race::Enum &          RAE             = race::Enum::Count_PlayerRaces,
                           const role::Enum &          ROLE            = role::Enum::PlayerRoleCount,
                           const stats::StatSet &      STATS           = stats::StatSet(),
-                          const stats::Trait_t        HEALTH          = 0,
-                          const stats::Trait_t        RANK            = 1,
+                          const Health_t              HEALTH          = 0_health,
+                          const Rank_t                RANK            = 1_rank,
                           const Experience_t          EXPERIENCE      = 0_exp,
                           const CondEnumVec_t &       CONDITIONS_VEC  = CondEnumVec_t(),
                           const TitleEnumVec_t &      TITLES_VEC      = TitleEnumVec_t(),
@@ -159,8 +159,8 @@ namespace creature
             return creature::sex::ToString(sex_);
         }
 
-        inline race::Enum Race() const                          { return race_; }
-        inline const std::string RaceName() const               { return race::Name(race_); }
+        inline race::Enum Race() const { return race_; }
+        inline const std::string RaceName() const { return race::Name(race_); }
         inline bool IsPixie() const
         {
             return (race_ == race::Pixie);
@@ -182,7 +182,7 @@ namespace creature
             return wolfen_class::ClassFromRank( Rank() );
         }
 
-        inline stats::Trait_t Rank() const                      { return rank_; }
+        inline Rank_t Rank() const { return rank_; }
 
         inline rank_class::Enum RankClass() const
         {
@@ -192,23 +192,19 @@ namespace creature
         const std::string RankClassName() const;
         float RankRatio() const;
 
-        inline stats::Trait_t IncreaseRank(const stats::Trait_t R)
-        {
-            rank_ += R;
-            return rank_;
-        }
+        inline Rank_t IncreaseRank(const Rank_t R)              { return rank_ += R; }
 
         inline Experience_t Exp() const                         { return experience_; }
         inline Experience_t IncreaseExp(const Experience_t E)   { return experience_ += E; }
 
-        inline stats::Trait_t HealthCurrent() const             { return healthCurrent_; }
-        inline void HealthCurrentSet(const stats::Trait_t X)    { healthCurrent_ = X; }
-        inline stats::Trait_t HealthNormal() const              { return healthNormal_; }
-        inline void HealthNormalSet(const stats::Trait_t X)     { healthNormal_ = X; }
+        inline Health_t HealthCurrent() const                   { return healthCurrent_; }
+        inline void HealthCurrentSet(const Health_t H)          { healthCurrent_ = H; }
+        inline Health_t HealthNormal() const                    { return healthNormal_; }
+        inline void HealthNormalSet(const Health_t H)           { healthNormal_ = H; }
         inline void HealthReset()                               { healthCurrent_ = healthNormal_; }
 
-        stats::Trait_t HealthCurrentAdj(const stats::Trait_t);
-        stats::Trait_t HealthNormalAdj(const stats::Trait_t);
+        Health_t HealthCurrentAdj(const Health_t);
+        Health_t HealthNormalAdj(const Health_t);
 
         inline role::Enum Role() const                          { return role_; }
         inline const std::string RoleName() const               { return role::Name(role_); }
@@ -219,10 +215,10 @@ namespace creature
 
         inline float HealthRatio() const
         {
-            return static_cast<float>(healthCurrent_) / static_cast<float>(healthNormal_);
+            return (healthCurrent_.AsFloat() / healthNormal_.AsFloat());
         }
 
-        inline stats::Trait_t HealthMissing() const
+        inline Health_t HealthMissing() const
         {
             return healthNormal_ - healthCurrent_;
         }
@@ -232,8 +228,8 @@ namespace creature
             return (TraitNormal(stats::Traits::Mana) - TraitWorking(stats::Traits::Mana));
         }
 
-        inline bool IsDead() const                              { return HasCondition(Conditions::Dead); }
-        inline bool IsAlive() const                             { return ! IsDead(); }
+        inline bool IsDead() const { return HasCondition(Conditions::Dead); }
+        inline bool IsAlive() const { return ! IsDead(); }
 
         inline stats::Trait_t Strength() const
         {
@@ -504,11 +500,10 @@ namespace creature
         std::size_t         lastSpellCastNum_;
         song::SongVec_t     songsVec_;
         std::size_t         lastSongPlayedNum_;
-        stats::Trait_t      healthCurrent_;
-        stats::Trait_t      healthNormal_;
-        stats::Trait_t      rank_;
+        Health_t            healthCurrent_;
+        Health_t            healthNormal_;
+        Rank_t              rank_;
         Experience_t        experience_;
-
 
         //
         //actualSet_.Normal   -The non-percent, non-bonus, positive, standing value,

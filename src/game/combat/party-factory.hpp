@@ -77,12 +77,12 @@ namespace combat
 
         non_player::CharacterPtr_t MakeCharacter(
             const stats::StatSet & STATS,
-            const stats::Trait_t HEALTH_MIN,
-            const stats::Trait_t HEALTH_MAX,
+            const Health_t HEALTH_MIN,
+            const Health_t HEALTH_MAX,
             const creature::sex::Enum SEX,
             const creature::race::Enum RACE,
             const creature::role::Enum ROLE,
-            const stats::Trait_t RANK = 1,
+            const Rank_t RANK = 1_rank,
             const Experience_t EXPERIENCE = 0_exp,
             const stats::Trait_t MANA = 0) const;
 

@@ -232,16 +232,16 @@ namespace item
         //Use a creature's rank min/max to establish a kind of combined power/worth/value
         //summon score, then append that to the summoning item's score.
 
-        auto const CREATURE_RANK_PAIR{
+        auto const CREATURE_RANK_RANGE{
             creature::race::RaceRoleRanks(SUMMON_INFO.Race(), SUMMON_INFO.Role()) };
 
-        auto const CREATURE_RANK_AVG{
-            static_cast<double>(CREATURE_RANK_PAIR.first + CREATURE_RANK_PAIR.second) / 2.0 };
+        auto const SUMMON_COUNT_D{ static_cast<double>(SUMMON_INFO.Count()) };
 
-        auto const SUMMON_COUNT{ static_cast<double>(SUMMON_INFO.Count()) };
+        auto const CREATURE_RANK_AVG{
+            (CREATURE_RANK_RANGE.A().AsDouble() + CREATURE_RANK_RANGE.B().AsDouble()) * 0.5f };
 
         auto const SUMMON_SCORE{ static_cast<int>( std::sqrt(
-            static_cast<double>(CREATURE_RANK_AVG * SUMMON_COUNT)) * 150.0) };
+            (CREATURE_RANK_AVG * SUMMON_COUNT_D) * 150.0)) };
 
         score_ += SUMMON_SCORE;
     }

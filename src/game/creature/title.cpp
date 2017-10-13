@@ -66,9 +66,9 @@ namespace creature
                  const std::size_t           ACHIEVEMENT_COUNT,
                  const RoleVec_t &           ROLES_VEC,
                  const stats::StatSet &      STATS_BONUS,
-                 const stats::Trait_t        RANK_BONUS,
+                 const Rank_t                RANK_BONUS,
                  const Experience_t          EXPERIENCE_BONUS,
-                 const stats::Trait_t        HEALTH_BONUS)
+                 const Health_t              HEALTH_BONUS)
     :
         title_           (TITLE),
         achievementType_ (ACHIEVEMENT_TYPE),
@@ -169,7 +169,7 @@ namespace creature
                 << AchievementType::Name(achievementType_) << SEP_STR;
         }
 
-        if (0 != rankBonus_)
+        if (0_rank != rankBonus_)
         {
             ss << "rank_bonus=" << rankBonus_ << SEP_STR;
         }
@@ -179,7 +179,7 @@ namespace creature
             ss << "exp_bonus=" << expBonus_ << SEP_STR;
         }
 
-        if (0 != healthBonus_)
+        if (0_health != healthBonus_)
         {
             ss << "health_bonus=" << healthBonus_ << SEP_STR;
         }
@@ -234,7 +234,7 @@ namespace creature
 
         ss << ".  ";
 
-        if (0 == rankBonus_)
+        if (0_rank == rankBonus_)
         {
             ss << "This does not increase your rank";
         }

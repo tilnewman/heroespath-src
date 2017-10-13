@@ -713,7 +713,7 @@ namespace combat
             }
             else
             {
-                ss << "for " << CREATURE_EFFECT.GetDamageTotal() * -1 << " damage";
+                ss << "for " << CREATURE_EFFECT.GetDamageTotal().AsInt() * -1 << " damage";
             }
 
             ss << AttackConditionsSummaryList(CREATURE_EFFECT);
@@ -802,9 +802,9 @@ namespace combat
                 }
             }
 
-            if (HIT_INFO.Damage() < 0)
+            if (HIT_INFO.Damage() < 0_health)
             {
-                ss << "for " << HIT_INFO.Damage() * -1 << " damage";
+                ss << "for " << HIT_INFO.Damage().AsInt() * -1 << " damage";
             }
             else
             {
@@ -960,13 +960,13 @@ namespace combat
 
         auto const DAMAGE{ HIT_INFO.Damage() };
 
-        if (DAMAGE > 0)
+        if (DAMAGE > 0_health)
         {
             ss << " healing for " << DAMAGE;
         }
-        else if (DAMAGE < 0)
+        else if (DAMAGE < 0_health)
         {
-            ss << " doing " << std::abs(DAMAGE) << " damage.";
+            ss << " doing " << DAMAGE.Abs() << " damage.";
         }
 
         return ss.str();
@@ -1086,13 +1086,13 @@ namespace combat
 
         auto const DAMAGE{ HIT_INFO.Damage() };
 
-        if (DAMAGE > 0)
+        if (DAMAGE > 0_health)
         {
             ss << " healing for " << DAMAGE;
         }
-        else if (DAMAGE < 0)
+        else if (DAMAGE < 0_health)
         {
-            ss << " doing " << std::abs(DAMAGE) << " damage.";
+            ss << " doing " << DAMAGE.Abs() << " damage.";
         }
 
         return ss.str();
@@ -1171,7 +1171,7 @@ namespace combat
 
         std::ostringstream ss;
         ss << CREATURE_UNLOCKING_PTR->Name() << " is " << HIT_INFO.ActionVerb()
-            << " for " << std::abs(HIT_INFO.Damage()) << " damage"
+            << " for " << HIT_INFO.Damage().Abs() << " damage"
             << AttackConditionsSummaryList(CREATURE_EFFECT);
 
         return ss.str();

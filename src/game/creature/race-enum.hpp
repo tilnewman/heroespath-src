@@ -30,9 +30,11 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
+#include "game/types.hpp"
 #include "game/stats/types.hpp"
 #include "game/item/treasure-info.hpp"
 #include "game/creature/role-enum.hpp"
+#include "game/creature/rank.hpp"
 
 #include "misc/handy-types.hpp"
 
@@ -129,17 +131,18 @@ namespace creature
         static const item::TreasureInfo TreasureScore(const race::Enum, const role::Enum);
         static const item::TreasureInfo TreasureScoreMax();
         static const std::string RaceRoleName(const race::Enum, const role::Enum);
-        static const stats::TraitPair_t RaceRoleRanks(const race::Enum, const role::Enum);
+        static const RankRange_t RaceRoleRanks(const race::Enum, const role::Enum);
         static const misc::StrVec_t CorpseImageKeys(const race::Enum);
     };
 
-
+    
     class SummonInfo
     {
     public:
-        explicit SummonInfo(const origin_type::Enum ORIGIN    = origin_type::Count,
-                            const race::Enum        RACE      = creature::race::Count,
-                            const role::Enum        ROLE      = creature::role::Count)
+        explicit SummonInfo(
+            const origin_type::Enum ORIGIN = origin_type::Count,
+            const race::Enum        RACE   = creature::race::Count,
+            const role::Enum        ROLE   = creature::role::Count)
         :
             origin_ (ORIGIN),
             race_   (RACE),

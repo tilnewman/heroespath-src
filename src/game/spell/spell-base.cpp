@@ -50,8 +50,8 @@ namespace spell
     Spell::Spell(const Spells::Enum     WHICH,
                  const EffectType::Enum EFFECT_TYPE,
                  const Phase::Enum      VALID_PHASES,
-                 const stats::Trait_t    MANA_COST,
-                 const stats::Trait_t    RANK,
+                 const stats::Trait_t   MANA_COST,
+                 const Rank_t           RANK,
                  const TargetType::Enum TARGET_TYPE,
                  const std::string &    VERB_THIRD_PERSON,
                  const std::string &    VERB_PAST_TENSE)
@@ -82,7 +82,7 @@ namespace spell
     const std::string Spell::DescDetails() const
     {
         std::ostringstream ss;
-        ss  << "A " << misc::String::DecorateNumber(rank_) << " rank"
+        ss  << "A " << misc::String::DecorateNumber(rank_.AsInt()) << " rank"
             << " " << EffectType::Name(effectType_) << " spell"
             << " that can be cast during " << Phase::ToString(validPhases_, false)
             << ", targeting " << TargetType::Name(targetType_)

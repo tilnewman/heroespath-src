@@ -102,7 +102,7 @@ namespace song
                 "game::song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                 << "\") resulted in a zero Mana cost.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->Rank() != 0),
+            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->Rank() != 0_rank),
                 "game::song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                 << "\") resulted in a zero Rank.");
 

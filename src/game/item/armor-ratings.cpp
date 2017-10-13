@@ -121,7 +121,7 @@ namespace item
     {
         using namespace item::armor;
 
-        auto const SKIN_PTR{ ArmorFactory::Make_Skin(material::Flesh, 1, false) };
+        auto const SKIN_PTR{ ArmorFactory::Make_Skin(material::Flesh, 1_rank, false) };
         auto const SHIRT_PTR{ ArmorFactory::Make_Shirt(base_type::Plain) };
         auto const PANTS_PTR{ ArmorFactory::Make_Pants(base_type::Plain, material::Cloth) };
         auto const BOOTS_PTR{ ArmorFactory::Make_Boots(base_type::Plain, MATERIAL_ENUM) };
@@ -129,13 +129,14 @@ namespace item
         auto const CLOAK_PTR{ ArmorFactory::Make_Cover(cover_type::Cloak, MATERIAL_ENUM) };
         auto const GLOVES_PTR{ ArmorFactory::Make_Gauntlets(base_type::Plain, MATERIAL_ENUM) };
 
-        return GetTotalArmorRating( ItemPVec_t{ SKIN_PTR,
-                                                SHIRT_PTR,
-                                                PANTS_PTR,
-                                                BOOTS_PTR,
-                                                VEST_PTR,
-                                                CLOAK_PTR,
-                                                GLOVES_PTR });
+        return GetTotalArmorRating( ItemPVec_t{
+            SKIN_PTR,
+            SHIRT_PTR,
+            PANTS_PTR,
+            BOOTS_PTR,
+            VEST_PTR,
+            CLOAK_PTR,
+            GLOVES_PTR });
     }
 
 
@@ -160,18 +161,19 @@ namespace item
         auto const BRACER_PTR{ ArmorFactory::Make_Bracer(BASE_TYPE, E) };
         auto const AVENTAIL_PTR{ ArmorFactory::Make_Aventail(BASE_TYPE, E) };
         auto const COVER_PTR{ ArmorFactory::Make_Cover(cover_type::Cloak, material::SoftLeather) };
-        auto const SKIN_PTR{ ArmorFactory::Make_Skin(material::Flesh, 1, false) };
+        auto const SKIN_PTR{ ArmorFactory::Make_Skin(material::Flesh, 1_rank, false) };
 
-        return GetTotalArmorRating(ItemPVec_t{ SHIELD_PTR,
-                                               HELM_PTR,
-                                               GAUNTLETS_PTR,
-                                               PANTS_PTR,
-                                               BOOTS_PTR,
-                                               SHIRT_PTR,
-                                               BRACER_PTR,
-                                               AVENTAIL_PTR,
-                                               COVER_PTR,
-                                               SKIN_PTR } );
+        return GetTotalArmorRating(ItemPVec_t{
+            SHIELD_PTR,
+            HELM_PTR,
+            GAUNTLETS_PTR,
+            PANTS_PTR,
+            BOOTS_PTR,
+            SHIRT_PTR,
+            BRACER_PTR,
+            AVENTAIL_PTR,
+            COVER_PTR,
+            SKIN_PTR } );
     }
 
 
@@ -196,18 +198,19 @@ namespace item
         auto const BRACER_PTR{ ArmorFactory::Make_Bracer(BASE_TYPE, E, E) };
         auto const AVENTAIL_PTR{ ArmorFactory::Make_Aventail(BASE_TYPE, E, E) };
         auto const COVER_PTR{ ArmorFactory::Make_Cover(cover_type::Cloak, material::HardLeather) };
-        auto const SKIN_PTR{ ArmorFactory::Make_Skin(material::Flesh, 1, false) };
+        auto const SKIN_PTR{ ArmorFactory::Make_Skin(material::Flesh, 1_rank, false) };
 
-        return GetTotalArmorRating(ItemPVec_t{ SHIELD_PTR,
-                                               HELM_PTR,
-                                               GAUNTLETS_PTR,
-                                               PANTS_PTR,
-                                               BOOTS_PTR,
-                                               SHIRT_PTR,
-                                               BRACER_PTR,
-                                               AVENTAIL_PTR,
-                                               COVER_PTR,
-                                               SKIN_PTR } );
+        return GetTotalArmorRating(ItemPVec_t{
+            SHIELD_PTR,
+            HELM_PTR,
+            GAUNTLETS_PTR,
+            PANTS_PTR,
+            BOOTS_PTR,
+            SHIRT_PTR,
+            BRACER_PTR,
+            AVENTAIL_PTR,
+            COVER_PTR,
+            SKIN_PTR } );
     }
 
 

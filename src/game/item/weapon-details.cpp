@@ -175,8 +175,8 @@ namespace weapon
         WeaponDetails weaponDetails;
 
         //lookup detail value string in the GameDataFile
-        const std::string KEY_STR("heroespath-item-weapon-details-" + WEAPON_NAME);
-        const std::string VALUE_STR( GameDataFile::Instance()->GetCopyStr(KEY_STR) );
+        auto const KEY_STR{ "heroespath-item-weapon-details-" + WEAPON_NAME };
+        auto const VALUE_STR{ GameDataFile::Instance()->GetCopyStr(KEY_STR) };
 
         //break the line of text into comma separated field strings
         StrVec_t fieldsVec;
@@ -196,8 +196,8 @@ namespace weapon
         weaponDetails.price = StringFieldToInt("Price", fieldsVec[2]);
         weaponDetails.weight = static_cast<stats::Trait_t>(StringFieldToInt("Weight", fieldsVec[3]));
 
-        weaponDetails.damage_min = StringFieldToInt("DamageMin", fieldsVec[4]);
-        weaponDetails.damage_max = StringFieldToInt("DamageMax", fieldsVec[5]);
+        weaponDetails.damage_min = Health_t(StringFieldToInt("DamageMin", fieldsVec[4]));
+        weaponDetails.damage_max = Health_t(StringFieldToInt("DamageMax", fieldsVec[5]));
 
         weaponDetails.handedness = ((CleanStringField(fieldsVec[6], true) == "two-handed") ?
             item::category::TwoHanded : item::category::OneHanded );

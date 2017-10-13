@@ -39,17 +39,19 @@
 namespace misc
 {
 
-    //Responsible for wrapping types to make them strong types with a phantom parameter.
+    //Responsible for wrapping types with a phantom tag parameter to make them stronger.
     template <typename T, typename Parameter>
     struct StrongType
     {
         explicit StrongType(const T & VALUE = T())
-            :
+        :
             m_value(VALUE)
         {}
 
         virtual ~StrongType()
         {}
+
+        using type = T;
 
         //this move constructor allows for reference types    
         template<typename T_ = T>
@@ -125,105 +127,6 @@ namespace misc
     std::ostream & operator<<(
         std::ostream & os,
         const StrongType<T, Parameter> & RHS)
-    {
-        os << RHS.Get();
-        return os;
-    }
-
-
-    //Responsible for wrapping 
-    template<typename T, typename Parameter>
-    struct StrongNumericType : public StrongType<T, Parameter>
-    {
-        explicit StrongNumericType(const T & VALUE = T(0))
-            :
-            StrongType<T, Parameter>(VALUE)
-        {}
-
-        virtual ~StrongNumericType()
-        {}
-
-        StrongNumericType & operator+=(const StrongNumericType & RHS)
-        {
-            this->m_value += RHS.m_value;
-            return *this;
-        }
-
-        StrongNumericType & operator-=(const StrongNumericType & RHS)
-        {
-            this->m_value -= RHS.m_value;
-            return *this;
-        }
-
-        StrongNumericType & operator*=(const StrongNumericType & RHS)
-        {
-            this->m_value *= RHS.m_value;
-            return *this;
-        }
-
-        StrongNumericType & operator/=(const StrongNumericType & RHS)
-        {
-            this->m_value /= RHS.m_value;
-            return *this;
-        }
-
-        StrongNumericType operator+(const StrongNumericType & RHS)
-        {
-            return TreasureInfo(*this) += RHS;
-        }
-
-        StrongNumericType operator-(const StrongNumericType & RHS)
-        {
-            return TreasureInfo(*this) -= RHS;
-        }
-
-        StrongNumericType operator*(const StrongNumericType & RHS)
-        {
-            return TreasureInfo(*this) *= RHS;
-        }
-
-        StrongNumericType operator/(const StrongNumericType & RHS)
-        {
-            return TreasureInfo(*this) /= RHS;
-        }
-
-        
-        bool operator==(const StrongNumericType & RHS) const
-        {
-            return this->m_value == RHS.m_value;
-        }
-
-        bool operator!=(const StrongNumericType & RHS) const
-        {
-            return this->m_value != RHS.m_value;
-        }
-
-        bool operator<(const StrongNumericType & RHS) const
-        {
-            return this->m_value < RHS.m_value;
-        }
-
-        bool operator<=(const StrongNumericType & RHS) const
-        {
-            return this->m_value <= RHS.m_value;
-        }
-
-        bool operator>(const StrongNumericType & RHS) const
-        {
-            return this->m_value > RHS.m_value;
-        }
-
-        bool operator>=(const StrongNumericType & RHS) const
-        {
-            return this->m_value >= RHS.m_value;
-        }
-    };
-
-
-    template<typename T, typename Parameter>
-    std::ostream & operator<<(
-        std::ostream & os,
-        const StrongNumericType<T, Parameter> & RHS)
     {
         os << RHS.Get();
         return os;

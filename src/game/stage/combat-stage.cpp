@@ -1294,7 +1294,6 @@ namespace stage
             return;
         }
 
-
         if ((TurnPhase::PerformAnim == turnPhase_) &&
             (AnimPhase::ProjectileShoot == animPhase_))
         {
@@ -3868,10 +3867,10 @@ namespace stage
     void CombatStage::HandleApplyDamageTasks()
     {
         //create a vec of all creatures damaged and killed this turn
-        std::vector<stats::Trait_t> damageVec;
+        std::vector<Health_t> damageVec;
         combat::CombatNodePVec_t combatNodePVec;
         creature::CreaturePVec_t killedCreaturesPVec;
-
+        
         auto const CREATURE_EFFECTS{ fightResult_.Effects() };
 
         for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)
@@ -3884,7 +3883,7 @@ namespace stage
                 }
 
                 auto const DAMAGE{ NEXT_CREATURE_EFFECT.GetDamageTotal() };
-                if (DAMAGE != 0)
+                if (DAMAGE != 0_health)
                 {
                     damageVec.push_back(DAMAGE);
                     combatNodePVec.push_back(combatDisplayStagePtr_->

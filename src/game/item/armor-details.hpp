@@ -58,7 +58,7 @@ namespace armor
 
         std::string     name;
         std::string     description;
-        stats::Trait_t    price;
+        stats::Trait_t  price;
         stats::Trait_t  weight;
         stats::Trait_t  armor_rating;
         non_player::ownership::complexity_type::Enum complexity;

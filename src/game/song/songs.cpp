@@ -44,7 +44,7 @@ namespace song
     bool RallyDrum::EffectCreature(
         creature::CreaturePtr_t   creaturePlayingPtr,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Trait_t &,
+        Health_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -103,7 +103,7 @@ namespace song
     bool SpiritResonance::EffectCreature(
         creature::CreaturePtr_t   creaturePlayingPtr,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Trait_t &,
+        Health_t &,
         creature::CondEnumVec_t &,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -132,10 +132,11 @@ namespace song
             std::ostringstream ss;
             ss << "'s mana for " << MANA_GAIN_FINAL << ".";
 
-            actionPhraseCNP = ContentAndNamePos("",
-                                                "'s " + TypeToVerb() + " recharges ",
-                                                ss.str(),
-                                                NamePosition::SourceThenTarget);
+            actionPhraseCNP = ContentAndNamePos(
+                "",
+                "'s " + TypeToVerb() + " recharges ",
+                ss.str(),
+                NamePosition::SourceThenTarget);
 
             return true;
         }
@@ -156,7 +157,7 @@ namespace song
     bool RousingRhythm::EffectCreature(
         creature::CreaturePtr_t,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Trait_t &,
+        Health_t &,
         creature::CondEnumVec_t &,
         creature::CondEnumVec_t & condsRemovedVec,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -190,14 +191,16 @@ namespace song
         }
         else
         {
-            condsRemovedVec.insert(condsRemovedVec.end(),
-                                   condsToRemoveVec.begin(),
-                                   condsToRemoveVec.end());
+            condsRemovedVec.insert(
+                condsRemovedVec.end(),
+                condsToRemoveVec.begin(),
+                condsToRemoveVec.end());
 
-            actionPhraseCNP = ContentAndNamePos("",
-                                                "'s " + TypeToVerb() + " rouses ",
-                                                ".",
-                                                NamePosition::SourceThenTarget);
+            actionPhraseCNP = ContentAndNamePos(
+                "",
+                "'s " + TypeToVerb() + " rouses ",
+                ".",
+                NamePosition::SourceThenTarget);
 
             return true;
         }
@@ -207,7 +210,7 @@ namespace song
     bool TripBeat::EffectCreature(
         creature::CreaturePtr_t   creaturePlayingPtr,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Trait_t &,
+        Health_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -283,7 +286,7 @@ namespace song
     bool PanicStrings::EffectCreature(
         creature::CreaturePtr_t   creaturePlayingPtr,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Trait_t &,
+        Health_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const
@@ -348,7 +351,7 @@ namespace song
     bool Lullaby::EffectCreature(
         creature::CreaturePtr_t   creaturePlayingPtr,
         creature::CreaturePtr_t   creatureListeningPtr,
-        stats::Trait_t &,
+        Health_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t &,
         ContentAndNamePos &       actionPhraseCNP) const

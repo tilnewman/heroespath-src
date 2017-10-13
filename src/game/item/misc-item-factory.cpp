@@ -232,8 +232,8 @@ namespace misc
             "",
             price,
             weight,
-            0,
-            0,
+            0_health,
+            0_health,
             DETAILS.armor_rating,
             creature::role::Count,
             weapon::WeaponInfo(),
@@ -244,8 +244,8 @@ namespace misc
             PROFILE.NamedType(),
             PROFILE.ElementType()) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
 
@@ -447,8 +447,8 @@ namespace misc
             PROFILE.NamedType(),
             PROFILE.ElementType()) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
 
@@ -569,8 +569,8 @@ namespace misc
             price,
             weight) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-             GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
@@ -598,8 +598,8 @@ namespace misc
             price,
             weight) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-             GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
@@ -627,8 +627,8 @@ namespace misc
             price,
             weight) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         return itemPtr;
     }
@@ -657,16 +657,16 @@ namespace misc
             "",
             price,
             weight,
-            0,
-            0,
+            0_health,
+            0_health,
             0,
             creature::role::Bard,
             weapon::WeaponInfo(),
             armor::ArmorInfo(),
             IS_PIXIE_ITEM) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-             GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
 
@@ -726,8 +726,8 @@ namespace misc
             "",
             price,
             weight,
-            0,
-            0,
+            0_health,
+            0_health,
             0,
             PROFILE.Role(),
             weapon::WeaponInfo(),
@@ -738,8 +738,8 @@ namespace misc
             PROFILE.NamedType(),
             PROFILE.ElementType()) ) };
 
-        itemPtr->ImageFilename(sfml_util::gui::ItemImageManager::Instance()->
-            GetImageFilename(itemPtr));
+        itemPtr->ImageFilename(
+            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
 
         creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
 
