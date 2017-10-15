@@ -27,6 +27,7 @@
 //
 // item-profile-warehouse.hpp
 //
+#include "game/types.hpp"
 #include "game/item/item-profile.hpp"
 #include "game/stats/traits-set.hpp"
 
@@ -74,53 +75,56 @@ namespace item
 
         const ItemProfileVec_t & Get();
 
-        static int Score(const stats::TraitSet &);
+        static Score_t Score(const stats::TraitSet &);
 
-        static int Score(const item::material::Enum PRI,
+        static Score_t Score(const item::material::Enum PRI,
             const item::material::Enum SEC = item::material::Nothing);
 
-        static int Score(const item::weapon::axe_type::Enum);
-        static int Score(const item::weapon::bladedstaff_type::Enum);
-        static int Score(const item::weapon::club_type::Enum);
-        static int Score(const item::weapon::projectile_type::Enum);
-        static int Score(const item::weapon::sword_type::Enum);
-        static int Score(const item::weapon::whip_type::Enum);
+        static Score_t Score(const item::weapon::axe_type::Enum);
+        static Score_t Score(const item::weapon::bladedstaff_type::Enum);
+        static Score_t Score(const item::weapon::club_type::Enum);
+        static Score_t Score(const item::weapon::projectile_type::Enum);
+        static Score_t Score(const item::weapon::sword_type::Enum);
+        static Score_t Score(const item::weapon::whip_type::Enum);
 
-        static int ScoreKnife(const sfml_util::Size::Enum);
-        static int ScoreDagger(const sfml_util::Size::Enum);
-        static int ScoreStaff();
-        static int ScoreQuarterStaff();
+        static Score_t ScoreKnife(const sfml_util::Size::Enum);
+        static Score_t ScoreDagger(const sfml_util::Size::Enum);
+        static Score_t ScoreStaff();
+        static Score_t ScoreQuarterStaff();
 
-        static int Score(const item::armor::base_type::Enum);
-        static int Score(const item::armor::cover_type::Enum);
-        static int Score(const item::armor::helm_type::Enum);
-        static int Score(const item::armor::shield_type::Enum);
+        static Score_t Score(const item::armor::base_type::Enum);
+        static Score_t Score(const item::armor::cover_type::Enum);
+        static Score_t Score(const item::armor::helm_type::Enum);
+        static Score_t Score(const item::armor::shield_type::Enum);
 
-        static int ScoreAventail(item::armor::base_type::Enum);
-        static int ScoreBracer(item::armor::base_type::Enum);
-        static int ScoreShirt(item::armor::base_type::Enum);
-        static int ScoreBoots(item::armor::base_type::Enum);
-        static int ScorePants(item::armor::base_type::Enum);
-        static int ScoreGauntlets(item::armor::base_type::Enum);
+        static Score_t ScoreAventail(item::armor::base_type::Enum);
+        static Score_t ScoreBracer(item::armor::base_type::Enum);
+        static Score_t ScoreShirt(item::armor::base_type::Enum);
+        static Score_t ScoreBoots(item::armor::base_type::Enum);
+        static Score_t ScorePants(item::armor::base_type::Enum);
+        static Score_t ScoreGauntlets(item::armor::base_type::Enum);
 
     private:
-        void SetupFromThinProfile(const ItemProfile &    THIN_PROFILE,
-                                  const named_type::Enum NAMED_TYPE,
-                                  const set_type::Enum   SET_TYPE);
+        void SetupFromThinProfile(
+            const ItemProfile &    THIN_PROFILE,
+            const named_type::Enum NAMED_TYPE,
+            const set_type::Enum   SET_TYPE);
 
-        void SetupFromThinProfile(const ItemProfile &,
-                                  const named_type::Enum,
-                                  const set_type::Enum,
-                                  const element_type::Enum,
-                                  const material::Enum,
-                                  const material::Enum,
-                                  const armor::base_type::Enum);
+        void SetupFromThinProfile(
+            const ItemProfile &,
+            const named_type::Enum,
+            const set_type::Enum,
+            const element_type::Enum,
+            const material::Enum,
+            const material::Enum,
+            const armor::base_type::Enum);
 
-        void SetupFromThinProfile(const ItemProfile &,
-                                  const named_type::Enum,
-                                  const set_type::Enum,
-                                  const ElementTypeVec_t &,
-                                  const BaseMaterialVecPairVec_t &);
+        void SetupFromThinProfile(
+            const ItemProfile &,
+            const named_type::Enum,
+            const set_type::Enum,
+            const ElementTypeVec_t &,
+            const BaseMaterialVecPairVec_t &);
 
         const BaseMaterialVecPairVec_t GetMaterialsFromThinProfile(
             const ItemProfile &    THIN_PROFILE,

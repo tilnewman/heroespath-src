@@ -44,9 +44,9 @@ namespace game
 namespace item
 {
 
-    Inventory::Inventory(const stats::Trait_t COINS,
-                         const stats::Trait_t METEOR_SHARDS,
-                         const stats::Trait_t GEMS,
+    Inventory::Inventory(const Coin_t         COINS,
+                         const MeteorShard_t  METEOR_SHARDS,
+                         const Gem_t          GEMS,
                          const ItemPVec_t &   ITEMS_SVEC,
                          const ItemPVec_t &   EQUIPPED_ITEMS_SVEC)
     :
@@ -64,13 +64,13 @@ namespace item
     }
 
 
-    bool Inventory::CoinsAdj(const stats::Trait_t A)
+    bool Inventory::CoinsAdj(const Coin_t COINS)
     {
-        coins_ += A;
+        coins_ += COINS;
 
-        if (coins_ < 0)
+        if (coins_ < 0_coin)
         {
-            coins_ = 0;
+            coins_ = 0_coin;
             return false;
         }
         else
@@ -80,13 +80,13 @@ namespace item
     }
 
 
-    bool Inventory::MeteorShardsAdj(const stats::Trait_t A)
+    bool Inventory::MeteorShardsAdj(const MeteorShard_t METEOR_SHARDS)
     {
-        meteorShards_ += A;
+        meteorShards_ += METEOR_SHARDS;
 
-        if (meteorShards_ < 0)
+        if (meteorShards_ < 0_mshard)
         {
-            meteorShards_ = 0;
+            meteorShards_ = 0_mshard;
             return false;
         }
         else
@@ -96,13 +96,13 @@ namespace item
     }
 
 
-    bool Inventory::GemsAdj(const stats::Trait_t A)
+    bool Inventory::GemsAdj(const Gem_t GEMS)
     {
-        gems_ += A;
+        gems_ += GEMS;
 
-        if (gems_ < 0)
+        if (gems_ < 0_gem)
         {
-            gems_ = 0;
+            gems_ = 0_gem;
             return false;
         }
         else
@@ -112,9 +112,9 @@ namespace item
     }
 
 
-    stats::Trait_t Inventory::Weight() const
+    Weight_t Inventory::Weight() const
     {
-        stats::Trait_t totalWeight(0);
+        Weight_t totalWeight{ 0_weight };
 
         for (auto const NEXT_ITEM_PTR : itemsPVec_)
         {
@@ -360,9 +360,9 @@ namespace item
     }
 
 
-    stats::Trait_t Inventory::ArmorRating() const
+    Armor_t Inventory::ArmorRating() const
     {
-        stats::Trait_t armorRating(0);
+        Armor_t armorRating{ 0_armor };
 
         for (auto const NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
         {

@@ -282,7 +282,7 @@ namespace condition
         }
         else
         {
-            const stats::Trait_t DAMAGE_BASE{
+            auto const DAMAGE_BASE{
                 ((creaturePtr->IsPixie()) ? 0 : misc::random::Int(1, 5)) };
 
             auto const DAMAGE_RAND_MAX{ std::max(1, static_cast<int>(

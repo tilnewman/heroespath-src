@@ -154,12 +154,10 @@ namespace treasure
     bool TreasureDisplayStage::HandleCallback(
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
-        M_HP_LOG_DBG("\t ********** TreasureDisplayStage::HandleCallback() begin");
         return treasureStagePtr_->HandleListboxCallback(
             treasureListboxUPtr_.get(),
             inventoryListboxUPtr_.get(),
             PACKAGE);
-        M_HP_LOG_DBG("\t ********** TreasureDisplayStage::HandleCallback() end");
     }
 
 
@@ -1001,7 +999,7 @@ namespace treasure
         {
             ss << CREATURE_PTR->Inventory().Coins() << "/";
 
-            stats::Trait_t coinSum{ 0 };
+            Coin_t coinSum{ 0_coin };
             for (auto const NEXT_CREATURE_PTR : Game::Instance()->State().Party().Characters())
             {
                 coinSum += NEXT_CREATURE_PTR->Inventory().Coins();
@@ -1035,7 +1033,7 @@ namespace treasure
         {
             ss << CREATURE_PTR->Inventory().Gems() << "/";
 
-            stats::Trait_t gemSum{ 0 };
+            Gem_t gemSum{ 0_gem };
             for (auto const NEXT_CREATURE_PTR : Game::Instance()->State().Party().Characters())
             {
                 gemSum += NEXT_CREATURE_PTR->Inventory().Gems();
@@ -1069,8 +1067,8 @@ namespace treasure
         {
             ss << CREATURE_PTR->Inventory().Weight() << "/" << CREATURE_PTR->WeightCanCarry()
                 << "  ("
-                << static_cast<int>(static_cast<float>(CREATURE_PTR->Inventory().Weight()) /
-                        static_cast<float>(CREATURE_PTR->WeightCanCarry()) * 100.0f)
+                << static_cast<int>( (CREATURE_PTR->Inventory().Weight().AsFloat() /
+                        CREATURE_PTR->WeightCanCarry().AsFloat()) * 100.0f)
                 << "%)";
         }
 

@@ -124,7 +124,7 @@ namespace weapon
             FISTS_DETAILS.weight,
             FISTS_DETAILS.damage_min,
             FISTS_DETAILS.damage_max,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo) ) };
 
@@ -167,7 +167,7 @@ namespace weapon
             CLAWS_DETAILS.weight,
             CLAWS_DETAILS.damage_min,
             CLAWS_DETAILS.damage_max,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo) ) };
 
@@ -210,7 +210,7 @@ namespace weapon
             TENDRIL_DETAILS.weight,
             TENDRIL_DETAILS.damage_min,
             TENDRIL_DETAILS.damage_max,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo) ) };
 
@@ -252,7 +252,7 @@ namespace weapon
             BITE_DETAILS.weight,
             BITE_DETAILS.damage_min,
             BITE_DETAILS.damage_max,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo) ) };
 
@@ -306,7 +306,7 @@ namespace weapon
             BREATH_DETAILS.weight,
             BREATH_DETAILS.damage_min,
             BREATH_DETAILS.damage_max,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo) ) };
 
@@ -332,11 +332,10 @@ namespace weapon
         const WeaponDetails KNIFE_DETAILS{
             WeaponDetailLoader::Instance()->LookupWeaponDetails("Knife") };
 
-        stats::Trait_t price(KNIFE_DETAILS.price + material::PriceAdj(MATERIAL_PRI, MATERIAL_SEC));
+        auto price{ KNIFE_DETAILS.price + material::PriceAdj(MATERIAL_PRI, MATERIAL_SEC) };
 
-        stats::Trait_t weight{ static_cast<stats::Trait_t>(
-            static_cast<float>(KNIFE_DETAILS.weight) *
-                material::WeightMult(MATERIAL_PRI, MATERIAL_SEC)) };
+        auto weight{ Weight_t( static_cast<Weight_t::type>(
+            KNIFE_DETAILS.weight.AsFloat() * material::WeightMult(MATERIAL_PRI, MATERIAL_SEC)) ) };
 
         Health_t damageMin{ KNIFE_DETAILS.damage_min };
         Health_t damageMax{ KNIFE_DETAILS.damage_max };
@@ -346,16 +345,16 @@ namespace weapon
         if (SIZE == sfml_util::Size::Large)
         {
             nameDescriptor = "Large ";
-            weight *= 2;
-            price += 10;
+            weight *= 2_weight;
+            price += 10_coin;
             damageMin += 1_health;
             damageMax += 1_health;
         }
         else if (SIZE == sfml_util::Size::Small)
         {
             nameDescriptor = "Small ";
-            weight /= 2;
-            price -= 10;
+            weight /= 2_weight;
+            price -= 10_coin;
             damageMin -= 1_health;
             damageMax -= 1_health;
         }
@@ -407,7 +406,7 @@ namespace weapon
             weight,
             damageMin,
             damageMax,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo,
             armor::ArmorInfo(),
@@ -438,8 +437,8 @@ namespace weapon
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(sword_type::ToString(SWORD_TYPE)) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
+        auto price{ DETAILS.price };
+        auto weight{ DETAILS.weight };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -465,7 +464,7 @@ namespace weapon
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
-            0,
+            0_armor,
             exclusiveRole,
             weaponInfo) ) };
 
@@ -487,8 +486,8 @@ namespace weapon
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(axe_type::ToString(AXE_TYPE)) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
+        auto price{ DETAILS.price };
+        auto weight{ DETAILS.weight };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -509,7 +508,7 @@ namespace weapon
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo) ) };
 
@@ -531,8 +530,8 @@ namespace weapon
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(club_type::ToString(CLUB_TYPE)) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
+        auto price{ DETAILS.price };
+        auto weight{ DETAILS.weight };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -552,7 +551,7 @@ namespace weapon
             weight,
             DETAILS.damage_min,
             DETAILS.damage_min,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo) ) };
 
@@ -574,8 +573,8 @@ namespace weapon
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(whip_type::ToString(WHIP_TYPE)) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
+        auto price{ DETAILS.price };
+        auto weight{ DETAILS.weight };
 
         material::Enum materialPri(material::Count);
 
@@ -624,7 +623,7 @@ namespace weapon
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo) ) };
 
@@ -646,8 +645,8 @@ namespace weapon
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(projectile_type::ToString(PROJ_TYPE)) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
+        auto price{ DETAILS.price };
+        auto weight{ DETAILS.weight };
 
         auto weaponType{ weapon_type::NotAWeapon };
 
@@ -710,7 +709,7 @@ namespace weapon
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo) ) };
 
@@ -734,8 +733,8 @@ namespace weapon
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(((IS_QUARTERSTAFF) ? "Quarterstaff" : "Staff")) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
+        auto price{ DETAILS.price };
+        auto weight{ DETAILS.weight };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -760,7 +759,7 @@ namespace weapon
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo,
             armor::ArmorInfo(),
@@ -784,8 +783,8 @@ namespace weapon
         auto const DETAILS{ WeaponDetailLoader::Instance()->
             LookupWeaponDetails(bladedstaff_type::ToString(STAFF_TYPE)) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
+        auto price{ DETAILS.price };
+        auto weight{ DETAILS.weight };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -817,7 +816,7 @@ namespace weapon
             weight,
             DETAILS.damage_min,
             DETAILS.damage_max,
-            0,
+            0_armor,
             creature::role::Count,
             weaponInfo) ) };
 

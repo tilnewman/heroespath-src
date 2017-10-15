@@ -691,7 +691,7 @@ namespace combat
                        << nextItemText.item_ptr->DamageMax();
             }
             else if (nextItemText.item_ptr->IsArmor() ||
-                    (nextItemText.item_ptr->ArmorRating() > 0))
+                    (nextItemText.item_ptr->ArmorRating() > 0_armor))
             {
                 infoSS << ((infoSS.str().empty()) ? "" : ", ") << "Armor Rating: "
                        << nextItemText.item_ptr->ArmorRating();

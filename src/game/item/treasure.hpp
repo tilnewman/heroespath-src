@@ -28,8 +28,8 @@
 // treasure.hpp
 //  Functions that determine what treasure a defeated enemy party has.
 //
-#include "game/stats/types.hpp"
-#include "game/item/treasure-info.hpp"
+#include "game/types.hpp"
+#include "game/item/treasure-scores.hpp"
 #include "game/item/item-profile.hpp"
 #include "game/item/treasure-image-enum.hpp"
 
@@ -67,30 +67,30 @@ namespace item
         static float TreasureRatioPer(const non_player::CharacterPVec_t &);
 
     private:
-        static TreasureImage::Enum DetermineWhichTreasureImage(const TreasureInfo &);
+        static TreasureImage::Enum DetermineWhichTreasureImage(const TreasureScores &);
 
         //uses a TreasureInfo object to hold/return sum values
-        static TreasureInfo CalculateTreasureSums(
+        static const TreasureScores CalculateTreasureSums(
             const non_player::CharacterPVec_t &);
 
-        static const item::TreasureInfo MakeRandTreasureInfo(
+        static const TreasureScores MakeRandTreasureInfo(
             const non_player::CharacterPVec_t &);
 
         static std::size_t SelectItems(
-            const stats::Trait_t TREASURE_SCORE,
+            const Score_t TREASURE_SCORE,
             const bool IS_RELIGIOUS,
             ItemCache & items_OutParam);
 
         static void ForceItemSelection(ItemCache & items_OutParam);
 
         static void RemoveTreasureScoresHigherThan(
-            const stats::Trait_t,
+            const Score_t,
             item::ItemProfileVec_t &,
             const bool IS_RELIGIOUS);
 
         static std::size_t SelectRandomWeighted(const item::ItemProfileVec_t &);
 
-        static double TreasureScoreToWeight(const int);
+        static double TreasureScoreToWeight(const Score_t);
 
         static void RemoveSetItemsAlreadyOwned(item::ItemProfileVec_t &);
 

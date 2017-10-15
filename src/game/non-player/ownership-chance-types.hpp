@@ -435,20 +435,22 @@ namespace chance
     struct InventoryChances
     {
         explicit InventoryChances(
-            const stats::Trait_t       COINS_MIN       = 0,
-            const stats::Trait_t       COINS_MAX       = 0,
+            const Coin_t             COINS_MIN       = 0_coin,
+            const Coin_t             COINS_MAX       = 0_coin,
             const ClothingChances &  CLOTHES_CHANCES = ClothingChances::NoClothes(),
             const WeaponChances &    WEAPON_CHANCES  = WeaponChances::NoWeapon(),
             const ArmorChances &     ARMOR_CHANCES   = ArmorChances::NoArmor(),
             const ItemChancePair_t & MISC_ITEM_CHANCES = ItemChancePair_t());
 
-        inline stats::Trait_t RandomCoins() const
+        inline Coin_t RandomCoins() const
         {
-            return ((coins_max > coins_min) ? misc::random::Int(coins_min, coins_max) : coins_min);
+            return ((coins_min < coins_max) ?
+                Coin_t(misc::random::Int(coins_min.AsInt(), coins_max.AsInt())) :
+                coins_min);
         }
 
-        stats::Trait_t coins_min;
-        stats::Trait_t coins_max;
+        Coin_t coins_min;
+        Coin_t coins_max;
 
         ArmorChances armor;
         WeaponChances weapon;

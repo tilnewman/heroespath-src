@@ -243,7 +243,7 @@ namespace item
         auto const SUMMON_SCORE{ static_cast<int>( std::sqrt(
             (CREATURE_RANK_AVG * SUMMON_COUNT_D) * 150.0)) };
 
-        score_ += SUMMON_SCORE;
+        score_ += Score_t(SUMMON_SCORE);
     }
 
 
@@ -431,7 +431,7 @@ namespace item
             normalStrings.push_back("role_restriction=" + creature::role::ToString(role_));
         }
 
-        if (score_ != 0)
+        if (score_ != 0_score)
         {
             std::ostringstream ss;
             ss << "score=" << score_;
@@ -483,7 +483,7 @@ namespace item
                                                                           IS_WEAPON,
                                                                           MATERIAL_PRIMARY));
 
-        score_ += 750;
+        score_ += 750_score;
     }
 
 
@@ -505,7 +505,7 @@ namespace item
             religious_ = misc_type::ReligiousRatio(E);
         }
 
-        if (0 == score_)
+        if (0_score == score_)
         {
             score_ += ItemProfileWarehouse::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY);
         }
@@ -547,12 +547,12 @@ namespace item
         else if (E == misc_type::Spider_Eggs)
         {
             category_ = static_cast<category::Enum>(category_ | category::Useable);
-            score_ += 500;
+            score_ += 500_score;
         }
         else if (E == misc_type::Summoning_Statue)
         {
             category_ = static_cast<category::Enum>(category_ | category::Useable);
-            score_ += 100;
+            score_ += 100_score;
         }
         else if ((E == misc_type::Wand) ||
                  (E == misc_type::Petrified_Snake) ||
@@ -569,7 +569,7 @@ namespace item
             category_ = static_cast<category::Enum>(category_ |
                                                     category::AllowsCasting |
                                                     category::Equippable);
-            score_ += 100;
+            score_ += 100_score;
 
             if (E == misc_type::Staff)
             {
@@ -593,7 +593,7 @@ namespace item
         {
             category_ = static_cast<category::Enum>(category_ | category::Equippable);
             role_ = creature::role::Bard;
-            score_ += 100;
+            score_ += 100_score;
         }
         else if ((E == misc_type::Bust) ||
                  (E == misc_type::Figurine_Blessed) ||
@@ -601,7 +601,7 @@ namespace item
                  (E == misc_type::Puppet_Blessed))
         {
             category_ = static_cast<category::Enum>(category_ | category::Blessed);
-            score_ += 50;
+            score_ += 50_score;
             score_ += creature::EnchantmentFactory::Instance()->TreasureScore(E,
                                                                               MATERIAL_PRIMARY,
                                                                               MATERIAL_SECONDARY);
@@ -612,7 +612,7 @@ namespace item
                  (E == misc_type::Puppet_Cursed))
         {
             category_ = static_cast<category::Enum>(category_ | category::Cursed);
-            score_ += 50;
+            score_ += 50_score;
             score_ += creature::EnchantmentFactory::Instance()->TreasureScore(E,
                                                                               MATERIAL_PRIMARY,
                                                                               MATERIAL_SECONDARY);
@@ -624,14 +624,14 @@ namespace item
                  (E == misc_type::Seeds))
         {
             category_ = static_cast<category::Enum>(category_ | category::Useable);
-            score_ += 150;
+            score_ += 150_score;
         }
         else if (E == misc_type::Ring)
         {
             category_ = static_cast<category::Enum>(category_ |
                                                     category::Equippable |
                                                     category::Wearable);
-            score_ += 20;
+            score_ += 20_score;
         }
     }
 
@@ -1343,17 +1343,18 @@ namespace item
     }
 
 
-    int ItemProfile::ScoreHelper(const material::Enum     MATERIAL_PRI,
-                                 const material::Enum     MATERIAL_SEC,
-                                 const named_type::Enum   NAMED_TYPE,
-                                 const set_type::Enum     SET_TYPE,
-                                 const element_type::Enum ELEMENT_TYPE,
-                                 const bool                     IS_WEAPON) const
+    Score_t ItemProfile::ScoreHelper(
+        const material::Enum     MATERIAL_PRI,
+        const material::Enum     MATERIAL_SEC,
+        const named_type::Enum   NAMED_TYPE,
+        const set_type::Enum     SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool                     IS_WEAPON) const
     {
         if ((MATERIAL_PRI == material::Nothing) ||
             (MATERIAL_PRI == material::Count))
         {
-            return 0;
+            return 0_score;
         }
         else
         {
@@ -1373,7 +1374,7 @@ namespace item
     void ItemProfile::EquippableHelper(const int SCORE_BONUS)
     {
         category_ = static_cast<category::Enum>(category_ | category::Equippable);
-        score_ += SCORE_BONUS;
+        score_ += Score_t(SCORE_BONUS);
     }
 
 }

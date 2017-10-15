@@ -453,7 +453,7 @@ namespace stage
             }
             else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Coins())
             {
-                if (creaturePtr_->Inventory().Coins() == 0)
+                if (creaturePtr_->Inventory().Coins() == 0_coin)
                 {
                     std::ostringstream ss;
                     ss << creaturePtr_->Name() << " has no coins to give!";
@@ -461,7 +461,7 @@ namespace stage
                     PopupRejectionWindow(ss.str());
                     return false;
                 }
-                else if (creaturePtr_->Inventory().Coins() == 1)
+                else if (creaturePtr_->Inventory().Coins() == 1_coin)
                 {
                     PopupCharacterSelectWindow("Give the coin to who?");
                 }
@@ -475,14 +475,14 @@ namespace stage
             }
             else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Gems())
             {
-                if (creaturePtr_->Inventory().Gems() == 0)
+                if (creaturePtr_->Inventory().Gems() == 0_gem)
                 {
                     std::ostringstream ss;
                     ss << creaturePtr_->Name() << " has no gems to give!";
                     PopupRejectionWindow(ss.str());
                     return false;
                 }
-                else if (creaturePtr_->Inventory().Gems() == 1)
+                else if (creaturePtr_->Inventory().Gems() == 1_gem)
                 {
                     PopupCharacterSelectWindow("Give the gem to who?");
                 }
@@ -496,14 +496,14 @@ namespace stage
             }
             else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_MeteorShards())
             {
-                if (creaturePtr_->Inventory().MeteorShards() == 0)
+                if (creaturePtr_->Inventory().MeteorShards() == 0_mshard)
                 {
                     std::ostringstream ss;
                     ss << creaturePtr_->Name() << " has no Meteor Shards to give!";
                     PopupRejectionWindow(ss.str());
                     return false;
                 }
-                else if (creaturePtr_->Inventory().MeteorShards() == 1)
+                else if (creaturePtr_->Inventory().MeteorShards() == 1_mshard)
                 {
                     PopupCharacterSelectWindow("Give the Meteor Shard to who?");
                 }
@@ -583,7 +583,7 @@ namespace stage
                 }
                 case ContentType::Coins:
                 {
-                    if (creaturePtr_->Inventory().Coins() == 1)
+                    if (creaturePtr_->Inventory().Coins() == 1_coin)
                     {
                         HandleCoinsGive(1, creatureToGiveToPtr_);
                         return false;
@@ -593,15 +593,16 @@ namespace stage
                         std::ostringstream ss;
                         ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many coins?";
 
-                        PopupNumberSelectWindow(ss.str(),
-                            static_cast<std::size_t>(creaturePtr_->Inventory().Coins()));
+                        PopupNumberSelectWindow(
+                            ss.str(),
+                            creaturePtr_->Inventory().Coins().AsSizeT());
 
                         return false;
                     }
                 }
                 case ContentType::Gems:
                 {
-                    if (creaturePtr_->Inventory().Gems() == 1)
+                    if (creaturePtr_->Inventory().Gems() == 1_gem)
                     {
                         HandleGemsGive(1, creatureToGiveToPtr_);
                         return false;
@@ -611,8 +612,9 @@ namespace stage
                         std::ostringstream ss;
                         ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many gems?";
 
-                        PopupNumberSelectWindow(ss.str(),
-                            static_cast<std::size_t>(creaturePtr_->Inventory().Gems()));
+                        PopupNumberSelectWindow(
+                            ss.str(),
+                            creaturePtr_->Inventory().Gems().AsSizeT());
 
                         return false;
                     }
@@ -621,7 +623,7 @@ namespace stage
                 case ContentType::Count:
                 default:
                 {
-                    if (creaturePtr_->Inventory().MeteorShards() == 1)
+                    if (creaturePtr_->Inventory().MeteorShards() == 1_mshard)
                     {
                         HandleMeteorShardsGive(1, creatureToGiveToPtr_);
                         return false;
@@ -632,8 +634,9 @@ namespace stage
                         ss << "\nGive " << creatureToGiveToPtr_->Name()
                             << " how many Meteor Shards?";
 
-                        PopupNumberSelectWindow(ss.str(),
-                            static_cast<std::size_t>(creaturePtr_->Inventory().MeteorShards()));
+                        PopupNumberSelectWindow(
+                            ss.str(),
+                            creaturePtr_->Inventory().MeteorShards().AsSizeT());
 
                         return false;
                     }
@@ -2835,64 +2838,80 @@ namespace stage
     }
 
 
-    void InventoryStage::HandleCoinsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
+    void InventoryStage::HandleCoinsGive(
+        const std::size_t COUNT,
+        creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Coin).PlayRandom();
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::Coin).PlayRandom();
 
-        creaturePtr_->CoinsAdj(static_cast<stats::Trait_t>(COUNT) * -1);
-        creatureToGiveToPtr->CoinsAdj(static_cast<stats::Trait_t>(COUNT));
+        creaturePtr_->CoinsAdj( Coin_t(static_cast<int>(COUNT) * -1) );
+        creatureToGiveToPtr->CoinsAdj( Coin_t(static_cast<Coin_t::type>(COUNT)) );
 
         std::ostringstream ss;
-        ss << COUNT << " coins taken from " << creaturePtr_->Name() << " and given to " << creatureToGiveToPtr->Name() << ".";
+        ss << COUNT << " coins taken from " << creaturePtr_->Name()
+            << " and given to " << creatureToGiveToPtr->Name() << ".";
+
         PopupDoneWindow(ss.str(), false);
     }
 
 
-    void InventoryStage::HandleGemsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
+    void InventoryStage::HandleGemsGive(
+        const std::size_t COUNT,
+        creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Gem).PlayRandom();
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::Gem).PlayRandom();
 
-        creaturePtr_->GemsAdj(static_cast<stats::Trait_t>(COUNT) * -1);
-        creatureToGiveToPtr->GemsAdj(static_cast<stats::Trait_t>(COUNT));
+        creaturePtr_->GemsAdj( Gem_t(static_cast<int>(COUNT) * -1) );
+        creatureToGiveToPtr->GemsAdj( Gem_t(static_cast<int>(COUNT)) );
 
         std::ostringstream ss;
-        ss << COUNT << " gems taken from " << creaturePtr_->Name() << " and given to " << creatureToGiveToPtr->Name() << ".";
+        ss << COUNT << " gems taken from " << creaturePtr_->Name()
+            << " and given to " << creatureToGiveToPtr->Name() << ".";
+
         PopupDoneWindow(ss.str(), false);
     }
 
 
-    void InventoryStage::HandleMeteorShardsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr)
+    void InventoryStage::HandleMeteorShardsGive(
+        const std::size_t COUNT,
+        creature::CreaturePtr_t creatureToGiveToPtr)
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard).PlayRandom();
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard).PlayRandom();
 
-        creaturePtr_->MeteorShardsAdj(static_cast<stats::Trait_t>(COUNT) * -1);
-        creatureToGiveToPtr->MeteorShardsAdj(static_cast<stats::Trait_t>(COUNT));
+        creaturePtr_->MeteorShardsAdj( MeteorShard_t(static_cast<int>(COUNT) * -1) );
+        creatureToGiveToPtr->MeteorShardsAdj(MeteorShard_t(static_cast<int>(COUNT)));
 
         std::ostringstream ss;
-        ss << COUNT << " Meteor Shards taken from " << creaturePtr_->Name() << " and given to " << creatureToGiveToPtr->Name() << ".";
+        ss << COUNT << " Meteor Shards taken from " << creaturePtr_->Name()
+            << " and given to " << creatureToGiveToPtr->Name() << ".";
+
         PopupDoneWindow(ss.str(), false);
     }
 
 
     void InventoryStage::HandleCoinsGather(const bool WILL_POPUP)
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Coin).PlayRandom();
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::Coin).PlayRandom();
 
-        std::size_t coinsOwnedByOtherPartyMembers(0);
+        auto coinsOwnedByOtherPartyMembers{ 0_coin };
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                const stats::Trait_t NEXT_CREATURE_COINS_OWNED(nextCreaturePtr->Inventory().Coins());
-                if (NEXT_CREATURE_COINS_OWNED > 0)
+                auto const NEXT_CREATURE_COINS_OWNED{ nextCreaturePtr->Inventory().Coins() };
+                if (NEXT_CREATURE_COINS_OWNED > 0_coin)
                 {
-                    coinsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_COINS_OWNED);
-                    nextCreaturePtr->CoinsAdj(NEXT_CREATURE_COINS_OWNED * -1);
+                    coinsOwnedByOtherPartyMembers += NEXT_CREATURE_COINS_OWNED;
+                    nextCreaturePtr->CoinsAdj(NEXT_CREATURE_COINS_OWNED * Coin_t(-1));
                 }
             }
         }
 
-        creaturePtr_->CoinsAdj(static_cast<stats::Trait_t>(coinsOwnedByOtherPartyMembers));
+        creaturePtr_->CoinsAdj(coinsOwnedByOtherPartyMembers);
 
         if (WILL_POPUP)
         {
@@ -2908,23 +2927,24 @@ namespace stage
 
     void InventoryStage::HandleGemsGather(const bool WILL_POPUP)
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Gem).PlayRandom();
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::Gem).PlayRandom();
 
-        std::size_t gemsOwnedByOtherPartyMembers(0);
+        auto gemsOwnedByOtherPartyMembers{ 0_gem };
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                const stats::Trait_t NEXT_CREATURE_GEMS_OWNED(nextCreaturePtr->Inventory().Gems());
-                if (NEXT_CREATURE_GEMS_OWNED > 0)
+                auto const NEXT_CREATURE_GEMS_OWNED{ nextCreaturePtr->Inventory().Gems() };
+                if (NEXT_CREATURE_GEMS_OWNED > 0_gem)
                 {
-                    gemsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_GEMS_OWNED);
-                    nextCreaturePtr->GemsAdj(NEXT_CREATURE_GEMS_OWNED * -1);
+                    gemsOwnedByOtherPartyMembers += NEXT_CREATURE_GEMS_OWNED;
+                    nextCreaturePtr->GemsAdj(NEXT_CREATURE_GEMS_OWNED * Gem_t(-1));
                 }
             }
         }
 
-        creaturePtr_->GemsAdj(static_cast<stats::Trait_t>(gemsOwnedByOtherPartyMembers));
+        creaturePtr_->GemsAdj(gemsOwnedByOtherPartyMembers);
 
         if (WILL_POPUP)
         {
@@ -2940,23 +2960,24 @@ namespace stage
 
     void InventoryStage::HandleMeteorShardsGather(const bool WILL_POPUP)
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard).PlayRandom();
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard).PlayRandom();
 
-        std::size_t shardsOwnedByOtherPartyMembers(0);
+        auto shardsOwnedByOtherPartyMembers{ 0_mshard };
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr != creaturePtr_)
             {
-                const stats::Trait_t NEXT_CREATURE_SHARDS_OWNED(nextCreaturePtr->Inventory().MeteorShards());
-                if (NEXT_CREATURE_SHARDS_OWNED > 0)
+                auto const NEXT_CREATURE_SHARDS{ nextCreaturePtr->Inventory().MeteorShards() };
+                if (NEXT_CREATURE_SHARDS > 0_mshard)
                 {
-                    shardsOwnedByOtherPartyMembers += static_cast<std::size_t>(NEXT_CREATURE_SHARDS_OWNED);
-                    nextCreaturePtr->MeteorShardsAdj(NEXT_CREATURE_SHARDS_OWNED * -1);
+                    shardsOwnedByOtherPartyMembers += NEXT_CREATURE_SHARDS;
+                    nextCreaturePtr->MeteorShardsAdj(NEXT_CREATURE_SHARDS * MeteorShard_t(-1));
                 }
             }
         }
 
-        creaturePtr_->MeteorShardsAdj(static_cast<stats::Trait_t>(shardsOwnedByOtherPartyMembers));
+        creaturePtr_->MeteorShardsAdj(shardsOwnedByOtherPartyMembers);
 
         if (WILL_POPUP)
         {
@@ -2977,29 +2998,29 @@ namespace stage
 
         HandleCoinsGather(false);
 
-        const stats::Trait_t COINS_TOTAL(creaturePtr_->Inventory().Coins());
+        auto const COINS_TOTAL{ creaturePtr_->Inventory().Coins().AsInt() };
 
-        auto const HUMANOID_COUNT(static_cast<stats::Trait_t>(
-            Game::Instance()->State().Party().GetNumHumanoid()));
+        auto const HUMANOID_COUNT{
+            static_cast<int>(Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        const stats::Trait_t COINS_TO_SHARE(COINS_TOTAL / HUMANOID_COUNT);
-        const stats::Trait_t COINS_LEFT_OVER(COINS_TOTAL % HUMANOID_COUNT);
+        auto const COINS_TO_SHARE{ COINS_TOTAL / HUMANOID_COUNT };
+        auto const COINS_LEFT_OVER{ COINS_TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * -1);
-                nextCreaturePtr->CoinsAdj(COINS_TO_SHARE);
+                nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * Coin_t(-1));
+                nextCreaturePtr->CoinsAdj( Coin_t(COINS_TO_SHARE) );
             }
         }
 
-        stats::Trait_t toHandOut(COINS_LEFT_OVER);
+        auto toHandOut{ COINS_LEFT_OVER };
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
             {
-                nextCreaturePtr->CoinsAdj(1);
+                nextCreaturePtr->CoinsAdj(1_coin);
             }
         }
 
@@ -3025,37 +3046,42 @@ namespace stage
 
     void InventoryStage::HandleGemsShare()
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Gem).PlayRandom();
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::Gem).PlayRandom();
 
         HandleGemsGather(false);
 
-        const stats::Trait_t GEMS_TOTAL(creaturePtr_->Inventory().Gems());
-        const stats::Trait_t HUMANOID_COUNT(static_cast<stats::Trait_t>(Game::Instance()->State().Party().GetNumHumanoid()));
-        const stats::Trait_t GEMS_TO_SHARE(GEMS_TOTAL / HUMANOID_COUNT);
-        const stats::Trait_t GEMS_LEFT_OVER(GEMS_TOTAL % HUMANOID_COUNT);
+        auto const GEMS_TOTAL{ creaturePtr_->Inventory().Gems().AsInt() };
+
+        auto const HUMANOID_COUNT{
+            static_cast<int>(Game::Instance()->State().Party().GetNumHumanoid()) };
+
+        auto const GEMS_TO_SHARE{ GEMS_TOTAL / HUMANOID_COUNT };
+        auto const GEMS_LEFT_OVER{ GEMS_TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * -1);
-                nextCreaturePtr->GemsAdj(GEMS_TO_SHARE);
+                nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * Gem_t(-1));
+                nextCreaturePtr->GemsAdj( Gem_t(GEMS_TO_SHARE) );
             }
         }
 
-        stats::Trait_t toHandOut(GEMS_LEFT_OVER);
+        auto toHandOut{ GEMS_LEFT_OVER };
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
             {
-                nextCreaturePtr->GemsAdj(1);
+                nextCreaturePtr->GemsAdj(1_gem);
             }
         }
 
         std::ostringstream ss;
         if (GEMS_TO_SHARE > 0)
         {
-            ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share " << GEMS_TO_SHARE;
+            ss << "\n\nAll " << HUMANOID_COUNT
+                << " humanoid party members share " << GEMS_TO_SHARE;
 
             if (GEMS_LEFT_OVER > 0)
             {
@@ -3074,37 +3100,44 @@ namespace stage
 
     void InventoryStage::HandleMeteorShardsShare()
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard).PlayRandom();
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard).PlayRandom();
 
         HandleMeteorShardsGather(false);
 
-        const stats::Trait_t METEORSHARDS_TOTAL(creaturePtr_->Inventory().MeteorShards());
-        const stats::Trait_t HUMANOID_COUNT(static_cast<stats::Trait_t>(Game::Instance()->State().Party().GetNumHumanoid()));
-        const stats::Trait_t METEORSHARDS_TO_SHARE(METEORSHARDS_TOTAL / HUMANOID_COUNT);
-        const stats::Trait_t METEORSHARDS_LEFT_OVER(METEORSHARDS_TOTAL % HUMANOID_COUNT);
+        const int METEORSHARDS_TOTAL{ creaturePtr_->Inventory().MeteorShards().AsInt() };
+
+        const int HUMANOID_COUNT{
+            static_cast<int>(Game::Instance()->State().Party().GetNumHumanoid()) };
+
+        auto const METEORSHARDS_TO_SHARE{ METEORSHARDS_TOTAL / HUMANOID_COUNT };
+        auto const METEORSHARDS_LEFT_OVER{ METEORSHARDS_TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid())
             {
-                nextCreaturePtr->MeteorShardsAdj(nextCreaturePtr->Inventory().MeteorShards() * -1);
-                nextCreaturePtr->MeteorShardsAdj(METEORSHARDS_TO_SHARE);
+                nextCreaturePtr->MeteorShardsAdj(
+                    nextCreaturePtr->Inventory().MeteorShards() * MeteorShard_t(-1));
+
+                nextCreaturePtr->MeteorShardsAdj( MeteorShard_t(METEORSHARDS_TO_SHARE) );
             }
         }
 
-        stats::Trait_t toHandOut(METEORSHARDS_LEFT_OVER);
+        auto toHandOut{ METEORSHARDS_LEFT_OVER };
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
             {
-                nextCreaturePtr->MeteorShardsAdj(1);
+                nextCreaturePtr->MeteorShardsAdj(1_mshard);
             }
         }
 
         std::ostringstream ss;
         if (METEORSHARDS_TO_SHARE > 0)
         {
-            ss << "\n\nAll " << HUMANOID_COUNT << " humanoid party members share " << METEORSHARDS_TO_SHARE;
+            ss << "\n\nAll " << HUMANOID_COUNT
+                << " humanoid party members share " << METEORSHARDS_TO_SHARE;
 
             if (METEORSHARDS_LEFT_OVER > 0)
             {
@@ -3113,7 +3146,8 @@ namespace stage
         }
         else
         {
-            ss << "\n\nThere were only " << METEORSHARDS_TO_SHARE << ", so not every character received";
+            ss << "\n\nThere were only "
+                << METEORSHARDS_TO_SHARE << ", so not every character received";
         }
 
         ss << " Meteor Shards.";
@@ -3137,10 +3171,18 @@ namespace stage
     float InventoryStage::UpdateImageDetailsPosition()
     {
         sf::Texture texture;
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(texture, creaturePtr_->ImageFilename());
+
+        sfml_util::gui::CreatureImageManager::Instance()->
+            GetImage(texture, creaturePtr_->ImageFilename());
+        
         sf::Sprite sprite(texture);
         sprite.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
-        detailsPosLeft_ = CREATURE_IMAGE_POS_LEFT_ + sprite.getGlobalBounds().width + CREATURE_IMAGE_RIGHT_PAD_;
+
+        detailsPosLeft_ = 
+            CREATURE_IMAGE_POS_LEFT_ +
+            sprite.getGlobalBounds().width +
+            CREATURE_IMAGE_RIGHT_PAD_;
+
         return sprite.getGlobalBounds().width;
     }
 

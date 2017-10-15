@@ -183,9 +183,9 @@ namespace armor
         armorDetails.complexity = non_player::ownership::complexity_type::FromString(
             CleanStringField(fieldsVec[1], false) );
 
-        armorDetails.price = StringFieldToInt("Price", fieldsVec[2]);
-        armorDetails.weight = static_cast<stats::Trait_t>(StringFieldToInt("Weight", fieldsVec[3]));
-        armorDetails.armor_rating = StringFieldToInt("ArmorRating", fieldsVec[4]);
+        armorDetails.price = Coin_t(StringFieldToInt("Price", fieldsVec[2]));
+        armorDetails.weight = Weight_t(StringFieldToInt("Weight", fieldsVec[3]));
+        armorDetails.armor_rating = Armor_t(StringFieldToInt("ArmorRating", fieldsVec[4]));
         armorDetails.description = CleanStringField(fieldsVec[5], false);
 
         //store details in the map
@@ -193,8 +193,9 @@ namespace armor
     }
 
 
-    int ArmorDetailLoader::StringFieldToInt(const std::string & FIELD_NAME,
-                                            const std::string & NUM_STR)
+    int ArmorDetailLoader::StringFieldToInt(
+        const std::string & FIELD_NAME,
+        const std::string & NUM_STR)
     {
         const int ERROR_VAL(-1);
         int result(ERROR_VAL);
@@ -216,8 +217,9 @@ namespace armor
     }
 
 
-    const std::string ArmorDetailLoader::CleanStringField(const std::string & FIELD_STR,
-                                                          const bool          WILL_LOWERCASE)
+    const std::string ArmorDetailLoader::CleanStringField(
+        const std::string & FIELD_STR,
+        const bool          WILL_LOWERCASE)
     {
         using namespace boost::algorithm;
 

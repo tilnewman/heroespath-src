@@ -27,7 +27,7 @@
 //
 // item-cache.hpp
 //
-#include "game/stats/trait.hpp"
+#include "game/types.hpp"
 
 #include <vector>
 
@@ -48,21 +48,21 @@ namespace item
     {
         ItemCache();
 
-        stats::Trait_t coins{ 0 };
-        stats::Trait_t gems{ 0 };
+        Coin_t coins{ 0_coin };
+        Gem_t gems{ 0_gem };
         item::ItemPVec_t items_pvec;
 
         //coins and gems weigh nothing
-        stats::Trait_t Weight() const;
+        Weight_t Weight() const;
 
         inline bool Empty() const
         {
-            return ((0 == coins) && (0 == gems) && items_pvec.empty());
+            return ((0_coin == coins) && (0_gem == gems) && items_pvec.empty());
         }
 
         inline bool ItemsOnly() const
         {
-            return ((0 == coins) && (0 == gems) && (items_pvec.empty() == false));
+            return ((0_coin == coins) && (0_gem == gems) && (items_pvec.empty() == false));
         }
     };
 

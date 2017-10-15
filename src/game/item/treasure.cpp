@@ -55,154 +55,155 @@ namespace item
         const non_player::CharacterPVec_t & CHARACTER_PVEC,
         ItemCache &                         itemCache_OutParam)
     {
-        auto const TREASURE_SUMS{ CalculateTreasureSums(CHARACTER_PVEC) };
+        auto const TREASURE_SCORES{ CalculateTreasureSums(CHARACTER_PVEC) };
 
-        itemCache_OutParam.coins = TREASURE_SUMS.Coin();
-        itemCache_OutParam.gems = TREASURE_SUMS.Gem();
+        itemCache_OutParam.coins = Coin_t(TREASURE_SCORES.Coin().AsInt());
+        itemCache_OutParam.gems = Gem_t(TREASURE_SCORES.Gem().AsInt());
 
-        SelectItems(TREASURE_SUMS.Magic(), false, itemCache_OutParam);
-        SelectItems(TREASURE_SUMS.Religious(), true, itemCache_OutParam);
+        SelectItems(TREASURE_SCORES.Magic(), false, itemCache_OutParam);
+        SelectItems(TREASURE_SCORES.Religious(), true, itemCache_OutParam);
             
         if (itemCache_OutParam.items_pvec.empty() &&
-            ((TREASURE_SUMS.Magic() > 0) || (TREASURE_SUMS.Religious() > 0)))
+            ((TREASURE_SCORES.Magic() > 0_score) || (TREASURE_SCORES.Religious() > 0_score)))
         {
             ForceItemSelection(itemCache_OutParam);
         }
         
-        return DetermineWhichTreasureImage(TREASURE_SUMS);
+        return DetermineWhichTreasureImage(TREASURE_SCORES);
     }
 
 
-    TreasureInfo TreasureFactory::CalculateTreasureSums(
+    const TreasureScores TreasureFactory::CalculateTreasureSums(
         const non_player::CharacterPVec_t & CHARACTER_PVEC)
     {
-        TreasureInfo sums;
+        TreasureScores scores;
 
         for (auto const NEXT_CHARACTER_PTR : CHARACTER_PVEC)
         {
             using namespace non_player::ownership;
             if (complexity_type::FromCreature(NEXT_CHARACTER_PTR) != complexity_type::Animal)
             {
-                sums += MakeRandTreasureInfo(CHARACTER_PVEC);
+                scores += MakeRandTreasureInfo(CHARACTER_PVEC);
             }
         }
 
-        return sums;
+        return scores;
     }
 
 
     TreasureImage::Enum TreasureFactory::DetermineWhichTreasureImage(
-        const TreasureInfo & TREASURE_INFO_SUM)
+        const TreasureScores & TREASURE_SCORES)
     {
-        if (TREASURE_INFO_SUM.IsEmpty())
+        if (TREASURE_SCORES.IsEmpty())
         {
             return TreasureImage::BonePile;
         }
         else
         {
-            const stats::Trait_t LOCKBOX_COIN_SUM_MAX{
-                GameDataFile::Instance()->GetCopyInt("heroespath-treasure-lockbox-coin-max") };
+            auto const LOCKBOX_COIN_SUM_MAX{ Score_t(
+                GameDataFile::Instance()->GetCopyInt("heroespath-treasure-lockbox-coin-max")) };
 
-            return ((TREASURE_INFO_SUM.Coin() > LOCKBOX_COIN_SUM_MAX) ?
+            return ((TREASURE_SCORES.Coin() > LOCKBOX_COIN_SUM_MAX) ?
                 TreasureImage::ChestClosed : TreasureImage::LockboxClosed);
         }
     }
 
 
-    float TreasureFactory::TreasureRatioPer(const non_player::CharacterPVec_t & CHARACTER_PVEC)
+    float TreasureFactory::TreasureRatioPer(
+        const non_player::CharacterPVec_t & CHARACTER_PVEC)
     {
-        item::TreasureInfo tScoresSum;
+        TreasureScores scores;
 
         for (auto const NEXT_CHARACTER_PTR : CHARACTER_PVEC)
         {
-            tScoresSum += creature::race::TreasureScore(
+            scores += creature::race::TreasureScore(
                 NEXT_CHARACTER_PTR->Race(), NEXT_CHARACTER_PTR->Role());
         }
 
         auto const COIN_AVG{
-            static_cast<float>(tScoresSum.Coin()) / static_cast<float>(CHARACTER_PVEC.size()) };
+            scores.Coin().AsFloat() / static_cast<float>(CHARACTER_PVEC.size()) };
 
         auto const GEM_AVG{
-            static_cast<float>(tScoresSum.Gem()) / static_cast<float>(CHARACTER_PVEC.size()) };
+            scores.Gem().AsFloat() / static_cast<float>(CHARACTER_PVEC.size()) };
 
         auto const MAGIC_AVG{
-            static_cast<float>(tScoresSum.Magic()) / static_cast<float>(CHARACTER_PVEC.size()) };
+            scores.Magic().AsFloat() / static_cast<float>(CHARACTER_PVEC.size()) };
 
         auto const RELIGIOUS_AVG{
-          static_cast<float>(tScoresSum.Religious()) / static_cast<float>(CHARACTER_PVEC.size()) };
+          scores.Religious().AsFloat() / static_cast<float>(CHARACTER_PVEC.size()) };
 
         auto const T_SCORES_MAX{ creature::race::TreasureScoreMax() };
 
-        auto const COIN_RATIO{ COIN_AVG / static_cast<float>(T_SCORES_MAX.Coin()) };
-        auto const GEM_RATIO{ GEM_AVG / static_cast<float>(T_SCORES_MAX.Gem()) };
-        auto const MAGIC_RATIO{ MAGIC_AVG / static_cast<float>(T_SCORES_MAX.Magic()) };
-        auto const RELIGIOUS_RATIO{ RELIGIOUS_AVG / static_cast<float>(T_SCORES_MAX.Religious()) };
+        auto const COIN_RATIO{ COIN_AVG / T_SCORES_MAX.Coin().AsFloat() };
+        auto const GEM_RATIO{ GEM_AVG / T_SCORES_MAX.Gem().AsFloat() };
+        auto const MAGIC_RATIO{ MAGIC_AVG / T_SCORES_MAX.Magic().AsFloat() };
+        auto const RELIGIOUS_RATIO{ RELIGIOUS_AVG / T_SCORES_MAX.Religious().AsFloat() };
 
         return (COIN_RATIO + GEM_RATIO + MAGIC_RATIO + RELIGIOUS_RATIO) / 4.0f;
     }
 
 
-    const item::TreasureInfo TreasureFactory::MakeRandTreasureInfo(
+    const TreasureScores TreasureFactory::MakeRandTreasureInfo(
         const non_player::CharacterPVec_t & CHARACTER_PVEC)
     {
-        item::TreasureInfo tInfoSum;
+        TreasureScores scores;
 
         for (auto const NEXT_CHARACTER_PTR : CHARACTER_PVEC)
         {
-            tInfoSum += creature::race::TreasureScore(
+            scores += creature::race::TreasureScore(
                 NEXT_CHARACTER_PTR->Race(), NEXT_CHARACTER_PTR->Role());
         }
 
-        auto const COIN_BASE{ static_cast<stats::Trait_t>(
-            static_cast<float>(tInfoSum.Coin()) *
+        auto const COIN_BASE{ static_cast<int>(
+            scores.Coin().AsFloat() *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-base")) };
 
-        auto const COIN_RAND_BASE{ static_cast<stats::Trait_t>(
-            static_cast<float>(tInfoSum.Coin()) *
+        auto const COIN_RAND_BASE{ static_cast<int>(
+            scores.Coin().AsFloat() *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-mult")) };
 
-        auto const COIN{ COIN_BASE + ::misc::random::Int(COIN_RAND_BASE) };
+        auto const COIN{ Score_t(COIN_BASE + ::misc::random::Int(COIN_RAND_BASE)) };
 
-        auto const GEM_BASE{ static_cast<stats::Trait_t>(
-            static_cast<float>(tInfoSum.Gem()) *
+        auto const GEM_BASE{ static_cast<int>(
+            scores.Gem().AsFloat() *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-base")) };
 
-        auto const GEM_RAND_BASE{ static_cast<stats::Trait_t>(
-            static_cast<float>(tInfoSum.Gem()) *
+        auto const GEM_RAND_BASE{ static_cast<int>(
+            scores.Gem().AsFloat() *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-mult")) };
 
-        auto const GEM{ GEM_BASE + ::misc::random::Int(GEM_RAND_BASE) };
+        auto const GEM{ Score_t(GEM_BASE + ::misc::random::Int(GEM_RAND_BASE)) };
 
         auto const MAGIC_BASE{ static_cast<stats::Trait_t>(
-            static_cast<float>(tInfoSum.Magic()) *
+            scores.Magic().AsFloat() *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-base")) };
 
         auto const MAGIC_RAND_BASE{ static_cast<stats::Trait_t>(
-            static_cast<float>(tInfoSum.Magic()) *
+            scores.Magic().AsFloat() *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-mult")) };
 
-        auto const MAGIC{ MAGIC_BASE + ::misc::random::Int(MAGIC_RAND_BASE) };
+        auto const MAGIC{ Score_t(MAGIC_BASE + ::misc::random::Int(MAGIC_RAND_BASE)) };
 
         auto const RELIGIOUS_BASE{ static_cast<stats::Trait_t>(
-            static_cast<float>(tInfoSum.Religious()) *
+            scores.Religious().AsFloat() *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-base")) };
 
         auto const RELIGIOUS_RAND_BASE{ static_cast<stats::Trait_t>(
-            static_cast<float>(tInfoSum.Religious()) *
+            scores.Religious().AsFloat() *
                 GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-mult")) };
 
-        auto const RELIGIOUS{ RELIGIOUS_BASE + ::misc::random::Int(RELIGIOUS_RAND_BASE) };
+        auto const RELIGIOUS{ Score_t(RELIGIOUS_BASE + ::misc::random::Int(RELIGIOUS_RAND_BASE)) };
 
-        return item::TreasureInfo(COIN, GEM, MAGIC, RELIGIOUS);
+        return TreasureScores(COIN, GEM, MAGIC, RELIGIOUS);
     }
 
 
     std::size_t TreasureFactory::SelectItems(
-        const stats::Trait_t TREASURE_SCORE,
-        const bool           IS_RELIGIOUS,
-        ItemCache &          itemCache_OutParam)
+        const Score_t TREASURE_SCORE,
+        const bool IS_RELIGIOUS,
+        ItemCache & itemCache_OutParam)
     {
-        if (TREASURE_SCORE == 0)
+        if (TREASURE_SCORE == 0_score)
         {
             return 0;
         }
@@ -221,7 +222,7 @@ namespace item
                 profiles.end(),
                 [](const auto & PROFILE)
                 {
-                    return (PROFILE.TreasureScore(true) == 0);
+                    return (PROFILE.TreasureScore(true) == 0_score);
                 }), profiles.end());
         }
 
@@ -265,11 +266,11 @@ namespace item
             profiles.begin(),
             profiles.end(),
             [](const auto & A, const auto & B)
-        {
-            return (A.TreasureScore() < B.TreasureScore());
-        });
+            {
+                return (A.TreasureScore() < B.TreasureScore());
+            });
 
-        auto const MAX_TREASURE_SCORE{ profiles[0].TreasureScore() * 2 };
+        auto const MAX_TREASURE_SCORE{ profiles[0].TreasureScore() * 2_score };
 
         profiles.erase(std::remove_if(
             profiles.begin(),
@@ -287,11 +288,11 @@ namespace item
 
 
     void TreasureFactory::RemoveTreasureScoresHigherThan(
-        const stats::Trait_t REMOVE_IF_HIGHER,
+        const Score_t REMOVE_IF_HIGHER,
         item::ItemProfileVec_t & profiles,
         const bool IS_RELIGIOUS)
     {
-        if ((REMOVE_IF_HIGHER <= 0) || profiles.empty())
+        if ((REMOVE_IF_HIGHER <= 0_score) || profiles.empty())
         {
             return;
         }
@@ -306,7 +307,8 @@ namespace item
     }
 
 
-    std::size_t TreasureFactory::SelectRandomWeighted(const item::ItemProfileVec_t & PROFILES_ORIG)
+    std::size_t TreasureFactory::SelectRandomWeighted(
+        const item::ItemProfileVec_t & PROFILES_ORIG)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((PROFILES_ORIG.empty() == false),
             "game::combat::TreasureFactory::SelectRandomWeighted() was given an empty vector.");
@@ -344,9 +346,9 @@ namespace item
     }
 
 
-    double TreasureFactory::TreasureScoreToWeight(const int TREASURE_SCORE)
+    double TreasureFactory::TreasureScoreToWeight(const Score_t TREASURE_SCORE)
     {
-        return 1.0 / (static_cast<double>(TREASURE_SCORE) * 0.1);
+        return 1.0 / (TREASURE_SCORE.AsDouble() * 0.1);
     }
 
 

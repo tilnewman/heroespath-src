@@ -47,6 +47,9 @@ namespace game
     struct HealthTag {};
     struct RankTag {};
     struct ManaTag {};
+    struct WeightTag {};
+    struct ArmorTag {};
+    struct ScoreTag {};
 
     /*
     //Responsible for wrapping a health value and providing health functions.
@@ -78,6 +81,9 @@ namespace game
     using Health_t =        misc::StrongNumericType<int, HealthTag>;
     using Rank_t =          misc::StrongNumericType<int, RankTag>;
     using Mana_t =          misc::StrongNumericType<int, ManaTag>;
+    using Weight_t =        misc::StrongNumericType<int, WeightTag>;
+    using Armor_t =         misc::StrongNumericType<int, ArmorTag>;
+    using Score_t =         misc::StrongNumericType<int, ScoreTag>;
 
 
     //user defined literals for strong types
@@ -114,6 +120,21 @@ namespace game
     inline Mana_t operator"" _mana(unsigned long long mana)
     {
         return Mana_t(static_cast<Mana_t::type>(mana));
+    }
+
+    inline Weight_t operator"" _weight(unsigned long long weight)
+    {
+        return Weight_t(static_cast<Weight_t::type>(weight));
+    }
+
+    inline Armor_t operator"" _armor(unsigned long long armor)
+    {
+        return Armor_t(static_cast<Armor_t::type>(armor));
+    }
+
+    inline Score_t operator"" _score(unsigned long long score)
+    {
+        return Score_t(static_cast<Score_t::type>(score));
     }
     
 }   

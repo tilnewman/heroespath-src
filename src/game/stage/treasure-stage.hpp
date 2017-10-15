@@ -136,7 +136,7 @@ namespace stage
         //returns true if a popup was displayed
         bool ShareAndShowPopupIfNeeded(const ShareType);
         
-        stats::Trait_t Share(const ShareType);
+        int Share(const ShareType);
 
         void SetupForCollection();
 

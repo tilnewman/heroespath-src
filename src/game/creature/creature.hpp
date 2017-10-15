@@ -310,9 +310,9 @@ namespace creature
         inline const item::Inventory & Inventory() const        { return inventory_; }
 
         //these functions return false if attempt to reduce beyond zero
-        inline bool CoinsAdj(const stats::Trait_t A)            { return inventory_.CoinsAdj(A); }
-        inline bool MeteorShardsAdj(const stats::Trait_t A)     { return inventory_.MeteorShardsAdj(A); }
-        inline bool GemsAdj(const stats::Trait_t A)             { return inventory_.GemsAdj(A); }
+        inline bool CoinsAdj(const Coin_t C) { return inventory_.CoinsAdj(C); }
+        inline bool MeteorShardsAdj(const MeteorShard_t M) { return inventory_.MeteorShardsAdj(M); }
+        inline bool GemsAdj(const Gem_t G)             { return inventory_.GemsAdj(G); }
 
         //These functinons return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
         //On failure, the string will be an explanation of the failure that can be shown to the player.
@@ -340,7 +340,7 @@ namespace creature
         const std::string WeaponsString() const;
         const std::string ArmorString() const;
 
-        stats::Trait_t ArmorRating() const;
+        Armor_t ArmorRating() const;
 
         //spell related functions
         inline bool CanCastSpells() const                       { return CanCastSpellsStr().empty(); }
@@ -372,7 +372,7 @@ namespace creature
         bool SongAdd(const song::Songs::Enum);
         bool SongRemove(const song::Songs::Enum);
 
-        stats::Trait_t WeightCanCarry() const;
+        Weight_t WeightCanCarry() const;
 
         inline Achievements & GetAchievements()                 { return achievements_; }
 

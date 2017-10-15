@@ -125,23 +125,24 @@ namespace ownership
         const Profile &                  PROFILE,
         const non_player::CharacterPtr_t CHARACTER_PTR)
     {
-        stats::Trait_t coinsMin(0);
-        stats::Trait_t coinsMax(0);
+        auto coinsMin{ 0_coin };
+        auto coinsMax{ 0_coin };
         Make_Coins(PROFILE, coinsMin, coinsMax);
 
-        return chance::InventoryChances(coinsMin,
-                                        coinsMax,
-                                        Make_ClothingChances(PROFILE, CHARACTER_PTR),
-                                        Make_WeaponChances(PROFILE, CHARACTER_PTR),
-                                        Make_ArmorChances(PROFILE, CHARACTER_PTR),
-                                        Make_MiscItemChances(PROFILE, CHARACTER_PTR));
+        return chance::InventoryChances(
+            coinsMin,
+            coinsMax,
+            Make_ClothingChances(PROFILE, CHARACTER_PTR),
+            Make_WeaponChances(PROFILE, CHARACTER_PTR),
+            Make_ArmorChances(PROFILE, CHARACTER_PTR),
+            Make_MiscItemChances(PROFILE, CHARACTER_PTR));
     }
 
 
     void ChanceFactory::Make_Coins(
         const Profile & PROFILE,
-        stats::Trait_t & coinsMin_OutParam,
-        stats::Trait_t & coinsMax_OutParam)
+        Coin_t & coinsMin_OutParam,
+        Coin_t & coinsMax_OutParam)
     {
         auto const KEY_STR{
             "heroespath-nonplayer-coins-bounds-" + wealth_type::ToString(PROFILE.wealthType) };
@@ -159,14 +160,14 @@ namespace ownership
 
         try
         {
-            coinsMin_OutParam = boost::lexical_cast<stats::Trait_t>(strVec[0]);
+            coinsMin_OutParam = Coin_t(boost::lexical_cast<Coin_t::type>(strVec[0]));
         }
         catch (...)
         {
-            coinsMin_OutParam = -1;
+            coinsMin_OutParam = Coin_t(-1);
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((coinsMin_OutParam >= 0),
+        M_ASSERT_OR_LOGANDTHROW_SS((coinsMin_OutParam >= 0_coin),
             "game::non_player::ownership::ChanceFactory::Make_Coins() looked up \""
             << KEY_STR << "\", retrieving \"" << VALUE_STR
             << "\" which failed to parse the first comma sep field into a valid number of coins."
@@ -174,11 +175,11 @@ namespace ownership
 
         try
         {
-            coinsMax_OutParam = boost::lexical_cast<stats::Trait_t>(strVec[1]);
+            coinsMax_OutParam = Coin_t(boost::lexical_cast<Coin_t::type>(strVec[1]));
         }
         catch (...)
         {
-            coinsMax_OutParam = -1;
+            coinsMax_OutParam = Coin_t(-1);
         }
 
         M_ASSERT_OR_LOGANDTHROW_SS((coinsMax_OutParam >= coinsMin_OutParam),
@@ -1308,7 +1309,7 @@ namespace ownership
         const Profile &                     PROFILE,
         const non_player::CharacterPtr_t    CHARACTER_PTR,
         const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
-        const stats::Trait_t                ITEM_WEIGHT,
+        const Weight_t                      ITEM_WEIGHT,
         chance::MaterialChanceMap_t &       materialsMap_OutParam)
     {
         //establish the base chances for a special primary material
@@ -1417,7 +1418,7 @@ namespace ownership
         }
 
         //adjust for item weight that can make special materials less likely
-        auto const WEIGHT_CHANCE_ADJUSTMENT{ static_cast<float>(ITEM_WEIGHT) / 2500.0f };
+        auto const WEIGHT_CHANCE_ADJUSTMENT{ ITEM_WEIGHT.AsFloat() / 2500.0f };
         chanceCool -= WEIGHT_CHANCE_ADJUSTMENT;
         chanceMetal -= WEIGHT_CHANCE_ADJUSTMENT;
         chancePrecious -= WEIGHT_CHANCE_ADJUSTMENT;
@@ -1871,7 +1872,7 @@ namespace ownership
         const non_player::CharacterPtr_t    CREATURE_PTR,
         chance::MaterialChanceMap_t &       materialsMapPri,
         chance::MaterialChanceMap_t &       materialsMapSec,
-        const stats::Trait_t                WEIGHT)
+        const Weight_t                      WEIGHT)
     {
         Make_MaterialChancesPrimary(
             PROFILE,

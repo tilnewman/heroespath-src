@@ -107,10 +107,11 @@ namespace misc
         static ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM);
 
     private:
-        static ItemPtr_t Make_Helper(const ItemProfile &  PROFILE,
-                                     const stats::Trait_t BASE_PRICE,
-                                     const stats::Trait_t BASE_WEIGHT,
-                                     const std::string &  BASE_DESC = "");
+        static ItemPtr_t Make_Helper(
+            const ItemProfile & PROFILE,
+            const Coin_t BASE_PRICE,
+            const Weight_t BASE_WEIGHT,
+            const std::string & BASE_DESC = "");
 
     private:
         static std::unique_ptr<MiscItemFactory> instanceUPtr_;

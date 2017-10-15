@@ -109,24 +109,24 @@ namespace creature
     }
 
 
-    int Enchantment::TreasureScore() const
+    Score_t Enchantment::TreasureScore() const
     {
         auto score{ item::ItemProfileWarehouse::Score(traitSet_) };
 
         if (type_ & EnchantmentType::WhenHeld)
         {
-            score += 350;
+            score += 350_score;
         }
 
         if (type_ & EnchantmentType::AllowsFlight)
         {
-            score += 200;
+            score += 200_score;
         }
 
         if ((type_ & EnchantmentType::BlessWithoutItem) ||
             (type_ & EnchantmentType::CurseWithoutItem))
         {
-            score += 300;
+            score += 300_score;
         }
 
         return score;

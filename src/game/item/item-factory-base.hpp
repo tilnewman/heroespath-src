@@ -50,39 +50,46 @@ namespace item
         virtual ~FactoryBase();
 
     protected:
-        static const std::string Make_Name(const std::string &  BASE_NAME,
-                                           const material::Enum MATERIAL_PRI,
-                                           const material::Enum MATERIAL_SEC,
-                                           const bool           IS_PIXIE_ITEM = false);
+        static const std::string Make_Name(
+            const std::string &  BASE_NAME,
+            const material::Enum MATERIAL_PRI,
+            const material::Enum MATERIAL_SEC,
+            const bool           IS_PIXIE_ITEM = false);
 
-        static const std::string Make_Desc(const std::string &  DESC,
-                                           const material::Enum MATERIAL_PRI,
-                                           const material::Enum MATERIAL_SEC,
-                                           const std::string &  EXTRA_NAME = "",
-                                           const bool           IS_PIXIE_ITEM = false);
+        static const std::string Make_Desc(
+            const std::string &  DESC,
+            const material::Enum MATERIAL_PRI,
+            const material::Enum MATERIAL_SEC,
+            const std::string &  EXTRA_NAME = "",
+            const bool           IS_PIXIE_ITEM = false);
 
-        static const std::string Make_Desc_Clasped(const std::string & DESC,
-                                                  const material::Enum MATERIAL_PRI,
-                                                  const material::Enum MATERIAL_SEC,
-                                                  const bool           IS_PIXIE_ITEM = false);
+        static const std::string Make_Desc_Clasped(
+            const std::string &  DESC,
+            const material::Enum MATERIAL_PRI,
+            const material::Enum MATERIAL_SEC,
+            const bool           IS_PIXIE_ITEM = false);
 
-        static const std::string Make_Desc_BladdedStaff(const std::string &  BASE_NAME,
-                                                        const bool           IS_SPEAR,
-                                                        const material::Enum MATERIAL_PRI,
-                                                        const material::Enum MATERIAL_SEC);
+        static const std::string Make_Desc_BladdedStaff(
+            const std::string &  BASE_NAME,
+            const bool           IS_SPEAR,
+            const material::Enum MATERIAL_PRI,
+            const material::Enum MATERIAL_SEC);
 
-        static void AdjustPrice(stats::Trait_t &     price,
-                                const material::Enum MATERIAL_PRI,
-                                const material::Enum MATERIAL_SEC,
-                                const bool           IS_PIXIE_ITEM = false);
+        static void AdjustPrice(
+            Coin_t &             price,
+            const material::Enum MATERIAL_PRI,
+            const material::Enum MATERIAL_SEC,
+            const bool           IS_PIXIE_ITEM = false);
 
-        static void AdjustWeight(stats::Trait_t &     weight,
-                                 const material::Enum MATERIAL_PRI,
-                                 const material::Enum MATERIAL_SEC);
+        static void AdjustWeight(
+            Weight_t &           weight,
+            const material::Enum MATERIAL_PRI,
+            const material::Enum MATERIAL_SEC);
 
-        static void AdjustArmorRating(stats::Trait_t &     armorRating,
-                                      const material::Enum MATERIAL_PRI,
-                                      const material::Enum MATERIAL_SEC);
+        static void AdjustArmorRating(
+            Armor_t &            armorRating,
+            const material::Enum MATERIAL_PRI,
+            const material::Enum MATERIAL_SEC);
 
         static const std::string RandomCoatedPhrase();
 

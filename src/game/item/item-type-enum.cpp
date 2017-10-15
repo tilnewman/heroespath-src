@@ -168,26 +168,26 @@ namespace item
 
         if ((E & element_type::Fire) && (E & element_type::Honor))
         {
-            v.push_back( static_cast<element_type::Enum>(element_type::Fire |
-                                                         element_type::Honor) );
+            v.push_back( static_cast<element_type::Enum>(
+                element_type::Fire | element_type::Honor) );
         }
 
         if ((E & element_type::Fire) && (E & element_type::Shadow))
         {
-            v.push_back( static_cast<element_type::Enum>(element_type::Fire |
-                                                         element_type::Shadow) );
+            v.push_back( static_cast<element_type::Enum>(
+                element_type::Fire | element_type::Shadow) );
         }
 
         if ((E & element_type::Frost) && (E & element_type::Honor))
         {
-            v.push_back(static_cast<element_type::Enum>(element_type::Frost |
-                                                        element_type::Honor));
+            v.push_back(static_cast<element_type::Enum>(
+                element_type::Frost | element_type::Honor));
         }
 
         if ((E & element_type::Frost) && (E & element_type::Shadow))
         {
-            v.push_back(static_cast<element_type::Enum>(element_type::Frost |
-                                                        element_type::Shadow));
+            v.push_back(static_cast<element_type::Enum>(
+                element_type::Frost | element_type::Shadow));
         }
 
         return v;
@@ -629,16 +629,18 @@ namespace item
         }
         else if (E == misc_type::Goblet)
         {
-            return MaterialVecPair_t({ material::Tin,
-                                       material::Bronze,
-                                       material::Silver,
-                                       material::Gold }, material::CoreSecondary());
+            return MaterialVecPair_t(
+            { material::Tin,
+              material::Bronze,
+              material::Silver,
+              material::Gold }, material::CoreSecondary());
         }
         else if (E == misc_type::Balm_Pot)
         {
-            return MaterialVecPair_t({ material::Bronze,
-                                       material::Silver,
-                                       material::Gold }, {});
+            return MaterialVecPair_t(
+            { material::Bronze,
+              material::Silver,
+              material::Gold }, {});
         }
         else if (E == misc_type::Seeds)
         {
@@ -676,11 +678,12 @@ namespace item
         {
             return MaterialVecPair_t({ material::Horn }, {});
         }
-        else if ((E == misc_type::Recorder) ||
-                 (E == misc_type::Viol) ||
-                 (E == misc_type::Pipe_And_Tabor) ||
-                 (E == misc_type::Lyre) ||
-                 (E == misc_type::Hurdy_Gurdy))
+        else if (
+            (E == misc_type::Recorder) ||
+            (E == misc_type::Viol) ||
+            (E == misc_type::Pipe_And_Tabor) ||
+            (E == misc_type::Lyre) ||
+            (E == misc_type::Hurdy_Gurdy))
         {
             return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
         }
@@ -705,56 +708,58 @@ namespace item
         //          MiscItemFactory::Make()
         //          misc_type::Materials()
         //          ItemProfile::SetMisc()
-        return ((E == misc_type::LockPicks) ||
-                (E == misc_type::Spider_Eggs) ||
-                (E == misc_type::Wand) ||
-                (E == misc_type::DrumLute) ||
-                (E == misc_type::Figurine_Blessed) ||
-                (E == misc_type::Figurine_Cursed) ||
-                (E == misc_type::Doll_Blessed) ||
-                (E == misc_type::Doll_Cursed) ||
-                (E == misc_type::Bust) ||
-                (E == misc_type::Puppet_Blessed) ||
-                (E == misc_type::Puppet_Cursed) ||
-                (E == misc_type::Dried_Head) ||
-                (E == misc_type::Goblet) ||
-                (E == misc_type::Balm_Pot) ||
-                (E == misc_type::Egg) ||
-                (E == misc_type::Embryo) ||
-                (E == misc_type::Seeds) ||
-                (E == misc_type::Petrified_Snake) ||
-                (E == misc_type::Mummy_Hand) ||
-                (E == misc_type::Shard) ||
-                (E == misc_type::Orb) ||
-                (E == misc_type::Scepter) ||
-                (E == misc_type::Icicle) ||
-                (E == misc_type::Finger) ||
-                (E == misc_type::Unicorn_Horn) ||
-                (E == misc_type::Devil_Horn) ||
-                (E == misc_type::Recorder) ||
-                (E == misc_type::Viol) ||
-                (E == misc_type::Pipe_And_Tabor) ||
-                (E == misc_type::Hurdy_Gurdy) ||
-                (E == misc_type::Lyre) ||
-                (E == misc_type::Staff) ||
-                (E == misc_type::Ring));
+        return (
+            (E == misc_type::LockPicks) ||
+            (E == misc_type::Spider_Eggs) ||
+            (E == misc_type::Wand) ||
+            (E == misc_type::DrumLute) ||
+            (E == misc_type::Figurine_Blessed) ||
+            (E == misc_type::Figurine_Cursed) ||
+            (E == misc_type::Doll_Blessed) ||
+            (E == misc_type::Doll_Cursed) ||
+            (E == misc_type::Bust) ||
+            (E == misc_type::Puppet_Blessed) ||
+            (E == misc_type::Puppet_Cursed) ||
+            (E == misc_type::Dried_Head) ||
+            (E == misc_type::Goblet) ||
+            (E == misc_type::Balm_Pot) ||
+            (E == misc_type::Egg) ||
+            (E == misc_type::Embryo) ||
+            (E == misc_type::Seeds) ||
+            (E == misc_type::Petrified_Snake) ||
+            (E == misc_type::Mummy_Hand) ||
+            (E == misc_type::Shard) ||
+            (E == misc_type::Orb) ||
+            (E == misc_type::Scepter) ||
+            (E == misc_type::Icicle) ||
+            (E == misc_type::Finger) ||
+            (E == misc_type::Unicorn_Horn) ||
+            (E == misc_type::Devil_Horn) ||
+            (E == misc_type::Recorder) ||
+            (E == misc_type::Viol) ||
+            (E == misc_type::Pipe_And_Tabor) ||
+            (E == misc_type::Hurdy_Gurdy) ||
+            (E == misc_type::Lyre) ||
+            (E == misc_type::Staff) ||
+            (E == misc_type::Ring));
     }
 
 
     bool misc_type::HasPixieVersion(const misc_type::Enum E)
     {
-        return ((E == misc_type::Bell) ||
-                (E == misc_type::Cape) ||
-                (E == misc_type::Cloak) ||
-                (E == misc_type::Crown) ||
-                (E == misc_type::Crumhorn) ||
-                (E == misc_type::DrumLute) ||
-                (E == misc_type::LockPicks) ||
-                (E == misc_type::Lyre) ||
-                (E == misc_type::Pipe_And_Tabor) ||
-                (E == misc_type::Recorder) ||
-                (E == misc_type::Robe) ||
-                (E == misc_type::Viol));
+        return (
+            (E == misc_type::Bell) ||
+            (E == misc_type::Cape) ||
+            (E == misc_type::Cloak) ||
+            (E == misc_type::Crown) ||
+            (E == misc_type::Crumhorn) ||
+            (E == misc_type::DrumLute) ||
+            (E == misc_type::LockPicks) ||
+            (E == misc_type::Lyre) ||
+            (E == misc_type::Pipe_And_Tabor) ||
+            (E == misc_type::Recorder) ||
+            (E == misc_type::Robe) ||
+            (E == misc_type::Viol));
     }
 
 
@@ -772,19 +777,21 @@ namespace item
 
     bool misc_type::IsBlessed(const misc_type::Enum E)
     {
-        return ((E == misc_type::Doll_Blessed) ||
-                (E == misc_type::Figurine_Blessed) ||
-                (E == misc_type::Puppet_Blessed) ||
-                (E == misc_type::Bust));
+        return (
+            (E == misc_type::Doll_Blessed) ||
+            (E == misc_type::Figurine_Blessed) ||
+            (E == misc_type::Puppet_Blessed) ||
+            (E == misc_type::Bust));
     }
 
 
     bool misc_type::IsCursed(const misc_type::Enum E)
     {
-        return ((E == misc_type::Doll_Cursed) ||
-                (E == misc_type::Figurine_Cursed) ||
-                (E == misc_type::Puppet_Cursed) ||
-                (E == misc_type::Dried_Head));
+        return (
+            (E == misc_type::Doll_Cursed) ||
+            (E == misc_type::Figurine_Cursed) ||
+            (E == misc_type::Puppet_Cursed) ||
+            (E == misc_type::Dried_Head));
     }
 
 
@@ -1366,24 +1373,28 @@ namespace item
             (E == unique_type::ViperFangFingerclaw) ||
             (E == unique_type::ScorpionStingerFingerclaw))
         {
-            elementType = static_cast<element_type::Enum>(element_type::Fire |
-                                                          element_type::Frost |
-                                                          element_type::Shadow);
+            elementType = static_cast<element_type::Enum>(
+                element_type::Fire |
+                element_type::Frost |
+                element_type::Shadow);
         }
-        else if ((E == unique_type::CommandersCape) ||
-                 (E == unique_type::GeneralsCape) ||
-                 (E == unique_type::KingsCape) ||
-                 (E == unique_type::JeweledPrincessVeil))
+        else if (
+            (E == unique_type::CommandersCape) ||
+            (E == unique_type::GeneralsCape) ||
+            (E == unique_type::KingsCape) ||
+            (E == unique_type::JeweledPrincessVeil))
         {
             elementType = element_type::Honor;
         }
-        else if ((E == unique_type::JeweledArmband) ||
-                 (E == unique_type::ManaAmulet))
+        else if (
+            (E == unique_type::JeweledArmband) ||
+            (E == unique_type::ManaAmulet))
         {
-            elementType = static_cast<element_type::Enum>(element_type::Fire |
-                                                          element_type::Frost |
-                                                          element_type::Honor |
-                                                          element_type::Shadow);
+            elementType = static_cast<element_type::Enum>(
+                element_type::Fire |
+                element_type::Frost |
+                element_type::Honor |
+                element_type::Shadow);
         }
 
         return elementType;
@@ -1980,10 +1991,11 @@ namespace item
             (E == named_type::Gladiator) ||
             (E == named_type::Focus))
         {
-            elementType = static_cast<element_type::Enum>(element_type::Fire |
-                                                          element_type::Frost |
-                                                          element_type::Honor |
-                                                          element_type::Shadow);
+            elementType = static_cast<element_type::Enum>(
+                element_type::Fire |
+                element_type::Frost |
+                element_type::Honor |
+                element_type::Shadow);
         }
         else if ((E == named_type::Wicked) ||
                  (E == named_type::Fiendish) ||
@@ -2003,9 +2015,10 @@ namespace item
                  (E == named_type::Thief) ||
                  (E == named_type::Pirate))
         {
-            elementType = static_cast<element_type::Enum>(element_type::Fire |
-                                                          element_type::Frost |
-                                                          element_type::Shadow);
+            elementType = static_cast<element_type::Enum>(
+                element_type::Fire |
+                element_type::Frost |
+                element_type::Shadow);
         }
         else if ((E == named_type::Honest) ||
                  (E == named_type::Noble) ||
@@ -2015,8 +2028,8 @@ namespace item
                  (E == named_type::Heros) ||
                  (E == named_type::Soldiers))
         {
-            elementType = static_cast<element_type::Enum>(element_type::Fire |
-                                                          element_type::Frost);
+            elementType = static_cast<element_type::Enum>(
+                element_type::Fire | element_type::Frost);
         }
 
         return elementType;
@@ -2119,14 +2132,15 @@ namespace item
     }
 
 
-    stats::Trait_t material::ArmorRatingBonus(const material::Enum MATERIAL_PRI,
-                                              const material::Enum MATERIAL_SEC)
+    Armor_t material::ArmorRatingBonus(
+        const material::Enum MATERIAL_PRI,
+        const material::Enum MATERIAL_SEC)
     {
         return ArmorRatingBonusPri(MATERIAL_PRI) + ArmorRatingBonusSec(MATERIAL_SEC);
     }
 
 
-    stats::Trait_t material::ArmorRatingBonusPri(const material::Enum MATERIAL_PRI)
+    Armor_t material::ArmorRatingBonusPri(const material::Enum MATERIAL_PRI)
     {
         switch (MATERIAL_PRI)
         {
@@ -2141,37 +2155,37 @@ namespace item
             case Glass      :
             case Feather    :
             case Fur        :
-            case Hair       : { return 0; }
-            case Flesh      : { return 1; }
+            case Hair       : { return 0_armor; }
+            case Flesh      : { return 1_armor; }
             case Rope       :
-            case Cloth      : { return 2; }
-            case Hide       : { return 5; }
-            case SoftLeather: { return 6; }
-            case HardLeather: { return 10; }
-            case Plant      : { return 11; }
-            case Claw       : { return 12; }
-            case Scale      : { return 13; }
-            case Horn       : { return 14; }
-            case Bone       : { return 15; }
-            case Tooth      : { return 16; }
-            case Wood       : { return 17; }
-            case Stone      : { return 20; }
-            case Obsidian   : { return 21; }
-            case Tin        : { return 25; }
-            case Bronze     : { return 26; }
-            case Iron       : { return 27; }
-            case Steel      : { return 28; }
-            case Jade       : { return 29; }
-            case Amethyst   : { return 30; }
-            case Emerald    : { return 31; }
-            case Pearl      : { return 32; }
-            case Ruby       : { return 33; }
-            case Lazuli     : { return 34; }
-            case Silver     : { return 35; }
-            case Sapphire   : { return 36; }
-            case Gold       : { return 40; }
-            case Platinum   : { return 45; }
-            case Diamond    : { return 50; }
+            case Cloth      : { return 2_armor; }
+            case Hide       : { return 5_armor; }
+            case SoftLeather: { return 6_armor; }
+            case HardLeather: { return 10_armor; }
+            case Plant      : { return 11_armor; }
+            case Claw       : { return 12_armor; }
+            case Scale      : { return 13_armor; }
+            case Horn       : { return 14_armor; }
+            case Bone       : { return 15_armor; }
+            case Tooth      : { return 16_armor; }
+            case Wood       : { return 17_armor; }
+            case Stone      : { return 20_armor; }
+            case Obsidian   : { return 21_armor; }
+            case Tin        : { return 25_armor; }
+            case Bronze     : { return 26_armor; }
+            case Iron       : { return 27_armor; }
+            case Steel      : { return 28_armor; }
+            case Jade       : { return 29_armor; }
+            case Amethyst   : { return 30_armor; }
+            case Emerald    : { return 31_armor; }
+            case Pearl      : { return 32_armor; }
+            case Ruby       : { return 33_armor; }
+            case Lazuli     : { return 34_armor; }
+            case Silver     : { return 35_armor; }
+            case Sapphire   : { return 36_armor; }
+            case Gold       : { return 40_armor; }
+            case Platinum   : { return 45_armor; }
+            case Diamond    : { return 50_armor; }
             case Count:
             default:
             {
@@ -2185,69 +2199,69 @@ namespace item
     }
 
 
-    stats::Trait_t material::ArmorRatingBonusSec(const material::Enum MATERIAL_SEC)
+    Armor_t material::ArmorRatingBonusSec(const material::Enum MATERIAL_SEC)
     {
         auto const SEC_MATERIAL_ARMOR_ADJ_RATIO{ GameDataFile::Instance()->GetCopyFloat(
             "heroespath-item-secondary-material-armor-adj-ratio") };
 
-        return static_cast<stats::Trait_t>(static_cast<float>(ArmorRatingBonusPri(MATERIAL_SEC)) *
-            SEC_MATERIAL_ARMOR_ADJ_RATIO);
+        return Armor_t( static_cast<Armor_t::type>(
+            ArmorRatingBonusPri(MATERIAL_SEC).AsFloat() * SEC_MATERIAL_ARMOR_ADJ_RATIO) );
     }
 
 
-    stats::Trait_t material::PriceAdj(const material::Enum MATERIAL_PRI,
-                                    const material::Enum MATERIAL_SEC)
+    Coin_t material::PriceAdj(
+        const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC)
     {
         return PriceAdjPri(MATERIAL_PRI) + PriceAdjSec(MATERIAL_SEC);
     }
 
 
-    stats::Trait_t material::PriceAdjPri(const material::Enum MATERIAL_PRI)
+    Coin_t material::PriceAdjPri(const material::Enum MATERIAL_PRI)
     {
         switch (MATERIAL_PRI)
         {
-            case Nothing    : { return 0; }
-            case Spirit     : { return 0; }
-            case Gas        : { return 0; }
-            case Water      : { return 0; }
-            case Blood      : { return 0; }
-            case Acid       : { return 100; }
-            case Dirt       : { return 0; }
-            case Paper      : { return 0; }
-            case Glass      : { return 10; }
-            case Feather    : { return 0; }
-            case Fur        : { return 8; }
-            case Hair       : { return 0; }
-            case Flesh      : { return 0; }
-            case Rope       : { return 0; }
-            case Cloth      : { return 0; }
-            case Hide       : { return 7; }
-            case SoftLeather: { return 5; }
-            case HardLeather: { return 10; }
-            case Plant      : { return 0; }
-            case Claw       : { return 4; }
-            case Scale      : { return 1000; }
-            case Horn       : { return 6; }
-            case Bone       : { return 12; }
-            case Tooth      : { return 5; }
-            case Wood       : { return 0; }
-            case Stone      : { return 0; }
-            case Obsidian   : { return 20; }
-            case Tin        : { return 30; }
-            case Bronze     : { return 32; }
-            case Iron       : { return 36; }
-            case Steel      : { return 40; }
-            case Jade       : { return 100; }
-            case Amethyst   : { return 200; }
-            case Emerald    : { return 300; }
-            case Pearl      : { return 500; }
-            case Ruby       : { return 600; }
-            case Lazuli     : { return 700; }
-            case Silver     : { return 1000; }
-            case Sapphire   : { return 2000; }
-            case Gold       : { return 5000; }
-            case Platinum   : { return 7500; }
-            case Diamond    : { return 10000; }
+            case Nothing    : { return     0_coin; }
+            case Spirit     : { return     0_coin; }
+            case Gas        : { return     0_coin; }
+            case Water      : { return     0_coin; }
+            case Blood      : { return     0_coin; }
+            case Acid       : { return   100_coin; }
+            case Dirt       : { return     0_coin; }
+            case Paper      : { return     0_coin; }
+            case Glass      : { return    10_coin; }
+            case Feather    : { return     0_coin; }
+            case Fur        : { return     8_coin; }
+            case Hair       : { return     0_coin; }
+            case Flesh      : { return     0_coin; }
+            case Rope       : { return     0_coin; }
+            case Cloth      : { return     0_coin; }
+            case Hide       : { return     7_coin; }
+            case SoftLeather: { return     5_coin; }
+            case HardLeather: { return    10_coin; }
+            case Plant      : { return     0_coin; }
+            case Claw       : { return     4_coin; }
+            case Scale      : { return  1000_coin; }
+            case Horn       : { return     6_coin; }
+            case Bone       : { return    12_coin; }
+            case Tooth      : { return     5_coin; }
+            case Wood       : { return     0_coin; }
+            case Stone      : { return     0_coin; }
+            case Obsidian   : { return    20_coin; }
+            case Tin        : { return    30_coin; }
+            case Bronze     : { return    32_coin; }
+            case Iron       : { return    36_coin; }
+            case Steel      : { return    40_coin; }
+            case Jade       : { return   100_coin; }
+            case Amethyst   : { return   200_coin; }
+            case Emerald    : { return   300_coin; }
+            case Pearl      : { return   500_coin; }
+            case Ruby       : { return   600_coin; }
+            case Lazuli     : { return   700_coin; }
+            case Silver     : { return  1000_coin; }
+            case Sapphire   : { return  2000_coin; }
+            case Gold       : { return  5000_coin; }
+            case Platinum   : { return  7500_coin; }
+            case Diamond    : { return 10000_coin; }
             case Count      :
             default         :
             {
@@ -2262,14 +2276,15 @@ namespace item
     }
 
 
-    stats::Trait_t material::PriceAdjSec(const material::Enum E)
+    Coin_t material::PriceAdjSec(const material::Enum E)
     {
-        return PriceAdjPri(E) / 10;
+        return PriceAdjPri(E) / 10_coin;
     }
 
 
-    float material::WeightMult(const material::Enum MATERIAL_PRI,
-                               const material::Enum MATERIAL_SEC)
+    float material::WeightMult(
+        const material::Enum MATERIAL_PRI,
+        const material::Enum MATERIAL_SEC)
     {
         return WeightMultPri(MATERIAL_PRI) + WeightMultSec(MATERIAL_SEC);
     }
@@ -2400,13 +2415,14 @@ namespace item
 
     const std::vector<material::Enum> material::CoreMetal(const bool WILL_INCLUDE_NOTHING)
     {
-        std::vector<material::Enum> materials{ material::Tin,
-                                               material::Bronze,
-                                               material::Iron,
-                                               material::Steel,
-                                               material::Silver,
-                                               material::Gold,
-                                               material::Platinum };
+        std::vector<material::Enum> materials{
+            material::Tin,
+            material::Bronze,
+            material::Iron,
+            material::Steel,
+            material::Silver,
+            material::Gold,
+            material::Platinum };
 
         if (WILL_INCLUDE_NOTHING)
         {
@@ -2419,13 +2435,14 @@ namespace item
 
     const std::vector<material::Enum> material::CoreJewel(const bool WILL_INCLUDE_NOTHING)
     {
-        std::vector<material::Enum> materials{ material::Jade,
-                                               material::Amethyst,
-                                               material::Emerald,
-                                               material::Ruby,
-                                               material::Lazuli,
-                                               material::Sapphire,
-                                               material::Diamond };
+        std::vector<material::Enum> materials{
+            material::Jade,
+            material::Amethyst,
+            material::Emerald,
+            material::Ruby,
+            material::Lazuli,
+            material::Sapphire,
+            material::Diamond };
 
         if (WILL_INCLUDE_NOTHING)
         {
@@ -2438,10 +2455,11 @@ namespace item
 
     const std::vector<material::Enum> material::CoreMisc(const bool WILL_INCLUDE_NOTHING)
     {
-        std::vector<material::Enum> materials{ material::Bone,
-                                               material::Stone,
-                                               material::Obsidian,
-                                               material::Pearl };
+        std::vector<material::Enum> materials{
+            material::Bone,
+            material::Stone,
+            material::Obsidian,
+            material::Pearl };
 
         if (WILL_INCLUDE_NOTHING)
         {

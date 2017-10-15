@@ -280,21 +280,20 @@ namespace chance
     {}
 
 
-    InventoryChances::InventoryChances(const stats::Trait_t       COINS_MIN,
-                                       const stats::Trait_t       COINS_MAX,
+    InventoryChances::InventoryChances(const Coin_t             COINS_MIN,
+                                       const Coin_t             COINS_MAX,
                                        const ClothingChances &  CLOTHES_CHANCES,
                                        const WeaponChances &    WEAPON_CHANCES,
                                        const ArmorChances &     ARMOR_CHANCES,
                                        const ItemChancePair_t & MISC_ITEM_CHANCES)
-        :
-            coins_min (COINS_MIN),
-            coins_max (COINS_MAX),
-            armor     (ARMOR_CHANCES),
-            weapon    (WEAPON_CHANCES),
-            clothes   (CLOTHES_CHANCES),
-            misc_items(MISC_ITEM_CHANCES)
-        {}
-
+    :
+        coins_min (COINS_MIN),
+        coins_max (COINS_MAX),
+        armor     (ARMOR_CHANCES),
+        weapon    (WEAPON_CHANCES),
+        clothes   (CLOTHES_CHANCES),
+        misc_items(MISC_ITEM_CHANCES)
+    {}
 
 
     WeaponChances::WeaponChances(const bool                     HAS_CLAWS,

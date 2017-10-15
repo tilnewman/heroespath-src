@@ -46,15 +46,15 @@ namespace item
 
     ArmorRatings::ArmorRatings()
     :
-        clothesCloth_             (0),
-        clothesSoftLeather_       (0),
-        clothesHardLeather_       (0),
-        armoredLesserSoftLeather_ (0),
-        armoredLesserSteel_       (0),
-        armoredLesserDiamond_     (0),
-        armoredGreaterSoftLeather_(0),
-        armoredGreaterSteel_      (0),
-        armoredGreaterDiamond_    (0)
+        clothesCloth_             (0_armor),
+        clothesSoftLeather_       (0_armor),
+        clothesHardLeather_       (0_armor),
+        armoredLesserSoftLeather_ (0_armor),
+        armoredLesserSteel_       (0_armor),
+        armoredLesserDiamond_     (0_armor),
+        armoredGreaterSoftLeather_(0_armor),
+        armoredGreaterSteel_      (0_armor),
+        armoredGreaterDiamond_    (0_armor)
     {
         M_HP_LOG_DBG("Singleton Construction: ArmorRatings");
     }
@@ -116,7 +116,7 @@ namespace item
     }
 
 
-    stats::Trait_t ArmorRatings::ClothesSetRating(
+    Armor_t ArmorRatings::ClothesSetRating(
         const item::material::Enum MATERIAL_ENUM) const
     {
         using namespace item::armor;
@@ -140,7 +140,7 @@ namespace item
     }
 
 
-    stats::Trait_t ArmorRatings::LesserArmorSetRating(
+    Armor_t ArmorRatings::LesserArmorSetRating(
         const item::material::Enum E) const
     {
         using namespace item::armor;
@@ -177,7 +177,7 @@ namespace item
     }
 
 
-    stats::Trait_t ArmorRatings::GreaterArmorSetRating(
+    Armor_t ArmorRatings::GreaterArmorSetRating(
         const item::material::Enum E) const
     {
         using namespace item::armor;
@@ -214,9 +214,9 @@ namespace item
     }
 
 
-    stats::Trait_t ArmorRatings::GetTotalArmorRating(const ItemPVec_t & ITEM_PVEC) const
+    Armor_t ArmorRatings::GetTotalArmorRating(const ItemPVec_t & ITEM_PVEC) const
     {
-        stats::Trait_t totalArmorRating{ 0 };
+        auto totalArmorRating{ 0_armor };
 
         for (auto const NEXT_ITEM_PTR : ITEM_PVEC)
         {

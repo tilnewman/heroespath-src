@@ -167,7 +167,7 @@ namespace game
             rankSum += CHARACTER_PTR->Rank();
         }
 
-        return rankSum / Rank_t(CHARACTER_PTRS.size());
+        return rankSum / Rank_t(static_cast<int>(CHARACTER_PTRS.size()));
     }
 
 }

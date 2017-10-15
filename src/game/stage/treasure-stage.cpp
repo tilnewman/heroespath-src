@@ -872,23 +872,23 @@ namespace stage
     }
 
 
-    stats::Trait_t TreasureStage::Share(const ShareType WHAT_IS_SHARED)
+    int TreasureStage::Share(const ShareType WHAT_IS_SHARED)
     {
-        auto const TOTAL{
+        const int TOTAL{
             ((WHAT_IS_SHARED == ShareType::Coins) ?
-                (itemCacheHeld_.coins + itemCacheLockbox_.coins) :
-                (itemCacheHeld_.gems + itemCacheLockbox_.gems)) };
+                (itemCacheHeld_.coins.AsInt() + itemCacheLockbox_.coins.AsInt()) :
+                (itemCacheHeld_.gems.AsInt() + itemCacheLockbox_.gems.AsInt())) };
 
         if (TOTAL <= 0)
         {
             return 0;
         }
 
-        auto const HUMANOID_COUNT(static_cast<stats::Trait_t>(
-            Game::Instance()->State().Party().GetNumHumanoid()));
+        auto const HUMANOID_COUNT{
+            static_cast<int>(Game::Instance()->State().Party().GetNumHumanoid()) };
 
-        const stats::Trait_t SHARED_AMOUNT(TOTAL / HUMANOID_COUNT);
-        const stats::Trait_t LEFTOVER_AMOUNT(TOTAL % HUMANOID_COUNT);
+        auto const SHARED_AMOUNT{ TOTAL / HUMANOID_COUNT };
+        auto const LEFTOVER_AMOUNT{ TOTAL % HUMANOID_COUNT };
 
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
@@ -896,29 +896,29 @@ namespace stage
             {
                 if (WHAT_IS_SHARED == ShareType::Coins)
                 {
-                    nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * -1);
-                    nextCreaturePtr->CoinsAdj(SHARED_AMOUNT);
+                    nextCreaturePtr->CoinsAdj(nextCreaturePtr->Inventory().Coins() * Coin_t(-1));
+                    nextCreaturePtr->CoinsAdj( Coin_t(SHARED_AMOUNT) );
                 }
                 else
                 {
-                    nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * -1);
-                    nextCreaturePtr->GemsAdj(SHARED_AMOUNT);
+                    nextCreaturePtr->GemsAdj(nextCreaturePtr->Inventory().Gems() * Gem_t(-1));
+                    nextCreaturePtr->GemsAdj( Gem_t(SHARED_AMOUNT));
                 }
             }
         }
 
-        stats::Trait_t toHandOut(LEFTOVER_AMOUNT);
+        auto toHandOut{ LEFTOVER_AMOUNT };
         for (auto nextCreaturePtr : Game::Instance()->State().Party().Characters())
         {
             if (nextCreaturePtr->Body().IsHumanoid() && (toHandOut-- > 0))
             {
                 if (WHAT_IS_SHARED == ShareType::Coins)
                 {
-                    nextCreaturePtr->CoinsAdj(1);
+                    nextCreaturePtr->CoinsAdj(1_coin);
                 }
                 else
                 {
-                    nextCreaturePtr->GemsAdj(1);
+                    nextCreaturePtr->GemsAdj(1_gem);
                 }
             }
         }

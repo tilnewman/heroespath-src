@@ -1225,7 +1225,7 @@ namespace creature
     }
 
 
-    stats::Trait_t Creature::ArmorRating() const
+    Armor_t Creature::ArmorRating() const
     {
         return inventory_.ArmorRating();
     }
@@ -1502,9 +1502,9 @@ namespace creature
     }
 
 
-    stats::Trait_t Creature::WeightCanCarry() const
+    Weight_t Creature::WeightCanCarry() const
     {
-        stats::Trait_t base(5000);
+        int base{ 5000 };
         if (race::Gnome == race_)
         {
             base = 2500;
@@ -1518,7 +1518,7 @@ namespace creature
             base = 3000;
         }
 
-        stats::Trait_t multiplier(1000);
+        int multiplier{ 1000 };
         if (race::Gnome == race_)
         {
             multiplier = 500;
@@ -1532,7 +1532,7 @@ namespace creature
             multiplier = 750;
         }
 
-        stats::Trait_t divisor(2);
+        int divisor{ 2 };
         if (race::Gnome == race_)
         {
             divisor = 4;
@@ -1546,7 +1546,7 @@ namespace creature
             divisor = 3;
         }
 
-        return (base + ((Strength() * multiplier) / divisor));
+        return Weight_t(base + ((Strength() * multiplier) / divisor));
     }
 
 

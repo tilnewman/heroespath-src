@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// treasure-info.cpp
+// treasure-scores.cpp
 //
-#include "treasure-info.hpp"
+#include "treasure-scores.hpp"
 
 #include <sstream>
 
@@ -37,10 +37,11 @@ namespace game
 namespace item
 {
 
-    TreasureInfo::TreasureInfo(const stats::Trait_t COIN,
-                               const stats::Trait_t GEM,
-                               const stats::Trait_t MAGIC,
-                               const stats::Trait_t RELIGIOUS)
+    TreasureScores::TreasureScores(
+        const Score_t COIN,
+        const Score_t GEM,
+        const Score_t MAGIC,
+        const Score_t RELIGIOUS)
     :
         coin_     (COIN),
         gem_      (GEM),
@@ -49,11 +50,12 @@ namespace item
     {}
 
 
-    const std::string TreasureInfo::ToString(const bool WILL_WRAP) const
+    const std::string TreasureScores::ToString(const bool WILL_WRAP) const
     {
         std::ostringstream ss;
 
-        ss << "Coin=" << coin_ << ", Gem=" << gem_ << ", Magic=" << magic_ << ", Religious=" << religious_;
+        ss << "Coin=" << coin_ << ", Gem=" << gem_
+            << ", Magic=" << magic_ << ", Religious=" << religious_;
 
         if (WILL_WRAP)
         {
@@ -66,7 +68,7 @@ namespace item
     }
 
 
-    TreasureInfo & TreasureInfo::operator+=(const TreasureInfo & RHS)
+    TreasureScores & TreasureScores::operator+=(const TreasureScores & RHS)
     {
         coin_ += RHS.coin_;
         gem_ += RHS.gem_;
@@ -76,7 +78,7 @@ namespace item
     }
 
 
-    TreasureInfo & TreasureInfo::operator-=(const TreasureInfo & RHS)
+    TreasureScores & TreasureScores::operator-=(const TreasureScores & RHS)
     {
         coin_ -= RHS.coin_;
         gem_ -= RHS.gem_;
@@ -86,7 +88,7 @@ namespace item
     }
 
 
-    TreasureInfo & TreasureInfo::operator*=(const TreasureInfo & RHS)
+    TreasureScores & TreasureScores::operator*=(const TreasureScores & RHS)
     {
         coin_ *= RHS.coin_;
         gem_ *= RHS.gem_;
@@ -96,7 +98,7 @@ namespace item
     }
 
 
-    TreasureInfo & TreasureInfo::operator/=(const TreasureInfo & RHS)
+    TreasureScores & TreasureScores::operator/=(const TreasureScores & RHS)
     {
         coin_ /= RHS.coin_;
         gem_ /= RHS.gem_;
@@ -106,27 +108,27 @@ namespace item
     }
 
 
-    TreasureInfo TreasureInfo::operator+(const TreasureInfo & RHS)
+    TreasureScores TreasureScores::operator+(const TreasureScores & RHS)
     {
-        return TreasureInfo( * this) += RHS;
+        return TreasureScores( * this) += RHS;
     }
 
 
-    TreasureInfo TreasureInfo::operator-(const TreasureInfo & RHS)
+    TreasureScores TreasureScores::operator-(const TreasureScores & RHS)
     {
-        return TreasureInfo( * this) -= RHS;
+        return TreasureScores( * this) -= RHS;
     }
 
 
-    TreasureInfo TreasureInfo::operator*(const TreasureInfo & RHS)
+    TreasureScores TreasureScores::operator*(const TreasureScores & RHS)
     {
-        return TreasureInfo( * this) *= RHS;
+        return TreasureScores( * this) *= RHS;
     }
 
 
-    TreasureInfo TreasureInfo::operator/(const TreasureInfo & RHS)
+    TreasureScores TreasureScores::operator/(const TreasureScores & RHS)
     {
-        return TreasureInfo( * this) /= RHS;
+        return TreasureScores( * this) /= RHS;
     }
 
 }

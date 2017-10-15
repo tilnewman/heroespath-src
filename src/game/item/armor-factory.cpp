@@ -110,9 +110,9 @@ namespace armor
         auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
                 item::armor::shield_type::ToString(SHIELD_TYPE)) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
-        stats::Trait_t armorRating{ DETAILS.armor_rating };
+        Coin_t   price{ DETAILS.price };
+        Weight_t weight{ DETAILS.weight };
+        Armor_t  armorRating{ DETAILS.armor_rating };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, false);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -214,9 +214,9 @@ namespace armor
         auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
                 item::armor::helm_type::ToString(HELM_TYPE)) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
-        stats::Trait_t armorRating{ DETAILS.armor_rating };
+        Coin_t price{ DETAILS.price };
+        Weight_t weight{ DETAILS.weight };
+        Armor_t armorRating{ DETAILS.armor_rating };
 
         auto materialPri{ MATERIAL_PRI };
         auto materialSec{ MATERIAL_SEC };
@@ -287,9 +287,9 @@ namespace armor
                 }
             }()) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
-        stats::Trait_t armorRating{ DETAILS.armor_rating };
+        Coin_t   price{ DETAILS.price };
+        Weight_t weight{ DETAILS.weight };
+        Armor_t  armorRating{ DETAILS.armor_rating };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -344,9 +344,9 @@ namespace armor
         auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
                 item::armor::base_type::ToString(TYPE) + "Pants") };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
-        stats::Trait_t armorRating{ DETAILS.armor_rating };
+        Coin_t   price{ DETAILS.price };
+        Weight_t weight{ DETAILS.weight };
+        Armor_t  armorRating{ DETAILS.armor_rating };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -406,9 +406,9 @@ namespace armor
         auto const DETAILS{
             ArmorDetailLoader::Instance()->LookupArmorDetails(TYPE_NAME_STR + "Boots") };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
-        stats::Trait_t armorRating{ DETAILS.armor_rating };
+        Coin_t   price{ DETAILS.price };
+        Weight_t weight{ DETAILS.weight };
+        Armor_t  armorRating{ DETAILS.armor_rating };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -465,9 +465,9 @@ namespace armor
         auto const DETAILS{
             ArmorDetailLoader::Instance()->LookupArmorDetails(TYPE_NAME_STR + "Shirt") };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
-        stats::Trait_t armorRating{ DETAILS.armor_rating };
+        Coin_t   price{ DETAILS.price };
+        Weight_t weight{ DETAILS.weight };
+        Armor_t  armorRating{ DETAILS.armor_rating };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -525,9 +525,9 @@ namespace armor
         auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
                 item::armor::base_type::ToString(TYPE) + "Bracers") };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
-        stats::Trait_t armorRating{ DETAILS.armor_rating };
+        Coin_t   price{ DETAILS.price };
+        Weight_t weight{ DETAILS.weight };
+        Armor_t  armorRating{ DETAILS.armor_rating };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -581,9 +581,9 @@ namespace armor
         auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
                 item::armor::base_type::ToString(TYPE) + "Aventail") };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
-        stats::Trait_t armorRating{ DETAILS.armor_rating };
+        Coin_t   price{ DETAILS.price };
+        Weight_t weight{ DETAILS.weight };
+        Armor_t  armorRating{ DETAILS.armor_rating };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -639,9 +639,9 @@ namespace armor
         auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
                 item::armor::cover_type::ToString(COVER_TYPE)) };
 
-        stats::Trait_t price{ DETAILS.price };
-        stats::Trait_t weight{ DETAILS.weight };
-        stats::Trait_t armorRating{ DETAILS.armor_rating };
+        Coin_t   price{ DETAILS.price };
+        Weight_t weight{ DETAILS.weight };
+        Armor_t  armorRating{ DETAILS.armor_rating };
 
         AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM);
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -689,16 +689,16 @@ namespace armor
 
         ArmorDetails details;
 
-        details.armor_rating = static_cast<stats::Trait_t>(
-            item::material::ArmorRatingBonusPri(MATERIAL)) + CREATURE_RANK.AsInt();
+        details.armor_rating = Armor_t( static_cast<Armor_t::type>(
+            item::material::ArmorRatingBonusPri(MATERIAL).AsInt() + CREATURE_RANK.AsInt() ) );
 
         details.complexity = non_player::ownership::complexity_type::Simple;
         details.name = material::ToReadableString(MATERIAL) + " skin";
-        details.price = 0;
+        details.price = 0_coin;
 
-        details.weight = static_cast<stats::Trait_t>(
-            100.0f * material::WeightMult(MATERIAL, material::Nothing));
-
+        details.weight = Weight_t( static_cast<Weight_t::type>(
+            100.0f * material::WeightMult(MATERIAL, material::Nothing) ) );
+         
         std::ostringstream ss;
         ss << "Skin made of " << material::ToReadableString(MATERIAL)
             << ".  The Armor Rating increases with Rank.";

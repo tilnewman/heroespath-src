@@ -27,7 +27,7 @@
 //
 // armor-ratings.hpp
 //
-#include "game/stats/types.hpp"
+#include "game/types.hpp"
 #include "game/item/item-type-enum.hpp"
 
 #include <memory>
@@ -60,69 +60,69 @@ namespace item
         void Setup();
 
 
-        inline stats::Trait_t FullyClothedCloth() const
+        inline Armor_t FullyClothedCloth() const
         {
             return clothesCloth_;
         }
 
-        inline stats::Trait_t FullyClothedSoftLeather() const
+        inline Armor_t FullyClothedSoftLeather() const
         {
             return clothesSoftLeather_;
         }
 
-        inline stats::Trait_t FullyClothedHardLeather() const
+        inline Armor_t FullyClothedHardLeather() const
         {
             return clothesHardLeather_;
         }
 
-        inline stats::Trait_t ArmoredLesserSoftLeather() const
+        inline Armor_t ArmoredLesserSoftLeather() const
         {
             return armoredLesserSoftLeather_;
         }
 
-        inline stats::Trait_t ArmoredLesserSteel() const
+        inline Armor_t ArmoredLesserSteel() const
         {
             return armoredLesserSteel_;
         }
 
-        inline stats::Trait_t ArmoredLesserDiamond() const
+        inline Armor_t ArmoredLesserDiamond() const
         {
             return armoredLesserDiamond_;
         }
 
-        inline stats::Trait_t ArmoredGreaterSoftLeather() const
+        inline Armor_t ArmoredGreaterSoftLeather() const
         {
             return armoredGreaterSoftLeather_;
         }
 
-        inline stats::Trait_t ArmoredGreaterSteel() const
+        inline Armor_t ArmoredGreaterSteel() const
         {
             return armoredGreaterSteel_;
         }
 
-        inline stats::Trait_t ArmoredGreaterDiamond() const
+        inline Armor_t ArmoredGreaterDiamond() const
         {
             return armoredGreaterDiamond_;
         }
 
     private:
-        stats::Trait_t ClothesSetRating(const item::material::Enum) const;
-        stats::Trait_t LesserArmorSetRating(const item::material::Enum) const;
-        stats::Trait_t GreaterArmorSetRating(const item::material::Enum) const;
-        stats::Trait_t GetTotalArmorRating(const ItemPVec_t &) const;
+        Armor_t ClothesSetRating(const item::material::Enum) const;
+        Armor_t LesserArmorSetRating(const item::material::Enum) const;
+        Armor_t GreaterArmorSetRating(const item::material::Enum) const;
+        Armor_t GetTotalArmorRating(const ItemPVec_t &) const;
 
     private:
         static std::unique_ptr<ArmorRatings> instanceUPtr_;
         //
-        stats::Trait_t clothesCloth_;
-        stats::Trait_t clothesSoftLeather_;
-        stats::Trait_t clothesHardLeather_;
-        stats::Trait_t armoredLesserSoftLeather_;
-        stats::Trait_t armoredLesserSteel_;
-        stats::Trait_t armoredLesserDiamond_;
-        stats::Trait_t armoredGreaterSoftLeather_;
-        stats::Trait_t armoredGreaterSteel_;
-        stats::Trait_t armoredGreaterDiamond_;
+        Armor_t clothesCloth_;
+        Armor_t clothesSoftLeather_;
+        Armor_t clothesHardLeather_;
+        Armor_t armoredLesserSoftLeather_;
+        Armor_t armoredLesserSteel_;
+        Armor_t armoredLesserDiamond_;
+        Armor_t armoredGreaterSoftLeather_;
+        Armor_t armoredGreaterSteel_;
+        Armor_t armoredGreaterDiamond_;
     };
 
 }

@@ -59,8 +59,8 @@ namespace weapon
 
         std::string name;
         std::string description;
-        stats::Trait_t price;
-        stats::Trait_t weight;
+        Coin_t price;
+        Weight_t weight;
         Health_t damage_min;
         Health_t damage_max;
         item::category::Enum handedness;

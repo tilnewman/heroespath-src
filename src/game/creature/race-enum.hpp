@@ -32,7 +32,7 @@
 
 #include "game/types.hpp"
 #include "game/stats/types.hpp"
-#include "game/item/treasure-info.hpp"
+#include "game/item/treasure-scores.hpp"
 #include "game/creature/role-enum.hpp"
 #include "game/creature/rank.hpp"
 
@@ -128,8 +128,8 @@ namespace creature
         static const RoleVec_t Roles(const race::Enum);
         static bool RaceRoleMatch(const race::Enum, const role::Enum);
         static const OriginTypeVec_t OriginTypes(const race::Enum, const role::Enum);
-        static const item::TreasureInfo TreasureScore(const race::Enum, const role::Enum);
-        static const item::TreasureInfo TreasureScoreMax();
+        static const item::TreasureScores TreasureScore(const race::Enum, const role::Enum);
+        static const item::TreasureScores TreasureScoreMax();
         static const std::string RaceRoleName(const race::Enum, const role::Enum);
         static const RankRange_t RaceRoleRanks(const race::Enum, const role::Enum);
         static const misc::StrVec_t CorpseImageKeys(const race::Enum);

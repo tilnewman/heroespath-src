@@ -1463,17 +1463,18 @@ namespace combat
         if (creatureDefendingPtrC->HasCondition(creature::Conditions::Tripped))
         {
             armorRatingToUse -= (item::ArmorRatings::Instance()->ArmoredLesserSteel() +
-                item::ArmorRatings::Instance()->ArmoredGreaterSteel()) / 4;
+                item::ArmorRatings::Instance()->ArmoredGreaterSteel()) / 4_armor;
 
-            if (armorRatingToUse < 0)
+            if (armorRatingToUse < 0_armor)
             {
-                armorRatingToUse = 0;
+                armorRatingToUse = 0_armor;
             }
         }
 
-        damageFinal -= Health_t(static_cast<Health_t::type>(damageFinal.AsFloat() *
-            (static_cast<float>(armorRatingToUse) /
-                static_cast<float>(item::ArmorRatings::Instance()->ArmoredGreaterDiamond()) ) ) );
+        damageFinal -= Health_t(
+            static_cast<Health_t::type>(damageFinal.AsFloat() *
+                (armorRatingToUse.AsFloat() /
+                    item::ArmorRatings::Instance()->ArmoredGreaterDiamond().AsFloat()) ) );
 
         //check if armor absorbed all the damage
         if ((DAMAGE_AFTER_SPECIALS > 0_health) && (damageFinal <= 0_health))

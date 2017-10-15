@@ -28,6 +28,7 @@
 // item-cache.cpp
 //
 #include "item-cache.hpp"
+
 #include "game/item/item.hpp"
 
 
@@ -38,15 +39,15 @@ namespace item
 
     ItemCache::ItemCache()
      :
-        coins(0),
-        gems(0),
+        coins(0_coin),
+        gems(0_gem),
         items_pvec()
     {}
 
 
-    game::stats::Trait_t ItemCache::Weight() const
+    Weight_t ItemCache::Weight() const
     {
-        game::stats::Trait_t sum{ 0 };
+        Weight_t sum{ 0_weight };
 
         for (auto const NEXT_ITEM_PTR : items_pvec)
         {

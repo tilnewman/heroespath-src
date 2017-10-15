@@ -397,8 +397,8 @@ namespace combat
         }
 
         deadNonPlayerItemsHeld_.items_pvec.clear();
-        deadNonPlayerItemsHeld_.coins = 0;
-        deadNonPlayerItemsHeld_.gems = 0;
+        deadNonPlayerItemsHeld_.coins = 0_coin;
+        deadNonPlayerItemsHeld_.gems = 0_gem;
 
         for (auto nextItemPtr : deadNonPlayerItemsLockbox_.items_pvec)
         {
@@ -406,8 +406,8 @@ namespace combat
         }
 
         deadNonPlayerItemsLockbox_.items_pvec.clear();
-        deadNonPlayerItemsLockbox_.coins = 0;
-        deadNonPlayerItemsLockbox_.gems = 0;
+        deadNonPlayerItemsLockbox_.coins = 0_coin;
+        deadNonPlayerItemsLockbox_.gems = 0_gem;
 
         FreeThenResetDeadNonPlayerParty();
     }

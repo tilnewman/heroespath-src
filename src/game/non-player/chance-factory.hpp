@@ -28,6 +28,7 @@
 // inventory-factory.hpp
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
+#include "game/types.hpp"
 #include "game/creature/race-enum.hpp"
 #include "game/creature/role-enum.hpp"
 #include "game/non-player/character.hpp"
@@ -117,9 +118,10 @@ namespace ownership
                                               const float         MIN,
                                               const float         MAX);
 
-        static void Make_Coins(const Profile & PROFILE,
-                               stats::Trait_t &  coinsMin_OutParam,
-                               stats::Trait_t &  coinsMax_OutParam);
+        static void Make_Coins(
+            const Profile & PROFILE,
+            Coin_t &  coinsMin_OutParam,
+            Coin_t &  coinsMax_OutParam);
 
         static const chance::ClothingChances Make_ClothingChances(
             const Profile &                  PROFILE,
@@ -161,7 +163,7 @@ namespace ownership
             const Profile &                     PROFILE,
             const non_player::CharacterPtr_t    CHARACTER_PTR,
             const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
-            const stats::Trait_t                ITEM_WEIGHT,
+            const Weight_t                      ITEM_WEIGHT,
             chance::MaterialChanceMap_t &       materialsMap_OutParam);
 
         static void Make_MaterialChancesSecondary(const Profile &,
@@ -194,13 +196,13 @@ namespace ownership
             const non_player::CharacterPtr_t    CHARACTER_PTR,
             chance::MaterialChanceMap_t &       materialsMapPri,
             chance::MaterialChanceMap_t &       materialsMapSec,
-            const stats::Trait_t                WEIGHT);
+            const Weight_t                WEIGHT);
 
         template<typename T>
         static bool SetWeaponChances(
             const std::string &                 WEAPON_NAME,
             const T                             WEAPON_ENUM,
-            const float                         CHANCE_BASE,
+            const float                         /*CHANCE_BASE*/,
             const Profile &                     PROFILE,
             const non_player::CharacterPtr_t    CHARACTER_PTR,
             const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,

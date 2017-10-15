@@ -101,7 +101,7 @@ namespace ownership
             const non_player::CharacterPtr_t CHARACTER_PTR,
             const bool                       HAS_TWO_HANDED_WEAPON_EQUIPPED);
 
-        static stats::Trait_t Make_Coins(const chance::InventoryChances & CHANCES);
+        static Coin_t Make_Coins(const chance::InventoryChances & CHANCES);
 
         static bool ContainsTwoHandedWeapon(const item::ItemPVec_t & WEAPON_VEC);
 

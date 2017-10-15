@@ -120,12 +120,13 @@ namespace item
 
         //Sorting by treasure score will help speed up later uses of profiles_
         // during gameplay, and is required before Setup_LogStatistics().
-        std::sort(profiles_.begin(),
-                  profiles_.end(),
-                  [](const auto & A, const auto & B)
-                    {
-                        return A.TreasureScore() < B.TreasureScore();
-                    });
+        std::sort(
+            profiles_.begin(),
+            profiles_.end(),
+            [](const auto & A, const auto & B)
+            {
+                return A.TreasureScore() < B.TreasureScore();
+            });
 
         //This line adds lots of verbose details about item profiles to the log,
         //which are not normally needed during a typical run of the game,
@@ -159,21 +160,21 @@ namespace item
 
     void ItemProfileWarehouse::Setup_UniqueItems()
     {
-        for (int i(1); i < item::unique_type::Count; ++i)
+        for (int i(1); i < unique_type::Count; ++i)
         {
-            auto const NEXT_UNIQUE_ENUM{ static_cast<item::unique_type::Enum>(i) };
+            auto const NEXT_UNIQUE_ENUM{ static_cast<unique_type::Enum>(i) };
 
-            auto const ELEMENT_TYPE_COMBS_VEC{ item::element_type::Combinations(
-                item::unique_type::ElementTypes(NEXT_UNIQUE_ENUM)) };
+            auto const ELEMENT_TYPE_COMBS_VEC{ element_type::Combinations(
+                unique_type::ElementTypes(NEXT_UNIQUE_ENUM)) };
 
             for (auto const NEXT_ELEMENT_TYPE : ELEMENT_TYPE_COMBS_VEC)
             {
-                auto const MATERIALS{ item::unique_type::Materials(NEXT_UNIQUE_ENUM) };
+                auto const MATERIALS{ unique_type::Materials(NEXT_UNIQUE_ENUM) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS((MATERIALS.first.empty() == false),
-                    "game::item::ItemProfileWarehouse::Setup() failed to find any primary "
+                    "game::ItemProfileWarehouse::Setup() failed to find any primary "
                     << "materials for unique_type="
-                    << item::unique_type::ToString(NEXT_UNIQUE_ENUM));
+                    << unique_type::ToString(NEXT_UNIQUE_ENUM));
 
                 auto didAddProfile{ false };
 
@@ -185,13 +186,13 @@ namespace item
 
                         p.SetUnique(NEXT_UNIQUE_ENUM,
                                     NEXT_MATERIAL_PRIMARY,
-                                    item::material::Nothing,
+                                    material::Nothing,
                                     NEXT_ELEMENT_TYPE);
 
-                        p.SetMisc(item::unique_type::MiscType(NEXT_UNIQUE_ENUM),
+                        p.SetMisc(unique_type::MiscType(NEXT_UNIQUE_ENUM),
                                   false,
                                   NEXT_MATERIAL_PRIMARY,
-                                  item::material::Nothing);
+                                  material::Nothing);
 
                         profiles_.push_back(p);
                         didAddProfile = true;
@@ -212,7 +213,7 @@ namespace item
                                         NEXT_MATERIAL_SECONDARY,
                                         NEXT_ELEMENT_TYPE);
 
-                            p.SetMisc(item::unique_type::MiscType(NEXT_UNIQUE_ENUM),
+                            p.SetMisc(unique_type::MiscType(NEXT_UNIQUE_ENUM),
                                       false,
                                       NEXT_MATERIAL_PRIMARY,
                                       NEXT_MATERIAL_SECONDARY);
@@ -224,9 +225,9 @@ namespace item
                 }
 
                 M_ASSERT_OR_LOGANDTHROW_SS((didAddProfile),
-                    "game::item::ItemProfileWarehouse::Setup() failed to find any valid "
+                    "game::ItemProfileWarehouse::Setup() failed to find any valid "
                     << "material combinations for unique_type="
-                    << item::unique_type::ToString(NEXT_UNIQUE_ENUM));
+                    << unique_type::ToString(NEXT_UNIQUE_ENUM));
             }
         }
     }
@@ -414,13 +415,17 @@ namespace item
     {
         struct ItemSet
         {
-            ItemSet(const std::string & NAME, int DIVISION_SIZE, const std::vector<ItemProfile> & PROFILES)
-                :
+            ItemSet(
+                const std::string & NAME,
+                int DIVISION_SIZE,
+                const std::vector<ItemProfile> & PROFILES)
+            :
                 name(NAME),
                 division(DIVISION_SIZE),
                 profiles(),
                 scores(),
-                divCountsScore(static_cast<std::size_t>((PROFILES[PROFILES.size() - 1].TreasureScore() / DIVISION_SIZE) + 1), 0),
+                divCountsScore(static_cast<std::size_t>(
+                    (PROFILES[PROFILES.size() - 1].TreasureScore().AsInt() / DIVISION_SIZE) + 1), 0),
                 sum(0)
             {}
 
@@ -434,9 +439,9 @@ namespace item
             void Add(const ItemProfile & P)
             {
                 profiles.push_back(P);
-                ++divCountsScore[static_cast<std::size_t>(P.TreasureScore() / division)];
-                sum += P.TreasureScore();
-                scores.push_back(P.TreasureScore());
+                ++divCountsScore[static_cast<std::size_t>(P.TreasureScore().AsInt() / division)];
+                sum += P.TreasureScore().AsInt();
+                scores.push_back(P.TreasureScore().AsInt());
             }
 
             void Log() const
@@ -476,7 +481,7 @@ namespace item
                         profiles.end(),
                         [DIV_SCORE_START](const auto & P)
                     {
-                        return P.TreasureScore() >= DIV_SCORE_START;
+                        return P.TreasureScore().AsInt() >= DIV_SCORE_START;
                     }) };
 
                     int i{ 0 };
@@ -570,11 +575,11 @@ namespace item
     }
 
 
-    int ItemProfileWarehouse::Score(const stats::TraitSet & TRAIT_SET)
+    Score_t ItemProfileWarehouse::Score(const stats::TraitSet & TRAIT_SET)
     {
         using namespace stats;
 
-        int score{ 0 };
+        auto score{ 0_score };
 
         for (int i(1); i < Traits::Count; ++i)
         {
@@ -615,7 +620,7 @@ namespace item
                 traitScore /= 4;
             }
 
-            score += traitScore;
+            score += Score_t(traitScore);
         }
 
         return score;
@@ -623,7 +628,7 @@ namespace item
 
 
     void ItemProfileWarehouse::SetupFromThinProfile(
-        const item::ItemProfile & THIN_PROFILE,
+        const ItemProfile & THIN_PROFILE,
         const named_type::Enum    NAMED_TYPE,
         const set_type::Enum      SET_TYPE)
     {
@@ -1043,7 +1048,7 @@ namespace item
         }
 
         std::ostringstream ss;
-        ss << "game::item::ItemProfileWarehouse::SetupFromThinProfile(final version, thin_profile="
+        ss << "game::ItemProfileWarehouse::SetupFromThinProfile(final version, thin_profile="
             << THIN_PROFILE.ToString() << ") "
             << "-was unable to find the type of the given ThinProfile.";
         throw std::runtime_error(ss.str());
@@ -1058,7 +1063,7 @@ namespace item
         const BaseMaterialVecPairVec_t & BASEMATERIAL_VEC_PAIR_VEC)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((BASEMATERIAL_VEC_PAIR_VEC.empty() == false),
-            "game::item::ItemProfileWarehouse(vector version, thin_profile="
+            "game::ItemProfileWarehouse(vector version, thin_profile="
             << THIN_PROFILE.ToString() << ") was given an empty " << "BASEMATERIAL_VEC_PAIR_VEC.");
 
         for (auto const NEXT_ELEMENT_TYPE : ELEMENT_TYPE_VEC)
@@ -1066,11 +1071,11 @@ namespace item
             for (auto const & NEXT_BASEMATERIALVECPAIR : BASEMATERIAL_VEC_PAIR_VEC)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS((NEXT_BASEMATERIALVECPAIR.second.first.empty() == false),
-                    "game::item::ItemProfileWarehouse(vector version, thin_profile="
+                    "game::ItemProfileWarehouse(vector version, thin_profile="
                     << THIN_PROFILE.ToString() << ", named_type="
-                    << item::named_type::ToString(NAMED_TYPE)
-                    << ", set_type=" << item::set_type::ToString(SET_TYPE)
-                    << ", element_type=" << item::element_type::ToString(NEXT_ELEMENT_TYPE, true)
+                    << named_type::ToString(NAMED_TYPE)
+                    << ", set_type=" << set_type::ToString(SET_TYPE)
+                    << ", element_type=" << element_type::ToString(NEXT_ELEMENT_TYPE, true)
                     << ", BASEMATERIAL_VEC_PAIR_VEC.size()=" << BASEMATERIAL_VEC_PAIR_VEC.size()
                     << ") was given an empty "
                     << "NEXT_BASEMATERIALVECPAIR.second.first (primary material vec).");
@@ -1317,7 +1322,7 @@ namespace item
             }
 
             std::ostringstream ss;
-            ss << "game::item::ItemProfileWarehouse::GetMaterialsFromThinProfile(thin_profile="
+            ss << "game::ItemProfileWarehouse::GetMaterialsFromThinProfile(thin_profile="
                 << THIN_PROFILE.ToString() << ") "
                 << "-was unable to find the type of the given ThinProfile.";
             throw std::runtime_error(ss.str());
@@ -1325,13 +1330,13 @@ namespace item
     }
 
 
-    void ItemProfileWarehouse::SetupProfilesForMiscType(const item::misc_type::Enum E)
+    void ItemProfileWarehouse::SetupProfilesForMiscType(const misc_type::Enum E)
     {
-        auto const MATERIALS{ item::misc_type::Materials(E) };
+        auto const MATERIALS{ misc_type::Materials(E) };
 
         M_ASSERT_OR_LOGANDTHROW_SS((MATERIALS.first.empty() == false),
-            "game::item::ItemProfileWarehouse::SetupProfilesForMiscType() failed to find any "
-            << " primary materials for misc_type=" << item::misc_type::ToString(E));
+            "game::ItemProfileWarehouse::SetupProfilesForMiscType() failed to find any "
+            << " primary materials for misc_type=" << misc_type::ToString(E));
 
         auto const COUNT{ profiles_.size() };
 
@@ -1340,13 +1345,13 @@ namespace item
             if (MATERIALS.second.empty())
             {
                 ItemProfile p;
-                p.SetMisc(E, false, NEXT_MATERIAL_PRIMARY, item::material::Nothing);
+                p.SetMisc(E, false, NEXT_MATERIAL_PRIMARY, material::Nothing);
                 profiles_.push_back(p);
 
                 if (misc_type::HasPixieVersion(E))
                 {
                     ItemProfile pPixie;
-                    pPixie.SetMisc(E, true, NEXT_MATERIAL_PRIMARY, item::material::Nothing);
+                    pPixie.SetMisc(E, true, NEXT_MATERIAL_PRIMARY, material::Nothing);
                     profiles_.push_back(pPixie);
                 }
             }
@@ -1374,310 +1379,311 @@ namespace item
         }
 
         M_ASSERT_OR_LOGANDTHROW_SS((profiles_.size() != COUNT),
-            "game::item::ItemProfileWarehouse::SetupProfilesForMiscType() failed to find any"
-            << " valid material combinations for misc_type=" << item::misc_type::ToString(E));
+            "game::ItemProfileWarehouse::SetupProfilesForMiscType() failed to find any"
+            << " valid material combinations for misc_type=" << misc_type::ToString(E));
     }
 
 
-    int ItemProfileWarehouse::Score(const item::material::Enum PRI,
-                               const item::material::Enum SEC)
+    Score_t ItemProfileWarehouse::Score(
+        const material::Enum PRI,
+        const material::Enum SEC)
     {
         auto const BONUS_PRI{ [PRI]()
             {
-                if ((PRI == item::material::Nothing) ||
-                    (PRI == item::material::Count))
+                if ((PRI == material::Nothing) ||
+                    (PRI == material::Count))
                 {
                     return 0;
                 }
                 else
                 {
-                    return item::material::Bonus(PRI);
+                    return material::Bonus(PRI);
                 }
             }() };
 
         auto const BONUS_SEC{ [SEC]()
             {
-                if ((SEC == item::material::Nothing) ||
-                    (SEC == item::material::Count))
+                if ((SEC == material::Nothing) ||
+                    (SEC == material::Count))
                 {
                     return 0;
                 }
                 else
                 {
-                    return item::material::Bonus(SEC);
+                    return material::Bonus(SEC);
                 }
             }() };
 
-        return 50 + (BONUS_PRI * BONUS_PRI) + ((BONUS_SEC * BONUS_SEC) / 3);
+        return Score_t(50 + (BONUS_PRI * BONUS_PRI) + ((BONUS_SEC * BONUS_SEC) / 3));
     }
 
 
-    int ItemProfileWarehouse::Score(const item::weapon::axe_type::Enum E)
+    Score_t ItemProfileWarehouse::Score(const weapon::axe_type::Enum E)
     {
-        using namespace item::weapon;
+        using namespace weapon;
 
         switch(E)
         {
-            case axe_type::Handaxe:   { return 50; }
-            case axe_type::Sickle:    { return 80; }
-            case axe_type::Battleaxe: { return 100; }
-            case axe_type::Waraxe:    { return 200; }
+            case axe_type::Handaxe:   { return 50_score; }
+            case axe_type::Sickle:    { return 80_score; }
+            case axe_type::Battleaxe: { return 100_score; }
+            case axe_type::Waraxe:    { return 200_score; }
             case axe_type::Count:
-            default:                  { return 0; }
+            default:                  { return 0_score; }
         }
     }
 
 
-    int ItemProfileWarehouse::Score(const item::weapon::bladedstaff_type::Enum E)
+    Score_t ItemProfileWarehouse::Score(const weapon::bladedstaff_type::Enum E)
     {
-        using namespace item::weapon;
+        using namespace weapon;
 
         switch (E)
         {
-            case bladedstaff_type::Spear:      { return 70; }
-            case bladedstaff_type::ShortSpear: { return 50; }
-            case bladedstaff_type::Scythe:     { return 80; }
-            case bladedstaff_type::Pike:       { return 100; }
-            case bladedstaff_type::Partisan:   { return 150; }
-            case bladedstaff_type::Halberd:    { return 200; }
+            case bladedstaff_type::Spear:      { return 70_score; }
+            case bladedstaff_type::ShortSpear: { return 50_score; }
+            case bladedstaff_type::Scythe:     { return 80_score; }
+            case bladedstaff_type::Pike:       { return 100_score; }
+            case bladedstaff_type::Partisan:   { return 150_score; }
+            case bladedstaff_type::Halberd:    { return 200_score; }
             case bladedstaff_type::Count:
-            default:                           { return 0; }
+            default:                           { return 0_score; }
         }
     }
 
 
-    int ItemProfileWarehouse::Score(const item::weapon::club_type::Enum E)
+    Score_t ItemProfileWarehouse::Score(const weapon::club_type::Enum E)
     {
-        using namespace item::weapon;
+        using namespace weapon;
 
         switch(E)
         {
-            case club_type::Spiked:    { return 50; }
-            case club_type::Maul:      { return 60; }
-            case club_type::Mace:      { return 80; }
-            case club_type::Warhammer: { return 120; }
+            case club_type::Spiked:    { return 50_score; }
+            case club_type::Maul:      { return 60_score; }
+            case club_type::Mace:      { return 80_score; }
+            case club_type::Warhammer: { return 120_score; }
             case club_type::Count:
-            default:                   { return 0; }
+            default:                   { return 0_score; }
         }
     }
 
 
-    int ItemProfileWarehouse::Score(const item::weapon::projectile_type::Enum E)
+    Score_t ItemProfileWarehouse::Score(const weapon::projectile_type::Enum E)
     {
-        using namespace item::weapon;
+        using namespace weapon;
 
         switch (E)
         {
-            case projectile_type::Blowpipe:     { return 50; }
-            case projectile_type::Sling:        { return 60; }
-            case projectile_type::Shortbow:     { return 100; }
-            case projectile_type::Longbow:      { return 200; }
-            case projectile_type::CompositeBow: { return 300; }
-            case projectile_type::Crossbow:     { return 300; }
+            case projectile_type::Blowpipe:     { return 50_score; }
+            case projectile_type::Sling:        { return 60_score; }
+            case projectile_type::Shortbow:     { return 100_score; }
+            case projectile_type::Longbow:      { return 200_score; }
+            case projectile_type::CompositeBow: { return 300_score; }
+            case projectile_type::Crossbow:     { return 300_score; }
             case projectile_type::Count:
-            default:                            { return 0; }
+            default:                            { return 0_score; }
         }
     }
 
 
-    int ItemProfileWarehouse::Score(const item::weapon::sword_type::Enum E)
+    Score_t ItemProfileWarehouse::Score(const weapon::sword_type::Enum E)
     {
-        using namespace item::weapon;
+        using namespace weapon;
 
         switch(E)
         {
-            case sword_type::Claymore:      { return 200; }
-            case sword_type::Longsword:     { return 120; }
-            case sword_type::Flamberg:      { return 190; }
-            case sword_type::Knightlysword: { return 110; }
-            case sword_type::Broadsword:    { return 100; }
-            case sword_type::Falcata:       { return 50; }
-            case sword_type::Saber:         { return 70; }
-            case sword_type::Cutlass:       { return 40; }
-            case sword_type::Rapier:        { return 70; }
-            case sword_type::Gladius:       { return 55; }
-            case sword_type::Shortsword:    { return 50; }
+            case sword_type::Claymore:      { return 200_score; }
+            case sword_type::Longsword:     { return 120_score; }
+            case sword_type::Flamberg:      { return 190_score; }
+            case sword_type::Knightlysword: { return 110_score; }
+            case sword_type::Broadsword:    { return 100_score; }
+            case sword_type::Falcata:       { return 50_score; }
+            case sword_type::Saber:         { return 70_score; }
+            case sword_type::Cutlass:       { return 40_score; }
+            case sword_type::Rapier:        { return 70_score; }
+            case sword_type::Gladius:       { return 55_score; }
+            case sword_type::Shortsword:    { return 50_score; }
             case sword_type::Count:
-            default:                        { return 0; }
+            default:                        { return 0_score; }
         }
     }
 
 
-    int ItemProfileWarehouse::Score(const item::weapon::whip_type::Enum E)
+    Score_t ItemProfileWarehouse::Score(const weapon::whip_type::Enum E)
     {
-        using namespace item::weapon;
+        using namespace weapon;
 
         switch(E)
         {
-            case whip_type::Bullwhip:     { return 30; }
-            case whip_type::Flail:        { return 60; }
-            case whip_type::MaceAndChain: { return 90; }
+            case whip_type::Bullwhip:     { return 30_score; }
+            case whip_type::Flail:        { return 60_score; }
+            case whip_type::MaceAndChain: { return 90_score; }
             case whip_type::Count:
-            default:                      { return 0; }
+            default:                      { return 0_score; }
         }
     }
 
 
-    int ItemProfileWarehouse::ScoreKnife(const sfml_util::Size::Enum E)
+    Score_t ItemProfileWarehouse::ScoreKnife(const sfml_util::Size::Enum E)
     {
         if (E == sfml_util::Size::Small)
         {
-            return 20;
+            return 20_score;
         }
 
-        return 25;
+        return 25_score;
     }
 
 
-    int ItemProfileWarehouse::ScoreDagger(const sfml_util::Size::Enum E)
+    Score_t ItemProfileWarehouse::ScoreDagger(const sfml_util::Size::Enum E)
     {
         if (E == sfml_util::Size::Small)
         {
-            return 30;
+            return 30_score;
         }
 
-        return 35;
+        return 35_score;
     }
 
 
-    int ItemProfileWarehouse::ScoreStaff()
+    Score_t ItemProfileWarehouse::ScoreStaff()
     {
-        return 25;
+        return 25_score;
     }
 
 
-    int ItemProfileWarehouse::ScoreQuarterStaff()
+    Score_t ItemProfileWarehouse::ScoreQuarterStaff()
     {
-        return 15;
+        return 15_score;
     }
 
 
-    int ItemProfileWarehouse::Score(const item::armor::base_type::Enum E)
+    Score_t ItemProfileWarehouse::Score(const armor::base_type::Enum E)
     {
-        using namespace item::armor;
+        using namespace armor;
 
         switch(E)
         {
-            case base_type::Mail:  { return 75; }
-            case base_type::Scale: { return 125; }
-            case base_type::Plate: { return 175; }
+            case base_type::Mail:  { return 75_score; }
+            case base_type::Scale: { return 125_score; }
+            case base_type::Plate: { return 175_score; }
             case base_type::Plain:
             case base_type::Count:
-            default:               { return 25; }
+            default:               { return 25_score; }
         }
     }
 
 
-    int ItemProfileWarehouse::Score(const item::armor::cover_type::Enum E)
+    Score_t ItemProfileWarehouse::Score(const armor::cover_type::Enum E)
     {
-        using namespace item::armor;
+        using namespace armor;
 
         switch(E)
         {
-            case cover_type::Cape:  { return 25; }
-            case cover_type::Vest:  { return 50; }
-            case cover_type::Robe:  { return 75; }
-            case cover_type::Cloak: { return 100; }
+            case cover_type::Cape:  { return 25_score; }
+            case cover_type::Vest:  { return 50_score; }
+            case cover_type::Robe:  { return 75_score; }
+            case cover_type::Cloak: { return 100_score; }
             case cover_type::Count:
-            default:                { return 0; }
+            default:                { return 0_score; }
         }
     }
 
 
-    int ItemProfileWarehouse::Score(const item::armor::helm_type::Enum E)
+    Score_t ItemProfileWarehouse::Score(const armor::helm_type::Enum E)
     {
-        using namespace item::armor;
+        using namespace armor;
 
         switch(E)
         {
-            case helm_type::Leather:  { return 25; }
-            case helm_type::MailCoif: { return 50; }
-            case helm_type::Kettle:   { return 75; }
-            case helm_type::Archers:  { return 100; }
-            case helm_type::Bascinet: { return 125; }
-            case helm_type::Great:    { return 150; }
+            case helm_type::Leather:  { return 25_score; }
+            case helm_type::MailCoif: { return 50_score; }
+            case helm_type::Kettle:   { return 75_score; }
+            case helm_type::Archers:  { return 100_score; }
+            case helm_type::Bascinet: { return 125_score; }
+            case helm_type::Great:    { return 150_score; }
             case helm_type::Count:
-            default:                  { return 0; }
+            default:                  { return 0_score; }
         }
     }
 
 
-    int ItemProfileWarehouse::Score(const item::armor::shield_type::Enum E)
+    Score_t ItemProfileWarehouse::Score(const armor::shield_type::Enum E)
     {
-        using namespace item::armor;
+        using namespace armor;
 
         switch(E)
         {
-            case shield_type::Buckler: { return 50; }
-            case shield_type::Kite:    { return 100; }
-            case shield_type::Heater:  { return 150; }
-            case shield_type::Pavis:   { return 200; }
+            case shield_type::Buckler: { return 50_score; }
+            case shield_type::Kite:    { return 100_score; }
+            case shield_type::Heater:  { return 150_score; }
+            case shield_type::Pavis:   { return 200_score; }
             case shield_type::Count:
-            default:                   { return 0; }
+            default:                   { return 0_score; }
         }
     }
 
 
-    int ItemProfileWarehouse::ScoreAventail(item::armor::base_type::Enum E)
+    Score_t ItemProfileWarehouse::ScoreAventail(armor::base_type::Enum E)
     {
-        return 34 + Score(E);
+        return 34_score + Score(E);
     }
 
 
-    int ItemProfileWarehouse::ScoreBracer(item::armor::base_type::Enum E)
+    Score_t ItemProfileWarehouse::ScoreBracer(armor::base_type::Enum E)
     {
-        return 36 + Score(E);
+        return 36_score + Score(E);
     }
 
 
-    int ItemProfileWarehouse::ScoreShirt(item::armor::base_type::Enum E)
+    Score_t ItemProfileWarehouse::ScoreShirt(armor::base_type::Enum E)
     {
-        return 44 + Score(E);
+        return 44_score + Score(E);
     }
 
 
-    int ItemProfileWarehouse::ScoreBoots(item::armor::base_type::Enum E)
+    Score_t ItemProfileWarehouse::ScoreBoots(armor::base_type::Enum E)
     {
-        return 46 + Score(E);
+        return 46_score + Score(E);
     }
 
 
-    int ItemProfileWarehouse::ScorePants(item::armor::base_type::Enum E)
+    Score_t ItemProfileWarehouse::ScorePants(armor::base_type::Enum E)
     {
-        return 55 + Score(E);
+        return 55_score + Score(E);
     }
 
 
-    int ItemProfileWarehouse::ScoreGauntlets(item::armor::base_type::Enum E)
+    Score_t ItemProfileWarehouse::ScoreGauntlets(armor::base_type::Enum E)
     {
-        return 30 + Score(E);
+        return 30_score + Score(E);
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::Materials(const item::weapon::axe_type::Enum)
+    const MaterialVecPair_t ItemProfileWarehouse::Materials(const weapon::axe_type::Enum)
     {
-        return item::material::CoreMetalAndCoreSecondary();
+        return material::CoreMetalAndCoreSecondary();
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::Materials(
-        const item::weapon::bladedstaff_type::Enum)
+    const MaterialVecPair_t ItemProfileWarehouse::Materials(
+        const weapon::bladedstaff_type::Enum)
     {
-        return item::MaterialVecPair_t({ item::material::Wood }, item::material::CoreSecondary());
+        return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::Materials(const item::weapon::club_type::Enum)
+    const MaterialVecPair_t ItemProfileWarehouse::Materials(const weapon::club_type::Enum)
     {
-        return item::material::CoreMetalAndCoreSecondary();
+        return material::CoreMetalAndCoreSecondary();
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::Materials(
-        const item::weapon::projectile_type::Enum E)
+    const MaterialVecPair_t ItemProfileWarehouse::Materials(
+        const weapon::projectile_type::Enum E)
     {
         using namespace item;
-        using namespace item::weapon;
+        using namespace weapon;
 
         switch (E)
         {
@@ -1716,18 +1722,18 @@ namespace item
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::Materials(
-        const item::weapon::sword_type::Enum)
+    const MaterialVecPair_t ItemProfileWarehouse::Materials(
+        const weapon::sword_type::Enum)
     {
-        return item::material::CoreMetalAndCoreSecondary();
+        return material::CoreMetalAndCoreSecondary();
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::Materials(
-        const item::weapon::whip_type::Enum E)
+    const MaterialVecPair_t ItemProfileWarehouse::Materials(
+        const weapon::whip_type::Enum E)
     {
         using namespace item;
-        using namespace item::weapon;
+        using namespace weapon;
 
         if (E == whip_type::Bullwhip)
         {
@@ -1740,107 +1746,107 @@ namespace item
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsKnife()
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsKnife()
     {
-        return item::material::CorePrimaryNoPearlAndSecondary();
+        return material::CorePrimaryNoPearlAndSecondary();
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsDagger()
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsDagger()
     {
         return MaterialsKnife();
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsStaff()
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsStaff()
     {
-        return item::MaterialVecPair_t({ item::material::Wood }, item::material::CoreSecondary());
+        return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsQuarterStaff()
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsQuarterStaff()
     {
         return MaterialsStaff();
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::Materials(const item::armor::cover_type::Enum)
+    const MaterialVecPair_t ItemProfileWarehouse::Materials(const armor::cover_type::Enum)
     {
-        return item::MaterialVecPair_t({ item::material::Cloth,
-                                         item::material::SoftLeather,
-                                         item::material::HardLeather},
-                                       item::material::CoreSecondary());
+        return MaterialVecPair_t({ material::Cloth,
+                                         material::SoftLeather,
+                                         material::HardLeather},
+                                       material::CoreSecondary());
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::Materials(const item::armor::helm_type::Enum E)
+    const MaterialVecPair_t ItemProfileWarehouse::Materials(const armor::helm_type::Enum E)
     {
         using namespace item;
-        using namespace item::armor;
+        using namespace armor;
 
         if (E == helm_type::Leather)
         {
-            return item::MaterialVecPair_t({ material::HardLeather }, material::CoreSecondary());
+            return MaterialVecPair_t({ material::HardLeather }, material::CoreSecondary());
         }
         else
         {
-            return item::MaterialVecPair_t(material::CoreMetal(), material::CoreSecondary());
+            return MaterialVecPair_t(material::CoreMetal(), material::CoreSecondary());
         }
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::Materials(
-        const item::armor::shield_type::Enum)
+    const MaterialVecPair_t ItemProfileWarehouse::Materials(
+        const armor::shield_type::Enum)
     {
-        item::MaterialVec_t v{ item::material::CoreMetal() };
-        v.push_back(item::material::Wood);
-        return item::MaterialVecPair_t(v, item::material::CoreSecondary());
+        MaterialVec_t v{ material::CoreMetal() };
+        v.push_back(material::Wood);
+        return MaterialVecPair_t(v, material::CoreSecondary());
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsAventail(
-        item::armor::base_type::Enum E)
-    {
-        return MaterialsFromBaseType(E);
-    }
-
-
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsBracer(item::armor::base_type::Enum E)
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsAventail(
+        armor::base_type::Enum E)
     {
         return MaterialsFromBaseType(E);
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsShirt(item::armor::base_type::Enum E)
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsBracer(armor::base_type::Enum E)
     {
         return MaterialsFromBaseType(E);
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsBoots(item::armor::base_type::Enum E)
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsShirt(armor::base_type::Enum E)
+    {
+        return MaterialsFromBaseType(E);
+    }
+
+
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsBoots(armor::base_type::Enum E)
     {
         return MaterialsFromBaseTypeNoCloth(E);
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsPants(item::armor::base_type::Enum E)
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsPants(armor::base_type::Enum E)
     {
         return MaterialsFromBaseType(E);
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsGauntlets(
-        item::armor::base_type::Enum E)
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsGauntlets(
+        armor::base_type::Enum E)
     {
         return MaterialsFromBaseType(E);
     }
 
 
-    const item::MaterialVec_t ItemProfileWarehouse::MaterialsPrimaryFromArmorBaseType(
-        const item::armor::base_type::Enum E)
+    const MaterialVec_t ItemProfileWarehouse::MaterialsPrimaryFromArmorBaseType(
+        const armor::base_type::Enum E)
     {
         using namespace item;
-        using namespace item::armor;
+        using namespace armor;
 
         switch(E)
         {
@@ -1856,21 +1862,21 @@ namespace item
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsFromBaseType(
-        const item::armor::base_type::Enum E)
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsFromBaseType(
+        const armor::base_type::Enum E)
     {
-        return item::MaterialVecPair_t(MaterialsPrimaryFromArmorBaseType(E),
-            item::material::CoreSecondary());
+        return MaterialVecPair_t(MaterialsPrimaryFromArmorBaseType(E),
+            material::CoreSecondary());
     }
 
 
-    const item::MaterialVecPair_t ItemProfileWarehouse::MaterialsFromBaseTypeNoCloth(
-        const item::armor::base_type::Enum E)
+    const MaterialVecPair_t ItemProfileWarehouse::MaterialsFromBaseTypeNoCloth(
+        const armor::base_type::Enum E)
     {
         using namespace item;
-        using namespace item::armor;
+        using namespace armor;
 
-        item::MaterialVec_t v;
+        MaterialVec_t v;
 
         if (E == base_type::Plain)
         {
@@ -1882,20 +1888,20 @@ namespace item
             v = MaterialsPrimaryFromArmorBaseType(E);
         }
 
-        return item::MaterialVecPair_t(v, item::material::CoreSecondary());
+        return MaterialVecPair_t(v, material::CoreSecondary());
     }
 
 
-    const item::ItemProfileVec_t ItemProfileWarehouse::ThinProfilesWeaponsSwords()
+    const ItemProfileVec_t ItemProfileWarehouse::ThinProfilesWeaponsSwords()
     {
         using namespace item;
-        using namespace item::weapon;
+        using namespace weapon;
 
         ItemProfileVec_t v;
 
         for (int i(0); i < sword_type::Count; ++i)
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetSword( static_cast<sword_type::Enum>(i) );
             v.push_back(thinProfile);
         }
@@ -1904,16 +1910,16 @@ namespace item
     }
 
 
-    const item::ItemProfileVec_t ItemProfileWarehouse::ThinProfilesWeaponsProjectiles()
+    const ItemProfileVec_t ItemProfileWarehouse::ThinProfilesWeaponsProjectiles()
     {
         using namespace item;
-        using namespace item::weapon;
+        using namespace weapon;
 
         ItemProfileVec_t v;
 
         for (int i(0); i < projectile_type::Count; ++i)
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetProjectile( static_cast<projectile_type::Enum>(i) );
             v.push_back(thinProfile);
         }
@@ -1922,10 +1928,10 @@ namespace item
     }
 
 
-    const item::ItemProfileVec_t ItemProfileWarehouse::ThinProfilesWeaponsAll()
+    const ItemProfileVec_t ItemProfileWarehouse::ThinProfilesWeaponsAll()
     {
         using namespace item;
-        using namespace item::weapon;
+        using namespace weapon;
 
         ItemProfileVec_t v;
 
@@ -1943,54 +1949,54 @@ namespace item
 
         for (int i(0); i < axe_type::Count; ++i)
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetAxe(static_cast<axe_type::Enum>(i));
             v.push_back(thinProfile);
         }
 
         for (int i(0); i < bladedstaff_type::Count; ++i)
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetBladedStaff(static_cast<bladedstaff_type::Enum>(i));
             v.push_back(thinProfile);
         }
 
         for (int i(0); i < club_type::Count; ++i)
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetClub(static_cast<club_type::Enum>(i));
             v.push_back(thinProfile);
         }
 
         for (int i(0); i < whip_type::Count; ++i)
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetWhip(static_cast<whip_type::Enum>(i));
             v.push_back(thinProfile);
         }
 
         for (int i(0); i < sfml_util::Size::Count; ++i)
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetKnife(static_cast<sfml_util::Size::Enum>(i));
             v.push_back(thinProfile);
         }
 
         for (int i(0); i < sfml_util::Size::Count; ++i)
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetDagger(static_cast<sfml_util::Size::Enum>(i));
             v.push_back(thinProfile);
         }
 
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetStaff(material::Nothing);
             v.push_back(thinProfile);
         }
 
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetQuarterStaff(material::Nothing);
             v.push_back(thinProfile);
         }
@@ -1999,11 +2005,11 @@ namespace item
     }
 
 
-    const item::ItemProfileVec_t ItemProfileWarehouse::ThinProfilesArmor(
+    const ItemProfileVec_t ItemProfileWarehouse::ThinProfilesArmor(
         const bool WILL_INCLUDE_COVERINGS)
     {
         using namespace item;
-        using namespace item::armor;
+        using namespace armor;
 
         ItemProfileVec_t v;
 
@@ -2011,7 +2017,7 @@ namespace item
         {
             for (int i(0); i < cover_type::Count; ++i)
             {
-                item::ItemProfile thinProfile;
+                ItemProfile thinProfile;
                 thinProfile.SetCover(static_cast<cover_type::Enum>(i));
                 v.push_back(thinProfile);
             }
@@ -2019,56 +2025,56 @@ namespace item
 
         for (int i(0); i < helm_type::Count; ++i)
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetHelm(static_cast<helm_type::Enum>(i));
             v.push_back(thinProfile);
         }
 
         for (int i(0); i < shield_type::Count; ++i)
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetShield(static_cast<shield_type::Enum>(i));
             v.push_back(thinProfile);
         }
 
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetAventail(base_type::Count);
             v.push_back(thinProfile);
         }
 
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetBoots(base_type::Count);
             v.push_back(thinProfile);
         }
 
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetBracer(base_type::Count);
             v.push_back(thinProfile);
         }
 
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetGauntlets(base_type::Count);
             v.push_back(thinProfile);
         }
 
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetPants(base_type::Count);
             v.push_back(thinProfile);
         }
 
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetShirt(base_type::Count);
             v.push_back(thinProfile);
         }
 
         {
-            item::ItemProfile thinProfile;
+            ItemProfile thinProfile;
             thinProfile.SetGauntlets(base_type::Count);
             v.push_back(thinProfile);
         }
@@ -2077,70 +2083,70 @@ namespace item
     }
 
 
-    const item::ItemProfileVec_t ItemProfileWarehouse::ThinProfiles(const item::named_type::Enum E)
+    const ItemProfileVec_t ItemProfileWarehouse::ThinProfiles(const named_type::Enum E)
     {
         using namespace item;
-        using namespace item::armor;
-        using namespace item::weapon;
+        using namespace armor;
+        using namespace weapon;
 
         switch (E)
         {
-            case item::named_type::Wicked:
-            case item::named_type::Fiendish:
-            case item::named_type::Infernal:
-            case item::named_type::Raging:
-            case item::named_type::Diabolic:
-            case item::named_type::Searing:
-            case item::named_type::Burning:
-            case item::named_type::Fiery:
-            case item::named_type::Icy:
-            case item::named_type::Winter:
-            case item::named_type::Frigid:
-            case item::named_type::Proud:
-            case item::named_type::Glory:
-            case item::named_type::Pure:
-            case item::named_type::Gloom:
-            case item::named_type::Twilight:
-            case item::named_type::Dusk:
-            case item::named_type::Dark:
-            case item::named_type::Betrayer:
+            case named_type::Wicked:
+            case named_type::Fiendish:
+            case named_type::Infernal:
+            case named_type::Raging:
+            case named_type::Diabolic:
+            case named_type::Searing:
+            case named_type::Burning:
+            case named_type::Fiery:
+            case named_type::Icy:
+            case named_type::Winter:
+            case named_type::Frigid:
+            case named_type::Proud:
+            case named_type::Glory:
+            case named_type::Pure:
+            case named_type::Gloom:
+            case named_type::Twilight:
+            case named_type::Dusk:
+            case named_type::Dark:
+            case named_type::Betrayer:
             {
                 return ThinProfilesWeaponsAll();
             }
 
-            case item::named_type::Dancing:
-            case item::named_type::Marauder:
+            case named_type::Dancing:
+            case named_type::Marauder:
             {
                 return ThinProfilesWeaponsSwords();
             }
 
-            case item::named_type::Honest:
-            case item::named_type::Noble:
-            case item::named_type::Daring:
-            case item::named_type::Elite:
-            case item::named_type::Valiant:
-            case item::named_type::Heros:
-            case item::named_type::Light:
-            case item::named_type::Dawn:
-            case item::named_type::Sun:
-            case item::named_type::Sorrow:
-            case item::named_type::Woe:
-            case item::named_type::Misery:
-            case item::named_type::Moon:
+            case named_type::Honest:
+            case named_type::Noble:
+            case named_type::Daring:
+            case named_type::Elite:
+            case named_type::Valiant:
+            case named_type::Heros:
+            case named_type::Light:
+            case named_type::Dawn:
+            case named_type::Sun:
+            case named_type::Sorrow:
+            case named_type::Woe:
+            case named_type::Misery:
+            case named_type::Moon:
             {
                 return ThinProfilesArmor(true);
             }
 
-            case item::named_type::Army:
-            case item::named_type::Charred:
-            case item::named_type::Chill:
-            case item::named_type::Frozen:
-            case item::named_type::Arctic:
+            case named_type::Army:
+            case named_type::Charred:
+            case named_type::Chill:
+            case named_type::Frozen:
+            case named_type::Arctic:
             {
                 return ThinProfilesArmor(false);
             }
 
-            case item::named_type::Gladiator:
+            case named_type::Gladiator:
             {
                 ItemProfileVec_t v;
                 v.reserve(10);
@@ -2208,9 +2214,9 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Soldiers:
+            case named_type::Soldiers:
             {
-                item::ItemProfileVec_t thinProfiles{ ThinProfilesWeaponsAll() };
+                ItemProfileVec_t thinProfiles{ ThinProfilesWeaponsAll() };
 
                 auto const THINPROFILES_ARMOR_VEC{ ThinProfilesArmor(false) };
 
@@ -2223,7 +2229,7 @@ namespace item
                 return thinProfiles;
             }
 
-            case item::named_type::Wardens:
+            case named_type::Wardens:
             {
                 ItemProfileVec_t v{ ThinProfilesArmor(false) };
 
@@ -2263,7 +2269,7 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Princes:
+            case named_type::Princes:
             {
                 ItemProfileVec_t v{ ThinProfilesArmor(false) };
 
@@ -2309,7 +2315,7 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Ranger:
+            case named_type::Ranger:
             {
                 ItemProfileVec_t v{ ThinProfilesArmor(false) };
 
@@ -2343,7 +2349,7 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Samurai:
+            case named_type::Samurai:
             {
                 ItemProfileVec_t v{ ThinProfilesArmor(false) };
 
@@ -2383,7 +2389,7 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Thors:
+            case named_type::Thors:
             {
                 ItemProfileVec_t v{ ThinProfilesArmor(false) };
 
@@ -2417,7 +2423,7 @@ namespace item
 
                 return v;
             }
-            case item::named_type::Nile:
+            case named_type::Nile:
             {
                 ItemProfileVec_t v;
 
@@ -2449,8 +2455,8 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Imposters:
-            case item::named_type::Pickpocket:
+            case named_type::Imposters:
+            case named_type::Pickpocket:
             {
                 ItemProfileVec_t v;
 
@@ -2463,8 +2469,8 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Burglar:
-            case item::named_type::Mountebank:
+            case named_type::Burglar:
+            case named_type::Mountebank:
             {
                 ItemProfileVec_t v;
 
@@ -2477,7 +2483,7 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Charlatans:
+            case named_type::Charlatans:
             {
                 ItemProfileVec_t v;
 
@@ -2490,9 +2496,9 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Robbers:
-            case item::named_type::Thugs:
-            case item::named_type::Knaves:
+            case named_type::Robbers:
+            case named_type::Thugs:
+            case named_type::Knaves:
             {
                 ItemProfileVec_t v;
 
@@ -2505,9 +2511,9 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Muggers:
-            case item::named_type::Thief:
-            case item::named_type::Pirate:
+            case named_type::Muggers:
+            case named_type::Thief:
+            case named_type::Pirate:
             {
                 ItemProfileVec_t v;
 
@@ -2520,13 +2526,13 @@ namespace item
                 return v;
             }
 
-            case item::named_type::Focus:
+            case named_type::Focus:
             {
                 return ThinProfilesWeaponsProjectiles();
             }
 
-            case item::named_type::NotNamed:
-            case item::named_type::Count:
+            case named_type::NotNamed:
+            case named_type::Count:
             default:
             {
                 return {};
@@ -2535,7 +2541,7 @@ namespace item
     }
 
 
-    const item::ItemProfileVec_t ItemProfileWarehouse::ThinProfiles(const item::set_type::Enum E)
+    const ItemProfileVec_t ItemProfileWarehouse::ThinProfiles(const set_type::Enum E)
     {
         using namespace item;
 

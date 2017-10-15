@@ -60,7 +60,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual int TreasureScore() const { return 1800; }
+        inline virtual Score_t TreasureScore() const { return 1800_score; }
         virtual ~Enchantment_PixieBell() {}
 
     private:
@@ -93,7 +93,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual int TreasureScore() const { return 2000; }
+        inline virtual Score_t TreasureScore() const { return 2000_score; }
         virtual ~Enchantment_CrystalChimes() {}
 
     private:
@@ -126,7 +126,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual int TreasureScore() const { return 2400; }
+        inline virtual Score_t TreasureScore() const { return 2400_score; }
         virtual ~Enchantment_GoldenGong() {}
 
     private:
@@ -158,7 +158,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual int TreasureScore() const { return 1500; }
+        inline virtual Score_t TreasureScore() const { return 1500_score; }
         virtual ~Enchantment_DragonToothWhistle() {}
 
     private:
@@ -191,7 +191,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual int TreasureScore() const { return 1900; }
+        inline virtual Score_t TreasureScore() const { return 1900_score; }
         virtual ~Enchantment_DoveBloodVial() {}
 
     private:
@@ -224,7 +224,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual int TreasureScore() const { return 800; }
+        inline virtual Score_t TreasureScore() const { return 800_score; }
         virtual ~Enchantment_DriedEdible() {}
 
     private:
@@ -257,7 +257,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual int TreasureScore() const { return 600; }
+        inline virtual Score_t TreasureScore() const { return 600_score; }
         virtual ~Enchantment_ShamanRainmaker() {}
 
     private:
@@ -289,7 +289,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual int TreasureScore() const { return 1300; }
+        inline virtual Score_t TreasureScore() const { return 1300_score; }
         virtual ~Enchantment_SpecterChains() {}
 
     private:
@@ -322,7 +322,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual int TreasureScore() const { return 1000; }
+        inline virtual Score_t TreasureScore() const { return 1000_score; }
         virtual ~Enchantment_VultureGizzard() {}
 
     private:
@@ -354,7 +354,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual int TreasureScore() const { return 1100; }
+        inline virtual Score_t TreasureScore() const { return 1100_score; }
         virtual ~Enchantment_WarTrumpet() {}
 
     private:
@@ -388,7 +388,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t) {}
-        inline virtual int TreasureScore() const { return 250; }
+        inline virtual Score_t TreasureScore() const { return 250_score; }
         virtual ~Enchantment_MiscBlessed() {}
 
     private:
@@ -422,7 +422,7 @@ namespace creature
         }
 
         virtual void UseEffect(const CreaturePtr_t) {}
-        inline virtual int TreasureScore() const { return 250; }
+        inline virtual Score_t TreasureScore() const { return 250_score; }
         virtual ~Enchantment_MiscCursed() {}
 
     private:

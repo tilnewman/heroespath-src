@@ -27,6 +27,7 @@
 //
 // item-profile.hpp
 //
+#include "game/types.hpp"
 #include "game/creature/race-enum.hpp"
 #include "game/item/item-type-enum.hpp"
 #include "game/item/armor-types.hpp"
@@ -136,11 +137,11 @@ namespace item
 
         inline creature::role::Enum Role() const                        { return role_; }
 
-        inline int TreasureScore(const bool IS_RELIGIOUS = false) const
+        inline Score_t TreasureScore(const bool IS_RELIGIOUS = false) const
         {
             if (IS_RELIGIOUS)
             {
-                return static_cast<int>(static_cast<float>(score_) * religious_);
+                return Score_t(static_cast<Score_t::type>(score_.AsFloat() * religious_));
             }
             else
             {
@@ -377,19 +378,21 @@ namespace item
         friend bool operator<(const ItemProfile & L, const ItemProfile & R);
 
     private:
-        void SetHelper(const material::Enum,
-                       const material::Enum,
-                       const named_type::Enum,
-                       const set_type::Enum,
-                       const element_type::Enum,
-                       const bool IS_PIXIE = false);
+        void SetHelper(
+            const material::Enum,
+            const material::Enum,
+            const named_type::Enum,
+            const set_type::Enum,
+            const element_type::Enum,
+            const bool IS_PIXIE = false);
 
-        int ScoreHelper(const item::material::Enum     MATERIAL_PRI,
-                        const item::material::Enum     MATERIAL_SEC,
-                        const item::named_type::Enum   NAMED_TYPE,
-                        const item::set_type::Enum     SET_TYPE,
-                        const item::element_type::Enum ELEMENT_TYPE,
-                        const bool                     IS_WEAPON) const;
+        Score_t ScoreHelper(
+            const item::material::Enum     MATERIAL_PRI,
+            const item::material::Enum     MATERIAL_SEC,
+            const item::named_type::Enum   NAMED_TYPE,
+            const item::set_type::Enum     SET_TYPE,
+            const item::element_type::Enum ELEMENT_TYPE,
+            const bool                     IS_WEAPON) const;
 
         void EquippableHelper(const int SCORE_BONUS);
 
@@ -439,7 +442,7 @@ namespace item
 
         creature::role::Enum role_;
 
-        int score_;
+        Score_t score_;
 
         creature::SummonInfo summonInfo_;
 

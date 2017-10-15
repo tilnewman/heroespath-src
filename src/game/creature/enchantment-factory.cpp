@@ -180,18 +180,19 @@ namespace creature
     }
 
 
-    int EnchantmentFactory::TreasureScore(const item::unique_type::Enum E,
-                                          const item::material::Enum    MATERIAL_PRIMARY) const
+    Score_t EnchantmentFactory::TreasureScore(
+        const item::unique_type::Enum E,
+        const item::material::Enum MATERIAL_PRIMARY) const
     {
         if ((E == item::unique_type::NotUnique) ||
             (E == item::unique_type::Count))
         {
-            return 0;
+            return 0_score;
         }
 
         auto const ENCHANTMENT_PTR_VEC{ MakeFromUniqueType(E, MATERIAL_PRIMARY) };
 
-        int score{ 0 };
+        auto score{ 0_score };
         for (auto const NEXT_ENCHANTMENT_PTR : ENCHANTMENT_PTR_VEC)
         {
             score += NEXT_ENCHANTMENT_PTR->TreasureScore();
@@ -202,14 +203,15 @@ namespace creature
     }
 
 
-    int EnchantmentFactory::TreasureScore(const item::misc_type::Enum E,
-                                          const item::material::Enum  MATERIAL_PRIMARY,
-                                          const item::material::Enum  MATERIAL_SECONDARY) const
+    Score_t EnchantmentFactory::TreasureScore(
+        const item::misc_type::Enum E,
+        const item::material::Enum  MATERIAL_PRIMARY,
+        const item::material::Enum  MATERIAL_SECONDARY) const
     {
         if ((E == item::misc_type::NotMisc) ||
             (E == item::misc_type::Count))
         {
-            return 0;
+            return 0_score;
         }
 
         auto const ENCHANTMENT_PTR{ MakeFromMiscType(E, MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
@@ -227,12 +229,12 @@ namespace creature
     }
 
 
-    int EnchantmentFactory::TreasureScore(const item::set_type::Enum E) const
+    Score_t EnchantmentFactory::TreasureScore(const item::set_type::Enum E) const
     {
         if ((E == item::set_type::NotASet) ||
             (E == item::set_type::Count))
         {
-            return 0;
+            return 0_score;
         }
 
         auto const INDV_ENCHANTMENT_PTR{ MakeFromSetType(E) };
@@ -256,25 +258,27 @@ namespace creature
         delete COMP_ENCHANTMENT_PTR;
 
         //the additional 100 is to raise the score of all set items
-        return SCORE + 100;
+        return SCORE + 100_score;
     }
 
 
-    int EnchantmentFactory::TreasureScore(const item::named_type::Enum NAMED_ENUM,
-                                          const item::material::Enum   MATERIAL_PRIMARY,
-                                          const bool                   IS_WEAPON,
-                                          const bool                   IS_ARMOR) const
+    Score_t EnchantmentFactory::TreasureScore(
+        const item::named_type::Enum NAMED_ENUM,
+        const item::material::Enum   MATERIAL_PRIMARY,
+        const bool                   IS_WEAPON,
+        const bool                   IS_ARMOR) const
     {
         if ((NAMED_ENUM == item::named_type::NotNamed) ||
             (NAMED_ENUM == item::named_type::Count))
         {
-            return 0;
+            return 0_score;
         }
 
-        auto const ENCHANTMENT_PTR{ MakeFromNamedType(NAMED_ENUM,
-                                                      MATERIAL_PRIMARY,
-                                                      IS_WEAPON,
-                                                      IS_ARMOR) };
+        auto const ENCHANTMENT_PTR{ MakeFromNamedType(
+            NAMED_ENUM,
+            MATERIAL_PRIMARY,
+            IS_WEAPON,
+            IS_ARMOR) };
 
         M_ASSERT_OR_LOGANDTHROW_SS((ENCHANTMENT_PTR != nullptr),
             "game::creature::EnchantmentFactory::TreasureScore("
@@ -289,17 +293,17 @@ namespace creature
         delete ENCHANTMENT_PTR;
 
         //the additional 450 is to raise the score of all named items
-        return SCORE + 450;
+        return SCORE + 450_score;
     }
 
 
-    int EnchantmentFactory::TreasureScore(const item::element_type::Enum E,
+    Score_t EnchantmentFactory::TreasureScore(const item::element_type::Enum E,
                                           const bool                     IS_WEAPON,
                                           const item::material::Enum     MATERIAL_PRIMARY) const
     {
         if (E == item::element_type::None)
         {
-            return 0;
+            return 0_score;
         }
 
         auto const ENCHANTMENT_PTR{ MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY) };
@@ -315,7 +319,7 @@ namespace creature
         delete ENCHANTMENT_PTR;
 
         //the additional 750 is to raise the score of all elemental items
-        return SCORE + 750;
+        return SCORE + 750_score;
     }
 
 

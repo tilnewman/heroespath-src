@@ -40,7 +40,7 @@
 
 #include <string>
 #include <sstream>
-#include <iterator>//for back_inserter
+#include <iterator>
 #include <exception>
 #include <algorithm>
 
@@ -935,16 +935,9 @@ namespace ownership
     }
 
 
-    stats::Trait_t InventoryFactory::Make_Coins(const chance::InventoryChances & CHANCES)
+    Coin_t InventoryFactory::Make_Coins(const chance::InventoryChances & CHANCES)
     {
-        if (CHANCES.coins_min < CHANCES.coins_max)
-        {
-            return misc::random::Int(CHANCES.coins_min, CHANCES.coins_max);
-        }
-        else
-        {
-            return CHANCES.coins_min;
-        }
+        return CHANCES.RandomCoins();
     }
 
 

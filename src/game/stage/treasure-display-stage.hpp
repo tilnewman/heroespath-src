@@ -157,6 +157,7 @@ namespace treasure
 
     public:
         explicit TreasureDisplayStage(TreasureStage *);
+        virtual ~TreasureDisplayStage() {}
 
         inline const std::string HandlerName() const override { return GetStageName(); }
         bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;

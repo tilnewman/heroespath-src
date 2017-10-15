@@ -30,6 +30,7 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
+#include "game/types.hpp"
 #include "game/stats/types.hpp"
 #include "game/item/item-type-enum.hpp"
 
@@ -54,22 +55,22 @@ namespace item
     class Inventory
     {
     public:
-        explicit Inventory(const stats::Trait_t COINS               = 0,
-                           const stats::Trait_t METEOR_SHARDS       = 0,
-                           const stats::Trait_t GEMS                = 0,
+        explicit Inventory(const Coin_t         COINS               = 0_coin,
+                           const MeteorShard_t  METEOR_SHARDS       = 0_mshard,
+                           const Gem_t          GEMS                = 0_gem,
                            const ItemPVec_t &   ITEMS_PVEC          = ItemPVec_t(),
                            const ItemPVec_t &   EQUIPPED_ITEMS_PVEC = ItemPVec_t());
 
         ~Inventory();
 
-        inline stats::Trait_t Coins() const         { return coins_; }
-        inline stats::Trait_t MeteorShards() const  { return meteorShards_; }
-        inline stats::Trait_t Gems() const          { return gems_; }
+        inline Coin_t Coins() const { return coins_; }
+        inline MeteorShard_t MeteorShards() const { return meteorShards_; }
+        inline Gem_t Gems() const { return gems_; }
 
         //these functions return false if attempt to reduce below zero
-        bool CoinsAdj(const stats::Trait_t A);
-        bool MeteorShardsAdj(const stats::Trait_t A);
-        bool GemsAdj(const stats::Trait_t A);
+        bool CoinsAdj(const Coin_t);
+        bool MeteorShardsAdj(const MeteorShard_t);
+        bool GemsAdj(const Gem_t);
 
         inline const ItemPVec_t Items() const           { return itemsPVec_; }
         inline const ItemPVec_t ItemsEquipped() const   { return equippedItemsPVec_; }
@@ -85,7 +86,7 @@ namespace item
 
         bool ContainsItem(const ItemPtr_t) const;
 
-        stats::Trait_t Weight() const;
+        Weight_t Weight() const;
 
         std::size_t Count() const;
 
@@ -105,7 +106,7 @@ namespace item
         std::size_t CountItemOfMiscTypeHeld(const item::misc_type::Enum) const;
         std::size_t CountItemOfMiscTypeEquipped(const item::misc_type::Enum) const;
 
-        stats::Trait_t ArmorRating() const;
+        Armor_t ArmorRating() const;
 
         const std::string ToString() const;
 
@@ -118,11 +119,11 @@ namespace item
         void FreeAllItemsFromWarehouse();
 
     private:
-        stats::Trait_t  coins_;
-        stats::Trait_t  meteorShards_;
-        stats::Trait_t  gems_;
-        ItemPVec_t      itemsPVec_;
-        ItemPVec_t      equippedItemsPVec_;
+        Coin_t         coins_;
+        MeteorShard_t  meteorShards_;
+        Gem_t          gems_;
+        ItemPVec_t     itemsPVec_;
+        ItemPVec_t     equippedItemsPVec_;
 
     private:
         friend class boost::serialization::access;

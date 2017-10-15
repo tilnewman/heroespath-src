@@ -56,11 +56,11 @@ namespace armor
             complexity      (non_player::ownership::complexity_type::Count)
         {}
 
-        std::string     name;
-        std::string     description;
-        stats::Trait_t  price;
-        stats::Trait_t  weight;
-        stats::Trait_t  armor_rating;
+        std::string name;
+        std::string description;
+        Coin_t      price;
+        Weight_t    weight;
+        Armor_t     armor_rating;
         non_player::ownership::complexity_type::Enum complexity;
     };
 

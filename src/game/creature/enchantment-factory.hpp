@@ -75,30 +75,36 @@ namespace creature
             const stats::TraitSet &     TRAIT_SET,
             const UseInfo &             USE_INFO    = UseInfo()) const;
 
-        int TreasureScore(const item::unique_type::Enum,
-                          const item::material::Enum) const;
+        Score_t TreasureScore(
+            const item::unique_type::Enum,
+            const item::material::Enum) const;
 
-        int TreasureScore(
+        Score_t TreasureScore(
             const item::misc_type::Enum,
             const item::material::Enum MATERIAL_PRIMARY,
             const item::material::Enum MATERIAL_SECONDARY) const;
 
-        int TreasureScore(const item::set_type::Enum) const;
+        Score_t TreasureScore(const item::set_type::Enum) const;
 
-        int TreasureScore(const item::named_type::Enum,
-                          const item::material::Enum,
-                          const bool IS_WEAPON,
-                          const bool IS_ARMOR) const;
+        Score_t TreasureScore(
+            const item::named_type::Enum,
+            const item::material::Enum,
+            const bool IS_WEAPON,
+            const bool IS_ARMOR) const;
 
-        int TreasureScore(const item::element_type::Enum,
-                          const bool IS_WEAPON,
-                          const item::material::Enum) const;
+        Score_t TreasureScore(
+            const item::element_type::Enum,
+            const bool IS_WEAPON,
+            const item::material::Enum) const;
 
     private:
-        item::ItemPtr_t StoreAttachReturn(item::ItemPtr_t, Enchantment * const) const;
+        item::ItemPtr_t StoreAttachReturn(
+            item::ItemPtr_t,
+            Enchantment * const) const;
 
-        std::vector<Enchantment *> MakeFromUniqueType(const item::unique_type::Enum,
-                                                      const item::material::Enum) const;
+        std::vector<Enchantment *> MakeFromUniqueType(
+            const item::unique_type::Enum,
+            const item::material::Enum) const;
 
         Enchantment * MakeFromMiscType(
             const item::misc_type::Enum,
@@ -108,14 +114,16 @@ namespace creature
         Enchantment * MakeFromSetType(const item::set_type::Enum) const;
         Enchantment * MakeFromSetCompleteType(const item::set_type::Enum) const;
 
-        Enchantment * MakeFromElementType(const item::element_type::Enum,
-                                          const bool IS_WEAPON,
-                                          const item::material::Enum) const;
+        Enchantment * MakeFromElementType(
+            const item::element_type::Enum,
+            const bool IS_WEAPON,
+            const item::material::Enum) const;
 
-        Enchantment * MakeFromNamedType(const item::named_type::Enum,
-                                        const item::material::Enum,
-                                        const bool IS_WEAPON,
-                                        const bool IS_ARMOR) const;
+        Enchantment * MakeFromNamedType(
+            const item::named_type::Enum,
+            const item::material::Enum,
+            const bool IS_WEAPON,
+            const bool IS_ARMOR) const;
 
     private:
         static std::unique_ptr<EnchantmentFactory> instanceUPtr_;

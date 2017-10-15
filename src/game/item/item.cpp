@@ -53,11 +53,11 @@ namespace item
                const material::Enum         MATERIAL_PRIMARY,
                const material::Enum         MATERIAL_SECONDARY,
                const std::string &          IMAGE_FILENAME,
-               const stats::Trait_t         PRICE,
-               const stats::Trait_t         WEIGHT,
+               const Coin_t                 PRICE,
+               const Weight_t               WEIGHT,
                const Health_t               DAMAGE_MIN,
                const Health_t               DAMAGE_MAX,
-               const stats::Trait_t         ARMOR_RATING,
+               const Armor_t                ARMOR_RATING,
                const creature::role::Enum   EXCLUSIVE_TO_ROLE,
                const weapon::WeaponInfo &   WEAPON_INFO,
                const armor::ArmorInfo &     ARMOR_INFO,
@@ -96,11 +96,11 @@ namespace item
         //adjust the weight for pixie items
         if (isPixie_)
         {
-            weight_ /= 250;
+            weight_ /= 250_weight;
 
-            if (weight_ < 1)
+            if (weight_ < 1_weight)
             {
-                weight_ = 1;
+                weight_ = 1_weight;
             }
         }
     }
