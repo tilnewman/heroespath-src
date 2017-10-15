@@ -28,7 +28,6 @@
 // spell-base.hpp
 //
 #include "game/types.hpp"
-#include "game/stats/trait.hpp"
 #include "game/spell/spell-enum.hpp"
 #include "game/effect-type-enum.hpp"
 #include "game/target-enum.hpp"
@@ -68,7 +67,7 @@ namespace spell
         Spell(const Spells::Enum     WHICH,
               const EffectType::Enum EFFECT_TYPE,
               const Phase::Enum      VALID_PHASES,
-              const stats::Trait_t   MANA_COST,
+              const Mana_t           MANA_COST,
               const Rank_t           RANK,
               const TargetType::Enum TARGET_TYPE,
               const std::string &    VERB_THIRD_PERSON,
@@ -76,7 +75,7 @@ namespace spell
 
         virtual ~Spell();
 
-        inline const std::string Name() const       { return Spells::Name(which_); }
+        inline const std::string Name() const { return Spells::Name(which_); }
 
         const std::string ToString() const;
 
@@ -91,7 +90,7 @@ namespace spell
         inline Spells::Enum Which() const       { return which_; }
         inline EffectType::Enum Effect() const  { return effectType_; }
         inline Phase::Enum ValidPhases() const  { return validPhases_; }
-        inline stats::Trait_t ManaCost() const  { return manaCost_; }
+        inline Mana_t ManaCost() const          { return manaCost_; }
         inline Rank_t Rank() const              { return rank_; }
         inline TargetType::Enum Target() const  { return targetType_; }
 
@@ -123,7 +122,7 @@ namespace spell
         Rank_t           rank_;
         EffectType::Enum effectType_;
         Phase::Enum      validPhases_;
-        stats::Trait_t   manaCost_;
+        Mana_t           manaCost_;
         TargetType::Enum targetType_;
         std::string      verbThirdPerson_;
         std::string      verbPastTense_;

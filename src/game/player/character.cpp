@@ -61,7 +61,7 @@ namespace player
                          const sfml_util::DateTime &          DATE_TIME,
                          const std::string &                  IMAGE_FILENAME,
                          const spell::SpellVec_t &            SPELLS_VEC,
-                         const stats::Trait_t                 MANA,
+                         const Mana_t                         MANA,
                          const song::SongVec_t &              SONG_VEC)
     :
         Creature(NAME,

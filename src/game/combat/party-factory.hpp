@@ -84,7 +84,7 @@ namespace combat
             const creature::role::Enum ROLE,
             const Rank_t RANK = 1_rank,
             const Experience_t EXPERIENCE = 0_exp,
-            const stats::Trait_t MANA = 0) const;
+            const Mana_t MANA = 0_mana) const;
 
     private:
         static std::unique_ptr<PartyFactory> instanceUPtr_;

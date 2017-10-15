@@ -437,7 +437,7 @@ namespace combat
             << ", creature_casting=" << creatureCastingPtr->NameAndRaceAndRole()
             << ", creatures_cast_upon=empty) was given an empty creaturesCastUponPVec.");
 
-        creatureCastingPtr->TraitCurrentAdj(stats::Traits::Mana, SPELL_CPTR->ManaCost() * -1);
+        creatureCastingPtr->ManaAdj(SPELL_CPTR->ManaCost() * Mana_t(-1));
 
         if (((SPELL_CPTR->Target() == TargetType::SingleCompanion) ||
             (SPELL_CPTR->Target() == TargetType::SingleOpponent)) &&
@@ -586,7 +586,7 @@ namespace combat
             << ", creature_playing=" << creaturePlayingPtr->NameAndRaceAndRole()
             << ", creatures_listening=empty) was given an empty creaturesListeningPVec.");
 
-        creaturePlayingPtr->TraitCurrentAdj(stats::Traits::Mana, SONG_CPTR->ManaCost() * -1);
+        creaturePlayingPtr->ManaAdj(SONG_CPTR->ManaCost() * Mana_t(-1));
 
         if (((SONG_CPTR->Target() == TargetType::SingleCompanion) ||
             (SONG_CPTR->Target() == TargetType::SingleOpponent)) &&

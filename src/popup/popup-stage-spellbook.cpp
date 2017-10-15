@@ -367,8 +367,7 @@ namespace popup
         ss << "Rank:  " << creaturePtr->Rank() << "\n"
             << "Health:  " << creaturePtr->HealthCurrent() << "/" << creaturePtr->HealthNormal()
             << " " << creaturePtr->HealthPercentStr() << "\n"
-            << "Mana:  " << creaturePtr->TraitWorking(game::stats::Traits::Mana) << "/"
-            << creaturePtr->TraitNormal(game::stats::Traits::Mana) << "\n"
+            << "Mana:  " << creaturePtr->Mana() << "/" << creaturePtr->ManaNormal() << "\n"
             << "\n";
 
         const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
@@ -724,8 +723,7 @@ namespace popup
     bool PopupStageSpellbook::DoesCharacterHaveEnoughManaToCastSpell(
         const game::spell::SpellPtrC_t SPELL_CPTRC) const
     {
-        return (popupInfo_.CreaturePtr()->TraitWorking(game::stats::Traits::Mana) >=
-            SPELL_CPTRC->ManaCost());
+        return (popupInfo_.CreaturePtr()->Mana() >= SPELL_CPTRC->ManaCost());
     }
 
 

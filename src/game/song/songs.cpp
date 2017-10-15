@@ -117,17 +117,17 @@ namespace song
             static_cast<float>(creaturePlayingPtr->TraitBonusCurrent(stats::Traits::MagicEffect)) /
                 100.0f };
 
-        auto const MANA_GAIN_ORIG{
-            static_cast<stats::Trait_t>(10.0f * (RATIO_FROM_STATS + RATIO_FROM_TRAIT_BONUS)) };
+        auto const MANA_GAIN_ORIG{ Mana_t(
+            static_cast<Mana_t::type>(10.0f * (RATIO_FROM_STATS + RATIO_FROM_TRAIT_BONUS))) };
 
         auto const MANA_GAIN_MAX{ creatureListeningPtr->ManaMissing() };
 
         auto const MANA_GAIN_FINAL{ ((MANA_GAIN_ORIG > MANA_GAIN_MAX) ?
             MANA_GAIN_MAX : MANA_GAIN_ORIG) };
 
-        if (MANA_GAIN_FINAL > 0)
+        if (MANA_GAIN_FINAL > 0_mana)
         {
-            creatureListeningPtr->TraitCurrentAdj(stats::Traits::Mana, MANA_GAIN_FINAL);
+            creatureListeningPtr->ManaAdj(MANA_GAIN_FINAL);
 
             std::ostringstream ss;
             ss << "'s mana for " << MANA_GAIN_FINAL << ".";

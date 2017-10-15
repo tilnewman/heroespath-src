@@ -134,7 +134,7 @@ namespace creature
                           const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
                           const std::string &         IMAGE_FILENAME  = "",
                           const spell::SpellVec_t &   SPELL_VEC       = spell::SpellVec_t(),
-                          const stats::Trait_t        MANA            = 0,
+                          const Mana_t                MANA            = 0_mana,
                           const song::SongVec_t &     SONG_VEC        = song::SongVec_t());
 
         virtual ~Creature();
@@ -223,9 +223,29 @@ namespace creature
             return healthNormal_ - healthCurrent_;
         }
 
-        inline stats::Trait_t ManaMissing() const
+        inline Mana_t ManaMissing() const
         {
-            return (TraitNormal(stats::Traits::Mana) - TraitWorking(stats::Traits::Mana));
+            return Mana_t(TraitNormal(stats::Traits::Mana) - TraitWorking(stats::Traits::Mana));
+        }
+
+        inline Mana_t Mana() const
+        {
+            return Mana_t(TraitWorking(stats::Traits::Mana));
+        }
+
+        inline Mana_t ManaAdj(const Mana_t ADJ)
+        {
+            return Mana_t( TraitCurrentAdj(stats::Traits::Mana, ADJ.AsInt()) );
+        }
+
+        inline Mana_t ManaNormal() const
+        {
+            return Mana_t(TraitNormal(stats::Traits::Mana));
+        }
+
+        inline Mana_t ManaNormalAdj(const Mana_t ADJ)
+        {
+            return Mana_t(TraitNormalAdj(stats::Traits::Mana, ADJ.AsInt()));
         }
 
         inline bool IsDead() const { return HasCondition(Conditions::Dead); }

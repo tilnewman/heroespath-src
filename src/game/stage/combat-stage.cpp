@@ -3299,10 +3299,10 @@ namespace stage
 
             armorSS << "Armor Rating: " << turnCreaturePtr_->ArmorRating();
 
-            auto const MANA_NORMAL{ turnCreaturePtr_->TraitNormal(stats::Traits::Mana) };
-            if (MANA_NORMAL > 0)
+            auto const MANA_NORMAL{ turnCreaturePtr_->ManaNormal() };
+            if (MANA_NORMAL > 0_mana)
             {
-                armorSS << "\n\nMana: " << turnCreaturePtr_->TraitWorking(stats::Traits::Mana)
+                armorSS << "\n\nMana: " << turnCreaturePtr_->Mana()
                     << "/" << MANA_NORMAL;
             }
 

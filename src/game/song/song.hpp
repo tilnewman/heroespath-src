@@ -28,7 +28,6 @@
 // song.hpp
 //
 #include "game/types.hpp"
-#include "game/stats/trait.hpp"
 #include "game/song/song-enum.hpp"
 #include "game/song/song-type-enum.hpp"
 #include "game/phase-enum.hpp"
@@ -70,7 +69,7 @@ namespace song
              const SongType::Enum   SONG_TYPE,
              const EffectType::Enum EFFECT_TYPE,
              const Phase::Enum      VALID_PHASES,
-             const stats::Trait_t   MANA_COST,
+             const Mana_t           MANA_COST,
              const Rank_t           RANK,
              const TargetType::Enum TARGET_TYPE,
              const std::string &    VERB_THIRD_PERSON,
@@ -94,7 +93,7 @@ namespace song
         inline SongType::Enum Type() const      { return type_; }
         inline EffectType::Enum Effect() const  { return effectType_; }
         inline Phase::Enum ValidPhases() const  { return validPhases_; }
-        inline stats::Trait_t ManaCost() const  { return manaCost_; }
+        inline Mana_t ManaCost() const          { return manaCost_; }
         inline Rank_t Rank() const              { return rank_; }
         inline TargetType::Enum Target() const  { return targetType_; }
 
@@ -127,7 +126,7 @@ namespace song
         EffectType::Enum effectType_;
         Rank_t           rank_;
         Phase::Enum      validPhases_;
-        stats::Trait_t   manaCost_;
+        Mana_t           manaCost_;
         TargetType::Enum targetType_;
         std::string      verbThirdPerson_;
         std::string      verbPastTense_;

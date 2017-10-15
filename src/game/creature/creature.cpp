@@ -76,7 +76,7 @@ namespace creature
                        const sfml_util::DateTime & DATE_TIME,
                        const std::string &         IMAGE_FILENAME,
                        const spell::SpellVec_t &   SPELL_VEC,
-                       const stats::Trait_t        MANA,
+                       const Mana_t                MANA,
                        const song::SongVec_t &     SONG_VEC)
     :
         name_             (NAME),
@@ -104,7 +104,7 @@ namespace creature
         bonusSet_         (),
         enchantmentsPVec_ ()
     {
-        actualSet_.Get(stats::Traits::Mana).CurrAndNormSet(MANA);
+        actualSet_.Get(stats::Traits::Mana).CurrAndNormSet(MANA.AsInt());
         actualSet_.Get(stats::Traits::Strength).CurrAndNormSet(STATS.Str().AsInt());
         actualSet_.Get(stats::Traits::Accuracy).CurrAndNormSet(STATS.Acc().AsInt());
         actualSet_.Get(stats::Traits::Charm).CurrAndNormSet(STATS.Cha().AsInt());

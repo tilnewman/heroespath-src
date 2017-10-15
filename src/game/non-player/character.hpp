@@ -93,7 +93,7 @@ namespace non_player
                            const sfml_util::DateTime &      DATE_TIME      = sfml_util::DateTime(),
                            const std::string &              IMAGE_FILENAME = "",
                            const spell::SpellVec_t &        SPELLS_VEC     = spell::SpellVec_t(),
-                           const stats::Trait_t             MANA           = 0,
+                           const Mana_t                     MANA           = 0_mana,
                            const song::SongVec_t &          SONG_VEC       = song::SongVec_t());
 
         virtual ~Character();

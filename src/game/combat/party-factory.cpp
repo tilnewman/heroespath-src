@@ -158,7 +158,7 @@ namespace combat
         const creature::role::Enum ROLE,
         const Rank_t RANK,
         const Experience_t EXPERIENCE,
-        const stats::Trait_t MANA) const
+        const Mana_t MANA) const
     {
         auto characterPtr{ new non_player::Character(
             creature::race::Name(RACE),

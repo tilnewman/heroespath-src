@@ -98,7 +98,7 @@ namespace song
                 "game::song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                 << "\") resulted in an empty DescExtra().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->ManaCost() != 0),
+            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->ManaCost() != 0_mana),
                 "game::song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                 << "\") resulted in a zero Mana cost.");
 

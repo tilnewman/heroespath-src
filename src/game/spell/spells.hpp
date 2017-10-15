@@ -57,7 +57,7 @@ namespace spell
             Spells::Sparks,
             EffectType::CreatureHarmDamage,
             Phase::Combat,
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleOpponent,
             "sprays with sparks",
@@ -88,7 +88,7 @@ namespace spell
                 Phase::Combat |
                 Phase::Exploring |
                 Phase::Inventory),
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleCompanion,
             "bandages",
@@ -116,7 +116,7 @@ namespace spell
             Spells::Sleep,
             EffectType::CreatureHarmMisc,
             Phase::Combat,
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleOpponent,
             "sleeps",
@@ -147,7 +147,7 @@ namespace spell
                 Phase::Combat |
                 Phase::Exploring |
                 Phase::Inventory),
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleCompanion,
             "awakens",
@@ -175,7 +175,7 @@ namespace spell
             Spells::Trip,
             EffectType::CreatureHarmMisc,
             Phase::Combat,
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleOpponent,
             "trips",
@@ -206,7 +206,7 @@ namespace spell
                 Phase::Combat |
                 Phase::Exploring |
                 Phase::Inventory),
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleCompanion,
             "lifts",
@@ -235,7 +235,7 @@ namespace spell
             Spells::Daze,
             EffectType::CreatureHarmMisc,
             Phase::Combat,
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleOpponent,
             "dazes",
@@ -263,7 +263,7 @@ namespace spell
             Spells::Panic,
             EffectType::CreatureHarmMisc,
             Phase::Combat,
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleOpponent,
             "panics",
@@ -294,7 +294,7 @@ namespace spell
                 Phase::Combat |
                 Phase::Exploring |
                 Phase::Inventory),
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleCompanion,
             "clears the mind",
@@ -322,7 +322,7 @@ namespace spell
             Spells::Poison,
             EffectType::CreatureHarmMisc,
             Phase::Combat,
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleOpponent,
             "poisons",
@@ -353,7 +353,7 @@ namespace spell
                 Phase::Combat |
                 Phase::Exploring |
                 Phase::Inventory),
-            1,
+            1_mana,
             1_rank,
             TargetType::SingleCompanion,
             "cures",
@@ -381,7 +381,7 @@ namespace spell
             Spells::PoisonCloud,
             EffectType::CreatureHarmMisc,
             Phase::Combat,
-            3,
+            3_mana,
             1_rank,
             TargetType::AllOpponents,
             "poisons",

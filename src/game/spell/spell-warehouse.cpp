@@ -102,7 +102,7 @@ namespace spell
                 "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
                 << "\") resulted in an empty DescExtra().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->ManaCost() != 0),
+            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->ManaCost() != 0_mana),
                 "game::spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
                 << "\") resulted in a zero Mana cost.");
 

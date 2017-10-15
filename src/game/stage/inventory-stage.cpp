@@ -2329,8 +2329,8 @@ namespace stage
         ss << "Coins:  " << INVENTORY.Coins() << "\n"
            << "Gems:  " << INVENTORY.Gems() << "\n"
            << "Meteor Shards:  " << INVENTORY.MeteorShards() << "\n"
-           << "Mana:  " << creaturePtr_->TraitWorking(stats::Traits::Mana) << "/"
-           << creaturePtr_->TraitNormal(stats::Traits::Mana) << "\n"
+           << "Mana:  " << creaturePtr_->Mana() << "/"
+           << creaturePtr_->ManaNormal() << "\n"
            << "Weight: " << INVENTORY.Weight() << "/"
            << creaturePtr_->WeightCanCarry() << "\n"
            << "\n \n ";
