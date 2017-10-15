@@ -28,7 +28,7 @@
 // song.hpp
 //
 #include "game/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/song/song-enum.hpp"
 #include "game/song/song-type-enum.hpp"
 #include "game/phase-enum.hpp"

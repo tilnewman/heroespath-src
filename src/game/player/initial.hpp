@@ -29,7 +29,7 @@
 //  A collection of functions that performs initial setup of a player character
 //
 #include "game/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/item/item-type-enum.hpp"
 
 

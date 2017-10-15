@@ -28,7 +28,7 @@
 // spell-base.hpp
 //
 #include "game/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/spell/spell-enum.hpp"
 #include "game/effect-type-enum.hpp"
 #include "game/target-enum.hpp"

@@ -28,7 +28,7 @@
 // inventory-factory.hpp
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/item/item-type-enum.hpp"
 #include "game/non-player/ownership-chance-types.hpp"
 

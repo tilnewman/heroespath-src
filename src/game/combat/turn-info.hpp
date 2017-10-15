@@ -28,7 +28,7 @@
 // turn-info.hpp
 //
 #include "game/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/combat/strategy-info.hpp"
 #include "game/combat/turn-action-info.hpp"
 #include "game/combat/turn-action-enum.hpp"

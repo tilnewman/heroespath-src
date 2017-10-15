@@ -35,7 +35,7 @@
 #include "game/creature/enchantment-type.hpp"
 #include "game/creature/condition-enum.hpp"
 #include "game/stats/traits-set.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/spell/spell-enum.hpp"
 
 #include "misc/boost-serialize-includes.hpp"

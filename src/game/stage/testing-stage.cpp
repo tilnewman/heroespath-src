@@ -966,12 +966,12 @@ namespace stage
                     M_HP_LOG_DBG(ss.str());
 
                     const stats::StatSet STATS(
-                        10,  //str
-                        10,  //acc
-                        10,  //cha
-                        10,  //lck
-                        10,  //spd
-                        10 );//int
+                        10_str,
+                        10_acc,
+                        10_cha,
+                        10_lck,
+                        10_spd,
+                        10_int );
 
                     std::ostringstream nameSS;
                     nameSS << "Name_" << RACE_STR << "_" << ROLE_STR << "_" << rankIndex;

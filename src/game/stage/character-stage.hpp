@@ -46,9 +46,10 @@
 #include "game/stage/character-stage-anim-num.hpp"
 #include "game/creature/race-stats.hpp"
 #include "game/creature/role-stats.hpp"
-#include "popup/i-popup-callback.hpp"
 #include "game/horiz-symbol.hpp"
 #include "game/main-menu-title.hpp"
+
+#include "popup/i-popup-callback.hpp"
 
 #include <memory>
 #include <string>
@@ -109,11 +110,12 @@ namespace stage
     //encapsulates a stat modifier that is drawn to the screen
     struct StatModText : public sf::Drawable
     {
-        StatModText(const stats::Traits::Enum STAT,
-                    const std::string &     NAME, //name of race or role
-                    const stats::Trait_t     VAL,
-                    const float             POS_LEFT,
-                    const float             POS_TOP)
+        StatModText(
+            const stats::Traits::Enum STAT,
+            const std::string & NAME, //name of race or role
+            const stats::Trait_t VAL,
+            const float POS_LEFT,
+            const float POS_TOP)
         :
             value(VAL),
             stat(STAT),

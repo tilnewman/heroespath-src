@@ -29,7 +29,7 @@
 //  Code that gives meaning to all possible rank values.
 //
 #include "game/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 
 #include "misc/range.hpp"
 

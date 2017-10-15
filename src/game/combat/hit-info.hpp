@@ -28,7 +28,7 @@
 // hit-info.hpp
 //
 #include "game/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/creature/condition-enum.hpp"
 #include "game/name-position-enum.hpp"
 

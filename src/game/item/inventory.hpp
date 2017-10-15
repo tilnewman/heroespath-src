@@ -31,7 +31,7 @@
 #include "misc/boost-serialize-includes.hpp"
 
 #include "game/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/item/item-type-enum.hpp"
 
 #include <string>

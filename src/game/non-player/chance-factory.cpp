@@ -34,7 +34,7 @@
 #include "game/item/weapon-details.hpp"
 #include "game/item/armor-details.hpp"
 #include "game/log-macros.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/non-player/character.hpp"
 
 #include "misc/assertlogandthrow.hpp"

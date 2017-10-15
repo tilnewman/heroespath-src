@@ -39,12 +39,13 @@ namespace game
 namespace stats
 {
 
-    StatSet::StatSet(const stats::Trait_t STR,
-                     const stats::Trait_t ACC,
-                     const stats::Trait_t CHA,
-                     const stats::Trait_t LCK,
-                     const stats::Trait_t SPD,
-                     const stats::Trait_t INT)
+    StatSet::StatSet(
+        const Strength_t STR,
+        const Accuracy_t ACC,
+        const Charm_t    CHA,
+        const Luck_t     LCK,
+        const Speed_t    SPD,
+        const Intell_t   INT)
     :
         str_(STR),
         acc_(ACC),
@@ -57,12 +58,12 @@ namespace stats
 
     stats::Trait_t StatSet::Get(const stats::Traits::Enum E) const
     {
-        if (E == Traits::Strength)      { return str_; }
-        if (E == Traits::Accuracy)      { return acc_; }
-        if (E == Traits::Charm)         { return cha_; }
-        if (E == Traits::Luck)          { return lck_; }
-        if (E == Traits::Speed)         { return spd_; }
-        if (E == Traits::Intelligence)  { return int_; }
+        if (E == Traits::Strength)      { return str_.Get(); }
+        if (E == Traits::Accuracy)      { return acc_.Get(); }
+        if (E == Traits::Charm)         { return cha_.Get(); }
+        if (E == Traits::Luck)          { return lck_.Get(); }
+        if (E == Traits::Speed)         { return spd_.Get(); }
+        if (E == Traits::Intelligence)  { return int_.Get(); }
 
         std::ostringstream ss;
         ss << "game::stats::StatSet::Get(" << E << ")_InvalidValueError.";
@@ -72,12 +73,12 @@ namespace stats
 
     void StatSet::Set(const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
     {
-        if (E == Traits::Strength)      { str_ = NEW_VALUE; return; }
-        if (E == Traits::Accuracy)      { acc_ = NEW_VALUE; return; }
-        if (E == Traits::Charm)         { cha_ = NEW_VALUE; return; }
-        if (E == Traits::Luck)          { lck_ = NEW_VALUE; return; }
-        if (E == Traits::Speed)         { spd_ = NEW_VALUE; return; }
-        if (E == Traits::Intelligence)  { int_ = NEW_VALUE; return; }
+        if (E == Traits::Strength)      { str_ = Strength_t(NEW_VALUE); return; }
+        if (E == Traits::Accuracy)      { acc_ = Accuracy_t(NEW_VALUE); return; }
+        if (E == Traits::Charm)         { cha_ = Charm_t(NEW_VALUE);    return; }
+        if (E == Traits::Luck)          { lck_ = Luck_t(NEW_VALUE);     return; }
+        if (E == Traits::Speed)         { spd_ = Speed_t(NEW_VALUE);    return; }
+        if (E == Traits::Intelligence)  { int_ = Intell_t(NEW_VALUE);   return; }
 
         std::ostringstream ss;
 
@@ -92,34 +93,34 @@ namespace stats
     {
         std::ostringstream ss;
 
-        if (str_ != 0)
+        if (str_ != 0_str)
         {
-            ss << "Str " << ((str_ > 0) ? "+" : "") << str_;
+            ss << "Str " << ((str_ > 0_str) ? "+" : "") << str_;
         }
 
-        if (acc_ != 0)
+        if (acc_ != 0_acc)
         {
-            ss << "Acc " << ((acc_ > 0) ? "+" : "") << acc_;
+            ss << "Acc " << ((acc_ > 0_acc) ? "+" : "") << acc_;
         }
 
-        if (cha_ != 0)
+        if (cha_ != 0_cha)
         {
-            ss << "Cha " << ((cha_ > 0) ? "+" : "") << cha_;
+            ss << "Cha " << ((cha_ > 0_cha) ? "+" : "") << cha_;
         }
 
-        if (lck_ != 0)
+        if (lck_ != 0_lck)
         {
-            ss << "Lck " << ((lck_ > 0) ? "+" : "") << lck_;
+            ss << "Lck " << ((lck_ > 0_lck) ? "+" : "") << lck_;
         }
 
-        if (spd_ != 0)
+        if (spd_ != 0_spd)
         {
-            ss << "Spd " << ((spd_ > 0) ? "+" : "") << spd_;
+            ss << "Spd " << ((spd_ > 0_spd) ? "+" : "") << spd_;
         }
 
-        if (int_ != 0)
+        if (int_ != 0_int)
         {
-            ss << "Int " << ((int_ > 0) ? "+" : "") << int_;
+            ss << "Int " << ((int_ > 0_int) ? "+" : "") << int_;
         }
 
         if (WILL_WRAP)

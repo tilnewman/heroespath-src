@@ -29,7 +29,7 @@
 //  A singleton class that creates parties of creatures that confront the player characters.
 //
 #include "game/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/stats/stat-set.hpp"
 #include "game/creature/sex-enum.hpp"
 #include "game/creature/race-enum.hpp"

@@ -31,7 +31,7 @@
 #include "game/song/song-enum.hpp"
 #include "game/song/song-type-enum.hpp"
 #include "game/song/song.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/phase-enum.hpp"
 #include "game/target-enum.hpp"
 #include "game/creature/condition.hpp"

@@ -39,7 +39,7 @@
 #include "game/creature/title-enum.hpp"
 #include "game/creature/race-enum.hpp"
 #include "game/creature/role-enum.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 
 #include <memory>
 #include <string>

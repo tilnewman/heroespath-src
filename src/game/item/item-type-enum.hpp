@@ -29,7 +29,7 @@
 //  Enumerations for all of an Item's various types.
 //
 #include "game/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/creature/role-enum.hpp"
 
 #include <string>

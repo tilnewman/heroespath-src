@@ -29,7 +29,7 @@
 //
 #include "weapon-factory.hpp"
 
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/item/item.hpp"
 #include "game/item/item-type-enum.hpp"
 #include "game/item/weapon-details.hpp"

@@ -48,10 +48,11 @@ namespace stats
         Trait & Get(const Traits::Enum E);
         const Trait & GetCopy(const Traits::Enum E) const;
 
-        const std::string ToString(const bool WILL_WRAP,
-                                   const bool WILL_ABBR,
-                                   const bool WILL_PREVENT_NEGATIVE,
-                                   const bool WILL_PREFIX_PERCENT) const;
+        const std::string ToString(
+            const bool WILL_WRAP,
+            const bool WILL_ABBR,
+            const bool WILL_PREVENT_NEGATIVE,
+            const bool WILL_PREFIX_PERCENT) const;
 
         const std::string StatsString(const bool WILL_WRAP) const;
 
@@ -59,8 +60,9 @@ namespace stats
         friend bool operator<(const TraitSet & L, const TraitSet & R);
 
     private:
-        const std::string StatStringHelper(const stats::Traits::Enum,
-                                           const bool                WILL_PREFIX = true) const;
+        const std::string StatStringHelper(
+            const stats::Traits::Enum,
+            const bool WILL_PREFIX = true) const;
 
     private:
         TraitVec_t traitVec_;

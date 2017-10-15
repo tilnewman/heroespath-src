@@ -32,7 +32,7 @@
 #include "game/item/weapon-factory.hpp"
 #include "game/item/armor-factory.hpp"
 #include "game/item/misc-item-factory.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "game/log-macros.hpp"
 

@@ -105,12 +105,12 @@ namespace creature
         enchantmentsPVec_ ()
     {
         actualSet_.Get(stats::Traits::Mana).CurrAndNormSet(MANA);
-        actualSet_.Get(stats::Traits::Strength).CurrAndNormSet(STATS.Str());
-        actualSet_.Get(stats::Traits::Accuracy).CurrAndNormSet(STATS.Acc());
-        actualSet_.Get(stats::Traits::Charm).CurrAndNormSet(STATS.Cha());
-        actualSet_.Get(stats::Traits::Luck).CurrAndNormSet(STATS.Lck());
-        actualSet_.Get(stats::Traits::Speed).CurrAndNormSet(STATS.Spd());
-        actualSet_.Get(stats::Traits::Intelligence).CurrAndNormSet(STATS.Int());
+        actualSet_.Get(stats::Traits::Strength).CurrAndNormSet(STATS.Str().AsInt());
+        actualSet_.Get(stats::Traits::Accuracy).CurrAndNormSet(STATS.Acc().AsInt());
+        actualSet_.Get(stats::Traits::Charm).CurrAndNormSet(STATS.Cha().AsInt());
+        actualSet_.Get(stats::Traits::Luck).CurrAndNormSet(STATS.Lck().AsInt());
+        actualSet_.Get(stats::Traits::Speed).CurrAndNormSet(STATS.Spd().AsInt());
+        actualSet_.Get(stats::Traits::Intelligence).CurrAndNormSet(STATS.Int().AsInt());
 
         //verify valid RACE and ROLE combination
         auto const ROLE_VEC{ race::Roles(race_) };
@@ -1546,7 +1546,7 @@ namespace creature
             divisor = 3;
         }
 
-        return Weight_t(base + ((Strength() * multiplier) / divisor));
+        return Weight_t(base + ((Strength().AsInt() * multiplier) / divisor));
     }
 
 
@@ -1653,12 +1653,12 @@ namespace creature
 
     void Creature::StatTraitsModify(const stats::StatSet & STAT_SET)
     {
-        TraitNormalAdj(stats::Traits::Strength, STAT_SET.Str());
-        TraitNormalAdj(stats::Traits::Accuracy, STAT_SET.Acc());
-        TraitNormalAdj(stats::Traits::Charm, STAT_SET.Cha());
-        TraitNormalAdj(stats::Traits::Luck, STAT_SET.Lck());
-        TraitNormalAdj(stats::Traits::Speed, STAT_SET.Spd());
-        TraitNormalAdj(stats::Traits::Intelligence, STAT_SET.Int());
+        TraitNormalAdj(stats::Traits::Strength, STAT_SET.Str().AsInt());
+        TraitNormalAdj(stats::Traits::Accuracy, STAT_SET.Acc().AsInt());
+        TraitNormalAdj(stats::Traits::Charm, STAT_SET.Cha().AsInt());
+        TraitNormalAdj(stats::Traits::Luck, STAT_SET.Lck().AsInt());
+        TraitNormalAdj(stats::Traits::Speed, STAT_SET.Spd().AsInt());
+        TraitNormalAdj(stats::Traits::Intelligence, STAT_SET.Int().AsInt());
     }
 
 

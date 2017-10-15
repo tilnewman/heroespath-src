@@ -27,7 +27,7 @@
 //
 // types.hpp
 //
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 
 #include "misc/strong-type.hpp"
 #include "misc/strong-numeric-type.hpp"
@@ -50,26 +50,12 @@ namespace game
     struct WeightTag {};
     struct ArmorTag {};
     struct ScoreTag {};
-
-    /*
-    //Responsible for wrapping a health value and providing health functions.
-    struct StrongNumericTypeHealth : misc::StrongNumericType<stats::Trait_t, HealthTag>
-    {
-        template<typename T, typename Parameter>
-        explicit StrongNumericTypeHealth(const misc::StrongNumericType<T, Parameter> STRONG_TYPE_VALUE)
-        :
-            StrongNumericType(STRONG_TYPE_VALUE.Get())
-        {}
-
-        explicit StrongNumericTypeHealth(const stats::Trait_t VALUE)
-        :
-            StrongNumericType(VALUE)
-        {}
-
-        inline bool IsDamage() const { return m_value < 0; }
-        inline bool IsHealing() const { return m_value > 0; }
-    };
-    */
+    struct StrengthTag {};
+    struct AccuracyTag {};
+    struct CharmTag {};
+    struct LuckTag {};
+    struct SpeedTag {};
+    struct IntellTag {};
 
 
     //strong types
@@ -84,6 +70,12 @@ namespace game
     using Weight_t =        misc::StrongNumericType<int, WeightTag>;
     using Armor_t =         misc::StrongNumericType<int, ArmorTag>;
     using Score_t =         misc::StrongNumericType<int, ScoreTag>;
+    using Strength_t =      misc::StrongNumericType<stats::Trait_t, StrengthTag>;
+    using Accuracy_t =      misc::StrongNumericType<stats::Trait_t, AccuracyTag>;
+    using Charm_t =         misc::StrongNumericType<stats::Trait_t, CharmTag>;
+    using Luck_t =          misc::StrongNumericType<stats::Trait_t, LuckTag>;
+    using Speed_t =         misc::StrongNumericType<stats::Trait_t, SpeedTag>;
+    using Intell_t =        misc::StrongNumericType<stats::Trait_t, IntellTag>;
 
 
     //user defined literals for strong types
@@ -135,6 +127,36 @@ namespace game
     inline Score_t operator"" _score(unsigned long long score)
     {
         return Score_t(static_cast<Score_t::type>(score));
+    }
+
+    inline Strength_t operator"" _str(unsigned long long strength)
+    {
+        return Strength_t(static_cast<Strength_t::type>(strength));
+    }
+
+    inline Accuracy_t operator"" _acc(unsigned long long accuracy)
+    {
+        return Accuracy_t(static_cast<Accuracy_t::type>(accuracy));
+    }
+
+    inline Charm_t operator"" _cha(unsigned long long charm)
+    {
+        return Charm_t(static_cast<Charm_t::type>(charm));
+    }
+
+    inline Luck_t operator"" _lck(unsigned long long luck)
+    {
+        return Luck_t(static_cast<Luck_t::type>(luck));
+    }
+
+    inline Speed_t operator"" _spd(unsigned long long speed)
+    {
+        return Speed_t(static_cast<Speed_t::type>(speed));
+    }
+
+    inline Intell_t operator"" _int(unsigned long long intell)
+    {
+        return Intell_t(static_cast<Intell_t::type>(intell));
     }
     
 }   

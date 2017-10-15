@@ -95,7 +95,7 @@ namespace combat
 
     non_player::PartyPtr_t PartyFactory::MakeParty_FirstEncounter() const
     {
-        non_player::PartyPtr_t partyPtr{ new non_player::Party() };
+        auto partyPtr{ new non_player::Party() };
 
         for (std::size_t i(0); i < 10; ++i)
         {
@@ -109,12 +109,12 @@ namespace combat
     non_player::CharacterPtr_t PartyFactory::MakeCharacter_GoblinGrunt() const
     {
         const stats::StatSet STATS(
-            13 + misc::random::Int(5),  //str
-            13 + misc::random::Int(5),  //acc
-            5  + misc::random::Int(5),  //cha
-            5  + misc::random::Int(5),  //lck
-            13 + misc::random::Int(5),  //spd
-            3  + misc::random::Int(5) );//int
+            Strength_t(13 + misc::random::Int(5)),
+            Accuracy_t(13 + misc::random::Int(5)),
+            Charm_t   ( 5 + misc::random::Int(5)),
+            Luck_t    ( 5 + misc::random::Int(5)),
+            Speed_t   (13 + misc::random::Int(5)),
+            Intell_t  ( 3 + misc::random::Int(5)) );
 
         auto characterPtr{ MakeCharacter(
             STATS,
@@ -133,12 +133,12 @@ namespace combat
     non_player::CharacterPtr_t PartyFactory::MakeCharacter_Boar() const
     {
         const stats::StatSet STATS(
-            13 + misc::random::Int(3),  //str
-            10 + misc::random::Int(2),  //acc
-            4  + misc::random::Int(2),  //cha
-            5  + misc::random::Int(5),  //lck
-            13 + misc::random::Int(5),  //spd
-            1 );                        //int
+            Strength_t(13 + misc::random::Int(3)),
+            Accuracy_t(10 + misc::random::Int(2)),
+            Charm_t   (4  + misc::random::Int(2)),
+            Luck_t    (5  + misc::random::Int(5)),
+            Speed_t   (13 + misc::random::Int(5)),
+            Intell_t  (1) );
 
         return MakeCharacter(
             STATS,

@@ -27,7 +27,7 @@
 //
 // stat-set.hpp
 //
-#include "game/stats/types.hpp"
+#include "game/types.hpp"
 #include "game/stats/trait-enum.hpp"
 
 #include <tuple>
@@ -44,19 +44,20 @@ namespace stats
     class StatSet
     {
     public:
-        explicit StatSet(const stats::Trait_t STR = 0,
-                         const stats::Trait_t ACC = 0,
-                         const stats::Trait_t CHA = 0,
-                         const stats::Trait_t LCK = 0,
-                         const stats::Trait_t SPD = 0,
-                         const stats::Trait_t INT = 0);
+        explicit StatSet(
+            const Strength_t STR = 0_str,
+            const Accuracy_t ACC = 0_acc,
+            const Charm_t    CHA = 0_cha,
+            const Luck_t     LCK = 0_lck,
+            const Speed_t    SPD = 0_spd,
+            const Intell_t   INT = 0_int);
 
-        inline stats::Trait_t Str() const { return str_; }
-        inline stats::Trait_t Acc() const { return acc_; }
-        inline stats::Trait_t Cha() const { return cha_; }
-        inline stats::Trait_t Lck() const { return lck_; }
-        inline stats::Trait_t Spd() const { return spd_; }
-        inline stats::Trait_t Int() const { return int_; }
+        inline Strength_t Str() const { return str_; }
+        inline Accuracy_t Acc() const { return acc_; }
+        inline Charm_t    Cha() const { return cha_; }
+        inline Luck_t     Lck() const { return lck_; }
+        inline Speed_t    Spd() const { return spd_; }
+        inline Intell_t   Int() const { return int_; }
 
         stats::Trait_t Get(const Traits::Enum) const;
         void Set(const Traits::Enum, const stats::Trait_t);
@@ -67,12 +68,12 @@ namespace stats
         friend bool operator<(const StatSet & L, const StatSet & R);
 
     private:
-        stats::Trait_t str_;
-        stats::Trait_t acc_;
-        stats::Trait_t cha_;
-        stats::Trait_t lck_;
-        stats::Trait_t spd_;
-        stats::Trait_t int_;
+        Strength_t str_;
+        Accuracy_t acc_;
+        Charm_t cha_;
+        Luck_t lck_;
+        Speed_t spd_;
+        Intell_t int_;
     };
 
 

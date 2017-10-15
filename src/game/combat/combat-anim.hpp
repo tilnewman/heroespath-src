@@ -32,7 +32,7 @@
 #include "sfml-util/animation-enum.hpp"
 
 #include "game/types.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 
 #include <vector>
 #include <memory>

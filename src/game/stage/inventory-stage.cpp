@@ -2216,6 +2216,7 @@ namespace stage
             {
                 ss << ", " << creaturePtr_->RoleName();
             }
+
             ss << " " << creaturePtr_->RankClassName() << "\n";
         }
         else
@@ -2270,37 +2271,31 @@ namespace stage
 
     void InventoryStage::SetupCreatureStats()
     {
-        const std::string STR_MOD_STR(creaturePtr_->
-            TraitModifiedString(stats::Traits::Strength, true));
+        auto const STR_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Strength, true) };
 
-        const std::string ACC_MOD_STR(creaturePtr_->
-            TraitModifiedString(stats::Traits::Accuracy, true));
+        auto const ACC_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Accuracy, true) };
 
-        const std::string CHA_MOD_STR(creaturePtr_->
-            TraitModifiedString(stats::Traits::Charm, true));
+        auto const CHA_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Charm, true) };
 
-        const std::string LCK_MOD_STR(creaturePtr_->
-            TraitModifiedString(stats::Traits::Luck, true));
+        auto const LCK_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Luck, true) };
 
-        const std::string SPD_MOD_STR(creaturePtr_->
-            TraitModifiedString(stats::Traits::Speed, true));
+        auto const SPD_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Speed, true) };
 
-        const std::string INT_MOD_STR(creaturePtr_->
-            TraitModifiedString(stats::Traits::Intelligence, true));
+        auto const INT_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Intelligence, true) };
 
         std::ostringstream ss;
-        ss << "Strength:       " << creaturePtr_->Strength()
-           << " " << STR_MOD_STR << "\n"
-           << "Accuracy:      "  << creaturePtr_->Accuracy()
-           << " " << ACC_MOD_STR << "\n"
-           << "Charm:          " << creaturePtr_->Charm()
-           << " " << CHA_MOD_STR << "\n"
-           << "Luck:             " << creaturePtr_->Luck()
-           << " " << LCK_MOD_STR << "\n"
-           << "Speed:            " << creaturePtr_->Speed()
-           << " " << SPD_MOD_STR << "\n"
-           << "Intelligence:   " << creaturePtr_->Intelligence()
-           << " " << INT_MOD_STR << "\n"
+        ss << "Strength:       " << creaturePtr_->Strength() << " " << STR_MOD_STR << "\n"
+           << "Accuracy:      "  << creaturePtr_->Accuracy() << " " << ACC_MOD_STR << "\n"
+           << "Charm:          " << creaturePtr_->Charm() << " " << CHA_MOD_STR << "\n"
+           << "Luck:             " << creaturePtr_->Luck() << " " << LCK_MOD_STR << "\n"
+           << "Speed:            " << creaturePtr_->Speed() << " " << SPD_MOD_STR << "\n"
+           << "Intelligence:   " << creaturePtr_->Intelligence() << " " << INT_MOD_STR << "\n"
            << "\n \n ";
 
         const sfml_util::gui::TextInfo STATS_TEXT_INFO(

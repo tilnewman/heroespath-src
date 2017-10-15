@@ -38,7 +38,7 @@ namespace stats
 {
 
     Trait::Trait(const Traits::Enum TYPE,
-                 const stats::Trait_t      NORMAL)
+                 const Trait_t NORMAL)
     :
         type_   (TYPE),
         normal_ (NORMAL),

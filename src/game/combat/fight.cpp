@@ -1108,7 +1108,7 @@ namespace combat
         auto hasHitBeenDetermined{ false };
         auto wasHit{ false };
 
-        auto const ATTACK_ACC_RAW{ creatureAttackingPtrC->Accuracy() };
+        auto const ATTACK_ACC_RAW{ creatureAttackingPtrC->Accuracy().AsInt() };
         auto attackAccToUse{ ATTACK_ACC_RAW };
 
         //If the attacking creature is an archer who is using a projectile weapon,
@@ -1145,7 +1145,7 @@ namespace combat
             (attackAccToUse >= STAT_HIGHER_THAN_AVERAGE) &&
             IsValuetHigherThanRatioOfStat(ATTACK_ACC_RAND, attackAccToUse, STAT_RATIO_AMAZING)};
 
-        auto const DEFEND_SPD_RAW{ creatureDefendingPtrC->Speed() };
+        auto const DEFEND_SPD_RAW{ creatureDefendingPtrC->Speed().AsInt() };
         auto defendSpdToUse{ DEFEND_SPD_RAW };
 
         //If the defending creature is a Pixie then add a speed bonus based on rank.
@@ -1369,7 +1369,7 @@ namespace combat
             "heroespath-fight-stats-value-floor") };
 
         Health_t damageFromStrength{ 0_health };
-        auto const STRENGTH_CURRENT{ creatureAttackingPtrC->Strength() };
+        auto const STRENGTH_CURRENT{ creatureAttackingPtrC->Strength().AsInt() };
         if (STRENGTH_CURRENT > STAT_FLOOR)
         {
             auto const RAND_STR_STAT{ creature::Stats::Roll(
@@ -1430,7 +1430,7 @@ namespace combat
         auto const CRITICAL_HIT_CHANCE_RATIO{ GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-hit-critical-chance-ratio") };
 
-        auto const ACCURACY_CURRENT{ creatureAttackingPtrC->Accuracy() };
+        auto const ACCURACY_CURRENT{ creatureAttackingPtrC->Accuracy().AsInt() };
 
         isCriticalHit_OutParam = 
             ((creatureAttackingPtrC->IsPlayerCharacter() || LUCK_TEST) &&

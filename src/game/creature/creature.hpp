@@ -32,7 +32,7 @@
 
 #include "game/types.hpp"
 #include "game/effect-type-enum.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/stats/traits-set.hpp"
 #include "game/stats/stat-set.hpp"
 #include "game/item/inventory.hpp"
@@ -231,34 +231,34 @@ namespace creature
         inline bool IsDead() const { return HasCondition(Conditions::Dead); }
         inline bool IsAlive() const { return ! IsDead(); }
 
-        inline stats::Trait_t Strength() const
+        inline Strength_t Strength() const
         {
-            return TraitWorking(stats::Traits::Strength);
+            return Strength_t( TraitWorking(stats::Traits::Strength) );
         }
 
-        inline stats::Trait_t Accuracy() const
+        inline Accuracy_t Accuracy() const
         {
-            return TraitWorking(stats::Traits::Accuracy);
+            return Accuracy_t( TraitWorking(stats::Traits::Accuracy) );
         }
 
-        inline stats::Trait_t Charm() const
+        inline Charm_t Charm() const
         {
-            return TraitWorking(stats::Traits::Charm);
+            return Charm_t( TraitWorking(stats::Traits::Charm) );
         }
 
-        inline stats::Trait_t Luck() const
+        inline Luck_t Luck() const
         {
-            return TraitWorking(stats::Traits::Luck);
+            return Luck_t( TraitWorking(stats::Traits::Luck) );
         }
 
-        inline stats::Trait_t Speed() const
+        inline Speed_t Speed() const
         {
-            return TraitWorking(stats::Traits::Speed);
+            return Speed_t( TraitWorking(stats::Traits::Speed) );
         }
 
-        inline stats::Trait_t Intelligence() const
+        inline Intell_t Intelligence() const
         {
-            return TraitWorking(stats::Traits::Intelligence);
+            return Intell_t( TraitWorking(stats::Traits::Intelligence) );
         }
 
         inline const sfml_util::DateTime DateTimeCreated() const { return dateTimeCreated_; }

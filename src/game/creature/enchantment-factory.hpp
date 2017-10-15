@@ -31,7 +31,7 @@
 #include "game/creature/enchantment-type.hpp"
 #include "game/creature/enchantment.hpp"
 #include "game/creature/condition-enum.hpp"
-#include "game/stats/types.hpp"
+#include "game/stats/trait.hpp"
 #include "game/stats/traits-set.hpp"
 #include "game/item/item-type-enum.hpp"
 
