@@ -48,27 +48,29 @@ namespace game
 namespace creature
 {
 
-    RoleVec_t Title::ROLEVEC_ALL_PLAYER_ROLES_ = { role::Knight,
-                                                   role::Archer,
-                                                   role::Bard,
-                                                   role::Thief,
-                                                   role::Beastmaster,
-                                                   role::Sorcerer,
-                                                   role::Cleric,
-                                                   role::Sylavin,
-                                                   role::Firebrand,
-                                                   role::Wolfen };
+    RoleVec_t Title::ROLEVEC_ALL_PLAYER_ROLES_ = {
+        role::Knight,
+        role::Archer,
+        role::Bard,
+        role::Thief,
+        role::Beastmaster,
+        role::Sorcerer,
+        role::Cleric,
+        role::Sylavin,
+        role::Firebrand,
+        role::Wolfen };
 
 
-    Title::Title(const Titles::Enum          TITLE,
-                 const AchievementType::Enum ACHIEVEMENT_TYPE,
-                 const std::size_t           ACHIEVEMENT_INDEX,
-                 const std::size_t           ACHIEVEMENT_COUNT,
-                 const RoleVec_t &           ROLES_VEC,
-                 const stats::StatSet &      STATS_BONUS,
-                 const Rank_t                RANK_BONUS,
-                 const Experience_t          EXPERIENCE_BONUS,
-                 const Health_t              HEALTH_BONUS)
+    Title::Title(
+        const Titles::Enum          TITLE,
+        const AchievementType::Enum ACHIEVEMENT_TYPE,
+        const Index_t               ACHIEVEMENT_INDEX,
+        const Count_t               ACHIEVEMENT_COUNT,
+        const RoleVec_t &           ROLES_VEC,
+        const stats::StatSet &      STATS_BONUS,
+        const Rank_t                RANK_BONUS,
+        const Experience_t          EXPERIENCE_BONUS,
+        const Health_t              HEALTH_BONUS)
     :
         title_           (TITLE),
         achievementType_ (ACHIEVEMENT_TYPE),
@@ -105,10 +107,12 @@ namespace creature
             << RANK_BONUS << ", exp_bonus=" << EXPERIENCE_BONUS
             << ") was given an AchievementType of 'Count'.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((((ACHIEVEMENT_TYPE != AchievementType::None) &&
-            (ACHIEVEMENT_COUNT == 0)) == false), "game::creature::Title::Title(title="
-            << Titles::ToString(TITLE) << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count="
-            << ACHIEVEMENT_COUNT << ", rank_bonus=" << RANK_BONUS
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (((ACHIEVEMENT_TYPE != AchievementType::None) &&
+             (ACHIEVEMENT_COUNT == 0_count)) == false),
+            "game::creature::Title::Title(title=" << Titles::ToString(TITLE)
+            << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
+            << ", rank_bonus=" << RANK_BONUS
             << ") was given a valid AchievementType but the achievement count was zero.");
 
         std::ostringstream ss;
@@ -122,7 +126,7 @@ namespace creature
         {
             ss << AchievementType::ToString(ACHIEVEMENT_TYPE);
 
-            if (ACHIEVEMENT_INDEX > 0)
+            if (ACHIEVEMENT_INDEX > 0_index)
             {
                 ss << ACHIEVEMENT_INDEX;
             }

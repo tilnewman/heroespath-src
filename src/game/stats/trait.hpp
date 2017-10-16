@@ -80,11 +80,11 @@ namespace stats
         inline void CurrentSet(const Trait_t X)     { current_ = X; }
         inline void CurrAndNormSet(const Trait_t X) { NormalSet(X); CurrentSet(X); }
 
-        inline void SetCurrentToNormal()             { current_ = normal_; }
+        inline void SetCurrentToNormal()            { current_ = normal_; }
 
         //the given Trait's current value is used to modify
-        inline void NormalAdj(const Trait & RS)      { normal_ += RS.current_; }
-        inline void CurrentAdj(const Trait & RS)     { current_ += RS.current_; }
+        inline void NormalAdj(const Trait & RS)     { normal_ += RS.current_; }
+        inline void CurrentAdj(const Trait & RS)    { current_ += RS.current_; }
 
         const std::string ToString(const bool WILL_PREPEND_PLUS = true) const;
 

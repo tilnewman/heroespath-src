@@ -30,6 +30,7 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
+#include "game/types.hpp"
 #include "game/creature/achievement-enum.hpp"
 #include "game/creature/title.hpp"
 #include "game/creature/role-enum.hpp"
@@ -53,7 +54,7 @@ namespace creature
 
     //Note:  Must store Titles::Enums and not TitlePtr_ts here because
     //       Achievements are serialized, and Titles cannot be serialized.
-    using TitleCountMap_t = std::map<std::size_t, Titles::Enum>;
+    using TitleCountMap_t = std::map<Count_t, Titles::Enum>;
 
 
     //Responsible for storing all the information about an achievement.
@@ -62,11 +63,12 @@ namespace creature
     class Achievement
     {
     public:
-        explicit Achievement(const AchievementType::Enum WHICH           = AchievementType::None,
-                             const TitleCountMap_t &     TITLE_COUNT_MAP = TitleCountMap_t());
+        explicit Achievement(
+            const AchievementType::Enum WHICH           = AchievementType::None,
+            const TitleCountMap_t &     TITLE_COUNT_MAP = TitleCountMap_t());
 
         inline AchievementType::Enum Which() const              { return which_; }
-        inline std::size_t Count() const                        { return count_; }
+        inline Count_t Count() const                            { return count_; }
         inline const std::string Name() const                   { return AchievementType::Name(which_); }
         inline const TitleCountMap_t & TitleCountMap() const    { return titleCountMap_; }
 
@@ -85,7 +87,7 @@ namespace creature
 
     private:
         AchievementType::Enum which_;
-        std::size_t count_;
+        Count_t count_;
         TitleCountMap_t titleCountMap_;
 
     private:

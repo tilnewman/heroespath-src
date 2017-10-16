@@ -56,6 +56,8 @@ namespace game
     struct LuckTag {};
     struct SpeedTag {};
     struct IntellTag {};
+    struct IndexTag {};
+    struct CountTag {};
 
 
     //strong types
@@ -76,6 +78,8 @@ namespace game
     using Luck_t =          misc::StrongNumericType<stats::Trait_t, LuckTag>;
     using Speed_t =         misc::StrongNumericType<stats::Trait_t, SpeedTag>;
     using Intell_t =        misc::StrongNumericType<stats::Trait_t, IntellTag>;
+    using Index_t =         misc::StrongNumericType<std::size_t, IndexTag>;
+    using Count_t =         misc::StrongNumericType<std::size_t, CountTag>;
 
 
     //user defined literals for strong types
@@ -157,6 +161,16 @@ namespace game
     inline Intell_t operator"" _int(unsigned long long intell)
     {
         return Intell_t(static_cast<Intell_t::type>(intell));
+    }
+
+    inline Index_t operator"" _index(unsigned long long index)
+    {
+        return Index_t(static_cast<Index_t::type>(index));
+    }
+
+    inline Count_t operator"" _count(unsigned long long count)
+    {
+        return Count_t(static_cast<Count_t::type>(count));
     }
     
 }   

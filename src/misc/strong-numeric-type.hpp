@@ -134,6 +134,32 @@ namespace misc
         {
             return this->m_value >= RHS.m_value;
         }
+
+        StrongNumericType & operator++()
+        {
+            ++(this->m_value);
+            return *this;
+        }
+
+        StrongNumericType operator++(int)
+        {
+            StrongNumericType temp{ *this };
+            operator++();
+            return temp;
+        }
+
+        StrongNumericType & operator--()
+        {
+            --(this->m_value);
+            return *this;
+        }
+
+        StrongNumericType operator--(int)
+        {
+            StrongNumericType temp{ *this };
+            operator--();
+            return temp;
+        }
     };
 
 

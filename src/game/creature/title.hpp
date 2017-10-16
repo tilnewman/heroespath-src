@@ -63,8 +63,8 @@ namespace creature
         explicit Title(
             const Titles::Enum          TITLE             = Titles::Count,
             const AchievementType::Enum ACHIEVEMENT_TYPE  = AchievementType::None,
-            const std::size_t           ACHIEVEMENT_INDEX = 0,//0 is invalid, valid start at one
-            const std::size_t           ACHIEVEMENT_COUNT = 0,
+            const Index_t               ACHIEVEMENT_INDEX = 0_index,//0 is invalid
+            const Count_t               ACHIEVEMENT_COUNT = 0_count,
             const RoleVec_t &           ROLES_VEC         = RoleVec_t(),
             const stats::StatSet &      STATS_BONUS       = stats::StatSet(),
             const Rank_t                RANK_BONUS        = 0_rank,
@@ -78,8 +78,8 @@ namespace creature
         inline virtual Titles::Enum Which() const                       { return title_; }
         inline virtual const stats::StatSet StatBonus() const           { return statBonus_; }
         inline virtual AchievementType::Enum GetAchievementType() const { return achievementType_; }
-        inline virtual std::size_t AchievementCount() const             { return achievementCount_; }
-        inline virtual std::size_t AchievementIndex() const             { return achievementIndex_; }
+        inline virtual Count_t AchievementCount() const                 { return achievementCount_; }
+        inline virtual Index_t AchievementIndex() const                 { return achievementIndex_; }
         inline virtual void Roles(RoleVec_t & rolesVec_OutParam) const  { rolesVec_OutParam = rolesVec_; }
         inline virtual const RoleVec_t RolesCopy() const                { return rolesVec_; }
         inline virtual bool IsRoleInList(const role::Enum E) const      { return (std::find(rolesVec_.begin(), rolesVec_.end(), E) != rolesVec_.end()); }
@@ -103,8 +103,8 @@ namespace creature
     protected:
         Titles::Enum          title_;
         AchievementType::Enum achievementType_;
-        std::size_t           achievementCount_;
-        std::size_t           achievementIndex_;
+        Count_t               achievementCount_;
+        Index_t               achievementIndex_;
         RoleVec_t             rolesVec_;
         Rank_t                rankBonus_;
         Experience_t          expBonus_;

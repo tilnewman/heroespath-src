@@ -35,12 +35,14 @@
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
 
-#include "game/main-menu-title.hpp"
+#include "game/phase-enum.hpp"
 #include "game/horiz-symbol.hpp"
-#include "popup/i-popup-callback.hpp"
+#include "game/main-menu-title.hpp"
 #include "game/combat/fight-results.hpp"
 #include "game/combat/combat-text.hpp"
-#include "game/phase-enum.hpp"
+#include "game/creature/achievement-enum.hpp"
+
+#include "popup/i-popup-callback.hpp"
 
 #include <memory>
 #include <string>
@@ -211,6 +213,18 @@ namespace stage
         const sf::FloatRect GetItemRectMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
         void SetupDetailViewItem(const item::ItemPtr_t);
         void SetupDetailViewCreature(const creature::CreaturePtr_t CREATURE_PTR);
+
+        const std::string MakeTitleString(
+            const creature::CreaturePtr_t CREATURE_PTR,
+            const creature::AchievementType::Enum WHICH_ACHV) const;
+
+        const std::string MakeTitleCountNeededString(
+            const creature::CreaturePtr_t CREATURE_PTR,
+            const creature::AchievementType::Enum WHICH_ACHV) const;
+
+        const std::string MakeTitleSeparatorString(
+            const creature::AchievementType::Enum WHICH_ACHV) const;
+
         void StartDetailViewFadeOutTasks();
         void HandleDetailViewMouseInterrupt(const sf::Vector2f & MOUSE_POS_V);
         bool HandleCast_Step1_TargetSelection(const spell::SpellPtr_t);
