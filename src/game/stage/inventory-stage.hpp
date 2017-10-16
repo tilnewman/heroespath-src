@@ -167,12 +167,23 @@ namespace stage
         bool HandleAchievementDisplay();
         bool HandleViewChange(const ViewType);
         bool HandleBack();
-        bool HandleEquip();
-        bool HandleUnequip();
-        bool HandleGive();
+        bool HandleEquipRequest();
+        bool HandleEquipActual();
+        bool HandleUnequipRequest();
+        bool HandleUnequipActual();
+        bool HandleGiveRequestInitial();
+        bool HandleGiveRequestItems();
+        bool HandleGiveRequestCoins();
+        bool HandleGiveRequestGems();
+        bool HandleGiveRequestMeteorShards();
+        bool HandleGiveActualItems();
+        bool HandleGiveActualCoins();
+        bool HandleGiveActualGems();
+        bool HandleGiveActualMeteorShards();
         bool HandleShare();
         bool HandleGather();
-        bool HandleDrop();
+        bool HandleDropRequest();
+        bool HandleDropActual();
         bool HandlePlayerChangeBeforeOrAfter(const bool IS_NEXT_CREATURE_AFTER);
         bool HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM);//zero indexed
         bool HandlePlayerChangeTo(const creature::CreaturePtrC_t, const bool IS_SLIDING_LEFT);
