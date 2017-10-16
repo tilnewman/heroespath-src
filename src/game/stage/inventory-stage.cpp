@@ -199,7 +199,7 @@ namespace stage
         bottomSymbol_              (0.75f, true, sf::Color::White),
         paperBgTexture_            (),
         paperBgSprite_             (),
-        ouroborosUPtr_             (),
+        ouroborosUPtr_             (std::make_unique<Ouroboros>("InventoryStage's", true)),
         creatureTexture_           (),
         creatureSprite_            (),
         view_                      (ViewType::Items),
@@ -603,190 +603,32 @@ namespace stage
 
     void InventoryStage::Setup()
     {
-        //paper background
-        sfml_util::LoadTexture(
-            paperBgTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
-
-        paperBgSprite_.setTexture(paperBgTexture_);
-
-        paperBgSprite_.setScale(
-            SCREEN_WIDTH_ / static_cast<float>(paperBgTexture_.getSize().x),
-            SCREEN_HEIGHT_ / static_cast<float>(paperBgTexture_.getSize().y));
-
-        paperBgSprite_.setPosition(0.0f, 0.0f);
-
-        //ouroboros
-        ouroborosUPtr_ = std::make_unique<Ouroboros>("InventoryStage's", true);
         EntityAdd(ouroborosUPtr_.get());
 
-        //instruction text
-        const sfml_util::gui::TextInfo INSTR_TEXT_INFO(
-            "(use arrows or numbers to change characters, press 'a' to see achievements)",
-            sfml_util::FontManager::Instance()->Font_Default1(),
-            sfml_util::FontManager::Instance()->Size_Small(),
-            sfml_util::FontManager::Color_GrayDark(),
-            sf::BlendAlpha,
-            sf::Text::Italic,
-            sfml_util::Justified::Left);
+        Setup_PaperBackground();
+        Setup_InstructionText();
+        Setup_CreatureImage();
+        Setup_CreatureDetails(true);
+        Setup_CreatureStats();
+        Setup_CenterText();
+        Setup_ListBox();
+        Setup_DescBox(false);
+        Setup_FirstListBoxTitle();
+        Setup_DescBoxTitle();
+        
+        Setup_Button(backButtonUPtr_, "(B)ack", 0.085f);
+        Setup_Button(itemsButtonUPtr_, "(I)tems", 0.155f);
+        Setup_Button(titlesButtonUPtr_, "(T)itles", 0.225f);
+        Setup_Button(condsButtonUPtr_, "(C)onditions", 0.34f);
+        Setup_Button(spellsButtonUPtr_, "(S)pells", 0.42f);
+        Setup_Button(giveButtonUPtr_, "(G)ive", 0.49f);
+        Setup_Button(shareButtonUPtr_, "S(h)are", 0.57f);
+        Setup_Button(gatherButtonUPtr_, "Gathe(r)", 0.667f);
+        Setup_Button(equipButtonUPtr_, "(E)quip", 0.76f);
+        Setup_Button(unequipButtonUPtr_, "(U)nequip", 0.865f);
+        Setup_Button(dropButtonUPtr_, "(D)rop", 0.94f);
 
-        insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "InventoryStage'sInstruction",
-            INSTR_TEXT_INFO,
-            sf::FloatRect(0.0f, mainMenuTitle_.Bottom(false) - 10.0f, 0.0f, 0.0f));
-
-        insTextRegionUPtr_->SetEntityPos(
-            (SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f,
-            insTextRegionUPtr_->GetEntityPos().y);
-
-        EntityAdd(insTextRegionUPtr_.get());
-
-        //player character image in the top left corner
-        SetupCreatureImage();
-
-        //details text
-        SetupCreatureDetails(true);
-        EntityAdd(detailsTextRegionUPtr_.get());
-
-        //stats text
-        SetupCreatureStats();
-        EntityAdd(statsTextRegionUPtr_.get());
-
-        //coins, gems, meteor shards, total weight carried
-        SetupCenterText();
-        EntityAdd(centerTextRegionUPtr_.get());
-
-        //equipped item list box
-        SetupListBox();
-        EntityAdd(equippedListBoxUPtr_.get());
-
-        //UnEquipped item list box
-        SetupDescBox(false);
-        EntityAdd(unEquipListBoxUPtr_.get());
-
-        //first listbox title text
-        SetupFirstListBoxTitle();
-        EntityAdd(eqTitleTextRegionUPtr_.get());
-
-        //descbox title text
-        SetupDescBoxTitle();
-        EntityAdd(unEqTitleTextRegionUPtr_.get());
-        EntityAdd(descTextRegionUPtr_.get());
-        EntityAdd(descBoxUPtr_.get());
-
-        //buttons
-        sfml_util::gui::TextInfo buttonTextInfo(" ",
-                                                sfml_util::FontManager::Instance()->Font_Default2(),
-                                                sfml_util::FontManager::Instance()->Size_Largeish(),
-                                                sf::Color::Black,
-                                                sfml_util::Justified::Left);
-
-        const sf::Color BUTTON_COLOR_DISABLED(sf::Color(0, 0, 0, 180));
-        const sf::Color BUTTON_COLOR_OVER(sfml_util::FontManager::Color_GrayDarker());
-        const sf::Color BUTTON_COLOR_DOWN(BUTTON_COLOR_DISABLED);
-        sfml_util::gui::TextInfo buttonTextInfoDisabled(buttonTextInfo);
-        buttonTextInfoDisabled.color = BUTTON_COLOR_DISABLED;
-
-        buttonTextInfo.text = "(B)ack";
-        buttonTextInfoDisabled.text = "(B)ack";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_BACK(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        backButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sBack", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_BACK, buttonTextInfoDisabled);
-        backButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.085f * INNER_RECT_.width)) - backButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (backButtonUPtr_->GetEntityRegion().height * 0.5f));
-        backButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(backButtonUPtr_.get());
-        buttonPVec_.push_back(backButtonUPtr_.get());
-
-        buttonTextInfo.text = "(I)tems";
-        buttonTextInfoDisabled.text = "(I)tems";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_ITEMS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        itemsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sItems", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_ITEMS, buttonTextInfoDisabled);
-        itemsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.155f * INNER_RECT_.width)) - itemsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (itemsButtonUPtr_->GetEntityRegion().height * 0.5f));
-        itemsButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(itemsButtonUPtr_.get());
-        buttonPVec_.push_back(itemsButtonUPtr_.get());
-
-        buttonTextInfo.text = "(T)itles";
-        buttonTextInfoDisabled.text = "(T)itles";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_TITLES(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        titlesButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sTitles", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_TITLES, buttonTextInfoDisabled);
-        titlesButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.225f * INNER_RECT_.width)) - titlesButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (titlesButtonUPtr_->GetEntityRegion().height * 0.5f));
-        titlesButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(titlesButtonUPtr_.get());
-        buttonPVec_.push_back(titlesButtonUPtr_.get());
-
-        buttonTextInfo.text = "(C)onditions";
-        buttonTextInfoDisabled.text = "(C)onditions";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_CONDITIONS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        condsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sConditions", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_CONDITIONS, buttonTextInfoDisabled);
-        condsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.34f * INNER_RECT_.width)) - condsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (condsButtonUPtr_->GetEntityRegion().height * 0.5f));
-        condsButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(condsButtonUPtr_.get());
-        buttonPVec_.push_back(condsButtonUPtr_.get());
-
-        buttonTextInfo.text = "(S)pells";
-        buttonTextInfoDisabled.text = "(S)pells";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_SPELLS(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        spellsButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sSpells", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SPELLS, buttonTextInfoDisabled);
-        spellsButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.42f * INNER_RECT_.width)) - spellsButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (spellsButtonUPtr_->GetEntityRegion().height * 0.5f));
-        spellsButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(spellsButtonUPtr_.get());
-        buttonPVec_.push_back(spellsButtonUPtr_.get());
-
-        buttonTextInfo.text = "(G)ive";
-        buttonTextInfoDisabled.text = "(G)ive";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_GIVE(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        giveButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sGive", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GIVE, buttonTextInfoDisabled);
-        giveButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.49f * INNER_RECT_.width)) - giveButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (giveButtonUPtr_->GetEntityRegion().height * 0.5f));
-        giveButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(giveButtonUPtr_.get());
-        buttonPVec_.push_back(giveButtonUPtr_.get());
-
-        buttonTextInfo.text = "S(h)are";
-        buttonTextInfoDisabled.text = "S(h)are";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_SHARE(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        shareButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sShare", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_SHARE, buttonTextInfoDisabled);
-        shareButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.57f * INNER_RECT_.width)) - shareButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (shareButtonUPtr_->GetEntityRegion().height * 0.5f));
-        shareButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(shareButtonUPtr_.get());
-        buttonPVec_.push_back(shareButtonUPtr_.get());
-
-        buttonTextInfo.text = "Gathe(r)";
-        buttonTextInfoDisabled.text = "Gathe(r)";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_GATHER(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        gatherButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sGather", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_GATHER, buttonTextInfoDisabled);
-        gatherButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.667f * INNER_RECT_.width)) - gatherButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (gatherButtonUPtr_->GetEntityRegion().height * 0.5f));
-        gatherButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(gatherButtonUPtr_.get());
-        buttonPVec_.push_back(gatherButtonUPtr_.get());
-
-        buttonTextInfo.text = "(E)quip";
-        buttonTextInfoDisabled.text = "(E)quip";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_EQUIP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        equipButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sEquip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_EQUIP, buttonTextInfoDisabled);
-        equipButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.76f * INNER_RECT_.width)) - equipButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (equipButtonUPtr_->GetEntityRegion().height * 0.5f));
-        equipButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(equipButtonUPtr_.get());
-        buttonPVec_.push_back(equipButtonUPtr_.get());
-
-        buttonTextInfo.text = "(U)nequip";
-        buttonTextInfoDisabled.text = "(U)nequip";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_UNEQUIP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        unequipButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sUnequip", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_UNEQUIP, buttonTextInfoDisabled);
-        unequipButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.865f * INNER_RECT_.width)) - unequipButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (unequipButtonUPtr_->GetEntityRegion().height * 0.5f));
-        unequipButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(unequipButtonUPtr_.get());
-        buttonPVec_.push_back(unequipButtonUPtr_.get());
-
-        buttonTextInfo.text = "(D)rop";
-        buttonTextInfoDisabled.text = "(D)rop";
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_DROP(buttonTextInfo, BUTTON_COLOR_DOWN, BUTTON_COLOR_OVER);
-        dropButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>("InventoryStage'sDrop", 0.0f, 0.0f, "", "", "", "", BUTTON_MOUSE_TEXT_DROP, buttonTextInfoDisabled);
-        dropButtonUPtr_->SetEntityPos((INNER_RECT_.left + (0.94f * INNER_RECT_.width)) - dropButtonUPtr_->GetEntityRegion().width, bottomSymbol_.Middle() - (dropButtonUPtr_->GetEntityRegion().height * 0.5f));
-        dropButtonUPtr_->SetCallbackHandler(this);
-        EntityAdd(dropButtonUPtr_.get());
-        buttonPVec_.push_back(dropButtonUPtr_.get());
-
-        SetupButtons();
+        Setup_ButtonMouseoverText();
 
         ForceSelectionAndDrawOfListBox();
     }
@@ -1059,7 +901,7 @@ namespace stage
 
                     if (imageSlider_.IsDone())
                     {
-                        SetupCreatureImage();
+                        Setup_CreatureImage();
                         creatureSprite_.setPosition(OUT_OF_SIGHT_POS_, creatureSprite_.getPosition().y);
                         hasImageChanged_ = true;
                         imageSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
@@ -1115,7 +957,7 @@ namespace stage
                     if (detailsSlider_.IsDone())
                     {
                         UpdateImageDetailsPosition();
-                        SetupCreatureDetails(true);
+                        Setup_CreatureDetails(true);
                         detailsTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, detailsTextRegionUPtr_->GetEntityPos().y);
                         hasDetailsChanged_ = true;
                         detailsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
@@ -1163,7 +1005,7 @@ namespace stage
 
                     if (centerSlider_.IsDone())
                     {
-                        SetupCenterText();
+                        Setup_CenterText();
                         centerTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, centerTextRegionUPtr_->GetEntityPos().y);
                         hasCenterChanged_ = true;
                         centerSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
@@ -1211,7 +1053,7 @@ namespace stage
 
                     if (statsSlider_.IsDone())
                     {
-                        SetupCreatureStats();
+                        Setup_CreatureStats();
                         statsTextRegionUPtr_->SetEntityPos(OUT_OF_SIGHT_POS_, statsTextRegionUPtr_->GetEntityPos().y);
                         hasStatsChanged_ = true;
                         statsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
@@ -1256,7 +1098,7 @@ namespace stage
 
                     if (listBoxSlider_.IsDone())
                     {
-                        SetupListBox();
+                        Setup_ListBox();
                         equippedListBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, equippedListBoxUPtr_->GetEntityPos().y);
                         hasListBoxChanged_ = true;
                         listBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
@@ -1319,7 +1161,7 @@ namespace stage
 
                     if (descBoxSlider_.IsDone())
                     {
-                        SetupDescBox(true);
+                        Setup_DescBox(true);
                         unEquipListBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, unEquipListBoxUPtr_->GetEntityPos().y);
                         descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
                         descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
@@ -1537,37 +1379,584 @@ namespace stage
     }
 
 
-    void InventoryStage::AfterChangingViewTasks()
+    void InventoryStage::Setup_PaperBackground()
     {
-        isSliderAnimating_ = false;
+        sfml_util::LoadTexture(
+            paperBgTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
 
-        if (ViewType::Count != viewToChangeTo_)
+        paperBgSprite_.setTexture(paperBgTexture_);
+
+        paperBgSprite_.setScale(
+            SCREEN_WIDTH_ / static_cast<float>(paperBgTexture_.getSize().x),
+            SCREEN_HEIGHT_ / static_cast<float>(paperBgTexture_.getSize().y));
+
+        paperBgSprite_.setPosition(0.0f, 0.0f);
+    }
+
+
+    void InventoryStage::Setup_InstructionText()
+    {
+        const sfml_util::gui::TextInfo INSTR_TEXT_INFO(
+            "(use arrows or numbers to change characters, press 'a' to see achievements)",
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_GrayDark(),
+            sf::BlendAlpha,
+            sf::Text::Italic,
+            sfml_util::Justified::Left);
+
+        insTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sInstruction",
+            INSTR_TEXT_INFO,
+            sf::FloatRect(0.0f, mainMenuTitle_.Bottom(false) - 10.0f, 0.0f, 0.0f));
+
+        insTextRegionUPtr_->SetEntityPos(
+            (SCREEN_WIDTH_ * 0.5f) - (insTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 93.0f,
+            insTextRegionUPtr_->GetEntityPos().y);
+
+        EntityAdd(insTextRegionUPtr_.get());
+    }
+
+
+    void InventoryStage::Setup_CreatureImage()
+    {
+        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
+            creatureTexture_,
+            creaturePtr_->ImageFilename(),
+            true);
+
+        sfml_util::Invert(creatureTexture_);
+        sfml_util::Mask(creatureTexture_, sf::Color::White);
+        creatureSprite_.setTexture(creatureTexture_, true);
+        creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_, CREATURE_IMAGE_POS_TOP_);
+        creatureSprite_.setColor(sf::Color(255, 255, 255, 127));
+        creatureSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
+    }
+
+
+    void InventoryStage::Setup_CreatureDetails(const bool WILL_UPDATE_POSITION)
+    {
+        std::ostringstream ss;
+        ss << "Character # "
+            << game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1 << "\n"
+            << creaturePtr_->Name() << "\n"
+            << creaturePtr_->SexName() << "\n"
+            << creaturePtr_->RaceName();
+
+        if (creaturePtr_->IsBeast())
         {
-            view_ = viewToChangeTo_;
-            viewToChangeTo_ = ViewType::Count;
+            if (creaturePtr_->Race() != creature::race::Wolfen)
+            {
+                ss << ", " << creaturePtr_->RoleName();
+            }
+
+            ss << " " << creaturePtr_->RankClassName() << "\n";
+        }
+        else
+        {
+            ss << " " << creaturePtr_->RankClassName() << " "
+                << creaturePtr_->RoleName() << "\n";
+        }
+
+        ss << "Rank:  " << creaturePtr_->Rank() << "\n"
+            << "Experience: " << creaturePtr_->Exp() << "\n"
+            << "Health:  " << creaturePtr_->HealthCurrent()
+            << "/" << creaturePtr_->HealthNormal()
+            << " " << creaturePtr_->HealthRatio() << "%\n"
+            << "Condition:  " << creaturePtr_->ConditionNames(4) << "\n"
+            << "\n";
+
+        const sfml_util::gui::TextInfo DETAILS_TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Left);
+
+        sf::FloatRect detailsTextRect(
+            CREATURE_IMAGE_POS_LEFT_ +
+                creatureSprite_.getGlobalBounds().width + CREATURE_IMAGE_RIGHT_PAD_,
+            creatureSprite_.getPosition().y + CREATURE_IMAGE_RIGHT_PAD_,
+            0.0f,
+            0.0f);
+
+        if ((WILL_UPDATE_POSITION == false) && (detailsTextRegionUPtr_.get() != nullptr))
+        {
+            detailsTextRect.left = detailsTextRegionUPtr_->GetEntityPos().x;
+        }
+
+        detailsPosLeft_ = detailsTextRect.left;
+
+        if (detailsTextRegionUPtr_.get() == nullptr)
+        {
+            detailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect);
+
+            EntityAdd(detailsTextRegionUPtr_.get());
+        }
+        else
+        {
+            detailsTextRegionUPtr_->SetText(ss.str());
+        }
+
+        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_,
+            detailsTextRegionUPtr_->GetEntityPos().y);
+    }
+
+
+    void InventoryStage::Setup_CreatureStats()
+    {
+        auto const STR_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Strength, true) };
+
+        auto const ACC_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Accuracy, true) };
+
+        auto const CHA_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Charm, true) };
+
+        auto const LCK_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Luck, true) };
+
+        auto const SPD_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Speed, true) };
+
+        auto const INT_MOD_STR{
+            creaturePtr_->TraitModifiedString(stats::Traits::Intelligence, true) };
+
+        std::ostringstream ss;
+        ss << "Strength:       " << creaturePtr_->Strength() << " " << STR_MOD_STR << "\n"
+            << "Accuracy:      " << creaturePtr_->Accuracy() << " " << ACC_MOD_STR << "\n"
+            << "Charm:          " << creaturePtr_->Charm() << " " << CHA_MOD_STR << "\n"
+            << "Luck:             " << creaturePtr_->Luck() << " " << LCK_MOD_STR << "\n"
+            << "Speed:            " << creaturePtr_->Speed() << " " << SPD_MOD_STR << "\n"
+            << "Intelligence:   " << creaturePtr_->Intelligence() << " " << INT_MOD_STR << "\n"
+            << "\n \n ";
+
+        const sfml_util::gui::TextInfo STATS_TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Left);
+
+        const sf::FloatRect STATS_TEXT_RECT(
+            STATS_POS_LEFT_,
+            mainMenuTitle_.Bottom(false) + 20.0f,
+            0.0f,
+            0.0f);
+
+        if (statsTextRegionUPtr_.get() == nullptr)
+        {
+            statsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT);
+
+            EntityAdd(statsTextRegionUPtr_.get());
+        }
+        else
+        {
+            statsTextRegionUPtr_->SetText(ss.str());
+        }
+    }
+
+
+    void InventoryStage::Setup_CenterText()
+    {   
+        auto const & INVENTORY{ creaturePtr_->Inventory() };
+
+        std::ostringstream ss;
+        ss << "Coins:  " << INVENTORY.Coins() << "\n"
+            << "Gems:  " << INVENTORY.Gems() << "\n"
+            << "Meteor Shards:  " << INVENTORY.MeteorShards() << "\n"
+            << "Mana:  " << creaturePtr_->Mana() << "/"
+            << creaturePtr_->ManaNormal() << "\n"
+            << "Weight: " << INVENTORY.Weight() << "/"
+            << creaturePtr_->WeightCanCarry() << "\n"
+            << "\n \n ";
+
+        const sfml_util::gui::TextInfo CENTER_TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Typical(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            sfml_util::FontManager::Color_GrayDarker(),
+            sfml_util::Justified::Left);
+
+        const sf::FloatRect CENTER_TEXT_RECT(
+            0.0f,
+            mainMenuTitle_.Bottom(true) + sfml_util::MapByRes(5.0f, 30.0f),
+            0.0f,
+            0.0f);
+
+        const bool WAS_ALREADY_INSTANTIATED{ centerTextRegionUPtr_.get() != nullptr };
+
+        if (WAS_ALREADY_INSTANTIATED)
+        {
+            centerTextRegionUPtr_->SetText(ss.str());
+        }
+        else
+        {
+            centerTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT);
+
+            EntityAdd(centerTextRegionUPtr_.get());
+        }
+
+        const float POS_LEFT{
+            ((WAS_ALREADY_INSTANTIATED == false) && creaturePtr_->IsBeast()) ?
+                (SCREEN_WIDTH_ + 1.0f) :
+                (SCREEN_WIDTH_ * 0.5f) - sfml_util::MapByRes(100.0f, 300.0f) };
+
+        centerTextRegionUPtr_->SetEntityPos(POS_LEFT, centerTextRegionUPtr_->GetEntityPos().y);
+        centerPosLeft_ = POS_LEFT;
+    }
+
+
+    void InventoryStage::Setup_ListBox()
+    {
+        const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
+            1,
+            true,
+            LISTBOX_REGION_,
+            LISTBOX_COLORSET_,
+            LISTBOX_BG_INFO_);
+
+        sfml_util::gui::ListBoxItemSLst_t listBoxItemsSList;
+
+        //establish which view to use
+        ViewType viewToUse(viewToChangeTo_);
+
+        if (ViewType::Count == viewToUse)
+        {
+            viewToUse = view_;
         }
 
         if (isViewForcedToItems_)
         {
-            view_ = ViewType::Items;
-            isViewForcedToItems_ = false;
+            viewToUse = ViewType::Items;
         }
 
-        characterViewMap_[Game::Instance()->State().Party().GetOrderNum(creaturePtr_)] = view_;
-
-        if (ViewType::Items != view_)
+        switch (viewToUse)
         {
-            SetDescBoxTextFromListBoxItem(equippedListBoxUPtr_->GetSelected());
+            case ViewType::Conditions:
+            {
+                for (auto const & NEXT_CONDITION_PTR : creaturePtr_->ConditionsPVec())
+                {
+                    listBoxItemTextInfo_.text = NEXT_CONDITION_PTR->Name();
+
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_CONDITION_PTR->Name() + "_ConditionsListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_CONDITION_PTR);
+
+                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+                }
+                break;
+            }
+            case ViewType::Items:
+            {
+                for (auto const & NEXT_ITEM_SPTR : creaturePtr_->Inventory().ItemsEquipped())
+                {
+                    listBoxItemTextInfo_.text = NEXT_ITEM_SPTR->Name();
+
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_ITEM_SPTR->Name() + "_EquippedItemsListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_ITEM_SPTR);
+
+                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+                }
+                break;
+            }
+            case ViewType::Spells:
+            {
+                for (auto const NEXT_SPELL_PTR : creaturePtr_->SpellsPVec())
+                {
+                    listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
+
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_SPELL_PTR);
+
+                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+                }
+                break;
+            }
+            case ViewType::Titles:
+            case ViewType::Count:
+            default:
+            {
+                for (auto const NEXT_TITLE_PTR : creaturePtr_->TitlesPVec())
+                {
+                    listBoxItemTextInfo_.text = NEXT_TITLE_PTR->Name();
+
+                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                        NEXT_TITLE_PTR->Name() + "_TitlesListBoxEntry",
+                        listBoxItemTextInfo_,
+                        NEXT_TITLE_PTR);
+
+                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+                }
+                break;
+            }
         }
 
-        SetupFirstListBoxTitle();
-        SetupDescBoxTitle();
-        SetupButtons();
-        ForceSelectionAndDrawOfListBox();
+        const bool IS_ALREADY_INSTANTIATED{ equippedListBoxUPtr_.get() != nullptr };
+
+        if (IS_ALREADY_INSTANTIATED)
+        {
+            EntityRemove(equippedListBoxUPtr_.get());
+        }
+
+        equippedListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+            "InventoryStage'sLeftListBox",
+            LISTBOX_REGION_,
+            listBoxItemsSList,
+            this,
+            10.0f,
+            6.0f,
+            LISTBOX_BOX_INFO,
+            LISTBOX_COLOR_LINE_,
+            sfml_util::gui::ListBox::NO_LIMIT_,
+            this);
+
+        EntityAdd(equippedListBoxUPtr_.get());
+        
+        equippedListBoxUPtr_->SetSelectedIndex(0);
+        equippedListBoxUPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
     }
 
 
-    void InventoryStage::SetupButtons()
+    void InventoryStage::Setup_DescBox(const bool WILL_MOVE_OFFSCREEN)
+    {
+        sfml_util::gui::ListBoxItemSLst_t unEquipItemsSList;
+        for (auto const & NEXT_ITEM_SPTR : creaturePtr_->Inventory().Items())
+        {
+            std::ostringstream itemEntryNameSS;
+            itemEntryNameSS << NEXT_ITEM_SPTR->Name() << " " << "UnEquippedItemsListBoxEntry";
+
+            listBoxItemTextInfo_.text = NEXT_ITEM_SPTR->Name();
+
+            auto const EQUIPPED_LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                itemEntryNameSS.str(),
+                listBoxItemTextInfo_,
+                NEXT_ITEM_SPTR);
+
+            unEquipItemsSList.push_back(EQUIPPED_LISTBOXITEM_SPTR);
+        }
+
+        const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
+            1,
+            true,
+            DESCBOX_REGION_,
+            LISTBOX_COLORSET_,
+            LISTBOX_BG_INFO_);
+
+        const bool IS_EQ_ALREADY_INSTANTIATED{ unEquipListBoxUPtr_.get() != nullptr };
+
+        sf::Vector2f origPosV(OUT_OF_SIGHT_POS_, OUT_OF_SIGHT_POS_);
+
+        if (IS_EQ_ALREADY_INSTANTIATED)
+        {
+            origPosV = unEquipListBoxUPtr_->GetEntityPos();
+            EntityRemove(unEquipListBoxUPtr_.get());
+        }
+
+        unEquipListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
+            "InventoryStage'sUnEquipped",
+            DESCBOX_REGION_,
+            unEquipItemsSList,
+            this,
+            10.0f,
+            6.0f,
+            LISTBOX_BOX_INFO,
+            LISTBOX_COLOR_LINE_,
+            sfml_util::gui::ListBox::NO_LIMIT_,
+            this);
+
+        EntityAdd(unEquipListBoxUPtr_.get());
+        
+        unEquipListBoxUPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
+        unEquipListBoxUPtr_->SetSelectedIndex(0);
+
+        if (IS_EQ_ALREADY_INSTANTIATED)
+        {
+            if (WILL_MOVE_OFFSCREEN)
+            {
+                unEquipListBoxUPtr_->SetEntityPos(
+                    SCREEN_WIDTH_ + 1.0f,
+                    unEquipListBoxUPtr_->GetEntityPos().y);
+            }
+            else
+            {
+                unEquipListBoxUPtr_->SetEntityPos(origPosV.x, origPosV.y);
+            }
+        }
+
+        if (descBoxUPtr_.get() == nullptr)
+        {
+            descBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>(
+                "InventoryStage'sDesc", LISTBOX_BOX_INFO);
+
+            EntityAdd(descBoxUPtr_.get());
+        }
+
+        sfml_util::gui::TextInfo descTextInfo(listBoxItemTextInfo_);
+        descTextInfo.color = DESCBOX_TEXT_COLOR_;
+        descTextInfo.text = " ";
+
+        const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionUPtr_.get() != nullptr);
+
+        if (IS_DTR_ALREADY_INSTANTIATED)
+        {
+            EntityRemove(descTextRegionUPtr_.get());
+        }
+
+        descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+            "InventoryStage'sDescription",
+            descTextInfo,
+            DESCBOX_REGION_,
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            sfml_util::gui::box::Info(),
+            DESCBOX_MARGINS_);
+
+        EntityAdd(descTextRegionUPtr_.get());
+        
+        descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f,
+            descTextRegionUPtr_->GetEntityPos().y);
+
+        descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
+    }
+
+
+    void InventoryStage::Setup_FirstListBoxTitle()
+    {
+        std::string titleText("");
+        switch (view_)
+        {
+            case ViewType::Conditions:  { titleText = "Conditions"; break; }
+            case ViewType::Items:       { titleText = "Equipped Items"; break; }
+            case ViewType::Spells:      { titleText = "Spells"; break; }
+            case ViewType::Titles:
+            case ViewType::Count:
+            default:                    { titleText = "Titles"; break; }
+        }
+
+        const sfml_util::gui::TextInfo LISTBOX_TEXT_INFO(
+            titleText,
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            LISTBOX_COLOR_TITLE_,
+            sfml_util::Justified::Center);
+
+        const sf::FloatRect LISTBOX_TEXT_RECT(
+            FIRST_LISTBOX_POS_LEFT_,
+            0.0f,
+            LISTBOX_WIDTH_,
+            0.0f);
+
+        if (eqTitleTextRegionUPtr_.get() == nullptr)
+        {
+            eqTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sEquippedListBoxTitle",
+                LISTBOX_TEXT_INFO,
+                LISTBOX_TEXT_RECT);
+
+            EntityAdd(eqTitleTextRegionUPtr_.get());
+        }
+        else
+        {
+            eqTitleTextRegionUPtr_->Setup(LISTBOX_TEXT_INFO, LISTBOX_TEXT_RECT);
+        }
+
+        eqTitleTextRegionUPtr_->SetEntityPos(
+            eqTitleTextRegionUPtr_->GetEntityPos().x,
+            LISTBOX_POS_TOP_ - eqTitleTextRegionUPtr_->GetEntityRegion().height);
+    }
+
+
+    void InventoryStage::Setup_DescBoxTitle()
+    {
+        auto const TITLETEXT{ (ViewType::Items == view_) ? "Unequipped Items" : "Description" };
+
+        const sfml_util::gui::TextInfo DESC_TEXT_INFO(
+            TITLETEXT,
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
+            LISTBOX_COLOR_TITLE_,
+            sfml_util::Justified::Center);
+
+        const sf::FloatRect DESC_TEXT_RECT(SECOND_LISTBOX_POS_LEFT_, 0.0f, LISTBOX_WIDTH_, 0.0f);
+
+        if (unEqTitleTextRegionUPtr_.get() == nullptr)
+        {
+            unEqTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "InventoryStage'sUnequippedListBoxTitle",
+                DESC_TEXT_INFO,
+                DESC_TEXT_RECT);
+
+            EntityAdd(unEqTitleTextRegionUPtr_.get());
+        }
+        else
+        {
+            unEqTitleTextRegionUPtr_->Setup(DESC_TEXT_INFO, DESC_TEXT_RECT);
+        }
+
+        unEqTitleTextRegionUPtr_->SetEntityPos(
+            unEqTitleTextRegionUPtr_->GetEntityPos().x,
+            LISTBOX_POS_TOP_ - unEqTitleTextRegionUPtr_->GetEntityRegion().height);
+    }
+
+
+    void InventoryStage::Setup_Button(
+        sfml_util::gui::FourStateButtonUPtr_t & buttonUPtr,
+        const std::string & TEXT,
+        const float HORIZ_OFFSET_MULT)
+    {
+        sfml_util::gui::TextInfo buttonTextInfo(
+            TEXT,
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Largeish(),
+            sf::Color::Black,
+            sfml_util::Justified::Left);
+
+        const sf::Color BUTTON_COLOR_DISABLED(sf::Color(0, 0, 0, 180));
+        const sf::Color BUTTON_COLOR_OVER(sfml_util::FontManager::Color_GrayDarker());
+        const sf::Color BUTTON_COLOR_DOWN(BUTTON_COLOR_DISABLED);
+
+        sfml_util::gui::TextInfo buttonTextInfoDisabled(buttonTextInfo);
+        buttonTextInfoDisabled.color = BUTTON_COLOR_DISABLED;
+        buttonTextInfoDisabled.text = TEXT;
+
+        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_BACK{
+            buttonTextInfo,
+            BUTTON_COLOR_DOWN,
+            BUTTON_COLOR_OVER };
+
+        buttonUPtr = std::make_unique<sfml_util::gui::FourStateButton>(
+            "InventoryStage's" + TEXT,
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            BUTTON_MOUSE_TEXT_BACK,
+            buttonTextInfoDisabled);
+
+        buttonUPtr->SetEntityPos(
+            (INNER_RECT_.left + (HORIZ_OFFSET_MULT * INNER_RECT_.width)) -
+                buttonUPtr->GetEntityRegion().width,
+            bottomSymbol_.Middle() - (buttonUPtr->GetEntityRegion().height * 0.5f));
+
+        buttonUPtr->SetCallbackHandler(this);
+        EntityAdd(buttonUPtr.get());
+        buttonPVec_.push_back(buttonUPtr.get());
+    }
+
+
+    void InventoryStage::Setup_ButtonMouseoverText()
     {
         backButtonUPtr_->SetIsDisabled(false);
 
@@ -1597,7 +1986,7 @@ namespace stage
                     "Already viewing songs.");
             }
             else if ((ROLE_ENUM == creature::role::Cleric) ||
-                     (ROLE_ENUM == creature::role::Sorcerer))
+                (ROLE_ENUM == creature::role::Sorcerer))
             {
                 spellsButtonUPtr_->SetText("(S)pells");
                 spellsButtonUPtr_->SetIsDisabled(true);
@@ -1618,7 +2007,7 @@ namespace stage
                     "Click here or press 's' to view and play magical songs.");
             }
             else if ((ROLE_ENUM == creature::role::Cleric) ||
-                     (ROLE_ENUM == creature::role::Sorcerer))
+                (ROLE_ENUM == creature::role::Sorcerer))
             {
                 spellsButtonUPtr_->SetText("(S)pells");
                 spellsButtonUPtr_->SetIsDisabled(false);
@@ -1631,7 +2020,9 @@ namespace stage
         if (creaturePtr_->Titles().empty())
         {
             titlesButtonUPtr_->SetIsDisabled(true);
-            titlesButtonUPtr_->SetMouseHoverText(creaturePtr_->Name() + " does not have any titles.");
+
+            titlesButtonUPtr_->SetMouseHoverText(
+                creaturePtr_->Name() + " does not have any titles.");
         }
         else if (ViewType::Titles == view_)
         {
@@ -1661,7 +2052,8 @@ namespace stage
             shareButtonUPtr_->SetIsDisabled(true);
             gatherButtonUPtr_->SetIsDisabled(true);
 
-            const std::string DENY_MSG("Beasts cannot carry items, coins, gems, or Meteor Shards.");
+            const std::string DENY_MSG{
+                "Beasts cannot carry items, coins, gems, or Meteor Shards." };
 
             giveButtonUPtr_->SetMouseHoverText(DENY_MSG);
             shareButtonUPtr_->SetMouseHoverText(DENY_MSG);
@@ -1673,9 +2065,14 @@ namespace stage
             shareButtonUPtr_->SetIsDisabled(false);
             gatherButtonUPtr_->SetIsDisabled(false);
 
-            giveButtonUPtr_->SetMouseHoverText("Click here or press 'g' to give something to another character.");
-            shareButtonUPtr_->SetMouseHoverText("Click here or press 'h' to share something between all characters.");
-            gatherButtonUPtr_->SetMouseHoverText("Click here or press 'r' to gather all of something from all other characters.");
+            giveButtonUPtr_->SetMouseHoverText(
+                "Click here or press 'g' to give something to another character.");
+
+            shareButtonUPtr_->SetMouseHoverText(
+                "Click here or press 'h' to share something between all characters.");
+
+            gatherButtonUPtr_->SetMouseHoverText(
+                "Click here or press 'r' to gather all of something from all other characters.");
         }
 
         if (ViewType::Items == view_)
@@ -1687,16 +2084,28 @@ namespace stage
                 (selectedItemPtr->ITEM_CPTR->Name().empty() == false))
             {
                 equipButtonUPtr_->SetIsDisabled(false);
-                equipButtonUPtr_->SetMouseHoverText("Click here or press 'e' to equip the " + unEquipListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
+
+                equipButtonUPtr_->SetMouseHoverText(
+                    "Click here or press 'e' to equip the " +
+                        unEquipListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
+
                 dropButtonUPtr_->SetIsDisabled(false);
-                dropButtonUPtr_->SetMouseHoverText("(Click here or press 'd' to drop the " + unEquipListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ")");
+
+                dropButtonUPtr_->SetMouseHoverText(
+                    "(Click here or press 'd' to drop the " +
+                        unEquipListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ")");
             }
             else
             {
                 equipButtonUPtr_->SetIsDisabled(true);
-                equipButtonUPtr_->SetMouseHoverText("There is no unequipped item selected to equip.");
+
+                equipButtonUPtr_->SetMouseHoverText(
+                    "There is no unequipped item selected to equip.");
+
                 dropButtonUPtr_->SetIsDisabled(true);
-                dropButtonUPtr_->SetMouseHoverText("There is no unequipped item selected to drop.");
+
+                dropButtonUPtr_->SetMouseHoverText(
+                    "There is no unequipped item selected to drop.");
             }
         }
         else if (creaturePtr_->IsBeast())
@@ -1710,9 +2119,14 @@ namespace stage
         else
         {
             equipButtonUPtr_->SetIsDisabled(true);
-            equipButtonUPtr_->SetMouseHoverText("Click 'Item' or press 'i' to switch to the items view if you want to equip an item.");
+
+            equipButtonUPtr_->SetMouseHoverText(
+                "Click 'Item' or press 'i' to switch to the items view if you want to equip an item.");
+
             dropButtonUPtr_->SetIsDisabled(true);
-            dropButtonUPtr_->SetMouseHoverText("Click 'Item' or press 'i' to switch to the items view if you want to drop an item.");
+
+            dropButtonUPtr_->SetMouseHoverText(
+                "Click 'Item' or press 'i' to switch to the items view if you want to drop an item.");
         }
 
         if (ViewType::Items == view_)
@@ -1722,7 +2136,10 @@ namespace stage
                 (equippedListBoxUPtr_->GetSelected()->ITEM_CPTR->Name().empty() == false))
             {
                 unequipButtonUPtr_->SetIsDisabled(false);
-                unequipButtonUPtr_->SetMouseHoverText("Click here or press 'u' to unequip the " + equippedListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
+
+                unequipButtonUPtr_->SetMouseHoverText(
+                    "Click here or press 'u' to unequip the " +
+                        equippedListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
             }
             else
             {
@@ -1738,8 +2155,40 @@ namespace stage
         else
         {
             unequipButtonUPtr_->SetIsDisabled(true);
-            unequipButtonUPtr_->SetMouseHoverText("Click 'Item' or press 'i' to switch to the items view if you want to unequip an item.");
+
+            unequipButtonUPtr_->SetMouseHoverText(
+                "Click 'Item' or press 'i' to switch to the items view if you want to unequip an item.");
         }
+    }
+
+
+    void InventoryStage::AfterChangingViewTasks()
+    {
+        isSliderAnimating_ = false;
+
+        if (ViewType::Count != viewToChangeTo_)
+        {
+            view_ = viewToChangeTo_;
+            viewToChangeTo_ = ViewType::Count;
+        }
+
+        if (isViewForcedToItems_)
+        {
+            view_ = ViewType::Items;
+            isViewForcedToItems_ = false;
+        }
+
+        characterViewMap_[Game::Instance()->State().Party().GetOrderNum(creaturePtr_)] = view_;
+
+        if (ViewType::Items != view_)
+        {
+            SetDescBoxTextFromListBoxItem(equippedListBoxUPtr_->GetSelected());
+        }
+
+        Setup_FirstListBoxTitle();
+        Setup_DescBoxTitle();
+        Setup_ButtonMouseoverText();
+        ForceSelectionAndDrawOfListBox();
     }
 
 
@@ -1824,7 +2273,7 @@ namespace stage
 
                     unEquipListBoxUPtr_->Remove(LISTBOX_ITEM_SPTR);
                     equippedListBoxUPtr_->Add(LISTBOX_ITEM_SPTR);
-                    SetupButtons();
+                    Setup_ButtonMouseoverText();
                 }
                 else
                 {
@@ -1887,7 +2336,7 @@ namespace stage
                     creaturePtr_->ItemUnEquip(IITEM_PTR);
                     equippedListBoxUPtr_->Remove(LISTBOX_ITEM_SPTR);
                     unEquipListBoxUPtr_->Add(LISTBOX_ITEM_SPTR);
-                    SetupButtons();
+                    Setup_ButtonMouseoverText();
                 }
             }
         }
@@ -2058,7 +2507,7 @@ namespace stage
 
             creaturePtr_->ItemRemove(IITEM_PTR);
             creatureToGiveToPtr_->ItemAdd(IITEM_PTR);
-            SetupDescBox(false);
+            Setup_DescBox(false);
             EndOfGiveShareGatherTasks();
             return true;
         }
@@ -2213,7 +2662,7 @@ namespace stage
             creaturePtr_->ItemRemove(iItemToDropPtr_);
             item::ItemWarehouse::Instance()->Free(iItemToDropPtr_);
             EndOfGiveShareGatherTasks();
-            SetupDescBox(false);
+            Setup_DescBox(false);
             return true;
         }
     }
@@ -2312,478 +2761,6 @@ namespace stage
         statsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
         listBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
         descBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-    }
-
-
-    void InventoryStage::SetupCreatureImage()
-    {
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(creatureTexture_,
-                                                                   creaturePtr_->ImageFilename(),
-                                                                   true);
-
-        sfml_util::Invert(creatureTexture_);
-        sfml_util::Mask(creatureTexture_, sf::Color::White);
-        creatureSprite_.setTexture(creatureTexture_, true);
-        creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_, CREATURE_IMAGE_POS_TOP_);
-        creatureSprite_.setColor(sf::Color(255, 255, 255, 127));
-        creatureSprite_.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
-    }
-
-
-    void InventoryStage::SetupCreatureDetails(const bool WILL_UPDATE_POSITION)
-    {
-        std::ostringstream ss;
-        ss << "Character # "
-            << game::Game::Instance()->State().Party().GetOrderNum(creaturePtr_) + 1 << "\n"
-            << creaturePtr_->Name() << "\n"
-            << creaturePtr_->SexName() << "\n"
-            << creaturePtr_->RaceName();
-
-        if (creaturePtr_->IsBeast())
-        {
-            if (creaturePtr_->Race() != creature::race::Wolfen)
-            {
-                ss << ", " << creaturePtr_->RoleName();
-            }
-
-            ss << " " << creaturePtr_->RankClassName() << "\n";
-        }
-        else
-        {
-            ss << " " << creaturePtr_->RankClassName() << " "
-                << creaturePtr_->RoleName() << "\n";
-        }
-
-        ss << "Rank:  " << creaturePtr_->Rank() << "\n"
-           << "Experience: " << creaturePtr_->Exp() << "\n"
-           << "Health:  " << creaturePtr_->HealthCurrent()
-           << "/" << creaturePtr_->HealthNormal()
-           << " " << creaturePtr_->HealthRatio()  << "%\n"
-           << "Condition:  " << creaturePtr_->ConditionNames(4) << "\n"
-           << "\n";
-
-        const sfml_util::gui::TextInfo DETAILS_TEXT_INFO(
-            ss.str(),
-            sfml_util::FontManager::Instance()->Font_Default1(),
-            sfml_util::FontManager::Instance()->Size_Smallish(),
-            sfml_util::FontManager::Color_GrayDarker(),
-            sfml_util::Justified::Left);
-
-        sf::FloatRect detailsTextRect(CREATURE_IMAGE_POS_LEFT_ +
-                                        creatureSprite_.getGlobalBounds().width +
-                                        CREATURE_IMAGE_RIGHT_PAD_,
-                                      creatureSprite_.getPosition().y + CREATURE_IMAGE_RIGHT_PAD_,
-                                      0.0f,
-                                      0.0f);
-
-        if ((WILL_UPDATE_POSITION == false) && (detailsTextRegionUPtr_.get() != nullptr))
-        {
-            detailsTextRect.left = detailsTextRegionUPtr_->GetEntityPos().x;
-        }
-
-        detailsPosLeft_ = detailsTextRect.left;
-
-        if (detailsTextRegionUPtr_.get() == nullptr)
-        {
-            detailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect);
-        }
-        else
-        {
-            detailsTextRegionUPtr_->SetText(ss.str());
-        }
-
-        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_,
-                                             detailsTextRegionUPtr_->GetEntityPos().y);
-    }
-
-
-    void InventoryStage::SetupCreatureStats()
-    {
-        auto const STR_MOD_STR{
-            creaturePtr_->TraitModifiedString(stats::Traits::Strength, true) };
-
-        auto const ACC_MOD_STR{
-            creaturePtr_->TraitModifiedString(stats::Traits::Accuracy, true) };
-
-        auto const CHA_MOD_STR{
-            creaturePtr_->TraitModifiedString(stats::Traits::Charm, true) };
-
-        auto const LCK_MOD_STR{
-            creaturePtr_->TraitModifiedString(stats::Traits::Luck, true) };
-
-        auto const SPD_MOD_STR{
-            creaturePtr_->TraitModifiedString(stats::Traits::Speed, true) };
-
-        auto const INT_MOD_STR{
-            creaturePtr_->TraitModifiedString(stats::Traits::Intelligence, true) };
-
-        std::ostringstream ss;
-        ss << "Strength:       " << creaturePtr_->Strength() << " " << STR_MOD_STR << "\n"
-           << "Accuracy:      "  << creaturePtr_->Accuracy() << " " << ACC_MOD_STR << "\n"
-           << "Charm:          " << creaturePtr_->Charm() << " " << CHA_MOD_STR << "\n"
-           << "Luck:             " << creaturePtr_->Luck() << " " << LCK_MOD_STR << "\n"
-           << "Speed:            " << creaturePtr_->Speed() << " " << SPD_MOD_STR << "\n"
-           << "Intelligence:   " << creaturePtr_->Intelligence() << " " << INT_MOD_STR << "\n"
-           << "\n \n ";
-
-        const sfml_util::gui::TextInfo STATS_TEXT_INFO(
-            ss.str(),
-            sfml_util::FontManager::Instance()->Font_Typical(),
-            sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::FontManager::Color_GrayDarker(),
-            sfml_util::Justified::Left);
-
-        const sf::FloatRect STATS_TEXT_RECT(
-            STATS_POS_LEFT_,
-            mainMenuTitle_.Bottom(false) + 20.0f,
-            0.0f,
-            0.0f);
-
-        if (statsTextRegionUPtr_.get() == nullptr)
-        {
-            statsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT);
-        }
-        else
-        {
-            statsTextRegionUPtr_->SetText(ss.str());
-        }
-    }
-
-    void InventoryStage::SetupCenterText()
-    {
-        std::ostringstream ss;
-        auto const & INVENTORY{ creaturePtr_->Inventory() };
-        ss << "Coins:  " << INVENTORY.Coins() << "\n"
-           << "Gems:  " << INVENTORY.Gems() << "\n"
-           << "Meteor Shards:  " << INVENTORY.MeteorShards() << "\n"
-           << "Mana:  " << creaturePtr_->Mana() << "/"
-           << creaturePtr_->ManaNormal() << "\n"
-           << "Weight: " << INVENTORY.Weight() << "/"
-           << creaturePtr_->WeightCanCarry() << "\n"
-           << "\n \n ";
-
-        const sfml_util::gui::TextInfo CENTER_TEXT_INFO(
-            ss.str(),
-            sfml_util::FontManager::Instance()->Font_Typical(),
-            sfml_util::FontManager::Instance()->Size_Normal(),
-            sfml_util::FontManager::Color_GrayDarker(),
-            sfml_util::Justified::Left);
-
-        const sf::FloatRect CENTER_TEXT_RECT(
-            0.0f,
-            mainMenuTitle_.Bottom(true) + sfml_util::MapByRes(5.0f, 30.0f),
-            0.0f,
-            0.0f);
-
-        const bool WAS_ALREADY_INSTANTIATED(centerTextRegionUPtr_.get() != nullptr);
-
-        if (WAS_ALREADY_INSTANTIATED == false)
-        {
-            centerTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT);
-        }
-        else
-        {
-            centerTextRegionUPtr_->SetText(ss.str());
-        }
-
-        const float POS_LEFT(((WAS_ALREADY_INSTANTIATED == false) &&
-                              (creaturePtr_->IsBeast())) ? (SCREEN_WIDTH_ + 1.0f) :
-                              (SCREEN_WIDTH_ * 0.5f) - sfml_util::MapByRes(100.0f, 300.0f));
-
-        centerTextRegionUPtr_->SetEntityPos(POS_LEFT, centerTextRegionUPtr_->GetEntityPos().y);
-        centerPosLeft_ = POS_LEFT;
-    }
-
-
-    void InventoryStage::SetupListBox()
-    {
-        const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
-            1,
-            true,
-            LISTBOX_REGION_,
-            LISTBOX_COLORSET_,
-            LISTBOX_BG_INFO_);
-
-        sfml_util::gui::ListBoxItemSLst_t listBoxItemsSList;
-
-        //establish which view to use
-        ViewType viewToUse(viewToChangeTo_);
-
-        if (ViewType::Count == viewToUse)
-            viewToUse = view_;
-
-        if (isViewForcedToItems_)
-            viewToUse = ViewType::Items;
-
-        switch(viewToUse)
-        {
-            case ViewType::Conditions:
-            {
-                for (auto const & NEXT_CONDITION_PTR : creaturePtr_->ConditionsPVec())
-                {
-                    listBoxItemTextInfo_.text = NEXT_CONDITION_PTR->Name();
-                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
-                        NEXT_CONDITION_PTR->Name() + "_ConditionsListBoxEntry",
-                        listBoxItemTextInfo_,
-                        NEXT_CONDITION_PTR);
-
-                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
-                }
-                break;
-            }
-
-            case ViewType::Items:
-            {
-                for (auto const & NEXT_ITEM_SPTR : creaturePtr_->Inventory().ItemsEquipped())
-                {
-                    listBoxItemTextInfo_.text = NEXT_ITEM_SPTR->Name();
-
-                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
-                        NEXT_ITEM_SPTR->Name() + "_EquippedItemsListBoxEntry",
-                        listBoxItemTextInfo_,
-                        NEXT_ITEM_SPTR);
-
-                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
-                }
-                break;
-            }
-
-            case ViewType::Spells:
-            {
-                for (auto const NEXT_SPELL_PTR : creaturePtr_->SpellsPVec())
-                {
-                    listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
-
-                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
-                        NEXT_SPELL_PTR->Name() + "_SpellsListBoxEntry",
-                        listBoxItemTextInfo_,
-                        NEXT_SPELL_PTR);
-
-                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
-                }
-                break;
-            }
-
-            case ViewType::Titles:
-            case ViewType::Count:
-            default:
-            {
-                for (auto const NEXT_TITLE_PTR : creaturePtr_->TitlesPVec())
-                {
-                    listBoxItemTextInfo_.text = NEXT_TITLE_PTR->Name();
-
-                    auto const LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
-                        NEXT_TITLE_PTR->Name() + "_TitlesListBoxEntry",
-                        listBoxItemTextInfo_,
-                        NEXT_TITLE_PTR);
-
-                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
-                }
-                break;
-            }
-        }
-
-        const bool IS_ALREADY_INSTANTIATED(equippedListBoxUPtr_.get() != nullptr);
-
-        if (IS_ALREADY_INSTANTIATED)
-        {
-            EntityRemove(equippedListBoxUPtr_.get());
-        }
-
-        equippedListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
-            "InventoryStage'sLeftListBox",
-            LISTBOX_REGION_,
-            listBoxItemsSList,
-            this,
-            10.0f,
-            6.0f,
-            LISTBOX_BOX_INFO,
-            LISTBOX_COLOR_LINE_,
-            sfml_util::gui::ListBox::NO_LIMIT_,
-            this);
-
-        if (IS_ALREADY_INSTANTIATED)
-        {
-            EntityAdd(equippedListBoxUPtr_.get());
-        }
-
-        equippedListBoxUPtr_->SetSelectedIndex(0);
-        equippedListBoxUPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
-    }
-
-
-    void InventoryStage::SetupDescBox(const bool WILL_MOVE_OFFSCREEN)
-    {
-        sfml_util::gui::ListBoxItemSLst_t unEquipItemsSList;
-        for (auto const & NEXT_ITEM_SPTR : creaturePtr_->Inventory().Items())
-        {
-            std::ostringstream itemEntryNameSS;
-            itemEntryNameSS << NEXT_ITEM_SPTR->Name() << " " << "UnEquippedItemsListBoxEntry";
-
-            listBoxItemTextInfo_.text = NEXT_ITEM_SPTR->Name();
-
-            auto const EQUIPPED_LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
-                itemEntryNameSS.str(),
-                listBoxItemTextInfo_,
-                NEXT_ITEM_SPTR);
-
-            unEquipItemsSList.push_back(EQUIPPED_LISTBOXITEM_SPTR);
-        }
-
-        const sfml_util::gui::box::Info LISTBOX_BOX_INFO(1,
-                                                         true,
-                                                         DESCBOX_REGION_,
-                                                         LISTBOX_COLORSET_,
-                                                         LISTBOX_BG_INFO_);
-
-        const bool IS_EQ_ALREADY_INSTANTIATED(unEquipListBoxUPtr_.get() != nullptr);
-
-        sf::Vector2f origPosV(OUT_OF_SIGHT_POS_, OUT_OF_SIGHT_POS_);
-        if (IS_EQ_ALREADY_INSTANTIATED)
-        {
-            origPosV = unEquipListBoxUPtr_->GetEntityPos();
-            EntityRemove(unEquipListBoxUPtr_.get());
-        }
-
-        unEquipListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
-            "InventoryStage'sUnEquipped",
-            DESCBOX_REGION_,
-            unEquipItemsSList,
-            this,
-            10.0f,
-            6.0f,
-            LISTBOX_BOX_INFO,
-            LISTBOX_COLOR_LINE_,
-            sfml_util::gui::ListBox::NO_LIMIT_,
-            this);
-
-        if (IS_EQ_ALREADY_INSTANTIATED)
-        {
-            EntityAdd(unEquipListBoxUPtr_.get());
-        }
-
-        unEquipListBoxUPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
-        unEquipListBoxUPtr_->SetSelectedIndex(0);
-
-        if (IS_EQ_ALREADY_INSTANTIATED)
-        {
-            if (WILL_MOVE_OFFSCREEN)
-            {
-                unEquipListBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f,
-                                                  unEquipListBoxUPtr_->GetEntityPos().y);
-            }
-            else
-            {
-                unEquipListBoxUPtr_->SetEntityPos(origPosV.x, origPosV.y);
-            }
-        }
-
-        if (descBoxUPtr_.get() == nullptr)
-        {
-            descBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>(
-                "InventoryStage'sDesc", LISTBOX_BOX_INFO);
-        }
-
-        sfml_util::gui::TextInfo descTextInfo(listBoxItemTextInfo_);
-        descTextInfo.color = DESCBOX_TEXT_COLOR_;
-        descTextInfo.text = " ";
-
-        const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionUPtr_.get() != nullptr);
-
-        if (IS_DTR_ALREADY_INSTANTIATED)
-        {
-            EntityRemove(descTextRegionUPtr_.get());
-        }
-
-        descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "InventoryStage'sDescription",
-            descTextInfo,
-            DESCBOX_REGION_,
-            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-            sfml_util::gui::box::Info(),
-            DESCBOX_MARGINS_);
-
-        if (IS_DTR_ALREADY_INSTANTIATED)
-        {
-            EntityAdd(descTextRegionUPtr_.get());
-        }
-
-        descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f,
-                                          descTextRegionUPtr_->GetEntityPos().y);
-
-        descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
-    }
-
-
-    void InventoryStage::SetupFirstListBoxTitle()
-    {
-        std::string titleText("");
-        switch (view_)
-        {
-            case ViewType::Conditions:  { titleText = "Conditions"; break; }
-            case ViewType::Items:       { titleText = "Equipped Items"; break; }
-            case ViewType::Spells:      { titleText = "Spells"; break; }
-            case ViewType::Titles:
-            case ViewType::Count:
-            default:                { titleText = "Titles"; break; }
-        }
-
-        const sfml_util::gui::TextInfo LISTBOX_TEXT_INFO(
-            titleText,
-            sfml_util::FontManager::Instance()->Font_Default2(),
-            sfml_util::FontManager::Instance()->Size_Normal(),
-            LISTBOX_COLOR_TITLE_,
-            sfml_util::Justified::Center);
-
-        const sf::FloatRect LISTBOX_TEXT_RECT(FIRST_LISTBOX_POS_LEFT_,
-                                              0.0f,
-                                              LISTBOX_WIDTH_,
-                                              0.0f);
-
-        if (eqTitleTextRegionUPtr_.get() == nullptr)
-        {
-            eqTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "InventoryStage'sEquippedListBoxTitle",
-                LISTBOX_TEXT_INFO,
-                LISTBOX_TEXT_RECT);
-        }
-        else
-        {
-            eqTitleTextRegionUPtr_->Setup(LISTBOX_TEXT_INFO, LISTBOX_TEXT_RECT);
-        }
-
-        eqTitleTextRegionUPtr_->SetEntityPos(eqTitleTextRegionUPtr_->GetEntityPos().x, LISTBOX_POS_TOP_ - eqTitleTextRegionUPtr_->GetEntityRegion().height);
-    }
-
-
-    void InventoryStage::SetupDescBoxTitle()
-    {
-        const std::string TITLETEXT((ViewType::Items == view_) ? "Unequipped Items" : "Description");
-
-        const sfml_util::gui::TextInfo DESC_TEXT_INFO(TITLETEXT,
-                                                      sfml_util::FontManager::Instance()->Font_Default2(),
-                                                      sfml_util::FontManager::Instance()->Size_Normal(),
-                                                      LISTBOX_COLOR_TITLE_,
-                                                      sfml_util::Justified::Center);
-
-        const sf::FloatRect DESC_TEXT_RECT(SECOND_LISTBOX_POS_LEFT_, 0.0f, LISTBOX_WIDTH_, 0.0f);
-
-        if (unEqTitleTextRegionUPtr_.get() == nullptr)
-        {
-            unEqTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "InventoryStage'sUnequippedListBoxTitle",
-                DESC_TEXT_INFO,
-                DESC_TEXT_RECT);
-        }
-        else
-        {
-            unEqTitleTextRegionUPtr_->Setup(DESC_TEXT_INFO, DESC_TEXT_RECT);
-        }
-
-        unEqTitleTextRegionUPtr_->SetEntityPos(unEqTitleTextRegionUPtr_->GetEntityPos().x, LISTBOX_POS_TOP_ - unEqTitleTextRegionUPtr_->GetEntityRegion().height);
     }
 
 
@@ -3286,9 +3263,9 @@ namespace stage
         iItemToDropPtr_ = nullptr;
         contentType_ = ContentType::Count;
         actionType_ = ActionType::Count;
-        SetupCreatureDetails(false);
-        SetupCreatureStats();
-        SetupCenterText();
+        Setup_CreatureDetails(false);
+        Setup_CreatureStats();
+        Setup_CenterText();
     }
 
 
@@ -3649,9 +3626,9 @@ namespace stage
             creaturePtr_,
             TARGET_CREATURES_PVEC);
 
-        SetupCreatureDetails(false);
-        SetupCreatureStats();
-        SetupCenterText();
+        Setup_CreatureDetails(false);
+        Setup_CreatureStats();
+        Setup_CenterText();
 
         creatureEffectIndex_ = 0;
         hitInfoIndex_ = 0;
@@ -3852,9 +3829,9 @@ namespace stage
             turnActionInfo_ = combat::TurnActionInfo(SONG_PTR, TARGETS_PVEC);
             fightResult_ = combat::FightClub::PlaySong(SONG_PTR, creaturePtr_, TARGETS_PVEC);
 
-            SetupCreatureDetails(false);
-            SetupCreatureStats();
-            SetupCenterText();
+            Setup_CreatureDetails(false);
+            Setup_CreatureStats();
+            Setup_CenterText();
 
             creatureEffectIndex_ = 0;
             hitInfoIndex_ = 0;

@@ -161,6 +161,25 @@ namespace stage
         virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
 
+    private:
+        void Setup_PaperBackground();
+        void Setup_InstructionText();
+        void Setup_CreatureImage();
+        void Setup_CreatureDetails(const bool WILL_UPDATE_POSITION);
+        void Setup_CreatureStats();
+        void Setup_CenterText();
+        void Setup_ListBox();
+        void Setup_DescBox(const bool WILL_MOVE_OFFSCREEN);
+        void Setup_FirstListBoxTitle();
+        void Setup_DescBoxTitle();
+
+        void Setup_Button(
+            sfml_util::gui::FourStateButtonUPtr_t & buttonUPtr,
+            const std::string & TEXT,
+            const float HORIZ_OFFSET_MULT);
+
+        void Setup_ButtonMouseoverText();
+
     protected:
         void AfterChangingViewTasks();
         void SetupButtons();
@@ -188,14 +207,6 @@ namespace stage
         bool HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM);//zero indexed
         bool HandlePlayerChangeTo(const creature::CreaturePtrC_t, const bool IS_SLIDING_LEFT);
         void StartSlidingAnimation(const bool IS_SLIDING_LEFT);
-        void SetupCreatureImage();
-        void SetupCreatureDetails(const bool WILL_UPDATE_POSITION);
-        void SetupCreatureStats();
-        void SetupCenterText();
-        void SetupListBox();
-        void SetupDescBox(const bool WILL_MOVE_OFFSCREEN);
-        void SetupFirstListBoxTitle();
-        void SetupDescBoxTitle();
         void SetDescBoxTextFromListBoxItem(const sfml_util::gui::ListBoxItemSPtr_t &);
         void SetDescBoxText(const std::string &);
 
