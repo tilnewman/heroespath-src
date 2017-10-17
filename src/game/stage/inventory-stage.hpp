@@ -180,6 +180,19 @@ namespace stage
 
         void Setup_ButtonMouseoverText();
 
+        void UpdateTime_ViewChangeNone(const float CUT_OFF_TIME_SEC);
+        void UpdateTime_ViewChangeNormal(const float CUT_OFF_TIME_SEC);
+        void UpdateTime_SlideCharacterImage(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_SlideDetailText(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_SlideCenterText(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_SlideStatusText(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_SlideListBox(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_SlideDescBox(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_DetailView(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_DetailViewFade(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_SparkleAnimation(const float ELAPSED_TIME_SECONDS);
+        void UpdateTime_SongAnimation(const float ELAPSED_TIME_SECONDS);
+
     protected:
         void AfterChangingViewTasks();
         void SetupButtons();

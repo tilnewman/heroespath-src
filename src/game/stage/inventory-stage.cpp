@@ -804,409 +804,52 @@ namespace stage
         if (isSliderAnimating_)
         {
             sliderAnimTimerSec_ += ELAPSED_TIME_SECONDS;
-            const float CUT_OFF_TIME_SEC(100.0f);
-            if ((sliderAnimTimerSec_ > VIEW_CHANGE_BETWEEN_TIME_SEC_) && (sliderAnimTimerSec_ < CUT_OFF_TIME_SEC))
+            
+            auto const CUT_OFF_TIME_SEC{ 100.0f };
+
+            if ((sliderAnimTimerSec_ > VIEW_CHANGE_BETWEEN_TIME_SEC_) &&
+                (sliderAnimTimerSec_ < CUT_OFF_TIME_SEC))
             {
                 sliderAnimTimerSec_ = 0.0f;
 
                 if (ViewType::Count == viewToChangeTo_)
                 {
-                    if (isSlidingLeft_)
-                    {
-                        if ((false == isImageSlidingDone_) && (false == isImageSliding_))
-                        {
-                            isImageSliding_ = true;
-                        }
-
-                        if ((false == isDetailsSlidingDone_) && (false == isDetailsSliding_))
-                        {
-                            isDetailsSliding_ = true;
-                        }
-
-                        if ((false == isCenterSlidingDone_) && (false == isCenterSliding_))
-                        {
-                            isCenterSliding_ = true;
-                        }
-
-                        if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
-                        {
-                            isListBoxSliding_ = true;
-                        }
-
-                        if ((false == isStatsSlidingDone_) && (false == isStatsSliding_))
-                        {
-                            isStatsSliding_ = true;
-                            isDescBoxSliding_ = true;
-                            sliderAnimTimerSec_ = CUT_OFF_TIME_SEC + 1.0f;//anything greater than CUT_OFF_TIME_SEC will work here
-                        }
-                    }
-                    else
-                    {
-                        if ((false == isStatsSlidingDone_) && (false == isStatsSliding_))
-                        {
-                            isStatsSliding_ = true;
-                            isDescBoxSliding_ = true;
-                        }
-
-                        if ((false == isCenterSlidingDone_) && (false == isCenterSliding_))
-                        {
-                            isCenterSliding_ = true;
-                        }
-
-                        if ((false == isDetailsSlidingDone_) && (false == isDetailsSliding_))
-                        {
-                            isDetailsSliding_ = true;
-                        }
-
-                        if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
-                        {
-                            isListBoxSliding_ = true;
-                        }
-
-                        if ((false == isImageSlidingDone_) && (false == isImageSliding_))
-                        {
-                            isImageSliding_ = true;
-                            sliderAnimTimerSec_ = CUT_OFF_TIME_SEC + 1.0f;//anything greater than CUT_OFF_TIME_SEC will work here
-                        }
-                    }
+                    UpdateTime_ViewChangeNone(CUT_OFF_TIME_SEC);
                 }
                 else
                 {
-                    if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
-                    {
-                        isListBoxSliding_ = true;
-                    }
-                    else if ((false == isDescBoxSlidingDone_) && (false == isDescBoxSliding_))
-                    {
-                        isDescBoxSliding_ = true;
-                        sliderAnimTimerSec_ = CUT_OFF_TIME_SEC + 1.0f;//anything greater than CUT_OFF_TIME_SEC will work here
-                    }
+                    UpdateTime_ViewChangeNormal(CUT_OFF_TIME_SEC);
                 }
             }
 
             if (isImageSliding_)
             {
-                if (false == hasImageChanged_)
-                {
-                    const float RATIO(imageSlider_.Update(ELAPSED_TIME_SECONDS));
-
-                    if (isSlidingLeft_)
-                    {
-                        creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_ + (OUT_OF_SIGHT_POS_ * RATIO), creatureSprite_.getPosition().y);
-                    }
-                    else
-                    {
-                        creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), creatureSprite_.getPosition().y);
-                    }
-
-                    if (imageSlider_.IsDone())
-                    {
-                        Setup_CreatureImage();
-                        creatureSprite_.setPosition(OUT_OF_SIGHT_POS_, creatureSprite_.getPosition().y);
-                        hasImageChanged_ = true;
-                        imageSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-                    }
-                }
-                else
-                {
-                    const float RATIO((1.0f - imageSlider_.Update(ELAPSED_TIME_SECONDS)));
-
-                    if (isSlidingLeft_)
-                    {
-                        creatureSprite_.setPosition(CREATURE_IMAGE_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), creatureSprite_.getPosition().y);
-                    }
-                    else
-                    {
-                        const float NEW_POS_LEFT(CREATURE_IMAGE_POS_LEFT_ + (OUT_OF_SIGHT_POS_ * RATIO));
-                        creatureSprite_.setPosition(NEW_POS_LEFT, creatureSprite_.getPosition().y);
-
-                        //sometimes the new creature image is wider than the last, so the details text needs to move with the new image to avoid overlap
-                        const float SPRITE_WIDTH(UpdateImageDetailsPosition());
-                        const float NEW_DETAILSTEXT_POS_LEFT_EDGE((NEW_POS_LEFT + SPRITE_WIDTH + CREATURE_IMAGE_RIGHT_PAD_));
-                        if (NEW_DETAILSTEXT_POS_LEFT_EDGE > detailsTextRegionUPtr_->GetEntityPos().x)
-                        {
-                            detailsPosLeft_ = NEW_DETAILSTEXT_POS_LEFT_EDGE;
-                            detailsTextRegionUPtr_->SetEntityPos(NEW_DETAILSTEXT_POS_LEFT_EDGE, detailsTextRegionUPtr_->GetEntityPos().y);
-                        }
-                    }
-
-                    if (imageSlider_.IsDone())
-                    {
-                        isImageSliding_ = false;
-                        isImageSlidingDone_ = true;
-                        hasImageChanged_ = false;
-                    }
-                }
+                UpdateTime_SlideCharacterImage(ELAPSED_TIME_SECONDS);
             }
 
             if (isDetailsSliding_)
             {
-                if (false == hasDetailsChanged_)
-                {
-                    const float RATIO(detailsSlider_.Update(ELAPSED_TIME_SECONDS));
-
-                    if (isSlidingLeft_)
-                    {
-                        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), detailsTextRegionUPtr_->GetEntityPos().y);
-                    }
-                    else
-                    {
-                        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_ + (SCREEN_WIDTH_ * RATIO), detailsTextRegionUPtr_->GetEntityPos().y);
-                    }
-
-                    if (detailsSlider_.IsDone())
-                    {
-                        UpdateImageDetailsPosition();
-                        Setup_CreatureDetails(true);
-                        detailsTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, detailsTextRegionUPtr_->GetEntityPos().y);
-                        hasDetailsChanged_ = true;
-                        detailsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-                    }
-                }
-                else
-                {
-                    const float RATIO((1.0f - detailsSlider_.Update(ELAPSED_TIME_SECONDS)));
-
-                    if (isSlidingLeft_)
-                    {
-                        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_ + (SCREEN_WIDTH_ * RATIO), detailsTextRegionUPtr_->GetEntityPos().y);
-                    }
-                    else
-                    {
-                        detailsTextRegionUPtr_->SetEntityPos(detailsPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO), detailsTextRegionUPtr_->GetEntityPos().y);
-                    }
-
-                    if (detailsSlider_.IsDone())
-                    {
-                        isDetailsSliding_ = false;
-                        isDetailsSlidingDone_ = true;
-                        hasDetailsChanged_ = false;
-                    }
-                }
+                UpdateTime_SlideDetailText(ELAPSED_TIME_SECONDS);
             }
 
             if (isCenterSliding_)
             {
-                if (false == hasCenterChanged_)
-                {
-                    const float RATIO(centerSlider_.Update(ELAPSED_TIME_SECONDS));
-
-                    if (centerTextRegionUPtr_->GetEntityPos().x < SCREEN_WIDTH_)
-                    {
-                        if (isSlidingLeft_)
-                        {
-                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
-                        }
-                        else
-                        {
-                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + (SCREEN_WIDTH_ * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
-                        }
-                    }
-
-                    if (centerSlider_.IsDone())
-                    {
-                        Setup_CenterText();
-                        centerTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, centerTextRegionUPtr_->GetEntityPos().y);
-                        hasCenterChanged_ = true;
-                        centerSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-                    }
-                }
-                else
-                {
-                    if (creaturePtr_->IsBeast() == false)
-                    {
-                        const float RATIO((1.0f - centerSlider_.Update(ELAPSED_TIME_SECONDS)));
-
-                        if (isSlidingLeft_)
-                        {
-                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + (SCREEN_WIDTH_ * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
-                        }
-                        else
-                        {
-                            centerTextRegionUPtr_->SetEntityPos(centerPosLeft_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), centerTextRegionUPtr_->GetEntityPos().y);
-                        }
-                    }
-
-                    if (centerSlider_.IsDone() || creaturePtr_->IsBeast())
-                    {
-                        isCenterSliding_ = false;
-                        isCenterSlidingDone_ = true;
-                        hasCenterChanged_ = false;
-                    }
-                }
+                UpdateTime_SlideCenterText(ELAPSED_TIME_SECONDS);
             }
 
             if (isStatsSliding_)
             {
-                if (false == hasStatsChanged_)
-                {
-                    const float RATIO(statsSlider_.Update(ELAPSED_TIME_SECONDS));
-
-                    if (isSlidingLeft_)
-                    {
-                        statsTextRegionUPtr_->SetEntityPos(STATS_POS_LEFT_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), statsTextRegionUPtr_->GetEntityPos().y);
-                    }
-                    else
-                    {
-                        statsTextRegionUPtr_->SetEntityPos(STATS_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.5f) * RATIO), statsTextRegionUPtr_->GetEntityPos().y);
-                    }
-
-                    if (statsSlider_.IsDone())
-                    {
-                        Setup_CreatureStats();
-                        statsTextRegionUPtr_->SetEntityPos(OUT_OF_SIGHT_POS_, statsTextRegionUPtr_->GetEntityPos().y);
-                        hasStatsChanged_ = true;
-                        statsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-                    }
-                }
-                else
-                {
-                    const float RATIO((1.0f - statsSlider_.Update(ELAPSED_TIME_SECONDS)));
-
-                    if (isSlidingLeft_)
-                    {
-                        statsTextRegionUPtr_->SetEntityPos(STATS_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.5f) * RATIO), statsTextRegionUPtr_->GetEntityPos().y);
-                    }
-                    else
-                    {
-                        statsTextRegionUPtr_->SetEntityPos(STATS_POS_LEFT_ + ((-1.0f * SCREEN_WIDTH_) * RATIO), statsTextRegionUPtr_->GetEntityPos().y);
-                    }
-
-                    if (statsSlider_.IsDone())
-                    {
-                        isStatsSliding_ = false;
-                        isStatsSlidingDone_ = true;
-                        hasStatsChanged_ = false;
-                    }
-                }
+                UpdateTime_SlideStatusText(ELAPSED_TIME_SECONDS);
             }
 
             if (isListBoxSliding_)
             {
-                if (false == hasListBoxChanged_)
-                {
-                    const float RATIO(listBoxSlider_.Update(ELAPSED_TIME_SECONDS));
-
-                    if (isSlidingLeft_)
-                    {
-                        equippedListBoxUPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO), equippedListBoxUPtr_->GetEntityPos().y);
-                    }
-                    else
-                    {
-                        equippedListBoxUPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), equippedListBoxUPtr_->GetEntityPos().y);
-                    }
-
-                    if (listBoxSlider_.IsDone())
-                    {
-                        Setup_ListBox();
-                        equippedListBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, equippedListBoxUPtr_->GetEntityPos().y);
-                        hasListBoxChanged_ = true;
-                        listBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-                    }
-                }
-                else
-                {
-                    const float RATIO((1.0f - listBoxSlider_.Update(ELAPSED_TIME_SECONDS)));
-
-                    if (isSlidingLeft_)
-                    {
-                        equippedListBoxUPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO), equippedListBoxUPtr_->GetEntityPos().y);
-                    }
-                    else
-                    {
-                        equippedListBoxUPtr_->SetEntityPos(FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO), equippedListBoxUPtr_->GetEntityPos().y);
-                    }
-
-                    if (listBoxSlider_.IsDone())
-                    {
-                        isListBoxSliding_ = false;
-                        isListBoxSlidingDone_ = true;
-                        hasListBoxChanged_ = false;
-                    }
-                }
+                UpdateTime_SlideListBox(ELAPSED_TIME_SECONDS);
             }
 
             if (isDescBoxSliding_)
             {
-                if (false == hasDescBoxChanged_)
-                {
-                    const float RATIO(descBoxSlider_.Update(ELAPSED_TIME_SECONDS));
-                    const float POS_LEFT_SLIDING_LEFT(SECOND_LISTBOX_POS_LEFT_ + (((OUT_OF_SIGHT_POS_ * 2.0f) - SCREEN_WIDTH_) * RATIO));
-                    const float POS_LEFT_SLIDING_RIGHT(SECOND_LISTBOX_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.75f) * RATIO));
-
-                    if (ViewType::Items == view_)
-                    {
-                        if (isSlidingLeft_)
-                        {
-                            unEquipListBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, unEquipListBoxUPtr_->GetEntityPos().y);
-                        }
-                        else
-                        {
-                            unEquipListBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, unEquipListBoxUPtr_->GetEntityPos().y);
-                        }
-                    }
-                    else
-                    {
-                        if (isSlidingLeft_)
-                        {
-                            descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxUPtr_->GetEntityPos().y);
-                        }
-                        else
-                        {
-                            descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxUPtr_->GetEntityPos().y);
-                        }
-                    }
-
-                    if (descBoxSlider_.IsDone())
-                    {
-                        Setup_DescBox(true);
-                        unEquipListBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, unEquipListBoxUPtr_->GetEntityPos().y);
-                        descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descTextRegionUPtr_->GetEntityPos().y);
-                        descBoxUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f, descBoxUPtr_->GetEntityPos().y);
-                        hasDescBoxChanged_ = true;
-                        descBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
-                    }
-                }
-                else
-                {
-                    const float RATIO((1.0f - descBoxSlider_.Update(ELAPSED_TIME_SECONDS)));
-                    const float POS_LEFT_SLIDING_LEFT(SECOND_LISTBOX_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.75f) * RATIO));
-                    const float POS_LEFT_SLIDING_RIGHT(SECOND_LISTBOX_POS_LEFT_ + (((OUT_OF_SIGHT_POS_ * 2.0f) - SCREEN_WIDTH_) * RATIO));
-
-                    if ((ViewType::Items == viewToChangeTo_) || isViewForcedToItems_ || ((ViewType::Count == viewToChangeTo_) && (ViewType::Items == view_)))
-                    {
-                        if (isSlidingLeft_)
-                        {
-                            unEquipListBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, unEquipListBoxUPtr_->GetEntityPos().y);
-                        }
-                        else
-                        {
-                            unEquipListBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, unEquipListBoxUPtr_->GetEntityPos().y);
-                        }
-                    }
-                    else
-                    {
-                        if (isSlidingLeft_)
-                        {
-                            descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_LEFT, descBoxUPtr_->GetEntityPos().y);
-                        }
-                        else
-                        {
-                            descTextRegionUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descTextRegionUPtr_->GetEntityPos().y);
-                            descBoxUPtr_->SetEntityPos(POS_LEFT_SLIDING_RIGHT, descBoxUPtr_->GetEntityPos().y);
-                        }
-                    }
-
-                    if (descBoxSlider_.IsDone())
-                    {
-                        isDescBoxSliding_ = false;
-                        isDescBoxSlidingDone_ = true;
-                        hasDescBoxChanged_ = false;
-                    }
-                }
+                UpdateTime_SlideDescBox(ELAPSED_TIME_SECONDS);
             }
 
             if (ViewType::Count == viewToChangeTo_)
@@ -1237,116 +880,16 @@ namespace stage
                 (GetItemMouseIsOver(mousePosV_) != nullptr) &&
                 (false == isWaitingOnPopup_))
             {
-                detailViewTimerSec_ += ELAPSED_TIME_SECONDS;
-
-                if (detailViewTimerSec_ >= DETAILVIEW_TIMER_DURATION_SEC_)
-                {
-                    sfml_util::SoundManager::Instance()->
-                        Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
-
-                    detailViewSourceRect_ = GetItemRectMouseIsOver(mousePosV_);
-                    if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
-                    {
-                        isAchievementDisplaying_ = false;
-                        isDetailViewFadingIn_ = true;
-                        detailViewTimerSec_ = 0.0f;
-                        detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
-                    }
-                }
+                UpdateTime_DetailView(ELAPSED_TIME_SECONDS);
             }
 
             if (isDetailViewFadingIn_ || isDetailViewFadingOut_)
             {
-                if (isDetailViewFadingIn_)
-                {
-                    detailViewSliderRatio_ = detailViewSlider_.Update(ELAPSED_TIME_SECONDS);
-                    if (detailViewSlider_.IsDone())
-                    {
-                        if (isAchievementDisplaying_)
-                        {
-                            isDetailViewFadingIn_ = false;
-                            isDetailViewDoneFading_ = true;
-                            isDetailViewFadingOut_ = false;
-                            SetupDetailViewCreature(creaturePtr_);
-                        }
-                        else
-                        {
-                            const item::ItemPtr_t IITEM_PTR(GetItemMouseIsOver(mousePosV_));
-                            if (IITEM_PTR == nullptr)
-                            {
-                                isDetailViewFadingIn_ = false;
-                                isDetailViewDoneFading_ = false;
-                                isDetailViewFadingOut_ = true;
-                            }
-                            else
-                            {
-                                isDetailViewFadingIn_ = false;
-                                isDetailViewDoneFading_ = true;
-                                isDetailViewFadingOut_ = false;
-                                SetupDetailViewItem(IITEM_PTR);
-                            }
-                        }
-                    }
-                }
-                else if (isDetailViewFadingOut_)
-                {
-                    detailViewSliderRatio_ = (1.0f - detailViewSlider_.Update(ELAPSED_TIME_SECONDS));
-                    if (detailViewSlider_.IsDone())
-                    {
-                        isDetailViewFadingIn_ = false;
-                        isDetailViewDoneFading_ = false;
-                        isDetailViewFadingOut_ = false;
-                    }
-                }
-
-                const sf::Color NEW_COLOR{
-                    0,
-                    0,
-                    0,
-                    static_cast<sf::Uint8>(DETAILVIEW_COLOR_ALPHA_START_ +
-                        ((DETAILVIEW_COLOR_ALPHA_END_ - DETAILVIEW_COLOR_ALPHA_START_) *
-                            detailViewSliderRatio_)) };
-
-                detailViewQuads_[0].color = NEW_COLOR;
-                detailViewQuads_[1].color = NEW_COLOR;
-                detailViewQuads_[2].color = NEW_COLOR;
-                detailViewQuads_[3].color = NEW_COLOR;
-
-                if ((detailViewSlider_.IsDone()) &&
-                    (false == isDetailViewFadingIn_) &&
-                    (false == isDetailViewDoneFading_) &&
-                    (false == isDetailViewFadingOut_))
-                {
-                    detailViewQuads_[0].color = sf::Color::Transparent;
-                    detailViewQuads_[1].color = sf::Color::Transparent;
-                    detailViewQuads_[2].color = sf::Color::Transparent;
-                    detailViewQuads_[3].color = sf::Color::Transparent;
-                }
-
-                SetDetailViewQuads();
+                UpdateTime_DetailViewFade(ELAPSED_TIME_SECONDS);
             }
 
-            if (sparkleAnimUPtr_.get() != nullptr)
-            {
-                sparkleAnimUPtr_->Update(ELAPSED_TIME_SECONDS);
-
-                if (sparkleAnimUPtr_->IsFinished())
-                {
-                    sparkleAnimUPtr_.reset();
-                    HandleCast_Step3_DisplayResults();
-                }
-            }
-
-            if (songAnimUPtr_.get() != nullptr)
-            {
-                songAnimUPtr_->Update(ELAPSED_TIME_SECONDS);
-
-                if (songAnimUPtr_->IsFinished())
-                {
-                    songAnimUPtr_.reset();
-                    HandleSong_Step2_DisplayResults();
-                }
-            }
+            UpdateTime_SparkleAnimation(ELAPSED_TIME_SECONDS);
+            UpdateTime_SongAnimation(ELAPSED_TIME_SECONDS);
         }
 
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
@@ -2162,6 +1705,69 @@ namespace stage
     }
 
 
+    void InventoryStage::UpdateTime_ViewChangeNone(const float CUT_OFF_TIME_SEC)
+    {
+        if (isSlidingLeft_)
+        {
+            if ((false == isImageSlidingDone_) && (false == isImageSliding_))
+            {
+                isImageSliding_ = true;
+            }
+
+            if ((false == isDetailsSlidingDone_) && (false == isDetailsSliding_))
+            {
+                isDetailsSliding_ = true;
+            }
+
+            if ((false == isCenterSlidingDone_) && (false == isCenterSliding_))
+            {
+                isCenterSliding_ = true;
+            }
+
+            if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
+            {
+                isListBoxSliding_ = true;
+            }
+
+            if ((false == isStatsSlidingDone_) && (false == isStatsSliding_))
+            {
+                isStatsSliding_ = true;
+                isDescBoxSliding_ = true;
+                sliderAnimTimerSec_ = CUT_OFF_TIME_SEC + 1.0f;
+            }
+        }
+        else
+        {
+            if ((false == isStatsSlidingDone_) && (false == isStatsSliding_))
+            {
+                isStatsSliding_ = true;
+                isDescBoxSliding_ = true;
+            }
+
+            if ((false == isCenterSlidingDone_) && (false == isCenterSliding_))
+            {
+                isCenterSliding_ = true;
+            }
+
+            if ((false == isDetailsSlidingDone_) && (false == isDetailsSliding_))
+            {
+                isDetailsSliding_ = true;
+            }
+
+            if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
+            {
+                isListBoxSliding_ = true;
+            }
+
+            if ((false == isImageSlidingDone_) && (false == isImageSliding_))
+            {
+                isImageSliding_ = true;
+                sliderAnimTimerSec_ = CUT_OFF_TIME_SEC + 1.0f;
+            }
+        }
+    }
+
+
     void InventoryStage::AfterChangingViewTasks()
     {
         isSliderAnimating_ = false;
@@ -2196,7 +1802,13 @@ namespace stage
     {
         isAchievementDisplaying_ = true;
         const float HALF_SIZE(10.0f);
-        detailViewSourceRect_ = sf::FloatRect((SCREEN_WIDTH_ * 0.5f) - HALF_SIZE, (SCREEN_HEIGHT_ * 0.5f) - HALF_SIZE, (HALF_SIZE * 2.0f), (HALF_SIZE * 2.0f));
+
+        detailViewSourceRect_ = sf::FloatRect(
+            (SCREEN_WIDTH_ * 0.5f) - HALF_SIZE,
+            (SCREEN_HEIGHT_ * 0.5f) - HALF_SIZE,
+            (HALF_SIZE * 2.0f),
+            (HALF_SIZE * 2.0f));
+
         isDetailViewFadingIn_ = true;
         detailViewTimerSec_ = 0.0f;
         detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
@@ -2230,6 +1842,591 @@ namespace stage
     }
 
 
+    void InventoryStage::UpdateTime_ViewChangeNormal(const float CUT_OFF_TIME_SEC)
+    {
+        if ((false == isListBoxSlidingDone_) && (false == isListBoxSliding_))
+        {
+            isListBoxSliding_ = true;
+        }
+        else if ((false == isDescBoxSlidingDone_) && (false == isDescBoxSliding_))
+        {
+            isDescBoxSliding_ = true;
+            sliderAnimTimerSec_ = CUT_OFF_TIME_SEC + 1.0f;
+        }
+    }
+
+
+    void InventoryStage::UpdateTime_SlideCharacterImage(const float ELAPSED_TIME_SECONDS)
+    {
+        if (false == hasImageChanged_)
+        {
+            const float RATIO(imageSlider_.Update(ELAPSED_TIME_SECONDS));
+
+            if (isSlidingLeft_)
+            {
+                creatureSprite_.setPosition(
+                    CREATURE_IMAGE_POS_LEFT_ + (OUT_OF_SIGHT_POS_ * RATIO),
+                    creatureSprite_.getPosition().y);
+            }
+            else
+            {
+                creatureSprite_.setPosition(
+                    CREATURE_IMAGE_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO),
+                    creatureSprite_.getPosition().y);
+            }
+
+            if (imageSlider_.IsDone())
+            {
+                Setup_CreatureImage();
+
+                creatureSprite_.setPosition(
+                    OUT_OF_SIGHT_POS_,
+                    creatureSprite_.getPosition().y);
+
+                hasImageChanged_ = true;
+                imageSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+            }
+        }
+        else
+        {
+            auto const RATIO{ (1.0f - imageSlider_.Update(ELAPSED_TIME_SECONDS)) };
+
+            if (isSlidingLeft_)
+            {
+                creatureSprite_.setPosition(
+                    CREATURE_IMAGE_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO),
+                    creatureSprite_.getPosition().y);
+            }
+            else
+            {
+                auto const NEW_POS_LEFT{
+                    CREATURE_IMAGE_POS_LEFT_ + (OUT_OF_SIGHT_POS_ * RATIO) };
+
+                creatureSprite_.setPosition(NEW_POS_LEFT, creatureSprite_.getPosition().y);
+
+                //sometimes the new creature image is wider than the last,
+                //so the details text needs to move with the new image to avoid overlap
+                auto const SPRITE_WIDTH{ UpdateImageDetailsPosition() };
+
+                auto const NEW_DETAILSTEXT_POS_LEFT_EDGE{
+                    (NEW_POS_LEFT + SPRITE_WIDTH + CREATURE_IMAGE_RIGHT_PAD_) };
+
+                if (NEW_DETAILSTEXT_POS_LEFT_EDGE > detailsTextRegionUPtr_->GetEntityPos().x)
+                {
+                    detailsPosLeft_ = NEW_DETAILSTEXT_POS_LEFT_EDGE;
+
+                    detailsTextRegionUPtr_->SetEntityPos(
+                        NEW_DETAILSTEXT_POS_LEFT_EDGE,
+                        detailsTextRegionUPtr_->GetEntityPos().y);
+                }
+            }
+
+            if (imageSlider_.IsDone())
+            {
+                isImageSliding_ = false;
+                isImageSlidingDone_ = true;
+                hasImageChanged_ = false;
+            }
+        }
+    }
+
+
+    void InventoryStage::UpdateTime_SlideDetailText(const float ELAPSED_TIME_SECONDS)
+    {
+        if (false == hasDetailsChanged_)
+        {
+            auto const RATIO{ detailsSlider_.Update(ELAPSED_TIME_SECONDS) };
+
+            if (isSlidingLeft_)
+            {
+                detailsTextRegionUPtr_->SetEntityPos(
+                    detailsPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO),
+                    detailsTextRegionUPtr_->GetEntityPos().y);
+            }
+            else
+            {
+                detailsTextRegionUPtr_->SetEntityPos(
+                    detailsPosLeft_ + (SCREEN_WIDTH_ * RATIO),
+                    detailsTextRegionUPtr_->GetEntityPos().y);
+            }
+
+            if (detailsSlider_.IsDone())
+            {
+                UpdateImageDetailsPosition();
+                Setup_CreatureDetails(true);
+
+                detailsTextRegionUPtr_->SetEntityPos(
+                    SCREEN_WIDTH_ + 1.0f,
+                    detailsTextRegionUPtr_->GetEntityPos().y);
+
+                hasDetailsChanged_ = true;
+                detailsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+            }
+        }
+        else
+        {
+            auto const RATIO{ (1.0f - detailsSlider_.Update(ELAPSED_TIME_SECONDS)) };
+
+            if (isSlidingLeft_)
+            {
+                detailsTextRegionUPtr_->SetEntityPos(
+                    detailsPosLeft_ + (SCREEN_WIDTH_ * RATIO),
+                    detailsTextRegionUPtr_->GetEntityPos().y);
+            }
+            else
+            {
+                detailsTextRegionUPtr_->SetEntityPos(
+                    detailsPosLeft_ + ((OUT_OF_SIGHT_POS_ - (SCREEN_WIDTH_ * 0.5f)) * RATIO),
+                    detailsTextRegionUPtr_->GetEntityPos().y);
+            }
+
+            if (detailsSlider_.IsDone())
+            {
+                isDetailsSliding_ = false;
+                isDetailsSlidingDone_ = true;
+                hasDetailsChanged_ = false;
+            }
+        }
+    }
+
+
+    void InventoryStage::UpdateTime_SlideCenterText(const float ELAPSED_TIME_SECONDS)
+    {
+        if (false == hasCenterChanged_)
+        {
+            auto const RATIO{ centerSlider_.Update(ELAPSED_TIME_SECONDS) };
+
+            if (centerTextRegionUPtr_->GetEntityPos().x < SCREEN_WIDTH_)
+            {
+                if (isSlidingLeft_)
+                {
+                    centerTextRegionUPtr_->SetEntityPos(
+                        centerPosLeft_ + ((-1.0f * SCREEN_WIDTH_) * RATIO),
+                        centerTextRegionUPtr_->GetEntityPos().y);
+                }
+                else
+                {
+                    centerTextRegionUPtr_->SetEntityPos(
+                        centerPosLeft_ + (SCREEN_WIDTH_ * RATIO),
+                        centerTextRegionUPtr_->GetEntityPos().y);
+                }
+            }
+
+            if (centerSlider_.IsDone())
+            {
+                Setup_CenterText();
+
+                centerTextRegionUPtr_->SetEntityPos(
+                    SCREEN_WIDTH_ + 1.0f,
+                    centerTextRegionUPtr_->GetEntityPos().y);
+
+                hasCenterChanged_ = true;
+                centerSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+            }
+        }
+        else
+        {
+            if (creaturePtr_->IsBeast() == false)
+            {
+                auto const RATIO{ (1.0f - centerSlider_.Update(ELAPSED_TIME_SECONDS)) };
+
+                if (isSlidingLeft_)
+                {
+                    centerTextRegionUPtr_->SetEntityPos(
+                        centerPosLeft_ + (SCREEN_WIDTH_ * RATIO),
+                        centerTextRegionUPtr_->GetEntityPos().y);
+                }
+                else
+                {
+                    centerTextRegionUPtr_->SetEntityPos(
+                        centerPosLeft_ + ((-1.0f * SCREEN_WIDTH_) * RATIO),
+                        centerTextRegionUPtr_->GetEntityPos().y);
+                }
+            }
+
+            if (centerSlider_.IsDone() || creaturePtr_->IsBeast())
+            {
+                isCenterSliding_ = false;
+                isCenterSlidingDone_ = true;
+                hasCenterChanged_ = false;
+            }
+        }
+    }
+
+
+    void InventoryStage::UpdateTime_SlideStatusText(const float ELAPSED_TIME_SECONDS)
+    {
+        if (false == hasStatsChanged_)
+        {
+            auto const RATIO{ statsSlider_.Update(ELAPSED_TIME_SECONDS) };
+
+            if (isSlidingLeft_)
+            {
+                statsTextRegionUPtr_->SetEntityPos(
+                    STATS_POS_LEFT_ + ((-1.0f * SCREEN_WIDTH_) * RATIO),
+                    statsTextRegionUPtr_->GetEntityPos().y);
+            }
+            else
+            {
+                statsTextRegionUPtr_->SetEntityPos(
+                    STATS_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.5f) * RATIO),
+                    statsTextRegionUPtr_->GetEntityPos().y);
+            }
+
+            if (statsSlider_.IsDone())
+            {
+                Setup_CreatureStats();
+
+                statsTextRegionUPtr_->SetEntityPos(
+                    OUT_OF_SIGHT_POS_,
+                    statsTextRegionUPtr_->GetEntityPos().y);
+
+                hasStatsChanged_ = true;
+                statsSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+            }
+        }
+        else
+        {
+            auto const RATIO{ (1.0f - statsSlider_.Update(ELAPSED_TIME_SECONDS)) };
+
+            if (isSlidingLeft_)
+            {
+                statsTextRegionUPtr_->SetEntityPos(
+                    STATS_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.5f) * RATIO),
+                    statsTextRegionUPtr_->GetEntityPos().y);
+            }
+            else
+            {
+                statsTextRegionUPtr_->SetEntityPos(
+                    STATS_POS_LEFT_ + ((-1.0f * SCREEN_WIDTH_) * RATIO),
+                    statsTextRegionUPtr_->GetEntityPos().y);
+            }
+
+            if (statsSlider_.IsDone())
+            {
+                isStatsSliding_ = false;
+                isStatsSlidingDone_ = true;
+                hasStatsChanged_ = false;
+            }
+        }
+    }
+
+
+    void InventoryStage::UpdateTime_SlideListBox(const float ELAPSED_TIME_SECONDS)
+    {
+        if (false == hasListBoxChanged_)
+        {
+            auto const RATIO{ listBoxSlider_.Update(ELAPSED_TIME_SECONDS) };
+
+            if (isSlidingLeft_)
+            {
+                equippedListBoxUPtr_->SetEntityPos(
+                    FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO),
+                    equippedListBoxUPtr_->GetEntityPos().y);
+            }
+            else
+            {
+                equippedListBoxUPtr_->SetEntityPos(
+                    FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO),
+                    equippedListBoxUPtr_->GetEntityPos().y);
+            }
+
+            if (listBoxSlider_.IsDone())
+            {
+                Setup_ListBox();
+
+                equippedListBoxUPtr_->SetEntityPos(
+                    SCREEN_WIDTH_ + 1.0f,
+                    equippedListBoxUPtr_->GetEntityPos().y);
+
+                hasListBoxChanged_ = true;
+                listBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+            }
+        }
+        else
+        {
+            auto const RATIO{ (1.0f - listBoxSlider_.Update(ELAPSED_TIME_SECONDS)) };
+
+            if (isSlidingLeft_)
+            {
+                equippedListBoxUPtr_->SetEntityPos(
+                    FIRST_LISTBOX_POS_LEFT_ + (SCREEN_WIDTH_ * RATIO),
+                    equippedListBoxUPtr_->GetEntityPos().y);
+            }
+            else
+            {
+                equippedListBoxUPtr_->SetEntityPos(
+                    FIRST_LISTBOX_POS_LEFT_ + ((OUT_OF_SIGHT_POS_ * 2.0f) * RATIO),
+                    equippedListBoxUPtr_->GetEntityPos().y);
+            }
+
+            if (listBoxSlider_.IsDone())
+            {
+                isListBoxSliding_ = false;
+                isListBoxSlidingDone_ = true;
+                hasListBoxChanged_ = false;
+            }
+        }
+    }
+
+
+    void InventoryStage::UpdateTime_SlideDescBox(const float ELAPSED_TIME_SECONDS)
+    {
+        if (false == hasDescBoxChanged_)
+        {
+            auto const RATIO{ descBoxSlider_.Update(ELAPSED_TIME_SECONDS) };
+
+            auto const POS_LEFT_SLIDING_LEFT{
+               SECOND_LISTBOX_POS_LEFT_ + (((OUT_OF_SIGHT_POS_ * 2.0f) - SCREEN_WIDTH_) * RATIO) };
+
+            auto const POS_LEFT_SLIDING_RIGHT{
+                SECOND_LISTBOX_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.75f) * RATIO) };
+
+            if (ViewType::Items == view_)
+            {
+                if (isSlidingLeft_)
+                {
+                    unEquipListBoxUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_LEFT,
+                        unEquipListBoxUPtr_->GetEntityPos().y);
+                }
+                else
+                {
+                    unEquipListBoxUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_RIGHT,
+                        unEquipListBoxUPtr_->GetEntityPos().y);
+                }
+            }
+            else
+            {
+                if (isSlidingLeft_)
+                {
+                    descTextRegionUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_LEFT,
+                        descTextRegionUPtr_->GetEntityPos().y);
+
+                    descBoxUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_LEFT,
+                        descBoxUPtr_->GetEntityPos().y);
+                }
+                else
+                {
+                    descTextRegionUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_RIGHT,
+                        descTextRegionUPtr_->GetEntityPos().y);
+
+                    descBoxUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_RIGHT,
+                        descBoxUPtr_->GetEntityPos().y);
+                }
+            }
+
+            if (descBoxSlider_.IsDone())
+            {
+                Setup_DescBox(true);
+
+                unEquipListBoxUPtr_->SetEntityPos(
+                    SCREEN_WIDTH_ + 1.0f,
+                    unEquipListBoxUPtr_->GetEntityPos().y);
+
+                descTextRegionUPtr_->SetEntityPos(
+                    SCREEN_WIDTH_ + 1.0f,
+                    descTextRegionUPtr_->GetEntityPos().y);
+
+                descBoxUPtr_->SetEntityPos(
+                    SCREEN_WIDTH_ + 1.0f,
+                    descBoxUPtr_->GetEntityPos().y);
+
+                hasDescBoxChanged_ = true;
+                descBoxSlider_.Reset(VIEW_CHANGE_SLIDER_SPEED_);
+            }
+        }
+        else
+        {
+            auto const RATIO{ (1.0f - descBoxSlider_.Update(ELAPSED_TIME_SECONDS)) };
+
+            auto const POS_LEFT_SLIDING_LEFT{
+                SECOND_LISTBOX_POS_LEFT_ + ((SCREEN_WIDTH_ * 0.75f) * RATIO) };
+
+            auto const POS_LEFT_SLIDING_RIGHT{
+               SECOND_LISTBOX_POS_LEFT_ + (((OUT_OF_SIGHT_POS_ * 2.0f) - SCREEN_WIDTH_) * RATIO) };
+
+            if ((ViewType::Items == viewToChangeTo_) ||
+                isViewForcedToItems_ ||
+                ((ViewType::Count == viewToChangeTo_) &&
+                (ViewType::Items == view_)))
+            {
+                if (isSlidingLeft_)
+                {
+                    unEquipListBoxUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_LEFT,
+                        unEquipListBoxUPtr_->GetEntityPos().y);
+                }
+                else
+                {
+                    unEquipListBoxUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_RIGHT,
+                        unEquipListBoxUPtr_->GetEntityPos().y);
+                }
+            }
+            else
+            {
+                if (isSlidingLeft_)
+                {
+                    descTextRegionUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_LEFT,
+                        descTextRegionUPtr_->GetEntityPos().y);
+
+                    descBoxUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_LEFT,
+                        descBoxUPtr_->GetEntityPos().y);
+                }
+                else
+                {
+                    descTextRegionUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_RIGHT,
+                        descTextRegionUPtr_->GetEntityPos().y);
+
+                    descBoxUPtr_->SetEntityPos(
+                        POS_LEFT_SLIDING_RIGHT,
+                        descBoxUPtr_->GetEntityPos().y);
+                }
+            }
+
+            if (descBoxSlider_.IsDone())
+            {
+                isDescBoxSliding_ = false;
+                isDescBoxSlidingDone_ = true;
+                hasDescBoxChanged_ = false;
+            }
+        }
+    }
+
+
+    void InventoryStage::UpdateTime_DetailView(const float ELAPSED_TIME_SECONDS)
+    {
+        detailViewTimerSec_ += ELAPSED_TIME_SECONDS;
+
+        if (detailViewTimerSec_ >= DETAILVIEW_TIMER_DURATION_SEC_)
+        {
+            sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+
+            detailViewSourceRect_ = GetItemRectMouseIsOver(mousePosV_);
+            if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
+            {
+                isAchievementDisplaying_ = false;
+                isDetailViewFadingIn_ = true;
+                detailViewTimerSec_ = 0.0f;
+                detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
+            }
+        }
+    }
+
+
+    void InventoryStage::UpdateTime_DetailViewFade(const float ELAPSED_TIME_SECONDS)
+    {
+        if (isDetailViewFadingIn_)
+        {
+            detailViewSliderRatio_ = detailViewSlider_.Update(ELAPSED_TIME_SECONDS);
+            if (detailViewSlider_.IsDone())
+            {
+                if (isAchievementDisplaying_)
+                {
+                    isDetailViewFadingIn_ = false;
+                    isDetailViewDoneFading_ = true;
+                    isDetailViewFadingOut_ = false;
+                    SetupDetailViewCreature(creaturePtr_);
+                }
+                else
+                {
+                    const item::ItemPtr_t IITEM_PTR(GetItemMouseIsOver(mousePosV_));
+                    if (IITEM_PTR == nullptr)
+                    {
+                        isDetailViewFadingIn_ = false;
+                        isDetailViewDoneFading_ = false;
+                        isDetailViewFadingOut_ = true;
+                    }
+                    else
+                    {
+                        isDetailViewFadingIn_ = false;
+                        isDetailViewDoneFading_ = true;
+                        isDetailViewFadingOut_ = false;
+                        SetupDetailViewItem(IITEM_PTR);
+                    }
+                }
+            }
+        }
+        else if (isDetailViewFadingOut_)
+        {
+            detailViewSliderRatio_ = (1.0f - detailViewSlider_.Update(ELAPSED_TIME_SECONDS));
+
+            if (detailViewSlider_.IsDone())
+            {
+                isDetailViewFadingIn_ = false;
+                isDetailViewDoneFading_ = false;
+                isDetailViewFadingOut_ = false;
+            }
+        }
+
+        const sf::Color NEW_COLOR{
+            0,
+            0,
+            0,
+            static_cast<sf::Uint8>(DETAILVIEW_COLOR_ALPHA_START_ +
+                ((DETAILVIEW_COLOR_ALPHA_END_ - DETAILVIEW_COLOR_ALPHA_START_) *
+                    detailViewSliderRatio_)) };
+
+        detailViewQuads_[0].color = NEW_COLOR;
+        detailViewQuads_[1].color = NEW_COLOR;
+        detailViewQuads_[2].color = NEW_COLOR;
+        detailViewQuads_[3].color = NEW_COLOR;
+
+        if ((detailViewSlider_.IsDone()) &&
+            (false == isDetailViewFadingIn_) &&
+            (false == isDetailViewDoneFading_) &&
+            (false == isDetailViewFadingOut_))
+        {
+            detailViewQuads_[0].color = sf::Color::Transparent;
+            detailViewQuads_[1].color = sf::Color::Transparent;
+            detailViewQuads_[2].color = sf::Color::Transparent;
+            detailViewQuads_[3].color = sf::Color::Transparent;
+        }
+
+        SetDetailViewQuads();
+    }
+
+
+    void InventoryStage::UpdateTime_SparkleAnimation(const float ELAPSED_TIME_SECONDS)
+    {
+        if (sparkleAnimUPtr_.get() != nullptr)
+        {
+            sparkleAnimUPtr_->Update(ELAPSED_TIME_SECONDS);
+
+            if (sparkleAnimUPtr_->IsFinished())
+            {
+                sparkleAnimUPtr_.reset();
+                HandleCast_Step3_DisplayResults();
+            }
+        }
+    }
+
+
+    void InventoryStage::UpdateTime_SongAnimation(const float ELAPSED_TIME_SECONDS)
+    {
+        if (songAnimUPtr_.get() != nullptr)
+        {
+            songAnimUPtr_->Update(ELAPSED_TIME_SECONDS);
+
+            if (songAnimUPtr_->IsFinished())
+            {
+                songAnimUPtr_.reset();
+                HandleSong_Step2_DisplayResults();
+            }
+        }
+    }
+
+
     bool InventoryStage::HandleBack()
     {
         game::LoopManager::Instance()->TransitionTo_Previous(hasTakenActionSpellOrSong_);
@@ -2259,13 +2456,13 @@ namespace stage
     {
         if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
-            auto const LISTBOX_ITEM_SPTR(unEquipListBoxUPtr_->GetSelected());
+            auto const LISTBOX_ITEM_SPTR{ unEquipListBoxUPtr_->GetSelected() };
 
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
                 (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
-                const item::ItemPtr_t IITEM_PTR(LISTBOX_ITEM_SPTR->ITEM_CPTR);
-                const std::string EQUIP_RESULT(creaturePtr_->ItemEquip(IITEM_PTR));
+                auto const IITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_CPTR };
+                auto const EQUIP_RESULT{ creaturePtr_->ItemEquip(IITEM_PTR) };
                 if (EQUIP_RESULT.empty())
                 {
                     sfml_util::SoundManager::Instance()->
@@ -2320,7 +2517,8 @@ namespace stage
         if ((ViewType::Items == view_) && (unequipButtonUPtr_->IsDisabled() == false))
         {
             auto const LISTBOX_ITEM_SPTR(equippedListBoxUPtr_->GetSelected());
-            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+            if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
+                (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
                 if (LISTBOX_ITEM_SPTR->ITEM_CPTR->IsBodypart())
                 {
@@ -2603,13 +2801,15 @@ namespace stage
 
     bool InventoryStage::HandleDropRequest()
     {
-        if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
+        if ((ViewType::Items == view_) &&
+            (equipButtonUPtr_->IsDisabled() == false))
         {
-            auto const LISTBOX_ITEM_SPTR(unEquipListBoxUPtr_->GetSelected());
+            auto const LISTBOX_ITEM_SPTR{ unEquipListBoxUPtr_->GetSelected() };
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
                 (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
-                if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
+                if ((Phase::Combat == currentPhase_) &&
+                    (creaturePtr_ != turnCreaturePtr_))
                 {
                     std::ostringstream ss;
                     ss << "\nDuring combat, only the character whose turn it is may "
@@ -2619,7 +2819,7 @@ namespace stage
                     return false;
                 }
 
-                auto const IITEM_PTR(LISTBOX_ITEM_SPTR->ITEM_CPTR);
+                auto const IITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_CPTR };
 
                 iItemToDropPtr_ = IITEM_PTR;
 
@@ -2645,7 +2845,8 @@ namespace stage
 
     bool InventoryStage::HandleDropActual()
     {
-        if ((Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
+        if ((Phase::Combat == currentPhase_) &&
+            (creaturePtr_ != turnCreaturePtr_))
         {
             std::ostringstream ss;
             ss << "\nDuring combat, only the character whose turn it is may "
@@ -2672,21 +2873,21 @@ namespace stage
     {
         if (IS_NEXT_CREATURE_AFTER)
         {
-            return HandlePlayerChangeTo(Game::Instance()->State().Party().
-                GetNextInOrderAfter(creaturePtr_), true);
+            return HandlePlayerChangeTo(Game::Instance()->
+                State().Party().GetNextInOrderAfter(creaturePtr_), true);
         }
         else
         {
-            return HandlePlayerChangeTo(Game::Instance()->State().Party().
-                GetNextInOrderBefore(creaturePtr_), false);
+            return HandlePlayerChangeTo(Game::Instance()->
+                State().Party().GetNextInOrderBefore(creaturePtr_), false);
         }
     }
 
 
     bool InventoryStage::HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM)
     {
-        const std::size_t CURR_INDEX(Game::Instance()->State().Party().
-            GetOrderNum(creaturePtr_));
+        auto const CURR_INDEX{
+            Game::Instance()->State().Party().GetOrderNum(creaturePtr_) };
 
         if (CURR_INDEX == CHARACTER_NUM)
         {
@@ -2694,14 +2895,15 @@ namespace stage
         }
         else
         {
-            return HandlePlayerChangeTo(Game::Instance()->State().Party().
-                GetAtOrderPos(CHARACTER_NUM), (CURR_INDEX < CHARACTER_NUM));
+            return HandlePlayerChangeTo(Game::Instance()->
+                State().Party().GetAtOrderPos(CHARACTER_NUM), (CURR_INDEX < CHARACTER_NUM));
         }
     }
 
 
-    bool InventoryStage::HandlePlayerChangeTo(const creature::CreaturePtrC_t CREATURE_CPTRC,
-                                              const bool                     IS_SLIDING_LEFT)
+    bool InventoryStage::HandlePlayerChangeTo(
+        const creature::CreaturePtrC_t CREATURE_CPTRC,
+        const bool IS_SLIDING_LEFT)
     {
         if (isSliderAnimating_)
         {
@@ -2764,7 +2966,8 @@ namespace stage
     }
 
 
-    void InventoryStage::SetDescBoxTextFromListBoxItem(const sfml_util::gui::ListBoxItemSPtr_t & LISTBOX_ITEM_SPTR)
+    void InventoryStage::SetDescBoxTextFromListBoxItem(
+        const sfml_util::gui::ListBoxItemSPtr_t & LISTBOX_ITEM_SPTR)
     {
         if (LISTBOX_ITEM_SPTR.get() != nullptr)
         {
@@ -2772,11 +2975,13 @@ namespace stage
 
             if (LISTBOX_ITEM_SPTR->COND_CPTRC != nullptr)
             {
-                ss << LISTBOX_ITEM_SPTR->COND_CPTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->COND_CPTRC->LongDesc();
+                ss << LISTBOX_ITEM_SPTR->COND_CPTRC->Name() << "\n\n"
+                    << LISTBOX_ITEM_SPTR->COND_CPTRC->LongDesc();
             }
             else if (LISTBOX_ITEM_SPTR->TITLE_CPTRC != nullptr)
             {
-                ss << LISTBOX_ITEM_SPTR->TITLE_CPTRC->Name() << "\n\n" << LISTBOX_ITEM_SPTR->TITLE_CPTRC->LongDesc();
+                ss << LISTBOX_ITEM_SPTR->TITLE_CPTRC->Name() << "\n\n"
+                    << LISTBOX_ITEM_SPTR->TITLE_CPTRC->LongDesc();
             }
 
             if (ss.str().empty() == false)
@@ -2794,7 +2999,7 @@ namespace stage
         descTextInfo.charSize = DESCBOX_TEXT_SIZE_;
         descTextInfo.text = TEXT;
 
-        const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionUPtr_.get() != nullptr);
+        const bool IS_DTR_ALREADY_INSTANTIATED{ descTextRegionUPtr_.get() != nullptr };
 
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
@@ -2817,14 +3022,15 @@ namespace stage
     }
 
 
-    void InventoryStage::PopupCharacterSelectWindow(const std::string & PROMPT_TEXT,
-                                                    const bool          CAN_SELECT_SELF,
-                                                    const bool          CAN_SELECT_BEASTS)
+    void InventoryStage::PopupCharacterSelectWindow(
+        const std::string & PROMPT_TEXT,
+        const bool CAN_SELECT_SELF,
+        const bool CAN_SELECT_BEASTS)
     {
         const std::size_t CURRENT_CREATURE_ORDER_NUM(
             Game::Instance()->State().Party().GetOrderNum(creaturePtr_));
 
-        const std::size_t NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
+        auto const NUM_CHARACTERS{ Game::Instance()->State().Party().Characters().size() };
 
         std::vector<std::string> invalidTextVec;
         invalidTextVec.resize(NUM_CHARACTERS);
@@ -2866,7 +3072,8 @@ namespace stage
             "InventoryStage'sPopupRejection",
             REJECTION_PROMPT_TEXT,
             popup::PopupButtons::Cancel,
-            ((WILL_USE_REGULAR_SIZE_POPUP) ? popup::PopupImage::Regular : popup::PopupImage::Banner),
+            ((WILL_USE_REGULAR_SIZE_POPUP) ?
+                popup::PopupImage::Regular : popup::PopupImage::Banner),
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptWarn,
             sfml_util::FontManager::Instance()->Size_Largeish()) };
@@ -3343,7 +3550,7 @@ namespace stage
 
         detailViewSprite_.setTexture(detailViewTexture_, true);
         
-        const float DETAILVIEW_IMAGE_SCALE(sfml_util::MapByRes(0.75f, 1.25f));
+        auto const DETAILVIEW_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 1.25f) };
 
         detailViewSprite_.setScale(DETAILVIEW_IMAGE_SCALE, DETAILVIEW_IMAGE_SCALE);
         
@@ -3558,7 +3765,9 @@ namespace stage
 
     void InventoryStage::StartDetailViewFadeOutTasks()
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+
         isDetailViewFadingIn_ = false;
         isDetailViewDoneFading_ = false;
         isDetailViewFadingOut_ = true;
@@ -3588,9 +3797,10 @@ namespace stage
 
         if (spellBeingCastPtr_->Target() == TargetType::SingleCompanion)
         {
-            PopupCharacterSelectWindow("Cast " + spellBeingCastPtr_->Name() + " on who?",
-                                       true,
-                                       true);
+            PopupCharacterSelectWindow(
+                "Cast " + spellBeingCastPtr_->Name() + " on who?",
+                true,
+                true);
         }
         else if (spellBeingCastPtr_->Target() == TargetType::AllCompanions)
         {
@@ -3712,7 +3922,7 @@ namespace stage
 
     bool InventoryStage::HandleSpellsOrSongs()
     {
-        auto const IS_SPELLS{ ! (creaturePtr_->Role() == creature::role::Bard) };
+        auto const IS_SPELLS{ (creaturePtr_->Role() != creature::role::Bard) };
 
         if (Phase::Combat == currentPhase_)
         {
@@ -3822,9 +4032,10 @@ namespace stage
             songBeingPlayedPtr_ = SONG_PTR;
             combatSoundEffectsUPtr_->PlaySong(SONG_PTR);
 
-            auto const TARGETS_PVEC{ ((SONG_PTR->Target() == TargetType::AllCompanions) ?
-                creature::Algorithms::Players() :
-                creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
+            auto const TARGETS_PVEC{
+                ((SONG_PTR->Target() == TargetType::AllCompanions) ?
+                    creature::Algorithms::Players() :
+                    creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
 
             turnActionInfo_ = combat::TurnActionInfo(SONG_PTR, TARGETS_PVEC);
             fightResult_ = combat::FightClub::PlaySong(SONG_PTR, creaturePtr_, TARGETS_PVEC);
@@ -3868,13 +4079,14 @@ namespace stage
         }
 
         bool isFightResultCollapsed{ false };
-        auto const ACTION_TEXT{ combat::Text::ActionTextIndexed(creaturePtr_,
-                                                                turnActionInfo_,
-                                                                fightResult_,
-                                                                false,
-                                                                creatureEffectIndex_,
-                                                                hitInfoIndex_,
-                                                                isFightResultCollapsed) };
+        auto const ACTION_TEXT{ combat::Text::ActionTextIndexed(
+            creaturePtr_,
+            turnActionInfo_,
+            fightResult_,
+            false,
+            creatureEffectIndex_,
+            hitInfoIndex_,
+            isFightResultCollapsed) };
 
         auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_SONG_RESULT_,
