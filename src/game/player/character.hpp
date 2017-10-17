@@ -115,6 +115,7 @@ namespace player
     using CharacterCPtr_t = const Character *;
     using CharacterPtrC_t = Character * const;
     using CharacerCPtrC_t = const Character * const;
+    using CharacterUPtr_t = std::unique_ptr<Character>;
 
     using CharacterPVec_t = std::vector<CharacterPtr_t>;
     using CharacterPSet_t = std::set<CharacterPtr_t>;

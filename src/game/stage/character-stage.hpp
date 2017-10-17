@@ -48,6 +48,7 @@
 #include "game/creature/role-stats.hpp"
 #include "game/horiz-symbol.hpp"
 #include "game/main-menu-title.hpp"
+#include "game/player/character.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
@@ -88,9 +89,10 @@ namespace stage
         MenuButton & operator=(const MenuButton &) =delete;
 
     public:
-        MenuButton(const std::string & NAME,
-                   const std::string & IMAGE_FILENAME_UP,
-                   const std::string & IMAGE_FILENAME_OVER);
+        MenuButton(
+            const std::string & NAME,
+            const std::string & IMAGE_FILENAME_UP,
+            const std::string & IMAGE_FILENAME_OVER);
 
         virtual ~MenuButton() {}
         virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
@@ -126,7 +128,9 @@ namespace stage
             sf::Color color(COLOR_BASE, 255, COLOR_BASE);
 
             if (VAL < 0)
+            {
                 color = sf::Color(255, COLOR_BASE, COLOR_BASE);
+            }
 
             std::ostringstream ss;
             ss << NAME << ((VAL > 0) ? "+" : "") << VAL;
@@ -176,42 +180,90 @@ namespace stage
         virtual ~CharacterStage();
 
         //required by callback handler
-        inline virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &);
-        virtual bool HandleCallback(const popup::PopupResponse &);
-        virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &);
-        virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
+        inline const std::string HandlerName() const override { return GetStageName(); }
 
-        bool HandleCallback_SaveButton();
-        bool HandleCallback_BackButton();
-        bool HandleCallback_HelpButton();
-        bool HandleCallback_NextButton();
+        bool HandleCallback(
+            const sfml_util::callback::RadioButtonCallbackPackage_t &) override;
+
+        bool HandleCallback(const popup::PopupResponse &) override;
+
+        bool HandleCallback(
+            const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+
+        bool HandleCallback(
+            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
+
+        void Setup() override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        bool KeyPress(const sf::Event::KeyEvent & KE) override;
+        bool KeyRelease(const sf::Event::KeyEvent & KE) override;
+        void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+        sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
+        bool AreAnyAnimNumStillMoving() const;
+
+    private:
+        void Setup_Button(MenuButtonUPtr_t & buttonUPtr, const float VERT_POS);
+        void Setup_RaceRadioButtons();
+        void Setup_RoleRadioButtons();
+        void Setup_RaceDescriptionBox();
+        void Setup_RoleDescriptionBox();
+        void Setup_NameLabel();
+        void Setup_NameTextEntryBox();
+        void Setup_SexRadioButtons();
+        void Setup_SpacebarInstructionText();
+        void Setup_StatBackgroundBox(const float STATBOX_POS_TOP);
+
+        void Setup_StatLabels(
+            const float STATBOX_POS_TOP,
+            const sfml_util::gui::TextInfo & STAT_TEXT_INFO);
+
+        void Setup_StatNumberPositions();
+        void Setup_FixedStats(const sfml_util::gui::TextInfo &);
+        void Setup_SmokeAnimation();
+        void Setup_AttributeDescriptionBox();
+
+        void Setup_Attribute(
+            const stats::Traits::Enum TRAIT_ENUM,
+            const std::string & DESC_KEY,
+            const sf::FloatRect REGION,
+            sfml_util::gui::TextInfo & descTextInfo,
+            sfml_util::gui::TextRegionUVec_t & textRegionUVec);
+
+        void Setup_AttributeHelpText(
+            const stats::Traits::Enum TRAIT_ENUM,
+            const sf::FloatRect REGION,
+            sfml_util::gui::TextInfo & helpTextInfo,
+            sfml_util::gui::TextRegionUVec_t & textRegionUVec);
+
+        bool OnSaveButton();
+        bool OnBackButton();
+        bool OnHelpButton();
+        bool OnNextButton();
+
+        void MissingAttributesPopup();
+        void CharacterNameMissingPopup();
+        void CharacterImageSelectionPopup(const std::string & CHARACTER_NAME);
+        void LeaveStageConfirmPopup(const std::string & CHARACTER_NAME);
+        void Help1Popup();
+        void Help2Popup();
+        void Help3Popup();
+        void CharacterCreationConfirmPopup(const std::size_t IMAGE_INDEX);
+        void CharacterSavedNotifyPopup(const player::CharacterUPtr_t &);
 
         void AdjustRoleRadioButtonsForRace(const game::creature::race::Enum WHICH_RACE);
 
-        virtual void Setup();
-
-        //on error the pos for Intelligence is returned
-        //depends on members attribVertOffset1_ and attribVertOffset2_ being set before running
         float GetAttributeNumPosTop(const stats::Traits::Enum STAT);
 
-        void SetupRaceDescriptionBox();
-        void SetupRoleDescriptionBox();
-        void SetupAttrDescriptionBox();
-
         //returns true if any text was set that needs to be displayed
-        bool GetStatHelpText(const stats::Traits::Enum WHICH_STAT,
-                             sfml_util::gui::TextInfo & textInfo) const;
-
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
-
-        virtual bool KeyPress(const sf::Event::KeyEvent & KE);
-        virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
+        bool GetStatHelpText(
+            const stats::Traits::Enum WHICH_STAT,
+            sfml_util::gui::TextInfo & textInfo) const;
 
         void UndoAndClearStatModifierChanges();
         void SetVisibleStatsToStatSetBase();
-        void HandleChangedStatModifiers(const std::string & WHEN_STR);
+        void HandleChangedStatModifiers();
         void CreateStatModifers();
         void ApplyStatModifiersToStatSetBase();
 
@@ -220,27 +272,17 @@ namespace stage
         stats::Traits::Enum GetStatAbove(const stats::Traits::Enum STAT) const;
         stats::Traits::Enum GetStatBelow(const stats::Traits::Enum STAT) const;
 
-        //returns a value less than zero on error
-        float GetStatPosTop(const stats::Traits::Enum STAT) const;
-
-        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
-        virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
-        virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
-
-        bool AreAnyAnimNumStillMoving() const;
+        float GetStatPosTop(const stats::Traits::Enum STAT) const;//returns <0.0f on error
         bool AreAnyStatsIgnored() const;
-
         void HandleAttributeDragging(const sf::Vector2f & MOUSE_POS_V);
-
         void ProduceAnimatingDigits(const float ELAPSED_TIME_SECONDS);
-
         void SwapAttributes(const stats::Traits::Enum A, const stats::Traits::Enum B);
-
         void HandleStuckAnims(const float ELAPSED_TIME_SEC);
-
         bool HandleMenuNavigationKeyRelease(const sf::Event::KeyEvent &);
-
         void ResetForNewCharacterCreation();
+        bool RaceChange(const creature::race::Enum);
+        bool RoleChange();
+        bool CreateCharacter();
 
     private:
         static const stats::Trait_t STAT_INVALID_;

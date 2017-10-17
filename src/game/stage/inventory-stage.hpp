@@ -143,23 +143,29 @@ namespace stage
         InventoryStage & operator=(const InventoryStage &) =delete;
 
     public:
-        explicit InventoryStage(const creature::CreaturePtr_t TURN_CREATURE_PTR,
-                                const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
-                                const Phase::Enum             CURRENT_PHASE);
+        explicit InventoryStage(
+            const creature::CreaturePtr_t TURN_CREATURE_PTR,
+            const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
+            const Phase::Enum             CURRENT_PHASE);
 
         virtual ~InventoryStage();
 
-        inline virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
-        virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
-        virtual bool HandleCallback(const popup::PopupResponse &);
+        inline const std::string HandlerName() const override { return GetStageName(); }
 
-        void Setup();
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
-        virtual bool KeyRelease(const sf::Event::KeyEvent &);
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-        virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
-        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
+        bool HandleCallback(
+            const sfml_util::gui::callback::ListBoxEventPackage &) override;
+
+        bool HandleCallback(
+            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
+
+        bool HandleCallback(const popup::PopupResponse &) override;
+
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
+        void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
     private:
         void Setup_PaperBackground();
@@ -223,17 +229,34 @@ namespace stage
         void SetDescBoxTextFromListBoxItem(const sfml_util::gui::ListBoxItemSPtr_t &);
         void SetDescBoxText(const std::string &);
 
-        void PopupCharacterSelectWindow(const std::string & PROMPT_TEXT,
-                                        const bool          CAN_SELECT_SELF = false,
-                                        const bool          CAN_SELECT_BEASTS = false);
+        void PopupCharacterSelectWindow(
+            const std::string & PROMPT_TEXT,
+            const bool CAN_SELECT_SELF = false,
+            const bool CAN_SELECT_BEASTS = false);
 
-        void PopupRejectionWindow(const std::string &, const bool WILL_USE_REGULAR_SIZE_POPUP = false);
-        void PopupNumberSelectWindow(const std::string & PROMPT_TEXT, const std::size_t NUMBER_MAX);
+        void PopupRejectionWindow(
+            const std::string &,
+            const bool WILL_USE_REGULAR_SIZE_POPUP = false);
+
+        void PopupNumberSelectWindow(
+            const std::string & PROMPT_TEXT,
+            const std::size_t NUMBER_MAX);
+
         void PopupDoneWindow(const std::string &, const bool);
         void PopupContentSelectionWindow(const std::string &);
-        void HandleCoinsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr);
-        void HandleGemsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr);
-        void HandleMeteorShardsGive(const std::size_t COUNT, creature::CreaturePtr_t cretureToGiveToPtr);
+
+        void HandleCoinsGive(
+            const std::size_t COUNT,
+            creature::CreaturePtr_t creatureToGiveToPtr);
+
+        void HandleGemsGive(
+            const std::size_t COUNT,
+            creature::CreaturePtr_t creatureToGiveToPtr);
+
+        void HandleMeteorShardsGive(
+            const std::size_t COUNT,
+            creature::CreaturePtr_t cretureToGiveToPtr);
+
         void HandleCoinsGather(const bool WILL_POPUP);
         void HandleGemsGather(const bool WILL_POPUP);
         void HandleMeteorShardsGather(const bool WILL_POPUP);
@@ -242,8 +265,17 @@ namespace stage
         void HandleMeteorShardsShare();
         void EndOfGiveShareGatherTasks();
         float UpdateImageDetailsPosition();//returns the sprite width
-        inline bool IsDetailViewFading() const { return (isDetailViewFadingIn_ || isDetailViewFadingOut_); }
-        inline bool IsDetailViewFadingOrVisible() const { return (IsDetailViewFading() || isDetailViewDoneFading_); }
+
+        inline bool IsDetailViewFading() const
+        {
+            return (isDetailViewFadingIn_ || isDetailViewFadingOut_);
+        }
+
+        inline bool IsDetailViewFadingOrVisible() const
+        {
+            return (IsDetailViewFading() || isDetailViewDoneFading_);
+        }
+
         item::ItemPtr_t GetItemMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
         const sf::FloatRect GetItemRectMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
         void SetupDetailViewItem(const item::ItemPtr_t);
@@ -270,9 +302,10 @@ namespace stage
         bool HandleSong_Step1_Play(const song::SongPtr_t);
         bool HandleSong_Step2_DisplayResults();
 
-        void SystemErrorPopup(const std::string & GENERAL_ERROR_MSG,
-                              const std::string & TECH_ERROR_MSG,
-                              const std::string & TITLE_MSG = "");
+        void SystemErrorPopup(
+            const std::string & GENERAL_ERROR_MSG,
+            const std::string & TECH_ERROR_MSG,
+            const std::string & TITLE_MSG = "");
 
         void SetDetailViewQuads();
 
