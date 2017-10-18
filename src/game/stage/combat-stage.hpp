@@ -26,7 +26,6 @@
 #define GAME_COMBATSTAGE_HPP_INCLUDED
 //
 // combat-stage.hpp
-//  A Stage class that enables combat.
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
@@ -40,6 +39,7 @@
 #include "sfml-util/gui/sliderbar.hpp"
 
 #include "popup/i-popup-callback.hpp"
+
 #include "game/horiz-symbol.hpp"
 #include "game/combat/turn-action-enum.hpp"
 #include "game/combat/turn-action-info.hpp"
@@ -47,10 +47,12 @@
 #include "game/combat/combat-sound-effects.hpp"
 #include "game/combat/combat-restore-info.hpp"
 #include "game/creature/achievement-enum.hpp"
+#include "game/creature/title.hpp"
 
 #include "misc/handy-types.hpp"
 
 #include <set>
+#include <tuple>
 #include <memory>
 #include <vector>
 #include <string>
@@ -106,13 +108,29 @@ namespace combat
 
 namespace stage
 {
+    //Responsible for wrapping all the perform report indicies.
+    struct ReportIndicies
+    {
+        ReportIndicies(
+            const std::size_t EFFECT_INDEX,
+            const std::size_t HIT_INDEX)
+        :
+            effect(EFFECT_INDEX),
+            hit(HIT_INDEX)
+        {}
 
-    using SizePairSet_t = std::set<std::pair<std::size_t, std::size_t>>;
+        std::size_t effect;
+        std::size_t hit;
 
-    using CreatureTitlePair_t = std::pair<creature::CreaturePtr_t,
-        std::pair<creature::TitlePtr_t, creature::TitlePtr_t> >;
+        friend bool operator<(const ReportIndicies &, const ReportIndicies &);
+    };
 
-    using CreatureTitleVec_t = std::vector<CreatureTitlePair_t>;
+    inline bool operator<(const ReportIndicies & L, const ReportIndicies & R)
+    {
+        return std::tie(L.effect, L.hit) < std::tie(R.effect, R.hit);
+    }
+
+    using ReportIndexesSet_t = std::set<ReportIndicies>;
 
 
     //A Stage class that allows camping characters
@@ -328,16 +346,18 @@ namespace stage
 
         void EndOfCombatCleanup();
 
-        void SystemErrorPopup(const std::string & GENERAL_ERROR_MSG,
-                              const std::string & TECH_ERROR_MSG,
-                              const std::string & TITLE_MSG = "");
+        void SystemErrorPopup(
+            const std::string & GENERAL_ERROR_MSG,
+            const std::string & TECH_ERROR_MSG,
+            const std::string & TITLE_MSG = "");
 
         //returns true if any Titles were conferred
         bool PopulateAchievementsVec();
 
-        void HandleAchievementEnqueue(const creature::CreaturePtr_t         CREATURE_PTR,
-                                      const creature::AchievementType::Enum ACH_ENUM,
-                                      const int                             COUNT = 1);
+        void HandleAchievementEnqueue(
+            const creature::CreaturePtr_t CREATURE_PTR,
+            const creature::AchievementType::Enum ACH_ENUM,
+            const int COUNT = 1);
 
         bool HandleAchievementPopups();
 
@@ -417,7 +437,7 @@ namespace stage
         sfml_util::gui::box::BoxUPtr_t   turnBoxUPtr_;
         sf::FloatRect                    turnBoxRegion_;
         combat::CombatSoundEffects       combatSoundEffects_;
-        SizePairSet_t                    soundEffectsPlayedSet_;
+        ReportIndexesSet_t               soundEffectsPlayedSet_;
         TurnPhase                        turnPhase_;
         PreTurnPhase                     preTurnPhase_;
         TurnActionPhase                  turnActionPhase_;
@@ -504,7 +524,7 @@ namespace stage
         bool isSongAnim2Done_;
 
         //members that support achievements and titles
-        CreatureTitleVec_t creatureTitleVec_;
+        creature::TitleTransitionVec_t creatureTitlesVec_;
     };
 
 }

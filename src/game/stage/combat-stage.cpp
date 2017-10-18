@@ -271,7 +271,7 @@ namespace stage
         clickPosV_                  (0.0f, 0.0f),
         isSongAnim1Done_            (false),
         isSongAnim2Done_            (false),
-        creatureTitleVec_           ()
+        creatureTitlesVec_           ()
     {
         restoreInfo_.CanTurnAdvance(false);
     }
@@ -397,8 +397,8 @@ namespace stage
             (combatDisplayStagePtr_ != nullptr))
         {
             //only zoom out half the distance that the slider actually shows
-            auto const HALF_ZOOM_DIFFERENCE{ 1.0f -
-                ((1.0f - PACKAGE.PTR_->GetCurrentValue()) * 0.5f) };
+            auto const HALF_ZOOM_DIFFERENCE{
+                1.0f - ((1.0f - PACKAGE.PTR_->GetCurrentValue()) * 0.5f) };
 
             combatDisplayStagePtr_->SetZoomLevel(HALF_ZOOM_DIFFERENCE);
             return true;
@@ -2491,7 +2491,7 @@ namespace stage
 
         conditionEffectsWillSkip_ = false;
 
-        creatureTitleVec_.clear();
+        creatureTitlesVec_.clear();
 
         HandleWin();
         HandleLose();
@@ -4014,12 +4014,13 @@ namespace stage
 
         if (HIT_INFO.IsWeapon())
         {
-            auto const EFFECT_HIT_PAIR{ std::make_pair(performReportEffectIndex_,
+            auto const REPORT_INDICIES{ ReportIndicies(
+                performReportEffectIndex_,
                 performReportHitIndex_) };
 
-            if (soundEffectsPlayedSet_.find(EFFECT_HIT_PAIR) == soundEffectsPlayedSet_.end())
+            if (soundEffectsPlayedSet_.find(REPORT_INDICIES) == soundEffectsPlayedSet_.end())
             {
-                soundEffectsPlayedSet_.insert(EFFECT_HIT_PAIR);
+                soundEffectsPlayedSet_.insert(REPORT_INDICIES);
                 combatSoundEffects_.PlayHitOrMiss(turnCreaturePtr_, HIT_INFO);
             }
         }
@@ -4133,7 +4134,7 @@ namespace stage
 
     bool CombatStage::PopulateAchievementsVec()
     {
-        creatureTitleVec_.clear();
+        creatureTitlesVec_.clear();
 
         //BeastMindLinks
         //MoonHowls
@@ -4152,8 +4153,8 @@ namespace stage
         //TODO -these achievements still need to be implemented
 
         //gather achievements from fightResult_
-        auto const IS_TURN_CREATURE_FLYING{ combat::Encounter::Instance()->
-            GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying() };
+        auto const IS_TURN_CREATURE_FLYING{
+            combat::Encounter::Instance()->GetTurnInfoCopy(turnCreaturePtr_).GetIsFlying() };
 
         auto flyingAttackHits{ 0 };
         auto meleeHits{ 0 };
@@ -4225,72 +4226,83 @@ namespace stage
             }
         }
 
-        HandleAchievementEnqueue(turnCreaturePtr_,
-                                 creature::AchievementType::FlyingAttackHits,
-                                 flyingAttackHits);
+        HandleAchievementEnqueue(
+            turnCreaturePtr_,
+            creature::AchievementType::FlyingAttackHits,
+            flyingAttackHits);
 
-        HandleAchievementEnqueue(turnCreaturePtr_,
-                                 creature::AchievementType::MeleeHits,
-                                 meleeHits);
+        HandleAchievementEnqueue(
+            turnCreaturePtr_,
+            creature::AchievementType::MeleeHits,
+            meleeHits);
 
-        HandleAchievementEnqueue(turnCreaturePtr_,
-                                 creature::AchievementType::ProjectileHits,
-                                 projectileHits);
+        HandleAchievementEnqueue(
+            turnCreaturePtr_,
+            creature::AchievementType::ProjectileHits,
+            projectileHits);
 
         for (auto const NEXT_DODGING_CREATURE_PTR : playersDodgedStandingPVec)
         {
-            HandleAchievementEnqueue(NEXT_DODGING_CREATURE_PTR,
-                                     creature::AchievementType::DodgedStanding);
+            HandleAchievementEnqueue(
+                NEXT_DODGING_CREATURE_PTR,
+                creature::AchievementType::DodgedStanding);
         }
 
         for (auto const NEXT_DODGING_CREATURE_PTR : playersDodgedFlyingPVec)
         {
-            HandleAchievementEnqueue(NEXT_DODGING_CREATURE_PTR,
-                                     creature::AchievementType::DodgedFlying);
+            HandleAchievementEnqueue(
+                NEXT_DODGING_CREATURE_PTR,
+                creature::AchievementType::DodgedFlying);
         }
 
         if (didPlaySong)
         {
-            HandleAchievementEnqueue(turnCreaturePtr_,
-                                     creature::AchievementType::SongsPlayed);
+            HandleAchievementEnqueue(
+                turnCreaturePtr_,
+                creature::AchievementType::SongsPlayed);
         }
 
         if (didRoar)
         {
-            HandleAchievementEnqueue(turnCreaturePtr_,
-                                     creature::AchievementType::BeastRoars);
+            HandleAchievementEnqueue(
+                turnCreaturePtr_,
+                creature::AchievementType::BeastRoars);
         }
 
         if (turnCreaturePtr_->IsPlayerCharacter() && IS_TURN_CREATURE_FLYING)
         {
-            HandleAchievementEnqueue(turnCreaturePtr_,
-                                     creature::AchievementType::TurnsInFlight);
+            HandleAchievementEnqueue(
+                turnCreaturePtr_,
+                creature::AchievementType::TurnsInFlight);
         }
 
         if (didCastSpell)
         {
-            HandleAchievementEnqueue(turnCreaturePtr_,
-                                     creature::AchievementType::SpellsCast);
+            HandleAchievementEnqueue(
+                turnCreaturePtr_,
+                creature::AchievementType::SpellsCast);
         }
 
-        return (creatureTitleVec_.empty() == false);
+        return (creatureTitlesVec_.empty() == false);
     }
 
 
     void CombatStage::HandleAchievementEnqueue(
-        const creature::CreaturePtr_t         CREATURE_PTR,
+        const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum ACH_ENUM,
-        const int                             COUNT)
+        const int COUNT)
     {
         for (int i(0); i < COUNT; ++i)
         {
-            auto const ORIG_TITLE_PTR{ CREATURE_PTR->GetAchievements().GetCurrentTitle(ACH_ENUM) };
-            auto const NEW_TITLE_PTR{ CREATURE_PTR->GetAchievements().Increment(ACH_ENUM) };
+            auto const FROM_TITLE_PTR{ CREATURE_PTR->GetAchievements().GetCurrentTitle(ACH_ENUM) };
+            auto const TO_TITLE_PTR{ CREATURE_PTR->GetAchievements().Increment(ACH_ENUM) };
 
-            if ((NEW_TITLE_PTR != nullptr) && (ORIG_TITLE_PTR != NEW_TITLE_PTR))
+            if ((TO_TITLE_PTR != nullptr) && (FROM_TITLE_PTR != TO_TITLE_PTR))
             {
-                creatureTitleVec_.push_back(std::make_pair(CREATURE_PTR,
-                    std::make_pair(ORIG_TITLE_PTR, NEW_TITLE_PTR)));
+                creatureTitlesVec_.push_back( creature::TitleTransition(
+                    CREATURE_PTR,
+                    FROM_TITLE_PTR,
+                    TO_TITLE_PTR) );
             }
         }
     }
@@ -4298,45 +4310,47 @@ namespace stage
 
     bool CombatStage::HandleAchievementPopups()
     {
-        if (creatureTitleVec_.empty())
+        if (creatureTitlesVec_.empty())
         {
             SetTurnPhase(TurnPhase::End);
             StartPause(END_PAUSE_SEC_, "End");
+
+            //return true because a popup will NOT be raised
             return true;
         }
         else
         {
-            auto const TITLE_PAIR{ creatureTitleVec_[0] };
+            auto const TITLE_TRANSITION{ creatureTitlesVec_[0] };
+
+            creatureTitlesVec_.erase(
+                std::remove(
+                    creatureTitlesVec_.begin(),
+                    creatureTitlesVec_.end(),
+                    TITLE_TRANSITION),
+                creatureTitlesVec_.end());
 
             //here is where the Title actually changes the creature
-            TITLE_PAIR.second.second->Change(TITLE_PAIR.first);
-
-            creatureTitleVec_.erase(
-                std::remove(
-                    creatureTitleVec_.begin(),
-                    creatureTitleVec_.end(),
-                    TITLE_PAIR),
-                creatureTitleVec_.end() );
+            TITLE_TRANSITION.toTitlePtr->Change(TITLE_TRANSITION.creaturePtr);
 
             sf::Texture fromTexture;
-            if (TITLE_PAIR.second.first != nullptr)
+            if (TITLE_TRANSITION.fromTitlePtr != nullptr)
             {
                 sfml_util::gui::TitleImageManager::Instance()->Get(
-                    fromTexture, TITLE_PAIR.second.first->Which());
+                    fromTexture, TITLE_TRANSITION.fromTitlePtr->Which());
             }
 
             sf::Texture toTexture;
-            if (TITLE_PAIR.second.second != nullptr)
+            if (TITLE_TRANSITION.toTitlePtr != nullptr)
             {
                 sfml_util::gui::TitleImageManager::Instance()->Get(
-                    toTexture, TITLE_PAIR.second.second->Which());
+                    toTexture, TITLE_TRANSITION.toTitlePtr->Which());
             }
 
             auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageFadePopupInfo(
                 POPUP_NAME_ACHIEVEMENT_,
-                TITLE_PAIR.first,
-                TITLE_PAIR.second.first,
-                TITLE_PAIR.second.second,
+                TITLE_TRANSITION.creaturePtr,
+                TITLE_TRANSITION.fromTitlePtr,
+                TITLE_TRANSITION.toTitlePtr,
                 & fromTexture,
                 & toTexture) };
 

@@ -34,6 +34,7 @@
 #include "game/creature/title-enum.hpp"
 #include "game/creature/achievement-enum.hpp"
 
+#include <tuple>
 #include <string>
 #include <vector>
 #include <memory>
@@ -46,6 +47,7 @@ namespace creature
 {
 
     class Creature;
+    using CreaturePtr_t = Creature *;
 
 
     //A Title is earned after a certain number of Achievements.  (see ACHIEVEMENT_COUNT)
@@ -127,6 +129,37 @@ namespace creature
     {
         return ! (L == R);
     }
+
+
+    //responsible for wrapping all the information about a title transition
+    struct TitleTransition
+    {
+        TitleTransition(
+            const CreaturePtr_t CREATURE_PTR,
+            const TitlePtr_t FROM_TITLE_PTR,
+            const TitlePtr_t TO_TITLE_PTR)
+            :
+            creaturePtr(CREATURE_PTR),
+            fromTitlePtr(FROM_TITLE_PTR),
+            toTitlePtr(TO_TITLE_PTR)
+        {}
+
+        CreaturePtr_t creaturePtr;
+        TitlePtr_t fromTitlePtr;
+        TitlePtr_t toTitlePtr;
+
+        friend bool operator==(const TitleTransition &, const TitleTransition &);
+    };
+
+    inline bool operator==(const TitleTransition & L, const TitleTransition & R)
+    {
+        return std::tie(L.creaturePtr, L.fromTitlePtr, L.toTitlePtr)
+            ==
+               std::tie(R.creaturePtr, R.fromTitlePtr, R.toTitlePtr);
+    }
+
+    using TitleTransitionVec_t = std::vector<TitleTransition>;
+
 
 }
 }
