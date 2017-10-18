@@ -62,15 +62,21 @@ namespace game
 namespace stage
 {
 
-    const std::string   PartyStage::POPUP_NAME_STR_NOT_ENOUGH_CHARS_("NotEnoughCharactersErrorMsg");
-    const std::string   PartyStage::POPUP_NAME_STR_TOO_MANY_CHARS_  ("TooManyCharactersErrorMsg");
-    const std::string   PartyStage::POPUP_NAME_STR_DELETE_CONFIRM_  ("CharacterDeleteConfirmMsg");
-    const float         PartyStage::MOUSE_OVER_POPUP_DELAY_SEC_     (1.0f);
-    const float         PartyStage::MOUSE_OVER_SLIDER_SPEED_        (4.0f);
-    const float         PartyStage::MOUSE_OVER_POPUP_POS_LEFT_      (20.0f);
-    const float         PartyStage::MOUSE_OVER_POPUP_POS_TOP_       (20.0f);
-    const float         PartyStage::MOUSE_OVER_IMAGE_PAD_           (10.0f);
-    const float         PartyStage::MOUSE_OVER_BOX_ALPHA_           (170.0f);
+    const std::string   PartyStage::POPUP_NAME_STR_NOT_ENOUGH_CHARS_{
+        "NotEnoughCharactersErrorMsg" };
+
+    const std::string   PartyStage::POPUP_NAME_STR_TOO_MANY_CHARS_{
+        "TooManyCharactersErrorMsg" };
+
+    const std::string   PartyStage::POPUP_NAME_STR_DELETE_CONFIRM_{
+        "CharacterDeleteConfirmMsg" };
+
+    const float         PartyStage::MOUSE_OVER_POPUP_DELAY_SEC_{ 1.0f };
+    const float         PartyStage::MOUSE_OVER_SLIDER_SPEED_   { 4.0f };
+    const float         PartyStage::MOUSE_OVER_POPUP_POS_LEFT_ { 20.0f };
+    const float         PartyStage::MOUSE_OVER_POPUP_POS_TOP_  { 20.0f };
+    const float         PartyStage::MOUSE_OVER_IMAGE_PAD_      { 10.0f };
+    const float         PartyStage::MOUSE_OVER_BOX_ALPHA_      { 170.0f };
 
 
     PartyStage::PartyStage()
@@ -80,9 +86,33 @@ namespace stage
         SCREEN_HEIGHT_          (sfml_util::Display::Instance()->GetWinHeight()),
         mainMenuTitle_          ("create_party_normal.png"),
         backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
-        backButtonUPtr_         ( std::make_unique<sfml_util::gui::FourStateButton>("PartyStage'sBack",      0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_normal.png"),      "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("back_button_lit.png")) ),
-        startButtonUPtr_        ( std::make_unique<sfml_util::gui::FourStateButton>("PartyStage'sStartGame", 0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_normal.png"), "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("startgame_button_lit.png")) ),
-        deleteButtonUPtr_       ( std::make_unique<sfml_util::gui::FourStateButton>("PartyStage'sDelete",    0.0f, 0.0f, std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_normal.png"),    "", std::string(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir")).append("delete_button_lit.png")) ),
+        backButtonUPtr_         ( std::make_unique<sfml_util::gui::FourStateButton>(
+            "PartyStage'sBack",
+            0.0f,
+            0.0f,
+            std::string(GameDataFile::Instance()->GetMediaPath(
+                "media-images-buttons-mainmenu-dir")).append("back_button_normal.png"),
+            "",
+            std::string(GameDataFile::Instance()->GetMediaPath(
+                "media-images-buttons-mainmenu-dir")).append("back_button_lit.png")) ),
+        startButtonUPtr_        ( std::make_unique<sfml_util::gui::FourStateButton>(
+            "PartyStage'sStartGame",
+            0.0f,
+            0.0f,
+            std::string(GameDataFile::Instance()->GetMediaPath(
+                "media-images-buttons-mainmenu-dir")).append("startgame_button_normal.png"),
+            "",
+            std::string(GameDataFile::Instance()->GetMediaPath(
+                "media-images-buttons-mainmenu-dir")).append("startgame_button_lit.png")) ),
+        deleteButtonUPtr_       ( std::make_unique<sfml_util::gui::FourStateButton>(
+            "PartyStage'sDelete",
+            0.0f,
+            0.0f,
+            std::string(GameDataFile::Instance()->GetMediaPath(
+                "media-images-buttons-mainmenu-dir")).append("delete_button_normal.png"),
+            "",
+            std::string(GameDataFile::Instance()->GetMediaPath(
+                "media-images-buttons-mainmenu-dir")).append("delete_button_lit.png")) ),
         characterListBoxUPtr_   (),
         partyListBoxUPtr_       (),
         insTextRegionUPtr_      (),
@@ -90,7 +120,11 @@ namespace stage
         partyTextRegionUPtr_    (),
         warningTextInfo_        (),
         warningTextRegionUPtr_  (),
-        warningTextSlider_      (150, 255, 4.0f, static_cast<sf::Uint8>(misc::random::Int(150, 255))),
+        warningTextSlider_      (
+            150,
+            255,
+            4.0f,
+            static_cast<sf::Uint8>(misc::random::Int(150, 255))),
         ouroborosUPtr_          (),
         bottomSymbol_           (),
         willDisplayCharacterCountWarningText_(false),
@@ -123,7 +157,8 @@ namespace stage
     }
 
 
-    bool PartyStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
+    bool PartyStage::HandleCallback(
+        const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
         ResetMouseOverPopupState();
 
@@ -137,9 +172,10 @@ namespace stage
 
         if (PACKAGE.package.PTR_ == characterListBoxUPtr_.get())
         {
-            sfml_util::gui::ListBoxItemSPtr_t itemSPtr(characterListBoxUPtr_->GetAtPosition(PACKAGE.mouse_pos));
+            auto itemSPtr{ characterListBoxUPtr_->GetAtPosition(PACKAGE.mouse_pos) };
 
-            if ((partyListBoxUPtr_->GetCount() < partyListBoxUPtr_->GetLimit()) && (itemSPtr.get() != nullptr))
+            if ((partyListBoxUPtr_->GetCount() < partyListBoxUPtr_->GetLimit()) &&
+                (itemSPtr.get() != nullptr))
             {
                 partyListBoxUPtr_->Add(itemSPtr);
                 characterListBoxUPtr_->Remove(itemSPtr);
@@ -149,7 +185,7 @@ namespace stage
         }
         else if (PACKAGE.package.PTR_ == partyListBoxUPtr_.get())
         {
-            sfml_util::gui::ListBoxItemSPtr_t itemSPtr(partyListBoxUPtr_->GetAtPosition(PACKAGE.mouse_pos));
+            auto itemSPtr{ partyListBoxUPtr_->GetAtPosition(PACKAGE.mouse_pos) };
 
             if (itemSPtr.get() != nullptr)
             {
@@ -164,18 +200,25 @@ namespace stage
     }
 
 
-    bool PartyStage::HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
+    bool PartyStage::HandleCallback(
+        const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
     {
         ResetMouseOverPopupState();
 
         if (PACKAGE.PTR_ == backButtonUPtr_.get())
+        {
             return HandleCallback_BackButton();
+        }
 
         if (PACKAGE.PTR_ == startButtonUPtr_.get())
+        {
             return HandleCallback_StartButton();
+        }
 
         if (PACKAGE.PTR_ == deleteButtonUPtr_.get())
+        {
             return HandleCallback_DeleteButton();
+        }
 
         return false;
     }
@@ -224,7 +267,10 @@ namespace stage
         if (partyListBoxUPtr_->GetCount() != player::Party::MAX_CHARACTER_COUNT_)
         {
             std::ostringstream ss;
-            ss << "There are " << partyListBoxUPtr_->GetCount() << " characters in your party.  You need exactly " << player::Party::MAX_CHARACTER_COUNT_ << " characters to start the game.";
+            ss << "There are " << partyListBoxUPtr_->GetCount()
+                << " characters in your party.  You need exactly "
+                << player::Party::MAX_CHARACTER_COUNT_ << " characters to start the game.";
+
             auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
                 ss.str(),
@@ -239,12 +285,11 @@ namespace stage
         else
         {
             //determine if any beasts are in the party
-            bool isAnyCharacterBeast(false);
-            const std::size_t NUM_CHARACTERS( partyListBoxUPtr_->GetCount() );
+            auto isAnyCharacterBeast{ false };
+            auto const NUM_CHARACTERS{ partyListBoxUPtr_->GetCount() };
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
-                const creature::race::Enum NEXT_CHAR_RACE(
-                    partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Race());
+                auto const NEXT_CHAR_RACE{ partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Race() };
 
                 if ((creature::race::Dragon == NEXT_CHAR_RACE) ||
                     (creature::race::Wolfen == NEXT_CHAR_RACE))
@@ -255,11 +300,10 @@ namespace stage
             }
 
             //determine if any are beastmasters
-            bool isAnyCharacterBeastmaster(false);
+            auto isAnyCharacterBeastmaster{ false };
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
-                const creature::role::Enum NEXT_CHAR_ROLE(
-                    partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Role());
+                auto const NEXT_CHAR_ROLE{ partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Role() };
 
                 if (NEXT_CHAR_ROLE == creature::role::Beastmaster)
                 {
@@ -305,6 +349,7 @@ namespace stage
 
         std::ostringstream ss;
         ss << "Delete " << selectedCharPtr->Name() << "?  This cannot be undone.  Are you sure?";
+
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_STR_DELETE_CONFIRM_,
             ss.str(),
@@ -372,11 +417,12 @@ namespace stage
 
         //fill a list with TextRegions for the character names
         sfml_util::gui::ListBoxItemSLst_t itemSList;
-        sfml_util::gui::TextInfo textInfo("",
-                                          sfml_util::FontManager::Instance()->Font_Default2(),
-                                          sfml_util::FontManager::Instance()->Size_Largeish(),
-                                          sf::Color::White,
-                                          sfml_util::Justified::Left);
+        sfml_util::gui::TextInfo textInfo(
+            "",
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Largeish(),
+            sf::Color::White,
+            sfml_util::Justified::Left);
 
         std::ostringstream ssCharText;
         std::ostringstream ssTitle;
@@ -406,21 +452,33 @@ namespace stage
         //establish the longest line that needs to fit in the listboxes
         std::ostringstream longestSS;
         longestSS << creature::NameInfo::Instance()->LargestName() << ", " << "Human, Beastmaster";
-        const sfml_util::gui::TextInfo LONGEST_TEXT_INFO( creature::NameInfo::Instance()->MakeTextInfo(longestSS.str()) );
-        const float LIST_BOX_WIDTH(game::creature::NameInfo::Instance()->Length(LONGEST_TEXT_INFO) + sfml_util::MapByRes(50.0f, 300.0f));
+
+        auto const LONGEST_TEXT_INFO{
+            creature::NameInfo::Instance()->MakeTextInfo(longestSS.str()) };
+        
+        auto const LIST_BOX_WIDTH{
+            game::creature::NameInfo::Instance()->Length(LONGEST_TEXT_INFO) +
+                sfml_util::MapByRes(50.0f, 300.0f) };
 
         //player list box
-        const float CHAR_LIST_POS_LEFT  (((SCREEN_WIDTH_ * 0.1f) - 75.0f) + sfml_util::MapByRes(0.0f, 800.0f));
-        const float CHAR_LIST_WIDTH     (LIST_BOX_WIDTH);
-        const float HALF_SCREEN_HEIGHT  (SCREEN_HEIGHT_ * 0.5f);
-        const float CHAR_LIST_HEIGHT    (sfml_util::MapByRes(HALF_SCREEN_HEIGHT + 20.0f, HALF_SCREEN_HEIGHT + 300.0f));
-        const float CHAR_LIST_POS_TOP   (((SCREEN_HEIGHT_ * 0.5f) - (CHAR_LIST_HEIGHT * 0.5f)) + sfml_util::MapByRes(70.0f, 350.0f));
-        //
-        const sf::FloatRect CHAR_LIST_RECT(CHAR_LIST_POS_LEFT,
-                                           CHAR_LIST_POS_TOP,
-                                           CHAR_LIST_WIDTH,
-                                           CHAR_LIST_HEIGHT);
-        //
+        auto const CHAR_LIST_POS_LEFT{
+            ((SCREEN_WIDTH_ * 0.1f) - 75.0f) + sfml_util::MapByRes(0.0f, 800.0f) };
+
+        auto const CHAR_LIST_WIDTH{ LIST_BOX_WIDTH };
+        auto const HALF_SCREEN_HEIGHT{ SCREEN_HEIGHT_ * 0.5f };
+        auto const CHAR_LIST_HEIGHT{
+            sfml_util::MapByRes(HALF_SCREEN_HEIGHT + 20.0f, HALF_SCREEN_HEIGHT + 300.0f) };
+
+        auto const CHAR_LIST_POS_TOP{
+            ((SCREEN_HEIGHT_ * 0.5f) - (CHAR_LIST_HEIGHT * 0.5f)) +
+                sfml_util::MapByRes(70.0f, 350.0f) };
+        
+        const sf::FloatRect CHAR_LIST_RECT(
+            CHAR_LIST_POS_LEFT,
+            CHAR_LIST_POS_TOP,
+            CHAR_LIST_WIDTH,
+            CHAR_LIST_HEIGHT);
+        
         auto const BG_COLOR{
             sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220) };
 
@@ -453,16 +511,17 @@ namespace stage
         EntityAdd(characterListBoxUPtr_.get());
 
         //party list box
-        const float PARTY_LIST_POS_LEFT ((SCREEN_WIDTH_ * 0.55f) - 25.0f);
-        const float PARTY_LIST_POS_TOP  (CHAR_LIST_POS_TOP);
-        const float PARTY_LIST_WIDTH    (LIST_BOX_WIDTH);
-        const float PARTY_LIST_HEIGHT   (CHAR_LIST_HEIGHT);
-        //
-        const sf::FloatRect PARTY_LIST_RECT(PARTY_LIST_POS_LEFT,
-                                            PARTY_LIST_POS_TOP,
-                                            PARTY_LIST_WIDTH,
-                                            PARTY_LIST_HEIGHT);
-        //
+        auto const PARTY_LIST_POS_LEFT{ (SCREEN_WIDTH_ * 0.55f) - 25.0f };
+        auto const PARTY_LIST_POS_TOP{ CHAR_LIST_POS_TOP };
+        auto const PARTY_LIST_WIDTH{ LIST_BOX_WIDTH };
+        auto const PARTY_LIST_HEIGHT{ CHAR_LIST_HEIGHT };
+        
+        const sf::FloatRect PARTY_LIST_RECT(
+            PARTY_LIST_POS_LEFT,
+            PARTY_LIST_POS_TOP,
+            PARTY_LIST_WIDTH,
+            PARTY_LIST_HEIGHT);
+        
         boxInfo.SetBoxAndBackgroundRegion(PARTY_LIST_RECT);
 
         partyListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
@@ -492,7 +551,11 @@ namespace stage
                 labelTextInfo,
                 sf::FloatRect());
 
-            upTextRegionUPtr_->SetEntityPos(characterListBoxUPtr_->GetEntityRegion().left + 50.0f, (characterListBoxUPtr_->GetEntityRegion().top - upTextRegionUPtr_->GetEntityRegion().height));
+            upTextRegionUPtr_->SetEntityPos(
+                characterListBoxUPtr_->GetEntityRegion().left + 50.0f,
+                (characterListBoxUPtr_->GetEntityRegion().top -
+                    upTextRegionUPtr_->GetEntityRegion().height));
+
             EntityAdd(upTextRegionUPtr_.get());
         }
 
@@ -509,7 +572,11 @@ namespace stage
                 labelTextInfo,
                 sf::FloatRect());
 
-            partyTextRegionUPtr_->SetEntityPos(partyListBoxUPtr_->GetEntityRegion().left + 50.0f, (partyListBoxUPtr_->GetEntityRegion().top - partyTextRegionUPtr_->GetEntityRegion().height));
+            partyTextRegionUPtr_->SetEntityPos(
+                partyListBoxUPtr_->GetEntityRegion().left + 50.0f,
+                (partyListBoxUPtr_->GetEntityRegion().top -
+                    partyTextRegionUPtr_->GetEntityRegion().height));
+
             EntityAdd(partyTextRegionUPtr_.get());
         }
 
@@ -533,8 +600,16 @@ namespace stage
                 warningTextInfo_,
                 sf::FloatRect());
 
-            warningTextRegionUPtr_->SetEntityPos((SCREEN_WIDTH_ * 0.5f) - (warningTextRegionUPtr_->GetEntityRegion().width * 0.5f) + 110.0f,
-                                                 (insTextRegionUPtr_->GetEntityRegion().top + insTextRegionUPtr_->GetEntityRegion().height) - sfml_util::MapByRes(0.0f, 20.0f));
+            auto const WARNING_TEXT_LEFT{
+                (SCREEN_WIDTH_ * 0.5f) - (warningTextRegionUPtr_->GetEntityRegion().width * 0.5f) +
+                    110.0f };
+
+            auto const WARNING_TEXT_TOP{
+                (insTextRegionUPtr_->GetEntityRegion().top +
+                    insTextRegionUPtr_->GetEntityRegion().height) -
+                    sfml_util::MapByRes(0.0f, 20.0f) };
+
+            warningTextRegionUPtr_->SetEntityPos(WARNING_TEXT_LEFT, WARNING_TEXT_TOP);
         }
     }
 
@@ -600,13 +675,18 @@ namespace stage
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
 
-        willDisplayCharacterCountWarningText_ = ((characterListBoxUPtr_->GetCount() + partyListBoxUPtr_->GetCount()) < player::Party::MAX_CHARACTER_COUNT_);
+        willDisplayCharacterCountWarningText_ =
+            ((characterListBoxUPtr_->GetCount() + partyListBoxUPtr_->GetCount()) <
+                player::Party::MAX_CHARACTER_COUNT_);
 
         //oscillate the warning text color
         if (willDisplayCharacterCountWarningText_)
         {
-            const sf::Uint8 NEW_COLOR_VAL(static_cast<sf::Uint8>(warningTextSlider_.Update(ELAPSED_TIME_SECONDS)));
-            sf::Color color(warningTextRegionUPtr_->GetEntityColorForeground());
+            auto const NEW_COLOR_VAL{
+                static_cast<sf::Uint8>(warningTextSlider_.Update(ELAPSED_TIME_SECONDS)) };
+
+            auto color(warningTextRegionUPtr_->GetEntityColorForeground());
+
             color.r = 255;
             color.g = NEW_COLOR_VAL;
             color.b = NEW_COLOR_VAL;
@@ -614,10 +694,11 @@ namespace stage
         }
 
         mouseOverPopupTimerSec_ += ELAPSED_TIME_SECONDS;
+
         if ((mouseOverPopupTimerSec_ > MOUSE_OVER_POPUP_DELAY_SEC_) &&
             (false == isMouseOverTexture_))
         {
-            auto itemSPtr(characterListBoxUPtr_->GetItemAtLocation(mouseOverPosV_));
+            auto itemSPtr{ characterListBoxUPtr_->GetItemAtLocation(mouseOverPosV_) };
 
             if (itemSPtr.get() == nullptr)
             {
@@ -637,29 +718,55 @@ namespace stage
 
                 isMouseOverTexture_ = true;
                 mouseOverSprite_.setTexture(mouseOverTexture_ );
-                mouseOverSprite_.setTextureRect( sf::IntRect(0, 0, static_cast<int>(mouseOverTexture_.getSize().x), static_cast<int>(mouseOverTexture_.getSize().y)) );
+
+                mouseOverSprite_.setTextureRect( sf::IntRect(
+                    0,
+                    0,
+                    static_cast<int>(mouseOverTexture_.getSize().x),
+                    static_cast<int>(mouseOverTexture_.getSize().y)) );
+
                 mouseOverSprite_.setScale(0.0f, 0.0f);
 
-                mouseOverBoxWidth_ = MOUSE_OVER_IMAGE_PAD_ + sfml_util::gui::CreatureImageManager::Instance()->DimmensionMax() + game::creature::NameInfo::Instance()->Length() + sfml_util::MapByRes(50.0f, 150.0f);
-                mouseOverBoxHeight_ = mouseOverSprite_.getLocalBounds().height + (MOUSE_OVER_IMAGE_PAD_ * 2.0f) + sfml_util::MapByRes(0.0f, 600.0f);
+                mouseOverBoxWidth_ = MOUSE_OVER_IMAGE_PAD_ +
+                    sfml_util::gui::CreatureImageManager::Instance()->DimmensionMax() +
+                    game::creature::NameInfo::Instance()->Length() +
+                    sfml_util::MapByRes(50.0f, 150.0f);
+
+                mouseOverBoxHeight_ = mouseOverSprite_.getLocalBounds().height +
+                    (MOUSE_OVER_IMAGE_PAD_ * 2.0f) + sfml_util::MapByRes(0.0f, 600.0f);
             }
         }
 
         if (isMouseOverTexture_)
         {
-            const float RATIO(mouseOverSlider_.Update(ELAPSED_TIME_SECONDS));
+            auto const RATIO{ mouseOverSlider_.Update(ELAPSED_TIME_SECONDS) };
 
-            const float CURR_BOX_WIDTH(mouseOverBoxWidth_ * RATIO);
-            const float CURR_BOX_HEIGHT(mouseOverBoxHeight_ * RATIO);
-            const float CURR_BOX_POS_LEFT(mouseOverPosV_.x - ((mouseOverPosV_.x - MOUSE_OVER_POPUP_POS_LEFT_) * RATIO));
-            const float CURR_BOX_POS_TOP(mouseOverPosV_.y - ((mouseOverPosV_.y - MOUSE_OVER_POPUP_POS_TOP_) * RATIO));
+            auto const CURR_BOX_WIDTH{ mouseOverBoxWidth_ * RATIO };
+            auto const CURR_BOX_HEIGHT{ mouseOverBoxHeight_ * RATIO };
 
-            mouseOverQuad_[0].position = sf::Vector2f(CURR_BOX_POS_LEFT, CURR_BOX_POS_TOP);
-            mouseOverQuad_[1].position = sf::Vector2f(CURR_BOX_POS_LEFT + CURR_BOX_WIDTH, CURR_BOX_POS_TOP);
-            mouseOverQuad_[2].position = sf::Vector2f(CURR_BOX_POS_LEFT + CURR_BOX_WIDTH, CURR_BOX_POS_TOP + CURR_BOX_HEIGHT);
-            mouseOverQuad_[3].position = sf::Vector2f(CURR_BOX_POS_LEFT, CURR_BOX_POS_TOP + CURR_BOX_HEIGHT);
+            auto const CURR_BOX_POS_LEFT{
+                mouseOverPosV_.x - ((mouseOverPosV_.x - MOUSE_OVER_POPUP_POS_LEFT_) * RATIO) };
 
-            const sf::Uint8 NEW_ALPHA(static_cast<sf::Uint8>(MOUSE_OVER_BOX_ALPHA_ * RATIO));
+            auto const CURR_BOX_POS_TOP{
+                mouseOverPosV_.y - ((mouseOverPosV_.y - MOUSE_OVER_POPUP_POS_TOP_) * RATIO) };
+
+            mouseOverQuad_[0].position = sf::Vector2f(
+                CURR_BOX_POS_LEFT,
+                CURR_BOX_POS_TOP);
+
+            mouseOverQuad_[1].position = sf::Vector2f(
+                CURR_BOX_POS_LEFT + CURR_BOX_WIDTH,
+                CURR_BOX_POS_TOP);
+
+            mouseOverQuad_[2].position = sf::Vector2f(
+                CURR_BOX_POS_LEFT + CURR_BOX_WIDTH,
+                CURR_BOX_POS_TOP + CURR_BOX_HEIGHT);
+
+            mouseOverQuad_[3].position = sf::Vector2f(
+                CURR_BOX_POS_LEFT,
+                CURR_BOX_POS_TOP + CURR_BOX_HEIGHT);
+
+            auto const NEW_ALPHA{ static_cast<sf::Uint8>(MOUSE_OVER_BOX_ALPHA_ * RATIO) };
             const sf::Color NEW_COLOR(0, 0, 0, NEW_ALPHA);
             mouseOverQuad_[0].color = NEW_COLOR;
             mouseOverQuad_[1].color = NEW_COLOR;
@@ -667,8 +774,16 @@ namespace stage
             mouseOverQuad_[3].color = NEW_COLOR;
 
             mouseOverSprite_.setScale(RATIO, RATIO);
-            const float SPRITE_POS_LEFT(mouseOverPosV_.x - ((mouseOverPosV_.x - (MOUSE_OVER_POPUP_POS_LEFT_ + MOUSE_OVER_IMAGE_PAD_)) * RATIO));
-            const float SPRITE_POS_TOP (mouseOverPosV_.y - ((mouseOverPosV_.y - (MOUSE_OVER_POPUP_POS_TOP_  + ((mouseOverBoxHeight_ - mouseOverSprite_.getLocalBounds().height) * 0.5f))) * RATIO));
+
+            auto const SPRITE_POS_LEFT{
+                mouseOverPosV_.x - ((mouseOverPosV_.x -
+                    (MOUSE_OVER_POPUP_POS_LEFT_ + MOUSE_OVER_IMAGE_PAD_)) * RATIO) };
+
+            auto const SPRITE_POS_TOP{
+                mouseOverPosV_.y - ((mouseOverPosV_.y - (MOUSE_OVER_POPUP_POS_TOP_ +
+                    ((mouseOverBoxHeight_ - mouseOverSprite_.getLocalBounds().height) * 0.5f)))
+                        * RATIO) };
+
             mouseOverSprite_.setPosition(SPRITE_POS_LEFT, SPRITE_POS_TOP);
 
             if (mouseOverSlider_.IsDone())
@@ -678,7 +793,8 @@ namespace stage
                    << mouseOverCharPtr_->SexName() << ", "
                    << mouseOverCharPtr_->RaceName() << ", "
                    << mouseOverCharPtr_->RoleName() << "\n"
-                   << "Created on " << mouseOverCharPtr_->DateTimeCreated().date.ToString() << " at " << mouseOverCharPtr_->DateTimeCreated().time.ToString() << "\n\n"
+                   << "Created on " << mouseOverCharPtr_->DateTimeCreated().date.ToString()
+                   << " at " << mouseOverCharPtr_->DateTimeCreated().time.ToString() << "\n\n"
                    << "Strength:        "      << mouseOverCharPtr_->Strength() << "\n"
                    << "Accuracy:       "       << mouseOverCharPtr_->Accuracy() << "\n"
                    << "Charm:           "      << mouseOverCharPtr_->Charm() << "\n"
@@ -735,7 +851,8 @@ namespace stage
                 if (state::GameStateFactory::Instance()->
                     DeleteCharacter(characterPtr) == false)
                 {
-                    M_HP_LOG_ERR("PartyStage::HandleCallback_StartButton() while trying to game::state::"
+                    M_HP_LOG_ERR(
+                        "PartyStage::HandleCallback_StartButton() while trying to game::state::"
                         << "GameStateFactory::DeleteCharacter(\"" << characterPtr->Name()
                         << "\") failed.");
                 }
@@ -765,7 +882,10 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
             backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
+            sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
             willShowMouseOverPopup_ = false;
             HandleCallback_BackButton();
             return true;
@@ -773,7 +893,10 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::D)
         {
             deleteButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
+            sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
             willShowMouseOverPopup_ = false;
             HandleCallback_DeleteButton();
             return true;
@@ -781,7 +904,10 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
             startButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
+            sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
             willShowMouseOverPopup_ = false;
             HandleCallback_StartButton();
             return true;

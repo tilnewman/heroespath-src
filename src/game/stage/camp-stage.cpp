@@ -36,6 +36,8 @@
 #include "sfml-util/sound-effects-enum.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
+
+#include "popup/popup-info.hpp"
 #include "popup/popup-manager.hpp"
 
 #include "game/game.hpp"
@@ -44,7 +46,6 @@
 #include "game/state/game-state-factory.hpp"
 #include "game/loop-manager.hpp"
 #include "game/creature/algorithms.hpp"
-#include "popup/popup-info.hpp"
 #include "game/creature/sex-enum.hpp"
 #include "game/creature/body-type.hpp"
 #include "game/player/character.hpp"
@@ -60,10 +61,10 @@ namespace game
 namespace stage
 {
 
-    const std::string CampStage::NEWGAME_POPUP_NAME1_("NewGameIntroStoryPopup1");
-    const std::string CampStage::NEWGAME_POPUP_NAME2_("NewGameIntroStoryPopup2");
-    const std::string CampStage::NEWGAME_POPUP_NAME3_("NewGameIntroStoryPopup3");
-    const std::string CampStage::NEWGAME_POPUP_NAME4_("NewGameIntroStoryPopup4");
+    const std::string CampStage::NEWGAME_POPUP_NAME1_{ "NewGameIntroStoryPopup1" };
+    const std::string CampStage::NEWGAME_POPUP_NAME2_{ "NewGameIntroStoryPopup2" };
+    const std::string CampStage::NEWGAME_POPUP_NAME3_{ "NewGameIntroStoryPopup3" };
+    const std::string CampStage::NEWGAME_POPUP_NAME4_{ "NewGameIntroStoryPopup4" };
 
 
     CampStage::CampStage()
@@ -128,16 +129,24 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         //campfire background image
-        sfml_util::LoadTexture(campfireTexture_, GameDataFile::Instance()->GetMediaPath("media-images-campfire"));
+        sfml_util::LoadTexture(
+            campfireTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-campfire"));
+
         campfireSprite_.setTexture(campfireTexture_);
         campfireSprite_.setScale(0.8f, 0.8f);
+
         auto const CAMPFIRE_BOUNDS_BEFORE{ campfireSprite_.getGlobalBounds() };
-        campfireSprite_.setPosition(SCREEN_WIDTH_ - CAMPFIRE_BOUNDS_BEFORE.width - 75.0f, SCREEN_HEIGHT_ - CAMPFIRE_BOUNDS_BEFORE.height - 60.0f);
+
+        campfireSprite_.setPosition(
+            SCREEN_WIDTH_ - CAMPFIRE_BOUNDS_BEFORE.width - 75.0f,
+            SCREEN_HEIGHT_ - CAMPFIRE_BOUNDS_BEFORE.height - 60.0f);
 
         //campfire animation
-        fireAnimUPtr_ = sfml_util::AnimationFactory::Make(sfml_util::Animations::Inferno,
-                                                                    1.2f,
-                                                                    0.05f);
+        fireAnimUPtr_ = sfml_util::AnimationFactory::Make(
+            sfml_util::Animations::Inferno,
+            1.2f,
+            0.05f);
 
         fireAnimUPtr_->SetEntityPos(
             (SCREEN_WIDTH_ - campfireSprite_.getGlobalBounds().width) - 85.0f,
@@ -384,13 +393,17 @@ namespace stage
             for (auto const & NEXT_BEAST_PTR: BEAST_PVEC)
             {
                 ss  << ((appendedFirstName) ? ", " : " ")
-                    << (((BEAST_PVEC.size() > 1) && ((BEAST_PVEC.size() - 1) == i++)) ? "and " : "")
+                    << (((BEAST_PVEC.size() > 1) && ((BEAST_PVEC.size() - 1) == i++)) ? "and " :"")
                     << NEXT_BEAST_PTR->Name() << " ";
 
                 if (NEXT_BEAST_PTR->Race() == creature::race::Dragon)
+                {
                     ss << "the " << creature::role::ToString(NEXT_BEAST_PTR->Role()) << " Dragon";
+                }
                 else
+                {
                     ss << "the Wolfen";
+                }
 
                 appendedFirstName = true;
             }
@@ -406,7 +419,8 @@ namespace stage
                 ss  << ((appendedFirstName) ? ", " : "")
                     << (((NONLOAD_NONBEAST_PVEC.size() > 1) && ((NONLOAD_NONBEAST_PVEC.size() - 1) == i++)) ? "and " : "")
                     << NEXT_CHAR_PTR->Name() << " the "
-                    << creature::race::ToString(NEXT_CHAR_PTR->Race()) << " " << creature::role::ToString(NEXT_CHAR_PTR->Role());
+                    << creature::race::ToString(NEXT_CHAR_PTR->Race()) << " "
+                    << creature::role::ToString(NEXT_CHAR_PTR->Role());
 
                 appendedFirstName = true;
             }
@@ -424,9 +438,13 @@ namespace stage
                         << NEXT_BEAST_SPTR->Name() << " ";
 
                     if (NEXT_BEAST_SPTR->Race() == creature::race::Dragon)
+                    {
                         ss << "the " << creature::role::ToString(NEXT_BEAST_SPTR->Role()) << " Dragon";
+                    }
                     else
+                    {
                         ss << "the Wolfen";
+                    }
 
                     appendedFirstName = true;
                 }

@@ -37,6 +37,7 @@
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
+
 #include "popup/popup-manager.hpp"
 
 #include "game/ouroboros.hpp"
@@ -75,24 +76,34 @@ namespace stage
     void InnStage::Setup()
     {
         //title symbol
-        sfml_util::LoadTexture(titleSymbolTexture_, GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
+        sfml_util::LoadTexture(
+            titleSymbolTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
+
         titleSymbolSprite_.setTexture(titleSymbolTexture_);
         titleSymbolSprite_.setScale(0.60f, 0.60f);
-        titleSymbolSprite_.setPosition((SCREEN_WIDTH_ * 0.5f) - (titleSymbolSprite_.getGlobalBounds().width * 0.5f), 10.0f);
+
+        titleSymbolSprite_.setPosition(
+            (SCREEN_WIDTH_ * 0.5f) - (titleSymbolSprite_.getGlobalBounds().width * 0.5f),
+            10.0f);
 
         //ouroboros
         ouroborosUPtr_ = std::make_unique<Ouroboros>("InnStage's");
         EntityAdd(ouroborosUPtr_.get());
 
         //candle
-        sfml_util::LoadTexture(candleTexture_, GameDataFile::Instance()->GetMediaPath("media-images-candle"));
+        sfml_util::LoadTexture(
+            candleTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-candle"));
+
         candleSprite_.setTexture(candleTexture_);
         candleSprite_.setPosition(SCREEN_WIDTH_ - 200.0f, SCREEN_HEIGHT_ - 200.0f);
 
         //candle anim
-        candleAnimUPtr_ = sfml_util::AnimationFactory::Make(sfml_util::Animations::CandleFlame,
-                                                            1.0f,
-                                                            0.05f);
+        candleAnimUPtr_ = sfml_util::AnimationFactory::Make(
+            sfml_util::Animations::CandleFlame,
+            1.0f,
+            0.05f);
 
         candleAnimUPtr_->SetEntityPos(SCREEN_WIDTH_ - 225.0f, SCREEN_HEIGHT_ - 290.0f);
 

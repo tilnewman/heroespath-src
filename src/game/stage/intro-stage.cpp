@@ -47,11 +47,12 @@ namespace stage
 
     IntroStage::IntroStage()
     :
-        Stage        ("Intro",
-                      0.0f,
-                      0.0f,
-                      sfml_util::Display::Instance()->GetWinWidth(),
-                      sfml_util::Display::Instance()->GetWinHeight()),
+        Stage(
+            "Intro",
+            0.0f,
+            0.0f,
+            sfml_util::Display::Instance()->GetWinWidth(),
+            sfml_util::Display::Instance()->GetWinHeight()),
         titleTexture_(),
         titleSprite_ (),
         initialDrawHoldCounter_(0)
@@ -75,7 +76,7 @@ namespace stage
 
         titleSprite_.setTexture(titleTexture_);
 
-        const float SCALE(sfml_util::MapByRes(0.4f, 2.5f));
+        auto const SCALE{ sfml_util::MapByRes(0.4f, 2.5f) };
         titleSprite_.setScale(SCALE, SCALE);
 
         PositionTitleImage();
@@ -100,7 +101,9 @@ namespace stage
 
     void IntroStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        auto const NEW_SCALE(titleSprite_.getScale().x * (1.0f + (ELAPSED_TIME_SECONDS * 0.028f)));
+        auto const NEW_SCALE{
+            titleSprite_.getScale().x * (1.0f + (ELAPSED_TIME_SECONDS * 0.028f)) };
+
         titleSprite_.setScale(NEW_SCALE, NEW_SCALE);
         PositionTitleImage();
     }
@@ -108,11 +111,11 @@ namespace stage
 
     void IntroStage::PositionTitleImage()
     {
-        auto const TITLE_POS_LEFT{ (StageRegionWidth()  * 0.5f) -
-            (titleSprite_.getGlobalBounds().width * 0.5f) };
+        auto const TITLE_POS_LEFT{
+            (StageRegionWidth()  * 0.5f) - (titleSprite_.getGlobalBounds().width * 0.5f) };
 
-        auto const TITLE_POS_TOP{ (StageRegionHeight() * 0.5f) -
-            (titleSprite_.getGlobalBounds().height * 0.5f) };
+        auto const TITLE_POS_TOP{
+            (StageRegionHeight() * 0.5f) - (titleSprite_.getGlobalBounds().height * 0.5f) };
 
         titleSprite_.setPosition(TITLE_POS_LEFT, TITLE_POS_TOP);
     }

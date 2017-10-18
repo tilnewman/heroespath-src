@@ -95,7 +95,8 @@ namespace stage
     }
 
 
-    bool LoadGameStage::HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
+    bool LoadGameStage::HandleCallback(
+        const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
     {
         if (PACKAGE.PTR_ == backButtonUPtr_.get())
         {
@@ -107,7 +108,8 @@ namespace stage
     }
 
 
-    bool LoadGameStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)
+    bool LoadGameStage::HandleCallback(
+        const sfml_util::gui::callback::ListBoxEventPackage &)
     {
         //TODO Handle selection of a game to load and then load it,
         //including a call to all creatures StoreItemsInWarehouseAfterLoad(),
@@ -126,7 +128,9 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         //back button
-        const std::string BUTTONS_PATH(GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir"));
+        auto const BUTTONS_PATH{
+            GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir") };
+
         backButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "Back",
             200.0f,
@@ -145,12 +149,18 @@ namespace stage
         gsListBoxPosWidth_ = 610.0f;
         gsListBoxPosHeight_= SCREEN_HEIGHT_ * 0.5f;
         gsListBoxPosTop_   = ((SCREEN_HEIGHT_ * 0.5f) - (gsListBoxPosHeight_ * 0.5f)) + 50.0f;
-        sf::FloatRect GS_LB_RECT(gsListBoxPosLeft_, gsListBoxPosTop_, gsListBoxPosWidth_, gsListBoxPosHeight_);
-        //
+
+        sf::FloatRect GS_LB_RECT(
+            gsListBoxPosLeft_,
+            gsListBoxPosTop_,
+            gsListBoxPosWidth_,
+            gsListBoxPosHeight_);
+
         //hand all GameState objects to the ListBox
         gamestatePSet_ = game::state::GameStateFactory::Instance()->LoadAllGames();
         std::list<sfml_util::gui::ListBoxItemSPtr_t> listBoxItemSLst;
         std::size_t gameStateCount(0);
+
         for (auto const NEXT_GAMESTATE_PTR : gamestatePSet_)
         {
             std::ostringstream ss;
@@ -176,16 +186,19 @@ namespace stage
 
             ss.str("");
             ss << ++gameStateCount;
-            auto const LBI_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>
-                (ss.str(), TEXT_INFO, NEXT_GAMESTATE_PTR);
+
+            auto const LBI_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
+                ss.str(),
+                TEXT_INFO,
+                NEXT_GAMESTATE_PTR);
 
             listBoxItemSLst.push_back(LBI_SPTR);
         }
         listBoxItemSLst.sort();
-        //
+
         //establish the boxing options
-        const sf::Color BG_COLOR(
-            sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220));
+        auto const BG_COLOR{
+            sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220) };
 
         const sfml_util::gui::BackgroundInfo BG_INFO(BG_COLOR);
 
@@ -247,15 +260,16 @@ namespace stage
             "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
             << " returned a GAMESTATE_CPTR that was null.");
 
-        sfml_util::gui::TextInfo descTextInfo("",
-                                              sfml_util::FontManager::Instance()->Font_Default2(),
-                                              26,
-                                              sf::Color::White,
-                                              sfml_util::Justified::Left);
+        sfml_util::gui::TextInfo descTextInfo(
+            "",
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            26,
+            sf::Color::White,
+            sfml_util::Justified::Left);
 
         //establish positions
-        const float CHAR_LIST_POS_LEFT(gsListBoxPosLeft_ + gsListBoxPosWidth_ + 75.0f);
-        const float CHAR_LIST_POS_TOP(gsListBoxPosTop_ + 100.0f);
+        auto const CHAR_LIST_POS_LEFT{ gsListBoxPosLeft_ + gsListBoxPosWidth_ + 75.0f };
+        auto const CHAR_LIST_POS_TOP{ gsListBoxPosTop_ + 100.0f };
 
         //setup location text
         if (locTextRegionUPtr_.get() == nullptr)
@@ -266,11 +280,14 @@ namespace stage
             EntityAdd(locTextRegionUPtr_.get());
         }
 
-        descTextInfo.text = std::string("Location:        ").append(gameStatePtr->
-            Location()->Name());
+        descTextInfo.text =
+            std::string("Location:        ").append(gameStatePtr->Location()->Name());
 
-        const sf::FloatRect LOC_TEXT_RECT(CHAR_LIST_POS_LEFT,
-            CHAR_LIST_POS_TOP - 35.0f, 0.0f, 0.0f);
+        const sf::FloatRect LOC_TEXT_RECT(
+            CHAR_LIST_POS_LEFT,
+            CHAR_LIST_POS_TOP - 35.0f,
+            0.0f,
+            0.0f);
 
         locTextRegionUPtr_->Setup(descTextInfo, LOC_TEXT_RECT);
 
@@ -284,20 +301,24 @@ namespace stage
         }
 
         descTextInfo.text = "Characters:";
-        const sf::FloatRect CHAR_TEXT_RECT(CHAR_LIST_POS_LEFT,
-            CHAR_LIST_POS_TOP - 5.0f, 0.0f, 0.0f);
+        const sf::FloatRect CHAR_TEXT_RECT(
+            CHAR_LIST_POS_LEFT,
+            CHAR_LIST_POS_TOP - 5.0f,
+            0.0f,
+            0.0f);
 
         charLabelTextRegionUPtr_->Setup(descTextInfo, CHAR_TEXT_RECT);
 
         //setup characters list
-        auto const CHAR_PVEC( gameStatePtr->Party().Characters() );
-        const std::size_t NUM_CHARS(CHAR_PVEC.size());
-        float posY(CHAR_LIST_POS_TOP + 30.0f);
+        auto const CHAR_PVEC{ gameStatePtr->Party().Characters() };
+        auto posY{ CHAR_LIST_POS_TOP + 30.0f };
+
+        auto const NUM_CHARS{ CHAR_PVEC.size() };
         for (std::size_t i(0); i<NUM_CHARS; ++i)
         {
             std::ostringstream ss;
             ss << "CharList_" << i << "_" << CHAR_PVEC[i]->Name();
-            const std::string TEXT_REGION_ENTITY_NAME(ss.str());
+            auto const TEXT_REGION_ENTITY_NAME{ ss.str() };
 
             ss.str("");
             ss  << CHAR_PVEC[i]->Name()
@@ -336,7 +357,10 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
             backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
+            sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            
             LoopManager::Instance()->TransitionTo_MainMenu();
             return true;
         }
