@@ -115,7 +115,7 @@ namespace spell
                 << "\") Spell is out of order.");
 
             ++spellIndex;
-            
+
             LoopManager::Instance()->TestingStrIncrement(
                 "Spell Test \"" + spellPtr->Name() + "\"");
 

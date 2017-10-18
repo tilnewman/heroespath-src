@@ -48,11 +48,11 @@ BOOST_AUTO_TEST_CASE(TextureCache_InvalidFunctionCallsAfterDefaultConstruction)
     BOOST_CHECK_THROW(tc.AddAllInDirectoryByPath(INVALID_PATH_OR_KEY), std::exception);
     BOOST_CHECK_THROW(tc.RemoveByKey(INVALID_PATH_OR_KEY), std::exception);
     BOOST_CHECK_THROW(tc.RemoveByPath(INVALID_PATH_OR_KEY), std::exception);
-    
+
     BOOST_REQUIRE_NO_THROW(tc.GetByIndex(0));
-    
+
     BOOST_REQUIRE_NO_THROW(tc.RemoveByIndex(0));
-    
+
     BOOST_REQUIRE_NO_THROW(tc.RemoveByIndexVec({ 0 }));
 
     //empty vectors result in no operations, so no exception is raised

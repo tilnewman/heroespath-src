@@ -97,12 +97,12 @@ namespace game
     {
         return MeteorShard_t(static_cast<MeteorShard_t::type>(mshards));
     }
-    
+
     inline Experience_t operator"" _exp(unsigned long long exp)
     {
         return Experience_t(static_cast<Experience_t::type>(exp));
     }
-    
+
     inline Health_t operator"" _health(unsigned long long health)
     {
         return Health_t(static_cast<Health_t::type>(health));
@@ -172,7 +172,7 @@ namespace game
     {
         return Count_t(static_cast<Count_t::type>(count));
     }
-    
-}   
+
+}
 
 #endif //GAME_TYPES_HPP_INCLUDED

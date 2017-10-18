@@ -102,7 +102,7 @@ namespace game
         sprite4_.setScale(SCALE, SCALE * VERT_SCALE);
 
         auto const VERT_OFFSET{ sprite1_.getGlobalBounds().height * VERT_OFFSET_RATIO };
-        
+
         auto const TOP{
             (sfml_util::Display::Instance()->GetWinHeight() - sprite1_.getGlobalBounds().height) +
                 VERT_OFFSET };

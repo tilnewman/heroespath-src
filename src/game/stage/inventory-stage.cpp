@@ -615,7 +615,7 @@ namespace stage
         Setup_DescBox(false);
         Setup_FirstListBoxTitle();
         Setup_DescBoxTitle();
-        
+
         Setup_Button(backButtonUPtr_, "(B)ack", 0.085f);
         Setup_Button(itemsButtonUPtr_, "(I)tems", 0.155f);
         Setup_Button(titlesButtonUPtr_, "(T)itles", 0.225f);
@@ -804,7 +804,7 @@ namespace stage
         if (isSliderAnimating_)
         {
             sliderAnimTimerSec_ += ELAPSED_TIME_SECONDS;
-            
+
             auto const CUT_OFF_TIME_SEC{ 100.0f };
 
             if ((sliderAnimTimerSec_ > VIEW_CHANGE_BETWEEN_TIME_SEC_) &&
@@ -1105,7 +1105,7 @@ namespace stage
 
 
     void InventoryStage::Setup_CenterText()
-    {   
+    {
         auto const & INVENTORY{ creaturePtr_->Inventory() };
 
         std::ostringstream ss;
@@ -1265,7 +1265,7 @@ namespace stage
             this);
 
         EntityAdd(equippedListBoxUPtr_.get());
-        
+
         equippedListBoxUPtr_->SetSelectedIndex(0);
         equippedListBoxUPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
     }
@@ -1319,7 +1319,7 @@ namespace stage
             this);
 
         EntityAdd(unEquipListBoxUPtr_.get());
-        
+
         unEquipListBoxUPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
         unEquipListBoxUPtr_->SetSelectedIndex(0);
 
@@ -1365,7 +1365,7 @@ namespace stage
             DESCBOX_MARGINS_);
 
         EntityAdd(descTextRegionUPtr_.get());
-        
+
         descTextRegionUPtr_->SetEntityPos(SCREEN_WIDTH_ + 1.0f,
             descTextRegionUPtr_->GetEntityPos().y);
 
@@ -2619,7 +2619,7 @@ namespace stage
                 PopupCharacterSelectWindow("Give coins to who?");
             }
         }
-        
+
         return false;
     }
 
@@ -2645,7 +2645,7 @@ namespace stage
                 PopupCharacterSelectWindow("Give gems to who?");
             }
         }
-        
+
         return false;
     }
 
@@ -2671,7 +2671,7 @@ namespace stage
                 PopupCharacterSelectWindow("Give Meteor Shards to who?");
             }
         }
-        
+
         return false;
     }
 
@@ -3482,11 +3482,11 @@ namespace stage
 
         sfml_util::gui::CreatureImageManager::Instance()->
             GetImage(texture, creaturePtr_->ImageFilename());
-        
+
         sf::Sprite sprite(texture);
         sprite.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
 
-        detailsPosLeft_ = 
+        detailsPosLeft_ =
             CREATURE_IMAGE_POS_LEFT_ +
             sprite.getGlobalBounds().width +
             CREATURE_IMAGE_RIGHT_PAD_;
@@ -3549,11 +3549,11 @@ namespace stage
         sfml_util::gui::ItemImageManager::Instance()->Load(detailViewTexture_, IITEM_PTR);
 
         detailViewSprite_.setTexture(detailViewTexture_, true);
-        
+
         auto const DETAILVIEW_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 1.25f) };
 
         detailViewSprite_.setScale(DETAILVIEW_IMAGE_SCALE, DETAILVIEW_IMAGE_SCALE);
-        
+
         detailViewSprite_.setPosition(
             (SCREEN_WIDTH_ * 0.5f) - (detailViewSprite_.getGlobalBounds().width * 0.5f),
             DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_);

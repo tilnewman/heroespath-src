@@ -135,7 +135,7 @@ namespace stage
 
         //returns true if a popup was displayed
         bool ShareAndShowPopupIfNeeded(const ShareType);
-        
+
         int Share(const ShareType);
 
         void SetupForCollection();

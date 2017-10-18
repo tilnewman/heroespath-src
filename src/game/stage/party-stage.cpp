@@ -455,7 +455,7 @@ namespace stage
 
         auto const LONGEST_TEXT_INFO{
             creature::NameInfo::Instance()->MakeTextInfo(longestSS.str()) };
-        
+
         auto const LIST_BOX_WIDTH{
             game::creature::NameInfo::Instance()->Length(LONGEST_TEXT_INFO) +
                 sfml_util::MapByRes(50.0f, 300.0f) };
@@ -472,13 +472,13 @@ namespace stage
         auto const CHAR_LIST_POS_TOP{
             ((SCREEN_HEIGHT_ * 0.5f) - (CHAR_LIST_HEIGHT * 0.5f)) +
                 sfml_util::MapByRes(70.0f, 350.0f) };
-        
+
         const sf::FloatRect CHAR_LIST_RECT(
             CHAR_LIST_POS_LEFT,
             CHAR_LIST_POS_TOP,
             CHAR_LIST_WIDTH,
             CHAR_LIST_HEIGHT);
-        
+
         auto const BG_COLOR{
             sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220) };
 
@@ -515,13 +515,13 @@ namespace stage
         auto const PARTY_LIST_POS_TOP{ CHAR_LIST_POS_TOP };
         auto const PARTY_LIST_WIDTH{ LIST_BOX_WIDTH };
         auto const PARTY_LIST_HEIGHT{ CHAR_LIST_HEIGHT };
-        
+
         const sf::FloatRect PARTY_LIST_RECT(
             PARTY_LIST_POS_LEFT,
             PARTY_LIST_POS_TOP,
             PARTY_LIST_WIDTH,
             PARTY_LIST_HEIGHT);
-        
+
         boxInfo.SetBoxAndBackgroundRegion(PARTY_LIST_RECT);
 
         partyListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
@@ -585,7 +585,7 @@ namespace stage
             std::ostringstream ss;
             ss << "(There are not enough characters to make a party of "
                 << player::Party::MAX_CHARACTER_COUNT_ << ".  Go back and create more.)";
-            
+
             warningTextInfo_ = sfml_util::gui::TextInfo(
                 ss.str(),
                 sfml_util::FontManager::Instance()->Font_Typical(),

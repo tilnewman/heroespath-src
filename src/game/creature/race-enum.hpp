@@ -135,7 +135,7 @@ namespace creature
         static const misc::StrVec_t CorpseImageKeys(const race::Enum);
     };
 
-    
+
     class SummonInfo
     {
     public:

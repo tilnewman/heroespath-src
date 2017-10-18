@@ -53,7 +53,7 @@ namespace misc
 
         using type = T;
 
-        //this move constructor allows for reference types    
+        //this move constructor allows for reference types
         template<typename T_ = T>
         explicit StrongType(
             T && value,

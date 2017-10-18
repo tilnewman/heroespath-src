@@ -107,7 +107,7 @@ namespace gui
         {
             return sf::Vector2f(entityRegion_.left, entityRegion_.top);
         }
-        
+
         inline void SetEntityPos(const sf::Vector2f & V) override { SetEntityPos(V.x, V.y); }
         void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
         void MoveEntityPos(const float HORIZ, const float VERT) override;

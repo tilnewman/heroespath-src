@@ -87,7 +87,7 @@ namespace stage
             BUTTON_SCALE_,
             false) ),
         exitButtonUPtr_    ( std::make_unique<main_menu_buttons::ExitButton>(
-            0.0f, 
+            0.0f,
             0.0f,
             BUTTON_SCALE_,
             false) ),
@@ -148,10 +148,10 @@ namespace stage
         settingsButtonUPtr_->SetScaleToRes();
         creditsButtonUPtr_->SetScaleToRes();
         exitButtonUPtr_->SetScaleToRes();
-        
+
         auto const SPACE_BETWEEN_BUTTONS{ sfml_util::MapByRes(8.0f, 50.0f) };
         auto const TITLE_TO_BUTTONS_SPACER{ sfml_util::MapByRes(160.0f, 1000.0f) };
-        
+
         resumeButtonUPtr_->SetEntityPos(
             (SCREEN_WIDTH_ * 0.5f) - (resumeButtonUPtr_->GetEntityRegion().width   * 0.5f),
             titleSprite_.getGlobalBounds().top + titleSprite_.getGlobalBounds().height +

@@ -698,7 +698,7 @@ namespace armor
 
         details.weight = Weight_t( static_cast<Weight_t::type>(
             100.0f * material::WeightMult(MATERIAL, material::Nothing) ) );
-         
+
         std::ostringstream ss;
         ss << "Skin made of " << material::ToReadableString(MATERIAL)
             << ".  The Armor Rating increases with Rank.";

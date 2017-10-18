@@ -195,7 +195,7 @@ namespace treasure
 
         std::size_t CharacterIndex() const;
         std::size_t CharacterIndexMax() const;
-        
+
         void InventoryChange(const std::size_t);
 
         inline bool IsItemDetailMovingOrShowing() const
@@ -222,7 +222,7 @@ namespace treasure
         void SetupAfterPleaseWait_CoinsImage();
 
         const std::string CorpseImageKeyFromEnemyParty() const;
-        
+
         void SetupForCollection_TreasureListbox(const stage::treasure::Type);
         void SetupForCollection_InventoryListbox();
         void SetupForCollection_TreasureListboxLabel();
@@ -246,7 +246,7 @@ namespace treasure
         void SetupInventory_GemsText();
         void SetupInventory_WeightText();
         void SetupInventory_RedXImage();
-        
+
         stage::treasure::Type TreasureSource() const;
 
         void UpdateTreasureVisuals();
@@ -276,7 +276,7 @@ namespace treasure
 
         const treasure::ItemDetails MouseOverListboxItemDetails(
             const sf::Vector2f & MOUSE_POS) const;
-        
+
     private:
         static const float ITEM_DETAIL_TIMEOUT_SEC_;
 

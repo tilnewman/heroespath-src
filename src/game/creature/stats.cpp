@@ -162,12 +162,12 @@ namespace creature
             "game::creature::Stats::Test() called with TRAIT_ENUM_VEC empty.");
 
         stats::Trait_t rollChance{ 0 };
-        
+
         for (auto const NEXT_TRAIT_ENUM : TRAIT_ENUM_VEC)
         {
             auto const TRAIT_WORKING{ CREATURE_PTR->TraitWorking(NEXT_TRAIT_ENUM) };
             rollChance += TRAIT_WORKING;
-            
+
             if (OPTIONS & With::RaceRoleBonus)
             {
                 rollChance += RollBonusByRace(
@@ -198,7 +198,7 @@ namespace creature
         }
 
         rollChance /= static_cast<int>(TRAIT_ENUM_VEC.size());
-        
+
         if (OPTIONS & With::Luck)
         {
             rollChance += LuckBonus(CREATURE_PTR);
@@ -212,7 +212,7 @@ namespace creature
 
             rollChance += RANK_BONUS;
         }
-        
+
         return (misc::random::Int(stats::Trait::STAT_MAX_ESTIMATED_) < rollChance);
     }
 

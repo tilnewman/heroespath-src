@@ -40,7 +40,7 @@ namespace gui
 {
 
     std::unique_ptr<ConditionImageManager> ConditionImageManager::instanceUPtr_{ nullptr };
-    
+
 
     ConditionImageManager::ConditionImageManager()
     {

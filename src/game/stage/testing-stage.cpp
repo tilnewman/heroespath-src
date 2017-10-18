@@ -359,7 +359,7 @@ namespace stage
         static auto hasTestingCompleted_SpellsImageManager{ false };
         if (false == hasTestingCompleted_SpellsImageManager)
         {
-            hasTestingCompleted_SpellsImageManager = 
+            hasTestingCompleted_SpellsImageManager =
                 TestImageManager<sfml_util::gui::SpellImageManager, spell::Spells>();
 
             return;
@@ -375,7 +375,7 @@ namespace stage
         static auto hasTestingCompleted_SongsImageManager{ false };
         if (false == hasTestingCompleted_SongsImageManager)
         {
-            hasTestingCompleted_SongsImageManager = 
+            hasTestingCompleted_SongsImageManager =
                 TestImageManager<sfml_util::gui::SongImageManager, song::Songs>();
 
             return;
@@ -391,7 +391,7 @@ namespace stage
         static auto hasTestingCompleted_ConditionImageManager{ false };
         if (false == hasTestingCompleted_ConditionImageManager)
         {
-            hasTestingCompleted_ConditionImageManager = 
+            hasTestingCompleted_ConditionImageManager =
                 TestImageManager<sfml_util::gui::ConditionImageManager, creature::Conditions>();
 
             return;
@@ -407,7 +407,7 @@ namespace stage
         static auto hasTestingCompleted_TitleImageManager{ false };
         if (false == hasTestingCompleted_TitleImageManager)
         {
-            hasTestingCompleted_TitleImageManager = 
+            hasTestingCompleted_TitleImageManager =
                 TestImageManager<sfml_util::gui::TitleImageManager, creature::Titles>();
 
             return;

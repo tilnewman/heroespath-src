@@ -164,7 +164,7 @@ namespace trap
             sfml_util::sound_effect::TrapChiaowahh,
             "You hear horrible wailing and a ghostly red light shines from the ",
             "  searing the party!"));
-        
+
         traps_.push_back(Trap(
             1, 4,
             12_health, 18_health,
@@ -172,14 +172,14 @@ namespace trap
             sfml_util::sound_effect::TrapGasExhale,
             "Noxious gas hisses from vents in the ",
             "!"));
-        
+
         traps_.push_back(Trap(
             2, 6,
             16_health, 24_health,
             "poisoned",
             sfml_util::sound_effect::TrapGasLeak,
             "A deadly chemical mist escapes!"));
-        
+
         traps_.push_back(Trap(
             2, 4,
             8_health, 14_health,
@@ -187,35 +187,35 @@ namespace trap
             sfml_util::sound_effect::TrapSparksHiss,
             "Sparks spray out from the ",
             "!"));
-        
+
         traps_.push_back(Trap(
             3, 6,
             12_health, 24_health,
             "sliced",
             sfml_util::sound_effect::TrapSparksAhh,
             "A torrent of molten metal showers the party!"));
-        
+
         traps_.push_back(Trap(
             1, 1,
             25_health, 50_health,
             "sliced",
             sfml_util::sound_effect::TrapSpiritShortHiss,
             "A spectral skeleton hand reaches out and strikes at the lock picker!"));
-        
+
         traps_.push_back(Trap(
             2, 4,
             30_health, 50_health,
             "sliced",
             sfml_util::sound_effect::TrapGhost2,
             "The raging ghost of a murdered witch emerges and slashes the party with ghostly claws!"));
-        
+
         traps_.push_back(Trap(
             4, 6,
             20_health, 40_health,
             "sliced",
             sfml_util::sound_effect::TrapGhost2,
             "Evil spirits emerge and tear through the party!"));
-        
+
         std::sort(
             std::begin(traps_),
             std::end(traps_),
@@ -286,7 +286,7 @@ namespace trap
 
         if (trapsWithSeverityWithinRange.empty())
         {
-            M_HP_LOG_ERR("game::trap::Warehouse::GetWithSeverityRatioBetween(min=" << THE_MIN 
+            M_HP_LOG_ERR("game::trap::Warehouse::GetWithSeverityRatioBetween(min=" << THE_MIN
                 << ", max=" << THE_MAX << ") "
                 << "resulted in no traps, so the default weakest trap is being used.");
 

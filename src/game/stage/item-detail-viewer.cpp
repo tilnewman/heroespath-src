@@ -217,9 +217,9 @@ namespace stage
             willShowImage_ = false;
             return;
         }
-        
+
         willShowImage_ = true;
-        
+
         sfml_util::gui::ItemImageManager::Instance()->Load(texture_, ITEM_PTR);
 
         sprite_.setTexture(texture_, true);

@@ -62,13 +62,13 @@ namespace item
 
         SelectItems(TREASURE_SCORES.Magic(), false, itemCache_OutParam);
         SelectItems(TREASURE_SCORES.Religious(), true, itemCache_OutParam);
-            
+
         if (itemCache_OutParam.items_pvec.empty() &&
             ((TREASURE_SCORES.Magic() > 0_score) || (TREASURE_SCORES.Religious() > 0_score)))
         {
             ForceItemSelection(itemCache_OutParam);
         }
-        
+
         return DetermineWhichTreasureImage(TREASURE_SCORES);
     }
 

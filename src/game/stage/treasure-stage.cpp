@@ -375,7 +375,7 @@ namespace stage
         {
             return HandleKeypress_LeftRight(KEY_EVENT.code);
         }
-        
+
         return Stage::KeyRelease(KEY_EVENT);
     }
 
@@ -448,7 +448,7 @@ namespace stage
         treasureImageType_ = combat::Encounter::Instance()->BeginTreasureStageTasks();
         itemCacheHeld_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsHeldCache();
         itemCacheLockbox_ = combat::Encounter::Instance()->TakeDeadNonPlayerItemsLockboxCache();
-        
+
         displayStagePtr_->SetupAfterPleaseWait(treasureImageType_);
         treasureAvailable_ = DetermineTreasureAvailableState(itemCacheHeld_, itemCacheLockbox_);
         PromptUserBasedonTreasureAvailability(treasureAvailable_, treasureImageType_);
@@ -812,7 +812,7 @@ namespace stage
         {
             treasureImageType_ = item::TreasureImage::LockboxOpen;
         }
-        
+
         sfml_util::SoundManager::Instance()->SoundEffectPlay(
             SelectRandomTreasureOpeningSfx(),
             0.5f);

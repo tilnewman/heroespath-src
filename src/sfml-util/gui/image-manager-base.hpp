@@ -56,13 +56,13 @@ namespace gui
                 "media-images-placeholder") )
         {}
 
-        
+
         virtual ~ImageManagerBase() {}
 
 
         static inline const std::string PathToImages() { return pathToImages_; }
-        
-        
+
+
         static inline void PathToImages(const std::string & PATH) { pathToImages_ = PATH; }
 
 
@@ -90,7 +90,7 @@ namespace gui
                 M_HP_LOG_ERR("sfml_util::gui::ImageManagerBase<"
                     << boost::typeindex::type_id<T>().pretty_name()
                     << ">::Get(enum=" << ENUM_OF_IMAGE
-                    << ", path=\"" << path.string() << "\", will_flip=" << std::boolalpha 
+                    << ", path=\"" << path.string() << "\", will_flip=" << std::boolalpha
                     << WILL_FLIP_HORIZ << ") that path does not exist or is not a regular file.");
 
                 path = bfs::system_complete( bfs::path(pathToPlaceholderImage_) );

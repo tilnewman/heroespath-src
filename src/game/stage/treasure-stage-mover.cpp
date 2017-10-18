@@ -187,7 +187,7 @@ namespace treasure
                 areAnyFinished = true;
             }
         }
-        
+
         if (areAnyFinished)
         {
             for (auto & slider : treasureSliders_)

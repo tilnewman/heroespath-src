@@ -342,7 +342,7 @@ namespace sfml_util
         {
             M_HP_LOG_ERR("sfml_util::TextureCache::GetByIndex(" << INDEX
                 << "\") failed because the pointer at that index is null.");
-        
+
             return * cacheUVec_[0];
         }
 

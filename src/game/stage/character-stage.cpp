@@ -157,7 +157,7 @@ namespace stage
 
     const sf::Color CharacterStage::DESC_TEXT_COLOR_{
         sfml_util::FontManager::Color_Orange() };
-    
+
     const std::string CharacterStage::POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_{
         "BackButtonLeaveScreenComfirm" };
 
@@ -171,7 +171,7 @@ namespace stage
     const std::string CharacterStage::POPUP_NAME_HELP_2_{ "HelpMessage2" };
     const std::string CharacterStage::POPUP_NAME_HELP_3_{ "HelpMessage3" };
     const std::string CharacterStage::POPUP_NAME_IMAGE_SELECTION_{ "ImageSelection" };
-    
+
     const stats::Trait_t CharacterStage::STAT_INVALID_{ -1 };
     const stats::Trait_t CharacterStage::STAT_INITIAL_MAX_{ 20 };
 
@@ -547,7 +547,7 @@ namespace stage
         sf::Vertex line6[] = {
             sf::Vector2f(STATS_POS_LEFT_ + 0.0f, statsLine6PosTop_),
             sf::Vector2f(STATS_POS_LEFT_ + 10.0f + statsLineLength_, statsLine6PosTop_) };
-        
+
         const sf::Color LINE_TO_COLOR{ 255, 255, 255, 20 };
         line1[1].color = LINE_TO_COLOR;
         line2[1].color = LINE_TO_COLOR;
@@ -831,7 +831,7 @@ namespace stage
 
         auto const ROLE_ENUM{
             ((RACE_ENUM == creature::race::Wolfen) ? creature::role::Wolfen : ROLE_SELECTED) };
-        
+
         auto const ROLE_RADIOBUTTON_REGION{ roleRadioButtonSPtr_->GetEntityRegion() };
 
         const sf::FloatRect REGION(
@@ -944,7 +944,7 @@ namespace stage
         const sfml_util::gui::BackgroundInfo BG_INFO(
             sfml_util::gui::GuiElements::Instance()->GetTextureWood(),
             TEMP_EMPTY_REGION);
-            
+
         const sfml_util::gui::box::Info BOX_INFO(
             true,
             TEMP_EMPTY_REGION,
@@ -1177,7 +1177,7 @@ namespace stage
     void CharacterStage::Setup_AttributeDescriptionBox()
     {
         auto const ATTR_DESC_WIDTH{ sfml_util::MapByRes(335.0f, 3000.0f) };
-        
+
         const sf::FloatRect REGION(
             (SCREEN_WIDTH_ - ATTR_DESC_WIDTH) - sfml_util::MapByRes(15.0f, 300.0f),
             sfml_util::MapByRes(450.0f, 1600.0f),
@@ -1206,7 +1206,7 @@ namespace stage
         sfml_util::gui::TextInfo strHelpTextInfo(descTextInfo);
 
         Setup_AttributeHelpText(stats::Traits::Strength, REGION, strHelpTextInfo, textRegionUVec);
-        
+
         Setup_Attribute(
             stats::Traits::Accuracy,
             "heroespath-stats-stat-desc_Accuracy",
@@ -1613,7 +1613,7 @@ namespace stage
             boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
 
         const bool IS_MALE{ sexRadioButtonUPtr_->GetSelectedNumber() == 0 };
-            
+
         auto const RACE{
             static_cast<creature::race::Enum>(raceRadioButtonUPtr_->GetSelectedNumber()) };
 
@@ -2490,7 +2490,7 @@ namespace stage
         {
             UndoAndClearStatModifierChanges();
             HandleChangedStatModifiers();
-            
+
             sfml_util::SoundManager::Instance()->
                 Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
         }
@@ -2890,7 +2890,7 @@ namespace stage
         {
             const typename AnimNumSVec_t::iterator ITR_TO_ERASE{
                 animStatsSVec_.begin() + AnimNumSVec_t::iterator::difference_type(i) };
-            
+
             animStatsSVec_.erase(ITR_TO_ERASE);
         }
     }

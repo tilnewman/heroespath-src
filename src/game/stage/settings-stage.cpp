@@ -180,7 +180,7 @@ namespace stage
 
         auto const BOX_POS_LEFT{
             (StageRegionWidth() - BOX_WIDTH_) - ((StageRegionWidth() - BOX_WIDTH_) * 0.5f) };
-        
+
         auto const BOX_POS_TOP{ mainMenuTitle_.Bottom() };
 
         const sf::FloatRect BOX_RECT(
@@ -296,7 +296,7 @@ namespace stage
             auto const SLIDER_POS_TOP{
                 musicVolumeTextRegionUPtr_->GetEntityPos().y +
                     musicVolumeTextRegionUPtr_->GetEntityRegion().height + 5.0f };
-            
+
             musicVolumeSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarLabeled_Music>(
                 "MusicVolume",
                 SLIDER_POS_LEFT,
@@ -325,7 +325,7 @@ namespace stage
             sfml_util::gui::TextInfo effectsVolumeTitleTextInfo(settingsTextInfoTitle);
             effectsVolumeTitleTextInfo.text = "Sound Effects\nVolume";
             effectsVolumeTitleTextInfo.justified = sfml_util::Justified::Center;
-            
+
             effectsVolumeTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "EffectsVolumeSetting",
                 effectsVolumeTitleTextInfo,
@@ -350,7 +350,7 @@ namespace stage
             auto const SLIDER_POS_TOP{
                 effectsVolumeTextRegionUPtr_->GetEntityPos().y +
                     effectsVolumeTextRegionUPtr_->GetEntityRegion().height + 5.0f };
-            
+
             effectsVolumeSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarLabeled_Effects>(
                 "EffectsVolume",
                 SLIDER_POS_LEFT,
@@ -390,7 +390,7 @@ namespace stage
                 AA_TEXT_REGION_RECT);
 
             EntityAdd(aaTextRegionUPtr_.get());
-            
+
             auto const AA_POS_LEFT{
                 resRadioButtonSetUPtr_->GetEntityRegion().left +
                     resRadioButtonSetUPtr_->GetEntityRegion().width + ANTIALIAS_HORIZ_POS_ };
@@ -473,7 +473,7 @@ namespace stage
                 auto const MUSICINFO_LABEL_POS_LEFT{
                     (aaRadioButtonSetUPtr_->GetEntityRegion().left - MUSICINFO_RIGHT_PAD) -
                         BOX_INNER_PAD_ };
-                
+
                 auto const MUSICINFO_LABEL_POS_TOP{
                     aaRadioButtonSetUPtr_->GetEntityRegion().top +
                         aaRadioButtonSetUPtr_->GetEntityRegion().height + 30.0f };
@@ -678,7 +678,7 @@ namespace stage
             auto const VOLUME_TOP{ BOX_RECT_INNER.top - 5.0f };
 
             musicVolumeTextRegionUPtr_->SetEntityPos(VOLUME_LEFT, VOLUME_TOP);
-            
+
             auto const SLIDER_POS_LEFT{
                 musicVolumeTextRegionUPtr_->GetEntityPos().x +
                     (musicVolumeTextRegionUPtr_->GetEntityRegion().width * 0.5f) - 13.0f };
@@ -702,7 +702,7 @@ namespace stage
             auto const VOLUME_TOP{ BOX_RECT_INNER.top - 5.0f };
 
             effectsVolumeTextRegionUPtr_->SetEntityPos(VOLUME_LEFT, VOLUME_TOP);
-            
+
             auto const SLIDER_POS_LEFT{
                 effectsVolumeTextRegionUPtr_->GetEntityPos().x +
                     (effectsVolumeTextRegionUPtr_->GetEntityRegion().width * 0.5f) - 13.0f };
@@ -725,7 +725,7 @@ namespace stage
             auto const AA_LABEL_POS_TOP{ BOX_RECT_INNER.top - 5.0f };
 
             aaTextRegionUPtr_->SetEntityPos(AA_LABEL_POS_LEFT, AA_LABEL_POS_TOP);
-            
+
             auto const AA_POS_LEFT{
                 resRadioButtonSetUPtr_->GetEntityRegion().left +
                 resRadioButtonSetUPtr_->GetEntityRegion().width +

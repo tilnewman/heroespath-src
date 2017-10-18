@@ -180,7 +180,7 @@ namespace treasure
         target.draw(bottomImage_, STATES);
         target.draw(corpseSprite_, STATES);
         target.draw(treasureSprite_, STATES);
-        
+
         if (instrTextUPtr_.get() != nullptr)
         {
             target.draw( * instrTextUPtr_, STATES);
@@ -292,7 +292,7 @@ namespace treasure
 
 
     void TreasureDisplayStage::SetupInitial()
-    {   
+    {
         SetupInitial_BackgroundImage();
         SetupInitial_Ouroboros();
     }
@@ -313,18 +313,18 @@ namespace treasure
     {
         treasureAvailable_ = TREASURE_AVAILABLE;
         treasureImage_ = TREASURE_IMAGE;
-        
+
         auto const TREASURE_SOURCE{ TreasureSource() };
-        
+
         stageMoverUPtr_ = std::make_unique<stage::treasure::StageMover>(
             TREASURE_SOURCE,
             WhichCharacterInventoryIsDisplayedIndex());
-        
+
         SetupForCollection_TreasureListbox(TREASURE_SOURCE);
         SetupForCollection_InventoryListbox();
-        
+
         SetupForCollection_TreasureListboxLabel();
-        
+
         SetupForCollection_InventoryCharacterImage();
         SetupForCollection_InventoryListboxLabel();
         SetupForCollection_InventoryCoinsText();
@@ -333,7 +333,7 @@ namespace treasure
         SetupForCollection_InventoryRedXImage();
 
         SetupForCollection_InstructionsText();
-        
+
         stageMoverUPtr_->StartAll();
     }
 
@@ -355,7 +355,7 @@ namespace treasure
         }
     }
 
-    
+
     bool TreasureDisplayStage::IsShowingHeldItems() const
     {
         if (nullptr == stageMoverUPtr_.get())
@@ -557,7 +557,7 @@ namespace treasure
 
         auto const TREASURE_IMAGE_MAX_WIDTH{
             (SCREEN_WIDTH * 0.36f * TREASURE_IMAGE_SCALE_ADJ) };
-        
+
         auto const TREASURE_IMAGE_MAX_HEIGHT{
             (SCREEN_HEIGHT * 0.275f * TREASURE_IMAGE_SCALE_ADJ) };
 
@@ -644,7 +644,7 @@ namespace treasure
             ((TREASURE_SOURCE == stage::treasure::Type::Container) ?
                 lockboxCache_.items_pvec :
                 heldCache_.items_pvec));
-        
+
         auto const MEASUREMENTS{ CreateDisplayMeasurements() };
 
         auto const TREASURE_ONSCREEN_POS_V{
@@ -670,7 +670,7 @@ namespace treasure
             treasure::WhichListbox::Inventory,
             inventoryListboxUPtr_,
             WhichCharacterInventoryIsDisplayed()->Inventory().Items());
-     
+
         auto const MEASUREMENTS{ CreateDisplayMeasurements() };
 
         auto const INVENTORY_ONSCREEN_POS_V{
@@ -682,7 +682,7 @@ namespace treasure
             sf::Vector2f(
                 CalculateHorizOffscreenPos(),
                 MEASUREMENTS.inventoryListboxRegion.top) };
-        
+
         stageMoverUPtr_->AddInventoryObject(
             inventoryListboxUPtr_.get(),
             INVENTORY_ONSCREEN_POS_V,
@@ -817,7 +817,7 @@ namespace treasure
                 listboxTextInfo,
                 ITEM_PTR) );
         }
-        
+
         auto const PREV_ENTITY_PTR{ listboxUPtr.get() };
 
         if (PREV_ENTITY_PTR != nullptr)
@@ -854,7 +854,7 @@ namespace treasure
             this);
 
         EntityAdd(listboxUPtr.get());
-        
+
         listboxUPtr->SetSelectedIndex(0);
         listboxUPtr->SetImageColor(listboxColors.image);
 
@@ -889,27 +889,27 @@ namespace treasure
             sfml_util::Justified::Left);
 
         auto const PREV_ENTITY_PTR{ treasureLabelUPtr_.get() };
-        
+
         if (PREV_ENTITY_PTR != nullptr)
         {
             EntityRemove(PREV_ENTITY_PTR);
         }
-        
+
         //initial position doesn't matter since the position must be set after rendering
         auto const EMPTY_RECT{ sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
 
         treasureLabelUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "TreasureStage'sTreasureListboxLabel", TEXT_INFO, EMPTY_RECT);
-        
+
         auto const MEASUREMENTS{ CreateDisplayMeasurements() };
-        
+
         auto const LEFT{ MEASUREMENTS.treasureListboxRegion.left };
-        
+
         auto const TOP{ (MEASUREMENTS.treasureListboxRegion.top -
                 treasureLabelUPtr_->GetEntityRegion().height) + 10.0f };
-        
+
         treasureLabelUPtr_->SetEntityPos(LEFT, TOP);
-        
+
         EntityAdd(treasureLabelUPtr_.get());
 
         if ((stageMoverUPtr_.get() != nullptr) &&
@@ -923,12 +923,12 @@ namespace treasure
     void TreasureDisplayStage::SetupInventory_CharacterImage()
     {
         auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
-        
+
         sfml_util::gui::CreatureImageManager::Instance()->GetImage(
             characterTexture_,
             CREATURE_PTR->ImageFilename(),
             true);
-        
+
         sfml_util::Invert(characterTexture_);
         sfml_util::Mask(characterTexture_, sf::Color::White);
 
@@ -936,7 +936,7 @@ namespace treasure
         sprite.setTexture(characterTexture_, true);
 
         auto const MEASUREMENTS{ CreateDisplayMeasurements() };
-        
+
         sprite.setScale(
             MEASUREMENTS.characterImageScale, MEASUREMENTS.characterImageScale);
 

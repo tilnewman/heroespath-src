@@ -59,7 +59,7 @@ namespace misc
         {
             return StrongNumericType<T, Parameter>(std::abs(this->m_value));
         }
-        
+
         StrongNumericType & operator+=(const StrongNumericType & RHS)
         {
             this->m_value += RHS.m_value;
@@ -104,7 +104,7 @@ namespace misc
             return StrongNumericType( * this) /= RHS;
         }
 
-        
+
         bool operator==(const StrongNumericType & RHS) const
         {
             return this->m_value == RHS.m_value;

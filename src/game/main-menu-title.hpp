@@ -62,9 +62,9 @@ namespace game
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
         inline const sf::FloatRect Region() const { return symbolSprite_.getGlobalBounds(); }
-        
+
         inline float BottomPad() const { return sfml_util::MapByRes(35.0f, 135.0f); }
-        
+
         inline float Bottom(const bool WILL_PAD = true) const
         {
             return Region().top + Region().height + ((WILL_PAD) ? BottomPad() : 0.0f);

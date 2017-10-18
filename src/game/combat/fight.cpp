@@ -1008,7 +1008,7 @@ namespace combat
 
             creature::CondEnumVec_t condsAddedVec;
             creature::CondEnumVec_t condsRemovedVec;
-            
+
             HitInfoVec_t hitInfoVec;
 
             HandleDamage(
@@ -1432,7 +1432,7 @@ namespace combat
 
         auto const ACCURACY_CURRENT{ creatureAttackingPtrC->Accuracy().AsInt() };
 
-        isCriticalHit_OutParam = 
+        isCriticalHit_OutParam =
             ((creatureAttackingPtrC->IsPlayerCharacter() || LUCK_TEST) &&
              ACCURACY_TEST &&
              ((ACCURACY_CURRENT >= STAT_FLOOR) || LUCK_TEST) &&

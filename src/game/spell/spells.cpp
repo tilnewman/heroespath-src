@@ -151,7 +151,7 @@ namespace spell
 
         auto const HEALTH_GAIN_MAX{ creatureCastUponPtr->HealthMissing() };
 
-        healthAdj = 
+        healthAdj =
             ((HEALTH_GAIN_ORIG > HEALTH_GAIN_MAX) ? HEALTH_GAIN_MAX : HEALTH_GAIN_ORIG);
 
         if (0_health == healthAdj)

@@ -56,7 +56,7 @@ namespace popup
 
     protected:
         bool HandleSelect() override;
-        
+
     private:
         std::size_t CountMax() const override;
         void SetupContent(const bool WILL_ERASE) override;

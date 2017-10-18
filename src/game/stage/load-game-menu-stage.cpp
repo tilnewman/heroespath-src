@@ -360,7 +360,7 @@ namespace stage
 
             sfml_util::SoundManager::Instance()->
                 Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-            
+
             LoopManager::Instance()->TransitionTo_MainMenu();
             return true;
         }

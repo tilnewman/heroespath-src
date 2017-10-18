@@ -64,7 +64,7 @@ namespace game
         inline float Top() const    { return sprite1_.getGlobalBounds().top; }
         inline float Middle() const { return Top() + (Height() * 0.5f); }
         float Bottom() const;
-        
+
     public:
         static const sf::Color DEFAULT_COLOR_;
 

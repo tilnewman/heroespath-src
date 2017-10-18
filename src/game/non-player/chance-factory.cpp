@@ -1291,14 +1291,14 @@ namespace ownership
         auto clothChance(0.0f);
         auto softleatherChance(0.0f);
         auto hardleatherChance(0.0f);
-        
+
         LookupClothingMaterialChances(
             PROFILE,
             CHARACTER_PTR,
             clothChance,
             softleatherChance,
             hardleatherChance);
-        
+
         itemChancesBase.mat_map_pri[item::material::Cloth] = clothChance;
         itemChancesBase.mat_map_pri[item::material::SoftLeather] = softleatherChance;
         itemChancesBase.mat_map_pri[item::material::HardLeather] = hardleatherChance;

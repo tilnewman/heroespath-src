@@ -1159,14 +1159,14 @@ namespace combat
         auto const CREATURE_EFFECT{ CREATURE_EFFECTS.at(EFFECT_INDEX) };
 
         auto const HIT_INFOS{ CREATURE_EFFECT.GetHitInfoVec() };
-        
+
         M_ASSERT_OR_LOGANDTHROW_SS((HIT_INDEX < HIT_INFOS.size()),
             "game::combat::Text::TrapDescriptionFullVersion(creature="
             << CREATURE_UNLOCKING_PTR->NameAndRaceAndRole()
             << ", effect_index=" << EFFECT_INDEX
             << ", hit_index=" << HIT_INDEX
             << ") but there were only " << HIT_INFOS.size() << " hit infos.");
-        
+
         auto const HIT_INFO{ HIT_INFOS.at(HIT_INDEX) };
 
         std::ostringstream ss;

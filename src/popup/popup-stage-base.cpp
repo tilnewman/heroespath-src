@@ -635,7 +635,7 @@ namespace popup
                 accentSprite1_,
                 textRegion_,
                 ACCENT_IMAGE_SCALEDOWN_RATIO_);
-            
+
             accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
         }
     }

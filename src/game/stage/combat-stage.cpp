@@ -3870,7 +3870,7 @@ namespace stage
         std::vector<Health_t> damageVec;
         combat::CombatNodePVec_t combatNodePVec;
         creature::CreaturePVec_t killedCreaturesPVec;
-        
+
         auto const CREATURE_EFFECTS{ fightResult_.Effects() };
 
         for (auto const & NEXT_CREATURE_EFFECT : CREATURE_EFFECTS)

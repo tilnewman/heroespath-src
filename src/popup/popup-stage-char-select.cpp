@@ -162,7 +162,7 @@ namespace popup
             PlayInvalidKeypressSoundEffect();
             return false;
         }
-        
+
         return PopupStageBase::HandleSelect();
     }
 
