@@ -152,6 +152,9 @@ namespace stage
 
         void UpdateItemDisplay();
 
+        //returns true if a popup is displayed
+        bool ProcessLockpickTitleAndPopupIfNeeded();
+
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
         static const std::string POPUP_NAME_ALL_ENEMIES_RAN_;
@@ -168,6 +171,7 @@ namespace stage
         static const std::string POPUP_NAME_COIN_SHARE_;
         static const std::string POPUP_NAME_GEM_SHARE_;
         static const std::string POPUP_NAME_ITEM_TAKE_REJECTION_;
+        static const std::string POPUP_NAME_TITLE_ACHIEVEMENT_;
 
     private:
         TreasureDisplayStage * displayStagePtr_;
@@ -180,6 +184,8 @@ namespace stage
         combat::FightResult fightResult_;
         std::size_t creatureEffectIndex_;
         bool updateItemDisplayNeeded_;
+        bool willProcessLockpickTitle_;
+        creature::CreaturePtr_t creatureWhoPickedTheLockPtr_;
     };
 
 }

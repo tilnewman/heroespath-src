@@ -33,12 +33,14 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/gui/title-image-manager.hpp"
 
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-treasure-trap.hpp"
 #include "popup/popup-stage-item-profile-wait.hpp"
 #include "popup/popup-stage-combat-over.hpp"
+#include "popup/popup-stage-image-fade.hpp"
 
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
@@ -51,6 +53,7 @@
 #include "game/player/character.hpp"
 #include "game/creature/algorithms.hpp"
 #include "game/creature/stats.hpp"
+#include "game/creature/title.hpp"
 #include "game/item/item.hpp"
 #include "game/item/item-profile-warehouse.hpp"
 #include "game/trap-warehouse.hpp"
@@ -124,6 +127,9 @@ namespace stage
     const std::string TreasureStage::POPUP_NAME_ITEM_TAKE_REJECTION_{
         "PopupName_ItemTakeRejection" };
 
+    const std::string TreasureStage::POPUP_NAME_TITLE_ACHIEVEMENT_{
+        "PopupName_TitleAchievement" };
+
 
     TreasureStage::TreasureStage()
     :
@@ -137,7 +143,9 @@ namespace stage
         trap_               (),
         fightResult_        (),
         creatureEffectIndex_(0),
-        updateItemDisplayNeeded_(false)
+        updateItemDisplayNeeded_(false),
+        willProcessLockpickTitle_(false),
+        creatureWhoPickedTheLockPtr_(nullptr)
     {}
 
 
@@ -193,12 +201,12 @@ namespace stage
 
                 if (SELECTION < Game::Instance()->State().Party().Characters().size())
                 {
-                    auto const LOCK_PICKING_CREATURE_PTR{
-                        Game::Instance()->State().Party().GetAtOrderPos(SELECTION) };
+                    creatureWhoPickedTheLockPtr_ =
+                        Game::Instance()->State().Party().GetAtOrderPos(SELECTION);
 
-                    combat::Encounter::Instance()->LockPickCreaturePtr(LOCK_PICKING_CREATURE_PTR);
+                    combat::Encounter::Instance()->LockPickCreaturePtr(creatureWhoPickedTheLockPtr_);
 
-                    PromptPlayerWithLockPickPopup(LOCK_PICKING_CREATURE_PTR->Name());
+                    PromptPlayerWithLockPickPopup(creatureWhoPickedTheLockPtr_->Name());
                     return false;
                 }
                 else
@@ -281,8 +289,15 @@ namespace stage
                 }
                 else
                 {
-                    SetupForCollection();
-                    return true;
+                    if (ProcessLockpickTitleAndPopupIfNeeded())
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        SetupForCollection();
+                        return true;
+                    }
                 }
             }
         }
@@ -295,12 +310,32 @@ namespace stage
             }
             else
             {
+                if (ProcessLockpickTitleAndPopupIfNeeded())
+                {
+                    return false;
+                }
+                else
+                {
+                    SetupForCollection();
+                    return true;
+                }
+            }
+        }
+
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_GEM_SHARE_)
+        {
+            if (ProcessLockpickTitleAndPopupIfNeeded())
+            {
+                return false;
+            }
+            else
+            {
                 SetupForCollection();
                 return true;
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_GEM_SHARE_)
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_TITLE_ACHIEVEMENT_)
         {
             SetupForCollection();
             return true;
@@ -725,6 +760,8 @@ namespace stage
         sfml_util::SoundManager::Instance()->SoundEffectPlay(
             sfml_util::sound_effect::TreasureUnlock);
 
+        willProcessLockpickTitle_ = true;
+
         LockboxOpen();
     }
 
@@ -1129,6 +1166,57 @@ namespace stage
     {
         displayStagePtr_->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
         displayStagePtr_->RefreshAfterCacheUpdate();
+    }
+
+
+    bool TreasureStage::ProcessLockpickTitleAndPopupIfNeeded()
+    {
+        if (willProcessLockpickTitle_ && (creatureWhoPickedTheLockPtr_ != nullptr))
+        {
+            willProcessLockpickTitle_ = false;
+
+            auto const FROM_TITLE_PTR{
+                creatureWhoPickedTheLockPtr_->GetAchievements().GetCurrentTitle(
+                    creature::AchievementType::LocksPicked) };
+
+            auto const TO_TITLE_PTR{
+                creatureWhoPickedTheLockPtr_->GetAchievements().Increment(
+                    creature::AchievementType::LocksPicked) };
+
+            if ((TO_TITLE_PTR != nullptr) && (FROM_TITLE_PTR != TO_TITLE_PTR))
+            {
+                TO_TITLE_PTR->Change(creatureWhoPickedTheLockPtr_);
+
+                sf::Texture fromTexture;
+                if (FROM_TITLE_PTR != nullptr)
+                {
+                    sfml_util::gui::TitleImageManager::Instance()->Get(
+                        fromTexture, FROM_TITLE_PTR->Which());
+                }
+
+                sf::Texture toTexture;
+                if (TO_TITLE_PTR != nullptr)
+                {
+                    sfml_util::gui::TitleImageManager::Instance()->Get(
+                        toTexture, TO_TITLE_PTR->Which());
+                }
+
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageFadePopupInfo(
+                    POPUP_NAME_TITLE_ACHIEVEMENT_,
+                    creatureWhoPickedTheLockPtr_,
+                    FROM_TITLE_PTR,
+                    TO_TITLE_PTR,
+                    & fromTexture,
+                    & toTexture) };
+
+                LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageFade>(
+                    this, POPUP_INFO);
+
+                return true;
+            }
+        }
+        
+        return false;
     }
 
 }
