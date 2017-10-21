@@ -88,6 +88,7 @@ namespace treasure
         sf::Color background;
         sf::Color title;
         sfml_util::gui::ColorSet colorSet;
+        sf::Color icon;
     };
 
 
@@ -115,6 +116,9 @@ namespace treasure
         float listboxItemSpacer;
         float characterImageLeft;
         float characterImageScale;
+        float listboxSortIconScale;
+        float listboxSortIconSpacer;
+        float listboxSortIconTop;
     };
 
 
@@ -226,12 +230,14 @@ namespace treasure
         void SetupForCollection_TreasureListbox(const stage::treasure::Type);
         void SetupForCollection_InventoryListbox();
         void SetupForCollection_TreasureListboxLabel();
+        void SetupForCollection_TreasureListboxSortIcons();
         void SetupForCollection_InventoryCharacterImage();
         void SetupForCollection_InventoryListboxLabel();
         void SetupForCollection_InventoryCoinsText();
         void SetupForCollection_InventoryGemsText();
         void SetupForCollection_InventoryWeightText();
         void SetupForCollection_InventoryRedXImage();
+        void SetupForCollection_InventoryListboxSortIcons();
         void SetupForCollection_InstructionsText();
 
         void SetupListbox(
@@ -240,6 +246,8 @@ namespace treasure
             const item::ItemPVec_t &);
 
         void SetupTreasure_ListboxLabel();
+        void SetupTreasure_ListboxSortIcons();
+        void SetupInventory_ListboxSortIcons();
         void SetupInventory_CharacterImage();
         void SetupInventory_ListboxLabel();
         void SetupInventory_CoinsText();
@@ -277,6 +285,35 @@ namespace treasure
         const treasure::ItemDetails MouseOverListboxItemDetails(
             const sf::Vector2f & MOUSE_POS) const;
 
+        template<typename T>
+        sfml_util::gui::IGuiEntityPtr_t GetGuiEntityPtrAndRemoveIfNeeded(const T & GUI_ENTITY_UPTR)
+        {
+            const sfml_util::gui::IGuiEntityPtr_t ENTITY_PTR{ GUI_ENTITY_UPTR.get() };
+
+            if (ENTITY_PTR != nullptr)
+            {
+                EntityRemove(ENTITY_PTR);
+            }
+
+            return ENTITY_PTR;
+        }
+
+        enum class StageAddEntity
+        {
+            Will,
+            Wont
+        };
+
+        void GuiEntityPtrAddCurrAndReplacePrevIfNeeded(
+            const sfml_util::gui::IGuiEntityPtr_t PREV_GUI_ENTITY_PTR,
+            const sfml_util::gui::IGuiEntityPtr_t CURR_GUI_ENTITY_PTR,
+            const StageAddEntity WILL_ADD = StageAddEntity::Will);
+
+        void ReplaceListboxIconImage(
+            const std::string & NAME,
+            sfml_util::gui::GuiImageUPtr_t & iconImageUPtr,
+            sf::Sprite & sprite);
+
     private:
         static const float ITEM_DETAIL_TIMEOUT_SEC_;
 
@@ -303,6 +340,15 @@ namespace treasure
         sf::Texture coinsTexture_;
         sf::Sprite coinsSprite_;
         sf::Texture characterTexture_;
+        sf::Texture listboxSortIconABCTexture_;
+        sf::Texture listboxSortIconMoneyTexture_;
+        sf::Texture listboxSortIconWeightTexture_;
+        sfml_util::gui::GuiImageUPtr_t treasureABCImageUPtr_;
+        sfml_util::gui::GuiImageUPtr_t treasureMoneyImageUPtr_;
+        sfml_util::gui::GuiImageUPtr_t treasureWeightImageUPtr_;
+        sfml_util::gui::GuiImageUPtr_t inventoryABCImageUPtr_;
+        sfml_util::gui::GuiImageUPtr_t inventoryMoneyImageUPtr_;
+        sfml_util::gui::GuiImageUPtr_t inventoryWeightImageUPtr_;
         sfml_util::gui::GuiImageUPtr_t characterImageUPtr_;
         item::TreasureAvailable::Enum treasureAvailable_;
         item::TreasureImage::Enum treasureImage_;

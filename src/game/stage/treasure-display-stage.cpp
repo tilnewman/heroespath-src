@@ -65,7 +65,8 @@ namespace treasure
         foreground(line),
         background(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220)),
         title(sfml_util::FontManager::Color_Orange() - sf::Color(130, 130, 130, 0)),
-        colorSet(foreground, background)
+        colorSet(foreground, background),
+        icon(sf::Color(255, 255, 255, 127))
     {}
 
 
@@ -102,7 +103,12 @@ namespace treasure
         listboxMargin(10.0f),
         listboxItemSpacer(6.0f),
         characterImageLeft(inventoryListboxRegion.left),
-        characterImageScale(sfml_util::MapByRes(0.75f, 3.25f))
+        characterImageScale(sfml_util::MapByRes(0.75f, 3.25f)),
+        listboxSortIconScale(sfml_util::MapByRes(0.1f, 0.35f)),
+        listboxSortIconSpacer(sfml_util::MapByRes(35.0f, 75.0f)),
+        listboxSortIconTop(
+            (listboxTop - (127.0f * listboxSortIconScale)) - sfml_util::MapByRes(10.0f, 20.0f))
+
     {}
 
 }//end of namespace treasure
@@ -137,6 +143,15 @@ namespace treasure
         coinsTexture_(),
         coinsSprite_(),
         characterTexture_(),
+        listboxSortIconABCTexture_(),
+        listboxSortIconMoneyTexture_(),
+        listboxSortIconWeightTexture_(),
+        treasureABCImageUPtr_(),
+        treasureMoneyImageUPtr_(),
+        treasureWeightImageUPtr_(),
+        inventoryABCImageUPtr_(),
+        inventoryMoneyImageUPtr_(),
+        inventoryWeightImageUPtr_(),
         characterImageUPtr_(),
         treasureAvailable_(item::TreasureAvailable::NoTreasure),
         treasureImage_(item::TreasureImage::Count),
@@ -324,7 +339,9 @@ namespace treasure
         SetupForCollection_InventoryListbox();
 
         SetupForCollection_TreasureListboxLabel();
+        SetupForCollection_TreasureListboxSortIcons();
 
+        SetupForCollection_InventoryListboxSortIcons();
         SetupForCollection_InventoryCharacterImage();
         SetupForCollection_InventoryListboxLabel();
         SetupForCollection_InventoryCoinsText();
@@ -701,6 +718,31 @@ namespace treasure
     }
 
 
+    void TreasureDisplayStage::SetupForCollection_TreasureListboxSortIcons()
+    {
+        SetupTreasure_ListboxSortIcons();
+
+        //The -300.0f here works because it is (the negative of) anything over 256.0f,
+        //which is the max dimmension of all listbox sort icon images.
+        auto const OFFSCREEN_POS_HORIZ{ -300.0f };
+
+        stageMoverUPtr_->AddTreasureObject(
+            treasureABCImageUPtr_.get(),
+            treasureABCImageUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureABCImageUPtr_->GetEntityPos().y));
+
+        stageMoverUPtr_->AddTreasureObject(
+            treasureMoneyImageUPtr_.get(),
+            treasureMoneyImageUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureMoneyImageUPtr_->GetEntityPos().y));
+
+        stageMoverUPtr_->AddTreasureObject(
+            treasureWeightImageUPtr_.get(),
+            treasureWeightImageUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureWeightImageUPtr_->GetEntityPos().y));
+    }
+
+
     void TreasureDisplayStage::SetupForCollection_InventoryListboxLabel()
     {
         SetupInventory_ListboxLabel();
@@ -767,6 +809,31 @@ namespace treasure
     }
 
 
+    void TreasureDisplayStage::SetupForCollection_InventoryListboxSortIcons()
+    {
+        SetupInventory_ListboxSortIcons();
+
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+
+        auto const OFFSCREEN_POS_HORIZ{ MEASUREMENTS.screenWidth + MEASUREMENTS.listboxWidth };
+
+        stageMoverUPtr_->AddInventoryObject(
+            inventoryABCImageUPtr_.get(),
+            inventoryABCImageUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryABCImageUPtr_->GetEntityPos().y));
+
+        stageMoverUPtr_->AddInventoryObject(
+            inventoryMoneyImageUPtr_.get(),
+            inventoryMoneyImageUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryMoneyImageUPtr_->GetEntityPos().y));
+
+        stageMoverUPtr_->AddInventoryObject(
+            inventoryWeightImageUPtr_.get(),
+            inventoryWeightImageUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryWeightImageUPtr_->GetEntityPos().y));
+    }
+
+
     void TreasureDisplayStage::SetupForCollection_InstructionsText()
     {
         const sfml_util::gui::TextInfo TEXT_INFO(
@@ -818,12 +885,7 @@ namespace treasure
                 ITEM_PTR) );
         }
 
-        auto const PREV_ENTITY_PTR{ listboxUPtr.get() };
-
-        if (PREV_ENTITY_PTR != nullptr)
-        {
-            EntityRemove(PREV_ENTITY_PTR);
-        }
+        auto const PREV_ENTITY_PTR{ GetGuiEntityPtrAndRemoveIfNeeded(listboxUPtr) };
 
         treasure::ListboxColors listboxColors;
 
@@ -853,16 +915,10 @@ namespace treasure
             sfml_util::gui::ListBox::NO_LIMIT_,
             this);
 
-        EntityAdd(listboxUPtr.get());
-
         listboxUPtr->SetSelectedIndex(0);
         listboxUPtr->SetImageColor(listboxColors.image);
 
-        if ((stageMoverUPtr_.get() != nullptr) &&
-            (PREV_ENTITY_PTR != nullptr))
-        {
-            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, listboxUPtr.get());
-        }
+        GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, listboxUPtr.get());
     }
 
 
@@ -888,12 +944,7 @@ namespace treasure
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        auto const PREV_ENTITY_PTR{ treasureLabelUPtr_.get() };
-
-        if (PREV_ENTITY_PTR != nullptr)
-        {
-            EntityRemove(PREV_ENTITY_PTR);
-        }
+        auto const PREV_ENTITY_PTR{ GetGuiEntityPtrAndRemoveIfNeeded(treasureLabelUPtr_) };
 
         //initial position doesn't matter since the position must be set after rendering
         auto const EMPTY_RECT{ sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
@@ -910,13 +961,169 @@ namespace treasure
 
         treasureLabelUPtr_->SetEntityPos(LEFT, TOP);
 
-        EntityAdd(treasureLabelUPtr_.get());
+        GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, treasureLabelUPtr_.get());
+    }
 
-        if ((stageMoverUPtr_.get() != nullptr) &&
-            (PREV_ENTITY_PTR != nullptr))
-        {
-            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, treasureLabelUPtr_.get());
-        }
+
+    void TreasureDisplayStage::SetupTreasure_ListboxSortIcons()
+    {
+        sfml_util::LoadTexture(
+            listboxSortIconABCTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-misc-abc"));
+
+        sfml_util::LoadTexture(
+            listboxSortIconMoneyTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-misc-money-bag"));
+
+        sfml_util::LoadTexture(
+            listboxSortIconWeightTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-misc-weight"));
+
+        sf::Sprite abcSprite;
+        sf::Sprite moneySprite;
+        sf::Sprite weightSprite;
+
+        abcSprite.setTexture(listboxSortIconABCTexture_, true);
+        moneySprite.setTexture(listboxSortIconMoneyTexture_, true);
+        weightSprite.setTexture(listboxSortIconWeightTexture_, true);
+
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+
+        auto const SCALE{ MEASUREMENTS.listboxSortIconScale };
+        abcSprite.setScale(SCALE, SCALE);
+        moneySprite.setScale(SCALE, SCALE);
+        weightSprite.setScale(SCALE, SCALE);
+
+        auto const ICON_POS_HORIZ_ABC{
+            ((MEASUREMENTS.treasureListboxLeft + MEASUREMENTS.listboxWidth) -
+                (abcSprite.getGlobalBounds().width +
+                 moneySprite.getGlobalBounds().width +
+                 weightSprite.getGlobalBounds().width)) -
+                    (MEASUREMENTS.listboxSortIconSpacer * 2.25f) };
+
+        auto const ICON_POS_VERT_ABC{
+            MEASUREMENTS.listboxSortIconTop - (abcSprite.getGlobalBounds().height * 0.5f) };
+
+        auto const ICON_POS_HORIZ_MONEY{
+            ICON_POS_HORIZ_ABC +
+            abcSprite.getGlobalBounds().width +
+            MEASUREMENTS.listboxSortIconSpacer };
+
+        auto const ICON_POS_VERT_MONEY{
+            MEASUREMENTS.listboxSortIconTop - (moneySprite.getGlobalBounds().height * 0.5f) };
+
+        auto const ICON_POS_HORIZ_WEIGHT{
+            ICON_POS_HORIZ_MONEY +
+            moneySprite.getGlobalBounds().width +
+            MEASUREMENTS.listboxSortIconSpacer };
+
+        auto const ICON_POS_VERT_WEIGHT{
+            MEASUREMENTS.listboxSortIconTop - (weightSprite.getGlobalBounds().height * 0.5f) };
+
+        abcSprite.setPosition(ICON_POS_HORIZ_ABC, ICON_POS_VERT_ABC);
+        moneySprite.setPosition(ICON_POS_HORIZ_MONEY, ICON_POS_VERT_MONEY);
+        weightSprite.setPosition(ICON_POS_HORIZ_WEIGHT, ICON_POS_VERT_WEIGHT);
+
+        stage::treasure::ListboxColors listboxColors;
+        abcSprite.setColor(listboxColors.icon);
+        moneySprite.setColor(listboxColors.icon);
+        weightSprite.setColor(listboxColors.icon);
+
+        ReplaceListboxIconImage(
+            "TreasureDisplayStage's_TreasureListboxSortIcon_ABC",
+            treasureABCImageUPtr_,
+            abcSprite);
+
+        ReplaceListboxIconImage(
+            "TreasureDisplayStage's_TreasureListboxSortIcon_Money",
+            treasureMoneyImageUPtr_,
+            moneySprite);
+
+        ReplaceListboxIconImage(
+            "TreasureDisplayStage's_TreasureListboxSortIcon_Weight",
+            treasureWeightImageUPtr_,
+            weightSprite);
+    }
+
+
+    void TreasureDisplayStage::SetupInventory_ListboxSortIcons()
+    {
+        sfml_util::LoadTexture(
+            listboxSortIconABCTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-misc-abc"));
+
+        sfml_util::LoadTexture(
+            listboxSortIconMoneyTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-misc-money-bag"));
+
+        sfml_util::LoadTexture(
+            listboxSortIconWeightTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-misc-weight"));
+
+        sf::Sprite abcSprite;
+        sf::Sprite moneySprite;
+        sf::Sprite weightSprite;
+
+        abcSprite.setTexture(listboxSortIconABCTexture_, true);
+        moneySprite.setTexture(listboxSortIconMoneyTexture_, true);
+        weightSprite.setTexture(listboxSortIconWeightTexture_, true);
+
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+
+        auto const SCALE{ MEASUREMENTS.listboxSortIconScale };
+        abcSprite.setScale(SCALE, SCALE);
+        moneySprite.setScale(SCALE, SCALE);
+        weightSprite.setScale(SCALE, SCALE);
+
+        auto const ICON_POS_HORIZ_ABC{
+            ((MEASUREMENTS.inventoryListboxLeft + MEASUREMENTS.listboxWidth) -
+            (abcSprite.getGlobalBounds().width +
+                moneySprite.getGlobalBounds().width +
+                weightSprite.getGlobalBounds().width)) -
+                (MEASUREMENTS.listboxSortIconSpacer * 2.25f) };
+
+        auto const ICON_POS_VERT_ABC{
+            MEASUREMENTS.listboxSortIconTop - (abcSprite.getGlobalBounds().height * 0.5f) };
+
+        auto const ICON_POS_HORIZ_MONEY{
+            ICON_POS_HORIZ_ABC +
+            abcSprite.getGlobalBounds().width +
+            MEASUREMENTS.listboxSortIconSpacer };
+
+        auto const ICON_POS_VERT_MONEY{
+            MEASUREMENTS.listboxSortIconTop - (moneySprite.getGlobalBounds().height * 0.5f) };
+
+        auto const ICON_POS_HORIZ_WEIGHT{
+            ICON_POS_HORIZ_MONEY +
+            moneySprite.getGlobalBounds().width +
+            MEASUREMENTS.listboxSortIconSpacer };
+
+        auto const ICON_POS_VERT_WEIGHT{
+            MEASUREMENTS.listboxSortIconTop - (weightSprite.getGlobalBounds().height * 0.5f) };
+
+        abcSprite.setPosition(ICON_POS_HORIZ_ABC, ICON_POS_VERT_ABC);
+        moneySprite.setPosition(ICON_POS_HORIZ_MONEY, ICON_POS_VERT_MONEY);
+        weightSprite.setPosition(ICON_POS_HORIZ_WEIGHT, ICON_POS_VERT_WEIGHT);
+
+        stage::treasure::ListboxColors listboxColors;
+        abcSprite.setColor(listboxColors.icon);
+        moneySprite.setColor(listboxColors.icon);
+        weightSprite.setColor(listboxColors.icon);
+
+        ReplaceListboxIconImage(
+            "TreasureDisplayStage's_InventoryListboxSortIcon_ABC",
+            inventoryABCImageUPtr_,
+            abcSprite);
+
+        ReplaceListboxIconImage(
+            "TreasureDisplayStage's_InventoryListboxSortIcon_Money",
+            inventoryMoneyImageUPtr_,
+            moneySprite);
+
+        ReplaceListboxIconImage(
+            "TreasureDisplayStage's_InventoryListboxSortIcon_Weight",
+            inventoryWeightImageUPtr_,
+            weightSprite);
     }
 
 
@@ -948,25 +1155,14 @@ namespace treasure
 
         sprite.setColor(sf::Color(255, 255, 255, 127));
 
-        auto const PREV_ENTITY_PTR{ characterImageUPtr_.get() };
-
-        if (PREV_ENTITY_PTR != nullptr)
-        {
-            EntityRemove(PREV_ENTITY_PTR);
-        }
+        auto const PREV_ENTITY_PTR{ GetGuiEntityPtrAndRemoveIfNeeded(characterImageUPtr_) };
 
         characterImageUPtr_ = std::make_unique<sfml_util::gui::GuiImage>(
             "TreasureDisplayStage's_CharacterImage",
             sprite.getGlobalBounds(),
             sprite);
 
-        EntityAdd(characterImageUPtr_.get());
-
-        if ((stageMoverUPtr_.get() != nullptr) &&
-            (PREV_ENTITY_PTR != nullptr))
-        {
-            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, characterImageUPtr_.get());
-        }
+        GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, characterImageUPtr_.get());
     }
 
 
@@ -1102,23 +1298,17 @@ namespace treasure
         auto const INVENTORY_RECT{ inventoryListboxUPtr_->GetEntityRegion() };
         sfml_util::CenterAndScaleSpriteToFit(sprite, INVENTORY_RECT);
 
-        auto const PREV_ENTITY_PTR{ redXImageUPtr_.get() };
-
-        if (PREV_ENTITY_PTR != nullptr)
-        {
-            EntityRemove(PREV_ENTITY_PTR);
-        }
+        auto const PREV_ENTITY_PTR{ GetGuiEntityPtrAndRemoveIfNeeded(redXImageUPtr_) };
 
         redXImageUPtr_ = std::make_unique<sfml_util::gui::GuiImage>(
             "TreasureDisplayStage's_RedXImage",
             INVENTORY_RECT,
             sprite);
 
-        if ((stageMoverUPtr_.get() != nullptr) &&
-            (PREV_ENTITY_PTR != nullptr))
-        {
-            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, redXImageUPtr_.get());
-        }
+        GuiEntityPtrAddCurrAndReplacePrevIfNeeded(
+            PREV_ENTITY_PTR,
+            redXImageUPtr_.get(),
+            StageAddEntity::Wont);
     }
 
 
@@ -1183,12 +1373,7 @@ namespace treasure
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        auto const PREV_ENTITY_PTR{ textRegionUPtr.get() };
-
-        if (PREV_ENTITY_PTR != nullptr)
-        {
-            EntityRemove(PREV_ENTITY_PTR);
-        }
+        auto const PREV_ENTITY_PTR{ GetGuiEntityPtrAndRemoveIfNeeded(textRegionUPtr) };
 
         //initial position doesn't matter since the position must be set after rendering
         auto const EMPTY_RECT{ sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f) };
@@ -1198,13 +1383,7 @@ namespace treasure
 
         textRegionUPtr->SetEntityPos(HORIZ_POS, VERT_POS);
 
-        EntityAdd(textRegionUPtr.get());
-
-        if ((stageMoverUPtr_.get() != nullptr) &&
-            (PREV_ENTITY_PTR != nullptr))
-        {
-            stageMoverUPtr_->ReplaceEntity(PREV_ENTITY_PTR, textRegionUPtr.get());
-        }
+        GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, textRegionUPtr.get());
     }
 
 
@@ -1254,6 +1433,40 @@ namespace treasure
         }
 
         return treasure::ItemDetails();
+    }
+
+
+    void TreasureDisplayStage::GuiEntityPtrAddCurrAndReplacePrevIfNeeded(
+        const sfml_util::gui::IGuiEntityPtr_t PREV_GUI_ENTITY_PTR,
+        const sfml_util::gui::IGuiEntityPtr_t CURR_GUI_ENTITY_PTR,
+        const StageAddEntity WILL_ADD)
+    {
+        if (WILL_ADD == StageAddEntity::Will)
+        {
+            EntityAdd(CURR_GUI_ENTITY_PTR);
+        }
+
+        if ((stageMoverUPtr_.get() != nullptr) &&
+            (PREV_GUI_ENTITY_PTR != nullptr))
+        {
+            stageMoverUPtr_->ReplaceEntity(PREV_GUI_ENTITY_PTR, CURR_GUI_ENTITY_PTR);
+        }
+    }
+
+
+    void TreasureDisplayStage::ReplaceListboxIconImage(
+        const std::string & NAME,
+        sfml_util::gui::GuiImageUPtr_t & iconImageUPtr,
+        sf::Sprite & sprite)
+    {
+        auto const PREV_ENTITY_PTR{ GetGuiEntityPtrAndRemoveIfNeeded(iconImageUPtr) };
+
+        iconImageUPtr = std::make_unique<sfml_util::gui::GuiImage>(
+            NAME,
+            sprite.getGlobalBounds(),
+            sprite);
+
+        GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, iconImageUPtr.get());
     }
 
 }
