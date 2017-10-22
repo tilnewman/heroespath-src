@@ -58,12 +58,18 @@ namespace gui
     class FourStateButton;
     namespace callback
     {
-        using FourStateButtonCallbackPackage_t = sfml_util::callback::PtrWrapper<FourStateButton>;
-        using IFourStateButtonCallbackHandler_t = sfml_util::callback::ICallbackHandler<FourStateButtonCallbackPackage_t, bool>;
+        using FourStateButtonCallbackPackage_t =
+            sfml_util::callback::PtrWrapper<FourStateButton>;
+
+        using IFourStateButtonCallbackHandler_t =
+            sfml_util::callback::ICallbackHandler<FourStateButtonCallbackPackage_t, bool>;
     }
 
 
-    //A simple button class
+    //Responsible for maintaining images and text for four possible states:
+    //Mouse Not-Over (up), Mouse Over (over), Mouse Down (down), and also disabled.
+    //The disabled state is used when the button cannot be pressed and will not
+    //change on mouse related states.
     class FourStateButton : public GuiEntity
     {
         FourStateButton(const FourStateButton &) =delete;
@@ -73,80 +79,86 @@ namespace gui
         //if using this constructor, Setup() must be called before any other functions
         explicit FourStateButton(const std::string & NAME);
 
-        FourStateButton(const std::string &    NAME,
-                         const float           POS_LEFT,
-                         const float           POS_TOP,
-                         const std::string &   IMAGE_PATH_UP,
-                         const std::string &   IMAGE_PATH_DOWN     = "",
-                         const std::string &   IMAGE_PATH_OVER     = "",
-                         const std::string &   IMAGE_PATH_DISABLED = "",
-                         const MouseTextInfo & MOUSE_TEXT_INFO     = MouseTextInfo(),
-                         const TextInfo &      TEXT_INFO_DISABLED  = TextInfo(),
-                         const bool            WILL_BOX            = false,
-                         const float           SCALE               = 1.0f,
-                         const bool            IS_DISABLED         = false);
+        FourStateButton(
+            const std::string &   NAME,
+            const float           POS_LEFT,
+            const float           POS_TOP,
+            const std::string &   IMAGE_PATH_UP,
+            const std::string &   IMAGE_PATH_DOWN     = "",
+            const std::string &   IMAGE_PATH_OVER     = "",
+            const std::string &   IMAGE_PATH_DISABLED = "",
+            const MouseTextInfo & MOUSE_TEXT_INFO     = MouseTextInfo(),
+            const TextInfo &      TEXT_INFO_DISABLED  = TextInfo(),
+            const bool            WILL_BOX            = false,
+            const float           SCALE               = 1.0f,
+            const bool            IS_DISABLED         = false);
 
-        FourStateButton(const std::string &    NAME,
-                         const float           POS_LEFT,
-                         const float           POS_TOP,
-                         const sf::Texture &   IMAGE_UP,
-                         const bool            HAS_IMAGE_UP,
-                         const sf::Texture &   IMAGE_DOWN         = sf::Texture(),
-                         const bool            HAS_IMAGE_DOWN     = false,
-                         const sf::Texture &   IMAGE_OVER         = sf::Texture(),
-                         const bool            HAS_IMAGE_OVER     = false,
-                         const sf::Texture &   IMAGE_DISABLED     = sf::Texture(),
-                         const bool            HAS_IMAGE_DISABLED = false,
-                         const MouseTextInfo & MOUSE_TEXT_INFO    = MouseTextInfo(),
-                         const TextInfo &      TEXT_INFO_DISABLED = TextInfo(),
-                         const bool            WILL_BOX           = false,
-                         const float           SCALE              = 1.0f,
-                         const bool            IS_DISABLED        = false);
+        FourStateButton(
+            const std::string &   NAME,
+            const float           POS_LEFT,
+            const float           POS_TOP,
+            const sf::Texture &   IMAGE_UP,
+            const bool            HAS_IMAGE_UP,
+            const sf::Texture &   IMAGE_DOWN         = sf::Texture(),
+            const bool            HAS_IMAGE_DOWN     = false,
+            const sf::Texture &   IMAGE_OVER         = sf::Texture(),
+            const bool            HAS_IMAGE_OVER     = false,
+            const sf::Texture &   IMAGE_DISABLED     = sf::Texture(),
+            const bool            HAS_IMAGE_DISABLED = false,
+            const MouseTextInfo & MOUSE_TEXT_INFO    = MouseTextInfo(),
+            const TextInfo &      TEXT_INFO_DISABLED = TextInfo(),
+            const bool            WILL_BOX           = false,
+            const float           SCALE              = 1.0f,
+            const bool            IS_DISABLED        = false);
 
         virtual ~FourStateButton();
 
-        virtual void Setup(const float           POS_LEFT,
-                           const float           POS_TOP,
-                           const std::string &   IMAGE_PATH_UP,
-                           const std::string &   IMAGE_PATH_DOWN     = "",
-                           const std::string &   IMAGE_PATH_OVER     = "",
-                           const std::string &   IMAGE_PATH_DISABLED = "",
-                           const MouseTextInfo & MOUSE_TEXT_INFO     = MouseTextInfo(),
-                           const TextInfo &      TEXT_INFO_DISABLED  = TextInfo(),
-                           const bool            WILL_BOX            = false,
-                           const float           SCALE               = 1.0f,
-                           const bool            IS_DISABLED         = false);
+        virtual void Setup(
+            const float           POS_LEFT,
+            const float           POS_TOP,
+            const std::string &   IMAGE_PATH_UP,
+            const std::string &   IMAGE_PATH_DOWN     = "",
+            const std::string &   IMAGE_PATH_OVER     = "",
+            const std::string &   IMAGE_PATH_DISABLED = "",
+            const MouseTextInfo & MOUSE_TEXT_INFO     = MouseTextInfo(),
+            const TextInfo &      TEXT_INFO_DISABLED  = TextInfo(),
+            const bool            WILL_BOX            = false,
+            const float           SCALE               = 1.0f,
+            const bool            IS_DISABLED         = false);
 
-        virtual void Setup(const float           POS_LEFT,
-                           const float           POS_TOP,
-                           const sf::Texture &   IMAGE_UP,
-                           const bool            HAS_IMAGE_UP,
-                           const sf::Texture &   IMAGE_DOWN         = sf::Texture(),
-                           const bool            HAS_IMAGE_DOWN     = false,
-                           const sf::Texture &   IMAGE_OVER         = sf::Texture(),
-                           const bool            HAS_IMAGE_OVER     = false,
-                           const sf::Texture &   IMAGE_DISABLED     = sf::Texture(),
-                           const bool            HAS_IMAGE_DISABLED = false,
-                           const MouseTextInfo & MOUSE_TEXT_INFO    = MouseTextInfo(),
-                           const TextInfo &      TEXT_INFODISABLED  = TextInfo(),
-                           const bool            WILL_BOX           = false,
-                           const float           SCALE              = 1.0f,
-                           const bool            IS_DISABLED        = false);
+        virtual void Setup(
+            const float           POS_LEFT,
+            const float           POS_TOP,
+            const sf::Texture &   IMAGE_UP,
+            const bool            HAS_IMAGE_UP,
+            const sf::Texture &   IMAGE_DOWN         = sf::Texture(),
+            const bool            HAS_IMAGE_DOWN     = false,
+            const sf::Texture &   IMAGE_OVER         = sf::Texture(),
+            const bool            HAS_IMAGE_OVER     = false,
+            const sf::Texture &   IMAGE_DISABLED     = sf::Texture(),
+            const bool            HAS_IMAGE_DISABLED = false,
+            const MouseTextInfo & MOUSE_TEXT_INFO    = MouseTextInfo(),
+            const TextInfo &      TEXT_INFODISABLED  = TextInfo(),
+            const bool            WILL_BOX           = false,
+            const float           SCALE              = 1.0f,
+            const bool            IS_DISABLED        = false);
 
-        virtual void SetText(const std::string & TEXT_UP,
-                             const std::string & TEXT_DOWN     = "",
-                             const std::string & TEXT_OVER     = "",
-                             const std::string & TEXT_DISABLED = "");
+        virtual void SetText(
+            const std::string & TEXT_UP,
+            const std::string & TEXT_DOWN     = "",
+            const std::string & TEXT_OVER     = "",
+            const std::string & TEXT_DISABLED = "");
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);
-        virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V);
-        virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
-        virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
-        virtual void MoveEntityPos(const float HORIZ, const float VERT);
+        bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+        bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
+        void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-        inline virtual void SetCallbackHandler(callback::IFourStateButtonCallbackHandler_t * const ptr)
+        inline virtual void SetCallbackHandler(
+            callback::IFourStateButtonCallbackHandler_t * const ptr)
         {
             callbackHandlerPtr_ = ptr;
         }
@@ -154,14 +166,14 @@ namespace gui
         inline bool IsDisabled() const { return isDisabled_; }
         void SetIsDisabled(const bool);
 
-        virtual void SetMouseState(const MouseState::Enum);
+        void SetMouseState(const MouseState::Enum) override;
 
         virtual void SetScaleToRes();
         virtual void SetVertPositionToBottomOfScreenByRes(const float POS_LEFT);
 
     protected:
         virtual void Reset();
-        virtual void OnClick(const sf::Vector2f &);
+        void OnClick(const sf::Vector2f &) override;
         virtual void SetScale(const float NEW_SCALE);
 
     protected:
@@ -187,12 +199,13 @@ namespace gui
 
     using FourStateButtonPtr_t  = FourStateButton *;
     using FourStateButtonPVec_t = std::vector<FourStateButtonPtr_t>;
-    //
+    
     using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
     using FourStateButtonUVec_t = std::vector<FourStateButtonUPtr_t>;
-    //
+    
     using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
 
 }
 }
+
 #endif //SFMLUTIL_GUI_FOURSTATEBUTTON_HPP_INCLUDED

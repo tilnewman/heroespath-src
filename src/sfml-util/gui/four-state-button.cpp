@@ -71,18 +71,19 @@ namespace gui
     {}
 
 
-    FourStateButton::FourStateButton(const std::string &   NAME,
-                                     const float           POS_LEFT,
-                                     const float           POS_TOP,
-                                     const std::string &   IMAGE_PATH_UP,
-                                     const std::string &   IMAGE_PATH_DOWN,
-                                     const std::string &   IMAGE_PATH_OVER,
-                                     const std::string &   IMAGE_PATH_DISABLED,
-                                     const MouseTextInfo & MOUSE_TEXT_INFO,
-                                     const TextInfo &      TEXT_INFO_DISABLED,
-                                     const bool            WILL_BOX,
-                                     const float           SCALE,
-                                     const bool            IS_DISABLED)
+    FourStateButton::FourStateButton(
+        const std::string &   NAME,
+        const float           POS_LEFT,
+        const float           POS_TOP,
+        const std::string &   IMAGE_PATH_UP,
+        const std::string &   IMAGE_PATH_DOWN,
+        const std::string &   IMAGE_PATH_OVER,
+        const std::string &   IMAGE_PATH_DISABLED,
+        const MouseTextInfo & MOUSE_TEXT_INFO,
+        const TextInfo &      TEXT_INFO_DISABLED,
+        const bool            WILL_BOX,
+        const float           SCALE,
+        const bool            IS_DISABLED)
     :
         GuiEntity              (std::string(NAME).append("_FourStateButton"), POS_LEFT, POS_TOP),
         isDisabled_            (IS_DISABLED),
@@ -118,22 +119,23 @@ namespace gui
     }
 
 
-    FourStateButton::FourStateButton(const std::string &   NAME,
-                                     const float           POS_LEFT,
-                                     const float           POS_TOP,
-                                     const sf::Texture &   IMAGE_UP,
-                                     const bool            HAS_IMAGE_UP,
-                                     const sf::Texture &   IMAGE_DOWN,
-                                     const bool            HAS_IMAGE_DOWN,
-                                     const sf::Texture &   IMAGE_OVER,
-                                     const bool            HAS_IMAGE_OVER,
-                                     const sf::Texture &   IMAGE_DISABLED,
-                                     const bool            HAS_IMAGE_DISABLED,
-                                     const MouseTextInfo & MOUSE_TEXT_INFO,
-                                     const TextInfo &      TEXT_INFO_DISABLED,
-                                     const bool            WILL_BOX,
-                                     const float           SCALE,
-                                     const bool            IS_DISABLED)
+    FourStateButton::FourStateButton(
+        const std::string &   NAME,
+        const float           POS_LEFT,
+        const float           POS_TOP,
+        const sf::Texture &   IMAGE_UP,
+        const bool            HAS_IMAGE_UP,
+        const sf::Texture &   IMAGE_DOWN,
+        const bool            HAS_IMAGE_DOWN,
+        const sf::Texture &   IMAGE_OVER,
+        const bool            HAS_IMAGE_OVER,
+        const sf::Texture &   IMAGE_DISABLED,
+        const bool            HAS_IMAGE_DISABLED,
+        const MouseTextInfo & MOUSE_TEXT_INFO,
+        const TextInfo &      TEXT_INFO_DISABLED,
+        const bool            WILL_BOX,
+        const float           SCALE,
+        const bool            IS_DISABLED)
     :
         GuiEntity              (std::string(NAME).append("_FourStateButton"), POS_LEFT, POS_TOP),
         isDisabled_            (IS_DISABLED),
@@ -177,17 +179,18 @@ namespace gui
     {}
 
 
-    void FourStateButton::Setup(const float           POS_LEFT,
-                                const float           POS_TOP,
-                                const std::string &   IMAGE_PATH_UP,
-                                const std::string &   IMAGE_PATH_DOWN,
-                                const std::string &   IMAGE_PATH_OVER,
-                                const std::string &   IMAGE_PATH_DISABLED,
-                                const MouseTextInfo & MOUSE_TEXT_INFO,
-                                const TextInfo &      TEXT_INFO_DISABLED,
-                                const bool            WILL_BOX,
-                                const float           SCALE,
-                                const bool            IS_DISABLED)
+    void FourStateButton::Setup(
+        const float           POS_LEFT,
+        const float           POS_TOP,
+        const std::string &   IMAGE_PATH_UP,
+        const std::string &   IMAGE_PATH_DOWN,
+        const std::string &   IMAGE_PATH_OVER,
+        const std::string &   IMAGE_PATH_DISABLED,
+        const MouseTextInfo & MOUSE_TEXT_INFO,
+        const TextInfo &      TEXT_INFO_DISABLED,
+        const bool            WILL_BOX,
+        const float           SCALE,
+        const bool            IS_DISABLED)
     {
         sf::Texture up;
         bool hasUp{ false };
@@ -241,21 +244,22 @@ namespace gui
     }
 
 
-    void FourStateButton::Setup(const float           POS_LEFT,
-                                const float           POS_TOP,
-                                const sf::Texture &   IMAGE_UP,
-                                const bool            HAS_IMAGE_UP,
-                                const sf::Texture &   IMAGE_DOWN,
-                                const bool            HAS_IMAGE_DOWN,
-                                const sf::Texture &   IMAGE_OVER,
-                                const bool            HAS_IMAGE_OVER,
-                                const sf::Texture &   IMAGE_DISABLED,
-                                const bool            HAS_IMAGE_DISABLED,
-                                const MouseTextInfo & MOUSE_TEXT_INFO,
-                                const TextInfo &      TEXT_INFO_DISABLED,
-                                const bool            WILL_BOX,
-                                const float           SCALE,
-                                const bool            IS_DISABLED)
+    void FourStateButton::Setup(
+        const float           POS_LEFT,
+        const float           POS_TOP,
+        const sf::Texture &   IMAGE_UP,
+        const bool            HAS_IMAGE_UP,
+        const sf::Texture &   IMAGE_DOWN,
+        const bool            HAS_IMAGE_DOWN,
+        const sf::Texture &   IMAGE_OVER,
+        const bool            HAS_IMAGE_OVER,
+        const sf::Texture &   IMAGE_DISABLED,
+        const bool            HAS_IMAGE_DISABLED,
+        const MouseTextInfo & MOUSE_TEXT_INFO,
+        const TextInfo &      TEXT_INFO_DISABLED,
+        const bool            WILL_BOX,
+        const float           SCALE,
+        const bool            IS_DISABLED)
     {
         //validate TextInfo objects if text is given
         if (MOUSE_TEXT_INFO.up.text.empty() == false)
@@ -303,25 +307,28 @@ namespace gui
         if ((MOUSE_TEXT_INFO.up.fontPtr != nullptr) &&
             (MOUSE_TEXT_INFO.up.text.empty() == false))
         {
-            textRegionUpUPtr_ = std::make_unique<TextRegion>(GetEntityName() + "Up",
-                                                             MOUSE_TEXT_INFO.up,
-                                                             tempRect);
+            textRegionUpUPtr_ = std::make_unique<TextRegion>(
+                GetEntityName() + "Up",
+                MOUSE_TEXT_INFO.up,
+                tempRect);
         }
 
         if (textRegionUpUPtr_.get() != nullptr)
         {
-            SetEntityRegion( sf::FloatRect(POS_LEFT,
-                                           POS_TOP,
-                                           textRegionUpUPtr_->GetEntityRegion().width,
-                                           textRegionUpUPtr_->GetEntityRegion().height) );
+            SetEntityRegion( sf::FloatRect(
+                POS_LEFT,
+                POS_TOP,
+                textRegionUpUPtr_->GetEntityRegion().width,
+                textRegionUpUPtr_->GetEntityRegion().height) );
         }
         else
         {
             if (HAS_IMAGE_UP)
             {
-                SetEntityRegion(sf::FloatRect(POS_LEFT, POS_TOP,
-                                              static_cast<float>(textureUp_.getSize().x),
-                                              static_cast<float>(textureUp_.getSize().y)));
+                SetEntityRegion(sf::FloatRect(
+                    POS_LEFT, POS_TOP,
+                    static_cast<float>(textureUp_.getSize().x),
+                    static_cast<float>(textureUp_.getSize().y)));
             }
             else
             {
@@ -357,11 +364,13 @@ namespace gui
 
         if (WILL_BOX)
         {
-            boxUPtr_ = std::make_unique<box::Box>("FourStateButton's",
-                                                  box::Info(true,
-                                                            GetEntityRegion(),
-                                                            gui::ColorSet(sf::Color::White),
-                                                  gui::BackgroundInfo()));
+            boxUPtr_ = std::make_unique<box::Box>(
+                "FourStateButton's",
+                box::Info(
+                    true,
+                    GetEntityRegion(),
+                    gui::ColorSet(sf::Color::White),
+                gui::BackgroundInfo()));
         }
 
         SetMouseState(MouseState::Up);
@@ -369,10 +378,11 @@ namespace gui
     }
 
 
-    void FourStateButton::SetText(const std::string & TEXT_UP,
-                                  const std::string & TEXT_DOWN,
-                                  const std::string & TEXT_OVER,
-                                  const std::string & TEXT_DISABLED)
+    void FourStateButton::SetText(
+        const std::string & TEXT_UP,
+        const std::string & TEXT_DOWN,
+        const std::string & TEXT_OVER,
+        const std::string & TEXT_DISABLED)
     {
         textRegionUpUPtr_->SetText(TEXT_UP);
         textRegionDownUPtr_->SetText(((TEXT_DOWN.empty()) ? TEXT_UP : TEXT_DOWN ));
@@ -394,9 +404,10 @@ namespace gui
     {
         if (hasUp_)
         {
-            const float POS_TOP((sfml_util::Display::Instance()->GetWinHeight() -
-                buttonSprite_.getGlobalBounds().height) -
-                sfml_util::MapByRes(42.0f, 170.0f));
+            auto const POS_TOP{
+                (sfml_util::Display::Instance()->GetWinHeight() -
+                    buttonSprite_.getGlobalBounds().height) -
+                        sfml_util::MapByRes(42.0f, 170.0f) };
 
             buttonSprite_.setPosition(POS_LEFT, POS_TOP);
             SetEntityPos(POS_LEFT, POS_TOP);
@@ -408,7 +419,8 @@ namespace gui
     {
         if (boxUPtr_.get() != nullptr)
         {
-            boxUPtr_ = std::make_unique<box::Box>("FourStateButton's",
+            boxUPtr_ = std::make_unique<box::Box>(
+                "FourStateButton's",
                 gui::box::Info(true, GetEntityRegion(), gui::ColorSet(sf::Color::White)));
         }
 
@@ -503,7 +515,9 @@ namespace gui
 
         if (DID_STATE_CHANGE)
         {
-            SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
             Reset();
         }
 
@@ -522,7 +536,9 @@ namespace gui
 
         if (DID_STATE_CHANGE)
         {
-            SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
             Reset();
         }
 
@@ -543,11 +559,13 @@ namespace gui
         {
             if (GetMouseState() == MouseState::Over)
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                SoundManager::Instance()->
+                    Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
             }
             else
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+                SoundManager::Instance()->
+                    Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
             }
 
             Reset();
