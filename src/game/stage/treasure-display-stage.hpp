@@ -33,6 +33,7 @@
 #include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/gui-entity-image.hpp"
+#include "sfml-util/gui/four-state-button.hpp"
 
 #include "game/ouroboros.hpp"
 #include "game/horiz-symbol.hpp"
@@ -149,12 +150,12 @@ namespace treasure
     class TreasureStage;
 
 
-    //Responsible for the display of treasure collection graphics (images, listboxes, etc.)
-    //for the Treasure Stage.
+    //Responsible for all displaying everything (images, listboxes, etc.) for the Treasure Stage.
     class TreasureDisplayStage
     :
         public sfml_util::Stage,
-        public sfml_util::gui::callback::IListBoxCallbackHandler
+        public sfml_util::gui::callback::IListBoxCallbackHandler,
+        public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
         TreasureDisplayStage(const TreasureDisplayStage &) =delete;
         TreasureDisplayStage & operator=(const TreasureDisplayStage &) =delete;
@@ -165,6 +166,9 @@ namespace treasure
 
         inline const std::string HandlerName() const override { return GetStageName(); }
         bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+
+        bool HandleCallback(
+            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
@@ -298,6 +302,12 @@ namespace treasure
             return ENTITY_PTR;
         }
 
+        void SetupSortSprites(
+            const float LISTBOX_LEFT,
+            sf::Sprite & alphaSprite,
+            sf::Sprite & moneySprite,
+            sf::Sprite & weightSprite);
+
         enum class StageAddEntity
         {
             Will,
@@ -309,10 +319,14 @@ namespace treasure
             const sfml_util::gui::IGuiEntityPtr_t CURR_GUI_ENTITY_PTR,
             const StageAddEntity WILL_ADD = StageAddEntity::Will);
 
-        void ReplaceListboxIconImage(
+        void CreateOrReplaceListboxIconImage(
             const std::string & NAME,
-            sfml_util::gui::GuiImageUPtr_t & iconImageUPtr,
+            sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr,
             sf::Sprite & sprite);
+
+        void SortByName(sfml_util::gui::ListBox &, bool & isSortReversed);
+        void SortByPrice(sfml_util::gui::ListBox &, bool & isSortReversed);
+        void SortByWeight(sfml_util::gui::ListBox &, bool & isSortReversed);
 
     private:
         static const float ITEM_DETAIL_TIMEOUT_SEC_;
@@ -340,15 +354,21 @@ namespace treasure
         sf::Texture coinsTexture_;
         sf::Sprite coinsSprite_;
         sf::Texture characterTexture_;
-        sf::Texture listboxSortIconABCTexture_;
+        sf::Texture listboxSortIconAlphaTexture_;
         sf::Texture listboxSortIconMoneyTexture_;
         sf::Texture listboxSortIconWeightTexture_;
-        sfml_util::gui::GuiImageUPtr_t treasureABCImageUPtr_;
-        sfml_util::gui::GuiImageUPtr_t treasureMoneyImageUPtr_;
-        sfml_util::gui::GuiImageUPtr_t treasureWeightImageUPtr_;
-        sfml_util::gui::GuiImageUPtr_t inventoryABCImageUPtr_;
-        sfml_util::gui::GuiImageUPtr_t inventoryMoneyImageUPtr_;
-        sfml_util::gui::GuiImageUPtr_t inventoryWeightImageUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t treasureAlphaButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t treasureMoneyButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t treasureWeightButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t inventoryAlphaButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t inventoryMoneyButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t inventoryWeightButtonUPtr_;
+        bool isSortOrderReversedTreasureAlpha_;
+        bool isSortOrderReversedTreasureMoney_;
+        bool isSortOrderReversedTreasureWeight_;
+        bool isSortOrderReversedInventoryAlpha_;
+        bool isSortOrderReversedInventoryMoney_;
+        bool isSortOrderReversedInventoryWeight_;
         sfml_util::gui::GuiImageUPtr_t characterImageUPtr_;
         item::TreasureAvailable::Enum treasureAvailable_;
         item::TreasureImage::Enum treasureImage_;

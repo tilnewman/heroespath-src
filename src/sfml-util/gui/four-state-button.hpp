@@ -91,7 +91,8 @@ namespace gui
             const TextInfo &      TEXT_INFO_DISABLED  = TextInfo(),
             const bool            WILL_BOX            = false,
             const float           SCALE               = 1.0f,
-            const bool            IS_DISABLED         = false);
+            const bool            IS_DISABLED         = false,
+            const sf::Color &     SPRITE_COLOR        = sf::Color::White);
 
         FourStateButton(
             const std::string &   NAME,
@@ -109,7 +110,8 @@ namespace gui
             const TextInfo &      TEXT_INFO_DISABLED = TextInfo(),
             const bool            WILL_BOX           = false,
             const float           SCALE              = 1.0f,
-            const bool            IS_DISABLED        = false);
+            const bool            IS_DISABLED        = false,
+            const sf::Color &     SPRITE_COLOR       = sf::Color::White);
 
         virtual ~FourStateButton();
 
@@ -124,7 +126,8 @@ namespace gui
             const TextInfo &      TEXT_INFO_DISABLED  = TextInfo(),
             const bool            WILL_BOX            = false,
             const float           SCALE               = 1.0f,
-            const bool            IS_DISABLED         = false);
+            const bool            IS_DISABLED         = false,
+            const sf::Color &     SPRITE_COLOR        = sf::Color::White);
 
         virtual void Setup(
             const float           POS_LEFT,
@@ -141,13 +144,8 @@ namespace gui
             const TextInfo &      TEXT_INFODISABLED  = TextInfo(),
             const bool            WILL_BOX           = false,
             const float           SCALE              = 1.0f,
-            const bool            IS_DISABLED        = false);
-
-        virtual void SetText(
-            const std::string & TEXT_UP,
-            const std::string & TEXT_DOWN     = "",
-            const std::string & TEXT_OVER     = "",
-            const std::string & TEXT_DISABLED = "");
+            const bool            IS_DISABLED        = false,
+            const sf::Color &     SPRITE_COLOR       = sf::Color::White);
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
@@ -171,10 +169,21 @@ namespace gui
         virtual void SetScaleToRes();
         virtual void SetVertPositionToBottomOfScreenByRes(const float POS_LEFT);
 
+        inline const sf::Color Color() const { return color_; }
+        inline void Color(const sf::Color & NEW_COLOR) { color_ = NEW_COLOR; }
+
+        inline float Scale() const { return scale_; }
+        void Scale(const float NEW_SCALE);
+
+        virtual void SetText(
+            const std::string & TEXT_UP,
+            const std::string & TEXT_DOWN = "",
+            const std::string & TEXT_OVER = "",
+            const std::string & TEXT_DISABLED = "");
+
     protected:
         virtual void Reset();
         void OnClick(const sf::Vector2f &) override;
-        virtual void SetScale(const float NEW_SCALE);
 
     protected:
         bool             isDisabled_;
@@ -194,6 +203,7 @@ namespace gui
         TextRegionUPtr_t textRegionDisabledUPtr_;
         box::BoxUPtr_t   boxUPtr_;
         float            scale_;
+        sf::Color        color_;
         callback::IFourStateButtonCallbackHandler_t * callbackHandlerPtr_;
     };
 

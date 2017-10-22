@@ -143,15 +143,21 @@ namespace treasure
         coinsTexture_(),
         coinsSprite_(),
         characterTexture_(),
-        listboxSortIconABCTexture_(),
+        listboxSortIconAlphaTexture_(),
         listboxSortIconMoneyTexture_(),
         listboxSortIconWeightTexture_(),
-        treasureABCImageUPtr_(),
-        treasureMoneyImageUPtr_(),
-        treasureWeightImageUPtr_(),
-        inventoryABCImageUPtr_(),
-        inventoryMoneyImageUPtr_(),
-        inventoryWeightImageUPtr_(),
+        treasureAlphaButtonUPtr_(),
+        treasureMoneyButtonUPtr_(),
+        treasureWeightButtonUPtr_(),
+        inventoryAlphaButtonUPtr_(),
+        inventoryMoneyButtonUPtr_(),
+        inventoryWeightButtonUPtr_(),
+        isSortOrderReversedTreasureAlpha_(false),
+        isSortOrderReversedTreasureMoney_(false),
+        isSortOrderReversedTreasureWeight_(false),
+        isSortOrderReversedInventoryAlpha_(false),
+        isSortOrderReversedInventoryMoney_(false),
+        isSortOrderReversedInventoryWeight_(false),
         characterImageUPtr_(),
         treasureAvailable_(item::TreasureAvailable::NoTreasure),
         treasureImage_(item::TreasureImage::Count),
@@ -173,6 +179,44 @@ namespace treasure
             treasureListboxUPtr_.get(),
             inventoryListboxUPtr_.get(),
             PACKAGE);
+    }
+
+
+    bool TreasureDisplayStage::HandleCallback(
+        const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
+    {
+        if (PACKAGE.PTR_ == treasureAlphaButtonUPtr_.get())
+        {
+            SortByName( * treasureListboxUPtr_, isSortOrderReversedTreasureAlpha_);
+            return true;
+        }
+        else if (PACKAGE.PTR_ == treasureMoneyButtonUPtr_.get())
+        {
+            SortByName( * treasureListboxUPtr_, isSortOrderReversedTreasureMoney_);
+            return true;
+        }
+        else if (PACKAGE.PTR_ == treasureWeightButtonUPtr_.get())
+        {
+            SortByName( * treasureListboxUPtr_, isSortOrderReversedTreasureWeight_);
+            return true;
+        }
+        else if (PACKAGE.PTR_ == inventoryAlphaButtonUPtr_.get())
+        {
+            SortByName( * inventoryListboxUPtr_, isSortOrderReversedInventoryAlpha_);
+            return true;
+        }
+        else if (PACKAGE.PTR_ == inventoryMoneyButtonUPtr_.get())
+        {
+            SortByName( * inventoryListboxUPtr_, isSortOrderReversedInventoryMoney_);
+            return true;
+        }
+        else if (PACKAGE.PTR_ == inventoryWeightButtonUPtr_.get())
+        {
+            SortByName( * inventoryListboxUPtr_, isSortOrderReversedInventoryWeight_);
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -727,19 +771,19 @@ namespace treasure
         auto const OFFSCREEN_POS_HORIZ{ -300.0f };
 
         stageMoverUPtr_->AddTreasureObject(
-            treasureABCImageUPtr_.get(),
-            treasureABCImageUPtr_->GetEntityPos(),
-            sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureABCImageUPtr_->GetEntityPos().y));
+            treasureAlphaButtonUPtr_.get(),
+            treasureAlphaButtonUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureAlphaButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddTreasureObject(
-            treasureMoneyImageUPtr_.get(),
-            treasureMoneyImageUPtr_->GetEntityPos(),
-            sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureMoneyImageUPtr_->GetEntityPos().y));
+            treasureMoneyButtonUPtr_.get(),
+            treasureMoneyButtonUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureMoneyButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddTreasureObject(
-            treasureWeightImageUPtr_.get(),
-            treasureWeightImageUPtr_->GetEntityPos(),
-            sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureWeightImageUPtr_->GetEntityPos().y));
+            treasureWeightButtonUPtr_.get(),
+            treasureWeightButtonUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureWeightButtonUPtr_->GetEntityPos().y));
     }
 
 
@@ -818,19 +862,19 @@ namespace treasure
         auto const OFFSCREEN_POS_HORIZ{ MEASUREMENTS.screenWidth + MEASUREMENTS.listboxWidth };
 
         stageMoverUPtr_->AddInventoryObject(
-            inventoryABCImageUPtr_.get(),
-            inventoryABCImageUPtr_->GetEntityPos(),
-            sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryABCImageUPtr_->GetEntityPos().y));
+            inventoryAlphaButtonUPtr_.get(),
+            inventoryAlphaButtonUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryAlphaButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddInventoryObject(
-            inventoryMoneyImageUPtr_.get(),
-            inventoryMoneyImageUPtr_->GetEntityPos(),
-            sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryMoneyImageUPtr_->GetEntityPos().y));
+            inventoryMoneyButtonUPtr_.get(),
+            inventoryMoneyButtonUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryMoneyButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddInventoryObject(
-            inventoryWeightImageUPtr_.get(),
-            inventoryWeightImageUPtr_->GetEntityPos(),
-            sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryWeightImageUPtr_->GetEntityPos().y));
+            inventoryWeightButtonUPtr_.get(),
+            inventoryWeightButtonUPtr_->GetEntityPos(),
+            sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryWeightButtonUPtr_->GetEntityPos().y));
     }
 
 
@@ -967,162 +1011,58 @@ namespace treasure
 
     void TreasureDisplayStage::SetupTreasure_ListboxSortIcons()
     {
-        sfml_util::LoadTexture(
-            listboxSortIconABCTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-misc-abc"));
-
-        sfml_util::LoadTexture(
-            listboxSortIconMoneyTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-misc-money-bag"));
-
-        sfml_util::LoadTexture(
-            listboxSortIconWeightTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-misc-weight"));
-
-        sf::Sprite abcSprite;
+        sf::Sprite alphaSprite;
         sf::Sprite moneySprite;
         sf::Sprite weightSprite;
 
-        abcSprite.setTexture(listboxSortIconABCTexture_, true);
-        moneySprite.setTexture(listboxSortIconMoneyTexture_, true);
-        weightSprite.setTexture(listboxSortIconWeightTexture_, true);
+        SetupSortSprites(
+            CreateDisplayMeasurements().treasureListboxLeft,
+            alphaSprite,
+            moneySprite,
+            weightSprite);
 
-        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+        CreateOrReplaceListboxIconImage(
+            "TreasureDisplayStage's_TreasureListboxSortIcon_Alpha",
+            treasureAlphaButtonUPtr_,
+            alphaSprite);
 
-        auto const SCALE{ MEASUREMENTS.listboxSortIconScale };
-        abcSprite.setScale(SCALE, SCALE);
-        moneySprite.setScale(SCALE, SCALE);
-        weightSprite.setScale(SCALE, SCALE);
-
-        auto const ICON_POS_HORIZ_ABC{
-            ((MEASUREMENTS.treasureListboxLeft + MEASUREMENTS.listboxWidth) -
-                (abcSprite.getGlobalBounds().width +
-                 moneySprite.getGlobalBounds().width +
-                 weightSprite.getGlobalBounds().width)) -
-                    (MEASUREMENTS.listboxSortIconSpacer * 2.25f) };
-
-        auto const ICON_POS_VERT_ABC{
-            MEASUREMENTS.listboxSortIconTop - (abcSprite.getGlobalBounds().height * 0.5f) };
-
-        auto const ICON_POS_HORIZ_MONEY{
-            ICON_POS_HORIZ_ABC +
-            abcSprite.getGlobalBounds().width +
-            MEASUREMENTS.listboxSortIconSpacer };
-
-        auto const ICON_POS_VERT_MONEY{
-            MEASUREMENTS.listboxSortIconTop - (moneySprite.getGlobalBounds().height * 0.5f) };
-
-        auto const ICON_POS_HORIZ_WEIGHT{
-            ICON_POS_HORIZ_MONEY +
-            moneySprite.getGlobalBounds().width +
-            MEASUREMENTS.listboxSortIconSpacer };
-
-        auto const ICON_POS_VERT_WEIGHT{
-            MEASUREMENTS.listboxSortIconTop - (weightSprite.getGlobalBounds().height * 0.5f) };
-
-        abcSprite.setPosition(ICON_POS_HORIZ_ABC, ICON_POS_VERT_ABC);
-        moneySprite.setPosition(ICON_POS_HORIZ_MONEY, ICON_POS_VERT_MONEY);
-        weightSprite.setPosition(ICON_POS_HORIZ_WEIGHT, ICON_POS_VERT_WEIGHT);
-
-        stage::treasure::ListboxColors listboxColors;
-        abcSprite.setColor(listboxColors.icon);
-        moneySprite.setColor(listboxColors.icon);
-        weightSprite.setColor(listboxColors.icon);
-
-        ReplaceListboxIconImage(
-            "TreasureDisplayStage's_TreasureListboxSortIcon_ABC",
-            treasureABCImageUPtr_,
-            abcSprite);
-
-        ReplaceListboxIconImage(
+        CreateOrReplaceListboxIconImage(
             "TreasureDisplayStage's_TreasureListboxSortIcon_Money",
-            treasureMoneyImageUPtr_,
+            treasureMoneyButtonUPtr_,
             moneySprite);
 
-        ReplaceListboxIconImage(
+        CreateOrReplaceListboxIconImage(
             "TreasureDisplayStage's_TreasureListboxSortIcon_Weight",
-            treasureWeightImageUPtr_,
+            treasureWeightButtonUPtr_,
             weightSprite);
     }
 
 
     void TreasureDisplayStage::SetupInventory_ListboxSortIcons()
     {
-        sfml_util::LoadTexture(
-            listboxSortIconABCTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-misc-abc"));
-
-        sfml_util::LoadTexture(
-            listboxSortIconMoneyTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-misc-money-bag"));
-
-        sfml_util::LoadTexture(
-            listboxSortIconWeightTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-misc-weight"));
-
-        sf::Sprite abcSprite;
+        sf::Sprite alphaSprite;
         sf::Sprite moneySprite;
         sf::Sprite weightSprite;
 
-        abcSprite.setTexture(listboxSortIconABCTexture_, true);
-        moneySprite.setTexture(listboxSortIconMoneyTexture_, true);
-        weightSprite.setTexture(listboxSortIconWeightTexture_, true);
+        SetupSortSprites(
+            CreateDisplayMeasurements().inventoryListboxLeft,
+            alphaSprite,
+            moneySprite,
+            weightSprite);
 
-        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+        CreateOrReplaceListboxIconImage(
+            "TreasureDisplayStage's_InventoryListboxSortIcon_Alpha",
+            inventoryAlphaButtonUPtr_,
+            alphaSprite);
 
-        auto const SCALE{ MEASUREMENTS.listboxSortIconScale };
-        abcSprite.setScale(SCALE, SCALE);
-        moneySprite.setScale(SCALE, SCALE);
-        weightSprite.setScale(SCALE, SCALE);
-
-        auto const ICON_POS_HORIZ_ABC{
-            ((MEASUREMENTS.inventoryListboxLeft + MEASUREMENTS.listboxWidth) -
-            (abcSprite.getGlobalBounds().width +
-                moneySprite.getGlobalBounds().width +
-                weightSprite.getGlobalBounds().width)) -
-                (MEASUREMENTS.listboxSortIconSpacer * 2.25f) };
-
-        auto const ICON_POS_VERT_ABC{
-            MEASUREMENTS.listboxSortIconTop - (abcSprite.getGlobalBounds().height * 0.5f) };
-
-        auto const ICON_POS_HORIZ_MONEY{
-            ICON_POS_HORIZ_ABC +
-            abcSprite.getGlobalBounds().width +
-            MEASUREMENTS.listboxSortIconSpacer };
-
-        auto const ICON_POS_VERT_MONEY{
-            MEASUREMENTS.listboxSortIconTop - (moneySprite.getGlobalBounds().height * 0.5f) };
-
-        auto const ICON_POS_HORIZ_WEIGHT{
-            ICON_POS_HORIZ_MONEY +
-            moneySprite.getGlobalBounds().width +
-            MEASUREMENTS.listboxSortIconSpacer };
-
-        auto const ICON_POS_VERT_WEIGHT{
-            MEASUREMENTS.listboxSortIconTop - (weightSprite.getGlobalBounds().height * 0.5f) };
-
-        abcSprite.setPosition(ICON_POS_HORIZ_ABC, ICON_POS_VERT_ABC);
-        moneySprite.setPosition(ICON_POS_HORIZ_MONEY, ICON_POS_VERT_MONEY);
-        weightSprite.setPosition(ICON_POS_HORIZ_WEIGHT, ICON_POS_VERT_WEIGHT);
-
-        stage::treasure::ListboxColors listboxColors;
-        abcSprite.setColor(listboxColors.icon);
-        moneySprite.setColor(listboxColors.icon);
-        weightSprite.setColor(listboxColors.icon);
-
-        ReplaceListboxIconImage(
-            "TreasureDisplayStage's_InventoryListboxSortIcon_ABC",
-            inventoryABCImageUPtr_,
-            abcSprite);
-
-        ReplaceListboxIconImage(
+        CreateOrReplaceListboxIconImage(
             "TreasureDisplayStage's_InventoryListboxSortIcon_Money",
-            inventoryMoneyImageUPtr_,
+            inventoryMoneyButtonUPtr_,
             moneySprite);
 
-        ReplaceListboxIconImage(
+        CreateOrReplaceListboxIconImage(
             "TreasureDisplayStage's_InventoryListboxSortIcon_Weight",
-            inventoryWeightImageUPtr_,
+            inventoryWeightButtonUPtr_,
             weightSprite);
     }
 
@@ -1436,6 +1376,72 @@ namespace treasure
     }
 
 
+    void TreasureDisplayStage::SetupSortSprites(
+        const float LISTBOX_LEFT,
+        sf::Sprite & alphaSprite,
+        sf::Sprite & moneySprite,
+        sf::Sprite & weightSprite)
+    {
+        sfml_util::LoadTexture(
+            listboxSortIconAlphaTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-misc-abc"));
+
+        sfml_util::LoadTexture(
+            listboxSortIconMoneyTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-misc-money-bag"));
+
+        sfml_util::LoadTexture(
+            listboxSortIconWeightTexture_,
+            GameDataFile::Instance()->GetMediaPath("media-images-misc-weight"));
+
+        alphaSprite.setTexture(listboxSortIconAlphaTexture_, true);
+        moneySprite.setTexture(listboxSortIconMoneyTexture_, true);
+        weightSprite.setTexture(listboxSortIconWeightTexture_, true);
+
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+
+        auto const SCALE{ MEASUREMENTS.listboxSortIconScale };
+        alphaSprite.setScale(SCALE, SCALE);
+        moneySprite.setScale(SCALE, SCALE);
+        weightSprite.setScale(SCALE, SCALE);
+
+        auto const ICON_POS_HORIZ_ABC{
+            ((LISTBOX_LEFT + MEASUREMENTS.listboxWidth) -
+                (alphaSprite.getGlobalBounds().width +
+                 moneySprite.getGlobalBounds().width +
+                 weightSprite.getGlobalBounds().width)) -
+                    (MEASUREMENTS.listboxSortIconSpacer * 2.25f) };
+
+        auto const ICON_POS_VERT_ABC{
+            MEASUREMENTS.listboxSortIconTop - (alphaSprite.getGlobalBounds().height * 0.5f) };
+
+        auto const ICON_POS_HORIZ_MONEY{
+            ICON_POS_HORIZ_ABC +
+            alphaSprite.getGlobalBounds().width +
+            MEASUREMENTS.listboxSortIconSpacer };
+
+        auto const ICON_POS_VERT_MONEY{
+            MEASUREMENTS.listboxSortIconTop - (moneySprite.getGlobalBounds().height * 0.5f) };
+
+        auto const ICON_POS_HORIZ_WEIGHT{
+            ICON_POS_HORIZ_MONEY +
+            moneySprite.getGlobalBounds().width +
+            MEASUREMENTS.listboxSortIconSpacer };
+
+        auto const ICON_POS_VERT_WEIGHT{
+            MEASUREMENTS.listboxSortIconTop - (weightSprite.getGlobalBounds().height * 0.5f) };
+
+        alphaSprite.setPosition(ICON_POS_HORIZ_ABC, ICON_POS_VERT_ABC);
+        moneySprite.setPosition(ICON_POS_HORIZ_MONEY, ICON_POS_VERT_MONEY);
+        weightSprite.setPosition(ICON_POS_HORIZ_WEIGHT, ICON_POS_VERT_WEIGHT);
+
+        stage::treasure::ListboxColors listboxColors;
+        alphaSprite.setColor(listboxColors.icon);
+        moneySprite.setColor(listboxColors.icon);
+        weightSprite.setColor(listboxColors.icon);
+    }
+
+
     void TreasureDisplayStage::GuiEntityPtrAddCurrAndReplacePrevIfNeeded(
         const sfml_util::gui::IGuiEntityPtr_t PREV_GUI_ENTITY_PTR,
         const sfml_util::gui::IGuiEntityPtr_t CURR_GUI_ENTITY_PTR,
@@ -1454,19 +1460,94 @@ namespace treasure
     }
 
 
-    void TreasureDisplayStage::ReplaceListboxIconImage(
+    void TreasureDisplayStage::CreateOrReplaceListboxIconImage(
         const std::string & NAME,
-        sfml_util::gui::GuiImageUPtr_t & iconImageUPtr,
+        sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr,
         sf::Sprite & sprite)
     {
-        auto const PREV_ENTITY_PTR{ GetGuiEntityPtrAndRemoveIfNeeded(iconImageUPtr) };
+        auto const PREV_ENTITY_PTR{ GetGuiEntityPtrAndRemoveIfNeeded(sortButtonUPtr) };
 
-        iconImageUPtr = std::make_unique<sfml_util::gui::GuiImage>(
+        sortButtonUPtr = std::make_unique<sfml_util::gui::FourStateButton>(
             NAME,
-            sprite.getGlobalBounds(),
-            sprite);
+            sprite.getPosition().x,
+            sprite.getPosition().y,
+            * sprite.getTexture(),
+            true);
 
-        GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, iconImageUPtr.get());
+        sortButtonUPtr->Color(sprite.getColor());
+        sortButtonUPtr->Scale(sprite.getScale().x);
+        sortButtonUPtr->SetCallbackHandler(this);
+
+        GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, sortButtonUPtr.get());
+    }
+
+
+    void TreasureDisplayStage::SortByName(
+        sfml_util::gui::ListBox & listbox,
+        bool & isSortReversed)
+    {
+        auto list{ listbox.GetList() };
+
+        list.sort([isSortReversed](auto & A, auto & B)
+            {
+                if (isSortReversed)
+                {
+                    return A->ITEM_CPTR->Name() > B->ITEM_CPTR->Name();
+                }
+                else
+                {
+                    return A->ITEM_CPTR->Name() < B->ITEM_CPTR->Name();
+                }
+            });
+
+        listbox.SetList(list);
+        isSortReversed = ! isSortReversed;
+    }
+
+
+    void TreasureDisplayStage::SortByPrice(
+        sfml_util::gui::ListBox & listbox,
+        bool & isSortReversed)
+    {
+        auto list{ listbox.GetList() };
+
+        list.sort([isSortReversed](auto & A, auto & B)
+            {
+                if (isSortReversed)
+                {
+                    return A->ITEM_CPTR->Price() > B->ITEM_CPTR->Price();
+                }
+                else
+                {
+                    return A->ITEM_CPTR->Price() < B->ITEM_CPTR->Price();
+                }
+            });
+
+        listbox.SetList(list);
+        isSortReversed = ! isSortReversed;
+    }
+
+
+    void TreasureDisplayStage::SortByWeight(
+        sfml_util::gui::ListBox & listbox,
+        bool & isSortReversed)
+    {
+        auto list{ listbox.GetList() };
+
+        list.sort([isSortReversed](auto & A, auto & B)
+        {
+            if (isSortReversed)
+            {
+                return A->ITEM_CPTR->Price() > B->ITEM_CPTR->Price();
+            }
+            else
+            {
+                return A->ITEM_CPTR->Price() < B->ITEM_CPTR->Price();
+            }
+        });
+
+        listbox.SetList(list);
+        isSortReversed = ! isSortReversed;
     }
 
 }

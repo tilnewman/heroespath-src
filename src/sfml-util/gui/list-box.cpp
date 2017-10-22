@@ -60,8 +60,8 @@ namespace gui
 
     namespace callback
     {
-        const int ListBoxEventPackage::INVALID_SELECTION_(-1);
-        const sf::Vector2f ListBoxEventPackage::INVALID_MOUSE_POS_V_(-1.0f, -1.0f);
+        const int ListBoxEventPackage::INVALID_SELECTION_{ -1 };
+        const sf::Vector2f ListBoxEventPackage::INVALID_MOUSE_POS_V_{ -1.0f, -1.0f };
     }
 
 
@@ -69,16 +69,17 @@ namespace gui
     const sf::FloatRect ListBox::ERROR_RECT_(-1.0f, -1.0f, -1.0f, -1.0f);
 
 
-    ListBox::ListBox(const std::string &       NAME,
-                     const sf::FloatRect &     REGION,
-                     const ListBoxItemSLst_t & ITEM_LIST,
-                     IStage * const            stagePtr,
-                     const float               MARGIN,
-                     const float               BETWEEN_PAD,
-                     const box::Info &         BOX_INFO,
-                     const sf::Color &         LINE_COLOR,
-                     const std::size_t         ITEM_LIMIT,
-                     callback::IListBoxCallbackHandler * const callbackPtr)
+    ListBox::ListBox(
+        const std::string &       NAME,
+        const sf::FloatRect &     REGION,
+        const ListBoxItemSLst_t & ITEM_LIST,
+        IStage * const            stagePtr,
+        const float               MARGIN,
+        const float               BETWEEN_PAD,
+        const box::Info &         BOX_INFO,
+        const sf::Color &         LINE_COLOR,
+        const std::size_t         ITEM_LIMIT,
+        callback::IListBoxCallbackHandler * const callbackPtr)
     :
         GuiEntity       (std::string(NAME).append("_ListBox"), REGION),
         IMAGE_HORIZ_PAD_(10.0f),
@@ -128,15 +129,16 @@ namespace gui
     }
 
 
-    void ListBox::Setup(const sf::FloatRect &     REGION,
-                        const ListBoxItemSLst_t & ITEM_LIST,
-                        IStage * const            stagePtr,
-                        const float               MARGIN,
-                        const float               BETWEEN_PAD,
-                        const box::Info &         BOX_INFO,
-                        const sf::Color &         LINE_COLOR,
-                        const std::size_t         ITEM_LIMIT,
-                        callback::IListBoxCallbackHandler * const callbackPtr)
+    void ListBox::Setup(
+        const sf::FloatRect &     REGION,
+        const ListBoxItemSLst_t & ITEM_LIST,
+        IStage * const            stagePtr,
+        const float               MARGIN,
+        const float               BETWEEN_PAD,
+        const box::Info &         BOX_INFO,
+        const sf::Color &         LINE_COLOR,
+        const std::size_t         ITEM_LIMIT,
+        callback::IListBoxCallbackHandler * const callbackPtr)
     {
         SetEntityRegion(REGION);
 
@@ -208,7 +210,9 @@ namespace gui
                     break;
                 }
             }
-            currentViewPos_ = (GetTotalHeight() - (*itr)->GetEntityRegion().height) * PACKAGE.PTR_->GetCurrentValue();
+            currentViewPos_ = (GetTotalHeight() - (*itr)->GetEntityRegion().height) *
+                PACKAGE.PTR_->GetCurrentValue();
+
             SetupList();
         }
 
@@ -234,7 +238,8 @@ namespace gui
 
     void ListBox::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        //use the ListBox's entityWillDraw_ to control whether ListBox is responsible for drawing its entitys
+        //use the ListBox's entityWillDraw_ to control whether
+        //ListBox is responsible for drawing its entitys
         if (false == entityWillDraw_)
         {
             return;
@@ -269,7 +274,11 @@ namespace gui
                     rect.width -= imageSize_ + IMAGE_HORIZ_PAD_;
                 }
 
-                sfml_util::DrawRectangle<float>(target, states, rect, sf::Color::Transparent, 0, sf::Color(127, 32, 32, 64));
+                sfml_util::DrawRectangle<float>(
+                    target,
+                    states,
+                    rect,
+                    sf::Color::Transparent, 0, sf::Color(127, 32, 32, 64));
             }
 
             //highlight the current selection
@@ -286,7 +295,11 @@ namespace gui
                     rect.width -= imageSize_ + IMAGE_HORIZ_PAD_;
                 }
 
-                sfml_util::DrawRectangle<float>(target, states, rect, sf::Color::Transparent, 0, highlightColor_);
+                sfml_util::DrawRectangle<float>(
+                    target,
+                    states,
+                    rect,
+                    sf::Color::Transparent, 0, highlightColor_);
             }
 
             if (nextEntitySPtr->GetEntityWillDraw())
@@ -299,10 +312,16 @@ namespace gui
                 }
 
                 target.draw( * nextEntitySPtr, states);
-                lastDrawnEntityHeight = std::max(nextEntitySPtr->GetEntityRegion().height, imageHeight);
+
+                lastDrawnEntityHeight =
+                    std::max(nextEntitySPtr->GetEntityRegion().height, imageHeight);
 
                 //draw between line
-                const float LINE_POS_TOP(nextEntitySPtr->GetEntityRegion().top + nextEntitySPtr->GetEntityRegion().height + (betweenPad_ * 0.5f));
+                auto const LINE_POS_TOP{
+                    nextEntitySPtr->GetEntityRegion().top +
+                    nextEntitySPtr->GetEntityRegion().height +
+                    (betweenPad_ * 0.5f) };
+
                 if (LINE_POS_TOP < BOTTOM)
                 {
                     const std::size_t LIMIT((list_.empty()) ? itemLimit_ : (itemLimit_ - 1));
@@ -345,7 +364,8 @@ namespace gui
                 if ((POS_V.x >= entityRegion_.left) &&
                     (POS_V.x <= entityRegion_.left + entityRegion_.width - (2.0f * margin_)) &&
                     (POS_V.y >= NEXT_ENTITY_SPTR->GetEntityRegion().top) &&
-                    (POS_V.y <= NEXT_ENTITY_SPTR->GetEntityRegion().top + NEXT_ENTITY_SPTR->GetEntityRegion().height))
+                    (POS_V.y <= NEXT_ENTITY_SPTR->GetEntityRegion().top +
+                        NEXT_ENTITY_SPTR->GetEntityRegion().height))
                 {
                     return NEXT_ENTITY_SPTR;
                 }
@@ -371,7 +391,9 @@ namespace gui
             }
         }
 
-        return list_.size() + 1;//return invalid index, anything that will cause IsIndexValid() to return false will work here
+        //return invalid index
+        //anything that will cause IsIndexValid() to return false will work here
+        return list_.size() + 1;
     }
 
 
@@ -406,12 +428,16 @@ namespace gui
 
         if (willPlaySfx_)
         {
-            SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+            SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
         }
 
         std::size_t indexCounter(0);
         float vertTracker(entityRegion_.height);
-        for (typename ListBoxItemSLst_t::const_iterator itr(list_.begin()); itr != list_.end(); ++itr)
+        for (
+            typename ListBoxItemSLst_t::const_iterator itr(list_.begin());
+            itr != list_.end();
+            ++itr)
         {
             if (indexCounter++ == NEW_INDEX)
             {
@@ -419,7 +445,8 @@ namespace gui
 
                 if (willPlaySfx_ && WILL_PLAY_SOUNDEFFECT)
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                    SoundManager::Instance()->
+                        Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
                 }
 
                 selectedSPtr_ = *itr;
@@ -445,20 +472,27 @@ namespace gui
         if (INDEX >= list_.size())
         {
             std::ostringstream ss;
-            ss << "Get() was given an index=" << INDEX << " that is out of bounds with the current count=" << list_.size() << ".";
+            ss << "Get() was given an index=" << INDEX
+                << " that is out of bounds with the current count=" << list_.size() << ".";
+
             throw std::range_error(ss.str());
         }
         else
         {
             typename sfml_util::gui::ListBoxItemSLst_t::iterator itr(list_.begin());
-            std::advance(itr, static_cast<sfml_util::gui::ListBoxItemSLst_t::iterator::difference_type>(INDEX));
+            
+            std::advance(
+                itr,
+                static_cast<sfml_util::gui::ListBoxItemSLst_t::iterator::difference_type>(INDEX));
+
             return * itr;
         }
     }
 
 
-    void ListBox::Add(const ListBoxItemSPtr_t & THING_SPTR,
-                      const bool                WILL_INC_CURRENT_SEL)
+    void ListBox::Add(
+        const ListBoxItemSPtr_t & THING_SPTR,
+        const bool WILL_INC_CURRENT_SEL)
     {
         if ((NO_LIMIT_ == itemLimit_) || (list_.size() < static_cast<std::size_t>(itemLimit_)))
         {
@@ -476,7 +510,8 @@ namespace gui
 
     bool ListBox::Remove(const ListBoxItemSPtr_t & THING_SPTR)
     {
-        typename ListBoxItemSLst_t::iterator FOUND_ITR(std::find(list_.begin(), list_.end(), THING_SPTR));
+        typename ListBoxItemSLst_t::iterator FOUND_ITR{
+            std::find(list_.begin(), list_.end(), THING_SPTR) };
 
         if (FOUND_ITR == list_.end())
         {
@@ -554,7 +589,8 @@ namespace gui
         {
             if (willPlaySfx_)
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+                SoundManager::Instance()->
+                    Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             }
 
             CreateKeypressPackageAndCallHandler(KEY_EVENT);
@@ -567,7 +603,8 @@ namespace gui
 
             if (willPlaySfx_ && WILL_RETURN_TRUE)
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+                SoundManager::Instance()->
+                    Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             }
 
             CreateKeypressPackageAndCallHandler(KEY_EVENT);
@@ -579,7 +616,8 @@ namespace gui
 
             if (willPlaySfx_ && WILL_RETURN_TRUE)
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+                SoundManager::Instance()->
+                    Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
             }
 
             CreateKeypressPackageAndCallHandler(KEY_EVENT);
@@ -600,7 +638,8 @@ namespace gui
                 if ((MOUSE_POS_V.x >= entityRegion_.left) &&
                     (MOUSE_POS_V.x <= entityRegion_.left + entityRegion_.width - (2.0f * margin_)) &&
                     (MOUSE_POS_V.y >= NEXT_ITEM_SPTR->GetEntityRegion().top) &&
-                    (MOUSE_POS_V.y <= NEXT_ITEM_SPTR->GetEntityRegion().top + NEXT_ITEM_SPTR->GetEntityRegion().height))
+                    (MOUSE_POS_V.y <= NEXT_ITEM_SPTR->GetEntityRegion().top +
+                        NEXT_ITEM_SPTR->GetEntityRegion().height))
                 {
                     return NEXT_ITEM_SPTR;
                 }
@@ -620,7 +659,8 @@ namespace gui
                 if ((MOUSE_POS_V.x >= entityRegion_.left) &&
                     (MOUSE_POS_V.x <= entityRegion_.left + entityRegion_.width - (2.0f * margin_)) &&
                     (MOUSE_POS_V.y >= NEXT_ITEM_SPTR->GetEntityRegion().top) &&
-                    (MOUSE_POS_V.y <= NEXT_ITEM_SPTR->GetEntityRegion().top + NEXT_ITEM_SPTR->GetEntityRegion().height))
+                    (MOUSE_POS_V.y <= NEXT_ITEM_SPTR->GetEntityRegion().top +
+                        NEXT_ITEM_SPTR->GetEntityRegion().height))
                 {
                     const ImageMapCIter_t IMAGE_MAP_CITER(imageMap_.find(NEXT_ITEM_SPTR));
                     if (IMAGE_MAP_CITER != imageMap_.end())
@@ -629,10 +669,12 @@ namespace gui
                     }
                     else
                     {
-                        return sf::FloatRect(entityRegion_.left,
-                                             NEXT_ITEM_SPTR->GetEntityRegion().top,
-                                             entityRegion_.width - (2.0f * margin_),
-                                             NEXT_ITEM_SPTR->GetEntityRegion().top + NEXT_ITEM_SPTR->GetEntityRegion().height);
+                        return sf::FloatRect(
+                            entityRegion_.left,
+                            NEXT_ITEM_SPTR->GetEntityRegion().top,
+                            entityRegion_.width - (2.0f * margin_),
+                            NEXT_ITEM_SPTR->GetEntityRegion().top +
+                                NEXT_ITEM_SPTR->GetEntityRegion().height);
                     }
                 }
             }
@@ -666,15 +708,25 @@ namespace gui
     }
 
 
+    void ListBox::SetList(const ListBoxItemSLst_t & LIST)
+    {
+        list_ = LIST;
+        SetSelectedIndex(0, false);
+    }
+
+
     void ListBox::CreateSelectionChangePackageAndCallHandler(const std::size_t NEW_SELECTED_INDEX)
     {
         if (callbackPtr_ != nullptr)
         {
             const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
-            const callback::ListBoxEventPackage PACKAGE(PTR_PACKAGE,
-                                                        sfml_util::GuiEvent::SelectionChange,
-                                                        callback::ListBoxEventPackage::INVALID_MOUSE_POS_V_,
-                                                        static_cast<int>(NEW_SELECTED_INDEX));
+
+            const callback::ListBoxEventPackage PACKAGE(
+                PTR_PACKAGE,
+                sfml_util::GuiEvent::SelectionChange,
+                callback::ListBoxEventPackage::INVALID_MOUSE_POS_V_,
+                static_cast<int>(NEW_SELECTED_INDEX));
+
             callbackPtr_->HandleCallback(PACKAGE);
         }
     }
@@ -685,12 +737,15 @@ namespace gui
         if (callbackPtr_ != nullptr)
         {
             const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
-            const callback::ListBoxEventPackage PACKAGE(PTR_PACKAGE,
-                                                        sfml_util::GuiEvent::Keypress,
-                                                        callback::ListBoxEventPackage::INVALID_MOUSE_POS_V_,
-                                                        callback::ListBoxEventPackage::INVALID_SELECTION_,
-                                                        false,
-                                                        KEY_EVENT);
+
+            const callback::ListBoxEventPackage PACKAGE(
+                PTR_PACKAGE,
+                sfml_util::GuiEvent::Keypress,
+                callback::ListBoxEventPackage::INVALID_MOUSE_POS_V_,
+                callback::ListBoxEventPackage::INVALID_SELECTION_,
+                false,
+                KEY_EVENT);
+
             callbackPtr_->HandleCallback(PACKAGE);
         }
     }
@@ -701,7 +756,11 @@ namespace gui
         if (callbackPtr_ != nullptr)
         {
             const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
-            const callback::ListBoxEventPackage PACKAGE(PTR_PACKAGE, sfml_util::GuiEvent::DoubleClick, MOUSE_POS_V);
+
+            const callback::ListBoxEventPackage PACKAGE(
+                PTR_PACKAGE,
+                sfml_util::GuiEvent::DoubleClick, MOUSE_POS_V);
+
             callbackPtr_->HandleCallback(PACKAGE);
         }
     }
@@ -747,7 +806,12 @@ namespace gui
         {
             firstVisibleEntitySPtr = *itr;
             firstVisibleEntitySPtr->SetEntityWillDraw(true);
-            PopulateImageMapAndAdjustLeftPos(firstVisibleEntitySPtr, entityRegion_.left + margin_, entityPosY, true);
+
+            PopulateImageMapAndAdjustLeftPos(
+                firstVisibleEntitySPtr,
+                entityRegion_.left + margin_,
+                entityPosY,
+                true);
 
             if (itr != list_.end())
             {
@@ -766,10 +830,11 @@ namespace gui
         {
             if ((list_.empty() == false) && (selectedSPtr_ != firstVisibleEntitySPtr))
             {
-                PopulateImageMapAndAdjustLeftPos(firstVisibleEntitySPtr,
-                                                 entityRegion_.left + margin_,
-                                                 entityPosY - (firstVisibleEntitySPtr->GetEntityRegion().height + betweenPad_),
-                                                 false);
+                PopulateImageMapAndAdjustLeftPos(
+                    firstVisibleEntitySPtr,
+                    entityRegion_.left + margin_,
+                    entityPosY - (firstVisibleEntitySPtr->GetEntityRegion().height + betweenPad_),
+                    false);
             }
         }
 
@@ -778,7 +843,8 @@ namespace gui
         {
             for (; itr != list_.end(); ++itr)
             {
-                if ((entityPosY + ((*itr)->GetEntityRegion().height + betweenPad_)) > (entityRegion_.top + entityRegion_.height))
+                if ((entityPosY + ((*itr)->GetEntityRegion().height + betweenPad_)) >
+                    (entityRegion_.top + entityRegion_.height))
                 {
                     (*itr)->SetEntityWillDraw(false);
                     break;
@@ -786,7 +852,13 @@ namespace gui
                 else
                 {
                     (*itr)->SetEntityWillDraw(true);
-                    PopulateImageMapAndAdjustLeftPos((*itr), entityRegion_.left + margin_, entityPosY, (selectedSPtr_ == * itr));
+
+                    PopulateImageMapAndAdjustLeftPos(
+                        (*itr),
+                        entityRegion_.left + margin_,
+                        entityPosY,
+                        (selectedSPtr_ == * itr));
+
                     entityPosY += (*itr)->GetEntityRegion().height + betweenPad_;
                 }
             }
@@ -821,10 +893,11 @@ namespace gui
     }
 
 
-    void ListBox::PopulateImageMapAndAdjustLeftPos(sfml_util::gui::ListBoxItemSPtr_t & listBoxItemSPtr,
-                                                   const float                         POS_LEFT_ORIG,
-                                                   const float                         POS_TOP,
-                                                   const bool                          IS_SELECTED_ITEM)
+    void ListBox::PopulateImageMapAndAdjustLeftPos(
+        sfml_util::gui::ListBoxItemSPtr_t & listBoxItemSPtr,
+        const float POS_LEFT_ORIG,
+        const float POS_TOP,
+        const bool IS_SELECTED_ITEM)
     {
         float newPosLeft(POS_LEFT_ORIG);
         sf::Texture texture;
@@ -904,8 +977,12 @@ namespace gui
                 sprite.setScale(SCALE, SCALE);
             }
 
-            const float SPRITE_POS_LEFT((POS_LEFT_ORIG + (imageSize_ * 0.5f)) - (sprite.getGlobalBounds().width * 0.5f));
-            const float SPRITE_POS_TOP((POS_TOP + (imageSize_ * 0.5f)) - (sprite.getGlobalBounds().height * 0.5f));
+            auto const SPRITE_POS_LEFT{
+                (POS_LEFT_ORIG + (imageSize_ * 0.5f)) - (sprite.getGlobalBounds().width * 0.5f) };
+
+            auto const SPRITE_POS_TOP{
+                (POS_TOP + (imageSize_ * 0.5f)) - (sprite.getGlobalBounds().height * 0.5f) };
+
             sprite.setPosition(SPRITE_POS_LEFT, SPRITE_POS_TOP);
 
             imageMap_[listBoxItemSPtr] = std::make_pair(texture, sprite);
@@ -926,7 +1003,10 @@ namespace gui
     bool ListBox::MoveSelectionUp()
     {
         float vertTracker(entityRegion_.height);
-        for (typename ListBoxItemSLst_t::const_iterator itr(list_.begin()); itr != list_.end(); ++itr)
+        for (
+            typename ListBoxItemSLst_t::const_iterator itr(list_.begin());
+            itr != list_.end();
+            ++itr)
         {
             auto const NEXT_HEIGHT{ (*itr)->GetEntityRegion().height + betweenPad_ };
             auto nextItr(itr);
@@ -958,7 +1038,10 @@ namespace gui
     bool ListBox::MoveSelectionDown()
     {
         float vertTracker(0.0f);
-        for (typename ListBoxItemSLst_t::const_iterator itr(list_.begin()); itr != list_.end(); ++itr)
+        for (
+            typename ListBoxItemSLst_t::const_iterator itr(list_.begin());
+            itr != list_.end();
+            ++itr)
         {
             auto const CURRENT_HEIGHT{ (*itr)->GetEntityRegion().height };
             if (itr != list_.begin())

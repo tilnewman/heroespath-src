@@ -180,8 +180,9 @@ namespace gui
         inline bool Empty() const               { return list_.empty(); }
         inline std::size_t GetLimit() const     { return itemLimit_; }
 
-        void Add(const ListBoxItemSPtr_t & THING_SPTR,
-                 const bool                WILL_INC_CURRENT_SEL = false);
+        void Add(
+            const ListBoxItemSPtr_t & THING_SPTR,
+            const bool                WILL_INC_CURRENT_SEL = false);
 
         bool Remove(const ListBoxItemSPtr_t & THING_SPTR);
 
@@ -204,6 +205,9 @@ namespace gui
 
         inline bool WillPlaySoundEffects() const { return willPlaySfx_; }
         inline void WillPlaySoundEffects(const bool B) { willPlaySfx_ = B; }
+
+        inline const ListBoxItemSLst_t GetList() const { return list_; }
+        void SetList(const ListBoxItemSLst_t & LIST);
 
     protected:
         void CreateSelectionChangePackageAndCallHandler(const std::size_t NEW_SELECTED_INDEX);

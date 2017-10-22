@@ -33,12 +33,13 @@
 #include "sfml-util/stage.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gradient.hpp"
+#include "sfml-util/gui/background-image.hpp"
 
 #include "game/horiz-symbol.hpp"
 #include "game/ouroboros.hpp"
 #include "game/main-menu-buttons.hpp"
+
 #include "popup/i-popup-callback.hpp"
-#include "sfml-util/gui/background-image.hpp"
 
 #include <memory>
 #include <string>
@@ -49,7 +50,8 @@ namespace game
 namespace stage
 {
 
-    //A simple class that displays the credits
+    //Responsible for displaying and managing mouse-clicks of five menu options:
+    //Resume Game, Create Characters, Settings, Credits, Exit
     class MainMenuStage
     :
         public sfml_util::Stage,
@@ -62,12 +64,14 @@ namespace stage
         MainMenuStage();
         virtual ~MainMenuStage();
 
-        inline virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
+        inline const std::string HandlerName() const override { return GetStageName(); }
+        
+        bool HandleCallback(
+            const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
-        virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
-        virtual bool KeyRelease(const sf::Event::KeyEvent &);
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
         const float SCREEN_WIDTH_;
