@@ -1825,6 +1825,98 @@ namespace creature
                                        std::make_pair(stats::Traits::CurseEffect, 80),
                                        std::make_pair(stats::Traits::ShadowDamage, 28) }) );
         }
+        else if (E == item::misc_type::Recorder)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                EnchantmentType::WhenEquipped |
+                EnchantmentType::BoundToItem |
+                EnchantmentType::BlessWithoutItem),
+                stats::TraitSet({
+                    std::make_pair(stats::Traits::Mana, 24),
+                    std::make_pair(stats::Traits::Charm, 13),
+                    std::make_pair(stats::Traits::Intelligence, 13),
+                    std::make_pair(stats::Traits::MagicCast, 16),
+                    std::make_pair(stats::Traits::MagicEffect, 16),
+                    std::make_pair(stats::Traits::BlessCast, 25),
+                    std::make_pair(stats::Traits::BlessEffect, 25),
+                    std::make_pair(stats::Traits::CurseResist, 25),
+                    std::make_pair(stats::Traits::ShadowResist, 18) }));
+        }
+        else if (E == item::misc_type::Viol)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                EnchantmentType::WhenEquipped |
+                EnchantmentType::BoundToItem |
+                EnchantmentType::CurseWithoutItem),
+                stats::TraitSet({
+                    std::make_pair(stats::Traits::Mana, 24),
+                    std::make_pair(stats::Traits::Charm, 13),
+                    std::make_pair(stats::Traits::Intelligence, 13),
+                    std::make_pair(stats::Traits::MagicCast, 16),
+                    std::make_pair(stats::Traits::MagicEffect, 16),
+                    std::make_pair(stats::Traits::CurseCast, 25),
+                    std::make_pair(stats::Traits::CurseEffect, 25),
+                    std::make_pair(stats::Traits::ShadowDamage, 18) }));
+        }
+        else if (E == item::misc_type::Viol)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                EnchantmentType::WhenEquipped |
+                EnchantmentType::BoundToItem |
+                EnchantmentType::BlessWithoutItem),
+                stats::TraitSet({
+                    std::make_pair(stats::Traits::Mana, 28),
+                    std::make_pair(stats::Traits::Charm, 18),
+                    std::make_pair(stats::Traits::Intelligence, 18),
+                    std::make_pair(stats::Traits::MagicCast, 33),
+                    std::make_pair(stats::Traits::MagicEffect, 33),
+                    std::make_pair(stats::Traits::BlessCast, 50),
+                    std::make_pair(stats::Traits::BlessEffect, 50) }));
+        }
+        else if (E == item::misc_type::Pipe_And_Tabor)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                EnchantmentType::WhenEquipped |
+                EnchantmentType::BoundToItem |
+                EnchantmentType::BlessWithoutItem),
+                stats::TraitSet({
+                std::make_pair(stats::Traits::Mana, 28),
+                std::make_pair(stats::Traits::Charm, 18),
+                std::make_pair(stats::Traits::Intelligence, 18),
+                std::make_pair(stats::Traits::MagicCast, 33),
+                std::make_pair(stats::Traits::MagicEffect, 33),
+                std::make_pair(stats::Traits::BlessCast, 50),
+                std::make_pair(stats::Traits::BlessEffect, 50) }));
+        }
+        else if (E == item::misc_type::Hurdy_Gurdy)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                EnchantmentType::WhenEquipped |
+                EnchantmentType::BoundToItem |
+                EnchantmentType::CurseWithoutItem),
+                stats::TraitSet({
+                    std::make_pair(stats::Traits::Mana, 28),
+                    std::make_pair(stats::Traits::Charm, 18),
+                    std::make_pair(stats::Traits::Intelligence, 18),
+                    std::make_pair(stats::Traits::MagicCast, 33),
+                    std::make_pair(stats::Traits::MagicEffect, 33),
+                    std::make_pair(stats::Traits::CurseCast, 50),
+                    std::make_pair(stats::Traits::CurseEffect, 50) }));
+        }
+        else if (E == item::misc_type::Lyre)
+        {
+            return new Enchantment(static_cast<EnchantmentType::Enum>(
+                EnchantmentType::WhenEquipped |
+                EnchantmentType::BoundToItem),
+                stats::TraitSet({
+                    std::make_pair(stats::Traits::Mana, 33),
+                    std::make_pair(stats::Traits::Charm, 20),
+                    std::make_pair(stats::Traits::Intelligence, 20),
+                    std::make_pair(stats::Traits::MagicCast, 50),
+                    std::make_pair(stats::Traits::MagicEffect, 50),
+                    std::make_pair(stats::Traits::FindMagic, 18),
+                    std::make_pair(stats::Traits::FindCoinsAmount, 18) }));
+        }
         else
         {
             return nullptr;
