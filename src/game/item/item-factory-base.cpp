@@ -325,6 +325,13 @@ namespace item
     }
 
 
+    Coin_t FactoryBase::TreasureScoreToCoins(const Score_t TREASURE_SCORE)
+    {
+        //For now Treasure Score equals the price in coins
+        return Coin_t(TREASURE_SCORE.AsInt());
+    }
+
+
     const std::string FactoryBase::RandomCoatedPhrase()
     {
         if (misc::random::Bool())

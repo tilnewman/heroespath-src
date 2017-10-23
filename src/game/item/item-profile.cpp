@@ -542,6 +542,12 @@ namespace item
                  (E == misc_type::Litch_Hand) ||
                  (E == misc_type::Braid))
         {
+            if ((E == misc_type::Litch_Hand) ||
+                (E == misc_type::Braid))
+            {
+                category_ = static_cast<category::Enum>(category_ | category::QuestItem);
+            }
+
             EquippableHelper(0);
         }
         else if (E == misc_type::Spider_Eggs)
@@ -566,9 +572,21 @@ namespace item
                  (E == misc_type::Devil_Horn) ||
                  (E == misc_type::Staff))
         {
-            category_ = static_cast<category::Enum>(category_ |
-                                                    category::AllowsCasting |
-                                                    category::Equippable);
+            category_ = static_cast<category::Enum>(
+                category_ |
+                category::AllowsCasting |
+                category::Equippable);
+
+            if ((E == misc_type::Petrified_Snake) ||
+                (E == misc_type::Mummy_Hand) ||
+                (E == misc_type::Finger) ||
+                (E == misc_type::Unicorn_Horn) ||
+                (E == misc_type::Devil_Horn) ||
+                (E == misc_type::Icicle))
+            {
+                category_ = static_cast<category::Enum>(category_ | category::QuestItem);
+            }
+
             score_ += 100_score;
 
             if (E == misc_type::Staff)
@@ -592,6 +610,16 @@ namespace item
                  (E == misc_type::Recorder))
         {
             category_ = static_cast<category::Enum>(category_ | category::Equippable);
+
+            if ((E == misc_type::Lyre) ||
+                (E == misc_type::Hurdy_Gurdy) ||
+                (E == misc_type::Pipe_And_Tabor) ||
+                (E == misc_type::Viol) ||
+                (E == misc_type::Recorder))
+            {
+                category_ = static_cast<category::Enum>(category_ | category::QuestItem);
+            }
+
             role_ = creature::role::Bard;
             score_ += 100_score;
         }

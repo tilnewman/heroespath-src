@@ -53,7 +53,7 @@ namespace item
 
     TreasureImage::Enum TreasureFactory::Make(
         const non_player::CharacterPVec_t & CHARACTER_PVEC,
-        ItemCache &                         itemCache_OutParam)
+        ItemCache & itemCache_OutParam)
     {
         auto const TREASURE_SCORES{ CalculateTreasureSums(CHARACTER_PVEC) };
 
@@ -213,6 +213,15 @@ namespace item
         auto amount{ TREASURE_SCORE };
 
         auto profiles{ item::ItemProfileWarehouse::Instance()->Get() };
+
+        //can't randomly acquire quest items
+        profiles.erase(std::remove_if(
+            profiles.begin(),
+            profiles.end(),
+            [](const auto & PROFILE)
+        {
+            return (PROFILE.Category() & item::category::QuestItem);
+        }), profiles.end());
 
         //Some items are 0% religious, and need to be removed if selecting a religious item.
         if (IS_RELIGIOUS)

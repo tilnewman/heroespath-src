@@ -1693,7 +1693,7 @@ namespace item
                                            material::Stone,
                                            material::Bone,
                                            material::Obsidian },
-                                         material::CoreSecondary());
+                                           material::CoreSecondary());
             }
 
             case projectile_type::Sling:
@@ -1773,9 +1773,9 @@ namespace item
     const MaterialVecPair_t ItemProfileWarehouse::Materials(const armor::cover_type::Enum)
     {
         return MaterialVecPair_t({ material::Cloth,
-                                         material::SoftLeather,
-                                         material::HardLeather},
-                                       material::CoreSecondary());
+                                   material::SoftLeather,
+                                   material::HardLeather},
+                                   material::CoreSecondary());
     }
 
 
