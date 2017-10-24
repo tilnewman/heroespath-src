@@ -42,15 +42,16 @@ namespace sfml_util
     bool SliderBarLabeled_Effects::willPreventPlayingSound_(false);
 
 
-    SliderBarLabeled_Effects::SliderBarLabeled_Effects( const std::string &        NAME,
-                                                        const float                POS_LEFT,
-                                                        const float                POS_TOP,
-                                                        const float                LENGTH,
-                                                        const gui::SliderStyle &   STYLE,
-                                                        const gui::MouseTextInfo & THREE_TEXT_INFOS,
-                                                        const float                INITIAL_VALUE,
-                                                        const float                RELATIVE_LABEL_POS_LEFT,
-                                                        const float                RELATIVE_LABEL_POS_TOP )
+    SliderBarLabeled_Effects::SliderBarLabeled_Effects(
+        const std::string &        NAME,
+        const float                POS_LEFT,
+        const float                POS_TOP,
+        const float                LENGTH,
+        const gui::SliderStyle &   STYLE,
+        const gui::MouseTextInfo & THREE_TEXT_INFOS,
+        const float                INITIAL_VALUE,
+        const float                RELATIVE_LABEL_POS_LEFT,
+        const float                RELATIVE_LABEL_POS_TOP )
     :
         SliderBarLabeled(std::string(NAME).append("_SliderBarLabeled_Music"),
                          POS_LEFT,
@@ -74,8 +75,8 @@ namespace sfml_util
 
     void SliderBarLabeled_Effects::OnChange(const float NEW_VALUE_PARAM)
     {
-        const float NEW_VALUE_RANGE_CORRECTED(NEW_VALUE_PARAM * 100.0f);
-        const int NEW_VALUE_INT(static_cast<int>(NEW_VALUE_RANGE_CORRECTED));
+        auto const NEW_VALUE_RANGE_CORRECTED{ NEW_VALUE_PARAM * 100.0f };
+        auto const NEW_VALUE_INT{ static_cast<int>(NEW_VALUE_RANGE_CORRECTED) };
 
         SoundManager::Instance()->SoundEffectVolumeSet( static_cast<float>(NEW_VALUE_INT) );
 
@@ -84,10 +85,16 @@ namespace sfml_util
         gui::TextInfo textInfo(threeTextInfos_.up);
 
         if (0 == NEW_VALUE_INT)
+        {
             textInfo = threeTextInfos_.down;
+        }
         else
+        {
             if (100 == NEW_VALUE_INT)
+            {
                 textInfo = threeTextInfos_.over;
+            }
+        }
 
         std::ostringstream ss;
 
@@ -114,24 +121,60 @@ namespace sfml_util
     void SliderBarLabeled_Effects::SetPadPosition()
     {
         if (currentVal_ > 1.0f)
-            currentVal_ = 1.0f;
-        else
-            if (currentVal_ < 0.0f)
-                currentVal_ = 0.0f;
-
-        const sf::Vector2f POS_V(GetEntityPos());
-
-        if (STYLE_.orientation == Orientation::Horiz)
         {
-            const float SLIDER_RANGE(LENGTH_ - (botOrLeftImage_.GetUpSprite().getLocalBounds().width + topOrRightImage_.GetUpSprite().getLocalBounds().width + padImage_.GetUpSprite().getLocalBounds().width - 8));
-            const float SLIDER_POSX(POS_V.x + botOrLeftImage_.GetUpSprite().getLocalBounds().width + (SLIDER_RANGE * (1.0f - currentVal_)) - 3);//magic number 3 moves passed the shadow
-            padImage_.GetUpSprite().setPosition(SLIDER_POSX, POS_V.y + (botOrLeftImage_.GetUpSprite().getLocalBounds().height * 0.5f) - (padImage_.GetUpSprite().getLocalBounds().height * 0.5f));
+            currentVal_ = 1.0f;
         }
         else
         {
-            const float SLIDER_RANGE(LENGTH_ - (topOrRightImage_.GetUpSprite().getLocalBounds().height + botOrLeftImage_.GetUpSprite().getLocalBounds().height + padImage_.GetUpSprite().getLocalBounds().height - 5));
-            const float SLIDER_POSY(POS_V.y + topOrRightImage_.GetUpSprite().getLocalBounds().height + (SLIDER_RANGE * (1.0f - currentVal_)) - 1);//magic number 1 moves passed the shadow
-            padImage_.GetUpSprite().setPosition(POS_V.x + (topOrRightImage_.GetUpSprite().getLocalBounds().width * 0.5f) - (padImage_.GetUpSprite().getLocalBounds().width * 0.5f), SLIDER_POSY);
+            if (currentVal_ < 0.0f)
+            {
+                currentVal_ = 0.0f;
+            }
+        }
+
+        auto const POS_V{ GetEntityPos() };
+
+        if (STYLE_.orientation == Orientation::Horiz)
+        {
+            auto const SLIDER_RANGE{
+                LENGTH_ -
+                (botOrLeftImage_.GetUpSprite().getLocalBounds().width +
+                    topOrRightImage_.GetUpSprite().getLocalBounds().width +
+                    padImage_.GetUpSprite().getLocalBounds().width -
+                    8) };
+
+            //magic number 3 moves passed the shadow
+            auto const SLIDER_POSX{
+                POS_V.x +
+                botOrLeftImage_.GetUpSprite().getLocalBounds().width +
+                (SLIDER_RANGE * (1.0f - currentVal_)) - 3.0f };
+
+            padImage_.GetUpSprite().setPosition(
+                SLIDER_POSX,
+                POS_V.y +
+                    (botOrLeftImage_.GetUpSprite().getLocalBounds().height * 0.5f) -
+                        (padImage_.GetUpSprite().getLocalBounds().height * 0.5f));
+        }
+        else
+        {
+            auto const SLIDER_RANGE{
+                LENGTH_ -
+                (topOrRightImage_.GetUpSprite().getLocalBounds().height +
+                    botOrLeftImage_.GetUpSprite().getLocalBounds().height +
+                    padImage_.GetUpSprite().getLocalBounds().height -
+                    5.0f) };
+
+            //magic number 1 moves passed the shadow
+            auto const SLIDER_POSY{
+                POS_V.y +
+                topOrRightImage_.GetUpSprite().getLocalBounds().height +
+                (SLIDER_RANGE * (1.0f - currentVal_)) - 1.0f };
+
+            padImage_.GetUpSprite().setPosition(
+                POS_V.x +
+                    (topOrRightImage_.GetUpSprite().getLocalBounds().width * 0.5f) -
+                    (padImage_.GetUpSprite().getLocalBounds().width * 0.5f),
+                SLIDER_POSY);
         }
     }
 
@@ -142,12 +185,12 @@ namespace sfml_util
         {
             if (STYLE_.orientation == Orientation::Horiz)
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                SoundManager::Instance()->PlaySfx_TickOn();
                 currentVal_ += 0.1f;
             }
             else
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+                SoundManager::Instance()->PlaySfx_TickOff();
                 currentVal_ -= 0.1f;
             }
 
@@ -160,12 +203,12 @@ namespace sfml_util
             {
                 if (STYLE_.orientation == Orientation::Horiz)
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+                    SoundManager::Instance()->PlaySfx_TickOff();
                     currentVal_ -= 0.1f;
                 }
                 else
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                    SoundManager::Instance()->PlaySfx_TickOn();
                     currentVal_ += 0.1f;
                 }
 
@@ -176,7 +219,7 @@ namespace sfml_util
             {
                 if (padImage_.MouseDown(MOUSE_POS_V))
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                    SoundManager::Instance()->PlaySfx_TickOn();
                     entityMouseState_ = MouseState::Down;
                 }
                 else
@@ -187,16 +230,17 @@ namespace sfml_util
                         {
                             if (MOUSE_POS_V.x < padImage_.GetEntityRegion().left)
                             {
-                                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                                SoundManager::Instance()->PlaySfx_TickOn();
                                 currentVal_ += 0.1f;
                                 SetupAllPositions();
                                 return true;
                             }
                             else
                             {
-                                if (MOUSE_POS_V.x >(padImage_.GetEntityRegion().left + padImage_.GetEntityRegion().width))
+                                if (MOUSE_POS_V.x >
+                                    (padImage_.GetEntityRegion().left + padImage_.GetEntityRegion().width))
                                 {
-                                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+                                    SoundManager::Instance()->PlaySfx_TickOff();
                                     currentVal_ -= 0.1f;
                                     SetupAllPositions();
                                     return true;
@@ -207,16 +251,17 @@ namespace sfml_util
                         {
                             if (MOUSE_POS_V.y < padImage_.GetEntityRegion().top)
                             {
-                                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                                SoundManager::Instance()->PlaySfx_TickOn();
                                 currentVal_ += 0.1f;
                                 SetupAllPositions();
                                 return true;
                             }
                             else
                             {
-                                if (MOUSE_POS_V.y >(padImage_.GetEntityRegion().top + padImage_.GetEntityRegion().height))
+                                if (MOUSE_POS_V.y >
+                                    (padImage_.GetEntityRegion().top + padImage_.GetEntityRegion().height))
                                 {
-                                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+                                    SoundManager::Instance()->PlaySfx_TickOff();
                                     currentVal_ -= 0.1f;
                                     SetupAllPositions();
                                     return true;
@@ -239,33 +284,55 @@ namespace sfml_util
         //change from screen to slider coords
         if (STYLE_.orientation == Orientation::Horiz)
         {
-            const float MIN_SCREENX(POS_V.x + botOrLeftImage_.GetUpSprite().getLocalBounds().width);
-            const float MAX_SCREENX((POS_V.x + (LENGTH_ - topOrRightImage_.GetUpSprite().getLocalBounds().width) - barImage_.GetUpSprite().getLocalBounds().height));
+            auto const MIN_SCREENX{
+                POS_V.x + botOrLeftImage_.GetUpSprite().getLocalBounds().width };
+
+            auto const MAX_SCREENX{
+                (POS_V.x + (LENGTH_ - topOrRightImage_.GetUpSprite().getLocalBounds().width) -
+                    barImage_.GetUpSprite().getLocalBounds().height) };
+
             if (NEW_COORDS.x < MIN_SCREENX)
+            {
                 currentVal_ = 1.0f;
+            }
             else
+            {
                 if (NEW_COORDS.x > MAX_SCREENX)
+                {
                     currentVal_ = 0.0f;
+                }
                 else
                 {
                     currentVal_ = (NEW_COORDS.x - MIN_SCREENX) / (MAX_SCREENX - MIN_SCREENX);
                     currentVal_ = 1.0f - currentVal_;
                 }
+            }
         }
         else
         {
-            const float MIN_SCREENY(POS_V.y + topOrRightImage_.GetUpSprite().getLocalBounds().height);
-            const float MAX_SCREENY((POS_V.y + (LENGTH_ - botOrLeftImage_.GetUpSprite().getLocalBounds().height) - barImage_.GetUpSprite().getLocalBounds().height));
+            auto const MIN_SCREENY{
+                POS_V.y + topOrRightImage_.GetUpSprite().getLocalBounds().height };
+
+            auto const MAX_SCREENY{
+                (POS_V.y + (LENGTH_ - botOrLeftImage_.GetUpSprite().getLocalBounds().height) -
+                    barImage_.GetUpSprite().getLocalBounds().height) };
+
             if (NEW_COORDS.y < MIN_SCREENY)
+            {
                 currentVal_ = 1.0f;
+            }
             else
+            {
                 if (NEW_COORDS.y > MAX_SCREENY)
+                {
                     currentVal_ = 0.0f;
+                }
                 else
                 {
                     currentVal_ = (NEW_COORDS.y - MIN_SCREENY) / (MAX_SCREENY - MIN_SCREENY);
                     currentVal_ = 1.0f - currentVal_;
                 }
+            }
         }
 
         SetupAllPositions();
@@ -282,7 +349,7 @@ namespace sfml_util
             {
                 willPlaySound_ = false;
                 timeSinceLastPlaySec_ = 0.0f;
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Prompt).Play(sound_effect::PromptWarn);
+                SoundManager::Instance()->PlaySfx_Reject();
                 return true;
             }
         }

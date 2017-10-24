@@ -98,33 +98,77 @@ namespace stage
             bpTitleSprite_.setTexture(hpTitleTexture_);
             const float SCALE(sfml_util::MapByRes(0.6f, 1.5f));
             bpTitleSprite_.setScale(SCALE, SCALE);
-            bpTitleSprite_.setPosition((CREDITBOX_POS_LEFT_ + (CREDIT_BOX_WIDTH_ * 0.5f)) - (bpTitleSprite_.getGlobalBounds().width * 0.5f), 50.0f);
+
+            bpTitleSprite_.setPosition(
+                (CREDITBOX_POS_LEFT_ + (CREDIT_BOX_WIDTH_ * 0.5f)) -
+                    (bpTitleSprite_.getGlobalBounds().width * 0.5f),
+                50.0f);
         }
 
         //size of the box in which all the credits scroll
-        const float MARGIN_TOP(sfml_util::MapByRes(20.0f, 100.0f));
-        const float MARGIN_BOTTOM(sfml_util::MapByRes(50.0f, 200.0f));
-        creditBoxPosTop_ = bpTitleSprite_.getPosition().y + bpTitleSprite_.getGlobalBounds().height + MARGIN_TOP;
+        auto const MARGIN_TOP{ sfml_util::MapByRes(20.0f, 100.0f) };
+        auto const MARGIN_BOTTOM{ sfml_util::MapByRes(50.0f, 200.0f) };
+
+        creditBoxPosTop_ = bpTitleSprite_.getPosition().y +
+            bpTitleSprite_.getGlobalBounds().height +
+            MARGIN_TOP;
+        
         creditBoxHeight_ = (SCREEN_HEIGHT_ - creditBoxPosTop_) - MARGIN_BOTTOM;
 
         //the rect that defines the credits box
-        const sf::FloatRect CREDITS_BOX_RECT(CREDITBOX_POS_LEFT_, creditBoxPosTop_, CREDIT_BOX_WIDTH_, creditBoxHeight_);
+        const sf::FloatRect CREDITS_BOX_RECT(
+            CREDITBOX_POS_LEFT_,
+            creditBoxPosTop_,
+            CREDIT_BOX_WIDTH_,
+            creditBoxHeight_);
 
         //rune background
-        const sfml_util::GradientInfo RUNE_BACKGROUND_GRADIENT_INFO(sf::Color(0, 0, 0, 200), sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
-        const sfml_util::gui::BackgroundInfo RUNE_BACKGROUND_INFO(GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-runes"), CREDITS_BOX_RECT, sf::Color::White, RUNE_BACKGROUND_GRADIENT_INFO);
+        const sfml_util::GradientInfo RUNE_BACKGROUND_GRADIENT_INFO(
+            sf::Color(0, 0, 0, 200),
+            sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
+
+        const sfml_util::gui::BackgroundInfo RUNE_BACKGROUND_INFO(
+            GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-runes"),
+            CREDITS_BOX_RECT,
+            sf::Color::White,
+            RUNE_BACKGROUND_GRADIENT_INFO);
+
         backgroundImage_.Setup(RUNE_BACKGROUND_INFO, sfml_util::MapByRes(1.0f, 3.0f), true);
 
         //box
         {
-            const sf::FloatRect BOX_RECT(CREDITBOX_POS_LEFT_, creditBoxPosTop_, CREDIT_BOX_WIDTH_, creditBoxHeight_);
-            sfml_util::gui::box::Info boxInfo(true, BOX_RECT, sfml_util::gui::ColorSet(sfml_util::FontManager::Color_GrayLight(), sf::Color::Transparent, sfml_util::FontManager::Color_GrayLight(), sf::Color::Transparent));
+            const sf::FloatRect BOX_RECT(
+                CREDITBOX_POS_LEFT_,
+                creditBoxPosTop_,
+                CREDIT_BOX_WIDTH_,
+                creditBoxHeight_);
+
+            sfml_util::gui::box::Info boxInfo(
+                true,
+                BOX_RECT,
+                sfml_util::gui::ColorSet(
+                    sfml_util::FontManager::Color_GrayLight(),
+                    sf::Color::Transparent,
+                    sfml_util::FontManager::Color_GrayLight(),
+                    sf::Color::Transparent));
+
             box_.SetupBox(boxInfo);
         }
 
         //establish baseline TextInfo objects
-        sfml_util::gui::TextInfo creditTextInfoSmall("", sfml_util::FontManager::Instance()->Font_Typical(), 20, sf::Color(255,255,255,200), sfml_util::Justified::Center);
-        sfml_util::gui::TextInfo creditTextInfoLarge("", sfml_util::FontManager::Instance()->Font_Typical(), 24, sf::Color::White, sfml_util::Justified::Center);
+        sfml_util::gui::TextInfo creditTextInfoSmall(
+            "",
+            sfml_util::FontManager::Instance()->Font_Typical(),
+            20,
+            sf::Color(255,255,255,200),
+            sfml_util::Justified::Center);
+
+        sfml_util::gui::TextInfo creditTextInfoLarge(
+            "",
+            sfml_util::FontManager::Instance()->Font_Typical(),
+            24,
+            sf::Color::White,
+            sfml_util::Justified::Center);
 
         //inner/tracking rect
         //keep track of the vertical position to draw via this rect
@@ -344,7 +388,7 @@ namespace stage
         totalHeight_ = trackingRect.top;
 
         //move down to initial positions
-        const float MOVE_AMOUNT(creditBoxHeight_ + 40);
+        auto const MOVE_AMOUNT{ creditBoxHeight_ + 40.0f };
         for (auto & nextCreditSPtr : creditSVec_)
         {
             nextCreditSPtr->Move(0.0f, MOVE_AMOUNT);
@@ -357,24 +401,32 @@ namespace stage
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
 
         for (auto & nextCreditSPtr : creditSVec_)
+        {
             nextCreditSPtr->UpdateTime(ELAPSED_TIME_SECONDS);
+        }
 
         //accellerate/decellerate when pressing/releasing the down arrow key
         if (isKeyHeldDown_)
         {
             scrollSpeed_ += ELAPSED_TIME_SECONDS * SCROLL_SPEED_MULT_;
             if (scrollSpeed_ > SCROLL_SPEED_MAX_)
+            {
                 scrollSpeed_ = SCROLL_SPEED_MAX_;
+            }
         }
         else
         {
             if (scrollSpeed_ > DEFAULT_SCROLL_SPEED_)
+            {
                 scrollSpeed_ -= ELAPSED_TIME_SECONDS * SCROLL_SPEED_MULT_;
+            }
         }
 
         const float MOVE_AMOUNT(ELAPSED_TIME_SECONDS * -1.0f * scrollSpeed_);
         for (auto & nextCreditSPtr : creditSVec_)
+        {
             nextCreditSPtr->Move(0.0f, MOVE_AMOUNT);
+        }
 
         heightTracker_ += (MOVE_AMOUNT * -1.0f);
         const float END_ROLL_OFFSET(300.0f);
@@ -384,7 +436,9 @@ namespace stage
 
             const float ADJUSTMENT(totalHeight_ + creditBoxHeight_ - END_ROLL_OFFSET);
             for (auto & nextCreditSPtr : creditSVec_)
+            {
                 nextCreditSPtr->Move(0.0f, ADJUSTMENT);
+            }
         }
     }
 
@@ -400,12 +454,29 @@ namespace stage
             nextCreditSPtr->Draw(target, STATES);
         }
 
-        //draw solid black rectangles above and below the credits box to hide the scrolling credits when outside the box
-        sfml_util::DrawRectangle(target, STATES, sf::FloatRect(0.0f, 0.0f, SCREEN_WIDTH_, creditBoxPosTop_ - 5.0f), sf::Color::Black, 1.0f, sf::Color::Black);
-        sfml_util::DrawRectangle(target, STATES, sf::FloatRect(0.0f, creditBoxPosTop_ + creditBoxHeight_ + 5.0f, SCREEN_WIDTH_, SCREEN_HEIGHT_), sf::Color::Black, 1.0f, sf::Color::Black);
+        //draw solid black rectangles above and below the credits box to hide the
+        //scrolling credits when outside the box
+        sfml_util::DrawRectangle(
+            target,
+            STATES,
+            sf::FloatRect(0.0f, 0.0f, SCREEN_WIDTH_, creditBoxPosTop_ - 5.0f),
+            sf::Color::Black,
+            1.0f,
+            sf::Color::Black);
+
+        sfml_util::DrawRectangle(
+            target,
+            STATES,
+            sf::FloatRect(
+                0.0f,
+                creditBoxPosTop_ + creditBoxHeight_ + 5.0f,
+                SCREEN_WIDTH_,
+                SCREEN_HEIGHT_),
+            sf::Color::Black,
+            1.0f,
+            sf::Color::Black);
 
         target.draw(box_, STATES);
-
         target.draw(bpTitleSprite_, STATES);
     }
 
@@ -413,10 +484,12 @@ namespace stage
     bool CreditsStage::KeyPress(const sf::Event::KeyEvent & KE)
     {
         if (KE.code == sf::Keyboard::Down)
+        {
             isKeyHeldDown_ = true;
+        }
         else
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
             LoopManager::Instance()->TransitionTo_MainMenu();
         }
 
@@ -432,7 +505,9 @@ namespace stage
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
 }

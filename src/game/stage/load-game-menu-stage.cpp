@@ -357,10 +357,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
             backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
             LoopManager::Instance()->TransitionTo_MainMenu();
             return true;
         }

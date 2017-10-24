@@ -179,8 +179,7 @@ namespace popup
 
                     if (imageIndexLastSoundOff_ != imageIndex_)
                     {
-                        sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::TickOff).PlayRandom();
+                        sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
                     }
 
                     imageIndexLastSoundOff_ = imageIndex_;
@@ -199,8 +198,7 @@ namespace popup
 
                 if (imageIndexLastSoundOn_ != imageMoveQueue_.front())
                 {
-                    sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                        sfml_util::sound_effect_set::TickOn).PlayRandom();
+                    sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
                 }
 
                 imageIndexLastSoundOn_ = imageMoveQueue_.front();

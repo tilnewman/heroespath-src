@@ -43,15 +43,16 @@ namespace sfml_util
 namespace gui
 {
 
-    CheckBox::CheckBox( const std::string &    NAME,
-                        const Brightness::Enum BRIGHTNESS,
-                        const float            POS_LEFT,
-                        const float            POS_TOP,
-                        const sf::Sprite &     SPRITE_UP,
-                        const sf::Sprite &     SPRITE_DOWN,
-                        const MouseTextInfo &  MOUSE_TEXT_INFO,
-                        const bool             IS_CHECKED,
-                        const bool             IS_INVALID)
+    CheckBox::CheckBox(
+        const std::string &    NAME,
+        const Brightness::Enum BRIGHTNESS,
+        const float            POS_LEFT,
+        const float            POS_TOP,
+        const sf::Sprite &     SPRITE_UP,
+        const sf::Sprite &     SPRITE_DOWN,
+        const MouseTextInfo &  MOUSE_TEXT_INFO,
+        const bool             IS_CHECKED,
+        const bool             IS_INVALID)
     :
         TwoStateEntity( std::string(NAME).append("_CheckBox"),
                         POS_LEFT,
@@ -70,13 +71,14 @@ namespace gui
     }
 
 
-    CheckBox::CheckBox( const std::string &    NAME,
-                        const Brightness::Enum BRIGHTNESS,
-                        const float            POS_LEFT,
-                        const float            POS_TOP,
-                        const MouseTextInfo &  MOUSE_TEXT_INFO,
-                        const bool             IS_CHECKED,
-                        const bool             IS_INVALID)
+    CheckBox::CheckBox(
+        const std::string &    NAME,
+        const Brightness::Enum BRIGHTNESS,
+        const float            POS_LEFT,
+        const float            POS_TOP,
+        const MouseTextInfo &  MOUSE_TEXT_INFO,
+        const bool             IS_CHECKED,
+        const bool             IS_INVALID)
     :
         TwoStateEntity( std::string(NAME).append("_CheckBox"),
                         POS_LEFT,
@@ -93,13 +95,14 @@ namespace gui
     }
 
 
-    CheckBox::CheckBox(const std::string &    NAME,
-                       const Brightness::Enum BRIGHTNESS,
-                       const float            POS_LEFT,
-                       const float            POS_TOP,
-                       const TextInfo &       TEXT_INFO_UP,
-                       const bool             IS_CHECKED,
-                       const bool             IS_INVALID)
+    CheckBox::CheckBox(
+        const std::string &    NAME,
+        const Brightness::Enum BRIGHTNESS,
+        const float            POS_LEFT,
+        const float            POS_TOP,
+        const TextInfo &       TEXT_INFO_UP,
+        const bool             IS_CHECKED,
+        const bool             IS_INVALID)
     :
         TwoStateEntity( std::string(NAME).append("_CheckBox"),
                         POS_LEFT,
@@ -180,20 +183,21 @@ namespace gui
     }
 
 
-    const float CheckBoxSet::OUTER_PAD_DEFAULT_  (6.0f);
-    const float CheckBoxSet::BETWEEN_PAD_DEFAULT_(6.0f);
+    const float CheckBoxSet::OUTER_PAD_DEFAULT_  { 6.0f };
+    const float CheckBoxSet::BETWEEN_PAD_DEFAULT_{ 6.0f };
 
 
-    CheckBoxSet::CheckBoxSet(const std::string &       NAME,
-                             const float               POS_LEFT,
-                             const float               POS_TOP,
-                             const TextInfoVec_t &     TEXT_INFO_VEC,
-                             const Brightness::Enum    BRIGHTNESS,
-                             const misc::SizetVec_t &  INVALID_SEL_VEC,
-                             const gui::box::Info &    BOX_INFO,
-                             const std::deque<bool> &  INITIAL_SELECTIONS,
-                             const float               OUTER_PAD,
-                             const float               BETWEEN_PAD)
+    CheckBoxSet::CheckBoxSet(
+        const std::string &       NAME,
+        const float               POS_LEFT,
+        const float               POS_TOP,
+        const TextInfoVec_t &     TEXT_INFO_VEC,
+        const Brightness::Enum    BRIGHTNESS,
+        const misc::SizetVec_t &  INVALID_SEL_VEC,
+        const gui::box::Info &    BOX_INFO,
+        const std::deque<bool> &  INITIAL_SELECTIONS,
+        const float               OUTER_PAD,
+        const float               BETWEEN_PAD)
     :
         GuiEntity            (std::string(NAME).append("_CheckBoxSet"), POS_LEFT, POS_TOP),
         outerPad_            (OUTER_PAD),
@@ -239,16 +243,17 @@ namespace gui
     }
 
 
-    CheckBoxSet::CheckBoxSet(const std::string &        NAME,
-                             const float                POS_LEFT,
-                             const float                POS_TOP,
-                             const MouseTextInfoVec_t & TEXT_INFO_VEC,
-                             const Brightness::Enum     BRIGHTNESS,
-                             const misc::SizetVec_t &   INVALID_SEL_VEC,
-                             const gui::box::Info &     BOX_INFO,
-                             const std::deque<bool> &   INITIAL_SELECTIONS,
-                             const float                OUTER_PAD,
-                             const float                BETWEEN_PAD)
+    CheckBoxSet::CheckBoxSet(
+        const std::string &        NAME,
+        const float                POS_LEFT,
+        const float                POS_TOP,
+        const MouseTextInfoVec_t & TEXT_INFO_VEC,
+        const Brightness::Enum     BRIGHTNESS,
+        const misc::SizetVec_t &   INVALID_SEL_VEC,
+        const gui::box::Info &     BOX_INFO,
+        const std::deque<bool> &   INITIAL_SELECTIONS,
+        const float                OUTER_PAD,
+        const float                BETWEEN_PAD)
     :
         GuiEntity            (std::string(NAME).append("_CheckBoxSet"), POS_LEFT, POS_TOP),
         outerPad_            (OUTER_PAD),
@@ -293,17 +298,18 @@ namespace gui
     }
 
 
-    CheckBoxSet::CheckBoxSet(const std::string &              NAME,
-                             const float                      POS_LEFT,
-                             const float                      POS_TOP,
-                             const TextInfo &                 TEXT_INFO,
-                             const std::vector<std::string> & LABEL_VEC,
-                             const Brightness::Enum           BRIGHTNESS,
-                             const misc::SizetVec_t &         INVALID_SEL_VEC,
-                             const gui::box::Info &           BOX_INFO,
-                             const std::deque<bool> &         INITIAL_SELECTIONS,
-                             const float                      OUTER_PAD,
-                             const float                      BETWEEN_PAD)
+    CheckBoxSet::CheckBoxSet(
+        const std::string &              NAME,
+        const float                      POS_LEFT,
+        const float                      POS_TOP,
+        const TextInfo &                 TEXT_INFO,
+        const std::vector<std::string> & LABEL_VEC,
+        const Brightness::Enum           BRIGHTNESS,
+        const misc::SizetVec_t &         INVALID_SEL_VEC,
+        const gui::box::Info &           BOX_INFO,
+        const std::deque<bool> &         INITIAL_SELECTIONS,
+        const float                      OUTER_PAD,
+        const float                      BETWEEN_PAD)
     :
         GuiEntity            (std::string(NAME).append("_CheckBoxSet"), POS_LEFT, POS_TOP),
         outerPad_            (OUTER_PAD),
@@ -409,9 +415,7 @@ namespace gui
                 (checkBoxSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V) &&
                 (downInWhichRegion_ == i)))
             {
-                SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
-
+                SoundManager::Instance()->PlaySfx_AckMajor();
                 currentSelections_[i] = ! currentSelections_[i];
                 checkBoxSVec_[i]->SetIsInFirstState( ! checkBoxSVec_[i]->IsInFirstState());
                 return true;
@@ -458,8 +462,7 @@ namespace gui
             {
                 if (checkBoxSVec_[i]->GetMouseState() != MouseState::Over)
                 {
-                    SoundManager::Instance()->
-                        Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                    SoundManager::Instance()->PlaySfx_TickOn();
                 }
 
                 checkBoxSVec_[i]->SetMouseState(MouseState::Over);
@@ -522,7 +525,9 @@ namespace gui
             posY += checkBoxSVec_[i - 1]->GetEntityRegion().height + betweenPad_;
             checkBoxSVec_[i]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(i));
 
-            const float NEXT_FAR_X_POINT(checkBoxSVec_[i]->GetEntityRegion().width + (outerPad_ * 2.0f));
+            auto const NEXT_FAR_X_POINT{
+                checkBoxSVec_[i]->GetEntityRegion().width + (outerPad_ * 2.0f) };
+
             if (maxX < NEXT_FAR_X_POINT)
             {
                 maxX = NEXT_FAR_X_POINT;

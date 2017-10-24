@@ -575,13 +575,81 @@ namespace sfml_util
 
 
     void SoundManager::SoundEffectPlay(const sound_effect::Enum E,
-                                       const float              PRE_DELAY_SEC)
+                                       const float PRE_DELAY_SEC)
     {
         if ((E != sound_effect::None) &&
             (E != sound_effect::Count &&
             (E != sound_effect::Random)))
         {
             sfxToPlayPairsVec_.push_back(std::make_pair(E, PRE_DELAY_SEC));
+        }
+    }
+
+
+    void SoundManager::PlaySfx_AckMinor()
+    {
+        Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+    }
+
+
+    void SoundManager::PlaySfx_AckMajor()
+    {
+        Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+    }
+
+
+    void SoundManager::PlaySfx_Reject()
+    {
+        SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+    }
+
+
+    void SoundManager::PlaySfx_TickOn()
+    {
+        Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+    }
+
+
+    void SoundManager::PlaySfx_TickOff()
+    {
+        Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+    }
+
+
+    void SoundManager::PlaySfx_Keypress()
+    {
+        PlaySfx_AckMinor();
+    }
+
+
+    void SoundManager::PlaySfx_MouseClick()
+    {
+        PlaySfx_AckMinor();
+    }
+
+
+    void SoundManager::ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX)
+    {
+        //eliminate buffers for sound effects that are done playing
+        for (auto & sfxWrapper : sfxWrapperVec_)
+        {
+            if (sfxWrapper.IsValid())
+            {
+                if (WILL_STOP_PLAYING_SFX)
+                {
+                    sfxWrapper.Stop();
+                }
+
+                if (sfxWrapper.Status() != sf::SoundSource::Playing)
+                {
+                    sfxWrapper.Reset();
+                }
+            }
+        }
+
+        if (WILL_STOP_PLAYING_SFX)
+        {
+            sfxToPlayPairsVec_.clear();
         }
     }
 
@@ -898,32 +966,6 @@ namespace sfml_util
                         return this->IsSfxDelayPairReadyToPlay(SFX_DELAY_PAIR);
                     }),
                 sfxToPlayPairsVec_.end() );
-        }
-    }
-
-
-    void SoundManager::ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX)
-    {
-        //eliminate buffers for sound effects that are done playing
-        for (auto & sfxWrapper : sfxWrapperVec_)
-        {
-            if (sfxWrapper.IsValid())
-            {
-                if (WILL_STOP_PLAYING_SFX)
-                {
-                    sfxWrapper.Stop();
-                }
-
-                if (sfxWrapper.Status() != sf::SoundSource::Playing)
-                {
-                    sfxWrapper.Reset();
-                }
-            }
-        }
-
-        if (WILL_STOP_PLAYING_SFX)
-        {
-            sfxToPlayPairsVec_.clear();
         }
     }
 

@@ -34,6 +34,7 @@
 #include "sfml-util/gui/text-region.hpp"
 
 #include "misc/assertlogandthrow.hpp"
+
 #include "game/log-macros.hpp"
 
 
@@ -62,12 +63,13 @@ namespace gui
     {}
 
 
-    TextEntryBox::TextEntryBox(const std::string &   NAME,
-                               const sf::FloatRect & REGION,
-                               const TextInfo &      TEXT_INFO,
-                               const sf::Color &     CURSOR_COLOR,
-                               const box::Info &     BOX_INFO,
-                               callback::ITextEntryBoxCallbackHandler_t * const CHANGE_HANDLER_PTR)
+    TextEntryBox::TextEntryBox(
+        const std::string &   NAME,
+        const sf::FloatRect & REGION,
+        const TextInfo &      TEXT_INFO,
+        const sf::Color &     CURSOR_COLOR,
+        const box::Info &     BOX_INFO,
+        callback::ITextEntryBoxCallbackHandler_t * const CHANGE_HANDLER_PTR)
     :
         GuiEntity           (std::string(NAME).append("_TextEntryBox"), REGION),
         box_                ("TextEntryBox's"),
@@ -88,9 +90,10 @@ namespace gui
     {}
 
 
-    void TextEntryBox::Setup(const sf::FloatRect & REGION,
-                             const TextInfo &      TEXT_INFO,
-                             const box::Info &     BOX_INFO)
+    void TextEntryBox::Setup(
+        const sf::FloatRect & REGION,
+        const TextInfo &      TEXT_INFO,
+        const box::Info &     BOX_INFO)
     {
         SetEntityRegion(REGION);
 
@@ -150,7 +153,13 @@ namespace gui
 
         if (willDrawCursor_ && HasFocus())
         {
-            sfml_util::DrawRectangle<float>(target, states, cursorRect_, cursorColor_, 1, cursorColor_);
+            sfml_util::DrawRectangle<float>(
+                target,
+                states,
+                cursorRect_,
+                cursorColor_,
+                1,
+                cursorColor_);
         }
     }
 
@@ -188,7 +197,7 @@ namespace gui
     {
         if ((KE.code != sf::Keyboard::LShift) && (KE.code != sf::Keyboard::RShift))
         {
-            SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            SoundManager::Instance()->PlaySfx_Keypress();
         }
 
         return true;

@@ -138,8 +138,7 @@ namespace stage
             slider_.ChangeDirection();
             slider_.Start();
 
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+            sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
         }
     }
 
@@ -156,8 +155,7 @@ namespace stage
             slider_.ChangeDirection();
             slider_.Start();
 
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+            sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
         }
     }
 

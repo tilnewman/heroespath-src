@@ -586,8 +586,7 @@ namespace combat
         {
             if (WILL_PLAY_SOUND_EFFECT)
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::TickOn).PlayRandom();
+                sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
             }
 
             sfml_util::SetTextColor(nameTextObj_, NAME_COLOR + HIGHLIGHT_ADJ_COLOR_);
@@ -602,8 +601,7 @@ namespace combat
         {
             if (WILL_PLAY_SOUND_EFFECT)
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::TickOff).PlayRandom();
+                sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
             }
 
             sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);

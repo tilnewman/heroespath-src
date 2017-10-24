@@ -502,7 +502,7 @@ namespace sfml_util
         if ((EVENT.type == sf::Event::KeyReleased) && (EVENT.key.code == sf::Keyboard::F1))
         {
             M_HP_LOG(NAME_ << " F1 KEY RELEASED.  Bail.");
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
             game::LoopManager::Instance()->SetExitSuccess(false);
             game::LoopManager::Instance()->TransitionTo_Exit();
         }
@@ -517,7 +517,7 @@ namespace sfml_util
             if (willExitOnKeypress_)
             {
                 M_HP_LOG(NAME_ << " key event while willExitOnKeypress.  Exiting the loop.");
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+                sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
                 willExit_ = true;
             }
         }
@@ -557,7 +557,7 @@ namespace sfml_util
         if (willExitOnMouseclick_)
         {
             M_HP_LOG(NAME_ << " mouse click while willExitOnMouseclick.  Exiting...");
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            sfml_util::SoundManager::Instance()->PlaySfx_MouseClick();
             willExit_ = true;
         }
     }

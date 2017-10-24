@@ -301,15 +301,13 @@ namespace popup
 
     void PopupStageBase::PlayValidKeypressSoundEffect() const
     {
-        sfml_util::SoundManager::Instance()->
-            Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+        sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
     }
 
 
     void PopupStageBase::PlayInvalidKeypressSoundEffect() const
     {
-        sfml_util::SoundManager::Instance()->
-            SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+        sfml_util::SoundManager::Instance()->PlaySfx_Reject();
     }
 
 

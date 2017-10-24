@@ -422,9 +422,7 @@ namespace gui
 
         if (DID_STATE_CHANGE)
         {
-            SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+            SoundManager::Instance()->PlaySfx_MouseClick();
             Reset();
         }
 
@@ -443,9 +441,7 @@ namespace gui
 
         if (DID_STATE_CHANGE)
         {
-            SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+            SoundManager::Instance()->PlaySfx_MouseClick();
             Reset();
         }
 
@@ -466,13 +462,11 @@ namespace gui
         {
             if (GetMouseState() == MouseState::Over)
             {
-                SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                SoundManager::Instance()->PlaySfx_TickOn();
             }
             else
             {
-                SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+                SoundManager::Instance()->PlaySfx_TickOff();
             }
 
             Reset();

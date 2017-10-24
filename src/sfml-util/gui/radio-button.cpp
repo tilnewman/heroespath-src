@@ -34,6 +34,7 @@
 #include "sfml-util/sound-manager.hpp"
 
 #include "misc/assertlogandthrow.hpp"
+
 #include "game/log-macros.hpp"
 
 #include <sstream>
@@ -49,15 +50,16 @@ namespace gui
     const sf::Color RadioButton::COLOR_INVALID_(255, 255, 255, 127);
 
 
-    RadioButton::RadioButton(const std::string &    NAME,
-                             const Brightness::Enum BRIGHTNESS,
-                             const float            POS_LEFT,
-                             const float            POS_TOP,
-                             const sf::Sprite &     SPRITE_UP,
-                             const sf::Sprite &     SPRITE_DOWN,
-                             const MouseTextInfo &  MOUSE_TEXT_INFO,
-                             const bool             IS_SELECTED,
-                             const bool             IS_INVALID)
+    RadioButton::RadioButton(
+        const std::string &    NAME,
+        const Brightness::Enum BRIGHTNESS,
+        const float            POS_LEFT,
+        const float            POS_TOP,
+        const sf::Sprite &     SPRITE_UP,
+        const sf::Sprite &     SPRITE_DOWN,
+        const MouseTextInfo &  MOUSE_TEXT_INFO,
+        const bool             IS_SELECTED,
+        const bool             IS_INVALID)
     :
         TwoStateEntity( std::string(NAME).append("_RadioButton"),
                         POS_LEFT,
@@ -67,20 +69,23 @@ namespace gui
                         MOUSE_TEXT_INFO )
     {
         if (IS_SELECTED)
+        {
             SetIsInFirstState(false);
+        }
 
         SetupSprites(BRIGHTNESS);
         Setup(POS_LEFT, POS_TOP, IS_INVALID);
     }
 
 
-    RadioButton::RadioButton(const std::string &    NAME,
-                             const Brightness::Enum BRIGHTNESS,
-                             const float            POS_LEFT,
-                             const float            POS_TOP,
-                             const MouseTextInfo &  MOUSE_TEXT_INFO,
-                             const bool             IS_SELECTED,
-                             const bool             IS_INVALID)
+    RadioButton::RadioButton(
+        const std::string &    NAME,
+        const Brightness::Enum BRIGHTNESS,
+        const float            POS_LEFT,
+        const float            POS_TOP,
+        const MouseTextInfo &  MOUSE_TEXT_INFO,
+        const bool             IS_SELECTED,
+        const bool             IS_INVALID)
     :
         TwoStateEntity( std::string(NAME).append("_RadioButton"),
                         POS_LEFT,
@@ -88,20 +93,23 @@ namespace gui
                         MOUSE_TEXT_INFO )
     {
         if (IS_SELECTED)
+        {
             SetIsInFirstState(false);
+        }
 
         SetupSprites(BRIGHTNESS);
         Setup(POS_LEFT, POS_TOP, IS_INVALID);
     }
 
 
-    RadioButton::RadioButton(const std::string &    NAME,
-                             const Brightness::Enum BRIGHTNESS,
-                             const float            POS_LEFT,
-                             const float            POS_TOP,
-                             const TextInfo &       TEXT_INFO_UP,
-                             const bool             IS_SELECTED,
-                             const bool             IS_INVALID)
+    RadioButton::RadioButton(
+        const std::string &    NAME,
+        const Brightness::Enum BRIGHTNESS,
+        const float            POS_LEFT,
+        const float            POS_TOP,
+        const TextInfo &       TEXT_INFO_UP,
+        const bool             IS_SELECTED,
+        const bool             IS_INVALID)
     :
         TwoStateEntity( std::string(NAME).append("_RadioButton"),
                         POS_LEFT,
@@ -109,7 +117,9 @@ namespace gui
                         MouseTextInfo(TEXT_INFO_UP) )
     {
         if (IS_SELECTED)
+        {
             SetIsInFirstState(false);
+        }
 
         SetupSprites(BRIGHTNESS);
         Setup(POS_LEFT, POS_TOP, IS_INVALID);
@@ -176,8 +186,8 @@ namespace gui
     }
 
 
-    const float RadioButtonSet::OUTER_PAD_DEFAULT_  (6.0f);
-    const float RadioButtonSet::BETWEEN_PAD_DEFAULT_(6.0f);
+    const float RadioButtonSet::OUTER_PAD_DEFAULT_  { 6.0f };
+    const float RadioButtonSet::BETWEEN_PAD_DEFAULT_{ 6.0f };
 
 
     RadioButtonSet::RadioButtonSet(const std::string & NAME)
@@ -195,16 +205,17 @@ namespace gui
     {}
 
 
-    RadioButtonSet::RadioButtonSet( const std::string &      NAME,
-                                    const float              POS_LEFT,
-                                    const float              POS_TOP,
-                                    const TextInfoVec_t &    TEXT_INFO_VEC,
-                                    const std::size_t        INITIAL_SELECTION,
-                                    const Brightness::Enum   BRIGHTNESS,
-                                    const misc::SizetVec_t & INVALID_SEL_VEC,
-                                    const box::Info &        BOX_INFO,
-                                    const float              OUTER_PAD,
-                                    const float              BETWEEN_PAD)
+    RadioButtonSet::RadioButtonSet(
+        const std::string &      NAME,
+        const float              POS_LEFT,
+        const float              POS_TOP,
+        const TextInfoVec_t &    TEXT_INFO_VEC,
+        const std::size_t        INITIAL_SELECTION,
+        const Brightness::Enum   BRIGHTNESS,
+        const misc::SizetVec_t & INVALID_SEL_VEC,
+        const box::Info &        BOX_INFO,
+        const float              OUTER_PAD,
+        const float              BETWEEN_PAD)
     :
         GuiEntity           (std::string(NAME).append("_RadioButtonSet"), POS_LEFT, POS_TOP),
         outerPad_           (OUTER_PAD),
@@ -229,16 +240,17 @@ namespace gui
     }
 
 
-    RadioButtonSet::RadioButtonSet( const std::string &        NAME,
-                                    const float                POS_LEFT,
-                                    const float                POS_TOP,
-                                    const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
-                                    const std::size_t          INITIAL_SELECTION,
-                                    const Brightness::Enum     BRIGHTNESS,
-                                    const misc::SizetVec_t &   INVALID_SEL_VEC,
-                                    const box::Info &          BOX_INFO,
-                                    const float                OUTER_PAD,
-                                    const float                BETWEEN_PAD )
+    RadioButtonSet::RadioButtonSet(
+        const std::string &        NAME,
+        const float                POS_LEFT,
+        const float                POS_TOP,
+        const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
+        const std::size_t          INITIAL_SELECTION,
+        const Brightness::Enum     BRIGHTNESS,
+        const misc::SizetVec_t &   INVALID_SEL_VEC,
+        const box::Info &          BOX_INFO,
+        const float                OUTER_PAD,
+        const float                BETWEEN_PAD )
     :
         GuiEntity           (std::string(NAME).append("_RadioButtonSet"), POS_LEFT, POS_TOP),
         outerPad_           (OUTER_PAD),
@@ -263,17 +275,18 @@ namespace gui
     }
 
 
-    RadioButtonSet::RadioButtonSet( const std::string &              NAME,
-                                    const float                      POS_LEFT,
-                                    const float                      POS_TOP,
-                                    const TextInfo &                 TEXT_INFO,
-                                    const std::vector<std::string> & LABEL_VEC,
-                                    const std::size_t                INITIAL_SELECTION,
-                                    const Brightness::Enum           BRIGHTNESS,
-                                    const misc::SizetVec_t &         INVALID_SEL_VEC,
-                                    const box::Info &                BOX_INFO,
-                                    const float                      OUTER_PAD,
-                                    const float                      BETWEEN_PAD)
+    RadioButtonSet::RadioButtonSet(
+        const std::string &              NAME,
+        const float                      POS_LEFT,
+        const float                      POS_TOP,
+        const TextInfo &                 TEXT_INFO,
+        const std::vector<std::string> & LABEL_VEC,
+        const std::size_t                INITIAL_SELECTION,
+        const Brightness::Enum           BRIGHTNESS,
+        const misc::SizetVec_t &         INVALID_SEL_VEC,
+        const box::Info &                BOX_INFO,
+        const float                      OUTER_PAD,
+        const float                      BETWEEN_PAD)
     :
         GuiEntity           (std::string(NAME).append("_RadioButtonSet"), POS_LEFT, POS_TOP),
         outerPad_           (OUTER_PAD),
@@ -303,15 +316,16 @@ namespace gui
     {}
 
 
-    void RadioButtonSet::Setup(const float              POS_LEFT,
-                               const float              POS_TOP,
-                               const TextInfoVec_t &    TEXT_INFO_VEC,
-                               const std::size_t        INITIAL_SELECTION,
-                               const Brightness::Enum   BRIGHTNESS,
-                               const misc::SizetVec_t & INVALID_SEL_VEC,
-                               const box::Info &        BOX_INFO,
-                               const float              OUTER_PAD,
-                               const float              BETWEEN_PAD)
+    void RadioButtonSet::Setup(
+        const float              POS_LEFT,
+        const float              POS_TOP,
+        const TextInfoVec_t &    TEXT_INFO_VEC,
+        const std::size_t        INITIAL_SELECTION,
+        const Brightness::Enum   BRIGHTNESS,
+        const misc::SizetVec_t & INVALID_SEL_VEC,
+        const box::Info &        BOX_INFO,
+        const float              OUTER_PAD,
+        const float              BETWEEN_PAD)
     {
         outerPad_   = OUTER_PAD;
         betweenPad_ = BETWEEN_PAD;
@@ -322,7 +336,7 @@ namespace gui
         //set to an out-of-range value to mean 'not down in any region'
         downInWhichRegion_ = TEXT_INFO_VEC.size();
 
-        const std::size_t NUM_BUTTONS(TEXT_INFO_VEC.size());
+        auto const NUM_BUTTONS{ TEXT_INFO_VEC.size() };
 
         M_ASSERT_OR_LOGANDTHROW_SS((NUM_BUTTONS > 0),
             entityName_ << " given an empty vector of TextInfo objects.");
@@ -351,15 +365,16 @@ namespace gui
     }
 
 
-    void RadioButtonSet::Setup( const float                POS_LEFT,
-                                const float                POS_TOP,
-                                const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
-                                const std::size_t          INITIAL_SELECTION,
-                                const Brightness::Enum     BRIGHTNESS,
-                                const misc::SizetVec_t &   INVALID_SEL_VEC,
-                                const box::Info &          BOX_INFO,
-                                const float                OUTER_PAD,
-                                const float                BETWEEN_PAD )
+    void RadioButtonSet::Setup(
+        const float                POS_LEFT,
+        const float                POS_TOP,
+        const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
+        const std::size_t          INITIAL_SELECTION,
+        const Brightness::Enum     BRIGHTNESS,
+        const misc::SizetVec_t &   INVALID_SEL_VEC,
+        const box::Info &          BOX_INFO,
+        const float                OUTER_PAD,
+        const float                BETWEEN_PAD )
     {
         outerPad_ = OUTER_PAD;
         betweenPad_ = BETWEEN_PAD;
@@ -370,10 +385,14 @@ namespace gui
         //set to an out-of-range value to mean 'not down in any region'
         downInWhichRegion_ = MOUSE_TEXT_INFO_VEC.size();
 
-        const std::size_t NUM_BUTTONS(MOUSE_TEXT_INFO_VEC.size());
+        auto const NUM_BUTTONS{ MOUSE_TEXT_INFO_VEC.size() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((NUM_BUTTONS > 0), entityName_ << " given an empty vector of string labels.");
-        M_ASSERT_OR_LOGANDTHROW_SS((INITIAL_SELECTION < NUM_BUTTONS), entityName_ << " given an initial selection value larger than the number of buttons=" << NUM_BUTTONS << ".");
+        M_ASSERT_OR_LOGANDTHROW_SS((NUM_BUTTONS > 0),
+            entityName_ << " given an empty vector of string labels.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((INITIAL_SELECTION < NUM_BUTTONS),
+            entityName_ << " given an initial selection value larger than the number of buttons="
+            << NUM_BUTTONS << ".");
 
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
         {
@@ -384,7 +403,10 @@ namespace gui
                 BRIGHTNESS,
                 POS_LEFT + OUTER_PAD,
                 POS_TOP + OUTER_PAD + (static_cast<float>(i) * BETWEEN_PAD),
-                MouseTextInfo(MOUSE_TEXT_INFO_VEC[i].up, MOUSE_TEXT_INFO_VEC[i].down, MOUSE_TEXT_INFO_VEC[i].over),
+                MouseTextInfo(
+                    MOUSE_TEXT_INFO_VEC[i].up,
+                    MOUSE_TEXT_INFO_VEC[i].down,
+                    MOUSE_TEXT_INFO_VEC[i].over),
                 ((INITIAL_SELECTION == i) ? true : false),
                 IsInvalid(i)) );
         }
@@ -394,16 +416,17 @@ namespace gui
     }
 
 
-    void RadioButtonSet::Setup( const float                      POS_LEFT,
-                                const float                      POS_TOP,
-                                const TextInfo &                 TEXT_INFO,
-                                const std::vector<std::string> & LABEL_VEC,
-                                const std::size_t                INITIAL_SELECTION,
-                                const Brightness::Enum           BRIGHTNESS,
-                                const misc::SizetVec_t &         INVALID_SEL_VEC,
-                                const box::Info &                BOX_INFO,
-                                const float                      OUTER_PAD,
-                                const float                      BETWEEN_PAD )
+    void RadioButtonSet::Setup(
+        const float                      POS_LEFT,
+        const float                      POS_TOP,
+        const TextInfo &                 TEXT_INFO,
+        const std::vector<std::string> & LABEL_VEC,
+        const std::size_t                INITIAL_SELECTION,
+        const Brightness::Enum           BRIGHTNESS,
+        const misc::SizetVec_t &         INVALID_SEL_VEC,
+        const box::Info &                BOX_INFO,
+        const float                      OUTER_PAD,
+        const float                      BETWEEN_PAD )
     {
         outerPad_ = OUTER_PAD;
         betweenPad_ = BETWEEN_PAD;
@@ -414,10 +437,14 @@ namespace gui
         //set to an out-of-range value to mean 'not down in any region'
         downInWhichRegion_ = LABEL_VEC.size();
 
-        const std::size_t NUM_BUTTONS(LABEL_VEC.size());
+        auto const NUM_BUTTONS{ LABEL_VEC.size() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((NUM_BUTTONS > 0), entityName_ << " given an empty vector of string labels.");
-        M_ASSERT_OR_LOGANDTHROW_SS((INITIAL_SELECTION < NUM_BUTTONS), entityName_ << " given an initial selection value larger than the number of buttons=" << NUM_BUTTONS << ".");
+        M_ASSERT_OR_LOGANDTHROW_SS((NUM_BUTTONS > 0),
+            entityName_ << " given an empty vector of string labels.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((INITIAL_SELECTION < NUM_BUTTONS),
+            entityName_ << " given an initial selection value larger than the number of buttons="
+            << NUM_BUTTONS << ".");
 
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
         {
@@ -446,16 +473,17 @@ namespace gui
     {
         bool wasButtonClicked(false);
 
-        const std::size_t ORIGINAL_SELECTION(currentSelection_);
+        auto const ORIGINAL_SELECTION{ currentSelection_ };
 
-        const std::size_t NUM_BUTTONS(buttonSVec_.size());
+        auto const NUM_BUTTONS{ buttonSVec_.size() };
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
         {
-            if (buttonSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V) && (downInWhichRegion_ == i))
+            if (buttonSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V) &&
+                (downInWhichRegion_ == i))
             {
                 if ((ORIGINAL_SELECTION != i) && (false == IsInvalid(i)))
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+                    SoundManager::Instance()->PlaySfx_MouseClick();
                     currentSelection_ = i;
                     buttonSVec_[i]->SetIsInFirstState(false);
                     wasButtonClicked = true;
@@ -478,7 +506,7 @@ namespace gui
 
     bool RadioButtonSet::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        const std::size_t NUM_BUTTONS(buttonSVec_.size());
+        auto const NUM_BUTTONS{ buttonSVec_.size() };
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
         {
             if (buttonSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V))
@@ -495,7 +523,7 @@ namespace gui
 
     bool RadioButtonSet::IsInvalid(const std::size_t INDEX) const
     {
-        const std::size_t NUM_INVALIDS(invalidSelectionVec_.size());
+        auto const NUM_INVALIDS{ invalidSelectionVec_.size() };
         for (std::size_t i(0); i < NUM_INVALIDS; ++i)
         {
             if (invalidSelectionVec_[i] == INDEX)
@@ -508,9 +536,10 @@ namespace gui
     }
 
 
-    void RadioButtonSet::PostSetupTasks(const float       POS_LEFT,
-                                        const float       POS_TOP,
-                                        const box::Info & BOX_INFO)
+    void RadioButtonSet::PostSetupTasks(
+        const float       POS_LEFT,
+        const float       POS_TOP,
+        const box::Info & BOX_INFO)
     {
         //The RadioButtonSet has little need for these colors,
         //but when they change they are used to set the backgrond/box
@@ -529,8 +558,8 @@ namespace gui
     void RadioButtonSet::PositionRadioButtons(const float POS_LEFT, const float POS_TOP)
     {
         //set the vertical positions of the radio buttons and find the maxX position
-        float maxX(buttonSVec_[0]->GetEntityRegion().width + (outerPad_ * 2.0f));
-        float posY(POS_TOP + outerPad_);
+        auto maxX(buttonSVec_[0]->GetEntityRegion().width + (outerPad_ * 2.0f));
+        auto posY(POS_TOP + outerPad_);
 
         buttonSVec_[0]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(0));
 
@@ -540,7 +569,9 @@ namespace gui
             posY += buttonSVec_[i - 1]->GetEntityRegion().height + betweenPad_;
             buttonSVec_[i]->Setup(POS_LEFT + outerPad_, posY, IsInvalid(i));
 
-            const float NEXT_HORIZ_LIMIT(buttonSVec_[i]->GetEntityRegion().width + (outerPad_ * 2.0f));
+            auto const NEXT_HORIZ_LIMIT{
+                buttonSVec_[i]->GetEntityRegion().width + (outerPad_ * 2.0f) };
+
             if (maxX < NEXT_HORIZ_LIMIT)
             {
                 maxX = NEXT_HORIZ_LIMIT;
@@ -574,7 +605,7 @@ namespace gui
     {
         target.draw(box_, states);
 
-        const std::size_t NUM_BUTTONS(buttonSVec_.size());
+        auto const NUM_BUTTONS{ buttonSVec_.size() };
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
         {
             buttonSVec_[i]->draw(target, states);
@@ -587,7 +618,9 @@ namespace gui
         if (NEW_VAL >= buttonSVec_.size())
         {
             std::ostringstream ss;
-            ss << "RadioButtonSet::SetSelectNumber(" << NEW_VAL << ") is out of range from the max of " << buttonSVec_.size() << ".";
+            ss << "RadioButtonSet::SetSelectNumber(" << NEW_VAL
+                << ") is out of range from the max of " << buttonSVec_.size() << ".";
+
             throw std::out_of_range(ss.str());
         }
 
@@ -602,14 +635,14 @@ namespace gui
     {
         invalidSelectionVec_ = INVALID_SELECTIONS_VEC;
 
-        const std::size_t ORIG_CURR_SEL(currentSelection_);
+        auto const ORIG_CURR_SEL{ currentSelection_ };
 
-        bool isCurrentSelectionValid(false);
-        bool hasSetFirstValid(false);
-        const std::size_t NUM_BUTTONS(buttonSVec_.size());
+        auto isCurrentSelectionValid(false);
+        auto hasSetFirstValid(false);
+        auto const NUM_BUTTONS{ buttonSVec_.size() };
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
         {
-            const bool IS_VALID(!IsInvalid(i));
+            auto const IS_VALID{ ! IsInvalid(i) };
 
             if ((IS_VALID) && (ORIG_CURR_SEL == i))
             {
@@ -626,6 +659,7 @@ namespace gui
             {
                 buttonSVec_[i]->SetIsInFirstState(true);
             }
+
             buttonSVec_[i]->SetValidity(IS_VALID);
         }
 
@@ -645,9 +679,9 @@ namespace gui
 
     bool RadioButtonSet::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
     {
-        bool didStatesChange(false);
+        auto didStatesChange{ false };
 
-        const std::size_t NUM_BUTTONS(buttonSVec_.size());
+        auto const NUM_BUTTONS{ buttonSVec_.size() };
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
         {
             const bool IS_IN_REGION(buttonSVec_[i]->GetEntityRegion().contains(MOUSE_POS_V));
@@ -659,7 +693,7 @@ namespace gui
             {
                 if (buttonSVec_[i]->GetMouseState() != MouseState::Over)
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                    SoundManager::Instance()->PlaySfx_TickOn();
                 }
 
                 buttonSVec_[i]->SetMouseState(MouseState::Over);
@@ -683,9 +717,7 @@ namespace gui
     void RadioButtonSet::SetEntityPos(const float POS_LEFT, const float POS_TOP)
     {
         GuiEntity::SetEntityPos(POS_LEFT, POS_TOP);
-
         PositionRadioButtons(POS_LEFT, POS_TOP);
-
         box_.SetEntityPos(POS_LEFT, POS_TOP);
     }
 
@@ -694,7 +726,7 @@ namespace gui
     {
         GuiEntity::MoveEntityPos(HORIZ, VERT);
 
-        const std::size_t NUM_BUTTONS(buttonSVec_.size());
+        auto const NUM_BUTTONS{ buttonSVec_.size() };
         for (std::size_t i(0); i < NUM_BUTTONS; ++i)
         {
             buttonSVec_[i]->MoveEntityPos(HORIZ, VERT);
@@ -714,7 +746,10 @@ namespace gui
     {
         for (auto handlerPtr : callbackHandlerPtrSet_)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((handlerPtr != nullptr), "sfml_util::gui::RadioButtonSet::TriggerCallback() had a nullptr in the callbackHandlerPtrSet_.");
+            M_ASSERT_OR_LOGANDTHROW_SS((handlerPtr != nullptr),
+                "sfml_util::gui::RadioButtonSet::TriggerCallback() had a nullptr "
+                << "in the callbackHandlerPtrSet_.");
+
             handlerPtr->HandleCallback(this);
         }
     }
@@ -726,14 +761,18 @@ namespace gui
     }
 
 
-    void RadioButtonSet::CallbackHandlerAdd(sfml_util::callback::IRadioButtonSetCallbackHandler_t * const handlerPtr)
+    void RadioButtonSet::CallbackHandlerAdd(
+        sfml_util::callback::IRadioButtonSetCallbackHandler_t * const handlerPtr)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((handlerPtr != nullptr), "sfml_util::gui::RadioButtonSet::HandlerAdd() was given a nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS((handlerPtr != nullptr),
+            "sfml_util::gui::RadioButtonSet::HandlerAdd() was given a nullptr.");
+
         callbackHandlerPtrSet_.insert(handlerPtr);
     }
 
 
-    bool RadioButtonSet::CallbackHandlerRemove(sfml_util::callback::IRadioButtonSetCallbackHandler_t * const handlerPtr)
+    bool RadioButtonSet::CallbackHandlerRemove(
+        sfml_util::callback::IRadioButtonSetCallbackHandler_t * const handlerPtr)
     {
         return (1 == callbackHandlerPtrSet_.erase(handlerPtr));
     }
@@ -741,10 +780,8 @@ namespace gui
 
     bool RadioButtonSet::SetHasFocus(const bool HAS_FOCUS)
     {
-        const bool DID_FOCUS_CHANGE(GuiEntity::SetHasFocus(HAS_FOCUS));
-
+        auto const DID_FOCUS_CHANGE{ GuiEntity::SetHasFocus(HAS_FOCUS) };
         box_.SetHasFocus(HAS_FOCUS);
-
         return DID_FOCUS_CHANGE;
     }
 

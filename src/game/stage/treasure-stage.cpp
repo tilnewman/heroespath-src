@@ -463,8 +463,7 @@ namespace stage
     {
         if (nullptr == displayStagePtr_)
         {
-            sfml_util::SoundManager::Instance()->
-                SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+            sfml_util::SoundManager::Instance()->PlaySfx_Reject();
 
             return;
         }
@@ -476,8 +475,7 @@ namespace stage
 
         if (itemsPVec.empty())
         {
-            sfml_util::SoundManager::Instance()->
-                SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+            sfml_util::SoundManager::Instance()->PlaySfx_Reject();
 
             return;
         }
@@ -536,8 +534,7 @@ namespace stage
         auto const NUM_ITEMS_REMAINING{ itemsPVec.size() };
         if (NUM_ITEMS_REMAINING == 0)
         {
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
 
             std::ostringstream ss;
             ss << "\n" << "All " << itemsToRemovePVec.size()
@@ -553,8 +550,7 @@ namespace stage
         }
         else if (itemsToRemovePVec.empty())
         {
-            sfml_util::SoundManager::Instance()->
-                SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+            sfml_util::SoundManager::Instance()->PlaySfx_Reject();
 
             auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NOT_ALL_ITEMS_TAKEN_,
@@ -566,8 +562,7 @@ namespace stage
         }
         else if (NUM_ITEMS_REMAINING > 0)
         {
-            sfml_util::SoundManager::Instance()->
-                SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+            sfml_util::SoundManager::Instance()->PlaySfx_Reject();
 
             std::ostringstream ss;
             ss << "\n" << NUM_ITEMS_REMAINING
@@ -907,11 +902,10 @@ namespace stage
 
     void TreasureStage::LockPickSuccess()
     {
-        sfml_util::SoundManager::Instance()->SoundEffectPlay(
-            sfml_util::sound_effect::TreasureUnlock);
+        sfml_util::SoundManager::Instance()->
+            SoundEffectPlay(sfml_util::sound_effect::TreasureUnlock);
 
         willProcessLockpickTitle_ = true;
-
         LockboxOpen();
     }
 
@@ -1219,15 +1213,13 @@ namespace stage
 
     void TreasureStage::PlaySoundEffect_KeypressValid() const
     {
-        sfml_util::SoundManager::Instance()->
-            Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
+        sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
     }
 
 
     void TreasureStage::PlaySoundEffect_KeypressInvalid() const
     {
-        sfml_util::SoundManager::Instance()->
-            SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+        sfml_util::SoundManager::Instance()->PlaySfx_Reject();
     }
 
 
@@ -1243,8 +1235,7 @@ namespace stage
 
         if (IS_ITEM_ADD_ALLOWED_STR.empty())
         {
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
 
             creaturePtr->ItemAdd(ITEM_PTR);
 

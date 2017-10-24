@@ -3922,8 +3922,8 @@ namespace stage
 
         if (wasPlayerKilled)
         {
-            sfml_util::SoundManager::Instance()->SoundEffectPlay(
-                sfml_util::sound_effect::CharacterDeath);
+            sfml_util::SoundManager::Instance()->
+                SoundEffectPlay(sfml_util::sound_effect::CharacterDeath);
         }
 
         combatDisplayStagePtr_->UpdateHealthTasks();

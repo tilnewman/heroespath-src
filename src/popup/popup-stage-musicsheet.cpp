@@ -212,8 +212,8 @@ namespace popup
         if ((imageColorSlider_.IsMoving() == false) &&
             (imageColorSlider_.Direction() == sfml_util::Moving::Away))
         {
-            sfml_util::SoundManager::Instance()->SoundEffectPlay(
-                sfml_util::sound_effect::Magic1);
+            sfml_util::SoundManager::Instance()->
+                SoundEffectPlay(sfml_util::sound_effect::Magic1);
 
             SetupPageRightText(currentSongPtr_);
             imageColorSlider_.ChangeDirection();
@@ -763,11 +763,8 @@ namespace popup
         }
         else
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::Prompt).Play(sfml_util::sound_effect::PromptWarn);
-
+            sfml_util::SoundManager::Instance()->PlaySfx_Reject();
             willShowXImage_ = true;
-
             return false;
         }
     }

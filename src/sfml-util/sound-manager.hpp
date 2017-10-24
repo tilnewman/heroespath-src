@@ -66,8 +66,9 @@ namespace sfml_util
         static void Acquire();
         static void Release();
 
-        static void SetSoundsDirectory(const std::string & SOUND_DIR_PATH,
-                                       const std::string & MUSIC_DIR_PATH);
+        static void SetSoundsDirectory(
+            const std::string & SOUND_DIR_PATH,
+            const std::string & MUSIC_DIR_PATH);
 
         bool Test();
         bool TestSfxSet(SfxSet &, const std::size_t INDEX);
@@ -75,22 +76,26 @@ namespace sfml_util
         void LoadSoundSets();
 
         //throws range_error on invalid enum input.
-        void MusicStart(const music::Enum WHICH,
-                        const float       FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_IN_,
-                        const float       VOLUME    = MusicOperator::VOLUME_USE_GLOBAL_);
+        void MusicStart(
+            const music::Enum WHICH,
+            const float FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_IN_,
+            const float VOLUME    = MusicOperator::VOLUME_USE_GLOBAL_);
 
-        void MusicStart(const MusicEnumVec_t & WHICH_VEC,
-                        const bool             WILL_RANDOMIZE       = true,
-                        const bool             WILL_START_AT_RANDOM = true,
-                        const float            FADE_MULT            = MusicOperator::FADE_MULT_DEFAULT_IN_,
-                        const float            VOLUME               = MusicOperator::VOLUME_USE_GLOBAL_,
-                        const bool             WILL_LOOP            = true);
+        void MusicStart(
+            const MusicEnumVec_t & WHICH_VEC,
+            const bool             WILL_RANDOMIZE       = true,
+            const bool             WILL_START_AT_RANDOM = true,
+            const float            FADE_MULT            = MusicOperator::FADE_MULT_DEFAULT_IN_,
+            const float            VOLUME               = MusicOperator::VOLUME_USE_GLOBAL_,
+            const bool             WILL_LOOP            = true);
 
-        void MusicStop(const music::Enum WHICH     = sfml_util::music::All,
-                       const float       FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
+        void MusicStop(
+            const music::Enum WHICH = sfml_util::music::All,
+            const float FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
 
-        void MusicStop(const MusicEnumVec_t MUSIC_ENUMS,
-                       const float          FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
+        void MusicStop(
+            const MusicEnumVec_t MUSIC_ENUMS,
+            const float FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
 
         const MusicInfoVec_t MusicInfoSet() const;
 
@@ -109,20 +114,31 @@ namespace sfml_util
 
         const SfxSet & Getsound_effect_set(const sound_effect_set::Enum) const;
 
-        void SoundEffectPlay(const sound_effect::Enum SFX_ENUM,
-                             const float              PRE_DELAY_SEC = 0.0f);
+        void SoundEffectPlay(
+            const sound_effect::Enum SFX_ENUM,
+            const float PRE_DELAY_SEC = 0.0f);
+
+        void PlaySfx_AckMinor();
+        void PlaySfx_AckMajor();
+        void PlaySfx_Reject();
+        void PlaySfx_TickOn();
+        void PlaySfx_TickOff();
+        void PlaySfx_Keypress();
+        void PlaySfx_MouseClick();
 
         void ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX = false);
 
     private:
-        MusicUPtr_t OpenMusic(const std::string & MUSIC_FILE_NAME,
-                              const std::string & MUSIC_DIR_NAME) const;
+        MusicUPtr_t OpenMusic(
+            const std::string & MUSIC_FILE_NAME,
+            const std::string & MUSIC_DIR_NAME) const;
 
         void CacheMusicInfo_CombatIntro();
 
-        MusicOperator MakeAndStartMusicOperator(const music::Enum MUSIC_ENUM,
-                                                const float       FADE_MULT,
-                                                const float       VOLUME) const;
+        MusicOperator MakeAndStartMusicOperator(
+            const music::Enum MUSIC_ENUM,
+            const float       FADE_MULT,
+            const float       VOLUME) const;
 
         void SoundEffectsUpdate(const float ELAPSED_TIME_SEC);
 

@@ -221,30 +221,21 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::M)
         {
             createButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
             LoopManager::Instance()->TransitionTo_CharacterCreation();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
             settingsButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
             LoopManager::Instance()->TransitionTo_Settings();
             return true;
         }
         else if (KEY_EVENT.code == sf::Keyboard::C)
         {
             creditsButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
             LoopManager::Instance()->TransitionTo_Credits();
             return true;
         }
@@ -252,10 +243,7 @@ namespace stage
                  (KEY_EVENT.code == sf::Keyboard::E))
         {
             exitButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
             LoopManager::Instance()->TransitionTo_Exit();
             return true;
         }
@@ -264,10 +252,7 @@ namespace stage
             if (false == resumeButtonUPtr_->IsDisabled())
             {
                 resumeButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-
-                sfml_util::SoundManager::Instance()->
-                    Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+                sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
                 LoopManager::Instance()->TransitionTo_LoadGameMenu();
                 return true;
             }

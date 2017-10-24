@@ -882,10 +882,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::B)
         {
             backButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
             willShowMouseOverPopup_ = false;
             HandleCallback_BackButton();
             return true;
@@ -893,10 +890,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::D)
         {
             deleteButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
             willShowMouseOverPopup_ = false;
             HandleCallback_DeleteButton();
             return true;
@@ -904,10 +898,7 @@ namespace stage
         else if (KEY_EVENT.code == sf::Keyboard::S)
         {
             startButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
-
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
-
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
             willShowMouseOverPopup_ = false;
             HandleCallback_StartButton();
             return true;

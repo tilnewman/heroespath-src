@@ -40,13 +40,14 @@ namespace sfml_util
 namespace gui
 {
 
-    SliderBar::SliderBar(const std::string & NAME,
-                         const float         POS_LEFT,
-                         const float         POS_TOP,
-                         const float         LENGTH,
-                         const SliderStyle & STYLE,
-                         callback::ISliderBarCallbackHandler_t * const CHANGE_HANDLER_PTR,
-                         const float         INITIAL_VALUE)
+    SliderBar::SliderBar(
+        const std::string & NAME,
+        const float         POS_LEFT,
+        const float         POS_TOP,
+        const float         LENGTH,
+        const SliderStyle & STYLE,
+        callback::ISliderBarCallbackHandler_t * const CHANGE_HANDLER_PTR,
+        const float         INITIAL_VALUE)
     :
         GuiEntity        (std::string(NAME).append("_SliderBar"), POS_LEFT, POS_TOP),
         currentVal_      (INITIAL_VALUE),
@@ -65,7 +66,7 @@ namespace gui
     void SliderBar::SetupEntityRegion()
     {
         //setup bounding rect for SliderBar as a Clickable object itself
-        const sf::Vector2f POS_V(GetEntityPos());
+        auto const POS_V{ GetEntityPos() };
 
         sf::FloatRect r;
         r.left = POS_V.x;//these values were already set in the constructor
@@ -100,30 +101,52 @@ namespace gui
         //change from screen to slider coords
         if (STYLE_.orientation == Orientation::Horiz)
         {
-            const float MIN_SCREENX(POS_V.x + botOrLeftImage_.GetUpSprite().getLocalBounds().width);
-            const float MAX_SCREENX((POS_V.x + (LENGTH_ - topOrRightImage_.GetUpSprite().getLocalBounds().width) - barImage_.GetUpSprite().getLocalBounds().height));
+            auto const MIN_SCREENX{
+                POS_V.x + botOrLeftImage_.GetUpSprite().getLocalBounds().width };
+
+            auto const MAX_SCREENX{
+                (POS_V.x + (LENGTH_ - topOrRightImage_.GetUpSprite().getLocalBounds().width) -
+                    barImage_.GetUpSprite().getLocalBounds().height) };
+
             if (NEW_COORDS.x < MIN_SCREENX)
+            {
                 currentVal_ = 0.0f;
+            }
             else
             {
                 if (NEW_COORDS.x > MAX_SCREENX)
+                {
                     currentVal_ = 1.0f;
+                }
                 else
+                {
                     currentVal_ = (NEW_COORDS.x - MIN_SCREENX) / (MAX_SCREENX - MIN_SCREENX);
+                }
             }
         }
         else
         {
-            const float MIN_SCREENY(POS_V.y + topOrRightImage_.GetUpSprite().getLocalBounds().height);
-            const float MAX_SCREENY((POS_V.y + (LENGTH_ - botOrLeftImage_.GetUpSprite().getLocalBounds().height) - barImage_.GetUpSprite().getLocalBounds().height));
+            auto const MIN_SCREENY{
+                POS_V.y + topOrRightImage_.GetUpSprite().getLocalBounds().height };
+
+            auto const MAX_SCREENY{
+                (POS_V.y + (LENGTH_ - botOrLeftImage_.GetUpSprite().getLocalBounds().height) -
+                    barImage_.GetUpSprite().getLocalBounds().height) };
+
             if (NEW_COORDS.y < MIN_SCREENY)
+            {
                 currentVal_ = 0.0f;
+            }
             else
             {
                 if (NEW_COORDS.y > MAX_SCREENY)
+                {
                     currentVal_ = 1.0f;
+                }
                 else
+                {
                     currentVal_ = (NEW_COORDS.y - MIN_SCREENY) / (MAX_SCREENY - MIN_SCREENY);
+                }
             }
         }
 
@@ -155,17 +178,20 @@ namespace gui
 
         if (STYLE_.isLineLarge)
         {
-            barImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_HorizontalLineLarge());
+            barImage_.GetUpSprite() =
+                sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_HorizontalLineLarge());
         }
         else
         {
-            barImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_HorizontalLineSmall());
+            barImage_.GetUpSprite() =
+                sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_HorizontalLineSmall());
         }
 
         if (STYLE_.orientation == Orientation::Horiz)
         {
             //pick the pad sprite
-            padImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_PadHorizontalLarge());
+            padImage_.GetUpSprite() =
+                sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_PadHorizontalLarge());
 
             switch (STYLE_.brightness)
             {
@@ -173,28 +199,42 @@ namespace gui
             {
                 if (STYLE_.willLabelArrows)
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusLeftMed());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusRightMed());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusLeftMed());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusRightMed());
                 }
                 else
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowLeftMed());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowRightMed());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowLeftMed());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowRightMed());
                 }
+
                 break;
             }
             case Brightness::Dark:
             {
                 if (STYLE_.willLabelArrows)
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusLeftDark());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusRightDark());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusLeftDark());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusRightDark());
                 }
                 else
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowLeftDark());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowRightDark());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowLeftDark());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowRightDark());
                 }
+
                 break;
             }
 
@@ -204,14 +244,21 @@ namespace gui
             {
                 if (STYLE_.willLabelArrows)
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusLeftBright());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusRightBright());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusLeftBright());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusRightBright());
                 }
                 else
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowLeftBright());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowRightBright());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowLeftBright());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowRightBright());
                 }
+
                 break;
             }//end default
             }//end switch
@@ -219,9 +266,13 @@ namespace gui
             SetupAllPositions();
 
             //set the bar's length
-            const float TARGET_LENGTH(LENGTH_ - botOrLeftImage_.GetUpSprite().getLocalBounds().width + (LENGTH_ / 80.0f));
-            const float CURRENT_LENGTH(barImage_.GetUpSprite().getLocalBounds().width);
-            const float NEW_SCALE(TARGET_LENGTH / CURRENT_LENGTH);
+            auto const TARGET_LENGTH{
+                LENGTH_ -
+                    botOrLeftImage_.GetUpSprite().getLocalBounds().width +
+                    (LENGTH_ / 80.0f) };
+
+            auto const CURRENT_LENGTH{ barImage_.GetUpSprite().getLocalBounds().width };
+            auto const NEW_SCALE{ TARGET_LENGTH / CURRENT_LENGTH };
             barImage_.GetUpSprite().setScale(NEW_SCALE, 1.0f);
 
             //ensure the given length is long enough
@@ -231,7 +282,8 @@ namespace gui
         else
         {
             //pick the pad sprite to use
-            padImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_PadVerticalLarge());
+            padImage_.GetUpSprite() =
+                sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_PadVerticalLarge());
 
             //bar sprites are only horizontal so rotate if orientation is vertical
             barImage_.GetUpSprite().rotate(270.0f);
@@ -242,28 +294,42 @@ namespace gui
             {
                 if (STYLE_.willLabelArrows)
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusDownMed());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusUpMed());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusDownMed());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusUpMed());
                 }
                 else
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowDownMed());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowUpMed());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowDownMed());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowUpMed());
                 }
+
                 break;
             }
             case Brightness::Dark:
             {
                 if (STYLE_.willLabelArrows)
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusDownDark());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusUpDark());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusDownDark());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusUpDark());
                 }
                 else
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowDownDark());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowUpDark());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowDownDark());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowUpDark());
                 }
+
                 break;
             }
 
@@ -273,14 +339,21 @@ namespace gui
             {
                 if (STYLE_.willLabelArrows)
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusDownBright());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusUpBright());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusDownBright());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusUpBright());
                 }
                 else
                 {
-                    botOrLeftImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowDownBright());
-                    topOrRightImage_.GetUpSprite() = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowUpBright());
+                    botOrLeftImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowDownBright());
+
+                    topOrRightImage_.GetUpSprite() =
+                        sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowUpBright());
                 }
+
                 break;
             }//end default
             }//end switch
@@ -288,9 +361,13 @@ namespace gui
             SetupAllPositions();
 
             //set the length of the bar sprite
-            const float TARGET_LENGTH(LENGTH_ - botOrLeftImage_.GetUpSprite().getLocalBounds().height + (LENGTH_ / 80.0f));
-            const float CURRENT_LENGTH(barImage_.GetUpSprite().getLocalBounds().width);
-            const float NEW_SCALE(TARGET_LENGTH / CURRENT_LENGTH);
+            auto const TARGET_LENGTH{
+                LENGTH_ -
+                    botOrLeftImage_.GetUpSprite().getLocalBounds().height +
+                    (LENGTH_ / 80.0f) };
+
+            auto const CURRENT_LENGTH{ barImage_.GetUpSprite().getLocalBounds().width };
+            auto const NEW_SCALE{ TARGET_LENGTH / CURRENT_LENGTH };
             barImage_.GetUpSprite().setScale(NEW_SCALE, 1.0f);
 
             //ensure given length is long enough
@@ -341,15 +418,32 @@ namespace gui
         if (STYLE_.orientation == Orientation::Horiz)
         {
             botOrLeftImage_.GetUpSprite().setPosition(POS_V);
-            topOrRightImage_.GetUpSprite().setPosition(POS_V.x + LENGTH_ - topOrRightImage_.GetUpSprite().getLocalBounds().width, POS_V.y);
-            barImage_.GetUpSprite().setPosition(POS_V.x + (botOrLeftImage_.GetUpSprite().getLocalBounds().width * 0.5f), POS_V.y + (botOrLeftImage_.GetUpSprite().getLocalBounds().height * 0.5f) - (barImage_.GetUpSprite().getLocalBounds().height * 0.5f));
+
+            topOrRightImage_.GetUpSprite().setPosition(
+                POS_V.x + LENGTH_ - topOrRightImage_.GetUpSprite().getLocalBounds().width,
+                POS_V.y);
+
+            barImage_.GetUpSprite().setPosition(
+                POS_V.x + (botOrLeftImage_.GetUpSprite().getLocalBounds().width * 0.5f),
+                POS_V.y + (botOrLeftImage_.GetUpSprite().getLocalBounds().height * 0.5f) -
+                    (barImage_.GetUpSprite().getLocalBounds().height * 0.5f));
         }
         else
         {
-            botOrLeftImage_.GetUpSprite().setPosition(POS_V.x, POS_V.y + LENGTH_ - botOrLeftImage_.GetUpSprite().getLocalBounds().height);
+            botOrLeftImage_.GetUpSprite().setPosition(
+                POS_V.x,
+                POS_V.y + LENGTH_ - botOrLeftImage_.GetUpSprite().getLocalBounds().height);
+
             topOrRightImage_.GetUpSprite().setPosition(POS_V.x, POS_V.y);
-            barImage_.GetUpSprite().setPosition(POS_V.x + (topOrRightImage_.GetUpSprite().getLocalBounds().width * 0.5f) + (barImage_.GetUpSprite().getLocalBounds().height / 3.0f), POS_V.y + (topOrRightImage_.GetUpSprite().getLocalBounds().height * 0.5f));
-            barImage_.GetUpSprite().setPosition(POS_V.x + (barImage_.GetUpSprite().getGlobalBounds().width * 0.5f), POS_V.y + LENGTH_ - 10.0f);
+
+            barImage_.GetUpSprite().setPosition(
+                POS_V.x + (topOrRightImage_.GetUpSprite().getLocalBounds().width * 0.5f) +
+                    (barImage_.GetUpSprite().getLocalBounds().height / 3.0f),
+                POS_V.y + (topOrRightImage_.GetUpSprite().getLocalBounds().height * 0.5f));
+
+            barImage_.GetUpSprite().setPosition(
+                POS_V.x + (barImage_.GetUpSprite().getGlobalBounds().width * 0.5f),
+                POS_V.y + LENGTH_ - 10.0f);
         }
 
         SetupEntityRegion();
@@ -377,15 +471,44 @@ namespace gui
 
         if (STYLE_.orientation == Orientation::Horiz)
         {
-            const float SLIDER_RANGE(LENGTH_ - (botOrLeftImage_.GetUpSprite().getLocalBounds().width + topOrRightImage_.GetUpSprite().getLocalBounds().width + padImage_.GetUpSprite().getLocalBounds().width - 8));
-            const float SLIDER_POSX(POS_V.x + botOrLeftImage_.GetUpSprite().getLocalBounds().width + (SLIDER_RANGE * currentVal_) - 3);//magic number 3 moves passed the shadow
-            padImage_.SetEntityPos(SLIDER_POSX, POS_V.y + (botOrLeftImage_.GetUpSprite().getLocalBounds().height * 0.5f) - (padImage_.GetUpSprite().getLocalBounds().height * 0.5f));
+            auto const SLIDER_RANGE{
+                LENGTH_ - (botOrLeftImage_.GetUpSprite().getLocalBounds().width +
+                    topOrRightImage_.GetUpSprite().getLocalBounds().width +
+                    padImage_.GetUpSprite().getLocalBounds().width -
+                    8.0f) };
+
+            //magic number 3 moves passed the shadow
+            auto const SLIDER_POSX{
+                POS_V.x +
+                    botOrLeftImage_.GetUpSprite().getLocalBounds().width +
+                    (SLIDER_RANGE * currentVal_) -
+                    3.0f };
+
+            padImage_.SetEntityPos(
+                SLIDER_POSX,
+                POS_V.y + (botOrLeftImage_.GetUpSprite().getLocalBounds().height * 0.5f) -
+                    (padImage_.GetUpSprite().getLocalBounds().height * 0.5f));
         }
         else
         {
-            const float SLIDER_RANGE(LENGTH_ - (topOrRightImage_.GetUpSprite().getLocalBounds().height + botOrLeftImage_.GetUpSprite().getLocalBounds().height + padImage_.GetUpSprite().getLocalBounds().height - 5));
-            const float SLIDER_POSY(POS_V.y + topOrRightImage_.GetUpSprite().getLocalBounds().height + (SLIDER_RANGE * currentVal_) - 1);//magic number 1 moves passed the shadow
-            padImage_.SetEntityPos(POS_V.x + (topOrRightImage_.GetUpSprite().getLocalBounds().width * 0.5f) - (padImage_.GetUpSprite().getLocalBounds().width * 0.5f), SLIDER_POSY);
+            auto const SLIDER_RANGE{
+                LENGTH_ - (topOrRightImage_.GetUpSprite().getLocalBounds().height +
+                    botOrLeftImage_.GetUpSprite().getLocalBounds().height +
+                    padImage_.GetUpSprite().getLocalBounds().height -
+                    5.0f) };
+
+            //magic number 1 moves passed the shadow
+            auto const SLIDER_POSY{
+                POS_V.y +
+                    topOrRightImage_.GetUpSprite().getLocalBounds().height +
+                    (SLIDER_RANGE * currentVal_) -
+                    1.0f };
+
+            padImage_.SetEntityPos(
+                POS_V.x +
+                    (topOrRightImage_.GetUpSprite().getLocalBounds().width * 0.5f) -
+                    (padImage_.GetUpSprite().getLocalBounds().width * 0.5f),
+                SLIDER_POSY);
         }
     }
 
@@ -396,12 +519,12 @@ namespace gui
         {
             if (STYLE_.orientation == Orientation::Horiz)
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+                SoundManager::Instance()->PlaySfx_TickOff();
                 currentVal_ -= 0.1f;
             }
             else
             {
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                SoundManager::Instance()->PlaySfx_TickOn();
                 currentVal_ += 0.1f;
             }
 
@@ -414,12 +537,12 @@ namespace gui
             {
                 if (STYLE_.orientation == Orientation::Horiz)
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                    SoundManager::Instance()->PlaySfx_TickOn();
                     currentVal_ += 0.1f;
                 }
                 else
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+                    SoundManager::Instance()->PlaySfx_TickOff();
                     currentVal_ -= 0.1f;
                 }
 
@@ -430,7 +553,7 @@ namespace gui
             {
                 if (padImage_.MouseDown(MOUSE_POS_V))
                 {
-                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                    SoundManager::Instance()->PlaySfx_TickOn();
                     entityMouseState_ = MouseState::Down;
                 }
                 else
@@ -441,16 +564,17 @@ namespace gui
                         {
                             if (MOUSE_POS_V.x < padImage_.GetEntityRegion().left)
                             {
-                                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+                                SoundManager::Instance()->PlaySfx_TickOff();
                                 currentVal_ -= 0.1f;
                                 SetupAllPositions();
                                 return true;
                             }
                             else
                             {
-                                if (MOUSE_POS_V.x > (padImage_.GetEntityRegion().left + padImage_.GetEntityRegion().width))
+                                if (MOUSE_POS_V.x >
+                                    (padImage_.GetEntityRegion().left + padImage_.GetEntityRegion().width))
                                 {
-                                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                                    SoundManager::Instance()->PlaySfx_TickOn();
                                     currentVal_ += 0.1f;
                                     SetupAllPositions();
                                     return true;
@@ -461,16 +585,17 @@ namespace gui
                         {
                             if (MOUSE_POS_V.y < padImage_.GetEntityRegion().top)
                             {
-                                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+                                SoundManager::Instance()->PlaySfx_TickOff();
                                 currentVal_ -= 0.1f;
                                 SetupAllPositions();
                                 return true;
                             }
                             else
                             {
-                                if (MOUSE_POS_V.y > (padImage_.GetEntityRegion().top + padImage_.GetEntityRegion().height))
+                                if (MOUSE_POS_V.y >
+                                    (padImage_.GetEntityRegion().top + padImage_.GetEntityRegion().height))
                                 {
-                                    SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+                                    SoundManager::Instance()->PlaySfx_TickOn();
                                     currentVal_ += 0.1f;
                                     SetupAllPositions();
                                     return true;
@@ -490,7 +615,7 @@ namespace gui
     {
         if (padImage_.MouseUp(MOUSE_POS_V))
         {
-            SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+            SoundManager::Instance()->PlaySfx_TickOff();
             entityMouseState_ = MouseState::Up;
         }
 

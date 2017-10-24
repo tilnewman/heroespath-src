@@ -676,8 +676,7 @@ namespace stage
             (IsDetailViewFadingOrVisible() == false) &&
             (game::LoopManager::Instance()->IsFading() == false))
         {
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
 
             if (KEY_EVENT.code == sf::Keyboard::A)
             {
@@ -2309,8 +2308,7 @@ namespace stage
 
         if (detailViewTimerSec_ >= DETAILVIEW_TIMER_DURATION_SEC_)
         {
-            sfml_util::SoundManager::Instance()->
-                Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+            sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
 
             detailViewSourceRect_ = GetItemRectMouseIsOver(mousePosV_);
             if (detailViewSourceRect_ != sfml_util::gui::ListBox::ERROR_RECT_)
@@ -2465,8 +2463,7 @@ namespace stage
                 auto const EQUIP_RESULT{ creaturePtr_->ItemEquip(IITEM_PTR) };
                 if (EQUIP_RESULT.empty())
                 {
-                    sfml_util::SoundManager::Instance()->
-                        Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+                    sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
 
                     unEquipListBoxUPtr_->Remove(LISTBOX_ITEM_SPTR);
                     equippedListBoxUPtr_->Add(LISTBOX_ITEM_SPTR);
@@ -2527,8 +2524,7 @@ namespace stage
                 }
                 else
                 {
-                    sfml_util::SoundManager::Instance()->
-                        Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+                    sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
 
                     auto const IITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_CPTR };
                     creaturePtr_->ItemUnEquip(IITEM_PTR);
@@ -3301,8 +3297,8 @@ namespace stage
 
     void InventoryStage::HandleCoinsShare()
     {
-        sfml_util::SoundManager::Instance()->Getsound_effect_set(
-            sfml_util::sound_effect_set::Coin).PlayRandom();
+        sfml_util::SoundManager::Instance()->
+            Getsound_effect_set(sfml_util::sound_effect_set::Coin).PlayRandom();
 
         HandleCoinsGather(false);
 
@@ -3765,8 +3761,7 @@ namespace stage
 
     void InventoryStage::StartDetailViewFadeOutTasks()
     {
-        sfml_util::SoundManager::Instance()->
-            Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+        sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
 
         isDetailViewFadingIn_ = false;
         isDetailViewDoneFading_ = false;

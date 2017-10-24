@@ -41,9 +41,10 @@ namespace sfml_util
 namespace gui
 {
 
-    GuiText::GuiText(const std::string & NAME,
-                     const float         TEXT_WIDTH_LIMIT,
-                     const FontPtr_t     NUMBERS_FONT_PTR)
+    GuiText::GuiText(
+        const std::string & NAME,
+        const float         TEXT_WIDTH_LIMIT,
+        const FontPtr_t     NUMBERS_FONT_PTR)
     :
         GuiEntity        (std::string(NAME).append("_GuiText"), 0.0f, 0.0f),
         text_            (""),
@@ -58,11 +59,12 @@ namespace gui
     {}
 
 
-    GuiText::GuiText(const std::string &    NAME,
-                     const sf::FloatRect &  REGION,
-                     const MouseTextInfo &  MOUSE_TEXT_INFO,
-                     const float            TEXT_WIDTH_LIMIT,
-                     const FontPtr_t        NUMBERS_FONT_PTR)
+    GuiText::GuiText(
+        const std::string &    NAME,
+        const sf::FloatRect &  REGION,
+        const MouseTextInfo &  MOUSE_TEXT_INFO,
+        const float            TEXT_WIDTH_LIMIT,
+        const FontPtr_t        NUMBERS_FONT_PTR)
     :
         GuiEntity        (std::string(NAME).append("_GuiText"), REGION),
         text_            (""),
@@ -84,12 +86,13 @@ namespace gui
     }
 
 
-    GuiText::GuiText(const std::string &   NAME,
-                     const float           POS_LEFT,
-                     const float           POS_TOP,
-                     const MouseTextInfo & MOUSE_TEXT_INFO,
-                     const float           TEXT_WIDTH_LIMIT,
-                     const FontPtr_t       NUMBERS_FONT_PTR)
+    GuiText::GuiText(
+        const std::string &   NAME,
+        const float           POS_LEFT,
+        const float           POS_TOP,
+        const MouseTextInfo & MOUSE_TEXT_INFO,
+        const float           TEXT_WIDTH_LIMIT,
+        const FontPtr_t       NUMBERS_FONT_PTR)
     :
         GuiEntity        (std::string(NAME).append("_GuiText"), POS_LEFT, POS_TOP),
         text_            (""),
@@ -115,15 +118,20 @@ namespace gui
     {}
 
 
-    void GuiText::Setup(const std::string &   TEXT,
-                        const float           POS_LEFT,
-                        const float           POS_TOP,
-                        const MouseTextInfo & MOUSE_TEXT_INFO,
-                        const float           TEXT_WIDTH_LIMIT,
-                        const FontPtr_t       NUMBERS_FONT_PTR)
+    void GuiText::Setup(
+        const std::string &   TEXT,
+        const float           POS_LEFT,
+        const float           POS_TOP,
+        const MouseTextInfo & MOUSE_TEXT_INFO,
+        const float           TEXT_WIDTH_LIMIT,
+        const FontPtr_t       NUMBERS_FONT_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT.empty()), entityName_ << " GuiText::Setup() was given a TEXT string that was empty.");
-        M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.up.fontPtr != nullptr), entityName_ << " GuiText::Setup(\"" << TEXT << "\") was given an upTextInfo with a null font pointer.");
+        M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT.empty()),
+            entityName_ << " GuiText::Setup() was given a TEXT string that was empty.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((MOUSE_TEXT_INFO.up.fontPtr != nullptr),
+            entityName_ << " GuiText::Setup(\"" << TEXT
+            << "\") was given an upTextInfo with a null font pointer.");
 
         upTextInfo_ = MOUSE_TEXT_INFO.up;
         downTextInfo_ = MOUSE_TEXT_INFO.down;
@@ -178,10 +186,11 @@ namespace gui
 
         sprite_.setTexture(textureSPtr_->getTexture());
 
-        sprite_.setTextureRect( sf::IntRect(0,
-                                            0,
-                                            static_cast<int>(renderedTextSPtr_->longest_line),
-                                            static_cast<int>(renderedTextSPtr_->total_height)));
+        sprite_.setTextureRect( sf::IntRect(
+            0,
+            0,
+            static_cast<int>(renderedTextSPtr_->longest_line),
+            static_cast<int>(renderedTextSPtr_->total_height)));
 
         sprite_.setPosition(POS_LEFT, POS_TOP);
 
@@ -205,12 +214,14 @@ namespace gui
 
     void GuiText::SetMouseState(const MouseState::Enum E)
     {
-        const bool WILL_RESET(E != GetMouseState());
+        const bool WILL_RESET{ E != GetMouseState() };
 
         GuiEntity::SetMouseState(E);
 
         if (WILL_RESET)
+        {
             ResetText();
+        }
     }
 
 
@@ -227,9 +238,12 @@ namespace gui
 
     bool GuiText::MouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
-        const bool DID_MOUSE_STATE_CHANGE(GuiEntity::MouseUp(MOUSE_POS_V));
+        const bool DID_MOUSE_STATE_CHANGE{ GuiEntity::MouseUp(MOUSE_POS_V) };
+
         if (DID_MOUSE_STATE_CHANGE)
+        {
             ResetText();
+        }
 
         return DID_MOUSE_STATE_CHANGE;
     }
@@ -237,10 +251,12 @@ namespace gui
 
     bool GuiText::MouseDown(const sf::Vector2f & MOUSE_POS_V)
     {
-        const bool DID_MOUSE_STATE_CHANGE( GuiEntity::MouseDown(MOUSE_POS_V) );
+        const bool DID_MOUSE_STATE_CHANGE{ GuiEntity::MouseDown(MOUSE_POS_V) };
 
         if (DID_MOUSE_STATE_CHANGE)
+        {
             ResetText();
+        }
 
         return DID_MOUSE_STATE_CHANGE;
     }
@@ -248,14 +264,18 @@ namespace gui
 
     bool GuiText::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
     {
-        const bool DID_MOUSE_STATE_CHANGE( GuiEntity::UpdateMousePos(MOUSE_POS_V) );
+        const bool DID_MOUSE_STATE_CHANGE{ GuiEntity::UpdateMousePos(MOUSE_POS_V) };
 
         if (DID_MOUSE_STATE_CHANGE)
         {
             if (GetMouseState() == MouseState::Over)
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
+            {
+                SoundManager::Instance()->PlaySfx_TickOn();
+            }
             else
-                SoundManager::Instance()->Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
+            {
+                SoundManager::Instance()->PlaySfx_TickOff();
+            }
 
             ResetText();
         }
@@ -270,9 +290,10 @@ namespace gui
     }
 
 
-    void GuiText::SetNewColors(const sf::Color & UP_COLOR,
-                               const sf::Color & DOWN_COLOR,
-                               const sf::Color & OVER_COLOR)
+    void GuiText::SetNewColors(
+        const sf::Color & UP_COLOR,
+        const sf::Color & DOWN_COLOR,
+        const sf::Color & OVER_COLOR)
     {
         upTextInfo_.color   = UP_COLOR;
         downTextInfo_.color = DOWN_COLOR;
