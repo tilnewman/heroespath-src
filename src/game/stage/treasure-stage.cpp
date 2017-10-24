@@ -158,9 +158,6 @@ namespace stage
 
     TreasureStage::~TreasureStage()
     {
-        combat::Encounter::Instance()->EndTreasureStageTasks(
-            itemCacheHeld_, itemCacheLockbox_);
-
         ClearAllEntities();
     }
 
