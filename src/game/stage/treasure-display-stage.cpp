@@ -105,10 +105,9 @@ namespace treasure
         characterImageLeft(inventoryListboxRegion.left),
         characterImageScale(sfml_util::MapByRes(0.75f, 3.25f)),
         listboxSortIconScale(sfml_util::MapByRes(0.1f, 0.35f)),
-        listboxSortIconSpacer(sfml_util::MapByRes(35.0f, 75.0f)),
+        listboxSortIconSpacer(sfml_util::MapByRes(22.0f, 75.0f)),
         listboxSortIconTop(
             (listboxTop - (127.0f * listboxSortIconScale)) - sfml_util::MapByRes(10.0f, 20.0f))
-
     {}
 
 }//end of namespace treasure
@@ -123,7 +122,7 @@ namespace treasure
         Stage("TreasureDisplay", false),
         treasureStagePtr_(treasureStagePtr),
         titleImage_("treasure-button.png", true, 1.0f, 0.75f),
-        bottomImage_(0.8f, true, sf::Color::White, 0.4f),
+        bottomImage_(0.75f, true, sf::Color::White, 0.4f),
         ouroborosUPtr_(),
         stageMoverUPtr_(),
         treasureListboxUPtr_(),
@@ -167,6 +166,8 @@ namespace treasure
         itemDetailViewer_(),
         mousePos_(0.0f, 0.0f),
         canDisplayItemDetail_(true),
+        takeAllButtonUPtr_(),
+        doneButtonUPtr_(),
         heldCache_(),
         lockboxCache_()
     {}
@@ -215,6 +216,22 @@ namespace treasure
             SortByName( * inventoryListboxUPtr_, isSortOrderReversedInventoryWeight_);
             return true;
         }
+        else if (PACKAGE.PTR_ == takeAllButtonUPtr_.get())
+        {
+            if (treasureStagePtr_ != nullptr)
+            {
+                treasureStagePtr_->TakeAllItems();
+                return true;
+            }
+        }
+        else if (PACKAGE.PTR_ == doneButtonUPtr_.get())
+        {
+            if (treasureStagePtr_ != nullptr)
+            {
+                treasureStagePtr_->Exit();
+                return true;
+            }
+        }
 
         return false;
     }
@@ -250,7 +267,8 @@ namespace treasure
             target.draw( * characterImageUPtr_, STATES);
         }
 
-        if (item::TreasureAvailable::NoTreasure != treasureAvailable_)
+        if ((item::TreasureAvailable::HeldAndLockbox == treasureAvailable_) ||
+            (item::TreasureAvailable::LockboxOnly == treasureAvailable_))
         {
             target.draw(coinsSprite_, STATES);
         }
@@ -394,6 +412,7 @@ namespace treasure
         SetupForCollection_InventoryRedXImage();
 
         SetupForCollection_InstructionsText();
+        SetupForCollection_LowerButtons();
 
         stageMoverUPtr_->StartAll();
     }
@@ -610,17 +629,14 @@ namespace treasure
 
         treasureSprite_.setTexture(treasureTexture_);
 
-        auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
-        auto const SCREEN_HEIGHT{ sfml_util::Display::Instance()->GetWinHeight() };
-
         auto const TREASURE_IMAGE_SCALE_ADJ{
             ((TREASURE_IMAGE_SCALE_NEED_REDUCTION) ? 0.75f : 1.0f) };
 
         auto const TREASURE_IMAGE_MAX_WIDTH{
-            (SCREEN_WIDTH * 0.36f * TREASURE_IMAGE_SCALE_ADJ) };
+            (CreateDisplayMeasurements().screenWidth * 0.36f * TREASURE_IMAGE_SCALE_ADJ) };
 
         auto const TREASURE_IMAGE_MAX_HEIGHT{
-            (SCREEN_HEIGHT * 0.275f * TREASURE_IMAGE_SCALE_ADJ) };
+            (CreateDisplayMeasurements().screenHeight * 0.250f * TREASURE_IMAGE_SCALE_ADJ) };
 
         sfml_util::ScaleSpriteToFit(
             treasureSprite_,
@@ -629,7 +645,7 @@ namespace treasure
 
         treasureSprite_.setPosition(
             sfml_util::MapByRes(50.0f, 350.0f),
-            titleImage_.Bottom() - sfml_util::MapByRes(50.0f, 275.0f));
+            titleImage_.Bottom() - sfml_util::MapByRes(40.0f, 250.0f));
 
         treasureSprite_.setColor(sf::Color(255, 255, 255, 192));
     }
@@ -902,6 +918,66 @@ namespace treasure
             titleImage_.Bottom(false) - 10.0f);
 
         EntityAdd(instrTextUPtr_.get());
+    }
+
+
+    void TreasureDisplayStage::SetupForCollection_LowerButtons()
+    {
+        auto const TAKEALL_POS_TOP{
+            instrTextUPtr_->GetEntityPos().y +
+            instrTextUPtr_->GetEntityRegion().height +
+            sfml_util::MapByRes(15.0f, 100.0f) };
+
+        SetupLowerButton(takeAllButtonUPtr_, "(T)ake All", TAKEALL_POS_TOP);
+
+        auto const EXIT_POS_TOP{
+            (TAKEALL_POS_TOP + takeAllButtonUPtr_->GetEntityRegion().height) -
+                sfml_util::MapByRes(0.0f, 50.0f) };
+
+        SetupLowerButton(doneButtonUPtr_, "(E)xit", EXIT_POS_TOP);
+    }
+
+
+    void TreasureDisplayStage::SetupLowerButton(
+        sfml_util::gui::FourStateButtonUPtr_t & buttonUPtr,
+        const std::string & TEXT,
+        const float VERT_POS)
+    {
+        auto const COLOR_UP{ sfml_util::FontManager::Instance()->Color_GrayDarker() };
+        auto const COLOR_OVER{ COLOR_UP - sf::Color(0, 0, 0, 127) };
+        auto const COLOR_DOWN{ sf::Color::Black };
+
+        sfml_util::gui::TextInfo textInfo(
+            TEXT,
+            sfml_util::FontManager::Instance()->Font_Default2(),
+            sfml_util::FontManager::Instance()->Size_Largeish(),
+            COLOR_UP,
+            sfml_util::Justified::Left);
+
+        const sfml_util::gui::MouseTextInfo MOUSE_TEXT_INFO{
+            textInfo,
+            COLOR_DOWN,
+            COLOR_OVER };
+
+        GetGuiEntityPtrAndRemoveIfNeeded(buttonUPtr);
+
+        buttonUPtr = std::make_unique<sfml_util::gui::FourStateButton>(
+            "TreasureStage's" + TEXT,
+            0.0f,
+            0.0f,
+            "",
+            "",
+            "",
+            "",
+            MOUSE_TEXT_INFO);
+
+        auto const HORIZ_POS{
+            (CreateDisplayMeasurements().screenWidth * 0.5f) -
+            (buttonUPtr->GetEntityRegion().width * 0.5f) };
+
+        buttonUPtr->SetEntityPos(HORIZ_POS, VERT_POS);
+        buttonUPtr->SetCallbackHandler(this);
+        EntityAdd(buttonUPtr.get());
     }
 
 

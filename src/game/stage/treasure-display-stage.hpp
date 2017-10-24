@@ -243,6 +243,12 @@ namespace treasure
         void SetupForCollection_InventoryRedXImage();
         void SetupForCollection_InventoryListboxSortIcons();
         void SetupForCollection_InstructionsText();
+        void SetupForCollection_LowerButtons();
+
+        void SetupLowerButton(
+            sfml_util::gui::FourStateButtonUPtr_t & buttonUPtr,
+            const std::string & TEXT,
+            const float VERT_POS);
 
         void SetupListbox(
             const treasure::WhichListbox WHICH_LISTBOX,
@@ -378,6 +384,8 @@ namespace treasure
         stage::ItemDetailViewer itemDetailViewer_;
         sf::Vector2f mousePos_;
         bool canDisplayItemDetail_;
+        sfml_util::gui::FourStateButtonUPtr_t takeAllButtonUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t doneButtonUPtr_;
 
         //These members are copies of the real data in TreasureStage
         item::ItemCache heldCache_;

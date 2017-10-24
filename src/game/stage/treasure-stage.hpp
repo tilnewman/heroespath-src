@@ -41,6 +41,7 @@
 #include "game/item/item-cache.hpp"
 #include "game/item/treasure-available-enum.hpp"
 #include "game/trap.hpp"
+#include "game/stage/treasure-stage-mover.hpp" //for treasure::Type::Enum
 
 #include "misc/handy-types.hpp"
 
@@ -88,6 +89,9 @@ namespace stage
             const sfml_util::gui::ListBox * const TREASURE_LISTBOX_PTR,
             const sfml_util::gui::ListBox * const INVENTORY_LISTBOX_PTR,
             const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE);
+
+        void TakeAllItems();
+        void Exit();
 
     private:
         void HandleCountdownAndPleaseWaitPopup();
@@ -155,9 +159,11 @@ namespace stage
         //returns true if a popup is displayed
         bool ProcessLockpickTitleAndPopupIfNeeded();
 
+        void TransitionToAdventureStage();
+
     private:
         static const std::string POPUP_NAME_ITEMPROFILE_PLEASEWAIT_;
-        static const std::string POPUP_NAME_ALL_ENEMIES_RAN_;
+        static const std::string POPUP_NAME_NO_TREASURE_;
         static const std::string POPUP_NAME_WORN_ONLY_;
         static const std::string POPUP_NAME_LOCKBOX_ONLY_;
         static const std::string POPUP_NAME_LOCKBOX_AND_HELD_;
@@ -172,6 +178,8 @@ namespace stage
         static const std::string POPUP_NAME_GEM_SHARE_;
         static const std::string POPUP_NAME_ITEM_TAKE_REJECTION_;
         static const std::string POPUP_NAME_TITLE_ACHIEVEMENT_;
+        static const std::string POPUP_NAME_ALL_ITEMS_TAKEN_;
+        static const std::string POPUP_NAME_NOT_ALL_ITEMS_TAKEN_;
 
     private:
         TreasureDisplayStage * displayStagePtr_;

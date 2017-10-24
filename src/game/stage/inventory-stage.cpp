@@ -1457,25 +1457,25 @@ namespace stage
         const std::string & TEXT,
         const float HORIZ_OFFSET_MULT)
     {
-        sfml_util::gui::TextInfo buttonTextInfo(
+        sfml_util::gui::TextInfo textInfo(
             TEXT,
             sfml_util::FontManager::Instance()->Font_Default2(),
             sfml_util::FontManager::Instance()->Size_Largeish(),
             sf::Color::Black,
             sfml_util::Justified::Left);
 
-        const sf::Color BUTTON_COLOR_DISABLED(sf::Color(0, 0, 0, 180));
-        const sf::Color BUTTON_COLOR_OVER(sfml_util::FontManager::Color_GrayDarker());
-        const sf::Color BUTTON_COLOR_DOWN(BUTTON_COLOR_DISABLED);
+        auto const COLOR_DISABLED{ sf::Color(0, 0, 0, 180) };
+        auto const COLOR_OVER{ sfml_util::FontManager::Color_GrayDarker() };
+        auto const COLOR_DOWN{ COLOR_DISABLED };
 
-        sfml_util::gui::TextInfo buttonTextInfoDisabled(buttonTextInfo);
-        buttonTextInfoDisabled.color = BUTTON_COLOR_DISABLED;
-        buttonTextInfoDisabled.text = TEXT;
+        sfml_util::gui::TextInfo textInfoDisabled(textInfo);
+        textInfoDisabled.color = COLOR_DISABLED;
+        textInfoDisabled.text = TEXT;
 
-        const sfml_util::gui::MouseTextInfo BUTTON_MOUSE_TEXT_BACK{
-            buttonTextInfo,
-            BUTTON_COLOR_DOWN,
-            BUTTON_COLOR_OVER };
+        const sfml_util::gui::MouseTextInfo MOUSE_TEXT_INFO{
+            textInfo,
+            COLOR_DOWN,
+            COLOR_OVER };
 
         buttonUPtr = std::make_unique<sfml_util::gui::FourStateButton>(
             "InventoryStage's" + TEXT,
@@ -1485,8 +1485,8 @@ namespace stage
             "",
             "",
             "",
-            BUTTON_MOUSE_TEXT_BACK,
-            buttonTextInfoDisabled);
+            MOUSE_TEXT_INFO,
+            textInfoDisabled);
 
         buttonUPtr->SetEntityPos(
             (INNER_RECT_.left + (HORIZ_OFFSET_MULT * INNER_RECT_.width)) -

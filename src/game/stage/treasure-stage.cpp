@@ -69,6 +69,7 @@
 #include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
 
+#include <set>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -85,7 +86,7 @@ namespace stage
     const std::string TreasureStage::POPUP_NAME_ITEMPROFILE_PLEASEWAIT_{
         "PopupName_ItemProfilePleaseWait" };
 
-    const std::string TreasureStage::POPUP_NAME_ALL_ENEMIES_RAN_{
+    const std::string TreasureStage::POPUP_NAME_NO_TREASURE_{
         "PopupName_AllEnemiesRan" };
 
     const std::string TreasureStage::POPUP_NAME_WORN_ONLY_{
@@ -130,6 +131,12 @@ namespace stage
     const std::string TreasureStage::POPUP_NAME_TITLE_ACHIEVEMENT_{
         "PopupName_TitleAchievement" };
 
+    const std::string TreasureStage::POPUP_NAME_ALL_ITEMS_TAKEN_{
+        "PopupName_AllItemsTaken" };
+
+    const std::string TreasureStage::POPUP_NAME_NOT_ALL_ITEMS_TAKEN_{
+        "PopupName_NotAllItemsTaken" };
+
 
     TreasureStage::TreasureStage()
     :
@@ -166,9 +173,9 @@ namespace stage
             return false;
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ALL_ENEMIES_RAN_)
+        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NO_TREASURE_)
         {
-            LoopManager::Instance()->TransitionTo_Adventure();
+            TransitionToAdventureStage();
             return false;
         }
 
@@ -411,6 +418,16 @@ namespace stage
             return HandleKeypress_LeftRight(KEY_EVENT.code);
         }
 
+        if (KEY_EVENT.code == sf::Keyboard::T)
+        {
+            TakeAllItems();
+        }
+
+        if (KEY_EVENT.code == sf::Keyboard::E)
+        {
+            Exit();
+        }
+
         return Stage::KeyRelease(KEY_EVENT);
     }
 
@@ -442,6 +459,142 @@ namespace stage
         }
 
         return true;
+    }
+
+
+    void TreasureStage::TakeAllItems()
+    {
+        if (nullptr == displayStagePtr_)
+        {
+            sfml_util::SoundManager::Instance()->
+                SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+
+            return;
+        }
+
+        item::ItemPVec_t & itemsPVec{
+            ((displayStagePtr_->IsShowingHeldItems()) ?
+                itemCacheHeld_.items_pvec :
+                itemCacheLockbox_.items_pvec) };
+
+        if (itemsPVec.empty())
+        {
+            sfml_util::SoundManager::Instance()->
+                SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+
+            return;
+        }
+
+        std::sort(itemsPVec.begin(), itemsPVec.end(), [](auto A_PTR, auto B_PTR)
+        {
+            return A_PTR->Weight() > B_PTR->Weight();
+        });
+
+        //create a vector of creature ptrs in the order of who should take items
+        auto const CHARACTER_INDEX{ displayStagePtr_->CharacterIndexShowingInventory() };
+
+        creature::CreaturePVec_t whoWillTakeItems(
+            1,
+            Game::Instance()->State().Party().Characters()[CHARACTER_INDEX]);
+
+        for (auto const CHARACTER_PTR : Game::Instance()->State().Party().Characters())
+        {
+            if ((CHARACTER_PTR->IsBeast() == false) &&
+                (CHARACTER_PTR != whoWillTakeItems[0]))
+            {
+                whoWillTakeItems.push_back(CHARACTER_PTR);
+            }
+        }
+
+        //for each item to be taken, attempt to give it to each possible character
+        std::set<std::string> creatureNamesWhoTookItems;
+        item::ItemPVec_t itemsToRemovePVec;
+        for (auto const ITEM_PTR : itemsPVec)
+        {
+            for (auto creaturePtr : whoWillTakeItems)
+            {
+                if (creaturePtr->ItemIsAddAllowed(ITEM_PTR).empty())
+                {
+                    creaturePtr->ItemAdd(ITEM_PTR);
+                    itemsToRemovePVec.push_back(ITEM_PTR);
+                    break;
+                }
+            }
+        }
+
+        //remove the taken items from the cache
+        for (auto const ITEM_PTR : itemsToRemovePVec)
+        {
+            itemsPVec.erase(
+                std::remove(
+                    itemsPVec.begin(),
+                    itemsPVec.end(),
+                    ITEM_PTR),
+                itemsPVec.end() );
+        }
+
+        UpdateItemDisplay();
+
+        //display a popup that reports how many items were taken
+        auto const NUM_ITEMS_REMAINING{ itemsPVec.size() };
+        if (NUM_ITEMS_REMAINING == 0)
+        {
+            sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
+
+            std::ostringstream ss;
+            ss << "\n" << "All " << itemsToRemovePVec.size()
+                << " items were taken.";
+
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME_ALL_ITEMS_TAKEN_,
+                ss.str(),
+                popup::PopupButtons::Okay,
+                popup::PopupImage::Regular) };
+
+            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        }
+        else if (itemsToRemovePVec.empty())
+        {
+            sfml_util::SoundManager::Instance()->
+                SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME_NOT_ALL_ITEMS_TAKEN_,
+                "None of the items could be taken by any of your characters.",
+                popup::PopupButtons::Okay,
+                popup::PopupImage::Regular) };
+
+            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        }
+        else if (NUM_ITEMS_REMAINING > 0)
+        {
+            sfml_util::SoundManager::Instance()->
+                SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
+
+            std::ostringstream ss;
+            ss << "\n" << NUM_ITEMS_REMAINING
+                << " items could not be taken by any of your characters.";
+
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+                POPUP_NAME_NOT_ALL_ITEMS_TAKEN_,
+                ss.str(),
+                popup::PopupButtons::Okay,
+                popup::PopupImage::Regular) };
+
+            LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+        }
+    }
+
+
+    void TreasureStage::Exit()
+    {
+        if (nullptr == displayStagePtr_)
+        {
+            return;
+        }
+
+        TransitionToAdventureStage();
     }
 
 
@@ -526,7 +679,7 @@ namespace stage
                     << "Click Continue to return to the Adventure screen.";
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
-                    POPUP_NAME_ALL_ENEMIES_RAN_,
+                    POPUP_NAME_NO_TREASURE_,
                     ss.str(),
                     popup::PopupButtons::Continue,
                     popup::PopupImage::Regular) };
@@ -1217,6 +1370,16 @@ namespace stage
         }
         
         return false;
+    }
+
+
+    void TreasureStage::TransitionToAdventureStage()
+    {
+        combat::Encounter::Instance()->EndTreasureStageTasks(
+            itemCacheHeld_,
+            itemCacheLockbox_);
+
+        LoopManager::Instance()->TransitionTo_Adventure();
     }
 
 }

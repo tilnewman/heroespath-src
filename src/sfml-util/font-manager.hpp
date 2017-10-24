@@ -70,19 +70,19 @@ namespace sfml_util
         static void SetFontsDirectory(const std::string & PATH);
 
         //colors
-        static inline const sf::Color Color_GrayLight()     { return sf::Color(200, 200, 200, 255); }
-        static inline const sf::Color Color_GrayLighter()   { return sf::Color(232, 232, 232, 255); }
-        static inline const sf::Color Color_GrayDark()      { return sf::Color(100, 100, 100, 255); }
-        static inline const sf::Color Color_GrayDarker()    { return sf::Color(64,  64,  64,  255); }
-        static inline const sf::Color Color_Orange()        { return sf::Color(255, 223, 181, 255); }
-        static inline const sf::Color Color_Light()         { return sf::Color(220, 220, 220, 255); }
-        static inline const sf::Color Color_LightGold()     { return sf::Color(255, 248, 220, 255); }
-        //
+        static inline const sf::Color Color_GrayLight()     { return sf::Color(200, 200, 200); }
+        static inline const sf::Color Color_GrayLighter()   { return sf::Color(232, 232, 232); }
+        static inline const sf::Color Color_GrayDark()      { return sf::Color(100, 100, 100); }
+        static inline const sf::Color Color_GrayDarker()    { return sf::Color( 64,  64,  64); }
+        static inline const sf::Color Color_Orange()        { return sf::Color(255, 223, 181); }
+        static inline const sf::Color Color_Light()         { return sf::Color(220, 220, 220); }
+        static inline const sf::Color Color_LightGold()     { return sf::Color(255, 248, 220); }
+
         static const sf::Color Color_PopupButtonUp(const popup::PopupButtonColor::Enum);
         static const sf::Color Color_PopupButtonDown(const popup::PopupButtonColor::Enum);
         static const sf::Color Color_PopupButtonOver(const popup::PopupButtonColor::Enum);
-        //
-        static inline sf::Uint8 ColorValue_Highlight()      { return 55; }
+
+        static inline sf::Uint8 ColorValue_Highlight() { return 55; }
 
         //sizes
         unsigned int Size_Larger() const;
@@ -94,25 +94,28 @@ namespace sfml_util
         unsigned int Size_Tiny() const;
         unsigned int Size_CombatCreatureLabels() const { return Size_Smallish(); }
 
-        inline const std::string NumbersDefault1FamilyName() { return Font_NumbersDefault1()->getInfo().family; }
+        inline const std::string NumbersDefault1FamilyName()
+        {
+            return Font_NumbersDefault1()->getInfo().family;
+        }
 
         inline FontPtr_t Font_NumbersDefault1() { return fontUVec_[static_cast<std::size_t>(Fonts::QuillSword)].get(); }
         inline FontPtr_t Font_NumbersTypical1() { return fontUVec_[static_cast<std::size_t>(Fonts::GentiumPlus)].get(); }
         inline FontPtr_t Font_NumbersTypical2() { return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get(); }
         inline FontPtr_t Font_NumbersSmall()    { return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get(); }
-        //
+
         inline FontPtr_t Font_Default1()        { return fontUVec_[static_cast<std::size_t>(Fonts::Euler)].get(); }
         inline FontPtr_t Font_Default2()        { return fontUVec_[static_cast<std::size_t>(Fonts::GentiumPlus)].get(); }
         inline FontPtr_t Font_Typical()         { return fontUVec_[static_cast<std::size_t>(Fonts::GoudyBookletter)].get(); }
-        //
+
         inline FontPtr_t Font_Dialog1()         { return fontUVec_[static_cast<std::size_t>(Fonts::Euler)].get(); }
         inline FontPtr_t Font_Dialog2()         { return fontUVec_[static_cast<std::size_t>(Fonts::GentiumPlus)].get(); }
         inline FontPtr_t Font_Dialog3()         { return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get(); }
-        //
+
         inline FontPtr_t Font_BigFlavor1()      { return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get(); }
         inline FontPtr_t Font_BigFlavor2()      { return fontUVec_[static_cast<std::size_t>(Fonts::ValleyForge)].get(); }
         inline FontPtr_t Font_BigFlavor3()      { return fontUVec_[static_cast<std::size_t>(Fonts::QueenCountry)].get(); }
-        //
+
         inline FontPtr_t Font_PopupButton()     { return Font_BigFlavor2(); }
 
     private:
