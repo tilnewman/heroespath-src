@@ -98,11 +98,11 @@ namespace song
                 "game::song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                 << "\") resulted in an empty DescExtra().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->ManaCost() != 0_mana),
+            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->ManaCost().IsNonZero()),
                 "game::song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                 << "\") resulted in a zero Mana cost.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->Rank() != 0_rank),
+            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->Rank().IsNonZero()),
                 "game::song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                 << "\") resulted in a zero Rank.");
 

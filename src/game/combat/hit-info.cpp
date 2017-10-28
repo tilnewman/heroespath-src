@@ -395,8 +395,7 @@ namespace combat
             }
             case HitType::Trap:
             {
-                return ((actionVerb_.empty() == false) &&
-                        (damage_ != 0_health));
+                return ((actionVerb_.empty() == false) && damage_.IsNonZero());
             }
             case HitType::Count:
             default:

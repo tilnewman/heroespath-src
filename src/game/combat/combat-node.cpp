@@ -265,31 +265,37 @@ namespace combat
             (false == isDead_))
         {
             //draw health lines
-            auto const HEALTH_POS_TOP
-                { nameTextObj_.getPosition().y + (nameTextObj_.getGlobalBounds().height * 2.0f) };
+            auto const POS_TOP{
+                nameTextObj_.getPosition().y + (nameTextObj_.getGlobalBounds().height * 2.0f) };
 
-            auto const HEALTH_LINE_LEN_MARGIN   { 0.25f * entityRegion_.width };
+            auto const LINE_LEN_MARGIN{ 0.25f * entityRegion_.width };
 
-            auto const HEALTH_LINE_POS_LEFT     { entityRegion_.left + HEALTH_LINE_LEN_MARGIN };
+            auto const LINE_POS_LEFT{ entityRegion_.left + LINE_LEN_MARGIN };
 
-            auto const HEALTH_LINE_LEN
-                { entityRegion_.width - (HEALTH_LINE_LEN_MARGIN * 2.0f) };
+            auto const LINE_LEN
+                { entityRegion_.width - (LINE_LEN_MARGIN * 2.0f) };
 
-            auto const HEALTH_LINE_TICK_HEIGHT  { 4.0f };
+            auto const LINE_TICK_HEIGHT  { 4.0f };
+
+            auto const LINE_RATIO_RIGHT{
+                LINE_POS_LEFT + (LINE_LEN * healthRatioDisplayed_) };
+
+            auto const LINE_TOTAL_RIGHT{ LINE_POS_LEFT + LINE_LEN };
 
             sf::Vertex lines[] =
             {
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + (HEALTH_LINE_LEN * healthRatioDisplayed_), HEALTH_POS_TOP)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP + 1)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + (HEALTH_LINE_LEN * healthRatioDisplayed_), HEALTH_POS_TOP + 1)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP + 2)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP + 2)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP - HEALTH_LINE_TICK_HEIGHT)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT, HEALTH_POS_TOP + HEALTH_LINE_TICK_HEIGHT + 2)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP - HEALTH_LINE_TICK_HEIGHT)),
-                sf::Vertex(sf::Vector2f(HEALTH_LINE_POS_LEFT + HEALTH_LINE_LEN, HEALTH_POS_TOP + HEALTH_LINE_TICK_HEIGHT + 2))
+                sf::Vertex(sf::Vector2f(LINE_POS_LEFT, POS_TOP)),
+                sf::Vertex(sf::Vector2f(LINE_RATIO_RIGHT, POS_TOP)),
+                sf::Vertex(sf::Vector2f(LINE_POS_LEFT, POS_TOP + 1)),
+                sf::Vertex(sf::Vector2f(LINE_RATIO_RIGHT, POS_TOP + 1)),
+                sf::Vertex(sf::Vector2f(LINE_POS_LEFT, POS_TOP + 2)),
+                sf::Vertex(sf::Vector2f(LINE_TOTAL_RIGHT, POS_TOP + 2)),
+                sf::Vertex(sf::Vector2f(LINE_POS_LEFT, POS_TOP - LINE_TICK_HEIGHT)),
+                sf::Vertex(sf::Vector2f(LINE_POS_LEFT, POS_TOP + LINE_TICK_HEIGHT + 2)),
+                sf::Vertex(sf::Vector2f(LINE_TOTAL_RIGHT, POS_TOP - LINE_TICK_HEIGHT)),
+                sf::Vertex(sf::Vector2f(LINE_TOTAL_RIGHT, POS_TOP + LINE_TICK_HEIGHT + 2))
             };
+
             lines[0].color = healthLineColor_;
             lines[1].color = healthLineColor_;
             lines[2].color = healthLineColor_;

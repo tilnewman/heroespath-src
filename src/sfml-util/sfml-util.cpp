@@ -190,6 +190,45 @@ namespace sfml_util
     }
 
 
+    void DrawRectangleWithLineVerts(
+        const sf::FloatRect & RECT,
+        const sf::Color & COLOR,
+        std::vector<sf::Vertex> & verts)
+    {
+        auto const LEFT{ RECT.left };
+        auto const RIGHT{ RECT.left + RECT.width };
+        auto const TOP{ RECT.top };
+        auto const BOTTOM{ RECT.top + RECT.height };
+
+        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR));
+        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR));
+        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR));
+        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR));
+        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR));
+        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR));
+        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR));
+        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR));
+    }
+
+
+    void DrawQuad(
+        const sf::FloatRect & RECT,
+        const sf::Color & COLOR_LEFT,
+        const sf::Color & COLOR_RIGHT,
+        std::vector<sf::Vertex> & verts)
+    {
+        auto const LEFT{ RECT.left };
+        auto const RIGHT{ RECT.left + RECT.width };
+        auto const TOP{ RECT.top };
+        auto const BOTTOM{ RECT.top + RECT.height };
+
+        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR_LEFT));
+        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR_RIGHT));
+        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR_RIGHT));
+        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR_LEFT));
+    }
+
+
     const std::string KeyCodeToString(const sf::Keyboard::Key KEY)
     {
         switch (KEY)

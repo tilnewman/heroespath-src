@@ -22,14 +22,16 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_STAGE_ADVENTURESTAGE_HPP_INCLUDED
-#define GAME_STAGE_ADVENTURESTAGE_HPP_INCLUDED
+#ifndef GAME_STAGE_ADVENTUREDISPLAYSTAGE_HPP_INCLUDED
+#define GAME_STAGE_ADVENTUREDISPLAYSTAGE_HPP_INCLUDED
 //
-// adventure-stage.hpp
+// adventure-display-stage.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
+
+#include "game/stage/adventure-stage-char-list.hpp"
 
 
 namespace game
@@ -37,26 +39,34 @@ namespace game
 namespace stage
 {
 
-    class AdventureDisplayStage;
+    class AdventureStage;
 
 
-    //Responsible for managing all AdventureStage interactions with the player.
-    class AdventureStage : public sfml_util::Stage
+    //Responsible for all drawin operations of the AdventureStage.
+    class AdventureDisplayStage : public sfml_util::Stage
     {
-        AdventureStage(const AdventureStage &) = delete;
-        AdventureStage & operator=(const AdventureStage &) = delete;
+        AdventureDisplayStage(const AdventureDisplayStage &) = delete;
+        AdventureDisplayStage & operator=(const AdventureDisplayStage &) = delete;
 
     public:
-        AdventureStage();
-        virtual ~AdventureStage();
+        AdventureDisplayStage(AdventureStage * const);
+        virtual ~AdventureDisplayStage();
 
         void Setup() override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
 
     private:
-        AdventureDisplayStage * adventureDisplayStagePtr_;
+        void Setup_BackgroundImage();
+
+    private:
+        AdventureStage * const adventureStagePtr_;
+        AdventureCharacterListUPtr_t characterListUPtr_;
+        sf::Texture backgroundTexture_;
+        sf::Sprite backgroundSprite_;
     };
 
 }
 }
 
-#endif //GAME_STAGE_ADVENTURESTAGE_HPP_INCLUDED
+#endif //GAME_STAGE_ADVENTUREDISPLAYSTAGE_HPP_INCLUDED

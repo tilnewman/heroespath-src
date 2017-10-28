@@ -2595,7 +2595,7 @@ namespace stage
 
     bool InventoryStage::HandleGiveRequestCoins()
     {
-        if (creaturePtr_->Inventory().Coins() == 0_coin)
+        if (creaturePtr_->Inventory().Coins().IsZero())
         {
             std::ostringstream ss;
             ss << creaturePtr_->Name() << " has no coins to give!";
@@ -2622,7 +2622,7 @@ namespace stage
 
     bool InventoryStage::HandleGiveRequestGems()
     {
-        if (creaturePtr_->Inventory().Gems() == 0_gem)
+        if (creaturePtr_->Inventory().Gems().IsZero())
         {
             std::ostringstream ss;
             ss << creaturePtr_->Name() << " has no gems to give!";
@@ -2648,7 +2648,7 @@ namespace stage
 
     bool InventoryStage::HandleGiveRequestMeteorShards()
     {
-        if (creaturePtr_->Inventory().MeteorShards() == 0_mshard)
+        if (creaturePtr_->Inventory().MeteorShards().IsZero())
         {
             std::ostringstream ss;
             ss << creaturePtr_->Name() << " has no Meteor Shards to give!";

@@ -55,6 +55,9 @@ namespace misc
         float AsFloat() const { return static_cast<float>(this->m_value); }
         double AsDouble() const { return static_cast<double>(this->m_value); }
 
+        bool IsZero() const { return (this->m_value == T(0)); }
+        bool IsNonZero() const { return ! IsZero(); }
+
         const StrongNumericType Abs() const
         {
             return StrongNumericType<T, Parameter>(std::abs(this->m_value));

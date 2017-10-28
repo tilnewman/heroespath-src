@@ -30,11 +30,11 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sfml-window.hpp"
-#include "misc/handy-types.hpp"
 
 #include "game/log-macros.hpp"
 
 #include "misc/real.hpp"
+#include "misc/handy-types.hpp"
 #include "misc/assertlogandthrow.hpp"
 
 #include <string>
@@ -230,6 +230,19 @@ namespace sfml_util
                       static_cast<float>(LINE_THICKNESS),
                       FILL_COLOR );
     }
+
+
+    void DrawRectangleWithLineVerts(
+        const sf::FloatRect & RECT,
+        const sf::Color & COLOR,
+        std::vector<sf::Vertex> & verts);
+
+
+    void DrawQuad(
+    const sf::FloatRect & RECT,
+        const sf::Color & COLOR_LEFT,
+        const sf::Color & COLOR_RIGHT,
+        std::vector<sf::Vertex> & verts);
 
 
     template<typename Given_t, typename Return_t>

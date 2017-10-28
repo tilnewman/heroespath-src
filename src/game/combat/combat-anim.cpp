@@ -1223,7 +1223,7 @@ namespace combat
         {
             auto const NEXT_DAMAGE_VALUE{ DAMAGE_VEC[damageIndex++] };
 
-            if ((NEXT_DAMAGE_VALUE == 0_health) ||
+            if ((NEXT_DAMAGE_VALUE.IsZero()) ||
                 (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false))
             {
                 continue;

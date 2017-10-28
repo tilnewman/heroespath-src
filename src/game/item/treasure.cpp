@@ -203,7 +203,7 @@ namespace item
         const bool IS_RELIGIOUS,
         ItemCache & itemCache_OutParam)
     {
-        if (TREASURE_SCORE == 0_score)
+        if (TREASURE_SCORE.IsZero())
         {
             return 0;
         }
@@ -231,7 +231,7 @@ namespace item
                 profiles.end(),
                 [](const auto & PROFILE)
                 {
-                    return (PROFILE.TreasureScore(true) == 0_score);
+                    return (PROFILE.TreasureScore(true).IsZero());
                 }), profiles.end());
         }
 

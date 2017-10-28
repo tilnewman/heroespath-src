@@ -248,6 +248,11 @@ namespace creature
             return Mana_t(TraitNormalAdj(stats::Traits::Mana, ADJ.AsInt()));
         }
 
+        inline float ManaRatio() const
+        {
+            return (Mana().AsFloat() / ManaNormal().AsFloat());
+        }
+
         inline bool IsDead() const { return HasCondition(Conditions::Dead); }
         inline bool IsAlive() const { return ! IsDead(); }
 

@@ -38,7 +38,8 @@ namespace sfml_util
 namespace callback
 {
 
-    //for some reason Package_t would not work as a pointer on IcallbackHandler below...grumble zTn 2016-10-20
+    //For some reason Package_t would not work as a pointer on IcallbackHandler below.
+    //(grumble) zTn 2016-10-20
     template<typename T>
     struct PtrWrapper
     {
@@ -46,7 +47,8 @@ namespace callback
         :
             PTR_(PACKAGE_PTR)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((PTR_ != nullptr), "sfml_util::callback::PtrWrapper(PACKAGE_PTR) was given a null PACKAGE_PTR.");
+            M_ASSERT_OR_LOGANDTHROW_SS((PTR_ != nullptr),
+                "sfml_util::callback::PtrWrapper(PACKAGE_PTR) was given a null PACKAGE_PTR.");
         }
 
         PtrWrapper(const PtrWrapper & PW)
@@ -55,7 +57,9 @@ namespace callback
             //Usage is short-term observation only, so ptr copying is safe.
             PTR_(PW.PTR_)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((PTR_ != nullptr), "sfml_util::callback::PtrWrapper(PtrWrapper) copy-constructor was given a null PACKAGE_PTR.");
+            M_ASSERT_OR_LOGANDTHROW_SS((PTR_ != nullptr),
+                "sfml_util::callback::PtrWrapper(PtrWrapper) copy-constructor "
+                << "was given a null PACKAGE_PTR.");
         }
 
         PtrWrapper & operator=(const PtrWrapper & PW)

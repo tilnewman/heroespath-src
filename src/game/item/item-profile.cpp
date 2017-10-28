@@ -431,7 +431,7 @@ namespace item
             normalStrings.push_back("role_restriction=" + creature::role::ToString(role_));
         }
 
-        if (score_ != 0_score)
+        if (score_.IsNonZero())
         {
             std::ostringstream ss;
             ss << "score=" << score_;

@@ -129,7 +129,7 @@ namespace combat
     {
         using namespace creature;
 
-        if (HEALTH_ADJ == 0_health)
+        if (HEALTH_ADJ.IsZero())
         {
             return;
         }

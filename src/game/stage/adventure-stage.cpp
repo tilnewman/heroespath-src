@@ -29,6 +29,15 @@
 //
 #include "adventure-stage.hpp"
 
+#include "game/loop-manager.hpp"
+#include "game/game.hpp"
+#include "game/state/game-state.hpp"
+#include "game/state/game-state-factory.hpp"
+#include "game/player/party.hpp"
+#include "game/player/fake-party.hpp"
+#include "game/player/character.hpp"
+#include "game/stage/adventure-display-stage.hpp"
+
 #include "sfml-util/display.hpp"
 
 
@@ -44,7 +53,8 @@ namespace stage
             0.0f,
             0.0f,
             sfml_util::Display::Instance()->GetWinWidth(),
-            sfml_util::Display::Instance()->GetWinHeight())
+            sfml_util::Display::Instance()->GetWinHeight()),
+        adventureDisplayStagePtr_(nullptr)
     {}
 
 
@@ -53,15 +63,17 @@ namespace stage
 
 
     void AdventureStage::Setup()
-    {}
+    {
+        //TEMP TODO REMOVE -once done testing
+        //create a party of characters to work with during testing
+        state::GameStateFactory::Instance()->NewGame(player::FakeParty::Make());
 
+        adventureDisplayStagePtr_ = new AdventureDisplayStage(this);
+        adventureDisplayStagePtr_->Setup();
 
-    void AdventureStage::UpdateTime(const float)
-    {}
-
-
-    void AdventureStage::Draw(sf::RenderTarget &, const sf::RenderStates &)
-    {}
+        //give control of the AdventureDispayStage object lifetime to the Loop class
+        LoopManager::Instance()->AddStage(adventureDisplayStagePtr_);
+    }
 
 }
 }

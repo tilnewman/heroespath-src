@@ -50,21 +50,23 @@ namespace gui
     class TextInfo
     {
     public:
-        explicit TextInfo(const std::string &   TEXT              = "",
-                          const FontPtr_t       FONT_PTR          = nullptr,
-                          const unsigned int    CHAR_SIZE         = FontManager::Instance()->Size_Normal(),
-                          const sf::Color &     COLOR             = sf::Color::White,
-                          const sf::BlendMode & BLEND_MODE        = sf::BlendAlpha,
-                          const sf::Uint32      STYLE             = sf::Text::Style::Regular,
-                          const Justified::Enum JUSTIFIED         = Justified::Left,
-                          const bool            IS_OUTLINE_ONLY   = false,
-                          const float           OUTLINE_THICKNESS = 0.0f);
+        explicit TextInfo(
+            const std::string &   TEXT              = "",
+            const FontPtr_t       FONT_PTR          = nullptr,
+            const unsigned int    CHAR_SIZE         = FontManager::Instance()->Size_Normal(),
+            const sf::Color &     COLOR             = sf::Color::White,
+            const sf::BlendMode & BLEND_MODE        = sf::BlendAlpha,
+            const sf::Uint32      STYLE             = sf::Text::Style::Regular,
+            const Justified::Enum JUSTIFIED         = Justified::Left,
+            const bool            IS_OUTLINE_ONLY   = false,
+            const float           OUTLINE_THICKNESS = 0.0f);
 
-        TextInfo(const std::string &   TEXT,
-                 const FontPtr_t       FONT_PTR,
-                 const unsigned int    CHAR_SIZE,
-                 const sf::Color &     COLOR,
-                 const Justified::Enum JUSTIFIED);
+        TextInfo(
+            const std::string &   TEXT,
+            const FontPtr_t       FONT_PTR,
+            const unsigned int    CHAR_SIZE,
+            const sf::Color &     COLOR,
+            const Justified::Enum JUSTIFIED);
 
         TextInfo(const TextInfo &);
 

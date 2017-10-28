@@ -570,14 +570,16 @@ namespace treasure
     void TreasureDisplayStage::SetupInitial_BackgroundImage()
     {
         sfml_util::LoadTexture(backgroundTexture_,
-            GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2b"));
+            GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
 
         backgroundSprite_.setTexture(backgroundTexture_);
         backgroundSprite_.setPosition(0.0f, 0.0f);
 
+        auto const MEASUREMENTS{ CreateDisplayMeasurements() };
+
         backgroundSprite_.setScale(
-            sfml_util::Display::Instance()->GetWinWidth() / backgroundSprite_.getLocalBounds().width,
-            sfml_util::Display::Instance()->GetWinHeight() / backgroundSprite_.getLocalBounds().height);
+            MEASUREMENTS.screenWidth / backgroundSprite_.getLocalBounds().width,
+            MEASUREMENTS.screenHeight / backgroundSprite_.getLocalBounds().height);
     }
 
 

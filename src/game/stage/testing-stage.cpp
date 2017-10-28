@@ -703,7 +703,6 @@ namespace stage
             "media-images-backgrounds-tile-wood",
             "media-images-backgrounds-tile-darkpaper",
             "media-images-backgrounds-paper-2",
-            "media-images-backgrounds-paper-2b",
             "media-images-logos-sfml",
             "media-images-logos-tiled",
             "media-images-logos-terrain",

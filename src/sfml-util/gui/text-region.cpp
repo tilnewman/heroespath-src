@@ -46,7 +46,7 @@ namespace sfml_util
 namespace gui
 {
 
-    const unsigned int TextRegion::DEFAULT_NO_RESIZE_(0);
+    const unsigned int TextRegion::DEFAULT_NO_RESIZE_{ 0 };
 
 
     TextRegion::TextRegion(const std::string & NAME)
@@ -67,12 +67,13 @@ namespace gui
     {}
 
 
-    TextRegion::TextRegion(const std::string &   NAME,
-                           const TextInfo &      TEXT_INFO,
-                           const sf::FloatRect & REGION,
-                           const unsigned int    SMALLER_FONT_SIZE,
-                           const box::Info &     BOX_INFO,
-                           const Margins &       MARGINS)
+    TextRegion::TextRegion(
+        const std::string &   NAME,
+        const TextInfo &      TEXT_INFO,
+        const sf::FloatRect & REGION,
+        const unsigned int    SMALLER_FONT_SIZE,
+        const box::Info &     BOX_INFO,
+        const Margins &       MARGINS)
     :
         GuiEntity          (std::string(NAME).append("_TextRegion"), REGION),
         boxInfo_           (),
@@ -96,13 +97,14 @@ namespace gui
     }
 
 
-    TextRegion::TextRegion(const std::string &   NAME,
-                           const TextInfo &      TEXT_INFO,
-                           const sf::FloatRect & REGION,
-                           IStage * const        stagePtr,
-                           const unsigned int    SMALLER_FONT_SIZE,
-                           const box::Info &     BOX_INFO,
-                           const Margins &       MARGINS)
+    TextRegion::TextRegion(
+        const std::string &   NAME,
+        const TextInfo &      TEXT_INFO,
+        const sf::FloatRect & REGION,
+        IStage * const        stagePtr,
+        const unsigned int    SMALLER_FONT_SIZE,
+        const box::Info &     BOX_INFO,
+        const Margins &       MARGINS)
     :
         GuiEntity          (std::string(NAME).append("_TextRegion"), REGION),
         boxInfo_           (),
@@ -145,11 +147,12 @@ namespace gui
     }
 
 
-    void TextRegion::Setup(const TextInfo &      TEXT_INFO,
-                           const sf::FloatRect & REGION,
-                           const unsigned int    SMALLER_FONT_SIZE,
-                           const box::Info &     BOX_INFO,
-                           const Margins &       MARGINS)
+    void TextRegion::Setup(
+        const TextInfo &      TEXT_INFO,
+        const sf::FloatRect & REGION,
+        const unsigned int    SMALLER_FONT_SIZE,
+        const box::Info &     BOX_INFO,
+        const Margins &       MARGINS)
     {
         Setup(TEXT_INFO,
               REGION,
@@ -161,13 +164,14 @@ namespace gui
     }
 
 
-    void TextRegion::Setup(const TextInfo &      TEXT_INFO,
-                           const sf::FloatRect & REGION,
-                           IStage * const        stagePtrParam,
-                           const unsigned int    SMALLER_FONT_SIZE,
-                           const box::Info &     BOX_INFO,
-                           const Margins &       MARGINS,
-                           const bool            WILL_ALLOW_SCROLLBAR)
+    void TextRegion::Setup(
+        const TextInfo &      TEXT_INFO,
+        const sf::FloatRect & REGION,
+        IStage * const        stagePtrParam,
+        const unsigned int    SMALLER_FONT_SIZE,
+        const box::Info &     BOX_INFO,
+        const Margins &       MARGINS,
+        const bool            WILL_ALLOW_SCROLLBAR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT_INFO.text.empty()),
             GetEntityName() << " TextRegion::Setup() was given a TEXT_INFO.up.text string"
@@ -189,32 +193,38 @@ namespace gui
         text_ = TEXT_INFO.text;
         stagePtr_ = stagePtrParam;
 
-        HandleSliderBar( text_render::RenderToArea(GetEntityName(),
-                                                   TEXT_INFO,
-                                                   renderedText_,
-                                                   REGION,
-                                                   SMALLER_FONT_SIZE,
-                                                   MARGINS,
-                                                   WILL_ALLOW_SCROLLBAR) );
+        HandleSliderBar( text_render::RenderToArea(
+            GetEntityName(),
+            TEXT_INFO,
+            renderedText_,
+            REGION,
+            SMALLER_FONT_SIZE,
+            MARGINS,
+            WILL_ALLOW_SCROLLBAR) );
 
         //position the text for on-screen coordinates
-        const std::size_t NUM_LINES(renderedText_.vec_vec.size());
+        auto const NUM_LINES{ renderedText_.vec_vec.size() };
         for (std::size_t l(0); l < NUM_LINES; ++l)
         {
-            const std::size_t NUM_SNIPPETS(renderedText_.vec_vec[l].size());
+            auto const NUM_SNIPPETS{ renderedText_.vec_vec[l].size() };
             for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
+            {
                 renderedText_.vec_vec[l][s].sf_text.move(REGION.left, REGION.top);
+            }
         }
 
         //establish the region
-        float heightToUse(renderedText_.total_height);
+        auto heightToUse{ renderedText_.total_height };
         if (REGION.height > 1.0f)
+        {
             heightToUse = REGION.height;
+        }
 
-        const sf::FloatRect OUTLINE_RECT(REGION.left,
-                                         REGION.top,
-                                         std::max(REGION.width, renderedText_.longest_line),
-                                         heightToUse);
+        const sf::FloatRect OUTLINE_RECT(
+            REGION.left,
+            REGION.top,
+            std::max(REGION.width, renderedText_.longest_line),
+            heightToUse);
 
         SetEntityRegion(OUTLINE_RECT);
         HandleBox(BOX_INFO);
@@ -259,8 +269,8 @@ namespace gui
 
             sf::FloatRect newRegion(entityRegion_);
 
-            const float FIRST_LINE_HEIGHT(static_cast<float>(
-                renderedText_.vec_vec[0][0].sf_text.getCharacterSize()));
+            auto const FIRST_LINE_HEIGHT{
+                static_cast<float>(renderedText_.vec_vec[0][0].sf_text.getCharacterSize()) };
 
             newRegion.top = entityRegion_.top - FIRST_LINE_HEIGHT;
             newRegion.height = entityRegion_.height + FIRST_LINE_HEIGHT;
@@ -290,55 +300,58 @@ namespace gui
         }
     }
 
+
     void TextRegion::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         //Note:  Don't draw the Box or SliderBar here.  They are being drawn by the stage.
-        if (entityWillDraw_)
+        if (false == entityWillDraw_)
         {
-            //don't draw farther down than the region extends, keep track with posY
-            float posY(0.0f);
-            const std::size_t NUM_LINES(renderedText_.vec_vec.size());
-            for (std::size_t l(startLine_); l < NUM_LINES; ++l)
+            return;
+        }
+        //don't draw farther down than the region extends, keep track with posY
+        auto posY{ 0.0f };
+        auto const NUM_LINES{ renderedText_.vec_vec.size() };
+        for (std::size_t l(startLine_); l < NUM_LINES; ++l)
+        {
+            if (renderedText_.vec_vec[l].empty())
             {
-                if (renderedText_.vec_vec[l].empty())
-                {
-                    continue;
-                }
-
-                //remove extra space created by newline characters
-                sf::Text t(renderedText_.vec_vec[l][0].sf_text);
-                t.setString( boost::algorithm::replace_all_copy(
-                    std::string(t.getString()), "\n", "") );
-
-                //there should be no empty lines, instead choose a value that fits
-                if (std::string(t.getString()).empty())
-                {
-                    t.setString("\n");
-
-                    //this magic number found by experiment
-                    posY += t.getGlobalBounds().height * 0.8f;
-                }
-                else
-                {
-                    posY += t.getGlobalBounds().height;
-                }
-
-                const float SCROLL_PAD((sliderBarUPtr_.get() == nullptr) ?
-                    0.0f : static_cast<float>(t.getCharacterSize()));
-
-                if (posY > (entityRegion_.height - SCROLL_PAD))
-                {
-                    break;
-                }
-
-                const std::size_t NUM_SNIPPETS(renderedText_.vec_vec[l].size());
-                for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
-                {
-                    target.draw(renderedText_.vec_vec[l][s].sf_text, states);
-                }
+                continue;
             }
 
-            //sfml_util::DrawRectangle(target, states, entityRegion_, sf::Color::Red);
+            //remove extra space created by newline characters
+            sf::Text t(renderedText_.vec_vec[l][0].sf_text);
+
+            t.setString(
+                boost::algorithm::replace_all_copy(std::string(t.getString()), "\n", "") );
+
+            //there should be no empty lines, instead choose a value that fits
+            if (std::string(t.getString()).empty())
+            {
+                t.setString("\n");
+
+                //this magic number found by experiment
+                posY += t.getGlobalBounds().height * 0.8f;
+            }
+            else
+            {
+                posY += t.getGlobalBounds().height;
+            }
+
+            auto const SCROLL_PAD{
+                (sliderBarUPtr_.get() == nullptr) ?
+                    0.0f :
+                    static_cast<float>(t.getCharacterSize()) };
+
+            if (posY > (entityRegion_.height - SCROLL_PAD))
+            {
+                break;
+            }
+
+            auto const NUM_SNIPPETS{ renderedText_.vec_vec[l].size() };
+            for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
+            {
+                target.draw(renderedText_.vec_vec[l][s].sf_text, states);
+            }
         }
     }
 
@@ -347,10 +360,10 @@ namespace gui
     {
         GuiEntity::MoveEntityPos(HORIZ, VERT);
 
-        const std::size_t NUM_LINES(renderedText_.vec_vec.size());
+        auto const NUM_LINES{ renderedText_.vec_vec.size() };
         for (std::size_t l(0); l < NUM_LINES; ++l)
         {
-            const std::size_t NUM_SNIPPETS(renderedText_.vec_vec[l].size());
+            auto const NUM_SNIPPETS{ renderedText_.vec_vec[l].size() };
             for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
             {
                 renderedText_.vec_vec[l][s].sf_text.move(HORIZ, VERT);
@@ -371,9 +384,7 @@ namespace gui
 
     void TextRegion::SetEntityPos(const float POS_LEFT, const float POS_TOP)
     {
-        const float OFFSET_X(POS_LEFT - entityRegion_.left);
-        const float OFFSET_Y(POS_TOP - entityRegion_.top);
-        MoveEntityPos(OFFSET_X, OFFSET_Y);
+        MoveEntityPos(POS_LEFT - entityRegion_.left, POS_TOP - entityRegion_.top);
     }
 
 
@@ -394,14 +405,14 @@ namespace gui
     void TextRegion::Append(const TextRegion & TEXT_REGION)
     {
         //add the new lines of text
-        const std::size_t NUM_LINES(TEXT_REGION.renderedText_.vec_vec.size());
+        auto const NUM_LINES{ TEXT_REGION.renderedText_.vec_vec.size() };
         for (std::size_t l(0); l < NUM_LINES; ++l)
         {
             //adjust vertical positions
             sfml_util::text_render::TextSnippetVec_t nextSnippetVec(
                 TEXT_REGION.renderedText_.vec_vec[l]);
 
-            const std::size_t NUM_SNIPPETS(nextSnippetVec.size());
+            auto const NUM_SNIPPETS{ nextSnippetVec.size() };
             for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
             {
                 nextSnippetVec[s].sf_text.move(0.0f, renderedText_.total_height);
@@ -419,15 +430,18 @@ namespace gui
             renderedText_.longest_line = TEXT_REGION.renderedText_.longest_line;
         }
 
-        HandleSliderBar( text_render::ApplyToArea(GetEntityName(),
-                                                  renderedText_,
-                                                  GetEntityRegion()) );
+        HandleSliderBar( text_render::ApplyToArea(
+            GetEntityName(),
+            renderedText_,
+            GetEntityRegion()) );
 
         //establish the new region
-        const sf::FloatRect OUTLINE_RECT(entityRegion_.left,
-                                         entityRegion_.top,
-                                         renderedText_.longest_line,
-                                         entityRegion_.height);
+        const sf::FloatRect OUTLINE_RECT(
+            entityRegion_.left,
+            entityRegion_.top,
+            renderedText_.longest_line,
+            entityRegion_.height);
+
         SetEntityRegion(OUTLINE_RECT);
 
         //keep the text_ member accurate
@@ -437,10 +451,10 @@ namespace gui
 
     void TextRegion::OnColorChange()
     {
-        const std::size_t NUM_LINES(renderedText_.vec_vec.size());
+        auto const NUM_LINES{ renderedText_.vec_vec.size() };
         for (std::size_t l(0); l < NUM_LINES; ++l)
         {
-            const std::size_t NUM_SNIPPETS(renderedText_.vec_vec[l].size());
+            auto const NUM_SNIPPETS{ renderedText_.vec_vec[l].size() };
             for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
             {
                 sfml_util::SetTextColor(renderedText_.vec_vec[l][s].sf_text, entityFgColor_);
@@ -482,14 +496,14 @@ namespace gui
         }
 
         //establish how far down the user has scrolled
-        const float SCROLL_POS(SCROLL_RATIO * (
-            renderedText_.total_height - (REGION_HEIGHT * 0.8f)));
+        auto const SCROLL_POS{
+            SCROLL_RATIO * (renderedText_.total_height - (REGION_HEIGHT * 0.8f)) };
 
-        const float FIRST_LINE_HEIGHT( static_cast<float>(
-            renderedText_.vec_vec[0][0].sf_text.getCharacterSize()) );
+        auto const FIRST_LINE_HEIGHT{
+            static_cast<float>(renderedText_.vec_vec[0][0].sf_text.getCharacterSize()) };
 
         //establish which line to start drawing
-        float startPosY(SCROLL_POS / FIRST_LINE_HEIGHT);
+        auto startPosY{ SCROLL_POS / FIRST_LINE_HEIGHT };
         if (startPosY < 0.0f)
         {
             startPosY = 0.0f;
@@ -498,10 +512,10 @@ namespace gui
         startLine_ = static_cast<std::size_t>(startPosY);
 
         //move the text to compensate
-        const std::size_t NUM_LINES(renderedText_.vec_vec.size());
+        auto const NUM_LINES{ renderedText_.vec_vec.size() };
         for (std::size_t l(0); l < NUM_LINES; ++l)
         {
-            const std::size_t NUM_SNIPPETS(renderedText_.vec_vec[l].size());
+            auto const NUM_SNIPPETS{ renderedText_.vec_vec[l].size() };
             for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
             {
                 renderedText_.vec_vec[l][s].sf_text.setPosition(

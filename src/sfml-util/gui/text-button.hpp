@@ -28,8 +28,8 @@
 // text-button.hpp
 //  Drawing and handling code for buttons that are only text.
 //
-#include "sfml-util/gui/gui-entity-text.hpp"
 #include "sfml-util/i-callback-handler.hpp"
+#include "sfml-util/gui/gui-entity-text.hpp"
 
 #include <memory>
 #include <string>

@@ -93,32 +93,32 @@ namespace stats
     {
         std::ostringstream ss;
 
-        if (str_ != 0_str)
+        if (str_.IsNonZero())
         {
             ss << "Str " << ((str_ > 0_str) ? "+" : "") << str_;
         }
 
-        if (acc_ != 0_acc)
+        if (acc_.IsNonZero())
         {
             ss << "Acc " << ((acc_ > 0_acc) ? "+" : "") << acc_;
         }
 
-        if (cha_ != 0_cha)
+        if (cha_.IsNonZero())
         {
             ss << "Cha " << ((cha_ > 0_cha) ? "+" : "") << cha_;
         }
 
-        if (lck_ != 0_lck)
+        if (lck_.IsNonZero())
         {
             ss << "Lck " << ((lck_ > 0_lck) ? "+" : "") << lck_;
         }
 
-        if (spd_ != 0_spd)
+        if (spd_.IsNonZero())
         {
             ss << "Spd " << ((spd_ > 0_spd) ? "+" : "") << spd_;
         }
 
-        if (int_ != 0_int)
+        if (int_.IsNonZero())
         {
             ss << "Int " << ((int_ > 0_int) ? "+" : "") << int_;
         }

@@ -109,7 +109,7 @@ namespace creature
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (((ACHIEVEMENT_TYPE != AchievementType::None) &&
-             (ACHIEVEMENT_COUNT == 0_count)) == false),
+                ACHIEVEMENT_COUNT.IsZero()) == false),
             "game::creature::Title::Title(title=" << Titles::ToString(TITLE)
             << ", ach_enum=" << ACHIEVEMENT_TYPE << ", ach_count=" << ACHIEVEMENT_COUNT
             << ", rank_bonus=" << RANK_BONUS

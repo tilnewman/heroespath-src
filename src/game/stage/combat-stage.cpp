@@ -3883,7 +3883,7 @@ namespace stage
                 }
 
                 auto const DAMAGE{ NEXT_CREATURE_EFFECT.GetDamageTotal() };
-                if (DAMAGE != 0_health)
+                if (DAMAGE.IsNonZero())
                 {
                     damageVec.push_back(DAMAGE);
                     combatNodePVec.push_back(combatDisplayStagePtr_->
