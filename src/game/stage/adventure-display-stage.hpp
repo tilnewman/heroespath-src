@@ -53,14 +53,14 @@ namespace stage
         virtual ~AdventureDisplayStage();
 
         void Setup() override;
-        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
 
     private:
+        void Setup_CharacterList();
         void Setup_BackgroundImage();
 
     private:
-        AdventureStage * const adventureStagePtr_;
+        //AdventureStage * const adventureStagePtr_;
         AdventureCharacterListUPtr_t characterListUPtr_;
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;

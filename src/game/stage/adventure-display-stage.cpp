@@ -42,7 +42,7 @@ namespace game
 namespace stage
 {
 
-    AdventureDisplayStage::AdventureDisplayStage(AdventureStage * const adventureStagePtr)
+    AdventureDisplayStage::AdventureDisplayStage(AdventureStage * const)
     :
         Stage(
             "AdventureDisplay",
@@ -50,7 +50,7 @@ namespace stage
             0.0f,
             sfml_util::Display::Instance()->GetWinWidth(),
             sfml_util::Display::Instance()->GetWinHeight()),
-        adventureStagePtr_(adventureStagePtr),
+        //adventureStagePtr_(adventureStagePtr),
         characterListUPtr_(std::make_unique<AdventureCharacterList>(this)),
         backgroundTexture_()
     {}
@@ -62,14 +62,25 @@ namespace stage
 
     void AdventureDisplayStage::Setup()
     {
+        Setup_CharacterList();
+        Setup_BackgroundImage();
+    }
+
+
+    void AdventureDisplayStage::Setup_CharacterList()
+    {
         characterListUPtr_->Setup();
 
-        characterListUPtr_->SetEntityPos(
-            sfml_util::MapByRes(20.0f, 60.0f),
+        auto const CHARACTER_LIST_LEFT{
+            (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) -
+            (characterListUPtr_->GetEntityRegion().width * 0.5f) };
+
+        auto const CHARACTER_LIST_TOP{
             sfml_util::Display::Instance()->GetWinHeight() -
-                characterListUPtr_->GetEntityRegion().height);
-        
-        Setup_BackgroundImage();
+            characterListUPtr_->GetEntityRegion().height -
+            sfml_util::MapByRes(50.0f, 200.0f) };
+
+        characterListUPtr_->SetEntityPos(CHARACTER_LIST_LEFT, CHARACTER_LIST_TOP);
     }
 
 
@@ -78,6 +89,8 @@ namespace stage
         sfml_util::LoadTexture(
             backgroundTexture_,
             GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-paper-2"));
+
+        sfml_util::FlipVert(backgroundTexture_);
 
         backgroundSprite_.setTexture(backgroundTexture_);
         backgroundSprite_.setPosition(0.0f, 0.0f);
@@ -88,10 +101,6 @@ namespace stage
             sfml_util::Display::Instance()->GetWinHeight() /
                 backgroundSprite_.getLocalBounds().height);
     }
-
-
-    void AdventureDisplayStage::UpdateTime(const float)
-    {}
 
 
     void AdventureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)

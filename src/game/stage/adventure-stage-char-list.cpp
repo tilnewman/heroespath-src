@@ -52,7 +52,7 @@ namespace stage
     :
         sfml_util::gui::GuiEntity("AdventureStage'sCharacterList", 0.0f, 0.0f),
         LINE_COLOR_( sfml_util::FontManager::Instance()->Color_GrayDarker() ),
-        OUTER_SPACER_( sfml_util::MapByRes(25.0f, 60.0f) ),
+        OUTER_SPACER_( sfml_util::MapByRes(75.0f, 300.0f) ),
         HEALTH_COLUMN_WIDTH_( sfml_util::MapByRes(180.0f, 500.0f) ),
         MANA_COLUMN_WIDTH_( HEALTH_COLUMN_WIDTH_ ),
         CELL_TEXT_LEFT_SPACER_( sfml_util::MapByRes(12.0f, 25.0f) ),
@@ -64,7 +64,8 @@ namespace stage
         manaColumnRects_(),
         conditionColumnRects_(),
         lineVerts_(),
-        boxVerts_()
+        quadVerts_(),
+        innerShadeQuadVerts_()
     {}
 
 
@@ -81,8 +82,9 @@ namespace stage
 
     void AdventureCharacterList::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
+        target.draw( & innerShadeQuadVerts_[0], innerShadeQuadVerts_.size(), sf::Quads, states);
         target.draw( & lineVerts_[0], lineVerts_.size(), sf::Lines, states);
-        target.draw( & boxVerts_[0], boxVerts_.size(), sf::Quads, states);
+        target.draw( & quadVerts_[0], quadVerts_.size(), sf::Quads, states);
     }
 
 
@@ -96,22 +98,23 @@ namespace stage
     void AdventureCharacterList::Setup()
     {
         lineVerts_.clear();
-        boxVerts_.clear();
-
+        quadVerts_.clear();
+        innerShadeQuadVerts_.clear();
+        
         SetupNameButtons();
         
         SetupColumnRects_Name();
         SetupColumnRects_Health();
         SetupColumnRects_Mana();
         SetupColumnRects_Condition();
-
+        
         SetupConditionsText();
-
+        
         SetupPositions_NameButtons();
         SetupPositions_HealthBars();
         SetupPositions_ManaBars();
         SetupPositions_Conditions();
-
+        
         SetupPositions_OverallRegion();
     }
 
@@ -185,7 +188,7 @@ namespace stage
                 conditionColumnRects_[i].height);
 
             condsTextRegionUVec_.push_back( std::make_unique<sfml_util::gui::TextRegion>(
-                "AdeventureStageCharacterList'sConditionTextFor_" + CHARACTER_PTR->Name(),
+                "AdventureStageCharacterList'sConditionTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT) );
         }
@@ -338,11 +341,10 @@ namespace stage
         {
             auto const LEFT{ conditionColumnRects_[0].left + CELL_TEXT_LEFT_SPACER_ };
 
-            auto const CELL_MID_VERT{
-                conditionColumnRects_[i].top + (conditionColumnRects_[i].height * 0.5f) };
-
             auto const TOP{
-                CELL_MID_VERT - (condsTextRegionUVec_[i]->GetEntityRegion().height * 0.5f) };
+                (conditionColumnRects_[i].top + (conditionColumnRects_[i].height * 0.5f)) -
+                    (condsTextRegionUVec_[i]->GetEntityRegion().height * 0.5f) +
+                    sfml_util::MapByRes(10.0f, 20.0f)};
 
             condsTextRegionUVec_[i]->SetEntityPos(LEFT, TOP);
         }
@@ -360,7 +362,6 @@ namespace stage
         auto const LAST_INDEX{ nameColumnRects_.size() - 1 };
 
         auto const OVERALL_RECT_HEIGHT{
-            (2.0f * OUTER_SPACER_) +
             (nameColumnRects_[LAST_INDEX].top + nameColumnRects_[LAST_INDEX].height) -
                 nameColumnRects_[0].top };
 
@@ -372,14 +373,30 @@ namespace stage
 
         SetEntityRegion(OVERALL_RECT);
 
-        sfml_util::DrawRectangleWithLineVerts(
+        for (float i(0.0f); i < 3.0f; i += 1.0f)
+        {
+            sfml_util::DrawRectangleWithLineVerts(
+                sf::FloatRect(
+                    OVERALL_RECT.left - i,
+                    OVERALL_RECT.top - i,
+                    (OVERALL_RECT.width + 3.0f) + (i * 2.0f),
+                    OVERALL_RECT.height + (i * 2.0f)),
+                LINE_COLOR_ - sf::Color(0, 0, 0, static_cast<sf::Uint8>(i) * 50),
+                lineVerts_);
+        }
+
+        const sf::Uint8 INNER_SHADOW_ALPHA{ 18 };
+        auto const INNER_SHADOW_COLOR{ sf::Color(0, 0, 0, INNER_SHADOW_ALPHA) };
+
+        sfml_util::DrawQuad(
             sf::FloatRect(
                 OVERALL_RECT.left - 1.0f,
                 OVERALL_RECT.top - 1.0f,
-                OVERALL_RECT.width + 2.0f,
-                OVERALL_RECT.height + 2.0f),
-            LINE_COLOR_ - sf::Color(0, 0, 0, 127),
-            lineVerts_);
+                (OVERALL_RECT.width + 3.0f) - 1.0f,
+                OVERALL_RECT.height - 1.0f),
+            INNER_SHADOW_COLOR,
+            INNER_SHADOW_COLOR,
+            innerShadeQuadVerts_);
     }
 
 
@@ -465,7 +482,7 @@ namespace stage
                 sf::FloatRect(LEFT + 2.0f, TOP + 2.0f, BAR_RIGHT, HEIGHT - 4.0f),
                 COLOR_BAR_LEFT,
                 COLOR_BAR_RIGHT,
-                boxVerts_);
+                quadVerts_);
         }
     }
 

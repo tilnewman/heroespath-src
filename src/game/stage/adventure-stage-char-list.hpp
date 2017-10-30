@@ -105,7 +105,8 @@ namespace stage
         sfml_util::FloatRectVec_t manaColumnRects_;
         sfml_util::FloatRectVec_t conditionColumnRects_;
         std::vector<sf::Vertex> lineVerts_;
-        std::vector<sf::Vertex> boxVerts_;
+        std::vector<sf::Vertex> quadVerts_;
+        std::vector<sf::Vertex> innerShadeQuadVerts_;
     };
 
 
