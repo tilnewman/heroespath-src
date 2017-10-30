@@ -72,6 +72,8 @@ namespace stage
 
     private:
         void SetupNameButtons();
+        void SetupHealthNumbersText();
+        void SetupManaNumbersText();
         void SetupConditionsText();
         void SetupColumnRects_Name();
         void SetupColumnRects_Health();
@@ -99,7 +101,9 @@ namespace stage
         const float CELL_TEXT_LEFT_SPACER_;
         sfml_util::IStage * stagePtr_;
         sfml_util::gui::FourStateButtonUVec_t namesButtonUVec_;
-        sfml_util::gui::TextRegionUVec_t condsTextRegionUVec_;
+        sfml_util::gui::TextRegionUVec_t condsTextRegionsUVec_;
+        sfml_util::gui::TextRegionUVec_t healthTextRegionsUVec_;
+        sfml_util::gui::TextRegionUVec_t manaTextRegionsUVec_;
         sfml_util::FloatRectVec_t nameColumnRects_;
         sfml_util::FloatRectVec_t healthColumnRects_;
         sfml_util::FloatRectVec_t manaColumnRects_;

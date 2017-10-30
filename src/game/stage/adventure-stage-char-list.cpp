@@ -58,7 +58,9 @@ namespace stage
         CELL_TEXT_LEFT_SPACER_( sfml_util::MapByRes(12.0f, 25.0f) ),
         stagePtr_(stagePtr),
         namesButtonUVec_(),
-        condsTextRegionUVec_(),
+        condsTextRegionsUVec_(),
+        healthTextRegionsUVec_(),
+        manaTextRegionsUVec_(),
         nameColumnRects_(),
         healthColumnRects_(),
         manaColumnRects_(),
@@ -102,7 +104,9 @@ namespace stage
         innerShadeQuadVerts_.clear();
         
         SetupNameButtons();
-        
+        SetupHealthNumbersText();
+        SetupManaNumbersText();
+
         SetupColumnRects_Name();
         SetupColumnRects_Health();
         SetupColumnRects_Mana();
@@ -160,14 +164,92 @@ namespace stage
     }
 
 
+    void AdventureCharacterList::SetupHealthNumbersText()
+    {
+        for (auto const & TEXT_UPTR : healthTextRegionsUVec_)
+        {
+            stagePtr_->EntityRemove(TEXT_UPTR.get());
+        }
+
+        healthTextRegionsUVec_.clear();
+
+        for (auto const CHARACTER_PTR : Game::Instance()->State().Party().Characters())
+        {
+            std::ostringstream ss;
+            ss << CHARACTER_PTR->HealthCurrent() << "/" << CHARACTER_PTR->HealthNormal();
+
+            const sfml_util::gui::TextInfo TEXT_INFO{
+                ss.str(),
+                sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
+                sfml_util::FontManager::Instance()->Size_Smallish(),
+                sfml_util::FontManager::Instance()->Color_GrayDarker() };
+
+            const sf::FloatRect RECT(
+                0.0f,//actual position will be set by SetupPositions_Conditions()
+                0.0f,
+                0.0f,
+                0.0f);
+
+            healthTextRegionsUVec_.push_back(std::make_unique<sfml_util::gui::TextRegion>(
+                "AdventureStage'sCharacterList'sHealthTextFor_" + CHARACTER_PTR->Name(),
+                TEXT_INFO,
+                RECT));
+        }
+
+        for (auto const & TEXT_UPTR : healthTextRegionsUVec_)
+        {
+            stagePtr_->EntityAdd(TEXT_UPTR.get());
+        }
+    }
+
+
+    void AdventureCharacterList::SetupManaNumbersText()
+    {
+        for (auto const & TEXT_UPTR : manaTextRegionsUVec_)
+        {
+            stagePtr_->EntityRemove(TEXT_UPTR.get());
+        }
+
+        manaTextRegionsUVec_.clear();
+
+        for (auto const CHARACTER_PTR : Game::Instance()->State().Party().Characters())
+        {
+            std::ostringstream ss;
+            ss << CHARACTER_PTR->Mana() << "/" << CHARACTER_PTR->ManaNormal();
+
+            const sfml_util::gui::TextInfo TEXT_INFO{
+                ss.str(),
+                sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
+                sfml_util::FontManager::Instance()->Size_Smallish(),
+                sfml_util::FontManager::Instance()->Color_GrayDarker() };
+
+            const sf::FloatRect RECT(
+                0.0f,//actual position will be set by SetupPositions_Conditions()
+                0.0f,
+                0.0f,
+                0.0f);
+
+            manaTextRegionsUVec_.push_back(std::make_unique<sfml_util::gui::TextRegion>(
+                "AdventureStage'sCharacterList'sManaTextFor_" + CHARACTER_PTR->Name(),
+                TEXT_INFO,
+                RECT));
+        }
+
+        for (auto const & TEXT_UPTR : manaTextRegionsUVec_)
+        {
+            stagePtr_->EntityAdd(TEXT_UPTR.get());
+        }
+    }
+
+
     void AdventureCharacterList::SetupConditionsText()
     {
-        for (auto const & TEXTREGION_UPTR : condsTextRegionUVec_)
+        for (auto const & TEXTREGION_UPTR : condsTextRegionsUVec_)
         {
             stagePtr_->EntityRemove(TEXTREGION_UPTR.get());
         }
 
-        condsTextRegionUVec_.clear();
+        condsTextRegionsUVec_.clear();
 
         auto const CHARACTER_PVEC{ Game::Instance()->State().Party().Characters() };
         auto const NUM_CHARACTERS{ CHARACTER_PVEC.size() };
@@ -187,13 +269,13 @@ namespace stage
                 conditionColumnRects_[i].width - (CELL_TEXT_LEFT_SPACER_ * 2.0f),
                 conditionColumnRects_[i].height);
 
-            condsTextRegionUVec_.push_back( std::make_unique<sfml_util::gui::TextRegion>(
+            condsTextRegionsUVec_.push_back( std::make_unique<sfml_util::gui::TextRegion>(
                 "AdventureStageCharacterList'sConditionTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT) );
         }
 
-        for (auto const & TEXTREGION_UPTR : condsTextRegionUVec_)
+        for (auto const & TEXTREGION_UPTR : condsTextRegionsUVec_)
         {
             stagePtr_->EntityAdd(TEXTREGION_UPTR.get());
         }
@@ -336,17 +418,17 @@ namespace stage
 
     void AdventureCharacterList::SetupPositions_Conditions()
     {
-        auto const NUM_TEXTREGIONS{ condsTextRegionUVec_.size() };
+        auto const NUM_TEXTREGIONS{ condsTextRegionsUVec_.size() };
         for (std::size_t i(0); i<NUM_TEXTREGIONS; ++i)
         {
             auto const LEFT{ conditionColumnRects_[0].left + CELL_TEXT_LEFT_SPACER_ };
 
             auto const TOP{
                 (conditionColumnRects_[i].top + (conditionColumnRects_[i].height * 0.5f)) -
-                    (condsTextRegionUVec_[i]->GetEntityRegion().height * 0.5f) +
+                    (condsTextRegionsUVec_[i]->GetEntityRegion().height * 0.5f) +
                     sfml_util::MapByRes(10.0f, 20.0f)};
 
-            condsTextRegionUVec_[i]->SetEntityPos(LEFT, TOP);
+            condsTextRegionsUVec_[i]->SetEntityPos(LEFT, TOP);
         }
     }
     
@@ -424,10 +506,9 @@ namespace stage
 
             //eastblish the outer line (bounding box) coordinates
             auto const WIDTH{ BOUNDS.width * 0.75f };
-            auto const HEIGHT{ BOUNDS.height * 0.5f };
 
-            auto const LEFT{
-                (BOUNDS.left + (BOUNDS.width * 0.5f)) - (WIDTH * 0.5f) };
+            auto const HEIGHT{ BOUNDS.height * 0.5f };
+            auto const LEFT{ BOUNDS.left + ((BOUNDS.width - WIDTH) * 0.5f) };
 
             auto const TOP{
                 (BOUNDS.top + (BOUNDS.height * 0.5f)) - (HEIGHT * 0.5f) };
@@ -449,7 +530,7 @@ namespace stage
                 CHARACTER_PTR->HealthRatio() :
                     CHARACTER_PTR->ManaRatio()) };
 
-            auto const BAR_RIGHT{ (WIDTH - 4.0f) * BAR_RATIO };
+            auto const BAR_WIDTH{ (WIDTH - 4.0f) * BAR_RATIO };
 
             //establish the inner colored bar colors
             const sf::Uint8 COLOR_BASE{ 64 };
@@ -458,7 +539,7 @@ namespace stage
             const sf::Uint8 COLOR_HIGH{ 192 };
             auto const COLOR_HIGH_F{ static_cast<float>(COLOR_HIGH) };
             auto const COLOR_BAR_ALPHA{ COLOR_HIGH };
-            
+
             auto const COLOR_BAR_LEFT{ sf::Color(
                 ((WHICH_BAR == WhichBar::Health) ? COLOR_MAX : COLOR_BASE),
                 COLOR_BASE,
@@ -479,10 +560,25 @@ namespace stage
 
             //draw inner colored bar
             sfml_util::DrawQuad(
-                sf::FloatRect(LEFT + 2.0f, TOP + 2.0f, BAR_RIGHT, HEIGHT - 4.0f),
+                sf::FloatRect(LEFT + 2.0f, TOP + 2.0f, BAR_WIDTH, HEIGHT - 4.0f),
                 COLOR_BAR_LEFT,
                 COLOR_BAR_RIGHT,
                 quadVerts_);
+
+            auto const NUMBER_TEXT_TOP_SPACER{ sfml_util::MapByRes(0.0f, 10.0f) };
+
+            if (WHICH_BAR == WhichBar::Health)
+            {
+                healthTextRegionsUVec_[i]->SetEntityPos(
+                    (LEFT + (BAR_WIDTH * 0.5f)) - (healthTextRegionsUVec_[i]->GetEntityRegion().width * 0.5f),
+                    (TOP + (HEIGHT * 0.5f)) - (healthTextRegionsUVec_[i]->GetEntityRegion().height * 0.5f) + NUMBER_TEXT_TOP_SPACER);
+            }
+            else
+            {
+                manaTextRegionsUVec_[i]->SetEntityPos(
+                    (LEFT + (BAR_WIDTH * 0.5f)) - (manaTextRegionsUVec_[i]->GetEntityRegion().width * 0.5f),
+                    (TOP + (HEIGHT * 0.5f)) - (manaTextRegionsUVec_[i]->GetEntityRegion().height * 0.5f) + NUMBER_TEXT_TOP_SPACER);
+            }
         }
     }
 
