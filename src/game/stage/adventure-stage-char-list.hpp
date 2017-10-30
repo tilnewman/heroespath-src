@@ -33,6 +33,8 @@
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
 
+#include "game/player/character.hpp"
+
 #include <memory>
 #include <vector>
 
@@ -84,6 +86,9 @@ namespace stage
         void SetupPositions_ManaBars();
         void SetupPositions_Conditions();
         void SetupPositions_OverallRegion();
+        void SetupMouseoverText();
+        
+        const std::string NameButtonMouseoverText(const player::CharacterPtr_t);
 
         enum class WhichBar
         {

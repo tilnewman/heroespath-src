@@ -33,7 +33,7 @@
 #include "game/log-macros.hpp"
 #include "game/state/game-state.hpp"
 #include "game/player/party.hpp"
-#include "game/player/character.hpp"
+#include "game/creature/race-enum.hpp"
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
@@ -120,6 +120,8 @@ namespace stage
         SetupPositions_Conditions();
         
         SetupPositions_OverallRegion();
+
+        SetupMouseoverText();
     }
 
 
@@ -580,6 +582,39 @@ namespace stage
                     (TOP + (HEIGHT * 0.5f)) - (manaTextRegionsUVec_[i]->GetEntityRegion().height * 0.5f) + NUMBER_TEXT_TOP_SPACER);
             }
         }
+    }
+
+
+    void AdventureCharacterList::SetupMouseoverText()
+    {
+        auto const CHARACTER_PVEC{ Game::Instance()->State().Party().Characters() };
+        auto const NUM_CHARACTERS{ CHARACTER_PVEC.size() };
+        for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+        {
+            auto const CHARACTER_PTR{ Game::Instance()->State().Party().Characters()[i] };
+            namesButtonUVec_[i]->SetMouseHoverText( NameButtonMouseoverText(CHARACTER_PTR) );
+            condsTextRegionsUVec_[i]->SetMouseHoverText(CHARACTER_PTR->ConditionNames());
+        }
+    }
+
+
+    const std::string AdventureCharacterList::NameButtonMouseoverText(
+        const player::CharacterPtr_t CHARACTER_PTR)
+    {
+        auto const NAME_STR{ CHARACTER_PTR->Name() };
+        auto const RACE_STR{ CHARACTER_PTR->RaceName() };
+
+        std::ostringstream ss;
+        ss << NAME_STR << " the " << CHARACTER_PTR->RankClassName();
+
+        if (NAME_STR != RACE_STR)
+        {
+            ss << " "
+                << creature::race::RaceRoleName(CHARACTER_PTR->Race(), CHARACTER_PTR->Role());
+        }
+
+        ss << " of Rank " << CHARACTER_PTR->Rank();
+        return ss.str();
     }
 
 }

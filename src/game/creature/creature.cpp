@@ -163,19 +163,15 @@ namespace creature
 
     const std::string Creature::NameAndRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
     {
-        auto const NAME_STR(Name());
-        auto const RACE_STR(RaceName());
-        auto const ROLE_STR(RoleName());
+        auto const NAME_STR{ Name() };
+        auto const RACE_STR{ RaceName() };
 
         std::ostringstream ss;
+        ss << NAME_STR;
 
-        if (NAME_STR == RACE_STR)
+        if (NAME_STR != RACE_STR)
         {
-            ss << NAME_STR;
-        }
-        else
-        {
-            ss << NAME_STR << " the " << race::RaceRoleName(race_, role_);
+            ss << " the " << race::RaceRoleName(race_, role_);
         }
 
         if (IS_FIRST_LETTER_CAPS)
