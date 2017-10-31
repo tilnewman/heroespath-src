@@ -45,6 +45,21 @@ namespace gui
     const float KnotFrame::FRAME_WIDTH_RATIO_{ 0.2f };
 
 
+    KnotFrame::KnotFrame()
+    :
+        regionInner_(),
+        regionOuter_(),
+        size_(0.0f),
+        color_(sf::Color::Black),
+        quadVerts_(),
+        texture_(),
+        topLeftSprite_(),
+        topRightSprite_(),
+        botLeftSprite_(),
+        botRightSprite_()
+    {}
+
+
     KnotFrame::KnotFrame(
         const sf::FloatRect & INNER_REGION,
         const float SIZE,

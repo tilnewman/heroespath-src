@@ -38,6 +38,8 @@ namespace gui
 {
 
     //Responsible for drawing a celtic knot border around a given region.
+    //OuterSize() is the width of the frame border, while InnerSize() is the rest of
+    //the image width.
     class KnotFrame : public sf::Drawable
     {
         KnotFrame(const KnotFrame &) =delete;
@@ -45,8 +47,10 @@ namespace gui
 
     public:
 
+        //If using this constructor, calling Setup(...) is required before drawing.
+        KnotFrame();
+
         //The INNER_REGION is the region to be framed, not the outer limit of the frame.
-        //OuterSize() is the distance from the image edge to 
         KnotFrame(
             const sf::FloatRect & INNER_REGION,
             const float SIZE,
@@ -84,7 +88,7 @@ namespace gui
             return topLeftSprite_.getGlobalBounds().width * FRAME_WIDTH_RATIO_;
         }
 
-        void draw(sf::RenderTarget &, sf::RenderStates) const override;
+        virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
     private:
         static const float OUTER_WIDTH_RATIO_;
