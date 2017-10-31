@@ -52,6 +52,8 @@ namespace stage
     :
         sfml_util::gui::GuiEntity("AdventureStage'sCharacterList", 0.0f, 0.0f),
         LINE_COLOR_( sfml_util::FontManager::Instance()->Color_GrayDarker() ),
+        FRAME_COLOR_( sf::Color(0, 0, 0, 85) ),
+        CELL_LINE_THICKNESS_( 3.0f ),
         OUTER_SPACER_( sfml_util::MapByRes(75.0f, 300.0f) ),
         HEALTH_COLUMN_WIDTH_( sfml_util::MapByRes(180.0f, 500.0f) ),
         MANA_COLUMN_WIDTH_( HEALTH_COLUMN_WIDTH_ ),
@@ -67,7 +69,11 @@ namespace stage
         conditionColumnRects_(),
         lineVerts_(),
         quadVerts_(),
-        innerShadeQuadVerts_()
+        innerShadeQuadVerts_(),
+        knotFrameUPtr_(std::make_unique<sfml_util::gui::KnotFrame>(
+            sf::FloatRect(),//region is set in SetupPositions_OverallRegion() below
+            sfml_util::MapByRes(50.0f, 150.0f),
+            FRAME_COLOR_))
     {}
 
 
@@ -87,6 +93,7 @@ namespace stage
         target.draw( & innerShadeQuadVerts_[0], innerShadeQuadVerts_.size(), sf::Quads, states);
         target.draw( & lineVerts_[0], lineVerts_.size(), sf::Lines, states);
         target.draw( & quadVerts_[0], quadVerts_.size(), sf::Quads, states);
+        target.draw( * knotFrameUPtr_, states);
     }
 
 
@@ -120,7 +127,7 @@ namespace stage
         SetupPositions_Conditions();
         
         SetupPositions_OverallRegion();
-
+        SetupCellDividerLines();
         SetupMouseoverText();
     }
 
@@ -319,7 +326,7 @@ namespace stage
                 TALLEST_NAME_BUTTON_HEIGHT);
 
             nameColumnRects_.push_back(NAME_RECT);
-            sfml_util::DrawRectangleWithLineVerts(NAME_RECT, LINE_COLOR_, lineVerts_);
+            //sfml_util::DrawRectangleWithLineVerts(NAME_RECT, LINE_COLOR_, lineVerts_);
         }
     }
 
@@ -337,7 +344,7 @@ namespace stage
                 NAME_RECT.height);
 
             healthColumnRects_.push_back(HEALTH_RECT);
-            sfml_util::DrawRectangleWithLineVerts(HEALTH_RECT, LINE_COLOR_, lineVerts_);
+            //sfml_util::DrawRectangleWithLineVerts(HEALTH_RECT, LINE_COLOR_, lineVerts_);
         }
     }
 
@@ -355,7 +362,7 @@ namespace stage
                 HEALTH_RECT.height);
 
             manaColumnRects_.push_back(MANA_RECT);
-            sfml_util::DrawRectangleWithLineVerts(MANA_RECT, LINE_COLOR_, lineVerts_);
+            //sfml_util::DrawRectangleWithLineVerts(MANA_RECT, LINE_COLOR_, lineVerts_);
         }
     }
 
@@ -383,7 +390,7 @@ namespace stage
                 MANA_RECT.height);
 
             conditionColumnRects_.push_back(COND_RECT);
-            sfml_util::DrawRectangleWithLineVerts(COND_RECT, LINE_COLOR_, lineVerts_);
+            //sfml_util::DrawRectangleWithLineVerts(COND_RECT, LINE_COLOR_, lineVerts_);
         }
     }
 
@@ -457,30 +464,93 @@ namespace stage
 
         SetEntityRegion(OVERALL_RECT);
 
-        for (float i(0.0f); i < 3.0f; i += 1.0f)
+        knotFrameUPtr_->RegionInner(OVERALL_RECT);
+
+        //draw inner colored bar
+        sfml_util::DrawQuad(
+            knotFrameUPtr_->Region(),
+            sf::Color(0, 0, 0, 20),
+            sf::Color(0, 0, 0, 20),
+            innerShadeQuadVerts_);
+    }
+
+
+    void AdventureCharacterList::SetupCellDividerLines()
+    {
+        auto const HORIZ_LINE_LEFT{
+            knotFrameUPtr_->RegionInner().left -
+            knotFrameUPtr_->InnerSize() +
+            knotFrameUPtr_->FrameSize() };
+
+        auto const HORIZ_LINE_RIGHT{
+            knotFrameUPtr_->RegionInner().left +
+            knotFrameUPtr_->RegionInner().width +
+            knotFrameUPtr_->InnerSize() -
+            knotFrameUPtr_->FrameSize() };
+
+        auto const NUM_ROWS{ nameColumnRects_.size() };
+        for (std::size_t i(0); i < (NUM_ROWS - 1); ++i)
         {
-            sfml_util::DrawRectangleWithLineVerts(
-                sf::FloatRect(
-                    OVERALL_RECT.left - i,
-                    OVERALL_RECT.top - i,
-                    (OVERALL_RECT.width + 3.0f) + (i * 2.0f),
-                    OVERALL_RECT.height + (i * 2.0f)),
-                LINE_COLOR_ - sf::Color(0, 0, 0, static_cast<sf::Uint8>(i) * 50),
-                lineVerts_);
+            for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
+            {
+                auto const HORIZ_LINE_TOP{ nameColumnRects_[i].top + nameColumnRects_[i].height + t };
+
+                lineVerts_.push_back(sf::Vertex(
+                    sf::Vector2f(HORIZ_LINE_LEFT, HORIZ_LINE_TOP),
+                    FRAME_COLOR_));
+
+                lineVerts_.push_back(sf::Vertex(
+                    sf::Vector2f(HORIZ_LINE_RIGHT, HORIZ_LINE_TOP),
+                    FRAME_COLOR_));
+            }
         }
 
-        const sf::Uint8 INNER_SHADOW_ALPHA{ 18 };
-        auto const INNER_SHADOW_COLOR{ sf::Color(0, 0, 0, INNER_SHADOW_ALPHA) };
+        auto const VERT_LINE_TOP{
+            knotFrameUPtr_->RegionInner().top -
+            knotFrameUPtr_->InnerSize() +
+            knotFrameUPtr_->FrameSize() };
 
-        sfml_util::DrawQuad(
-            sf::FloatRect(
-                OVERALL_RECT.left - 1.0f,
-                OVERALL_RECT.top - 1.0f,
-                (OVERALL_RECT.width + 3.0f) - 1.0f,
-                OVERALL_RECT.height - 1.0f),
-            INNER_SHADOW_COLOR,
-            INNER_SHADOW_COLOR,
-            innerShadeQuadVerts_);
+        auto const VERT_LINE_BOTTOM{
+            knotFrameUPtr_->RegionInner().top +
+            knotFrameUPtr_->RegionInner().height +
+            knotFrameUPtr_->InnerSize() -
+            knotFrameUPtr_->FrameSize() };
+
+        for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
+        {
+            auto const VERT_LINE_LEFT1{
+                nameColumnRects_[0].left + nameColumnRects_[0].width + t };
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT1, VERT_LINE_TOP),
+                FRAME_COLOR_));
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT1, VERT_LINE_BOTTOM),
+                FRAME_COLOR_));
+
+            auto const VERT_LINE_LEFT2{
+                healthColumnRects_[0].left + healthColumnRects_[0].width + t };
+
+            lineVerts_.push_back(sf::Vertex(sf::Vector2f(
+                VERT_LINE_LEFT2, VERT_LINE_TOP),
+                FRAME_COLOR_));
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT2, VERT_LINE_BOTTOM),
+                FRAME_COLOR_));
+
+            auto const VERT_LINE_LEFT3{
+                manaColumnRects_[0].left + manaColumnRects_[0].width + t };
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT3, VERT_LINE_TOP),
+                FRAME_COLOR_));
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT3, VERT_LINE_BOTTOM),
+                FRAME_COLOR_));
+        }
     }
 
 

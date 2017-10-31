@@ -30,6 +30,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
+#include "sfml-util/gui/knot-frame.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
 
@@ -86,6 +87,7 @@ namespace stage
         void SetupPositions_ManaBars();
         void SetupPositions_Conditions();
         void SetupPositions_OverallRegion();
+        void SetupCellDividerLines();
         void SetupMouseoverText();
         
         const std::string NameButtonMouseoverText(const player::CharacterPtr_t);
@@ -100,6 +102,8 @@ namespace stage
 
     private:
         const sf::Color LINE_COLOR_;
+        const sf::Color FRAME_COLOR_;
+        const float CELL_LINE_THICKNESS_;
         const float OUTER_SPACER_;
         const float HEALTH_COLUMN_WIDTH_;
         const float MANA_COLUMN_WIDTH_;
@@ -116,6 +120,7 @@ namespace stage
         std::vector<sf::Vertex> lineVerts_;
         std::vector<sf::Vertex> quadVerts_;
         std::vector<sf::Vertex> innerShadeQuadVerts_;
+        sfml_util::gui::KnotFrameUPtr_t knotFrameUPtr_;
     };
 
 

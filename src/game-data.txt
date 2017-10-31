@@ -145,6 +145,7 @@ media-images-misc-error=                    image/misc/error.png
 media-images-misc-money-bag=                image/misc/money-bag.png
 media-images-misc-abc=                      image/misc/abc.png
 media-images-misc-weight=                   image/misc/weight.png
+media-images-misc-knot-corner=              image/misc/knot-corner.png
 media-images-chest-closed=                  image/treasure-stage/chest-closed.png
 media-images-chest-open=                    image/treasure-stage/chest-open.png
 media-images-coins=                         image/treasure-stage/coins.png
