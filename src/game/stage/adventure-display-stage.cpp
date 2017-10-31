@@ -52,7 +52,9 @@ namespace stage
             sfml_util::Display::Instance()->GetWinHeight()),
         //adventureStagePtr_(adventureStagePtr),
         characterListUPtr_(std::make_unique<AdventureCharacterList>(this)),
-        backgroundTexture_()
+        backgroundTexture_(),
+        bottomImage_(0.75f, true, sf::Color::White),
+        topImage_("", true, 1.0f, 0.75f)
     {}
 
 
@@ -78,7 +80,8 @@ namespace stage
         auto const CHARACTER_LIST_TOP{
             sfml_util::Display::Instance()->GetWinHeight() -
             characterListUPtr_->GetEntityRegion().height -
-            sfml_util::MapByRes(50.0f, 200.0f) };
+            bottomImage_.Height() -
+            sfml_util::MapByRes(30.0f, 90.0f)};
 
         characterListUPtr_->SetEntityPos(CHARACTER_LIST_LEFT, CHARACTER_LIST_TOP);
     }
@@ -106,6 +109,8 @@ namespace stage
     void AdventureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(backgroundSprite_, STATES);
+        target.draw(bottomImage_, STATES);
+        target.draw(topImage_, STATES);
         target.draw( * characterListUPtr_, STATES);
         Stage::Draw(target, STATES);
     }

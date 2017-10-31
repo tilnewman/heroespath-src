@@ -31,6 +31,8 @@
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
 
+#include "game/horiz-symbol.hpp"
+#include "game/main-menu-title.hpp"
 #include "game/stage/adventure-stage-char-list.hpp"
 
 
@@ -64,6 +66,8 @@ namespace stage
         AdventureCharacterListUPtr_t characterListUPtr_;
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;
+        BottomSymbol bottomImage_;
+        MainMenuTitle topImage_;
     };
 
 }
