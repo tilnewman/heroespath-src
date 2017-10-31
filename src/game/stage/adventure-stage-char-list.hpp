@@ -59,19 +59,19 @@ namespace stage
         AdventureCharacterList(sfml_util::IStage *);
         virtual ~AdventureCharacterList();
 
-        inline const std::string HandlerName() const override { return GetEntityName(); }
+        virtual inline const std::string HandlerName() const override { return GetEntityName(); }
         
-        bool HandleCallback(
+        virtual bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
         
-        void draw(sf::RenderTarget &, sf::RenderStates) const override;
+        virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
-        void SetEntityPos(const float LEFT, const float TOP) override;
+        virtual void SetEntityPos(const float LEFT, const float TOP) override;
 
         void Setup();
 
     protected:
-        void OnClick(const sf::Vector2f &) override {}
+        virtual void OnClick(const sf::Vector2f &) override {}
 
     private:
         void SetupNameButtons();
