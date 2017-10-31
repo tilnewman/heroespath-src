@@ -94,6 +94,14 @@ namespace stage
         target.draw( & lineVerts_[0], lineVerts_.size(), sf::Lines, states);
         target.draw( & quadVerts_[0], quadVerts_.size(), sf::Quads, states);
         target.draw( * knotFrameUPtr_, states);
+
+        for (auto const & TEXT_REGION_UPTR : manaTextRegionsUVec_)
+        {
+            if (TEXT_REGION_UPTR->GetText() != "0/0")
+            {
+                target.draw( * TEXT_REGION_UPTR, states);
+            }
+        }
     }
 
 
@@ -214,10 +222,7 @@ namespace stage
 
     void AdventureCharacterList::SetupManaNumbersText()
     {
-        for (auto const & TEXT_UPTR : manaTextRegionsUVec_)
-        {
-            stagePtr_->EntityRemove(TEXT_UPTR.get());
-        }
+        //the mana TextRegions are not controlled/drawn by the stage
 
         manaTextRegionsUVec_.clear();
 
@@ -242,11 +247,6 @@ namespace stage
                 "AdventureStage'sCharacterList'sManaTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT));
-        }
-
-        for (auto const & TEXT_UPTR : manaTextRegionsUVec_)
-        {
-            stagePtr_->EntityAdd(TEXT_UPTR.get());
         }
     }
 
@@ -326,7 +326,6 @@ namespace stage
                 TALLEST_NAME_BUTTON_HEIGHT);
 
             nameColumnRects_.push_back(NAME_RECT);
-            //sfml_util::DrawRectangleWithLineVerts(NAME_RECT, LINE_COLOR_, lineVerts_);
         }
     }
 
@@ -344,7 +343,6 @@ namespace stage
                 NAME_RECT.height);
 
             healthColumnRects_.push_back(HEALTH_RECT);
-            //sfml_util::DrawRectangleWithLineVerts(HEALTH_RECT, LINE_COLOR_, lineVerts_);
         }
     }
 
@@ -362,7 +360,6 @@ namespace stage
                 HEALTH_RECT.height);
 
             manaColumnRects_.push_back(MANA_RECT);
-            //sfml_util::DrawRectangleWithLineVerts(MANA_RECT, LINE_COLOR_, lineVerts_);
         }
     }
 
@@ -390,7 +387,6 @@ namespace stage
                 MANA_RECT.height);
 
             conditionColumnRects_.push_back(COND_RECT);
-            //sfml_util::DrawRectangleWithLineVerts(COND_RECT, LINE_COLOR_, lineVerts_);
         }
     }
 
@@ -641,15 +637,33 @@ namespace stage
 
             if (WHICH_BAR == WhichBar::Health)
             {
+                auto const HEALTH_TEXTREGION_LEFT{
+                    (LEFT + (BAR_WIDTH * 0.5f)) -
+                    (healthTextRegionsUVec_[i]->GetEntityRegion().width * 0.5f) };
+
+                auto const HEALTH_TEXTREGION_TOP{
+                    (TOP + (HEIGHT * 0.5f)) -
+                    (healthTextRegionsUVec_[i]->GetEntityRegion().height * 0.5f) +
+                    NUMBER_TEXT_TOP_SPACER };
+
                 healthTextRegionsUVec_[i]->SetEntityPos(
-                    (LEFT + (BAR_WIDTH * 0.5f)) - (healthTextRegionsUVec_[i]->GetEntityRegion().width * 0.5f),
-                    (TOP + (HEIGHT * 0.5f)) - (healthTextRegionsUVec_[i]->GetEntityRegion().height * 0.5f) + NUMBER_TEXT_TOP_SPACER);
+                    HEALTH_TEXTREGION_LEFT,
+                    HEALTH_TEXTREGION_TOP);
             }
             else
             {
+                auto const MANA_TEXTREGION_LEFT{
+                    (LEFT + (BAR_WIDTH * 0.5f)) -
+                    (manaTextRegionsUVec_[i]->GetEntityRegion().width * 0.5f) };
+
+                auto const MANA_TEXTREGION_TOP{
+                    (TOP + (HEIGHT * 0.5f)) -
+                    (manaTextRegionsUVec_[i]->GetEntityRegion().height * 0.5f) +
+                    NUMBER_TEXT_TOP_SPACER };
+
                 manaTextRegionsUVec_[i]->SetEntityPos(
-                    (LEFT + (BAR_WIDTH * 0.5f)) - (manaTextRegionsUVec_[i]->GetEntityRegion().width * 0.5f),
-                    (TOP + (HEIGHT * 0.5f)) - (manaTextRegionsUVec_[i]->GetEntityRegion().height * 0.5f) + NUMBER_TEXT_TOP_SPACER);
+                    MANA_TEXTREGION_LEFT,
+                    MANA_TEXTREGION_TOP);
             }
         }
     }
@@ -663,7 +677,6 @@ namespace stage
         {
             auto const CHARACTER_PTR{ Game::Instance()->State().Party().Characters()[i] };
             namesButtonUVec_[i]->SetMouseHoverText( NameButtonMouseoverText(CHARACTER_PTR) );
-            condsTextRegionsUVec_[i]->SetMouseHoverText(CHARACTER_PTR->ConditionNames());
         }
     }
 
