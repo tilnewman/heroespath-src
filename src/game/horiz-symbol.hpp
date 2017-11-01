@@ -58,7 +58,7 @@ namespace game
             const sf::Color & COLOR             = DEFAULT_COLOR_,
             const float       VERT_OFFSET_RATIO = 0.0f);
 
-        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
         inline float Height() const { return Bottom() - Top(); }
         inline float Top() const    { return sprite1_.getGlobalBounds().top; }

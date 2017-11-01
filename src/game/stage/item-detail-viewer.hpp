@@ -52,7 +52,7 @@ namespace stage
     public:
         ItemDetailViewer();
 
-        void draw(sf::RenderTarget &, sf::RenderStates) const override;
+        virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         void FadeIn(const item::ItemPtr_t, const sf::FloatRect &);

@@ -54,8 +54,8 @@ namespace stage
         AdventureDisplayStage(AdventureStage * const);
         virtual ~AdventureDisplayStage();
 
-        void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        virtual void Setup() override;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
 
     private:
         void Setup_CharacterList();

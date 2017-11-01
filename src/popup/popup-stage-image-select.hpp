@@ -53,12 +53,12 @@ namespace popup
         using PopupStageBase::HandlerName;
         using PopupStageBase::HandleCallback;
 
-        bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
-        void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
-        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-        bool KeyRelease(const sf::Event::KeyEvent &) override;
+        virtual void Setup() override;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
         void SetupSelectImage(const std::size_t NEW_IMAGE_INDEX, const float SLIDER_SPEED);

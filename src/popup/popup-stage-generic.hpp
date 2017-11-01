@@ -45,12 +45,12 @@ namespace popup
         explicit PopupStageGeneric(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageGeneric();
 
-        inline const std::string HandlerName() const override
+        inline virtual const std::string HandlerName() const override
         {
             return PopupStageBase::HandlerName();
         }
 
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
     };
 
 }

@@ -77,20 +77,20 @@ namespace popup
 
         virtual ~PopupStageSpellbook();
 
-        inline const std::string HandlerName() const override
+        inline virtual const std::string HandlerName() const override
         {
             return PopupStageBase::HandlerName();
         }
 
         using PopupStageBase::HandleCallback;
-        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)override;
 
-        void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
-        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-        bool KeyRelease(const sf::Event::KeyEvent &) override;
+        virtual void Setup() override;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
 
-        void SetupOuterAndInnerRegion() override;
+        virtual void SetupOuterAndInnerRegion() override;
 
         void SetupRegions();
         void SetupLeftAccentImage();

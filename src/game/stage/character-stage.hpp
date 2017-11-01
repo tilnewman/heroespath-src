@@ -180,28 +180,28 @@ namespace stage
         virtual ~CharacterStage();
 
         //required by callback handler
-        inline const std::string HandlerName() const override { return GetStageName(); }
+        inline virtual const std::string HandlerName() const override { return GetStageName(); }
 
-        bool HandleCallback(
+        virtual bool HandleCallback(
             const sfml_util::callback::RadioButtonCallbackPackage_t &) override;
 
-        bool HandleCallback(const popup::PopupResponse &) override;
+        virtual bool HandleCallback(const popup::PopupResponse &) override;
 
-        bool HandleCallback(
+        virtual bool HandleCallback(
             const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
-        bool HandleCallback(
+        virtual bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
-        void Setup() override;
-        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
-        bool KeyPress(const sf::Event::KeyEvent & KE) override;
-        bool KeyRelease(const sf::Event::KeyEvent & KE) override;
-        void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
-        sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
-        void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
-        bool AreAnyAnimNumStillMoving() const;
+        virtual void Setup() override;
+        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        virtual bool KeyPress(const sf::Event::KeyEvent & KE) override;
+        virtual bool KeyRelease(const sf::Event::KeyEvent & KE) override;
+        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+        virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
+        virtual bool AreAnyAnimNumStillMoving() const;
 
     private:
         void Setup_Button(MenuButtonUPtr_t & buttonUPtr, const float VERT_POS);

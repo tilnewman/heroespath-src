@@ -78,12 +78,12 @@ namespace stage
         TreasureStage();
         virtual ~TreasureStage();
 
-        inline const std::string HandlerName() const override { return GetStageName(); }
-        bool HandleCallback(const popup::PopupResponse &) override;
+        inline virtual const std::string HandlerName() const override { return GetStageName(); }
+        virtual bool HandleCallback(const popup::PopupResponse &) override;
 
         void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
-        bool KeyRelease(const sf::Event::KeyEvent &) override;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
 
         bool HandleListboxCallback(
             const sfml_util::gui::ListBox * const TREASURE_LISTBOX_PTR,

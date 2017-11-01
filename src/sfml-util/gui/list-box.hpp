@@ -147,9 +147,9 @@ namespace gui
             const std::size_t         ITEM_LIMIT  = NO_LIMIT_,
             callback::IListBoxCallbackHandler * const callbackPtr = nullptr);
 
-        inline const std::string HandlerName() const override { return GetEntityName(); }
+        inline virtual const std::string HandlerName() const override { return GetEntityName(); }
 
-        bool HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE) override;
+        virtual bool HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE) override;
 
         inline void SetImageHeight(const float HEIGHT)      { imageSize_ = HEIGHT; }
         inline float GetImageHeight() const                 { return imageSize_; }
@@ -159,7 +159,7 @@ namespace gui
 
         void DrawLine(sf::RenderTarget & target, const float POS_TOP) const;
 
-        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
         ListBoxItemSPtr_t GetAtPosition(const sf::Vector2f & POS_V);
 
@@ -189,16 +189,16 @@ namespace gui
         inline bool RemoveSelected()            { return Remove(selectedSPtr_); }
         inline void Clear()                     { list_.clear(); }
 
-        bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
-        bool KeyRelease(const sf::Event::KeyEvent & KEY_EVENT) override;
+        virtual bool KeyRelease(const sf::Event::KeyEvent & KEY_EVENT) override;
 
         ListBoxItemSPtr_t GetItemAtLocation(const sf::Vector2f & MOUSE_POS_V);
 
         //if there is an image at location, then return the rect of the image
         const sf::FloatRect GetRectAtLocation(const sf::Vector2f & MOUSE_POS_V);
 
-        void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+        virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
 
         inline const sf::Color GetHighlightColor() const { return highlightColor_; }
         inline void SetHighlightColor(const sf::Color & C) { highlightColor_ = C; }
@@ -213,7 +213,7 @@ namespace gui
         void CreateSelectionChangePackageAndCallHandler(const std::size_t NEW_SELECTED_INDEX);
         void CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT);
         inline void OnClick(const sf::Vector2f &) override {}
-        void OnDoubleClick(const sf::Vector2f & MOUSE_POS_V) override;
+        virtual void OnDoubleClick(const sf::Vector2f & MOUSE_POS_V) override;
         void SetupList();
         float GetTotalHeight() const;
 

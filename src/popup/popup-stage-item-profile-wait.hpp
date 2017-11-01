@@ -43,7 +43,7 @@ namespace popup
         explicit PopupStageItemProfileWait(const PopupInfo &);
         virtual ~PopupStageItemProfileWait();
 
-        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
 
     private:
         int drawCountdown_;

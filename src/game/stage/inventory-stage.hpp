@@ -150,22 +150,22 @@ namespace stage
 
         virtual ~InventoryStage();
 
-        inline const std::string HandlerName() const override { return GetStageName(); }
+        inline virtual const std::string HandlerName() const override { return GetStageName(); }
 
-        bool HandleCallback(
+        virtual bool HandleCallback(
             const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
-        bool HandleCallback(
+        virtual bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
-        bool HandleCallback(const popup::PopupResponse &) override;
+        virtual bool HandleCallback(const popup::PopupResponse &) override;
 
-        void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
-        bool KeyRelease(const sf::Event::KeyEvent &) override;
-        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-        void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
-        void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+        virtual void Setup() override;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
+        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
     private:
         void Setup_PaperBackground();

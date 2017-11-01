@@ -70,16 +70,16 @@ namespace popup
             return PopupStageBase::HandlerName();
         }
 
-        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)override;
 
         using PopupStageBase::HandleCallback;
 
-        void Setup() override;
-        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
-        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-        bool KeyRelease(const sf::Event::KeyEvent &) override;
+        virtual void Setup() override;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
 
-        void SetupOuterAndInnerRegion() override;
+        virtual void SetupOuterAndInnerRegion() override;
 
     private:
         void SetupRegions();
