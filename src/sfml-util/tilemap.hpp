@@ -22,12 +22,13 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_TILEMAP_INCLUDED
-#define SFMLUTIL_TILEMAP_INCLUDED
+#ifndef SFMLUTIL_TILEMAP_HPP_INCLUDED
+#define SFMLUTIL_TILEMAP_HPP_INCLUDED
 //
 // tilemap.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/collision-quad-tree.hpp"
 
 //suppress warnings that are safe to ignore in boost
 #if !defined(WIN32) && !defined(_WIN32) && !defined(__WIN32__) && !defined(__WINDOWS__)
@@ -52,21 +53,21 @@
 
 namespace sfml_util
 {
-namespace map
-{
 
-    //helpful struct used by TileMap
     struct TileOffsets
     {
-        TileOffsets();
-
-        unsigned begin_x;
-        unsigned end_x;
-        unsigned begin_y;
-        unsigned end_y;
+        unsigned begin_x = 0;
+        unsigned end_x = 0;
+        unsigned begin_y = 0;
+        unsigned end_y = 0;
     };
 
-    bool operator==(const TileOffsets & L, const TileOffsets & R);
+    inline bool operator==(const TileOffsets & L, const TileOffsets & R)
+    {
+        return std::tie(L.begin_x, L.begin_y, L.end_x, L.end_y)
+                ==
+               std::tie(R.begin_x, R.begin_y, R.end_x, R.end_y);
+    }
 
     inline bool operator!=(const TileOffsets & L, const TileOffsets & R)
     {
@@ -75,111 +76,73 @@ namespace map
 
 
 
-    //holds all the info regarding an image file used by TileMap
+    //Responsible for wrapping all the details about a single tile image.
     struct TileImage
     {
-        explicit TileImage(const std::string & NAME          = "",
-                           const std::string & RELATIVE_PATH = "",
-                           const std::size_t   FIRST_ID      = 0,
-                           const std::size_t   TILE_COUNT    = 1,
-                           const std::size_t   COLUMN_COUNT  = 1,
-                           const sf::Texture & TEXTURE       = sf::Texture());
+        explicit TileImage(
+            const std::string & NAME          = "",
+            const std::string & RELATIVE_PATH = "",
+            const std::size_t   FIRST_ID      = 0,
+            const std::size_t   TILE_COUNT    = 1,
+            const std::size_t   COLUMN_COUNT  = 1,
+            const sf::Texture & TEXTURE       = sf::Texture());
 
         inline bool OwnsId(const std::size_t ID) const
         {
             return ((ID >= first_id) && (ID < (first_id + tile_count)));
         }
 
-        std::string             name;
-        std::string             path_rel; //path string relative to the .tmx map path
+        std::string name;
+        std::string path_rel; //path string relative to the .tmx map path
+        std::size_t first_id;
+        std::size_t tile_count;
+        std::size_t column_count;
+        sf::Texture texture;
         boost::filesystem::path path_obj;
-        std::size_t             first_id;
-        std::size_t             tile_count;
-        std::size_t             column_count;
-        sf::Texture             texture;
     };
 
-    bool operator==(const TileImage & L, const TileImage & R);
+    //NOTE:  intentionally does not compare the actual texture image data
+    inline bool operator==(const TileImage & L, const TileImage & R)
+    {
+        return std::tie(L.name,
+                        L.path_rel,
+                        L.first_id,
+                        L.tile_count,
+                        L.column_count,
+                        L.path_obj)
+                ==
+               std::tie(R.name,
+                        R.path_rel,
+                        R.first_id,
+                        R.tile_count,
+                        R.column_count,
+                        R.path_obj);
+    }
 
     inline bool operator!=(const TileImage & L, const TileImage & R)
     {
-        return !(L == R);
+        return ! (L == R);
     }
 
     using TileImageVec_t = std::vector<TileImage>;
 
 
 
-    //custom types
+    //helpful types
     using MapVal_t = unsigned;
     using MapValVec_t = std::vector<MapVal_t>;
 
 
 
-    //encapsulates all the info about a layer of the tilemap
+    //Responsible for wrapping all the details about a layer of the map.
     struct MapLayer
     {
-        MapLayer()
-        :
-            vert_array    (),
-            tilesimage_vec(),
-            mapval_vec    ()
-        {}
-
         sf::VertexArray vert_array;
-        TileImageVec_t  tilesimage_vec;
-        MapValVec_t     mapval_vec;
+        TileImageVec_t tilesimage_vec;
+        MapValVec_t mapval_vec;
     };
 
     using MapLayerList_t = std::list<MapLayer>;
-
-
-
-    //collision detection quad
-    struct Quad
-    {
-        Quad()
-        :
-            coll_rects_vec(),
-            quad_rects_vec(),
-            child_quads_vec()
-        {}
-
-        FloatRectVec_t coll_rects_vec;
-        FloatRectVec_t quad_rects_vec;
-        std::vector<Quad> child_quads_vec;
-    };
-
-
-
-    //collision detection quad-tree
-    class QuadTree
-    {
-        QuadTree(const QuadTree &) =delete;
-        QuadTree & operator=(const QuadTree &) =delete;
-
-    public:
-        QuadTree();
-        virtual ~QuadTree();
-
-        void Setup(const float            MAP_WIDTH,
-                   const float            MAP_HEIGHT,
-                   const FloatRectVec_t & COLL_RECTS_VEC);
-
-        bool IsPointWithinCollisionRect(const float POS_LEFT, const float POS_TOP) const;
-
-    private:
-        void PopulateQuadAndRecurse(Quad &                 quad,
-                                    const sf::FloatRect &  RECT,
-                                    const FloatRectVec_t & COLL_RECTS_VEC);
-
-        bool IsPointWithinCollisionRect_Impl(const Quad & QUAD,
-                                             const float  POS_LEFT,
-                                             const float  POS_TOP) const;
-
-        static const float MIN_QUAD_SIZE_;
-        Quad headQuad_;
-    };
 
 
 
@@ -190,13 +153,12 @@ namespace map
         TileMap & operator=(const TileMap &) =delete;
 
     public:
-        TileMap(const std::string &  MAP_PATH_STR,
-                const sf::Vector2f & WIN_POS_V,
-                const sf::Vector2u & WIN_SIZE_V,
-                const sf::Vector2f & PLAYER_POS_V,
-                const sf::Color &    TRANSPARENT_MASK_COLOR = DEFAULT_TRANSPARENT_MASK_);
-
-        virtual ~TileMap();
+        TileMap(
+            const std::string & MAP_PATH_STR,
+            const sf::Vector2f & WIN_POS_V,
+            const sf::Vector2u & WIN_SIZE_V,
+            const sf::Vector2f & PLAYER_POS_V,
+            const sf::Color & TRANSPARENT_MASK_COLOR = DEFAULT_TRANSPARENT_MASK_);
 
         void ApplyColorMasksToHandleTransparency();
 
@@ -205,22 +167,37 @@ namespace map
         bool MoveLeft(const float ADJUSTMENT);
         bool MoveRight(const float ADJUSTMENT);
 
-        void DrawMap(sf::RenderTarget & target);
+        void Draw(sf::RenderTarget &, const sf::RenderStates &);
 
     private:
         void SetupMapSprite();
 
-        void ParseMapFile(const std::string & MAP_PATH_STR);
+        void ParseMapFile(const std::string & MAP_FILE_PATH_STR);
+        void ParseMapFile_TryCatchAndLog(const std::string & MAP_FILE_PATH_STR);
+        void ParseMapFile_Implementation(const std::string & MAP_FILE_PATH_STR);
 
-        void ParseTilesetLayer(const std::string &                 MAP_PATH_STR,
-                               const boost::property_tree::ptree & TILESET_PT);
+        const boost::property_tree::ptree ParseMapFile_ReadXML(
+            const std::string & MAP_FILE_PATH_STR) const;
 
-        void ParseTileLayer(MapValVec_t & map, std::stringstream & ss);
+        void ParseMapFile_ParseMapSizes(const boost::property_tree::ptree &);
 
-        void ParseCollisionsLayer(const boost::property_tree::ptree &);
+        void ParseMapFile_ParseLayerTileset(
+            const std::string & MAP_PATH_STR,
+            const boost::property_tree::ptree & TILESET_PT);
 
-        void EstablishMapSubsection(MapLayer &          mapLayerSPtr,
-                                    const TileOffsets & TILE_OFFSETS);
+        bool ParseMapFile_WillParseLayer(const std::string & NODENAME_LOWERCASE) const;
+
+        void ParseMapFile_ParseLayerCollisions(const boost::property_tree::ptree &);
+
+        void ParseMapFile_PraseLayerGeneric(
+            const boost::property_tree::ptree::value_type &,
+            const TileOffsets & PLAYER_POS_TILE_OFFSETS);
+
+        void ParseMapFile_ParseGenericTileLayer(MapValVec_t &, std::stringstream &);
+
+        void EstablishMapSubsection(
+            MapLayer & mapLayerSPtr,
+            const TileOffsets & TILE_OFFSETS);
 
         const TileOffsets GetTileOffsets(const sf::Vector2f &) const;
         const TileOffsets GetTileOffsetsPlayerPos() const;
@@ -235,6 +212,8 @@ namespace map
         void SetupEmptyTexture();
 
         void DrawPlayer(sf::RenderTarget & target);
+
+        void AdjustOffscreenRectsToPreventDrift(const TileOffsets &);
 
     public:
         //This is how close the player position can get to
@@ -296,5 +275,5 @@ namespace map
     };
 
 }
-}
-#endif //SFMLUTIL_TILEMAP_INCLUDED
+
+#endif //SFMLUTIL_TILEMAP_HPP_INCLUDED
