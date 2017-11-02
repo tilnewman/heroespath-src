@@ -183,6 +183,12 @@ media-images-bones-wolfen=                  image/treasure-stage/bones/wolfen.pn
 media-images-trap=                          image/treasure-stage/trap.png
 media-images-placeholder=                   image/misc/placeholder.png
 
+#Maps
+media-maps-tile-dir=                        image/tile/
+media-maps-thornberry=                      map/Thornberry.tmx
+media-maps-thornberry-highlands=            map/ThornberryHighlands.tmx
+media-maps-thornberry-meadows=              map/ThornberryMeadows.tmx
+
 #Race Stat Modifiers
 heroespath-creature-race-stat-modifiers-Human=    2,  2,   2, -6,  0,  0
 heroespath-creature-race-stat-modifiers-Gnome=   -6,  0,  -6,  6,  6,  0

@@ -142,7 +142,7 @@ namespace sfml_util
         MapValVec_t mapval_vec;
     };
 
-    using MapLayerList_t = std::list<MapLayer>;
+    using MapLayerVec_t = std::vector<MapLayer>;
 
 
 
@@ -181,9 +181,7 @@ namespace sfml_util
 
         void ParseMapFile_ParseMapSizes(const boost::property_tree::ptree &);
 
-        void ParseMapFile_ParseLayerTileset(
-            const std::string & MAP_PATH_STR,
-            const boost::property_tree::ptree & TILESET_PT);
+        void ParseMapFile_ParseLayerTileset(const boost::property_tree::ptree &);
 
         bool ParseMapFile_WillParseLayer(const std::string & NODENAME_LOWERCASE) const;
 
@@ -268,11 +266,14 @@ namespace sfml_util
         sf::RenderTexture  offScreenTexture_;
         sf::RenderTexture  emptyRendText_;
         FloatRectVec_t     collisionsVec_;
-        MapLayerList_t     mapLayerList_;
+        MapLayerVec_t      mapLayers_;
         TileImageVec_t     tilesImageVec_;
         const sf::Color    TRANSPARENT_MASK_;
         QuadTree           collisionTree_;
     };
+
+
+    using TileMapUPtr_t = std::unique_ptr<TileMap>;
 
 }
 

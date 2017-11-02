@@ -33,6 +33,7 @@
 #include "sfml-util/loaders.hpp"
 
 #include "game/log-macros.hpp"
+#include "game/game-data-file.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -108,7 +109,7 @@ namespace sfml_util
         offScreenTexture_(),
         emptyRendText_   (),
         collisionsVec_   (),
-        mapLayerList_    (),
+        mapLayers_       (),
         tilesImageVec_   (),
         TRANSPARENT_MASK_(TRANSPARENT_MASK),
         collisionTree_   ()
@@ -381,14 +382,14 @@ namespace sfml_util
         if (prevTileOffsets_ != CURRENT_TILE_OFFSETS)
         {
             //clear away the existing tiles
-            for(auto & nextMapLayer : mapLayerList_)
+            for(auto & nextMapLayer : mapLayers_)
             {
                 nextMapLayer.vert_array.clear();
                 nextMapLayer.tilesimage_vec.clear();
             }
 
             //establish what new tiles to draw
-            for (auto & nextMapLayer : mapLayerList_)
+            for (auto & nextMapLayer : mapLayers_)
             {
                 EstablishMapSubsection(nextMapLayer, CURRENT_TILE_OFFSETS);
             }
@@ -407,7 +408,7 @@ namespace sfml_util
 
         //draw all vertex arrays to the off-screen texture
         sf::VertexArray quads(sf::Quads, 4);
-        for (auto const & NEXT_MAP_LAYER : mapLayerList_)
+        for (auto const & NEXT_MAP_LAYER : mapLayers_)
         {
             std::size_t tilesImageIndex{ 0 };
             auto const NUM_VERTS{ NEXT_MAP_LAYER.vert_array.getVertexCount() };
@@ -461,6 +462,7 @@ namespace sfml_util
 
         offScreenTexture_.display();
         target.draw(mapSprite_);
+        DrawPlayer(target);
     }
 
 
@@ -524,7 +526,7 @@ namespace sfml_util
         auto const PLAYER_POS_TILE_OFFSETS{ GetTileOffsetsPlayerPos() };
 
         //loop over all layers in the map file and parse them separately
-        mapLayerList_.clear();
+        mapLayers_.clear();
         for(const boost::property_tree::ptree::value_type & PROPTREE_CHILD_PAIR :
             XML_PROPERTY_TREE.get_child("map"))
         {
@@ -542,7 +544,7 @@ namespace sfml_util
             }
             else if (ba::contains(NODENAME_LOWER, ba::to_lower_copy(XML_NODE_NAME_TILESET_)))
             {
-                ParseMapFile_ParseLayerTileset(MAP_FILE_PATH_STR, PROPTREE_CHILD_PAIR.second);
+                ParseMapFile_ParseLayerTileset(PROPTREE_CHILD_PAIR.second);
                 continue;
             }
             else
@@ -594,25 +596,24 @@ namespace sfml_util
     }
 
 
-    void TileMap::ParseMapFile_ParseLayerTileset(const std::string &                 MAP_PATH_STR,
-                                    const boost::property_tree::ptree & TILESET_PT)
+    void TileMap::ParseMapFile_ParseLayerTileset(
+        const boost::property_tree::ptree & TILESET_PROPTREE)
     {
-        const boost::property_tree::ptree IMAGE_PT(TILESET_PT.get_child("image"));
+        auto const IMAGE_PROPTREE{ TILESET_PROPTREE.get_child("image") };
 
-        TileImage tileImage(TILESET_PT.get<std::string>("<xmlattr>.name"),
-                            IMAGE_PT.get<std::string>("<xmlattr>.source"),
-                            TILESET_PT.get<std::size_t>("<xmlattr>.firstgid"),
-                            TILESET_PT.get<std::size_t>("<xmlattr>.tilecount"),
-                            TILESET_PT.get<std::size_t>("<xmlattr>.columns"));
+        TileImage tileImage(
+            TILESET_PROPTREE.get<std::string>("<xmlattr>.name"),
+            IMAGE_PROPTREE.get<std::string>("<xmlattr>.source"),
+            TILESET_PROPTREE.get<std::size_t>("<xmlattr>.firstgid"),
+            TILESET_PROPTREE.get<std::size_t>("<xmlattr>.tilecount"),
+            TILESET_PROPTREE.get<std::size_t>("<xmlattr>.columns"));
 
         namespace bfs = boost::filesystem;
-        tileImage.path_obj = bfs::system_complete((bfs::current_path() /
-                                                   bfs::path(MAP_PATH_STR)) /
-                                                  (bfs::path("..") /
-                                                   bfs::path(tileImage.path_rel)));
+        tileImage.path_obj = bfs::system_complete(
+            bfs::path(game::GameDataFile::Instance()->GetMediaPath("media-maps-tile-dir")) /
+            bfs::path(tileImage.path_rel).leaf());
 
         sfml_util::LoadTexture(tileImage.texture, tileImage.path_obj.string());
-
         tilesImageVec_.push_back(tileImage);
     }
 
@@ -666,7 +667,7 @@ namespace sfml_util
         MapLayer mapLayer;
         ParseMapFile_ParseGenericTileLayer(mapLayer.mapval_vec, ssAllData);
         EstablishMapSubsection(mapLayer, PLAYER_POS_TILE_OFFSETS);
-        mapLayerList_.push_back(mapLayer);
+        mapLayers_.push_back(mapLayer);
     }
 
 

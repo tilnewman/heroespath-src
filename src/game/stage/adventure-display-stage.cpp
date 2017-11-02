@@ -66,6 +66,50 @@ namespace stage
     {
         Setup_CharacterList();
         Setup_BackgroundImage();
+        Setup_Map();
+    }
+
+
+    void AdventureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    {
+        target.draw(backgroundSprite_, STATES);
+        target.draw(bottomImage_, STATES);
+        target.draw(topImage_, STATES);
+        target.draw(*characterListUPtr_, STATES);
+        Stage::Draw(target, STATES);
+        mapUPtr_->Draw(target, STATES);
+    }
+
+
+    bool AdventureDisplayStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
+    {
+        auto const MOVE_AMOUNT{ 1.0f };
+
+        if (KEY_EVENT.code == sf::Keyboard::Up)
+        {
+            mapUPtr_->MoveUp(MOVE_AMOUNT);
+            return true;
+        }
+
+        if (KEY_EVENT.code == sf::Keyboard::Down)
+        {
+            mapUPtr_->MoveDown(MOVE_AMOUNT);
+            return true;
+        }
+
+        if (KEY_EVENT.code == sf::Keyboard::Left)
+        {
+            mapUPtr_->MoveLeft(MOVE_AMOUNT);
+            return true;
+        }
+
+        if (KEY_EVENT.code == sf::Keyboard::Right)
+        {
+            mapUPtr_->MoveRight(MOVE_AMOUNT);
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -106,13 +150,13 @@ namespace stage
     }
 
 
-    void AdventureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    void AdventureDisplayStage::Setup_Map()
     {
-        target.draw(backgroundSprite_, STATES);
-        target.draw(bottomImage_, STATES);
-        target.draw(topImage_, STATES);
-        target.draw( * characterListUPtr_, STATES);
-        Stage::Draw(target, STATES);
+        mapUPtr_ = std::make_unique<sfml_util::TileMap>(
+            GameDataFile::Instance()->GetMediaPath("media-maps-thornberry-highlands"),
+            sf::Vector2f(100.0f + sfml_util::MapByRes(30.0f, 90.0f), topImage_.Bottom()),
+            sf::Vector2u(512, 256),
+            sf::Vector2f(150.0f, 150.0f));
     }
 
 }

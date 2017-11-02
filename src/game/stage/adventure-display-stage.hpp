@@ -30,6 +30,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
+#include "sfml-util/tilemap.hpp"
 
 #include "game/horiz-symbol.hpp"
 #include "game/main-menu-title.hpp"
@@ -55,11 +56,13 @@ namespace stage
         virtual ~AdventureDisplayStage();
 
         virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
         void Setup_CharacterList();
         void Setup_BackgroundImage();
+        void Setup_Map();
 
     private:
         //AdventureStage * const adventureStagePtr_;
@@ -68,6 +71,7 @@ namespace stage
         sf::Sprite backgroundSprite_;
         BottomSymbol bottomImage_;
         MainMenuTitle topImage_;
+        sfml_util::TileMapUPtr_t mapUPtr_;
     };
 
 }
