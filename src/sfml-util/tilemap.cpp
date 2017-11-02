@@ -601,12 +601,14 @@ namespace sfml_util
     {
         auto const IMAGE_PROPTREE{ TILESET_PROPTREE.get_child("image") };
 
-        TileImage tileImage(
+        tilesImageVec_.push_back( TileImage(
             TILESET_PROPTREE.get<std::string>("<xmlattr>.name"),
             IMAGE_PROPTREE.get<std::string>("<xmlattr>.source"),
             TILESET_PROPTREE.get<std::size_t>("<xmlattr>.firstgid"),
             TILESET_PROPTREE.get<std::size_t>("<xmlattr>.tilecount"),
-            TILESET_PROPTREE.get<std::size_t>("<xmlattr>.columns"));
+            TILESET_PROPTREE.get<std::size_t>("<xmlattr>.columns")));
+
+        TileImage & tileImage{ tilesImageVec_[tilesImageVec_.size() - 1] };
 
         namespace bfs = boost::filesystem;
         tileImage.path_obj = bfs::system_complete(
@@ -614,7 +616,7 @@ namespace sfml_util
             bfs::path(tileImage.path_rel).leaf());
 
         sfml_util::LoadTexture(tileImage.texture, tileImage.path_obj.string());
-        tilesImageVec_.push_back(tileImage);
+        
     }
 
 
