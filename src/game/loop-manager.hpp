@@ -79,7 +79,7 @@ namespace game
 
         inline LoopState::Enum GetState() const                     { return state_; }
         inline LoopState::Enum GetPrevState() const                 { return prevState_; }
-        inline popup::ResponseTypes::Enum GetPopupResponse() const   { return popupResponse_; }
+        inline popup::ResponseTypes::Enum GetPopupResponse() const  { return popupResponse_; }
         inline std::size_t GetPopupSelection() const                { return popupSelection_; }
 
         inline void ClearPopupResponse()
@@ -89,6 +89,11 @@ namespace game
         }
 
         Phase::Enum GetPhase() const;
+
+        inline bool IsKeyPressed(const sf::Keyboard::Key KEY) const
+        {
+            return loop_.IsKeyPressed(KEY);
+        }
 
         bool Execute();
 

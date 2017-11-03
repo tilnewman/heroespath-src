@@ -616,7 +616,6 @@ namespace sfml_util
             bfs::path(tileImage.path_rel).leaf());
 
         sfml_util::LoadTexture(tileImage.texture, tileImage.path_obj.string());
-        
     }
 
 

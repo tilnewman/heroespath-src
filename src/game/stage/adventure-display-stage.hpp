@@ -57,7 +57,7 @@ namespace stage
 
         virtual void Setup() override;
         virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
-        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
     private:
         void Setup_CharacterList();
@@ -72,6 +72,7 @@ namespace stage
         BottomSymbol bottomImage_;
         MainMenuTitle topImage_;
         sfml_util::TileMapUPtr_t mapUPtr_;
+        int frameCounter_;
     };
 
 }

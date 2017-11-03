@@ -30,6 +30,7 @@
 #include "adventure-display-stage.hpp"
 
 #include "game/game-data-file.hpp"
+#include "game/loop-manager.hpp"
 #include "game/stage/adventure-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
@@ -54,7 +55,8 @@ namespace stage
         characterListUPtr_(std::make_unique<AdventureCharacterList>(this)),
         backgroundTexture_(),
         bottomImage_(0.75f, true, sf::Color::White),
-        topImage_("", true, 1.0f, 0.75f)
+        topImage_("", true, 1.0f, 0.75f),
+        frameCounter_(0)
     {}
 
 
@@ -81,35 +83,37 @@ namespace stage
     }
 
 
-    bool AdventureDisplayStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
+    void AdventureDisplayStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        auto const MOVE_AMOUNT{ 1.0f };
-
-        if (KEY_EVENT.code == sf::Keyboard::Up)
+        //don't process map moves every frame to save resources
+        auto const PROCESS_MAP_MOVE_ON_FRAME{ 3 };
+        if (PROCESS_MAP_MOVE_ON_FRAME == ++frameCounter_)
         {
-            mapUPtr_->MoveUp(MOVE_AMOUNT);
-            return true;
-        }
+            frameCounter_ = 0;
 
-        if (KEY_EVENT.code == sf::Keyboard::Down)
-        {
-            mapUPtr_->MoveDown(MOVE_AMOUNT);
-            return true;
-        }
+            auto const MOVE_AMOUNT{
+                static_cast<float>(PROCESS_MAP_MOVE_ON_FRAME) * 100.0f * ELAPSED_TIME_SECONDS };
 
-        if (KEY_EVENT.code == sf::Keyboard::Left)
-        {
-            mapUPtr_->MoveLeft(MOVE_AMOUNT);
-            return true;
-        }
+            if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up))
+            {
+                mapUPtr_->MoveUp(MOVE_AMOUNT);
+            }
 
-        if (KEY_EVENT.code == sf::Keyboard::Right)
-        {
-            mapUPtr_->MoveRight(MOVE_AMOUNT);
-            return true;
-        }
+            if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down))
+            {
+                mapUPtr_->MoveDown(MOVE_AMOUNT);
+            }
 
-        return false;
+            if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left))
+            {
+                mapUPtr_->MoveLeft(MOVE_AMOUNT);
+            }
+
+            if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right))
+            {
+                mapUPtr_->MoveRight(MOVE_AMOUNT);
+            }
+        }
     }
 
 

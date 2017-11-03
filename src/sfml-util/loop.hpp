@@ -118,6 +118,11 @@ namespace sfml_util
         void TestingStrIncrement(const std::string &);
         void TestingImageSet(const sf::Texture &);
 
+        inline bool IsKeyPressed(const sf::Keyboard::Key KEY) const
+        {
+            return sf::Keyboard::isKeyPressed(KEY);
+        }
+
     protected:
         void LogFrameRate();
 
