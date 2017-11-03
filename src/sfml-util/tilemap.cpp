@@ -549,7 +549,9 @@ namespace sfml_util
             }
             else
             {
+                M_HP_LOG_DBG("\t********** ParseMapFile_Implementation() 2-generic-begin  ");
                 ParseMapFile_PraseLayerGeneric(PROPTREE_CHILD_PAIR, PLAYER_POS_TILE_OFFSETS);
+                M_HP_LOG_DBG("\t********** ParseMapFile_Implementation() 2-generic-end");
             }
         }
     }
@@ -665,17 +667,20 @@ namespace sfml_util
         std::stringstream ssAllData;
         ssAllData << PROPTREE_CHILD_PAIR.second.get_child("data").data();
 
-        MapLayer mapLayer;
+        mapLayers_.push_back( MapLayer() );
+        MapLayer & mapLayer{ mapLayers_[mapLayers_.size() - 1] };
         ParseMapFile_ParseGenericTileLayer(mapLayer.mapval_vec, ssAllData);
         EstablishMapSubsection(mapLayer, PLAYER_POS_TILE_OFFSETS);
-        mapLayers_.push_back(mapLayer);
     }
 
 
     void TileMap::ParseMapFile_ParseGenericTileLayer(
-        MapValVec_t & map,
+        MapValVec_t & mapValues,
         std::stringstream & tileLayerDataSS)
     {
+        //found by experiment to be a reliable upper bound for typical maps
+        mapValues.reserve(20'000);
+
         std::string nextLine("");
         while (tileLayerDataSS)
         {   
@@ -688,28 +693,29 @@ namespace sfml_util
 
             std::stringstream ssLine;
             ssLine << nextLine;
-            std::string nextVal("");
+            std::string nextValStr("");
 
             //loop through each line reading numbers between the commas
             while (ssLine)
             {
-                std::getline(ssLine, nextVal, ',');
+                std::getline(ssLine, nextValStr, ',');
 
-                if (nextVal.empty())
+                if (nextValStr.empty())
                 {
                     continue;
                 }
 
                 try
                 {
-                    map.push_back(boost::lexical_cast<MapVal_t>(nextVal));
+                    //using boost::lexical_cast instead of std::stoi because it is faster
+                    mapValues.push_back(boost::lexical_cast<MapVal_t>(nextValStr));
                 }
                 catch (const std::exception & E)
                 {
                     M_HP_LOG("sfml_util::TileMap::ParseMapFile_ParseGenericTileLayer("
                         << nextLine << ") " << "boost::lexical_cast<"
                         << boost::typeindex::type_id<MapVal_t>().pretty_name() << "("
-                        << "\"" << nextVal << "\") threw '" << E.what() << "' exception.");
+                        << "\"" << nextValStr << "\") threw '" << E.what() << "' exception.");
 
                     throw;
                 }
@@ -719,7 +725,7 @@ namespace sfml_util
                     ss << "sfml_util::TileMap::ParseMapFile_ParseGenericTileLayer("
                        << nextLine << ") " << "boost::lexical_cast<"
                        << boost::typeindex::type_id<MapVal_t>().pretty_name() << "("
-                       << "\"" << nextVal << "\") threw unknown exception.";
+                       << "\"" << nextValStr << "\") threw unknown exception.";
 
                     M_HP_LOG(ss.str());
                     throw std::runtime_error(ss.str());
@@ -736,6 +742,7 @@ namespace sfml_util
         auto const TILE_HEIGHT{ TILE_OFFSETS.end_y - TILE_OFFSETS.begin_y };
         mapLayer.vert_array.setPrimitiveType(sf::Quads);
         mapLayer.vert_array.resize(TILE_WIDTH * TILE_HEIGHT * 4);
+        mapLayer.tilesimage_vec.reserve(TILE_WIDTH * TILE_HEIGHT);
 
         //populate the vertex array with one quad per tile
         unsigned vertIndex(0);
@@ -973,11 +980,11 @@ namespace sfml_util
 
     const TileImage & TileMap::GetTileImageFromId(const MapVal_t ID) const
     {
-        for (auto const & NEXT_TI : tilesImageVec_)
+        for (auto const & TILE_IMAGE : tilesImageVec_)
         {
-            if (NEXT_TI.OwnsId(ID))
+            if (TILE_IMAGE.OwnsId(ID))
             {
-                return NEXT_TI;
+                return TILE_IMAGE;
             }
         }
 
