@@ -52,40 +52,40 @@ namespace sfml_util
     TileImage::TileImage(
         const std::string & NAME,
         const std::string & RELATIVE_PATH,
-        const std::size_t FIRST_ID,
-        const std::size_t TILE_COUNT,
-        const std::size_t COLUMN_COUNT,
-        const std::size_t TEXTURE_INDEX)
+        const ID_t FIRST_ID,
+        const Count_t TILE_COUNT,
+        const Column_t COLUMN,
+        const Index_t TEXTURE_INDEX)
     :
         name         (NAME),
         path_rel     (RELATIVE_PATH),
         first_id     (FIRST_ID),
         tile_count   (TILE_COUNT),
-        column_count (COLUMN_COUNT),
-        texture_index(TEXTURE_INDEX),//zero is always the index of the empty/transparent textures
+        column       (COLUMN),
+        texture_index(TEXTURE_INDEX),
         path_obj     ()
     {}
 
 
-    const float       TileMap::BORDER_PAD_                (75.0f);
-    const std::string TileMap::TILE_IMAGE_NAME_EMPTY_     ("Empty");
-    const std::string TileMap::XML_NODE_NAME_TILE_LAYER_  ("layer");
-    const std::string TileMap::XML_NODE_NAME_OBJECT_LAYER_("objectgroup");
-    const std::string TileMap::XML_NODE_NAME_TILESET_     ("tileset");
-    const std::string TileMap::XML_ATTRIB_NAME_GROUND_    ("ground");
-    const std::string TileMap::XML_ATTRIB_NAME_OBJECTS_   ("object");
-    const std::string TileMap::XML_ATTRIB_NAME_SHADOWS_   ("shadow");
-    const std::string TileMap::XML_ATTRIB_NAME_COLLISION_ ("collision");
-    const unsigned    TileMap::EXTRA_OFFSCREEN_TILE_COUNT_(2);
-    const sf::Color   TileMap::DEFAULT_TRANSPARENT_MASK_  (sf::Color(75, 99, 127));
-    const sf::Color   TileMap::SHADOW_MASK1_              (sf::Color(0, 0, 0));
-    const sf::Color   TileMap::SHADOW_MASK2_              (sf::Color(151, 0, 147));
-    const sf::Color   TileMap::SHADOW_MASK2B_             (sf::Color(127, 0, 127));
-    const sf::Color   TileMap::SHADOW_MASK3_              (sf::Color(255, 0, 255));
-    const sf::Color   TileMap::SHADOW_COLOR1_             (sf::Color(0, 0, 0, 100));
-    const sf::Color   TileMap::SHADOW_COLOR2_             (sf::Color(0, 0, 0, 65));
-    const sf::Color   TileMap::SHADOW_COLOR3_             (sf::Color(0, 0, 0, 35));
-
+    const float       TileMap::BORDER_PAD_                { 75.0f };
+    const std::string TileMap::TILE_IMAGE_NAME_EMPTY_     { "Empty" };
+    const std::string TileMap::XML_NODE_NAME_TILE_LAYER_  { "layer" };
+    const std::string TileMap::XML_NODE_NAME_OBJECT_LAYER_{ "objectgroup" };
+    const std::string TileMap::XML_NODE_NAME_TILESET_     { "tileset" };
+    const std::string TileMap::XML_ATTRIB_NAME_GROUND_    { "ground" };
+    const std::string TileMap::XML_ATTRIB_NAME_OBJECTS_   { "object" };
+    const std::string TileMap::XML_ATTRIB_NAME_SHADOWS_   { "shadow" };
+    const std::string TileMap::XML_ATTRIB_NAME_COLLISION_ { "collision" };
+    const Count_t     TileMap::EXTRA_OFFSCREEN_TILE_COUNT_{ 2_count };
+    const sf::Color   TileMap::DEFAULT_TRANSPARENT_MASK_  { sf::Color(75, 99, 127) };
+    const sf::Color   TileMap::SHADOW_MASK1_              { sf::Color(0, 0, 0) };
+    const sf::Color   TileMap::SHADOW_MASK2_              { sf::Color(151, 0, 147) };
+    const sf::Color   TileMap::SHADOW_MASK2B_             { sf::Color(127, 0, 127) };
+    const sf::Color   TileMap::SHADOW_MASK3_              { sf::Color(255, 0, 255) };
+    const sf::Color   TileMap::SHADOW_COLOR1_             { sf::Color(0, 0, 0, 100) };
+    const sf::Color   TileMap::SHADOW_COLOR2_             { sf::Color(0, 0, 0, 65) };
+    const sf::Color   TileMap::SHADOW_COLOR3_             { sf::Color(0, 0, 0, 35) };
+    const Index_t     TileMap::TRANSPARENT_TEXTURE_INDEX_ { 0_index };
 
     TileMap::TileMap(
         const std::string & MAP_PATH_STR,
@@ -120,8 +120,11 @@ namespace sfml_util
 
         //create off-screen texture
         //always ensure these are valid power of 2 sizes
-        auto const WIDTH{ WIN_SIZE_V_.x + (tileSizeWidth_  * (EXTRA_OFFSCREEN_TILE_COUNT_ + 2)) };
-        auto const HEIGHT{ WIN_SIZE_V_.y + (tileSizeHeight_ * (EXTRA_OFFSCREEN_TILE_COUNT_ + 2)) };
+        auto const WIDTH{
+            WIN_SIZE_V_.x + (tileSizeWidth_  * (EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt() + 2)) };
+
+        auto const HEIGHT{
+            WIN_SIZE_V_.y + (tileSizeHeight_ * (EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt() + 2)) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(offScreenTexture_.create(WIDTH, HEIGHT),
             "sfml_util::TileMap::TileMap(\"" << MAP_PATH_STR
@@ -130,8 +133,12 @@ namespace sfml_util
         //set the initial position of what is drawn on-screen from the off-screen texture
         offScreenRect_.width = static_cast<float>(WIN_SIZE_V_.x);
         offScreenRect_.height = static_cast<float>(WIN_SIZE_V_.y);
-        offScreenRect_.left = static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_ * tileSizeWidth_);
-        offScreenRect_.top = static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_ * tileSizeHeight_);
+
+        offScreenRect_.left =
+            static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt() * tileSizeWidth_);
+
+        offScreenRect_.top =
+            static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt() * tileSizeHeight_);
 
         SetupMapSprite();
 
@@ -148,7 +155,7 @@ namespace sfml_util
     {
         for (auto & nextTileImage: tilesImageVec_)
         {
-            sf::Image srcImage(textures_[nextTileImage.texture_index].copyToImage());
+            sf::Image srcImage(textures_[nextTileImage.texture_index.Get()].copyToImage());
             sf::Image destImage(srcImage);
 
             namespace ba = boost::algorithm;
@@ -202,7 +209,7 @@ namespace sfml_util
                 }
             }
 
-            textures_[nextTileImage.texture_index].update(destImage);
+            textures_[nextTileImage.texture_index.Get()].update(destImage);
         }
     }
 
@@ -273,7 +280,7 @@ namespace sfml_util
         {
             auto const VERT_POS{
                 offScreenRect_.top +
-                    static_cast<float>(prevTileOffsets_.begin_y * tileSizeHeight_) };
+                    static_cast<float>(prevTileOffsets_.begin_y.AsUInt() * tileSizeHeight_) };
 
             auto const VERT_LIMIT{
                 static_cast<float>(mapTileCountY_ * tileSizeHeight_) -
@@ -358,7 +365,7 @@ namespace sfml_util
         {
             auto const HORIZ_POS{
                 (offScreenRect_.left +
-                    static_cast<float>(prevTileOffsets_.begin_x * tileSizeWidth_)) };
+                    static_cast<float>(prevTileOffsets_.begin_x.AsUInt() * tileSizeWidth_)) };
 
             auto const HORIZ_LIMIT{
                 static_cast<float>((mapTileCountX_ * tileSizeWidth_) - WIN_SIZE_V_.x) };
@@ -449,8 +456,8 @@ namespace sfml_util
                     quads[3].position  = NEXT_MAP_LAYER.vert_array[vertIndex].position;
                     quads[3].texCoords = NEXT_MAP_LAYER.vert_array[vertIndex++].texCoords;
 
-                    renderStates_.texture =
-                        & textures_[NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex++].texture_index];
+                    renderStates_.texture = & textures_[
+                        NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex++].texture_index.AsUInt()];
 
                     offScreenTexture_.draw(quads, renderStates_);
                 }
@@ -609,10 +616,10 @@ namespace sfml_util
         tilesImageVec_.push_back( TileImage(
             TILESET_PROPTREE.get<std::string>("<xmlattr>.name"),
             IMAGE_PROPTREE.get<std::string>("<xmlattr>.source"),
-            TILESET_PROPTREE.get<std::size_t>("<xmlattr>.firstgid"),
-            TILESET_PROPTREE.get<std::size_t>("<xmlattr>.tilecount"),
-            TILESET_PROPTREE.get<std::size_t>("<xmlattr>.columns"),
-            TEXTURE_INDEX) );
+            ID_t(TILESET_PROPTREE.get<ID_t::type>("<xmlattr>.firstgid")),
+            Count_t(TILESET_PROPTREE.get<Count_t::type>("<xmlattr>.tilecount")),
+            Column_t(TILESET_PROPTREE.get<Column_t::type>("<xmlattr>.columns")),
+            Index_t(TEXTURE_INDEX)) );
 
         TileImage & tileImage{ tilesImageVec_[tilesImageVec_.size() - 1] };
 
@@ -673,17 +680,17 @@ namespace sfml_util
 
         mapLayers_.push_back( MapLayer() );
         MapLayer & mapLayer{ mapLayers_[mapLayers_.size() - 1] };
-        ParseMapFile_ParseGenericTileLayer(mapLayer.mapval_vec, ssAllData);
+        ParseMapFile_ParseGenericTileLayer(mapLayer.mapid_vec, ssAllData);
         EstablishMapSubsection(mapLayer, PLAYER_POS_TILE_OFFSETS);
     }
 
 
     void TileMap::ParseMapFile_ParseGenericTileLayer(
-        MapValVec_t & mapValues,
+        IDVec_t & mapIDs,
         std::stringstream & tileLayerDataSS)
     {
         //found by experiment to be a reliable upper bound for typical maps
-        mapValues.reserve(20'000);
+        mapIDs.reserve(20'000);
 
         std::string nextLine("");
         while (tileLayerDataSS)
@@ -711,14 +718,14 @@ namespace sfml_util
 
                 try
                 {
-                    //using boost::lexical_cast instead of std::stoi because it is faster
-                    mapValues.push_back(boost::lexical_cast<MapVal_t>(nextValStr));
+                    //using boost::lexical_cast instead of std::stoi because it tested faster
+                    mapIDs.push_back( ID_t(boost::lexical_cast<ID_t::type>(nextValStr)) );
                 }
                 catch (const std::exception & E)
                 {
                     M_HP_LOG("sfml_util::TileMap::ParseMapFile_ParseGenericTileLayer("
                         << nextLine << ") " << "boost::lexical_cast<"
-                        << boost::typeindex::type_id<MapVal_t>().pretty_name() << "("
+                        << boost::typeindex::type_id<ID_t::type>().pretty_name() << "("
                         << "\"" << nextValStr << "\") threw '" << E.what() << "' exception.");
 
                     throw;
@@ -728,7 +735,7 @@ namespace sfml_util
                     std::ostringstream ss;
                     ss << "sfml_util::TileMap::ParseMapFile_ParseGenericTileLayer("
                        << nextLine << ") " << "boost::lexical_cast<"
-                       << boost::typeindex::type_id<MapVal_t>().pretty_name() << "("
+                       << boost::typeindex::type_id<ID_t::type>().pretty_name() << "("
                        << "\"" << nextValStr << "\") threw unknown exception.";
 
                     M_HP_LOG(ss.str());
@@ -745,32 +752,31 @@ namespace sfml_util
         auto const TILE_WIDTH{  TILE_OFFSETS.end_x - TILE_OFFSETS.begin_x };
         auto const TILE_HEIGHT{ TILE_OFFSETS.end_y - TILE_OFFSETS.begin_y };
         mapLayer.vert_array.setPrimitiveType(sf::Quads);
-        mapLayer.vert_array.resize(TILE_WIDTH * TILE_HEIGHT * 4);
-        mapLayer.tilesimage_vec.reserve(TILE_WIDTH * TILE_HEIGHT);
+        mapLayer.vert_array.resize(TILE_WIDTH.AsSizeT() * TILE_HEIGHT.AsSizeT() * 4);
+        mapLayer.tilesimage_vec.reserve(TILE_WIDTH.AsSizeT() * TILE_HEIGHT.AsSizeT());
 
         //populate the vertex array with one quad per tile
         unsigned vertIndex(0);
-        for (unsigned x(TILE_OFFSETS.begin_x); x < TILE_OFFSETS.end_x; ++x)
+        for (Count_t::type x(TILE_OFFSETS.begin_x.Get()); x < TILE_OFFSETS.end_x.Get(); ++x)
         {
-            for (unsigned y(TILE_OFFSETS.begin_y); y < TILE_OFFSETS.end_y; ++y)
+            for (Count_t::type y(TILE_OFFSETS.begin_y.Get()); y < TILE_OFFSETS.end_y.Get(); ++y)
             {
                 //get the current tile number
                 auto const TILE_INDEX{ x + (y * mapTileCountX_) };
 
                 auto const TILE_NUM_ORIG{
-                    mapLayer.mapval_vec[static_cast<std::size_t>(TILE_INDEX)] };
+                    mapLayer.mapid_vec[static_cast<std::size_t>(TILE_INDEX)] };
 
                 //This -1 comes from the Tiled app that starts tile ids at 1 instead of 0.
-                auto const TILE_NUM_ADJ{ (TILE_NUM_ORIG == 0) ? 0 : (TILE_NUM_ORIG - 1) };
+                auto const TILE_NUM_ID_ADJ{
+                    (TILE_NUM_ORIG == 0_id) ? 0_id : (TILE_NUM_ORIG - 1_id) };
 
                 //get the texture/image this tile can be found in
-                const TileImage & TILE_IMAGE{ GetTileImageFromId(TILE_NUM_ADJ) };
+                const TileImage & TILE_IMAGE{ GetTileImageFromId(TILE_NUM_ID_ADJ) };
                 mapLayer.tilesimage_vec.push_back(TILE_IMAGE);
 
                 //adjust the tile number to start at one
-                auto const TILE_NUM{
-                    (TILE_NUM_ADJ - static_cast<unsigned>(TILE_IMAGE.first_id)) +
-                        static_cast<unsigned>(1) };
+                auto const TILE_ID{ (TILE_NUM_ID_ADJ - TILE_IMAGE.first_id) + 1_id };
 
                 //get a pointer to the current tile's quad
                 sf::Vertex * quadPtr{
@@ -778,13 +784,13 @@ namespace sfml_util
 
                 //define its 4 corners on screen
                 auto const POS_WIDTH{
-                    static_cast<float>((x - TILE_OFFSETS.begin_x) * tileSizeWidth_) };
+                    static_cast<float>((x - TILE_OFFSETS.begin_x.Get()) * tileSizeWidth_) };
 
                 auto const POS_WIDTH_PLUS_ONE_TILE{
                     POS_WIDTH + static_cast<float>(tileSizeWidth_) };
 
                 auto const POS_HEIGHT{
-                    static_cast<float>((y - TILE_OFFSETS.begin_y) * tileSizeHeight_) };
+                    static_cast<float>((y - TILE_OFFSETS.begin_y.Get()) * tileSizeHeight_) };
 
                 auto const POS_HEIGHT_PLUS_ONE_TILE{
                     POS_HEIGHT + static_cast<float>(tileSizeHeight_) };
@@ -803,10 +809,13 @@ namespace sfml_util
 
                 //find its position in the tileset texture
                 auto const TEXTURE_TILE_COUNT_HORIZ{
-                    textures_[TILE_IMAGE.texture_index].getSize().x / tileSizeWidth_ };
+                    textures_[TILE_IMAGE.texture_index.Get()].getSize().x / tileSizeWidth_ };
 
-                auto const TILE_COUNT_U{ static_cast<float>(TILE_NUM % TEXTURE_TILE_COUNT_HORIZ) };
-                auto const TILE_COUNT_V{ static_cast<float>(TILE_NUM / TEXTURE_TILE_COUNT_HORIZ) };
+                auto const TILE_COUNT_U{
+                    static_cast<float>(TILE_ID.AsUInt() % TEXTURE_TILE_COUNT_HORIZ) };
+
+                auto const TILE_COUNT_V{
+                    static_cast<float>(TILE_ID.AsUInt() / TEXTURE_TILE_COUNT_HORIZ) };
 
                 auto const TEXTCOORD_WIDTH{
                     TILE_COUNT_U * static_cast<float>(tileSizeWidth_) };
@@ -852,17 +861,17 @@ namespace sfml_util
 
         if (PLAYER_POSX_IN_TILES >= HALF_WIN_TILES_X)
         {
-            tileOffsets.begin_x = (PLAYER_POSX_IN_TILES - HALF_WIN_TILES_X);
+            tileOffsets.begin_x = Count_t(PLAYER_POSX_IN_TILES - HALF_WIN_TILES_X);
         }
         else
         {
-            tileOffsets.begin_x = 0;
+            tileOffsets.begin_x = 0_count;
         }
 
-        tileOffsets.end_x = (PLAYER_POSX_IN_TILES + HALF_WIN_TILES_X);
+        tileOffsets.end_x = Count_t(PLAYER_POSX_IN_TILES + HALF_WIN_TILES_X);
 
         auto const TILE_WITH_OFFSET_COUNT_X{
-            (WIN_SIZE_V_.x / tileSizeWidth_) + EXTRA_OFFSCREEN_TILE_COUNT_ };
+            Count_t((WIN_SIZE_V_.x / tileSizeWidth_) + EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt()) };
 
         if (tileOffsets.end_x < TILE_WITH_OFFSET_COUNT_X)
         {
@@ -874,17 +883,17 @@ namespace sfml_util
 
         if (PLAYER_POSY_IN_TILES >= HALF_WIN_TILES_Y)
         {
-            tileOffsets.begin_y = (PLAYER_POSY_IN_TILES - HALF_WIN_TILES_Y);
+            tileOffsets.begin_y = Count_t(PLAYER_POSY_IN_TILES - HALF_WIN_TILES_Y);
         }
         else
         {
-            tileOffsets.begin_y = 0;
+            tileOffsets.begin_y = 0_count;
         }
 
-        tileOffsets.end_y = (PLAYER_POSY_IN_TILES + HALF_WIN_TILES_Y);
+        tileOffsets.end_y = Count_t(PLAYER_POSY_IN_TILES + HALF_WIN_TILES_Y);
 
         auto const TILE_WITH_OFFSET_COUNT_Y{
-            (WIN_SIZE_V_.y / tileSizeHeight_) + EXTRA_OFFSCREEN_TILE_COUNT_ };
+            Count_t((WIN_SIZE_V_.y / tileSizeHeight_) + EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt()) };
 
         if (tileOffsets.end_y < TILE_WITH_OFFSET_COUNT_Y)
         {
@@ -897,7 +906,7 @@ namespace sfml_util
         }
         else
         {
-            tileOffsets.begin_x = 0;
+            tileOffsets.begin_x = 0_count;
         }
 
         if (tileOffsets.begin_y >= EXTRA_OFFSCREEN_TILE_COUNT_)
@@ -906,25 +915,25 @@ namespace sfml_util
         }
         else
         {
-            tileOffsets.begin_y = 0;
+            tileOffsets.begin_y = 0_count;
         }
 
-        if ((tileOffsets.end_x + EXTRA_OFFSCREEN_TILE_COUNT_) < mapTileCountX_)
+        if ((tileOffsets.end_x.Get() + EXTRA_OFFSCREEN_TILE_COUNT_.Get()) < mapTileCountX_)
         {
             tileOffsets.end_x += EXTRA_OFFSCREEN_TILE_COUNT_;
         }
         else
         {
-            tileOffsets.end_x = mapTileCountX_;
+            tileOffsets.end_x = Count_t(mapTileCountX_);
         }
 
-        if ((tileOffsets.end_y + EXTRA_OFFSCREEN_TILE_COUNT_) < mapTileCountY_)
+        if ((tileOffsets.end_y.Get() + EXTRA_OFFSCREEN_TILE_COUNT_.Get()) < mapTileCountY_)
         {
             tileOffsets.end_y += EXTRA_OFFSCREEN_TILE_COUNT_;
         }
         else
         {
-            tileOffsets.end_y = mapTileCountY_;
+            tileOffsets.end_y = Count_t(mapTileCountY_);
         }
 
         auto const TILE_WITH_DOUBLE_OFFSET_COUNT_Y{
@@ -956,8 +965,11 @@ namespace sfml_util
     const sf::Vector2f TileMap::GetScreenPos(const TileOffsets & TILE_OFFSETS) const
     {
         //Convert from off-screen coords to on-screen coords.
-        auto const OFFSET_DIFFX{ static_cast<float>(TILE_OFFSETS.end_x - TILE_OFFSETS.begin_x) };
-        auto const OFFSET_DIFFY{ static_cast<float>(TILE_OFFSETS.end_y - TILE_OFFSETS.begin_y) };
+        auto const OFFSET_DIFFX{
+            static_cast<float>(TILE_OFFSETS.end_x.AsInt() - TILE_OFFSETS.begin_x.AsInt()) };
+
+        auto const OFFSET_DIFFY{
+            static_cast<float>(TILE_OFFSETS.end_y.AsInt() - TILE_OFFSETS.begin_y.AsInt()) };
 
         auto const LEFT{ static_cast<float>(
             WIN_POS_V_.x + ((OFFSET_DIFFX * static_cast<float>(tileSizeWidth_)) * 0.5f)) };
@@ -982,7 +994,7 @@ namespace sfml_util
     }
 
 
-    const TileImage & TileMap::GetTileImageFromId(const MapVal_t ID) const
+    const TileImage & TileMap::GetTileImageFromId(const ID_t ID) const
     {
         for (auto const & TILE_IMAGE : tilesImageVec_)
         {
@@ -1009,16 +1021,16 @@ namespace sfml_util
         emptyRendText_.clear(sf::Color::Transparent);
         emptyRendText_.display();
 
-        textures_.resize(1);
-        textures_[0] = emptyRendText_.getTexture();
+        textures_.resize(TRANSPARENT_TEXTURE_INDEX_.Get() + 1);
+        textures_[TRANSPARENT_TEXTURE_INDEX_.Get()] = emptyRendText_.getTexture();
 
         tilesImageVec_.push_back( TileImage(
             TILE_IMAGE_NAME_EMPTY_,
             "",//the empty/transparent texture has no file
-            0,
-            1,
-            1,
-            0/*zero is always the index of the empty/transparent texture*/) );
+            0_id,
+            1_count,
+            1_column,
+            TRANSPARENT_TEXTURE_INDEX_) );
     }
 
 

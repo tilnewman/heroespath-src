@@ -50,11 +50,19 @@ namespace misc
         {}
 
         unsigned char AsUChar() const { return static_cast<unsigned char>(this->m_value); }
+        int AsShort() const { return static_cast<short>(this->m_value); }
+        unsigned AsUShort() const { return static_cast<unsigned short>(this->m_value); }
         int AsInt() const { return static_cast<int>(this->m_value); }
+        unsigned AsUInt() const { return static_cast<unsigned>(this->m_value); }
+        int AsLong() const { return static_cast<long>(this->m_value); }
+        unsigned AsULong() const { return static_cast<unsigned long>(this->m_value); }
+        int AsLLong() const { return static_cast<long long>(this->m_value); }
+        unsigned AsULLong() const { return static_cast<unsigned long long>(this->m_value); }
         std::size_t AsSizeT() const { return static_cast<std::size_t>(this->m_value); }
         float AsFloat() const { return static_cast<float>(this->m_value); }
         double AsDouble() const { return static_cast<double>(this->m_value); }
-
+        double AsLDouble() const { return static_cast<long double>(this->m_value); }
+        
         bool IsZero() const { return (this->m_value == T(0)); }
         bool IsNonZero() const { return ! IsZero(); }
 
@@ -106,7 +114,6 @@ namespace misc
         {
             return StrongNumericType( * this) /= RHS;
         }
-
 
         bool operator==(const StrongNumericType & RHS) const
         {

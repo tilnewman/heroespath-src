@@ -26,15 +26,57 @@
 #define GAME_TYPES_HPP_INCLUDED
 //
 // types.hpp
+//  Strong types used by the game.
 //
 #include "game/stats/trait.hpp"
 
 #include "misc/strong-type.hpp"
 #include "misc/strong-numeric-type.hpp"
 
+#include <vector>
 #include <utility>
 
 
+//global strong types
+struct IDTag {};
+struct IndexTag {};
+struct CountTag {};
+struct RowTag {};
+struct ColumnTag {};
+
+using ID_t = misc::StrongNumericType<std::size_t, IDTag>;
+using Index_t = misc::StrongNumericType<std::size_t, IndexTag>;
+using Count_t = misc::StrongNumericType<std::size_t, CountTag>;
+using Row_t = misc::StrongNumericType<std::size_t, RowTag>;
+using Column_t = misc::StrongNumericType<std::size_t, ColumnTag>;
+
+inline ID_t operator"" _id(unsigned long long id)
+{
+    return ID_t(static_cast<ID_t::type>(id));
+}
+inline Index_t operator"" _index(unsigned long long index)
+{
+    return Index_t(static_cast<Index_t::type>(index));
+}
+inline Count_t operator"" _count(unsigned long long count)
+{
+    return Count_t(static_cast<Count_t::type>(count));
+}
+inline Row_t operator"" _row(unsigned long long row)
+{
+    return Row_t(static_cast<Row_t::type>(row));
+}
+inline Column_t operator"" _column(unsigned long long column)
+{
+    return Column_t(static_cast<Column_t::type>(column));
+}
+
+using IDVec_t = std::vector<ID_t>;
+using IndexVec_t = std::vector<Index_t>;
+using CountVec_t = std::vector<Count_t>;
+
+
+//game strong types
 namespace game
 {
 
@@ -56,9 +98,7 @@ namespace game
     struct LuckTag {};
     struct SpeedTag {};
     struct IntellTag {};
-    struct IndexTag {};
-    struct CountTag {};
-
+    
 
     //strong types
     using Name_t =          misc::StrongType<std::string, NameTag>;
@@ -72,15 +112,13 @@ namespace game
     using Weight_t =        misc::StrongNumericType<int, WeightTag>;
     using Armor_t =         misc::StrongNumericType<int, ArmorTag>;
     using Score_t =         misc::StrongNumericType<int, ScoreTag>;
-    using Strength_t =      misc::StrongNumericType<stats::Trait_t, StrengthTag>;
-    using Accuracy_t =      misc::StrongNumericType<stats::Trait_t, AccuracyTag>;
-    using Charm_t =         misc::StrongNumericType<stats::Trait_t, CharmTag>;
-    using Luck_t =          misc::StrongNumericType<stats::Trait_t, LuckTag>;
-    using Speed_t =         misc::StrongNumericType<stats::Trait_t, SpeedTag>;
-    using Intell_t =        misc::StrongNumericType<stats::Trait_t, IntellTag>;
-    using Index_t =         misc::StrongNumericType<std::size_t, IndexTag>;
-    using Count_t =         misc::StrongNumericType<std::size_t, CountTag>;
-
+    using Strength_t =      misc::StrongNumericType<game::stats::Trait_t, StrengthTag>;
+    using Accuracy_t =      misc::StrongNumericType<game::stats::Trait_t, AccuracyTag>;
+    using Charm_t =         misc::StrongNumericType<game::stats::Trait_t, CharmTag>;
+    using Luck_t =          misc::StrongNumericType<game::stats::Trait_t, LuckTag>;
+    using Speed_t =         misc::StrongNumericType<game::stats::Trait_t, SpeedTag>;
+    using Intell_t =        misc::StrongNumericType<game::stats::Trait_t, IntellTag>;
+    
 
     //user defined literals for strong types
     inline Coin_t operator"" _coin(unsigned long long coins)
@@ -161,16 +199,6 @@ namespace game
     inline Intell_t operator"" _int(unsigned long long intell)
     {
         return Intell_t(static_cast<Intell_t::type>(intell));
-    }
-
-    inline Index_t operator"" _index(unsigned long long index)
-    {
-        return Index_t(static_cast<Index_t::type>(index));
-    }
-
-    inline Count_t operator"" _count(unsigned long long count)
-    {
-        return Count_t(static_cast<Count_t::type>(count));
     }
 
 }

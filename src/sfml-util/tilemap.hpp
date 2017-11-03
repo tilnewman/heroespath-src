@@ -30,6 +30,8 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/collision-quad-tree.hpp"
 
+#include "game/types.hpp"
+
 //suppress warnings that are safe to ignore in boost
 #if !defined(WIN32) && !defined(_WIN32) && !defined(__WIN32__) && !defined(__WINDOWS__)
 #pragma GCC diagnostic ignored "-Wundef"
@@ -56,10 +58,10 @@ namespace sfml_util
 
     struct TileOffsets
     {
-        unsigned begin_x = 0;
-        unsigned end_x = 0;
-        unsigned begin_y = 0;
-        unsigned end_y = 0;
+        Count_t begin_x = 0_count;
+        Count_t end_x = 0_count;
+        Count_t begin_y = 0_count;
+        Count_t end_y = 0_count;
     };
 
     inline bool operator==(const TileOffsets & L, const TileOffsets & R)
@@ -82,32 +84,27 @@ namespace sfml_util
         explicit TileImage(
             const std::string & NAME          = "",
             const std::string & RELATIVE_PATH = "",
-            const std::size_t FIRST_ID        = 0,
-            const std::size_t TILE_COUNT      = 1,
-            const std::size_t COLUMN_COUNT    = 1,
-            const std::size_t TEXTURE_INDEX   = 0);
+            const ID_t FIRST_ID               = 0_id,
+            const Count_t TILE_COUNT          = 1_count,
+            const Column_t COLUMN             = 1_column,
+            const Index_t TEXTURE_INDEX       = 0_index);
 
-        inline bool OwnsId(const std::size_t ID) const
+        inline bool OwnsId(const ID_t ID) const
         {
-            return ((ID >= first_id) && (ID < (first_id + tile_count)));
+            return (ID >= first_id) &&
+                   (ID.AsUInt() < (first_id.AsUInt() + tile_count.AsUInt()));
         }
 
         std::string name;
         std::string path_rel; //path string relative to the .tmx map path
-        std::size_t first_id;
-        std::size_t tile_count;
-        std::size_t column_count;
-        std::size_t texture_index;
+        ID_t first_id;
+        Count_t tile_count;
+        Column_t column;
+        Index_t texture_index;
         boost::filesystem::path path_obj;
     };
 
     using TileImageVec_t = std::vector<TileImage>;
-
-
-
-    //helpful types
-    using MapVal_t = unsigned;
-    using MapValVec_t = std::vector<MapVal_t>;
 
 
 
@@ -116,7 +113,7 @@ namespace sfml_util
     {
         sf::VertexArray vert_array;
         TileImageVec_t tilesimage_vec;
-        MapValVec_t mapval_vec;
+        IDVec_t mapid_vec;
     };
 
     using MapLayerVec_t = std::vector<MapLayer>;
@@ -168,7 +165,7 @@ namespace sfml_util
             const boost::property_tree::ptree::value_type &,
             const TileOffsets & PLAYER_POS_TILE_OFFSETS);
 
-        void ParseMapFile_ParseGenericTileLayer(MapValVec_t &, std::stringstream &);
+        void ParseMapFile_ParseGenericTileLayer(IDVec_t &, std::stringstream &);
 
         void EstablishMapSubsection(
             MapLayer & mapLayerSPtr,
@@ -182,7 +179,7 @@ namespace sfml_util
 
         bool IsPointWithinCollision(const sf::Vector2f &) const;
 
-        const TileImage & GetTileImageFromId(const MapVal_t ID) const;
+        const TileImage & GetTileImageFromId(const ID_t) const;
 
         void SetupEmptyTexture();
 
@@ -210,7 +207,7 @@ namespace sfml_util
         static const std::string XML_ATTRIB_NAME_COLLISION_;
 
         //how many tiles to draw offscreen that are outside the visible map area
-        static const unsigned EXTRA_OFFSCREEN_TILE_COUNT_;
+        static const Count_t EXTRA_OFFSCREEN_TILE_COUNT_;
 
         //The tileset I found online uses this color as a background,
         //so it needs to be changed to transparen.t
@@ -226,6 +223,8 @@ namespace sfml_util
         static const sf::Color SHADOW_COLOR1_;
         static const sf::Color SHADOW_COLOR2_;
         static const sf::Color SHADOW_COLOR3_;
+
+        static const Index_t TRANSPARENT_TEXTURE_INDEX_;
 
     private:
         unsigned           tileSizeWidth_;
