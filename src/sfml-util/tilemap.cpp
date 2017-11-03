@@ -52,18 +52,18 @@ namespace sfml_util
     TileImage::TileImage(
         const std::string & NAME,
         const std::string & RELATIVE_PATH,
-        const std::size_t   FIRST_ID,
-        const std::size_t   TILE_COUNT,
-        const std::size_t   COLUMN_COUNT,
-        const sf::Texture & TEXTURE)
+        const std::size_t FIRST_ID,
+        const std::size_t TILE_COUNT,
+        const std::size_t COLUMN_COUNT,
+        const std::size_t TEXTURE_INDEX)
     :
-        name        (NAME),
-        path_rel    (RELATIVE_PATH),
-        first_id    (FIRST_ID),
-        tile_count  (TILE_COUNT),
-        column_count(COLUMN_COUNT),
-        texture     (TEXTURE),
-        path_obj    ()
+        name         (NAME),
+        path_rel     (RELATIVE_PATH),
+        first_id     (FIRST_ID),
+        tile_count   (TILE_COUNT),
+        column_count (COLUMN_COUNT),
+        texture_index(TEXTURE_INDEX),//zero is always the index of the empty/transparent textures
+        path_obj     ()
     {}
 
 
@@ -112,7 +112,8 @@ namespace sfml_util
         mapLayers_       (),
         tilesImageVec_   (),
         TRANSPARENT_MASK_(TRANSPARENT_MASK),
-        collisionTree_   ()
+        collisionTree_   (),
+        textures_        ()
     {
         //parse the .tmx xml file
         ParseMapFile(MAP_PATH_STR);
@@ -147,7 +148,7 @@ namespace sfml_util
     {
         for (auto & nextTileImage: tilesImageVec_)
         {
-            sf::Image srcImage(nextTileImage.texture.copyToImage());
+            sf::Image srcImage(textures_[nextTileImage.texture_index].copyToImage());
             sf::Image destImage(srcImage);
 
             namespace ba = boost::algorithm;
@@ -201,7 +202,7 @@ namespace sfml_util
                 }
             }
 
-            nextTileImage.texture.update(destImage);
+            textures_[nextTileImage.texture_index].update(destImage);
         }
     }
 
@@ -448,7 +449,8 @@ namespace sfml_util
                     quads[3].position  = NEXT_MAP_LAYER.vert_array[vertIndex].position;
                     quads[3].texCoords = NEXT_MAP_LAYER.vert_array[vertIndex++].texCoords;
 
-                    renderStates_.texture = & NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex++].texture;
+                    renderStates_.texture =
+                        & textures_[NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex++].texture_index];
 
                     offScreenTexture_.draw(quads, renderStates_);
                 }
@@ -549,9 +551,7 @@ namespace sfml_util
             }
             else
             {
-                M_HP_LOG_DBG("\t********** ParseMapFile_Implementation() 2-generic-begin  ");
                 ParseMapFile_PraseLayerGeneric(PROPTREE_CHILD_PAIR, PLAYER_POS_TILE_OFFSETS);
-                M_HP_LOG_DBG("\t********** ParseMapFile_Implementation() 2-generic-end");
             }
         }
     }
@@ -603,12 +603,16 @@ namespace sfml_util
     {
         auto const IMAGE_PROPTREE{ TILESET_PROPTREE.get_child("image") };
 
+        textures_.push_back( sf::Texture() );
+        auto const TEXTURE_INDEX{ textures_.size() - 1 };
+
         tilesImageVec_.push_back( TileImage(
             TILESET_PROPTREE.get<std::string>("<xmlattr>.name"),
             IMAGE_PROPTREE.get<std::string>("<xmlattr>.source"),
             TILESET_PROPTREE.get<std::size_t>("<xmlattr>.firstgid"),
             TILESET_PROPTREE.get<std::size_t>("<xmlattr>.tilecount"),
-            TILESET_PROPTREE.get<std::size_t>("<xmlattr>.columns")));
+            TILESET_PROPTREE.get<std::size_t>("<xmlattr>.columns"),
+            TEXTURE_INDEX) );
 
         TileImage & tileImage{ tilesImageVec_[tilesImageVec_.size() - 1] };
 
@@ -617,7 +621,7 @@ namespace sfml_util
             bfs::path(game::GameDataFile::Instance()->GetMediaPath("media-maps-tile-dir")) /
             bfs::path(tileImage.path_rel).leaf());
 
-        sfml_util::LoadTexture(tileImage.texture, tileImage.path_obj.string());
+        sfml_util::LoadTexture(textures_[TEXTURE_INDEX], tileImage.path_obj.string());
     }
 
 
@@ -799,7 +803,7 @@ namespace sfml_util
 
                 //find its position in the tileset texture
                 auto const TEXTURE_TILE_COUNT_HORIZ{
-                    TILE_IMAGE.texture.getSize().x / tileSizeWidth_ };
+                    textures_[TILE_IMAGE.texture_index].getSize().x / tileSizeWidth_ };
 
                 auto const TILE_COUNT_U{ static_cast<float>(TILE_NUM % TEXTURE_TILE_COUNT_HORIZ) };
                 auto const TILE_COUNT_V{ static_cast<float>(TILE_NUM / TEXTURE_TILE_COUNT_HORIZ) };
@@ -1005,8 +1009,16 @@ namespace sfml_util
         emptyRendText_.clear(sf::Color::Transparent);
         emptyRendText_.display();
 
-        TileImage emptyTileImage(TILE_IMAGE_NAME_EMPTY_, "", 0, 1, 1, emptyRendText_.getTexture());
-        tilesImageVec_.push_back(emptyTileImage);
+        textures_.resize(1);
+        textures_[0] = emptyRendText_.getTexture();
+
+        tilesImageVec_.push_back( TileImage(
+            TILE_IMAGE_NAME_EMPTY_,
+            "",//the empty/transparent texture has no file
+            0,
+            1,
+            1,
+            0/*zero is always the index of the empty/transparent texture*/) );
     }
 
 

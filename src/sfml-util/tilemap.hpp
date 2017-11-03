@@ -82,10 +82,10 @@ namespace sfml_util
         explicit TileImage(
             const std::string & NAME          = "",
             const std::string & RELATIVE_PATH = "",
-            const std::size_t   FIRST_ID      = 0,
-            const std::size_t   TILE_COUNT    = 1,
-            const std::size_t   COLUMN_COUNT  = 1,
-            const sf::Texture & TEXTURE       = sf::Texture());
+            const std::size_t FIRST_ID        = 0,
+            const std::size_t TILE_COUNT      = 1,
+            const std::size_t COLUMN_COUNT    = 1,
+            const std::size_t TEXTURE_INDEX   = 0);
 
         inline bool OwnsId(const std::size_t ID) const
         {
@@ -97,32 +97,9 @@ namespace sfml_util
         std::size_t first_id;
         std::size_t tile_count;
         std::size_t column_count;
-        sf::Texture texture;
+        std::size_t texture_index;
         boost::filesystem::path path_obj;
     };
-
-    //NOTE:  intentionally does not compare the actual texture image data
-    inline bool operator==(const TileImage & L, const TileImage & R)
-    {
-        return std::tie(L.name,
-                        L.path_rel,
-                        L.first_id,
-                        L.tile_count,
-                        L.column_count,
-                        L.path_obj)
-                ==
-               std::tie(R.name,
-                        R.path_rel,
-                        R.first_id,
-                        R.tile_count,
-                        R.column_count,
-                        R.path_obj);
-    }
-
-    inline bool operator!=(const TileImage & L, const TileImage & R)
-    {
-        return ! (L == R);
-    }
 
     using TileImageVec_t = std::vector<TileImage>;
 
@@ -270,6 +247,7 @@ namespace sfml_util
         TileImageVec_t     tilesImageVec_;
         const sf::Color    TRANSPARENT_MASK_;
         QuadTree           collisionTree_;
+        sfml_util::TextureVec_t textures_;
     };
 
 
