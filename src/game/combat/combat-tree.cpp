@@ -63,37 +63,33 @@ namespace combat
 
     CombatTree::CombatTree()
     :
-        edgeList_       (),
-        vertexList_     ()
+        edgeList_(),
+        vertexList_()
     {}
 
 
-    CombatTree::~CombatTree()
-    {}
-
-
-    CombatTree::Id_t CombatTree::NextAvailableId() const
+    ID_t CombatTree::NextAvailableId() const
     {
-        const Id_t NUM_VERTEXES(vertexList_.size());
-        for (Id_t i(0); i < NUM_VERTEXES; ++i)
+        auto const NUM_VERTEXES{ vertexList_.size() };
+        for (std::size_t i(0); i < NUM_VERTEXES; ++i)
         {
-            if (false == DoesVertexExist(i))
+            if (false == DoesVertexExist( ID_t(i)) )
             {
-                return i;
+                return ID_t(i);
             }
         }
 
-        return NUM_VERTEXES;
+        return ID_t(NUM_VERTEXES);
     }
 
 
-    CombatNodePtr_t CombatTree::GetNode(const Id_t ID) const
+    CombatNodePtr_t CombatTree::GetNode(const ID_t ID) const
     {
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.first == ID)
+            if (VERTEX.id == ID)
             {
-                return NEXT_VERTEX.second.get();
+                return VERTEX.node_sptr.get();
             }
         }
 
@@ -103,13 +99,13 @@ namespace combat
     }
 
 
-    CombatNodeSPtr_t CombatTree::GetNodeSPtr(const Id_t ID) const
+    CombatNodeSPtr_t CombatTree::GetNodeSPtr(const ID_t ID) const
     {
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.first == ID)
+            if (VERTEX.id == ID)
             {
-                return NEXT_VERTEX.second;
+                return VERTEX.node_sptr;
             }
         }
 
@@ -121,11 +117,11 @@ namespace combat
 
     CombatNodePtr_t CombatTree::GetNode(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.second->Creature() == CREATURE_CPTRC)
+            if (VERTEX.node_sptr->Creature() == CREATURE_CPTRC)
             {
-                return NEXT_VERTEX.second.get();
+                return VERTEX.node_sptr.get();
             }
         }
 
@@ -135,11 +131,11 @@ namespace combat
 
     CombatNodeSPtr_t CombatTree::GetNodeSPtr(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.second->Creature() == CREATURE_CPTRC)
+            if (VERTEX.node_sptr->Creature() == CREATURE_CPTRC)
             {
-                return NEXT_VERTEX.second;
+                return VERTEX.node_sptr;
             }
         }
 
@@ -147,13 +143,13 @@ namespace combat
     }
 
 
-    void CombatTree::SetNode(const Id_t ID, const CombatNodeSPtr_t & NODE_SPTR)
+    void CombatTree::SetNode(const ID_t ID, const CombatNodeSPtr_t & NODE_SPTR)
     {
-        for(auto & nextVertex : vertexList_)
+        for(auto & vertex : vertexList_)
         {
-            if (nextVertex.first == ID)
+            if (vertex.id == ID)
             {
-                nextVertex.second = NODE_SPTR;
+                vertex.node_sptr = NODE_SPTR;
                 return;
             }
         }
@@ -167,13 +163,13 @@ namespace combat
     }
 
 
-    CombatTree::Id_t CombatTree::GetNodeId(const CombatNodePtr_t COMBATNODE_PTR) const
+    ID_t CombatTree::GetNodeId(const CombatNodePtr_t COMBATNODE_PTR) const
     {
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.second.get() == COMBATNODE_PTR)
+            if (VERTEX.node_sptr.get() == COMBATNODE_PTR)
             {
-                return NEXT_VERTEX.first;
+                return VERTEX.id;
             }
         }
 
@@ -186,13 +182,13 @@ namespace combat
     }
 
 
-    CombatTree::Id_t CombatTree::GetNodeId(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    ID_t CombatTree::GetNodeId(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.second->Creature() == CREATURE_CPTRC)
+            if (VERTEX.node_sptr->Creature() == CREATURE_CPTRC)
             {
-                return NEXT_VERTEX.first;
+                return VERTEX.id;
             }
         }
 
@@ -205,17 +201,18 @@ namespace combat
     }
 
 
-    std::size_t CombatTree::GetNodeIds(CombatTree::IdVec_t &      IdVec_OutParam,
-                                       const creature::role::Enum ROLE)
+    std::size_t CombatTree::GetNodeIds(
+        IDVec_t & IDVec_OutParam,
+        const creature::role::Enum ROLE)
     {
         std::size_t count(0);
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if ((NEXT_VERTEX.second->Creature() != nullptr) &&
-                (NEXT_VERTEX.second->Creature()->Role() == ROLE))
+            if ((VERTEX.node_sptr->Creature() != nullptr) &&
+                (VERTEX.node_sptr->Creature()->Role() == ROLE))
             {
                 ++count;
-                IdVec_OutParam.push_back(NEXT_VERTEX.first);
+                IDVec_OutParam.push_back(VERTEX.id);
             }
         }
 
@@ -223,17 +220,18 @@ namespace combat
     }
 
 
-    std::size_t CombatTree::GetNodeIds(CombatTree::IdVec_t &      IdVec_OutParam,
-                                       const creature::race::Enum RACE)
+    std::size_t CombatTree::GetNodeIds(
+        IDVec_t & IdVec_OutParam,
+        const creature::race::Enum RACE)
     {
         std::size_t count(0);
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if ((NEXT_VERTEX.second->Creature() != nullptr) &&
-                (NEXT_VERTEX.second->Creature()->Race() == RACE))
+            if ((VERTEX.node_sptr->Creature() != nullptr) &&
+                (VERTEX.node_sptr->Creature()->Race() == RACE))
             {
                 ++count;
-                IdVec_OutParam.push_back(NEXT_VERTEX.first);
+                IdVec_OutParam.push_back(VERTEX.id);
             }
         }
 
@@ -243,11 +241,11 @@ namespace combat
 
     CombatNodePtr_t CombatTree::GetNode(const float POS_X, const float POS_Y) const
     {
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.second->GetEntityRegion().contains(POS_X, POS_Y))
+            if (VERTEX.node_sptr->GetEntityRegion().contains(POS_X, POS_Y))
             {
-                return NEXT_VERTEX.second.get();
+                return VERTEX.node_sptr.get();
             }
         }
 
@@ -258,9 +256,9 @@ namespace combat
     std::size_t CombatTree::VertexCountByBlockingPos(const int BLOCKING_POS) const
     {
         std::size_t count(0);
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.second->GetBlockingPos() == BLOCKING_POS)
+            if (VERTEX.node_sptr->GetBlockingPos() == BLOCKING_POS)
             {
                 ++count;
             }
@@ -287,9 +285,9 @@ namespace combat
             ss << "[";
         }
 
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            ss << NEXT_VERTEX.first << ":" << NEXT_VERTEX.second->ToString() << ", ";
+            ss << VERTEX.id << ":" << VERTEX.node_sptr->ToString() << ", ";
         }
 
         if (WILL_WRAP)
@@ -301,15 +299,15 @@ namespace combat
     }
 
 
-    CombatTree::Id_t CombatTree::AddVertex(const CombatNodeSPtr_t & NODE_SPTR)
+    ID_t CombatTree::AddVertex(const CombatNodeSPtr_t & NODE_SPTR)
     {
-        const Id_t ID_TO_USE( NextAvailableId() );
-        vertexList_.push_back( std::make_pair(ID_TO_USE, NODE_SPTR) );
+        const ID_t ID_TO_USE( NextAvailableId() );
+        vertexList_.push_back( Vertex(ID_TO_USE, NODE_SPTR) );
         return ID_TO_USE;
     }
 
 
-    void CombatTree::AddVertex(const Id_t ID, const CombatNodeSPtr_t & NODE_SPTR)
+    void CombatTree::AddVertex(const ID_t ID, const CombatNodeSPtr_t & NODE_SPTR)
     {
         if (DoesVertexExist(ID))
         {
@@ -322,17 +320,16 @@ namespace combat
         }
         else
         {
-            vertexList_.push_back( std::make_pair(ID, NODE_SPTR) );
+            vertexList_.push_back( Vertex(ID, NODE_SPTR) );
         }
     }
 
-    void CombatTree::RemoveVertex(const Id_t ID, const bool WILL_REMOVE_DANGLING_EDGES)
+    void CombatTree::RemoveVertex(const ID_t ID, const bool WILL_REMOVE_DANGLING_EDGES)
     {
         auto iter(vertexList_.begin());
-
         for (; iter != vertexList_.end(); ++iter)
         {
-            if (ID == iter->first)
+            if (ID == iter->id)
             {
                 break;
             }
@@ -353,28 +350,29 @@ namespace combat
         }
 
         CombatTree::EdgeList_t edgesToBeRemovedList;
-        for (auto const & NEXT_EDGE : edgeList_)
+        for (auto const & EDGE : edgeList_)
         {
-            if ((std::get<0>(NEXT_EDGE) == ID) || (std::get<1>(NEXT_EDGE) == ID))
+            if ((EDGE.a == ID) || (EDGE.b == ID))
             {
-                edgesToBeRemovedList.push_back(NEXT_EDGE);
+                edgesToBeRemovedList.push_back(EDGE);
             }
         }
 
         //remove all edges connected to the removed vert,
         //while keeping track of a list (set) of blocking IDs with orphaned verts
         std::set<int> orphanedBlockingIdSet;
-        for(auto const & NEXT_EDGE_TO_BE_REMOVED : edgesToBeRemovedList)
+        for(auto const & EDGE_TO_BE_REMOVED : edgesToBeRemovedList)
         {
-            auto const NEXT_ORPHANED_VERT_ID_VEC( RemoveEdge(std::get<0>(NEXT_EDGE_TO_BE_REMOVED),
-                                                             std::get<1>(NEXT_EDGE_TO_BE_REMOVED),
-                                                             ! WILL_REMOVE_DANGLING_EDGES) );
+            auto const ORPHANED_VERT_ID_VEC{ RemoveEdge(
+                EDGE_TO_BE_REMOVED.a,
+                EDGE_TO_BE_REMOVED.b,
+                ! WILL_REMOVE_DANGLING_EDGES) };
 
-            for (auto const & NEXT_ORPHANED_VERT_ID : NEXT_ORPHANED_VERT_ID_VEC)
+            for (auto const & ORPHANED_VERT_ID : ORPHANED_VERT_ID_VEC)
             {
-                if (NEXT_ORPHANED_VERT_ID != ID)
+                if (ORPHANED_VERT_ID != ID)
                 {
-                    orphanedBlockingIdSet.insert(GetNode(NEXT_ORPHANED_VERT_ID)->GetBlockingPos());
+                    orphanedBlockingIdSet.insert( GetNode(ORPHANED_VERT_ID)->GetBlockingPos() );
                 }
             }
         }
@@ -395,10 +393,10 @@ namespace combat
         }
         else
         {
-            Id_t count(0);
-            for (auto const & NEXT_EDGE : edgeList_)
+            ID_t::type count{ 0 };
+            for (auto const & EDGE : edgeList_)
             {
-                if (std::get<2>(NEXT_EDGE) == TYPE)
+                if (EDGE.type == TYPE)
                 {
                     ++count;
                 }
@@ -412,17 +410,17 @@ namespace combat
     const CombatTree::EdgeVec_t CombatTree::Edges(const EdgeType::Enum TYPE) const
     {
         CombatTree::EdgeVec_t v;
-        for(auto const & NEXT_EDGE : edgeList_)
+        for(auto const & EDGE : edgeList_)
         {
             if (TYPE == EdgeType::All)
             {
-                v.push_back(NEXT_EDGE);
+                v.push_back(EDGE);
             }
             else
             {
-                if (TYPE == std::get<2>(NEXT_EDGE))
+                if (EDGE.type == TYPE)
                 {
-                    v.push_back(NEXT_EDGE);
+                    v.push_back(EDGE);
                 }
             }
         }
@@ -440,10 +438,9 @@ namespace combat
             ss << "(";
         }
 
-        for (auto const & NEXT_EDGE : edgeList_)
+        for (auto const & EDGE : edgeList_)
         {
-            ss << std::get<0>(NEXT_EDGE) << "-" << std::get<1>(NEXT_EDGE) << ":"
-                << EdgeType::ToString(std::get<2>(NEXT_EDGE)) << ", ";
+            ss << EDGE.a << "-" << EDGE.b << ":" << EdgeType::ToString(EDGE.type) << ", ";
         }
 
         if (WILL_WRAP)
@@ -455,9 +452,10 @@ namespace combat
     }
 
 
-    void CombatTree::AddEdge(const Id_t           ID1,
-                             const Id_t           ID2,
-                             const EdgeType::Enum TYPE)
+    void CombatTree::AddEdge(
+        const ID_t ID1,
+        const ID_t ID2,
+        const EdgeType::Enum TYPE)
     {
         if (ID1 == ID2)
         {
@@ -497,13 +495,14 @@ namespace combat
             throw std::invalid_argument(ss.str());
         }
 
-        edgeList_.push_back( std::make_tuple(ID1, ID2, TYPE) );
+        edgeList_.push_back( Edge(ID1, ID2, TYPE) );
     }
 
 
-    const CombatTree::IdVec_t CombatTree::RemoveEdge(const Id_t ID1,
-                                                     const Id_t ID2,
-                                                     const bool IS_DRY_RUN)
+    const IDVec_t CombatTree::RemoveEdge(
+        const ID_t ID1,
+        const ID_t ID2,
+        const bool IS_DRY_RUN)
     {
         if (ID1 == ID2)
         {
@@ -514,7 +513,7 @@ namespace combat
             throw std::invalid_argument(ss.str());
         }
 
-        if (false == DoesEdgeExist(ID1, ID2))
+        if (DoesEdgeExist(ID1, ID2) == false)
         {
             std::ostringstream ss;
             ss << "CombatTree::RemoveEdge(id1=" << ID1 << ", id2=" << ID2 << ", dry_run="
@@ -523,24 +522,26 @@ namespace combat
             throw std::invalid_argument(ss.str());
         }
 
-        const EdgeType::Enum TYPE(GetEdgeType(ID1, ID2));
+        const EdgeType::Enum TYPE{ GetEdgeType(ID1, ID2) };
 
-        edgeList_.erase(std::remove(edgeList_.begin(),
-                                    edgeList_.end(),
-                                    std::make_tuple(ID1, ID2, TYPE)), edgeList_.end());
+        edgeList_.erase(std::remove(
+            edgeList_.begin(),
+            edgeList_.end(),
+            Edge(ID1, ID2, TYPE)), edgeList_.end());
 
-        edgeList_.erase(std::remove(edgeList_.begin(),
-                                    edgeList_.end(),
-                                    std::make_tuple(ID2, ID1, TYPE)), edgeList_.end());
+        edgeList_.erase(std::remove(
+            edgeList_.begin(),
+            edgeList_.end(),
+            Edge(ID2, ID1, TYPE)), edgeList_.end());
 
-        CombatTree::IdVec_t orphanedVertexIdVec;
+        IDVec_t orphanedVertexIdVec;
 
-        if (false == AreAnyAdjacent(ID1))
+        if (AreAnyAdjacent(ID1) == false)
         {
             orphanedVertexIdVec.push_back(ID1);
         }
 
-        if (false == AreAnyAdjacent(ID2))
+        if (AreAnyAdjacent(ID2) == false)
         {
             orphanedVertexIdVec.push_back(ID2);
         }
@@ -554,11 +555,11 @@ namespace combat
     }
 
 
-    bool CombatTree::DoesVertexExist(const Id_t ID) const
+    bool CombatTree::DoesVertexExist(const ID_t ID) const
     {
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.first == ID)
+            if (VERTEX.id == ID)
             {
                 return true;
             }
@@ -568,14 +569,15 @@ namespace combat
     }
 
 
-    bool CombatTree::DoesEdgeExist(const Id_t ID1,
-                                   const Id_t ID2,
-                                   const EdgeType::Enum TYPE) const
+    bool CombatTree::DoesEdgeExist(
+        const ID_t ID1,
+        const ID_t ID2,
+        const EdgeType::Enum TYPE) const
     {
-        for(auto const & NEXT_EDGE : edgeList_)
+        for(auto const & EDGE : edgeList_)
         {
-            if (((std::get<0>(NEXT_EDGE) == ID1) && (std::get<1>(NEXT_EDGE) == ID2)) ||
-                ((std::get<0>(NEXT_EDGE) == ID2) && (std::get<1>(NEXT_EDGE) == ID1)))
+            if (((EDGE.a == ID1) && (EDGE.b == ID2)) ||
+                ((EDGE.a == ID2) && (EDGE.b == ID1)))
             {
                 if (TYPE == EdgeType::All)
                 {
@@ -583,7 +585,7 @@ namespace combat
                 }
                 else
                 {
-                    if (TYPE == std::get<2>(NEXT_EDGE))
+                    if (EDGE.type == TYPE)
                     {
                         return true;
                     }
@@ -595,12 +597,16 @@ namespace combat
     }
 
 
-    EdgeType::Enum CombatTree::GetEdgeType(const Id_t ID1, const Id_t ID2) const
+    EdgeType::Enum CombatTree::GetEdgeType(const ID_t ID1, const ID_t ID2) const
     {
-        for(auto const & NEXT_EDGE : edgeList_)
-            if (((std::get<0>(NEXT_EDGE) == ID1) && (std::get<1>(NEXT_EDGE) == ID2)) ||
-                ((std::get<0>(NEXT_EDGE) == ID2) && (std::get<1>(NEXT_EDGE) == ID1)))
-                return std::get<2>(NEXT_EDGE);
+        for (auto const & EDGE : edgeList_)
+        {
+            if (((EDGE.a == ID1) && (EDGE.b == ID2)) ||
+                ((EDGE.a == ID2) && (EDGE.b == ID1)))
+            {
+                return EDGE.type;
+            }
+        }
 
         std::ostringstream ss;
         ss << "CombatTree::GetEdgeType(id1=" << ID1 << ", id2=" << ID2
@@ -610,14 +616,14 @@ namespace combat
     }
 
 
-    void CombatTree::SetEdgeType(const Id_t ID1, const Id_t ID2, const EdgeType::Enum TYPE)
+    void CombatTree::SetEdgeType(const ID_t ID1, const ID_t ID2, const EdgeType::Enum TYPE)
     {
-        for(auto & nextEdge : edgeList_)
+        for(auto & edge : edgeList_)
         {
-            if (((std::get<0>(nextEdge) == ID1) && (std::get<1>(nextEdge) == ID2)) ||
-                ((std::get<0>(nextEdge) == ID2) && (std::get<1>(nextEdge) == ID1)))
+            if (((edge.a == ID1) && (edge.b == ID2)) ||
+                ((edge.a == ID2) && (edge.b == ID1)))
             {
-                std::get<2>(nextEdge) = TYPE;
+                edge.type = TYPE;
                 return;
             }
         }
@@ -630,80 +636,80 @@ namespace combat
     }
 
 
-    bool CombatTree::FindAdjacentByEdgeType(const Id_t           ID,
-                                            IdVec_t &            idVec_OutParam,
-                                            const EdgeType::Enum TYPE) const
+    bool CombatTree::FindAdjacentByEdgeType(
+        const ID_t ID,
+        IDVec_t & idVec_OutParam,
+        const EdgeType::Enum TYPE) const
     {
-        const Id_t ORIG_SIZE(idVec_OutParam.size());
+        const ID_t ORIG_SIZE{ idVec_OutParam.size() };
 
-        for(auto const & NEXT_EDGE : edgeList_)
+        for(auto const & EDGE : edgeList_)
         {
             if (TYPE == EdgeType::All)
             {
-                if (std::get<0>(NEXT_EDGE) == ID)
+                if (EDGE.a == ID)
                 {
-                    idVec_OutParam.push_back(std::get<1>(NEXT_EDGE));
+                    idVec_OutParam.push_back(EDGE.b);
                 }
                 else
                 {
-                    if (std::get<1>(NEXT_EDGE) == ID)
+                    if (EDGE.b == ID)
                     {
-                        idVec_OutParam.push_back(std::get<0>(NEXT_EDGE));
+                        idVec_OutParam.push_back(EDGE.a);
                     }
                 }
             }
             else
             {
-                if ((std::get<0>(NEXT_EDGE) == ID) && (std::get<2>(NEXT_EDGE) == TYPE))
+                if ((EDGE.a == ID) && (EDGE.type == TYPE))
                 {
-                    idVec_OutParam.push_back(std::get<1>(NEXT_EDGE));
+                    idVec_OutParam.push_back(EDGE.b);
                 }
                 else
                 {
-                    if ((std::get<1>(NEXT_EDGE) == ID) && (std::get<2>(NEXT_EDGE) == TYPE))
+                    if ((EDGE.b == ID) && (EDGE.type == TYPE))
                     {
-                        idVec_OutParam.push_back(std::get<0>(NEXT_EDGE));
+                        idVec_OutParam.push_back(EDGE.a);
                     }
                 }
             }
         }
 
-        const Id_t FINAL_SIZE(idVec_OutParam.size());
-
+        const ID_t FINAL_SIZE{ idVec_OutParam.size() };
         return (ORIG_SIZE != FINAL_SIZE);
     }
 
 
-    bool CombatTree::FindAdjacent(const Id_t ID,
-                                  IdVec_t &  idVec_OutParam) const
+    bool CombatTree::FindAdjacent(
+        const ID_t ID,
+        IDVec_t &  idVec_OutParam) const
     {
-        auto const ORIG_SIZE(idVec_OutParam.size());
+        auto const ORIG_SIZE{ idVec_OutParam.size() };
 
-        for(auto const & NEXT_EDGE : edgeList_)
+        for(auto const & EDGE : edgeList_)
         {
-            if (std::get<0>(NEXT_EDGE) == ID)
+            if (EDGE.a == ID)
             {
-                idVec_OutParam.push_back(std::get<1>(NEXT_EDGE));
+                idVec_OutParam.push_back(EDGE.b);
             }
             else
             {
-                if (std::get<1>(NEXT_EDGE) == ID)
+                if (EDGE.b == ID)
                 {
-                    idVec_OutParam.push_back(std::get<0>(NEXT_EDGE));
+                    idVec_OutParam.push_back(EDGE.a);
                 }
             }
         }
 
         auto const FINAL_SIZE(idVec_OutParam.size());
-
         return (ORIG_SIZE != FINAL_SIZE);
     }
 
 
-    std::size_t CombatTree::CountAdjacent(const Id_t           ID,
+    std::size_t CombatTree::CountAdjacent(const ID_t           ID,
                                           const EdgeType::Enum EDGE_TYPE) const
     {
-        CombatTree::IdVec_t v;
+        IDVec_t v;
         FindAdjacentByEdgeType(ID, v, EDGE_TYPE);
         return v.size();
     }
@@ -721,55 +727,57 @@ namespace combat
                                           const EdgeType::Enum CONNECTION_TYPE)
     {
         //establish a vec of all verts at POS
-        IdVec_t vertIDsAtPosVec;
-        for (auto const & NEXT_VERTEX : vertexList_)
+        IDVec_t vertIDsAtPosVec;
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.second->GetBlockingPos() == POS)
+            if (VERTEX.node_sptr->GetBlockingPos() == POS)
             {
-                vertIDsAtPosVec.push_back(NEXT_VERTEX.first);
+                vertIDsAtPosVec.push_back(VERTEX.id);
             }
         }
 
         //remove pre-existing edges
         EdgeVec_t edgesToRemoveVec;
-        for (auto const & NEXT_VERTEX_ID : vertIDsAtPosVec)
+        for (auto const & VERTEX_ID : vertIDsAtPosVec)
         {
-            for (auto const & NEXT_EDGE : edgeList_)
+            for (auto const & EDGE : edgeList_)
             {
-                if ((std::get<2>(NEXT_EDGE) == CONNECTION_TYPE) &&
-                    ((std::get<0>(NEXT_EDGE) == NEXT_VERTEX_ID) ||
-                        (std::get<1>(NEXT_EDGE) == NEXT_VERTEX_ID)))
+                if ((EDGE.type == CONNECTION_TYPE) &&
+                    ((EDGE.a == VERTEX_ID) || (EDGE.b == VERTEX_ID)))
                 {
-                    edgesToRemoveVec.push_back(NEXT_EDGE);
+                    edgesToRemoveVec.push_back(EDGE);
                 }
             }
         }
-        //
-        for(auto const & NEXT_EDGE_TO_REMOVE : edgesToRemoveVec)
+        
+        for(auto const & EDGE_TO_REMOVE : edgesToRemoveVec)
         {
-            for(auto const & NEXT_EDGE : edgeList_)
+            for(auto const & EDGE : edgeList_)
             {
-                if (NEXT_EDGE == NEXT_EDGE_TO_REMOVE)
+                if (EDGE == EDGE_TO_REMOVE)
                 {
-                    edgeList_.erase(remove(edgeList_.begin(),
-                                    edgeList_.end(),
-                                    NEXT_EDGE_TO_REMOVE), edgeList_.end());
+                    edgeList_.erase(remove(
+                        edgeList_.begin(),
+                        edgeList_.end(),
+                        EDGE_TO_REMOVE), edgeList_.end());
+
                     break;
                 }
             }
         }
 
         //attach all verts at position with an edge of type CONNECTION_TYPE
-        const Id_t NUM_VERTS_AT_POS(vertIDsAtPosVec.size());
+        auto const NUM_VERTS_AT_POS{ vertIDsAtPosVec.size() };
         if (NUM_VERTS_AT_POS > 0)
         {
-            for (Id_t i(0); i < NUM_VERTS_AT_POS - 1; ++i)
+            for (ID_t::type i(0); i < NUM_VERTS_AT_POS - 1; ++i)
             {
-                for (Id_t j(i + 1); j < NUM_VERTS_AT_POS - 1; ++j)
+                for (ID_t::type j(i + 1); j < NUM_VERTS_AT_POS - 1; ++j)
                 {
-                    edgeList_.push_back(std::make_tuple(vertIDsAtPosVec[i],
-                                                        vertIDsAtPosVec[j],
-                                                        CONNECTION_TYPE));
+                    edgeList_.push_back( Edge(
+                        vertIDsAtPosVec[i],
+                        vertIDsAtPosVec[j],
+                        CONNECTION_TYPE) );
                 }
             }
         }
@@ -783,10 +791,10 @@ namespace combat
             return 0;
         }
 
-        int min(vertexList_.begin()->second->GetBlockingPos());
-        for (auto const & NEXT_VERTEX : vertexList_)
+        int min(vertexList_.begin()->node_sptr->GetBlockingPos());
+        for (auto const & VERTEX : vertexList_)
         {
-            const int NEXT_BLOCKING_POS(NEXT_VERTEX.second->GetBlockingPos());
+            const int NEXT_BLOCKING_POS{ VERTEX.node_sptr->GetBlockingPos() };
             if (min > NEXT_BLOCKING_POS)
             {
                 min = NEXT_BLOCKING_POS;
@@ -804,10 +812,10 @@ namespace combat
             return 0;
         }
 
-        int max(vertexList_.begin()->second->GetBlockingPos());
-        for (auto const & NEXT_VERTEX : vertexList_)
+        int max(vertexList_.begin()->node_sptr->GetBlockingPos());
+        for (auto const & VERTEX : vertexList_)
         {
-            const int NEXT_BLOCKING_POS(NEXT_VERTEX.second->GetBlockingPos());
+            const int NEXT_BLOCKING_POS{ VERTEX.node_sptr->GetBlockingPos() };
             if (max < NEXT_BLOCKING_POS)
             {
                 max = NEXT_BLOCKING_POS;
@@ -824,16 +832,17 @@ namespace combat
     }
 
 
-    std::size_t CombatTree::GetNodeIDsAtBlockingPos(IdVec_t & IdVec_OutParam,
-                                                    const int BLOCKING_POS) const
+    std::size_t CombatTree::GetNodeIDsAtBlockingPos(
+        IDVec_t & IdVec_OutParam,
+        const int BLOCKING_POS) const
     {
         std::size_t count(0);
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if (NEXT_VERTEX.second->GetBlockingPos() == BLOCKING_POS)
+            if (VERTEX.node_sptr->GetBlockingPos() == BLOCKING_POS)
             {
                 ++count;
-                IdVec_OutParam.push_back(NEXT_VERTEX.first);
+                IdVec_OutParam.push_back(VERTEX.id);
             }
         }
 
@@ -841,12 +850,13 @@ namespace combat
     }
 
 
-    std::size_t CombatTree::GetNodeIDsAllAroundBlockingPos(IdVec_t & IdVec_OutParam,
-                                                           const int BLOCKING_POS) const
+    std::size_t CombatTree::GetNodeIDsAllAroundBlockingPos(
+        IDVec_t & IdVec_OutParam,
+        const int BLOCKING_POS) const
     {
-        const std::size_t ORIG_COUNT(IdVec_OutParam.size());
+        auto const ORIG_COUNT{ IdVec_OutParam.size() };
 
-        IdVec_t tempIdVec;
+        IDVec_t tempIdVec;
         GetNodeIDsAtBlockingPos(tempIdVec, BLOCKING_POS);
         if (tempIdVec.empty() == false)
         {
@@ -875,7 +885,7 @@ namespace combat
                                              IdVec_OutParam.end());
         }
 
-        auto const NEW_COUNT(IdVec_OutParam.size());
+        auto const NEW_COUNT{ IdVec_OutParam.size() };
 
         if (NEW_COUNT < ORIG_COUNT)
         {
@@ -888,27 +898,30 @@ namespace combat
     }
 
 
-    std::size_t CombatTree::GetNodesAtBlockingPos(CombatNodePVec_t & NodePVec_OutParam,
-                                                  const int          BLOCKING_POS) const
+    std::size_t CombatTree::GetNodesAtBlockingPos(
+        CombatNodePVec_t & NodePVec_OutParam,
+        const int BLOCKING_POS) const
     {
-        auto const ORIG_COUNT(NodePVec_OutParam.size());
+        auto const ORIG_COUNT{ NodePVec_OutParam.size() };
 
-        IdVec_t idVec;
+        IDVec_t idVec;
         GetNodeIDsAtBlockingPos(idVec, BLOCKING_POS);
 
-        for (auto const NEXT_ID : idVec)
+        for (auto const & NEXT_ID : idVec)
         {
-            NodePVec_OutParam.push_back(GetNode(NEXT_ID));
+            NodePVec_OutParam.push_back( GetNode(NEXT_ID) );
         }
 
         if (NodePVec_OutParam.size() > 1)
         {
             std::sort(NodePVec_OutParam.begin(), NodePVec_OutParam.end());
-            NodePVec_OutParam.erase(std::unique(NodePVec_OutParam.begin(),
-                                                NodePVec_OutParam.end()), NodePVec_OutParam.end());
+
+            NodePVec_OutParam.erase(std::unique(
+                NodePVec_OutParam.begin(),
+                NodePVec_OutParam.end()), NodePVec_OutParam.end());
         }
 
-        auto const NEW_COUNT(NodePVec_OutParam.size());
+        auto const NEW_COUNT{ NodePVec_OutParam.size() };
 
         if (NEW_COUNT < ORIG_COUNT)
         {
@@ -921,15 +934,16 @@ namespace combat
     }
 
 
-    std::size_t CombatTree::GetNodesAllAroundBlockingPos(CombatNodePVec_t & NodePVec_OutParam,
-                                                         const int          BLOCKING_POS) const
+    std::size_t CombatTree::GetNodesAllAroundBlockingPos(
+        CombatNodePVec_t & NodePVec_OutParam,
+        const int BLOCKING_POS) const
     {
-        auto const ORIG_COUNT(NodePVec_OutParam.size());
+        auto const ORIG_COUNT{ NodePVec_OutParam.size() };
 
-        IdVec_t idVec;
+        IDVec_t idVec;
         GetNodeIDsAllAroundBlockingPos(idVec, BLOCKING_POS);
 
-        for (auto const NEXT_ID : idVec)
+        for (auto const & NEXT_ID : idVec)
         {
             NodePVec_OutParam.push_back(GetNode(NEXT_ID));
         }
@@ -941,7 +955,7 @@ namespace combat
                                                 NodePVec_OutParam.end()), NodePVec_OutParam.end());
         }
 
-        auto const NEW_COUNT(NodePVec_OutParam.size());
+        auto const NEW_COUNT{ NodePVec_OutParam.size() };
 
         if (NEW_COUNT < ORIG_COUNT)
         {
@@ -956,18 +970,20 @@ namespace combat
 
     void CombatTree::GetCombatNodes(CombatNodePVec_t & combatNodesPVec) const
     {
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            combatNodesPVec.push_back(NEXT_VERTEX.second.get());
+            combatNodesPVec.push_back(VERTEX.node_sptr.get());
         }
     }
 
 
-    int CombatTree::GetBlockingDistanceBetween(creature::CreatureCPtrC_t CREATURE_A_CPTRC,
-                                               creature::CreatureCPtrC_t CREATURE_B_CPTRC) const
+    int CombatTree::GetBlockingDistanceBetween(
+        creature::CreatureCPtrC_t CREATURE_A_CPTRC,
+        creature::CreatureCPtrC_t CREATURE_B_CPTRC) const
     {
-        return GetNode(CREATURE_B_CPTRC)->GetBlockingPos() -
-            GetNode(CREATURE_A_CPTRC)->GetBlockingPos();
+        return
+            GetNode(CREATURE_B_CPTRC)->GetBlockingPos() -
+                GetNode(CREATURE_A_CPTRC)->GetBlockingPos();
     }
 
 
@@ -978,18 +994,18 @@ namespace combat
         CombatNodeSPtr_t closestNodeSPtr{ nullptr };
         auto closestBlockingDistanceABS{ GetBlockingDistanceMax() + 1 };
 
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            if ((NEXT_VERTEX.second->Creature() != CREATURE_CPTRC) &&
-                (NEXT_VERTEX.second->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
+            if ((VERTEX.node_sptr->Creature() != CREATURE_CPTRC) &&
+                (VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
                 auto const ABS_DISTANCE{ std::abs(GetBlockingDistanceBetween(
-                    CREATURE_CPTRC, NEXT_VERTEX.second->Creature())) };
+                    CREATURE_CPTRC, VERTEX.node_sptr->Creature())) };
 
                 if (ABS_DISTANCE < closestBlockingDistanceABS)
                 {
                     closestBlockingDistanceABS = ABS_DISTANCE;
-                    closestNodeSPtr = NEXT_VERTEX.second;
+                    closestNodeSPtr = VERTEX.node_sptr;
                 }
             }
         }
@@ -1005,18 +1021,19 @@ namespace combat
     }
 
 
-    const CombatNodePVec_t CombatTree::FindNodesClosestOfType(const int ORIGIN_BLOCKING_POS,
-                                                              const bool WILL_FIND_PLAYERS) const
+    const CombatNodePVec_t CombatTree::FindNodesClosestOfType(
+        const int ORIGIN_BLOCKING_POS,
+        const bool WILL_FIND_PLAYERS) const
     {
         auto closestBlockingDistanceABS{ GetBlockingDistanceMax() + 1 };
 
         //find closest distance
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(NEXT_VERTEX.second->GetBlockingPos() -
+            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(VERTEX.node_sptr->GetBlockingPos() -
                 ORIGIN_BLOCKING_POS) };
 
-            if ((NEXT_VERTEX.second->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS) &&
+            if ((VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS) &&
                 (NEXT_BLOCKING_DISTANCE_ABS < closestBlockingDistanceABS))
             {
                 closestBlockingDistanceABS = NEXT_BLOCKING_DISTANCE_ABS;
@@ -1026,15 +1043,15 @@ namespace combat
         CombatNodePVec_t closestCombatNodesPVec;
 
         //find all nodes with that closest distance
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(NEXT_VERTEX.second->GetBlockingPos() -
+            auto const NEXT_BLOCKING_DISTANCE_ABS{ std::abs(VERTEX.node_sptr->GetBlockingPos() -
                 ORIGIN_BLOCKING_POS) };
 
-            if ((NEXT_VERTEX.second->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS) &&
+            if ((VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS) &&
                 (NEXT_BLOCKING_DISTANCE_ABS == closestBlockingDistanceABS))
             {
-                closestCombatNodesPVec.push_back(NEXT_VERTEX.second.get());
+                closestCombatNodesPVec.push_back(VERTEX.node_sptr.get());
             }
         }
 
@@ -1051,10 +1068,11 @@ namespace combat
     {
         edgeList_.clear();
 
-        for (auto const & NEXT_VERTEX : vertexList_)
+        for (auto const & VERTEX : vertexList_)
         {
-            ConnectAllAtPosition(NEXT_VERTEX.second->GetBlockingPos(),
-                                 combat::EdgeType::ShoulderToShoulder);
+            ConnectAllAtPosition(
+                VERTEX.node_sptr->GetBlockingPos(),
+                combat::EdgeType::ShoulderToShoulder);
         }
     }
 

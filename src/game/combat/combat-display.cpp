@@ -485,18 +485,18 @@ namespace combat
         float maxNameWidth(0.0f);
         for (auto const & NEXT_VERTEX : VERT_VEC)
         {
-            if (NEXT_VERTEX.second->GetBlockingPos() < lowestBlockingPos)
+            if (NEXT_VERTEX.node_sptr->GetBlockingPos() < lowestBlockingPos)
             {
-                lowestBlockingPos = NEXT_VERTEX.second->GetBlockingPos();
+                lowestBlockingPos = NEXT_VERTEX.node_sptr->GetBlockingPos();
             }
 
-            if (NEXT_VERTEX.second->GetBlockingPos() > highestBlockingPos)
+            if (NEXT_VERTEX.node_sptr->GetBlockingPos() > highestBlockingPos)
             {
-                highestBlockingPos = NEXT_VERTEX.second->GetBlockingPos();
+                highestBlockingPos = NEXT_VERTEX.node_sptr->GetBlockingPos();
             }
 
-            const std::size_t SHOULDER_TO_SHOULDER_COUNT(combatTree_.VertexCountByBlockingPos(
-                static_cast<int>(NEXT_VERTEX.first)));
+            auto const SHOULDER_TO_SHOULDER_COUNT{
+                combatTree_.VertexCountByBlockingPos(NEXT_VERTEX.id.AsInt()) };
 
             if (shoulderToShoulderMax < SHOULDER_TO_SHOULDER_COUNT)
             {
@@ -504,7 +504,7 @@ namespace combat
             }
 
             const float NEXT_NAME_WIDTH(creature::NameInfo::Instance()->Length(
-                GetNodeTitle(NEXT_VERTEX.second.get()),
+                GetNodeTitle(NEXT_VERTEX.node_sptr.get()),
                 creature::NameInfo::Instance()->DefaultFont(),
                 nameCharSizeCurr_));
 
@@ -566,7 +566,7 @@ namespace combat
         std::map<int, std::size_t> shoulderToShoulderBlockingMap;
         for (auto const & NEXT_VERTEX : VERT_VEC)
         {
-            const int NEXT_BLOCKING_POS(NEXT_VERTEX.second->GetBlockingPos());
+            const int NEXT_BLOCKING_POS(NEXT_VERTEX.node_sptr->GetBlockingPos());
 
             //count the number of verts are shoulder-to-shoulder (vertical on screen) with this one
             const std::size_t SHOULDER_TO_SHOULDER_COUNT(
@@ -593,13 +593,13 @@ namespace combat
 
             if (WILL_DELAY)
             {
-                nodePosTrackerMap_[NEXT_VERTEX.second.get()] =
-                    NodePosTracker(NEXT_VERTEX.second.get(), POS_LEFT, POS_TOP);
+                nodePosTrackerMap_[NEXT_VERTEX.node_sptr.get()] =
+                    NodePosTracker(NEXT_VERTEX.node_sptr.get(), POS_LEFT, POS_TOP);
             }
             else
             {
-                NEXT_VERTEX.second->SetRegion(RECT);
-                NEXT_VERTEX.second->SetCharacterSize(nameCharSizeCurr_);
+                NEXT_VERTEX.node_sptr->SetRegion(RECT);
+                NEXT_VERTEX.node_sptr->SetCharacterSize(nameCharSizeCurr_);
             }
         }
     }
@@ -913,13 +913,13 @@ namespace combat
             << CREATURE_CPTRC->Name() << ", will_find_players=" << std::boolalpha
             << WILL_FIND_PLAYERS << ") was unable to find that creature node in the combatTree_.");
 
-        combat::CombatTree::IdVec_t idVec;
+        IDVec_t idVec;
         combatTree_.GetNodeIDsAtBlockingPos(idVec, COMBAT_NODE_PTR->GetBlockingPos());
 
         std::size_t count(0);
-        for (auto const NEXT_NODE_ID : idVec)
+        for (auto const & NEXT_NODE_ID : idVec)
         {
-            const CombatNodePtr_t NEXT_COMBATNODE_PTR(combatTree_.GetNode(NEXT_NODE_ID));
+            auto const NEXT_COMBATNODE_PTR{ combatTree_.GetNode(NEXT_NODE_ID) };
 
             if ((NEXT_COMBATNODE_PTR != nullptr) &&
                 (NEXT_COMBATNODE_PTR->Creature() != CREATURE_CPTRC) &&
@@ -1425,8 +1425,8 @@ namespace combat
                 const creature::UniqueTraits_t NEXT_CHARACTER_TRAITS(
                     NEXT_CHARACTER_PTR->UniqueTraits());
 
-                const int NEXT_POSITION(blockingMap_[NEXT_CHARACTER_TRAITS]);
-                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_PTR));
+                auto const NEXT_POSITION{ blockingMap_[NEXT_CHARACTER_TRAITS] };
+                auto const NEXT_NODE_ID{ combatTree_.GetNodeId(NEXT_CHARACTER_PTR) };
                 combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(NEXT_POSITION);
 
                 combatTree_.ConnectAllAtPosition(NEXT_POSITION,
@@ -1441,7 +1441,7 @@ namespace combat
         {
             if (NEXT_CHARACTER_PTR->CanTakeAction() == false)
             {
-                const CombatTree::Id_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_PTR));
+                const ID_t NEXT_NODE_ID(combatTree_.GetNodeId(NEXT_CHARACTER_PTR));
                 combatTree_.GetNode(NEXT_NODE_ID)->SetBlockingPos(DISABLED_CREATURES_POSITION);
             }
         }
@@ -1667,10 +1667,10 @@ namespace combat
                                              const creature::role::Enum ROLE,
                                              const int                  BLOCKING_POS)
     {
-        CombatTree::IdVec_t idVec;
+        IDVec_t idVec;
         combatTree_.GetNodeIds(idVec, ROLE);
 
-        for (auto const NEXT_NODE_ID : idVec)
+        for (auto const & NEXT_NODE_ID : idVec)
         {
             CombatNodePtr_t nextCombatNodePtr(combatTree_.GetNode(NEXT_NODE_ID));
 

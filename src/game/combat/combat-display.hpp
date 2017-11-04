@@ -81,9 +81,10 @@ namespace combat
     {
         NodePosTracker();
 
-        NodePosTracker(const CombatNodePtr_t COMBAT_NODE_PTR,
-                       const float           TARGET_POS_LEFT,
-                       const float           TARGET_POS_TOP);
+        NodePosTracker(
+            const CombatNodePtr_t COMBAT_NODE_PTR,
+            const float TARGET_POS_LEFT,
+            const float TARGET_POS_TOP);
 
         float posHorizOrig;
         float posVertOrig;

@@ -53,18 +53,15 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 
     combat::CombatTree combatTree;
 
-    BOOST_CHECK(combatTree.NextAvailableId() == 0);
+    BOOST_CHECK(combatTree.NextAvailableId() == 0_id);
 
-    BOOST_CHECK_THROW(combatTree.GetNode(
-        static_cast<combat::CombatTree::Id_t>(0)), std::invalid_argument);
-
-    BOOST_CHECK_THROW(combatTree.GetNodeSPtr(
-        static_cast<combat::CombatTree::Id_t>(0)), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.GetNode(0_id), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.GetNodeSPtr(0_id), std::invalid_argument);
 
     BOOST_CHECK(combatTree.GetNode(nullptr) == nullptr);
     BOOST_CHECK(combatTree.GetNodeSPtr(nullptr) == nullptr);
 
-    BOOST_CHECK_THROW(combatTree.SetNode(0, combat::CombatNodeSPtr_t()), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.SetNode(0_id, combat::CombatNodeSPtr_t()), std::invalid_argument);
 
     BOOST_CHECK_THROW(combatTree.GetNodeId(
         combat::CombatNodePtr_t(nullptr)), std::invalid_argument);
@@ -73,13 +70,13 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
         creature::CreaturePtr_t(nullptr)), std::invalid_argument);
 
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         combatTree.GetNodeIds(ids, creature::role::Count);
         BOOST_CHECK(ids.empty());
     }
 
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         combatTree.GetNodeIds(ids, creature::race::Count);
         BOOST_CHECK(ids.empty());
     }
@@ -92,8 +89,8 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
     BOOST_CHECK(combatTree.Vertexes().empty());
     BOOST_CHECK(combatTree.VertexesString(false).empty());
 
-    BOOST_CHECK_THROW(combatTree.RemoveVertex(0, false), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.RemoveVertex(0, true), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.RemoveVertex(0_id, false), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.RemoveVertex(0_id, true), std::invalid_argument);
 
     BOOST_CHECK(combatTree.EdgeCount() == 0);
     BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::All) == 0);
@@ -109,49 +106,49 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 
     BOOST_CHECK(combatTree.EdgesString(false).empty());
 
-    BOOST_CHECK_THROW(combatTree.AddEdge(0, 0, combat::EdgeType::Blocking), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.AddEdge(0, 1, combat::EdgeType::Blocking), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.AddEdge(0_id, 0_id, combat::EdgeType::Blocking), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.AddEdge(0_id, 1_id, combat::EdgeType::Blocking), std::invalid_argument);
 
-    BOOST_CHECK_THROW(combatTree.RemoveEdge(0, 0), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.RemoveEdge(0, 1), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.RemoveEdge(0_id, 0_id), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.RemoveEdge(0_id, 1_id), std::invalid_argument);
 
-    BOOST_CHECK(combatTree.DoesVertexExist(0) == false);
+    BOOST_CHECK(combatTree.DoesVertexExist(0_id) == false);
 
-    BOOST_CHECK(combatTree.DoesEdgeExist(0, 1) == false);
+    BOOST_CHECK(combatTree.DoesEdgeExist(0_id, 1_id) == false);
 
-    BOOST_CHECK_THROW(combatTree.GetEdgeType(0, 1), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.GetEdgeType(0_id, 1_id), std::invalid_argument);
 
     BOOST_CHECK_THROW(combatTree.SetEdgeType(
-        0, 1, combat::EdgeType::Blocking), std::invalid_argument);
+        0_id, 1_id, combat::EdgeType::Blocking), std::invalid_argument);
 
     {
-        combat::CombatTree::IdVec_t ids;
-        combatTree.FindAdjacentByEdgeType(0, ids);
+        IDVec_t ids;
+        combatTree.FindAdjacentByEdgeType(0_id, ids);
         BOOST_CHECK(ids.empty());
     }
 
     {
-        combat::CombatTree::IdVec_t ids;
-        combatTree.FindAdjacent(0, ids);
+        IDVec_t ids;
+        combatTree.FindAdjacent(0_id, ids);
         BOOST_CHECK(ids.empty());
     }
 
-    BOOST_CHECK(combatTree.CountAdjacent(0) == 0);
+    BOOST_CHECK(combatTree.CountAdjacent(0_id) == 0);
 
-    BOOST_CHECK(combatTree.AreAnyAdjacent(0) == false);
+    BOOST_CHECK(combatTree.AreAnyAdjacent(0_id) == false);
 
     BOOST_CHECK(combatTree.GetBlockingPosMin() == 0);
     BOOST_CHECK(combatTree.GetBlockingPosMax() == 0);
     BOOST_CHECK(combatTree.GetBlockingDistanceMax() == 0);
 
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         BOOST_CHECK(combatTree.GetNodeIDsAtBlockingPos(ids, 0) == false);
         BOOST_CHECK(ids.empty());
     }
 
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         BOOST_CHECK(combatTree.GetNodeIDsAllAroundBlockingPos(ids, 0) == false);
         BOOST_CHECK(ids.empty());
     }
@@ -201,7 +198,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     auto const VERT_ID0{ combatTree.AddVertex(combatNodeSPtr0) };
 
     //tests after the single vertex insert
-    BOOST_CHECK(combatTree.NextAvailableId() == 1);
+    BOOST_CHECK(combatTree.NextAvailableId() == 1_id);
     BOOST_CHECK(combatTree.GetNode(VERT_ID0) == combatNodeSPtr0.get());
     BOOST_CHECK(combatTree.GetNodeSPtr(VERT_ID0) == combatNodeSPtr0);
     BOOST_CHECK(combatTree.GetNode(CREATURE_PTR0) == combatNodeSPtr0.get());
@@ -225,39 +222,39 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     BOOST_CHECK(combatTree.Edges(combat::EdgeType::Count).empty());
     BOOST_CHECK(combatTree.EdgesString(false).empty());
     BOOST_CHECK(combatTree.DoesVertexExist(VERT_ID0) == true);
-    BOOST_CHECK(combatTree.DoesVertexExist(VERT_ID0 + 1) == false);
+    BOOST_CHECK(combatTree.DoesVertexExist(VERT_ID0 + 1_id) == false);
     BOOST_CHECK(combatTree.CountAdjacent(VERT_ID0) == 0);
     BOOST_CHECK(combatTree.AreAnyAdjacent(VERT_ID0) == false);
     BOOST_CHECK(combatTree.GetBlockingPosMin() == BLOCKING_POS0);
     BOOST_CHECK(combatTree.GetBlockingPosMax() == BLOCKING_POS0);
-    const combat::CombatTree::IdVec_t ID_VEC_SINGLE_ZERO = { 0 };
+    const IDVec_t ID_VEC_SINGLE_ZERO = { 0_id };
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         combatTree.GetNodeIds(ids, CREATURE_PTR0->Role());
         BOOST_CHECK(ids == ID_VEC_SINGLE_ZERO);
     }
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         combatTree.GetNodeIds(ids, CREATURE_PTR0->Race());
         BOOST_CHECK(ids == ID_VEC_SINGLE_ZERO);
     }
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         combatTree.FindAdjacentByEdgeType(VERT_ID0, ids);
         BOOST_CHECK(ids.empty());
     }
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         combatTree.FindAdjacent(VERT_ID0, ids);
         BOOST_CHECK(ids.empty());
     }
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         BOOST_CHECK(combatTree.GetNodeIDsAtBlockingPos(ids, BLOCKING_POS0));
         BOOST_CHECK(ids == ID_VEC_SINGLE_ZERO);
     }
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         BOOST_CHECK(combatTree.GetNodeIDsAllAroundBlockingPos(ids, BLOCKING_POS0));
         BOOST_CHECK(ids == ID_VEC_SINGLE_ZERO);
     }
@@ -292,7 +289,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     auto const VERT_ID1{ combatTree.AddVertex(combatNodeSPtr1) };
 
     //tests after the second vertex insert
-    BOOST_CHECK(combatTree.NextAvailableId() == 2);
+    BOOST_CHECK(combatTree.NextAvailableId() == 2_id);
     BOOST_CHECK(combatTree.GetNode(VERT_ID1) == combatNodeSPtr1.get());
     BOOST_CHECK(combatTree.GetNodeSPtr(VERT_ID1) == combatNodeSPtr1);
     BOOST_CHECK(combatTree.GetNode(CREATURE_PTR1) == combatNodeSPtr1.get());
@@ -316,18 +313,18 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     BOOST_CHECK(combatTree.Edges(combat::EdgeType::Count).empty());
     BOOST_CHECK(combatTree.EdgesString(false).empty());
     BOOST_CHECK(combatTree.DoesVertexExist(VERT_ID1) == true);
-    BOOST_CHECK(combatTree.DoesVertexExist(VERT_ID1 + 1) == false);
+    BOOST_CHECK(combatTree.DoesVertexExist(VERT_ID1 + 1_id) == false);
     BOOST_CHECK(combatTree.CountAdjacent(VERT_ID1) == 0);
     BOOST_CHECK(combatTree.AreAnyAdjacent(VERT_ID1) == false);
     BOOST_CHECK(combatTree.GetBlockingPosMin() == BLOCKING_POS1);
     BOOST_CHECK(combatTree.GetBlockingPosMax() == BLOCKING_POS1);
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         BOOST_CHECK(combatTree.GetNodeIDsAtBlockingPos(ids, BLOCKING_POS1));
         BOOST_CHECK(ids.size() == 2);
     }
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         BOOST_CHECK(combatTree.GetNodeIDsAllAroundBlockingPos(ids, BLOCKING_POS1));
         BOOST_CHECK(ids.size() == 2);
     }
@@ -362,10 +359,10 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
         BOOST_CHECK(EDGES_ALL.size() == 1);
 
         BOOST_CHECK(
-            ((std::get<0>(EDGES_ALL[0]) == 0) || (std::get<1>(EDGES_ALL[0]) == 1)) ||
-             (std::get<0>(EDGES_ALL[0]) == 1) || (std::get<1>(EDGES_ALL[0]) == 0));
+            ((EDGES_ALL[0].a == 0_id) && (EDGES_ALL[0].b == 1_id)) ||
+            ((EDGES_ALL[0].a == 1_id) && (EDGES_ALL[0].b == 0_id)) );
 
-        BOOST_CHECK(std::get<2>(EDGES_ALL[0]) == combat::EdgeType::ShoulderToShoulder);
+        BOOST_CHECK(EDGES_ALL[0].type == combat::EdgeType::ShoulderToShoulder);
     }
 
     {
@@ -373,10 +370,10 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
         BOOST_CHECK(EDGES_STS.size() == 1);
 
         BOOST_CHECK(
-            ((std::get<0>(EDGES_STS[0]) == 0) || (std::get<1>(EDGES_STS[0]) == 1)) ||
-             (std::get<0>(EDGES_STS[0]) == 1) || (std::get<1>(EDGES_STS[0]) == 0));
+            ((EDGES_STS[0].a == 0_id) && (EDGES_STS[0].b == 1_id)) ||
+            ((EDGES_STS[0].a == 1_id) && (EDGES_STS[0].b == 0_id)));
 
-        BOOST_CHECK(std::get<2>(EDGES_STS[0]) == combat::EdgeType::ShoulderToShoulder);
+        BOOST_CHECK(EDGES_STS[0].type == combat::EdgeType::ShoulderToShoulder);
     }
 
     combatTree.RemoveVertex(VERT_ID1, true);
@@ -395,18 +392,15 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     BOOST_CHECK_THROW(combatTree.RemoveVertex(VERT_ID0), std::invalid_argument);
 
     //whole set of checks to be sure the combatTree is back in its inital (empty) state
-    BOOST_CHECK(combatTree.NextAvailableId() == 0);
+    BOOST_CHECK(combatTree.NextAvailableId() == 0_id);
 
-    BOOST_CHECK_THROW(combatTree.GetNode(
-        static_cast<combat::CombatTree::Id_t>(0)), std::invalid_argument);
-
-    BOOST_CHECK_THROW(combatTree.GetNodeSPtr(
-        static_cast<combat::CombatTree::Id_t>(0)), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.GetNode(0_id), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.GetNodeSPtr(0_id), std::invalid_argument);
 
     BOOST_CHECK(combatTree.GetNode(nullptr) == nullptr);
     BOOST_CHECK(combatTree.GetNodeSPtr(nullptr) == nullptr);
 
-    BOOST_CHECK_THROW(combatTree.SetNode(0, combat::CombatNodeSPtr_t()), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.SetNode(0_id, combat::CombatNodeSPtr_t()), std::invalid_argument);
 
     BOOST_CHECK_THROW(combatTree.GetNodeId(
         combat::CombatNodePtr_t(nullptr)), std::invalid_argument);
@@ -419,8 +413,8 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     BOOST_CHECK(combatTree.VertexCountByBlockingPos(0) == 0);
     BOOST_CHECK(combatTree.Vertexes().empty());
     BOOST_CHECK(combatTree.VertexesString(false).empty());
-    BOOST_CHECK_THROW(combatTree.RemoveVertex(0, false), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.RemoveVertex(0, true), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.RemoveVertex(0_id, false), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.RemoveVertex(0_id, true), std::invalid_argument);
     BOOST_CHECK(combatTree.EdgeCount() == 0);
     BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::All) == 0);
     BOOST_CHECK(combatTree.EdgeCount(combat::EdgeType::Blocking) == 0);
@@ -432,49 +426,50 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     BOOST_CHECK(combatTree.Edges(combat::EdgeType::ShoulderToShoulder).empty());
     BOOST_CHECK(combatTree.Edges(combat::EdgeType::Count).empty());
     BOOST_CHECK(combatTree.EdgesString(false).empty());
-    BOOST_CHECK_THROW(combatTree.AddEdge(0, 0, combat::EdgeType::Blocking), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.AddEdge(0, 1, combat::EdgeType::Blocking), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.RemoveEdge(0, 0), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.RemoveEdge(0, 1), std::invalid_argument);
-    BOOST_CHECK(combatTree.DoesVertexExist(0) == false);
-    BOOST_CHECK(combatTree.DoesEdgeExist(0, 1) == false);
-    BOOST_CHECK_THROW(combatTree.GetEdgeType(0, 1), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.AddEdge(0_id, 0_id, combat::EdgeType::Blocking), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.AddEdge(0_id, 1_id, combat::EdgeType::Blocking), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.RemoveEdge(0_id, 0_id), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.RemoveEdge(0_id, 1_id), std::invalid_argument);
+    BOOST_CHECK(combatTree.DoesVertexExist(0_id) == false);
+    BOOST_CHECK(combatTree.DoesEdgeExist(0_id, 1_id) == false);
+    BOOST_CHECK_THROW(combatTree.GetEdgeType(0_id, 1_id), std::invalid_argument);
+    
     BOOST_CHECK_THROW(combatTree.SetEdgeType(
-        0, 1, combat::EdgeType::Blocking), std::invalid_argument);
+        0_id, 1_id, combat::EdgeType::Blocking), std::invalid_argument);
 
-    BOOST_CHECK(combatTree.CountAdjacent(0) == 0);
-    BOOST_CHECK(combatTree.AreAnyAdjacent(0) == false);
+    BOOST_CHECK(combatTree.CountAdjacent(0_id) == 0);
+    BOOST_CHECK(combatTree.AreAnyAdjacent(0_id) == false);
     BOOST_CHECK(combatTree.GetBlockingPosMin() == 0);
     BOOST_CHECK(combatTree.GetBlockingPosMax() == 0);
     BOOST_CHECK(combatTree.GetBlockingDistanceMax() == 0);
 
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         combatTree.GetNodeIds(ids, creature::role::Count);
         BOOST_CHECK(ids.empty());
     }
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         combatTree.GetNodeIds(ids, creature::race::Count);
         BOOST_CHECK(ids.empty());
     }
     {
-        combat::CombatTree::IdVec_t ids;
-        combatTree.FindAdjacentByEdgeType(0, ids);
+        IDVec_t ids;
+        combatTree.FindAdjacentByEdgeType(0_id, ids);
         BOOST_CHECK(ids.empty());
     }
     {
-        combat::CombatTree::IdVec_t ids;
-        combatTree.FindAdjacent(0, ids);
+        IDVec_t ids;
+        combatTree.FindAdjacent(0_id, ids);
         BOOST_CHECK(ids.empty());
     }
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         BOOST_CHECK(combatTree.GetNodeIDsAtBlockingPos(ids, 0) == false);
         BOOST_CHECK(ids.empty());
     }
     {
-        combat::CombatTree::IdVec_t ids;
+        IDVec_t ids;
         BOOST_CHECK(combatTree.GetNodeIDsAllAroundBlockingPos(ids, 0) == false);
         BOOST_CHECK(ids.empty());
     }

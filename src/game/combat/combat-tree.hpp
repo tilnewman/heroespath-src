@@ -26,13 +26,14 @@
 #define GAME_COMBAT_COMBATTREE_HPP_INCLUDED
 //
 // combat-tree.hpp
-//  A class that manages an undirected graph of verticies with Id_t IDs called the combat tree.
+//  A class that manages an undirected graph of verticies with ID_t IDs called the combat tree.
 //  Boost Graph was considered but rejected because the graphs required will be very small and
 //  because Boost Graph would not provide required features.  So this implementation may be slower
 //  than Boost Graph, but not in a noticable way, and will have a much simpler interface.
 //
 #include "game/creature/race-enum.hpp"
 #include "game/creature/role-enum.hpp"
+#include "game/types.hpp"
 
 #include <list>
 #include <tuple>
@@ -98,40 +99,62 @@ namespace combat
     //Manages the combat tree and provides functions to ease common operations
     class CombatTree
     {
-        //types
+        //helpful types
     public:
-        using Id_t    = std::size_t;
-        using IdVec_t = std::vector<Id_t>;
-        //
-        using Edge_t    = std::tuple<Id_t, Id_t, EdgeType::Enum>;//vertex_id, vertex_id, edge_type
-        using EdgeVec_t = std::vector<Edge_t>;
-        //
-        using Vertex_t    = std::pair<Id_t, CombatNodeSPtr_t>; //vertex_id, node
-        using VertexVec_t = std::vector<Vertex_t>;
-    private:
-        using EdgeList_t      = std::list<Edge_t>;
-        using EdgeListIter_t  = EdgeList_t::iterator;
-        using EdgeListCIter_t = EdgeList_t::const_iterator;
-        //
-        using VertexList_t      = std::list<Vertex_t>;
-        using VertexListIter_t  = VertexList_t::iterator;
-        using VertexListCIter_t = VertexList_t::const_iterator;
+        struct Edge
+        {
+            Edge(
+                const ID_t A,
+                const ID_t B,
+                const EdgeType::Enum TYPE_ENUM)
+            :
+                a(A),
+                b(B),
+                type(TYPE_ENUM)
+            {}
 
+            ID_t a;
+            ID_t b;
+            EdgeType::Enum type;
+
+            friend bool operator==(const Edge & L, const Edge & R);
+        };
+
+        using EdgeVec_t = std::vector<Edge>;
+        
+        struct Vertex
+        {
+            Vertex(
+                const ID_t ID,
+                const CombatNodeSPtr_t & NODE_SPTR)
+            :
+                id(ID),
+                node_sptr(NODE_SPTR)
+            {}
+
+            ID_t id;
+            CombatNodeSPtr_t node_sptr;
+        };
+
+        using VertexVec_t = std::vector<Vertex>;
+        using EdgeList_t = std::list<Edge>;
+        using VertexList_t = std::list<Vertex>;
+
+    private:
         CombatTree(const CombatTree &) =delete;
         CombatTree & operator=(const CombatTree &) =delete;
 
     public:
         CombatTree();
-        virtual ~CombatTree();
 
         //reuses IDs that were preveiously removed
-        Id_t NextAvailableId() const;
+        ID_t NextAvailableId() const;
 
         //throws std::invalid_argument if ID does not exist
-        CombatNodePtr_t GetNode(const Id_t ID) const;
+        CombatNodePtr_t GetNode(const ID_t ID) const;
 
         //throws std::invalid_argument if ID does not exist
-        CombatNodeSPtr_t GetNodeSPtr(const Id_t ID) const;
+        CombatNodeSPtr_t GetNodeSPtr(const ID_t ID) const;
 
         //returns nullptr if creature does not exist
         CombatNodePtr_t GetNode(creature::CreatureCPtrC_t) const;
@@ -140,16 +163,16 @@ namespace combat
         CombatNodeSPtr_t GetNodeSPtr(creature::CreatureCPtrC_t) const;
 
         //throws std::invalid_argument if ID does not exist
-        void SetNode(const Id_t ID, const CombatNodeSPtr_t & NODE_SPTR);
+        void SetNode(const ID_t ID, const CombatNodeSPtr_t & NODE_SPTR);
 
         //throws std::invalid_argument if CombatNode does not exist
-        Id_t GetNodeId(const CombatNodePtr_t) const;
+        ID_t GetNodeId(const CombatNodePtr_t) const;
 
         //throws std::invalid_argument if creature does not exist
-        Id_t GetNodeId(creature::CreatureCPtrC_t) const;
+        ID_t GetNodeId(creature::CreatureCPtrC_t) const;
 
-        std::size_t GetNodeIds(IdVec_t & IdVec_OutParam, const creature::role::Enum ROLE);
-        std::size_t GetNodeIds(IdVec_t & IdVec_OutParam, const creature::race::Enum RACE);
+        std::size_t GetNodeIds(IDVec_t & IDVec_OutParam, const creature::role::Enum ROLE);
+        std::size_t GetNodeIds(IDVec_t & IDVec_OutParam, const creature::race::Enum RACE);
 
         //returns nullptr if there is no node at the position given
         CombatNodePtr_t GetNode(const float POS_X, const float POS_Y) const;
@@ -162,15 +185,16 @@ namespace combat
         const std::string VertexesString(const bool WILL_WRAP = true) const;
 
         //returns the id number of the vertex added
-        Id_t AddVertex(const CombatNodeSPtr_t & NODE_SPTR);
+        ID_t AddVertex(const CombatNodeSPtr_t & NODE_SPTR);
 
         //throws std::invalid_argument if the vertex already existed
-        void AddVertex(const Id_t ID, const CombatNodeSPtr_t & NODE_SPTR);
+        void AddVertex(const ID_t ID, const CombatNodeSPtr_t & NODE_SPTR);
 
         //returns a vector of vertex IDs that were left without edges
         //throws std::invalid_argument if ID is not an existing vertex
-        void RemoveVertex(const Id_t ID,
-                          const bool WILL_REMOVE_DANGLING_EDGES = false);
+        void RemoveVertex(
+            const ID_t ID,
+            const bool WILL_REMOVE_DANGLING_EDGES = false);
 
         std::size_t EdgeCount(const EdgeType::Enum TYPE = EdgeType::All) const;
 
@@ -179,84 +203,148 @@ namespace combat
         const std::string EdgesString(const bool WILL_WRAP = true) const;
 
         //throws std::invalid_argument if edge already exists, or if the Verticies do not exist
-        void AddEdge(const Id_t           ID1,
-                     const Id_t           ID2,
-                     const EdgeType::Enum E);
+        void AddEdge(
+            const ID_t ID1,
+            const ID_t ID2,
+            const EdgeType::Enum E);
 
         //order independant matching
         //returns a vector of vertex IDs that were left without edges
         //if DRY_RUN == true, then no edges will be removed
         //throws std::invalid_argument if the edge does not exist
-        const IdVec_t RemoveEdge(const Id_t   ID1,
-                                 const Id_t   ID2,
-                                 const bool   IS_DRY_RUN = false);
+        const IDVec_t RemoveEdge(
+            const ID_t ID1,
+            const ID_t ID2,
+            const bool IS_DRY_RUN = false);
 
         //verticies may exist without edges
-        bool DoesVertexExist(const Id_t ID) const;
+        bool DoesVertexExist(const ID_t ID) const;
 
         //order independant matching
-        bool DoesEdgeExist(const Id_t           ID1,
-                           const Id_t           ID2,
-                           const EdgeType::Enum TYPE = EdgeType::All) const;
+        bool DoesEdgeExist(
+            const ID_t ID1,
+            const ID_t ID2,
+            const EdgeType::Enum TYPE = EdgeType::All) const;
 
         //throws std::invalid_argument if the edge does not exist
-        EdgeType::Enum GetEdgeType(const Id_t ID1, const Id_t ID2) const;
+        EdgeType::Enum GetEdgeType(const ID_t ID1, const ID_t ID2) const;
 
         //throws std::invalid_argument if the edge does not exist
-        void SetEdgeType(const Id_t ID1, const Id_t ID2, const EdgeType::Enum);
+        void SetEdgeType(const ID_t ID1, const ID_t ID2, const EdgeType::Enum);
 
         //returns false if no IDs were added to the output vector
-        bool FindAdjacentByEdgeType(const Id_t           ID,
-                                    IdVec_t &            idVec_OutParam,
-                                    const EdgeType::Enum TYPE = EdgeType::All) const;
+        bool FindAdjacentByEdgeType(
+            const ID_t ID,
+            IDVec_t & idVec_OutParam,
+            const EdgeType::Enum TYPE = EdgeType::All) const;
 
-        bool FindAdjacent(const Id_t  ID,
-                          IdVec_t & idVec_OutParam) const;
+        bool FindAdjacent(
+            const ID_t ID,
+            IDVec_t & idVec_OutParam) const;
 
-        std::size_t CountAdjacent(const Id_t           ID,
-                                  const EdgeType::Enum EDGE_TYPE = EdgeType::All) const;
+        std::size_t CountAdjacent(
+            const ID_t ID,
+            const EdgeType::Enum EDGE_TYPE = EdgeType::All) const;
 
-        inline bool AreAnyAdjacent(const Id_t           ID,
-                                   const EdgeType::Enum EDGE_TYPE = EdgeType::All) const { return (CountAdjacent(ID, EDGE_TYPE) > 0); }
+        inline bool AreAnyAdjacent(
+            const ID_t ID,
+            const EdgeType::Enum EDGE_TYPE = EdgeType::All) const
+        {
+            return (CountAdjacent(ID, EDGE_TYPE) > 0);
+        }
 
-        inline bool IsVertexLeaf(const Id_t ID) const { return (CountAdjacent(ID) == 1); }
+        inline bool IsVertexLeaf(const ID_t ID) const { return (CountAdjacent(ID) == 1); }
 
         const std::string ToString() const;
 
         //only breaks pre-existing edges of type CONNECTION_TYPE
-        void ConnectAllAtPosition(const int            POS,
-                                  const EdgeType::Enum CONNECTION_TYPE);
+        void ConnectAllAtPosition(
+            const int POS,
+            const EdgeType::Enum CONNECTION_TYPE);
 
         int GetBlockingPosMin() const;
         int GetBlockingPosMax() const;
         int GetBlockingDistanceMax() const;
-        inline float GetBlockingPosMid() const          { return (static_cast<float>(GetBlockingPosMax()) + static_cast<float>(GetBlockingPosMin())) / 2.0f; }
-        inline float GetBlockingPosMidPercent() const   { return (50.0f + (GetBlockingPosMid() * 10.0f)); }
-        inline float GetBlockingPosMidRatio() const     { return (GetBlockingPosMidPercent() / 100.0f); }
-        inline float GetBlockingPosMinPercent() const   { return (50.0f + (static_cast<float>(GetBlockingPosMin()) * 10.0f)); }
-        inline float GetBlockingPosMinRatio() const     { return (GetBlockingPosMinPercent() / 100.0f); }
-        inline float GetBlockingPosMaxPercent() const   { return (50.0f + (static_cast<float>(GetBlockingPosMax()) * 10.0f)); }
-        inline float GetBlockingPosMaxRatio() const     { return (GetBlockingPosMaxPercent() / 100.0f); }
 
-        std::size_t GetNodeIDsAtBlockingPos(IdVec_t & IdVec_OutParam, const int BLOCKING_POS) const;
-        std::size_t GetNodeIDsAllAroundBlockingPos(IdVec_t & IdVec_OutParam, const int BLOCKING_POS) const;
-        std::size_t GetNodesAtBlockingPos(CombatNodePVec_t & NodePVec_OutParam, const int BLOCKING_POS) const;
-        std::size_t GetNodesAllAroundBlockingPos(CombatNodePVec_t & NodePVec_OutParam, const int BLOCKING_POS) const;
+        inline float GetBlockingPosMid() const
+        {
+            return (static_cast<float>(
+                GetBlockingPosMax()) + static_cast<float>(GetBlockingPosMin())) / 2.0f;
+        }
+
+        inline float GetBlockingPosMidPercent() const
+        {
+            return (50.0f + (GetBlockingPosMid() * 10.0f));
+        }
+
+        inline float GetBlockingPosMidRatio() const
+        {
+            return (GetBlockingPosMidPercent() / 100.0f);
+        }
+
+        inline float GetBlockingPosMinPercent() const
+        {
+            return (50.0f + (static_cast<float>(GetBlockingPosMin()) * 10.0f));
+        }
+
+        inline float GetBlockingPosMinRatio() const
+        {
+            return (GetBlockingPosMinPercent() / 100.0f);
+        }
+
+        inline float GetBlockingPosMaxPercent() const
+        {
+            return (50.0f + (static_cast<float>(GetBlockingPosMax()) * 10.0f));
+        }
+
+        inline float GetBlockingPosMaxRatio() const
+        {
+            return (GetBlockingPosMaxPercent() / 100.0f);
+        }
+
+        std::size_t GetNodeIDsAtBlockingPos(
+            IDVec_t & IdVec_OutParam, const int BLOCKING_POS) const;
+
+        std::size_t GetNodeIDsAllAroundBlockingPos(
+            IDVec_t & IdVec_OutParam, const int BLOCKING_POS) const;
+
+        std::size_t GetNodesAtBlockingPos(
+            CombatNodePVec_t & NodePVec_OutParam, const int BLOCKING_POS) const;
+
+        std::size_t GetNodesAllAroundBlockingPos(
+            CombatNodePVec_t & NodePVec_OutParam, const int BLOCKING_POS) const;
 
         void GetCombatNodes(CombatNodePVec_t & combatNodesPVec) const;
 
-        int GetBlockingDistanceBetween(creature::CreatureCPtrC_t, creature::CreatureCPtrC_t) const;
+        int GetBlockingDistanceBetween(
+            creature::CreatureCPtrC_t,
+            creature::CreatureCPtrC_t) const;
 
-        int GetClosestBlockingDistanceByType(creature::CreatureCPtrC_t, const bool WILL_FIND_PLAYERS) const;
+        int GetClosestBlockingDistanceByType(
+            creature::CreatureCPtrC_t,
+            const bool WILL_FIND_PLAYERS) const;
 
-        const CombatNodePVec_t FindNodesClosestOfType(const int ORIGIN_BLOCKING_POS, const bool WILL_FIND_PLAYERS) const;
+        const CombatNodePVec_t FindNodesClosestOfType(
+            const int ORIGIN_BLOCKING_POS,
+            const bool WILL_FIND_PLAYERS) const;
 
         void ResetAllEdges();
 
     private:
-        EdgeList_t   edgeList_;
+        EdgeList_t edgeList_;
         VertexList_t vertexList_;
     };
+
+
+    inline bool operator==(const CombatTree::Edge & L, const CombatTree::Edge & R)
+    {
+        return std::tie(L.a, L.b, L.type) == std::tie(R.a, R.b, R.type);
+    }
+
+    inline bool operator!=(const CombatTree::Edge & L, const CombatTree::Edge & R)
+    {
+        return !(L == R);
+    }
 
 }
 }
