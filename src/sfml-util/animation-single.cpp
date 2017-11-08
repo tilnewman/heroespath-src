@@ -54,19 +54,19 @@ namespace sfml_util
                   BLEND_MODE,
                   COLOR_FROM,
                   COLOR_TO),
-        sprite_   (),
+        sprite_(),
         origSizeV_(0.0f, 0.0f),
-        rects_    ()
+        rects_()
     {
         auto const FRAME_SIZE_INT_PAIR{ sfml_util::Animations::SizePair(ENUM) };
         origSizeV_.x = static_cast<float>(FRAME_SIZE_INT_PAIR.first);
         origSizeV_.y = static_cast<float>(FRAME_SIZE_INT_PAIR.second);
 
-        entityRegion_.width = ((misc::IsRealZero(REGION.width)) ? origSizeV_.x : REGION.width);
-        entityRegion_.height = ((misc::IsRealZero(REGION.height)) ? origSizeV_.y : REGION.height);
+        entityRegion_.width = ((heroespath::misc::IsRealZero(REGION.width)) ? origSizeV_.x : REGION.width);
+        entityRegion_.height = ((heroespath::misc::IsRealZero(REGION.height)) ? origSizeV_.y : REGION.height);
 
         auto const TEXTURE_ID_NUM{ TextureCache::Instance()->AddByPath(
-            game::GameDataFile::Instance()->GetMediaPath(
+            heroespath::game::GameDataFile::Instance()->GetMediaPath(
                 sfml_util::Animations::MediaPathKey(ENUM)), true) };
 
         sprite_.setTexture(TextureCache::Instance()->GetByIndex(TEXTURE_ID_NUM));

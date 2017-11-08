@@ -36,44 +36,46 @@
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-res-change.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 #include "game/game-data-file.hpp"
-#include "game/creature/creature.hpp"
-#include "game/stage/loop-cmd-addstage.hpp"
+#include "creature/creature.hpp"
+#include "stage/loop-cmd-addstage.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
 #include <string>
 
 
+namespace heroespath
+{
 namespace game
 {
 
     std::unique_ptr<LoopManager> LoopManager::instanceUPtr_{ nullptr };
-    std::string LoopManager::startupStage_{ LoopState::ToString(LoopState::Intro) };
+    std::string LoopManager::startupStage_{ sfml_util::LoopState::ToString(sfml_util::LoopState::Intro) };
 
 
     LoopManager::LoopManager()
     :
-        state_            (LoopState::None),
+        state_            (sfml_util::LoopState::None),
         cmdQueue_         (),
         loop_             ("DefaultLoop"),
-        popupResponse_    (popup::ResponseTypes::None),
+        popupResponse_    (heroespath::popup::ResponseTypes::None),
         popupSelection_   (0),
-        prevState_        (LoopState::None),
-        prevSettingsState_(LoopState::None),
-        stateBeforeFade_  (LoopState::None),
+        prevState_        (sfml_util::LoopState::None),
+        prevSettingsState_(sfml_util::LoopState::None),
+        stateBeforeFade_  (sfml_util::LoopState::None),
         exitSuccess_      (true)
     {
         M_HP_LOG_DBG("Singleton Construction: LoopManager");
 
         if (startupStage_.empty())
         {
-            TransitionTo(LoopState::Intro);
+            TransitionTo(sfml_util::LoopState::Intro);
         }
         else
         {
-            TransitionTo(LoopState::FromString(startupStage_));
+            TransitionTo(sfml_util::LoopState::FromString(startupStage_));
         }
     }
 
@@ -84,7 +86,7 @@ namespace game
     }
 
 
-    LoopManager * LoopManager::Instance()
+    LoopManager * game::LoopManager::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
@@ -118,37 +120,37 @@ namespace game
     }
 
 
-    Phase::Enum LoopManager::GetPhase() const
+    game::Phase::Enum LoopManager::GetPhase() const
     {
-        if (LoopState::Adventure == state_)
+        if (sfml_util::LoopState::Adventure == state_)
         {
-            return Phase::Exploring;
+            return game::Phase::Exploring;
         }
-        else if (LoopState::Combat == state_)
+        else if (sfml_util::LoopState::Combat == state_)
         {
-            return Phase::Combat;
+            return game::Phase::Combat;
         }
-        else if (LoopState::Inventory == state_)
+        else if (sfml_util::LoopState::Inventory == state_)
         {
-            return Phase::Inventory;
+            return game::Phase::Inventory;
         }
-        else if (LoopState::Popup == state_)
+        else if (sfml_util::LoopState::Popup == state_)
         {
-            if (LoopState::Adventure == prevState_)
+            if (sfml_util::LoopState::Adventure == prevState_)
             {
-                return Phase::Exploring;
+                return game::Phase::Exploring;
             }
-            else if (LoopState::Combat == prevState_)
+            else if (sfml_util::LoopState::Combat == prevState_)
             {
-                return Phase::Combat;
+                return game::Phase::Combat;
             }
-            else if (LoopState::Inventory == prevState_)
+            else if (sfml_util::LoopState::Inventory == prevState_)
             {
-                return Phase::Inventory;
+                return game::Phase::Inventory;
             }
         }
 
-        return static_cast<Phase::Enum>(0);
+        return static_cast<game::Phase::Enum>(0);
     }
 
 
@@ -156,7 +158,7 @@ namespace game
     {
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_RemoveAllStages>() );
 
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_StateChange>(LoopState::Intro) );
+        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Intro) );
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(true) );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(true) );
@@ -170,10 +172,12 @@ namespace game
 
         //set the theme music volume to 25% even if the config file has it set lower so it can
         //always be heard during the intro
-        const float VOLUME_IF_INTRO_OR_CAMP_STAGE(25.0f);
+        auto const VOLUME_IF_INTRO_OR_CAMP_STAGE{ 25.0f };
         float targetVolumeToUse(sfml_util::MusicOperator::VOLUME_USE_GLOBAL_);
         if (sfml_util::SoundManager::Instance()->MusicVolume() < VOLUME_IF_INTRO_OR_CAMP_STAGE)
+        {
             targetVolumeToUse = VOLUME_IF_INTRO_OR_CAMP_STAGE;
+        }
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_StartMusic>(
             sfml_util::music::Theme,
@@ -211,8 +215,8 @@ namespace game
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_RemoveStage_Popup>() );
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_FadeIn>(
-            popup::PopupManager::Color_Fade(),
-            popup::PopupManager::SpeedMult_Fade()) );
+            heroespath::popup::PopupManager::Color_Fade(),
+            heroespath::popup::PopupManager::SpeedMult_Fade()) );
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_Execute>() );
     }
@@ -228,7 +232,7 @@ namespace game
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(false) );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(false) );
 
-        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_StateChange>(LoopState::Exit) );
+        cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Exit) );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_StopMusic>(sfml_util::music::Enum::All, 100.0f) );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_FadeOut>() );
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_Execute>() );
@@ -240,7 +244,7 @@ namespace game
     {
         TransitionHelper(
             static_cast<TransOpt>(TransOpt::ClearQueue | TransOpt::MouseIgnore),
-            LoopState::Credits,
+            sfml_util::LoopState::Credits,
             std::make_shared< stage::LoopCmd_AddStage<stage::CreditsStage> >(),
             sfml_util::music::All,
             sfml_util::music::Credits);
@@ -259,7 +263,7 @@ namespace game
                 TransOpt::MouseIgnore |
                 TransOpt::MouseRestore |
                 TransOpt::FinalExecute),
-            LoopState::MainMenu,
+            sfml_util::LoopState::MainMenu,
             std::make_shared< stage::LoopCmd_AddStage<stage::MainMenuStage> >(),
             sfml_util::music::Wind,
             sfml_util::music::Theme);
@@ -272,7 +276,7 @@ namespace game
 
         TransitionHelper(
             TransOpt::All,
-            LoopState::Settings,
+            sfml_util::LoopState::Settings,
             std::make_shared< stage::LoopCmd_AddStage<stage::SettingsStage> >(),
             sfml_util::music::All,
             sfml_util::music::Theme);
@@ -285,7 +289,7 @@ namespace game
     {
         TransitionHelper(
             TransOpt::All,
-            LoopState::CharacterCreation,
+            sfml_util::LoopState::CharacterCreation,
             std::make_shared< stage::LoopCmd_AddStage<stage::CharacterStage> >(),
             sfml_util::music::All,
             sfml_util::music::Wind);
@@ -299,7 +303,7 @@ namespace game
                 TransOpt::ClearQueue |
                 TransOpt::MouseIgnore |
                 TransOpt::MouseRestore),
-            LoopState::PartyCreation,
+            sfml_util::LoopState::PartyCreation,
             std::make_shared< stage::LoopCmd_AddStage<stage::PartyStage> >(),
             sfml_util::music::All,
             sfml_util::music::PartyCreation);
@@ -315,7 +319,7 @@ namespace game
     {
         TransitionHelper(
             TransOpt::All,
-            LoopState::Inn,
+            sfml_util::LoopState::Inn,
             std::make_shared< stage::LoopCmd_AddStage<stage::InnStage> >() );
     }
 
@@ -324,7 +328,7 @@ namespace game
     {
         TransitionHelper(
             static_cast<TransOpt>(TransOpt::ClearQueue | TransOpt::MouseRestore),
-            LoopState::Camp,
+            sfml_util::LoopState::Camp,
             std::make_shared< stage::LoopCmd_AddStage<stage::CampStage> >(),
             sfml_util::music::All,
             sfml_util::music::None);
@@ -351,7 +355,7 @@ namespace game
     {
         TransitionHelper(
             TransOpt::All,
-            LoopState::LoadGameMenu,
+            sfml_util::LoopState::LoadGameMenu,
             std::make_shared< stage::LoopCmd_AddStage<stage::LoadGameStage> >() );
     }
 
@@ -360,7 +364,7 @@ namespace game
     {
         TransitionHelper(
             TransOpt::All,
-            LoopState::Combat,
+            sfml_util::LoopState::Combat,
             std::make_shared<stage::LoopCmd_AddStage_Combat>(WILL_ADVANCE_TURN),
             sfml_util::music::All,
             sfml_util::music::None);
@@ -371,7 +375,7 @@ namespace game
     {
         TransitionHelper(
             TransOpt::All,
-            LoopState::Test,
+            sfml_util::LoopState::Test,
             std::make_shared< stage::LoopCmd_AddStage<stage::TestingStage> >(),
             sfml_util::music::All,
             sfml_util::music::None);
@@ -385,7 +389,7 @@ namespace game
                 TransOpt::ClearQueue |
                 TransOpt::FinalExecute |
                 TransOpt::MouseRestore),
-            LoopState::Treasure,
+            sfml_util::LoopState::Treasure,
             std::make_shared < stage::LoopCmd_AddStage< stage::TreasureStage> >(),
             sfml_util::music::All,
             sfml_util::music::None);
@@ -396,7 +400,7 @@ namespace game
     {
         TransitionHelper(
             TransOpt::All,
-            LoopState::Adventure,
+            sfml_util::LoopState::Adventure,
             std::make_shared< stage::LoopCmd_AddStage<stage::AdventureStage> >(),
             sfml_util::music::All,
             sfml_util::music::None);
@@ -405,13 +409,13 @@ namespace game
 
     void LoopManager::TransitionTo_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
                                              const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
-                                             const Phase::Enum             CURRENT_PHASE)
+                                             const game::Phase::Enum             CURRENT_PHASE)
     {
         prevSettingsState_ = state_;
 
         TransitionHelper(
             TransOpt::All,
-            LoopState::Inventory,
+            sfml_util::LoopState::Inventory,
             std::make_shared<stage::LoopCmd_AddStage_Inventory>(
                 TURN_CREATURE_PTR,
                 INVENTORY_CREATURE_PTR,
@@ -423,7 +427,7 @@ namespace game
 
     void LoopManager::TransitionHelper(
         const TransOpt                    OPTIONS,
-        const LoopState::Enum             NEW_STATE,
+        const sfml_util::LoopState::Enum             NEW_STATE,
         const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
         const sfml_util::music::Enum      MUSIC_TO_STOP,
         const sfml_util::music::Enum      MUSIC_TO_START)
@@ -496,14 +500,14 @@ namespace game
 
             cmdSPtr->Execute();
 
-            const LoopState::Enum CURRENT_STATE(loop_.GetState() );
+            const sfml_util::LoopState::Enum CURRENT_STATE(loop_.GetState() );
             if (CURRENT_STATE != state_)
             {
                 prevState_ = state_;
                 state_ = CURRENT_STATE;
 
-                M_HP_LOG("LoopManager changed from \"" << LoopState::ToString(prevState_)
-                    << "\" to \"" << LoopState::ToString(state_) << "\"");
+                M_HP_LOG("LoopManager changed from \"" << sfml_util::LoopState::ToString(prevState_)
+                    << "\" to \"" << sfml_util::LoopState::ToString(state_) << "\"");
             }
         }
 
@@ -512,7 +516,7 @@ namespace game
 
 
     void LoopManager::PopupWaitEnd(
-        const popup::ResponseTypes::Enum RESPONSE, const std::size_t SELECTION)
+        const heroespath::popup::ResponseTypes::Enum RESPONSE, const std::size_t SELECTION)
     {
         popupResponse_ = RESPONSE;
         popupSelection_ = SELECTION;
@@ -524,8 +528,8 @@ namespace game
     {
         loop_.Exit();
 
-        LoopState::Enum prevStateToUse(prevState_);
-        if (prevState_ == LoopState::Popup)
+        sfml_util::LoopState::Enum prevStateToUse(prevState_);
+        if (prevState_ == sfml_util::LoopState::Popup)
         {
             prevStateToUse = prevSettingsState_;
         }
@@ -536,13 +540,13 @@ namespace game
 
     void LoopManager::HandleTransitionBeforeFade()
     {
-        if (LoopState::None == stateBeforeFade_)
+        if (sfml_util::LoopState::None == stateBeforeFade_)
         {
             return;
         }
 
         TransitionTo(stateBeforeFade_);
-        stateBeforeFade_ = LoopState::None;
+        stateBeforeFade_ = sfml_util::LoopState::None;
     }
 
 
@@ -553,33 +557,33 @@ namespace game
 
 
     void LoopManager::TransitionTo(
-        const LoopState::Enum STATE, const bool WILL_ADVANCE_TURN)
+        const sfml_util::LoopState::Enum STATE, const bool WILL_ADVANCE_TURN)
     {
         switch (STATE)
         {
-            case LoopState::Settings:           { TransitionTo_Settings(); break; }
-            case LoopState::MainMenu:           { TransitionTo_MainMenu(); break; }
-            case LoopState::Intro:              { TransitionTo_Intro(); break; }
-            case LoopState::Exit:               { TransitionTo_Exit(); break; }
-            case LoopState::Credits:            { TransitionTo_Credits(); break; }
-            case LoopState::PartyCreation:      { TransitionTo_PartyCreation(); break; }
-            case LoopState::Camp:               { TransitionTo_Camp(); break; }
-            case LoopState::LoadGameMenu:       { TransitionTo_LoadGameMenu(); break; }
-            case LoopState::CharacterCreation:  { TransitionTo_CharacterCreation(); break; }
-            case LoopState::Inn:                { TransitionTo_Inn(); break; }
-            case LoopState::Combat:             { TransitionTo_Combat(WILL_ADVANCE_TURN); break; }
-            case LoopState::Test:               { TransitionTo_Test(); break; }
-            case LoopState::Treasure:           { TransitionTo_Treasure(); break; }
-            case LoopState::Inventory:
-            case LoopState::Adventure:          { TransitionTo_Adventure(); break; }
-            case LoopState::None:
-            case LoopState::Popup:
-            case LoopState::Query:
-            case LoopState::Count:
+            case sfml_util::LoopState::Settings:           { TransitionTo_Settings(); break; }
+            case sfml_util::LoopState::MainMenu:           { TransitionTo_MainMenu(); break; }
+            case sfml_util::LoopState::Intro:              { TransitionTo_Intro(); break; }
+            case sfml_util::LoopState::Exit:               { TransitionTo_Exit(); break; }
+            case sfml_util::LoopState::Credits:            { TransitionTo_Credits(); break; }
+            case sfml_util::LoopState::PartyCreation:      { TransitionTo_PartyCreation(); break; }
+            case sfml_util::LoopState::Camp:               { TransitionTo_Camp(); break; }
+            case sfml_util::LoopState::LoadGameMenu:       { TransitionTo_LoadGameMenu(); break; }
+            case sfml_util::LoopState::CharacterCreation:  { TransitionTo_CharacterCreation(); break; }
+            case sfml_util::LoopState::Inn:                { TransitionTo_Inn(); break; }
+            case sfml_util::LoopState::Combat:             { TransitionTo_Combat(WILL_ADVANCE_TURN); break; }
+            case sfml_util::LoopState::Test:               { TransitionTo_Test(); break; }
+            case sfml_util::LoopState::Treasure:           { TransitionTo_Treasure(); break; }
+            case sfml_util::LoopState::Inventory:
+            case sfml_util::LoopState::Adventure:          { TransitionTo_Adventure(); break; }
+            case sfml_util::LoopState::None:
+            case sfml_util::LoopState::Popup:
+            case sfml_util::LoopState::Query:
+            case sfml_util::LoopState::Count:
             default:
             {
                 M_HP_LOG("ERROR:  LoopManager::TransitionTo() called when STATE is "
-                    << LoopState::ToString(STATE) << ".  Going to Main Menu...");
+                    << sfml_util::LoopState::ToString(STATE) << ".  Going to Main Menu...");
 
                 TransitionTo_MainMenu();
                 break;
@@ -590,7 +594,7 @@ namespace game
 
     sfml_util::DisplayChangeResult::Enum LoopManager::ChangeResolution(
         sfml_util::IStage * const               currentStagePtr_,
-        popup::IPopupHandler_t * const          HANDLER_PTR,
+        heroespath::popup::IPopupHandler_t * const          HANDLER_PTR,
         const sfml_util::Resolution &           NEW_RES,
         const unsigned                          ANTIALIAS_LEVEL)
     {
@@ -642,11 +646,11 @@ namespace game
             }
         }
 
-        const popup::PopupInfo POPUP_INFO(
+        const heroespath::popup::PopupInfo POPUP_INFO(
             "ResolutionChangePopup",
             textInfo,
-            popup::PopupButtons::YesNo,
-            popup::PopupImage::Banner,
+            heroespath::popup::PopupButtons::YesNo,
+            heroespath::popup::PopupImage::Banner,
             sfml_util::MapByRes(1.0f, 3.0f),
             sfml_util::sound_effect::PromptQuestion);
 
@@ -672,4 +676,5 @@ namespace game
         }
     }
 
+}
 }

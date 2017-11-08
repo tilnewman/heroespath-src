@@ -34,6 +34,8 @@
 #include <type_traits>
 
 
+namespace heroespath
+{
 namespace misc
 {
 
@@ -49,19 +51,19 @@ namespace misc
         virtual ~StrongNumericType()
         {}
 
-        unsigned char AsUChar() const { return static_cast<unsigned char>(this->m_value); }
-        int AsShort() const { return static_cast<short>(this->m_value); }
-        unsigned AsUShort() const { return static_cast<unsigned short>(this->m_value); }
-        int AsInt() const { return static_cast<int>(this->m_value); }
-        unsigned AsUInt() const { return static_cast<unsigned>(this->m_value); }
-        int AsLong() const { return static_cast<long>(this->m_value); }
-        unsigned AsULong() const { return static_cast<unsigned long>(this->m_value); }
-        int AsLLong() const { return static_cast<long long>(this->m_value); }
-        unsigned AsULLong() const { return static_cast<unsigned long long>(this->m_value); }
-        std::size_t AsSizeT() const { return static_cast<std::size_t>(this->m_value); }
-        float AsFloat() const { return static_cast<float>(this->m_value); }
-        double AsDouble() const { return static_cast<double>(this->m_value); }
-        double AsLDouble() const { return static_cast<long double>(this->m_value); }
+        unsigned char AsUChar() const { return static_cast<unsigned char>(this->Get()); }
+        int AsShort() const { return static_cast<short>(this->Get()); }
+        unsigned AsUShort() const { return static_cast<unsigned short>(this->Get()); }
+        int AsInt() const { return static_cast<int>(this->Get()); }
+        unsigned AsUInt() const { return static_cast<unsigned>(this->Get()); }
+        int AsLong() const { return static_cast<long>(this->Get()); }
+        unsigned AsULong() const { return static_cast<unsigned long>(this->Get()); }
+        int AsLLong() const { return static_cast<long long>(this->Get()); }
+        unsigned AsULLong() const { return static_cast<unsigned long long>(this->Get()); }
+        std::size_t AsSizeT() const { return static_cast<std::size_t>(this->Get()); }
+        float AsFloat() const { return static_cast<float>(this->Get()); }
+        double AsDouble() const { return static_cast<double>(this->Get()); }
+        double AsLDouble() const { return static_cast<long double>(this->Get()); }
         
         bool IsZero() const { return (this->m_value == T(0)); }
         bool IsNonZero() const { return ! IsZero(); }
@@ -71,27 +73,33 @@ namespace misc
             return StrongNumericType<T, Parameter>(std::abs(this->m_value));
         }
 
+        StrongNumericType & operator=(const StrongNumericType & RHS)
+        {
+            this->Get() = RHS.Get();
+            return * this;
+        }
+
         StrongNumericType & operator+=(const StrongNumericType & RHS)
         {
-            this->m_value += RHS.m_value;
+            this->Get() += RHS.Get();
             return * this;
         }
 
         StrongNumericType & operator-=(const StrongNumericType & RHS)
         {
-            this->m_value -= RHS.m_value;
+            this->Get() -= RHS.Get();
             return * this;
         }
 
         StrongNumericType & operator*=(const StrongNumericType & RHS)
         {
-            this->m_value *= RHS.m_value;
+            this->Get() *= RHS.Get();
             return * this;
         }
 
         StrongNumericType & operator/=(const StrongNumericType & RHS)
         {
-            this->m_value /= RHS.m_value;
+            this->Get() /= RHS.Get();
             return * this;
         }
 
@@ -117,37 +125,37 @@ namespace misc
 
         bool operator==(const StrongNumericType & RHS) const
         {
-            return this->m_value == RHS.m_value;
+            return this->Get() == RHS.Get();
         }
 
         bool operator!=(const StrongNumericType & RHS) const
         {
-            return this->m_value != RHS.m_value;
+            return this->Get() != RHS.Get();
         }
 
         bool operator<(const StrongNumericType & RHS) const
         {
-            return this->m_value < RHS.m_value;
+            return this->Get() < RHS.Get();
         }
 
         bool operator<=(const StrongNumericType & RHS) const
         {
-            return this->m_value <= RHS.m_value;
+            return this->Get() <= RHS.Get();
         }
 
         bool operator>(const StrongNumericType & RHS) const
         {
-            return this->m_value > RHS.m_value;
+            return this->Get() > RHS.Get();
         }
 
         bool operator>=(const StrongNumericType & RHS) const
         {
-            return this->m_value >= RHS.m_value;
+            return this->Get() >= RHS.Get();
         }
 
         StrongNumericType & operator++()
         {
-            ++(this->m_value);
+            ++(this->Get());
             return *this;
         }
 
@@ -160,7 +168,7 @@ namespace misc
 
         StrongNumericType & operator--()
         {
-            --(this->m_value);
+            --(this->Get());
             return *this;
         }
 
@@ -182,6 +190,7 @@ namespace misc
         return os;
     }
 
+}
 }
 
 #endif //MISC_STRONGNUMERICTYPE_HPP_INCLUDED

@@ -41,13 +41,13 @@
 #include "sfml-util/gui/condition-image-manager.hpp"
 #include "sfml-util/gui/song-image-manager.hpp"
 
-#include "game/log-macros.hpp"
-#include "game/creature/title.hpp"
-#include "game/player/character.hpp"
-#include "game/creature/condition.hpp"
-#include "game/spell/spells.hpp"
-#include "game/song/song.hpp"
-#include "game/item/item.hpp"
+#include "log/log-macros.hpp"
+#include "creature/title.hpp"
+#include "player/character.hpp"
+#include "creature/condition.hpp"
+#include "spell/spells.hpp"
+#include "song/song.hpp"
+#include "item/item.hpp"
 
 #include <vector>
 #include <algorithm>

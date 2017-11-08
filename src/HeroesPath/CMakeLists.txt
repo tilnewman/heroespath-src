@@ -35,19 +35,19 @@ add_executable(${PROJECT_NAME} ${source_files})
 
 target_link_libraries(  ${PROJECT_NAME}
                         Misc
-                        ConfigBase
-                        LogBase
+                        Config
+                        Log
                         sfml-util
                         sfml-util-gui
                         Game
-                        Game-Stage
-                        Game-Stats
-                        Game-Creature
-                        Game-Player
-                        Game-NonPlayer
-                        Game-Location
-                        Game-State
-                        Game-Combat
+                        Stage
+                        Stats
+                        Creature
+                        Player
+                        NonPlayer
+                        Location
+                        State
+                        Combat
 			Popup
                         ${Boost_LIBRARIES}
                         ${SFML_LIBRARIES})

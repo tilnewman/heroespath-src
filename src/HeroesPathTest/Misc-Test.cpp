@@ -31,7 +31,7 @@
 #include "misc/real.hpp"
 
 
-using namespace misc;
+using namespace heroespath::misc;
 
 
 BOOST_AUTO_TEST_CASE(Real_IsRealZero)

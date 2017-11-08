@@ -29,7 +29,7 @@
 //
 #include "sfml-util/gui/image-manager-base.hpp"
 
-#include "game/creature/condition-enum.hpp"
+#include "creature/condition-enum.hpp"
 
 #include <memory>
 
@@ -40,7 +40,7 @@ namespace gui
 {
 
     //Loads images and delivers sf::Textures to them on demand.
-    class ConditionImageManager : public ImageManagerBase<game::creature::Conditions>
+    class ConditionImageManager : public ImageManagerBase<heroespath::creature::Conditions>
     {
         ConditionImageManager(const ConditionImageManager &) =delete;
         ConditionImageManager & operator=(const ConditionImageManager &) =delete;

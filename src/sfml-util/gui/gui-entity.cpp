@@ -273,22 +273,22 @@ namespace gui
     {
         if (L.entityRegion_ != R.entityRegion_)
         {
-            if (misc::IsRealClose(L.entityRegion_.left, R.entityRegion_.left) == false)
+            if (heroespath::misc::IsRealClose(L.entityRegion_.left, R.entityRegion_.left) == false)
             {
                 return (L.entityRegion_.left < R.entityRegion_.left);
             }
 
-            if (misc::IsRealClose(L.entityRegion_.top, R.entityRegion_.top) == false)
+            if (heroespath::misc::IsRealClose(L.entityRegion_.top, R.entityRegion_.top) == false)
             {
                 return (L.entityRegion_.top < R.entityRegion_.top);
             }
 
-            if (misc::IsRealClose(L.entityRegion_.width, R.entityRegion_.width) == false)
+            if (heroespath::misc::IsRealClose(L.entityRegion_.width, R.entityRegion_.width) == false)
             {
                 return (L.entityRegion_.width < R.entityRegion_.width);
             }
 
-            if (misc::IsRealClose(L.entityRegion_.height, R.entityRegion_.height) == false)
+            if (heroespath::misc::IsRealClose(L.entityRegion_.height, R.entityRegion_.height) == false)
             {
                 return (L.entityRegion_.height < R.entityRegion_.height);
             }
@@ -296,11 +296,14 @@ namespace gui
 
         if (L.entityPrevPos_ != R.entityPrevPos_)
         {
-            if (misc::IsRealClose(L.entityPrevPos_.x, R.entityPrevPos_.x) == false)
+            if (heroespath::misc::IsRealClose(L.entityPrevPos_.x, R.entityPrevPos_.x) == false)
+            {
                 return L.entityPrevPos_.x < R.entityPrevPos_.x;
-
-            if (misc::IsRealClose(L.entityPrevPos_.y, R.entityPrevPos_.y) == false)
+            }
+            if (heroespath::misc::IsRealClose(L.entityPrevPos_.y, R.entityPrevPos_.y) == false)
+            {
                 return L.entityPrevPos_.y < R.entityPrevPos_.y;
+            }
         }
 
         if (L.entityFgColor_ != R.entityFgColor_)

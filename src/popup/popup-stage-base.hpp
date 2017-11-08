@@ -40,6 +40,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -143,6 +145,7 @@ namespace popup
         float keepAliveTimerSec_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGEBASE_HPP_INCLUDED

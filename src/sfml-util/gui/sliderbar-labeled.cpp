@@ -28,7 +28,7 @@
 // sliderbar-labeled.cpp
 //
 #include "sliderbar-labeled.hpp"
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include <sstream>
 

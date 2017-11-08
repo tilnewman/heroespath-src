@@ -32,7 +32,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 #include "game/game-data-file.hpp"
 
 #include "misc/assertlogandthrow.hpp"

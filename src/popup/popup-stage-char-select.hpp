@@ -35,6 +35,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -68,6 +70,7 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGECHARSELECT_HPP_INCLUDED

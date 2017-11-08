@@ -41,6 +41,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -349,4 +351,5 @@ namespace popup
         EntityAdd(sliderbarUPtr_.get());
     }
 
+}
 }

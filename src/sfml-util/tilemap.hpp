@@ -30,7 +30,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/collision-quad-tree.hpp"
 
-#include "game/types.hpp"
+#include "misc/types.hpp"
 
 //suppress warnings that are safe to ignore in boost
 #if !defined(WIN32) && !defined(_WIN32) && !defined(__WIN32__) && !defined(__WINDOWS__)
@@ -51,6 +51,9 @@
 #include <vector>
 #include <list>
 #include <tuple>
+
+
+using namespace heroespath;
 
 
 namespace sfml_util

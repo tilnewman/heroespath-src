@@ -31,7 +31,7 @@
 
 #include "sfml-util/sound-manager.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 #include <sstream>
 

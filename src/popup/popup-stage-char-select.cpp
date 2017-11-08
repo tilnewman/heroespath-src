@@ -30,15 +30,17 @@
 #include "popup-stage-char-select.hpp"
 
 #include "game/game.hpp"
-#include "game/state/game-state.hpp"
-#include "game/player/party.hpp"
-#include "game/creature/creature.hpp"
+#include "state/game-state.hpp"
+#include "player/party.hpp"
+#include "creature/creature.hpp"
 #include "game/loop-manager.hpp"
 
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -191,7 +193,7 @@ namespace popup
 
         if (CREATURE_PTR->IsBeast())
         {
-            if (CREATURE_PTR->Race() != game::creature::race::Wolfen)
+            if (CREATURE_PTR->Race() != creature::race::Wolfen)
             {
                 ss << ", " << CREATURE_PTR->RoleName();
             }
@@ -253,4 +255,5 @@ namespace popup
             true);
     }
 
+}
 }

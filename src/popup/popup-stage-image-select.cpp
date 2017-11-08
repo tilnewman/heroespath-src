@@ -36,6 +36,8 @@
 #include <algorithm>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -572,4 +574,5 @@ namespace popup
         return PopupStageBase::HandleSelect();
     }
 
+}
 }

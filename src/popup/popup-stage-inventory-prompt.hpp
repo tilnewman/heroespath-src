@@ -30,6 +30,8 @@
 #include "popup/popup-stage-base.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -50,6 +52,7 @@ namespace popup
         inline virtual bool WillPressingCKeyClosePopup() const override { return true; }
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGEINVENTORYPROMPT_HPP_INCLUDED

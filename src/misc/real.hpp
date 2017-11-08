@@ -31,13 +31,16 @@
 #include <limits> //for epsilon
 
 
+namespace heroespath
+{
 namespace misc
 {
 
     template<typename T>
-    inline bool IsRealClose(const T A,
-                            const T B,
-                            const T TOLERANCE = std::numeric_limits<T>::epsilon())
+    inline bool IsRealClose(
+        const T A,
+        const T B,
+        const T TOLERANCE = std::numeric_limits<T>::epsilon())
     {
         return std::fabs(A - B) < TOLERANCE;
     }
@@ -49,6 +52,7 @@ namespace misc
 
     template<typename T>
     inline bool IsRealZero(const T X) { return IsRealClose(X, static_cast<T>(0)); }
+}
 }
 
 #endif //MISC_REALUTILS_HPP_INCLUDED

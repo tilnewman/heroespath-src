@@ -29,8 +29,8 @@
 //
 #include "popup-stage-musicsheet.hpp"
 
-#include "game/song/song.hpp"
-#include "game/creature/creature.hpp"
+#include "song/song.hpp"
+#include "creature/creature.hpp"
 #include "game/loop-manager.hpp"
 
 #include "popup/popup-manager.hpp"
@@ -45,6 +45,8 @@
 #include <algorithm>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -348,7 +350,7 @@ namespace popup
         {
             ss << creaturePtr->RaceName();
 
-            if (creaturePtr->Race() != game::creature::race::Wolfen)
+            if (creaturePtr->Race() != creature::race::Wolfen)
             {
                 ss << ", " << creaturePtr->RoleName();
             }
@@ -472,7 +474,7 @@ namespace popup
     }
 
 
-    void PopupStageMusicSheet::SetupPageRightText(const game::song::SongPtrC_t SONG_CPTRC)
+    void PopupStageMusicSheet::SetupPageRightText(const song::SongPtrC_t SONG_CPTRC)
     {
         if (SONG_CPTRC == nullptr)
         {
@@ -535,7 +537,7 @@ namespace popup
         std::ostringstream ss;
         ss << "Mana Cost: " << SONG_CPTRC->ManaCost() << "\n"
            << "Rank: " << SONG_CPTRC->Rank() << "\n"
-           << "Targets " << game::TargetType::Name(SONG_CPTRC->Target()) << "\n"
+           << "Targets " << combat::TargetType::Name(SONG_CPTRC->Target()) << "\n"
            << "Play during " << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false) << "\n";
 
         const sfml_util::gui::TextInfo SONG_DETAILS_TEXTINFO(
@@ -719,19 +721,19 @@ namespace popup
 
 
     bool PopupStageMusicSheet::DoesCharacterHaveEnoughManaToPlaySong(
-        const game::song::SongPtrC_t SONG_CPTRC) const
+        const song::SongPtrC_t SONG_CPTRC) const
     {
         return (popupInfo_.CreaturePtr()->Mana() >= SONG_CPTRC->ManaCost());
     }
 
 
-    bool PopupStageMusicSheet::CanPlaySongInPhase(const game::song::SongPtrC_t SONG_CPTRC) const
+    bool PopupStageMusicSheet::CanPlaySongInPhase(const song::SongPtrC_t SONG_CPTRC) const
     {
         return (SONG_CPTRC->ValidPhases() & game::LoopManager::Instance()->GetPhase());
     }
 
 
-    bool PopupStageMusicSheet::CanPlaySong(const game::song::SongPtrC_t SONG_CPTRC) const
+    bool PopupStageMusicSheet::CanPlaySong(const song::SongPtrC_t SONG_CPTRC) const
     {
         return (DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) &&
             CanPlaySongInPhase(SONG_CPTRC));
@@ -744,12 +746,12 @@ namespace popup
         {
             if (currentSongPtr_ != nullptr)
             {
-                if (currentSongPtr_->Type() == game::song::SongType::Drum)
+                if (currentSongPtr_->Type() == song::SongType::Drum)
                 {
                     sfml_util::SoundManager::Instance()->Getsound_effect_set(
                         sfml_util::sound_effect_set::DrumBlip).PlayRandom();
                 }
-                else if (currentSongPtr_->Type() == game::song::SongType::Guitar)
+                else if (currentSongPtr_->Type() == song::SongType::Guitar)
                 {
                     sfml_util::SoundManager::Instance()->Getsound_effect_set(
                         sfml_util::sound_effect_set::GuitarStrum).PlayRandom();
@@ -769,4 +771,5 @@ namespace popup
         }
     }
 
+}
 }

@@ -31,7 +31,7 @@
 
 #include "sfml-util/loaders.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 #include "game/game-data-file.hpp"
 
 #include "misc/assertlogandthrow.hpp"
@@ -104,16 +104,18 @@ namespace sfml_util
     }
 
 
-    std::size_t TextureCache::AddByKey(const std::string & GAMEDATAFILE_KEY_STR,
-                                       const bool          WILL_SMOOTH)
+    std::size_t TextureCache::AddByKey(
+        const std::string & GAMEDATAFILE_KEY_STR,
+        const bool          WILL_SMOOTH)
     {
         return AddByPath(
-            game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), WILL_SMOOTH);
+            heroespath::game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), WILL_SMOOTH);
     }
 
 
-    std::size_t TextureCache::AddByPath(const std::string & PATH_TO_TEXTURE_STR,
-                                        const bool          WILL_SMOOTH)
+    std::size_t TextureCache::AddByPath(
+        const std::string & PATH_TO_TEXTURE_STR,
+        const bool          WILL_SMOOTH)
     {
         auto const FOUND_ITER{ strToVecMap_.find(PATH_TO_TEXTURE_STR) };
         if (FOUND_ITER != strToVecMap_.end())
@@ -138,20 +140,21 @@ namespace sfml_util
         }
 
         auto const INDEX{ AddByPathInternal(PATH_TO_TEXTURE_STR, WILL_SMOOTH) };
-        strToVecMap_.insert( std::make_pair(PATH_TO_TEXTURE_STR, misc::SizetVec_t(1, INDEX)) );
+        strToVecMap_.insert( std::make_pair(PATH_TO_TEXTURE_STR, heroespath::misc::SizetVec_t(1, INDEX)) );
         return INDEX;
     }
 
 
-    const misc::SizetVec_t TextureCache::AddAllInDirectoryByKey(const std::string & DIR_PATH_KEY,
-                                                                const bool          WILL_SMOOTH)
+    const heroespath::misc::SizetVec_t TextureCache::AddAllInDirectoryByKey(
+        const std::string & DIR_PATH_KEY,
+        const bool          WILL_SMOOTH)
     {
-        return AddAllInDirectoryByPath(game::GameDataFile::Instance()->GetMediaPath(
+        return AddAllInDirectoryByPath(heroespath::game::GameDataFile::Instance()->GetMediaPath(
             DIR_PATH_KEY), WILL_SMOOTH);
     }
 
 
-    const misc::SizetVec_t TextureCache::AddAllInDirectoryByPath(
+    const heroespath::misc::SizetVec_t TextureCache::AddAllInDirectoryByPath(
         const std::string & DIR_PATH_PARAM_STR,
         const bool          WILL_SMOOTH)
     {
@@ -179,7 +182,7 @@ namespace sfml_util
             << "AddAllInDirectory(\"" << DIR_PATH_COMPLETE_STR
             << "\") failed because that is not a directory.");
 
-        misc::SizetVec_t indexVec;
+        heroespath::misc::SizetVec_t indexVec;
 
         bfs::directory_iterator endItr;
         for (bfs::directory_iterator dirItr(DIR_PATH); endItr != dirItr; ++dirItr)
@@ -228,7 +231,7 @@ namespace sfml_util
 
     void TextureCache::RemoveByKey(const std::string & GAMEDATAFILE_KEY_STR)
     {
-        RemoveByPath(game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR));
+        RemoveByPath(heroespath::game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR));
     }
 
 
@@ -270,7 +273,7 @@ namespace sfml_util
 
         cacheUVec_[INDEX].reset();
 
-        misc::StrVec_t keysToBeRemovedVec;
+        heroespath::misc::StrVec_t keysToBeRemovedVec;
         for (auto const & NEXT_PAIR : strToVecMap_)
         {
             if ((NEXT_PAIR.second.empty() == false) && (NEXT_PAIR.second[0] == INDEX))
@@ -286,7 +289,7 @@ namespace sfml_util
     }
 
 
-    void TextureCache::RemoveByIndexVec(const misc::SizetVec_t & INDEX_VEC)
+    void TextureCache::RemoveByIndexVec(const heroespath::misc::SizetVec_t & INDEX_VEC)
     {
         auto const NUM_INDEXES{ INDEX_VEC.size() };
         for (std::size_t i(0); i < NUM_INDEXES; ++i)

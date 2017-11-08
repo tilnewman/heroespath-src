@@ -33,8 +33,11 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace popup
 {
+
     //Responsible for implementing a generic popup window stage.
     class PopupStageGeneric : public PopupStageBase
     {
@@ -53,6 +56,7 @@ namespace popup
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGEGENERIC_HPP_INCLUDED

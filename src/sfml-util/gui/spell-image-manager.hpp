@@ -29,7 +29,7 @@
 //
 #include "sfml-util/gui/image-manager-base.hpp"
 
-#include "game/spell/spell-enum.hpp"
+#include "spell/spell-enum.hpp"
 
 #include <memory>
 
@@ -40,7 +40,7 @@ namespace gui
 {
 
     //Loads images and delivers sf::Textures to them on demand.
-    class SpellImageManager : public ImageManagerBase<game::spell::Spells>
+    class SpellImageManager : public ImageManagerBase<heroespath::spell::Spells>
     {
         SpellImageManager(const SpellImageManager &) =delete;
         SpellImageManager & operator=(const SpellImageManager &) =delete;

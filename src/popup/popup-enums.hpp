@@ -32,6 +32,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -87,6 +89,7 @@ namespace popup
         static bool IsValid(const PopupImage::Enum);
     };
 
+}
 }
 
 #endif //POPUP_POPUPENUMS_HPP_INCLUDE

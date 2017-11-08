@@ -31,6 +31,8 @@
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace misc
 {
 
@@ -65,6 +67,7 @@ namespace misc
 
     };
 
+}
 }
 
 #endif //MISC_STRINGS_HPP_INCLUDED

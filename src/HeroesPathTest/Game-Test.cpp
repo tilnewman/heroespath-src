@@ -30,13 +30,13 @@
 
 #include "Test-stuff.hpp"
 
-#include "game/warehouse.hpp"
+#include "misc/warehouse.hpp"
 
 #include <string>
 #include <exception>
 
 
-using namespace game;
+using namespace heroespath;
 namespace ts = test_stuff;
 
 
@@ -62,7 +62,7 @@ public:
     inline void free(Counted * & ptr) { m_warehouse.Free(ptr, ""); }
     inline std::size_t size() const { return m_warehouse.Size(); }
 private:
-    game::Warehouse<Counted> m_warehouse;
+    misc::Warehouse<Counted> m_warehouse;
 };
 
 

@@ -29,7 +29,7 @@
 //
 #include "sfml-util/gui/image-manager-base.hpp"
 
-#include "game/song/song-enum.hpp"
+#include "song/song-enum.hpp"
 
 #include <memory>
 
@@ -40,7 +40,7 @@ namespace gui
 {
 
     //Loads images and delivers sf::Textures to them on demand.
-    class SongImageManager : public ImageManagerBase<game::song::Songs>
+    class SongImageManager : public ImageManagerBase<heroespath::song::Songs>
     {
         SongImageManager(const SongImageManager &) =delete;
         SongImageManager & operator=(const SongImageManager &) =delete;

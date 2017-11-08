@@ -30,9 +30,11 @@
 #include "popup-stage-item-profile-wait.hpp"
 
 #include "game/loop-manager.hpp"
-#include "game/item/item-profile-warehouse.hpp"
+#include "item/item-profile-warehouse.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -55,7 +57,7 @@ namespace popup
         {
             if (0 == --drawCountdown_)
             {
-                game::item::ItemProfileWarehouse::Instance()->Setup();
+                item::ItemProfileWarehouse::Instance()->Setup();
                 game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Continue);
             }
         }
@@ -63,4 +65,5 @@ namespace popup
         Stage::Draw(target, STATES);
     }
 
+}
 }

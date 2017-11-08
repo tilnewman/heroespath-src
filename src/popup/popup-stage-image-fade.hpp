@@ -32,6 +32,8 @@
 #include "sfml-util/gui/text-region.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -63,6 +65,7 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGEIMAGEFADE_HPP_INCLUDED

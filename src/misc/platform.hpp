@@ -59,6 +59,8 @@
 #endif
 
 
+namespace heroespath
+{
 namespace misc
 {
 
@@ -113,4 +115,6 @@ namespace misc
     };
 
 }
+}
+
 #endif //MISC_PLATFORM_HPP_INCLUDED

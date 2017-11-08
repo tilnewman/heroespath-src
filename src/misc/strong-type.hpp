@@ -36,6 +36,8 @@
 #include <type_traits>
 
 
+namespace heroespath
+{
 namespace misc
 {
 
@@ -57,16 +59,13 @@ namespace misc
         template<typename T_ = T>
         explicit StrongType(
             T && value,
-            typename std::enable_if< !std::is_reference<T_>::value, std::nullptr_t>::type = nullptr)
-            :
+            typename std::enable_if< ! std::is_reference<T_>::value, std::nullptr_t>::type = nullptr)
+        :
             m_value(std::move(value))
         {}
 
         T & Get() { return m_value; }
         const T & Get() const { return m_value; }
-
-        T & operator()() { return m_value; }
-        const T & operator()() const { return m_value; }
 
         const std::string ToString() const
         {
@@ -132,6 +131,7 @@ namespace misc
         return os;
     }
 
+}
 }
 
 #endif //MISC_STRONGTYPE_HPP_INCLUDED

@@ -36,7 +36,7 @@
 
 using namespace sfml_util;
 using namespace test_stuff;
-using namespace misc;
+using namespace heroespath::misc;
 
 
 bool AreVectorsClose(const sf::Vector2f A, const sf::Vector2f B)

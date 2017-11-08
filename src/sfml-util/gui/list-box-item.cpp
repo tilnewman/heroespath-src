@@ -29,13 +29,13 @@
 //
 #include "list-box-item.hpp"
 
-#include "game/player/character.hpp"
-#include "game/state/game-state.hpp"
-#include "game/item/item.hpp"
-#include "game/creature/condition.hpp"
-#include "game/creature/title.hpp"
-#include "game/spell/spell-base.hpp"
-#include "game/song/song.hpp"
+#include "player/character.hpp"
+#include "state/game-state.hpp"
+#include "item/item.hpp"
+#include "creature/condition.hpp"
+#include "creature/title.hpp"
+#include "spell/spell-base.hpp"
+#include "song/song.hpp"
 
 #include <tuple>
 #include <string>
@@ -46,8 +46,9 @@ namespace sfml_util
 namespace gui
 {
 
-    ListBoxItem::ListBoxItem(const std::string & NAME,
-                             const bool          IS_VALID)
+    ListBoxItem::ListBoxItem(
+        const std::string & NAME,
+        const bool IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemBase")),
             CHARACTER_CPTR(nullptr),
@@ -61,9 +62,10 @@ namespace gui
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &              NAME,
-                             const sfml_util::gui::TextInfo & TEXT_INFO,
-                             const bool                       IS_VALID)
+    ListBoxItem::ListBoxItem(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const bool IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemTextOnly"),
                            TEXT_INFO,
@@ -79,10 +81,11 @@ namespace gui
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &                NAME,
-                             const sfml_util::gui::TextInfo &   TEXT_INFO,
-                             const game::player::CharacterPtr_t CHARACTER_PTR,
-                             const bool                         IS_VALID)
+    ListBoxItem::ListBoxItem(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo &   TEXT_INFO,
+        const heroespath::player::CharacterPtr_t CHARACTER_PTR,
+        const bool IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemPlayerCharacter"),
                            TEXT_INFO,
@@ -98,10 +101,11 @@ namespace gui
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &               NAME,
-                             const sfml_util::gui::TextInfo &  TEXT_INFO,
-                             const game::state::GameStatePtr_t GAMESTATE_PTR,
-                             const bool                        IS_VALID)
+    ListBoxItem::ListBoxItem(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo &  TEXT_INFO,
+        const heroespath::state::GameStatePtr_t GAMESTATE_PTR,
+        const bool IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemGameState"),
                            TEXT_INFO,
@@ -117,10 +121,11 @@ namespace gui
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &                  NAME,
-                             const sfml_util::gui::TextInfo &     TEXT_INFO,
-                             const game::creature::ConditionPtr_t CONDITION_CPTRC_PARAM,
-                             const bool                           IS_VALID)
+    ListBoxItem::ListBoxItem(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const heroespath::creature::ConditionPtr_t CONDITION_CPTRC_PARAM,
+        const bool IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemCondition"),
                            TEXT_INFO,
@@ -136,10 +141,11 @@ namespace gui
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &              NAME,
-                             const sfml_util::gui::TextInfo & TEXT_INFO,
-                             const game::item::ItemPtr_t      ITEM_PTR,
-                             const bool                       IS_VALID)
+    ListBoxItem::ListBoxItem(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const heroespath::item::ItemPtr_t ITEM_PTR,
+        const bool IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemItem"),
                            TEXT_INFO,
@@ -155,10 +161,11 @@ namespace gui
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &               NAME,
-                             const sfml_util::gui::TextInfo &  TEXT_INFO,
-                             const game::creature::TitlePtrC_t TITLE_CPTRC_PARAM,
-                             const bool                        IS_VALID)
+    ListBoxItem::ListBoxItem(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const heroespath::creature::TitlePtrC_t TITLE_CPTRC_PARAM,
+        const bool IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemTitle"),
                            TEXT_INFO,
@@ -174,10 +181,11 @@ namespace gui
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &              NAME,
-                             const sfml_util::gui::TextInfo & TEXT_INFO,
-                             const game::spell::SpellPtrC_t   SPELL_CPTRC_PARAM,
-                             const bool                       IS_VALID)
+    ListBoxItem::ListBoxItem(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const heroespath::spell::SpellPtrC_t SPELL_CPTRC_PARAM,
+        const bool IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemSpell"),
                            TEXT_INFO,
@@ -193,10 +201,11 @@ namespace gui
     {}
 
 
-    ListBoxItem::ListBoxItem(const std::string &              NAME,
-                             const sfml_util::gui::TextInfo & TEXT_INFO,
-                             const game::song::SongPtrC_t     SONG_CPTRC_PARAM,
-                             const bool                       IS_VALID)
+    ListBoxItem::ListBoxItem(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const heroespath::song::SongPtrC_t SONG_CPTRC_PARAM,
+        const bool IS_VALID)
     :
             TextRegion    (std::string(NAME).append("_ListBoxItemSong"),
                            TEXT_INFO,

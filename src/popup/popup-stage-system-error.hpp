@@ -30,6 +30,8 @@
 #include "popup/popup-stage-base.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -51,6 +53,7 @@ namespace popup
         sf::Sprite bgSprite_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGESYSTEMERROR_HPP_INCLUDED

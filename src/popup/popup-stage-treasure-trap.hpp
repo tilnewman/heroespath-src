@@ -34,8 +34,11 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace popup
 {
+
     //Responsible for implementing a treasure trap popup window stage.
     class PopupStageTreasureTrap : public PopupStageBase
     {
@@ -65,6 +68,7 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED

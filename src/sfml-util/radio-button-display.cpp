@@ -35,7 +35,7 @@
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/text-info.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 #include "game/loop-manager.hpp"
 
 #include "misc/handy-types.hpp"
@@ -86,7 +86,7 @@ namespace gui_demo
               mouseTextInfoVec,
               FindCurrentResolutionSelection(),
               sfml_util::Brightness::Bright,
-              misc::SizetVec_t(),
+              heroespath::misc::SizetVec_t(),
               resRadioButtonSetBoxInfo);
     }
 
@@ -95,19 +95,19 @@ namespace gui_demo
     {}
 
 
-    bool RadioButtonSet_DisplayChange::HandleCallback(const popup::PopupResponse & POPUP)
+    bool RadioButtonSet_DisplayChange::HandleCallback(const heroespath::popup::PopupResponse & POPUP)
     {
-        M_HP_LOG(GetEntityName() << " HandlePopupCallback(response=\"" << popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
+        M_HP_LOG(GetEntityName() << " HandlePopupCallback(response=\"" << heroespath::popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
 
-        if (POPUP.Response() == popup::ResponseTypes::No)
+        if (POPUP.Response() == heroespath::popup::ResponseTypes::No)
         {
             M_HP_LOG(GetEntityName() << " User rejected the new resolution.  Changing back to the previous res.");
-            game::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, prevResolution_, sfml_util::Display::Instance()->AntialiasLevel());
+            heroespath::game::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, prevResolution_, sfml_util::Display::Instance()->AntialiasLevel());
         }
 
         ChangeCurrentSelection(FindCurrentResolutionSelection());
 
-        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName() << "'s RadioButtonSet_DisplayChange::HandlePopupCallback(" << popup::ResponseTypes::ToString(POPUP.Response()) << ") was called when the ownerStagePtr_ was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName() << "'s RadioButtonSet_DisplayChange::HandlePopupCallback(" << heroespath::popup::ResponseTypes::ToString(POPUP.Response()) << ") was called when the ownerStagePtr_ was null.");
         ownerStagePtr_->HandleResolutionChange();
 
         return true;
@@ -117,7 +117,7 @@ namespace gui_demo
     void RadioButtonSet_DisplayChange::OnClick(const sf::Vector2f &)
     {
         prevResolution_ = sfml_util::Display::GetCurrentResolution();
-        game::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, resolutionVec_[currentSelection_], sfml_util::Display::Instance()->AntialiasLevel());
+        heroespath::game::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, resolutionVec_[currentSelection_], sfml_util::Display::Instance()->AntialiasLevel());
 
         M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName() << "'s RadioButtonSet_DisplayChange::OnClick() was called when the ownerStagePtr_ was null.");
         ownerStagePtr_->HandleResolutionChange();

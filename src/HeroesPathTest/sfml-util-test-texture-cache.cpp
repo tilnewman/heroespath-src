@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByPath)
     TextureCache tc;
     auto const KEY{ "media-images-gui-elements" };
     auto const ID2{ tc.AddByKey(KEY) };
-    auto const PATH{ game::GameDataFile::Instance()->GetMediaPath(KEY) };
+    auto const PATH{ heroespath::game::GameDataFile::Instance()->GetMediaPath(KEY) };
     BOOST_CHECK(ID2 == 1);
     BOOST_CHECK(tc.GetByIndex(ID2).getSize().x > 0.0f);
     BOOST_REQUIRE_NO_THROW(tc.RemoveByPath(PATH));

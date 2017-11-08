@@ -39,7 +39,7 @@
 namespace sfml_util
 {
 
-    using StrToSizetVecMap_t = std::map<std::string, misc::SizetVec_t>;
+    using StrToSizetVecMap_t = std::map<std::string, heroespath::misc::SizetVec_t>;
 
 
     //stores textures in a single location and makes them available by index.
@@ -58,19 +58,23 @@ namespace sfml_util
         static void Acquire();
         static void Release();
 
-        std::size_t AddByKey(const std::string & GAMEDATAFILE_KEY_STR,
-                             const bool          WILL_SMOOTH = true);
+        std::size_t AddByKey(
+            const std::string & GAMEDATAFILE_KEY_STR,
+            const bool          WILL_SMOOTH = true);
 
-        std::size_t AddByPath(const std::string & PATH_TO_TEXTURE_STR,
-                              const bool          WILL_SMOOTH = true);
-
-        //not recursive
-        const misc::SizetVec_t AddAllInDirectoryByKey(const std::string & DIR_PATH_KEY,
-                                                      const bool          WILL_SMOOTH = true);
+        std::size_t AddByPath(
+            const std::string & PATH_TO_TEXTURE_STR,
+            const bool          WILL_SMOOTH = true);
 
         //not recursive
-        const misc::SizetVec_t AddAllInDirectoryByPath(const std::string & DIR_PATH_PARAM_STR,
-                                                       const bool          WILL_SMOOTH = true);
+        const heroespath::misc::SizetVec_t AddAllInDirectoryByKey(
+            const std::string & DIR_PATH_KEY,
+            const bool          WILL_SMOOTH = true);
+
+        //not recursive
+        const heroespath::misc::SizetVec_t AddAllInDirectoryByPath(
+            const std::string & DIR_PATH_PARAM_STR,
+            const bool          WILL_SMOOTH = true);
 
         void RemoveByKey(const std::string & GAMEDATAFILE_KEY_STR);
 
@@ -78,7 +82,7 @@ namespace sfml_util
 
         void RemoveByIndex(const std::size_t INDEX);
 
-        void RemoveByIndexVec(const misc::SizetVec_t & INDEX_VEC);
+        void RemoveByIndexVec(const heroespath::misc::SizetVec_t & INDEX_VEC);
 
         void RemoveAll();
 
@@ -86,8 +90,10 @@ namespace sfml_util
 
     private:
         std::size_t EstablishNextAvailableIndex();
-        std::size_t AddByPathInternal(const std::string & PATH_TO_TEXTURE_STR,
-                                      const bool          WILL_SMOOTH);
+
+        std::size_t AddByPathInternal(
+            const std::string & PATH_TO_TEXTURE_STR,
+            const bool          WILL_SMOOTH);
 
     private:
         static std::unique_ptr<TextureCache> instanceUPtr_;

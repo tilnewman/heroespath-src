@@ -29,7 +29,11 @@
 //
 #include "random.hpp"
 
+#include <random>
 
+
+namespace heroespath
+{
 namespace misc
 {
 namespace random
@@ -58,5 +62,6 @@ namespace random
         }
     }
 
+}
 }
 }

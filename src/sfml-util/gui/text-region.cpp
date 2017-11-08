@@ -34,7 +34,7 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/box-info.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 

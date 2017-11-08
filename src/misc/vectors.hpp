@@ -37,6 +37,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace misc
 {
 
@@ -318,6 +320,7 @@ namespace misc
 
     };
 
+}
 }
 
 #endif //MISC_VECTOROPERATIONS_HPP_INCLUDED

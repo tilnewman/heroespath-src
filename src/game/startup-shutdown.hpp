@@ -22,14 +22,16 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_STARTUPSHUTDOWN_HPP_INCLUDED
-#define GAME_STARTUPSHUTDOWN_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_STARTUPSHUTDOWN_HPP_INCLUDED
+#define HEROESPATH_GAME_STARTUPSHUTDOWN_HPP_INCLUDED
 //
 // startup-shutdown.hpp
 //
 #include <string>
 
 
+namespace heroespath
+{
 namespace game
 {
 
@@ -57,5 +59,6 @@ namespace game
     };
 
 }
+}
 
-#endif //GAME_STARTUPSHUTDOWN_HPP_INCLUDED
+#endif //HEROESPATH_GAME_STARTUPSHUTDOWN_HPP_INCLUDED

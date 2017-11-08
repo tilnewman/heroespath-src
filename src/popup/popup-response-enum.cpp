@@ -33,6 +33,8 @@
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -84,4 +86,5 @@ namespace popup
         }
     }
 
+}
 }

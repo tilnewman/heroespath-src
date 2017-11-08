@@ -32,7 +32,7 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -115,9 +115,9 @@ namespace sfml_util
     }
 
 
-    const sf::Color FontManager::Color_PopupButtonUp(const popup::PopupButtonColor::Enum C)
+    const sf::Color FontManager::Color_PopupButtonUp(const heroespath::popup::PopupButtonColor::Enum C)
     {
-        if (C == popup::PopupButtonColor::Dark)
+        if (C == heroespath::popup::PopupButtonColor::Dark)
         {
             return sf::Color(0, 0, 0, 70);
         }
@@ -128,9 +128,9 @@ namespace sfml_util
     }
 
 
-    const sf::Color FontManager::Color_PopupButtonDown(const popup::PopupButtonColor::Enum C)
+    const sf::Color FontManager::Color_PopupButtonDown(const heroespath::popup::PopupButtonColor::Enum C)
     {
-        if (C == popup::PopupButtonColor::Dark)
+        if (C == heroespath::popup::PopupButtonColor::Dark)
         {
             return sf::Color(0, 0, 0, 255);
         }
@@ -141,9 +141,9 @@ namespace sfml_util
     }
 
 
-    const sf::Color FontManager::Color_PopupButtonOver(const popup::PopupButtonColor::Enum C)
+    const sf::Color FontManager::Color_PopupButtonOver(const heroespath::popup::PopupButtonColor::Enum C)
     {
-        if (C == popup::PopupButtonColor::Dark)
+        if (C == heroespath::popup::PopupButtonColor::Dark)
         {
             return sf::Color(0, 0, 0, 150);
         }

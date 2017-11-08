@@ -39,20 +39,18 @@
 
 namespace sfml_util
 {
+namespace gui
+{
+    class IGuiEntity;
+    using IGuiEntityPtr_t  = IGuiEntity *;
+    using IGuiEntityPVec_t = std::vector<IGuiEntityPtr_t>;
 
-    //forward declarations
-    namespace gui
-    {
-        class IGuiEntity;
-        using IGuiEntityPtr_t  = IGuiEntity *;
-        using IGuiEntityPVec_t = std::vector<IGuiEntityPtr_t>;
-
-        namespace box
-        {
-            class Box;
-            using BoxUPtr_t = std::unique_ptr<Box>;
-        }
-    }
+namespace box
+{
+    class Box;
+    using BoxUPtr_t = std::unique_ptr<Box>;
+}
+}
 
 
     //A base class for types that hold and draw a group of on screen resources.

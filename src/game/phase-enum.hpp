@@ -22,17 +22,19 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_PHASEENUM_HPP_INCLUDED
-#define GAME_PHASEENUM_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_PHASEENUM_HPP_INCLUDED
+#define HEROESPATH_GAME_PHASEENUM_HPP_INCLUDED
 //
 // phase-enum.hpp
 //
 #include <string>
 
 
+namespace heroespath
+{
 namespace game
 {
-
+    
     struct Phase
     {
         enum Enum : unsigned int
@@ -50,5 +52,6 @@ namespace game
     };
 
 }
+}
 
-#endif //GAME_PHASEENUM_HPP_INCLUDED
+#endif //HEROESPATH_GAME_PHASEENUM_HPP_INCLUDED

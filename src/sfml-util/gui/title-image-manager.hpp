@@ -30,7 +30,7 @@
 //
 #include "sfml-util/gui/image-manager-base.hpp"
 
-#include "game/creature/title-enum.hpp"
+#include "creature/title-enum.hpp"
 
 #include <memory>
 
@@ -41,7 +41,7 @@ namespace gui
 {
 
     //A class that loads, stores, and distributes creature images.
-    class TitleImageManager : public ImageManagerBase<game::creature::Titles>
+    class TitleImageManager : public ImageManagerBase<heroespath::creature::Titles>
     {
         TitleImageManager(const TitleImageManager &) =delete;
         TitleImageManager & operator=(const TitleImageManager &) =delete;

@@ -29,7 +29,7 @@
 //
 #include "song-image-manager.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -82,7 +82,7 @@ namespace gui
     void SongImageManager::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "game::SongImageManager::Release() found instanceUPtr that was null.");
+            "SongImageManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

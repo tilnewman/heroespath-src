@@ -31,7 +31,7 @@
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sfml-window.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 #include "misc/real.hpp"
 #include "misc/handy-types.hpp"

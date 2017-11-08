@@ -249,7 +249,7 @@ namespace box
         y += tJointRightSprite_.getLocalBounds().height;
         x += (tJointRightSprite_.getLocalBounds().width - static_cast<float>(GE_PTR->GetRect_LineSmallVerticalRight().width));
 
-        if (misc::IsRealClose(SECOND_VERT_LEN, 0.0f))
+        if (heroespath::misc::IsRealClose(SECOND_VERT_LEN, 0.0f))
             rightLine2_.Setup(x, y, static_cast<std::size_t>(SECOND_VERT_LEN));
 
         y += SECOND_VERT_LEN;
@@ -261,7 +261,7 @@ namespace box
 
         const float BOTTOM_LINE_Y(y);
 
-        if (misc::IsRealClose(SECOND_HORIZ_LEN, 0.0f))
+        if (heroespath::misc::IsRealClose(SECOND_HORIZ_LEN, 0.0f))
             botLine_.Setup(x, y, static_cast<std::size_t>(SECOND_HORIZ_LEN));
 
         //x -= (SECOND_HORIZ_LEN + tJointBotSprite_.getLocalBounds().width);
@@ -277,7 +277,7 @@ namespace box
         y = BOTTOM_LINE_Y;
         x = (LEFT_TO_USE + cBotLeftSprite_.getLocalBounds().width);
 
-        if (misc::IsRealClose(FIRST_HORIZ_LEN, 0.0f))
+        if (heroespath::misc::IsRealClose(FIRST_HORIZ_LEN, 0.0f))
             botLine2_.Setup(x, y, static_cast<std::size_t>(FIRST_HORIZ_LEN));
 
         x = LEFT_TO_USE;

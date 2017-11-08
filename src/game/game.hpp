@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_GAME_HPP_INCLUDED
-#define GAME_GAME_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_HEROESPATH_HPP_INCLUDED
+#define HEROESPATH_GAME_HEROESPATH_HPP_INCLUDED
 //
 // game.hpp
 //  A class that provides access to all game information.
@@ -31,17 +31,18 @@
 #include <memory>
 
 
-namespace game
+namespace heroespath
 {
 
-    //forward declaration
-    namespace state
-    {
-        class GameState;
-        using GameStatePtr_t = GameState *;
-        using GameStateUPtr_t = std::unique_ptr<GameState>;
-    }
+namespace state
+{
+    class GameState;
+    using GameStatePtr_t = GameState *;
+    using GameStateUPtr_t = std::unique_ptr<GameState>;
+}
 
+namespace game
+{
 
     //Singleton class that provides access to all game information
     class Game
@@ -66,4 +67,6 @@ namespace game
     };
 
 }
-#endif //GAME_STATE_GAMESTATE_HPP_INCLUDED
+}
+
+#endif //HEROESPATH_GAME_HEROESPATH_HPP_INCLUDED

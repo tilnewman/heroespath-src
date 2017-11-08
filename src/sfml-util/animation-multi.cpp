@@ -57,7 +57,7 @@ namespace sfml_util
         sprite_      (),
         origSizeV_   (0.0f, 0.0f),
         textureIdVec_(TextureCache::Instance()->AddAllInDirectoryByPath(
-                         game::GameDataFile::Instance()->GetMediaPath(
+                         heroespath::game::GameDataFile::Instance()->GetMediaPath(
                             Animations::MediaPathKey(ENUM)), true))
     {
         M_ASSERT_OR_LOGANDTHROW_SS((textureIdVec_.empty() == false),
@@ -67,8 +67,8 @@ namespace sfml_util
         origSizeV_.x = static_cast<float>(FRAME_SIZE_INT_PAIR.first);
         origSizeV_.y = static_cast<float>(FRAME_SIZE_INT_PAIR.second);
 
-        entityRegion_.width = ((misc::IsRealZero(REGION.width)) ? origSizeV_.x : REGION.width);
-        entityRegion_.height = ((misc::IsRealZero(REGION.height)) ? origSizeV_.y : REGION.height);
+        entityRegion_.width = ((heroespath::misc::IsRealZero(REGION.width)) ? origSizeV_.x : REGION.width);
+        entityRegion_.height = ((heroespath::misc::IsRealZero(REGION.height)) ? origSizeV_.y : REGION.height);
 
         sprite_.setTexture(TextureCache::Instance()->GetByIndex(textureIdVec_[0]));
         sprite_.setPosition(REGION.left, REGION.top);

@@ -30,7 +30,7 @@
 #include "gui-elements.hpp"
 
 #include "game/game-data-file.hpp"
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 #include "sfml-util/loaders.hpp"
 
@@ -119,9 +119,21 @@ namespace gui
         lineSmallTRightSpriteRect_	        (sf::IntRect(141, 223, 19, 26))
     {
         M_HP_LOG_DBG("Singleton Construction: GuiElements");
-        sfml_util::LoadTexture(elementsTexture_,   game::GameDataFile::Instance()->GetMediaPath("media-images-gui-elements"));
-        sfml_util::LoadTexture(woodBgTexture_,     game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
-        sfml_util::LoadTexture(darkKnotBgTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"));
+
+        sfml_util::LoadTexture(
+            elementsTexture_,
+            heroespath::game::GameDataFile::Instance()->
+                GetMediaPath("media-images-gui-elements"));
+
+        sfml_util::LoadTexture(
+            woodBgTexture_,
+            heroespath::game::GameDataFile::Instance()->
+                GetMediaPath("media-images-backgrounds-tile-wood"));
+
+        sfml_util::LoadTexture(
+            darkKnotBgTexture_,
+            heroespath::game::GameDataFile::Instance()->
+                GetMediaPath("media-images-backgrounds-tile-darkknot"));
     }
 
 
@@ -158,7 +170,9 @@ namespace gui
 
     void GuiElements::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "sfml_util::gui::GuiElements::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "sfml_util::gui::GuiElements::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 

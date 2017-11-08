@@ -30,18 +30,18 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "game/item/item-type-enum.hpp"
-#include "game/item/weapon-info.hpp"
-#include "game/item/armor-info.hpp"
-#include "game/creature/race-enum.hpp"
-#include "game/creature/role-enum.hpp"
+#include "item/item-type-enum.hpp"
+#include "item/weapon-info.hpp"
+#include "item/armor-info.hpp"
+#include "creature/race-enum.hpp"
+#include "creature/role-enum.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
 
 
-namespace game
+namespace heroespath
 {
 namespace item
 {
@@ -77,43 +77,43 @@ namespace gui
 
         void Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const;
 
-        void Load(sf::Texture & texture, const game::item::ItemPtr_t ITEM_PTR) const;
+        void Load(sf::Texture & texture, const heroespath::item::ItemPtr_t ITEM_PTR) const;
 
         void Load(
             sf::Texture &                     texture,
-            const game::item::misc_type::Enum ITEM_ENUM,
+            const heroespath::item::misc_type::Enum ITEM_ENUM,
             const bool                        IS_JEWELED = false,
             const bool                        IS_BONE = false,
             const bool                        WILL_RANDOMIZE = true) const;
 
         const std::string GetImageFilename(
-            const game::item::ItemPtr_t ITEM_PTR,
+            const heroespath::item::ItemPtr_t ITEM_PTR,
             const bool                  WILL_RANDOMIZE = true) const;
 
         const std::string GetImageFilename(
-            const game::item::weapon::WeaponInfo & WEAPON_INFO,
+            const heroespath::item::weapon::WeaponInfo & WEAPON_INFO,
             const bool                             IS_JEWELED = false) const;
 
         const std::string GetImageFilename(
-            const game::item::armor::ArmorInfo & ARMOR_INFO) const;
+            const heroespath::item::armor::ArmorInfo & ARMOR_INFO) const;
 
         const std::string GetSkinImageFilename(
-            const game::item::ItemPtr_t ITEM_PTR) const;
+            const heroespath::item::ItemPtr_t ITEM_PTR) const;
 
         const std::string GetImageFilename(
-            const game::item::misc_type::Enum ITEM_ENUM,
+            const heroespath::item::misc_type::Enum ITEM_ENUM,
             const bool                        IS_JEWELED     = false,
             const bool                        IS_BONE        = false,
             const bool                        WILL_RANDOMIZE = false,
-            const game::creature::race::Enum  RACE_ENUM = game::creature::race::Count,
-            const game::creature::role::Enum  ROLE_ENUM = game::creature::role::Count) const;
+            const heroespath::creature::race::Enum  RACE_ENUM = heroespath::creature::race::Count,
+            const heroespath::creature::role::Enum  ROLE_ENUM = heroespath::creature::role::Count) const;
 
         const std::vector<std::string> GetImageFilenames(
-            const game::item::misc_type::Enum ITEM_ENUM,
+            const heroespath::item::misc_type::Enum ITEM_ENUM,
             const bool                        IS_JEWELED = false,
             const bool                        IS_BONE    = false,
-            const game::creature::race::Enum  RACE_ENUM  = game::creature::race::Count,
-            const game::creature::role::Enum  ROLE_ENUM  = game::creature::role::Count) const;
+            const heroespath::creature::race::Enum  RACE_ENUM  = heroespath::creature::race::Count,
+            const heroespath::creature::role::Enum  ROLE_ENUM  = heroespath::creature::role::Count) const;
 
     private:
         static std::unique_ptr<ItemImageManager> instanceUPtr_;

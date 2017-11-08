@@ -29,7 +29,7 @@
 //
 #include "popup-info.hpp"
 
-#include "game/creature/creature.hpp"
+#include "creature/creature.hpp"
 
 #include "sfml-util/sfml-util.hpp"
 
@@ -42,6 +42,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -61,13 +63,13 @@ namespace popup
         const sfml_util::TextureVec_t &     TEXTURE_VEC,
         const std::vector<std::string> &    TEXT_VEC,
         const float                         IMAGE_FADE_SPEED,
-        const game::creature::CreaturePtr_t CREATURE_CPTR,
+        const creature::CreaturePtr_t CREATURE_CPTR,
         const std::size_t                   INITIAL_SELECTION,
         const bool                          ARE_IMAGES_CREATURES,
         const std::string &                 TITLE_TEXT,
         const std::string &                 DESC_TEXT,
-        const game::creature::TitlePtr_t    FROM_TITLE_PTR,
-        const game::creature::TitlePtr_t    TO_TITLE_PTR,
+        const creature::TitlePtr_t    FROM_TITLE_PTR,
+        const creature::TitlePtr_t    TO_TITLE_PTR,
         const float                         KEEP_ALIVE_SECONDS)
     :
         name_            (NAME),
@@ -90,7 +92,7 @@ namespace popup
         initialSelection_(INITIAL_SELECTION),
         areImgsCreatures_(ARE_IMAGES_CREATURES),
         textVec_         (TEXT_VEC),
-        howCombatEnded_  (game::combat::CombatEnd::Count),
+        howCombatEnded_  (combat::CombatEnd::Count),
         titleFromPtr_    (FROM_TITLE_PTR),
         titleToPtr_      (TO_TITLE_PTR),
         titleText_       (TITLE_TEXT),
@@ -160,7 +162,7 @@ namespace popup
         initialSelection_(0),
         areImgsCreatures_(false),
         textVec_         (),
-        howCombatEnded_  (game::combat::CombatEnd::Count),
+        howCombatEnded_  (combat::CombatEnd::Count),
         titleFromPtr_    (nullptr),
         titleToPtr_      (nullptr),
         titleText_       (""),
@@ -199,7 +201,7 @@ namespace popup
         initialSelection_(INITIAL_SELECTION),
         areImgsCreatures_(ARE_IMAGES_CREATURES),
         textVec_         (),
-        howCombatEnded_  (game::combat::CombatEnd::Count),
+        howCombatEnded_  (combat::CombatEnd::Count),
         titleFromPtr_    (nullptr),
         titleToPtr_      (nullptr),
         titleText_       (""),
@@ -242,7 +244,7 @@ namespace popup
         initialSelection_(0),
         areImgsCreatures_(false),
         textVec_         (),
-        howCombatEnded_  (game::combat::CombatEnd::Count),
+        howCombatEnded_  (combat::CombatEnd::Count),
         titleFromPtr_    (nullptr),
         titleToPtr_      (nullptr),
         titleText_       (""),
@@ -256,7 +258,7 @@ namespace popup
                          const sfml_util::gui::TextInfo &    TEXT_INFO,
                          const float                         IMAGE_SCALE,
                          const PopupButtons::Enum            BUTTONS,
-                         const game::combat::CombatEnd::Enum HOW_COMBAT_ENDED)
+                         const combat::CombatEnd::Enum HOW_COMBAT_ENDED)
     :
         name_            (NAME),
         textInfo_        (TEXT_INFO),
@@ -472,9 +474,9 @@ namespace popup
             ss << ", are_images_creatures=true";
         }
 
-        if (howCombatEnded_ != game::combat::CombatEnd::Count)
+        if (howCombatEnded_ != combat::CombatEnd::Count)
         {
-            ss << ", combat_ended=" << game::combat::CombatEnd::ToString(howCombatEnded_);
+            ss << ", combat_ended=" << combat::CombatEnd::ToString(howCombatEnded_);
         }
 
         if (titleText_.empty() == false)
@@ -508,4 +510,5 @@ namespace popup
         }
     }
 
+}
 }

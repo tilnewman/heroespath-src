@@ -43,7 +43,6 @@ namespace sfml_util
 namespace gui
 {
 
-    //handy wrapper struct
     class MouseTextInfo
     {
     public:
@@ -72,7 +71,7 @@ namespace gui
         //MouseTextInfo generating helper functions
         static const MouseTextInfo Make_PopupButtonSet(
             const std::string & NAME,
-            const popup::PopupInfo &);
+            const heroespath::popup::PopupInfo &);
 
         TextInfo up;
         TextInfo down;

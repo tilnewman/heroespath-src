@@ -29,7 +29,7 @@
 //
 #include "spell-image-manager.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -82,7 +82,7 @@ namespace gui
     void SpellImageManager::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "game::SpellImageManager::Release() found instanceUPtr that was null.");
+            "SpellImageManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

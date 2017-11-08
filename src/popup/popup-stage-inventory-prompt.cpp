@@ -34,6 +34,8 @@
 #include "sfml-util/sound-manager.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -98,4 +100,5 @@ namespace popup
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
 
+}
 }

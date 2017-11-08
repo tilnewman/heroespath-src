@@ -29,7 +29,7 @@
 //
 #include "game-data-file.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 #include "misc/platform.hpp"
 #include "misc/boost-string-includes.hpp"
@@ -37,9 +37,10 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace game
 {
-
     std::unique_ptr<GameDataFile> GameDataFile::instanceUPtr_{ nullptr };
 
 
@@ -58,7 +59,7 @@ namespace game
     }
 
 
-    GameDataFile * GameDataFile::Instance()
+    GameDataFile * game::GameDataFile::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
@@ -86,7 +87,7 @@ namespace game
     void GameDataFile::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "game::GameDataFile::Release() found instanceUPtr that was null.");
+            "GameDataFile::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
@@ -127,4 +128,5 @@ namespace game
         return MEDIA_BASE_PATH_STR;
     }
 
+}
 }

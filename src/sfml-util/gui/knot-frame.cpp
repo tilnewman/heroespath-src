@@ -91,8 +91,10 @@ namespace gui
         size_ = SIZE;
         color_ = COLOR;
 
-        sfml_util::LoadTexture(texture_, game::GameDataFile::Instance()->GetMediaPath(
-            "media-images-misc-knot-corner"));
+        sfml_util::LoadTexture(
+            texture_,
+            heroespath::game::GameDataFile::Instance()->
+                GetMediaPath("media-images-misc-knot-corner"));
 
         topLeftSprite_.setTexture(texture_, true);
         topRightSprite_.setTexture(texture_, true);

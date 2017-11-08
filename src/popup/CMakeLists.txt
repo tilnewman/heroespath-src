@@ -13,13 +13,13 @@ endif()
 file(GLOB source_files *.?pp)
 add_library(${PROJECT_NAME} STATIC ${source_files})
 target_link_libraries(${PROJECT_NAME}
-		      ConfigBase
-                      LogBase
-                      sfml-util
+		      Config
+              Log
+              sfml-util
 		      sfml-util-gui
-                      StringUtil
-                      Misc
+              StringUtil
+              Misc
 		      Game
-		      Game-Combat
-                      ${SFML_LIBRARIES}
+		      Combat
+              ${SFML_LIBRARIES}
 		      ${Boost_LIBRARIES})

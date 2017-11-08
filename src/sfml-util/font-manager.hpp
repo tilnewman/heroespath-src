@@ -78,9 +78,9 @@ namespace sfml_util
         static inline const sf::Color Color_Light()         { return sf::Color(220, 220, 220); }
         static inline const sf::Color Color_LightGold()     { return sf::Color(255, 248, 220); }
 
-        static const sf::Color Color_PopupButtonUp(const popup::PopupButtonColor::Enum);
-        static const sf::Color Color_PopupButtonDown(const popup::PopupButtonColor::Enum);
-        static const sf::Color Color_PopupButtonOver(const popup::PopupButtonColor::Enum);
+        static const sf::Color Color_PopupButtonUp(const heroespath::popup::PopupButtonColor::Enum);
+        static const sf::Color Color_PopupButtonDown(const heroespath::popup::PopupButtonColor::Enum);
+        static const sf::Color Color_PopupButtonOver(const heroespath::popup::PopupButtonColor::Enum);
 
         static inline sf::Uint8 ColorValue_Highlight() { return 55; }
 

@@ -43,15 +43,16 @@ namespace sfml_util
 namespace gui
 {
 
-    TextInfo::TextInfo(const std::string &   TEXT,
-                       const FontPtr_t       FONT_PTR,
-                       const unsigned int    CHAR_SIZE,
-                       const sf::Color &     COLOR,
-                       const sf::BlendMode & BLEND_MODE,
-                       const sf::Uint32      STYLE,
-                       const Justified::Enum JUSTIFIED,
-                       const bool            IS_OUTLINE_ONLY,
-                       const float           OUTLINE_THICKNESS)
+    TextInfo::TextInfo(
+        const std::string & TEXT,
+        const FontPtr_t FONT_PTR,
+        const unsigned int CHAR_SIZE,
+        const sf::Color & COLOR,
+        const sf::BlendMode & BLEND_MODE,
+        const sf::Uint32 STYLE,
+        const Justified::Enum JUSTIFIED,
+        const bool IS_OUTLINE_ONLY,
+        const float OUTLINE_THICKNESS)
     :
         text	        (TEXT),
         fontPtr	        (FONT_PTR),
@@ -65,11 +66,12 @@ namespace gui
     {}
 
 
-    TextInfo::TextInfo(const std::string &   TEXT,
-                       const FontPtr_t       FONT_PTR,
-                       const unsigned int    CHAR_SIZE,
-                       const sf::Color &     COLOR,
-                       const Justified::Enum JUSTIFIED)
+    TextInfo::TextInfo(
+        const std::string & TEXT,
+        const FontPtr_t FONT_PTR,
+        const unsigned int CHAR_SIZE,
+        const sf::Color & COLOR,
+        const Justified::Enum JUSTIFIED)
     :
         text	        (TEXT),
         fontPtr	        (FONT_PTR),
@@ -127,10 +129,14 @@ namespace gui
     bool operator<(const TextInfo & L, const TextInfo & R)
     {
         if (L.color != R.color)
+        {
             return sfml_util::color::ColorLess(L.color, R.color);
+        }
 
         if (L.blendMode != R.blendMode)
+        {
             return sfml_util::color::BlendModeLess(L.blendMode, R.blendMode);
+        }
 
         return std::tie(L.text,
                         L.fontPtr,
@@ -152,8 +158,10 @@ namespace gui
 
     bool operator==(const TextInfo & L, const TextInfo & R)
     {
-        if (misc::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
+        if (heroespath::misc::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
+        {
             return false;
+        }
 
         return std::tie(L.text,
                         L.fontPtr,
@@ -177,10 +185,15 @@ namespace gui
 
     void SetupText(sf::Text & text, const TextInfo & TEXT_INFO)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT_INFO.text.empty()), "sfml_util::gui::SetupText() given a TEXT_INFO.string that was empty.");
+        M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT_INFO.text.empty()),
+            "sfml_util::gui::SetupText() given a TEXT_INFO.string that was empty.");
+
         text.setString(TEXT_INFO.text);
 
-        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != TEXT_INFO.fontPtr), "sfml_util::gui::SetupText(\"" << TEXT_INFO.text << "\") was given a null font pointer.");
+        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != TEXT_INFO.fontPtr),
+            "sfml_util::gui::SetupText(\"" << TEXT_INFO.text
+            << "\") was given a null font pointer.");
+
         text.setFont( * TEXT_INFO.fontPtr);
         text.setStyle(TEXT_INFO.style);
         text.setCharacterSize(TEXT_INFO.charSize);

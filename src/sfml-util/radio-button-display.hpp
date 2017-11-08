@@ -44,7 +44,7 @@ namespace gui_demo
     //Represents a RadioButtonSet that changes the display
     class RadioButtonSet_DisplayChange
     :
-        public popup::IPopupHandler_t,
+        public heroespath::popup::IPopupHandler_t,
         public sfml_util::gui::RadioButtonSet
     {
         RadioButtonSet_DisplayChange(const RadioButtonSet_DisplayChange &) =delete;
@@ -60,7 +60,7 @@ namespace gui_demo
 
         inline virtual const std::string HandlerName() const { return GetEntityName(); }
 
-        virtual bool HandleCallback(const popup::PopupResponse &);
+        virtual bool HandleCallback(const heroespath::popup::PopupResponse &);
 
     protected:
         //if not found, resolutionVec_.size() is returned

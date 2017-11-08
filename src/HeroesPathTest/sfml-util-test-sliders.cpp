@@ -35,7 +35,7 @@
 
 #include "Test-stuff.hpp"
 
-using namespace misc;
+using namespace heroespath::misc;
 using namespace sfml_util;
 
 namespace ts = test_stuff;

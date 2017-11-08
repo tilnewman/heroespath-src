@@ -34,8 +34,9 @@
 
 #include <algorithm>
 
-
 namespace ts = test_stuff;
+
+using namespace heroespath;
 
 
 BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToSingle)

@@ -41,20 +41,20 @@ foreach(testSrc ${impl_files})
 
         target_link_libraries(  ${testName}
 	                        Misc
-        	                ConfigBase
-                	        LogBase
+        	                Config
+                	        Log
                         	sfml-util
                         	sfml-util-gui
                         	Game
-                        	Game-Stage
-                        	Game-Stats
-                        	Game-Creature
-                        	Game-Player
-                        	Game-NonPlayer
-                        	Game-Location
-                        	Game-State
-                        	Game-Combat
-				Popup
+                        	Stage
+                        	Stats
+                        	Creature
+                        	Player
+                        	NonPlayer
+                        	Location
+                        	State
+                        	Combat
+				            Popup
                         	${Boost_LIBRARIES}
                         	${SFML_LIBRARIES})
 

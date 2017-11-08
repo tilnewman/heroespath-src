@@ -36,7 +36,7 @@
 #include "popup/i-popup-callback.hpp"
 #include "popup/popup-info.hpp"
 
-#include "game/combat/combat-over-enum.hpp"
+#include "combat/combat-over-enum.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -46,7 +46,18 @@
 #include <memory>
 
 
-namespace game
+namespace sfml_util
+{
+    namespace gui
+    {
+        namespace box
+        {
+            class Info;
+        }
+    }
+}
+
+namespace heroespath
 {
 namespace creature
 {
@@ -55,18 +66,6 @@ namespace creature
 
     class Title;
     using TitlePtr_t = Title *;
-}
-}
-
-namespace sfml_util
-{
-namespace gui
-{
-namespace box
-{
-    class Info;
-}
-}
 }
 
 namespace popup
@@ -88,8 +87,10 @@ namespace popup
         static PopupManager * Instance();
         static void Acquire();
         static void Release();
-        static void SetTexturesDirectoryPaths(const std::string & WINDOWS_PATH,
-                                              const std::string & ACCENTS_PATH);
+
+        static void SetTexturesDirectoryPaths(
+            const std::string & WINDOWS_PATH,
+            const std::string & ACCENTS_PATH);
 
         bool Test();
 
@@ -214,28 +215,28 @@ namespace popup
         //use this function to make image fade/transition popup windows
         const PopupInfo CreateImageFadePopupInfo(
             const std::string &                 POPUP_NAME,
-            const game::creature::CreaturePtr_t CREATURE_PTR,
-            const game::creature::TitlePtr_t    FROM_TITLE_PTR,
-            const game::creature::TitlePtr_t    TO_TITLE_PTR,
+            const creature::CreaturePtr_t CREATURE_PTR,
+            const creature::TitlePtr_t    FROM_TITLE_PTR,
+            const creature::TitlePtr_t    TO_TITLE_PTR,
             const sf::Texture * const           FROM_IMAGE_PTR,
             const sf::Texture * const           TO_IMAGE_PTR) const;
 
         //use this function to make the spellbook popup window
         const PopupInfo CreateSpellbookPopupInfo(
             const std::string &                 POPUP_NAME,
-            const game::creature::CreaturePtr_t CREATURE_CPTR,
+            const creature::CreaturePtr_t CREATURE_CPTR,
             const std::size_t                   INITIAL_SELECTION) const;
 
         //use this function to make the music sheet popup window
         const PopupInfo CreateMusicPopupInfo(
             const std::string &                 POPUP_NAME,
-            const game::creature::CreaturePtr_t CREATURE_CPTR,
+            const creature::CreaturePtr_t CREATURE_CPTR,
             const std::size_t                   INITIAL_SELECTION) const;
 
         //use this function to make the CombatOver popup window
         const PopupInfo CreateCombatOverPopupInfo(
             const std::string &                 POPUP_NAME,
-            const game::combat::CombatEnd::Enum HOW_COMBAT_ENDED) const;
+            const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const;
 
         //use this function t make the system error popup window
         const PopupInfo CreateSystemErrorPopupInfo(
@@ -292,6 +293,7 @@ namespace popup
         PathVec_t accentPathsVec_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPMANAGER_HPP_INCLUDED

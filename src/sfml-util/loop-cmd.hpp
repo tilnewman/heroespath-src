@@ -33,7 +33,7 @@
 #include "sfml-util/stage.hpp"
 #include "sfml-util/sound-manager.hpp"
 
-#include "game/loop-state-enum.hpp"
+#include "sfml-util/loop-state-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -104,7 +104,7 @@ namespace sfml_util
     class LoopCmd_StateChange : public LoopCmd
     {
     public:
-        explicit LoopCmd_StateChange(const game::LoopState::Enum STATE_NUM)
+        explicit LoopCmd_StateChange(const LoopState::Enum STATE_NUM)
         :
             LoopCmd("LoopStateChange"),
             STATE_ (STATE_NUM)
@@ -118,12 +118,12 @@ namespace sfml_util
         virtual const std::string GetName() const
         {
             std::ostringstream ss;
-            ss << NAME_ << " new_state=" << game::LoopState::ToString(STATE_);
+            ss << NAME_ << " new_state=" << LoopState::ToString(STATE_);
             return ss.str();
         }
 
     private:
-        const game::LoopState::Enum STATE_;
+        const LoopState::Enum STATE_;
     };
 
 

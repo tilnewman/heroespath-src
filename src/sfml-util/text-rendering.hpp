@@ -176,7 +176,7 @@ namespace text_render
               sf::RenderStates states,
               const float      MOVE_VERT = 0.0f)
     {
-        const bool WILL_MOVE(false == misc::IsRealClose(MOVE_VERT, 0.0f));
+        const bool WILL_MOVE(false == heroespath::misc::IsRealClose(MOVE_VERT, 0.0f));
 
         const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
         states.blendMode = sf::BlendNone;

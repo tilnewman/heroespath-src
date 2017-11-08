@@ -32,6 +32,8 @@
 #include "game/loop-manager.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -89,4 +91,5 @@ namespace popup
         }
     }
 
+}
 }

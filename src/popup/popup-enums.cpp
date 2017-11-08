@@ -33,6 +33,8 @@
 #include <exception>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -144,4 +146,5 @@ namespace popup
         }
     }
 
+}
 }

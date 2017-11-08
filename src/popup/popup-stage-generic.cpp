@@ -30,6 +30,8 @@
 #include "popup-stage-generic.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -49,4 +51,5 @@ namespace popup
         Stage::Draw(target, STATES);
     }
 
+}
 }

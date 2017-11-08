@@ -30,10 +30,11 @@
 #include "loop-cmd-popup.hpp"
 
 #include "sfml-util/display.hpp"
+
 #include "popup/popup-stage-generic.hpp"
 #include "popup/popup-manager.hpp"
-
 #include "popup/i-popup-callback.hpp"
+
 #include "game/loop-manager.hpp"
 
 
@@ -52,7 +53,7 @@ namespace sfml_util
 
     bool LoopCmd_RemoveStage_Popup::Execute()
     {
-        game::LoopManager::Instance()->CommandLoopAccess(this).FreePopupStage();
+        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).FreePopupStage();
         return true;
     }
 

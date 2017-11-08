@@ -31,13 +31,13 @@
 
 #include "sfml-util/loaders.hpp"
 
-#include "game/log-macros.hpp"
-#include "game/item/item.hpp"
+#include "log/log-macros.hpp"
+#include "item/item.hpp"
 #include "game/loop-manager.hpp"
-#include "game/non-player/ownership-profile.hpp"
-#include "game/item/armor-details.hpp"
-#include "game/creature/wolfen-class-enum.hpp"
-#include "game/creature/dragon-class-enum.hpp"
+#include "non-player/ownership-profile.hpp"
+#include "item/armor-details.hpp"
+#include "creature/wolfen-class-enum.hpp"
+#include "creature/dragon-class-enum.hpp"
 
 #include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -50,6 +50,9 @@
 #include <exception>
 #include <sstream>
 #include <vector>
+
+
+using namespace heroespath;
 
 
 namespace sfml_util
@@ -123,14 +126,14 @@ namespace gui
 
         //test weapon items
         static auto axeIndex{ 0 };
-        if (axeIndex < static_cast<int>(game::item::weapon::axe_type::Count))
+        if (axeIndex < static_cast<int>(item::weapon::axe_type::Count))
         {
-            auto const ENUM{ static_cast<game::item::weapon::axe_type::Enum>(axeIndex) };
+            auto const ENUM{ static_cast<item::weapon::axe_type::Enum>(axeIndex) };
 
             auto const STR { boost::algorithm::to_lower_copy(
-                game::item::weapon::axe_type::ToString(ENUM)) };
+                item::weapon::axe_type::ToString(ENUM)) };
 
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Axe, STR);
+            item::weapon::WeaponInfo wi(item::weapon_type::Axe, STR);
             wi.axe = ENUM;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -143,7 +146,7 @@ namespace gui
         static auto hasTestedBite{ false };
         if (false == hasTestedBite)
         {
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Bite, "bite");
+            item::weapon::WeaponInfo wi(item::weapon_type::Bite, "bite");
             wi.is_bite = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -154,15 +157,15 @@ namespace gui
         }
 
         static auto bladedStaffIndex{ 0 };
-        if (bladedStaffIndex < static_cast<int>(game::item::weapon::bladedstaff_type::Count))
+        if (bladedStaffIndex < static_cast<int>(item::weapon::bladedstaff_type::Count))
         {
-            auto const ENUM{ static_cast<game::item::weapon::bladedstaff_type::Enum>(
+            auto const ENUM{ static_cast<item::weapon::bladedstaff_type::Enum>(
                 bladedStaffIndex) };
 
             auto const STR{ boost::algorithm::to_lower_copy(
-                game::item::weapon::bladedstaff_type::ToString(ENUM)) };
+                item::weapon::bladedstaff_type::ToString(ENUM)) };
 
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::BladedStaff, STR);
+            item::weapon::WeaponInfo wi(item::weapon_type::BladedStaff, STR);
             wi.bladedstaff = ENUM;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -175,7 +178,7 @@ namespace gui
         static auto hasTestedBreath{ false };
         if (false == hasTestedBreath)
         {
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Breath, "breath");
+            item::weapon::WeaponInfo wi(item::weapon_type::Breath, "breath");
             wi.is_breath = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -188,7 +191,7 @@ namespace gui
         static auto hasTestedClaws{ false };
         if (false == hasTestedClaws)
         {
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Claws, "claws");
+            item::weapon::WeaponInfo wi(item::weapon_type::Claws, "claws");
             wi.is_claws = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -199,14 +202,14 @@ namespace gui
         }
 
         static auto clubIndex{ 0 };
-        if (clubIndex < static_cast<int>(game::item::weapon::club_type::Count))
+        if (clubIndex < static_cast<int>(item::weapon::club_type::Count))
         {
-            auto const ENUM{ static_cast<game::item::weapon::club_type::Enum>(clubIndex) };
+            auto const ENUM{ static_cast<item::weapon::club_type::Enum>(clubIndex) };
 
             auto const STR{ boost::algorithm::to_lower_copy(
-                game::item::weapon::club_type::ToString(ENUM)) };
+                item::weapon::club_type::ToString(ENUM)) };
 
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Club, STR);
+            item::weapon::WeaponInfo wi(item::weapon_type::Club, STR);
             wi.club = ENUM;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -219,7 +222,7 @@ namespace gui
         static auto hasTestedFists{ false };
         if (false == hasTestedFists)
         {
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Fists, "fists");
+            item::weapon::WeaponInfo wi(item::weapon_type::Fists, "fists");
             wi.is_fists = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -232,7 +235,7 @@ namespace gui
         static auto hasTestedKnife{ false };
         if (false == hasTestedKnife)
         {
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Knife, "knife");
+            item::weapon::WeaponInfo wi(item::weapon_type::Knife, "knife");
             wi.is_knife = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -245,7 +248,7 @@ namespace gui
         static auto hasTestedDagger{ false };
         if (false == hasTestedDagger)
         {
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Knife, "dagger");
+            item::weapon::WeaponInfo wi(item::weapon_type::Knife, "dagger");
             wi.is_dagger = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -256,14 +259,14 @@ namespace gui
         }
 
         static auto projIndex{ 0 };
-        if (projIndex < static_cast<int>(game::item::weapon::projectile_type::Count))
+        if (projIndex < static_cast<int>(item::weapon::projectile_type::Count))
         {
-            auto const ENUM{ static_cast<game::item::weapon::projectile_type::Enum>(projIndex) };
+            auto const ENUM{ static_cast<item::weapon::projectile_type::Enum>(projIndex) };
 
             auto const STR{ boost::algorithm::to_lower_copy(
-                game::item::weapon::projectile_type::ToString(ENUM)) };
+                item::weapon::projectile_type::ToString(ENUM)) };
 
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Projectile, STR);
+            item::weapon::WeaponInfo wi(item::weapon_type::Projectile, STR);
             wi.projectile = ENUM;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -276,7 +279,7 @@ namespace gui
         static auto hasTestedStaff{ false };
         if (false == hasTestedStaff)
         {
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Staff, "staff");
+            item::weapon::WeaponInfo wi(item::weapon_type::Staff, "staff");
             wi.is_staff = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -289,7 +292,7 @@ namespace gui
         static auto hasTestedQStaff{ false };
         if (false == hasTestedQStaff)
         {
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Staff, "quarterstaff");
+            item::weapon::WeaponInfo wi(item::weapon_type::Staff, "quarterstaff");
             wi.is_quarterstaff = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -300,14 +303,14 @@ namespace gui
         }
 
         static auto swordIndex{ 0 };
-        if (swordIndex < static_cast<int>(game::item::weapon::sword_type::Count))
+        if (swordIndex < static_cast<int>(item::weapon::sword_type::Count))
         {
-            auto const ENUM{ static_cast<game::item::weapon::sword_type::Enum>(swordIndex) };
+            auto const ENUM{ static_cast<item::weapon::sword_type::Enum>(swordIndex) };
 
             auto const STR{ boost::algorithm::to_lower_copy(
-                game::item::weapon::sword_type::ToString(ENUM)) };
+                item::weapon::sword_type::ToString(ENUM)) };
 
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Sword, STR);
+            item::weapon::WeaponInfo wi(item::weapon_type::Sword, STR);
             wi.sword = ENUM;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -320,7 +323,7 @@ namespace gui
         static auto hasTestedTendrils{ false };
         if (false == hasTestedTendrils)
         {
-            game::item::weapon::WeaponInfo wi(game::item::weapon_type::Tendrils, "tendrils");
+            item::weapon::WeaponInfo wi(item::weapon_type::Tendrils, "tendrils");
             wi.is_tendrils = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
@@ -332,10 +335,10 @@ namespace gui
 
         //test armor items
         static auto aventailIndex{ 0 };
-        if (aventailIndex < static_cast<int>(game::item::armor::base_type::Count))
+        if (aventailIndex < static_cast<int>(item::armor::base_type::Count))
         {
-            game::item::armor::ArmorInfo ai(game::item::armor_type::Aventail);
-            ai.base = static_cast<game::item::armor::base_type::Enum>(aventailIndex);
+            item::armor::ArmorInfo ai(item::armor_type::Aventail);
+            ai.base = static_cast<item::armor::base_type::Enum>(aventailIndex);
             ai.is_aventail = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
@@ -346,10 +349,10 @@ namespace gui
         }
 
         static auto bootsIndex{ 0 };
-        if (bootsIndex < static_cast<int>(game::item::armor::base_type::Count))
+        if (bootsIndex < static_cast<int>(item::armor::base_type::Count))
         {
-            game::item::armor::ArmorInfo ai(game::item::armor_type::Boots);
-            ai.base = static_cast<game::item::armor::base_type::Enum>(bootsIndex);
+            item::armor::ArmorInfo ai(item::armor_type::Boots);
+            ai.base = static_cast<item::armor::base_type::Enum>(bootsIndex);
             ai.is_boots = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
@@ -360,10 +363,10 @@ namespace gui
         }
 
         static auto bracerIndex{ 0 };
-        if (bracerIndex < static_cast<int>(game::item::armor::base_type::Count))
+        if (bracerIndex < static_cast<int>(item::armor::base_type::Count))
         {
-            game::item::armor::ArmorInfo ai(game::item::armor_type::Bracer);
-            ai.base = static_cast<game::item::armor::base_type::Enum>(bracerIndex);
+            item::armor::ArmorInfo ai(item::armor_type::Bracer);
+            ai.base = static_cast<item::armor::base_type::Enum>(bracerIndex);
             ai.is_bracer = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
@@ -374,10 +377,10 @@ namespace gui
         }
 
         static auto coverIndex{ 0 };
-        if (coverIndex < static_cast<int>(game::item::armor::cover_type::Count))
+        if (coverIndex < static_cast<int>(item::armor::cover_type::Count))
         {
-            game::item::armor::ArmorInfo ai(game::item::armor_type::Covering);
-            ai.cover = static_cast<game::item::armor::cover_type::Enum>(coverIndex);
+            item::armor::ArmorInfo ai(item::armor_type::Covering);
+            ai.cover = static_cast<item::armor::cover_type::Enum>(coverIndex);
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
@@ -387,10 +390,10 @@ namespace gui
         }
 
         static auto helmIndex{ 0 };
-        if (helmIndex < static_cast<int>(game::item::armor::helm_type::Count))
+        if (helmIndex < static_cast<int>(item::armor::helm_type::Count))
         {
-            game::item::armor::ArmorInfo ai(game::item::armor_type::Helm);
-            ai.helm = static_cast<game::item::armor::helm_type::Enum>(helmIndex);
+            item::armor::ArmorInfo ai(item::armor_type::Helm);
+            ai.helm = static_cast<item::armor::helm_type::Enum>(helmIndex);
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
@@ -400,10 +403,10 @@ namespace gui
         }
 
         static auto pantIndex{ 0 };
-        if (pantIndex < static_cast<int>(game::item::armor::base_type::Count))
+        if (pantIndex < static_cast<int>(item::armor::base_type::Count))
         {
-            game::item::armor::ArmorInfo ai(game::item::armor_type::Pants);
-            ai.base = static_cast<game::item::armor::base_type::Enum>(pantIndex);
+            item::armor::ArmorInfo ai(item::armor_type::Pants);
+            ai.base = static_cast<item::armor::base_type::Enum>(pantIndex);
             ai.is_pants = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
@@ -414,10 +417,10 @@ namespace gui
         }
 
         static auto shieldIndex{ 0 };
-        if (shieldIndex < static_cast<int>(game::item::armor::shield_type::Count))
+        if (shieldIndex < static_cast<int>(item::armor::shield_type::Count))
         {
-            game::item::armor::ArmorInfo ai(game::item::armor_type::Sheild);
-            ai.shield = static_cast<game::item::armor::shield_type::Enum>(shieldIndex);
+            item::armor::ArmorInfo ai(item::armor_type::Sheild);
+            ai.shield = static_cast<item::armor::shield_type::Enum>(shieldIndex);
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
             game::LoopManager::Instance()->TestingImageSet(texture);
@@ -427,10 +430,10 @@ namespace gui
         }
 
         static auto shirtIndex{ 0 };
-        if (shirtIndex < static_cast<int>(game::item::armor::base_type::Count))
+        if (shirtIndex < static_cast<int>(item::armor::base_type::Count))
         {
-            game::item::armor::ArmorInfo ai(game::item::armor_type::Shirt);
-            ai.base = static_cast<game::item::armor::base_type::Enum>(shirtIndex);
+            item::armor::ArmorInfo ai(item::armor_type::Shirt);
+            ai.base = static_cast<item::armor::base_type::Enum>(shirtIndex);
             ai.is_shirt = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
@@ -444,10 +447,10 @@ namespace gui
         static auto miscIndex{ 1 };
         static auto isJeweled{ true };
         static auto isBone{ false };
-        if (miscIndex < static_cast<int>(game::item::misc_type::Count))
+        if (miscIndex < static_cast<int>(item::misc_type::Count))
         {
-            auto const ENUM{ static_cast<game::item::misc_type::Enum>(miscIndex) };
-            auto const ENUM_STR{ game::item::misc_type::ToString(ENUM) };
+            auto const ENUM{ static_cast<item::misc_type::Enum>(miscIndex) };
+            auto const ENUM_STR{ item::misc_type::ToString(ENUM) };
             auto const FILENAMES_VEC = iimPtr->GetImageFilenames(ENUM, isJeweled, isBone);
 
             M_ASSERT_OR_LOGANDTHROW_SS((FILENAMES_VEC.empty() == false),
@@ -500,10 +503,10 @@ namespace gui
         //test item ToString() functions
         {
             static unsigned int categoryIndex{ 0 };
-            if (categoryIndex <= game::item::category::ConsumedOnUse)
+            if (categoryIndex <= item::category::ConsumedOnUse)
             {
-                auto const STR{ game::item::category::ToString(
-                    static_cast<game::item::category::Enum>(categoryIndex), false) };
+                auto const STR{ item::category::ToString(
+                    static_cast<item::category::Enum>(categoryIndex), false) };
 
                 game::LoopManager::Instance()->TestingStrIncrement(
                     "ItemImageManager category::ToString(\"" + STR + "\") Test.");
@@ -520,10 +523,10 @@ namespace gui
             }
 
             static unsigned int weaponTypeIndex{ 0 };
-            if (weaponTypeIndex <= game::item::weapon_type::Breath)
+            if (weaponTypeIndex <= item::weapon_type::Breath)
             {
-                auto const STR{ game::item::weapon_type::ToString(
-                    static_cast<game::item::weapon_type::Enum>(weaponTypeIndex), false) };
+                auto const STR{ item::weapon_type::ToString(
+                    static_cast<item::weapon_type::Enum>(weaponTypeIndex), false) };
 
                 game::LoopManager::Instance()->TestingStrIncrement(
                     "ItemImageManager weapon_type::ToString(\"" + STR + "\") Test.");
@@ -540,10 +543,10 @@ namespace gui
             }
 
             static unsigned int armorTypeIndex{ 0 };
-            if (armorTypeIndex <= game::item::armor_type::Skin)
+            if (armorTypeIndex <= item::armor_type::Skin)
             {
-                auto const STR{ game::item::armor_type::ToString(
-                    static_cast<game::item::armor_type::Enum>(armorTypeIndex), false) };
+                auto const STR{ item::armor_type::ToString(
+                    static_cast<item::armor_type::Enum>(armorTypeIndex), false) };
 
                 game::LoopManager::Instance()->TestingStrIncrement(
                     "ItemImageManager armor_type::ToString(\"" + STR + "\") Test.");
@@ -560,10 +563,10 @@ namespace gui
             }
 
             static unsigned int collecterTypeIndex{ 0 };
-            if (collecterTypeIndex <= game::non_player::ownership::collector_type::Hoarder)
+            if (collecterTypeIndex <= non_player::ownership::collector_type::Hoarder)
             {
-                auto const STR{ game::non_player::ownership::collector_type::ToString(
-                    static_cast<game::non_player::ownership::collector_type::Enum>(
+                auto const STR{ non_player::ownership::collector_type::ToString(
+                    static_cast<non_player::ownership::collector_type::Enum>(
                         collecterTypeIndex)) };
 
                 game::LoopManager::Instance()->TestingStrIncrement(
@@ -604,14 +607,14 @@ namespace gui
     }
 
 
-    void ItemImageManager::Load(sf::Texture & texture, const game::item::ItemPtr_t ITEM_PTR) const
+    void ItemImageManager::Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const
     {
         return Load(texture, ITEM_PTR->ImageFilename());
     }
 
 
     void ItemImageManager::Load(sf::Texture &                     texture,
-                                const game::item::misc_type::Enum ITEM_ENUM,
+                                const item::misc_type::Enum ITEM_ENUM,
                                 const bool                        IS_JEWELED,
                                 const bool                        IS_BONE,
                                 const bool                        WILL_RANDOMIZE) const
@@ -621,12 +624,12 @@ namespace gui
 
 
     const std::string ItemImageManager::GetImageFilename(
-        const game::item::misc_type::Enum ITEM_ENUM,
+        const item::misc_type::Enum ITEM_ENUM,
         const bool                        IS_JEWELED,
         const bool                        IS_BONE,
         const bool                        WILL_RANDOMIZE,
-        const game::creature::race::Enum  RACE_ENUM,
-        const game::creature::role::Enum  ROLE_ENUM) const
+        const creature::race::Enum  RACE_ENUM,
+        const creature::role::Enum  ROLE_ENUM) const
     {
         auto const FILENAMES_VEC(GetImageFilenames(ITEM_ENUM,
                                                    IS_JEWELED,
@@ -636,7 +639,7 @@ namespace gui
 
         M_ASSERT_OR_LOGANDTHROW_SS((FILENAMES_VEC.empty() == false),
             "sfml_util::gui::ItemImageManager::GetImageFilename(misc, \""
-            << game::item::misc_type::ToString(ITEM_ENUM) << "\", is_jeweled="
+            << item::misc_type::ToString(ITEM_ENUM) << "\", is_jeweled="
             << std::boolalpha << IS_JEWELED << ", will_rand=" << WILL_RANDOMIZE
             << ", race=" << RACE_ENUM << ", role=" << ROLE_ENUM
             << ") unable to get any filenames for those settings.");
@@ -655,10 +658,10 @@ namespace gui
 
 
     const std::string ItemImageManager::GetImageFilename(
-        const game::item::ItemPtr_t      ITEM_PTR,
+        const item::ItemPtr_t      ITEM_PTR,
         const bool                       WILL_RANDOMIZE) const
     {
-        using namespace game::item;
+        using namespace item;
 
         if (ITEM_PTR->IsWeapon() && (ITEM_PTR->Weapon_Info().type != weapon_type::NotAWeapon))
         {
@@ -676,7 +679,7 @@ namespace gui
         {
             return GetImageFilename(ITEM_PTR->MiscType(),
                                     ITEM_PTR->IsJeweled(),
-                                    (ITEM_PTR->MaterialPrimary() == game::item::material::Bone),
+                                    (ITEM_PTR->MaterialPrimary() == item::material::Bone),
                                     WILL_RANDOMIZE,
                                     ITEM_PTR->GetSummonInfo().Race(),
                                     ITEM_PTR->GetSummonInfo().Role());
@@ -700,10 +703,10 @@ namespace gui
 
 
     const std::string ItemImageManager::GetImageFilename(
-        const game::item::weapon::WeaponInfo & WEAPON_INFO,
+        const item::weapon::WeaponInfo & WEAPON_INFO,
         const bool                             IS_JEWELED) const
     {
-        using namespace game::item;
+        using namespace item;
 
         if (WEAPON_INFO.type & weapon_type::Sword)
         {
@@ -795,9 +798,9 @@ namespace gui
 
 
     const std::string ItemImageManager::GetImageFilename(
-        const game::item::armor::ArmorInfo & ARMOR_INFO) const
+        const item::armor::ArmorInfo & ARMOR_INFO) const
     {
-        using namespace game::item;
+        using namespace item;
 
         if (ARMOR_INFO.type & armor_type::Aventail)
         {
@@ -860,9 +863,9 @@ namespace gui
 
 
     const std::string ItemImageManager::GetSkinImageFilename(
-        const game::item::ItemPtr_t ITEM_PTR) const
+        const item::ItemPtr_t ITEM_PTR) const
     {
-        using namespace game::item;
+        using namespace item;
 
         auto const PRI_MATERIAL{ ITEM_PTR->MaterialPrimary() };
 
@@ -894,13 +897,13 @@ namespace gui
 
 
     const std::vector<std::string> ItemImageManager::GetImageFilenames(
-        const game::item::misc_type::Enum ITEM_ENUM,
+        const item::misc_type::Enum ITEM_ENUM,
         const bool                        IS_JEWELED,
         const bool                        IS_BONE,
-        const game::creature::race::Enum  RACE_ENUM,
-        const game::creature::role::Enum  ROLE_ENUM) const
+        const creature::race::Enum  RACE_ENUM,
+        const creature::role::Enum  ROLE_ENUM) const
     {
-        using namespace game::item;
+        using namespace item;
 
         std::vector<std::string> filenames;
 
@@ -1276,8 +1279,8 @@ namespace gui
             }
             case misc_type::Summoning_Statue:
             {
-                if ((RACE_ENUM == game::creature::race::Count) ||
-                    (ROLE_ENUM == game::creature::role::Count))
+                if ((RACE_ENUM == creature::race::Count) ||
+                    (ROLE_ENUM == creature::role::Count))
                 {
                     filenames.push_back("figurine-1" + FILE_EXT_STR_);
                 }
@@ -1288,10 +1291,10 @@ namespace gui
                         RACE_ENUM,
                         ROLE_ENUM,
                         ((::misc::random::Bool()) ?
-                            game::creature::sex::Male :
-                            game::creature::sex::Female),
-                        game::creature::wolfen_class::Adult,
-                        game::creature::dragon_class::Adult);
+                            creature::sex::Male :
+                            creature::sex::Female),
+                        creature::wolfen_class::Adult,
+                        creature::dragon_class::Adult);
                 }
                 return filenames;
             }

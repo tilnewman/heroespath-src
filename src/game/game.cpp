@@ -29,8 +29,8 @@
 //
 #include "game.hpp"
 
-#include "game/log-macros.hpp"
-#include "game/state/game-state.hpp"
+#include "log/log-macros.hpp"
+#include "state/game-state.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -39,9 +39,11 @@
 #include <exception>
 
 
+namespace heroespath
+{
 namespace game
 {
-
+    
     std::unique_ptr<Game> Game::instanceUPtr_{ nullptr };
 
 
@@ -59,7 +61,7 @@ namespace game
     }
 
 
-    Game * Game::Instance()
+    Game * game::Game::Instance()
     {
         if (instanceUPtr_.get() == nullptr)
         {
@@ -87,7 +89,7 @@ namespace game
     void Game::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "game::Game::Release() found instanceUPtr that was null.");
+            "Game::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 
@@ -97,7 +99,7 @@ namespace game
         if (stateUPtr_.get() == nullptr)
         {
             std::ostringstream ss;
-            ss << "game::Game::State() was called when there was no state.";
+            ss << "Game::State() was called when there was no state.";
             throw std::runtime_error(ss.str());
         }
         else
@@ -111,11 +113,12 @@ namespace game
     {
         if (stateUPtr_.get() != nullptr)
         {
-            M_HP_LOG_WRN("game::Game::StateSet() is going to free an old game state"
+            M_HP_LOG_WRN("Game::StateSet() is going to free an old game state"
                 << " and replace it with a new one.");
         }
 
         stateUPtr_.reset(STATE_PTR);
     }
 
+}
 }

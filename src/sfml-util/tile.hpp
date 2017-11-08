@@ -43,21 +43,22 @@ namespace sfml_util
     //the given width and hieght.
     //Must call .display() on the renderTarget after.
     template<typename RenderTarget_t, typename Size_t>
-    void Tile(  const Size_t     WIN_WIDTH,
-                const Size_t     WIN_HEIGHT,
-                sf::Sprite &     tileSprite,
-                RenderTarget_t & renderTarget )
+    void Tile(
+        const Size_t WIN_WIDTH,
+        const Size_t WIN_HEIGHT,
+        sf::Sprite & tileSprite,
+        RenderTarget_t & renderTarget )
     {
         auto const TILE_SPRITE_BOUNDS{ tileSprite.getLocalBounds() };
-        const std::size_t COUNT_X(static_cast<std::size_t>(static_cast<float>(WIN_WIDTH) / TILE_SPRITE_BOUNDS.width) + 1);
-        const std::size_t COUNT_Y(static_cast<std::size_t>(static_cast<float>(WIN_HEIGHT) / TILE_SPRITE_BOUNDS.height) + 1);
+        auto const COUNT_X{ static_cast<std::size_t>(static_cast<float>(WIN_WIDTH) / TILE_SPRITE_BOUNDS.width) + 1 };
+        auto const COUNT_Y{ static_cast<std::size_t>(static_cast<float>(WIN_HEIGHT) / TILE_SPRITE_BOUNDS.height) + 1 };
 
         for (std::size_t iY(0); iY<COUNT_Y; ++iY)
         {
             for (std::size_t iX(0); iX<COUNT_X; ++iX)
             {
-                const float POS_X(static_cast<float>(iX) * TILE_SPRITE_BOUNDS.width);
-                const float POS_Y(static_cast<float>(iY) * TILE_SPRITE_BOUNDS.height);
+                auto const POS_X{ static_cast<float>(iX) * TILE_SPRITE_BOUNDS.width };
+                auto const POS_Y{ static_cast<float>(iY) * TILE_SPRITE_BOUNDS.height };
                 tileSprite.setPosition(POS_X, POS_Y);
                 renderTarget.draw(tileSprite);
             }
@@ -70,13 +71,14 @@ namespace sfml_util
     //The sf::Texture used to create the sprite must have setRepeated(true) called.
     //Must call .display() on the renderTarget after.
     template<typename RenderTarget_t, typename Pos_t, typename Size_t>
-    void Tile2( const Pos_t      START_X,
-                const Pos_t      START_Y,
-                const Size_t     WIDTH,
-                const Size_t     HEIGHT,
-                sf::Sprite &     sprite,
-                RenderTarget_t & renderTarget,
-                const sf::RenderStates & STATES)
+    void Tile2(
+        const Pos_t START_X,
+        const Pos_t START_Y,
+        const Size_t WIDTH,
+        const Size_t HEIGHT,
+        sf::Sprite & sprite,
+        RenderTarget_t & renderTarget,
+        const sf::RenderStates & STATES)
     {
         sprite.setTextureRect(sf::IntRect(0, 0, static_cast<int>(WIDTH), static_cast<int>(HEIGHT)));
         sprite.setPosition(static_cast<float>(START_X), static_cast<float>(START_Y));
@@ -84,18 +86,20 @@ namespace sfml_util
     }
     //
     template<typename RenderTarget_t, typename Rect_t>
-    void Tile2(const sf::Rect<Rect_t> & RECT,
-               sf::Sprite &             sprite,
-               RenderTarget_t &         renderTarget,
-               const sf::RenderStates & STATES)
+    void Tile2(
+        const sf::Rect<Rect_t> & RECT,
+        sf::Sprite & sprite,
+        RenderTarget_t & renderTarget,
+        const sf::RenderStates & STATES)
     {
-        Tile2(  static_cast<float>(RECT.left),
-                static_cast<float>(RECT.top),
-                static_cast<int>(RECT.width),
-                static_cast<int>(RECT.height),
-                sprite,
-                renderTarget,
-                STATES);
+        Tile2(
+            static_cast<float>(RECT.left),
+            static_cast<float>(RECT.top),
+            static_cast<int>(RECT.width),
+            static_cast<int>(RECT.height),
+            sprite,
+            renderTarget,
+            STATES);
     }
 
 
@@ -108,10 +112,11 @@ namespace sfml_util
     //TODO keep track of current sprite position x and y to allow for different sized textures
     //Must call .display() on the renderTarget after.
     template<typename RenderTarget_t>
-    void TileFromVec(const sf::FloatRect & RECT,
-                     SpriteVec_t &         spriteVec,
-                     RenderTarget_t &      renderTarget,
-                     const bool            WILL_RANDOM_ORDER = false)
+    void TileFromVec(
+        const sf::FloatRect & RECT,
+        SpriteVec_t & spriteVec,
+        RenderTarget_t & renderTarget,
+        const bool WILL_RANDOM_ORDER = false)
     {
         if (spriteVec.empty())
         {
@@ -121,7 +126,7 @@ namespace sfml_util
 
         if (WILL_RANDOM_ORDER)
         {
-            misc::Vector::ShuffleVec(spriteVec);
+            heroespath::misc::Vector::ShuffleVec(spriteVec);
         }
 
         const std::size_t SPRITE_COUNT(spriteVec.size());
@@ -153,7 +158,7 @@ namespace sfml_util
 
                     if (WILL_RANDOM_ORDER)
                     {
-                        misc::Vector::ShuffleVec(spriteVec);
+                        heroespath::misc::Vector::ShuffleVec(spriteVec);
                     }
                 }
             }
@@ -163,10 +168,11 @@ namespace sfml_util
 
     //See comments above
     template<typename RenderTarget_t>
-    void TileFromVec(const sf::FloatRect & RECT,
-                     TextureVec_t &        textureVec,
-                     RenderTarget_t &      renderTarget,
-                     const bool            WILL_RANDOM_ORDER = false)
+    void TileFromVec(
+        const sf::FloatRect & RECT,
+        TextureVec_t & textureVec,
+        RenderTarget_t & renderTarget,
+        const bool WILL_RANDOM_ORDER = false)
     {
         SpriteVec_t spriteVec;
         spriteVec.reserve(textureVec.size());
@@ -179,4 +185,5 @@ namespace sfml_util
     }
 
 }
+
 #endif //SFMLUTIL_TILE_HPP_INCLUDED

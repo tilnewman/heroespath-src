@@ -32,6 +32,8 @@
 #include "popup/popup-info.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -58,6 +60,7 @@ namespace popup
         std::size_t selection_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPRESPONSE_HPP_INCLUDED

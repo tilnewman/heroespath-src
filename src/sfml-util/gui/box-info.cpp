@@ -131,7 +131,7 @@ namespace box
 
     bool operator==(const Info & L, const Info & R)
     {
-        if (misc::IsRealClose(L.line_thickness, R.line_thickness) == false)
+        if (heroespath::misc::IsRealClose(L.line_thickness, R.line_thickness) == false)
         {
             return false;
         }

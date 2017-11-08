@@ -40,7 +40,7 @@
 #include <string>
 
 
-namespace game
+namespace heroespath
 {
 namespace song
 {
@@ -48,13 +48,13 @@ namespace song
     using SongPtr_t = Song *;
     using SongPtrC_t = Song * const;
 }
-}
+
 namespace popup
 {
 
     //Responsible for implementing the MusicSheet popup stage
     class PopupStageMusicSheet
-        :
+    :
         public PopupStageBase,
         public sfml_util::gui::callback::IListBoxCallbackHandler
     {
@@ -62,7 +62,7 @@ namespace popup
         PopupStageMusicSheet & operator=(const PopupStageMusicSheet &) =delete;
 
     public:
-        explicit PopupStageMusicSheet(const popup::PopupInfo &);
+        explicit PopupStageMusicSheet(const heroespath::popup::PopupInfo &);
         virtual ~PopupStageMusicSheet();
 
         inline const std::string HandlerName() const override
@@ -90,11 +90,11 @@ namespace popup
         void SetupListboxLabelText();
         void SetupListbox();
 
-        void SetupPageRightText(const game::song::SongPtrC_t);
+        void SetupPageRightText(const song::SongPtrC_t);
         void SetPageRightColors(const sf::Color & IMAGE_COLOR, const sf::Color & TEXT_COLOR);
-        bool DoesCharacterHaveEnoughManaToPlaySong(const game::song::SongPtrC_t) const;
-        bool CanPlaySongInPhase(const game::song::SongPtrC_t) const;
-        bool CanPlaySong(const game::song::SongPtrC_t) const;
+        bool DoesCharacterHaveEnoughManaToPlaySong(const song::SongPtrC_t) const;
+        bool CanPlaySongInPhase(const song::SongPtrC_t) const;
+        bool CanPlaySong(const song::SongPtrC_t) const;
         bool HandleSongPlay();
 
     private:
@@ -104,7 +104,7 @@ namespace popup
         static const sf::Uint8 IMAGE_ALPHA_;
         static const float WARNING_DURATION_SEC_;
 
-        game::song::SongPtr_t currentSongPtr_;
+        song::SongPtr_t currentSongPtr_;
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
         sfml_util::gui::ListBoxUPtr_t listBoxUPtr_;
@@ -130,6 +130,7 @@ namespace popup
         sfml_util::ColorSlider textColorSlider_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED

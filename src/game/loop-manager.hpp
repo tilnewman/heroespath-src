@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_LOOPMANAGER_HPP_INCLUDED
-#define GAME_LOOPMANAGER_HPP_INCLUDED
+#ifndef HEROESPATH_LOOPMANAGER_HPP_INCLUDED
+#define HEROESPATH_LOOPMANAGER_HPP_INCLUDED
 //
 // loop-manager.hpp
 //  A class that controls the running game loop with a queue of commands
@@ -35,28 +35,29 @@
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/loop.hpp"
+#include "sfml-util/loop-state-enum.hpp"
 
 #include "popup/popup-info.hpp"
 #include "popup/popup-stage-generic.hpp"
 #include "popup/popup-response-enum.hpp"
 
-#include "game/loop-state-enum.hpp"
 #include "game/phase-enum.hpp"
 
 #include <queue>
 #include <string>
 
 
-namespace game
+namespace heroespath
 {
 
-    //forward declarations
-    namespace creature
-    {
-        class Creature;
-        using CreaturePtr_t = Creature *;
-    }
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+}
 
+namespace game
+{
 
     //Singleton class that keeps track of the game state
     class LoopManager
@@ -77,18 +78,23 @@ namespace game
             startupStage_ = STARTUP_STAGE_NAME;
         }
 
-        inline LoopState::Enum GetState() const                     { return state_; }
-        inline LoopState::Enum GetPrevState() const                 { return prevState_; }
-        inline popup::ResponseTypes::Enum GetPopupResponse() const  { return popupResponse_; }
-        inline std::size_t GetPopupSelection() const                { return popupSelection_; }
+        inline sfml_util::LoopState::Enum GetState() const { return state_; }
+        inline sfml_util::LoopState::Enum GetPrevState() const { return prevState_; }
+
+        inline heroespath::popup::ResponseTypes::Enum GetPopupResponse() const
+        {
+            return popupResponse_;
+        }
+        
+        inline std::size_t GetPopupSelection() const { return popupSelection_; }
 
         inline void ClearPopupResponse()
         {
-            popupResponse_ = popup::ResponseTypes::None;
+            popupResponse_ = heroespath::popup::ResponseTypes::None;
             popupSelection_ = 0;
         }
 
-        Phase::Enum GetPhase() const;
+        game::Phase::Enum GetPhase() const;
 
         inline bool IsKeyPressed(const sf::Keyboard::Key KEY) const
         {
@@ -99,34 +105,34 @@ namespace game
 
         template<typename PopupType_t>
         void PopupWaitBeginSpecific(
-            popup::IPopupHandler_t * const HANDLER_PTR,
-            const popup::PopupInfo & POPUP_INFO)
+            heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
+            const heroespath::popup::PopupInfo & POPUP_INFO)
         {
-            popupResponse_ = popup::ResponseTypes::None;
+            popupResponse_ = heroespath::popup::ResponseTypes::None;
             popupSelection_ = 0;
             TransitionTo_Popup<PopupType_t>(HANDLER_PTR, POPUP_INFO);
         }
 
         inline void PopupWaitBegin(
-            popup::IPopupHandler_t * const HANDLER_PTR,
-            const popup::PopupInfo & POPUP_INFO)
+            heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
+            const heroespath::popup::PopupInfo & POPUP_INFO)
         {
             PopupWaitBeginSpecific<popup::PopupStageGeneric>(HANDLER_PTR, POPUP_INFO);
         }
 
         void PopupWaitEnd(
-            const popup::ResponseTypes::Enum RESPONSE,
+            const heroespath::popup::ResponseTypes::Enum RESPONSE,
             const std::size_t SELECTION = 0);
 
         void TransitionTo_Previous(const bool WILL_ADVANCE_TURN = false);
 
         sfml_util::DisplayChangeResult::Enum ChangeResolution(
             sfml_util::IStage * const         currentStagePtr_,
-            popup::IPopupHandler_t * const HANDLER_PTR,
+            heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
             const sfml_util::Resolution &     NEW_RES,
             const unsigned                    ANTIALIAS_LEVEL);
 
-        inline void SetTransitionBeforeFade(const LoopState::Enum E)
+        inline void SetTransitionBeforeFade(const sfml_util::LoopState::Enum E)
         {
             stateBeforeFade_ = E;
         }
@@ -186,9 +192,10 @@ namespace game
         void TransitionTo_Treasure();
         void TransitionTo_Adventure();
 
-        void TransitionTo_Inventory(const creature::CreaturePtr_t TURN_CREATURE_PTR,
+        void TransitionTo_Inventory(
+            const creature::CreaturePtr_t TURN_CREATURE_PTR,
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
-            const Phase::Enum             CURRENT_PHASE);
+            const game::Phase::Enum CURRENT_PHASE);
 
         inline sfml_util::Loop & CommandLoopAccess(const sfml_util::ILoopCmd *)
         {
@@ -200,8 +207,8 @@ namespace game
 
         template<typename PopupType_t>
         void TransitionTo_Popup(
-            popup::IPopupHandler_t * const HANDLER_PTR,
-            const popup::PopupInfo & POPUP_INFO)
+            heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
+            const heroespath::popup::PopupInfo & POPUP_INFO)
         {
             CommandQueueClear();
             loop_.Exit();
@@ -210,11 +217,11 @@ namespace game
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(false));
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(false));
 
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StateChange>(LoopState::Popup));
+            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Popup));
 
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeOut>(
-                popup::PopupManager::Color_Fade(),
-                popup::PopupManager::SpeedMult_Fade(),
+                heroespath::popup::PopupManager::Color_Fade(),
+                heroespath::popup::PopupManager::SpeedMult_Fade(),
                 true));
 
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
@@ -227,7 +234,7 @@ namespace game
 
         void TransitionFrom_Popup();
 
-        void TransitionTo(const LoopState::Enum, const bool WILL_ADVANCE_TURN = false);
+        void TransitionTo(const sfml_util::LoopState::Enum, const bool WILL_ADVANCE_TURN = false);
 
         enum TransOpt : unsigned
         {
@@ -240,11 +247,11 @@ namespace game
         };
 
         void TransitionHelper(
-            const TransOpt                    OPTIONS,
-            const LoopState::Enum             NEW_STATE,
+            const TransOpt OPTIONS,
+            const sfml_util::LoopState::Enum NEW_STATE,
             const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
-            const sfml_util::music::Enum      MUSIC_TO_STOP  = sfml_util::music::All,
-            const sfml_util::music::Enum      MUSIC_TO_START = sfml_util::music::None);
+            const sfml_util::music::Enum MUSIC_TO_STOP  = sfml_util::music::All,
+            const sfml_util::music::Enum MUSIC_TO_START = sfml_util::music::None);
 
         void CommandQueueClear();
 
@@ -252,16 +259,18 @@ namespace game
         static std::unique_ptr<LoopManager> instanceUPtr_;
         static std::string startupStage_;
         //
-        LoopState::Enum           state_;
+        sfml_util::LoopState::Enum state_;
         std::queue<sfml_util::ILoopCmdSPtr_t> cmdQueue_;
-        sfml_util::Loop           loop_;
-        popup::ResponseTypes::Enum popupResponse_;
-        std::size_t               popupSelection_;
-        LoopState::Enum           prevState_;
-        LoopState::Enum           prevSettingsState_;
-        LoopState::Enum           stateBeforeFade_;
-        bool                      exitSuccess_;
+        sfml_util::Loop loop_;
+        heroespath::popup::ResponseTypes::Enum popupResponse_;
+        std::size_t popupSelection_;
+        sfml_util::LoopState::Enum prevState_;
+        sfml_util::LoopState::Enum prevSettingsState_;
+        sfml_util::LoopState::Enum stateBeforeFade_;
+        bool exitSuccess_;
     };
 
 }
-#endif //GAME_LOOPMANAGER_HPP_INCLUDED
+}
+
+#endif //HEROESPATH_LOOPMANAGER_HPP_INCLUDED

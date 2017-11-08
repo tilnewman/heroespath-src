@@ -30,6 +30,8 @@
 #include "popup/popup-stage-base.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -51,6 +53,7 @@ namespace popup
         std::size_t secondCounter_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED

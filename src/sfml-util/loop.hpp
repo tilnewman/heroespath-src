@@ -31,8 +31,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/fade.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
-
-#include "game/loop-state-enum.hpp"
+#include "sfml-util/loop-state-enum.hpp"
 
 #include "popup/i-popup-callback.hpp"
 #include "popup/popup-info.hpp"
@@ -89,8 +88,8 @@ namespace sfml_util
 
         inline void SetMouseVisibility(const bool IS_VISIBLE)   { winPtr_->setMouseCursorVisible(IS_VISIBLE); }
 
-        inline void SetState(const game::LoopState::Enum E)     { state_ = E; }
-        inline game::LoopState::Enum  GetState() const          { return state_; }
+        inline void SetState(const LoopState::Enum E)           { state_ = E; }
+        inline LoopState::Enum  GetState() const                { return state_; }
 
         void ConsumeEvents();
 
@@ -98,7 +97,9 @@ namespace sfml_util
         inline void SetWillExitOnMouseclick(const bool B)       { willExitOnMouseclick_ = B; }
 
         void RemoveFocus();
-        bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);//returns true if a stage was found owning the GuiEntity
+
+        //returns true if a stage was found owning the GuiEntity
+        bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);
 
         inline bool GetIgnoreMouse() const                      { return willIgnoreMouse_; }
         inline void SetIgnoreMouse(const bool B)                { willIgnoreMouse_ = B; }
@@ -107,8 +108,8 @@ namespace sfml_util
         inline void SetIgnoreKeystrokes(const bool B)           { willIgnoreKeystrokes_ = B; }
 
         void AssignPopupCallbackHandlerInfo(
-            popup::IPopupHandler_t * const HANDLER_PTR,
-            const popup::PopupInfo & POPUP_INFO);
+            heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
+            const heroespath::popup::PopupInfo & POPUP_INFO);
 
         void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V);
 
@@ -182,14 +183,14 @@ namespace sfml_util
         gui::IGuiEntityPtr_t  entityWithFocusSPtr_;
         bool                  willIgnoreMouse_;
         bool                  willIgnoreKeystrokes_;
-        popup::PopupInfo      popupInfo_;
+        heroespath::popup::PopupInfo      popupInfo_;
         bool                  hasFadeStarted_;
         sf::Event::EventType  prevEventType_;
         sf::Keyboard::Key     prevKeyPressed_;
         bool                  isMouseHovering_;
         bool                  takeScreenshot_;
-        popup::IPopupHandler_t * popupCallbackPtr_;
-        game::LoopState::Enum state_;
+        heroespath::popup::IPopupHandler_t * popupCallbackPtr_;
+        LoopState::Enum state_;
         std::vector<float>    frameRateVec_;
         std::size_t           frameRateSampleCount_;
         bool                  willLogFrameRate_;

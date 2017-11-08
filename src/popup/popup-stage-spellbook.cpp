@@ -29,8 +29,8 @@
 //
 #include "popup-stage-spellbook.hpp"
 
-#include "game/spell/spell-base.hpp"
-#include "game/creature/creature.hpp"
+#include "spell/spell-base.hpp"
+#include "creature/creature.hpp"
 #include "game/loop-manager.hpp"
 
 #include "popup/popup-manager.hpp"
@@ -45,6 +45,8 @@
 #include <algorithm>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -55,7 +57,7 @@ namespace popup
     const float     PopupStageSpellbook::WARNING_DURATION_SEC_      { 2.0f };
 
 
-    PopupStageSpellbook::PopupStageSpellbook(const popup::PopupInfo & POPUP_INFO)
+    PopupStageSpellbook::PopupStageSpellbook(const heroespath::popup::PopupInfo & POPUP_INFO)
         :
         PopupStageBase(POPUP_INFO),
         playerTexture_(),
@@ -272,7 +274,7 @@ namespace popup
     {
         auto const LEFT_PAGE_RECT_RAW{
             sfml_util::ConvertRect<int, float>(
-                popup::PopupManager::Rect_Spellbook_PageLeft()) };
+                heroespath::popup::PopupManager::Rect_Spellbook_PageLeft()) };
 
         auto const SCALE{
             innerRegion_.width / static_cast<float>(backgroundTexture_.getSize().x) };
@@ -283,7 +285,7 @@ namespace popup
         pageRectLeft_.height = LEFT_PAGE_RECT_RAW.height * SCALE;
 
         auto const RIGHT_PAGE_RECT_RAW{ sfml_util::ConvertRect<int, float>(
-            popup::PopupManager::Rect_Spellbook_PageRight()) };
+            heroespath::popup::PopupManager::Rect_Spellbook_PageRight()) };
 
         pageRectRight_.left = innerRegion_.left + (RIGHT_PAGE_RECT_RAW.left * SCALE);
         pageRectRight_.top = innerRegion_.top + (RIGHT_PAGE_RECT_RAW.top * SCALE);
@@ -294,7 +296,7 @@ namespace popup
 
     void PopupStageSpellbook::SetupLeftAccentImage()
     {
-        popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
+        heroespath::popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
         accentSprite1_.setTexture(accentTexture1_);
 
         sfml_util::CenterAndScaleSpriteToFit(
@@ -308,7 +310,7 @@ namespace popup
 
     void PopupStageSpellbook::SetupRightAccentImage()
     {
-        popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
+        heroespath::popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
         accentSprite2_.setTexture(accentTexture2_);
 
         sfml_util::CenterAndScaleSpriteToFit(
@@ -349,7 +351,7 @@ namespace popup
         {
             ss << creaturePtr->RaceName();
 
-            if (creaturePtr->Race() != game::creature::race::Wolfen)
+            if (creaturePtr->Race() != creature::race::Wolfen)
             {
                 ss << ", " << creaturePtr->RoleName();
             }
@@ -501,7 +503,7 @@ namespace popup
 
 
     void PopupStageSpellbook::SetupPageRightText(
-        const game::spell::SpellPtrC_t SPELL_CPTRC)
+        const spell::SpellPtrC_t SPELL_CPTRC)
     {
         if (SPELL_CPTRC == nullptr)
         {
@@ -566,7 +568,7 @@ namespace popup
         std::ostringstream ss;
         ss << "Mana Cost: " << SPELL_CPTRC->ManaCost() << "\n"
            << "Rank: " << SPELL_CPTRC->Rank() << "\n"
-           << "Targets " << game::TargetType::Name(SPELL_CPTRC->Target()) << "\n"
+           << "Targets " << combat::TargetType::Name(SPELL_CPTRC->Target()) << "\n"
            << "Cast during " << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false) << "\n";
 
         const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(
@@ -721,19 +723,19 @@ namespace popup
 
 
     bool PopupStageSpellbook::DoesCharacterHaveEnoughManaToCastSpell(
-        const game::spell::SpellPtrC_t SPELL_CPTRC) const
+        const spell::SpellPtrC_t SPELL_CPTRC) const
     {
         return (popupInfo_.CreaturePtr()->Mana() >= SPELL_CPTRC->ManaCost());
     }
 
 
-    bool PopupStageSpellbook::CanCastSpellInPhase(const game::spell::SpellPtrC_t SPELL_CPTRC) const
+    bool PopupStageSpellbook::CanCastSpellInPhase(const spell::SpellPtrC_t SPELL_CPTRC) const
     {
         return (SPELL_CPTRC->ValidPhases() & game::LoopManager::Instance()->GetPhase());
     }
 
 
-    bool PopupStageSpellbook::CanCastSpell(const game::spell::SpellPtrC_t SPELL_CPTRC) const
+    bool PopupStageSpellbook::CanCastSpell(const spell::SpellPtrC_t SPELL_CPTRC) const
     {
         return (DoesCharacterHaveEnoughManaToCastSpell(SPELL_CPTRC) &&
             CanCastSpellInPhase(SPELL_CPTRC));
@@ -762,4 +764,5 @@ namespace popup
         }
     }
 
+}
 }

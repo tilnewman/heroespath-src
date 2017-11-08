@@ -35,26 +35,28 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/box-info.hpp"
 
-#include "game/types.hpp"
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 #include "game/loop-manager.hpp"
-#include "game/creature/title.hpp"
-#include "game/creature/creature.hpp"
+#include "creature/title.hpp"
+#include "creature/creature.hpp"
 
 #include "popup/popup-stage-generic.hpp"
 
+#include "misc/types.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 
 #include <boost/algorithm/algorithm.hpp>
 #include <boost/algorithm/string.hpp>
 
+#include <string>
+#include <memory>
 #include <sstream>
 #include <exception>
-#include <memory>
 
 
-
+namespace heroespath
+{
 namespace popup
 {
 
@@ -248,7 +250,7 @@ namespace popup
             TEXTURE_VEC,
             ARE_IMAGES_CREATURES,
             INITIAL_SELECTION,
-            GetScaleForImage(popup::PopupImage::Large),
+            GetScaleForImage(heroespath::popup::PopupImage::Large),
             SOUND_EFFECT);
     }
 
@@ -265,7 +267,7 @@ namespace popup
             TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
             THE_MIN,
             THE_MAX,
-            GetScaleForImage(popup::PopupImage::Large));
+            GetScaleForImage(heroespath::popup::PopupImage::Large));
     }
 
 
@@ -292,13 +294,12 @@ namespace popup
 
     const PopupInfo PopupManager::CreateImageFadePopupInfo(
         const std::string &                 POPUP_NAME,
-        const game::creature::CreaturePtr_t CREATURE_PTR,
-        const game::creature::TitlePtr_t    FROM_TITLE_PTR,
-        const game::creature::TitlePtr_t    TO_TITLE_PTR,
+        const creature::CreaturePtr_t CREATURE_PTR,
+        const creature::TitlePtr_t    FROM_TITLE_PTR,
+        const creature::TitlePtr_t    TO_TITLE_PTR,
         const sf::Texture * const           FROM_IMAGE_PTR,
         const sf::Texture * const           TO_IMAGE_PTR) const
     {
-        using namespace game;
         using namespace misc;
 
         M_ASSERT_OR_LOGANDTHROW_SS((TO_IMAGE_PTR != nullptr),
@@ -310,20 +311,20 @@ namespace popup
 
         std::ostringstream descSS;
         descSS << "Congradulations!\n\nAfter a total of " << TO_TITLE_PTR->AchievementCount()
-            << " " << game::creature::AchievementType::Name(TO_TITLE_PTR->GetAchievementType())
+            << " " << creature::AchievementType::Name(TO_TITLE_PTR->GetAchievementType())
             << " " << CREATURE_PTR->Name();
 
         if (FROM_TITLE_PTR == nullptr)
         {
             descSS << " has earned the title of "
-                << game::creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
+                << creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
         }
         else
         {
             descSS << " has transitioned from a "
-                << game::creature::Titles::Name(FROM_TITLE_PTR->Which())
+                << creature::Titles::Name(FROM_TITLE_PTR->Which())
                 << " to a "
-                << game::creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
+                << creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
         }
 
         descSS << "  This title comes with the following stats bonus: "
@@ -385,7 +386,7 @@ namespace popup
 
     const PopupInfo PopupManager::CreateSpellbookPopupInfo(
         const std::string &                 POPUP_NAME,
-        const game::creature::CreaturePtr_t CREATURE_CPTR,
+        const creature::CreaturePtr_t CREATURE_CPTR,
         const std::size_t                   INITIAL_SELECTION) const
     {
         return PopupInfo(
@@ -411,7 +412,7 @@ namespace popup
 
     const PopupInfo PopupManager::CreateMusicPopupInfo(
         const std::string &                 POPUP_NAME,
-        const game::creature::CreaturePtr_t CREATURE_CPTR,
+        const creature::CreaturePtr_t CREATURE_CPTR,
         const std::size_t                   INITIAL_SELECTION) const
     {
         return PopupInfo(
@@ -437,7 +438,7 @@ namespace popup
 
     const PopupInfo PopupManager::CreateCombatOverPopupInfo(
         const std::string &                 POPUP_NAME,
-        const game::combat::CombatEnd::Enum HOW_COMBAT_ENDED) const
+        const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const
     {
         return PopupInfo(
             POPUP_NAME,
@@ -446,7 +447,7 @@ namespace popup
                 sfml_util::Justified::Center,
                 sfml_util::FontManager::Instance()->Size_Large()),
             sfml_util::MapByRes(1.0f, 5.0f),
-            ((HOW_COMBAT_ENDED == game::combat::CombatEnd::Ran) ?
+            ((HOW_COMBAT_ENDED == combat::CombatEnd::Ran) ?
                 PopupButtons::Continue : PopupButtons::YesNo),
             HOW_COMBAT_ENDED);
     }
@@ -525,12 +526,12 @@ namespace popup
             IMAGE,
             1.0f,
             SOUND_EFFECT,
-            popup::PopupButtonColor::Dark,
+            heroespath::popup::PopupButtonColor::Dark,
             false,
             std::vector<std::size_t>(),
             sfml_util::TextureVec_t(),
             std::vector<std::string>(),
-            popup::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
+            heroespath::popup::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
             nullptr,
             0,
             false,
@@ -574,8 +575,8 @@ namespace popup
         return CreatePopupInfo(
             POPUP_NAME,
             TRAP_DESCRIPTION,
-            popup::PopupButtons::Continue,
-            popup::PopupImage::Regular,
+            heroespath::popup::PopupButtons::Continue,
+            heroespath::popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             SOUND_EFFECT);
     }
@@ -635,4 +636,4 @@ namespace popup
     }
 
 }
-
+}

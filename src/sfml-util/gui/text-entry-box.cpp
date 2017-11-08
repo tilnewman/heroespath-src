@@ -35,7 +35,7 @@
 
 #include "misc/assertlogandthrow.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 
 namespace sfml_util

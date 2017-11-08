@@ -51,9 +51,10 @@ namespace gui
     {}
 
 
-    BackgroundImage::BackgroundImage(const sfml_util::gui::BackgroundInfo & BG_INFO,
-                                     const float                            IMAGE_SCALE,
-                                     const bool                             WILL_SMOOTH_IMAGE)
+    BackgroundImage::BackgroundImage(
+        const sfml_util::gui::BackgroundInfo & BG_INFO,
+        const float                            IMAGE_SCALE,
+        const bool                             WILL_SMOOTH_IMAGE)
     :
         gradient_(),
         bgInfo_  (BG_INFO),
@@ -69,19 +70,20 @@ namespace gui
         bgInfo_  (),
         sprite_  ()
     {
-        const sf::FloatRect FULLSCREEN_RECT(sfml_util::Display::Instance()->FullScreenRect());
+        auto const FULLSCREEN_RECT{ sfml_util::Display::Instance()->FullScreenRect() };
 
-        const sfml_util::GradientInfo GRADIENT_INFO(sf::Color(0, 0, 0, 200),
-                                                    sfml_util::Corner::TopLeft |
-                                                    sfml_util::Corner::BottomRight);
+        const sfml_util::GradientInfo GRADIENT_INFO(
+            sf::Color(0, 0, 0, 200),
+            sfml_util::Corner::TopLeft |
+            sfml_util::Corner::BottomRight);
 
         gradient_.Setup(FULLSCREEN_RECT, GRADIENT_INFO);
 
         bgInfo_ = sfml_util::gui::BackgroundInfo(
-            game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
-                                                         FULLSCREEN_RECT,
-                                                         sf::Color::White,
-                                                         GRADIENT_INFO);
+            heroespath::game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
+            FULLSCREEN_RECT,
+            sf::Color::White,
+            GRADIENT_INFO);
 
         Setup(bgInfo_, sfml_util::MapByRes(1.0f, 4.0f), true);
     }
@@ -91,9 +93,10 @@ namespace gui
     {}
 
 
-    void BackgroundImage::Setup(const sfml_util::gui::BackgroundInfo & BG_INFO,
-                                const float                            IMAGE_SCALE,
-                                const bool                             WILL_SMOOTH_IMAGE)
+    void BackgroundImage::Setup(
+        const sfml_util::gui::BackgroundInfo & BG_INFO,
+        const float IMAGE_SCALE,
+        const bool WILL_SMOOTH_IMAGE)
     {
         //set the internal states even if they are not valid
         bgInfo_ = BG_INFO;
@@ -129,27 +132,29 @@ namespace gui
         float textRectLeftToUse(0.0f);
         float textRectTopToUse(0.0f);
 
-        const float WIDTH_DIFF(static_cast<float>(bgInfo_.texture.getSize().x) -
-            bgInfo_.region.width);
+        auto const WIDTH_DIFF{
+            static_cast<float>(bgInfo_.texture.getSize().x) - bgInfo_.region.width };
 
         if (WIDTH_DIFF > 10.0f)
         {
-            textRectLeftToUse = misc::random::Float(0.0f, WIDTH_DIFF);
+            textRectLeftToUse = heroespath::misc::random::Float(0.0f, WIDTH_DIFF);
         }
 
-        const float HEIGHT_DIFF(static_cast<float>(bgInfo_.texture.getSize().y) -
-            bgInfo_.region.height);
+        auto const HEIGHT_DIFF{
+            static_cast<float>(bgInfo_.texture.getSize().y) - bgInfo_.region.height };
 
         if (HEIGHT_DIFF > 10.0f)
         {
-            textRectTopToUse = misc::random::Float(0.0f, HEIGHT_DIFF);
+            textRectTopToUse = heroespath::misc::random::Float(0.0f, HEIGHT_DIFF);
         }
 
-        const float SCALE_MULT(1.0f / IMAGE_SCALE);
-        const sf::FloatRect TEXTURE_RECT(textRectLeftToUse,
-                                         textRectTopToUse,
-                                         bgInfo_.region.width * SCALE_MULT,
-                                         bgInfo_.region.height * SCALE_MULT);
+        auto const SCALE_MULT{ 1.0f / IMAGE_SCALE };
+
+        const sf::FloatRect TEXTURE_RECT(
+            textRectLeftToUse,
+            textRectTopToUse,
+            bgInfo_.region.width * SCALE_MULT,
+            bgInfo_.region.height * SCALE_MULT);
 
         //setup the sprite
         sprite_.setTexture(bgInfo_.texture);
@@ -162,11 +167,13 @@ namespace gui
 
     void BackgroundImage::Reset()
     {
-        sfml_util::gui::BackgroundInfo newBgInfo(bgInfo_);
-        newBgInfo.region = sf::FloatRect(0.0f,
-                                         0.0f,
-                                         sfml_util::Display::Instance()->GetWinWidth(),
-                                         sfml_util::Display::Instance()->GetWinHeight());
+        auto newBgInfo{ bgInfo_ };
+
+        newBgInfo.region = sf::FloatRect(
+            0.0f,
+            0.0f,
+            sfml_util::Display::Instance()->GetWinWidth(),
+            sfml_util::Display::Instance()->GetWinHeight());
 
         Setup(newBgInfo, sfml_util::MapByRes(1.0f, 4.0f), IsTextureSmoothed());
     }
@@ -180,12 +187,13 @@ namespace gui
         }
         else
         {
-            sfml_util::DrawRectangle<float>(target,
-                                            states,
-                                            bgInfo_.region,
-                                            bgInfo_.color,
-                                            0,
-                                            bgInfo_.color);
+            sfml_util::DrawRectangle<float>(
+                target,
+                states,
+                bgInfo_.region,
+                bgInfo_.color,
+                0,
+                bgInfo_.color);
         }
 
         gradient_.draw(target, states);

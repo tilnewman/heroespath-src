@@ -30,6 +30,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -52,6 +54,7 @@ namespace popup
         static bool IsAffirmative(const ResponseTypes::Enum E);
     };
 
+}
 }
 
 #endif //POPUP_POPUPRESPONSEENUM_HPP_INCLUDED

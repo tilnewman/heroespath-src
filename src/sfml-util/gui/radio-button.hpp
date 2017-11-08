@@ -46,17 +46,17 @@
 
 namespace sfml_util
 {
-    namespace gui
-    {
-        class RadioButtonSet;
-    }
+namespace gui
+{
+    class RadioButtonSet;
+}
 
-    namespace callback
-    {
-        using RadioButtonCallbackPackage_t = sfml_util::callback::PtrWrapper<sfml_util::gui::RadioButtonSet>;
-        using IRadioButtonSetCallbackHandler_t = ICallbackHandler<RadioButtonCallbackPackage_t, bool>;
-        using RadioButtonCallbackHandlerPtrSet_t = std::set<IRadioButtonSetCallbackHandler_t *>;
-    }
+namespace callback
+{
+    using RadioButtonCallbackPackage_t = sfml_util::callback::PtrWrapper<sfml_util::gui::RadioButtonSet>;
+    using IRadioButtonSetCallbackHandler_t = ICallbackHandler<RadioButtonCallbackPackage_t, bool>;
+    using RadioButtonCallbackHandlerPtrSet_t = std::set<IRadioButtonSetCallbackHandler_t *>;
+}
 
 namespace gui
 {
@@ -126,7 +126,7 @@ namespace gui
                         const TextInfoVec_t &    TEXT_INFO_VEC,
                         const std::size_t        INITIAL_SELECTION,
                         const Brightness::Enum   BRIGHTNESS,
-                        const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                        const heroespath::misc::SizetVec_t & INVALID_SEL_VEC = heroespath::misc::SizetVec_t(),
                         const box::Info &        BOX_INFO        = box::Info(),
                         const float              OUTER_PAD       = OUTER_PAD_DEFAULT_,
                         const float              BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
@@ -137,7 +137,7 @@ namespace gui
                         const MouseTextInfoVec_t & TEXT_INFO_VEC,
                         const std::size_t          INITIAL_SELECTION,
                         const Brightness::Enum     BRIGHTNESS,
-                        const misc::SizetVec_t &   INVALID_SEL_VEC = misc::SizetVec_t(),
+                        const heroespath::misc::SizetVec_t &   INVALID_SEL_VEC = heroespath::misc::SizetVec_t(),
                         const box::Info &          BOX_INFO        = box::Info(),
                         const float                OUTER_PAD       = OUTER_PAD_DEFAULT_,
                         const float                BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
@@ -150,7 +150,7 @@ namespace gui
                         const std::vector<std::string> & LABEL_VEC,
                         const std::size_t                INITIAL_SELECTION,
                         const Brightness::Enum           BRIGHTNESS,
-                        const misc::SizetVec_t &         INVALID_SEL_VEC = misc::SizetVec_t(),
+                        const heroespath::misc::SizetVec_t &         INVALID_SEL_VEC = heroespath::misc::SizetVec_t(),
                         const box::Info &                BOX_INFO        = box::Info(),
                         const float                      OUTER_PAD       = OUTER_PAD_DEFAULT_,
                         const float                      BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
@@ -162,7 +162,7 @@ namespace gui
                    const TextInfoVec_t &    TEXT_INFO_VEC,
                    const std::size_t        INITIAL_SELECTION,
                    const Brightness::Enum   BRIGHTNESS,
-                   const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                   const heroespath::misc::SizetVec_t & INVALID_SEL_VEC = heroespath::misc::SizetVec_t(),
                    const box::Info &        BOX_INFO        = box::Info(),
                    const float              OUTER_PAD       = OUTER_PAD_DEFAULT_,
                    const float              BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
@@ -172,7 +172,7 @@ namespace gui
                    const MouseTextInfoVec_t & TEXT_INFO_VEC,
                    const std::size_t          INITIAL_SELECTION,
                    const Brightness::Enum     BRIGHTNESS,
-                   const misc::SizetVec_t &   INVALID_SEL_VEC = misc::SizetVec_t(),
+                   const heroespath::misc::SizetVec_t &   INVALID_SEL_VEC = heroespath::misc::SizetVec_t(),
                    const box::Info &          BOX_INFO        = box::Info(),
                    const float                OUTER_PAD       = OUTER_PAD_DEFAULT_,
                    const float                BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_);
@@ -183,7 +183,7 @@ namespace gui
                     const std::vector<std::string> & LABEL_VEC,
                     const std::size_t                INITIAL_SELECTION,
                     const Brightness::Enum           BRIGHTNESS,
-                    const misc::SizetVec_t &         INVALID_SEL_VEC = misc::SizetVec_t(),
+                    const heroespath::misc::SizetVec_t &         INVALID_SEL_VEC = heroespath::misc::SizetVec_t(),
                     const box::Info &                BOX_INFO        = box::Info(),
                     const float                      OUTER_PAD       = OUTER_PAD_DEFAULT_,
                     const float                      BETWEEN_PAD     = BETWEEN_PAD_DEFAULT_ );
@@ -196,8 +196,8 @@ namespace gui
         //throws on out of bounds, but will allow setting a grayed-out number
         void SetSelectNumber(const std::size_t);
 
-        void SetInvalidSelections(const misc::SizetVec_t & INVALID_SELECTIONS_VEC);
-        inline const misc::SizetVec_t GetInvalidSelections() const    { return invalidSelectionVec_; }
+        void SetInvalidSelections(const heroespath::misc::SizetVec_t & INVALID_SELECTIONS_VEC);
+        inline const heroespath::misc::SizetVec_t GetInvalidSelections() const    { return invalidSelectionVec_; }
 
         //returns true if the currentSelection_ changed
         virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);
@@ -246,7 +246,7 @@ namespace gui
         RadioButtonSVec_t  buttonSVec_;
         box::Box           box_;
         std::size_t        downInWhichRegion_;
-        misc::SizetVec_t   invalidSelectionVec_;
+        heroespath::misc::SizetVec_t   invalidSelectionVec_;
         std::size_t        prevSelection_;
         //
         sfml_util::callback::RadioButtonCallbackHandlerPtrSet_t callbackHandlerPtrSet_;

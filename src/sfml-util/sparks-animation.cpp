@@ -67,7 +67,7 @@ namespace animation
         sprite_.setPosition(0.0f, 0.0f);
         sprite_.setScale(1.0f, 1.0f);
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f, sprite_.getLocalBounds().height * 0.5f);
-        sprite_.rotate(misc::random::Float(360.0f));
+        sprite_.rotate(heroespath::misc::random::Float(360.0f));
         sprite_.setOrigin(0.0f, 0.0f);
         //
         sprite_.setPosition(startPosV_);
@@ -148,13 +148,13 @@ namespace animation
         sparkTexture3_           (),
         sparkVec_                ()
     {
-        LoadTexture(sparkTexture1_, game::GameDataFile::Instance()->
+        LoadTexture(sparkTexture1_, heroespath::game::GameDataFile::Instance()->
             GetMediaPath("media-images-misc-spark1"));
 
-        LoadTexture(sparkTexture2_, game::GameDataFile::Instance()->
+        LoadTexture(sparkTexture2_, heroespath::game::GameDataFile::Instance()->
             GetMediaPath("media-images-misc-spark2"));
 
-        LoadTexture(sparkTexture3_, game::GameDataFile::Instance()->
+        LoadTexture(sparkTexture3_, heroespath::game::GameDataFile::Instance()->
             GetMediaPath("media-images-misc-spark3"));
 
         sfml_util::Mask(sparkTexture1_);
@@ -176,22 +176,22 @@ namespace animation
             emitTimerSec_ -= SEC_PER_EMIT_;
 
             auto const EMITTER_VERTICAL_SPAN{ (SPRAY_RATIO_MINOR_ * REGION_.height) };
-            auto const START_POS_TOP{ ((REGION_.top + (REGION_.height * 0.5f)) - (EMITTER_VERTICAL_SPAN * 0.5f)) + misc::random::Float(EMITTER_VERTICAL_SPAN) };
+            auto const START_POS_TOP{ ((REGION_.top + (REGION_.height * 0.5f)) - (EMITTER_VERTICAL_SPAN * 0.5f)) + heroespath::misc::random::Float(EMITTER_VERTICAL_SPAN) };
 
-            auto const EMITTER_HORIZ_OFFSET{ misc::random::Float(SPRAY_RATIO_MINOR_ * 0.5f * REGION_.width) };
+            auto const EMITTER_HORIZ_OFFSET{ heroespath::misc::random::Float(SPRAY_RATIO_MINOR_ * 0.5f * REGION_.width) };
             auto const START_POS_LEFT{ ((WILL_EMIT_RIGHT_) ? REGION_.left + EMITTER_HORIZ_OFFSET : (REGION_.left + REGION_.width) - EMITTER_HORIZ_OFFSET) };
 
-            auto const TARGET_VERT_SPAN{ misc::random::Float(REGION_.height * SPRAY_RATIO_MAJOR_) };
-            auto const END_POS_TOP{ ((misc::random::Bool()) ? START_POS_TOP + TARGET_VERT_SPAN : START_POS_TOP - TARGET_VERT_SPAN) };
+            auto const TARGET_VERT_SPAN{ heroespath::misc::random::Float(REGION_.height * SPRAY_RATIO_MAJOR_) };
+            auto const END_POS_TOP{ ((heroespath::misc::random::Bool()) ? START_POS_TOP + TARGET_VERT_SPAN : START_POS_TOP - TARGET_VERT_SPAN) };
 
             auto const TARGET_HORIZ_SPAN_MIN{ (REGION_.width * SPRAY_RATIO_MINOR_) };
             auto const TARGET_HORIZ_SPAN_MAX{ (REGION_.width * SPRAY_RATIO_MAJOR_) };
-            auto const TARGET_HORIZ_SPAN{ misc::random::Float(TARGET_HORIZ_SPAN_MIN, TARGET_HORIZ_SPAN_MAX) };
+            auto const TARGET_HORIZ_SPAN{ heroespath::misc::random::Float(TARGET_HORIZ_SPAN_MIN, TARGET_HORIZ_SPAN_MAX) };
             auto const END_POS_LEFT{ ((WILL_EMIT_RIGHT_) ? START_POS_LEFT + TARGET_HORIZ_SPAN : START_POS_LEFT - TARGET_HORIZ_SPAN) };
 
             const sf::Texture * const TEXTURE_PTR{ [&]()
                 {
-                    auto const RAND{ misc::random::Int(2) };
+                    auto const RAND{ heroespath::misc::random::Int(2) };
                     if (RAND == 0)
                     {
                         return & sparkTexture1_;
@@ -216,9 +216,9 @@ namespace animation
                 ValueWithRandomVariance(ROTATION_SPEED_BASE_, ROTATION_SPEED_VAR_RATIO_),
                 sf::Color(255,
                           255,
-                          static_cast<sf::Uint8>(misc::random::Int(255)),
-                          static_cast<sf::Uint8>(misc::random::Int(0, 127))),
-                sf::Color(255, 255, static_cast<sf::Uint8>(misc::random::Int(255)), 255) ) );
+                          static_cast<sf::Uint8>(heroespath::misc::random::Int(255)),
+                          static_cast<sf::Uint8>(heroespath::misc::random::Int(0, 127))),
+                sf::Color(255, 255, static_cast<sf::Uint8>(heroespath::misc::random::Int(255)), 255) ) );
         }
 
         for (auto & nextSpark : sparkVec_)
@@ -245,14 +245,14 @@ namespace animation
 
     float SparksAnimation::ValueWithRandomVariance(const float BASE, const float VARIANCE_RATIO) const
     {
-        if (misc::IsRealZero(VARIANCE_RATIO))
+        if (heroespath::misc::IsRealZero(VARIANCE_RATIO))
         {
             return BASE;
         }
         else
         {
             auto const VARIATION_SPAN{ BASE * VARIANCE_RATIO };
-            return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
+            return (BASE - (VARIATION_SPAN * 0.5f)) + heroespath::misc::random::Float(VARIATION_SPAN);
         }
     }
 

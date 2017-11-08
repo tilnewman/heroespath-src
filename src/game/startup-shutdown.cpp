@@ -29,9 +29,9 @@
 //
 #include "startup-shutdown.hpp"
 
-#include "configbase/configbase.hpp"
+#include "config/configbase.hpp"
 
-#include "logbase/macros.hpp"
+#include "log/macros.hpp"
 
 #include "sfml-util/loop.hpp"
 #include "sfml-util/display.hpp"
@@ -49,35 +49,36 @@
 
 #include "popup/popup-manager.hpp"
 
+#include "log/logger.hpp"
+
 #include "game/loop-manager.hpp"
-#include "game/logger.hpp"
 #include "game/game-data-file.hpp"
-#include "game/settings-file.hpp"
+#include "config/settings-file.hpp"
 #include "game/game.hpp"
-#include "game/creature/title-warehouse.hpp"
-#include "game/creature/condition-warehouse.hpp"
-#include "game/creature/enchantment-warehouse.hpp"
-#include "game/creature/enchantment-factory.hpp"
-#include "game/creature/name-info.hpp"
-#include "game/spell/spell-warehouse.hpp"
-#include "game/state/game-state-factory.hpp"
-#include "game/combat/encounter.hpp"
-#include "game/combat/party-factory.hpp"
-#include "game/combat/strategy-details.hpp"
-#include "game/item/armor-details.hpp"
-#include "game/item/armor-factory.hpp"
-#include "game/item/weapon-details.hpp"
-#include "game/item/item-warehouse.hpp"
-#include "game/item/weapon-factory.hpp"
-#include "game/item/armor-ratings.hpp"
-#include "game/item/item-profile-warehouse.hpp"
-#include "game/item/item-factory.hpp"
-#include "game/item/misc-item-factory.hpp"
-#include "game/player/character-warehouse.hpp"
-#include "game/non-player/inventory-factory.hpp"
-#include "game/non-player/character-warehouse.hpp"
-#include "game/song/song-warehouse.hpp"
-#include "game/trap-warehouse.hpp"
+#include "creature/title-warehouse.hpp"
+#include "creature/condition-warehouse.hpp"
+#include "creature/enchantment-warehouse.hpp"
+#include "creature/enchantment-factory.hpp"
+#include "creature/name-info.hpp"
+#include "spell/spell-warehouse.hpp"
+#include "state/game-state-factory.hpp"
+#include "combat/encounter.hpp"
+#include "combat/party-factory.hpp"
+#include "combat/strategy-details.hpp"
+#include "item/armor-details.hpp"
+#include "item/armor-factory.hpp"
+#include "item/weapon-details.hpp"
+#include "item/item-warehouse.hpp"
+#include "item/weapon-factory.hpp"
+#include "item/armor-ratings.hpp"
+#include "item/item-profile-warehouse.hpp"
+#include "item/item-factory.hpp"
+#include "item/misc-item-factory.hpp"
+#include "player/character-warehouse.hpp"
+#include "non-player/inventory-factory.hpp"
+#include "non-player/character-warehouse.hpp"
+#include "song/song-warehouse.hpp"
+#include "combat/trap-warehouse.hpp"
 
 #include "misc/random.hpp"
 #include "misc/platform.hpp"
@@ -87,6 +88,8 @@
 #include <exception>
 
 
+namespace heroespath
+{
 namespace game
 {
 
@@ -98,7 +101,7 @@ namespace game
         try
         {
             //initialize the log first so that everything has the chance to log
-            game::Logger::Acquire();
+            log::Logger::Acquire();
 
             ParseCommandLineArguments(ARGC, argv);
             DetectLogAndCheckPlatform();
@@ -106,7 +109,7 @@ namespace game
             misc::random::MersenneTwister::Seed();
 
             //for this point forward the GameDataFile is required, so initialize it here
-            game::GameDataFile::Acquire();
+            GameDataFile::Acquire();
 
             SetupDisplay(APPLICATION_NAME);
             SetManagerClassResourcePaths();
@@ -116,12 +119,12 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT( * game::Logger::Instance(),
+            M_LOG_FAT( * log::Logger::Instance(),
                 "Appication Setup Framework threw std::exception \"" << E.what() << "\"");
         }
         catch (...)
         {
-            M_LOG_FAT( * game::Logger::Instance(),
+            M_LOG_FAT( * log::Logger::Instance(),
                 "Appication Setup Framework threw unknown (non-std) exception.");
         }
 
@@ -140,12 +143,12 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT( * game::Logger::Instance(),
+            M_LOG_FAT( * log::Logger::Instance(),
                 "Application threw std::exception \"" << E.what() << "\"");
         }
         catch (...)
         {
-            M_LOG_FAT( * game::Logger::Instance(),
+            M_LOG_FAT( * log::Logger::Instance(),
                 "Application threw an unknown (non-std) exception.");
         }
 
@@ -159,19 +162,19 @@ namespace game
 
         try
         {
-            game::SettingsFile::Instance()->AcquireAndSave();
+            config::SettingsFile::Instance()->AcquireAndSave();
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT( * game::Logger::Instance(),
-               "game::SettingsFile::AcquireAndSave() threw std::exception \"" << E.what() << "\"");
+            M_LOG_FAT( * log::Logger::Instance(),
+               "SettingsFile::AcquireAndSave() threw std::exception \"" << E.what() << "\"");
 
             exitCode = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG_FAT( * game::Logger::Instance(),
-                "game::SettingsFile::AcquireAndSave() threw an unknown (non-std) exception.");
+            M_LOG_FAT( * log::Logger::Instance(),
+                "SettingsFile::AcquireAndSave() threw an unknown (non-std) exception.");
 
             exitCode = EXIT_FAILURE;
         }
@@ -186,7 +189,7 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(*game::Logger::Instance(),
+            M_LOG_FAT( * log::Logger::Instance(),
                 "sfml_util::Display::GetWindow()->close() threw std::exception \""
                 << E.what() << "\"");
 
@@ -194,7 +197,7 @@ namespace game
         }
         catch (...)
         {
-            M_LOG(*game::Logger::Instance(),
+            M_LOG( * log::Logger::Instance(),
                 "sfml_util::Display::GetWindow()->close() threw an unknown (non-std) exception.");
 
             exitCode = EXIT_FAILURE;
@@ -206,16 +209,16 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(*game::Logger::Instance(),
-                "game::StartupShutdown::WarehousesEmpty() threw std::exception \""
+            M_LOG_FAT( * log::Logger::Instance(),
+                "StartupShutdown::WarehousesEmpty() threw std::exception \""
                 << E.what() << "\"");
 
             exitCode = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG_FAT(*game::Logger::Instance(),
-                "game::StartupShutdown::WarehousesEmpty() threw an unknown (non-std) exception.");
+            M_LOG_FAT( * log::Logger::Instance(),
+                "StartupShutdown::WarehousesEmpty() threw an unknown (non-std) exception.");
 
             exitCode = EXIT_FAILURE;
         }
@@ -226,21 +229,21 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(*game::Logger::Instance(),
-                "game::StartupShutdown::SingletonsRelease() threw std::exception \""
+            M_LOG_FAT( * log::Logger::Instance(),
+                "StartupShutdown::SingletonsRelease() threw std::exception \""
                 << E.what() << "\"");
 
             exitCode = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG_FAT(*game::Logger::Instance(),
-               "game::StartupShutdown::SingletonsRelease() threw an unknown (non-std) exception.");
+            M_LOG_FAT( * log::Logger::Instance(),
+               "StartupShutdown::SingletonsRelease() threw an unknown (non-std) exception.");
 
             exitCode = EXIT_FAILURE;
         }
 
-        game::Logger::Release();
+        log::Logger::Release();
         return exitCode;
     }
 
@@ -250,7 +253,7 @@ namespace game
         if (ARGC > 1)
         {
             std::cout << "Will attempt to start in stage: \"" << argv[1] << "\"" << std::endl;
-            game::LoopManager::SetStartupStage(argv[1]);
+            LoopManager::SetStartupStage(argv[1]);
 
             if (ARGC >= 2)
             {
@@ -298,7 +301,7 @@ namespace game
         sfml_util::FontManager::SetFontsDirectory(
             game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir"));
 
-        popup::PopupManager::SetTexturesDirectoryPaths(
+        heroespath::popup::PopupManager::SetTexturesDirectoryPaths(
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-popup-dir"),
             game::GameDataFile::Instance()->GetMediaPath("media-images-accents-dir"));
 
@@ -332,21 +335,21 @@ namespace game
     void StartupShutdown::WarehousesFill()
     {
         sfml_util::FontManager::Fill();
-        game::creature::title::Warehouse::Fill();
-        game::creature::condition::Warehouse::Fill();
-        game::spell::Warehouse::Fill();
-        game::song::Warehouse::Fill();
-        game::trap::Warehouse::Fill();
+        creature::title::Warehouse::Fill();
+        creature::condition::Warehouse::Fill();
+        spell::Warehouse::Fill();
+        song::Warehouse::Fill();
+        combat::trap::Warehouse::Fill();
     }
 
 
     void StartupShutdown::WarehousesEmpty()
     {
-        game::trap::Warehouse::Empty();
-        game::song::Warehouse::Empty();
-        game::spell::Warehouse::Empty();
-        game::creature::condition::Warehouse::Empty();
-        game::creature::title::Warehouse::Empty();
+        combat::trap::Warehouse::Empty();
+        song::Warehouse::Empty();
+        spell::Warehouse::Empty();
+        creature::condition::Warehouse::Empty();
+        creature::title::Warehouse::Empty();
         sfml_util::FontManager::Empty();
     }
 
@@ -354,16 +357,16 @@ namespace game
     void StartupShutdown::SingletonsAcquireAndInitialize()
     {
         sfml_util::TextureCache::Acquire();
-        game::creature::EnchantmentWarehouse::Acquire();
-        game::creature::EnchantmentFactory::Acquire();
-        game::item::ItemWarehouse::Acquire();
-        game::player::CharacterWarehouse::Acquire();
-        game::non_player::CharacterWarehouse::Acquire();
-        game::item::weapon::WeaponFactory::Acquire();
-        game::item::misc::MiscItemFactory::Acquire();
+        creature::EnchantmentWarehouse::Acquire();
+        creature::EnchantmentFactory::Acquire();
+        item::ItemWarehouse::Acquire();
+        player::CharacterWarehouse::Acquire();
+        non_player::CharacterWarehouse::Acquire();
+        item::weapon::WeaponFactory::Acquire();
+        item::MiscItemFactory::Acquire();
         sfml_util::SoundManager::Acquire();
         sfml_util::FontManager::Acquire();
-        popup::PopupManager::Acquire();
+        heroespath::popup::PopupManager::Acquire();
         sfml_util::gui::GuiElements::Acquire();
         sfml_util::gui::ItemImageManager::Acquire();
         sfml_util::gui::CreatureImageManager::Acquire();
@@ -372,52 +375,52 @@ namespace game
         sfml_util::gui::ConditionImageManager::Acquire();
         sfml_util::gui::CombatImageManager::Acquire();
         sfml_util::gui::SongImageManager::Acquire();
-        game::Game::Acquire();
-        game::state::GameStateFactory::Acquire();
-        game::combat::PartyFactory::Acquire();
-        game::creature::NameInfo::Acquire();
-        game::item::armor::ArmorDetailLoader::Acquire();
-        game::item::armor::ArmorFactory::Acquire();
-        game::item::weapon::WeaponDetailLoader::Acquire();
-        game::non_player::ownership::InventoryFactory::Acquire();
-        game::combat::Encounter::Acquire();
-        game::item::ArmorRatings::Acquire();
-        game::item::ItemProfileWarehouse::Acquire();
-        game::item::ItemFactory::Acquire();
+        Game::Acquire();
+        state::GameStateFactory::Acquire();
+        combat::PartyFactory::Acquire();
+        creature::NameInfo::Acquire();
+        item::armor::ArmorDetailLoader::Acquire();
+        item::armor::ArmorFactory::Acquire();
+        item::weapon::WeaponDetailLoader::Acquire();
+        non_player::ownership::InventoryFactory::Acquire();
+        combat::Encounter::Acquire();
+        item::ArmorRatings::Acquire();
+        item::ItemProfileWarehouse::Acquire();
+        item::ItemFactory::Acquire();
 
-        game::SettingsFile::Acquire();
-        game::SettingsFile::Instance()->LoadAndRestore();
+        config::SettingsFile::Acquire();
+        config::SettingsFile::Instance()->LoadAndRestore();
 
         //NOTE:  LoadSoundSets() must occur after SettingsFile's
         //       LoadAndRestore(), so that the sound effects created
         //       here have the correct volume loaded from the settings
         //       file.
         sfml_util::SoundManager::Instance()->LoadSoundSets();
-        game::combat::strategy::ChanceFactory::Instance()->Initialize();
-        popup::PopupManager::Instance()->LoadAccentImagePaths();
-        game::item::ArmorRatings::Instance()->Setup();
+        combat::strategy::ChanceFactory::Instance()->Initialize();
+        heroespath::popup::PopupManager::Instance()->LoadAccentImagePaths();
+        item::ArmorRatings::Instance()->Setup();
 
         //LoopManager must be last
-        game::LoopManager::Acquire();
+        LoopManager::Acquire();
     }
 
 
     void StartupShutdown::SingletonsRelease()
     {
-        game::LoopManager::Release();
-        game::SettingsFile::Release();
-        game::item::ItemFactory::Release();
-        game::item::ItemProfileWarehouse::Release();
-        game::item::ArmorRatings::Release();
-        game::combat::Encounter::Release();
-        game::non_player::ownership::InventoryFactory::Release();
-        game::item::weapon::WeaponDetailLoader::Release();
-        game::item::armor::ArmorFactory::Release();
-        game::item::armor::ArmorDetailLoader::Release();
-        game::creature::NameInfo::Release();
-        game::combat::PartyFactory::Release();
-        game::state::GameStateFactory::Release();
-        game::Game::Release();
+        LoopManager::Release();
+        config::SettingsFile::Release();
+        item::ItemFactory::Release();
+        item::ItemProfileWarehouse::Release();
+        item::ArmorRatings::Release();
+        combat::Encounter::Release();
+        non_player::ownership::InventoryFactory::Release();
+        item::weapon::WeaponDetailLoader::Release();
+        item::armor::ArmorFactory::Release();
+        item::armor::ArmorDetailLoader::Release();
+        creature::NameInfo::Release();
+        combat::PartyFactory::Release();
+        state::GameStateFactory::Release();
+        Game::Release();
         sfml_util::gui::SongImageManager::Release();
         sfml_util::gui::CombatImageManager::Release();
         sfml_util::gui::ConditionImageManager::Release();
@@ -427,19 +430,20 @@ namespace game
         sfml_util::gui::ItemImageManager::Release();
         sfml_util::gui::GuiElements::Release();
         sfml_util::FontManager::Release();
-        popup::PopupManager::Release();
+        heroespath::popup::PopupManager::Release();
         sfml_util::SoundManager::Release();
-        game::GameDataFile::Release();
-        game::item::misc::MiscItemFactory::Release();
-        game::item::weapon::WeaponFactory::Release();
-        game::player::CharacterWarehouse::Release();
-        game::non_player::CharacterWarehouse::Release();
-        game::item::ItemWarehouse::Release();
-        game::creature::EnchantmentFactory::Release();
-        game::creature::EnchantmentWarehouse::Release();
+        GameDataFile::Release();
+        item::MiscItemFactory::Release();
+        item::weapon::WeaponFactory::Release();
+        player::CharacterWarehouse::Release();
+        non_player::CharacterWarehouse::Release();
+        item::ItemWarehouse::Release();
+        creature::EnchantmentFactory::Release();
+        creature::EnchantmentWarehouse::Release();
         sfml_util::Display::Release();
         misc::Platform::Release();
         sfml_util::TextureCache::Release();
     }
 
+}
 }

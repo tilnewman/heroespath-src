@@ -35,6 +35,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -42,6 +44,7 @@ namespace popup
     //This means you must return false if one popup will replace another.
     using IPopupHandler_t = sfml_util::callback::ICallbackHandler<PopupResponse, bool>;
 
+}
 }
 
 #endif //POPUP_IPOOPUPCALLBACK_HPP_INCLUDED

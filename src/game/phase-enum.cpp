@@ -35,39 +35,41 @@
 #include <exception>
 
 
+namespace heroespath
+{
 namespace game
 {
 
-    const std::string Phase::ToString(const Enum E, const bool WILL_WRAP)
+    const std::string game::Phase::ToString(const Enum E, const bool WILL_WRAP)
     {
         std::ostringstream ss;
 
-        if (E == Phase::NotAPhase)
+        if (E == game::Phase::NotAPhase)
         {
             return "";
         }
 
-        if (E & Phase::Combat)
+        if (E & game::Phase::Combat)
         {
             ss << "Combat";
         }
 
-        if (E & Phase::Exploring)
+        if (E & game::Phase::Exploring)
         {
             ss << ((ss.str().empty()) ? "" : ", ") << "Exploring";
         }
 
-        if (E & Phase::Conversation)
+        if (E & game::Phase::Conversation)
         {
             ss << ((ss.str().empty()) ? "" : ", ") << "Conversation";
         }
 
-        if (E & Phase::Quest)
+        if (E & game::Phase::Quest)
         {
             ss << ((ss.str().empty()) ? "" : ", ") << "Quest";
         }
 
-        if (E & Phase::Inventory)
+        if (E & game::Phase::Inventory)
         {
             ss << ((ss.str().empty()) ? "" : ", ") << "Inventory";
         }
@@ -75,7 +77,7 @@ namespace game
         if (ss.str().empty())
         {
             std::ostringstream ssErr;
-            ssErr << "game::Phase::ToString(" << E << ")_InvalidValueError";
+            ssErr << "Phase::ToString(" << E << ")_InvalidValueError";
             throw std::range_error(ssErr.str());
         }
 
@@ -90,11 +92,11 @@ namespace game
     }
 
 
-    Phase::Enum Phase::FromString(const std::string & S)
+    game::Phase::Enum game::Phase::FromString(const std::string & S)
     {
-        if (S == Phase::ToString(Phase::NotAPhase, false))
+        if (S == game::Phase::ToString(Phase::NotAPhase, false))
         {
-            return Phase::NotAPhase;
+            return game::Phase::NotAPhase;
         }
 
         auto lowerCaseStr{ boost::algorithm::to_lower_copy(S) };
@@ -103,42 +105,42 @@ namespace game
         if (boost::contains(lowerCaseStr,
                             boost::to_lower_copy(Phase::ToString(Phase::Combat, false))))
         {
-            x = x | Phase::Combat;
+            x = x | game::Phase::Combat;
         }
 
         if (boost::contains(lowerCaseStr,
                             boost::to_lower_copy(Phase::ToString(Phase::Exploring, false))))
         {
-            x = x | Phase::Exploring;
+            x = x | game::Phase::Exploring;
         }
 
         if (boost::contains(lowerCaseStr,
                             boost::to_lower_copy(Phase::ToString(Phase::Conversation, false))))
         {
-            x = x | Phase::Conversation;
+            x = x | game::Phase::Conversation;
         }
 
         if (boost::contains(lowerCaseStr,
                             boost::to_lower_copy(Phase::ToString(Phase::Quest, false))))
         {
-            x = x | Phase::Quest;
+            x = x | game::Phase::Quest;
         }
 
         if (boost::contains(lowerCaseStr,
                             boost::to_lower_copy(Phase::ToString(Phase::Inventory, false))))
         {
-            x = x | Phase::Inventory;
+            x = x | game::Phase::Inventory;
         }
 
         if (0 == x)
         {
             std::ostringstream ssErr;
-            ssErr << "game::Phase::FromString(\"" << S << "\") unable to convert that string into a set of Phase::Enum flags.";
+            ssErr << "Phase::FromString(\"" << S << "\") unable to convert that string into a set of game::Phase::Enum flags.";
             throw std::runtime_error(ssErr.str());
         }
 
-        return static_cast<Phase::Enum>(x);
+        return static_cast<game::Phase::Enum>(x);
     }
 
-
+}
 }

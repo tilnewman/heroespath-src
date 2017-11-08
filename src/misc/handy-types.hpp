@@ -32,10 +32,15 @@
 #include <cstddef>
 
 
+namespace heroespath
+{
 namespace misc
 {
+
     using StrVec_t = std::vector<std::string>;
     using SizetVec_t = std::vector<std::size_t>;
+
+}
 }
 
 #endif //MISC_HANDYTYPES_HPP_INCLUDED

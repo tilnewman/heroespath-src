@@ -29,7 +29,7 @@
 //
 #include "platform.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
@@ -37,6 +37,8 @@
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace misc
 {
 
@@ -104,7 +106,9 @@ namespace misc
 
     void Platform::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "misc::Platform::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+            "misc::Platform::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
@@ -151,9 +155,13 @@ namespace misc
 #endif
 
         if (ss.str().empty())
+        {
             ss << "(None?  This platform is probably unsupported...)";
+        }
 
-        M_HP_LOG("Platform(s) Detected:  " << ss.str() << "  The platform_type has been set to " << GetName() << ".");
+        M_HP_LOG("Platform(s) Detected:  " << ss.str()
+            << "  The platform_type has been set to " << GetName() << ".");
     }
 
+}
 }

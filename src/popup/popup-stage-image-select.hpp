@@ -37,6 +37,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -113,6 +115,7 @@ namespace popup
         float imagePosTop_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGEIMAGESELECT_HPP_INCLUDED

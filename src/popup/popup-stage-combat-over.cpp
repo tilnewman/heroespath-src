@@ -35,6 +35,8 @@
 #include "sfml-util/loaders.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -58,7 +60,7 @@ namespace popup
 
         switch (popupInfo_.HowCombatEnded())
         {
-            case game::combat::CombatEnd::Win:
+            case combat::CombatEnd::Win:
             {
                 sfml_util::SoundManager::Instance()->Getsound_effect_set(
                     sfml_util::sound_effect_set::CombatWin).PlayRandom();
@@ -69,7 +71,7 @@ namespace popup
                 break;
             }
 
-            case game::combat::CombatEnd::Lose:
+            case combat::CombatEnd::Lose:
             {
                 sfml_util::SoundManager::Instance()->Getsound_effect_set(
                     sfml_util::sound_effect_set::CombatLose).PlayRandom();
@@ -80,8 +82,8 @@ namespace popup
                 break;
             }
 
-            case game::combat::CombatEnd::Ran:
-            case game::combat::CombatEnd::Count:
+            case combat::CombatEnd::Ran:
+            case combat::CombatEnd::Count:
             default:
             {
                 sfml_util::SoundManager::Instance()->Getsound_effect_set(
@@ -124,10 +126,10 @@ namespace popup
             {
                 switch (popupInfo_.HowCombatEnded())
                 {
-                    case game::combat::CombatEnd::Win:  { return "Victory!";}
-                    case game::combat::CombatEnd::Lose: { return "Death Strikes!"; }
-                    case game::combat::CombatEnd::Ran:
-                    case game::combat::CombatEnd::Count:
+                    case combat::CombatEnd::Win:  { return "Victory!";}
+                    case combat::CombatEnd::Lose: { return "Death Strikes!"; }
+                    case combat::CombatEnd::Ran:
+                    case combat::CombatEnd::Count:
                     default:                            { return "Defeat!"; }
                 }
             }() };
@@ -158,14 +160,14 @@ namespace popup
                 std::ostringstream descSS;
                 switch (popupInfo_.HowCombatEnded())
                 {
-                    case game::combat::CombatEnd::Win:
+                    case combat::CombatEnd::Win:
                     {
                         descSS << "Congratulations, your party has beaten all enemies on the "
                             << "field of battle and emerged victorious.\n\nWill you search "
                             << "for loot?";
                         break;
                     }
-                    case game::combat::CombatEnd::Lose:
+                    case combat::CombatEnd::Lose:
                     {
                         descSS << "The dangers of Etan have claimed another party of "
                             << "adventurers.  All of your characters have been "
@@ -175,8 +177,8 @@ namespace popup
                             << "to quit.";
                         break;
                     }
-                    case game::combat::CombatEnd::Ran:
-                    case game::combat::CombatEnd::Count:
+                    case combat::CombatEnd::Ran:
+                    case combat::CombatEnd::Count:
                     default:
                     {
                         descSS << "You have run from battle, and as a consequence, "
@@ -222,4 +224,5 @@ namespace popup
         Stage::Draw(target, STATES);
     }
 
+}
 }

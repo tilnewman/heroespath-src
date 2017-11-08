@@ -74,7 +74,7 @@ namespace animation
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f,
                           sprite_.getLocalBounds().height * 0.5f);
 
-        sprite_.rotate(misc::random::Float(360.0f));
+        sprite_.rotate(heroespath::misc::random::Float(360.0f));
 
         sprite_.setOrigin(0.0f, 0.0f);
 
@@ -165,13 +165,13 @@ namespace animation
         cloudTexture3_           (),
         cloudVec_                ()
     {
-        LoadTexture(cloudTexture1_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(cloudTexture1_, heroespath::game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-cloud1"));
 
-        LoadTexture(cloudTexture2_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(cloudTexture2_, heroespath::game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-cloud2"));
 
-        LoadTexture(cloudTexture3_, game::GameDataFile::Instance()->GetMediaPath(
+        LoadTexture(cloudTexture3_, heroespath::game::GameDataFile::Instance()->GetMediaPath(
             "media-images-misc-cloud3"));
 
         cloudVec_.reserve(static_cast<std::size_t>(EMIT_RATE_BASE_PER_SEC * DURATION_SEC) * 2);
@@ -196,21 +196,21 @@ namespace animation
             auto const HORIZ_CENTER     { REGION_.left + (REGION_.width * 0.5f) };
             auto const HORIZ_RAND_SPAN  { (REGION_.width * 0.5f) * CENTER_VAR_RATIO_ };
             auto const HORIZ_BASE       { HORIZ_CENTER - (HORIZ_RAND_SPAN * 0.5f) };
-            auto const HORIZ_START_POS  { HORIZ_BASE + misc::random::Float(HORIZ_RAND_SPAN) };
+            auto const HORIZ_START_POS  { HORIZ_BASE + heroespath::misc::random::Float(HORIZ_RAND_SPAN) };
             auto const HORIZ_END_POS    { ((HORIZ_START_POS < HORIZ_CENTER) ?
-                (HORIZ_START_POS - misc::random::Float(HORIZ_RAND_SPAN)) :
-                (HORIZ_START_POS + misc::random::Float(HORIZ_RAND_SPAN))) };
+                (HORIZ_START_POS - heroespath::misc::random::Float(HORIZ_RAND_SPAN)) :
+                (HORIZ_START_POS + heroespath::misc::random::Float(HORIZ_RAND_SPAN))) };
 
             auto const VERT_CENTER{ REGION_.top + (REGION_.height * 0.5f) };
             auto const VERT_RAND_SPAN{ (REGION_.height * 0.5f) * CENTER_VAR_RATIO_ };
             auto const VERT_BASE{ VERT_CENTER - (VERT_RAND_SPAN * 0.5f) };
-            auto const VERT_START_POS{ VERT_BASE + misc::random::Float(VERT_RAND_SPAN) };
+            auto const VERT_START_POS{ VERT_BASE + heroespath::misc::random::Float(VERT_RAND_SPAN) };
             auto const VERT_END_POS{ ((VERT_START_POS < VERT_CENTER) ?
-                (VERT_START_POS - misc::random::Float(VERT_RAND_SPAN)) :
-                (VERT_START_POS + misc::random::Float(VERT_RAND_SPAN))) };
+                (VERT_START_POS - heroespath::misc::random::Float(VERT_RAND_SPAN)) :
+                (VERT_START_POS + heroespath::misc::random::Float(VERT_RAND_SPAN))) };
 
             sf::Texture & textureRef{ cloudTexture1_ };
-            auto const WHICH_TEXTURE_NUM{ misc::random::Int(2) };
+            auto const WHICH_TEXTURE_NUM{ heroespath::misc::random::Int(2) };
             if (WHICH_TEXTURE_NUM == 0)
             {
                 textureRef = cloudTexture2_;
@@ -221,7 +221,7 @@ namespace animation
             }
 
             auto rotationSpeedToUse{ ValueWithRandomVariance(ROTATION_SPEED_BASE_, ROTATION_SPEED_VAR_RATIO_) };
-            if (misc::random::Bool())
+            if (heroespath::misc::random::Bool())
             {
                 rotationSpeedToUse *= -1.0f;
             }
@@ -234,12 +234,12 @@ namespace animation
                 ValueWithRandomVariance(START_SCALE_BASE_, START_SCALE_VAR_RATIO_),
                 ValueWithRandomVariance(END_SCALE_BASE_, END_SCALE_VAR_RATIO_),
                 rotationSpeedToUse,
-                sf::Color(static_cast<sf::Uint8>(104 + misc::random::Int(25)),
+                sf::Color(static_cast<sf::Uint8>(104 + heroespath::misc::random::Int(25)),
                           155,
-                          static_cast<sf::Uint8>(54 + misc::random::Int(50))),
-                sf::Color(static_cast<sf::Uint8>(104 + misc::random::Int(25)),
+                          static_cast<sf::Uint8>(54 + heroespath::misc::random::Int(50))),
+                sf::Color(static_cast<sf::Uint8>(104 + heroespath::misc::random::Int(25)),
                           155,
-                          static_cast<sf::Uint8>(54 + misc::random::Int(50)),
+                          static_cast<sf::Uint8>(54 + heroespath::misc::random::Int(50)),
                           0) ) );
         }
 
@@ -272,14 +272,14 @@ namespace animation
     float CloudAnimation::ValueWithRandomVariance(const float BASE,
                                                   const float VARIANCE_RATIO) const
     {
-        if (misc::IsRealZero(VARIANCE_RATIO))
+        if (heroespath::misc::IsRealZero(VARIANCE_RATIO))
         {
             return BASE;
         }
         else
         {
             auto const VARIATION_SPAN{ BASE * VARIANCE_RATIO };
-            return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
+            return (BASE - (VARIATION_SPAN * 0.5f)) + heroespath::misc::random::Float(VARIATION_SPAN);
         }
     }
 

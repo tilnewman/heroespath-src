@@ -32,9 +32,9 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 #include "game/loop-manager.hpp"
-#include "game/creature/body-type.hpp"
+#include "creature/body-type.hpp"
 
 #include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -49,6 +49,9 @@ namespace sfml_util
 {
 namespace gui
 {
+
+    using namespace heroespath;
+
 
     std::string CreatureImageManager::imagesDirectoryPath_;
     std::unique_ptr<CreatureImageManager> CreatureImageManager::instanceUPtr_{ nullptr };
@@ -123,36 +126,36 @@ namespace gui
         static auto sexIndex  { 0 };
         static auto classIndex{ 0 };
 
-        if (raceIndex < static_cast<int>(game::creature::race::Count))
+        if (raceIndex < static_cast<int>(creature::race::Count))
         {
-            auto const RACE_ENUM{ static_cast<game::creature::race::Enum>(raceIndex) };
-            auto const RACE_STR { game::creature::race::ToString(RACE_ENUM) };
-            auto const ROLE_VEC{ game::creature::race::Roles(RACE_ENUM) };
+            auto const RACE_ENUM{ static_cast<creature::race::Enum>(raceIndex) };
+            auto const RACE_STR { creature::race::ToString(RACE_ENUM) };
+            auto const ROLE_VEC{ creature::race::Roles(RACE_ENUM) };
 
             if (roleIndex < static_cast<int>(ROLE_VEC.size()))
             {
                 auto const ROLE_ENUM{ ROLE_VEC[static_cast<std::size_t>(roleIndex)] };
-                auto const ROLE_STR { game::creature::role::ToString(ROLE_ENUM) };
+                auto const ROLE_STR { creature::role::ToString(ROLE_ENUM) };
 
-                if (sexIndex < static_cast<int>(game::creature::sex::Count))
+                if (sexIndex < static_cast<int>(creature::sex::Count))
                 {
                     static std::size_t fileIndex{ 0 };
 
-                    auto const SEX_ENUM{ static_cast<game::creature::sex::Enum>(sexIndex) };
-                    auto const SEX_STR { game::creature::sex::ToString(SEX_ENUM) };
+                    auto const SEX_ENUM{ static_cast<creature::sex::Enum>(sexIndex) };
+                    auto const SEX_STR { creature::sex::ToString(SEX_ENUM) };
 
                     //test to ensure that BodyType maker will not throw
-                    auto const BODY_TYPE{ game::creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM) };
+                    auto const BODY_TYPE{ creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM) };
 
-                    if (RACE_ENUM == game::creature::race::Wolfen)
+                    if (RACE_ENUM == creature::race::Wolfen)
                     {
-                        if (classIndex < static_cast<int>(game::creature::wolfen_class::Count))
+                        if (classIndex < static_cast<int>(creature::wolfen_class::Count))
                         {
-                            auto const CLASS_ENUM{ static_cast<game::creature::wolfen_class::Enum>(classIndex) };
-                            auto const CLASS_STR { game::creature::wolfen_class::ToString(CLASS_ENUM) };
+                            auto const CLASS_ENUM{ static_cast<creature::wolfen_class::Enum>(classIndex) };
+                            auto const CLASS_STR { creature::wolfen_class::ToString(CLASS_ENUM) };
 
                             std::vector<std::string> filenamesVec;
-                            cimSPtr->GetFilenames(filenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM, CLASS_ENUM, game::creature::dragon_class::Count);
+                            cimSPtr->GetFilenames(filenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM, CLASS_ENUM, creature::dragon_class::Count);
 
                             M_ASSERT_OR_LOGANDTHROW_SS((filenamesVec.empty() == false), "sfml_util::gui::CreatureImageManager() (wolfen_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", wolfen_class=" << CLASS_STR << ", GetFilenames() failed to return anything.");
 
@@ -175,15 +178,15 @@ namespace gui
                             return false;
                         }
                     }
-                    else if (RACE_ENUM == game::creature::race::Dragon)
+                    else if (RACE_ENUM == creature::race::Dragon)
                     {
-                        if (classIndex < static_cast<int>(game::creature::dragon_class::Count))
+                        if (classIndex < static_cast<int>(creature::dragon_class::Count))
                         {
-                            auto const CLASS_ENUM{ static_cast<game::creature::dragon_class::Enum>(classIndex) };
-                            auto const CLASS_STR { game::creature::dragon_class::ToString(CLASS_ENUM) };
+                            auto const CLASS_ENUM{ static_cast<creature::dragon_class::Enum>(classIndex) };
+                            auto const CLASS_STR { creature::dragon_class::ToString(CLASS_ENUM) };
 
                             std::vector<std::string> filenamesVec;
-                            cimSPtr->GetFilenames(filenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM, game::creature::wolfen_class::Count, CLASS_ENUM);
+                            cimSPtr->GetFilenames(filenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM, creature::wolfen_class::Count, CLASS_ENUM);
 
                             M_ASSERT_OR_LOGANDTHROW_SS((filenamesVec.empty() == false), "sfml_util::gui::CreatureImageManager() (dragon_classes) race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", dragon_class=" << CLASS_STR << ", GetFilenames() failed to return anything.");
 
@@ -210,7 +213,7 @@ namespace gui
                     else
                     {
                         std::vector<std::string> filenamesVec;
-                        cimSPtr->GetFilenames(filenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM, game::creature::wolfen_class::Count, game::creature::dragon_class::Count);
+                        cimSPtr->GetFilenames(filenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM, creature::wolfen_class::Count, creature::dragon_class::Count);
 
                         M_ASSERT_OR_LOGANDTHROW_SS((filenamesVec.empty() == false), "sfml_util::gui::CreatureImageManager() race=" << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR << ", GetFilenames() failed to return anything.");
 
@@ -260,16 +263,16 @@ namespace gui
 
 
     void CreatureImageManager::GetImage(sf::Texture &                            texture,
-                                        const game::creature::race::Enum         RACE,
-                                        const game::creature::role::Enum         ROLE,
-                                        const game::creature::sex::Enum          SEX,
+                                        const creature::race::Enum         RACE,
+                                        const creature::role::Enum         ROLE,
+                                        const creature::sex::Enum          SEX,
                                         const bool                               WILL_PICK_RANDOM,
                                         const bool                               WILL_FACE_RIGHT,
-                                        const game::creature::wolfen_class::Enum WOLFEN_CLASS,
-                                        const game::creature::dragon_class::Enum DRAGON_CLASS) const
+                                        const creature::wolfen_class::Enum WOLFEN_CLASS,
+                                        const creature::dragon_class::Enum DRAGON_CLASS) const
     {
         const std::string FILENAME(GetFilename(RACE, ROLE, SEX, WILL_PICK_RANDOM, WOLFEN_CLASS, DRAGON_CLASS));
-        M_ASSERT_OR_LOGANDTHROW_SS((FILENAME.empty() == false), "sfml_util::gui::CreatureImageManager::GetImage()  GetFilename() call return no filename.  (race=" << game::creature::race::ToString(RACE) << ", role=" << game::creature::role::ToString(ROLE) << ", sex=" << game::creature::sex::ToString(SEX) << ", wolfen_class=" << WOLFEN_CLASS << ", dragon_class=" << DRAGON_CLASS << ")");
+        M_ASSERT_OR_LOGANDTHROW_SS((FILENAME.empty() == false), "sfml_util::gui::CreatureImageManager::GetImage()  GetFilename() call return no filename.  (race=" << creature::race::ToString(RACE) << ", role=" << creature::role::ToString(ROLE) << ", sex=" << creature::sex::ToString(SEX) << ", wolfen_class=" << WOLFEN_CLASS << ", dragon_class=" << DRAGON_CLASS << ")");
         return LoadImage(texture, FILENAME, WILL_FACE_RIGHT);
     }
 
@@ -290,19 +293,19 @@ namespace gui
     }
 
 
-    const std::string CreatureImageManager::GetFilename(const game::creature::race::Enum         RACE,
-                                                        const game::creature::role::Enum         ROLE,
-                                                        const game::creature::sex::Enum          SEX,
+    const std::string CreatureImageManager::GetFilename(const creature::race::Enum         RACE,
+                                                        const creature::role::Enum         ROLE,
+                                                        const creature::sex::Enum          SEX,
                                                         const bool                                     WILL_PICK_RANDOM,
-                                                        const game::creature::wolfen_class::Enum WOLFEN_CLASS,
-                                                        const game::creature::dragon_class::Enum DRAGON_CLASS) const
+                                                        const creature::wolfen_class::Enum WOLFEN_CLASS,
+                                                        const creature::dragon_class::Enum DRAGON_CLASS) const
     {
-        using namespace game::creature;
+        using namespace creature;
 
         std::vector<std::string> filenameVec;
         GetFilenames(filenameVec, RACE, ROLE, SEX, WOLFEN_CLASS, DRAGON_CLASS);
 
-        M_ASSERT_OR_LOGANDTHROW_SS((filenameVec.empty() == false), "sfml_util::gui::CreatureImageManager::GetFilename()  GetFilenames() call return no filenames.  (race=" << game::creature::race::ToString(RACE) << ", role=" << game::creature::role::ToString(ROLE) << ", sex=" << game::creature::sex::ToString(SEX) << ", wolfen_class=" << WOLFEN_CLASS << ", dragon_class=" << DRAGON_CLASS << ")");
+        M_ASSERT_OR_LOGANDTHROW_SS((filenameVec.empty() == false), "sfml_util::gui::CreatureImageManager::GetFilename()  GetFilenames() call return no filenames.  (race=" << creature::race::ToString(RACE) << ", role=" << creature::role::ToString(ROLE) << ", sex=" << creature::sex::ToString(SEX) << ", wolfen_class=" << WOLFEN_CLASS << ", dragon_class=" << DRAGON_CLASS << ")");
 
         if (WILL_PICK_RANDOM && (filenameVec.size() > 1))
         {
@@ -316,13 +319,13 @@ namespace gui
 
 
     void CreatureImageManager::GetFilenames(std::vector<std::string> &               outputVec,
-                                            const game::creature::race::Enum         RACE,
-                                            const game::creature::role::Enum         ROLE,
-                                            const game::creature::sex::Enum          SEX,
-                                            const game::creature::wolfen_class::Enum WOLFEN_CLASS,
-                                            const game::creature::dragon_class::Enum DRAGON_CLASS) const
+                                            const creature::race::Enum         RACE,
+                                            const creature::role::Enum         ROLE,
+                                            const creature::sex::Enum          SEX,
+                                            const creature::wolfen_class::Enum WOLFEN_CLASS,
+                                            const creature::dragon_class::Enum DRAGON_CLASS) const
     {
-        using namespace game::creature;
+        using namespace creature;
 
         if (RACE == race::Troll)
         {
@@ -1116,15 +1119,15 @@ namespace gui
             {
                 switch (DRAGON_CLASS)
                 {
-                    case game::creature::dragon_class::Hatchling: { outputVec.push_back("dragon-fb-hatchling.png"); return; }
-                    case game::creature::dragon_class::Whelp:     { outputVec.push_back("dragon-fb-whelp.png"); return;}
-                    case game::creature::dragon_class::Fledgling: { outputVec.push_back("dragon-fb-fledgling.png"); return; }
-                    case game::creature::dragon_class::Juvenile:  { outputVec.push_back("dragon-fb-juvenile.png"); return; }
-                    case game::creature::dragon_class::Adult:     { outputVec.push_back("dragon-fb-adult.png"); return; }
-                    case game::creature::dragon_class::Wyrm:      { outputVec.push_back("dragon-fb-wyrm.png"); return; }
-                    case game::creature::dragon_class::Skycaster: { outputVec.push_back("dragon-fb-skycaster.png"); return; }
-                    case game::creature::dragon_class::Elder:     { outputVec.push_back("dragon-fb-elder.png"); return; }
-                    case game::creature::dragon_class::Count:
+                    case creature::dragon_class::Hatchling: { outputVec.push_back("dragon-fb-hatchling.png"); return; }
+                    case creature::dragon_class::Whelp:     { outputVec.push_back("dragon-fb-whelp.png"); return;}
+                    case creature::dragon_class::Fledgling: { outputVec.push_back("dragon-fb-fledgling.png"); return; }
+                    case creature::dragon_class::Juvenile:  { outputVec.push_back("dragon-fb-juvenile.png"); return; }
+                    case creature::dragon_class::Adult:     { outputVec.push_back("dragon-fb-adult.png"); return; }
+                    case creature::dragon_class::Wyrm:      { outputVec.push_back("dragon-fb-wyrm.png"); return; }
+                    case creature::dragon_class::Skycaster: { outputVec.push_back("dragon-fb-skycaster.png"); return; }
+                    case creature::dragon_class::Elder:     { outputVec.push_back("dragon-fb-elder.png"); return; }
+                    case creature::dragon_class::Count:
                     default: { break; }
                 }
             }
@@ -1133,15 +1136,15 @@ namespace gui
             {
                 switch (DRAGON_CLASS)
                 {
-                    case game::creature::dragon_class::Hatchling: { outputVec.push_back("dragon-syl-hatchling.png"); return; }
-                    case game::creature::dragon_class::Whelp:     { outputVec.push_back("dragon-syl-whelp.png"); return; }
-                    case game::creature::dragon_class::Fledgling: { outputVec.push_back("dragon-syl-fledgling.png"); return; }
-                    case game::creature::dragon_class::Juvenile:  { outputVec.push_back("dragon-syl-juvenile.png"); return; }
-                    case game::creature::dragon_class::Adult:     { outputVec.push_back("dragon-syl-adult.png"); return; }
-                    case game::creature::dragon_class::Wyrm:      { outputVec.push_back("dragon-syl-wyrm.png"); return; }
-                    case game::creature::dragon_class::Skycaster: { outputVec.push_back("dragon-syl-skycaster.png"); return; }
-                    case game::creature::dragon_class::Elder:     { outputVec.push_back("dragon-syl-elder.png"); return; }
-                    case game::creature::dragon_class::Count:
+                    case creature::dragon_class::Hatchling: { outputVec.push_back("dragon-syl-hatchling.png"); return; }
+                    case creature::dragon_class::Whelp:     { outputVec.push_back("dragon-syl-whelp.png"); return; }
+                    case creature::dragon_class::Fledgling: { outputVec.push_back("dragon-syl-fledgling.png"); return; }
+                    case creature::dragon_class::Juvenile:  { outputVec.push_back("dragon-syl-juvenile.png"); return; }
+                    case creature::dragon_class::Adult:     { outputVec.push_back("dragon-syl-adult.png"); return; }
+                    case creature::dragon_class::Wyrm:      { outputVec.push_back("dragon-syl-wyrm.png"); return; }
+                    case creature::dragon_class::Skycaster: { outputVec.push_back("dragon-syl-skycaster.png"); return; }
+                    case creature::dragon_class::Elder:     { outputVec.push_back("dragon-syl-elder.png"); return; }
+                    case creature::dragon_class::Count:
                     default: { break; }
                 }
             }
@@ -1655,13 +1658,13 @@ namespace gui
             {
                 switch (WOLFEN_CLASS)
                 {
-                    case game::creature::wolfen_class::Pup:       { outputVec.push_back("wolfen-pup.png"); return; }
-                    case game::creature::wolfen_class::Juvenile:  { outputVec.push_back("wolfen-juvenile.png"); return; }
-                    case game::creature::wolfen_class::Adult:     { outputVec.push_back("wolfen-adult.png"); return; }
-                    case game::creature::wolfen_class::Noble:     { outputVec.push_back("wolfen-noble.png"); return; }
-                    case game::creature::wolfen_class::Highborn:  { outputVec.push_back("wolfen-highborn.png"); return; }
-                    case game::creature::wolfen_class::Elder:     { outputVec.push_back("wolfen-elder.png"); return; }
-                    case game::creature::wolfen_class::Count:
+                    case creature::wolfen_class::Pup:       { outputVec.push_back("wolfen-pup.png"); return; }
+                    case creature::wolfen_class::Juvenile:  { outputVec.push_back("wolfen-juvenile.png"); return; }
+                    case creature::wolfen_class::Adult:     { outputVec.push_back("wolfen-adult.png"); return; }
+                    case creature::wolfen_class::Noble:     { outputVec.push_back("wolfen-noble.png"); return; }
+                    case creature::wolfen_class::Highborn:  { outputVec.push_back("wolfen-highborn.png"); return; }
+                    case creature::wolfen_class::Elder:     { outputVec.push_back("wolfen-elder.png"); return; }
+                    case creature::wolfen_class::Count:
                     default: { break; }
                 }
             }
@@ -1859,17 +1862,17 @@ namespace gui
 
         std::ostringstream ss;
         ss  << "CreatureImageManager::GetCharacterFilenames(race="
-            << ((RACE == game::creature::race::Count) ?
+            << ((RACE == creature::race::Count) ?
                 "(count)" :
-                game::creature::race::ToString(RACE))
+                creature::race::ToString(RACE))
             << ", role="
-            << ((ROLE == game::creature::role::Count) ?
+            << ((ROLE == creature::role::Count) ?
                 "(count)" :
-                game::creature::role::ToString(ROLE))
+                creature::role::ToString(ROLE))
             << ", sex="
-            << ((SEX == game::creature::sex::Count) ?
+            << ((SEX == creature::sex::Count) ?
                 "(count)" :
-                game::creature::sex::ToString(SEX))
+                creature::sex::ToString(SEX))
             << ", wolfen_class=" << WOLFEN_CLASS
             << ", dragon_class=" << DRAGON_CLASS
             << ") -No filenames found for that creature information.";

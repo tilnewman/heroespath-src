@@ -22,13 +22,13 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_GAMEDATAFILE_HPP_INCLUDED
-#define GAME_GAMEDATAFILE_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_GAMEDATAFILE_HPP_INCLUDED
+#define HEROESPATH_GAME_GAMEDATAFILE_HPP_INCLUDED
 //
 // game-data-file.hpp
 //  A singleton config file that contains game data
 //
-#include "configbase/configbase.hpp"
+#include "config/configbase.hpp"
 #include "misc/assertlogandthrow.hpp"
 
 #include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
@@ -37,11 +37,13 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace game
 {
 
     //Singleton class that manages a simple configuration file
-    class GameDataFile : public appbase::ConfigBase
+    class GameDataFile : public config::ConfigBase
     {
         GameDataFile(const GameDataFile &) =delete;
         GameDataFile & operator=(const GameDataFile &) =delete;
@@ -62,4 +64,6 @@ namespace game
     };
 
 }
-#endif //GAME_GAMEDATAFILE_HPP_INCLUDED
+}
+
+#endif //HEROESPATH_GAME_GAMEDATAFILE_HPP_INCLUDED

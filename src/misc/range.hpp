@@ -30,6 +30,8 @@
 #include <algorithm>
 
 
+namespace heroespath
+{
 namespace misc
 {
 
@@ -68,6 +70,7 @@ namespace misc
         T b_;
     };
 
+}
 }
 
 #endif //MISC_FROMTO_HPP_INCLUDED

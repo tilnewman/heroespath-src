@@ -34,6 +34,8 @@
 #include "sfml-util/loaders.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -127,4 +129,5 @@ namespace popup
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
 
+}
 }

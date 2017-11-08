@@ -30,6 +30,8 @@
 #include "popup/popup-stage-base.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -49,6 +51,7 @@ namespace popup
         int drawCountdown_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED

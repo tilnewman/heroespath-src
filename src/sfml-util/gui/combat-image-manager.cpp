@@ -29,7 +29,7 @@
 //
 #include "combat-image-manager.hpp"
 
-#include "game/log-macros.hpp"
+#include "log/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 

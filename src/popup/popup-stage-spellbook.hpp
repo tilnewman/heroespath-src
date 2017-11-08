@@ -41,7 +41,7 @@
 #include <string>
 
 
-namespace game
+namespace heroespath
 {
 namespace spell
 {
@@ -49,7 +49,7 @@ namespace spell
     using SpellPtr_t = Spell *;
     using SpellPtrC_t = Spell * const;
 }
-}
+
 namespace popup
 {
 
@@ -101,10 +101,10 @@ namespace popup
         void SetupSpellListbox();
 
         void SetPageRightColors(const sf::Color & IMAGE_COLOR, const sf::Color & TEXT_COLOR);
-        void SetupPageRightText(const game::spell::SpellPtrC_t);
-        bool DoesCharacterHaveEnoughManaToCastSpell(const game::spell::SpellPtrC_t) const;
-        bool CanCastSpellInPhase(const game::spell::SpellPtrC_t) const;
-        bool CanCastSpell(const game::spell::SpellPtrC_t) const;
+        void SetupPageRightText(const spell::SpellPtrC_t);
+        bool DoesCharacterHaveEnoughManaToCastSpell(const spell::SpellPtrC_t) const;
+        bool CanCastSpellInPhase(const spell::SpellPtrC_t) const;
+        bool CanCastSpell(const spell::SpellPtrC_t) const;
         bool HandleSpellCast();
 
     private:
@@ -134,12 +134,13 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t   spellDetailsTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t   unableTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t   spellDescTextUPtr_;
-        game::spell::SpellPtr_t currentSpellPtr_;
+        spell::SpellPtr_t currentSpellPtr_;
         sfml_util::ColorShaker  warnColorShaker_;
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGESPELLBOOK_HPP_INCLUDED

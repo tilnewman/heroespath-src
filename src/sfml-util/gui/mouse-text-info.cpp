@@ -93,7 +93,7 @@ namespace gui
     {}
 
 
-    const MouseTextInfo MouseTextInfo::Make_PopupButtonSet(const std::string & NAME, const popup::PopupInfo & POPUP_INFO)
+    const MouseTextInfo MouseTextInfo::Make_PopupButtonSet(const std::string & NAME, const heroespath::popup::PopupInfo & POPUP_INFO)
     {
         return MouseTextInfo(NAME,
                              FontManager::Instance()->Font_PopupButton(),

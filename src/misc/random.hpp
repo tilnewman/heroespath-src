@@ -38,6 +38,8 @@
 #include <array>
 
 
+namespace heroespath
+{
 namespace misc
 {
 namespace random
@@ -100,6 +102,7 @@ namespace random
 
     inline bool Bool()                                                  { return (Int(1) == 1); }
 
+}
 }
 }
 

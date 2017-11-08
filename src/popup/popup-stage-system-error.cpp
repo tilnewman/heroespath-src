@@ -34,6 +34,8 @@
 #include "sfml-util/loaders.hpp"
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -93,4 +95,5 @@ namespace popup
         Stage::Draw(target, STATES);
     }
 
+}
 }

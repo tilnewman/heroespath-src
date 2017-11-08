@@ -36,6 +36,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace popup
 {
 
@@ -84,6 +86,7 @@ namespace popup
         bool willTextBoxUpdate_;
     };
 
+}
 }
 
 #endif //POPUP_POPUPSTAGENUMSELECT_HPP_INCLUDED
