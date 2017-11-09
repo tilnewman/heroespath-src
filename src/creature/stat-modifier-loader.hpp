@@ -46,5 +46,4 @@ namespace creature
 }
 }
 
-
 #endif //HEROESPATH_CREATURE_STATMODIFIERLOADER_HPP_INCLUDED

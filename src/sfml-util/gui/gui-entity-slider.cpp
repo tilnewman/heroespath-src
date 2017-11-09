@@ -32,6 +32,8 @@
 #include "sfml-util/gui/i-gui-entity.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -77,5 +79,6 @@ namespace gui
         return RESULT;
     }
 
+}
 }
 }

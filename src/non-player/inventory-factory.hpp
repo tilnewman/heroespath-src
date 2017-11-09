@@ -183,4 +183,5 @@ namespace ownership
 }
 }
 }
+
 #endif //HEROESPATH_NONPLAYER_INVENTORYFACTORY_HPP_INCLUDED

@@ -62,4 +62,5 @@ namespace stage
 
 }
 }
+
 #endif //HEROESPATH_INTROSTAGE_HPP_INCLUDED

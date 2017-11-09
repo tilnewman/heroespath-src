@@ -34,6 +34,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace animation
@@ -132,6 +134,7 @@ namespace animation
     using CloudAnimationUPtr_t = std::unique_ptr<CloudAnimation>;
     using CloudAnimationUVec_t = std::vector<CloudAnimationUPtr_t>;
 
+}
 }
 }
 

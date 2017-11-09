@@ -43,6 +43,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -57,8 +59,6 @@ namespace gui
 }
 }
 
-namespace heroespath
-{
 namespace combat
 {
 
@@ -360,4 +360,5 @@ namespace combat
 
 }
 }
+
 #endif //GAME_COMBAT_COMBATDISPLAY_HPP_INCLUDED

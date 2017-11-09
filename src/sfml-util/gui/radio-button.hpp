@@ -44,6 +44,8 @@
 #include <set>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -256,4 +258,6 @@ namespace gui
     using RadioButtonSVec_t = std::vector<RadioButtonSPtr_t>;
 }
 }
+}
+
 #endif //SFMLUTIL_RADIOBUTTON_HPP_INCLUDED

@@ -62,4 +62,5 @@ namespace player
 
 }
 }
+
 #endif //HEROESPATH_PLAYER_INITIAL_HPP_INCLUDED

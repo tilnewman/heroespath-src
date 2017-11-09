@@ -45,6 +45,8 @@
 #include <utility>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -164,4 +166,6 @@ namespace sfml_util
     };
 
 }
+}
+
 #endif //SFMLUTIL_SOUNDMANAGER_HPP_INCLUDED

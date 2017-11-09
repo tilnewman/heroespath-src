@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SUMMARY_VIEW_HPP_INCLUDED
-#define HEROESPATH_SUMMARY_VIEW_HPP_INCLUDED
+#ifndef HEROESPATH_COMBAT_SUMMARY_VIEW_HPP_INCLUDED
+#define HEROESPATH_COMBAT_SUMMARY_VIEW_HPP_INCLUDED
 //
 // summary-view.hpp
 //  A collection of classes that are responsible for displaying creature details on the Combat Display
@@ -35,6 +35,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -45,8 +47,6 @@ namespace gui
 }
 }
 
-namespace heroespath
-{
 namespace item
 {
     class Item;
@@ -158,4 +158,4 @@ namespace combat
 }
 }
 
-#endif //HEROESPATH_SUMMARY_VIEW_HPP_INCLUDED
+#endif //HEROESPATH_COMBAT_SUMMARY_VIEW_HPP_INCLUDED

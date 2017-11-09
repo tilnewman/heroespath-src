@@ -38,6 +38,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -92,6 +94,7 @@ namespace gui
         return ! (L == R);
     }
 
+}
 }
 }
 

@@ -30,6 +30,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -56,6 +58,7 @@ namespace gui
         static const std::string ImageFilename(const Enum);
     };
 
+}
 }
 }
 

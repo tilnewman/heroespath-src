@@ -30,6 +30,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -49,6 +51,7 @@ namespace sfml_util
         static bool IsValid(const Side::Enum E);
     };
 
+}
 }
 
 #endif //SFMLUTIL_SIDE_ENUM_HPP_INCLUDED

@@ -30,6 +30,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -47,6 +49,7 @@ namespace sfml_util
         static bool IsValid(const Brightness::Enum E);
     };
 
+}
 }
 
 #endif //SFMLUTIL_BRIGHTNESS_ENUM_HPP_INCLUDED

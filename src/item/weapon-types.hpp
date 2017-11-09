@@ -140,4 +140,5 @@ namespace weapon
 }
 }
 }
+
 #endif //HEROESPATH_ITEM_WEAPONTYPES_HPP_INCLUDED

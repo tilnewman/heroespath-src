@@ -48,7 +48,6 @@ namespace item
     class Item;
     using ItemPtr_t = Item *;
 }
-}
 
 namespace sfml_util
 {
@@ -123,4 +122,6 @@ namespace gui
 
 }
 }
+}
+
 #endif //SFMLUTIL_GUI_ITEMIMAGEMANAGER_HPP_INCLUDED

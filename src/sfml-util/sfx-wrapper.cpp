@@ -32,6 +32,8 @@
 #include "misc/assertlogandthrow.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -102,4 +104,5 @@ namespace sfml_util
         bufferUPtr_.reset();
     }
 
+}
 }

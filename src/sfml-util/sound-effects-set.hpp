@@ -34,6 +34,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -69,4 +71,6 @@ namespace sfml_util
     using SfxSetVec_t = std::vector<SfxSet>;
 
 }
+}
+
 #endif //SFMLUTIL_SOUNDEFFECTSSET_HPP_INCLUDED

@@ -34,6 +34,8 @@
 #include <tuple>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -113,4 +115,5 @@ namespace sfml_util
         return (R == V);
     }
 
+}
 }

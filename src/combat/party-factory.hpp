@@ -92,4 +92,5 @@ namespace combat
 
 }
 }
+
 #endif //HEROESPATH_COMBAT_PARTYFACTORY_HPP_INCLUDED

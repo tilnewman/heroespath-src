@@ -47,6 +47,8 @@
 #include <iomanip>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -854,4 +856,5 @@ namespace sfml_util
         willHoldFade_ = WILL_HOLD_FADE;
     }
 
+}
 }

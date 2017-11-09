@@ -30,6 +30,8 @@
 #include "gradient-info.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -53,4 +55,5 @@ namespace sfml_util
                 (L.color_to == R.color_to));
     }
 
+}
 }

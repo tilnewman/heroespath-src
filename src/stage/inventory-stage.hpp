@@ -49,6 +49,8 @@
 #include <map>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     class Ouroboros;
@@ -76,8 +78,6 @@ namespace sfml_util
     }
 }
 
-namespace heroespath
-{
 namespace creature
 {
     class Creature;

@@ -32,6 +32,8 @@
 #include "log/log-macros.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace sliders
@@ -124,5 +126,6 @@ namespace sliders
         return sf::Vector2f(POS_LEFT, POS_TOP);
     }
 
+}
 }
 }

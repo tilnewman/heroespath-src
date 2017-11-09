@@ -35,6 +35,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -65,6 +67,7 @@ namespace sfml_util
 
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 
+}
 }
 
 #endif //HEROESPATH_SFMLUTIL_OUROBOROS_HPP_INCLUDED

@@ -39,6 +39,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -111,6 +113,7 @@ namespace gui
     using SliderBarPtr_t = SliderBar *;
     using SliderBarUPtr_t = std::unique_ptr<SliderBar>;
 
+}
 }
 }
 

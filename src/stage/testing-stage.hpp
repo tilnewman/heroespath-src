@@ -155,5 +155,6 @@ namespace stage
 
 }
 }
+
 #endif //HEROESPATH_STAGE_TESTINGSTAGE_HPP_INCLUDED
 

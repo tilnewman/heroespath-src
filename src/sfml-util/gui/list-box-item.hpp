@@ -72,7 +72,6 @@ namespace player
     class Character;
     using CharacterPtr_t = Character *;
 }
-}
 
 namespace sfml_util
 {
@@ -168,4 +167,6 @@ namespace gui
 
 }
 }
+}
+
 #endif //SFMLUTIL_GUI_LISTBOXITEM_HPP_INCLUDED

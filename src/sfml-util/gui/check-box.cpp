@@ -38,6 +38,8 @@
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -579,5 +581,6 @@ namespace gui
         box_.MoveEntityPos(HORIZ, VERT);
     }
 
+}
 }
 }

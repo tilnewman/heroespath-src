@@ -37,6 +37,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -119,4 +121,6 @@ namespace box
 }
 }
 }
+}
+
 #endif //SFMLUTIL_GUI_CROSSBOX_HPP_INCLUDED

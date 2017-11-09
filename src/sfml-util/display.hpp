@@ -37,6 +37,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -183,4 +185,6 @@ namespace sfml_util
     };
 
 }
+}
+
 #endif //SFMLUTIL_DISPLAY_HPP_INCLUDED

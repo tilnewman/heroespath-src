@@ -32,6 +32,8 @@
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -62,4 +64,5 @@ namespace sfml_util
         return ((E == Orientation::Horiz) || (E == Orientation::Vert));
     }
 
+}
 }

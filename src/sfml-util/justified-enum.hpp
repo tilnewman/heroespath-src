@@ -30,6 +30,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -47,6 +49,7 @@ namespace sfml_util
         static bool IsValid(const Justified::Enum E);
     };
 
+}
 }
 
 #endif //SFMLUTIL_JUSTIFIED_ENUM_HPP_INCLUDED

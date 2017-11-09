@@ -194,4 +194,5 @@ namespace song
 
 }
 }
+
 #endif //HEROESPATH_SONG_SONG_HPP_INCLUDED

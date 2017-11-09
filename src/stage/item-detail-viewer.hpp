@@ -94,5 +94,4 @@ namespace stage
 }
 }
 
-
 #endif //HEROESPATH_STAGE_ITEMDETAILVIEWER_HPP_INCLUDED

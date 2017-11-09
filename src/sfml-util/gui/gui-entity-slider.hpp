@@ -31,6 +31,8 @@
 #include "sfml-util/pos-slider.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -72,6 +74,6 @@ namespace gui
 
 }
 }
-
+}
 
 #endif //SFMLUTIL_GUI_GUI_ENTITY_SLIDER_HPP_INCLUDED

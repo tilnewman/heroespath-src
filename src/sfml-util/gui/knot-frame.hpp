@@ -32,6 +32,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -109,6 +111,7 @@ namespace gui
 
     using KnotFrameUPtr_t = std::unique_ptr<KnotFrame>;
 
+}
 }
 }
 

@@ -37,6 +37,8 @@
 #include <set>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -52,7 +54,6 @@ namespace box
 }
 }
 
-
     //A base class for types that hold and draw a group of on screen resources.
     class Stage : public IStage
     {
@@ -60,19 +61,22 @@ namespace box
         Stage & operator=(const Stage &) =delete;
 
     public:
-        explicit Stage(const std::string & NAME,
-                       const bool          WILL_CLEAR_CACHE_ON_EXIT = true);
+        explicit Stage(
+            const std::string & NAME,
+            const bool WILL_CLEAR_CACHE_ON_EXIT = true);
 
-        Stage(const std::string &   NAME,
-              const sf::FloatRect & REGION,
-              const bool            WILL_CLEAR_CACHE_ON_EXIT = true);
+        Stage(
+            const std::string & NAME,
+            const sf::FloatRect & REGION,
+            const bool WILL_CLEAR_CACHE_ON_EXIT = true);
 
-        Stage(const std::string & NAME,
-              const float         REGION_LEFT,
-              const float         REGION_TOP,
-              const float         REGION_WIDTH,
-              const float         REGION_HEIGHT,
-              const bool          WILL_CLEAR_CACHE_ON_EXIT = true);
+        Stage(
+            const std::string & NAME,
+            const float REGION_LEFT,
+            const float REGION_TOP,
+            const float REGION_WIDTH,
+            const float REGION_HEIGHT,
+            const bool WILL_CLEAR_CACHE_ON_EXIT = true);
 
         virtual ~Stage();
 
@@ -150,4 +154,6 @@ namespace box
     };
 
 }
+}
+
 #endif //SFMLUTIL_STAGE_HPP_INCLUDED

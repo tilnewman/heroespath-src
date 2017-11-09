@@ -40,6 +40,8 @@
 #include <map>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     class Animation;
@@ -70,8 +72,6 @@ namespace animation
 }
 }
 
-namespace heroespath
-{
 namespace item
 {
     class Item;

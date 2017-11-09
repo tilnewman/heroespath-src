@@ -35,6 +35,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -132,6 +134,7 @@ namespace sfml_util
 
     using SfxWrapperVec_t = std::vector<SfxWrapper>;
 
+}
 }
 
 #endif //SFMLUTIL_SFXWRAPPER_HPP_INCLUDED

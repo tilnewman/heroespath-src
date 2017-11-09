@@ -43,6 +43,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -111,4 +113,6 @@ namespace gui
 
 }
 }
+}
+
 #endif //SFMLUTIL_GUI_CREATUREIMAGEMANAGER_HPP_INCLUDED

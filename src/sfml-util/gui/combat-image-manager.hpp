@@ -37,6 +37,9 @@ namespace sf
 {
     class Texture;
 }
+
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -60,6 +63,7 @@ namespace gui
         static std::unique_ptr<CombatImageManager> instanceUPtr_;
     };
 
+}
 }
 }
 

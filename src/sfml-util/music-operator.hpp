@@ -40,6 +40,8 @@ namespace sf
     class Music;
 }
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -161,4 +163,6 @@ namespace sfml_util
     }
 
 }
+}
+
 #endif //SFMLUTIL_MUSIC_OPERATOR_HPP_INCLUDED

@@ -37,6 +37,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace main_menu_buttons
@@ -288,5 +290,6 @@ namespace main_menu_buttons
         heroespath::game::LoopManager::Instance()->TransitionTo_Previous();
     }
 
+}
 }
 }

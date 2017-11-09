@@ -288,4 +288,5 @@ namespace condition
 }
 }
 }
+
 #endif //HEROESPATH_CREATURE_CONDITIONS_HPP_INCLUDED

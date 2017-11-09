@@ -76,5 +76,4 @@ namespace spell
 }
 }
 
-
 #endif //HEROESPATH_CREATURE_SPELL_SPELLENUM_HPP_INCLUDED

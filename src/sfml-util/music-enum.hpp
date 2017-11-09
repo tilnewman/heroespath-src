@@ -33,6 +33,8 @@
 #include <set>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -68,4 +70,6 @@ namespace sfml_util
     using MusicEnumSet_t = std::set<music::Enum>;
 
 }
+}
+
 #endif //SFMLUTIL_MUSICENUM_HPP_INCLUDED

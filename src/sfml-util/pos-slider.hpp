@@ -32,6 +32,8 @@
 #include "sfml-util/moving-enum.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace sliders
@@ -89,6 +91,7 @@ namespace sliders
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
     };
 
+}
 }
 }
 

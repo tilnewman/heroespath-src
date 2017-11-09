@@ -35,6 +35,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -81,6 +83,7 @@ namespace animation
     using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;
     using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
 
+}
 }
 }
 

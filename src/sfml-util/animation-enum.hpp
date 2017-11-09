@@ -32,6 +32,8 @@
 #include <utility> //for std::pair
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -76,6 +78,7 @@ namespace sfml_util
         static const std::pair<int, int> SizePair(const Enum);
     };
 
+}
 }
 
 #endif //SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE

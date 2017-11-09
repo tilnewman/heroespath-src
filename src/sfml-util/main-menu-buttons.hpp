@@ -31,6 +31,8 @@
 #include "sfml-util/gui/four-state-button.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace main_menu_buttons
@@ -178,6 +180,7 @@ namespace main_menu_buttons
 
     using DeleteButtonUPtr_t = std::unique_ptr<DeleteButton>;
 
+}
 }
 }
 

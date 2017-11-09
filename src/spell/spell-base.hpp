@@ -188,4 +188,5 @@ namespace spell
 
 }
 }
+
 #endif //HEROESPATH_SPELL_Spell_HPP_INCLUDED

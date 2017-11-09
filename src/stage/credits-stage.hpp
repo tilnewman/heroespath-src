@@ -89,4 +89,5 @@ namespace stage
 
 }
 }
+
 #endif //HEROESPATH_CREDITSTAGE_HPP_INCLUDED

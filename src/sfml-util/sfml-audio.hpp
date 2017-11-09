@@ -46,12 +46,14 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     using MusicUPtr_t = std::unique_ptr<sf::Music>;
     using SoundUPtr_t = std::unique_ptr<sf::Sound>;
     using SoundBufferUPtr_t = std::unique_ptr<sf::SoundBuffer>;
 }
-
+}
 
 #endif //SFMLUTIL_SFMLAUDIO_HPP_INCLUDED

@@ -33,6 +33,8 @@
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -124,5 +126,6 @@ namespace gui
         textRegion_.MoveEntityPos(HORIZ, VERT);
     }
 
+}
 }
 }

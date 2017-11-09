@@ -32,6 +32,8 @@
 #include "game/loop-manager.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -162,4 +164,5 @@ namespace sfml_util
         return true;
     }
 
+}
 }

@@ -46,13 +46,13 @@
 #include <set>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     class DateTime;
 }
 
-namespace heroespath
-{
 namespace item
 {
     class Inventory;

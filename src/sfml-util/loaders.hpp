@@ -35,6 +35,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -55,4 +57,6 @@ namespace sfml_util
     MusicUPtr_t LoadMusic(const std::string & PATH_STR);
 
 }
+}
+
 #endif //SFMLUTIL_LOADERS_HPP_INCLUDED

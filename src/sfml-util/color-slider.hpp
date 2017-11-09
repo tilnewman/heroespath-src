@@ -33,6 +33,8 @@
 #include "sfml-util/sliders.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -87,6 +89,7 @@ namespace sfml_util
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
     };
 
+}
 }
 
 #endif //SFMLUTIL_COLOR_SLIDER_HPP_INCLUDED

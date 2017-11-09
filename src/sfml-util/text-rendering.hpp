@@ -37,6 +37,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     namespace gui
@@ -253,6 +255,7 @@ namespace text_render
     void GroupTextSnippets(TextSnippetVec_t &       resultVec,
                            const TextSnippetVec_t & inputVec);
 
+}
 }
 }
 

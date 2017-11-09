@@ -35,6 +35,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -105,6 +107,7 @@ namespace sfml_util
     using IStagePtr_t = IStage *;
     using IStagePVec_t = std::vector<IStagePtr_t>;
 
+}
 }
 
 #endif //SFMLUTIL_ISTAGE_HPP_INCLUDED

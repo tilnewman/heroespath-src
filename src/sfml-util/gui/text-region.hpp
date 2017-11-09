@@ -42,6 +42,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     class IStage;
@@ -159,4 +161,6 @@ namespace gui
     
 }
 }
+}
+
 #endif //SFMLUTIL_GUI_TEXTREGION_HPP_INCLUDED

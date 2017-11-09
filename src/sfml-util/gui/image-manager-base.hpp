@@ -37,6 +37,8 @@
 #include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -115,6 +117,7 @@ namespace gui
     template<typename T>
     std::string ImageManagerBase<T>::pathToImages_{ "" };
 
+}
 }
 }
 

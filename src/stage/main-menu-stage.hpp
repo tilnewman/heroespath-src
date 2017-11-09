@@ -96,4 +96,5 @@ namespace stage
 
 }
 }
+
 #endif //HEROESPATH_MAINMENUSTAGE_HPP_INCLUDED

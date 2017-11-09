@@ -33,6 +33,8 @@
 #include <exception>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -87,5 +89,6 @@ namespace gui
         }
     }
 
+}
 }
 }

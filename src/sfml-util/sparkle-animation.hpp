@@ -34,6 +34,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace animation
@@ -112,6 +114,7 @@ namespace animation
     using SparkleAnimationUPtr_t = std::unique_ptr<SparkleAnimation>;
     using SparkleAnimationUVec_t = std::vector<SparkleAnimationUPtr_t>;
 
+}
 }
 }
 

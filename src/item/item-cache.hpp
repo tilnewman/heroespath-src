@@ -69,5 +69,4 @@ namespace item
 }
 }
 
-
 #endif //HEROESPATH_ITEM_ITEMCACHE_HPP_INCLUDED

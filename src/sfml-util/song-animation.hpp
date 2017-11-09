@@ -34,6 +34,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace animation
@@ -135,6 +137,7 @@ namespace animation
     using SongAnimationUPtr_t = std::unique_ptr<SongAnimation>;
     using SongAnimationUVec_t = std::vector<SongAnimationUPtr_t>;
 
+}
 }
 }
 

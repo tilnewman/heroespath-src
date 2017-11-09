@@ -47,6 +47,8 @@
 #include <type_traits>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace sliders
@@ -456,6 +458,7 @@ namespace sliders
         SliderOnce<Value_t, Speed_t> slider_;
     };
 
+}
 }
 }
 

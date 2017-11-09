@@ -36,6 +36,8 @@
 #include <tuple>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -176,4 +178,6 @@ namespace sfml_util
     }
 
 }
+}
+
 #endif //SFMLUTIL_DATETIME_HPP_INCLUDED

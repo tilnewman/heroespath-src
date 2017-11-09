@@ -33,6 +33,8 @@
 #include "misc/vectors.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -184,6 +186,7 @@ namespace sfml_util
         TileFromVec(RECT, spriteVec, renderTarget, WILL_RANDOM_ORDER);
     }
 
+}
 }
 
 #endif //SFMLUTIL_TILE_HPP_INCLUDED

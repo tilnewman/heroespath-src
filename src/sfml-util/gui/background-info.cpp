@@ -33,6 +33,8 @@
 #include <tuple>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -106,5 +108,6 @@ namespace gui
                         R.hasTexture);
     }
 
+}
 }
 }

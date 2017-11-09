@@ -34,7 +34,8 @@
 #include <cstdlib>
 #include <exception>
 
-using namespace sfml_util;
+
+using namespace heroespath::sfml_util;
 
 
 BOOST_AUTO_TEST_CASE(TextureCache_InvalidFunctionCallsAfterDefaultConstruction)

@@ -35,6 +35,8 @@
 #include <tuple>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -153,6 +155,7 @@ namespace box
         }
     }
 
+}
 }
 }
 }

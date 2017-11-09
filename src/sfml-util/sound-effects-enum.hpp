@@ -32,6 +32,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -356,4 +358,6 @@ namespace sfml_util
     using SfxEnumVec_t = std::vector<sound_effect::Enum>;
 
 }
+}
+
 #endif //SFMLUTIL_SOUNDEFFECTSENUM_HPP_INCLUDED

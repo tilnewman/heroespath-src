@@ -45,13 +45,12 @@
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
 {
-
-    using namespace heroespath;
-
 
     std::string CreatureImageManager::imagesDirectoryPath_;
     std::unique_ptr<CreatureImageManager> CreatureImageManager::instanceUPtr_{ nullptr };
@@ -1880,5 +1879,6 @@ namespace gui
         throw std::runtime_error(ss.str());
     }
 
+}
 }
 }

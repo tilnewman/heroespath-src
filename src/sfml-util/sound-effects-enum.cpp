@@ -28,10 +28,13 @@
 // sound-effects-enum.cpp
 //
 #include "sound-effects-enum.hpp"
+
 #include <sstream>
 #include <exception>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -685,4 +688,5 @@ namespace sfml_util
         }
     }
 
+}
 }

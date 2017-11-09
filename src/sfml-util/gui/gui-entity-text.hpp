@@ -38,6 +38,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     namespace text_render
@@ -129,4 +131,6 @@ namespace gui
 
 }
 }
+}
+
 #endif //SFMLUTIL_GUITEXT_HPP_INCLUDED

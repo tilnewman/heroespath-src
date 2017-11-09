@@ -41,6 +41,8 @@
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -540,4 +542,6 @@ namespace sfml_util
     using LoopCmdSVec_t = std::vector<LoopCmdSPtr_t>;
 
 }
+}
+
 #endif //SFMLUTIL_LOOPCOMMAND_HPP_INCLUDED

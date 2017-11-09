@@ -30,6 +30,8 @@
 #include "animation-base.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -55,4 +57,5 @@ namespace sfml_util
     Animation::~Animation()
     {}
 
+}
 }

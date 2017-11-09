@@ -54,4 +54,5 @@ namespace location
 
 }
 }
+
 #endif //HEROESPATH_LOCATION_MAPENUM_HPP_INCLUDED

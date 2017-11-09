@@ -43,6 +43,8 @@
 #include <map>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     class IStage;
@@ -252,4 +254,6 @@ namespace gui
 
 }
 }
+}
+
 #endif //SFMLUTIL_GUI_LISTBOX_HPP_INCLUDED

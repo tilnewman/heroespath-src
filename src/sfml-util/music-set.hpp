@@ -37,6 +37,8 @@
 #include <algorithm>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -108,6 +110,7 @@ namespace sfml_util
         return ! (L == R);
     }
 
+}
 }
 
 #endif //SFMLUTIL_MUSICSET_HPP_INCLUDED

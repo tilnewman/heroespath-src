@@ -32,6 +32,8 @@
 #include <SFML/Graphics/Color.hpp>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -66,6 +68,7 @@ namespace sfml_util
         float alphaDiff_;
     };
 
+}
 }
 
 #endif //SFMLUTIL_COLORSHAKER_HPP_INCLUDED

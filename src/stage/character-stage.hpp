@@ -57,6 +57,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     class Animation;
@@ -67,16 +69,14 @@ namespace sfml_util
 
     namespace gui
     {
-        namespace box
-        {
-            class Box;
-            using BoxUPtr_t = std::unique_ptr<Box>;
-        }
+    namespace box
+    {
+        class Box;
+        using BoxUPtr_t = std::unique_ptr<Box>;
+    }
     }
 }
 
-namespace heroespath
-{
 namespace stage
 {
 

@@ -35,6 +35,8 @@
 #include "misc/assertlogandthrow.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -647,5 +649,6 @@ namespace gui
         SetupAllPositions();
     }
 
+}
 }
 }

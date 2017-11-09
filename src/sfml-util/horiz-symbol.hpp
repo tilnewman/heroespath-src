@@ -31,6 +31,8 @@
 #include "sfml-util/sfml-graphics.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -76,6 +78,7 @@ namespace sfml_util
         sf::Texture texture_;
     };
 
+}
 }
 
 #endif //SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED

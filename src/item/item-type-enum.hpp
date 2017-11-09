@@ -733,4 +733,5 @@ namespace item
 
 }
 }
+
 #endif //HEROESPATH_ITEM_ITEMTYPEENUM_HPP_INCLUDED

@@ -46,6 +46,8 @@
 #include <algorithm>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -552,4 +554,5 @@ namespace sfml_util
         }
     }
 
-}//end of namespace sfml_util
+}
+}

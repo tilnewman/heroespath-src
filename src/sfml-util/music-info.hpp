@@ -35,6 +35,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -87,6 +89,7 @@ namespace sfml_util
         return ! (L == R);
     }
 
+}
 }
 
 #endif //SFMLUTIL_MUSICINFO_HPP_INCLUDED

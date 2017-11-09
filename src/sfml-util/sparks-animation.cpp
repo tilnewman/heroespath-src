@@ -37,6 +37,8 @@
 #include "misc/random.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace animation
@@ -256,5 +258,6 @@ namespace animation
         }
     }
 
+}
 }
 }

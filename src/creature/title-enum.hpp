@@ -237,4 +237,5 @@ namespace creature
 
 }
 }
+
 #endif //HEROESPATH_CREATURE_TITLEENUM_HPP_INCLUDED

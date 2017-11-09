@@ -27,7 +27,7 @@
 //
 // animation-base.hpp
 //  A class responsible for common state and operation of all animation objects.
-//
+//  
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/animation-enum.hpp"
@@ -37,6 +37,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -130,6 +132,7 @@ namespace sfml_util
     using AnimationUPtr_t = std::unique_ptr<Animation>;
     using AnimationUVec_t = std::vector<AnimationUPtr_t>;
 
+}
 }
 
 #endif //SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED

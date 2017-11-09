@@ -53,9 +53,8 @@
 #include <tuple>
 
 
-using namespace heroespath;
-
-
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -255,6 +254,7 @@ namespace sfml_util
 
     using TileMapUPtr_t = std::unique_ptr<TileMap>;
 
+}
 }
 
 #endif //SFMLUTIL_TILEMAP_HPP_INCLUDED

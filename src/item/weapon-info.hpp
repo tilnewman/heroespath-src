@@ -204,4 +204,5 @@ namespace weapon
 }
 }
 }
+
 #endif //HEROESPATH_ITEM_WEAPONFINFO_HPP_INCLUDED

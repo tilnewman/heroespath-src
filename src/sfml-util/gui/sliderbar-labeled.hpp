@@ -38,6 +38,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -89,6 +91,7 @@ namespace gui
     using SliderBarLabeledSPtr_t = std::shared_ptr<SliderBarLabeled>;
     using SliderBarLabeledSVec_t = std::vector<SliderBarLabeledSPtr_t>;
 
+}
 }
 }
 

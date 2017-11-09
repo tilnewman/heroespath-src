@@ -149,4 +149,5 @@ namespace item
 
 }
 }
+
 #endif //HEROESPATH_ITEM_INVENTORY_HPP_INCLUDED

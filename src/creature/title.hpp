@@ -163,4 +163,5 @@ namespace creature
 
 }
 }
+
 #endif //HEROESPATH_CREATURE_Title_HPP_INCLUDED

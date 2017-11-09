@@ -36,6 +36,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -73,6 +75,7 @@ namespace sfml_util
 
     using SliderBarLabeled_MusicUPtr_t = std::unique_ptr<SliderBarLabeled_Music>;
 
+}
 }
 
 #endif //SFMLUTIL_SLIDERBARMUSIC_HPP_INCLUDED

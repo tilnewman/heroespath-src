@@ -36,6 +36,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -103,6 +105,7 @@ namespace sfml_util
         //NOT the complete system path.
         StrToSizetVecMap_t strToVecMap_;
     };
+}
 }
 
 #endif //SFMLUTIL_TEXTURECACHE_HPP_INCLUDED

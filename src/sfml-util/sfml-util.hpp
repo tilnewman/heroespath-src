@@ -43,6 +43,8 @@
 #include <cmath>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -416,6 +418,7 @@ namespace sfml_util
         const std::string ColorToString(const sf::Color & C, const bool WILL_WRAP = true);
     }
 
-}//end of namespace sfml_util
+}
+}
 
 #endif //SFMLUTIL_SFMLUTIL_HPP_INCLUDED

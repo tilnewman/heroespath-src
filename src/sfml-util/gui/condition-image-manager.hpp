@@ -34,6 +34,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -56,6 +58,7 @@ namespace gui
     private:
         static std::unique_ptr<ConditionImageManager> instanceUPtr_;
     };
+}
 }
 }
 

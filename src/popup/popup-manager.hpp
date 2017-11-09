@@ -46,19 +46,19 @@
 #include <memory>
 
 
-namespace sfml_util
-{
-    namespace gui
-    {
-        namespace box
-        {
-            class Info;
-        }
-    }
-}
-
 namespace heroespath
 {
+namespace sfml_util
+{
+namespace gui
+{
+namespace box
+{
+    class Info;
+}
+}
+}
+
 namespace creature
 {
     class Creature;

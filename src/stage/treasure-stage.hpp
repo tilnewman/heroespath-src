@@ -49,6 +49,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -58,8 +60,6 @@ namespace gui
 }
 }
 
-namespace heroespath
-{
 namespace stage
 {
 

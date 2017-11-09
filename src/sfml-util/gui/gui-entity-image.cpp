@@ -30,6 +30,8 @@
 #include "gui-entity-image.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -169,5 +171,6 @@ namespace gui
         overSprite_.move(HORIZ, VERT);
     }
 
+}
 }
 }

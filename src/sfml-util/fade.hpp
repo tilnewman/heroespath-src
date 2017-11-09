@@ -34,6 +34,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -99,4 +101,6 @@ namespace sfml_util
     using FadeSVec_t = std::vector<FadeSPtr_t>;
 
 }
+}
+
 #endif //SFMLUTIL_FADE_HPP_INCLUDED

@@ -32,6 +32,8 @@
 #include "sfml-util/gui/mouse-text-info.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -84,5 +86,6 @@ namespace gui
         }
     }
 
+}
 }
 }

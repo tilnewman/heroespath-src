@@ -40,6 +40,8 @@
 #include <cctype>//for isDigit()
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace text_render
@@ -551,5 +553,6 @@ namespace text_render
         }
     }
 
+}
 }
 }

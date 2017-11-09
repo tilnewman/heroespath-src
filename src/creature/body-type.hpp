@@ -160,4 +160,5 @@ namespace creature
 
 }
 }
+
 #endif //HEROESPATH_CREATURE_BODYTYPE_INCLUDED

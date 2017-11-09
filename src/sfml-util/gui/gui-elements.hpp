@@ -33,6 +33,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -209,6 +211,7 @@ namespace gui
         const sf::IntRect lineSmallTRightSpriteRect_;
     };
 
+}
 }
 }
 

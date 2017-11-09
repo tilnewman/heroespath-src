@@ -160,4 +160,5 @@ namespace stage
 
 }
 }
+
 #endif //GUIDEMO_LOOPCOMMANDADDSTAGE_HPP_INCLUDED

@@ -47,6 +47,8 @@
 #include <list>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -69,6 +71,7 @@ namespace sfml_util
     using WinPtr_t  = sf::RenderWindow *;
     using WinUPtr_t = std::unique_ptr<sf::RenderWindow>;
 
+}
 }
 
 #endif //SFMLUTIL_SFMLGRAPHICS_HPP_INCLUDED

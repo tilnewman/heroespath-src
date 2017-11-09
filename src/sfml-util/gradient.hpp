@@ -34,6 +34,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -72,4 +74,6 @@ namespace sfml_util
     using GradientRectSVec_t = std::vector<GradientRectSPtr_t>;
 
 }
+}
+
 #endif //SFMLUTIL_GRADIENT_HPP_INCLUDED

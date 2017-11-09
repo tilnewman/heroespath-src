@@ -30,6 +30,8 @@
 #include "color-shaker.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -81,4 +83,5 @@ namespace sfml_util
         slider_.Reset(0.0f, 1.0f);
     }
 
+}
 }

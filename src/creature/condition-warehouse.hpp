@@ -60,5 +60,4 @@ namespace condition
 }
 }
 
-
 #endif //HEROESPATH_CREATURE_CONDITIONWAREHOUSE_HPP_INCLUDED

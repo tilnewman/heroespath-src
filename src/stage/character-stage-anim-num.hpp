@@ -139,4 +139,5 @@ namespace stage
 
 }
 }
+
 #endif //HEROESPATH_CHARACTERSTAGEANIMNUM_HPP_INCLUDED

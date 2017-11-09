@@ -30,6 +30,7 @@
 //  This is useful as a base class for buttons, checkboxes, radio buttons, etc.
 //
 #include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/gui-entity-text.hpp"
 #include "sfml-util/gui/gui-entity-image.hpp"
@@ -39,6 +40,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -103,6 +106,7 @@ namespace gui
         //use guiImage_.upSprite_ as first state sprite, and guiImage_.downSprite for the second state.
     };
 
+}
 }
 }
 

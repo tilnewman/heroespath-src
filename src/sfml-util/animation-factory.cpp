@@ -33,6 +33,8 @@
 #include "sfml-util/animation-multi.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -113,4 +115,5 @@ namespace sfml_util
         }
     }
 
+}
 }

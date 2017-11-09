@@ -36,6 +36,8 @@
 #include "log/log-macros.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -296,6 +298,7 @@ namespace box
         return DID_FOCUS_CHANGE;
     }
 
+}
 }
 }
 }

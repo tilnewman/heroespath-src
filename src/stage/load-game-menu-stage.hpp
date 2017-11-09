@@ -46,6 +46,8 @@
 #include <set>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     class Ouroboros;
@@ -59,8 +61,6 @@ namespace sfml_util
     }
 }
 
-namespace heroespath
-{
 namespace state
 {
     class GameState;

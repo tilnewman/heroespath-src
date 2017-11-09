@@ -30,6 +30,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -46,6 +48,7 @@ namespace sfml_util
         static bool IsValid(const Orientation::Enum E);
     };
 
+}
 }
 
 #endif //SFMLUTIL_ORIENTATION_ENUM_HPP_INCLUDED

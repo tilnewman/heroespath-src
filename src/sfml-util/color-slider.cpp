@@ -30,6 +30,8 @@
 #include "color-slider.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -131,4 +133,5 @@ namespace sfml_util
             static_cast<sf::Uint8>(ALPHA));
     }
 
+}
 }

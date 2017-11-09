@@ -88,4 +88,5 @@ namespace location
 
 }
 }
+
 #endif //HEROESPATH_LOCATION_LOCATION_HPP_INCLUDED

@@ -70,4 +70,5 @@ namespace creature
 
 }
 }
+
 #endif //HEROESPATH_CREATURE_RANK_HPP_INCLUDED

@@ -40,6 +40,8 @@
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -785,5 +787,6 @@ namespace gui
         return DID_FOCUS_CHANGE;
     }
 
+}
 }
 }

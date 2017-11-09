@@ -144,5 +144,4 @@ namespace strategy
 }
 }
 
-
 #endif //HEROESPATH_COMBAT_STRATEGYDETAILS_HPP_INCLUDED

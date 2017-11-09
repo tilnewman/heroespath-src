@@ -39,6 +39,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -215,6 +217,7 @@ namespace gui
     
     using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
 
+}
 }
 }
 

@@ -52,9 +52,8 @@
 #include <vector>
 
 
-using namespace heroespath;
-
-
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -1290,7 +1289,7 @@ namespace gui
                         filenames,
                         RACE_ENUM,
                         ROLE_ENUM,
-                        ((::misc::random::Bool()) ?
+                        ((misc::random::Bool()) ?
                             creature::sex::Male :
                             creature::sex::Female),
                         creature::wolfen_class::Adult,
@@ -1435,5 +1434,6 @@ namespace gui
         }
     }
 
+}
 }
 }

@@ -104,4 +104,5 @@ namespace creature
 
 }
 }
+
 #endif //HEROESPATH_CREATURE_CONDITION_HPP_INCLUDED

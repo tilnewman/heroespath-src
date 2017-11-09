@@ -71,4 +71,5 @@ namespace state
 
 }
 }
+
 #endif //HEROESPATH_STATE_WORLDSTATE_HPP_INCLUDED

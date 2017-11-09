@@ -36,6 +36,8 @@
 #include <tuple>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -115,5 +117,6 @@ namespace gui
         return std::tie(L.up, L.down, L.over) == std::tie(R.up, R.down, R.over);
     }
 
+}
 }
 }

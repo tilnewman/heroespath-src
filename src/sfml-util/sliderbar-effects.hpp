@@ -36,6 +36,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -74,6 +76,7 @@ namespace sfml_util
 
     using SliderBarLabeled_EffectsUPtr_t = std::unique_ptr<SliderBarLabeled_Effects>;
 
+}
 }
 
 #endif //SFMLUTIL_SLIDERBAREFFECTS_HPP_INCLUDED

@@ -39,6 +39,8 @@
 #include <list>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -113,4 +115,6 @@ namespace gui
 
 }
 }
+}
+
 #endif //SFMLUTIL_GUI_IGUIENTITY_HPP_INCLUDED

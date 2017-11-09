@@ -110,4 +110,5 @@ namespace stage
 
 }
 }
+
 #endif //HEROESPATH_SETTINGSSTAGE_HPP_INCLUDED

@@ -38,7 +38,9 @@
 #include <string>
 
 
-namespace gui_demo
+namespace heroespath
+{
+namespace sfml_util
 {
 
     //Represents a RadioButtonSet that changes the display
@@ -51,10 +53,12 @@ namespace gui_demo
         RadioButtonSet_DisplayChange & operator=(const RadioButtonSet_DisplayChange &) =delete;
 
     public:
-        //If Using this constructor, then one of the Setup() functions must be called before any other member
-        RadioButtonSet_DisplayChange(const float               POS_LEFT,
-                                     const float               POS_TOP,
-                                     sfml_util::IStage * const OWNER_STAGE_PTR);
+        //If Using this constructor, then one of the Setup()
+        //functions must be called before any other member.
+        RadioButtonSet_DisplayChange(
+            const float POS_LEFT,
+            const float POS_TOP,
+            sfml_util::IStage * const OWNER_STAGE_PTR);
 
         virtual ~RadioButtonSet_DisplayChange();
 
@@ -77,5 +81,8 @@ namespace gui_demo
     };
 
     using RadioButtonSet_DisplayChangeSPtr_t = std::shared_ptr<RadioButtonSet_DisplayChange>;
+
 }
+}
+
 #endif //SFMLUTIL_RADIOBUTTONDISPLAY_HPP_INCLUDED

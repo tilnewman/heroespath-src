@@ -72,5 +72,4 @@ namespace creature
 }
 }
 
-
 #endif //HEROESPATH_CREATURE_ACHIEVEMENT_ENUM_HPP_INCLUDED

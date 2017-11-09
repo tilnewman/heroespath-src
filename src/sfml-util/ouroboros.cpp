@@ -37,6 +37,8 @@
 #include "log/log-macros.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -98,4 +100,5 @@ namespace sfml_util
         return true;
     }
 
+}
 }

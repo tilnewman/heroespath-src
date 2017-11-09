@@ -33,6 +33,8 @@
 #include "sfml-util/display.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -365,5 +367,6 @@ namespace gui
                          R.entityPrevPos_);
     }
 
+}
 }
 }

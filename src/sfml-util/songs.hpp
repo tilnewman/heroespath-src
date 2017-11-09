@@ -34,6 +34,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -63,6 +65,7 @@ namespace sfml_util
 
     using SongSetVec_t = std::vector<SongSet>;
 
+}
 }
 
 #endif //SFMLUTIL_SONGS_HPP_INCLUDED

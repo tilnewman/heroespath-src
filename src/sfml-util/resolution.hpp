@@ -34,6 +34,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -74,6 +76,7 @@ namespace sfml_util
     }
 
 
+}
 }
 
 #endif //SFMLUTIL_RESOLUTION_HPP_INCLUDED

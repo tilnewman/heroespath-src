@@ -101,5 +101,4 @@ namespace stats
 }
 }
 
-
 #endif //HEROESPATH_STATS_STATSET_HPP_INCLUDED

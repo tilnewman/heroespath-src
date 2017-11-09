@@ -35,6 +35,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -86,6 +88,7 @@ namespace gui
 
     using GuiImageUPtr_t = std::unique_ptr<GuiImage>;
 
+}
 }
 }
 

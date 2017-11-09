@@ -39,6 +39,8 @@
 #include <algorithm>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace animation
@@ -134,5 +136,6 @@ namespace animation
         target.draw( * textRegionUPtr_, states);
     }
 
+}
 }
 }

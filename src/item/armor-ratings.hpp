@@ -128,5 +128,4 @@ namespace item
 }
 }
 
-
 #endif //HEROESPATH_ITEM_ARMORRATINGS_HPP_INCLUDED

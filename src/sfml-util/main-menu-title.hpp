@@ -33,6 +33,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -78,6 +80,7 @@ namespace sfml_util
         bool willDrawTitle_;
     };
 
+}
 }
 
 #endif //HEROESPATH_SFMLUTIL_MAINMENUTITLE_HPP_INCLUDED

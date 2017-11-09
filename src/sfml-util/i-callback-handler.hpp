@@ -33,6 +33,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace callback
@@ -90,4 +92,6 @@ namespace callback
 
 }
 }
+}
+
 #endif //SFMLUTIL_ICALLBACKHANDLER_HPP_INCLUDED

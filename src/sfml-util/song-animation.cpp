@@ -39,6 +39,8 @@
 #include <algorithm>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace animation
@@ -315,5 +317,6 @@ namespace animation
         }
     }
 
+}
 }
 }

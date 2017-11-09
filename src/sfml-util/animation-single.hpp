@@ -34,6 +34,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -83,6 +85,7 @@ namespace sfml_util
         std::vector<sf::IntRect> rects_;
     };
 
+}
 }
 
 #endif //SFMLUTIL_ANIMATIONSINGLE_HPP_INCLUDED

@@ -30,6 +30,8 @@
 #include "gradient.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -146,4 +148,5 @@ namespace sfml_util
         target.draw(quads_, states);
     }
 
+}
 }

@@ -42,6 +42,8 @@
 #include <list>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -197,4 +199,6 @@ namespace sfml_util
     };
 
 }
+}
+
 #endif //SFMLUTIL_LOOP_INCLUDED

@@ -34,10 +34,10 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/tile.hpp"
-#include "sfml-util/radio-button-display.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/radio-button-display.hpp"
 
 #include "misc/real.hpp"
 
@@ -239,7 +239,7 @@ namespace stage
         auto const RES_RADIOBUTTONSET_POS_LEFT{ BOX_RECT_INNER.left };
         auto const RES_RADIOBUTTONSET_POS_TOP{ BOX_RECT.top + 50.0f };
 
-        resRadioButtonSetUPtr_ = std::make_unique<gui_demo::RadioButtonSet_DisplayChange>(
+        resRadioButtonSetUPtr_ = std::make_unique<sfml_util::RadioButtonSet_DisplayChange>(
             RES_RADIOBUTTONSET_POS_LEFT,
             RES_RADIOBUTTONSET_POS_TOP,
             this);

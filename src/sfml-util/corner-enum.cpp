@@ -28,10 +28,13 @@
 // corner.cpp
 //
 #include "corner-enum.hpp"
+
 #include <exception>
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -60,4 +63,5 @@ namespace sfml_util
         return (static_cast<unsigned>(E) <= MAX);
     }
 
+}
 }

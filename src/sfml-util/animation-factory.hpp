@@ -31,6 +31,8 @@
 #include "sfml-util/animation-enum.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -67,6 +69,7 @@ namespace sfml_util
             const sf::BlendMode &  BLEND_MODE = sf::BlendAdd);
     };
 
+}
 }
 
 #endif //SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE

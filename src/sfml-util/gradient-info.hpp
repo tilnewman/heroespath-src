@@ -34,6 +34,8 @@
 #include <SFML/Graphics/Color.hpp>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -61,4 +63,6 @@ namespace sfml_util
     }
 
 }
+}
+
 #endif //SFMLUTIL_GRADIENTINFO_HPP_INCLUDED

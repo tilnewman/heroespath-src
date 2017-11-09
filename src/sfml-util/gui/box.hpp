@@ -39,6 +39,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -94,6 +96,7 @@ namespace box
 
     using BoxUPtr_t = std::unique_ptr<Box>;
 
+}
 }
 }
 }

@@ -30,6 +30,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -50,6 +52,7 @@ namespace sfml_util
         static bool IsValid(const GuiEvent::Enum);
     };
 
+}
 }
 
 #endif //SFMLUTIL_GUIEVENT_ENUM_HPP_INCLUDED

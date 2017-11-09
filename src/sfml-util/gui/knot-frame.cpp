@@ -35,6 +35,8 @@
 #include "game/game-data-file.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -221,5 +223,6 @@ namespace gui
         target.draw( & quadVerts_[0], quadVerts_.size(), sf::Quads, states);
     }
 
+}
 }
 }

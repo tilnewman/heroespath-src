@@ -43,6 +43,8 @@
 #include <deque>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -192,4 +194,6 @@ namespace gui
     using CheckBoxSetSVec_t = std::vector<CheckBoxSetSPtr_t>;
 }
 }
+}
+
 #endif //SFMLUTIL_CHECKBOX_HPP_INCLUDED

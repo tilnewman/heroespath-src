@@ -46,6 +46,8 @@
 #include <set>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 namespace gui
@@ -55,8 +57,6 @@ namespace gui
 }
 }
 
-namespace heroespath
-{
 namespace player
 {
     class Character;

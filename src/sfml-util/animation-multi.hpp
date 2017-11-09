@@ -35,6 +35,8 @@
 #include <vector>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -84,6 +86,7 @@ namespace sfml_util
         heroespath::misc::SizetVec_t textureIdVec_;
     };
 
+}
 }
 
 #endif //SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED

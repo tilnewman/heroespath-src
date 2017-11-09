@@ -213,4 +213,5 @@ namespace creature
 
 }
 }
+
 #endif //HEROESPATH_CREATURE_RACEENUM_HPP_INCLUDED

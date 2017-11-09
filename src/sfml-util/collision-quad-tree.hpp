@@ -30,6 +30,8 @@
 #include "sfml-util/sfml-graphics.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -73,6 +75,7 @@ namespace sfml_util
         Quad headQuad_;
     };
 
+}
 }
 
 #endif //SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED

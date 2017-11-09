@@ -28,10 +28,13 @@
 // size-enum.cpp
 //
 #include "size-enum.hpp"
+
 #include <exception>
 #include <sstream>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -57,4 +60,5 @@ namespace sfml_util
 
     }
 
+}
 }

@@ -41,6 +41,8 @@
 #include <memory>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     const unsigned int FontManager::SIZE_LARGER_MIN_(36);
@@ -230,4 +232,5 @@ namespace sfml_util
         return font;
     }
 
+}
 }

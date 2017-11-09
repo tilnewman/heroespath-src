@@ -42,6 +42,8 @@
 #include <string>
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
     class Animation;
@@ -51,8 +53,6 @@ namespace sfml_util
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
 }
 
-namespace heroespath
-{
 namespace stage
 {
 

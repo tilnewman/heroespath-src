@@ -35,6 +35,8 @@
 #include "sfml-util/loaders.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -133,4 +135,5 @@ namespace sfml_util
         }
     }
 
+}
 }

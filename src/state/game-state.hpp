@@ -158,4 +158,5 @@ namespace state
 
 }
 }
+
 #endif //HEROESPATH_STATE_GAMESTATE_HPP_INCLUDED

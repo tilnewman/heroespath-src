@@ -41,20 +41,24 @@
 #include "misc/handy-types.hpp"
 
 
-namespace gui_demo
+namespace heroespath
+{
+namespace sfml_util
 {
 
     const std::size_t RadioButtonSet_DisplayChange::MAX_NUM_RES_DISPLAYABLE_(14);
 
 
-    RadioButtonSet_DisplayChange::RadioButtonSet_DisplayChange(const float               POS_LEFT,
-                                                               const float               POS_TOP,
-                                                               sfml_util::IStage * const OWNER_STAGE_PTR)
+    RadioButtonSet_DisplayChange::RadioButtonSet_DisplayChange(
+        const float POS_LEFT,
+        const float POS_TOP,
+        sfml_util::IStage * const OWNER_STAGE_PTR)
     :
         RadioButtonSet         ("DisplayChange"),
         ownerStagePtr_         (OWNER_STAGE_PTR),
         resolutionVec_         (),
-        ORIG_INVALID_SELECTION_(sfml_util::Display::ComposeSupportedFullScreenVideoModesVec(resolutionVec_)),
+        ORIG_INVALID_SELECTION_(
+            sfml_util::Display::ComposeSupportedFullScreenVideoModesVec(resolutionVec_)),
         prevResolution_        ()
     {
         //handle case where there are too many resolutions to display
@@ -67,19 +71,26 @@ namespace gui_demo
         sfml_util::gui::MouseTextInfoVec_t mouseTextInfoVec;
         for (auto const & NEXT_RESOLUTION : resolutionVec_)
         {
-            sfml_util::gui::MouseTextInfo nextTextInfo(NEXT_RESOLUTION.ToString(false), sfml_util::FontManager::Instance()->Font_Default1(), 20);
+            sfml_util::gui::MouseTextInfo nextTextInfo(
+                NEXT_RESOLUTION.ToString(false),
+                sfml_util::FontManager::Instance()->Font_Default1(),
+                20);
+
             mouseTextInfoVec.push_back(nextTextInfo);
         }
 
-        sfml_util::GradientInfo gradientInfo(sf::Color(0, 0, 0, 150), sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
+        sfml_util::GradientInfo gradientInfo(
+            sf::Color(0, 0, 0, 150),
+            sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
         sfml_util::gui::BackgroundInfo backgroundInfo(sf::Color(0, 0, 0, 60), gradientInfo);
 
-        sfml_util::gui::box::Info resRadioButtonSetBoxInfo(1.0f,
-                                                           true,
-                                                           sf::FloatRect(),
-                                                           sfml_util::gui::ColorSet(sf::Color(180, 180, 180)),
-                                                           backgroundInfo);
+        sfml_util::gui::box::Info resRadioButtonSetBoxInfo(
+            1.0f,
+            true,
+            sf::FloatRect(),
+            sfml_util::gui::ColorSet(sf::Color(180, 180, 180)),
+            backgroundInfo);
 
         Setup(POS_LEFT,
               POS_TOP,
@@ -95,19 +106,31 @@ namespace gui_demo
     {}
 
 
-    bool RadioButtonSet_DisplayChange::HandleCallback(const heroespath::popup::PopupResponse & POPUP)
+    bool RadioButtonSet_DisplayChange::HandleCallback(
+        const heroespath::popup::PopupResponse & POPUP)
     {
-        M_HP_LOG(GetEntityName() << " HandlePopupCallback(response=\"" << heroespath::popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
+        M_HP_LOG(GetEntityName() << " HandlePopupCallback(response=\""
+            << heroespath::popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
 
         if (POPUP.Response() == heroespath::popup::ResponseTypes::No)
         {
-            M_HP_LOG(GetEntityName() << " User rejected the new resolution.  Changing back to the previous res.");
-            heroespath::game::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, prevResolution_, sfml_util::Display::Instance()->AntialiasLevel());
+            M_HP_LOG(GetEntityName()
+                << " User rejected the new resolution.  Changing back to the previous res.");
+
+            heroespath::game::LoopManager::Instance()->ChangeResolution(
+                ownerStagePtr_,
+                this,
+                prevResolution_,
+                sfml_util::Display::Instance()->AntialiasLevel());
         }
 
         ChangeCurrentSelection(FindCurrentResolutionSelection());
 
-        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName() << "'s RadioButtonSet_DisplayChange::HandlePopupCallback(" << heroespath::popup::ResponseTypes::ToString(POPUP.Response()) << ") was called when the ownerStagePtr_ was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName()
+            << "'s RadioButtonSet_DisplayChange::HandlePopupCallback("
+            << heroespath::popup::ResponseTypes::ToString(POPUP.Response())
+            << ") was called when the ownerStagePtr_ was null.");
+
         ownerStagePtr_->HandleResolutionChange();
 
         return true;
@@ -117,23 +140,32 @@ namespace gui_demo
     void RadioButtonSet_DisplayChange::OnClick(const sf::Vector2f &)
     {
         prevResolution_ = sfml_util::Display::GetCurrentResolution();
-        heroespath::game::LoopManager::Instance()->ChangeResolution(ownerStagePtr_, this, resolutionVec_[currentSelection_], sfml_util::Display::Instance()->AntialiasLevel());
 
-        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName() << "'s RadioButtonSet_DisplayChange::OnClick() was called when the ownerStagePtr_ was null.");
+        heroespath::game::LoopManager::Instance()->ChangeResolution(
+            ownerStagePtr_,
+            this,
+            resolutionVec_[currentSelection_],
+            sfml_util::Display::Instance()->AntialiasLevel());
+
+        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName()
+            << "'s RadioButtonSet_DisplayChange::OnClick() was called "
+            << "when the ownerStagePtr_ was null.");
+
         ownerStagePtr_->HandleResolutionChange();
     }
 
 
     std::size_t RadioButtonSet_DisplayChange::FindCurrentResolutionSelection()
     {
-        const sfml_util::Resolution CURRENT_RES(sfml_util::Display::GetCurrentVideoMode());
+        const sfml_util::Resolution CURRENT_RES{ sfml_util::Display::GetCurrentVideoMode() };
 
-        const std::size_t NUM_SUPPORTED_MODES(resolutionVec_.size());
-        std::size_t resRadioButtonSetInitialSelection(NUM_SUPPORTED_MODES);
+        auto const NUM_SUPPORTED_MODES{ resolutionVec_.size() };
+        auto resRadioButtonSetInitialSelection(NUM_SUPPORTED_MODES);
 
         for (std::size_t i(0); i < NUM_SUPPORTED_MODES; ++i)
         {
-            if ((CURRENT_RES.width == resolutionVec_[i].width) && (CURRENT_RES.height == resolutionVec_[i].height))
+            if ((CURRENT_RES.width == resolutionVec_[i].width) &&
+                (CURRENT_RES.height == resolutionVec_[i].height))
             {
                 resRadioButtonSetInitialSelection = i;
                 break;
@@ -143,4 +175,5 @@ namespace gui_demo
         return resRadioButtonSetInitialSelection;
     }
 
+}
 }

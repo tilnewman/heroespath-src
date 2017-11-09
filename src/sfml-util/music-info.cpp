@@ -30,6 +30,8 @@
 #include "music-info.hpp"
 
 
+namespace heroespath
+{
 namespace sfml_util
 {
 
@@ -92,4 +94,5 @@ namespace sfml_util
                      R.duration_);
     }
 
+}
 }
