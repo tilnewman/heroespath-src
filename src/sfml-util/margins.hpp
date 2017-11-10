@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_MARGINS_HPP_INCLUDED
-#define GAME_MARGINS_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_MARGINS_HPP_INCLUDED
+#define HEROESPATH_GAME_MARGINS_HPP_INCLUDED
 //
 // margins.hpp
 //  Margins code
@@ -59,4 +59,4 @@ namespace sfml_util
 }
 }
 
-#endif //GAME_MARGINS_HPP_INCLUDED
+#endif //HEROESPATH_GAME_MARGINS_HPP_INCLUDED

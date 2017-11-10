@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_TEXTBUTTON_HPP_INCLUDED
-#define SFMLUTIL_TEXTBUTTON_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_TEXTBUTTON_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_TEXTBUTTON_HPP_INCLUDED
 //
 // text-button.hpp
 //  Drawing and handling code for buttons that are only text.
@@ -96,4 +96,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_TEXTBUTTON_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_TEXTBUTTON_HPP_INCLUDED

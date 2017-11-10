@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_LOOP_INCLUDED
-#define SFMLUTIL_LOOP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_LOOP_INCLUDED
+#define HEROESPATH_SFMLUTIL_LOOP_INCLUDED
 //
 // loop.hpp
 //  Code to manage an event/draw loop.
@@ -201,4 +201,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_LOOP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_LOOP_INCLUDED

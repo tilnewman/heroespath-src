@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPSTAGEIMAGEFADE_HPP_INCLUDED
-#define POPUP_POPUPSTAGEIMAGEFADE_HPP_INCLUDED
+#ifndef HEROESPATH_POPUP_POPUPSTAGEIMAGEFADE_HPP_INCLUDED
+#define HEROESPATH_POPUP_POPUPSTAGEIMAGEFADE_HPP_INCLUDED
 //
 // popup-stage-image-fade.hpp
 //
@@ -68,4 +68,4 @@ namespace popup
 }
 }
 
-#endif //POPUP_POPUPSTAGEIMAGEFADE_HPP_INCLUDED
+#endif //HEROESPATH_POPUP_POPUPSTAGEIMAGEFADE_HPP_INCLUDED

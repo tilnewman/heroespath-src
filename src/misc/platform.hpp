@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef MISC_PLATFORM_HPP_INCLUDED
-#define MISC_PLATFORM_HPP_INCLUDED
+#ifndef HEROESPATH_MISC_PLATFORM_HPP_INCLUDED
+#define HEROESPATH_MISC_PLATFORM_HPP_INCLUDED
 //
 // platform.hpp
 //  Code that detects the platform and stores it.
@@ -33,29 +33,29 @@
 
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(WIN64) || defined(_WIN64) || defined(__WINDOWS__)
-#define PLATFORM_DETECTED_IS_WINDOWS
+#define HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
 #elif defined(macintosh) || defined(Macintosh)
-#define PLATFORM_DETECTED_IS_APPLE9
+#define HEROESPATH_PLATFORM_DETECTED_IS_APPLE9
 #elif defined(__APPLE__) || defined(__MACH__)
-#define PLATFORM_DETECTED_IS_APPLE
+#define HEROESPATH_PLATFORM_DETECTED_IS_APPLE
 #elif defined(linux) || defined(__linux) || defined(__linux__)
-#define PLATFORM_DETECTED_IS_LINUX
+#define HEROESPATH_PLATFORM_DETECTED_IS_LINUX
 #endif
 
 #if defined(__unix) || defined(__unix__)
-#define PLATFORM_DETECTED_IS_UNIX
+#define HEROESPATH_PLATFORM_DETECTED_IS_UNIX
 #endif
 
 #if defined(__posix) || defined(__posix__)
-#define PLATFORM_DETECTED_IS_POSIX
+#define HEROESPATH_PLATFORM_DETECTED_IS_POSIX
 #endif
 
 #if defined(__CYGWIN__)
-#define PLATFORM_DETECTED_IS_CYGWIN
+#define HEROESPATH_PLATFORM_DETECTED_IS_CYGWIN
 #endif
 
 #if defined(__gnu_linux__)
-#define PLATFORM_DETECTED_IS_LINUX_GNU
+#define HEROESPATH_PLATFORM_DETECTED_IS_LINUX_GNU
 #endif
 
 
@@ -117,4 +117,4 @@ namespace misc
 }
 }
 
-#endif //MISC_PLATFORM_HPP_INCLUDED
+#endif //HEROESPATH_MISC_PLATFORM_HPP_INCLUDED

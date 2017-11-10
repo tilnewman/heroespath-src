@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPSTAGECOMBATOVER_HPP_INCLUDED
-#define POPUP_POPUPSTAGECOMBATOVER_HPP_INCLUDED
+#ifndef HEROESPATH_POPUP_POPUPSTAGECOMBATOVER_HPP_INCLUDED
+#define HEROESPATH_POPUP_POPUPSTAGECOMBATOVER_HPP_INCLUDED
 //
 // popup-stage-combat-over.hpp
 //
@@ -61,4 +61,4 @@ namespace popup
 }
 }
 
-#endif //POPUP_POPUPSTAGECOMBATOVER_HPP_INCLUDED
+#endif //HEROESPATH_POPUP_POPUPSTAGECOMBATOVER_HPP_INCLUDED

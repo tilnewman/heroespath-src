@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPRESPONSE_HPP_INCLUDED
-#define POPUP_POPUPRESPONSE_HPP_INCLUDED
+#ifndef HEROESPATH_POPUP_POPUPRESPONSE_HPP_INCLUDED
+#define HEROESPATH_POPUP_POPUPRESPONSE_HPP_INCLUDED
 //
 // popup-response.hpp
 //  Encapsulates everything about a popup window's result with a response from the user
@@ -63,4 +63,4 @@ namespace popup
 }
 }
 
-#endif //POPUP_POPUPRESPONSE_HPP_INCLUDED
+#endif //HEROESPATH_POPUP_POPUPRESPONSE_HPP_INCLUDED

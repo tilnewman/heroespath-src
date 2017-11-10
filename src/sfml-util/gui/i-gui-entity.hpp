@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_IGUIENTITY_HPP_INCLUDED
-#define SFMLUTIL_GUI_IGUIENTITY_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_IGUIENTITY_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_IGUIENTITY_HPP_INCLUDED
 //
 // i-gui-entity.hpp
 //  Common interface for all gui elements
@@ -117,4 +117,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUI_IGUIENTITY_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_GUI_IGUIENTITY_HPP_INCLUDED

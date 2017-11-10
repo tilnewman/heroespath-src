@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE
-#define SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE
+#ifndef HEROESPATH_SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE
+#define HEROESPATH_SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE
 //
 // animation-enum.hpp
 //  An enumeration of all animations.
@@ -81,4 +81,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE
+#endif //HEROESPATH_SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef GAME_COMBAT_COMBATDISPLAY_HPP_INCLUDED
-#define GAME_COMBAT_COMBATDISPLAY_HPP_INCLUDED
+#ifndef HEROESPATH_GAME_COMBAT_COMBATDISPLAY_HPP_INCLUDED
+#define HEROESPATH_GAME_COMBAT_COMBATDISPLAY_HPP_INCLUDED
 //
 // combat-display.hpp
 //  A class that handles drawing the combat tree.
@@ -361,4 +361,4 @@ namespace combat
 }
 }
 
-#endif //GAME_COMBAT_COMBATDISPLAY_HPP_INCLUDED
+#endif //HEROESPATH_GAME_COMBAT_COMBATDISPLAY_HPP_INCLUDED

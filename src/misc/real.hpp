@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef MISC_REALUTILS_HPP_INCLUDED
-#define MISC_REALUTILS_HPP_INCLUDED
+#ifndef HEROESPATH_MISC_REALUTILS_HPP_INCLUDED
+#define HEROESPATH_MISC_REALUTILS_HPP_INCLUDED
 //
 // real-utils.hpp
 //
@@ -55,4 +55,4 @@ namespace misc
 }
 }
 
-#endif //MISC_REALUTILS_HPP_INCLUDED
+#endif //HEROESPATH_MISC_REALUTILS_HPP_INCLUDED

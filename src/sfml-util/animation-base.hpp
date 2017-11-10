@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED
-#define SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED
 //
 // animation-base.hpp
 //  A class responsible for common state and operation of all animation objects.
@@ -135,4 +135,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED

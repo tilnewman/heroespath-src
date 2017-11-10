@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_BRIGHTNESS_ENUM_HPP_INCLUDED
-#define SFMLUTIL_BRIGHTNESS_ENUM_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_BRIGHTNESS_ENUM_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_BRIGHTNESS_ENUM_HPP_INCLUDED
 //
 // brightness.hpp
 //
@@ -52,4 +52,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_BRIGHTNESS_ENUM_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_BRIGHTNESS_ENUM_HPP_INCLUDED

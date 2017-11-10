@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_TEXTANIMATION_HPP_INCLUDED
-#define SFMLUTIL_TEXTANIMATION_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_TEXTANIMATION_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_TEXTANIMATION_HPP_INCLUDED
 //
 // text-animation.hpp
 //
@@ -87,4 +87,4 @@ namespace animation
 }
 }
 
-#endif //SFMLUTIL_TEXTANIMATION_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_TEXTANIMATION_HPP_INCLUDED

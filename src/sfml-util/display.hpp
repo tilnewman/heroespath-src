@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_DISPLAY_HPP_INCLUDED
-#define SFMLUTIL_DISPLAY_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_DISPLAY_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_DISPLAY_HPP_INCLUDED
 //
 // display.hpp
 //  Code that manages the display.
@@ -187,4 +187,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_DISPLAY_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_DISPLAY_HPP_INCLUDED

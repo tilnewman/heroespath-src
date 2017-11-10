@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED
-#define SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED
 //
 // horiz-symbol.hpp
 //  A symbol drawn at the bottom of menu screens
@@ -81,4 +81,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_JUSTIFIED_ENUM_HPP_INCLUDED
-#define SFMLUTIL_JUSTIFIED_ENUM_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_JUSTIFIED_ENUM_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_JUSTIFIED_ENUM_HPP_INCLUDED
 //
 // justified-enum.hpp
 //
@@ -52,4 +52,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_JUSTIFIED_ENUM_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_JUSTIFIED_ENUM_HPP_INCLUDED

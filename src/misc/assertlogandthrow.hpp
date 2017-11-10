@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef MISC_ASSERTORLOGANDTHROW_HPP_INCLUDED
-#define MISC_ASSERTORLOGANDTHROW_HPP_INCLUDED
+#ifndef HEROESPATH_MISC_ASSERTORLOGANDTHROW_HPP_INCLUDED
+#define HEROESPATH_MISC_ASSERTORLOGANDTHROW_HPP_INCLUDED
 //
 // assertlogandthrow.hpp
 //

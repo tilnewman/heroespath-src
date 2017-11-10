@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_BOX_HPP_INCLUDED
-#define SFMLUTIL_BOX_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_BOX_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_BOX_HPP_INCLUDED
 //
 // box.hpp
 //  Box drawing utility class
@@ -101,4 +101,4 @@ namespace box
 }
 }
 
-#endif //SFMLUTIL_BOX_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_BOX_HPP_INCLUDED

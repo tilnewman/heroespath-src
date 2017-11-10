@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SFXSETENUM_HPP_INCLUDED
-#define SFMLUTIL_SFXSETENUM_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_SFXSETENUM_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_SFXSETENUM_HPP_INCLUDED
 //
 // sfx-set-enum.hpp
 //
@@ -80,4 +80,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_SFXSETENUM_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_SFXSETENUM_HPP_INCLUDED

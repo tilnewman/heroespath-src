@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_COMBATIMAGEENUM_HPP_INCLUDED
-#define SFMLUTIL_COMBATIMAGEENUM_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_COMBATIMAGEENUM_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_COMBATIMAGEENUM_HPP_INCLUDED
 //
 // combat-image-enum.hpp
 //
@@ -62,4 +62,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_COMBATIMAGEENUM_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_COMBATIMAGEENUM_HPP_INCLUDED

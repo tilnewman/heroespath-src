@@ -67,7 +67,7 @@
 #define M_LOG_ERR(logThing, str) M_LOG_PRI_SS(logThing, heroespath::log::LogPri::Error, str);
 #define M_LOG_FAT(logThing, str) M_LOG_PRI_SS(logThing, heroespath::log::LogPri::Fatal, str);
 
-#endif //#if defined(APPBASE_MACRO_DISABLE_ALL) || defined(APPBASE_MACRO_DISABLE_LOGGERS)
+#endif //HEROESPATH_#if defined(APPBASE_MACRO_DISABLE_ALL) || defined(APPBASE_MACRO_DISABLE_LOGGERS)
 
 
 #endif //HEROESPATH_LOG_MACROS_HPP_INCLUDED

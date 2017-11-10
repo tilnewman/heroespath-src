@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_LOOPSTATE_HPP_INCLUDED
-#define SFMLUTIL_LOOPSTATE_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_LOOPSTATE_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_LOOPSTATE_HPP_INCLUDED
 //
 // loop-state-enum.hpp
 //  An enum describing the game loop state.
@@ -68,4 +68,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_LOOPSTATE_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_LOOPSTATE_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SLIDERBARSYLE_HPP_INCLUDED
-#define SFMLUTIL_SLIDERBARSYLE_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_SLIDERBARSYLE_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_SLIDERBARSYLE_HPP_INCLUDED
 //
 // sliderbar-style.hpp
 //  A type that encapsulates the style of a SliderBar.
@@ -78,4 +78,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_SLIDERBARSYLE_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_SLIDERBARSYLE_HPP_INCLUDED

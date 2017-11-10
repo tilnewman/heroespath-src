@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_TWOSTATEENTITY_HPP_INCLUDED
-#define SFMLUTIL_TWOSTATEENTITY_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_TWOSTATEENTITY_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_TWOSTATEENTITY_HPP_INCLUDED
 //
 // two-state-entity.hpp
 //  Code that combines a GuiImage and GuiText into an object that can be in one of two states.
@@ -110,4 +110,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_TWOSTATEENTITY_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_TWOSTATEENTITY_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED
-#define SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED
 //
 // collision-quad-tree.hpp
 //
@@ -78,4 +78,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED

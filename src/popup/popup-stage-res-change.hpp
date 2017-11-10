@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED
-#define POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED
+#ifndef HEROESPATH_POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED
+#define HEROESPATH_POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED
 //
 // popup-stage-res-change.hpp
 //
@@ -56,4 +56,4 @@ namespace popup
 }
 }
 
-#endif //POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED
+#endif //HEROESPATH_POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED

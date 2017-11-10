@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED
-#define POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED
+#ifndef HEROESPATH_POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED
+#define HEROESPATH_POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED
 //
 // popup-stage-treasure-trap.hpp
 //
@@ -71,4 +71,4 @@ namespace popup
 }
 }
 
-#endif //POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED
+#endif //HEROESPATH_POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED

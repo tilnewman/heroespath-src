@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_LINE_HPP_INCLUDED
-#define SFMLUTIL_LINE_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_LINE_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_LINE_HPP_INCLUDED
 //
 // line.hpp
 //  Line drawing utility class
@@ -110,4 +110,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_LINE_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_LINE_HPP_INCLUDED

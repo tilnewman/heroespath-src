@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SONGANIMATION_HPP_INCLUDED
-#define SFMLUTIL_SONGANIMATION_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_SONGANIMATION_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_SONGANIMATION_HPP_INCLUDED
 //
 // song-animation.hpp
 //
@@ -141,4 +141,4 @@ namespace animation
 }
 }
 
-#endif //SFMLUTIL_SONGANIMATION_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_SONGANIMATION_HPP_INCLUDED

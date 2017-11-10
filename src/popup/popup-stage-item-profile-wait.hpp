@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED
-#define POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED
+#ifndef HEROESPATH_POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED
+#define HEROESPATH_POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED
 //
 // popup-stage-item-profile-wait.hpp
 //
@@ -54,4 +54,4 @@ namespace popup
 }
 }
 
-#endif //POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED
+#endif //HEROESPATH_POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED

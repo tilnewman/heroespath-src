@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_LISTBOXITEM_HPP_INCLUDED
-#define SFMLUTIL_GUI_LISTBOXITEM_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_LISTBOXITEM_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_LISTBOXITEM_HPP_INCLUDED
 //
 // list-box-item.hpp
 //  A hack'ish extension of the TextRegion class that holds
@@ -169,4 +169,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUI_LISTBOXITEM_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_GUI_LISTBOXITEM_HPP_INCLUDED

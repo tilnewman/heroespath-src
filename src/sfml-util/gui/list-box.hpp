@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_LISTBOX_HPP_INCLUDED
-#define SFMLUTIL_GUI_LISTBOX_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_LISTBOX_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_LISTBOX_HPP_INCLUDED
 //
 // list-box.hpp
 //  A class that manages a list of some template GuiEntity types wrapped in a box
@@ -256,4 +256,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUI_LISTBOX_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_GUI_LISTBOX_HPP_INCLUDED

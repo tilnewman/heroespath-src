@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_KNOTFRAME_HPP_INCLUDED
-#define SFMLUTIL_GUI_KNOTFRAME_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_KNOTFRAME_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_KNOTFRAME_HPP_INCLUDED
 //
 // knot-frame.hpp
 //
@@ -115,4 +115,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUI_KNOTFRAME_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_GUI_KNOTFRAME_HPP_INCLUDED

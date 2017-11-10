@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE
-#define SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE
+#ifndef HEROESPATH_SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE
+#define HEROESPATH_SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE
 //
 // animation-factory.hpp
 //
@@ -72,4 +72,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE
+#endif //HEROESPATH_SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE

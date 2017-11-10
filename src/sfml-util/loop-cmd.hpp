@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_LOOPCOMMAND_HPP_INCLUDED
-#define SFMLUTIL_LOOPCOMMAND_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_LOOPCOMMAND_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_LOOPCOMMAND_HPP_INCLUDED
 //
 // loop-cmd.hpp
 //  Code that encapsulates a command that performs some action on a Loop object.
@@ -544,4 +544,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_LOOPCOMMAND_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_LOOPCOMMAND_HPP_INCLUDED

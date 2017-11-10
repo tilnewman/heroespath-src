@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_MUSICENUM_HPP_INCLUDED
-#define SFMLUTIL_MUSICENUM_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_MUSICENUM_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_MUSICENUM_HPP_INCLUDED
 //
 // music-enum.hpp
 //  An enum defining the various background music files
@@ -72,4 +72,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_MUSICENUM_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_MUSICENUM_HPP_INCLUDED

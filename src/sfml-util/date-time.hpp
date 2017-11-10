@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_DATETIME_HPP_INCLUDED
-#define SFMLUTIL_DATETIME_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_DATETIME_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_DATETIME_HPP_INCLUDED
 //
 // date-time.hpp
 //  Simple wrapper structs for holding date and time.
@@ -180,4 +180,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_DATETIME_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_DATETIME_HPP_INCLUDED

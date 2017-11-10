@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED
-#define SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED
 //
 // condition-image-manager.hpp
 //
@@ -62,4 +62,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED

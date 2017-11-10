@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_SFMLSYSTEM_HPP_INCLUDED
-#define SFMLUTIL_SFMLSYSTEM_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_SFMLSYSTEM_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_SFMLSYSTEM_HPP_INCLUDED
 //
 // sfml-system.hpp
 //
@@ -42,4 +42,4 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
-#endif //SFMLUTIL_SFMLSYSTEM_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_SFMLSYSTEM_HPP_INCLUDED

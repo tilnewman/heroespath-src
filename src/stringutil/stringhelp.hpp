@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef STRINGHELP_HPP_INCLUDED
-#define STRINGHELP_HPP_INCLUDED
+#ifndef HEROESPATH_STRINGHELP_HPP_INCLUDED
+#define HEROESPATH_STRINGHELP_HPP_INCLUDED
 //
 // stringhelp.hpp
 //
@@ -434,4 +434,4 @@ namespace stringhelp
 }//end of namespace stringhelp
 }//end of namespace appbase
 
-#endif //STRINGHELP_HPP_INCLUDED
+#endif //HEROESPATH_STRINGHELP_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef MISC_BOOSTSTRINGINCLUDES_HPP_INCLUDED
-#define MISC_BOOSTSTRINGINCLUDES_HPP_INCLUDED
+#ifndef HEROESPATH_MISC_BOOSTSTRINGINCLUDES_HPP_INCLUDED
+#define HEROESPATH_MISC_BOOSTSTRINGINCLUDES_HPP_INCLUDED
 //
 // boost-string-includes.hpp
 //
@@ -43,4 +43,4 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
-#endif //MISC_BOOSTSTRINGINCLUDES_HPP_INCLUDED
+#endif //HEROESPATH_MISC_BOOSTSTRINGINCLUDES_HPP_INCLUDED

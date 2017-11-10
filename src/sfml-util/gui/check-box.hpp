@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_CHECKBOX_HPP_INCLUDED
-#define SFMLUTIL_CHECKBOX_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_CHECKBOX_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_CHECKBOX_HPP_INCLUDED
 //
 // check-box.hpp
 //  Check box drawing and handling code.
@@ -196,4 +196,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_CHECKBOX_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_CHECKBOX_HPP_INCLUDED

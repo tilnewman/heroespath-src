@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_CLOUDANIMATION_HPP_INCLUDED
-#define SFMLUTIL_CLOUDANIMATION_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_CLOUDANIMATION_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_CLOUDANIMATION_HPP_INCLUDED
 //
 // cloud-animation.hpp
 //
@@ -138,4 +138,4 @@ namespace animation
 }
 }
 
-#endif //SFMLUTIL_CLOUDANIMATION_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_CLOUDANIMATION_HPP_INCLUDED

@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPENUMS_HPP_INCLUDE
-#define POPUP_POPUPENUMS_HPP_INCLUDE
+#ifndef HEROESPATH_POPUP_POPUPENUMS_HPP_INCLUDE
+#define HEROESPATH_POPUP_POPUPENUMS_HPP_INCLUDE
 //
 // popup-enums.hpp
 //
@@ -92,4 +92,4 @@ namespace popup
 }
 }
 
-#endif //POPUP_POPUPENUMS_HPP_INCLUDE
+#endif //HEROESPATH_POPUP_POPUPENUMS_HPP_INCLUDE

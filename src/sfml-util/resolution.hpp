@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_RESOLUTION_HPP_INCLUDED
-#define SFMLUTIL_RESOLUTION_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_RESOLUTION_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_RESOLUTION_HPP_INCLUDED
 //
 // resolution.hpp
 //  A class that contains all the info about a screen resolution.
@@ -79,4 +79,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_RESOLUTION_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_RESOLUTION_HPP_INCLUDED

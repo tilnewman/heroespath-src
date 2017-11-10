@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
-#define POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
+#ifndef HEROESPATH_POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
+#define HEROESPATH_POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
 //
 // popup-stage-musicsheet.hpp
 //
@@ -133,4 +133,4 @@ namespace popup
 }
 }
 
-#endif //POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
+#endif //HEROESPATH_POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED

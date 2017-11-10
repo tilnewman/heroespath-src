@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef MISC_STRONGNUMERICTYPE_HPP_INCLUDED
-#define MISC_STRONGNUMERICTYPE_HPP_INCLUDED
+#ifndef HEROESPATH_MISC_STRONGNUMERICTYPE_HPP_INCLUDED
+#define HEROESPATH_MISC_STRONGNUMERICTYPE_HPP_INCLUDED
 //
 // strong-numeric-type.hpp
 //
@@ -193,4 +193,4 @@ namespace misc
 }
 }
 
-#endif //MISC_STRONGNUMERICTYPE_HPP_INCLUDED
+#endif //HEROESPATH_MISC_STRONGNUMERICTYPE_HPP_INCLUDED

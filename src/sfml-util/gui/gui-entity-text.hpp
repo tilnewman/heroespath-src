@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUITEXT_HPP_INCLUDED
-#define SFMLUTIL_GUITEXT_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUITEXT_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUITEXT_HPP_INCLUDED
 //
 // gui-entity-text.hpp
 //  Code for handling a piece of text that can be in one of three states.
@@ -133,4 +133,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUITEXT_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_GUITEXT_HPP_INCLUDED

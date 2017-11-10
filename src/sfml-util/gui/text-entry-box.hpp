@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUI_TEXTENTRYBOX_HPP_INCLUDED
-#define SFMLUTIL_GUI_TEXTENTRYBOX_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUI_TEXTENTRYBOX_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_TEXTENTRYBOX_HPP_INCLUDED
 //
 // text-entry-box.hpp
 //  Code for a box that users can type a single line of text into, with a blinking cursor, etc.
@@ -119,4 +119,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUI_TEXTENTRYBOX_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_GUI_TEXTENTRYBOX_HPP_INCLUDED

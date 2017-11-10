@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUIENTITY_HPP_INCLUDED
-#define SFMLUTIL_GUIENTITY_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUIENTITY_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUIENTITY_HPP_INCLUDED
 //
 // gui-entity.hpp
 //
@@ -188,4 +188,4 @@ namespace gui
 }
 }
 
-#endif //SFMLUTIL_GUIENTITY_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_GUIENTITY_HPP_INCLUDED

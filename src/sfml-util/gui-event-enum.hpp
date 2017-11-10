@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_GUIEVENT_ENUM_HPP_INCLUDED
-#define SFMLUTIL_GUIEVENT_ENUM_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_GUIEVENT_ENUM_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUIEVENT_ENUM_HPP_INCLUDED
 //
 // gui-event-enum.hpp
 //
@@ -55,4 +55,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_GUIEVENT_ENUM_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_GUIEVENT_ENUM_HPP_INCLUDED

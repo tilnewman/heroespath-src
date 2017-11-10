@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef MISC_RANDOM_HPP_INCLUDED
-#define MISC_RANDOM_HPP_INCLUDED
+#ifndef HEROESPATH_MISC_RANDOM_HPP_INCLUDED
+#define HEROESPATH_MISC_RANDOM_HPP_INCLUDED
 //
 // random.hpp
 //
@@ -106,4 +106,4 @@ namespace random
 }
 }
 
-#endif //MISC_RANDOM_HPP_INCLUDED
+#endif //HEROESPATH_MISC_RANDOM_HPP_INCLUDED

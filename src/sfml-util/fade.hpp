@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_FADE_HPP_INCLUDED
-#define SFMLUTIL_FADE_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_FADE_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_FADE_HPP_INCLUDED
 //
 // fade.hpp
 //  Helper classes and functions for fading the screen in and out.
@@ -103,4 +103,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_FADE_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_FADE_HPP_INCLUDED

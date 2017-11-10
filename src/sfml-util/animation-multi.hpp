@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED
-#define SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED
 //
 // animation-multi.hpp
 //  An animation class sourced from multiples textures.
@@ -89,4 +89,4 @@ namespace sfml_util
 }
 }
 
-#endif //SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED

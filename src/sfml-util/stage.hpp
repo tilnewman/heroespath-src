@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef SFMLUTIL_STAGE_HPP_INCLUDED
-#define SFMLUTIL_STAGE_HPP_INCLUDED
+#ifndef HEROESPATH_SFMLUTIL_STAGE_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_STAGE_HPP_INCLUDED
 //
 // stage.hpp
 //  Helper classes and functions for managing GuiEntity's in a collection on screen.
@@ -156,4 +156,4 @@ namespace box
 }
 }
 
-#endif //SFMLUTIL_STAGE_HPP_INCLUDED
+#endif //HEROESPATH_SFMLUTIL_STAGE_HPP_INCLUDED
