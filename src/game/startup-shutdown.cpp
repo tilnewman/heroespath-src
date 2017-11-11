@@ -100,17 +100,19 @@ namespace game
     {
         try
         {
-            //initialize the log first so that everything has the chance to log
+            //initialize the log first so that all Setup() actions can be logged
             log::Logger::Acquire();
 
-            ParseCommandLineArguments(ARGC, argv);
             DetectLogAndCheckPlatform();
 
             misc::random::MersenneTwister::Seed();
 
+            ParseCommandLineArguments(ARGC, argv);
+            
             //for this point forward the GameDataFile is required, so initialize it here
             GameDataFile::Acquire();
 
+            //this order is critical
             SetupDisplay(APPLICATION_NAME);
             SetManagerClassResourcePaths();
             SingletonsAcquireAndInitialize();
@@ -160,25 +162,42 @@ namespace game
     {
         int exitCode{ EXIT_SUCCESS };
 
+        Teardown_SettingsFile(exitCode);
+        Teardown_CloseDisplay(exitCode);
+        Teardown_EmptyWarehouses(exitCode);
+        Teardown_ReleaseSingletons(exitCode);
+        Teardown_Logger(exitCode);
+
+        return exitCode;
+    }
+
+
+    void StartupShutdown::Teardown_SettingsFile(int & exitCode_OutParam)
+    {
         try
         {
             config::SettingsFile::Instance()->AcquireAndSave();
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
-               "SettingsFile::AcquireAndSave() threw std::exception \"" << E.what() << "\"");
+            M_LOG_FAT(*log::Logger::Instance(),
+                "SettingsFile::Teardown_SettingsFile() threw std::exception \""
+                << E.what() << "\"");
 
-            exitCode = EXIT_FAILURE;
+            exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
-                "SettingsFile::AcquireAndSave() threw an unknown (non-std) exception.");
+            M_LOG_FAT(*log::Logger::Instance(),
+                "SettingsFile::Teardown_SettingsFile() threw an unknown (non-std) exception.");
 
-            exitCode = EXIT_FAILURE;
+            exitCode_OutParam = EXIT_FAILURE;
         }
+    }
 
+
+    void StartupShutdown::Teardown_CloseDisplay(int & exitCode_OutParam)
+    {
         try
         {
             //close the display window before free'ing resources
@@ -189,62 +208,93 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
-                "sfml_util::Display::GetWindow()->close() threw std::exception \""
+            M_LOG_FAT(*log::Logger::Instance(),
+                "StartupShutdown::Teardown_CloseDisplay() threw std::exception \""
                 << E.what() << "\"");
 
-            exitCode = EXIT_FAILURE;
+            exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG( * log::Logger::Instance(),
-                "sfml_util::Display::GetWindow()->close() threw an unknown (non-std) exception.");
+            M_LOG(*log::Logger::Instance(),
+                "StartupShutdown::Teardown_CloseDisplay() threw an unknown (non-std) exception.");
 
-            exitCode = EXIT_FAILURE;
+            exitCode_OutParam = EXIT_FAILURE;
         }
+    }
 
+
+    void StartupShutdown::Teardown_EmptyWarehouses(int & exitCode_OutParam)
+    {
         try
         {
             WarehousesEmpty();
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
-                "StartupShutdown::WarehousesEmpty() threw std::exception \""
+            M_LOG_FAT(*log::Logger::Instance(),
+                "StartupShutdown::Teardown_EmptyWarehouses() threw std::exception \""
                 << E.what() << "\"");
 
-            exitCode = EXIT_FAILURE;
+            exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
-                "StartupShutdown::WarehousesEmpty() threw an unknown (non-std) exception.");
+            M_LOG_FAT(*log::Logger::Instance(),
+                "StartupShutdown::Teardown_EmptyWarehouses() "
+                << "threw an unknown (non-std) exception.");
 
-            exitCode = EXIT_FAILURE;
+            exitCode_OutParam = EXIT_FAILURE;
         }
+    }
 
+
+    void StartupShutdown::Teardown_ReleaseSingletons(int & exitCode_OutParam)
+    {
         try
         {
             SingletonsRelease();
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
-                "StartupShutdown::SingletonsRelease() threw std::exception \""
+            M_LOG_FAT(*log::Logger::Instance(),
+                "StartupShutdown::Teardown_ReleaseSingletons() threw std::exception \""
                 << E.what() << "\"");
 
-            exitCode = EXIT_FAILURE;
+            exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
-               "StartupShutdown::SingletonsRelease() threw an unknown (non-std) exception.");
+            M_LOG_FAT(*log::Logger::Instance(),
+                "StartupShutdown::Teardown_ReleaseSingletons() "
+                << "threw an unknown (non-std) exception.");
 
-            exitCode = EXIT_FAILURE;
+            exitCode_OutParam = EXIT_FAILURE;
         }
+    }
 
-        log::Logger::Release();
-        return exitCode;
+
+    void StartupShutdown::Teardown_Logger(int & exitCode_OutParam)
+    {
+        try
+        {
+            log::Logger::Release();
+        }
+        catch (const std::exception & E)
+        {
+            M_LOG_FAT(*log::Logger::Instance(),
+                "StartupShutdown::Teardown_Logger() threw std::exception \""
+                << E.what() << "\"");
+
+            exitCode_OutParam = EXIT_FAILURE;
+        }
+        catch (...)
+        {
+            M_LOG_FAT(*log::Logger::Instance(),
+                "StartupShutdown::Teardown_Logger() threw an unknown (non-std) exception.");
+
+            exitCode_OutParam = EXIT_FAILURE;
+        }
     }
 
 
@@ -301,7 +351,7 @@ namespace game
         sfml_util::FontManager::SetFontsDirectory(
             game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir"));
 
-        heroespath::popup::PopupManager::SetTexturesDirectoryPaths(
+        popup::PopupManager::SetTexturesDirectoryPaths(
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-popup-dir"),
             game::GameDataFile::Instance()->GetMediaPath("media-images-accents-dir"));
 
@@ -366,7 +416,7 @@ namespace game
         item::MiscItemFactory::Acquire();
         sfml_util::SoundManager::Acquire();
         sfml_util::FontManager::Acquire();
-        heroespath::popup::PopupManager::Acquire();
+        popup::PopupManager::Acquire();
         sfml_util::gui::GuiElements::Acquire();
         sfml_util::gui::ItemImageManager::Acquire();
         sfml_util::gui::CreatureImageManager::Acquire();
@@ -397,7 +447,7 @@ namespace game
         //       file.
         sfml_util::SoundManager::Instance()->LoadSoundSets();
         combat::strategy::ChanceFactory::Instance()->Initialize();
-        heroespath::popup::PopupManager::Instance()->LoadAccentImagePaths();
+        popup::PopupManager::Instance()->LoadAccentImagePaths();
         item::ArmorRatings::Instance()->Setup();
 
         //LoopManager must be last
@@ -430,7 +480,7 @@ namespace game
         sfml_util::gui::ItemImageManager::Release();
         sfml_util::gui::GuiElements::Release();
         sfml_util::FontManager::Release();
-        heroespath::popup::PopupManager::Release();
+        popup::PopupManager::Release();
         sfml_util::SoundManager::Release();
         GameDataFile::Release();
         item::MiscItemFactory::Release();

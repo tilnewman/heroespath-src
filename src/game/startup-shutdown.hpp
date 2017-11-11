@@ -48,6 +48,11 @@ namespace game
         static int Teardown();
 
     private:
+        static void Teardown_SettingsFile(int & exitCode_OutParam);
+        static void Teardown_CloseDisplay(int & exitCode_OutParam);
+        static void Teardown_EmptyWarehouses(int & exitCode_OutParam);
+        static void Teardown_ReleaseSingletons(int & exitCode_OutParam);
+        static void Teardown_Logger(int & exitCode_OutParam);
         static void ParseCommandLineArguments(const int ARGC, char * argv[]);
         static void DetectLogAndCheckPlatform();
         static void SetupDisplay(const std::string & APPLICATION_NAME);
