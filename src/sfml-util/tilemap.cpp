@@ -599,11 +599,29 @@ namespace sfml_util
     void TileMap::ParseMapFile_ParseMapSizes(const boost::property_tree::ptree & XML_PROPERTY_TREE)
     {
         auto const XML_PROPERTY_TREE_MAPIMAGE{ XML_PROPERTY_TREE.get_child("map") };
+        
+        try
+        {
+            tileSizeWidth_ = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.tilewidth");
+            tileSizeHeight_ = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.tileheight");
+            mapTileCountX_ = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.width");
+            mapTileCountY_ = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.height");
+        }
+        catch (const std::exception & E)
+        {
+            std::string name("(no name)");
+            try
+            {
+                name = XML_PROPERTY_TREE_MAPIMAGE.get<std::string>("<xmlattr>.name");
+            }
+            catch (...)
+            {}
 
-        tileSizeWidth_ = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.tilewidth");
-        tileSizeHeight_ = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.tileheight");
-        mapTileCountX_ = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.width");
-        mapTileCountY_ = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.height");
+            M_HP_LOG_FAT("TileMap::ParseMapFile_ParseMapSizes() threw exception when parsing \""
+                << name << "\".  what=\"" << E.what() << "\".");
+
+            throw E;
+        }
     }
 
 
@@ -662,12 +680,37 @@ namespace sfml_util
         {
             if (ba::contains(ba::to_lower_copy(CHILD.first), ba::to_lower_copy(XML_ATTRIB_NAME_OBJECTS_)))
             {
-                const float LEFT  (CHILD.second.get<float>("<xmlattr>.x") - 20.0f);//Not sure why these magic numbers are needed...zTn 2016-11-1
-                const float TOP   (CHILD.second.get<float>("<xmlattr>.y") - 40.0f);
-                const float WIDTH (CHILD.second.get<float>("<xmlattr>.width"));
-                const float HEIGHT(CHILD.second.get<float>("<xmlattr>.height"));
-                const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
-                collisionsVec_.push_back(RECT);
+                try
+                {
+                    //Not sure why these magic numbers 20.0f and 40.0f are here...zTn 2016-11-1
+                    const float LEFT(CHILD.second.get<float>("<xmlattr>.x") - 20.0f);
+                    const float TOP(CHILD.second.get<float>("<xmlattr>.y") - 40.0f);
+
+                    const float WIDTH(CHILD.second.get<float>("<xmlattr>.width"));
+                    const float HEIGHT(CHILD.second.get<float>("<xmlattr>.height"));
+
+                    const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
+
+                    collisionsVec_.push_back(RECT);
+                }
+                catch (const std::exception & E)
+                {
+                    std::string name("(no name)");
+                    try
+                    {
+                        name = CHILD.second.get<std::string>("<xmlattr>.name");
+                    }
+                    catch (...)
+                    {
+                        name = CHILD.first;
+                    }
+
+                    M_HP_LOG_FAT("TileMap::ParseMapFile_ParseLayerCollisions() threw "
+                        << "std::exception when parsing \"" << name << "\".  what=\""
+                        << E.what() << "\".");
+
+                    throw E;
+                }
             }
         }
     }
