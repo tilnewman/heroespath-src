@@ -118,45 +118,45 @@ namespace misc
         std::ostringstream ss;
         platform_ = platform_type::Unknown;
 
-#ifdef PLATFORM_DETECTED_IS_WINDOWS
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
         ss << "  Windows";
         platform_ = platform_type::Windows;
 #endif
 
-#ifdef PLATFORM_DETECTED_IS_APPLE9
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE9
         ss << "  APPLE (OS9)";
         platform_ = platform_type::Unsupported;
 #endif
 
-#ifdef PLATFORM_DETECTED_IS_APPLE
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
         ss << "  APPLE (OS)";
         platform_ = platform_type::Apple;
 #endif
 
-#ifdef PLATFORM_DETECTED_IS_LINUX
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_LINUX
         ss << "  Linux";
         platform_ = platform_type::Linux;
 #endif
 
-#ifdef PLATFORM_DETECTED_IS_UNIX
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_UNIX
         ss << "  Unix";
 #endif
 
-#ifdef PLATFORM_DETECTED_IS_POSIX
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_POSIX
         ss << "  POSIX";
 #endif
 
-#ifdef PLATFORM_DETECTED_IS_CYGWIN
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_CYGWIN
         ss << "  CYGWIN";
 #endif
 
-#ifdef PLATFORM_DETECTED_IS_LINUX_GNU
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_LINUX_GNU
         ss << "  GNU/Linux";
 #endif
 
-        if (ss.str().empty())
+        if (ss.str().empty() || (platform_ == platform_type::Unknown))
         {
-            ss << "(None?  This platform is probably unsupported...)";
+            ss << "(None!  This unknown platform is probably not supported...)";
         }
 
         M_HP_LOG("Platform(s) Detected:  " << ss.str()

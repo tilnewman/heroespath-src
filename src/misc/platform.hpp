@@ -107,7 +107,11 @@ namespace misc
 
         inline bool IsApple() const { return (platform_type::Apple == platform_); }
 
-        inline bool IsSupported() const { return (platform_type::Unknown != platform_) && (platform_type::Unsupported != platform_); }
+        inline bool IsSupported() const
+        {
+            return (platform_type::Unknown != platform_) &&
+                (platform_type::Unsupported != platform_);
+        }
 
     private:
         static std::unique_ptr<Platform> instanceUPtr_;
