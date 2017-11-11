@@ -125,7 +125,7 @@ namespace sfml_util
                                         whichVec_.end(),
                                         currentlyPlaying_), whichVec_.end());
 
-            return heroespath::misc::Vector::SelectRandom(possibleSongs);
+            return misc::Vector::SelectRandom(possibleSongs);
         }
         else
         {

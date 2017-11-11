@@ -524,17 +524,17 @@ namespace item
                     if ((MISC_ENUM == misc_type::Doll_Blessed) ||
                         (MISC_ENUM == misc_type::Doll_Cursed))
                     {
-                        return ((heroespath::misc::random::Bool()) ? "Doll" : "Effigy");
+                        return ((misc::random::Bool()) ? "Doll" : "Effigy");
                     }
                     else if ((MISC_ENUM == misc_type::Figurine_Blessed) ||
                              (MISC_ENUM == misc_type::Figurine_Cursed))
                     {
-                        return ((heroespath::misc::random::Bool()) ? "Figurine": "Statuette");
+                        return ((misc::random::Bool()) ? "Figurine": "Statuette");
                     }
                     else if ((MISC_ENUM == misc_type::Puppet_Blessed) ||
                              (MISC_ENUM == misc_type::Puppet_Cursed))
                     {
-                        return ((heroespath::misc::random::Bool()) ? "Puppet" : "Marionette");
+                        return ((misc::random::Bool()) ? "Puppet" : "Marionette");
                     }
                     else if (MISC_ENUM == misc_type::Bust)
                     {

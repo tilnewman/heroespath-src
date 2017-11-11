@@ -73,7 +73,7 @@ namespace gui
         //MouseTextInfo generating helper functions
         static const MouseTextInfo Make_PopupButtonSet(
             const std::string & NAME,
-            const heroespath::popup::PopupInfo &);
+            const popup::PopupInfo &);
 
         TextInfo up;
         TextInfo down;

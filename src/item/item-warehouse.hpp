@@ -65,7 +65,7 @@ namespace item
 
     private:
         static std::unique_ptr<ItemWarehouse> instanceUPtr_;
-        heroespath::misc::Warehouse<Item> warehouse_;
+        misc::Warehouse<Item> warehouse_;
     };
 
 }

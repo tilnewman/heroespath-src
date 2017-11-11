@@ -136,8 +136,8 @@ namespace sfml_util
 
 
     void Loop::AssignPopupCallbackHandlerInfo(
-        heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
-        const heroespath::popup::PopupInfo & POPUP_INFO)
+        popup::IPopupHandler_t * const HANDLER_PTR,
+        const popup::PopupInfo & POPUP_INFO)
     {
         popupInfo_ = POPUP_INFO;
         popupCallbackPtr_ = HANDLER_PTR;
@@ -242,7 +242,7 @@ namespace sfml_util
 
             auto const AVERAGE_FRAMERATE{ sum / static_cast<float>(frameRateSampleCount_) };
 
-            const float STANDARD_DEVIATION{ heroespath::misc::Vector::StandardDeviation(
+            const float STANDARD_DEVIATION{ misc::Vector::StandardDeviation(
                 frameRateVec_,
                 frameRateSampleCount_,
                 AVERAGE_FRAMERATE) };
@@ -357,7 +357,7 @@ namespace sfml_util
 
         if (continueFading_)
         {
-            heroespath::game::LoopManager::Instance()->HandleTransitionBeforeFade();
+            game::LoopManager::Instance()->HandleTransitionBeforeFade();
 
             continueFading_ = ! fader_.Update(elapsedTimeSec_);
 
@@ -505,14 +505,14 @@ namespace sfml_util
         {
             M_HP_LOG(NAME_ << " F1 KEY RELEASED.  Bail.");
             sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
-            heroespath::game::LoopManager::Instance()->SetExitSuccess(false);
-            heroespath::game::LoopManager::Instance()->TransitionTo_Exit();
+            game::LoopManager::Instance()->SetExitSuccess(false);
+            game::LoopManager::Instance()->TransitionTo_Exit();
         }
         if ((EVENT.key.code == sf::Keyboard::Escape)
-            && (heroespath::game::LoopManager::Instance()->GetState() == LoopState::Test))
+            && (game::LoopManager::Instance()->GetState() == LoopState::Test))
         {
             M_HP_LOG(NAME_ << " ESCAPE KEY RELEASED WHILE TESTING.  Bail.");
-            heroespath::game::LoopManager::Instance()->TransitionTo_Exit();
+            game::LoopManager::Instance()->TransitionTo_Exit();
         }
         else
         {
@@ -626,17 +626,17 @@ namespace sfml_util
             return;
         }
 
-        auto const POPUP_RESPONSE_ENUM{ heroespath::game::LoopManager::Instance()->GetPopupResponse() };
-        auto const POPUP_SELECTION{ heroespath::game::LoopManager::Instance()->GetPopupSelection() };
+        auto const POPUP_RESPONSE_ENUM{ game::LoopManager::Instance()->GetPopupResponse() };
+        auto const POPUP_SELECTION{ game::LoopManager::Instance()->GetPopupSelection() };
 
-        if (POPUP_RESPONSE_ENUM != heroespath::popup::ResponseTypes::None)
+        if (POPUP_RESPONSE_ENUM != popup::ResponseTypes::None)
         {
             M_HP_LOG("PopupCallback resp=\""
-                << heroespath::popup::ResponseTypes::ToString(POPUP_RESPONSE_ENUM)
+                << popup::ResponseTypes::ToString(POPUP_RESPONSE_ENUM)
                 << "\" with selection=" << POPUP_SELECTION
                 << " to popup=\"" << popupInfo_.Name() << "\"");
 
-            const heroespath::popup::PopupResponse POPUP_RESPONSE_OBJ(
+            const popup::PopupResponse POPUP_RESPONSE_OBJ(
                 popupInfo_,
                 POPUP_RESPONSE_ENUM,
                 POPUP_SELECTION);
@@ -644,7 +644,7 @@ namespace sfml_util
             auto const WILL_RESET_CALLBACKHANDLER{
                 popupCallbackPtr_->HandleCallback(POPUP_RESPONSE_OBJ) };
 
-            heroespath::game::LoopManager::Instance()->ClearPopupResponse();
+            game::LoopManager::Instance()->ClearPopupResponse();
 
             if (WILL_RESET_CALLBACKHANDLER)
             {

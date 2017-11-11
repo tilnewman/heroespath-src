@@ -82,7 +82,7 @@ namespace gui
         gradient_.Setup(FULLSCREEN_RECT, GRADIENT_INFO);
 
         bgInfo_ = sfml_util::gui::BackgroundInfo(
-            heroespath::game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
+            game::GameDataFile::Instance()->GetMediaPath(MEDIA_PATH_KEY_STR),
             FULLSCREEN_RECT,
             sf::Color::White,
             GRADIENT_INFO);
@@ -139,7 +139,7 @@ namespace gui
 
         if (WIDTH_DIFF > 10.0f)
         {
-            textRectLeftToUse = heroespath::misc::random::Float(0.0f, WIDTH_DIFF);
+            textRectLeftToUse = misc::random::Float(0.0f, WIDTH_DIFF);
         }
 
         auto const HEIGHT_DIFF{
@@ -147,7 +147,7 @@ namespace gui
 
         if (HEIGHT_DIFF > 10.0f)
         {
-            textRectTopToUse = heroespath::misc::random::Float(0.0f, HEIGHT_DIFF);
+            textRectTopToUse = misc::random::Float(0.0f, HEIGHT_DIFF);
         }
 
         auto const SCALE_MULT{ 1.0f / IMAGE_SCALE };

@@ -42,7 +42,7 @@ namespace gui
 {
 
     //Loads images and delivers sf::Textures to them on demand.
-    class ConditionImageManager : public ImageManagerBase<heroespath::creature::Conditions>
+    class ConditionImageManager : public ImageManagerBase<creature::Conditions>
     {
         ConditionImageManager(const ConditionImageManager &) =delete;
         ConditionImageManager & operator=(const ConditionImageManager &) =delete;

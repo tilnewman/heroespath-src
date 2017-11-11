@@ -104,7 +104,7 @@ namespace stage
     class InventoryStage
     :
         public sfml_util::Stage,
-        public heroespath::popup::IPopupHandler_t,
+        public popup::IPopupHandler_t,
         public sfml_util::gui::callback::IListBoxCallbackHandler,
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
@@ -157,7 +157,7 @@ namespace stage
         virtual bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
-        virtual bool HandleCallback(const heroespath::popup::PopupResponse &) override;
+        virtual bool HandleCallback(const popup::PopupResponse &) override;
 
         virtual void Setup() override;
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;

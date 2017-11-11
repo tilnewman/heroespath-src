@@ -100,7 +100,7 @@ namespace stage
     }
 
 
-    bool CampStage::HandleCallback(const heroespath::popup::PopupResponse & PACKAGE)
+    bool CampStage::HandleCallback(const popup::PopupResponse & PACKAGE)
     {
         if (PACKAGE.Info().Name() == NEWHEROESPATH_POPUP_NAME1_)
         {
@@ -193,11 +193,11 @@ namespace stage
 
         if (showNewGamePopup1_)
         {
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME1_,
                 std::string("The world of Etan suffers.\n\n").append(ComposeNewGamePopupText1()),
-                heroespath::popup::PopupButtons::Continue,
-                heroespath::popup::PopupImage::Large,
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Large,
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::None) };
 
@@ -206,11 +206,11 @@ namespace stage
         }
         else if (showNewGamePopup2_)
         {
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME2_,
                 ComposeNewGamePopupText2(),
-                heroespath::popup::PopupButtons::Continue,
-                heroespath::popup::PopupImage::Large,
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Large,
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::None) };
 
@@ -219,11 +219,11 @@ namespace stage
         }
         else if (showNewGamePopup3_)
         {
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME3_,
                 ComposeNewGamePopupText3(),
-                heroespath::popup::PopupButtons::Continue,
-                heroespath::popup::PopupImage::Large,
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Large,
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::None) };
 
@@ -232,11 +232,11 @@ namespace stage
         }
         else if (showNewGamePopup4_)
         {
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 NEWHEROESPATH_POPUP_NAME4_,
                 ComposeNewGamePopupText4(),
-                heroespath::popup::PopupButtons::Continue,
-                heroespath::popup::PopupImage::Large,
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Large,
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::None) };
 

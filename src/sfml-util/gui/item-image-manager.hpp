@@ -76,43 +76,43 @@ namespace gui
 
         void Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const;
 
-        void Load(sf::Texture & texture, const heroespath::item::ItemPtr_t ITEM_PTR) const;
+        void Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const;
 
         void Load(
             sf::Texture &                     texture,
-            const heroespath::item::misc_type::Enum ITEM_ENUM,
+            const item::misc_type::Enum ITEM_ENUM,
             const bool                        IS_JEWELED = false,
             const bool                        IS_BONE = false,
             const bool                        WILL_RANDOMIZE = true) const;
 
         const std::string GetImageFilename(
-            const heroespath::item::ItemPtr_t ITEM_PTR,
+            const item::ItemPtr_t ITEM_PTR,
             const bool                  WILL_RANDOMIZE = true) const;
 
         const std::string GetImageFilename(
-            const heroespath::item::weapon::WeaponInfo & WEAPON_INFO,
+            const item::weapon::WeaponInfo & WEAPON_INFO,
             const bool                             IS_JEWELED = false) const;
 
         const std::string GetImageFilename(
-            const heroespath::item::armor::ArmorInfo & ARMOR_INFO) const;
+            const item::armor::ArmorInfo & ARMOR_INFO) const;
 
         const std::string GetSkinImageFilename(
-            const heroespath::item::ItemPtr_t ITEM_PTR) const;
+            const item::ItemPtr_t ITEM_PTR) const;
 
         const std::string GetImageFilename(
-            const heroespath::item::misc_type::Enum ITEM_ENUM,
+            const item::misc_type::Enum ITEM_ENUM,
             const bool                        IS_JEWELED     = false,
             const bool                        IS_BONE        = false,
             const bool                        WILL_RANDOMIZE = false,
-            const heroespath::creature::race::Enum  RACE_ENUM = heroespath::creature::race::Count,
-            const heroespath::creature::role::Enum  ROLE_ENUM = heroespath::creature::role::Count) const;
+            const creature::race::Enum  RACE_ENUM = creature::race::Count,
+            const creature::role::Enum  ROLE_ENUM = creature::role::Count) const;
 
         const std::vector<std::string> GetImageFilenames(
-            const heroespath::item::misc_type::Enum ITEM_ENUM,
+            const item::misc_type::Enum ITEM_ENUM,
             const bool                        IS_JEWELED = false,
             const bool                        IS_BONE    = false,
-            const heroespath::creature::race::Enum  RACE_ENUM  = heroespath::creature::race::Count,
-            const heroespath::creature::role::Enum  ROLE_ENUM  = heroespath::creature::role::Count) const;
+            const creature::race::Enum  RACE_ENUM  = creature::race::Count,
+            const creature::role::Enum  ROLE_ENUM  = creature::role::Count) const;
 
     private:
         static std::unique_ptr<ItemImageManager> instanceUPtr_;

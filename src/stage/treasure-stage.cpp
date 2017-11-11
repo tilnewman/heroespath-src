@@ -163,7 +163,7 @@ namespace stage
     }
 
 
-    bool TreasureStage::HandleCallback(const heroespath::popup::PopupResponse & POPUP_RESPONSE)
+    bool TreasureStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ITEMPROFILE_PLEASEWAIT_)
         {
@@ -186,7 +186,7 @@ namespace stage
         if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_ONLY_) ||
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_AND_HELD_))
         {
-            if (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Yes)
+            if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Yes)
             {
                 PromptPlayerWhichCharacterWillPickLock();
                 return false;
@@ -200,7 +200,7 @@ namespace stage
 
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_)
         {
-            if (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Select)
+            if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
                 auto const SELECTION{ POPUP_RESPONSE.Selection() };
 
@@ -541,11 +541,11 @@ namespace stage
             ss << "\n" << "All " << itemsToRemovePVec.size()
                 << " items were taken.";
 
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_ALL_ITEMS_TAKEN_,
                 ss.str(),
-                heroespath::popup::PopupButtons::Okay,
-                heroespath::popup::PopupImage::Regular) };
+                popup::PopupButtons::Okay,
+                popup::PopupImage::Regular) };
 
             game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         }
@@ -553,11 +553,11 @@ namespace stage
         {
             sfml_util::SoundManager::Instance()->PlaySfx_Reject();
 
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NOT_ALL_ITEMS_TAKEN_,
                 "None of the items could be taken by any of your characters.",
-                heroespath::popup::PopupButtons::Okay,
-                heroespath::popup::PopupImage::Regular) };
+                popup::PopupButtons::Okay,
+                popup::PopupImage::Regular) };
 
             game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         }
@@ -569,11 +569,11 @@ namespace stage
             ss << "\n" << NUM_ITEMS_REMAINING
                 << " items could not be taken by any of your characters.";
 
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NOT_ALL_ITEMS_TAKEN_,
                 ss.str(),
-                heroespath::popup::PopupButtons::Okay,
-                heroespath::popup::PopupImage::Regular) };
+                popup::PopupButtons::Okay,
+                popup::PopupImage::Regular) };
 
             game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         }
@@ -601,7 +601,7 @@ namespace stage
             {
                 game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageItemProfileWait>(
                     this,
-                    heroespath::popup::PopupManager::Instance()->CreateItemProfilePleaseWaitPopupInfo(
+                    popup::PopupManager::Instance()->CreateItemProfilePleaseWaitPopupInfo(
                         POPUP_NAME_ITEMPROFILE_PLEASEWAIT_));
             }
         }
@@ -671,11 +671,11 @@ namespace stage
                 ss << "\nYour enemies had no possessions on them and they carried no lockbox.  "
                     << "Click Continue to return to the Adventure screen.";
 
-                auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_NO_TREASURE_,
                     ss.str(),
-                    heroespath::popup::PopupButtons::Continue,
-                    heroespath::popup::PopupImage::Regular) };
+                    popup::PopupButtons::Continue,
+                    popup::PopupImage::Regular) };
 
                 game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
@@ -686,11 +686,11 @@ namespace stage
                 ss << "\nYour enemies were wearing possessions but they carried no lockbox.  "
                     << "Click Continue to search what they left behind.";
 
-                auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_WORN_ONLY_,
                     ss.str(),
-                    heroespath::popup::PopupButtons::Continue,
-                    heroespath::popup::PopupImage::Regular) };
+                    popup::PopupButtons::Continue,
+                    popup::PopupImage::Regular) };
 
                 game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
@@ -703,13 +703,13 @@ namespace stage
                     << item::TreasureImage::ToContainerName(TREASURE_IMAGE)
                     << ".  Attempt to pick the lock?";
 
-                auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     ((TREASURE_AVAILABLE == item::TreasureAvailable::LockboxOnly) ?
                         POPUP_NAME_LOCKBOX_ONLY_ :
                         POPUP_NAME_LOCKBOX_AND_HELD_),
                     ss.str(),
-                    heroespath::popup::PopupButtons::YesNo,
-                    heroespath::popup::PopupImage::Regular) };
+                    popup::PopupButtons::YesNo,
+                    popup::PopupImage::Regular) };
 
                 game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                 break;
@@ -742,7 +742,7 @@ namespace stage
 
         if (isThereAValidCharacterWhoCanAttemptToPickTheLock)
         {
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
                 POPUP_NAME_CHAR_SELECT_,
                 "Who will attempt to pick the lock?",
                 INVALID_MSGS,
@@ -757,11 +757,11 @@ namespace stage
                 std::string("There are no characters who can attempt to pick the lock!  ") +
                     "They are all incapable or incapacitated" };
 
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_,
                 MSG,
-                heroespath::popup::PopupButtons::Continue,
-                heroespath::popup::PopupImage::Regular) };
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Regular) };
 
             game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         }
@@ -843,13 +843,13 @@ namespace stage
     void TreasureStage::PromptPlayerWithLockPickPopup(
         const std::string & CHAR_PICKING_NAME)
     {
-        auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
             POPUP_NAME_LOCK_PICK_ATTEMPT_,
             CHAR_PICKING_NAME + " is attempting to pick the lock...",
             4.0f,//the duration of the longest lockpick sfx
             sfml_util::FontManager::Instance()->Size_Normal(),
-            heroespath::popup::PopupButtons::None,
-            heroespath::popup::PopupImage::Regular,
+            popup::PopupButtons::None,
+            popup::PopupImage::Regular,
             SelectRandomLockPickingSfx()) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
@@ -920,7 +920,7 @@ namespace stage
             trap_,
             combat::Encounter::Instance()->LockPickCreaturePtr());
 
-        auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreateTrapPopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTrapPopupInfo(
             POPUP_NAME_LOCK_PICK_FAILURE_,
             trap_.Description(item::TreasureImage::ToContainerName(treasureImageType_)),
             trap_.SoundEffect()) };
@@ -945,11 +945,11 @@ namespace stage
                 0,
                 ignored) };
 
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_DAMAGE_REPORT_,
                 "\n" + DAMAGE_TEXT,
-                heroespath::popup::PopupButtons::Continue,
-                heroespath::popup::PopupImage::Regular) };
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Regular) };
 
             game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
 
@@ -972,7 +972,7 @@ namespace stage
         {
             game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCombatOver>(
                 this,
-                heroespath::popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
+                popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                     POPUP_NAME_ALL_CHARACTERS_DIED_, combat::CombatEnd::Lose));
 
             return true;
@@ -999,13 +999,13 @@ namespace stage
             SelectRandomTreasureOpeningSfx(),
             0.5f);
 
-        auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
             POPUP_NAME_LOCKBOX_OPEN_,
             "\nThe " + item::TreasureImage::ToContainerName(treasureImageType_) + " Opens!",
             4.0f,
             sfml_util::FontManager::Instance()->Size_Large(),
-            heroespath::popup::PopupButtons::Continue,
-            heroespath::popup::PopupImage::Regular,
+            popup::PopupButtons::Continue,
+            popup::PopupImage::Regular,
             sfml_util::sound_effect::None) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
@@ -1039,11 +1039,11 @@ namespace stage
             auto const SOUND_EFFECT{ sfml_util::SoundManager::Instance()->
                 Getsound_effect_set(SOUND_EFFECT_SET).SelectRandom() };
 
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME,
                 ss.str(),
-                heroespath::popup::PopupButtons::Continue,
-                heroespath::popup::PopupImage::Regular,
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Regular,
                 sfml_util::Justified::Center,
                 SOUND_EFFECT,
                 sfml_util::FontManager::Instance()->Size_Normal()) };
@@ -1264,11 +1264,11 @@ namespace stage
             ss << creaturePtr->Name() << " can't take the " << ITEM_PTR->Name() << " because:  "
                 << IS_ITEM_ADD_ALLOWED_STR;
 
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_ITEM_TAKE_REJECTION_,
                 ss.str(),
-                heroespath::popup::PopupButtons::Cancel,
-                heroespath::popup::PopupImage::Regular,
+                popup::PopupButtons::Cancel,
+                popup::PopupImage::Regular,
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::PromptWarn,
                 sfml_util::FontManager::Instance()->Size_Largeish()) };
@@ -1343,7 +1343,7 @@ namespace stage
                         toTexture, TO_TITLE_PTR->Which());
                 }
 
-                auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreateImageFadePopupInfo(
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageFadePopupInfo(
                     POPUP_NAME_TITLE_ACHIEVEMENT_,
                     creatureWhoPickedTheLockPtr_,
                     FROM_TITLE_PTR,

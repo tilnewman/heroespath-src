@@ -53,7 +53,7 @@ namespace main_menu_buttons
         FourStateButton("CreateCharacters")
     {
         auto const BUTTONS_PATH{
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") };
 
         FourStateButton::Setup(
@@ -71,7 +71,7 @@ namespace main_menu_buttons
 
     void CreateCharactersButton::OnClick(const sf::Vector2f &)
     {
-        heroespath::game::LoopManager::Instance()->TransitionTo_CharacterCreation();
+        game::LoopManager::Instance()->TransitionTo_CharacterCreation();
     }
 
 
@@ -84,7 +84,7 @@ namespace main_menu_buttons
         FourStateButton("Resume")
     {
         auto const BUTTONS_PATH{
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") };
 
         FourStateButton::Setup(
@@ -115,7 +115,7 @@ namespace main_menu_buttons
         FourStateButton("StartGame")
     {
         auto const BUTTONS_PATH{
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") };
 
         FourStateButton::Setup(
@@ -144,7 +144,7 @@ namespace main_menu_buttons
         FourStateButton("Settings")
     {
         auto const BUTTONS_PATH{
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") };
 
         FourStateButton::Setup(
@@ -162,7 +162,7 @@ namespace main_menu_buttons
 
     void SettingsButton::OnClick(const sf::Vector2f &)
     {
-        heroespath::game::LoopManager::Instance()->TransitionTo_Settings();
+        game::LoopManager::Instance()->TransitionTo_Settings();
     }
 
 
@@ -175,7 +175,7 @@ namespace main_menu_buttons
         FourStateButton("Credits")
     {
         auto const BUTTONS_PATH{
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") };
 
         FourStateButton::Setup(
@@ -193,7 +193,7 @@ namespace main_menu_buttons
 
     void CreditsButton::OnClick(const sf::Vector2f &)
     {
-        heroespath::game::LoopManager::Instance()->TransitionTo_Credits();
+        game::LoopManager::Instance()->TransitionTo_Credits();
     }
 
 
@@ -206,7 +206,7 @@ namespace main_menu_buttons
         FourStateButton("Exit")
     {
         auto const BUTTONS_PATH{
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") };
 
         FourStateButton::Setup(
@@ -224,7 +224,7 @@ namespace main_menu_buttons
 
     void ExitButton::OnClick(const sf::Vector2f &)
     {
-       heroespath::game::LoopManager::Instance()->TransitionTo_Exit();
+       game::LoopManager::Instance()->TransitionTo_Exit();
     }
 
 
@@ -238,7 +238,7 @@ namespace main_menu_buttons
         FourStateButton("Back")
     {
         auto const BUTTONS_PATH{
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") };
 
         FourStateButton::Setup(
@@ -256,7 +256,7 @@ namespace main_menu_buttons
 
     void BackButton::OnClick(const sf::Vector2f &)
     {
-        heroespath::game::LoopManager::Instance()->TransitionTo_Previous();
+        game::LoopManager::Instance()->TransitionTo_Previous();
     }
 
 
@@ -269,7 +269,7 @@ namespace main_menu_buttons
         FourStateButton("Delete")
     {
         auto const BUTTONS_PATH{
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") };
 
         FourStateButton::Setup(
@@ -287,7 +287,7 @@ namespace main_menu_buttons
 
     void DeleteButton::OnClick(const sf::Vector2f &)
     {
-        heroespath::game::LoopManager::Instance()->TransitionTo_Previous();
+        game::LoopManager::Instance()->TransitionTo_Previous();
     }
 
 }

@@ -42,13 +42,16 @@
 
 #include <exception>
 
+
 using namespace heroespath;
+using namespace heroespath::game;
+
 namespace ts = test_stuff;
 
 
 BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 {
-    BOOST_CHECK_MESSAGE(game::StartupShutdown::Setup("Heroes' Path Unit Tests", 0, nullptr),
+    BOOST_CHECK_MESSAGE(StartupShutdown::Setup("Heroes' Path Unit Tests", 0, nullptr),
         "StartupShutdown::Setup() failed");
 
     combat::CombatTree combatTree;
@@ -171,32 +174,35 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
         BOOST_CHECK(combatNodePtrs.empty());
     }
 
-    game::StartupShutdown::Teardown();
+    StartupShutdown::Teardown();
 }
 
 
 BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
 {
-    BOOST_CHECK_MESSAGE(game::StartupShutdown::Setup("Heroes' Path Unit Tests", 0, nullptr),
+    std::cout << "begin" << std::endl;
+    BOOST_CHECK_MESSAGE(
+        StartupShutdown::Setup("Heroes' Path Unit Tests", 0, nullptr),
         "StartupShutdown::Setup() failed");
 
+    std::cout << "1" << std::endl;
     //setup the default party
     auto partyPtr{ player::FakeParty::Make() };
     state::GameStateFactory::Instance()->NewGame(partyPtr);
     combat::Encounter::Instance()->BeginCombatTasks();
-
+    std::cout << "2" << std::endl;
     //make a CombatNode for the creature at position zero
     auto const CREATURE_PTR0{
         static_cast<creature::CreaturePtr_t>(partyPtr->Characters().at(0)) };
-
+    std::cout << "3" << std::endl;
     auto combatNodeSPtr0{ std::make_shared<combat::CombatNode>(CREATURE_PTR0) };
     const int BLOCKING_POS0{ -13 };
     combatNodeSPtr0->SetBlockingPos(BLOCKING_POS0);
-
+    std::cout << "4" << std::endl;
     //add that CombatNodeSPtr_t as a Vertex to the CombatTree
     combat::CombatTree combatTree;
     auto const VERT_ID0{ combatTree.AddVertex(combatNodeSPtr0) };
-
+    std::cout << "5" << std::endl;
     //tests after the single vertex insert
     BOOST_CHECK(combatTree.NextAvailableId() == 1_id);
     BOOST_CHECK(combatTree.GetNode(VERT_ID0) == combatNodeSPtr0.get());
@@ -489,5 +495,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
         BOOST_CHECK(combatNodePtrs.empty());
     }
 
-    game::StartupShutdown::Teardown();
+    StartupShutdown::Teardown();
+
+    std::cout << "end" << std::endl;
 }

@@ -124,17 +124,17 @@ namespace gui
 
         sfml_util::LoadTexture(
             elementsTexture_,
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-gui-elements"));
 
         sfml_util::LoadTexture(
             woodBgTexture_,
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-backgrounds-tile-wood"));
 
         sfml_util::LoadTexture(
             darkKnotBgTexture_,
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-backgrounds-tile-darkknot"));
     }
 

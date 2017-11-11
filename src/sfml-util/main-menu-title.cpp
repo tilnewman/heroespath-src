@@ -68,7 +68,7 @@ namespace sfml_util
     {
         LoadTexture(
             symbolTexture_,
-            heroespath::game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
+            game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
 
         symbolSprite_.setTexture(symbolTexture_, true);
 
@@ -81,7 +81,7 @@ namespace sfml_util
         {
             willDrawTitle_ = true;
 
-            auto const TITLE_IMAGE_PATH{ heroespath::game::GameDataFile::Instance()->
+            auto const TITLE_IMAGE_PATH{ game::GameDataFile::Instance()->
                 GetMediaPath("media-images-buttons-mainmenu-dir") + TITLE_IMAGE_FILENAME };
 
             sfml_util::LoadTexture(titleTexture_, TITLE_IMAGE_PATH);

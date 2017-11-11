@@ -90,7 +90,7 @@ namespace player
         {
             ItemPtr_t weaponPtr = [&]()
                 {
-                    switch(heroespath::misc::random::Int(2))
+                    switch(misc::random::Int(2))
                     {
                         case 1:
                         {
@@ -150,7 +150,7 @@ namespace player
         {
             ItemPtr_t weaponPtr = [&]()
                 {
-                    switch(heroespath::misc::random::Int(2))
+                    switch(misc::random::Int(2))
                     {
                         case 1:
                         {

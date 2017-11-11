@@ -290,21 +290,21 @@ namespace stage
     }
 
 
-    bool CharacterStage::HandleCallback(const heroespath::popup::PopupResponse & POPUP_RESPONSE)
+    bool CharacterStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
         if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CREATECONFIRM_) &&
-            (heroespath::popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response())))
+            (popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response())))
         {
             return CreateCharacter();
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_) &&
-                 heroespath::popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response()))
+                 popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response()))
         {
             game::LoopManager::Instance()->SetTransitionBeforeFade(sfml_util::LoopState::MainMenu);
             return true;
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_) &&
-                 heroespath::popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response()))
+                 popup::ResponseTypes::IsAffirmative(POPUP_RESPONSE.Response()))
         {
             game::LoopManager::Instance()->SetTransitionBeforeFade(sfml_util::LoopState::PartyCreation);
             return true;
@@ -320,7 +320,7 @@ namespace stage
             return true;
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_IMAGE_SELECTION_) &&
-                 (POPUP_RESPONSE.Response() != heroespath::popup::ResponseTypes::Cancel))
+                 (POPUP_RESPONSE.Response() != popup::ResponseTypes::Cancel))
         {
             CharacterCreationConfirmPopup(POPUP_RESPONSE.Selection());
             return false;
@@ -1391,11 +1391,11 @@ namespace stage
 
             game::LoopManager::Instance()->PopupWaitBegin(
                 this,
-                heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+                popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_,
                     ss.str(),
-                    heroespath::popup::PopupButtons::YesNo,
-                    heroespath::popup::PopupImage::Banner,
+                    popup::PopupButtons::YesNo,
+                    popup::PopupImage::Banner,
                     sfml_util::Justified::Center,
                     sfml_util::sound_effect::PromptWarn));
 
@@ -1430,11 +1430,11 @@ namespace stage
         ss << ".  All attributes must have a value before your character can be created.  "
             << "Hold down the spacebar until all attributes have values.";
 
-        auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_MISSINGATTRIBS_,
             ss.str(),
-            heroespath::popup::PopupButtons::Okay,
-            heroespath::popup::PopupImage::RegularSidebar,
+            popup::PopupButtons::Okay,
+            popup::PopupImage::RegularSidebar,
             sfml_util::Justified::Left,
             sfml_util::sound_effect::PromptQuestion) };
 
@@ -1446,11 +1446,11 @@ namespace stage
     {
         game::LoopManager::Instance()->PopupWaitBegin(
             this,
-            heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NONAMEERROR_,
                 "The name box is empty.  You must name your character to continue.",
-                heroespath::popup::PopupButtons::Okay,
-                heroespath::popup::PopupImage::Banner,
+                popup::PopupButtons::Okay,
+                popup::PopupImage::Banner,
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::PromptWarn));
     }
@@ -1494,7 +1494,7 @@ namespace stage
         std::ostringstream ss;
         ss << "Choose an image for \"" << CHARACTER_NAME << "\"";
 
-        auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
             POPUP_NAME_IMAGE_SELECTION_,
             ss.str(),
             characterTextureVec,
@@ -1526,11 +1526,11 @@ namespace stage
 
             game::LoopManager::Instance()->PopupWaitBegin(
                 this,
-                heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+                popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_,
                     ss.str(),
-                    heroespath::popup::PopupButtons::YesNo,
-                    heroespath::popup::PopupImage::Banner,
+                    popup::PopupButtons::YesNo,
+                    popup::PopupImage::Banner,
                     sfml_util::Justified::Center,
                     sfml_util::sound_effect::PromptWarn));
         }
@@ -1545,7 +1545,7 @@ namespace stage
     {
         game::LoopManager::Instance()->PopupWaitBegin(
             this,
-            heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_HELP_1_,
                 std::string("You play Heroes' Path with a group of six characters called a party.  ") +
                     "This is where you create those characters one at a time. " +
@@ -1557,8 +1557,8 @@ namespace stage
                     "If you are new to the game, there are four recommended sets of " +
                     "Roles that are known to be effective and fun to play.  Click continue " +
                     "below to see them listed.",
-                heroespath::popup::PopupButtons::Continue,
-                heroespath::popup::PopupImage::Regular));
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Regular));
     }
 
 
@@ -1566,7 +1566,7 @@ namespace stage
     {
         game::LoopManager::Instance()->PopupWaitBegin(
             this,
-            heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_HELP_2_,
                 std::string("Classic Set:\n\nKnight\nArcher\nBard\nThief\nCleric\nSorcerer") +
                 "\n\n\nPet Set:\n\nKnight\nBeastmaster\nDragon or Wolfen\nBard\nThief\nCleric" +
@@ -1576,8 +1576,8 @@ namespace stage
                 "\n\n\n" +
                 "Note that one of your characters must have the role of Beastmaster " +
                 "if you want a Dragon or Wolfen in your party.",
-                heroespath::popup::PopupButtons::Continue,
-                heroespath::popup::PopupImage::Large));
+                popup::PopupButtons::Continue,
+                popup::PopupImage::Large));
     }
 
 
@@ -1585,7 +1585,7 @@ namespace stage
     {
         game::LoopManager::Instance()->PopupWaitBegin(
             this,
-            heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_HELP_3_,
                 std::string("To make a character, first select the Race and Role.  ") +
                     "Use the text descriptions to guide you.  Then hold down the space bar to " +
@@ -1597,8 +1597,8 @@ namespace stage
                     "then click the Save button.  Once you have created all the characters you " +
                     "need, click the Next button.  You can always return and make more " +
                     "characters.",
-                heroespath::popup::PopupButtons::Okay,
-                heroespath::popup::PopupImage::Large));
+                popup::PopupButtons::Okay,
+                popup::PopupImage::Large));
     }
 
 
@@ -1656,11 +1656,11 @@ namespace stage
 
         game::LoopManager::Instance()->PopupWaitBegin(
             this,
-            heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_CREATECONFIRM_,
                 ss.str(),
-                heroespath::popup::PopupButtons::YesNo,
-                heroespath::popup::PopupImage::Large,
+                popup::PopupButtons::YesNo,
+                popup::PopupImage::Large,
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::PromptQuestion));
     }
@@ -1684,7 +1684,7 @@ namespace stage
         sss << " saved.";
 
         game::LoopManager::Instance()->PopupWaitBegin(
-            this, heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            this, popup::PopupManager::Instance()->CreatePopupInfo(
                 "CharacterCreationConfirmPopup", sss.str()));
     }
 

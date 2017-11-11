@@ -50,9 +50,9 @@ namespace item
     struct MemberStrings
     {
         MemberStrings(
-            const heroespath::misc::StrVec_t & NORMAL_STRINGS,
-            const heroespath::misc::StrVec_t & WEAPON_STRINGS,
-            const heroespath::misc::StrVec_t & ARMOR_STRINGS)
+            const misc::StrVec_t & NORMAL_STRINGS,
+            const misc::StrVec_t & WEAPON_STRINGS,
+            const misc::StrVec_t & ARMOR_STRINGS)
         :
             normalStrings(NORMAL_STRINGS),
             weaponStrings(WEAPON_STRINGS),
@@ -66,9 +66,9 @@ namespace item
         const std::string ToString() const;
 
     private:
-        heroespath::misc::StrVec_t normalStrings;
-        heroespath::misc::StrVec_t weaponStrings;
-        heroespath::misc::StrVec_t armorStrings;
+        misc::StrVec_t normalStrings;
+        misc::StrVec_t weaponStrings;
+        misc::StrVec_t armorStrings;
     };
 
 

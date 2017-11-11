@@ -55,7 +55,7 @@ namespace gui
         ImageManagerBase()
         :
             pathToPlaceholderImage_(
-                heroespath::game::GameDataFile::Instance()->GetMediaPath("media-images-placeholder") )
+                game::GameDataFile::Instance()->GetMediaPath("media-images-placeholder") )
         {}
 
 

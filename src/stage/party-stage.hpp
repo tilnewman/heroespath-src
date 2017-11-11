@@ -73,7 +73,7 @@ namespace stage
         public sfml_util::Stage,
         public sfml_util::gui::callback::IListBoxCallbackHandler,
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t,
-        public heroespath::popup::IPopupHandler_t
+        public popup::IPopupHandler_t
     {
         PartyStage(const PartyStage &) =delete;
         PartyStage & operator=(const PartyStage &) =delete;
@@ -85,7 +85,7 @@ namespace stage
         inline virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
         virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
-        virtual bool HandleCallback(const heroespath::popup::PopupResponse &);
+        virtual bool HandleCallback(const popup::PopupResponse &);
         //
         virtual bool HandleCallback_BackButton();
         virtual bool HandleCallback_StartButton();

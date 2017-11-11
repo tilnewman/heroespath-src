@@ -409,7 +409,7 @@ namespace stage
     }
 
 
-    bool InventoryStage::HandleCallback(const heroespath::popup::PopupResponse & POPUP_RESPONSE)
+    bool InventoryStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
         isWaitingOnPopup_ = false;
 
@@ -422,32 +422,32 @@ namespace stage
             return HandleCast_Step3_DisplayResults();
         }
         else  if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_DROPCONFIRM_) &&
-                  (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Yes))
+                  (POPUP_RESPONSE.Response() == popup::ResponseTypes::Yes))
         {
             return HandleDropActual();
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_GIVE_) &&
-                 (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Select))
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
-            if (POPUP_RESPONSE.Selection() == heroespath::popup::PopupInfo::ContentNum_Item())
+            if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Item())
             {
                 return HandleGiveRequestItems();
             }
-            else if (POPUP_RESPONSE.Selection() == heroespath::popup::PopupInfo::ContentNum_Coins())
+            else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Coins())
             {
                 return HandleGiveRequestCoins();
             }
-            else if (POPUP_RESPONSE.Selection() == heroespath::popup::PopupInfo::ContentNum_Gems())
+            else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Gems())
             {
                 return HandleGiveRequestGems();
             }
-            else if (POPUP_RESPONSE.Selection() == heroespath::popup::PopupInfo::ContentNum_MeteorShards())
+            else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_MeteorShards())
             {
                 return HandleGiveRequestMeteorShards();
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_) &&
-                 (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Select))
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
             creatureToGiveToPtr_ =
                 game::Game::Instance()->State().Party().GetAtOrderPos(POPUP_RESPONSE.Selection());
@@ -491,7 +491,7 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_NUMBER_SELECT_) &&
-                 (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Select) &&
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select) &&
                  (creatureToGiveToPtr_ != nullptr))
         {
             switch (contentType_)
@@ -520,9 +520,9 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_CONTENTSELECTION_) &&
-                 (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Select))
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
-            if (POPUP_RESPONSE.Selection() == heroespath::popup::PopupInfo::ContentNum_Coins())
+            if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Coins())
             {
                 if (ActionType::Gather == actionType_)
                 {
@@ -535,7 +535,7 @@ namespace stage
 
                 return false;
             }
-            else if (POPUP_RESPONSE.Selection() == heroespath::popup::PopupInfo::ContentNum_Gems())
+            else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_Gems())
             {
                 if (ActionType::Gather == actionType_)
                 {
@@ -548,7 +548,7 @@ namespace stage
 
                 return false;
             }
-            else if (POPUP_RESPONSE.Selection() == heroespath::popup::PopupInfo::ContentNum_MeteorShards())
+            else if (POPUP_RESPONSE.Selection() == popup::PopupInfo::ContentNum_MeteorShards())
             {
                 if (ActionType::Gather == actionType_)
                 {
@@ -563,7 +563,7 @@ namespace stage
             }
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_) &&
-                 (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Select))
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
             const spell::SpellPVec_t SPELLS_PVEC{ creaturePtr_->SpellsPVec() };
             M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
@@ -580,7 +580,7 @@ namespace stage
             return HandleCast_Step1_TargetSelection(SPELLS_PVEC[POPUP_RESPONSE.Selection()]);
         }
         else if ((POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_) &&
-                 (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Select))
+                 (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
             const song::SongPVec_t SONGS_PVEC{ creaturePtr_->SongsPVec() };
             M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SONGS_PVEC.size()),
@@ -2474,11 +2474,11 @@ namespace stage
                     std::ostringstream ss;
                     ss << "Cannot equip the " << IITEM_PTR->Name() << " because: " << EQUIP_RESULT;
 
-                    auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+                    auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                         "InventoryStage'sEquipItemFailedPopup",
                         ss.str(),
-                        heroespath::popup::PopupButtons::Okay,
-                        heroespath::popup::PopupImage::Regular) };
+                        popup::PopupButtons::Okay,
+                        popup::PopupImage::Regular) };
 
                     game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
                     isWaitingOnPopup_ = true;
@@ -2543,12 +2543,12 @@ namespace stage
     {
         actionType_ = ActionType::Give;
 
-        auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
             POPUP_NAME_GIVE_,
             std::string("\nWhat do you want to give?\n\n(I)tem\n(C)oins\n(G)ems\n(M)eteor").
                 append("Shards\n\n...or (Escape) to Cancel"),
-            heroespath::popup::PopupButtons::Cancel,
-            heroespath::popup::PopupImage::Large,
+            popup::PopupButtons::Cancel,
+            popup::PopupImage::Large,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptGeneric,
             true,
@@ -2821,11 +2821,11 @@ namespace stage
 
                 actionType_ = ActionType::Drop;
 
-                auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_DROPCONFIRM_,
                     "\nAre you sure you want to drop the " + IITEM_PTR->Name() + "?",
-                    heroespath::popup::PopupButtons::YesNo,
-                    heroespath::popup::PopupImage::Regular,
+                    popup::PopupButtons::YesNo,
+                    popup::PopupImage::Regular,
                     sfml_util::Justified::Center,
                     sfml_util::sound_effect::PromptQuestion) };
 
@@ -3048,7 +3048,7 @@ namespace stage
             }
         }
 
-        auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
             POPUP_NAME_CHAR_SELECT_,
             PROMPT_TEXT,
             invalidTextVec) };
@@ -3064,12 +3064,12 @@ namespace stage
         const std::string & REJECTION_PROMPT_TEXT,
         const bool WILL_USE_REGULAR_SIZE_POPUP)
     {
-        auto const POPUPINFO_NOITEM{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
             "InventoryStage'sPopupRejection",
             REJECTION_PROMPT_TEXT,
-            heroespath::popup::PopupButtons::Cancel,
+            popup::PopupButtons::Cancel,
             ((WILL_USE_REGULAR_SIZE_POPUP) ?
-                heroespath::popup::PopupImage::Regular : heroespath::popup::PopupImage::Banner),
+                popup::PopupImage::Regular : popup::PopupImage::Banner),
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptWarn,
             sfml_util::FontManager::Instance()->Size_Largeish()) };
@@ -3084,7 +3084,7 @@ namespace stage
         const std::string & PROMPT_TEXT,
         const std::size_t NUMBER_MAX)
     {
-        auto const POPUP_INFO_NUMBER_SELECT{ heroespath::popup::PopupManager::Instance()->
+        auto const POPUP_INFO_NUMBER_SELECT{ popup::PopupManager::Instance()->
             CreateNumberSelectionPopupInfo(
                 POPUP_NAME_NUMBER_SELECT_,
                 PROMPT_TEXT,
@@ -3103,11 +3103,11 @@ namespace stage
         const std::string & PROMPT_TEXT,
         const bool WILL_PLAY_SOUNDEFFECT)
     {
-        auto const POPUP_INFO_DONE{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO_DONE{ popup::PopupManager::Instance()->CreatePopupInfo(
             "InventoryStage'sPopupDone",
             PROMPT_TEXT,
-            heroespath::popup::PopupButtons::Okay,
-            heroespath::popup::PopupImage::Regular,
+            popup::PopupButtons::Okay,
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             ((WILL_PLAY_SOUNDEFFECT) ?
                 sfml_util::sound_effect::PromptGeneric :
@@ -3125,11 +3125,11 @@ namespace stage
         std::ostringstream ss;
         ss << PROMPT_TEXT << "\n\n(C)oins\n(G)ems\n(M)eteor Shards";
 
-        auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateInventoryPromptPopupInfo(
             POPUP_NAME_CONTENTSELECTION_,
             ss.str(),
-            heroespath::popup::PopupButtons::Cancel,
-            heroespath::popup::PopupImage::Regular,
+            popup::PopupButtons::Cancel,
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptGeneric,
             false,
@@ -3869,11 +3869,11 @@ namespace stage
             hitInfoIndex_,
             isFightResultCollapsed) };
 
-        auto const POPUPINFO_NOITEM{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_SPELL_RESULT_,
             ACTION_TEXT,
-            heroespath::popup::PopupButtons::Okay,
-            heroespath::popup::PopupImage::Regular,
+            popup::PopupButtons::Okay,
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::None,
             sfml_util::FontManager::Instance()->Size_Normal()) };
@@ -3967,7 +3967,7 @@ namespace stage
             if (CAN_CAST_STR.empty())
             {
                 auto const POPUP_INFO{
-                    heroespath::popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
+                    popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                         POPUP_NAME_SPELLBOOK_,
                         creaturePtr_,
                         creaturePtr_->LastSpellCastNum()) };
@@ -3986,7 +3986,7 @@ namespace stage
             if (CAN_PLAY_STR.empty())
             {
                 auto const POPUP_INFO{
-                    heroespath::popup::PopupManager::Instance()->CreateMusicPopupInfo(
+                    popup::PopupManager::Instance()->CreateMusicPopupInfo(
                         POPUP_NAME_MUSICSHEET_,
                         creaturePtr_,
                         creaturePtr_->LastSongPlayedNum()) };
@@ -4083,11 +4083,11 @@ namespace stage
             hitInfoIndex_,
             isFightResultCollapsed) };
 
-        auto const POPUPINFO_NOITEM{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_SONG_RESULT_,
             ACTION_TEXT,
-            heroespath::popup::PopupButtons::Okay,
-            heroespath::popup::PopupImage::Regular,
+            popup::PopupButtons::Okay,
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::None,
             sfml_util::FontManager::Instance()->Size_Normal()) };
@@ -4118,7 +4118,7 @@ namespace stage
                                           const std::string & TECH_ERROR_MSG,
                                           const std::string & TITLE_MSG)
     {
-        game::LoopManager::Instance()->PopupWaitBegin(this, heroespath::popup::PopupManager::Instance()->
+        game::LoopManager::Instance()->PopupWaitBegin(this, popup::PopupManager::Instance()->
                 CreateSystemErrorPopupInfo("Stage'sSystemErrorPopupName", GENERAL_ERROR_MSG,
                     TECH_ERROR_MSG, TITLE_MSG));
     }

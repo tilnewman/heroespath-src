@@ -97,7 +97,7 @@ namespace sfml_util
               mouseTextInfoVec,
               FindCurrentResolutionSelection(),
               sfml_util::Brightness::Bright,
-              heroespath::misc::SizetVec_t(),
+              misc::SizetVec_t(),
               resRadioButtonSetBoxInfo);
     }
 
@@ -107,17 +107,17 @@ namespace sfml_util
 
 
     bool RadioButtonSet_DisplayChange::HandleCallback(
-        const heroespath::popup::PopupResponse & POPUP)
+        const popup::PopupResponse & POPUP)
     {
         M_HP_LOG(GetEntityName() << " HandlePopupCallback(response=\""
-            << heroespath::popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
+            << popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
 
-        if (POPUP.Response() == heroespath::popup::ResponseTypes::No)
+        if (POPUP.Response() == popup::ResponseTypes::No)
         {
             M_HP_LOG(GetEntityName()
                 << " User rejected the new resolution.  Changing back to the previous res.");
 
-            heroespath::game::LoopManager::Instance()->ChangeResolution(
+            game::LoopManager::Instance()->ChangeResolution(
                 ownerStagePtr_,
                 this,
                 prevResolution_,
@@ -128,7 +128,7 @@ namespace sfml_util
 
         M_ASSERT_OR_LOGANDTHROW_SS((nullptr != ownerStagePtr_), GetEntityName()
             << "'s RadioButtonSet_DisplayChange::HandlePopupCallback("
-            << heroespath::popup::ResponseTypes::ToString(POPUP.Response())
+            << popup::ResponseTypes::ToString(POPUP.Response())
             << ") was called when the ownerStagePtr_ was null.");
 
         ownerStagePtr_->HandleResolutionChange();
@@ -141,7 +141,7 @@ namespace sfml_util
     {
         prevResolution_ = sfml_util::Display::GetCurrentResolution();
 
-        heroespath::game::LoopManager::Instance()->ChangeResolution(
+        game::LoopManager::Instance()->ChangeResolution(
             ownerStagePtr_,
             this,
             resolutionVec_[currentSelection_],

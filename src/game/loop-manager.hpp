@@ -81,7 +81,7 @@ namespace game
         inline sfml_util::LoopState::Enum GetState() const { return state_; }
         inline sfml_util::LoopState::Enum GetPrevState() const { return prevState_; }
 
-        inline heroespath::popup::ResponseTypes::Enum GetPopupResponse() const
+        inline popup::ResponseTypes::Enum GetPopupResponse() const
         {
             return popupResponse_;
         }
@@ -90,7 +90,7 @@ namespace game
 
         inline void ClearPopupResponse()
         {
-            popupResponse_ = heroespath::popup::ResponseTypes::None;
+            popupResponse_ = popup::ResponseTypes::None;
             popupSelection_ = 0;
         }
 
@@ -105,30 +105,30 @@ namespace game
 
         template<typename PopupType_t>
         void PopupWaitBeginSpecific(
-            heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
-            const heroespath::popup::PopupInfo & POPUP_INFO)
+            popup::IPopupHandler_t * const HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO)
         {
-            popupResponse_ = heroespath::popup::ResponseTypes::None;
+            popupResponse_ = popup::ResponseTypes::None;
             popupSelection_ = 0;
             TransitionTo_Popup<PopupType_t>(HANDLER_PTR, POPUP_INFO);
         }
 
         inline void PopupWaitBegin(
-            heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
-            const heroespath::popup::PopupInfo & POPUP_INFO)
+            popup::IPopupHandler_t * const HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO)
         {
             PopupWaitBeginSpecific<popup::PopupStageGeneric>(HANDLER_PTR, POPUP_INFO);
         }
 
         void PopupWaitEnd(
-            const heroespath::popup::ResponseTypes::Enum RESPONSE,
+            const popup::ResponseTypes::Enum RESPONSE,
             const std::size_t SELECTION = 0);
 
         void TransitionTo_Previous(const bool WILL_ADVANCE_TURN = false);
 
         sfml_util::DisplayChangeResult::Enum ChangeResolution(
             sfml_util::IStage * const         currentStagePtr_,
-            heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
+            popup::IPopupHandler_t * const HANDLER_PTR,
             const sfml_util::Resolution &     NEW_RES,
             const unsigned                    ANTIALIAS_LEVEL);
 
@@ -207,8 +207,8 @@ namespace game
 
         template<typename PopupType_t>
         void TransitionTo_Popup(
-            heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
-            const heroespath::popup::PopupInfo & POPUP_INFO)
+            popup::IPopupHandler_t * const HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO)
         {
             CommandQueueClear();
             loop_.Exit();
@@ -220,8 +220,8 @@ namespace game
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Popup));
 
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeOut>(
-                heroespath::popup::PopupManager::Color_Fade(),
-                heroespath::popup::PopupManager::SpeedMult_Fade(),
+                popup::PopupManager::Color_Fade(),
+                popup::PopupManager::SpeedMult_Fade(),
                 true));
 
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
@@ -262,7 +262,7 @@ namespace game
         sfml_util::LoopState::Enum state_;
         std::queue<sfml_util::ILoopCmdSPtr_t> cmdQueue_;
         sfml_util::Loop loop_;
-        heroespath::popup::ResponseTypes::Enum popupResponse_;
+        popup::ResponseTypes::Enum popupResponse_;
         std::size_t popupSelection_;
         sfml_util::LoopState::Enum prevState_;
         sfml_util::LoopState::Enum prevSettingsState_;

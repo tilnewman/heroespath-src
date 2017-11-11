@@ -110,8 +110,8 @@ namespace sfml_util
         inline void SetIgnoreKeystrokes(const bool B)           { willIgnoreKeystrokes_ = B; }
 
         void AssignPopupCallbackHandlerInfo(
-            heroespath::popup::IPopupHandler_t * const HANDLER_PTR,
-            const heroespath::popup::PopupInfo & POPUP_INFO);
+            popup::IPopupHandler_t * const HANDLER_PTR,
+            const popup::PopupInfo & POPUP_INFO);
 
         void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V);
 
@@ -185,13 +185,13 @@ namespace sfml_util
         gui::IGuiEntityPtr_t  entityWithFocusSPtr_;
         bool                  willIgnoreMouse_;
         bool                  willIgnoreKeystrokes_;
-        heroespath::popup::PopupInfo      popupInfo_;
+        popup::PopupInfo      popupInfo_;
         bool                  hasFadeStarted_;
         sf::Event::EventType  prevEventType_;
         sf::Keyboard::Key     prevKeyPressed_;
         bool                  isMouseHovering_;
         bool                  takeScreenshot_;
-        heroespath::popup::IPopupHandler_t * popupCallbackPtr_;
+        popup::IPopupHandler_t * popupCallbackPtr_;
         LoopState::Enum state_;
         std::vector<float>    frameRateVec_;
         std::size_t           frameRateSampleCount_;

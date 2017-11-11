@@ -74,12 +74,12 @@ namespace sliders
             val_(0),
             willContinue_(true)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((heroespath::misc::IsRealZero(SPEED) == false),
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "sfml_util::sliders::ZeroSliderOnce::Constructor() given speed of zero.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (heroespath::misc::IsRealZero(INITIAL) ||
-                    heroespath::misc::IsRealOne(INITIAL) ||
+                (misc::IsRealZero(INITIAL) ||
+                    misc::IsRealOne(INITIAL) ||
                  ((INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1))) ),
                 "sfml_util::sliders::ZeroSliderOnce::Constructor() given initial value of "
                 << INITIAL << ", which is not within [0,1].");
@@ -95,12 +95,12 @@ namespace sliders
             const T SPEED   = 1.0,
             const T INITIAL = 0.0)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((heroespath::misc::IsRealZero(SPEED) == false),
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "sfml_util::sliders::ZeroSliderOnce::Reset() given speed of zero.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (heroespath::misc::IsRealZero(INITIAL) ||
-                    heroespath::misc::IsRealOne(INITIAL) ||
+                (misc::IsRealZero(INITIAL) ||
+                    misc::IsRealOne(INITIAL) ||
                  ((INITIAL > static_cast<T>(0)) && (INITIAL < static_cast<T>(1))) ),
                 "sfml_util::sliders::ZeroSliderOnce::Reset() given initial value of "
                 << INITIAL << ", which is not within [0,1].");
@@ -119,7 +119,7 @@ namespace sliders
                 age_ += ADJUSTMENT * spd_;
                 const T NEW_VAL(static_cast<T>(0.5f + (sin(std::fmod(age_, TWO_PI_)) * 0.5f)));
 
-                if ((val_ < NEW_VAL) || (heroespath::misc::IsRealClose(val_, NEW_VAL)))
+                if ((val_ < NEW_VAL) || (misc::IsRealClose(val_, NEW_VAL)))
                 {
                     val_ = NEW_VAL;
                 }
@@ -168,7 +168,7 @@ namespace sliders
             diff_  (0.0),
             slider_()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((heroespath::misc::IsRealZero(SPEED) == false),
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "sfml_util::sliders::SliderOnce::Constructor() given speed of zero.");
 
             M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
@@ -196,7 +196,7 @@ namespace sliders
             const Value_t THE_MAX = 1,
             const Math_t  SPEED   = 1)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((heroespath::misc::IsRealZero(SPEED) == false),
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(SPEED) == false),
                 "sfml_util::sliders::SliderOnce::Reset() given speed of zero.");
 
             M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
@@ -247,7 +247,7 @@ namespace sliders
             isIncreasing_(true),
             slider_      ()
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((heroespath::misc::IsRealZero(speed_) == false),
+            M_ASSERT_OR_LOGANDTHROW_SS((misc::IsRealZero(speed_) == false),
                 "sfml_util::sliders::Slider::Constructor given SPEED of zero.");
 
             Reset(THE_MIN, THE_MAX, SPEED, INITIAL);
@@ -272,13 +272,13 @@ namespace sliders
             min_ = THE_MIN;
             max_ = THE_MAX;
 
-            if (heroespath::misc::IsRealZero(SPEED) == false)
+            if (misc::IsRealZero(SPEED) == false)
             {
                 speed_ = SPEED;
             }
 
             auto initialToUse{ INITIAL };
-            if (heroespath::misc::IsRealZero(initialToUse))
+            if (misc::IsRealZero(initialToUse))
             {
                 initialToUse = THE_MIN;
             }
@@ -361,7 +361,7 @@ namespace sliders
         isIncreasing_(true),
         slider_      ()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((false == heroespath::misc::IsRealClose(SPEED_MAX, Speed_t(0))),
+        M_ASSERT_OR_LOGANDTHROW_SS((false == misc::IsRealClose(SPEED_MAX, Speed_t(0))),
             "sfml_util::sliders::Drifter::Constructor() given speed_max of zero.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL >= THE_MIN) && (INITIAL <= THE_MAX)),
@@ -387,7 +387,7 @@ namespace sliders
                 const Value_t INITIAL,
                 const Value_t TARGET)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((false == heroespath::misc::IsRealClose(SPEED_MAX, Speed_t(0))),
+        M_ASSERT_OR_LOGANDTHROW_SS((false == misc::IsRealClose(SPEED_MAX, Speed_t(0))),
             "sfml_util::sliders::Drifter::Reset() given speed_max of zero.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(((INITIAL >= THE_MIN) && (INITIAL <= THE_MAX)),
@@ -441,12 +441,12 @@ namespace sliders
     private:
         Value_t RandRange() const
         {
-            return static_cast<Value_t>(heroespath::misc::random::Double(min_, max_));
+            return static_cast<Value_t>(misc::random::Double(min_, max_));
         }
 
         Speed_t RandSpeed() const
         {
-            return static_cast<Speed_t>(heroespath::misc::random::Double(spdMin_, spdMax_));
+            return static_cast<Speed_t>(misc::random::Double(spdMin_, spdMax_));
         }
 
     private:

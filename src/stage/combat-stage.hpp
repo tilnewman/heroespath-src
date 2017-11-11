@@ -137,7 +137,7 @@ namespace stage
     class CombatStage
     :
         public sfml_util::Stage,
-        public heroespath::popup::IPopupHandler_t,
+        public popup::IPopupHandler_t,
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t,
         public sfml_util::gui::callback::IListBoxCallbackHandler,
         public sfml_util::gui::callback::ISliderBarCallbackHandler_t
@@ -240,7 +240,7 @@ namespace stage
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
         virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
         virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &);
-        virtual bool HandleCallback(const heroespath::popup::PopupResponse &);
+        virtual bool HandleCallback(const popup::PopupResponse &);
 
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);

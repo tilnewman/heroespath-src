@@ -126,7 +126,7 @@ namespace stage
             150,
             255,
             4.0f,
-            static_cast<sf::Uint8>(heroespath::misc::random::Int(150, 255))),
+            static_cast<sf::Uint8>(misc::random::Int(150, 255))),
         ouroborosUPtr_          (),
         bottomSymbol_           (),
         willDisplayCharacterCountWarningText_(false),
@@ -226,13 +226,13 @@ namespace stage
     }
 
 
-    bool PartyStage::HandleCallback(const heroespath::popup::PopupResponse & PACKAGE)
+    bool PartyStage::HandleCallback(const popup::PopupResponse & PACKAGE)
     {
         ResetMouseOverPopupState();
         willShowMouseOverPopup_ = true;
 
         if ((PACKAGE.Info().Name() == POPUP_NAME_STR_DELETE_CONFIRM_) &&
-            (PACKAGE.Response() == heroespath::popup::ResponseTypes::Yes))
+            (PACKAGE.Response() == popup::ResponseTypes::Yes))
         {
             auto selectedItemSPtr{ GetSelectedItemSPtr() };
 
@@ -273,11 +273,11 @@ namespace stage
                 << " characters in your party.  You need exactly "
                 << player::Party::MAX_CHARACTER_COUNT_ << " characters to start the game.";
 
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
                 ss.str(),
-                heroespath::popup::PopupButtons::Okay,
-                heroespath::popup::PopupImage::Banner,
+                popup::PopupButtons::Okay,
+                popup::PopupImage::Banner,
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::PromptQuestion) };
 
@@ -322,11 +322,11 @@ namespace stage
                     << " of Beastmaster.  To have Wolfens or Dragons in your party, you must also"
                     << " have a Beastmaster.";
 
-                auto const POP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+                auto const POP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
                     ss.str(),
-                    heroespath::popup::PopupButtons::Okay,
-                    heroespath::popup::PopupImage::RegularSidebar,
+                    popup::PopupButtons::Okay,
+                    popup::PopupImage::RegularSidebar,
                     sfml_util::Justified::Left,
                     sfml_util::sound_effect::PromptWarn) };
 
@@ -352,11 +352,11 @@ namespace stage
         std::ostringstream ss;
         ss << "Delete " << selectedCharPtr->Name() << "?  This cannot be undone.  Are you sure?";
 
-        auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_STR_DELETE_CONFIRM_,
             ss.str(),
-            heroespath::popup::PopupButtons::YesNo,
-            heroespath::popup::PopupImage::Banner,
+            popup::PopupButtons::YesNo,
+            popup::PopupImage::Banner,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptWarn) };
 

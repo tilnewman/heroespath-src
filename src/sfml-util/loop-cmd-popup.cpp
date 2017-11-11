@@ -55,7 +55,7 @@ namespace sfml_util
 
     bool LoopCmd_RemoveStage_Popup::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).FreePopupStage();
+        game::LoopManager::Instance()->CommandLoopAccess(this).FreePopupStage();
         return true;
     }
 

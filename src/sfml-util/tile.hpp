@@ -128,7 +128,7 @@ namespace sfml_util
 
         if (WILL_RANDOM_ORDER)
         {
-            heroespath::misc::Vector::ShuffleVec(spriteVec);
+            misc::Vector::ShuffleVec(spriteVec);
         }
 
         const std::size_t SPRITE_COUNT(spriteVec.size());
@@ -160,7 +160,7 @@ namespace sfml_util
 
                     if (WILL_RANDOM_ORDER)
                     {
-                        heroespath::misc::Vector::ShuffleVec(spriteVec);
+                        misc::Vector::ShuffleVec(spriteVec);
                     }
                 }
             }

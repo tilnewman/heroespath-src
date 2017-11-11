@@ -41,7 +41,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    using StrToSizetVecMap_t = std::map<std::string, heroespath::misc::SizetVec_t>;
+    using StrToSizetVecMap_t = std::map<std::string, misc::SizetVec_t>;
 
 
     //stores textures in a single location and makes them available by index.
@@ -69,12 +69,12 @@ namespace sfml_util
             const bool          WILL_SMOOTH = true);
 
         //not recursive
-        const heroespath::misc::SizetVec_t AddAllInDirectoryByKey(
+        const misc::SizetVec_t AddAllInDirectoryByKey(
             const std::string & DIR_PATH_KEY,
             const bool          WILL_SMOOTH = true);
 
         //not recursive
-        const heroespath::misc::SizetVec_t AddAllInDirectoryByPath(
+        const misc::SizetVec_t AddAllInDirectoryByPath(
             const std::string & DIR_PATH_PARAM_STR,
             const bool          WILL_SMOOTH = true);
 
@@ -84,7 +84,7 @@ namespace sfml_util
 
         void RemoveByIndex(const std::size_t INDEX);
 
-        void RemoveByIndexVec(const heroespath::misc::SizetVec_t & INDEX_VEC);
+        void RemoveByIndexVec(const misc::SizetVec_t & INDEX_VEC);
 
         void RemoveAll();
 

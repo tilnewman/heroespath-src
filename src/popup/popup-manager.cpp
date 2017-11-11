@@ -250,7 +250,7 @@ namespace popup
             TEXTURE_VEC,
             ARE_IMAGES_CREATURES,
             INITIAL_SELECTION,
-            GetScaleForImage(heroespath::popup::PopupImage::Large),
+            GetScaleForImage(popup::PopupImage::Large),
             SOUND_EFFECT);
     }
 
@@ -267,7 +267,7 @@ namespace popup
             TextInfoDefault(PROMPT_TEXT, sfml_util::Justified::Center, FONT_SIZE),
             THE_MIN,
             THE_MAX,
-            GetScaleForImage(heroespath::popup::PopupImage::Large));
+            GetScaleForImage(popup::PopupImage::Large));
     }
 
 
@@ -526,12 +526,12 @@ namespace popup
             IMAGE,
             1.0f,
             SOUND_EFFECT,
-            heroespath::popup::PopupButtonColor::Dark,
+            popup::PopupButtonColor::Dark,
             false,
             std::vector<std::size_t>(),
             sfml_util::TextureVec_t(),
             std::vector<std::string>(),
-            heroespath::popup::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
+            popup::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
             nullptr,
             0,
             false,
@@ -575,8 +575,8 @@ namespace popup
         return CreatePopupInfo(
             POPUP_NAME,
             TRAP_DESCRIPTION,
-            heroespath::popup::PopupButtons::Continue,
-            heroespath::popup::PopupImage::Regular,
+            popup::PopupButtons::Continue,
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             SOUND_EFFECT);
     }

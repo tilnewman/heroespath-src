@@ -44,7 +44,7 @@
     {                                                                                \
         std::ostringstream _m_oss_hp_log_temp;                                       \
         _m_oss_hp_log_temp << str_stream;                                            \
-        M_LOG_DEF( * heroespath::log::Logger::Instance(), _m_oss_hp_log_temp.str()); \
+        M_LOG_DEF( * log::Logger::Instance(), _m_oss_hp_log_temp.str()); \
     }                                                                                \
 }                                                                                    \
 
@@ -53,7 +53,7 @@
     {                                                                                \
         std::ostringstream _m_oss_hp_log_temp;                                       \
         _m_oss_hp_log_temp << str_stream;                                            \
-        M_LOG_DBG( * heroespath::log::Logger::Instance(), _m_oss_hp_log_temp.str()); \
+        M_LOG_DBG( * log::Logger::Instance(), _m_oss_hp_log_temp.str()); \
     }                                                                                \
 }                                                                                    \
 
@@ -62,7 +62,7 @@
     {                                                                                \
         std::ostringstream _m_oss_hp_log_temp;                                       \
         _m_oss_hp_log_temp << str_stream;                                            \
-        M_LOG_WRN( * heroespath::log::Logger::Instance(), _m_oss_hp_log_temp.str()); \
+        M_LOG_WRN( * log::Logger::Instance(), _m_oss_hp_log_temp.str()); \
     }                                                                                \
 }                                                                                    \
 
@@ -71,7 +71,7 @@
     {                                                                                \
         std::ostringstream _m_oss_hp_log_temp;                                       \
         _m_oss_hp_log_temp << str_stream;                                            \
-        M_LOG_ERR( * heroespath::log::Logger::Instance(), _m_oss_hp_log_temp.str()); \
+        M_LOG_ERR( * log::Logger::Instance(), _m_oss_hp_log_temp.str()); \
     }                                                                                \
 }                                                                                    \
 
@@ -80,7 +80,7 @@
     {                                                                                \
         std::ostringstream _m_oss_hp_log_temp;                                       \
         _m_oss_hp_log_temp << str_stream;                                            \
-        M_LOG_FAT( * heroespath::log::Logger::Instance(), _m_oss_hp_log_temp.str()); \
+        M_LOG_FAT( * log::Logger::Instance(), _m_oss_hp_log_temp.str()); \
     }                                                                                \
 }                                                                                    \
 

@@ -65,15 +65,15 @@ namespace animation
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f,
                           sprite_.getLocalBounds().height * 0.5f);
 
-        sprite_.setRotation(heroespath::misc::random::Float(360.0f));
+        sprite_.setRotation(misc::random::Float(360.0f));
 
         sprite_.setPosition(posV_);
         sprite_.setScale(0.0f, 0.0f);
 
         sprite_.setColor( sf::Color(
-            static_cast<sf::Uint8>(200 + heroespath::misc::random::Int(55)),
-            static_cast<sf::Uint8>(200 + heroespath::misc::random::Int(55)),
-            static_cast<sf::Uint8>(200 + heroespath::misc::random::Int(55))) );
+            static_cast<sf::Uint8>(200 + misc::random::Int(55)),
+            static_cast<sf::Uint8>(200 + misc::random::Int(55)),
+            static_cast<sf::Uint8>(200 + misc::random::Int(55))) );
     }
 
 
@@ -91,7 +91,7 @@ namespace animation
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f,
                           sprite_.getLocalBounds().height * 0.5f);
 
-        sprite_.rotate(heroespath::misc::random::Float(0.5f, 3.0f));
+        sprite_.rotate(misc::random::Float(0.5f, 3.0f));
 
 
         auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
@@ -147,13 +147,13 @@ namespace animation
         sparkTexture3_           (),
         sparkleVec_              ()
     {
-        LoadTexture(sparkTexture1_, heroespath::game::GameDataFile::Instance()->
+        LoadTexture(sparkTexture1_, game::GameDataFile::Instance()->
             GetMediaPath("media-images-misc-spark1"));
 
-        LoadTexture(sparkTexture2_, heroespath::game::GameDataFile::Instance()->
+        LoadTexture(sparkTexture2_, game::GameDataFile::Instance()->
             GetMediaPath("media-images-misc-spark2"));
 
-        LoadTexture(sparkTexture3_, heroespath::game::GameDataFile::Instance()->
+        LoadTexture(sparkTexture3_, game::GameDataFile::Instance()->
             GetMediaPath("media-images-misc-spark3"));
 
         sparkleVec_.reserve(static_cast<std::size_t>(EMIT_RATE_BASE_PER_SEC * DURATION_SEC) * 2);
@@ -177,12 +177,12 @@ namespace animation
 
             auto const ADJ_RECT{ sfml_util::MakeMinimalSquareAndCenter(REGION_) };
 
-            auto const POS_LEFT{ ADJ_RECT.left + heroespath::misc::random::Float(ADJ_RECT.width) };
-            auto const POS_TOP{ ADJ_RECT.top + heroespath::misc::random::Float(ADJ_RECT.height) };
+            auto const POS_LEFT{ ADJ_RECT.left + misc::random::Float(ADJ_RECT.width) };
+            auto const POS_TOP{ ADJ_RECT.top + misc::random::Float(ADJ_RECT.height) };
 
             const sf::Texture * const TEXTURE_PTR{ [&]()
                 {
-                    auto const RAND{ heroespath::misc::random::Int(2) };
+                    auto const RAND{ misc::random::Int(2) };
                     if (RAND == 0)
                     {
                         return &sparkTexture1_;
@@ -233,14 +233,14 @@ namespace animation
     float SparkleAnimation::ValueWithRandomVariance(const float BASE,
                                                   const float VARIANCE_RATIO) const
     {
-        if (heroespath::misc::IsRealZero(VARIANCE_RATIO))
+        if (misc::IsRealZero(VARIANCE_RATIO))
         {
             return BASE;
         }
         else
         {
             auto const VARIATION_SPAN{ BASE * VARIANCE_RATIO };
-            return (BASE - (VARIATION_SPAN * 0.5f)) + heroespath::misc::random::Float(VARIATION_SPAN);
+            return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
         }
     }
 

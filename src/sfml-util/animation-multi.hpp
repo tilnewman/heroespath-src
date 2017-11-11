@@ -83,7 +83,7 @@ namespace sfml_util
         sf::Vector2f origSizeV_;
 
         //the size of this vec acts as a total frame count
-        heroespath::misc::SizetVec_t textureIdVec_;
+        misc::SizetVec_t textureIdVec_;
     };
 
 }

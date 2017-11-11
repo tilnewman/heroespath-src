@@ -217,7 +217,7 @@ namespace sfml_util
             {
                 fadeOutMult_ = 0.0f;
 
-                auto const DID_FADE_TO_ZERO{ (NEW_VOL < 0.0f) || heroespath::misc::IsRealZero(targetVolume_) };
+                auto const DID_FADE_TO_ZERO{ (NEW_VOL < 0.0f) || misc::IsRealZero(targetVolume_) };
 
                 if (killAfterFadeOut_ && DID_FADE_TO_ZERO)
                 {

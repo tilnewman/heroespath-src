@@ -70,22 +70,22 @@ namespace gui
         inline static float DimmensionMax() { return 256.0f; }
 
         const std::string GetFilename(
-            const heroespath::creature::race::Enum         RACE,
-            const heroespath::creature::role::Enum         ROLE,
-            const heroespath::creature::sex::Enum          SEX,
+            const creature::race::Enum         RACE,
+            const creature::role::Enum         ROLE,
+            const creature::sex::Enum          SEX,
             const bool                               WILL_PICK_RANDOM = true,
-            const heroespath::creature::wolfen_class::Enum WOLFEN_CLASS     = heroespath::creature::wolfen_class::Pup,
-            const heroespath::creature::dragon_class::Enum DRAGON_CLASS     = heroespath::creature::dragon_class::Hatchling) const;
+            const creature::wolfen_class::Enum WOLFEN_CLASS     = creature::wolfen_class::Pup,
+            const creature::dragon_class::Enum DRAGON_CLASS     = creature::dragon_class::Hatchling) const;
 
         void GetImage(
             sf::Texture & texture,
-            const heroespath::creature::race::Enum         RACE,
-            const heroespath::creature::role::Enum         ROLE,
-            const heroespath::creature::sex::Enum          SEX              = heroespath::creature::sex::Male,
+            const creature::race::Enum         RACE,
+            const creature::role::Enum         ROLE,
+            const creature::sex::Enum          SEX              = creature::sex::Male,
             const bool                               WILL_PICK_RANDOM = true,
             const bool                               WILL_FACE_RIGHT  = false,
-            const heroespath::creature::wolfen_class::Enum WOLFEN_CLASS     = heroespath::creature::wolfen_class::Pup,
-            const heroespath::creature::dragon_class::Enum DRAGON_CLASS     = heroespath::creature::dragon_class::Hatchling) const;
+            const creature::wolfen_class::Enum WOLFEN_CLASS     = creature::wolfen_class::Pup,
+            const creature::dragon_class::Enum DRAGON_CLASS     = creature::dragon_class::Hatchling) const;
 
         void GetImage(
             sf::Texture &       texture,
@@ -94,11 +94,11 @@ namespace gui
 
         void GetFilenames(
             std::vector<std::string> &               outputVec,
-            const heroespath::creature::race::Enum         RACE,
-            const heroespath::creature::role::Enum         ROLE,
-            const heroespath::creature::sex::Enum          SEX,
-            const heroespath::creature::wolfen_class::Enum WOLFEN_CLASS = heroespath::creature::wolfen_class::Pup,
-            const heroespath::creature::dragon_class::Enum DRAGON_CLASS = heroespath::creature::dragon_class::Hatchling) const;
+            const creature::race::Enum         RACE,
+            const creature::role::Enum         ROLE,
+            const creature::sex::Enum          SEX,
+            const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
+            const creature::dragon_class::Enum DRAGON_CLASS = creature::dragon_class::Hatchling) const;
 
     private:
         void LoadImage(

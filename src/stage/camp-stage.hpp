@@ -60,7 +60,7 @@ namespace stage
     class CampStage
     :
         public sfml_util::Stage,
-        public heroespath::popup::IPopupHandler_t
+        public popup::IPopupHandler_t
     {
         CampStage(const CampStage &) =delete;
         CampStage & operator=(const CampStage &) =delete;
@@ -70,7 +70,7 @@ namespace stage
         virtual ~CampStage();
 
         inline virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const heroespath::popup::PopupResponse &);
+        virtual bool HandleCallback(const popup::PopupResponse &);
 
         virtual void Setup();
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);

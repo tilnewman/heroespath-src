@@ -62,7 +62,7 @@ namespace popup
         PopupStageMusicSheet & operator=(const PopupStageMusicSheet &) =delete;
 
     public:
-        explicit PopupStageMusicSheet(const heroespath::popup::PopupInfo &);
+        explicit PopupStageMusicSheet(const popup::PopupInfo &);
         virtual ~PopupStageMusicSheet();
 
         inline const std::string HandlerName() const override

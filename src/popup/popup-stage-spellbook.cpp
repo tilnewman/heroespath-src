@@ -57,7 +57,7 @@ namespace popup
     const float     PopupStageSpellbook::WARNING_DURATION_SEC_      { 2.0f };
 
 
-    PopupStageSpellbook::PopupStageSpellbook(const heroespath::popup::PopupInfo & POPUP_INFO)
+    PopupStageSpellbook::PopupStageSpellbook(const popup::PopupInfo & POPUP_INFO)
         :
         PopupStageBase(POPUP_INFO),
         playerTexture_(),
@@ -274,7 +274,7 @@ namespace popup
     {
         auto const LEFT_PAGE_RECT_RAW{
             sfml_util::ConvertRect<int, float>(
-                heroespath::popup::PopupManager::Rect_Spellbook_PageLeft()) };
+                popup::PopupManager::Rect_Spellbook_PageLeft()) };
 
         auto const SCALE{
             innerRegion_.width / static_cast<float>(backgroundTexture_.getSize().x) };
@@ -285,7 +285,7 @@ namespace popup
         pageRectLeft_.height = LEFT_PAGE_RECT_RAW.height * SCALE;
 
         auto const RIGHT_PAGE_RECT_RAW{ sfml_util::ConvertRect<int, float>(
-            heroespath::popup::PopupManager::Rect_Spellbook_PageRight()) };
+            popup::PopupManager::Rect_Spellbook_PageRight()) };
 
         pageRectRight_.left = innerRegion_.left + (RIGHT_PAGE_RECT_RAW.left * SCALE);
         pageRectRight_.top = innerRegion_.top + (RIGHT_PAGE_RECT_RAW.top * SCALE);
@@ -296,7 +296,7 @@ namespace popup
 
     void PopupStageSpellbook::SetupLeftAccentImage()
     {
-        heroespath::popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
+        popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
         accentSprite1_.setTexture(accentTexture1_);
 
         sfml_util::CenterAndScaleSpriteToFit(
@@ -310,7 +310,7 @@ namespace popup
 
     void PopupStageSpellbook::SetupRightAccentImage()
     {
-        heroespath::popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
+        popup::PopupManager::Instance()->LoadRandomAccentImage(accentTexture2_);
         accentSprite2_.setTexture(accentTexture2_);
 
         sfml_util::CenterAndScaleSpriteToFit(

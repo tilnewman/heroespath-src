@@ -42,7 +42,7 @@ namespace gui
 {
 
     //Loads images and delivers sf::Textures to them on demand.
-    class SongImageManager : public ImageManagerBase<heroespath::song::Songs>
+    class SongImageManager : public ImageManagerBase<song::Songs>
     {
         SongImageManager(const SongImageManager &) =delete;
         SongImageManager & operator=(const SongImageManager &) =delete;

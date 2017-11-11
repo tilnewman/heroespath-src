@@ -160,7 +160,7 @@ namespace gui
 
     bool operator==(const TextInfo & L, const TextInfo & R)
     {
-        if (heroespath::misc::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
+        if (misc::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
         {
             return false;
         }

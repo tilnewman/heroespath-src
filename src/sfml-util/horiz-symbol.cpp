@@ -80,7 +80,7 @@ namespace sfml_util
         const float       VERT_OFFSET_RATIO)
     {
         sfml_util::LoadTexture(texture_,
-            heroespath::game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol1"));
+            game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol1"));
 
         if (WILL_INVERT_COLOR)
         {

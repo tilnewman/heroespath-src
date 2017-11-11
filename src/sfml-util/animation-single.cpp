@@ -64,11 +64,11 @@ namespace sfml_util
         origSizeV_.x = static_cast<float>(FRAME_SIZE_INT_PAIR.first);
         origSizeV_.y = static_cast<float>(FRAME_SIZE_INT_PAIR.second);
 
-        entityRegion_.width = ((heroespath::misc::IsRealZero(REGION.width)) ? origSizeV_.x : REGION.width);
-        entityRegion_.height = ((heroespath::misc::IsRealZero(REGION.height)) ? origSizeV_.y : REGION.height);
+        entityRegion_.width = ((misc::IsRealZero(REGION.width)) ? origSizeV_.x : REGION.width);
+        entityRegion_.height = ((misc::IsRealZero(REGION.height)) ? origSizeV_.y : REGION.height);
 
         auto const TEXTURE_ID_NUM{ TextureCache::Instance()->AddByPath(
-            heroespath::game::GameDataFile::Instance()->GetMediaPath(
+            game::GameDataFile::Instance()->GetMediaPath(
                 sfml_util::Animations::MediaPathKey(ENUM)), true) };
 
         sprite_.setTexture(TextureCache::Instance()->GetByIndex(TEXTURE_ID_NUM));

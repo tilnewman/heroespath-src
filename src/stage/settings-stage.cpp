@@ -127,12 +127,12 @@ namespace stage
     }
 
 
-    bool SettingsStage::HandleCallback(const heroespath::popup::PopupResponse & POPUP)
+    bool SettingsStage::HandleCallback(const popup::PopupResponse & POPUP)
     {
         M_HP_LOG(GetStageName() << " HandlePopupCallback(response=\""
-            << heroespath::popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
+            << popup::ResponseTypes::ToString(POPUP.Response()) << "\")");
 
-        if (POPUP.Response() == heroespath::popup::ResponseTypes::No)
+        if (POPUP.Response() == popup::ResponseTypes::No)
         {
             M_HP_LOG(GetStageName() << " Stage.  User rejected the new antialias level.  "
                 << "Changing back to the previous.");
@@ -146,7 +146,7 @@ namespace stage
             HandleResolutionChange();
             return false;
         }
-        else if (POPUP.Response() == heroespath::popup::ResponseTypes::Okay)
+        else if (POPUP.Response() == popup::ResponseTypes::Okay)
         {
             //case where the antialiasing mode was not supported and
             //need to revert back to original value

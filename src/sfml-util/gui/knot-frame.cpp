@@ -95,7 +95,7 @@ namespace gui
 
         sfml_util::LoadTexture(
             texture_,
-            heroespath::game::GameDataFile::Instance()->
+            game::GameDataFile::Instance()->
                 GetMediaPath("media-images-misc-knot-corner"));
 
         topLeftSprite_.setTexture(texture_, true);

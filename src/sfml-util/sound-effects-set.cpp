@@ -149,7 +149,7 @@ namespace sfml_util
         else
         {
             PlayAt(static_cast<std::size_t>(
-                heroespath::misc::random::Int(static_cast<int>(sfxEnums_.size()) - 1)));
+                misc::random::Int(static_cast<int>(sfxEnums_.size()) - 1)));
         }
     }
 
@@ -162,7 +162,7 @@ namespace sfml_util
         }
         else
         {
-            return heroespath::misc::Vector::SelectRandom(sfxEnums_);
+            return misc::Vector::SelectRandom(sfxEnums_);
         }
     }
 

@@ -43,7 +43,7 @@ namespace gui
 {
 
     //A class that loads, stores, and distributes creature images.
-    class TitleImageManager : public ImageManagerBase<heroespath::creature::Titles>
+    class TitleImageManager : public ImageManagerBase<creature::Titles>
     {
         TitleImageManager(const TitleImageManager &) =delete;
         TitleImageManager & operator=(const TitleImageManager &) =delete;

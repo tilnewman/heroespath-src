@@ -55,7 +55,7 @@ namespace sfml_util
         rotSpeedDrifter_(1.0f, 10.0f, 0.25f, 0.75f)
     {
         sfml_util::LoadTexture(texture_,
-            heroespath::game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-ouroboros"));
+            game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-ouroboros"));
 
         if (WILL_INVERT == false)
         {

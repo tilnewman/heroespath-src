@@ -99,52 +99,52 @@ namespace gui
         //used by the Party Stage for a ListBox of Characters
         ListBoxItem(const std::string &                NAME,
                     const sfml_util::gui::TextInfo &   TEXT_INFO,
-                    const heroespath::player::CharacterPtr_t CHARACTER_PTR,
+                    const player::CharacterPtr_t CHARACTER_PTR,
                     const bool                         IS_VALID = true);
 
         //used by the LoadGame Stage for a ListBox of GameStates
         ListBoxItem(const std::string &               NAME,
                     const sfml_util::gui::TextInfo &  TEXT_INFO,
-                    const heroespath::state::GameStatePtr_t GAMESTATE_PTR,
+                    const state::GameStatePtr_t GAMESTATE_PTR,
                     const bool                        IS_VALID = true);
 
         //used by the inventory stage to list items
         ListBoxItem(const std::string &              NAME,
                     const sfml_util::gui::TextInfo & TEXT_INFO,
-                    const heroespath::item::ItemPtr_t      ITEM_PTR,
+                    const item::ItemPtr_t      ITEM_PTR,
                     const bool                       IS_VALID = true);
 
         //used by the inventory stage to list conditions
         ListBoxItem(const std::string &                  NAME,
                     const sfml_util::gui::TextInfo &     TEXT_INFO,
-                    const heroespath::creature::ConditionPtr_t CONDITION_PTR_PARAM,
+                    const creature::ConditionPtr_t CONDITION_PTR_PARAM,
                     const bool                           IS_VALID = true);
 
         //used by the inventory stage to list titles
         ListBoxItem(const std::string &               NAME,
                     const sfml_util::gui::TextInfo &  TEXT_INFO,
-                    const heroespath::creature::TitlePtrC_t TITLE_CPTRC_PARAM,
+                    const creature::TitlePtrC_t TITLE_CPTRC_PARAM,
                     const bool                        IS_VALID = true);
 
         //used by the inventory stage to list spells
         ListBoxItem(const std::string &              NAME,
                     const sfml_util::gui::TextInfo & TEXT_INFO,
-                    const heroespath::spell::SpellPtrC_t   SPELL_CPTRC_PARAM,
+                    const spell::SpellPtrC_t   SPELL_CPTRC_PARAM,
                     const bool                       IS_VALID = true);
 
         //used by the inventory stage to list spells
         ListBoxItem(const std::string &              NAME,
                     const sfml_util::gui::TextInfo & TEXT_INFO,
-                    const heroespath::song::SongPtrC_t     SONG_CPTRC_PARAM,
+                    const song::SongPtrC_t     SONG_CPTRC_PARAM,
                     const bool                       IS_VALID = true);
 
-        const heroespath::player::CharacterPtr_t    CHARACTER_CPTR;
-        const heroespath::state::GameStatePtr_t     GAMESTATE_CPTR;
-        const heroespath::item::ItemPtr_t           ITEM_CPTR;
-        const heroespath::creature::ConditionPtrC_t COND_CPTRC;
-        const heroespath::creature::TitlePtrC_t     TITLE_CPTRC;
-        const heroespath::spell::SpellPtrC_t        SPELL_CPTRC;
-        const heroespath::song::SongPtrC_t          SONG_CPTRC;
+        const player::CharacterPtr_t    CHARACTER_CPTR;
+        const state::GameStatePtr_t     GAMESTATE_CPTR;
+        const item::ItemPtr_t           ITEM_CPTR;
+        const creature::ConditionPtrC_t COND_CPTRC;
+        const creature::TitlePtrC_t     TITLE_CPTRC;
+        const spell::SpellPtrC_t        SPELL_CPTRC;
+        const song::SongPtrC_t          SONG_CPTRC;
         bool                                  is_valid;
 
         friend bool operator==(const ListBoxItem & L, const ListBoxItem & R);

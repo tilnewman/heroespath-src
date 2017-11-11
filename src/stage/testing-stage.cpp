@@ -417,7 +417,7 @@ namespace stage
         if (false == hasTestingCompleted_PopupManager)
         {
             hasTestingCompleted_PopupManager =
-                heroespath::popup::PopupManager::Instance()->Test();
+                popup::PopupManager::Instance()->Test();
             return;
         }
 

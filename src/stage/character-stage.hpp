@@ -167,7 +167,7 @@ namespace stage
     :
         public sfml_util::Stage,
         public sfml_util::callback::IRadioButtonSetCallbackHandler_t,
-        public heroespath::popup::IPopupHandler_t,
+        public popup::IPopupHandler_t,
         public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
         public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
@@ -184,7 +184,7 @@ namespace stage
         virtual bool HandleCallback(
             const sfml_util::callback::RadioButtonCallbackPackage_t &) override;
 
-        virtual bool HandleCallback(const heroespath::popup::PopupResponse &) override;
+        virtual bool HandleCallback(const popup::PopupResponse &) override;
 
         virtual bool HandleCallback(
             const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;

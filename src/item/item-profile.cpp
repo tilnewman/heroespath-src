@@ -249,9 +249,9 @@ namespace item
 
     const MemberStrings ItemProfile::ToMemberStrings() const
     {
-        heroespath::misc::StrVec_t normalStrings;
-        heroespath::misc::StrVec_t weaponStrings;
-        heroespath::misc::StrVec_t armorStrings;
+        misc::StrVec_t normalStrings;
+        misc::StrVec_t weaponStrings;
+        misc::StrVec_t armorStrings;
 
         if (baseName_.empty() == false)
         {

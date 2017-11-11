@@ -410,7 +410,7 @@ namespace stage
     }
 
 
-    bool CombatStage::HandleCallback(const heroespath::popup::PopupResponse & POPUP_RESPONSE)
+    bool CombatStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_ACHIEVEMENT_)
         {
@@ -418,7 +418,7 @@ namespace stage
         }
         else if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_)
         {
-            if (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Select)
+            if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
                 const song::SongPVec_t SONGS_PVEC{ turnCreaturePtr_->SongsPVec() };
 
@@ -446,7 +446,7 @@ namespace stage
         }
         if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_SPELLBOOK_)
         {
-            if (POPUP_RESPONSE.Response() == heroespath::popup::ResponseTypes::Select)
+            if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
                 const spell::SpellPVec_t SPELLS_PVEC( turnCreaturePtr_->SpellsPVec() );
                 M_ASSERT_OR_LOGANDTHROW_SS((POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
@@ -2518,8 +2518,8 @@ namespace stage
         }
         else
         {
-            if ((heroespath::misc::IsRealZero(conditionEffectsCenterPosV_.x)) &&
-                (heroespath::misc::IsRealZero(conditionEffectsCenterPosV_.y)))
+            if ((misc::IsRealZero(conditionEffectsCenterPosV_.x)) &&
+                (misc::IsRealZero(conditionEffectsCenterPosV_.y)))
             {
                 combatAnimationUPtr_->RepositionAnimStart(turnCreaturePtr_);
             }
@@ -2594,7 +2594,7 @@ namespace stage
             SetTurnActionPhase(TurnActionPhase::PlaySong);
 
             auto const POPUP_INFO{
-                heroespath::popup::PopupManager::Instance()->CreateMusicPopupInfo(
+                popup::PopupManager::Instance()->CreateMusicPopupInfo(
                     POPUP_NAME_MUSICSHEET_,
                     turnCreaturePtr_,
                     turnCreaturePtr_->LastSongPlayedNum()) };
@@ -2669,7 +2669,7 @@ namespace stage
             SetTurnActionPhase(TurnActionPhase::Cast);
 
             auto const POPUP_INFO{
-                heroespath::popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
+                popup::PopupManager::Instance()->CreateSpellbookPopupInfo(
                     POPUP_NAME_SPELLBOOK_,
                     turnCreaturePtr_,
                     turnCreaturePtr_->LastSpellCastNum()) };
@@ -3229,11 +3229,11 @@ namespace stage
     {
         std::ostringstream ss;
         ss << "\n" << ((WILL_PREPEND_NEWLINE) ? "\n" : "") << PROMPT;
-        auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreatePopupInfo(
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
             "CombatStage'sQuickPopup",
             ss.str(),
-            heroespath::popup::PopupButtons::Okay,
-            heroespath::popup::PopupImage::Regular,
+            popup::PopupButtons::Okay,
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             ((IS_SOUNDEFFECT_NORMAL) ?
                 sfml_util::sound_effect::PromptGeneric : sfml_util::sound_effect::PromptWarn),
@@ -4080,7 +4080,7 @@ namespace stage
             {
                 game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCombatOver>(
                     this,
-                    heroespath::popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
+                    popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                         POPUP_NAME_COMBATOVER_RAN_,
                         combat::CombatEnd::Ran));
 
@@ -4108,7 +4108,7 @@ namespace stage
         {
             game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageCombatOver>(
                 this,
-                heroespath::popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
+                popup::PopupManager::Instance()->CreateCombatOverPopupInfo(
                     ((IS_DETECTING_WIN) ? POPUP_NAME_COMBATOVER_WIN_ : POPUP_NAME_COMBATOVER_LOSE_),
                     ((IS_DETECTING_WIN) ? combat::CombatEnd::Win : combat::CombatEnd::Lose)));
 
@@ -4135,7 +4135,7 @@ namespace stage
     {
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageSystemError>(
             this,
-            heroespath::popup::PopupManager::Instance()->CreateSystemErrorPopupInfo(
+            popup::PopupManager::Instance()->CreateSystemErrorPopupInfo(
                 "Stage'sSystemErrorPopupName",
                 GENERAL_ERROR_MSG,
                 TECH_ERROR_MSG,
@@ -4357,7 +4357,7 @@ namespace stage
                     toTexture, TITLE_TRANSITION.toTitlePtr->Which());
             }
 
-            auto const POPUP_INFO{ heroespath::popup::PopupManager::Instance()->CreateImageFadePopupInfo(
+            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageFadePopupInfo(
                 POPUP_NAME_ACHIEVEMENT_,
                 TITLE_TRANSITION.creaturePtr,
                 TITLE_TRANSITION.fromTitlePtr,

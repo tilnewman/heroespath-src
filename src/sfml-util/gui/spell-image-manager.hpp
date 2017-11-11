@@ -42,7 +42,7 @@ namespace gui
 {
 
     //Loads images and delivers sf::Textures to them on demand.
-    class SpellImageManager : public ImageManagerBase<heroespath::spell::Spells>
+    class SpellImageManager : public ImageManagerBase<spell::Spells>
     {
         SpellImageManager(const SpellImageManager &) =delete;
         SpellImageManager & operator=(const SpellImageManager &) =delete;

@@ -214,7 +214,7 @@ namespace gui
         const TextInfoVec_t &    TEXT_INFO_VEC,
         const std::size_t        INITIAL_SELECTION,
         const Brightness::Enum   BRIGHTNESS,
-        const heroespath::misc::SizetVec_t & INVALID_SEL_VEC,
+        const misc::SizetVec_t & INVALID_SEL_VEC,
         const box::Info &        BOX_INFO,
         const float              OUTER_PAD,
         const float              BETWEEN_PAD)
@@ -249,7 +249,7 @@ namespace gui
         const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
         const std::size_t          INITIAL_SELECTION,
         const Brightness::Enum     BRIGHTNESS,
-        const heroespath::misc::SizetVec_t &   INVALID_SEL_VEC,
+        const misc::SizetVec_t &   INVALID_SEL_VEC,
         const box::Info &          BOX_INFO,
         const float                OUTER_PAD,
         const float                BETWEEN_PAD )
@@ -285,7 +285,7 @@ namespace gui
         const std::vector<std::string> & LABEL_VEC,
         const std::size_t                INITIAL_SELECTION,
         const Brightness::Enum           BRIGHTNESS,
-        const heroespath::misc::SizetVec_t &         INVALID_SEL_VEC,
+        const misc::SizetVec_t &         INVALID_SEL_VEC,
         const box::Info &                BOX_INFO,
         const float                      OUTER_PAD,
         const float                      BETWEEN_PAD)
@@ -324,7 +324,7 @@ namespace gui
         const TextInfoVec_t &    TEXT_INFO_VEC,
         const std::size_t        INITIAL_SELECTION,
         const Brightness::Enum   BRIGHTNESS,
-        const heroespath::misc::SizetVec_t & INVALID_SEL_VEC,
+        const misc::SizetVec_t & INVALID_SEL_VEC,
         const box::Info &        BOX_INFO,
         const float              OUTER_PAD,
         const float              BETWEEN_PAD)
@@ -373,7 +373,7 @@ namespace gui
         const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
         const std::size_t          INITIAL_SELECTION,
         const Brightness::Enum     BRIGHTNESS,
-        const heroespath::misc::SizetVec_t &   INVALID_SEL_VEC,
+        const misc::SizetVec_t &   INVALID_SEL_VEC,
         const box::Info &          BOX_INFO,
         const float                OUTER_PAD,
         const float                BETWEEN_PAD )
@@ -425,7 +425,7 @@ namespace gui
         const std::vector<std::string> & LABEL_VEC,
         const std::size_t                INITIAL_SELECTION,
         const Brightness::Enum           BRIGHTNESS,
-        const heroespath::misc::SizetVec_t &         INVALID_SEL_VEC,
+        const misc::SizetVec_t &         INVALID_SEL_VEC,
         const box::Info &                BOX_INFO,
         const float                      OUTER_PAD,
         const float                      BETWEEN_PAD )
@@ -633,7 +633,7 @@ namespace gui
     }
 
 
-    void RadioButtonSet::SetInvalidSelections(const heroespath::misc::SizetVec_t & INVALID_SELECTIONS_VEC)
+    void RadioButtonSet::SetInvalidSelections(const misc::SizetVec_t & INVALID_SELECTIONS_VEC)
     {
         invalidSelectionVec_ = INVALID_SELECTIONS_VEC;
 

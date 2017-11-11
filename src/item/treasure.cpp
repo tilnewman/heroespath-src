@@ -162,7 +162,7 @@ namespace item
             scores.Coin().AsFloat() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-mult")) };
 
-        auto const COIN{ Score_t(COIN_BASE + heroespath::misc::random::Int(COIN_RAND_BASE)) };
+        auto const COIN{ Score_t(COIN_BASE + misc::random::Int(COIN_RAND_BASE)) };
 
         auto const GEM_BASE{ static_cast<int>(
             scores.Gem().AsFloat() *
@@ -172,7 +172,7 @@ namespace item
             scores.Gem().AsFloat() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-mult")) };
 
-        auto const GEM{ Score_t(GEM_BASE + heroespath::misc::random::Int(GEM_RAND_BASE)) };
+        auto const GEM{ Score_t(GEM_BASE + misc::random::Int(GEM_RAND_BASE)) };
 
         auto const MAGIC_BASE{ static_cast<stats::Trait_t>(
             scores.Magic().AsFloat() *
@@ -182,7 +182,7 @@ namespace item
             scores.Magic().AsFloat() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-mult")) };
 
-        auto const MAGIC{ Score_t(MAGIC_BASE + heroespath::misc::random::Int(MAGIC_RAND_BASE)) };
+        auto const MAGIC{ Score_t(MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE)) };
 
         auto const RELIGIOUS_BASE{ static_cast<stats::Trait_t>(
             scores.Religious().AsFloat() *
@@ -192,7 +192,7 @@ namespace item
             scores.Religious().AsFloat() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-mult")) };
 
-        auto const RELIGIOUS{ Score_t(RELIGIOUS_BASE + heroespath::misc::random::Int(RELIGIOUS_RAND_BASE)) };
+        auto const RELIGIOUS{ Score_t(RELIGIOUS_BASE + misc::random::Int(RELIGIOUS_RAND_BASE)) };
 
         return TreasureScores(COIN, GEM, MAGIC, RELIGIOUS);
     }
@@ -290,7 +290,7 @@ namespace item
             }), profiles.end());
 
         auto const ITEM_PTR{ item::ItemFactory::Instance()->
-            Make(heroespath::misc::Vector::SelectRandom(profiles)) };
+            Make(misc::Vector::SelectRandom(profiles)) };
 
         itemCache_OutParam.items_pvec.push_back( ITEM_PTR );
     }
@@ -339,7 +339,7 @@ namespace item
             weightSum += TreasureScoreToWeight(NEXT_PROFILE.TreasureScore());
         }
 
-        auto const RAND{ heroespath::misc::random::Double(weightSum) };
+        auto const RAND{ misc::random::Double(weightSum) };
 
         double runningWeight{ 0.0 };
         for (std::size_t i(0); i<profiles.size(); ++i)

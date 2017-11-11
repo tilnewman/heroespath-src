@@ -49,55 +49,55 @@ namespace sfml_util
 
     bool LoopCmd_Execute::Execute()
     {
-        return heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).Execute();
+        return game::LoopManager::Instance()->CommandLoopAccess(this).Execute();
     }
 
 
     bool LoopCmd_StateChange::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).SetState(STATE_);
+        game::LoopManager::Instance()->CommandLoopAccess(this).SetState(STATE_);
         return true;
     }
 
 
     bool LoopCmd_SetMouseVisibility::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).SetMouseVisibility(IS_VISIBLE_);
+        game::LoopManager::Instance()->CommandLoopAccess(this).SetMouseVisibility(IS_VISIBLE_);
         return true;
     }
 
 
     bool LoopCmd_AddStage_Default::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(new Stage("Default"));
+        game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(new Stage("Default"));
         return true;
     }
 
 
     bool LoopCmd_SetHoldTime::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).SetHoldTime(TIME_);
+        game::LoopManager::Instance()->CommandLoopAccess(this).SetHoldTime(TIME_);
         return true;
     }
 
 
     bool LoopCmd_RemoveAllStages::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).FreeAllStages();
+        game::LoopManager::Instance()->CommandLoopAccess(this).FreeAllStages();
         return true;
     }
 
 
     bool LoopCmd_ExitAfterFade::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).SetWillExitAfterFade(true);
+        game::LoopManager::Instance()->CommandLoopAccess(this).SetWillExitAfterFade(true);
         return true;
     }
 
 
     bool LoopCmd_FadeIn::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).FadeIn(
+        game::LoopManager::Instance()->CommandLoopAccess(this).FadeIn(
             FADE_FROM_COLOR_, SPEED_MULT_, WILL_HOLD_FADE_);
 
         return true;
@@ -106,7 +106,7 @@ namespace sfml_util
 
     bool LoopCmd_FadeOut::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).FadeOut(
+        game::LoopManager::Instance()->CommandLoopAccess(this).FadeOut(
             FADE_TO_COLOR_, SPEED_MULT_, WILL_HOLD_FADE_);
 
         return true;
@@ -115,7 +115,7 @@ namespace sfml_util
 
     bool LoopCmd_ExitAfterKeypress::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).SetWillExitOnKeypress(
+        game::LoopManager::Instance()->CommandLoopAccess(this).SetWillExitOnKeypress(
             WILL_EXIT_ON_KEYSTROKE_);
 
         return true;
@@ -124,7 +124,7 @@ namespace sfml_util
 
     bool LoopCmd_ExitAfterMouseclick::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).SetWillExitOnMouseclick(
+        game::LoopManager::Instance()->CommandLoopAccess(this).SetWillExitOnMouseclick(
             WILL_EXIT_ON_MOUSECLICK_);
 
         return true;
@@ -133,14 +133,14 @@ namespace sfml_util
 
     bool LoopCmd_RemoveFocus::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).RemoveFocus();
+        game::LoopManager::Instance()->CommandLoopAccess(this).RemoveFocus();
         return true;
     }
 
 
     bool LoopCmd_IgnoreMouse::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).SetIgnoreMouse(
+        game::LoopManager::Instance()->CommandLoopAccess(this).SetIgnoreMouse(
             WILL_IGNORE_MOUSE_);
 
         return true;
@@ -149,7 +149,7 @@ namespace sfml_util
 
     bool LoopCmd_IgnoreKeystrokes::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).SetIgnoreKeystrokes(
+        game::LoopManager::Instance()->CommandLoopAccess(this).SetIgnoreKeystrokes(
             WILL_IGNORE_KEYSTROKES_);
 
         return true;
@@ -158,7 +158,7 @@ namespace sfml_util
 
     bool LoopCmd_FakeMouseClick::Execute()
     {
-        heroespath::game::LoopManager::Instance()->CommandLoopAccess(this).FakeMouseClick(
+        game::LoopManager::Instance()->CommandLoopAccess(this).FakeMouseClick(
             MOUSE_CLICK_POS_);
 
         return true;

@@ -60,7 +60,7 @@ namespace game
         state_            (sfml_util::LoopState::None),
         cmdQueue_         (),
         loop_             ("DefaultLoop"),
-        popupResponse_    (heroespath::popup::ResponseTypes::None),
+        popupResponse_    (popup::ResponseTypes::None),
         popupSelection_   (0),
         prevState_        (sfml_util::LoopState::None),
         prevSettingsState_(sfml_util::LoopState::None),
@@ -215,8 +215,8 @@ namespace game
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_RemoveStage_Popup>() );
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_FadeIn>(
-            heroespath::popup::PopupManager::Color_Fade(),
-            heroespath::popup::PopupManager::SpeedMult_Fade()) );
+            popup::PopupManager::Color_Fade(),
+            popup::PopupManager::SpeedMult_Fade()) );
 
         cmdQueue_.push( std::make_shared<sfml_util::LoopCmd_Execute>() );
     }
@@ -516,7 +516,7 @@ namespace game
 
 
     void LoopManager::PopupWaitEnd(
-        const heroespath::popup::ResponseTypes::Enum RESPONSE, const std::size_t SELECTION)
+        const popup::ResponseTypes::Enum RESPONSE, const std::size_t SELECTION)
     {
         popupResponse_ = RESPONSE;
         popupSelection_ = SELECTION;
@@ -594,7 +594,7 @@ namespace game
 
     sfml_util::DisplayChangeResult::Enum LoopManager::ChangeResolution(
         sfml_util::IStage * const               currentStagePtr_,
-        heroespath::popup::IPopupHandler_t * const          HANDLER_PTR,
+        popup::IPopupHandler_t * const          HANDLER_PTR,
         const sfml_util::Resolution &           NEW_RES,
         const unsigned                          ANTIALIAS_LEVEL)
     {
@@ -646,11 +646,11 @@ namespace game
             }
         }
 
-        const heroespath::popup::PopupInfo POPUP_INFO(
+        const popup::PopupInfo POPUP_INFO(
             "ResolutionChangePopup",
             textInfo,
-            heroespath::popup::PopupButtons::YesNo,
-            heroespath::popup::PopupImage::Banner,
+            popup::PopupButtons::YesNo,
+            popup::PopupImage::Banner,
             sfml_util::MapByRes(1.0f, 3.0f),
             sfml_util::sound_effect::PromptQuestion);
 

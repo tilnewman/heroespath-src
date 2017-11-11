@@ -33,15 +33,15 @@
 #if defined(APPBASE_MACRO_DISABLE_ALL) || defined(APPBASE_MACRO_DISABLE_LOGGERS)
 
 #warning "log macros M_LOG_...() have been disabled"
-#define M_LOG_PRI(log, pri, str) ;
-#define M_LOG_PRI_SS(log, pri, str) ;
-#define M_LOG(log, str) ;
-#define M_LOG_NON(log, str) ;
-#define M_LOG_DBG(log, str) ;
-#define M_LOG_DEF(log, str) ;
-#define M_LOG_WRN(log, str) ;
-#define M_LOG_ERR(log, str) ;
-#define M_LOG_FAT(log, str) ;
+#define M_LOG_PRI(logThing, pri, str) ;
+#define M_LOG_PRI_SS(logThing, pri, str) ;
+#define M_LOG(logThing, str) ;
+#define M_LOG_NON(logThing, str) ;
+#define M_LOG_DBG(logThing, str) ;
+#define M_LOG_DEF(logThing, str) ;
+#define M_LOG_WRN(logThing, str) ;
+#define M_LOG_ERR(logThing, str) ;
+#define M_LOG_FAT(logThing, str) ;
 
 #else
 

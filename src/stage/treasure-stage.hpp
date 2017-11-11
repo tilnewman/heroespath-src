@@ -70,7 +70,7 @@ namespace stage
     class TreasureStage
     :
         public sfml_util::Stage,
-        public heroespath::popup::IPopupHandler_t
+        public popup::IPopupHandler_t
     {
         TreasureStage(const TreasureStage &) =delete;
         TreasureStage & operator=(const TreasureStage &) =delete;
@@ -80,7 +80,7 @@ namespace stage
         virtual ~TreasureStage();
 
         inline virtual const std::string HandlerName() const override { return GetStageName(); }
-        virtual bool HandleCallback(const heroespath::popup::PopupResponse &) override;
+        virtual bool HandleCallback(const popup::PopupResponse &) override;
 
         void Setup() override;
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;

@@ -117,9 +117,9 @@ namespace sfml_util
     }
 
 
-    const sf::Color FontManager::Color_PopupButtonUp(const heroespath::popup::PopupButtonColor::Enum C)
+    const sf::Color FontManager::Color_PopupButtonUp(const popup::PopupButtonColor::Enum C)
     {
-        if (C == heroespath::popup::PopupButtonColor::Dark)
+        if (C == popup::PopupButtonColor::Dark)
         {
             return sf::Color(0, 0, 0, 70);
         }
@@ -130,9 +130,9 @@ namespace sfml_util
     }
 
 
-    const sf::Color FontManager::Color_PopupButtonDown(const heroespath::popup::PopupButtonColor::Enum C)
+    const sf::Color FontManager::Color_PopupButtonDown(const popup::PopupButtonColor::Enum C)
     {
-        if (C == heroespath::popup::PopupButtonColor::Dark)
+        if (C == popup::PopupButtonColor::Dark)
         {
             return sf::Color(0, 0, 0, 255);
         }
@@ -143,9 +143,9 @@ namespace sfml_util
     }
 
 
-    const sf::Color FontManager::Color_PopupButtonOver(const heroespath::popup::PopupButtonColor::Enum C)
+    const sf::Color FontManager::Color_PopupButtonOver(const popup::PopupButtonColor::Enum C)
     {
-        if (C == heroespath::popup::PopupButtonColor::Dark)
+        if (C == popup::PopupButtonColor::Dark)
         {
             return sf::Color(0, 0, 0, 150);
         }

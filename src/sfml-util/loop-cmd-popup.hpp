@@ -51,7 +51,7 @@ namespace sfml_util
     public:
         LoopCmd_AddStage_Popup_Specific(
             sfml_util::Loop & loop,
-            const heroespath::popup::PopupInfo & POPUP_INFO)
+            const popup::PopupInfo & POPUP_INFO)
         :
             LoopCmd("AddStage_Popup_Specific_" +
                 boost::typeindex::type_id<PopupType_t>().pretty_name()),
@@ -71,7 +71,7 @@ namespace sfml_util
 
     private:
         sfml_util::Loop & loop_;
-        heroespath::popup::PopupInfo popupInfo_;
+        popup::PopupInfo popupInfo_;
     };
 
 
