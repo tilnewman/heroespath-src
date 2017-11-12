@@ -36,7 +36,7 @@
 
 
 //these defines will disable these macros
-#if defined(MACRO_DISABLE_ALL) || defined(MACRO_DISABLE_ASSERTORTHROW)
+#if defined(HEROESPATH_MACRO_DISABLE_ALL) || defined(HEROESPATH_MACRO_DISABLE_ASSERTORTHROW)
 
 //if disabled by ASSERT_OR_THROW_DISABLED, then produce no code
 #define M_ASSERT_OR_LOGANDTHROW(exp, str) ;

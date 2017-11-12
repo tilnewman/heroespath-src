@@ -29,45 +29,46 @@
 //
 
 
-//these defines will disable these macros
-#if defined(APPBASE_MACRO_DISABLE_ALL) || defined(APPBASE_MACRO_DISABLE_LOGGERS)
+//defines that disable logging macros
+#if defined(HEROESPATH_MACRO_DISABLE_ALL) || defined(HEROESPATH_MACRO_DISABLE_LOGGERS)
 
 #warning "log macros M_LOG_...() have been disabled"
-#define M_LOG_PRI(logThing, pri, str) ;
-#define M_LOG_PRI_SS(logThing, pri, str) ;
-#define M_LOG(logThing, str) ;
-#define M_LOG_NON(logThing, str) ;
-#define M_LOG_DBG(logThing, str) ;
-#define M_LOG_DEF(logThing, str) ;
-#define M_LOG_WRN(logThing, str) ;
-#define M_LOG_ERR(logThing, str) ;
-#define M_LOG_FAT(logThing, str) ;
+#define M_LOG_PRI(logger, priority, str) ;
+#define M_LOG_PRI_SS(logger, priority, str) ;
+#define M_LOG(logger, str) ;
+#define M_LOG_NON(logger, str) ;
+#define M_LOG_DBG(logger, str) ;
+#define M_LOG_DEF(logger, str) ;
+#define M_LOG_WRN(logger, str) ;
+#define M_LOG_ERR(logger, str) ;
+#define M_LOG_FAT(logger, str) ;
 
 #else
 
-#include <sstream>
 #include "log/ilog.hpp"
-#define M_LOG_PRI(logThing, pri, str_static)                   \
-{                                                              \
-    (logThing).Log( (pri), __FILE__, __LINE__, (str_static) ); \
+#include <sstream>
+
+#define M_LOG_PRI(logger, priority, string_static)                   \
+{                                                                    \
+    (logger).Log( (priority), __FILE__, __LINE__, (string_static) ); \
 }
 
-#define M_LOG_PRI_SS(logThing, pri, str_stream)                          \
-{                                                                        \
-    std::ostringstream _m_oss_mlog_temp;                                 \
-    _m_oss_mlog_temp << str_stream;                                      \
-    (logThing).Log( (pri), __FILE__, __LINE__, _m_oss_mlog_temp.str() ); \
+#define M_LOG_PRI_SS(logger, priority, string_stream)                       \
+{                                                                           \
+    std::ostringstream _m_oss_mlog_temp;                                    \
+    _m_oss_mlog_temp << string_stream;                                      \
+    (logger).Log( (priority), __FILE__, __LINE__, _m_oss_mlog_temp.str() ); \
 }
 
-#define M_LOG(logThing, str)     M_LOG_PRI_SS(logThing, heroespath::log::LogPri::Default, str);
-#define M_LOG_NON(logThing, str) M_LOG_PRI_SS(logThing, heroespath::log::LogPri::None, str);
-#define M_LOG_DBG(logThing, str) M_LOG_PRI_SS(logThing, heroespath::log::LogPri::Debug, str);
-#define M_LOG_DEF(logThing, str) M_LOG_PRI_SS(logThing, heroespath::log::LogPri::Default, str);
-#define M_LOG_WRN(logThing, str) M_LOG_PRI_SS(logThing, heroespath::log::LogPri::Warn, str);
-#define M_LOG_ERR(logThing, str) M_LOG_PRI_SS(logThing, heroespath::log::LogPri::Error, str);
-#define M_LOG_FAT(logThing, str) M_LOG_PRI_SS(logThing, heroespath::log::LogPri::Fatal, str);
+#define M_LOG(logger, string_stream) M_LOG_PRI_SS(logger, heroespath::log::LogPri::Default, string_stream);
+#define M_LOG_NON(logger, string_stream) M_LOG_PRI_SS(logger, heroespath::log::LogPri::None, string_stream);
+#define M_LOG_DBG(logger, string_stream) M_LOG_PRI_SS(logger, heroespath::log::LogPri::Debug, string_stream);
+#define M_LOG_DEF(logger, string_stream) M_LOG_PRI_SS(logger, heroespath::log::LogPri::Default, string_stream);
+#define M_LOG_WRN(logger, string_stream) M_LOG_PRI_SS(logger, heroespath::log::LogPri::Warn, string_stream);
+#define M_LOG_ERR(logger, string_stream) M_LOG_PRI_SS(logger, heroespath::log::LogPri::Error, string_stream);
+#define M_LOG_FAT(logger, string_stream) M_LOG_PRI_SS(logger, heroespath::log::LogPri::Fatal, string_stream);
 
-#endif //HEROESPATH_#if defined(APPBASE_MACRO_DISABLE_ALL) || defined(APPBASE_MACRO_DISABLE_LOGGERS)
+#endif //#if defined(HEROESPATH_MACRO_DISABLE_ALL) || defined(HEROESPATH_MACRO_DISABLE_LOGGERS)
 
 
 #endif //HEROESPATH_LOG_MACROS_HPP_INCLUDED
