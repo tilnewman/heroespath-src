@@ -125,16 +125,16 @@ namespace creature
                           const race::Enum &          RAE             = race::Enum::Count_PlayerRaces,
                           const role::Enum &          ROLE            = role::Enum::PlayerRoleCount,
                           const stats::StatSet &      STATS           = stats::StatSet(),
-                          const Health_t              HEALTH          = 0_health,
-                          const Rank_t                RANK            = 1_rank,
-                          const Experience_t          EXPERIENCE      = 0_exp,
+                          const Health_t &            HEALTH          = 0_health,
+                          const Rank_t &              RANK            = 1_rank,
+                          const Experience_t &        EXPERIENCE      = 0_exp,
                           const CondEnumVec_t &       CONDITIONS_VEC  = CondEnumVec_t(),
                           const TitleEnumVec_t &      TITLES_VEC      = TitleEnumVec_t(),
                           const item::Inventory &     INVENTORY       = item::Inventory(),
                           const sfml_util::DateTime & DATE_TIME       = sfml_util::DateTime(),
                           const std::string &         IMAGE_FILENAME  = "",
                           const spell::SpellVec_t &   SPELL_VEC       = spell::SpellVec_t(),
-                          const Mana_t                MANA            = 0_mana,
+                          const Mana_t &              MANA            = 0_mana,
                           const song::SongVec_t &     SONG_VEC        = song::SongVec_t());
 
         virtual ~Creature();
@@ -192,19 +192,19 @@ namespace creature
         const std::string RankClassName() const;
         float RankRatio() const;
 
-        inline Rank_t IncreaseRank(const Rank_t R)              { return rank_ += R; }
+        inline Rank_t IncreaseRank(const Rank_t & R)            { return rank_ += R; }
 
         inline Experience_t Exp() const                         { return experience_; }
-        inline Experience_t IncreaseExp(const Experience_t E)   { return experience_ += E; }
+        inline Experience_t IncreaseExp(const Experience_t & E) { return experience_ += E; }
 
         inline Health_t HealthCurrent() const                   { return healthCurrent_; }
-        inline void HealthCurrentSet(const Health_t H)          { healthCurrent_ = H; }
+        inline void HealthCurrentSet(const Health_t & H)        { healthCurrent_ = H; }
         inline Health_t HealthNormal() const                    { return healthNormal_; }
-        inline void HealthNormalSet(const Health_t H)           { healthNormal_ = H; }
+        inline void HealthNormalSet(const Health_t & H)         { healthNormal_ = H; }
         inline void HealthReset()                               { healthCurrent_ = healthNormal_; }
 
-        Health_t HealthCurrentAdj(const Health_t);
-        Health_t HealthNormalAdj(const Health_t);
+        Health_t HealthCurrentAdj(const Health_t &);
+        Health_t HealthNormalAdj(const Health_t &);
 
         inline role::Enum Role() const                          { return role_; }
         inline const std::string RoleName() const               { return role::Name(role_); }
@@ -233,7 +233,7 @@ namespace creature
             return Mana_t(TraitWorking(stats::Traits::Mana));
         }
 
-        inline Mana_t ManaAdj(const Mana_t ADJ)
+        inline Mana_t ManaAdj(const Mana_t & ADJ)
         {
             return Mana_t( TraitCurrentAdj(stats::Traits::Mana, ADJ.AsInt()) );
         }
@@ -243,7 +243,7 @@ namespace creature
             return Mana_t(TraitNormal(stats::Traits::Mana));
         }
 
-        inline Mana_t ManaNormalAdj(const Mana_t ADJ)
+        inline Mana_t ManaNormalAdj(const Mana_t & ADJ)
         {
             return Mana_t(TraitNormalAdj(stats::Traits::Mana, ADJ.AsInt()));
         }
@@ -335,9 +335,9 @@ namespace creature
         inline const item::Inventory & Inventory() const        { return inventory_; }
 
         //these functions return false if attempt to reduce beyond zero
-        inline bool CoinsAdj(const Coin_t C) { return inventory_.CoinsAdj(C); }
-        inline bool MeteorShardsAdj(const MeteorShard_t M) { return inventory_.MeteorShardsAdj(M); }
-        inline bool GemsAdj(const Gem_t G)             { return inventory_.GemsAdj(G); }
+        inline bool CoinsAdj(const Coin_t & C) { return inventory_.CoinsAdj(C); }
+        inline bool MeteorShardsAdj(const MeteorShard_t & M) { return inventory_.MeteorShardsAdj(M); }
+        inline bool GemsAdj(const Gem_t & G)             { return inventory_.GemsAdj(G); }
 
         //These functinons return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
         //On failure, the string will be an explanation of the failure that can be shown to the player.
@@ -487,7 +487,7 @@ namespace creature
         }
 
         const std::string TraitModifiedString(const stats::Traits::Enum E,
-                                              const bool                WILL_WRAP) const;
+                                              const bool WILL_WRAP) const;
 
         void StatTraitsModify(const stats::StatSet &);
 
@@ -497,9 +497,9 @@ namespace creature
     protected:
         const item::ItemPVecVec_t ComposeWeaponsList() const;
 
-        void EnchantmentsApplyOrRemoveByType(const EnchantmentPVec_t &   PVEC,
+        void EnchantmentsApplyOrRemoveByType(const EnchantmentPVec_t & PVEC,
                                              const EnchantmentType::Enum TYPE,
-                                             const bool                  WILL_APPLY);
+                                             const bool WILL_APPLY);
 
         bool HasEnchantmentType(const EnchantmentType::Enum) const;
 

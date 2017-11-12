@@ -64,13 +64,13 @@ namespace creature
     Title::Title(
         const Titles::Enum          TITLE,
         const AchievementType::Enum ACHIEVEMENT_TYPE,
-        const Index_t               ACHIEVEMENT_INDEX,
-        const Count_t               ACHIEVEMENT_COUNT,
+        const Index_t &             ACHIEVEMENT_INDEX,
+        const Count_t  &            ACHIEVEMENT_COUNT,
         const RoleVec_t &           ROLES_VEC,
         const stats::StatSet &      STATS_BONUS,
-        const Rank_t                RANK_BONUS,
-        const Experience_t          EXPERIENCE_BONUS,
-        const Health_t              HEALTH_BONUS)
+        const Rank_t &              RANK_BONUS,
+        const Experience_t &        EXPERIENCE_BONUS,
+        const Health_t &            HEALTH_BONUS)
     :
         title_           (TITLE),
         achievementType_ (ACHIEVEMENT_TYPE),

@@ -317,8 +317,7 @@ namespace stringhelp
             if (WILL_TRIM)
                 boost::algorithm::trim_if(nextToken, boost::algorithm::is_space());
 
-            if ((WILL_SKIP_EMPTY == false) ||
-                ((WILL_SKIP_EMPTY == true) && (nextToken.empty() == false)) )
+            if ((WILL_SKIP_EMPTY == false) || (nextToken.empty() == false))
             {
                 ++appendCount;
                 outContainer.insert(outContainer.end(), nextToken);

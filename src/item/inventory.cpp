@@ -44,11 +44,11 @@ namespace heroespath
 namespace item
 {
 
-    Inventory::Inventory(const Coin_t         COINS,
-                         const MeteorShard_t  METEOR_SHARDS,
-                         const Gem_t          GEMS,
-                         const ItemPVec_t &   ITEMS_SVEC,
-                         const ItemPVec_t &   EQUIPPED_ITEMS_SVEC)
+    Inventory::Inventory(const Coin_t &        COINS,
+                         const MeteorShard_t & METEOR_SHARDS,
+                         const Gem_t &         GEMS,
+                         const ItemPVec_t &    ITEMS_SVEC,
+                         const ItemPVec_t &    EQUIPPED_ITEMS_SVEC)
     :
         coins_           (COINS),
         meteorShards_    (METEOR_SHARDS),
@@ -64,7 +64,7 @@ namespace item
     }
 
 
-    bool Inventory::CoinsAdj(const Coin_t COINS)
+    bool Inventory::CoinsAdj(const Coin_t & COINS)
     {
         coins_ += COINS;
 
@@ -80,7 +80,7 @@ namespace item
     }
 
 
-    bool Inventory::MeteorShardsAdj(const MeteorShard_t METEOR_SHARDS)
+    bool Inventory::MeteorShardsAdj(const MeteorShard_t & METEOR_SHARDS)
     {
         meteorShards_ += METEOR_SHARDS;
 
@@ -96,7 +96,7 @@ namespace item
     }
 
 
-    bool Inventory::GemsAdj(const Gem_t GEMS)
+    bool Inventory::GemsAdj(const Gem_t & GEMS)
     {
         gems_ += GEMS;
 

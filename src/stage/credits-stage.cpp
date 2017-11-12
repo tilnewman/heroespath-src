@@ -74,7 +74,7 @@ namespace stage
         scrollSpeed_          (DEFAULT_SCROLL_SPEED_),
         isKeyHeldDown_        (false)
     {
-        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Credits, false, true);
+        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Credits);
     }
 
 

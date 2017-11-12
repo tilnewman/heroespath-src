@@ -53,11 +53,11 @@ namespace item
                const material::Enum         MATERIAL_PRIMARY,
                const material::Enum         MATERIAL_SECONDARY,
                const std::string &          IMAGE_FILENAME,
-               const Coin_t                 PRICE,
-               const Weight_t               WEIGHT,
-               const Health_t               DAMAGE_MIN,
-               const Health_t               DAMAGE_MAX,
-               const Armor_t                ARMOR_RATING,
+               const Coin_t &               PRICE,
+               const Weight_t &             WEIGHT,
+               const Health_t &             DAMAGE_MIN,
+               const Health_t &             DAMAGE_MAX,
+               const Armor_t &              ARMOR_RATING,
                const creature::role::Enum   EXCLUSIVE_TO_ROLE,
                const weapon::WeaponInfo &   WEAPON_INFO,
                const armor::ArmorInfo &     ARMOR_INFO,
@@ -174,7 +174,7 @@ namespace item
             return misc_type::Name(miscType_);
         }
 
-        if ((weaponType_ & weapon_type::NotAWeapon) == false)
+        if (weaponType_ != weapon_type::NotAWeapon)
         {
             if (weaponType_ & weapon_type::Axe)         { return "Axe"; }
             if (weaponType_ & weapon_type::Bite)        { return "Bite"; }
@@ -195,7 +195,7 @@ namespace item
             if (weaponType_ & weapon_type::Whip)        { return "Whip"; }
         }
 
-        if ((armorType_ & armor_type::NotArmor) == false)
+        if (armorType_ != armor_type::NotArmor)
         {
             if (armorType_ & armor_type::Aventail)  { return "Aventail"; }
             if (armorType_ & armor_type::Boots)     { return "Boots"; }

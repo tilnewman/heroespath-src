@@ -69,7 +69,7 @@ namespace creature
     }
 
 
-    dragon_class::Enum dragon_class::ClassFromRank(const Rank_t RANK)
+    dragon_class::Enum dragon_class::ClassFromRank(const Rank_t & RANK)
     {
         if (RANK >= Rank_t(game::GameDataFile::Instance()->
             GetCopyInt("heroespath-creature-dragon-class-rank-min-Elder")))

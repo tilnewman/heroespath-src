@@ -49,14 +49,14 @@ namespace test_stuff
             const double CLOSE_ENOUGH_EPSILON_PARAM   = 0.000001,
             const float  CLOSE_ENOUGH_EPSILON_F_PARAM = 0.000001f)
         :
-            RANDOM_RETRY_COUNT(RANDOM_RETRY_COUNT_PARAM),
             CLOSE_ENOUGH_EPSILON(CLOSE_ENOUGH_EPSILON_PARAM),
-            CLOSE_ENOUGH_EPSILON_F(CLOSE_ENOUGH_EPSILON_F_PARAM)
+            CLOSE_ENOUGH_EPSILON_F(CLOSE_ENOUGH_EPSILON_F_PARAM),
+            RANDOM_RETRY_COUNT(RANDOM_RETRY_COUNT_PARAM)
         {}
 
-        const int    RANDOM_RETRY_COUNT;
         const double CLOSE_ENOUGH_EPSILON;
         const float  CLOSE_ENOUGH_EPSILON_F;
+        const int    RANDOM_RETRY_COUNT;
     };
 
     template <typename T>

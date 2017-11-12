@@ -154,7 +154,7 @@ namespace misc
         ss << "  GNU/Linux";
 #endif
 
-        if (ss.str().empty() || (platform_ == platform_type::Unknown))
+        if (ss.str().empty())
         {
             ss << "(None!  This unknown platform is probably not supported...)";
         }

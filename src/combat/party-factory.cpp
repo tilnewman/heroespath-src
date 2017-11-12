@@ -151,14 +151,14 @@ namespace combat
 
     non_player::CharacterPtr_t PartyFactory::MakeCharacter(
         const stats::StatSet & STATS,
-        const Health_t HEALTH_MIN,
-        const Health_t HEALTH_MAX,
+        const Health_t & HEALTH_MIN,
+        const Health_t & HEALTH_MAX,
         const creature::sex::Enum SEX,
         const creature::race::Enum RACE,
         const creature::role::Enum ROLE,
-        const Rank_t RANK,
-        const Experience_t EXPERIENCE,
-        const Mana_t MANA) const
+        const Rank_t & RANK,
+        const Experience_t & EXPERIENCE,
+        const Mana_t & MANA) const
     {
         auto characterPtr{ new non_player::Character(
             creature::race::Name(RACE),

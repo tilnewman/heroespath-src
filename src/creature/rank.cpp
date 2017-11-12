@@ -41,7 +41,7 @@ namespace heroespath
 namespace creature
 {
 
-    rank_class::Enum rank_class::FromRank(const Rank_t RANK_PARAM)
+    rank_class::Enum rank_class::FromRank(const Rank_t & RANK_PARAM)
     {
         Rank_t rankCumulative{ 0_rank };
         for (int i(0); i < (rank_class::Count - 1); ++i)

@@ -163,7 +163,7 @@ namespace ownership
             const Profile &                     PROFILE,
             const non_player::CharacterPtr_t    CHARACTER_PTR,
             const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
-            const Weight_t                      ITEM_WEIGHT,
+            const Weight_t &                    ITEM_WEIGHT,
             chance::MaterialChanceMap_t &       materialsMap_OutParam);
 
         static void Make_MaterialChancesSecondary(const Profile &,
@@ -196,7 +196,7 @@ namespace ownership
             const non_player::CharacterPtr_t    CHARACTER_PTR,
             chance::MaterialChanceMap_t &       materialsMapPri,
             chance::MaterialChanceMap_t &       materialsMapSec,
-            const Weight_t                WEIGHT);
+            const Weight_t &              WEIGHT);
 
         template<typename T>
         static bool SetWeaponChances(

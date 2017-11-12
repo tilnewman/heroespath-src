@@ -1309,7 +1309,7 @@ namespace ownership
         const Profile &                     PROFILE,
         const non_player::CharacterPtr_t    CHARACTER_PTR,
         const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
-        const Weight_t                      ITEM_WEIGHT,
+        const Weight_t &                    ITEM_WEIGHT,
         chance::MaterialChanceMap_t &       materialsMap_OutParam)
     {
         //establish the base chances for a special primary material
@@ -1872,7 +1872,7 @@ namespace ownership
         const non_player::CharacterPtr_t    CREATURE_PTR,
         chance::MaterialChanceMap_t &       materialsMapPri,
         chance::MaterialChanceMap_t &       materialsMapSec,
-        const Weight_t                      WEIGHT)
+        const Weight_t &                    WEIGHT)
     {
         Make_MaterialChancesPrimary(
             PROFILE,

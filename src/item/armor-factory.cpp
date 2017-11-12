@@ -682,7 +682,7 @@ namespace armor
 
     ItemPtr_t ArmorFactory::Make_Skin(
         const material::Enum MATERIAL,
-        const Rank_t         CREATURE_RANK,
+        const Rank_t &       CREATURE_RANK,
         const bool           IS_PIXIE_ITEM)
     {
         ArmorInfo armorInfo{ armor_type::Skin };

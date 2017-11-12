@@ -67,16 +67,16 @@ namespace creature
                        const race::Enum &          RACE,
                        const role::Enum &          ROLE,
                        const stats::StatSet &      STATS,
-                       const Health_t              HEALTH,
-                       const Rank_t                RANK,
-                       const Experience_t          EXPERIENCE,
+                       const Health_t &            HEALTH,
+                       const Rank_t &              RANK,
+                       const Experience_t &        EXPERIENCE,
                        const CondEnumVec_t &       CONDITIONS_VEC,
                        const TitleEnumVec_t &      TITLE_VEC,
                        const item::Inventory &     INVENTORY,
                        const sfml_util::DateTime & DATE_TIME,
                        const std::string &         IMAGE_FILENAME,
                        const spell::SpellVec_t &   SPELL_VEC,
-                       const Mana_t                MANA,
+                       const Mana_t &              MANA,
                        const song::SongVec_t &     SONG_VEC)
     :
         name_             (NAME),
@@ -216,7 +216,7 @@ namespace creature
     }
 
 
-    Health_t Creature::HealthCurrentAdj(const Health_t HEALTH_ADJ)
+    Health_t Creature::HealthCurrentAdj(const Health_t & HEALTH_ADJ)
     {
         healthCurrent_ += HEALTH_ADJ;
 
@@ -234,7 +234,7 @@ namespace creature
     }
 
 
-    Health_t Creature::HealthNormalAdj(const Health_t HEALTH_ADJ)
+    Health_t Creature::HealthNormalAdj(const Health_t & HEALTH_ADJ)
     {
         healthNormal_ += HEALTH_ADJ;
 
@@ -304,16 +304,12 @@ namespace creature
 
     bool Creature::ConditionAdd(const Conditions::Enum E, const bool ALLOW_CHANGES)
     {
-        const ConditionEnumVecCIter_t COND_GOOD_ITER( std::find(conditionsVec_.begin(),
-                                                                conditionsVec_.end(),
-                                                                Conditions::Good) );
+        const ConditionEnumVecCIter_t COND_GOOD_ITER( std::find(
+            conditionsVec_.begin(),
+            conditionsVec_.end(),
+            Conditions::Good) );
 
-        bool willAdd(false);
-        if (COND_GOOD_ITER == conditionsVec_.end())
-        {
-            willAdd = true;
-        }
-        else
+        if (COND_GOOD_ITER != conditionsVec_.end())
         {
             //prevent multiple 'Good' conditions
             if (E == Conditions::Good)
@@ -326,30 +322,25 @@ namespace creature
                 conditionsVec_.erase(std::remove(conditionsVec_.begin(),
                                                  conditionsVec_.end(),
                                                  Conditions::Good), conditionsVec_.end());
-                willAdd = true;
             }
         }
 
-        if (willAdd)
+        //verify the condition is not already in the list
+        if (conditionsVec_.end() == std::find(
+            conditionsVec_.begin(), conditionsVec_.end(), E))
         {
-            //verify the condition is not already in the list
-            if (conditionsVec_.end() == std::find(conditionsVec_.begin(),
-                                                  conditionsVec_.end(),
-                                                  E))
+            conditionsVec_.push_back(E);
+
+            //make the change to the creature
+            if (ALLOW_CHANGES)
             {
-                conditionsVec_.push_back(E);
-
-                //make the change to the creature
-                if (ALLOW_CHANGES)
-                {
-                    condition::Warehouse::Get(E)->InitialChange(this);
-                    ReCalculateTraitBonuses();
-                }
-
-                return true;
+                condition::Warehouse::Get(E)->InitialChange(this);
+                ReCalculateTraitBonuses();
             }
-        }
 
+            return true;
+        }
+        
         return false;
     }
 

@@ -432,7 +432,7 @@ namespace sfml_util
     }
 
 
-    void SoundManager::MusicStop(const MusicEnumVec_t MUSIC_ENUMS, const float FADE_MULT)
+    void SoundManager::MusicStop(const MusicEnumVec_t & MUSIC_ENUMS, const float FADE_MULT)
     {
         for (auto const MUSIC_ENUM : MUSIC_ENUMS)
         {
@@ -885,6 +885,7 @@ namespace sfml_util
                 {
                     game::LoopManager::Instance()->TestingStrIncrement(
                         "SoundManager Music Test #" + ss.str() + " Delay...");
+
                     ++counter;
                     return false;
                 }
@@ -892,10 +893,12 @@ namespace sfml_util
                 if (playOrStop)
                 {
                     MusicStop(NEXT_ENUM);
-                    playOrStop = ! playOrStop;
+                    playOrStop = false;
                     ++musicIndex;
+
                     game::LoopManager::Instance()->TestingStrIncrement(
                         "SoundManager Music Test #" + ss.str());
+                    
                     return false;
                 }
             }

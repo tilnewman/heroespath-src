@@ -81,16 +81,16 @@ namespace player
                            const creature::race::Enum &     RACE           = creature::race::Count_PlayerRaces,
                            const creature::role::Enum &     ROLE           = creature::role::PlayerRoleCount,
                            const stats::StatSet &           STATS          = stats::StatSet(),
-                           const Health_t                   HEALTH         = 0_health,
-                           const Rank_t                     RANK           = 1_rank,
-                           const Experience_t               EXPERIENCE     = 0_exp,
+                           const Health_t &                 HEALTH         = 0_health,
+                           const Rank_t &                   RANK           = 1_rank,
+                           const Experience_t &             EXPERIENCE     = 0_exp,
                            const creature::CondEnumVec_t &  CONDITIONS_VEC = creature::CondEnumVec_t(),
                            const creature::TitleEnumVec_t & TITLES_VEC     = creature::TitleEnumVec_t(),
                            const item::Inventory &          INVENTORY      = item::Inventory(),
                            const sfml_util::DateTime &      DATE_TIME      = sfml_util::DateTime(),
                            const std::string &              IMAGE_FILENAME = "",
                            const spell::SpellVec_t &        SPELLS_VEC     = spell::SpellVec_t(),
-                           const Mana_t                     MANA           = 0_mana,
+                           const Mana_t &                   MANA           = 0_mana,
                            const song::SongVec_t &          SONG_VEC       = song::SongVec_t());
 
         virtual ~Character();

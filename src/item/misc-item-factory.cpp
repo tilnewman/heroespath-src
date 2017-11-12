@@ -678,8 +678,8 @@ namespace item
 
     ItemPtr_t MiscItemFactory::Make_Helper(
         const ItemProfile & PROFILE,
-        const Coin_t BASE_PRICE,
-        const Weight_t BASE_WEIGHT,
+        const Coin_t & BASE_PRICE,
+        const Weight_t & BASE_WEIGHT,
         const std::string & BASE_DESC)
     {
         auto price{ BASE_PRICE };

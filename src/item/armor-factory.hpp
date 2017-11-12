@@ -116,7 +116,7 @@ namespace armor
         //material must be plant, flesh, scale, hide, fur, or featers
         static ItemPtr_t Make_Skin(
             const material::Enum MATERIAL,
-            const Rank_t         CREATURE_RANK,
+            const Rank_t &       CREATURE_RANK,
             const bool           IS_PIXIE_ITEM);
 
     private:

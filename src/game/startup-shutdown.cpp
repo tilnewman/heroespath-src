@@ -300,12 +300,12 @@ namespace game
 
     void StartupShutdown::ParseCommandLineArguments(const int ARGC, char * argv[])
     {
-        if (ARGC > 1)
+        if (ARGC >= 2)
         {
             std::cout << "Will attempt to start in stage: \"" << argv[1] << "\"" << std::endl;
             LoopManager::SetStartupStage(argv[1]);
 
-            if (ARGC >= 2)
+            if (ARGC > 2)
             {
                 for (int i(2); i < ARGC; ++i)
                 {

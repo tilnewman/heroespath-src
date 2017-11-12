@@ -90,7 +90,7 @@ namespace combat
         explicit HitInfo(
             const bool                      WAS_HIT           = false,
             const item::ItemPtr_t           ITEM_PTR          = nullptr,
-            const Health_t                  DAMAGE            = 0_health,
+            const Health_t &                DAMAGE            = 0_health,
             const bool                      IS_CRITICAL_HIT   = false,
             const bool                      IS_POWER_HIT      = false,
             const bool                      DID_ARMOR_ABSORB  = false,
@@ -102,7 +102,7 @@ namespace combat
         HitInfo(const bool                      WAS_HIT,
                 const spell::SpellPtr_t         SPELL_CPTR,
                 const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                const Health_t                  DAMAGE            = 0_health,
+                const Health_t &                DAMAGE            = 0_health,
                 const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
                 const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
 
@@ -110,7 +110,7 @@ namespace combat
         HitInfo(const bool                      WAS_HIT,
                 const song::SongPtr_t           SONG_CPTR,
                 const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                const Health_t                  DAMAGE            = 0_health,
+                const Health_t &                DAMAGE            = 0_health,
                 const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
                 const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
 
@@ -118,7 +118,7 @@ namespace combat
         HitInfo(const bool                       WAS_HIT,
                 const creature::Conditions::Enum COND_ENUM,
                 const ContentAndNamePos &        ACTION_PHRASE_CNP,
-                const Health_t                   DAMAGE            = 0_health,
+                const Health_t &                 DAMAGE            = 0_health,
                 const creature::CondEnumVec_t &  CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
                 const creature::CondEnumVec_t &  CONDS_REMOVED_VEC = creature::CondEnumVec_t());
 
@@ -126,13 +126,13 @@ namespace combat
         HitInfo(const bool                      WAS_HIT,
                 const HitType::Enum             HIT_TYPE,
                 const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                const Health_t                  DAMAGE            = 0_health,
+                const Health_t &                DAMAGE            = 0_health,
                 const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
                 const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
 
         //use this constructor for treasure trap hits
         HitInfo(
-            const Health_t                  DAMAGE,
+            const Health_t &                DAMAGE,
             const std::string &             ACTION_VERB,
             const creature::CondEnumVec_t & CONDS_ADDED_VEC = creature::CondEnumVec_t(),
             const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());

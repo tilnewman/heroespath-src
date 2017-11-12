@@ -122,7 +122,7 @@ namespace combat
     void FightClub::HandleDamage(
         creature::CreaturePtrC_t  creatureDefendingPtrC,
         HitInfoVec_t &            hitInfoVec,
-        const Health_t            HEALTH_ADJ,
+        const Health_t &          HEALTH_ADJ,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t & condsRemovedVec,
         const bool                CAN_ADD_CONDITIONS)
@@ -282,7 +282,7 @@ namespace combat
 
     void FightClub::AddConditionsBasedOnDamage(
         creature::CreaturePtrC_t  creatureDefendingPtrC,
-        const Health_t            DAMAGE_ABS,
+        const Health_t &          DAMAGE_ABS,
         creature::CondEnumVec_t & condsAddedVecParam,
         creature::CondEnumVec_t & condsRemovedVecParam,
         HitInfoVec_t &            hitInfoVec)

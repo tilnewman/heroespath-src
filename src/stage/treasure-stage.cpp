@@ -561,7 +561,7 @@ namespace stage
 
             game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
         }
-        else if (NUM_ITEMS_REMAINING > 0)
+        else
         {
             sfml_util::SoundManager::Instance()->PlaySfx_Reject();
 

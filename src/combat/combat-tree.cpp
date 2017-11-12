@@ -84,7 +84,7 @@ namespace combat
     }
 
 
-    CombatNodePtr_t CombatTree::GetNode(const ID_t ID) const
+    CombatNodePtr_t CombatTree::GetNode(const ID_t & ID) const
     {
         for (auto const & VERTEX : vertexes_)
         {
@@ -100,7 +100,7 @@ namespace combat
     }
 
 
-    CombatNodeSPtr_t CombatTree::GetNodeSPtr(const ID_t ID) const
+    CombatNodeSPtr_t CombatTree::GetNodeSPtr(const ID_t & ID) const
     {
         for (auto const & VERTEX : vertexes_)
         {
@@ -144,7 +144,7 @@ namespace combat
     }
 
 
-    void CombatTree::SetNode(const ID_t ID, const CombatNodeSPtr_t & NODE_SPTR)
+    void CombatTree::SetNode(const ID_t & ID, const CombatNodeSPtr_t & NODE_SPTR)
     {
         for(auto & vertex : vertexes_)
         {
@@ -308,7 +308,7 @@ namespace combat
     }
 
 
-    void CombatTree::AddVertex(const ID_t ID, const CombatNodeSPtr_t & NODE_SPTR)
+    void CombatTree::AddVertex(const ID_t & ID, const CombatNodeSPtr_t & NODE_SPTR)
     {
         if (DoesVertexExist(ID))
         {
@@ -325,7 +325,7 @@ namespace combat
         }
     }
 
-    void CombatTree::RemoveVertex(const ID_t ID, const bool WILL_REMOVE_DANGLING_EDGES)
+    void CombatTree::RemoveVertex(const ID_t & ID, const bool WILL_REMOVE_DANGLING_EDGES)
     {
         auto iter(vertexes_.begin());
         for (; iter != vertexes_.end(); ++iter)
@@ -454,8 +454,8 @@ namespace combat
 
 
     void CombatTree::AddEdge(
-        const ID_t ID1,
-        const ID_t ID2,
+        const ID_t & ID1,
+        const ID_t & ID2,
         const EdgeType::Enum TYPE)
     {
         if (ID1 == ID2)
@@ -501,8 +501,8 @@ namespace combat
 
 
     const IDVec_t CombatTree::RemoveEdge(
-        const ID_t ID1,
-        const ID_t ID2,
+        const ID_t & ID1,
+        const ID_t & ID2,
         const bool IS_DRY_RUN)
     {
         if (ID1 == ID2)
@@ -556,7 +556,7 @@ namespace combat
     }
 
 
-    bool CombatTree::DoesVertexExist(const ID_t ID) const
+    bool CombatTree::DoesVertexExist(const ID_t & ID) const
     {
         for (auto const & VERTEX : vertexes_)
         {
@@ -571,8 +571,8 @@ namespace combat
 
 
     bool CombatTree::DoesEdgeExist(
-        const ID_t ID1,
-        const ID_t ID2,
+        const ID_t & ID1,
+        const ID_t & ID2,
         const EdgeType::Enum TYPE) const
     {
         for(auto const & EDGE : edges_)
@@ -598,7 +598,7 @@ namespace combat
     }
 
 
-    EdgeType::Enum CombatTree::GetEdgeType(const ID_t ID1, const ID_t ID2) const
+    EdgeType::Enum CombatTree::GetEdgeType(const ID_t & ID1, const ID_t & ID2) const
     {
         for (auto const & EDGE : edges_)
         {
@@ -617,7 +617,7 @@ namespace combat
     }
 
 
-    void CombatTree::SetEdgeType(const ID_t ID1, const ID_t ID2, const EdgeType::Enum TYPE)
+    void CombatTree::SetEdgeType(const ID_t & ID1, const ID_t & ID2, const EdgeType::Enum TYPE)
     {
         for(auto & edge : edges_)
         {
@@ -638,7 +638,7 @@ namespace combat
 
 
     bool CombatTree::FindAdjacentByEdgeType(
-        const ID_t ID,
+        const ID_t & ID,
         IDVec_t & idVec_OutParam,
         const EdgeType::Enum TYPE) const
     {
@@ -682,7 +682,7 @@ namespace combat
 
 
     bool CombatTree::FindAdjacent(
-        const ID_t ID,
+        const ID_t & ID,
         IDVec_t &  idVec_OutParam) const
     {
         auto const ORIG_SIZE{ idVec_OutParam.size() };
@@ -708,7 +708,7 @@ namespace combat
 
 
     std::size_t CombatTree::CountAdjacent(
-        const ID_t ID,
+        const ID_t & ID,
         const EdgeType::Enum EDGE_TYPE) const
     {
         IDVec_t v;

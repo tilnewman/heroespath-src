@@ -107,8 +107,8 @@ namespace item
     private:
         static ItemPtr_t Make_Helper(
             const ItemProfile & PROFILE,
-            const Coin_t BASE_PRICE,
-            const Weight_t BASE_WEIGHT,
+            const Coin_t & BASE_PRICE,
+            const Weight_t & BASE_WEIGHT,
             const std::string & BASE_DESC = "");
 
     private:

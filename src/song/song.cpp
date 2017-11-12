@@ -52,8 +52,8 @@ namespace song
         const SongType::Enum TYPE,
         const combat::EffectType::Enum EFFECT_TYPE,
         const game::Phase::Enum VALID_PHASES,
-        const Mana_t MANA_COST,
-        const Rank_t RANK,
+        const Mana_t & MANA_COST,
+        const Rank_t & RANK,
         const combat::TargetType::Enum TARGET_TYPE,
         const std::string & VERB_THIRD_PERSON,
         const std::string & VERB_PAST_TENSE)

@@ -55,11 +55,11 @@ namespace item
     class Inventory
     {
     public:
-        explicit Inventory(const Coin_t         COINS               = 0_coin,
-                           const MeteorShard_t  METEOR_SHARDS       = 0_mshard,
-                           const Gem_t          GEMS                = 0_gem,
-                           const ItemPVec_t &   ITEMS_PVEC          = ItemPVec_t(),
-                           const ItemPVec_t &   EQUIPPED_ITEMS_PVEC = ItemPVec_t());
+        explicit Inventory(const Coin_t &        COINS               = 0_coin,
+                           const MeteorShard_t & METEOR_SHARDS       = 0_mshard,
+                           const Gem_t &         GEMS                = 0_gem,
+                           const ItemPVec_t &    ITEMS_PVEC          = ItemPVec_t(),
+                           const ItemPVec_t &    EQUIPPED_ITEMS_PVEC = ItemPVec_t());
 
         ~Inventory();
 
@@ -68,9 +68,9 @@ namespace item
         inline Gem_t Gems() const { return gems_; }
 
         //these functions return false if attempt to reduce below zero
-        bool CoinsAdj(const Coin_t);
-        bool MeteorShardsAdj(const MeteorShard_t);
-        bool GemsAdj(const Gem_t);
+        bool CoinsAdj(const Coin_t &);
+        bool MeteorShardsAdj(const MeteorShard_t &);
+        bool GemsAdj(const Gem_t &);
 
         inline const ItemPVec_t Items() const           { return itemsPVec_; }
         inline const ItemPVec_t ItemsEquipped() const   { return equippedItemsPVec_; }

@@ -61,7 +61,7 @@ namespace creature
             return Name(E);
         }
 
-        static dragon_class::Enum ClassFromRank(const Rank_t);
+        static dragon_class::Enum ClassFromRank(const Rank_t &);
     };
 
 }

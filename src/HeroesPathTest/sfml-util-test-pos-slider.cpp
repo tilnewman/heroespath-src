@@ -40,13 +40,13 @@ using namespace heroespath::sfml_util;
 using namespace heroespath::misc;
 
 
-bool AreVectorsClose(const sf::Vector2f A, const sf::Vector2f B)
+bool AreVectorsClose(const sf::Vector2f & A, const sf::Vector2f & B)
 {
     return IsRealClose(A.x, B.x) && IsRealClose(A.y, B.y);
 }
 
 
-bool AreVectorsCloseEnough(const sf::Vector2f A, const sf::Vector2f B)
+bool AreVectorsCloseEnough(const sf::Vector2f & A, const sf::Vector2f & B)
 {
     Constants constants;
     return IsRealClose(A.x, B.x, constants.CLOSE_ENOUGH_EPSILON_F) &&

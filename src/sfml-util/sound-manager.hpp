@@ -96,7 +96,7 @@ namespace sfml_util
             const float FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
 
         void MusicStop(
-            const MusicEnumVec_t MUSIC_ENUMS,
+            const MusicEnumVec_t & MUSIC_ENUMS,
             const float FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_OUT_);
 
         const MusicInfoVec_t MusicInfoSet() const;

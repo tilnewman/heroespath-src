@@ -1673,8 +1673,7 @@ namespace stage
                 HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
             }
         }
-        else if ((nullptr != spellBeingCastPtr_) &&
-                 (spellBeingCastPtr_->Target() == combat::TargetType::SingleCompanion))
+        else if (spellBeingCastPtr_->Target() == combat::TargetType::SingleCompanion)
         {
             if (creatureAtPosPtr->IsPlayerCharacter() == false)
             {

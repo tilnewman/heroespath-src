@@ -54,10 +54,10 @@ namespace sfml_util
     TileImage::TileImage(
         const std::string & NAME,
         const std::string & RELATIVE_PATH,
-        const ID_t FIRST_ID,
-        const Count_t TILE_COUNT,
-        const Column_t COLUMN,
-        const Index_t TEXTURE_INDEX)
+        const ID_t & FIRST_ID,
+        const Count_t & TILE_COUNT,
+        const Column_t & COLUMN,
+        const Index_t & TEXTURE_INDEX)
     :
         name         (NAME),
         path_rel     (RELATIVE_PATH),
@@ -176,11 +176,13 @@ namespace sfml_util
                 const sf::Uint8 GREEN{ * (PIXEL_PTR + i + 1) };
                 const sf::Uint8 BLUE { * (PIXEL_PTR + i + 2) };
                 
+                const unsigned NUM_COLOR_COMPONENTS{ 4 };//red, green, blue, alpha
+
                 auto const DEST_X{
-                    (static_cast<unsigned>(i) / static_cast<unsigned>(4)) % destImage.getSize().x};
+                    (static_cast<unsigned>(i) / NUM_COLOR_COMPONENTS) % destImage.getSize().x};
 
                 auto const DEST_Y{
-                    (static_cast<unsigned>(i) / static_cast<unsigned>(4)) / destImage.getSize().x};
+                    (static_cast<unsigned>(i) / NUM_COLOR_COMPONENTS) / destImage.getSize().x};
 
                 //check for faded blue background color that should be made fully transparent
                 if ((RED   == TRANSPARENT_MASK_.r) &&
@@ -466,7 +468,8 @@ namespace sfml_util
                 else
                 {
                     ++tilesImageIndex;
-                    vertIndex += 4;
+                    auto const VERTEXES_PER_QUAD{ 4 };
+                    vertIndex += VERTEXES_PER_QUAD;
                 }
             }
         }
@@ -609,13 +612,15 @@ namespace sfml_util
         }
         catch (const std::exception & E)
         {
-            std::string name("(no name)");
+            std::string name("");
             try
             {
                 name = XML_PROPERTY_TREE_MAPIMAGE.get<std::string>("<xmlattr>.name");
             }
             catch (...)
-            {}
+            {
+                name = "(no name error)";
+            }
 
             M_HP_LOG_FAT("TileMap::ParseMapFile_ParseMapSizes() threw exception when parsing \""
                 << name << "\".  what=\"" << E.what() << "\".");
@@ -797,7 +802,11 @@ namespace sfml_util
         auto const TILE_WIDTH{  TILE_OFFSETS.end_x - TILE_OFFSETS.begin_x };
         auto const TILE_HEIGHT{ TILE_OFFSETS.end_y - TILE_OFFSETS.begin_y };
         mapLayer.vert_array.setPrimitiveType(sf::Quads);
-        mapLayer.vert_array.resize(TILE_WIDTH.AsSizeT() * TILE_HEIGHT.AsSizeT() * 4);
+        const std::size_t VERTEXES_PER_QUAD{ 4 };
+
+        mapLayer.vert_array.resize(
+            (TILE_WIDTH.AsSizeT() * TILE_HEIGHT.AsSizeT()) * VERTEXES_PER_QUAD);
+
         mapLayer.tilesimage_vec.reserve(TILE_WIDTH.AsSizeT() * TILE_HEIGHT.AsSizeT());
 
         //populate the vertex array with one quad per tile
@@ -963,7 +972,7 @@ namespace sfml_util
             tileOffsets.begin_y = 0_count;
         }
 
-        if ((tileOffsets.end_x.Get() + EXTRA_OFFSCREEN_TILE_COUNT_.Get()) < mapTileCountX_)
+        if ((tileOffsets.end_x.AsUInt() + EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt()) < mapTileCountX_)
         {
             tileOffsets.end_x += EXTRA_OFFSCREEN_TILE_COUNT_;
         }
@@ -972,7 +981,7 @@ namespace sfml_util
             tileOffsets.end_x = Count_t(mapTileCountX_);
         }
 
-        if ((tileOffsets.end_y.Get() + EXTRA_OFFSCREEN_TILE_COUNT_.Get()) < mapTileCountY_)
+        if ((tileOffsets.end_y.AsUInt() + EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt()) < mapTileCountY_)
         {
             tileOffsets.end_y += EXTRA_OFFSCREEN_TILE_COUNT_;
         }
@@ -1039,7 +1048,7 @@ namespace sfml_util
     }
 
 
-    const TileImage & TileMap::GetTileImageFromId(const ID_t ID) const
+    const TileImage & TileMap::GetTileImageFromId(const ID_t & ID) const
     {
         for (auto const & TILE_IMAGE : tilesImageVec_)
         {

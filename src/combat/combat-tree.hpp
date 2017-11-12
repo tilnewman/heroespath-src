@@ -102,7 +102,7 @@ namespace combat
     public:
         struct Edge
         {
-            Edge(const ID_t A, const ID_t B, const EdgeType::Enum TYPE)
+            Edge(const ID_t & A, const ID_t & B, const EdgeType::Enum TYPE)
             :
                 a(A),
                 b(B),
@@ -118,7 +118,7 @@ namespace combat
         
         struct Vertex
         {
-            Vertex(const ID_t ID, const CombatNodeSPtr_t & NODE_SPTR)
+            Vertex(const ID_t & ID, const CombatNodeSPtr_t & NODE_SPTR)
             :
                 id(ID),
                 node_sptr(NODE_SPTR)
@@ -141,10 +141,10 @@ namespace combat
         ID_t NextAvailableId() const;
 
         //throws std::invalid_argument if ID does not exist
-        CombatNodePtr_t GetNode(const ID_t ID) const;
+        CombatNodePtr_t GetNode(const ID_t & ID) const;
 
         //throws std::invalid_argument if ID does not exist
-        CombatNodeSPtr_t GetNodeSPtr(const ID_t ID) const;
+        CombatNodeSPtr_t GetNodeSPtr(const ID_t & ID) const;
 
         //returns nullptr if creature does not exist
         CombatNodePtr_t GetNode(creature::CreatureCPtrC_t) const;
@@ -153,7 +153,7 @@ namespace combat
         CombatNodeSPtr_t GetNodeSPtr(creature::CreatureCPtrC_t) const;
 
         //throws std::invalid_argument if ID does not exist
-        void SetNode(const ID_t ID, const CombatNodeSPtr_t & NODE_SPTR);
+        void SetNode(const ID_t & ID, const CombatNodeSPtr_t & NODE_SPTR);
 
         //throws std::invalid_argument if CombatNode does not exist
         ID_t GetNodeId(const CombatNodePtr_t) const;
@@ -178,12 +178,12 @@ namespace combat
         ID_t AddVertex(const CombatNodeSPtr_t & NODE_SPTR);
 
         //throws std::invalid_argument if the vertex already existed
-        void AddVertex(const ID_t ID, const CombatNodeSPtr_t & NODE_SPTR);
+        void AddVertex(const ID_t & ID, const CombatNodeSPtr_t & NODE_SPTR);
 
         //returns a vector of vertex IDs that were left without edges
         //throws std::invalid_argument if ID is not an existing vertex
         void RemoveVertex(
-            const ID_t ID,
+            const ID_t & ID,
             const bool WILL_REMOVE_DANGLING_EDGES = false);
 
         std::size_t EdgeCount(const EdgeType::Enum TYPE = EdgeType::All) const;
@@ -194,8 +194,8 @@ namespace combat
 
         //throws std::invalid_argument if edge already exists, or if the Verticies do not exist
         void AddEdge(
-            const ID_t ID1,
-            const ID_t ID2,
+            const ID_t & ID1,
+            const ID_t & ID2,
             const EdgeType::Enum E);
 
         //order independant matching
@@ -203,47 +203,47 @@ namespace combat
         //if DRY_RUN == true, then no edges will be removed
         //throws std::invalid_argument if the edge does not exist
         const IDVec_t RemoveEdge(
-            const ID_t ID1,
-            const ID_t ID2,
+            const ID_t & ID1,
+            const ID_t & ID2,
             const bool IS_DRY_RUN = false);
 
         //verticies may exist without edges
-        bool DoesVertexExist(const ID_t ID) const;
+        bool DoesVertexExist(const ID_t & ID) const;
 
         //order independant matching
         bool DoesEdgeExist(
-            const ID_t ID1,
-            const ID_t ID2,
+            const ID_t & ID1,
+            const ID_t & ID2,
             const EdgeType::Enum TYPE = EdgeType::All) const;
 
         //throws std::invalid_argument if the edge does not exist
-        EdgeType::Enum GetEdgeType(const ID_t ID1, const ID_t ID2) const;
+        EdgeType::Enum GetEdgeType(const ID_t & ID1, const ID_t & ID2) const;
 
         //throws std::invalid_argument if the edge does not exist
-        void SetEdgeType(const ID_t ID1, const ID_t ID2, const EdgeType::Enum);
+        void SetEdgeType(const ID_t & ID1, const ID_t & ID2, const EdgeType::Enum);
 
         //returns false if no IDs were added to the output vector
         bool FindAdjacentByEdgeType(
-            const ID_t ID,
+            const ID_t & ID,
             IDVec_t & idVec_OutParam,
             const EdgeType::Enum TYPE = EdgeType::All) const;
 
         bool FindAdjacent(
-            const ID_t ID,
+            const ID_t & ID,
             IDVec_t & idVec_OutParam) const;
 
         std::size_t CountAdjacent(
-            const ID_t ID,
+            const ID_t & ID,
             const EdgeType::Enum EDGE_TYPE = EdgeType::All) const;
 
         inline bool AreAnyAdjacent(
-            const ID_t ID,
+            const ID_t & ID,
             const EdgeType::Enum EDGE_TYPE = EdgeType::All) const
         {
             return (CountAdjacent(ID, EDGE_TYPE) > 0);
         }
 
-        inline bool IsVertexLeaf(const ID_t ID) const { return (CountAdjacent(ID) == 1); }
+        inline bool IsVertexLeaf(const ID_t & ID) const { return (CountAdjacent(ID) == 1); }
 
         const std::string ToString() const;
 

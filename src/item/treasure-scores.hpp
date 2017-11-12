@@ -43,25 +43,25 @@ namespace item
     {
     public:
         explicit TreasureScores(
-            const Score_t COIN      = 0_score,
-            const Score_t GEM       = 0_score,
-            const Score_t MAGIC     = 0_score,
-            const Score_t RELIGIOUS = 0_score);
+            const Score_t & COIN      = 0_score,
+            const Score_t & GEM       = 0_score,
+            const Score_t & MAGIC     = 0_score,
+            const Score_t & RELIGIOUS = 0_score);
 
         inline Score_t Coin() const                         { return coin_; }
         inline Score_t Gem() const                          { return gem_; }
         inline Score_t Magic() const                        { return magic_; }
         inline Score_t Religious() const                    { return religious_; }
 
-        inline void Coin(const Score_t SCORE)               { coin_ = SCORE; }
-        inline void Gem(const Score_t SCORE)                { gem_ = SCORE; }
-        inline void Magic(const Score_t SCORE)              { magic_ = SCORE; }
-        inline void Religious(const Score_t SCORE)          { religious_ = SCORE; }
+        inline void Coin(const Score_t & SCORE)             { coin_ = SCORE; }
+        inline void Gem(const Score_t & SCORE)              { gem_ = SCORE; }
+        inline void Magic(const Score_t & SCORE)            { magic_ = SCORE; }
+        inline void Religious(const Score_t & SCORE)        { religious_ = SCORE; }
 
-        inline Score_t AdjustCoin(const Score_t SCORE)      { return coin_ += SCORE; }
-        inline Score_t AdjustGem(const Score_t SCORE)       { return gem_ += SCORE; }
-        inline Score_t AdjustMagic(const Score_t SCORE)     { return magic_ += SCORE; }
-        inline Score_t AdjustReligious(const Score_t SCORE) { return religious_ += SCORE; }
+        inline Score_t AdjustCoin(const Score_t & SCORE)    { return coin_ += SCORE; }
+        inline Score_t AdjustGem(const Score_t & SCORE)     { return gem_ += SCORE; }
+        inline Score_t AdjustMagic(const Score_t & SCORE)   { return magic_ += SCORE; }
+        inline Score_t AdjustReligious(const Score_t & SCORE){ return religious_ += SCORE; }
 
         inline bool IsEmpty() const
         {

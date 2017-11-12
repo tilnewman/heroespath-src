@@ -40,12 +40,12 @@ namespace stats
 {
 
     StatSet::StatSet(
-        const Strength_t STR,
-        const Accuracy_t ACC,
-        const Charm_t    CHA,
-        const Luck_t     LCK,
-        const Speed_t    SPD,
-        const Intell_t   INT)
+        const Strength_t & STR,
+        const Accuracy_t & ACC,
+        const Charm_t &    CHA,
+        const Luck_t &     LCK,
+        const Speed_t &    SPD,
+        const Intell_t &   INT)
     :
         str_(STR),
         acc_(ACC),

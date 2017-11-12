@@ -60,8 +60,8 @@ namespace combat
     Trap::Trap(
         const std::size_t PLAYER_COUNT_MIN,
         const std::size_t PLAYER_COUNT_MAX,
-        const Health_t DAMAGE_MIN,
-        const Health_t DAMAGE_MAX,
+        const Health_t & DAMAGE_MIN,
+        const Health_t & DAMAGE_MAX,
         const std::string & HIT_VERB,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const std::string & DESCRIPTION)
@@ -79,8 +79,8 @@ namespace combat
     Trap::Trap(
         const std::size_t PLAYER_COUNT_MIN,
         const std::size_t PLAYER_COUNT_MAX,
-        const Health_t DAMAGE_MIN,
-        const Health_t DAMAGE_MAX,
+        const Health_t & DAMAGE_MIN,
+        const Health_t & DAMAGE_MAX,
         const std::string & HIT_VERB,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const std::string & DESC_PREFIX,

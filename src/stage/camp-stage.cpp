@@ -102,15 +102,16 @@ namespace stage
 
     bool CampStage::HandleCallback(const popup::PopupResponse & PACKAGE)
     {
-        if (PACKAGE.Info().Name() == NEWHEROESPATH_POPUP_NAME1_)
+        auto const CALLBACK_NAME{ PACKAGE.Info().Name() };
+        if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME1_)
         {
             showNewGamePopup2_ = true;
         }
-        else if (PACKAGE.Info().Name() == NEWHEROESPATH_POPUP_NAME2_)
+        else if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME2_)
         {
             showNewGamePopup3_ = true;
         }
-        else if (PACKAGE.Info().Name() == NEWHEROESPATH_POPUP_NAME3_)
+        else if (CALLBACK_NAME == NEWHEROESPATH_POPUP_NAME3_)
         {
             showNewGamePopup4_ = true;
         }

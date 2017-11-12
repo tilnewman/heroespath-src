@@ -435,8 +435,8 @@ namespace chance
     struct InventoryChances
     {
         explicit InventoryChances(
-            const Coin_t             COINS_MIN       = 0_coin,
-            const Coin_t             COINS_MAX       = 0_coin,
+            const Coin_t &           COINS_MIN       = 0_coin,
+            const Coin_t &           COINS_MAX       = 0_coin,
             const ClothingChances &  CLOTHES_CHANCES = ClothingChances::NoClothes(),
             const WeaponChances &    WEAPON_CHANCES  = WeaponChances::NoWeapon(),
             const ArmorChances &     ARMOR_CHANCES   = ArmorChances::NoArmor(),

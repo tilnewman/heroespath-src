@@ -199,7 +199,7 @@ namespace item
 
 
     std::size_t TreasureFactory::SelectItems(
-        const Score_t TREASURE_SCORE,
+        const Score_t & TREASURE_SCORE,
         const bool IS_RELIGIOUS,
         ItemCache & itemCache_OutParam)
     {
@@ -297,7 +297,7 @@ namespace item
 
 
     void TreasureFactory::RemoveTreasureScoresHigherThan(
-        const Score_t REMOVE_IF_HIGHER,
+        const Score_t & REMOVE_IF_HIGHER,
         item::ItemProfileVec_t & profiles,
         const bool IS_RELIGIOUS)
     {
@@ -355,7 +355,7 @@ namespace item
     }
 
 
-    double TreasureFactory::TreasureScoreToWeight(const Score_t TREASURE_SCORE)
+    double TreasureFactory::TreasureScoreToWeight(const Score_t & TREASURE_SCORE)
     {
         return 1.0 / (TREASURE_SCORE.AsDouble() * 0.1);
     }

@@ -280,8 +280,8 @@ namespace chance
     {}
 
 
-    InventoryChances::InventoryChances(const Coin_t             COINS_MIN,
-                                       const Coin_t             COINS_MAX,
+    InventoryChances::InventoryChances(const Coin_t &           COINS_MIN,
+                                       const Coin_t &           COINS_MAX,
                                        const ClothingChances &  CLOTHES_CHANCES,
                                        const WeaponChances &    WEAPON_CHANCES,
                                        const ArmorChances &     ARMOR_CHANCES,

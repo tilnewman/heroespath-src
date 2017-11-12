@@ -66,7 +66,7 @@ namespace ownership
 
         static const std::string ToString(const wealth_type::Enum);
         static wealth_type::Enum FromRankType(const creature::rank_class::Enum RANK_CLASS);
-        static wealth_type::Enum FromRank(const Rank_t RANK);
+        static wealth_type::Enum FromRank(const Rank_t & RANK);
         static wealth_type::Enum FromCreature(const CharacterPtr_t CHARACTER_PTR);
     };
 

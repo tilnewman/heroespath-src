@@ -290,7 +290,7 @@ namespace stage
         currentPhase_              (CURRENT_PHASE),
         hasTakenActionSpellOrSong_ (false)
     {
-        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Inventory, false, true);
+        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Inventory);
 
         auto const NUM_CHARACTERS(characterViewMap_.size());
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
@@ -3684,15 +3684,15 @@ namespace stage
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum WHICH_ACHV) const
     {
-        auto const & ACHIEVEMENTS{ CREATURE_PTR->GetAchievements() };
+        auto const & ACHIEVEMENT{ CREATURE_PTR->GetAchievements().Get(WHICH_ACHV) };
 
-        if (ACHIEVEMENTS.Get(WHICH_ACHV).IsRoleInList(CREATURE_PTR->Role()))
+        if (ACHIEVEMENT.IsRoleInList(CREATURE_PTR->Role()))
         {
             std::ostringstream ss;
             ss << "\n"
-                << ACHIEVEMENTS.Get(WHICH_ACHV).Name()
+                << ACHIEVEMENT.Name()
                 << MakeTitleSeparatorString(WHICH_ACHV)
-                << ACHIEVEMENTS.Get(WHICH_ACHV).Count()
+                << ACHIEVEMENT.Count()
                 << MakeTitleCountNeededString(CREATURE_PTR, WHICH_ACHV);
 
             return ss.str();

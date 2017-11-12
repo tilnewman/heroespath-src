@@ -65,13 +65,13 @@ namespace creature
         explicit Title(
             const Titles::Enum          TITLE             = Titles::Count,
             const AchievementType::Enum ACHIEVEMENT_TYPE  = AchievementType::None,
-            const Index_t               ACHIEVEMENT_INDEX = 0_index,//0 is invalid
-            const Count_t               ACHIEVEMENT_COUNT = 0_count,
+            const Index_t &             ACHIEVEMENT_INDEX = 0_index,//0 is invalid
+            const Count_t &             ACHIEVEMENT_COUNT = 0_count,
             const RoleVec_t &           ROLES_VEC         = RoleVec_t(),
             const stats::StatSet &      STATS_BONUS       = stats::StatSet(),
-            const Rank_t                RANK_BONUS        = 0_rank,
-            const Experience_t          EXPERIENCE_BONUS  = 0_exp,
-            const Health_t              HEALTH_BONUS      = 0_health);
+            const Rank_t &              RANK_BONUS        = 0_rank,
+            const Experience_t &        EXPERIENCE_BONUS  = 0_exp,
+            const Health_t &            HEALTH_BONUS      = 0_health);
 
         virtual ~Title();
 

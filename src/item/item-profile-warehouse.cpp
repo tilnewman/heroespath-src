@@ -439,9 +439,10 @@ namespace item
             void Add(const ItemProfile & P)
             {
                 profiles.push_back(P);
-                ++divCountsScore[static_cast<std::size_t>(P.TreasureScore().AsInt() / division)];
-                sum += P.TreasureScore().AsInt();
-                scores.push_back(P.TreasureScore().AsInt());
+                auto const TREASURE_SCORE_INT{ P.TreasureScore().AsInt() };
+                ++divCountsScore[static_cast<std::size_t>(TREASURE_SCORE_INT / division)];
+                sum += TREASURE_SCORE_INT;
+                scores.push_back(TREASURE_SCORE_INT);
             }
 
             void Log() const

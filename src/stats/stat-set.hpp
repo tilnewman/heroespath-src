@@ -45,12 +45,12 @@ namespace stats
     {
     public:
         explicit StatSet(
-            const Strength_t STR = 0_str,
-            const Accuracy_t ACC = 0_acc,
-            const Charm_t    CHA = 0_cha,
-            const Luck_t     LCK = 0_lck,
-            const Speed_t    SPD = 0_spd,
-            const Intell_t   INT = 0_int);
+            const Strength_t & STR = 0_str,
+            const Accuracy_t & ACC = 0_acc,
+            const Charm_t &    CHA = 0_cha,
+            const Luck_t &     LCK = 0_lck,
+            const Speed_t &    SPD = 0_spd,
+            const Intell_t &   INT = 0_int);
 
         inline Strength_t Str() const { return str_; }
         inline Accuracy_t Acc() const { return acc_; }

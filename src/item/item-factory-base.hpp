@@ -91,7 +91,7 @@ namespace item
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC);
 
-        static Coin_t TreasureScoreToCoins(const Score_t);
+        static Coin_t TreasureScoreToCoins(const Score_t &);
 
         static const std::string RandomCoatedPhrase();
 

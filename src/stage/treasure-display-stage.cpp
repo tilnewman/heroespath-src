@@ -1617,11 +1617,11 @@ namespace treasure
         {
             if (isSortReversed)
             {
-                return A->ITEM_CPTR->Price() > B->ITEM_CPTR->Price();
+                return A->ITEM_CPTR->Weight() > B->ITEM_CPTR->Weight();
             }
             else
             {
-                return A->ITEM_CPTR->Price() < B->ITEM_CPTR->Price();
+                return A->ITEM_CPTR->Weight() < B->ITEM_CPTR->Weight();
             }
         });
 

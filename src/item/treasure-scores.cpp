@@ -38,10 +38,10 @@ namespace item
 {
 
     TreasureScores::TreasureScores(
-        const Score_t COIN,
-        const Score_t GEM,
-        const Score_t MAGIC,
-        const Score_t RELIGIOUS)
+        const Score_t & COIN,
+        const Score_t & GEM,
+        const Score_t & MAGIC,
+        const Score_t & RELIGIOUS)
     :
         coin_     (COIN),
         gem_      (GEM),

@@ -134,7 +134,7 @@ namespace ownership
     }
 
 
-    wealth_type::Enum wealth_type::FromRank(const Rank_t RANK)
+    wealth_type::Enum wealth_type::FromRank(const Rank_t & RANK)
     {
         return FromRankType( creature::rank_class::FromRank(RANK) );
     }

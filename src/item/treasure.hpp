@@ -78,20 +78,20 @@ namespace item
             const non_player::CharacterPVec_t &);
 
         static std::size_t SelectItems(
-            const Score_t TREASURE_SCORE,
+            const Score_t & TREASURE_SCORE,
             const bool IS_RELIGIOUS,
             ItemCache & items_OutParam);
 
         static void ForceItemSelection(ItemCache & items_OutParam);
 
         static void RemoveTreasureScoresHigherThan(
-            const Score_t,
+            const Score_t &,
             item::ItemProfileVec_t &,
             const bool IS_RELIGIOUS);
 
         static std::size_t SelectRandomWeighted(const item::ItemProfileVec_t &);
 
-        static double TreasureScoreToWeight(const Score_t);
+        static double TreasureScoreToWeight(const Score_t &);
 
         static void RemoveSetItemsAlreadyOwned(item::ItemProfileVec_t &);
 

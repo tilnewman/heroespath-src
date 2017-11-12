@@ -85,14 +85,14 @@ namespace combat
         static void HandleDamage(
             creature::CreaturePtrC_t  creatureDefendingPtrC,
             HitInfoVec_t &            hitInfoVec,
-            const Health_t            HEALTH_ADJ,
+            const Health_t &          HEALTH_ADJ,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             const bool                CAN_ADD_CONDITIONS = true);
 
         static void AddConditionsBasedOnDamage(
             creature::CreaturePtrC_t  creatureDefendingPtrC,
-            const Health_t            DAMAGE_ABS,
+            const Health_t &          DAMAGE_ABS,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             HitInfoVec_t &            hitInfoVec);

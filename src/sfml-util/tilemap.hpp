@@ -86,12 +86,12 @@ namespace sfml_util
         explicit TileImage(
             const std::string & NAME          = "",
             const std::string & RELATIVE_PATH = "",
-            const ID_t FIRST_ID               = 0_id,
-            const Count_t TILE_COUNT          = 1_count,
-            const Column_t COLUMN             = 1_column,
-            const Index_t TEXTURE_INDEX       = 0_index);
+            const ID_t & FIRST_ID             = 0_id,
+            const Count_t & TILE_COUNT        = 1_count,
+            const Column_t & COLUMN           = 1_column,
+            const Index_t & TEXTURE_INDEX     = 0_index);
 
-        inline bool OwnsId(const ID_t ID) const
+        inline bool OwnsId(const ID_t & ID) const
         {
             return (ID >= first_id) &&
                    (ID.AsUInt() < (first_id.AsUInt() + tile_count.AsUInt()));
@@ -181,7 +181,7 @@ namespace sfml_util
 
         bool IsPointWithinCollision(const sf::Vector2f &) const;
 
-        const TileImage & GetTileImageFromId(const ID_t) const;
+        const TileImage & GetTileImageFromId(const ID_t &) const;
 
         void SetupEmptyTexture();
 

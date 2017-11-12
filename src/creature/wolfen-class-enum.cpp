@@ -28,7 +28,9 @@
 // wolfen-class-enum.hpp
 //
 #include "wolfen-class-enum.hpp"
+
 #include "game/game-data-file.hpp"
+
 #include <exception>
 #include <sstream>
 
@@ -80,7 +82,7 @@ namespace creature
     }
 
 
-    wolfen_class::Enum wolfen_class::ClassFromRank(const Rank_t RANK)
+    wolfen_class::Enum wolfen_class::ClassFromRank(const Rank_t & RANK)
     {
         if (RANK >= Rank_t(game::GameDataFile::Instance()->
             GetCopyInt("heroespath-creature-wolfen-class-rank-min-Elder")))

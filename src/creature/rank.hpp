@@ -60,7 +60,7 @@ namespace creature
             Count
         };
 
-        static rank_class::Enum FromRank(const Rank_t RANK);
+        static rank_class::Enum FromRank(const Rank_t & RANK);
 
         //returns a second/max of zero to represent limitless
         static const RankRange_t RankRangeByClass(const rank_class::Enum E);

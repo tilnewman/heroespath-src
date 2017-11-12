@@ -226,13 +226,13 @@ namespace stage
         void Setup_Attribute(
             const stats::Traits::Enum TRAIT_ENUM,
             const std::string & DESC_KEY,
-            const sf::FloatRect REGION,
+            const sf::FloatRect & REGION,
             sfml_util::gui::TextInfo & descTextInfo,
             sfml_util::gui::TextRegionUVec_t & textRegionUVec);
 
         void Setup_AttributeHelpText(
             const stats::Traits::Enum TRAIT_ENUM,
-            const sf::FloatRect REGION,
+            const sf::FloatRect & REGION,
             sfml_util::gui::TextInfo & helpTextInfo,
             sfml_util::gui::TextRegionUVec_t & textRegionUVec);
 
