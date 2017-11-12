@@ -11,7 +11,7 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="game-song">
+          <xs:element name="Spell">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="FileName" type="xs:string" default="" />
@@ -26,7 +26,7 @@
         </xs:choice>
       </xs:complexType>
       <xs:unique name="Constraint1" msdata:PrimaryKey="true">
-        <xs:selector xpath=".//game-song" />
+        <xs:selector xpath=".//Spell" />
         <xs:field xpath="FileName" />
         <xs:field xpath="ErrorCode" />
         <xs:field xpath="Message" />
@@ -39,44 +39,44 @@
   <SuppressVersion>
     <CurrentVersion>2</CurrentVersion>
   </SuppressVersion>
-  <game-song>
-    <FileName>popup-manager.hpp</FileName>
-    <ErrorCode>V112</ErrorCode>
-    <Message>Dangerous magic number _ used: ...tRect( _, _, _, _);.</Message>
-    <CodePrev>123</CodePrev>
-    <CodeCurrent>1282091839</CodeCurrent>
-    <CodeNext>125</CodeNext>
-  </game-song>
-  <game-song>
-    <FileName>font-manager.hpp</FileName>
-    <ErrorCode>V524</ErrorCode>
-    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
-    <CodePrev>113</CodePrev>
-    <CodeCurrent>1062758543</CodeCurrent>
-    <CodeNext>3601251520</CodeNext>
-  </game-song>
-  <game-song>
+  <Spell>
     <FileName>body-type.hpp</FileName>
     <ErrorCode>V112</ErrorCode>
     <Message>Dangerous magic number _ used: ...{ return (_ == num_legs...</Message>
     <CodePrev>891535403</CodePrev>
     <CodeCurrent>872550379</CodeCurrent>
     <CodeNext>3675469807</CodeNext>
-  </game-song>
-  <game-song>
+  </Spell>
+  <Spell>
     <FileName>popup-manager.hpp</FileName>
     <ErrorCode>V112</ErrorCode>
-    <Message>Dangerous magic number _ used: ...tRect(_, _, _, _);.</Message>
+    <Message>Dangerous magic number _ used: ...tRect( _, _, _, _);.</Message>
     <CodePrev>123</CodePrev>
-    <CodeCurrent>2564131829</CodeCurrent>
+    <CodeCurrent>1282091839</CodeCurrent>
     <CodeNext>125</CodeNext>
-  </game-song>
-  <game-song>
+  </Spell>
+  <Spell>
     <FileName>popup-manager.hpp</FileName>
     <ErrorCode>V112</ErrorCode>
     <Message>Dangerous magic number _ used: ...f::IntRect( _, _, _,...</Message>
     <CodePrev>123</CodePrev>
     <CodeCurrent>1282108943</CodeCurrent>
     <CodeNext>125</CodeNext>
-  </game-song>
+  </Spell>
+  <Spell>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect(_, _, _, _);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>2564131829</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Spell>
+  <Spell>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1062758543</CodeCurrent>
+    <CodeNext>3601251520</CodeNext>
+  </Spell>
 </NewDataSet>

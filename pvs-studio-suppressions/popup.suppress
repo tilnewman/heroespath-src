@@ -1,0 +1,274 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="SuppressVersion">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Popup">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FileName" type="xs:string" default="" />
+                <xs:element name="ErrorCode" type="xs:string" default="" />
+                <xs:element name="Message" type="xs:string" default="" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" default="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Popup" />
+        <xs:field xpath="FileName" />
+        <xs:field xpath="ErrorCode" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="CodePrev" />
+        <xs:field xpath="CodeCurrent" />
+        <xs:field xpath="CodeNext" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <SuppressVersion>
+    <CurrentVersion>2</CurrentVersion>
+  </SuppressVersion>
+  <Popup>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ return (_ == num_legs...</Message>
+    <CodePrev>891535403</CodePrev>
+    <CodeCurrent>872550379</CodeCurrent>
+    <CodeNext>3675469807</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect( _, _, _, _);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1282091839</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...f::IntRect( _, _, _,...</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1282108943</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect(_, _, _, _);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>2564131829</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-combat-over.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ..., _, _, _) );.</Message>
+    <CodePrev>3611915192</CodePrev>
+    <CodeCurrent>1043049452</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-system-error.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ..., _, _, _) );.</Message>
+    <CodePrev>3611915192</CodePrev>
+    <CodeCurrent>1043049452</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-char-select.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Color(_, _, _));.</Message>
+    <CodePrev>3240935750</CodePrev>
+    <CodeCurrent>3050604216</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-musicsheet.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Color(_, _, _) };.</Message>
+    <CodePrev>3090367318</CodePrev>
+    <CodeCurrent>359298271</CodeCurrent>
+    <CodeNext>3069342210</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-spellbook.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Color(_, _, _) };.</Message>
+    <CodePrev>156099812</CodePrev>
+    <CodeCurrent>1352338402</CodeCurrent>
+    <CodeNext>3746752889</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-treasure-trap.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: sf::Color(_, _, _),.</Message>
+    <CodePrev>671199333</CodePrev>
+    <CodeCurrent>83396718</CodeCurrent>
+    <CodeNext>1304366</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-image-select.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...rgetIndex = _;.</Message>
+    <CodePrev>387338032</CodePrev>
+    <CodeCurrent>387370814</CodeCurrent>
+    <CodeNext>387403580</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-musicsheet.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a pointer to avoid using the 'PACKAGE.package.PTR_-&gt;GetSelected()' expression repeatedly.</Message>
+    <CodePrev>4153730679</CodePrev>
+    <CodeCurrent>1797610878</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-spellbook.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a pointer to avoid using the 'PACKAGE.package.PTR_-&gt;GetSelected()' expression repeatedly.</Message>
+    <CodePrev>4153730679</CodePrev>
+    <CodeCurrent>2571788370</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-combat-over.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'bgSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3682157593</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-system-error.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'bgSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3682157593</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-musicsheet.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'detailsTextUPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3571546564</CodeCurrent>
+    <CodeNext>2419395516</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-musicsheet.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'songSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>727541658</CodePrev>
+    <CodeCurrent>2579681819</CodeCurrent>
+    <CodeNext>4281378639</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-spellbook.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'spellDetailsTextUPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3810617530</CodeCurrent>
+    <CodeNext>271911865</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-spellbook.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'spellSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>727491674</CodePrev>
+    <CodeCurrent>2579689947</CodeCurrent>
+    <CodeNext>785850326</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-image-fade.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'spriteCurr_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>3105146014</CodePrev>
+    <CodeCurrent>600137972</CodeCurrent>
+    <CodeNext>1578359632</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-musicsheet.cpp</FileName>
+    <ErrorCode>V821</ErrorCode>
+    <Message>Decreased performance. The 'SONG_TITLE_TEXTINFO' variable can be constructed in a lower level scope.</Message>
+    <CodePrev>23800544</CodePrev>
+    <CodeCurrent>2789140514</CodeCurrent>
+    <CodeNext>27682438</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-musicsheet.cpp</FileName>
+    <ErrorCode>V821</ErrorCode>
+    <Message>Decreased performance. The 'SONG_TITLE_TEXTRECT' variable can be constructed in a lower level scope.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3881368592</CodeCurrent>
+    <CodeNext>21753808</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-musicsheet.cpp</FileName>
+    <ErrorCode>V821</ErrorCode>
+    <Message>Decreased performance. The 'SONG_DETAILS_TEXTINFO' variable can be constructed in a lower level scope.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2565632764</CodeCurrent>
+    <CodeNext>19310</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-musicsheet.cpp</FileName>
+    <ErrorCode>V821</ErrorCode>
+    <Message>Decreased performance. The 'SONG_DETAILS_TEXTRECT' variable can be constructed in a lower level scope.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>863707815</CodeCurrent>
+    <CodeNext>1747774496</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-spellbook.cpp</FileName>
+    <ErrorCode>V821</ErrorCode>
+    <Message>Decreased performance. The 'SPELL_TITLE_TEXTINFO' variable can be constructed in a lower level scope.</Message>
+    <CodePrev>47707360</CodePrev>
+    <CodeCurrent>1286347159</CodeCurrent>
+    <CodeNext>52553350</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-spellbook.cpp</FileName>
+    <ErrorCode>V821</ErrorCode>
+    <Message>Decreased performance. The 'SPELL_TITLE_TEXTRECT' variable can be constructed in a lower level scope.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3833944000</CodeCurrent>
+    <CodeNext>43507380</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-spellbook.cpp</FileName>
+    <ErrorCode>V821</ErrorCode>
+    <Message>Decreased performance. The 'SPELL_DETAILS_TEXTINFO' variable can be constructed in a lower level scope.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>849851435</CodeCurrent>
+    <CodeNext>19310</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>popup-stage-spellbook.cpp</FileName>
+    <ErrorCode>V821</ErrorCode>
+    <Message>Decreased performance. The 'SPELL_DETAILS_TEXTRECT' variable can be constructed in a lower level scope.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2449640072</CodeCurrent>
+    <CodeNext>2476333333</CodeNext>
+  </Popup>
+  <Popup>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1062758543</CodeCurrent>
+    <CodeNext>3601251520</CodeNext>
+  </Popup>
+</NewDataSet>

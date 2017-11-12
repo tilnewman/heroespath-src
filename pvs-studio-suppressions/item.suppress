@@ -1,0 +1,122 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="SuppressVersion">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Item">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FileName" type="xs:string" default="" />
+                <xs:element name="ErrorCode" type="xs:string" default="" />
+                <xs:element name="Message" type="xs:string" default="" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" default="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Item" />
+        <xs:field xpath="FileName" />
+        <xs:field xpath="ErrorCode" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="CodePrev" />
+        <xs:field xpath="CodeCurrent" />
+        <xs:field xpath="CodeNext" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <SuppressVersion>
+    <CurrentVersion>2</CurrentVersion>
+  </SuppressVersion>
+  <Item>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect( _, _, _, _);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1282091839</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Item>
+  <Item>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...f::IntRect( _, _, _,...</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1282108943</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Item>
+  <Item>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tRect(_, _, _, _);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>2564131829</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Item>
+  <Item>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ return (_ == num_legs...</Message>
+    <CodePrev>891535403</CodePrev>
+    <CodeCurrent>872550379</CodeCurrent>
+    <CodeNext>3675469807</CodeNext>
+  </Item>
+  <Item>
+    <FileName>item-type-enum.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...: { return _; }.</Message>
+    <CodePrev>290884023</CodePrev>
+    <CodeCurrent>8972715</CodeCurrent>
+    <CodeNext>72860079</CodeNext>
+  </Item>
+  <Item>
+    <FileName>item-factory.cpp</FileName>
+    <ErrorCode>V522</ErrorCode>
+    <Message>There might be dereferencing of a potential null pointer 'itemPtr'.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1681995581</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Item>
+  <Item>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1062758543</CodeCurrent>
+    <CodeNext>3601251520</CodeNext>
+  </Item>
+  <Item>
+    <FileName>misc-item-factory.cpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Make_SpiderEggs' function is fully equivalent to the body of 'Make_Seeds' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3881197190</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Item>
+  <Item>
+    <FileName>item-profile.cpp</FileName>
+    <ErrorCode>V818</ErrorCode>
+    <Message>It is more efficient to use an initialization list 'baseName_(BASE_NAME)' rather than an assignment operator.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3242400843</CodeCurrent>
+    <CodeNext>545986556</CodeNext>
+  </Item>
+  <Item>
+    <FileName>misc-item-factory.cpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Make_Viol' function is fully equivalent to the body of 'Make_BalmPot' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3397121851</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Item>
+</NewDataSet>

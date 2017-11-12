@@ -455,4 +455,116 @@
     <CodeCurrent>160974463</CodeCurrent>
     <CodeNext>123</CodeNext>
   </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>list-box.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...:Color(_, _, _, _));.</Message>
+    <CodePrev>1344</CodePrev>
+    <CodeCurrent>1998034635</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>sliderbar.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'barImage_.GetUpSprite()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>4255372607</CodeCurrent>
+    <CodeNext>2866620351</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>sliderbar.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'botOrLeftImage_.GetUpSprite()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>3517886695</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>list-box.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'NEXT_ENTITY_SPTR-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>2457175645</CodePrev>
+    <CodeCurrent>2663545951</CodeCurrent>
+    <CodeNext>1739627279</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>list-box.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'NEXT_ITEM_SPTR-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>2457177807</CodePrev>
+    <CodeCurrent>2526669362</CodeCurrent>
+    <CodeNext>631667604</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>list-box.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'nextEntitySPtr-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>151318781</CodePrev>
+    <CodeCurrent>231171185</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>sliderbar.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>166119949</CodePrev>
+    <CodeCurrent>1659286680</CodeCurrent>
+    <CodeNext>288060566</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>sliderbar.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>166119949</CodePrev>
+    <CodeCurrent>3579244424</CodeCurrent>
+    <CodeNext>1045262257</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>knot-frame.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'topLeftSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>987040830</CodePrev>
+    <CodeCurrent>4191291879</CodeCurrent>
+    <CodeNext>3447359466</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>sliderbar.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'topOrRightImage_.GetUpSprite()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>968007288</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>knot-frame.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'topRightSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>21077613</CodePrev>
+    <CodeCurrent>3418787414</CodeCurrent>
+    <CodeNext>10538659</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>four-state-button.cpp</FileName>
+    <ErrorCode>V821</ErrorCode>
+    <Message>Decreased performance. The 'tempRect' variable can be constructed in a lower level scope.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1065711386</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1062758543</CodeCurrent>
+    <CodeNext>3601251520</CodeNext>
+  </sfml-util-gui>
+  <sfml-util-gui>
+    <FileName>knot-frame.cpp</FileName>
+    <ErrorCode>V813</ErrorCode>
+    <Message>Decreased performance. The 'states' argument should probably be rendered as a constant reference.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2021731210</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util-gui>
 </NewDataSet>

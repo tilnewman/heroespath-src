@@ -175,4 +175,84 @@
     <CodeCurrent>2564131829</CodeCurrent>
     <CodeNext>125</CodeNext>
   </game>
+  <game>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>145916554</CodePrev>
+    <CodeCurrent>36688362</CodeCurrent>
+    <CodeNext>145930861</CodeNext>
+  </game>
+  <game>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>36479136</CodePrev>
+    <CodeCurrent>36688360</CodeCurrent>
+    <CodeNext>145930861</CodeNext>
+  </game>
+  <game>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED_MIN' with 'const .. &amp;SPEED_MIN'.</Message>
+    <CodePrev>36479136</CodePrev>
+    <CodeCurrent>146752332</CodeCurrent>
+    <CodeNext>146752325</CodeNext>
+  </game>
+  <game>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the fourth function argument as a reference. Consider replacing 'const .. SPEED_MAX' with 'const .. &amp;SPEED_MAX'.</Message>
+    <CodePrev>146752332</CodePrev>
+    <CodeCurrent>146752325</CodeCurrent>
+    <CodeNext>58</CodeNext>
+  </game>
+  <game>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED_MIN' with 'const .. &amp;SPEED_MIN'.</Message>
+    <CodePrev>36479136</CodePrev>
+    <CodeCurrent>146752332</CodeCurrent>
+    <CodeNext>146752320</CodeNext>
+  </game>
+  <game>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the fourth function argument as a reference. Consider replacing 'const .. SPEED_MAX' with 'const .. &amp;SPEED_MAX'.</Message>
+    <CodePrev>146752332</CodePrev>
+    <CodeCurrent>146752320</CodeCurrent>
+    <CodeNext>36482712</CodeNext>
+  </game>
+  <game>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Instantiate SliderOnce &lt; Value_t, Speed_t &gt;: Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>145916554</CodePrev>
+    <CodeCurrent>72820713</CodeCurrent>
+    <CodeNext>58</CodeNext>
+  </game>
+  <game>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Instantiate SliderOnce &lt; Value_t, Speed_t &gt;: Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>145916554</CodePrev>
+    <CodeCurrent>18205167</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </game>
+  <game>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Instantiate SliderOnce &lt; Value_t, Speed_t &gt;: Decreased performance. It is better to redefine the first function argument as a reference. Consider replacing 'const .. ORIG' with 'const .. &amp;ORIG'.</Message>
+    <CodePrev>11496</CodePrev>
+    <CodeCurrent>1200870178</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </game>
+  <game>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1062758543</CodeCurrent>
+    <CodeNext>3601251520</CodeNext>
+  </game>
 </NewDataSet>

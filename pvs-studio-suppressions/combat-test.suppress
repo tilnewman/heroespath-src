@@ -1,0 +1,122 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="SuppressVersion">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Combat-Test">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FileName" type="xs:string" default="" />
+                <xs:element name="ErrorCode" type="xs:string" default="" />
+                <xs:element name="Message" type="xs:string" default="" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" default="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Combat-Test" />
+        <xs:field xpath="FileName" />
+        <xs:field xpath="ErrorCode" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="CodePrev" />
+        <xs:field xpath="CodeCurrent" />
+        <xs:field xpath="CodeNext" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <SuppressVersion>
+    <CurrentVersion>2</CurrentVersion>
+  </SuppressVersion>
+  <Combat-Test>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ return (_ == num_legs...</Message>
+    <CodePrev>891535403</CodePrev>
+    <CodeCurrent>872550379</CodeCurrent>
+    <CodeNext>3675469807</CodeNext>
+  </Combat-Test>
+  <Combat-Test>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>145916554</CodePrev>
+    <CodeCurrent>36688362</CodeCurrent>
+    <CodeNext>145930861</CodeNext>
+  </Combat-Test>
+  <Combat-Test>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>36479136</CodePrev>
+    <CodeCurrent>36688360</CodeCurrent>
+    <CodeNext>145930861</CodeNext>
+  </Combat-Test>
+  <Combat-Test>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED_MIN' with 'const .. &amp;SPEED_MIN'.</Message>
+    <CodePrev>36479136</CodePrev>
+    <CodeCurrent>146752332</CodeCurrent>
+    <CodeNext>146752325</CodeNext>
+  </Combat-Test>
+  <Combat-Test>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the fourth function argument as a reference. Consider replacing 'const .. SPEED_MAX' with 'const .. &amp;SPEED_MAX'.</Message>
+    <CodePrev>146752332</CodePrev>
+    <CodeCurrent>146752325</CodeCurrent>
+    <CodeNext>58</CodeNext>
+  </Combat-Test>
+  <Combat-Test>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED_MIN' with 'const .. &amp;SPEED_MIN'.</Message>
+    <CodePrev>36479136</CodePrev>
+    <CodeCurrent>146752332</CodeCurrent>
+    <CodeNext>146752320</CodeNext>
+  </Combat-Test>
+  <Combat-Test>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the fourth function argument as a reference. Consider replacing 'const .. SPEED_MAX' with 'const .. &amp;SPEED_MAX'.</Message>
+    <CodePrev>146752332</CodePrev>
+    <CodeCurrent>146752320</CodeCurrent>
+    <CodeNext>36482712</CodeNext>
+  </Combat-Test>
+  <Combat-Test>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Instantiate SliderOnce &lt; Value_t, Speed_t &gt;: Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>145916554</CodePrev>
+    <CodeCurrent>72820713</CodeCurrent>
+    <CodeNext>58</CodeNext>
+  </Combat-Test>
+  <Combat-Test>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Instantiate SliderOnce &lt; Value_t, Speed_t &gt;: Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>145916554</CodePrev>
+    <CodeCurrent>18205167</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Combat-Test>
+  <Combat-Test>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Instantiate SliderOnce &lt; Value_t, Speed_t &gt;: Decreased performance. It is better to redefine the first function argument as a reference. Consider replacing 'const .. ORIG' with 'const .. &amp;ORIG'.</Message>
+    <CodePrev>11496</CodePrev>
+    <CodeCurrent>1200870178</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Combat-Test>
+</NewDataSet>

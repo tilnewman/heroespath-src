@@ -11,7 +11,7 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="game-state">
+          <xs:element name="NonPlayer">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="FileName" type="xs:string" default="" />
@@ -26,7 +26,7 @@
         </xs:choice>
       </xs:complexType>
       <xs:unique name="Constraint1" msdata:PrimaryKey="true">
-        <xs:selector xpath=".//game-state" />
+        <xs:selector xpath=".//NonPlayer" />
         <xs:field xpath="FileName" />
         <xs:field xpath="ErrorCode" />
         <xs:field xpath="Message" />
@@ -39,60 +39,28 @@
   <SuppressVersion>
     <CurrentVersion>2</CurrentVersion>
   </SuppressVersion>
-  <game-state>
-    <FileName>creature.hpp</FileName>
-    <ErrorCode>V107</ErrorCode>
-    <Message>Implicit type conversion first argument 'Rank()' of function 'ClassFromRank' to _-bit type.</Message>
-    <CodePrev>0</CodePrev>
-    <CodeCurrent>66920954</CodeCurrent>
-    <CodeNext>3421634589</CodeNext>
-  </game-state>
-  <game-state>
-    <FileName>creature.hpp</FileName>
-    <ErrorCode>V107</ErrorCode>
-    <Message>Implicit type conversion first argument 'Rank()' of function 'ClassFromRank' to _-bit type.</Message>
-    <CodePrev>66920954</CodePrev>
-    <CodeCurrent>3421634589</CodeCurrent>
-    <CodeNext>0</CodeNext>
-  </game-state>
-  <game-state>
-    <FileName>creature.hpp</FileName>
-    <ErrorCode>V109</ErrorCode>
-    <Message>Implicit type conversion of return value 'rank_' to memsize type.</Message>
-    <CodePrev>0</CodePrev>
-    <CodeCurrent>2327452172</CodeCurrent>
-    <CodeNext>52101514</CodeNext>
-  </game-state>
-  <game-state>
-    <FileName>game-state-factory.cpp</FileName>
-    <ErrorCode>V807</ErrorCode>
-    <Message>Decreased performance. Consider creating a reference to avoid using the 'itr-&gt;path()' expression repeatedly.</Message>
-    <CodePrev>123</CodePrev>
-    <CodeCurrent>857688883</CodeCurrent>
-    <CodeNext>1403610541</CodeNext>
-  </game-state>
-  <game-state>
+  <NonPlayer>
     <FileName>body-type.hpp</FileName>
     <ErrorCode>V112</ErrorCode>
     <Message>Dangerous magic number _ used: ...{ return (_ == num_legs...</Message>
     <CodePrev>891535403</CodePrev>
     <CodeCurrent>872550379</CodeCurrent>
     <CodeNext>3675469807</CodeNext>
-  </game-state>
-  <game-state>
-    <FileName>body-type.hpp</FileName>
+  </NonPlayer>
+  <NonPlayer>
+    <FileName>ownership-profile.cpp</FileName>
     <ErrorCode>V112</ErrorCode>
-    <Message>Dangerous magic number _ used: ...:Fur, _, _, _, _, true, t...</Message>
+    <Message>Dangerous magic number _ used: ...c.size() == _),.</Message>
     <CodePrev>0</CodePrev>
-    <CodeCurrent>2611340669</CodeCurrent>
-    <CodeNext>2340706172</CodeNext>
-  </game-state>
-  <game-state>
-    <FileName>body-type.hpp</FileName>
+    <CodeCurrent>1462992560</CodeCurrent>
+    <CodeNext>1092944743</CodeNext>
+  </NonPlayer>
+  <NonPlayer>
+    <FileName>ownership-profile.cpp</FileName>
     <ErrorCode>V112</ErrorCode>
-    <Message>Dangerous magic number _ used: ...cale, _, _, _, _, true, t...</Message>
-    <CodePrev>2611340669</CodePrev>
-    <CodeCurrent>2340706172</CodeCurrent>
-    <CodeNext>3129711703</CodeNext>
-  </game-state>
+    <Message>Dangerous magic number _ used: ...c.size() == _),.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1431535280</CodeCurrent>
+    <CodeNext>1092944743</CodeNext>
+  </NonPlayer>
 </NewDataSet>
