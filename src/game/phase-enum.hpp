@@ -34,7 +34,7 @@ namespace heroespath
 {
 namespace game
 {
-    
+
     struct Phase
     {
         enum Enum : unsigned int

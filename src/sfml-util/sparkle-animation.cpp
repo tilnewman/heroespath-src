@@ -87,7 +87,7 @@ namespace animation
         //rotate
         sprite_.setPosition(0.0f, 0.0f);
         sprite_.setScale(1.0f, 1.0f);
-        
+
         sprite_.setOrigin(sprite_.getLocalBounds().width * 0.5f,
                           sprite_.getLocalBounds().height * 0.5f);
 

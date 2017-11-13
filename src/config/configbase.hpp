@@ -75,7 +75,7 @@ namespace heroespath
 {
 namespace config
 {
-    
+
     //
     // ConfigBase Class
     //  Intended to be a bare-bones base implementation that is fully functional,

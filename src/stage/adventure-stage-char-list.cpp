@@ -117,7 +117,7 @@ namespace stage
         lineVerts_.clear();
         quadVerts_.clear();
         innerShadeQuadVerts_.clear();
-        
+
         SetupNameButtons();
         SetupHealthNumbersText();
         SetupManaNumbersText();
@@ -126,14 +126,14 @@ namespace stage
         SetupColumnRects_Health();
         SetupColumnRects_Mana();
         SetupColumnRects_Condition();
-        
+
         SetupConditionsText();
-        
+
         SetupPositions_NameButtons();
         SetupPositions_HealthBars();
         SetupPositions_ManaBars();
         SetupPositions_Conditions();
-        
+
         SetupPositions_OverallRegion();
         SetupCellDividerLines();
         SetupMouseoverText();
@@ -265,7 +265,7 @@ namespace stage
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
             auto const CHARACTER_PTR{ CHARACTER_PVEC[i] };
-            
+
             const sfml_util::gui::TextInfo TEXT_INFO{
                 CHARACTER_PTR->ConditionNames(),
                 sfml_util::FontManager::Instance()->Font_Default1(),
@@ -403,7 +403,7 @@ namespace stage
 
             auto const TOP{
                 CELL_MID_VERT - (namesButtonUVec_[i]->GetEntityRegion().height * 0.5f) };
-            
+
             namesButtonUVec_[i]->SetEntityPos(LEFT, TOP);
         }
     }
@@ -436,7 +436,7 @@ namespace stage
             condsTextRegionsUVec_[i]->SetEntityPos(LEFT, TOP);
         }
     }
-    
+
 
     void AdventureCharacterList::SetupPositions_OverallRegion()
     {

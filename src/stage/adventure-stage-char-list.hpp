@@ -60,10 +60,10 @@ namespace stage
         virtual ~AdventureCharacterList();
 
         virtual inline const std::string HandlerName() const override { return GetEntityName(); }
-        
+
         virtual bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
-        
+
         virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         virtual void SetEntityPos(const float LEFT, const float TOP) override;
@@ -89,7 +89,7 @@ namespace stage
         void SetupPositions_OverallRegion();
         void SetupCellDividerLines();
         void SetupMouseoverText();
-        
+
         const std::string NameButtonMouseoverText(const player::CharacterPtr_t);
 
         enum class WhichBar

@@ -108,7 +108,7 @@ namespace game
             misc::random::MersenneTwister::Seed();
 
             ParseCommandLineArguments(ARGC, argv);
-            
+
             //for this point forward the GameDataFile is required, so initialize it here
             GameDataFile::Acquire();
 

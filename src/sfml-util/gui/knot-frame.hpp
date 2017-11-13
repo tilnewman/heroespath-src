@@ -107,7 +107,7 @@ namespace gui
         sf::Sprite  botLeftSprite_;
         sf::Sprite  botRightSprite_;
     };
-    
+
 
     using KnotFrameUPtr_t = std::unique_ptr<KnotFrame>;
 

@@ -69,7 +69,7 @@ namespace sfml_util
 
     SliderBarLabeled_Music::~SliderBarLabeled_Music()
     {}
-    
+
 
     void SliderBarLabeled_Music::OnChange(const float NEW_VALUE_PARAM)
     {

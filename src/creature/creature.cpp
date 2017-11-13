@@ -340,7 +340,7 @@ namespace creature
 
             return true;
         }
-        
+
         return false;
     }
 

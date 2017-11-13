@@ -1357,7 +1357,7 @@ namespace stage
                 return true;
             }
         }
-        
+
         return false;
     }
 

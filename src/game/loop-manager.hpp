@@ -85,7 +85,7 @@ namespace game
         {
             return popupResponse_;
         }
-        
+
         inline std::size_t GetPopupSelection() const { return popupSelection_; }
 
         inline void ClearPopupResponse()

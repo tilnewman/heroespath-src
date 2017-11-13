@@ -34,7 +34,7 @@ namespace heroespath
 {
 namespace log
 {
-    
+
     struct LogPri
     {
         enum Enum

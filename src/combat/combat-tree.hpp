@@ -115,7 +115,7 @@ namespace combat
         };
 
         using EdgeVec_t = std::vector<Edge>;
-        
+
         struct Vertex
         {
             Vertex(const ID_t & ID, const CombatNodeSPtr_t & NODE_SPTR)

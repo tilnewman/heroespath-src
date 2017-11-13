@@ -898,7 +898,7 @@ namespace sfml_util
 
                     game::LoopManager::Instance()->TestingStrIncrement(
                         "SoundManager Music Test #" + ss.str());
-                    
+
                     return false;
                 }
             }

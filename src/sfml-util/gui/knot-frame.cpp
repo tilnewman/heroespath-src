@@ -131,7 +131,7 @@ namespace gui
         regionOuter_.left = topLeftSprite_.getPosition().x;
         regionOuter_.top = topLeftSprite_.getPosition().y;
 
-        regionOuter_.width = 
+        regionOuter_.width =
             (topRightSprite_.getGlobalBounds().left + topRightSprite_.getGlobalBounds().width) -
                 regionOuter_.left;
 
@@ -177,7 +177,7 @@ namespace gui
         }
 
         //left bar
-        auto const VERT_BAR_TOP{ 
+        auto const VERT_BAR_TOP{
             topLeftSprite_.getGlobalBounds().top + topLeftSprite_.getGlobalBounds().height };
 
         auto const VERT_BAR_HEIGHT{ botLeftSprite_.getGlobalBounds().top - VERT_BAR_TOP };

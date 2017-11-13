@@ -64,7 +64,7 @@ namespace misc
         float AsFloat() const { return static_cast<float>(this->Get()); }
         double AsDouble() const { return static_cast<double>(this->Get()); }
         double AsLDouble() const { return static_cast<long double>(this->Get()); }
-        
+
         bool IsZero() const { return (this->m_value == T(0)); }
         bool IsNonZero() const { return ! IsZero(); }
 

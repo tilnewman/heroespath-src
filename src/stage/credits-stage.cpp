@@ -112,7 +112,7 @@ namespace stage
         creditBoxPosTop_ = bpTitleSprite_.getPosition().y +
             bpTitleSprite_.getGlobalBounds().height +
             MARGIN_TOP;
-        
+
         creditBoxHeight_ = (SCREEN_HEIGHT_ - creditBoxPosTop_) - MARGIN_BOTTOM;
 
         //the rect that defines the credits box

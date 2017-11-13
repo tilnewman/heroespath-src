@@ -38,14 +38,14 @@ int main(int argc, char * argv[])
     using namespace heroespath::game;
 
     int runExitCode{ EXIT_FAILURE };
-    
+
     if (StartupShutdown::Setup("Heroes' Path", argc, argv))
     {
         runExitCode = StartupShutdown::Run();
     }
 
     auto const TEARDOWN_EXIT_CODE{ StartupShutdown::Teardown() };
-    
+
     return (((EXIT_SUCCESS == runExitCode) &&
         (TEARDOWN_EXIT_CODE == EXIT_SUCCESS)) ? EXIT_SUCCESS : EXIT_FAILURE );
 }

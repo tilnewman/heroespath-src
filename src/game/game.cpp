@@ -43,7 +43,7 @@ namespace heroespath
 {
 namespace game
 {
-    
+
     std::unique_ptr<Game> Game::instanceUPtr_{ nullptr };
 
 

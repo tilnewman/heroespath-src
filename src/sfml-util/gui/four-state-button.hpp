@@ -211,10 +211,10 @@ namespace gui
 
     using FourStateButtonPtr_t  = FourStateButton *;
     using FourStateButtonPVec_t = std::vector<FourStateButtonPtr_t>;
-    
+
     using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
     using FourStateButtonUVec_t = std::vector<FourStateButtonUPtr_t>;
-    
+
     using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
 
 }

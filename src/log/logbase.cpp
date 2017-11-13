@@ -44,7 +44,7 @@ namespace heroespath
 {
 namespace log
 {
-    
+
     //static member initializers
     const std::string   LogBase::FILE_NAME_DEFAULT      { "log" };
     const std::string   LogBase::FILE_NAME_EXT_DEFAULT  { ".txt"};

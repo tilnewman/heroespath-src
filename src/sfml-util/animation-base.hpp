@@ -27,7 +27,7 @@
 //
 // animation-base.hpp
 //  A class responsible for common state and operation of all animation objects.
-//  
+//
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/animation-enum.hpp"

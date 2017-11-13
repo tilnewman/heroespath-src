@@ -752,7 +752,7 @@ namespace combat
                 }
             }
         }
-        
+
         for(auto const & EDGE_TO_REMOVE : edgesToRemoveVec)
         {
             for(auto const & EDGE : edges_)

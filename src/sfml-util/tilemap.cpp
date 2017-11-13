@@ -175,7 +175,7 @@ namespace sfml_util
                 const sf::Uint8 RED  { * (PIXEL_PTR + i + 0) };
                 const sf::Uint8 GREEN{ * (PIXEL_PTR + i + 1) };
                 const sf::Uint8 BLUE { * (PIXEL_PTR + i + 2) };
-                
+
                 const unsigned NUM_COLOR_COMPONENTS{ 4 };//red, green, blue, alpha
 
                 auto const DEST_X{
@@ -533,7 +533,7 @@ namespace sfml_util
         auto const XML_PROPERTY_TREE{ ParseMapFile_ReadXML(MAP_FILE_PATH_STR) };
 
         ParseMapFile_ParseMapSizes(XML_PROPERTY_TREE);
-        
+
         SetupEmptyTexture();
 
         //calculate which tiles need to be drawn around the player position
@@ -602,7 +602,7 @@ namespace sfml_util
     void TileMap::ParseMapFile_ParseMapSizes(const boost::property_tree::ptree & XML_PROPERTY_TREE)
     {
         auto const XML_PROPERTY_TREE_MAPIMAGE{ XML_PROPERTY_TREE.get_child("map") };
-        
+
         try
         {
             tileSizeWidth_ = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.tilewidth");
@@ -744,7 +744,7 @@ namespace sfml_util
 
         std::string nextLine("");
         while (tileLayerDataSS)
-        {   
+        {
             std::getline(tileLayerDataSS, nextLine, '\n');
 
             if (nextLine.empty())

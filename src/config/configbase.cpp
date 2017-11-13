@@ -40,7 +40,7 @@ namespace heroespath
 {
 namespace config
 {
-    
+
     //static member initializers
     const std::string ConfigBase::FILE_PATH_DEFAULT_    ("config.txt");
     const std::string ConfigBase::SEP_STR_DEFAULT_      (" ");

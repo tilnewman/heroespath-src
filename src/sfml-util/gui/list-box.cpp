@@ -480,7 +480,7 @@ namespace gui
         else
         {
             typename sfml_util::gui::ListBoxItemSLst_t::iterator itr(list_.begin());
-            
+
             std::advance(
                 itr,
                 static_cast<sfml_util::gui::ListBoxItemSLst_t::iterator::difference_type>(INDEX));
