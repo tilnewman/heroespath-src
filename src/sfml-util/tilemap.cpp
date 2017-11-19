@@ -89,6 +89,7 @@ namespace sfml_util
     const sf::Color   TileMap::SHADOW_COLOR3_             { sf::Color(0, 0, 0, 35) };
     const Index_t     TileMap::TRANSPARENT_TEXTURE_INDEX_ { 0_index };
 
+
     TileMap::TileMap(
         const std::string & MAP_PATH_STR,
         const sf::Vector2f & WIN_POS_V,
@@ -103,14 +104,14 @@ namespace sfml_util
         prevTileOffsets_ (),
         WIN_POS_V_       (WIN_POS_V),
         WIN_SIZE_V_      (WIN_SIZE_V),
-        playerPosV_      (PLAYER_POS_V),
-        playerPosOffsetV_(0.0f, 0.0f),
+        playerPosMapV_   (PLAYER_POS_V),
+        playerPosOffsetScreenV_(0.0f, 0.0f),
         renderStates_    (sf::RenderStates::Default),
         offScreenRect_   (),
         mapSprite_       (),
         offScreenTexture_(),
         emptyRendText_   (),
-        collisionsVec_   (),
+        collisionRectsVec_(),
         mapLayers_       (),
         tilesImageVec_   (),
         TRANSPARENT_MASK_(TRANSPARENT_MASK),
@@ -149,7 +150,7 @@ namespace sfml_util
         collisionTree_.Setup(
             static_cast<float>(tileSizeWidth_ * mapTileCountX_),
             static_cast<float>(tileSizeHeight_ * mapTileCountY_),
-            collisionsVec_);
+            collisionRectsVec_);
     }
 
 
@@ -221,19 +222,19 @@ namespace sfml_util
     bool TileMap::MoveUp(const float ADJUSTMENT)
     {
         //check for collision
-        auto posTest{ GetPlayerPosActual() };
+        auto posTest{ GetPlayerPosCollision() };
         posTest.y -= ADJUSTMENT;
         if (IsPointWithinCollision(posTest))
         {
             return false;
         }
 
-        auto const CURR_SCREEN_POS{ GetScreenPosPlayer() };
+        auto const CURR_SCREEN_POS{ GetPlayerPosScreen() };
 
         //move within the view before moving the view
         if (CURR_SCREEN_POS.y > (WIN_POS_V_.y + BORDER_PAD_))
         {
-            playerPosOffsetV_.y -= ADJUSTMENT;
+            playerPosOffsetScreenV_.y -= ADJUSTMENT;
             return true;
         }
         else
@@ -248,10 +249,10 @@ namespace sfml_util
 
                 SetupMapSprite();
 
-                playerPosV_.y -= ADJUSTMENT;
-                if (playerPosV_.y < 0.0f)
+                playerPosMapV_.y -= ADJUSTMENT;
+                if (playerPosMapV_.y < 0.0f)
                 {
-                    playerPosV_.y = 0.0f;
+                    playerPosMapV_.y = 0.0f;
                 }
 
                 return true;
@@ -265,19 +266,19 @@ namespace sfml_util
     bool TileMap::MoveDown(const float ADJUSTMENT)
     {
         //check for collision
-        auto posTest{ GetPlayerPosActual() };
+        auto posTest{ GetPlayerPosCollision() };
         posTest.y += ADJUSTMENT;
         if (IsPointWithinCollision(posTest))
         {
             return false;
         }
 
-        auto const CURR_SCREEN_POS{ GetScreenPosPlayer() };
+        auto const CURR_SCREEN_POS{ GetPlayerPosScreen() };
 
         //move within the view before moving the view
         if (CURR_SCREEN_POS.y < ((WIN_POS_V_.y + static_cast<float>(WIN_SIZE_V_.y)) - BORDER_PAD_))
         {
-            playerPosOffsetV_.y += ADJUSTMENT;
+            playerPosOffsetScreenV_.y += ADJUSTMENT;
             return true;
         }
         else
@@ -294,7 +295,7 @@ namespace sfml_util
             {
                 offScreenRect_.top += ADJUSTMENT;
                 SetupMapSprite();
-                playerPosV_.y += ADJUSTMENT;
+                playerPosMapV_.y += ADJUSTMENT;
                 return true;
             }
         }
@@ -306,19 +307,19 @@ namespace sfml_util
     bool TileMap::MoveLeft(const float ADJUSTMENT)
     {
         //check for collision
-        auto posTest{ GetPlayerPosActual() };
+        auto posTest{ GetPlayerPosCollision() };
         posTest.x -= ADJUSTMENT;
         if (IsPointWithinCollision(posTest))
         {
             return false;
         }
 
-        auto const CURR_SCREEN_POS{ GetScreenPosPlayer() };
+        auto const CURR_SCREEN_POS{ GetPlayerPosScreen() };
 
         //move within the view before moving the view
         if (CURR_SCREEN_POS.x > (WIN_POS_V_.x + BORDER_PAD_))
         {
-            playerPosOffsetV_.x -= ADJUSTMENT;
+            playerPosOffsetScreenV_.x -= ADJUSTMENT;
             return true;
         }
         else
@@ -333,10 +334,10 @@ namespace sfml_util
 
                 SetupMapSprite();
 
-                playerPosV_.x -= ADJUSTMENT;
-                if (playerPosV_.x < 0.0f)
+                playerPosMapV_.x -= ADJUSTMENT;
+                if (playerPosMapV_.x < 0.0f)
                 {
-                    playerPosV_.x = 0.0f;
+                    playerPosMapV_.x = 0.0f;
                 }
 
                 return true;
@@ -350,19 +351,19 @@ namespace sfml_util
     bool TileMap::MoveRight(const float ADJUSTMENT)
     {
         //check for collision
-        auto posTest{ GetPlayerPosActual() };
+        auto posTest{ GetPlayerPosCollision() };
         posTest.x += ADJUSTMENT;
         if (IsPointWithinCollision(posTest))
         {
             return false;
         }
 
-        auto const CURR_SCREEN_POS{ GetScreenPosPlayer() };
+        auto const CURR_SCREEN_POS{ GetPlayerPosScreen() };
 
         //move within the view before moving the view
         if (CURR_SCREEN_POS.x < ((WIN_POS_V_.x + static_cast<float>(WIN_SIZE_V_.x)) - BORDER_PAD_))
         {
-            playerPosOffsetV_.x += ADJUSTMENT;
+            playerPosOffsetScreenV_.x += ADJUSTMENT;
             return true;
         }
         else
@@ -378,7 +379,7 @@ namespace sfml_util
             {
                 offScreenRect_.left += ADJUSTMENT;
                 SetupMapSprite();
-                playerPosV_.x += ADJUSTMENT;
+                playerPosMapV_.x += ADJUSTMENT;
                 return true;
             }
         }
@@ -387,10 +388,10 @@ namespace sfml_util
     }
 
 
-    void TileMap::Draw(sf::RenderTarget & target, const sf::RenderStates &)
+    void TileMap::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         //check if player position requires changing the map tiles drawn
-        auto const CURRENT_TILE_OFFSETS{ GetTileOffsetsPlayerPos() };
+        auto const CURRENT_TILE_OFFSETS{ GetTileOffsetsOfPlayerPos() };
         if (prevTileOffsets_ != CURRENT_TILE_OFFSETS)
         {
             //clear away the existing tiles
@@ -477,6 +478,28 @@ namespace sfml_util
         offScreenTexture_.display();
         target.draw(mapSprite_);
         DrawPlayer(target);
+
+        //TEMP TODO REMOVE - draw collision rects on screen
+        for (auto const & COL_RECT : collisionRectsVec_)
+        {
+            auto const SCREEN_POS_TOP_LEFT{
+                GetPosScreen(sf::Vector2f(COL_RECT.left, COL_RECT.top)) };
+
+            auto const SCREEN_POS_BOT_RIGHT{
+                GetPosScreen(sf::Vector2f(
+                    COL_RECT.left + COL_RECT.width,
+                    COL_RECT.top + COL_RECT.height)) };
+
+            const sf::FloatRect SCREEN_RECT(
+                SCREEN_POS_TOP_LEFT.x,
+                SCREEN_POS_TOP_LEFT.y,
+                SCREEN_POS_BOT_RIGHT.x - SCREEN_POS_TOP_LEFT.x,
+                SCREEN_POS_BOT_RIGHT.y - SCREEN_POS_TOP_LEFT.y);
+
+            M_HP_LOG_DBG("\t********** " << sfml_util::RectToString(COL_RECT) << ",  " << sfml_util::RectToString(SCREEN_RECT))
+            sfml_util::DrawRectangle(target, STATES, SCREEN_RECT);
+        }
+        M_HP_LOG_DBG("\t**********");
     }
 
 
@@ -484,7 +507,7 @@ namespace sfml_util
     {
         sf::CircleShape c(5);
         c.setFillColor(sf::Color(255, 0, 0));
-        c.setPosition(GetScreenPosPlayer());
+        c.setPosition(GetPlayerPosScreen());
         target.draw(c);
     }
 
@@ -537,7 +560,7 @@ namespace sfml_util
         SetupEmptyTexture();
 
         //calculate which tiles need to be drawn around the player position
-        auto const PLAYER_POS_TILE_OFFSETS{ GetTileOffsetsPlayerPos() };
+        auto const PLAYER_POS_TILE_OFFSETS{ GetTileOffsetsOfPlayerPos() };
 
         //loop over all layers in the map file and parse them separately
         mapLayers_.clear();
@@ -696,7 +719,7 @@ namespace sfml_util
 
                     const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
 
-                    collisionsVec_.push_back(RECT);
+                    collisionRectsVec_.push_back(RECT);
                 }
                 catch (const std::exception & E)
                 {
@@ -900,17 +923,17 @@ namespace sfml_util
     }
 
 
-    const TileOffsets TileMap::GetTileOffsetsPlayerPos() const
+    const TileOffsets TileMap::GetTileOffsetsOfPlayerPos() const
     {
-        return GetTileOffsets(playerPosV_);
+        return GetTileOffsetsFromMapPos(playerPosMapV_);
     }
 
 
-    const TileOffsets TileMap::GetTileOffsets(const sf::Vector2f & POS_V) const
+    const TileOffsets TileMap::GetTileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const
     {
         TileOffsets tileOffsets;
 
-        auto const PLAYER_POSX_IN_TILES{ static_cast<unsigned>(POS_V.x) / tileSizeWidth_ };
+        auto const PLAYER_POSX_IN_TILES{ static_cast<unsigned>(MAP_POS_V.x) / tileSizeWidth_ };
         auto const HALF_WIN_TILES_X{ (WIN_SIZE_V_.x / tileSizeWidth_) / 2 };
 
         if (PLAYER_POSX_IN_TILES >= HALF_WIN_TILES_X)
@@ -932,7 +955,7 @@ namespace sfml_util
             tileOffsets.end_x = TILE_WITH_OFFSET_COUNT_X;
         }
 
-        auto const PLAYER_POSY_IN_TILES{ static_cast<unsigned>(POS_V.y) / tileSizeHeight_ };
+        auto const PLAYER_POSY_IN_TILES{ static_cast<unsigned>(MAP_POS_V.y) / tileSizeHeight_ };
         auto const HALF_WIN_TILES_Y{ (WIN_SIZE_V_.y / tileSizeHeight_) / 2 };
 
         if (PLAYER_POSY_IN_TILES >= HALF_WIN_TILES_Y)
@@ -1010,13 +1033,13 @@ namespace sfml_util
     }
 
 
-    const sf::Vector2f TileMap::GetPlayerPosActual() const
+    const sf::Vector2f TileMap::GetPlayerPosCollision() const
     {
-        return (playerPosV_ + playerPosOffsetV_);
+        return (playerPosMapV_ + playerPosOffsetScreenV_);
     }
 
 
-    const sf::Vector2f TileMap::GetScreenPos(const TileOffsets & TILE_OFFSETS) const
+    const sf::Vector2f TileMap::GetPosScreen(const TileOffsets & TILE_OFFSETS) const
     {
         //Convert from off-screen coords to on-screen coords.
         auto const OFFSET_DIFFX{
@@ -1031,20 +1054,25 @@ namespace sfml_util
         auto const TOP{ static_cast<float>(
             WIN_POS_V_.y + ((OFFSET_DIFFY * static_cast<float>(tileSizeHeight_)) * 0.5f)) };
 
-        sf::Vector2f posMappedV(LEFT, TOP);
-        return posMappedV;
+        return sf::Vector2f(LEFT, TOP);
     }
 
 
-    const sf::Vector2f TileMap::GetScreenPosPlayer() const
+    const sf::Vector2f TileMap::GetPosScreen(const sf::Vector2f & MAP_POS_V) const
     {
-        return GetScreenPos( GetTileOffsetsPlayerPos() ) + playerPosOffsetV_;
+        return GetPosScreen( GetTileOffsetsFromMapPos(MAP_POS_V) );
+    }
+
+
+    const sf::Vector2f TileMap::GetPlayerPosScreen() const
+    {
+        return GetPosScreen( GetTileOffsetsOfPlayerPos() ) + playerPosOffsetScreenV_;
     }
 
 
     bool TileMap::IsPointWithinCollision(const sf::Vector2f & POS_V) const
     {
-        return collisionTree_.IsPointWithinCollisionRect(POS_V.x, POS_V.y);
+        return collisionTree_.IsPointWithinCollisionRect(POS_V);
     }
 
 

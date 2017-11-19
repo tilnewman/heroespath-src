@@ -57,7 +57,7 @@ namespace sfml_util
             const float MAP_HEIGHT,
             const FloatRectVec_t & COLL_RECTS_VEC);
 
-        bool IsPointWithinCollisionRect(const float POS_LEFT, const float POS_TOP) const;
+        bool IsPointWithinCollisionRect(const sf::Vector2f &) const;
 
     private:
         void PopulateQuadAndRecurse(
@@ -65,10 +65,7 @@ namespace sfml_util
             const sf::FloatRect & RECT,
             const FloatRectVec_t & COLL_RECTS_VEC);
 
-        bool IsPointWithinCollisionRect_Impl(
-            const Quad & QUAD,
-            const float POS_LEFT,
-            const float POS_TOP) const;
+        bool IsPointWithinCollisionRect_Impl(const Quad &, const sf::Vector2f &) const;
 
     private:
         static const float MIN_QUAD_SIZE_;

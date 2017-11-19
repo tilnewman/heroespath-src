@@ -112,22 +112,21 @@ namespace sfml_util
     }
 
 
-    bool QuadTree::IsPointWithinCollisionRect(const float POS_LEFT, const float POS_TOP) const
+    bool QuadTree::IsPointWithinCollisionRect(const sf::Vector2f & POINT) const
     {
-        return IsPointWithinCollisionRect_Impl(headQuad_, POS_LEFT, POS_TOP);
+        return IsPointWithinCollisionRect_Impl(headQuad_, POINT);
     }
 
 
     bool QuadTree::IsPointWithinCollisionRect_Impl(
         const Quad & QUAD,
-        const float POS_LEFT,
-        const float POS_TOP) const
+        const sf::Vector2f & POINT) const
     {
         if (QUAD.quad_rects_vec.empty())
         {
             for (auto const & NEXT_COLL_RECT : QUAD.coll_rects_vec)
             {
-                if (NEXT_COLL_RECT.contains(POS_LEFT, POS_TOP))
+                if (NEXT_COLL_RECT.contains(POINT))
                 {
                     return true;
                 }
@@ -137,38 +136,26 @@ namespace sfml_util
         }
         else
         {
-            if (POS_LEFT < QUAD.quad_rects_vec[1].left)
+            if (POINT.x < QUAD.quad_rects_vec[1].left)
             {
-                if (POS_TOP < QUAD.quad_rects_vec[2].top)
+                if (POINT.y < QUAD.quad_rects_vec[2].top)
                 {
-                    return IsPointWithinCollisionRect_Impl(
-                        QUAD.child_quads_vec[0],
-                        POS_LEFT,
-                        POS_TOP);
+                    return IsPointWithinCollisionRect_Impl(QUAD.child_quads_vec[0], POINT);
                 }
                 else
                 {
-                    return IsPointWithinCollisionRect_Impl(
-                        QUAD.child_quads_vec[2],
-                        POS_LEFT,
-                        POS_TOP);
+                    return IsPointWithinCollisionRect_Impl(QUAD.child_quads_vec[2], POINT);
                 }
             }
             else
             {
-                if (POS_TOP < QUAD.quad_rects_vec[2].top)
+                if (POINT.y < QUAD.quad_rects_vec[2].top)
                 {
-                    return IsPointWithinCollisionRect_Impl(
-                        QUAD.child_quads_vec[1],
-                        POS_LEFT,
-                        POS_TOP);
+                    return IsPointWithinCollisionRect_Impl(QUAD.child_quads_vec[1], POINT);
                 }
                 else
                 {
-                    return IsPointWithinCollisionRect_Impl(
-                        QUAD.child_quads_vec[3],
-                        POS_LEFT,
-                        POS_TOP);
+                    return IsPointWithinCollisionRect_Impl(QUAD.child_quads_vec[3], POINT);
                 }
             }
         }

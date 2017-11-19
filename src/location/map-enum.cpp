@@ -45,7 +45,7 @@ namespace location
         switch (E)
         {
             case Thornberry:        { return "Thornberry"; }
-            case ThornberryForest:  { return "ThronberryForest"; }
+            case ThornberryForest:  { return "ThornberryForest"; }
             case Mudgate:           { return "Mudgate"; }
             case Bridgeway:         { return "Bridgeway"; }
             case Count:

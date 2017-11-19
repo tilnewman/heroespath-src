@@ -173,11 +173,12 @@ namespace sfml_util
             MapLayer & mapLayerSPtr,
             const TileOffsets & TILE_OFFSETS);
 
-        const TileOffsets GetTileOffsets(const sf::Vector2f &) const;
-        const TileOffsets GetTileOffsetsPlayerPos() const;
-        const sf::Vector2f GetPlayerPosActual() const;
-        const sf::Vector2f GetScreenPos(const TileOffsets &) const;
-        const sf::Vector2f GetScreenPosPlayer() const;
+        const TileOffsets GetTileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
+        const TileOffsets GetTileOffsetsOfPlayerPos() const;
+        const sf::Vector2f GetPlayerPosCollision() const;
+        const sf::Vector2f GetPosScreen(const TileOffsets &) const;
+        const sf::Vector2f GetPosScreen(const sf::Vector2f &) const;
+        const sf::Vector2f GetPlayerPosScreen() const;
 
         bool IsPointWithinCollision(const sf::Vector2f &) const;
 
@@ -236,14 +237,14 @@ namespace sfml_util
         TileOffsets        prevTileOffsets_;
         const sf::Vector2f WIN_POS_V_;
         const sf::Vector2u WIN_SIZE_V_;
-        sf::Vector2f       playerPosV_; //in offscreen coordinates
-        sf::Vector2f       playerPosOffsetV_;//in screeen coordinates
+        sf::Vector2f       playerPosMapV_;
+        sf::Vector2f       playerPosOffsetScreenV_;
         sf::RenderStates   renderStates_;
         sf::FloatRect      offScreenRect_;
         sf::Sprite         mapSprite_;
         sf::RenderTexture  offScreenTexture_;
         sf::RenderTexture  emptyRendText_;
-        FloatRectVec_t     collisionsVec_;
+        FloatRectVec_t     collisionRectsVec_;
         MapLayerVec_t      mapLayers_;
         TileImageVec_t     tilesImageVec_;
         const sf::Color    TRANSPARENT_MASK_;
