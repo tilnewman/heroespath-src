@@ -67,7 +67,6 @@ namespace stage
         SettingsStage();
         virtual ~SettingsStage();
 
-        //required by callback handler
         inline virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &);
         virtual bool HandleCallback(const popup::PopupResponse &);
@@ -76,34 +75,46 @@ namespace stage
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
         virtual void HandleResolutionChange();
         virtual bool KeyRelease(const sf::Event::KeyEvent &);
-        float GetBackButtonPosLeft() const;
 
     private:
-        void ResetPositions();
-        //
-        static const float BOX_WIDTH_;
-        static const float BOX_HEIGHT_;
-        static const float BOX_INNER_PAD_;
-        static const float MUSIC_VOLUME_HORIZ_POS_;
-        static const float SOUNDEFFECTS_VOLUME_HORIZ_POS_;
-        static const float ANTIALIAS_HORIZ_POS_;
-        //
-        float boxTop_;
-        sfml_util::gui::BackgroundImage backgroundImage_;
+        void Setup_StageRegionToFullscreen();
+        void Setup_BackgroundImage();
+        void Setup_MainMenuTitle();
+        void Setup_BottomSymbol();
+        void Setup_BackButton();
+        const sf::FloatRect Setup_WoodBackgroundBoxAndReturnInnerRect();
+        void Setup_ResolutionChangeLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
+        void Setup_ResolutionChangeRadioButtonSet(const sf::FloatRect & BG_BOX_INNER_RECT);
+        void Setup_MusicVolumeLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
+        void Setup_MusicVolumeSlider();
+        void Setup_SfxVolumeLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
+        void Setup_SfxVolumeSlider();
+        void Setup_AntiAliasLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
+        void Setup_AntiAliasRadioButtonSet();
+        void Setup_MusicInfoLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
+        void Setup_MusicInfoBox(const sf::FloatRect & BG_BOX_INNER_RECT);
+        void Setup_RevisionNumber(const sf::FloatRect & BG_BOX_INNER_RECT);
+        
+    private:
+        const float SLIDER_LABEL_OFFSET_VERT_;
+        const sfml_util::gui::TextInfo LABEL_TEXT_INFO_;
+        const sfml_util::gui::MouseTextInfo SLIDER_MOUSE_TEXT_INFO_;
+        bool hasStageAlreadyBeenSetup_;
+        sfml_util::gui::BackgroundImage bgTileImage_;
         sfml_util::MainMenuTitle mainMenuTitle_;
-        sfml_util::gui::box::Box box_;
+        sfml_util::BottomSymbol bottomSymbol_;
+        sfml_util::main_menu_buttons::BackButtonUPtr_t backButtonUPtr_;
+        sfml_util::gui::box::Box bgBox_;
         sfml_util::gui::RadioButtonSetUPtr_t resRadioButtonSetUPtr_;
         sfml_util::gui::TextRegionUPtr_t resolutionTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t musicVolumeTextRegionUPtr_;
         sfml_util::SliderBarLabeled_MusicUPtr_t musicVolumeSliderBarUPtr_;
         sfml_util::gui::TextRegionUPtr_t effectsVolumeTextRegionUPtr_;
         sfml_util::SliderBarLabeled_EffectsUPtr_t effectsVolumeSliderBarUPtr_;
-        sfml_util::main_menu_buttons::BackButtonUPtr_t backButtonUPtr_;
         sfml_util::gui::TextRegionUPtr_t revisionTextRegionUPtr_;
         sfml_util::gui::RadioButtonSetUPtr_t aaRadioButtonSetUPtr_;
         sfml_util::gui::TextRegionUPtr_t aaTextRegionUPtr_;
         unsigned prevAALevel_;
-        sfml_util::BottomSymbol bottomSymbol_;
         sfml_util::gui::TextRegionUPtr_t musicInfoLabelTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t musicInfoTextRegionUPtr_;
     };
