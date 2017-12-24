@@ -74,10 +74,10 @@ namespace sfml_util
     private:
         static const std::size_t MAX_NUM_RES_DISPLAYABLE_;
         //
-        sfml_util::IStage * const  ownerStagePtr_;
+        sfml_util::IStage * const ownerStagePtr_;
         sfml_util::ResolutionVec_t resolutionVec_;
-        const std::size_t          ORIG_INVALID_SELECTION_;
-        sfml_util::Resolution      prevResolution_;
+        const std::size_t ORIG_INVALID_SELECTION_;
+        sfml_util::Resolution prevResolution_;
     };
 
     using RadioButtonSet_DisplayChangeSPtr_t = std::shared_ptr<RadioButtonSet_DisplayChange>;
