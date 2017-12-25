@@ -59,13 +59,7 @@ namespace stage
     SettingsStage::SettingsStage()
     :
         Stage("Settings"),
-        SLIDER_LABEL_OFFSET_VERT_(165.0f),
-        SLIDER_MOUSE_TEXT_INFO_(
-            "",
-            sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
-            sfml_util::FontManager::Instance()->Size_Normal(),
-            sf::Color::White,
-            sf::Color(255, 200, 200)),
+        SLIDER_LENGTH_VERT_(160.0f),
         hasStageAlreadyBeenSetup_(false),
         prevAALevel_(sfml_util::Display::Instance()->AntialiasLevel()),
         bgTileImage_("media-images-backgrounds-tile-darkknot"),
@@ -79,12 +73,12 @@ namespace stage
         bgBox_("SettingsStageWoodBackground"),
         resLabelTextRegionUPtr_(),
         resRadioButtonSetUPtr_(),
+        aaLabelTextRegionUPtr_(),
+        aaRadioButtonSetUPtr_(),
         musicVolLabelTextRegionUPtr_(),
         musicVolSliderBarUPtr_(),
         effectsVolLabelTextRegionUPtr_(),
         effectsVolSliderBarUPtr_(),
-        aaLabelTextRegionUPtr_(),
-        aaRadioButtonSetUPtr_(),
         musicInfoLabelTextRegionUPtr_(),
         musicInfoDetailsTextRegionUPtr_(),
         revLabelTextRegionUPtr_()
@@ -279,8 +273,8 @@ namespace stage
 
     const sf::FloatRect SettingsStage::Setup_WoodBackgroundBoxAndReturnInnerRect()
     {
-        auto const BG_BOX_WIDTH{ StageRegionWidth() * 0.5f };
-        auto const BG_BOX_HEIGHT{ StageRegionHeight() * 0.5f };
+        auto const BG_BOX_WIDTH{ std::max(StageRegionWidth() * 0.5f, 1200.0f) };
+        auto const BG_BOX_HEIGHT{ std::max(StageRegionHeight() * 0.5f, 500.0f) };
 
         auto const BG_BOX_LEFT{
             (StageRegionWidth() * 0.5f) - (BG_BOX_WIDTH * 0.5f) };
@@ -316,24 +310,22 @@ namespace stage
 
     void SettingsStage::Setup_ResolutionChangeLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
-        auto const LEFT{ BG_BOX_INNER_RECT.left + sfml_util::MapByRes(60.0f, 125.0f) };
-        auto const TOP{ BG_BOX_INNER_RECT.top };
-
-        if (hasStageAlreadyBeenSetup_)
-        {
-            resLabelTextRegionUPtr_->SetEntityPos(LEFT, TOP);
-        }
-        else
+        if (false == hasStageAlreadyBeenSetup_)
         {
             resLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "ResolutionChangeLabel",
                 CreateLabelTextInfo("Change Resolution"),
-                sf::FloatRect(LEFT, TOP, 0.0f, 0.0f),
-                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                sfml_util::gui::box::Info());
+                sf::FloatRect());
 
             EntityAdd(resLabelTextRegionUPtr_.get());
         }
+
+        auto const LEFT{ BG_BOX_INNER_RECT.left + sfml_util::MapByRes(60.0f, 125.0f) };
+        auto const TOP{ BG_BOX_INNER_RECT.top };
+
+        resLabelTextRegionUPtr_->Setup(
+            CreateLabelTextInfo("Change Resolution"),
+            sf::FloatRect(LEFT, TOP, 0.0f, 0.0f));
     }
 
 
@@ -367,120 +359,6 @@ namespace stage
     }
 
 
-    void SettingsStage::Setup_MusicVolumeLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
-    {
-        if (false == hasStageAlreadyBeenSetup_)
-        {
-            musicVolLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "MusicVolumeSettingLabel",
-                CreateLabelTextInfo("Music\nVolume"),
-                sf::FloatRect());
-
-            EntityAdd(musicVolLabelTextRegionUPtr_.get());
-        }
-
-        auto const LEFT{
-            HorizPositionOfColumn(2, BG_BOX_INNER_RECT) -
-            (musicVolLabelTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
-
-        auto const TOP{ BG_BOX_INNER_RECT.top };
-
-        musicVolLabelTextRegionUPtr_->SetEntityPos(LEFT, TOP);
-    }
-
-
-    void SettingsStage::Setup_MusicVolumeSlider(const sf::FloatRect & BG_BOX_INNER_RECT)
-    {
-        if (false == hasStageAlreadyBeenSetup_)
-        {
-            musicVolSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarLabeled_Music>(
-                "MusicVolume",
-                0.0f,
-                0.0f,
-                160.0f,
-                sfml_util::gui::SliderStyle(),
-                SLIDER_MOUSE_TEXT_INFO_,
-                0.5f,
-                0.0f,
-                SLIDER_LABEL_OFFSET_VERT_);
-
-            EntityAdd(musicVolSliderBarUPtr_.get());
-        }
-
-        auto const LEFT{
-            HorizPositionOfColumn(2, BG_BOX_INNER_RECT) -
-            (musicVolSliderBarUPtr_->GetEntityRegion().width * 0.5f) };
-
-        auto const TOP{
-            musicVolLabelTextRegionUPtr_->GetEntityPos().y +
-            musicVolLabelTextRegionUPtr_->GetEntityRegion().height };
-
-        musicVolSliderBarUPtr_->SetEntityPos(LEFT, TOP);
-    }
-
-
-    void SettingsStage::Setup_SfxVolumeLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
-    {
-        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(true);
-
-        if (false == hasStageAlreadyBeenSetup_)
-        {
-            effectsVolLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "EffectsVolumeSettingLabel",
-                CreateLabelTextInfo("Sound Effects\nVolume"),
-                sf::FloatRect(),
-                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
-                sfml_util::gui::box::Info());
-
-            EntityAdd(effectsVolLabelTextRegionUPtr_.get());
-        }
-
-        auto const LEFT{
-            HorizPositionOfColumn(3, BG_BOX_INNER_RECT) -
-            (effectsVolLabelTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
-
-        auto const TOP{ BG_BOX_INNER_RECT.top };
-
-        effectsVolLabelTextRegionUPtr_->SetEntityPos(LEFT, TOP);
-
-        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(false);
-    }
-        
-
-    void SettingsStage::Setup_SfxVolumeSlider(const sf::FloatRect & BG_BOX_INNER_RECT)
-    {
-        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(true);
-
-        if (false == hasStageAlreadyBeenSetup_)
-        {   
-            effectsVolSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarLabeled_Effects>(
-                "EffectsVolume",
-                0.0f,
-                0.0f,
-                160.0f,
-                sfml_util::gui::SliderStyle(),
-                SLIDER_MOUSE_TEXT_INFO_,
-                0.5f,
-                0.0f,
-                SLIDER_LABEL_OFFSET_VERT_);
-
-            EntityAdd(effectsVolSliderBarUPtr_.get());
-        }
-
-        auto const LEFT{
-            HorizPositionOfColumn(3, BG_BOX_INNER_RECT) -
-            (effectsVolSliderBarUPtr_->GetEntityRegion().width * 0.5f) };
-
-        auto const TOP{
-            effectsVolLabelTextRegionUPtr_->GetEntityPos().y +
-            effectsVolLabelTextRegionUPtr_->GetEntityRegion().height };
-
-        effectsVolSliderBarUPtr_->SetEntityPos(LEFT, TOP);
-
-        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(false);
-    }
-
-
     void SettingsStage::Setup_AntiAliasLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
         if (false == hasStageAlreadyBeenSetup_)
@@ -499,7 +377,9 @@ namespace stage
 
         auto const TOP{ BG_BOX_INNER_RECT.top };
 
-        aaLabelTextRegionUPtr_->SetEntityPos(LEFT, TOP);
+        aaLabelTextRegionUPtr_->Setup(
+            CreateLabelTextInfo("Anti-\nAliasing"),
+            sf::FloatRect(LEFT, TOP, 0.0f, 0.0f));
     }
 
 
@@ -510,7 +390,7 @@ namespace stage
             const sfml_util::gui::TextInfo TEXT_INFO(
                 " ",
                 sfml_util::FontManager::Instance()->Font_Default1(),
-                sfml_util::FontManager::Instance()->Size_Smallish());
+                sfml_util::FontManager::Instance()->Size_Small());
 
             const std::vector<std::string> LABELS_VEC =
                 { "0   ", "1   ", "2   ", "4   ", "8   ", "16  " };
@@ -588,8 +468,138 @@ namespace stage
     }
 
 
+    void SettingsStage::Setup_MusicVolumeLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
+    {
+        if (false == hasStageAlreadyBeenSetup_)
+        {
+            musicVolLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "MusicVolumeSettingLabel",
+                CreateLabelTextInfo("Music\nVolume"),
+                sf::FloatRect());
+
+            EntityAdd(musicVolLabelTextRegionUPtr_.get());
+        }
+
+        auto const LEFT{
+            HorizPositionOfColumn(2, BG_BOX_INNER_RECT) -
+            (musicVolLabelTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
+
+        auto const TOP{ BG_BOX_INNER_RECT.top };
+
+        musicVolLabelTextRegionUPtr_->Setup(
+            CreateLabelTextInfo("Music\nVolume"),
+            sf::FloatRect(LEFT, TOP, 0.0f, 0.0f));
+    }
+
+
+    void SettingsStage::Setup_MusicVolumeSlider(const sf::FloatRect & BG_BOX_INNER_RECT)
+    {
+        if (false == hasStageAlreadyBeenSetup_)
+        {
+            musicVolSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarLabeled_Music>(
+                "MusicVolume",
+                0.0f,
+                0.0f,
+                SLIDER_LENGTH_VERT_,
+                sfml_util::gui::SliderStyle(),
+                CreateSliderbarValueTextInfoSet(),
+                0.5f,
+                0.0f,
+                SLIDER_LENGTH_VERT_ + SliderLabelVertPad());
+
+            EntityAdd(musicVolSliderBarUPtr_.get());
+        }
+
+        auto const LEFT{
+            HorizPositionOfColumn(2, BG_BOX_INNER_RECT) -
+            (musicVolSliderBarUPtr_->GetEntityRegion().width * 0.5f) };
+
+        auto const TOP{
+            musicVolLabelTextRegionUPtr_->GetEntityPos().y +
+            musicVolLabelTextRegionUPtr_->GetEntityRegion().height };
+
+        musicVolSliderBarUPtr_->SetEntityPos(LEFT, TOP);
+        musicVolSliderBarUPtr_->ChangeTextInfo( CreateSliderbarValueTextInfoSet() );
+    }
+
+
+    void SettingsStage::Setup_SfxVolumeLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
+    {
+        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(true);
+
+        if (false == hasStageAlreadyBeenSetup_)
+        {
+            effectsVolLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "EffectsVolumeSettingLabel",
+                CreateLabelTextInfo("Sound Effects\nVolume"),
+                sf::FloatRect(),
+                sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+                sfml_util::gui::box::Info());
+
+            EntityAdd(effectsVolLabelTextRegionUPtr_.get());
+        }
+
+        auto const LEFT{
+            HorizPositionOfColumn(3, BG_BOX_INNER_RECT) -
+            (effectsVolLabelTextRegionUPtr_->GetEntityRegion().width * 0.5f) };
+
+        auto const TOP{ BG_BOX_INNER_RECT.top };
+
+        effectsVolLabelTextRegionUPtr_->Setup(
+            CreateLabelTextInfo("Sound Effects\nVolume"),
+            sf::FloatRect(LEFT, TOP, 0.0f, 0.0f));
+
+        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(false);
+    }
+        
+
+    void SettingsStage::Setup_SfxVolumeSlider(const sf::FloatRect & BG_BOX_INNER_RECT)
+    {
+        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(true);
+
+        if (false == hasStageAlreadyBeenSetup_)
+        {   
+            effectsVolSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarLabeled_Effects>(
+                "EffectsVolume",
+                0.0f,
+                0.0f,
+                SLIDER_LENGTH_VERT_,
+                sfml_util::gui::SliderStyle(),
+                CreateSliderbarValueTextInfoSet(),
+                0.5f,
+                0.0f,
+                SLIDER_LENGTH_VERT_ + SliderLabelVertPad());
+
+            EntityAdd(effectsVolSliderBarUPtr_.get());
+        }
+
+        auto const LEFT{
+            HorizPositionOfColumn(3, BG_BOX_INNER_RECT) -
+            (effectsVolSliderBarUPtr_->GetEntityRegion().width * 0.5f) };
+
+        auto const TOP{
+            effectsVolLabelTextRegionUPtr_->GetEntityPos().y +
+            effectsVolLabelTextRegionUPtr_->GetEntityRegion().height };
+
+        effectsVolSliderBarUPtr_->SetEntityPos(LEFT, TOP);
+        effectsVolSliderBarUPtr_->ChangeTextInfo(CreateSliderbarValueTextInfoSet());
+
+        sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(false);
+    }
+
+
     void SettingsStage::Setup_MusicInfoLabel(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
+        if (false == hasStageAlreadyBeenSetup_)
+        {
+            musicInfoLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
+                "MusicInfoLabel",
+                CreateLabelTextInfo("Music Currently Playing"),
+                sf::FloatRect());
+
+            EntityAdd(musicInfoLabelTextRegionUPtr_.get());
+        }
+
         auto const PAD{ 30.0f };
 
         auto const LEFT{
@@ -604,23 +614,9 @@ namespace stage
         auto const WIDTH{
             (BG_BOX_INNER_RECT.left + BG_BOX_INNER_RECT.width) - LEFT };
 
-        auto const HEIGHT{ 0.0f };
-
-        const sf::FloatRect TEXT_RECT(LEFT, TOP, WIDTH, HEIGHT);
-
-        if (hasStageAlreadyBeenSetup_)
-        {
-            musicInfoLabelTextRegionUPtr_->SetEntityPos(LEFT, TOP);
-        }
-        else
-        {
-            musicInfoLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "MusicInfoLabel",
-                CreateLabelTextInfo("Music Currently Playing"),
-                TEXT_RECT);
-
-            EntityAdd(musicInfoLabelTextRegionUPtr_.get());
-        }
+        musicInfoLabelTextRegionUPtr_->Setup(
+            CreateLabelTextInfo("MusicInfoLabel"),
+            sf::FloatRect(LEFT, TOP, WIDTH, 0.0f));
     }
 
 
@@ -647,51 +643,47 @@ namespace stage
             WIDTH,
             HEIGHT);
 
-        if (hasStageAlreadyBeenSetup_)
+        auto const MUSIC_INFO_VEC{ sfml_util::SoundManager::Instance()->MusicInfoSet() };
+
+        std::ostringstream ss;
+        for (auto const & MUSIC_INFO : MUSIC_INFO_VEC)
         {
-            musicInfoDetailsTextRegionUPtr_->SetEntityPos(LEFT, TOP);
+            ss << "\"" << MUSIC_INFO.SongName()
+                << "\"\nby " << MUSIC_INFO.ArtistName()
+                << "\nLicense: " << MUSIC_INFO.LicenseTitle()
+                << "\nDuration: " << MUSIC_INFO.Duration().ToString()
+                << "\n\n";
         }
-        else
-        {   
-            auto const MUSIC_INFO_VEC{ sfml_util::SoundManager::Instance()->MusicInfoSet() };
 
-            std::ostringstream ss;
-            for (auto const & MUSIC_INFO : MUSIC_INFO_VEC)
-            {
-                ss << "\"" << MUSIC_INFO.SongName()
-                    << "\"\nby " << MUSIC_INFO.ArtistName()
-                    << "\nLicense: " << MUSIC_INFO.LicenseTitle()
-                    << "\nDuration: " << MUSIC_INFO.Duration().ToString()
-                    << "\n\n";
-            }
+        if (ss.str().empty())
+        {
+            ss << " ";
+        }
 
-            if (ss.str().empty())
-            {
-                ss << " ";
-            }
+        const sfml_util::gui::TextInfo TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_Light(),
+            sfml_util::Justified::Center);
 
-            const sfml_util::gui::TextInfo TEXT_INFO(
-                ss.str(),
-                sfml_util::FontManager::Instance()->Font_Default1(),
-                sfml_util::FontManager::Instance()->Size_Smallish(),
-                sfml_util::FontManager::Color_Light(),
-                sfml_util::Justified::Center);
+        const sfml_util::GradientInfo GRADIENT_INFO(
+            sf::Color(0, 0, 0, 150),
+            sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
 
-            const sfml_util::GradientInfo GRADIENT_INFO(
-                sf::Color(0, 0, 0, 150),
-                sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight);
+        const sfml_util::gui::BackgroundInfo BACKGROUND_INFO(
+            sf::Color(0, 0, 0, 60),
+            GRADIENT_INFO);
 
-            const sfml_util::gui::BackgroundInfo BACKGROUND_INFO(
-                sf::Color(0, 0, 0, 60),
-                GRADIENT_INFO);
+        const sfml_util::gui::box::Info BOX_INFO(
+            1.0f,
+            true,
+            RECT,
+            sfml_util::gui::ColorSet(sf::Color(180, 180, 180)),
+            BACKGROUND_INFO);
 
-            const sfml_util::gui::box::Info BOX_INFO(
-                1.0f,
-                true,
-                RECT,
-                sfml_util::gui::ColorSet(sf::Color(180, 180, 180)),
-                BACKGROUND_INFO);
-
+        if (false == hasStageAlreadyBeenSetup_)
+        {
             musicInfoDetailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SettingsStageMusicInfo",
                 TEXT_INFO,
@@ -702,25 +694,31 @@ namespace stage
 
             EntityAdd(musicInfoDetailsTextRegionUPtr_.get());
         }
+
+        musicInfoDetailsTextRegionUPtr_->Setup(
+            TEXT_INFO,
+            sf::FloatRect(LEFT, TOP, 0.0f, 0.0f),
+            sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
+            BOX_INFO);
     }
 
 
     void SettingsStage::Setup_RevisionNumber(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
+        std::ostringstream ss;
+        ss << "Revision: " << game::GameDataFile::Instance()->GetCopyStr("system-revision");
+
+        const sfml_util::gui::TextInfo TEXT_INFO(
+            ss.str(),
+            sfml_util::FontManager::Instance()->Font_Default1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Color_Light(),
+            sfml_util::Justified::Left);
+
         if (false == hasStageAlreadyBeenSetup_)
         {
-            std::ostringstream ss;
-            ss << "Revision: " << game::GameDataFile::Instance()->GetCopyStr("system-revision");
-
-            const sfml_util::gui::TextInfo TEXT_INFO(
-                ss.str(),
-                sfml_util::FontManager::Instance()->Font_Default1(),
-                sfml_util::FontManager::Instance()->Size_Normal(),
-                sfml_util::FontManager::Color_Light(),
-                sfml_util::Justified::Left);
-
             revLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "Version",
+                "RevisionNumber",
                 TEXT_INFO,
                 sf::FloatRect());
 
@@ -733,7 +731,9 @@ namespace stage
             ((BG_BOX_INNER_RECT.top + BG_BOX_INNER_RECT.height) -
             revLabelTextRegionUPtr_->GetEntityRegion().height) };
 
-        revLabelTextRegionUPtr_->SetEntityPos(LEFT, TOP);
+        revLabelTextRegionUPtr_->Setup(
+            TEXT_INFO,
+            sf::FloatRect(LEFT, TOP, 0.0f, 0.0f));
     }
 
 
@@ -746,6 +746,17 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Normal(),
             sf::Color(255, 255, 255, 200),
             sfml_util::Justified::Center);
+    }
+
+
+    const sfml_util::gui::MouseTextInfo SettingsStage::CreateSliderbarValueTextInfoSet() const
+    {
+        return sfml_util::gui::MouseTextInfo(
+            "",
+            sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
+            sfml_util::FontManager::Instance()->Size_Small(),
+            sf::Color::White,
+            sf::Color(255, 200, 200));
     }
 
 
@@ -763,6 +774,12 @@ namespace stage
         auto const COLUMN_WIDTH{ REMAINING_RIGHT_SPACE / 4.0f };
 
         return LEFT + (static_cast<float>(COLUMN_NUM) * COLUMN_WIDTH);
+    }
+
+
+    float SettingsStage::SliderLabelVertPad() const
+    {
+        return sfml_util::MapByRes(5.0f, 15.0f);
     }
 
 }

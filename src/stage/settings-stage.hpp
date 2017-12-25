@@ -85,25 +85,28 @@ namespace stage
         const sf::FloatRect Setup_WoodBackgroundBoxAndReturnInnerRect();
         void Setup_ResolutionChangeLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
         void Setup_ResolutionChangeRadioButtonSet(const sf::FloatRect & BG_BOX_INNER_RECT);
+        void Setup_AntiAliasLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
+        void Setup_AntiAliasRadioButtonSet(const sf::FloatRect & BG_BOX_INNER_RECT);
         void Setup_MusicVolumeLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
         void Setup_MusicVolumeSlider(const sf::FloatRect & BG_BOX_INNER_RECT);
         void Setup_SfxVolumeLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
         void Setup_SfxVolumeSlider(const sf::FloatRect & BG_BOX_INNER_RECT);
-        void Setup_AntiAliasLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
-        void Setup_AntiAliasRadioButtonSet(const sf::FloatRect & BG_BOX_INNER_RECT);
         void Setup_MusicInfoLabel(const sf::FloatRect & BG_BOX_INNER_RECT);
         void Setup_MusicInfoBox(const sf::FloatRect & BG_BOX_INNER_RECT);
         void Setup_RevisionNumber(const sf::FloatRect & BG_BOX_INNER_RECT);
 
         const sfml_util::gui::TextInfo CreateLabelTextInfo(const std::string & TITLE) const;
 
+        const sfml_util::gui::MouseTextInfo CreateSliderbarValueTextInfoSet() const;
+
         float HorizPositionOfColumn(
             const std::size_t COLUMN_NUM,
             const sf::FloatRect & BG_BOX_INNER_RECT);
+
+        float SliderLabelVertPad() const;
         
     private:
-        const float SLIDER_LABEL_OFFSET_VERT_;
-        const sfml_util::gui::MouseTextInfo SLIDER_MOUSE_TEXT_INFO_;
+        const float SLIDER_LENGTH_VERT_;
         bool hasStageAlreadyBeenSetup_;
         unsigned prevAALevel_;
         sfml_util::gui::BackgroundImage bgTileImage_;
@@ -113,12 +116,12 @@ namespace stage
         sfml_util::gui::box::Box bgBox_;
         sfml_util::gui::TextRegionUPtr_t resLabelTextRegionUPtr_;
         sfml_util::gui::RadioButtonSetUPtr_t resRadioButtonSetUPtr_;
+        sfml_util::gui::TextRegionUPtr_t aaLabelTextRegionUPtr_;
+        sfml_util::gui::RadioButtonSetUPtr_t aaRadioButtonSetUPtr_;
         sfml_util::gui::TextRegionUPtr_t musicVolLabelTextRegionUPtr_;
         sfml_util::SliderBarLabeled_MusicUPtr_t musicVolSliderBarUPtr_;
         sfml_util::gui::TextRegionUPtr_t effectsVolLabelTextRegionUPtr_;
         sfml_util::SliderBarLabeled_EffectsUPtr_t effectsVolSliderBarUPtr_;
-        sfml_util::gui::TextRegionUPtr_t aaLabelTextRegionUPtr_;
-        sfml_util::gui::RadioButtonSetUPtr_t aaRadioButtonSetUPtr_;
         sfml_util::gui::TextRegionUPtr_t musicInfoLabelTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t musicInfoDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t revLabelTextRegionUPtr_;

@@ -57,32 +57,41 @@ namespace gui
                          const float           POS_TOP,
                          const float           LENGTH,
                          const SliderStyle &   STYLE,
-                         const MouseTextInfo & THREE_TEXT_INFOS,
+                         const MouseTextInfo & THREE_TEXT_INFOS_HOLDER,
                          const float           INITIAL_VALUE         = 0.0f,
                          const float           LABEL_POS_OFFSET_LEFT = 0.0f,
                          const float           LABEL_POS_OFFSET_TOP  = 0.0f);//must be [0.0f, 1.0f]
 
         virtual ~SliderBarLabeled();
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
         inline const sf::Vector2f GetLabelPos() const { return textRegion_.GetEntityPos(); }
         void SetLabelPos(const float POS_LEFT, const float POS_TOP);
         void SetLabelPosRelative(const float POS_REL_LEFT, const float POS_REL_TOP);
 
-        virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
-        virtual void MoveEntityPos(const float HORIZ, const float VERT);
+        virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+        virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
 
         inline virtual void SetLabelOffset(const float X, const float Y) { labelOffsetX_ = X; labelOffsetY_ = Y; }
         inline virtual sf::Vector2f GetLabelOffset() const { return sf::Vector2f(labelOffsetX_, labelOffsetY_); }
 
-    protected:
-        inline virtual void OnClick(const sf::Vector2f &) {} //TODO sound effect?
-
-        virtual void OnChange(const float NEW_VALUE);
+        void ChangeTextInfo(const MouseTextInfo &);
 
     protected:
-        MouseTextInfo threeTextInfos_;
+        inline virtual void OnClick(const sf::Vector2f &) override {}
+
+        virtual void OnChange(const float NEW_VALUE) override;
+
+        const TextInfo GetTextInfoFromSliderValue(const int SLIDER_VAL) const;
+
+    protected:
+        //This var is not really about mouse text info but about the three TextInfo
+        //objects required to display the current slider number.  A MouseTextInfo object
+        //is just being used to hold three TextInfo objects.
+        //Down==when zero, Over==when 100, and Up==when all other values.
+        MouseTextInfo threeTextInfosHolder_;
+
         TextRegion    textRegion_;
         float         labelOffsetX_;
         float         labelOffsetY_;

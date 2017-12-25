@@ -75,21 +75,21 @@ namespace gui
         void SetCurrentValue(const float NEW_VAL);
         virtual void SetCurrentValueFromScreenCoords(const sf::Vector2f & NEW_COORD_V);
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
         //Overrides from GuiEntity
-        virtual bool MouseWheel     (const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION);
-        virtual bool MouseDown      (const sf::Vector2f & MOUSE_POS_V);
-        virtual bool MouseUp        (const sf::Vector2f & MOUSE_POS_V);
-        virtual bool UpdateMousePos (const sf::Vector2f & MOUSE_POS_V);
-        virtual void SetEntityPos   (const float POS_LEFT, const float POS_TOP);
-        virtual void MoveEntityPos  (const float HORIZ, const float VERT);
+        virtual bool UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION) override;
+        virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+        virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
+        virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+        virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
 
         inline virtual void SetOnChangeHandler(callback::ISliderBarCallbackHandler_t * const CHANGE_HANDLER_PTR) { changeHandlerPtr_ = CHANGE_HANDLER_PTR; }
 
         inline float GetLength() const { return LENGTH_; }
     protected:
-        inline virtual void OnClick(const sf::Vector2f &) {} //TODO sound effect?
+        inline virtual void OnClick(const sf::Vector2f &) override {}
 
         virtual void OnChange(const float NEW_VALUE);
 

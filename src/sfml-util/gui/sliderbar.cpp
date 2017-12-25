@@ -389,7 +389,7 @@ namespace gui
     }
 
 
-    bool SliderBar::MouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION)
+    bool SliderBar::UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION)
     {
         if (IsInEntityRegion(MOUSE_POS_V))
         {

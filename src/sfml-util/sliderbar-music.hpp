@@ -60,17 +60,17 @@ namespace sfml_util
                                const float                POS_TOP,
                                const float                LENGTH,
                                const gui::SliderStyle &   STYLE,
-                               const gui::MouseTextInfo & THREE_TEXT_INFOS,
+                               const gui::MouseTextInfo & THREE_TEXT_INFOS_HOLDER,
                                const float                INITIAL_VALUE           = 0.0f,
                                const float                RELATIVE_LABEL_POS_LEFT = 0.0f,
                                const float                RELATIVE_LABEL_POS_TOP  = 0.0f);//must be [0.0f, 1.0f]
 
         virtual ~SliderBarLabeled_Music();
 
-        virtual void OnChange(const float NEW_VALUE);
-        virtual void SetPadPosition();
-        virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V);
-        virtual void SetCurrentValueFromScreenCoords(const sf::Vector2f & NEW_COORD_V);
+        virtual void OnChange(const float NEW_VALUE) override;
+        virtual void SetPadPosition() override;
+        virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+        virtual void SetCurrentValueFromScreenCoords(const sf::Vector2f & NEW_COORD_V) override;
     };
 
     using SliderBarLabeled_MusicUPtr_t = std::unique_ptr<SliderBarLabeled_Music>;

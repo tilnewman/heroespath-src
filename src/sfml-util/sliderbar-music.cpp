@@ -47,7 +47,7 @@ namespace sfml_util
         const float                POS_TOP,
         const float                LENGTH,
         const gui::SliderStyle &   STYLE,
-        const gui::MouseTextInfo & THREE_TEXT_INFOS,
+        const gui::MouseTextInfo & THREE_TEXT_INFOS_HOLDER,
         const float                INITIAL_VALUE,
         const float                RELATIVE_LABEL_POS_LEFT,
         const float                RELATIVE_LABEL_POS_TOP)
@@ -58,7 +58,7 @@ namespace sfml_util
             POS_TOP,
             LENGTH,
             STYLE,
-            THREE_TEXT_INFOS,
+            THREE_TEXT_INFOS_HOLDER,
             INITIAL_VALUE,
             RELATIVE_LABEL_POS_LEFT,
             RELATIVE_LABEL_POS_TOP)
@@ -78,38 +78,30 @@ namespace sfml_util
         sfml_util::SoundManager::Instance()->MusicVolumeSet(NEW_VALUE_RANGE_CORRECTED);
 
         auto const NEW_VALUE_RANGE_CORRECTED_INT{ static_cast<int>(NEW_VALUE_RANGE_CORRECTED) };
-        gui::TextInfo textInfo(threeTextInfos_.up);
-        if (NEW_VALUE_RANGE_CORRECTED_INT == 0)
-        {
-            textInfo = threeTextInfos_.down;
-        }
-        else
-        {
-            if (NEW_VALUE_RANGE_CORRECTED_INT == 100)
-            {
-                textInfo = threeTextInfos_.over;
-            }
-        }
+
+        gui::TextInfo textInfo{ GetTextInfoFromSliderValue(NEW_VALUE_RANGE_CORRECTED_INT) };
 
         std::ostringstream ss;
 
         if (NEW_VALUE_RANGE_CORRECTED_INT == 0)
         {
             ss << "MUTE";
-            textInfo.text = ss.str();
+            
             textInfo.fontPtr = FontManager::Instance()->Font_Typical();
         }
         else
         {
             ss << NEW_VALUE_RANGE_CORRECTED_INT;
-            textInfo.text = ss.str();
             textInfo.fontPtr = FontManager::Instance()->Font_NumbersDefault1();
         }
 
-        sf::FloatRect r(textRegion_.GetEntityRegion());
-        r.width = 0.0f;
-        r.height = 0.0f;
-        textRegion_.Setup(textInfo, r);
+        textInfo.text = ss.str();
+
+        sf::FloatRect textInfoRect(textRegion_.GetEntityRegion());
+        textInfoRect.width = 0.0f;
+        textInfoRect.height = 0.0f;
+
+        textRegion_.Setup(textInfo, textInfoRect);
     }
 
 

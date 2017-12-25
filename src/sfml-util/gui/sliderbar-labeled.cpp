@@ -45,20 +45,20 @@ namespace gui
                                        const float           POS_TOP,
                                        const float           LENGTH,
                                        const SliderStyle &   STYLE,
-                                       const MouseTextInfo & THREE_TEXT_INFOS,
+                                       const MouseTextInfo & THREE_TEXT_INFOS_HOLDER,
                                        const float           INITIAL_VALUE,
                                        const float           LABEL_POS_OFFSET_LEFT,
                                        const float           LABEL_POS_OFFSET_TOP)
     :
-        SliderBar      (std::string(NAME).append("_SliderBarLabeled"), POS_LEFT, POS_TOP, LENGTH, STYLE, nullptr, INITIAL_VALUE),
-        threeTextInfos_(THREE_TEXT_INFOS),
-        textRegion_    ("SliderBarLabeled's"),
-        labelOffsetX_  (LABEL_POS_OFFSET_LEFT),
-        labelOffsetY_  (LABEL_POS_OFFSET_TOP)
+        SliderBar(std::string(NAME).append("_SliderBarLabeled"), POS_LEFT, POS_TOP, LENGTH, STYLE, nullptr, INITIAL_VALUE),
+        threeTextInfosHolder_(THREE_TEXT_INFOS_HOLDER),
+        textRegion_("SliderBarLabeled's"),
+        labelOffsetX_(LABEL_POS_OFFSET_LEFT),
+        labelOffsetY_(LABEL_POS_OFFSET_TOP)
     {
         std::ostringstream ss;
         ss << static_cast<int>( GetCurrentValue() );
-        TextInfo textInfo(THREE_TEXT_INFOS.up);
+        TextInfo textInfo(THREE_TEXT_INFOS_HOLDER.up);
         textInfo.text = ss.str();
 
         const sf::FloatRect R(POS_LEFT + LABEL_POS_OFFSET_LEFT, POS_TOP + LABEL_POS_OFFSET_TOP, 0.0f, 0.0f);
@@ -90,29 +90,6 @@ namespace gui
     }
 
 
-    void SliderBarLabeled::OnChange(const float NEW_VALUE)
-    {
-        const int NEW_VALUE_INT( static_cast<int>(NEW_VALUE * 100.0f) );
-
-        TextInfo textInfo(threeTextInfos_.up);
-
-        if (0 == NEW_VALUE_INT)
-            textInfo = threeTextInfos_.down;
-        else
-            if (100 == NEW_VALUE_INT)
-                textInfo = threeTextInfos_.over;
-
-        std::ostringstream ss;
-        ss << NEW_VALUE_INT;
-        textInfo.text = ss.str();
-
-        sf::FloatRect r( textRegion_.GetEntityRegion() );
-        r.width = 0.0f;
-        r.height = 0.0f;
-        textRegion_.Setup(textInfo, r);
-    }
-
-
     void SliderBarLabeled::SetEntityPos(const float POS_LEFT, const float POS_TOP)
     {
         SliderBar::SetEntityPos(POS_LEFT, POS_TOP);
@@ -124,6 +101,48 @@ namespace gui
     {
         SliderBar::MoveEntityPos(HORIZ, VERT);
         textRegion_.MoveEntityPos(HORIZ, VERT);
+    }
+
+
+    void SliderBarLabeled::OnChange(const float NEW_VALUE_FLOAT)
+    {
+        const int NEW_VALUE_INT( static_cast<int>(NEW_VALUE_FLOAT * 100.0f) );
+
+        TextInfo textInfo{ GetTextInfoFromSliderValue(NEW_VALUE_INT) };
+
+        std::ostringstream newValueIntSS;
+        newValueIntSS << NEW_VALUE_INT;
+        textInfo.text = newValueIntSS.str();
+
+        sf::FloatRect textInfoRect( textRegion_.GetEntityRegion() );
+        textInfoRect.width = 0.0f;
+        textInfoRect.height = 0.0f;
+
+        textRegion_.Setup(textInfo, textInfoRect);
+    }
+
+
+    const TextInfo SliderBarLabeled::GetTextInfoFromSliderValue(const int SLIDER_VAL) const
+    {
+        if (SLIDER_VAL <= 0)
+        {
+            return threeTextInfosHolder_.down;
+        }
+        else if (SLIDER_VAL >= 100)
+        {
+            return threeTextInfosHolder_.over;
+        }
+        else
+        {
+            return threeTextInfosHolder_.up;
+        }
+    }
+
+
+    void SliderBarLabeled::ChangeTextInfo(const MouseTextInfo & TEXT_INFO_SET)
+    {
+        threeTextInfosHolder_ = TEXT_INFO_SET;
+        OnChange(currentVal_);
     }
 
 }
