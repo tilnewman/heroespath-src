@@ -273,7 +273,7 @@ namespace stage
 
     const sf::FloatRect SettingsStage::Setup_WoodBackgroundBoxAndReturnInnerRect()
     {
-        auto const BG_BOX_WIDTH{ std::max(StageRegionWidth() * 0.5f, 1200.0f) };
+        auto const BG_BOX_WIDTH{ std::max(StageRegionWidth() * 0.45f, 1000.0f) };
         auto const BG_BOX_HEIGHT{ std::max(StageRegionHeight() * 0.5f, 500.0f) };
 
         auto const BG_BOX_LEFT{
@@ -615,16 +615,16 @@ namespace stage
             (BG_BOX_INNER_RECT.left + BG_BOX_INNER_RECT.width) - LEFT };
 
         musicInfoLabelTextRegionUPtr_->Setup(
-            CreateLabelTextInfo("MusicInfoLabel"),
+            CreateLabelTextInfo("Music Currently Playing"),
             sf::FloatRect(LEFT, TOP, WIDTH, 0.0f));
     }
 
 
     void SettingsStage::Setup_MusicInfoBox(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
-        auto const PAD{ 30.0f };
+        auto const PAD{ sfml_util::MapByRes(20.0f, 60.0f) };
 
-        auto const LEFT{ aaRadioButtonSetUPtr_->GetEntityRegion().left };
+        auto const LEFT{ aaRadioButtonSetUPtr_->GetEntityPos().x };
 
         auto const TOP{
             musicInfoLabelTextRegionUPtr_->GetEntityRegion().top +
@@ -663,7 +663,7 @@ namespace stage
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
             sfml_util::FontManager::Instance()->Font_Default1(),
-            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Instance()->Size_Normal(),
             sfml_util::FontManager::Color_Light(),
             sfml_util::Justified::Center);
 
@@ -697,7 +697,7 @@ namespace stage
 
         musicInfoDetailsTextRegionUPtr_->Setup(
             TEXT_INFO,
-            sf::FloatRect(LEFT, TOP, 0.0f, 0.0f),
+            RECT,
             sfml_util::gui::TextRegion::DEFAULT_NO_RESIZE_,
             BOX_INFO);
     }
@@ -711,7 +711,7 @@ namespace stage
         const sfml_util::gui::TextInfo TEXT_INFO(
             ss.str(),
             sfml_util::FontManager::Instance()->Font_Default1(),
-            sfml_util::FontManager::Instance()->Size_Small(),
+            sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_Light(),
             sfml_util::Justified::Left);
 
