@@ -46,7 +46,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    const std::size_t RadioButtonSet_DisplayChange::MAX_NUM_RES_DISPLAYABLE_(14);
+    const std::size_t RadioButtonSet_DisplayChange::MAX_NUM_RES_DISPLAYABLE_(10);
 
 
     RadioButtonSet_DisplayChange::RadioButtonSet_DisplayChange(
@@ -54,12 +54,12 @@ namespace sfml_util
         const float POS_TOP,
         sfml_util::IStage * const OWNER_STAGE_PTR)
     :
-        RadioButtonSet         ("DisplayChange"),
-        ownerStagePtr_         (OWNER_STAGE_PTR),
-        resolutionVec_         (),
+        RadioButtonSet("DisplayChange"),
+        ownerStagePtr_(OWNER_STAGE_PTR),
+        resolutionVec_(),
         ORIG_INVALID_SELECTION_(
             sfml_util::Display::ComposeSupportedFullScreenVideoModesVec(resolutionVec_)),
-        prevResolution_        ()
+        prevResolution_()
     {
         //handle case where there are too many resolutions to display
         if (resolutionVec_.size() > MAX_NUM_RES_DISPLAYABLE_)
