@@ -335,7 +335,7 @@ namespace weapon
         auto price{ KNIFE_DETAILS.price + material::PriceAdj(MATERIAL_PRI, MATERIAL_SEC) };
 
         auto weight{ Weight_t( static_cast<Weight_t::type>(
-            KNIFE_DETAILS.weight.AsFloat() * material::WeightMult(MATERIAL_PRI, MATERIAL_SEC)) ) };
+            KNIFE_DETAILS.weight.As<float>() * material::WeightMult(MATERIAL_PRI, MATERIAL_SEC)) ) };
 
         Health_t damageMin{ KNIFE_DETAILS.damage_min };
         Health_t damageMax{ KNIFE_DETAILS.damage_max };

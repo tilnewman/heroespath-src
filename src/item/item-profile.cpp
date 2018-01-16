@@ -238,7 +238,7 @@ namespace item
         auto const SUMMON_COUNT_D{ static_cast<double>(SUMMON_INFO.Count()) };
 
         auto const CREATURE_RANK_AVG{
-            (CREATURE_RANK_RANGE.A().AsDouble() + CREATURE_RANK_RANGE.B().AsDouble()) * 0.5f };
+            (CREATURE_RANK_RANGE.A().As<double>() + CREATURE_RANK_RANGE.B().As<double>()) * 0.5f };
 
         auto const SUMMON_SCORE{ static_cast<int>( std::sqrt(
             (CREATURE_RANK_AVG * SUMMON_COUNT_D) * 150.0)) };

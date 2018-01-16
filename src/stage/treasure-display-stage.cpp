@@ -1282,8 +1282,8 @@ namespace treasure
         {
             ss << CREATURE_PTR->Inventory().Weight() << "/" << CREATURE_PTR->WeightCanCarry()
                 << "  ("
-                << static_cast<int>( (CREATURE_PTR->Inventory().Weight().AsFloat() /
-                        CREATURE_PTR->WeightCanCarry().AsFloat()) * 100.0f)
+                << static_cast<int>( (CREATURE_PTR->Inventory().Weight().As<float>() /
+                        CREATURE_PTR->WeightCanCarry().As<float>()) * 100.0f)
                 << "%)";
         }
 

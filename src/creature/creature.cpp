@@ -104,13 +104,13 @@ namespace creature
         bonusSet_         (),
         enchantmentsPVec_ ()
     {
-        actualSet_.Get(stats::Traits::Mana).CurrAndNormSet(MANA.AsInt());
-        actualSet_.Get(stats::Traits::Strength).CurrAndNormSet(STATS.Str().AsInt());
-        actualSet_.Get(stats::Traits::Accuracy).CurrAndNormSet(STATS.Acc().AsInt());
-        actualSet_.Get(stats::Traits::Charm).CurrAndNormSet(STATS.Cha().AsInt());
-        actualSet_.Get(stats::Traits::Luck).CurrAndNormSet(STATS.Lck().AsInt());
-        actualSet_.Get(stats::Traits::Speed).CurrAndNormSet(STATS.Spd().AsInt());
-        actualSet_.Get(stats::Traits::Intelligence).CurrAndNormSet(STATS.Int().AsInt());
+        actualSet_.Get(stats::Traits::Mana).CurrAndNormSet(MANA.As<int>());
+        actualSet_.Get(stats::Traits::Strength).CurrAndNormSet(STATS.Str().As<int>());
+        actualSet_.Get(stats::Traits::Accuracy).CurrAndNormSet(STATS.Acc().As<int>());
+        actualSet_.Get(stats::Traits::Charm).CurrAndNormSet(STATS.Cha().As<int>());
+        actualSet_.Get(stats::Traits::Luck).CurrAndNormSet(STATS.Lck().As<int>());
+        actualSet_.Get(stats::Traits::Speed).CurrAndNormSet(STATS.Spd().As<int>());
+        actualSet_.Get(stats::Traits::Intelligence).CurrAndNormSet(STATS.Int().As<int>());
 
         //verify valid RACE and ROLE combination
         auto const ROLE_VEC{ race::Roles(race_) };
@@ -206,7 +206,7 @@ namespace creature
         const float GRANDMASTER_RANK_F{
             game::GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax") + 1.0f };
 
-        auto rankRatio{ rank_.AsFloat() / GRANDMASTER_RANK_F };
+        auto rankRatio{ rank_.As<float>() / GRANDMASTER_RANK_F };
         if (rankRatio > 1.0f)
         {
             rankRatio = 1.0f;
@@ -1533,7 +1533,7 @@ namespace creature
             divisor = 3;
         }
 
-        return Weight_t(base + ((Strength().AsInt() * multiplier) / divisor));
+        return Weight_t(base + ((Strength().As<int>() * multiplier) / divisor));
     }
 
 
@@ -1641,12 +1641,12 @@ namespace creature
 
     void Creature::StatTraitsModify(const stats::StatSet & STAT_SET)
     {
-        TraitNormalAdj(stats::Traits::Strength, STAT_SET.Str().AsInt());
-        TraitNormalAdj(stats::Traits::Accuracy, STAT_SET.Acc().AsInt());
-        TraitNormalAdj(stats::Traits::Charm, STAT_SET.Cha().AsInt());
-        TraitNormalAdj(stats::Traits::Luck, STAT_SET.Lck().AsInt());
-        TraitNormalAdj(stats::Traits::Speed, STAT_SET.Spd().AsInt());
-        TraitNormalAdj(stats::Traits::Intelligence, STAT_SET.Int().AsInt());
+        TraitNormalAdj(stats::Traits::Strength, STAT_SET.Str().As<int>());
+        TraitNormalAdj(stats::Traits::Accuracy, STAT_SET.Acc().As<int>());
+        TraitNormalAdj(stats::Traits::Charm, STAT_SET.Cha().As<int>());
+        TraitNormalAdj(stats::Traits::Luck, STAT_SET.Lck().As<int>());
+        TraitNormalAdj(stats::Traits::Speed, STAT_SET.Spd().As<int>());
+        TraitNormalAdj(stats::Traits::Intelligence, STAT_SET.Int().As<int>());
     }
 
 

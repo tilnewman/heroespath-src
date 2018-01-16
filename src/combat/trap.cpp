@@ -120,7 +120,7 @@ namespace combat
 
         auto const AVG_PLAYER_RANK_MINUS_ONE{ [&]()
             {
-                auto const AVG_PLAYER_RANK{ FindAveragePlayerRank().AsDouble() };
+                auto const AVG_PLAYER_RANK{ FindAveragePlayerRank().As<double>() };
                 if (AVG_PLAYER_RANK < 2.0)
                 {
                     return 1.0;
@@ -145,7 +145,7 @@ namespace combat
         auto const SQRT_AVG_PLAYER_COUNT{
             std::sqrt(static_cast<double>(playerCountRange_.Mid()) * 10.0) };
 
-        auto const SQRT_AVG_DAMAGE{ std::sqrt(damageRange_.Mid().AsFloat() * 10.0) };
+        auto const SQRT_AVG_DAMAGE{ std::sqrt(damageRange_.Mid().As<float>() * 10.0) };
 
         return static_cast<int>(SQRT_AVG_PLAYER_COUNT * SQRT_AVG_DAMAGE);
     }

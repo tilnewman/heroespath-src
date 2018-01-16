@@ -1261,7 +1261,7 @@ namespace ownership
 
         //adjust chances by rank, where higher rank means a higher
         //chance of more valuable materials
-        auto const RANK_RATIO{ CHARACTER_PTR->Rank().AsFloat() /
+        auto const RANK_RATIO{ CHARACTER_PTR->Rank().As<float>() /
             game::GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax") };
 
         hardleatherChance += RANK_RATIO;
@@ -1330,7 +1330,7 @@ namespace ownership
         auto const RANK_DIVISOR_F{
             game::GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax") };
 
-        auto const RANK_CHANCE_INCREASE{ CHARACTER_PTR->Rank().AsFloat() / RANK_DIVISOR_F };
+        auto const RANK_CHANCE_INCREASE{ CHARACTER_PTR->Rank().As<float>() / RANK_DIVISOR_F };
 
         chanceCool += RANK_CHANCE_INCREASE;
         chanceMetal += RANK_CHANCE_INCREASE;
@@ -1418,7 +1418,7 @@ namespace ownership
         }
 
         //adjust for item weight that can make special materials less likely
-        auto const WEIGHT_CHANCE_ADJUSTMENT{ ITEM_WEIGHT.AsFloat() / 2500.0f };
+        auto const WEIGHT_CHANCE_ADJUSTMENT{ ITEM_WEIGHT.As<float>() / 2500.0f };
         chanceCool -= WEIGHT_CHANCE_ADJUSTMENT;
         chanceMetal -= WEIGHT_CHANCE_ADJUSTMENT;
         chancePrecious -= WEIGHT_CHANCE_ADJUSTMENT;
@@ -1502,7 +1502,7 @@ namespace ownership
         auto const RANK_DIVISOR{ static_cast<float>(
             game::GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax")) };
 
-        auto const RANK_CHANCE_INCREASE{ CHARACTER_PTR->Rank().AsFloat() / RANK_DIVISOR };
+        auto const RANK_CHANCE_INCREASE{ CHARACTER_PTR->Rank().As<float>() / RANK_DIVISOR };
         chanceCool += RANK_CHANCE_INCREASE;
         chanceMetal += RANK_CHANCE_INCREASE;
         chancePrecious += RANK_CHANCE_INCREASE;

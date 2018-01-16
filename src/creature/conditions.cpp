@@ -63,7 +63,7 @@ namespace condition
             }
         }
 
-        if (misc::random::Int(100) < (8 + creaturePtr->Rank().AsInt()))
+        if (misc::random::Int(100) < (8 + creaturePtr->Rank().As<int>()))
         {
             creaturePtr->ConditionRemove(Conditions::AsleepMagical);
 
@@ -97,7 +97,7 @@ namespace condition
             }
         }
 
-        if (misc::random::Int(100) < (15 + creaturePtr->Rank().AsInt()))
+        if (misc::random::Int(100) < (15 + creaturePtr->Rank().As<int>()))
         {
             creaturePtr->ConditionRemove(Conditions::AsleepNatural);
 
@@ -130,7 +130,7 @@ namespace condition
             }
         }
 
-        if (misc::random::Int(100) < (10 + creaturePtr->Rank().AsInt()))
+        if (misc::random::Int(100) < (10 + creaturePtr->Rank().As<int>()))
         {
             creaturePtr->ConditionRemove(Conditions::Dazed);
 
@@ -294,7 +294,7 @@ namespace condition
                 ((creaturePtr->IsPixie()) ? 0 : misc::random::Int(1, 5)) };
 
             auto const DAMAGE_RAND_MAX{ std::max(1, static_cast<int>(
-                creaturePtr->HealthNormal().AsFloat() * 0.1f)) };
+                creaturePtr->HealthNormal().As<float>() * 0.1f)) };
 
             auto const DAMAGE_FROM_HEALTH_NORMAL{ misc::random::Int(1, DAMAGE_RAND_MAX) };
 

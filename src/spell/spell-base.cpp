@@ -83,7 +83,7 @@ namespace spell
     const std::string Spell::DescDetails() const
     {
         std::ostringstream ss;
-        ss  << "A " << misc::String::DecorateNumber(rank_.AsInt()) << " rank"
+        ss  << "A " << misc::String::DecorateNumber(rank_.As<int>()) << " rank"
             << " " << combat::EffectType::Name(effectType_) << " spell"
             << " that can be cast during " << game::Phase::ToString(validPhases_, false)
             << ", targeting " << combat::TargetType::Name(targetType_)

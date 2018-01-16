@@ -97,7 +97,7 @@ namespace song
     const std::string Song::DescDetails() const
     {
         std::ostringstream ss;
-        ss << "A " << misc::String::DecorateNumber(rank_.AsInt()) << " rank"
+        ss << "A " << misc::String::DecorateNumber(rank_.As<int>()) << " rank"
            << combat::EffectType::Name(effectType_) << " magical ";
 
         if (SongType::Guitar == type_)

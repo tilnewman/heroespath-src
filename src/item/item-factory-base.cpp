@@ -303,7 +303,7 @@ namespace item
 
         if (IS_PIXIE_ITEM)
         {
-            price = Coin_t(static_cast<Coin_t::type>(price.AsFloat() * 1.5f));
+            price = Coin_t(static_cast<Coin_t::type>(price.As<float>() * 1.5f));
         }
     }
 
@@ -313,7 +313,7 @@ namespace item
                                    const material::Enum MATERIAL_SEC)
     {
         weight = Weight_t( static_cast<Weight_t::type>(
-            weight.AsFloat() * material::WeightMult(MATERIAL_PRI, MATERIAL_SEC) ) );
+            weight.As<float>() * material::WeightMult(MATERIAL_PRI, MATERIAL_SEC) ) );
     }
 
 
@@ -328,7 +328,7 @@ namespace item
     Coin_t FactoryBase::TreasureScoreToCoins(const Score_t & TREASURE_SCORE)
     {
         //For now Treasure Score equals the price in coins
-        return Coin_t(TREASURE_SCORE.AsInt());
+        return Coin_t(TREASURE_SCORE.As<int>());
     }
 
 

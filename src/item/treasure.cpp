@@ -57,8 +57,8 @@ namespace item
     {
         auto const TREASURE_SCORES{ CalculateTreasureSums(CHARACTER_PVEC) };
 
-        itemCache_OutParam.coins = Coin_t(TREASURE_SCORES.Coin().AsInt());
-        itemCache_OutParam.gems = Gem_t(TREASURE_SCORES.Gem().AsInt());
+        itemCache_OutParam.coins = Coin_t(TREASURE_SCORES.Coin().As<int>());
+        itemCache_OutParam.gems = Gem_t(TREASURE_SCORES.Gem().As<int>());
 
         SelectItems(TREASURE_SCORES.Magic(), false, itemCache_OutParam);
         SelectItems(TREASURE_SCORES.Religious(), true, itemCache_OutParam);
@@ -121,23 +121,23 @@ namespace item
         }
 
         auto const COIN_AVG{
-            scores.Coin().AsFloat() / static_cast<float>(CHARACTER_PVEC.size()) };
+            scores.Coin().As<float>() / static_cast<float>(CHARACTER_PVEC.size()) };
 
         auto const GEM_AVG{
-            scores.Gem().AsFloat() / static_cast<float>(CHARACTER_PVEC.size()) };
+            scores.Gem().As<float>() / static_cast<float>(CHARACTER_PVEC.size()) };
 
         auto const MAGIC_AVG{
-            scores.Magic().AsFloat() / static_cast<float>(CHARACTER_PVEC.size()) };
+            scores.Magic().As<float>() / static_cast<float>(CHARACTER_PVEC.size()) };
 
         auto const RELIGIOUS_AVG{
-          scores.Religious().AsFloat() / static_cast<float>(CHARACTER_PVEC.size()) };
+          scores.Religious().As<float>() / static_cast<float>(CHARACTER_PVEC.size()) };
 
         auto const T_SCORES_MAX{ creature::race::TreasureScoreMax() };
 
-        auto const COIN_RATIO{ COIN_AVG / T_SCORES_MAX.Coin().AsFloat() };
-        auto const GEM_RATIO{ GEM_AVG / T_SCORES_MAX.Gem().AsFloat() };
-        auto const MAGIC_RATIO{ MAGIC_AVG / T_SCORES_MAX.Magic().AsFloat() };
-        auto const RELIGIOUS_RATIO{ RELIGIOUS_AVG / T_SCORES_MAX.Religious().AsFloat() };
+        auto const COIN_RATIO{ COIN_AVG / T_SCORES_MAX.Coin().As<float>() };
+        auto const GEM_RATIO{ GEM_AVG / T_SCORES_MAX.Gem().As<float>() };
+        auto const MAGIC_RATIO{ MAGIC_AVG / T_SCORES_MAX.Magic().As<float>() };
+        auto const RELIGIOUS_RATIO{ RELIGIOUS_AVG / T_SCORES_MAX.Religious().As<float>() };
 
         return (COIN_RATIO + GEM_RATIO + MAGIC_RATIO + RELIGIOUS_RATIO) / 4.0f;
     }
@@ -155,41 +155,41 @@ namespace item
         }
 
         auto const COIN_BASE{ static_cast<int>(
-            scores.Coin().AsFloat() *
+            scores.Coin().As<float>() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-base")) };
 
         auto const COIN_RAND_BASE{ static_cast<int>(
-            scores.Coin().AsFloat() *
+            scores.Coin().As<float>() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-coin-mult")) };
 
         auto const COIN{ Score_t(COIN_BASE + misc::random::Int(COIN_RAND_BASE)) };
 
         auto const GEM_BASE{ static_cast<int>(
-            scores.Gem().AsFloat() *
+            scores.Gem().As<float>() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-base")) };
 
         auto const GEM_RAND_BASE{ static_cast<int>(
-            scores.Gem().AsFloat() *
+            scores.Gem().As<float>() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-gem-mult")) };
 
         auto const GEM{ Score_t(GEM_BASE + misc::random::Int(GEM_RAND_BASE)) };
 
         auto const MAGIC_BASE{ static_cast<stats::Trait_t>(
-            scores.Magic().AsFloat() *
+            scores.Magic().As<float>() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-base")) };
 
         auto const MAGIC_RAND_BASE{ static_cast<stats::Trait_t>(
-            scores.Magic().AsFloat() *
+            scores.Magic().As<float>() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-magic-mult")) };
 
         auto const MAGIC{ Score_t(MAGIC_BASE + misc::random::Int(MAGIC_RAND_BASE)) };
 
         auto const RELIGIOUS_BASE{ static_cast<stats::Trait_t>(
-            scores.Religious().AsFloat() *
+            scores.Religious().As<float>() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-base")) };
 
         auto const RELIGIOUS_RAND_BASE{ static_cast<stats::Trait_t>(
-            scores.Religious().AsFloat() *
+            scores.Religious().As<float>() *
                 game::GameDataFile::Instance()->GetCopyFloat("heroespath-treasure-religious-mult")) };
 
         auto const RELIGIOUS{ Score_t(RELIGIOUS_BASE + misc::random::Int(RELIGIOUS_RAND_BASE)) };
@@ -357,7 +357,7 @@ namespace item
 
     double TreasureFactory::TreasureScoreToWeight(const Score_t & TREASURE_SCORE)
     {
-        return 1.0 / (TREASURE_SCORE.AsDouble() * 0.1);
+        return 1.0 / (TREASURE_SCORE.As<double>() * 0.1);
     }
 
 

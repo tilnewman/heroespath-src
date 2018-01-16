@@ -215,7 +215,7 @@ namespace creature
 
         inline float HealthRatio() const
         {
-            return (healthCurrent_.AsFloat() / healthNormal_.AsFloat());
+            return (healthCurrent_.As<float>() / healthNormal_.As<float>());
         }
 
         inline Health_t HealthMissing() const
@@ -235,7 +235,7 @@ namespace creature
 
         inline Mana_t ManaAdj(const Mana_t & ADJ)
         {
-            return Mana_t( TraitCurrentAdj(stats::Traits::Mana, ADJ.AsInt()) );
+            return Mana_t( TraitCurrentAdj(stats::Traits::Mana, ADJ.As<int>()) );
         }
 
         inline Mana_t ManaNormal() const
@@ -245,12 +245,12 @@ namespace creature
 
         inline Mana_t ManaNormalAdj(const Mana_t & ADJ)
         {
-            return Mana_t(TraitNormalAdj(stats::Traits::Mana, ADJ.AsInt()));
+            return Mana_t(TraitNormalAdj(stats::Traits::Mana, ADJ.As<int>()));
         }
 
         inline float ManaRatio() const
         {
-            return (Mana().AsFloat() / ManaNormal().AsFloat());
+            return (Mana().As<float>() / ManaNormal().As<float>());
         }
 
         inline bool IsDead() const { return HasCondition(Conditions::Dead); }

@@ -94,7 +94,7 @@ namespace sfml_util
         inline bool OwnsId(const ID_t & ID) const
         {
             return (ID >= first_id) &&
-                   (ID.AsUInt() < (first_id.AsUInt() + tile_count.AsUInt()));
+                   (ID.As<unsigned>() < (first_id.As<unsigned>() + tile_count.As<unsigned>()));
         }
 
         std::string name;

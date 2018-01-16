@@ -713,7 +713,7 @@ namespace combat
             }
             else
             {
-                ss << "for " << CREATURE_EFFECT.GetDamageTotal().AsInt() * -1 << " damage";
+                ss << "for " << CREATURE_EFFECT.GetDamageTotal().As<int>() * -1 << " damage";
             }
 
             ss << AttackConditionsSummaryList(CREATURE_EFFECT);
@@ -804,7 +804,7 @@ namespace combat
 
             if (HIT_INFO.Damage() < 0_health)
             {
-                ss << "for " << HIT_INFO.Damage().AsInt() * -1 << " damage";
+                ss << "for " << HIT_INFO.Damage().As<int>() * -1 << " damage";
             }
             else
             {

@@ -51,20 +51,9 @@ namespace misc
         virtual ~StrongNumericType()
         {}
 
-        unsigned char AsUChar() const { return static_cast<unsigned char>(this->Get()); }
-        int AsShort() const { return static_cast<short>(this->Get()); }
-        unsigned AsUShort() const { return static_cast<unsigned short>(this->Get()); }
-        int AsInt() const { return static_cast<int>(this->Get()); }
-        unsigned AsUInt() const { return static_cast<unsigned>(this->Get()); }
-        int AsLong() const { return static_cast<long>(this->Get()); }
-        unsigned AsULong() const { return static_cast<unsigned long>(this->Get()); }
-        int AsLLong() const { return static_cast<long long>(this->Get()); }
-        unsigned AsULLong() const { return static_cast<unsigned long long>(this->Get()); }
-        std::size_t AsSizeT() const { return static_cast<std::size_t>(this->Get()); }
-        float AsFloat() const { return static_cast<float>(this->Get()); }
-        double AsDouble() const { return static_cast<double>(this->Get()); }
-        double AsLDouble() const { return static_cast<long double>(this->Get()); }
-
+        template<typename AsType_t>
+        AsType_t As() const { return static_cast<AsType_t>(this->Get()); }
+        
         bool IsZero() const { return (this->m_value == T(0)); }
         bool IsNonZero() const { return ! IsZero(); }
 
@@ -161,7 +150,7 @@ namespace misc
 
         StrongNumericType operator++(int)
         {
-            StrongNumericType temp{ *this };
+            StrongNumericType temp{ * this };
             operator++();
             return temp;
         }
@@ -174,7 +163,7 @@ namespace misc
 
         StrongNumericType operator--(int)
         {
-            StrongNumericType temp{ *this };
+            StrongNumericType temp{ * this };
             operator--();
             return temp;
         }

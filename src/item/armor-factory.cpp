@@ -690,7 +690,7 @@ namespace armor
         ArmorDetails details;
 
         details.armor_rating = Armor_t( static_cast<Armor_t::type>(
-            item::material::ArmorRatingBonusPri(MATERIAL).AsInt() + CREATURE_RANK.AsInt() ) );
+            item::material::ArmorRatingBonusPri(MATERIAL).As<int>() + CREATURE_RANK.As<int>() ) );
 
         details.complexity = non_player::ownership::complexity_type::Simple;
         details.name = material::ToReadableString(MATERIAL) + " skin";

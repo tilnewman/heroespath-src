@@ -207,7 +207,7 @@ namespace creature
         if (OPTIONS & With::RankBonus)
         {
             auto const RANK_BONUS{ static_cast<int>(
-                CREATURE_PTR->Rank().AsFloat() * game::GameDataFile::Instance()->GetCopyFloat(
+                CREATURE_PTR->Rank().As<float>() * game::GameDataFile::Instance()->GetCopyFloat(
                     "heroespath-fight-stats-rank-bonus-ratio")) };
 
             rollChance += RANK_BONUS;
@@ -298,7 +298,7 @@ namespace creature
         }
 
         auto const CHALLENGER_ROLL{ chaRandSum + ((OPTIONS & With::RankBonus) ?
-            CHALLENGER_PTR->Rank().AsInt() : 0 ) };
+            CHALLENGER_PTR->Rank().As<int>() : 0 ) };
 
         auto const DEFENDER_TRAIT_VEC{ ((DEFENDER_TRAIT_VEC_PARAM.empty()) ?
             CHALLENGER_TRAIT_VEC : DEFENDER_TRAIT_VEC_PARAM) };
@@ -343,13 +343,13 @@ namespace creature
         }
 
         auto const DEFENDER_ROLL{ defRandSum + ((OPTIONS & With::RankBonus) ?
-            DEFENDER_PTR->Rank().AsInt() : 0 ) };
+            DEFENDER_PTR->Rank().As<int>() : 0 ) };
 
         //handle roll tie
         if (CHALLENGER_ROLL == DEFENDER_ROLL)
         {
-            auto const CHA_NORMAL_PLUS_RANK{ chaNormalSum + CHALLENGER_PTR->Rank().AsInt() };
-            auto const DEF_NORMAL_PLUS_RANK{ defNormalSum + DEFENDER_PTR->Rank().AsInt() };
+            auto const CHA_NORMAL_PLUS_RANK{ chaNormalSum + CHALLENGER_PTR->Rank().As<int>() };
+            auto const DEF_NORMAL_PLUS_RANK{ defNormalSum + DEFENDER_PTR->Rank().As<int>() };
 
             //handle normal+rank tie
             if (CHA_NORMAL_PLUS_RANK == DEF_NORMAL_PLUS_RANK)
@@ -558,7 +558,7 @@ namespace creature
         auto x{ static_cast<int>(
             static_cast<float>(RAND_SPREAD) * (RAND_RATIO + TRAIT_BONUS_RATIO)) };
 
-        x += static_cast<int>(CREATURE_PTR->Rank().AsFloat() * RANK_BONUS_MULT);
+        x += static_cast<int>(CREATURE_PTR->Rank().As<float>() * RANK_BONUS_MULT);
 
         return x;
     }

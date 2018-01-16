@@ -445,7 +445,7 @@ namespace chance
         inline Coin_t RandomCoins() const
         {
             return ((coins_min < coins_max) ?
-                Coin_t(misc::random::Int(coins_min.AsInt(), coins_max.AsInt())) :
+                Coin_t(misc::random::Int(coins_min.As<int>(), coins_max.As<int>())) :
                 coins_min);
         }
 

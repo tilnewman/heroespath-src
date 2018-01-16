@@ -2731,7 +2731,7 @@ namespace stage
 
             PopupNumberSelectWindow(
                 ss.str(),
-                creaturePtr_->Inventory().Coins().AsSizeT());
+                creaturePtr_->Inventory().Coins().As<std::size_t>());
         }
 
         return false;
@@ -2751,7 +2751,7 @@ namespace stage
 
             PopupNumberSelectWindow(
                 ss.str(),
-                creaturePtr_->Inventory().Gems().AsSizeT());
+                creaturePtr_->Inventory().Gems().As<std::size_t>());
         }
 
         return false;
@@ -2772,7 +2772,7 @@ namespace stage
 
             PopupNumberSelectWindow(
                 ss.str(),
-                creaturePtr_->Inventory().MeteorShards().AsSizeT());
+                creaturePtr_->Inventory().MeteorShards().As<std::size_t>());
         }
 
         return false;
@@ -3302,7 +3302,7 @@ namespace stage
 
         HandleCoinsGather(false);
 
-        auto const COINS_TOTAL{ creaturePtr_->Inventory().Coins().AsInt() };
+        auto const COINS_TOTAL{ creaturePtr_->Inventory().Coins().As<int>() };
 
         auto const HUMANOID_COUNT{
             static_cast<int>(game::Game::Instance()->State().Party().GetNumHumanoid()) };
@@ -3355,7 +3355,7 @@ namespace stage
 
         HandleGemsGather(false);
 
-        auto const GEMS_TOTAL{ creaturePtr_->Inventory().Gems().AsInt() };
+        auto const GEMS_TOTAL{ creaturePtr_->Inventory().Gems().As<int>() };
 
         auto const HUMANOID_COUNT{
             static_cast<int>(game::Game::Instance()->State().Party().GetNumHumanoid()) };
@@ -3409,7 +3409,7 @@ namespace stage
 
         HandleMeteorShardsGather(false);
 
-        const int METEORSHARDS_TOTAL{ creaturePtr_->Inventory().MeteorShards().AsInt() };
+        const int METEORSHARDS_TOTAL{ creaturePtr_->Inventory().MeteorShards().As<int>() };
 
         const int HUMANOID_COUNT{
             static_cast<int>(game::Game::Instance()->State().Party().GetNumHumanoid()) };

@@ -496,7 +496,7 @@ namespace combat
             }
 
             auto const SHOULDER_TO_SHOULDER_COUNT{
-                combatTree_.VertexCountByBlockingPos(NEXT_VERTEX.id.AsInt()) };
+                combatTree_.VertexCountByBlockingPos(NEXT_VERTEX.id.As<int>()) };
 
             if (shoulderToShoulderMax < SHOULDER_TO_SHOULDER_COUNT)
             {

@@ -124,10 +124,10 @@ namespace sfml_util
         //create off-screen texture
         //always ensure these are valid power of 2 sizes
         auto const WIDTH{
-            WIN_SIZE_V_.x + (tileSizeWidth_  * (EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt() + 2)) };
+            WIN_SIZE_V_.x + (tileSizeWidth_  * (EXTRA_OFFSCREEN_TILE_COUNT_.As<unsigned>() + 2)) };
 
         auto const HEIGHT{
-            WIN_SIZE_V_.y + (tileSizeHeight_ * (EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt() + 2)) };
+            WIN_SIZE_V_.y + (tileSizeHeight_ * (EXTRA_OFFSCREEN_TILE_COUNT_.As<unsigned>() + 2)) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(offScreenTexture_.create(WIDTH, HEIGHT),
             "sfml_util::TileMap::TileMap(\"" << MAP_PATH_STR
@@ -138,10 +138,10 @@ namespace sfml_util
         offScreenRect_.height = static_cast<float>(WIN_SIZE_V_.y);
 
         offScreenRect_.left =
-            static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt() * tileSizeWidth_);
+            static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_.As<unsigned>() * tileSizeWidth_);
 
         offScreenRect_.top =
-            static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt() * tileSizeHeight_);
+            static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_.As<unsigned>() * tileSizeHeight_);
 
         SetupMapSprite();
 
@@ -285,7 +285,7 @@ namespace sfml_util
         {
             auto const VERT_POS{
                 offScreenRect_.top +
-                    static_cast<float>(prevTileOffsets_.begin_y.AsUInt() * tileSizeHeight_) };
+                    static_cast<float>(prevTileOffsets_.begin_y.As<unsigned>() * tileSizeHeight_) };
 
             auto const VERT_LIMIT{
                 static_cast<float>(mapTileCountY_ * tileSizeHeight_) -
@@ -370,7 +370,7 @@ namespace sfml_util
         {
             auto const HORIZ_POS{
                 (offScreenRect_.left +
-                    static_cast<float>(prevTileOffsets_.begin_x.AsUInt() * tileSizeWidth_)) };
+                    static_cast<float>(prevTileOffsets_.begin_x.As<unsigned>() * tileSizeWidth_)) };
 
             auto const HORIZ_LIMIT{
                 static_cast<float>((mapTileCountX_ * tileSizeWidth_) - WIN_SIZE_V_.x) };
@@ -462,7 +462,7 @@ namespace sfml_util
                     quads[3].texCoords = NEXT_MAP_LAYER.vert_array[vertIndex++].texCoords;
 
                     renderStates_.texture = & textures_[
-                        NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex++].texture_index.AsUInt()];
+                        NEXT_MAP_LAYER.tilesimage_vec[tilesImageIndex++].texture_index.As<unsigned>()];
 
                     offScreenTexture_.draw(quads, renderStates_);
                 }
@@ -828,9 +828,9 @@ namespace sfml_util
         const std::size_t VERTEXES_PER_QUAD{ 4 };
 
         mapLayer.vert_array.resize(
-            (TILE_WIDTH.AsSizeT() * TILE_HEIGHT.AsSizeT()) * VERTEXES_PER_QUAD);
+            (TILE_WIDTH.As<std::size_t>() * TILE_HEIGHT.As<std::size_t>()) * VERTEXES_PER_QUAD);
 
-        mapLayer.tilesimage_vec.reserve(TILE_WIDTH.AsSizeT() * TILE_HEIGHT.AsSizeT());
+        mapLayer.tilesimage_vec.reserve(TILE_WIDTH.As<std::size_t>() * TILE_HEIGHT.As<std::size_t>());
 
         //populate the vertex array with one quad per tile
         unsigned vertIndex(0);
@@ -889,10 +889,10 @@ namespace sfml_util
                     textures_[TILE_IMAGE.texture_index.Get()].getSize().x / tileSizeWidth_ };
 
                 auto const TILE_COUNT_U{
-                    static_cast<float>(TILE_ID.AsUInt() % TEXTURE_TILE_COUNT_HORIZ) };
+                    static_cast<float>(TILE_ID.As<unsigned>() % TEXTURE_TILE_COUNT_HORIZ) };
 
                 auto const TILE_COUNT_V{
-                    static_cast<float>(TILE_ID.AsUInt() / TEXTURE_TILE_COUNT_HORIZ) };
+                    static_cast<float>(TILE_ID.As<unsigned>() / TEXTURE_TILE_COUNT_HORIZ) };
 
                 auto const TEXTCOORD_WIDTH{
                     TILE_COUNT_U * static_cast<float>(tileSizeWidth_) };
@@ -948,7 +948,7 @@ namespace sfml_util
         tileOffsets.end_x = Count_t(PLAYER_POSX_IN_TILES + HALF_WIN_TILES_X);
 
         auto const TILE_WITH_OFFSET_COUNT_X{
-            Count_t((WIN_SIZE_V_.x / tileSizeWidth_) + EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt()) };
+            Count_t((WIN_SIZE_V_.x / tileSizeWidth_) + EXTRA_OFFSCREEN_TILE_COUNT_.As<unsigned>()) };
 
         if (tileOffsets.end_x < TILE_WITH_OFFSET_COUNT_X)
         {
@@ -970,7 +970,7 @@ namespace sfml_util
         tileOffsets.end_y = Count_t(PLAYER_POSY_IN_TILES + HALF_WIN_TILES_Y);
 
         auto const TILE_WITH_OFFSET_COUNT_Y{
-            Count_t((WIN_SIZE_V_.y / tileSizeHeight_) + EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt()) };
+            Count_t((WIN_SIZE_V_.y / tileSizeHeight_) + EXTRA_OFFSCREEN_TILE_COUNT_.As<unsigned>()) };
 
         if (tileOffsets.end_y < TILE_WITH_OFFSET_COUNT_Y)
         {
@@ -995,7 +995,7 @@ namespace sfml_util
             tileOffsets.begin_y = 0_count;
         }
 
-        if ((tileOffsets.end_x.AsUInt() + EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt()) < mapTileCountX_)
+        if ((tileOffsets.end_x.As<unsigned>() + EXTRA_OFFSCREEN_TILE_COUNT_.As<unsigned>()) < mapTileCountX_)
         {
             tileOffsets.end_x += EXTRA_OFFSCREEN_TILE_COUNT_;
         }
@@ -1004,7 +1004,7 @@ namespace sfml_util
             tileOffsets.end_x = Count_t(mapTileCountX_);
         }
 
-        if ((tileOffsets.end_y.AsUInt() + EXTRA_OFFSCREEN_TILE_COUNT_.AsUInt()) < mapTileCountY_)
+        if ((tileOffsets.end_y.As<unsigned>() + EXTRA_OFFSCREEN_TILE_COUNT_.As<unsigned>()) < mapTileCountY_)
         {
             tileOffsets.end_y += EXTRA_OFFSCREEN_TILE_COUNT_;
         }
@@ -1043,10 +1043,10 @@ namespace sfml_util
     {
         //Convert from off-screen coords to on-screen coords.
         auto const OFFSET_DIFFX{
-            static_cast<float>(TILE_OFFSETS.end_x.AsInt() - TILE_OFFSETS.begin_x.AsInt()) };
+            static_cast<float>(TILE_OFFSETS.end_x.As<int>() - TILE_OFFSETS.begin_x.As<int>()) };
 
         auto const OFFSET_DIFFY{
-            static_cast<float>(TILE_OFFSETS.end_y.AsInt() - TILE_OFFSETS.begin_y.AsInt()) };
+            static_cast<float>(TILE_OFFSETS.end_y.As<int>() - TILE_OFFSETS.begin_y.As<int>()) };
 
         auto const LEFT{ static_cast<float>(
             WIN_POS_V_.x + ((OFFSET_DIFFX * static_cast<float>(tileSizeWidth_)) * 0.5f)) };

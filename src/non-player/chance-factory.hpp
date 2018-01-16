@@ -231,7 +231,7 @@ namespace ownership
             auto const ENUM_RATIO_INVERSE{
                 (WEAPON_COUNT_FLOAT + 1.0f) / (WEAPON_NUM_FLOAT + 1.0f) };
 
-            auto const RANK_F{ CHARACTER_PTR->Rank().AsFloat() };
+            auto const RANK_F{ CHARACTER_PTR->Rank().As<float>() };
 
             auto const RANK_GRANDMASTER_F{ game::GameDataFile::Instance()->
                 GetCopyFloat("heroespath-rankclass-Master-rankmax") + 1.0f };

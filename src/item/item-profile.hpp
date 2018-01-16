@@ -142,7 +142,7 @@ namespace item
         {
             if (IS_RELIGIOUS)
             {
-                return Score_t(static_cast<Score_t::type>(score_.AsFloat() * religious_));
+                return Score_t(static_cast<Score_t::type>(score_.As<float>() * religious_));
             }
             else
             {

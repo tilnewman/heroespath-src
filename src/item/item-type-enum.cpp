@@ -2205,7 +2205,7 @@ namespace item
             "heroespath-item-secondary-material-armor-adj-ratio") };
 
         return Armor_t( static_cast<Armor_t::type>(
-            ArmorRatingBonusPri(MATERIAL_SEC).AsFloat() * SEC_MATERIAL_ARMOR_ADJ_RATIO) );
+            ArmorRatingBonusPri(MATERIAL_SEC).As<float>() * SEC_MATERIAL_ARMOR_ADJ_RATIO) );
     }
 
 

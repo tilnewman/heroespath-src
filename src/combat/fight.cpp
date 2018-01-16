@@ -1108,7 +1108,7 @@ namespace combat
         auto hasHitBeenDetermined{ false };
         auto wasHit{ false };
 
-        auto const ATTACK_ACC_RAW{ creatureAttackingPtrC->Accuracy().AsInt() };
+        auto const ATTACK_ACC_RAW{ creatureAttackingPtrC->Accuracy().As<int>() };
         auto attackAccToUse{ ATTACK_ACC_RAW };
 
         //If the attacking creature is an archer who is using a projectile weapon,
@@ -1126,7 +1126,7 @@ namespace combat
                 "heroespath-fight-archer-projectile-rank-bonus-ratio") };
 
             attackAccToUse += static_cast<int>(
-                creatureAttackingPtrC->Rank().AsFloat() * ARCHER_RANK_BONUS_RATIO);
+                creatureAttackingPtrC->Rank().As<float>() * ARCHER_RANK_BONUS_RATIO);
         }
 
         auto const ATTACK_ACC_RAND_MIN{ static_cast<stats::Trait_t>(
@@ -1145,13 +1145,13 @@ namespace combat
             (attackAccToUse >= STAT_HIGHER_THAN_AVERAGE) &&
             IsValuetHigherThanRatioOfStat(ATTACK_ACC_RAND, attackAccToUse, STAT_RATIO_AMAZING)};
 
-        auto const DEFEND_SPD_RAW{ creatureDefendingPtrC->Speed().AsInt() };
+        auto const DEFEND_SPD_RAW{ creatureDefendingPtrC->Speed().As<int>() };
         auto defendSpdToUse{ DEFEND_SPD_RAW };
 
         //If the defending creature is a Pixie then add a speed bonus based on rank.
         if (creatureDefendingPtrC->IsPixie())
         {
-            defendSpdToUse += static_cast<int>(creatureDefendingPtrC->Rank().AsFloat() *
+            defendSpdToUse += static_cast<int>(creatureDefendingPtrC->Rank().As<float>() *
                 game::GameDataFile::Instance()->GetCopyFloat(
                     "heroespath-fight-pixie-defend-speed-rank-bonus-ratio"));
         }
@@ -1199,10 +1199,10 @@ namespace combat
         if (false == hasHitBeenDetermined)
         {
             auto const ATTACK_ACC_RANK_ADJ{
-                ATTACK_ACC_RAND + creatureAttackingPtrC->Rank().AsInt() };
+                ATTACK_ACC_RAND + creatureAttackingPtrC->Rank().As<int>() };
 
             auto const DEFEND_SPD_RANK_ADJ{
-                DEFEND_SPD_RAND + creatureDefendingPtrC->Rank().AsInt() };
+                DEFEND_SPD_RAND + creatureDefendingPtrC->Rank().As<int>() };
 
             if (ATTACK_ACC_RANK_ADJ > DEFEND_SPD_RANK_ADJ)
             {
@@ -1235,10 +1235,10 @@ namespace combat
                 //In this case, attaker and defender tied on luck rolls,
                 //so the hit is determined by who has the greater luck roll + rank.
                 auto const ATTACK_LCK_RANK_ADJ{
-                    ATTACKER_LUCK_RAND + creatureAttackingPtrC->Rank().AsInt() };
+                    ATTACKER_LUCK_RAND + creatureAttackingPtrC->Rank().As<int>() };
 
                 auto const DEFEND_LCK_RANK_ADJ{
-                    DEFENDER_LUCK_RAND + creatureDefendingPtrC->Rank().AsInt() };
+                    DEFENDER_LUCK_RAND + creatureDefendingPtrC->Rank().As<int>() };
 
                 if (ATTACK_LCK_RANK_ADJ > DEFEND_LCK_RANK_ADJ)
                 {
@@ -1329,7 +1329,7 @@ namespace combat
         bool &                   didArmorAbsorb_OutParam)
     {
         const Health_t DAMAGE_FROM_WEAPON_RAW{ misc::random::Int(
-            WEAPON_PTR->DamageMin().AsInt(), WEAPON_PTR->DamageMax().AsInt()) };
+            WEAPON_PTR->DamageMin().As<int>(), WEAPON_PTR->DamageMax().As<int>()) };
 
         //If weapon is fist and creature attacking is wearing gauntlets, then triple the damage.
         Health_t extraDamage{ 0_health };
@@ -1361,7 +1361,7 @@ namespace combat
             "heroespath-fight-rank-damage-bonus-ratio") };
 
         const Health_t DAMAGE_FROM_RANK{ static_cast<Health_t::type>(
-            creatureAttackingPtrC->Rank().AsFloat() * RANK_DAMAGE_BONUS_ADJ_RATIO) };
+            creatureAttackingPtrC->Rank().As<float>() * RANK_DAMAGE_BONUS_ADJ_RATIO) };
 
         //If strength stat is at or over the min of STAT_FLOOR,
         //then add a damage bonus based on half a strength ratio "roll".
@@ -1369,7 +1369,7 @@ namespace combat
             "heroespath-fight-stats-value-floor") };
 
         Health_t damageFromStrength{ 0_health };
-        auto const STRENGTH_CURRENT{ creatureAttackingPtrC->Strength().AsInt() };
+        auto const STRENGTH_CURRENT{ creatureAttackingPtrC->Strength().As<int>() };
         if (STRENGTH_CURRENT > STAT_FLOOR)
         {
             auto const RAND_STR_STAT{ creature::Stats::Roll(
@@ -1430,7 +1430,7 @@ namespace combat
         auto const CRITICAL_HIT_CHANCE_RATIO{ game::GameDataFile::Instance()->GetCopyFloat(
             "heroespath-fight-hit-critical-chance-ratio") };
 
-        auto const ACCURACY_CURRENT{ creatureAttackingPtrC->Accuracy().AsInt() };
+        auto const ACCURACY_CURRENT{ creatureAttackingPtrC->Accuracy().As<int>() };
 
         isCriticalHit_OutParam =
             ((creatureAttackingPtrC->IsPlayerCharacter() || LUCK_TEST) &&
@@ -1441,7 +1441,7 @@ namespace combat
         Health_t damageFinal{ DAMAGE_BASE };
 
         const Health_t SPECIAL_HIT_DAMAGE_MIN{
-            creatureAttackingPtrC->Rank().AsInt() +
+            creatureAttackingPtrC->Rank().As<int>() +
                 game::GameDataFile::Instance()->GetCopyInt("heroespath-fight-hit-special-damage-min") };
 
         if (isPowerHit_OutParam)
@@ -1472,9 +1472,9 @@ namespace combat
         }
 
         damageFinal -= Health_t(
-            static_cast<Health_t::type>(damageFinal.AsFloat() *
-                (armorRatingToUse.AsFloat() /
-                    item::ArmorRatings::Instance()->ArmoredGreaterDiamond().AsFloat()) ) );
+            static_cast<Health_t::type>(damageFinal.As<float>() *
+                (armorRatingToUse.As<float>() /
+                    item::ArmorRatings::Instance()->ArmoredGreaterDiamond().As<float>()) ) );
 
         //check if armor absorbed all the damage
         if ((DAMAGE_AFTER_SPECIALS > 0_health) && (damageFinal <= 0_health))
@@ -1500,7 +1500,7 @@ namespace combat
                     "heroespath-fight-pixie-damage-adj-ratio") };
 
                 damageFinal = Health_t(static_cast<Health_t::type>(
-                    damageFinal.AsFloat() * PIXIE_DAMAGE_ADJ_RATIO));
+                    damageFinal.As<float>() * PIXIE_DAMAGE_ADJ_RATIO));
             }
         }
 

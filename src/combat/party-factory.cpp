@@ -167,7 +167,7 @@ namespace combat
             RACE,
             ROLE,
             STATS,
-            Health_t(misc::random::Int(HEALTH_MIN.AsInt(), HEALTH_MAX.AsInt())),
+            Health_t(misc::random::Int(HEALTH_MIN.As<int>(), HEALTH_MAX.As<int>())),
             RANK,
             EXPERIENCE,
             creature::CondEnumVec_t(),

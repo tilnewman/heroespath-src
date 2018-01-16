@@ -425,7 +425,7 @@ namespace item
                 profiles(),
                 scores(),
                 divCountsScore(static_cast<std::size_t>(
-                    (PROFILES[PROFILES.size() - 1].TreasureScore().AsInt() / DIVISION_SIZE) + 1), 0),
+                    (PROFILES[PROFILES.size() - 1].TreasureScore().As<int>() / DIVISION_SIZE) + 1), 0),
                 sum(0)
             {}
 
@@ -439,7 +439,7 @@ namespace item
             void Add(const ItemProfile & P)
             {
                 profiles.push_back(P);
-                auto const TREASURE_SCORE_INT{ P.TreasureScore().AsInt() };
+                auto const TREASURE_SCORE_INT{ P.TreasureScore().As<int>() };
                 ++divCountsScore[static_cast<std::size_t>(TREASURE_SCORE_INT / division)];
                 sum += TREASURE_SCORE_INT;
                 scores.push_back(TREASURE_SCORE_INT);
@@ -482,7 +482,7 @@ namespace item
                         profiles.end(),
                         [DIV_SCORE_START](const auto & P)
                     {
-                        return P.TreasureScore().AsInt() >= DIV_SCORE_START;
+                        return P.TreasureScore().template As<int>() >= DIV_SCORE_START;
                     }) };
 
                     int i{ 0 };

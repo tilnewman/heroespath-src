@@ -1058,8 +1058,8 @@ namespace stage
     {
         const int TOTAL{
             ((WHAT_IS_SHARED == ShareType::Coins) ?
-                (itemCacheHeld_.coins.AsInt() + itemCacheLockbox_.coins.AsInt()) :
-                (itemCacheHeld_.gems.AsInt() + itemCacheLockbox_.gems.AsInt())) };
+                (itemCacheHeld_.coins.As<int>() + itemCacheLockbox_.coins.As<int>()) :
+                (itemCacheHeld_.gems.As<int>() + itemCacheLockbox_.gems.As<int>())) };
 
         if (TOTAL <= 0)
         {
