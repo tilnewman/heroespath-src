@@ -28,7 +28,7 @@
 // strong-numeric-type.hpp
 //
 #include "strong-type.hpp"
-
+#include "misc/real.hpp"
 #include <cmath>
 #include <ostream>
 #include <type_traits>
@@ -54,7 +54,10 @@ namespace misc
         template<typename AsType_t>
         AsType_t As() const { return static_cast<AsType_t>(this->Get()); }
         
+        //Note:  There are no StrongNumericTypes defined where T is real,
+        //       so comparrison to zero here is okay.
         bool IsZero() const { return (this->m_value == T(0)); }
+
         bool IsNonZero() const { return ! IsZero(); }
 
         const StrongNumericType Abs() const
