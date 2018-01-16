@@ -179,28 +179,29 @@ namespace stage
             creditsButtonUPtr_->GetEntityRegion().top  +
                 creditsButtonUPtr_->GetEntityRegion().height  + SPACE_BETWEEN_BUTTONS);
 
+        
+        resumeButtonUPtr_->SetCallbackHandler(this);
+
+        auto const ARE_THERE_GAMES_TO_LOAD{ []()
+            {
+                auto const GAMESTATE_PSET{ state::GameStateFactory::Instance()->LoadAllGames() };
+                auto const ARE_THERE_GAMES{ (GAMESTATE_PSET.empty() == false) };
+                
+                for (auto const NEXT_GAMESTATE_PTR : GAMESTATE_PSET)
+                {
+                    delete NEXT_GAMESTATE_PTR;
+                }
+
+                return ARE_THERE_GAMES;
+            }() };
+
+        resumeButtonUPtr_->SetIsDisabled(ARE_THERE_GAMES_TO_LOAD == false);
+
         EntityAdd(resumeButtonUPtr_.get());
         EntityAdd(createButtonUPtr_.get());
         EntityAdd(settingsButtonUPtr_.get());
         EntityAdd(creditsButtonUPtr_.get());
         EntityAdd(exitButtonUPtr_.get());
-        //
-        resumeButtonUPtr_->SetCallbackHandler(this);
-
-        //determine if there are saved games to load
-        auto const GAMESTATE_PSET{ state::GameStateFactory::Instance()->LoadAllGames() };
-        if (GAMESTATE_PSET.empty())
-        {
-            resumeButtonUPtr_->SetIsDisabled(true);
-        }
-        else
-        {
-            //free all of the loaded games
-            for (auto const NEXT_GAMESTATE_PTR : GAMESTATE_PSET)
-            {
-                delete NEXT_GAMESTATE_PTR;
-            }
-        }
     }
 
 

@@ -344,20 +344,22 @@ namespace sfml_util
                 return;
             }
 
-            const gui::TextInfo TEXT_INFO(hoverText,
-                                          FontManager::Instance()->Font_Default2(),
-                                          FontManager::Instance()->Size_Smallish(),
-                                          sf::Color(50,50,50),
-                                          Justified::Left);
+            const gui::TextInfo TEXT_INFO(
+                hoverText,
+                FontManager::Instance()->Font_Default2(),
+                FontManager::Instance()->Size_Smallish(),
+                sf::Color(50,50,50),
+                Justified::Left);
 
             sfml_util::gui::SetupText(hoverSfText_, TEXT_INFO);
 
-            sf::FloatRect region(MOUSE_POS_V.x - 200.0f,
-                                 MOUSE_POS_V.y + 10.0f,
-                                 hoverSfText_.getGlobalBounds().width + 20.0f,
-                                 hoverSfText_.getGlobalBounds().height + 8.0f);
+            sf::FloatRect region(
+                MOUSE_POS_V.x - 200.0f,
+                MOUSE_POS_V.y + 10.0f,
+                hoverSfText_.getGlobalBounds().width + 20.0f,
+                hoverSfText_.getGlobalBounds().height + 8.0f);
 
-            const float SCREEN_WIDTH(Display::Instance()->GetWinWidth());
+            auto const SCREEN_WIDTH{ Display::Instance()->GetWinWidth() };
             if ((region.left + region.width) > SCREEN_WIDTH)
             {
                 region.left = SCREEN_WIDTH - region.width;
