@@ -522,7 +522,7 @@ namespace gui
             auto const POS_TOP{
                 (sfml_util::Display::Instance()->GetWinHeight() -
                     buttonSprite_.getGlobalBounds().height) -
-                        sfml_util::MapByRes(42.0f, 170.0f) };
+                        sfml_util::MapByRes(30.0f, 150.0f) };
 
             buttonSprite_.setPosition(POS_LEFT, POS_TOP);
             SetEntityPos(POS_LEFT, POS_TOP);

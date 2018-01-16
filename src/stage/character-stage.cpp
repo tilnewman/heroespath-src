@@ -367,22 +367,27 @@ namespace stage
     {
         EntityAdd(ouroborosUPtr_.get());
 
+        auto const MID_SCREEN_HORIZ{ SCREEN_WIDTH_ * 0.5f };
+        
         Setup_Button(
             helpButtonUPtr_,
-            (SCREEN_WIDTH_ * 0.5f) - helpButtonUPtr_->GetEntityRegion().width - 180.0f);
+            (MID_SCREEN_HORIZ - helpButtonUPtr_->GetEntityRegion().width) - 145.0f);
 
         Setup_Button(
             saveButtonUPtr_,
-            (SCREEN_WIDTH_ * 0.5f) + 180.0f);
+            MID_SCREEN_HORIZ + 190.0f);
 
+        auto const BETWEEN_SPACER{ sfml_util::MapByRes(40.0f, 600.0f) };
+        
         Setup_Button(
             backButtonUPtr_,
-            (((SCREEN_WIDTH_ * 0.5f) - backButtonUPtr_->GetEntityRegion().width) - 400.0f) -
-                sfml_util::MapByRes(0.0f, 400.0f));
+            (helpButtonUPtr_->GetEntityPos().x - helpButtonUPtr_->GetEntityRegion().width) -
+                BETWEEN_SPACER);
 
         Setup_Button(
             nextButtonUPtr_,
-            (SCREEN_WIDTH_ * 0.5f) + 400.0f + sfml_util::MapByRes(0.0f, 400.0f));
+            saveButtonUPtr_->GetEntityPos().x +
+                saveButtonUPtr_->GetEntityRegion().width + BETWEEN_SPACER);
 
         Setup_RaceRadioButtons();
         Setup_RoleRadioButtons();
