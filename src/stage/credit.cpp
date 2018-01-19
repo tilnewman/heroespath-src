@@ -176,7 +176,7 @@ namespace stage
                 (sprite_.getGlobalBounds().width * 0.5f) };
 
             auto const POS_TOP{ (trackingRect.top + (trackingRect.height * 0.5f)) -
-                (sprite_.getGlobalBounds().height * 0.5f) };
+                (sprite_.getGlobalBounds().height * 0.5f) + sfml_util::MapByRes(30.0f, 90.0f) };
 
             sprite_.setPosition(POS_LEFT, POS_TOP);
 
@@ -197,7 +197,7 @@ namespace stage
                 (WIDTH * 0.5f) };
 
             auto const POS_TOP{ (trackingRect.top + (trackingRect.height * 0.5f)) -
-                (HEIGHT * 0.5f) };
+                (HEIGHT * 0.5f) + sfml_util::MapByRes(80.0f, 200.0f) };
 
             animUPtr_->SetEntityRegion( sf::FloatRect(POS_LEFT, POS_TOP, WIDTH, HEIGHT) );
 
