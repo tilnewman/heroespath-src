@@ -307,7 +307,9 @@ namespace combat
             CombatNodePVec_t & NodePVec_OutParam,
             const int BLOCKING_POS) const;
 
-        void GetCombatNodes(CombatNodePVec_t & combatNodesPVec) const;
+        void GetCombatNodes(CombatNodePVec_t &) const;
+
+        void GetCombatNodesOfPlayerType(CombatNodePVec_t &, const bool FIND_PLAYERS) const;
 
         int GetBlockingDistanceBetween(
             creature::CreatureCPtrC_t,

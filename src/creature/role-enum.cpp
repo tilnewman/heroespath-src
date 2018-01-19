@@ -98,7 +98,7 @@ namespace creature
             {
                 std::ostringstream ss;
 
-                ss << "creature::player::role::Enum::ToString(" << E
+                ss << "creature::role::ToString(" << E
                     << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());
@@ -140,6 +140,99 @@ namespace creature
         return ((E == role::Wing) ||
                 (E == role::Whelp) ||
                 (E == role::Bat));
+    }
+
+
+    combat::BlockingPosType::Enum role::BlockingPosType(const role::Enum E)
+    {
+        switch (E)
+        {
+            case role::Mountain:
+            case role::Spider:
+            case role::Beetle:
+            case role::Boar:
+            case role::Lion:
+            case role::Ramonaut:
+            case role::Serpent:
+            case role::Whelp:
+            case role::Pod:
+            case role::Spike:
+            case role::Skeleton:
+            case role::Thug:
+            case role::Mugger:
+            case role::Drunk:
+            case role::Grunt:
+            case role::FourArmed:
+            case role::Tendrilus:
+            case role::TwoHeaded:
+            case role::Giant:
+            case role::Smasher:
+            case role::Strangler:
+            case role::Soldier:
+            case role::Brute:
+            case role::Berserker:
+            case role::Knight:
+            case role::Wolfen:
+            case role::Firebrand:
+            case role::Ranger:
+            case role::Water:
+            case role::Blacksmith:
+            case role::Cat:
+            case role::Wolf:
+            case role::Sylavin: { return combat::BlockingPosType::Front; }
+            
+            case role::Ghost:
+            case role::Bat:
+            case role::Beastmaster:
+            case role::Bard:
+            case role::Archer:
+            case role::Wing: { return combat::BlockingPosType::Support; }
+
+            case role::Captain:
+            case role::Warlord:
+            case role::Chieftain: { return combat::BlockingPosType::Commanders; }
+
+            case role::Thief: { return combat::BlockingPosType::Reluctant; }
+
+            case role::Elder:
+            case role::Shaman:
+            case role::Sorcerer:
+            case role::Cleric: { return combat::BlockingPosType::Casters; }
+
+            case role::Trader: { return combat::BlockingPosType::Last; }
+            
+            case role::Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "role::BlockingPosType(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    std::vector<role::Enum> role::RolesOfBlockingPosType(
+        const combat::BlockingPosType::Enum BLOCKING_POS_ENUM)
+    {
+        std::vector<role::Enum> rolesVec;
+        for (int i(0); i<role::Count; ++i)
+        {
+            auto const ROLE{ static_cast<role::Enum>(i) };
+            if (BlockingPosType(ROLE) == BLOCKING_POS_ENUM)
+            {
+                rolesVec.push_back(ROLE);
+            }
+        }
+
+        if (rolesVec.empty())
+        {
+            std::ostringstream ss;
+            ss << "role::RolesOfBlockingPosType(" << BLOCKING_POS_ENUM << ") produced no roles.";
+            throw std::range_error(ss.str());
+        }
+
+        return rolesVec;
     }
 
 }

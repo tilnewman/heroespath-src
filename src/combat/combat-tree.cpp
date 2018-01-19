@@ -980,6 +980,20 @@ namespace combat
     }
 
 
+    void CombatTree::GetCombatNodesOfPlayerType(
+        CombatNodePVec_t & combatNodesPVec,
+        const bool FIND_PLAYERS) const
+    {
+        for (auto const & VERTEX : vertexes_)
+        {
+            if (VERTEX.node_sptr->Creature()->IsPlayerCharacter() == FIND_PLAYERS)
+            {
+                combatNodesPVec.push_back(VERTEX.node_sptr.get());
+            }
+        }
+    }
+
+
     int CombatTree::GetBlockingDistanceBetween(
         creature::CreatureCPtrC_t CREATURE_A_CPTRC,
         creature::CreatureCPtrC_t CREATURE_B_CPTRC) const

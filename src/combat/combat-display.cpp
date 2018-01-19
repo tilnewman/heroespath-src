@@ -54,6 +54,7 @@
 #include "combat/summary-view.hpp"
 
 #include "misc/real.hpp"
+#include "misc/random.hpp"
 
 #include <sstream>
 #include <numeric>
@@ -100,7 +101,6 @@ namespace combat
     const float       CombatDisplay::CREATURE_MOVE_SLIDER_SPEED_            (4.0f);
     const float       CombatDisplay::BATTLEFIELD_DRAG_SPEED_                (3.0f);
     const std::size_t CombatDisplay::SHOULDER_TO_SHOULDER_MAX_              (10);
-    const std::size_t CombatDisplay::SHOULDER_TO_SHOULDER_OPPOSITE_TYPE_MAX_(2);
 
 
     CombatDisplay::CombatDisplay(const sf::FloatRect & REGION)
@@ -1390,31 +1390,10 @@ namespace combat
 
     void CombatDisplay::InitialPlayerPartyCombatTreeSetup()
     {
-        int position(-1);
-
         //apply the player's preferred blocking pattern if one is saved
         if (blockingMap_.empty())
         {
-            //place Knights/Arhers/Beasts/Beastmasters first in the blocking order
-            SetBlockingPosOfType(true, creature::role::Knight, position);
-            SetBlockingPosOfType(true, creature::role::Archer, position);
-            SetBlockingPosOfType(true, creature::role::Wolfen, position);
-            SetBlockingPosOfType(true, creature::role::Sylavin, position);
-            SetBlockingPosOfType(true, creature::role::Firebrand, position);
-            SetBlockingPosOfType(true, creature::role::Beastmaster, position);
-            combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-            //place thieves/bards next in the blocking order
-            position -= 1;
-            SetBlockingPosOfType(true, creature::role::Thief, position);
-            SetBlockingPosOfType(true, creature::role::Bard, position);
-            combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-            //place sorcerers and clerics next in the blocking order
-            position -= 1;
-            SetBlockingPosOfType(true, creature::role::Sorcerer, position);
-            SetBlockingPosOfType(true, creature::role::Cleric, position);
-            combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
+            InitialCreaturePositionsSetup(true);
         }
         else
         {
@@ -1434,6 +1413,7 @@ namespace combat
             }
         }
 
+        /*
         //whatever blocking order pattern, leave the disabled characters farthest behind
         const int DISABLED_CREATURES_POSITION(position - 1);
         auto const CHAR_PVEC( game::Game::Instance()->State().Party().Characters() );
@@ -1448,45 +1428,13 @@ namespace combat
 
         combatTree_.ConnectAllAtPosition(DISABLED_CREATURES_POSITION,
             combat::EdgeType::ShoulderToShoulder);
+        */
     }
 
 
     void CombatDisplay::InitialNonPlayerPartyCombatTreeSetup()
     {
-        int position(1);
-
-        //place ignorant roles first in the blocking order
-        SetBlockingPosOfType(false, creature::role::Drunk, position);
-        SetBlockingPosOfType(false, creature::role::Grunt, position);
-        SetBlockingPosOfType(false, creature::role::Mugger, position);
-        SetBlockingPosOfType(false, creature::role::Firebrand, position);
-        SetBlockingPosOfType(false, creature::role::Sylavin, position);
-        SetBlockingPosOfType(false, creature::role::Wolfen, position);
-        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-        position += 1;
-        SetBlockingPosOfType(false, creature::role::Archer, position);
-        SetBlockingPosOfType(false, creature::role::Knight, position);
-        SetBlockingPosOfType(false, creature::role::Beastmaster, position);
-        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-        position += 1;
-        SetBlockingPosOfType(false, creature::role::Bard, position);
-        SetBlockingPosOfType(false, creature::role::Thief, position);
-        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-        position += 1;
-        SetBlockingPosOfType(false, creature::role::Captain, position);
-        SetBlockingPosOfType(false, creature::role::Chieftain, position);
-        SetBlockingPosOfType(false, creature::role::Sorcerer, position);
-        SetBlockingPosOfType(false, creature::role::Cleric, position);
-        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-        position += 1;
-        SetBlockingPosOfType(false, creature::role::Warlord, position);
-        combatTree_.ConnectAllAtPosition(position, combat::EdgeType::ShoulderToShoulder);
-
-        //TODO need to handle all roles, or have a catch-all for any remaining
+        InitialCreaturePositionsSetup(false);
     }
 
 
@@ -1663,25 +1611,6 @@ namespace combat
     }
 
 
-    void CombatDisplay::SetBlockingPosOfType(const bool                 IS_PLAYER,
-                                             const creature::role::Enum ROLE,
-                                             const int                  BLOCKING_POS)
-    {
-        IDVec_t idVec;
-        combatTree_.GetNodeIds(idVec, ROLE);
-
-        for (auto const & NEXT_NODE_ID : idVec)
-        {
-            CombatNodePtr_t nextCombatNodePtr(combatTree_.GetNode(NEXT_NODE_ID));
-
-            if (nextCombatNodePtr->Creature()->IsPlayerCharacter() == IS_PLAYER)
-            {
-                nextCombatNodePtr->SetBlockingPos(BLOCKING_POS);
-            }
-        }
-    }
-
-
     void CombatDisplay::EndOfCombatCleanup()
     {
         isCombatOver_ = true;
@@ -1696,6 +1625,93 @@ namespace combat
             combatTree_.RemoveVertex(NEXT_NODE_ID, true);
             RemoveCombatNode(NEXT_NODE_SPTR);
         }
+    }
+
+
+    void CombatDisplay::InitialCreaturePositionsSetup(const bool WILL_POSITION_PLAYERS)
+    {
+        //get a list of all combat nodes, either of all players or non-players
+        CombatNodePVec_t cNodesOfPlayerTypePVec;
+        combatTree_.GetCombatNodesOfPlayerType(cNodesOfPlayerTypePVec, WILL_POSITION_PLAYERS);
+        
+        //assign combat_node's blocking positions
+        auto const WILL_BLOCKING_POSITIONS_INCREASE{ ! WILL_POSITION_PLAYERS };
+        auto blockingPos{ 0 };
+
+        for(int typeNumber(0); typeNumber < BlockingPosType::Count; ++typeNumber)
+        {
+            //move all combat_nodes with a role that matches the blocking type into a new vector
+            auto const BLOCKING_POS_TYPE{ static_cast<BlockingPosType::Enum>(typeNumber) };
+            auto const ROLES_VEC{ creature::role::RolesOfBlockingPosType(BLOCKING_POS_TYPE) };
+            CombatNodePVec_t cNodesOfBlockingTypeRolePVec;
+
+            MoveCombatNodesOfGivenRolesIntoTargetVec(
+                ROLES_VEC,
+                cNodesOfPlayerTypePVec,
+                cNodesOfBlockingTypeRolePVec);
+
+            if (cNodesOfBlockingTypeRolePVec.empty())
+            {
+                continue;
+            }
+
+            misc::Vector::ShuffleVec(cNodesOfBlockingTypeRolePVec);
+
+            while (cNodesOfBlockingTypeRolePVec.empty() == false)
+            {
+                if (WILL_BLOCKING_POSITIONS_INCREASE)
+                {
+                    ++blockingPos;
+                }
+                else
+                {
+                    --blockingPos;
+                }
+
+                for (std::size_t shoulder(0); shoulder < SHOULDER_TO_SHOULDER_MAX_; ++shoulder)
+                {
+                    cNodesOfBlockingTypeRolePVec.at(0)->SetBlockingPos(blockingPos);
+                    cNodesOfBlockingTypeRolePVec.erase( std::begin(cNodesOfBlockingTypeRolePVec) );
+                    if (cNodesOfBlockingTypeRolePVec.empty())
+                    {
+                        break;
+                    }
+                }
+
+                combatTree_.ConnectAllAtPosition(blockingPos, combat::EdgeType::ShoulderToShoulder);
+            }
+        }
+    }
+
+
+    void CombatDisplay::MoveCombatNodesOfGivenRolesIntoTargetVec(
+        const creature::RoleVec_t & ROLES_VEC,
+        CombatNodePVec_t & sourceCNodePVec,
+        CombatNodePVec_t & targetCNodePVec)
+    {
+        auto findMatchingRoleOfCombatNode = [&ROLES_VEC](const CombatNodePtr_t & CNODE_PTR)
+            {
+                auto const ROLE{ CNODE_PTR->Creature()->Role() };
+
+                auto const FOUND_ITER{ std::find(
+                    std::begin(ROLES_VEC),
+                    std::end(ROLES_VEC),
+                    ROLE) };
+
+                return (FOUND_ITER != std::end(ROLES_VEC));
+            };
+
+        std::copy_if(
+            std::begin(sourceCNodePVec),
+            std::end(sourceCNodePVec),
+            std::back_inserter(targetCNodePVec),
+            findMatchingRoleOfCombatNode);
+
+        sourceCNodePVec.erase(
+            std::remove_if(
+                std::begin(sourceCNodePVec),
+                std::end(sourceCNodePVec),
+                findMatchingRoleOfCombatNode), std::end(sourceCNodePVec));
     }
 
 }

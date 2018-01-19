@@ -28,6 +28,7 @@
 // role-enum.hpp
 //  An enumeration defining each Role of creature, both player and non_player.
 //
+#include "combat/blocking-pos-type-enum.hpp"
 #include <string>
 #include <vector>
 
@@ -99,6 +100,8 @@ namespace creature
         static const std::string Abbr(const role::Enum);
         static bool CanFly(const role::Enum);
         static bool WillInitiallyFly(const role::Enum);
+        static combat::BlockingPosType::Enum BlockingPosType(const role::Enum);
+        static std::vector<role::Enum> RolesOfBlockingPosType(const combat::BlockingPosType::Enum);
     };
 
     using RoleVec_t = std::vector<role::Enum>;

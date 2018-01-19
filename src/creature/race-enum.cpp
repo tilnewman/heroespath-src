@@ -416,8 +416,7 @@ namespace creature
                          role::FourArmed,
                          role::Mountain,
                          role::Shaman,
-                         role::Warlord,
-                         role::Grunt };
+                         role::Warlord};
             }
             case Ogre:
             {

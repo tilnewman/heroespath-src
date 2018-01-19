@@ -279,7 +279,7 @@ namespace combat
             creature::CreaturePVec_t &    creaturesInRoaringDistancePVec_OutParam) const;
 
     protected:
-        inline void SetIsSummaryViewInProgress(const bool B)                    { isSummaryViewInProgress_ = B; }
+        inline void SetIsSummaryViewInProgress(const bool B) { isSummaryViewInProgress_ = B; }
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
@@ -287,9 +287,17 @@ namespace combat
 
         const std::string GetNodeTitle(const CombatNodePtr_t COMBAT_NODE_PTR);
 
-        void SetBlockingPosOfType(const bool                 IS_PLAYER,
-                                  const creature::role::Enum ROLE,
-                                  const int                  BLOCKING_POS);
+        bool SetBlockingPosOfType(
+            const bool IS_PLAYER,
+            const creature::role::Enum ROLE,
+            const int BLOCKING_POS);
+
+        void InitialCreaturePositionsSetup(const bool WILL_POSITION_PLAYERS);
+
+        void MoveCombatNodesOfGivenRolesIntoTargetVec(
+            const creature::RoleVec_t & ROLES_VEC,
+            CombatNodePVec_t & sourceCNodePVec,
+            CombatNodePVec_t & targetCNodePVec);
 
     public:
         static const float       BATTLEFIELD_MARGIN_;
@@ -303,7 +311,6 @@ namespace combat
         static const int         BLOCKING_POS_MARGIN_;
         static const int         BLOCKING_POS_INVALID_;
         static const std::size_t SHOULDER_TO_SHOULDER_MAX_;
-        static const std::size_t SHOULDER_TO_SHOULDER_OPPOSITE_TYPE_MAX_;
 
     private:
         const float                     POSITIONING_MARGIN_HORIZ_;
