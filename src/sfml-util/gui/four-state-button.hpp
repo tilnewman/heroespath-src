@@ -172,7 +172,7 @@ namespace gui
         virtual void SetVertPositionToBottomOfScreenByRes(const float POS_LEFT);
 
         inline const sf::Color Color() const { return color_; }
-        inline void Color(const sf::Color & NEW_COLOR) { color_ = NEW_COLOR; }
+        inline void Color(const sf::Color & NEW_COLOR) { color_ = NEW_COLOR; Reset(); }
 
         inline float Scale() const { return scale_; }
         void Scale(const float NEW_SCALE);
