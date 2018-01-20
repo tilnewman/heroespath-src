@@ -708,6 +708,7 @@ namespace gui
     {
         list_ = LIST;
         SetSelectedIndex(0, false);
+        sliderbarUPtr_->SetCurrentValue(0.0f);
     }
 
 

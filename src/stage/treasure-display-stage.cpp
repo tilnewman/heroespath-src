@@ -194,12 +194,12 @@ namespace treasure
         }
         else if (PACKAGE.PTR_ == treasureMoneyButtonUPtr_.get())
         {
-            SortByName( * treasureListboxUPtr_, isSortOrderReversedTreasureMoney_);
+            SortByPrice( * treasureListboxUPtr_, isSortOrderReversedTreasureMoney_);
             return true;
         }
         else if (PACKAGE.PTR_ == treasureWeightButtonUPtr_.get())
         {
-            SortByName( * treasureListboxUPtr_, isSortOrderReversedTreasureWeight_);
+            SortByWeight( * treasureListboxUPtr_, isSortOrderReversedTreasureWeight_);
             return true;
         }
         else if (PACKAGE.PTR_ == inventoryAlphaButtonUPtr_.get())
@@ -209,12 +209,12 @@ namespace treasure
         }
         else if (PACKAGE.PTR_ == inventoryMoneyButtonUPtr_.get())
         {
-            SortByName( * inventoryListboxUPtr_, isSortOrderReversedInventoryMoney_);
+            SortByPrice( * inventoryListboxUPtr_, isSortOrderReversedInventoryMoney_);
             return true;
         }
         else if (PACKAGE.PTR_ == inventoryWeightButtonUPtr_.get())
         {
-            SortByName( * inventoryListboxUPtr_, isSortOrderReversedInventoryWeight_);
+            SortByWeight( * inventoryListboxUPtr_, isSortOrderReversedInventoryWeight_);
             return true;
         }
         else if (PACKAGE.PTR_ == takeAllButtonUPtr_.get())
