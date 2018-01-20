@@ -189,6 +189,11 @@ namespace stage
         DETAILVIEW_HEIGHT_         (SCREEN_HEIGHT_ * 0.85f),
         DETAILVIEW_POS_LEFT_       ((SCREEN_WIDTH_ * 0.5f) - (DETAILVIEW_WIDTH_ * 0.5f)),
         DETAILVIEW_POS_TOP_        (sfml_util::MapByRes(35.0f, 100.0f)),
+        SORT_ICON_SCALE_           (sfml_util::MapByRes(0.1f, 0.35f)),
+        SORT_ICON_SPACER_          (sfml_util::MapByRes(22.0f, 75.0f)),
+        SORT_ICON_POS_TOP_         ((LISTBOX_POS_TOP_ - (127.0f * SORT_ICON_SCALE_)) -
+            sfml_util::MapByRes(10.0f, 20.0f)),
+        SORT_ICON_COLOR_           (sf::Color(255, 255, 255, 127)),
         listBoxItemTextInfo_       (
             " ",
             sfml_util::FontManager::Instance()->Font_Default2(),
@@ -257,6 +262,21 @@ namespace stage
         unequipButtonUPtr_         (),
         dropButtonUPtr_            (),
         buttonPVec_                (),
+        sortButtonNameTexture_     (),
+        sortButtonPriceTexture_    (),
+        sortButtonWeightTexture_   (),
+        eqSortButtonNameUPtr_      (),
+        eqSortButtonPriceUPtr_     (),
+        eqSortButtonWeightUPtr_    (),
+        unEqSortButtonNameUPtr_    (),
+        unEqSortButtonPriceUPtr_   (),
+        unEqSortButtonWeightUPtr_  (),
+        isSortReversedEqName_      (false),
+        isSortReversedEqPrice_     (false),
+        isSortReversedEqWeight_    (false),
+        isSortReversedUneqName_    (false),
+        isSortReversedUneqPrice_   (false),
+        isSortReversedUneqWeight_  (false),
         actionType_                (ActionType::Count),
         contentType_               (ContentType::Count),
         listBoxItemToGiveSPtr_     (),
@@ -405,6 +425,42 @@ namespace stage
             return HandleDropRequest();
         }
 
+        if (PACKAGE.PTR_ == eqSortButtonNameUPtr_.get())
+        {
+            SortByName( * equippedListBoxUPtr_, isSortReversedEqName_);
+            return true;
+        }
+
+        if (PACKAGE.PTR_ == eqSortButtonPriceUPtr_.get())
+        {
+            SortByPrice( * equippedListBoxUPtr_, isSortReversedEqPrice_);
+            return true;
+        }
+
+        if (PACKAGE.PTR_ == eqSortButtonWeightUPtr_.get())
+        {
+            SortByWeight( * equippedListBoxUPtr_, isSortReversedEqWeight_);
+            return true;
+        }
+        
+        if (PACKAGE.PTR_ == unEqSortButtonNameUPtr_.get())
+        {
+            SortByName( * unEquipListBoxUPtr_, isSortReversedUneqName_);
+            return true;
+        }
+
+        if (PACKAGE.PTR_ == unEqSortButtonPriceUPtr_.get())
+        {
+            SortByPrice( * unEquipListBoxUPtr_, isSortReversedUneqPrice_);
+            return true;
+        }
+        
+        if (PACKAGE.PTR_ == unEqSortButtonWeightUPtr_.get())
+        {
+            SortByWeight( * unEquipListBoxUPtr_, isSortReversedUneqWeight_);
+            return true;
+        }
+        
         return false;
     }
 
@@ -615,21 +671,9 @@ namespace stage
         Setup_DescBox(false);
         Setup_FirstListBoxTitle();
         Setup_DescBoxTitle();
-
-        Setup_Button(backButtonUPtr_, "(B)ack", 0.085f);
-        Setup_Button(itemsButtonUPtr_, "(I)tems", 0.155f);
-        Setup_Button(titlesButtonUPtr_, "(T)itles", 0.225f);
-        Setup_Button(condsButtonUPtr_, "(C)onditions", 0.34f);
-        Setup_Button(spellsButtonUPtr_, "(S)pells", 0.42f);
-        Setup_Button(giveButtonUPtr_, "(G)ive", 0.49f);
-        Setup_Button(shareButtonUPtr_, "S(h)are", 0.57f);
-        Setup_Button(gatherButtonUPtr_, "Gathe(r)", 0.667f);
-        Setup_Button(equipButtonUPtr_, "(E)quip", 0.76f);
-        Setup_Button(unequipButtonUPtr_, "(U)nequip", 0.865f);
-        Setup_Button(dropButtonUPtr_, "(D)rop", 0.94f);
-
+        Setup_MenuButtons();
+        Setup_SortButtons();
         Setup_ButtonMouseoverText();
-
         ForceSelectionAndDrawOfListBox();
     }
 
@@ -1372,6 +1416,160 @@ namespace stage
     }
 
 
+    void InventoryStage::Setup_MenuButtons()
+    {
+        Setup_MenuButton(backButtonUPtr_, "(B)ack", 0.085f);
+        Setup_MenuButton(itemsButtonUPtr_, "(I)tems", 0.155f);
+        Setup_MenuButton(titlesButtonUPtr_, "(T)itles", 0.225f);
+        Setup_MenuButton(condsButtonUPtr_, "(C)onditions", 0.34f);
+        Setup_MenuButton(spellsButtonUPtr_, "(S)pells", 0.42f);
+        Setup_MenuButton(giveButtonUPtr_, "(G)ive", 0.49f);
+        Setup_MenuButton(shareButtonUPtr_, "S(h)are", 0.57f);
+        Setup_MenuButton(gatherButtonUPtr_, "Gathe(r)", 0.667f);
+        Setup_MenuButton(equipButtonUPtr_, "(E)quip", 0.76f);
+        Setup_MenuButton(unequipButtonUPtr_, "(U)nequip", 0.865f);
+        Setup_MenuButton(dropButtonUPtr_, "(D)rop", 0.94f);
+    }
+
+
+    void InventoryStage::Setup_SortButtons()
+    {
+        //load images
+        sfml_util::LoadTexture(
+            sortButtonNameTexture_,
+            game::GameDataFile::Instance()->GetMediaPath("media-images-misc-abc"));
+
+        sfml_util::LoadTexture(
+            sortButtonPriceTexture_,
+            game::GameDataFile::Instance()->GetMediaPath("media-images-misc-money-bag"));
+
+        sfml_util::LoadTexture(
+            sortButtonWeightTexture_,
+            game::GameDataFile::Instance()->GetMediaPath("media-images-misc-weight"));
+
+        //setup sprites
+        sf::Sprite eqNameSprite;
+        sf::Sprite eqPriceSprite;
+        sf::Sprite eqWeightSprite;
+        sf::Sprite unEqNameSprite;
+        sf::Sprite unEqPriceSprite;
+        sf::Sprite unEqWeightSprite;
+
+        eqNameSprite.setTexture(sortButtonNameTexture_, true);
+        eqPriceSprite.setTexture(sortButtonPriceTexture_, true);
+        eqWeightSprite.setTexture(sortButtonWeightTexture_, true);
+        unEqNameSprite.setTexture(sortButtonNameTexture_, true);
+        unEqPriceSprite.setTexture(sortButtonPriceTexture_, true);
+        unEqWeightSprite.setTexture(sortButtonWeightTexture_, true);
+
+        eqNameSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
+        eqPriceSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
+        eqWeightSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
+        unEqNameSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
+        unEqPriceSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
+        unEqWeightSprite.setScale(SORT_ICON_SCALE_, SORT_ICON_SCALE_);
+
+        eqNameSprite.setColor(SORT_ICON_COLOR_);
+        eqPriceSprite.setColor(SORT_ICON_COLOR_);
+        eqWeightSprite.setColor(SORT_ICON_COLOR_);
+        unEqNameSprite.setColor(SORT_ICON_COLOR_);
+        unEqPriceSprite.setColor(SORT_ICON_COLOR_);
+        unEqWeightSprite.setColor(SORT_ICON_COLOR_);
+
+        auto const THREE_ICONS_WIDTH{
+            eqNameSprite.getGlobalBounds().width +
+            eqPriceSprite.getGlobalBounds().width +
+            eqWeightSprite.getGlobalBounds().width };
+
+        auto const POS_HORIZ_NAME_EQ{
+            ((FIRST_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_) -
+                THREE_ICONS_WIDTH) - (SORT_ICON_SPACER_ * 2.25f)};
+
+        auto const POS_HORIZ_NAME_UNEQ{
+            ((SECOND_LISTBOX_POS_LEFT_ + LISTBOX_WIDTH_) -
+                THREE_ICONS_WIDTH) - (SORT_ICON_SPACER_ * 2.25f) };
+
+        auto const POS_VERT_NAME{
+            SORT_ICON_POS_TOP_ - (eqNameSprite.getGlobalBounds().height * 0.5f) };
+
+        auto const POS_HORIZ_PRICE_EQ{
+            POS_HORIZ_NAME_EQ + eqNameSprite.getGlobalBounds().width + SORT_ICON_SPACER_ };
+       
+        auto const POS_HORIZ_PRICE_UNEQ{
+            POS_HORIZ_NAME_UNEQ + unEqNameSprite.getGlobalBounds().width + SORT_ICON_SPACER_ };
+
+        auto const POS_VERT_PRICE{
+            SORT_ICON_POS_TOP_ - (eqPriceSprite.getGlobalBounds().height * 0.5f) };
+
+        auto const POS_HORIZ_WEIGHT_EQ{
+            POS_HORIZ_PRICE_EQ + eqPriceSprite.getGlobalBounds().width + SORT_ICON_SPACER_ };
+
+        auto const POS_HORIZ_WEIGHT_UNEQ{
+            POS_HORIZ_PRICE_UNEQ + unEqPriceSprite.getGlobalBounds().width + SORT_ICON_SPACER_ };
+
+        auto const POS_VERT_WEIGHT{
+            SORT_ICON_POS_TOP_ - (eqWeightSprite.getGlobalBounds().height * 0.5f) };
+
+        eqNameSprite.setPosition(POS_HORIZ_NAME_EQ, POS_VERT_NAME);
+        eqPriceSprite.setPosition(POS_HORIZ_PRICE_EQ, POS_VERT_PRICE);
+        eqWeightSprite.setPosition(POS_HORIZ_WEIGHT_EQ, POS_VERT_WEIGHT);
+        unEqNameSprite.setPosition(POS_HORIZ_NAME_UNEQ, POS_VERT_NAME);
+        unEqPriceSprite.setPosition(POS_HORIZ_PRICE_UNEQ, POS_VERT_PRICE);
+        unEqWeightSprite.setPosition(POS_HORIZ_WEIGHT_UNEQ, POS_VERT_WEIGHT);
+
+        //setup actual buttons
+        Setup_SortButton(
+            "InventoryStage's_EquippedListbox_SortByName_",
+            eqSortButtonNameUPtr_,
+            eqNameSprite);
+
+        Setup_SortButton(
+            "InventoryStage's_EquippedListbox_SortByPrice_",
+            eqSortButtonPriceUPtr_,
+            eqPriceSprite);
+
+        Setup_SortButton(
+            "InventoryStage's_EquippedListbox_SortByWeight_",
+            eqSortButtonWeightUPtr_,
+            eqWeightSprite);
+
+        Setup_SortButton(
+            "InventoryStage's_UnequippedListbox_SortByName_",
+            unEqSortButtonNameUPtr_,
+            unEqNameSprite);
+
+        Setup_SortButton(
+            "InventoryStage's_UnequippedListbox_SortByPrice_",
+            unEqSortButtonPriceUPtr_,
+            unEqPriceSprite);
+
+        Setup_SortButton(
+            "InventoryStage's_UnequippedListbox_SortByWeight_",
+            unEqSortButtonWeightUPtr_,
+            unEqWeightSprite);
+    }
+
+
+    void InventoryStage::Setup_SortButton(
+        const std::string & NAME,
+        sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr,
+        sf::Sprite & sprite)
+    {
+        sortButtonUPtr = std::make_unique<sfml_util::gui::FourStateButton>(
+            NAME,
+            sprite.getPosition().x,
+            sprite.getPosition().y,
+            * sprite.getTexture(),
+            true);
+
+        sortButtonUPtr->Color(sprite.getColor());
+        sortButtonUPtr->Scale(sprite.getScale().x);
+        sortButtonUPtr->SetCallbackHandler(this);
+
+        EntityAdd( sortButtonUPtr.get() );
+    }
+
+
     void InventoryStage::Setup_FirstListBoxTitle()
     {
         std::string titleText("");
@@ -1451,7 +1649,7 @@ namespace stage
     }
 
 
-    void InventoryStage::Setup_Button(
+    void InventoryStage::Setup_MenuButton(
         sfml_util::gui::FourStateButtonUPtr_t & buttonUPtr,
         const std::string & TEXT,
         const float HORIZ_OFFSET_MULT)
@@ -4156,6 +4354,75 @@ namespace stage
         detailViewQuads_[1].position = sf::Vector2f(RGT, TOP);
         detailViewQuads_[2].position = sf::Vector2f(RGT, BOTTOM);
         detailViewQuads_[3].position = sf::Vector2f(LEFT, BOTTOM);
+    }
+
+
+    void InventoryStage::SortByName(
+        sfml_util::gui::ListBox & listbox,
+        bool & isSortReversed)
+    {
+        auto list{ listbox.GetList() };
+
+        list.sort([isSortReversed](auto & A, auto & B)
+        {
+            if (isSortReversed)
+            {
+                return A->ITEM_CPTR->Name() > B->ITEM_CPTR->Name();
+            }
+            else
+            {
+                return A->ITEM_CPTR->Name() < B->ITEM_CPTR->Name();
+            }
+        });
+
+        listbox.SetList(list);
+        isSortReversed = ! isSortReversed;
+    }
+
+
+    void InventoryStage::SortByPrice(
+        sfml_util::gui::ListBox & listbox,
+        bool & isSortReversed)
+    {
+        auto list{ listbox.GetList() };
+
+        list.sort([isSortReversed](auto & A, auto & B)
+        {
+            if (isSortReversed)
+            {
+                return A->ITEM_CPTR->Price() > B->ITEM_CPTR->Price();
+            }
+            else
+            {
+                return A->ITEM_CPTR->Price() < B->ITEM_CPTR->Price();
+            }
+        });
+
+        listbox.SetList(list);
+        isSortReversed = ! isSortReversed;
+    }
+
+
+    void InventoryStage::SortByWeight(
+        sfml_util::gui::ListBox & listbox,
+        bool & isSortReversed)
+    {
+        auto list{ listbox.GetList() };
+
+        list.sort([isSortReversed](auto & A, auto & B)
+        {
+            if (isSortReversed)
+            {
+                return A->ITEM_CPTR->Weight() > B->ITEM_CPTR->Weight();
+            }
+            else
+            {
+                return A->ITEM_CPTR->Weight() < B->ITEM_CPTR->Weight();
+            }
+        });
+
+        listbox.SetList(list);
+        isSortReversed = ! isSortReversed;
     }
 
 }

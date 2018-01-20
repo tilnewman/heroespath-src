@@ -177,8 +177,15 @@ namespace stage
         void Setup_DescBox(const bool WILL_MOVE_OFFSCREEN);
         void Setup_FirstListBoxTitle();
         void Setup_DescBoxTitle();
+        void Setup_MenuButtons();
+        void Setup_SortButtons();
 
-        void Setup_Button(
+        void Setup_SortButton(
+            const std::string & NAME,
+            sfml_util::gui::FourStateButtonUPtr_t & sortButtonUPtr,
+            sf::Sprite & sprite);
+
+        void Setup_MenuButton(
             sfml_util::gui::FourStateButtonUPtr_t & buttonUPtr,
             const std::string & TEXT,
             const float HORIZ_OFFSET_MULT);
@@ -200,7 +207,6 @@ namespace stage
 
     protected:
         void AfterChangingViewTasks();
-        void SetupButtons();
         bool HandleAchievementDisplay();
         bool HandleViewChange(const ViewType);
         bool HandleBack();
@@ -308,6 +314,10 @@ namespace stage
 
         void SetDetailViewQuads();
 
+        void SortByName(sfml_util::gui::ListBox & listbox, bool & isSortReversed);
+        void SortByPrice(sfml_util::gui::ListBox & listbox, bool & isSortReversed);
+        void SortByWeight(sfml_util::gui::ListBox & listbox, bool & isSortReversed);
+
     public:
         static const float VIEW_CHANGE_SLIDER_SPEED_;
         static const float VIEW_CHANGE_BETWEEN_TIME_SEC_;
@@ -364,6 +374,10 @@ namespace stage
         const float                 DETAILVIEW_HEIGHT_;
         const float                 DETAILVIEW_POS_LEFT_;
         const float                 DETAILVIEW_POS_TOP_;
+        const float                 SORT_ICON_SCALE_;
+        const float                 SORT_ICON_SPACER_;
+        const float                 SORT_ICON_POS_TOP_;
+        const sf::Color             SORT_ICON_COLOR_;
 
         sfml_util::gui::TextInfo    listBoxItemTextInfo_;
         creature::CreaturePtr_t     creaturePtr_;
@@ -432,6 +446,22 @@ namespace stage
         sfml_util::gui::FourStateButtonUPtr_t unequipButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t dropButtonUPtr_;
         sfml_util::gui::FourStateButtonPVec_t buttonPVec_;
+        
+        sf::Texture sortButtonNameTexture_;
+        sf::Texture sortButtonPriceTexture_;
+        sf::Texture sortButtonWeightTexture_;
+        sfml_util::gui::FourStateButtonUPtr_t eqSortButtonNameUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t eqSortButtonPriceUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t eqSortButtonWeightUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t unEqSortButtonNameUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t unEqSortButtonPriceUPtr_;
+        sfml_util::gui::FourStateButtonUPtr_t unEqSortButtonWeightUPtr_;
+        bool isSortReversedEqName_;
+        bool isSortReversedEqPrice_;
+        bool isSortReversedEqWeight_;
+        bool isSortReversedUneqName_;
+        bool isSortReversedUneqPrice_;
+        bool isSortReversedUneqWeight_;
 
         //members that manage the give/drop/share/gather actions
         ActionType                        actionType_;
