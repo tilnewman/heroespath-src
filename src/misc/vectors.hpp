@@ -121,16 +121,11 @@ namespace misc
 
 
         template<typename T>
-        static bool ShuffleVec(std::vector<T> & v)
+        static void ShuffleVec(std::vector<T> & v)
         {
             if (v.size() > 1)
             {
                 std::shuffle(v.begin(), v.end(), random::MersenneTwister::engine);
-                return true;
-            }
-            else
-            {
-                return false;
             }
         }
 
@@ -140,16 +135,9 @@ namespace misc
         {
             M_ASSERT_OR_LOGANDTHROW_SS((V.empty() == false),
                 "misc::Vector::SelectRandom() was given an empty vector.");
-
-            if (V.size() == 1)
-            {
-                return V[0];
-            }
-            else
-            {
-                return V[static_cast<std::size_t>(
+            
+            return V[static_cast<std::size_t>(
                     misc::random::Int(static_cast<int>(V.size()) - 1))];
-            }
         }
 
 
