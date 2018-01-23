@@ -225,7 +225,6 @@ namespace sfml_util
             else
             {
                 pathVec.push_back(NEXT_PATH_STR);
-                M_HP_LOG_DBG("AddAllInDirectoryByPath() - " << NEXT_PATH_STR);
             }
         }
 
