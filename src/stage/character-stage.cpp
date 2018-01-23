@@ -173,6 +173,9 @@ namespace stage
     const stats::Trait_t CharacterStage::STAT_INVALID_{ -1 };
     const stats::Trait_t CharacterStage::STAT_INITIAL_MAX_{ 20 };
 
+    const double CharacterStage::SMOKE_ANIM_SPEED_MIN_{ 0.05 };
+    const double CharacterStage::SMOKE_ANIM_SPEED_MAX_{ 0.5 };
+
 
     CharacterStage::CharacterStage()
     :
@@ -189,15 +192,8 @@ namespace stage
         mainMenuTitle_          ("create_char_button_normal.png"),
         attribVertOffset1_      (0.0f),
         attribVertOffset2_      (0.0f),
-        smokeAnimmaxX_          (
-            sfml_util::Display::Instance()->GetWinWidth() -
-            (sfml_util::Display::Instance()->GetWinWidth() * 0.25f)),
-        smokeAnimDrifterX_      (
-            smokeAnimmaxX_,
-            sfml_util::Display::Instance()->GetWinWidth() - 200.0f,
-            0.05f,
-            0.5f),
-        smokeAnimDrifterY_      (0.0f, 300.0f, 0.05f, 0.5f),
+        smokeAnimDrifterX_      (0.0f, 1.0f, 0.1, 1.0), //these drifter values are reset below
+        smokeAnimDrifterY_      (0.0f, 1.0f, 0.1, 1.0), //these drifter values are reset below
         backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
         smokeAnimUPtr_          (),
         backButtonUPtr_         (
@@ -393,7 +389,7 @@ namespace stage
         Setup_RoleRadioButtons();
         Setup_RaceDescriptionBox();
         Setup_RoleDescriptionBox();
-        Setup_AttributeDescriptionBox();
+        auto const ATTRIB_BOX_TOP{ Setup_AttributeDescriptionBox() };
         Setup_NameLabel();
         Setup_NameTextEntryBox();
         Setup_SexRadioButtons();
@@ -416,7 +412,7 @@ namespace stage
         Setup_StatLabels(STATBOX_POS_TOP, statTextInfo);
         Setup_StatNumberPositions();
         Setup_FixedStats(statTextInfo);
-        Setup_SmokeAnimation();
+        Setup_SmokeAnimation(ATTRIB_BOX_TOP);
 
         //setup initial config of radio buttons
         AdjustRoleRadioButtonsForRace(static_cast<creature::race::Enum>(0));
@@ -465,7 +461,8 @@ namespace stage
         }
 
         //drift the position of the smoke anim
-        smokeAnimUPtr_->SetEntityPos(smokeAnimDrifterX_.Update(ELAPSED_TIME_SECONDS),
+        smokeAnimUPtr_->SetEntityPos(
+            smokeAnimDrifterX_.Update(ELAPSED_TIME_SECONDS),
             smokeAnimDrifterY_.Update(ELAPSED_TIME_SECONDS));
 
         //ramp the smoke anim speed up and down when the spacebar is held
@@ -1163,7 +1160,7 @@ namespace stage
     }
 
 
-    void CharacterStage::Setup_SmokeAnimation()
+    void CharacterStage::Setup_SmokeAnimation(const float ATTRIB_BOX_TOP)
     {
         smokeAnimUPtr_ = sfml_util::AnimationFactory::Make(
             sfml_util::Animations::SmokeSwirl,
@@ -1171,18 +1168,46 @@ namespace stage
             0.035f,
             sf::Color::White,
             sf::BlendAlpha);
-
+        
         EntityAdd(smokeAnimUPtr_.get());
+
+        auto const DRIFT_LIMIT_LEFT{ SCREEN_WIDTH_ * 0.65f };
+        auto const DRIFT_LIMIT_RIGHT{ SCREEN_WIDTH_ - smokeAnimUPtr_->GetEntityRegion().width };
+        
+        smokeAnimDrifterX_.Reset(
+            DRIFT_LIMIT_LEFT,
+            DRIFT_LIMIT_RIGHT,
+            SMOKE_ANIM_SPEED_MIN_,
+            SMOKE_ANIM_SPEED_MAX_,
+            misc::random::Float(DRIFT_LIMIT_LEFT, DRIFT_LIMIT_RIGHT),
+            misc::random::Float(DRIFT_LIMIT_LEFT, DRIFT_LIMIT_RIGHT));
+
+        auto const VERT_OVERLAP{ sfml_util::MapByRes(30.0f, 150.0f) };
+
+        auto const DRIFT_LIMIT_TOP{ mainMenuTitle_.Bottom(false) - VERT_OVERLAP };
+
+        auto const DRIFT_LIMIT_BOTTOM{
+            (ATTRIB_BOX_TOP - smokeAnimUPtr_->GetEntityRegion().height) + (VERT_OVERLAP * 2.0f) };
+
+        smokeAnimDrifterY_.Reset(
+            DRIFT_LIMIT_TOP,
+            DRIFT_LIMIT_BOTTOM,
+            SMOKE_ANIM_SPEED_MIN_,
+            SMOKE_ANIM_SPEED_MAX_,
+            misc::random::Float(DRIFT_LIMIT_TOP, DRIFT_LIMIT_BOTTOM),
+            misc::random::Float(DRIFT_LIMIT_TOP, DRIFT_LIMIT_BOTTOM));
     }
 
 
-    void CharacterStage::Setup_AttributeDescriptionBox()
+    float CharacterStage::Setup_AttributeDescriptionBox()
     {
         auto const ATTR_DESC_WIDTH{ sfml_util::MapByRes(335.0f, 3000.0f) };
 
+        auto const REGION_TOP{ sfml_util::MapByRes(450.0f, 1600.0f) };
+
         const sf::FloatRect REGION(
             (SCREEN_WIDTH_ - ATTR_DESC_WIDTH) - sfml_util::MapByRes(15.0f, 300.0f),
-            sfml_util::MapByRes(450.0f, 1600.0f),
+            REGION_TOP,
             ATTR_DESC_WIDTH,
             sfml_util::MapByRes(310.0f, 2100.0f));
 
@@ -1265,6 +1290,8 @@ namespace stage
         {
             attrDescTextRegionUPtr_->Append( * NEXT_TR_UPTR );
         }
+
+        return REGION_TOP;
     }
 
 

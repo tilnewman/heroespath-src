@@ -220,8 +220,10 @@ namespace stage
 
         void Setup_StatNumberPositions();
         void Setup_FixedStats(const sfml_util::gui::TextInfo &);
-        void Setup_SmokeAnimation();
-        void Setup_AttributeDescriptionBox();
+        void Setup_SmokeAnimation(const float ATTRIB_BOX_TOP);
+
+        //returns the vertical position on screen
+        float Setup_AttributeDescriptionBox();
 
         void Setup_Attribute(
             const stats::Traits::Enum TRAIT_ENUM,
@@ -301,6 +303,9 @@ namespace stage
         static const std::string POPUP_NAME_HELP_3_;
         static const std::string POPUP_NAME_IMAGE_SELECTION_;
         //
+        static const double SMOKE_ANIM_SPEED_MIN_;
+        static const double SMOKE_ANIM_SPEED_MAX_;
+        //
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         const unsigned int SMALL_FONT_SIZE_;
@@ -317,7 +322,6 @@ namespace stage
         float attribVertOffset1_;
         float attribVertOffset2_;
         //
-        float                              smokeAnimmaxX_;
         sfml_util::sliders::Drifter<float> smokeAnimDrifterX_;
         sfml_util::sliders::Drifter<float> smokeAnimDrifterY_;
         sfml_util::gui::BackgroundImage    backgroundImage_;
