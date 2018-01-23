@@ -70,10 +70,9 @@ namespace random
         }
         else
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
-                "misc::random::Real(min=" << THE_MIN
-                << ", max=" << THE_MAX
-                << ")  The min was not less than the max.");
+            //Tested uniform_real_distribution on both Windows and MacOS over ranges
+            //where min==max and where min>max.  In both cases the distribution didn't
+            //crash and behaved as expected.  So no need to check that min<max.
 
             //uniform_real_distribution is [x,y) so the nextafter() call is needed
             std::uniform_real_distribution<T> uniformDist(

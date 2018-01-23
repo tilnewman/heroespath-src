@@ -44,22 +44,19 @@ namespace random
 
     int Int(const int THE_MIN, const int THE_MAX)
     {
-        if (THE_MIN == THE_MAX)
-        {
-            return THE_MIN;
-        }
-        else
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN < THE_MAX),
-                "misc::random::Int(min=" << THE_MIN << ", max="
-                << THE_MAX << ")  The min was not less than the max.");
+        //Tested uniform_int_distribution<int> on both Windows and MacOS over ranges where
+        //min==max and where min>max.  In both cases the distribution didn't crash and behaved
+        //as expected, except when min>max when it seemed to return random out-of-range values.
+        //So to ensure results within range check that min<=max.
 
-            //uniform_int_distribution is [x,y] (inclusive to the max value)
-            //so no increment is needed
-            std::uniform_int_distribution<int> uni_int_dist(THE_MIN, THE_MAX);
+        M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN <= THE_MAX),
+            "misc::random::Int(min=" << THE_MIN
+            << ", max=" << THE_MAX
+            << ")  The min was not <= the max.");
 
-            return uni_int_dist(MersenneTwister::engine);
-        }
+        //uniform_int_distribution is [x,y] so no nextafter() call is needed
+        std::uniform_int_distribution<int> uni_int_dist(THE_MIN, THE_MAX);
+        return uni_int_dist(MersenneTwister::engine);
     }
 
 }
