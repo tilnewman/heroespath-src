@@ -105,8 +105,8 @@ namespace popup
         imagesRect_ = textRegion_;
 
         //added is a pad so the text does not touch the images
-        imagesRect_.top = textRegionUPtr_->GetEntityPos().y +
-            sfml_util::MapByRes(70.0f, 200.0f);
+        imagesRect_.top =
+            textRegionUPtr_->GetEntityPos().y + sfml_util::MapByRes(70.0f, 200.0f);
 
         imagesRect_.height =
             (sliderbarPosTop_ - (ButtonTextHeight() * 2.0f)) - imagesRect_.top;

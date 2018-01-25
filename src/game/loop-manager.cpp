@@ -650,8 +650,7 @@ namespace game
             "ResolutionChangePopup",
             textInfo,
             popup::PopupButtons::YesNo,
-            popup::PopupImage::Banner,
-            sfml_util::MapByRes(1.0f, 3.0f),
+            popup::PopupImage::Regular,
             sfml_util::sound_effect::PromptQuestion);
 
         if (isPopupTypeResolutionChange)

@@ -61,10 +61,10 @@ namespace popup
 
         imagesRect_ = textRegion_;
 
-        imagesRect_.top = textRegionUPtr_->GetEntityPos().y +
-            sfml_util::MapByRes(70.0f, 120.0f);
+        imagesRect_.top =
+            textRegionUPtr_->GetEntityPos().y + sfml_util::MapByRes(70.0f, 120.0f);
 
-        imagesRect_.height = 300.0f;
+        imagesRect_.height = sfml_util::MapByRes(125.0f, 625.0f);
 
         imagePosTop_ = (imagesRect_.top + (imagesRect_.height * 0.5f));
 
@@ -92,8 +92,10 @@ namespace popup
         const float SLIDERBAR_POS_LEFT(textRegion_.left +
             ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f));
 
-        sliderbarPosTop_ = charDetailsTextRegionUPtr_->GetEntityRegion().top +
-            charDetailsTextRegionUPtr_->GetEntityRegion().height + 100.0f;
+        sliderbarPosTop_ =
+            charDetailsTextRegionUPtr_->GetEntityRegion().top +
+            charDetailsTextRegionUPtr_->GetEntityRegion().height +
+            sfml_util::MapByRes(60.0f, 300.0f);
 
         if (sliderbarUPtr_.get() != nullptr)
         {

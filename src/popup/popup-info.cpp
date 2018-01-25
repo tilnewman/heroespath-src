@@ -55,7 +55,6 @@ namespace popup
         const sfml_util::gui::TextInfo &    TEXT_INFO,
         const PopupButtons::Enum            BUTTONS,
         const PopupImage::Enum              IMAGE,
-        const float                         IMAGE_SCALE,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
         const PopupButtonColor::Enum        BUTTON_COLOR,
         const bool                          WILL_ADD_RAND_IMAGE,
@@ -63,13 +62,13 @@ namespace popup
         const sfml_util::TextureVec_t &     TEXTURE_VEC,
         const std::vector<std::string> &    TEXT_VEC,
         const float                         IMAGE_FADE_SPEED,
-        const creature::CreaturePtr_t CREATURE_CPTR,
+        const creature::CreaturePtr_t       CREATURE_CPTR,
         const std::size_t                   INITIAL_SELECTION,
         const bool                          ARE_IMAGES_CREATURES,
         const std::string &                 TITLE_TEXT,
         const std::string &                 DESC_TEXT,
-        const creature::TitlePtr_t    FROM_TITLE_PTR,
-        const creature::TitlePtr_t    TO_TITLE_PTR,
+        const creature::TitlePtr_t          FROM_TITLE_PTR,
+        const creature::TitlePtr_t          TO_TITLE_PTR,
         const float                         KEEP_ALIVE_SECONDS)
     :
         name_            (NAME),
@@ -82,7 +81,6 @@ namespace popup
         ratioY_          (1.0f),
         buttonColor_     (BUTTON_COLOR),
         willAddRandImage_(WILL_ADD_RAND_IMAGE),
-        imageScale_      (IMAGE_SCALE),
         textureVec_      (TEXTURE_VEC),
         numberMin_       (0),
         numberMax_       (0),
@@ -152,7 +150,6 @@ namespace popup
         ratioY_          (MAX_SIZE_RATIO_Y),
         buttonColor_     (BUTTON_COLOR),
         willAddRandImage_(WILL_ADD_RAND_IMAGE),
-        imageScale_      (1.0f),
         textureVec_      (),
         numberMin_       (0),
         numberMax_       (0),
@@ -177,7 +174,6 @@ namespace popup
                          const sfml_util::TextureVec_t &     TEXTURE_VEC,
                          const bool                          ARE_IMAGES_CREATURES,
                          const std::size_t                   INITIAL_SELECTION,
-                         const float                         IMAGE_SCALE,
                          const sfml_util::sound_effect::Enum SOUND_EFFECT,
                          const PopupButtonColor::Enum        BUTTON_COLOR)
     :
@@ -191,7 +187,6 @@ namespace popup
         ratioY_          (1.0f),
         buttonColor_     (BUTTON_COLOR),
         willAddRandImage_(true),
-        imageScale_      (IMAGE_SCALE),
         textureVec_      (TEXTURE_VEC),
         numberMin_       (0),
         numberMax_       (0),
@@ -221,8 +216,7 @@ namespace popup
     PopupInfo::PopupInfo(const std::string &              NAME,
                          const sfml_util::gui::TextInfo & TEXT_INFO,
                          const std::size_t                THE_MIN,
-                         const std::size_t                THE_MAX,
-                         const float                      IMAGE_SCALE)
+                         const std::size_t                THE_MAX)
     :
         name_            (NAME),
         textInfo_        (TEXT_INFO),
@@ -234,7 +228,6 @@ namespace popup
         ratioY_          (1.0f),
         buttonColor_     (PopupButtonColor::Dark),
         willAddRandImage_(true),
-        imageScale_      (IMAGE_SCALE),
         textureVec_      (),
         numberMin_       (THE_MIN),
         numberMax_       (THE_MAX),
@@ -256,9 +249,8 @@ namespace popup
 
     PopupInfo::PopupInfo(const std::string &                 NAME,
                          const sfml_util::gui::TextInfo &    TEXT_INFO,
-                         const float                         IMAGE_SCALE,
                          const PopupButtons::Enum            BUTTONS,
-                         const combat::CombatEnd::Enum HOW_COMBAT_ENDED)
+                         const combat::CombatEnd::Enum       HOW_COMBAT_ENDED)
     :
         name_            (NAME),
         textInfo_        (TEXT_INFO),
@@ -270,7 +262,6 @@ namespace popup
         ratioY_          (1.0f),
         buttonColor_     (PopupButtonColor::Dark),
         willAddRandImage_(false),
-        imageScale_      (IMAGE_SCALE),
         textureVec_      (),
         numberMin_       (0),
         numberMax_       (0),
@@ -306,7 +297,6 @@ namespace popup
         ratioY_          (PI.ratioY_),
         buttonColor_     (PI.buttonColor_),
         willAddRandImage_(PI.willAddRandImage_),
-        imageScale_      (PI.imageScale_),
         textureVec_      (PI.textureVec_),
         numberMin_       (PI.numberMin_),
         numberMax_       (PI.numberMax_),
@@ -344,7 +334,6 @@ namespace popup
             ratioY_           = PI.ratioY_;
             buttonColor_      = PI.buttonColor_;
             willAddRandImage_ = PI.willAddRandImage_;
-            imageScale_       = PI.imageScale_;
             textureVec_       = PI.textureVec_;
             numberMin_        = PI.numberMin_;
             numberMax_        = PI.numberMax_;
@@ -402,7 +391,6 @@ namespace popup
         else
         {
             ss << ", image=" << PopupImage::ToString(image_);
-            ss << ", image_scale=" << imageScale_;
             ss << ", button_color=" << PopupButtonColor::ToString(buttonColor_);
 
             if (image_ == PopupImage::Custom)

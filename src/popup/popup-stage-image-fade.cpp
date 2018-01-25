@@ -104,13 +104,18 @@ namespace popup
 
         auto const IMAGE_TOP{
             textRegionUPtr_->GetEntityRegion().top +
-            textRegionUPtr_->GetEntityRegion().height + IMAGE_PAD };
+            textRegionUPtr_->GetEntityRegion().height +
+            IMAGE_PAD };
 
         auto const FREE_SPACE_VERT{ descTextRegionUPtr_->GetEntityPos().y - (IMAGE_TOP + IMAGE_PAD) };
         auto const FREE_SPACE_HORIZ{ textRegion_.width };
-        auto const IMAGE_MAX_DIMM{ sfml_util::MapByRes(256.0f, 768.0f) };
+        auto const IMAGE_MAX_DIMM{ sfml_util::MapByRes(110.0f, 750.0f) };
         auto const IMAGE_WIDTH{ std::min(IMAGE_MAX_DIMM, FREE_SPACE_HORIZ) };
         auto const IMAGE_HEIGHT{ std::min(IMAGE_MAX_DIMM, FREE_SPACE_VERT) };
+
+        descTextRegionUPtr_->SetEntityPos(
+            descTextRegionUPtr_->GetEntityPos().x,
+            IMAGE_TOP + IMAGE_HEIGHT + IMAGE_PAD);
 
         if (popupInfo_.ImagesCount() == 1)
         {

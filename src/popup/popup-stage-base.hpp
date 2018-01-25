@@ -109,6 +109,8 @@ namespace popup
 
         virtual inline bool WillPressingCKeyClosePopup() const { return false; }
 
+        float calcBackgroundImageScale(const PopupImage::Enum) const;
+
     protected:
         static const sf::Uint8 ACCENT_IMAGE_ALPHA_;
         static const float ACCENT_IMAGE_SCALEDOWN_RATIO_;

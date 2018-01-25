@@ -338,6 +338,8 @@ namespace popup
 
     void PopupStageBase::SetupOuterAndInnerRegion()
     {
+        auto const BG_IMAGE_SCALE{ calcBackgroundImageScale(popupInfo_.Image()) };
+
         if (popupInfo_.Image() == PopupImage::Custom)
         {
             //establish a new popup window region for Custom popups
@@ -386,11 +388,11 @@ namespace popup
             StageRegionSet(region);
 
             innerRegion_ = sfml_util::ConvertRect<int, float>(
-                BackgroundImageRect(popupInfo_.Image(), popupInfo_.ImageScale()) );
+                BackgroundImageRect(popupInfo_.Image(), BG_IMAGE_SCALE) );
         }
 
         //adjust regions based on the background image
-        backgroundSprite_.setScale(popupInfo_.ImageScale(), popupInfo_.ImageScale());
+        backgroundSprite_.setScale(BG_IMAGE_SCALE, BG_IMAGE_SCALE);
 
         //set the stage region to fit the newly sized background paper/whatever image
         auto const BACKGROUND_WIDTH{ backgroundSprite_.getGlobalBounds().width };
@@ -714,6 +716,42 @@ namespace popup
                     << PI << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    float PopupStageBase::calcBackgroundImageScale(const PopupImage::Enum E) const
+    {
+        //These values found by experiment to look good at various resolutions.
+        switch (E)
+        {
+            case PopupImage::Banner:
+            {
+                return sfml_util::MapByRes(0.7f, 2.0f);
+            }
+            
+            case PopupImage::Regular:
+            case PopupImage::RegularSidebar:
+            {
+                return sfml_util::MapByRes(0.85f, 3.5f);
+            }
+
+            case PopupImage::Large:
+            case PopupImage::LargeSidebar:
+            {
+                //If you change this, then make sure the character_selection
+                //and image_selection popups still look right.
+                return sfml_util::MapByRes(1.0f, 4.75f);
+            }
+            
+            case PopupImage::Custom:    //Custom popups are custom sized so no value needed here.
+            case PopupImage::Spellbook: //Spellbook and MusicSheet are scale themselves to fit the screen.
+            case PopupImage::MusicSheet: 
+            case PopupImage::Count:
+            default:
+            {
+                return 1.0f;
             }
         }
     }

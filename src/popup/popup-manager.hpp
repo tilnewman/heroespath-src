@@ -280,15 +280,10 @@ namespace popup
         void LoadAccentImagePaths();
 
     private:
-        float GetScaleForImage(const PopupImage::Enum E) const;
-
-    private:
         static std::string windowTextureDirectoryPath_;
         static std::string accentTextureDirectoryPath_;
         static sf::Color fontColor_;
         static std::unique_ptr<PopupManager> instanceUPtr_;
-        //
-        const float BACKGROUND_IMAGE_SCALE_DEFAULT_;
         //
         PathVec_t accentPathsVec_;
     };

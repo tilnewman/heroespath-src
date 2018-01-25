@@ -65,7 +65,6 @@ namespace popup
             const sfml_util::gui::TextInfo &        TEXT_INFO,
             const PopupButtons::Enum                BUTTONS              = PopupButtons::Okay,
             const PopupImage::Enum                  IMAGE                = PopupImage::Banner,
-            const float                             IMAGE_SCALE          = 1.0f,
             const sfml_util::sound_effect::Enum     SOUND_EFFECT         = sfml_util::sound_effect::PromptGeneric,
             const PopupButtonColor::Enum            BUTTON_COLOR         = PopupButtonColor::Dark,
             const bool                              WILL_ADD_RAND_IMAGE  = true,
@@ -73,13 +72,13 @@ namespace popup
             const sfml_util::TextureVec_t &         TEXTURE_VEC          = sfml_util::TextureVec_t(),
             const std::vector<std::string> &        TEXT_VEC             = std::vector<std::string>(),
             const float                             IMAGE_FADE_SPEED     = IMAGE_FADE_SPEED_DEFAULT_,
-            const creature::CreaturePtr_t     CREATURE_CPTR        = nullptr,
+            const creature::CreaturePtr_t           CREATURE_CPTR        = nullptr,
             const std::size_t                       INITIAL_SELECTION    = 0,
             const bool                              ARE_IMAGES_CREATURES = false,
             const std::string &                     TITLE_TEXT           = "",
             const std::string &                     DESC_TEXT            = "",
-            const creature::TitlePtr_t        FROM_TITLE_PTR       = nullptr,
-            const creature::TitlePtr_t        TO_TITLE_PTR         = nullptr,
+            const creature::TitlePtr_t              FROM_TITLE_PTR       = nullptr,
+            const creature::TitlePtr_t              TO_TITLE_PTR         = nullptr,
             const float                             KEEP_ALIVE_SECONDS   = -1.0f);//any negative works
 
         //use this constructor for boxed popups with no background image
@@ -101,25 +100,22 @@ namespace popup
             const sfml_util::TextureVec_t &         TEXTURE_VEC,
             const bool                              ARE_IMAGES_CREATURES,
             const std::size_t                       INITIAL_SELECTION,
-            const float                             IMAGE_SCALE,
-            const sfml_util::sound_effect::Enum     SOUND_EFFECT    = sfml_util::sound_effect::PromptGeneric,
-            const PopupButtonColor::Enum BUTTON_COLOR = PopupButtonColor::Dark);
+            const sfml_util::sound_effect::Enum     SOUND_EFFECT = sfml_util::sound_effect::PromptGeneric,
+            const PopupButtonColor::Enum            BUTTON_COLOR = PopupButtonColor::Dark);
 
         //use this constructor for number selection popups
         PopupInfo(
             const std::string &              NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
             const std::size_t                THE_MIN,
-            const std::size_t                THE_MAX,
-            const float                      IMAGE_SCALE);
+            const std::size_t                THE_MAX);
 
         //use this constructor for end-of-combat popups
         PopupInfo(
             const std::string &                 NAME,
             const sfml_util::gui::TextInfo &    TEXT_INFO,
-            const float                         IMAGE_SCALE,
             const PopupButtons::Enum            BUTTONS,
-            const combat::CombatEnd::Enum HOW_COMBAT_ENDED);
+            const combat::CombatEnd::Enum       HOW_COMBAT_ENDED);
 
         virtual ~PopupInfo();
 
@@ -136,20 +132,19 @@ namespace popup
         inline float                             SizeY() const              { return ratioY_; }
         inline PopupButtonColor::Enum            ButtonColor() const        { return buttonColor_; }
         inline bool                              WillAddRandImage() const   { return willAddRandImage_; }
-        inline float                             ImageScale() const         { return imageScale_; }
         inline const sfml_util::TextureVec_t &   Images() const             { return textureVec_; }
         inline std::size_t                       ImagesCount() const        { return textureVec_.size(); }
         inline std::size_t                       NumberSelMin() const       { return numberMin_; }
         inline std::size_t                       NumberSelMax() const       { return numberMax_; }
         inline const std::vector<std::size_t>    NumberSelInvVec() const    { return numberInvalidVec_; }
         inline float                             ImageFadeSpeed() const     { return imageFadeSpeed_; }
-        inline creature::CreaturePtr_t     CreaturePtr() const        { return creatureCPtr_; }
+        inline creature::CreaturePtr_t           CreaturePtr() const        { return creatureCPtr_; }
         inline std::size_t                       InitialSelection() const   { return initialSelection_; }
         inline bool                              AreImagesCreatures() const { return areImgsCreatures_; }
         inline const std::vector<std::string> &  TextVec() const            { return textVec_; }
-        inline combat::CombatEnd::Enum     HowCombatEnded() const     { return howCombatEnded_; }
-        inline creature::TitlePtr_t        TitleFromPtr() const       { return titleFromPtr_; }
-        inline creature::TitlePtr_t        TitleToPtr() const         { return titleToPtr_; }
+        inline combat::CombatEnd::Enum           HowCombatEnded() const     { return howCombatEnded_; }
+        inline creature::TitlePtr_t              TitleFromPtr() const       { return titleFromPtr_; }
+        inline creature::TitlePtr_t              TitleToPtr() const         { return titleToPtr_; }
         inline const std::string                 TitleText() const          { return titleText_; }
         inline const std::string                 DescText() const           { return descText_; }
         inline bool                              WillIncludeItems() const   { return willIncludeItems_; }
@@ -199,21 +194,20 @@ namespace popup
         sfml_util::gui::box::Info         boxInfo_;
         float                             ratioX_;
         float                             ratioY_;
-        PopupButtonColor::Enum buttonColor_;
+        PopupButtonColor::Enum            buttonColor_;
         bool                              willAddRandImage_;
-        float                             imageScale_;
         sfml_util::TextureVec_t           textureVec_;
         std::size_t                       numberMin_;
         std::size_t                       numberMax_;
         std::vector<std::size_t>          numberInvalidVec_;
         float                             imageFadeSpeed_;
-        creature::CreaturePtr_t     creatureCPtr_;
+        creature::CreaturePtr_t           creatureCPtr_;
         std::size_t                       initialSelection_;
         bool                              areImgsCreatures_;
         std::vector<std::string>          textVec_;
-        combat::CombatEnd::Enum     howCombatEnded_;
-        creature::TitlePtr_t        titleFromPtr_;
-        creature::TitlePtr_t        titleToPtr_;
+        combat::CombatEnd::Enum           howCombatEnded_;
+        creature::TitlePtr_t              titleFromPtr_;
+        creature::TitlePtr_t              titleToPtr_;
         std::string                       titleText_;
         std::string                       descText_;
         bool                              willIncludeItems_;
