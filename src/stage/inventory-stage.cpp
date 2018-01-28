@@ -958,7 +958,7 @@ namespace stage
             if ((NEXT_BUTTON_PTR->IsDisabled()) &&
                 (NEXT_BUTTON_PTR->GetEntityRegion().contains(MOUSE_POS_V)))
             {
-                PopupRejectionWindow(NEXT_BUTTON_PTR->GetMouseHoverText(), false);
+                PopupRejectionWindow(NEXT_BUTTON_PTR->GetMouseHoverText());
                 break;
             }
         }
@@ -2638,7 +2638,7 @@ namespace stage
             ss << "\nDuring combat, only the character whose turn it is may "
                 << "equip items.";
 
-            PopupRejectionWindow(ss.str(), true);
+            PopupRejectionWindow(ss.str());
             return false;
         }
         else
@@ -2697,7 +2697,7 @@ namespace stage
             ss << "\nDuring combat, only the character whose turn it is may "
                 << "unequip items.";
 
-            PopupRejectionWindow(ss.str(), true);
+            PopupRejectionWindow(ss.str());
             return false;
         }
         else
@@ -2768,7 +2768,7 @@ namespace stage
             ss << "\nDuring combat, only the character whose turn it is may "
                 << "interact with items.";
 
-            PopupRejectionWindow(ss.str(), true);
+            PopupRejectionWindow(ss.str());
         }
 
         listBoxItemToGiveSPtr_ = unEquipListBoxUPtr_->GetSelected();
@@ -2878,7 +2878,7 @@ namespace stage
             ss << "\nDuring combat, only the character whose turn it is may "
                 << "interact with items.";
 
-            PopupRejectionWindow(ss.str(), true);
+            PopupRejectionWindow(ss.str());
             return false;
         }
 
@@ -2910,7 +2910,7 @@ namespace stage
                 << creatureToGiveToPtr_->Name() << " because:  "
                 << CAN_GIVE_ITEM_STR;
 
-            PopupRejectionWindow(ss.str(), true);
+            PopupRejectionWindow(ss.str());
             return false;
         }
     }
@@ -3009,7 +3009,7 @@ namespace stage
                     ss << "\nDuring combat, only the character whose turn it is may "
                         << "interact with items.";
 
-                    PopupRejectionWindow(ss.str(), true);
+                    PopupRejectionWindow(ss.str());
                     return false;
                 }
 
@@ -3046,7 +3046,7 @@ namespace stage
             ss << "\nDuring combat, only the character whose turn it is may "
                 << "interact with items.";
 
-            PopupRejectionWindow(ss.str(), true);
+            PopupRejectionWindow(ss.str());
             return false;
         }
         else
@@ -3258,16 +3258,16 @@ namespace stage
     }
 
 
-    void InventoryStage::PopupRejectionWindow(
-        const std::string & REJECTION_PROMPT_TEXT,
-        const bool WILL_USE_REGULAR_SIZE_POPUP)
+    void InventoryStage::PopupRejectionWindow(const std::string & REJECTION_PROMPT_TEXT)
     {
+        std::ostringstream ss;
+        ss << "\n" << REJECTION_PROMPT_TEXT;
+
         auto const POPUPINFO_NOITEM{ popup::PopupManager::Instance()->CreatePopupInfo(
             "InventoryStage'sPopupRejection",
-            REJECTION_PROMPT_TEXT,
+            ss.str(),
             popup::PopupButtons::Cancel,
-            ((WILL_USE_REGULAR_SIZE_POPUP) ?
-                popup::PopupImage::Regular : popup::PopupImage::Banner),
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptWarn,
             sfml_util::FontManager::Instance()->Size_Largeish()) };
@@ -3394,11 +3394,8 @@ namespace stage
     }
 
 
-    void InventoryStage::HandleCoinsGather(const bool WILL_POPUP)
+    void InventoryStage::HandleCoinsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS)
     {
-        sfml_util::SoundManager::Instance()->
-            Getsound_effect_set(sfml_util::sound_effect_set::Coin).PlayRandom();
-
         auto coinsOwnedByOtherPartyMembers{ 0_coin };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
@@ -3413,9 +3410,21 @@ namespace stage
             }
         }
 
+        if ((0 == coinsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
+        {
+            PopupRejectionWindow("No other party members had any coins to gather.");
+            return;
+        }
+
         creaturePtr_->CoinsAdj(coinsOwnedByOtherPartyMembers);
 
-        if (WILL_POPUP)
+        if (WILL_TRIGGER_SECONDARY_ACTIONS)
+        {
+            sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Coin).PlayRandom();
+        }
+
+        if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             std::ostringstream ss;
             ss << "\n\n" << creaturePtr_->Name() << " gathered " << coinsOwnedByOtherPartyMembers
@@ -3427,11 +3436,8 @@ namespace stage
     }
 
 
-    void InventoryStage::HandleGemsGather(const bool WILL_POPUP)
+    void InventoryStage::HandleGemsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS)
     {
-        sfml_util::SoundManager::Instance()->
-            Getsound_effect_set(sfml_util::sound_effect_set::Gem).PlayRandom();
-
         auto gemsOwnedByOtherPartyMembers{ 0_gem };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
@@ -3446,9 +3452,21 @@ namespace stage
             }
         }
 
+        if ((0 == gemsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
+        {
+            PopupRejectionWindow("No other party members had any gems to gather.");
+            return;
+        }
+
         creaturePtr_->GemsAdj(gemsOwnedByOtherPartyMembers);
 
-        if (WILL_POPUP)
+        if (WILL_TRIGGER_SECONDARY_ACTIONS)
+        {
+            sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::Gem).PlayRandom();
+        }
+
+        if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             std::ostringstream ss;
             ss << "\n\n" << creaturePtr_->Name() << " gathered " << gemsOwnedByOtherPartyMembers
@@ -3460,11 +3478,8 @@ namespace stage
     }
 
 
-    void InventoryStage::HandleMeteorShardsGather(const bool WILL_POPUP)
+    void InventoryStage::HandleMeteorShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS)
     {
-        sfml_util::SoundManager::Instance()->
-            Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard).PlayRandom();
-
         auto shardsOwnedByOtherPartyMembers{ 0_mshard };
         for (auto nextCreaturePtr : game::Game::Instance()->State().Party().Characters())
         {
@@ -3479,9 +3494,21 @@ namespace stage
             }
         }
 
+        if ((0 == shardsOwnedByOtherPartyMembers) && WILL_TRIGGER_SECONDARY_ACTIONS)
+        {
+            PopupRejectionWindow("No other party members had any Meteor Shards to gather.");
+            return;
+        }
+
         creaturePtr_->MeteorShardsAdj(shardsOwnedByOtherPartyMembers);
 
-        if (WILL_POPUP)
+        if (WILL_TRIGGER_SECONDARY_ACTIONS)
+        {
+            sfml_util::SoundManager::Instance()->
+                Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard).PlayRandom();
+        }
+
+        if (WILL_TRIGGER_SECONDARY_ACTIONS)
         {
             std::ostringstream ss;
             ss << "\n\n" << creaturePtr_->Name() << " gathered " << shardsOwnedByOtherPartyMembers
@@ -3495,6 +3522,21 @@ namespace stage
 
     void InventoryStage::HandleCoinsShare()
     {
+        //ensure there are any coins to share
+        {
+            Coin_t totalCoins{ 0 };
+            for (auto const CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            {
+                totalCoins += CREATURE_PTR->Inventory().Coins();
+            }
+
+            if (0 == totalCoins)
+            {
+                PopupRejectionWindow("The party has no coins to share.");
+                return;
+            }
+        }
+
         sfml_util::SoundManager::Instance()->
             Getsound_effect_set(sfml_util::sound_effect_set::Coin).PlayRandom();
 
@@ -3548,6 +3590,21 @@ namespace stage
 
     void InventoryStage::HandleGemsShare()
     {
+        //ensure there are any gems to share
+        {
+            Gem_t totalGems{ 0 };
+            for (auto const CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            {
+                totalGems += CREATURE_PTR->Inventory().Gems();
+            }
+
+            if (0 == totalGems)
+            {
+                PopupRejectionWindow("The party has no gems to share.");
+                return;
+            }
+        }
+
         sfml_util::SoundManager::Instance()->
             Getsound_effect_set(sfml_util::sound_effect_set::Gem).PlayRandom();
 
@@ -3602,6 +3659,21 @@ namespace stage
 
     void InventoryStage::HandleMeteorShardsShare()
     {
+        //ensure there are any shards to share
+        {
+            MeteorShard_t totalShards{ 0 };
+            for (auto const CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            {
+                totalShards += CREATURE_PTR->Inventory().MeteorShards();
+            }
+
+            if (0 == totalShards)
+            {
+                PopupRejectionWindow("The party has no Meteor Shards to share.");
+                return;
+            }
+        }
+
         sfml_util::SoundManager::Instance()->
             Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard).PlayRandom();
 
@@ -4133,7 +4205,7 @@ namespace stage
                     ss << "play songs.";
                 }
 
-                PopupRejectionWindow(ss.str(), true);
+                PopupRejectionWindow(ss.str());
 
                 //return false because one popup is replacing another
                 return false;
@@ -4152,7 +4224,7 @@ namespace stage
                     ss << "play one song.";
                 }
 
-                PopupRejectionWindow(ss.str(), true);
+                PopupRejectionWindow(ss.str());
 
                 //return false because one popup is replacing another
                 return false;
@@ -4175,7 +4247,7 @@ namespace stage
             }
             else
             {
-                PopupRejectionWindow(CAN_CAST_STR, true);
+                PopupRejectionWindow(CAN_CAST_STR);
             }
         }
         else
@@ -4194,7 +4266,7 @@ namespace stage
             }
             else
             {
-                PopupRejectionWindow(CAN_PLAY_STR, true);
+                PopupRejectionWindow(CAN_PLAY_STR);
             }
         }
 

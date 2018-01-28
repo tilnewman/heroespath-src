@@ -182,6 +182,34 @@ namespace misc
         return os;
     }
 
+
+    template<typename T, typename Parameter>
+    bool operator==(const int LEFT_INT, const StrongNumericType<T, Parameter> RIGHT_SNT)
+    {
+        return (LEFT_INT == RIGHT_SNT.template As<int>());
+    }
+
+
+    template<typename T, typename Parameter>
+    bool operator==(const StrongNumericType<T, Parameter> LEFT_SNT, const int RIGHT_INT)
+    {
+        return (LEFT_SNT.template As<int>() == RIGHT_INT);
+    }
+
+
+    template<typename T, typename Parameter>
+    bool operator!=(const int LEFT_INT, const StrongNumericType<T, Parameter> RIGHT_SNT)
+    {
+        return (LEFT_INT != RIGHT_SNT.template As<int>());
+    }
+
+
+    template<typename T, typename Parameter>
+    bool operator!=(const StrongNumericType<T, Parameter> LEFT_SNT, const int RIGHT_INT)
+    {
+        return (LEFT_SNT.template As<int>() != RIGHT_INT);
+    }
+
 }
 }
 

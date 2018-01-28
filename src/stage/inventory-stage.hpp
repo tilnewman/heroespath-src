@@ -239,9 +239,7 @@ namespace stage
             const bool CAN_SELECT_SELF = false,
             const bool CAN_SELECT_BEASTS = false);
 
-        void PopupRejectionWindow(
-            const std::string &,
-            const bool WILL_USE_REGULAR_SIZE_POPUP = false);
+        void PopupRejectionWindow(const std::string & MESSAGE);
 
         void PopupNumberSelectWindow(
             const std::string & PROMPT_TEXT,
@@ -262,9 +260,9 @@ namespace stage
             const std::size_t COUNT,
             creature::CreaturePtr_t cretureToGiveToPtr);
 
-        void HandleCoinsGather(const bool WILL_POPUP);
-        void HandleGemsGather(const bool WILL_POPUP);
-        void HandleMeteorShardsGather(const bool WILL_POPUP);
+        void HandleCoinsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
+        void HandleGemsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
+        void HandleMeteorShardsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
         void HandleCoinsShare();
         void HandleGemsShare();
         void HandleMeteorShardsShare();
