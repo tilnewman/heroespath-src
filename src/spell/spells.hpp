@@ -57,7 +57,7 @@ namespace spell
             Spells::Sparks,
             combat::EffectType::CreatureHarmDamage,
             game::Phase::Combat,
-            1_mana,
+            2_mana,
             1_rank,
             combat::TargetType::SingleOpponent,
             "sprays with sparks",

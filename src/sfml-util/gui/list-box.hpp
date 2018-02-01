@@ -35,12 +35,13 @@
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/box-info.hpp"
+#include "misc/vector-map.hpp"
 
 #include <memory>
 #include <utility>
 #include <string>
-#include <list>
-#include <map>
+#include <vector>
+#include <algorithm>
 
 
 namespace heroespath
@@ -60,16 +61,15 @@ namespace gui
 
     class ListBoxItem;
     using ListBoxItemSPtr_t = std::shared_ptr<ListBoxItem>;
-    using ListBoxItemSLst_t = std::list<ListBoxItemSPtr_t>;
+    using ListBoxItemSVec_t = std::vector<ListBoxItemSPtr_t>;
 
     //types required for the ListBoxPtrPackage_t and IListBoxCallbackHandler below
     class ListBox;
     using ListBoxUPtr_t = std::unique_ptr<ListBox>;
 
-    using ImageMap_t      = std::map<ListBoxItemSPtr_t, std::pair<sf::Texture, sf::Sprite> >;
-    using ImageMapIter_t  = ImageMap_t::iterator;
-    using ImageMapCIter_t = ImageMap_t::const_iterator;
-
+    using ImagePair_t = std::pair<std::shared_ptr<sf::Texture>, sf::Sprite>;
+    using ImageMap_t = misc::VectorMap<ListBoxItemSPtr_t, ImagePair_t>;
+    
 
     //the callback type for ListBox is a wrapper class called ListBoxItem
     namespace callback
@@ -127,78 +127,86 @@ namespace gui
         explicit ListBox(
             const std::string &       NAME,
             const sf::FloatRect &     REGION      = sf::FloatRect(),
-            const ListBoxItemSLst_t & ITEM_LIST   = ListBoxItemSLst_t(),
+            const ListBoxItemSVec_t & ITEM_VEC    = ListBoxItemSVec_t(),
             IStage * const            stagePtr    = nullptr,
             const float               MARGIN      = 0.0f,
             const float               BETWEEN_PAD = 0.0f,
             const box::Info &         BOX_INFO    = box::Info(),
             const sf::Color &         LINE_COLOR  = sf::Color::Transparent,
-            const std::size_t         ITEM_LIMIT  = NO_LIMIT_,
             callback::IListBoxCallbackHandler * const callbackPtr = nullptr);
 
         virtual ~ListBox();
 
         void Setup(
             const sf::FloatRect &     REGION      = sf::FloatRect(),
-            const ListBoxItemSLst_t & ITEM_LIST   = ListBoxItemSLst_t(),
+            const ListBoxItemSVec_t & ITEM_VEC    = ListBoxItemSVec_t(),
             IStage * const            stagePtr    = nullptr,
             const float               MARGIN      = 0.0f,
             const float               BETWEEN_PAD = 0.0f,
             const box::Info &         BOX_INFO    = box::Info(),
             const sf::Color &         LINE_COLOR  = sf::Color::Transparent,
-            const std::size_t         ITEM_LIMIT  = NO_LIMIT_,
             callback::IListBoxCallbackHandler * const callbackPtr = nullptr);
 
         inline virtual const std::string HandlerName() const override { return GetEntityName(); }
 
         virtual bool HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE) override;
 
-        inline void SetImageHeight(const float HEIGHT)      { imageSize_ = HEIGHT; }
-        inline float GetImageHeight() const                 { return imageSize_; }
-
-        inline void SetImageColor(const sf::Color & COLOR)  { imageColor_ = COLOR; }
-        inline const sf::Color GetImageColor() const        { return imageColor_; }
-
-        void DrawLine(sf::RenderTarget & target, const float POS_TOP) const;
+        inline void ImageColor(const sf::Color & COLOR)  { imageColor_ = COLOR; }
+        inline const sf::Color ImageColor() const        { return imageColor_; }
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        ListBoxItemSPtr_t GetAtPosition(const sf::Vector2f & POS_V);
+        ListBoxItemSPtr_t AtPos(const sf::Vector2f & POS_V);
 
-        inline const ListBoxItemSPtr_t GetSelected() const  { return selectedSPtr_; }
+        const ListBoxItemSPtr_t Selected() const;
+        
+        inline std::size_t DisplayIndex() const
+        {
+            return displayIndex_;
+        }
 
-        std::size_t GetSelectedIndex() const;
+        void DisplayIndex(const std::size_t);
 
-        bool IsIndexValid(const std::size_t) const;
+        inline std::size_t SelectedIndex() const
+        {
+            return selectionDisplayIndex_ + selectionOffsetIndex_;
+        }
 
-        //returns true if the selected index was valid and set
-        bool SetSelectedIndex(
-            const std::size_t NEW_INDEX,
-            const bool WILL_PLAY_SOUNDEFFECT = true);
+        //sets displayIndex_ to whatever selectionDisplayIndex_ turns out to be
+        void SelectedIndex(const std::size_t);
+        
+        inline bool IsIndexValid(const std::size_t INDEX) const { return (INDEX < items_.size()); }
 
-        ListBoxItemSPtr_t At(const std::size_t INDEX);
+        inline bool IsIndexVisible_Display(const std::size_t INDEX) const
+        {
+            return ((INDEX >= displayIndex_) &&
+                    (INDEX <= CalcLastVisibleIndex_Display()));
+        }
 
-        inline std::size_t GetCount() const     { return list_.size(); }
-        inline bool Empty() const               { return list_.empty(); }
-        inline std::size_t GetLimit() const     { return itemLimit_; }
+        inline bool IsIndexVisible_Selection(const std::size_t INDEX) const
+        {
+            return ((INDEX >= selectionDisplayIndex_) &&
+                    (INDEX <= CalcLastVisibleIndex_Selection()));
+        }
 
-        void Add(
-            const ListBoxItemSPtr_t & THING_SPTR,
-            const bool                WILL_INC_CURRENT_SEL = false);
+        inline ListBoxItemSPtr_t At(const std::size_t INDEX) { return items_.at(INDEX); }
+
+        inline std::size_t Size() const { return items_.size(); }
+        inline bool Empty() const { return items_.empty(); }
+
+        void Add(const ListBoxItemSPtr_t & ITEM_SPTR);
 
         bool Remove(const ListBoxItemSPtr_t & THING_SPTR);
 
-        inline bool RemoveSelected()            { return Remove(selectedSPtr_); }
-        inline void Clear()                     { list_.clear(); }
+        inline bool RemoveSelected() { return Remove(Selected()); }
+        inline void Clear() { items_.clear(); }
 
         virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
         virtual bool KeyRelease(const sf::Event::KeyEvent & KEY_EVENT) override;
 
-        ListBoxItemSPtr_t GetItemAtLocation(const sf::Vector2f & MOUSE_POS_V);
-
         //if there is an image at location, then return the rect of the image
-        const sf::FloatRect GetRectAtLocation(const sf::Vector2f & MOUSE_POS_V);
+        const sf::FloatRect ImageRectOfItemAtPos(const sf::Vector2f & MOUSE_POS_V);
 
         virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
 
@@ -208,48 +216,68 @@ namespace gui
         inline bool WillPlaySoundEffects() const { return willPlaySfx_; }
         inline void WillPlaySoundEffects(const bool B) { willPlaySfx_ = B; }
 
-        inline const ListBoxItemSLst_t GetList() const { return list_; }
-        void SetList(const ListBoxItemSLst_t & LIST);
+        inline const ListBoxItemSVec_t Items() const { return items_; }
+        void Items(const ListBoxItemSVec_t & NEW_ITEMS_VEC);
+
+        //these two functions return true if the selection changed
+        bool SelectPrev();
+        bool SelectNext();
 
     protected:
-        void CreateSelectionChangePackageAndCallHandler(const std::size_t NEW_SELECTED_INDEX);
+        std::size_t CalcVisibleItems() const;
+        std::size_t CalcGreatestFirstDisplayedIndex() const;
         void CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT);
         inline void OnClick(const sf::Vector2f &) override {}
         virtual void OnDoubleClick(const sf::Vector2f & MOUSE_POS_V) override;
-        void SetupList();
-        float GetTotalHeight() const;
+        void SetupForDraw();
 
-        void PopulateImageMapAndAdjustLeftPos(
+        void LoadImageAndSetPosition(
             ListBoxItemSPtr_t & LISTBOXITEM_SPTR,
-            const float         POS_LEFT_ORIG,
             const float         POS_TOP,
             const bool          IS_SELECTED_ITEM);
 
-        bool MoveSelectionUp();
-        bool MoveSelectionDown();
+        std::size_t CalcVisibleCount() const;
+        std::size_t CalcLastVisibleIndex_Display() const;
+        std::size_t CalcLastVisibleIndex_Selection() const;
+
+        void PlaySfx() const;
+
+        void DrawLine(sf::RenderTarget & target, const float POS_TOP) const;
+
+        bool IsPosWithinItemRegion(
+            const sf::Vector2f & POS_V,
+            const ListBoxItemSPtr_t & ITEM_SPTR) const;
 
     public:
-        static const std::size_t NO_LIMIT_;
         static const sf::FloatRect ERROR_RECT_;
 
     protected:
         const float       IMAGE_HORIZ_PAD_;
+        const float       IMAGE_SIZE_;
         box::BoxUPtr_t    boxUPtr_;
         SliderBarUPtr_t   sliderbarUPtr_;
         sf::Color         lineColor_;
         sf::Color         highlightColor_;
-        float             currentViewPos_;
         float             margin_;
         float             betweenPad_;
         IStage *          stagePtr_;
-        ListBoxItemSLst_t list_;
-        ListBoxItemSPtr_t selectedSPtr_;
-        std::size_t       itemLimit_;
-        float             imageSize_;
+        ListBoxItemSVec_t items_;
         ImageMap_t        imageMap_;
         sf::Color         imageColor_;
         bool              willPlaySfx_;
         callback::IListBoxCallbackHandler * callbackPtr_;
+        
+        //which item is displayed at the top of the list
+        std::size_t displayIndex_;
+
+        //which item item is displayed at the top of the list when the selection is displayed
+        std::size_t selectionDisplayIndex_;
+
+        //offset from selectionIndexA_ to the actual selection
+        std::size_t selectionOffsetIndex_;
+
+        //how many items are listed
+        std::size_t visibleCount_;
     };
 
 }

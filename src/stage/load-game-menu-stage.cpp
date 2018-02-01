@@ -158,7 +158,7 @@ namespace stage
 
         //hand all GameState objects to the ListBox
         gamestatePSet_ = state::GameStateFactory::Instance()->LoadAllGames();
-        std::list<sfml_util::gui::ListBoxItemSPtr_t> listBoxItemSLst;
+        sfml_util::gui::ListBoxItemSVec_t listBoxItemSVec;
         std::size_t gameStateCount(0);
 
         for (auto const NEXT_GAMESTATE_PTR : gamestatePSet_)
@@ -192,10 +192,9 @@ namespace stage
                 TEXT_INFO,
                 NEXT_GAMESTATE_PTR);
 
-            listBoxItemSLst.push_back(LBI_SPTR);
+            listBoxItemSVec.push_back(LBI_SPTR);
         }
-        listBoxItemSLst.sort();
-
+        
         //establish the boxing options
         auto const BG_COLOR{
             sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220) };
@@ -218,13 +217,12 @@ namespace stage
         gsListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "GameStateToLoad",
             GS_LB_RECT,
-            listBoxItemSLst,
+            listBoxItemSVec,
             this,
             10.0f,
             6.0f,
             BOX_INFO,
             sfml_util::FontManager::Color_Orange(),
-            0,
             this);
 
         EntityAdd(gsListBoxUPtr_.get());
@@ -250,7 +248,7 @@ namespace stage
             return;
         }
 
-        auto listBoxItemSPtr{ gsListBoxUPtr_->GetSelected() };
+        auto listBoxItemSPtr{ gsListBoxUPtr_->Selected() };
         M_ASSERT_OR_LOGANDTHROW_SS((listBoxItemSPtr.get() != nullptr),
             "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
             << " returned a nullptr.");

@@ -109,12 +109,12 @@ namespace popup
             (PACKAGE.keypress_event.code == sf::Keyboard::Up) ||
             (PACKAGE.keypress_event.code == sf::Keyboard::Down))
         {
-            if ((PACKAGE.package.PTR_->GetSelected() != nullptr) &&
-                (currentSpellPtr_ != PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC))
+            if ((PACKAGE.package.PTR_->Selected() != nullptr) &&
+                (currentSpellPtr_ != PACKAGE.package.PTR_->Selected()->SPELL_CPTRC))
             {
-                if (currentSpellPtr_ != PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC)
+                if (currentSpellPtr_ != PACKAGE.package.PTR_->Selected()->SPELL_CPTRC)
                 {
-                    currentSpellPtr_ = PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC;
+                    currentSpellPtr_ = PACKAGE.package.PTR_->Selected()->SPELL_CPTRC;
                 }
 
                 if (imageColorSlider_.Direction() != sfml_util::Moving::Away)
@@ -131,7 +131,7 @@ namespace popup
         else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
                  (PACKAGE.keypress_event.code == sf::Keyboard::Return))
         {
-            if (PACKAGE.package.PTR_->GetSelected()->SPELL_CPTRC != nullptr)
+            if (PACKAGE.package.PTR_->Selected()->SPELL_CPTRC != nullptr)
             {
                 return HandleSpellCast();
             }
@@ -157,8 +157,8 @@ namespace popup
         //keystrokes work without having to click on the listbox.
         SetFocus(listBoxUPtr_.get());
 
-        //Force spell listbox selection up and down to force
-        //colors to correct.
+        //Force spell listbox selection up and down to force colors to be correct.
+        //For some reason the listbox colors are not correct when first drawn.
         listBoxUPtr_->WillPlaySoundEffects(false);
         sf::Event::KeyEvent keyEvent;
         keyEvent.code = sf::Keyboard::Down;
@@ -470,7 +470,7 @@ namespace popup
             LISTBOX_COLORSET_,
             LISTBOX_BG_INFO_);
 
-        sfml_util::gui::ListBoxItemSLst_t listBoxItemsSList;
+        sfml_util::gui::ListBoxItemSVec_t listBoxItemsSVec;
         auto const SPELL_PVEC{ popupInfo_.CreaturePtr()->SpellsPVec() };
         for (auto const NEXT_SPELL_PTR : SPELL_PVEC)
         {
@@ -481,24 +481,23 @@ namespace popup
                 NEXT_SPELL_PTR,
                 CanCastSpell(NEXT_SPELL_PTR)) );
 
-            listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+            listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
         }
 
         listBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "PopupStage'sSpellListBox",
             LISTBOX_RECT,
-            listBoxItemsSList,
+            listBoxItemsSVec,
             this,
             10.0f,
             6.0f,
             LISTBOX_BOX_INFO,
             LISTBOX_LINE_COLOR_,
-            sfml_util::gui::ListBox::NO_LIMIT_,
             this);
 
         EntityAdd(listBoxUPtr_.get());
-        listBoxUPtr_->SetSelectedIndex(0);
-        listBoxUPtr_->SetImageColor(LISTBOX_IMAGE_COLOR_);
+        listBoxUPtr_->SelectedIndex(0);
+        listBoxUPtr_->ImageColor(LISTBOX_IMAGE_COLOR_);
     }
 
 
@@ -744,13 +743,13 @@ namespace popup
 
     bool PopupStageSpellbook::HandleSpellCast()
     {
-        if (CanCastSpell(listBoxUPtr_->GetSelected()->SPELL_CPTRC))
+        if (CanCastSpell(listBoxUPtr_->Selected()->SPELL_CPTRC))
         {
             sfml_util::SoundManager::Instance()->Getsound_effect_set(
                 sfml_util::sound_effect_set::SpellSelect).PlayRandom();
 
             game::LoopManager::Instance()->PopupWaitEnd(
-                ResponseTypes::Select, listBoxUPtr_->GetSelectedIndex());
+                ResponseTypes::Select, listBoxUPtr_->SelectedIndex());
 
             willShowXImage_ = false;
 

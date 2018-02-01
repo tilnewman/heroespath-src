@@ -435,7 +435,7 @@ namespace stage
         const sfml_util::gui::ListBox * const INVENTORY_LISTBOX_PTR,
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
-        auto const LISTBOX_ITEM_SPTR{ PACKAGE.package.PTR_->GetSelected() };
+        auto const LISTBOX_ITEM_SPTR{ PACKAGE.package.PTR_->Selected() };
 
         if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
             (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))

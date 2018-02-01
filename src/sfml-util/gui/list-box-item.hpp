@@ -31,7 +31,7 @@
 //
 #include "sfml-util/gui/text-region.hpp"
 
-#include <list>
+#include <vector>
 #include <memory>
 #include <string>
 
@@ -153,7 +153,7 @@ namespace gui
 
 
     using ListBoxItemSPtr_t = std::shared_ptr<ListBoxItem>;
-    using ListBoxItemSLst_t = std::list<ListBoxItemSPtr_t>;
+    using ListBoxItemSVec_t = std::vector<ListBoxItemSPtr_t>;
 
 
     bool operator==(const ListBoxItem & L, const ListBoxItem & R);

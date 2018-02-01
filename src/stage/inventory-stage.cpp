@@ -340,7 +340,7 @@ namespace stage
             (PACKAGE.keypress_event.code == sf::Keyboard::Up) ||
             (PACKAGE.keypress_event.code == sf::Keyboard::Down))
         {
-            SetDescBoxTextFromListBoxItem(PACKAGE.package.PTR_->GetSelected());
+            SetDescBoxTextFromListBoxItem(PACKAGE.package.PTR_->Selected());
         }
         else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
                  (PACKAGE.keypress_event.code == sf::Keyboard::Return))
@@ -1207,7 +1207,7 @@ namespace stage
             LISTBOX_COLORSET_,
             LISTBOX_BG_INFO_);
 
-        sfml_util::gui::ListBoxItemSLst_t listBoxItemsSList;
+        sfml_util::gui::ListBoxItemSVec_t listBoxItemsSVec;
 
         //establish which view to use
         ViewType viewToUse(viewToChangeTo_);
@@ -1235,7 +1235,7 @@ namespace stage
                         listBoxItemTextInfo_,
                         NEXT_CONDITION_PTR);
 
-                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+                    listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
             }
@@ -1250,7 +1250,7 @@ namespace stage
                         listBoxItemTextInfo_,
                         NEXT_ITEM_SPTR);
 
-                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+                    listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
             }
@@ -1265,7 +1265,7 @@ namespace stage
                         listBoxItemTextInfo_,
                         NEXT_SPELL_PTR);
 
-                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+                    listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
             }
@@ -1282,7 +1282,7 @@ namespace stage
                         listBoxItemTextInfo_,
                         NEXT_TITLE_PTR);
 
-                    listBoxItemsSList.push_back(LISTBOXITEM_SPTR);
+                    listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
                 }
                 break;
             }
@@ -1298,25 +1298,25 @@ namespace stage
         equippedListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "InventoryStage'sLeftListBox",
             LISTBOX_REGION_,
-            listBoxItemsSList,
+            listBoxItemsSVec,
             this,
             10.0f,
             6.0f,
             LISTBOX_BOX_INFO,
             LISTBOX_COLOR_LINE_,
-            sfml_util::gui::ListBox::NO_LIMIT_,
             this);
 
         EntityAdd(equippedListBoxUPtr_.get());
 
-        equippedListBoxUPtr_->SetSelectedIndex(0);
-        equippedListBoxUPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
+        equippedListBoxUPtr_->SelectedIndex(0);
+        equippedListBoxUPtr_->ImageColor(LISTBOX_COLOR_IMAGE_);
+        equippedListBoxUPtr_->WillPlaySoundEffects(false);
     }
 
 
     void InventoryStage::Setup_DescBox(const bool WILL_MOVE_OFFSCREEN)
     {
-        sfml_util::gui::ListBoxItemSLst_t unEquipItemsSList;
+        sfml_util::gui::ListBoxItemSVec_t unEquipItemsSVec;
         for (auto const & NEXT_ITEM_SPTR : creaturePtr_->Inventory().Items())
         {
             std::ostringstream itemEntryNameSS;
@@ -1329,7 +1329,7 @@ namespace stage
                 listBoxItemTextInfo_,
                 NEXT_ITEM_SPTR);
 
-            unEquipItemsSList.push_back(EQUIPPED_LISTBOXITEM_SPTR);
+            unEquipItemsSVec.push_back(EQUIPPED_LISTBOXITEM_SPTR);
         }
 
         const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
@@ -1352,19 +1352,19 @@ namespace stage
         unEquipListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "InventoryStage'sUnEquipped",
             DESCBOX_REGION_,
-            unEquipItemsSList,
+            unEquipItemsSVec,
             this,
             10.0f,
             6.0f,
             LISTBOX_BOX_INFO,
             LISTBOX_COLOR_LINE_,
-            sfml_util::gui::ListBox::NO_LIMIT_,
             this);
 
         EntityAdd(unEquipListBoxUPtr_.get());
 
-        unEquipListBoxUPtr_->SetImageColor(LISTBOX_COLOR_IMAGE_);
-        unEquipListBoxUPtr_->SetSelectedIndex(0);
+        unEquipListBoxUPtr_->SelectedIndex(0);
+        unEquipListBoxUPtr_->ImageColor(LISTBOX_COLOR_IMAGE_);
+        unEquipListBoxUPtr_->WillPlaySoundEffects(false);
 
         if (IS_EQ_ALREADY_INSTANTIATED)
         {
@@ -1817,7 +1817,7 @@ namespace stage
 
         if (ViewType::Items == view_)
         {
-            auto selectedItemPtr{ unEquipListBoxUPtr_->GetSelected() };
+            auto selectedItemPtr{ unEquipListBoxUPtr_->Selected() };
 
             if ((selectedItemPtr != nullptr) &&
                 (selectedItemPtr->ITEM_CPTR != nullptr) &&
@@ -1827,13 +1827,13 @@ namespace stage
 
                 equipButtonUPtr_->SetMouseHoverText(
                     "Click here or press 'e' to equip the " +
-                        unEquipListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
+                        unEquipListBoxUPtr_->Selected()->ITEM_CPTR->Name() + ".");
 
                 dropButtonUPtr_->SetIsDisabled(false);
 
                 dropButtonUPtr_->SetMouseHoverText(
                     "(Click here or press 'd' to drop the " +
-                        unEquipListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ")");
+                        unEquipListBoxUPtr_->Selected()->ITEM_CPTR->Name() + ")");
             }
             else
             {
@@ -1871,15 +1871,15 @@ namespace stage
 
         if (ViewType::Items == view_)
         {
-            if ((equippedListBoxUPtr_->GetSelected().get() != nullptr) &&
-                (equippedListBoxUPtr_->GetSelected()->ITEM_CPTR != nullptr) &&
-                (equippedListBoxUPtr_->GetSelected()->ITEM_CPTR->Name().empty() == false))
+            if ((equippedListBoxUPtr_->Selected().get() != nullptr) &&
+                (equippedListBoxUPtr_->Selected()->ITEM_CPTR != nullptr) &&
+                (equippedListBoxUPtr_->Selected()->ITEM_CPTR->Name().empty() == false))
             {
                 unequipButtonUPtr_->SetIsDisabled(false);
 
                 unequipButtonUPtr_->SetMouseHoverText(
                     "Click here or press 'u' to unequip the " +
-                        equippedListBoxUPtr_->GetSelected()->ITEM_CPTR->Name() + ".");
+                        equippedListBoxUPtr_->Selected()->ITEM_CPTR->Name() + ".");
             }
             else
             {
@@ -1985,7 +1985,7 @@ namespace stage
 
         if (ViewType::Items != view_)
         {
-            SetDescBoxTextFromListBoxItem(equippedListBoxUPtr_->GetSelected());
+            SetDescBoxTextFromListBoxItem(equippedListBoxUPtr_->Selected());
         }
 
         Setup_FirstListBoxTitle();
@@ -2652,7 +2652,7 @@ namespace stage
     {
         if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
-            auto const LISTBOX_ITEM_SPTR{ unEquipListBoxUPtr_->GetSelected() };
+            auto const LISTBOX_ITEM_SPTR{ unEquipListBoxUPtr_->Selected() };
 
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
                 (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
@@ -2711,7 +2711,7 @@ namespace stage
     {
         if ((ViewType::Items == view_) && (unequipButtonUPtr_->IsDisabled() == false))
         {
-            auto const LISTBOX_ITEM_SPTR(equippedListBoxUPtr_->GetSelected());
+            auto const LISTBOX_ITEM_SPTR(equippedListBoxUPtr_->Selected());
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
                 (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
@@ -2771,7 +2771,7 @@ namespace stage
             PopupRejectionWindow(ss.str());
         }
 
-        listBoxItemToGiveSPtr_ = unEquipListBoxUPtr_->GetSelected();
+        listBoxItemToGiveSPtr_ = unEquipListBoxUPtr_->Selected();
 
         if (listBoxItemToGiveSPtr_.get() != nullptr)
         {
@@ -2998,7 +2998,7 @@ namespace stage
         if ((ViewType::Items == view_) &&
             (equipButtonUPtr_->IsDisabled() == false))
         {
-            auto const LISTBOX_ITEM_SPTR{ unEquipListBoxUPtr_->GetSelected() };
+            auto const LISTBOX_ITEM_SPTR{ unEquipListBoxUPtr_->Selected() };
             if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
                 (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
             {
@@ -3769,11 +3769,11 @@ namespace stage
 
             if (unEquipListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
-                listBoxItemPtr = unEquipListBoxUPtr_->GetAtPosition(MOUSE_POS_V);
+                listBoxItemPtr = unEquipListBoxUPtr_->AtPos(MOUSE_POS_V);
             }
             else if (equippedListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
-                listBoxItemPtr = equippedListBoxUPtr_->GetAtPosition(MOUSE_POS_V);
+                listBoxItemPtr = equippedListBoxUPtr_->AtPos(MOUSE_POS_V);
             }
 
             if (listBoxItemPtr.get() != nullptr)
@@ -3792,11 +3792,11 @@ namespace stage
         {
             if (unEquipListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
-                return unEquipListBoxUPtr_->GetRectAtLocation(MOUSE_POS_V);
+                return unEquipListBoxUPtr_->ImageRectOfItemAtPos(MOUSE_POS_V);
             }
             else if (equippedListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
-                return equippedListBoxUPtr_->GetRectAtLocation(MOUSE_POS_V);
+                return equippedListBoxUPtr_->ImageRectOfItemAtPos(MOUSE_POS_V);
             }
         }
 
@@ -4171,8 +4171,6 @@ namespace stage
 
     void InventoryStage::ForceSelectionAndDrawOfListBox()
     {
-        equippedListBoxUPtr_->WillPlaySoundEffects(false);
-
         sf::Event::KeyEvent keyEvent;
 
         keyEvent.code = sf::Keyboard::Down;
@@ -4180,8 +4178,6 @@ namespace stage
 
         keyEvent.code = sf::Keyboard::Up;
         equippedListBoxUPtr_->KeyRelease(keyEvent);
-
-        equippedListBoxUPtr_->WillPlaySoundEffects(true);
     }
 
 
@@ -4433,21 +4429,24 @@ namespace stage
         sfml_util::gui::ListBox & listbox,
         bool & isSortReversed)
     {
-        auto list{ listbox.GetList() };
+        auto vec{ listbox.Items() };
 
-        list.sort([isSortReversed](auto & A, auto & B)
-        {
-            if (isSortReversed)
+        std::sort(
+            std::begin(vec),
+            std::end(vec),
+            [isSortReversed](auto & A, auto & B)
             {
-                return A->ITEM_CPTR->Name() > B->ITEM_CPTR->Name();
-            }
-            else
-            {
-                return A->ITEM_CPTR->Name() < B->ITEM_CPTR->Name();
-            }
-        });
+                if (isSortReversed)
+                {
+                    return A->ITEM_CPTR->Name() > B->ITEM_CPTR->Name();
+                }
+                else
+                {
+                    return A->ITEM_CPTR->Name() < B->ITEM_CPTR->Name();
+                }
+            });
 
-        listbox.SetList(list);
+        listbox.Items(vec);
         isSortReversed = ! isSortReversed;
     }
 
@@ -4456,21 +4455,24 @@ namespace stage
         sfml_util::gui::ListBox & listbox,
         bool & isSortReversed)
     {
-        auto list{ listbox.GetList() };
+        auto vec{ listbox.Items() };
 
-        list.sort([isSortReversed](auto & A, auto & B)
-        {
-            if (isSortReversed)
+        std::sort(
+            std::begin(vec),
+            std::end(vec),
+            [isSortReversed](auto & A, auto & B)
             {
-                return A->ITEM_CPTR->Price() > B->ITEM_CPTR->Price();
-            }
-            else
-            {
-                return A->ITEM_CPTR->Price() < B->ITEM_CPTR->Price();
-            }
-        });
+                if (isSortReversed)
+                {
+                    return A->ITEM_CPTR->Price() > B->ITEM_CPTR->Price();
+                }
+                else
+                {
+                    return A->ITEM_CPTR->Price() < B->ITEM_CPTR->Price();
+                }
+            });
 
-        listbox.SetList(list);
+        listbox.Items(vec);
         isSortReversed = ! isSortReversed;
     }
 
@@ -4479,21 +4481,24 @@ namespace stage
         sfml_util::gui::ListBox & listbox,
         bool & isSortReversed)
     {
-        auto list{ listbox.GetList() };
+        auto vec{ listbox.Items() };
 
-        list.sort([isSortReversed](auto & A, auto & B)
-        {
-            if (isSortReversed)
+        std::sort(
+            std::begin(vec),
+            std::end(vec),
+            [isSortReversed](auto & A, auto & B)
             {
-                return A->ITEM_CPTR->Weight() > B->ITEM_CPTR->Weight();
-            }
-            else
-            {
-                return A->ITEM_CPTR->Weight() < B->ITEM_CPTR->Weight();
-            }
-        });
+                if (isSortReversed)
+                {
+                    return A->ITEM_CPTR->Weight() > B->ITEM_CPTR->Weight();
+                }
+                else
+                {
+                    return A->ITEM_CPTR->Weight() < B->ITEM_CPTR->Weight();
+                }
+            });
 
-        listbox.SetList(list);
+        listbox.Items(vec);
         isSortReversed = ! isSortReversed;
     }
 

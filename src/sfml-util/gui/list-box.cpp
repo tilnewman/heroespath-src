@@ -50,7 +50,6 @@
 #include "item/item.hpp"
 
 #include <vector>
-#include <algorithm>
 
 
 namespace heroespath
@@ -67,49 +66,47 @@ namespace gui
     }
 
 
-    const std::size_t   ListBox::NO_LIMIT_(0);
     const sf::FloatRect ListBox::ERROR_RECT_(-1.0f, -1.0f, -1.0f, -1.0f);
 
 
     ListBox::ListBox(
-        const std::string &       NAME,
-        const sf::FloatRect &     REGION,
-        const ListBoxItemSLst_t & ITEM_LIST,
-        IStage * const            stagePtr,
-        const float               MARGIN,
-        const float               BETWEEN_PAD,
-        const box::Info &         BOX_INFO,
-        const sf::Color &         LINE_COLOR,
-        const std::size_t         ITEM_LIMIT,
+        const std::string & NAME,
+        const sf::FloatRect & REGION,
+        const ListBoxItemSVec_t & ITEM_VEC,
+        IStage * const stagePtr,
+        const float MARGIN,
+        const float BETWEEN_PAD,
+        const box::Info & BOX_INFO,
+        const sf::Color & LINE_COLOR,
         callback::IListBoxCallbackHandler * const callbackPtr)
     :
         GuiEntity       (std::string(NAME).append("_ListBox"), REGION),
         IMAGE_HORIZ_PAD_(10.0f),
+        IMAGE_SIZE_     (sfml_util::MapByRes(50.0f, 150.0f)),
         boxUPtr_        (),
         sliderbarUPtr_  (),
         lineColor_      (LINE_COLOR),
         highlightColor_ (BOX_INFO.bg_info.color + sf::Color(20, 20, 20, 20)),
-        currentViewPos_ (0.0f),
         margin_         (MARGIN),
         betweenPad_     (BETWEEN_PAD),
         stagePtr_       (stagePtr),
-        list_           (ITEM_LIST),
-        selectedSPtr_   (),
-        itemLimit_      (ITEM_LIMIT),
-        imageSize_      (sfml_util::MapByRes(50.0f, 150.0f)),
+        items_          (ITEM_VEC),
         imageMap_       (),
         imageColor_     (sf::Color::White),
         willPlaySfx_    (true),
-        callbackPtr_    (callbackPtr)
+        callbackPtr_    (callbackPtr),
+        displayIndex_   (0),
+        selectionDisplayIndex_(0),
+        selectionOffsetIndex_(0),
+        visibleCount_   (0)
     {
         Setup(REGION,
-              ITEM_LIST,
+              ITEM_VEC,
               stagePtr,
               MARGIN,
               BETWEEN_PAD,
               BOX_INFO,
               LINE_COLOR,
-              ITEM_LIMIT,
               callbackPtr);
     }
 
@@ -132,26 +129,23 @@ namespace gui
 
 
     void ListBox::Setup(
-        const sf::FloatRect &     REGION,
-        const ListBoxItemSLst_t & ITEM_LIST,
-        IStage * const            stagePtr,
-        const float               MARGIN,
-        const float               BETWEEN_PAD,
-        const box::Info &         BOX_INFO,
-        const sf::Color &         LINE_COLOR,
-        const std::size_t         ITEM_LIMIT,
+        const sf::FloatRect & REGION,
+        const ListBoxItemSVec_t & ITEM_VEC,
+        IStage * const stagePtr,
+        const float MARGIN,
+        const float BETWEEN_PAD,
+        const box::Info & BOX_INFO,
+        const sf::Color & LINE_COLOR,
         callback::IListBoxCallbackHandler * const callbackPtr)
     {
         SetEntityRegion(REGION);
 
-        list_.clear();
-        list_ = ITEM_LIST;
+        items_.clear();
+        items_ = ITEM_VEC;
         stagePtr_ = stagePtr;
         margin_ = MARGIN;
         betweenPad_ = BETWEEN_PAD;
         lineColor_ = LINE_COLOR;
-        currentViewPos_ = 0.0f;
-        itemLimit_ = ITEM_LIMIT;
         callbackPtr_ = callbackPtr;
 
         if (boxUPtr_.get() == nullptr)
@@ -183,42 +177,671 @@ namespace gui
             sliderbarUPtr_->SetCurrentValue(0.0f);
         }
 
-        //select the first entity in the list
-        if (list_.empty() == false)
-        {
-            selectedSPtr_ = *list_.begin();
-        }
+        displayIndex_ = 0;
+        selectionDisplayIndex_ = 0;
+        selectionOffsetIndex_ = 0;
+        
+        visibleCount_ = CalcVisibleItems();
 
-        SetupList();
+        SetupForDraw();
     }
 
 
     bool ListBox::HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        if (list_.empty())
+        if (Empty())
         {
-            currentViewPos_ = 0.0f;
-            selectedSPtr_.reset();
+            return false;
         }
         else
         {
-            typename ListBoxItemSLst_t::const_iterator itr(list_.begin());
-            for (; itr != list_.end(); ++itr)
+            auto const NEW_INDEX_F{
+                static_cast<float>(items_.size() - 1) * PACKAGE.PTR_->GetCurrentValue() };
+
+            DisplayIndex(static_cast<std::size_t>(NEW_INDEX_F));
+            return true;
+        }
+    }
+
+
+    void ListBox::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        //use the ListBox's entityWillDraw_ to control whether
+        //ListBox is responsible for drawing its entitys
+        if (false == entityWillDraw_)
+        {
+            return;
+        }
+
+        auto lastDrawnListPosY{ entityRegion_.top };
+        auto lastDrawnEntityHeight{ IMAGE_SIZE_ };
+        auto const POS_BOTTOM{ entityRegion_.top + entityRegion_.height } ;
+        auto const SELECTION_INDEX{ SelectedIndex() };
+        auto const LAST_DRAWN_INDEX{ CalcLastVisibleIndex_Display() };
+        
+        if (Empty() == false)
+        {
+            for (std::size_t i(displayIndex_); i <= LAST_DRAWN_INDEX; ++i)
             {
-                typename ListBoxItemSLst_t::const_iterator tempItr(itr);
-                ++tempItr;
-                if (tempItr == list_.end())
+                auto const ITEM_SPTR{ items_.at(i) };
+
+                ImagePair_t imagePair;
+                auto const DID_FIND_IMAGE{ imageMap_.Find(ITEM_SPTR, imagePair) };
+
+                //highlight invalid entries
+                if (ITEM_SPTR->is_valid == false)
+                {
+                    sf::FloatRect rect(ITEM_SPTR->GetEntityRegion());
+                    rect.left -= margin_;
+                    rect.width = entityRegion_.width;
+
+                    if (DID_FIND_IMAGE)
+                    {
+                        rect.width -= IMAGE_SIZE_ + IMAGE_HORIZ_PAD_;
+                    }
+
+                    sfml_util::DrawRectangle<float>(
+                        target,
+                        states,
+                        rect,
+                        sf::Color::Transparent, 0, sf::Color(127, 32, 32, 64));
+                }
+
+                //highlight the current selection
+                if (SELECTION_INDEX == i)
+                {
+                    sf::FloatRect rect(ITEM_SPTR->GetEntityRegion());
+                    rect.left -= margin_;
+                    rect.width = entityRegion_.width;
+
+                    if (DID_FIND_IMAGE)
+                    {
+                        rect.width -= IMAGE_SIZE_ + IMAGE_HORIZ_PAD_;
+                    }
+
+                    sfml_util::DrawRectangle<float>(
+                        target,
+                        states,
+                        rect,
+                        sf::Color::Transparent, 0, highlightColor_);
+                }
+
+                if (DID_FIND_IMAGE)
+                {
+                    target.draw(imagePair.second, states);
+                }
+
+                target.draw(*ITEM_SPTR, states);
+
+                lastDrawnEntityHeight = ITEM_SPTR->GetEntityRegion().height;
+
+                //draw between line
+                auto const LINE_POS_TOP{
+                    ITEM_SPTR->GetEntityRegion().top +
+                    ITEM_SPTR->GetEntityRegion().height +
+                    (betweenPad_ * 0.5f) };
+
+                if (LINE_POS_TOP < POS_BOTTOM)
+                {
+                    DrawLine(target, LINE_POS_TOP);
+                    lastDrawnListPosY = LINE_POS_TOP + lastDrawnEntityHeight + betweenPad_;
+                }
+                else
                 {
                     break;
                 }
             }
-            currentViewPos_ = (GetTotalHeight() - (*itr)->GetEntityRegion().height) *
-                PACKAGE.PTR_->GetCurrentValue();
-
-            SetupList();
         }
 
-        return true;
+        //draw lines in the rest of the box even though there are no more entitys
+        while (lastDrawnListPosY < POS_BOTTOM)
+        {
+            DrawLine(target, lastDrawnListPosY);
+            lastDrawnListPosY += lastDrawnEntityHeight;
+        }
+    }
+
+
+    ListBoxItemSPtr_t ListBox::AtPos(const sf::Vector2f & POS_V)
+    {
+        for (auto const & NEXT_ITEM_SPTR : items_)
+        {
+            if (NEXT_ITEM_SPTR->GetEntityWillDraw() &&
+                NEXT_ITEM_SPTR->GetEntityRegion().contains(POS_V))
+            {
+                return NEXT_ITEM_SPTR;
+            }
+        }
+
+        return ListBoxItemSPtr_t();
+    }
+
+
+    const ListBoxItemSPtr_t ListBox::Selected() const
+    {
+        auto const INDEX{ SelectedIndex() };
+        if (INDEX < items_.size())
+        {
+            return items_[INDEX];
+        }
+        else
+        {
+            return ListBoxItemSPtr_t();
+        }
+    }
+
+
+    void ListBox::DisplayIndex(const std::size_t NEW_INDEX)
+    {
+        if (IsIndexValid(NEW_INDEX) && (DisplayIndex() != NEW_INDEX))
+        {
+            if (NEW_INDEX < displayIndex_)
+            {
+                displayIndex_ = NEW_INDEX;
+            }
+            else
+            {
+                auto const GREATEST_FIRST_INDEX{ CalcGreatestFirstDisplayedIndex() };
+                if (NEW_INDEX >= GREATEST_FIRST_INDEX)
+                {
+                    displayIndex_ = GREATEST_FIRST_INDEX;
+                }
+                else
+                {
+                    displayIndex_ = NEW_INDEX - visibleCount_;
+                }
+            }
+
+            SetupForDraw();
+        }
+    }
+
+
+    void ListBox::SelectedIndex(const std::size_t NEW_INDEX)
+    {
+        if (IsIndexValid(NEW_INDEX) && (SelectedIndex() != NEW_INDEX))
+        {
+            if (IsIndexVisible_Selection(NEW_INDEX))
+            {
+                selectionOffsetIndex_ = NEW_INDEX - selectionDisplayIndex_;
+            }
+            else
+            {
+                if (NEW_INDEX < selectionDisplayIndex_)
+                {
+                    selectionDisplayIndex_ = NEW_INDEX;
+                    selectionOffsetIndex_ = 0;
+                }
+                else
+                {
+                    auto const GREATEST_FIRST_INDEX{ CalcGreatestFirstDisplayedIndex() };
+                    if (NEW_INDEX >= GREATEST_FIRST_INDEX)
+                    {
+                        selectionDisplayIndex_ = GREATEST_FIRST_INDEX;
+                        selectionOffsetIndex_ = NEW_INDEX - GREATEST_FIRST_INDEX;
+                    }
+                    else
+                    {
+                        selectionDisplayIndex_ = NEW_INDEX - visibleCount_;
+                        selectionOffsetIndex_ = visibleCount_ - 1;
+                    }
+                }
+            }
+        }
+
+        displayIndex_ = selectionDisplayIndex_;
+        SetupForDraw();
+    }
+
+
+    void ListBox::Add(const ListBoxItemSPtr_t & ITEM_SPTR)
+    {
+        items_.push_back(ITEM_SPTR);
+        SetupForDraw();
+    }
+
+
+    bool ListBox::Remove(const ListBoxItemSPtr_t & ITEM_SPTR)
+    {
+        auto const FOUND_ITR{ std::find(items_.begin(), items_.end(), ITEM_SPTR) };
+
+        if (FOUND_ITR == items_.end())
+        {
+            return false;
+        }
+        else
+        {
+            items_.erase(FOUND_ITR);
+
+            if (SelectedIndex() >= items_.size())
+            {
+                SelectPrev();
+            }
+
+            SetupForDraw();
+            return true;
+        }
+    }
+
+
+    bool ListBox::MouseUp(const sf::Vector2f & MOUSE_POS_V)
+    {
+        auto const DID_STATE_CHANGE{ GuiEntity::MouseUp(MOUSE_POS_V) };
+        
+        auto const ORIG_SELECTED_ITEM_SPTR{ Selected() };
+        
+        auto const NUM_ITEMS{ items_.size() };
+        for (std::size_t i(0); i < NUM_ITEMS; ++i)
+        {
+            auto const ITEM_SPTR{ items_[i] };
+
+            if (ITEM_SPTR->GetEntityWillDraw() &&
+                IsPosWithinItemRegion(MOUSE_POS_V, ITEM_SPTR) &&
+                (ORIG_SELECTED_ITEM_SPTR != ITEM_SPTR))
+            {
+                SelectedIndex(i);
+
+                if (willPlaySfx_)
+                {
+                    SoundManager::Instance()->PlaySfx_MouseClick();
+                }
+
+                boxUPtr_->FakeColorSetAsIfFocusIs(true);
+
+                if (callbackPtr_ != nullptr)
+                {
+                    const callback::ListBoxPtrPackage_t PTR_PACKAGE{ this };
+
+                    const callback::ListBoxEventPackage PACKAGE(
+                        PTR_PACKAGE,
+                        sfml_util::GuiEvent::Click,
+                        MOUSE_POS_V);
+
+                    callbackPtr_->HandleCallback(PACKAGE);
+
+                    SetupForDraw();
+                }
+
+                return true;
+            }
+        }
+
+        boxUPtr_->FakeColorSetAsIfFocusIs(DID_STATE_CHANGE);
+        return DID_STATE_CHANGE;
+    }
+
+
+    bool ListBox::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
+    {
+        if (Empty())
+        {
+            CreateKeypressPackageAndCallHandler(KEY_EVENT);
+            return false;
+        }
+
+        if (KEY_EVENT.code == sf::Keyboard::Return)
+        {
+            PlaySfx();
+            CreateKeypressPackageAndCallHandler(KEY_EVENT);
+            return true;
+        }
+
+        if (KEY_EVENT.code == sf::Keyboard::Up)
+        {
+            auto const DID_SELECTION_CHANGE{ SelectPrev() };
+            PlaySfx();
+            CreateKeypressPackageAndCallHandler(KEY_EVENT);
+            return DID_SELECTION_CHANGE;
+        }
+        else if (KEY_EVENT.code == sf::Keyboard::Down)
+        {
+            auto const DID_SELECTION_CHANGE{ SelectNext() };
+            PlaySfx();
+            CreateKeypressPackageAndCallHandler(KEY_EVENT);
+            return DID_SELECTION_CHANGE;
+        }
+
+        CreateKeypressPackageAndCallHandler(KEY_EVENT);
+        return false;
+    }
+
+
+    const sf::FloatRect ListBox::ImageRectOfItemAtPos(const sf::Vector2f & MOUSE_POS_V)
+    {
+        auto const ITEM_SPTR{ AtPos(MOUSE_POS_V) };
+
+        if (ITEM_SPTR.get() == nullptr)
+        {
+            return ERROR_RECT_;
+        }
+
+        ImagePair_t imagePair;
+        auto const DID_FIND_IMAGE{ imageMap_.Find(ITEM_SPTR, imagePair) };
+        if (DID_FIND_IMAGE)
+        {
+            return imagePair.second.getGlobalBounds();
+        }
+        else
+        {
+            return ITEM_SPTR->GetEntityRegion();
+        }
+    }
+
+
+    void ListBox::SetEntityPos(const float POS_LEFT, const float POS_TOP)
+    {
+        auto const DIFF_HORIZ{ POS_LEFT - GetEntityPos().x };
+        auto const DIFF_VERT{ POS_TOP - GetEntityPos().y };
+
+        for (auto & itemSPtr : items_)
+        {
+            itemSPtr->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
+        }
+
+        for (auto & NEXT_IMAGE_PAIR : imageMap_)
+        {
+            NEXT_IMAGE_PAIR.second.second.move(DIFF_HORIZ, DIFF_VERT);
+        }
+
+        if (boxUPtr_.get() != nullptr)
+        {
+            boxUPtr_->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
+        }
+
+        GuiEntity::SetEntityPos(POS_LEFT, POS_TOP);
+    }
+
+
+    void ListBox::Items(const ListBoxItemSVec_t & NEW_ITEMS_VEC)
+    {
+        items_ = NEW_ITEMS_VEC;
+        DisplayIndex(0);
+        SelectedIndex(0);
+        sliderbarUPtr_->SetCurrentValue(0.0f);
+        SetupForDraw();
+    }
+
+
+    bool ListBox::SelectPrev()
+    {
+        if (selectionOffsetIndex_ > 0)
+        {
+            --selectionOffsetIndex_;
+            SetupForDraw();
+            return true;
+        }
+        else
+        {
+            if (selectionDisplayIndex_ > 0)
+            {
+                if (displayIndex_ == selectionDisplayIndex_)
+                {
+                    --displayIndex_;
+                }
+
+                --selectionDisplayIndex_;
+
+                SetupForDraw();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    bool ListBox::SelectNext()
+    {
+        if ((Empty() == false) && (SelectedIndex() < (items_.size() - 1)))
+        {
+            SelectedIndex(SelectedIndex() + 1);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    std::size_t ListBox::CalcGreatestFirstDisplayedIndex() const
+    {
+        return ((items_.size() > visibleCount_) ? (items_.size() - visibleCount_) : 0);
+    }
+
+
+    void ListBox::CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT)
+    {
+        if (callbackPtr_ != nullptr)
+        {
+            const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
+
+            const callback::ListBoxEventPackage PACKAGE(
+                PTR_PACKAGE,
+                sfml_util::GuiEvent::Keypress,
+                callback::ListBoxEventPackage::INVALID_MOUSE_POS_V_,
+                callback::ListBoxEventPackage::INVALID_SELECTION_,
+                false,
+                KEY_EVENT);
+
+            callbackPtr_->HandleCallback(PACKAGE);
+
+            SetupForDraw();
+        }
+    }
+
+
+    void ListBox::OnDoubleClick(const sf::Vector2f & MOUSE_POS_V)
+    {
+        if (callbackPtr_ != nullptr)
+        {
+            const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
+
+            const callback::ListBoxEventPackage PACKAGE(
+                PTR_PACKAGE,
+                sfml_util::GuiEvent::DoubleClick, MOUSE_POS_V);
+
+            callbackPtr_->HandleCallback(PACKAGE);
+
+            SetupForDraw();
+        }
+    }
+
+
+    void ListBox::SetupForDraw()
+    {
+        auto posTop{ entityRegion_.top + margin_ };
+
+        auto const NUM_ITEMS{ items_.size() };
+        for (std::size_t i(0); i < NUM_ITEMS; ++i)
+        {
+            auto itemSPtr{ items_[i] };
+            if (IsIndexVisible_Display(i))
+            {
+                itemSPtr->SetEntityWillDraw(true);
+                LoadImageAndSetPosition(itemSPtr, posTop, (SelectedIndex() == i));
+                posTop += itemSPtr->GetEntityRegion().height + betweenPad_;
+            }
+            else
+            {
+                itemSPtr->SetEntityWillDraw(false);
+            }
+        }
+    }
+
+
+    void ListBox::LoadImageAndSetPosition(
+        sfml_util::gui::ListBoxItemSPtr_t & listBoxItemSPtr,
+        const float POS_TOP,
+        const bool IS_SELECTED_ITEM)
+    {
+        ImagePair_t imagePair;
+        
+        auto const DOES_IMAGE_EXIST{
+            ((listBoxItemSPtr->ITEM_CPTR != nullptr) ||
+            (listBoxItemSPtr->TITLE_CPTRC != nullptr) ||
+            (listBoxItemSPtr->CHARACTER_CPTR != nullptr) ||
+            (listBoxItemSPtr->SPELL_CPTRC != nullptr) ||
+            (listBoxItemSPtr->COND_CPTRC != nullptr) ||
+            (listBoxItemSPtr->SONG_CPTRC != nullptr)) };
+
+        if (DOES_IMAGE_EXIST)
+        {
+            imageMap_.Find(listBoxItemSPtr, imagePair);
+            
+            if (imagePair.first.get() == nullptr)
+            {
+                imagePair.first = std::make_shared<sf::Texture>();
+
+                if (listBoxItemSPtr->ITEM_CPTR != nullptr)
+                {
+                    sfml_util::gui::ItemImageManager::Instance()->Load(
+                        * imagePair.first,
+                        listBoxItemSPtr->ITEM_CPTR);
+                }
+                else if (listBoxItemSPtr->TITLE_CPTRC != nullptr)
+                {
+                    sfml_util::gui::TitleImageManager::Instance()->Get(
+                        * imagePair.first,
+                        listBoxItemSPtr->TITLE_CPTRC->Which());
+                }
+                else if (listBoxItemSPtr->CHARACTER_CPTR != nullptr)
+                {
+                    sfml_util::gui::CreatureImageManager::Instance()->GetImage(
+                        * imagePair.first,
+                        listBoxItemSPtr->CHARACTER_CPTR->ImageFilename(),
+                        true);
+                }
+                else if (listBoxItemSPtr->SPELL_CPTRC != nullptr)
+                {
+                    sfml_util::gui::SpellImageManager::Instance()->Get(
+                        * imagePair.first,
+                        listBoxItemSPtr->SPELL_CPTRC->Which());
+                }
+                else if (listBoxItemSPtr->COND_CPTRC != nullptr)
+                {
+                    sfml_util::gui::ConditionImageManager::Instance()->Get(
+                        * imagePair.first,
+                        listBoxItemSPtr->COND_CPTRC->Which());
+                }
+                else if (listBoxItemSPtr->SONG_CPTRC != nullptr)
+                {
+                    sfml_util::gui::SongImageManager::Instance()->Get(
+                        * imagePair.first,
+                        listBoxItemSPtr->SONG_CPTRC->Which());
+                }
+            }
+        }
+
+        auto const ITEM_POS_LEFT{ entityRegion_.left + margin_ };
+        auto newPosLeft{ ITEM_POS_LEFT };
+
+        if (imagePair.first.get() != nullptr)
+        {
+            sf::Sprite & sprite{ imagePair.second };
+
+            sprite.setTexture( * imagePair.first, true);
+
+            if (IS_SELECTED_ITEM)
+            {
+                sprite.setColor(sf::Color::White);
+            }
+            else
+            {
+                sprite.setColor(imageColor_);
+            }
+
+            if (sprite.getLocalBounds().width > sprite.getLocalBounds().height)
+            {
+                const float SCALE(IMAGE_SIZE_ / sprite.getLocalBounds().width);
+                sprite.setScale(SCALE, SCALE);
+            }
+            else
+            {
+                const float SCALE(IMAGE_SIZE_ / sprite.getLocalBounds().height);
+                sprite.setScale(SCALE, SCALE);
+            }
+            
+            auto const SPRITE_POS_LEFT{
+                (ITEM_POS_LEFT + (IMAGE_SIZE_ * 0.5f)) - (sprite.getGlobalBounds().width * 0.5f) };
+
+            auto const SPRITE_POS_TOP{
+                (POS_TOP + (IMAGE_SIZE_ * 0.5f)) - (sprite.getGlobalBounds().height * 0.5f) };
+
+            sprite.setPosition(SPRITE_POS_LEFT, SPRITE_POS_TOP);
+
+            auto const IMAGE_AREA_WIDTH{ IMAGE_SIZE_ + IMAGE_HORIZ_PAD_ };
+            newPosLeft += IMAGE_AREA_WIDTH;
+
+            imageMap_[listBoxItemSPtr] = imagePair;
+
+            sf::FloatRect r(listBoxItemSPtr->GetEntityRegion());
+            r.width -= IMAGE_AREA_WIDTH;
+            r.height = IMAGE_SIZE_;
+            listBoxItemSPtr->SetEntityRegion(r);
+        }
+
+        listBoxItemSPtr->SetEntityPos(newPosLeft, POS_TOP);
+    }
+
+
+    std::size_t ListBox::CalcVisibleItems() const
+    {
+        std::size_t count{ 0 };
+        auto posVert{ entityRegion_.top + margin_ };
+        auto const POS_BOTTOM{ (entityRegion_.top + entityRegion_.height) };
+        
+        do
+        {
+            posVert += IMAGE_SIZE_;
+
+            if (posVert > POS_BOTTOM)
+            {
+                break;
+            }
+            else
+            {
+                ++count;
+                posVert += betweenPad_;
+            }
+        } while (posVert < POS_BOTTOM);
+
+        return count;
+    }
+
+
+    std::size_t ListBox::CalcLastVisibleIndex_Display() const
+    {
+        if (Empty())
+        {
+            return 0;
+        }
+        else
+        {
+            return std::min((displayIndex_ + visibleCount_) - 1, items_.size() - 1);
+        }
+    }
+
+
+    std::size_t ListBox::CalcLastVisibleIndex_Selection() const
+    {
+        if (Empty())
+        {
+            return 0;
+        }
+        else
+        {
+            return std::min((selectionDisplayIndex_ + visibleCount_) - 1, items_.size() - 1);
+        }
+    }
+
+
+    void ListBox::PlaySfx() const
+    {
+        if (willPlaySfx_)
+        {
+            SoundManager::Instance()->PlaySfx_Keypress();
+        }
     }
 
 
@@ -238,833 +861,15 @@ namespace gui
     }
 
 
-    void ListBox::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    bool ListBox::IsPosWithinItemRegion(
+        const sf::Vector2f & POS_V,
+        const ListBoxItemSPtr_t & ITEM_SPTR) const
     {
-        //use the ListBox's entityWillDraw_ to control whether
-        //ListBox is responsible for drawing its entitys
-        if (false == entityWillDraw_)
-        {
-            return;
-        }
-
-        typename ListBoxItemSLst_t::const_iterator itr(list_.begin());
-        const std::size_t NUM_ENTITYS(list_.size());
-        const float BOTTOM(entityRegion_.top + entityRegion_.height);
-        float lastDrawnListPosY(entityRegion_.top);
-        float lastDrawnEntityHeight(45.0f);
-        std::size_t itemCount(0);
-
-        for (std::size_t i(0); i<NUM_ENTITYS; ++i)
-        {
-            if (itr == list_.end())
-            {
-                break;
-            }
-
-            const ListBoxItemSPtr_t nextEntitySPtr( * itr );
-            const ImageMapCIter_t IMAGE_MAP_CITER(imageMap_.find(nextEntitySPtr));
-
-            //highlight invalid entries
-            if (nextEntitySPtr->is_valid == false)
-            {
-                sf::FloatRect rect(nextEntitySPtr->GetEntityRegion());
-                rect.left -= margin_;
-                rect.width = entityRegion_.width;
-
-                if (IMAGE_MAP_CITER != imageMap_.end())
-                {
-                    rect.width -= imageSize_ + IMAGE_HORIZ_PAD_;
-                }
-
-                sfml_util::DrawRectangle<float>(
-                    target,
-                    states,
-                    rect,
-                    sf::Color::Transparent, 0, sf::Color(127, 32, 32, 64));
-            }
-
-            //highlight the current selection
-            if ((selectedSPtr_.get() != nullptr) &&
-                (nextEntitySPtr == selectedSPtr_) &&
-                (nextEntitySPtr->GetEntityWillDraw()))
-            {
-                sf::FloatRect rect(nextEntitySPtr->GetEntityRegion());
-                rect.left -= margin_;
-                rect.width = entityRegion_.width;
-
-                if (IMAGE_MAP_CITER != imageMap_.end())
-                {
-                    rect.width -= imageSize_ + IMAGE_HORIZ_PAD_;
-                }
-
-                sfml_util::DrawRectangle<float>(
-                    target,
-                    states,
-                    rect,
-                    sf::Color::Transparent, 0, highlightColor_);
-            }
-
-            if (nextEntitySPtr->GetEntityWillDraw())
-            {
-                float imageHeight(0.0f);
-                if (IMAGE_MAP_CITER != imageMap_.end())
-                {
-                    target.draw(IMAGE_MAP_CITER->second.second, states);
-                    imageHeight = IMAGE_MAP_CITER->second.second.getGlobalBounds().height;
-                }
-
-                target.draw( * nextEntitySPtr, states);
-
-                lastDrawnEntityHeight =
-                    std::max(nextEntitySPtr->GetEntityRegion().height, imageHeight);
-
-                //draw between line
-                auto const LINE_POS_TOP{
-                    nextEntitySPtr->GetEntityRegion().top +
-                    nextEntitySPtr->GetEntityRegion().height +
-                    (betweenPad_ * 0.5f) };
-
-                if (LINE_POS_TOP < BOTTOM)
-                {
-                    const std::size_t LIMIT((list_.empty()) ? itemLimit_ : (itemLimit_ - 1));
-                    if ((NO_LIMIT_ == itemLimit_) || (itemCount++ <= LIMIT))
-                    {
-                        DrawLine(target, LINE_POS_TOP);
-                    }
-
-                    lastDrawnListPosY = LINE_POS_TOP + lastDrawnEntityHeight;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            ++itr;
-        }
-
-        //draw lines in the rest of the box even though there are no more entitys
-        while (lastDrawnListPosY < BOTTOM)
-        {
-            const std::size_t LIMIT((list_.empty()) ? itemLimit_ : (itemLimit_ - 1));
-            if ((NO_LIMIT_ == itemLimit_) || (itemCount++ <= LIMIT))
-            {
-                DrawLine(target, lastDrawnListPosY);
-            }
-
-            lastDrawnListPosY += lastDrawnEntityHeight;
-        }
-    }
-
-
-    ListBoxItemSPtr_t ListBox::GetAtPosition(const sf::Vector2f & POS_V)
-    {
-        for (auto const & NEXT_ENTITY_SPTR : list_)
-        {
-            if (NEXT_ENTITY_SPTR->GetEntityWillDraw())
-            {
-                if ((POS_V.x >= entityRegion_.left) &&
-                    (POS_V.x <= entityRegion_.left + entityRegion_.width - (2.0f * margin_)) &&
-                    (POS_V.y >= NEXT_ENTITY_SPTR->GetEntityRegion().top) &&
-                    (POS_V.y <= NEXT_ENTITY_SPTR->GetEntityRegion().top +
-                        NEXT_ENTITY_SPTR->GetEntityRegion().height))
-                {
-                    return NEXT_ENTITY_SPTR;
-                }
-            }
-        }
-
-        return ListBoxItemSPtr_t();
-    }
-
-
-    std::size_t ListBox::GetSelectedIndex() const
-    {
-        std::size_t index(0);
-        for (auto const & NEXT_ENTITY_SPTR : list_)
-        {
-            if (NEXT_ENTITY_SPTR == selectedSPtr_)
-            {
-                return index;
-            }
-            else
-            {
-                ++index;
-            }
-        }
-
-        //return invalid index
-        //anything that will cause IsIndexValid() to return false will work here
-        return list_.size() + 1;
-    }
-
-
-    bool ListBox::IsIndexValid(const std::size_t INDEX) const
-    {
-        if (list_.empty())
-        {
-            return false;
-        }
-        else if (INDEX >= list_.size())
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-
-    bool ListBox::SetSelectedIndex(const std::size_t NEW_INDEX, const bool WILL_PLAY_SOUNDEFFECT)
-    {
-        if (IsIndexValid(NEW_INDEX) == false)
-        {
-            return false;
-        }
-
-        if (GetSelectedIndex() == NEW_INDEX)
-        {
-            return false;
-        }
-
-        if (willPlaySfx_)
-        {
-            SoundManager::Instance()->PlaySfx_TickOn();
-        }
-
-        std::size_t indexCounter(0);
-        float vertTracker(entityRegion_.height);
-        for (
-            typename ListBoxItemSLst_t::const_iterator itr(list_.begin());
-            itr != list_.end();
-            ++itr)
-        {
-            if (indexCounter++ == NEW_INDEX)
-            {
-                currentViewPos_ = (*itr)->GetEntityRegion().height + betweenPad_;
-
-                if (willPlaySfx_ && WILL_PLAY_SOUNDEFFECT)
-                {
-                    SoundManager::Instance()->PlaySfx_TickOn();
-                }
-
-                selectedSPtr_ = *itr;
-                SetupList();
-                CreateSelectionChangePackageAndCallHandler(NEW_INDEX);
-                return true;
-            }
-            else
-            {
-                if ((*itr)->GetEntityWillDraw())
-                {
-                    vertTracker += (*itr)->GetEntityRegion().height + betweenPad_;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    ListBoxItemSPtr_t ListBox::At(const std::size_t INDEX)
-    {
-        if (INDEX >= list_.size())
-        {
-            std::ostringstream ss;
-            ss << "Get() was given an index=" << INDEX
-                << " that is out of bounds with the current count=" << list_.size() << ".";
-
-            throw std::range_error(ss.str());
-        }
-        else
-        {
-            typename sfml_util::gui::ListBoxItemSLst_t::iterator itr(list_.begin());
-
-            std::advance(
-                itr,
-                static_cast<sfml_util::gui::ListBoxItemSLst_t::iterator::difference_type>(INDEX));
-
-            return * itr;
-        }
-    }
-
-
-    void ListBox::Add(
-        const ListBoxItemSPtr_t & THING_SPTR,
-        const bool WILL_INC_CURRENT_SEL)
-    {
-        if ((NO_LIMIT_ == itemLimit_) || (list_.size() < static_cast<std::size_t>(itemLimit_)))
-        {
-            list_.push_back(THING_SPTR);
-
-            if (WILL_INC_CURRENT_SEL)
-            {
-                MoveSelectionDown();
-            }
-
-            SetupList();
-        }
-    }
-
-
-    bool ListBox::Remove(const ListBoxItemSPtr_t & THING_SPTR)
-    {
-        typename ListBoxItemSLst_t::iterator FOUND_ITR{
-            std::find(list_.begin(), list_.end(), THING_SPTR) };
-
-        if (FOUND_ITR == list_.end())
-        {
-            return false;
-        }
-
-        if (*FOUND_ITR == selectedSPtr_)
-        {
-            selectedSPtr_.reset();
-        }
-
-        list_.erase(FOUND_ITR);
-        SetupList();
-        return true;
-    }
-
-
-    bool ListBox::MouseUp(const sf::Vector2f & MOUSE_POS_V)
-    {
-        const bool DID_STATE_CHANGE(GuiEntity::MouseUp(MOUSE_POS_V));
-
-        for (auto const & NEXT_ENTITY_SPTR : list_)
-        {
-            if (NEXT_ENTITY_SPTR->GetEntityWillDraw())
-            {
-                if ((MOUSE_POS_V.x >= entityRegion_.left) &&
-                    (MOUSE_POS_V.x <= entityRegion_.left + entityRegion_.width -
-                        (2.0f * margin_)) &&
-                    (MOUSE_POS_V.y >= NEXT_ENTITY_SPTR->GetEntityRegion().top) &&
-                    (MOUSE_POS_V.y <= NEXT_ENTITY_SPTR->GetEntityRegion().top +
-                        NEXT_ENTITY_SPTR->GetEntityRegion().height))
-                {
-                    if (selectedSPtr_ != NEXT_ENTITY_SPTR)
-                    {
-                        if (willPlaySfx_)
-                        {
-                            SoundManager::Instance()->PlaySfx_MouseClick();
-                        }
-
-                        selectedSPtr_ = NEXT_ENTITY_SPTR;
-                        SetupList();
-                        boxUPtr_->FakeColorSetAsIfFocusIs(true);
-
-                        if (callbackPtr_ != nullptr)
-                        {
-                            const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
-                            const callback::ListBoxEventPackage PACKAGE(
-                                PTR_PACKAGE, sfml_util::GuiEvent::Click, MOUSE_POS_V);
-                            callbackPtr_->HandleCallback(PACKAGE);
-                        }
-
-                        return true;
-                    }
-                }
-            }
-        }
-
-        boxUPtr_->FakeColorSetAsIfFocusIs(DID_STATE_CHANGE);
-
-        return DID_STATE_CHANGE;
-    }
-
-
-    bool ListBox::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
-    {
-        if (list_.empty())
-        {
-            selectedSPtr_.reset();
-            CreateKeypressPackageAndCallHandler(KEY_EVENT);
-            return false;
-        }
-
-        if (KEY_EVENT.code == sf::Keyboard::Return)
-        {
-            if (willPlaySfx_)
-            {
-                SoundManager::Instance()->PlaySfx_Keypress();
-            }
-
-            CreateKeypressPackageAndCallHandler(KEY_EVENT);
-            return true;
-        }
-
-        if (KEY_EVENT.code == sf::Keyboard::Up)
-        {
-            auto const WILL_RETURN_TRUE{ MoveSelectionUp() };
-
-            if (willPlaySfx_ && WILL_RETURN_TRUE)
-            {
-                SoundManager::Instance()->PlaySfx_Keypress();
-            }
-
-            CreateKeypressPackageAndCallHandler(KEY_EVENT);
-            return WILL_RETURN_TRUE;
-        }
-        else if (KEY_EVENT.code == sf::Keyboard::Down)
-        {
-            auto const WILL_RETURN_TRUE{ MoveSelectionDown() };
-
-            if (willPlaySfx_ && WILL_RETURN_TRUE)
-            {
-                SoundManager::Instance()->PlaySfx_Keypress();
-            }
-
-            CreateKeypressPackageAndCallHandler(KEY_EVENT);
-            return WILL_RETURN_TRUE;
-        }
-
-        CreateKeypressPackageAndCallHandler(KEY_EVENT);
-        return false;
-    }
-
-
-    ListBoxItemSPtr_t ListBox::GetItemAtLocation(const sf::Vector2f & MOUSE_POS_V)
-    {
-        for (auto const & NEXT_ITEM_SPTR : list_)
-        {
-            if (NEXT_ITEM_SPTR->GetEntityWillDraw())
-            {
-                if ((MOUSE_POS_V.x >= entityRegion_.left) &&
-                    (MOUSE_POS_V.x <= entityRegion_.left + entityRegion_.width - (2.0f * margin_)) &&
-                    (MOUSE_POS_V.y >= NEXT_ITEM_SPTR->GetEntityRegion().top) &&
-                    (MOUSE_POS_V.y <= NEXT_ITEM_SPTR->GetEntityRegion().top +
-                        NEXT_ITEM_SPTR->GetEntityRegion().height))
-                {
-                    return NEXT_ITEM_SPTR;
-                }
-            }
-        }
-
-        return ListBoxItemSPtr_t();
-    }
-
-
-    const sf::FloatRect ListBox::GetRectAtLocation(const sf::Vector2f & MOUSE_POS_V)
-    {
-        for (auto const & NEXT_ITEM_SPTR : list_)
-        {
-            if (NEXT_ITEM_SPTR->GetEntityWillDraw())
-            {
-                if ((MOUSE_POS_V.x >= entityRegion_.left) &&
-                    (MOUSE_POS_V.x <= entityRegion_.left + entityRegion_.width - (2.0f * margin_)) &&
-                    (MOUSE_POS_V.y >= NEXT_ITEM_SPTR->GetEntityRegion().top) &&
-                    (MOUSE_POS_V.y <= NEXT_ITEM_SPTR->GetEntityRegion().top +
-                        NEXT_ITEM_SPTR->GetEntityRegion().height))
-                {
-                    const ImageMapCIter_t IMAGE_MAP_CITER(imageMap_.find(NEXT_ITEM_SPTR));
-                    if (IMAGE_MAP_CITER != imageMap_.end())
-                    {
-                        return IMAGE_MAP_CITER->second.second.getGlobalBounds();
-                    }
-                    else
-                    {
-                        return sf::FloatRect(
-                            entityRegion_.left,
-                            NEXT_ITEM_SPTR->GetEntityRegion().top,
-                            entityRegion_.width - (2.0f * margin_),
-                            NEXT_ITEM_SPTR->GetEntityRegion().top +
-                                NEXT_ITEM_SPTR->GetEntityRegion().height);
-                    }
-                }
-            }
-        }
-
-        return ERROR_RECT_;
-    }
-
-
-    void ListBox::SetEntityPos(const float POS_LEFT, const float POS_TOP)
-    {
-        const float DIFF_HORIZ(POS_LEFT - GetEntityPos().x);
-        const float DIFF_VERT(POS_TOP - GetEntityPos().y);
-
-        for (auto & NEXT_ITEM_SPTR : list_)
-        {
-            NEXT_ITEM_SPTR->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
-        }
-
-        for (auto & NEXT_IMAGE_PAIR : imageMap_)
-        {
-            NEXT_IMAGE_PAIR.second.second.move(DIFF_HORIZ, DIFF_VERT);
-        }
-
-        if (boxUPtr_.get() != nullptr)
-        {
-            boxUPtr_->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
-        }
-
-        GuiEntity::SetEntityPos(POS_LEFT, POS_TOP);
-    }
-
-
-    void ListBox::SetList(const ListBoxItemSLst_t & LIST)
-    {
-        list_ = LIST;
-        SetSelectedIndex(0, false);
-        sliderbarUPtr_->SetCurrentValue(0.0f);
-    }
-
-
-    void ListBox::CreateSelectionChangePackageAndCallHandler(const std::size_t NEW_SELECTED_INDEX)
-    {
-        if (callbackPtr_ != nullptr)
-        {
-            const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
-
-            const callback::ListBoxEventPackage PACKAGE(
-                PTR_PACKAGE,
-                sfml_util::GuiEvent::SelectionChange,
-                callback::ListBoxEventPackage::INVALID_MOUSE_POS_V_,
-                static_cast<int>(NEW_SELECTED_INDEX));
-
-            callbackPtr_->HandleCallback(PACKAGE);
-        }
-    }
-
-
-    void ListBox::CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT)
-    {
-        if (callbackPtr_ != nullptr)
-        {
-            const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
-
-            const callback::ListBoxEventPackage PACKAGE(
-                PTR_PACKAGE,
-                sfml_util::GuiEvent::Keypress,
-                callback::ListBoxEventPackage::INVALID_MOUSE_POS_V_,
-                callback::ListBoxEventPackage::INVALID_SELECTION_,
-                false,
-                KEY_EVENT);
-
-            callbackPtr_->HandleCallback(PACKAGE);
-        }
-    }
-
-
-    void ListBox::OnDoubleClick(const sf::Vector2f & MOUSE_POS_V)
-    {
-        if (callbackPtr_ != nullptr)
-        {
-            const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
-
-            const callback::ListBoxEventPackage PACKAGE(
-                PTR_PACKAGE,
-                sfml_util::GuiEvent::DoubleClick, MOUSE_POS_V);
-
-            callbackPtr_->HandleCallback(PACKAGE);
-        }
-    }
-
-
-    void ListBox::SetupList()
-    {
-        imageMap_.clear();
-
-        //find the first visible (or last) entity
-        auto itr(list_.begin());
-        if (list_.empty() == false)
-        {
-            float vertTracker(0.0f);
-
-            for (; itr != list_.end(); ++itr)
-            {
-                if (vertTracker < currentViewPos_)
-                {
-                    //check if at the end of the list
-                    auto nextItr(itr);
-                    ++nextItr;
-                    if (nextItr == list_.end())
-                    {
-                        currentViewPos_ = vertTracker;
-                        break;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-
-                (*itr)->SetEntityWillDraw(false);
-                vertTracker += (*itr)->GetEntityRegion().height + betweenPad_;
-            }
-        }
-
-        //setup first visible entity
-        ListBoxItemSPtr_t firstVisibleEntitySPtr;
-        auto entityPosY(entityRegion_.top + margin_);
-        if (list_.empty() == false)
-        {
-            firstVisibleEntitySPtr = *itr;
-            firstVisibleEntitySPtr->SetEntityWillDraw(true);
-
-            PopulateImageMapAndAdjustLeftPos(
-                firstVisibleEntitySPtr,
-                entityRegion_.left + margin_,
-                entityPosY,
-                true);
-
-            if (itr != list_.end())
-            {
-                ++itr;
-            }
-
-            entityPosY += firstVisibleEntitySPtr->GetEntityRegion().height + betweenPad_;
-        }
-
-        //set selected entity to the first if none is set
-        if (selectedSPtr_.get() == nullptr)
-        {
-            selectedSPtr_ = firstVisibleEntitySPtr;
-        }
-        else
-        {
-            if ((list_.empty() == false) && (selectedSPtr_ != firstVisibleEntitySPtr))
-            {
-                PopulateImageMapAndAdjustLeftPos(
-                    firstVisibleEntitySPtr,
-                    entityRegion_.left + margin_,
-                    entityPosY - (firstVisibleEntitySPtr->GetEntityRegion().height + betweenPad_),
-                    false);
-            }
-        }
-
-        //establish the visible set of entitys in the box
-        if (list_.empty() == false)
-        {
-            for (; itr != list_.end(); ++itr)
-            {
-                if ((entityPosY + ((*itr)->GetEntityRegion().height + betweenPad_)) >
-                    (entityRegion_.top + entityRegion_.height))
-                {
-                    (*itr)->SetEntityWillDraw(false);
-                    break;
-                }
-                else
-                {
-                    (*itr)->SetEntityWillDraw(true);
-
-                    PopulateImageMapAndAdjustLeftPos(
-                        (*itr),
-                        entityRegion_.left + margin_,
-                        entityPosY,
-                        (selectedSPtr_ == * itr));
-
-                    entityPosY += (*itr)->GetEntityRegion().height + betweenPad_;
-                }
-            }
-        }
-
-        //set all remaining entitys (outside the box's lower limit) to not draw
-        if (list_.empty() == false)
-        {
-            for (; itr != list_.end(); ++itr)
-            {
-                (*itr)->SetEntityWillDraw(false);
-            }
-        }
-    }
-
-
-    float ListBox::GetTotalHeight() const
-    {
-        float totalHeight(0.0f);
-
-        for (auto const & NEXT_ENTITY_SPTR : list_)
-        {
-            totalHeight += NEXT_ENTITY_SPTR->GetEntityRegion().height + betweenPad_;
-        }
-
-        if (totalHeight > 0.0f)
-        {
-            totalHeight -= betweenPad_;
-        }
-
-        return totalHeight;
-    }
-
-
-    void ListBox::PopulateImageMapAndAdjustLeftPos(
-        sfml_util::gui::ListBoxItemSPtr_t & listBoxItemSPtr,
-        const float POS_LEFT_ORIG,
-        const float POS_TOP,
-        const bool IS_SELECTED_ITEM)
-    {
-        float newPosLeft(POS_LEFT_ORIG);
-        sf::Texture texture;
-        auto didLoadTexture{ false };
-
-        if (listBoxItemSPtr->ITEM_CPTR != nullptr)
-        {
-            sfml_util::gui::ItemImageManager::Instance()->Load(
-                texture,
-                listBoxItemSPtr->ITEM_CPTR);
-
-            didLoadTexture = true;
-        }
-        else if (listBoxItemSPtr->TITLE_CPTRC != nullptr)
-        {
-            sfml_util::gui::TitleImageManager::Instance()->Get(
-                texture,
-                listBoxItemSPtr->TITLE_CPTRC->Which());
-
-            didLoadTexture = true;
-        }
-        else if (listBoxItemSPtr->CHARACTER_CPTR != nullptr)
-        {
-            sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-                texture,
-                listBoxItemSPtr->CHARACTER_CPTR->ImageFilename(),
-                true);
-
-            didLoadTexture = true;
-        }
-        else if (listBoxItemSPtr->SPELL_CPTRC != nullptr)
-        {
-            sfml_util::gui::SpellImageManager::Instance()->Get(
-                texture,
-                listBoxItemSPtr->SPELL_CPTRC->Which());
-
-            didLoadTexture = true;
-        }
-        else if (listBoxItemSPtr->COND_CPTRC != nullptr)
-        {
-            sfml_util::gui::ConditionImageManager::Instance()->Get(
-                texture,
-                listBoxItemSPtr->COND_CPTRC->Which());
-
-            didLoadTexture = true;
-        }
-        else if (listBoxItemSPtr->SONG_CPTRC != nullptr)
-        {
-            sfml_util::gui::SongImageManager::Instance()->Get(
-                texture,
-                listBoxItemSPtr->SONG_CPTRC->Which());
-
-            didLoadTexture = true;
-        }
-
-        if (didLoadTexture)
-        {
-            sf::Sprite sprite(texture);
-
-            if (IS_SELECTED_ITEM)
-            {
-                sprite.setColor(sf::Color::White);
-            }
-            else
-            {
-                sprite.setColor(imageColor_);
-            }
-
-            if (sprite.getLocalBounds().width > sprite.getLocalBounds().height)
-            {
-                const float SCALE(imageSize_ / sprite.getLocalBounds().width);
-                sprite.setScale(SCALE, SCALE);
-            }
-            else
-            {
-                const float SCALE(imageSize_ / sprite.getLocalBounds().height);
-                sprite.setScale(SCALE, SCALE);
-            }
-
-            auto const SPRITE_POS_LEFT{
-                (POS_LEFT_ORIG + (imageSize_ * 0.5f)) - (sprite.getGlobalBounds().width * 0.5f) };
-
-            auto const SPRITE_POS_TOP{
-                (POS_TOP + (imageSize_ * 0.5f)) - (sprite.getGlobalBounds().height * 0.5f) };
-
-            sprite.setPosition(SPRITE_POS_LEFT, SPRITE_POS_TOP);
-
-            imageMap_[listBoxItemSPtr] = std::make_pair(texture, sprite);
-            imageMap_[listBoxItemSPtr].second.setTexture(imageMap_[listBoxItemSPtr].first);
-            const float POS_LEFT_ADJ(imageSize_ + IMAGE_HORIZ_PAD_);
-            newPosLeft += POS_LEFT_ADJ;
-
-            sf::FloatRect r(listBoxItemSPtr->GetEntityRegion());
-            r.width -= POS_LEFT_ADJ;
-            r.height = std::max(r.height, imageSize_);
-            listBoxItemSPtr->SetEntityRegion(r);
-        }
-
-        listBoxItemSPtr->SetEntityPos(newPosLeft, POS_TOP);
-    }
-
-
-    bool ListBox::MoveSelectionUp()
-    {
-        float vertTracker(entityRegion_.height);
-        for (
-            typename ListBoxItemSLst_t::const_iterator itr(list_.begin());
-            itr != list_.end();
-            ++itr)
-        {
-            auto const NEXT_HEIGHT{ (*itr)->GetEntityRegion().height + betweenPad_ };
-            auto nextItr(itr);
-            ++nextItr;
-            if (*nextItr == selectedSPtr_)
-            {
-                if (vertTracker >= entityRegion_.height)
-                {
-                    currentViewPos_ -= NEXT_HEIGHT;
-                }
-
-                selectedSPtr_ = *itr;
-                SetupList();
-                return true;
-            }
-            else
-            {
-                if ((*itr)->GetEntityWillDraw())
-                {
-                    vertTracker -= NEXT_HEIGHT;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    bool ListBox::MoveSelectionDown()
-    {
-        float vertTracker(0.0f);
-        for (
-            typename ListBoxItemSLst_t::const_iterator itr(list_.begin());
-            itr != list_.end();
-            ++itr)
-        {
-            auto const CURRENT_HEIGHT{ (*itr)->GetEntityRegion().height };
-            if (itr != list_.begin())
-            {
-                auto prevItr(itr);
-                --prevItr;
-                if (*prevItr == selectedSPtr_)
-                {
-                    if ((*itr)->GetEntityWillDraw() == false)
-                    {
-                        currentViewPos_ += CURRENT_HEIGHT + betweenPad_;
-                    }
-
-                    selectedSPtr_ = *itr;
-                    SetupList();
-                    return true;
-                }
-            }
-
-            if ((*itr)->GetEntityWillDraw())
-            {
-                vertTracker += CURRENT_HEIGHT + betweenPad_;
-            }
-        }
-
-        return false;
+        return (
+            (POS_V.x >= entityRegion_.left) &&
+            (POS_V.x <= entityRegion_.left + entityRegion_.width - (2.0f * margin_)) &&
+            (POS_V.y >= ITEM_SPTR->GetEntityRegion().top) &&
+            (POS_V.y <= ITEM_SPTR->GetEntityRegion().top + ITEM_SPTR->GetEntityRegion().height) );
     }
 
 }

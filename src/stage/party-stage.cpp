@@ -174,10 +174,9 @@ namespace stage
 
         if (PACKAGE.package.PTR_ == characterListBoxUPtr_.get())
         {
-            auto itemSPtr{ characterListBoxUPtr_->GetAtPosition(PACKAGE.mouse_pos) };
+            auto itemSPtr{ characterListBoxUPtr_->AtPos(PACKAGE.mouse_pos) };
 
-            if ((partyListBoxUPtr_->GetCount() < partyListBoxUPtr_->GetLimit()) &&
-                (itemSPtr.get() != nullptr))
+            if (itemSPtr.get() != nullptr)
             {
                 partyListBoxUPtr_->Add(itemSPtr);
                 characterListBoxUPtr_->Remove(itemSPtr);
@@ -187,7 +186,7 @@ namespace stage
         }
         else if (PACKAGE.package.PTR_ == partyListBoxUPtr_.get())
         {
-            auto itemSPtr{ partyListBoxUPtr_->GetAtPosition(PACKAGE.mouse_pos) };
+            auto itemSPtr{ partyListBoxUPtr_->AtPos(PACKAGE.mouse_pos) };
 
             if (itemSPtr.get() != nullptr)
             {
@@ -266,10 +265,10 @@ namespace stage
 
     bool PartyStage::HandleCallback_StartButton()
     {
-        if (partyListBoxUPtr_->GetCount() != player::Party::MAX_CHARACTER_COUNT_)
+        if (partyListBoxUPtr_->Size() != player::Party::MAX_CHARACTER_COUNT_)
         {
             std::ostringstream ss;
-            ss << "There are " << partyListBoxUPtr_->GetCount()
+            ss << "There are " << partyListBoxUPtr_->Size()
                 << " characters in your party.  You need exactly "
                 << player::Party::MAX_CHARACTER_COUNT_ << " characters to start the game.";
 
@@ -288,7 +287,7 @@ namespace stage
         {
             //determine if any beasts are in the party
             auto isAnyCharacterBeast{ false };
-            auto const NUM_CHARACTERS{ partyListBoxUPtr_->GetCount() };
+            auto const NUM_CHARACTERS{ partyListBoxUPtr_->Size() };
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
                 auto const NEXT_CHAR_RACE{ partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Race() };
@@ -418,7 +417,7 @@ namespace stage
         charactersPSet_ = state::GameStateFactory::Instance()->LoadAllCompanions();
 
         //fill a list with TextRegions for the character names
-        sfml_util::gui::ListBoxItemSLst_t itemSList;
+        sfml_util::gui::ListBoxItemSVec_t itemSVec;
         sfml_util::gui::TextInfo textInfo(
             "",
             sfml_util::FontManager::Instance()->Font_Default2(),
@@ -448,7 +447,7 @@ namespace stage
                 textInfo,
                 NEXT_CHAR_PTR);
 
-            itemSList.push_back( nextCharTextSPtr );
+            itemSVec.push_back( nextCharTextSPtr );
         }
 
         //establish the longest line that needs to fit in the listboxes
@@ -501,13 +500,12 @@ namespace stage
         characterListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "PartyStage'sCharacter",
             CHAR_LIST_RECT,
-            itemSList,
+            itemSVec,
             this,
             10.0f,
             6.0f,
             boxInfo,
             sfml_util::FontManager::Color_Orange(),
-            sfml_util::gui::ListBox::NO_LIMIT_,
             this);
 
         EntityAdd(characterListBoxUPtr_.get());
@@ -529,13 +527,12 @@ namespace stage
         partyListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "PartyStage'sParty",
             PARTY_LIST_RECT,
-            sfml_util::gui::ListBoxItemSLst_t(),
+            sfml_util::gui::ListBoxItemSVec_t(),
             this,
             10.0f,
             6.0f,
             boxInfo,
             sfml_util::FontManager::Color_Orange(),
-            player::Party::MAX_CHARACTER_COUNT_,
             this);
 
         EntityAdd(partyListBoxUPtr_.get());
@@ -643,7 +640,7 @@ namespace stage
 
     std::size_t PartyStage::NumCharactersInTheParty() const
     {
-        return partyListBoxUPtr_->GetCount();
+        return partyListBoxUPtr_->Size();
     }
 
 
@@ -651,11 +648,11 @@ namespace stage
     {
         if (partyListBoxUPtr_->HasFocus())
         {
-            return partyListBoxUPtr_->GetSelected();
+            return partyListBoxUPtr_->Selected();
         }
         else
         {
-            return characterListBoxUPtr_->GetSelected();
+            return characterListBoxUPtr_->Selected();
         }
     }
 
@@ -678,7 +675,7 @@ namespace stage
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
 
         willDisplayCharacterCountWarningText_ =
-            ((characterListBoxUPtr_->GetCount() + partyListBoxUPtr_->GetCount()) <
+            ((characterListBoxUPtr_->Size() + partyListBoxUPtr_->Size()) <
                 player::Party::MAX_CHARACTER_COUNT_);
 
         //oscillate the warning text color
@@ -700,11 +697,11 @@ namespace stage
         if ((mouseOverPopupTimerSec_ > MOUSE_OVER_POPUP_DELAY_SEC_) &&
             (false == isMouseOverTexture_))
         {
-            auto itemSPtr{ characterListBoxUPtr_->GetItemAtLocation(mouseOverPosV_) };
+            auto itemSPtr{ characterListBoxUPtr_->AtPos(mouseOverPosV_) };
 
             if (itemSPtr.get() == nullptr)
             {
-                itemSPtr = partyListBoxUPtr_->GetItemAtLocation(mouseOverPosV_);
+                itemSPtr = partyListBoxUPtr_->AtPos(mouseOverPosV_);
             }
 
             if ((itemSPtr.get() != nullptr) &&
@@ -843,7 +840,7 @@ namespace stage
         //create a new party structure
         player::CharacterPVec_t charPVec;
         {
-            for (std::size_t i(0); i < partyListBoxUPtr_->GetCount(); ++i)
+            for (std::size_t i(0); i < partyListBoxUPtr_->Size(); ++i)
             {
                 auto characterPtr{ partyListBoxUPtr_->At(i)->CHARACTER_CPTR };
                 charPVec.push_back(characterPtr);

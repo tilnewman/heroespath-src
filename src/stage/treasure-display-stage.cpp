@@ -996,13 +996,13 @@ namespace treasure
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        sfml_util::gui::ListBoxItemSLst_t listboxItemsSList;
+        sfml_util::gui::ListBoxItemSVec_t listboxItemsSVec;
 
         for (auto const ITEM_PTR : ITEMS_PVEC)
         {
             listboxTextInfo.text = ITEM_PTR->Name();
 
-            listboxItemsSList.push_back( std::make_shared<sfml_util::gui::ListBoxItem>(
+            listboxItemsSVec.push_back( std::make_shared<sfml_util::gui::ListBoxItem>(
                 "TreasureDisplayStage_CharacterInventoryListboxItem_" + ITEM_PTR->Name(),
                 listboxTextInfo,
                 ITEM_PTR) );
@@ -1029,17 +1029,16 @@ namespace treasure
         listboxUPtr = std::make_unique<sfml_util::gui::ListBox>(
             "TreasureDisplayStage's_CharacterInventoryListBox",
             LISTBOX_REGION,
-            listboxItemsSList,
+            listboxItemsSVec,
             this,
             MEASUREMENTS.listboxMargin,
             MEASUREMENTS.listboxItemSpacer,
             LISTBOX_BOXINFO,
             listboxColors.line,
-            sfml_util::gui::ListBox::NO_LIMIT_,
             this);
 
-        listboxUPtr->SetSelectedIndex(0);
-        listboxUPtr->SetImageColor(listboxColors.image);
+        listboxUPtr->SelectedIndex(0);
+        listboxUPtr->ImageColor(listboxColors.image);
 
         GuiEntityPtrAddCurrAndReplacePrevIfNeeded(PREV_ENTITY_PTR, listboxUPtr.get());
     }
@@ -1429,23 +1428,23 @@ namespace treasure
         {
             if (treasureListboxUPtr_->GetEntityRegion().contains(MOUSE_POS))
             {
-                auto const LISTBOX_ITEM_SPTR{ treasureListboxUPtr_->GetAtPosition(MOUSE_POS) };
+                auto const LISTBOX_ITEM_SPTR{ treasureListboxUPtr_->AtPos(MOUSE_POS) };
                 if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
                     (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
                 {
                     return treasure::ItemDetails(
-                        treasureListboxUPtr_->GetRectAtLocation(MOUSE_POS),
+                        treasureListboxUPtr_->ImageRectOfItemAtPos(MOUSE_POS),
                         LISTBOX_ITEM_SPTR->ITEM_CPTR);
                 }
             }
             else if (inventoryListboxUPtr_->GetEntityRegion().contains(MOUSE_POS))
             {
-                auto const LISTBOX_ITEM_SPTR{ inventoryListboxUPtr_->GetAtPosition(MOUSE_POS) };
+                auto const LISTBOX_ITEM_SPTR{ inventoryListboxUPtr_->AtPos(MOUSE_POS) };
                 if ((LISTBOX_ITEM_SPTR.get() != nullptr) &&
                     (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
                 {
                     return treasure::ItemDetails(
-                        inventoryListboxUPtr_->GetRectAtLocation(MOUSE_POS),
+                        inventoryListboxUPtr_->ImageRectOfItemAtPos(MOUSE_POS),
                         LISTBOX_ITEM_SPTR->ITEM_CPTR);
                 }
             }
@@ -1565,9 +1564,12 @@ namespace treasure
         sfml_util::gui::ListBox & listbox,
         bool & isSortReversed)
     {
-        auto list{ listbox.GetList() };
+        auto vec{ listbox.Items() };
 
-        list.sort([isSortReversed](auto & A, auto & B)
+        std::sort(
+            std::begin(vec),
+            std::end(vec),
+            [isSortReversed](auto & A, auto & B)
             {
                 if (isSortReversed)
                 {
@@ -1579,7 +1581,7 @@ namespace treasure
                 }
             });
 
-        listbox.SetList(list);
+        listbox.Items(vec);
         isSortReversed = ! isSortReversed;
     }
 
@@ -1588,9 +1590,12 @@ namespace treasure
         sfml_util::gui::ListBox & listbox,
         bool & isSortReversed)
     {
-        auto list{ listbox.GetList() };
+        auto vec{ listbox.Items() };
 
-        list.sort([isSortReversed](auto & A, auto & B)
+        std::sort(
+            std::begin(vec),
+            std::end(vec),
+            [isSortReversed](auto & A, auto & B)
             {
                 if (isSortReversed)
                 {
@@ -1602,7 +1607,7 @@ namespace treasure
                 }
             });
 
-        listbox.SetList(list);
+        listbox.Items(vec);
         isSortReversed = ! isSortReversed;
     }
 
@@ -1611,21 +1616,24 @@ namespace treasure
         sfml_util::gui::ListBox & listbox,
         bool & isSortReversed)
     {
-        auto list{ listbox.GetList() };
+        auto vec{ listbox.Items() };
 
-        list.sort([isSortReversed](auto & A, auto & B)
-        {
-            if (isSortReversed)
+        std::sort(
+            std::begin(vec),
+            std::end(vec),
+            [isSortReversed](auto & A, auto & B)
             {
-                return A->ITEM_CPTR->Weight() > B->ITEM_CPTR->Weight();
-            }
-            else
-            {
-                return A->ITEM_CPTR->Weight() < B->ITEM_CPTR->Weight();
-            }
-        });
+                if (isSortReversed)
+                {
+                    return A->ITEM_CPTR->Weight() > B->ITEM_CPTR->Weight();
+                }
+                else
+                {
+                    return A->ITEM_CPTR->Weight() < B->ITEM_CPTR->Weight();
+                }
+            });
 
-        listbox.SetList(list);
+        listbox.Items(vec);
         isSortReversed = ! isSortReversed;
     }
 

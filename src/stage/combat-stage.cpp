@@ -530,13 +530,12 @@ namespace stage
         statusBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "ComabtStage'sStatus",
             STATUS_REGION,
-            sfml_util::gui::ListBoxItemSLst_t(),
+            sfml_util::gui::ListBoxItemSVec_t(),
             this,
             15.0f,
             0.0f,
             STATUS_BOX_INFO,
             LISTBOX_LINE_COLOR_,
-            sfml_util::gui::ListBox::NO_LIMIT_,
             this);
 
         statusBoxUPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
@@ -1853,8 +1852,11 @@ namespace stage
             << combat::Encounter::Instance()->LivingNonPlayerParty().Summary() << "!";
 
         statusBoxTextInfo_.text = ss.str();
+
         statusBoxUPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
-            "CombatStageStatusMsg", statusBoxTextInfo_), true);
+            "CombatStageStatusMsg", statusBoxTextInfo_));
+
+        statusBoxUPtr_->SelectNext();
 
         MoveTurnBoxObjectsOffScreen();
         statusMsgAnimColorShaker_.Reset();
@@ -1869,8 +1871,11 @@ namespace stage
     void CombatStage::AppendStatusMessage(const std::string & MSG_STR, const bool WILL_ANIM)
     {
         statusBoxTextInfo_.text = MSG_STR;
+
         statusBoxUPtr_->Add(std::make_shared<sfml_util::gui::ListBoxItem>(
-            "CombatStageStatusMsg", statusBoxTextInfo_), true);
+            "CombatStageStatusMsg", statusBoxTextInfo_));
+
+        statusBoxUPtr_->SelectNext();
 
         if (WILL_ANIM)
         {
