@@ -268,7 +268,7 @@ namespace stage
         if (partyListBoxUPtr_->Size() != player::Party::MAX_CHARACTER_COUNT_)
         {
             std::ostringstream ss;
-            ss << "There are " << partyListBoxUPtr_->Size()
+            ss << "\n\nThere are " << partyListBoxUPtr_->Size()
                 << " characters in your party.  You need exactly "
                 << player::Party::MAX_CHARACTER_COUNT_ << " characters to start the game.";
 
@@ -276,7 +276,7 @@ namespace stage
                 POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
                 ss.str(),
                 popup::PopupButtons::Okay,
-                popup::PopupImage::Banner,
+                popup::PopupImage::Regular,
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::PromptQuestion) };
 
@@ -317,7 +317,7 @@ namespace stage
             if (isAnyCharacterBeast && (false == isAnyCharacterBeastmaster))
             {
                 std::ostringstream ss;
-                ss << "There are beast characters in your party, but no character with the role"
+                ss << "\nThere are beast characters in your party, but no character with the role"
                     << " of Beastmaster.  To have Wolfens or Dragons in your party, you must also"
                     << " have a Beastmaster.";
 
@@ -349,13 +349,13 @@ namespace stage
         }
 
         std::ostringstream ss;
-        ss << "Delete " << selectedCharPtr->Name() << "?  This cannot be undone.  Are you sure?";
+        ss << "\n\nDelete " << selectedCharPtr->Name() << "?  This cannot be undone.  Are you sure?";
 
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
             POPUP_NAME_STR_DELETE_CONFIRM_,
             ss.str(),
             popup::PopupButtons::YesNo,
-            popup::PopupImage::Banner,
+            popup::PopupImage::Regular,
             sfml_util::Justified::Center,
             sfml_util::sound_effect::PromptWarn) };
 

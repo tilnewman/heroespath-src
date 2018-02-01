@@ -1408,7 +1408,7 @@ namespace stage
         if ((false == AreAnyStatsIgnored()) || (false == NAME.empty()))
         {
             std::ostringstream ss;
-            ss << "Leaving will cause ";
+            ss << "\n\nLeaving will cause ";
 
             if (NAME.empty())
             {
@@ -1427,7 +1427,7 @@ namespace stage
                     POPUP_NAME_NEXTBUTTON_LEAVESCREENCONFIRM_,
                     ss.str(),
                     popup::PopupButtons::YesNo,
-                    popup::PopupImage::Banner,
+                    popup::PopupImage::Regular,
                     sfml_util::Justified::Center,
                     sfml_util::sound_effect::PromptWarn));
 
@@ -1480,9 +1480,9 @@ namespace stage
             this,
             popup::PopupManager::Instance()->CreatePopupInfo(
                 POPUP_NAME_NONAMEERROR_,
-                "The name box is empty.  You must name your character to continue.",
+                "\n\nThe name box is empty.  You must name your character to continue.",
                 popup::PopupButtons::Okay,
-                popup::PopupImage::Banner,
+                popup::PopupImage::Regular,
                 sfml_util::Justified::Center,
                 sfml_util::sound_effect::PromptWarn));
     }
@@ -1543,7 +1543,7 @@ namespace stage
         if ((AreAnyStatsIgnored() == false) || (CHARACTER_NAME.empty() == false))
         {
             std::ostringstream ss;
-            ss << "Leaving will cause ";
+            ss << "\nLeaving will cause ";
 
             if (CHARACTER_NAME.empty())
             {
@@ -1562,7 +1562,7 @@ namespace stage
                     POPUP_NAME_BACKBUTTON_LEAVESCREENCONFIRM_,
                     ss.str(),
                     popup::PopupButtons::YesNo,
-                    popup::PopupImage::Banner,
+                    popup::PopupImage::Regular,
                     sfml_util::Justified::Center,
                     sfml_util::sound_effect::PromptWarn));
         }
@@ -1588,9 +1588,9 @@ namespace stage
                     "\n\n" +
                     "If you are new to the game, there are four recommended sets of " +
                     "Roles that are known to be effective and fun to play.  Click continue " +
-                    "below to see them listed.",
+                    "below to see them.",
                 popup::PopupButtons::Continue,
-                popup::PopupImage::Regular));
+                popup::PopupImage::Large));
     }
 
 
