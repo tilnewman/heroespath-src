@@ -44,22 +44,12 @@ namespace creature
 {
 
     Achievement::Achievement(const AchievementType::Enum WHICH,
-                             const TitleCountMap_t &     TITLE_COUNT_MAP)
+                             const TitleCountMap_t & TITLE_COUNT_MAP)
     :
         which_        (WHICH),
         count_        (0),
         titleCountMap_(TITLE_COUNT_MAP)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((WHICH != AchievementType::None),
-            "creature::Achievement::Achievement(which=AchievementType::None, "
-            << "title_count_map_size=" << TITLE_COUNT_MAP.size()
-            << ") was given an invalid AchievementType.");
-
-        M_ASSERT_OR_LOGANDTHROW_SS((TITLE_COUNT_MAP.empty() == false),
-            "creature::Achievement::Achievement(which=" << AchievementType::ToString(WHICH)
-            << ", title_count_map_size=" << TITLE_COUNT_MAP.size()
-            << ") was given an empty title count map.");
-    }
+    {}
 
 
     TitlePtr_t Achievement::GetCurrentTitle() const
