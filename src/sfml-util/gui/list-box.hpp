@@ -151,8 +151,8 @@ namespace gui
 
         virtual bool HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE) override;
 
-        inline void ImageColor(const sf::Color & COLOR)  { imageColor_ = COLOR; }
-        inline const sf::Color ImageColor() const        { return imageColor_; }
+        inline void ImageColor(const sf::Color & COLOR) { imageColor_ = COLOR; SetupForDraw(); }
+        inline const sf::Color ImageColor() const { return imageColor_; }
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 

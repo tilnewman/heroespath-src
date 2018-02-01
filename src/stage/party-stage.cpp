@@ -450,6 +450,14 @@ namespace stage
             itemSVec.push_back( nextCharTextSPtr );
         }
 
+        std::sort(
+            std::begin(itemSVec),
+            std::end(itemSVec),
+            [](auto const & A, auto const & B)
+            {
+                return (A->CHARACTER_CPTR->Name() < B->CHARACTER_CPTR->Name());
+            });
+
         //establish the longest line that needs to fit in the listboxes
         std::ostringstream longestSS;
         longestSS << creature::NameInfo::Instance()->LargestName() << ", " << "Human, Beastmaster";
@@ -508,6 +516,8 @@ namespace stage
             sfml_util::FontManager::Color_Orange(),
             this);
 
+        characterListBoxUPtr_->ImageColor( sf::Color(255,255,255,190) );
+
         EntityAdd(characterListBoxUPtr_.get());
 
         //party list box
@@ -534,6 +544,8 @@ namespace stage
             boxInfo,
             sfml_util::FontManager::Color_Orange(),
             this);
+
+        partyListBoxUPtr_->ImageColor(sf::Color(255, 255, 255, 190));
 
         EntityAdd(partyListBoxUPtr_.get());
 
