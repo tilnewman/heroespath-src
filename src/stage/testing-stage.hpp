@@ -64,17 +64,23 @@ namespace stage
         TestingStage();
         virtual ~TestingStage();
 
-        virtual void Setup();
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
-        virtual bool KeyPress(const sf::Event::KeyEvent &);
-        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
+        virtual void Setup() override;
+        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        virtual bool KeyPress(const sf::Event::KeyEvent &) override;
+        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
-        void TestingStrAppend(const std::string &);
-        void TestingStrIncrement(const std::string &);
-        void TestingImageSet(const sf::Texture &);
+        virtual void TestingStrAppend(const std::string &) override;
+        virtual void TestingStrIncrement(const std::string &) override;
 
-        void PerformNextTest();
+        virtual void TestingImageSet(
+            const sf::Texture &,
+            const bool WILL_CHECK_FOR_OUTLINE = false,
+            const std::string & CATEGORY_NAME = "",
+            const std::string & TYPE_NAME = "",
+            const std::string & PATH = "") override;
+
+        virtual void PerformNextTest() override;
         void PerformStatsTests();
 
     private:
@@ -134,6 +140,11 @@ namespace stage
 
             return true;
         }
+
+        bool DoesImageHaveOutline(const sf::Texture & TEXTURE) const;
+
+        //see comment in .cpp file
+        //void ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const;
 
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;

@@ -171,9 +171,19 @@ namespace game
             loop_.TestingStrIncrement(S);
         }
 
-        inline void TestingImageSet(const sf::Texture & T)
+        inline void TestingImageSet(
+            const sf::Texture & TEXTURE,
+            const bool WILL_CHECK_FOR_OUTLINE = false,
+            const std::string & CATEGORY_NAME = "",
+            const std::string & TYPE_NAME = "",
+            const std::string & PATH= "")
         {
-            loop_.TestingImageSet(T);
+            loop_.TestingImageSet(
+                TEXTURE,
+                WILL_CHECK_FOR_OUTLINE,
+                CATEGORY_NAME,
+                TYPE_NAME,
+                PATH);
         }
 
         inline void SetExitSuccess(const bool WAS_SUCCESS) { exitSuccess_ = WAS_SUCCESS; }

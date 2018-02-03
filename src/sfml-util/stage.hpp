@@ -125,7 +125,14 @@ namespace box
 
         inline virtual void TestingStrAppend(const std::string &) {}
         inline virtual void TestingStrIncrement(const std::string &) {}
-        inline virtual void TestingImageSet(const sf::Texture &) {}
+
+        inline virtual void TestingImageSet(
+            const sf::Texture &,
+            const bool = false,
+            const std::string & = "",
+            const std::string & = "",
+            const std::string & = "") {}
+        
         inline virtual void PerformNextTest() {}
 
         virtual void ClearAllEntities();

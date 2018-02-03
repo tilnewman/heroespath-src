@@ -299,10 +299,23 @@ namespace stage
     }
 
 
-    void TestingStage::TestingImageSet(const sf::Texture & TEXTURE)
+    void TestingStage::TestingImageSet(
+        const sf::Texture & TEXTURE,
+        const bool WILL_CHECK_FOR_OUTLINE,
+        const std::string & CATEGORY_NAME,
+        const std::string & TYPE_NAME,
+        const std::string & PATH)
     {
         textureList_.push_back(TEXTURE);
         ++imageCount_;
+
+        if (WILL_CHECK_FOR_OUTLINE && DoesImageHaveOutline(TEXTURE))
+        {
+            M_HP_LOG_ERR("Testing Stage found an image with an outline:  "
+                << "category=" << CATEGORY_NAME
+                << ", type=" << TYPE_NAME
+                << ", path=" << PATH);
+        }
     }
 
 
@@ -326,6 +339,9 @@ namespace stage
             hasPromptStart = true;
             game::LoopManager::Instance()->TestingStrAppend("System Tests Starting...");
         }
+
+        //ReSaveWithBlackBorder("media-images-creaturess-dir");
+        //ReSaveWithBlackBorder("media-images-items-dir");
 
         static auto hasTestingCompleted_GameDataFile{ false };
         if (false == hasTestingCompleted_GameDataFile)
@@ -1015,6 +1031,164 @@ namespace stage
 
         return true;
     }
+
+
+    bool TestingStage::DoesImageHaveOutline(const sf::Texture & TEXTURE) const
+    {
+        const unsigned OFFSET{ 10 };
+        const unsigned RUN_LENGTH{ 20 };
+
+        if ((TEXTURE.getSize().x < (OFFSET + RUN_LENGTH + 1)) ||
+            (TEXTURE.getSize().x < (OFFSET + RUN_LENGTH + 1)))
+        {
+            //in this case, the image is too small to detect outlines
+            return false;
+        }
+
+        auto const WIDTH{ TEXTURE.getSize().x };
+        auto const HEIGHT{ TEXTURE.getSize().y };
+
+        sf::Image image{ TEXTURE.copyToImage() };
+
+        std::size_t outlineDetectedCount{ 0 };
+
+        enum CornerSide
+        {
+            TopLeftTop,
+            TopLeftLeft,
+            TopRightTop,
+            TopRightRight,
+            BotLeftBot,
+            BotLeftLeft,
+            BotRightBot,
+            BotRightRight,
+            Count
+        };
+
+        for(int cs(0); cs < CornerSide::Count; ++cs)
+        {
+            auto const ENUM{ static_cast<CornerSide>(cs) };
+
+            auto wereAllColorsEqual{ true };
+
+            auto const FIRST_COLOR{
+                [&]()
+                {
+                    switch (ENUM)
+                    {
+                        case TopLeftTop:   { return image.getPixel(OFFSET, 0); }
+                        case TopLeftLeft:  { return image.getPixel(0, OFFSET); }
+                        case TopRightTop:  { return image.getPixel(((WIDTH-1)-OFFSET)-RUN_LENGTH, 0); }
+                        case TopRightRight:{ return image.getPixel((WIDTH-1), 0); }
+                        case BotLeftBot:   { return image.getPixel(OFFSET, (HEIGHT-1)); }
+                        case BotLeftLeft:  { return image.getPixel(0, ((HEIGHT-1)-OFFSET)-RUN_LENGTH); }
+                        case BotRightBot:  { return image.getPixel(((WIDTH-1)-OFFSET)-RUN_LENGTH, (HEIGHT-1)); }
+                        case BotRightRight:{ return image.getPixel((WIDTH-1), (HEIGHT-1)-OFFSET); }
+                        case Count:
+                        default:            { return image.getPixel(0, 0); }
+                    }
+                }() };
+
+            for (unsigned rl(0); rl < RUN_LENGTH; ++rl)
+            {
+                auto const NEXT_COLOR{
+                    [&]()
+                    {
+                        switch (ENUM)
+                        {
+                            case TopLeftTop:   { return image.getPixel(OFFSET+rl, 0); }
+                            case TopLeftLeft:  { return image.getPixel(0, OFFSET+rl); }
+                            case TopRightTop:  { return image.getPixel((((WIDTH-1)-OFFSET)-RUN_LENGTH)+rl, 0); }
+                            case TopRightRight:{ return image.getPixel((WIDTH-1), 0+rl); }
+                            case BotLeftBot:   { return image.getPixel(OFFSET+rl, (HEIGHT-1)); }
+                            case BotLeftLeft:  { return image.getPixel(0, (((HEIGHT-1)-OFFSET)-RUN_LENGTH)+rl); }
+                            case BotRightBot:  { return image.getPixel((((WIDTH-1)-OFFSET)-RUN_LENGTH)+rl, (HEIGHT-1)); }
+                            case BotRightRight:{ return image.getPixel((WIDTH-1), (((HEIGHT-1)-OFFSET)-RUN_LENGTH)+rl); }
+                            case Count:
+                            default:            { return image.getPixel(0, 0); }
+                        }
+                    }()
+                };
+
+                if ((NEXT_COLOR != FIRST_COLOR) ||
+                    (NEXT_COLOR == sf::Color::White) ||
+                    (NEXT_COLOR == sf::Color::Black))
+                {
+                    wereAllColorsEqual = false;
+                    break;
+                }
+            }
+
+            if (wereAllColorsEqual)
+            {
+                ++outlineDetectedCount;
+            }
+        }
+
+        return (outlineDetectedCount >= 4);
+    }
+
+
+    /*
+     * There was a problem where many creature and item images had slightly off-black borders
+     * so this code was used to programatically force a single-pixel black border.  This code
+     * probably won't be needed again, but I'm keeping it here just in case.
+     *
+    void TestingStage::ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const
+    {
+        namespace bfs = boost::filesystem;
+        
+        auto const IMAGES_PATH_STR{
+            game::GameDataFile::Instance()->GetMediaPath(IMAGES_DIR_KEY_STR) };
+
+        auto const DIR_PATH{ bfs::system_complete(bfs::path(IMAGES_PATH_STR).normalize()) };
+        
+        auto const DIR_PATH_STR{ DIR_PATH.string() };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            bfs::exists(DIR_PATH),
+            "TestingStage::ReSaveWithBlackBorder()(\"" << DIR_PATH_STR
+                << "\") failed because that path does not exist.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            bfs::is_directory(DIR_PATH),
+            "TestingStage::ReSaveWithBlackBorder()(\"" << DIR_PATH_STR
+                << "\") failed because that is not a directory.");
+
+        bfs::directory_iterator endIter;
+        for (bfs::directory_iterator dirIter(DIR_PATH); endIter != dirIter; ++dirIter)
+        {
+            auto const FILE_PATH_STR{ dirIter->path().string() };
+
+            if (bfs::is_regular_file(dirIter->status()) == false)
+            {
+                continue;
+            }
+
+            if (boost::algorithm::iends_with(FILE_PATH_STR, ".png") == false)
+            {
+                continue;
+            }
+        
+            sf::Texture texture;
+            sfml_util::LoadTexture(texture, FILE_PATH_STR, false);
+            sf::Image image{ texture.copyToImage() };
+            
+            auto const WIDTH{ texture.getSize().x };
+            auto const HEIGHT{ texture.getSize().y };
+
+            for (unsigned i(0); i < WIDTH; ++i) image.setPixel(i, 0, sf::Color::Black);
+            for (unsigned i(0); i < WIDTH; ++i) image.setPixel(i, HEIGHT-1, sf::Color::Black);
+            for (unsigned i(0); i < HEIGHT; ++i)image.setPixel(0, i, sf::Color::Black);
+            for (unsigned i(0); i < HEIGHT; ++i)image.setPixel(WIDTH-1, i, sf::Color::Black);
+
+            image.saveToFile(FILE_PATH_STR);
+
+            M_HP_LOG_DBG("\tRe-saved image with black border:  \"" << FILE_PATH_STR << "\"");
+        }
+        exit(1);
+    }
+    */
 
 }
 }

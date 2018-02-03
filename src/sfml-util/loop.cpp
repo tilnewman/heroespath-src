@@ -169,13 +169,23 @@ namespace sfml_util
     }
 
 
-    void Loop::TestingImageSet(const sf::Texture & TEXTURE)
+    void Loop::TestingImageSet(
+        const sf::Texture & TEXTURE,
+        const bool WILL_CHECK_FOR_OUTLINE,
+        const std::string & CATEGORY_NAME,
+        const std::string & TYPE_NAME,
+        const std::string & PATH)
     {
         for (auto & nextStagePtr : stagePVec_)
         {
-            nextStagePtr->TestingImageSet(TEXTURE);
+            nextStagePtr->TestingImageSet(
+                TEXTURE,
+                WILL_CHECK_FOR_OUTLINE,
+                CATEGORY_NAME,
+                TYPE_NAME,
+                PATH);
         }
-    }
+    }    
 
 
     void Loop::AddStage(IStagePtr_t stageSPtr)

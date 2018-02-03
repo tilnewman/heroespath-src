@@ -162,7 +162,13 @@ namespace gui
                             {
                                 sf::Texture texture;
                                 cimSPtr->GetImage(texture, filenamesVec.at(fileIndex));
-                                game::LoopManager::Instance()->TestingImageSet(texture);
+
+                                game::LoopManager::Instance()->TestingImageSet(
+                                    texture,
+                                    true,
+                                    "Creature",
+                                    "(no type)",
+                                    filenamesVec.at(fileIndex));
 
                                 std::ostringstream ss;
                                 ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " wolfen_class=" << CLASS_STR << " filename=" << filenamesVec.at(fileIndex);
@@ -193,7 +199,13 @@ namespace gui
                             {
                                 sf::Texture texture;
                                 cimSPtr->GetImage(texture, filenamesVec.at(fileIndex));
-                                game::LoopManager::Instance()->TestingImageSet(texture);
+
+                                game::LoopManager::Instance()->TestingImageSet(
+                                    texture,
+                                    true,
+                                    "Creature",
+                                    "(no type)",
+                                    filenamesVec.at(fileIndex));
 
                                 std::ostringstream ss;
                                 ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " dragon_class=" << CLASS_STR << " filename=" << filenamesVec.at(fileIndex);
@@ -220,7 +232,13 @@ namespace gui
                         {
                             sf::Texture texture;
                             cimSPtr->GetImage(texture, filenamesVec.at(fileIndex));
-                            game::LoopManager::Instance()->TestingImageSet(texture);
+                            
+                            game::LoopManager::Instance()->TestingImageSet(
+                                texture,
+                                true,
+                                "Creature",
+                                "(no type)",
+                                filenamesVec.at(fileIndex));
 
                             std::ostringstream ss;
                             ss << " CreatureImageManager Tested race=" << RACE_STR << " role=" << ROLE_STR << " sex=" << SEX_STR << " filename=" << filenamesVec.at(fileIndex);

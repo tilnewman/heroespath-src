@@ -94,7 +94,14 @@ namespace sfml_util
 
         virtual void TestingStrAppend(const std::string &) = 0;
         virtual void TestingStrIncrement(const std::string &) = 0;
-        virtual void TestingImageSet(const sf::Texture &) = 0;
+
+        virtual void TestingImageSet(
+            const sf::Texture &,
+            const bool = false,
+            const std::string & = "",
+            const std::string & = "",
+            const std::string & = "") = 0;
+        
         virtual void PerformNextTest() = 0;
 
         virtual void ClearAllEntities() = 0;

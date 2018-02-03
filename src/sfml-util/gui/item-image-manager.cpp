@@ -136,7 +136,7 @@ namespace gui
             wi.axe = ENUM;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", STR);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++axeIndex;
             return false;
@@ -149,7 +149,7 @@ namespace gui
             wi.is_bite = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "bite");
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedBite = true;
             return false;
@@ -168,7 +168,7 @@ namespace gui
             wi.bladedstaff = ENUM;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", STR);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bladedStaffIndex;
             return false;
@@ -181,7 +181,7 @@ namespace gui
             wi.is_breath = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "breath");
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedBreath = true;
             return false;
@@ -194,7 +194,7 @@ namespace gui
             wi.is_claws = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "claws");
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedClaws = true;
             return false;
@@ -212,7 +212,7 @@ namespace gui
             wi.club = ENUM;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", STR);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++clubIndex;
             return false;
@@ -225,7 +225,7 @@ namespace gui
             wi.is_fists = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "fists");
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedFists = true;
             return false;
@@ -238,7 +238,7 @@ namespace gui
             wi.is_knife = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "knife");
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedKnife = true;
             return false;
@@ -251,7 +251,7 @@ namespace gui
             wi.is_dagger = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "dagger");
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedDagger = true;
             return false;
@@ -269,7 +269,7 @@ namespace gui
             wi.projectile = ENUM;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", STR);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++projIndex;
             return false;
@@ -282,7 +282,7 @@ namespace gui
             wi.is_staff = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "staff");
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedStaff = true;
             return false;
@@ -295,7 +295,7 @@ namespace gui
             wi.is_quarterstaff = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "quarterstaff");
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedQStaff = true;
             return false;
@@ -313,7 +313,7 @@ namespace gui
             wi.sword = ENUM;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", STR);
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++swordIndex;
             return false;
@@ -326,7 +326,7 @@ namespace gui
             wi.is_tendrils = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "tendrils");
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             hasTestedTendrils = true;
             return false;
@@ -341,7 +341,7 @@ namespace gui
             ai.is_aventail = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "aventail", item::armor::base_type::ToString(ai.base));
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++aventailIndex;
             return false;
@@ -355,7 +355,7 @@ namespace gui
             ai.is_boots = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "boots", item::armor::base_type::ToString(ai.base));
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bootsIndex;
             return false;
@@ -369,7 +369,7 @@ namespace gui
             ai.is_bracer = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "bracer", item::armor::base_type::ToString(ai.base));
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++bracerIndex;
             return false;
@@ -382,7 +382,7 @@ namespace gui
             ai.cover = static_cast<item::armor::cover_type::Enum>(coverIndex);
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "cover", item::armor::cover_type::ToString(ai.cover));
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++coverIndex;
             return false;
@@ -395,7 +395,7 @@ namespace gui
             ai.helm = static_cast<item::armor::helm_type::Enum>(helmIndex);
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "helm", item::armor::helm_type::ToString(ai.helm));
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++helmIndex;
             return false;
@@ -409,7 +409,7 @@ namespace gui
             ai.is_pants = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "pants", item::armor::base_type::ToString(ai.base));
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++pantIndex;
             return false;
@@ -422,7 +422,7 @@ namespace gui
             ai.shield = static_cast<item::armor::shield_type::Enum>(shieldIndex);
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "shield", item::armor::shield_type::ToString(ai.shield));
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++shieldIndex;
             return false;
@@ -436,7 +436,7 @@ namespace gui
             ai.is_shirt = true;
             sf::Texture texture;
             iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
-            game::LoopManager::Instance()->TestingImageSet(texture);
+            game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "shirt", item::armor::base_type::ToString(ai.base));
             game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
             ++shirtIndex;
             return false;
@@ -478,7 +478,12 @@ namespace gui
 
                 sf::Texture texture;
                 iimPtr->Load(texture, NEXT_FILENAME);
-                game::LoopManager::Instance()->TestingImageSet(texture);
+                game::LoopManager::Instance()->TestingImageSet(
+                    texture,
+                    true,
+                    "items/misc",
+                    ENUM_STR,
+                    NEXT_FILENAME);
 
                 ++fileIndex;
                 return false;
