@@ -546,6 +546,7 @@ namespace stage
             this);
 
         partyListBoxUPtr_->ImageColor(sf::Color(255, 255, 255, 190));
+        partyListBoxUPtr_->CountLimit(player::Party::MAX_CHARACTER_COUNT_);
 
         EntityAdd(partyListBoxUPtr_.get());
 

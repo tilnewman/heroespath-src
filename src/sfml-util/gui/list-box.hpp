@@ -194,7 +194,8 @@ namespace gui
         inline std::size_t Size() const { return items_.size(); }
         inline bool Empty() const { return items_.empty(); }
 
-        void Add(const ListBoxItemSPtr_t & ITEM_SPTR);
+        //returns true if the item was added, returns false if failed to add due to countLimit_
+        bool Add(const ListBoxItemSPtr_t & ITEM_SPTR);
 
         bool Remove(const ListBoxItemSPtr_t & THING_SPTR);
 
@@ -223,8 +224,10 @@ namespace gui
         bool SelectPrev();
         bool SelectNext();
 
+        inline std::size_t CountLimit() const { return countLimit_; }
+        inline void CountLimit(const std::size_t NEW_COUNT_LIMIT) { countLimit_ = NEW_COUNT_LIMIT; }
+
     protected:
-        std::size_t CalcVisibleItems() const;
         std::size_t CalcGreatestFirstDisplayedIndex() const;
         void CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT);
         inline void OnClick(const sf::Vector2f &) override {}
@@ -236,7 +239,7 @@ namespace gui
             const float         POS_TOP,
             const bool          IS_SELECTED_ITEM);
 
-        std::size_t CalcVisibleCount() const;
+        std::size_t CalcVisibleItems() const;
         std::size_t CalcLastVisibleIndex_Display() const;
         std::size_t CalcLastVisibleIndex_Selection() const;
 
@@ -278,6 +281,8 @@ namespace gui
 
         //how many items are listed
         std::size_t visibleCount_;
+
+        std::size_t countLimit_;
     };
 
 }

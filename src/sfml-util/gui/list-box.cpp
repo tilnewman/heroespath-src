@@ -98,7 +98,8 @@ namespace gui
         displayIndex_   (0),
         selectionDisplayIndex_(0),
         selectionOffsetIndex_(0),
-        visibleCount_   (0)
+        visibleCount_   (0),
+        countLimit_     (0)
     {
         Setup(REGION,
               ITEM_VEC,
@@ -219,10 +220,13 @@ namespace gui
         auto const SELECTION_INDEX{ SelectedIndex() };
         auto const LAST_DRAWN_INDEX{ CalcLastVisibleIndex_Display() };
         
+        std::size_t drawnCount{ 0 };
         if (Empty() == false)
         {
             for (std::size_t i(displayIndex_); i <= LAST_DRAWN_INDEX; ++i)
             {
+                ++drawnCount;
+
                 auto const ITEM_SPTR{ items_.at(i) };
 
                 ImagePair_t imagePair;
@@ -298,6 +302,11 @@ namespace gui
         {
             DrawLine(target, lastDrawnListPosY);
             lastDrawnListPosY += lastDrawnEntityHeight;
+            
+            if ((++drawnCount > countLimit_) && (countLimit_ > 0))
+            {
+                break;
+            }
         }
     }
 
@@ -394,10 +403,18 @@ namespace gui
     }
 
 
-    void ListBox::Add(const ListBoxItemSPtr_t & ITEM_SPTR)
+    bool ListBox::Add(const ListBoxItemSPtr_t & ITEM_SPTR)
     {
-        items_.push_back(ITEM_SPTR);
-        SetupForDraw();
+        if ((0 == countLimit_) || (items_.size() < countLimit_))
+        {
+            items_.push_back(ITEM_SPTR);
+            SetupForDraw();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 
