@@ -251,10 +251,7 @@ namespace stage
         void Help2Popup();
         void Help3Popup();
         void CharacterCreationConfirmPopup(const std::size_t IMAGE_INDEX);
-        void CharacterSavedNotifyPopup(const player::CharacterUPtr_t &);
-
         void AdjustRoleRadioButtonsForRace(const creature::race::Enum WHICH_RACE);
-
         float GetAttributeNumPosTop(const stats::Traits::Enum STAT);
 
         //returns true if any text was set that needs to be displayed

@@ -1698,29 +1698,6 @@ namespace stage
     }
 
 
-    void CharacterStage::CharacterSavedNotifyPopup(
-        const player::CharacterUPtr_t & NEW_CHARACTER_UPTR)
-    {
-        std::ostringstream sss;
-        sss << "\n"
-            << NEW_CHARACTER_UPTR->Name()
-            << " the " << creature::sex::ToString(NEW_CHARACTER_UPTR->Sex())
-            << " " << NEW_CHARACTER_UPTR->RaceName();
-
-        if (creature::race::RaceRoleMatch(
-            NEW_CHARACTER_UPTR->Race(), NEW_CHARACTER_UPTR->Role()) == false)
-        {
-            sss << " " << NEW_CHARACTER_UPTR->RoleName();
-        }
-
-        sss << " saved.";
-
-        game::LoopManager::Instance()->PopupWaitBegin(
-            this, popup::PopupManager::Instance()->CreatePopupInfo(
-                "CharacterCreationConfirmPopup", sss.str()));
-    }
-
-
     void CharacterStage::AdjustRoleRadioButtonsForRace(const creature::race::Enum WHICH_RACE)
     {
         using namespace creature;
@@ -3039,7 +3016,6 @@ namespace stage
         player::Initial::Setup(newCharacterUPtr.get());
         state::GameStateFactory::Instance()->SaveCharacter(newCharacterUPtr.get());
         ResetForNewCharacterCreation();
-        CharacterSavedNotifyPopup(newCharacterUPtr);
         return false;
     }
 
