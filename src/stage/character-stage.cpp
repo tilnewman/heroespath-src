@@ -1700,54 +1700,26 @@ namespace stage
 
     void CharacterStage::AdjustRoleRadioButtonsForRace(const creature::race::Enum WHICH_RACE)
     {
-        using namespace creature;
+        auto const VALID_ROLES{ creature::race::Roles(WHICH_RACE) };
 
-        std::vector<role::Enum> temp;
-        if (WHICH_RACE == creature::race::Dragon)
+        misc::SizetVec_t invalidRoleIndexes;
+        invalidRoleIndexes.reserve(creature::role::PlayerRoleCount);
+
+        auto const NUM_PLAYER_ROLES{ static_cast<std::size_t>(creature::role::PlayerRoleCount) };
+        for (std::size_t i(0); i < NUM_PLAYER_ROLES; ++i)
         {
-            temp = { role::Archer,
-                     role::Bard,
-                     role::Beastmaster,
-                     role::Cleric,
-                     role::Knight,
-                     role::Sorcerer,
-                     role::Thief };
-        }
-        else
-        {
-            if (WHICH_RACE == creature::race::Pixie)
+            auto const ROLE{ static_cast<creature::role::Enum>(i) };
+
+            auto const FOUND_ITER{
+                std::find(std::begin(VALID_ROLES), std::end(VALID_ROLES), ROLE) };
+
+            if (FOUND_ITER == std::end(VALID_ROLES))
             {
-                temp = { role::Sylavin, role::Firebrand, role::Knight, role::Archer };
-            }
-            else
-            {
-                if (WHICH_RACE == creature::race::Wolfen)
-                {
-                    temp = {
-                        role::Archer,
-                        role::Bard,
-                        role::Beastmaster,
-                        role::Sylavin,
-                        role::Cleric,
-                        role::Firebrand,
-                        role::Knight,
-                        role::Sorcerer,
-                        role::Thief };
-                }
-                else
-                {
-                    temp = { role::Sylavin, role::Firebrand };
-                }
+                invalidRoleIndexes.push_back(i);
             }
         }
 
-        misc::SizetVec_t invalidSelectionsVec;
-        for (auto const NEXT_ENUM : temp)
-        {
-            invalidSelectionsVec.push_back(static_cast<std::size_t>(NEXT_ENUM));
-        }
-
-        roleRadioButtonSPtr_->SetInvalidSelections(invalidSelectionsVec);
+        roleRadioButtonSPtr_->SetInvalidSelections(invalidRoleIndexes);
     }
 
 

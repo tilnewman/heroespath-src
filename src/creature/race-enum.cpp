@@ -117,11 +117,11 @@ namespace creature
             case Ghoul:        { return "Ghoul"; }
             case Beetle:       { return "Beetle"; }
             case Boar:         { return "Boar"; }
-            case Bat:               { return "Bat"; }
-            case Witch:             { return "Witch"; }
-            case Golem:             { return "Golem"; }
-            case Harpy:             { return "Harpy"; }
-            case ThreeHeadedHound:  { return "ThreeHeadedHound"; }
+            case Bat:          { return "Bat"; }
+            case Witch:        { return "Witch"; }
+            case Golem:        { return "Golem"; }
+            case Harpy:        { return "Harpy"; }
+            case ThreeHeadedHound: { return "ThreeHeadedHound"; }
             case Count:
             default:
             {
@@ -297,7 +297,7 @@ namespace creature
     }
 
 
-    //At last count on 2017-8-3 there were 167 unique race/roles.
+    //At last count on 2017-8-3 there were 167 unique race/roles, and 24 unique player race/roles.
     const RoleVec_t race::Roles(const race::Enum E)
     {
         switch (E)
