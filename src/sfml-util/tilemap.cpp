@@ -559,9 +559,6 @@ namespace sfml_util
 
         SetupEmptyTexture();
 
-        //calculate which tiles need to be drawn around the player position
-        auto const PLAYER_POS_TILE_OFFSETS{ GetTileOffsetsOfPlayerPos() };
-
         //loop over all layers in the map file and parse them separately
         mapLayers_.clear();
         for(const boost::property_tree::ptree::value_type & PROPTREE_CHILD_PAIR :
@@ -586,7 +583,7 @@ namespace sfml_util
             }
             else
             {
-                ParseMapFile_PraseLayerGeneric(PROPTREE_CHILD_PAIR, PLAYER_POS_TILE_OFFSETS);
+                ParseMapFile_PraseLayerGeneric(PROPTREE_CHILD_PAIR);
             }
         }
     }
@@ -745,8 +742,7 @@ namespace sfml_util
 
 
     void TileMap::ParseMapFile_PraseLayerGeneric(
-        const boost::property_tree::ptree::value_type & PROPTREE_CHILD_PAIR,
-        const TileOffsets & PLAYER_POS_TILE_OFFSETS)
+        const boost::property_tree::ptree::value_type & PROPTREE_CHILD_PAIR)
     {
         std::stringstream ssAllData;
         ssAllData << PROPTREE_CHILD_PAIR.second.get_child("data").data();
@@ -754,7 +750,6 @@ namespace sfml_util
         mapLayers_.push_back( MapLayer() );
         MapLayer & mapLayer{ mapLayers_[mapLayers_.size() - 1] };
         ParseMapFile_ParseGenericTileLayer(mapLayer.mapid_vec, ssAllData);
-        EstablishMapSubsection(mapLayer, PLAYER_POS_TILE_OFFSETS);
     }
 
 

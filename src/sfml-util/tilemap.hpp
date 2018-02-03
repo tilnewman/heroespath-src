@@ -164,8 +164,7 @@ namespace sfml_util
         void ParseMapFile_ParseLayerCollisions(const boost::property_tree::ptree &);
 
         void ParseMapFile_PraseLayerGeneric(
-            const boost::property_tree::ptree::value_type &,
-            const TileOffsets & PLAYER_POS_TILE_OFFSETS);
+            const boost::property_tree::ptree::value_type &);
 
         void ParseMapFile_ParseGenericTileLayer(IDVec_t &, std::stringstream &);
 
