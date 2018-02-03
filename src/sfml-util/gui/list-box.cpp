@@ -297,15 +297,24 @@ namespace gui
             }
         }
 
-        //draw lines in the rest of the box even though there are no more entitys
-        while (lastDrawnListPosY < POS_BOTTOM)
+        if (drawnCount < countLimit_)
         {
-            DrawLine(target, lastDrawnListPosY);
-            lastDrawnListPosY += lastDrawnEntityHeight;
-            
-            if ((++drawnCount > countLimit_) && (countLimit_ > 0))
+            auto const WERE_ANY_DRAWN{ (drawnCount != 0) };
+
+            //draw lines in the rest of the box even though there are no more entitys
+            while (lastDrawnListPosY < POS_BOTTOM)
             {
-                break;
+                DrawLine(target, lastDrawnListPosY);
+                lastDrawnListPosY += lastDrawnEntityHeight;
+
+                ++drawnCount;
+
+                if ((countLimit_ > 0) &&
+                    ((WERE_ANY_DRAWN && (drawnCount >= countLimit_)) ||
+                        ((WERE_ANY_DRAWN == false) && (drawnCount > countLimit_))))
+                {
+                    break;
+                }
             }
         }
     }
@@ -316,7 +325,7 @@ namespace gui
         for (auto const & NEXT_ITEM_SPTR : items_)
         {
             if (NEXT_ITEM_SPTR->GetEntityWillDraw() &&
-                NEXT_ITEM_SPTR->GetEntityRegion().contains(POS_V))
+                IsPosWithinItemRegion(POS_V, NEXT_ITEM_SPTR))
             {
                 return NEXT_ITEM_SPTR;
             }
