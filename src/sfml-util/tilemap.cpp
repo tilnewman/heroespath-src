@@ -559,10 +559,11 @@ namespace sfml_util
 
         SetupEmptyTexture();
 
+        using BPTreeValue_t = boost::property_tree::ptree::value_type;
+
         //loop over all layers in the map file and parse them separately
         mapLayers_.clear();
-        for(const boost::property_tree::ptree::value_type & PROPTREE_CHILD_PAIR :
-            XML_PROPERTY_TREE.get_child("map"))
+        for(const BPTreeValue_t & PROPTREE_CHILD_PAIR : XML_PROPERTY_TREE.get_child("map"))
         {
             namespace ba = boost::algorithm;
             auto const NODENAME_LOWER{ ba::to_lower_copy(PROPTREE_CHILD_PAIR.first) };
