@@ -178,8 +178,16 @@ namespace stage
 
             if (itemSPtr.get() != nullptr)
             {
-                partyListBoxUPtr_->Add(itemSPtr);
-                characterListBoxUPtr_->Remove(itemSPtr);
+                if (partyListBoxUPtr_->Size() < partyListBoxUPtr_->CountLimit())
+                {
+                    partyListBoxUPtr_->Add(itemSPtr);
+                    characterListBoxUPtr_->Remove(itemSPtr);
+                    sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
+                }
+                else
+                {
+                    sfml_util::SoundManager::Instance()->PlaySfx_Reject();
+                }
             }
 
             return true;
@@ -192,6 +200,7 @@ namespace stage
             {
                 characterListBoxUPtr_->Add(itemSPtr);
                 partyListBoxUPtr_->Remove(itemSPtr);
+                sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
             }
 
             return false;
