@@ -392,16 +392,23 @@ namespace gui
                 }
                 else
                 {
-                    auto const GREATEST_FIRST_INDEX{ CalcGreatestFirstDisplayedIndex() };
-                    if (NEW_INDEX >= GREATEST_FIRST_INDEX)
+                    if ((NEW_INDEX > 0) && (SelectedIndex() == (NEW_INDEX - 1)))
                     {
-                        selectionDisplayIndex_ = GREATEST_FIRST_INDEX;
-                        selectionOffsetIndex_ = NEW_INDEX - GREATEST_FIRST_INDEX;
+                        ++selectionDisplayIndex_;
                     }
                     else
                     {
-                        selectionDisplayIndex_ = NEW_INDEX - visibleCount_;
-                        selectionOffsetIndex_ = visibleCount_ - 1;
+                        auto const GREATEST_FIRST_INDEX{ CalcGreatestFirstDisplayedIndex() };
+                        if (NEW_INDEX >= GREATEST_FIRST_INDEX)
+                        {
+                            selectionDisplayIndex_ = GREATEST_FIRST_INDEX;
+                            selectionOffsetIndex_ = NEW_INDEX - GREATEST_FIRST_INDEX;
+                        }
+                        else
+                        {
+                            selectionDisplayIndex_ = NEW_INDEX - visibleCount_;
+                            selectionOffsetIndex_ = visibleCount_ - 1;
+                        }
                     }
                 }
             }
