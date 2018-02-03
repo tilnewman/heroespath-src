@@ -64,7 +64,7 @@ namespace stage
         isHeldDown_  (false),
         textInfo_    (TEXT_INFO),
         textObj_     (),
-        sliderX_     (misc::random::Float(0.35f, 0.75f)),
+        sliderX_     (misc::random::Float(0.55f, 0.75f)),
         timerSec_    (0.0f),
         prevPosX_    (-1.0f) //any negative value will work here
     {
