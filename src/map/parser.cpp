@@ -87,7 +87,7 @@ namespace map
         collisionRects_.clear();
         collisionRects_.reserve(4096);//found by experiment to be a good upper bound
 
-        layout.ResetBeforeLoading();
+        layout.Reset();
 
         auto const XML_PROPERTY_TREE{ Parse_XML(MAP_FILE_PATH_STR) };
 

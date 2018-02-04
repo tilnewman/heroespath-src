@@ -157,9 +157,11 @@ namespace stage
     void AdventureDisplayStage::Setup_Map()
     {
         mapUPtr_ = std::make_unique<sfml_util::TileMap>(
-            game::GameDataFile::Instance()->GetMediaPath("media-maps-thornberry"),
             sf::Vector2f(100.0f + sfml_util::MapByRes(30.0f, 90.0f), topImage_.Bottom()),
-            sf::Vector2u(512, 256),
+            sf::Vector2f(sfml_util::MapByRes(500.0f, 2500.0f), sfml_util::MapByRes(250.0f, 2000.0f)));
+
+        mapUPtr_->Load(
+            game::GameDataFile::Instance()->GetMediaPath("media-maps-thornberry"),
             sf::Vector2f(150.0f, 150.0f));
     }
 

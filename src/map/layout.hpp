@@ -60,7 +60,7 @@ namespace map
             empty_texture()
         {}
 
-        void ResetBeforeLoading()
+        void Reset()
         {
             tile_size_x = 0;
             tile_size_y = 0;
@@ -71,6 +71,8 @@ namespace map
             texture_vec.clear();
             collision_qtree.Clear();
         }
+
+        inline const std::string EmptyTilesPanelName() const { return "empty"; }
 
         int tile_size_x;
         int tile_size_y;
@@ -86,8 +88,6 @@ namespace map
         sfml_util::QuadTree collision_qtree;
 
         sf::RenderTexture empty_texture;
-
-        inline const std::string EmptyTilesPanelName() const { return "empty"; }
     };
 
 }

@@ -28,6 +28,7 @@
 // tilemap.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/direction-enum.hpp"
 #include "map/parser.hpp"
 #include "map/layout.hpp"
 #include "map/layer.hpp"
@@ -51,11 +52,9 @@ namespace sfml_util
         TileMap & operator=(const TileMap &) =delete;
 
     public:
-        TileMap(
-            const std::string & MAP_PATH_STR,
-            const sf::Vector2f & WIN_POS_V,
-            const sf::Vector2u & WIN_SIZE_V,
-            const sf::Vector2f & PLAYER_POS_V);
+        TileMap(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V);
+
+        void Load(const std::string & MAP_FILE_PATH_STR, const sf::Vector2f & PLAYER_POS_V);
 
         bool MoveUp(const float ADJUSTMENT);
         bool MoveDown(const float ADJUSTMENT);
@@ -67,12 +66,16 @@ namespace sfml_util
     private:
         void DrawNormal(sf::RenderTarget &, const sf::RenderStates &);
         void DrawDebug(sf::RenderTarget &, const sf::RenderStates &);
+        void DrawPlayer(sf::RenderTarget & target);
+        void ReDraw();
+
+        void ResetBeforeLoad();
 
         void SetupMapSprite();
 
-        void ReDraw();
+        void SetupOffScreenTexture();
 
-        void EstablishMapSubsection(map::Layer &, const map::TileOffsets &);
+        void SetupMapSubsection(map::Layer &, const map::TileOffsets &);
 
         const map::TileOffsets GetTileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
         const map::TileOffsets GetTileOffsetsOfPlayerPos() const;
@@ -81,11 +84,9 @@ namespace sfml_util
         const sf::Vector2f GetPosScreen(const sf::Vector2f &) const;
         const sf::Vector2f GetPlayerPosScreen() const;
 
-        bool IsPointWithinCollision(const sf::Vector2f &) const;
+        bool DoesAdjPlayerPosCollide(const Direction::Enum DIR, const float ADJ) const;
 
         const map::TilesPanel & GetTilesPanelFromId(const int) const;
-
-        void DrawPlayer(sf::RenderTarget & target);
 
         void AdjustOffscreenRectsToPreventDrift(const map::TileOffsets &);
 
@@ -98,12 +99,12 @@ namespace sfml_util
         static const int EXTRA_OFFSCREEN_TILE_COUNT_;
 
     private:
+        const sf::Vector2f WIN_POS_V_;
+        const sf::Vector2f WIN_SIZE_V_;
         map::Layout        mapLayout_;
         map::TileOffsets   prevTileOffsets_;
-        const sf::Vector2f WIN_POS_V_;
-        const sf::Vector2u WIN_SIZE_V_;
-        sf::Vector2f       playerPosMapV_;
-        sf::Vector2f       playerPosOffsetScreenV_;
+        sf::Vector2f       playerPosV_;
+        sf::Vector2f       playerPosOffsetV_;
         sf::FloatRect      offScreenRect_;
         sf::Sprite         mapSprite_;
         sf::RenderTexture  offScreenTexture_;
