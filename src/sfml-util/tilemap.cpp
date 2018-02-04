@@ -93,6 +93,8 @@ namespace sfml_util
             static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_ * mapLayout_.tile_size_y);
 
         SetupMapSprite();
+
+        ReDraw();
     }
 
 
@@ -112,6 +114,7 @@ namespace sfml_util
         if (CURR_SCREEN_POS.y > (WIN_POS_V_.y + BORDER_PAD_))
         {
             playerPosOffsetScreenV_.y -= ADJUSTMENT;
+            ReDraw();
             return true;
         }
         else
@@ -131,6 +134,8 @@ namespace sfml_util
                 {
                     playerPosMapV_.y = 0.0f;
                 }
+
+                ReDraw();
 
                 return true;
             }
@@ -156,6 +161,7 @@ namespace sfml_util
         if (CURR_SCREEN_POS.y < ((WIN_POS_V_.y + static_cast<float>(WIN_SIZE_V_.y)) - BORDER_PAD_))
         {
             playerPosOffsetScreenV_.y += ADJUSTMENT;
+            ReDraw();
             return true;
         }
         else
@@ -173,6 +179,7 @@ namespace sfml_util
                 offScreenRect_.top += ADJUSTMENT;
                 SetupMapSprite();
                 playerPosMapV_.y += ADJUSTMENT;
+                ReDraw();
                 return true;
             }
         }
@@ -197,6 +204,7 @@ namespace sfml_util
         if (CURR_SCREEN_POS.x > (WIN_POS_V_.x + BORDER_PAD_))
         {
             playerPosOffsetScreenV_.x -= ADJUSTMENT;
+            ReDraw();
             return true;
         }
         else
@@ -216,6 +224,8 @@ namespace sfml_util
                 {
                     playerPosMapV_.x = 0.0f;
                 }
+
+                ReDraw();
 
                 return true;
             }
@@ -241,6 +251,7 @@ namespace sfml_util
         if (CURR_SCREEN_POS.x < ((WIN_POS_V_.x + static_cast<float>(WIN_SIZE_V_.x)) - BORDER_PAD_))
         {
             playerPosOffsetScreenV_.x += ADJUSTMENT;
+            ReDraw();
             return true;
         }
         else
@@ -257,6 +268,7 @@ namespace sfml_util
                 offScreenRect_.left += ADJUSTMENT;
                 SetupMapSprite();
                 playerPosMapV_.x += ADJUSTMENT;
+                ReDraw();
                 return true;
             }
         }
@@ -267,91 +279,6 @@ namespace sfml_util
 
     void TileMap::Draw(sf::RenderTarget & target, const sf::RenderStates &)
     {
-        //check if player position requires changing the map tiles drawn
-        auto const CURRENT_TILE_OFFSETS{ GetTileOffsetsOfPlayerPos() };
-        if (prevTileOffsets_ != CURRENT_TILE_OFFSETS)
-        {
-            //clear away the existing tiles
-            for(auto & nextMapLayer : mapLayout_.layer_vec)
-            {
-                nextMapLayer.ResetForReDraw();
-            }
-
-            //establish what new tiles to draw
-            for (auto & nextMapLayer : mapLayout_.layer_vec)
-            {
-                EstablishMapSubsection(nextMapLayer, CURRENT_TILE_OFFSETS);
-            }
-
-            //adjust offScreenRect to keep the map from jumping every time the offsets change
-            AdjustOffscreenRectsToPreventDrift(CURRENT_TILE_OFFSETS);
-
-            prevTileOffsets_ = CURRENT_TILE_OFFSETS;
-            SetupMapSprite();
-        }
-
-        //clear the map to black
-        offScreenTexture_.clear(sf::Color::Black);
-
-        auto hasObjectTileBeenDrawnYet{ false };
-
-        //draw all vertex arrays to the off-screen texture
-        sf::VertexArray quads(sf::Quads, 4);
-        for (auto const & LAYER : mapLayout_.layer_vec)
-        {
-            std::size_t tilesPanelIndex{ 0 };
-            auto const NUM_VERTS{ LAYER.vert_array.getVertexCount() };
-            for (std::size_t vertIndex(0); vertIndex < NUM_VERTS; )
-            {
-                //draw player before objects that might be drawn on top of the player
-                if (false == hasObjectTileBeenDrawnYet)
-                {
-                    namespace ba = boost::algorithm;
-
-                    auto const IS_GROUND_LAYER{ ba::contains(
-                            ba::to_lower_copy(LAYER.tiles_panel_vec[tilesPanelIndex].name),
-                            mapParser_.XML_ATTRIB_NAME_GROUND_) };
-
-                    if (IS_GROUND_LAYER == false)
-                    {
-                        offScreenTexture_.display();
-                        target.draw(mapSprite_);
-                        offScreenTexture_.clear(sf::Color::Transparent);
-                        DrawPlayer(target);
-                        hasObjectTileBeenDrawnYet = true;
-                    }
-                }
-
-                //skip drawing empty tiles
-                if (LAYER.tiles_panel_vec[tilesPanelIndex].name != mapLayout_.EmptyTilesPanelName())
-                {
-                    quads[0].position  = LAYER.vert_array[vertIndex].position;
-                    quads[0].texCoords = LAYER.vert_array[vertIndex++].texCoords;
-
-                    quads[1].position  = LAYER.vert_array[vertIndex].position;
-                    quads[1].texCoords = LAYER.vert_array[vertIndex++].texCoords;
-
-                    quads[2].position  = LAYER.vert_array[vertIndex].position;
-                    quads[2].texCoords = LAYER.vert_array[vertIndex++].texCoords;
-
-                    quads[3].position  = LAYER.vert_array[vertIndex].position;
-                    quads[3].texCoords = LAYER.vert_array[vertIndex++].texCoords;
-
-                    renderStates_.texture = & mapLayout_.texture_vec[
-                        LAYER.tiles_panel_vec[tilesPanelIndex++].texture_index];
-
-                    offScreenTexture_.draw(quads, renderStates_);
-                }
-                else
-                {
-                    ++tilesPanelIndex;
-                    auto const VERTEXES_PER_QUAD{ 4 };
-                    vertIndex += VERTEXES_PER_QUAD;
-                }
-            }
-        }
-
-        offScreenTexture_.display();
         target.draw(mapSprite_);
         DrawPlayer(target);
     }
@@ -371,6 +298,69 @@ namespace sfml_util
         mapSprite_.setTexture(offScreenTexture_.getTexture());
         mapSprite_.setPosition(WIN_POS_V_);
         mapSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(offScreenRect_));
+    }
+
+
+    void TileMap::ReDraw()
+    {
+        //check if player position requires changing the map tiles drawn
+        auto const CURRENT_TILE_OFFSETS{ GetTileOffsetsOfPlayerPos() };
+        if (prevTileOffsets_ != CURRENT_TILE_OFFSETS)
+        {
+            for (auto & nextMapLayer : mapLayout_.layer_vec)
+            {
+                nextMapLayer.ResetForReDraw();
+                EstablishMapSubsection(nextMapLayer, CURRENT_TILE_OFFSETS);
+            }
+
+            //adjust offScreenRect to keep the map from jumping every time the offsets change
+            AdjustOffscreenRectsToPreventDrift(CURRENT_TILE_OFFSETS);
+
+            prevTileOffsets_ = CURRENT_TILE_OFFSETS;
+            SetupMapSprite();
+        }
+
+        //clear the map to black
+        offScreenTexture_.clear(sf::Color::Black);
+
+        //draw all vertex arrays to the off-screen texture
+        sf::VertexArray quads(sf::Quads, 4);
+        for (auto const & LAYER : mapLayout_.layer_vec)
+        {
+            std::size_t tilesPanelIndex{ 0 };
+            auto const NUM_VERTS{ LAYER.vert_array.getVertexCount() };
+            for (std::size_t vertIndex(0); vertIndex < NUM_VERTS; )
+            {
+                //skip drawing empty tiles
+                if (LAYER.tiles_panel_vec[tilesPanelIndex].name != mapLayout_.EmptyTilesPanelName())
+                {
+                    quads[0].position = LAYER.vert_array[vertIndex].position;
+                    quads[0].texCoords = LAYER.vert_array[vertIndex++].texCoords;
+
+                    quads[1].position = LAYER.vert_array[vertIndex].position;
+                    quads[1].texCoords = LAYER.vert_array[vertIndex++].texCoords;
+
+                    quads[2].position = LAYER.vert_array[vertIndex].position;
+                    quads[2].texCoords = LAYER.vert_array[vertIndex++].texCoords;
+
+                    quads[3].position = LAYER.vert_array[vertIndex].position;
+                    quads[3].texCoords = LAYER.vert_array[vertIndex++].texCoords;
+
+                    renderStates_.texture = &mapLayout_.texture_vec[
+                        LAYER.tiles_panel_vec[tilesPanelIndex++].texture_index];
+
+                    offScreenTexture_.draw(quads, renderStates_);
+                }
+                else
+                {
+                    ++tilesPanelIndex;
+                    auto const VERTEXES_PER_QUAD{ 4 };
+                    vertIndex += VERTEXES_PER_QUAD;
+                }
+            }
+        }
+
+        offScreenTexture_.display();
     }
 
 

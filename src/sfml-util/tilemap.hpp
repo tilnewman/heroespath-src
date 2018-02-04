@@ -66,6 +66,7 @@ namespace sfml_util
 
     private:
         void SetupMapSprite();
+        void ReDraw();
 
         void EstablishMapSubsection(map::Layer &, const map::TileOffsets &);
 
