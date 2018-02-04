@@ -19,6 +19,7 @@ target_link_libraries(${PROJECT_NAME}
 				Game
 				Song
 				Misc
+                Map
 				Popup)
 
 add_subdirectory(gui)
