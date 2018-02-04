@@ -46,25 +46,15 @@ namespace heroespath
 namespace sfml_util
 {
 
-    const float       TileMap::BORDER_PAD_                { 75.0f };
-    const int         TileMap::EXTRA_OFFSCREEN_TILE_COUNT_{ 2 };
-    const sf::Color   TileMap::DEFAULT_TRANSPARENT_MASK_  { sf::Color(75, 99, 127) };
-    const sf::Color   TileMap::SHADOW_MASK1_              { sf::Color(0, 0, 0) };
-    const sf::Color   TileMap::SHADOW_MASK2_              { sf::Color(151, 0, 147) };
-    const sf::Color   TileMap::SHADOW_MASK2B_             { sf::Color(127, 0, 127) };
-    const sf::Color   TileMap::SHADOW_MASK3_              { sf::Color(255, 0, 255) };
-    const sf::Color   TileMap::SHADOW_COLOR1_             { sf::Color(0, 0, 0, 100) };
-    const sf::Color   TileMap::SHADOW_COLOR2_             { sf::Color(0, 0, 0, 65) };
-    const sf::Color   TileMap::SHADOW_COLOR3_             { sf::Color(0, 0, 0, 35) };
-    const std::size_t TileMap::TRANSPARENT_TEXTURE_INDEX_ { 0 };
-
+    const float TileMap::BORDER_PAD_                { 75.0f };
+    const int   TileMap::EXTRA_OFFSCREEN_TILE_COUNT_{ 2 };
+    
 
     TileMap::TileMap(
         const std::string & MAP_PATH_STR,
         const sf::Vector2f & WIN_POS_V,
         const sf::Vector2u & WIN_SIZE_V,
-        const sf::Vector2f & PLAYER_POS_V,
-        const sf::Color & TRANSPARENT_MASK)
+        const sf::Vector2f & PLAYER_POS_V)
     :
         mapParser_       (),
         mapLayout_       (),
@@ -76,13 +66,10 @@ namespace sfml_util
         renderStates_    (sf::RenderStates::Default),
         offScreenRect_   (),
         mapSprite_       (),
-        offScreenTexture_(),
-        TRANSPARENT_MASK_(TRANSPARENT_MASK)
+        offScreenTexture_()
     {
         mapParser_.Parse(MAP_PATH_STR, mapLayout_);
 
-        ApplyColorMasksToHandleTransparency();
-        
         //create off-screen texture
         //always ensure these are valid power of 2 sizes
         auto const WIDTH{ WIN_SIZE_V_.x + static_cast<unsigned>(
@@ -106,71 +93,6 @@ namespace sfml_util
             static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_ * mapLayout_.tile_size_y);
 
         SetupMapSprite();
-    }
-
-
-    void TileMap::ApplyColorMasksToHandleTransparency()
-    {
-        for (auto & nextTilesPanel: mapLayout_.tiles_panel_vec)
-        {
-            sf::Image srcImage(mapLayout_.texture_vec[nextTilesPanel.texture_index].copyToImage());
-            sf::Image destImage(srcImage);
-
-            namespace ba = boost::algorithm;
-            auto const IS_SHADOW_LAYER{ ba::contains(
-                ba::to_lower_copy(nextTilesPanel.name),
-                ba::to_lower_copy(mapParser_.XML_ATTRIB_NAME_SHADOWS_)) };
-
-            const sf::Uint8 * const PIXEL_PTR{ srcImage.getPixelsPtr() };
-
-            auto const PIXEL_COUNT{ static_cast<std::size_t>(
-                srcImage.getSize().x * srcImage.getSize().y * static_cast<unsigned int>(4)) };
-
-            for (std::size_t i(0); i < PIXEL_COUNT; i+=4)
-            {
-                const sf::Uint8 RED  { * (PIXEL_PTR + i + 0) };
-                const sf::Uint8 GREEN{ * (PIXEL_PTR + i + 1) };
-                const sf::Uint8 BLUE { * (PIXEL_PTR + i + 2) };
-
-                const unsigned NUM_COLOR_COMPONENTS{ 4 };//red, green, blue, alpha
-
-                auto const DEST_X{
-                    (static_cast<unsigned>(i) / NUM_COLOR_COMPONENTS) % destImage.getSize().x};
-
-                auto const DEST_Y{
-                    (static_cast<unsigned>(i) / NUM_COLOR_COMPONENTS) / destImage.getSize().x};
-
-                //check for faded blue background color that should be made fully transparent
-                if ((RED   == TRANSPARENT_MASK_.r) &&
-                    (GREEN == TRANSPARENT_MASK_.g) &&
-                    (BLUE  == TRANSPARENT_MASK_.b))
-                {
-                    destImage.setPixel(DEST_X, DEST_Y, sf::Color::Transparent);
-                }
-                else
-                {
-                    //all remaining shadow colors has a green value of zero
-                    if (IS_SHADOW_LAYER && (GREEN == 0))
-                    {
-                        if ((RED  == SHADOW_MASK1_.r) && (BLUE == SHADOW_MASK1_.b))
-                        {
-                            destImage.setPixel(DEST_X, DEST_Y, SHADOW_COLOR1_);
-                        }
-                        else if (((RED  == SHADOW_MASK2_.r) &&  (BLUE == SHADOW_MASK2_.b)) ||
-                                 ((RED  == SHADOW_MASK2B_.r) && (BLUE == SHADOW_MASK2B_.b)))
-                        {
-                            destImage.setPixel(DEST_X, DEST_Y, SHADOW_COLOR2_);
-                        }
-                        else if ((RED  == SHADOW_MASK3_.r) && (BLUE == SHADOW_MASK3_.b))
-                        {
-                            destImage.setPixel(DEST_X, DEST_Y, SHADOW_COLOR3_);
-                        }
-                    }
-                }
-            }
-
-            mapLayout_.texture_vec[nextTilesPanel.texture_index].update(destImage);
-        }
     }
 
 

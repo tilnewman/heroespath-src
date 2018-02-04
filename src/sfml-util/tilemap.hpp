@@ -55,10 +55,7 @@ namespace sfml_util
             const std::string & MAP_PATH_STR,
             const sf::Vector2f & WIN_POS_V,
             const sf::Vector2u & WIN_SIZE_V,
-            const sf::Vector2f & PLAYER_POS_V,
-            const sf::Color & TRANSPARENT_MASK_COLOR = DEFAULT_TRANSPARENT_MASK_);
-
-        void ApplyColorMasksToHandleTransparency();
+            const sf::Vector2f & PLAYER_POS_V);
 
         bool MoveUp(const float ADJUSTMENT);
         bool MoveDown(const float ADJUSTMENT);
@@ -95,23 +92,6 @@ namespace sfml_util
         //how many tiles to draw offscreen that are outside the visible map area
         static const int EXTRA_OFFSCREEN_TILE_COUNT_;
 
-        //The tileset I found online uses this color as a background,
-        //so it needs to be changed to transparen.t
-        static const sf::Color DEFAULT_TRANSPARENT_MASK_;
-
-        //the tileset I found online uses these magenta colors as shades for shadows
-        static const sf::Color SHADOW_MASK1_;
-        static const sf::Color SHADOW_MASK2_;
-        static const sf::Color SHADOW_MASK2B_;
-        static const sf::Color SHADOW_MASK3_;
-
-        //these are the shades of semi-transparent black I chose for shadows
-        static const sf::Color SHADOW_COLOR1_;
-        static const sf::Color SHADOW_COLOR2_;
-        static const sf::Color SHADOW_COLOR3_;
-
-        static const std::size_t TRANSPARENT_TEXTURE_INDEX_;
-
     private:
         map::Parser        mapParser_;
         map::Layout        mapLayout_;
@@ -124,7 +104,6 @@ namespace sfml_util
         sf::FloatRect      offScreenRect_;
         sf::Sprite         mapSprite_;
         sf::RenderTexture  offScreenTexture_;
-        const sf::Color    TRANSPARENT_MASK_;
     };
 
     using TileMapUPtr_t = std::unique_ptr<TileMap>;

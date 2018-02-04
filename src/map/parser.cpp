@@ -30,6 +30,7 @@
 #include "parser.hpp"
 
 #include "map/tiles-panel.hpp"
+#include "map/shadow-masker.hpp"
 #include "log/log-macros.hpp"
 #include "game/game-data-file.hpp"
 #include "sfml-util/loaders.hpp"
@@ -128,6 +129,9 @@ namespace map
             collisionRects_);
 
         collisionRects_.clear();
+
+        ShadowMasker shadowMasker;
+        shadowMasker.ChangeColors(XML_ATTRIB_NAME_SHADOWS_, layout);
     }
 
 
