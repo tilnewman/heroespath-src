@@ -43,8 +43,8 @@ namespace map
     {
         TileOffsets(
             const int BEGIN_X = 0,
-            const int END_X = 0, 
-            const int BEGIN_Y = 0, 
+            const int END_X = 0,
+            const int BEGIN_Y = 0,
             const int END_Y = 0)
         :
             begin_x(BEGIN_X),

@@ -447,7 +447,7 @@ namespace sfml_util
         {
             const char LETTER{ FILE_NAME[i] };
             const bool IS_DIGIT{ std::isdigit(LETTER) != 0 };
-            
+
             if ((numberStr.empty() == false) && (IS_DIGIT == false))
             {
                 break;
@@ -460,7 +460,7 @@ namespace sfml_util
             --i;
         } while (i != 0);
 
-        
+
         std::reverse(numberStr.begin(), numberStr.end());
 
         try

@@ -444,7 +444,7 @@ namespace stage
         sfml_util::gui::FourStateButtonUPtr_t unequipButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t dropButtonUPtr_;
         sfml_util::gui::FourStateButtonPVec_t buttonPVec_;
-        
+
         sf::Texture sortButtonNameTexture_;
         sf::Texture sortButtonPriceTexture_;
         sf::Texture sortButtonWeightTexture_;

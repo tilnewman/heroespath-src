@@ -744,10 +744,10 @@ namespace popup
                 //and image_selection popups still look right.
                 return sfml_util::MapByRes(1.0f, 4.75f);
             }
-            
+
             case PopupImage::Custom:    //Custom popups are custom sized so no value needed here.
             case PopupImage::Spellbook: //Spellbook and MusicSheet are scale themselves to fit the screen.
-            case PopupImage::MusicSheet: 
+            case PopupImage::MusicSheet:
             case PopupImage::Count:
             default:
             {

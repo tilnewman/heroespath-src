@@ -180,7 +180,7 @@ namespace creature
             case role::Cat:
             case role::Wolf:
             case role::Sylavin: { return combat::BlockingPosType::Front; }
-            
+
             case role::Ghost:
             case role::Bat:
             case role::Beastmaster:
@@ -200,7 +200,7 @@ namespace creature
             case role::Cleric: { return combat::BlockingPosType::Casters; }
 
             case role::Trader: { return combat::BlockingPosType::Last; }
-            
+
             case role::Count:
             default:
             {

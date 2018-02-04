@@ -225,7 +225,7 @@ namespace map
         sfml_util::LoadTexture(layout.texture_vec[TEXTURE_INDEX], tilesPanel.path_obj.string());
     }
 
-    
+
     void Parser::Parse_Layer_Collisions(const boost::property_tree::ptree & OBJ_GROUP_PT)
     {
         namespace ba = boost::algorithm;

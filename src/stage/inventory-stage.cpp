@@ -442,7 +442,7 @@ namespace stage
             SortByWeight( * equippedListBoxUPtr_, isSortReversedEqWeight_);
             return true;
         }
-        
+
         if (PACKAGE.PTR_ == unEqSortButtonNameUPtr_.get())
         {
             SortByName( * unEquipListBoxUPtr_, isSortReversedUneqName_);
@@ -454,13 +454,13 @@ namespace stage
             SortByPrice( * unEquipListBoxUPtr_, isSortReversedUneqPrice_);
             return true;
         }
-        
+
         if (PACKAGE.PTR_ == unEqSortButtonWeightUPtr_.get())
         {
             SortByWeight( * unEquipListBoxUPtr_, isSortReversedUneqWeight_);
             return true;
         }
-        
+
         return false;
     }
 
@@ -1494,7 +1494,7 @@ namespace stage
 
         auto const POS_HORIZ_PRICE_EQ{
             POS_HORIZ_NAME_EQ + eqNameSprite.getGlobalBounds().width + SORT_ICON_SPACER_ };
-       
+
         auto const POS_HORIZ_PRICE_UNEQ{
             POS_HORIZ_NAME_UNEQ + unEqNameSprite.getGlobalBounds().width + SORT_ICON_SPACER_ };
 

@@ -104,7 +104,7 @@ namespace stage
             const sf::FloatRect & BG_BOX_INNER_RECT);
 
         float SliderLabelVertPad() const;
-        
+
     private:
         const float SLIDER_LENGTH_VERT_;
         bool hasStageAlreadyBeenSetup_;

@@ -45,7 +45,7 @@ namespace map
     {
         Layout(const Layout &) = delete;
         Layout & operator=(const Layout &) = delete;
-    
+
     public:
         Layout()
         :
@@ -82,7 +82,7 @@ namespace map
         LayerVec_t layer_vec;
 
         TilesPanelVec_t tiles_panel_vec;
-        
+
         sfml_util::TextureVec_t texture_vec;
 
         sfml_util::QuadTree collision_qtree;

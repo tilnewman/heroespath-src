@@ -46,7 +46,7 @@ namespace sfml_util
 
     const float TileMap::BORDER_PAD_                { 75.0f };
     const int   TileMap::EXTRA_OFFSCREEN_TILE_COUNT_{ 2 };
-    
+
 
     TileMap::TileMap(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V)
     :
@@ -70,7 +70,7 @@ namespace sfml_util
 
         map::Parser mapParser;
         mapParser.Parse(MAP_FILE_PATH_STR, mapLayout_);
-        
+
         SetupOffScreenTexture();
         ReDraw();
     }
@@ -82,7 +82,7 @@ namespace sfml_util
         {
             return false;
         }
-        
+
         auto const CURR_SCREEN_POS{ GetPlayerPosScreen() };
 
         //move within the view before moving the view
@@ -563,7 +563,7 @@ namespace sfml_util
             case Direction::Left:   { posToTest.x -= ADJ; break; }
             case Direction::Right:  { posToTest.x += ADJ; break; }
             case Direction::Up:     { posToTest.y -= ADJ; break; }
-            case Direction::Down: 
+            case Direction::Down:
             case Direction::Count:
             default:                { posToTest.y += ADJ; break; }
         }

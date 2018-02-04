@@ -364,7 +364,7 @@ namespace stage
         EntityAdd(ouroborosUPtr_.get());
 
         auto const MID_SCREEN_HORIZ{ SCREEN_WIDTH_ * 0.5f };
-        
+
         Setup_Button(
             helpButtonUPtr_,
             (MID_SCREEN_HORIZ - helpButtonUPtr_->GetEntityRegion().width) - 145.0f);
@@ -374,7 +374,7 @@ namespace stage
             MID_SCREEN_HORIZ + 190.0f);
 
         auto const BETWEEN_SPACER{ sfml_util::MapByRes(40.0f, 600.0f) };
-        
+
         Setup_Button(
             backButtonUPtr_,
             (helpButtonUPtr_->GetEntityPos().x - helpButtonUPtr_->GetEntityRegion().width) -
@@ -1168,12 +1168,12 @@ namespace stage
             0.035f,
             sf::Color::White,
             sf::BlendAlpha);
-        
+
         EntityAdd(smokeAnimUPtr_.get());
 
         auto const DRIFT_LIMIT_LEFT{ SCREEN_WIDTH_ * 0.65f };
         auto const DRIFT_LIMIT_RIGHT{ SCREEN_WIDTH_ - smokeAnimUPtr_->GetEntityRegion().width };
-        
+
         smokeAnimDrifterX_.Reset(
             DRIFT_LIMIT_LEFT,
             DRIFT_LIMIT_RIGHT,

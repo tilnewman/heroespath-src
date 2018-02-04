@@ -1633,7 +1633,7 @@ namespace combat
         //get a list of all combat nodes, either of all players or non-players
         CombatNodePVec_t cNodesOfPlayerTypePVec;
         combatTree_.GetCombatNodesOfPlayerType(cNodesOfPlayerTypePVec, WILL_POSITION_PLAYERS);
-        
+
         //assign combat_node's blocking positions
         auto const WILL_BLOCKING_POSITIONS_INCREASE{ ! WILL_POSITION_PLAYERS };
         auto blockingPos{ 0 };

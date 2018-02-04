@@ -181,7 +181,7 @@ namespace gui
         displayIndex_ = 0;
         selectionDisplayIndex_ = 0;
         selectionOffsetIndex_ = 0;
-        
+
         visibleCount_ = CalcVisibleItems();
 
         SetupForDraw();
@@ -219,7 +219,7 @@ namespace gui
         auto const POS_BOTTOM{ entityRegion_.top + entityRegion_.height } ;
         auto const SELECTION_INDEX{ SelectedIndex() };
         auto const LAST_DRAWN_INDEX{ CalcLastVisibleIndex_Display() };
-        
+
         std::size_t drawnCount{ 0 };
         if (Empty() == false)
         {
@@ -460,9 +460,9 @@ namespace gui
     bool ListBox::MouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         auto const DID_STATE_CHANGE{ GuiEntity::MouseUp(MOUSE_POS_V) };
-        
+
         auto const ORIG_SELECTED_ITEM_SPTR{ Selected() };
-        
+
         auto const NUM_ITEMS{ items_.size() };
         for (std::size_t i(0); i < NUM_ITEMS; ++i)
         {
@@ -709,7 +709,7 @@ namespace gui
         const bool IS_SELECTED_ITEM)
     {
         ImagePair_t imagePair;
-        
+
         auto const DOES_IMAGE_EXIST{
             ((listBoxItemSPtr->ITEM_CPTR != nullptr) ||
             (listBoxItemSPtr->TITLE_CPTRC != nullptr) ||
@@ -721,7 +721,7 @@ namespace gui
         if (DOES_IMAGE_EXIST)
         {
             imageMap_.Find(listBoxItemSPtr, imagePair);
-            
+
             if (imagePair.first.get() == nullptr)
             {
                 imagePair.first = std::make_shared<sf::Texture>();
@@ -794,7 +794,7 @@ namespace gui
                 const float SCALE(IMAGE_SIZE_ / sprite.getLocalBounds().height);
                 sprite.setScale(SCALE, SCALE);
             }
-            
+
             auto const SPRITE_POS_LEFT{
                 (ITEM_POS_LEFT + (IMAGE_SIZE_ * 0.5f)) - (sprite.getGlobalBounds().width * 0.5f) };
 
@@ -823,7 +823,7 @@ namespace gui
         std::size_t count{ 0 };
         auto posVert{ entityRegion_.top + margin_ };
         auto const POS_BOTTOM{ (entityRegion_.top + entityRegion_.height) };
-        
+
         do
         {
             posVert += IMAGE_SIZE_;

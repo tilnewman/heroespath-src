@@ -169,7 +169,7 @@ namespace stage
         Setup_MainMenuTitle();
         Setup_BottomSymbol();
         Setup_BackButton();
-        
+
         auto const BG_BOX_INNER_RECT{ Setup_WoodBackgroundBoxAndReturnInnerRect() };
 
         Setup_ResolutionChangeLabel(BG_BOX_INNER_RECT);
@@ -177,7 +177,7 @@ namespace stage
 
         Setup_MusicVolumeLabel(BG_BOX_INNER_RECT);
         Setup_MusicVolumeSlider(BG_BOX_INNER_RECT);
-        
+
         Setup_SfxVolumeLabel(BG_BOX_INNER_RECT);
         Setup_SfxVolumeSlider(BG_BOX_INNER_RECT);
 
@@ -188,7 +188,7 @@ namespace stage
         Setup_MusicInfoBox(BG_BOX_INNER_RECT);
 
         Setup_RevisionNumber(BG_BOX_INNER_RECT);
-        
+
         hasStageAlreadyBeenSetup_ = true;
     }
 
@@ -256,7 +256,7 @@ namespace stage
     void SettingsStage::Setup_BottomSymbol()
     {
         bottomSymbol_.Setup();
-    
+
         if (false == hasStageAlreadyBeenSetup_)
         {
             EntityAdd(backButtonUPtr_.get());
@@ -551,14 +551,14 @@ namespace stage
 
         sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(false);
     }
-        
+
 
     void SettingsStage::Setup_SfxVolumeSlider(const sf::FloatRect & BG_BOX_INNER_RECT)
     {
         sfml_util::SliderBarLabeled_Effects::SetPreventSoundEffect(true);
 
         if (false == hasStageAlreadyBeenSetup_)
-        {   
+        {
             effectsVolSliderBarUPtr_ = std::make_unique<sfml_util::SliderBarLabeled_Effects>(
                 "EffectsVolume",
                 0.0f,
