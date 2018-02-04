@@ -478,8 +478,40 @@ namespace sfml_util
 
     const map::TileOffsets TileMap::GetTileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const
     {
-        map::TileOffsets tileOffsets;
+        map::TileOffsets offsets;
 
+        {
+            auto const PLAYER_POS_IN_TILES_X{ static_cast<int>(MAP_POS_V.x) / mapLayout_.tile_size_x };
+            auto const WINDOW_TILE_COUNT_X{ (static_cast<int>(WIN_SIZE_V_.x) / mapLayout_.tile_size_x) };
+            auto const OFFSCREEN_TILE_COUNT_X{ WINDOW_TILE_COUNT_X + (EXTRA_OFFSCREEN_TILE_COUNT_ * 2) };
+
+            offsets.begin_x = std::max(0, (PLAYER_POS_IN_TILES_X - (OFFSCREEN_TILE_COUNT_X / 2)));
+            offsets.end_x = offsets.begin_x + OFFSCREEN_TILE_COUNT_X;
+
+            if (offsets.end_x > mapLayout_.tile_count_x)
+            {
+                offsets.end_x = mapLayout_.tile_count_x;
+                offsets.begin_x = offsets.end_x - OFFSCREEN_TILE_COUNT_X;
+            }
+        }
+
+        {
+            auto const PLAYER_POS_IN_TILES_Y{ static_cast<int>(MAP_POS_V.y) / mapLayout_.tile_size_y };
+            auto const WINDOW_TILE_COUNT_Y{ (static_cast<int>(WIN_SIZE_V_.y) / mapLayout_.tile_size_y) };
+            auto const OFFSCREEN_TILE_COUNT_Y{ WINDOW_TILE_COUNT_Y + (EXTRA_OFFSCREEN_TILE_COUNT_ * 2) };
+
+            offsets.begin_y = std::max(0, (PLAYER_POS_IN_TILES_Y - (OFFSCREEN_TILE_COUNT_Y / 2)));
+            offsets.end_y = offsets.begin_y + OFFSCREEN_TILE_COUNT_Y;
+
+            if (offsets.end_y > mapLayout_.tile_count_y)
+            {
+                offsets.end_y = mapLayout_.tile_count_y;
+                offsets.begin_y = offsets.end_y - OFFSCREEN_TILE_COUNT_Y;
+            }
+        }
+
+        return offsets;
+        /*
         auto const PLAYER_POSX_IN_TILES{ static_cast<int>(MAP_POS_V.x) / mapLayout_.tile_size_x };
         auto const HALF_WIN_TILES_X{ (static_cast<int>(WIN_SIZE_V_.x) / mapLayout_.tile_size_x) / 2 };
 
@@ -563,8 +595,9 @@ namespace sfml_util
         {
             tileOffsets.begin_x = (tileOffsets.end_x - TILE_WITH_DOUBLE_OFFSET_COUNT_X);
         }
-
+        
         return tileOffsets;
+        */
     }
 
 
