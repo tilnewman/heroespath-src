@@ -32,6 +32,7 @@
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
+#include "sfml-util/text-rendering.hpp"
 
 #include <memory>
 #include <string>
@@ -42,12 +43,6 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    namespace text_render
-    {
-        class RenderedText;
-        using RenderedTextSPtr_t = std::shared_ptr<RenderedText>;
-    }
-
 namespace gui
 {
 
@@ -59,22 +54,25 @@ namespace gui
 
     public:
         //if this constructor is used, then Setup() must be called before any other functions
-        explicit GuiText(const std::string & NAME,
-                         const float         TEXT_WIDTH_LIMIT = 0.0f,
-                         const FontPtr_t     NUMBERS_FONT_PTR = nullptr);
+        explicit GuiText(
+            const std::string & NAME,
+            const float TEXT_WIDTH_LIMIT = 0.0f,
+            const FontPtr_t NUMBERS_FONT_PTR = nullptr);
 
-        GuiText(const std::string &   NAME,
-                const sf::FloatRect & REGION,
-                const MouseTextInfo & MOUSE_TEXT_INFO,
-                const float           TEXT_WIDTH_LIMIT = 0.0f,
-                const FontPtr_t       NUMBERS_FONT_PTR = nullptr);
+        GuiText(
+            const std::string &   NAME,
+            const sf::FloatRect & REGION,
+            const MouseTextInfo & MOUSE_TEXT_INFO,
+            const float TEXT_WIDTH_LIMIT = 0.0f,
+            const FontPtr_t NUMBERS_FONT_PTR = nullptr);
 
-        GuiText(const std::string &   NAME,
-                const float           POS_LEFT,
-                const float           POS_TOP,
-                const MouseTextInfo & MOUSE_TEXT_INFO,
-                const float           TEXT_WIDTH_LIMIT = 0.0f,
-                const FontPtr_t       NUMBERS_FONT_PTR = nullptr);
+        GuiText(
+            const std::string & NAME,
+            const float POS_LEFT,
+            const float POS_TOP,
+            const MouseTextInfo & MOUSE_TEXT_INFO,
+            const float TEXT_WIDTH_LIMIT = 0.0f,
+            const FontPtr_t NUMBERS_FONT_PTR = nullptr);
 
         virtual ~GuiText();
 
@@ -92,19 +90,21 @@ namespace gui
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-        virtual void SetNewColors(const sf::Color & UP_COLOR,
-                                  const sf::Color & DOWN_COLOR,
-                                  const sf::Color & OVER_COLOR);
+        virtual void SetNewColors(
+            const sf::Color & UP_COLOR,
+            const sf::Color & DOWN_COLOR,
+            const sf::Color & OVER_COLOR);
 
         virtual void SpriteColorSet(const sf::Color & NEW_COLOR);
         virtual void SpriteColorReset();
 
-        void Setup(const std::string &   TEXT,
-                   const float           POS_LEFT,
-                   const float           POS_TOP,
-                   const MouseTextInfo & MOUSE_TEXT_INFO,
-                   const float           TEXT_WIDTH_LIMIT = 0.0f,
-                   const FontPtr_t       NUMBERS_FONT_PTR = nullptr);
+        void Setup(
+            const std::string & TEXT,
+            const float POS_LEFT,
+            const float POS_TOP,
+            const MouseTextInfo & MOUSE_TEXT_INFO,
+            const float TEXT_WIDTH_LIMIT = 0.0f,
+            const FontPtr_t NUMBERS_FONT_PTR = nullptr);
 
         virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
         virtual void MoveEntityPos(const float HORIZ, const float VERT);
@@ -114,15 +114,15 @@ namespace gui
         inline virtual void OnClick(const sf::Vector2f &) {}
 
     protected:
-        std::string    text_;
-        TextInfo       upTextInfo_;
-        TextInfo       downTextInfo_;
-        TextInfo       overTextInfo_;
-        FontPtr_t      numberFontPtr_;
-        RendTextSPtr_t textureSPtr_;
-        sf::Sprite     sprite_;
-        float          textWidthLimit_;
-        text_render::RenderedTextSPtr_t renderedTextSPtr_;
+        std::string text_;
+        TextInfo upTextInfo_;
+        TextInfo downTextInfo_;
+        TextInfo overTextInfo_;
+        FontPtr_t numberFontPtr_;
+        sf::RenderTexture offscreenTexture_;
+        sf::Sprite sprite_;
+        float textWidthLimit_;
+        text_render::RenderedText renderedText_;
     };
 
 

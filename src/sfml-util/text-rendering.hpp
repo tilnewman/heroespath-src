@@ -65,11 +65,12 @@ namespace text_render
             text_info()
         {}
 
-        TextSnippet(const float           POS_LEFT,
-                    const float           POS_TOP,
-                    const std::string &   TEXT,
-                    const sf::Text &      TEXT_OBJ,
-                    const gui::TextInfo & TEXT_INFO)
+        TextSnippet(
+            const float POS_LEFT,
+            const float POS_TOP,
+            const std::string & TEXT,
+            const sf::Text & TEXT_OBJ,
+            const gui::TextInfo & TEXT_INFO)
         :
             sf_text  (TEXT_OBJ),
             text_info(TEXT_INFO)
@@ -77,10 +78,11 @@ namespace text_render
             Setup(POS_LEFT, POS_TOP, TEXT, TEXT_INFO);
         }
 
-        void Setup( const float           POS_LEFT,
-                    const float           POS_TOP,
-                    const std::string &   TEXT,
-                    const gui::TextInfo & TEXT_INFO)
+        void Setup(
+            const float POS_LEFT,
+            const float POS_TOP,
+            const std::string & TEXT,
+            const gui::TextInfo & TEXT_INFO)
         {
             gui::SetupText(sf_text, TEXT_INFO);
             sf_text.setString(TEXT);
@@ -111,18 +113,18 @@ namespace text_render
         :
             longest_line(0.0f),
             total_height(0.0f),
-            vec_vec     ()
+            vec_vec()
         {}
 
-        RenderedText(const float                 LONGEST_LINE,
-                     const float                 TOTAL_HEIGHT,
-                     const TextSnippetVecVec_t & VEC_VEC)
+        RenderedText(
+            const float LONGEST_LINE,
+            const float TOTAL_HEIGHT,
+            const TextSnippetVecVec_t & VEC_VEC)
         :
             longest_line(LONGEST_LINE),
             total_height(TOTAL_HEIGHT),
             vec_vec     (VEC_VEC)
         {}
-
 
         void Reset()
         {
@@ -131,21 +133,19 @@ namespace text_render
             vec_vec.clear();
         }
 
-
         float longest_line;
         float total_height;
         TextSnippetVecVec_t vec_vec;
     };
 
-    using RenderedTextSPtr_t = std::shared_ptr<RenderedText>;
-
 
     //struct used internally by TextRender
     struct TextInfoSet
     {
-        TextInfoSet(const std::string &   TEXT,
-                    const gui::TextInfo & TEXT_INFO_NUM,
-                    const gui::TextInfo & TEXT_INFO_CHAR)
+        TextInfoSet(
+            const std::string & TEXT,
+            const gui::TextInfo & TEXT_INFO_NUM,
+            const gui::TextInfo & TEXT_INFO_CHAR)
         :
             text   (TEXT),
             ti_num (TEXT_INFO_NUM),
@@ -173,10 +173,11 @@ namespace text_render
     //
     //Target_t must be either sf::RenderWindow or sf::RenderTexture
     template<typename Target_t>
-    void Draw(RenderedText &   renderedText,
-              Target_t &       target,
-              sf::RenderStates states,
-              const float      MOVE_VERT = 0.0f)
+    void Draw(
+        RenderedText & renderedText,
+        Target_t & target,
+        sf::RenderStates states,
+        const float MOVE_VERT = 0.0f)
     {
         const bool WILL_MOVE(false == misc::IsRealClose(MOVE_VERT, 0.0f));
 
@@ -202,58 +203,67 @@ namespace text_render
     }
 
     //The caller is responsible for the sliderBarPtr that may new'd and returned.
-    gui::SliderBarPtr_t RenderToArea(const std::string &   NAME,
-                                     const gui::TextInfo & TEXT_INFO,
-                                     RenderedText &        renderedText,
-                                     const sf::FloatRect & REGION,
-                                     const unsigned int    SMALLER_FONT_SIZE    = 0,
-                                     const Margins &       MARGINS              = Margins(),
-                                     const bool            WILL_ALLOW_SCROLLBAR = true);
+    gui::SliderBarPtr_t RenderToArea(
+        const std::string & NAME,
+        const gui::TextInfo & TEXT_INFO,
+        RenderedText & renderedText,
+        const sf::FloatRect & REGION,
+        const unsigned int SMALLER_FONT_SIZE    = 0,
+        const Margins & MARGINS              = Margins(),
+        const bool WILL_ALLOW_SCROLLBAR = true);
 
     //The caller is responsible for the sliderBarPtr that may new'd and returned.
-    gui::SliderBarPtr_t ApplyToArea(const std::string &   NAME,
-                                    const RenderedText &  RENDERED_TEXT,
-                                    const sf::FloatRect & REGION);
+    gui::SliderBarPtr_t ApplyToArea(
+        const std::string & NAME,
+        const RenderedText & RENDERED_TEXT,
+        const sf::FloatRect & REGION);
 
-    RendTextSPtr_t RenderAndDraw(RenderedText & renderedText);
+    void RenderAndDraw(RenderedText &, sf::RenderTexture &);
 
-    void Render(RenderedText &        renderText,
-                const gui::TextInfo & TEXT_INFO,
-                const float           WIDTH_LIMIT,
-                const Margins &       MARGINS = Margins());
+    void Render(
+        RenderedText & renderText,
+        const gui::TextInfo & TEXT_INFO,
+        const float WIDTH_LIMIT,
+        const Margins & MARGINS = Margins());
 
-    void Render(RenderedText &        renderText,
-                const gui::TextInfo & TEXT_INFO,
-                const float           POS_LEFT,
-                const float           POS_TOP,
-                const Margins &       MARGINS = Margins());
+    void Render(
+        RenderedText & renderText,
+        const gui::TextInfo & TEXT_INFO,
+        const float POS_LEFT,
+        const float POS_TOP,
+        const Margins & MARGINS = Margins());
 
-    void Render(RenderedText &        renderText,
-                const gui::TextInfo & TEXT_INFO,
-                const sf::FloatRect & REGION,
-                const Margins &       MARGINS = Margins());
+    void Render(
+        RenderedText & renderText,
+        const gui::TextInfo & TEXT_INFO,
+        const sf::FloatRect & REGION,
+        const Margins & MARGINS = Margins());
 
-    void Render(RenderedText &        renderText,
-                const gui::TextInfo & TEXT_INFO_CHAR,
-                const gui::TextInfo & TEXT_INFO_NUM,
-                const std::string &   TEXT,
-                const sf::FloatRect & REGION,
-                const Margins &       MARGINS = Margins());
+    void Render(
+        RenderedText & renderText,
+        const gui::TextInfo & TEXT_INFO_CHAR,
+        const gui::TextInfo & TEXT_INFO_NUM,
+        const std::string & TEXT,
+        const sf::FloatRect & REGION,
+        const Margins & MARGINS = Margins());
 
-    TextSnippetVec_t RenderLine(const TextInfoSet & TEXT_INFO_SET,
-                                sf::Vector2f &      textPos,
-                                const float         WIDTH_LIMIT,
-                                float &             heightTracker,
-                                std::size_t &            strIndex);
+    TextSnippetVec_t RenderLine(
+        const TextInfoSet & TEXT_INFO_SET,
+        sf::Vector2f & textPos,
+        const float WIDTH_LIMIT,
+        float & heightTracker,
+        std::size_t & strIndex);
 
-    TextSnippetVec_t RenderWord(const TextInfoSet & TEXT_INFO_SET,
-                                sf::Vector2f &      textPos,
-                                float &             heightTracker,
-                                std::size_t &            strIndex,
-                                char &              termChar);
+    TextSnippetVec_t RenderWord(
+        const TextInfoSet & TEXT_INFO_SET,
+        sf::Vector2f & textPos,
+        float & heightTracker,
+        std::size_t & strIndex,
+        char & termChar);
 
-    void GroupTextSnippets(TextSnippetVec_t &       resultVec,
-                           const TextSnippetVec_t & inputVec);
+    void GroupTextSnippets(
+        TextSnippetVec_t & resultVec,
+        const TextSnippetVec_t & inputVec);
 
 }
 }

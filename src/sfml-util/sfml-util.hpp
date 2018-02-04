@@ -261,6 +261,10 @@ namespace sfml_util
         return static_cast<Return_t>(y);
     }
 
+    /*
+     * No need for keeping sf::RenderTextures at power of two sizes, and even if there were,
+     * we would not wrap them in std::shared_ptrs.
+     *
     template<typename T>
     RendTextSPtr_t CreateRenderTextureAtPowerOf2Size(const T ORIG_WIDTH,
                                                      const T ORIG_HEIGHT)
@@ -304,7 +308,7 @@ namespace sfml_util
 
         return renderTextureSPtr;
     }
-
+    */
 
     const std::string KeyCodeToString(const sf::Keyboard::Key KEY);
 

@@ -52,26 +52,29 @@ namespace gui
         Line & operator=(const Line &) =delete;
 
     public:
-        Line(const std::string & NAME,
-             const float         LEFT,
-             const float         TOP,
-             const std::size_t   LENGTH,
-             Orientation::Enum   ORIENTATION,
-             const Side::Enum    SIDE,
-             const bool          WILL_CAP_ENDS = true);
+        Line(
+            const std::string & NAME,
+            const float LEFT,
+            const float TOP,
+            const std::size_t LENGTH,
+            Orientation::Enum ORIENTATION,
+            const Side::Enum SIDE,
+            const bool WILL_CAP_ENDS = true);
 
         //Use this constructor when position and length are not initially know,
         //but must call Setup() before any other function after construction.
-        Line(const std::string & NAME,
-             Orientation::Enum   ORIENTATION,
-             const Side::Enum    SIDE,
-             const bool          WILL_CAP_ENDS);
+        Line(
+            const std::string & NAME,
+            Orientation::Enum ORIENTATION,
+            const Side::Enum SIDE,
+            const bool WILL_CAP_ENDS);
 
-        virtual ~Line();
+        virtual ~Line() {}
 
-        void Setup(const float  LEFT,
-                   const float  TOP,
-                   const std::size_t LENGTH);
+        void Setup(
+            const float  LEFT,
+            const float  TOP,
+            const std::size_t LENGTH);
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
@@ -89,17 +92,17 @@ namespace gui
         void SetupOffScreenTexture();
 
     private:
-        std::size_t             length_;
+        std::size_t length_;
         const Orientation::Enum ORIENTATION_;
-        const Side::Enum        SIDE_;
-        const bool              WILL_CAP_ENDS_;
-        std::size_t             pixelsOfMiddleToUse_;
-        std::size_t             middleCount_;
-        sf::Sprite              middleSprite_;
-        sf::Sprite              endTopOrLeftSprite_;
-        sf::Sprite              endBotOrRightSprite_;
-        sf::Sprite              finalSprite_;//used to draw to screen
-        RendTextSPtr_t          offScreenTextureSPtr_;
+        const Side::Enum SIDE_;
+        const bool WILL_CAP_ENDS_;
+        std::size_t pixelsOfMiddleToUse_;
+        std::size_t middleCount_;
+        sf::Sprite middleSprite_;
+        sf::Sprite endTopOrLeftSprite_;
+        sf::Sprite endBotOrRightSprite_;
+        sf::Sprite finalSprite_;//used to draw to screen
+        sf::RenderTexture offScreenTexture_;
     };
 
 

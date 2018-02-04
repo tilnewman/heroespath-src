@@ -45,8 +45,8 @@ namespace gui
 
     GuiText::GuiText(
         const std::string & NAME,
-        const float         TEXT_WIDTH_LIMIT,
-        const FontPtr_t     NUMBERS_FONT_PTR)
+        const float TEXT_WIDTH_LIMIT,
+        const FontPtr_t NUMBERS_FONT_PTR)
     :
         GuiEntity        (std::string(NAME).append("_GuiText"), 0.0f, 0.0f),
         text_            (""),
@@ -54,19 +54,19 @@ namespace gui
         downTextInfo_    (),
         overTextInfo_    (),
         numberFontPtr_   (NUMBERS_FONT_PTR),
-        textureSPtr_     (),
+        offscreenTexture_(),
         sprite_          (),
         textWidthLimit_  (TEXT_WIDTH_LIMIT),
-        renderedTextSPtr_()
+        renderedText_    ()
     {}
 
 
     GuiText::GuiText(
-        const std::string &    NAME,
-        const sf::FloatRect &  REGION,
-        const MouseTextInfo &  MOUSE_TEXT_INFO,
-        const float            TEXT_WIDTH_LIMIT,
-        const FontPtr_t        NUMBERS_FONT_PTR)
+        const std::string & NAME,
+        const sf::FloatRect & REGION,
+        const MouseTextInfo & MOUSE_TEXT_INFO,
+        const float TEXT_WIDTH_LIMIT,
+        const FontPtr_t NUMBERS_FONT_PTR)
     :
         GuiEntity        (std::string(NAME).append("_GuiText"), REGION),
         text_            (""),
@@ -74,27 +74,28 @@ namespace gui
         downTextInfo_    (MOUSE_TEXT_INFO.down),
         overTextInfo_    (MOUSE_TEXT_INFO.over),
         numberFontPtr_   (NUMBERS_FONT_PTR),
-        textureSPtr_     (),
+        offscreenTexture_(),
         sprite_          (),
         textWidthLimit_  (TEXT_WIDTH_LIMIT),
-        renderedTextSPtr_()
+        renderedText_    ()
     {
-        Setup(MOUSE_TEXT_INFO.up.text,
-              REGION.left,
-              REGION.top,
-              MOUSE_TEXT_INFO,
-              TEXT_WIDTH_LIMIT,
-              NUMBERS_FONT_PTR);
+        Setup(
+            MOUSE_TEXT_INFO.up.text,
+            REGION.left,
+            REGION.top,
+            MOUSE_TEXT_INFO,
+            TEXT_WIDTH_LIMIT,
+            NUMBERS_FONT_PTR);
     }
 
 
     GuiText::GuiText(
-        const std::string &   NAME,
-        const float           POS_LEFT,
-        const float           POS_TOP,
+        const std::string & NAME,
+        const float POS_LEFT,
+        const float POS_TOP,
         const MouseTextInfo & MOUSE_TEXT_INFO,
-        const float           TEXT_WIDTH_LIMIT,
-        const FontPtr_t       NUMBERS_FONT_PTR)
+        const float TEXT_WIDTH_LIMIT,
+        const FontPtr_t NUMBERS_FONT_PTR)
     :
         GuiEntity        (std::string(NAME).append("_GuiText"), POS_LEFT, POS_TOP),
         text_            (""),
@@ -102,17 +103,18 @@ namespace gui
         downTextInfo_    (MOUSE_TEXT_INFO.down),
         overTextInfo_    (MOUSE_TEXT_INFO.over),
         numberFontPtr_   (NUMBERS_FONT_PTR),
-        textureSPtr_     (),
+        offscreenTexture_(),
         sprite_          (),
         textWidthLimit_  (TEXT_WIDTH_LIMIT),
-        renderedTextSPtr_()
+        renderedText_    ()
     {
-        Setup(MOUSE_TEXT_INFO.up.text,
-              POS_LEFT,
-              POS_TOP,
-              MOUSE_TEXT_INFO,
-              TEXT_WIDTH_LIMIT,
-              NUMBERS_FONT_PTR);
+        Setup(
+            MOUSE_TEXT_INFO.up.text,
+            POS_LEFT,
+            POS_TOP,
+            MOUSE_TEXT_INFO,
+            TEXT_WIDTH_LIMIT,
+            NUMBERS_FONT_PTR);
     }
 
 
@@ -121,12 +123,12 @@ namespace gui
 
 
     void GuiText::Setup(
-        const std::string &   TEXT,
-        const float           POS_LEFT,
-        const float           POS_TOP,
+        const std::string & TEXT,
+        const float POS_LEFT,
+        const float POS_TOP,
         const MouseTextInfo & MOUSE_TEXT_INFO,
-        const float           TEXT_WIDTH_LIMIT,
-        const FontPtr_t       NUMBERS_FONT_PTR)
+        const float TEXT_WIDTH_LIMIT,
+        const FontPtr_t NUMBERS_FONT_PTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT.empty()),
             entityName_ << " GuiText::Setup() was given a TEXT string that was empty.");
@@ -142,7 +144,7 @@ namespace gui
         text_ = TEXT;
         textWidthLimit_ = TEXT_WIDTH_LIMIT;
 
-        renderedTextSPtr_ = std::make_shared<text_render::RenderedText>();
+        renderedText_.Reset();
 
         TextInfo textInfoChar(MOUSE_TEXT_INFO.up);
         if ((MouseState::Down == entityMouseState_) &&
@@ -178,21 +180,22 @@ namespace gui
             numberFontPtr_ = NUMBERS_FONT_PTR;
         }
 
-        text_render::Render( * renderedTextSPtr_,
-                            textInfoChar,
-                            textInfoNum,
-                            text_,
-                            sf::FloatRect(0, 0, textWidthLimit_, 0));
+        text_render::Render(
+            renderedText_,
+            textInfoChar,
+            textInfoNum,
+            text_,
+            sf::FloatRect(0, 0, textWidthLimit_, 0));
 
-        textureSPtr_ = text_render::RenderAndDraw( * renderedTextSPtr_ );
+        text_render::RenderAndDraw(renderedText_, offscreenTexture_);
 
-        sprite_.setTexture(textureSPtr_->getTexture());
+        sprite_.setTexture(offscreenTexture_.getTexture());
 
         sprite_.setTextureRect( sf::IntRect(
             0,
             0,
-            static_cast<int>(renderedTextSPtr_->longest_line),
-            static_cast<int>(renderedTextSPtr_->total_height)));
+            static_cast<int>(renderedText_.longest_line),
+            static_cast<int>(renderedText_.total_height)));
 
         sprite_.setPosition(POS_LEFT, POS_TOP);
 
@@ -229,12 +232,13 @@ namespace gui
 
     void GuiText::ResetText()
     {
-        Setup(text_,
-              GetEntityPos().x,
-              GetEntityPos().y,
-              MouseTextInfo(upTextInfo_, downTextInfo_, overTextInfo_),
-              textWidthLimit_,
-              numberFontPtr_);
+        Setup(
+            text_,
+            GetEntityPos().x,
+            GetEntityPos().y,
+            MouseTextInfo(upTextInfo_, downTextInfo_, overTextInfo_),
+            textWidthLimit_,
+            numberFontPtr_);
     }
 
 

@@ -163,19 +163,17 @@ namespace text_render
     }
 
 
-    RendTextSPtr_t RenderAndDraw(RenderedText & renderedText)
+    void RenderAndDraw(RenderedText & renderedText, sf::RenderTexture & renderTexture)
     {
-        auto renderedTextureSPtr{ sfml_util::CreateRenderTextureAtPowerOf2Size(
-            renderedText.longest_line,
-            renderedText.total_height) };
+        renderTexture.create(
+            static_cast<unsigned>(renderedText.longest_line),
+            static_cast<unsigned>(renderedText.total_height));
 
-        renderedTextureSPtr->clear(sf::Color::Transparent);
+        renderTexture.clear(sf::Color::Transparent);
 
         sf::RenderStates states;
-        text_render::Draw(renderedText, * renderedTextureSPtr, states);
-        renderedTextureSPtr->display();
-
-        return renderedTextureSPtr;
+        text_render::Draw(renderedText, renderTexture, states);
+        renderTexture.display();
     }
 
 
