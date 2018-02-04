@@ -65,14 +65,18 @@ namespace sfml_util
         void Draw(sf::RenderTarget &, const sf::RenderStates &);
 
     private:
+        void DrawNormal(sf::RenderTarget &, const sf::RenderStates &);
+        void DrawDebug(sf::RenderTarget &, const sf::RenderStates &);
+
         void SetupMapSprite();
+
         void ReDraw();
 
         void EstablishMapSubsection(map::Layer &, const map::TileOffsets &);
 
         const map::TileOffsets GetTileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
         const map::TileOffsets GetTileOffsetsOfPlayerPos() const;
-        const sf::Vector2f GetPlayerPosCollision() const;
+        const sf::Vector2f GetPlayerPos() const;
         const sf::Vector2f GetPosScreen(const map::TileOffsets &) const;
         const sf::Vector2f GetPosScreen(const sf::Vector2f &) const;
         const sf::Vector2f GetPlayerPosScreen() const;
@@ -94,14 +98,12 @@ namespace sfml_util
         static const int EXTRA_OFFSCREEN_TILE_COUNT_;
 
     private:
-        map::Parser        mapParser_;
         map::Layout        mapLayout_;
         map::TileOffsets   prevTileOffsets_;
         const sf::Vector2f WIN_POS_V_;
         const sf::Vector2u WIN_SIZE_V_;
         sf::Vector2f       playerPosMapV_;
         sf::Vector2f       playerPosOffsetScreenV_;
-        sf::RenderStates   renderStates_;
         sf::FloatRect      offScreenRect_;
         sf::Sprite         mapSprite_;
         sf::RenderTexture  offScreenTexture_;

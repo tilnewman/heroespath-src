@@ -56,27 +56,28 @@ namespace sfml_util
         const sf::Vector2u & WIN_SIZE_V,
         const sf::Vector2f & PLAYER_POS_V)
     :
-        mapParser_       (),
         mapLayout_       (),
         prevTileOffsets_ (),
         WIN_POS_V_       (WIN_POS_V),
         WIN_SIZE_V_      (WIN_SIZE_V),
         playerPosMapV_   (PLAYER_POS_V),
         playerPosOffsetScreenV_(0.0f, 0.0f),
-        renderStates_    (sf::RenderStates::Default),
         offScreenRect_   (),
         mapSprite_       (),
         offScreenTexture_()
     {
-        mapParser_.Parse(MAP_PATH_STR, mapLayout_);
+        {
+            map::Parser mapParser;
+            mapParser.Parse(MAP_PATH_STR, mapLayout_);
+        }
 
         //create off-screen texture
         //always ensure these are valid power of 2 sizes
         auto const WIDTH{ WIN_SIZE_V_.x + static_cast<unsigned>(
-            mapLayout_.tile_size_x  * (EXTRA_OFFSCREEN_TILE_COUNT_ + 2)) };
+            mapLayout_.tile_size_x  * (EXTRA_OFFSCREEN_TILE_COUNT_ * 2)) };
 
         auto const HEIGHT{ WIN_SIZE_V_.y + static_cast<unsigned>(
-            mapLayout_.tile_size_y * (EXTRA_OFFSCREEN_TILE_COUNT_ + 2)) };
+            mapLayout_.tile_size_y * (EXTRA_OFFSCREEN_TILE_COUNT_ * 2)) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(offScreenTexture_.create(WIDTH, HEIGHT),
             "sfml_util::TileMap::TileMap(\"" << MAP_PATH_STR
@@ -101,7 +102,7 @@ namespace sfml_util
     bool TileMap::MoveUp(const float ADJUSTMENT)
     {
         //check for collision
-        auto posTest{ GetPlayerPosCollision() };
+        auto posTest{ GetPlayerPos() };
         posTest.y -= ADJUSTMENT;
         if (IsPointWithinCollision(posTest))
         {
@@ -114,41 +115,30 @@ namespace sfml_util
         if (CURR_SCREEN_POS.y > (WIN_POS_V_.y + BORDER_PAD_))
         {
             playerPosOffsetScreenV_.y -= ADJUSTMENT;
-            ReDraw();
-            return true;
         }
         else
         {
             if (offScreenRect_.top > 0.0f)
             {
-                offScreenRect_.top -= ADJUSTMENT;
-                if (offScreenRect_.top < 0.0f)
-                {
-                    offScreenRect_.top = 0.0f;
-                }
-
+                offScreenRect_.top = std::max(0.0f, offScreenRect_.top - ADJUSTMENT);
                 SetupMapSprite();
-
-                playerPosMapV_.y -= ADJUSTMENT;
-                if (playerPosMapV_.y < 0.0f)
-                {
-                    playerPosMapV_.y = 0.0f;
-                }
-
-                ReDraw();
-
-                return true;
+                playerPosMapV_.y = std::max(0.0f, playerPosMapV_.y - ADJUSTMENT);
+            }
+            else
+            {
+                return false;
             }
         }
 
-        return false;
+        ReDraw();
+        return true;
     }
 
 
     bool TileMap::MoveDown(const float ADJUSTMENT)
     {
         //check for collision
-        auto posTest{ GetPlayerPosCollision() };
+        auto posTest{ GetPlayerPos() };
         posTest.y += ADJUSTMENT;
         if (IsPointWithinCollision(posTest))
         {
@@ -161,37 +151,37 @@ namespace sfml_util
         if (CURR_SCREEN_POS.y < ((WIN_POS_V_.y + static_cast<float>(WIN_SIZE_V_.y)) - BORDER_PAD_))
         {
             playerPosOffsetScreenV_.y += ADJUSTMENT;
-            ReDraw();
-            return true;
         }
         else
         {
-            auto const VERT_POS{
-                offScreenRect_.top +
-                    static_cast<float>(prevTileOffsets_.begin_y * mapLayout_.tile_size_y) };
+            auto const VERT_POS{ offScreenRect_.top +
+                static_cast<float>(prevTileOffsets_.begin_y * mapLayout_.tile_size_y) };
 
             auto const VERT_LIMIT{
                 static_cast<float>(mapLayout_.tile_count_y * mapLayout_.tile_size_y) -
                     static_cast<float>(WIN_SIZE_V_.y) };
 
-            if (VERT_POS < VERT_LIMIT)
+            if (VERT_POS >= VERT_LIMIT)
+            {
+                return false;
+            }
+            else
             {
                 offScreenRect_.top += ADJUSTMENT;
                 SetupMapSprite();
                 playerPosMapV_.y += ADJUSTMENT;
-                ReDraw();
-                return true;
             }
         }
 
-        return false;
+        ReDraw();
+        return true;
     }
 
 
     bool TileMap::MoveLeft(const float ADJUSTMENT)
     {
         //check for collision
-        auto posTest{ GetPlayerPosCollision() };
+        auto posTest{ GetPlayerPos() };
         posTest.x -= ADJUSTMENT;
         if (IsPointWithinCollision(posTest))
         {
@@ -204,41 +194,30 @@ namespace sfml_util
         if (CURR_SCREEN_POS.x > (WIN_POS_V_.x + BORDER_PAD_))
         {
             playerPosOffsetScreenV_.x -= ADJUSTMENT;
-            ReDraw();
-            return true;
         }
         else
         {
             if (offScreenRect_.left > 0.0f)
             {
-                offScreenRect_.left -= ADJUSTMENT;
-                if (offScreenRect_.left < 0.0f)
-                {
-                    offScreenRect_.left = 0.0f;
-                }
-
+                offScreenRect_.left = std::max(0.0f, offScreenRect_.left - ADJUSTMENT);
                 SetupMapSprite();
-
-                playerPosMapV_.x -= ADJUSTMENT;
-                if (playerPosMapV_.x < 0.0f)
-                {
-                    playerPosMapV_.x = 0.0f;
-                }
-
-                ReDraw();
-
-                return true;
+                playerPosMapV_.x = std::max(0.0f, playerPosMapV_.x - ADJUSTMENT);
+            }
+            else
+            {
+                return false;
             }
         }
 
-        return false;
+        ReDraw();
+        return true;
     }
 
 
     bool TileMap::MoveRight(const float ADJUSTMENT)
     {
         //check for collision
-        auto posTest{ GetPlayerPosCollision() };
+        auto posTest{ GetPlayerPos() };
         posTest.x += ADJUSTMENT;
         if (IsPointWithinCollision(posTest))
         {
@@ -251,8 +230,6 @@ namespace sfml_util
         if (CURR_SCREEN_POS.x < ((WIN_POS_V_.x + static_cast<float>(WIN_SIZE_V_.x)) - BORDER_PAD_))
         {
             playerPosOffsetScreenV_.x += ADJUSTMENT;
-            ReDraw();
-            return true;
         }
         else
         {
@@ -263,24 +240,49 @@ namespace sfml_util
                 (mapLayout_.tile_count_x * mapLayout_.tile_size_x) -
                     static_cast<int>(WIN_SIZE_V_.x)) };
 
-            if (HORIZ_POS < HORIZ_LIMIT)
+            if (HORIZ_POS >= HORIZ_LIMIT)
+            {
+                return false;
+            }
+            else
             {
                 offScreenRect_.left += ADJUSTMENT;
                 SetupMapSprite();
                 playerPosMapV_.x += ADJUSTMENT;
-                ReDraw();
-                return true;
             }
         }
 
-        return false;
+        ReDraw();
+        return true;
     }
 
 
-    void TileMap::Draw(sf::RenderTarget & target, const sf::RenderStates &)
+    void TileMap::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        target.draw(mapSprite_);
+        DrawNormal(target, STATES);
+    }
+
+
+    void TileMap::DrawNormal(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    {
+        target.draw(mapSprite_, STATES);
         DrawPlayer(target);
+    }
+
+
+    void TileMap::DrawDebug(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    {
+        sf::Sprite offScreenSprite(offScreenTexture_.getTexture());
+        offScreenSprite.setPosition(WIN_POS_V_);
+        target.draw(offScreenSprite);
+
+        sf::FloatRect offScreenInnerWindowRect(
+            WIN_POS_V_.x + offScreenRect_.left,
+            WIN_POS_V_.y + offScreenRect_.top,
+            offScreenRect_.width,
+            offScreenRect_.height);
+
+        sfml_util::DrawRectangle(target, STATES, offScreenInnerWindowRect);
     }
 
 
@@ -323,8 +325,10 @@ namespace sfml_util
         //clear the map to black
         offScreenTexture_.clear(sf::Color::Black);
 
-        //draw all vertex arrays to the off-screen texture
+        sf::RenderStates renderStates{ sf::RenderStates::Default };
         sf::VertexArray quads(sf::Quads, 4);
+
+        //draw all vertex arrays to the off-screen texture
         for (auto const & LAYER : mapLayout_.layer_vec)
         {
             std::size_t tilesPanelIndex{ 0 };
@@ -346,10 +350,10 @@ namespace sfml_util
                     quads[3].position = LAYER.vert_array[vertIndex].position;
                     quads[3].texCoords = LAYER.vert_array[vertIndex++].texCoords;
 
-                    renderStates_.texture = &mapLayout_.texture_vec[
+                    renderStates.texture = &mapLayout_.texture_vec[
                         LAYER.tiles_panel_vec[tilesPanelIndex++].texture_index];
 
-                    offScreenTexture_.draw(quads, renderStates_);
+                    offScreenTexture_.draw(quads, renderStates);
                 }
                 else
                 {
@@ -511,97 +515,10 @@ namespace sfml_util
         }
 
         return offsets;
-        /*
-        auto const PLAYER_POSX_IN_TILES{ static_cast<int>(MAP_POS_V.x) / mapLayout_.tile_size_x };
-        auto const HALF_WIN_TILES_X{ (static_cast<int>(WIN_SIZE_V_.x) / mapLayout_.tile_size_x) / 2 };
-
-        tileOffsets.begin_x = (PLAYER_POSX_IN_TILES - HALF_WIN_TILES_X);
-        if (tileOffsets.begin_x < 0)
-        {
-            tileOffsets.begin_x = 0;
-        }
-
-        tileOffsets.end_x = PLAYER_POSX_IN_TILES + HALF_WIN_TILES_X;
-
-        auto const TILE_WITH_OFFSET_COUNT_X{
-          (static_cast<int>(WIN_SIZE_V_.x) / mapLayout_.tile_size_x) + EXTRA_OFFSCREEN_TILE_COUNT_ };
-
-        if (tileOffsets.end_x < TILE_WITH_OFFSET_COUNT_X)
-        {
-            tileOffsets.end_x = TILE_WITH_OFFSET_COUNT_X;
-        }
-
-        auto const PLAYER_POSY_IN_TILES{ static_cast<int>(MAP_POS_V.y) / mapLayout_.tile_size_y };
-        auto const HALF_WIN_TILES_Y{ (static_cast<int>(WIN_SIZE_V_.y) / mapLayout_.tile_size_y) / 2 };
-
-        tileOffsets.begin_y = PLAYER_POSY_IN_TILES - HALF_WIN_TILES_Y;
-        if (tileOffsets.begin_y < 0)
-        {
-            tileOffsets.begin_y = 0;
-        }
-
-        tileOffsets.end_y = (PLAYER_POSY_IN_TILES + HALF_WIN_TILES_Y);
-
-        auto const TILE_WITH_OFFSET_COUNT_Y{
-            (static_cast<int>(WIN_SIZE_V_.y) / mapLayout_.tile_size_y) + EXTRA_OFFSCREEN_TILE_COUNT_ };
-
-        if (tileOffsets.end_y < TILE_WITH_OFFSET_COUNT_Y)
-        {
-            tileOffsets.end_y = TILE_WITH_OFFSET_COUNT_Y;
-        }
-
-        tileOffsets.begin_x -= EXTRA_OFFSCREEN_TILE_COUNT_;
-        if (tileOffsets.begin_x < 0)
-        {
-            tileOffsets.begin_x = 0;
-        }
-
-        tileOffsets.begin_y -= EXTRA_OFFSCREEN_TILE_COUNT_;
-        if (tileOffsets.begin_y < 0)
-        {
-            tileOffsets.begin_y = 0;
-        }
-
-        if ((tileOffsets.end_x + EXTRA_OFFSCREEN_TILE_COUNT_) < mapLayout_.tile_count_x)
-        {
-            tileOffsets.end_x += EXTRA_OFFSCREEN_TILE_COUNT_;
-        }
-        else
-        {
-            tileOffsets.end_x = mapLayout_.tile_count_x;
-        }
-
-        if ((tileOffsets.end_y + EXTRA_OFFSCREEN_TILE_COUNT_) < mapLayout_.tile_count_y)
-        {
-            tileOffsets.end_y += EXTRA_OFFSCREEN_TILE_COUNT_;
-        }
-        else
-        {
-            tileOffsets.end_y = mapLayout_.tile_count_y;
-        }
-
-        auto const TILE_WITH_DOUBLE_OFFSET_COUNT_Y{
-            TILE_WITH_OFFSET_COUNT_Y + EXTRA_OFFSCREEN_TILE_COUNT_ };
-
-        if ((tileOffsets.end_y - tileOffsets.begin_y) != TILE_WITH_DOUBLE_OFFSET_COUNT_Y)
-        {
-            tileOffsets.begin_y = (tileOffsets.end_y - TILE_WITH_DOUBLE_OFFSET_COUNT_Y);
-        }
-
-        auto const TILE_WITH_DOUBLE_OFFSET_COUNT_X{
-            TILE_WITH_OFFSET_COUNT_X + EXTRA_OFFSCREEN_TILE_COUNT_ };
-
-        if ((tileOffsets.end_x - tileOffsets.begin_x) != TILE_WITH_DOUBLE_OFFSET_COUNT_X)
-        {
-            tileOffsets.begin_x = (tileOffsets.end_x - TILE_WITH_DOUBLE_OFFSET_COUNT_X);
-        }
-        
-        return tileOffsets;
-        */
     }
 
 
-    const sf::Vector2f TileMap::GetPlayerPosCollision() const
+    const sf::Vector2f TileMap::GetPlayerPos() const
     {
         return (playerPosMapV_ + playerPosOffsetScreenV_);
     }
@@ -664,47 +581,26 @@ namespace sfml_util
 
     void TileMap::AdjustOffscreenRectsToPreventDrift(const map::TileOffsets & CURRENT_TILE_OFFSETS)
     {
+        auto const TILE_SIZE_X{ static_cast<float>(mapLayout_.tile_size_x) };
+
         if (CURRENT_TILE_OFFSETS.begin_x > prevTileOffsets_.begin_x)
         {
-            if (offScreenRect_.left > 0.0f)
-            {
-                offScreenRect_.left -= static_cast<float>(mapLayout_.tile_size_x);
-
-                if (offScreenRect_.left < 0.0f)
-                {
-                    offScreenRect_.left = 0.0f;
-                }
-            }
+            offScreenRect_.left = std::max(0.0f, offScreenRect_.left - TILE_SIZE_X);
         }
-        else
+        else if (CURRENT_TILE_OFFSETS.begin_x < prevTileOffsets_.begin_x)
         {
-            if (CURRENT_TILE_OFFSETS.begin_x < prevTileOffsets_.begin_x)
-            {
-                if (offScreenRect_.left > 0.0f)
-                {
-                    offScreenRect_.left += static_cast<float>(mapLayout_.tile_size_x);
-                }
-            }
+            offScreenRect_.left += TILE_SIZE_X;
         }
+
+        auto const TILE_SIZE_Y{ static_cast<float>(mapLayout_.tile_size_y) };
 
         if (CURRENT_TILE_OFFSETS.begin_y > prevTileOffsets_.begin_y)
         {
-            if (offScreenRect_.top > 0.0f)
-            {
-                offScreenRect_.top -= static_cast<float>(mapLayout_.tile_size_y);
-
-                if (offScreenRect_.top < 0.0f)
-                {
-                    offScreenRect_.top = 0.0f;
-                }
-            }
+            offScreenRect_.top = std::max(0.0f, offScreenRect_.top - TILE_SIZE_Y);
         }
-        else
+        else if (CURRENT_TILE_OFFSETS.begin_y < prevTileOffsets_.begin_y)
         {
-            if (CURRENT_TILE_OFFSETS.begin_y < prevTileOffsets_.begin_y)
-            {
-                offScreenRect_.top += static_cast<float>(mapLayout_.tile_size_y);
-            }
+            offScreenRect_.top += TILE_SIZE_Y;
         }
     }
 
