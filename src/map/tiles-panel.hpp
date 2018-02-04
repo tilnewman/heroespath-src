@@ -47,10 +47,10 @@ namespace map
         explicit TilesPanel(
             const std::string & NAME = "",
             const std::string & RELATIVE_PATH = "",
-            const ID_t & FIRST_ID = 0_id,
-            const Count_t & TILE_COUNT = 1_count,
-            const Column_t & COLUMN = 1_column,
-            const Index_t & TEXTURE_INDEX = 0_index)
+            const int & FIRST_ID = 0,
+            const int & TILE_COUNT = 1,
+            const int & COLUMN = 1,
+            const std::size_t & TEXTURE_INDEX = 0)
         :
             name(NAME),
             path_rel(RELATIVE_PATH),
@@ -61,18 +61,17 @@ namespace map
             path_obj()
         {}
 
-        inline bool OwnsId(const ID_t & ID) const
+        inline bool OwnsId(const int ID) const
         {
-            return (ID >= first_id) &&
-                (ID.As<unsigned>() < (first_id.As<unsigned>() + tile_count.As<unsigned>()));
+            return ((ID >= first_id) && (ID < (first_id + tile_count)));
         }
 
         std::string name;
         std::string path_rel; //path string relative to the .tmx map path
-        ID_t first_id;
-        Count_t tile_count;
-        Column_t column;
-        Index_t texture_index;
+        int first_id;
+        int tile_count;
+        int column;
+        std::size_t texture_index;
         boost::filesystem::path path_obj;
     };
 

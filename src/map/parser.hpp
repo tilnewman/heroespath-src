@@ -73,9 +73,9 @@ namespace map
 
         void Parse_MapSizes(const boost::property_tree::ptree &, Layout &);
         void Parse_Layer_Tileset(const boost::property_tree::ptree &, Layout & layout);
-        void Parse_Layer_Collisions(const boost::property_tree::ptree &, Layout & layout);
+        void Parse_Layer_Collisions(const boost::property_tree::ptree &);
         void Prase_Layer_Generic(const boost::property_tree::ptree::value_type &, Layout & layout);
-        void Parse_Layer_Generic_Tiles(IDVec_t &, std::stringstream &);
+        void Parse_Layer_Generic_Tiles(std::vector<int> &, std::stringstream &);
         bool WillParseLayer(const std::string & NODENAME_LOWERCASE) const;
         void SetupEmptyTexture(Layout &);
 
@@ -90,6 +90,9 @@ namespace map
         static const std::string XML_ATTRIB_NAME_OBJECTS_;
         static const std::string XML_ATTRIB_NAME_SHADOWS_;
         static const std::string XML_ATTRIB_NAME_COLLISION_;
+
+    private:
+        sfml_util::FloatRectVec_t collisionRects_;
     };
 
 }

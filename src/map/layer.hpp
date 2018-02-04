@@ -49,7 +49,7 @@ namespace map
         TilesPanelVec_t tiles_panel_vec;
 
         //the map IDs that make up this panel
-        IDVec_t mapid_vec;
+        std::vector<int> mapid_vec;
 
         void ResetForReDraw()
         {

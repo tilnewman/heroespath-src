@@ -59,6 +59,8 @@ namespace sfml_util
 
         bool IsPointWithinCollisionRect(const sf::Vector2f &) const;
 
+        void Clear();
+
     private:
         void PopulateQuadAndRecurse(
             Quad & quad,

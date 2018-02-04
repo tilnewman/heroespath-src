@@ -42,10 +42,10 @@ namespace map
     struct TileOffsets
     {
         TileOffsets(
-            const Count_t BEGIN_X = 0_count,
-            const Count_t END_X = 0_count, 
-            const Count_t BEGIN_Y = 0_count, 
-            const Count_t END_Y = 0_count)
+            const int BEGIN_X = 0,
+            const int END_X = 0, 
+            const int BEGIN_Y = 0, 
+            const int END_Y = 0)
         :
             begin_x(BEGIN_X),
             end_x(END_X),
@@ -53,10 +53,10 @@ namespace map
             end_y(END_Y)
         {}
 
-        Count_t begin_x;
-        Count_t end_x;
-        Count_t begin_y;
-        Count_t end_y;
+        int begin_x;
+        int end_x;
+        int begin_y;
+        int end_y;
     };
 
 

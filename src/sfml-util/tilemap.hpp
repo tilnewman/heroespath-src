@@ -28,7 +28,6 @@
 // tilemap.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/collision-quad-tree.hpp"
 #include "map/parser.hpp"
 #include "map/layout.hpp"
 #include "map/layer.hpp"
@@ -82,7 +81,7 @@ namespace sfml_util
 
         bool IsPointWithinCollision(const sf::Vector2f &) const;
 
-        const map::TilesPanel & GetTilesPanelFromId(const ID_t &) const;
+        const map::TilesPanel & GetTilesPanelFromId(const int) const;
 
         void DrawPlayer(sf::RenderTarget & target);
 
@@ -94,7 +93,7 @@ namespace sfml_util
         static const float BORDER_PAD_;
 
         //how many tiles to draw offscreen that are outside the visible map area
-        static const Count_t EXTRA_OFFSCREEN_TILE_COUNT_;
+        static const int EXTRA_OFFSCREEN_TILE_COUNT_;
 
         //The tileset I found online uses this color as a background,
         //so it needs to be changed to transparen.t
@@ -111,7 +110,7 @@ namespace sfml_util
         static const sf::Color SHADOW_COLOR2_;
         static const sf::Color SHADOW_COLOR3_;
 
-        static const Index_t TRANSPARENT_TEXTURE_INDEX_;
+        static const std::size_t TRANSPARENT_TEXTURE_INDEX_;
 
     private:
         map::Parser        mapParser_;
@@ -126,7 +125,6 @@ namespace sfml_util
         sf::Sprite         mapSprite_;
         sf::RenderTexture  offScreenTexture_;
         const sf::Color    TRANSPARENT_MASK_;
-        QuadTree           collisionTree_;
     };
 
     using TileMapUPtr_t = std::unique_ptr<TileMap>;

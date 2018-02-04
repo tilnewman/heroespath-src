@@ -28,6 +28,7 @@
 // layout.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/collision-quad-tree.hpp"
 #include "map/layer.hpp"
 #include "map/tiles-panel.hpp"
 
@@ -48,33 +49,33 @@ namespace map
     public:
         Layout()
         :
-            tile_size_horiz(0),
-            tile_size_vert(0),
-            tile_count_horiz(0),
-            tile_count_vert(0),
+            tile_size_x(0),
+            tile_size_y(0),
+            tile_count_x(0),
+            tile_count_y(0),
             layer_vec(),
             tiles_panel_vec(),
             texture_vec(),
-            collision_rect_vec(),
+            collision_qtree(),
             empty_texture()
         {}
 
         void ResetBeforeLoading()
         {
-            tile_size_horiz = 0;
-            tile_size_vert = 0;
-            tile_count_horiz = 0;
-            tile_count_vert = 0;
+            tile_size_x = 0;
+            tile_size_y = 0;
+            tile_count_x = 0;
+            tile_count_y = 0;
             layer_vec.clear();
             tiles_panel_vec.clear();
             texture_vec.clear();
-            collision_rect_vec.clear();
+            collision_qtree.Clear();
         }
 
-        unsigned tile_size_horiz;
-        unsigned tile_size_vert;
-        unsigned tile_count_horiz;
-        unsigned tile_count_vert;
+        int tile_size_x;
+        int tile_size_y;
+        int tile_count_x;
+        int tile_count_y;
 
         LayerVec_t layer_vec;
 
@@ -82,7 +83,7 @@ namespace map
         
         sfml_util::TextureVec_t texture_vec;
 
-        sfml_util::FloatRectVec_t collision_rect_vec;
+        sfml_util::QuadTree collision_qtree;
 
         sf::RenderTexture empty_texture;
 

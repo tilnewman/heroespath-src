@@ -46,21 +46,20 @@ namespace heroespath
 namespace map
 {
 
-    const std::string Parser::XML_NODE_NAME_TILE_LAYER_     { "layer" };
-    const std::string Parser::XML_NODE_NAME_OBJECT_LAYER_   { "objectgroup" };
-    const std::string Parser::XML_NODE_NAME_TILESET_        { "tileset" };
+    const std::string Parser::XML_NODE_NAME_TILE_LAYER_  { "layer" };
+    const std::string Parser::XML_NODE_NAME_OBJECT_LAYER_{ "objectgroup" };
+    const std::string Parser::XML_NODE_NAME_TILESET_     { "tileset" };
     //
-    const std::string Parser::XML_ATTRIB_NAME_GROUND_       { "ground" };
-    const std::string Parser::XML_ATTRIB_NAME_OBJECTS_      { "object" };
-    const std::string Parser::XML_ATTRIB_NAME_SHADOWS_      { "shadow" };
-    const std::string Parser::XML_ATTRIB_NAME_COLLISION_    { "collision" };
+    const std::string Parser::XML_ATTRIB_NAME_GROUND_    { "ground" };
+    const std::string Parser::XML_ATTRIB_NAME_OBJECTS_   { "object" };
+    const std::string Parser::XML_ATTRIB_NAME_SHADOWS_   { "shadow" };
+    const std::string Parser::XML_ATTRIB_NAME_COLLISION_ { "collision" };
 
 
     void Parser::Parse(const std::string & FILE_PATH_STR, Layout & layout)
     {
         try
         {
-            layout.ResetBeforeLoading();
             Parse_Implementation(FILE_PATH_STR, layout);
         }
         catch (const std::exception & E)
@@ -84,6 +83,11 @@ namespace map
 
     void Parser::Parse_Implementation(const std::string & MAP_FILE_PATH_STR, Layout & layout)
     {
+        collisionRects_.clear();
+        collisionRects_.reserve(4096);//found by experiment to be a good upper bound
+
+        layout.ResetBeforeLoading();
+
         auto const XML_PROPERTY_TREE{ Parse_XML(MAP_FILE_PATH_STR) };
 
         Parse_MapSizes(XML_PROPERTY_TREE, layout);
@@ -104,7 +108,7 @@ namespace map
             }
             else if (ba::contains(NODENAME_LOWER, ba::to_lower_copy(XML_NODE_NAME_OBJECT_LAYER_)))
             {
-                Parse_Layer_Collisions(PROPTREE_CHILD_PAIR.second, layout);
+                Parse_Layer_Collisions(PROPTREE_CHILD_PAIR.second);
                 continue;
             }
             else if (ba::contains(NODENAME_LOWER, ba::to_lower_copy(XML_NODE_NAME_TILESET_)))
@@ -117,6 +121,13 @@ namespace map
                 Prase_Layer_Generic(PROPTREE_CHILD_PAIR, layout);
             }
         }
+
+        layout.collision_qtree.Setup(
+            static_cast<float>(layout.tile_size_x * layout.tile_count_x),
+            static_cast<float>(layout.tile_size_y * layout.tile_count_y),
+            collisionRects_);
+
+        collisionRects_.clear();
     }
 
 
@@ -158,10 +169,10 @@ namespace map
 
         try
         {
-            layout.tile_size_horiz = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.tilewidth");
-            layout.tile_size_vert = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.tileheight");
-            layout.tile_count_horiz = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.width");
-            layout.tile_count_vert = XML_PROPERTY_TREE_MAPIMAGE.get<unsigned>("<xmlattr>.height");
+            layout.tile_size_x = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.tilewidth");
+            layout.tile_size_y = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.tileheight");
+            layout.tile_count_x = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.width");
+            layout.tile_count_y = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.height");
         }
         catch (const std::exception & E)
         {
@@ -192,13 +203,13 @@ namespace map
         layout.texture_vec.push_back(sf::Texture());
         auto const TEXTURE_INDEX{ layout.texture_vec.size() - 1 };
 
-        layout.tiles_panel_vec.push_back(TilesPanel(
+        layout.tiles_panel_vec.push_back( TilesPanel(
             TILESET_PROPTREE.get<std::string>("<xmlattr>.name"),
             IMAGE_PROPTREE.get<std::string>("<xmlattr>.source"),
-            ID_t(TILESET_PROPTREE.get<ID_t::type>("<xmlattr>.firstgid")),
-            Count_t(TILESET_PROPTREE.get<Count_t::type>("<xmlattr>.tilecount")),
-            Column_t(TILESET_PROPTREE.get<Column_t::type>("<xmlattr>.columns")),
-            Index_t(TEXTURE_INDEX)));
+            TILESET_PROPTREE.get<int>("<xmlattr>.firstgid"),
+            TILESET_PROPTREE.get<int>("<xmlattr>.tilecount"),
+            TILESET_PROPTREE.get<int>("<xmlattr>.columns"),
+            TEXTURE_INDEX));
 
         TilesPanel & tilesPanel{ layout.tiles_panel_vec[layout.tiles_panel_vec.size() - 1] };
 
@@ -211,9 +222,7 @@ namespace map
     }
 
     
-    void Parser::Parse_Layer_Collisions(
-        const boost::property_tree::ptree & OBJ_GROUP_PT,
-        Layout & layout)
+    void Parser::Parse_Layer_Collisions(const boost::property_tree::ptree & OBJ_GROUP_PT)
     {
         namespace ba = boost::algorithm;
 
@@ -232,7 +241,7 @@ namespace map
 
                     const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
 
-                    layout.collision_rect_vec.push_back(RECT);
+                    collisionRects_.push_back(RECT);
                 }
                 catch (const std::exception & E)
                 {
@@ -271,7 +280,7 @@ namespace map
 
 
     void Parser::Parse_Layer_Generic_Tiles(
-        IDVec_t & mapIDs,
+        std::vector<int> & mapIDs,
         std::stringstream & tileLayerDataSS)
     {
         //found by experiment to be a reliable upper bound for typical maps
@@ -304,13 +313,12 @@ namespace map
                 try
                 {
                     //using boost::lexical_cast instead of std::stoi because it tested faster
-                    mapIDs.push_back(ID_t(boost::lexical_cast<ID_t::type>(nextValStr)));
+                    mapIDs.push_back( boost::lexical_cast<int>(nextValStr) );
                 }
                 catch (const std::exception & E)
                 {
                     M_HP_LOG("sfml_util::Parser::ParseMapFile_ParseGenericTileLayer("
-                        << nextLine << ") " << "boost::lexical_cast<"
-                        << boost::typeindex::type_id<ID_t::type>().pretty_name() << "("
+                        << nextLine << ") " << "boost::lexical_cast<int>("
                         << "\"" << nextValStr << "\") threw '" << E.what() << "' exception.");
 
                     throw;
@@ -319,8 +327,7 @@ namespace map
                 {
                     std::ostringstream ss;
                     ss << "sfml_util::Parser::ParseMapFile_ParseGenericTileLayer("
-                        << nextLine << ") " << "boost::lexical_cast<"
-                        << boost::typeindex::type_id<ID_t::type>().pretty_name() << "("
+                        << nextLine << ") " << "boost::lexical_cast<int>("
                         << "\"" << nextValStr << "\") threw unknown exception.";
 
                     M_HP_LOG(ss.str());
@@ -353,23 +360,26 @@ namespace map
 
     void Parser::SetupEmptyTexture(Layout & layout)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(layout.empty_texture.create(layout.tile_size_horiz, layout.tile_size_vert),
-            "TileMap::SetupEmptyTexture() sf::RenderTexture::create(" << layout.tile_size_horiz << "x"
-            << layout.tile_size_vert << ") failed.");
+        auto const TILE_WIDTH{ static_cast<unsigned>(layout.tile_size_x) };
+        auto const TILE_HEIGHT{ static_cast<unsigned>(layout.tile_size_y) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(layout.empty_texture.create(TILE_WIDTH, TILE_HEIGHT),
+            "TileMap::SetupEmptyTexture() sf::RenderTexture::create(" << layout.tile_size_x << "x"
+            << layout.tile_size_y << ") failed.");
 
         layout.empty_texture.clear(sf::Color::Transparent);
         layout.empty_texture.display();
 
-        const Index_t EMPTY_TEXTURE_INDEX{ 0 };
-        layout.texture_vec.resize(EMPTY_TEXTURE_INDEX.Get() + 1);
-        layout.texture_vec[EMPTY_TEXTURE_INDEX.Get()] = layout.empty_texture.getTexture();
+        const std::size_t EMPTY_TEXTURE_INDEX{ 0 };
+        layout.texture_vec.resize(EMPTY_TEXTURE_INDEX + 1);
+        layout.texture_vec[EMPTY_TEXTURE_INDEX] = layout.empty_texture.getTexture();
 
         layout.tiles_panel_vec.push_back( map::TilesPanel(
             layout.EmptyTilesPanelName(),
             "",//the empty/transparent texture has no file
-            0_id,
-            1_count,
-            1_column,
+            0,
+            1,
+            1,
             EMPTY_TEXTURE_INDEX));
     }
 

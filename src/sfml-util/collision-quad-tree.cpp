@@ -118,6 +118,12 @@ namespace sfml_util
     }
 
 
+    void QuadTree::Clear()
+    {
+        headQuad_ = Quad();
+    }
+
+
     bool QuadTree::IsPointWithinCollisionRect_Impl(
         const Quad & QUAD,
         const sf::Vector2f & POINT) const
