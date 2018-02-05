@@ -38,6 +38,8 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/text-info.hpp"
+#include "sfml-util/loaders.hpp"
+#include "sfml-util/gui/creature-image-manager.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -51,29 +53,29 @@ namespace stage
     AdventureCharacterList::AdventureCharacterList(sfml_util::IStage * stagePtr)
     :
         sfml_util::gui::GuiEntity("AdventureStage'sCharacterList", 0.0f, 0.0f),
-        LINE_COLOR_( sfml_util::FontManager::Instance()->Color_GrayDarker() ),
-        FRAME_COLOR_( sf::Color(0, 0, 0, 85) ),
-        CELL_LINE_THICKNESS_( 3.0f ),
-        OUTER_SPACER_( sfml_util::MapByRes(75.0f, 300.0f) ),
-        HEALTH_COLUMN_WIDTH_( sfml_util::MapByRes(180.0f, 500.0f) ),
-        MANA_COLUMN_WIDTH_( HEALTH_COLUMN_WIDTH_ ),
-        CELL_TEXT_LEFT_SPACER_( sfml_util::MapByRes(12.0f, 25.0f) ),
-        stagePtr_(stagePtr),
-        namesButtonUVec_(),
-        condsTextRegionsUVec_(),
-        healthTextRegionsUVec_(),
-        manaTextRegionsUVec_(),
-        nameColumnRects_(),
-        healthColumnRects_(),
-        manaColumnRects_(),
-        conditionColumnRects_(),
-        lineVerts_(),
-        quadVerts_(),
-        innerShadeQuadVerts_(),
-        knotFrameUPtr_(std::make_unique<sfml_util::gui::KnotFrame>(
-            sf::FloatRect(),//region is set in SetupPositions_OverallRegion() below
-            sfml_util::MapByRes(50.0f, 150.0f),
-            FRAME_COLOR_))
+        ALPHA_FOR_LINES_         (120),
+        ALPHA_FOR_TEXT_          (160),
+        ALPHA_FOR_CHAR_IMAGES_   (150),
+        ALPHA_FOR_COLORED_BARS_  (150),
+        CELL_LINE_THICKNESS_     (3.0f),
+        OUTER_SPACER_            (sfml_util::MapByRes(75.0f, 300.0f)),
+        HEALTH_COLUMN_WIDTH_     (sfml_util::MapByRes(180.0f, 500.0f)),
+        MANA_COLUMN_WIDTH_       (HEALTH_COLUMN_WIDTH_),
+        CELL_TEXT_LEFT_SPACER_   (sfml_util::MapByRes(12.0f, 25.0f)),
+        stagePtr_                (stagePtr),
+        namesButtonUVec_         (),
+        condsTextRegionsUVec_    (),
+        healthTextRegionsUVec_   (),
+        manaTextRegionsUVec_     (),
+        imageColumnRects_        (),
+        nameColumnRects_         (),
+        healthColumnRects_       (),
+        manaColumnRects_         (),
+        conditionColumnRects_    (),
+        lineVerts_               (),
+        quadVerts_               (),
+        innerShadeQuadVerts_     (),
+        charImages_              ()
     {}
 
 
@@ -93,14 +95,18 @@ namespace stage
         target.draw( & innerShadeQuadVerts_[0], innerShadeQuadVerts_.size(), sf::Quads, states);
         target.draw( & lineVerts_[0], lineVerts_.size(), sf::Lines, states);
         target.draw( & quadVerts_[0], quadVerts_.size(), sf::Quads, states);
-        target.draw( * knotFrameUPtr_, states);
-
+        
         for (auto const & TEXT_REGION_UPTR : manaTextRegionsUVec_)
         {
             if (TEXT_REGION_UPTR->GetText() != "0/0")
             {
                 target.draw( * TEXT_REGION_UPTR, states);
             }
+        }
+
+        for (auto const & IMAGE_VECTORMAP_PAIR : charImages_)
+        {
+            target.draw(IMAGE_VECTORMAP_PAIR.second.second, states);
         }
     }
 
@@ -122,6 +128,7 @@ namespace stage
         SetupHealthNumbersText();
         SetupManaNumbersText();
 
+        SetupColumnRects_Image();
         SetupColumnRects_Name();
         SetupColumnRects_Health();
         SetupColumnRects_Mana();
@@ -137,6 +144,7 @@ namespace stage
         SetupPositions_OverallRegion();
         SetupCellDividerLines();
         SetupMouseoverText();
+        SetupCharacterImages();
     }
 
 
@@ -155,7 +163,7 @@ namespace stage
                 CHARACTER_PTR->Name(),
                 sfml_util::FontManager::Instance()->Font_Default1(),
                 sfml_util::FontManager::Instance()->Size_Large(),
-                sfml_util::FontManager::Instance()->Color_GrayDarker() };
+                FadedDarkColor_Text() };
 
             const sfml_util::gui::MouseTextInfo MOUSE_TEXT_INFO{ TEXT_INFO };
 
@@ -199,7 +207,7 @@ namespace stage
                 ss.str(),
                 sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
                 sfml_util::FontManager::Instance()->Size_Smallish(),
-                sfml_util::FontManager::Instance()->Color_GrayDarker() };
+                FadedDarkColor_Text() };
 
             const sf::FloatRect RECT(
                 0.0f,//actual position will be set by SetupPositions_Conditions()
@@ -235,7 +243,7 @@ namespace stage
                 ss.str(),
                 sfml_util::FontManager::Instance()->Font_NumbersDefault1(),
                 sfml_util::FontManager::Instance()->Size_Smallish(),
-                sfml_util::FontManager::Instance()->Color_GrayDarker() };
+                FadedDarkColor_Text() };
 
             const sf::FloatRect RECT(
                 0.0f,//actual position will be set by SetupPositions_Conditions()
@@ -270,7 +278,7 @@ namespace stage
                 CHARACTER_PTR->ConditionNames(),
                 sfml_util::FontManager::Instance()->Font_Default1(),
                 sfml_util::FontManager::Instance()->Size_Normal(),
-                sfml_util::FontManager::Instance()->Color_GrayDarker() };
+                FadedDarkColor_Text() };
 
             const sf::FloatRect RECT(
                 0.0f,//actual position will be set by SetupPositions_Conditions()
@@ -291,44 +299,63 @@ namespace stage
     }
 
 
+    void AdventureCharacterList::SetupColumnRects_Image()
+    {
+        imageColumnRects_.clear();
+
+        auto const NAME_CELL_PAD_VERT{ sfml_util::MapByRes(6.0f, 12.0f) };
+
+        auto const TALLEST_NAME_BUTTON_HEIGHT{ (NAME_CELL_PAD_VERT * 2.0f) +
+            ( * std::max_element(
+                namesButtonUVec_.begin(),
+                namesButtonUVec_.end(),
+                [](auto & A_UPTR, auto & B_UPTR)
+                {
+                    return (A_UPTR->GetEntityRegion().height < B_UPTR->GetEntityRegion().height);
+                }))->GetEntityRegion().height };
+
+        auto const NUM_ROWS{ namesButtonUVec_.size() };
+        for (std::size_t i(0); i < NUM_ROWS; ++i)
+        {
+            auto const I_FLOAT{ static_cast<float>(i) };
+
+            const sf::FloatRect IMAGE_RECT(
+                GetEntityPos().x,
+                GetEntityRegion().top + (I_FLOAT * TALLEST_NAME_BUTTON_HEIGHT) + I_FLOAT,
+                TALLEST_NAME_BUTTON_HEIGHT,
+                TALLEST_NAME_BUTTON_HEIGHT);
+
+            imageColumnRects_.push_back(IMAGE_RECT);
+        }
+    }
+
+
     void AdventureCharacterList::SetupColumnRects_Name()
     {
         nameColumnRects_.clear();
 
-        auto const NAME_CELL_PAD_HORIZ{ sfml_util::MapByRes(32.0f, 64.0f) };
-        auto const NAME_CELL_PAD_VERT{ sfml_util::MapByRes(16.0f, 32.0f) };
+        auto const NAME_CELL_PAD_HORIZ{ sfml_util::MapByRes(12.0f, 24.0f) };
 
-        auto const LONGEST_NAME_BUTTON_WIDTH{ NAME_CELL_PAD_HORIZ + ( * std::max_element(
-            namesButtonUVec_.begin(),
-            namesButtonUVec_.end(),
-            [](auto & A_UPTR, auto & B_UPTR)
-            {
-                return (A_UPTR->GetEntityRegion().width < B_UPTR->GetEntityRegion().width);
-            }))->GetEntityRegion().width };
+        auto const LONGEST_NAME_BUTTON_WIDTH{ (NAME_CELL_PAD_HORIZ * 2.0f) +
+            ( * std::max_element(
+                namesButtonUVec_.begin(),
+                namesButtonUVec_.end(),
+                [](auto & A_UPTR, auto & B_UPTR)
+                {
+                    return (A_UPTR->GetEntityRegion().width < B_UPTR->GetEntityRegion().width);
+                }))->GetEntityRegion().width };
 
-        auto const TALLEST_NAME_BUTTON_HEIGHT{ NAME_CELL_PAD_VERT + ( * std::max_element(
-            namesButtonUVec_.begin(),
-            namesButtonUVec_.end(),
-            [](auto & A_UPTR, auto & B_UPTR)
-            {
-                return (A_UPTR->GetEntityRegion().height < B_UPTR->GetEntityRegion().height);
-            }))->GetEntityRegion().height };
-
-        auto const NUM_BUTTONS{ namesButtonUVec_.size() };
-        for (std::size_t i(0); i < NUM_BUTTONS; ++i)
+        for (auto const & IMAGE_RECT : imageColumnRects_)
         {
-            auto const I_FLOAT{ static_cast<float>(i) };
-
-            const sf::FloatRect NAME_RECT(
-                GetEntityPos().x,
-                GetEntityRegion().top + (I_FLOAT * TALLEST_NAME_BUTTON_HEIGHT) + I_FLOAT,
+            const sf::FloatRect HEALTH_RECT(
+                IMAGE_RECT.left + IMAGE_RECT.width + 1.0f,
+                IMAGE_RECT.top,
                 LONGEST_NAME_BUTTON_WIDTH,
-                TALLEST_NAME_BUTTON_HEIGHT);
+                IMAGE_RECT.height);
 
-            nameColumnRects_.push_back(NAME_RECT);
+            nameColumnRects_.push_back(HEALTH_RECT);
         }
     }
-
 
     void AdventureCharacterList::SetupColumnRects_Health()
     {
@@ -460,47 +487,43 @@ namespace stage
 
         SetEntityRegion(OVERALL_RECT);
 
-        knotFrameUPtr_->RegionInner(OVERALL_RECT);
-
+        /*
         //draw inner colored bar
         sfml_util::DrawQuad(
             knotFrameUPtr_->Region(),
             sf::Color(0, 0, 0, 20),
             sf::Color(0, 0, 0, 20),
             innerShadeQuadVerts_);
+        */
     }
 
 
     void AdventureCharacterList::SetupCellDividerLines()
     {
-        auto const HORIZ_LINE_LEFT{
-            knotFrameUPtr_->RegionInner().left -
-            knotFrameUPtr_->InnerSize() +
-            knotFrameUPtr_->FrameSize() };
+        auto const HORIZ_LINE_LEFT{ sfml_util::MapByRes(33.3f, 100.0f) };
 
         auto const HORIZ_LINE_RIGHT{
-            knotFrameUPtr_->RegionInner().left +
-            knotFrameUPtr_->RegionInner().width +
-            knotFrameUPtr_->InnerSize() -
-            knotFrameUPtr_->FrameSize() };
+            sfml_util::Display::Instance()->GetWinWidth() - (HORIZ_LINE_LEFT * 2.0f) };
 
         auto const NUM_ROWS{ nameColumnRects_.size() };
         for (std::size_t i(0); i < (NUM_ROWS - 1); ++i)
         {
             for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
             {
-                auto const HORIZ_LINE_TOP{ nameColumnRects_[i].top + nameColumnRects_[i].height + t };
+                auto const HORIZ_LINE_TOP{
+                    nameColumnRects_[i].top + nameColumnRects_[i].height + t };
 
                 lineVerts_.push_back(sf::Vertex(
                     sf::Vector2f(HORIZ_LINE_LEFT, HORIZ_LINE_TOP),
-                    FRAME_COLOR_));
+                    FadedDarkColor_Lines()));
 
                 lineVerts_.push_back(sf::Vertex(
                     sf::Vector2f(HORIZ_LINE_RIGHT, HORIZ_LINE_TOP),
-                    FRAME_COLOR_));
+                    FadedDarkColor_Lines()));
             }
         }
 
+        /*
         auto const VERT_LINE_TOP{
             knotFrameUPtr_->RegionInner().top -
             knotFrameUPtr_->InnerSize() +
@@ -519,34 +542,35 @@ namespace stage
 
             lineVerts_.push_back(sf::Vertex(
                 sf::Vector2f(VERT_LINE_LEFT1, VERT_LINE_TOP),
-                FRAME_COLOR_));
+                LINE_COLOR_));
 
             lineVerts_.push_back(sf::Vertex(
                 sf::Vector2f(VERT_LINE_LEFT1, VERT_LINE_BOTTOM),
-                FRAME_COLOR_));
+                LINE_COLOR_));
 
             auto const VERT_LINE_LEFT2{
                 healthColumnRects_[0].left + healthColumnRects_[0].width + t };
 
             lineVerts_.push_back(sf::Vertex(sf::Vector2f(
                 VERT_LINE_LEFT2, VERT_LINE_TOP),
-                FRAME_COLOR_));
+                LINE_COLOR_));
 
             lineVerts_.push_back(sf::Vertex(
                 sf::Vector2f(VERT_LINE_LEFT2, VERT_LINE_BOTTOM),
-                FRAME_COLOR_));
+                LINE_COLOR_));
 
             auto const VERT_LINE_LEFT3{
                 manaColumnRects_[0].left + manaColumnRects_[0].width + t };
 
             lineVerts_.push_back(sf::Vertex(
                 sf::Vector2f(VERT_LINE_LEFT3, VERT_LINE_TOP),
-                FRAME_COLOR_));
+                LINE_COLOR_));
 
             lineVerts_.push_back(sf::Vertex(
                 sf::Vector2f(VERT_LINE_LEFT3, VERT_LINE_BOTTOM),
-                FRAME_COLOR_));
+                LINE_COLOR_));
         }
+        */
     }
 
 
@@ -583,13 +607,13 @@ namespace stage
 
             sfml_util::DrawRectangleWithLineVerts(
                 sf::FloatRect(LEFT, TOP, WIDTH, HEIGHT),
-                LINE_COLOR_ - sf::Color(0, 0, 0, 127),
+                FadedDarkColor_Lines() - sf::Color(0, 0, 0, 50),
                 lineVerts_);
 
             //establish the inner line (bounding box) coordinates
             sfml_util::DrawRectangleWithLineVerts(
                 sf::FloatRect(LEFT + 1.0f, TOP + 1.0f, WIDTH - 2.0f, HEIGHT - 2.0f),
-                LINE_COLOR_,
+                FadedDarkColor_Lines(),
                 lineVerts_);
 
             //establish the inner colored bar coordinates
@@ -606,7 +630,7 @@ namespace stage
             const sf::Uint8 COLOR_MAX{ 255 };
             const sf::Uint8 COLOR_HIGH{ 192 };
             auto const COLOR_HIGH_F{ static_cast<float>(COLOR_HIGH) };
-            auto const COLOR_BAR_ALPHA{ COLOR_HIGH };
+            auto const COLOR_BAR_ALPHA{ ALPHA_FOR_COLORED_BARS_ };
 
             auto const COLOR_BAR_LEFT{ sf::Color(
                 ((WHICH_BAR == WhichBar::Health) ? COLOR_MAX : COLOR_BASE),
@@ -681,6 +705,51 @@ namespace stage
     }
 
 
+    void AdventureCharacterList::SetupCharacterImages()
+    {
+        charImages_.Clear();
+
+        auto const CHARACTER_VEC{ game::Game::Instance()->State().Party().Characters() };
+        auto const NUM_CHARACTERS{ CHARACTER_VEC.size() };
+        for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+        {
+            auto const CHARACTER_PTR{ CHARACTER_VEC[i] };
+
+            auto & imagePair{ charImages_[CHARACTER_PTR] };
+            
+            sfml_util::gui::CreatureImageManager::Instance()->GetImage(
+                imagePair.first,
+                CHARACTER_PTR->ImageFilename(),
+                true);
+
+            sfml_util::Invert(imagePair.first);
+            sfml_util::Mask(imagePair.first, sf::Color::White);
+            imagePair.second.setTexture(imagePair.first, true);
+            imagePair.second.setColor(FadedDarkColor_CharacterImages());
+
+            auto const RESIZE_RATIO{ 0.9f };
+
+            auto const SCALE_HORIZ{
+                (imageColumnRects_[i].width / imagePair.second.getLocalBounds().width) * RESIZE_RATIO };
+
+            auto const SCALE_VERT{
+                (imageColumnRects_[i].height / imagePair.second.getLocalBounds().height) * RESIZE_RATIO };
+
+            auto const FINAL_SCALE{ std::min(SCALE_HORIZ, SCALE_VERT) };
+
+            imagePair.second.setScale(FINAL_SCALE, FINAL_SCALE);
+
+            auto const LEFT{ (imageColumnRects_[i].left + (imageColumnRects_[i].width * 0.5f)) -
+                (imagePair.second.getGlobalBounds().width * 0.5f) };
+
+            auto const TOP{ (imageColumnRects_[i].top + (imageColumnRects_[i].height * 0.5f)) -
+                (imagePair.second.getGlobalBounds().height * 0.5f) };
+
+            imagePair.second.setPosition(LEFT, TOP);
+        }
+    }
+
+
     const std::string AdventureCharacterList::NameButtonMouseoverText(
         const player::CharacterPtr_t CHARACTER_PTR)
     {
@@ -698,6 +767,30 @@ namespace stage
 
         ss << " of Rank " << CHARACTER_PTR->Rank();
         return ss.str();
+    }
+
+
+    const sf::Color AdventureCharacterList::FadedDarkColor_Lines() const
+    {
+        auto darkColor{ sfml_util::FontManager::Instance()->Color_GrayDarker() };
+        darkColor.a = ALPHA_FOR_LINES_;
+        return darkColor;
+    }
+
+
+    const sf::Color AdventureCharacterList::FadedDarkColor_Text() const
+    {
+        auto darkColor{ sfml_util::FontManager::Instance()->Color_GrayDarker() };
+        darkColor.a = ALPHA_FOR_TEXT_;
+        return darkColor;
+    }
+
+
+    const sf::Color AdventureCharacterList::FadedDarkColor_CharacterImages() const
+    {
+        auto darkColor{ sfml_util::FontManager::Instance()->Color_GrayDarker() };
+        darkColor.a = ALPHA_FOR_CHAR_IMAGES_;
+        return darkColor;
     }
 
 }

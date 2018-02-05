@@ -30,11 +30,11 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
-#include "sfml-util/gui/knot-frame.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
 
 #include "player/character.hpp"
+#include "misc/vector-map.hpp"
 
 #include <memory>
 #include <vector>
@@ -78,6 +78,7 @@ namespace stage
         void SetupHealthNumbersText();
         void SetupManaNumbersText();
         void SetupConditionsText();
+        void SetupColumnRects_Image();
         void SetupColumnRects_Name();
         void SetupColumnRects_Health();
         void SetupColumnRects_Mana();
@@ -89,6 +90,7 @@ namespace stage
         void SetupPositions_OverallRegion();
         void SetupCellDividerLines();
         void SetupMouseoverText();
+        void SetupCharacterImages();
 
         const std::string NameButtonMouseoverText(const player::CharacterPtr_t);
 
@@ -100,9 +102,15 @@ namespace stage
 
         void SetupPositions_Bars(const WhichBar);
 
+        const sf::Color FadedDarkColor_Lines() const;
+        const sf::Color FadedDarkColor_Text() const;
+        const sf::Color FadedDarkColor_CharacterImages() const;
+
     private:
-        const sf::Color LINE_COLOR_;
-        const sf::Color FRAME_COLOR_;
+        const sf::Uint8 ALPHA_FOR_LINES_;
+        const sf::Uint8 ALPHA_FOR_TEXT_;
+        const sf::Uint8 ALPHA_FOR_CHAR_IMAGES_;
+        const sf::Uint8 ALPHA_FOR_COLORED_BARS_;
         const float CELL_LINE_THICKNESS_;
         const float OUTER_SPACER_;
         const float HEALTH_COLUMN_WIDTH_;
@@ -113,6 +121,7 @@ namespace stage
         sfml_util::gui::TextRegionUVec_t condsTextRegionsUVec_;
         sfml_util::gui::TextRegionUVec_t healthTextRegionsUVec_;
         sfml_util::gui::TextRegionUVec_t manaTextRegionsUVec_;
+        sfml_util::FloatRectVec_t imageColumnRects_;
         sfml_util::FloatRectVec_t nameColumnRects_;
         sfml_util::FloatRectVec_t healthColumnRects_;
         sfml_util::FloatRectVec_t manaColumnRects_;
@@ -120,7 +129,10 @@ namespace stage
         std::vector<sf::Vertex> lineVerts_;
         std::vector<sf::Vertex> quadVerts_;
         std::vector<sf::Vertex> innerShadeQuadVerts_;
-        sfml_util::gui::KnotFrameUPtr_t knotFrameUPtr_;
+
+        using ImagePair_t = std::pair<sf::Texture, sf::Sprite>;
+        using CharImageMap_t = misc::VectorMap<player::CharacterPtr_t, ImagePair_t>;
+        CharImageMap_t charImages_;
     };
 
 
