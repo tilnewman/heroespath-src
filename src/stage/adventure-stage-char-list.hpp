@@ -102,7 +102,7 @@ namespace stage
 
         void SetupPositions_Bars(const WhichBar);
 
-        const sf::Color FadedDarkColor_Lines() const;
+        const sf::Color FadedDarkColor_Line() const;
         const sf::Color FadedDarkColor_Text() const;
         const sf::Color FadedDarkColor_CharacterImages() const;
 

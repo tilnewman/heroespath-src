@@ -53,11 +53,11 @@ namespace stage
     AdventureCharacterList::AdventureCharacterList(sfml_util::IStage * stagePtr)
     :
         sfml_util::gui::GuiEntity("AdventureStage'sCharacterList", 0.0f, 0.0f),
-        ALPHA_FOR_LINES_         (120),
+        ALPHA_FOR_LINES_         (180),
         ALPHA_FOR_TEXT_          (160),
         ALPHA_FOR_CHAR_IMAGES_   (150),
         ALPHA_FOR_COLORED_BARS_  (150),
-        CELL_LINE_THICKNESS_     (3.0f),
+        CELL_LINE_THICKNESS_     (2.0f),
         OUTER_SPACER_            (sfml_util::MapByRes(75.0f, 300.0f)),
         HEALTH_COLUMN_WIDTH_     (sfml_util::MapByRes(180.0f, 500.0f)),
         MANA_COLUMN_WIDTH_       (HEALTH_COLUMN_WIDTH_),
@@ -399,6 +399,7 @@ namespace stage
         auto const SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() };
 
         auto const NON_COND_COLUMN_WIDTHS{
+            imageColumnRects_[0].width +
             nameColumnRects_[0].width +
             healthColumnRects_[0].width +
             manaColumnRects_[0].width };
@@ -468,6 +469,7 @@ namespace stage
     void AdventureCharacterList::SetupPositions_OverallRegion()
     {
         auto const OVERALL_RECT_WIDTH{
+            imageColumnRects_[0].width +
             nameColumnRects_[0].width +
             healthColumnRects_[0].width +
             manaColumnRects_[0].width +
@@ -480,33 +482,36 @@ namespace stage
                 nameColumnRects_[0].top };
 
         const sf::FloatRect OVERALL_RECT(
-            nameColumnRects_[0].left,
-            nameColumnRects_[0].top,
+            imageColumnRects_[0].left,
+            imageColumnRects_[0].top,
             OVERALL_RECT_WIDTH,
             OVERALL_RECT_HEIGHT);
 
         SetEntityRegion(OVERALL_RECT);
-
-        /*
-        //draw inner colored bar
-        sfml_util::DrawQuad(
-            knotFrameUPtr_->Region(),
-            sf::Color(0, 0, 0, 20),
-            sf::Color(0, 0, 0, 20),
-            innerShadeQuadVerts_);
-        */
     }
 
 
     void AdventureCharacterList::SetupCellDividerLines()
     {
-        auto const HORIZ_LINE_LEFT{ sfml_util::MapByRes(33.3f, 100.0f) };
+        auto const HORIZ_LINE_LEFT{ GetEntityRegion().left };
+        auto const HORIZ_LINE_RIGHT{ GetEntityRegion().left + GetEntityRegion().width + 4.0f };
 
-        auto const HORIZ_LINE_RIGHT{
-            sfml_util::Display::Instance()->GetWinWidth() - (HORIZ_LINE_LEFT * 2.0f) };
+        for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
+        {
+            auto const HORIZ_LINE_TOP{
+                nameColumnRects_[0].top + t };
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(HORIZ_LINE_LEFT, HORIZ_LINE_TOP),
+                FadedDarkColor_Line()));
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(HORIZ_LINE_RIGHT, HORIZ_LINE_TOP),
+                FadedDarkColor_Line()));
+        }
 
         auto const NUM_ROWS{ nameColumnRects_.size() };
-        for (std::size_t i(0); i < (NUM_ROWS - 1); ++i)
+        for (std::size_t i(0); i < NUM_ROWS; ++i)
         {
             for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
             {
@@ -515,62 +520,85 @@ namespace stage
 
                 lineVerts_.push_back(sf::Vertex(
                     sf::Vector2f(HORIZ_LINE_LEFT, HORIZ_LINE_TOP),
-                    FadedDarkColor_Lines()));
+                    FadedDarkColor_Line()));
 
                 lineVerts_.push_back(sf::Vertex(
                     sf::Vector2f(HORIZ_LINE_RIGHT, HORIZ_LINE_TOP),
-                    FadedDarkColor_Lines()));
+                    FadedDarkColor_Line()));
             }
         }
 
-        /*
-        auto const VERT_LINE_TOP{
-            knotFrameUPtr_->RegionInner().top -
-            knotFrameUPtr_->InnerSize() +
-            knotFrameUPtr_->FrameSize() };
-
-        auto const VERT_LINE_BOTTOM{
-            knotFrameUPtr_->RegionInner().top +
-            knotFrameUPtr_->RegionInner().height +
-            knotFrameUPtr_->InnerSize() -
-            knotFrameUPtr_->FrameSize() };
+        auto const VERT_LINE_TOP{ GetEntityRegion().top };
+        auto const VERT_LINE_BOTTOM{ GetEntityRegion().top + GetEntityRegion().height};
 
         for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
         {
+            auto const VERT_LINE_LEFT{
+                imageColumnRects_[0].left + t };
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT, VERT_LINE_TOP),
+                FadedDarkColor_Line()));
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT, VERT_LINE_BOTTOM),
+                FadedDarkColor_Line()));
+
+            auto const VERT_LINE_LEFT0{
+                nameColumnRects_[0].left + t };
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT0, VERT_LINE_TOP),
+                FadedDarkColor_Line()));
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT0, VERT_LINE_BOTTOM),
+                FadedDarkColor_Line()));
+
             auto const VERT_LINE_LEFT1{
                 nameColumnRects_[0].left + nameColumnRects_[0].width + t };
 
             lineVerts_.push_back(sf::Vertex(
                 sf::Vector2f(VERT_LINE_LEFT1, VERT_LINE_TOP),
-                LINE_COLOR_));
+                FadedDarkColor_Line()));
 
             lineVerts_.push_back(sf::Vertex(
                 sf::Vector2f(VERT_LINE_LEFT1, VERT_LINE_BOTTOM),
-                LINE_COLOR_));
+                FadedDarkColor_Line()));
 
             auto const VERT_LINE_LEFT2{
                 healthColumnRects_[0].left + healthColumnRects_[0].width + t };
 
             lineVerts_.push_back(sf::Vertex(sf::Vector2f(
                 VERT_LINE_LEFT2, VERT_LINE_TOP),
-                LINE_COLOR_));
+                FadedDarkColor_Line()));
 
             lineVerts_.push_back(sf::Vertex(
                 sf::Vector2f(VERT_LINE_LEFT2, VERT_LINE_BOTTOM),
-                LINE_COLOR_));
+                FadedDarkColor_Line()));
 
             auto const VERT_LINE_LEFT3{
                 manaColumnRects_[0].left + manaColumnRects_[0].width + t };
 
             lineVerts_.push_back(sf::Vertex(
                 sf::Vector2f(VERT_LINE_LEFT3, VERT_LINE_TOP),
-                LINE_COLOR_));
+                FadedDarkColor_Line()));
 
             lineVerts_.push_back(sf::Vertex(
                 sf::Vector2f(VERT_LINE_LEFT3, VERT_LINE_BOTTOM),
-                LINE_COLOR_));
+                FadedDarkColor_Line()));
+
+            auto const VERT_LINE_LEFT4{
+                conditionColumnRects_[0].left + conditionColumnRects_[0].width + t };
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT4, VERT_LINE_TOP),
+                FadedDarkColor_Line()));
+
+            lineVerts_.push_back(sf::Vertex(
+                sf::Vector2f(VERT_LINE_LEFT4, VERT_LINE_BOTTOM),
+                FadedDarkColor_Line()));
         }
-        */
     }
 
 
@@ -607,13 +635,13 @@ namespace stage
 
             sfml_util::DrawRectangleWithLineVerts(
                 sf::FloatRect(LEFT, TOP, WIDTH, HEIGHT),
-                FadedDarkColor_Lines() - sf::Color(0, 0, 0, 50),
+                FadedDarkColor_Line() - sf::Color(0, 0, 0, 50),
                 lineVerts_);
 
             //establish the inner line (bounding box) coordinates
             sfml_util::DrawRectangleWithLineVerts(
                 sf::FloatRect(LEFT + 1.0f, TOP + 1.0f, WIDTH - 2.0f, HEIGHT - 2.0f),
-                FadedDarkColor_Lines(),
+                FadedDarkColor_Line(),
                 lineVerts_);
 
             //establish the inner colored bar coordinates
@@ -770,7 +798,7 @@ namespace stage
     }
 
 
-    const sf::Color AdventureCharacterList::FadedDarkColor_Lines() const
+    const sf::Color AdventureCharacterList::FadedDarkColor_Line() const
     {
         auto darkColor{ sfml_util::FontManager::Instance()->Color_GrayDarker() };
         darkColor.a = ALPHA_FOR_LINES_;
