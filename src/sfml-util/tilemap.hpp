@@ -68,16 +68,14 @@ namespace sfml_util
         void DrawDebug(sf::RenderTarget &, const sf::RenderStates &);
         void DrawPlayer(sf::RenderTarget & target);
         void ReDraw();
-        void SetupMapSubsection(const map::TileOffsets & CURRENT_OFFSETS);
+        void ResetMapSubsections();
         void DrawMapSubsectionOffscreen();
 
-        void ResetBeforeLoad();
-
-        void SetupMapSprite();
+        void PositionMapSpriteTextureRect();
 
         void SetupOffScreenTexture();
 
-        void SetupMapSubsectionLayer(map::Layer &, const map::TileOffsets &);
+        void SetupMapLayerSubsection(map::Layer &, const map::TileOffsets &);
 
         const map::TileOffsets GetTileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
 
@@ -90,7 +88,9 @@ namespace sfml_util
 
         const map::TilesPanel & GetTilesPanelFromId(const int) const;
 
-        void AdjustOffscreenRectsToPreventDrift(const map::TileOffsets &);
+        void IncrementTileOffsetsInDirection(const Direction::Enum);
+
+        const sf::Vector2f CalcOffScreenMapSize() const;
 
     public:
         //This is how close the player position can get to
@@ -104,12 +104,13 @@ namespace sfml_util
         const sf::Vector2f WIN_POS_V_;
         const sf::Vector2f WIN_SIZE_V_;
         map::Layout        mapLayout_;
-        map::TileOffsets   prevTileOffsets_;
+        map::TileOffsets   tileOffsets_;
         sf::Vector2f       playerPosV_;
         sf::Vector2f       playerPosOffsetV_;
         sf::FloatRect      offScreenRect_;
         sf::Sprite         mapSprite_;
         sf::RenderTexture  offScreenTexture_;
+        sf::Vector2f       offScreenMapSize_;
     };
 
     using TileMapUPtr_t = std::unique_ptr<TileMap>;

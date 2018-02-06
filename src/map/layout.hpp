@@ -74,8 +74,6 @@ namespace map
 
         sf::Vector2i tile_size_v;
         sf::Vector2i tile_count_v;
-        int tile_count_x;
-        int tile_count_y;
 
         LayerVec_t layer_vec;
 
