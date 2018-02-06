@@ -68,6 +68,8 @@ namespace sfml_util
         void DrawDebug(sf::RenderTarget &, const sf::RenderStates &);
         void DrawPlayer(sf::RenderTarget & target);
         void ReDraw();
+        void SetupMapSubsection(const map::TileOffsets & CURRENT_OFFSETS);
+        void DrawMapSubsectionOffscreen();
 
         void ResetBeforeLoad();
 
@@ -75,13 +77,13 @@ namespace sfml_util
 
         void SetupOffScreenTexture();
 
-        void SetupMapSubsection(map::Layer &, const map::TileOffsets &);
+        void SetupMapSubsectionLayer(map::Layer &, const map::TileOffsets &);
 
         const map::TileOffsets GetTileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
-        const map::TileOffsets GetTileOffsetsOfPlayerPos() const;
-        const sf::Vector2f GetPlayerPos() const;
+
+        inline const sf::Vector2f GetPlayerPos() const { return playerPosV_ + playerPosOffsetV_; }
+        
         const sf::Vector2f GetPosScreen(const map::TileOffsets &) const;
-        const sf::Vector2f GetPosScreen(const sf::Vector2f &) const;
         const sf::Vector2f GetPlayerPosScreen() const;
 
         bool DoesAdjPlayerPosCollide(const Direction::Enum DIR, const float ADJ) const;
