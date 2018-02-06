@@ -65,7 +65,6 @@ namespace stage
         void Setup_Map();
 
     private:
-        //AdventureStage * const adventureStagePtr_;
         AdventureCharacterListUPtr_t characterListUPtr_;
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;

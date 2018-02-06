@@ -51,7 +51,6 @@ namespace stage
             0.0f,
             sfml_util::Display::Instance()->GetWinWidth(),
             sfml_util::Display::Instance()->GetWinHeight()),
-        //adventureStagePtr_(adventureStagePtr),
         characterListUPtr_(std::make_unique<AdventureCharacterList>(this)),
         backgroundTexture_(),
         bottomImage_(0.75f, true, sf::Color::White),
@@ -77,7 +76,7 @@ namespace stage
         target.draw(backgroundSprite_, STATES);
         target.draw(bottomImage_, STATES);
         target.draw(topImage_, STATES);
-        target.draw(*characterListUPtr_, STATES);
+        target.draw( * characterListUPtr_, STATES);
         Stage::Draw(target, STATES);
         mapUPtr_->Draw(target, STATES);
     }
