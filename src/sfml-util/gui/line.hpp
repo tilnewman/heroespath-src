@@ -61,8 +61,8 @@ namespace gui
             const Side::Enum SIDE,
             const bool WILL_CAP_ENDS = true);
 
-        //Use this constructor when position and length are not initially know,
-        //but must call Setup() before any other function after construction.
+        //Use this constructor when position and length are not initially known,
+        //but must still call Setup() before any other functions.
         Line(
             const std::string & NAME,
             Orientation::Enum ORIENTATION,
@@ -72,8 +72,8 @@ namespace gui
         virtual ~Line() {}
 
         void Setup(
-            const float  LEFT,
-            const float  TOP,
+            const float LEFT,
+            const float TOP,
             const std::size_t LENGTH);
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
@@ -104,10 +104,6 @@ namespace gui
         sf::Sprite finalSprite_;//used to draw to screen
         sf::RenderTexture offScreenTexture_;
     };
-
-
-    using LineSPtr_t = std::shared_ptr<Line>;
-    using LineSVec_t = std::vector<LineSPtr_t>;
 
 }
 }

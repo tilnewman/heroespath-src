@@ -57,11 +57,12 @@ namespace stage
         ALPHA_FOR_TEXT_          (160),
         ALPHA_FOR_CHAR_IMAGES_   (150),
         ALPHA_FOR_COLORED_BARS_  (150),
-        CELL_LINE_THICKNESS_     (2.0f),
+        CELL_LINE_THICKNESS_     (1.0f),
         OUTER_SPACER_            (sfml_util::MapByRes(75.0f, 300.0f)),
         HEALTH_COLUMN_WIDTH_     (sfml_util::MapByRes(180.0f, 500.0f)),
         MANA_COLUMN_WIDTH_       (HEALTH_COLUMN_WIDTH_),
         CELL_TEXT_LEFT_SPACER_   (sfml_util::MapByRes(12.0f, 25.0f)),
+        CHARLIST_SEP_SPACER_     (sfml_util::MapByRes(15.0f, 150.0f)),
         stagePtr_                (stagePtr),
         namesButtonUVec_         (),
         condsTextRegionsUVec_    (),
@@ -75,7 +76,12 @@ namespace stage
         lineVerts_               (),
         quadVerts_               (),
         innerShadeQuadVerts_     (),
-        charImages_              ()
+        charImages_              (),
+        charListSepLine_         (
+            "AdventureStage_CharacterList_CharListSeparator_",
+            sfml_util::Orientation::Horiz,
+            sfml_util::Side::Top,
+            true)
     {}
 
 
@@ -95,6 +101,7 @@ namespace stage
         target.draw( & innerShadeQuadVerts_[0], innerShadeQuadVerts_.size(), sf::Quads, states);
         target.draw( & lineVerts_[0], lineVerts_.size(), sf::Lines, states);
         target.draw( & quadVerts_[0], quadVerts_.size(), sf::Quads, states);
+        target.draw(charListSepLine_, states);
         
         for (auto const & TEXT_REGION_UPTR : manaTextRegionsUVec_)
         {
@@ -493,111 +500,37 @@ namespace stage
 
     void AdventureCharacterList::SetupCellDividerLines()
     {
-        auto const HORIZ_LINE_LEFT{ GetEntityRegion().left };
-        auto const HORIZ_LINE_RIGHT{ GetEntityRegion().left + GetEntityRegion().width + 4.0f };
-
-        for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
         {
-            auto const HORIZ_LINE_TOP{
-                nameColumnRects_[0].top + t };
+            auto const LEFT{ CHARLIST_SEP_SPACER_ };
+            auto const TOP{ imageColumnRects_[0].top - 10.0f };
 
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(HORIZ_LINE_LEFT, HORIZ_LINE_TOP),
-                FadedDarkColor_Line()));
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(HORIZ_LINE_RIGHT, HORIZ_LINE_TOP),
-                FadedDarkColor_Line()));
+            auto const LENGTH{
+                sfml_util::Display::Instance()->GetWinWidth() - (CHARLIST_SEP_SPACER_ * 2.0f) };
+            
+            charListSepLine_.Setup(LEFT, TOP, static_cast<std::size_t>(LENGTH));
         }
 
-        auto const NUM_ROWS{ nameColumnRects_.size() };
-        for (std::size_t i(0); i < NUM_ROWS; ++i)
         {
-            for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
+            auto const HORIZ_LINE_LEFT{ GetEntityRegion().left };
+            auto const HORIZ_LINE_RIGHT{ GetEntityRegion().left + GetEntityRegion().width + 4.0f };
+
+            auto const NUM_ROWS{ nameColumnRects_.size() };
+            for (std::size_t i(0); i < NUM_ROWS; ++i)
             {
-                auto const HORIZ_LINE_TOP{
-                    nameColumnRects_[i].top + nameColumnRects_[i].height + t };
+                for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
+                {
+                    auto const HORIZ_LINE_TOP{
+                        imageColumnRects_[i].top + nameColumnRects_[i].height + t };
 
-                lineVerts_.push_back(sf::Vertex(
-                    sf::Vector2f(HORIZ_LINE_LEFT, HORIZ_LINE_TOP),
-                    FadedDarkColor_Line()));
+                    lineVerts_.push_back(sf::Vertex(
+                        sf::Vector2f(HORIZ_LINE_LEFT, HORIZ_LINE_TOP),
+                        FadedDarkColor_Line()));
 
-                lineVerts_.push_back(sf::Vertex(
-                    sf::Vector2f(HORIZ_LINE_RIGHT, HORIZ_LINE_TOP),
-                    FadedDarkColor_Line()));
+                    lineVerts_.push_back(sf::Vertex(
+                        sf::Vector2f(HORIZ_LINE_RIGHT, HORIZ_LINE_TOP),
+                        FadedDarkColor_Line()));
+                }
             }
-        }
-
-        auto const VERT_LINE_TOP{ GetEntityRegion().top };
-        auto const VERT_LINE_BOTTOM{ GetEntityRegion().top + GetEntityRegion().height};
-
-        for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
-        {
-            auto const VERT_LINE_LEFT{
-                imageColumnRects_[0].left + t };
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT, VERT_LINE_TOP),
-                FadedDarkColor_Line()));
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT, VERT_LINE_BOTTOM),
-                FadedDarkColor_Line()));
-
-            auto const VERT_LINE_LEFT0{
-                nameColumnRects_[0].left + t };
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT0, VERT_LINE_TOP),
-                FadedDarkColor_Line()));
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT0, VERT_LINE_BOTTOM),
-                FadedDarkColor_Line()));
-
-            auto const VERT_LINE_LEFT1{
-                nameColumnRects_[0].left + nameColumnRects_[0].width + t };
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT1, VERT_LINE_TOP),
-                FadedDarkColor_Line()));
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT1, VERT_LINE_BOTTOM),
-                FadedDarkColor_Line()));
-
-            auto const VERT_LINE_LEFT2{
-                healthColumnRects_[0].left + healthColumnRects_[0].width + t };
-
-            lineVerts_.push_back(sf::Vertex(sf::Vector2f(
-                VERT_LINE_LEFT2, VERT_LINE_TOP),
-                FadedDarkColor_Line()));
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT2, VERT_LINE_BOTTOM),
-                FadedDarkColor_Line()));
-
-            auto const VERT_LINE_LEFT3{
-                manaColumnRects_[0].left + manaColumnRects_[0].width + t };
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT3, VERT_LINE_TOP),
-                FadedDarkColor_Line()));
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT3, VERT_LINE_BOTTOM),
-                FadedDarkColor_Line()));
-
-            auto const VERT_LINE_LEFT4{
-                conditionColumnRects_[0].left + conditionColumnRects_[0].width + t };
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT4, VERT_LINE_TOP),
-                FadedDarkColor_Line()));
-
-            lineVerts_.push_back(sf::Vertex(
-                sf::Vector2f(VERT_LINE_LEFT4, VERT_LINE_BOTTOM),
-                FadedDarkColor_Line()));
         }
     }
 

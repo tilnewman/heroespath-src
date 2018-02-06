@@ -32,6 +32,7 @@
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/gui/line.hpp"
 
 #include "player/character.hpp"
 #include "misc/vector-map.hpp"
@@ -116,6 +117,7 @@ namespace stage
         const float HEALTH_COLUMN_WIDTH_;
         const float MANA_COLUMN_WIDTH_;
         const float CELL_TEXT_LEFT_SPACER_;
+        const float CHARLIST_SEP_SPACER_;
         sfml_util::IStage * stagePtr_;
         sfml_util::gui::FourStateButtonUVec_t namesButtonUVec_;
         sfml_util::gui::TextRegionUVec_t condsTextRegionsUVec_;
@@ -129,10 +131,12 @@ namespace stage
         std::vector<sf::Vertex> lineVerts_;
         std::vector<sf::Vertex> quadVerts_;
         std::vector<sf::Vertex> innerShadeQuadVerts_;
-
+        
         using ImagePair_t = std::pair<sf::Texture, sf::Sprite>;
         using CharImageMap_t = misc::VectorMap<player::CharacterPtr_t, ImagePair_t>;
         CharImageMap_t charImages_;
+
+        sfml_util::gui::Line charListSepLine_;
     };
 
 
