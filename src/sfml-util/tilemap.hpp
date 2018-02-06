@@ -81,7 +81,6 @@ namespace sfml_util
 
         inline const sf::Vector2f GetPlayerPos() const { return playerPosV_ + playerPosOffsetV_; }
         
-        const sf::Vector2f GetPosScreen(const map::TileOffsets &) const;
         const sf::Vector2f GetPlayerPosScreen() const;
 
         bool DoesAdjPlayerPosCollide(const Direction::Enum DIR, const float ADJ) const;
@@ -103,6 +102,7 @@ namespace sfml_util
     private:
         const sf::Vector2f WIN_POS_V_;
         const sf::Vector2f WIN_SIZE_V_;
+        const sf::Vector2f WIN_CENTER_V_;
         map::Layout        mapLayout_;
         map::TileOffsets   tileOffsets_;
         sf::Vector2f       playerPosV_;

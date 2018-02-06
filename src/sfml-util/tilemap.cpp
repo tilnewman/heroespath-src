@@ -52,6 +52,9 @@ namespace sfml_util
     :
         WIN_POS_V_       (WIN_POS_V),
         WIN_SIZE_V_      (WIN_SIZE_V),
+        WIN_CENTER_V_    (
+            WIN_POS_V_.x + (WIN_SIZE_V_.x * 0.5f),
+            WIN_POS_V_.y + (WIN_SIZE_V_.y * 0.5f)),
         mapLayout_       (),
         tileOffsets_     (),
         playerPosV_      (0.0f, 0.0f),
@@ -527,30 +530,9 @@ namespace sfml_util
     }
 
 
-    const sf::Vector2f TileMap::GetPosScreen(const map::TileOffsets & TILE_OFFSETS) const
-    {
-        //Convert from off-screen coords to on-screen coords.
-        auto const OFFSET_DIFFX{
-            static_cast<float>(TILE_OFFSETS.end_v.x - TILE_OFFSETS.begin_v.x) };
-
-        auto const OFFSET_DIFFY{
-            static_cast<float>(TILE_OFFSETS.end_v.y - TILE_OFFSETS.begin_v.y) };
-
-        auto const LEFT{ static_cast<float>(
-            WIN_POS_V_.x + ((OFFSET_DIFFX * static_cast<float>(mapLayout_.tile_size_v.x)) * 0.5f)) };
-
-        auto const TOP{ static_cast<float>(
-            WIN_POS_V_.y + ((OFFSET_DIFFY * static_cast<float>(mapLayout_.tile_size_v.y)) * 0.5f)) };
-
-        return sf::Vector2f(LEFT, TOP);
-    }
-
-
     const sf::Vector2f TileMap::GetPlayerPosScreen() const
     {
-        //TODO this need overhauling, it needs to work a completely different way
-        //
-        return GetPosScreen( GetTileOffsetsFromMapPos(playerPosV_) ) + playerPosOffsetV_;
+        return WIN_CENTER_V_ + playerPosOffsetV_;
     }
 
 
