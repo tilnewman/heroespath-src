@@ -261,7 +261,7 @@ namespace sfml_util
                 << ", max=" << max
                 << ", count=" << frameRateSampleCount_ - 1
                 << ", avg=" << AVERAGE_FRAMERATE
-                << ", std_dev=" << STANDARD_DEVIATION << ":  ");
+                << ", std_dev=" << STANDARD_DEVIATION);
         }
         else
         {
