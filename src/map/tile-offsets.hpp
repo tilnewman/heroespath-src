@@ -27,6 +27,7 @@
 //
 // tile-offsets.hpp
 //
+#include "sfml-util/sfml-graphics.hpp"
 #include "misc/types.hpp"
 
 #include <tuple>
@@ -42,29 +43,23 @@ namespace map
     struct TileOffsets
     {
         TileOffsets(
-            const int BEGIN_X = 0,
-            const int END_X = 0,
-            const int BEGIN_Y = 0,
-            const int END_Y = 0)
+            const sf::Vector2i BEGIN_V = sf::Vector2i(0, 0),
+            const sf::Vector2i END_V = sf::Vector2i(0, 0))
         :
-            begin_x(BEGIN_X),
-            end_x(END_X),
-            begin_y(BEGIN_Y),
-            end_y(END_Y)
+            begin_v(BEGIN_V),
+            end_v(END_V)
         {}
 
-        int begin_x;
-        int end_x;
-        int begin_y;
-        int end_y;
+        sf::Vector2i begin_v;
+        sf::Vector2i end_v;
     };
 
 
     inline bool operator==(const TileOffsets & L, const TileOffsets & R)
     {
-        return std::tie(L.begin_x, L.begin_y, L.end_x, L.end_y)
+        return std::tie(L.begin_v, L.end_v)
                 ==
-               std::tie(R.begin_x, R.begin_y, R.end_x, R.end_y);
+               std::tie(R.begin_v, R.end_v);
     }
 
 

@@ -124,8 +124,8 @@ namespace map
         }
 
         layout.collision_qtree.Setup(
-            static_cast<float>(layout.tile_size_x * layout.tile_count_x),
-            static_cast<float>(layout.tile_size_y * layout.tile_count_y),
+            static_cast<float>(layout.tile_size_v.x * layout.tile_count_v.x),
+            static_cast<float>(layout.tile_size_v.y * layout.tile_count_v.y),
             collisionRects_);
 
         collisionRects_.clear();
@@ -173,10 +173,10 @@ namespace map
 
         try
         {
-            layout.tile_size_x = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.tilewidth");
-            layout.tile_size_y = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.tileheight");
-            layout.tile_count_x = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.width");
-            layout.tile_count_y = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.height");
+            layout.tile_size_v.x = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.tilewidth");
+            layout.tile_size_v.y = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.tileheight");
+            layout.tile_count_v.x = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.width");
+            layout.tile_count_v.y = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.height");
         }
         catch (const std::exception & E)
         {
@@ -364,12 +364,12 @@ namespace map
 
     void Parser::SetupEmptyTexture(Layout & layout)
     {
-        auto const TILE_WIDTH{ static_cast<unsigned>(layout.tile_size_x) };
-        auto const TILE_HEIGHT{ static_cast<unsigned>(layout.tile_size_y) };
+        auto const TILE_WIDTH{ static_cast<unsigned>(layout.tile_size_v.x) };
+        auto const TILE_HEIGHT{ static_cast<unsigned>(layout.tile_size_v.y) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(layout.empty_texture.create(TILE_WIDTH, TILE_HEIGHT),
-            "TileMap::SetupEmptyTexture() sf::RenderTexture::create(" << layout.tile_size_x << "x"
-            << layout.tile_size_y << ") failed.");
+            "TileMap::SetupEmptyTexture() sf::RenderTexture::create(" << layout.tile_size_v.x << "x"
+            << layout.tile_size_v.y << ") failed.");
 
         layout.empty_texture.clear(sf::Color::Transparent);
         layout.empty_texture.display();

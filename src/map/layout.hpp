@@ -49,10 +49,8 @@ namespace map
     public:
         Layout()
         :
-            tile_size_x(0),
-            tile_size_y(0),
-            tile_count_x(0),
-            tile_count_y(0),
+            tile_size_v(0, 0),
+            tile_count_v(0, 0),
             layer_vec(),
             tiles_panel_vec(),
             texture_vec(),
@@ -62,10 +60,10 @@ namespace map
 
         void Reset()
         {
-            tile_size_x = 0;
-            tile_size_y = 0;
-            tile_count_x = 0;
-            tile_count_y = 0;
+            tile_size_v.x = 0;
+            tile_size_v.y = 0;
+            tile_count_v.x = 0;
+            tile_count_v.y = 0;
             layer_vec.clear();
             tiles_panel_vec.clear();
             texture_vec.clear();
@@ -74,8 +72,8 @@ namespace map
 
         inline const std::string EmptyTilesPanelName() const { return "empty"; }
 
-        int tile_size_x;
-        int tile_size_y;
+        sf::Vector2i tile_size_v;
+        sf::Vector2i tile_count_v;
         int tile_count_x;
         int tile_count_y;
 
