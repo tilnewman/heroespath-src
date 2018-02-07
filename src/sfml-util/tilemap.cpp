@@ -311,7 +311,13 @@ namespace sfml_util
             for (std::size_t vertIndex(0); vertIndex < NUM_VERTS; )
             {
                 //skip drawing empty tiles
-                if (LAYER.tiles_panel_vec[tilesPanelIndex].name != mapLayout_.EmptyTilesPanelName())
+                if (LAYER.tiles_panel_vec[tilesPanelIndex].is_empty)
+                {
+                    ++tilesPanelIndex;
+                    auto const VERTEXES_PER_QUAD{ 4 };
+                    vertIndex += VERTEXES_PER_QUAD;
+                }
+                else
                 {
                     quads[0].position = LAYER.vert_array[vertIndex].position;
                     quads[0].texCoords = LAYER.vert_array[vertIndex++].texCoords;
@@ -325,16 +331,12 @@ namespace sfml_util
                     quads[3].position = LAYER.vert_array[vertIndex].position;
                     quads[3].texCoords = LAYER.vert_array[vertIndex++].texCoords;
 
-                    renderStates.texture = &mapLayout_.texture_vec[
-                        LAYER.tiles_panel_vec[tilesPanelIndex++].texture_index];
+                    renderStates.texture = & mapLayout_.texture_vec[
+                        LAYER.tiles_panel_vec[tilesPanelIndex].texture_index];
+
+                    ++tilesPanelIndex;
 
                     offScreenTexture_.draw(quads, renderStates);
-                }
-                else
-                {
-                    ++tilesPanelIndex;
-                    auto const VERTEXES_PER_QUAD{ 4 };
-                    vertIndex += VERTEXES_PER_QUAD;
                 }
             }
         }
@@ -412,7 +414,11 @@ namespace sfml_util
 
                 //get the texture/image this tile can be found in
                 const map::TilesPanel & TILES_PANEL{ TilesPanelFromId(TILE_NUM_ID_ADJ) };
-                mapLayer.tiles_panel_vec.push_back(TILES_PANEL);
+                
+                mapLayer.tiles_panel_vec.push_back( 
+                    map::TilesPanelForLayers(
+                        (TILES_PANEL.name == mapLayout_.EmptyTilesPanelName()),
+                        TILES_PANEL.texture_index) );
 
                 //adjust the tile number to start at one
                 auto const TILE_ID{ (TILE_NUM_ID_ADJ - TILES_PANEL.first_id) + 1 };

@@ -77,6 +77,23 @@ namespace map
 
     using TilesPanelVec_t = std::vector<TilesPanel>;
 
+
+    //Responsible for wrapping only the details layers need about a single panel
+    //of map tiles images.
+    struct TilesPanelForLayers
+    {
+        TilesPanelForLayers(const bool IS_EMPTY, const std::size_t TEXTURE_INDEX)
+        :
+            is_empty(IS_EMPTY),
+            texture_index(TEXTURE_INDEX)
+        {}
+
+        bool is_empty;
+        std::size_t texture_index;
+    };
+
+    using TilesPanelForLayersVec_t = std::vector<TilesPanelForLayers>;
+
 }
 }
 

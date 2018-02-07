@@ -46,7 +46,7 @@ namespace map
         sf::VertexArray vert_array;
 
         //copies of TileImages that are used by vert_array
-        TilesPanelVec_t tiles_panel_vec;
+        TilesPanelForLayersVec_t tiles_panel_vec;
 
         //the map IDs that make up this panel
         std::vector<int> mapid_vec;
