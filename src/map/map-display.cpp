@@ -61,8 +61,10 @@ namespace map
         playerPosV_      (0.0f, 0.0f),
         playerPosOffsetV_(0.0f, 0.0f),
         offScreenRect_   (0.0f, 0.0f, 0.0f, 0.0f),
-        offScreenSprite_ (),
-        offScreenTexture_(),
+        offScreenSpriteAbove_(),
+        offScreenSpriteBelow_(),
+        offScreenTextureAbove_(),
+        offScreenTextureBelow_(),
         offScreenMapSize_(0.0f, 0.0f)
     {}
 
@@ -232,16 +234,21 @@ namespace map
 
     void MapDisplay::DrawNormal(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(offScreenSprite_, states);
+        target.draw(offScreenSpriteBelow_, states);
         DrawPlayerImage(target, PlayerPosScreen());
+        target.draw(offScreenSpriteAbove_, states);
     }
 
 
     void MapDisplay::DrawDebug(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        sf::Sprite offScreenSprite(offScreenTexture_.getTexture());
-        offScreenSprite.setPosition(WIN_POS_V_);
-        target.draw(offScreenSprite);
+        sf::Sprite offScreenSpriteBelow(offScreenTextureBelow_.getTexture());
+        offScreenSpriteBelow.setPosition(WIN_POS_V_);
+        target.draw(offScreenSpriteBelow);
+
+        sf::Sprite offScreenSpriteAbove(offScreenTextureAbove_.getTexture());
+        offScreenSpriteAbove.setPosition(WIN_POS_V_);
+        target.draw(offScreenSpriteAbove);
 
         sf::FloatRect offScreenInnerWindowRect(
             WIN_POS_V_.x + offScreenRect_.left,
@@ -282,7 +289,8 @@ namespace map
 
     void MapDisplay::DrawMapSubsectionOffscreen()
     {
-        offScreenTexture_.clear(sf::Color::Black);
+        offScreenTextureBelow_.clear(sf::Color::Transparent);
+        offScreenTextureAbove_.clear(sf::Color::Transparent);
 
         sf::RenderStates renderStates{ sf::RenderStates::Default };
         sf::VertexArray quads(sf::Quads, 4);
@@ -320,19 +328,28 @@ namespace map
 
                     ++tilesPanelIndex;
 
-                    offScreenTexture_.draw(quads, renderStates);
+                    if (LAYER.type == LayerType::Object)
+                    {
+                        offScreenTextureAbove_.draw(quads, renderStates);
+                    }
+                    else
+                    {
+                        offScreenTextureBelow_.draw(quads, renderStates);
+                    }
                 }
             }
         }
 
-        offScreenTexture_.display();
+        offScreenTextureBelow_.display();
+        offScreenTextureAbove_.display();
     }
 
 
     void MapDisplay::PositionMapSpriteTextureRect()
     {
-        
-        offScreenSprite_.setTextureRect(sfml_util::ConvertRect<float, int>(offScreenRect_));
+        auto const FLOAT_RECT{ sfml_util::ConvertRect<float, int>(offScreenRect_) };
+        offScreenSpriteBelow_.setTextureRect(FLOAT_RECT);
+        offScreenSpriteAbove_.setTextureRect(FLOAT_RECT);
     }
 
 
@@ -344,9 +361,13 @@ namespace map
         auto const EXTRA_HEIGHT{ layout_.tile_size_v.y * (EXTRA_OFFSCREEN_TILE_COUNT_ * 2) };
         auto const HEIGHT{ static_cast<unsigned>(WIN_SIZE_V_.y) + static_cast<unsigned>(EXTRA_HEIGHT) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(offScreenTexture_.create(WIDTH, HEIGHT),
+        M_ASSERT_OR_LOGANDTHROW_SS(offScreenTextureBelow_.create(WIDTH, HEIGHT),
             "sfml_util::MapDisplay::Load(), failed to sf::RenderTexture::create("
-                << WIDTH << "x" << HEIGHT << ").");
+                << WIDTH << "x" << HEIGHT << ") for 'below' texture.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(offScreenTextureAbove_.create(WIDTH, HEIGHT),
+            "sfml_util::MapDisplay::Load(), failed to sf::RenderTexture::create("
+            << WIDTH << "x" << HEIGHT << ") for 'above' texture.");
 
         //set the initial position of what is drawn on-screen from the off-screen texture
         offScreenRect_.width = WIN_SIZE_V_.x;
@@ -358,8 +379,11 @@ namespace map
         offScreenRect_.top =
             static_cast<float>(EXTRA_OFFSCREEN_TILE_COUNT_ * layout_.tile_size_v.y);
 
-        offScreenSprite_.setTexture(offScreenTexture_.getTexture());
-        offScreenSprite_.setPosition(WIN_POS_V_);
+        offScreenSpriteBelow_.setTexture(offScreenTextureBelow_.getTexture());
+        offScreenSpriteAbove_.setTexture(offScreenTextureAbove_.getTexture());
+        
+        offScreenSpriteBelow_.setPosition(WIN_POS_V_);
+        offScreenSpriteAbove_.setPosition(WIN_POS_V_);
 
         PositionMapSpriteTextureRect();
     }

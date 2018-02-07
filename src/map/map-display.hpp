@@ -111,8 +111,10 @@ namespace map
         sf::Vector2f       playerPosV_;
         sf::Vector2f       playerPosOffsetV_;
         sf::FloatRect      offScreenRect_;
-        sf::Sprite         offScreenSprite_;
-        sf::RenderTexture  offScreenTexture_;
+        sf::Sprite         offScreenSpriteAbove_;
+        sf::Sprite         offScreenSpriteBelow_;
+        sf::RenderTexture  offScreenTextureAbove_;
+        sf::RenderTexture  offScreenTextureBelow_;
         sf::Vector2f       offScreenMapSize_;
     };
 
