@@ -46,14 +46,16 @@ namespace heroespath
 {
 namespace map
 {
+    //all of these strings must be lower case
+    const std::string Parser::XML_NODE_NAME_MAP_            { "map" };
+    const std::string Parser::XML_NODE_NAME_TILE_LAYER_     { "layer" };
+    const std::string Parser::XML_NODE_NAME_OBJECTS_LAYER_  { "objectgroup" };
+    const std::string Parser::XML_NODE_NAME_OBJECT_         { "object" };
+    const std::string Parser::XML_NODE_NAME_TILESET_        { "tileset" };
+    const std::string Parser::XML_NODE_NAME_SHADOW_         { "shadow" };
+    const std::string Parser::XML_ATTRIB_FETCH_PREFIX_      { "<xmlattr>." };
+    const std::string Parser::XML_ATTRIB_NAME_COLLISIONS_   { "collisions" };
 
-    const std::string Parser::XML_NODE_NAME_TILE_LAYER_  { "layer" };
-    const std::string Parser::XML_NODE_NAME_OBJECT_LAYER_{ "objectgroup" };
-    const std::string Parser::XML_NODE_NAME_TILESET_     { "tileset" };
-    //
-    const std::string Parser::XML_ATTRIB_NAME_OBJECTS_{ "object" };
-    const std::string Parser::XML_ATTRIB_NAME_SHADOWS_{ "shadow" };
-    
 
     void Parser::Parse(
         const std::string & FILE_PATH_STR,
@@ -66,17 +68,15 @@ namespace map
         }
         catch (const std::exception & E)
         {
-            M_HP_LOG_ERR("map::Parser::Parse(" << FILE_PATH_STR
-                << ") boost::property_tree functions threw '" << E.what() << "' exception.");
+            M_HP_LOG_ERR("map::Parser::Parse(" << FILE_PATH_STR << ") threw '"
+                << E.what() << "' exception.");
 
             throw E;
         }
         catch (...)
         {
             std::ostringstream ss;
-            ss << "map::Parser::Parse(" << FILE_PATH_STR
-                << ") boost::property_tree functions threw an unknown exception.";
-
+            ss << "map::Parser::Parse(" << FILE_PATH_STR << ") threw an unknown exception.";
             M_HP_LOG_ERR(ss.str());
             throw std::runtime_error(ss.str());
         }
@@ -95,37 +95,39 @@ namespace map
 
         layout.Reset();
 
-        auto const XML_PROPERTY_TREE{ Parse_XML(MAP_FILE_PATH_STR) };
+        auto const XML_PTREE_ROOT{ Parse_XML(MAP_FILE_PATH_STR) };
 
-        Parse_MapSizes(XML_PROPERTY_TREE, layout);
+        Parse_MapSizes(XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_), layout);
 
         SetupEmptyTexture(layout);
 
         using BPTreeValue_t = boost::property_tree::ptree::value_type;
 
         //loop over all layers in the map file and parse them separately
-        for (const BPTreeValue_t & PROPTREE_CHILD_PAIR : XML_PROPERTY_TREE.get_child("map"))
+        for (const BPTreeValue_t & CHILD_PAIR : XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_))
         {
             namespace ba = boost::algorithm;
-            auto const NODENAME_LOWER{ ba::to_lower_copy(PROPTREE_CHILD_PAIR.first) };
+            auto const NODENAME_LOWER{ ba::to_lower_copy(CHILD_PAIR.first) };
 
-            if (WillParseLayer(NODENAME_LOWER) == false)
+            if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_OBJECTS_LAYER_))
             {
+                auto const OBJECT_LAYER_NAME_LOWER{
+                    ba::to_lower_copy(FetchXMLAttributeName(CHILD_PAIR.second)) };
+
+                if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_COLLISIONS_))
+                {
+                    Parse_Layer_Collisions(CHILD_PAIR.second);
+                }
                 continue;
             }
-            else if (ba::contains(NODENAME_LOWER, ba::to_lower_copy(XML_NODE_NAME_OBJECT_LAYER_)))
+            else if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_TILESET_))
             {
-                Parse_Layer_Collisions(PROPTREE_CHILD_PAIR.second);
+                Parse_Layer_Tileset(CHILD_PAIR.second, layout);
                 continue;
             }
-            else if (ba::contains(NODENAME_LOWER, ba::to_lower_copy(XML_NODE_NAME_TILESET_)))
+            else if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_TILE_LAYER_))
             {
-                Parse_Layer_Tileset(PROPTREE_CHILD_PAIR.second, layout);
-                continue;
-            }
-            else
-            {
-                Prase_Layer_Generic(PROPTREE_CHILD_PAIR, layout);
+                Prase_Layer_Generic(CHILD_PAIR.second, layout);
             }
         }
 
@@ -137,7 +139,7 @@ namespace map
         collisionRects_.clear();
 
         ShadowMasker shadowMasker;
-        shadowMasker.ChangeColors(XML_ATTRIB_NAME_SHADOWS_, layout);
+        shadowMasker.ChangeColors(XML_NODE_NAME_SHADOW_, layout);
     }
 
 
@@ -172,32 +174,20 @@ namespace map
 
 
     void Parser::Parse_MapSizes(
-        const boost::property_tree::ptree & XML_PROPERTY_TREE,
+        const boost::property_tree::ptree & MAP_PTREE,
         Layout & layout)
     {
-        auto const XML_PROPERTY_TREE_MAPIMAGE{ XML_PROPERTY_TREE.get_child("map") };
-
         try
         {
-            layout.tile_size_v.x = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.tilewidth");
-            layout.tile_size_v.y = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.tileheight");
-            layout.tile_count_v.x = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.width");
-            layout.tile_count_v.y = XML_PROPERTY_TREE_MAPIMAGE.get<int>("<xmlattr>.height");
+            layout.tile_size_v.x = FetchXMLAttribute<int>(MAP_PTREE, "tilewidth");
+            layout.tile_size_v.y = FetchXMLAttribute<int>(MAP_PTREE, "tileheight");
+            layout.tile_count_v.x = FetchXMLAttribute<int>(MAP_PTREE, "width");
+            layout.tile_count_v.y = FetchXMLAttribute<int>(MAP_PTREE, "height");
         }
         catch (const std::exception & E)
         {
-            std::string name("");
-            try
-            {
-                name = XML_PROPERTY_TREE_MAPIMAGE.get<std::string>("<xmlattr>.name");
-            }
-            catch (...)
-            {
-                name = "(no name error)";
-            }
-
             M_HP_LOG_FAT("map::Parser::Parse_MapSizes() threw exception when parsing \""
-                << name << "\".  what=\"" << E.what() << "\".");
+                << FetchXMLAttributeName(MAP_PTREE) << "\".  what=\"" << E.what() << "\".");
 
             throw E;
         }
@@ -205,20 +195,20 @@ namespace map
 
 
     void Parser::Parse_Layer_Tileset(
-        const boost::property_tree::ptree & TILESET_PROPTREE,
+        const boost::property_tree::ptree & TILESET_PTREE,
         Layout & layout)
     {
-        auto const IMAGE_PROPTREE{ TILESET_PROPTREE.get_child("image") };
+        auto const IMAGE_PROPTREE{ TILESET_PTREE.get_child("image") };
 
         layout.texture_vec.push_back(sf::Texture());
         auto const TEXTURE_INDEX{ layout.texture_vec.size() - 1 };
 
         layout.tiles_panel_vec.push_back( TilesPanel(
-            TILESET_PROPTREE.get<std::string>("<xmlattr>.name"),
-            IMAGE_PROPTREE.get<std::string>("<xmlattr>.source"),
-            TILESET_PROPTREE.get<int>("<xmlattr>.firstgid"),
-            TILESET_PROPTREE.get<int>("<xmlattr>.tilecount"),
-            TILESET_PROPTREE.get<int>("<xmlattr>.columns"),
+            FetchXMLAttribute<std::string>(TILESET_PTREE, "name"),
+            FetchXMLAttribute<std::string>(IMAGE_PROPTREE, "source"),
+            FetchXMLAttribute<int>(TILESET_PTREE, "firstgid"),
+            FetchXMLAttribute<int>(TILESET_PTREE, "tilecount"),
+            FetchXMLAttribute<int>(TILESET_PTREE, "columns"),
             TEXTURE_INDEX));
 
         TilesPanel & tilesPanel{ layout.tiles_panel_vec[layout.tiles_panel_vec.size() - 1] };
@@ -232,55 +222,49 @@ namespace map
     }
 
 
-    void Parser::Parse_Layer_Collisions(const boost::property_tree::ptree & OBJ_GROUP_PT)
+    void Parser::Parse_Layer_Collisions(const boost::property_tree::ptree & OBJGROUP_PTREE)
     {
         namespace ba = boost::algorithm;
 
-        for (const boost::property_tree::ptree::value_type & CHILD : OBJ_GROUP_PT)
+        for (const boost::property_tree::ptree::value_type & CHILD_PAIR : OBJGROUP_PTREE)
         {
-            if (ba::contains(ba::to_lower_copy(CHILD.first), ba::to_lower_copy(XML_ATTRIB_NAME_OBJECTS_)))
+            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_) == false)
             {
-                try
-                {
-                    auto const LEFT{ CHILD.second.get<float>("<xmlattr>.x") };
-                    auto const TOP{ CHILD.second.get<float>("<xmlattr>.y") };
+                continue;
+            }
 
-                    auto const WIDTH{ CHILD.second.get<float>("<xmlattr>.width") };
-                    auto const HEIGHT{ CHILD.second.get<float>("<xmlattr>.height") };
+            auto const CHILD_PTREE{ CHILD_PAIR.second };
 
-                    const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
+            try
+            {
+                auto const LEFT{ FetchXMLAttribute<float>(CHILD_PTREE, "x") };
+                auto const TOP{ FetchXMLAttribute<float>(CHILD_PTREE, "y") };
 
-                    collisionRects_.push_back(RECT);
-                }
-                catch (const std::exception & E)
-                {
-                    std::string name("(no name)");
-                    try
-                    {
-                        name = CHILD.second.get<std::string>("<xmlattr>.name");
-                    }
-                    catch (...)
-                    {
-                        name = CHILD.first;
-                    }
+                auto const WIDTH{ FetchXMLAttribute<float>(CHILD_PTREE, "width") };
+                auto const HEIGHT{ FetchXMLAttribute<float>(CHILD_PTREE, "height") };
 
-                    M_HP_LOG_FAT("Parser::ParseMapFile_ParseLayerCollisions() threw "
-                        << "std::exception when parsing \"" << name << "\".  what=\""
-                        << E.what() << "\".");
+                const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
 
-                    throw E;
-                }
+                collisionRects_.push_back(RECT);
+            }
+            catch (const std::exception & E)
+            {
+                M_HP_LOG_FAT("Parser::Parse_Layer_Collisions() threw "
+                    << "std::exception when parsing \"" << FetchXMLAttributeName(CHILD_PAIR.second)
+                    << "\".  what=\"" << E.what() << "\".");
+
+                throw E;
             }
         }
     }
 
 
     void Parser::Prase_Layer_Generic(
-        const boost::property_tree::ptree::value_type & PROPTREE_CHILD_PAIR,
+        const boost::property_tree::ptree & PTREE,
         Layout & layout)
     {
         std::stringstream ssAllData;
-        ssAllData << PROPTREE_CHILD_PAIR.second.get_child("data").data();
+        ssAllData << PTREE.get_child("data").data();
 
         layout.layer_vec.push_back( Layer() );
         Layer & layer{ layout.layer_vec[layout.layer_vec.size() - 1] };
@@ -326,7 +310,7 @@ namespace map
                 }
                 catch (const std::exception & E)
                 {
-                    M_HP_LOG("sfml_util::Parser::ParseMapFile_ParseGenericTileLayer("
+                    M_HP_LOG("sfml_util::Parser::Parse_Layer_Generic_Tiles("
                         << nextLine << ") " << "boost::lexical_cast<int>("
                         << "\"" << nextValStr << "\") threw '" << E.what() << "' exception.");
 
@@ -335,7 +319,7 @@ namespace map
                 catch (...)
                 {
                     std::ostringstream ss;
-                    ss << "sfml_util::Parser::ParseMapFile_ParseGenericTileLayer("
+                    ss << "sfml_util::Parser::Parse_Layer_Generic_Tiles("
                         << nextLine << ") " << "boost::lexical_cast<int>("
                         << "\"" << nextValStr << "\") threw unknown exception.";
 
@@ -344,26 +328,6 @@ namespace map
                 }
             }
         }
-    }
-
-
-    bool Parser::WillParseLayer(const std::string & NODENAME_LOWERCASE) const
-    {
-        namespace ba = boost::algorithm;
-
-        auto const DOES_NODENAME_CONTAIN_TILELAYER{
-            ba::contains(NODENAME_LOWERCASE, ba::to_lower_copy(XML_NODE_NAME_TILE_LAYER_)) };
-
-        auto const DOES_NODENAME_CONTAIN_OBJECTLAYER{
-            ba::contains(NODENAME_LOWERCASE, ba::to_lower_copy(XML_NODE_NAME_OBJECT_LAYER_)) };
-
-        auto const DOES_NODENAME_CONTAIN_TILESET{
-            ba::contains(NODENAME_LOWERCASE, ba::to_lower_copy(XML_NODE_NAME_TILESET_)) };
-
-        return (
-            DOES_NODENAME_CONTAIN_TILELAYER ||
-            DOES_NODENAME_CONTAIN_OBJECTLAYER ||
-            DOES_NODENAME_CONTAIN_TILESET);
     }
 
 
@@ -390,6 +354,20 @@ namespace map
             1,
             1,
             EMPTY_TEXTURE_INDEX));
+    }
+
+
+    const std::string Parser::FetchXMLAttributeName(
+        const boost::property_tree::ptree & PTREE) const
+    {
+        try
+        {
+            return FetchXMLAttribute<std::string>(PTREE, "name");
+        }
+        catch(...)
+        {
+            return "(no attribute 'name' error)";
+        }
     }
 
 }

@@ -82,20 +82,34 @@ namespace map
         void Parse_MapSizes(const boost::property_tree::ptree &, Layout &);
         void Parse_Layer_Tileset(const boost::property_tree::ptree &, Layout & layout);
         void Parse_Layer_Collisions(const boost::property_tree::ptree &);
-        void Prase_Layer_Generic(const boost::property_tree::ptree::value_type &, Layout & layout);
+        void Prase_Layer_Generic(const boost::property_tree::ptree &, Layout & layout);
         void Parse_Layer_Generic_Tiles(std::vector<int> &, std::stringstream &);
-        bool WillParseLayer(const std::string & NODENAME_LOWERCASE) const;
         void SetupEmptyTexture(Layout &);
+
+        template<typename T>
+        T FetchXMLAttribute(
+            const boost::property_tree::ptree & PTREE,
+            const std::string & NAME) const
+        {
+            return PTREE.get<T>(XML_ATTRIB_FETCH_PREFIX_ + NAME);
+        }
+
+        const std::string FetchXMLAttributeName(
+            const boost::property_tree::ptree &) const;
 
     public:
         //these are the names of XML nodes used in parsing the .tmx map files
+        static const std::string XML_NODE_NAME_MAP_;
         static const std::string XML_NODE_NAME_TILE_LAYER_;
-        static const std::string XML_NODE_NAME_OBJECT_LAYER_;
+        static const std::string XML_NODE_NAME_OBJECTS_LAYER_;
+        static const std::string XML_NODE_NAME_OBJECT_;
         static const std::string XML_NODE_NAME_TILESET_;
+        static const std::string XML_NODE_NAME_SHADOW_;
 
         //these are the sub-names of XML nodes used in parsing the .tmx map files
-        static const std::string XML_ATTRIB_NAME_OBJECTS_;
-        static const std::string XML_ATTRIB_NAME_SHADOWS_;
+        static const std::string XML_ATTRIB_FETCH_PREFIX_;
+        static const std::string XML_ATTRIB_NAME_COLLISIONS_;
+
         
     private:
         sfml_util::FloatRectVec_t collisionRects_;
