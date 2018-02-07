@@ -30,6 +30,8 @@
 #include "map/layout.hpp"
 #include "misc/types.hpp"
 
+#include "sfml-util/collision-quad-tree.hpp"
+
 #include <string>
 
 
@@ -63,10 +65,16 @@ namespace map
     public:
         Parser() {}
 
-        void Parse(const std::string & FILE_PATH_STR, Layout &);
+        void Parse(
+            const std::string & FILE_PATH_STR,
+            Layout &,
+            sfml_util::QuadTree &);
 
     private:
-        void Parse_Implementation(const std::string & FILE_PATH_STR, Layout &);
+        void Parse_Implementation(
+            const std::string & FILE_PATH_STR,
+            Layout &,
+            sfml_util::QuadTree &);
 
         const boost::property_tree::ptree Parse_XML(
             const std::string & MAP_FILE_PATH_STR) const;

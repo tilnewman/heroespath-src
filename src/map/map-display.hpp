@@ -22,19 +22,19 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SFMLUTIL_TILEMAP_HPP_INCLUDED
-#define HEROESPATH_SFMLUTIL_TILEMAP_HPP_INCLUDED
+#ifndef HEROESPATH_MAP_MAPDISPLAY_HPP_INCLUDED
+#define HEROESPATH_MAP_MAPDISPLAY_HPP_INCLUDED
 //
-// tilemap.hpp
+// map-display.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/direction-enum.hpp"
-#include "map/parser.hpp"
+#include "sfml-util/collision-quad-tree.hpp"
+
 #include "map/layout.hpp"
 #include "map/layer.hpp"
 #include "map/tiles-panel.hpp"
 #include "map/tile-offsets.hpp"
-
 #include "misc/types.hpp"
 
 #include <string>
@@ -42,31 +42,36 @@
 
 namespace heroespath
 {
-namespace sfml_util
+namespace map
 {
 
     //Encapsulates a tiled map, along with the player's position.
-    class TileMap
+    class MapDisplay : public sf::Drawable
     {
-        TileMap(const TileMap &) =delete;
-        TileMap & operator=(const TileMap &) =delete;
+        MapDisplay(const MapDisplay &) = delete;
+        MapDisplay & operator=(const MapDisplay &) = delete;
 
     public:
-        TileMap(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V);
+        MapDisplay(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V);
 
-        void Load(const std::string & MAP_FILE_PATH_STR, const sf::Vector2f & PLAYER_POS_V);
+        void Load(
+            const std::string & MAP_FILE_PATH_STR,
+            const sf::Vector2f & STARTING_POS_V,
+            sfml_util::QuadTree & collisionQTree);
 
         bool MoveUp(const float ADJUSTMENT);
         bool MoveDown(const float ADJUSTMENT);
         bool MoveLeft(const float ADJUSTMENT);
         bool MoveRight(const float ADJUSTMENT);
 
-        void Draw(sf::RenderTarget &, const sf::RenderStates &);
+        virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
+
+        inline const sf::Vector2f PlayerPosMap() const { return playerPosV_ + playerPosOffsetV_; }
 
     private:
-        void DrawNormal(sf::RenderTarget &, const sf::RenderStates &);
-        void DrawDebug(sf::RenderTarget &, const sf::RenderStates &);
-        void DrawPlayerImage(sf::RenderTarget &, const sf::Vector2f &);
+        void DrawNormal(sf::RenderTarget &, sf::RenderStates) const;
+        void DrawDebug(sf::RenderTarget &, sf::RenderStates) const;
+        void DrawPlayerImage(sf::RenderTarget &, const sf::Vector2f &) const;
         void ReDraw();
         void ResetMapSubsections();
         void DrawMapSubsectionOffscreen();
@@ -79,17 +84,13 @@ namespace sfml_util
 
         const map::TileOffsets TileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
 
-        inline const sf::Vector2f PlayerPosMap() const { return playerPosV_ + playerPosOffsetV_; }
-        
         const sf::Vector2f PlayerPosScreen() const;
 
         const sf::Vector2f ScreenPosFromMapPos(const sf::Vector2f &) const;
 
-        bool DoesAdjPlayerPosCollide(const Direction::Enum DIR, const float ADJ) const;
-
         const map::TilesPanel & TilesPanelFromId(const int) const;
 
-        void IncrementTileOffsetsInDirection(const Direction::Enum);
+        void IncrementTileOffsetsInDirection(const sfml_util::Direction::Enum);
 
         const sf::Vector2f CalcOffScreenMapSize() const;
 
@@ -105,19 +106,18 @@ namespace sfml_util
         const sf::Vector2f WIN_POS_V_;
         const sf::Vector2f WIN_SIZE_V_;
         const sf::Vector2f WIN_CENTER_V_;
-        map::Layout        mapLayout_;
+        map::Layout        layout_;
         map::TileOffsets   tileOffsets_;
         sf::Vector2f       playerPosV_;
         sf::Vector2f       playerPosOffsetV_;
         sf::FloatRect      offScreenRect_;
-        sf::Sprite         mapSprite_;
+        sf::Sprite         offScreenSprite_;
         sf::RenderTexture  offScreenTexture_;
         sf::Vector2f       offScreenMapSize_;
     };
 
-    using TileMapUPtr_t = std::unique_ptr<TileMap>;
-
+    using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_TILEMAP_HPP_INCLUDED
+#endif //HEROESPATH_MAP_MAPDISPLAY_HPP_INCLUDED

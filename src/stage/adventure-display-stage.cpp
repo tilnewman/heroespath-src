@@ -29,6 +29,8 @@
 //
 #include "adventure-display-stage.hpp"
 
+#include "map/map.hpp"
+#include "map/map-display.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "stage/adventure-stage.hpp"
@@ -55,6 +57,7 @@ namespace stage
         backgroundTexture_(),
         bottomImage_(0.75f, true, sf::Color::White),
         topImage_("", true, 1.0f, 0.75f),
+        mapUPtr_(),
         frameCounter_(0)
     {}
 
@@ -77,8 +80,8 @@ namespace stage
         target.draw(bottomImage_, STATES);
         target.draw(topImage_, STATES);
         target.draw( * characterListUPtr_, STATES);
+        target.draw( * mapUPtr_, STATES);
         Stage::Draw(target, STATES);
-        mapUPtr_->Draw(target, STATES);
     }
 
 
@@ -155,9 +158,15 @@ namespace stage
 
     void AdventureDisplayStage::Setup_Map()
     {
-        mapUPtr_ = std::make_unique<sfml_util::TileMap>(
-            sf::Vector2f(100.0f + sfml_util::MapByRes(30.0f, 90.0f), topImage_.Bottom()),
-            sf::Vector2f(sfml_util::MapByRes(500.0f, 2500.0f), sfml_util::MapByRes(250.0f, 2000.0f)));
+        const sf::Vector2f MAP_WIN_POS_V(
+            100.0f + sfml_util::MapByRes(30.0f, 90.0f),
+            topImage_.Bottom());
+
+        const sf::Vector2f MAP_WIN_SIZE_V(
+            sfml_util::MapByRes(500.0f, 2500.0f),
+            sfml_util::MapByRes(250.0f, 2000.0f));
+
+        mapUPtr_ = std::make_unique<map::Map>(MAP_WIN_POS_V, MAP_WIN_SIZE_V);
 
         mapUPtr_->Load(
             game::GameDataFile::Instance()->GetMediaPath("media-maps-thornberry"),

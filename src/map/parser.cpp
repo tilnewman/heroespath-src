@@ -57,11 +57,14 @@ namespace map
     const std::string Parser::XML_ATTRIB_NAME_COLLISION_ { "collision" };
 
 
-    void Parser::Parse(const std::string & FILE_PATH_STR, Layout & layout)
+    void Parser::Parse(
+        const std::string & FILE_PATH_STR,
+        Layout & layout,
+        sfml_util::QuadTree & collisionQTree)
     {
         try
         {
-            Parse_Implementation(FILE_PATH_STR, layout);
+            Parse_Implementation(FILE_PATH_STR, layout, collisionQTree);
         }
         catch (const std::exception & E)
         {
@@ -82,10 +85,15 @@ namespace map
     }
 
 
-    void Parser::Parse_Implementation(const std::string & MAP_FILE_PATH_STR, Layout & layout)
+    void Parser::Parse_Implementation(
+        const std::string & MAP_FILE_PATH_STR,
+        Layout & layout,
+        sfml_util::QuadTree & collisionQTree)
     {
         collisionRects_.clear();
         collisionRects_.reserve(4096);//found by experiment to be a good upper bound
+
+        collisionQTree.Clear();
 
         layout.Reset();
 
@@ -123,7 +131,7 @@ namespace map
             }
         }
 
-        layout.collision_qtree.Setup(
+        collisionQTree.Setup(
             static_cast<float>(layout.tile_size_v.x * layout.tile_count_v.x),
             static_cast<float>(layout.tile_size_v.y * layout.tile_count_v.y),
             collisionRects_);

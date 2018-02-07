@@ -28,7 +28,6 @@
 // layout.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/collision-quad-tree.hpp"
 #include "map/layer.hpp"
 #include "map/tiles-panel.hpp"
 
@@ -54,7 +53,6 @@ namespace map
             layer_vec(),
             tiles_panel_vec(),
             texture_vec(),
-            collision_qtree(),
             empty_texture()
         {}
 
@@ -67,7 +65,6 @@ namespace map
             layer_vec.clear();
             tiles_panel_vec.clear();
             texture_vec.clear();
-            collision_qtree.Clear();
         }
 
         inline const std::string EmptyTilesPanelName() const { return "empty"; }
@@ -77,7 +74,6 @@ namespace map
         LayerVec_t layer_vec;
         TilesPanelVec_t tiles_panel_vec;
         sfml_util::TextureVec_t texture_vec;
-        sfml_util::QuadTree collision_qtree;
         sf::RenderTexture empty_texture;
     };
 

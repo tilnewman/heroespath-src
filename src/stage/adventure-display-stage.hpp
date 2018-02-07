@@ -30,15 +30,21 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
-#include "sfml-util/tilemap.hpp"
-
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-title.hpp"
+
 #include "stage/adventure-stage-char-list.hpp"
+
+#include <memory>
 
 
 namespace heroespath
 {
+namespace map
+{
+    class Map;
+    using MapUPtr_t = std::unique_ptr<Map>;
+}
 namespace stage
 {
 
@@ -70,7 +76,7 @@ namespace stage
         sf::Sprite backgroundSprite_;
         sfml_util::BottomSymbol bottomImage_;
         sfml_util::MainMenuTitle topImage_;
-        sfml_util::TileMapUPtr_t mapUPtr_;
+        map::MapUPtr_t mapUPtr_;
         int frameCounter_;
     };
 
