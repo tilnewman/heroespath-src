@@ -22,17 +22,12 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_LAYER_HPP_INCLUDED
-#define HEROESPATH_LAYER_HPP_INCLUDED
+#ifndef HEROESPATH_MAP_LAYERTYPEENUM_HPP_INCLUDED
+#define HEROESPATH_MAP_LAYERTYPEENUM_HPP_INCLUDED
 //
-// layer.hpp
+// layer-type-enum.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "map/tiles-panel.hpp"
-#include "map/layer-type-enum.hpp"
-#include "misc/types.hpp"
-
-#include <vector>
+#include <string>
 
 
 namespace heroespath
@@ -40,31 +35,21 @@ namespace heroespath
 namespace map
 {
 
-    //Responsible for wrapping all data about a single map layer.
-    struct Layer
+    struct LayerType
     {
-        LayerType::Enum type;
-
-        //only stores verts for drawn map tiles
-        sf::VertexArray vert_array;
-
-        //copies of TileImages that are used by vert_array
-        TilesPanelForLayersVec_t tiles_panel_vec;
-
-        //the map IDs that make up this panel
-        std::vector<int> mapid_vec;
-
-        void ResetForReDraw()
+        enum Enum
         {
-            vert_array.clear();
-            tiles_panel_vec.clear();
-        }
+            Ground = 0,
+            Object,
+            Shadow,
+            Count
+        };
+
+        static const std::string ToString(const LayerType::Enum);
     };
 
-    using LayerVec_t = std::vector<Layer>;
 
 }
 }
 
-
-#endif //HEROESPATH_LAYER_HPP_INCLUDED
+#endif //HEROESPATH_MAP_LAYERTYPEENUM_HPP_INCLUDED

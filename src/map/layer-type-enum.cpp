@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -22,17 +24,13 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_LAYER_HPP_INCLUDED
-#define HEROESPATH_LAYER_HPP_INCLUDED
 //
-// layer.hpp
+// layer-type-enum.cpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "map/tiles-panel.hpp"
-#include "map/layer-type-enum.hpp"
-#include "misc/types.hpp"
+#include "layer-type-enum.hpp"
 
-#include <vector>
+#include <sstream>
+#include <exception>
 
 
 namespace heroespath
@@ -40,31 +38,22 @@ namespace heroespath
 namespace map
 {
 
-    //Responsible for wrapping all data about a single map layer.
-    struct Layer
+    const std::string LayerType::ToString(const LayerType::Enum E)
     {
-        LayerType::Enum type;
-
-        //only stores verts for drawn map tiles
-        sf::VertexArray vert_array;
-
-        //copies of TileImages that are used by vert_array
-        TilesPanelForLayersVec_t tiles_panel_vec;
-
-        //the map IDs that make up this panel
-        std::vector<int> mapid_vec;
-
-        void ResetForReDraw()
+        switch (E)
         {
-            vert_array.clear();
-            tiles_panel_vec.clear();
+            case Ground: { return "Ground"; }
+            case Object: { return "Object"; }
+            case Shadow: { return "Shadow"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "map::LayerType::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
         }
-    };
-
-    using LayerVec_t = std::vector<Layer>;
+    }
 
 }
 }
-
-
-#endif //HEROESPATH_LAYER_HPP_INCLUDED

@@ -28,6 +28,7 @@
 // parser.hpp
 //
 #include "map/layout.hpp"
+#include "map/layer-type-enum.hpp"
 #include "misc/types.hpp"
 
 #include "sfml-util/collision-quad-tree.hpp"
@@ -80,9 +81,14 @@ namespace map
             const std::string & MAP_FILE_PATH_STR) const;
 
         void Parse_MapSizes(const boost::property_tree::ptree &, Layout &);
-        void Parse_Layer_Tileset(const boost::property_tree::ptree &, Layout & layout);
+        void Parse_Layer_Tileset(const boost::property_tree::ptree &, Layout &);
         void Parse_Layer_Collisions(const boost::property_tree::ptree &);
-        void Prase_Layer_Generic(const boost::property_tree::ptree &, Layout & layout);
+
+        void Prase_Layer_Generic(
+            const boost::property_tree::ptree &,
+            Layout &,
+            const LayerType::Enum);
+        
         void Parse_Layer_Generic_Tiles(std::vector<int> &, std::stringstream &);
         void SetupEmptyTexture(Layout &);
 
@@ -102,6 +108,8 @@ namespace map
             const std::string & NODE_NAME,
             sfml_util::FloatRectVec_t &) const;
 
+        LayerType::Enum LayerTypeFromName(const std::string &) const;
+
     public:
         //these are the names of XML nodes used in parsing the .tmx map files
         static const std::string XML_NODE_NAME_MAP_;
@@ -109,12 +117,12 @@ namespace map
         static const std::string XML_NODE_NAME_OBJECTS_LAYER_;
         static const std::string XML_NODE_NAME_OBJECT_;
         static const std::string XML_NODE_NAME_TILESET_;
-        static const std::string XML_NODE_NAME_SHADOW_;
-
+        
         //these are the sub-names of XML nodes used in parsing the .tmx map files
         static const std::string XML_ATTRIB_FETCH_PREFIX_;
         static const std::string XML_ATTRIB_NAME_COLLISIONS_;
-
+        static const std::string XML_ATTRIB_NAME_SHADOW_;
+        static const std::string XML_ATTRIB_NAME_GROUND_;
         
     private:
         sfml_util::FloatRectVec_t collisionRects_;

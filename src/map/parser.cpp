@@ -52,9 +52,10 @@ namespace map
     const std::string Parser::XML_NODE_NAME_OBJECTS_LAYER_  { "objectgroup" };
     const std::string Parser::XML_NODE_NAME_OBJECT_         { "object" };
     const std::string Parser::XML_NODE_NAME_TILESET_        { "tileset" };
-    const std::string Parser::XML_NODE_NAME_SHADOW_         { "shadow" };
     const std::string Parser::XML_ATTRIB_FETCH_PREFIX_      { "<xmlattr>." };
-    const std::string Parser::XML_ATTRIB_NAME_COLLISIONS_   { "collisions" };
+    const std::string Parser::XML_ATTRIB_NAME_COLLISIONS_   { "collision" };
+    const std::string Parser::XML_ATTRIB_NAME_SHADOW_       { "shadow" };
+    const std::string Parser::XML_ATTRIB_NAME_GROUND_       { "ground" };
 
 
     void Parser::Parse(
@@ -127,7 +128,10 @@ namespace map
             }
             else if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_TILE_LAYER_))
             {
-                Prase_Layer_Generic(CHILD_PAIR.second, layout);
+                auto const LAYER_TYPE{ LayerTypeFromName(ba::to_lower_copy(
+                    FetchXMLAttributeName(CHILD_PAIR.second))) };
+
+                Prase_Layer_Generic(CHILD_PAIR.second, layout, LAYER_TYPE);
             }
         }
 
@@ -139,7 +143,7 @@ namespace map
         collisionRects_.clear();
 
         ShadowMasker shadowMasker;
-        shadowMasker.ChangeColors(XML_NODE_NAME_SHADOW_, layout);
+        shadowMasker.ChangeColors(XML_ATTRIB_NAME_SHADOW_, layout);
     }
 
 
@@ -230,13 +234,17 @@ namespace map
 
     void Parser::Prase_Layer_Generic(
         const boost::property_tree::ptree & PTREE,
-        Layout & layout)
+        Layout & layout,
+        const LayerType::Enum TYPE)
     {
         std::stringstream ssAllData;
         ssAllData << PTREE.get_child("data").data();
 
         layout.layer_vec.push_back( Layer() );
         Layer & layer{ layout.layer_vec[layout.layer_vec.size() - 1] };
+        
+        layer.type = TYPE;
+        
         Parse_Layer_Generic_Tiles(layer.mapid_vec, ssAllData);
     }
 
@@ -374,6 +382,25 @@ namespace map
 
                 throw E;
             }
+        }
+    }
+
+
+    LayerType::Enum Parser::LayerTypeFromName(const std::string & NAME) const
+    {
+        namespace ba = boost::algorithm;
+
+        if (ba::contains(NAME, XML_ATTRIB_NAME_GROUND_))
+        {
+            return LayerType::Ground;
+        }
+        else if (ba::contains(NAME, XML_ATTRIB_NAME_SHADOW_))
+        {
+            return LayerType::Shadow;
+        }
+        else
+        {
+            return LayerType::Object;
         }
     }
 
