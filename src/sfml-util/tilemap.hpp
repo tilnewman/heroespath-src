@@ -66,7 +66,7 @@ namespace sfml_util
     private:
         void DrawNormal(sf::RenderTarget &, const sf::RenderStates &);
         void DrawDebug(sf::RenderTarget &, const sf::RenderStates &);
-        void DrawPlayer(sf::RenderTarget & target);
+        void DrawPlayerImage(sf::RenderTarget &, const sf::Vector2f &);
         void ReDraw();
         void ResetMapSubsections();
         void DrawMapSubsectionOffscreen();
@@ -77,15 +77,17 @@ namespace sfml_util
 
         void SetupMapLayerSubsection(map::Layer &, const map::TileOffsets &);
 
-        const map::TileOffsets GetTileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
+        const map::TileOffsets TileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
 
-        inline const sf::Vector2f GetPlayerPos() const { return playerPosV_ + playerPosOffsetV_; }
+        inline const sf::Vector2f PlayerPosMap() const { return playerPosV_ + playerPosOffsetV_; }
         
-        const sf::Vector2f GetPlayerPosScreen() const;
+        const sf::Vector2f PlayerPosScreen() const;
+
+        const sf::Vector2f ScreenPosFromMapPos(const sf::Vector2f &) const;
 
         bool DoesAdjPlayerPosCollide(const Direction::Enum DIR, const float ADJ) const;
 
-        const map::TilesPanel & GetTilesPanelFromId(const int) const;
+        const map::TilesPanel & TilesPanelFromId(const int) const;
 
         void IncrementTileOffsetsInDirection(const Direction::Enum);
 

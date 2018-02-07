@@ -77,7 +77,7 @@ namespace sfml_util
         map::Parser mapParser;
         mapParser.Parse(MAP_FILE_PATH_STR, mapLayout_);
 
-        tileOffsets_ = GetTileOffsetsFromMapPos(PLAYER_POS_V);
+        tileOffsets_ = TileOffsetsFromMapPos(PLAYER_POS_V);
 
         offScreenMapSize_ = CalcOffScreenMapSize();
 
@@ -93,9 +93,7 @@ namespace sfml_util
             return false;
         }
 
-        auto const CURR_SCREEN_POS{ GetPlayerPosScreen() };
-
-        if (CURR_SCREEN_POS.y > (WIN_POS_V_.y + BORDER_PAD_))
+        if (PlayerPosScreen().y > (WIN_POS_V_.y + BORDER_PAD_))
         {
             //move within the view before moving the view
             playerPosOffsetV_.y -= ADJUSTMENT;
@@ -130,9 +128,7 @@ namespace sfml_util
             return false;
         }
 
-        auto const CURR_SCREEN_POS{ GetPlayerPosScreen() };
-
-        if (CURR_SCREEN_POS.y < ((WIN_POS_V_.y + WIN_SIZE_V_.y) - BORDER_PAD_))
+        if (PlayerPosScreen().y < ((WIN_POS_V_.y + WIN_SIZE_V_.y) - BORDER_PAD_))
         {
             //move within the view before moving the view
             playerPosOffsetV_.y += ADJUSTMENT;
@@ -174,9 +170,7 @@ namespace sfml_util
             return false;
         }
 
-        auto const CURR_SCREEN_POS{ GetPlayerPosScreen() };
-
-        if (CURR_SCREEN_POS.x > (WIN_POS_V_.x + BORDER_PAD_))
+        if (PlayerPosScreen().x > (WIN_POS_V_.x + BORDER_PAD_))
         {
             //move within the view before moving the view
             playerPosOffsetV_.x -= ADJUSTMENT;
@@ -211,9 +205,7 @@ namespace sfml_util
             return false;
         }
 
-        auto const CURR_SCREEN_POS{ GetPlayerPosScreen() };
-
-        if (CURR_SCREEN_POS.x < ((WIN_POS_V_.x + WIN_SIZE_V_.x) - BORDER_PAD_))
+        if (PlayerPosScreen().x < ((WIN_POS_V_.x + WIN_SIZE_V_.x) - BORDER_PAD_))
         {
             //move within the view before moving the view
             playerPosOffsetV_.x += ADJUSTMENT;
@@ -257,7 +249,7 @@ namespace sfml_util
     void TileMap::DrawNormal(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(mapSprite_, STATES);
-        DrawPlayer(target);
+        DrawPlayerImage(target, PlayerPosScreen());
     }
 
 
@@ -277,11 +269,12 @@ namespace sfml_util
     }
 
 
-    void TileMap::DrawPlayer(sf::RenderTarget & target)
+    void TileMap::DrawPlayerImage(sf::RenderTarget & target, const sf::Vector2f & POS_V)
     {
-        sf::CircleShape c(5);
-        c.setFillColor(sf::Color(255, 0, 0));
-        c.setPosition(GetPlayerPosScreen());
+        auto const RADIUS{ 10.0f };
+        sf::CircleShape c(RADIUS);
+        c.setFillColor(sf::Color::Magenta);
+        c.setPosition(POS_V - sf::Vector2f(RADIUS * 0.5f, RADIUS * 0.5f));
         target.draw(c);
     }
 
@@ -418,7 +411,7 @@ namespace sfml_util
                     (TILE_NUM_ORIG == 0) ? 0 : (TILE_NUM_ORIG - 1) };
 
                 //get the texture/image this tile can be found in
-                const map::TilesPanel & TILES_PANEL{ GetTilesPanelFromId(TILE_NUM_ID_ADJ) };
+                const map::TilesPanel & TILES_PANEL{ TilesPanelFromId(TILE_NUM_ID_ADJ) };
                 mapLayer.tiles_panel_vec.push_back(TILES_PANEL);
 
                 //adjust the tile number to start at one
@@ -492,7 +485,7 @@ namespace sfml_util
     }
 
 
-    const map::TileOffsets TileMap::GetTileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const
+    const map::TileOffsets TileMap::TileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const
     {
         map::TileOffsets offsets;
 
@@ -530,31 +523,54 @@ namespace sfml_util
     }
 
 
-    const sf::Vector2f TileMap::GetPlayerPosScreen() const
+    const sf::Vector2f TileMap::PlayerPosScreen() const
     {
-        return WIN_CENTER_V_ + playerPosOffsetV_;
+        return ScreenPosFromMapPos(PlayerPosMap());
+    }
+
+
+    const sf::Vector2f TileMap::ScreenPosFromMapPos(const sf::Vector2f & MAP_POS_V) const
+    {
+        auto const SCREEN_LEFT{ (WIN_POS_V_.x - offScreenRect_.left) };
+        auto const SCREEN_TOP{ (WIN_POS_V_.y - offScreenRect_.top) };
+        const sf::Vector2f SCREEN_POS_V(SCREEN_LEFT, SCREEN_TOP);
+
+        auto const MAP_OFFSET_LEFT{
+            MAP_POS_V.x - static_cast<float>(mapLayout_.tile_size_v.x * tileOffsets_.begin_v.x) };
+
+        auto const MAP_OFFSET_TOP {
+            MAP_POS_V.y -  static_cast<float>(mapLayout_.tile_size_v.y * tileOffsets_.begin_v.y) };
+
+        const sf::Vector2f MAP_OFFSET_V(MAP_OFFSET_LEFT, MAP_OFFSET_TOP);
+
+        //okay...I don't know why I need these fudge factors, but I do...ug.
+        auto const FUDGE_FACTOR_HORIZ{ static_cast<float>(mapLayout_.tile_size_v.x) * 0.5f };
+        auto const FUDGE_FACTOR_VERT{ static_cast<float>(mapLayout_.tile_size_v.y) };
+        const sf::Vector2f FUDGE_FACTOR_V(FUDGE_FACTOR_HORIZ, FUDGE_FACTOR_VERT);
+
+        return SCREEN_POS_V + MAP_OFFSET_V + FUDGE_FACTOR_V;
     }
 
 
     bool TileMap::DoesAdjPlayerPosCollide(const Direction::Enum DIR, const float ADJ) const
     {
-        auto posToTest{ GetPlayerPos() };
+        auto posToTest{ PlayerPosMap() };
 
         switch (DIR)
         {
             case Direction::Left:   { posToTest.x -= ADJ; break; }
             case Direction::Right:  { posToTest.x += ADJ; break; }
             case Direction::Up:     { posToTest.y -= ADJ; break; }
-            case Direction::Down:
+            case Direction::Down:   { posToTest.y += ADJ; break; }
             case Direction::Count:
-            default:                { posToTest.y += ADJ; break; }
+            default:                { break; }
         }
 
         return mapLayout_.collision_qtree.IsPointWithinCollisionRect(posToTest);
     }
 
 
-    const map::TilesPanel & TileMap::GetTilesPanelFromId(const int ID) const
+    const map::TilesPanel & TileMap::TilesPanelFromId(const int ID) const
     {
         for (auto const & TILES_PANEL : mapLayout_.tiles_panel_vec)
         {
@@ -565,7 +581,7 @@ namespace sfml_util
         }
 
         std::ostringstream ss;
-        ss << "sfml_util::TileMap::GetTilesPanelFromId(id=" << ID
+        ss << "sfml_util::TileMap::TilesPanelFromId(id=" << ID
             << ") failed to find the owning TilesPanel.";
 
         throw std::runtime_error(ss.str());

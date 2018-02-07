@@ -74,15 +74,10 @@ namespace map
 
         sf::Vector2i tile_size_v;
         sf::Vector2i tile_count_v;
-
         LayerVec_t layer_vec;
-
         TilesPanelVec_t tiles_panel_vec;
-
         sfml_util::TextureVec_t texture_vec;
-
         sfml_util::QuadTree collision_qtree;
-
         sf::RenderTexture empty_texture;
     };
 
