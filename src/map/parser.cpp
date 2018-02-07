@@ -224,38 +224,7 @@ namespace map
 
     void Parser::Parse_Layer_Collisions(const boost::property_tree::ptree & OBJGROUP_PTREE)
     {
-        namespace ba = boost::algorithm;
-
-        for (const boost::property_tree::ptree::value_type & CHILD_PAIR : OBJGROUP_PTREE)
-        {
-            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_) == false)
-            {
-                continue;
-            }
-
-            auto const CHILD_PTREE{ CHILD_PAIR.second };
-
-            try
-            {
-                auto const LEFT{ FetchXMLAttribute<float>(CHILD_PTREE, "x") };
-                auto const TOP{ FetchXMLAttribute<float>(CHILD_PTREE, "y") };
-
-                auto const WIDTH{ FetchXMLAttribute<float>(CHILD_PTREE, "width") };
-                auto const HEIGHT{ FetchXMLAttribute<float>(CHILD_PTREE, "height") };
-
-                const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
-
-                collisionRects_.push_back(RECT);
-            }
-            catch (const std::exception & E)
-            {
-                M_HP_LOG_FAT("Parser::Parse_Layer_Collisions() threw "
-                    << "std::exception when parsing \"" << FetchXMLAttributeName(CHILD_PAIR.second)
-                    << "\".  what=\"" << E.what() << "\".");
-
-                throw E;
-            }
-        }
+        Parse_Rects(OBJGROUP_PTREE, XML_NODE_NAME_OBJECT_, collisionRects_);
     }
 
 
@@ -367,6 +336,44 @@ namespace map
         catch(...)
         {
             return "(no attribute 'name' error)";
+        }
+    }
+
+
+    void Parser::Parse_Rects(
+        const boost::property_tree::ptree & PTREE,
+        const std::string & NODE_NAME,
+        sfml_util::FloatRectVec_t & rectsVec) const
+    {
+        namespace ba = boost::algorithm;
+
+        for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
+        {
+            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), NODE_NAME) == false)
+            {
+                continue;
+            }
+
+            auto const CHILD_PTREE{ CHILD_PAIR.second };
+
+            try
+            {
+                auto const LEFT{ FetchXMLAttribute<float>(CHILD_PTREE, "x") };
+                auto const TOP{ FetchXMLAttribute<float>(CHILD_PTREE, "y") };
+                auto const WIDTH{ FetchXMLAttribute<float>(CHILD_PTREE, "width") };
+                auto const HEIGHT{ FetchXMLAttribute<float>(CHILD_PTREE, "height") };
+
+                const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
+                rectsVec.push_back(RECT);
+            }
+            catch (const std::exception & E)
+            {
+                M_HP_LOG_FAT("Parser::Parse_Rects() threw "
+                    << "std::exception when parsing \"" << FetchXMLAttributeName(CHILD_PAIR.second)
+                    << "\".  what=\"" << E.what() << "\".");
+
+                throw E;
+            }
         }
     }
 

@@ -97,6 +97,11 @@ namespace map
         const std::string FetchXMLAttributeName(
             const boost::property_tree::ptree &) const;
 
+        void Parse_Rects(
+            const boost::property_tree::ptree &,
+            const std::string & NODE_NAME,
+            sfml_util::FloatRectVec_t &) const;
+
     public:
         //these are the names of XML nodes used in parsing the .tmx map files
         static const std::string XML_NODE_NAME_MAP_;
