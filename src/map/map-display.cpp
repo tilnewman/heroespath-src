@@ -533,12 +533,7 @@ namespace map
 
         const sf::Vector2f MAP_OFFSET_V(MAP_OFFSET_LEFT, MAP_OFFSET_TOP);
 
-        //okay...I don't know why I need these fudge factors, but I do...ug.
-        auto const FUDGE_FACTOR_HORIZ{ static_cast<float>(layout_.tile_size_v.x) * 0.5f };
-        auto const FUDGE_FACTOR_VERT{ static_cast<float>(layout_.tile_size_v.y) };
-        const sf::Vector2f FUDGE_FACTOR_V(FUDGE_FACTOR_HORIZ, FUDGE_FACTOR_VERT);
-
-        return SCREEN_POS_V + MAP_OFFSET_V + FUDGE_FACTOR_V;
+        return SCREEN_POS_V + MAP_OFFSET_V;
     }
 
 

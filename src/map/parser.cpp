@@ -51,11 +51,9 @@ namespace map
     const std::string Parser::XML_NODE_NAME_OBJECT_LAYER_{ "objectgroup" };
     const std::string Parser::XML_NODE_NAME_TILESET_     { "tileset" };
     //
-    const std::string Parser::XML_ATTRIB_NAME_GROUND_    { "ground" };
-    const std::string Parser::XML_ATTRIB_NAME_OBJECTS_   { "object" };
-    const std::string Parser::XML_ATTRIB_NAME_SHADOWS_   { "shadow" };
-    const std::string Parser::XML_ATTRIB_NAME_COLLISION_ { "collision" };
-
+    const std::string Parser::XML_ATTRIB_NAME_OBJECTS_{ "object" };
+    const std::string Parser::XML_ATTRIB_NAME_SHADOWS_{ "shadow" };
+    
 
     void Parser::Parse(
         const std::string & FILE_PATH_STR,
@@ -244,12 +242,11 @@ namespace map
             {
                 try
                 {
-                    //Not sure why these magic numbers 20.0f and 40.0f are here...zTn 2016-11-1
-                    const float LEFT(CHILD.second.get<float>("<xmlattr>.x") - 20.0f);
-                    const float TOP(CHILD.second.get<float>("<xmlattr>.y") - 40.0f);
+                    auto const LEFT{ CHILD.second.get<float>("<xmlattr>.x") };
+                    auto const TOP{ CHILD.second.get<float>("<xmlattr>.y") };
 
-                    const float WIDTH(CHILD.second.get<float>("<xmlattr>.width"));
-                    const float HEIGHT(CHILD.second.get<float>("<xmlattr>.height"));
+                    auto const WIDTH{ CHILD.second.get<float>("<xmlattr>.width") };
+                    auto const HEIGHT{ CHILD.second.get<float>("<xmlattr>.height") };
 
                     const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
 

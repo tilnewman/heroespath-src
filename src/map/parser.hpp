@@ -94,11 +94,9 @@ namespace map
         static const std::string XML_NODE_NAME_TILESET_;
 
         //these are the sub-names of XML nodes used in parsing the .tmx map files
-        static const std::string XML_ATTRIB_NAME_GROUND_;
         static const std::string XML_ATTRIB_NAME_OBJECTS_;
         static const std::string XML_ATTRIB_NAME_SHADOWS_;
-        static const std::string XML_ATTRIB_NAME_COLLISION_;
-
+        
     private:
         sfml_util::FloatRectVec_t collisionRects_;
     };

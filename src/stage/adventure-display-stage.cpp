@@ -170,7 +170,7 @@ namespace stage
 
         mapUPtr_->Load(
             game::GameDataFile::Instance()->GetMediaPath("media-maps-thornberry"),
-            sf::Vector2f(300.0f, 300.0f));
+            sf::Vector2f(250.0f, 350.0f));
     }
 
 }
