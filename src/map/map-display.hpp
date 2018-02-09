@@ -96,14 +96,14 @@ namespace map
         const sf::Vector2f CalcOffScreenMapSize() const;
 
     public:
-        //This is how close the player position can get to
-        //the edge of the map before being forced to stop.
-        static const float BORDER_PAD_;
-
         //how many tiles to draw offscreen that are outside the visible map area
         static const int EXTRA_OFFSCREEN_TILE_COUNT_;
 
     private:
+        //This is how close the player position can get to
+        //the edge of the map before being forced to stop.
+        const float BORDER_PAD_;
+
         const sf::Vector2f WIN_POS_V_;
         const sf::Vector2f WIN_SIZE_V_;
         const sf::Vector2f WIN_CENTER_V_;
