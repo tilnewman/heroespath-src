@@ -419,20 +419,16 @@ namespace map
                 auto const TILE_NUM_ORIG{
                     mapLayer.mapid_vec[static_cast<std::size_t>(TILE_INDEX)] };
 
-                //This -1 comes from the Tiled app that starts tile ids at 1 instead of 0.
-                auto const TILE_NUM_ID_ADJ{
-                    (TILE_NUM_ORIG == 0) ? 0 : (TILE_NUM_ORIG - 1) };
-
                 //get the texture/image this tile can be found in
-                const map::TilesPanel & TILES_PANEL{ TilesPanelFromId(TILE_NUM_ID_ADJ) };
+                const map::TilesPanel & TILES_PANEL{ TilesPanelFromId(TILE_NUM_ORIG) };
                 
                 mapLayer.tiles_panel_vec.push_back( 
                     map::TilesPanelForLayers(
                         (TILES_PANEL.name == layout_.EmptyTilesPanelName()),
                         TILES_PANEL.texture_index) );
 
-                //adjust the tile number to start at one
-                auto const TILE_ID{ (TILE_NUM_ID_ADJ - TILES_PANEL.first_id) + 1 };
+                //get the actual tile number (id)
+                auto const TILE_NUM_FINAL{ (TILE_NUM_ORIG - TILES_PANEL.first_id) };
 
                 //get a pointer to the current tile's quad
                 auto const VERT_ARRAY_INDEX{ static_cast<std::size_t>((vertIndex++) * 4) };
@@ -468,10 +464,10 @@ namespace map
                     layout_.texture_vec[TILES_PANEL.texture_index].getSize().x) / layout_.tile_size_v.x };
 
                 auto const TILE_COUNT_U{
-                    static_cast<float>(TILE_ID % TEXTURE_TILE_COUNT_HORIZ) };
+                    static_cast<float>(TILE_NUM_FINAL % TEXTURE_TILE_COUNT_HORIZ) };
 
                 auto const TILE_COUNT_V{
-                    static_cast<float>(TILE_ID / TEXTURE_TILE_COUNT_HORIZ) };
+                    static_cast<float>(TILE_NUM_FINAL / TEXTURE_TILE_COUNT_HORIZ) };
 
                 auto const TEXTCOORD_WIDTH{
                     TILE_COUNT_U * static_cast<float>(layout_.tile_size_v.x) };
