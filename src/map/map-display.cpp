@@ -331,13 +331,13 @@ namespace map
 
                     ++tilesPanelIndex;
 
-                    if (LAYER.type == LayerType::Object)
+                    if (LAYER.type == LayerType::Ground)
                     {
-                        offScreenTextureAbove_.draw(quads, renderStates);
+                        offScreenTextureBelow_.draw(quads, renderStates);
                     }
                     else
                     {
-                        offScreenTextureBelow_.draw(quads, renderStates);
+                        offScreenTextureAbove_.draw(quads, renderStates);
                     }
                 }
             }
