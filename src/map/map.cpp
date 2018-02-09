@@ -30,6 +30,9 @@
 #include "map.hpp"
 
 #include "map/map-display.hpp"
+#include "map/parser.hpp"
+#include "map/layout.hpp"
+#include "game/game-data-file.hpp"
 
 
 namespace heroespath
@@ -40,13 +43,28 @@ namespace map
     Map::Map(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V)
     :
         mapDisplayUPtr_( std::make_unique<map::MapDisplay>(WIN_POS_V, WIN_SIZE_V) ),
-        collisionQTree_()
+        collisionQTree_(),
+        transitionVec_(),
+        level_(Level::Count)
     {}
 
 
-    void Map::Load(const std::string & MAP_FILE_PATH_STR, const sf::Vector2f & STARTING_POS_V)
+    void Map::Load(const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM)
     {
-        mapDisplayUPtr_->Load(MAP_FILE_PATH_STR, STARTING_POS_V, collisionQTree_);
+        transitionVec_.clear();
+
+        Layout & layout{ mapDisplayUPtr_->GetLayoutRef() };
+        layout.Reset();
+
+        Parser mapParser;
+        mapParser.Parse(
+            ComposeMapFilePath(LEVEL_TO_LOAD),
+            layout,
+            collisionQTree_,
+            transitionVec_);
+
+        mapDisplayUPtr_->Load( FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM) );
+        level_ = LEVEL_TO_LOAD;
     }
 
 
@@ -102,6 +120,12 @@ namespace map
     }
 
 
+    void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        target.draw( * mapDisplayUPtr_, states);
+    }
+
+
     bool Map::DoesAdjPlayerPosCollide(
         const sfml_util::Direction::Enum DIR,
         const float ADJ) const
@@ -122,9 +146,35 @@ namespace map
     }
 
 
-    void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    const std::string Map::ComposeMapFilePath(const Level::Enum E) const
     {
-        target.draw( * mapDisplayUPtr_, states);
+        return game::GameDataFile::Instance()->GetMediaPath("media-maps-dir") +
+            Level::ToFilename(E);
+    }
+
+
+    const sf::Vector2f Map::FindStartPos(
+        const TransitionVec_t & TRANS_VEC,
+        const Level::Enum LEVEL_TO_LOAD,
+        const Level::Enum LEVEL_FROM)
+    {
+        sf::Vector2f startPos(-1.0f, - 1.0f);
+
+        for (auto const & TRANSITION : TRANS_VEC)
+        {
+            if (TRANSITION.IsEntry() && (TRANSITION.Level() == LEVEL_FROM))
+            {
+                startPos = TRANSITION.Center();
+                break;
+            }
+        }
+
+        M_ASSERT_OR_LOGANDTHROW_SS(((startPos.x > 0.0f) && (startPos.y > 0.0f)),
+            "map::Map::Load(to_load=" << Level::ToString(LEVEL_TO_LOAD)
+            << ", from=" << Level::ToString(LEVEL_FROM)
+            << ") unable to find an entry transition.");
+
+        return startPos;
     }
 
 }

@@ -52,20 +52,27 @@ namespace map
     const std::string Parser::XML_NODE_NAME_OBJECTS_LAYER_  { "objectgroup" };
     const std::string Parser::XML_NODE_NAME_OBJECT_         { "object" };
     const std::string Parser::XML_NODE_NAME_TILESET_        { "tileset" };
+    const std::string Parser::XML_NODE_NAME_PROPERTIES_     { "properties" };
+    const std::string Parser::XML_NODE_NAME_PROPERTY_       { "property" };
     const std::string Parser::XML_ATTRIB_FETCH_PREFIX_      { "<xmlattr>." };
     const std::string Parser::XML_ATTRIB_NAME_COLLISIONS_   { "collision" };
     const std::string Parser::XML_ATTRIB_NAME_SHADOW_       { "shadow" };
     const std::string Parser::XML_ATTRIB_NAME_GROUND_       { "ground" };
+    const std::string Parser::XML_ATTRIB_NAME_TYPE_         { "type" };
+    const std::string Parser::XML_ATTRIB_NAME_LEVEL_        { "level" };
+    const std::string Parser::XML_ATTRIB_NAME_TRANSITIONS_  { "transitions" };
+    const std::string Parser::XML_ATTRIB_NAME_VALUE_        { "value" };
 
 
     void Parser::Parse(
         const std::string & FILE_PATH_STR,
         Layout & layout,
-        sfml_util::QuadTree & collisionQTree)
+        sfml_util::QuadTree & collisionQTree,
+        TransitionVec_t & transitionVec) const
     {
         try
         {
-            Parse_Implementation(FILE_PATH_STR, layout, collisionQTree);
+            Parse_Implementation(FILE_PATH_STR, layout, collisionQTree, transitionVec);
         }
         catch (const std::exception & E)
         {
@@ -87,10 +94,14 @@ namespace map
     void Parser::Parse_Implementation(
         const std::string & MAP_FILE_PATH_STR,
         Layout & layout,
-        sfml_util::QuadTree & collisionQTree)
+        sfml_util::QuadTree & collisionQTree,
+        TransitionVec_t & transitionVec) const
     {
-        collisionRects_.clear();
-        collisionRects_.reserve(4096);//found by experiment to be a good upper bound
+        sfml_util::FloatRectVec_t collisionRects;
+        collisionRects.reserve(1024);//found by experiment to be a good upper bound
+
+        transitionVec.clear();
+        transitionVec.reserve(8);//found by experiment to be a good upper bound
 
         collisionQTree.Clear();
 
@@ -117,7 +128,11 @@ namespace map
 
                 if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_COLLISIONS_))
                 {
-                    Parse_Layer_Collisions(CHILD_PAIR.second);
+                    Parse_Layer_Collisions(CHILD_PAIR.second, collisionRects);
+                }
+                else if(ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_TRANSITIONS_))
+                {
+                    Parse_Layer_Transitions(CHILD_PAIR.second, transitionVec);
                 }
                 continue;
             }
@@ -138,9 +153,7 @@ namespace map
         collisionQTree.Setup(
             static_cast<float>(layout.tile_size_v.x * layout.tile_count_v.x),
             static_cast<float>(layout.tile_size_v.y * layout.tile_count_v.y),
-            collisionRects_);
-
-        collisionRects_.clear();
+            collisionRects);
 
         ShadowMasker shadowMasker;
         shadowMasker.ChangeColors(XML_ATTRIB_NAME_SHADOW_, layout);
@@ -179,7 +192,7 @@ namespace map
 
     void Parser::Parse_MapSizes(
         const boost::property_tree::ptree & MAP_PTREE,
-        Layout & layout)
+        Layout & layout) const
     {
         try
         {
@@ -200,7 +213,7 @@ namespace map
 
     void Parser::Parse_Layer_Tileset(
         const boost::property_tree::ptree & TILESET_PTREE,
-        Layout & layout)
+        Layout & layout) const
     {
         auto const IMAGE_PROPTREE{ TILESET_PTREE.get_child("image") };
 
@@ -226,16 +239,18 @@ namespace map
     }
 
 
-    void Parser::Parse_Layer_Collisions(const boost::property_tree::ptree & OBJGROUP_PTREE)
+    void Parser::Parse_Layer_Collisions(
+        const boost::property_tree::ptree & OBJGROUP_PTREE,
+        sfml_util::FloatRectVec_t & collisionRects) const
     {
-        Parse_Rects(OBJGROUP_PTREE, XML_NODE_NAME_OBJECT_, collisionRects_);
+        Parse_Rects(OBJGROUP_PTREE, XML_NODE_NAME_OBJECT_, collisionRects);
     }
 
 
     void Parser::Prase_Layer_Generic(
         const boost::property_tree::ptree & PTREE,
         Layout & layout,
-        const LayerType::Enum TYPE)
+        const LayerType::Enum TYPE) const
     {
         std::stringstream ssAllData;
         ssAllData << PTREE.get_child("data").data();
@@ -251,7 +266,7 @@ namespace map
 
     void Parser::Parse_Layer_Generic_Tiles(
         std::vector<int> & mapIDs,
-        std::stringstream & tileLayerDataSS)
+        std::stringstream & tileLayerDataSS) const
     {
         //found by experiment to be a reliable upper bound for typical maps
         mapIDs.reserve(20'000);
@@ -287,7 +302,7 @@ namespace map
                 }
                 catch (const std::exception & E)
                 {
-                    M_HP_LOG("sfml_util::Parser::Parse_Layer_Generic_Tiles("
+                    M_HP_LOG("map::Parser::Parse_Layer_Generic_Tiles("
                         << nextLine << ") " << "boost::lexical_cast<int>("
                         << "\"" << nextValStr << "\") threw '" << E.what() << "' exception.");
 
@@ -296,7 +311,7 @@ namespace map
                 catch (...)
                 {
                     std::ostringstream ss;
-                    ss << "sfml_util::Parser::Parse_Layer_Generic_Tiles("
+                    ss << "map::Parser::Parse_Layer_Generic_Tiles("
                         << nextLine << ") " << "boost::lexical_cast<int>("
                         << "\"" << nextValStr << "\") threw unknown exception.";
 
@@ -308,13 +323,123 @@ namespace map
     }
 
 
-    void Parser::SetupEmptyTexture(Layout & layout)
+    void Parser::Parse_Layer_Transitions(
+        const boost::property_tree::ptree & PTREE,
+        TransitionVec_t & transitionVec) const
+    {
+        namespace ba = boost::algorithm;
+
+        for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
+        {
+            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
+            {
+                transitionVec.push_back(Parse_Transition(CHILD_PAIR.second));
+            }
+        }
+    }
+
+
+    const Transition Parser::Parse_Transition(
+        const boost::property_tree::ptree & PTREE) const
+    {
+        namespace ba = boost::algorithm;
+
+        sf::FloatRect rect;
+
+        try
+        {
+            rect.left = FetchXMLAttribute<float>(PTREE, "x");
+            rect.top = FetchXMLAttribute<float>(PTREE, "y");
+            rect.width = FetchXMLAttribute<float>(PTREE, "width");
+            rect.height = FetchXMLAttribute<float>(PTREE, "height");
+        }
+        catch (const std::exception & E)
+        {
+            M_HP_LOG_FAT("map::Parser::Parse_Transition() threw "
+                << "std::exception when parsing the rect from a node named \""
+                << FetchXMLAttributeName(PTREE) << "\".  what=\""
+                << E.what() << "\".");
+
+            throw E;
+        }
+
+        auto isEntry{ false };
+        Level::Enum level{ Level::Count };
+
+        for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
+        {
+            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_PROPERTIES_))
+            {
+                Parse_Transition_Property(CHILD_PAIR.second, isEntry, level);
+            }
+        }
+
+        return Transition(isEntry, level, rect);
+    }
+
+
+    void Parser::Parse_Transition_Property(
+        const boost::property_tree::ptree & PTREE,
+        bool & isEntry,
+        Level::Enum & level) const
+    {
+        namespace ba = boost::algorithm;
+
+        auto wasEntrySet{ false };
+        auto wasLevelSet{ false };
+
+        for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
+        {
+            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_PROPERTY_) == false)
+            {
+                continue;
+            }
+
+            auto const NAME_STR{ FetchXMLAttributeName(CHILD_PAIR.second) };
+
+            auto const VALUE_STR{
+                FetchXMLAttribute<std::string>(CHILD_PAIR.second, XML_ATTRIB_NAME_VALUE_) };
+
+            if (NAME_STR == XML_ATTRIB_NAME_TYPE_)
+            {
+                if (VALUE_STR == "entry")
+                {
+                    isEntry = true;
+                    wasEntrySet = true;
+                }
+                else if (VALUE_STR == "exit")
+                {
+                    isEntry = false;
+                    wasEntrySet = true;
+                }
+            }
+            else if (NAME_STR == XML_ATTRIB_NAME_LEVEL_)
+            {
+                try
+                {
+                    level = Level::FromString(VALUE_STR);
+                    wasLevelSet = (level != Level::Count);
+                }
+                catch(...)
+                {}
+            }
+        }
+
+        M_ASSERT_OR_LOGANDTHROW_SS((wasEntrySet),
+            "map::Parser::Parse_Transition_Property() was unable to parse an entry type.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((wasLevelSet),
+            "map::Parser::Parse_Transition_Property() was unable to parse a Level::Enum.");
+    }
+
+
+    void Parser::SetupEmptyTexture(Layout & layout) const
     {
         auto const TILE_WIDTH{ static_cast<unsigned>(layout.tile_size_v.x) };
         auto const TILE_HEIGHT{ static_cast<unsigned>(layout.tile_size_v.y) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(layout.empty_texture.create(TILE_WIDTH, TILE_HEIGHT),
-            "TileMap::SetupEmptyTexture() sf::RenderTexture::create(" << layout.tile_size_v.x << "x"
+            "map::Parser::SetupEmptyTexture() sf::RenderTexture::create(" << layout.tile_size_v.x << "x"
             << layout.tile_size_v.y << ") failed.");
 
         layout.empty_texture.clear(sf::Color::Transparent);
@@ -343,7 +468,7 @@ namespace map
         }
         catch(...)
         {
-            return "(no attribute 'name' error)";
+            return "";
         }
     }
 
@@ -376,7 +501,7 @@ namespace map
             }
             catch (const std::exception & E)
             {
-                M_HP_LOG_FAT("Parser::Parse_Rects() threw "
+                M_HP_LOG_FAT("map::Parser::Parse_Rects() threw "
                     << "std::exception when parsing \"" << FetchXMLAttributeName(CHILD_PAIR.second)
                     << "\".  what=\"" << E.what() << "\".");
 

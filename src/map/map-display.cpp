@@ -69,24 +69,13 @@ namespace map
     {}
 
 
-    void MapDisplay::Load(
-        const std::string & MAP_FILE_PATH_STR,
-        const sf::Vector2f & PLAYER_POS_V,
-        sfml_util::QuadTree & collisionQTree)
+    void MapDisplay::Load(const sf::Vector2f & STARTING_POS_V)
     {
-        layout_.Reset();
         tileOffsets_ = map::TileOffsets();
         playerPosOffsetV_ = sf::Vector2f(0.0f, 0.0f);
-
-        playerPosV_ = PLAYER_POS_V;
-        
-        map::Parser mapParser;
-        mapParser.Parse(MAP_FILE_PATH_STR, layout_, collisionQTree);
-
-        tileOffsets_ = TileOffsetsFromMapPos(PLAYER_POS_V);
-
+        playerPosV_ = STARTING_POS_V;
+        tileOffsets_ = TileOffsetsFromMapPos(STARTING_POS_V);
         offScreenMapSize_ = CalcOffScreenMapSize();
-
         SetupOffScreenTexture();
         ReDraw();
     }

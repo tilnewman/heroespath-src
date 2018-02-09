@@ -22,16 +22,16 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_LAYOUT_HPP_INCLUDED
-#define HEROESPATH_LAYOUT_HPP_INCLUDED
+#ifndef HEROESPATH_MAP_TRANSITION_HPP_INCLUDED
+#define HEROESPATH_MAP_TRANSITION_HPP_INCLUDED
 //
-// layout.hpp
+// transition.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "map/layer.hpp"
-#include "map/tiles-panel.hpp"
+#include "map/level-enum.hpp"
 
-#include <string>
+#include <SFML/Graphics/Rect.hpp>
+
+#include <vector>
 
 
 namespace heroespath
@@ -39,42 +39,40 @@ namespace heroespath
 namespace map
 {
 
-    //Responsible for wrapping all image and state of a single loaded map.
-    struct Layout
+    //Responsible for storing all the information about a transition between two maps.
+    class Transition
     {
-        Layout()
+    public:
+        Transition(
+            const bool IS_ENTRY = true,
+            const Level::Enum LEVEL = Level::Count,
+            const sf::FloatRect & RECT = sf::FloatRect())
         :
-            tile_size_v(0, 0),
-            tile_count_v(0, 0),
-            layer_vec(),
-            tiles_panel_vec(),
-            texture_vec(),
-            empty_texture()
+            isEntry_(IS_ENTRY),
+            level_(LEVEL),
+            rect_(RECT)
         {}
 
-        void Reset()
+        inline bool IsEntry() const { return isEntry_; }
+        inline Level::Enum Level() const { return level_; }
+        inline const sf::FloatRect Rect() const { return rect_; }
+
+        inline const sf::Vector2f Center() const
         {
-            tile_size_v.x = 0;
-            tile_size_v.y = 0;
-            tile_count_v.x = 0;
-            tile_count_v.y = 0;
-            layer_vec.clear();
-            tiles_panel_vec.clear();
-            texture_vec.clear();
+            return sf::Vector2f(
+                rect_.left + (rect_.width * 0.5f),
+                rect_.top + (rect_.height * 0.5f));
         }
 
-        inline const std::string EmptyTilesPanelName() const { return "empty"; }
-
-        sf::Vector2i tile_size_v;
-        sf::Vector2i tile_count_v;
-        LayerVec_t layer_vec;
-        TilesPanelVec_t tiles_panel_vec;
-        sfml_util::TextureVec_t texture_vec;
-        sf::RenderTexture empty_texture;
+    private:
+        bool isEntry_;
+        Level::Enum level_;
+        sf::FloatRect rect_;
     };
 
+    using TransitionVec_t = std::vector<Transition>;
+
 }
 }
 
-
-#endif //HEROESPATH_LAYOUT_HPP_INCLUDED
+#endif //HEROESPATH_MAP_TRANSITION_HPP_INCLUDED

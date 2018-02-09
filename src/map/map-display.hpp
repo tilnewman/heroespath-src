@@ -54,10 +54,7 @@ namespace map
     public:
         MapDisplay(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V);
 
-        void Load(
-            const std::string & MAP_FILE_PATH_STR,
-            const sf::Vector2f & STARTING_POS_V,
-            sfml_util::QuadTree & collisionQTree);
+        void Load(const sf::Vector2f & STARTING_POS_V);
 
         bool MoveUp(const float ADJUSTMENT);
         bool MoveDown(const float ADJUSTMENT);
@@ -67,6 +64,8 @@ namespace map
         virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         inline const sf::Vector2f PlayerPosMap() const { return playerPosV_ + playerPosOffsetV_; }
+
+        Layout & GetLayoutRef() { return layout_; }
 
     private:
         void DrawNormal(sf::RenderTarget &, sf::RenderStates) const;
@@ -80,15 +79,15 @@ namespace map
 
         void SetupOffScreenTexture();
 
-        void SetupMapLayerSubsection(map::Layer &, const map::TileOffsets &);
+        void SetupMapLayerSubsection(Layer &, const TileOffsets &);
 
-        const map::TileOffsets TileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
+        const TileOffsets TileOffsetsFromMapPos(const sf::Vector2f & MAP_POS_V) const;
 
         const sf::Vector2f PlayerPosScreen() const;
 
         const sf::Vector2f ScreenPosFromMapPos(const sf::Vector2f &) const;
 
-        const map::TilesPanel & TilesPanelFromId(const int) const;
+        const TilesPanel & TilesPanelFromId(const int) const;
 
         void IncrementTileOffsetsInDirection(const sfml_util::Direction::Enum);
 
@@ -106,8 +105,8 @@ namespace map
         const sf::Vector2f WIN_POS_V_;
         const sf::Vector2f WIN_SIZE_V_;
         const sf::Vector2f WIN_CENTER_V_;
-        map::Layout        layout_;
-        map::TileOffsets   tileOffsets_;
+        Layout             layout_;
+        TileOffsets        tileOffsets_;
         sf::Vector2f       playerPosV_;
         sf::Vector2f       playerPosOffsetV_;
         sf::FloatRect      offScreenRect_;

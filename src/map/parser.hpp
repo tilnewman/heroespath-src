@@ -29,6 +29,7 @@
 //
 #include "map/layout.hpp"
 #include "map/layer-type-enum.hpp"
+#include "map/transition.hpp"
 #include "misc/types.hpp"
 
 #include "sfml-util/collision-quad-tree.hpp"
@@ -69,28 +70,46 @@ namespace map
         void Parse(
             const std::string & FILE_PATH_STR,
             Layout &,
-            sfml_util::QuadTree &);
+            sfml_util::QuadTree &,
+            TransitionVec_t &) const;
 
     private:
         void Parse_Implementation(
             const std::string & FILE_PATH_STR,
             Layout &,
-            sfml_util::QuadTree &);
+            sfml_util::QuadTree &,
+            TransitionVec_t &) const;
 
         const boost::property_tree::ptree Parse_XML(
             const std::string & MAP_FILE_PATH_STR) const;
 
-        void Parse_MapSizes(const boost::property_tree::ptree &, Layout &);
-        void Parse_Layer_Tileset(const boost::property_tree::ptree &, Layout &);
-        void Parse_Layer_Collisions(const boost::property_tree::ptree &);
+        void Parse_MapSizes(const boost::property_tree::ptree &, Layout &) const;
+
+        void Parse_Layer_Tileset(const boost::property_tree::ptree &, Layout &) const;
+
+        void Parse_Layer_Collisions(
+            const boost::property_tree::ptree &,
+            sfml_util::FloatRectVec_t &) const;
 
         void Prase_Layer_Generic(
             const boost::property_tree::ptree &,
             Layout &,
-            const LayerType::Enum);
+            const LayerType::Enum) const;
         
-        void Parse_Layer_Generic_Tiles(std::vector<int> &, std::stringstream &);
-        void SetupEmptyTexture(Layout &);
+        void Parse_Layer_Generic_Tiles(std::vector<int> &, std::stringstream &) const;
+
+        void Parse_Layer_Transitions(
+            const boost::property_tree::ptree &,
+            TransitionVec_t &) const;
+
+        const Transition Parse_Transition(const boost::property_tree::ptree &) const;
+
+        void Parse_Transition_Property(
+            const boost::property_tree::ptree &,
+            bool &,
+            Level::Enum &) const;
+
+        void SetupEmptyTexture(Layout &) const;
 
         template<typename T>
         T FetchXMLAttribute(
@@ -117,15 +136,18 @@ namespace map
         static const std::string XML_NODE_NAME_OBJECTS_LAYER_;
         static const std::string XML_NODE_NAME_OBJECT_;
         static const std::string XML_NODE_NAME_TILESET_;
+        static const std::string XML_NODE_NAME_PROPERTIES_;
+        static const std::string XML_NODE_NAME_PROPERTY_;
         
         //these are the sub-names of XML nodes used in parsing the .tmx map files
         static const std::string XML_ATTRIB_FETCH_PREFIX_;
         static const std::string XML_ATTRIB_NAME_COLLISIONS_;
         static const std::string XML_ATTRIB_NAME_SHADOW_;
         static const std::string XML_ATTRIB_NAME_GROUND_;
-        
-    private:
-        sfml_util::FloatRectVec_t collisionRects_;
+        static const std::string XML_ATTRIB_NAME_TYPE_;
+        static const std::string XML_ATTRIB_NAME_LEVEL_;
+        static const std::string XML_ATTRIB_NAME_TRANSITIONS_;
+        static const std::string XML_ATTRIB_NAME_VALUE_;
     };
 
 }

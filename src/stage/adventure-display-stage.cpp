@@ -31,6 +31,7 @@
 
 #include "map/map.hpp"
 #include "map/map-display.hpp"
+#include "map/level-enum.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "stage/adventure-stage.hpp"
@@ -167,10 +168,7 @@ namespace stage
             sfml_util::MapByRes(250.0f, 2000.0f));
 
         mapUPtr_ = std::make_unique<map::Map>(MAP_WIN_POS_V, MAP_WIN_SIZE_V);
-
-        mapUPtr_->Load(
-            game::GameDataFile::Instance()->GetMediaPath("media-maps-thornberry"),
-            sf::Vector2f(250.0f, 350.0f));
+        mapUPtr_->Load(map::Level::Thornberry, map::Level::ThornberryMeadows);
     }
 
 }

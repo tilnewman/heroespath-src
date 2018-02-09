@@ -30,6 +30,9 @@
 #include "sfml-util/collision-quad-tree.hpp"
 #include "sfml-util/direction-enum.hpp"
 
+#include "map/level-enum.hpp"
+#include "map/transition.hpp"
+
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 
@@ -54,7 +57,7 @@ namespace map
     public:
         Map(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V);
         
-        void Load(const std::string & MAP_FILE_PATH_STR, const sf::Vector2f & STARTING_POS_V);
+        void Load(const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM);
 
         bool MoveUp(const float ADJUSTMENT);
         bool MoveDown(const float ADJUSTMENT);
@@ -63,14 +66,25 @@ namespace map
 
         virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
+        inline Level::Enum Level() const { return level_; }
+
     private:
         bool DoesAdjPlayerPosCollide(
             const sfml_util::Direction::Enum DIR,
             const float ADJ) const;
 
+        const std::string ComposeMapFilePath(const Level::Enum) const;
+
+        const sf::Vector2f FindStartPos(
+            const TransitionVec_t &,
+            const Level::Enum LEVEL_TO_LOAD,
+            const Level::Enum LEVEL_FROM);
+
     private:
         MapDisplayUPtr_t mapDisplayUPtr_;
         sfml_util::QuadTree collisionQTree_;
+        TransitionVec_t transitionVec_;
+        Level::Enum level_;
     };
 
 

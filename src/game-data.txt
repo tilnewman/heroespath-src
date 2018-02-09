@@ -44,22 +44,24 @@ heroespath-treasure-religious-mult= 0.01
 heroespath-treasure-lockbox-coin-max=1500
 
 #directories (assume all are relative to media except for system-media-dir) (always leave a trailing slash)
-system-media-dir-linux=../../heroespath-media/
-system-media-dir-win=../../../heroespath-media/
-media-fonts-dir=font/
-media-images-buttons-gui=image/gui/buttons/
-media-images-buttons-mainmenu-dir=image/gui/buttons/main-menu/
-media-sounds-dir=sound/
-media-music-dir=sound/music/
-media-images-accents-dir=image/gui/popup/accents/
-media-images-backgrounds-popup-dir=image/gui/popup/backgrounds/
-media-images-creatures-dir=image/creatures/
-media-images-items-dir=image/items/
-media-images-titles-dir=image/titles/
-media-images-spells-dir=image/spells/
-media-images-conditions-dir=image/conditions/
-media-images-songs-dir=image/songs/
-media-images-combat-dir=image/combat/
+system-media-dir-linux=                 ../../heroespath-media/
+system-media-dir-win=                   ../../../heroespath-media/
+media-fonts-dir=                        font/
+media-images-buttons-gui=               image/gui/buttons/
+media-images-buttons-mainmenu-dir=      image/gui/buttons/main-menu/
+media-sounds-dir=                       sound/
+media-music-dir=                        sound/music/
+media-images-accents-dir=               image/gui/popup/accents/
+media-images-backgrounds-popup-dir=     image/gui/popup/backgrounds/
+media-images-creatures-dir=             image/creatures/
+media-images-items-dir=                 image/items/
+media-images-titles-dir=                image/titles/
+media-images-spells-dir=                image/spells/
+media-images-conditions-dir=            image/conditions/
+media-images-songs-dir=                 image/songs/
+media-images-combat-dir=                image/combat/
+media-maps-tile-dir=                    image/tile/
+media-maps-dir=                         map/
 
 #animation files and folders
 media-anim-image-burst=             image/anim/burst_s_120x120x40/burst.png
@@ -182,12 +184,6 @@ media-images-bones-three-headed-hound=      image/treasure-stage/bones/three-hea
 media-images-bones-wolfen=                  image/treasure-stage/bones/wolfen.png
 media-images-trap=                          image/treasure-stage/trap.png
 media-images-placeholder=                   image/misc/placeholder.png
-
-#Maps
-media-maps-tile-dir=                        image/tile/
-media-maps-thornberry=                      map/Thornberry.tmx
-media-maps-thornberry-highlands=            map/ThornberryHighlands.tmx
-media-maps-thornberry-meadows=              map/ThornberryMeadows.tmx
 
 #Race Stat Modifiers
 heroespath-creature-race-stat-modifiers-Human=    2,  2,   2, -6,  0,  0
