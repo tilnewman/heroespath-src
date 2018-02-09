@@ -47,11 +47,12 @@ namespace map
     {
         switch (E)
         {
-            case Thornberry:            { return "Thornberry"; }
-            case ThornberryMeadows:     { return "ThornberryMeadows"; }
-            case ThornberryHighlands:   { return "ThornberryHighlands"; }
-            case Mudgate:               { return "Mudgate"; }
-            case Bridgeway:             { return "Bridgeway"; }
+            case Thornberry:                { return "Thornberry"; }
+            case ThornberryMeadows:         { return "ThornberryMeadows"; }
+            case ThornberryHighlands:       { return "ThornberryHighlands"; }
+            case ThornberryGuardRoomWest:   { return "ThornberryGuardRoomWest"; }
+            case Mudgate:                   { return "Mudgate"; }
+            case Bridgeway:                 { return "Bridgeway"; }
             case Count:
             default:
             {

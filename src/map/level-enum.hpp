@@ -42,6 +42,7 @@ namespace map
             Thornberry = 0,
             ThornberryMeadows,
             ThornberryHighlands,
+            ThornberryGuardRoomWest,
             Mudgate,
             Bridgeway,
             Count
