@@ -39,6 +39,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/loaders.hpp"
+#include "sfml-util/direction-enum.hpp"
 
 
 namespace heroespath
@@ -99,22 +100,22 @@ namespace stage
 
             if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up))
             {
-                mapUPtr_->MoveUp(MOVE_AMOUNT);
+                mapUPtr_->Move(sfml_util::Direction::Up, MOVE_AMOUNT);
             }
 
             if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down))
             {
-                mapUPtr_->MoveDown(MOVE_AMOUNT);
+                mapUPtr_->Move(sfml_util::Direction::Down, MOVE_AMOUNT);
             }
 
             if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left))
             {
-                mapUPtr_->MoveLeft(MOVE_AMOUNT);
+                mapUPtr_->Move(sfml_util::Direction::Left, MOVE_AMOUNT);
             }
 
             if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right))
             {
-                mapUPtr_->MoveRight(MOVE_AMOUNT);
+                mapUPtr_->Move(sfml_util::Direction::Right, MOVE_AMOUNT);
             }
         }
     }

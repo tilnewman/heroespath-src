@@ -68,54 +68,22 @@ namespace map
     }
 
 
-    bool Map::MoveUp(const float ADJUSTMENT)
+    bool Map::Move(const sfml_util::Direction::Enum DIRECTION, const float ADJUSTMENT)
     {
-        if (DoesAdjPlayerPosCollide(sfml_util::Direction::Up, ADJUSTMENT))
+        if (DoesAdjPlayerPosCollide(DIRECTION, ADJUSTMENT))
         {
             return false;
         }
         else
         {
-            return mapDisplayUPtr_->MoveUp(ADJUSTMENT);
-        }
-    }
-
-
-    bool Map::MoveDown(const float ADJUSTMENT)
-    {
-        if (DoesAdjPlayerPosCollide(sfml_util::Direction::Down, ADJUSTMENT))
-        {
-            return false;
-        }
-        else
-        {
-            return mapDisplayUPtr_->MoveDown(ADJUSTMENT);
-        }
-    }
-
-
-    bool Map::MoveLeft(const float ADJUSTMENT)
-    {
-        if (DoesAdjPlayerPosCollide(sfml_util::Direction::Left, ADJUSTMENT))
-        {
-            return false;
-        }
-        else
-        {
-            return mapDisplayUPtr_->MoveLeft(ADJUSTMENT);
-        }
-    }
-
-
-    bool Map::MoveRight(const float ADJUSTMENT)
-    {
-        if (DoesAdjPlayerPosCollide(sfml_util::Direction::Right, ADJUSTMENT))
-        {
-            return false;
-        }
-        else
-        {
-            return mapDisplayUPtr_->MoveRight(ADJUSTMENT);
+            if (ChangeLevelOnExit(DIRECTION, ADJUSTMENT))
+            {
+                return true;
+            }
+            else
+            {
+                return mapDisplayUPtr_->Move(DIRECTION, ADJUSTMENT);
+            }
         }
     }
 
@@ -130,19 +98,7 @@ namespace map
         const sfml_util::Direction::Enum DIR,
         const float ADJ) const
     {
-        auto posToTest{ mapDisplayUPtr_->PlayerPosMap() };
-
-        switch (DIR)
-        {
-            case sfml_util::Direction::Left:  { posToTest.x -= ADJ; break; }
-            case sfml_util::Direction::Right: { posToTest.x += ADJ; break; }
-            case sfml_util::Direction::Up:    { posToTest.y -= ADJ; break; }
-            case sfml_util::Direction::Down:  { posToTest.y += ADJ; break; }
-            case sfml_util::Direction::Count:
-            default:                          { break; }
-        }
-
-        return collisionQTree_.IsPointWithinCollisionRect(posToTest);
+        return collisionQTree_.IsPointWithinCollisionRect(CalcAdjPlayerPos(DIR, ADJ));
     }
 
 
@@ -175,6 +131,46 @@ namespace map
             << ") unable to find an entry transition.");
 
         return startPos;
+    }
+
+
+    bool Map::ChangeLevelOnExit(
+        const sfml_util::Direction::Enum DIRECTION,
+        const float ADJUSTMENT)
+    {
+        auto const ADJ_PLAYER_POS_V{ CalcAdjPlayerPos(DIRECTION, ADJUSTMENT) };
+
+        for (auto const & TRANSITION : transitionVec_)
+        {
+            if ((TRANSITION.IsEntry() == false) &&
+                (TRANSITION.Rect().contains(ADJ_PLAYER_POS_V)))
+            {
+                Load(TRANSITION.Level(), level_);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    const sf::Vector2f Map::CalcAdjPlayerPos(
+        const sfml_util::Direction::Enum DIRECTION,
+        const float ADJUSTMENT) const
+    {
+        auto posToTest{ mapDisplayUPtr_->PlayerPosMap() };
+
+        switch (DIRECTION)
+        {
+            case sfml_util::Direction::Left:  { posToTest.x -= ADJUSTMENT; break; }
+            case sfml_util::Direction::Right: { posToTest.x += ADJUSTMENT; break; }
+            case sfml_util::Direction::Up:    { posToTest.y -= ADJUSTMENT; break; }
+            case sfml_util::Direction::Down:  { posToTest.y += ADJUSTMENT; break; }
+            case sfml_util::Direction::Count:
+            default:                          { break; }
+        }
+
+        return posToTest;
     }
 
 }

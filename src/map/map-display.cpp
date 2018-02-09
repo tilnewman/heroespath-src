@@ -81,6 +81,26 @@ namespace map
     }
 
 
+    bool MapDisplay::Move(const sfml_util::Direction::Enum DIR, const float ADJUSTMENT)
+    {
+        switch (DIR)
+        {
+            case sfml_util::Direction::Up:    { return MoveUp(ADJUSTMENT); }
+            case sfml_util::Direction::Down:  { return MoveDown(ADJUSTMENT); }
+            case sfml_util::Direction::Left:  { return MoveLeft(ADJUSTMENT); }
+            case sfml_util::Direction::Right: { return MoveRight(ADJUSTMENT); }
+            case sfml_util::Direction::Count:
+            default: { return false; }
+        }
+    }
+
+
+    void MapDisplay::draw(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        DrawNormal(target, states);
+    }
+
+
     bool MapDisplay::MoveUp(const float ADJUSTMENT)
     {
         if (PlayerPosScreen().y > (WIN_POS_V_.y + BORDER_PAD_))
@@ -212,12 +232,6 @@ namespace map
         }
 
         return true;
-    }
-
-
-    void MapDisplay::draw(sf::RenderTarget & target, sf::RenderStates states) const
-    {
-        DrawNormal(target, states);
     }
 
 

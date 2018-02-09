@@ -59,10 +59,7 @@ namespace map
         
         void Load(const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM);
 
-        bool MoveUp(const float ADJUSTMENT);
-        bool MoveDown(const float ADJUSTMENT);
-        bool MoveLeft(const float ADJUSTMENT);
-        bool MoveRight(const float ADJUSTMENT);
+        bool Move(const sfml_util::Direction::Enum, const float ADJUSTMENT);
 
         virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
@@ -80,13 +77,20 @@ namespace map
             const Level::Enum LEVEL_TO_LOAD,
             const Level::Enum LEVEL_FROM);
 
+        bool ChangeLevelOnExit(
+            const sfml_util::Direction::Enum DIRECTION,
+            const float ADJUSTMENT);
+
+        const sf::Vector2f CalcAdjPlayerPos(
+            const sfml_util::Direction::Enum DIRECTION,
+            const float ADJUSTMENT) const;
+
     private:
         MapDisplayUPtr_t mapDisplayUPtr_;
         sfml_util::QuadTree collisionQTree_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
     };
-
 
     using MapUPtr_t = std::unique_ptr<Map>;
 
