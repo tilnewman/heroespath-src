@@ -40,9 +40,10 @@ namespace map
         enum Enum
         {
             Thornberry = 0,
+            Thornberry_GuardPostWest,
+            Thornberry_GuardPostEast,
             ThornberryMeadows,
             ThornberryHighlands,
-            ThornberryGuardRoomWest,
             Mudgate,
             Bridgeway,
             Count

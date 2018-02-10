@@ -421,7 +421,15 @@ namespace map
                     wasLevelSet = (level != Level::Count);
                 }
                 catch(...)
-                {}
+                {
+                    std::ostringstream ss;
+
+                    ss << "map::Parser::Parse_Transition_Property() found a level "
+                        "property in a map file \"" << VALUE_STR
+                        << "\", but that is not a valid level name.";
+
+                    throw std::runtime_error(ss.str());
+                }
             }
         }
 

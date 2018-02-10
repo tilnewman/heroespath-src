@@ -48,9 +48,10 @@ namespace map
         switch (E)
         {
             case Thornberry:                { return "Thornberry"; }
+            case Thornberry_GuardPostWest:  { return "Thornberry_GuardPostWest"; }
+            case Thornberry_GuardPostEast:  { return "Thornberry_GuardPostEast"; }
             case ThornberryMeadows:         { return "ThornberryMeadows"; }
             case ThornberryHighlands:       { return "ThornberryHighlands"; }
-            case ThornberryGuardRoomWest:   { return "ThornberryGuardRoomWest"; }
             case Mudgate:                   { return "Mudgate"; }
             case Bridgeway:                 { return "Bridgeway"; }
             case Count:
