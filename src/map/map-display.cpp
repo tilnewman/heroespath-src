@@ -46,6 +46,7 @@ namespace map
 {
 
     const int MapDisplay::EXTRA_OFFSCREEN_TILE_COUNT_{ 2 };
+    const std::size_t MapDisplay::VERTS_PER_QUAD_{ 4 };
 
 
     MapDisplay::MapDisplay(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V)
@@ -306,7 +307,7 @@ namespace map
         offScreenTextureAbove_.clear(sf::Color::Transparent);
 
         sf::RenderStates renderStates{ sf::RenderStates::Default };
-        sf::VertexArray quads(sf::Quads, 4);
+        sf::VertexArray quads(sf::Quads, VERTS_PER_QUAD_);
 
         //draw all vertex arrays to the off-screen texture
         for (auto const & LAYER : layout_.layer_vec)
@@ -319,8 +320,7 @@ namespace map
                 if (LAYER.tiles_panel_vec[tilesPanelIndex].is_empty)
                 {
                     ++tilesPanelIndex;
-                    auto const VERTEXES_PER_QUAD{ 4 };
-                    vertIndex += VERTEXES_PER_QUAD;
+                    vertIndex += VERTS_PER_QUAD_;
                 }
                 else
                 {
@@ -410,15 +410,14 @@ namespace map
         auto const TILE_WIDTH{  TILE_OFFSETS.end_v.x - TILE_OFFSETS.begin_v.x };
         auto const TILE_HEIGHT{ TILE_OFFSETS.end_v.y - TILE_OFFSETS.begin_v.y };
         mapLayer.vert_array.setPrimitiveType(sf::Quads);
-        const int VERTEXES_PER_QUAD{ 4 };
 
-        mapLayer.vert_array.resize( static_cast<std::size_t>(
-            (TILE_WIDTH * TILE_HEIGHT) * VERTEXES_PER_QUAD) );
+        mapLayer.vert_array.resize(
+            static_cast<std::size_t>(TILE_WIDTH * TILE_HEIGHT) * VERTS_PER_QUAD_ );
 
         mapLayer.tiles_panel_vec.reserve( static_cast<std::size_t>(TILE_WIDTH * TILE_HEIGHT) );
 
         //populate the vertex array with one quad per tile
-        unsigned vertIndex(0);
+        std::size_t vertIndex{ 0 };
         for (int x(TILE_OFFSETS.begin_v.x); x < TILE_OFFSETS.end_v.x; ++x)
         {
             for (int y(TILE_OFFSETS.begin_v.y); y < TILE_OFFSETS.end_v.y; ++y)
@@ -441,10 +440,10 @@ namespace map
                 auto const TILE_NUM_FINAL{ (TILE_NUM_ORIG - TILES_PANEL.first_id) };
 
                 //get a pointer to the current tile's quad
-                auto const VERT_ARRAY_INDEX{ static_cast<std::size_t>((vertIndex++) * 4) };
+                auto const VERT_ARRAY_INDEX{ vertIndex++ * VERTS_PER_QUAD_ };
                 sf::Vertex * quadPtr{ & mapLayer.vert_array[VERT_ARRAY_INDEX] };
 
-                //define its 4 corners on screen
+                //define its four corners on screen
                 auto const POS_WIDTH{
                     static_cast<float>((x - TILE_OFFSETS.begin_v.x) * layout_.tile_size_v.x) };
 
@@ -491,7 +490,7 @@ namespace map
                 auto const TEXTCOORD_HEIGHT_PLUS_ONE_TILE{
                     TEXTCOORD_HEIGHT + static_cast<float>(layout_.tile_size_v.y) };
 
-                //define its 4 texture coordinates
+                //define its four texture coordinates
                 quadPtr[0].texCoords =
                     sf::Vector2f(TEXTCOORD_WIDTH, TEXTCOORD_HEIGHT);
 

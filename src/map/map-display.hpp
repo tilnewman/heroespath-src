@@ -96,8 +96,10 @@ namespace map
         const sf::Vector2f CalcOffScreenMapSize() const;
 
     public:
-        //how many tiles to draw offscreen that are outside the visible map area
+        //how many extra tiles to draw offscreen that are outside the visible map area
         static const int EXTRA_OFFSCREEN_TILE_COUNT_;
+
+        static const std::size_t VERTS_PER_QUAD_;
 
     private:
         //This is how close the player position can get to
