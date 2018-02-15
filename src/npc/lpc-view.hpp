@@ -1,0 +1,103 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
+// Copyright (C) 2017 Ziesche Til Newman (tilnewman@gmail.com)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from
+// the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+//  1. The origin of this software must not be misrepresented; you must not
+//     claim that you wrote the original software.  If you use this software
+//     in a product, an acknowledgment in the product documentation would be
+//     appreciated but is not required.
+//
+//  2. Altered source versions must be plainly marked as such, and must not
+//     be misrepresented as being the original software.
+//
+//  3. This notice may not be removed or altered from any source distribution.
+//
+///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_NPC_LPCVIEW_HPP_INCLUDED
+#define HEROESPATH_NPC_LPCVIEW_HPP_INCLUDED
+//
+// lpc-npc-view.hpp
+//
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/direction-enum.hpp"
+
+#include "npc/i-view.hpp"
+#include "npc/pose-enum.hpp"
+#include "npc/animation.hpp"
+
+
+namespace heroespath
+{
+namespace npc
+{
+
+    //Responsible for drawing an LPC-style NPC.
+    class LPCView : public IView
+    {
+        LPCView(const LPCView &) = delete;
+        LPCView(const LPCView &&) = delete;
+        LPCView & operator=(const LPCView &) = delete;
+
+    public:
+        LPCView(const sf::Texture &);
+        virtual ~LPCView() {}
+
+    public:
+        virtual void Set(const Pose::Enum, const sfml_util::Direction::Enum) override;
+
+        virtual bool Update(const float TIME_ELAPSED) override;
+
+        inline virtual sfml_util::Direction::Enum Direction() const override
+        {
+            return animation_.direction;
+        }
+
+        inline virtual Pose::Enum Pose() const override { return animation_.pose; }
+
+        inline virtual void Sprite(sf::Sprite & s) const override { s = sprite_; }
+
+    private:
+        const FrameNumVec_t FrameNumbers(
+            const Pose::Enum,
+            const sfml_util::Direction::Enum) const;
+
+        const sf::IntRect FrameRect(const FrameNum_t FRAME_NUM) const;
+
+        const Animation CreateAnimation(
+            const Pose::Enum,
+            const sfml_util::Direction::Enum) const;
+
+        float FrameDuration(
+            const Pose::Enum,
+            const sfml_util::Direction::Enum) const;
+
+        void SetupSprite();
+
+    private:
+        static const int CELL_SIZE_;
+        static const float FRAME_DURATION_SEC_WALK_;
+        static const float FRAME_DURATION_SEC_GIVETAKE_;
+        static const float FRAME_DURATION_SEC_SINGLEFRAME_;
+        static const float FRAME_DURATION_SEC_BLINK_MIN_;
+        static const float FRAME_DURATION_SEC_BLINK_MAX_;
+
+        sf::Texture texture_;
+        sf::Sprite sprite_;
+        Animation animation_;
+        float frameTimerSec_;
+        std::size_t frameIndex_;
+    };
+
+}
+}
+
+#endif //HEROESPATH_NPC_LPCVIEW_HPP_INCLUDED

@@ -54,7 +54,8 @@ foreach(testSrc ${impl_files})
                         	Location
                         	State
                         	Combat
-				            Popup
+				Popup
+				NPC
                         	${Boost_LIBRARIES}
                         	${SFML_LIBRARIES})
 

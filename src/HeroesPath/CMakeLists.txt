@@ -49,5 +49,6 @@ target_link_libraries(  ${PROJECT_NAME}
                         State
                         Combat
 			Popup
+			NPC
                         ${Boost_LIBRARIES}
                         ${SFML_LIBRARIES})

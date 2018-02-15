@@ -36,6 +36,7 @@
 #include "map/tiles-panel.hpp"
 #include "map/tile-offsets.hpp"
 #include "misc/types.hpp"
+#include "npc/model.hpp"
 
 #include <string>
 
@@ -63,6 +64,8 @@ namespace map
         inline const sf::Vector2f PlayerPosMap() const { return playerPosV_ + playerPosOffsetV_; }
 
         Layout & GetLayoutRef() { return layout_; }
+
+        void Update(const float TIME_ELAPSED);
 
     private:
         bool MoveUp(const float ADJUSTMENT);
@@ -119,6 +122,7 @@ namespace map
         sf::RenderTexture  offScreenTextureAbove_;
         sf::RenderTexture  offScreenTextureBelow_;
         sf::Vector2f       offScreenMapSize_;
+        npc::Model         player_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;

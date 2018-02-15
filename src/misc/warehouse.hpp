@@ -44,9 +44,8 @@ namespace heroespath
 namespace misc
 {
 
-    //Template responsible for the lifetimes of various types of objects.
-    //This class does not new the objects, but it does delete them, hence
-    //the name 'warehouse'.
+    //Template responsible for the lifetimes of various objects.  This class does
+    //not new the objects, but it does delete them, hence the name 'warehouse'.
     template<typename T>
     class Warehouse
     {

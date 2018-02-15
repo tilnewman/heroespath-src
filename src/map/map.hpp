@@ -65,6 +65,8 @@ namespace map
 
         inline Level::Enum Level() const { return level_; }
 
+        void Update(const float TIME_ELAPSED);
+
     private:
         bool DoesAdjPlayerPosCollide(
             const sfml_util::Direction::Enum DIR,

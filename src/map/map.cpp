@@ -33,6 +33,7 @@
 #include "map/parser.hpp"
 #include "map/layout.hpp"
 #include "game/game-data-file.hpp"
+#include "npc/i-view.hpp"
 
 
 namespace heroespath
@@ -91,6 +92,12 @@ namespace map
     void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         target.draw( * mapDisplayUPtr_, states);
+    }
+
+
+    void Map::Update(const float TIME_ELAPSED)
+    {
+        mapDisplayUPtr_->Update(TIME_ELAPSED);
     }
 
 

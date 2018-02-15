@@ -35,6 +35,7 @@
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "stage/adventure-stage.hpp"
+#include "npc/i-view.hpp"
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
@@ -89,6 +90,8 @@ namespace stage
 
     void AdventureDisplayStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
+        mapUPtr_->Update(ELAPSED_TIME_SECONDS);
+
         //don't process map moves every frame to save resources
         auto const PROCESS_MAP_MOVE_ON_FRAME{ 3 };
         if (PROCESS_MAP_MOVE_ON_FRAME == ++frameCounter_)

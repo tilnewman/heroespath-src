@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project("Heroes Path")
+project("Heroes' Path")
 
 message(STATUS "System Detected: ${CMAKE_SYSTEM}")
 
@@ -78,6 +78,9 @@ if(MSVC)
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/map.suppress)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/map.suppress DESTINATION ${CMAKE_BINARY_DIR}/map)
     endif()
+    if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/npc.suppress)
+        file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/npc.suppress DESTINATION ${CMAKE_BINARY_DIR}/npc)
+    endif()
 endif()
 
 if(WIN32)
@@ -143,3 +146,4 @@ add_subdirectory(stats)
 add_subdirectory(creature)
 add_subdirectory(location)
 add_subdirectory(map)
+add_subdirectory(npc)
