@@ -74,20 +74,18 @@ namespace stage
         void HandleMovementKeypresses(
             const sfml_util::Direction::Enum,
             bool & wasPressed,
-            const bool IS_PRESSED,
-            const float MOVE_AMOUNT);
+            const bool IS_PRESSED);
 
     private:
-        static const int MAP_MOVE_SKIP_FRAME_COUNT_;
-        static const float MOVE_SPEED_;
-
+        static const float TIME_BETWEEN_MAP_MOVES_SEC_;
+        
         AdventureCharacterListUPtr_t characterListUPtr_;
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;
         sfml_util::BottomSymbol bottomImage_;
         sfml_util::MainMenuTitle topImage_;
         map::MapUPtr_t mapUPtr_;
-        int frameCounter_;
+        float moveTimerSec_;
         bool wasPressedLeft_;
         bool wasPressedRight_;
         bool wasPressedUp_;

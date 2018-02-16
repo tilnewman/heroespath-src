@@ -36,7 +36,6 @@
 #include "map/tiles-panel.hpp"
 #include "map/tile-offsets.hpp"
 #include "misc/types.hpp"
-#include "npc/model.hpp"
 
 #include <string>
 
@@ -46,6 +45,9 @@ namespace heroespath
 namespace map
 {
 
+    class Map;
+
+
     //Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
     {
@@ -53,7 +55,10 @@ namespace map
         MapDisplay & operator=(const MapDisplay &) = delete;
 
     public:
-        MapDisplay(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V);
+        MapDisplay(
+            const Map & MAP,
+            const sf::Vector2f & WIN_POS_V,
+            const sf::Vector2f & WIN_SIZE_V);
 
         void Load(const sf::Vector2f & STARTING_POS_V);
 
@@ -65,10 +70,6 @@ namespace map
 
         Layout & GetLayoutRef() { return layout_; }
 
-        npc::Model & GetPlayerRef() { return player_; }
-
-        void Update(const float TIME_ELAPSED);
-
     private:
         bool MoveUp(const float ADJUSTMENT);
         bool MoveDown(const float ADJUSTMENT);
@@ -77,7 +78,7 @@ namespace map
 
         void DrawNormal(sf::RenderTarget &, sf::RenderStates) const;
         void DrawDebug(sf::RenderTarget &, sf::RenderStates) const;
-        void DrawPlayerImage(sf::RenderTarget &, const sf::Vector2f &) const;
+        void DrawCharacterImages(sf::RenderTarget &) const;
         void ReDraw();
         void ResetMapSubsections();
         void DrawMapSubsectionOffscreen();
@@ -109,6 +110,8 @@ namespace map
         static const std::size_t VERTS_PER_QUAD_;
 
     private:
+        const Map & MAP_;
+
         //This is how close the player position can get to
         //the edge of the map before being forced to stop.
         const float BORDER_PAD_;
@@ -126,7 +129,6 @@ namespace map
         sf::RenderTexture  offScreenTextureAbove_;
         sf::RenderTexture  offScreenTextureBelow_;
         sf::Vector2f       offScreenMapSize_;
-        npc::Model         player_;
         sf::Texture        npcShadowTexture_;
         sf::Sprite         npcShadowSprite_;
     };

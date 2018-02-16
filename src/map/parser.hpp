@@ -31,9 +31,11 @@
 #include "map/layer-type-enum.hpp"
 #include "map/transition.hpp"
 #include "misc/types.hpp"
+#include "misc/vector-map.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -59,6 +61,9 @@ namespace heroespath
 namespace map
 {
 
+    using WalkRectMap_t = misc::VectorMap<std::size_t, std::vector<sf::FloatRect> >;
+
+
     //Responsible for parsing map .tmx files.
     class Parser
     {
@@ -72,14 +77,16 @@ namespace map
             const std::string & FILE_PATH_STR,
             Layout &,
             std::vector<sf::FloatRect> &,
-            TransitionVec_t &) const;
+            TransitionVec_t &,
+            WalkRectMap_t &) const;
 
     private:
         void Parse_Implementation(
             const std::string & FILE_PATH_STR,
             Layout &,
             std::vector<sf::FloatRect> &,
-            TransitionVec_t &) const;
+            TransitionVec_t &,
+            WalkRectMap_t &) const;
 
         const boost::property_tree::ptree Parse_XML(
             const std::string & MAP_FILE_PATH_STR) const;
@@ -98,6 +105,10 @@ namespace map
             const LayerType::Enum) const;
         
         void Parse_Layer_Generic_Tiles(std::vector<int> &, std::stringstream &) const;
+
+        void Parse_Layer_WalkBounds(
+            const boost::property_tree::ptree &,
+            WalkRectMap_t &) const;
 
         void Parse_Layer_Transitions(
             const boost::property_tree::ptree &,
@@ -149,6 +160,7 @@ namespace map
         static const std::string XML_ATTRIB_NAME_LEVEL_;
         static const std::string XML_ATTRIB_NAME_TRANSITIONS_;
         static const std::string XML_ATTRIB_NAME_VALUE_;
+        static const std::string XML_ATTRIB_NAME_WALKBOUNDS_;
     };
 
 }

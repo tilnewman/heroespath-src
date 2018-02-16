@@ -34,7 +34,9 @@
 #include "map/layout.hpp"
 #include "game/game-data-file.hpp"
 #include "npc/i-view.hpp"
+#include "npc/view-factory.hpp"
 #include "sfml-util/sfml-util.hpp"
+#include "misc/vector-map.hpp"
 
 
 namespace heroespath
@@ -42,12 +44,18 @@ namespace heroespath
 namespace map
 {
 
+    const float Map::PLAYER_MOVE_SPEED_{ 3.5f };
+    const float Map::NONPLAYER_MOVE_SPEED_{ 3.0f };
+
+
     Map::Map(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V)
     :
-        mapDisplayUPtr_( std::make_unique<map::MapDisplay>(WIN_POS_V, WIN_SIZE_V) ),
+        mapDisplayUPtr_(std::make_unique<map::MapDisplay>( * this, WIN_POS_V, WIN_SIZE_V) ),
         collisionVec_(),
         transitionVec_(),
-        level_(Level::Count)
+        level_(Level::Count),
+        player_(npc::ViewFactory::MakeLPCView("media-images-npc-lpc-puck")),
+        nonPlayers_()
     {}
 
 
@@ -58,34 +66,50 @@ namespace map
         Layout & layout{ mapDisplayUPtr_->GetLayoutRef() };
         layout.Reset();
 
+        WalkRectMap_t walkRectMap;
+
         Parser mapParser;
         mapParser.Parse(
             ComposeMapFilePath(LEVEL_TO_LOAD),
             layout,
             collisionVec_,
-            transitionVec_);
+            transitionVec_,
+            walkRectMap);
 
         mapDisplayUPtr_->Load( FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM) );
         level_ = LEVEL_TO_LOAD;
+
+        nonPlayers_.push_back(
+            npc::Model(npc::ViewFactory::MakeLPCView("media-images-npc-lpc-beardy"),
+                walkRectMap[0]) );
     }
 
 
-    bool Map::Move(const sfml_util::Direction::Enum DIRECTION, const float ADJUSTMENT)
+    bool Map::MovePlayer(const sfml_util::Direction::Enum DIRECTION)
     {
-        if (DoesAdjPlayerPosCollide(DIRECTION, ADJUSTMENT))
+        if (DoesAdjPlayerPosCollide(DIRECTION, PLAYER_MOVE_SPEED_))
         {
             return false;
         }
         else
         {
-            if (ChangeLevelOnExit(DIRECTION, ADJUSTMENT))
+            if (ChangeLevelOnExit(DIRECTION, PLAYER_MOVE_SPEED_))
             {
                 return true;
             }
             else
             {
-                return mapDisplayUPtr_->Move(DIRECTION, ADJUSTMENT);
+                return mapDisplayUPtr_->Move(DIRECTION, PLAYER_MOVE_SPEED_);
             }
+        }
+    }
+
+
+    void Map::MoveNonPlayers()
+    {
+        for (auto & nonPlayer : nonPlayers_)
+        {
+            nonPlayer.Move(NONPLAYER_MOVE_SPEED_);
         }
     }
 
@@ -98,13 +122,18 @@ namespace map
 
     void Map::Update(const float TIME_ELAPSED)
     {
-        mapDisplayUPtr_->Update(TIME_ELAPSED);
+        player_.Update(TIME_ELAPSED);
+
+        for (auto & npc : nonPlayers_)
+        {
+            npc.Update(TIME_ELAPSED);
+        }
     }
 
 
-    void Map::WalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
+    void Map::SetPlayerWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
     {
-        mapDisplayUPtr_->GetPlayerRef().WalkAnim(DIRECTION, WILL_START);
+        player_.SetWalkAnim(DIRECTION, WILL_START);
     }
 
 
@@ -116,7 +145,7 @@ namespace map
 
         auto const ADJ_V{ [&]()
         {
-            auto v(mapDisplayUPtr_->GetPlayerRef().GetView().SpriteSize());
+            auto v(player_.GetView().SpriteSize());
             v.x *= 0.3f;
             v.y *= 0.5f;
             return v;

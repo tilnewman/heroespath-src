@@ -53,6 +53,8 @@ namespace npc
         //returns true if the current animation finished
         virtual bool Update(const float TIME_ELAPSED) = 0;
 
+        virtual void UpdatePos(const sf::Vector2f &) = 0;
+
         virtual sfml_util::Direction::Enum Direction() const = 0;
 
         virtual Pose::Enum Pose() const = 0;

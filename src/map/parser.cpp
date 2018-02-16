@@ -65,17 +65,24 @@ namespace map
     const std::string Parser::XML_ATTRIB_NAME_LEVEL_        { "level" };
     const std::string Parser::XML_ATTRIB_NAME_TRANSITIONS_  { "transitions" };
     const std::string Parser::XML_ATTRIB_NAME_VALUE_        { "value" };
+    const std::string Parser::XML_ATTRIB_NAME_WALKBOUNDS_   { "walk-bounds" };
 
 
     void Parser::Parse(
         const std::string & FILE_PATH_STR,
         Layout & layout,
         std::vector<sf::FloatRect> & collisionVec,
-        TransitionVec_t & transitionVec) const
+        TransitionVec_t & transitionVec,
+        WalkRectMap_t & walkRectMap) const
     {
         try
         {
-            Parse_Implementation(FILE_PATH_STR, layout, collisionVec, transitionVec);
+            Parse_Implementation(
+                FILE_PATH_STR,
+                layout,
+                collisionVec,
+                transitionVec,
+                walkRectMap);
         }
         catch (const std::exception & E)
         {
@@ -98,13 +105,16 @@ namespace map
         const std::string & MAP_FILE_PATH_STR,
         Layout & layout,
         std::vector<sf::FloatRect> & collisionVec,
-        TransitionVec_t & transitionVec) const
+        TransitionVec_t & transitionVec,
+        WalkRectMap_t & walkRectMap) const
     {
         collisionVec.clear();
         collisionVec.reserve(1024);//found by experiment to be a good upper bound
 
         transitionVec.clear();
         transitionVec.reserve(8);//found by experiment to be a good upper bound
+
+        walkRectMap.Clear();
 
         layout.Reset();
 
@@ -131,10 +141,15 @@ namespace map
                 {
                     Parse_Layer_Collisions(CHILD_PAIR.second, collisionVec);
                 }
-                else if(ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_TRANSITIONS_))
+                else if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_TRANSITIONS_))
                 {
                     Parse_Layer_Transitions(CHILD_PAIR.second, transitionVec);
                 }
+                else if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_WALKBOUNDS_))
+                {
+                    Parse_Layer_WalkBounds(CHILD_PAIR.second, walkRectMap);
+                }
+
                 continue;
             }
             else if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_TILESET_))
@@ -315,6 +330,47 @@ namespace map
                     M_HP_LOG(ss.str());
                     throw std::runtime_error(ss.str());
                 }
+            }
+        }
+    }
+
+
+    void Parser::Parse_Layer_WalkBounds(
+        const boost::property_tree::ptree & PTREE,
+        WalkRectMap_t & walkRectMap) const
+    {
+        namespace ba = boost::algorithm;
+
+        for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
+        {
+            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
+            {
+                auto const OBJECT_PTREE{ CHILD_PAIR.second };
+
+                //the index is stored in an attribute field named "type"
+                auto const WALK_RECT_INDEX{
+                    FetchXMLAttribute<std::size_t>(OBJECT_PTREE, XML_ATTRIB_NAME_TYPE_) };
+
+                sf::FloatRect rect;
+
+                try
+                {
+                    rect.left = FetchXMLAttribute<float>(OBJECT_PTREE, "x");
+                    rect.top = FetchXMLAttribute<float>(OBJECT_PTREE, "y");
+                    rect.width = FetchXMLAttribute<float>(OBJECT_PTREE, "width");
+                    rect.height = FetchXMLAttribute<float>(OBJECT_PTREE, "height");
+                }
+                catch (const std::exception & E)
+                {
+                    M_HP_LOG_FAT("map::Parser::Parse_Layer_WalkBounds() threw "
+                        << "std::exception when parsing the rect from a node named \""
+                        << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\""
+                        << E.what() << "\".");
+
+                    throw E;
+                }
+
+                walkRectMap[WALK_RECT_INDEX].push_back(rect);
             }
         }
     }

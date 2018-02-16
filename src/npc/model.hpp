@@ -27,9 +27,13 @@
 //
 // model.hpp
 //
+#include "npc/pose-enum.hpp"
 #include "sfml-util/direction-enum.hpp"
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <memory>
 #include <vector>
+#include <utility>
 
 
 namespace heroespath
@@ -43,34 +47,64 @@ namespace npc
     //Responsible for all state and non-drawing behavior of an NPC.
     class Model
     {
-        Model(const Model &) = delete;
-        Model(const Model &&) = delete;
-        Model & operator=(const Model &) = delete;
+        //Model(const Model &) = delete;
+        //Model(const Model &&) = delete;
+        //Model & operator=(const Model &) = delete;
 
     public:
-        Model(IViewUPtr_t viewUPtr);
+        Model(
+            IViewUPtr_t viewUPtr,
+            const std::vector<sf::FloatRect> & WALK_RECTS = std::vector<sf::FloatRect>());
 
         void Update(const float TIME_ELAPSED);
 
         inline const IView & GetView() const { return * viewUPtr_; }
 
-        void WalkAnim(const sfml_util::Direction::Enum, const bool WILL_START);
+        void SetWalkAnim(const sfml_util::Direction::Enum, const bool WILL_START_OR_STOP);
+
+        inline bool IsPlayer() const { return walkRects_.empty(); }
+
+        void Move(const float AMOUNT);
 
     private:
         float RandomBlinkDelay() const;
+        float RandomWalkDelay() const;
 
-        void ExtendTimeBeforeNextBlinkIfNeeded(const float PREV_BLINK_DELAY);
+        void ExtendTimeUntilNextBlinkIfNeeded(const float PREV_BLINK_DELAY);
+
+        void UpdateAnimationAndStopIfNeeded(const float TIME_ELAPSED);
+
+        void UpdateBlinking(const float TIME_ELAPSED);
+
+        void UpdateWalkingAction(const float TIME_ELAPSED);
+
+        std::size_t RandomWalkRectIndex() const;
+
+        const sf::Vector2f RandomWalkTarget() const;
+
+        sfml_util::Direction::Enum WalkDirection() const;
 
     private:
         static const float NUM_BLINKS_TIME_WINDOW_SEC_;
         static const std::size_t NUM_BLINKS_WITHIN_TIME_WINDOW_;
         static const float TIME_BETWEEN_BLINK_MIN_SEC_;
         static const float TIME_BETWEEN_BLINK_MAX_SEC_;
+        static const float TIME_BETWEEN_WALK_MIN_SEC_;
+        static const float TIME_BETWEEN_WALK_MAX_SEC_;
+        static const float WALK_TARGET_CLOSE_ENOUGH_;
 
         IViewUPtr_t viewUPtr_;
         float blinkTimerSec_;
-        float timeBeforeNextBlinkSec_;
+        float timeUntilNextBlinkSec_;
         std::vector<float> blinkTimes_;
+        Pose::Enum action_;
+        float walkTimerSec_;
+        float timeUntilNextWalkSec_;
+        std::vector<sf::FloatRect> walkRects_;
+        sf::Vector2f walkTargetPosV_;
+        std::size_t walkRectIndex_;
+        sf::Vector2f posV_;
+        sfml_util::Direction::Enum prevWalkDirection_;
     };
 
 }

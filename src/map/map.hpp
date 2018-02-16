@@ -32,6 +32,8 @@
 #include "map/level-enum.hpp"
 #include "map/transition.hpp"
 
+#include "npc/model.hpp"
+
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -57,10 +59,13 @@ namespace map
 
     public:
         Map(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V);
-        
+        ~Map() {}
+
         void Load(const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM);
 
-        bool Move(const sfml_util::Direction::Enum, const float ADJUSTMENT);
+        bool MovePlayer(const sfml_util::Direction::Enum);
+
+        void MoveNonPlayers();
 
         virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
@@ -68,7 +73,11 @@ namespace map
 
         void Update(const float TIME_ELAPSED);
 
-        void WalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START);
+        void SetPlayerWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START);
+
+        const npc::Model & Player() const { return player_; }
+
+        inline const std::vector<npc::Model> & NonPlayers() const { return nonPlayers_; }
 
     private:
         bool DoesAdjPlayerPosCollide(
@@ -91,10 +100,15 @@ namespace map
             const float ADJUSTMENT) const;
 
     private:
+        static const float PLAYER_MOVE_SPEED_;
+        static const float NONPLAYER_MOVE_SPEED_;
+
         MapDisplayUPtr_t mapDisplayUPtr_;
         std::vector<sf::FloatRect> collisionVec_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
+        npc::Model player_;
+        std::vector<npc::Model> nonPlayers_;
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;

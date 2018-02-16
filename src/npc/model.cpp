@@ -30,8 +30,11 @@
 #include "model.hpp"
 #include "npc/i-view.hpp"
 #include "misc/random.hpp"
+#include "misc/vectors.hpp"
+#include "log/log-macros.hpp"
 
 #include <numeric>
+#include <algorithm>
 
 
 namespace heroespath
@@ -39,46 +42,68 @@ namespace heroespath
 namespace npc
 {
 
-    const float Model::TIME_BETWEEN_BLINK_MIN_SEC_{ 0.25f };
-    const float Model::TIME_BETWEEN_BLINK_MAX_SEC_{ 4.0f };
     const float Model::NUM_BLINKS_TIME_WINDOW_SEC_{ 1.5f };
     const std::size_t Model::NUM_BLINKS_WITHIN_TIME_WINDOW_{ 3 };
+    const float Model::TIME_BETWEEN_BLINK_MIN_SEC_{ 0.25f };
+    const float Model::TIME_BETWEEN_BLINK_MAX_SEC_{ 4.0f };
+    const float Model::TIME_BETWEEN_WALK_MIN_SEC_{ 1.0f };
+    const float Model::TIME_BETWEEN_WALK_MAX_SEC_{ 2.0f };
+    const float Model::WALK_TARGET_CLOSE_ENOUGH_{ 5.0f };
 
 
-    Model::Model(IViewUPtr_t viewUPtr)
+    Model::Model(IViewUPtr_t viewUPtr, const std::vector<sf::FloatRect> & WALK_RECTS)
     :
         viewUPtr_(std::move(viewUPtr)),
         blinkTimerSec_(0.0f),
-        timeBeforeNextBlinkSec_(RandomBlinkDelay()),
-        blinkTimes_()
+        timeUntilNextBlinkSec_(RandomBlinkDelay()),
+        blinkTimes_(),
+        action_(Pose::Standing),
+        walkTimerSec_(0.0f),
+        timeUntilNextWalkSec_(RandomWalkDelay()),
+        walkRects_(WALK_RECTS),
+        walkTargetPosV_(),
+        walkRectIndex_(RandomWalkRectIndex()),
+        posV_(RandomWalkTarget()),
+        prevWalkDirection_(sfml_util::Direction::Count)
     {}
 
 
     void Model::Update(const float TIME_ELAPSED)
     {
-        if (viewUPtr_->Update(TIME_ELAPSED))
+        UpdateAnimationAndStopIfNeeded(TIME_ELAPSED);
+        UpdateBlinking(TIME_ELAPSED);
+
+        if (IsPlayer() == false)
         {
-            viewUPtr_->Set(Pose::Standing, viewUPtr_->Direction());
+            UpdateWalkingAction(TIME_ELAPSED);
         }
 
-        if (viewUPtr_->Pose() == Pose::Standing)
-        {
-            blinkTimerSec_ += TIME_ELAPSED;
-            if (blinkTimerSec_ > timeBeforeNextBlinkSec_)
-            {
-                viewUPtr_->Set(Pose::Blink, viewUPtr_->Direction());
-                blinkTimerSec_ = 0.0f;
-                auto const PREV_TIME_BEFORE_NEXT_BLINK_DELAY_SEC{ timeBeforeNextBlinkSec_ };
-                timeBeforeNextBlinkSec_ = RandomBlinkDelay();
-                ExtendTimeBeforeNextBlinkIfNeeded(PREV_TIME_BEFORE_NEXT_BLINK_DELAY_SEC);
-            }
-        }
+        viewUPtr_->UpdatePos(posV_);
     }
 
 
-    void Model::WalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
+    void Model::SetWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
     {
         viewUPtr_->Set(((WILL_START) ? Pose::Walking : Pose::Standing), DIRECTION);
+    }
+
+
+    void Model::Move(const float AMOUNT)
+    {
+        if (Pose::Walking == action_)
+        {
+            switch (viewUPtr_->Direction())
+            {
+                case sfml_util::Direction::Left:  { posV_.x -= AMOUNT; break; }
+                case sfml_util::Direction::Right: { posV_.x += AMOUNT; break; }
+                case sfml_util::Direction::Up:    { posV_.y -= AMOUNT; break; }
+                case sfml_util::Direction::Down:  
+                case sfml_util::Direction::Count: 
+                default:                          { posV_.y += AMOUNT; break; }
+            }
+
+            viewUPtr_->UpdatePos(posV_);
+        }
     }
 
 
@@ -88,7 +113,13 @@ namespace npc
     }
 
 
-    void Model::ExtendTimeBeforeNextBlinkIfNeeded(const float PREV_BLINK_DELAY)
+    float Model::RandomWalkDelay() const
+    {
+        return misc::random::Float(TIME_BETWEEN_WALK_MIN_SEC_, TIME_BETWEEN_WALK_MAX_SEC_);
+    }
+
+
+    void Model::ExtendTimeUntilNextBlinkIfNeeded(const float PREV_BLINK_DELAY)
     {
         blinkTimes_.push_back(PREV_BLINK_DELAY);
 
@@ -101,8 +132,159 @@ namespace npc
 
             if (TOTAL_TIME < NUM_BLINKS_TIME_WINDOW_SEC_)
             {
-                timeBeforeNextBlinkSec_ += NUM_BLINKS_TIME_WINDOW_SEC_;
+                timeUntilNextBlinkSec_ += NUM_BLINKS_TIME_WINDOW_SEC_;
             }
+        }
+    }
+
+
+    void Model::UpdateAnimationAndStopIfNeeded(const float TIME_ELAPSED)
+    {
+        if (viewUPtr_->Update(TIME_ELAPSED))
+        {
+            viewUPtr_->Set(Pose::Standing, viewUPtr_->Direction());
+        }
+    }
+
+
+    void Model::UpdateBlinking(const float TIME_ELAPSED)
+    {
+        if (viewUPtr_->Pose() == Pose::Standing)
+        {
+            blinkTimerSec_ += TIME_ELAPSED;
+            if (blinkTimerSec_ > timeUntilNextBlinkSec_)
+            {
+                viewUPtr_->Set(Pose::Blink, viewUPtr_->Direction());
+                blinkTimerSec_ = 0.0f;
+                auto const PREV_TIME_BEFORE_NEXT_BLINK_DELAY_SEC{ timeUntilNextBlinkSec_ };
+                timeUntilNextBlinkSec_ = RandomBlinkDelay();
+                ExtendTimeUntilNextBlinkIfNeeded(PREV_TIME_BEFORE_NEXT_BLINK_DELAY_SEC);
+            }
+        }
+    }
+
+
+    void Model::UpdateWalkingAction(const float TIME_ELAPSED)
+    {
+        auto const WAS_STANDING{ (Pose::Standing == action_) };
+
+        if (WAS_STANDING)
+        {
+            walkTimerSec_ += TIME_ELAPSED;
+
+            if (walkTimerSec_ > timeUntilNextWalkSec_)
+            {
+                walkTimerSec_ = 0.0f;
+                walkRectIndex_ = RandomWalkRectIndex();
+                walkTargetPosV_ = RandomWalkTarget();
+                
+                auto const NEW_DIRECTION{ WalkDirection() };
+
+                if (NEW_DIRECTION != sfml_util::Direction::Count)
+                {
+                    action_ = Pose::Walking;
+                    SetWalkAnim(NEW_DIRECTION, true);
+                    prevWalkDirection_ = NEW_DIRECTION;
+                }
+            }
+        }
+        else
+        {
+            auto const NEW_DIRECTION{ WalkDirection() };
+
+            if (NEW_DIRECTION != prevWalkDirection_)
+            {
+                if (NEW_DIRECTION == sfml_util::Direction::Count)
+                {
+                    SetWalkAnim(prevWalkDirection_, false);
+                    action_ = Pose::Standing;
+                }
+                else
+                {
+                    SetWalkAnim(NEW_DIRECTION, true);
+                }
+
+                prevWalkDirection_ = NEW_DIRECTION;
+            }
+        }
+    }
+
+
+    std::size_t Model::RandomWalkRectIndex() const
+    {
+        if (walkRects_.size() <= 1)
+        {
+            return 0;
+        }
+        else
+        {
+            std::vector<std::size_t> possibleWalkRectIndexes_;
+            for (std::size_t i(0); i < walkRects_.size(); ++i)
+            {
+                if (walkRects_[i].contains(posV_))
+                {
+                    possibleWalkRectIndexes_.push_back(i);
+                }
+            }
+
+            if (possibleWalkRectIndexes_.empty())
+            {
+                return static_cast<std::size_t>( misc::random::Int(0, static_cast<int>(walkRects_.size())) );
+            }
+            else if (possibleWalkRectIndexes_.size() > 1)
+            {
+                //if there is more than one option, then remove the current index
+                //from the list of possibilities
+                possibleWalkRectIndexes_.erase(
+                    std::remove(
+                        std::begin(possibleWalkRectIndexes_),
+                        std::end(possibleWalkRectIndexes_),
+                        walkRectIndex_), std::end(possibleWalkRectIndexes_));
+            }
+            
+            return misc::Vector::SelectRandom(possibleWalkRectIndexes_);
+        }
+    }
+
+
+    const sf::Vector2f Model::RandomWalkTarget() const
+    {
+        if (IsPlayer())
+        {
+            return sf::Vector2f(0.0f, 0.0f);
+        }
+        else
+        {
+            auto const RECT{ walkRects_[walkRectIndex_] };
+
+            return sf::Vector2f(
+                misc::random::Float(RECT.left, RECT.left + RECT.width),
+                misc::random::Float(RECT.top, RECT.top + RECT.height) );
+        }
+    }
+
+
+    sfml_util::Direction::Enum Model::WalkDirection() const
+    {
+        if ((posV_.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+        {
+            return sfml_util::Direction::Up;
+        }
+        else if ((walkTargetPosV_.y - posV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+        {
+            return sfml_util::Direction::Down;
+        }
+        else if ((walkTargetPosV_.x - posV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
+        {
+            return sfml_util::Direction::Right;
+        }
+        else if ((posV_.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
+        {
+            return sfml_util::Direction::Left;
+        }
+        else
+        {
+            return sfml_util::Direction::Count;
         }
     }
 

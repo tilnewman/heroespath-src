@@ -56,6 +56,11 @@ namespace npc
 
         virtual bool Update(const float TIME_ELAPSED) override;
 
+        inline virtual void UpdatePos(const sf::Vector2f & V) override
+        {
+            sprite_.setPosition(V);
+        }
+
         inline virtual sfml_util::Direction::Enum Direction() const override
         {
             return animation_.direction;
