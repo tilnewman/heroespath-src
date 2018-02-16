@@ -155,8 +155,7 @@ namespace map
             static_cast<float>(layout.tile_size_v.y * layout.tile_count_v.y),
             collisionRects);
 
-        ShadowMasker shadowMasker;
-        shadowMasker.ChangeColors(XML_ATTRIB_NAME_SHADOW_, layout);
+        ShadowMasker::ChangeColors(XML_ATTRIB_NAME_SHADOW_, layout);
     }
 
 

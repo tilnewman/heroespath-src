@@ -185,6 +185,7 @@ media-images-bones-wolfen=                  image/treasure-stage/bones/wolfen.pn
 media-images-trap=                          image/treasure-stage/trap.png
 media-images-placeholder=                   image/misc/placeholder.png
 media-images-npc-lpc-puck=                  image/npc/character/lpc/puck.png
+media-images-npc-shadow=                    image/npc/character/shadow.png
 
 #Race Stat Modifiers
 heroespath-creature-race-stat-modifiers-Human=    2,  2,   2, -6,  0,  0

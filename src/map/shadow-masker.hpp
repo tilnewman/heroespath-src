@@ -39,13 +39,14 @@ namespace map
     //Responsible for changing shadow place-holder colors into shades of gray.
     class ShadowMasker
     {
+        ShadowMasker() = delete;
         ShadowMasker(const ShadowMasker &) = delete;
+        ShadowMasker(const ShadowMasker &&) = delete;
         ShadowMasker & operator=(const ShadowMasker &) = delete;
 
     public:
-        ShadowMasker() {}
-
-        void ChangeColors(const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout);
+        static void ChangeColors(const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout);
+        static void ChangeColors(sf::Texture &, const bool IS_SHADOW_IMAGE);
 
     private:
         //The tileset I found online uses this color as a background,
@@ -62,6 +63,8 @@ namespace map
         static const sf::Color SHADOW_COLOR1_;
         static const sf::Color SHADOW_COLOR2_;
         static const sf::Color SHADOW_COLOR3_;
+
+        static const unsigned COLOR_COMPONENT_COUNT_;
     };
 
 }

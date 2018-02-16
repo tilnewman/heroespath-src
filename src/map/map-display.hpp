@@ -100,6 +100,8 @@ namespace map
 
         const sf::Vector2f CalcOffScreenMapSize() const;
 
+        void SetupNPCShadowImage();
+
     public:
         //how many extra tiles to draw offscreen that are outside the visible map area
         static const int EXTRA_OFFSCREEN_TILE_COUNT_;
@@ -125,6 +127,8 @@ namespace map
         sf::RenderTexture  offScreenTextureBelow_;
         sf::Vector2f       offScreenMapSize_;
         npc::Model         player_;
+        sf::Texture        npcShadowTexture_;
+        sf::Sprite         npcShadowSprite_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;

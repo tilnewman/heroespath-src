@@ -30,10 +30,13 @@
 #include "map-display.hpp"
 
 #include "map/parser.hpp"
-#include "sfml-util/sfml-util.hpp"
+#include "map/shadow-masker.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "npc/view-factory.hpp"
 #include "npc/lpc-view.hpp"
+#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/loaders.hpp"
+#include "game/game-data-file.hpp"
 
 #include <boost/algorithm/algorithm.hpp>
 #include <boost/algorithm/string.hpp>
@@ -52,7 +55,7 @@ namespace map
 
 
     MapDisplay::MapDisplay(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V)
-        :
+    :
         BORDER_PAD_(sfml_util::MapByRes(50.0f, 500.0f)),
         WIN_POS_V_(WIN_POS_V),
         WIN_SIZE_V_(WIN_SIZE_V),
@@ -69,8 +72,12 @@ namespace map
         offScreenTextureAbove_(),
         offScreenTextureBelow_(),
         offScreenMapSize_(0.0f, 0.0f),
-        player_(npc::ViewFactory::MakeLPCView("media-images-npc-lpc-puck"))
-    {}
+        player_(npc::ViewFactory::MakeLPCView("media-images-npc-lpc-puck")),
+        npcShadowTexture_(),
+        npcShadowSprite_()
+    {
+        SetupNPCShadowImage();
+    }
 
 
     void MapDisplay::Load(const sf::Vector2f & STARTING_POS_V)
@@ -285,16 +292,20 @@ namespace map
 
     void MapDisplay::DrawPlayerImage(sf::RenderTarget & target, const sf::Vector2f & POS_V) const
     {
-        sf::Sprite sprite;
-        player_.GetView().Sprite(sprite);
+        sf::Sprite playerSprite;
+        player_.GetView().Sprite(playerSprite);
 
-        sprite.setPosition(POS_V);
+        const sf::Vector2f PLAYER_IMAGE_SIZE_HALF(
+            playerSprite.getGlobalBounds().width * 0.5f,
+            playerSprite.getGlobalBounds().height * 0.5f);
 
-        sprite.move( sf::Vector2f(
-            sprite.getGlobalBounds().width * -0.5f,
-            sprite.getGlobalBounds().height * -0.5f) );
-        
-        target.draw(sprite);
+        sf::Sprite playerShadowSprite(npcShadowSprite_);
+        playerShadowSprite.setPosition(POS_V - PLAYER_IMAGE_SIZE_HALF);
+
+        playerSprite.setPosition(POS_V - PLAYER_IMAGE_SIZE_HALF);
+
+        target.draw(playerShadowSprite);
+        target.draw(playerSprite);
     }
 
 
@@ -682,6 +693,18 @@ namespace map
             (tileOffsets_.end_v.y - tileOffsets_.begin_v.y) * layout_.tile_size_v.y };
 
         return sf::Vector2f(static_cast<float>(WIDTH), static_cast<float>(HEIGHT));
+    }
+
+
+    void MapDisplay::SetupNPCShadowImage()
+    {
+        sfml_util::LoadTexture(
+            npcShadowTexture_,
+            game::GameDataFile::Instance()->GetMediaPath("media-images-npc-shadow"));
+
+        ShadowMasker::ChangeColors(npcShadowTexture_, true);
+
+        npcShadowSprite_.setTexture(npcShadowTexture_, true);
     }
 
 }
