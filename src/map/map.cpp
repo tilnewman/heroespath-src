@@ -113,17 +113,23 @@ namespace map
     {
         auto const POS_V{ CalcAdjPlayerPos(DIR, ADJ) };
 
-        auto const HALF_V{ mapDisplayUPtr_->GetPlayerRef().GetView().SpriteSize() * 0.5f };
-        
-        auto const UPPER_LEFT_V{ POS_V - HALF_V};
-        auto const LOWER_RIGHT_V{ POS_V + HALF_V };
-        auto const UPPER_RIGHT_V{ POS_V + sf::Vector2f(HALF_V.x, -HALF_V.y) };
-        auto const LOWER_LEFT_V{ POS_V + sf::Vector2f(-HALF_V.x, HALF_V.y) };
+        auto const ADJ_V{ [&]()
+            {
+                auto v(mapDisplayUPtr_->GetPlayerRef().GetView().SpriteSize());
+                v.x *= 0.3f;
+                v.y *= 0.5f;
+                return v;
+            }() };
 
-        auto const UPPER_CENTER_V{ POS_V + sf::Vector2f(0.0f, -HALF_V.y) };
-        auto const LOWER_CENTER_V{ POS_V + sf::Vector2f(0.0f, HALF_V.y) };
-        auto const CENTER_RIGHT_V{ POS_V + sf::Vector2f(-HALF_V.x, 0.0f) };
-        auto const CENTER_LEFT_V { POS_V + sf::Vector2f(HALF_V.x, 0.0f) };
+        auto const UPPER_LEFT_V{ POS_V - ADJ_V};
+        auto const LOWER_RIGHT_V{ POS_V + ADJ_V };
+        auto const UPPER_RIGHT_V{ POS_V + sf::Vector2f(ADJ_V.x, -ADJ_V.y) };
+        auto const LOWER_LEFT_V{ POS_V + sf::Vector2f(-ADJ_V.x, ADJ_V.y) };
+
+        auto const UPPER_CENTER_V{ POS_V + sf::Vector2f(0.0f, -ADJ_V.y) };
+        auto const LOWER_CENTER_V{ POS_V + sf::Vector2f(0.0f, ADJ_V.y) };
+        auto const CENTER_RIGHT_V{ POS_V + sf::Vector2f(-ADJ_V.x, 0.0f) };
+        auto const CENTER_LEFT_V { POS_V + sf::Vector2f(ADJ_V.x, 0.0f) };
 
         return (
             collisionQTree_.IsPointWithinCollisionRect(UPPER_LEFT_V) ||
