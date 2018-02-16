@@ -27,16 +27,17 @@
 //
 // map.hpp
 //
-#include "sfml-util/collision-quad-tree.hpp"
 #include "sfml-util/direction-enum.hpp"
 
 #include "map/level-enum.hpp"
 #include "map/transition.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 
 #include <memory>
+#include <vector>
 
 
 namespace heroespath
@@ -91,7 +92,7 @@ namespace map
 
     private:
         MapDisplayUPtr_t mapDisplayUPtr_;
-        sfml_util::QuadTree collisionQTree_;
+        std::vector<sf::FloatRect> collisionVec_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
     };

@@ -32,9 +32,10 @@
 #include "map/transition.hpp"
 #include "misc/types.hpp"
 
-#include "sfml-util/collision-quad-tree.hpp"
+#include <SFML/Graphics/Rect.hpp>
 
 #include <string>
+#include <vector>
 
 
 //suppress warnings that are safe to ignore in boost
@@ -70,14 +71,14 @@ namespace map
         void Parse(
             const std::string & FILE_PATH_STR,
             Layout &,
-            sfml_util::QuadTree &,
+            std::vector<sf::FloatRect> &,
             TransitionVec_t &) const;
 
     private:
         void Parse_Implementation(
             const std::string & FILE_PATH_STR,
             Layout &,
-            sfml_util::QuadTree &,
+            std::vector<sf::FloatRect> &,
             TransitionVec_t &) const;
 
         const boost::property_tree::ptree Parse_XML(
@@ -89,7 +90,7 @@ namespace map
 
         void Parse_Layer_Collisions(
             const boost::property_tree::ptree &,
-            sfml_util::FloatRectVec_t &) const;
+            std::vector<sf::FloatRect> &) const;
 
         void Prase_Layer_Generic(
             const boost::property_tree::ptree &,
@@ -125,7 +126,7 @@ namespace map
         void Parse_Rects(
             const boost::property_tree::ptree &,
             const std::string & NODE_NAME,
-            sfml_util::FloatRectVec_t &) const;
+            std::vector<sf::FloatRect> &) const;
 
         LayerType::Enum LayerTypeFromName(const std::string &) const;
 

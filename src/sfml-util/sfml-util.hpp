@@ -41,12 +41,37 @@
 #include <vector>
 #include <sstream>
 #include <cmath>
+#include <tuple>
+
+
+namespace sf
+{
+
+    template<typename T>
+    inline bool operator<(const sf::Rect<T> & A, const sf::Rect<T> & B)
+    {
+        return std::tie(A.left, A.top, A.width, A.height) <
+               std::tie(B.left, B.top, B.width, B.height);
+    }
+
+}
 
 
 namespace heroespath
 {
 namespace sfml_util
 {
+
+    template<typename T>
+    bool DoRectsOverlap(const sf::Rect<T> & A, const sf::Rect<T> & B)
+    {
+        return (
+            (A.left < (B.left + B.width)) &&
+            ((A.left + A.width) > B.left) &&
+            (A.top < (B.top + B.height)) &&
+            ((A.top + A.height) > B.top));
+    }
+
 
     template<typename T>
     T MagnitudeSFML(const sf::Vector2<T> & V)

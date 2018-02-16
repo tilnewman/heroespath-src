@@ -33,6 +33,7 @@
 #include "map/shadow-masker.hpp"
 #include "log/log-macros.hpp"
 #include "game/game-data-file.hpp"
+#include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 #include "misc/assertlogandthrow.hpp"
 
@@ -40,6 +41,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/algorithm.hpp>
 #include <boost/algorithm/string.hpp>
+
+#include <algorithm>
 
 
 namespace heroespath
@@ -67,12 +70,12 @@ namespace map
     void Parser::Parse(
         const std::string & FILE_PATH_STR,
         Layout & layout,
-        sfml_util::QuadTree & collisionQTree,
+        std::vector<sf::FloatRect> & collisionVec,
         TransitionVec_t & transitionVec) const
     {
         try
         {
-            Parse_Implementation(FILE_PATH_STR, layout, collisionQTree, transitionVec);
+            Parse_Implementation(FILE_PATH_STR, layout, collisionVec, transitionVec);
         }
         catch (const std::exception & E)
         {
@@ -94,16 +97,14 @@ namespace map
     void Parser::Parse_Implementation(
         const std::string & MAP_FILE_PATH_STR,
         Layout & layout,
-        sfml_util::QuadTree & collisionQTree,
+        std::vector<sf::FloatRect> & collisionVec,
         TransitionVec_t & transitionVec) const
     {
-        sfml_util::FloatRectVec_t collisionRects;
-        collisionRects.reserve(1024);//found by experiment to be a good upper bound
+        collisionVec.clear();
+        collisionVec.reserve(1024);//found by experiment to be a good upper bound
 
         transitionVec.clear();
         transitionVec.reserve(8);//found by experiment to be a good upper bound
-
-        collisionQTree.Clear();
 
         layout.Reset();
 
@@ -128,7 +129,7 @@ namespace map
 
                 if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_COLLISIONS_))
                 {
-                    Parse_Layer_Collisions(CHILD_PAIR.second, collisionRects);
+                    Parse_Layer_Collisions(CHILD_PAIR.second, collisionVec);
                 }
                 else if(ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_TRANSITIONS_))
                 {
@@ -150,10 +151,7 @@ namespace map
             }
         }
 
-        collisionQTree.Setup(
-            static_cast<float>(layout.tile_size_v.x * layout.tile_count_v.x),
-            static_cast<float>(layout.tile_size_v.y * layout.tile_count_v.y),
-            collisionRects);
+        std::sort(std::begin(collisionVec), std::end(collisionVec));
 
         ShadowMasker::ChangeColors(XML_ATTRIB_NAME_SHADOW_, layout);
     }
@@ -240,7 +238,7 @@ namespace map
 
     void Parser::Parse_Layer_Collisions(
         const boost::property_tree::ptree & OBJGROUP_PTREE,
-        sfml_util::FloatRectVec_t & collisionRects) const
+        std::vector<sf::FloatRect> & collisionRects) const
     {
         Parse_Rects(OBJGROUP_PTREE, XML_NODE_NAME_OBJECT_, collisionRects);
     }
@@ -483,7 +481,7 @@ namespace map
     void Parser::Parse_Rects(
         const boost::property_tree::ptree & PTREE,
         const std::string & NODE_NAME,
-        sfml_util::FloatRectVec_t & rectsVec) const
+        std::vector<sf::FloatRect> & rectsVec) const
     {
         namespace ba = boost::algorithm;
 

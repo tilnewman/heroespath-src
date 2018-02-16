@@ -34,6 +34,7 @@
 #include "map/layout.hpp"
 #include "game/game-data-file.hpp"
 #include "npc/i-view.hpp"
+#include "sfml-util/sfml-util.hpp"
 
 
 namespace heroespath
@@ -44,7 +45,7 @@ namespace map
     Map::Map(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V)
     :
         mapDisplayUPtr_( std::make_unique<map::MapDisplay>(WIN_POS_V, WIN_SIZE_V) ),
-        collisionQTree_(),
+        collisionVec_(),
         transitionVec_(),
         level_(Level::Count)
     {}
@@ -61,7 +62,7 @@ namespace map
         mapParser.Parse(
             ComposeMapFilePath(LEVEL_TO_LOAD),
             layout,
-            collisionQTree_,
+            collisionVec_,
             transitionVec_);
 
         mapDisplayUPtr_->Load( FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM) );
@@ -111,35 +112,31 @@ namespace map
         const sfml_util::Direction::Enum DIR,
         const float ADJ) const
     {
-        auto const POS_V{ CalcAdjPlayerPos(DIR, ADJ) };
+        auto const PLAYER_POS_V{ CalcAdjPlayerPos(DIR, ADJ) };
 
         auto const ADJ_V{ [&]()
+        {
+            auto v(mapDisplayUPtr_->GetPlayerRef().GetView().SpriteSize());
+            v.x *= 0.3f;
+            v.y *= 0.5f;
+            return v;
+        }() };
+
+        const sf::FloatRect PLAYER_POS_RECT(
+            PLAYER_POS_V.x - ADJ_V.x,
+            PLAYER_POS_V.y - ADJ_V.y,
+            ADJ_V.x * 2.0f,
+            ADJ_V.y * 2.0f);
+        
+        for (auto const & COLLISION_RECT : collisionVec_)
+        {
+            if (sfml_util::DoRectsOverlap(COLLISION_RECT, PLAYER_POS_RECT))
             {
-                auto v(mapDisplayUPtr_->GetPlayerRef().GetView().SpriteSize());
-                v.x *= 0.3f;
-                v.y *= 0.5f;
-                return v;
-            }() };
+                return true;
+            }
+        }
 
-        auto const UPPER_LEFT_V{ POS_V - ADJ_V};
-        auto const LOWER_RIGHT_V{ POS_V + ADJ_V };
-        auto const UPPER_RIGHT_V{ POS_V + sf::Vector2f(ADJ_V.x, -ADJ_V.y) };
-        auto const LOWER_LEFT_V{ POS_V + sf::Vector2f(-ADJ_V.x, ADJ_V.y) };
-
-        auto const UPPER_CENTER_V{ POS_V + sf::Vector2f(0.0f, -ADJ_V.y) };
-        auto const LOWER_CENTER_V{ POS_V + sf::Vector2f(0.0f, ADJ_V.y) };
-        auto const CENTER_RIGHT_V{ POS_V + sf::Vector2f(-ADJ_V.x, 0.0f) };
-        auto const CENTER_LEFT_V { POS_V + sf::Vector2f(ADJ_V.x, 0.0f) };
-
-        return (
-            collisionQTree_.IsPointWithinCollisionRect(UPPER_LEFT_V) ||
-            collisionQTree_.IsPointWithinCollisionRect(UPPER_RIGHT_V) ||
-            collisionQTree_.IsPointWithinCollisionRect(LOWER_LEFT_V) ||
-            collisionQTree_.IsPointWithinCollisionRect(LOWER_RIGHT_V) ||
-            collisionQTree_.IsPointWithinCollisionRect(UPPER_CENTER_V) ||
-            collisionQTree_.IsPointWithinCollisionRect(LOWER_CENTER_V) ||
-            collisionQTree_.IsPointWithinCollisionRect(CENTER_RIGHT_V) ||
-            collisionQTree_.IsPointWithinCollisionRect(CENTER_LEFT_V) );
+        return false;
     }
 
 
