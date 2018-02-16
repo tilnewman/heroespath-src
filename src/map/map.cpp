@@ -101,11 +101,39 @@ namespace map
     }
 
 
+    void Map::WalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
+    {
+        mapDisplayUPtr_->GetPlayerRef().WalkAnim(DIRECTION, WILL_START);
+    }
+
+
     bool Map::DoesAdjPlayerPosCollide(
         const sfml_util::Direction::Enum DIR,
         const float ADJ) const
     {
-        return collisionQTree_.IsPointWithinCollisionRect(CalcAdjPlayerPos(DIR, ADJ));
+        auto const POS_V{ CalcAdjPlayerPos(DIR, ADJ) };
+
+        auto const HALF_V{ mapDisplayUPtr_->GetPlayerRef().GetView().SpriteSize() * 0.5f };
+        
+        auto const UPPER_LEFT_V{ POS_V - HALF_V};
+        auto const LOWER_RIGHT_V{ POS_V + HALF_V };
+        auto const UPPER_RIGHT_V{ POS_V + sf::Vector2f(HALF_V.x, -HALF_V.y) };
+        auto const LOWER_LEFT_V{ POS_V + sf::Vector2f(-HALF_V.x, HALF_V.y) };
+
+        auto const UPPER_CENTER_V{ POS_V + sf::Vector2f(0.0f, -HALF_V.y) };
+        auto const LOWER_CENTER_V{ POS_V + sf::Vector2f(0.0f, HALF_V.y) };
+        auto const CENTER_RIGHT_V{ POS_V + sf::Vector2f(-HALF_V.x, 0.0f) };
+        auto const CENTER_LEFT_V { POS_V + sf::Vector2f(HALF_V.x, 0.0f) };
+
+        return (
+            collisionQTree_.IsPointWithinCollisionRect(UPPER_LEFT_V) ||
+            collisionQTree_.IsPointWithinCollisionRect(UPPER_RIGHT_V) ||
+            collisionQTree_.IsPointWithinCollisionRect(LOWER_LEFT_V) ||
+            collisionQTree_.IsPointWithinCollisionRect(LOWER_RIGHT_V) ||
+            collisionQTree_.IsPointWithinCollisionRect(UPPER_CENTER_V) ||
+            collisionQTree_.IsPointWithinCollisionRect(LOWER_CENTER_V) ||
+            collisionQTree_.IsPointWithinCollisionRect(CENTER_RIGHT_V) ||
+            collisionQTree_.IsPointWithinCollisionRect(CENTER_LEFT_V) );
     }
 
 

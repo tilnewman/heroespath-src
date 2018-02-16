@@ -38,8 +38,8 @@ namespace npc
 {
 
     const int LPCView::CELL_SIZE_{ 64 };
-    const float LPCView::FRAME_DURATION_SEC_WALK_{ 0.225f };
-    const float LPCView::FRAME_DURATION_SEC_GIVETAKE_{ 0.333f };
+    const float LPCView::FRAME_DURATION_SEC_WALK_{ 0.05f };
+    const float LPCView::FRAME_DURATION_SEC_GIVETAKE_{ 0.1f };
     const float LPCView::FRAME_DURATION_SEC_SINGLEFRAME_{ 1.5f };
     const float LPCView::FRAME_DURATION_SEC_BLINK_MIN_{ 0.025f };
     const float LPCView::FRAME_DURATION_SEC_BLINK_MAX_{ 0.20f };
@@ -150,11 +150,11 @@ namespace npc
                 switch (DIRECTION)
                 {
                     case su::Direction::Left:  { return { 47 }; }
-                    case su::Direction::Right: { return { 64 }; }
+                    case su::Direction::Right: { return { 63 }; }
                     case su::Direction::Up:    { return { 39 }; }
                     case su::Direction::Down: 
                     case su::Direction::Count:
-                    default:                   { return { 56 }; }
+                    default:                   { return { 55 }; }
                 }
             }
             case Pose::Cast:
@@ -166,7 +166,7 @@ namespace npc
                     case su::Direction::Up:    { return { 40 }; }
                     case su::Direction::Down: 
                     case su::Direction::Count:
-                    default:                   { return { 54 }; }
+                    default:                   { return { 56 }; }
                 }
             }
             case Pose::Blink:
@@ -191,9 +191,34 @@ namespace npc
     const sf::IntRect LPCView::FrameRect(const FrameNum_t FRAME_NUM) const
     {
         auto const CELL_COUNT{ static_cast<FrameNum_t>(texture_.getSize().x) / CELL_SIZE_ };
-        auto const FRAME_INDEX_X{ (FRAME_NUM % CELL_COUNT) - 1 };
-        auto const FRAME_INDEX_Y{ FRAME_NUM / CELL_COUNT };
-
+        
+        auto const FRAME_INDEX_X{ [&]()
+            {
+                auto const INDEX{ (FRAME_NUM % CELL_COUNT) - 1 };
+                if (INDEX == -1)
+                {
+                    return CELL_COUNT - 1;
+                }
+                else
+                {
+                    return INDEX;
+                }
+            }() };
+        
+        //auto const FRAME_INDEX_X{ (FRAME_NUM % CELL_COUNT) - 1 };
+        auto const FRAME_INDEX_Y{ [&]()
+            {
+                auto const INDEX{ FRAME_NUM / CELL_COUNT };
+                if ((FRAME_NUM % CELL_COUNT) == 0)
+                {
+                    return INDEX - 1;
+                }
+                else
+                {
+                    return INDEX;
+                }
+            }() };
+    
         return sf::IntRect(
             FRAME_INDEX_X * CELL_SIZE_,
             FRAME_INDEX_Y * CELL_SIZE_,
@@ -210,36 +235,25 @@ namespace npc
             POSE,
             DIRECTION,
             FrameNumbers(POSE, DIRECTION),
-            FrameDuration(POSE, DIRECTION),
+            FrameDuration(POSE),
             (POSE == Pose::Walking));
     }
 
 
-    float LPCView::FrameDuration(
-        const Pose::Enum POSE,
-        const sfml_util::Direction::Enum DIRECTION) const
+    float LPCView::FrameDuration(const Pose::Enum POSE) const
     {
         switch (POSE)
         {
-            case Pose::Walking:
-            {
-                if ((DIRECTION == sfml_util::Direction::Up) ||
-                    (DIRECTION == sfml_util::Direction::Down))
-                {
-                    return FRAME_DURATION_SEC_WALK_ * (7.0f / 8.0f);
-                }
-                else
-                {
-                    return FRAME_DURATION_SEC_WALK_;
-                }
-            }
-            case Pose::GiveTake:  { return FRAME_DURATION_SEC_GIVETAKE_; }
-            case Pose::Fight:     
-            case Pose::Cast:      { return FRAME_DURATION_SEC_SINGLEFRAME_; }
+            case Pose::Walking:  { return FRAME_DURATION_SEC_WALK_; }
+            case Pose::GiveTake: { return FRAME_DURATION_SEC_GIVETAKE_; }
+            case Pose::Cast:     { return FRAME_DURATION_SEC_SINGLEFRAME_; }
             case Pose::Blink:
             {
-                return misc::random::Float(FRAME_DURATION_SEC_BLINK_MIN_, FRAME_DURATION_SEC_BLINK_MAX_);
+                return misc::random::Float(
+                    FRAME_DURATION_SEC_BLINK_MIN_,
+                    FRAME_DURATION_SEC_BLINK_MAX_);
             }
+            case Pose::Fight:
             case Pose::Standing:
             case Pose::Dead:
             case Pose::Count:

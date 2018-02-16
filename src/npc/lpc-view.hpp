@@ -65,6 +65,13 @@ namespace npc
 
         inline virtual void Sprite(sf::Sprite & s) const override { s = sprite_; }
 
+        inline virtual const sf::Vector2f SpriteSize() const override
+        {
+            return sf::Vector2f(
+                sprite_.getGlobalBounds().width,
+                sprite_.getGlobalBounds().height);
+        }
+
     private:
         const FrameNumVec_t FrameNumbers(
             const Pose::Enum,
@@ -76,9 +83,7 @@ namespace npc
             const Pose::Enum,
             const sfml_util::Direction::Enum) const;
 
-        float FrameDuration(
-            const Pose::Enum,
-            const sfml_util::Direction::Enum) const;
+        float FrameDuration(const Pose::Enum) const;
 
         void SetupSprite();
 

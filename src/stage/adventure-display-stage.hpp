@@ -32,6 +32,7 @@
 #include "sfml-util/stage.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-title.hpp"
+#include "sfml-util/direction-enum.hpp"
 
 #include "stage/adventure-stage-char-list.hpp"
 
@@ -70,7 +71,16 @@ namespace stage
         void Setup_BackgroundImage();
         void Setup_Map();
 
+        void HandleMovementKeypresses(
+            const sfml_util::Direction::Enum,
+            bool & wasPressed,
+            const bool IS_PRESSED,
+            const float MOVE_AMOUNT);
+
     private:
+        static const int MAP_MOVE_SKIP_FRAME_COUNT_;
+        static const float MOVE_SPEED_;
+
         AdventureCharacterListUPtr_t characterListUPtr_;
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;
@@ -78,6 +88,11 @@ namespace stage
         sfml_util::MainMenuTitle topImage_;
         map::MapUPtr_t mapUPtr_;
         int frameCounter_;
+        bool wasPressedLeft_;
+        bool wasPressedRight_;
+        bool wasPressedUp_;
+        bool wasPressedDown_;
+
     };
 
 }

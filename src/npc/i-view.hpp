@@ -29,6 +29,7 @@
 //
 #include "npc/pose-enum.hpp"
 #include "sfml-util/direction-enum.hpp"
+#include <SFML/System/Vector2.hpp>
 #include <memory>
 
 
@@ -57,6 +58,8 @@ namespace npc
         virtual Pose::Enum Pose() const = 0;
         
         virtual void Sprite(sf::Sprite &) const = 0;
+
+        virtual const sf::Vector2f SpriteSize() const = 0;
     };
 
     using IViewUPtr_t = std::unique_ptr<IView>;

@@ -287,7 +287,13 @@ namespace map
     {
         sf::Sprite sprite;
         player_.GetView().Sprite(sprite);
+
         sprite.setPosition(POS_V);
+
+        sprite.move( sf::Vector2f(
+            sprite.getGlobalBounds().width * -0.5f,
+            sprite.getGlobalBounds().height * -0.5f) );
+        
         target.draw(sprite);
     }
 

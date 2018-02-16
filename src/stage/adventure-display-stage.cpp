@@ -48,6 +48,10 @@ namespace heroespath
 namespace stage
 {
 
+    const int AdventureDisplayStage::MAP_MOVE_SKIP_FRAME_COUNT_{ 3 };
+    const float AdventureDisplayStage::MOVE_SPEED_{ 100.0f };
+
+
     AdventureDisplayStage::AdventureDisplayStage(AdventureStage * const)
     :
         Stage(
@@ -61,7 +65,11 @@ namespace stage
         bottomImage_(0.75f, true, sf::Color::White),
         topImage_("", true, 1.0f, 0.75f),
         mapUPtr_(),
-        frameCounter_(0)
+        frameCounter_(0),
+        wasPressedLeft_(false),
+        wasPressedRight_(false),
+        wasPressedUp_(false),
+        wasPressedDown_(false)
     {}
 
 
@@ -93,33 +101,37 @@ namespace stage
         mapUPtr_->Update(ELAPSED_TIME_SECONDS);
 
         //don't process map moves every frame to save resources
-        auto const PROCESS_MAP_MOVE_ON_FRAME{ 3 };
-        if (PROCESS_MAP_MOVE_ON_FRAME == ++frameCounter_)
+        if (MAP_MOVE_SKIP_FRAME_COUNT_ == ++frameCounter_)
         {
             frameCounter_ = 0;
 
             auto const MOVE_AMOUNT{
-                static_cast<float>(PROCESS_MAP_MOVE_ON_FRAME) * 100.0f * ELAPSED_TIME_SECONDS };
+                static_cast<float>(MAP_MOVE_SKIP_FRAME_COUNT_) * MOVE_SPEED_ *
+                    ELAPSED_TIME_SECONDS };
 
-            if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up))
-            {
-                mapUPtr_->Move(sfml_util::Direction::Up, MOVE_AMOUNT);
-            }
+            HandleMovementKeypresses(
+                sfml_util::Direction::Left,
+                wasPressedLeft_,
+                game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left),
+                MOVE_AMOUNT);
 
-            if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down))
-            {
-                mapUPtr_->Move(sfml_util::Direction::Down, MOVE_AMOUNT);
-            }
+            HandleMovementKeypresses(
+                sfml_util::Direction::Right,
+                wasPressedRight_,
+                game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right),
+                MOVE_AMOUNT);
 
-            if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left))
-            {
-                mapUPtr_->Move(sfml_util::Direction::Left, MOVE_AMOUNT);
-            }
+            HandleMovementKeypresses(
+                sfml_util::Direction::Up,
+                wasPressedUp_,
+                game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up),
+                MOVE_AMOUNT);
 
-            if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right))
-            {
-                mapUPtr_->Move(sfml_util::Direction::Right, MOVE_AMOUNT);
-            }
+            HandleMovementKeypresses(
+                sfml_util::Direction::Down,
+                wasPressedDown_,
+                game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down),
+                MOVE_AMOUNT);
         }
     }
 
@@ -173,6 +185,54 @@ namespace stage
 
         mapUPtr_ = std::make_unique<map::Map>(MAP_WIN_POS_V, MAP_WIN_SIZE_V);
         mapUPtr_->Load(map::Level::Thornberry, map::Level::ThornberryMeadows);
+    }
+
+
+    void AdventureDisplayStage::HandleMovementKeypresses(
+        const sfml_util::Direction::Enum DIRECTION,
+        bool & wasPressed,
+        const bool IS_PRESSED,
+        const float MOVE_AMOUNT)
+    {
+        if ((false == wasPressed) && IS_PRESSED)
+        {
+            mapUPtr_->WalkAnim(DIRECTION, true);
+        }
+        else if (wasPressed && (IS_PRESSED == false))
+        {
+            mapUPtr_->WalkAnim(DIRECTION, false);
+
+            if ((DIRECTION == sfml_util::Direction::Up) ||
+                (DIRECTION == sfml_util::Direction::Down))
+            {
+                if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left))
+                {
+                    mapUPtr_->WalkAnim(sfml_util::Direction::Left, true);
+                }
+                else if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right))
+                {
+                    mapUPtr_->WalkAnim(sfml_util::Direction::Right, true);
+                }
+            }
+            else
+            {
+                if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up))
+                {
+                    mapUPtr_->WalkAnim(sfml_util::Direction::Up, true);
+                }
+                else if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down))
+                {
+                    mapUPtr_->WalkAnim(sfml_util::Direction::Down, true);
+                }
+            }
+        }
+
+        if (IS_PRESSED)
+        {
+            mapUPtr_->Move(DIRECTION, MOVE_AMOUNT);
+        }
+
+        wasPressed = IS_PRESSED;
     }
 
 }

@@ -67,6 +67,8 @@ namespace map
 
         void Update(const float TIME_ELAPSED);
 
+        void WalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START);
+
     private:
         bool DoesAdjPlayerPosCollide(
             const sfml_util::Direction::Enum DIR,

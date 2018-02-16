@@ -65,6 +65,8 @@ namespace map
 
         Layout & GetLayoutRef() { return layout_; }
 
+        npc::Model & GetPlayerRef() { return player_; }
+
         void Update(const float TIME_ELAPSED);
 
     private:

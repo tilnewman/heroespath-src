@@ -76,6 +76,12 @@ namespace npc
     }
 
 
+    void Model::WalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
+    {
+        viewUPtr_->Set(((WILL_START) ? Pose::Walking : Pose::Standing), DIRECTION);
+    }
+
+
     float Model::RandomBlinkDelay() const
     {
         return misc::random::Float(TIME_BETWEEN_BLINK_MIN_SEC_, TIME_BETWEEN_BLINK_MAX_SEC_);

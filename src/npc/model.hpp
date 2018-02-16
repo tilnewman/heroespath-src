@@ -54,6 +54,8 @@ namespace npc
 
         inline const IView & GetView() const { return * viewUPtr_; }
 
+        void WalkAnim(const sfml_util::Direction::Enum, const bool WILL_START);
+
     private:
         float RandomBlinkDelay() const;
 
