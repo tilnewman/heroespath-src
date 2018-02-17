@@ -55,12 +55,12 @@ media-images-accents-dir=               image/gui/popup/accents/
 media-images-backgrounds-popup-dir=     image/gui/popup/backgrounds/
 media-images-creatures-dir=             image/creatures/
 media-images-items-dir=                 image/items/
-media-images-titles-dir=                image/titles/
+media-images-titles-dir=                image/achievement-titles/
 media-images-spells-dir=                image/spells/
 media-images-conditions-dir=            image/conditions/
 media-images-songs-dir=                 image/songs/
 media-images-combat-dir=                image/combat/
-media-maps-tile-dir=                    image/tile/
+media-maps-tile-dir=                    image/map-tiles/
 media-maps-dir=                         map/
 
 #animation files and folders
@@ -96,10 +96,10 @@ media-anim-images-dir-splash1=      image/anim/splash-white_m_50x47x24
 
 #images
 media-images-gui-elements=                  image/gui/elements/gui-elements-lamoot.png
-media-images-title-intro=                   image/title/title-intro.jpg
-media-images-title-blacksymbol=             image/title/title.png
+media-images-title-intro=                   image/titles/title-intro.jpg
+media-images-title-blacksymbol=             image/titles/title.png
 media-images-backgrounds-tile-darkknot=     image/gui/backgrounds/knot-dark.png
-media-images-backgrounds-tile-runes=        image/tile/hp-symbol-stone.jpg
+media-images-backgrounds-tile-runes=        image/map-tiles/hp-symbol-stone.jpg
 media-images-backgrounds-tile-wood=         image/gui/backgrounds/wood.png
 media-images-backgrounds-tile-darkpaper=    image/gui/backgrounds/paper-dark.jpg
 media-images-backgrounds-paper-2=           image/gui/backgrounds/paper-background2.jpg
