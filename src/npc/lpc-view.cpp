@@ -29,7 +29,10 @@
 //
 #include "lpc-view.hpp"
 #include "misc/random.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "log/log-macros.hpp"
+#include "sfml-util/loaders.hpp"
+
 
 
 namespace heroespath
@@ -45,15 +48,17 @@ namespace npc
     const float LPCView::FRAME_DURATION_SEC_BLINK_MAX_{ 0.20f };
 
 
-    LPCView::LPCView(const sf::Texture & TEXTURE)
+    LPCView::LPCView(const Anim::Enum WHICH_ANIM)
     :
-        texture_(TEXTURE),
-        sprite_(TEXTURE),
+        whichAnim_(WHICH_ANIM),
+        texture_(),
+        sprite_(),
         animation_(CreateAnimation(Pose::Standing, sfml_util::Direction::Right)),
         frameTimerSec_(0.0f),
         frameIndex_(0)
     {
-        sprite_.setTexture(texture_);
+        sfml_util::LoadTexture(texture_, Anim::ImagePath(whichAnim_));
+        sprite_.setTexture(texture_, true);
         SetupSprite();
     }
 
@@ -205,7 +210,6 @@ namespace npc
                 }
             }() };
         
-        //auto const FRAME_INDEX_X{ (FRAME_NUM % CELL_COUNT) - 1 };
         auto const FRAME_INDEX_Y{ [&]()
             {
                 auto const INDEX{ FRAME_NUM / CELL_COUNT };

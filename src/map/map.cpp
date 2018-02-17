@@ -33,10 +33,11 @@
 #include "map/parser.hpp"
 #include "map/layout.hpp"
 #include "game/game-data-file.hpp"
-#include "npc/i-view.hpp"
-#include "npc/view-factory.hpp"
+#include "npc/lpc-view.hpp"
+#include "npc/anim-enum.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "misc/vector-map.hpp"
+#include "misc/random.hpp"
 
 
 namespace heroespath
@@ -55,7 +56,7 @@ namespace map
         collisionVec_(),
         transitionVec_(),
         level_(Level::Count),
-        player_(npc::ViewFactory::MakeLPCView("media-images-npc-lpc-puck")),
+        player_(std::make_unique<npc::LPCView>(npc::Anim::Metal_Female_Dark)),
         nonPlayers_()
     {}
 
@@ -80,11 +81,12 @@ namespace map
         mapDisplayUPtr_->Load( FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM) );
         level_ = LEVEL_TO_LOAD;
 
-        for (int i(0); i < 10; ++i)
+        for (int i(0); i < 5; ++i)
         {
+            auto const WHICH_ANIM{ static_cast<npc::Anim::Enum>(i) };
+
             nonPlayers_.push_back(
-                npc::Model(npc::ViewFactory::MakeLPCView("media-images-npc-lpc-beardy"),
-                walkRectMap[0]));
+                npc::Model(std::make_unique<npc::LPCView>(WHICH_ANIM), walkRectMap[0]) );
         }
     }
 
@@ -175,6 +177,7 @@ namespace map
             }
 
             //check if NPC move will collide with other NPCs
+            auto const NPC_POS_V{ npc.GetView().SpriteRef().getPosition() };
             auto didNPCsCollide{ false };
             for (std::size_t subNPCIndex(0); subNPCIndex < nonPlayers_.size(); ++subNPCIndex)
             {
@@ -188,9 +191,28 @@ namespace map
                 if (sfml_util::DoRectsOverlap(
                     NPC_RECT_ADJ,
                     subNPC.GetView().SpriteRef().getGlobalBounds()))
-                {
-                    didNPCsCollide = true;
-                    break;
+                {   
+                    auto const SUB_POS_V{ subNPC.GetView().SpriteRef().getPosition() };
+
+                    auto const IS_IN_THE_WAY{
+                        [&]()
+                        {
+                            switch (npc.GetView().Direction())
+                            {
+                                case sfml_util::Direction::Left: { return (SUB_POS_V.x < NPC_POS_V.x); }
+                                case sfml_util::Direction::Right:{ return (SUB_POS_V.x > NPC_POS_V.x); }
+                                case sfml_util::Direction::Up:   { return (SUB_POS_V.y < NPC_POS_V.y); }
+                                case sfml_util::Direction::Down:
+                                case sfml_util::Direction::Count:
+                                default:                         { return (SUB_POS_V.y > NPC_POS_V.y); }
+                            }
+                        }() };
+
+                    if (IS_IN_THE_WAY)
+                    {
+                        didNPCsCollide = true;
+                        break;
+                    }
                 }
             }
 

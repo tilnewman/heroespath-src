@@ -36,6 +36,7 @@
 
 #include <numeric>
 #include <algorithm>
+#include <vector>
 
 
 namespace heroespath
@@ -115,6 +116,54 @@ namespace npc
     }
 
 
+    void Model::ChangeDirection()
+    {
+        std::vector<sfml_util::Direction::Enum> dirVec{
+            sfml_util::Direction::Left,
+            sfml_util::Direction::Right,
+            sfml_util::Direction::Up,
+            sfml_util::Direction::Down };
+
+        dirVec.erase( std::remove(
+            std::begin(dirVec),
+            std::end(dirVec),
+            GetView().Direction()), std::end(dirVec));
+
+        auto const NEW_DIRECTION{ misc::Vector::SelectRandom(dirVec) };
+        
+        auto const RECT{ walkRects_[walkRectIndex_] };
+
+        switch (NEW_DIRECTION)
+        {
+            case sfml_util::Direction::Left:
+            {
+                walkTargetPosV_.x = RECT.left;
+                break;
+            }
+            case sfml_util::Direction::Right:
+            {
+                walkTargetPosV_.x = RECT.left + RECT.width;
+                break;
+            }
+            case sfml_util::Direction::Up:
+            {
+                walkTargetPosV_.y = RECT.top;
+                break;
+            }
+            case sfml_util::Direction::Down:
+            case sfml_util::Direction::Count:
+            default:
+            {
+                walkTargetPosV_.y = RECT.top + RECT.height;
+                break;
+            }
+        }
+
+        SetWalkAnim(NEW_DIRECTION, true);
+        prevWalkDirection_ = NEW_DIRECTION;
+    }
+
+
     float Model::RandomBlinkDelay() const
     {
         return misc::random::Float(TIME_BETWEEN_BLINK_MIN_SEC_, TIME_BETWEEN_BLINK_MAX_SEC_);
@@ -186,7 +235,7 @@ namespace npc
                 walkRectIndex_ = RandomWalkRectIndex();
                 walkTargetPosV_ = RandomWalkTarget();
                 
-                auto const NEW_DIRECTION{ WalkDirection() };
+                auto const NEW_DIRECTION{ WalkDirection(sfml_util::Direction::Count) };
 
                 if (NEW_DIRECTION != sfml_util::Direction::Count)
                 {
@@ -198,7 +247,7 @@ namespace npc
         }
         else
         {
-            auto const NEW_DIRECTION{ WalkDirection() };
+            auto const NEW_DIRECTION{ WalkDirection(prevWalkDirection_) };
 
             if (NEW_DIRECTION != prevWalkDirection_)
             {
@@ -271,27 +320,84 @@ namespace npc
     }
 
 
-    sfml_util::Direction::Enum Model::WalkDirection() const
+    sfml_util::Direction::Enum Model::WalkDirection(
+        const sfml_util::Direction::Enum DIRECTION_TO_MAINTAIN) const
     {
-        if ((posV_.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+        if (DIRECTION_TO_MAINTAIN == sfml_util::Direction::Count)
         {
-            return sfml_util::Direction::Up;
+            std::vector<sfml_util::Direction::Enum> dirVec;
+
+            if ((posV_.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+            {
+                dirVec.push_back(sfml_util::Direction::Up);
+            }
+
+            if ((walkTargetPosV_.y - posV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+            {
+                dirVec.push_back(sfml_util::Direction::Down);
+            }
+
+            if ((walkTargetPosV_.x - posV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
+            {
+                dirVec.push_back(sfml_util::Direction::Right);
+            }
+
+            if ((posV_.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
+            {
+                dirVec.push_back(sfml_util::Direction::Left);
+            }
+
+            if (dirVec.empty())
+            {
+                return sfml_util::Direction::Count;
+            }
+            else
+            {
+                return misc::Vector::SelectRandom(dirVec);
+            }
         }
-        else if ((walkTargetPosV_.y - posV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
-        {
-            return sfml_util::Direction::Down;
-        }
-        else if ((walkTargetPosV_.x - posV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
-        {
-            return sfml_util::Direction::Right;
-        }
-        else if ((posV_.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
-        {
-            return sfml_util::Direction::Left;
-        } 
         else
         {
-            return sfml_util::Direction::Count;
+            if ((DIRECTION_TO_MAINTAIN == sfml_util::Direction::Up) &&
+                ((posV_.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_))
+            {
+                return sfml_util::Direction::Up;
+            }
+            else if ((DIRECTION_TO_MAINTAIN == sfml_util::Direction::Down) &&
+                ((walkTargetPosV_.y - posV_.y) > WALK_TARGET_CLOSE_ENOUGH_))
+            {
+                return sfml_util::Direction::Down;
+            }
+            else if ((DIRECTION_TO_MAINTAIN == sfml_util::Direction::Right) &&
+                ((walkTargetPosV_.x - posV_.x) > WALK_TARGET_CLOSE_ENOUGH_))
+            {
+                return sfml_util::Direction::Right;
+            }
+            else if ((DIRECTION_TO_MAINTAIN == sfml_util::Direction::Left) &&
+                ((posV_.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_))
+            {
+                return sfml_util::Direction::Left;
+            }
+            else if ((posV_.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+            {
+                return sfml_util::Direction::Up;
+            }
+            else if ((walkTargetPosV_.y - posV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
+            {
+                return sfml_util::Direction::Down;
+            }
+            else if ((walkTargetPosV_.x - posV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
+            {
+                return sfml_util::Direction::Right;
+            }
+            else if ((posV_.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
+            {
+                return sfml_util::Direction::Left;
+            }
+            else
+            {
+                return sfml_util::Direction::Count;
+            }
         }
     }
 

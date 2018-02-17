@@ -43,15 +43,10 @@ namespace npc
     //Responsible for drawing an LPC-style NPC.
     class LPCView : public IView
     {
-        LPCView(const LPCView &) = delete;
-        LPCView(const LPCView &&) = delete;
-        LPCView & operator=(const LPCView &) = delete;
-
     public:
-        LPCView(const sf::Texture &);
+        LPCView(const Anim::Enum);
         virtual ~LPCView() {}
 
-    public:
         virtual void Set(const Pose::Enum, const sfml_util::Direction::Enum) override;
 
         virtual bool Update(const float TIME_ELAPSED) override;
@@ -77,6 +72,8 @@ namespace npc
                 sprite_.getGlobalBounds().height);
         }
 
+        inline virtual Anim::Enum WhichAnim() const override { return whichAnim_; }
+
     private:
         const FrameNumVec_t FrameNumbers(
             const Pose::Enum,
@@ -100,6 +97,7 @@ namespace npc
         static const float FRAME_DURATION_SEC_BLINK_MIN_;
         static const float FRAME_DURATION_SEC_BLINK_MAX_;
 
+        Anim::Enum whichAnim_;
         sf::Texture texture_;
         sf::Sprite sprite_;
         Animation animation_;

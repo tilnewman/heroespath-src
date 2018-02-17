@@ -28,6 +28,7 @@
 // i-view.hpp
 //
 #include "npc/pose-enum.hpp"
+#include "npc/anim-enum.hpp"
 #include "sfml-util/direction-enum.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <memory>
@@ -62,6 +63,8 @@ namespace npc
         virtual const sf::Sprite & SpriteRef() const = 0;
 
         virtual const sf::Vector2f SpriteSize() const = 0;
+
+        virtual Anim::Enum WhichAnim() const = 0;
     };
 
     using IViewUPtr_t = std::unique_ptr<IView>;

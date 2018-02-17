@@ -28,9 +28,12 @@
 // model.hpp
 //
 #include "npc/pose-enum.hpp"
+
 #include "sfml-util/direction-enum.hpp"
+
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
+
 #include <memory>
 #include <vector>
 #include <utility>
@@ -40,6 +43,7 @@ namespace heroespath
 {
 namespace npc
 {
+
     struct IView;
     using IViewUPtr_t = std::unique_ptr<IView>;
 
@@ -47,10 +51,6 @@ namespace npc
     //Responsible for all state and non-drawing behavior of an NPC.
     class Model
     {
-        //Model(const Model &) = delete;
-        //Model(const Model &&) = delete;
-        //Model & operator=(const Model &) = delete;
-
     public:
         Model(
             IViewUPtr_t viewUPtr,
@@ -68,6 +68,8 @@ namespace npc
 
         void StopWalking();
 
+        void ChangeDirection();
+
     private:
         float RandomBlinkDelay() const;
         float RandomWalkDelay() const;
@@ -84,7 +86,8 @@ namespace npc
 
         const sf::Vector2f RandomWalkTarget() const;
 
-        sfml_util::Direction::Enum WalkDirection() const;
+        sfml_util::Direction::Enum WalkDirection(
+            const sfml_util::Direction::Enum DIRECTION_TO_MAINTAIN) const;
 
     private:
         static const float NUM_BLINKS_TIME_WINDOW_SEC_;
