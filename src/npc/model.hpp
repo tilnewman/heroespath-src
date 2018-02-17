@@ -66,6 +66,8 @@ namespace npc
 
         void Move(const float AMOUNT);
 
+        void StopWalking();
+
     private:
         float RandomBlinkDelay() const;
         float RandomWalkDelay() const;

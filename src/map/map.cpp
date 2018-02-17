@@ -44,8 +44,9 @@ namespace heroespath
 namespace map
 {
 
-    const float Map::PLAYER_MOVE_SPEED_{ 3.5f };
-    const float Map::NONPLAYER_MOVE_SPEED_{ 3.0f };
+    //These are different so that players can always move faster than, and catch, NPCs.
+    const float Map::PLAYER_MOVE_DISTANCE_{ 3.5f };
+    const float Map::NONPLAYER_MOVE_DISTANCE_{ 3.0f };
 
 
     Map::Map(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V)
@@ -79,27 +80,30 @@ namespace map
         mapDisplayUPtr_->Load( FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM) );
         level_ = LEVEL_TO_LOAD;
 
-        nonPlayers_.push_back(
-            npc::Model(npc::ViewFactory::MakeLPCView("media-images-npc-lpc-beardy"),
-                walkRectMap[0]) );
+        for (int i(0); i < 10; ++i)
+        {
+            nonPlayers_.push_back(
+                npc::Model(npc::ViewFactory::MakeLPCView("media-images-npc-lpc-beardy"),
+                walkRectMap[0]));
+        }
     }
 
 
     bool Map::MovePlayer(const sfml_util::Direction::Enum DIRECTION)
     {
-        if (DoesAdjPlayerPosCollide(DIRECTION, PLAYER_MOVE_SPEED_))
+        if (DoesAdjPlayerPosCollide(DIRECTION, PLAYER_MOVE_DISTANCE_))
         {
             return false;
         }
         else
         {
-            if (ChangeLevelOnExit(DIRECTION, PLAYER_MOVE_SPEED_))
+            if (ChangeLevelOnExit(DIRECTION, PLAYER_MOVE_DISTANCE_))
             {
                 return true;
             }
             else
             {
-                return mapDisplayUPtr_->Move(DIRECTION, PLAYER_MOVE_SPEED_);
+                return mapDisplayUPtr_->Move(DIRECTION, PLAYER_MOVE_DISTANCE_);
             }
         }
     }
@@ -107,9 +111,97 @@ namespace map
 
     void Map::MoveNonPlayers()
     {
-        for (auto & nonPlayer : nonPlayers_)
+        for (std::size_t npcIndex(0); npcIndex < nonPlayers_.size(); ++npcIndex)
         {
-            nonPlayer.Move(NONPLAYER_MOVE_SPEED_);
+            //check if NPC move will collide with the player
+            auto & npc{ nonPlayers_[npcIndex] };
+
+            auto const ADJ_POS_V{
+                [&]()
+                {
+                    auto v{ player_.GetView().SpriteSize() };
+                    v.x *= 0.5f;
+                    v.y *= 0.5f;
+                    return v;
+                }() };
+
+            auto const PLAYER_RECT_FOR_NPC_COLLISIONS{
+                [&]()
+                {
+                    auto const PLAYER_POS_V{ mapDisplayUPtr_->PlayerPosMap() };
+
+                    return sf::FloatRect(
+                        PLAYER_POS_V.x + (ADJ_POS_V.x * 1.2f),
+                        PLAYER_POS_V.y + (ADJ_POS_V.x * 0.8f),
+                        ADJ_POS_V.x * 0.05f,
+                        ADJ_POS_V.y * 1.45f);
+                }() };
+
+            auto const NPC_RECT_ADJ{
+                [&]()
+                {
+                    auto rect{ npc.GetView().SpriteRef().getGlobalBounds() };
+
+                    switch (npc.GetView().Direction())
+                    {
+                        case sfml_util::Direction::Left:  { rect.left -= NONPLAYER_MOVE_DISTANCE_; break; }
+                        case sfml_util::Direction::Right: { rect.left += NONPLAYER_MOVE_DISTANCE_; break; }
+                        case sfml_util::Direction::Up:    { rect.top -= NONPLAYER_MOVE_DISTANCE_; break; }
+                        case sfml_util::Direction::Down:  
+                        case sfml_util::Direction::Count:
+                        default:                          { rect.top += NONPLAYER_MOVE_DISTANCE_; break; }
+                    }
+                    
+                    return rect;
+                }() };
+
+            
+            auto const NPC_RECT_FOR_PLAYER_COLLISIONS{
+                [&]()
+                {
+                    auto rect{ NPC_RECT_ADJ };
+                    rect.left -= ADJ_POS_V.x * 0.25f;
+                    rect.width *= 1.75f;
+                    rect.height *= 1.75f;
+                    return rect;
+                }() };
+
+            if (sfml_util::DoRectsOverlap(
+                NPC_RECT_FOR_PLAYER_COLLISIONS,
+                PLAYER_RECT_FOR_NPC_COLLISIONS))
+            {
+                npc.StopWalking();
+                return;
+            }
+
+            //check if NPC move will collide with other NPCs
+            auto didNPCsCollide{ false };
+            for (std::size_t subNPCIndex(0); subNPCIndex < nonPlayers_.size(); ++subNPCIndex)
+            {
+                if (subNPCIndex == npcIndex)
+                {
+                    continue;
+                }
+
+                auto & subNPC{ nonPlayers_[subNPCIndex] };
+
+                if (sfml_util::DoRectsOverlap(
+                    NPC_RECT_ADJ,
+                    subNPC.GetView().SpriteRef().getGlobalBounds()))
+                {
+                    didNPCsCollide = true;
+                    break;
+                }
+            }
+
+            if (didNPCsCollide)
+            {
+                npc.StopWalking();
+            }
+            else
+            {
+                npc.Move(NONPLAYER_MOVE_DISTANCE_);
+            }
         }
     }
 
@@ -143,23 +235,49 @@ namespace map
     {
         auto const PLAYER_POS_V{ CalcAdjPlayerPos(DIR, ADJ) };
 
-        auto const ADJ_V{ [&]()
-        {
-            auto v(player_.GetView().SpriteSize());
-            v.x *= 0.3f;
-            v.y *= 0.5f;
-            return v;
-        }() };
+        auto const ADJ_FOR_COLLISIONS_V{
+            [&]()
+            {
+                auto v{ player_.GetView().SpriteSize() };
+                v.x *= 0.3f;
+                v.y *= 0.5f;
+                return v;
+            }() };
 
-        const sf::FloatRect PLAYER_POS_RECT(
-            PLAYER_POS_V.x - ADJ_V.x,
-            PLAYER_POS_V.y - ADJ_V.y,
-            ADJ_V.x * 2.0f,
-            ADJ_V.y * 2.0f);
+        const sf::FloatRect PLAYER_RECT_FOR_MAP_COLLISIONS(
+            PLAYER_POS_V.x - ADJ_FOR_COLLISIONS_V.x,
+            PLAYER_POS_V.y - ADJ_FOR_COLLISIONS_V.y,
+            ADJ_FOR_COLLISIONS_V.x * 2.0f,
+            ADJ_FOR_COLLISIONS_V.y * 2.0f);
         
         for (auto const & COLLISION_RECT : collisionVec_)
         {
-            if (sfml_util::DoRectsOverlap(COLLISION_RECT, PLAYER_POS_RECT))
+            if (sfml_util::DoRectsOverlap(COLLISION_RECT, PLAYER_RECT_FOR_MAP_COLLISIONS))
+            {
+                return true;
+            }
+        }
+
+        auto const ADJ_FOR_NPC_COLLISIONS_V{
+            [&]()
+            {
+                auto v{ player_.GetView().SpriteSize() };
+                v.x *= 0.5f;
+                v.y *= 0.5f;
+                return v;
+            }() };
+
+        const sf::FloatRect PLAYER_RECT_FOR_NPC_COLLISIONS(
+            PLAYER_POS_V.x + (ADJ_FOR_NPC_COLLISIONS_V.x * 1.0f),
+            PLAYER_POS_V.y + (ADJ_FOR_NPC_COLLISIONS_V.x * 0.5f),
+            ADJ_FOR_NPC_COLLISIONS_V.x * 0.25f,
+            ADJ_FOR_NPC_COLLISIONS_V.y * 1.25f);
+
+        for (auto const & NPC : nonPlayers_)
+        {
+            const sf::FloatRect NPC_RECT{ NPC.GetView().SpriteRef().getGlobalBounds() };
+
+            if (sfml_util::DoRectsOverlap(NPC_RECT, PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
                 return true;
             }

@@ -100,8 +100,8 @@ namespace map
             const float ADJUSTMENT) const;
 
     private:
-        static const float PLAYER_MOVE_SPEED_;
-        static const float NONPLAYER_MOVE_SPEED_;
+        static const float PLAYER_MOVE_DISTANCE_;
+        static const float NONPLAYER_MOVE_DISTANCE_;
 
         MapDisplayUPtr_t mapDisplayUPtr_;
         std::vector<sf::FloatRect> collisionVec_;

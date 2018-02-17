@@ -46,7 +46,8 @@ namespace sfml_util
             Count
         };
 
-        static const std::string ToString(const Direction::Enum E);
+        static const std::string ToString(const Direction::Enum);
+        static sfml_util::Direction::Enum Opposite(const Direction::Enum);
     };
 
 }

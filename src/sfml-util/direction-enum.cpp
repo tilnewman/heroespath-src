@@ -56,5 +56,24 @@ namespace sfml_util
         }
     }
 
+
+    sfml_util::Direction::Enum Direction::Opposite(const Direction::Enum E)
+    {
+        switch (E)
+        {
+            case Left:  { return Direction::Right; }
+            case Right: { return Direction::Left; }
+            case Up:    { return Direction::Down; }
+            case Down:  { return Direction::Up; }
+            case Count: { return Direction::Count; }
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::Direction::Opposite(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
 }
 }

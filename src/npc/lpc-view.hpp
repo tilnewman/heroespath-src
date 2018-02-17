@@ -68,7 +68,7 @@ namespace npc
 
         inline virtual Pose::Enum Pose() const override { return animation_.pose; }
 
-        inline virtual void Sprite(sf::Sprite & s) const override { s = sprite_; }
+        inline virtual const sf::Sprite & SpriteRef() const override { return sprite_; }
 
         inline virtual const sf::Vector2f SpriteSize() const override
         {

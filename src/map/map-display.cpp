@@ -291,21 +291,19 @@ namespace map
     {
         auto const PLAYER_SCREEN_POS_V{ PlayerPosScreen() };
 
-        sf::Sprite playerSprite;
-        MAP_.Player().GetView().Sprite(playerSprite);
-
+        sf::Sprite playerSprite{ MAP_.Player().GetView().SpriteRef() };
+        
         const sf::Vector2f SIZE_HALF(
             playerSprite.getGlobalBounds().width * 0.5f,
             playerSprite.getGlobalBounds().height * 0.5f);
 
-        sf::Sprite characterShadowSprite(npcShadowSprite_);
+        sf::Sprite characterShadowSprite{ npcShadowSprite_ };
         characterShadowSprite.setPosition(PLAYER_SCREEN_POS_V - SIZE_HALF);
         target.draw(characterShadowSprite);
 
         for (auto const & NPC : MAP_.NonPlayers())
         {
-            sf::Sprite npcSprite;
-            NPC.GetView().Sprite(npcSprite);
+            sf::Sprite npcSprite{ NPC.GetView().SpriteRef() };
 
             //check if NPC is on the visible map
             auto const NPC_SCREEN_POS_V{

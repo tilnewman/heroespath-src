@@ -29,6 +29,7 @@
 //
 #include "model.hpp"
 #include "npc/i-view.hpp"
+#include "npc/lpc-view.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 #include "log/log-macros.hpp"
@@ -104,6 +105,13 @@ namespace npc
 
             viewUPtr_->UpdatePos(posV_);
         }
+    }
+
+
+    void Model::StopWalking()
+    {
+        SetWalkAnim(prevWalkDirection_, false);
+        action_ = Pose::Standing;
     }
 
 
@@ -196,8 +204,7 @@ namespace npc
             {
                 if (NEW_DIRECTION == sfml_util::Direction::Count)
                 {
-                    SetWalkAnim(prevWalkDirection_, false);
-                    action_ = Pose::Standing;
+                    StopWalking();
                 }
                 else
                 {
@@ -281,7 +288,7 @@ namespace npc
         else if ((posV_.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
         {
             return sfml_util::Direction::Left;
-        }
+        } 
         else
         {
             return sfml_util::Direction::Count;

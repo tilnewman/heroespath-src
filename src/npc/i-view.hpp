@@ -59,7 +59,7 @@ namespace npc
 
         virtual Pose::Enum Pose() const = 0;
         
-        virtual void Sprite(sf::Sprite &) const = 0;
+        virtual const sf::Sprite & SpriteRef() const = 0;
 
         virtual const sf::Vector2f SpriteSize() const = 0;
     };
