@@ -80,14 +80,6 @@ namespace map
 
         mapDisplayUPtr_->Load( FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM) );
         level_ = LEVEL_TO_LOAD;
-
-        for (int i(0); i < 5; ++i)
-        {
-            auto const WHICH_ANIM{ static_cast<npc::Anim::Enum>(i) };
-
-            nonPlayers_.push_back(
-                npc::Model(std::make_unique<npc::LPCView>(WHICH_ANIM), walkRectMap[0]) );
-        }
     }
 
 

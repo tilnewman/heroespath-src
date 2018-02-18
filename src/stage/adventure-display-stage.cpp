@@ -206,6 +206,16 @@ namespace stage
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Right, true);
                 }
+                else if ((DIRECTION == sfml_util::Direction::Up) &&
+                    (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down)))
+                {
+                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Down, true);
+                }
+                else if ((DIRECTION == sfml_util::Direction::Down) &&
+                    (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up)))
+                {
+                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Up, true);
+                }
             }
             else
             {
@@ -216,6 +226,16 @@ namespace stage
                 else if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Down, true);
+                }
+                else if ((DIRECTION == sfml_util::Direction::Left) &&
+                    (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right)))
+                {
+                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Right, true);
+                }
+                else if ((DIRECTION == sfml_util::Direction::Right) &&
+                    (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left)))
+                {
+                    mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Left, true);
                 }
             }
         }
