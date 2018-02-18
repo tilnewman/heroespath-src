@@ -84,11 +84,13 @@ namespace stage
         void PerformStatsTests();
 
     private:
-        void TestStatSetsCurrentAndNormal(const std::string &    TEST_NAME,
-                                          const stats::StatSet & ACTUAL,
-                                          const stats::StatSet & EXPECTED);
+        void TestStatSetsCurrentAndNormal(
+            const std::string & TEST_NAME,
+            const stats::StatSet & ACTUAL,
+            const stats::StatSet & EXPECTED);
 
         bool TestImageSet();
+        bool TestCharacterImageSet();
         bool PerformGameDataFileTests();
         bool TestAnimations();
         bool TestInventoryFactory();

@@ -59,6 +59,7 @@
 #include "song/song-warehouse.hpp"
 #include "non-player/inventory-factory.hpp"
 #include "item/item-factory.hpp"
+#include "npc/anim-enum.hpp"
 
 #include <sstream>
 #include <chrono>
@@ -362,6 +363,13 @@ namespace stage
         if (false == hasTestingCompleted_ImageSet)
         {
             hasTestingCompleted_ImageSet = TestImageSet();
+            return;
+        }
+
+        static auto hasTestingCompleted_CharacterImageSet{ false };
+        if (false == hasTestingCompleted_CharacterImageSet)
+        {
+            hasTestingCompleted_CharacterImageSet = TestCharacterImageSet();
             return;
         }
 
@@ -710,94 +718,95 @@ namespace stage
         }
 
         static std::vector<std::string> imagePathKeyVec =
-        {
-            "media-images-gui-elements",
-            "media-images-title-intro",
-            "media-images-title-blacksymbol",
-            "media-images-backgrounds-tile-darkknot",
-            "media-images-backgrounds-tile-runes",
-            "media-images-backgrounds-tile-wood",
-            "media-images-backgrounds-tile-darkpaper",
-            "media-images-backgrounds-paper-2",
-            "media-images-logos-sfml",
-            "media-images-logos-tiled",
-            "media-images-logos-terrain",
-            "media-images-logos-sound",
-            "media-images-logos-avalontrees",
-            "media-images-logos-renderedtrees",
-            "media-images-logos-manaworldtrees",
-            "media-images-logos-darkwoodpaper",
-            "media-images-logos-openfontlicense",
-            "media-images-gui-accents-symbol1",
-            "media-images-gui-accents-symbol2",
-            "media-images-gui-accents-symbol3",
-            "media-images-gui-accents-ouroboros",
-            "media-images-campfire",
-            "media-images-combat-dart",
-            "media-images-combat-arrow1",
-            "media-images-combat-arrow2",
-            "media-images-combat-arrow3",
-            "media-images-combat-arrow4",
-            "media-images-combat-stone1",
-            "media-images-combat-stone2",
-            "media-images-combat-stone3",
-            "media-images-combat-stone4",
-            "media-images-combat-crossbones",
-            "media-images-combat-crossswords",
-            "media-images-combat-run",
-            "media-images-misc-spark1",
-            "media-images-misc-spark2",
-            "media-images-misc-spark3",
-            "media-images-misc-cloud1",
-            "media-images-misc-cloud2",
-            "media-images-misc-cloud3",
-            "media-images-misc-note1",
-            "media-images-misc-note2",
-            "media-images-misc-note3",
-            "media-images-misc-note4",
-            "media-images-misc-note5",
-            "media-images-misc-note6",
-            "media-images-misc-x",
-            "media-images-misc-error",
-            "media-images-misc-money-bag",
-            "media-images-misc-abc",
-            "media-images-misc-weight",
-            "media-images-chest-closed",
-            "media-images-chest-open",
-            "media-images-coins",
-            "media-images-lockbox-closed",
-            "media-images-lockbox-open",
-            "media-images-bones-bat",
-            "media-images-bones-beetle",
-            "media-images-bones-bone-pile-1",
-            "media-images-bones-bone-pile-2",
-            "media-images-bones-bone-pile-3",
-            "media-images-bones-cat",
-            "media-images-bones-cave-crawler",
-            "media-images-bones-griffin",
-            "media-images-bones-harpy",
-            "media-images-bones-skull-animal-1",
-            "media-images-bones-skull-animal-2",
-            "media-images-bones-skull-animal-3",
-            "media-images-bones-skull-bog",
-            "media-images-bones-skull-demon",
-            "media-images-bones-skull-dragon-1",
-            "media-images-bones-skull-dragon-2",
-            "media-images-bones-skull-dragon-3",
-            "media-images-bones-skull-dragon-4",
-            "media-images-bones-skull-giant",
-            "media-images-bones-skull-goblin",
-            "media-images-bones-skull-humaniod-pile-1",
-            "media-images-bones-skull-humaniod-pile-2",
-            "media-images-bones-skull-humaniod-pile-3",
-            "media-images-bones-skull-humaniod",
-            "media-images-bones-skull-minotaur",
-            "media-images-bones-skull-orc",
-            "media-images-bones-skull-snake",
-            "media-images-bones-three-headed-hound",
-            "media-images-bones-wolfen",
-            "media-images-trap"
-        };
+            {
+                "media-images-gui-elements",
+                "media-images-title-intro",
+                "media-images-title-blacksymbol",
+                "media-images-backgrounds-tile-darkknot",
+                "media-images-backgrounds-tile-runes",
+                "media-images-backgrounds-tile-wood",
+                "media-images-backgrounds-tile-darkpaper",
+                "media-images-backgrounds-paper-2",
+                "media-images-logos-sfml",
+                "media-images-logos-tiled",
+                "media-images-logos-terrain",
+                "media-images-logos-sound",
+                "media-images-logos-avalontrees",
+                "media-images-logos-renderedtrees",
+                "media-images-logos-manaworldtrees",
+                "media-images-logos-darkwoodpaper",
+                "media-images-logos-openfontlicense",
+                "media-images-gui-accents-symbol1",
+                "media-images-gui-accents-symbol2",
+                "media-images-gui-accents-symbol3",
+                "media-images-gui-accents-ouroboros",
+                "media-images-campfire",
+                "media-images-combat-dart",
+                "media-images-combat-arrow1",
+                "media-images-combat-arrow2",
+                "media-images-combat-arrow3",
+                "media-images-combat-arrow4",
+                "media-images-combat-stone1",
+                "media-images-combat-stone2",
+                "media-images-combat-stone3",
+                "media-images-combat-stone4",
+                "media-images-combat-crossbones",
+                "media-images-combat-crossswords",
+                "media-images-combat-run",
+                "media-images-misc-spark1",
+                "media-images-misc-spark2",
+                "media-images-misc-spark3",
+                "media-images-misc-cloud1",
+                "media-images-misc-cloud2",
+                "media-images-misc-cloud3",
+                "media-images-misc-note1",
+                "media-images-misc-note2",
+                "media-images-misc-note3",
+                "media-images-misc-note4",
+                "media-images-misc-note5",
+                "media-images-misc-note6",
+                "media-images-misc-x",
+                "media-images-misc-error",
+                "media-images-misc-money-bag",
+                "media-images-misc-abc",
+                "media-images-misc-weight",
+                "media-images-chest-closed",
+                "media-images-chest-open",
+                "media-images-coins",
+                "media-images-lockbox-closed",
+                "media-images-lockbox-open",
+                "media-images-bones-bat",
+                "media-images-bones-beetle",
+                "media-images-bones-bone-pile-1",
+                "media-images-bones-bone-pile-2",
+                "media-images-bones-bone-pile-3",
+                "media-images-bones-cat",
+                "media-images-bones-cave-crawler",
+                "media-images-bones-griffin",
+                "media-images-bones-harpy",
+                "media-images-bones-skull-animal-1",
+                "media-images-bones-skull-animal-2",
+                "media-images-bones-skull-animal-3",
+                "media-images-bones-skull-bog",
+                "media-images-bones-skull-demon",
+                "media-images-bones-skull-dragon-1",
+                "media-images-bones-skull-dragon-2",
+                "media-images-bones-skull-dragon-3",
+                "media-images-bones-skull-dragon-4",
+                "media-images-bones-skull-giant",
+                "media-images-bones-skull-goblin",
+                "media-images-bones-skull-humaniod-pile-1",
+                "media-images-bones-skull-humaniod-pile-2",
+                "media-images-bones-skull-humaniod-pile-3",
+                "media-images-bones-skull-humaniod",
+                "media-images-bones-skull-minotaur",
+                "media-images-bones-skull-orc",
+                "media-images-bones-skull-snake",
+                "media-images-bones-three-headed-hound",
+                "media-images-bones-wolfen",
+                "media-images-trap",
+                "media-images-character-shadow"
+            };
 
         static std::size_t imageIndex{ 0 };
         if (imageIndex < imagePathKeyVec.size())
@@ -818,6 +827,40 @@ namespace stage
 
         game::LoopManager::Instance()->TestingStrAppend(
             "stage::TestingStage::TestImageSet() ALL Tests Passed.");
+
+        return true;
+    }
+
+
+    bool TestingStage::TestCharacterImageSet()
+    {
+        static auto hasInitialPrompt{ false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            game::LoopManager::Instance()->TestingStrAppend(
+                "stage::TestingStage::TestCharacterImageSet() Starting Tests...");
+        }
+
+        static auto imageIndex{ 0 };
+        if (imageIndex < npc::Anim::Count)
+        {
+            auto const WHICH_ANIM{ static_cast<npc::Anim::Enum>(imageIndex) };
+
+            std::ostringstream ss;
+            ss << "TestCharacterImageSet() \"" << npc::Anim::ToString(WHICH_ANIM) << "\"";
+            game::LoopManager::Instance()->TestingStrAppend(ss.str());
+
+            sf::Texture texture;
+            sfml_util::LoadTexture(texture, npc::Anim::ImagePath(WHICH_ANIM));
+            TestingImageSet(texture);
+
+            ++imageIndex;
+            return false;
+        }
+
+        game::LoopManager::Instance()->TestingStrAppend(
+            "stage::TestingStage::TestCharacterImageSet() ALL Tests Passed.");
 
         return true;
     }
