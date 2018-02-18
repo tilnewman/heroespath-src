@@ -32,7 +32,7 @@
 #include "map/parser.hpp"
 #include "map/shadow-masker.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "npc/lpc-view.hpp"
+#include "char_anim/lpc-view.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 #include "game/game-data-file.hpp"

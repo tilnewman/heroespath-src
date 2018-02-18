@@ -39,7 +39,7 @@
 
 namespace heroespath
 {
-namespace npc
+namespace char_anim
 {
     
     const std::string Anim::ToString(const NameEnum E)
@@ -55,7 +55,7 @@ namespace npc
             default:
             {
                 std::ostringstream ss;
-                ss << "npc::Anim::ToString(NameEnum=" << E << ")_InvalidValueError.";
+                ss << "char_anim::Anim::ToString(NameEnum=" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
@@ -122,7 +122,7 @@ namespace npc
             default:
             {
                 std::ostringstream ss;
-                ss << "npc::Anim::Animations(NameEnum=" << E << ")_InvalidValueError.";
+                ss << "char_anim::Anim::Animations(NameEnum=" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
@@ -161,7 +161,7 @@ namespace npc
             default:
             {
                 std::ostringstream ss;
-                ss << "npc::Anim::ToString(Enum=" << E << ")_InvalidValueError.";
+                ss << "char_anim::Anim::ToString(Enum=" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
@@ -200,7 +200,7 @@ namespace npc
             default:
             {
                 std::ostringstream ss;
-                ss << "npc::Anim::Name(" << E << ")_InvalidValueError.";
+                ss << "char_anim::Anim::Name(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }

@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -22,37 +24,40 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_NPC_POSEENUM_HPP_INCLUDED
-#define HEROESPATH_NPC_POSEENUM_HPP_INCLUDED
 //
-// pose-enum.hpp
+// pose-enum.cpp
 //
-#include <string>
+#include "pose-enum.hpp"
+
+#include <exception>
+#include <sstream>
 
 
 namespace heroespath
 {
-namespace npc
+namespace char_anim
 {
 
-    struct Pose
+    const std::string Pose::ToString(const Pose::Enum E)
     {
-        enum Enum
+        switch (E)
         {
-            Standing = 0,
-            Walking,
-            GiveTake,
-            Fight,
-            Cast,
-            Blink,
-            Dead,
-            Count
-        };
-
-        static const std::string ToString(const Pose::Enum E);
-    };
+            case Standing:  { return "Standing"; }
+            case Walking:   { return "Walking"; }
+            case GiveTake:  { return "GiveTake"; }
+            case Fight:     { return "Fight"; }
+            case Cast:      { return "Cast"; }
+            case Blink:     { return "Blink"; }
+            case Dead:      { return "Dead"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "char_anim::Pose::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
 
 }
 }
-
-#endif //HEROESPATH_NPC_POSEENUM_HPP_INCLUDED

@@ -22,12 +22,12 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_NPC_MODEL_HPP_INCLUDED
-#define HEROESPATH_NPC_MODEL_HPP_INCLUDED
+#ifndef HEROESPATH_CHARANIM_MODEL_HPP_INCLUDED
+#define HEROESPATH_CHARANIM_MODEL_HPP_INCLUDED
 //
 // model.hpp
 //
-#include "npc/pose-enum.hpp"
+#include "char_anim/pose-enum.hpp"
 
 #include "sfml-util/direction-enum.hpp"
 
@@ -41,7 +41,7 @@
 
 namespace heroespath
 {
-namespace npc
+namespace char_anim
 {
 
     struct IView;
@@ -115,4 +115,4 @@ namespace npc
 }
 }
 
-#endif //HEROESPATH_NPC_MODEL_HPP_INCLUDED
+#endif //HEROESPATH_CHARANIM_MODEL_HPP_INCLUDED

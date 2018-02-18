@@ -55,7 +55,7 @@ foreach(testSrc ${impl_files})
                         	State
                         	Combat
 				Popup
-				NPC
+				Char_Anim
                         	${Boost_LIBRARIES}
                         	${SFML_LIBRARIES})
 

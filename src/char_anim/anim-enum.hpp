@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_NPC_ANIMENUM_HPP_INCLUDED
-#define HEROESPATH_NPC_ANIMENUM_HPP_INCLUDED
+#ifndef HEROESPATH_CHARANIM_ANIMENUM_HPP_INCLUDED
+#define HEROESPATH_CHARANIM_ANIMENUM_HPP_INCLUDED
 //
 // anim-enum.hpp
 //
@@ -33,7 +33,7 @@
 
 namespace heroespath
 {
-namespace npc
+namespace char_anim
 {
 
     struct Anim
@@ -94,4 +94,4 @@ namespace npc
 }
 }
 
-#endif //HEROESPATH_NPC_ANIMENUM_HPP_INCLUDED
+#endif //HEROESPATH_CHARANIM_ANIMENUM_HPP_INCLUDED
