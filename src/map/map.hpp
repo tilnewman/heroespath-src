@@ -61,7 +61,10 @@ namespace map
         Map(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V);
         ~Map() {}
 
-        void Load(const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM);
+        void Load(
+            const Level::Enum LEVEL_TO_LOAD,
+            const Level::Enum LEVEL_FROM,
+            const bool IS_TEST_LOAD = false);
 
         bool MovePlayer(const sfml_util::Direction::Enum);
 
@@ -75,9 +78,13 @@ namespace map
 
         void SetPlayerWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START);
 
-        const npc::Model & Player() const { return player_; }
+        inline const npc::Model & Player() const { return player_; }
 
         inline const std::vector<npc::Model> & NonPlayers() const { return nonPlayers_; }
+
+        void EntryAndExitLevels(
+            std::vector<Level::Enum> & entryLevels,
+            std::vector<Level::Enum> & exitLevels);
 
     private:
         bool DoesAdjPlayerPosCollide(

@@ -60,6 +60,11 @@
 #include "non-player/inventory-factory.hpp"
 #include "item/item-factory.hpp"
 #include "npc/anim-enum.hpp"
+#include "npc/i-view.hpp"
+#include "map/level-enum.hpp"
+#include "map/map.hpp"
+#include "map/map-display.hpp"
+
 
 #include <sstream>
 #include <chrono>
@@ -341,6 +346,8 @@ namespace stage
             game::LoopManager::Instance()->TestingStrAppend("System Tests Starting...");
         }
 
+        //See below (function ReSaveWithBlackBorder) for a comment explaining why
+        //this code is commented out.
         //ReSaveWithBlackBorder("media-images-creaturess-dir");
         //ReSaveWithBlackBorder("media-images-items-dir");
 
@@ -370,6 +377,13 @@ namespace stage
         if (false == hasTestingCompleted_CharacterImageSet)
         {
             hasTestingCompleted_CharacterImageSet = TestCharacterImageSet();
+            return;
+        }
+
+        static auto hasTestingCompleted_Maps{ false };
+        if (false == hasTestingCompleted_Maps)
+        {
+            hasTestingCompleted_Maps = TestMaps();
             return;
         }
 
@@ -861,6 +875,125 @@ namespace stage
 
         game::LoopManager::Instance()->TestingStrAppend(
             "stage::TestingStage::TestCharacterImageSet() ALL Tests Passed.");
+
+        return true;
+    }
+
+
+    bool TestingStage::TestMaps()
+    {
+        static auto hasInitialPrompt{ false };
+        if (false == hasInitialPrompt)
+        {
+            hasInitialPrompt = true;
+            game::LoopManager::Instance()->TestingStrAppend(
+                "stage::TestingStage::TestMaps() Starting Tests.  Please wait...");
+        }
+
+        static auto mapIndex{ 0 };
+        if (mapIndex < map::Level::Count)
+        {
+            auto const WHICH_LEVEL{ static_cast<map::Level::Enum>(mapIndex) };
+
+            std::ostringstream ss;
+            ss << "TestMaps() Testing \"" << map::Level::ToString(WHICH_LEVEL) << "\" Map";
+            game::LoopManager::Instance()->TestingStrAppend(ss.str());
+
+            auto const ParseMap{
+                [](
+                    map::Map & map,
+                    const map::Level::Enum LEVEL_ENUM,
+                    std::vector<map::Level::Enum> & entryLevels,
+                    std::vector<map::Level::Enum> & exitLevels,
+                    const std::string & ERROR_MSG)
+                {
+                    try
+                    {
+                        map.Load(LEVEL_ENUM, map::Level::Count, true);
+                    }
+                    catch (const std::exception & E)
+                    {
+                        M_HP_LOG_FAT("TestingStage::TestMaps() threw an exception while \""
+                            << ERROR_MSG << "\" for map \"" << map::Level::ToString(LEVEL_ENUM)
+                            << "\"");
+
+                        throw E;
+                    }
+
+                    map.EntryAndExitLevels(entryLevels, exitLevels);
+                } };
+
+
+            auto const MAP_POS_V{ sf::Vector2f(0.0f, 0.0f) };
+            auto const MAP_SIZE_V{ sf::Vector2f(256.0f, 512.0f) };
+
+            map::MapUPtr_t mapUPtr{ std::make_unique<map::Map>(MAP_POS_V, MAP_SIZE_V) };
+
+            std::vector<map::Level::Enum> entryLevels;
+            std::vector<map::Level::Enum> exitLevels;
+
+            ParseMap(* mapUPtr, WHICH_LEVEL, entryLevels, exitLevels, "initial parse");
+
+            for (auto const NEXT_ENTRY_LEVEL : entryLevels)
+            {
+                map::MapUPtr_t nextMapUPtr{ std::make_unique<map::Map>(MAP_POS_V, MAP_SIZE_V) };
+
+                std::vector<map::Level::Enum> ignored;
+                std::vector<map::Level::Enum> nextExitLevels;
+
+                ParseMap(
+                    * nextMapUPtr,
+                    NEXT_ENTRY_LEVEL,
+                    ignored,
+                    nextExitLevels,
+                    "secondary parse looking for exit");
+
+                auto const FOUND_ITER{
+                    std::find(
+                        std::begin(nextExitLevels),
+                        std::end(nextExitLevels),
+                        WHICH_LEVEL) };
+
+                M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER != std::end(nextExitLevels)),
+                    "TestingStage::TestMaps() found a map \"" << map::Level::ToString(WHICH_LEVEL)
+                    << "\" that had an entry level from map \""
+                    << map::Level::ToString(NEXT_ENTRY_LEVEL)
+                    << "\", but that map did not have an exit level to match.");
+            }
+
+            for (auto const NEXT_EXIT_LEVEL : exitLevels)
+            {
+                map::MapUPtr_t nextMapUPtr{ std::make_unique<map::Map>(MAP_POS_V, MAP_SIZE_V) };
+
+                std::vector<map::Level::Enum> nextEntryLevels;
+                std::vector<map::Level::Enum> ignored;
+
+                ParseMap(
+                    * nextMapUPtr,
+                    NEXT_EXIT_LEVEL,
+                    nextEntryLevels,
+                    ignored,
+                    "secondary parse looking for entry");
+
+                auto const FOUND_ITER{
+                    std::find(
+                        std::begin(nextEntryLevels),
+                        std::end(nextEntryLevels),
+                        WHICH_LEVEL) };
+
+                M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER != std::end(nextEntryLevels)),
+                    "TestingStage::TestMaps() found a map \"" << map::Level::ToString(WHICH_LEVEL)
+                    << "\" that had an exit level to map \""
+                    << map::Level::ToString(NEXT_EXIT_LEVEL)
+                    << "\", but that map did not have an entry level to match.");
+            }
+
+            ++mapIndex;
+            return false;
+        }
+
+        game::LoopManager::Instance()->TestingStrAppend(
+            "stage::TestingStage::TestMaps() ALL Tests Passed.");
 
         return true;
     }

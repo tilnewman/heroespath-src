@@ -44,15 +44,15 @@ namespace map
             Thornberry_GuardPostEast,
             ThornberryMeadows,
             ThornberryHighlands,
-            Mudgate,
-            Bridgeway,
+            //Mudgate,
+            //Bridgeway,
             Count
         };
 
         static const std::string FILENAME_EXTENSION;
         static const std::string ToString(const Level::Enum);
         static Level::Enum FromString(const std::string &);
-        static const std::string ToFilename(const Level::Enum);
+        static const std::string Path(const Level::Enum);
     };
 
 }

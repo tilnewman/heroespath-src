@@ -61,7 +61,10 @@ namespace map
     {}
 
 
-    void Map::Load(const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM)
+    void Map::Load(
+        const Level::Enum LEVEL_TO_LOAD,
+        const Level::Enum LEVEL_FROM,
+        const bool IS_TEST_LOAD)
     {
         transitionVec_.clear();
 
@@ -72,14 +75,18 @@ namespace map
 
         Parser mapParser;
         mapParser.Parse(
-            ComposeMapFilePath(LEVEL_TO_LOAD),
+            Level::Path(LEVEL_TO_LOAD),
             layout,
             collisionVec_,
             transitionVec_,
             walkRectMap);
 
-        mapDisplayUPtr_->Load( FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM) );
         level_ = LEVEL_TO_LOAD;
+
+        if (IS_TEST_LOAD == false)
+        {
+            mapDisplayUPtr_->Load(FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM));
+        }
     }
 
 
@@ -243,6 +250,24 @@ namespace map
     }
 
 
+    void Map::EntryAndExitLevels(
+        std::vector<Level::Enum> & entryLevels,
+        std::vector<Level::Enum> & exitLevels)
+    {
+        for (auto const & TRANSITION : transitionVec_)
+        {
+            if (TRANSITION.IsEntry())
+            {
+                entryLevels.push_back(TRANSITION.Level());
+            }
+            else
+            {
+                exitLevels.push_back(TRANSITION.Level());
+            }
+        }
+    }
+
+
     bool Map::DoesAdjPlayerPosCollide(
         const sfml_util::Direction::Enum DIR,
         const float ADJ) const
@@ -298,13 +323,6 @@ namespace map
         }
 
         return false;
-    }
-
-
-    const std::string Map::ComposeMapFilePath(const Level::Enum E) const
-    {
-        return game::GameDataFile::Instance()->GetMediaPath("media-maps-dir") +
-            Level::ToFilename(E);
     }
 
 

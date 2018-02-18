@@ -29,6 +29,8 @@
 //
 #include "level-enum.hpp"
 
+#include "game/game-data-file.hpp"
+
 #include <exception>
 #include <sstream>
 
@@ -52,8 +54,8 @@ namespace map
             case Thornberry_GuardPostEast:  { return "Thornberry_GuardPostEast"; }
             case ThornberryMeadows:         { return "ThornberryMeadows"; }
             case ThornberryHighlands:       { return "ThornberryHighlands"; }
-            case Mudgate:                   { return "Mudgate"; }
-            case Bridgeway:                 { return "Bridgeway"; }
+            //case Mudgate:                   { return "Mudgate"; }
+            //case Bridgeway:                 { return "Bridgeway"; }
             case Count:
             default:
             {
@@ -65,9 +67,10 @@ namespace map
     }
 
 
-    const std::string Level::ToFilename(const Level::Enum E)
+    const std::string Level::Path(const Level::Enum E)
     {
-        return ToString(E) + FILENAME_EXTENSION;
+        return game::GameDataFile::Instance()->GetMediaPath("media-maps-dir") +
+            ToString(E) + FILENAME_EXTENSION;
     }
 
 

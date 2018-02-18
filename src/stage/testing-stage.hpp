@@ -91,6 +91,7 @@ namespace stage
 
         bool TestImageSet();
         bool TestCharacterImageSet();
+        bool TestMaps();
         bool PerformGameDataFileTests();
         bool TestAnimations();
         bool TestInventoryFactory();
