@@ -987,7 +987,7 @@ namespace stage
             POPUP_NAME_STR_PARTY_IMAGE_SELECT_,
             ss.str(),
             partyTextureVec,
-            true) };
+            false) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageSelect>(
             this, POPUP_INFO);

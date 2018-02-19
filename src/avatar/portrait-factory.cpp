@@ -47,6 +47,7 @@ namespace avatar
 
         sf::RenderTexture renderTexture;
         renderTexture.create(WIDTH, HEIGHT);
+        renderTexture.clear(sf::Color::Transparent);
         renderTexture.draw(charSprite);
         renderTexture.display();
 
