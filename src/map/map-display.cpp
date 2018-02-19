@@ -729,7 +729,7 @@ namespace map
     {
         sfml_util::LoadTexture(
             npcShadowTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-character-shadow"));
+            game::GameDataFile::Instance()->GetMediaPath("media-images-avatar-shadow"));
 
         ShadowMasker::ChangeColors(npcShadowTexture_, true);
 

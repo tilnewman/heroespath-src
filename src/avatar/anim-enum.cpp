@@ -216,8 +216,8 @@ namespace avatar
     const std::string Anim::ImagePath(const Anim::Enum E)
     {
         std::string keyStr{ ((Anim::IsPlayer(E)) ?
-            game::GameDataFile::Instance()->GetMediaPath("media-images-character-player") :
-            game::GameDataFile::Instance()->GetMediaPath("media-images-character-nonplayer")) };
+            game::GameDataFile::Instance()->GetMediaPath("media-images-avatar-player") :
+            game::GameDataFile::Instance()->GetMediaPath("media-images-avatar-nonplayer")) };
 
         keyStr += boost::algorithm::to_lower_copy( Anim::ToString(E) );
         keyStr += ".png";

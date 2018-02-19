@@ -60,8 +60,8 @@ media-images-spells-dir=                image/spells/
 media-images-conditions-dir=            image/conditions/
 media-images-songs-dir=                 image/songs/
 media-images-combat-dir=                image/combat/
-media-images-character-player=          image/characters/player/
-media-images-character-nonplayer=       image/characters/non-player/
+media-images-avatar-player=             image/avatars/player/
+media-images-avatar-nonplayer=          image/avatars/non-player/
 media-maps-tile-dir=                    image/map-tiles/
 media-maps-dir=                         map/
 
@@ -186,7 +186,7 @@ media-images-bones-three-headed-hound=      image/treasure-stage/bones/three-hea
 media-images-bones-wolfen=                  image/treasure-stage/bones/wolfen.png
 media-images-trap=                          image/treasure-stage/trap.png
 media-images-placeholder=                   image/misc/placeholder.png
-media-images-character-shadow=              image/characters/shadow.png
+media-images-avatar-shadow=                 image/avatars/shadow.png
 
 #Race Stat Modifiers
 heroespath-creature-race-stat-modifiers-Human=    2,  2,   2, -6,  0,  0
