@@ -34,12 +34,14 @@
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/sliders.hpp"
-
 #include "sfml-util/main-menu-buttons.hpp"
-#include "popup/i-popup-callback.hpp"
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-title.hpp"
+
+#include "char_anim/anim-enum.hpp"
+
+#include "popup/i-popup-callback.hpp"
 
 #include <memory>
 #include <string>
@@ -101,17 +103,25 @@ namespace stage
 
         virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
 
-        virtual void StartNewGame();
+        virtual void StartNewGame(const char_anim::Anim::Enum);
 
         virtual bool KeyRelease(const sf::Event::KeyEvent &);
 
     private:
         void ResetMouseOverPopupState();
 
+        bool AreAnyCharactersBeasts() const;
+        bool AreAnyCharactersBeastmasters() const;
+
+        void MissingBeastmasterPopup();
+        void NotEnoughCharactersPopup();
+        void PartyAvatarSelectionPopup();
+
     private:
         static const std::string POPUP_NAME_STR_NOT_ENOUGH_CHARS_;
         static const std::string POPUP_NAME_STR_TOO_MANY_CHARS_;
         static const std::string POPUP_NAME_STR_DELETE_CONFIRM_;
+        static const std::string POPUP_NAME_STR_PARTY_IMAGE_SELECT_;
         static const float MOUSE_OVER_POPUP_DELAY_SEC_;
         static const float MOUSE_OVER_SLIDER_SPEED_;
         static const float MOUSE_OVER_POPUP_POS_LEFT_;
@@ -154,6 +164,8 @@ namespace stage
 
         //
         player::CharacterPSet_t charactersPSet_;
+
+        char_anim::Anim::Enum partyCharAnim_;
     };
 
 }

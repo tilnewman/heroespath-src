@@ -40,6 +40,7 @@
 #include "sfml-util/gui/creature-image-manager.hpp"
 
 #include "popup/popup-manager.hpp"
+#include "popup/popup-stage-image-select.hpp"
 
 #include "log/log-macros.hpp"
 
@@ -52,6 +53,8 @@
 #include "player/party.hpp"
 #include "player/character.hpp"
 #include "player/character-warehouse.hpp"
+
+#include "char_anim/portrait-factory.hpp"
 
 #include "misc/real.hpp"
 
@@ -72,6 +75,9 @@ namespace stage
 
     const std::string   PartyStage::POPUP_NAME_STR_DELETE_CONFIRM_{
         "CharacterDeleteConfirmMsg" };
+
+    const std::string   PartyStage::POPUP_NAME_STR_PARTY_IMAGE_SELECT_{
+        "PartyImageSelection" };
 
     const float         PartyStage::MOUSE_OVER_POPUP_DELAY_SEC_{ 1.0f };
     const float         PartyStage::MOUSE_OVER_SLIDER_SPEED_   { 4.0f };
@@ -142,7 +148,8 @@ namespace stage
         isMouseOverTexture_     (false),
         mouseOverTextRegionUPtr_(),
         mouseOverSlider_        (4.0f),
-        charactersPSet_         ()
+        charactersPSet_         (),
+        partyCharAnim_          (char_anim::Anim::Count)
     {}
 
 
@@ -260,6 +267,17 @@ namespace stage
                 //actual Character object will be free'd when the PartyStage object is destroyed
             }
         }
+        else if ((PACKAGE.Info().Name() == POPUP_NAME_STR_PARTY_IMAGE_SELECT_) &&
+                 (PACKAGE.Response() != popup::ResponseTypes::Cancel))
+        {
+            auto const SELECTED_NUM{ static_cast<int>(PACKAGE.Selection()) };
+            auto const ANIM_NUM{ char_anim::Anim::Player_First + SELECTED_NUM };
+            auto const ANIM_ENUM{ static_cast<char_anim::Anim::Enum>(ANIM_NUM) };
+            if (char_anim::Anim::IsPlayer(ANIM_ENUM))
+            {
+                StartNewGame(ANIM_ENUM);
+            }
+        }
 
         return false;
     }
@@ -276,75 +294,18 @@ namespace stage
     {
         if (partyListBoxUPtr_->Size() != player::Party::MAX_CHARACTER_COUNT_)
         {
-            std::ostringstream ss;
-            ss << "\n\nThere are " << partyListBoxUPtr_->Size()
-                << " characters in your party.  You need exactly "
-                << player::Party::MAX_CHARACTER_COUNT_ << " characters to start the game.";
-
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
-                POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
-                ss.str(),
-                popup::PopupButtons::Okay,
-                popup::PopupImage::Regular,
-                sfml_util::Justified::Center,
-                sfml_util::sound_effect::PromptQuestion) };
-
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+            NotEnoughCharactersPopup();
             return false;
         }
-        else
+        
+        if (AreAnyCharactersBeasts() && (AreAnyCharactersBeastmasters() == false))
         {
-            //determine if any beasts are in the party
-            auto isAnyCharacterBeast{ false };
-            auto const NUM_CHARACTERS{ partyListBoxUPtr_->Size() };
-            for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
-            {
-                auto const NEXT_CHAR_RACE{ partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Race() };
-
-                if ((creature::race::Dragon == NEXT_CHAR_RACE) ||
-                    (creature::race::Wolfen == NEXT_CHAR_RACE))
-                {
-                    isAnyCharacterBeast = true;
-                    break;
-                }
-            }
-
-            //determine if any are beastmasters
-            auto isAnyCharacterBeastmaster{ false };
-            for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
-            {
-                auto const NEXT_CHAR_ROLE{ partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Role() };
-
-                if (NEXT_CHAR_ROLE == creature::role::Beastmaster)
-                {
-                    isAnyCharacterBeastmaster = true;
-                    break;
-                }
-            }
-
-            //if any characters are beasts, then one in the party must be a beastmaster
-            if (isAnyCharacterBeast && (false == isAnyCharacterBeastmaster))
-            {
-                std::ostringstream ss;
-                ss << "\nThere are beast characters in your party, but no character with the role"
-                    << " of Beastmaster.  To have Wolfens or Dragons in your party, you must also"
-                    << " have a Beastmaster.";
-
-                auto const POP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
-                    POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
-                    ss.str(),
-                    popup::PopupButtons::Okay,
-                    popup::PopupImage::RegularSidebar,
-                    sfml_util::Justified::Left,
-                    sfml_util::sound_effect::PromptWarn) };
-
-                game::LoopManager::Instance()->PopupWaitBegin(this, POP_INFO);
-                return false;
-            }
-
-            StartNewGame();
-            return true;
+            MissingBeastmasterPopup();
+            return false;
         }
+        
+        PartyAvatarSelectionPopup();
+        return true;
     }
 
 
@@ -857,7 +818,7 @@ namespace stage
     }
 
 
-    void PartyStage::StartNewGame()
+    void PartyStage::StartNewGame(const char_anim::Anim::Enum PARTY_AVATAR)
     {
         //create a new party structure
         player::CharacterPVec_t charPVec;
@@ -881,7 +842,7 @@ namespace stage
         }
 
         //create a new GameState with the given party and then save it
-        state::GameStateFactory::Instance()->NewGame( new player::Party(charPVec) );
+        state::GameStateFactory::Instance()->NewGame( new player::Party(PARTY_AVATAR, charPVec) );
 
         //Don't bother clearing the party ListBox because it flashes the
         //"not engouh characters" text, and since we are immediately transitioning
@@ -936,6 +897,98 @@ namespace stage
         mouseOverPopupTimerSec_ = 0.0f;
         isMouseOverTexture_ = false;
         mouseOverTextRegionUPtr_.reset();
+    }
+
+
+    bool PartyStage::AreAnyCharactersBeasts() const
+    {
+        auto const NUM_CHARACTERS{ partyListBoxUPtr_->Size() };
+        for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+        {
+            if (partyListBoxUPtr_->At(i)->CHARACTER_CPTR->IsBeast())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    bool PartyStage::AreAnyCharactersBeastmasters() const
+    {
+        auto const NUM_CHARACTERS{ partyListBoxUPtr_->Size() };
+        for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+        {
+            if (partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Role() == creature::role::Beastmaster)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    void PartyStage::MissingBeastmasterPopup()
+    {
+        std::ostringstream ss;
+        ss << "\nThere are beast characters in your party, but no character with the role"
+            << " of Beastmaster.  To have Wolfens or Dragons in your party, you must also"
+            << " have a Beastmaster.";
+
+        auto const POP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
+            ss.str(),
+            popup::PopupButtons::Okay,
+            popup::PopupImage::RegularSidebar,
+            sfml_util::Justified::Left,
+            sfml_util::sound_effect::PromptWarn) };
+
+        game::LoopManager::Instance()->PopupWaitBegin(this, POP_INFO);
+    }
+
+
+    void PartyStage::NotEnoughCharactersPopup()
+    {
+        std::ostringstream ss;
+        ss << "\n\nThere are " << partyListBoxUPtr_->Size()
+            << " characters in your party.  You need exactly "
+            << player::Party::MAX_CHARACTER_COUNT_ << " characters to start the game.";
+
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
+            POPUP_NAME_STR_NOT_ENOUGH_CHARS_,
+            ss.str(),
+            popup::PopupButtons::Okay,
+            popup::PopupImage::Regular,
+            sfml_util::Justified::Center,
+            sfml_util::sound_effect::PromptQuestion) };
+
+        game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
+    }
+
+
+    void PartyStage::PartyAvatarSelectionPopup()
+    {
+        sfml_util::TextureVec_t partyTextureVec;
+        for (int i(char_anim::Anim::Player_First); i <= char_anim::Anim::Player_Last; ++i)
+        {
+            partyTextureVec.push_back(sf::Texture());
+            auto const WHICH_ANIM{ static_cast<char_anim::Anim::Enum>(i) };
+            char_anim::PortraitFactory::Make(WHICH_ANIM, partyTextureVec[i]);
+        }
+
+        std::ostringstream ss;
+        ss << "Choose an avatar for your party...";
+
+        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageSelectionPopupInfo(
+            POPUP_NAME_STR_PARTY_IMAGE_SELECT_,
+            ss.str(),
+            partyTextureVec,
+            true) };
+
+        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageSelect>(
+            this, POPUP_INFO);
     }
 
 }

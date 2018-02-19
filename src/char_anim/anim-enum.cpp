@@ -209,7 +209,7 @@ namespace char_anim
 
     bool Anim::IsPlayer(const Anim::Enum E)
     {
-        return ((E >= Anim::Player_First) && (E < Anim::Player_Count));
+        return ((E >= Anim::Player_First) && (E <= Anim::Player_Last));
     }
 
 

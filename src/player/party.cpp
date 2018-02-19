@@ -47,8 +47,11 @@ namespace player
     const std::size_t Party::MAX_CHARACTER_COUNT_(6);
 
 
-    Party::Party(const CharacterPVec_t & CHARACTERS_PVEC)
+    Party::Party(
+        const char_anim::Anim::Enum PARTY_AVATAR, 
+        const CharacterPVec_t & CHARACTERS_PVEC)
     :
+        avatar_(PARTY_AVATAR),
         charactersPVec_()
     {
         for (auto const NEXT_CHARACTER_PTR : CHARACTERS_PVEC)

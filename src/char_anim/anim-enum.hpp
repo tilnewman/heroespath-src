@@ -63,9 +63,9 @@ namespace char_anim
             Sara_Cyan,
             Sara_Green,
             Sara_White,
-            Player_Count,
-            NonPlayer_First = Player_Count,
-            Rags_Dark = Player_Count,
+            Player_Last = Sara_White,
+            NonPlayer_First,
+            Rags_Dark = NonPlayer_First,
             Rags_Tan1,
             Rags_Tan2,
             Robes_Light_Blonde,
@@ -77,8 +77,8 @@ namespace char_anim
             Robes_Tan2_BrunLong,
             Robes_Tan2_Crow,
             Robes_Whitebeard,
-            NonPlayer_Count,
-            Count = NonPlayer_Count
+            NonPlayer_Last,
+            Count = NonPlayer_Last
         };
 
         static const std::string ToString(const NameEnum);

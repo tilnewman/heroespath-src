@@ -28,6 +28,7 @@
 // party.hpp (player)
 //  A collection of characters under control of the user.
 //
+#include "char_anim/anim-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
 
 #include <memory>
@@ -60,7 +61,10 @@ namespace player
         Party & operator=(const Party &) =delete;
 
     public:
-        explicit Party(const CharacterPVec_t & CHARACTER_PVEC = CharacterPVec_t());
+        explicit Party(
+            const char_anim::Anim::Enum PARTY_AVATAR = char_anim::Anim::Player_First,
+            const CharacterPVec_t & CHARACTER_PVEC = CharacterPVec_t());
+        
         virtual ~Party();
 
         inline const CharacterPVec_t Characters() const { return charactersPVec_; }
@@ -102,10 +106,13 @@ namespace player
 
         std::size_t GetNumHumanoid() const;
 
+        inline char_anim::Anim::Enum Avatar() const { return avatar_; }
+
     public:
         static const std::size_t MAX_CHARACTER_COUNT_;
 
     private:
+        char_anim::Anim::Enum avatar_;
         CharacterPVec_t charactersPVec_;
 
     private:
