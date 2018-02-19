@@ -28,7 +28,7 @@
 // i-view.hpp
 //
 #include "avatar/pose-enum.hpp"
-#include "avatar/anim-enum.hpp"
+#include "avatar/avatar-enum.hpp"
 #include "sfml-util/direction-enum.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <memory>
@@ -64,7 +64,7 @@ namespace avatar
 
         virtual const sf::Vector2f SpriteSize() const = 0;
 
-        virtual Anim::Enum WhichAnim() const = 0;
+        virtual Avatar::Enum WhichAvatar() const = 0;
     };
 
     using IViewUPtr_t = std::unique_ptr<IView>;

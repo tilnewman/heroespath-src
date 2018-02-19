@@ -27,7 +27,7 @@
 //
 // anim-enum.cpp
 //
-#include "anim-enum.hpp"
+#include "avatar-enum.hpp"
 
 #include "game/game-data-file.hpp"
 
@@ -42,7 +42,7 @@ namespace heroespath
 namespace avatar
 {
     
-    const std::string Anim::ToString(const NameEnum E)
+    const std::string Avatar::ToString(const NameEnum E)
     {
         switch (E)
         {
@@ -55,81 +55,81 @@ namespace avatar
             default:
             {
                 std::ostringstream ss;
-                ss << "avatar::Anim::ToString(NameEnum=" << E << ")_InvalidValueError.";
+                ss << "avatar::Avatar::ToString(NameEnum=" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
 
 
-    bool Anim::IsPlayer(const NameEnum E)
+    bool Avatar::IsPlayer(const NameEnum E)
     {
         return ((E == Metal) || (E == Puck) || (E == Sara));
     }
 
 
-    const std::vector<Anim::Enum> Anim::Animations(const NameEnum E)
+    const std::vector<Avatar::Enum> Avatar::Animations(const NameEnum E)
     {
         switch (E)
         {
             case Metal:
             {
                 return {
-                    Anim::Metal_Female_Dark,
-                    Anim::Metal_Female_Light,
-                    Anim::Metal_Male_Dark,
-                    Anim::Metal_Male_Light };
+                    Avatar::Metal_Female_Dark,
+                    Avatar::Metal_Female_Light,
+                    Avatar::Metal_Male_Dark,
+                    Avatar::Metal_Male_Light };
             }
             case Puck:
             {
                 return {
-                    Anim::Puck_Female_Dark,
-                    Anim::Puck_Female_Light,
-                    Anim::Puck_Male_Dark,
-                    Anim::Puck_Male_Light };
+                    Avatar::Puck_Female_Dark,
+                    Avatar::Puck_Female_Light,
+                    Avatar::Puck_Male_Dark,
+                    Avatar::Puck_Male_Light };
             }
             case Sara:
             {
                 return {
-                    Anim::Sara_BlueWhite,
-                    Anim::Sara_Cyan,
-                    Anim::Sara_Green,
-                    Anim::Sara_White };
+                    Avatar::Sara_BlueWhite,
+                    Avatar::Sara_Cyan,
+                    Avatar::Sara_Green,
+                    Avatar::Sara_White };
             }
             case Rags:
             {
                 return {
-                    Anim::Rags_Dark,
-                    Anim::Rags_Tan1,
-                    Anim::Rags_Tan2 };
+                    Avatar::Rags_Dark,
+                    Avatar::Rags_Tan1,
+                    Avatar::Rags_Tan2 };
             }
             case Robes:
             {
                 return {
-                    Anim::Robes_Light_Blonde,
-                    Anim::Robes_Light_Crow,
-                    Anim::Robes_Tan1_Blonde,
-                    Anim::Robes_Tan1_Crow,
-                    Anim::Robes_Tan1_CrowLong,
-                    Anim::Robes_Tan1_Red,
-                    Anim::Robes_Tan2_BrunLong,
-                    Anim::Robes_Tan2_Crow };
+                    Avatar::Robes_Light_Blonde,
+                    Avatar::Robes_Light_Crow,
+                    Avatar::Robes_Tan1_Blonde,
+                    Avatar::Robes_Tan1_Crow,
+                    Avatar::Robes_Tan1_CrowLong,
+                    Avatar::Robes_Tan1_Red,
+                    Avatar::Robes_Tan2_BrunLong,
+                    Avatar::Robes_Tan2_Crow };
             }
             case Whitebeard:
             {
-                return { Anim::Robes_Whitebeard };
+                return { Avatar::Robes_Whitebeard };
             }
             default:
             {
                 std::ostringstream ss;
-                ss << "avatar::Anim::Animations(NameEnum=" << E << ")_InvalidValueError.";
+                ss << "avatar::Avatar::Animations(NameEnum=" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
 
 
-    const std::string Anim::ToString(const Anim::Enum E)
+    const std::string Avatar::ToString(const Avatar::Enum E)
     {
         switch (E)
         {
@@ -161,14 +161,14 @@ namespace avatar
             default:
             {
                 std::ostringstream ss;
-                ss << "avatar::Anim::ToString(Enum=" << E << ")_InvalidValueError.";
+                ss << "avatar::Avatar::ToString(Enum=" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
 
 
-    Anim::NameEnum Anim::Name(const Anim::Enum E)
+    Avatar::NameEnum Avatar::Name(const Avatar::Enum E)
     {
         switch (E)
         {
@@ -200,26 +200,26 @@ namespace avatar
             default:
             {
                 std::ostringstream ss;
-                ss << "avatar::Anim::Name(" << E << ")_InvalidValueError.";
+                ss << "avatar::Avatar::Name(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
 
 
-    bool Anim::IsPlayer(const Anim::Enum E)
+    bool Avatar::IsPlayer(const Avatar::Enum E)
     {
-        return ((E >= Anim::Player_First) && (E <= Anim::Player_Last));
+        return ((E >= Avatar::Player_First) && (E <= Avatar::Player_Last));
     }
 
 
-    const std::string Anim::ImagePath(const Anim::Enum E)
+    const std::string Avatar::ImagePath(const Avatar::Enum E)
     {
-        std::string keyStr{ ((Anim::IsPlayer(E)) ?
+        std::string keyStr{ ((Avatar::IsPlayer(E)) ?
             game::GameDataFile::Instance()->GetMediaPath("media-images-avatar-player") :
             game::GameDataFile::Instance()->GetMediaPath("media-images-avatar-nonplayer")) };
 
-        keyStr += boost::algorithm::to_lower_copy( Anim::ToString(E) );
+        keyStr += boost::algorithm::to_lower_copy( Avatar::ToString(E) );
         keyStr += ".png";
 
         return keyStr;

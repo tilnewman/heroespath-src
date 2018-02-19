@@ -44,7 +44,7 @@ namespace avatar
     class LPCView : public IView
     {
     public:
-        LPCView(const Anim::Enum);
+        LPCView(const Avatar::Enum);
         virtual ~LPCView() {}
 
         virtual void Set(const Pose::Enum, const sfml_util::Direction::Enum) override;
@@ -72,7 +72,7 @@ namespace avatar
                 sprite_.getGlobalBounds().height);
         }
 
-        inline virtual Anim::Enum WhichAnim() const override { return whichAnim_; }
+        inline virtual Avatar::Enum WhichAvatar() const override { return whichAvatar_; }
 
     private:
         const FrameNumVec_t FrameNumbers(
@@ -97,7 +97,7 @@ namespace avatar
         static const float FRAME_DURATION_SEC_BLINK_MIN_;
         static const float FRAME_DURATION_SEC_BLINK_MAX_;
 
-        Anim::Enum whichAnim_;
+        Avatar::Enum whichAvatar_;
         sf::Texture texture_;
         sf::Sprite sprite_;
         Animation animation_;

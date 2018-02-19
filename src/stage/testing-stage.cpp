@@ -59,7 +59,7 @@
 #include "song/song-warehouse.hpp"
 #include "non-player/inventory-factory.hpp"
 #include "item/item-factory.hpp"
-#include "avatar/anim-enum.hpp"
+#include "avatar/avatar-enum.hpp"
 #include "avatar/i-view.hpp"
 #include "map/level-enum.hpp"
 #include "map/map.hpp"
@@ -857,16 +857,16 @@ namespace stage
         }
 
         static auto imageIndex{ 0 };
-        if (imageIndex < avatar::Anim::Count)
+        if (imageIndex < avatar::Avatar::Count)
         {
-            auto const WHICH_ANIM{ static_cast<avatar::Anim::Enum>(imageIndex) };
+            auto const WHICH_AVATAR{ static_cast<avatar::Avatar::Enum>(imageIndex) };
 
             std::ostringstream ss;
-            ss << "TestCharacterImageSet() \"" << avatar::Anim::ToString(WHICH_ANIM) << "\"";
+            ss << "TestCharacterImageSet() \"" << avatar::Avatar::ToString(WHICH_AVATAR) << "\"";
             game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
             sf::Texture texture;
-            sfml_util::LoadTexture(texture, avatar::Anim::ImagePath(WHICH_ANIM));
+            sfml_util::LoadTexture(texture, avatar::Avatar::ImagePath(WHICH_AVATAR));
             TestingImageSet(texture);
 
             ++imageIndex;

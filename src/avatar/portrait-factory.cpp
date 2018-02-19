@@ -36,10 +36,10 @@ namespace heroespath
 namespace avatar
 {
 
-    void PortraitFactory::Make(const Anim::Enum WHICH_ANIM, sf::Texture & finalTexture)
+    void PortraitFactory::Make(const Avatar::Enum WHICH_AVATAR, sf::Texture & finalTexture)
     {
         sf::Texture charTexture;
-        sfml_util::LoadTexture(charTexture, Anim::ImagePath(WHICH_ANIM));
+        sfml_util::LoadTexture(charTexture, Avatar::ImagePath(WHICH_AVATAR));
 
         auto const WIDTH{ 64 };
         auto const HEIGHT{ WIDTH };

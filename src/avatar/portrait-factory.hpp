@@ -27,7 +27,7 @@
 //
 // portrait-factory.hpp
 //
-#include "avatar/anim-enum.hpp"
+#include "avatar/avatar-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
 
@@ -40,7 +40,7 @@ namespace avatar
     class PortraitFactory
     {
     public:
-        static void Make(const Anim::Enum, sf::Texture &);
+        static void Make(const Avatar::Enum, sf::Texture &);
     };
         
 }

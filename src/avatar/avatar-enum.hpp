@@ -22,10 +22,10 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_AVATAR_ANIMENUM_HPP_INCLUDED
-#define HEROESPATH_AVATAR_ANIMENUM_HPP_INCLUDED
+#ifndef HEROESPATH_AVATAR_AVATARENUM_HPP_INCLUDED
+#define HEROESPATH_AVATAR_AVATARENUM_HPP_INCLUDED
 //
-// anim-enum.hpp
+// avatar-enum.hpp
 //
 #include <string>
 #include <vector>
@@ -36,7 +36,7 @@ namespace heroespath
 namespace avatar
 {
 
-    struct Anim
+    struct Avatar
     {
         enum NameEnum
         {
@@ -94,4 +94,4 @@ namespace avatar
 }
 }
 
-#endif //HEROESPATH_AVATAR_ANIMENUM_HPP_INCLUDED
+#endif //HEROESPATH_AVATAR_AVATARENUM_HPP_INCLUDED

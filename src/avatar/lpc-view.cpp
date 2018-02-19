@@ -48,16 +48,16 @@ namespace avatar
     const float LPCView::FRAME_DURATION_SEC_BLINK_MAX_{ 0.20f };
 
 
-    LPCView::LPCView(const Anim::Enum WHICH_ANIM)
+    LPCView::LPCView(const Avatar::Enum WHICH_AVATAR)
     :
-        whichAnim_(WHICH_ANIM),
+        whichAvatar_(WHICH_AVATAR),
         texture_(),
         sprite_(),
         animation_(CreateAnimation(Pose::Standing, sfml_util::Direction::Right)),
         frameTimerSec_(0.0f),
         frameIndex_(0)
     {
-        sfml_util::LoadTexture(texture_, Anim::ImagePath(whichAnim_));
+        sfml_util::LoadTexture(texture_, Avatar::ImagePath(whichAvatar_));
         sprite_.setTexture(texture_, true);
         SetupSprite();
     }

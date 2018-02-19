@@ -270,9 +270,9 @@ namespace stage
                  (PACKAGE.Response() != popup::ResponseTypes::Cancel))
         {
             auto const SELECTED_NUM{ static_cast<int>(PACKAGE.Selection()) };
-            auto const ANIM_NUM{ avatar::Anim::Player_First + SELECTED_NUM };
-            auto const ANIM_ENUM{ static_cast<avatar::Anim::Enum>(ANIM_NUM) };
-            if (avatar::Anim::IsPlayer(ANIM_ENUM))
+            auto const ANIM_NUM{ avatar::Avatar::Player_First + SELECTED_NUM };
+            auto const ANIM_ENUM{ static_cast<avatar::Avatar::Enum>(ANIM_NUM) };
+            if (avatar::Avatar::IsPlayer(ANIM_ENUM))
             {
                 StartNewGame(ANIM_ENUM);
             }
@@ -817,7 +817,7 @@ namespace stage
     }
 
 
-    void PartyStage::StartNewGame(const avatar::Anim::Enum PARTY_AVATAR)
+    void PartyStage::StartNewGame(const avatar::Avatar::Enum PARTY_AVATAR)
     {
         //create a new party structure
         player::CharacterPVec_t charPVec;
@@ -970,13 +970,13 @@ namespace stage
     void PartyStage::PartyAvatarSelectionPopup()
     {
         sfml_util::TextureVec_t partyTextureVec;
-        for (int i(avatar::Anim::Player_First); i <= avatar::Anim::Player_Last; ++i)
+        for (int i(avatar::Avatar::Player_First); i <= avatar::Avatar::Player_Last; ++i)
         {
             partyTextureVec.push_back(sf::Texture());
-            auto const WHICH_ANIM{ static_cast<avatar::Anim::Enum>(i) };
+            auto const WHICH_AVATAR{ static_cast<avatar::Avatar::Enum>(i) };
             
             avatar::PortraitFactory::Make(
-                WHICH_ANIM,
+                WHICH_AVATAR,
                 partyTextureVec[static_cast<std::size_t>(i)]);
         }
 
