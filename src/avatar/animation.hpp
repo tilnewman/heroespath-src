@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,34 +22,51 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_AVATAR_ANIMATION_HPP_INCLUDED
+#define HEROESPATH_AVATAR_ANIMATION_HPP_INCLUDED
 //
-// portrait-factory.hpp
+// animation.hpp
 //
-#include "portrait-factory.hpp"
-#include "sfml-util/loaders.hpp"
+#include "avatar/pose-enum.hpp"
+#include "sfml-util/direction-enum.hpp"
+
+#include <vector>
 
 
 namespace heroespath
 {
-namespace char_anim
+namespace avatar
 {
 
-    void PortraitFactory::Make(const Anim::Enum WHICH_ANIM, sf::Texture & finalTexture)
+    using FrameNum_t = int;
+    using FrameNumVec_t = std::vector<FrameNum_t>;
+
+
+    //Responsible for wrapping all the information needed to animate an NPC.
+    struct Animation
     {
-        sf::Texture charTexture;
-        sfml_util::LoadTexture(charTexture, Anim::ImagePath(WHICH_ANIM));
+        Animation(
+            const Pose::Enum POSE,
+            const sfml_util::Direction::Enum DIRECTION,
+            const std::vector<FrameNum_t> FRAME_NUM_VEC,
+            const float FRAME_DURATION,
+            const bool WILL_LOOP)
+        :
+            pose(POSE),
+            direction(DIRECTION),
+            frame_num_vec(FRAME_NUM_VEC),
+            frame_duration(FRAME_DURATION),
+            will_loop(WILL_LOOP)
+        {}
 
-        auto const WIDTH{ 64 };
-        auto const HEIGHT{ WIDTH };
-        sf::Sprite charSprite(charTexture, sf::IntRect(0, 192, WIDTH, HEIGHT));
-
-        sf::RenderTexture renderTexture;
-        renderTexture.create(WIDTH, HEIGHT);
-        renderTexture.draw(charSprite);
-        renderTexture.display();
-
-        finalTexture = renderTexture.getTexture();
-    }
+        Pose::Enum pose;
+        sfml_util::Direction::Enum direction;
+        FrameNumVec_t frame_num_vec;
+        float frame_duration;
+        bool will_loop;
+    };
 
 }
 }
+
+#endif //HEROESPATH_AVATAR_ANIMATION_HPP_INCLUDED

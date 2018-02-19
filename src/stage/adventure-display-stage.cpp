@@ -35,7 +35,7 @@
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "stage/adventure-stage.hpp"
-#include "char_anim/i-view.hpp"
+#include "avatar/i-view.hpp"
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"

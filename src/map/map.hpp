@@ -32,7 +32,7 @@
 #include "map/level-enum.hpp"
 #include "map/transition.hpp"
 
-#include "char_anim/model.hpp"
+#include "avatar/model.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -78,9 +78,9 @@ namespace map
 
         void SetPlayerWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START);
 
-        inline const char_anim::Model & Player() const { return player_; }
+        inline const avatar::Model & Player() const { return player_; }
 
-        inline const std::vector<char_anim::Model> & NonPlayers() const { return nonPlayers_; }
+        inline const std::vector<avatar::Model> & NonPlayers() const { return nonPlayers_; }
 
         void EntryAndExitLevels(
             std::vector<Level::Enum> & entryLevels,
@@ -114,8 +114,8 @@ namespace map
         std::vector<sf::FloatRect> collisionVec_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
-        char_anim::Model player_;
-        std::vector<char_anim::Model> nonPlayers_;
+        avatar::Model player_;
+        std::vector<avatar::Model> nonPlayers_;
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;

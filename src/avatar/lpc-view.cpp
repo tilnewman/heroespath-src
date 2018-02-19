@@ -37,7 +37,7 @@
 
 namespace heroespath
 {
-namespace char_anim
+namespace avatar
 {
 
     const int LPCView::CELL_SIZE_{ 64 };

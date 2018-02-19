@@ -22,22 +22,22 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_CHARANIM_LPCVIEW_HPP_INCLUDED
-#define HEROESPATH_CHARANIM_LPCVIEW_HPP_INCLUDED
+#ifndef HEROESPATH_AVATAR_LPCVIEW_HPP_INCLUDED
+#define HEROESPATH_AVATAR_LPCVIEW_HPP_INCLUDED
 //
 // lpc-npc-view.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/direction-enum.hpp"
 
-#include "char_anim/i-view.hpp"
-#include "char_anim/pose-enum.hpp"
-#include "char_anim/animation.hpp"
+#include "avatar/i-view.hpp"
+#include "avatar/pose-enum.hpp"
+#include "avatar/animation.hpp"
 
 
 namespace heroespath
 {
-namespace char_anim
+namespace avatar
 {
 
     //Responsible for drawing an LPC-style NPC.
@@ -108,4 +108,4 @@ namespace char_anim
 }
 }
 
-#endif //HEROESPATH_CHARANIM_LPCVIEW_HPP_INCLUDED
+#endif //HEROESPATH_AVATAR_LPCVIEW_HPP_INCLUDED

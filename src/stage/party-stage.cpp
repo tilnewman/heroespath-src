@@ -54,7 +54,7 @@
 #include "player/character.hpp"
 #include "player/character-warehouse.hpp"
 
-#include "char_anim/portrait-factory.hpp"
+#include "avatar/portrait-factory.hpp"
 
 #include "misc/real.hpp"
 
@@ -148,8 +148,7 @@ namespace stage
         isMouseOverTexture_     (false),
         mouseOverTextRegionUPtr_(),
         mouseOverSlider_        (4.0f),
-        charactersPSet_         (),
-        partyCharAnim_          (char_anim::Anim::Count)
+        charactersPSet_         ()
     {}
 
 
@@ -271,9 +270,9 @@ namespace stage
                  (PACKAGE.Response() != popup::ResponseTypes::Cancel))
         {
             auto const SELECTED_NUM{ static_cast<int>(PACKAGE.Selection()) };
-            auto const ANIM_NUM{ char_anim::Anim::Player_First + SELECTED_NUM };
-            auto const ANIM_ENUM{ static_cast<char_anim::Anim::Enum>(ANIM_NUM) };
-            if (char_anim::Anim::IsPlayer(ANIM_ENUM))
+            auto const ANIM_NUM{ avatar::Anim::Player_First + SELECTED_NUM };
+            auto const ANIM_ENUM{ static_cast<avatar::Anim::Enum>(ANIM_NUM) };
+            if (avatar::Anim::IsPlayer(ANIM_ENUM))
             {
                 StartNewGame(ANIM_ENUM);
             }
@@ -818,7 +817,7 @@ namespace stage
     }
 
 
-    void PartyStage::StartNewGame(const char_anim::Anim::Enum PARTY_AVATAR)
+    void PartyStage::StartNewGame(const avatar::Anim::Enum PARTY_AVATAR)
     {
         //create a new party structure
         player::CharacterPVec_t charPVec;
@@ -971,11 +970,14 @@ namespace stage
     void PartyStage::PartyAvatarSelectionPopup()
     {
         sfml_util::TextureVec_t partyTextureVec;
-        for (int i(char_anim::Anim::Player_First); i <= char_anim::Anim::Player_Last; ++i)
+        for (int i(avatar::Anim::Player_First); i <= avatar::Anim::Player_Last; ++i)
         {
             partyTextureVec.push_back(sf::Texture());
-            auto const WHICH_ANIM{ static_cast<char_anim::Anim::Enum>(i) };
-            char_anim::PortraitFactory::Make(WHICH_ANIM, partyTextureVec[i]);
+            auto const WHICH_ANIM{ static_cast<avatar::Anim::Enum>(i) };
+            
+            avatar::PortraitFactory::Make(
+                WHICH_ANIM,
+                partyTextureVec[static_cast<std::size_t>(i)]);
         }
 
         std::ostringstream ss;

@@ -39,7 +39,7 @@
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-title.hpp"
 
-#include "char_anim/anim-enum.hpp"
+#include "avatar/anim-enum.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
@@ -103,7 +103,7 @@ namespace stage
 
         virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V);
 
-        virtual void StartNewGame(const char_anim::Anim::Enum);
+        virtual void StartNewGame(const avatar::Anim::Enum);
 
         virtual bool KeyRelease(const sf::Event::KeyEvent &);
 
@@ -164,8 +164,6 @@ namespace stage
 
         //
         player::CharacterPSet_t charactersPSet_;
-
-        char_anim::Anim::Enum partyCharAnim_;
     };
 
 }

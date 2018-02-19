@@ -33,8 +33,8 @@
 #include "map/parser.hpp"
 #include "map/layout.hpp"
 #include "game/game-data-file.hpp"
-#include "char_anim/lpc-view.hpp"
-#include "char_anim/anim-enum.hpp"
+#include "avatar/lpc-view.hpp"
+#include "avatar/anim-enum.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "misc/vector-map.hpp"
 #include "misc/random.hpp"
@@ -56,7 +56,7 @@ namespace map
         collisionVec_(),
         transitionVec_(),
         level_(Level::Count),
-        player_(std::make_unique<char_anim::LPCView>(char_anim::Anim::Metal_Female_Dark)),
+        player_(std::make_unique<avatar::LPCView>(avatar::Anim::Metal_Female_Dark)),
         nonPlayers_()
     {}
 

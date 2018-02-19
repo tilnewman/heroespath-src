@@ -28,8 +28,8 @@
 // model.cpp
 //
 #include "model.hpp"
-#include "char_anim/i-view.hpp"
-#include "char_anim/lpc-view.hpp"
+#include "avatar/i-view.hpp"
+#include "avatar/lpc-view.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 #include "log/log-macros.hpp"
@@ -41,7 +41,7 @@
 
 namespace heroespath
 {
-namespace char_anim
+namespace avatar
 {
 
     const float Model::NUM_BLINKS_TIME_WINDOW_SEC_{ 1.5f };

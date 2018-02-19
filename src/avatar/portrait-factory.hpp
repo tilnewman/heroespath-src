@@ -22,55 +22,29 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_CHARANIM_IVIEW_HPP_INCLUDED
-#define HEROESPATH_CHARANIM_IVIEW_HPP_INCLUDED
+#ifndef HEROESPATH_AVATAR_PORTRAITFACTORY_HPP_INCLUDED
+#define HEROESPATH_AVATAR_PORTRAITFACTORY_HPP_INCLUDED
 //
-// i-view.hpp
+// portrait-factory.hpp
 //
-#include "char_anim/pose-enum.hpp"
-#include "char_anim/anim-enum.hpp"
-#include "sfml-util/direction-enum.hpp"
-#include <SFML/System/Vector2.hpp>
-#include <memory>
+#include "avatar/anim-enum.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
-
-namespace sf
-{
-    class Sprite;
-}
 
 namespace heroespath
 {
-namespace char_anim
+namespace avatar
 {
 
-    //Pure virtual interface for all NPC classes.
-    struct IView
+    //Responsible for making textures of NPCs.
+    class PortraitFactory
     {
-        virtual ~IView() {}
-
-        virtual void Set(const Pose::Enum, const sfml_util::Direction::Enum) = 0;
-
-        //returns true if the current animation finished
-        virtual bool Update(const float TIME_ELAPSED) = 0;
-
-        virtual void UpdatePos(const sf::Vector2f &) = 0;
-
-        virtual sfml_util::Direction::Enum Direction() const = 0;
-
-        virtual Pose::Enum Pose() const = 0;
-        
-        virtual const sf::Sprite & SpriteRef() const = 0;
-
-        virtual const sf::Vector2f SpriteSize() const = 0;
-
-        virtual Anim::Enum WhichAnim() const = 0;
+    public:
+        static void Make(const Anim::Enum, sf::Texture &);
     };
-
-    using IViewUPtr_t = std::unique_ptr<IView>;
-
+        
 }
 }
 
 
-#endif //HEROESPATH_CHARANIM_IVIEW_HPP_INCLUDED
+#endif //HEROESPATH_AVATAR_PORTRAITFACTORY_HPP_INCLUDED

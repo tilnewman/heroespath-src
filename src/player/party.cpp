@@ -48,7 +48,7 @@ namespace player
 
 
     Party::Party(
-        const char_anim::Anim::Enum PARTY_AVATAR, 
+        const avatar::Anim::Enum PARTY_AVATAR, 
         const CharacterPVec_t & CHARACTERS_PVEC)
     :
         avatar_(PARTY_AVATAR),

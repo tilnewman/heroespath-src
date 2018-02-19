@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -22,29 +24,34 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_CHARANIM_PORTRAITFACTORY_HPP_INCLUDED
-#define HEROESPATH_CHARANIM_PORTRAITFACTORY_HPP_INCLUDED
 //
 // portrait-factory.hpp
 //
-#include "char_anim/anim-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
+#include "portrait-factory.hpp"
+#include "sfml-util/loaders.hpp"
 
 
 namespace heroespath
 {
-namespace char_anim
+namespace avatar
 {
 
-    //Responsible for making textures of NPCs.
-    class PortraitFactory
+    void PortraitFactory::Make(const Anim::Enum WHICH_ANIM, sf::Texture & finalTexture)
     {
-    public:
-        static void Make(const Anim::Enum, sf::Texture &);
-    };
-        
+        sf::Texture charTexture;
+        sfml_util::LoadTexture(charTexture, Anim::ImagePath(WHICH_ANIM));
+
+        auto const WIDTH{ 64 };
+        auto const HEIGHT{ WIDTH };
+        sf::Sprite charSprite(charTexture, sf::IntRect(0, 192, WIDTH, HEIGHT));
+
+        sf::RenderTexture renderTexture;
+        renderTexture.create(WIDTH, HEIGHT);
+        renderTexture.draw(charSprite);
+        renderTexture.display();
+
+        finalTexture = renderTexture.getTexture();
+    }
+
 }
 }
-
-
-#endif //HEROESPATH_CHARANIM_PORTRAITFACTORY_HPP_INCLUDED

@@ -22,51 +22,55 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_CHARANIM_ANIMATION_HPP_INCLUDED
-#define HEROESPATH_CHARANIM_ANIMATION_HPP_INCLUDED
+#ifndef HEROESPATH_AVATAR_IVIEW_HPP_INCLUDED
+#define HEROESPATH_AVATAR_IVIEW_HPP_INCLUDED
 //
-// animation.hpp
+// i-view.hpp
 //
-#include "char_anim/pose-enum.hpp"
+#include "avatar/pose-enum.hpp"
+#include "avatar/anim-enum.hpp"
 #include "sfml-util/direction-enum.hpp"
+#include <SFML/System/Vector2.hpp>
+#include <memory>
 
-#include <vector>
 
+namespace sf
+{
+    class Sprite;
+}
 
 namespace heroespath
 {
-namespace char_anim
+namespace avatar
 {
 
-    using FrameNum_t = int;
-    using FrameNumVec_t = std::vector<FrameNum_t>;
-
-
-    //Responsible for wrapping all the information needed to animate an NPC.
-    struct Animation
+    //Pure virtual interface for all NPC classes.
+    struct IView
     {
-        Animation(
-            const Pose::Enum POSE,
-            const sfml_util::Direction::Enum DIRECTION,
-            const std::vector<FrameNum_t> FRAME_NUM_VEC,
-            const float FRAME_DURATION,
-            const bool WILL_LOOP)
-        :
-            pose(POSE),
-            direction(DIRECTION),
-            frame_num_vec(FRAME_NUM_VEC),
-            frame_duration(FRAME_DURATION),
-            will_loop(WILL_LOOP)
-        {}
+        virtual ~IView() {}
 
-        Pose::Enum pose;
-        sfml_util::Direction::Enum direction;
-        FrameNumVec_t frame_num_vec;
-        float frame_duration;
-        bool will_loop;
+        virtual void Set(const Pose::Enum, const sfml_util::Direction::Enum) = 0;
+
+        //returns true if the current animation finished
+        virtual bool Update(const float TIME_ELAPSED) = 0;
+
+        virtual void UpdatePos(const sf::Vector2f &) = 0;
+
+        virtual sfml_util::Direction::Enum Direction() const = 0;
+
+        virtual Pose::Enum Pose() const = 0;
+        
+        virtual const sf::Sprite & SpriteRef() const = 0;
+
+        virtual const sf::Vector2f SpriteSize() const = 0;
+
+        virtual Anim::Enum WhichAnim() const = 0;
     };
 
+    using IViewUPtr_t = std::unique_ptr<IView>;
+
 }
 }
 
-#endif //HEROESPATH_CHARANIM_ANIMATION_HPP_INCLUDED
+
+#endif //HEROESPATH_AVATAR_IVIEW_HPP_INCLUDED

@@ -49,6 +49,6 @@ target_link_libraries(  ${PROJECT_NAME}
                         State
                         Combat
 			Popup
-			Char_Anim
+			Avatar
                         ${Boost_LIBRARIES}
                         ${SFML_LIBRARIES})
