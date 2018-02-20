@@ -50,9 +50,9 @@ namespace map
     const float Map::NONPLAYER_MOVE_DISTANCE_{ 3.0f };
 
 
-    Map::Map(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V)
+    Map::Map(const sf::FloatRect & REGION)
     :
-        mapDisplayUPtr_(std::make_unique<map::MapDisplay>( * this, WIN_POS_V, WIN_SIZE_V) ),
+        mapDisplayUPtr_(std::make_unique<map::MapDisplay>( * this, REGION) ),
         collisionVec_(),
         transitionVec_(),
         level_(Level::Count),

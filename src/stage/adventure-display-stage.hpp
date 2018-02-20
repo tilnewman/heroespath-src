@@ -33,6 +33,7 @@
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-title.hpp"
 #include "sfml-util/direction-enum.hpp"
+#include "sfml-util/gui/picture-frame.hpp"
 
 #include "stage/adventure-stage-char-list.hpp"
 
@@ -85,6 +86,7 @@ namespace stage
         sfml_util::BottomSymbol bottomImage_;
         sfml_util::MainMenuTitle topImage_;
         map::MapUPtr_t mapUPtr_;
+        sfml_util::gui::PictureFrame mapFrame_;
         float moveTimerSec_;
         bool wasPressedLeft_;
         bool wasPressedRight_;

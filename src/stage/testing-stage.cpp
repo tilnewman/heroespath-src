@@ -741,6 +741,7 @@ namespace stage
                 "media-images-backgrounds-tile-wood",
                 "media-images-backgrounds-tile-darkpaper",
                 "media-images-backgrounds-paper-2",
+                "media-images-backgrounds-paper-3",
                 "media-images-logos-sfml",
                 "media-images-logos-tiled",
                 "media-images-logos-terrain",
@@ -784,6 +785,8 @@ namespace stage
                 "media-images-misc-money-bag",
                 "media-images-misc-abc",
                 "media-images-misc-weight",
+                "media-images-misc-knot-corner",
+                "media-images-misc-picture-frame",
                 "media-images-chest-closed",
                 "media-images-chest-open",
                 "media-images-coins",
@@ -819,7 +822,8 @@ namespace stage
                 "media-images-bones-three-headed-hound",
                 "media-images-bones-wolfen",
                 "media-images-trap",
-                "media-images-avatar-shadow"
+                "media-images-placeholder",
+                "media-images-avatar-shadow",
             };
 
         static std::size_t imageIndex{ 0 };
@@ -923,11 +927,9 @@ namespace stage
                     map.EntryAndExitLevels(entryLevels, exitLevels);
                 } };
 
+            const sf::FloatRect MAP_REGION(0.0f, 0.0f, 128.0f, 256.0f);
 
-            auto const MAP_POS_V{ sf::Vector2f(0.0f, 0.0f) };
-            auto const MAP_SIZE_V{ sf::Vector2f(256.0f, 512.0f) };
-
-            map::MapUPtr_t mapUPtr{ std::make_unique<map::Map>(MAP_POS_V, MAP_SIZE_V) };
+            map::MapUPtr_t mapUPtr{ std::make_unique<map::Map>(MAP_REGION) };
 
             std::vector<map::Level::Enum> entryLevels;
             std::vector<map::Level::Enum> exitLevels;
@@ -936,7 +938,7 @@ namespace stage
 
             for (auto const NEXT_ENTRY_LEVEL : entryLevels)
             {
-                map::MapUPtr_t nextMapUPtr{ std::make_unique<map::Map>(MAP_POS_V, MAP_SIZE_V) };
+                map::MapUPtr_t nextMapUPtr{ std::make_unique<map::Map>(MAP_REGION) };
 
                 std::vector<map::Level::Enum> ignored;
                 std::vector<map::Level::Enum> nextExitLevels;
@@ -963,7 +965,7 @@ namespace stage
 
             for (auto const NEXT_EXIT_LEVEL : exitLevels)
             {
-                map::MapUPtr_t nextMapUPtr{ std::make_unique<map::Map>(MAP_POS_V, MAP_SIZE_V) };
+                map::MapUPtr_t nextMapUPtr{ std::make_unique<map::Map>(MAP_REGION) };
 
                 std::vector<map::Level::Enum> nextEntryLevels;
                 std::vector<map::Level::Enum> ignored;

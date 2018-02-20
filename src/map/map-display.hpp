@@ -55,10 +55,7 @@ namespace map
         MapDisplay & operator=(const MapDisplay &) = delete;
 
     public:
-        MapDisplay(
-            const Map & MAP,
-            const sf::Vector2f & WIN_POS_V,
-            const sf::Vector2f & WIN_SIZE_V);
+        MapDisplay(const Map & MAP, const sf::FloatRect & REGION);
 
         void Load(const sf::Vector2f & STARTING_POS_V);
 

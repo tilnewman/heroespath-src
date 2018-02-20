@@ -58,8 +58,8 @@ namespace map
         Map & operator=(const Map &) = delete;
 
     public:
-        Map(const sf::Vector2f & WIN_POS_V, const sf::Vector2f & WIN_SIZE_V);
-        ~Map() {}
+        Map(const sf::FloatRect &);
+        virtual ~Map() {}
 
         void Load(
             const Level::Enum LEVEL_TO_LOAD,

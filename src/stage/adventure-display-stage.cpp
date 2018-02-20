@@ -64,6 +64,7 @@ namespace stage
         bottomImage_(0.75f, true, sf::Color::White),
         topImage_("", true, 1.0f, 0.75f),
         mapUPtr_(),
+        mapFrame_(),
         moveTimerSec_(0.0f),
         wasPressedLeft_(false),
         wasPressedRight_(false),
@@ -91,6 +92,7 @@ namespace stage
         target.draw(topImage_, STATES);
         target.draw( * characterListUPtr_, STATES);
         target.draw( * mapUPtr_, STATES);
+        target.draw(mapFrame_, STATES);
         Stage::Draw(target, STATES);
     }
 
@@ -169,15 +171,17 @@ namespace stage
 
     void AdventureDisplayStage::Setup_Map()
     {
-        const sf::Vector2f MAP_WIN_POS_V(
+        const sf::FloatRect MAP_OUTER_REGION(
             100.0f + sfml_util::MapByRes(30.0f, 90.0f),
-            topImage_.Bottom());
-
-        const sf::Vector2f MAP_WIN_SIZE_V(
+            topImage_.Bottom(),
             sfml_util::MapByRes(500.0f, 2500.0f),
             sfml_util::MapByRes(250.0f, 2000.0f));
 
-        mapUPtr_ = std::make_unique<map::Map>(MAP_WIN_POS_V, MAP_WIN_SIZE_V);
+        auto const MAP_INNER_REGION{ mapFrame_.Setup(
+            MAP_OUTER_REGION,
+            sf::Color(239, 220, 234)) };
+
+        mapUPtr_ = std::make_unique<map::Map>(MAP_INNER_REGION);
         mapUPtr_->Load(map::Level::Thornberry, map::Level::ThornberryMeadows);
     }
 

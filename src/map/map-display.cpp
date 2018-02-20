@@ -54,15 +54,12 @@ namespace map
     const std::size_t MapDisplay::VERTS_PER_QUAD_{ 4 };
 
 
-    MapDisplay::MapDisplay(
-        const Map & MAP,
-        const sf::Vector2f & WIN_POS_V,
-        const sf::Vector2f & WIN_SIZE_V)
+    MapDisplay::MapDisplay(const Map & MAP, const sf::FloatRect & REGION)
     :
         MAP_(MAP),
         BORDER_PAD_(sfml_util::MapByRes(50.0f, 500.0f)),
-        WIN_POS_V_(WIN_POS_V),
-        WIN_SIZE_V_(WIN_SIZE_V),
+        WIN_POS_V_( sf::Vector2f(REGION.left, REGION.top) ),
+        WIN_SIZE_V_( sf::Vector2f(REGION.width, REGION.height) ),
         WIN_CENTER_V_(
             WIN_POS_V_.x + (WIN_SIZE_V_.x * 0.5f),
             WIN_POS_V_.y + (WIN_SIZE_V_.y * 0.5f)),
