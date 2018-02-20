@@ -30,8 +30,8 @@
 #include "map.hpp"
 
 #include "map/map-display.hpp"
-#include "map/parser.hpp"
 #include "map/layout.hpp"
+#include "map/map-anim.hpp"
 #include "game/game-data-file.hpp"
 #include "avatar/lpc-view.hpp"
 #include "avatar/avatar-enum.hpp"
@@ -57,7 +57,8 @@ namespace map
         transitionVec_(),
         level_(Level::Count),
         player_(std::make_unique<avatar::LPCView>(avatar::Avatar::Metal_Female_Dark)),
-        nonPlayers_()
+        nonPlayers_(),
+        walkRectVecMap_()
     {}
 
 
@@ -71,21 +72,26 @@ namespace map
         Layout & layout{ mapDisplayUPtr_->GetLayoutRef() };
         layout.Reset();
 
-        WalkRectMap_t walkRectMap;
+        MapAnimVec_t animInfoVec;
 
-        Parser mapParser;
-        mapParser.Parse(
+        ParsePacket packet(
             Level::Path(LEVEL_TO_LOAD),
             layout,
             collisionVec_,
             transitionVec_,
-            walkRectMap);
+            walkRectVecMap_,
+            animInfoVec);
+
+        Parser mapParser;
+        mapParser.Parse(packet);
 
         level_ = LEVEL_TO_LOAD;
 
         if (IS_TEST_LOAD == false)
         {
-            mapDisplayUPtr_->Load(FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM));
+            mapDisplayUPtr_->Load(
+                FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM),
+                animInfoVec);
         }
     }
 
@@ -235,6 +241,8 @@ namespace map
 
     void Map::Update(const float TIME_ELAPSED)
     {
+        mapDisplayUPtr_->Update(TIME_ELAPSED);
+
         player_.Update(TIME_ELAPSED);
 
         for (auto & npc : nonPlayers_)

@@ -30,11 +30,14 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/direction-enum.hpp"
 #include "sfml-util/collision-quad-tree.hpp"
+#include "sfml-util/animation-base.hpp"
+#include "sfml-util/animation-factory.hpp"
 
 #include "map/layout.hpp"
 #include "map/layer.hpp"
 #include "map/tiles-panel.hpp"
 #include "map/tile-offsets.hpp"
+#include "map/map-anim.hpp"
 #include "misc/types.hpp"
 
 #include <string>
@@ -57,7 +60,7 @@ namespace map
     public:
         MapDisplay(const Map & MAP, const sf::FloatRect & REGION);
 
-        void Load(const sf::Vector2f & STARTING_POS_V);
+        void Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t &);
 
         bool Move(const sfml_util::Direction::Enum, const float ADJUSTMENT);
         
@@ -66,6 +69,8 @@ namespace map
         inline const sf::Vector2f PlayerPosMap() const { return playerPosV_ + playerPosOffsetV_; }
 
         Layout & GetLayoutRef() { return layout_; }
+
+        void Update(const float TIME_ELAPSED);
 
     private:
         bool MoveUp(const float ADJUSTMENT);
@@ -76,6 +81,7 @@ namespace map
         void DrawNormal(sf::RenderTarget &, sf::RenderStates) const;
         void DrawDebug(sf::RenderTarget &, sf::RenderStates) const;
         void DrawCharacterImages(sf::RenderTarget &) const;
+        void DrawAnimations(sf::RenderTarget &, sf::RenderStates) const;
         void ReDraw();
         void ResetMapSubsections();
         void DrawMapSubsectionOffscreen();
@@ -99,6 +105,8 @@ namespace map
         const sf::Vector2f CalcOffScreenMapSize() const;
 
         void SetupNPCShadowImage();
+
+        void SetupAnimations();
 
     public:
         //how many extra tiles to draw offscreen that are outside the visible map area
@@ -128,6 +136,9 @@ namespace map
         sf::Vector2f       offScreenMapSize_;
         sf::Texture        npcShadowTexture_;
         sf::Sprite         npcShadowSprite_;
+
+        MapAnimVec_t animInfoVec_;
+        std::vector<sfml_util::AnimationUPtr_t> animUPtrVec_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;

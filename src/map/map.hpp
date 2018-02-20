@@ -31,6 +31,7 @@
 
 #include "map/level-enum.hpp"
 #include "map/transition.hpp"
+#include "map/parser.hpp"
 
 #include "avatar/model.hpp"
 
@@ -116,6 +117,7 @@ namespace map
         Level::Enum level_;
         avatar::Model player_;
         std::vector<avatar::Model> nonPlayers_;
+        WalkRectMap_t walkRectVecMap_;
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;

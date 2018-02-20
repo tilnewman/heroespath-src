@@ -73,6 +73,8 @@ namespace sfml_util
 
         virtual const sf::Vector2f OrigSize() const = 0;
 
+        virtual const sf::Sprite Sprite() const = 0;
+
         inline virtual void OnClick(const sf::Vector2f &)
         {}
 

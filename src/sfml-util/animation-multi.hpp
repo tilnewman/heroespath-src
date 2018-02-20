@@ -56,27 +56,29 @@ namespace sfml_util
 
         virtual ~AnimationMultiTexture();
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        virtual void SetEntityPos(const sf::Vector2f & V);
-        virtual void SetEntityPos(const float LEFT, const float TOP);
+        virtual void SetEntityPos(const sf::Vector2f & V) override;
+        virtual void SetEntityPos(const float LEFT, const float TOP) override;
 
-        virtual void SetEntityRegion(const sf::FloatRect & R);
+        virtual void SetEntityRegion(const sf::FloatRect & R) override;
 
         //returns true if frame count wrapped around back to zero
-        virtual bool UpdateTime(const float SECONDS);
+        virtual bool UpdateTime(const float SECONDS) override;
 
-        inline virtual std::size_t FrameCount() const
+        inline virtual std::size_t FrameCount() const override
         {
             return textureIdVec_.size();
         }
 
-        inline virtual const sf::Vector2f OrigSize() const
+        inline virtual const sf::Vector2f OrigSize() const override
         {
             return origSizeV_;
         }
 
-        virtual void MoveEntityPos(const float HORIZ, const float VERT);
+        virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
+
+        virtual const sf::Sprite Sprite() const override { return sprite_; }
 
     protected:
         sf::Sprite sprite_;

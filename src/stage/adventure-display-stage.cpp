@@ -182,7 +182,7 @@ namespace stage
             sf::Color(239, 220, 234)) };
 
         mapUPtr_ = std::make_unique<map::Map>(MAP_INNER_REGION);
-        mapUPtr_->Load(map::Level::Thornberry, map::Level::ThornberryMeadows);
+        mapUPtr_->Load(map::Level::Thornberry_GuardPostWest, map::Level::Thornberry);
     }
 
 

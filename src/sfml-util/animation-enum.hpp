@@ -74,6 +74,7 @@ namespace sfml_util
         };
 
         static const std::string ToString(const Enum);
+        static Enum FromString(const std::string &);
         static const std::string MediaPathKey(const Enum);
         static bool IsMultiTexture(const Enum);
         static const std::pair<int, int> SizePair(const Enum);

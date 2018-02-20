@@ -30,6 +30,7 @@
 #include "map/layout.hpp"
 #include "map/layer-type-enum.hpp"
 #include "map/transition.hpp"
+#include "map/map-anim.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 
@@ -63,6 +64,33 @@ namespace map
 
     using WalkRectMap_t = misc::VectorMap<std::size_t, std::vector<sf::FloatRect> >;
 
+    //Responsible for wrapping all the data needed to parse a map file.
+    struct ParsePacket
+    {
+        ParsePacket(
+            const std::string & FILE_PATH_PARAM,
+            Layout & layoutParam,
+            std::vector<sf::FloatRect> & collisionVecParam,
+            TransitionVec_t & transitionVecParam,
+            WalkRectMap_t & walkVecMapParam,
+            MapAnimVec_t & mapAnimVecParam)
+        :
+            file_path(FILE_PATH_PARAM),
+            layout(layoutParam),
+            collision_vec(collisionVecParam),
+            transition_vec(transitionVecParam),
+            walk_region_vecmap(walkVecMapParam),
+            animation_vec(mapAnimVecParam)
+        {}
+        
+        std::string file_path;
+        Layout & layout;
+        std::vector<sf::FloatRect> & collision_vec;
+        TransitionVec_t & transition_vec;
+        WalkRectMap_t & walk_region_vecmap;
+        MapAnimVec_t & animation_vec;
+    };
+
 
     //Responsible for parsing map .tmx files.
     class Parser
@@ -73,20 +101,10 @@ namespace map
     public:
         Parser() {}
 
-        void Parse(
-            const std::string & FILE_PATH_STR,
-            Layout &,
-            std::vector<sf::FloatRect> &,
-            TransitionVec_t &,
-            WalkRectMap_t &) const;
+        void Parse(ParsePacket &) const;
 
     private:
-        void Parse_Implementation(
-            const std::string & FILE_PATH_STR,
-            Layout &,
-            std::vector<sf::FloatRect> &,
-            TransitionVec_t &,
-            WalkRectMap_t &) const;
+        void Parse_Implementation(ParsePacket &) const;
 
         const boost::property_tree::ptree Parse_XML(
             const std::string & MAP_FILE_PATH_STR) const;
@@ -109,6 +127,10 @@ namespace map
         void Parse_Layer_WalkBounds(
             const boost::property_tree::ptree &,
             WalkRectMap_t &) const;
+
+        void Parse_Layer_Animations(
+            const boost::property_tree::ptree &,
+            MapAnimVec_t &) const;
 
         void Parse_Layer_Transitions(
             const boost::property_tree::ptree &,
@@ -150,6 +172,7 @@ namespace map
         static const std::string XML_NODE_NAME_TILESET_;
         static const std::string XML_NODE_NAME_PROPERTIES_;
         static const std::string XML_NODE_NAME_PROPERTY_;
+        static const std::string XML_NODE_NAME_ANIMATIONS_;
         
         //these are the sub-names of XML nodes used in parsing the .tmx map files
         static const std::string XML_ATTRIB_FETCH_PREFIX_;
@@ -161,6 +184,7 @@ namespace map
         static const std::string XML_ATTRIB_NAME_TRANSITIONS_;
         static const std::string XML_ATTRIB_NAME_VALUE_;
         static const std::string XML_ATTRIB_NAME_WALKBOUNDS_;
+        static const std::string XML_ATTRIB_NAME_NAME_;
     };
 
 }

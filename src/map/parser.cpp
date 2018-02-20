@@ -57,6 +57,7 @@ namespace map
     const std::string Parser::XML_NODE_NAME_TILESET_        { "tileset" };
     const std::string Parser::XML_NODE_NAME_PROPERTIES_     { "properties" };
     const std::string Parser::XML_NODE_NAME_PROPERTY_       { "property" };
+    const std::string Parser::XML_NODE_NAME_ANIMATIONS_     { "animations" };
     const std::string Parser::XML_ATTRIB_FETCH_PREFIX_      { "<xmlattr>." };
     const std::string Parser::XML_ATTRIB_NAME_COLLISIONS_   { "collision" };
     const std::string Parser::XML_ATTRIB_NAME_SHADOW_       { "shadow" };
@@ -66,27 +67,18 @@ namespace map
     const std::string Parser::XML_ATTRIB_NAME_TRANSITIONS_  { "transitions" };
     const std::string Parser::XML_ATTRIB_NAME_VALUE_        { "value" };
     const std::string Parser::XML_ATTRIB_NAME_WALKBOUNDS_   { "walk-bounds" };
+    const std::string Parser::XML_ATTRIB_NAME_NAME_         { "name" };
 
 
-    void Parser::Parse(
-        const std::string & FILE_PATH_STR,
-        Layout & layout,
-        std::vector<sf::FloatRect> & collisionVec,
-        TransitionVec_t & transitionVec,
-        WalkRectMap_t & walkRectMap) const
+    void Parser::Parse(ParsePacket & packet) const
     {
         try
         {
-            Parse_Implementation(
-                FILE_PATH_STR,
-                layout,
-                collisionVec,
-                transitionVec,
-                walkRectMap);
+            Parse_Implementation(packet);
         }
         catch (const std::exception & E)
         {
-            M_HP_LOG_ERR("map::Parser::Parse(" << FILE_PATH_STR << ") threw '"
+            M_HP_LOG_ERR("map::Parser::Parse(" << packet.file_path << ") threw '"
                 << E.what() << "' exception.");
 
             throw E;
@@ -94,35 +86,30 @@ namespace map
         catch (...)
         {
             std::ostringstream ss;
-            ss << "map::Parser::Parse(" << FILE_PATH_STR << ") threw an unknown exception.";
+            ss << "map::Parser::Parse(" << packet.file_path << ") threw an unknown exception.";
             M_HP_LOG_ERR(ss.str());
             throw std::runtime_error(ss.str());
         }
     }
 
 
-    void Parser::Parse_Implementation(
-        const std::string & MAP_FILE_PATH_STR,
-        Layout & layout,
-        std::vector<sf::FloatRect> & collisionVec,
-        TransitionVec_t & transitionVec,
-        WalkRectMap_t & walkRectMap) const
+    void Parser::Parse_Implementation(ParsePacket & packet) const
     {
-        collisionVec.clear();
-        collisionVec.reserve(1024);//found by experiment to be a good upper bound
+        packet.collision_vec.clear();
+        packet.collision_vec.reserve(1024);//found by experiment to be a good upper bound
 
-        transitionVec.clear();
-        transitionVec.reserve(8);//found by experiment to be a good upper bound
+        packet.transition_vec.clear();
+        packet.transition_vec.reserve(8);//found by experiment to be a good upper bound
 
-        walkRectMap.Clear();
+        packet.walk_region_vecmap.Clear();
 
-        layout.Reset();
+        packet.layout.Reset();
 
-        auto const XML_PTREE_ROOT{ Parse_XML(MAP_FILE_PATH_STR) };
+        auto const XML_PTREE_ROOT{ Parse_XML(packet.file_path) };
 
-        Parse_MapSizes(XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_), layout);
+        Parse_MapSizes(XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_), packet.layout);
 
-        SetupEmptyTexture(layout);
+        SetupEmptyTexture(packet.layout);
 
         using BPTreeValue_t = boost::property_tree::ptree::value_type;
 
@@ -139,22 +126,25 @@ namespace map
 
                 if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_COLLISIONS_))
                 {
-                    Parse_Layer_Collisions(CHILD_PAIR.second, collisionVec);
+                    Parse_Layer_Collisions(CHILD_PAIR.second, packet.collision_vec);
                 }
                 else if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_TRANSITIONS_))
                 {
-                    Parse_Layer_Transitions(CHILD_PAIR.second, transitionVec);
+                    Parse_Layer_Transitions(CHILD_PAIR.second, packet.transition_vec);
                 }
                 else if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_WALKBOUNDS_))
                 {
-                    Parse_Layer_WalkBounds(CHILD_PAIR.second, walkRectMap);
+                    Parse_Layer_WalkBounds(CHILD_PAIR.second, packet.walk_region_vecmap);
                 }
-
+                else if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_NODE_NAME_ANIMATIONS_))
+                {
+                    Parse_Layer_Animations(CHILD_PAIR.second, packet.animation_vec);
+                }
                 continue;
             }
             else if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_TILESET_))
             {
-                Parse_Layer_Tileset(CHILD_PAIR.second, layout);
+                Parse_Layer_Tileset(CHILD_PAIR.second, packet.layout);
                 continue;
             }
             else if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_TILE_LAYER_))
@@ -162,13 +152,13 @@ namespace map
                 auto const LAYER_TYPE{ LayerTypeFromName(ba::to_lower_copy(
                     FetchXMLAttributeName(CHILD_PAIR.second))) };
 
-                Prase_Layer_Generic(CHILD_PAIR.second, layout, LAYER_TYPE);
+                Prase_Layer_Generic(CHILD_PAIR.second, packet.layout, LAYER_TYPE);
             }
         }
 
-        std::sort(std::begin(collisionVec), std::end(collisionVec));
+        std::sort(std::begin(packet.collision_vec), std::end(packet.collision_vec));
 
-        ShadowMasker::ChangeColors(XML_ATTRIB_NAME_SHADOW_, layout);
+        ShadowMasker::ChangeColors(XML_ATTRIB_NAME_SHADOW_, packet.layout);
     }
 
 
@@ -371,6 +361,53 @@ namespace map
                 }
 
                 walkRectMap[WALK_RECT_INDEX].push_back(rect);
+            }
+        }
+    }
+
+
+    void Parser::Parse_Layer_Animations(
+        const boost::property_tree::ptree & PTREE,
+        MapAnimVec_t & anims_) const
+    {
+        namespace ba = boost::algorithm;
+
+        for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
+        {
+            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
+            {
+                auto const OBJECT_PTREE{ CHILD_PAIR.second };
+
+                //the anim enum name is stored in an attribute field named "name"
+                auto const ANIM_NAME{
+                    FetchXMLAttribute<std::string>(OBJECT_PTREE, XML_ATTRIB_NAME_NAME_) };
+
+                auto const ANIM_ENUM{ sfml_util::Animations::FromString(ANIM_NAME) };
+
+                M_ASSERT_OR_LOGANDTHROW_SS((ANIM_ENUM != sfml_util::Animations::Count),
+                    "map::Parser::Parse_Layer_Animations() got an invalid animation name \""
+                    << ANIM_NAME << "\"");
+
+                sf::FloatRect rect;
+
+                try
+                {
+                    rect.left = FetchXMLAttribute<float>(OBJECT_PTREE, "x");
+                    rect.top = FetchXMLAttribute<float>(OBJECT_PTREE, "y");
+                    rect.width = FetchXMLAttribute<float>(OBJECT_PTREE, "width");
+                    rect.height = FetchXMLAttribute<float>(OBJECT_PTREE, "height");
+                }
+                catch (const std::exception & E)
+                {
+                    M_HP_LOG_FAT("map::Parser::Parse_Layer_Animations() threw "
+                        << "std::exception when parsing the rect from a node named \""
+                        << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\""
+                        << E.what() << "\".");
+
+                    throw E;
+                }
+
+                anims_.push_back( MapAnim(ANIM_ENUM, rect) );
             }
         }
     }

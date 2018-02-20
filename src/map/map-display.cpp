@@ -74,14 +74,17 @@ namespace map
         offScreenTextureBelow_(),
         offScreenMapSize_(0.0f, 0.0f),
         npcShadowTexture_(),
-        npcShadowSprite_()
+        npcShadowSprite_(),
+        animInfoVec_(),
+        animUPtrVec_()
     {
         SetupNPCShadowImage();
     }
 
 
-    void MapDisplay::Load(const sf::Vector2f & STARTING_POS_V)
+    void MapDisplay::Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t & ANIM_INFO_VEC)
     {
+        animInfoVec_ = ANIM_INFO_VEC;
         tileOffsets_ = map::TileOffsets();
         playerPosOffsetV_ = sf::Vector2f(0.0f, 0.0f);
         playerPosV_ = STARTING_POS_V;
@@ -89,6 +92,7 @@ namespace map
         offScreenMapSize_ = CalcOffScreenMapSize();
         SetupOffScreenTexture();
         ReDraw();
+        SetupAnimations();
     }
 
 
@@ -109,6 +113,15 @@ namespace map
     void MapDisplay::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         DrawNormal(target, states);
+    }
+
+
+    void MapDisplay::Update(const float TIME_ELAPSED)
+    {
+        for (std::size_t i(0); i < animUPtrVec_.size(); ++i)
+        {
+            animUPtrVec_[i]->UpdateTime(TIME_ELAPSED);
+        }
     }
 
 
@@ -206,8 +219,6 @@ namespace map
                 {
                     IncrementTileOffsetsInDirection(sfml_util::Direction::Left);
                 }
-
-
             }
             else
             {
@@ -261,6 +272,7 @@ namespace map
         target.draw(offScreenSpriteBelow_, states);
         DrawCharacterImages(target);
         target.draw(offScreenSpriteAbove_, states);
+        DrawAnimations(target, states);
     }
 
 
@@ -332,6 +344,34 @@ namespace map
 
         playerSprite.setPosition(PLAYER_SCREEN_POS_V - SIZE_HALF);
         target.draw(playerSprite);
+    }
+
+
+    void MapDisplay::DrawAnimations(sf::RenderTarget & target, sf::RenderStates states) const
+    {
+        for (std::size_t i(0); i < animUPtrVec_.size(); ++i)
+        {
+            auto sprite{ animUPtrVec_[i]->Sprite() };
+            sprite.setPosition( ScreenPosFromMapPos(sprite.getPosition()) );
+
+            const sf::FloatRect ONSCREEN_WIN_RECT(
+                static_cast<float>(WIN_POS_V_.x),
+                static_cast<float>(WIN_POS_V_.y),
+                static_cast<float>(WIN_SIZE_V_.x),
+                static_cast<float>(WIN_SIZE_V_.y));
+
+            auto const TOP_LEFT_POS_V{ sprite.getPosition() };
+
+            auto const LOWER_RIGHT_POS_V{
+                TOP_LEFT_POS_V +
+                sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height) };
+
+            if (ONSCREEN_WIN_RECT.contains(TOP_LEFT_POS_V) &&
+                ONSCREEN_WIN_RECT.contains(LOWER_RIGHT_POS_V))
+            {
+                target.draw(sprite, states);
+            }
+        }
     }
 
 
@@ -731,6 +771,21 @@ namespace map
         ShadowMasker::ChangeColors(npcShadowTexture_, true);
 
         npcShadowSprite_.setTexture(npcShadowTexture_, true);
+    }
+
+
+
+    void MapDisplay::SetupAnimations()
+    {
+        animUPtrVec_.clear();
+
+        for (auto const & ANIM_INFO : animInfoVec_)
+        {
+            animUPtrVec_.push_back( sfml_util::AnimationFactory::Make(
+                ANIM_INFO.which_anim,
+                ANIM_INFO.rect,
+                0.05f));
+        }
     }
 
 }

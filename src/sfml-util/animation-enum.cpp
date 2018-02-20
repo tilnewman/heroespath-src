@@ -29,6 +29,8 @@
 //
 #include "animation-enum.hpp"
 
+#include <boost/algorithm/string.hpp>
+
 #include <sstream>
 #include <exception>
 
@@ -79,6 +81,26 @@ namespace sfml_util
                 throw std::range_error(ss.str());
             }
         }
+    }
+
+
+    Animations::Enum Animations::FromString(const std::string & NAME_ORIG)
+    {
+        namespace ba = boost::algorithm;
+
+        auto const NAME_LOWER{ ba::to_lower_copy(NAME_ORIG) };
+
+        for (int i(0); i < Count; ++i)
+        {
+            auto const ENUM{ static_cast<Animations::Enum>(i) };
+
+            if (ba::to_lower_copy(ToString(ENUM)) == NAME_LOWER)
+            {
+                return ENUM;
+            }
+        }
+
+        return Animations::Count;
     }
 
 
