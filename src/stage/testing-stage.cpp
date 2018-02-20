@@ -1069,7 +1069,7 @@ namespace stage
                 "stage::TestingStage::TestAnimations() Starting Tests...");
         }
 
-        const long ANIM_FRAME_SLEEP_MS{ 0 };
+        const long ANIM_FRAME_SLEEP_MS{ 1 };
 
         static std::size_t animIndex{ 0 };
 

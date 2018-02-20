@@ -44,6 +44,7 @@ namespace sfml_util
         {
             case Burst:             { return "Burst"; }
             case CandleFlame:       { return "CandleFlame"; }
+            case Campfire:          { return "Campfire"; }
             case DualCharge:        { return "DualCharge"; }
             case DualSwirl:         { return "DualSwirl"; }
             case ExplosionLarge:    { return "ExplosionLarge"; }
@@ -86,6 +87,7 @@ namespace sfml_util
         switch (E)
         {
             case Burst:             { return "media-anim-image-burst"; }
+            case Campfire:          { return "media-anim-images-campfire"; }
             case CandleFlame:       { return "media-anim-images-candleflame"; }
             case DualCharge:        { return "media-anim-images-dir-dualcharge"; }
             case DualSwirl:         { return "media-anim-image-dualswirl"; }
@@ -143,6 +145,7 @@ namespace sfml_util
             case Smoke:
             case SplashMagenta1:
             case SplashMagenta2: { return false; }
+            case Campfire:
             case DualCharge:
             case ExplosionLarge:
             case LightningBall:
@@ -171,6 +174,7 @@ namespace sfml_util
         switch (E)
         {
             case Burst:             { return std::make_pair(120, 120); }
+            case Campfire:          { return std::make_pair(81, 123); }
             case CandleFlame:       { return std::make_pair(128, 128); }
             case DualCharge:        { return std::make_pair(133, 169); }
             case DualSwirl:         { return std::make_pair(140, 140); }

@@ -222,9 +222,7 @@ namespace gui
             auto const POS_LEFT{ (outerRect_.left + outerRect_.width) - OUTER_EDGE };
 
             auto const POS_TOP{
-                topRightSprite_.getGlobalBounds().top +
-                topRightSprite_.getGlobalBounds().height -
-                0.0f };
+                topRightSprite_.getGlobalBounds().top + topRightSprite_.getGlobalBounds().height };
 
             for (int i(0); i < RIGHT_HORIZ_FILL_COUNT; ++i)
             {
