@@ -819,7 +819,7 @@ namespace stage
                 "media-images-bones-three-headed-hound",
                 "media-images-bones-wolfen",
                 "media-images-trap",
-                "media-images-character-shadow"
+                "media-images-avatar-shadow"
             };
 
         static std::size_t imageIndex{ 0 };
