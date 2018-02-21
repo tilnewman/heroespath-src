@@ -86,7 +86,7 @@ namespace map
         mapParser.Parse(packet);
 
         level_ = LEVEL_TO_LOAD;
-
+        
         if (IS_TEST_LOAD == false)
         {
             mapDisplayUPtr_->Load(

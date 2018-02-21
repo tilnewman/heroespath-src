@@ -118,10 +118,12 @@ namespace map
 
     void MapDisplay::Update(const float TIME_ELAPSED)
     {
-        for (std::size_t i(0); i < animUPtrVec_.size(); ++i)
-        {
-            animUPtrVec_[i]->UpdateTime(TIME_ELAPSED);
-        }
+        DrawMapSubsectionOffscreen();
+        UpdateAndDrawAnimations(TIME_ELAPSED);
+        DrawCharacterImages();
+
+        offScreenTextureBelow_.display();
+        offScreenTextureAbove_.display();
     }
 
 
@@ -270,9 +272,7 @@ namespace map
     void MapDisplay::DrawNormal(sf::RenderTarget & target, sf::RenderStates states) const
     {
         target.draw(offScreenSpriteBelow_, states);
-        DrawCharacterImages(target);
         target.draw(offScreenSpriteAbove_, states);
-        DrawAnimations(target, states);
     }
 
 
@@ -296,9 +296,9 @@ namespace map
     }
 
 
-    void MapDisplay::DrawCharacterImages(sf::RenderTarget & target) const
+    void MapDisplay::DrawCharacterImages()
     {
-        auto const PLAYER_SCREEN_POS_V{ PlayerPosScreen() };
+        auto const PLAYER_OFFSCREEN_POS_V{ OffScreenPosFromMapPos( PlayerPosMap() ) };
 
         sf::Sprite playerSprite{ MAP_.Player().GetView().SpriteRef() };
         
@@ -307,70 +307,37 @@ namespace map
             playerSprite.getGlobalBounds().height * 0.5f);
 
         sf::Sprite characterShadowSprite{ npcShadowSprite_ };
-        characterShadowSprite.setPosition(PLAYER_SCREEN_POS_V - SIZE_HALF);
-        target.draw(characterShadowSprite);
+        characterShadowSprite.setPosition(PLAYER_OFFSCREEN_POS_V - SIZE_HALF);
+        offScreenTextureBelow_.draw(characterShadowSprite);
 
         for (auto const & NPC : MAP_.NonPlayers())
         {
             sf::Sprite npcSprite{ NPC.GetView().SpriteRef() };
 
             //check if NPC is on the visible map
-            auto const NPC_SCREEN_POS_V{
-                ScreenPosFromMapPos(npcSprite.getPosition()) - SIZE_HALF };
+            auto const NPC_OFFSCREEN_POS_V{
+                OffScreenPosFromMapPos(npcSprite.getPosition()) - SIZE_HALF };
 
-            auto const UPPER_LEFT { NPC_SCREEN_POS_V - SIZE_HALF };
-            auto const UPPER_RIGHT{ NPC_SCREEN_POS_V + sf::Vector2f(SIZE_HALF.x, -SIZE_HALF.y) };
-            auto const LOWER_LEFT { NPC_SCREEN_POS_V + sf::Vector2f(-SIZE_HALF.x, SIZE_HALF.y) };
-            auto const LOWER_RIGHT{ NPC_SCREEN_POS_V + SIZE_HALF };
-            
-            const sf::FloatRect ONSCREEN_WIN_RECT(
-                static_cast<float>(WIN_POS_V_.x),
-                static_cast<float>(WIN_POS_V_.y),
-                static_cast<float>(WIN_SIZE_V_.x),
-                static_cast<float>(WIN_SIZE_V_.y));
+            characterShadowSprite.setPosition(NPC_OFFSCREEN_POS_V);
+            offScreenTextureBelow_.draw(characterShadowSprite);
 
-            if (ONSCREEN_WIN_RECT.contains(UPPER_LEFT + sf::Vector2f(SIZE_HALF.x, SIZE_HALF.y)) &&
-                ONSCREEN_WIN_RECT.contains(LOWER_RIGHT + sf::Vector2f(SIZE_HALF.x, 2.0f * SIZE_HALF.y)) &&
-                ONSCREEN_WIN_RECT.contains(UPPER_RIGHT + sf::Vector2f(SIZE_HALF.x, SIZE_HALF.y)) &&
-                ONSCREEN_WIN_RECT.contains(LOWER_LEFT + sf::Vector2f(SIZE_HALF.x, 2.0f * SIZE_HALF.y)))
-            {
-                characterShadowSprite.setPosition(NPC_SCREEN_POS_V);
-                target.draw(characterShadowSprite);
-
-                npcSprite.setPosition(NPC_SCREEN_POS_V);
-                target.draw(npcSprite);
-            }
+            npcSprite.setPosition(NPC_OFFSCREEN_POS_V);
+            offScreenTextureBelow_.draw(npcSprite);
         }
 
-        playerSprite.setPosition(PLAYER_SCREEN_POS_V - SIZE_HALF);
-        target.draw(playerSprite);
+        playerSprite.setPosition(PLAYER_OFFSCREEN_POS_V - SIZE_HALF);
+        offScreenTextureBelow_.draw(playerSprite);
     }
 
 
-    void MapDisplay::DrawAnimations(sf::RenderTarget & target, sf::RenderStates states) const
+    void MapDisplay::UpdateAndDrawAnimations(const float TIME_ELAPSED)
     {
         for (std::size_t i(0); i < animUPtrVec_.size(); ++i)
         {
+            animUPtrVec_[i]->UpdateTime(TIME_ELAPSED);
             auto sprite{ animUPtrVec_[i]->Sprite() };
-            sprite.setPosition( ScreenPosFromMapPos(sprite.getPosition()) );
-
-            const sf::FloatRect ONSCREEN_WIN_RECT(
-                static_cast<float>(WIN_POS_V_.x),
-                static_cast<float>(WIN_POS_V_.y),
-                static_cast<float>(WIN_SIZE_V_.x),
-                static_cast<float>(WIN_SIZE_V_.y));
-
-            auto const TOP_LEFT_POS_V{ sprite.getPosition() };
-
-            auto const LOWER_RIGHT_POS_V{
-                TOP_LEFT_POS_V +
-                sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height) };
-
-            if (ONSCREEN_WIN_RECT.contains(TOP_LEFT_POS_V) &&
-                ONSCREEN_WIN_RECT.contains(LOWER_RIGHT_POS_V))
-            {
-                target.draw(sprite, states);
-            }
+            sprite.setPosition(OffScreenPosFromMapPos(sprite.getPosition()));
+            offScreenTextureAbove_.draw(sprite);
         }
     }
 
@@ -657,6 +624,22 @@ namespace map
         const sf::Vector2f MAP_OFFSET_V(MAP_OFFSET_LEFT, MAP_OFFSET_TOP);
 
         return SCREEN_POS_V + MAP_OFFSET_V;
+    }
+
+
+    const sf::Vector2f MapDisplay::OffScreenPosFromMapPos(const sf::Vector2f & MAP_POS_V) const
+    {
+        const sf::Vector2f OS_TEXTURE_POS_V(
+            static_cast<float>(tileOffsets_.begin_v.x * layout_.tile_size_v.x),
+            static_cast<float>(tileOffsets_.begin_v.y * layout_.tile_size_v.y) );
+
+        const sf::Vector2f OS_TEXTURE_OFFSET_V(
+            static_cast<float>(offScreenSpriteAbove_.getTextureRect().left),
+            static_cast<float>(offScreenSpriteAbove_.getTextureRect().top) );
+
+        const sf::Vector2f OS_RECT_POS_V(offScreenRect_.left, offScreenRect_.top);
+
+        return MAP_POS_V - ((OS_TEXTURE_POS_V + OS_TEXTURE_OFFSET_V) - OS_RECT_POS_V);
     }
 
 

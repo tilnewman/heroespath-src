@@ -80,8 +80,8 @@ namespace map
 
         void DrawNormal(sf::RenderTarget &, sf::RenderStates) const;
         void DrawDebug(sf::RenderTarget &, sf::RenderStates) const;
-        void DrawCharacterImages(sf::RenderTarget &) const;
-        void DrawAnimations(sf::RenderTarget &, sf::RenderStates) const;
+        void DrawCharacterImages();
+        void UpdateAndDrawAnimations(const float TIME_ELAPSED);
         void ReDraw();
         void ResetMapSubsections();
         void DrawMapSubsectionOffscreen();
@@ -97,6 +97,7 @@ namespace map
         const sf::Vector2f PlayerPosScreen() const;
 
         const sf::Vector2f ScreenPosFromMapPos(const sf::Vector2f &) const;
+        const sf::Vector2f OffScreenPosFromMapPos(const sf::Vector2f &) const;
 
         const TilesPanel & TilesPanelFromId(const int) const;
 
