@@ -56,7 +56,7 @@ namespace map
         collisionVec_(),
         transitionVec_(),
         level_(Level::Count),
-        player_(std::make_unique<avatar::LPCView>(avatar::Avatar::Metal_Female_Dark)),
+        player_(std::make_unique<avatar::LPCView>(avatar::Avatar::Puck_Female_Light)),
         nonPlayers_(),
         walkRectVecMap_()
     {}
@@ -293,9 +293,9 @@ namespace map
 
         const sf::FloatRect PLAYER_RECT_FOR_MAP_COLLISIONS(
             PLAYER_POS_V.x - ADJ_FOR_COLLISIONS_V.x,
-            PLAYER_POS_V.y - ADJ_FOR_COLLISIONS_V.y,
+            PLAYER_POS_V.y - (ADJ_FOR_COLLISIONS_V.y * 0.6f),
             ADJ_FOR_COLLISIONS_V.x * 2.0f,
-            ADJ_FOR_COLLISIONS_V.y * 2.0f);
+            ADJ_FOR_COLLISIONS_V.y * 1.4f);
         
         for (auto const & COLLISION_RECT : collisionVec_)
         {
