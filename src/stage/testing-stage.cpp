@@ -373,6 +373,13 @@ namespace stage
             return;
         }
 
+        static auto hasTestingCompleted_Animations{ false };
+        if (false == hasTestingCompleted_Animations)
+        {
+            hasTestingCompleted_Animations = TestAnimations();
+            return;
+        }
+
         static auto hasTestingCompleted_CharacterImageSet{ false };
         if (false == hasTestingCompleted_CharacterImageSet)
         {
@@ -495,13 +502,6 @@ namespace stage
         {
             hasTestingCompleted_CreatureImageManager =
                 sfml_util::gui::CreatureImageManager::Instance()->Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_Animations{ false };
-        if (false == hasTestingCompleted_Animations)
-        {
-            hasTestingCompleted_Animations = TestAnimations();
             return;
         }
 
@@ -1069,7 +1069,7 @@ namespace stage
                 "stage::TestingStage::TestAnimations() Starting Tests...");
         }
 
-        const long ANIM_FRAME_SLEEP_MS{ 1 };
+        const long ANIM_FRAME_SLEEP_MS{ 0 };
 
         static std::size_t animIndex{ 0 };
 

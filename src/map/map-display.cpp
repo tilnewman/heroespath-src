@@ -784,7 +784,7 @@ namespace map
             animUPtrVec_.push_back( sfml_util::AnimationFactory::Make(
                 ANIM_INFO.which_anim,
                 ANIM_INFO.rect,
-                0.05f));
+                sfml_util::Animations::TimePerFrameSec(ANIM_INFO.which_anim)));
         }
     }
 

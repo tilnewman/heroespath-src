@@ -46,6 +46,7 @@ namespace sfml_util
         {
             case Burst:             { return "Burst"; }
             case CandleFlame:       { return "CandleFlame"; }
+            case CandleFlame2:      { return "CandleFlame2"; }
             case Campfire:          { return "Campfire"; }
             case DualCharge:        { return "DualCharge"; }
             case DualSwirl:         { return "DualSwirl"; }
@@ -109,12 +110,13 @@ namespace sfml_util
         switch (E)
         {
             case Burst:             { return "media-anim-image-burst"; }
-            case Campfire:          { return "media-anim-images-campfire"; }
-            case CandleFlame:       { return "media-anim-images-candleflame"; }
+            case Campfire:          { return "media-anim-images-dir-campfire"; }
+            case CandleFlame:       { return "media-anim-image-candleflame"; }
+            case CandleFlame2:      { return "media-anim-images-dir-candleflame2"; }
             case DualCharge:        { return "media-anim-images-dir-dualcharge"; }
             case DualSwirl:         { return "media-anim-image-dualswirl"; }
             case ExplosionLarge:    { return "media-anim-images-dir-explosion"; }
-            case ExplosionSmall:    { return "media-anim-images-explosion-small"; }
+            case ExplosionSmall:    { return "media-anim-image-explosion-small"; }
             case ExplosionMedium1:  { return "media-anim-image-explosion1"; }
             case ExplosionMedium2:  { return "media-anim-image-explosion2"; }
             case ExplosionMedium3:  { return "media-anim-image-explosion3"; }
@@ -168,6 +170,7 @@ namespace sfml_util
             case SplashMagenta1:
             case SplashMagenta2: { return false; }
             case Campfire:
+            case CandleFlame2:
             case DualCharge:
             case ExplosionLarge:
             case LightningBall:
@@ -196,8 +199,9 @@ namespace sfml_util
         switch (E)
         {
             case Burst:             { return std::make_pair(120, 120); }
-            case Campfire:          { return std::make_pair(81, 123); }
+            case Campfire:          { return std::make_pair(81, 64); }
             case CandleFlame:       { return std::make_pair(128, 128); }
+            case CandleFlame2:      { return std::make_pair(16, 24); }
             case DualCharge:        { return std::make_pair(133, 169); }
             case DualSwirl:         { return std::make_pair(140, 140); }
             case ExplosionLarge:    { return std::make_pair(320, 240); }
@@ -229,6 +233,51 @@ namespace sfml_util
             {
                 std::ostringstream ss;
                 ss << "sfml_util::Animations::SizePair(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    float Animations::TimePerFrameSec(const Animations::Enum E)
+    {
+        switch (E)
+        {
+            case CandleFlame2: { return 0.1f; }
+            case Burst:
+            case Campfire:
+            case CandleFlame:
+            case DualCharge:
+            case DualSwirl:
+            case ExplosionLarge:
+            case ExplosionSmall:
+            case ExplosionMedium1:
+            case ExplosionMedium2:
+            case ExplosionMedium3:
+            case FireTorch:
+            case Flash:
+            case FlashSparkle:
+            case Inferno:
+            case LightningBall:
+            case LightningBolt:
+            case OrbCharge:
+            case OrbShimmer:
+            case Puff:
+            case PuffShort:
+            case SelectSwirl:
+            case Shimmer:
+            case Smoke:
+            case SmokeSwirl:
+            case SpiderFlare:
+            case SplashMagenta1:
+            case SplashMagenta2:
+            case SplashWhite:
+            case SymbolReduce:{ return 0.05f; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::Animations::TimePerFrameSec(" << E << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }

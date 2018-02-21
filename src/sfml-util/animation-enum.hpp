@@ -44,6 +44,7 @@ namespace sfml_util
             Burst = 0,
             Campfire,
             CandleFlame,
+            CandleFlame2, //a very small pixel animation for candles on the map
             DualCharge,
             DualSwirl,
             ExplosionLarge,
@@ -78,6 +79,7 @@ namespace sfml_util
         static const std::string MediaPathKey(const Enum);
         static bool IsMultiTexture(const Enum);
         static const std::pair<int, int> SizePair(const Enum);
+        static float TimePerFrameSec(const Enum);
     };
 
 }
