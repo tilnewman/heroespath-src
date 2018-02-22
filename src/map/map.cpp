@@ -96,6 +96,16 @@ namespace map
                 FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM),
                 animInfoVec);
         }
+
+        for (int i(0); i < 5; ++i)
+            nonPlayers_.push_back( avatar::Model(
+                std::make_unique<avatar::LPCView>(avatar::Avatar::Girl_Dark_Loose_Black),
+                walkRectVecMap_[0]) );
+
+        for (int i(0); i < 5; ++i)
+            nonPlayers_.push_back(avatar::Model(
+                std::make_unique<avatar::LPCView>(avatar::Avatar::Leather_Circus1_Dark_Brunette),
+                walkRectVecMap_[0]) );
     }
 
 

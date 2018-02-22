@@ -319,6 +319,7 @@ namespace map
                 OffScreenPosFromMapPos(npcSprite.getPosition()) - SIZE_HALF };
 
             characterShadowSprite.setPosition(NPC_OFFSCREEN_POS_V);
+            characterShadowSprite.setScale(NPC.GetView().SpriteRef().getScale());
             offScreenTextureBelow_.draw(characterShadowSprite);
 
             npcSprite.setPosition(NPC_OFFSCREEN_POS_V);

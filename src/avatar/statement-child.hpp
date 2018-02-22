@@ -74,12 +74,9 @@ namespace talk
 
         inline const StrVec_t ParentsAndRelations()
         {
-            const StrVec_t PARENTS_VEC{ Parents() };
-
             StrVec_t allVec{ Relations() };
-
+            const StrVec_t PARENTS_VEC{ Parents() };
             std::copy(std::begin(PARENTS_VEC), std::end(PARENTS_VEC), std::back_inserter(allVec));
-
             return allVec;
         }
     }

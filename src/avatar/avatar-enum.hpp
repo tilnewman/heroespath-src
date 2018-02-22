@@ -534,6 +534,7 @@ namespace avatar
         static const std::string ToString(const Enum);
         static bool IsPlayer(const Enum);
         static const std::string ImagePath(const Enum);
+        static NameEnum Name(const Enum);
     };
 
 }

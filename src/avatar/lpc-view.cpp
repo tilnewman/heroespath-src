@@ -34,7 +34,6 @@
 #include "sfml-util/loaders.hpp"
 
 
-
 namespace heroespath
 {
 namespace avatar
@@ -269,6 +268,11 @@ namespace avatar
     void LPCView::SetupSprite()
     {
         sprite_.setTextureRect( FrameRect(animation_.frame_num_vec[frameIndex_]) );
+
+        auto const SCALE{
+            ((Avatar::NameEnum::Girl == Avatar::Name(whichAvatar_)) ? 0.75f : 1.0f) };
+
+        sprite_.setScale(SCALE, SCALE);
     }
 
 }
