@@ -530,6 +530,7 @@ namespace avatar
         static const std::string ToString(const NameEnum);
         static bool IsPlayer(const NameEnum);
         static const std::vector<Enum> Avatars(const NameEnum);
+        static float Scale(const NameEnum);
 
         static const std::string ToString(const Enum);
         static bool IsPlayer(const Enum);

@@ -269,9 +269,7 @@ namespace avatar
     {
         sprite_.setTextureRect( FrameRect(animation_.frame_num_vec[frameIndex_]) );
 
-        auto const SCALE{
-            ((Avatar::NameEnum::Girl == Avatar::Name(whichAvatar_)) ? 0.75f : 1.0f) };
-
+        auto const SCALE{ Avatar::Scale(Avatar::Name(whichAvatar_)) };
         sprite_.setScale(SCALE, SCALE);
     }
 

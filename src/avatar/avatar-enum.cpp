@@ -648,6 +648,19 @@ namespace avatar
     }
 
 
+    float Avatar::Scale(const Avatar::NameEnum E)
+    {
+        if (NameEnum::Girl == E)
+        {
+            return 0.75f;
+        }
+        else
+        {
+            return 1.0f;
+        }
+    }
+
+
     const std::string Avatar::ToString(const Avatar::Enum E)
     {
         switch (E)
