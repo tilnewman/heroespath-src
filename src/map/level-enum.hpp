@@ -35,6 +35,21 @@ namespace heroespath
 namespace map
 {
 
+    struct LevelType
+    {
+        enum Enum
+        {
+            Town = 0,
+            Hideaway,
+            Inside,
+            Realm,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+    };
+
+
     struct Level
     {
         enum Enum
@@ -53,6 +68,7 @@ namespace map
         static const std::string ToString(const Level::Enum);
         static Level::Enum FromString(const std::string &);
         static const std::string Path(const Level::Enum);
+        static LevelType::Enum Type(const Level::Enum);
     };
 
 }

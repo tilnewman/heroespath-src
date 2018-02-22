@@ -33,6 +33,9 @@
 #include "map/layout.hpp"
 #include "map/map-anim.hpp"
 #include "game/game-data-file.hpp"
+#include "game/game.hpp"
+#include "state/game-state.hpp"
+#include "player/party.hpp"
 #include "avatar/lpc-view.hpp"
 #include "avatar/avatar-enum.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -56,7 +59,7 @@ namespace map
         collisionVec_(),
         transitionVec_(),
         level_(Level::Count),
-        player_(std::make_unique<avatar::LPCView>(avatar::Avatar::Puck_Female_Light)),
+        player_(std::make_unique<avatar::LPCView>(game::Game::Instance()->State().Party().Avatar())),
         nonPlayers_(),
         walkRectVecMap_()
     {}

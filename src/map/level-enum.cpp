@@ -42,6 +42,25 @@ namespace heroespath
 namespace map
 {
 
+    const std::string LevelType::ToString(const LevelType::Enum E)
+    {
+        switch (E)
+        {
+            case Town:      { return "Town"; }
+            case Hideaway:  { return "Hideaway"; }
+            case Inside:    { return "Inside"; }
+            case Realm:     { return "Realm"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "map::LevelType::Enum::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
     const std::string Level::FILENAME_EXTENSION{ ".tmx" };
 
 
@@ -91,6 +110,26 @@ namespace map
         std::ostringstream ss;
         ss << "map::Level::Enum::FromString(\"" << NAME << "\")_InvalidValueError.";
         throw std::runtime_error(ss.str());
+    }
+
+
+    LevelType::Enum Level::Type(const Level::Enum E)
+    {
+        switch (E)
+        {
+            case Thornberry:                { return LevelType::Town; }
+            case Thornberry_GuardPostWest:  { return LevelType::Inside; }
+            case Thornberry_GuardPostEast:  { return LevelType::Inside; }
+            case ThornberryMeadows:         { return LevelType::Realm; }
+            case ThornberryHighlands:       { return LevelType::Realm; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "map::Level::Enum::Type(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
     }
 
 }
