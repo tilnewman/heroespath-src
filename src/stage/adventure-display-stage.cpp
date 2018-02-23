@@ -36,6 +36,7 @@
 #include "game/loop-manager.hpp"
 #include "stage/adventure-stage.hpp"
 #include "avatar/i-view.hpp"
+#include "stage/adventure-stage-interact-stage.hpp"
 
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/display.hpp"
@@ -59,6 +60,7 @@ namespace stage
             0.0f,
             sfml_util::Display::Instance()->GetWinWidth(),
             sfml_util::Display::Instance()->GetWinHeight()),
+        interactStagePtr_(nullptr),
         characterListUPtr_(std::make_unique<AdventureCharacterList>(this)),
         backgroundTexture_(),
         bottomImage_(0.75f, true, sf::Color::White),
@@ -81,7 +83,14 @@ namespace stage
     {
         Setup_CharacterList();
         Setup_BackgroundImage();
-        Setup_Map();
+        auto const MAP_REGION{ Setup_Map() };
+
+        interactStagePtr_ = new stage::InteractStage( * mapUPtr_, CalcInteractRegion(MAP_REGION));
+        interactStagePtr_->Setup();
+
+        //give control of Stages object lifetime to the Loop class
+        game::LoopManager::Instance()->AddStage(this);
+        game::LoopManager::Instance()->AddStage(interactStagePtr_);
     }
 
 
@@ -169,13 +178,13 @@ namespace stage
     }
 
 
-    void AdventureDisplayStage::Setup_Map()
+    const sf::FloatRect AdventureDisplayStage::Setup_Map()
     {
         const sf::FloatRect MAP_OUTER_REGION(
-            100.0f + sfml_util::MapByRes(30.0f, 90.0f),
+            sfml_util::MapByRes(75.0f, 100.0f),
             topImage_.Bottom() - sfml_util::MapByRes(25.0f, 75.0f),
-            sfml_util::MapByRes(500.0f, 2500.0f),
-            sfml_util::MapByRes(250.0f, 2000.0f));
+            sfml_util::MapByRes(500.0f, 3000.0f),
+            sfml_util::MapByRes(250.0f, 2500.0f));
 
         auto const MAP_INNER_REGION{ mapFrame_.Setup(
             MAP_OUTER_REGION,
@@ -183,6 +192,8 @@ namespace stage
 
         mapUPtr_ = std::make_unique<map::Map>(MAP_INNER_REGION);
         mapUPtr_->Load(map::Level::Thornberry, map::Level::ThornberryMeadows);
+
+        return MAP_OUTER_REGION;
     }
 
 
@@ -250,6 +261,28 @@ namespace stage
         }
 
         wasPressed = IS_PRESSED;
+    }
+
+
+    const sf::FloatRect AdventureDisplayStage::CalcInteractRegion(
+        const sf::FloatRect & MAP_REGION) const
+    {
+        sf::FloatRect interactRegion{ MAP_REGION };
+
+        auto const BETWEEN_MAP_AND_INTERACT_REGION_WIDTH{
+            sfml_util::MapByRes(30.0f, 150.0f) };
+
+        interactRegion.left =
+            MAP_REGION.left +
+            MAP_REGION.width +
+            BETWEEN_MAP_AND_INTERACT_REGION_WIDTH;
+
+        auto const RIGHT_MARGIN{ sfml_util::MapByRes(25.0f, 80.0f) };
+
+        interactRegion.width =
+            (StageRegion().width - interactRegion.left) - RIGHT_MARGIN;
+
+        return interactRegion;
     }
 
 }

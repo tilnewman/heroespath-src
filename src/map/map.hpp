@@ -60,7 +60,7 @@ namespace map
 
     public:
         Map(const sf::FloatRect &);
-        virtual ~Map() {}
+        virtual ~Map();
 
         void Load(
             const Level::Enum LEVEL_TO_LOAD,
@@ -76,6 +76,7 @@ namespace map
         inline Level::Enum Level() const { return level_; }
 
         void Update(const float TIME_ELAPSED);
+        void UpdateInteractions(const float TIME_ELAPSED);
 
         void SetPlayerWalkAnim(const sfml_util::Direction::Enum, const bool);
 

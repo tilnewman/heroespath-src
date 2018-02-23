@@ -25,20 +25,10 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// adventure-stage.cpp
+// adventure-stage-interact-stage.hpp
 //
-#include "adventure-stage.hpp"
-
-#include "game/loop-manager.hpp"
-#include "game/game.hpp"
-#include "state/game-state.hpp"
-#include "state/game-state-factory.hpp"
-#include "player/party.hpp"
-#include "player/fake-party.hpp"
-#include "player/character.hpp"
-#include "stage/adventure-display-stage.hpp"
-
-#include "sfml-util/display.hpp"
+#include "adventure-stage-interact-stage.hpp"
+#include "map/map.hpp"
 
 
 namespace heroespath
@@ -46,37 +36,46 @@ namespace heroespath
 namespace stage
 {
 
-    AdventureStage::AdventureStage()
+    InteractStage::InteractStage(map::Map & map, const sf::FloatRect & STAGE_REGION)
     :
-        Stage(
-            "Adventure",
-            0.0f,
-            0.0f,
-            sfml_util::Display::Instance()->GetWinWidth(),
-            sfml_util::Display::Instance()->GetWinHeight()),
-        adventureDisplayStagePtr_(nullptr)
+        Stage("AdventureInteract", STAGE_REGION),
+        map_(map),
+        texture_(),
+        sprite_()
     {}
 
 
-    AdventureStage::~AdventureStage()
-    {}
-
-
-    void AdventureStage::Setup()
+    void InteractStage::Setup()
     {
-        //TEMP TODO REMOVE -once done testing
-        //create a party of characters to work with during testing
-        state::GameStateFactory::Instance()->NewGame(player::FakeParty::Make());
+        sf::Image image;
+        image.create(10, 10);
+        
+        texture_.loadFromImage(image);
+        
+        sprite_.setTexture(texture_, true);
 
-        adventureDisplayStagePtr_ = new AdventureDisplayStage(this);
-        adventureDisplayStagePtr_->Setup();
+        auto const SCALE_HORIZ{ StageRegion().width / sprite_.getLocalBounds().width };
+        auto const SCALE_VERT{ StageRegion().height / sprite_.getLocalBounds().height };
+        sprite_.setScale(SCALE_HORIZ, SCALE_VERT);
 
-        //See AdventureDisplayStage::Setup() for where this is actually done.
-        //The AdventureDisplayStage gives itself to the LoopManager so that it
-        //can do so before adding it's own substages, so that it will be drawn
-        //before those substages.
-        //game::LoopManager::Instance()->AddStage(adventureDisplayStagePtr_);
+        sprite_.setPosition(StageRegion().left, StageRegion().top);
+
+        sprite_.setColor(sf::Color(255, 255, 255, 64));
     }
+
+
+    void InteractStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
+    {
+        target.draw(sprite_, STATES);
+        Stage::Draw(target, STATES);
+    }
+
+
+    void InteractStage::UpdateTime(const float TIME_ELAPSED)
+    {
+        map_.UpdateInteractions(TIME_ELAPSED);
+    }
+
 
 }
 }

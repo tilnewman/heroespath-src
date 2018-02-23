@@ -65,6 +65,10 @@ namespace map
     {}
 
 
+    Map::~Map()
+    {}
+
+
     void Map::Load(
         const Level::Enum LEVEL_TO_LOAD,
         const Level::Enum LEVEL_FROM,
@@ -252,6 +256,13 @@ namespace map
         {
             npc.Update(TIME_ELAPSED);
         }
+    }
+
+
+    void Map::UpdateInteractions(const float TIME_ELAPSED)
+    {
+        //TODO
+        player_.MovingIntoUpdate(TIME_ELAPSED);
     }
 
 

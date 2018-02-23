@@ -50,6 +50,7 @@ namespace map
 namespace stage
 {
 
+    class InteractStage;
     class AdventureStage;
 
 
@@ -70,16 +71,19 @@ namespace stage
     private:
         void Setup_CharacterList();
         void Setup_BackgroundImage();
-        void Setup_Map();
+        const sf::FloatRect Setup_Map();
 
         void HandleMovementKeypresses(
             const sfml_util::Direction::Enum,
             bool & wasPressed,
             const bool IS_PRESSED);
 
+        const sf::FloatRect CalcInteractRegion(const sf::FloatRect & MAP_REGION) const;
+
     private:
         static const float TIME_BETWEEN_MAP_MOVES_SEC_;
         
+        InteractStage * interactStagePtr_;
         AdventureCharacterListUPtr_t characterListUPtr_;
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;
