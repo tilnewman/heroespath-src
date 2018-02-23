@@ -22,12 +22,12 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_AVATAR_STATEMENTCHILD_HPP_INCLUDED
-#define HEROESPATH_AVATAR_STATEMENTCHILD_HPP_INCLUDED
+#ifndef HEROESPATH_INTERACT_STATEMENTCHILD_HPP_INCLUDED
+#define HEROESPATH_INTERACT_STATEMENTCHILD_HPP_INCLUDED
 //
 // statement-child.hpp
 //
-#include "avatar/statement.hpp"
+#include "interact/statement.hpp"
 #include "map/level-enum.hpp"
 #include "player/party.hpp"
 #include <string>
@@ -36,7 +36,7 @@
 
 namespace heroespath
 {
-namespace avatar
+namespace interact
 {
 namespace talk
 {
@@ -91,4 +91,4 @@ namespace talk
 }
 }
 
-#endif //HEROESPATH_AVATAR_STATEMENTCHILD_HPP_INCLUDED
+#endif //HEROESPATH_INTERACT_STATEMENTCHILD_HPP_INCLUDED

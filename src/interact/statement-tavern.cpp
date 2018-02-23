@@ -31,7 +31,7 @@
 
 namespace heroespath
 {
-namespace avatar
+namespace interact
 {
 namespace talk
 {

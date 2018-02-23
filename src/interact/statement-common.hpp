@@ -22,33 +22,30 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_AVATAR_STATEMENTTOWN_HPP_INCLUDED
-#define HEROESPATH_AVATAR_STATEMENTTOWN_HPP_INCLUDED
+#ifndef HEROESPATH_INTERACT_STATEMENTCOMMONHPP_INCLUDED
+#define HEROESPATH_INTERACT_STATEMENTCOMMONHPP_INCLUDED
 //
-// statement-town.hpp
+// statement-common.hpp
 //
-#include "avatar/statement.hpp"
-#include "map/level-enum.hpp"
+#include "interact/statement.hpp"
 #include "player/party.hpp"
 #include <string>
 
 
 namespace heroespath
 {
-namespace avatar
+namespace interact
 {
 namespace talk
 {
 
-    struct TownTalk
+    struct CommonTalk
     {
-        static const std::string Compose(
-            const player::Party &,
-            const map::Level::Enum);
+        static const std::string Compose(const player::Party &);
     };
 
 }
 }
 }
 
-#endif //HEROESPATH_AVATAR_STATEMENTTOWN_HPP_INCLUDED
+#endif //HEROESPATH_INTERACT_STATEMENTCOMMONHPP_INCLUDED

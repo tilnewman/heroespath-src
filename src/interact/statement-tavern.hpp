@@ -22,24 +22,65 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_AVATAR_STATEMENTCOMMONHPP_INCLUDED
-#define HEROESPATH_AVATAR_STATEMENTCOMMONHPP_INCLUDED
+#ifndef HEROESPATH_INTERACT_STATEMENTTAVERN_HPP_INCLUDED
+#define HEROESPATH_INTERACT_STATEMENTTAVERN_HPP_INCLUDED
 //
-// statement-common.hpp
+// statement-tavern.hpp
 //
-#include "avatar/statement.hpp"
+#include "interact/statement.hpp"
 #include "player/party.hpp"
 #include <string>
 
 
 namespace heroespath
 {
-namespace avatar
+namespace interact
 {
 namespace talk
 {
 
-    struct CommonTalk
+    namespace compose
+    {
+        static inline const StrVec_t TavernServers()
+        {
+            return {
+                "server",
+                "barkeep",
+                "barwhipe",
+                "bartender",
+                "wench",
+                "serving girl",
+                "bar maid" };
+        }
+
+        static inline const StrVec_t TavernDrinks()
+        {
+            return { "ale", "drink", "beer", "mead", "brew", "swill" };
+        }
+
+        static inline const StrVec_t TavernDrinkAdjectives()
+        {
+            return {
+                "delightful",
+                "dreadful",
+                "horrid",
+                "stinking",
+                "festering",
+                "rotting",
+                "murky",
+                "bubbling",
+                "tasteless",
+                "sour" };
+        }
+
+        static inline const StrVec_t TavernNoises()
+        {
+            return { "(hiccup)", "(burp)", "(grumble)", "(mutter)", "(laughs)" };
+        }
+    }
+
+
+    struct TavernTalk
     {
         static const std::string Compose(const player::Party &);
     };
@@ -48,4 +89,4 @@ namespace talk
 }
 }
 
-#endif //HEROESPATH_AVATAR_STATEMENTCOMMONHPP_INCLUDED
+#endif //HEROESPATH_INTERACT_STATEMENTTAVERN_HPP_INCLUDED

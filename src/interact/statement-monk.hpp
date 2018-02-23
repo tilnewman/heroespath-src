@@ -22,19 +22,19 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_AVATAR_STATEMENTMONK_HPP_INCLUDED
-#define HEROESPATH_AVATAR_STATEMENTMONK_HPP_INCLUDED
+#ifndef HEROESPATH_INTERACT_STATEMENTMONK_HPP_INCLUDED
+#define HEROESPATH_INTERACT_STATEMENTMONK_HPP_INCLUDED
 //
 // statement-monk.hpp
 //
-#include "avatar/statement.hpp"
+#include "interact/statement.hpp"
 #include "player/party.hpp"
 #include <string>
 
 
 namespace heroespath
 {
-namespace avatar
+namespace interact
 {
 namespace talk
 {
@@ -63,4 +63,4 @@ namespace talk
 }
 }
 
-#endif //HEROESPATH_AVATAR_STATEMENTMONK_HPP_INCLUDED
+#endif //HEROESPATH_INTERACT_STATEMENTMONK_HPP_INCLUDED

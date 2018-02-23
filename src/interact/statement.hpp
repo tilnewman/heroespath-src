@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_AVATAR_STATEMENT_HPP_INCLUDED
-#define HEROESPATH_AVATAR_STATEMENT_HPP_INCLUDED
+#ifndef HEROESPATH_INTERACT_STATEMENT_HPP_INCLUDED
+#define HEROESPATH_INTERACT_STATEMENT_HPP_INCLUDED
 //
 // pose-enum.hpp
 //
@@ -39,7 +39,7 @@
 
 namespace heroespath
 {
-namespace avatar
+namespace interact
 {
 namespace talk
 {
@@ -235,4 +235,4 @@ namespace compose
 }
 }
 
-#endif //HEROESPATH_AVATAR_STATEMENT_HPP_INCLUDED
+#endif //HEROESPATH_INTERACT_STATEMENT_HPP_INCLUDED
