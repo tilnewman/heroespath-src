@@ -70,6 +70,10 @@ namespace avatar
 
         void ChangeDirection();
 
+        void MovingIntoSet(const std::size_t NON_PLAYER_INDEX);
+        void MovingIntoReset();
+        int MovingIntoUpdate(const float TIME_ELAPSED);
+
     private:
         float RandomBlinkDelay() const;
         float RandomWalkDelay() const;
@@ -97,6 +101,8 @@ namespace avatar
         static const float TIME_BETWEEN_WALK_MIN_SEC_;
         static const float TIME_BETWEEN_WALK_MAX_SEC_;
         static const float WALK_TARGET_CLOSE_ENOUGH_;
+        static const int WALKING_INTO_INDEX_INVALID_;
+        static const float WALKING_INTO_DURATION_SEC_;
 
         IViewUPtr_t viewUPtr_;
         float blinkTimerSec_;
@@ -110,6 +116,8 @@ namespace avatar
         std::size_t walkRectIndex_;
         sf::Vector2f posV_;
         sfml_util::Direction::Enum prevWalkDirection_;
+        float walkingIntoTimerSec_;
+        int walkingIntoIndex_;
     };
 
 }

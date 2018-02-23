@@ -77,7 +77,7 @@ namespace map
 
         void Update(const float TIME_ELAPSED);
 
-        void SetPlayerWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START);
+        void SetPlayerWalkAnim(const sfml_util::Direction::Enum, const bool);
 
         inline const avatar::Model & Player() const { return player_; }
 
@@ -90,7 +90,7 @@ namespace map
     private:
         bool DoesAdjPlayerPosCollide(
             const sfml_util::Direction::Enum DIR,
-            const float ADJ) const;
+            const float ADJ);
 
         const std::string ComposeMapFilePath(const Level::Enum) const;
 

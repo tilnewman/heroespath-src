@@ -92,7 +92,6 @@ namespace stage
         bool wasPressedRight_;
         bool wasPressedUp_;
         bool wasPressedDown_;
-
     };
 
 }

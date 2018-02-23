@@ -258,6 +258,7 @@ namespace map
     void Map::SetPlayerWalkAnim(const sfml_util::Direction::Enum DIRECTION, const bool WILL_START)
     {
         player_.SetWalkAnim(DIRECTION, WILL_START);
+        player_.MovingIntoReset();
     }
 
 
@@ -281,7 +282,7 @@ namespace map
 
     bool Map::DoesAdjPlayerPosCollide(
         const sfml_util::Direction::Enum DIR,
-        const float ADJ) const
+        const float ADJ)
     {
         auto const PLAYER_POS_V{ CalcAdjPlayerPos(DIR, ADJ) };
 
@@ -323,16 +324,20 @@ namespace map
             ADJ_FOR_NPC_COLLISIONS_V.x * 0.25f,
             ADJ_FOR_NPC_COLLISIONS_V.y * 1.25f);
 
-        for (auto const & NPC : nonPlayers_)
+        for (std::size_t i(0); i < nonPlayers_.size(); ++i)
         {
+            auto const & NPC{ nonPlayers_[i] };
+
             const sf::FloatRect NPC_RECT{ NPC.GetView().SpriteRef().getGlobalBounds() };
 
             if (sfml_util::DoRectsOverlap(NPC_RECT, PLAYER_RECT_FOR_NPC_COLLISIONS))
             {
+                player_.MovingIntoSet(i);
                 return true;
             }
         }
 
+        player_.MovingIntoReset();
         return false;
     }
 

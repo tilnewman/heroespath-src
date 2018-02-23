@@ -173,7 +173,7 @@ namespace stage
     {
         const sf::FloatRect MAP_OUTER_REGION(
             100.0f + sfml_util::MapByRes(30.0f, 90.0f),
-            topImage_.Bottom(),
+            topImage_.Bottom() - sfml_util::MapByRes(25.0f, 75.0f),
             sfml_util::MapByRes(500.0f, 2500.0f),
             sfml_util::MapByRes(250.0f, 2000.0f));
 

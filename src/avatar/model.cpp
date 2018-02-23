@@ -51,6 +51,8 @@ namespace avatar
     const float Model::TIME_BETWEEN_WALK_MIN_SEC_{ 1.0f };
     const float Model::TIME_BETWEEN_WALK_MAX_SEC_{ 2.0f };
     const float Model::WALK_TARGET_CLOSE_ENOUGH_{ 5.0f };
+    const int Model::WALKING_INTO_INDEX_INVALID_{ -1 };
+    const float Model::WALKING_INTO_DURATION_SEC_{ 1.5f };
 
 
     Model::Model(IViewUPtr_t viewUPtr, const std::vector<sf::FloatRect> & WALK_RECTS)
@@ -66,7 +68,9 @@ namespace avatar
         walkTargetPosV_(),
         walkRectIndex_(RandomWalkRectIndex()),
         posV_(RandomWalkTarget()),
-        prevWalkDirection_(sfml_util::Direction::Count)
+        prevWalkDirection_(sfml_util::Direction::Count),
+        walkingIntoTimerSec_(0.0f),
+        walkingIntoIndex_(WALKING_INTO_INDEX_INVALID_)
     {}
 
 
@@ -161,6 +165,42 @@ namespace avatar
 
         SetWalkAnim(NEW_DIRECTION, true);
         prevWalkDirection_ = NEW_DIRECTION;
+    }
+
+
+    void Model::MovingIntoSet(const std::size_t NON_PLAYER_INDEX)
+    {
+        auto const INDEX_INT{ static_cast<int>(NON_PLAYER_INDEX) };
+
+        if (INDEX_INT != walkingIntoIndex_)
+        {
+            walkingIntoIndex_ = INDEX_INT;
+            walkingIntoTimerSec_ = 0.0f;
+        }
+    }
+
+
+    void Model::MovingIntoReset()
+    {
+        walkingIntoIndex_ = WALKING_INTO_INDEX_INVALID_;
+        walkingIntoTimerSec_ = 0.0f;
+    }
+
+
+    int Model::MovingIntoUpdate(const float TIME_ELAPSED)
+    {
+        if (walkingIntoIndex_ != WALKING_INTO_INDEX_INVALID_)
+        {
+            walkingIntoTimerSec_ += TIME_ELAPSED;
+
+            if (walkingIntoTimerSec_ > WALKING_INTO_DURATION_SEC_)
+            {
+                walkingIntoTimerSec_ = 0.0f;
+                return walkingIntoIndex_;
+            }
+        }
+
+        return WALKING_INTO_INDEX_INVALID_;
     }
 
 
