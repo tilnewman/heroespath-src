@@ -50,7 +50,7 @@ namespace stage
 {
 
     const float AdventureDisplayStage::TIME_BETWEEN_MAP_MOVES_SEC_{ 0.0333f };
-    
+
 
     AdventureDisplayStage::AdventureDisplayStage(AdventureStage * const)
     :
@@ -277,7 +277,7 @@ namespace stage
             MAP_REGION.width +
             BETWEEN_MAP_AND_INTERACT_REGION_WIDTH;
 
-        auto const RIGHT_MARGIN{ sfml_util::MapByRes(25.0f, 80.0f) };
+        auto const RIGHT_MARGIN{ sfml_util::MapByRes(50.0f, 300.0f) };
 
         interactRegion.width =
             (StageRegion().width - interactRegion.left) - RIGHT_MARGIN;
