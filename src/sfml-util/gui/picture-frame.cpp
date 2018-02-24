@@ -75,7 +75,7 @@ namespace gui
     void PictureFrame::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         for (auto const & SPRITE : sideSprites_) target.draw(SPRITE, states);
-        
+
         target.draw(topLeftSprite_, states);
         target.draw(topRightSprite_, states);
         target.draw(botLeftSprite_, states);
@@ -169,7 +169,7 @@ namespace gui
 
             auto const POS_LEFT{
                 botLeftSprite_.getGlobalBounds().left + botLeftSprite_.getGlobalBounds().width };
-            
+
             auto const POS_TOP{ (outerRect_.top + outerRect_.height) - OUTER_EDGE };
 
             for (int i(0); i < BOT_HORIZ_FILL_COUNT; ++i)
@@ -230,13 +230,13 @@ namespace gui
 
                 auto const OFFSET{
                     static_cast<float>(i) * (RIGHT_SPRITE.getGlobalBounds().height) };
-                
+
                 sprite.setPosition(POS_LEFT, POS_TOP + OFFSET);
                 sprite.setColor(color_);
                 sideSprites_.push_back(sprite);
             }
         }
-        
+
         return innerRect_;
     }
 

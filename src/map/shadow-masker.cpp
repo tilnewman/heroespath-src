@@ -59,7 +59,7 @@ namespace map
                 ba::to_lower_copy(nextTilesPanel.name),
                 ba::to_lower_copy(XML_ATTRIB_NAME_SHADOWS)) };
 
-            ChangeColors(layout.texture_vec[nextTilesPanel.texture_index], IS_SHADOW_IMAGE);   
+            ChangeColors(layout.texture_vec[nextTilesPanel.texture_index], IS_SHADOW_IMAGE);
         }
     }
 

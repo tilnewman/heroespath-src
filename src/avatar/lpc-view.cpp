@@ -120,7 +120,7 @@ namespace avatar
                     case su::Direction::Left:  { return { 9 }; }
                     case su::Direction::Right: { return { 25 }; }
                     case su::Direction::Up:    { return { 1 }; }
-                    case su::Direction::Down: 
+                    case su::Direction::Down:
                     case su::Direction::Count:
                     default:                   { return { 17 }; }
                 }
@@ -132,7 +132,7 @@ namespace avatar
                     case su::Direction::Left:  { return { 10,11,12,13,14,15,16,41 }; }
                     case su::Direction::Right: { return { 26,27,28,29,30,31,32,57 }; }
                     case su::Direction::Up:    { return { 2,3,4,1,6,7,8 }; }
-                    case su::Direction::Down: 
+                    case su::Direction::Down:
                     case su::Direction::Count:
                     default:                   { return { 18,19,20,17,22,23,24 }; }
                 }
@@ -144,7 +144,7 @@ namespace avatar
                     case su::Direction::Left:  { return { 42,43,44,45,46 }; }
                     case su::Direction::Right: { return { 58,59,60,61,62 }; }
                     case su::Direction::Up:    { return { 34,35,36,37,38 }; }
-                    case su::Direction::Down: 
+                    case su::Direction::Down:
                     case su::Direction::Count:
                     default:                   { return { 50,51,52,53,54 }; }
                 }
@@ -156,7 +156,7 @@ namespace avatar
                     case su::Direction::Left:  { return { 47 }; }
                     case su::Direction::Right: { return { 63 }; }
                     case su::Direction::Up:    { return { 39 }; }
-                    case su::Direction::Down: 
+                    case su::Direction::Down:
                     case su::Direction::Count:
                     default:                   { return { 55 }; }
                 }
@@ -168,7 +168,7 @@ namespace avatar
                     case su::Direction::Left:  { return { 48 }; }
                     case su::Direction::Right: { return { 64 }; }
                     case su::Direction::Up:    { return { 40 }; }
-                    case su::Direction::Down: 
+                    case su::Direction::Down:
                     case su::Direction::Count:
                     default:                   { return { 56 }; }
                 }
@@ -180,7 +180,7 @@ namespace avatar
                     case su::Direction::Left:  { return { 5 }; }
                     case su::Direction::Right: { return { 21 }; }
                     case su::Direction::Up:    { return { 1 }; }
-                    case su::Direction::Down: 
+                    case su::Direction::Down:
                     case su::Direction::Count:
                     default:                   { return { 33 }; }
                 }
@@ -195,7 +195,7 @@ namespace avatar
     const sf::IntRect LPCView::FrameRect(const FrameNum_t FRAME_NUM) const
     {
         auto const CELL_COUNT{ static_cast<FrameNum_t>(texture_.getSize().x) / CELL_SIZE_ };
-        
+
         auto const FRAME_INDEX_X{ [&]()
             {
                 auto const INDEX{ (FRAME_NUM % CELL_COUNT) - 1 };
@@ -208,7 +208,7 @@ namespace avatar
                     return INDEX;
                 }
             }() };
-        
+
         auto const FRAME_INDEX_Y{ [&]()
             {
                 auto const INDEX{ FRAME_NUM / CELL_COUNT };
@@ -221,7 +221,7 @@ namespace avatar
                     return INDEX;
                 }
             }() };
-    
+
         return sf::IntRect(
             FRAME_INDEX_X * CELL_SIZE_,
             FRAME_INDEX_Y * CELL_SIZE_,

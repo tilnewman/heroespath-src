@@ -102,7 +102,7 @@ namespace stage
         target.draw( & lineVerts_[0], lineVerts_.size(), sf::Lines, states);
         target.draw( & quadVerts_[0], quadVerts_.size(), sf::Quads, states);
         target.draw(charListSepLine_, states);
-        
+
         for (auto const & TEXT_REGION_UPTR : manaTextRegionsUVec_)
         {
             if (TEXT_REGION_UPTR->GetText() != "0/0")
@@ -506,7 +506,7 @@ namespace stage
 
             auto const LENGTH{
                 sfml_util::Display::Instance()->GetWinWidth() - (CHARLIST_SEP_SPACER_ * 2.0f) };
-            
+
             charListSepLine_.Setup(LEFT, TOP, static_cast<std::size_t>(LENGTH));
         }
 
@@ -677,7 +677,7 @@ namespace stage
             auto const CHARACTER_PTR{ CHARACTER_VEC[i] };
 
             auto & imagePair{ charImages_[CHARACTER_PTR] };
-            
+
             sfml_util::gui::CreatureImageManager::Instance()->GetImage(
                 imagePair.first,
                 CHARACTER_PTR->ImageFilename(),

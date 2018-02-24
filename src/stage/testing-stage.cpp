@@ -1315,12 +1315,12 @@ namespace stage
     void TestingStage::ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const
     {
         namespace bfs = boost::filesystem;
-        
+
         auto const IMAGES_PATH_STR{
             game::GameDataFile::Instance()->GetMediaPath(IMAGES_DIR_KEY_STR) };
 
         auto const DIR_PATH{ bfs::system_complete(bfs::path(IMAGES_PATH_STR).normalize()) };
-        
+
         auto const DIR_PATH_STR{ DIR_PATH.string() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
@@ -1347,11 +1347,11 @@ namespace stage
             {
                 continue;
             }
-        
+
             sf::Texture texture;
             sfml_util::LoadTexture(texture, FILE_PATH_STR, false);
             sf::Image image{ texture.copyToImage() };
-            
+
             auto const WIDTH{ texture.getSize().x };
             auto const HEIGHT{ texture.getSize().y };
 

@@ -44,7 +44,7 @@ namespace talk
         {
             auto const BEAST_RACE_NAME{
                 ((DoesPartyHaveWolfens(party)) ? "wolfen " : "dragon ") };
-            
+
             if ((misc::random::Int(7) == 0) && (DoesPartyHaveBeasts(party)))
             {
                 return "Is that " + std::string(BEAST_RACE_NAME) + "allowed in here?";
@@ -53,7 +53,7 @@ namespace talk
             auto const FIRST_PART{ Random(StrVec_t{
                 "Does your " + std::string(BEAST_RACE_NAME),
                 "Nice " + std::string(BEAST_RACE_NAME) + ".  Does he" }) };
-                
+
             std::string secondPart{ "" };
             switch (misc::random::Int(6))
             {
@@ -62,7 +62,7 @@ namespace talk
                     secondPart = Random(StrVec_t{ "burp", "fart", "cough up", "hack up", "poop" }) +
                         " " +
                         ((DoesPartyHaveWolfens(party)) ? "hairballs" : "lava");
-                    
+
                     break;
                 }
                 case 1:
@@ -201,7 +201,7 @@ namespace talk
             }
             case 13:
             {
-                return "They " + 
+                return "They " +
                     Random(StrVec_t{ "serve", "serve only", "pour", "pour only"}) +
                     " the finest " +
                     Random(RaceNames()) +

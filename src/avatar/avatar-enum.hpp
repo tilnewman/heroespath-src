@@ -44,10 +44,10 @@ namespace avatar
             Metal,
             Puck,
             Sara,
-            
+
             //stereotypical young girl in a princess outfit
             Girl,
-            
+
             //commoners
             Circus,
             Poor, //male only, leather scaps

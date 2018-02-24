@@ -730,7 +730,7 @@ namespace popup
             {
                 return sfml_util::MapByRes(0.7f, 2.0f);
             }
-            
+
             case PopupImage::Regular:
             case PopupImage::RegularSidebar:
             {

@@ -49,9 +49,9 @@ namespace stage
     {
         sf::Image image;
         image.create(10, 10);
-        
+
         texture_.loadFromImage(image);
-        
+
         sprite_.setTexture(texture_, true);
 
         auto const SCALE_HORIZ{ StageRegion().width / sprite_.getLocalBounds().width };

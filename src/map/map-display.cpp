@@ -213,7 +213,7 @@ namespace map
                 offScreenRect_.left = std::max(0.0f, offScreenRect_.left - ADJUSTMENT);
 
                 auto const ACTUAL_ADJUSTMENT{ OFFSCREEN_LEFT_BEFORE - offScreenRect_.left };
-                
+
                 PositionMapSpriteTextureRect();
                 playerPosV_.x = std::max(0.0f, playerPosV_.x - ACTUAL_ADJUSTMENT);
 
@@ -301,7 +301,7 @@ namespace map
         auto const PLAYER_OFFSCREEN_POS_V{ OffScreenPosFromMapPos( PlayerPosMap() ) };
 
         sf::Sprite playerSprite{ MAP_.Player().GetView().SpriteRef() };
-        
+
         const sf::Vector2f SIZE_HALF(
             playerSprite.getGlobalBounds().width * 0.5f,
             playerSprite.getGlobalBounds().height * 0.5f);
@@ -453,7 +453,7 @@ namespace map
 
         offScreenSpriteBelow_.setTexture(offScreenTextureBelow_.getTexture());
         offScreenSpriteAbove_.setTexture(offScreenTextureAbove_.getTexture());
-        
+
         offScreenSpriteBelow_.setPosition(WIN_POS_V_);
         offScreenSpriteAbove_.setPosition(WIN_POS_V_);
 
@@ -489,8 +489,8 @@ namespace map
 
                 //get the texture/image this tile can be found in
                 const map::TilesPanel & TILES_PANEL{ TilesPanelFromId(TILE_NUM_ORIG) };
-                
-                mapLayer.tiles_panel_vec.push_back( 
+
+                mapLayer.tiles_panel_vec.push_back(
                     map::TilesPanelForLayers(
                         (TILES_PANEL.name == layout_.EmptyTilesPanelName()),
                         TILES_PANEL.texture_index) );

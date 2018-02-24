@@ -109,7 +109,7 @@ namespace talk
             {
                 return CapFirstLetter(Random(PartyNames())) + Random(StrVec_t{ "?", "!" });
             }
-            
+
             case 1:
             {
                 return
@@ -147,7 +147,7 @@ namespace talk
                     Random(StrVec_t{ "all ", "all six ", "the six " }) +
                     Random(StrVec_t{ "of you ", "of you " + Random(PartyNames()) + " " }) +
                     Random(StrVec_t{ "this ", "on this " }) +
-                    AppendIf(RandomOrEmpty(WeatherAdjectives()), " ") + 
+                    AppendIf(RandomOrEmpty(WeatherAdjectives()), " ") +
                     Random(TimesOfDay()) +
                     PeriodOrBang();
             }
@@ -291,7 +291,7 @@ namespace talk
             {
                 return
                     "Good day " +
-                    Random(StrVec_t{ "to you", "to all of you", "to all six of you" }) + 
+                    Random(StrVec_t{ "to you", "to all of you", "to all six of you" }) +
                     PeriodOrBang();
             }
             default:

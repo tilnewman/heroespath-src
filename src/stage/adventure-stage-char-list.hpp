@@ -131,7 +131,7 @@ namespace stage
         std::vector<sf::Vertex> lineVerts_;
         std::vector<sf::Vertex> quadVerts_;
         std::vector<sf::Vertex> innerShadeQuadVerts_;
-        
+
         using ImagePair_t = std::pair<sf::Texture, sf::Sprite>;
         using CharImageMap_t = misc::VectorMap<player::CharacterPtr_t, ImagePair_t>;
         CharImageMap_t charImages_;

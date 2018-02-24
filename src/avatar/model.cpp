@@ -103,8 +103,8 @@ namespace avatar
                 case sfml_util::Direction::Left:  { posV_.x -= AMOUNT; break; }
                 case sfml_util::Direction::Right: { posV_.x += AMOUNT; break; }
                 case sfml_util::Direction::Up:    { posV_.y -= AMOUNT; break; }
-                case sfml_util::Direction::Down:  
-                case sfml_util::Direction::Count: 
+                case sfml_util::Direction::Down:
+                case sfml_util::Direction::Count:
                 default:                          { posV_.y += AMOUNT; break; }
             }
 
@@ -134,7 +134,7 @@ namespace avatar
             GetView().Direction()), std::end(dirVec));
 
         auto const NEW_DIRECTION{ misc::Vector::SelectRandom(dirVec) };
-        
+
         auto const RECT{ walkRects_[walkRectIndex_] };
 
         switch (NEW_DIRECTION)
@@ -274,7 +274,7 @@ namespace avatar
                 walkTimerSec_ = 0.0f;
                 walkRectIndex_ = RandomWalkRectIndex();
                 walkTargetPosV_ = RandomWalkTarget();
-                
+
                 auto const NEW_DIRECTION{ WalkDirection(sfml_util::Direction::Count) };
 
                 if (NEW_DIRECTION != sfml_util::Direction::Count)
@@ -337,7 +337,7 @@ namespace avatar
                         std::end(possibleWalkRectIndexes_),
                         walkRectIndex_), std::end(possibleWalkRectIndexes_));
             }
-            
+
             return misc::Vector::SelectRandom(possibleWalkRectIndexes_);
         }
     }

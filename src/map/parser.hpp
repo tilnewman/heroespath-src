@@ -82,7 +82,7 @@ namespace map
             walk_region_vecmap(walkVecMapParam),
             animation_vec(mapAnimVecParam)
         {}
-        
+
         std::string file_path;
         Layout & layout;
         std::vector<sf::FloatRect> & collision_vec;
@@ -121,7 +121,7 @@ namespace map
             const boost::property_tree::ptree &,
             Layout &,
             const LayerType::Enum) const;
-        
+
         void Parse_Layer_Generic_Tiles(std::vector<int> &, std::stringstream &) const;
 
         void Parse_Layer_WalkBounds(
@@ -173,7 +173,7 @@ namespace map
         static const std::string XML_NODE_NAME_PROPERTIES_;
         static const std::string XML_NODE_NAME_PROPERTY_;
         static const std::string XML_NODE_NAME_ANIMATIONS_;
-        
+
         //these are the sub-names of XML nodes used in parsing the .tmx map files
         static const std::string XML_ATTRIB_FETCH_PREFIX_;
         static const std::string XML_ATTRIB_NAME_COLLISIONS_;

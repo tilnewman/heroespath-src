@@ -49,7 +49,7 @@ namespace compose
         return misc::Vector::SelectRandom(STR_VEC);
     }
 
-        
+
     const StrVec_t Combinations(
         const StrVec_t & V1,
         const StrVec_t & V2,
@@ -110,7 +110,7 @@ namespace compose
             return s;
         }
     }
-   
+
 }
 }
 }

@@ -60,7 +60,7 @@ namespace compose
     {
         return ((VV.empty()) ? std::string(T()) : Random( misc::Vector::SelectRandom(VV) ));
     }
-        
+
     const std::string RandomWithEmpty(const StrVec_t &);
 
     inline const std::string RandomOrEmpty(const StrVec_t & STR_VEC)

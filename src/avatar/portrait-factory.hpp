@@ -42,7 +42,7 @@ namespace avatar
     public:
         static void Make(const Avatar::Enum, sf::Texture &);
     };
-        
+
 }
 }
 

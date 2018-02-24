@@ -296,13 +296,13 @@ namespace stage
             NotEnoughCharactersPopup();
             return false;
         }
-        
+
         if (AreAnyCharactersBeasts() && (AreAnyCharactersBeastmasters() == false))
         {
             MissingBeastmasterPopup();
             return false;
         }
-        
+
         PartyAvatarSelectionPopup();
         return true;
     }
@@ -974,7 +974,7 @@ namespace stage
         {
             partyTextureVec.push_back(sf::Texture());
             auto const WHICH_AVATAR{ static_cast<avatar::Avatar::Enum>(i) };
-            
+
             avatar::PortraitFactory::Make(
                 WHICH_AVATAR,
                 partyTextureVec[static_cast<std::size_t>(i)]);

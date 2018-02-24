@@ -259,9 +259,9 @@ namespace map
 
         layout.layer_vec.push_back( Layer() );
         Layer & layer{ layout.layer_vec[layout.layer_vec.size() - 1] };
-        
+
         layer.type = TYPE;
-        
+
         Parse_Layer_Generic_Tiles(layer.mapid_vec, ssAllData);
     }
 

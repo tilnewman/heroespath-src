@@ -93,7 +93,7 @@ namespace map
         mapParser.Parse(packet);
 
         level_ = LEVEL_TO_LOAD;
-        
+
         if (IS_TEST_LOAD == false)
         {
             mapDisplayUPtr_->Load(
@@ -161,15 +161,15 @@ namespace map
                         case sfml_util::Direction::Left:  { rect.left -= NONPLAYER_MOVE_DISTANCE_; break; }
                         case sfml_util::Direction::Right: { rect.left += NONPLAYER_MOVE_DISTANCE_; break; }
                         case sfml_util::Direction::Up:    { rect.top -= NONPLAYER_MOVE_DISTANCE_; break; }
-                        case sfml_util::Direction::Down:  
+                        case sfml_util::Direction::Down:
                         case sfml_util::Direction::Count:
                         default:                          { rect.top += NONPLAYER_MOVE_DISTANCE_; break; }
                     }
-                    
+
                     return rect;
                 }() };
 
-            
+
             auto const NPC_RECT_FOR_PLAYER_COLLISIONS{
                 [&]()
                 {
@@ -203,7 +203,7 @@ namespace map
                 if (sfml_util::DoRectsOverlap(
                     NPC_RECT_ADJ,
                     subNPC.GetView().SpriteRef().getGlobalBounds()))
-                {   
+                {
                     auto const SUB_POS_V{ subNPC.GetView().SpriteRef().getPosition() };
 
                     auto const IS_IN_THE_WAY{
@@ -311,7 +311,7 @@ namespace map
             PLAYER_POS_V.y - (ADJ_FOR_COLLISIONS_V.y * 0.6f),
             ADJ_FOR_COLLISIONS_V.x * 2.0f,
             ADJ_FOR_COLLISIONS_V.y * 1.4f);
-        
+
         for (auto const & COLLISION_RECT : collisionVec_)
         {
             if (sfml_util::DoRectsOverlap(COLLISION_RECT, PLAYER_RECT_FOR_MAP_COLLISIONS))

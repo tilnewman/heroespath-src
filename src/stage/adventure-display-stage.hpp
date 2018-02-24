@@ -82,7 +82,7 @@ namespace stage
 
     private:
         static const float TIME_BETWEEN_MAP_MOVES_SEC_;
-        
+
         InteractStage * interactStagePtr_;
         AdventureCharacterListUPtr_t characterListUPtr_;
         sf::Texture backgroundTexture_;
