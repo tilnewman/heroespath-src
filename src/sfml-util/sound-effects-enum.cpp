@@ -792,6 +792,7 @@ namespace sfml_util
                     vec = { sound_effect::DoorSqueakyClose1 }; break;
                 }
             }
+            case DoorType::Count:
             default:
             {
                 std::ostringstream ss;
@@ -803,6 +804,47 @@ namespace sfml_util
         }
 
         return misc::Vector::SelectRandom(vec);
+    }
+
+
+    const std::string sound_effect::DoorTypeToString(const DoorType TYPE)
+    {
+        switch (TYPE)
+        {
+            case DoorType::Common:  { return "Common"; }
+            case DoorType::Old:     { return "Old"; }
+            case DoorType::Rattly:  { return "Rattly"; }
+            case DoorType::Squaeky: { return "Squaeky"; }
+            case DoorType::Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::sound_effect::DoorTypeToString("
+                    << static_cast<int>(TYPE) << ")_Invalid(Type)ValueError.";
+
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    sound_effect::DoorType sound_effect::DoorTypeFromString(const std::string & NAME)
+    {
+        namespace ba = boost::algorithm;
+
+        for (int i(0); i < static_cast<int>(sound_effect::DoorType::Count); ++i)
+        {
+            auto const ENUM{ static_cast<sound_effect::DoorType>(i) };
+
+            if (ba::to_lower_copy(DoorTypeToString(ENUM)) == ba::to_lower_copy(NAME))
+            {
+                return ENUM;
+            }
+        }
+
+        std::ostringstream ss;
+        ss << "map::Level::Enum::DoorTypeFromString(\"" << NAME << "\")_InvalidValueError.";
+        throw std::runtime_error(ss.str());
     }
 
 }

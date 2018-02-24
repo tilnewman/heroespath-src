@@ -28,6 +28,7 @@
 // transition.hpp
 //
 #include "map/level-enum.hpp"
+#include "sfml-util/sound-effects-enum.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 
@@ -46,16 +47,20 @@ namespace map
         Transition(
             const bool IS_ENTRY = true,
             const Level::Enum LEVEL = Level::Count,
-            const sf::FloatRect & RECT = sf::FloatRect())
+            const sf::FloatRect & RECT = sf::FloatRect(),
+            const sfml_util::sound_effect::DoorType DOOR_TYPE =
+                sfml_util::sound_effect::DoorType::Count)
         :
             isEntry_(IS_ENTRY),
             level_(LEVEL),
-            rect_(RECT)
+            rect_(RECT),
+            doorSfxType_(DOOR_TYPE)
         {}
 
         inline bool IsEntry() const { return isEntry_; }
         inline Level::Enum Level() const { return level_; }
         inline const sf::FloatRect Rect() const { return rect_; }
+        inline sfml_util::sound_effect::DoorType DoorType() const { return doorSfxType_; }
 
         inline const sf::Vector2f Center() const
         {
@@ -68,6 +73,7 @@ namespace map
         bool isEntry_;
         Level::Enum level_;
         sf::FloatRect rect_;
+        sfml_util::sound_effect::DoorType doorSfxType_;
     };
 
     using TransitionVec_t = std::vector<Transition>;

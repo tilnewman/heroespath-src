@@ -39,6 +39,7 @@
 #include "avatar/lpc-view.hpp"
 #include "avatar/avatar-enum.hpp"
 #include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sound-manager.hpp"
 #include "misc/vector-map.hpp"
 #include "misc/random.hpp"
 
@@ -389,7 +390,48 @@ namespace map
             if ((TRANSITION.IsEntry() == false) &&
                 (TRANSITION.Rect().contains(ADJ_PLAYER_POS_V)))
             {
+                auto const SOUND_EFFECT_OPEN{
+                    [& TRANSITION]()
+                    {
+                        if (TRANSITION.DoorType() == sfml_util::sound_effect::DoorType::Count)
+                        {
+                            return sfml_util::sound_effect::Count;
+                        }
+                        else
+                        {
+                            return sfml_util::sound_effect::RandomDoorSfx(
+                                TRANSITION.DoorType(),
+                                sfml_util::sound_effect::DoorAction::Open);
+                        }
+                    }() };
+
+                auto const SOUND_EFFECT_CLOSE{
+                    [& TRANSITION]()
+                    {
+                        if (TRANSITION.DoorType() == sfml_util::sound_effect::DoorType::Count)
+                        {
+                            return sfml_util::sound_effect::Count;
+                        }
+                        else
+                        {
+                            return sfml_util::sound_effect::RandomDoorSfx(
+                                TRANSITION.DoorType(),
+                                sfml_util::sound_effect::DoorAction::Close);
+                        }
+                    }() };
+
+                if (SOUND_EFFECT_OPEN != sfml_util::sound_effect::Count)
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlayNow(SOUND_EFFECT_OPEN);
+                }
+                
                 Load(TRANSITION.Level(), level_);
+                
+                if (SOUND_EFFECT_CLOSE != sfml_util::sound_effect::Count)
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(SOUND_EFFECT_CLOSE, 1.0f);
+                }
+
                 return true;
             }
         }

@@ -567,6 +567,28 @@ namespace sfml_util
     }
 
 
+    void SoundManager::SoundEffectPlayNow(const sound_effect::Enum SFX_ENUM)
+    {
+        auto & sfxWrapper{ sfxWrapperVec_[SFX_ENUM] };
+
+        if (sfxWrapper.IsValid() == false)
+        {
+            sfxWrapper = SfxWrapper(
+                SFX_ENUM,
+                std::make_unique<sf::Sound>(),
+                LoadSfxBuffer(SFX_ENUM));
+
+            sfxWrapper.Volume(SoundEffectVolume());
+        }
+
+        //This restarts play from the beginning, which is the
+        //desired behavior even if it was already playing,
+        //because I decided that repeated plays of the same
+        //sfx will restart if not allowed to finish.
+        sfxWrapper.Play();
+    }
+
+
     void SoundManager::PlaySfx_AckMinor()
     {
         Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
@@ -917,25 +939,7 @@ namespace sfml_util
             if (IsSfxDelayPairReadyToPlay(sfxDelayPair))
             {
                 willCleanup = true;
-
-                auto const SFX_ENUM{ sfxDelayPair.first };
-                auto & sfxWrapper{ sfxWrapperVec_[SFX_ENUM] };
-
-                if (sfxWrapper.IsValid() == false)
-                {
-                    sfxWrapper = SfxWrapper(
-                        SFX_ENUM,
-                        std::make_unique<sf::Sound>(),
-                        LoadSfxBuffer(SFX_ENUM) );
-
-                    sfxWrapper.Volume( SoundEffectVolume() );
-                }
-
-                //This restarts play from the beginning, which is the
-                //desired behavior even if it was already playing,
-                //because I decided that repeated plays of the same
-                //sfx will restart if not allowed to finish.
-                sfxWrapper.Play();
+                SoundEffectPlayNow(sfxDelayPair.first);
             }
         }
 

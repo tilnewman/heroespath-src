@@ -374,8 +374,8 @@ namespace sfml_util
 
         enum class DoorAction
         {
-            Open = 0,
-            Closed
+            Open,
+            Close
         };
 
         enum class DoorType
@@ -383,8 +383,12 @@ namespace sfml_util
             Common = 0,
             Old,
             Rattly,
-            Squaeky
+            Squaeky,
+            Count
         };
+
+        static const std::string DoorTypeToString(const DoorType);
+        static DoorType DoorTypeFromString(const std::string &);
 
         static sound_effect::Enum RandomDoorSfx(const DoorType, const DoorAction);
     };

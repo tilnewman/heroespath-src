@@ -120,6 +120,8 @@ namespace sfml_util
             const sound_effect::Enum SFX_ENUM,
             const float PRE_DELAY_SEC = 0.0f);
 
+        void SoundEffectPlayNow(const sound_effect::Enum);
+
         void PlaySfx_AckMinor();
         void PlaySfx_AckMajor();
         void PlaySfx_Reject();

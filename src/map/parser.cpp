@@ -68,6 +68,7 @@ namespace map
     const std::string Parser::XML_ATTRIB_NAME_VALUE_        { "value" };
     const std::string Parser::XML_ATTRIB_NAME_WALKBOUNDS_   { "walk-bounds" };
     const std::string Parser::XML_ATTRIB_NAME_NAME_         { "name" };
+    const std::string Parser::XML_ATTRIB_NAME_DOORSFX_      { "doorsfx" };
 
 
     void Parser::Parse(ParsePacket & packet) const
@@ -455,28 +456,29 @@ namespace map
 
         auto isEntry{ false };
         Level::Enum level{ Level::Count };
+        sfml_util::sound_effect::DoorType doorSfxType{ sfml_util::sound_effect::DoorType::Count };
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
             if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_PROPERTIES_))
             {
-                Parse_Transition_Property(CHILD_PAIR.second, isEntry, level);
+                Parse_Transition_Properties(CHILD_PAIR.second, isEntry, level, doorSfxType);
             }
         }
 
-        return Transition(isEntry, level, rect);
+        return Transition(isEntry, level, rect, doorSfxType);
     }
 
 
-    void Parser::Parse_Transition_Property(
+    void Parser::Parse_Transition_Properties(
         const boost::property_tree::ptree & PTREE,
         bool & isEntry,
-        Level::Enum & level) const
+        Level::Enum & level,
+        sfml_util::sound_effect::DoorType & doorSfxType) const
     {
         namespace ba = boost::algorithm;
 
         auto wasEntrySet{ false };
-        auto wasLevelSet{ false };
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
@@ -508,15 +510,31 @@ namespace map
                 try
                 {
                     level = Level::FromString(VALUE_STR);
-                    wasLevelSet = (level != Level::Count);
                 }
                 catch(...)
                 {
                     std::ostringstream ss;
 
-                    ss << "map::Parser::Parse_Transition_Property() found a level "
+                    ss << "map::Parser::Parse_Transition_Properties() found a level "
                         "property in a map file \"" << VALUE_STR
                         << "\", but that is not a valid level name.";
+
+                    throw std::runtime_error(ss.str());
+                }
+            }
+            else if (NAME_STR == XML_ATTRIB_NAME_DOORSFX_)
+            {
+                try
+                {
+                    doorSfxType = sfml_util::sound_effect::DoorTypeFromString(VALUE_STR);
+                }
+                catch (...)
+                {
+                    std::ostringstream ss;
+
+                    ss << "map::Parser::Parse_Transition_Properties() found a doorSfxType "
+                        "property in a map file \"" << VALUE_STR
+                        << "\", but that is not a valid name.";
 
                     throw std::runtime_error(ss.str());
                 }
@@ -524,10 +542,10 @@ namespace map
         }
 
         M_ASSERT_OR_LOGANDTHROW_SS((wasEntrySet),
-            "map::Parser::Parse_Transition_Property() was unable to parse an entry type.");
+            "map::Parser::Parse_Transition_Properties() was unable to parse an entry type.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((wasLevelSet),
-            "map::Parser::Parse_Transition_Property() was unable to parse a Level::Enum.");
+        M_ASSERT_OR_LOGANDTHROW_SS((level != Level::Count),
+            "map::Parser::Parse_Transition_Properties() was unable to parse a Level::Enum.");
     }
 
 

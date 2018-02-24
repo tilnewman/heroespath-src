@@ -138,10 +138,11 @@ namespace map
 
         const Transition Parse_Transition(const boost::property_tree::ptree &) const;
 
-        void Parse_Transition_Property(
+        void Parse_Transition_Properties(
             const boost::property_tree::ptree &,
             bool &,
-            Level::Enum &) const;
+            Level::Enum &,
+            sfml_util::sound_effect::DoorType &) const;
 
         void SetupEmptyTexture(Layout &) const;
 
@@ -185,6 +186,7 @@ namespace map
         static const std::string XML_ATTRIB_NAME_VALUE_;
         static const std::string XML_ATTRIB_NAME_WALKBOUNDS_;
         static const std::string XML_ATTRIB_NAME_NAME_;
+        static const std::string XML_ATTRIB_NAME_DOORSFX_;
     };
 
 }
