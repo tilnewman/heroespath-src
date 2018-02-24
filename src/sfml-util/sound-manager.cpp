@@ -336,27 +336,6 @@ namespace sfml_util
             { sound_effect::CombatLose1,
               sound_effect::CombatLose2,
               sound_effect::CombatLose3 });
-
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::TreasureOpen)] = SfxSet(SfxEnumVec_t
-            { sound_effect::TreasureOpen1,
-              sound_effect::TreasureOpen2,
-              sound_effect::TreasureOpen3,
-              sound_effect::TreasureOpen4,
-              sound_effect::TreasureOpen5,
-              sound_effect::TreasureOpen6,
-              sound_effect::TreasureOpen7,
-              sound_effect::TreasureOpen8,
-              sound_effect::TreasureOpen9 });
-
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::TreasurePicking)] =
-            SfxSet(SfxEnumVec_t
-            { sound_effect::TreasurePicking1,
-              sound_effect::TreasurePicking2,
-              sound_effect::TreasurePicking3,
-              sound_effect::TreasurePicking4,
-              sound_effect::TreasurePicking5,
-              sound_effect::TreasurePicking6,
-              sound_effect::TreasurePicking7 });
     }
 
 

@@ -65,6 +65,10 @@
 #include "map/map.hpp"
 #include "map/map-display.hpp"
 
+#include "state/game-state.hpp"
+#include "state/game-state-factory.hpp"
+#include "player/party.hpp"
+#include "player/fake-party.hpp"
 
 #include <sstream>
 #include <chrono>
@@ -115,6 +119,8 @@ namespace stage
 
         animBGSprite_.setTexture(animBGTexture_);
         animBGSprite_.setPosition(0.0f, 0.0f);
+
+        state::GameStateFactory::Instance()->NewGame(player::FakeParty::Make());
     }
 
 
@@ -373,13 +379,6 @@ namespace stage
             return;
         }
 
-        static auto hasTestingCompleted_Animations{ false };
-        if (false == hasTestingCompleted_Animations)
-        {
-            hasTestingCompleted_Animations = TestAnimations();
-            return;
-        }
-
         static auto hasTestingCompleted_CharacterImageSet{ false };
         if (false == hasTestingCompleted_CharacterImageSet)
         {
@@ -502,6 +501,13 @@ namespace stage
         {
             hasTestingCompleted_CreatureImageManager =
                 sfml_util::gui::CreatureImageManager::Instance()->Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_Animations{ false };
+        if (false == hasTestingCompleted_Animations)
+        {
+            hasTestingCompleted_Animations = TestAnimations();
             return;
         }
 

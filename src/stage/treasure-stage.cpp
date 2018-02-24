@@ -872,13 +872,13 @@ namespace stage
     sfml_util::sound_effect::Enum TreasureStage::SelectRandomLockPickingSfx() const
     {
         std::vector<sfml_util::sound_effect::Enum> lockPickingSfx = {
-            sfml_util::sound_effect::TreasurePicking1,
-            sfml_util::sound_effect::TreasurePicking2,
-            sfml_util::sound_effect::TreasurePicking3,
-            sfml_util::sound_effect::TreasurePicking4,
-            sfml_util::sound_effect::TreasurePicking5,
-            sfml_util::sound_effect::TreasurePicking6,
-            sfml_util::sound_effect::TreasurePicking7 };
+            sfml_util::sound_effect::LockPicking1,
+            sfml_util::sound_effect::LockPicking2,
+            sfml_util::sound_effect::LockPicking3,
+            sfml_util::sound_effect::LockPicking4,
+            sfml_util::sound_effect::LockPicking5,
+            sfml_util::sound_effect::LockPicking6,
+            sfml_util::sound_effect::LockPicking7 };
 
         return misc::Vector::SelectRandom(lockPickingSfx);
     }
@@ -892,10 +892,7 @@ namespace stage
             sfml_util::sound_effect::TreasureOpen3,
             sfml_util::sound_effect::TreasureOpen4,
             sfml_util::sound_effect::TreasureOpen5,
-            sfml_util::sound_effect::TreasureOpen6,
-            sfml_util::sound_effect::TreasureOpen7,
-            sfml_util::sound_effect::TreasureOpen8,
-            sfml_util::sound_effect::TreasureOpen9 };
+            sfml_util::sound_effect::TreasureOpen6 };
 
         return misc::Vector::SelectRandom(treasureOpeningSfx);
     }
@@ -904,7 +901,7 @@ namespace stage
     void TreasureStage::LockPickSuccess()
     {
         sfml_util::SoundManager::Instance()->
-            SoundEffectPlay(sfml_util::sound_effect::TreasureUnlock);
+            SoundEffectPlay(sfml_util::sound_effect::LockUnlock);
 
         willProcessLockpickTitle_ = true;
         LockboxOpen();

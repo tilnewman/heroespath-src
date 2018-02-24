@@ -315,17 +315,14 @@ namespace sfml_util
             TreasureOpen4,
             TreasureOpen5,
             TreasureOpen6,
-            TreasureOpen7,
-            TreasureOpen8,
-            TreasureOpen9,
-            TreasurePicking1,
-            TreasurePicking2,
-            TreasurePicking3,
-            TreasurePicking4,
-            TreasurePicking5,
-            TreasurePicking6,
-            TreasurePicking7,
-            TreasureUnlock,
+            LockPicking1,
+            LockPicking2,
+            LockPicking3,
+            LockPicking4,
+            LockPicking5,
+            LockPicking6,
+            LockPicking7,
+            LockUnlock,
             TrapBang,
             TrapBoom,
             TrapChiaowahh,
@@ -345,6 +342,27 @@ namespace sfml_util
             TrapSpiritShortHiss,
             TrapSplatDunk,
             TrapSplutter,
+            DoorCommonClose1,
+            DoorCommonClose2,
+            DoorCommonClose3,
+            DoorCommonOpen1,
+            DoorCommonOpen2,
+            DoorCommonOpen3,
+            DoorLocked1,
+            DoorLocked2,
+            DoorLocked3,
+            DoorOldClose1,
+            DoorOldClose2,
+            DoorOldOpen1,
+            DoorOldOpen2,
+            DoorRattlyClose1,
+            DoorRattlyClose2,
+            DoorRattlyClose3,
+            DoorRattlyOpen1,
+            DoorSqueakyClose1,
+            DoorSqueakyOpen1,
+            DoorSqueakyOpen2,
+            DoorSqueakyOpen3,
             Count,
             None,
             Random
@@ -353,6 +371,22 @@ namespace sfml_util
         static const std::string ToString(const sound_effect::Enum);
         static const std::string Filename(const sound_effect::Enum);
         static const std::string Directory(const sound_effect::Enum);
+
+        enum class DoorAction
+        {
+            Open = 0,
+            Closed
+        };
+
+        enum class DoorType
+        {
+            Common = 0,
+            Old,
+            Rattly,
+            Squaeky
+        };
+
+        static sound_effect::Enum RandomDoorSfx(const DoorType, const DoorAction);
     };
 
     using SfxEnumVec_t = std::vector<sound_effect::Enum>;

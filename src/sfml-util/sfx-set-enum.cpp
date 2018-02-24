@@ -72,8 +72,6 @@ namespace sfml_util
             case GuitarStrum:       { return "GuitarStrum"; }
             case CombatWin:         { return "CombatWin"; }
             case CombatLose:        { return "CombatLose"; }
-            case TreasureOpen:      { return "TreasureOpen"; }
-            case TreasurePicking:   { return "TreasurePicking"; }
             case Count:
             default:
             {

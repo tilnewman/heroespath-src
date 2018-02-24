@@ -69,8 +69,6 @@ namespace sfml_util
             GuitarStrum,
             CombatWin,
             CombatLose,
-            TreasureOpen,
-            TreasurePicking,
             Count
         };
 

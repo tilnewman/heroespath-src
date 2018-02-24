@@ -47,8 +47,9 @@ namespace sfml_util
 
         explicit SfxSet(const sound_effect::Enum);
 
-        SfxSet(const sound_effect::Enum FIRST_ENUM,
-                const sound_effect::Enum LAST_ENUM);
+        SfxSet(
+            const sound_effect::Enum FIRST_ENUM,
+            const sound_effect::Enum LAST_ENUM);
 
         //throws runtime_error if given is not in the set
         void Play(const sound_effect::Enum) const;

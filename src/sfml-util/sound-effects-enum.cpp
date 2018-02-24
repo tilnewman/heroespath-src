@@ -28,6 +28,7 @@
 // sound-effects-enum.cpp
 //
 #include "sound-effects-enum.hpp"
+#include "misc/vectors.hpp"
 
 #include <sstream>
 #include <exception>
@@ -313,23 +314,20 @@ namespace sfml_util
             case DeathBoar:                     { return "boar"; }
             case DeathLionboar:                 { return "lionboar"; }
             case Achievement:                   { return "achievement"; }
-            case TreasureOpen1:                 { return "open1"; }
-            case TreasureOpen2:                 { return "open2"; }
-            case TreasureOpen3:                 { return "open3"; }
-            case TreasureOpen4:                 { return "open4"; }
-            case TreasureOpen5:                 { return "open5"; }
-            case TreasureOpen6:                 { return "open6"; }
-            case TreasureOpen7:                 { return "open7"; }
-            case TreasureOpen8:                 { return "open8"; }
-            case TreasureOpen9:                 { return "open9"; }
-            case TreasurePicking1:              { return "picking1"; }
-            case TreasurePicking2:              { return "picking2"; }
-            case TreasurePicking3:              { return "picking3"; }
-            case TreasurePicking4:              { return "picking4"; }
-            case TreasurePicking5:              { return "picking5"; }
-            case TreasurePicking6:              { return "picking6"; }
-            case TreasurePicking7:              { return "picking7"; }
-            case TreasureUnlock:                { return "unlock"; }
+            case TreasureOpen1:                 { return "open-1"; }
+            case TreasureOpen2:                 { return "open-2"; }
+            case TreasureOpen3:                 { return "open-3"; }
+            case TreasureOpen4:                 { return "open-4"; }
+            case TreasureOpen5:                 { return "open-5"; }
+            case TreasureOpen6:                 { return "open-6"; }
+            case LockPicking1:                  { return "picking-1"; }
+            case LockPicking2:                  { return "picking-2"; }
+            case LockPicking3:                  { return "picking-3"; }
+            case LockPicking4:                  { return "picking-4"; }
+            case LockPicking5:                  { return "picking-5"; }
+            case LockPicking6:                  { return "picking-6"; }
+            case LockPicking7:                  { return "picking-7"; }
+            case LockUnlock:                    { return "unlock"; }
             case TrapBang:                      { return "trap-bang"; }
             case TrapBoom:                      { return "trap-boom"; }
             case TrapChiaowahh:                 { return "trap-chiaowahh"; }
@@ -338,8 +336,8 @@ namespace sfml_util
             case TrapFireball:                  { return "trap-fireball"; }
             case TrapGasExhale:                 { return "trap-gas-exhale"; }
             case TrapGasLeak:                   { return "trap-gas-leak"; }
-            case TrapGhost1:                    { return "trap-ghost1"; }
-            case TrapGhost2:                    { return "trap-ghost2"; }
+            case TrapGhost1:                    { return "trap-ghost-1"; }
+            case TrapGhost2:                    { return "trap-ghost-2"; }
             case TrapInferno:                   { return "trap-inferno"; }
             case TrapMetalBang:                 { return "trap-metal-bang"; }
             case TrapMetal:                     { return "trap-metal"; }
@@ -349,6 +347,27 @@ namespace sfml_util
             case TrapSpiritShortHiss:           { return "trap-spirit-short-hiss"; }
             case TrapSplatDunk:                 { return "trap-splat-dunk"; }
             case TrapSplutter:                  { return "trap-splutter"; }
+            case DoorCommonClose1:              { return "door-common-close-1"; }
+            case DoorCommonClose2:              { return "door-common-close-2"; }
+            case DoorCommonClose3:              { return "door-common-close-3"; }
+            case DoorCommonOpen1:               { return "door-common-open-1"; }
+            case DoorCommonOpen2:               { return "door-common-open-2"; }
+            case DoorCommonOpen3:               { return "door-common-open-3"; }
+            case DoorLocked1:                   { return "door-locked-1"; }
+            case DoorLocked2:                   { return "door-locked-2"; }
+            case DoorLocked3:                   { return "door-locked-3"; }
+            case DoorOldClose1:                 { return "door-old-close-1"; }
+            case DoorOldClose2:                 { return "door-old-close-2"; }
+            case DoorOldOpen1:                  { return "door-old-open-1"; }
+            case DoorOldOpen2:                  { return "door-old-open-2"; }
+            case DoorRattlyClose1:              { return "door-rattly-close-1"; }
+            case DoorRattlyClose2:              { return "door-rattly-close-2"; }
+            case DoorRattlyClose3:              { return "door-rattly-close-3"; }
+            case DoorRattlyOpen1:               { return "door-rattly-open-1"; }
+            case DoorSqueakyClose1:             { return "door-squeaky-close-1"; }
+            case DoorSqueakyOpen1:              { return "door-squeaky-open-1"; }
+            case DoorSqueakyOpen2:              { return "door-squeaky-open-2"; }
+            case DoorSqueakyOpen3:              { return "door-squeaky-open-3"; }
             case None:                          { return "None"; }
             case Count:
             case Random:
@@ -645,18 +664,15 @@ namespace sfml_util
             case TreasureOpen3:
             case TreasureOpen4:
             case TreasureOpen5:
-            case TreasureOpen6:
-            case TreasureOpen7:
-            case TreasureOpen8:
-            case TreasureOpen9:
-            case TreasurePicking1:
-            case TreasurePicking2:
-            case TreasurePicking3:
-            case TreasurePicking4:
-            case TreasurePicking5:
-            case TreasurePicking6:
-            case TreasurePicking7:
-            case TreasureUnlock:
+            case TreasureOpen6:                 { return "sound-effects/treasure"; }
+            case LockPicking1:
+            case LockPicking2:
+            case LockPicking3:
+            case LockPicking4:
+            case LockPicking5:
+            case LockPicking6:
+            case LockPicking7:
+            case LockUnlock:                    { return "sound-effects/lock"; }
             case TrapBang:
             case TrapBoom:
             case TrapChiaowahh:
@@ -675,7 +691,28 @@ namespace sfml_util
             case TrapSparksHiss:
             case TrapSpiritShortHiss:
             case TrapSplatDunk:
-            case TrapSplutter:                  { return "sound-effects/treasure-stage"; }
+            case TrapSplutter:                  { return "sound-effects/trap"; }
+            case DoorCommonClose1:
+            case DoorCommonClose2:
+            case DoorCommonClose3:
+            case DoorCommonOpen1:
+            case DoorCommonOpen2:
+            case DoorCommonOpen3:
+            case DoorLocked1:
+            case DoorLocked2:
+            case DoorLocked3:
+            case DoorOldClose1:
+            case DoorOldClose2:
+            case DoorOldOpen1:
+            case DoorOldOpen2:
+            case DoorRattlyClose1:
+            case DoorRattlyClose2:
+            case DoorRattlyClose3:
+            case DoorRattlyOpen1:
+            case DoorSqueakyClose1:
+            case DoorSqueakyOpen1:
+            case DoorSqueakyOpen2:
+            case DoorSqueakyOpen3:              { return "sound-effects/door"; }
             case Count:
             case None:
             case Random:
@@ -686,6 +723,86 @@ namespace sfml_util
                 throw std::range_error(ss.str());
             }
         }
+    }
+
+
+    sound_effect::Enum sound_effect::RandomDoorSfx(const DoorType TYPE, const DoorAction ACTION)
+    {
+        SfxEnumVec_t vec;
+
+        switch (TYPE)
+        {
+            case DoorType::Common:
+            {
+                if (ACTION == DoorAction::Open)
+                {
+                    vec = {
+                        sound_effect::DoorCommonOpen1,
+                        sound_effect::DoorCommonOpen2,
+                        sound_effect::DoorCommonOpen3 }; break;
+                }
+                else
+                {
+                    vec = {
+                        sound_effect::DoorCommonClose1,
+                        sound_effect::DoorCommonClose2,
+                        sound_effect::DoorCommonClose3 }; break;
+                }
+            }
+            case DoorType::Old:
+            {
+                if (ACTION == DoorAction::Open)
+                {
+                    vec = {
+                        sound_effect::DoorOldOpen1,
+                        sound_effect::DoorOldOpen2 }; break;
+                }
+                else
+                {
+                    vec = {
+                        sound_effect::DoorOldClose1,
+                        sound_effect::DoorOldClose2 }; break;
+                }
+            }
+            case DoorType::Rattly:
+            {
+                if (ACTION == DoorAction::Open)
+                {
+                    vec = { sound_effect::DoorRattlyOpen1 }; break;
+                }
+                else
+                {
+                    vec = {
+                        sound_effect::DoorRattlyClose1,
+                        sound_effect::DoorRattlyClose2,
+                        sound_effect::DoorRattlyClose3 }; break;
+                }
+            }
+            case DoorType::Squaeky:
+            {
+                if (ACTION == DoorAction::Open)
+                {
+                    vec = {
+                        sound_effect::DoorSqueakyOpen1,
+                        sound_effect::DoorSqueakyOpen2,
+                        sound_effect::DoorSqueakyOpen3 }; break;
+                }
+                else
+                {
+                    vec = { sound_effect::DoorSqueakyClose1 }; break;
+                }
+            }
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::sound_effect::RandomDoor(type=" << static_cast<int>(TYPE)
+                    << ", action=" << static_cast<int>(ACTION) << ")_Invalid(Type)ValueError.";
+
+                throw std::range_error(ss.str());
+            }
+        }
+
+        return misc::Vector::SelectRandom(vec);
     }
 
 }
