@@ -91,8 +91,9 @@ namespace map
         tileOffsets_ = TileOffsetsFromMapPos(STARTING_POS_V);
         offScreenMapSize_ = CalcOffScreenMapSize();
         SetupOffScreenTexture();
-        ReDraw();
         SetupAnimations();
+        ResetMapSubsections();
+        ReDraw(0.0f);
     }
 
 
@@ -118,12 +119,7 @@ namespace map
 
     void MapDisplay::Update(const float TIME_ELAPSED)
     {
-        DrawMapSubsectionOffscreen();
-        UpdateAndDrawAnimations(TIME_ELAPSED);
-        DrawCharacterImages();
-
-        offScreenTextureBelow_.display();
-        offScreenTextureAbove_.display();
+        ReDraw(TIME_ELAPSED);
     }
 
 
@@ -335,7 +331,11 @@ namespace map
     {
         for (std::size_t i(0); i < animUPtrVec_.size(); ++i)
         {
-            animUPtrVec_[i]->UpdateTime(TIME_ELAPSED);
+            if (TIME_ELAPSED > 0.0f)
+            {
+                animUPtrVec_[i]->UpdateTime(TIME_ELAPSED);
+            }
+
             auto sprite{ animUPtrVec_[i]->Sprite() };
             sprite.setPosition(OffScreenPosFromMapPos(sprite.getPosition()));
             offScreenTextureAbove_.draw(sprite);
@@ -343,10 +343,14 @@ namespace map
     }
 
 
-    void MapDisplay::ReDraw()
+    void MapDisplay::ReDraw(const float TIME_ELAPSED)
     {
-        ResetMapSubsections();
         DrawMapSubsectionOffscreen();
+        UpdateAndDrawAnimations(TIME_ELAPSED);
+        DrawCharacterImages();
+
+        offScreenTextureBelow_.display();
+        offScreenTextureAbove_.display();
     }
 
 
@@ -728,8 +732,9 @@ namespace map
 
         if (wereChangesMade)
         {
-            ReDraw();
             PositionMapSpriteTextureRect();
+            ResetMapSubsections();
+            ReDraw(0.0f);
         }
     }
 

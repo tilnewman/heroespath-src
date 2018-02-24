@@ -82,7 +82,7 @@ namespace map
         void DrawDebug(sf::RenderTarget &, sf::RenderStates) const;
         void DrawCharacterImages();
         void UpdateAndDrawAnimations(const float TIME_ELAPSED);
-        void ReDraw();
+        void ReDraw(const float TIME_ELAPSED);
         void ResetMapSubsections();
         void DrawMapSubsectionOffscreen();
 
