@@ -108,6 +108,12 @@ namespace map
             const sfml_util::Direction::Enum DIRECTION,
             const float ADJUSTMENT) const;
 
+        void ChangeLevel(const Transition &);
+
+        void PlayDoorSfx(
+            const sfml_util::sound_effect::DoorType,
+            const bool IS_OPEN_SFX) const;
+
     private:
         static const float PLAYER_MOVE_DISTANCE_;
         static const float NONPLAYER_MOVE_DISTANCE_;

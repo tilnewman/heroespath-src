@@ -390,47 +390,7 @@ namespace map
             if ((TRANSITION.IsEntry() == false) &&
                 (TRANSITION.Rect().contains(ADJ_PLAYER_POS_V)))
             {
-                auto const SOUND_EFFECT_OPEN{
-                    [& TRANSITION]()
-                    {
-                        if (TRANSITION.DoorType() == sfml_util::sound_effect::DoorType::Count)
-                        {
-                            return sfml_util::sound_effect::Count;
-                        }
-                        else
-                        {
-                            return sfml_util::sound_effect::RandomDoorSfx(
-                                TRANSITION.DoorType(),
-                                sfml_util::sound_effect::DoorAction::Open);
-                        }
-                    }() };
-
-                auto const SOUND_EFFECT_CLOSE{
-                    [& TRANSITION]()
-                    {
-                        if (TRANSITION.DoorType() == sfml_util::sound_effect::DoorType::Count)
-                        {
-                            return sfml_util::sound_effect::Count;
-                        }
-                        else
-                        {
-                            return sfml_util::sound_effect::RandomDoorSfx(
-                                TRANSITION.DoorType(),
-                                sfml_util::sound_effect::DoorAction::Close);
-                        }
-                    }() };
-
-                if (SOUND_EFFECT_OPEN != sfml_util::sound_effect::Count)
-                {
-                    sfml_util::SoundManager::Instance()->SoundEffectPlayNow(SOUND_EFFECT_OPEN);
-                }
-                
-                Load(TRANSITION.Level(), level_);
-                
-                if (SOUND_EFFECT_CLOSE != sfml_util::sound_effect::Count)
-                {
-                    sfml_util::SoundManager::Instance()->SoundEffectPlay(SOUND_EFFECT_CLOSE, 1.0f);
-                }
+                ChangeLevel(TRANSITION);
 
                 return true;
             }
@@ -457,6 +417,42 @@ namespace map
         }
 
         return posToTest;
+    }
+
+
+    void Map::ChangeLevel(const Transition & TRANSITION)
+    {
+        PlayDoorSfx(TRANSITION.DoorType(), true);
+        Load(TRANSITION.Level(), level_);
+        PlayDoorSfx(TRANSITION.DoorType(), false);
+    }
+
+
+    void Map::PlayDoorSfx(
+        const sfml_util::sound_effect::DoorType DOOR_TYPE,
+        const bool IS_OPEN_SFX) const
+    {
+        if (DOOR_TYPE != sfml_util::sound_effect::DoorType::Count)
+        {
+            auto const DOOR_ACTION{ ((IS_OPEN_SFX) ?
+                sfml_util::sound_effect::DoorAction::Open :
+                sfml_util::sound_effect::DoorAction::Close) };
+
+            auto const DOOR_SFX{
+                sfml_util::sound_effect::RandomDoorSfx(DOOR_TYPE, DOOR_ACTION) };
+
+            if (DOOR_SFX != sfml_util::sound_effect::Count)
+            {
+                if (IS_OPEN_SFX)
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlayNow(DOOR_SFX);
+                }
+                else
+                {
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(DOOR_SFX);
+                }
+            }
+        }
     }
 
 }

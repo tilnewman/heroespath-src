@@ -28,6 +28,7 @@
 // map-anim.hpp
 //
 #include "sfml-util/animation-enum.hpp"
+#include "sfml-util/music-enum.hpp"
 #include <SFML/Graphics/Rect.hpp>
 #include <string>
 #include <vector>
@@ -43,14 +44,17 @@ namespace map
     {
         MapAnim(
             const sfml_util::Animations::Enum ENUM = sfml_util::Animations::Count,
-            const sf::FloatRect & RECT = sf::FloatRect())
+            const sf::FloatRect & RECT = sf::FloatRect(),
+            const sfml_util::MusicEnumVec_t & MUSIC_VEC = sfml_util::MusicEnumVec_t())
         :
             which_anim(ENUM),
-            rect(RECT)
+            rect(RECT),
+            music_vec(MUSIC_VEC)
         {}
 
         sfml_util::Animations::Enum which_anim;
         sf::FloatRect rect;
+        sfml_util::MusicEnumVec_t music_vec;
     };
 
     using MapAnimVec_t = std::vector<MapAnim>;

@@ -59,6 +59,7 @@ namespace map
 
     public:
         MapDisplay(const Map & MAP, const sf::FloatRect & REGION);
+        virtual ~MapDisplay();
 
         void Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t &);
 
@@ -108,11 +109,16 @@ namespace map
         void SetupNPCShadowImage();
 
         void SetupAnimations();
+        
+        void StartMusic();
+        void UpdateMusicVolume();
+        void StopMusic();
+
+        float CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const;
 
     public:
         //how many extra tiles to draw offscreen that are outside the visible map area
         static const int EXTRA_OFFSCREEN_TILE_COUNT_;
-
         static const std::size_t VERTS_PER_QUAD_;
 
     private:
@@ -125,6 +131,15 @@ namespace map
         const sf::Vector2f WIN_POS_V_;
         const sf::Vector2f WIN_SIZE_V_;
         const sf::Vector2f WIN_CENTER_V_;
+        
+        //These distances are in offscreen coordinates.
+        const float ANIM_SFX_DISTANCE_MIN_;
+        const float ANIM_SFX_DISTANCE_MAX_;
+        const float ANIM_SFX_VOLUME_MIN_RATIO_;
+        const float ANIM_SFX_TIME_BETWEEN_UPDATES_;
+
+        float animSfxUpdateTimerSec_;
+
         Layout             layout_;
         TileOffsets        tileOffsets_;
         sf::Vector2f       playerPosV_;

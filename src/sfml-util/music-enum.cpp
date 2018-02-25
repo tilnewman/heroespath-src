@@ -42,16 +42,18 @@ namespace sfml_util
     {
         switch (E)
         {
-            case None:          { return "None"; }
-            case Theme:         { return "theme-violin"; }
-            case Wind:          { return "wind"; }
-            case Fire1:         { return "fire-1"; }
-            case Fire2:         { return "fire-2"; }
-            case CombatIntro:   { return "combatintro"; }
-            case PartyCreation: { return "party-creation-background"; }
-            case Credits:       { return "credits"; }
-            case Inventory:     { return "inventory"; }
-            case All:           { return "All"; }
+            case None:              { return "None"; }
+            case Theme:             { return "theme-violin"; }
+            case Wind:              { return "wind"; }
+            case FireIndoorSmall:   { return "fire-indoor-small"; }
+            case FireIndoorLarge:   { return "fire-indoor-large"; }
+            case FireOutdoor1:      { return "fire-outdoor-1"; }
+            case FireOutdoor2:      { return "fire-outdoor-2"; }
+            case CombatIntro:       { return "combatintro"; }
+            case PartyCreation:     { return "party-creation-background"; }
+            case Credits:           { return "credits"; }
+            case Inventory:         { return "inventory"; }
+            case All:               { return "All"; }
             case Count:
             default:
             {
@@ -75,14 +77,16 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Theme:         { return "theme"; }
-            case Wind:          { return "wind"; }
-            case Fire1:
-            case Fire2:         { return "fire"; }
-            case CombatIntro:   { return "combat-intro"; }
-            case PartyCreation: { return "party-creation"; }
-            case Credits:       { return "credits"; }
-            case Inventory:     { return "inventory"; }
+            case Theme:             { return "theme"; }
+            case Wind:              { return "wind"; }
+            case FireIndoorSmall:
+            case FireIndoorLarge:
+            case FireOutdoor1:
+            case FireOutdoor2:      { return "fire"; }
+            case CombatIntro:       { return "combat-intro"; }
+            case PartyCreation:     { return "party-creation"; }
+            case Credits:           { return "credits"; }
+            case Inventory:         { return "inventory"; }
             case All:
             case None:
             {
@@ -107,9 +111,11 @@ namespace sfml_util
         {
             case Theme:
             case Wind:
-            case Fire1:
+            case FireIndoorSmall:
+            case FireIndoorLarge:
+            case FireOutdoor1:
+            case FireOutdoor2:
             case PartyCreation:
-            case Fire2:
             case Credits:
             case Inventory:     { return true; }
             case CombatIntro:   { return false; }
@@ -135,14 +141,16 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Wind:          { return "Luke @RUST LTD"; }
+            case Wind:              { return "Luke @RUST LTD"; }
+            case FireIndoorSmall:   { return "Inchadney"; }
             case Theme:
-            case Fire1:
-            case Fire2:         { return "(unknown)"; }
-            case CombatIntro:   { return "(various)"; }
+            case FireIndoorLarge:
+            case FireOutdoor1:
+            case FireOutdoor2:      { return "(unknown)"; }
+            case CombatIntro:       { return "(various)"; }
             case Credits:
-            case Inventory:     { return "Janne Hanhisuanto"; }
-            case PartyCreation: { return "Marcelo Fernandez"; }
+            case Inventory:         { return "Janne Hanhisuanto"; }
+            case PartyCreation:     { return "Marcelo Fernandez"; }
             case All:
             case None:
             {
@@ -165,14 +173,16 @@ namespace sfml_util
     {
         switch (E)
         {
+            case FireIndoorSmall:   { return "CC-BY 3.0"; }
+            case FireIndoorLarge:   { return "Inchadney"; }
             case Theme:
             case Wind:
-            case Fire1:
-            case Fire2:         { return "CC0 1.0"; }
-            case CombatIntro:   { return "(various)"; }
+            case FireOutdoor1:
+            case FireOutdoor2:      { return "CC0 1.0"; }
+            case CombatIntro:       { return "(various)"; }
             case Credits:
-            case Inventory:     { return "CC-BY-SA 3.0"; }
-            case PartyCreation: { return "CC-BY 4.0"; }
+            case Inventory:         { return "CC-BY-SA 3.0"; }
+            case PartyCreation:     { return "CC-BY 4.0"; }
             case All:
             case None:
             {
@@ -195,14 +205,16 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Theme:         { return "Heroes' Path Theme"; }
-            case Wind:          { return "Wind"; }
-            case Fire1:         { return "Campfire1"; }
-            case Fire2:         { return "Campfire2"; }
-            case CombatIntro:   { return "(various)"; }
-            case PartyCreation: { return "Intro of Dragons"; }
-            case Credits:       { return "Radakan Menu"; }
-            case Inventory:     { return "PYC"; }
+            case Theme:             { return "Heroes' Path Theme"; }
+            case Wind:              { return "Wind"; }
+            case FireIndoorSmall:   { return "Fireplace Small"; }
+            case FireIndoorLarge:   { return "Fireplace Large"; }
+            case FireOutdoor1:      { return "Campfire1"; }
+            case FireOutdoor2:      { return "Campfire2"; }
+            case CombatIntro:       { return "(various)"; }
+            case PartyCreation:     { return "Intro of Dragons"; }
+            case Credits:           { return "Radakan Menu"; }
+            case Inventory:         { return "PYC"; }
             case All:
             case None:
             {

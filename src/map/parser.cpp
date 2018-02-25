@@ -408,7 +408,10 @@ namespace map
                     throw E;
                 }
 
-                anims_.push_back( MapAnim(ANIM_ENUM, rect) );
+                anims_.push_back( MapAnim(
+                    ANIM_ENUM,
+                    rect,
+                    sfml_util::Animations::Sfx(ANIM_ENUM)) );
             }
         }
     }

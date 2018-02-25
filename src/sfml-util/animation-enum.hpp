@@ -28,6 +28,7 @@
 // animation-enum.hpp
 //  An enumeration of all animations.
 //
+#include "sfml-util/music-enum.hpp"
 #include <string>
 #include <utility> //for std::pair
 
@@ -80,6 +81,7 @@ namespace sfml_util
         static bool IsMultiTexture(const Enum);
         static const std::pair<int, int> SizePair(const Enum);
         static float TimePerFrameSec(const Enum);
+        static const MusicEnumVec_t Sfx(const Enum);
     };
 
 }

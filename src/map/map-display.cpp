@@ -35,6 +35,7 @@
 #include "avatar/lpc-view.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
+#include "sfml-util/sound-manager.hpp"
 #include "game/game-data-file.hpp"
 #include "map/map.hpp"
 
@@ -63,6 +64,19 @@ namespace map
         WIN_CENTER_V_(
             WIN_POS_V_.x + (WIN_SIZE_V_.x * 0.5f),
             WIN_POS_V_.y + (WIN_SIZE_V_.y * 0.5f)),
+        ANIM_SFX_DISTANCE_MIN_(
+            game::GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-sound-map-animsfx-distance-min")),
+        ANIM_SFX_DISTANCE_MAX_(
+            game::GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-sound-map-animsfx-distance-max")),
+        ANIM_SFX_VOLUME_MIN_RATIO_(
+            game::GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-sound-map-animsfx-min-volume-ratio")),
+        ANIM_SFX_TIME_BETWEEN_UPDATES_(
+            game::GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-sound-map-animsfx-time-between-updates")),
+        animSfxUpdateTimerSec_(0.0f),
         layout_(),
         tileOffsets_(),
         playerPosV_(0.0f, 0.0f),
@@ -82,8 +96,15 @@ namespace map
     }
 
 
+    MapDisplay::~MapDisplay()
+    {
+        StopMusic();
+    }
+
+
     void MapDisplay::Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t & ANIM_INFO_VEC)
     {
+        StopMusic();
         animInfoVec_ = ANIM_INFO_VEC;
         tileOffsets_ = map::TileOffsets();
         playerPosOffsetV_ = sf::Vector2f(0.0f, 0.0f);
@@ -94,6 +115,8 @@ namespace map
         SetupAnimations();
         ResetMapSubsections();
         ReDraw(0.0f);
+        StartMusic();
+        UpdateMusicVolume();
     }
 
 
@@ -120,6 +143,14 @@ namespace map
     void MapDisplay::Update(const float TIME_ELAPSED)
     {
         ReDraw(TIME_ELAPSED);
+
+        //don't update the animation sound volume every frame
+        animSfxUpdateTimerSec_ += TIME_ELAPSED;
+        if (animSfxUpdateTimerSec_ > ANIM_SFX_TIME_BETWEEN_UPDATES_)
+        {
+            animSfxUpdateTimerSec_ = 0.0f;
+            UpdateMusicVolume();
+        }
     }
 
 
@@ -774,6 +805,75 @@ namespace map
                 ANIM_INFO.which_anim,
                 ANIM_INFO.rect,
                 sfml_util::Animations::TimePerFrameSec(ANIM_INFO.which_anim)));
+        }
+    }
+
+
+    void MapDisplay::StartMusic()
+    {
+        for (auto const & ANIM_INFO : animInfoVec_)
+        {
+            if (ANIM_INFO.music_vec.empty() == false)
+            {
+                sfml_util::SoundManager::Instance()->MusicStart(ANIM_INFO.music_vec);
+            }
+        }
+    }
+
+
+    void MapDisplay::UpdateMusicVolume()
+    {
+        for (auto const & ANIM_INFO : animInfoVec_)
+        {
+            if (ANIM_INFO.music_vec.empty() == false)
+            {
+                auto const ANIM_POS_V{ sf::Vector2f(
+                    ANIM_INFO.rect.left + (ANIM_INFO.rect.width * 0.5f),
+                    ANIM_INFO.rect.top + (ANIM_INFO.rect.height * 0.5f)) };
+
+                auto const DISTANCE_TO_PLAYER{ sfml_util::Distance(ANIM_POS_V, PlayerPosMap()) };
+
+                sfml_util::SoundManager::Instance()->MusicVolume(
+                    ANIM_INFO.music_vec,
+                    CalcAnimationVolume(DISTANCE_TO_PLAYER));
+            }
+        }
+    }
+
+
+    void MapDisplay::StopMusic()
+    {
+        for (auto const & ANIM_INFO : animInfoVec_)
+        {
+            if (ANIM_INFO.music_vec.empty() == false)
+            {
+                sfml_util::SoundManager::Instance()->MusicStop(ANIM_INFO.music_vec);
+            }
+        }
+    }
+
+
+    float MapDisplay::CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const
+    {
+        auto const DIFF_DISTANCE{ ANIM_SFX_DISTANCE_MAX_ - ANIM_SFX_DISTANCE_MIN_ };
+        
+        //Sounds coming from animations are sfml_util::music and not sfml_util::sound_effects,
+        //but they are goverened by the SoundEffectsVolume and not the MusicVolume.
+        auto const MAX_VOLUME{ sfml_util::SoundManager::Instance()->SoundEffectVolume() };
+        auto const MIN_VOLUME{ MAX_VOLUME * ANIM_SFX_VOLUME_MIN_RATIO_ };
+        auto const DIFF_VOLUME{ MAX_VOLUME - MIN_VOLUME };
+
+        if (DISTANCE_TO_PLAYER > ANIM_SFX_DISTANCE_MAX_)
+        {
+            return MIN_VOLUME;
+        }
+        else if (DISTANCE_TO_PLAYER < ANIM_SFX_DISTANCE_MIN_)
+        {
+            return MAX_VOLUME;
+        }
+        else
+        {
+            return MIN_VOLUME + ((1.0f - (DISTANCE_TO_PLAYER / DIFF_DISTANCE)) * DIFF_VOLUME);
         }
     }
 

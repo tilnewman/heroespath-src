@@ -283,5 +283,18 @@ namespace sfml_util
         }
     }
 
+
+    const MusicEnumVec_t Animations::Sfx(const Animations::Enum E)
+    {
+        if (E == Animations::Campfire)
+        {
+            return { music::FireIndoorLarge };
+        }
+        else
+        {
+            return {};
+        }
+    }
+
 }
 }

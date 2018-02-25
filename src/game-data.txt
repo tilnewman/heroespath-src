@@ -43,6 +43,11 @@ heroespath-treasure-religious-base= 0.05
 heroespath-treasure-religious-mult= 0.01
 heroespath-treasure-lockbox-coin-max=1500
 
+heroespath-sound-map-animsfx-distance-min=          50.0
+heroespath-sound-map-animsfx-distance-max=          400.0
+heroespath-sound-map-animsfx-min-volume-ratio=      0.2
+heroespath-sound-map-animsfx-time-between-updates=  0.333
+
 #directories (assume all are relative to media except for system-media-dir) (always leave a trailing slash)
 system-media-dir-linux=                 ../../heroespath-media/
 system-media-dir-win=                   ../../../heroespath-media/

@@ -84,13 +84,13 @@ namespace stage
         ouroborosUPtr_     (),
         botSymbol_         ()
     {
-        sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Fire1);
+        sfml_util::SoundManager::Instance()->MusicStart({sfml_util::music::FireOutdoor1, sfml_util::music::FireOutdoor2});
     }
 
 
     CampStage::~CampStage()
     {
-        sfml_util::SoundManager::Instance()->MusicStop(sfml_util::music::Fire1);
+        sfml_util::SoundManager::Instance()->MusicStop({ sfml_util::music::FireOutdoor1, sfml_util::music::FireOutdoor2 });
 
         //If the theme music volume was changed just because this was the
         //Camp Stage, then set it back again once leaving the Intro Stage.

@@ -44,8 +44,10 @@ namespace sfml_util
         {
             Theme = 0,
             Wind,
-            Fire1,
-            Fire2,
+            FireIndoorSmall,
+            FireIndoorLarge,
+            FireOutdoor1,
+            FireOutdoor2,
             CombatIntro,
             PartyCreation,
             Credits,

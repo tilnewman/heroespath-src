@@ -403,7 +403,8 @@ namespace sfml_util
         for (auto & songSet : songSetVec_)
         {
             if (songSet.IsValid() &&
-                ((songSet.op.Info().Which() == WHICH) || (WHICH == music::All)))
+                (((songSet.set.Count() == 1) && (songSet.op.Info().Which() == WHICH)) ||
+                (WHICH == music::All)))
             {
                 songSet.op.VolumeFadeOut(FADE_MULT, true);
             }
@@ -413,9 +414,29 @@ namespace sfml_util
 
     void SoundManager::MusicStop(const MusicEnumVec_t & MUSIC_ENUMS, const float FADE_MULT)
     {
-        for (auto const MUSIC_ENUM : MUSIC_ENUMS)
+        for (auto & songSet : songSetVec_)
         {
-            MusicStop(MUSIC_ENUM, FADE_MULT);
+            if (songSet.IsValid())
+            {
+                auto const CONTAINS_ALL{
+                    [&]()
+                {
+                    for (auto const MUSIC : MUSIC_ENUMS)
+                    {
+                        if (songSet.set.Contains(MUSIC) == false)
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }() };
+
+                if (CONTAINS_ALL)
+                {
+                    songSet.op.VolumeFadeOut(FADE_MULT, true);
+                }
+            }
         }
     }
 
@@ -433,6 +454,38 @@ namespace sfml_util
         }
 
         return musicInfos;
+    }
+
+
+    void SoundManager::MusicVolume(
+        const MusicEnumVec_t & MUSIC_ENUMS,
+        const float NEW_VOLUME,
+        const float FADE_MULT)
+    {
+        for (auto & songSet : songSetVec_)
+        {
+            if (songSet.IsValid())
+            {
+                auto const CONTAINS_ALL{
+                    [&]()
+                    {
+                        for (auto const MUSIC : MUSIC_ENUMS)
+                        {
+                            if (songSet.set.Contains(MUSIC) == false)
+                            {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }() };
+
+                if (CONTAINS_ALL)
+                {
+                    songSet.op.VolumeFadeTo(NEW_VOLUME, FADE_MULT);
+                }
+            }
+        }
     }
 
 

@@ -101,6 +101,11 @@ namespace sfml_util
 
         const MusicInfoVec_t MusicInfoSet() const;
 
+        void MusicVolume(
+            const MusicEnumVec_t & MUSIC_ENUMS,
+            const float NEW_VOLUME,
+            const float FADE_MULT = MusicOperator::FADE_MULT_IMMEDIATE_);
+
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         //Note:  These functions don't actually change the volume of any sound objects in memory.
