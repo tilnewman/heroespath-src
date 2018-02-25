@@ -29,6 +29,8 @@
 //
 #include "music-enum.hpp"
 
+#include <boost/algorithm/string.hpp>
+
 #include <sstream>
 #include <exception>
 
@@ -38,6 +40,46 @@ namespace heroespath
 namespace sfml_util
 {
 
+    const std::string Footstep::ToString(const Footstep::Enum E)
+    {
+        switch (E)
+        {
+            case Grass:     { return "Grass"; }
+            case Gravel:    { return "Gravel"; }
+            case Leaves:    { return "Leaves"; }
+            case Solid:     { return "Solid"; }
+            case Wood:      { return "Wood"; }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::Footstep::ToString(" << E << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    Footstep::Enum Footstep::FromString(const std::string & NAME_ORIG)
+    {
+        namespace ba = boost::algorithm;
+
+        auto const NAME_LOWER{ ba::to_lower_copy(NAME_ORIG) };
+
+        for (int i(0); i < Footstep::Count; ++i)
+        {
+            auto const ENUM{ static_cast<Footstep::Enum>(i) };
+
+            if (ba::to_lower_copy(Footstep::ToString(ENUM)) == NAME_LOWER)
+            {
+                return ENUM;
+            }
+        }
+
+        return Footstep::Count;
+    }
+
+
     const std::string music::ToString(const music::Enum E)
     {
         switch (E)
@@ -45,6 +87,11 @@ namespace sfml_util
             case None:              { return "None"; }
             case Theme:             { return "theme-violin"; }
             case Wind:              { return "wind"; }
+            case FootstepGrass:     { return "footstep-grass"; }
+            case FootstepGravel:    { return "footstep-gravel"; }
+            case FootstepLeaves:    { return "footstep-leaves"; }
+            case FootstepSolid:     { return "footstep-solid"; }
+            case FootstepWood:      { return "footstep-wood"; }
             case FireIndoorSmall:   { return "fire-indoor-small"; }
             case FireIndoorLarge:   { return "fire-indoor-large"; }
             case FireOutdoor1:      { return "fire-outdoor-1"; }
@@ -79,6 +126,11 @@ namespace sfml_util
         {
             case Theme:             { return "theme"; }
             case Wind:              { return "wind"; }
+            case FootstepGrass:
+            case FootstepGravel:
+            case FootstepLeaves:
+            case FootstepSolid:
+            case FootstepWood:      { return "footstep"; }
             case FireIndoorSmall:
             case FireIndoorLarge:
             case FireOutdoor1:
@@ -111,6 +163,11 @@ namespace sfml_util
         {
             case Theme:
             case Wind:
+            case FootstepGrass:
+            case FootstepGravel:
+            case FootstepLeaves:
+            case FootstepSolid:
+            case FootstepWood:
             case FireIndoorSmall:
             case FireIndoorLarge:
             case FireOutdoor1:
@@ -143,6 +200,11 @@ namespace sfml_util
         {
             case Wind:              { return "Luke @RUST LTD"; }
             case FireIndoorSmall:   { return "Inchadney"; }
+            case FootstepGrass:
+            case FootstepGravel:
+            case FootstepLeaves:
+            case FootstepSolid:
+            case FootstepWood:
             case Theme:
             case FireIndoorLarge:
             case FireOutdoor1:
@@ -177,6 +239,11 @@ namespace sfml_util
             case FireIndoorLarge:   { return "Inchadney"; }
             case Theme:
             case Wind:
+            case FootstepGrass:
+            case FootstepGravel:
+            case FootstepLeaves:
+            case FootstepSolid:
+            case FootstepWood:
             case FireOutdoor1:
             case FireOutdoor2:      { return "CC0 1.0"; }
             case CombatIntro:       { return "(various)"; }
@@ -207,6 +274,11 @@ namespace sfml_util
         {
             case Theme:             { return "Heroes' Path Theme"; }
             case Wind:              { return "Wind"; }
+            case FootstepGrass:     { return "Footstep Grass"; }
+            case FootstepGravel:    { return "Footstep Gravel"; }
+            case FootstepLeaves:    { return "Footstep Leaves"; }
+            case FootstepSolid:     { return "Footstep Solid"; }
+            case FootstepWood:      { return "Footstep Wood"; }
             case FireIndoorSmall:   { return "Fireplace Small"; }
             case FireIndoorLarge:   { return "Fireplace Large"; }
             case FireOutdoor1:      { return "Campfire1"; }
@@ -230,6 +302,17 @@ namespace sfml_util
                 throw std::range_error(ss.str());
             }
         }
+    }
+
+
+    music::Enum music::FootstepToMusic(const Footstep::Enum E)
+    {
+        if (E == Footstep::Grass) return music::FootstepGrass;
+        else if (E == Footstep::Gravel) return music::FootstepGravel;
+        else if (E == Footstep::Leaves) return music::FootstepLeaves;
+        else if (E == Footstep::Solid) return music::FootstepSolid;
+        else if (E == Footstep::Wood) return music::FootstepWood;
+        else return music::Count;
     }
 
 }

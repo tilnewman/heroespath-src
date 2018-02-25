@@ -38,12 +38,33 @@ namespace heroespath
 namespace sfml_util
 {
 
+    struct Footstep
+    {
+        enum Enum
+        {
+            Grass = 0,
+            Gravel,
+            Leaves,
+            Solid,
+            Wood,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+        static Enum FromString(const std::string &);
+    };
+
     struct music
     {
         enum Enum
         {
             Theme = 0,
             Wind,
+            FootstepGrass,
+            FootstepGravel,
+            FootstepLeaves,
+            FootstepSolid,
+            FootstepWood,
             FireIndoorSmall,
             FireIndoorLarge,
             FireOutdoor1,
@@ -66,6 +87,7 @@ namespace sfml_util
         static const std::string LicenseTitle(const music::Enum);
         static const std::string SongName(const music::Enum);
         static bool IsLooped(const music::Enum);
+        static music::Enum FootstepToMusic(const Footstep::Enum);
     };
 
     using MusicEnumVec_t = std::vector<music::Enum>;
