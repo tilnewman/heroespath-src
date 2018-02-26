@@ -115,6 +115,8 @@ namespace sfml_util
             return which_;
         }
 
+        void RandomVaryTimePerFrame();
+
     protected:
         Animations::Enum which_;
         sf::BlendMode blendMode_;

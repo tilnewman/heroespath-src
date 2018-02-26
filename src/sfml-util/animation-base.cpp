@@ -28,6 +28,7 @@
 // animation-base.cpp
 //
 #include "animation-base.hpp"
+#include "misc/random.hpp"
 
 
 namespace heroespath
@@ -56,6 +57,14 @@ namespace sfml_util
 
     Animation::~Animation()
     {}
+
+
+    void Animation::RandomVaryTimePerFrame()
+    {
+        auto const VARY_SEC_MAX{ 0.02f };
+        timePerFrameSec_ -= VARY_SEC_MAX * 0.5f;
+        timePerFrameSec_ += misc::random::Float(VARY_SEC_MAX);
+    }
 
 }
 }

@@ -815,6 +815,8 @@ namespace map
                 ANIM_INFO.which_anim,
                 ANIM_INFO.rect,
                 sfml_util::Animations::TimePerFrameSec(ANIM_INFO.which_anim)));
+
+            animUPtrVec_[animUPtrVec_.size() - 1]->RandomVaryTimePerFrame();
         }
     }
 
