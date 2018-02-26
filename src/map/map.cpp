@@ -31,7 +31,6 @@
 
 #include "map/map-display.hpp"
 #include "map/layout.hpp"
-#include "map/walk-sfx.hpp"
 #include "map/map-anim.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
@@ -57,13 +56,22 @@ namespace map
 
     Map::Map(const sf::FloatRect & REGION)
     :
+        WALK_SFX_VOLUME_RATIO_(
+            game::GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-sound-map-walk-sfx-volume-ratio")),
         mapDisplayUPtr_(std::make_unique<map::MapDisplay>( * this, REGION) ),
         collisionVec_(),
         transitionVec_(),
         level_(Level::Count),
         player_(std::make_unique<avatar::LPCView>(game::Game::Instance()->State().Party().Avatar())),
         nonPlayers_(),
-        walkRectVecMap_()
+        walkRectVecMap_(),
+        walkSfxLayers_(),
+        walkMusicWhich_(sfml_util::music::Count),
+        walkMusicIsWalking_(false),
+        sfxTimer_(
+            game::GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-sound-map-sfx-time-between-updates"))
     {}
 
 
@@ -83,8 +91,6 @@ namespace map
 
         MapAnimVec_t animInfoVec;
 
-        WalkSfxRegionLayers walkSfxLayers;
-
         ParsePacket packet(
             Level::Path(LEVEL_TO_LOAD),
             layout,
@@ -92,7 +98,7 @@ namespace map
             transitionVec_,
             walkRectVecMap_,
             animInfoVec,
-            walkSfxLayers);
+            walkSfxLayers_);
 
         Parser mapParser;
         mapParser.Parse(packet);
@@ -103,8 +109,7 @@ namespace map
         {
             mapDisplayUPtr_->Load(
                 FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM),
-                animInfoVec,
-                walkSfxLayers);
+                animInfoVec);
         }
     }
 
@@ -261,6 +266,12 @@ namespace map
         for (auto & npc : nonPlayers_)
         {
             npc.Update(TIME_ELAPSED);
+        }
+
+        if (sfxTimer_.Update(TIME_ELAPSED))
+        {
+            mapDisplayUPtr_->UpdateAnimMusicVolume();
+            UpdateWalkMusic();
         }
     }
 
@@ -458,6 +469,44 @@ namespace map
                 }
             }
         }
+    }
+
+
+    void Map::UpdateWalkMusic()
+    {
+        auto const NEW_IS_WALKING{ (Player().GetView().Pose() == avatar::Pose::Walking) };
+        auto const NEW_WALK_MUSIC{ walkSfxLayers_.FindSfx(mapDisplayUPtr_->PlayerPosMap()) };
+
+        if (NEW_IS_WALKING && ((NEW_WALK_MUSIC != walkMusicWhich_) || (NEW_IS_WALKING != walkMusicIsWalking_)))
+        {
+            if (sfml_util::music::Count != walkMusicWhich_)
+            {
+                sfml_util::SoundManager::Instance()->MusicStop(
+                    walkMusicWhich_,
+                    sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_);
+            }
+
+            if (NEW_WALK_MUSIC != sfml_util::music::Count)
+            {
+                auto const VOLUME{
+                    sfml_util::SoundManager::Instance()->SoundEffectVolume() *
+                        WALK_SFX_VOLUME_RATIO_ };
+
+                sfml_util::SoundManager::Instance()->MusicStart(
+                    NEW_WALK_MUSIC,
+                    sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_,
+                    VOLUME);
+            }
+        }
+        else if ((NEW_IS_WALKING == false) && (sfml_util::music::Count != walkMusicWhich_))
+        {
+            sfml_util::SoundManager::Instance()->MusicStop(
+                walkMusicWhich_,
+                sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_);
+        }
+
+        walkMusicWhich_ = NEW_WALK_MUSIC;
+        walkMusicIsWalking_ = NEW_IS_WALKING;
     }
 
 }

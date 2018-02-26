@@ -32,7 +32,8 @@
 #include "map/level-enum.hpp"
 #include "map/transition.hpp"
 #include "map/parser.hpp"
-
+#include "map/walk-sfx.hpp"
+#include "misc/timer.hpp"
 #include "avatar/model.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
@@ -116,9 +117,13 @@ namespace map
             const sfml_util::sound_effect::DoorType,
             const bool IS_OPEN_SFX) const;
 
+        void UpdateWalkMusic();
+
     private:
         static const float PLAYER_MOVE_DISTANCE_;
         static const float NONPLAYER_MOVE_DISTANCE_;
+
+        const float WALK_SFX_VOLUME_RATIO_;
 
         MapDisplayUPtr_t mapDisplayUPtr_;
         std::vector<sf::FloatRect> collisionVec_;
@@ -127,6 +132,10 @@ namespace map
         avatar::Model player_;
         std::vector<avatar::Model> nonPlayers_;
         WalkRectMap_t walkRectVecMap_;
+        WalkSfxRegionLayers walkSfxLayers_;
+        sfml_util::music::Enum walkMusicWhich_;
+        bool walkMusicIsWalking_;
+        misc::Timer sfxTimer_;
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;

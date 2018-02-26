@@ -73,13 +73,6 @@ namespace map
         ANIM_SFX_VOLUME_MIN_RATIO_(
             game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-sound-map-animsfx-min-volume-ratio")),
-        SFX_TIME_BETWEEN_UPDATES_(
-            game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-sound-map-sfx-time-between-updates")),
-        WALK_SFX_VOLUME_RATIO_(
-            game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-sound-map-walk-sfx-volume-ratio")),
-        sfxUpdateTimerSec_(0.0f),
         layout_(),
         tileOffsets_(),
         playerPosV_(0.0f, 0.0f),
@@ -93,10 +86,7 @@ namespace map
         npcShadowTexture_(),
         npcShadowSprite_(),
         animInfoVec_(),
-        animUPtrVec_(),
-        walkSfxLayers_(),
-        walkMusic_(sfml_util::music::Count),
-        isWalking_(false)
+        animUPtrVec_()
     {
         SetupNPCShadowImage();
     }
@@ -110,11 +100,9 @@ namespace map
 
     void MapDisplay::Load(
         const sf::Vector2f & STARTING_POS_V,
-        const MapAnimVec_t & ANIM_INFO_VEC,
-        const WalkSfxRegionLayers & WALK_SFX_LAYERS)
+        const MapAnimVec_t & ANIM_INFO_VEC)
     {
         StopAnimMusic();
-        walkSfxLayers_ = WALK_SFX_LAYERS;
         animInfoVec_ = ANIM_INFO_VEC;
         tileOffsets_ = map::TileOffsets();
         playerPosOffsetV_ = sf::Vector2f(0.0f, 0.0f);
@@ -153,14 +141,25 @@ namespace map
     void MapDisplay::Update(const float TIME_ELAPSED)
     {
         ReDraw(TIME_ELAPSED);
+    }
 
-        //don't update the music every frame
-        sfxUpdateTimerSec_ += TIME_ELAPSED;
-        if (sfxUpdateTimerSec_ > SFX_TIME_BETWEEN_UPDATES_)
+
+    void MapDisplay::UpdateAnimMusicVolume()
+    {
+        for (auto const & ANIM_INFO : animInfoVec_)
         {
-            sfxUpdateTimerSec_ = 0.0f;
-            UpdateAnimMusicVolume();
-            UpdateWalkMusic();
+            if (ANIM_INFO.music_vec.empty() == false)
+            {
+                auto const ANIM_POS_V{ sf::Vector2f(
+                    ANIM_INFO.rect.left + (ANIM_INFO.rect.width * 0.5f),
+                    ANIM_INFO.rect.top + (ANIM_INFO.rect.height * 0.5f)) };
+
+                auto const DISTANCE_TO_PLAYER{ sfml_util::Distance(ANIM_POS_V, PlayerPosMap()) };
+
+                sfml_util::SoundManager::Instance()->MusicVolume(
+                    ANIM_INFO.music_vec,
+                    CalcAnimationVolume(DISTANCE_TO_PLAYER));
+            }
         }
     }
 
@@ -832,26 +831,6 @@ namespace map
     }
 
 
-    void MapDisplay::UpdateAnimMusicVolume()
-    {
-        for (auto const & ANIM_INFO : animInfoVec_)
-        {
-            if (ANIM_INFO.music_vec.empty() == false)
-            {
-                auto const ANIM_POS_V{ sf::Vector2f(
-                    ANIM_INFO.rect.left + (ANIM_INFO.rect.width * 0.5f),
-                    ANIM_INFO.rect.top + (ANIM_INFO.rect.height * 0.5f)) };
-
-                auto const DISTANCE_TO_PLAYER{ sfml_util::Distance(ANIM_POS_V, PlayerPosMap()) };
-
-                sfml_util::SoundManager::Instance()->MusicVolume(
-                    ANIM_INFO.music_vec,
-                    CalcAnimationVolume(DISTANCE_TO_PLAYER));
-            }
-        }
-    }
-
-
     void MapDisplay::StopAnimMusic()
     {
         for (auto const & ANIM_INFO : animInfoVec_)
@@ -861,44 +840,6 @@ namespace map
                 sfml_util::SoundManager::Instance()->MusicStop(ANIM_INFO.music_vec);
             }
         }
-    }
-
-
-    void MapDisplay::UpdateWalkMusic()
-    {
-        auto const NEW_IS_WALKING{ (MAP_.Player().GetView().Pose() == avatar::Pose::Walking) };
-        auto const NEW_WALK_MUSIC{ walkSfxLayers_.FindSfx(PlayerPosMap()) };
-
-        if (NEW_IS_WALKING && ((NEW_WALK_MUSIC != walkMusic_) || (NEW_IS_WALKING != isWalking_)))
-        {
-            if (sfml_util::music::Count != walkMusic_)
-            {
-                sfml_util::SoundManager::Instance()->MusicStop(
-                    walkMusic_,
-                    sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_);
-            }
-
-            if (NEW_WALK_MUSIC != sfml_util::music::Count)
-            {
-                auto const VOLUME{
-                    sfml_util::SoundManager::Instance()->SoundEffectVolume() *
-                        WALK_SFX_VOLUME_RATIO_ };
-
-                sfml_util::SoundManager::Instance()->MusicStart(
-                    NEW_WALK_MUSIC,
-                    sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_,
-                    VOLUME);
-            }
-        }
-        else if ((NEW_IS_WALKING == false) && (sfml_util::music::Count != walkMusic_))
-        {
-            sfml_util::SoundManager::Instance()->MusicStop(
-                walkMusic_,
-                sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_);
-        }
-
-        walkMusic_ = NEW_WALK_MUSIC;
-        isWalking_ = NEW_IS_WALKING;
     }
 
 
