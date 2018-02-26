@@ -825,7 +825,7 @@ namespace sfml_util
 
         static auto counter{ 0 };
         static auto playOrStop{ false };
-        static auto const MUSIC_COUNT_MAX{ 50 };
+        static auto const MUSIC_COUNT_MAX{ 200 };
 
         //test sound effects individually
         {

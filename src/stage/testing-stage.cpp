@@ -793,6 +793,8 @@ namespace stage
                 "media-images-misc-weight",
                 "media-images-misc-knot-corner",
                 "media-images-misc-picture-frame",
+                "media-images-misc-door",
+                "media-images-misc-door-locked",
                 "media-images-chest-closed",
                 "media-images-chest-open",
                 "media-images-coins",
