@@ -108,7 +108,9 @@ namespace map
             const sfml_util::Direction::Enum DIRECTION,
             const float ADJUSTMENT) const;
 
-        void ChangeLevel(const Transition &);
+        //Transition is not taken by reference because this function needs it's own copy.
+        //This is because Load() will be called which will change the original copy.
+        void ChangeLevel(const Transition);
 
         void PlayDoorSfx(
             const sfml_util::sound_effect::DoorType,

@@ -149,6 +149,8 @@ namespace sfml_util
             const float       FADE_MULT,
             const float       VOLUME) const;
 
+        void SongsUpdate(const float ELAPSED_TIME_SEC);
+
         void SoundEffectsUpdate(const float ELAPSED_TIME_SEC);
 
         SoundBufferUPtr_t LoadSfxBuffer(const sound_effect::Enum) const;

@@ -491,52 +491,7 @@ namespace sfml_util
 
     void SoundManager::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        auto willCleanup{ false };
-
-        for (auto & songSet : songSetVec_)
-        {
-            if (songSet.IsValid())
-            {
-                auto const UPDATE_STATUS{ songSet.op.UpdateTime(ELAPSED_TIME_SECONDS) };
-
-                if (UPDATE_STATUS == music_update_status::FadedOutKill)
-                {
-                    songSet.op.Stop();
-                    songSet = SongSet();
-                    willCleanup = true;
-                }
-                else if (UPDATE_STATUS == music_update_status::Stopped)
-                {
-                    songSet.op.Stop();
-
-                    if (songSet.set.WillLoop())
-                    {
-                        const float VOLUME_TO_USE((songSet.set.Volume() < 0.0f) ?
-                            musicVolume_ : songSet.set.Volume());
-
-                        songSet.op = MakeAndStartMusicOperator(
-                            songSet.set.Advance(), songSet.set.FadeInMult(), VOLUME_TO_USE);
-                    }
-                    else
-                    {
-                        songSet = SongSet();
-                        willCleanup = true;
-                    }
-                }
-            }
-        }
-
-        if (willCleanup)
-        {
-            songSetVec_.erase(std::remove_if(
-                songSetVec_.begin(),
-                songSetVec_.end(),
-                [](const auto & SONG_SET)
-                {
-                    return (SONG_SET.IsValid() == false);
-                }), songSetVec_.end());
-        }
-
+        SongsUpdate(ELAPSED_TIME_SECONDS);
         SoundEffectsUpdate(ELAPSED_TIME_SECONDS);
     }
 
@@ -980,6 +935,55 @@ namespace sfml_util
         }
     }
 
+    void SoundManager::SongsUpdate(const float ELAPSED_TIME_SECONDS)
+    {
+        auto willCleanup{ false };
+
+        for (auto & songSet : songSetVec_)
+        {
+            if (songSet.IsValid())
+            {
+                auto const UPDATE_STATUS{ songSet.op.UpdateTime(ELAPSED_TIME_SECONDS) };
+
+                if (UPDATE_STATUS == music_update_status::FadedOutKill)
+                {
+                    songSet.op.Stop();
+                    songSet = SongSet();
+                    willCleanup = true;
+                }
+                else if (UPDATE_STATUS == music_update_status::Stopped)
+                {
+                    songSet.op.Stop();
+
+                    if (songSet.set.WillLoop())
+                    {
+                        const float VOLUME_TO_USE((songSet.set.Volume() < 0.0f) ?
+                            musicVolume_ : songSet.set.Volume());
+
+                        songSet.op = MakeAndStartMusicOperator(
+                            songSet.set.Advance(), songSet.set.FadeInMult(), VOLUME_TO_USE);
+                    }
+                    else
+                    {
+                        songSet = SongSet();
+                        willCleanup = true;
+                    }
+                }
+            }
+        }
+
+        if (willCleanup)
+        {
+            songSetVec_.erase(std::remove_if(
+                songSetVec_.begin(),
+                songSetVec_.end(),
+                [](const auto & SONG_SET)
+                {
+                    return (SONG_SET.IsValid() == false);
+                }), songSetVec_.end());
+        }
+    }
+
 
     void SoundManager::SoundEffectsUpdate(const float ELAPSED_TIME_SEC)
     {
@@ -997,7 +1001,7 @@ namespace sfml_util
         }
 
         if (willCleanup)
-        {
+        {   
             sfxToPlayPairsVec_.erase(
                 std::remove_if(
                     sfxToPlayPairsVec_.begin(),

@@ -352,12 +352,10 @@ namespace sfml_util
             case DoorCommonClose3:              { return "door-common-close-3"; }
             case DoorCommonOpen1:               { return "door-common-open-1"; }
             case DoorCommonOpen2:               { return "door-common-open-2"; }
-            case DoorCommonOpen3:               { return "door-common-open-3"; }
             case DoorLocked1:                   { return "door-locked-1"; }
             case DoorLocked2:                   { return "door-locked-2"; }
             case DoorLocked3:                   { return "door-locked-3"; }
             case DoorOldClose1:                 { return "door-old-close-1"; }
-            case DoorOldClose2:                 { return "door-old-close-2"; }
             case DoorOldOpen1:                  { return "door-old-open-1"; }
             case DoorOldOpen2:                  { return "door-old-open-2"; }
             case DoorRattlyClose1:              { return "door-rattly-close-1"; }
@@ -697,12 +695,10 @@ namespace sfml_util
             case DoorCommonClose3:
             case DoorCommonOpen1:
             case DoorCommonOpen2:
-            case DoorCommonOpen3:
             case DoorLocked1:
             case DoorLocked2:
             case DoorLocked3:
             case DoorOldClose1:
-            case DoorOldClose2:
             case DoorOldOpen1:
             case DoorOldOpen2:
             case DoorRattlyClose1:
@@ -738,8 +734,7 @@ namespace sfml_util
                 {
                     vec = {
                         sound_effect::DoorCommonOpen1,
-                        sound_effect::DoorCommonOpen2,
-                        sound_effect::DoorCommonOpen3 }; break;
+                        sound_effect::DoorCommonOpen2 }; break;
                 }
                 else
                 {
@@ -759,9 +754,7 @@ namespace sfml_util
                 }
                 else
                 {
-                    vec = {
-                        sound_effect::DoorOldClose1,
-                        sound_effect::DoorOldClose2 }; break;
+                    vec = { sound_effect::DoorOldClose1 }; break;
                 }
             }
             case DoorType::Rattly:

@@ -425,7 +425,7 @@ namespace map
     }
 
 
-    void Map::ChangeLevel(const Transition & TRANSITION)
+    void Map::ChangeLevel(const Transition TRANSITION)
     {
         PlayDoorSfx(TRANSITION.DoorType(), true);
         Load(TRANSITION.Level(), level_);
@@ -454,7 +454,7 @@ namespace map
                 }
                 else
                 {
-                    sfml_util::SoundManager::Instance()->SoundEffectPlay(DOOR_SFX);
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(DOOR_SFX, 1.0f);
                 }
             }
         }
