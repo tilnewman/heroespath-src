@@ -46,7 +46,8 @@ heroespath-treasure-lockbox-coin-max=1500
 heroespath-sound-map-animsfx-distance-min=          50.0
 heroespath-sound-map-animsfx-distance-max=          400.0
 heroespath-sound-map-animsfx-min-volume-ratio=      0.2
-heroespath-sound-map-animsfx-time-between-updates=  0.333
+heroespath-sound-map-sfx-time-between-updates=      0.2
+heroespath-sound-map-walk-sfx-volume-ratio=         0.5
 
 #directories (assume all are relative to media except for system-media-dir) (always leave a trailing slash)
 system-media-dir-linux=                 ../../heroespath-media/

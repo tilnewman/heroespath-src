@@ -31,6 +31,7 @@
 #include "map/layer-type-enum.hpp"
 #include "map/transition.hpp"
 #include "map/map-anim.hpp"
+#include "map/walk-sfx.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 
@@ -73,14 +74,16 @@ namespace map
             std::vector<sf::FloatRect> & collisionVecParam,
             TransitionVec_t & transitionVecParam,
             WalkRectMap_t & walkVecMapParam,
-            MapAnimVec_t & mapAnimVecParam)
+            MapAnimVec_t & mapAnimVecParam,
+            WalkSfxRegionLayers & walkSfxLayersParam)
         :
             file_path(FILE_PATH_PARAM),
             layout(layoutParam),
             collision_vec(collisionVecParam),
             transition_vec(transitionVecParam),
             walk_region_vecmap(walkVecMapParam),
-            animation_vec(mapAnimVecParam)
+            animation_vec(mapAnimVecParam),
+            walkSfxLayers(walkSfxLayersParam)
         {}
 
         std::string file_path;
@@ -89,6 +92,7 @@ namespace map
         TransitionVec_t & transition_vec;
         WalkRectMap_t & walk_region_vecmap;
         MapAnimVec_t & animation_vec;
+        WalkSfxRegionLayers & walkSfxLayers;
     };
 
 
@@ -144,6 +148,14 @@ namespace map
             Level::Enum &,
             sfml_util::sound_effect::DoorType &) const;
 
+        void Parse_Layer_WalkSfxs(
+            const boost::property_tree::ptree &,
+            WalkSfxRegionLayers &) const;
+
+        void Parse_WalkSfx(
+            const boost::property_tree::ptree &,
+            WalkSfxRegionLayers &) const;
+
         void SetupEmptyTexture(Layout &) const;
 
         template<typename T>
@@ -174,6 +186,7 @@ namespace map
         static const std::string XML_NODE_NAME_PROPERTIES_;
         static const std::string XML_NODE_NAME_PROPERTY_;
         static const std::string XML_NODE_NAME_ANIMATIONS_;
+        static const std::string XML_NODE_NAME_WALKSFX_;
 
         //these are the sub-names of XML nodes used in parsing the .tmx map files
         static const std::string XML_ATTRIB_FETCH_PREFIX_;

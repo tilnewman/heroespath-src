@@ -31,6 +31,7 @@
 
 #include "map/map-display.hpp"
 #include "map/layout.hpp"
+#include "map/walk-sfx.hpp"
 #include "map/map-anim.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
@@ -82,13 +83,16 @@ namespace map
 
         MapAnimVec_t animInfoVec;
 
+        WalkSfxRegionLayers walkSfxLayers;
+
         ParsePacket packet(
             Level::Path(LEVEL_TO_LOAD),
             layout,
             collisionVec_,
             transitionVec_,
             walkRectVecMap_,
-            animInfoVec);
+            animInfoVec,
+            walkSfxLayers);
 
         Parser mapParser;
         mapParser.Parse(packet);
@@ -99,7 +103,8 @@ namespace map
         {
             mapDisplayUPtr_->Load(
                 FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM),
-                animInfoVec);
+                animInfoVec,
+                walkSfxLayers);
         }
     }
 

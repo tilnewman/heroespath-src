@@ -38,6 +38,7 @@
 #include "map/tiles-panel.hpp"
 #include "map/tile-offsets.hpp"
 #include "map/map-anim.hpp"
+#include "map/walk-sfx.hpp"
 #include "misc/types.hpp"
 
 #include <string>
@@ -61,7 +62,10 @@ namespace map
         MapDisplay(const Map & MAP, const sf::FloatRect & REGION);
         virtual ~MapDisplay();
 
-        void Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t &);
+        void Load(
+            const sf::Vector2f & STARTING_POS_V,
+            const MapAnimVec_t &,
+            const WalkSfxRegionLayers &);
 
         bool Move(const sfml_util::Direction::Enum, const float ADJUSTMENT);
 
@@ -110,9 +114,11 @@ namespace map
 
         void SetupAnimations();
         
-        void StartMusic();
-        void UpdateMusicVolume();
-        void StopMusic();
+        void StartAnimMusic();
+        void UpdateAnimMusicVolume();
+        void StopAnimMusic();
+
+        void UpdateWalkMusic();
 
         float CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const;
 
@@ -136,9 +142,10 @@ namespace map
         const float ANIM_SFX_DISTANCE_MIN_;
         const float ANIM_SFX_DISTANCE_MAX_;
         const float ANIM_SFX_VOLUME_MIN_RATIO_;
-        const float ANIM_SFX_TIME_BETWEEN_UPDATES_;
+        const float SFX_TIME_BETWEEN_UPDATES_;
+        const float WALK_SFX_VOLUME_RATIO_;
 
-        float animSfxUpdateTimerSec_;
+        float sfxUpdateTimerSec_;
 
         Layout             layout_;
         TileOffsets        tileOffsets_;
@@ -155,6 +162,10 @@ namespace map
 
         MapAnimVec_t animInfoVec_;
         std::vector<sfml_util::AnimationUPtr_t> animUPtrVec_;
+
+        WalkSfxRegionLayers walkSfxLayers_;
+        sfml_util::music::Enum walkMusic_;
+        bool isWalking_;
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;

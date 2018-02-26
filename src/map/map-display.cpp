@@ -73,10 +73,13 @@ namespace map
         ANIM_SFX_VOLUME_MIN_RATIO_(
             game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-sound-map-animsfx-min-volume-ratio")),
-        ANIM_SFX_TIME_BETWEEN_UPDATES_(
+        SFX_TIME_BETWEEN_UPDATES_(
             game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-sound-map-animsfx-time-between-updates")),
-        animSfxUpdateTimerSec_(0.0f),
+                "heroespath-sound-map-sfx-time-between-updates")),
+        WALK_SFX_VOLUME_RATIO_(
+            game::GameDataFile::Instance()->GetCopyFloat(
+                "heroespath-sound-map-walk-sfx-volume-ratio")),
+        sfxUpdateTimerSec_(0.0f),
         layout_(),
         tileOffsets_(),
         playerPosV_(0.0f, 0.0f),
@@ -90,7 +93,10 @@ namespace map
         npcShadowTexture_(),
         npcShadowSprite_(),
         animInfoVec_(),
-        animUPtrVec_()
+        animUPtrVec_(),
+        walkSfxLayers_(),
+        walkMusic_(sfml_util::music::Count),
+        isWalking_(false)
     {
         SetupNPCShadowImage();
     }
@@ -98,13 +104,17 @@ namespace map
 
     MapDisplay::~MapDisplay()
     {
-        StopMusic();
+        StopAnimMusic();
     }
 
 
-    void MapDisplay::Load(const sf::Vector2f & STARTING_POS_V, const MapAnimVec_t & ANIM_INFO_VEC)
+    void MapDisplay::Load(
+        const sf::Vector2f & STARTING_POS_V,
+        const MapAnimVec_t & ANIM_INFO_VEC,
+        const WalkSfxRegionLayers & WALK_SFX_LAYERS)
     {
-        StopMusic();
+        StopAnimMusic();
+        walkSfxLayers_ = WALK_SFX_LAYERS;
         animInfoVec_ = ANIM_INFO_VEC;
         tileOffsets_ = map::TileOffsets();
         playerPosOffsetV_ = sf::Vector2f(0.0f, 0.0f);
@@ -115,8 +125,8 @@ namespace map
         SetupAnimations();
         ResetMapSubsections();
         ReDraw(0.0f);
-        StartMusic();
-        UpdateMusicVolume();
+        StartAnimMusic();
+        UpdateAnimMusicVolume();
     }
 
 
@@ -144,12 +154,13 @@ namespace map
     {
         ReDraw(TIME_ELAPSED);
 
-        //don't update the animation sound volume every frame
-        animSfxUpdateTimerSec_ += TIME_ELAPSED;
-        if (animSfxUpdateTimerSec_ > ANIM_SFX_TIME_BETWEEN_UPDATES_)
+        //don't update the music every frame
+        sfxUpdateTimerSec_ += TIME_ELAPSED;
+        if (sfxUpdateTimerSec_ > SFX_TIME_BETWEEN_UPDATES_)
         {
-            animSfxUpdateTimerSec_ = 0.0f;
-            UpdateMusicVolume();
+            sfxUpdateTimerSec_ = 0.0f;
+            UpdateAnimMusicVolume();
+            UpdateWalkMusic();
         }
     }
 
@@ -809,7 +820,7 @@ namespace map
     }
 
 
-    void MapDisplay::StartMusic()
+    void MapDisplay::StartAnimMusic()
     {
         for (auto const & ANIM_INFO : animInfoVec_)
         {
@@ -821,7 +832,7 @@ namespace map
     }
 
 
-    void MapDisplay::UpdateMusicVolume()
+    void MapDisplay::UpdateAnimMusicVolume()
     {
         for (auto const & ANIM_INFO : animInfoVec_)
         {
@@ -841,7 +852,7 @@ namespace map
     }
 
 
-    void MapDisplay::StopMusic()
+    void MapDisplay::StopAnimMusic()
     {
         for (auto const & ANIM_INFO : animInfoVec_)
         {
@@ -850,6 +861,44 @@ namespace map
                 sfml_util::SoundManager::Instance()->MusicStop(ANIM_INFO.music_vec);
             }
         }
+    }
+
+
+    void MapDisplay::UpdateWalkMusic()
+    {
+        auto const NEW_IS_WALKING{ (MAP_.Player().GetView().Pose() == avatar::Pose::Walking) };
+        auto const NEW_WALK_MUSIC{ walkSfxLayers_.FindSfx(PlayerPosMap()) };
+
+        if (NEW_IS_WALKING && ((NEW_WALK_MUSIC != walkMusic_) || (NEW_IS_WALKING != isWalking_)))
+        {
+            if (sfml_util::music::Count != walkMusic_)
+            {
+                sfml_util::SoundManager::Instance()->MusicStop(
+                    walkMusic_,
+                    sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_);
+            }
+
+            if (NEW_WALK_MUSIC != sfml_util::music::Count)
+            {
+                auto const VOLUME{
+                    sfml_util::SoundManager::Instance()->SoundEffectVolume() *
+                        WALK_SFX_VOLUME_RATIO_ };
+
+                sfml_util::SoundManager::Instance()->MusicStart(
+                    NEW_WALK_MUSIC,
+                    sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_,
+                    VOLUME);
+            }
+        }
+        else if ((NEW_IS_WALKING == false) && (sfml_util::music::Count != walkMusic_))
+        {
+            sfml_util::SoundManager::Instance()->MusicStop(
+                walkMusic_,
+                sfml_util::MusicOperator::FADE_MULT_IMMEDIATE_);
+        }
+
+        walkMusic_ = NEW_WALK_MUSIC;
+        isWalking_ = NEW_IS_WALKING;
     }
 
 

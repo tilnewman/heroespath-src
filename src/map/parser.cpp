@@ -58,6 +58,7 @@ namespace map
     const std::string Parser::XML_NODE_NAME_PROPERTIES_     { "properties" };
     const std::string Parser::XML_NODE_NAME_PROPERTY_       { "property" };
     const std::string Parser::XML_NODE_NAME_ANIMATIONS_     { "animations" };
+    const std::string Parser::XML_NODE_NAME_WALKSFX_        { "walk-sfx" };
     const std::string Parser::XML_ATTRIB_FETCH_PREFIX_      { "<xmlattr>." };
     const std::string Parser::XML_ATTRIB_NAME_COLLISIONS_   { "collision" };
     const std::string Parser::XML_ATTRIB_NAME_SHADOW_       { "shadow" };
@@ -141,6 +142,10 @@ namespace map
                 {
                     Parse_Layer_Animations(CHILD_PAIR.second, packet.animation_vec);
                 }
+                else if(ba::contains(OBJECT_LAYER_NAME_LOWER, XML_NODE_NAME_WALKSFX_))
+                {
+                    Parse_Layer_WalkSfxs(CHILD_PAIR.second, packet.walkSfxLayers);
+                }
                 continue;
             }
             else if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_TILESET_))
@@ -158,6 +163,14 @@ namespace map
         }
 
         std::sort(std::begin(packet.collision_vec), std::end(packet.collision_vec));
+
+        std::sort(
+            std::begin(packet.walkSfxLayers.bottom_layers),
+            std::end(packet.walkSfxLayers.bottom_layers));
+
+        std::sort(
+            std::begin(packet.walkSfxLayers.top_layers),
+            std::end(packet.walkSfxLayers.top_layers));
 
         ShadowMasker::ChangeColors(XML_ATTRIB_NAME_SHADOW_, packet.layout);
     }
@@ -549,6 +562,82 @@ namespace map
 
         M_ASSERT_OR_LOGANDTHROW_SS((level != Level::Count),
             "map::Parser::Parse_Transition_Properties() was unable to parse a Level::Enum.");
+    }
+
+
+    void Parser::Parse_Layer_WalkSfxs(
+        const boost::property_tree::ptree & PTREE,
+        WalkSfxRegionLayers & walkSfxLayers) const
+    {
+        namespace ba = boost::algorithm;
+
+        for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
+        {
+            if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
+            {
+                Parse_WalkSfx(CHILD_PAIR.second, walkSfxLayers);
+            }
+        }
+    }
+
+
+    void Parser::Parse_WalkSfx(
+        const boost::property_tree::ptree & PTREE,
+        WalkSfxRegionLayers & walkSfxLayers) const
+    {
+        namespace ba = boost::algorithm;
+
+        sf::FloatRect rect;
+        std::string footstepName;
+
+        try
+        {
+            rect.left = FetchXMLAttribute<float>(PTREE, "x");
+            rect.top = FetchXMLAttribute<float>(PTREE, "y");
+            rect.width = FetchXMLAttribute<float>(PTREE, "width");
+            rect.height = FetchXMLAttribute<float>(PTREE, "height");
+            footstepName = FetchXMLAttributeName(PTREE);
+        }
+        catch (const std::exception & E)
+        {
+            M_HP_LOG_FAT("map::Parser::Parse_WalkSfx() threw "
+                << "std::exception when parsing the rect from a node named \""
+                << FetchXMLAttributeName(PTREE) << "\".  what=\""
+                << E.what() << "\".");
+
+            throw E;
+        }
+
+        auto const MUSIC{ 
+            sfml_util::music::FootstepToMusic( sfml_util::Footstep::FromString(footstepName)) };
+
+        if (MUSIC == sfml_util::music::Count)
+        {
+            std::ostringstream ss;
+            ss << "map::Parser::Parse_WalkSfx() failed to translate footstep sfx name \""
+                << footstepName << "\" into a valid Footstep and then a valid music::Enum.";
+
+            throw std::runtime_error(ss.str());
+        }
+
+        std::string typeStr{ "" };
+        try
+        {
+            typeStr = FetchXMLAttribute<std::string>(PTREE, XML_ATTRIB_NAME_TYPE_);
+        }
+        catch (...)
+        {
+            typeStr = "";
+        }
+
+        if ("0" == typeStr)
+        {
+            walkSfxLayers.bottom_layers.push_back( WalkSfxRegion(rect, MUSIC) );
+        }
+        else
+        {
+            walkSfxLayers.top_layers.push_back(WalkSfxRegion(rect, MUSIC));
+        }
     }
 
 
