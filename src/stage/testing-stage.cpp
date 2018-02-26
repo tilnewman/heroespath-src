@@ -795,6 +795,8 @@ namespace stage
                 "media-images-misc-picture-frame",
                 "media-images-misc-door",
                 "media-images-misc-door-locked",
+                "media-images-misc-lock",
+                "media-images-misc-talk",
                 "media-images-chest-closed",
                 "media-images-chest-open",
                 "media-images-coins",
