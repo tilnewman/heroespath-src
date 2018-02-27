@@ -22,37 +22,62 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_LOCATION_MAPENUM_HPP_INCLUDED
-#define HEROESPATH_LOCATION_MAPENUM_HPP_INCLUDED
+#ifndef HEROESPATH_STATE_MAPS_HPP_INCLUDED
+#define HEROESPATH_STATE_MAPS_HPP_INCLUDED
 //
-// map-enum.hpp
-//  An enumeration defining each mapped location in the game.
+// maps.hpp
 //
-#include <string>
+#include "state/level.hpp"
+#include "map/level-enum.hpp"
+#include "misc/boost-serialize-includes.hpp"
+
+#include <vector>
+#include <memory>
 
 
 namespace heroespath
 {
-namespace location
+namespace state
 {
 
-    struct map
+    //Responsible for storing all states that represent the game world contained in maps.
+    class Maps
     {
-        enum Enum
-        {
-            Thornberry = 0,
-            ThornberryForest,
-            Mudgate,
-            Bridgeway,
-            Count
-        };
+        Maps(const Maps &) = delete;
+        Maps & operator=(const Maps &) = delete;
 
-        static const std::string MAP_FILENAME_EXT;
-        static const std::string ToString(const map::Enum E);
-        static const std::string MapFilename(const map::Enum E);
+    public:
+        Maps();
+
+        inline map::Level::Enum CurrentEnum() const { return level_; }
+
+        inline const std::string CurrentName() const
+        {
+            return map::Level::ToString(level_);
+        }
+
+        inline Level & CurrentInfo() { return Info(level_); }
+
+        inline Level & Info(const map::Level::Enum E)
+        {
+            return levels_.at(static_cast<std::size_t>(E));
+        }
+
+    private:
+        map::Level::Enum level_;
+        std::vector<Level> levels_;
+
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & level_;
+            ar & levels_;
+        }
     };
 
 }
 }
 
-#endif //HEROESPATH_LOCATION_MAPENUM_HPP_INCLUDED
+#endif //HEROESPATH_STATE_MAPS_HPP_INCLUDED

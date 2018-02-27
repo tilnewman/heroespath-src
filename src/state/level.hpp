@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,29 +22,52 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_STATE_LEVEL_HPP_INCLUDED
+#define HEROESPATH_STATE_LEVEL_HPP_INCLUDED
 //
-// location.cpp
+// level.hpp
 //
-#include "location.hpp"
+#include "map/level-enum.hpp"
+#include "misc/boost-serialize-includes.hpp"
+#include "misc/vector-map.hpp"
+
+#include <memory>
 
 
 namespace heroespath
 {
-namespace location
+namespace state
 {
 
-    Location::Location(const map::Enum WHICH_MAP,
-                       const float MAP_POS_OFFSET_X,
-                       const float MAP_POS_OFFSET_Y)
-    :
-        whichMap_     (WHICH_MAP),
-        mapPosOffsetX_(MAP_POS_OFFSET_X),
-        mapPosOffsetY_(MAP_POS_OFFSET_Y)
-    {}
+    //Responsible for storing all states that represent
+    //the game world contained in a specific level.
+    class Level
+    {
+        Level(const Level &) = delete;
+        Level & operator=(const Level &) = delete;
 
+    public:
+        Level(const map::Level::Enum = map::Level::Enum::Count);
 
-    Location::~Location()
-    {}
+        inline map::Level::Enum WhichLevel() const { return level_; }
+
+        bool IsDoorLocked(const map::Level::Enum) const;
+
+    private:
+        map::Level::Enum level_;
+        misc::VectorMap<map::Level::Enum, bool> doorLockMap_;
+
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & level_;
+            ar & doorLockMap_;
+        }
+    };
 
 }
 }
+
+#endif //HEROESPATH_STATE_LEVEL_HPP_INCLUDED

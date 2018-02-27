@@ -27,6 +27,7 @@
 //
 // vector-map.hpp
 //
+#include "misc/boost-serialize-includes.hpp"
 #include <vector>
 #include <utility>
 
@@ -49,14 +50,14 @@ namespace misc
 
         VectorMap()
         :
-            m_pairVec()
+            pairs_()
         {}
 
         bool Exists(const Key_t & KEY) const
         {
-            for (auto & pair : m_pairVec)
+            for (auto const & PAIR : pairs_)
             {
-                if (KEY == pair.first)
+                if (KEY == PAIR.first)
                 {
                     return true;
                 }
@@ -67,25 +68,25 @@ namespace misc
 
         Value_t & operator[](const Key_t & KEY)
         {
-            for (auto & pair : m_pairVec)
+            for (auto & pair : pairs_)
             {
                 if (KEY == pair.first)
                 {
                     return pair.second;
                 }
             }
-
-            m_pairVec.push_back(std::make_pair(KEY, Value_t()));
-            return m_pairVec[m_pairVec.size() - 1].second;
+            
+            pairs_.push_back( std::make_pair(KEY, Value_t()) );
+            return pairs_[pairs_.size() - 1].second;
         }
 
         bool Find(const Key_t & KEY, Value_t & thing) const
         {
-            for (auto & pair : m_pairVec)
+            for (auto const & PAIR : pairs_)
             {
-                if (KEY == pair.first)
+                if (KEY == PAIR.first)
                 {
-                    thing = pair.second;
+                    thing = PAIR.second;
                     return true;
                 }
             }
@@ -93,20 +94,30 @@ namespace misc
             return false;
         }
 
-        std::size_t Size() const { return m_pairVec.size(); }
+        std::size_t Size() const { return pairs_.size(); }
 
-        bool Empty() const { return m_pairVec.empty(); }
+        bool Empty() const { return pairs_.empty(); }
 
-        void Clear() { return m_pairVec.clear(); }
+        void Clear() { return pairs_.clear(); }
 
-        iterator begin() { return std::begin(m_pairVec); }
-        iterator end() { return std::end(m_pairVec); }
+        void Reserve(const std::size_t NEW_CAPACITY) { pairs_.reserve(NEW_CAPACITY); }
 
-        const const_iterator begin() const { return std::begin(m_pairVec); }
-        const const_iterator end() const { return std::end(m_pairVec); }
+        iterator begin() { return std::begin(pairs_); }
+        iterator end() { return std::end(pairs_); }
+
+        const const_iterator begin() const { return std::begin(pairs_); }
+        const const_iterator end() const { return std::end(pairs_); }
 
     private:
-        PairVec_t m_pairVec;
+        PairVec_t pairs_;
+
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & pairs_;
+        }
     };
 
 

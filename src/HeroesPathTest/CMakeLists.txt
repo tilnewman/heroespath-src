@@ -51,11 +51,10 @@ foreach(testSrc ${impl_files})
                         	Creature
                         	Player
                         	NonPlayer
-                        	Location
                         	State
                         	Combat
-				Popup
-				Avatar
+				            Popup
+				            Avatar
                         	${Boost_LIBRARIES}
                         	${SFML_LIBRARIES})
 

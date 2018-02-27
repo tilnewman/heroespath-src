@@ -22,41 +22,56 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_LOCATION_ILOCATION_HPP_INCLUDED
-#define HEROESPATH_LOCATION_ILOCATION_HPP_INCLUDED
+#ifndef HEROESPATH_STATE_WORLD_HPP_INCLUDED
+#define HEROESPATH_STATE_WORLD_HPP_INCLUDED
 //
-// i-location.hpp
-//  An interface for all Location objects
+// world.hpp
+//  A class that represents the entire state of the game world.
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "location/map-enum.hpp"
-#include <string>
+#include "state/maps.hpp"
+#include "misc/boost-serialize-includes.hpp"
+
+#include <memory>
 
 
 namespace heroespath
 {
-namespace location
+namespace state
 {
 
-    //an interface for all Location objects
-    struct ILocation
+    //Encapsulates all states that describe the game world.
+    class World
     {
-        virtual ~ILocation() {}
+        World(const World &) =delete;
+        World & operator=(const World &) =delete;
 
-        virtual const std::string Name() const = 0;
+    public:
+        World();
+        virtual ~World();
 
-        virtual map::Enum Map() const = 0;
-        virtual void MapSet(const map::Enum) = 0;
+        inline Maps & GetMaps() { return maps_; }
+        inline std::size_t EncounterCount() const { return encounterCount_; }
+        inline void EncounterCountInc() { ++encounterCount_; }
 
-        virtual const std::string MapFilename() const = 0;
+    private:
+        //TODO quests
+        //TODO events
+        Maps maps_;
+        std::size_t encounterCount_;
 
-        virtual const sf::Vector2f MapPosOffset() const = 0;
-        virtual void MapPosOffset(const float OFFSET_X, const float OFFSET_Y) = 0;
+    private:
+        friend class boost::serialization::access;
+        template<typename Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & encounterCount_;
+        }
     };
 
-    using ILocationSPtr_t = std::shared_ptr<ILocation>;
+    using WorldPtr_t  = World *;
+    using WorldUPtr_t = std::unique_ptr<World>;
 
 }
 }
 
-#endif //HEROESPATH_LOCATION_ILOCATION_HPP_INCLUDED
+#endif //HEROESPATH_STATE_WORLDcd_HPP_INCLUDED

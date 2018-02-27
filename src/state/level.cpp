@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// world-state.cpp
+// level.cpp
 //
-#include "world-state.hpp"
+#include "level.hpp"
 
 
 namespace heroespath
@@ -35,14 +35,19 @@ namespace heroespath
 namespace state
 {
 
-    WorldState::WorldState()
+    Level::Level(const map::Level::Enum LEVEL)
     :
-        encounterCount_(0)
+        level_(LEVEL),
+        doorLockMap_()
     {}
 
 
-    WorldState::~WorldState()
-    {}
+    bool Level::IsDoorLocked(const map::Level::Enum LEVEL) const
+    {
+        auto isLocked{ false };
+        doorLockMap_.Find(LEVEL, isLocked);
+        return isLocked;
+    }
 
 }
 }

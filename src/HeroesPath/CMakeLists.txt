@@ -45,7 +45,6 @@ target_link_libraries(  ${PROJECT_NAME}
                         Creature
                         Player
                         NonPlayer
-                        Location
                         State
                         Combat
 			Popup

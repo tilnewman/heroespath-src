@@ -42,7 +42,7 @@
 #include "combat/strategy-details.hpp"
 #include "combat/party-factory.hpp"
 #include "state/game-state.hpp"
-#include "state/world-state.hpp"
+#include "state/world.hpp"
 #include "creature/algorithms.hpp"
 #include "item/item.hpp"
 #include "item/item-warehouse.hpp"
@@ -278,7 +278,7 @@ namespace combat
         //nonPlayerPartyUPtr_ must be left alone because it will have already been populated
 
         roundCounter_ = 0;
-        game::Game::Instance()->State().World().EncoundterCountInc();
+        game::Game::Instance()->State().World().EncounterCountInc();
 
         //TODO move this to the adventure stage
         //TODO Encounter will need a function that plays combat music and that takes a bool

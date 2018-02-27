@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -22,15 +24,10 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_STATE_WORLDSTATE_HPP_INCLUDED
-#define HEROESPATH_STATE_WORLDSTATE_HPP_INCLUDED
 //
-// world-state.hpp
-//  A class that represents the entire state of the game world.
+// maps.cpp
 //
-#include "misc/boost-serialize-includes.hpp"
-
-#include <memory>
+#include "maps.hpp"
 
 
 namespace heroespath
@@ -38,38 +35,11 @@ namespace heroespath
 namespace state
 {
 
-    //Encapsulates everything about the game world.
-    class WorldState
-    {
-        WorldState(const WorldState &) =delete;
-        WorldState & operator=(const WorldState &) =delete;
-
-    public:
-        WorldState();
-        virtual ~WorldState();
-
-        inline std::size_t EncounterCount() const   { return encounterCount_; }
-        inline void EncoundterCountInc()            { ++encounterCount_; }
-
-    private:
-        //TODO quests
-        //TODO events
-        //TODO map states
-        std::size_t encounterCount_;
-
-    private:
-        friend class boost::serialization::access;
-        template<typename Archive>
-        void serialize(Archive & ar, const unsigned int)
-        {
-            ar & encounterCount_;
-        }
-    };
-
-    using WorldStatePtr_t  = WorldState *;
-    using WorldStateUPtr_t = std::unique_ptr<WorldState>;
+    Maps::Maps()
+    :
+        level_(map::Level::Count),
+        levels_()
+    {}
 
 }
 }
-
-#endif //HEROESPATH_STATE_WORLDSTATE_HPP_INCLUDED

@@ -38,26 +38,19 @@
 
 namespace heroespath
 {
-    namespace player
-    {
-        class Party;
-        using PartyPtr_t  = Party *;
-        using PartyUPtr_t = std::unique_ptr<Party>;
-    }
-
-    namespace location
-    {
-        class Location;
-        using LocationSPtr_t = std::shared_ptr<Location>;
-    }
-
+namespace player
+{
+    class Party;
+    using PartyPtr_t  = Party *;
+    using PartyUPtr_t = std::unique_ptr<Party>;
+}
 namespace state
 {
 
     //forward declarations
-    class WorldState;
-    using WorldStatePtr_t  = WorldState *;
-    using WorldStateUPtr_t = std::unique_ptr<WorldState>;
+    class World;
+    using WorldPtr_t  = World *;
+    using WorldUPtr_t = std::unique_ptr<World>;
 
 
     //Encapsulates everything about a saved game.
@@ -67,13 +60,13 @@ namespace state
         GameState & operator=(const GameState &) =delete;
 
     public:
-        explicit GameState(const player::PartyPtr_t         PARTY_PTR       = nullptr,
-                           const WorldStatePtr_t            WORLD_STATE_PTR = nullptr,
-                           const location::LocationSPtr_t & LOCATION_SPTR   = location::LocationSPtr_t());
+        explicit GameState(
+            const player::PartyPtr_t PARTY_PTR = nullptr,
+            const WorldPtr_t WORLD_PTR = nullptr);
 
         virtual ~GameState();
 
-        WorldState & World();
+        World & World();
 
         player::Party & Party();
 
@@ -107,26 +100,15 @@ namespace state
             dateTimeLastSave_ = DT;
         }
 
-        inline const location::LocationSPtr_t Location() const
-        {
-            return locationSPtr_;
-        }
-
-        inline void LocationSet(const location::LocationSPtr_t & L_SPTR)
-        {
-            locationSPtr_ = L_SPTR;
-        }
-
         friend bool operator<(const GameState & L, const GameState & R);
         friend bool operator==(const GameState & L, const GameState & R);
 
     private:
         player::PartyUPtr_t      partyUPtr_;
-        WorldStateUPtr_t         worldStateUPtr_;
+        WorldUPtr_t              worldUPtr_;
         bool                     isGameNew_;
         sfml_util::DateTime      dateTimeStarted_;
         sfml_util::DateTime      dateTimeLastSave_;
-        location::LocationSPtr_t locationSPtr_;
 
     private:
         friend class boost::serialization::access;
@@ -134,11 +116,10 @@ namespace state
         void serialize(Archive & ar, const unsigned int)
         {
             ar & partyUPtr_;
-            ar & worldStateUPtr_;
+            ar & worldUPtr_;
             ar & isGameNew_;
             ar & dateTimeStarted_;
             ar & dateTimeLastSave_;
-            ar & locationSPtr_;
         }
     };
 

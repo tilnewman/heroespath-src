@@ -44,8 +44,8 @@
 #include "game/game-data-file.hpp"
 #include "state/game-state.hpp"
 #include "state/game-state-factory.hpp"
+#include "state/world.hpp"
 #include "game/loop-manager.hpp"
-#include "location/location.hpp"
 #include "player/party.hpp"
 #include "player/character.hpp"
 
@@ -279,7 +279,7 @@ namespace stage
         }
 
         descTextInfo.text =
-            std::string("Location:        ").append(gameStatePtr->Location()->Name());
+            std::string("Location:        ").append(gameStatePtr->World().GetMaps().CurrentName());
 
         const sf::FloatRect LOC_TEXT_RECT(
             CHAR_LIST_POS_LEFT,

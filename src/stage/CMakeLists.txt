@@ -9,6 +9,5 @@ target_link_libraries(  ${PROJECT_NAME}
                         Creature
                         Player
                         NonPlayer
-                        Location
                         Spell
                         ${Boost_LIBRARIES} )

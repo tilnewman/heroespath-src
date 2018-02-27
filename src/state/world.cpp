@@ -25,46 +25,24 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// map-enum.cpp
+// world.cpp
 //
-#include "map-enum.hpp"
-#include <exception>
-#include <sstream>
+#include "world.hpp"
 
 
 namespace heroespath
 {
-namespace location
+namespace state
 {
 
-    const std::string map::MAP_FILENAME_EXT(".tmx");
+    World::World()
+    :
+        encounterCount_(0)
+    {}
 
 
-    const std::string map::ToString(const map::Enum E)
-    {
-        switch (E)
-        {
-            case Thornberry:        { return "Thornberry"; }
-            case ThornberryForest:  { return "ThornberryForest"; }
-            case Mudgate:           { return "Mudgate"; }
-            case Bridgeway:         { return "Bridgeway"; }
-            case Count:
-            default:
-            {
-                std::ostringstream ss;
-                ss << "location::map::Enum::ToString(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
-            }
-        }
-    }
-
-
-    const std::string map::MapFilename(const map::Enum E)
-    {
-        std::ostringstream ss;
-        ss << ToString(E) << MAP_FILENAME_EXT;
-        return ss.str();
-    }
+    World::~World()
+    {}
 
 }
 }

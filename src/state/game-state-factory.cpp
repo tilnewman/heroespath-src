@@ -35,8 +35,7 @@
 
 #include "game/game.hpp"
 #include "state/game-state.hpp"
-#include "state/world-state.hpp"
-#include "location/location.hpp"
+#include "state/world.hpp"
 #include "player/party.hpp"
 #include "player/character.hpp"
 #include "log/log-macros.hpp"
@@ -112,13 +111,9 @@ namespace state
 
     void GameStateFactory::NewGame(const player::PartyPtr_t PARTY_PTR) const
     {
-        auto gameStatePtr = new GameState(PARTY_PTR, new WorldState());
+        auto gameStatePtr = new GameState(PARTY_PTR, new World());
         gameStatePtr->IsNewGameSet(true);
         gameStatePtr->DateTimeStartedSet( sfml_util::DateTime::CurrentDateTime() );
-
-        gameStatePtr->LocationSet(
-            std::make_shared<location::Location>(location::map::Thornberry) );
-
         game::Game::Instance()->StateStore(gameStatePtr);
         SaveGame(gameStatePtr);
     }

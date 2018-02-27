@@ -30,8 +30,7 @@
 #include "game-state.hpp"
 
 #include "player/party.hpp"
-#include "state/world-state.hpp"
-#include "location/location.hpp"
+#include "state/world.hpp"
 
 #include <tuple>
 #include <sstream>
@@ -43,29 +42,25 @@ namespace heroespath
 namespace state
 {
 
-    GameState::GameState(const player::PartyPtr_t         PARTY_PTR,
-                         const WorldStatePtr_t            WORLD_STATE_PTR,
-                         const location::LocationSPtr_t & LOCATION_SPTR)
+    GameState::GameState(
+        const player::PartyPtr_t PARTY_PTR,
+        const WorldPtr_t WORLD_PTR)
     :
-        partyUPtr_       (),
-        worldStateUPtr_  (),
+        partyUPtr_       (PARTY_PTR),
+        worldUPtr_       (WORLD_PTR),
         isGameNew_       (false),
         dateTimeStarted_ (),
-        dateTimeLastSave_(),
-        locationSPtr_    (LOCATION_SPTR)
-    {
-        partyUPtr_.reset(PARTY_PTR);
-        worldStateUPtr_.reset(WORLD_STATE_PTR);
-    }
+        dateTimeLastSave_()
+    {}
 
 
     GameState::~GameState()
     {}
 
 
-    WorldState & GameState::World()
+    World & GameState::World()
     {
-        if (worldStateUPtr_.get() == nullptr)
+        if (worldUPtr_.get() == nullptr)
         {
             std::ostringstream ss;
             ss << "state::GameState::World() called when the world ptr was null.";
@@ -73,7 +68,7 @@ namespace state
         }
         else
         {
-            return * worldStateUPtr_;
+            return * worldUPtr_;
         }
     }
 
@@ -96,36 +91,32 @@ namespace state
     bool operator<(const GameState & L, const GameState & R)
     {
         return std::tie(L.partyUPtr_,
-                        L.worldStateUPtr_,
+                        L.worldUPtr_,
                         L.isGameNew_,
                         L.dateTimeStarted_,
-                        L.dateTimeLastSave_,
-                        L.locationSPtr_)
+                        L.dateTimeLastSave_)
                <
                std::tie(R.partyUPtr_,
-                        R.worldStateUPtr_,
+                        R.worldUPtr_,
                         R.isGameNew_,
                         R.dateTimeStarted_,
-                        R.dateTimeLastSave_,
-                        R.locationSPtr_);
+                        R.dateTimeLastSave_);
     }
 
 
     bool operator==(const GameState & L, const GameState & R)
     {
         return std::tie(L.partyUPtr_,
-                        L.worldStateUPtr_,
+                        L.worldUPtr_,
                         L.isGameNew_,
                         L.dateTimeStarted_,
-                        L.dateTimeLastSave_,
-                        L.locationSPtr_)
+                        L.dateTimeLastSave_)
                ==
                std::tie(R.partyUPtr_,
-                        R.worldStateUPtr_,
+                        R.worldUPtr_,
                         R.isGameNew_,
                         R.dateTimeStarted_,
-                        R.dateTimeLastSave_,
-                        R.locationSPtr_);
+                        R.dateTimeLastSave_);
     }
 
 }
