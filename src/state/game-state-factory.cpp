@@ -36,6 +36,7 @@
 #include "game/game.hpp"
 #include "state/game-state.hpp"
 #include "state/world.hpp"
+#include "state/world-factory.hpp"
 #include "player/party.hpp"
 #include "player/character.hpp"
 #include "log/log-macros.hpp"
@@ -111,7 +112,7 @@ namespace state
 
     void GameStateFactory::NewGame(player::PartyUPtr_t PARTY_UPTR) const
     {
-        auto gameStatePtr = new GameState(std::move(PARTY_UPTR), new World());
+        auto gameStatePtr = new GameState(std::move(PARTY_UPTR), WorldFactory::MakeForNewGame());
         gameStatePtr->IsNewGameSet(true);
         gameStatePtr->DateTimeStartedSet( sfml_util::DateTime::CurrentDateTime() );
         game::Game::Instance()->StateStore(gameStatePtr);
@@ -124,8 +125,8 @@ namespace state
         namespace bfs = boost::filesystem;
 
         //configure the path
-        const bfs::path DIR_OBJ(bfs::system_complete(bfs::current_path() /
-            bfs::path(SAVED_HEROESPATH_DIR_NAME_)));
+        const bfs::path DIR_OBJ(bfs::system_complete(
+            bfs::current_path() / bfs::path(SAVED_HEROESPATH_DIR_NAME_)));
 
         GameStatePSet_t gameStatePSet;
 

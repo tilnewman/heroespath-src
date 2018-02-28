@@ -44,10 +44,10 @@ namespace state
 
     GameState::GameState(
         player::PartyUPtr_t PARTY_UPTR,
-        const WorldPtr_t WORLD_PTR)
+        WorldUPtr_t WORLD_UPTR)
     :
         partyUPtr_       (std::move(PARTY_UPTR)),
-        worldUPtr_       (WORLD_PTR),
+        worldUPtr_       (std::move(WORLD_UPTR)),
         isGameNew_       (false),
         dateTimeStarted_ (),
         dateTimeLastSave_()

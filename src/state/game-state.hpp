@@ -48,7 +48,6 @@ namespace state
 
     //forward declarations
     class World;
-    using WorldPtr_t  = World *;
     using WorldUPtr_t = std::unique_ptr<World>;
 
 
@@ -61,7 +60,7 @@ namespace state
     public:
         explicit GameState(
             player::PartyUPtr_t PARTY_UPTR = player::PartyUPtr_t(),
-            const WorldPtr_t WORLD_PTR = nullptr);
+            WorldUPtr_t WORLD_UPTR = WorldUPtr_t());
 
         virtual ~GameState();
 

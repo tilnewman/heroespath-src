@@ -22,15 +22,11 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_STATE_WORLD_HPP_INCLUDED
-#define HEROESPATH_STATE_WORLD_HPP_INCLUDED
+#ifndef HEROESPATH_STATE_WORLD_FACTORY_HPP_INCLUDED
+#define HEROESPATH_STATE_WORLD_FACTORY_HPP_INCLUDED
 //
-// world.hpp
-//  A class that represents the entire state of the game world.
+// world-factory.hpp
 //
-#include "state/maps.hpp"
-#include "misc/boost-serialize-includes.hpp"
-
 #include <memory>
 
 
@@ -39,38 +35,17 @@ namespace heroespath
 namespace state
 {
 
-    //Encapsulates all states that describe the game world.
-    class World
-    {
-        World(const World &) =delete;
-        World & operator=(const World &) =delete;
-
-    public:
-        World();
-        virtual ~World();
-
-        inline Maps & GetMaps() { return maps_; }
-        inline std::size_t EncounterCount() const { return encounterCount_; }
-        inline void EncounterCountInc() { ++encounterCount_; }
-
-    private:
-        //TODO quests
-        //TODO events
-        Maps maps_;
-        std::size_t encounterCount_;
-
-    private:
-        friend class boost::serialization::access;
-        template<typename Archive>
-        void serialize(Archive & ar, const unsigned int)
-        {
-            ar & encounterCount_;
-        }
-    };
-
+    class World;
     using WorldUPtr_t = std::unique_ptr<World>;
 
+
+    //Responsible for making World objects, specifically new World objects for new games.
+    struct WorldFactory
+    {
+        static WorldUPtr_t MakeForNewGame();
+    };
+        
 }
 }
 
-#endif //HEROESPATH_STATE_WORLDcd_HPP_INCLUDED
+#endif //HEROESPATH_STATE_WORLD_FACTORY_HPP_INCLUDED
