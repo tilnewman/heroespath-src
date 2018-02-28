@@ -40,9 +40,5 @@ namespace state
         encounterCount_(0)
     {}
 
-
-    World::~World()
-    {}
-
 }
 }

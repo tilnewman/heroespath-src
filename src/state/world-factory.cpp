@@ -29,6 +29,7 @@
 //
 #include "world-factory.hpp"
 #include "state/world.hpp"
+#include "state/level.hpp"
 
 
 namespace heroespath
@@ -38,7 +39,19 @@ namespace state
 
     WorldUPtr_t WorldFactory::MakeForNewGame()
     {
-        return std::make_unique<World>();
+        auto worldUPtr{ std::make_unique<World>() };
+        worldUPtr->GetMaps().SetupForNewGame();
+        return worldUPtr;
+    }
+
+
+    void WorldFactory::SetupLevelForNewGame(Level & level)
+    {
+        if (level.WhichLevel() == map::Level::Thornberry)
+        {
+            level.IsDoorLocked(map::Level::Thornberry_GuardPostWest, true);
+            level.IsDoorLocked(map::Level::Thornberry_GuardPostEast, true);
+        }
     }
 
 }

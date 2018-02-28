@@ -39,10 +39,14 @@ namespace state
     using WorldUPtr_t = std::unique_ptr<World>;
 
 
+    class Level;
+
+
     //Responsible for making World objects, specifically new World objects for new games.
     struct WorldFactory
     {
         static WorldUPtr_t MakeForNewGame();
+        static void SetupLevelForNewGame(Level &);
     };
         
 }

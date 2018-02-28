@@ -43,15 +43,17 @@ namespace state
     //the game world contained in a specific level.
     class Level
     {
-        Level(const Level &) = delete;
-        Level & operator=(const Level &) = delete;
-
     public:
         Level(const map::Level::Enum = map::Level::Enum::Count);
 
         inline map::Level::Enum WhichLevel() const { return level_; }
 
         bool IsDoorLocked(const map::Level::Enum) const;
+
+        inline void IsDoorLocked(const map::Level::Enum LEVEL, const bool IS_LOCKED)
+        {
+            doorLockMap_[LEVEL] = IS_LOCKED;
+        }
 
     private:
         map::Level::Enum level_;

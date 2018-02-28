@@ -43,13 +43,12 @@ namespace state
     //Responsible for storing all states that represent the game world contained in maps.
     class Maps
     {
-        Maps(const Maps &) = delete;
-        Maps & operator=(const Maps &) = delete;
-
     public:
         Maps();
 
         inline map::Level::Enum CurrentEnum() const { return level_; }
+
+        inline void CurrentEnum(const map::Level::Enum NEW_LEVEL) { level_ = NEW_LEVEL; }
 
         inline const std::string CurrentName() const
         {
@@ -62,6 +61,8 @@ namespace state
         {
             return levels_.at(static_cast<std::size_t>(E));
         }
+
+        void SetupForNewGame();
 
     private:
         map::Level::Enum level_;

@@ -47,7 +47,6 @@ namespace state
 
     public:
         World();
-        virtual ~World();
 
         inline Maps & GetMaps() { return maps_; }
         inline std::size_t EncounterCount() const { return encounterCount_; }
