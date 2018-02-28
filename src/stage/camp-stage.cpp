@@ -50,6 +50,7 @@
 #include "creature/body-type.hpp"
 #include "player/character.hpp"
 #include "player/party.hpp"
+#include "player/party-factory.hpp"
 #include "sfml-util/ouroboros.hpp"
 
 #include "misc/vectors.hpp"
@@ -156,24 +157,7 @@ namespace stage
         EntityAdd(fireAnimUPtr_.get());
 
         //TEMP TODO REMOVE -make a party to test this stage with
-        auto c1Ptr{ new player::Character("TheWolfen1",    creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::race::Wolfen,  creature::role::Wolfen) };
-        auto c2Ptr{ new player::Character("TheWolfen2",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::race::Wolfen,  creature::role::Wolfen) };
-        auto c3Ptr{ new player::Character("TheWolfen3",    creature::sex::Male,   creature::BodyType::Make_Wolfen(),   creature::race::Wolfen,  creature::role::Wolfen) };
-        auto c4Ptr{ new player::Character("TheThief",      creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::race::Gnome,   creature::role::Thief) };
-        auto c5Ptr{ new player::Character("TheCleric",     creature::sex::Female, creature::BodyType::Make_Humanoid(), creature::race::Human,   creature::role::Cleric) };
-        auto c6Ptr{ new player::Character("ThBeastmaster", creature::sex::Male,   creature::BodyType::Make_Humanoid(), creature::race::Human,   creature::role::Beastmaster) };
-        player::PartyPtr_t partyPtr{ new player::Party() };
-        std::string errMsgIgnored{ "" };
-        partyPtr->Add(c1Ptr, errMsgIgnored);
-        partyPtr->Add(c2Ptr, errMsgIgnored);
-        partyPtr->Add(c3Ptr, errMsgIgnored);
-        partyPtr->Add(c4Ptr, errMsgIgnored);
-        partyPtr->Add(c5Ptr, errMsgIgnored);
-        partyPtr->Add(c6Ptr, errMsgIgnored);
-        auto gameStatePtr = new state::GameState(partyPtr);
-        gameStatePtr->IsNewGameSet(true);
-        game::Game::Instance()->StateStore(gameStatePtr);
-
+        state::GameStateFactory::Instance()->NewGame(player::PartyFactory::MakeFakeForTesting());
         showNewGamePopup1_ = game::Game::Instance()->State().IsNewGame();
     }
 

@@ -86,7 +86,6 @@ namespace non_player
         }
     };
 
-    using PartyPtr_t = non_player::Party *;
     using PartyUPtr_t = std::unique_ptr<Party>;
 
 }

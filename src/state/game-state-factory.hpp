@@ -41,7 +41,7 @@ namespace heroespath
 namespace player
 {
     class Party;
-    using PartyPtr_t = Party *;
+    using PartyUPtr_t = std::unique_ptr<Party>;
 
     class Character;
     using CharacterPtr_t = Character *;
@@ -71,7 +71,7 @@ namespace state
         static void Acquire();
         static void Release();
 
-        void NewGame(const player::PartyPtr_t) const;
+        void NewGame(player::PartyUPtr_t) const;
 
         //Caller is responsible for the lifetime of the returned GameState objects.
         GameStatePSet_t LoadAllGames() const;
@@ -89,11 +89,12 @@ namespace state
         //hack'ish function that saves either the game or the character
         //depending on which pointer is null...because can't include the
         //boost serializer includes here in this header file...grumble...zTn 2016-10-26
-        void Save(const GameStatePtr_t         HEROESPATH_PTR,
-                  const player::CharacterPtr_t CHARACTER_PTR,
-                  const std::string &          DIR_STR,
-                  const std::string &          FILE_STR,
-                  const std::string &          EXT_STR) const;
+        void Save(
+            const GameStatePtr_t HEROESPATH_PTR,
+            const player::CharacterPtr_t CHARACTER_PTR,
+            const std::string & DIR_STR,
+            const std::string & FILE_STR,
+            const std::string & EXT_STR) const;
 
         static const std::string SAVED_HEROESPATH_DIR_NAME_;
         static const std::string SAVED_HEROESPATH_FILE_NAME_;

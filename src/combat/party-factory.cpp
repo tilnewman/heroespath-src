@@ -93,16 +93,16 @@ namespace combat
     }
 
 
-    non_player::PartyPtr_t PartyFactory::MakeParty_FirstEncounter() const
+    non_player::PartyUPtr_t PartyFactory::MakeParty_FirstEncounter() const
     {
-        auto partyPtr{ new non_player::Party() };
+        auto partyUPtr{ std::make_unique<non_player::Party>() };
 
         for (std::size_t i(0); i < 10; ++i)
         {
-            partyPtr->Add( MakeCharacter_GoblinGrunt() );
+            partyUPtr->Add( MakeCharacter_GoblinGrunt() );
         }
 
-        return partyPtr;
+        return partyUPtr;
     }
 
 

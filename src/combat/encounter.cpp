@@ -216,7 +216,7 @@ namespace combat
     void Encounter::Setup_First()
     {
         FreeThenResetLivingNonPlayerParty();
-        nonPlayerPartyUPtr_.reset( PartyFactory::Instance()->MakeParty_FirstEncounter() );
+        nonPlayerPartyUPtr_ = PartyFactory::Instance()->MakeParty_FirstEncounter();
     }
 
 

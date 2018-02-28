@@ -59,7 +59,7 @@
 #include "player/initial.hpp"
 #include "player/character.hpp"
 #include "player/character-warehouse.hpp"
-#include "player/fake-party.hpp"
+#include "player/party-factory.hpp"
 #include "non-player/party.hpp"
 #include "non-player/character.hpp"
 #include "state/game-state.hpp"
@@ -1068,7 +1068,7 @@ namespace stage
             preTurnPhase_ = PreTurnPhase::End;
 
             //TEMP TODO REMOVE create new game and player party object
-            state::GameStateFactory::Instance()->NewGame( player::FakeParty::Make() );
+            state::GameStateFactory::Instance()->NewGame( player::PartyFactory::MakeFakeForTesting() );
 
             combat::Encounter::Instance()->BeginCombatTasks();
         }

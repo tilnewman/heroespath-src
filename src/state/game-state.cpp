@@ -43,10 +43,10 @@ namespace state
 {
 
     GameState::GameState(
-        const player::PartyPtr_t PARTY_PTR,
+        player::PartyUPtr_t PARTY_UPTR,
         const WorldPtr_t WORLD_PTR)
     :
-        partyUPtr_       (PARTY_PTR),
+        partyUPtr_       (std::move(PARTY_UPTR)),
         worldUPtr_       (WORLD_PTR),
         isGameNew_       (false),
         dateTimeStarted_ (),

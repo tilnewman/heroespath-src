@@ -109,9 +109,9 @@ namespace state
     }
 
 
-    void GameStateFactory::NewGame(const player::PartyPtr_t PARTY_PTR) const
+    void GameStateFactory::NewGame(player::PartyUPtr_t PARTY_UPTR) const
     {
-        auto gameStatePtr = new GameState(PARTY_PTR, new World());
+        auto gameStatePtr = new GameState(std::move(PARTY_UPTR), new World());
         gameStatePtr->IsNewGameSet(true);
         gameStatePtr->DateTimeStartedSet( sfml_util::DateTime::CurrentDateTime() );
         game::Game::Instance()->StateStore(gameStatePtr);

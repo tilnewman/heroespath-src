@@ -22,11 +22,14 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_PLAYER_FAKEPARTY_HPP_INCLUDED
-#define HEROESPATH_PLAYER_FAKEPARTY_HPP_INCLUDED
+#ifndef HEROESPATH_PLAYER_PARTY_FACTORY_HPP_INCLUDED
+#define HEROESPATH_PLAYER_PARTY_FACTORY_HPP_INCLUDED
 //
-// startup-shutdown.hpp
+// party-factory.hpp
 //
+#include "avatar/avatar-enum.hpp"
+#include <memory>
+#include <vector>
 
 
 namespace heroespath
@@ -34,15 +37,25 @@ namespace heroespath
 namespace player
 {
 
+    class Character;
+    using CharacterPtr_t = Character *;
+    using CharacterPVec_t = std::vector<CharacterPtr_t>;
+
+
     class Party;
+    using PartyUPtr_t = std::unique_ptr<Party>;
 
 
-    struct FakeParty
+    struct PartyFactory
     {
-        static Party * Make();
+        static PartyUPtr_t Make(
+            const avatar::Avatar::Enum,
+            const CharacterPVec_t &);
+
+        static PartyUPtr_t MakeFakeForTesting();
     };
 
 }
 }
 
-#endif //HEROESPATH_PLAYER_FAKEPARTY_HPP_INCLUDED
+#endif //HEROESPATH_PLAYER_PARTY_FACTORY_HPP_INCLUDED

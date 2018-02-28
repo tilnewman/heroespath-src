@@ -68,7 +68,7 @@
 #include "state/game-state.hpp"
 #include "state/game-state-factory.hpp"
 #include "player/party.hpp"
-#include "player/fake-party.hpp"
+#include "player/party-factory.hpp"
 
 #include <sstream>
 #include <chrono>
@@ -120,7 +120,7 @@ namespace stage
         animBGSprite_.setTexture(animBGTexture_);
         animBGSprite_.setPosition(0.0f, 0.0f);
 
-        state::GameStateFactory::Instance()->NewGame(player::FakeParty::Make());
+        state::GameStateFactory::Instance()->NewGame(player::PartyFactory::MakeFakeForTesting());
     }
 
 

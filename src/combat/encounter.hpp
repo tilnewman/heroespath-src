@@ -58,7 +58,6 @@ namespace player
 namespace non_player
 {
     class Party;
-    using PartyPtr_t = Party *;
     using PartyUPtr_t = std::unique_ptr<Party>;
 }
 

@@ -53,6 +53,7 @@
 #include "player/party.hpp"
 #include "player/character.hpp"
 #include "player/character-warehouse.hpp"
+#include "player/party-factory.hpp"
 
 #include "avatar/portrait-factory.hpp"
 
@@ -841,7 +842,8 @@ namespace stage
         }
 
         //create a new GameState with the given party and then save it
-        state::GameStateFactory::Instance()->NewGame( new player::Party(PARTY_AVATAR, charPVec) );
+        state::GameStateFactory::Instance()->NewGame(
+            player::PartyFactory::Make(PARTY_AVATAR, charPVec) );
 
         //Don't bother clearing the party ListBox because it flashes the
         //"not engouh characters" text, and since we are immediately transitioning

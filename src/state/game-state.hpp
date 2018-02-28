@@ -41,7 +41,6 @@ namespace heroespath
 namespace player
 {
     class Party;
-    using PartyPtr_t  = Party *;
     using PartyUPtr_t = std::unique_ptr<Party>;
 }
 namespace state
@@ -61,7 +60,7 @@ namespace state
 
     public:
         explicit GameState(
-            const player::PartyPtr_t PARTY_PTR = nullptr,
+            player::PartyUPtr_t PARTY_UPTR = player::PartyUPtr_t(),
             const WorldPtr_t WORLD_PTR = nullptr);
 
         virtual ~GameState();

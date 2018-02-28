@@ -47,7 +47,7 @@ namespace heroespath
 namespace non_player
 {
     class Party;
-    using PartyPtr_t = Party *;
+    using PartyUPtr_t = std::unique_ptr<Party>;
 
     class Character;
     using CharacterPtr_t = Character *;
@@ -69,7 +69,7 @@ namespace combat
         static void Acquire();
         static void Release();
 
-        non_player::PartyPtr_t MakeParty_FirstEncounter() const;
+        non_player::PartyUPtr_t MakeParty_FirstEncounter() const;
 
     private:
         non_player::CharacterPtr_t MakeCharacter_GoblinGrunt() const;

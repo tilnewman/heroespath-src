@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// fake-party.cpp
+// party-factory.cpp
 //
-#include "fake-party.hpp"
+#include "party-factory.hpp"
 
 #include "stats/stat-set.hpp"
 #include "player/party.hpp"
@@ -47,10 +47,18 @@ namespace heroespath
 namespace player
 {
 
-    Party * FakeParty::Make()
+    PartyUPtr_t PartyFactory::Make(
+        const avatar::Avatar::Enum AVATAR,
+        const CharacterPVec_t & CHARACTERS)
+    {
+        return std::make_unique<Party>(AVATAR, CHARACTERS);
+    }
+
+
+    PartyUPtr_t PartyFactory::MakeFakeForTesting()
     {
         std::string errMsgIgnored{ "" };
-        auto partyPtr{ new player::Party() };
+        auto partyUPtr{ std::make_unique<player::Party>() };
 
         const int STAT_BASE_HIGH{18};
         const int STAT_BASE_MED{9};
@@ -80,7 +88,7 @@ namespace player
                 KNIGHT_STATS) };
 
             player::Initial::Setup(knightPtr);
-            partyPtr->Add(knightPtr, errMsgIgnored);
+            partyUPtr->Add(knightPtr, errMsgIgnored);
         }
         */
         {
@@ -106,7 +114,7 @@ namespace player
                 FIREBRAND_STATS) };
 
             player::Initial::Setup(firebrandPtr);
-            partyPtr->Add(firebrandPtr, errMsgIgnored);
+            partyUPtr->Add(firebrandPtr, errMsgIgnored);
         }
         /*
         {
@@ -132,7 +140,7 @@ namespace player
                 ARCHER_STATS) };
 
             player::Initial::Setup(archerPtr);
-            partyPtr->Add(archerPtr, errMsgIgnored);
+            partyUPtr->Add(archerPtr, errMsgIgnored);
         }
 
         {
@@ -158,7 +166,7 @@ namespace player
                 WOLFEN_STATS) };
 
             player::Initial::Setup(wolfenPtr);
-            partyPtr->Add(wolfenPtr, errMsgIgnored);
+            partyUPtr->Add(wolfenPtr, errMsgIgnored);
         }
         */
         {
@@ -184,7 +192,7 @@ namespace player
                 BARD_STATS) };
 
             player::Initial::Setup(bardPtr);
-            partyPtr->Add(bardPtr, errMsgIgnored);
+            partyUPtr->Add(bardPtr, errMsgIgnored);
         }
 
         {
@@ -210,7 +218,7 @@ namespace player
                 BEASTMASTER_STATS) };
 
             player::Initial::Setup(bmPtr);
-            partyPtr->Add(bmPtr, errMsgIgnored);
+            partyUPtr->Add(bmPtr, errMsgIgnored);
         }
 
         {
@@ -236,7 +244,7 @@ namespace player
                 THEIF_STATS) };
 
             player::Initial::Setup(thiefPtr);
-            partyPtr->Add(thiefPtr, errMsgIgnored);
+            partyUPtr->Add(thiefPtr, errMsgIgnored);
         }
 
         {
@@ -262,7 +270,7 @@ namespace player
                 CLERIC_STATS) };
 
             player::Initial::Setup(clericPtr);
-            partyPtr->Add(clericPtr, errMsgIgnored);
+            partyUPtr->Add(clericPtr, errMsgIgnored);
         }
         /*
         {
@@ -288,7 +296,7 @@ namespace player
                 SORCERER_STATS) };
 
             player::Initial::Setup(sorcererPtr);
-            partyPtr->Add(sorcererPtr, errMsgIgnored);
+            partyUPtr->Add(sorcererPtr, errMsgIgnored);
         }
         */
         {
@@ -314,10 +322,10 @@ namespace player
                 SYLAVIN_STATS) };
 
             player::Initial::Setup(sylavinPtr);
-            partyPtr->Add(sylavinPtr, errMsgIgnored);
+            partyUPtr->Add(sylavinPtr, errMsgIgnored);
         }
 
-        return partyPtr;
+        return partyUPtr;
     }
 
 }

@@ -62,7 +62,7 @@
 
 //TODO TEMP REMOVE -once done testing
 #include "player/party.hpp"
-#include "player/fake-party.hpp"
+#include "player/party-factory.hpp"
 #include "state/game-state.hpp"
 #include "state/game-state-factory.hpp"
 
@@ -612,7 +612,7 @@ namespace stage
     {
         //TEMP TODO REMOVE -once done testing
         //create a party of characters to work with during testing
-        state::GameStateFactory::Instance()->NewGame(player::FakeParty::Make());
+        state::GameStateFactory::Instance()->NewGame(player::PartyFactory::MakeFakeForTesting());
 
         //TODO TEMP REMOVE -once finished testing
         //create a fake collection of dead creatures, using the predetermined initial encounter

@@ -124,7 +124,6 @@ namespace player
         }
     };
 
-    using PartyPtr_t  = Party *;
     using PartyUPtr_t = std::unique_ptr<Party>;
 
 }
