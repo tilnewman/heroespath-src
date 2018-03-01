@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,10 +22,13 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_INTERACT_LOCKED_DOOR_HPP_INCLUDED
+#define HEROESPATH_INTERACT_LOCKED_DOOR_HPP_INCLUDED
 //
-// interaction.cpp
+// locked-door.hpp
 //
-#include "interaction.hpp"
+#include "interact/interaction-base.hpp"
+#include "map/level-enum.hpp"
 
 
 namespace heroespath
@@ -35,11 +36,19 @@ namespace heroespath
 namespace interact
 {
 
-    Interaction::Interaction(const sf::Texture & TEXTURE, const std::string & TEXT)
-    :
-        text_(TEXT),
-        texture_(TEXTURE)
-    {}
+    //Responsible for interactions with locked doors.
+    class LockedDoor : public InteractionBase
+    {
+    public:
+        LockedDoor(const map::Level::Enum TO_LEVEL);
+
+        inline map::Level::Enum ToLevel() const { return toLevel_; }
+
+    private:
+        map::Level::Enum toLevel_;
+    };
 
 }
 }
+
+#endif //HEROESPATH_INTERACT_LOCKED_DOOR_HPP_INCLUDED

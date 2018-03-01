@@ -25,20 +25,23 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// world.cpp
+// locked-door.cpp
 //
-#include "world.hpp"
+#include "locked-door.hpp"
 
 
 namespace heroespath
 {
-namespace state
+namespace interact
 {
 
-    World::World()
+    LockedDoor::LockedDoor(const map::Level::Enum TO_LEVEL)
     :
-        maps_(),
-        encounterCount_(0)
+        InteractionBase(
+            Interact::Lock,
+            "This door is locked.",
+            "media-images-misc-door-locked"),
+        toLevel_(TO_LEVEL)
     {}
 
 }

@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,22 +22,33 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED
+#define HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED
 //
-// world.cpp
+// interact-enum.hpp
 //
-#include "world.hpp"
+#include <string>
 
 
 namespace heroespath
 {
-namespace state
+namespace interact
 {
 
-    World::World()
-    :
-        maps_(),
-        encounterCount_(0)
-    {}
+    struct Interact
+    {
+        enum Enum
+        {
+            Lock = 0,
+            Conversation,
+            Count
+        };
+
+        static const std::string ToString(const Interact::Enum);
+        static const std::string ImageKey(const Interact::Enum);
+    };
 
 }
 }
+
+#endif //HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED

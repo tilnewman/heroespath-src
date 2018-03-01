@@ -1,3 +1,5 @@
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -22,12 +24,11 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_INTERACT_INTERACTION_HPP_INCLUDED
-#define HEROESPATH_INTERACT_INTERACTION_HPP_INCLUDED
 //
-// interaction.hpp
+// interaction-base.cpp
 //
-#include "sfml-util/sfml-graphics.hpp"
+#include "interaction-base.hpp"
+#include "sfml-util/loaders.hpp"
 
 
 namespace heroespath
@@ -35,22 +36,28 @@ namespace heroespath
 namespace interact
 {
 
-    //Responsible for wrapping all the information needed to conduct an
-    //interaction with the player in the Adventure Stage.
-    class Interaction
+    const sf::Uint8 InteractionBase::CONTEXT_IMAGE_ALPHA_{ 64 };
+
+
+    InteractionBase::InteractionBase(
+        const Interact::Enum INTERACTION_TYPE,
+        const std::string & TEXT,
+        const std::string & SUBJECT_IMAGE_KEY)
+    :
+        interactionType_(INTERACTION_TYPE),
+        text_(TEXT),
+        subjectTexture_(),
+        subjectSprite_(),
+        contextTexture_(),
+        contextSprite_()
     {
-    public:
-        Interaction(const sf::Texture &, const std::string &);
+        sfml_util::LoadTexture(subjectTexture_, SUBJECT_IMAGE_KEY);
+        subjectSprite_.setTexture(subjectTexture_, true);
 
-        inline const std::string GetText() const { return text_; }
-        inline const sf::Texture & GetTexture() const { return texture_; }
-
-    private:
-        std::string text_;
-        sf::Texture texture_;
-    };
+        sfml_util::LoadTexture(contextTexture_, Interact::ImageKey(INTERACTION_TYPE));
+        contextSprite_.setTexture(contextTexture_, true);
+        contextSprite_.setColor( sf::Color(255, 255, 255, CONTEXT_IMAGE_ALPHA_) );
+    }
 
 }
 }
-
-#endif //HEROESPATH_INTERACT_INTERACTION_HPP_INCLUDED

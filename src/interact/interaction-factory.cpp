@@ -25,21 +25,21 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// world.cpp
+// interaction-factory.cpp
 //
-#include "world.hpp"
+#include "interaction-factory.hpp"
+#include "interact/locked-door.hpp"
 
 
 namespace heroespath
 {
-namespace state
+namespace interact
 {
 
-    World::World()
-    :
-        maps_(),
-        encounterCount_(0)
-    {}
+    InteractionUPtr_t InteractionFactory::MakeLockedDoor(const map::Level::Enum TO_LEVEL)
+    {
+        return std::make_unique<LockedDoor>(TO_LEVEL);
+    }
 
 }
 }
