@@ -840,5 +840,14 @@ namespace sfml_util
         throw std::runtime_error(ss.str());
     }
 
+
+    const std::vector<sound_effect::Enum> sound_effect::DoorLockedSfx()
+    {
+        return {
+            sound_effect::DoorLocked1,
+            sound_effect::DoorLocked2,
+            sound_effect::DoorLocked3 };
+    }
+
 }
 }

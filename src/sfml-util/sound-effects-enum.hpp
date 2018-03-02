@@ -389,6 +389,8 @@ namespace sfml_util
         static DoorType DoorTypeFromString(const std::string &);
 
         static sound_effect::Enum RandomDoorSfx(const DoorType, const DoorAction);
+
+        static const std::vector<sound_effect::Enum> DoorLockedSfx();
     };
 
     using SfxEnumVec_t = std::vector<sound_effect::Enum>;

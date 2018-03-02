@@ -22,51 +22,42 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_STATE_MAPS_HPP_INCLUDED
-#define HEROESPATH_STATE_MAPS_HPP_INCLUDED
+#ifndef HEROESPATH_MAP_INTERACTION_TEXT_ENUM_HPP_INCLUDED
+#define HEROESPATH_MAP_INTERACTION_TEXT_ENUM_HPP_INCLUDED
 //
-// maps.hpp
+// interaction-text-enum.hpp
 //
-#include "state/level.hpp"
-#include "map/level-enum.hpp"
-#include "misc/boost-serialize-includes.hpp"
+#include <string>
 
-#include <vector>
-#include <memory>
 
+namespace sf
+{
+    class Font;
+}
 
 namespace heroespath
 {
-namespace state
+namespace sfml_util
+{
+    using FontPtr_t = sf::Font *;
+}
+namespace interact
 {
 
-    //Responsible for storing all states that represent the game world contained in maps.
-    class Maps
+    struct Text
     {
-    public:
-        Maps();
-
-        inline void SetCurrent(const map::Level::Enum NEW_LEVEL) { level_ = NEW_LEVEL; }
-
-        inline Level & Current() { return levels_.at(static_cast<std::size_t>(level_)); }
-
-        void SetupForNewGame();
-
-    private:
-        map::Level::Enum level_;
-        std::vector<Level> levels_;
-
-    private:
-        friend class boost::serialization::access;
-        template<typename Archive>
-        void serialize(Archive & ar, const unsigned int)
+        enum Enum
         {
-            ar & level_;
-            ar & levels_;
-        }
+            System = 0,
+            Dialog,
+            Count
+        };
+
+        static const std::string ToString(const Enum);
+        static sfml_util::FontPtr_t Font(const Enum);
     };
 
 }
 }
 
-#endif //HEROESPATH_STATE_MAPS_HPP_INCLUDED
+#endif //HEROESPATH_MAP_INTERACTION_TEXT_ENUM_HPP_INCLUDED

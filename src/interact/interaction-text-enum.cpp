@@ -25,10 +25,12 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// locked-door.cpp
+// interaction-text-enum.cpp
 //
-#include "locked-door.hpp"
-#include "misc/vectors.hpp"
+#include "interaction-text-enum.hpp"
+#include "sfml-util/font-manager.hpp"
+#include <exception>
+#include <sstream>
 
 
 namespace heroespath
@@ -36,15 +38,42 @@ namespace heroespath
 namespace interact
 {
 
-    LockedDoor::LockedDoor(const map::Level::Enum TO_LEVEL)
-    :
-        InteractionBase(
-            Interact::Lock,
-            InteractionBase::MakeTextInfo("This door is locked.", Text::System),
-            "media-images-misc-door-locked",
-            misc::Vector::SelectRandom(sfml_util::sound_effect::DoorLockedSfx())),
-        toLevel_(TO_LEVEL)
-    {}
+    const std::string Text::ToString(const Text::Enum TEXT_TYPE)
+    {
+        switch (TEXT_TYPE)
+        {
+            case Text::System: { return "System"; }
+            case Text::Dialog: { return "Dialog"; }
+            case Text::Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "interact::Text::Enum::ToString(" << TEXT_TYPE
+                    << ")_InvalidValueError.";
+
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
+
+    sfml_util::FontPtr_t Text::Font(const Text::Enum TEXT_TYPE)
+    {
+        switch (TEXT_TYPE)
+        {
+            case Text::System: { return sfml_util::FontManager::Instance()->Font_Default1(); }
+            case Text::Dialog: { return sfml_util::FontManager::Instance()->Font_Dialog1(); }
+            case Text::Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "interact::Text::Enum::Font(" << TEXT_TYPE
+                    << ")_InvalidValueError.";
+
+                throw std::range_error(ss.str());
+            }
+        }
+    }
 
 }
 }

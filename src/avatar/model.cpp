@@ -51,7 +51,7 @@ namespace avatar
     const float Model::TIME_BETWEEN_WALK_MIN_SEC_{ 1.0f };
     const float Model::TIME_BETWEEN_WALK_MAX_SEC_{ 2.0f };
     const float Model::WALK_TARGET_CLOSE_ENOUGH_{ 5.0f };
-    const int Model::WALKING_INTO_INDEX_INVALID_{ -1 };
+    const std::size_t Model::WALKING_INTO_INDEX_INVALID_{ 0 }; //TODO fix by using something other than a size_t
     const float Model::WALKING_INTO_DURATION_SEC_{ 1.5f };
 
 
@@ -85,6 +85,10 @@ namespace avatar
         }
 
         viewUPtr_->UpdatePos(posV_);
+
+        //TODO finish implementation,
+        //TODO change method of identifying moving into targets, std::size_t won't work...
+        MovingIntoUpdate(TIME_ELAPSED);
     }
 
 
@@ -170,11 +174,9 @@ namespace avatar
 
     void Model::MovingIntoSet(const std::size_t NON_PLAYER_INDEX)
     {
-        auto const INDEX_INT{ static_cast<int>(NON_PLAYER_INDEX) };
-
-        if (INDEX_INT != walkingIntoIndex_)
+        if (NON_PLAYER_INDEX != walkingIntoIndex_)
         {
-            walkingIntoIndex_ = INDEX_INT;
+            walkingIntoIndex_ = NON_PLAYER_INDEX;
             walkingIntoTimerSec_ = 0.0f;
         }
     }
@@ -187,7 +189,7 @@ namespace avatar
     }
 
 
-    int Model::MovingIntoUpdate(const float TIME_ELAPSED)
+    std::size_t Model::MovingIntoUpdate(const float TIME_ELAPSED)
     {
         if (walkingIntoIndex_ != WALKING_INTO_INDEX_INVALID_)
         {

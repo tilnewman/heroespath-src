@@ -10,4 +10,5 @@ target_link_libraries(  ${PROJECT_NAME}
                         Player
                         NonPlayer
                         Spell
+                        Interact
                         ${Boost_LIBRARIES} )

@@ -64,6 +64,7 @@
 #include "map/level-enum.hpp"
 #include "map/map.hpp"
 #include "map/map-display.hpp"
+#include "interact/interaction-manager.hpp"
 
 #include "state/game-state.hpp"
 #include "state/game-state-factory.hpp"
@@ -896,6 +897,8 @@ namespace stage
 
     bool TestingStage::TestMaps()
     {
+        static interact::InteractionManager interactionManager;
+
         static auto hasInitialPrompt{ false };
         if (false == hasInitialPrompt)
         {
@@ -939,7 +942,7 @@ namespace stage
 
             const sf::FloatRect MAP_REGION(0.0f, 0.0f, 128.0f, 256.0f);
 
-            map::MapUPtr_t mapUPtr{ std::make_unique<map::Map>(MAP_REGION) };
+            map::MapUPtr_t mapUPtr{ std::make_unique<map::Map>(MAP_REGION, interactionManager) };
 
             std::vector<map::Level::Enum> entryLevels;
             std::vector<map::Level::Enum> exitLevels;
@@ -948,7 +951,7 @@ namespace stage
 
             for (auto const NEXT_ENTRY_LEVEL : entryLevels)
             {
-                map::MapUPtr_t nextMapUPtr{ std::make_unique<map::Map>(MAP_REGION) };
+                map::MapUPtr_t nextMapUPtr{ std::make_unique<map::Map>(MAP_REGION, interactionManager) };
 
                 std::vector<map::Level::Enum> ignored;
                 std::vector<map::Level::Enum> nextExitLevels;
@@ -975,7 +978,7 @@ namespace stage
 
             for (auto const NEXT_EXIT_LEVEL : exitLevels)
             {
-                map::MapUPtr_t nextMapUPtr{ std::make_unique<map::Map>(MAP_REGION) };
+                map::MapUPtr_t nextMapUPtr{ std::make_unique<map::Map>(MAP_REGION, interactionManager) };
 
                 std::vector<map::Level::Enum> nextEntryLevels;
                 std::vector<map::Level::Enum> ignored;

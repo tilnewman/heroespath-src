@@ -22,14 +22,11 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED
-#define HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED
+#ifndef HEROESPATH_INTERACT_INTERACTION_MANAGER_HPP_INCLUDED
+#define HEROESPATH_INTERACT_INTERACTION_MANAGER_HPP_INCLUDED
 //
-// i-interaction.hpp
+// interaction-manager.hpp
 //
-#include "interact/interact-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/gui/text-info.hpp"
 #include <memory>
 
 
@@ -38,21 +35,33 @@ namespace heroespath
 namespace interact
 {
 
-    //Pure virtual interface for all Interactions objects.
-    struct IInteraction
-    {
-        virtual ~IInteraction() {}
-        virtual Interact::Enum Type() const = 0;
-        virtual const sfml_util::gui::TextInfo & Text() const = 0;
-        virtual const sf::Texture & SubjectTexture() const = 0;
-        virtual const sf::Texture & ContextTexture() const = 0;
-        virtual void PlayEnterSfx() const = 0;
-        virtual void PlayExitSfx() const = 0;
-    };
-
+    struct IInteraction;
     using InteractionUPtr_t = std::unique_ptr<IInteraction>;
 
+
+    //Responsible for the lifetimes of interactions.
+    class InteractionManager
+    {
+        InteractionManager(const InteractionManager &) = delete;
+        InteractionManager & operator=(const InteractionManager &) = delete;
+
+    public:
+        InteractionManager();
+        ~InteractionManager();
+
+        inline IInteraction * Current() { return currentUPtr_.get(); }
+        bool HasCurrentChanged() const;
+        void RemoveCurrent();
+        void SetNext(InteractionUPtr_t);
+        bool Update();
+        
+    private:
+        InteractionUPtr_t currentUPtr_;
+        InteractionUPtr_t nextUPtr_;
+        mutable bool hasCurrentChanged_;
+    };
+
 }
 }
 
-#endif //HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED
+#endif //HEROESPATH_INTERACT_INTERACTION_MANAGER_HPP_INCLUDED

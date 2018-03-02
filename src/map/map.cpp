@@ -35,6 +35,7 @@
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "state/game-state.hpp"
+#include "state/world.hpp"
 #include "player/party.hpp"
 #include "avatar/lpc-view.hpp"
 #include "avatar/avatar-enum.hpp"
@@ -42,6 +43,7 @@
 #include "sfml-util/sound-manager.hpp"
 #include "misc/vector-map.hpp"
 #include "misc/random.hpp"
+#include "interact/interaction-factory.hpp"
 
 
 namespace heroespath
@@ -54,12 +56,13 @@ namespace map
     const float Map::NONPLAYER_MOVE_DISTANCE_{ 3.0f };
 
 
-    Map::Map(const sf::FloatRect & REGION)
+    Map::Map(const sf::FloatRect & REGION, interact::InteractionManager & interactionManager)
     :
         WALK_SFX_VOLUME_RATIO_(
             game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-sound-map-walk-sfx-volume-ratio")),
         mapDisplayUPtr_(std::make_unique<map::MapDisplay>( * this, REGION) ),
+        interactionManager_(interactionManager),
         collisionVec_(),
         transitionVec_(),
         level_(Level::Count),
@@ -71,7 +74,8 @@ namespace map
         walkMusicIsWalking_(false),
         sfxTimer_(
             game::GameDataFile::Instance()->GetCopyFloat(
-                "heroespath-sound-map-sfx-time-between-updates"))
+                "heroespath-sound-map-sfx-time-between-updates")),
+        interactionRect_()
     {}
 
 
@@ -105,6 +109,8 @@ namespace map
 
         level_ = LEVEL_TO_LOAD;
 
+        game::Game::Instance()->State().World().GetMaps().SetCurrent(LEVEL_TO_LOAD);
+
         if (IS_TEST_LOAD == false)
         {
             mapDisplayUPtr_->Load(
@@ -122,12 +128,20 @@ namespace map
         }
         else
         {
-            if (ChangeLevelOnExit(DIRECTION, PLAYER_MOVE_DISTANCE_))
+            Transition transition;
+            if (CheckIfEnteringTransition(DIRECTION, PLAYER_MOVE_DISTANCE_, transition))
             {
+                HandleEnteringTransition(transition);
                 return true;
             }
             else
             {
+                if (sf::FloatRect() != interactionRect_)
+                {
+                    interactionRect_ = sf::FloatRect();
+                    interactionManager_.RemoveCurrent();
+                }
+
                 return mapDisplayUPtr_->Move(DIRECTION, PLAYER_MOVE_DISTANCE_);
             }
         }
@@ -179,7 +193,6 @@ namespace map
 
                     return rect;
                 }() };
-
 
             auto const NPC_RECT_FOR_PLAYER_COLLISIONS{
                 [&]()
@@ -273,13 +286,6 @@ namespace map
             mapDisplayUPtr_->UpdateAnimMusicVolume();
             UpdateWalkMusic();
         }
-    }
-
-
-    void Map::UpdateInteractions(const float TIME_ELAPSED)
-    {
-        //TODO
-        player_.MovingIntoUpdate(TIME_ELAPSED);
     }
 
 
@@ -395,9 +401,10 @@ namespace map
     }
 
 
-    bool Map::ChangeLevelOnExit(
+    bool Map::CheckIfEnteringTransition(
         const sfml_util::Direction::Enum DIRECTION,
-        const float ADJUSTMENT)
+        const float ADJUSTMENT,
+        Transition & transition) const
     {
         auto const ADJ_PLAYER_POS_V{ CalcAdjPlayerPos(DIRECTION, ADJUSTMENT) };
 
@@ -406,13 +413,36 @@ namespace map
             if ((TRANSITION.IsEntry() == false) &&
                 (TRANSITION.Rect().contains(ADJ_PLAYER_POS_V)))
             {
-                ChangeLevel(TRANSITION);
-
+                transition = TRANSITION;
                 return true;
             }
         }
 
         return false;
+    }
+
+
+    void Map::HandleEnteringTransition(const Transition & TRANSITION)
+    {
+        player_.StopWalking();
+
+        auto const IS_LOCKED{ game::Game::Instance()->
+            State().World().GetMaps().Current().IsDoorLocked(TRANSITION.Level()) };
+
+        if (IS_LOCKED)
+        {
+            if (TRANSITION.Rect() != interactionRect_)
+            {
+                interactionManager_.SetNext(
+                    interact::InteractionFactory::MakeLockedDoor(TRANSITION.Level()));
+
+                interactionRect_ = TRANSITION.Rect();
+            }
+        }
+        else
+        {
+            ChangeLevel(TRANSITION);
+        }
     }
 
 
@@ -436,7 +466,7 @@ namespace map
     }
 
 
-    void Map::ChangeLevel(const Transition TRANSITION)
+    void Map::ChangeLevel(const Transition & TRANSITION)
     {
         PlayDoorSfx(TRANSITION.DoorType(), true);
         Load(TRANSITION.Level(), level_);

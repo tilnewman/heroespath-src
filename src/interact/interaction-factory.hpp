@@ -28,6 +28,7 @@
 // interaction-factory.hpp
 //
 #include "interact/i-interaction.hpp"
+#include "interact/interaction-text-enum.hpp"
 #include "map/level-enum.hpp"
 
 
@@ -39,7 +40,7 @@ namespace interact
     //Responsible for the construction of all Interaction objects.
     struct InteractionFactory
     {
-        InteractionUPtr_t MakeLockedDoor(const map::Level::Enum TO_LEVEL);
+        static InteractionUPtr_t MakeLockedDoor(const map::Level::Enum TO_LEVEL);
     };
 
 }

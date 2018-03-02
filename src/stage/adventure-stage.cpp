@@ -54,7 +54,8 @@ namespace stage
             0.0f,
             sfml_util::Display::Instance()->GetWinWidth(),
             sfml_util::Display::Instance()->GetWinHeight()),
-        adventureDisplayStagePtr_(nullptr)
+        adventureDisplayStagePtr_(nullptr),
+        interactionManager_()
     {}
 
 
@@ -68,7 +69,7 @@ namespace stage
         //create a party of characters to work with during testing
         state::GameStateFactory::Instance()->NewGame(player::PartyFactory::MakeFakeForTesting());
 
-        adventureDisplayStagePtr_ = new AdventureDisplayStage(this);
+        adventureDisplayStagePtr_ = new AdventureDisplayStage(this, interactionManager_);
         adventureDisplayStagePtr_->Setup();
 
         //See AdventureDisplayStage::Setup() for where this is actually done.
@@ -76,6 +77,12 @@ namespace stage
         //can do so before adding it's own substages, so that it will be drawn
         //before those substages.
         //game::LoopManager::Instance()->AddStage(adventureDisplayStagePtr_);
+    }
+
+
+    void AdventureStage::UpdateTime(const float)
+    {
+        interactionManager_.Update();
     }
 
 }

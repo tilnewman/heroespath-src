@@ -52,7 +52,9 @@ namespace stage
     const float AdventureDisplayStage::TIME_BETWEEN_MAP_MOVES_SEC_{ 0.0333f };
 
 
-    AdventureDisplayStage::AdventureDisplayStage(AdventureStage * const)
+    AdventureDisplayStage::AdventureDisplayStage(
+        AdventureStage * const,
+        interact::InteractionManager & interactionManager)
     :
         Stage(
             "AdventureDisplay",
@@ -61,6 +63,7 @@ namespace stage
             sfml_util::Display::Instance()->GetWinWidth(),
             sfml_util::Display::Instance()->GetWinHeight()),
         interactStagePtr_(nullptr),
+        interactionManager_(interactionManager),
         characterListUPtr_(std::make_unique<AdventureCharacterList>(this)),
         backgroundTexture_(),
         bottomImage_(0.75f, true, sf::Color::White),
@@ -85,7 +88,11 @@ namespace stage
         Setup_BackgroundImage();
         auto const MAP_REGION{ Setup_Map() };
 
-        interactStagePtr_ = new stage::InteractStage( * mapUPtr_, CalcInteractRegion(MAP_REGION));
+        interactStagePtr_ = new stage::InteractStage(
+            * mapUPtr_,
+            CalcInteractRegion(MAP_REGION),
+            interactionManager_);
+
         interactStagePtr_->Setup();
 
         //give control of Stages object lifetime to the Loop class
@@ -190,7 +197,7 @@ namespace stage
             MAP_OUTER_REGION,
             sf::Color(239, 220, 234)) };
 
-        mapUPtr_ = std::make_unique<map::Map>(MAP_INNER_REGION);
+        mapUPtr_ = std::make_unique<map::Map>(MAP_INNER_REGION, interactionManager_);
         mapUPtr_->Load(map::Level::Thornberry_GuardPostWest, map::Level::Thornberry);
 
         return MAP_OUTER_REGION;

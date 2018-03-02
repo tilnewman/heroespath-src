@@ -35,6 +35,7 @@
 #include "map/walk-sfx.hpp"
 #include "misc/timer.hpp"
 #include "avatar/model.hpp"
+#include "interact/interaction-manager.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -60,7 +61,7 @@ namespace map
         Map & operator=(const Map &) = delete;
 
     public:
-        Map(const sf::FloatRect &);
+        Map(const sf::FloatRect &, interact::InteractionManager &);
         virtual ~Map();
 
         void Load(
@@ -77,7 +78,6 @@ namespace map
         inline Level::Enum Level() const { return level_; }
 
         void Update(const float TIME_ELAPSED);
-        void UpdateInteractions(const float TIME_ELAPSED);
 
         void SetPlayerWalkAnim(const sfml_util::Direction::Enum, const bool);
 
@@ -94,24 +94,23 @@ namespace map
             const sfml_util::Direction::Enum DIR,
             const float ADJ);
 
-        const std::string ComposeMapFilePath(const Level::Enum) const;
-
         const sf::Vector2f FindStartPos(
             const TransitionVec_t &,
             const Level::Enum LEVEL_TO_LOAD,
             const Level::Enum LEVEL_FROM);
 
-        bool ChangeLevelOnExit(
+        bool CheckIfEnteringTransition(
             const sfml_util::Direction::Enum DIRECTION,
-            const float ADJUSTMENT);
+            const float ADJUSTMENT,
+            Transition & transition) const;
+
+        void HandleEnteringTransition(const Transition &);
 
         const sf::Vector2f CalcAdjPlayerPos(
             const sfml_util::Direction::Enum DIRECTION,
             const float ADJUSTMENT) const;
 
-        //Transition is not taken by reference because this function needs it's own copy.
-        //This is because Load() will be called which will change the original copy.
-        void ChangeLevel(const Transition);
+        void ChangeLevel(const Transition &);
 
         void PlayDoorSfx(
             const sfml_util::sound_effect::DoorType,
@@ -126,6 +125,7 @@ namespace map
         const float WALK_SFX_VOLUME_RATIO_;
 
         MapDisplayUPtr_t mapDisplayUPtr_;
+        interact::InteractionManager & interactionManager_;
         std::vector<sf::FloatRect> collisionVec_;
         TransitionVec_t transitionVec_;
         Level::Enum level_;
@@ -136,6 +136,7 @@ namespace map
         sfml_util::music::Enum walkMusicWhich_;
         bool walkMusicIsWalking_;
         misc::Timer sfxTimer_;
+        sf::FloatRect interactionRect_;
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;

@@ -27,12 +27,22 @@
 //
 // adventure-stage-interact-stage.hpp
 //
+#include "interact/interaction-manager.hpp"
 #include "sfml-util/stage.hpp"
 #include "sfml-util/sfml-graphics.hpp"
+#include <memory>
 
 
 namespace heroespath
 {
+namespace sfml_util
+{
+namespace gui
+{
+    class TextRegion;
+    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+}
+}
 namespace map
 {
     class Map;
@@ -47,7 +57,11 @@ namespace stage
         InteractStage & operator=(const InteractStage &) = delete;
 
     public:
-        InteractStage(map::Map &, const sf::FloatRect & STAGE_REGION);
+        InteractStage(
+            map::Map &,
+            const sf::FloatRect & STAGE_REGION,
+            interact::InteractionManager &);
+
         virtual ~InteractStage() {}
 
         virtual void Setup() override;
@@ -55,9 +69,21 @@ namespace stage
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
     private:
+        void SetupInteractionForDrawing(const interact::IInteraction * const);
+        void DrawInteraction(sf::RenderTarget &) const;
+
+    private:
+        static const sf::Uint8 CONTEXT_IMAGE_ALPHA_;
+        static const float SUBJECT_REGION_WIDTH_RATIO_;
+        static const float SUBJECT_REGION_HEIGHT_RATIO_;
+        static const float SUBJECT_IMAGE_PAD_RATIO_;
+        static const float CONTEXT_IMAGE_PAD_RATIO_;
+
         map::Map & map_;
-        sf::Texture texture_;
-        sf::Sprite sprite_;
+        interact::InteractionManager & interactionManager_;
+        sf::Sprite subjectSprite_;
+        sf::Sprite contextSprite_;
+        sfml_util::gui::TextRegionUPtr_t textRegionUPtr_;
     };
 
 }

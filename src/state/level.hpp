@@ -46,7 +46,9 @@ namespace state
     public:
         Level(const map::Level::Enum = map::Level::Enum::Count);
 
-        inline map::Level::Enum WhichLevel() const { return level_; }
+        inline map::Level::Enum Which() const { return level_; }
+
+        inline const std::string Name() const { return map::Level::ToString(level_); }
 
         bool IsDoorLocked(const map::Level::Enum) const;
 

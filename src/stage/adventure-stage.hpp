@@ -27,6 +27,7 @@
 //
 // adventure-stage.hpp
 //
+#include "interact/interaction-manager.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
@@ -50,10 +51,12 @@ namespace stage
         AdventureStage();
         virtual ~AdventureStage();
 
-        void Setup() override;
+        virtual void Setup() override;
+        virtual void UpdateTime(const float ELAPSED_TIME_SEC) override;
 
     private:
         AdventureDisplayStage * adventureDisplayStagePtr_;
+        interact::InteractionManager interactionManager_;
     };
 
 }

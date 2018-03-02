@@ -28,7 +28,10 @@
 // interaction-base.cpp
 //
 #include "interaction-base.hpp"
+#include "game/game-data-file.hpp"
 #include "sfml-util/loaders.hpp"
+#include "sfml-util/sound-manager.hpp"
+#include "sfml-util/font-manager.hpp"
 
 
 namespace heroespath
@@ -36,28 +39,60 @@ namespace heroespath
 namespace interact
 {
 
-    const sf::Uint8 InteractionBase::CONTEXT_IMAGE_ALPHA_{ 64 };
-
-
     InteractionBase::InteractionBase(
         const Interact::Enum INTERACTION_TYPE,
-        const std::string & TEXT,
-        const std::string & SUBJECT_IMAGE_KEY)
+        const sfml_util::gui::TextInfo & TEXT,
+        const std::string & SUBJECT_IMAGE_KEY,
+        const sfml_util::sound_effect::Enum SFX_ENTER,
+        const sfml_util::sound_effect::Enum SFX_EXIT)
     :
         interactionType_(INTERACTION_TYPE),
         text_(TEXT),
         subjectTexture_(),
-        subjectSprite_(),
         contextTexture_(),
-        contextSprite_()
+        sfxEnter_(SFX_ENTER),
+        sfxExit_(SFX_EXIT)
     {
-        sfml_util::LoadTexture(subjectTexture_, SUBJECT_IMAGE_KEY);
-        subjectSprite_.setTexture(subjectTexture_, true);
+        sfml_util::LoadTexture(
+            subjectTexture_,
+            game::GameDataFile::Instance()->GetMediaPath(SUBJECT_IMAGE_KEY));
 
-        sfml_util::LoadTexture(contextTexture_, Interact::ImageKey(INTERACTION_TYPE));
-        contextSprite_.setTexture(contextTexture_, true);
-        contextSprite_.setColor( sf::Color(255, 255, 255, CONTEXT_IMAGE_ALPHA_) );
+        sfml_util::LoadTexture(
+            contextTexture_,
+            game::GameDataFile::Instance()->GetMediaPath(Interact::ImageKey(INTERACTION_TYPE)));
     }
+
+
+    void InteractionBase::PlayEnterSfx() const
+    {
+        if (sfml_util::sound_effect::Count != sfxEnter_)
+        {
+            sfml_util::SoundManager::Instance()->SoundEffectPlay(sfxEnter_);
+        }
+    }
+
+
+    void InteractionBase::PlayExitSfx() const
+    {
+        if (sfml_util::sound_effect::Count != sfxExit_)
+        {
+            sfml_util::SoundManager::Instance()->SoundEffectPlay(sfxExit_);
+        }
+    }
+
+
+    const sfml_util::gui::TextInfo InteractionBase::MakeTextInfo(
+        const std::string & TEXT,
+        const Text::Enum TYPE)
+    {
+        return sfml_util::gui::TextInfo(
+            TEXT,
+            Text::Font(TYPE),
+            sfml_util::FontManager::Instance()->Size_Large(),
+            sfml_util::FontManager::Instance()->Color_GrayDark(),
+            sfml_util::Justified::Left);
+    }
+
 
 }
 }

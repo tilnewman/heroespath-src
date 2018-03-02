@@ -28,6 +28,8 @@
 // interaction-base.hpp
 //
 #include "interact/i-interaction.hpp"
+#include "interact/interaction-text-enum.hpp"
+#include "sfml-util/sound-effects-enum.hpp"
 
 
 namespace heroespath
@@ -41,26 +43,34 @@ namespace interact
     public:
         InteractionBase(
             const Interact::Enum,
-            const std::string & TEXT,
-            const std::string & SUBJECT_IMAGE_KEY);
+            const sfml_util::gui::TextInfo & TEXT,
+            const std::string & SUBJECT_IMAGE_KEY,
+            const sfml_util::sound_effect::Enum SFX_ENTER = sfml_util::sound_effect::Count,
+            const sfml_util::sound_effect::Enum SFX_EXIT = sfml_util::sound_effect::Count);
 
         inline virtual Interact::Enum Type() const override { return interactionType_; }
 
-        inline virtual const std::string Text() const override { return text_; }
+        inline virtual const sfml_util::gui::TextInfo & Text() const override { return text_; }
         
-        inline virtual sf::Sprite & SubjectSprite() override { return subjectSprite_; }
+        inline virtual const sf::Texture & SubjectTexture() const override { return subjectTexture_; }
 
-        inline virtual sf::Sprite & ContextSprite() override { return contextSprite_; }
+        inline virtual const sf::Texture & ContextTexture() const override { return contextTexture_; }
+
+        virtual void PlayEnterSfx() const override;
+
+        virtual void PlayExitSfx() const override;
+
+        static const sfml_util::gui::TextInfo MakeTextInfo(
+            const std::string & TEXT,
+            const Text::Enum TYPE);
 
     private:
-        static const sf::Uint8 CONTEXT_IMAGE_ALPHA_;
-
         Interact::Enum interactionType_;
-        std::string text_;
+        sfml_util::gui::TextInfo text_;
         sf::Texture subjectTexture_;
-        sf::Sprite subjectSprite_;
         sf::Texture contextTexture_;
-        sf::Sprite contextSprite_;
+        sfml_util::sound_effect::Enum sfxEnter_;
+        sfml_util::sound_effect::Enum sfxExit_;
     };
 
 }

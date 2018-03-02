@@ -72,7 +72,7 @@ namespace avatar
 
         void MovingIntoSet(const std::size_t NON_PLAYER_INDEX);
         void MovingIntoReset();
-        int MovingIntoUpdate(const float TIME_ELAPSED);
+        std::size_t MovingIntoUpdate(const float TIME_ELAPSED);
 
     private:
         float RandomBlinkDelay() const;
@@ -101,7 +101,7 @@ namespace avatar
         static const float TIME_BETWEEN_WALK_MIN_SEC_;
         static const float TIME_BETWEEN_WALK_MAX_SEC_;
         static const float WALK_TARGET_CLOSE_ENOUGH_;
-        static const int WALKING_INTO_INDEX_INVALID_;
+        static const std::size_t WALKING_INTO_INDEX_INVALID_;
         static const float WALKING_INTO_DURATION_SEC_;
 
         IViewUPtr_t viewUPtr_;
@@ -117,7 +117,7 @@ namespace avatar
         sf::Vector2f posV_;
         sfml_util::Direction::Enum prevWalkDirection_;
         float walkingIntoTimerSec_;
-        int walkingIntoIndex_;
+        std::size_t walkingIntoIndex_;
     };
 
 }

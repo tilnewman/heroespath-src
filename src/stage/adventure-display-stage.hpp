@@ -27,6 +27,7 @@
 //
 // adventure-display-stage.hpp
 //
+#include "interact/interaction-manager.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
@@ -54,14 +55,14 @@ namespace stage
     class AdventureStage;
 
 
-    //Responsible for all drawin operations of the AdventureStage.
+    //Responsible for all drawing operations of the AdventureStage.
     class AdventureDisplayStage : public sfml_util::Stage
     {
         AdventureDisplayStage(const AdventureDisplayStage &) = delete;
         AdventureDisplayStage & operator=(const AdventureDisplayStage &) = delete;
 
     public:
-        AdventureDisplayStage(AdventureStage * const);
+        AdventureDisplayStage(AdventureStage * const, interact::InteractionManager &);
         virtual ~AdventureDisplayStage();
 
         virtual void Setup() override;
@@ -84,6 +85,7 @@ namespace stage
         static const float TIME_BETWEEN_MAP_MOVES_SEC_;
 
         InteractStage * interactStagePtr_;
+        interact::InteractionManager & interactionManager_;
         AdventureCharacterListUPtr_t characterListUPtr_;
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;

@@ -25,32 +25,76 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// world-factory.cpp
+// interaction-manager.cpp
 //
-#include "world-factory.hpp"
-#include "state/world.hpp"
-#include "state/level.hpp"
+#include "interaction-manager.hpp"
+#include "interact/i-interaction.hpp"
+#include "log/log-macros.hpp"
 
 
 namespace heroespath
 {
-namespace state
+namespace interact
 {
 
-    WorldUPtr_t WorldFactory::MakeForNewGame()
+    InteractionManager::InteractionManager()
+    :
+        currentUPtr_(),
+        nextUPtr_(),
+        hasCurrentChanged_(true)
+    {}
+
+
+    InteractionManager::~InteractionManager()
+    {}
+
+
+    bool InteractionManager::HasCurrentChanged() const
     {
-        auto worldUPtr{ std::make_unique<World>() };
-        worldUPtr->GetMaps().SetupForNewGame();
-        return worldUPtr;
+        if (hasCurrentChanged_)
+        {
+            hasCurrentChanged_ = false;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 
-    void WorldFactory::SetupLevelForNewGame(Level & level)
+    void InteractionManager::RemoveCurrent()
     {
-        if (level.Which() == map::Level::Thornberry)
+        currentUPtr_.reset();
+        hasCurrentChanged_ = true;
+    }
+
+
+    void InteractionManager::SetNext(InteractionUPtr_t NEXT_UPTR)
+    {
+        nextUPtr_ = std::move(NEXT_UPTR);
+    }
+
+
+    bool InteractionManager::Update()
+    {
+        if (nextUPtr_.get() != nullptr)
         {
-            level.IsDoorLocked(map::Level::Thornberry_GuardPostWest, true);
-            level.IsDoorLocked(map::Level::Thornberry_GuardPostEast, true);
+            if (currentUPtr_.get() != nullptr)
+            {
+                currentUPtr_->PlayExitSfx();
+            }
+
+            currentUPtr_.swap(nextUPtr_);
+
+            nextUPtr_.reset();
+            currentUPtr_->PlayEnterSfx();
+            hasCurrentChanged_ = true;
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
