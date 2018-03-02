@@ -347,9 +347,7 @@ namespace sfml_util
             DoorCommonClose3,
             DoorCommonOpen1,
             DoorCommonOpen2,
-            DoorLocked1,
-            DoorLocked2,
-            DoorLocked3,
+            DoorLocked,
             DoorOldClose1,
             DoorOldOpen1,
             DoorOldOpen2,
@@ -387,10 +385,7 @@ namespace sfml_util
 
         static const std::string DoorTypeToString(const DoorType);
         static DoorType DoorTypeFromString(const std::string &);
-
         static sound_effect::Enum RandomDoorSfx(const DoorType, const DoorAction);
-
-        static const std::vector<sound_effect::Enum> DoorLockedSfx();
     };
 
     using SfxEnumVec_t = std::vector<sound_effect::Enum>;

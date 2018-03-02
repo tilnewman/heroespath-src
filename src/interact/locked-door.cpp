@@ -42,7 +42,7 @@ namespace interact
             Interact::Lock,
             InteractionBase::MakeTextInfo("This door is locked.", Text::System),
             "media-images-misc-door-locked",
-            misc::Vector::SelectRandom(sfml_util::sound_effect::DoorLockedSfx())),
+            sfml_util::sound_effect::DoorLocked),
         toLevel_(TO_LEVEL)
     {}
 
