@@ -472,17 +472,19 @@ namespace map
 
         auto isEntry{ false };
         Level::Enum level{ Level::Count };
-        sfml_util::sound_effect::DoorType doorSfxType{ sfml_util::sound_effect::DoorType::Count };
+
+        sfml_util::sound_effect::MapTransition transSfxType{
+            sfml_util::sound_effect::MapTransition::Count };
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
             if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_PROPERTIES_))
             {
-                Parse_Transition_Properties(CHILD_PAIR.second, isEntry, level, doorSfxType);
+                Parse_Transition_Properties(CHILD_PAIR.second, isEntry, level, transSfxType);
             }
         }
 
-        return Transition(isEntry, level, rect, doorSfxType);
+        return Transition(isEntry, level, rect, transSfxType);
     }
 
 
@@ -490,7 +492,7 @@ namespace map
         const boost::property_tree::ptree & PTREE,
         bool & isEntry,
         Level::Enum & level,
-        sfml_util::sound_effect::DoorType & doorSfxType) const
+        sfml_util::sound_effect::MapTransition & transSfxType) const
     {
         namespace ba = boost::algorithm;
 
@@ -542,7 +544,7 @@ namespace map
             {
                 try
                 {
-                    doorSfxType = sfml_util::sound_effect::DoorTypeFromString(VALUE_STR);
+                    transSfxType = sfml_util::sound_effect::MapTransitionFromString(VALUE_STR);
                 }
                 catch (...)
                 {

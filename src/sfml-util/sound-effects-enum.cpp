@@ -364,6 +364,7 @@ namespace sfml_util
             case DoorSqueakyOpen1:              { return "door-squeaky-open-1"; }
             case DoorSqueakyOpen2:              { return "door-squeaky-open-2"; }
             case DoorSqueakyOpen3:              { return "door-squeaky-open-3"; }
+            case Stairs:                        { return "stairs"; }
             case None:                          { return "None"; }
             case Count:
             case Random:
@@ -704,7 +705,8 @@ namespace sfml_util
             case DoorSqueakyClose1:
             case DoorSqueakyOpen1:
             case DoorSqueakyOpen2:
-            case DoorSqueakyOpen3:              { return "sound-effects/door"; }
+            case DoorSqueakyOpen3:
+            case Stairs:                        { return "sound-effects/map"; }
             case Count:
             case None:
             case Random:
@@ -718,13 +720,13 @@ namespace sfml_util
     }
 
 
-    sound_effect::Enum sound_effect::RandomDoorSfx(const DoorType TYPE, const DoorAction ACTION)
+    sound_effect::Enum sound_effect::RandomMapTransitionSfx(const MapTransition TYPE, const DoorAction ACTION)
     {
         SfxEnumVec_t vec;
 
         switch (TYPE)
         {
-            case DoorType::Common:
+            case MapTransition::DoorCommon:
             {
                 if (ACTION == DoorAction::Open)
                 {
@@ -740,7 +742,7 @@ namespace sfml_util
                         sound_effect::DoorCommonClose3 }; break;
                 }
             }
-            case DoorType::Old:
+            case MapTransition::DoorOld:
             {
                 if (ACTION == DoorAction::Open)
                 {
@@ -753,7 +755,7 @@ namespace sfml_util
                     vec = { sound_effect::DoorOldClose1 }; break;
                 }
             }
-            case DoorType::Rattly:
+            case MapTransition::DoorRattly:
             {
                 if (ACTION == DoorAction::Open)
                 {
@@ -767,7 +769,7 @@ namespace sfml_util
                         sound_effect::DoorRattlyClose3 }; break;
                 }
             }
-            case DoorType::Squaeky:
+            case MapTransition::DoorSquaeky:
             {
                 if (ACTION == DoorAction::Open)
                 {
@@ -781,7 +783,8 @@ namespace sfml_util
                     vec = { sound_effect::DoorSqueakyClose1 }; break;
                 }
             }
-            case DoorType::Count:
+            case MapTransition::Stairs: { vec = { sound_effect::Stairs }; break; }
+            case MapTransition::Count:
             default:
             {
                 std::ostringstream ss;
@@ -796,19 +799,20 @@ namespace sfml_util
     }
 
 
-    const std::string sound_effect::DoorTypeToString(const DoorType TYPE)
+    const std::string sound_effect::MapTransitionToString(const MapTransition TYPE)
     {
         switch (TYPE)
         {
-            case DoorType::Common:  { return "Common"; }
-            case DoorType::Old:     { return "Old"; }
-            case DoorType::Rattly:  { return "Rattly"; }
-            case DoorType::Squaeky: { return "Squaeky"; }
-            case DoorType::Count:
+            case MapTransition::DoorCommon:  { return "DoorCommon"; }
+            case MapTransition::DoorOld:     { return "DoorOld"; }
+            case MapTransition::DoorRattly:  { return "DoorRattly"; }
+            case MapTransition::DoorSquaeky: { return "DoorSquaeky"; }
+            case MapTransition::Stairs:      { return "Stairs"; }
+            case MapTransition::Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::sound_effect::DoorTypeToString("
+                ss << "sfml_util::sound_effect::MapTransitionToString("
                     << static_cast<int>(TYPE) << ")_Invalid(Type)ValueError.";
 
                 throw std::range_error(ss.str());
@@ -817,22 +821,22 @@ namespace sfml_util
     }
 
 
-    sound_effect::DoorType sound_effect::DoorTypeFromString(const std::string & NAME)
+    sound_effect::MapTransition sound_effect::MapTransitionFromString(const std::string & NAME)
     {
         namespace ba = boost::algorithm;
 
-        for (int i(0); i < static_cast<int>(sound_effect::DoorType::Count); ++i)
+        for (int i(0); i < static_cast<int>(sound_effect::MapTransition::Count); ++i)
         {
-            auto const ENUM{ static_cast<sound_effect::DoorType>(i) };
+            auto const ENUM{ static_cast<sound_effect::MapTransition>(i) };
 
-            if (ba::to_lower_copy(DoorTypeToString(ENUM)) == ba::to_lower_copy(NAME))
+            if (ba::to_lower_copy(MapTransitionToString(ENUM)) == ba::to_lower_copy(NAME))
             {
                 return ENUM;
             }
         }
 
         std::ostringstream ss;
-        ss << "map::Level::Enum::DoorTypeFromString(\"" << NAME << "\")_InvalidValueError.";
+        ss << "map::Level::Enum::MapTransitionFromString(\"" << NAME << "\")_InvalidValueError.";
         throw std::runtime_error(ss.str());
     }
 

@@ -112,9 +112,9 @@ namespace map
 
         void ChangeLevel(const Transition &);
 
-        void PlayDoorSfx(
-            const sfml_util::sound_effect::DoorType,
-            const bool IS_OPEN_SFX) const;
+        void PlayTransitionSfx(
+            const sfml_util::sound_effect::MapTransition,
+            const bool IS_DOOR_OPENING) const;
 
         void UpdateWalkMusic();
 

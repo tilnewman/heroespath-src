@@ -468,34 +468,39 @@ namespace map
 
     void Map::ChangeLevel(const Transition & TRANSITION)
     {
-        PlayDoorSfx(TRANSITION.DoorType(), true);
+        PlayTransitionSfx(TRANSITION.TransType(), true);
         Load(TRANSITION.Level(), level_);
-        PlayDoorSfx(TRANSITION.DoorType(), false);
+        PlayTransitionSfx(TRANSITION.TransType(), false);
     }
 
 
-    void Map::PlayDoorSfx(
-        const sfml_util::sound_effect::DoorType DOOR_TYPE,
-        const bool IS_OPEN_SFX) const
+    void Map::PlayTransitionSfx(
+        const sfml_util::sound_effect::MapTransition TRANS_TYPE,
+        const bool IS_DOOR_OPENING) const
     {
-        if (DOOR_TYPE != sfml_util::sound_effect::DoorType::Count)
+        if (TRANS_TYPE != sfml_util::sound_effect::MapTransition::Count)
         {
-            auto const DOOR_ACTION{ ((IS_OPEN_SFX) ?
+            auto const DOOR_ACTION{ ((IS_DOOR_OPENING) ?
                 sfml_util::sound_effect::DoorAction::Open :
                 sfml_util::sound_effect::DoorAction::Close) };
 
-            auto const DOOR_SFX{
-                sfml_util::sound_effect::RandomDoorSfx(DOOR_TYPE, DOOR_ACTION) };
+            auto const TRANS_SFX{
+                sfml_util::sound_effect::RandomMapTransitionSfx(TRANS_TYPE, DOOR_ACTION) };
 
-            if (DOOR_SFX != sfml_util::sound_effect::Count)
+            if ((TRANS_SFX == sfml_util::sound_effect::Stairs) && (IS_DOOR_OPENING))
             {
-                if (IS_OPEN_SFX)
+                return;
+            }
+
+            if (TRANS_SFX != sfml_util::sound_effect::Count)
+            {
+                if (IS_DOOR_OPENING)
                 {
-                    sfml_util::SoundManager::Instance()->SoundEffectPlayNow(DOOR_SFX);
+                    sfml_util::SoundManager::Instance()->SoundEffectPlayNow(TRANS_SFX);
                 }
                 else
                 {
-                    sfml_util::SoundManager::Instance()->SoundEffectPlay(DOOR_SFX, 1.0f);
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(TRANS_SFX, 1.0f);
                 }
             }
         }

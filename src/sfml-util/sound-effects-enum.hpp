@@ -359,6 +359,7 @@ namespace sfml_util
             DoorSqueakyOpen1,
             DoorSqueakyOpen2,
             DoorSqueakyOpen3,
+            Stairs,
             Count,
             None,
             Random
@@ -374,18 +375,19 @@ namespace sfml_util
             Close
         };
 
-        enum class DoorType
+        enum class MapTransition
         {
-            Common = 0,
-            Old,
-            Rattly,
-            Squaeky,
+            DoorCommon = 0,
+            DoorOld,
+            DoorRattly,
+            DoorSquaeky,
+            Stairs,
             Count
         };
 
-        static const std::string DoorTypeToString(const DoorType);
-        static DoorType DoorTypeFromString(const std::string &);
-        static sound_effect::Enum RandomDoorSfx(const DoorType, const DoorAction);
+        static const std::string MapTransitionToString(const MapTransition);
+        static MapTransition MapTransitionFromString(const std::string &);
+        static sound_effect::Enum RandomMapTransitionSfx(const MapTransition, const DoorAction);
     };
 
     using SfxEnumVec_t = std::vector<sound_effect::Enum>;
