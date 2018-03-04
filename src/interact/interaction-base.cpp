@@ -29,39 +29,43 @@
 //
 #include "interaction-base.hpp"
 #include "game/game-data-file.hpp"
+#include "sfml-util/font-manager.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "sfml-util/font-manager.hpp"
-
+#include "stage/adventure-stage-interact-stage.hpp"
 
 namespace heroespath
 {
 namespace interact
 {
 
+    const std::string InteractionBase::BUTTON_NAME_IGNORE_{ "Ignore" };
+
     InteractionBase::InteractionBase(
         const Interact::Enum INTERACTION_TYPE,
         const sfml_util::gui::TextInfo & TEXT,
+        const ButtonVec_t & BUTTONS,
         const std::string & SUBJECT_IMAGE_KEY,
         const sfml_util::sound_effect::Enum SFX_ENTER,
         const sfml_util::sound_effect::Enum SFX_EXIT)
-    :
-        interactionType_(INTERACTION_TYPE),
-        text_(TEXT),
-        subjectTexture_(),
-        contextTexture_(),
-        sfxEnter_(SFX_ENTER),
-        sfxExit_(SFX_EXIT)
+        : interactionType_(INTERACTION_TYPE)
+        , text_(TEXT)
+        , buttons_(BUTTONS)
+        , subjectTexture_()
+        , contextTexture_()
+        , sfxEnter_(SFX_ENTER)
+        , sfxExit_(SFX_EXIT)
+        , isLocked_(false)
     {
+        buttons_.push_back(Button(BUTTON_NAME_IGNORE_, sf::Keyboard::I));
+
         sfml_util::LoadTexture(
-            subjectTexture_,
-            game::GameDataFile::Instance()->GetMediaPath(SUBJECT_IMAGE_KEY));
+            subjectTexture_, game::GameDataFile::Instance()->GetMediaPath(SUBJECT_IMAGE_KEY));
 
         sfml_util::LoadTexture(
             contextTexture_,
             game::GameDataFile::Instance()->GetMediaPath(Interact::ImageKey(INTERACTION_TYPE)));
     }
-
 
     void InteractionBase::PlayEnterSfx() const
     {
@@ -71,7 +75,6 @@ namespace interact
         }
     }
 
-
     void InteractionBase::PlayExitSfx() const
     {
         if (sfml_util::sound_effect::Count != sfxExit_)
@@ -80,10 +83,8 @@ namespace interact
         }
     }
 
-
-    const sfml_util::gui::TextInfo InteractionBase::MakeTextInfo(
-        const std::string & TEXT,
-        const Text::Enum TYPE)
+    const sfml_util::gui::TextInfo
+        InteractionBase::MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE)
     {
         return sfml_util::gui::TextInfo(
             TEXT,
@@ -93,6 +94,41 @@ namespace interact
             sfml_util::Justified::Left);
     }
 
+    bool InteractionBase::OnButtonClick(
+        stage::InteractStage * const interactStagePtr,
+        const sfml_util::gui::TextButton * const TEXT_BUTTON_PTR)
+    {
+        for (auto const & BUTTON : buttons_)
+        {
+            if (BUTTON.DoPointersMatch(TEXT_BUTTON_PTR))
+            {
+                return OnInteraction(interactStagePtr, BUTTON);
+            }
+        }
 
+        return false;
+    }
+
+    bool InteractionBase::OnKeyRelease(
+        stage::InteractStage * const interactStagePtr, const sf::Keyboard::Key KEY)
+    {
+        for (auto const & BUTTON : buttons_)
+        {
+            if (BUTTON.Key() == KEY)
+            {
+                return OnInteraction(interactStagePtr, BUTTON);
+            }
+        }
+
+        return false;
+    }
+
+    void InteractionBase::HandleIgnore(stage::InteractStage * const interactStagePtr)
+    {
+        if (nullptr != interactStagePtr)
+        {
+            interactStagePtr->InteractionManager().RemoveCurrent();
+        }
+    }
 }
 }

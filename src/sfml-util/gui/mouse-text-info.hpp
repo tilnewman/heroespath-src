@@ -31,7 +31,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/text-info.hpp"
 
-#include "popup/popup-info.hpp"
+#include "popup/popup-enums.hpp"
 
 #include <string>
 #include <vector>
@@ -58,22 +58,24 @@ namespace gui
             const TextInfo & OVER);
 
         MouseTextInfo(
-            const TextInfo &  TEXT_INFO_UP,
+            const TextInfo & TEXT_INFO_UP,
             const sf::Color & COLOR_DOWN,
             const sf::Color & COLOR_OVER);
 
         MouseTextInfo(
             const std::string & TEXT,
-            const FontPtr_t     FONT_PTR,
+            const FontPtr_t FONT_PTR,
             const unsigned int  SIZE,
-            const sf::Color &   COLOR_UP   = sf::Color(220,220,220),
-            const sf::Color &   COLOR_DOWN = sf::Color::White,
-            const sf::Color &   COLOR_OVER = sf::Color::White);
+            const sf::Color & COLOR_UP   = sf::Color(220,220,220),
+            const sf::Color & COLOR_DOWN = sf::Color::White,
+            const sf::Color & COLOR_OVER = sf::Color::White);
 
         //MouseTextInfo generating helper functions
         static const MouseTextInfo Make_PopupButtonSet(
             const std::string & NAME,
-            const popup::PopupInfo &);
+            const popup::PopupButtonColor::Enum);
+
+        static const MouseTextInfo Make_InteractionButtonSet(const std::string & NAME);
 
         TextInfo up;
         TextInfo down;

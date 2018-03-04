@@ -28,13 +28,19 @@
 // i-interaction.hpp
 //
 #include "interact/interact-enum.hpp"
+#include "interact/interaction-button.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/text-info.hpp"
+#include "sfml-util/gui/text-button.hpp"
 #include <memory>
 
 
 namespace heroespath
 {
+namespace stage
+{
+    class InteractStage;
+}
 namespace interact
 {
 
@@ -44,10 +50,26 @@ namespace interact
         virtual ~IInteraction() {}
         virtual Interact::Enum Type() const = 0;
         virtual const sfml_util::gui::TextInfo & Text() const = 0;
+        virtual ButtonVec_t & Buttons() = 0;
         virtual const sf::Texture & SubjectTexture() const = 0;
         virtual const sf::Texture & ContextTexture() const = 0;
         virtual void PlayEnterSfx() const = 0;
         virtual void PlayExitSfx() const = 0;
+
+        virtual bool OnButtonClick(
+            stage::InteractStage * const,
+            const sfml_util::gui::TextButton * const) = 0;
+
+        virtual bool OnKeyRelease(
+            stage::InteractStage * const, 
+            const sf::Keyboard::Key) = 0;
+
+        virtual void Lock() = 0;
+        virtual void Unlock() = 0;
+        virtual bool IsLocked() const = 0;
+
+        virtual bool OnSuccess(stage::InteractStage * const) = 0;
+        virtual bool OnFailure(stage::InteractStage * const) = 0;
     };
 
     using InteractionUPtr_t = std::unique_ptr<IInteraction>;

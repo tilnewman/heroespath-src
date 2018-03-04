@@ -28,52 +28,79 @@
 // interaction-base.hpp
 //
 #include "interact/i-interaction.hpp"
+#include "interact/interaction-button.hpp"
 #include "interact/interaction-text-enum.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
-
 namespace heroespath
 {
+namespace stage
+{
+    class InteractStage;
+}
 namespace interact
 {
 
-    //Responsible for wrapping the common state and operation of all Interactions.
+    // Responsible for wrapping the common state and operation of all Interactions.
     class InteractionBase : public IInteraction
     {
     public:
         InteractionBase(
             const Interact::Enum,
             const sfml_util::gui::TextInfo & TEXT,
+            const ButtonVec_t & BUTTONS,
             const std::string & SUBJECT_IMAGE_KEY,
             const sfml_util::sound_effect::Enum SFX_ENTER = sfml_util::sound_effect::Count,
             const sfml_util::sound_effect::Enum SFX_EXIT = sfml_util::sound_effect::Count);
 
-        inline virtual Interact::Enum Type() const override { return interactionType_; }
+        inline virtual Interact::Enum Type() const final { return interactionType_; }
 
-        inline virtual const sfml_util::gui::TextInfo & Text() const override { return text_; }
-        
-        inline virtual const sf::Texture & SubjectTexture() const override { return subjectTexture_; }
+        inline virtual const sfml_util::gui::TextInfo & Text() const final { return text_; }
 
-        inline virtual const sf::Texture & ContextTexture() const override { return contextTexture_; }
+        virtual ButtonVec_t & Buttons() final { return buttons_; }
 
-        virtual void PlayEnterSfx() const override;
+        inline virtual const sf::Texture & SubjectTexture() const final { return subjectTexture_; }
 
-        virtual void PlayExitSfx() const override;
+        inline virtual const sf::Texture & ContextTexture() const final { return contextTexture_; }
 
-        static const sfml_util::gui::TextInfo MakeTextInfo(
-            const std::string & TEXT,
-            const Text::Enum TYPE);
+        virtual void PlayEnterSfx() const final;
+
+        virtual void PlayExitSfx() const final;
+
+        static const sfml_util::gui::TextInfo
+            MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE);
+
+        virtual bool OnButtonClick(
+            stage::InteractStage * const, const sfml_util::gui::TextButton * const) final;
+
+        virtual bool OnKeyRelease(stage::InteractStage * const, const sf::Keyboard::Key) final;
+
+        virtual void Lock() final { isLocked_ = true; }
+        virtual void Unlock() final { isLocked_ = false; }
+        virtual bool IsLocked() const final { return isLocked_; }
+
+        virtual bool OnSuccess(stage::InteractStage * const) override { return false; }
+        virtual bool OnFailure(stage::InteractStage * const) override { return false; }
+
+    private:
+        virtual bool OnInteraction(stage::InteractStage * const, const Button &) = 0;
+
+        void HandleIgnore(stage::InteractStage * const);
+
+    public:
+        static const std::string BUTTON_NAME_IGNORE_;
 
     private:
         Interact::Enum interactionType_;
         sfml_util::gui::TextInfo text_;
+        ButtonVec_t buttons_;
         sf::Texture subjectTexture_;
         sf::Texture contextTexture_;
         sfml_util::sound_effect::Enum sfxEnter_;
         sfml_util::sound_effect::Enum sfxExit_;
+        bool isLocked_;
     };
-
 }
 }
 
-#endif //HEROESPATH_INTERACT_INTERACTION_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_INTERACTION_HPP_INCLUDED

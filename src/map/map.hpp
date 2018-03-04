@@ -64,6 +64,8 @@ namespace map
         Map(const sf::FloatRect &, interact::InteractionManager &);
         virtual ~Map();
 
+        void TransitionLevel(const Transition &);
+
         void Load(
             const Level::Enum LEVEL_TO_LOAD,
             const Level::Enum LEVEL_FROM,
@@ -109,8 +111,6 @@ namespace map
         const sf::Vector2f CalcAdjPlayerPos(
             const sfml_util::Direction::Enum DIRECTION,
             const float ADJUSTMENT) const;
-
-        void ChangeLevel(const Transition &);
 
         void PlayTransitionSfx(
             const sfml_util::sound_effect::MapTransition,

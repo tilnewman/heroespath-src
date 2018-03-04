@@ -28,23 +28,60 @@
 // locked-door.cpp
 //
 #include "locked-door.hpp"
+#include "game/game.hpp"
+#include "interact/lock-interactions.hpp"
 #include "misc/vectors.hpp"
-
+#include "popup/popup-manager.hpp"
+#include "popup/popup-stage-char-select.hpp"
+#include "popup/popup-stage-treasure-trap.hpp"
+#include "stage/adventure-stage-interact-stage.hpp"
+#include "state/game-state.hpp"
+#include "state/maps.hpp"
+#include "state/world.hpp"
 
 namespace heroespath
 {
 namespace interact
 {
 
-    LockedDoor::LockedDoor(const map::Level::Enum TO_LEVEL)
-    :
-        InteractionBase(
-            Interact::Lock,
-            InteractionBase::MakeTextInfo("This door is locked.", Text::System),
-            "media-images-misc-door-locked",
-            sfml_util::sound_effect::DoorLocked),
-        toLevel_(TO_LEVEL)
+    const std::string LockedDoor::BUTTON_NAME_UNLOCK_{ "Unlock" };
+
+    LockedDoor::LockedDoor(const map::Transition & TRANSITION)
+        : InteractionBase(
+              Interact::Lock,
+              InteractionBase::MakeTextInfo("This door is locked.", Text::System),
+              ButtonVec_t(1, Button(BUTTON_NAME_UNLOCK_, sf::Keyboard::U)),
+              "media-images-misc-door-locked",
+              sfml_util::sound_effect::DoorLocked)
+        , transition_(TRANSITION)
     {}
 
+    bool LockedDoor::OnInteraction(
+        stage::InteractStage * const interactStagePtr, const Button & BUTTON)
+    {
+        if (BUTTON.Name() == BUTTON_NAME_IGNORE_)
+        {
+            interactStagePtr->InteractionManager().RemoveCurrent();
+            return true;
+        }
+        else if (BUTTON.Name() == BUTTON_NAME_UNLOCK_)
+        {
+            Lock();
+            interactStagePtr->LockPick().PopupCharacterSelection(interactStagePtr);
+            return true;
+        }
+
+        return false;
+    }
+
+    bool LockedDoor::OnSuccess(stage::InteractStage * const stagePtr)
+    {
+        game::Game::Instance()->State().World().GetMaps().Current().IsDoorLocked(
+            transition_.Level(), false);
+
+        stagePtr->MapTransition(transition_);
+        stagePtr->InteractionManager().RemoveCurrent();
+        return true;
+    }
 }
 }

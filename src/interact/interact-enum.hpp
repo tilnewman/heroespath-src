@@ -22,8 +22,8 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED
-#define HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED
+#ifndef HEROESPATH_INTERACT_INTERACT_ENUM_HPP_INCLUDED
+#define HEROESPATH_INTERACT_INTERACT_ENUM_HPP_INCLUDED
 //
 // interact-enum.hpp
 //
@@ -51,4 +51,4 @@ namespace interact
 }
 }
 
-#endif //HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED
+#endif //HEROESPATH_INTERACT_INTERACT_ENUM_HPP_INCLUDED

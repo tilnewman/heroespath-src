@@ -42,6 +42,7 @@
 #include "item/treasure-available-enum.hpp"
 #include "combat/trap.hpp"
 #include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enum
+#include "interact/lock-interactions.hpp"
 
 #include "misc/handy-types.hpp"
 
@@ -106,14 +107,8 @@ namespace stage
             const item::TreasureAvailable::Enum, const item::TreasureImage::Enum);
 
         void SetupForCollectionWithoutLockbox();
-        void PromptPlayerWhichCharacterWillPickLock();
-        std::size_t FindCharacterIndexWhoPrevAttemptedLockPicking() const;
-        const misc::StrVec_t MakeInvalidLockPickCharacterMessages() const;
-        bool AreAnyStringsEmpty(const misc::StrVec_t & INVALID_MSGS) const;
-        void PromptPlayerWithLockPickPopup(const std::string & CHAR_PICKING_NAME);
         bool DetermineIfLockPickingSucceeded(const creature::CreaturePtr_t) const;
 
-        sfml_util::sound_effect::Enum SelectRandomLockPickingSfx() const;
         sfml_util::sound_effect::Enum SelectRandomTreasureOpeningSfx() const;
 
         void LockPickSuccess();
@@ -168,17 +163,12 @@ namespace stage
         static const std::string POPUP_NAME_WORN_ONLY_;
         static const std::string POPUP_NAME_LOCKBOX_ONLY_;
         static const std::string POPUP_NAME_LOCKBOX_AND_HELD_;
-        static const std::string POPUP_NAME_CHAR_SELECT_;
-        static const std::string POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_;
-        static const std::string POPUP_NAME_LOCK_PICK_ATTEMPT_;
         static const std::string POPUP_NAME_LOCK_PICK_FAILURE_;
         static const std::string POPUP_NAME_DAMAGE_REPORT_;
-        static const std::string POPUP_NAME_LOCKBOX_OPEN_;
         static const std::string POPUP_NAME_ALL_CHARACTERS_DIED_;
         static const std::string POPUP_NAME_COIN_SHARE_;
         static const std::string POPUP_NAME_GEM_SHARE_;
         static const std::string POPUP_NAME_ITEM_TAKE_REJECTION_;
-        static const std::string POPUP_NAME_TITLE_ACHIEVEMENT_;
         static const std::string POPUP_NAME_ALL_ITEMS_TAKEN_;
         static const std::string POPUP_NAME_NOT_ALL_ITEMS_TAKEN_;
 
@@ -194,7 +184,7 @@ namespace stage
         std::size_t creatureEffectIndex_;
         bool updateItemDisplayNeeded_;
         bool willProcessLockpickTitle_;
-        creature::CreaturePtr_t creatureWhoPickedTheLockPtr_;
+        interact::LockPicking lockPicking_;
     };
 
 }

@@ -59,9 +59,10 @@ namespace gui
     {}
 
 
-    MouseTextInfo::MouseTextInfo(const TextInfo & UP,
-                                 const TextInfo & DOWN,
-                                 const TextInfo & OVER)
+    MouseTextInfo::MouseTextInfo(
+        const TextInfo & UP,
+        const TextInfo & DOWN,
+        const TextInfo & OVER)
     :
         up  (UP),
         down(DOWN),
@@ -69,9 +70,10 @@ namespace gui
     {}
 
 
-    MouseTextInfo::MouseTextInfo(const TextInfo &  TEXT_INFO_UP,
-                                 const sf::Color & COLOR_DOWN,
-                                 const sf::Color & COLOR_OVER)
+    MouseTextInfo::MouseTextInfo(
+        const TextInfo & TEXT_INFO_UP,
+        const sf::Color & COLOR_DOWN,
+        const sf::Color & COLOR_OVER)
     :
         up  (TEXT_INFO_UP),
         down(TEXT_INFO_UP),
@@ -82,12 +84,13 @@ namespace gui
     }
 
 
-    MouseTextInfo::MouseTextInfo(const std::string & TEXT,
-                                 const FontPtr_t     FONT_PTR,
-                                 const unsigned int  SIZE,
-                                 const sf::Color &   COLOR_UP,
-                                 const sf::Color &   COLOR_DOWN,
-                                 const sf::Color &   COLOR_OVER)
+    MouseTextInfo::MouseTextInfo(
+        const std::string & TEXT,
+        const FontPtr_t FONT_PTR,
+        const unsigned int SIZE,
+        const sf::Color & COLOR_UP,
+        const sf::Color & COLOR_DOWN,
+        const sf::Color & COLOR_OVER)
     :
         up  (TEXT, FONT_PTR, SIZE, COLOR_UP),
         down(TEXT, FONT_PTR, SIZE, COLOR_DOWN),
@@ -95,14 +98,29 @@ namespace gui
     {}
 
 
-    const MouseTextInfo MouseTextInfo::Make_PopupButtonSet(const std::string & NAME, const popup::PopupInfo & POPUP_INFO)
+    const MouseTextInfo MouseTextInfo::Make_PopupButtonSet(
+        const std::string & NAME,
+        const popup::PopupButtonColor::Enum COLOR)
     {
-        return MouseTextInfo(NAME,
-                             FontManager::Instance()->Font_PopupButton(),
-                             FontManager::Instance()->Size_Larger(),
-                             FontManager::Color_PopupButtonUp(POPUP_INFO.ButtonColor()),
-                             FontManager::Color_PopupButtonDown(POPUP_INFO.ButtonColor()),
-                             FontManager::Color_PopupButtonOver(POPUP_INFO.ButtonColor()));
+        return MouseTextInfo(
+            NAME,
+            FontManager::Instance()->Font_PopupButton(),
+            FontManager::Instance()->Size_Larger(),
+            FontManager::Color_PopupButtonUp(COLOR),
+            FontManager::Color_PopupButtonDown(COLOR),
+            FontManager::Color_PopupButtonOver(COLOR));
+    }
+
+
+    const MouseTextInfo MouseTextInfo::Make_InteractionButtonSet(const std::string & NAME)
+    {
+        return MouseTextInfo(
+            NAME,
+            FontManager::Instance()->Font_PopupButton(),
+            FontManager::Instance()->Size_Large(),
+            FontManager::Color_PopupButtonUp(popup::PopupButtonColor::Dark),
+            FontManager::Color_PopupButtonDown(popup::PopupButtonColor::Dark),
+            FontManager::Color_PopupButtonOver(popup::PopupButtonColor::Dark));
     }
 
 

@@ -319,7 +319,6 @@ namespace sfml_util
             case TreasureOpen3:                 { return "open-3"; }
             case TreasureOpen4:                 { return "open-4"; }
             case TreasureOpen5:                 { return "open-5"; }
-            case TreasureOpen6:                 { return "open-6"; }
             case LockPicking1:                  { return "picking-1"; }
             case LockPicking2:                  { return "picking-2"; }
             case LockPicking3:                  { return "picking-3"; }
@@ -327,6 +326,7 @@ namespace sfml_util
             case LockPicking5:                  { return "picking-5"; }
             case LockPicking6:                  { return "picking-6"; }
             case LockPicking7:                  { return "picking-7"; }
+            case LockPickingFail:               { return "picking-fail"; }
             case LockUnlock:                    { return "unlock"; }
             case TrapBang:                      { return "trap-bang"; }
             case TrapBoom:                      { return "trap-boom"; }
@@ -660,8 +660,7 @@ namespace sfml_util
             case TreasureOpen2:
             case TreasureOpen3:
             case TreasureOpen4:
-            case TreasureOpen5:
-            case TreasureOpen6:                 { return "sound-effects/treasure"; }
+            case TreasureOpen5:                 { return "sound-effects/treasure"; }
             case LockPicking1:
             case LockPicking2:
             case LockPicking3:
@@ -669,6 +668,7 @@ namespace sfml_util
             case LockPicking5:
             case LockPicking6:
             case LockPicking7:
+            case LockPickingFail:
             case LockUnlock:                    { return "sound-effects/lock"; }
             case TrapBang:
             case TrapBoom:

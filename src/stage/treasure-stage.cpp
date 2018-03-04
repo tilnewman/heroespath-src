@@ -99,23 +99,11 @@ namespace stage
     const std::string TreasureStage::POPUP_NAME_LOCKBOX_AND_HELD_{
         "PopupName_LockboxAndWorn" };
 
-    const std::string TreasureStage::POPUP_NAME_CHAR_SELECT_{
-        "PopupName_CharacterSelect" };
-
-    const std::string TreasureStage::POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_{
-        "PopupName_NoCharactersCanAttemptToPickTheLock" };
-
-    const std::string TreasureStage::POPUP_NAME_LOCK_PICK_ATTEMPT_{
-        "PopupName_LockPickAttempt" };
-
     const std::string TreasureStage::POPUP_NAME_LOCK_PICK_FAILURE_{
         "PopupName_LockPickFailure" };
 
     const std::string TreasureStage::POPUP_NAME_DAMAGE_REPORT_{
         "PopupName_DamageReport" };
-
-    const std::string TreasureStage::POPUP_NAME_LOCKBOX_OPEN_{
-        "PopupName_LockboxOpen" };
 
     const std::string TreasureStage::POPUP_NAME_ALL_CHARACTERS_DIED_{
         "PopupName_AllCharactersDied" };
@@ -128,9 +116,6 @@ namespace stage
 
     const std::string TreasureStage::POPUP_NAME_ITEM_TAKE_REJECTION_{
         "PopupName_ItemTakeRejection" };
-
-    const std::string TreasureStage::POPUP_NAME_TITLE_ACHIEVEMENT_{
-        "PopupName_TitleAchievement" };
 
     const std::string TreasureStage::POPUP_NAME_ALL_ITEMS_TAKEN_{
         "PopupName_AllItemsTaken" };
@@ -153,7 +138,7 @@ namespace stage
         creatureEffectIndex_(0),
         updateItemDisplayNeeded_(false),
         willProcessLockpickTitle_(false),
-        creatureWhoPickedTheLockPtr_(nullptr)
+        lockPicking_()
     {}
 
 
@@ -188,7 +173,7 @@ namespace stage
         {
             if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Yes)
             {
-                PromptPlayerWhichCharacterWillPickLock();
+                lockPicking_.PopupCharacterSelection(this);
                 return false;
             }
             else
@@ -198,20 +183,12 @@ namespace stage
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_)
+        if (POPUP_RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_CHARACTER_SELECTION_)
         {
             if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
-                auto const SELECTION{ POPUP_RESPONSE.Selection() };
-
-                if (SELECTION < game::Game::Instance()->State().Party().Characters().size())
+                if (lockPicking_.HandleCharacterSelectionPopupResponse(this, POPUP_RESPONSE))
                 {
-                    creatureWhoPickedTheLockPtr_ =
-                        game::Game::Instance()->State().Party().GetAtOrderPos(SELECTION);
-
-                    combat::Encounter::Instance()->LockPickCreaturePtr(creatureWhoPickedTheLockPtr_);
-
-                    PromptPlayerWithLockPickPopup(creatureWhoPickedTheLockPtr_->Name());
                     return false;
                 }
                 else
@@ -239,16 +216,15 @@ namespace stage
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_)
+        if (POPUP_RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_NO_CHARACTER_CAN_PICK_)
         {
             SetupForCollectionWithoutLockbox();
             return true;
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCK_PICK_ATTEMPT_)
+        if (POPUP_RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_ATTEMPTING_)
         {
-            if (DetermineIfLockPickingSucceeded(
-                combat::Encounter::Instance()->LockPickCreaturePtr()))
+            if (lockPicking_.Attempt())
             {
                 LockPickSuccess();
             }
@@ -278,7 +254,7 @@ namespace stage
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_LOCKBOX_OPEN_)
+        if (POPUP_RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_SUCCESS_)
         {
             displayStagePtr_->UpdateTreasureImage(treasureImageType_);
 
@@ -340,7 +316,7 @@ namespace stage
             }
         }
 
-        if (POPUP_RESPONSE.Info().Name() == POPUP_NAME_TITLE_ACHIEVEMENT_)
+        if (POPUP_RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
         {
             SetupForCollection();
             return true;
@@ -734,129 +710,6 @@ namespace stage
     }
 
 
-    void TreasureStage::PromptPlayerWhichCharacterWillPickLock()
-    {
-        auto const INVALID_MSGS{ MakeInvalidLockPickCharacterMessages() };
-
-        auto isThereAValidCharacterWhoCanAttemptToPickTheLock{ AreAnyStringsEmpty(INVALID_MSGS) };
-
-        if (isThereAValidCharacterWhoCanAttemptToPickTheLock)
-        {
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateCharacterSelectPopupInfo(
-                POPUP_NAME_CHAR_SELECT_,
-                "Who will attempt to pick the lock?",
-                INVALID_MSGS,
-                FindCharacterIndexWhoPrevAttemptedLockPicking()) };
-
-            game::LoopManager::Instance()->
-                PopupWaitBeginSpecific<popup::PopupStageCharacterSelect>(this, POPUP_INFO);
-        }
-        else
-        {
-            auto const MSG{
-                std::string("There are no characters who can attempt to pick the lock!  ") +
-                    "They are all incapable or incapacitated" };
-
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
-                POPUP_NAME_NO_CHARS_CAN_PICK_THE_LOCK_,
-                MSG,
-                popup::PopupButtons::Continue,
-                popup::PopupImage::Regular) };
-
-            game::LoopManager::Instance()->PopupWaitBegin(this, POPUP_INFO);
-        }
-    }
-
-
-    std::size_t TreasureStage::FindCharacterIndexWhoPrevAttemptedLockPicking() const
-    {
-        auto const NUM_CHARACTERS{ game::Game::Instance()->State().Party().Characters().size() };
-
-        auto const PREV_LOCKPICK_CREATURE_PTR{
-            combat::Encounter::Instance()->LockPickCreaturePtr() };
-
-        if (PREV_LOCKPICK_CREATURE_PTR != nullptr)
-        {
-            for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
-            {
-                auto const CREATURE_PTR{ game::Game::Instance()->State().Party().GetAtOrderPos(i) };
-                if (CREATURE_PTR == PREV_LOCKPICK_CREATURE_PTR)
-                {
-                    return i;
-                }
-            }
-
-            combat::Encounter::Instance()->LockPickCreaturePtr(nullptr);
-        }
-
-        return 0;
-    }
-
-
-    const misc::StrVec_t TreasureStage::MakeInvalidLockPickCharacterMessages() const
-    {
-        auto const NUM_CHARACTERS{ game::Game::Instance()->State().Party().Characters().size() };
-
-        misc::StrVec_t invalidMsgsVec;
-        invalidMsgsVec.resize(NUM_CHARACTERS);
-
-        for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
-        {
-            auto const CREATURE_PTR{ game::Game::Instance()->State().Party().GetAtOrderPos(i) };
-            if (CREATURE_PTR->IsBeast())
-            {
-                invalidMsgsVec[i] = "Beasts cannot pick locks";
-            }
-            else if (CREATURE_PTR->CanTakeAction() == false)
-            {
-                std::ostringstream ss;
-
-                ss << creature::sex::HeSheIt(CREATURE_PTR->Sex(), true)
-                    << " is " << CREATURE_PTR->CanTakeActionStr(false) << ".";
-
-                invalidMsgsVec[i] = ss.str();
-            }
-            else
-            {
-                invalidMsgsVec[i].clear();
-            }
-        }
-
-        return invalidMsgsVec;
-    }
-
-
-    bool TreasureStage::AreAnyStringsEmpty(const misc::StrVec_t & INVALID_MSGS) const
-    {
-        for (auto const & INVALID_MSG : INVALID_MSGS)
-        {
-            if (INVALID_MSG.empty())
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    void TreasureStage::PromptPlayerWithLockPickPopup(
-        const std::string & CHAR_PICKING_NAME)
-    {
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
-            POPUP_NAME_LOCK_PICK_ATTEMPT_,
-            CHAR_PICKING_NAME + " is attempting to pick the lock...",
-            4.0f,//the duration of the longest lockpick sfx
-            sfml_util::FontManager::Instance()->Size_Normal(),
-            popup::PopupButtons::None,
-            popup::PopupImage::Regular,
-            SelectRandomLockPickingSfx()) };
-
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
-            this, POPUP_INFO);
-    }
-
-
     bool TreasureStage::DetermineIfLockPickingSucceeded(
         const creature::CreaturePtr_t CHAR_WHO_IS_PICKING_THE_LOCK_PTR) const
     {
@@ -869,21 +722,6 @@ namespace stage
     }
 
 
-    sfml_util::sound_effect::Enum TreasureStage::SelectRandomLockPickingSfx() const
-    {
-        std::vector<sfml_util::sound_effect::Enum> lockPickingSfx = {
-            sfml_util::sound_effect::LockPicking1,
-            sfml_util::sound_effect::LockPicking2,
-            sfml_util::sound_effect::LockPicking3,
-            sfml_util::sound_effect::LockPicking4,
-            sfml_util::sound_effect::LockPicking5,
-            sfml_util::sound_effect::LockPicking6,
-            sfml_util::sound_effect::LockPicking7 };
-
-        return misc::Vector::SelectRandom(lockPickingSfx);
-    }
-
-
     sfml_util::sound_effect::Enum TreasureStage::SelectRandomTreasureOpeningSfx() const
     {
         std::vector<sfml_util::sound_effect::Enum> treasureOpeningSfx = {
@@ -891,8 +729,7 @@ namespace stage
             sfml_util::sound_effect::TreasureOpen2,
             sfml_util::sound_effect::TreasureOpen3,
             sfml_util::sound_effect::TreasureOpen4,
-            sfml_util::sound_effect::TreasureOpen5,
-            sfml_util::sound_effect::TreasureOpen6 };
+            sfml_util::sound_effect::TreasureOpen5 };
 
         return misc::Vector::SelectRandom(treasureOpeningSfx);
     }
@@ -900,9 +737,6 @@ namespace stage
 
     void TreasureStage::LockPickSuccess()
     {
-        sfml_util::SoundManager::Instance()->
-            SoundEffectPlay(sfml_util::sound_effect::LockUnlock);
-
         willProcessLockpickTitle_ = true;
         LockboxOpen();
     }
@@ -996,17 +830,9 @@ namespace stage
             SelectRandomTreasureOpeningSfx(),
             0.5f);
 
-        auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateKeepAlivePopupInfo(
-            POPUP_NAME_LOCKBOX_OPEN_,
-            "\nThe " + item::TreasureImage::ToContainerName(treasureImageType_) + " Opens!",
-            4.0f,
-            sfml_util::FontManager::Instance()->Size_Large(),
-            popup::PopupButtons::Continue,
-            popup::PopupImage::Regular,
-            sfml_util::sound_effect::None) };
-
-        game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageGeneric>(
-            this, POPUP_INFO);
+        lockPicking_.PopupSuccess(
+            this,
+            item::TreasureImage::ToContainerName(treasureImageType_));
     }
 
 
@@ -1310,52 +1136,15 @@ namespace stage
 
     bool TreasureStage::ProcessLockpickTitleAndPopupIfNeeded()
     {
-        if (willProcessLockpickTitle_ && (creatureWhoPickedTheLockPtr_ != nullptr))
+        if (willProcessLockpickTitle_)
         {
             willProcessLockpickTitle_ = false;
-
-            auto const FROM_TITLE_PTR{
-                creatureWhoPickedTheLockPtr_->GetAchievements().GetCurrentTitle(
-                    creature::AchievementType::LocksPicked) };
-
-            auto const TO_TITLE_PTR{
-                creatureWhoPickedTheLockPtr_->GetAchievements().Increment(
-                    creature::AchievementType::LocksPicked) };
-
-            if ((TO_TITLE_PTR != nullptr) && (FROM_TITLE_PTR != TO_TITLE_PTR))
-            {
-                TO_TITLE_PTR->Change(creatureWhoPickedTheLockPtr_);
-
-                sf::Texture fromTexture;
-                if (FROM_TITLE_PTR != nullptr)
-                {
-                    sfml_util::gui::TitleImageManager::Instance()->Get(
-                        fromTexture, FROM_TITLE_PTR->Which());
-                }
-
-                sf::Texture toTexture;
-                if (TO_TITLE_PTR != nullptr)
-                {
-                    sfml_util::gui::TitleImageManager::Instance()->Get(
-                        toTexture, TO_TITLE_PTR->Which());
-                }
-
-                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageFadePopupInfo(
-                    POPUP_NAME_TITLE_ACHIEVEMENT_,
-                    creatureWhoPickedTheLockPtr_,
-                    FROM_TITLE_PTR,
-                    TO_TITLE_PTR,
-                    & fromTexture,
-                    & toTexture) };
-
-                game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageFade>(
-                    this, POPUP_INFO);
-
-                return true;
-            }
+            return lockPicking_.HandleTitleAchievement(this);
         }
-
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
 

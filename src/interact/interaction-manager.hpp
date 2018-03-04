@@ -29,7 +29,6 @@
 //
 #include <memory>
 
-
 namespace heroespath
 {
 namespace interact
@@ -38,8 +37,7 @@ namespace interact
     struct IInteraction;
     using InteractionUPtr_t = std::unique_ptr<IInteraction>;
 
-
-    //Responsible for the lifetimes of interactions.
+    // Responsible for the lifetimes of interactions.
     class InteractionManager
     {
         InteractionManager(const InteractionManager &) = delete;
@@ -49,19 +47,22 @@ namespace interact
         InteractionManager();
         ~InteractionManager();
 
-        inline IInteraction * Current() { return currentUPtr_.get(); }
+        IInteraction * Current() { return currentUPtr_.get(); }
         bool HasCurrentChanged() const;
         void RemoveCurrent();
         void SetNext(InteractionUPtr_t);
         bool Update();
-        
+        void Lock();
+        void Unlock();
+        bool IsLocked() const;
+
     private:
         InteractionUPtr_t currentUPtr_;
         InteractionUPtr_t nextUPtr_;
         mutable bool hasCurrentChanged_;
+        bool isRemoveCurrentPending_;
     };
-
 }
 }
 
-#endif //HEROESPATH_INTERACT_INTERACTION_MANAGER_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_INTERACTION_MANAGER_HPP_INCLUDED

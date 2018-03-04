@@ -28,20 +28,28 @@
 // adventure-stage-interact-stage.hpp
 //
 #include "interact/interaction-manager.hpp"
-#include "sfml-util/stage.hpp"
+#include "interact/lock-interactions.hpp"
+#include "map/transition.hpp"
+#include "popup/i-popup-callback.hpp"
+#include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/stage.hpp"
 #include <memory>
-
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+}
 namespace sfml_util
 {
-namespace gui
-{
-    class TextRegion;
-    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-}
+    namespace gui
+    {
+        class TextRegion;
+        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    }
 }
 namespace map
 {
@@ -50,26 +58,41 @@ namespace map
 namespace stage
 {
 
-    //Responsible for the interaction region of the Adventure Stage.
-    class InteractStage : public sfml_util::Stage
+    // Responsible for the interaction region of the Adventure Stage.
+    class InteractStage
+        : public sfml_util::Stage
+        , public sfml_util::gui::callback::ITextButtonCallbackHandler_t
+        , public popup::IPopupHandler_t
     {
         InteractStage(const InteractStage &) = delete;
         InteractStage & operator=(const InteractStage &) = delete;
 
     public:
         InteractStage(
-            map::Map &,
-            const sf::FloatRect & STAGE_REGION,
-            interact::InteractionManager &);
+            map::Map &, const sf::FloatRect & STAGE_REGION, interact::InteractionManager &);
 
-        virtual ~InteractStage() {}
+        virtual ~InteractStage();
+
+        virtual const std::string HandlerName() const final { return GetStageName(); }
+
+        virtual bool
+            HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) final;
+
+        virtual bool HandleCallback(const popup::PopupResponse &) override;
 
         virtual void Setup() override;
         virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+
+        interact::InteractionManager & InteractionManager() { return interactionManager_; }
+
+        interact::LockPicking & LockPick() { return lockPicking_; }
+
+        void MapTransition(const map::Transition &);
 
     private:
-        void SetupInteractionForDrawing(const interact::IInteraction * const);
+        void SetupInteractionForDrawing(interact::IInteraction * const);
         void DrawInteraction(sf::RenderTarget &) const;
 
     private:
@@ -84,10 +107,10 @@ namespace stage
         sf::Sprite subjectSprite_;
         sf::Sprite contextSprite_;
         sfml_util::gui::TextRegionUPtr_t textRegionUPtr_;
+        std::vector<sfml_util::gui::TextButtonUPtr_t> buttons_;
+        interact::LockPicking lockPicking_;
     };
-
 }
 }
 
-
-#endif //HEROESPATH_STAGE_ADVENTURE_STAGE_INTERACT_STAGE_REGION_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_ADVENTURE_STAGE_INTERACT_STAGE_REGION_HPP_INCLUDED

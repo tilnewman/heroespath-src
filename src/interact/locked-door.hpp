@@ -28,27 +28,31 @@
 // locked-door.hpp
 //
 #include "interact/interaction-base.hpp"
-#include "map/level-enum.hpp"
-
+#include "map/transition.hpp"
 
 namespace heroespath
 {
 namespace interact
 {
 
-    //Responsible for interactions with locked doors.
+    // Responsible for interactions with locked doors.
     class LockedDoor : public InteractionBase
     {
     public:
-        LockedDoor(const map::Level::Enum TO_LEVEL);
+        LockedDoor(const map::Transition &);
 
-        inline map::Level::Enum ToLevel() const { return toLevel_; }
+        map::Level::Enum ToLevel() const { return transition_.Level(); }
+
+        virtual bool OnSuccess(stage::InteractStage * const) final;
 
     private:
-        map::Level::Enum toLevel_;
+        virtual bool OnInteraction(stage::InteractStage * const, const Button &) final;
+
+    private:
+        static const std::string BUTTON_NAME_UNLOCK_;
+        map::Transition transition_;
     };
-
 }
 }
 
-#endif //HEROESPATH_INTERACT_LOCKED_DOOR_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_LOCKED_DOOR_HPP_INCLUDED

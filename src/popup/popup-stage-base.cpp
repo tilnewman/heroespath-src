@@ -431,7 +431,7 @@ namespace popup
     void PopupStageBase::SetupVariousButtonPositionValues()
     {
         auto const TEMP_MOUSE_TEXT_INFO{ sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
-            creature::NameInfo::Instance()->LargestLetterString(), popupInfo_) };
+            creature::NameInfo::Instance()->LargestLetterString(), popupInfo_.ButtonColor()) };
 
         const sf::Text TEMP_TEXT_OBJ{
             TEMP_MOUSE_TEXT_INFO.up.text,
@@ -463,7 +463,7 @@ namespace popup
                 "PopupStage'sYes",
                 StageRegionLeft() + innerRegion_.left + (innerRegion_.width / 4.0f) - 50.0f,
                 buttonVertPos_,
-                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Yes", popupInfo_),
+                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Yes", popupInfo_.ButtonColor()),
                 this);
 
             EntityAdd(buttonYesUPtr_.get());
@@ -476,7 +476,7 @@ namespace popup
                 StageRegionLeft() + innerRegion_.left + (2.0f * (innerRegion_.width / 4.0f))
                     - 40.0f,
                 buttonVertPos_,
-                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("No", popupInfo_),
+                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("No", popupInfo_.ButtonColor()),
                 this);
 
             EntityAdd(buttonNoUPtr_.get());
@@ -489,7 +489,7 @@ namespace popup
                 (StageRegionLeft() + innerRegion_.left + innerRegion_.width) -
                     (innerRegion_.width / 3.0f),
                 buttonVertPos_,
-                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Cancel", popupInfo_),
+                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Cancel", popupInfo_.ButtonColor()),
                 this);
 
             EntityAdd(buttonCancelUPtr_.get());
@@ -504,7 +504,7 @@ namespace popup
                 "PopupStage'sContinue",
                 MIDDLE - 30.0f,
                 buttonVertPos_,
-                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Continue", popupInfo_),
+                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Continue", popupInfo_.ButtonColor()),
                 this);
 
             if (popupInfo_.Image() == PopupImage::Custom)
@@ -529,7 +529,7 @@ namespace popup
                 "PopupStage'sOkay",
                 MIDDLE - 50.0f,
                 buttonVertPos_,
-                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Okay", popupInfo_),
+                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Okay", popupInfo_.ButtonColor()),
                 this);
 
             if (popupInfo_.Image() == PopupImage::Custom)
@@ -554,7 +554,7 @@ namespace popup
                 "PopupStage'sSelect",
                 MIDDLE - 100.0f,
                 buttonVertPos_,
-                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Select", popupInfo_),
+                sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Select", popupInfo_.ButtonColor()),
                 this);
 
             if (popupInfo_.Image() == PopupImage::Custom)

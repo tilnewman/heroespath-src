@@ -83,6 +83,14 @@ namespace map
     {}
 
 
+    void Map::TransitionLevel(const Transition & TRANSITION)
+    {
+        PlayTransitionSfx(TRANSITION.TransType(), true);
+        Load(TRANSITION.Level(), level_);
+        PlayTransitionSfx(TRANSITION.TransType(), false);
+    }
+
+
     void Map::Load(
         const Level::Enum LEVEL_TO_LOAD,
         const Level::Enum LEVEL_FROM,
@@ -122,6 +130,11 @@ namespace map
 
     bool Map::MovePlayer(const sfml_util::Direction::Enum DIRECTION)
     {
+        if (interactionManager_.IsLocked())
+        {
+            return false;
+        }
+
         if (DoesAdjPlayerPosCollide(DIRECTION, PLAYER_MOVE_DISTANCE_))
         {
             return false;
@@ -434,14 +447,14 @@ namespace map
             if (TRANSITION.Rect() != interactionRect_)
             {
                 interactionManager_.SetNext(
-                    interact::InteractionFactory::MakeLockedDoor(TRANSITION.Level()));
+                    interact::InteractionFactory::MakeLockedDoor(TRANSITION));
 
                 interactionRect_ = TRANSITION.Rect();
             }
         }
         else
         {
-            ChangeLevel(TRANSITION);
+            TransitionLevel(TRANSITION);
         }
     }
 
@@ -463,14 +476,6 @@ namespace map
         }
 
         return posToTest;
-    }
-
-
-    void Map::ChangeLevel(const Transition & TRANSITION)
-    {
-        PlayTransitionSfx(TRANSITION.TransType(), true);
-        Load(TRANSITION.Level(), level_);
-        PlayTransitionSfx(TRANSITION.TransType(), false);
     }
 
 

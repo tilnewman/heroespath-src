@@ -41,7 +41,8 @@ namespace interact
     :
         currentUPtr_(),
         nextUPtr_(),
-        hasCurrentChanged_(true)
+        hasCurrentChanged_(true),
+        isRemoveCurrentPending_(false)
     {}
 
 
@@ -65,8 +66,7 @@ namespace interact
 
     void InteractionManager::RemoveCurrent()
     {
-        currentUPtr_.reset();
-        hasCurrentChanged_ = true;
+        isRemoveCurrentPending_ = true;
     }
 
 
@@ -78,6 +78,13 @@ namespace interact
 
     bool InteractionManager::Update()
     {
+        if (isRemoveCurrentPending_)
+        {
+            isRemoveCurrentPending_ = false;
+            currentUPtr_.reset();
+            hasCurrentChanged_ = true;
+        }
+
         if (nextUPtr_.get() != nullptr)
         {
             if (currentUPtr_.get() != nullptr)
@@ -91,6 +98,37 @@ namespace interact
             currentUPtr_->PlayEnterSfx();
             hasCurrentChanged_ = true;
             return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    void InteractionManager::Lock()
+    {
+        if (currentUPtr_.get() != nullptr)
+        {
+            currentUPtr_->Lock();
+        }
+    }
+
+
+    void InteractionManager::Unlock()
+    {
+        if (currentUPtr_.get() != nullptr)
+        {
+            currentUPtr_->Unlock();
+        }
+    }
+
+
+    bool InteractionManager::IsLocked() const
+    {
+        if (currentUPtr_.get() != nullptr)
+        {
+            return currentUPtr_->IsLocked();
         }
         else
         {

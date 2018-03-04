@@ -29,21 +29,19 @@
 //
 #include "interact/i-interaction.hpp"
 #include "interact/interaction-text-enum.hpp"
-#include "map/level-enum.hpp"
-
+#include "map/transition.hpp"
 
 namespace heroespath
 {
 namespace interact
 {
 
-    //Responsible for the construction of all Interaction objects.
+    // Responsible for the construction of all Interaction objects.
     struct InteractionFactory
     {
-        static InteractionUPtr_t MakeLockedDoor(const map::Level::Enum TO_LEVEL);
+        static InteractionUPtr_t MakeLockedDoor(const map::Transition &);
     };
-
 }
 }
 
-#endif //HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED
