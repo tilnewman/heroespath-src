@@ -69,7 +69,9 @@ namespace sfml_util
     class MusicOperator
     {
         MusicOperator(const MusicOperator &) = delete;
+        MusicOperator(const MusicOperator &&) = delete;
         MusicOperator & operator=(const MusicOperator &) = delete;
+        MusicOperator & operator=(const MusicOperator &&) = delete;
 
     public:
         explicit MusicOperator(

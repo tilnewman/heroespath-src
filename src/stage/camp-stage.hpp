@@ -61,7 +61,9 @@ namespace stage
         , public popup::IPopupHandler_t
     {
         CampStage(const CampStage &) = delete;
+        CampStage(const CampStage &&) = delete;
         CampStage & operator=(const CampStage &) = delete;
+        CampStage & operator=(const CampStage &&) = delete;
 
     public:
         CampStage();

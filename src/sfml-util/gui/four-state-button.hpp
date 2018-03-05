@@ -72,7 +72,9 @@ namespace sfml_util
         class FourStateButton : public GuiEntity
         {
             FourStateButton(const FourStateButton &) = delete;
+            FourStateButton(const FourStateButton &&) = delete;
             FourStateButton & operator=(const FourStateButton &) = delete;
+            FourStateButton & operator=(const FourStateButton &&) = delete;
 
         public:
             // if using this constructor, Setup() must be called before any other functions

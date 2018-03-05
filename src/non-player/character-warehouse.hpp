@@ -48,7 +48,9 @@ namespace non_player
     class CharacterWarehouse
     {
         CharacterWarehouse(const CharacterWarehouse &) = delete;
+        CharacterWarehouse(const CharacterWarehouse &&) = delete;
         CharacterWarehouse & operator=(const CharacterWarehouse &) = delete;
+        CharacterWarehouse & operator=(const CharacterWarehouse &&) = delete;
 
     public:
         CharacterWarehouse();

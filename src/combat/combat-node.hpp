@@ -47,7 +47,9 @@ namespace combat
     class CombatNode : public sfml_util::gui::GuiEntity
     {
         CombatNode(const CombatNode &) = delete;
+        CombatNode(const CombatNode &&) = delete;
         CombatNode & operator=(const CombatNode &) = delete;
+        CombatNode & operator=(const CombatNode &&) = delete;
 
     public:
         explicit CombatNode(const creature::CreaturePtr_t CREATURE_PTR);

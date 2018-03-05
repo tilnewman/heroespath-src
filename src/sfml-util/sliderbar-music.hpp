@@ -50,7 +50,9 @@ namespace sfml_util
     class SliderBarLabeled_Music : public gui::SliderBarLabeled
     {
         SliderBarLabeled_Music(const SliderBarLabeled_Music &) = delete;
+        SliderBarLabeled_Music(const SliderBarLabeled_Music &&) = delete;
         SliderBarLabeled_Music & operator=(const SliderBarLabeled_Music &) = delete;
+        SliderBarLabeled_Music & operator=(const SliderBarLabeled_Music &&) = delete;
 
     public:
         SliderBarLabeled_Music(

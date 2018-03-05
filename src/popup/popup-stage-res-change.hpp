@@ -38,7 +38,9 @@ namespace popup
     class PopupStageResChange : public PopupStageBase
     {
         PopupStageResChange(const PopupStageResChange &) = delete;
+        PopupStageResChange(const PopupStageResChange &&) = delete;
         PopupStageResChange & operator=(const PopupStageResChange &) = delete;
+        PopupStageResChange & operator=(const PopupStageResChange &&) = delete;
 
     public:
         explicit PopupStageResChange(const PopupInfo &);

@@ -67,7 +67,9 @@ namespace sfml_util
     class Display
     {
         Display(const Display &) = delete;
+        Display(const Display &&) = delete;
         Display & operator=(const Display &) = delete;
+        Display & operator=(const Display &&) = delete;
 
     public:
         Display();

@@ -47,7 +47,9 @@ namespace creature
     class EnchantmentWarehouse
     {
         EnchantmentWarehouse(const EnchantmentWarehouse &) = delete;
+        EnchantmentWarehouse(const EnchantmentWarehouse &&) = delete;
         EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) = delete;
+        EnchantmentWarehouse & operator=(const EnchantmentWarehouse &&) = delete;
 
     public:
         EnchantmentWarehouse();

@@ -48,7 +48,9 @@ namespace sfml_util
         class SliderBarLabeled : public SliderBar
         {
             SliderBarLabeled(const SliderBarLabeled &) = delete;
+            SliderBarLabeled(const SliderBarLabeled &&) = delete;
             SliderBarLabeled & operator=(const SliderBarLabeled &) = delete;
+            SliderBarLabeled & operator=(const SliderBarLabeled &&) = delete;
 
         public:
             SliderBarLabeled(

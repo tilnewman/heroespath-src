@@ -63,7 +63,9 @@ namespace non_player
         class InventoryFactory
         {
             InventoryFactory(const InventoryFactory &) = delete;
+            InventoryFactory(const InventoryFactory &&) = delete;
             InventoryFactory & operator=(const InventoryFactory &) = delete;
+            InventoryFactory & operator=(const InventoryFactory &&) = delete;
 
         public:
             InventoryFactory();

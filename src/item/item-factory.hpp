@@ -43,7 +43,9 @@ namespace item
     class ItemFactory
     {
         ItemFactory(const ItemFactory &) = delete;
+        ItemFactory(const ItemFactory &&) = delete;
         ItemFactory & operator=(const ItemFactory &) = delete;
+        ItemFactory & operator=(const ItemFactory &&) = delete;
 
     public:
         ItemFactory();

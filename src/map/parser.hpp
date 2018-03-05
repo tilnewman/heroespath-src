@@ -96,7 +96,9 @@ namespace map
     class Parser
     {
         Parser(const Parser &) = delete;
+        Parser(const Parser &&) = delete;
         Parser & operator=(const Parser &) = delete;
+        Parser & operator=(const Parser &&) = delete;
 
     public:
         Parser() {}
@@ -181,7 +183,7 @@ namespace map
         static const std::string XML_ATTRIB_NAME_NAME_;
         static const std::string XML_ATTRIB_NAME_DOORSFX_;
     };
-} // namespace map
-} // namespace heroespath
+}
+}
 
 #endif // HEROESPATH_MAP_PARSER_HPP_INCLUDED

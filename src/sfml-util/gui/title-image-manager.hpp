@@ -45,7 +45,9 @@ namespace sfml_util
         class TitleImageManager : public ImageManagerBase<creature::Titles>
         {
             TitleImageManager(const TitleImageManager &) = delete;
+            TitleImageManager(const TitleImageManager &&) = delete;
             TitleImageManager & operator=(const TitleImageManager &) = delete;
+            TitleImageManager & operator=(const TitleImageManager &&) = delete;
 
         public:
             TitleImageManager();

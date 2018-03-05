@@ -76,7 +76,9 @@ namespace stage
         , public popup::IPopupHandler_t
     {
         PartyStage(const PartyStage &) = delete;
+        PartyStage(const PartyStage &&) = delete;
         PartyStage & operator=(const PartyStage &) = delete;
+        PartyStage & operator=(const PartyStage &&) = delete;
 
     public:
         PartyStage();

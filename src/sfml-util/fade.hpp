@@ -42,7 +42,9 @@ namespace sfml_util
     class Fade : public sf::Drawable
     {
         Fade(const Fade &) = delete;
+        Fade(const Fade &&) = delete;
         Fade & operator=(const Fade &) = delete;
+        Fade & operator=(const Fade &&) = delete;
 
     public:
         Fade(); // must call Setup() before any other functinos if using this constructor

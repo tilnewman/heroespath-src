@@ -58,7 +58,9 @@ namespace sfml_util
         class SliderBar : public GuiEntity
         {
             SliderBar(const SliderBar &) = delete;
+            SliderBar(const SliderBar &&) = delete;
             SliderBar & operator=(const SliderBar &) = delete;
+            SliderBar & operator=(const SliderBar &&) = delete;
 
         public:
             SliderBar(

@@ -45,7 +45,9 @@ namespace game
     class GameDataFile : public config::ConfigBase
     {
         GameDataFile(const GameDataFile &) = delete;
+        GameDataFile(const GameDataFile &&) = delete;
         GameDataFile & operator=(const GameDataFile &) = delete;
+        GameDataFile & operator=(const GameDataFile &&) = delete;
 
     public:
         GameDataFile();

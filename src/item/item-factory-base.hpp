@@ -42,7 +42,9 @@ namespace item
     class FactoryBase
     {
         FactoryBase(const FactoryBase &) = delete;
+        FactoryBase(const FactoryBase &&) = delete;
         FactoryBase & operator=(const FactoryBase &) = delete;
+        FactoryBase & operator=(const FactoryBase &&) = delete;
 
     public:
         FactoryBase();

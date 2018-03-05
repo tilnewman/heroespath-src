@@ -51,7 +51,9 @@ namespace item
     class Item
     {
         Item(const Item &) = delete;
+        Item(const Item &&) = delete;
         Item & operator=(const Item &) = delete;
+        Item & operator=(const Item &&) = delete;
 
     public:
         explicit Item(

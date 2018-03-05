@@ -103,7 +103,9 @@ namespace sfml_util
         class CheckBoxSet : public GuiEntity
         {
             CheckBoxSet(const CheckBoxSet &) = delete;
+            CheckBoxSet(const CheckBoxSet &&) = delete;
             CheckBoxSet & operator=(const CheckBoxSet &) = delete;
+            CheckBoxSet & operator=(const CheckBoxSet &&) = delete;
 
         public:
             // Constructor for cases where each radio button's label text has a different style,

@@ -63,7 +63,9 @@ namespace combat
     class CombatSoundEffects
     {
         CombatSoundEffects & operator=(const CombatSoundEffects &) = delete;
+        CombatSoundEffects & operator=(const CombatSoundEffects &&) = delete;
         CombatSoundEffects(const CombatSoundEffects &) = delete;
+        CombatSoundEffects(const CombatSoundEffects &&) = delete;
 
     public:
         CombatSoundEffects();

@@ -43,7 +43,9 @@ namespace stage
     class AdventureStage : public sfml_util::Stage
     {
         AdventureStage(const AdventureStage &) = delete;
+        AdventureStage(const AdventureStage &&) = delete;
         AdventureStage & operator=(const AdventureStage &) = delete;
+        AdventureStage & operator=(const AdventureStage &&) = delete;
 
     public:
         AdventureStage();
@@ -56,7 +58,7 @@ namespace stage
         AdventureDisplayStage * adventureDisplayStagePtr_;
         interact::InteractionManager interactionManager_;
     };
-} // namespace stage
-} // namespace heroespath
+}
+}
 
 #endif // HEROESPATH_STAGE_ADVENTURESTAGE_HPP_INCLUDED

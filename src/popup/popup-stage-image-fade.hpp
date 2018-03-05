@@ -40,7 +40,9 @@ namespace popup
     class PopupStageImageFade : public PopupStageBase
     {
         PopupStageImageFade(const PopupStageImageFade &) = delete;
+        PopupStageImageFade(const PopupStageImageFade &&) = delete;
         PopupStageImageFade & operator=(const PopupStageImageFade &) = delete;
+        PopupStageImageFade & operator=(const PopupStageImageFade &&) = delete;
 
     public:
         explicit PopupStageImageFade(const PopupInfo &);

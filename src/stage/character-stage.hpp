@@ -84,7 +84,9 @@ namespace stage
     class MenuButton : public sfml_util::gui::FourStateButton
     {
         MenuButton(const MenuButton &) = delete;
+        MenuButton(const MenuButton &&) = delete;
         MenuButton & operator=(const MenuButton &) = delete;
+        MenuButton & operator=(const MenuButton &&) = delete;
 
     public:
         MenuButton(
@@ -165,7 +167,9 @@ namespace stage
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
         CharacterStage(const CharacterStage &) = delete;
+        CharacterStage(const CharacterStage &&) = delete;
         CharacterStage & operator=(const CharacterStage &) = delete;
+        CharacterStage & operator=(const CharacterStage &&) = delete;
 
     public:
         CharacterStage();

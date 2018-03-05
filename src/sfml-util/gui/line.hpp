@@ -48,7 +48,9 @@ namespace sfml_util
         class Line : public GuiEntity
         {
             Line(const Line &) = delete;
+            Line(const Line &&) = delete;
             Line & operator=(const Line &) = delete;
+            Line & operator=(const Line &&) = delete;
 
         public:
             Line(

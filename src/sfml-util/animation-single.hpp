@@ -42,7 +42,9 @@ namespace sfml_util
     class AnimationSingleTexture : public Animation
     {
         AnimationSingleTexture(const AnimationSingleTexture &) = delete;
+        AnimationSingleTexture(const AnimationSingleTexture &&) = delete;
         AnimationSingleTexture & operator=(const AnimationSingleTexture &) = delete;
+        AnimationSingleTexture & operator=(const AnimationSingleTexture &&) = delete;
 
     public:
         AnimationSingleTexture(

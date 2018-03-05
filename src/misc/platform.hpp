@@ -83,7 +83,9 @@ namespace misc
     class Platform
     {
         Platform(const Platform &) = delete;
+        Platform(const Platform &&) = delete;
         Platform & operator=(const Platform &) = delete;
+        Platform & operator=(const Platform &&) = delete;
 
     public:
         Platform();

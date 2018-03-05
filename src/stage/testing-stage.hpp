@@ -56,7 +56,9 @@ namespace stage
     class TestingStage : public sfml_util::Stage
     {
         TestingStage(const TestingStage &) = delete;
+        TestingStage(const TestingStage &&) = delete;
         TestingStage & operator=(const TestingStage &) = delete;
+        TestingStage & operator=(const TestingStage &&) = delete;
 
     public:
         TestingStage();

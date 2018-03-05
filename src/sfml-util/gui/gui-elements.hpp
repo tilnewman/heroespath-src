@@ -43,7 +43,9 @@ namespace sfml_util
         class GuiElements
         {
             GuiElements(const GuiElements &) = delete;
+            GuiElements(const GuiElements &&) = delete;
             GuiElements & operator=(const GuiElements &) = delete;
+            GuiElements & operator=(const GuiElements &&) = delete;
 
         public:
             GuiElements();

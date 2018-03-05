@@ -56,7 +56,9 @@ namespace stage
     class InnStage : public sfml_util::Stage
     {
         InnStage(const InnStage &) = delete;
+        InnStage(const InnStage &&) = delete;
         InnStage & operator=(const InnStage &) = delete;
+        InnStage & operator=(const InnStage &&) = delete;
 
     public:
         InnStage();

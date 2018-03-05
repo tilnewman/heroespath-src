@@ -40,7 +40,9 @@ namespace stage
     class IntroStage : public sfml_util::Stage
     {
         IntroStage(const IntroStage &) = delete;
+        IntroStage(const IntroStage &&) = delete;
         IntroStage & operator=(const IntroStage &) = delete;
+        IntroStage & operator=(const IntroStage &&) = delete;
 
     public:
         IntroStage();

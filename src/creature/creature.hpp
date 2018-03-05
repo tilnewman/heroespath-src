@@ -111,7 +111,9 @@ namespace creature
     class Creature
     {
         Creature(const Creature &) = delete;
+        Creature(const Creature &&) = delete;
         Creature & operator=(const Creature &) = delete;
+        Creature & operator=(const Creature &&) = delete;
 
     public:
         // Note:  This constructor will add the default 'Good' status if CONDITIONS is empty.

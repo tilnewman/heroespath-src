@@ -56,7 +56,9 @@ namespace player
     class Party
     {
         Party(const Party &) = delete;
+        Party(const Party &&) = delete;
         Party & operator=(const Party &) = delete;
+        Party & operator=(const Party &&) = delete;
 
     public:
         explicit Party(

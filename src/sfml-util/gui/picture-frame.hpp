@@ -43,7 +43,9 @@ namespace sfml_util
         class PictureFrame : public sf::Drawable
         {
             PictureFrame(const PictureFrame &) = delete;
+            PictureFrame(const PictureFrame &&) = delete;
             PictureFrame & operator=(const PictureFrame &) = delete;
+            PictureFrame & operator=(const PictureFrame &&) = delete;
 
         public:
             PictureFrame(

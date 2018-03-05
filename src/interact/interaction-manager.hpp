@@ -41,7 +41,9 @@ namespace interact
     class InteractionManager
     {
         InteractionManager(const InteractionManager &) = delete;
+        InteractionManager(const InteractionManager &&) = delete;
         InteractionManager & operator=(const InteractionManager &) = delete;
+        InteractionManager & operator=(const InteractionManager &&) = delete;
 
     public:
         InteractionManager();

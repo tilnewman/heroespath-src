@@ -65,7 +65,9 @@ namespace stage
         , public popup::IPopupHandler_t
     {
         InteractStage(const InteractStage &) = delete;
+        InteractStage(const InteractStage &&) = delete;
         InteractStage & operator=(const InteractStage &) = delete;
+        InteractStage & operator=(const InteractStage &&) = delete;
 
     public:
         InteractStage(

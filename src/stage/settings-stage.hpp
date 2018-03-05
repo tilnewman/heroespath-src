@@ -59,7 +59,9 @@ namespace stage
         , public sfml_util::callback::IRadioButtonSetCallbackHandler_t
     {
         SettingsStage(const SettingsStage &) = delete;
+        SettingsStage(const SettingsStage &&) = delete;
         SettingsStage & operator=(const SettingsStage &) = delete;
+        SettingsStage & operator=(const SettingsStage &&) = delete;
 
     public:
         SettingsStage();

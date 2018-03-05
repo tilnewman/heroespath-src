@@ -62,7 +62,9 @@ namespace sfml_util
             , public callback::ISliderBarCallbackHandler_t
         {
             TextRegion(const TextRegion &) = delete;
+            TextRegion(const TextRegion &&) = delete;
             TextRegion & operator=(const TextRegion &) = delete;
+            TextRegion & operator=(const TextRegion &&) = delete;
 
         public:
             // if using this constructor, Setup() must be called before any other function

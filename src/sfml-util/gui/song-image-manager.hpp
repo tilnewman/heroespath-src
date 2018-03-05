@@ -44,7 +44,9 @@ namespace sfml_util
         class SongImageManager : public ImageManagerBase<song::Songs>
         {
             SongImageManager(const SongImageManager &) = delete;
+            SongImageManager(const SongImageManager &&) = delete;
             SongImageManager & operator=(const SongImageManager &) = delete;
+            SongImageManager & operator=(const SongImageManager &&) = delete;
 
         public:
             SongImageManager();

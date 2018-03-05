@@ -51,7 +51,9 @@ namespace popup
         , public sfml_util::gui::callback::ITextButtonCallbackHandler_t
     {
         PopupStageBase(const PopupStageBase &) = delete;
+        PopupStageBase(const PopupStageBase &&) = delete;
         PopupStageBase & operator=(const PopupStageBase &) = delete;
+        PopupStageBase & operator=(const PopupStageBase &&) = delete;
 
     public:
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
@@ -142,7 +144,7 @@ namespace popup
         sf::Texture xSymbolTexture_;
         float keepAliveTimerSec_;
     };
-} // namespace popup
-} // namespace heroespath
+}
+}
 
 #endif // HEROESPATH_POPUP_POPUPSTAGEBASE_HPP_INCLUDED

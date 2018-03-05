@@ -42,7 +42,9 @@ namespace sfml_util
     class BottomSymbol : public sf::Drawable
     {
         BottomSymbol(const BottomSymbol &) = delete;
+        BottomSymbol(const BottomSymbol &&) = delete;
         BottomSymbol & operator=(const BottomSymbol &) = delete;
+        BottomSymbol & operator=(const BottomSymbol &&) = delete;
 
     public:
         explicit BottomSymbol(

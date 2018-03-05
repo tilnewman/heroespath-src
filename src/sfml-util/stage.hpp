@@ -57,7 +57,9 @@ namespace sfml_util
     class Stage : public IStage
     {
         Stage(const Stage &) = delete;
+        Stage(const Stage &&) = delete;
         Stage & operator=(const Stage &) = delete;
+        Stage & operator=(const Stage &&) = delete;
 
     public:
         explicit Stage(const std::string & NAME, const bool WILL_CLEAR_CACHE_ON_EXIT = true);

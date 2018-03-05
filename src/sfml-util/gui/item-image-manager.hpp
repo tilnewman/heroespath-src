@@ -57,7 +57,9 @@ namespace sfml_util
         class ItemImageManager
         {
             ItemImageManager(const ItemImageManager &) = delete;
+            ItemImageManager(const ItemImageManager &&) = delete;
             ItemImageManager & operator=(const ItemImageManager &) = delete;
+            ItemImageManager & operator=(const ItemImageManager &&) = delete;
 
         public:
             ItemImageManager();

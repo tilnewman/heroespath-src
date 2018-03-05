@@ -117,7 +117,9 @@ namespace sfml_util
             , public callback::ISliderBarCallbackHandler_t
         {
             ListBox(const ListBox &) = delete;
+            ListBox(const ListBox &&) = delete;
             ListBox & operator=(const ListBox &) = delete;
+            ListBox & operator=(const ListBox &&) = delete;
 
         public:
             explicit ListBox(

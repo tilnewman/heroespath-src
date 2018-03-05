@@ -44,7 +44,9 @@ namespace sfml_util
     class SliderBarLabeled_Effects : public gui::SliderBarLabeled
     {
         SliderBarLabeled_Effects(const SliderBarLabeled_Effects &) = delete;
+        SliderBarLabeled_Effects(const SliderBarLabeled_Effects &&) = delete;
         SliderBarLabeled_Effects & operator=(const SliderBarLabeled_Effects &) = delete;
+        SliderBarLabeled_Effects & operator=(const SliderBarLabeled_Effects &&) = delete;
 
     public:
         SliderBarLabeled_Effects(

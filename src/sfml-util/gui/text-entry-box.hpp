@@ -60,7 +60,9 @@ namespace sfml_util
         class TextEntryBox : public GuiEntity
         {
             TextEntryBox(const TextEntryBox &) = delete;
+            TextEntryBox(const TextEntryBox &&) = delete;
             TextEntryBox & operator=(const TextEntryBox &) = delete;
+            TextEntryBox & operator=(const TextEntryBox &&) = delete;
 
         public:
             // if using this constructor, Setup() must be called before any other function

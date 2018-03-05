@@ -57,7 +57,9 @@ namespace popup
         , public sfml_util::gui::callback::IListBoxCallbackHandler
     {
         PopupStageSpellbook(const PopupStageSpellbook &) = delete;
+        PopupStageSpellbook(const PopupStageSpellbook &&) = delete;
         PopupStageSpellbook & operator=(const PopupStageSpellbook &) = delete;
+        PopupStageSpellbook & operator=(const PopupStageSpellbook &&) = delete;
 
         // defines what is happening on the spellbook popup
         enum class FadeState

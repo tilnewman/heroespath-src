@@ -49,7 +49,9 @@ namespace stage
     class CreditsStage : public sfml_util::Stage
     {
         CreditsStage(const CreditsStage &) = delete;
+        CreditsStage(const CreditsStage &&) = delete;
         CreditsStage & operator=(const CreditsStage &) = delete;
+        CreditsStage & operator=(const CreditsStage &&) = delete;
 
     public:
         CreditsStage();

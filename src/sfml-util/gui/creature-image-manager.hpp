@@ -53,7 +53,9 @@ namespace sfml_util
         class CreatureImageManager
         {
             CreatureImageManager(const CreatureImageManager &) = delete;
+            CreatureImageManager(const CreatureImageManager &&) = delete;
             CreatureImageManager & operator=(const CreatureImageManager &) = delete;
+            CreatureImageManager & operator=(const CreatureImageManager &&) = delete;
 
         public:
             CreatureImageManager();

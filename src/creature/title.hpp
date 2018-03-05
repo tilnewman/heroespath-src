@@ -57,7 +57,9 @@ namespace creature
     class Title
     {
         Title(const Title &) = delete;
+        Title(const Title &&) = delete;
         Title & operator=(const Title &) = delete;
+        Title & operator=(const Title &&) = delete;
 
     public:
         explicit Title(

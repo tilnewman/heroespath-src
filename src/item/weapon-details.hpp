@@ -72,7 +72,9 @@ namespace item
         class WeaponDetailLoader
         {
             WeaponDetailLoader & operator=(const WeaponDetailLoader &) = delete;
+            WeaponDetailLoader & operator=(const WeaponDetailLoader &&) = delete;
             WeaponDetailLoader(const WeaponDetailLoader &) = delete;
+            WeaponDetailLoader(const WeaponDetailLoader &&) = delete;
 
         public:
             WeaponDetailLoader();

@@ -62,7 +62,9 @@ namespace combat
         class ChanceFactory
         {
             ChanceFactory(const ChanceFactory &) = delete;
+            ChanceFactory(const ChanceFactory &&) = delete;
             ChanceFactory & operator=(const ChanceFactory &) = delete;
+            ChanceFactory & operator=(const ChanceFactory &&) = delete;
 
         public:
             ChanceFactory();

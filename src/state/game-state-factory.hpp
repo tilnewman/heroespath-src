@@ -59,7 +59,9 @@ namespace state
     class GameStateFactory
     {
         GameStateFactory(const GameStateFactory &) = delete;
+        GameStateFactory(const GameStateFactory &&) = delete;
         GameStateFactory & operator=(const GameStateFactory &) = delete;
+        GameStateFactory & operator=(const GameStateFactory &&) = delete;
 
     public:
         GameStateFactory();

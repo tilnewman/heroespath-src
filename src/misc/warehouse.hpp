@@ -49,7 +49,9 @@ namespace misc
     class Warehouse
     {
         Warehouse(const Warehouse &) = delete;
+        Warehouse(const Warehouse &&) = delete;
         Warehouse & operator=(const Warehouse &) = delete;
+        Warehouse & operator=(const Warehouse &&) = delete;
 
     public:
         Warehouse()

@@ -41,7 +41,9 @@ namespace popup
     class PopupStageCombatOver : public PopupStageBase
     {
         PopupStageCombatOver(const PopupStageCombatOver &) = delete;
+        PopupStageCombatOver(const PopupStageCombatOver &&) = delete;
         PopupStageCombatOver & operator=(const PopupStageCombatOver &) = delete;
+        PopupStageCombatOver & operator=(const PopupStageCombatOver &&) = delete;
 
     public:
         explicit PopupStageCombatOver(const PopupInfo &);

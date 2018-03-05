@@ -38,7 +38,9 @@ namespace popup
     class PopupStageInventoryPrompt : public PopupStageBase
     {
         PopupStageInventoryPrompt(const PopupStageInventoryPrompt &) = delete;
+        PopupStageInventoryPrompt(const PopupStageInventoryPrompt &&) = delete;
         PopupStageInventoryPrompt & operator=(const PopupStageInventoryPrompt &) = delete;
+        PopupStageInventoryPrompt & operator=(const PopupStageInventoryPrompt &&) = delete;
 
     public:
         explicit PopupStageInventoryPrompt(const PopupInfo &);

@@ -44,7 +44,9 @@ namespace sfml_util
         class KnotFrame : public sf::Drawable
         {
             KnotFrame(const KnotFrame &) = delete;
+            KnotFrame(const KnotFrame &&) = delete;
             KnotFrame & operator=(const KnotFrame &) = delete;
+            KnotFrame & operator=(const KnotFrame &&) = delete;
 
         public:
             // If using this constructor, calling Setup(...) is required before drawing.

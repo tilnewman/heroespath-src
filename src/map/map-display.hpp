@@ -53,7 +53,9 @@ namespace map
     class MapDisplay : public sf::Drawable
     {
         MapDisplay(const MapDisplay &) = delete;
+        MapDisplay(const MapDisplay &&) = delete;
         MapDisplay & operator=(const MapDisplay &) = delete;
+        MapDisplay & operator=(const MapDisplay &&) = delete;
 
     public:
         MapDisplay(const Map & MAP, const sf::FloatRect & REGION);
@@ -153,7 +155,7 @@ namespace map
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
-} // namespace map
-} // namespace heroespath
+}
+}
 
 #endif // HEROESPATH_MAP_MAPDISPLAY_HPP_INCLUDED

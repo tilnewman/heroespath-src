@@ -71,7 +71,9 @@ namespace stage
         , public popup::IPopupHandler_t
     {
         TreasureStage(const TreasureStage &) = delete;
+        TreasureStage(const TreasureStage &&) = delete;
         TreasureStage & operator=(const TreasureStage &) = delete;
+        TreasureStage & operator=(const TreasureStage &&) = delete;
 
     public:
         TreasureStage();

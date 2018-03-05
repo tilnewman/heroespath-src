@@ -51,7 +51,9 @@ namespace sfml_util
         class TwoStateEntity : public GuiEntity
         {
             TwoStateEntity(const TwoStateEntity &) = delete;
+            TwoStateEntity(const TwoStateEntity &&) = delete;
             TwoStateEntity & operator=(const TwoStateEntity &) = delete;
+            TwoStateEntity & operator=(const TwoStateEntity &&) = delete;
 
         public:
             TwoStateEntity(

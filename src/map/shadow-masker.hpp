@@ -42,6 +42,7 @@ namespace map
         ShadowMasker(const ShadowMasker &) = delete;
         ShadowMasker(const ShadowMasker &&) = delete;
         ShadowMasker & operator=(const ShadowMasker &) = delete;
+        ShadowMasker & operator=(const ShadowMasker &&) = delete;
 
     public:
         static void ChangeColors(const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout);

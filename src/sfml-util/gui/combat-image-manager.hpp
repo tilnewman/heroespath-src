@@ -48,7 +48,9 @@ namespace sfml_util
         class CombatImageManager : public ImageManagerBase<CombatImageType>
         {
             CombatImageManager & operator=(const CombatImageManager &) = delete;
+            CombatImageManager & operator=(const CombatImageManager &&) = delete;
             CombatImageManager(const CombatImageManager &) = delete;
+            CombatImageManager(const CombatImageManager &&) = delete;
 
         public:
             CombatImageManager();

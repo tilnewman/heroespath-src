@@ -45,7 +45,9 @@ namespace item
     class ArmorRatings
     {
         ArmorRatings(const ArmorRatings &) = delete;
+        ArmorRatings(const ArmorRatings &&) = delete;
         ArmorRatings & operator=(const ArmorRatings &) = delete;
+        ArmorRatings & operator=(const ArmorRatings &&) = delete;
 
     public:
         ArmorRatings();

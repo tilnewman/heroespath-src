@@ -44,7 +44,9 @@ namespace sfml_util
         class SpellImageManager : public ImageManagerBase<spell::Spells>
         {
             SpellImageManager(const SpellImageManager &) = delete;
+            SpellImageManager(const SpellImageManager &&) = delete;
             SpellImageManager & operator=(const SpellImageManager &) = delete;
+            SpellImageManager & operator=(const SpellImageManager &&) = delete;
 
         public:
             SpellImageManager();

@@ -50,7 +50,9 @@ namespace creature
         using FontSizeToWidthMap_t = std::map<FontSizePair_t, float>;
 
         NameInfo(const NameInfo &) = delete;
+        NameInfo(const NameInfo &&) = delete;
         NameInfo & operator=(const NameInfo &) = delete;
+        NameInfo & operator=(const NameInfo &&) = delete;
 
     public:
         NameInfo();

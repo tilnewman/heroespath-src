@@ -48,7 +48,9 @@ namespace sfml_util
         , public sfml_util::gui::RadioButtonSet
     {
         RadioButtonSet_DisplayChange(const RadioButtonSet_DisplayChange &) = delete;
+        RadioButtonSet_DisplayChange(const RadioButtonSet_DisplayChange &&) = delete;
         RadioButtonSet_DisplayChange & operator=(const RadioButtonSet_DisplayChange &) = delete;
+        RadioButtonSet_DisplayChange & operator=(const RadioButtonSet_DisplayChange &&) = delete;
 
     public:
         // If Using this constructor, then one of the Setup()

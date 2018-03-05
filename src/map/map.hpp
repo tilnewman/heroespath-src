@@ -56,7 +56,9 @@ namespace map
     class Map : public sf::Drawable
     {
         Map(const Map &) = delete;
+        Map(const Map &&) = delete;
         Map & operator=(const Map &) = delete;
+        Map & operator=(const Map &&) = delete;
 
     public:
         Map(const sf::FloatRect &, interact::InteractionManager &);
@@ -131,7 +133,7 @@ namespace map
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;
-} // namespace map
-} // namespace heroespath
+}
+}
 
 #endif // HEROESPATH_MAP_MAP_HPP_INCLUDED

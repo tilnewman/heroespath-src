@@ -58,7 +58,9 @@ namespace item
         class WeaponFactory : public FactoryBase
         {
             WeaponFactory(const WeaponFactory &) = delete;
+            WeaponFactory(const WeaponFactory &&) = delete;
             WeaponFactory & operator=(const WeaponFactory &) = delete;
+            WeaponFactory & operator=(const WeaponFactory &&) = delete;
 
         public:
             WeaponFactory();

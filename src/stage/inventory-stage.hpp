@@ -137,7 +137,9 @@ namespace stage
         using CharViewMap_t = std::map<std::size_t, ViewType>;
 
         InventoryStage(const InventoryStage &) = delete;
+        InventoryStage(const InventoryStage &&) = delete;
         InventoryStage & operator=(const InventoryStage &) = delete;
+        InventoryStage & operator=(const InventoryStage &&) = delete;
 
     public:
         explicit InventoryStage(

@@ -49,7 +49,9 @@ namespace item
         class ArmorFactory : public FactoryBase
         {
             ArmorFactory(const ArmorFactory &) = delete;
+            ArmorFactory(const ArmorFactory &&) = delete;
             ArmorFactory & operator=(const ArmorFactory &) = delete;
+            ArmorFactory & operator=(const ArmorFactory &&) = delete;
 
         public:
             ArmorFactory();

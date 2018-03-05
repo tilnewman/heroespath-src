@@ -71,7 +71,9 @@ namespace non_player
     class Character : public creature::Creature
     {
         Character(const Character &) = delete;
+        Character(const Character &&) = delete;
         Character & operator=(const Character &) = delete;
+        Character & operator=(const Character &&) = delete;
 
     public:
         explicit Character(

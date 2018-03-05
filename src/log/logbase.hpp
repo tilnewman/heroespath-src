@@ -109,7 +109,9 @@ namespace log
     class LogBase : public ILog
     {
         LogBase(const LogBase &) = delete;
+        LogBase(const LogBase &&) = delete;
         LogBase & operator=(const LogBase &) = delete;
+        LogBase & operator=(const LogBase &&) = delete;
 
     public:
         explicit LogBase(

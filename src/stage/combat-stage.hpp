@@ -137,7 +137,9 @@ namespace stage
         , public sfml_util::gui::callback::ISliderBarCallbackHandler_t
     {
         CombatStage(const CombatStage &) = delete;
+        CombatStage(const CombatStage &&) = delete;
         CombatStage & operator=(const CombatStage &) = delete;
+        CombatStage & operator=(const CombatStage &&) = delete;
 
         // defines what phase of the initial zoom and pan currently in
         enum class PreTurnPhase

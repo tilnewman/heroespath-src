@@ -49,7 +49,9 @@ namespace sfml_util
         class GuiEntity : public IGuiEntity
         {
             GuiEntity(const GuiEntity &) = delete;
+            GuiEntity(const GuiEntity &&) = delete;
             GuiEntity & operator=(const GuiEntity &) = delete;
+            GuiEntity & operator=(const GuiEntity &&) = delete;
 
         public:
             GuiEntity(

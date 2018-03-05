@@ -69,7 +69,9 @@ namespace item
         class ArmorDetailLoader
         {
             ArmorDetailLoader & operator=(const ArmorDetailLoader &) = delete;
+            ArmorDetailLoader & operator=(const ArmorDetailLoader &&) = delete;
             ArmorDetailLoader(const ArmorDetailLoader &) = delete;
+            ArmorDetailLoader(const ArmorDetailLoader &&) = delete;
 
         public:
             ArmorDetailLoader();

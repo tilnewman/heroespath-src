@@ -43,7 +43,9 @@ namespace sfml_util
     class Ouroboros : public gui::GuiEntity
     {
         Ouroboros(const Ouroboros &) = delete;
+        Ouroboros(const Ouroboros &&) = delete;
         Ouroboros & operator=(const Ouroboros &) = delete;
+        Ouroboros & operator=(const Ouroboros &&) = delete;
 
     public:
         explicit Ouroboros(const std::string & NAME, const bool WILL_INVERT = false);

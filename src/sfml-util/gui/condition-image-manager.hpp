@@ -44,7 +44,9 @@ namespace sfml_util
         class ConditionImageManager : public ImageManagerBase<creature::Conditions>
         {
             ConditionImageManager(const ConditionImageManager &) = delete;
+            ConditionImageManager(const ConditionImageManager &&) = delete;
             ConditionImageManager & operator=(const ConditionImageManager &) = delete;
+            ConditionImageManager & operator=(const ConditionImageManager &&) = delete;
 
         public:
             ConditionImageManager();

@@ -117,7 +117,9 @@ namespace sfml_util
         class RadioButtonSet : public GuiEntity
         {
             RadioButtonSet(const RadioButtonSet &) = delete;
+            RadioButtonSet(const RadioButtonSet &&) = delete;
             RadioButtonSet & operator=(const RadioButtonSet &) = delete;
+            RadioButtonSet & operator=(const RadioButtonSet &&) = delete;
 
         public:
             // If Using this constructor, then one of the Setup() functions must be called before

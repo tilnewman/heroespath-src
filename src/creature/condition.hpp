@@ -52,7 +52,9 @@ namespace creature
     class Condition
     {
         Condition(const Condition &) = delete;
+        Condition(const Condition &&) = delete;
         Condition & operator=(const Condition &) = delete;
+        Condition & operator=(const Condition &&) = delete;
 
     public:
         explicit Condition(

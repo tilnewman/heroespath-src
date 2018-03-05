@@ -47,7 +47,9 @@ namespace sfml_util
         class BackgroundImage : public sf::Drawable
         {
             BackgroundImage(const BackgroundImage &) = delete;
+            BackgroundImage(const BackgroundImage &&) = delete;
             BackgroundImage & operator=(const BackgroundImage &) = delete;
+            BackgroundImage & operator=(const BackgroundImage &&) = delete;
 
         public:
             // if using this constructor then Setup() must be called before any other function

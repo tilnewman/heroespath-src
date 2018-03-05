@@ -42,7 +42,9 @@ namespace config
     class SettingsFile : public ConfigBase
     {
         SettingsFile(const SettingsFile &) = delete;
+        SettingsFile(const SettingsFile &&) = delete;
         SettingsFile & operator=(const SettingsFile &) = delete;
+        SettingsFile & operator=(const SettingsFile &&) = delete;
 
     public:
         SettingsFile();

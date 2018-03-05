@@ -42,7 +42,9 @@ namespace state
     class World
     {
         World(const World &) = delete;
+        World(const World &&) = delete;
         World & operator=(const World &) = delete;
+        World & operator=(const World &&) = delete;
 
     public:
         World();

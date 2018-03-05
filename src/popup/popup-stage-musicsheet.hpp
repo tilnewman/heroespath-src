@@ -57,7 +57,9 @@ namespace popup
         , public sfml_util::gui::callback::IListBoxCallbackHandler
     {
         PopupStageMusicSheet(const PopupStageMusicSheet &) = delete;
+        PopupStageMusicSheet(const PopupStageMusicSheet &&) = delete;
         PopupStageMusicSheet & operator=(const PopupStageMusicSheet &) = delete;
+        PopupStageMusicSheet & operator=(const PopupStageMusicSheet &&) = delete;
 
     public:
         explicit PopupStageMusicSheet(const popup::PopupInfo &);
