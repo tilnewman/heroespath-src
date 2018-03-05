@@ -38,7 +38,7 @@ namespace popup
         : PopupStageBase(POPUP_INFO)
     {}
 
-    PopupStageGeneric::~PopupStageGeneric() {}
+    PopupStageGeneric::~PopupStageGeneric() = default;
 
     void PopupStageGeneric::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {

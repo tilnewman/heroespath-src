@@ -73,7 +73,7 @@ namespace stage
         , wasPressedDown_(false)
     {}
 
-    AdventureDisplayStage::~AdventureDisplayStage() {}
+    AdventureDisplayStage::~AdventureDisplayStage() = default;
 
     void AdventureDisplayStage::Setup()
     {
@@ -269,5 +269,5 @@ namespace stage
 
         return interactRegion;
     }
-} // namespace stage
-} // namespace heroespath
+}
+}

@@ -73,7 +73,7 @@ namespace sfml_util
             textRegion_.Setup(textInfo, R);
         }
 
-        SliderBarLabeled::~SliderBarLabeled() {}
+        SliderBarLabeled::~SliderBarLabeled() = default;
 
         void SliderBarLabeled::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {

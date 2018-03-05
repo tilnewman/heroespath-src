@@ -114,7 +114,7 @@ namespace sfml_util
             Setup(POS_LEFT, POS_TOP, IS_INVALID);
         }
 
-        CheckBox::~CheckBox() {}
+        CheckBox::~CheckBox() = default;
 
         void CheckBox::Setup(const float POS_LEFT, const float POS_TOP, const bool IS_INVALID)
         {
@@ -341,7 +341,7 @@ namespace sfml_util
             PostSetupTasks(POS_LEFT, POS_TOP, BOX_INFO);
         }
 
-        CheckBoxSet::~CheckBoxSet() {}
+        CheckBoxSet::~CheckBoxSet() = default;
 
         void CheckBoxSet::SetupInitialSelections()
         {

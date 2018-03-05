@@ -64,7 +64,7 @@ namespace spell
         , verbPastTense_(VERB_PAST_TENSE)
     {}
 
-    Spell::~Spell() {}
+    Spell::~Spell() = default;
 
     const std::string Spell::ToString() const
     {

@@ -76,7 +76,7 @@ namespace sfml_util
             , entityPrevPos_(0.0f, 0.0f)
         {}
 
-        GuiEntity::~GuiEntity() {}
+        GuiEntity::~GuiEntity() = default;
 
         bool GuiEntity::MouseUp(const sf::Vector2f & MOUSE_POS_V)
         {

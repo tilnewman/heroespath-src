@@ -82,7 +82,7 @@ namespace stage
               true)
     {}
 
-    AdventureCharacterList::~AdventureCharacterList() {}
+    AdventureCharacterList::~AdventureCharacterList() = default;
 
     bool AdventureCharacterList::HandleCallback(
         const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &)

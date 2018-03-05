@@ -59,7 +59,7 @@ namespace combat
             : raceRoleChancesMap_()
         {}
 
-        ChanceFactory::~ChanceFactory() {}
+        ChanceFactory::~ChanceFactory() = default;
 
         DetailsSPtr_t ChanceFactory::Instance()
         {

@@ -70,7 +70,7 @@ namespace creature
         , skinMaterialOuter_(SKIN_MATERIAL_OUTER)
     {}
 
-    BodyType::~BodyType() {}
+    BodyType::~BodyType() = default;
 
     const std::string BodyType::ToString() const
     {

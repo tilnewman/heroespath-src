@@ -166,7 +166,7 @@ namespace sfml_util
         namespace bfs = boost::filesystem;
 
         auto const DIR_PATH{ bfs::system_complete(bfs::path(DIR_PATH_PARAM_STR)) };
-        auto const DIR_PATH_COMPLETE_STR{ DIR_PATH.string() };
+        auto const & DIR_PATH_COMPLETE_STR{ DIR_PATH.string() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (bfs::exists(DIR_PATH)),

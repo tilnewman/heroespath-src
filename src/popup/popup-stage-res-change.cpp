@@ -42,7 +42,7 @@ namespace popup
         , secondCounter_(10)
     {}
 
-    PopupStageResChange::~PopupStageResChange() {}
+    PopupStageResChange::~PopupStageResChange() = default;
 
     void PopupStageResChange::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {

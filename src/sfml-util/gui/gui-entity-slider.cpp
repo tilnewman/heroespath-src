@@ -49,7 +49,7 @@ namespace sfml_util
             Setup(guiEntityPtr_, FROM_POS_V, TO_POS_V, SLIDER_SPEED);
         }
 
-        GuiEntitySlider::~GuiEntitySlider() {}
+        GuiEntitySlider::~GuiEntitySlider() = default;
 
         void GuiEntitySlider::Setup(
             IGuiEntityPtr_t guiEntityPtr,

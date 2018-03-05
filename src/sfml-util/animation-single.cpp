@@ -103,7 +103,7 @@ namespace sfml_util
         sprite_.setTextureRect(rects_[0]);
     }
 
-    AnimationSingleTexture::~AnimationSingleTexture() {}
+    AnimationSingleTexture::~AnimationSingleTexture() = default;
 
     void AnimationSingleTexture::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {

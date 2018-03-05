@@ -53,7 +53,7 @@ namespace sfml_util
         , isFinished_(false)
     {}
 
-    Animation::~Animation() {}
+    Animation::~Animation() = default;
 
     void Animation::RandomVaryTimePerFrame()
     {

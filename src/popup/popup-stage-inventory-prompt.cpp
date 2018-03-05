@@ -42,7 +42,7 @@ namespace popup
         : PopupStageBase(POPUP_INFO)
     {}
 
-    PopupStageInventoryPrompt::~PopupStageInventoryPrompt() {}
+    PopupStageInventoryPrompt::~PopupStageInventoryPrompt() = default;
 
     void PopupStageInventoryPrompt::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {

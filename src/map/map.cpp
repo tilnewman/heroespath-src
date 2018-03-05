@@ -74,7 +74,7 @@ namespace map
         , interactionRect_()
     {}
 
-    Map::~Map() {}
+    Map::~Map() = default;
 
     void Map::TransitionLevel(const Transition & TRANSITION)
     {

@@ -161,7 +161,7 @@ namespace combat
         IsFlying(false);
     }
 
-    CombatNode::~CombatNode() {}
+    CombatNode::~CombatNode() = default;
 
     const std::string CombatNode::ToString() const
     {

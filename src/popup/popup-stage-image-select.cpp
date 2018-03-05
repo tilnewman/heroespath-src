@@ -69,7 +69,7 @@ namespace popup
         , imagePosTop_(0.0f)
     {}
 
-    PopupStageImageSelect::~PopupStageImageSelect() {}
+    PopupStageImageSelect::~PopupStageImageSelect() = default;
 
     bool PopupStageImageSelect::HandleCallback(
         const sfml_util::gui::callback::SliderBarCallbackPackage_t &)

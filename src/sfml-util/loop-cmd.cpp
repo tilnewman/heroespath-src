@@ -40,7 +40,7 @@ namespace sfml_util
         : NAME_(std::string(NAME).append("_LoopCommand"))
     {}
 
-    LoopCmd::~LoopCmd() {}
+    LoopCmd::~LoopCmd() = default;
 
     bool LoopCmd_Execute::Execute()
     {

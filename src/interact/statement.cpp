@@ -57,7 +57,7 @@ namespace interact
                 {
                     for (auto const & S2 : V2)
                     {
-                        v.emplace_back(S1 + SEPARATOR + S2);
+                        v.emplace_back((S1 + SEPARATOR).append(S2));
                     }
                 }
 

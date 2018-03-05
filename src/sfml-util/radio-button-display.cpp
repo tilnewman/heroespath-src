@@ -96,7 +96,7 @@ namespace sfml_util
             resRadioButtonSetBoxInfo);
     }
 
-    RadioButtonSet_DisplayChange::~RadioButtonSet_DisplayChange() {}
+    RadioButtonSet_DisplayChange::~RadioButtonSet_DisplayChange() = default;
 
     bool RadioButtonSet_DisplayChange::HandleCallback(const popup::PopupResponse & POPUP)
     {

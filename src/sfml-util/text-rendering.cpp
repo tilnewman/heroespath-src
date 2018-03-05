@@ -38,6 +38,7 @@
 #include "misc/assertlogandthrow.hpp"
 
 #include <cctype> //for isDigit()
+#include <numeric>
 
 namespace heroespath
 {
@@ -371,7 +372,6 @@ namespace sfml_util
 
                     if ('\n' == termChar)
                     {
-                        termChar = 0;
                         break;
                     }
                 }
@@ -387,14 +387,15 @@ namespace sfml_util
                         {
                             nextTextSnippetVec.pop_back();
 
-                            float newLineLength(0.0f);
-                            for (std::size_t j(0); j < nextTextSnippetVec.size(); ++j)
-                            {
-                                newLineLength
-                                    += nextTextSnippetVec[j].sf_text.getLocalBounds().width;
-                            }
+                            auto const LINE_LENGTH{ std::accumulate(
+                                std::begin(nextTextSnippetVec),
+                                std::end(nextTextSnippetVec),
+                                0.0f,
+                                [](auto const SUBTOTAL, auto const & TEXT_SNIPPET) {
+                                    return SUBTOTAL + TEXT_SNIPPET.sf_text.getLocalBounds().width;
+                                }) };
 
-                            if (newLineLength < WIDTH_LIMIT_TO_USE)
+                            if (LINE_LENGTH < WIDTH_LIMIT_TO_USE)
                             {
                                 break;
                             }
@@ -405,9 +406,9 @@ namespace sfml_util
                             nextTextSnippetVec.pop_back();
                         }
 
-                        for (std::size_t i(0); i < nextTextSnippetVec.size(); ++i)
+                        for (auto const & NEXT_TEXT_SNIPPET : nextTextSnippetVec)
                         {
-                            textSnippetVec.emplace_back(nextTextSnippetVec[i]);
+                            textSnippetVec.emplace_back(NEXT_TEXT_SNIPPET);
                         }
 
                         break;

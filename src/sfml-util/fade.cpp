@@ -93,7 +93,7 @@ namespace sfml_util
         Setup(SCREEN_REGION);
     }
 
-    Fade::~Fade() {}
+    Fade::~Fade() = default;
 
     void Fade::UpdateRegion(const float WIDTH, const float HEIGHT)
     {

@@ -68,7 +68,7 @@ namespace sfml_util
         SetCurrentValue(sfml_util::SoundManager::Instance()->SoundEffectVolume() / 100.0f);
     }
 
-    SliderBarLabeled_Effects::~SliderBarLabeled_Effects() {}
+    SliderBarLabeled_Effects::~SliderBarLabeled_Effects() = default;
 
     void SliderBarLabeled_Effects::OnChange(const float NEW_VALUE_PARAM)
     {

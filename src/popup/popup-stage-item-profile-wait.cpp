@@ -42,7 +42,7 @@ namespace popup
         , drawCountdown_(3)
     {}
 
-    PopupStageItemProfileWait::~PopupStageItemProfileWait() {}
+    PopupStageItemProfileWait::~PopupStageItemProfileWait() = default;
 
     void PopupStageItemProfileWait::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {

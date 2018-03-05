@@ -56,7 +56,7 @@ namespace sfml_util
         Setup(VERT_SCALE, WILL_INVERT_COLOR, COLOR, VERT_OFFSET_RATIO);
     }
 
-    BottomSymbol::~BottomSymbol() {}
+    BottomSymbol::~BottomSymbol() = default;
 
     void BottomSymbol::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {

@@ -43,7 +43,7 @@ namespace item
 
     FactoryBase::FactoryBase() {}
 
-    FactoryBase::~FactoryBase() {}
+    FactoryBase::~FactoryBase() = default;
 
     const std::string FactoryBase::Make_Name(
         const std::string & BASE_NAME,

@@ -65,7 +65,7 @@ namespace sfml_util
             Setup(POS_LEFT, POS_TOP);
         }
 
-        GuiImage::~GuiImage() {}
+        GuiImage::~GuiImage() = default;
 
         void GuiImage::Setup(const float POS_LEFT, const float POS_TOP)
         {

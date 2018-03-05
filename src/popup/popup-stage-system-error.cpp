@@ -44,7 +44,7 @@ namespace popup
         , bgSprite_()
     {}
 
-    PopupStageSystemError::~PopupStageSystemError() {}
+    PopupStageSystemError::~PopupStageSystemError() = default;
 
     void PopupStageSystemError::Setup()
     {

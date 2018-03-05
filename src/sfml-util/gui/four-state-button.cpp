@@ -179,7 +179,7 @@ namespace sfml_util
                 SPRITE_COLOR);
         }
 
-        FourStateButton::~FourStateButton() {}
+        FourStateButton::~FourStateButton() = default;
 
         void FourStateButton::Setup(
             const float POS_LEFT,

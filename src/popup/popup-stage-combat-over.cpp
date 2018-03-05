@@ -47,7 +47,7 @@ namespace popup
         , descTextRegionUPtr_()
     {}
 
-    PopupStageCombatOver::~PopupStageCombatOver() {}
+    PopupStageCombatOver::~PopupStageCombatOver() = default;
 
     void PopupStageCombatOver::Setup()
     {

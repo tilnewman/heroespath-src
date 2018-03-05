@@ -48,7 +48,7 @@ namespace popup
         , charDetailsTextRegionUPtr_()
     {}
 
-    PopupStageCharacterSelect::~PopupStageCharacterSelect() {}
+    PopupStageCharacterSelect::~PopupStageCharacterSelect() = default;
 
     void PopupStageCharacterSelect::Setup()
     {

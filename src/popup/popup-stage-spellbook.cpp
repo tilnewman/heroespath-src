@@ -88,7 +88,7 @@ namespace popup
         , textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
     {}
 
-    PopupStageSpellbook::~PopupStageSpellbook() {}
+    PopupStageSpellbook::~PopupStageSpellbook() = default;
 
     bool PopupStageSpellbook::HandleCallback(
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)

@@ -134,11 +134,11 @@ namespace sfml_util
 
         const std::size_t SPRITE_COUNT(spriteVec.size());
 
-        const float SPRITE_WIDTH(spriteVec[0].getLocalBounds().width);
-        const float SPRITE_HEIGHT(spriteVec[0].getLocalBounds().height);
+        auto const SPRITE_WIDTH{ spriteVec[0].getLocalBounds().width };
+        auto const SPRITE_HEIGHT{ spriteVec[0].getLocalBounds().height };
 
-        const std::size_t COUNT_X(static_cast<std::size_t>(RECT.width / SPRITE_WIDTH));
-        const std::size_t COUNT_Y(static_cast<std::size_t>(RECT.height / SPRITE_HEIGHT));
+        auto const COUNT_X{ static_cast<std::size_t>(RECT.width / SPRITE_WIDTH) };
+        auto const COUNT_Y{ static_cast<std::size_t>(RECT.height / SPRITE_HEIGHT) };
 
         std::size_t spriteVecIndex(0);
         for (std::size_t x(0); x < COUNT_X; ++x)

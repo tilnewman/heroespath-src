@@ -72,7 +72,7 @@ namespace stage
         CreateNewTextRegion();
     }
 
-    AnimNum::~AnimNum() {}
+    AnimNum::~AnimNum() = default;
 
     void AnimNum::CreateNewTextRegion()
     {

@@ -50,7 +50,7 @@ namespace popup
         , descTextRegionUPtr_()
     {}
 
-    PopupStageImageFade::~PopupStageImageFade() {}
+    PopupStageImageFade::~PopupStageImageFade() = default;
 
     void PopupStageImageFade::Setup()
     {

@@ -96,7 +96,7 @@ namespace popup
         , textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
     {}
 
-    PopupStageMusicSheet::~PopupStageMusicSheet() {}
+    PopupStageMusicSheet::~PopupStageMusicSheet() = default;
 
     bool PopupStageMusicSheet::HandleCallback(
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)

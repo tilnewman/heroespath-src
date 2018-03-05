@@ -49,7 +49,7 @@ namespace state
         , dateTimeLastSave_()
     {}
 
-    GameState::~GameState() {}
+    GameState::~GameState() = default;
 
     World & GameState::World()
     {

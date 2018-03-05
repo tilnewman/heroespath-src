@@ -129,7 +129,7 @@ namespace creature
         fileName_ = ss.str();
     }
 
-    Title::~Title() {}
+    Title::~Title() = default;
 
     const std::string Title::ToString() const
     {

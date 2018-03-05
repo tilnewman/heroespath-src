@@ -111,7 +111,7 @@ namespace sfml_util
                 NUMBERS_FONT_PTR);
         }
 
-        GuiText::~GuiText() {}
+        GuiText::~GuiText() = default;
 
         void GuiText::Setup(
             const std::string & TEXT,

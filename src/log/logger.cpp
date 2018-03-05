@@ -44,7 +44,7 @@ namespace log
         : LogBase(LogBase::FILE_NAME_DEFAULT, LogBase::FILE_NAME_EXT_DEFAULT, "")
     {}
 
-    Logger::~Logger() {}
+    Logger::~Logger() = default;
 
     Logger * Logger::Instance()
     {

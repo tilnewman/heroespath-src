@@ -83,7 +83,7 @@ namespace non_player
               SONG_VEC)
     {}
 
-    Character::~Character() {}
+    Character::~Character() = default;
 
     bool operator==(const Character & L, const Character & R)
     {

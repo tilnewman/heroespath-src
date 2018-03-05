@@ -55,7 +55,7 @@ namespace sfml_util
         Setup(sf::FloatRect(POS_LEFT, POS_TOP, WIDTH, HEIGHT), INFO);
     }
 
-    GradientRect::~GradientRect() {}
+    GradientRect::~GradientRect() = default;
 
     void GradientRect::Setup(const sf::FloatRect & REGION, const GradientInfo & INFO)
     {

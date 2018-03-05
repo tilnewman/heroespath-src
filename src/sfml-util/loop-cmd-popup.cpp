@@ -46,7 +46,7 @@ namespace sfml_util
         : LoopCmd("RemoveStage_Popup")
     {}
 
-    LoopCmd_RemoveStage_Popup::~LoopCmd_RemoveStage_Popup() {}
+    LoopCmd_RemoveStage_Popup::~LoopCmd_RemoveStage_Popup() = default;
 
     bool LoopCmd_RemoveStage_Popup::Execute()
     {

@@ -56,12 +56,12 @@ namespace sfml_util
     // A base class for types that hold and draw a group of on screen resources.
     class Stage : public IStage
     {
+    public:
         Stage(const Stage &) = delete;
         Stage(const Stage &&) = delete;
         Stage & operator=(const Stage &) = delete;
         Stage & operator=(const Stage &&) = delete;
 
-    public:
         explicit Stage(const std::string & NAME, const bool WILL_CLEAR_CACHE_ON_EXIT = true);
 
         Stage(

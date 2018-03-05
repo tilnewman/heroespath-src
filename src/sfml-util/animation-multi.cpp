@@ -92,7 +92,7 @@ namespace sfml_util
         }
     }
 
-    AnimationMultiTexture::~AnimationMultiTexture() {}
+    AnimationMultiTexture::~AnimationMultiTexture() = default;
 
     void AnimationMultiTexture::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {

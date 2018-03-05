@@ -43,12 +43,12 @@ namespace sfml_util
     // Encapsulates a gui sliderbar with a label that controls the sound effects volume.
     class SliderBarLabeled_Effects : public gui::SliderBarLabeled
     {
+    public:
         SliderBarLabeled_Effects(const SliderBarLabeled_Effects &) = delete;
         SliderBarLabeled_Effects(const SliderBarLabeled_Effects &&) = delete;
         SliderBarLabeled_Effects & operator=(const SliderBarLabeled_Effects &) = delete;
         SliderBarLabeled_Effects & operator=(const SliderBarLabeled_Effects &&) = delete;
 
-    public:
         SliderBarLabeled_Effects(
             const std::string & NAME,
             const float POS_LEFT,

@@ -45,7 +45,7 @@ namespace popup
         , descTextRegionUPtr_()
     {}
 
-    PopupStageTreasureTrap::~PopupStageTreasureTrap() {}
+    PopupStageTreasureTrap::~PopupStageTreasureTrap() = default;
 
     void PopupStageTreasureTrap::Setup()
     {

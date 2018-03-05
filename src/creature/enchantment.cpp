@@ -49,7 +49,7 @@ namespace creature
         , useInfo_(USE_INFO)
     {}
 
-    Enchantment::~Enchantment() {}
+    Enchantment::~Enchantment() = default;
 
     const std::string Enchantment::EffectStr(const CreaturePtr_t) const
     {

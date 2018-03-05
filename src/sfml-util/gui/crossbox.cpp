@@ -148,7 +148,7 @@ namespace sfml_util
                     BACKGROUND_INFO);
             }
 
-            CrossBox::~CrossBox() {}
+            CrossBox::~CrossBox() = default;
 
             void CrossBox::draw(sf::RenderTarget & target, sf::RenderStates states) const
             {

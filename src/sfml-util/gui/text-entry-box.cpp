@@ -82,7 +82,7 @@ namespace sfml_util
             Setup(REGION, TEXT_INFO, BOX_INFO);
         }
 
-        TextEntryBox::~TextEntryBox() {}
+        TextEntryBox::~TextEntryBox() = default;
 
         void TextEntryBox::Setup(
             const sf::FloatRect & REGION, const TextInfo & TEXT_INFO, const box::Info & BOX_INFO)

@@ -47,7 +47,7 @@ namespace creature
         , traitSet_(TRAIT_SET)
     {}
 
-    Condition::~Condition() {}
+    Condition::~Condition() = default;
 
     const std::string Condition::ToString() const
     {

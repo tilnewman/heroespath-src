@@ -55,7 +55,7 @@ namespace popup
         , willTextBoxUpdate_(true)
     {}
 
-    PopupStageNumberSelect::~PopupStageNumberSelect() {}
+    PopupStageNumberSelect::~PopupStageNumberSelect() = default;
 
     bool PopupStageNumberSelect::HandleCallback(
         const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)

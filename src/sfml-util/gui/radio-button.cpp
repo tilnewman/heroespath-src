@@ -119,7 +119,7 @@ namespace sfml_util
             Setup(POS_LEFT, POS_TOP, IS_INVALID);
         }
 
-        RadioButton::~RadioButton() {}
+        RadioButton::~RadioButton() = default;
 
         void RadioButton::Setup(const float POS_LEFT, const float POS_TOP, const bool IS_INVALID)
         {
@@ -300,7 +300,7 @@ namespace sfml_util
                 betweenPad_);
         }
 
-        RadioButtonSet::~RadioButtonSet() {}
+        RadioButtonSet::~RadioButtonSet() = default;
 
         void RadioButtonSet::Setup(
             const float POS_LEFT,

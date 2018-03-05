@@ -83,7 +83,7 @@ namespace sfml_util
             Setup(bgInfo_, sfml_util::MapByRes(1.0f, 4.0f), true);
         }
 
-        BackgroundImage::~BackgroundImage() {}
+        BackgroundImage::~BackgroundImage() = default;
 
         void BackgroundImage::Setup(
             const sfml_util::gui::BackgroundInfo & BG_INFO,

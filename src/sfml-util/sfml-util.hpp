@@ -358,8 +358,8 @@ namespace sfml_util
     template <typename T>
     T RelativeOffset(const T ORIG_POS, const T NEW_POS)
     {
-        const float ORIG_POS_FLOAT(static_cast<float>(ORIG_POS));
-        const float NEW_POS_FLOAT(static_cast<float>(NEW_POS));
+        auto const ORIG_POS_FLOAT{ static_cast<float>(ORIG_POS) };
+        auto const NEW_POS_FLOAT{ static_cast<float>(NEW_POS) };
         return static_cast<T>(NEW_POS_FLOAT + ((NEW_POS_FLOAT + ORIG_POS_FLOAT) / NEW_POS_FLOAT));
     }
 

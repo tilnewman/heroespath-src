@@ -79,7 +79,7 @@ namespace song
                 << "QuestSpecific.");
     }
 
-    Song::~Song() {}
+    Song::~Song() = default;
 
     const std::string Song::ToString() const
     {

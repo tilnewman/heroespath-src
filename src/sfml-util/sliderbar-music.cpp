@@ -64,7 +64,7 @@ namespace sfml_util
         SetCurrentValue((sfml_util::SoundManager::Instance()->MusicVolume() / 100.0f));
     }
 
-    SliderBarLabeled_Music::~SliderBarLabeled_Music() {}
+    SliderBarLabeled_Music::~SliderBarLabeled_Music() = default;
 
     void SliderBarLabeled_Music::OnChange(const float NEW_VALUE_PARAM)
     {

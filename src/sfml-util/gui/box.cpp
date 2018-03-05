@@ -109,7 +109,7 @@ namespace sfml_util
                 SetupBox(BOX_INFO);
             }
 
-            Box::~Box() {}
+            Box::~Box() = default;
 
             void Box::SetupBox(const box::Info & BOX_INFO)
             {

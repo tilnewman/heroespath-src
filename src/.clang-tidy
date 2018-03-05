@@ -1,4 +1,4 @@
-Checks: -*,modernize-*
+Checks: -*,boost-*,bugprone-*,clang-analyzer-*,modernize-*,-modernize-use-override,-modernize-pass-by-value,-modernize-use-default-member-init,performance-*
 CheckOptions:
       - key:             cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
         value:           1

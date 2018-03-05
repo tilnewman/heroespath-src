@@ -76,7 +76,7 @@ namespace sfml_util
         sprite_.setColor(sf::Color(255, 255, 255, 20));
     }
 
-    Ouroboros::~Ouroboros() {}
+    Ouroboros::~Ouroboros() = default;
 
     void Ouroboros::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {

@@ -61,7 +61,7 @@ namespace stage
         , lockPicking_()
     {}
 
-    InteractStage::~InteractStage() {}
+    InteractStage::~InteractStage() = default;
 
     bool InteractStage::HandleCallback(
         const sfml_util::gui::callback::TextButtonCallbackPackage_t & PACKAGE)

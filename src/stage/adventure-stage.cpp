@@ -56,7 +56,7 @@ namespace stage
         , interactionManager_()
     {}
 
-    AdventureStage::~AdventureStage() {}
+    AdventureStage::~AdventureStage() = default;
 
     void AdventureStage::Setup()
     {
@@ -75,5 +75,5 @@ namespace stage
     }
 
     void AdventureStage::UpdateTime(const float) { interactionManager_.Update(); }
-} // namespace stage
-} // namespace heroespath
+}
+}

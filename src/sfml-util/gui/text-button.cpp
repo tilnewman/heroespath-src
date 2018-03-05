@@ -56,7 +56,7 @@ namespace sfml_util
             Setup(POS_LEFT, POS_TOP, MOUSE_TEXT_INFO, callbackHandlerPtr);
         }
 
-        TextButton::~TextButton() {}
+        TextButton::~TextButton() = default;
 
         void TextButton::Setup(
             const float POS_LEFT,

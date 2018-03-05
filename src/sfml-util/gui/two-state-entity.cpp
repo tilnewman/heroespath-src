@@ -88,7 +88,7 @@ namespace sfml_util
             , wasDownInRegion_(false)
         {}
 
-        TwoStateEntity::~TwoStateEntity() {}
+        TwoStateEntity::~TwoStateEntity() = default;
 
         void TwoStateEntity::PostSpriteSetup(const float POS_LEFT, const float POS_TOP)
         {

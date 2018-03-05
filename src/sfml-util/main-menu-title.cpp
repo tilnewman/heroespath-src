@@ -53,7 +53,7 @@ namespace sfml_util
         Setup(TITLE_KEY_STR, WILL_INVERT_SYMBOL, SYMBOL_SCALE_HORIZ, SYMBOL_SCALE_VERT);
     }
 
-    MainMenuTitle::~MainMenuTitle() {}
+    MainMenuTitle::~MainMenuTitle() = default;
 
     void MainMenuTitle::Setup(
         const std::string & TITLE_IMAGE_FILENAME,
