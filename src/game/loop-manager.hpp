@@ -61,6 +61,7 @@ namespace game
     // Singleton class that keeps track of the game state
     class LoopManager
     {
+    public:
         LoopManager(const LoopManager &) = delete;
         LoopManager(const LoopManager &&) = delete;
         LoopManager & operator=(const LoopManager &) = delete;

@@ -43,7 +43,7 @@ namespace interact
         , isRemoveCurrentPending_(false)
     {}
 
-    InteractionManager::~InteractionManager() {}
+    InteractionManager::~InteractionManager() = default;
 
     bool InteractionManager::HasCurrentChanged() const
     {
@@ -121,5 +121,5 @@ namespace interact
             return false;
         }
     }
-} // namespace interact
-} // namespace heroespath
+}
+}

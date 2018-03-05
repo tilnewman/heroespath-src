@@ -40,6 +40,7 @@ namespace interact
     // Responsible for the lifetimes of interactions.
     class InteractionManager
     {
+    public:
         InteractionManager(const InteractionManager &) = delete;
         InteractionManager(const InteractionManager &&) = delete;
         InteractionManager & operator=(const InteractionManager &) = delete;

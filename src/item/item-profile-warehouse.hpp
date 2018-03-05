@@ -46,6 +46,7 @@ namespace item
     // Responsible for storing an ItemProfile for each possible item in the game.
     class ItemProfileWarehouse
     {
+    public:
         ItemProfileWarehouse(const ItemProfileWarehouse &) = delete;
         ItemProfileWarehouse(const ItemProfileWarehouse &&) = delete;
         ItemProfileWarehouse & operator=(const ItemProfileWarehouse &) = delete;

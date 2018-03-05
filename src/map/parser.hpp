@@ -95,6 +95,7 @@ namespace map
     // Responsible for parsing map .tmx files.
     class Parser
     {
+    public:
         Parser(const Parser &) = delete;
         Parser(const Parser &&) = delete;
         Parser & operator=(const Parser &) = delete;

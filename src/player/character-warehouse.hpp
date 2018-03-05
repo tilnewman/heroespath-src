@@ -46,6 +46,7 @@ namespace player
     // Singleton responsible for the lifetimes of player::Character objects.
     class CharacterWarehouse
     {
+    public:
         CharacterWarehouse(const CharacterWarehouse &) = delete;
         CharacterWarehouse(const CharacterWarehouse &&) = delete;
         CharacterWarehouse & operator=(const CharacterWarehouse &) = delete;

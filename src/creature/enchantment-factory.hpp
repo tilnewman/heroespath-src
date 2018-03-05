@@ -53,6 +53,7 @@ namespace creature
     // storing them in the EnchantmentWarehouse for safe keeping.
     class EnchantmentFactory
     {
+    public:
         EnchantmentFactory(const EnchantmentFactory &) = delete;
         EnchantmentFactory(const EnchantmentFactory &&) = delete;
         EnchantmentFactory & operator=(const EnchantmentFactory &) = delete;

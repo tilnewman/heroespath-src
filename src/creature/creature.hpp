@@ -110,6 +110,7 @@ namespace creature
     // base class for all creatures
     class Creature
     {
+    public:
         Creature(const Creature &) = delete;
         Creature(const Creature &&) = delete;
         Creature & operator=(const Creature &) = delete;

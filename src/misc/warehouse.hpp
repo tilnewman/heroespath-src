@@ -48,6 +48,7 @@ namespace misc
     template <typename T>
     class Warehouse
     {
+    public:
         Warehouse(const Warehouse &) = delete;
         Warehouse(const Warehouse &&) = delete;
         Warehouse & operator=(const Warehouse &) = delete;

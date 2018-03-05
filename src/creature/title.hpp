@@ -56,6 +56,7 @@ namespace creature
     // Once earned, a Title changes the player that earned it.  (see ..._BONUS)
     class Title
     {
+    public:
         Title(const Title &) = delete;
         Title(const Title &&) = delete;
         Title & operator=(const Title &) = delete;

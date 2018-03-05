@@ -43,6 +43,7 @@ namespace sfml_util
     // and presenting an interface for controlling it.
     class SfxWrapper
     {
+    public:
         SfxWrapper(const SfxWrapper &) = delete;
         SfxWrapper(const SfxWrapper &&) = delete;
         SfxWrapper & operator=(const SfxWrapper &) = delete;

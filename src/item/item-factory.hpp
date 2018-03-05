@@ -42,6 +42,7 @@ namespace item
     // Responsible for making new (and properly stored) item objects from fat ItemProfiles.
     class ItemFactory
     {
+    public:
         ItemFactory(const ItemFactory &) = delete;
         ItemFactory(const ItemFactory &&) = delete;
         ItemFactory & operator=(const ItemFactory &) = delete;

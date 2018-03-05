@@ -119,6 +119,7 @@ namespace combat
     // Responsible for displaying combat related animations.
     class CombatAnimation
     {
+    public:
         CombatAnimation(const CombatAnimation &) = delete;
         CombatAnimation(const CombatAnimation &&) = delete;
         CombatAnimation & operator=(const CombatAnimation &) = delete;

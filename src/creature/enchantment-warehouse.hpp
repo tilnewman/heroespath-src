@@ -46,6 +46,7 @@ namespace creature
     // This class does not new the objects, but it does delete them.
     class EnchantmentWarehouse
     {
+    public:
         EnchantmentWarehouse(const EnchantmentWarehouse &) = delete;
         EnchantmentWarehouse(const EnchantmentWarehouse &&) = delete;
         EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) = delete;

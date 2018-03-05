@@ -55,6 +55,7 @@ namespace sfml_util
     // A class that loads, stores, and distributes sounds
     class SoundManager
     {
+    public:
         SoundManager(const SoundManager &) = delete;
         SoundManager(const SoundManager &&) = delete;
         SoundManager & operator=(const SoundManager &) = delete;

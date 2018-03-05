@@ -47,6 +47,7 @@ namespace item
     // This class does not new the objects, but it does delete them.
     class ItemWarehouse
     {
+    public:
         ItemWarehouse(const ItemWarehouse &) = delete;
         ItemWarehouse(const ItemWarehouse &&) = delete;
         ItemWarehouse & operator=(const ItemWarehouse &) = delete;

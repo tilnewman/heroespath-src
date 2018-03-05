@@ -47,6 +47,7 @@ namespace non_player
     // This class does not new the objects, but it does delete them.
     class CharacterWarehouse
     {
+    public:
         CharacterWarehouse(const CharacterWarehouse &) = delete;
         CharacterWarehouse(const CharacterWarehouse &&) = delete;
         CharacterWarehouse & operator=(const CharacterWarehouse &) = delete;
