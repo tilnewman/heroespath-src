@@ -37,6 +37,7 @@ namespace popup
     // Responsible for implementing the System Error Popup Stage.
     class PopupStageItemProfileWait : public PopupStageBase
     {
+    public:
         PopupStageItemProfileWait(const PopupStageItemProfileWait &) = delete;
         PopupStageItemProfileWait(const PopupStageItemProfileWait &&) = delete;
         PopupStageItemProfileWait & operator=(const PopupStageItemProfileWait &) = delete;

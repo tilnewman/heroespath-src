@@ -66,6 +66,7 @@ namespace combat
     // Manages an encounter with the player party
     class Encounter
     {
+    public:
         Encounter(const Encounter &) = delete;
         Encounter(const Encounter &&) = delete;
         Encounter & operator=(const Encounter &) = delete;

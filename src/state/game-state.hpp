@@ -52,6 +52,7 @@ namespace state
     // Encapsulates everything about a saved game.
     class GameState
     {
+    public:
         GameState(const GameState &) = delete;
         GameState(const GameState &&) = delete;
         GameState & operator=(const GameState &) = delete;

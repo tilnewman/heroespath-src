@@ -44,6 +44,7 @@ namespace game
     // Singleton class that manages a simple configuration file
     class GameDataFile : public config::ConfigBase
     {
+    public:
         GameDataFile(const GameDataFile &) = delete;
         GameDataFile(const GameDataFile &&) = delete;
         GameDataFile & operator=(const GameDataFile &) = delete;

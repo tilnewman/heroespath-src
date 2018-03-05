@@ -42,6 +42,7 @@ namespace sfml_util
         // Manages a set of sprites relating to gui drawing elements.
         class GuiElements
         {
+        public:
             GuiElements(const GuiElements &) = delete;
             GuiElements(const GuiElements &&) = delete;
             GuiElements & operator=(const GuiElements &) = delete;

@@ -75,6 +75,7 @@ namespace popup
     // A class that loads, stores, and distributes fonts by style.
     class PopupManager
     {
+    public:
         PopupManager(const PopupManager &) = delete;
         PopupManager(const PopupManager &&) = delete;
         PopupManager & operator=(const PopupManager &) = delete;

@@ -61,6 +61,7 @@ namespace combat
         // loads strategy details from GameDataFile and stores them per race and role
         class ChanceFactory
         {
+        public:
             ChanceFactory(const ChanceFactory &) = delete;
             ChanceFactory(const ChanceFactory &&) = delete;
             ChanceFactory & operator=(const ChanceFactory &) = delete;

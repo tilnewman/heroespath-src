@@ -51,7 +51,9 @@ namespace map
 
     // Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
+
     {
+    public:
         MapDisplay(const MapDisplay &) = delete;
         MapDisplay(const MapDisplay &&) = delete;
         MapDisplay & operator=(const MapDisplay &) = delete;

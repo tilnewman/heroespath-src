@@ -50,6 +50,7 @@ namespace item
     // A base class for all items.
     class Item
     {
+    public:
         Item(const Item &) = delete;
         Item(const Item &&) = delete;
         Item & operator=(const Item &) = delete;

@@ -42,7 +42,9 @@ namespace sfml_util
         // OuterSize() is the width of the frame border, while InnerSize() is the rest of
         // the image width.
         class KnotFrame : public sf::Drawable
+
         {
+        public:
             KnotFrame(const KnotFrame &) = delete;
             KnotFrame(const KnotFrame &&) = delete;
             KnotFrame & operator=(const KnotFrame &) = delete;

@@ -42,6 +42,7 @@ namespace sfml_util
     // An animtion class sourced from multiple textures.
     class AnimationMultiTexture : public Animation
     {
+    public:
         AnimationMultiTexture(const AnimationMultiTexture &) = delete;
         AnimationMultiTexture(const AnimationMultiTexture &&) = delete;
         AnimationMultiTexture & operator=(const AnimationMultiTexture &) = delete;

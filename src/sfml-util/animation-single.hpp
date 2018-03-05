@@ -41,6 +41,7 @@ namespace sfml_util
     // An animation that is sourced from a single texture
     class AnimationSingleTexture : public Animation
     {
+    public:
         AnimationSingleTexture(const AnimationSingleTexture &) = delete;
         AnimationSingleTexture(const AnimationSingleTexture &&) = delete;
         AnimationSingleTexture & operator=(const AnimationSingleTexture &) = delete;

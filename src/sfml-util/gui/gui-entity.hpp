@@ -48,6 +48,7 @@ namespace sfml_util
         // Encapsulates the basics of everything needed by a clickable gui element.
         class GuiEntity : public IGuiEntity
         {
+        public:
             GuiEntity(const GuiEntity &) = delete;
             GuiEntity(const GuiEntity &&) = delete;
             GuiEntity & operator=(const GuiEntity &) = delete;

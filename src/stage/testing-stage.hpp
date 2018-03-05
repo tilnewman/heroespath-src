@@ -55,6 +55,7 @@ namespace stage
     // A Stage class that allows visualizing testing info
     class TestingStage : public sfml_util::Stage
     {
+    public:
         TestingStage(const TestingStage &) = delete;
         TestingStage(const TestingStage &&) = delete;
         TestingStage & operator=(const TestingStage &) = delete;

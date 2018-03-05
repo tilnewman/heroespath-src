@@ -47,6 +47,7 @@ namespace sfml_util
         // A simple line drawing gui entity
         class Line : public GuiEntity
         {
+        public:
             Line(const Line &) = delete;
             Line(const Line &&) = delete;
             Line & operator=(const Line &) = delete;

@@ -43,6 +43,7 @@ namespace sfml_util
         // Loads images and delivers sf::Textures to them on demand.
         class ConditionImageManager : public ImageManagerBase<creature::Conditions>
         {
+        public:
             ConditionImageManager(const ConditionImageManager &) = delete;
             ConditionImageManager(const ConditionImageManager &&) = delete;
             ConditionImageManager & operator=(const ConditionImageManager &) = delete;

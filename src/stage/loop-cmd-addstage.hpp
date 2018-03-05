@@ -85,6 +85,7 @@ namespace stage
 
     class LoopCmd_AddStage_Combat : public sfml_util::LoopCmd
     {
+    public:
         LoopCmd_AddStage_Combat(const LoopCmd_AddStage_Combat &) = delete;
         LoopCmd_AddStage_Combat(const LoopCmd_AddStage_Combat &&) = delete;
         LoopCmd_AddStage_Combat & operator=(const LoopCmd_AddStage_Combat &) = delete;
@@ -112,6 +113,7 @@ namespace stage
 
     class LoopCmd_AddStage_Inventory : public sfml_util::LoopCmd
     {
+    public:
         LoopCmd_AddStage_Inventory(const LoopCmd_AddStage_Inventory &) = delete;
         LoopCmd_AddStage_Inventory(const LoopCmd_AddStage_Inventory &&) = delete;
         LoopCmd_AddStage_Inventory & operator=(const LoopCmd_AddStage_Inventory &) = delete;

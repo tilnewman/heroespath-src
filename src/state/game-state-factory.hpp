@@ -58,6 +58,7 @@ namespace state
     // Creates game states either new or from a previous save to disc.
     class GameStateFactory
     {
+    public:
         GameStateFactory(const GameStateFactory &) = delete;
         GameStateFactory(const GameStateFactory &&) = delete;
         GameStateFactory & operator=(const GameStateFactory &) = delete;

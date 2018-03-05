@@ -41,7 +41,9 @@ namespace sfml_util
 
         // Responsible for drawing a pciture frame border in a given region.
         class PictureFrame : public sf::Drawable
+
         {
+        public:
             PictureFrame(const PictureFrame &) = delete;
             PictureFrame(const PictureFrame &&) = delete;
             PictureFrame & operator=(const PictureFrame &) = delete;

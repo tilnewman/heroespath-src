@@ -41,6 +41,7 @@ namespace sfml_util
     // VERT_OFFSET_RATIO is > 0 and some of the symbol is offscreen.
     class BottomSymbol : public sf::Drawable
     {
+    public:
         BottomSymbol(const BottomSymbol &) = delete;
         BottomSymbol(const BottomSymbol &&) = delete;
         BottomSymbol & operator=(const BottomSymbol &) = delete;

@@ -57,6 +57,7 @@ namespace sfml_util
         // Encapsulates a gui sliderbar with mouse clickable increment arrows and a slider pad.
         class SliderBar : public GuiEntity
         {
+        public:
             SliderBar(const SliderBar &) = delete;
             SliderBar(const SliderBar &&) = delete;
             SliderBar & operator=(const SliderBar &) = delete;

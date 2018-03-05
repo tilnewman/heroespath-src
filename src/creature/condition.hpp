@@ -51,6 +51,7 @@ namespace creature
     // base class for all conditions
     class Condition
     {
+    public:
         Condition(const Condition &) = delete;
         Condition(const Condition &&) = delete;
         Condition & operator=(const Condition &) = delete;

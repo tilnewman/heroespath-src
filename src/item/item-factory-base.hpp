@@ -41,6 +41,7 @@ namespace item
     // A base class for all item factories.
     class FactoryBase
     {
+    public:
         FactoryBase(const FactoryBase &) = delete;
         FactoryBase(const FactoryBase &&) = delete;
         FactoryBase & operator=(const FactoryBase &) = delete;

@@ -52,6 +52,7 @@ namespace sfml_util
         // A class that loads, stores, and distributes creature images.
         class CreatureImageManager
         {
+        public:
             CreatureImageManager(const CreatureImageManager &) = delete;
             CreatureImageManager(const CreatureImageManager &&) = delete;
             CreatureImageManager & operator=(const CreatureImageManager &) = delete;

@@ -48,6 +48,7 @@ namespace sfml_util
         // Base class for gui text that can be in any of MouseState::Enum states.
         class GuiText : public GuiEntity
         {
+        public:
             GuiText(const GuiText &) = delete;
             GuiText(const GuiText &&) = delete;
             GuiText & operator=(const GuiText &) = delete;

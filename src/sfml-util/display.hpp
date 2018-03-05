@@ -66,6 +66,7 @@ namespace sfml_util
     // A singleton that retains details pertaining to an sfml application.
     class Display
     {
+    public:
         Display(const Display &) = delete;
         Display(const Display &&) = delete;
         Display & operator=(const Display &) = delete;

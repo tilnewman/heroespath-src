@@ -48,6 +48,7 @@ namespace item
         // A singleton class responsible for creating armor objects.
         class ArmorFactory : public FactoryBase
         {
+        public:
             ArmorFactory(const ArmorFactory &) = delete;
             ArmorFactory(const ArmorFactory &&) = delete;
             ArmorFactory & operator=(const ArmorFactory &) = delete;

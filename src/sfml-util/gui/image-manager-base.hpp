@@ -47,6 +47,7 @@ namespace sfml_util
         template <typename T>
         class ImageManagerBase
         {
+        public:
             ImageManagerBase(const ImageManagerBase &) = delete;
             ImageManagerBase(const ImageManagerBase &&) = delete;
             ImageManagerBase & operator=(const ImageManagerBase &) = delete;

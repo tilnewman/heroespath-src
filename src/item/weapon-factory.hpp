@@ -57,6 +57,7 @@ namespace item
         // A singleton class that creates weapon objects.
         class WeaponFactory : public FactoryBase
         {
+        public:
             WeaponFactory(const WeaponFactory &) = delete;
             WeaponFactory(const WeaponFactory &&) = delete;
             WeaponFactory & operator=(const WeaponFactory &) = delete;

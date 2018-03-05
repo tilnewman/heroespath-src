@@ -70,6 +70,7 @@ namespace player
 
     class Character : public creature::Creature
     {
+    public:
         Character(const Character &) = delete;
         Character(const Character &&) = delete;
         Character & operator=(const Character &) = delete;

@@ -43,6 +43,7 @@ namespace sfml_util
         // Loads images and delivers sf::Textures to them on demand.
         class SongImageManager : public ImageManagerBase<song::Songs>
         {
+        public:
             SongImageManager(const SongImageManager &) = delete;
             SongImageManager(const SongImageManager &&) = delete;
             SongImageManager & operator=(const SongImageManager &) = delete;

@@ -43,6 +43,7 @@ namespace sfml_util
 
     class Animation : public gui::GuiEntity
     {
+    public:
         Animation(const Animation &) = delete;
         Animation(const Animation &&) = delete;
         Animation & operator=(const Animation &) = delete;

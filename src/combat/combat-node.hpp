@@ -46,6 +46,7 @@ namespace combat
     // represents a node in the CombatTree
     class CombatNode : public sfml_util::gui::GuiEntity
     {
+    public:
         CombatNode(const CombatNode &) = delete;
         CombatNode(const CombatNode &&) = delete;
         CombatNode & operator=(const CombatNode &) = delete;

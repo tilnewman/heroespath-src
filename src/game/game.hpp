@@ -46,6 +46,7 @@ namespace game
     // Singleton class that provides access to all game information
     class Game
     {
+    public:
         Game(const Game &) = delete;
         Game(const Game &&) = delete;
         Game & operator=(const Game &) = delete;

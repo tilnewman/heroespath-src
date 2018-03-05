@@ -82,6 +82,7 @@ namespace sfml_util
         // TextRegion wrapper for anything the ListBox class may need to list...
         class ListBoxItem : public sfml_util::gui::TextRegion
         {
+        public:
             ListBoxItem(const ListBoxItem &) = delete;
             ListBoxItem(const ListBoxItem &&) = delete;
             ListBoxItem & operator=(const ListBoxItem &) = delete;

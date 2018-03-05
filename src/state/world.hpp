@@ -41,6 +41,7 @@ namespace state
     // Encapsulates all states that describe the game world.
     class World
     {
+    public:
         World(const World &) = delete;
         World(const World &&) = delete;
         World & operator=(const World &) = delete;

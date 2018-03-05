@@ -55,6 +55,7 @@ namespace stage
     // A Stage class that allows starting the game
     class InnStage : public sfml_util::Stage
     {
+    public:
         InnStage(const InnStage &) = delete;
         InnStage(const InnStage &&) = delete;
         InnStage & operator=(const InnStage &) = delete;

@@ -50,6 +50,7 @@ namespace sfml_util
         // Prevents using guiImage_.overSprite, but guiText_.overTextInfo_ is allowed.
         class TwoStateEntity : public GuiEntity
         {
+        public:
             TwoStateEntity(const TwoStateEntity &) = delete;
             TwoStateEntity(const TwoStateEntity &&) = delete;
             TwoStateEntity & operator=(const TwoStateEntity &) = delete;

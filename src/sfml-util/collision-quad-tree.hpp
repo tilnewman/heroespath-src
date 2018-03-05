@@ -44,6 +44,7 @@ namespace sfml_util
     // Responsible for implementing a collision detection quad-tree.
     class QuadTree
     {
+    public:
         QuadTree(const QuadTree &) = delete;
         QuadTree(const QuadTree &&) = delete;
         QuadTree & operator=(const QuadTree &) = delete;

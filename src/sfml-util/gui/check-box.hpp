@@ -102,6 +102,7 @@ namespace sfml_util
         // Represents a set of radio buttons
         class CheckBoxSet : public GuiEntity
         {
+        public:
             CheckBoxSet(const CheckBoxSet &) = delete;
             CheckBoxSet(const CheckBoxSet &&) = delete;
             CheckBoxSet & operator=(const CheckBoxSet &) = delete;

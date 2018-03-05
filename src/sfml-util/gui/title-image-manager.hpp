@@ -44,6 +44,7 @@ namespace sfml_util
         // A class that loads, stores, and distributes creature images.
         class TitleImageManager : public ImageManagerBase<creature::Titles>
         {
+        public:
             TitleImageManager(const TitleImageManager &) = delete;
             TitleImageManager(const TitleImageManager &&) = delete;
             TitleImageManager & operator=(const TitleImageManager &) = delete;

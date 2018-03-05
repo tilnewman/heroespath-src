@@ -54,6 +54,7 @@ namespace sfml_util
             // Assumes corner images are symmetrical
             class Box : public GuiEntity
             {
+            public:
                 Box(const Box &) = delete;
                 Box(const Box &&) = delete;
                 Box & operator=(const Box &) = delete;

@@ -46,6 +46,7 @@ namespace sfml_util
         // and filled with the given color.
         class BackgroundImage : public sf::Drawable
         {
+        public:
             BackgroundImage(const BackgroundImage &) = delete;
             BackgroundImage(const BackgroundImage &&) = delete;
             BackgroundImage & operator=(const BackgroundImage &) = delete;

@@ -48,6 +48,7 @@ namespace stage
     // A simple class that displays the credits
     class CreditsStage : public sfml_util::Stage
     {
+    public:
         CreditsStage(const CreditsStage &) = delete;
         CreditsStage(const CreditsStage &&) = delete;
         CreditsStage & operator=(const CreditsStage &) = delete;

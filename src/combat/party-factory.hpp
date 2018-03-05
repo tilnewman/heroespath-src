@@ -57,6 +57,7 @@ namespace combat
     // Creates partys of creatures that confront the player characters
     class PartyFactory
     {
+    public:
         PartyFactory(const PartyFactory &) = delete;
         PartyFactory(const PartyFactory &&) = delete;
         PartyFactory & operator=(const PartyFactory &) = delete;

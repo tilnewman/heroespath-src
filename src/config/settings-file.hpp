@@ -41,6 +41,7 @@ namespace config
     // Singleton class that manages a simple configuration file
     class SettingsFile : public ConfigBase
     {
+    public:
         SettingsFile(const SettingsFile &) = delete;
         SettingsFile(const SettingsFile &&) = delete;
         SettingsFile & operator=(const SettingsFile &) = delete;

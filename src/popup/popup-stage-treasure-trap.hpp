@@ -41,6 +41,7 @@ namespace popup
     // Responsible for implementing a treasure trap popup window stage.
     class PopupStageTreasureTrap : public PopupStageBase
     {
+    public:
         PopupStageTreasureTrap(const PopupStageTreasureTrap &) = delete;
         PopupStageTreasureTrap(const PopupStageTreasureTrap &&) = delete;
         PopupStageTreasureTrap & operator=(const PopupStageTreasureTrap &) = delete;

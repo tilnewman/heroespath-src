@@ -82,6 +82,7 @@ namespace misc
     // singleton responsible for detecting, logging, and storing the system platform
     class Platform
     {
+    public:
         Platform(const Platform &) = delete;
         Platform(const Platform &&) = delete;
         Platform & operator=(const Platform &) = delete;

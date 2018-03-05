@@ -41,7 +41,9 @@ namespace stage
 
     // Responsible for managing all AdventureStage interactions with the player.
     class AdventureStage : public sfml_util::Stage
+
     {
+    public:
         AdventureStage(const AdventureStage &) = delete;
         AdventureStage(const AdventureStage &&) = delete;
         AdventureStage & operator=(const AdventureStage &) = delete;

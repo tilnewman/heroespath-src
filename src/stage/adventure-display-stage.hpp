@@ -55,7 +55,9 @@ namespace stage
 
     // Responsible for all drawing operations of the AdventureStage.
     class AdventureDisplayStage : public sfml_util::Stage
+
     {
+    public:
         AdventureDisplayStage(const AdventureDisplayStage &) = delete;
         AdventureDisplayStage(const AdventureDisplayStage &&) = delete;
         AdventureDisplayStage & operator=(const AdventureDisplayStage &) = delete;

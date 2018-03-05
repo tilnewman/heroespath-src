@@ -68,6 +68,7 @@ namespace sfml_util
     // of any negative float if you want the fade to be instant.
     class MusicOperator
     {
+    public:
         MusicOperator(const MusicOperator &) = delete;
         MusicOperator(const MusicOperator &&) = delete;
         MusicOperator & operator=(const MusicOperator &) = delete;

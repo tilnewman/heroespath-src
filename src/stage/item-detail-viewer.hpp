@@ -45,6 +45,7 @@ namespace stage
     // Tolerates repeated calls to FadeIn() and FadeOut() in any order.
     class ItemDetailViewer : public sf::Drawable
     {
+    public:
         ItemDetailViewer(const ItemDetailViewer &) = delete;
         ItemDetailViewer(const ItemDetailViewer &&) = delete;
         ItemDetailViewer & operator=(const ItemDetailViewer &) = delete;

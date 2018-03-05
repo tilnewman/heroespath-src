@@ -56,6 +56,7 @@ namespace sfml_util
         // Base class for a text button that has different text styles for mouse positions
         class TextButton : public GuiText
         {
+        public:
             TextButton(const TextButton &) = delete;
             TextButton(const TextButton &&) = delete;
             TextButton & operator=(const TextButton &) = delete;

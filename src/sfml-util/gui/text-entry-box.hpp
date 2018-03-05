@@ -59,6 +59,7 @@ namespace sfml_util
         // Encapsulates a single line of user type-able text with a blinking cursor
         class TextEntryBox : public GuiEntity
         {
+        public:
             TextEntryBox(const TextEntryBox &) = delete;
             TextEntryBox(const TextEntryBox &&) = delete;
             TextEntryBox & operator=(const TextEntryBox &) = delete;

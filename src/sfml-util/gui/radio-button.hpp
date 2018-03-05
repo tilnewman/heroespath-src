@@ -116,6 +116,7 @@ namespace sfml_util
         // Represents a set of radio buttons
         class RadioButtonSet : public GuiEntity
         {
+        public:
             RadioButtonSet(const RadioButtonSet &) = delete;
             RadioButtonSet(const RadioButtonSet &&) = delete;
             RadioButtonSet & operator=(const RadioButtonSet &) = delete;

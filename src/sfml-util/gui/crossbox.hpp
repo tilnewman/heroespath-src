@@ -51,6 +51,7 @@ namespace sfml_util
             // A box drawing class for when the box is segmented into four parts.
             class CrossBox : public Box
             {
+            public:
                 CrossBox(const CrossBox &) = delete;
                 CrossBox(const CrossBox &&) = delete;
                 CrossBox & operator=(const CrossBox &) = delete;

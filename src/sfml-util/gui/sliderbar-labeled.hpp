@@ -47,6 +47,7 @@ namespace sfml_util
         // Encapsulates a gui sliderbar with a label
         class SliderBarLabeled : public SliderBar
         {
+        public:
             SliderBarLabeled(const SliderBarLabeled &) = delete;
             SliderBarLabeled(const SliderBarLabeled &&) = delete;
             SliderBarLabeled & operator=(const SliderBarLabeled &) = delete;

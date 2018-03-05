@@ -71,6 +71,7 @@ namespace sfml_util
         // change on mouse related states.
         class FourStateButton : public GuiEntity
         {
+        public:
             FourStateButton(const FourStateButton &) = delete;
             FourStateButton(const FourStateButton &&) = delete;
             FourStateButton & operator=(const FourStateButton &) = delete;

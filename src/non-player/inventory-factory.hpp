@@ -62,6 +62,7 @@ namespace non_player
         // that will equip non-player characters.
         class InventoryFactory
         {
+        public:
             InventoryFactory(const InventoryFactory &) = delete;
             InventoryFactory(const InventoryFactory &&) = delete;
             InventoryFactory & operator=(const InventoryFactory &) = delete;

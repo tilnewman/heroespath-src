@@ -43,6 +43,7 @@ namespace sfml_util
         // Loads images and delivers sf::Textures to them on demand.
         class SpellImageManager : public ImageManagerBase<spell::Spells>
         {
+        public:
             SpellImageManager(const SpellImageManager &) = delete;
             SpellImageManager(const SpellImageManager &&) = delete;
             SpellImageManager & operator=(const SpellImageManager &) = delete;
