@@ -448,7 +448,7 @@ namespace stage
         {
             if ((CHARACTER_PTR->IsBeast() == false) && (CHARACTER_PTR != whoWillTakeItems[0]))
             {
-                whoWillTakeItems.push_back(CHARACTER_PTR);
+                whoWillTakeItems.emplace_back(CHARACTER_PTR);
             }
         }
 
@@ -462,7 +462,7 @@ namespace stage
                 if (creaturePtr->ItemIsAddAllowed(ITEM_PTR).empty())
                 {
                     creaturePtr->ItemAdd(ITEM_PTR);
-                    itemsToRemovePVec.push_back(ITEM_PTR);
+                    itemsToRemovePVec.emplace_back(ITEM_PTR);
                     break;
                 }
             }
@@ -1068,11 +1068,11 @@ namespace stage
 
         if (displayStagePtr_->IsShowingHeldItems())
         {
-            itemCacheHeld_.items_pvec.push_back(ITEM_PTR);
+            itemCacheHeld_.items_pvec.emplace_back(ITEM_PTR);
         }
         else
         {
-            itemCacheLockbox_.items_pvec.push_back(ITEM_PTR);
+            itemCacheLockbox_.items_pvec.emplace_back(ITEM_PTR);
         }
 
         // Can't update display now because it would invalidate the this pointer.
@@ -1104,5 +1104,5 @@ namespace stage
 
         game::LoopManager::Instance()->TransitionTo_Adventure();
     }
-} // namespace stage
-} // namespace heroespath
+}
+}

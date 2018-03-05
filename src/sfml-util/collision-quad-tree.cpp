@@ -54,7 +54,7 @@ namespace sfml_util
                 && (RECT.top < (NEXT_COLL_RECT.top + NEXT_COLL_RECT.height))
                 && ((RECT.height + RECT.top) > NEXT_COLL_RECT.top))
             {
-                quad.coll_rects_vec.push_back(NEXT_COLL_RECT);
+                quad.coll_rects_vec.emplace_back(NEXT_COLL_RECT);
             }
         }
 
@@ -64,21 +64,21 @@ namespace sfml_util
             auto const HALF_WIDTH{ RECT.width * 0.5f };
             auto const HALF_HEIGHT{ RECT.height * 0.5f };
 
-            quad.quad_rects_vec.push_back(
+            quad.quad_rects_vec.emplace_back(
                 sf::FloatRect(RECT.left, RECT.top, HALF_WIDTH, HALF_HEIGHT));
 
-            quad.quad_rects_vec.push_back(
+            quad.quad_rects_vec.emplace_back(
                 sf::FloatRect(RECT.left + HALF_WIDTH, RECT.top, HALF_WIDTH, HALF_HEIGHT));
 
-            quad.quad_rects_vec.push_back(
+            quad.quad_rects_vec.emplace_back(
                 sf::FloatRect(RECT.left, RECT.top + HALF_HEIGHT, HALF_WIDTH, HALF_HEIGHT));
 
-            quad.quad_rects_vec.push_back(sf::FloatRect(
+            quad.quad_rects_vec.emplace_back(sf::FloatRect(
                 RECT.left + HALF_WIDTH, RECT.top + HALF_HEIGHT, HALF_WIDTH, HALF_HEIGHT));
 
             for (std::size_t i(0); i < 4; ++i)
             {
-                quad.child_quads_vec.push_back(Quad());
+                quad.child_quads_vec.emplace_back(Quad());
                 PopulateQuadAndRecurse(
                     quad.child_quads_vec[i], quad.quad_rects_vec[i], quad.coll_rects_vec);
             }

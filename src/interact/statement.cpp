@@ -44,7 +44,7 @@ namespace interact
             const std::string RandomWithEmpty(const StrVec_t & STR_VEC)
             {
                 StrVec_t v(STR_VEC);
-                v.push_back("");
+                v.emplace_back("");
                 return misc::Vector::SelectRandom(STR_VEC);
             }
 
@@ -57,7 +57,7 @@ namespace interact
                 {
                     for (auto const & S2 : V2)
                     {
-                        v.push_back(S1 + SEPARATOR + S2);
+                        v.emplace_back(S1 + SEPARATOR + S2);
                     }
                 }
 

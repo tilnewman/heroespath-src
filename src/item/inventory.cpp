@@ -264,7 +264,7 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR != nullptr), "Inventory::ItemAdd(nullptr) was given a null ITEM_PTR.");
 
-        itemsPVec_.push_back(ITEM_PTR);
+        itemsPVec_.emplace_back(ITEM_PTR);
     }
 
     void Inventory::ItemRemove(const ItemPtr_t ITEM_PTR)
@@ -289,7 +289,7 @@ namespace item
     void Inventory::ItemEquip(const ItemPtr_t ITEM_PTR)
     {
         ItemRemove(ITEM_PTR);
-        equippedItemsPVec_.push_back(ITEM_PTR);
+        equippedItemsPVec_.emplace_back(ITEM_PTR);
     }
 
     void Inventory::ItemUnEquip(const ItemPtr_t ITEM_PTR)
@@ -381,7 +381,7 @@ namespace item
         auto itemWarehousePtr{ ItemWarehouse::Instance() };
         for (auto const NEXT_ITEM_PTR : ITEMS_PVEC_COPY)
         {
-            itemPVec.push_back(itemWarehousePtr->Store(NEXT_ITEM_PTR));
+            itemPVec.emplace_back(itemWarehousePtr->Store(NEXT_ITEM_PTR));
         }
     }
 

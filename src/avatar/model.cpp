@@ -222,7 +222,7 @@ namespace avatar
 
     void Model::ExtendTimeUntilNextBlinkIfNeeded(const float PREV_BLINK_DELAY)
     {
-        blinkTimes_.push_back(PREV_BLINK_DELAY);
+        blinkTimes_.emplace_back(PREV_BLINK_DELAY);
 
         if (blinkTimes_.size() > NUM_BLINKS_TIME_WINDOW_SEC_)
         {
@@ -319,7 +319,7 @@ namespace avatar
             {
                 if (walkRects_[i].contains(posV_))
                 {
-                    possibleWalkRectIndexes_.push_back(i);
+                    possibleWalkRectIndexes_.emplace_back(i);
                 }
             }
 
@@ -369,22 +369,22 @@ namespace avatar
 
             if ((posV_.y - walkTargetPosV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                dirVec.push_back(sfml_util::Direction::Up);
+                dirVec.emplace_back(sfml_util::Direction::Up);
             }
 
             if ((walkTargetPosV_.y - posV_.y) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                dirVec.push_back(sfml_util::Direction::Down);
+                dirVec.emplace_back(sfml_util::Direction::Down);
             }
 
             if ((walkTargetPosV_.x - posV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                dirVec.push_back(sfml_util::Direction::Right);
+                dirVec.emplace_back(sfml_util::Direction::Right);
             }
 
             if ((posV_.x - walkTargetPosV_.x) > WALK_TARGET_CLOSE_ENOUGH_)
             {
-                dirVec.push_back(sfml_util::Direction::Left);
+                dirVec.emplace_back(sfml_util::Direction::Left);
             }
 
             if (dirVec.empty())

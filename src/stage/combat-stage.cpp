@@ -2116,7 +2116,7 @@ namespace stage
                 if ((NEXT_CREATURE_EFFECT.WasKill())
                     && (NEXT_CREATURE_EFFECT.GetCreature()->IsPlayerCharacter() == false))
                 {
-                    killedNonPlayerCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+                    killedNonPlayerCreaturesPVec.emplace_back(NEXT_CREATURE_EFFECT.GetCreature());
                 }
             }
 
@@ -2588,7 +2588,7 @@ namespace stage
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
             isShortPostZoomOutPause_ = true;
             auto creaturesToCenterOnPVec{ creaturesListeningPVec };
-            creaturesToCenterOnPVec.push_back(turnCreaturePtr_);
+            creaturesToCenterOnPVec.emplace_back(turnCreaturePtr_);
             combatAnimationUPtr_->CenteringStart(creaturesToCenterOnPVec);
             slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
             SetupTurnBox();
@@ -2672,7 +2672,7 @@ namespace stage
         SetTurnPhase(TurnPhase::CenterAndZoomOut);
         isShortPostZoomOutPause_ = true;
         auto creaturesToCenterOnPVec{ creaturesToCastUponPVec };
-        creaturesToCenterOnPVec.push_back(turnCreaturePtr_);
+        creaturesToCenterOnPVec.emplace_back(turnCreaturePtr_);
         combatAnimationUPtr_->CenteringStart(creaturesToCenterOnPVec);
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
         SetupTurnBox();
@@ -2873,7 +2873,7 @@ namespace stage
                     turnCreaturePtr_, turnActionInfo_, fightResult_, true, true),
                 false);
 
-            creaturesToCenterOnPVec.push_back(turnCreaturePtr_);
+            creaturesToCenterOnPVec.emplace_back(turnCreaturePtr_);
             combatAnimationUPtr_->CenteringStart(creaturesToCenterOnPVec);
             slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
             SetTurnActionPhase(TurnActionPhase::Roar);
@@ -3574,7 +3574,7 @@ namespace stage
                 creature::CreaturePVec_t creaturesToShakePVec{ creature::Algorithms::NonPlayers(
                     creature::Algorithms::Living) };
 
-                creaturesToShakePVec.push_back(turnCreaturePtr_);
+                creaturesToShakePVec.emplace_back(turnCreaturePtr_);
 
                 combatAnimationUPtr_->ShakeAnimStart(
                     creaturesToShakePVec, ANIM_IMPACT_SHAKE_SLIDER_SPEED_, true);
@@ -3960,14 +3960,14 @@ namespace stage
             {
                 if (NEXT_CREATURE_EFFECT.WasKill())
                 {
-                    killedCreaturesPVec.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+                    killedCreaturesPVec.emplace_back(NEXT_CREATURE_EFFECT.GetCreature());
                 }
 
                 auto const DAMAGE{ NEXT_CREATURE_EFFECT.GetDamageTotal() };
                 if (DAMAGE.IsNonZero())
                 {
-                    damageVec.push_back(DAMAGE);
-                    combatNodePVec.push_back(combatDisplayStagePtr_->GetCombatNodeForCreature(
+                    damageVec.emplace_back(DAMAGE);
+                    combatNodePVec.emplace_back(combatDisplayStagePtr_->GetCombatNodeForCreature(
                         NEXT_CREATURE_EFFECT.GetCreature()));
                 }
             }
@@ -4280,11 +4280,11 @@ namespace stage
                 {
                     if (IS_EFFECTED_CREATURE_FLYING)
                     {
-                        playersDodgedFlyingPVec.push_back(NEXT_EFFECTED_CREATURE_PTR);
+                        playersDodgedFlyingPVec.emplace_back(NEXT_EFFECTED_CREATURE_PTR);
                     }
                     else
                     {
-                        playersDodgedStandingPVec.push_back(NEXT_EFFECTED_CREATURE_PTR);
+                        playersDodgedStandingPVec.emplace_back(NEXT_EFFECTED_CREATURE_PTR);
                     }
                 }
             }
@@ -4345,7 +4345,7 @@ namespace stage
 
             if ((TO_TITLE_PTR != nullptr) && (FROM_TITLE_PTR != TO_TITLE_PTR))
             {
-                creatureTitlesVec_.push_back(
+                creatureTitlesVec_.emplace_back(
                     creature::TitleTransition(CREATURE_PTR, FROM_TITLE_PTR, TO_TITLE_PTR));
             }
         }

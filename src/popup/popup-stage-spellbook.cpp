@@ -438,7 +438,7 @@ namespace popup
                 NEXT_SPELL_PTR,
                 CanCastSpell(NEXT_SPELL_PTR)));
 
-            listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
+            listBoxItemsSVec.emplace_back(LISTBOXITEM_SPTR);
         }
 
         listBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(

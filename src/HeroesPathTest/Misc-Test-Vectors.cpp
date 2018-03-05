@@ -107,8 +107,8 @@ BOOST_AUTO_TEST_CASE(Vector_Append_AppendNothingToReverseDuplicatedCounting)
         ts::IntVec_t reverseDuplicatedCountingValues;
         for (int i{ VALUE }; i >= 0; --i)
         {
-            reverseDuplicatedCountingValues.push_back(i);
-            reverseDuplicatedCountingValues.push_back(i);
+            reverseDuplicatedCountingValues.emplace_back(i);
+            reverseDuplicatedCountingValues.emplace_back(i);
         }
 
         const ts::IntVec_t REV_DUP_COUNT_VALUES_BEFORE{ reverseDuplicatedCountingValues };
@@ -178,7 +178,7 @@ BOOST_AUTO_TEST_CASE(Vector_Append_CornerCases)
                                                        << ts::vectorToString(B_BEFORE_EMPTY_APPEND)
                                                        << ", result=" << ts::vectorToString(b));
 
-    a.push_back(0);
+    a.emplace_back(0);
 
     auto const SINGLE_ZERO{ a };
 

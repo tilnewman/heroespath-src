@@ -179,7 +179,7 @@ namespace stage
             auto const LBI_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
                 ss.str(), TEXT_INFO, NEXT_GAMESTATE_PTR);
 
-            listBoxItemSVec.push_back(LBI_SPTR);
+            listBoxItemSVec.emplace_back(LBI_SPTR);
         }
 
         // establish the boxing options
@@ -312,7 +312,7 @@ namespace stage
 
             EntityAdd(textRegionUPtr.get());
             posY += textRegionUPtr->GetEntityRegion().height - 25.0f;
-            charTextRegionUVec_.push_back(std::move(textRegionUPtr));
+            charTextRegionUVec_.emplace_back(std::move(textRegionUPtr));
         }
     }
 

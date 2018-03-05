@@ -89,7 +89,7 @@ namespace sfml_util
                     posX += FRAME_SIZE_INT_PAIR.first;
                 }
 
-                rects_.push_back(
+                rects_.emplace_back(
                     sf::IntRect(posX, posY, FRAME_SIZE_INT_PAIR.first, FRAME_SIZE_INT_PAIR.second));
             };
 

@@ -349,10 +349,10 @@ namespace popup
         sfml_util::TextureVec_t textureVec;
         if ((FROM_TITLE_PTR != nullptr) && (FROM_IMAGE_PTR != nullptr))
         {
-            textureVec.push_back(*FROM_IMAGE_PTR);
+            textureVec.emplace_back(*FROM_IMAGE_PTR);
         }
 
-        textureVec.push_back(*TO_IMAGE_PTR);
+        textureVec.emplace_back(*TO_IMAGE_PTR);
 
         return PopupInfo(
             POPUP_NAME,
@@ -601,7 +601,7 @@ namespace popup
                 && (boost::algorithm::starts_with(itr->path().leaf().string(), "accent-"))
                 && (boost::algorithm::ends_with(itr->path().leaf().string(), ".png")))
             {
-                accentPathsVec_.push_back(itr->path());
+                accentPathsVec_.emplace_back(itr->path());
             }
         }
     }

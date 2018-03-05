@@ -506,7 +506,7 @@ namespace stage
             if (nullptr != spellBeingCastPtr_)
             {
                 creature::CreaturePVec_t spellTargetCreaturePVec;
-                spellTargetCreaturePVec.push_back(creatureToGiveToPtr_);
+                spellTargetCreaturePVec.emplace_back(creatureToGiveToPtr_);
                 HandleCast_Step2_PerformSpell(spellTargetCreaturePVec);
                 return true;
             }
@@ -1190,7 +1190,7 @@ namespace stage
                         listBoxItemTextInfo_,
                         NEXT_CONDITION_PTR);
 
-                    listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
+                    listBoxItemsSVec.emplace_back(LISTBOXITEM_SPTR);
                 }
                 break;
             }
@@ -1205,7 +1205,7 @@ namespace stage
                         listBoxItemTextInfo_,
                         NEXT_ITEM_SPTR);
 
-                    listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
+                    listBoxItemsSVec.emplace_back(LISTBOXITEM_SPTR);
                 }
                 break;
             }
@@ -1220,7 +1220,7 @@ namespace stage
                         listBoxItemTextInfo_,
                         NEXT_SPELL_PTR);
 
-                    listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
+                    listBoxItemsSVec.emplace_back(LISTBOXITEM_SPTR);
                 }
                 break;
             }
@@ -1237,7 +1237,7 @@ namespace stage
                         listBoxItemTextInfo_,
                         NEXT_TITLE_PTR);
 
-                    listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
+                    listBoxItemsSVec.emplace_back(LISTBOXITEM_SPTR);
                 }
                 break;
             }
@@ -1282,7 +1282,7 @@ namespace stage
             auto const EQUIPPED_LISTBOXITEM_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
                 itemEntryNameSS.str(), listBoxItemTextInfo_, NEXT_ITEM_SPTR);
 
-            unEquipItemsSVec.push_back(EQUIPPED_LISTBOXITEM_SPTR);
+            unEquipItemsSVec.emplace_back(EQUIPPED_LISTBOXITEM_SPTR);
         }
 
         const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
@@ -1632,7 +1632,7 @@ namespace stage
 
         buttonUPtr->SetCallbackHandler(this);
         EntityAdd(buttonUPtr.get());
-        buttonPVec_.push_back(buttonUPtr.get());
+        buttonPVec_.emplace_back(buttonUPtr.get());
     }
 
     void InventoryStage::Setup_ButtonMouseoverText()

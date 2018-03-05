@@ -258,7 +258,7 @@ namespace sfml_util
                     textureRef = noteTexture6_;
                 }
 
-                noteVec_.push_back(Note(
+                noteVec_.emplace_back(Note(
                     textureRef,
                     sf::Vector2f(HORIZ_START_POS, VERT_START_POS),
                     sf::Vector2f(HORIZ_END_POS, VERT_END_POS),

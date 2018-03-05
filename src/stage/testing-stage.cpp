@@ -269,7 +269,7 @@ namespace stage
     {
         M_HP_LOG(S);
 
-        testingBlurbsVec_.push_back(std::make_pair(S, 0));
+        testingBlurbsVec_.emplace_back(std::make_pair(S, 0));
 
         if (testingBlurbsVec_.size() > TEXT_LINES_COUNT_MAX_)
         {
@@ -304,7 +304,7 @@ namespace stage
         const std::string & TYPE_NAME,
         const std::string & PATH)
     {
-        textureList_.push_back(TEXTURE);
+        textureList_.emplace_back(TEXTURE);
         ++imageCount_;
 
         if (WILL_CHECK_FOR_OUTLINE && DoesImageHaveOutline(TEXTURE))

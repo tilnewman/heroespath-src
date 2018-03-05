@@ -676,7 +676,7 @@ namespace stage
         std::vector<std::string> raceNameVec;
         for (std::size_t i(0); i < creature::race::Count_PlayerRaces; ++i)
         {
-            raceNameVec.push_back(creature::race::Name(static_cast<creature::race::Enum>(i)));
+            raceNameVec.emplace_back(creature::race::Name(static_cast<creature::race::Enum>(i)));
         }
 
         const sf::FloatRect REGION(
@@ -719,7 +719,7 @@ namespace stage
             auto const ROLE{ static_cast<creature::role::Enum>(i) };
             if (ROLE != creature::role::Wolfen)
             {
-                roleNameVec.push_back(creature::role::Name(ROLE));
+                roleNameVec.emplace_back(creature::role::Name(ROLE));
             }
         }
 
@@ -883,8 +883,8 @@ namespace stage
             sfml_util::Justified::Left);
 
         std::vector<std::string> sexNameVec;
-        sexNameVec.push_back("Male");
-        sexNameVec.push_back("Female");
+        sexNameVec.emplace_back("Male");
+        sexNameVec.emplace_back("Female");
 
         const sf::FloatRect TEMP_EMPTY_REGION(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -1033,7 +1033,7 @@ namespace stage
         const std::size_t NUM_TRAITS(stats::Traits::StatCount);
         for (std::size_t i(0); i < NUM_TRAITS; ++i)
         {
-            fixedStatsSVec_.push_back(AnimNumSPtr_t());
+            fixedStatsSVec_.emplace_back(AnimNumSPtr_t());
         }
 
         //...then assign valid AnimNumSPtr_t objects with a value of zero
@@ -1234,7 +1234,7 @@ namespace stage
            << game::GameDataFile::Instance()->GetCopyStr(DESC_KEY) << "\n\n";
 
         descTextInfo.text = ss.str();
-        textRegionUVec.push_back(std::make_unique<sfml_util::gui::TextRegion>(
+        textRegionUVec.emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
             stats::Traits::ToString(TRAIT_ENUM) + "StatDesc",
             descTextInfo,
             REGION,
@@ -1257,7 +1257,7 @@ namespace stage
 
         if (helpTextInfo.text.empty() == false)
         {
-            textRegionUVec.push_back(std::make_unique<sfml_util::gui::TextRegion>(
+            textRegionUVec.emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
                 stats::Traits::ToString(TRAIT_ENUM) + "AttributeDesc",
                 helpTextInfo,
                 REGION,
@@ -1428,7 +1428,7 @@ namespace stage
             sfml_util::gui::CreatureImageManager::Instance()->GetImage(
                 texture, NEXT_FILENAME_STR, true);
 
-            characterTextureVec.push_back(texture);
+            characterTextureVec.emplace_back(texture);
         }
 
         std::ostringstream ss;
@@ -1614,7 +1614,7 @@ namespace stage
 
             if (FOUND_ITER == std::end(VALID_ROLES))
             {
-                invalidRoleIndexes.push_back(i);
+                invalidRoleIndexes.emplace_back(i);
             }
         }
 
@@ -2193,8 +2193,8 @@ namespace stage
                 && (false == fixedStatsSVec_[NEXT_TRAIT_ENUM]->IsHeldDown())
                 && (initialRollCounter_ >= 6))
             {
-                preExistingStatVec.push_back(NEXT_TRAIT_ENUM);
-                statModifierTextVec_.push_back(StatModText(
+                preExistingStatVec.emplace_back(NEXT_TRAIT_ENUM);
+                statModifierTextVec_.emplace_back(StatModText(
                     NEXT_TRAIT_ENUM,
                     RACE_NAME_ABBR,
                     NEXT_STAT_VAL,
@@ -2237,7 +2237,7 @@ namespace stage
                     extraHorizOffset = sfml_util::MapByRes(60.0f, 200.0f);
                 }
 
-                statModifierTextVec_.push_back(StatModText(
+                statModifierTextVec_.emplace_back(StatModText(
                     NEXT_TRAIT_ENUM,
                     ROLE_NAME_ABBR,
                     NEXT_STAT_VAL,
@@ -2578,7 +2578,7 @@ namespace stage
                         ANIM_NUM_TARGET_X,
                         statsStrPosTop_,
                         textInfo);
-                    animStatsSVec_.push_back(ansp);
+                    animStatsSVec_.emplace_back(ansp);
 
                     AnimNumSPtr_t toFadeSPtr(fixedStatsSVec_[stats::Traits::Strength]);
                     toFadeSPtr->WillFadeSet(true);
@@ -2589,7 +2589,7 @@ namespace stage
                     //
                     fixedStatsSVec_[stats::Traits::Strength] = holdFadeSPtr;
                     statSetBase_.Set(stats::Traits::Strength, NEXT_VAL);
-                    animStatsSVec_.push_back(toFadeSPtr);
+                    animStatsSVec_.emplace_back(toFadeSPtr);
                     break;
                 }
 
@@ -2604,7 +2604,7 @@ namespace stage
                         statsAccPosTop_,
                         textInfo);
 
-                    animStatsSVec_.push_back(ansp);
+                    animStatsSVec_.emplace_back(ansp);
 
                     AnimNumSPtr_t toFade(fixedStatsSVec_[stats::Traits::Accuracy]);
                     toFade->WillFadeSet(true);
@@ -2615,7 +2615,7 @@ namespace stage
                     //
                     fixedStatsSVec_[stats::Traits::Accuracy] = holdFade;
                     statSetBase_.Set(stats::Traits::Accuracy, NEXT_VAL);
-                    animStatsSVec_.push_back(toFade);
+                    animStatsSVec_.emplace_back(toFade);
                     break;
                 }
 
@@ -2630,7 +2630,7 @@ namespace stage
                         statsChaPosTop_,
                         textInfo);
 
-                    animStatsSVec_.push_back(ansp);
+                    animStatsSVec_.emplace_back(ansp);
 
                     AnimNumSPtr_t toFade(fixedStatsSVec_[stats::Traits::Charm]);
                     toFade->WillFadeSet(true);
@@ -2641,7 +2641,7 @@ namespace stage
                     //
                     fixedStatsSVec_[stats::Traits::Charm] = holdFade;
                     statSetBase_.Set(stats::Traits::Charm, NEXT_VAL);
-                    animStatsSVec_.push_back(toFade);
+                    animStatsSVec_.emplace_back(toFade);
                     break;
                 }
 
@@ -2656,7 +2656,7 @@ namespace stage
                         statsLckPosTop_,
                         textInfo);
 
-                    animStatsSVec_.push_back(ansp);
+                    animStatsSVec_.emplace_back(ansp);
 
                     AnimNumSPtr_t toFade(fixedStatsSVec_[stats::Traits::Luck]);
                     toFade->WillFadeSet(true);
@@ -2667,7 +2667,7 @@ namespace stage
                     //
                     fixedStatsSVec_[stats::Traits::Luck] = holdFade;
                     statSetBase_.Set(stats::Traits::Luck, NEXT_VAL);
-                    animStatsSVec_.push_back(toFade);
+                    animStatsSVec_.emplace_back(toFade);
                     break;
                 }
 
@@ -2682,7 +2682,7 @@ namespace stage
                         statsSpdPosTop_,
                         textInfo);
 
-                    animStatsSVec_.push_back(ansp);
+                    animStatsSVec_.emplace_back(ansp);
 
                     AnimNumSPtr_t toFade(fixedStatsSVec_[stats::Traits::Speed]);
                     toFade->WillFadeSet(true);
@@ -2693,7 +2693,7 @@ namespace stage
                     //
                     fixedStatsSVec_[stats::Traits::Speed] = holdFade;
                     statSetBase_.Set(stats::Traits::Speed, NEXT_VAL);
-                    animStatsSVec_.push_back(toFade);
+                    animStatsSVec_.emplace_back(toFade);
                     break;
                 }
 
@@ -2709,7 +2709,7 @@ namespace stage
                         statsIntPosTop_,
                         textInfo);
 
-                    animStatsSVec_.push_back(ansp);
+                    animStatsSVec_.emplace_back(ansp);
 
                     AnimNumSPtr_t toFade(fixedStatsSVec_[stats::Traits::Intelligence]);
                     toFade->WillFadeSet(true);
@@ -2720,7 +2720,7 @@ namespace stage
                     //
                     fixedStatsSVec_[stats::Traits::Intelligence] = holdFade;
                     statSetBase_.Set(stats::Traits::Intelligence, NEXT_VAL);
-                    animStatsSVec_.push_back(toFade);
+                    animStatsSVec_.emplace_back(toFade);
                     break;
                 }
             } // end switch()
@@ -2778,7 +2778,7 @@ namespace stage
         {
             if (animStatsSVec_[i]->UpdateTimer(ELAPSED_TIME_SEC))
             {
-                stuckAnimIndexVec.push_back(i);
+                stuckAnimIndexVec.emplace_back(i);
             }
         }
 

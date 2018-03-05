@@ -159,7 +159,7 @@ namespace misc
             {
                 if (ONLY_IF_FUNC(NEXT_ELEMENT))
                 {
-                    toJoinVec.push_back(NEXT_ELEMENT);
+                    toJoinVec.emplace_back(NEXT_ELEMENT);
                     if ((MAX_COUNT != 0) && (++toJoinCount == MAX_COUNT))
                     {
                         break;

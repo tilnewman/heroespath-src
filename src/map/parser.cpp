@@ -227,10 +227,10 @@ namespace map
     {
         auto const IMAGE_PROPTREE{ TILESET_PTREE.get_child("image") };
 
-        layout.texture_vec.push_back(sf::Texture());
+        layout.texture_vec.emplace_back(sf::Texture());
         auto const TEXTURE_INDEX{ layout.texture_vec.size() - 1 };
 
-        layout.tiles_panel_vec.push_back(TilesPanel(
+        layout.tiles_panel_vec.emplace_back(TilesPanel(
             FetchXMLAttribute<std::string>(TILESET_PTREE, "name"),
             FetchXMLAttribute<std::string>(IMAGE_PROPTREE, "source"),
             FetchXMLAttribute<int>(TILESET_PTREE, "firstgid"),
@@ -263,7 +263,7 @@ namespace map
         std::stringstream ssAllData;
         ssAllData << PTREE.get_child("data").data();
 
-        layout.layer_vec.push_back(Layer());
+        layout.layer_vec.emplace_back(Layer());
         Layer & layer{ layout.layer_vec[layout.layer_vec.size() - 1] };
 
         layer.type = TYPE;
@@ -304,7 +304,7 @@ namespace map
                 try
                 {
                     // using boost::lexical_cast instead of std::stoi because it tested faster
-                    mapIDs.push_back(boost::lexical_cast<int>(nextValStr));
+                    mapIDs.emplace_back(boost::lexical_cast<int>(nextValStr));
                 }
                 catch (const std::exception & E)
                 {
@@ -365,7 +365,7 @@ namespace map
                     throw E;
                 }
 
-                walkRectMap[WALK_RECT_INDEX].push_back(rect);
+                walkRectMap[WALK_RECT_INDEX].emplace_back(rect);
             }
         }
     }
@@ -412,7 +412,8 @@ namespace map
                     throw E;
                 }
 
-                anims_.push_back(MapAnim(ANIM_ENUM, rect, sfml_util::Animations::Sfx(ANIM_ENUM)));
+                anims_.emplace_back(
+                    MapAnim(ANIM_ENUM, rect, sfml_util::Animations::Sfx(ANIM_ENUM)));
             }
         }
     }
@@ -426,7 +427,7 @@ namespace map
         {
             if (ba::contains(ba::to_lower_copy(CHILD_PAIR.first), XML_NODE_NAME_OBJECT_))
             {
-                transitionVec.push_back(Parse_Transition(CHILD_PAIR.second));
+                transitionVec.emplace_back(Parse_Transition(CHILD_PAIR.second));
             }
         }
     }
@@ -616,11 +617,11 @@ namespace map
 
         if ("0" == typeStr)
         {
-            walkSfxLayers.bottom_layers.push_back(WalkSfxRegion(rect, MUSIC));
+            walkSfxLayers.bottom_layers.emplace_back(WalkSfxRegion(rect, MUSIC));
         }
         else
         {
-            walkSfxLayers.top_layers.push_back(WalkSfxRegion(rect, MUSIC));
+            walkSfxLayers.top_layers.emplace_back(WalkSfxRegion(rect, MUSIC));
         }
     }
 
@@ -641,7 +642,7 @@ namespace map
         layout.texture_vec.resize(EMPTY_TEXTURE_INDEX + 1);
         layout.texture_vec[EMPTY_TEXTURE_INDEX] = layout.empty_texture.getTexture();
 
-        layout.tiles_panel_vec.push_back(map::TilesPanel(
+        layout.tiles_panel_vec.emplace_back(map::TilesPanel(
             layout.EmptyTilesPanelName(),
             "", // the empty/transparent texture has no file
             0,
@@ -686,7 +687,7 @@ namespace map
                 auto const HEIGHT{ FetchXMLAttribute<float>(CHILD_PTREE, "height") };
 
                 const sf::FloatRect RECT(LEFT, TOP, WIDTH, HEIGHT);
-                rectsVec.push_back(RECT);
+                rectsVec.emplace_back(RECT);
             }
             catch (const std::exception & E)
             {

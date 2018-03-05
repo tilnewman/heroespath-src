@@ -768,7 +768,7 @@ namespace combat
                         combatTree_.GetBlockingDistanceBetween(NEXT_CREATURE_PTR, CREATURE_CPTRC))
                     == MIN_BLOCKING_DISTANCE)
                 {
-                    closestCreaturesPVec.push_back(NEXT_CREATURE_PTR);
+                    closestCreaturesPVec.emplace_back(NEXT_CREATURE_PTR);
                 }
             }
 
@@ -873,7 +873,7 @@ namespace combat
                     || (LIVING_ONLY && (NEXT_COMBATNODE_PTR->Creature()->IsDead() == false)))
                 {
                     ++count;
-                    pVec_OutParam.push_back(NEXT_COMBATNODE_PTR->Creature());
+                    pVec_OutParam.emplace_back(NEXT_COMBATNODE_PTR->Creature());
                 }
             }
         }
@@ -914,7 +914,7 @@ namespace combat
                 && (NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
                 ++count;
-                pVec_OutParam.push_back(NEXT_COMBATNODE_PTR->Creature());
+                pVec_OutParam.emplace_back(NEXT_COMBATNODE_PTR->Creature());
             }
         }
 
@@ -936,7 +936,7 @@ namespace combat
                 && (NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
                 ++count;
-                pVec_OutParam.push_back(NEXT_COMBATNODE_PTR->Creature());
+                pVec_OutParam.emplace_back(NEXT_COMBATNODE_PTR->Creature());
             }
         }
 
@@ -994,7 +994,7 @@ namespace combat
             if ((NEXT_CREATURE_PTR->IsPlayerCharacter() == WILL_FIND_PLAYERS)
                 && (NEXT_BLOCKING_DISTANCE_ABS == closestBlockingDistanceABS))
             {
-                closestCreaturesPVec.push_back(NEXT_CREATURE_PTR);
+                closestCreaturesPVec.emplace_back(NEXT_CREATURE_PTR);
             }
         }
 
@@ -1079,7 +1079,7 @@ namespace combat
             {
                 if (nextCombatNodePtrC->Creature() == NEXT_CREATURE_PTR)
                 {
-                    creatureCombatNodesPVec.push_back(nextCombatNodePtrC);
+                    creatureCombatNodesPVec.emplace_back(nextCombatNodePtrC);
                 }
             }
         }
@@ -1357,11 +1357,11 @@ namespace combat
         auto combatNodesPVec{ GetCombatNodesForCreatures(CREATURES_TO_CENTER_ON_PVEC) };
         for (auto const nextComabtNodeCPtr : combatNodesPVec)
         {
-            horizPosVec.push_back(
+            horizPosVec.emplace_back(
                 nextComabtNodeCPtr->GetEntityPos().x
                 + (nextComabtNodeCPtr->GetEntityRegion().width * 0.5f));
 
-            vertPosVec.push_back(
+            vertPosVec.emplace_back(
                 nextComabtNodeCPtr->GetEntityPos().y
                 + (nextComabtNodeCPtr->GetEntityRegion().height * 0.5f));
         }
@@ -1498,7 +1498,7 @@ namespace combat
                     == CREATURE_ATTEMPTING_PTR->IsPlayerCharacter()))
             {
                 ++count;
-                pVec_OutParam.push_back(NEXT_CREATURE_PTR);
+                pVec_OutParam.emplace_back(NEXT_CREATURE_PTR);
             }
         }
 
@@ -1522,7 +1522,7 @@ namespace combat
                     CREATURE_ROARING_PTR, NEXT_OPPONENT_CREATURE_PTR))
                 <= 2)
             {
-                creaturesInRoaringDistancePVec_OutParam.push_back(NEXT_OPPONENT_CREATURE_PTR);
+                creaturesInRoaringDistancePVec_OutParam.emplace_back(NEXT_OPPONENT_CREATURE_PTR);
                 ++count;
             }
         }

@@ -255,7 +255,7 @@ namespace combat
                     || misc::IsRealOne(NEXT_FREQCHANCE_PAIR.second))
                 {
                     cretainOrHigherChanceTotal += NEXT_FREQCHANCE_PAIR.second;
-                    cretainOrHigherFreqTypeVec.push_back(NEXT_FREQCHANCE_PAIR);
+                    cretainOrHigherFreqTypeVec.emplace_back(NEXT_FREQCHANCE_PAIR);
                 }
             }
 

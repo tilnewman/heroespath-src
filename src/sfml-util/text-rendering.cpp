@@ -257,9 +257,9 @@ namespace sfml_util
                     heightTracker,
                     strIndex));
 
-                textSnippetVecVec.push_back(nextTextSnippetVec);
+                textSnippetVecVec.emplace_back(nextTextSnippetVec);
 
-                lineLengthVec.push_back(textPos.x);
+                lineLengthVec.emplace_back(textPos.x);
 
                 if (longestLine < textPos.x)
                 {
@@ -407,7 +407,7 @@ namespace sfml_util
 
                         for (std::size_t i(0); i < nextTextSnippetVec.size(); ++i)
                         {
-                            textSnippetVec.push_back(nextTextSnippetVec[i]);
+                            textSnippetVec.emplace_back(nextTextSnippetVec[i]);
                         }
 
                         break;
@@ -493,7 +493,7 @@ namespace sfml_util
                     heightTracker = textHeight;
                 }
 
-                textSnippetVec.push_back(nextTextSnippet);
+                textSnippetVec.emplace_back(nextTextSnippet);
 
                 // break after spaces, dashes, and new-lines
                 if ((' ' == currChar) || ('-' == currChar) || ('\n' == currChar))
@@ -524,7 +524,7 @@ namespace sfml_util
                 std::size_t i(0);
 
                 if (resultVec.empty())
-                    resultVec.push_back(inputVec[i++]);
+                    resultVec.emplace_back(inputVec[i++]);
 
                 for (; i < NUM_SNIPPETS; ++i)
                 {
@@ -539,7 +539,7 @@ namespace sfml_util
                     }
                     else
                     {
-                        resultVec.push_back(inputVec[i]);
+                        resultVec.emplace_back(inputVec[i]);
                     }
                 }
             }

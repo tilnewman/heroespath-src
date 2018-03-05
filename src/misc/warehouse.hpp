@@ -98,7 +98,7 @@ namespace misc
             {
                 std::unique_ptr<T> tempUPtr;
                 tempUPtr.reset(ptr_to_store);
-                uPtrVec_.push_back(std::move(tempUPtr));
+                uPtrVec_.emplace_back(std::move(tempUPtr));
             }
 
             return ptr_to_store;

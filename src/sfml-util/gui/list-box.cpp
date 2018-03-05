@@ -402,7 +402,7 @@ namespace sfml_util
         {
             if ((0 == countLimit_) || (items_.size() < countLimit_))
             {
-                items_.push_back(ITEM_SPTR);
+                items_.emplace_back(ITEM_SPTR);
                 SetupForDraw();
                 return true;
             }

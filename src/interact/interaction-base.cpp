@@ -57,7 +57,7 @@ namespace interact
         , sfxExit_(SFX_EXIT)
         , isLocked_(false)
     {
-        buttons_.push_back(Button(BUTTON_NAME_IGNORE_, sf::Keyboard::I));
+        buttons_.emplace_back(Button(BUTTON_NAME_IGNORE_, sf::Keyboard::I));
 
         sfml_util::LoadTexture(
             subjectTexture_, game::GameDataFile::Instance()->GetMediaPath(SUBJECT_IMAGE_KEY));
@@ -130,5 +130,5 @@ namespace interact
             interactStagePtr->InteractionManager().RemoveCurrent();
         }
     }
-} // namespace interact
-} // namespace heroespath
+}
+}

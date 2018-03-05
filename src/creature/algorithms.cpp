@@ -61,7 +61,7 @@ namespace creature
         {
             if (((OPTIONS & PlayerOpt::Living) == false) || NEXT_PLAYER_PTR->IsAlive())
             {
-                pVec_OutParam.push_back(NEXT_PLAYER_PTR);
+                pVec_OutParam.emplace_back(NEXT_PLAYER_PTR);
                 ++count;
             }
         }
@@ -100,7 +100,7 @@ namespace creature
         {
             if (((OPTIONS & PlayerOpt::Living) == false) || NEXT_NONPLAYER_PTR->IsAlive())
             {
-                pVec_OutParam.push_back(NEXT_NONPLAYER_PTR);
+                pVec_OutParam.emplace_back(NEXT_NONPLAYER_PTR);
                 ++count;
             }
         }
@@ -112,7 +112,7 @@ namespace creature
 
             for (auto const NEXT_DEAD_NONPLAYER_PTR : DEAD_NONPLAYERS_PVEC)
             {
-                pVec_OutParam.push_back(NEXT_DEAD_NONPLAYER_PTR);
+                pVec_OutParam.emplace_back(NEXT_DEAD_NONPLAYER_PTR);
                 ++count;
             }
         }

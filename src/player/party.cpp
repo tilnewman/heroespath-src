@@ -51,7 +51,7 @@ namespace player
     {
         for (auto const NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
         {
-            charactersPVec_.push_back(CharacterWarehouse::Instance()->Store(NEXT_CHARACTER_PTR));
+            charactersPVec_.emplace_back(CharacterWarehouse::Instance()->Store(NEXT_CHARACTER_PTR));
         }
     }
 
@@ -69,7 +69,7 @@ namespace player
     {
         if (IsAddAllowed(CHARACTER_PTR, error_msg))
         {
-            charactersPVec_.push_back(CharacterWarehouse::Instance()->Store(CHARACTER_PTR));
+            charactersPVec_.emplace_back(CharacterWarehouse::Instance()->Store(CHARACTER_PTR));
             return true;
         }
         else

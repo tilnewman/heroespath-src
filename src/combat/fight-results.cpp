@@ -247,7 +247,7 @@ namespace combat
     {
         for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
         {
-            CreaturePVec_OutParam.push_back(NEXT_CREATURE_EFFECT.GetCreature());
+            CreaturePVec_OutParam.emplace_back(NEXT_CREATURE_EFFECT.GetCreature());
         }
 
         return creatureEffectVec_.size();

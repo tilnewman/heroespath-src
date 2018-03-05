@@ -614,7 +614,7 @@ namespace sfml_util
         {
             const Resolution R(ConvertVideoModeToReslution(NEXT_VIDEO_MODE));
             if (IsResolutionSupported(R))
-                vec.push_back(R);
+                vec.emplace_back(R);
 
             if ((CURRENT_VIDEO_MODE.width == R.width) && (CURRENT_VIDEO_MODE.height == R.height))
             {
@@ -624,7 +624,7 @@ namespace sfml_util
 
         // add the current video mode if supported and not already listed
         if (IsCurrentDesktopResolutionSupported() && (false == isCurrentVideoModeListed))
-            vec.push_back(ConvertVideoModeToReslution(sf::VideoMode::getDesktopMode()));
+            vec.emplace_back(ConvertVideoModeToReslution(sf::VideoMode::getDesktopMode()));
 
         return vec.size();
     }

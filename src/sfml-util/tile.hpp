@@ -180,7 +180,7 @@ namespace sfml_util
         spriteVec.reserve(textureVec.size());
         for (auto const & NEXT_TEXTURE : textureVec)
         {
-            spriteVec.push_back(sf::Sprite(NEXT_TEXTURE));
+            spriteVec.emplace_back(sf::Sprite(NEXT_TEXTURE));
         }
 
         TileFromVec(RECT, spriteVec, renderTarget, WILL_RANDOM_ORDER);

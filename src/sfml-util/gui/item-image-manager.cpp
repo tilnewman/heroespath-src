@@ -911,13 +911,13 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "amulet-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
                 case misc_type::Necklace:
                 {
-                    filenames.push_back("necklace" + FILE_EXT_STR_);
+                    filenames.emplace_back("necklace" + FILE_EXT_STR_);
                     return filenames;
                 }
                 case misc_type::Bag:
@@ -926,7 +926,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "bag-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -937,23 +937,23 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "book-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
                 case misc_type::Cape:
                 {
-                    filenames.push_back("cape" + FILE_EXT_STR_);
+                    filenames.emplace_back("cape" + FILE_EXT_STR_);
                     return filenames;
                 }
                 case misc_type::Cloak:
                 {
-                    filenames.push_back("cloak" + FILE_EXT_STR_);
+                    filenames.emplace_back("cloak" + FILE_EXT_STR_);
                     return filenames;
                 }
                 case misc_type::Robe:
                 {
-                    filenames.push_back("robe" + FILE_EXT_STR_);
+                    filenames.emplace_back("robe" + FILE_EXT_STR_);
                     return filenames;
                 }
                 case misc_type::Crown:
@@ -962,7 +962,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "crown-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -972,7 +972,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "doll-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -983,7 +983,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "potion-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -993,7 +993,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "goblet-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1003,7 +1003,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "herb-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1013,7 +1013,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "hourglass-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1023,7 +1023,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "key-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1033,7 +1033,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "lantern-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1043,7 +1043,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "torch-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1053,7 +1053,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "lockbox-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1063,7 +1063,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "chest-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1073,7 +1073,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "lockpicks-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1083,7 +1083,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "mask-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1093,7 +1093,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "mirror-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1103,7 +1103,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "drumlute-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1113,7 +1113,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "scroll-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1123,7 +1123,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "orb-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1135,12 +1135,12 @@ namespace sfml_util
                         {
                             std::ostringstream ss;
                             ss << "ring-jeweled-" << i << FILE_EXT_STR_;
-                            filenames.push_back(ss.str());
+                            filenames.emplace_back(ss.str());
                         }
                     }
                     else if (IS_BONE)
                     {
-                        filenames.push_back("ring-bone" + FILE_EXT_STR_);
+                        filenames.emplace_back("ring-bone" + FILE_EXT_STR_);
                     }
                     else
                     {
@@ -1148,7 +1148,7 @@ namespace sfml_util
                         {
                             std::ostringstream ss;
                             ss << "ring-plain-" << i << FILE_EXT_STR_;
-                            filenames.push_back(ss.str());
+                            filenames.emplace_back(ss.str());
                         }
                     }
                     return filenames;
@@ -1159,7 +1159,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "skull-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1169,7 +1169,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "shard-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1179,7 +1179,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "mortar-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1189,7 +1189,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "wand-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1199,7 +1199,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "scepter-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1209,30 +1209,30 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "balm-pot-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
                 case misc_type::Doll_Blessed:
                 {
-                    filenames.push_back("doll-1" + FILE_EXT_STR_);
-                    filenames.push_back("doll-2" + FILE_EXT_STR_);
-                    filenames.push_back("doll-4" + FILE_EXT_STR_);
-                    filenames.push_back("doll-5" + FILE_EXT_STR_);
-                    filenames.push_back("doll-6" + FILE_EXT_STR_);
-                    filenames.push_back("doll-8" + FILE_EXT_STR_);
-                    filenames.push_back("doll-9" + FILE_EXT_STR_);
-                    filenames.push_back("doll-10" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-1" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-2" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-4" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-5" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-6" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-8" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-9" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-10" + FILE_EXT_STR_);
                     return filenames;
                 }
                 case misc_type::Doll_Cursed:
                 {
-                    filenames.push_back("doll-11" + FILE_EXT_STR_);
-                    filenames.push_back("doll-12" + FILE_EXT_STR_);
-                    filenames.push_back("doll-13" + FILE_EXT_STR_);
-                    filenames.push_back("doll-14" + FILE_EXT_STR_);
-                    filenames.push_back("doll-15" + FILE_EXT_STR_);
-                    filenames.push_back("doll-16" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-11" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-12" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-13" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-14" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-15" + FILE_EXT_STR_);
+                    filenames.emplace_back("doll-16" + FILE_EXT_STR_);
                     return filenames;
                 }
                 case misc_type::Figurine_Blessed:
@@ -1241,7 +1241,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "figurine-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1251,13 +1251,13 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "figurine-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     for (auto i(1); i <= 4; ++i)
                     {
                         std::ostringstream ss;
                         ss << "figurine-evil-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1267,7 +1267,7 @@ namespace sfml_util
                     {
                         std::ostringstream ss;
                         ss << "staff-" << i << FILE_EXT_STR_;
-                        filenames.push_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
                     return filenames;
                 }
@@ -1276,7 +1276,7 @@ namespace sfml_util
                     if ((RACE_ENUM == creature::race::Count)
                         || (ROLE_ENUM == creature::role::Count))
                     {
-                        filenames.push_back("figurine-1" + FILE_EXT_STR_);
+                        filenames.emplace_back("figurine-1" + FILE_EXT_STR_);
                     }
                     else
                     {
@@ -1293,7 +1293,7 @@ namespace sfml_util
                 case misc_type::Puppet_Blessed:
                 case misc_type::Puppet_Cursed:
                 {
-                    filenames.push_back("puppet" + FILE_EXT_STR_);
+                    filenames.emplace_back("puppet" + FILE_EXT_STR_);
                     return filenames;
                 }
                 case misc_type::Ankh_Necklace:
@@ -1411,7 +1411,7 @@ namespace sfml_util
                     auto const STR{ boost::replace_all_copy(
                         boost::to_lower_copy(misc_type::ToString(ITEM_ENUM)), "_", "-") };
 
-                    filenames.push_back(STR + FILE_EXT_STR_);
+                    filenames.emplace_back(STR + FILE_EXT_STR_);
                     return filenames;
                 }
                 case misc_type::NotMisc:

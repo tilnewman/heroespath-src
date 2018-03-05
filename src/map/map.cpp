@@ -315,11 +315,11 @@ namespace map
         {
             if (TRANSITION.IsEntry())
             {
-                entryLevels.push_back(TRANSITION.Level());
+                entryLevels.emplace_back(TRANSITION.Level());
             }
             else
             {
-                exitLevels.push_back(TRANSITION.Level());
+                exitLevels.emplace_back(TRANSITION.Level());
             }
         }
     }
@@ -548,5 +548,5 @@ namespace map
         walkMusicWhich_ = NEW_WALK_MUSIC;
         walkMusicIsWalking_ = NEW_IS_WALKING;
     }
-} // namespace map
-} // namespace heroespath
+}
+}

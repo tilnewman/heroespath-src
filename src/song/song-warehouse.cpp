@@ -49,12 +49,12 @@ namespace song
             (songsUVec_.empty()), "song::Warehouse::Setup() was called twice.");
 
         // Note::Keep order in sync with song::Songs::Enum
-        songsUVec_.push_back(std::make_unique<RallyDrum>());
-        songsUVec_.push_back(std::make_unique<SpiritResonance>());
-        songsUVec_.push_back(std::make_unique<RousingRhythm>());
-        songsUVec_.push_back(std::make_unique<TripBeat>());
-        songsUVec_.push_back(std::make_unique<PanicStrings>());
-        songsUVec_.push_back(std::make_unique<Lullaby>());
+        songsUVec_.emplace_back(std::make_unique<RallyDrum>());
+        songsUVec_.emplace_back(std::make_unique<SpiritResonance>());
+        songsUVec_.emplace_back(std::make_unique<RousingRhythm>());
+        songsUVec_.emplace_back(std::make_unique<TripBeat>());
+        songsUVec_.emplace_back(std::make_unique<PanicStrings>());
+        songsUVec_.emplace_back(std::make_unique<Lullaby>());
     }
 
     void Warehouse::Empty() { songsUVec_.clear(); }

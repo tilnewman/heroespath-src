@@ -402,7 +402,7 @@ namespace stage
             auto nextCharTextSPtr = std::make_shared<sfml_util::gui::ListBoxItem>(
                 ssCharText.str(), textInfo, NEXT_CHAR_PTR);
 
-            itemSVec.push_back(nextCharTextSPtr);
+            itemSVec.emplace_back(nextCharTextSPtr);
         }
 
         std::sort(std::begin(itemSVec), std::end(itemSVec), [](auto const & A, auto const & B) {
@@ -777,7 +777,7 @@ namespace stage
             for (std::size_t i(0); i < partyListBoxUPtr_->Size(); ++i)
             {
                 auto characterPtr{ partyListBoxUPtr_->At(i)->CHARACTER_CPTR };
-                charPVec.push_back(characterPtr);
+                charPVec.emplace_back(characterPtr);
 
                 charactersPSet_.erase(characterPtr);
 
@@ -917,7 +917,7 @@ namespace stage
         sfml_util::TextureVec_t partyTextureVec;
         for (int i(avatar::Avatar::Player_First); i <= avatar::Avatar::Player_Last; ++i)
         {
-            partyTextureVec.push_back(sf::Texture());
+            partyTextureVec.emplace_back(sf::Texture());
             auto const WHICH_AVATAR{ static_cast<avatar::Avatar::Enum>(i) };
 
             avatar::PortraitFactory::Make(

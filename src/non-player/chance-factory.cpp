@@ -1138,7 +1138,7 @@ namespace non_player
                     }
                 }
 
-                weaponSetVec_OutParam.push_back(nextWeaponSet);
+                weaponSetVec_OutParam.emplace_back(nextWeaponSet);
             }
         }
 

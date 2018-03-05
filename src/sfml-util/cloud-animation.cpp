@@ -228,7 +228,7 @@ namespace sfml_util
                     rotationSpeedToUse *= -1.0f;
                 }
 
-                cloudVec_.push_back(Cloud(
+                cloudVec_.emplace_back(Cloud(
                     textureRef,
                     sf::Vector2f(HORIZ_START_POS, VERT_START_POS),
                     sf::Vector2f(HORIZ_END_POS, VERT_END_POS),

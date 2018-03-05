@@ -73,7 +73,7 @@ namespace song
             if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Bold);
-                condsAddedVec.push_back(creature::Conditions::Bold);
+                condsAddedVec.emplace_back(creature::Conditions::Bold);
 
                 actionPhraseCNP = combat::ContentAndNamePos(
                     "",
@@ -169,7 +169,7 @@ namespace song
             if (creatureListeningPtr->HasCondition(NEXT_COND_TO_REMOVE_ENUM))
             {
                 creatureListeningPtr->ConditionRemove(NEXT_COND_TO_REMOVE_ENUM);
-                condsToRemoveVec.push_back(NEXT_COND_TO_REMOVE_ENUM);
+                condsToRemoveVec.emplace_back(NEXT_COND_TO_REMOVE_ENUM);
             }
         }
 
@@ -246,7 +246,7 @@ namespace song
             if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Tripped);
-                condsAddedVec.push_back(creature::Conditions::Tripped);
+                condsAddedVec.emplace_back(creature::Conditions::Tripped);
 
                 actionPhraseCNP = combat::ContentAndNamePos(
                     "",
@@ -309,7 +309,7 @@ namespace song
             if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::Panic);
-                condsAddedVec.push_back(creature::Conditions::Panic);
+                condsAddedVec.emplace_back(creature::Conditions::Panic);
 
                 actionPhraseCNP = combat::ContentAndNamePos(
                     "",
@@ -367,7 +367,7 @@ namespace song
             if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
                 creatureListeningPtr->ConditionAdd(creature::Conditions::AsleepNatural);
-                condsAddedVec.push_back(creature::Conditions::AsleepNatural);
+                condsAddedVec.emplace_back(creature::Conditions::AsleepNatural);
 
                 actionPhraseCNP = combat::ContentAndNamePos(
                     "",

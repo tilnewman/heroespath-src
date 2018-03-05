@@ -107,7 +107,7 @@ namespace stage
             const sf::Vector2f & ONSCREEN_POS,
             const sf::Vector2f & OFFSCREEN_POS)
         {
-            treasureSliders_.push_back(sfml_util::gui::GuiEntitySlider(
+            treasureSliders_.emplace_back(sfml_util::gui::GuiEntitySlider(
                 IGUI_ENTITY_PTR, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
         }
 
@@ -116,7 +116,7 @@ namespace stage
             const sf::Vector2f & ONSCREEN_POS,
             const sf::Vector2f & OFFSCREEN_POS)
         {
-            inventorySliders_.push_back(sfml_util::gui::GuiEntitySlider(
+            inventorySliders_.emplace_back(sfml_util::gui::GuiEntitySlider(
                 IGUI_ENTITY_PTR, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
         }
 

@@ -71,7 +71,7 @@ namespace sfml_util
                 sfml_util::FontManager::Instance()->Font_Default1(),
                 sfml_util::FontManager::Instance()->Size_Small());
 
-            mouseTextInfoVec.push_back(nextTextInfo);
+            mouseTextInfoVec.emplace_back(nextTextInfo);
         }
 
         sfml_util::GradientInfo gradientInfo(

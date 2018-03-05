@@ -423,7 +423,7 @@ namespace popup
                 NEXT_SONG_PTR,
                 CanPlaySong(NEXT_SONG_PTR)));
 
-            listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
+            listBoxItemsSVec.emplace_back(LISTBOXITEM_SPTR);
         }
 
         listBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(

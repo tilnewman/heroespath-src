@@ -193,14 +193,14 @@ namespace sfml_util
         auto const TOP{ RECT.top };
         auto const BOTTOM{ RECT.top + RECT.height };
 
-        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR));
-        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR));
-        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR));
-        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR));
-        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR));
-        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR));
-        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR));
-        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR));
     }
 
     void DrawQuad(
@@ -214,10 +214,10 @@ namespace sfml_util
         auto const TOP{ RECT.top };
         auto const BOTTOM{ RECT.top + RECT.height };
 
-        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR_LEFT));
-        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR_RIGHT));
-        verts.push_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR_RIGHT));
-        verts.push_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR_LEFT));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, TOP), COLOR_LEFT));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, TOP), COLOR_RIGHT));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(RIGHT, BOTTOM), COLOR_RIGHT));
+        verts.emplace_back(sf::Vertex(sf::Vector2f(LEFT, BOTTOM), COLOR_LEFT));
     }
 
     const std::string KeyCodeToString(const sf::Keyboard::Key KEY)

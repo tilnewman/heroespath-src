@@ -387,7 +387,7 @@ namespace sfml_util
                     nextSnippetVec[s].sf_text.move(0.0f, renderedText_.total_height);
                 }
 
-                renderedText_.vec_vec.push_back(nextSnippetVec);
+                renderedText_.vec_vec.emplace_back(nextSnippetVec);
             }
 
             // adjust total height

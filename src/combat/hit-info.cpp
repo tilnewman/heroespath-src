@@ -319,7 +319,7 @@ namespace combat
         {
             if (NEXT_CONDITION_ENUM == E)
             {
-                condsToRemoveVec.push_back(NEXT_CONDITION_ENUM);
+                condsToRemoveVec.emplace_back(NEXT_CONDITION_ENUM);
             }
         }
 
@@ -354,7 +354,7 @@ namespace combat
         {
             if (NEXT_CONDITION_ENUM == E)
             {
-                condsToRemoveVec.push_back(NEXT_CONDITION_ENUM);
+                condsToRemoveVec.emplace_back(NEXT_CONDITION_ENUM);
             }
         }
 

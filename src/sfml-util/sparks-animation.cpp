@@ -220,7 +220,7 @@ namespace sfml_util
                     }
                 }() };
 
-                sparkVec_.push_back(Spark(
+                sparkVec_.emplace_back(Spark(
                     *TEXTURE_PTR,
                     sf::Vector2f(START_POS_LEFT, START_POS_TOP),
                     sf::Vector2f(END_POS_LEFT, END_POS_TOP),

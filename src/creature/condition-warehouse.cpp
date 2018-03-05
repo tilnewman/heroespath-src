@@ -50,20 +50,20 @@ namespace creature
                 "creature::condition::Warehouse::Setup() was called twice.");
 
             // Note:  Keep order in sync with creature::Conditions::Enum
-            conditionsUVec_.push_back(std::make_unique<Good>());
-            conditionsUVec_.push_back(std::make_unique<Bold>());
-            conditionsUVec_.push_back(std::make_unique<Heroic>());
-            conditionsUVec_.push_back(std::make_unique<Daunted>());
-            conditionsUVec_.push_back(std::make_unique<Panic>());
-            conditionsUVec_.push_back(std::make_unique<Dazed>());
-            conditionsUVec_.push_back(std::make_unique<Tripped>());
-            conditionsUVec_.push_back(std::make_unique<AsleepNatural>());
-            conditionsUVec_.push_back(std::make_unique<Poisoned>());
-            conditionsUVec_.push_back(std::make_unique<Pounced>());
-            conditionsUVec_.push_back(std::make_unique<AsleepMagical>());
-            conditionsUVec_.push_back(std::make_unique<Unconscious>());
-            conditionsUVec_.push_back(std::make_unique<Stone>());
-            conditionsUVec_.push_back(std::make_unique<Dead>());
+            conditionsUVec_.emplace_back(std::make_unique<Good>());
+            conditionsUVec_.emplace_back(std::make_unique<Bold>());
+            conditionsUVec_.emplace_back(std::make_unique<Heroic>());
+            conditionsUVec_.emplace_back(std::make_unique<Daunted>());
+            conditionsUVec_.emplace_back(std::make_unique<Panic>());
+            conditionsUVec_.emplace_back(std::make_unique<Dazed>());
+            conditionsUVec_.emplace_back(std::make_unique<Tripped>());
+            conditionsUVec_.emplace_back(std::make_unique<AsleepNatural>());
+            conditionsUVec_.emplace_back(std::make_unique<Poisoned>());
+            conditionsUVec_.emplace_back(std::make_unique<Pounced>());
+            conditionsUVec_.emplace_back(std::make_unique<AsleepMagical>());
+            conditionsUVec_.emplace_back(std::make_unique<Unconscious>());
+            conditionsUVec_.emplace_back(std::make_unique<Stone>());
+            conditionsUVec_.emplace_back(std::make_unique<Dead>());
         }
 
         void Warehouse::Empty() { conditionsUVec_.clear(); }

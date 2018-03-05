@@ -909,7 +909,7 @@ namespace stage
         {
             listboxTextInfo.text = ITEM_PTR->Name();
 
-            listboxItemsSVec.push_back(std::make_shared<sfml_util::gui::ListBoxItem>(
+            listboxItemsSVec.emplace_back(std::make_shared<sfml_util::gui::ListBoxItem>(
                 "TreasureDisplayStage_CharacterInventoryListboxItem_" + ITEM_PTR->Name(),
                 listboxTextInfo,
                 ITEM_PTR));

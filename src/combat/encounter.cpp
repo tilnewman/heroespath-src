@@ -188,7 +188,7 @@ namespace combat
 
         if (CREATURE_PTR->IsPlayerCharacter())
         {
-            runawayPlayersVec_.push_back(CREATURE_PTR);
+            runawayPlayersVec_.emplace_back(CREATURE_PTR);
         }
         else
         {
@@ -254,7 +254,7 @@ namespace combat
 
         if (turnCreaturePtr_ != nullptr)
         {
-            turnOverPVec_.push_back(turnCreaturePtr_);
+            turnOverPVec_.emplace_back(turnCreaturePtr_);
         }
 
         // re-sort by speed every turn because spells/conditions/etc could have changed
@@ -353,7 +353,7 @@ namespace combat
                 if (NEXT_UNEQUIPPED_ITEM_PTR->IsBodypart() == false)
                 {
                     NEXT_CHARACTER_PTR->ItemRemove(NEXT_UNEQUIPPED_ITEM_PTR);
-                    deadNonPlayerItemsHeld_.items_pvec.push_back(NEXT_UNEQUIPPED_ITEM_PTR);
+                    deadNonPlayerItemsHeld_.items_pvec.emplace_back(NEXT_UNEQUIPPED_ITEM_PTR);
                 }
             }
         }

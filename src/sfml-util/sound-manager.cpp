@@ -337,7 +337,7 @@ namespace sfml_util
             }
         }
 
-        songSetVec_.push_back(SongSet(
+        songSetVec_.emplace_back(SongSet(
             musicSet,
             MakeAndStartMusicOperator(WHICH_MUSIC_TO_START_PLAYING, FADE_MULT, VOLUME_TO_USE)));
     }
@@ -389,7 +389,7 @@ namespace sfml_util
         {
             if (SONG_SET.IsValid())
             {
-                musicInfos.push_back(SONG_SET.op.Info());
+                musicInfos.emplace_back(SONG_SET.op.Info());
             }
         }
 
@@ -498,7 +498,7 @@ namespace sfml_util
     {
         if ((E != sound_effect::None) && (E != sound_effect::Count && (E != sound_effect::Random)))
         {
-            sfxToPlayPairsVec_.push_back(std::make_pair(E, PRE_DELAY_SEC));
+            sfxToPlayPairsVec_.emplace_back(std::make_pair(E, PRE_DELAY_SEC));
         }
     }
 
@@ -634,7 +634,7 @@ namespace sfml_util
             const std::string NEXT_LICENSE_NAME(
                 boost::algorithm::erase_all_copy(filenamePartsVec.at(3), music::FileExt()));
 
-            combatIntroMusicInfoVec_.push_back(MusicInfo(
+            combatIntroMusicInfoVec_.emplace_back(MusicInfo(
                 music::CombatIntro,
                 false,
                 NEXT_ARTIST_NAME,

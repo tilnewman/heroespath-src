@@ -660,14 +660,14 @@ namespace combat
             {
                 if (TURN_INFO.GetLastHitByCreature() != nullptr)
                 {
-                    refinedTargetsPVec.push_back(TURN_INFO.GetLastHitByCreature());
+                    refinedTargetsPVec.emplace_back(TURN_INFO.GetLastHitByCreature());
                 }
             }
             else
             {
                 if (TURN_INFO.GetFirstHitByCreature() != nullptr)
                 {
-                    refinedTargetsPVec.push_back(TURN_INFO.GetFirstHitByCreature());
+                    refinedTargetsPVec.emplace_back(TURN_INFO.GetFirstHitByCreature());
                 }
             }
         }
@@ -678,14 +678,14 @@ namespace combat
             {
                 if (TURN_INFO.GetLastAttackedByCreature() != nullptr)
                 {
-                    refinedTargetsPVec.push_back(TURN_INFO.GetLastAttackedByCreature());
+                    refinedTargetsPVec.emplace_back(TURN_INFO.GetLastAttackedByCreature());
                 }
             }
             else
             {
                 if (TURN_INFO.GetFirstAttackedByCreature() != nullptr)
                 {
-                    refinedTargetsPVec.push_back(TURN_INFO.GetFirstAttackedByCreature());
+                    refinedTargetsPVec.emplace_back(TURN_INFO.GetFirstAttackedByCreature());
                 }
             }
         }
@@ -696,14 +696,14 @@ namespace combat
             {
                 if (TURN_INFO.GetLastToMakeMusicCreature() != nullptr)
                 {
-                    refinedTargetsPVec.push_back(TURN_INFO.GetLastToMakeMusicCreature());
+                    refinedTargetsPVec.emplace_back(TURN_INFO.GetLastToMakeMusicCreature());
                 }
             }
             else
             {
                 if (TURN_INFO.GetFirstToMakeMusicCreature() != nullptr)
                 {
-                    refinedTargetsPVec.push_back(TURN_INFO.GetFirstToMakeMusicCreature());
+                    refinedTargetsPVec.emplace_back(TURN_INFO.GetFirstToMakeMusicCreature());
                 }
             }
         }
@@ -714,14 +714,14 @@ namespace combat
             {
                 if (TURN_INFO.GetLastToCastCreature() != nullptr)
                 {
-                    refinedTargetsPVec.push_back(TURN_INFO.GetLastToCastCreature());
+                    refinedTargetsPVec.emplace_back(TURN_INFO.GetLastToCastCreature());
                 }
             }
             else
             {
                 if (TURN_INFO.GetFirstToCastCreature() != nullptr)
                 {
-                    refinedTargetsPVec.push_back(TURN_INFO.GetFirstToCastCreature());
+                    refinedTargetsPVec.emplace_back(TURN_INFO.GetFirstToCastCreature());
                 }
             }
         }
@@ -750,7 +750,7 @@ namespace combat
         {
             if (TURN_INFO.GetMostDamageCreaturePair().second != nullptr)
             {
-                refinedTargetsPVec.push_back(TURN_INFO.GetMostDamageCreaturePair().second);
+                refinedTargetsPVec.emplace_back(TURN_INFO.GetMostDamageCreaturePair().second);
             }
         }
 
@@ -988,7 +988,7 @@ namespace combat
                 auto const RAND{ misc::random::Float(1.0f) };
                 if (RAND < ROAR_CHANCE)
                 {
-                    actionChancesVec.push_back(
+                    actionChancesVec.emplace_back(
                         std::make_tuple(TurnAction::Roar, ROAR_CHANCE, RAND));
                 }
             }
@@ -1003,7 +1003,8 @@ namespace combat
                 auto const RAND{ misc::random::Float(1.0f) };
                 if (RAND < FLY_CHANCE)
                 {
-                    actionChancesVec.push_back(std::make_tuple(TurnAction::Fly, FLY_CHANCE, RAND));
+                    actionChancesVec.emplace_back(
+                        std::make_tuple(TurnAction::Fly, FLY_CHANCE, RAND));
                 }
             }
 
@@ -1017,7 +1018,7 @@ namespace combat
                 auto const RAND{ misc::random::Float(1.0f) };
                 if (RAND < FLY_CHANCE)
                 {
-                    actionChancesVec.push_back(
+                    actionChancesVec.emplace_back(
                         std::make_tuple(TurnAction::SkyPounce, SKYPOUNCE_CHANCE, RAND));
                 }
             }
@@ -1032,7 +1033,7 @@ namespace combat
                 auto const RAND{ misc::random::Float(1.0f) };
                 if (RAND < FLY_CHANCE)
                 {
-                    actionChancesVec.push_back(
+                    actionChancesVec.emplace_back(
                         std::make_tuple(TurnAction::LandPounce, LANDPOUNCE_CHANCE, RAND));
                 }
             }
@@ -1188,7 +1189,7 @@ namespace combat
             (spellPtr->Target() == TargetType::SingleCompanion)
             || (spellPtr->Target() == TargetType::SingleOpponent))
         {
-            targetedCreaturesPVec.push_back(MOST_DESIRED_TARGET_CPTRC);
+            targetedCreaturesPVec.emplace_back(MOST_DESIRED_TARGET_CPTRC);
         }
         else
         {

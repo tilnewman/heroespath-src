@@ -238,7 +238,7 @@ namespace item
                 std::remove(profiles.begin(), profiles.end(), NEXT_ITEM_TO_ADD_PROFILE),
                 profiles.end());
 
-            itemCache_OutParam.items_pvec.push_back(
+            itemCache_OutParam.items_pvec.emplace_back(
                 item::ItemFactory::Instance()->Make(NEXT_ITEM_TO_ADD_PROFILE));
 
             amount -= NEXT_ITEM_TO_ADD_PROFILE.TreasureScore();
@@ -277,7 +277,7 @@ namespace item
         auto const ITEM_PTR{ item::ItemFactory::Instance()->Make(
             misc::Vector::SelectRandom(profiles)) };
 
-        itemCache_OutParam.items_pvec.push_back(ITEM_PTR);
+        itemCache_OutParam.items_pvec.emplace_back(ITEM_PTR);
     }
 
     void TreasureFactory::RemoveTreasureScoresHigherThan(
@@ -355,7 +355,7 @@ namespace item
                 auto const SET_ITEM_PROFILE{ ItemToSetItemProfile(UNEQUIPPED_ITEM_PTR) };
                 if (SET_ITEM_PROFILE.IsSet())
                 {
-                    setItemsOwnedProfiles.push_back(SET_ITEM_PROFILE);
+                    setItemsOwnedProfiles.emplace_back(SET_ITEM_PROFILE);
                 }
             }
 
@@ -366,7 +366,7 @@ namespace item
                 auto const SET_ITEM_PROFILE{ ItemToSetItemProfile(EQUIPPED_ITEM_PTR) };
                 if (SET_ITEM_PROFILE.IsSet())
                 {
-                    setItemsOwnedProfiles.push_back(SET_ITEM_PROFILE);
+                    setItemsOwnedProfiles.emplace_back(SET_ITEM_PROFILE);
                 }
             }
         }

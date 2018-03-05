@@ -90,7 +90,7 @@ namespace combat
         {
             if (nextCombatNodeCPtr->IsFlying())
             {
-                creaturesFlyingPVec_.push_back(nextCombatNodeCPtr->Creature());
+                creaturesFlyingPVec_.emplace_back(nextCombatNodeCPtr->Creature());
             }
         }
     }

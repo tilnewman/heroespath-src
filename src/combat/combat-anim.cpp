@@ -406,7 +406,7 @@ namespace combat
         for (auto const nextCombatNodePtrC : combatNodesPVec)
         {
             nextCombatNodePtrC->SetDead(true);
-            deadAnimNodesPVec_.push_back(nextCombatNodePtrC);
+            deadAnimNodesPVec_.emplace_back(nextCombatNodePtrC);
         }
     }
 
@@ -700,7 +700,7 @@ namespace combat
                 || (nextShakeInfoPair.first->Creature() == CREATURE_CPTRC))
             {
                 nextShakeInfoPair.first->SetImagePosOffset(0.0f, 0.0f);
-                combatNodesToErasePVec.push_back(nextShakeInfoPair.first);
+                combatNodesToErasePVec.emplace_back(nextShakeInfoPair.first);
             }
         }
 
@@ -950,14 +950,15 @@ namespace combat
         {
             if (NEXT_COMBATNODE_PTR->GetEntityWillDraw())
             {
-                sparksAnimUVec_.push_back(std::make_unique<sfml_util::animation::SparksAnimation>(
-                    !NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter(),
-                    NEXT_COMBATNODE_PTR->GetEntityRegion(),
-                    0.33f,
-                    sfml_util::MapByRes(0.15f, 0.45f),
-                    0.9f,
-                    CASTING_CREATURE_CPTRC->RankRatio(),
-                    1.25f));
+                sparksAnimUVec_.emplace_back(
+                    std::make_unique<sfml_util::animation::SparksAnimation>(
+                        !NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter(),
+                        NEXT_COMBATNODE_PTR->GetEntityRegion(),
+                        0.33f,
+                        sfml_util::MapByRes(0.15f, 0.45f),
+                        0.9f,
+                        CASTING_CREATURE_CPTRC->RankRatio(),
+                        1.25f));
             }
         }
     }
@@ -987,7 +988,7 @@ namespace combat
         {
             if (NEXT_COMBATNODE_PTR->GetEntityWillDraw())
             {
-                cloudAnimUVec_.push_back(std::make_unique<sfml_util::animation::CloudAnimation>(
+                cloudAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::CloudAnimation>(
                     NEXT_COMBATNODE_PTR->GetEntityRegion(),
                     0.35f,
                     sfml_util::MapByRes(0.1f, 0.35f),
@@ -1051,7 +1052,7 @@ namespace combat
                 region.height += ADJ * 2.0f;
             }
 
-            animUVec_.push_back(sfml_util::AnimationFactory::Make(
+            animUVec_.emplace_back(sfml_util::AnimationFactory::Make(
                 ENUM, region, FRAME_DELAY_SEC, COLOR_FROM, COLOR_TO));
         }
     }
@@ -1067,7 +1068,7 @@ namespace combat
                 continue;
             }
 
-            songAnimUVec_.push_back(std::make_unique<sfml_util::animation::SongAnimation>(
+            songAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::SongAnimation>(
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 0.1f,
                 sfml_util::MapByRes(0.1f, 0.25f),
@@ -1112,7 +1113,7 @@ namespace combat
                 continue;
             }
 
-            sparkleAnimUVec_.push_back(std::make_unique<sfml_util::animation::SparkleAnimation>(
+            sparkleAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::SparkleAnimation>(
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 sfml_util::MapByRes(0.333f, 1.0f),
                 0.5f,
@@ -1197,7 +1198,7 @@ namespace combat
 
             ss << NEXT_DAMAGE_VALUE;
 
-            textAnimUVec_.push_back(std::make_unique<sfml_util::animation::TextAnimation>(
+            textAnimUVec_.emplace_back(std::make_unique<sfml_util::animation::TextAnimation>(
                 ss.str(),
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 1.0f,

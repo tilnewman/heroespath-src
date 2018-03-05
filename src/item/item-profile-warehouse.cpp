@@ -178,7 +178,7 @@ namespace item
                             NEXT_MATERIAL_PRIMARY,
                             material::Nothing);
 
-                        profiles_.push_back(p);
+                        profiles_.emplace_back(p);
                         didAddProfile = true;
                     }
                     else
@@ -204,7 +204,7 @@ namespace item
                                 NEXT_MATERIAL_PRIMARY,
                                 NEXT_MATERIAL_SECONDARY);
 
-                            profiles_.push_back(p);
+                            profiles_.emplace_back(p);
                             didAddProfile = true;
                         }
                     }
@@ -294,7 +294,7 @@ namespace item
                             p.SetSummoningAndAdjustScore(
                                 SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM));
 
-                            profiles_.push_back(p);
+                            profiles_.emplace_back(p);
                         }
                     }
                     else
@@ -331,7 +331,7 @@ namespace item
 
                         p.SetSummoningAndAdjustScore(SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM));
 
-                        profiles_.push_back(p);
+                        profiles_.emplace_back(p);
                     }
                 }
             }
@@ -408,11 +408,11 @@ namespace item
 
             void Add(const ItemProfile & P)
             {
-                profiles.push_back(P);
+                profiles.emplace_back(P);
                 auto const TREASURE_SCORE_INT{ P.TreasureScore().As<int>() };
                 ++divCountsScore[static_cast<std::size_t>(TREASURE_SCORE_INT / division)];
                 sum += TREASURE_SCORE_INT;
-                scores.push_back(TREASURE_SCORE_INT);
+                scores.emplace_back(TREASURE_SCORE_INT);
             }
 
             void Log() const
@@ -612,7 +612,7 @@ namespace item
         }() };
 
         auto elementCombinationsVec{ element_type::Combinations(ELEMENT_TYPES) };
-        elementCombinationsVec.push_back(element_type::None);
+        elementCombinationsVec.emplace_back(element_type::None);
 
         SetupFromThinProfile(
             THIN_PROFILE,
@@ -642,14 +642,14 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetMisc(
                 THIN_PROFILE.MiscType(), false, MATERIAL_PRI, MATERIAL_SEC, SET_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
 
             if (misc_type::HasPixieVersion(THIN_PROFILE.MiscType()))
             {
                 ItemProfile fatProfilePixie;
                 fatProfilePixie.SetMisc(
                     THIN_PROFILE.MiscType(), true, MATERIAL_PRI, MATERIAL_SEC, SET_TYPE);
-                profiles_.push_back(fatProfilePixie);
+                profiles_.emplace_back(fatProfilePixie);
             }
 
             return;
@@ -660,7 +660,7 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetAventail(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -669,12 +669,12 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetBoots(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetBoots(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
-            profiles_.push_back(fatProfilePixie);
+            profiles_.emplace_back(fatProfilePixie);
             return;
         }
 
@@ -683,12 +683,12 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetBracer(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetBracer(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
-            profiles_.push_back(fatProfilePixie);
+            profiles_.emplace_back(fatProfilePixie);
             return;
         }
 
@@ -697,12 +697,12 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetGauntlets(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetGauntlets(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
-            profiles_.push_back(fatProfilePixie);
+            profiles_.emplace_back(fatProfilePixie);
             return;
         }
 
@@ -711,12 +711,12 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetPants(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetPants(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
-            profiles_.push_back(fatProfilePixie);
+            profiles_.emplace_back(fatProfilePixie);
             return;
         }
 
@@ -725,12 +725,12 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetShirt(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetShirt(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
-            profiles_.push_back(fatProfilePixie);
+            profiles_.emplace_back(fatProfilePixie);
             return;
         }
 
@@ -744,7 +744,7 @@ namespace item
                 NAMED_TYPE,
                 SET_TYPE,
                 ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -759,7 +759,7 @@ namespace item
                 SET_TYPE,
                 ELEMENT_TYPE,
                 false);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetCover(
@@ -770,7 +770,7 @@ namespace item
                 SET_TYPE,
                 ELEMENT_TYPE,
                 true);
-            profiles_.push_back(fatProfilePixie);
+            profiles_.emplace_back(fatProfilePixie);
             return;
         }
 
@@ -784,7 +784,7 @@ namespace item
                 NAMED_TYPE,
                 SET_TYPE,
                 ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -798,7 +798,7 @@ namespace item
                 NAMED_TYPE,
                 SET_TYPE,
                 ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -812,7 +812,7 @@ namespace item
                 NAMED_TYPE,
                 SET_TYPE,
                 ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -826,7 +826,7 @@ namespace item
                 NAMED_TYPE,
                 SET_TYPE,
                 ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -840,7 +840,7 @@ namespace item
                 NAMED_TYPE,
                 SET_TYPE,
                 ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -854,7 +854,7 @@ namespace item
                 NAMED_TYPE,
                 SET_TYPE,
                 ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -868,7 +868,7 @@ namespace item
                 NAMED_TYPE,
                 SET_TYPE,
                 ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -887,7 +887,7 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     false);
-                profiles_.push_back(fatProfile);
+                profiles_.emplace_back(fatProfile);
 
                 ItemProfile fatProfilePixie;
                 fatProfilePixie.SetKnife(
@@ -898,7 +898,7 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     true);
-                profiles_.push_back(fatProfilePixie);
+                profiles_.emplace_back(fatProfilePixie);
             }
             return;
         }
@@ -918,7 +918,7 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     false);
-                profiles_.push_back(fatProfile);
+                profiles_.emplace_back(fatProfile);
 
                 ItemProfile fatProfilePixie;
                 fatProfilePixie.SetDagger(
@@ -929,7 +929,7 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     true);
-                profiles_.push_back(fatProfilePixie);
+                profiles_.emplace_back(fatProfilePixie);
             }
             return;
         }
@@ -938,7 +938,7 @@ namespace item
         {
             ItemProfile fatProfile;
             fatProfile.SetStaff(MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -947,7 +947,7 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetQuarterStaff(
                 MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-            profiles_.push_back(fatProfile);
+            profiles_.emplace_back(fatProfile);
             return;
         }
 
@@ -1049,7 +1049,7 @@ namespace item
                     if ((THIN_PROFILE.ArmorTypeRestriction() == NEXT_BASE_ENUM)
                         || (THIN_PROFILE.ArmorTypeRestriction() == armor::base_type::Count))
                     {
-                        v.push_back(
+                        v.emplace_back(
                             std::make_pair(NEXT_BASE_ENUM, MaterialsAventail(NEXT_BASE_ENUM)));
                     }
                 }
@@ -1067,7 +1067,8 @@ namespace item
                     if ((THIN_PROFILE.ArmorTypeRestriction() == NEXT_BASE_ENUM)
                         || (THIN_PROFILE.ArmorTypeRestriction() == armor::base_type::Count))
                     {
-                        v.push_back(std::make_pair(NEXT_BASE_ENUM, MaterialsBoots(NEXT_BASE_ENUM)));
+                        v.emplace_back(
+                            std::make_pair(NEXT_BASE_ENUM, MaterialsBoots(NEXT_BASE_ENUM)));
                     }
                 }
 
@@ -1084,7 +1085,7 @@ namespace item
                     if ((THIN_PROFILE.ArmorTypeRestriction() == NEXT_BASE_ENUM)
                         || (THIN_PROFILE.ArmorTypeRestriction() == armor::base_type::Count))
                     {
-                        v.push_back(
+                        v.emplace_back(
                             std::make_pair(NEXT_BASE_ENUM, MaterialsBracer(NEXT_BASE_ENUM)));
                     }
                 }
@@ -1102,7 +1103,7 @@ namespace item
                     if ((THIN_PROFILE.ArmorTypeRestriction() == NEXT_BASE_ENUM)
                         || (THIN_PROFILE.ArmorTypeRestriction() == armor::base_type::Count))
                     {
-                        v.push_back(
+                        v.emplace_back(
                             std::make_pair(NEXT_BASE_ENUM, MaterialsGauntlets(NEXT_BASE_ENUM)));
                     }
                 }
@@ -1120,7 +1121,8 @@ namespace item
                     if ((THIN_PROFILE.ArmorTypeRestriction() == NEXT_BASE_ENUM)
                         || (THIN_PROFILE.ArmorTypeRestriction() == armor::base_type::Count))
                     {
-                        v.push_back(std::make_pair(NEXT_BASE_ENUM, MaterialsPants(NEXT_BASE_ENUM)));
+                        v.emplace_back(
+                            std::make_pair(NEXT_BASE_ENUM, MaterialsPants(NEXT_BASE_ENUM)));
                     }
                 }
 
@@ -1137,7 +1139,8 @@ namespace item
                     if ((THIN_PROFILE.ArmorTypeRestriction() == NEXT_BASE_ENUM)
                         || (THIN_PROFILE.ArmorTypeRestriction() == armor::base_type::Count))
                     {
-                        v.push_back(std::make_pair(NEXT_BASE_ENUM, MaterialsShirt(NEXT_BASE_ENUM)));
+                        v.emplace_back(
+                            std::make_pair(NEXT_BASE_ENUM, MaterialsShirt(NEXT_BASE_ENUM)));
                     }
                 }
 
@@ -1243,13 +1246,13 @@ namespace item
             {
                 ItemProfile p;
                 p.SetMisc(E, false, NEXT_MATERIAL_PRIMARY, material::Nothing);
-                profiles_.push_back(p);
+                profiles_.emplace_back(p);
 
                 if (misc_type::HasPixieVersion(E))
                 {
                     ItemProfile pPixie;
                     pPixie.SetMisc(E, true, NEXT_MATERIAL_PRIMARY, material::Nothing);
-                    profiles_.push_back(pPixie);
+                    profiles_.emplace_back(pPixie);
                 }
             }
             else
@@ -1263,13 +1266,13 @@ namespace item
 
                     ItemProfile p;
                     p.SetMisc(E, false, NEXT_MATERIAL_PRIMARY, NEXT_MATERIAL_SECONDARY);
-                    profiles_.push_back(p);
+                    profiles_.emplace_back(p);
 
                     if (misc_type::HasPixieVersion(E))
                     {
                         ItemProfile pPixie;
                         pPixie.SetMisc(E, true, NEXT_MATERIAL_PRIMARY, NEXT_MATERIAL_SECONDARY);
-                        profiles_.push_back(pPixie);
+                        profiles_.emplace_back(pPixie);
                     }
                 }
             }
@@ -1823,7 +1826,7 @@ namespace item
     const MaterialVecPair_t ItemProfileWarehouse::Materials(const armor::shield_type::Enum)
     {
         MaterialVec_t v{ material::CoreMetal() };
-        v.push_back(material::Wood);
+        v.emplace_back(material::Wood);
         return MaterialVecPair_t(v, material::CoreSecondary());
     }
 
@@ -1902,8 +1905,8 @@ namespace item
 
         if (E == base_type::Plain)
         {
-            v.push_back(material::SoftLeather);
-            v.push_back(material::HardLeather);
+            v.emplace_back(material::SoftLeather);
+            v.emplace_back(material::HardLeather);
         }
         else
         {
@@ -1924,7 +1927,7 @@ namespace item
         {
             ItemProfile thinProfile;
             thinProfile.SetSword(static_cast<sword_type::Enum>(i));
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         return v;
@@ -1941,7 +1944,7 @@ namespace item
         {
             ItemProfile thinProfile;
             thinProfile.SetProjectile(static_cast<projectile_type::Enum>(i));
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         return v;
@@ -1968,54 +1971,54 @@ namespace item
         {
             ItemProfile thinProfile;
             thinProfile.SetAxe(static_cast<axe_type::Enum>(i));
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         for (int i(0); i < bladedstaff_type::Count; ++i)
         {
             ItemProfile thinProfile;
             thinProfile.SetBladedStaff(static_cast<bladedstaff_type::Enum>(i));
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         for (int i(0); i < club_type::Count; ++i)
         {
             ItemProfile thinProfile;
             thinProfile.SetClub(static_cast<club_type::Enum>(i));
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         for (int i(0); i < whip_type::Count; ++i)
         {
             ItemProfile thinProfile;
             thinProfile.SetWhip(static_cast<whip_type::Enum>(i));
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         for (int i(0); i < sfml_util::Size::Count; ++i)
         {
             ItemProfile thinProfile;
             thinProfile.SetKnife(static_cast<sfml_util::Size::Enum>(i));
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         for (int i(0); i < sfml_util::Size::Count; ++i)
         {
             ItemProfile thinProfile;
             thinProfile.SetDagger(static_cast<sfml_util::Size::Enum>(i));
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         {
             ItemProfile thinProfile;
             thinProfile.SetStaff(material::Nothing);
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         {
             ItemProfile thinProfile;
             thinProfile.SetQuarterStaff(material::Nothing);
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         return v;
@@ -2035,7 +2038,7 @@ namespace item
             {
                 ItemProfile thinProfile;
                 thinProfile.SetCover(static_cast<cover_type::Enum>(i));
-                v.push_back(thinProfile);
+                v.emplace_back(thinProfile);
             }
         }
 
@@ -2043,56 +2046,56 @@ namespace item
         {
             ItemProfile thinProfile;
             thinProfile.SetHelm(static_cast<helm_type::Enum>(i));
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         for (int i(0); i < shield_type::Count; ++i)
         {
             ItemProfile thinProfile;
             thinProfile.SetShield(static_cast<shield_type::Enum>(i));
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         {
             ItemProfile thinProfile;
             thinProfile.SetAventail(base_type::Count);
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         {
             ItemProfile thinProfile;
             thinProfile.SetBoots(base_type::Count);
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         {
             ItemProfile thinProfile;
             thinProfile.SetBracer(base_type::Count);
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         {
             ItemProfile thinProfile;
             thinProfile.SetGauntlets(base_type::Count);
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         {
             ItemProfile thinProfile;
             thinProfile.SetPants(base_type::Count);
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         {
             ItemProfile thinProfile;
             thinProfile.SetShirt(base_type::Count);
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         {
             ItemProfile thinProfile;
             thinProfile.SetGauntlets(base_type::Count);
-            v.push_back(thinProfile);
+            v.emplace_back(thinProfile);
         }
 
         return v;
@@ -2169,61 +2172,61 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShield(shield_type::Buckler);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShield(shield_type::Kite);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(helm_type::Great);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(helm_type::Bascinet);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(helm_type::Kettle);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetAxe(axe_type::Handaxe);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetBladedStaff(bladedstaff_type::Spear);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetSword(sword_type::Gladius);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetSword(sword_type::Shortsword);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetSword(sword_type::Broadsword);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2271,19 +2274,19 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetSword(sword_type::Shortsword);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(helm_type::Bascinet);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShield(shield_type::Buckler);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2315,25 +2318,25 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetSword(sword_type::Rapier);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(helm_type::MailCoif);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShield(shield_type::Kite);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(cover_type::Cape);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2365,13 +2368,13 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetProjectile(projectile_type::Longbow);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(cover_type::Cloak);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2403,19 +2406,19 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetSword(sword_type::Longsword);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(helm_type::Leather);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(cover_type::Cape);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2442,19 +2445,19 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetSword(sword_type::Broadsword);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(helm_type::Great);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShield(shield_type::Pavis);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2466,26 +2469,26 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetSword(sword_type::Falcata);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShield(shield_type::Buckler);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(helm_type::Leather);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetBracer();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2499,7 +2502,7 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(cover_type::Robe);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2513,7 +2516,7 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(cover_type::Cloak);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2526,7 +2529,7 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(cover_type::Vest);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2541,7 +2544,7 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetKnife();
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2556,7 +2559,7 @@ namespace item
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetDagger();
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2592,46 +2595,46 @@ namespace item
                     ItemProfile thinProfile;
                     thinProfile.SetBoots();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetPants();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShirt();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetGauntlets();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(armor::cover_type::Cloak);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetDagger();
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetMisc(misc_type::LockPicks);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2647,40 +2650,40 @@ namespace item
                     ItemProfile thinProfile;
                     thinProfile.SetBoots();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetPants();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShirt();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetGauntlets();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(armor::cover_type::Robe);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetMisc(misc_type::Wand);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2694,40 +2697,40 @@ namespace item
                     ItemProfile thinProfile;
                     thinProfile.SetBoots();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetPants();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShirt();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetGauntlets();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(armor::cover_type::Robe);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetMisc(misc_type::Litch_Hand);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2743,40 +2746,40 @@ namespace item
                     ItemProfile thinProfile;
                     thinProfile.SetBoots();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetPants();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShirt();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetGauntlets();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(armor::cover_type::Robe);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetMisc(misc_type::Wand);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2790,40 +2793,40 @@ namespace item
                     ItemProfile thinProfile;
                     thinProfile.SetBoots();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetPants();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShirt();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetGauntlets();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(armor::cover_type::Robe);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetMisc(misc_type::Braid);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2839,46 +2842,46 @@ namespace item
                     ItemProfile thinProfile;
                     thinProfile.SetBoots();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetPants();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShirt();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetGauntlets();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(armor::cover_type::Vest);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetSword(weapon::sword_type::Longsword);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetMisc(misc_type::DrumLute);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2898,60 +2901,60 @@ namespace item
                     ItemProfile thinProfile;
                     thinProfile.SetBoots();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetPants();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShirt();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetGauntlets();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetBracer();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(armor::cover_type::Cape);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShield(armor::shield_type::Pavis);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(armor::helm_type::Great);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetAventail();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plate);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -2970,47 +2973,47 @@ namespace item
                     ItemProfile thinProfile;
                     thinProfile.SetBoots();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetPants();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShirt();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetGauntlets();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Plain);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetBracer();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Mail);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetCover(armor::cover_type::Vest);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(armor::helm_type::Archers);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;
@@ -3028,47 +3031,47 @@ namespace item
                     ItemProfile thinProfile;
                     thinProfile.SetBoots();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Scale);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetPants();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Scale);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShirt();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Scale);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetBracer();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Scale);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetGauntlets();
                     thinProfile.SetArmorTypeRestriction(armor::base_type::Scale);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetShield(armor::shield_type::Kite);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 {
                     ItemProfile thinProfile;
                     thinProfile.SetHelm(armor::helm_type::Bascinet);
-                    v.push_back(thinProfile);
+                    v.emplace_back(thinProfile);
                 }
 
                 return v;

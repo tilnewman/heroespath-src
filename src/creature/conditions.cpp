@@ -67,7 +67,7 @@ namespace creature
                 const combat::ContentAndNamePos CNP(
                     " wakes from a magical sleep.", combat::NamePosition::TargetBefore);
 
-                hitInfoVec.push_back(combat::HitInfo(
+                hitInfoVec.emplace_back(combat::HitInfo(
                     false, Which(), CNP, 0_health, {}, { Conditions::AsleepMagical }));
             }
         }
@@ -92,7 +92,7 @@ namespace creature
                 const combat::ContentAndNamePos CNP(
                     " wakes from a natural sleep.", combat::NamePosition::TargetBefore);
 
-                hitInfoVec.push_back(combat::HitInfo(
+                hitInfoVec.emplace_back(combat::HitInfo(
                     false, Which(), CNP, 0_health, {}, { Conditions::AsleepNatural }));
             }
         }
@@ -116,7 +116,7 @@ namespace creature
                 const combat::ContentAndNamePos CNP(
                     "'s mind clears an is not Dazed anymore.", combat::NamePosition::TargetBefore);
 
-                hitInfoVec.push_back(
+                hitInfoVec.emplace_back(
                     combat::HitInfo(false, Which(), CNP, 0_health, {}, { Conditions::Dazed }));
             }
         }
@@ -158,7 +158,7 @@ namespace creature
                 const combat::ContentAndNamePos CNP(
                     " gets up after being pounced on.", combat::NamePosition::TargetBefore);
 
-                hitInfoVec.push_back(
+                hitInfoVec.emplace_back(
                     combat::HitInfo(false, Which(), CNP, 0_health, {}, { Conditions::Pounced }));
 
                 hasTurnBeenConsumed = true;
@@ -196,7 +196,7 @@ namespace creature
             const combat::ContentAndNamePos CNP(
                 " gets up after being tripped.", combat::NamePosition::TargetBefore);
 
-            hitInfoVec.push_back(
+            hitInfoVec.emplace_back(
                 combat::HitInfo(false, Which(), CNP, 0_health, {}, { Conditions::Tripped }));
 
             hasTurnBeenConsumed = true;
@@ -228,7 +228,7 @@ namespace creature
                 auto const CONTENT_NAME_POS{ combat::ContentAndNamePos(
                     ss.str(), "'s body.", "", combat::NamePosition::TargetBefore) };
 
-                hitInfoVec.push_back(
+                hitInfoVec.emplace_back(
                     combat::HitInfo(false, Which(), CONTENT_NAME_POS, 0_health, {}, condsRemoved));
             }
             else
@@ -256,7 +256,7 @@ namespace creature
                 const combat::ContentAndNamePos CNP(
                     "The poison in ", ss.str(), "", combat::NamePosition::TargetBefore);
 
-                hitInfoVec.push_back(combat::HitInfo(
+                hitInfoVec.emplace_back(combat::HitInfo(
                     true, Which(), CNP, DAMAGE_FINAL, condsAddedVec, condsRemovedVec));
             }
         }

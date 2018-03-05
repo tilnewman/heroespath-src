@@ -144,16 +144,18 @@ namespace sfml_util
     void FontManager::Fill()
     {
         // Note:  Keep order in sync with enum FontManager::Fonts
-        fontUVec_.push_back(std::make_unique<sf::Font>(LoadFont("/euler/euler.otf")));
-        fontUVec_.push_back(std::make_unique<sf::Font>(LoadFont("/gentium-plus/gentium-plus.ttf")));
-        fontUVec_.push_back(
+        fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/euler/euler.otf")));
+        fontUVec_.emplace_back(
+            std::make_unique<sf::Font>(LoadFont("/gentium-plus/gentium-plus.ttf")));
+        fontUVec_.emplace_back(
             std::make_unique<sf::Font>(LoadFont("/goudy-bookletter/goudy-bookletter.otf")));
-        fontUVec_.push_back(
+        fontUVec_.emplace_back(
             std::make_unique<sf::Font>(LoadFont("/modern-antiqua/modern-antiqua.ttf")));
-        fontUVec_.push_back(
+        fontUVec_.emplace_back(
             std::make_unique<sf::Font>(LoadFont("/queen-country/queen-country.ttf")));
-        fontUVec_.push_back(std::make_unique<sf::Font>(LoadFont("/quill-sword/quillsword.ttf")));
-        fontUVec_.push_back(std::make_unique<sf::Font>(LoadFont("/valley-forge/valleyforge.ttf")));
+        fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/quill-sword/quillsword.ttf")));
+        fontUVec_.emplace_back(
+            std::make_unique<sf::Font>(LoadFont("/valley-forge/valleyforge.ttf")));
     }
 
     void FontManager::Empty() { fontUVec_.clear(); }

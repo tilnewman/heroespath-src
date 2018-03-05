@@ -248,7 +248,7 @@ namespace creature
             title::Warehouse::Get(E)->Change(this);
         }
 
-        titlesVec_.push_back(E);
+        titlesVec_.emplace_back(E);
     }
 
     const TitlePVec_t Creature::TitlesPVec() const
@@ -256,7 +256,7 @@ namespace creature
         TitlePVec_t titlePVec;
 
         for (auto const NEXT_TITLE_ENUM : titlesVec_)
-            titlePVec.push_back(title::Warehouse::Get(NEXT_TITLE_ENUM));
+            titlePVec.emplace_back(title::Warehouse::Get(NEXT_TITLE_ENUM));
 
         return titlePVec;
     }
@@ -312,7 +312,7 @@ namespace creature
         // verify the condition is not already in the list
         if (conditionsVec_.end() == std::find(conditionsVec_.begin(), conditionsVec_.end(), E))
         {
-            conditionsVec_.push_back(E);
+            conditionsVec_.emplace_back(E);
 
             // make the change to the creature
             if (ALLOW_CHANGES)
@@ -334,7 +334,7 @@ namespace creature
         {
             if (NEXT_CONDITION_ENUM == E)
             {
-                conditionsToRemoveVec.push_back(NEXT_CONDITION_ENUM);
+                conditionsToRemoveVec.emplace_back(NEXT_CONDITION_ENUM);
             }
         }
 
@@ -381,7 +381,7 @@ namespace creature
         ConditionPVec_t conditionPVec;
 
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
-            conditionPVec.push_back(condition::Warehouse::Get(NEXT_CONDITION_ENUM));
+            conditionPVec.emplace_back(condition::Warehouse::Get(NEXT_CONDITION_ENUM));
 
         return conditionPVec;
     }
@@ -1136,7 +1136,7 @@ namespace creature
         {
             if (NEXT_ITEM_PTR->Category() & item::category::Armor)
             {
-                armorItemsPVec.push_back(NEXT_ITEM_PTR);
+                armorItemsPVec.emplace_back(NEXT_ITEM_PTR);
             }
         }
 
@@ -1230,7 +1230,7 @@ namespace creature
 
         for (auto const NEXT_SPELL_TYPE : spellsVec_)
         {
-            spellsPVec.push_back(spell::Warehouse::Get(NEXT_SPELL_TYPE));
+            spellsPVec.emplace_back(spell::Warehouse::Get(NEXT_SPELL_TYPE));
         }
 
         return spellsPVec;
@@ -1240,7 +1240,7 @@ namespace creature
     {
         if (std::find(spellsVec_.begin(), spellsVec_.end(), E) == spellsVec_.end())
         {
-            spellsVec_.push_back(E);
+            spellsVec_.emplace_back(E);
             return true;
         }
         else
@@ -1326,7 +1326,7 @@ namespace creature
 
         for (auto const NEXT_SONG_ENUM : songsVec_)
         {
-            songsPVec.push_back(song::Warehouse::Get(NEXT_SONG_ENUM));
+            songsPVec.emplace_back(song::Warehouse::Get(NEXT_SONG_ENUM));
         }
 
         return songsPVec;
@@ -1336,7 +1336,7 @@ namespace creature
     {
         if (std::find(songsVec_.begin(), songsVec_.end(), E) == songsVec_.end())
         {
-            songsVec_.push_back(E);
+            songsVec_.emplace_back(E);
             return true;
         }
         else
@@ -1397,7 +1397,7 @@ namespace creature
         if (WILL_APPLY)
         {
             ENCHANTMENT_PTR->CreatureChangeApply(this);
-            enchantmentsPVec_.push_back(ENCHANTMENT_PTR);
+            enchantmentsPVec_.emplace_back(ENCHANTMENT_PTR);
             ReCalculateTraitBonuses();
         }
         else
@@ -1576,7 +1576,7 @@ namespace creature
         {
             if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
             {
-                ssNonBPWeaponsPVec.push_back(NEXT_ITEM_PTR);
+                ssNonBPWeaponsPVec.emplace_back(NEXT_ITEM_PTR);
             }
         }
 
@@ -1585,7 +1585,7 @@ namespace creature
 
         if (ssNonBPWeaponsPVec.empty() == false)
         {
-            weaponsPVecVec.push_back(ssNonBPWeaponsPVec);
+            weaponsPVecVec.emplace_back(ssNonBPWeaponsPVec);
         }
 
         //...if the creature is a spellcaster then wands are considered a separate weapon set/vec
@@ -1597,7 +1597,7 @@ namespace creature
 
             if (NOT_BROKEN_WANDS_PVEC.empty() == false)
             {
-                weaponsPVecVec.push_back(NOT_BROKEN_WANDS_PVEC);
+                weaponsPVecVec.emplace_back(NOT_BROKEN_WANDS_PVEC);
             }
         }
 
@@ -1609,13 +1609,13 @@ namespace creature
                 && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Bite) == 0)
                 && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Claws) == 0))
             {
-                ssBPNonBCWeaponsPVec.push_back(NEXT_ITEM_PTR);
+                ssBPNonBCWeaponsPVec.emplace_back(NEXT_ITEM_PTR);
             }
         }
 
         if (ssBPNonBCWeaponsPVec.empty() == false)
         {
-            weaponsPVecVec.push_back(ssBPNonBCWeaponsPVec);
+            weaponsPVecVec.emplace_back(ssBPNonBCWeaponsPVec);
         }
 
         // the equipped body part weapons that ARE bite/claws always come after
@@ -1626,13 +1626,13 @@ namespace creature
                 && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Bite)
                     || (NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Claws)))
             {
-                ssBPBCWeaponsPVec.push_back(NEXT_ITEM_PTR);
+                ssBPBCWeaponsPVec.emplace_back(NEXT_ITEM_PTR);
             }
         }
 
         if (ssBPBCWeaponsPVec.empty() == false)
         {
-            weaponsPVecVec.push_back(ssBPBCWeaponsPVec);
+            weaponsPVecVec.emplace_back(ssBPBCWeaponsPVec);
         }
 
         return weaponsPVecVec;

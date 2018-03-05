@@ -147,7 +147,7 @@ namespace combat
                         Conditions::Panic, creatureDefendingPtrC, hitInfoVec, condsRemovedVec);
 
                     creatureDefendingPtrC->ConditionAdd(Conditions::Daunted);
-                    condsAddedVec.push_back(Conditions::Daunted);
+                    condsAddedVec.emplace_back(Conditions::Daunted);
                 }
             }
 
@@ -185,7 +185,7 @@ namespace combat
         {
             creatureDefendingPtrC->HealthCurrentSet(0_health);
             creatureDefendingPtrC->ConditionAdd(Conditions::Dead);
-            condsAddedVec.push_back(Conditions::Dead);
+            condsAddedVec.emplace_back(Conditions::Dead);
 
             auto turnInfo{ combat::Encounter::Instance()->GetTurnInfoCopy(creatureDefendingPtrC) };
             turnInfo.SetIsFlying(false);
@@ -224,7 +224,7 @@ namespace combat
                 creatureDefendingPtrC->HealthCurrentSet(1_health);
 
                 creatureDefendingPtrC->ConditionAdd(Conditions::Unconscious);
-                condsAddedVec.push_back(Conditions::Unconscious);
+                condsAddedVec.emplace_back(Conditions::Unconscious);
 
                 RemoveAddedConditions(
                     { Conditions::Dazed,
@@ -350,7 +350,7 @@ namespace combat
                 }
 
                 creatureDefendingPtrC->ConditionAdd(NEXT_COND_ENUM);
-                condsAddedVecParam.push_back(NEXT_COND_ENUM);
+                condsAddedVecParam.emplace_back(NEXT_COND_ENUM);
             }
         }
     }
@@ -388,7 +388,7 @@ namespace combat
         if (creaturePtrC->HasCondition(COND_ENUM))
         {
             creaturePtrC->ConditionRemove(COND_ENUM);
-            condsRemovedVec.push_back(COND_ENUM);
+            condsRemovedVec.emplace_back(COND_ENUM);
             return true;
         }
         else
@@ -452,7 +452,7 @@ namespace combat
 
                 const HitInfo HIT_INFO(false, SPELL_CPTR, CNP);
 
-                creatureEffectVec.push_back(
+                creatureEffectVec.emplace_back(
                     CreatureEffect(nextCreatureCastUponPtr, HitInfoVec_t(1, HIT_INFO)));
             }
             else
@@ -482,7 +482,7 @@ namespace combat
                         condsRemovedVec);
                 }
 
-                hitInfoVec.push_back(HitInfo(
+                hitInfoVec.emplace_back(HitInfo(
                     DID_SPELL_SUCCEED,
                     SPELL_CPTR,
                     actionPhraseCNP,
@@ -490,7 +490,7 @@ namespace combat
                     condsAddedVec,
                     condsRemovedVec));
 
-                creatureEffectVec.push_back(CreatureEffect(nextCreatureCastUponPtr, hitInfoVec));
+                creatureEffectVec.emplace_back(CreatureEffect(nextCreatureCastUponPtr, hitInfoVec));
 
                 // update target's TurnInfo
                 auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(nextCreatureCastUponPtr) };
@@ -597,7 +597,7 @@ namespace combat
 
                 const HitInfo HIT_INFO(false, SONG_CPTR, CNP);
 
-                creatureEffectVec.push_back(
+                creatureEffectVec.emplace_back(
                     CreatureEffect(nextCreatureCastUponPtr, HitInfoVec_t(1, HIT_INFO)));
             }
             else
@@ -627,7 +627,7 @@ namespace combat
                         condsRemovedVec);
                 }
 
-                hitInfoVec.push_back(HitInfo(
+                hitInfoVec.emplace_back(HitInfo(
                     DID_SONG_SUCCEED,
                     SONG_CPTR,
                     actionPhraseCNP,
@@ -635,7 +635,7 @@ namespace combat
                     condsAddedVec,
                     condsRemovedVec));
 
-                creatureEffectVec.push_back(CreatureEffect(nextCreatureCastUponPtr, hitInfoVec));
+                creatureEffectVec.emplace_back(CreatureEffect(nextCreatureCastUponPtr, hitInfoVec));
 
                 // handle TurnInfo
                 auto turnInfo{ Encounter::Instance()->GetTurnInfoCopy(nextCreatureCastUponPtr) };
@@ -730,7 +730,7 @@ namespace combat
             if (creatureDefendingPtrC->HasCondition(Conditions::Tripped))
             {
                 creatureDefendingPtrC->ConditionRemove(Conditions::Tripped);
-                condsRemovedVec.push_back(Conditions::Tripped);
+                condsRemovedVec.emplace_back(Conditions::Tripped);
             }
 
             HandleDamage(
@@ -823,7 +823,7 @@ namespace combat
 
                 const HitInfo HIT_INFO(false, HitType::Roar, CNP);
 
-                creatureEffectsVec.push_back(
+                creatureEffectsVec.emplace_back(
                     CreatureEffect(NEXT_DEFEND_CREATURE_PTR, HitInfoVec_t(1, HIT_INFO)));
 
                 continue;
@@ -870,7 +870,7 @@ namespace combat
                     creature::CondEnumVec_t(1, Conditions::Panic),
                     creature::CondEnumVec_t());
 
-                creatureEffectsVec.push_back(
+                creatureEffectsVec.emplace_back(
                     CreatureEffect(NEXT_DEFEND_CREATURE_PTR, HitInfoVec_t(1, HIT_INFO)));
             }
             else
@@ -880,7 +880,7 @@ namespace combat
 
                 const HitInfo HIT_INFO(false, HitType::Roar, CNP);
 
-                creatureEffectsVec.push_back(
+                creatureEffectsVec.emplace_back(
                     CreatureEffect(NEXT_DEFEND_CREATURE_PTR, HitInfoVec_t(1, HIT_INFO)));
             }
         }
@@ -963,10 +963,10 @@ namespace combat
             HandleDamage(
                 nextCreatureHurtPtr, hitInfoVec, HEALTH_ADJ, condsAddedVec, condsRemovedVec);
 
-            hitInfoVec.push_back(
+            hitInfoVec.emplace_back(
                 HitInfo(HEALTH_ADJ, TRAP.HitVerb(), condsAddedVec, condsRemovedVec));
 
-            creatureEffectVec.push_back(CreatureEffect(nextCreatureHurtPtr, hitInfoVec));
+            creatureEffectVec.emplace_back(CreatureEffect(nextCreatureHurtPtr, hitInfoVec));
         }
 
         return FightResult(creatureEffectVec);
@@ -993,7 +993,7 @@ namespace combat
             if (NEXT_CHARACTER_PTR->IsAlive()
                 && (NEXT_CHARACTER_PTR != creaturePickingTheLockPtr_C))
             {
-                creaturesHurtPtrs.push_back(NEXT_CHARACTER_PTR);
+                creaturesHurtPtrs.emplace_back(NEXT_CHARACTER_PTR);
                 ++numCharactersAdded;
             }
         }
@@ -1020,7 +1020,7 @@ namespace combat
                     creatureDefendingPtrC,
                     WILL_FORCE_HIT) };
 
-                hitInfoVec.push_back(NEXT_HIT_INFO);
+                hitInfoVec.emplace_back(NEXT_HIT_INFO);
 
                 if (NEXT_HIT_INFO.CondsAddedContains(creature::Conditions::Dead)
                     || creatureDefendingPtrC->HasCondition(creature::Conditions::Dead))

@@ -170,7 +170,7 @@ namespace sfml_util
         }
     }
 
-    void Loop::AddStage(IStagePtr_t stageSPtr) { stagePVec_.push_back(stageSPtr); }
+    void Loop::AddStage(IStagePtr_t stageSPtr) { stagePVec_.emplace_back(stageSPtr); }
 
     void Loop::FreeAllStages()
     {

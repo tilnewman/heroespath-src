@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValues)
         ts::IntVec_t countingValues;
         for (int i{ 0 }; i <= VALUE; ++i)
         {
-            countingValues.push_back(i);
+            countingValues.emplace_back(i);
         }
 
         BOOST_CHECK_MESSAGE(
@@ -112,10 +112,10 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithOneDuplicate)
         {
             if (i == 0)
             {
-                countingValuesWithDuplicate.push_back(i);
+                countingValuesWithDuplicate.emplace_back(i);
             }
 
-            countingValuesWithDuplicate.push_back(i);
+            countingValuesWithDuplicate.emplace_back(i);
         }
 
         BOOST_CHECK_MESSAGE(
@@ -132,8 +132,8 @@ BOOST_AUTO_TEST_CASE(isUnique_CountingValuesWithMultDuplicate)
         ts::IntVec_t countingValuesWithDuplicate;
         for (int i{ 0 }; i <= VALUE; ++i)
         {
-            countingValuesWithDuplicate.push_back(i);
-            countingValuesWithDuplicate.push_back(i);
+            countingValuesWithDuplicate.emplace_back(i);
+            countingValuesWithDuplicate.emplace_back(i);
         }
 
         BOOST_CHECK_MESSAGE(
@@ -204,7 +204,7 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValues)
         ts::IntVec_t countingValues;
         for (int i{ 0 }; i <= VALUE; ++i)
         {
-            countingValues.push_back(i);
+            countingValues.emplace_back(i);
         }
 
         BOOST_CHECK_MESSAGE(
@@ -222,10 +222,10 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithOneDuplicate)
         {
             if (VALUE == 0)
             {
-                countingValuesWithDuplicate.push_back(i);
+                countingValuesWithDuplicate.emplace_back(i);
             }
 
-            countingValuesWithDuplicate.push_back(i);
+            countingValuesWithDuplicate.emplace_back(i);
         }
 
         BOOST_CHECK_MESSAGE(
@@ -242,8 +242,8 @@ BOOST_AUTO_TEST_CASE(isSorted_CountingValuesWithMultDuplicate)
         ts::IntVec_t countingValuesWithDuplicate;
         for (int i{ 0 }; i <= VALUE; ++i)
         {
-            countingValuesWithDuplicate.push_back(i);
-            countingValuesWithDuplicate.push_back(i);
+            countingValuesWithDuplicate.emplace_back(i);
+            countingValuesWithDuplicate.emplace_back(i);
         }
 
         BOOST_CHECK_MESSAGE(

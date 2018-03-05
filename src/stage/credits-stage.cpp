@@ -166,13 +166,13 @@ namespace stage
         trackingRect.width -= (CREDIT_BOX_INNER_PAD_ * 2.0f);
         trackingRect.height = 0.0f;
 
-        creditSVec_.push_back(
+        creditSVec_.emplace_back(
             std::make_shared<Credit>(trackingRect, "Game Design", "Ziesche Til Newman"));
 
-        creditSVec_.push_back(
+        creditSVec_.emplace_back(
             std::make_shared<Credit>(trackingRect, "Programming", "Ziesche Til Newman"));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             " ",
             "Special thanks to Laurent Gomila for the superb SFML\n(Simple Fast Multimedia "
@@ -182,12 +182,13 @@ namespace stage
             "media-images-logos-sfml",
             sfml_util::MapByRes(0.5f, 1.5f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(trackingRect, "Art", "Ziesche Til Newman"));
+        creditSVec_.emplace_back(
+            std::make_shared<Credit>(trackingRect, "Art", "Ziesche Til Newman"));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect, "Rune Symbols and Other Designs", "Angela Diegel"));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "User Interface Art",
             "RPG GUI Construction Kit v1.0\nPosted on OpenGameArt.org by "
@@ -196,7 +197,7 @@ namespace stage
             "images provided.\nThis excellent artwork is the foundation\nof this game's GUI look "
             "and feel."));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Smoke Animation",
             "Posted on OpenGameArt.org by MrBeast\nwww.opengameart.org/users/mrbeast\nUnder the "
@@ -206,7 +207,7 @@ namespace stage
             sfml_util::MapByRes(1.0f, 3.0f),
             0.05f));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Inferno Animation",
             "Posted on OpenGameArt.org by Retimer\nWrath Games "
@@ -216,7 +217,7 @@ namespace stage
             sfml_util::MapByRes(0.7f, 2.0f),
             0.05f));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Candle Flame Animation",
             "Posted on OpenGameArt.org by Para\nwww.opengameart.org/users/para\nUnder the Public "
@@ -226,7 +227,7 @@ namespace stage
             sfml_util::MapByRes(1.0f, 3.0f),
             0.05f));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Various Spell Animations",
             "Posted on OpenGameArt.org by Mikodrak\nwww.opengameart.org/users/Mikodrak\nUnder the "
@@ -237,14 +238,14 @@ namespace stage
             sfml_util::MapByRes(1.0f, 3.0f),
             0.075f));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Terrain Art",
             "Daniel Cook\nA beautiful (and free!) (for any use) set of tiles.\nwww.lostgarden.com",
             "media-images-logos-terrain",
             sfml_util::MapByRes(0.75f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Whispers of Avalon Grassland Tileset",
             "Posted on OpenGameArt.org by Leonard "
@@ -254,7 +255,7 @@ namespace stage
             "media-images-logos-avalontrees",
             sfml_util::MapByRes(0.75f, 1.75f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Manaworld Trees Tileset",
             "Posted on OpenGameArt.org by Leonard "
@@ -264,7 +265,7 @@ namespace stage
             "media-images-logos-manaworldtrees",
             sfml_util::MapByRes(0.5f, 1.5f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Bleed's Rendered Trees",
             "Posted on OpenGameArt.org by Bleed as Tree Collection "
@@ -274,7 +275,7 @@ namespace stage
             "media-images-logos-renderedtrees",
             sfml_util::MapByRes(0.5f, 1.5f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Hi-Res Paper Textures",
             "Posted on OpenGameArt.org by qubodup, Created by "
@@ -283,14 +284,14 @@ namespace stage
             "media-images-logos-darkwoodpaper",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Map Editing Software",
             "Thorbjorn Lindeijer for Tiled\nAn incredible free mapping utility.\nwww.mapeditor.org",
             "media-images-logos-tiled",
             sfml_util::MapByRes(0.75f, 1.5f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Inventory Sound Effects",
             "Posted on OpenGameArt.org by Hansjorg Malthaner\nUnder the Attribution-ShareAlike "
@@ -298,7 +299,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Inventory Sound Effects",
             "Posted on OpenGameArt.org as 'Little Robot Sound "
@@ -307,7 +308,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "User Interface Sound Effects",
             "Posted on OpenGameArt.org as 'UI SFX Set' by Kenney Vleugels\nwww.kenney.nl\nUnder "
@@ -316,7 +317,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Wind Gust Sound Effects",
             "Posted on OpenGameArt.org by IgnasD\nwww.crystalgames.space\nUnder the "
@@ -325,7 +326,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Storm Winds Sound Effects",
             "Posted on OpenGameArt.org by Luke\nwww.rustltd.com\nUnder the Public Domain "
@@ -333,7 +334,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "\"Battle\"\n\"Castlecall\"\n\"Deal with the Devil\"\n\"Menu Loop\"\n\"Mini Epic "
             "Theme\"\n\"Runaway\"\n\"Steeps of Destiny\"\n\"Treasures of Ancient Dungeon\"\n\"We "
@@ -344,7 +345,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "\"Old Crypt\"\n\"Dramatic Event 2\"\n\"Radakan Menu\"",
             "Janne Hanhisuanto for Radakan\nUnder the Attribution-ShareAlike Unported 3.0 "
@@ -353,7 +354,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "\"spell.ogg\"\n\"curse.ogg\"\n\"enchant.ogg\"\n\"freeze2.ogg\"\n\"heal."
             "ogg\"\n\"magicfail.ogg\"\n\"water.ogg\"",
@@ -364,7 +365,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "\"spell1_0.wav\"\n\"spell2.wav\"\n\"spell3.wav\"\n\"whoosh1.wav\"\n\"whoosh2."
             "wav\"\n\"foom_0.wav\"",
@@ -375,7 +376,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "\"spell_00.wav\"\n\"spell_02.wav\"\n\"spell_03.wav\"\n\"Slide_Soft_00.wav\"",
             "These and other sound effects posted on OpenGameArt.org by \"Little Robot Sound "
@@ -385,7 +386,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "\"Omens\"\n\"The Plot Thickens\"",
             "Eliot Corley from Chaos is Harmony\nUnder the Attribution Unported 3.0 "
@@ -394,7 +395,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "\"Almost Out\"\n\"Assassin's Assault\"\n\"Unforgiving Lands\"",
             "Posted on OpenGameArt.org by HorrorPen\nwww.opengameart.org/users/horrorpen\nUnder "
@@ -403,7 +404,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "\"DrumLoop 1\"\n\"DrumLoop 1 64BPM\"",
             "Written and produced by Ove Melaa\nOmsofware@hotmail.com\nPosted on OpenGameArt.org "
@@ -413,7 +414,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "\"Regular Battle\"",
             "Posted on OpenGameArt.org by Telaron\nwww.opengameart.org/users/telaron\nUnder the "
@@ -422,7 +423,7 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "\"Something is Near\"\n\"Intro of Dragons\"\n\"Small Epic\"\n\"PYC\"",
             "Music by Marcelo "
@@ -433,41 +434,41 @@ namespace stage
             "media-images-logos-sound",
             sfml_util::MapByRes(1.0f, 2.0f)));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Neo Euler\"",
             sfml_util::FontManager::Instance()->Font_Default1(),
             "Copyright (c) 2009, 2010 Khaled Hosny\nkhaledhosny@eglug.org\nUnder the SIL Open Font "
             "License v1.1\nwww.scripts.sil.org/OFL"));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Goudy Bookletter 1911 \"",
             sfml_util::FontManager::Instance()->Font_Typical(),
             "by Barry Schwartz\nwww.crudfactory.com\nUnder the public domain (no copyright)"));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Gentium Plus\"",
             sfml_util::FontManager::Instance()->Font_Default2(),
             "Copyright (c) SIL International, 2003-2014\nwww.scripts.sil.org/Gentium\nUnder the "
             "SIL Open Font License v1.1\nwww.scripts.sil.org/OFL"));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Modern Antiqua\"",
             sfml_util::FontManager::Instance()->Font_BigFlavor1(),
             "Copyright (c) 2011, wmk69 (wmk69@o2.pl)\nFrom www.openfontlibrary.org\nUnder the SIL "
             "Open Font License v1.1\nwww.scripts.sil.org/OFL"));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Queen & Country\"",
             sfml_util::FontManager::Instance()->Font_BigFlavor3(),
             "by Daniel Zadorozny\n2009 Iconian Fonts\nwww.iconian.com\nThis font is e-mailware.  "
             "If you like it,\nplease e-mail the author at iconian@aol.com."));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Valley Forge\"",
             sfml_util::FontManager::Instance()->Font_BigFlavor2(),
@@ -475,7 +476,7 @@ namespace stage
             "non-commercial uses\"\nThis font is e-mailware.  If you like it,\nplease e-mail the "
             "author at iconian@aol.com."));
 
-        creditSVec_.push_back(std::make_shared<Credit>(
+        creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
             "Font \"Quill Sword\"",
             sfml_util::FontManager::Instance()->Font_NumbersDefault1(),

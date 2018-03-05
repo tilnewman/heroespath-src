@@ -705,7 +705,7 @@ namespace creature
             case race::Ramonaut:
             case race::Boar:
             {
-                v.push_back(origin_type::Embryo);
+                v.emplace_back(origin_type::Embryo);
                 break;
             }
             case race::Demon:
@@ -714,7 +714,7 @@ namespace creature
             case race::Bog:
             case race::Plant:
             {
-                v.push_back(origin_type::Seeds);
+                v.emplace_back(origin_type::Seeds);
                 break;
             }
             case race::Pixie:
@@ -722,8 +722,8 @@ namespace creature
             case race::Troll:
             case race::Hydra:
             {
-                v.push_back(origin_type::Egg);
-                v.push_back(origin_type::Seeds);
+                v.emplace_back(origin_type::Egg);
+                v.emplace_back(origin_type::Seeds);
                 break;
             }
             case race::LizardWalker:
@@ -735,7 +735,7 @@ namespace creature
             case race::Cobra:
             case race::Wyvern:
             {
-                v.push_back(origin_type::Egg);
+                v.emplace_back(origin_type::Egg);
                 break;
             }
             case race::Shade:
@@ -762,11 +762,11 @@ namespace creature
 
         if (ROLE == role::Tendrilus)
         {
-            v.push_back(origin_type::Seeds);
+            v.emplace_back(origin_type::Seeds);
         }
         else if ((ROLE == role::Wing) || (ROLE == role::Whelp) || (ROLE == role::Tendrilus))
         {
-            v.push_back(origin_type::Egg);
+            v.emplace_back(origin_type::Egg);
         }
 
         std::sort(v.begin(), v.end());

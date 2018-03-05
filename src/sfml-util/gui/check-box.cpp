@@ -216,7 +216,7 @@ namespace sfml_util
                 std::ostringstream ss;
                 ss << NAME << "'s #" << i + 1;
 
-                checkBoxSVec_.push_back(std::make_shared<CheckBox>(
+                checkBoxSVec_.emplace_back(std::make_shared<CheckBox>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,
@@ -270,7 +270,7 @@ namespace sfml_util
             {
                 std::ostringstream ss;
                 ss << NAME << "'s #" << i + 1;
-                checkBoxSVec_.push_back(std::make_shared<CheckBox>(
+                checkBoxSVec_.emplace_back(std::make_shared<CheckBox>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,
@@ -327,7 +327,7 @@ namespace sfml_util
                 std::ostringstream ss;
                 ss << NAME << "'s #" << i + 1;
 
-                checkBoxSVec_.push_back(std::make_shared<CheckBox>(
+                checkBoxSVec_.emplace_back(std::make_shared<CheckBox>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,
@@ -364,7 +364,7 @@ namespace sfml_util
             {
                 if (false == checkBoxSVec_[i]->IsInFirstState())
                 {
-                    checkedBoxNumbers.push_back(i);
+                    checkedBoxNumbers.emplace_back(i);
                 }
             }
 
@@ -380,7 +380,7 @@ namespace sfml_util
             {
                 if (false == checkBoxSVec_[i]->IsInFirstState())
                 {
-                    checkedBoxes.push_back(checkBoxSVec_[i]);
+                    checkedBoxes.emplace_back(checkBoxSVec_[i]);
                 }
             }
 

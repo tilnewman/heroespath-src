@@ -166,7 +166,7 @@ namespace stage
 
             const sfml_util::gui::MouseTextInfo MOUSE_TEXT_INFO{ TEXT_INFO };
 
-            namesButtonUVec_.push_back(std::make_unique<sfml_util::gui::FourStateButton>(
+            namesButtonUVec_.emplace_back(std::make_unique<sfml_util::gui::FourStateButton>(
                 "AdventureStage'sCharacterList'sNameButtonFor_" + CHARACTER_PTR->Name(),
                 0.0f, // position set in SetupPositions_NameButtons()
                 0.0f,
@@ -214,7 +214,7 @@ namespace stage
                 0.0f,
                 0.0f);
 
-            healthTextRegionsUVec_.push_back(std::make_unique<sfml_util::gui::TextRegion>(
+            healthTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
                 "AdventureStage'sCharacterList'sHealthTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT));
@@ -250,7 +250,7 @@ namespace stage
                 0.0f,
                 0.0f);
 
-            manaTextRegionsUVec_.push_back(std::make_unique<sfml_util::gui::TextRegion>(
+            manaTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
                 "AdventureStage'sCharacterList'sManaTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT));
@@ -285,7 +285,7 @@ namespace stage
                 conditionColumnRects_[i].width - (CELL_TEXT_LEFT_SPACER_ * 2.0f),
                 conditionColumnRects_[i].height);
 
-            condsTextRegionsUVec_.push_back(std::make_unique<sfml_util::gui::TextRegion>(
+            condsTextRegionsUVec_.emplace_back(std::make_unique<sfml_util::gui::TextRegion>(
                 "AdventureStageCharacterList'sConditionTextFor_" + CHARACTER_PTR->Name(),
                 TEXT_INFO,
                 RECT));
@@ -326,7 +326,7 @@ namespace stage
                 TALLEST_NAME_BUTTON_HEIGHT,
                 TALLEST_NAME_BUTTON_HEIGHT);
 
-            imageColumnRects_.push_back(IMAGE_RECT);
+            imageColumnRects_.emplace_back(IMAGE_RECT);
         }
     }
 
@@ -356,7 +356,7 @@ namespace stage
                 LONGEST_NAME_BUTTON_WIDTH,
                 IMAGE_RECT.height);
 
-            nameColumnRects_.push_back(HEALTH_RECT);
+            nameColumnRects_.emplace_back(HEALTH_RECT);
         }
     }
 
@@ -372,7 +372,7 @@ namespace stage
                 HEALTH_COLUMN_WIDTH_,
                 NAME_RECT.height);
 
-            healthColumnRects_.push_back(HEALTH_RECT);
+            healthColumnRects_.emplace_back(HEALTH_RECT);
         }
     }
 
@@ -388,7 +388,7 @@ namespace stage
                 MANA_COLUMN_WIDTH_,
                 HEALTH_RECT.height);
 
-            manaColumnRects_.push_back(MANA_RECT);
+            manaColumnRects_.emplace_back(MANA_RECT);
         }
     }
 
@@ -413,7 +413,7 @@ namespace stage
                 COND_COLUMN_WIDTH,
                 MANA_RECT.height);
 
-            conditionColumnRects_.push_back(COND_RECT);
+            conditionColumnRects_.emplace_back(COND_RECT);
         }
     }
 
@@ -505,10 +505,10 @@ namespace stage
                     auto const HORIZ_LINE_TOP{ imageColumnRects_[i].top + nameColumnRects_[i].height
                                                + t };
 
-                    lineVerts_.push_back(sf::Vertex(
+                    lineVerts_.emplace_back(sf::Vertex(
                         sf::Vector2f(HORIZ_LINE_LEFT, HORIZ_LINE_TOP), FadedDarkColor_Line()));
 
-                    lineVerts_.push_back(sf::Vertex(
+                    lineVerts_.emplace_back(sf::Vertex(
                         sf::Vector2f(HORIZ_LINE_RIGHT, HORIZ_LINE_TOP), FadedDarkColor_Line()));
                 }
             }

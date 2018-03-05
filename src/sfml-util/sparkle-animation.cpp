@@ -195,7 +195,7 @@ namespace sfml_util
                     }
                 }() };
 
-                sparkleVec_.push_back(Sparkle(
+                sparkleVec_.emplace_back(Sparkle(
                     *TEXTURE_PTR,
                     sf::Vector2f(POS_LEFT, POS_TOP),
                     ValueWithRandomVariance(SPEED_BASE_, SPEED_VAR_RATIO_),

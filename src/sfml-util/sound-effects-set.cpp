@@ -78,7 +78,7 @@ namespace sfml_util
 
         for (int i(FIRST); i <= LAST; ++i)
         {
-            sfxEnums_.push_back(static_cast<sound_effect::Enum>(i));
+            sfxEnums_.emplace_back(static_cast<sound_effect::Enum>(i));
         }
 
         M_ASSERT_OR_LOGANDTHROW_SS(

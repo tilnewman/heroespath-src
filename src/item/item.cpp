@@ -112,7 +112,7 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ENCHANTMENT_PTR != nullptr), "item::Item::EnchantmentAdd() was given a null ptr.");
 
-        enchantmentsPVec_.push_back(ENCHANTMENT_PTR);
+        enchantmentsPVec_.emplace_back(ENCHANTMENT_PTR);
     }
 
     void Item::EnchantmentRemoveAndFree(creature::EnchantmentPtr_t enchantement_ptr)

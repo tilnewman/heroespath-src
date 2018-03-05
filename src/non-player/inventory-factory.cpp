@@ -338,7 +338,7 @@ namespace non_player
 
             if (CHANCES.boots.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(item::armor::ArmorFactory::Make_Boots(
+                itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Boots(
                     item::armor::base_type::Plain,
                     CHANCES.boots.RandomMaterialPri(),
                     CHANCES.boots.RandomMaterialSec()));
@@ -346,7 +346,7 @@ namespace non_player
 
             if (CHANCES.gloves.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(item::armor::ArmorFactory::Make_Gauntlets(
+                itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Gauntlets(
                     item::armor::base_type::Plain,
                     CHANCES.gloves.RandomMaterialPri(),
                     CHANCES.gloves.RandomMaterialSec()));
@@ -354,19 +354,19 @@ namespace non_player
 
             if (CHANCES.pants.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(item::armor::ArmorFactory::Make_Pants(
+                itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Pants(
                     item::armor::base_type::Plain, CHANCES.pants.RandomMaterialPri()));
             }
 
             if (CHANCES.shirt.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(item::armor::ArmorFactory::Make_Shirt(
+                itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Shirt(
                     item::armor::base_type::Plain, CHANCES.shirt.RandomMaterialPri()));
             }
 
             if (CHANCES.vest.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(item::armor::ArmorFactory::Make_Cover(
+                itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Cover(
                     item::armor::cover_type::Vest,
                     CHANCES.vest.RandomMaterialPri(),
                     CHANCES.vest.RandomMaterialSec()));
@@ -382,7 +382,7 @@ namespace non_player
                     "non_player::ownership::InventoryFactory::MakeItemSet_Clothing() failed to"
                         << " find \"" << COVER_TYPE << "\".");
 
-                itemsPtrVecPair.first.push_back(item::armor::ArmorFactory::Make_Cover(
+                itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Cover(
                     COVER_TYPE,
                     ITER->second.RandomMaterialPri(),
                     ITER->second.RandomMaterialSec()));
@@ -552,7 +552,7 @@ namespace non_player
                         break;
                     }
 
-                    itemsPtrVecPair.first.push_back(
+                    itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Knife(
                             IS_DAGGER,
                             knifeSize,
@@ -566,7 +566,7 @@ namespace non_player
                     const bool IS_QUARTERSTAFF(
                         misc::random::Float() < WEAPON_CHANCES.staff.is_quarterstaff);
 
-                    itemsPtrVecPair.first.push_back(
+                    itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Staff(
                             IS_QUARTERSTAFF,
                             WEAPON_CHANCES.staff.RandomMaterialPri(),
@@ -602,7 +602,7 @@ namespace non_player
                         materialSec = item::material::Steel;
                     }
 
-                    itemsPtrVecPair.first.push_back(
+                    itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Axe(
                             AXE_TYPE, MATERIAL_PRI, materialSec));
                     break;
@@ -638,7 +638,7 @@ namespace non_player
                         materialSec = item::material::Steel;
                     }
 
-                    itemsPtrVecPair.first.push_back(
+                    itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_BladedStaff(
                             BLADEDSTAFF_TYPE, MATERIAL_PRI, materialSec));
                     break;
@@ -670,7 +670,7 @@ namespace non_player
                         && (item::material::Nothing == materialSec))
                         materialSec = item::material::Steel;
 
-                    itemsPtrVecPair.first.push_back(
+                    itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Club(
                             CLUB_TYPE, MATERIAL_PRI, materialSec));
                     break;
@@ -695,7 +695,7 @@ namespace non_player
                             << "\" -but that weapon was not found in the original WEAPON_CHANCES "
                                "object.");
 
-                    itemsPtrVecPair.first.push_back(
+                    itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Projectile(
                             PROJECTILE_TYPE,
                             CITER->second.RandomMaterialPri(), //-V783
@@ -722,7 +722,7 @@ namespace non_player
                             << "\" -but that weapon was not found in the original WEAPON_CHANCES "
                                "object.");
 
-                    itemsPtrVecPair.first.push_back(
+                    itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Sword(
                             SWORD_TYPE,
                             CITER->second.RandomMaterialPri(),
@@ -748,7 +748,7 @@ namespace non_player
                             << "\" -but that weapon was not found in the original WEAPON_CHANCES "
                                "object.");
 
-                    itemsPtrVecPair.first.push_back(
+                    itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Whip(
                             WHIP_TYPE,
                             CITER->second.RandomMaterialPri(), //-V783
@@ -796,7 +796,7 @@ namespace non_player
 
             if (CHANCES.aventail.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(ArmorFactory::Instance()->Make_Aventail(
+                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Aventail(
                     CHANCES.aventail.RandomArmorBaseType(),
                     CHANCES.aventail.RandomMaterialPri(),
                     CHANCES.aventail.RandomMaterialSec()));
@@ -804,7 +804,7 @@ namespace non_player
 
             if (CHANCES.boots.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(ArmorFactory::Instance()->Make_Boots(
+                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Boots(
                     CHANCES.boots.RandomArmorBaseType(),
                     CHANCES.boots.RandomMaterialPri(),
                     CHANCES.boots.RandomMaterialSec()));
@@ -812,7 +812,7 @@ namespace non_player
 
             if (CHANCES.bracers.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(ArmorFactory::Instance()->Make_Bracer(
+                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Bracer(
                     CHANCES.bracers.RandomArmorBaseType(),
                     CHANCES.bracers.RandomMaterialPri(),
                     CHANCES.bracers.RandomMaterialSec()));
@@ -820,7 +820,7 @@ namespace non_player
 
             if (CHANCES.gauntlets.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(ArmorFactory::Instance()->Make_Gauntlets(
+                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Gauntlets(
                     CHANCES.gauntlets.RandomArmorBaseType(),
                     CHANCES.gauntlets.RandomMaterialPri(),
                     CHANCES.gauntlets.RandomMaterialSec()));
@@ -828,13 +828,13 @@ namespace non_player
 
             if (CHANCES.pants.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(ArmorFactory::Instance()->Make_Pants(
+                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Pants(
                     CHANCES.pants.RandomArmorBaseType(), CHANCES.pants.RandomMaterialSec()));
             }
 
             if (CHANCES.shirt.IsOwned())
             {
-                itemsPtrVecPair.first.push_back(ArmorFactory::Instance()->Make_Shirt(
+                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Shirt(
                     CHANCES.shirt.RandomArmorBaseType(), CHANCES.shirt.RandomMaterialSec()));
             }
 
@@ -852,7 +852,7 @@ namespace non_player
                         << cover_type::ToString(COVER_PAIR.first)
                         << "\", but that item was not found in the ARMOR_CHANCES.cover_map.");
 
-                itemsPtrVecPair.first.push_back(ArmorFactory::Instance()->Make_Cover(
+                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Cover(
                     COVER_PAIR.first,
                     COVER_CITER->second.RandomMaterialPri(),
                     COVER_CITER->second.RandomMaterialSec()));
@@ -872,7 +872,7 @@ namespace non_player
                         << helm_type::ToString(HELM_PAIR.first)
                         << "\", but that item was not found in the ARMOR_CHANCES.helm_map.");
 
-                itemsPtrVecPair.first.push_back(ArmorFactory::Instance()->Make_Helm(
+                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Helm(
                     HELM_PAIR.first,
                     HELM_CITER->second.RandomMaterialPri(),
                     HELM_CITER->second.RandomMaterialSec()));
@@ -894,14 +894,14 @@ namespace non_player
 
                 if (HAS_TWO_HANDED_WEAPON)
                 {
-                    itemsPtrVecPair.second.push_back(ArmorFactory::Instance()->Make_Shield(
+                    itemsPtrVecPair.second.emplace_back(ArmorFactory::Instance()->Make_Shield(
                         SHIELD_PAIR.first,
                         SHIELD_CITER->second.RandomMaterialPri(),
                         SHIELD_CITER->second.RandomMaterialSec()));
                 }
                 else
                 {
-                    itemsPtrVecPair.first.push_back(ArmorFactory::Instance()->Make_Shield(
+                    itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Shield(
                         SHIELD_PAIR.first,
                         SHIELD_CITER->second.RandomMaterialPri(),
                         SHIELD_CITER->second.RandomMaterialSec()));
@@ -920,31 +920,31 @@ namespace non_player
 
             if (CHANCES.has_bite)
             {
-                bodyWeaponsSVec.push_back(
+                bodyWeaponsSVec.emplace_back(
                     item::weapon::WeaponFactory::Instance()->Make_Bite(CHARACTER_PTR));
             }
 
             if (CHANCES.has_claws && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false))
             {
-                bodyWeaponsSVec.push_back(
+                bodyWeaponsSVec.emplace_back(
                     item::weapon::WeaponFactory::Instance()->Make_Claws(CHARACTER_PTR));
             }
 
             if (CHANCES.has_fists && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false)
                 && (CHANCES.has_claws == false))
             {
-                bodyWeaponsSVec.push_back(item::weapon::WeaponFactory::Instance()->Make_Fists());
+                bodyWeaponsSVec.emplace_back(item::weapon::WeaponFactory::Instance()->Make_Fists());
             }
 
             if (CHANCES.has_tendrils && (HAS_TWO_HANDED_WEAPON_EQUIPPED == false))
             {
-                bodyWeaponsSVec.push_back(
+                bodyWeaponsSVec.emplace_back(
                     item::weapon::WeaponFactory::Instance()->Make_Tendrils(CHARACTER_PTR));
             }
 
             if (CHANCES.has_breath)
             {
-                bodyWeaponsSVec.push_back(
+                bodyWeaponsSVec.emplace_back(
                     item::weapon::WeaponFactory::Instance()->Make_Breath(CHARACTER_PTR));
             }
 

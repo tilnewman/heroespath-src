@@ -49,18 +49,18 @@ namespace spell
             (spellsUVec_.empty()), "spell::Warehouse::Setup() was called twice.");
 
         // Note::Keep order in sync with spell::Spells::Enum
-        spellsUVec_.push_back(std::make_unique<Sparks>());
-        spellsUVec_.push_back(std::make_unique<Bandage>());
-        spellsUVec_.push_back(std::make_unique<Sleep>());
-        spellsUVec_.push_back(std::make_unique<Awaken>());
-        spellsUVec_.push_back(std::make_unique<Trip>());
-        spellsUVec_.push_back(std::make_unique<Lift>());
-        spellsUVec_.push_back(std::make_unique<Daze>());
-        spellsUVec_.push_back(std::make_unique<Panic>());
-        spellsUVec_.push_back(std::make_unique<ClearMind>());
-        spellsUVec_.push_back(std::make_unique<Poison>());
-        spellsUVec_.push_back(std::make_unique<Antidote>());
-        spellsUVec_.push_back(std::make_unique<PoisonCloud>());
+        spellsUVec_.emplace_back(std::make_unique<Sparks>());
+        spellsUVec_.emplace_back(std::make_unique<Bandage>());
+        spellsUVec_.emplace_back(std::make_unique<Sleep>());
+        spellsUVec_.emplace_back(std::make_unique<Awaken>());
+        spellsUVec_.emplace_back(std::make_unique<Trip>());
+        spellsUVec_.emplace_back(std::make_unique<Lift>());
+        spellsUVec_.emplace_back(std::make_unique<Daze>());
+        spellsUVec_.emplace_back(std::make_unique<Panic>());
+        spellsUVec_.emplace_back(std::make_unique<ClearMind>());
+        spellsUVec_.emplace_back(std::make_unique<Poison>());
+        spellsUVec_.emplace_back(std::make_unique<Antidote>());
+        spellsUVec_.emplace_back(std::make_unique<PoisonCloud>());
     }
 
     void Warehouse::Empty() { spellsUVec_.clear(); }

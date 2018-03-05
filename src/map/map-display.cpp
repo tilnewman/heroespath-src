@@ -521,7 +521,7 @@ namespace map
                 // get the texture/image this tile can be found in
                 const map::TilesPanel & TILES_PANEL{ TilesPanelFromId(TILE_NUM_ORIG) };
 
-                mapLayer.tiles_panel_vec.push_back(map::TilesPanelForLayers(
+                mapLayer.tiles_panel_vec.emplace_back(map::TilesPanelForLayers(
                     (TILES_PANEL.name == layout_.EmptyTilesPanelName()),
                     TILES_PANEL.texture_index));
 
@@ -793,7 +793,7 @@ namespace map
 
         for (auto const & ANIM_INFO : animInfoVec_)
         {
-            animUPtrVec_.push_back(sfml_util::AnimationFactory::Make(
+            animUPtrVec_.emplace_back(sfml_util::AnimationFactory::Make(
                 ANIM_INFO.which_anim,
                 ANIM_INFO.rect,
                 sfml_util::Animations::TimePerFrameSec(ANIM_INFO.which_anim)));
@@ -847,5 +847,5 @@ namespace map
             return MIN_VOLUME + ((1.0f - (DISTANCE_TO_PLAYER / DIFF_DISTANCE)) * DIFF_VOLUME);
         }
     }
-} // namespace map
-} // namespace heroespath
+}
+}

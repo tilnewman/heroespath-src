@@ -74,7 +74,7 @@ namespace misc
                 }
             }
 
-            pairs_.push_back(std::make_pair(KEY, Value_t()));
+            pairs_.emplace_back(std::make_pair(KEY, Value_t()));
             return pairs_[pairs_.size() - 1].second;
         }
 

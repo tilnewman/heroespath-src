@@ -338,7 +338,7 @@ namespace sfml_util
                 std::ostringstream ss;
                 ss << GetEntityName() << "'s #" << i + 1;
 
-                buttonSVec_.push_back(std::make_shared<RadioButton>(
+                buttonSVec_.emplace_back(std::make_shared<RadioButton>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,
@@ -387,7 +387,7 @@ namespace sfml_util
             {
                 std::ostringstream ss;
                 ss << GetEntityName() << "'s #" << i + 1;
-                buttonSVec_.push_back(std::make_shared<RadioButton>(
+                buttonSVec_.emplace_back(std::make_shared<RadioButton>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,
@@ -444,7 +444,7 @@ namespace sfml_util
                 sfml_util::gui::TextInfo nextTextInfo(TEXT_INFO);
                 nextTextInfo.text = LABEL_VEC[i];
 
-                buttonSVec_.push_back(std::make_shared<RadioButton>(
+                buttonSVec_.emplace_back(std::make_shared<RadioButton>(
                     ss.str(),
                     BRIGHTNESS,
                     POS_LEFT + OUTER_PAD,

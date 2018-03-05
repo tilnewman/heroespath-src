@@ -191,7 +191,7 @@ namespace spell
         else
         {
             creatureCastUponPtr->ConditionAdd(creature::Conditions::AsleepNatural);
-            condsAddedVec.push_back(creature::Conditions::AsleepNatural);
+            condsAddedVec.emplace_back(creature::Conditions::AsleepNatural);
             actionPhraseCNP = ActionPhrase();
             combat::Encounter::Instance()->SetIsFlying(creatureCastUponPtr, false);
             return true;
@@ -222,7 +222,7 @@ namespace spell
             if (creatureCastUponPtr->HasCondition(NEXT_COND_ENUM_TO_REMOVE))
             {
                 creatureCastUponPtr->ConditionRemove(NEXT_COND_ENUM_TO_REMOVE);
-                condsRemovedVec.push_back(NEXT_COND_ENUM_TO_REMOVE);
+                condsRemovedVec.emplace_back(NEXT_COND_ENUM_TO_REMOVE);
                 wereAnyCondsRemoved = true;
             }
         }
@@ -281,7 +281,7 @@ namespace spell
         else
         {
             creatureCastUponPtr->ConditionAdd(creature::Conditions::Tripped);
-            condsAddedVec.push_back(creature::Conditions::Tripped);
+            condsAddedVec.emplace_back(creature::Conditions::Tripped);
             actionPhraseCNP = ActionPhrase();
             return true;
         }
@@ -308,14 +308,14 @@ namespace spell
         if (creatureCastUponPtr->HasCondition(creature::Conditions::Tripped))
         {
             creatureCastUponPtr->ConditionRemove(creature::Conditions::Tripped);
-            condsRemovedVec.push_back(creature::Conditions::Tripped);
+            condsRemovedVec.emplace_back(creature::Conditions::Tripped);
             actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
             return true;
         }
         else if (creatureCastUponPtr->HasCondition(creature::Conditions::Pounced))
         {
             creatureCastUponPtr->ConditionRemove(creature::Conditions::Pounced);
-            condsRemovedVec.push_back(creature::Conditions::Pounced);
+            condsRemovedVec.emplace_back(creature::Conditions::Pounced);
             actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
             return true;
         }
@@ -357,7 +357,7 @@ namespace spell
         else
         {
             creatureCastUponPtr->ConditionAdd(creature::Conditions::Dazed);
-            condsAddedVec.push_back(creature::Conditions::Dazed);
+            condsAddedVec.emplace_back(creature::Conditions::Dazed);
             actionPhraseCNP = ActionPhrase();
             return true;
         }
@@ -390,7 +390,7 @@ namespace spell
         else
         {
             creatureCastUponPtr->ConditionAdd(creature::Conditions::Panic);
-            condsAddedVec.push_back(creature::Conditions::Panic);
+            condsAddedVec.emplace_back(creature::Conditions::Panic);
             actionPhraseCNP = ActionPhrase();
             return true;
         }
@@ -420,7 +420,7 @@ namespace spell
             if (creatureCastUponPtr->HasCondition(NEXT_COND_ENUM_TO_REMOVE))
             {
                 creatureCastUponPtr->ConditionRemove(NEXT_COND_ENUM_TO_REMOVE);
-                condsRemovedVec.push_back(NEXT_COND_ENUM_TO_REMOVE);
+                condsRemovedVec.emplace_back(NEXT_COND_ENUM_TO_REMOVE);
                 wereAnyCondsRemoved = true;
             }
         }
@@ -469,7 +469,7 @@ namespace spell
         else
         {
             creatureCastUponPtr->ConditionAdd(creature::Conditions::Poisoned);
-            condsAddedVec.push_back(creature::Conditions::Poisoned);
+            condsAddedVec.emplace_back(creature::Conditions::Poisoned);
             actionPhraseCNP = ActionPhrase();
             return true;
         }
@@ -492,7 +492,7 @@ namespace spell
         if (creatureCastUponPtr->HasCondition(creature::Conditions::Poisoned))
         {
             creatureCastUponPtr->ConditionRemove(creature::Conditions::Poisoned);
-            condsRemovedVec.push_back(creature::Conditions::Poisoned);
+            condsRemovedVec.emplace_back(creature::Conditions::Poisoned);
             actionPhraseCNP = ActionPhrase();
             return true;
         }
@@ -552,7 +552,7 @@ namespace spell
             if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
                 creatureCastUponPtr->ConditionAdd(creature::Conditions::Poisoned);
-                condsAddedVec.push_back(creature::Conditions::Poisoned);
+                condsAddedVec.emplace_back(creature::Conditions::Poisoned);
                 actionPhraseCNP = ActionPhrase();
                 return true;
             }

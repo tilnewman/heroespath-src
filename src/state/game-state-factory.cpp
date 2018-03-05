@@ -145,7 +145,7 @@ namespace state
                        itr->path().leaf().string(), SAVED_HEROESPATH_FILE_EXT_))
                 && (bfs::is_regular_file(*itr)))
             {
-                pathVec.push_back(DIR_OBJ / itr->path().leaf());
+                pathVec.emplace_back(DIR_OBJ / itr->path().leaf());
             }
         }
 
@@ -219,7 +219,7 @@ namespace state
             if ((boost::algorithm::ends_with(itr->path().leaf().string(), SAVED_CHAR_FILE_EXT_))
                 && (bfs::is_regular_file(*itr)))
             {
-                pathVec.push_back(DIR_OBJ / itr->path().leaf());
+                pathVec.emplace_back(DIR_OBJ / itr->path().leaf());
             }
         }
 
@@ -293,7 +293,7 @@ namespace state
             if ((boost::algorithm::ends_with(itr->path().leaf().string(), SAVED_CHAR_FILE_EXT_))
                 && (bfs::is_regular_file(*itr)))
             {
-                pathVec.push_back(DIR_OBJ / itr->path().leaf());
+                pathVec.emplace_back(DIR_OBJ / itr->path().leaf());
             }
         }
 

@@ -47,7 +47,7 @@ namespace state
 
         for (int i(0); i < map::Level::Count; ++i)
         {
-            levels_.push_back(Level(static_cast<map::Level::Enum>(i)));
+            levels_.emplace_back(Level(static_cast<map::Level::Enum>(i)));
             WorldFactory::SetupLevelForNewGame(levels_[levels_.size() - 1]);
         }
     }

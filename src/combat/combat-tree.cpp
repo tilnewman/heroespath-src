@@ -205,7 +205,7 @@ namespace combat
                 && (VERTEX.node_sptr->Creature()->Role() == ROLE))
             {
                 ++count;
-                IDVec_OutParam.push_back(VERTEX.id);
+                IDVec_OutParam.emplace_back(VERTEX.id);
             }
         }
 
@@ -221,7 +221,7 @@ namespace combat
                 && (VERTEX.node_sptr->Creature()->Race() == RACE))
             {
                 ++count;
-                IdVec_OutParam.push_back(VERTEX.id);
+                IdVec_OutParam.emplace_back(VERTEX.id);
             }
         }
 
@@ -287,7 +287,7 @@ namespace combat
     ID_t CombatTree::AddVertex(const CombatNodeSPtr_t & NODE_SPTR)
     {
         const ID_t ID_tO_USE(NextAvailableId());
-        vertexes_.push_back(Vertex(ID_tO_USE, NODE_SPTR));
+        vertexes_.emplace_back(Vertex(ID_tO_USE, NODE_SPTR));
         return ID_tO_USE;
     }
 
@@ -304,7 +304,7 @@ namespace combat
         }
         else
         {
-            vertexes_.push_back(Vertex(ID, NODE_SPTR));
+            vertexes_.emplace_back(Vertex(ID, NODE_SPTR));
         }
     }
 
@@ -338,7 +338,7 @@ namespace combat
         {
             if ((EDGE.a == ID) || (EDGE.b == ID))
             {
-                edgesToBeRemoved.push_back(EDGE);
+                edgesToBeRemoved.emplace_back(EDGE);
             }
         }
 
@@ -394,13 +394,13 @@ namespace combat
         {
             if (TYPE == EdgeType::All)
             {
-                v.push_back(EDGE);
+                v.emplace_back(EDGE);
             }
             else
             {
                 if (EDGE.type == TYPE)
                 {
-                    v.push_back(EDGE);
+                    v.emplace_back(EDGE);
                 }
             }
         }
@@ -470,7 +470,7 @@ namespace combat
             throw std::invalid_argument(ss.str());
         }
 
-        edges_.push_back(Edge(ID1, ID2, TYPE));
+        edges_.emplace_back(Edge(ID1, ID2, TYPE));
     }
 
     const IDVec_t CombatTree::RemoveEdge(const ID_t & ID1, const ID_t & ID2, const bool IS_DRY_RUN)
@@ -505,12 +505,12 @@ namespace combat
 
         if (AreAnyAdjacent(ID1) == false)
         {
-            orphanedVertexIdVec.push_back(ID1);
+            orphanedVertexIdVec.emplace_back(ID1);
         }
 
         if (AreAnyAdjacent(ID2) == false)
         {
-            orphanedVertexIdVec.push_back(ID2);
+            orphanedVertexIdVec.emplace_back(ID2);
         }
 
         if (IS_DRY_RUN)
@@ -604,13 +604,13 @@ namespace combat
             {
                 if (EDGE.a == ID)
                 {
-                    idVec_OutParam.push_back(EDGE.b);
+                    idVec_OutParam.emplace_back(EDGE.b);
                 }
                 else
                 {
                     if (EDGE.b == ID)
                     {
-                        idVec_OutParam.push_back(EDGE.a);
+                        idVec_OutParam.emplace_back(EDGE.a);
                     }
                 }
             }
@@ -618,13 +618,13 @@ namespace combat
             {
                 if ((EDGE.a == ID) && (EDGE.type == TYPE))
                 {
-                    idVec_OutParam.push_back(EDGE.b);
+                    idVec_OutParam.emplace_back(EDGE.b);
                 }
                 else
                 {
                     if ((EDGE.b == ID) && (EDGE.type == TYPE))
                     {
-                        idVec_OutParam.push_back(EDGE.a);
+                        idVec_OutParam.emplace_back(EDGE.a);
                     }
                 }
             }
@@ -642,13 +642,13 @@ namespace combat
         {
             if (EDGE.a == ID)
             {
-                idVec_OutParam.push_back(EDGE.b);
+                idVec_OutParam.emplace_back(EDGE.b);
             }
             else
             {
                 if (EDGE.b == ID)
                 {
-                    idVec_OutParam.push_back(EDGE.a);
+                    idVec_OutParam.emplace_back(EDGE.a);
                 }
             }
         }
@@ -679,7 +679,7 @@ namespace combat
         {
             if (VERTEX.node_sptr->GetBlockingPos() == POS)
             {
-                vertIDsAtPosVec.push_back(VERTEX.id);
+                vertIDsAtPosVec.emplace_back(VERTEX.id);
             }
         }
 
@@ -692,7 +692,7 @@ namespace combat
                 if ((EDGE.type == CONNECTION_TYPE)
                     && ((EDGE.a == VERTEX_ID) || (EDGE.b == VERTEX_ID)))
                 {
-                    edgesToRemoveVec.push_back(EDGE);
+                    edgesToRemoveVec.emplace_back(EDGE);
                 }
             }
         }
@@ -719,7 +719,8 @@ namespace combat
             {
                 for (ID_t::type j(i + 1); j < NUM_VERTS_AT_POS - 1; ++j)
                 {
-                    edges_.push_back(Edge(vertIDsAtPosVec[i], vertIDsAtPosVec[j], CONNECTION_TYPE));
+                    edges_.emplace_back(
+                        Edge(vertIDsAtPosVec[i], vertIDsAtPosVec[j], CONNECTION_TYPE));
                 }
             }
         }
@@ -779,7 +780,7 @@ namespace combat
             if (VERTEX.node_sptr->GetBlockingPos() == BLOCKING_POS)
             {
                 ++count;
-                IdVec_OutParam.push_back(VERTEX.id);
+                IdVec_OutParam.emplace_back(VERTEX.id);
             }
         }
 
@@ -841,7 +842,7 @@ namespace combat
 
         for (auto const & NEXT_ID : idVec)
         {
-            NodePVec_OutParam.push_back(GetNode(NEXT_ID));
+            NodePVec_OutParam.emplace_back(GetNode(NEXT_ID));
         }
 
         if (NodePVec_OutParam.size() > 1)
@@ -875,7 +876,7 @@ namespace combat
 
         for (auto const & NEXT_ID : idVec)
         {
-            NodePVec_OutParam.push_back(GetNode(NEXT_ID));
+            NodePVec_OutParam.emplace_back(GetNode(NEXT_ID));
         }
 
         if (NodePVec_OutParam.size() > 1)
@@ -902,7 +903,7 @@ namespace combat
     {
         for (auto const & VERTEX : vertexes_)
         {
-            combatNodesPVec.push_back(VERTEX.node_sptr.get());
+            combatNodesPVec.emplace_back(VERTEX.node_sptr.get());
         }
     }
 
@@ -913,7 +914,7 @@ namespace combat
         {
             if (VERTEX.node_sptr->Creature()->IsPlayerCharacter() == FIND_PLAYERS)
             {
-                combatNodesPVec.push_back(VERTEX.node_sptr.get());
+                combatNodesPVec.emplace_back(VERTEX.node_sptr.get());
             }
         }
     }
@@ -987,7 +988,7 @@ namespace combat
             if ((VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS)
                 && (NEXT_BLOCKING_DISTANCE_ABS == closestBlockingDistanceABS))
             {
-                closestCombatNodesPVec.push_back(VERTEX.node_sptr.get());
+                closestCombatNodesPVec.emplace_back(VERTEX.node_sptr.get());
             }
         }
 

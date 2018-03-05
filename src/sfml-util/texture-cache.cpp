@@ -63,7 +63,7 @@ namespace sfml_util
         cacheUVec_.reserve(1024);
 
         // put an empty image at index zero so there is something to return by default
-        cacheUVec_.push_back(std::make_unique<sf::Texture>());
+        cacheUVec_.emplace_back(std::make_unique<sf::Texture>());
     }
 
     TextureCache::~TextureCache() { M_HP_LOG_DBG("Singleton Construction: TextureCache"); }
@@ -212,7 +212,7 @@ namespace sfml_util
             }
             else
             {
-                pathVec.push_back(NEXT_PATH_STR);
+                pathVec.emplace_back(NEXT_PATH_STR);
             }
         }
 
@@ -223,7 +223,7 @@ namespace sfml_util
         misc::SizetVec_t indexVec;
         for (auto const & PATH_STR : pathVec)
         {
-            indexVec.push_back(AddByPathInternal(PATH_STR, WILL_SMOOTH));
+            indexVec.emplace_back(AddByPathInternal(PATH_STR, WILL_SMOOTH));
         }
 
         // verify that at least one valid file was found
@@ -293,7 +293,7 @@ namespace sfml_util
         {
             if ((NEXT_PAIR.second.empty() == false) && (NEXT_PAIR.second[0] == INDEX))
             {
-                keysToBeRemovedVec.push_back(NEXT_PAIR.first);
+                keysToBeRemovedVec.emplace_back(NEXT_PAIR.first);
             }
         }
 
@@ -381,7 +381,7 @@ namespace sfml_util
             }
         }
 
-        cacheUVec_.push_back(std::make_unique<sf::Texture>());
+        cacheUVec_.emplace_back(std::make_unique<sf::Texture>());
         return NUM_TEXTURES;
     }
 
@@ -421,7 +421,7 @@ namespace sfml_util
 
         for (auto const & NUM_STR_PAIR : numberToStrMMap)
         {
-            strVec.push_back(NUM_STR_PAIR.second);
+            strVec.emplace_back(NUM_STR_PAIR.second);
         }
     }
 

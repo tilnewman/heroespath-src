@@ -236,7 +236,7 @@ namespace sfml_util
                 }
             });
 
-        entityPVec_.push_back(ENTITY_PTR);
+        entityPVec_.emplace_back(ENTITY_PTR);
     }
 
     bool Stage::EntityRemove(const gui::IGuiEntityPtr_t ENTITY_PTR)

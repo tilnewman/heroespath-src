@@ -49,7 +49,7 @@ namespace non_player
     {
         for (auto const NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
         {
-            charactersPVec_.push_back(CharacterWarehouse::Instance()->Store(NEXT_CHARACTER_PTR));
+            charactersPVec_.emplace_back(CharacterWarehouse::Instance()->Store(NEXT_CHARACTER_PTR));
         }
     }
 
@@ -67,11 +67,11 @@ namespace non_player
     {
         if (WILL_STORE)
         {
-            charactersPVec_.push_back(CharacterWarehouse::Instance()->Store(CHARACTER_PTR));
+            charactersPVec_.emplace_back(CharacterWarehouse::Instance()->Store(CHARACTER_PTR));
         }
         else
         {
-            charactersPVec_.push_back(CHARACTER_PTR);
+            charactersPVec_.emplace_back(CHARACTER_PTR);
         }
     }
 

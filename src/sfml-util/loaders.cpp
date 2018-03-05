@@ -120,7 +120,7 @@ namespace sfml_util
 
             sf::Texture t;
             LoadTexture(t, DIR_PATH_STR, WILL_SMOOTH);
-            textureVec.push_back(t);
+            textureVec.emplace_back(t);
         }
 
         const std::size_t TOTAL_ADDED(textureVec.size() - ORIG_SIZE);

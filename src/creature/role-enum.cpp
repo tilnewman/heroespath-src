@@ -380,7 +380,7 @@ namespace creature
             auto const ROLE{ static_cast<role::Enum>(i) };
             if (BlockingPosType(ROLE) == BLOCKING_POS_ENUM)
             {
-                rolesVec.push_back(ROLE);
+                rolesVec.emplace_back(ROLE);
             }
         }
 

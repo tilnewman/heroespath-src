@@ -150,7 +150,7 @@ namespace sfml_util
                     auto const OFFSET{ static_cast<float>(i) * TOP_SPRITE.getGlobalBounds().width };
                     sprite.setPosition(POS_LEFT + OFFSET, POS_TOP);
                     sprite.setColor(color_);
-                    sideSprites_.push_back(sprite);
+                    sideSprites_.emplace_back(sprite);
                 }
             }
 
@@ -178,7 +178,7 @@ namespace sfml_util
                     auto const OFFSET{ static_cast<float>(i) * BOT_SPRITE.getGlobalBounds().width };
                     sprite.setPosition(POS_LEFT + OFFSET, POS_TOP);
                     sprite.setColor(color_);
-                    sideSprites_.push_back(sprite);
+                    sideSprites_.emplace_back(sprite);
                 }
             }
 
@@ -206,7 +206,7 @@ namespace sfml_util
                                        * LEFT_SPRITE.getGlobalBounds().height };
                     sprite.setPosition(POS_LEFT, POS_TOP + OFFSET);
                     sprite.setColor(color_);
-                    sideSprites_.push_back(sprite);
+                    sideSprites_.emplace_back(sprite);
                 }
             }
 
@@ -236,7 +236,7 @@ namespace sfml_util
 
                     sprite.setPosition(POS_LEFT, POS_TOP + OFFSET);
                     sprite.setColor(color_);
-                    sideSprites_.push_back(sprite);
+                    sideSprites_.emplace_back(sprite);
                 }
             }
 

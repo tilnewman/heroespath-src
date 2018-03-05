@@ -455,7 +455,7 @@ namespace combat
         {
             if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
             {
-                weaponItemsToDisplay.push_back(NEXT_ITEM_PTR);
+                weaponItemsToDisplay.emplace_back(NEXT_ITEM_PTR);
             }
         }
 
@@ -466,7 +466,7 @@ namespace combat
             {
                 if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
                 {
-                    weaponItemsToDisplay.push_back(NEXT_ITEM_PTR);
+                    weaponItemsToDisplay.emplace_back(NEXT_ITEM_PTR);
                 }
             }
         }
@@ -476,14 +476,14 @@ namespace combat
             {
                 if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
                 {
-                    weaponItemsToIgnore.push_back(NEXT_ITEM_PTR);
+                    weaponItemsToIgnore.emplace_back(NEXT_ITEM_PTR);
                 }
             }
         }
 
         for (auto const NEXT_ITEM_PTR : weaponItemsToDisplay)
         {
-            itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
+            itemWithTextVec_.emplace_back(ItemWithText(NEXT_ITEM_PTR));
         }
 
         // then armor
@@ -491,7 +491,7 @@ namespace combat
         {
             if (NEXT_ITEM_PTR->IsArmor())
             {
-                itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
+                itemWithTextVec_.emplace_back(ItemWithText(NEXT_ITEM_PTR));
             }
         }
 
@@ -500,7 +500,7 @@ namespace combat
         {
             if (NEXT_ITEM_PTR->MiscType() != item::misc_type::NotMisc)
             {
-                itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
+                itemWithTextVec_.emplace_back(ItemWithText(NEXT_ITEM_PTR));
             }
         }
 
@@ -523,7 +523,7 @@ namespace combat
 
             if ((IV_CITER == weaponItemsToIgnore.end()) && (IWTV_CITER == itemWithTextVec_.end()))
             {
-                itemWithTextVec_.push_back(ItemWithText(NEXT_ITEM_PTR));
+                itemWithTextVec_.emplace_back(ItemWithText(NEXT_ITEM_PTR));
             }
         }
 
@@ -579,7 +579,7 @@ namespace combat
                             += (NEXT_ITEM_TEXT.sprite.getGlobalBounds().height
                                 + IMAGE_BETWEEN_PAD_);
 
-                        itemWithTextVec_.push_back(NEXT_ITEM_TEXT);
+                        itemWithTextVec_.emplace_back(NEXT_ITEM_TEXT);
                     }
                     else
                     {

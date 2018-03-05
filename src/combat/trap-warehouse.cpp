@@ -51,7 +51,7 @@ namespace combat
         {
             Empty();
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 1,
                 1,
                 2_health,
@@ -60,7 +60,7 @@ namespace combat
                 sfml_util::sound_effect::TrapPop,
                 "The lock bursts in the lock picker's hands!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 1,
                 1,
                 3_health,
@@ -70,7 +70,7 @@ namespace combat
                 "A metal spike pops out from the",
                 "!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 1,
                 3,
                 4_health,
@@ -79,7 +79,7 @@ namespace combat
                 sfml_util::sound_effect::TrapMetal,
                 "Sharp metal pieces burst out and tear through the party!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 1,
                 3,
                 6_health,
@@ -88,7 +88,7 @@ namespace combat
                 sfml_util::sound_effect::TrapSplutter,
                 "The lock oozes with toxic black sludge!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 3,
                 6,
                 8_health,
@@ -98,7 +98,7 @@ namespace combat
                 "Green slime spits out from holes in the ",
                 "!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 2,
                 4,
                 6_health,
@@ -107,7 +107,7 @@ namespace combat
                 sfml_util::sound_effect::TrapBang,
                 "The lock detonates!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 3,
                 6,
                 8_health,
@@ -117,7 +117,7 @@ namespace combat
                 "The ",
                 "  blows apart!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 4,
                 6,
                 10_health,
@@ -127,7 +127,7 @@ namespace combat
                 "The ",
                 "  explodes!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 1,
                 1,
                 8_health,
@@ -136,7 +136,7 @@ namespace combat
                 sfml_util::sound_effect::TrapFire,
                 "The lock becomes scalding and burns the lock picker!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 1,
                 3,
                 10_health,
@@ -146,7 +146,7 @@ namespace combat
                 "The whole ",
                 "  erupts into a raging inferno!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 4,
                 6,
                 15_health,
@@ -155,7 +155,7 @@ namespace combat
                 sfml_util::sound_effect::TrapFireball,
                 "A fireball engulfs the party!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 6,
                 6,
                 8_health,
@@ -165,7 +165,7 @@ namespace combat
                 "You hear haunting moans and a ghostly yellow light shines from the ",
                 "  searing the party!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 6,
                 6,
                 11_health,
@@ -175,7 +175,7 @@ namespace combat
                 "You hear cries of pain and a ghostly green light shines from the ",
                 "  searing the party!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 6,
                 6,
                 14_health,
@@ -185,7 +185,7 @@ namespace combat
                 "You hear frightful screams and a ghostly blue light shines from the ",
                 "  searing the party!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 6,
                 6,
                 17_health,
@@ -195,7 +195,7 @@ namespace combat
                 "You hear horrible wailing and a ghostly red light shines from the ",
                 "  searing the party!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 1,
                 4,
                 12_health,
@@ -205,7 +205,7 @@ namespace combat
                 "Noxious gas hisses from vents in the ",
                 "!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 2,
                 6,
                 16_health,
@@ -214,7 +214,7 @@ namespace combat
                 sfml_util::sound_effect::TrapGasLeak,
                 "A deadly chemical mist escapes!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 2,
                 4,
                 8_health,
@@ -224,7 +224,7 @@ namespace combat
                 "Sparks spray out from the ",
                 "!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 3,
                 6,
                 12_health,
@@ -233,7 +233,7 @@ namespace combat
                 sfml_util::sound_effect::TrapSparksAhh,
                 "A torrent of molten metal showers the party!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 1,
                 1,
                 25_health,
@@ -242,7 +242,7 @@ namespace combat
                 sfml_util::sound_effect::TrapSpiritShortHiss,
                 "A spectral skeleton hand reaches out and strikes at the lock picker!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 2,
                 4,
                 30_health,
@@ -252,7 +252,7 @@ namespace combat
                 "The raging ghost of a murdered witch emerges and slashes the party with ghostly "
                 "claws!"));
 
-            traps_.push_back(Trap(
+            traps_.emplace_back(Trap(
                 4,
                 6,
                 20_health,
@@ -317,7 +317,7 @@ namespace combat
                     || misc::IsRealClose(SEVERITY_RATIO, THE_MIN)
                     || misc::IsRealClose(SEVERITY_RATIO, THE_MAX))
                 {
-                    trapsWithSeverityWithinRange.push_back(TRAP);
+                    trapsWithSeverityWithinRange.emplace_back(TRAP);
                 }
             }
 
@@ -328,7 +328,7 @@ namespace combat
                     << THE_MIN << ", max=" << THE_MAX << ") "
                     << "resulted in no traps, so the default weakest trap is being used.");
 
-                trapsWithSeverityWithinRange.push_back(traps_[0]);
+                trapsWithSeverityWithinRange.emplace_back(traps_[0]);
             }
 
             return trapsWithSeverityWithinRange;

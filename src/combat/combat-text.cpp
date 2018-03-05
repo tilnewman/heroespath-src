@@ -556,37 +556,37 @@ namespace combat
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Axe)
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("chopping");
+                strVec.emplace_back("chopping");
             else
-                strVec.push_back("chops");
+                strVec.emplace_back("chops");
             if (WILL_APPEND_ING)
-                strVec.push_back("hacking");
+                strVec.emplace_back("hacking");
             else
-                strVec.push_back("hacks");
+                strVec.emplace_back("hacks");
             if (WILL_APPEND_ING)
-                strVec.push_back("swinging");
+                strVec.emplace_back("swinging");
             else
-                strVec.push_back("swings");
+                strVec.emplace_back("swings");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Bite)
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("bitting");
+                strVec.emplace_back("bitting");
             else
-                strVec.push_back("bites");
+                strVec.emplace_back("bites");
             if (WILL_APPEND_ING)
-                strVec.push_back("snapping");
+                strVec.emplace_back("snapping");
             else
-                strVec.push_back("snaps");
+                strVec.emplace_back("snaps");
             if (WILL_APPEND_ING)
-                strVec.push_back("gnawing");
+                strVec.emplace_back("gnawing");
             else
-                strVec.push_back("gnaws");
+                strVec.emplace_back("gnaws");
             if (WILL_APPEND_ING)
-                strVec.push_back("chewing");
+                strVec.emplace_back("chewing");
             else
-                strVec.push_back("chews");
+                strVec.emplace_back("chews");
         }
 
         if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bladed)
@@ -595,21 +595,21 @@ namespace combat
             || (WEAPON_PTR->WeaponType() & item::weapon_type::Sword))
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("slicing");
+                strVec.emplace_back("slicing");
             else
-                strVec.push_back("slices");
+                strVec.emplace_back("slices");
             if (WILL_APPEND_ING)
-                strVec.push_back("slashing");
+                strVec.emplace_back("slashing");
             else
-                strVec.push_back("slashes");
+                strVec.emplace_back("slashes");
             if (WILL_APPEND_ING)
-                strVec.push_back("cutting");
+                strVec.emplace_back("cutting");
             else
-                strVec.push_back("cuts");
+                strVec.emplace_back("cuts");
             if (WILL_APPEND_ING)
-                strVec.push_back("swinging");
+                strVec.emplace_back("swinging");
             else
-                strVec.push_back("swings");
+                strVec.emplace_back("swings");
         }
 
         if ((WEAPON_PTR->WeaponType() & item::weapon_type::BladedStaff)
@@ -618,25 +618,25 @@ namespace combat
             || (WEAPON_PTR->WeaponType() & item::weapon_type::Spear))
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("stabbing");
+                strVec.emplace_back("stabbing");
             else
-                strVec.push_back("stabs");
+                strVec.emplace_back("stabs");
             if (WILL_APPEND_ING)
-                strVec.push_back("thrusting");
+                strVec.emplace_back("thrusting");
             else
-                strVec.push_back("thrusts");
+                strVec.emplace_back("thrusts");
             if (WILL_APPEND_ING)
-                strVec.push_back("jabbing");
+                strVec.emplace_back("jabbing");
             else
-                strVec.push_back("jabs");
+                strVec.emplace_back("jabs");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe)
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("darting");
+                strVec.emplace_back("darting");
             else
-                strVec.push_back("darts");
+                strVec.emplace_back("darts");
         }
 
         if ((WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe)
@@ -645,110 +645,110 @@ namespace combat
             || (WEAPON_PTR->WeaponType() & item::weapon_type::Projectile))
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("shooting");
+                strVec.emplace_back("shooting");
             else
-                strVec.push_back("shoots");
+                strVec.emplace_back("shoots");
             if (WILL_APPEND_ING)
-                strVec.push_back("firing");
+                strVec.emplace_back("firing");
             else
-                strVec.push_back("fires");
+                strVec.emplace_back("fires");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Breath)
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("breathing");
+                strVec.emplace_back("breathing");
             else
-                strVec.push_back("breathes");
+                strVec.emplace_back("breathes");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Claws)
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("tearing");
+                strVec.emplace_back("tearing");
             else
-                strVec.push_back("tears");
+                strVec.emplace_back("tears");
             if (WILL_APPEND_ING)
-                strVec.push_back("slashing");
+                strVec.emplace_back("slashing");
             else
-                strVec.push_back("slashes");
+                strVec.emplace_back("slashes");
             if (WILL_APPEND_ING)
-                strVec.push_back("clawing");
+                strVec.emplace_back("clawing");
             else
-                strVec.push_back("claws");
+                strVec.emplace_back("claws");
             if (WILL_APPEND_ING)
-                strVec.push_back("ripping");
+                strVec.emplace_back("ripping");
             else
-                strVec.push_back("rips");
+                strVec.emplace_back("rips");
         }
 
         if ((WEAPON_PTR->WeaponType() & item::weapon_type::Club)
             || (WEAPON_PTR->WeaponType() & item::weapon_type::Staff))
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("swinging");
+                strVec.emplace_back("swinging");
             else
-                strVec.push_back("swings");
+                strVec.emplace_back("swings");
             if (WILL_APPEND_ING)
-                strVec.push_back("bashing");
+                strVec.emplace_back("bashing");
             else
-                strVec.push_back("bashes");
+                strVec.emplace_back("bashes");
             if (WILL_APPEND_ING)
-                strVec.push_back("smashing");
+                strVec.emplace_back("smashing");
             else
-                strVec.push_back("smashes");
+                strVec.emplace_back("smashes");
             if (WILL_APPEND_ING)
-                strVec.push_back("slamming");
+                strVec.emplace_back("slamming");
             else
-                strVec.push_back("slams");
+                strVec.emplace_back("slams");
             if (WILL_APPEND_ING)
-                strVec.push_back("crushing");
+                strVec.emplace_back("crushing");
             else
-                strVec.push_back("crushes");
+                strVec.emplace_back("crushes");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Sling)
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("slinging");
+                strVec.emplace_back("slinging");
             else
-                strVec.push_back("slings");
+                strVec.emplace_back("slings");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Whip)
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("whipping");
+                strVec.emplace_back("whipping");
             else
-                strVec.push_back("whips");
+                strVec.emplace_back("whips");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Tendrils)
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("whipping");
+                strVec.emplace_back("whipping");
             else
-                strVec.push_back("whips");
+                strVec.emplace_back("whips");
             if (WILL_APPEND_ING)
-                strVec.push_back("sliming");
+                strVec.emplace_back("sliming");
             else
-                strVec.push_back("slimes");
+                strVec.emplace_back("slimes");
             if (WILL_APPEND_ING)
-                strVec.push_back("slapping");
+                strVec.emplace_back("slapping");
             else
-                strVec.push_back("slaps");
+                strVec.emplace_back("slaps");
             if (WILL_APPEND_ING)
-                strVec.push_back("squeezing");
+                strVec.emplace_back("squeezing");
             else
-                strVec.push_back("squeezes");
+                strVec.emplace_back("squeezes");
         }
 
         if (strVec.empty())
         {
             if (WILL_APPEND_ING)
-                strVec.push_back("attacking");
+                strVec.emplace_back("attacking");
             else
-                strVec.push_back("attacks");
+                strVec.emplace_back("attacks");
         }
 
         std::sort(strVec.begin(), strVec.end());
@@ -1246,7 +1246,7 @@ namespace combat
             if ((WILL_SKIP_MISSES == false)
                 || (WILL_SKIP_MISSES && (NEXT_HIT_INFO.WasHit() == true)))
             {
-                strVec.push_back(NEXT_HIT_INFO.ActionVerb());
+                strVec.emplace_back(NEXT_HIT_INFO.ActionVerb());
             }
         }
 
@@ -1464,7 +1464,7 @@ namespace combat
                 if (frs.already_vec.empty()
                     || (frs.already_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
                 {
-                    frs.already_vec.push_back(
+                    frs.already_vec.emplace_back(
                         std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO));
 
                     return true;
@@ -1478,7 +1478,7 @@ namespace combat
                 if (frs.resisted_vec.empty()
                     || (frs.resisted_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
                 {
-                    frs.resisted_vec.push_back(
+                    frs.resisted_vec.emplace_back(
                         std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO));
 
                     return true;
@@ -1490,7 +1490,7 @@ namespace combat
             if (frs.effected_vec.empty()
                 || (frs.effected_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
             {
-                frs.effected_vec.push_back(
+                frs.effected_vec.emplace_back(
                     std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO));
 
                 return true;

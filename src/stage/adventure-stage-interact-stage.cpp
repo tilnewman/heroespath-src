@@ -202,7 +202,7 @@ namespace stage
 
             for (auto & button : interactionPTr->Buttons())
             {
-                buttons_.push_back(button.Make(this));
+                buttons_.emplace_back(button.Make(this));
             }
 
             auto const ALL_BUTTONS_HEIGHT{ std::accumulate(

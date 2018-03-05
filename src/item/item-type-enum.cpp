@@ -182,39 +182,42 @@ namespace item
 
         if (E & element_type::Fire)
         {
-            v.push_back(element_type::Fire);
+            v.emplace_back(element_type::Fire);
         }
         if (E & element_type::Frost)
         {
-            v.push_back(element_type::Frost);
+            v.emplace_back(element_type::Frost);
         }
         if (E & element_type::Honor)
         {
-            v.push_back(element_type::Honor);
+            v.emplace_back(element_type::Honor);
         }
         if (E & element_type::Shadow)
         {
-            v.push_back(element_type::Shadow);
+            v.emplace_back(element_type::Shadow);
         }
 
         if ((E & element_type::Fire) && (E & element_type::Honor))
         {
-            v.push_back(static_cast<element_type::Enum>(element_type::Fire | element_type::Honor));
+            v.emplace_back(
+                static_cast<element_type::Enum>(element_type::Fire | element_type::Honor));
         }
 
         if ((E & element_type::Fire) && (E & element_type::Shadow))
         {
-            v.push_back(static_cast<element_type::Enum>(element_type::Fire | element_type::Shadow));
+            v.emplace_back(
+                static_cast<element_type::Enum>(element_type::Fire | element_type::Shadow));
         }
 
         if ((E & element_type::Frost) && (E & element_type::Honor))
         {
-            v.push_back(static_cast<element_type::Enum>(element_type::Frost | element_type::Honor));
+            v.emplace_back(
+                static_cast<element_type::Enum>(element_type::Frost | element_type::Honor));
         }
 
         if ((E & element_type::Frost) && (E & element_type::Shadow))
         {
-            v.push_back(
+            v.emplace_back(
                 static_cast<element_type::Enum>(element_type::Frost | element_type::Shadow));
         }
 
@@ -1245,8 +1248,8 @@ namespace item
         {
             MaterialVec_t v{ material::CoreMetal() };
             material::AppendCoreJewel(v);
-            v.push_back(material::Bone);
-            v.push_back(material::Obsidian);
+            v.emplace_back(material::Bone);
+            v.emplace_back(material::Obsidian);
             return MaterialVecPair_t(v, {});
         }
         else if (
@@ -4893,9 +4896,9 @@ namespace item
             || (E == named_type::Muggers) || (E == named_type::Thief) || (E == named_type::Pirate))
         {
             MaterialVec_t v{ material::CoreMetal() };
-            v.push_back(material::Bone);
-            v.push_back(material::Stone);
-            v.push_back(material::Obsidian);
+            v.emplace_back(material::Bone);
+            v.emplace_back(material::Stone);
+            v.emplace_back(material::Obsidian);
             return MaterialVecPair_t(v, {});
         }
         else
@@ -5777,7 +5780,7 @@ namespace item
 
         if (WILL_INCLUDE_NOTHING)
         {
-            materials.push_back(material::Nothing);
+            materials.emplace_back(material::Nothing);
         }
 
         return materials;
@@ -5792,7 +5795,7 @@ namespace item
 
         if (WILL_INCLUDE_NOTHING)
         {
-            materials.push_back(material::Nothing);
+            materials.emplace_back(material::Nothing);
         }
 
         return materials;
@@ -5806,7 +5809,7 @@ namespace item
 
         if (WILL_INCLUDE_NOTHING)
         {
-            materials.push_back(material::Nothing);
+            materials.emplace_back(material::Nothing);
         }
 
         return materials;
@@ -5836,9 +5839,9 @@ namespace item
         std::vector<material::Enum> v;
         v.reserve(CORE_METAL_VEC.size() + CORE_JEWEL_VEC.size() + 3);
 
-        v.push_back(material::Bone);
-        v.push_back(material::Stone);
-        v.push_back(material::Obsidian);
+        v.emplace_back(material::Bone);
+        v.emplace_back(material::Stone);
+        v.emplace_back(material::Obsidian);
 
         std::copy(CORE_METAL_VEC.begin(), CORE_METAL_VEC.end(), std::back_inserter(v));
         std::copy(CORE_JEWEL_VEC.begin(), CORE_JEWEL_VEC.end(), std::back_inserter(v));
@@ -5855,15 +5858,15 @@ namespace item
 
         std::copy(CORE_JEWEL_VEC.begin(), CORE_JEWEL_VEC.end(), std::back_inserter(v));
 
-        v.push_back(material::Obsidian);
-        v.push_back(material::Pearl);
-        v.push_back(material::Silver);
-        v.push_back(material::Gold);
-        v.push_back(material::Platinum);
+        v.emplace_back(material::Obsidian);
+        v.emplace_back(material::Pearl);
+        v.emplace_back(material::Silver);
+        v.emplace_back(material::Gold);
+        v.emplace_back(material::Platinum);
 
         if (WILL_INCLUDE_NOTHING)
         {
-            v.push_back(material::Nothing);
+            v.emplace_back(material::Nothing);
         }
 
         return v;
