@@ -67,7 +67,10 @@ namespace interact
                 return ((misc::random::Bool()) ? "" : Random(STR_VEC));
             }
 
-            inline const std::string PeriodOrBang() { return ((misc::random::Bool()) ? "." : "!"); }
+            inline const std::string PeriodOrBang()
+            {
+                return ((misc::random::Bool()) ? std::string(".") : std::string("!"));
+            }
 
             inline const std::string
                 PrependIf(const std::string & S, const std::string & PREFIX = "  ")
@@ -94,7 +97,8 @@ namespace interact
 
             inline const std::string BeastRaceName(const player::Party & party)
             {
-                return ((DoesPartyHaveWolfens(party)) ? "wolfen" : "dragon");
+                return (
+                    (DoesPartyHaveWolfens(party)) ? std::string("wolfen") : std::string("dragon"));
             }
 
             const std::string CapFirstLetter(const std::string &);

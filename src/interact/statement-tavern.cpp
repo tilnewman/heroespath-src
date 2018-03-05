@@ -42,7 +42,8 @@ namespace interact
             if ((misc::random::Int(10) == 0) && (DoesPartyHaveBeasts(party)))
             {
                 auto const BEAST_RACE_NAME{ (
-                    (DoesPartyHaveWolfens(party)) ? "wolfen " : "dragon ") };
+                    (DoesPartyHaveWolfens(party)) ? std::string("wolfen ")
+                                                  : std::string("dragon ")) };
 
                 if ((misc::random::Int(7) == 0) && (DoesPartyHaveBeasts(party)))
                 {

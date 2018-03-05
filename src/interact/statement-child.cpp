@@ -149,7 +149,7 @@ namespace interact
                                            "steal from my " + Random(ParentsAndRelations()),
                                            "eat from a witch's garden",
                                            "put boogers in the baker's dough" })
-                        + ((WAS_QUESTION) ? "?" : ".");
+                        + ((WAS_QUESTION) ? std::string("?") : std::string("."));
                 }
                 default:
                 {
