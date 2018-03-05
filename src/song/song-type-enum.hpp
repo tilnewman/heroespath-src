@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace song
@@ -46,8 +45,7 @@ namespace song
 
         static const std::string ToString(const Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_SONG_SONGTYPEENUM_HPP_INCLUDED
+#endif // HEROESPATH_SONG_SONGTYPEENUM_HPP_INCLUDED

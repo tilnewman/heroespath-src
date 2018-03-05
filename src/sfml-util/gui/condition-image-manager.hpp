@@ -33,33 +33,32 @@
 
 #include <memory>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //Loads images and delivers sf::Textures to them on demand.
-    class ConditionImageManager : public ImageManagerBase<creature::Conditions>
+    namespace gui
     {
-        ConditionImageManager(const ConditionImageManager &) =delete;
-        ConditionImageManager & operator=(const ConditionImageManager &) =delete;
 
-    public:
-        ConditionImageManager();
-        virtual ~ConditionImageManager();
+        // Loads images and delivers sf::Textures to them on demand.
+        class ConditionImageManager : public ImageManagerBase<creature::Conditions>
+        {
+            ConditionImageManager(const ConditionImageManager &) = delete;
+            ConditionImageManager & operator=(const ConditionImageManager &) = delete;
 
-        static ConditionImageManager * Instance();
-        static void Acquire();
-        static void Release();
+        public:
+            ConditionImageManager();
+            virtual ~ConditionImageManager();
 
-    private:
-        static std::unique_ptr<ConditionImageManager> instanceUPtr_;
-    };
+            static ConditionImageManager * Instance();
+            static void Acquire();
+            static void Release();
+
+        private:
+            static std::unique_ptr<ConditionImageManager> instanceUPtr_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED

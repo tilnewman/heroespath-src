@@ -31,22 +31,21 @@
 #include "config/configbase.hpp"
 #include "misc/assertlogandthrow.hpp"
 
-#include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
+#include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
-#include <string>
 #include <memory>
-
+#include <string>
 
 namespace heroespath
 {
 namespace game
 {
 
-    //Singleton class that manages a simple configuration file
+    // Singleton class that manages a simple configuration file
     class GameDataFile : public config::ConfigBase
     {
-        GameDataFile(const GameDataFile &) =delete;
-        GameDataFile & operator=(const GameDataFile &) =delete;
+        GameDataFile(const GameDataFile &) = delete;
+        GameDataFile & operator=(const GameDataFile &) = delete;
 
     public:
         GameDataFile();
@@ -62,8 +61,7 @@ namespace game
     private:
         static std::unique_ptr<GameDataFile> instanceUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_GAME_GAMEDATAFILE_HPP_INCLUDED
+#endif // HEROESPATH_GAME_GAMEDATAFILE_HPP_INCLUDED

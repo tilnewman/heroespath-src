@@ -29,7 +29,6 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -42,8 +41,7 @@ namespace sfml_util
         std::vector<Quad> child_quads_vec;
     };
 
-
-    //Responsible for implementing a collision detection quad-tree.
+    // Responsible for implementing a collision detection quad-tree.
     class QuadTree
     {
         QuadTree(const QuadTree &) = delete;
@@ -53,9 +51,7 @@ namespace sfml_util
         QuadTree() = default;
 
         void Setup(
-            const float MAP_WIDTH,
-            const float MAP_HEIGHT,
-            const FloatRectVec_t & COLL_RECTS_VEC);
+            const float MAP_WIDTH, const float MAP_HEIGHT, const FloatRectVec_t & COLL_RECTS_VEC);
 
         bool IsPointWithinCollisionRect(const sf::Vector2f &) const;
 
@@ -63,9 +59,7 @@ namespace sfml_util
 
     private:
         void PopulateQuadAndRecurse(
-            Quad & quad,
-            const sf::FloatRect & RECT,
-            const FloatRectVec_t & COLL_RECTS_VEC);
+            Quad & quad, const sf::FloatRect & RECT, const FloatRectVec_t & COLL_RECTS_VEC);
 
         bool IsPointWithinCollisionRect_Impl(const Quad &, const sf::Vector2f &) const;
 
@@ -73,8 +67,7 @@ namespace sfml_util
         static const float MIN_QUAD_SIZE_;
         Quad headQuad_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED

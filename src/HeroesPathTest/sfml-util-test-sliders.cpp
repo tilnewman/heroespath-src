@@ -35,12 +35,10 @@
 
 #include "Test-stuff.hpp"
 
-
 using namespace heroespath::misc;
 using namespace heroespath::sfml_util;
 
 namespace ts = test_stuff;
-
 
 BOOST_AUTO_TEST_CASE(Sliders_ZeroSliderOnce_DefaultConstruction)
 {
@@ -56,7 +54,6 @@ BOOST_AUTO_TEST_CASE(Sliders_ZeroSliderOnce_DefaultConstruction)
     BOOST_CHECK(IsRealClose(slider.Current(), 0.0, constants.CLOSE_ENOUGH_EPSILON));
     BOOST_CHECK(IsRealClose(slider.Speed(), 1.0, constants.CLOSE_ENOUGH_EPSILON));
 }
-
 
 BOOST_AUTO_TEST_CASE(Sliders_ZeroSliderOnce_Updates)
 {
@@ -76,7 +73,6 @@ BOOST_AUTO_TEST_CASE(Sliders_ZeroSliderOnce_Updates)
     }
     BOOST_CHECK(IsRealOne(slider.Current()));
 }
-
 
 BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_DefaultConstruction)
 {
@@ -102,7 +98,6 @@ BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_DefaultConstruction)
     BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
 }
 
-
 BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_Updates)
 {
     auto const THE_MIN{ 123.123 };
@@ -120,7 +115,6 @@ BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_Updates)
     BOOST_CHECK(IsRealClose(slider.Current(), THE_MAX));
     BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
 }
-
 
 BOOST_AUTO_TEST_CASE(Sliders_Slider_DefaultConstruction)
 {
@@ -142,7 +136,6 @@ BOOST_AUTO_TEST_CASE(Sliders_Slider_DefaultConstruction)
     BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
 }
 
-
 BOOST_AUTO_TEST_CASE(Sliders_Slider_Updates)
 {
     ts::Constants constants;
@@ -154,13 +147,14 @@ BOOST_AUTO_TEST_CASE(Sliders_Slider_Updates)
     sliders::Slider<double> slider(THE_MIN, THE_MAX, SPEED, THE_MIN);
 
     auto const ITERATIONS{ 1000 };
-    for (int i(0); i<ITERATIONS; ++i)
+    for (int i(0); i < ITERATIONS; ++i)
     {
         auto const CURRENT{ slider.Update(0.1) };
 
-        BOOST_CHECK(IsRealClose(CURRENT, THE_MIN, constants.CLOSE_ENOUGH_EPSILON) ||
-                    IsRealClose(CURRENT, THE_MAX, constants.CLOSE_ENOUGH_EPSILON) ||
-                    ((CURRENT > THE_MIN) && (CURRENT < THE_MAX)));
+        BOOST_CHECK(
+            IsRealClose(CURRENT, THE_MIN, constants.CLOSE_ENOUGH_EPSILON)
+            || IsRealClose(CURRENT, THE_MAX, constants.CLOSE_ENOUGH_EPSILON)
+            || ((CURRENT > THE_MIN) && (CURRENT < THE_MAX)));
 
         BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
         BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));

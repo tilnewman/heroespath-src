@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace interact
@@ -47,8 +46,7 @@ namespace interact
         static const std::string ToString(const Interact::Enum);
         static const std::string ImageKey(const Interact::Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_INTERACT_INTERACT_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_INTERACT_ENUM_HPP_INCLUDED

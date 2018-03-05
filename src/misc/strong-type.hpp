@@ -35,33 +35,29 @@
 #include <sstream>
 #include <type_traits>
 
-
 namespace heroespath
 {
 namespace misc
 {
 
-    //Responsible for wrapping types with a phantom tag parameter to make them stronger.
+    // Responsible for wrapping types with a phantom tag parameter to make them stronger.
     template <typename T, typename Parameter>
     struct StrongType
     {
         explicit StrongType(const T & VALUE = T())
-        :
-            m_value(VALUE)
+            : m_value(VALUE)
         {}
 
-        virtual ~StrongType()
-        {}
+        virtual ~StrongType() {}
 
         using type = T;
 
-        //this move constructor allows for reference types
-        template<typename T_ = T>
+        // this move constructor allows for reference types
+        template <typename T_ = T>
         explicit StrongType(
             T && value,
-            typename std::enable_if< ! std::is_reference<T_>::value, std::nullptr_t>::type = nullptr)
-        :
-            m_value(std::move(value))
+            typename std::enable_if<!std::is_reference<T_>::value, std::nullptr_t>::type = nullptr)
+            : m_value(std::move(value))
         {}
 
         T & Get() { return m_value; }
@@ -74,64 +70,39 @@ namespace misc
             return ss.str();
         }
 
-        const std::string TypeName() const
-        {
-            return boost::typeindex::type_id<T>().pretty_name();
-        }
+        const std::string TypeName() const { return boost::typeindex::type_id<T>().pretty_name(); }
 
-        bool operator==(const StrongType & RHS) const
-        {
-            return this->m_value == RHS.m_value;
-        }
+        bool operator==(const StrongType & RHS) const { return this->m_value == RHS.m_value; }
 
-        bool operator!=(const StrongType & RHS) const
-        {
-            return this->m_value != RHS.m_value;
-        }
+        bool operator!=(const StrongType & RHS) const { return this->m_value != RHS.m_value; }
 
-        bool operator<(const StrongType & RHS) const
-        {
-            return this->m_value < RHS.m_value;
-        }
+        bool operator<(const StrongType & RHS) const { return this->m_value < RHS.m_value; }
 
-        bool operator<=(const StrongType & RHS) const
-        {
-            return this->m_value <= RHS.m_value;
-        }
+        bool operator<=(const StrongType & RHS) const { return this->m_value <= RHS.m_value; }
 
-        bool operator>(const StrongType & RHS) const
-        {
-            return this->m_value > RHS.m_value;
-        }
+        bool operator>(const StrongType & RHS) const { return this->m_value > RHS.m_value; }
 
-        bool operator>=(const StrongType & RHS) const
-        {
-            return this->m_value >= RHS.m_value;
-        }
+        bool operator>=(const StrongType & RHS) const { return this->m_value >= RHS.m_value; }
 
     protected:
         T m_value;
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & m_value;
         }
     };
 
-
-    template<typename T, typename Parameter>
-    std::ostream & operator<<(
-        std::ostream & os,
-        const StrongType<T, Parameter> & RHS)
+    template <typename T, typename Parameter>
+    std::ostream & operator<<(std::ostream & os, const StrongType<T, Parameter> & RHS)
     {
         os << RHS.Get();
         return os;
     }
-
 }
 }
 
-#endif //HEROESPATH_MISC_STRONGTYPE_HPP_INCLUDED
+#endif // HEROESPATH_MISC_STRONGTYPE_HPP_INCLUDED

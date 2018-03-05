@@ -32,38 +32,35 @@
 #include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-    class IGuiEntity;
-    using IGuiEntityPtr_t  = IGuiEntity *;
-    using IGuiEntityPVec_t = std::vector<IGuiEntityPtr_t>;
+    namespace gui
+    {
+        class IGuiEntity;
+        using IGuiEntityPtr_t = IGuiEntity *;
+        using IGuiEntityPVec_t = std::vector<IGuiEntityPtr_t>;
 
-namespace box
-{
-    class Box;
-    using BoxUPtr_t = std::unique_ptr<Box>;
-}
-}
+        namespace box
+        {
+            class Box;
+            using BoxUPtr_t = std::unique_ptr<Box>;
+        }
+    }
 
-    //A base class for types that hold and draw a group of on screen resources.
+    // A base class for types that hold and draw a group of on screen resources.
     class Stage : public IStage
     {
-        Stage(const Stage &) =delete;
-        Stage & operator=(const Stage &) =delete;
+        Stage(const Stage &) = delete;
+        Stage & operator=(const Stage &) = delete;
 
     public:
-        explicit Stage(
-            const std::string & NAME,
-            const bool WILL_CLEAR_CACHE_ON_EXIT = true);
+        explicit Stage(const std::string & NAME, const bool WILL_CLEAR_CACHE_ON_EXIT = true);
 
         Stage(
             const std::string & NAME,
@@ -82,20 +79,21 @@ namespace box
 
         inline virtual void Setup() {}
 
-        inline virtual const std::string GetStageName() const           { return STAGE_NAME_; }
+        inline virtual const std::string GetStageName() const { return STAGE_NAME_; }
 
-        inline virtual const sf::FloatRect StageRegion() const          { return stageRegion_; }
-        inline virtual void StageRegionSet(const sf::FloatRect & RECT)  { stageRegion_ = RECT; }
+        inline virtual const sf::FloatRect StageRegion() const { return stageRegion_; }
+        inline virtual void StageRegionSet(const sf::FloatRect & RECT) { stageRegion_ = RECT; }
 
-        inline virtual float StageRegionLeft() const                    { return stageRegion_.left;   }
-        inline virtual float StageRegionTop() const                     { return stageRegion_.top;    }
-        inline virtual float StageRegionWidth() const                   { return stageRegion_.width;  }
-        inline virtual float StageRegionHeight() const                  { return stageRegion_.height; }
+        inline virtual float StageRegionLeft() const { return stageRegion_.left; }
+        inline virtual float StageRegionTop() const { return stageRegion_.top; }
+        inline virtual float StageRegionWidth() const { return stageRegion_.width; }
+        inline virtual float StageRegionHeight() const { return stageRegion_.height; }
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
         virtual void UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS);
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
-        virtual void UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA);
+        virtual void
+            UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA);
 
         virtual gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
@@ -112,13 +110,13 @@ namespace box
 
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
-        //only a required function for the SettingsStage which can change resolution
+        // only a required function for the SettingsStage which can change resolution
         virtual void HandleResolutionChange() {}
 
-        //throws if the entity to add was already there
+        // throws if the entity to add was already there
         virtual void EntityAdd(const gui::IGuiEntityPtr_t);
 
-        //returns false if the entity to remove was not found
+        // returns false if the entity to remove was not found
         virtual bool EntityRemove(const gui::IGuiEntityPtr_t);
 
         virtual void SetMouseHover(const sf::Vector2f &, const bool);
@@ -131,8 +129,9 @@ namespace box
             const bool = false,
             const std::string & = "",
             const std::string & = "",
-            const std::string & = "") {}
-        
+            const std::string & = "")
+        {}
+
         inline virtual void PerformNextTest() {}
 
         virtual void ClearAllEntities();
@@ -145,22 +144,22 @@ namespace box
         void DrawHoverText(sf::RenderTarget &, const sf::RenderStates &);
 
     private:
-        static const float    MOUSE_DRAG_MIN_DISTANCE_;
+        static const float MOUSE_DRAG_MIN_DISTANCE_;
         //
-        const std::string     STAGE_NAME_;
-        sf::FloatRect         stageRegion_;
+        const std::string STAGE_NAME_;
+        sf::FloatRect stageRegion_;
         gui::IGuiEntityPVec_t entityPVec_;
-        gui::IGuiEntityPtr_t  entityWithFocusPtr_;//a copy of a ptr in entityPVec_
-        gui::box::BoxUPtr_t   hoverTextBoxUPtr_;
-        sf::Text              hoverSfText_;
+        gui::IGuiEntityPtr_t entityWithFocusPtr_; // a copy of a ptr in entityPVec_
+        gui::box::BoxUPtr_t hoverTextBoxUPtr_;
+        sf::Text hoverSfText_;
+
     protected:
-        bool                  isMouseHeldDown_;
-        bool                  isMouseHeldDownAndMoving_;
-        sf::Vector2f          mouseDownPosV_;
-        bool                  willClearCachesOnExit_;
+        bool isMouseHeldDown_;
+        bool isMouseHeldDownAndMoving_;
+        sf::Vector2f mouseDownPosV_;
+        bool willClearCachesOnExit_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_STAGE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_STAGE_HPP_INCLUDED

@@ -31,15 +31,14 @@
 
 #include "popup/popup-info.hpp"
 
-#include "sfml-util/gui/background-info.hpp"
-#include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/color-shaker.hpp"
-#include "sfml-util/sliders.hpp"
 #include "sfml-util/color-slider.hpp"
+#include "sfml-util/gui/background-info.hpp"
+#include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/sliders.hpp"
 
 #include <string>
-
 
 namespace heroespath
 {
@@ -54,14 +53,13 @@ namespace popup
 {
 
     class PopupStageSpellbook
-    :
-        public PopupStageBase,
-        public sfml_util::gui::callback::IListBoxCallbackHandler
+        : public PopupStageBase
+        , public sfml_util::gui::callback::IListBoxCallbackHandler
     {
         PopupStageSpellbook(const PopupStageSpellbook &) = delete;
         PopupStageSpellbook & operator=(const PopupStageSpellbook &) = delete;
 
-        //defines what is happening on the spellbook popup
+        // defines what is happening on the spellbook popup
         enum class FadeState
         {
             Initial = 0,
@@ -83,7 +81,7 @@ namespace popup
         }
 
         using PopupStageBase::HandleCallback;
-        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)override;
+        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
         virtual void Setup() override;
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -108,39 +106,38 @@ namespace popup
         bool HandleSpellCast();
 
     private:
-        static const float     BACKGROUND_WIDTH_RATIO_;
-        static const float     COLOR_FADE_SPEED_;
+        static const float BACKGROUND_WIDTH_RATIO_;
+        static const float COLOR_FADE_SPEED_;
         static const sf::Uint8 SPELL_IMAGE_ALPHA_;
         static const sf::Color UNABLE_TEXT_COLOR_;
-        static const float     WARNING_DURATION_SEC_;
+        static const float WARNING_DURATION_SEC_;
 
-        sf::Texture             playerTexture_;
-        sf::Sprite              playerSprite_;
-        sf::FloatRect           pageRectLeft_;
-        sf::FloatRect           pageRectRight_;
-        sfml_util::gui::TextRegionUPtr_t   charDetailsTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t   listBoxLabelTextRegionUPtr_;
-        sfml_util::gui::ListBoxUPtr_t      listBoxUPtr_;
-        const sf::Color         LISTBOX_IMAGE_COLOR_;
-        const sf::Color         LISTBOX_LINE_COLOR_;
-        const sf::Color         LISTBOX_COLOR_FG_;
-        const sf::Color         LISTBOX_COLOR_BG_;
-        const sfml_util::gui::ColorSet     LISTBOX_COLORSET_;
-        sfml_util::gui::BackgroundInfo     LISTBOX_BG_INFO_;
-        sfml_util::gui::TextInfo           listBoxItemTextInfo_;
-        sf::Texture             spellTexture_;
-        sf::Sprite              spellSprite_;
-        sfml_util::gui::TextRegionUPtr_t   spellTitleTextRegionUPtr_;
-        sfml_util::gui::TextRegionUPtr_t   spellDetailsTextUPtr_;
-        sfml_util::gui::TextRegionUPtr_t   unableTextUPtr_;
-        sfml_util::gui::TextRegionUPtr_t   spellDescTextUPtr_;
+        sf::Texture playerTexture_;
+        sf::Sprite playerSprite_;
+        sf::FloatRect pageRectLeft_;
+        sf::FloatRect pageRectRight_;
+        sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
+        sfml_util::gui::ListBoxUPtr_t listBoxUPtr_;
+        const sf::Color LISTBOX_IMAGE_COLOR_;
+        const sf::Color LISTBOX_LINE_COLOR_;
+        const sf::Color LISTBOX_COLOR_FG_;
+        const sf::Color LISTBOX_COLOR_BG_;
+        const sfml_util::gui::ColorSet LISTBOX_COLORSET_;
+        sfml_util::gui::BackgroundInfo LISTBOX_BG_INFO_;
+        sfml_util::gui::TextInfo listBoxItemTextInfo_;
+        sf::Texture spellTexture_;
+        sf::Sprite spellSprite_;
+        sfml_util::gui::TextRegionUPtr_t spellTitleTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t spellDetailsTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t unableTextUPtr_;
+        sfml_util::gui::TextRegionUPtr_t spellDescTextUPtr_;
         spell::SpellPtr_t currentSpellPtr_;
-        sfml_util::ColorShaker  warnColorShaker_;
+        sfml_util::ColorShaker warnColorShaker_;
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGESPELLBOOK_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGESPELLBOOK_HPP_INCLUDED

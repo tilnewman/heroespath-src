@@ -30,21 +30,18 @@
 #include "avatar/avatar-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
-
 namespace heroespath
 {
 namespace avatar
 {
 
-    //Responsible for making textures of NPCs.
+    // Responsible for making textures of NPCs.
     class PortraitFactory
     {
     public:
         static void Make(const Avatar::Enum, sf::Texture &);
     };
-
 }
 }
 
-
-#endif //HEROESPATH_AVATAR_PORTRAITFACTORY_HPP_INCLUDED
+#endif // HEROESPATH_AVATAR_PORTRAITFACTORY_HPP_INCLUDED

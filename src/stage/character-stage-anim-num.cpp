@@ -34,48 +34,45 @@
 #include <sstream>
 #include <tuple>
 
-
 namespace heroespath
 {
 namespace stage
 {
 
-    AnimNum::AnimNum(const stats::Trait_t             VALUE,
-                     const stats::Traits::Enum        WHICH_STAT,
-                     const float                      START_LEFT,
-                     const float                      START_TOP,
-                     const float                      TARGET_LEFT,
-                     const float                      TARGET_TOP,
-                     const sfml_util::gui::TextInfo & TEXT_INFO)
-    :
-        value_       (VALUE),
-        whichStat_   (WHICH_STAT),
-        ignoreMe_    (VALUE < 0),
-        colorVal_    (100),
-        startLeft_   (START_LEFT),
-        startTop_    (START_TOP),
-        distanceX_   (TARGET_LEFT - START_LEFT),
-        distanceY_   (TARGET_TOP - START_TOP),
-        color_       (sf::Color(colorVal_, colorVal_, colorVal_, colorVal_)),
-        isDoneMoving_(false),
-        isDoneFading_(false),
-        willFade_    (true),
-        fadeCounter_ (0.0f),
-        isHeldDown_  (false),
-        textInfo_    (TEXT_INFO),
-        textObj_     (),
-        sliderX_     (misc::random::Float(0.5f, 0.7f)),//this controls the speed
-        timerSec_    (0.0f),
-        prevPosX_    (-1.0f) //any negative value will work here
+    AnimNum::AnimNum(
+        const stats::Trait_t VALUE,
+        const stats::Traits::Enum WHICH_STAT,
+        const float START_LEFT,
+        const float START_TOP,
+        const float TARGET_LEFT,
+        const float TARGET_TOP,
+        const sfml_util::gui::TextInfo & TEXT_INFO)
+        : value_(VALUE)
+        , whichStat_(WHICH_STAT)
+        , ignoreMe_(VALUE < 0)
+        , colorVal_(100)
+        , startLeft_(START_LEFT)
+        , startTop_(START_TOP)
+        , distanceX_(TARGET_LEFT - START_LEFT)
+        , distanceY_(TARGET_TOP - START_TOP)
+        , color_(sf::Color(colorVal_, colorVal_, colorVal_, colorVal_))
+        , isDoneMoving_(false)
+        , isDoneFading_(false)
+        , willFade_(true)
+        , fadeCounter_(0.0f)
+        , isHeldDown_(false)
+        , textInfo_(TEXT_INFO)
+        , textObj_()
+        , sliderX_(misc::random::Float(0.5f, 0.7f))
+        , // this controls the speed
+        timerSec_(0.0f)
+        , prevPosX_(-1.0f) // any negative value will work here
     {
         textObj_.setPosition(START_LEFT, START_TOP);
         CreateNewTextRegion();
     }
 
-
-    AnimNum::~AnimNum()
-    {}
-
+    AnimNum::~AnimNum() {}
 
     void AnimNum::CreateNewTextRegion()
     {
@@ -95,20 +92,21 @@ namespace stage
         sfml_util::gui::SetupText(textObj_, textInfo_);
     }
 
-
     bool AnimNum::UpdateTime(const float ELAPSED_TIME_SEC)
     {
         if (false == isDoneMoving_)
         {
-            //position
+            // position
             const float SLIDERX_RATIO(sliderX_.Update(ELAPSED_TIME_SEC));
-            textObj_.setPosition(startLeft_ + (SLIDERX_RATIO * distanceX_), startTop_ + (SLIDERX_RATIO * distanceY_));
+            textObj_.setPosition(
+                startLeft_ + (SLIDERX_RATIO * distanceX_),
+                startTop_ + (SLIDERX_RATIO * distanceY_));
 
-            //size
-            const float SCALE( sfml_util::Map(SLIDERX_RATIO, 0.0f, 1.0f, 0.6f, 1.0f) );
+            // size
+            const float SCALE(sfml_util::Map(SLIDERX_RATIO, 0.0f, 1.0f, 0.6f, 1.0f));
             textObj_.setScale(SCALE, SCALE);
 
-            //color
+            // color
             const float COLOR_VALF(static_cast<float>(colorVal_));
             color_.r = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
             color_.g = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
@@ -153,7 +151,6 @@ namespace stage
         }
     }
 
-
     bool AnimNum::MouseDown(const float POS_LEFT, const float POS_TOP)
     {
         if (textObj_.getGlobalBounds().contains(POS_LEFT, POS_TOP))
@@ -166,7 +163,6 @@ namespace stage
             return false;
         }
     }
-
 
     bool AnimNum::UpdateTimer(const float ELAPSED_TIME_SEC)
     {
@@ -184,43 +180,43 @@ namespace stage
         return (timerSec_ >= 3.0f);
     }
 
-
     bool operator==(const AnimNum & L, const AnimNum & R)
     {
-        if (((misc::IsRealClose(L.startLeft_, R.startLeft_)) &&
-             (misc::IsRealClose(L.startTop_, R.startTop_)) &&
-             (misc::IsRealClose(L.distanceX_, R.distanceX_)) &&
-             (misc::IsRealClose(L.distanceY_, R.distanceY_)) &&
-             (misc::IsRealClose(L.fadeCounter_, R.fadeCounter_)) &&
-             (misc::IsRealClose(L.timerSec_, R.timerSec_)) &&
-             (misc::IsRealClose(L.prevPosX_, R.prevPosX_)) &&
-             (misc::IsRealClose(L.sliderX_.Current(), R.sliderX_.Current()))) == false)
+        if (((misc::IsRealClose(L.startLeft_, R.startLeft_))
+             && (misc::IsRealClose(L.startTop_, R.startTop_))
+             && (misc::IsRealClose(L.distanceX_, R.distanceX_))
+             && (misc::IsRealClose(L.distanceY_, R.distanceY_))
+             && (misc::IsRealClose(L.fadeCounter_, R.fadeCounter_))
+             && (misc::IsRealClose(L.timerSec_, R.timerSec_))
+             && (misc::IsRealClose(L.prevPosX_, R.prevPosX_))
+             && (misc::IsRealClose(L.sliderX_.Current(), R.sliderX_.Current())))
+            == false)
         {
             return false;
         }
 
-        return std::tie(L.value_,
-                        L.whichStat_,
-                        L.ignoreMe_,
-                        L.colorVal_,
-                        L.color_,
-                        L.isDoneMoving_,
-                        L.isDoneFading_,
-                        L.willFade_,
-                        L.isHeldDown_,
-                        L.textInfo_)
-            ==
-            std::tie(R.value_,
-                     R.whichStat_,
-                     R.ignoreMe_,
-                     R.colorVal_,
-                     R.color_,
-                     R.isDoneMoving_,
-                     R.isDoneFading_,
-                     R.willFade_,
-                     R.isHeldDown_,
-                     R.textInfo_);
+        return std::tie(
+                   L.value_,
+                   L.whichStat_,
+                   L.ignoreMe_,
+                   L.colorVal_,
+                   L.color_,
+                   L.isDoneMoving_,
+                   L.isDoneFading_,
+                   L.willFade_,
+                   L.isHeldDown_,
+                   L.textInfo_)
+            == std::tie(
+                   R.value_,
+                   R.whichStat_,
+                   R.ignoreMe_,
+                   R.colorVal_,
+                   R.color_,
+                   R.isDoneMoving_,
+                   R.isDoneFading_,
+                   R.willFade_,
+                   R.isHeldDown_,
+                   R.textInfo_);
     }
-
 }
 }

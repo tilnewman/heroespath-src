@@ -29,29 +29,24 @@
 //
 #include "songs.hpp"
 
-#include "sfml-util/music-set.hpp"
 #include "sfml-util/music-operator.hpp"
+#include "sfml-util/music-set.hpp"
 
 #include <tuple>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    SongSet::SongSet(const MusicSet &      SET,
-                     MusicOperator OP)
-    :
-        set(SET),
-        op (std::move(OP))
+    SongSet::SongSet(const MusicSet & SET, MusicOperator OP)
+        : set(SET)
+        , op(std::move(OP))
     {}
-
 
     bool operator==(const SongSet & L, const SongSet & R)
     {
         return std::tie(L.set, L.op) == std::tie(R.set, R.op);
     }
-
 }
 }

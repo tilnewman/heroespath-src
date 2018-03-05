@@ -34,21 +34,19 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //forward declarations
+    // forward declarations
     namespace gui
     {
         class IGuiEntity;
         using IGuiEntityPtr_t = IGuiEntity *;
     }
 
-
-    //interface for all Stage classes
+    // interface for all Stage classes
     class IStage
     {
     public:
@@ -69,7 +67,9 @@ namespace sfml_util
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) = 0;
         virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) = 0;
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) = 0;
-        virtual void UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA) = 0;
+        virtual void
+            UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA)
+            = 0;
 
         virtual gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) = 0;
 
@@ -84,10 +84,10 @@ namespace sfml_util
 
         virtual void HandleResolutionChange() = 0;
 
-        //throws if the entity to add was already there
+        // throws if the entity to add was already there
         virtual void EntityAdd(const gui::IGuiEntityPtr_t) = 0;
 
-        //returns false if the entity to remove was not found
+        // returns false if the entity to remove was not found
         virtual bool EntityRemove(const gui::IGuiEntityPtr_t) = 0;
 
         virtual void SetMouseHover(const sf::Vector2f &, const bool) = 0;
@@ -100,8 +100,9 @@ namespace sfml_util
             const bool = false,
             const std::string & = "",
             const std::string & = "",
-            const std::string & = "") = 0;
-        
+            const std::string & = "")
+            = 0;
+
         virtual void PerformNextTest() = 0;
 
         virtual void ClearAllEntities() = 0;
@@ -113,8 +114,7 @@ namespace sfml_util
 
     using IStagePtr_t = IStage *;
     using IStagePVec_t = std::vector<IStagePtr_t>;
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_ISTAGE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_ISTAGE_HPP_INCLUDED

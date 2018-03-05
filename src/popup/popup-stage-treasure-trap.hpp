@@ -33,17 +33,16 @@
 
 #include <string>
 
-
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing a treasure trap popup window stage.
+    // Responsible for implementing a treasure trap popup window stage.
     class PopupStageTreasureTrap : public PopupStageBase
     {
-        PopupStageTreasureTrap(const PopupStageTreasureTrap &) =delete;
-        PopupStageTreasureTrap & operator=(const PopupStageTreasureTrap &) =delete;
+        PopupStageTreasureTrap(const PopupStageTreasureTrap &) = delete;
+        PopupStageTreasureTrap & operator=(const PopupStageTreasureTrap &) = delete;
 
     public:
         explicit PopupStageTreasureTrap(const PopupInfo & POPUP_INFO);
@@ -67,8 +66,7 @@ namespace popup
         sf::Sprite trapSprite_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGETREASURETRAP_HPP_INCLUDED

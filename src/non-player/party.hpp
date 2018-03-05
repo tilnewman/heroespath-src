@@ -34,31 +34,29 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t   = Creature *;
-    using CreatureCPtr_t  = const Creature *;
-    using CreaturePtrC_t  = Creature * const;
+    using CreaturePtr_t = Creature *;
+    using CreatureCPtr_t = const Creature *;
+    using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
 }
 namespace non_player
 {
 
-    //forward declarations
+    // forward declarations
     class Character;
     using CharacterPtr_t = Character *;
     using CharacterPVec_t = std::vector<CharacterPtr_t>;
 
-
-    //encapsulates a set of Characters under control of the user
+    // encapsulates a set of Characters under control of the user
     class Party
     {
-        Party(const Party &) =delete;
-        Party & operator=(const Party &) =delete;
+        Party(const Party &) = delete;
+        Party & operator=(const Party &) = delete;
 
     public:
         explicit Party(const CharacterPVec_t & CHARACTER_PVEC = CharacterPVec_t());
@@ -79,7 +77,7 @@ namespace non_player
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & charactersPVec_;
@@ -87,8 +85,7 @@ namespace non_player
     };
 
     using PartyUPtr_t = std::unique_ptr<Party>;
-
 }
 }
 
-#endif //HEROESPATH_NONPLAYER_PARTY_HPP_INCLUDED
+#endif // HEROESPATH_NONPLAYER_PARTY_HPP_INCLUDED

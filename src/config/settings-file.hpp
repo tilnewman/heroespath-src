@@ -33,17 +33,16 @@
 #include <memory>
 #include <string>
 
-
 namespace heroespath
 {
 namespace config
 {
 
-    //Singleton class that manages a simple configuration file
+    // Singleton class that manages a simple configuration file
     class SettingsFile : public ConfigBase
     {
-        SettingsFile(const SettingsFile &) =delete;
-        SettingsFile & operator=(const SettingsFile &) =delete;
+        SettingsFile(const SettingsFile &) = delete;
+        SettingsFile & operator=(const SettingsFile &) = delete;
 
     public:
         SettingsFile();
@@ -64,11 +63,11 @@ namespace config
         static const std::string KEY_VERTICAL_SYNC_;
         static const std::string KEY_FRAMERATE_LIMIT_;
         static const std::string KEY_ANTIALIAS_LEVEL_;
+
     private:
         static std::unique_ptr<SettingsFile> instanceUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_CONFIG_SETTINGSFILE_HPP_INCLUDED
+#endif // HEROESPATH_CONFIG_SETTINGSFILE_HPP_INCLUDED

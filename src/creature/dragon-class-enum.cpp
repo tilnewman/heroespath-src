@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace creature
@@ -42,14 +41,38 @@ namespace creature
     {
         switch (E)
         {
-            case Hatchling: { return "Hatchling"; }
-            case Whelp:     { return "Whelp"; }
-            case Fledgling: { return "Fledgling"; }
-            case Juvenile:  { return "Juvenile"; }
-            case Adult:     { return "Adult"; }
-            case Wyrm:      { return "Wyrm"; }
-            case Skycaster: { return "Skycaster"; }
-            case Elder:     { return "Elder"; }
+            case Hatchling:
+            {
+                return "Hatchling";
+            }
+            case Whelp:
+            {
+                return "Whelp";
+            }
+            case Fledgling:
+            {
+                return "Fledgling";
+            }
+            case Juvenile:
+            {
+                return "Juvenile";
+            }
+            case Adult:
+            {
+                return "Adult";
+            }
+            case Wyrm:
+            {
+                return "Wyrm";
+            }
+            case Skycaster:
+            {
+                return "Skycaster";
+            }
+            case Elder:
+            {
+                return "Elder";
+            }
             case Count:
             default:
             {
@@ -60,7 +83,6 @@ namespace creature
         }
     }
 
-
     const std::string dragon_class::Desc(const dragon_class::Enum E)
     {
         std::ostringstream ss;
@@ -68,36 +90,40 @@ namespace creature
         return game::GameDataFile::Instance()->GetCopyStr(ss.str());
     }
 
-
     dragon_class::Enum dragon_class::ClassFromRank(const Rank_t & RANK)
     {
-        if (RANK >= Rank_t(game::GameDataFile::Instance()->
-            GetCopyInt("heroespath-creature-dragon-class-rank-min-Elder")))
+        if (RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+                        "heroespath-creature-dragon-class-rank-min-Elder")))
         {
             return dragon_class::Elder;
         }
-        else if (RANK >= Rank_t(game::GameDataFile::Instance()->
-            GetCopyInt("heroespath-creature-dragon-class-rank-min-Skycaster")))
+        else if (
+            RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+                        "heroespath-creature-dragon-class-rank-min-Skycaster")))
         {
             return dragon_class::Skycaster;
         }
-        else if (RANK >= Rank_t(game::GameDataFile::Instance()->
-            GetCopyInt("heroespath-creature-dragon-class-rank-min-Wyrm")))
+        else if (
+            RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+                        "heroespath-creature-dragon-class-rank-min-Wyrm")))
         {
             return dragon_class::Wyrm;
         }
-        else if (RANK >= Rank_t(game::GameDataFile::Instance()->
-            GetCopyInt("heroespath-creature-dragon-class-rank-min-Adult")))
+        else if (
+            RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+                        "heroespath-creature-dragon-class-rank-min-Adult")))
         {
             return dragon_class::Adult;
         }
-        else if (RANK >= Rank_t(game::GameDataFile::Instance()->
-            GetCopyInt("heroespath-creature-dragon-class-rank-min-Juvenile")))
+        else if (
+            RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+                        "heroespath-creature-dragon-class-rank-min-Juvenile")))
         {
             return dragon_class::Juvenile;
         }
-        else if (RANK >= Rank_t(game::GameDataFile::Instance()->
-            GetCopyInt("heroespath-creature-dragon-class-rank-min-Fledgling")))
+        else if (
+            RANK >= Rank_t(game::GameDataFile::Instance()->GetCopyInt(
+                        "heroespath-creature-dragon-class-rank-min-Fledgling")))
         {
             return dragon_class::Fledgling;
         }
@@ -106,6 +132,5 @@ namespace creature
             return dragon_class::Whelp;
         }
     }
-
 }
 }

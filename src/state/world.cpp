@@ -29,17 +29,14 @@
 //
 #include "world.hpp"
 
-
 namespace heroespath
 {
 namespace state
 {
 
     World::World()
-    :
-        maps_(),
-        encounterCount_(0)
+        : maps_()
+        , encounterCount_(0)
     {}
-
 }
 }

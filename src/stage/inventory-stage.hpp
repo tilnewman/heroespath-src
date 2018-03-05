@@ -27,27 +27,26 @@
 //
 // inventory-stage.hpp
 //
+#include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/margins.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
-#include "sfml-util/stage.hpp"
 #include "sfml-util/sliders.hpp"
-#include "sfml-util/margins.hpp"
-#include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/stage.hpp"
 
+#include "combat/combat-text.hpp"
+#include "combat/fight-results.hpp"
+#include "creature/achievement-enum.hpp"
 #include "game/phase-enum.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-title.hpp"
-#include "combat/fight-results.hpp"
-#include "combat/combat-text.hpp"
-#include "creature/achievement-enum.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
+#include <map>
 #include <memory>
 #include <string>
-#include <map>
-
 
 namespace heroespath
 {
@@ -81,9 +80,9 @@ namespace sfml_util
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t   = Creature *;
-    using CreatureCPtr_t  = const Creature *;
-    using CreaturePtrC_t  = Creature * const;
+    using CreaturePtr_t = Creature *;
+    using CreatureCPtr_t = const Creature *;
+    using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
 }
 namespace item
@@ -100,13 +99,12 @@ namespace combat
 namespace stage
 {
 
-    //displays all the information about a player character including the inventory
+    // displays all the information about a player character including the inventory
     class InventoryStage
-    :
-        public sfml_util::Stage,
-        public popup::IPopupHandler_t,
-        public sfml_util::gui::callback::IListBoxCallbackHandler,
-        public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        : public sfml_util::Stage
+        , public popup::IPopupHandler_t
+        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
         enum class ViewType
         {
@@ -135,11 +133,11 @@ namespace stage
             Count
         };
 
-        //used to remember which view each character was last using
+        // used to remember which view each character was last using
         using CharViewMap_t = std::map<std::size_t, ViewType>;
 
-        InventoryStage(const InventoryStage &) =delete;
-        InventoryStage & operator=(const InventoryStage &) =delete;
+        InventoryStage(const InventoryStage &) = delete;
+        InventoryStage & operator=(const InventoryStage &) = delete;
 
     public:
         explicit InventoryStage(
@@ -151,8 +149,7 @@ namespace stage
 
         inline virtual const std::string HandlerName() const override { return GetStageName(); }
 
-        virtual bool HandleCallback(
-            const sfml_util::gui::callback::ListBoxEventPackage &) override;
+        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
         virtual bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
@@ -228,7 +225,7 @@ namespace stage
         bool HandleDropRequest();
         bool HandleDropActual();
         bool HandlePlayerChangeBeforeOrAfter(const bool IS_NEXT_CREATURE_AFTER);
-        bool HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM);//zero indexed
+        bool HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM); // zero indexed
         bool HandlePlayerChangeTo(const creature::CreaturePtrC_t, const bool IS_SLIDING_LEFT);
         void StartSlidingAnimation(const bool IS_SLIDING_LEFT);
         void SetDescBoxTextFromListBoxItem(const sfml_util::gui::ListBoxItemSPtr_t &);
@@ -241,24 +238,17 @@ namespace stage
 
         void PopupRejectionWindow(const std::string & MESSAGE);
 
-        void PopupNumberSelectWindow(
-            const std::string & PROMPT_TEXT,
-            const std::size_t NUMBER_MAX);
+        void PopupNumberSelectWindow(const std::string & PROMPT_TEXT, const std::size_t NUMBER_MAX);
 
         void PopupDoneWindow(const std::string &, const bool);
         void PopupContentSelectionWindow(const std::string &);
 
-        void HandleCoinsGive(
-            const std::size_t COUNT,
-            creature::CreaturePtr_t creatureToGiveToPtr);
+        void HandleCoinsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr);
 
-        void HandleGemsGive(
-            const std::size_t COUNT,
-            creature::CreaturePtr_t creatureToGiveToPtr);
+        void HandleGemsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr);
 
         void HandleMeteorShardsGive(
-            const std::size_t COUNT,
-            creature::CreaturePtr_t cretureToGiveToPtr);
+            const std::size_t COUNT, creature::CreaturePtr_t cretureToGiveToPtr);
 
         void HandleCoinsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
         void HandleGemsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
@@ -267,7 +257,7 @@ namespace stage
         void HandleGemsShare();
         void HandleMeteorShardsShare();
         void EndOfGiveShareGatherTasks();
-        float UpdateImageDetailsPosition();//returns the sprite width
+        float UpdateImageDetailsPosition(); // returns the sprite width
 
         inline bool IsDetailViewFading() const
         {
@@ -292,8 +282,8 @@ namespace stage
             const creature::CreaturePtr_t CREATURE_PTR,
             const creature::AchievementType::Enum WHICH_ACHV) const;
 
-        const std::string MakeTitleSeparatorString(
-            const creature::AchievementType::Enum WHICH_ACHV) const;
+        const std::string
+            MakeTitleSeparatorString(const creature::AchievementType::Enum WHICH_ACHV) const;
 
         void StartDetailViewFadeOutTasks();
         void HandleDetailViewMouseInterrupt(const sf::Vector2f & MOUSE_POS_V);
@@ -336,84 +326,84 @@ namespace stage
         static const std::string POPUP_NAME_SONG_RESULT_;
 
     private:
-        const float                 SCREEN_WIDTH_;
-        const float                 SCREEN_HEIGHT_;
-        const float                 INNER_PAD_;
-        const sf::FloatRect         INNER_RECT_;
-        const float                 CREATURE_IMAGE_POS_LEFT_;
-        const float                 CREATURE_IMAGE_SCALE_;
-        const float                 CREATURE_IMAGE_HEIGHT_MAX_;
-        const float                 LISTBOX_HEIGHT_REDUCTION_;
-        const float                 LISTBOX_SCREEN_EDGE_MARGIN_;
-        const float                 LISTBOX_BETWEEN_SPACER_;
-        const float                 LISTBOX_WIDTH_;
-        const float                 OUT_OF_SIGHT_POS_;
-        const float                 FIRST_LISTBOX_POS_LEFT_;
-        const float                 SECOND_LISTBOX_POS_LEFT_;
-        const float                 STATS_POS_LEFT_;
-        const sf::Color             LISTBOX_COLOR_IMAGE_;
-        const sf::Color             LISTBOX_COLOR_LINE_;
-        const sf::Color             LISTBOX_COLOR_FG_;
-        const sf::Color             LISTBOX_COLOR_BG_;
-        const sf::Color             LISTBOX_COLOR_TITLE_;
-        const sf::Color             DESCBOX_TEXT_COLOR_;
-        const unsigned int          DESCBOX_TEXT_SIZE_;
+        const float SCREEN_WIDTH_;
+        const float SCREEN_HEIGHT_;
+        const float INNER_PAD_;
+        const sf::FloatRect INNER_RECT_;
+        const float CREATURE_IMAGE_POS_LEFT_;
+        const float CREATURE_IMAGE_SCALE_;
+        const float CREATURE_IMAGE_HEIGHT_MAX_;
+        const float LISTBOX_HEIGHT_REDUCTION_;
+        const float LISTBOX_SCREEN_EDGE_MARGIN_;
+        const float LISTBOX_BETWEEN_SPACER_;
+        const float LISTBOX_WIDTH_;
+        const float OUT_OF_SIGHT_POS_;
+        const float FIRST_LISTBOX_POS_LEFT_;
+        const float SECOND_LISTBOX_POS_LEFT_;
+        const float STATS_POS_LEFT_;
+        const sf::Color LISTBOX_COLOR_IMAGE_;
+        const sf::Color LISTBOX_COLOR_LINE_;
+        const sf::Color LISTBOX_COLOR_FG_;
+        const sf::Color LISTBOX_COLOR_BG_;
+        const sf::Color LISTBOX_COLOR_TITLE_;
+        const sf::Color DESCBOX_TEXT_COLOR_;
+        const unsigned int DESCBOX_TEXT_SIZE_;
         const sfml_util::gui::ColorSet LISTBOX_COLORSET_;
         const sfml_util::gui::BackgroundInfo LISTBOX_BG_INFO_;
-        sfml_util::MainMenuTitle    mainMenuTitle_;
-        const float                 CREATURE_IMAGE_POS_TOP_;
-        const float                 LISTBOX_POS_TOP_;
-        const float                 LISTBOX_HEIGHT_;
-        const sf::FloatRect         LISTBOX_REGION_;
-        const sf::FloatRect         DESCBOX_REGION_;
-        const float                 DESCBOX_MARGIN_;
-        const sfml_util::Margins    DESCBOX_MARGINS_;
-        const float                 DETAILVIEW_WIDTH_;
-        const float                 DETAILVIEW_HEIGHT_;
-        const float                 DETAILVIEW_POS_LEFT_;
-        const float                 DETAILVIEW_POS_TOP_;
-        const float                 SORT_ICON_SCALE_;
-        const float                 SORT_ICON_SPACER_;
-        const float                 SORT_ICON_POS_TOP_;
-        const sf::Color             SORT_ICON_COLOR_;
+        sfml_util::MainMenuTitle mainMenuTitle_;
+        const float CREATURE_IMAGE_POS_TOP_;
+        const float LISTBOX_POS_TOP_;
+        const float LISTBOX_HEIGHT_;
+        const sf::FloatRect LISTBOX_REGION_;
+        const sf::FloatRect DESCBOX_REGION_;
+        const float DESCBOX_MARGIN_;
+        const sfml_util::Margins DESCBOX_MARGINS_;
+        const float DETAILVIEW_WIDTH_;
+        const float DETAILVIEW_HEIGHT_;
+        const float DETAILVIEW_POS_LEFT_;
+        const float DETAILVIEW_POS_TOP_;
+        const float SORT_ICON_SCALE_;
+        const float SORT_ICON_SPACER_;
+        const float SORT_ICON_POS_TOP_;
+        const sf::Color SORT_ICON_COLOR_;
 
-        sfml_util::gui::TextInfo    listBoxItemTextInfo_;
-        creature::CreaturePtr_t     creaturePtr_;
-        sfml_util::BottomSymbol     bottomSymbol_;
-        sf::Texture                 paperBgTexture_;
-        sf::Sprite                  paperBgSprite_;
-        sfml_util::OuroborosUPtr_t  ouroborosUPtr_;
-        sf::Texture                 creatureTexture_;
-        sf::Sprite                  creatureSprite_;
-        ViewType                    view_;
-        CharViewMap_t               characterViewMap_;
+        sfml_util::gui::TextInfo listBoxItemTextInfo_;
+        creature::CreaturePtr_t creaturePtr_;
+        sfml_util::BottomSymbol bottomSymbol_;
+        sf::Texture paperBgTexture_;
+        sf::Sprite paperBgSprite_;
+        sfml_util::OuroborosUPtr_t ouroborosUPtr_;
+        sf::Texture creatureTexture_;
+        sf::Sprite creatureSprite_;
+        ViewType view_;
+        CharViewMap_t characterViewMap_;
 
-        //members responsible for animating view changes
-        bool     isSliderAnimating_;
-        bool     isSlidingLeft_;
-        bool     isViewForcedToItems_;
+        // members responsible for animating view changes
+        bool isSliderAnimating_;
+        bool isSlidingLeft_;
+        bool isViewForcedToItems_;
         ViewType viewToChangeTo_;
-        float    sliderAnimTimerSec_;
-        float    detailsPosLeft_;
-        float    centerPosLeft_;
-        bool     isImageSliding_;
-        bool     isDetailsSliding_;
-        bool     isCenterSliding_;
-        bool     isStatsSliding_;
-        bool     isListBoxSliding_;
-        bool     isDescBoxSliding_;
-        bool     isImageSlidingDone_;
-        bool     isDetailsSlidingDone_;
-        bool     isCenterSlidingDone_;
-        bool     isStatsSlidingDone_;
-        bool     isListBoxSlidingDone_;
-        bool     isDescBoxSlidingDone_;
-        bool     hasImageChanged_;
-        bool     hasDetailsChanged_;
-        bool     hasCenterChanged_;
-        bool     hasStatsChanged_;
-        bool     hasListBoxChanged_;
-        bool     hasDescBoxChanged_;
+        float sliderAnimTimerSec_;
+        float detailsPosLeft_;
+        float centerPosLeft_;
+        bool isImageSliding_;
+        bool isDetailsSliding_;
+        bool isCenterSliding_;
+        bool isStatsSliding_;
+        bool isListBoxSliding_;
+        bool isDescBoxSliding_;
+        bool isImageSlidingDone_;
+        bool isDetailsSlidingDone_;
+        bool isCenterSlidingDone_;
+        bool isStatsSlidingDone_;
+        bool isListBoxSlidingDone_;
+        bool isDescBoxSlidingDone_;
+        bool hasImageChanged_;
+        bool hasDetailsChanged_;
+        bool hasCenterChanged_;
+        bool hasStatsChanged_;
+        bool hasListBoxChanged_;
+        bool hasDescBoxChanged_;
         sfml_util::sliders::ZeroSliderOnce<float> imageSlider_;
         sfml_util::sliders::ZeroSliderOnce<float> detailsSlider_;
         sfml_util::sliders::ZeroSliderOnce<float> centerSlider_;
@@ -425,11 +415,11 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t statsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t eqTitleTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t unEqTitleTextRegionUPtr_;
-        sfml_util::gui::ListBoxUPtr_t    equippedListBoxUPtr_;
-        sfml_util::gui::ListBoxUPtr_t    unEquipListBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t equippedListBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t unEquipListBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t insTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
-        sfml_util::gui::box::BoxUPtr_t   descBoxUPtr_;
+        sfml_util::gui::box::BoxUPtr_t descBoxUPtr_;
         sfml_util::gui::TextRegionUPtr_t centerTextRegionUPtr_;
 
         sfml_util::gui::FourStateButtonUPtr_t backButtonUPtr_;
@@ -461,31 +451,31 @@ namespace stage
         bool isSortReversedUneqPrice_;
         bool isSortReversedUneqWeight_;
 
-        //members that manage the give/drop/share/gather actions
-        ActionType                        actionType_;
-        ContentType                       contentType_;
+        // members that manage the give/drop/share/gather actions
+        ActionType actionType_;
+        ContentType contentType_;
         sfml_util::gui::ListBoxItemSPtr_t listBoxItemToGiveSPtr_;
-        creature::CreaturePtr_t           creatureToGiveToPtr_;
-        item::ItemPtr_t                   iItemToDropPtr_;
+        creature::CreaturePtr_t creatureToGiveToPtr_;
+        item::ItemPtr_t iItemToDropPtr_;
 
-        //members that manage the item detail view
-        bool            isDetailViewFadingIn_;
-        bool            isDetailViewFadingOut_;
-        bool            isDetailViewDoneFading_;
-        bool            isAchievementDisplaying_;
-        bool            hasMouseMoved_;
-        bool            isWaitingOnPopup_;
-        float           detailViewTimerSec_;
-        float           detailViewSliderRatio_;
-        sf::Vector2f    mousePosV_;
-        sf::FloatRect   detailViewSourceRect_;
+        // members that manage the item detail view
+        bool isDetailViewFadingIn_;
+        bool isDetailViewFadingOut_;
+        bool isDetailViewDoneFading_;
+        bool isAchievementDisplaying_;
+        bool hasMouseMoved_;
+        bool isWaitingOnPopup_;
+        float detailViewTimerSec_;
+        float detailViewSliderRatio_;
+        sf::Vector2f mousePosV_;
+        sf::FloatRect detailViewSourceRect_;
         sf::VertexArray detailViewQuads_;
-        sf::Sprite      detailViewSprite_;
-        sf::Texture     detailViewTexture_;
+        sf::Sprite detailViewSprite_;
+        sf::Texture detailViewTexture_;
         sfml_util::gui::TextRegionUPtr_t detailViewTextUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> detailViewSlider_;
 
-        //members that support spell casting (and song playing)
+        // members that support spell casting (and song playing)
         spell::SpellPtr_t spellBeingCastPtr_;
         song::SongPtr_t songBeingPlayedPtr_;
         combat::TurnActionInfo turnActionInfo_;
@@ -496,13 +486,12 @@ namespace stage
         sfml_util::animation::SparkleAnimationUPtr_t sparkleAnimUPtr_;
         sfml_util::animation::SongAnimationUPtr_t songAnimUPtr_;
 
-        //members that control combat action restrictions
+        // members that control combat action restrictions
         creature::CreaturePtr_t turnCreaturePtr_;
         game::Phase::Enum currentPhase_;
         bool hasTakenActionSpellOrSong_;
     };
-
 }
 }
 
-#endif //HEROESPATH_STAGE_INVENTORY_STAGE_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_INVENTORY_STAGE_HPP_INCLUDED

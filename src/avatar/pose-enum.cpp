@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace avatar
@@ -42,13 +41,34 @@ namespace avatar
     {
         switch (E)
         {
-            case Standing:  { return "Standing"; }
-            case Walking:   { return "Walking"; }
-            case GiveTake:  { return "GiveTake"; }
-            case Fight:     { return "Fight"; }
-            case Cast:      { return "Cast"; }
-            case Blink:     { return "Blink"; }
-            case Dead:      { return "Dead"; }
+            case Standing:
+            {
+                return "Standing";
+            }
+            case Walking:
+            {
+                return "Walking";
+            }
+            case GiveTake:
+            {
+                return "GiveTake";
+            }
+            case Fight:
+            {
+                return "Fight";
+            }
+            case Cast:
+            {
+                return "Cast";
+            }
+            case Blink:
+            {
+                return "Blink";
+            }
+            case Dead:
+            {
+                return "Dead";
+            }
             case Count:
             default:
             {
@@ -58,6 +78,5 @@ namespace avatar
             }
         }
     }
-
 }
 }

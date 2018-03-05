@@ -32,52 +32,47 @@
 #include <memory>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //Responsible for drawing a pciture frame border in a given region.
-    class PictureFrame : public sf::Drawable
+    namespace gui
     {
-        PictureFrame(const PictureFrame &) =delete;
-        PictureFrame & operator=(const PictureFrame &) =delete;
 
-    public:
-        PictureFrame(
-            const sf::FloatRect & RECT = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f),
-            const sf::Color & COLOR = sf::Color::White);
+        // Responsible for drawing a pciture frame border in a given region.
+        class PictureFrame : public sf::Drawable
+        {
+            PictureFrame(const PictureFrame &) = delete;
+            PictureFrame & operator=(const PictureFrame &) = delete;
 
-        inline const sf::FloatRect OuterRect() const { return outerRect_; }
-        inline const sf::FloatRect InnerRect() const { return innerRect_; }
+        public:
+            PictureFrame(
+                const sf::FloatRect & RECT = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f),
+                const sf::Color & COLOR = sf::Color::White);
 
-        virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
+            inline const sf::FloatRect OuterRect() const { return outerRect_; }
+            inline const sf::FloatRect InnerRect() const { return innerRect_; }
 
-        //returns the innerRect_
-        const sf::FloatRect Setup(
-            const sf::FloatRect & RECT,
-            const sf::Color & COLOR);
+            virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
-    private:
-        sf::Color color_;
-        sf::FloatRect outerRect_;
-        sf::FloatRect innerRect_;
-        sf::Texture texture_;
-        sf::Sprite topLeftSprite_;
-        sf::Sprite topRightSprite_;
-        sf::Sprite botLeftSprite_;
-        sf::Sprite botRightSprite_;
-        std::vector<sf::Sprite> sideSprites_;
-    };
+            // returns the innerRect_
+            const sf::FloatRect Setup(const sf::FloatRect & RECT, const sf::Color & COLOR);
 
+        private:
+            sf::Color color_;
+            sf::FloatRect outerRect_;
+            sf::FloatRect innerRect_;
+            sf::Texture texture_;
+            sf::Sprite topLeftSprite_;
+            sf::Sprite topRightSprite_;
+            sf::Sprite botLeftSprite_;
+            sf::Sprite botRightSprite_;
+            std::vector<sf::Sprite> sideSprites_;
+        };
 
-    using PictureFrameUPtr_t = std::unique_ptr<PictureFrame>;
-
+        using PictureFrameUPtr_t = std::unique_ptr<PictureFrame>;
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUI_PICTUREFRAME_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_PICTUREFRAME_HPP_INCLUDED

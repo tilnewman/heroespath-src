@@ -34,25 +34,25 @@
 
 #include <vector>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //An animtion class sourced from multiple textures.
+    // An animtion class sourced from multiple textures.
     class AnimationMultiTexture : public Animation
     {
-        AnimationMultiTexture(const AnimationMultiTexture &) =delete;
-        AnimationMultiTexture & operator=(const AnimationMultiTexture &) =delete;
+        AnimationMultiTexture(const AnimationMultiTexture &) = delete;
+        AnimationMultiTexture & operator=(const AnimationMultiTexture &) = delete;
 
     public:
-        AnimationMultiTexture(const Animations::Enum ENUM,
-                              const sf::FloatRect &  REGION,
-                              const float            TIME_PER_FRAME_SEC,
-                              const sf::BlendMode &  BLEND_MODE,
-                              const sf::Color &      COLOR_FROM,
-                              const sf::Color &      COLOR_TO);
+        AnimationMultiTexture(
+            const Animations::Enum ENUM,
+            const sf::FloatRect & REGION,
+            const float TIME_PER_FRAME_SEC,
+            const sf::BlendMode & BLEND_MODE,
+            const sf::Color & COLOR_FROM,
+            const sf::Color & COLOR_TO);
 
         virtual ~AnimationMultiTexture();
 
@@ -63,18 +63,12 @@ namespace sfml_util
 
         virtual void SetEntityRegion(const sf::FloatRect & R) override;
 
-        //returns true if frame count wrapped around back to zero
+        // returns true if frame count wrapped around back to zero
         virtual bool UpdateTime(const float SECONDS) override;
 
-        inline virtual std::size_t FrameCount() const override
-        {
-            return textureIdVec_.size();
-        }
+        inline virtual std::size_t FrameCount() const override { return textureIdVec_.size(); }
 
-        inline virtual const sf::Vector2f OrigSize() const override
-        {
-            return origSizeV_;
-        }
+        inline virtual const sf::Vector2f OrigSize() const override { return origSizeV_; }
 
         virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
 
@@ -84,11 +78,10 @@ namespace sfml_util
         sf::Sprite sprite_;
         sf::Vector2f origSizeV_;
 
-        //the size of this vec acts as a total frame count
+        // the size of this vec acts as a total frame count
         misc::SizetVec_t textureIdVec_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED

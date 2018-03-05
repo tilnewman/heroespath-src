@@ -29,17 +29,16 @@
 //
 #include "adventure-stage.hpp"
 
-#include "game/loop-manager.hpp"
 #include "game/game.hpp"
-#include "state/game-state.hpp"
-#include "state/game-state-factory.hpp"
-#include "player/party.hpp"
-#include "player/party-factory.hpp"
+#include "game/loop-manager.hpp"
 #include "player/character.hpp"
+#include "player/party-factory.hpp"
+#include "player/party.hpp"
 #include "stage/adventure-display-stage.hpp"
+#include "state/game-state-factory.hpp"
+#include "state/game-state.hpp"
 
 #include "sfml-util/display.hpp"
-
 
 namespace heroespath
 {
@@ -47,43 +46,34 @@ namespace stage
 {
 
     AdventureStage::AdventureStage()
-    :
-        Stage(
-            "Adventure",
-            0.0f,
-            0.0f,
-            sfml_util::Display::Instance()->GetWinWidth(),
-            sfml_util::Display::Instance()->GetWinHeight()),
-        adventureDisplayStagePtr_(nullptr),
-        interactionManager_()
+        : Stage(
+              "Adventure",
+              0.0f,
+              0.0f,
+              sfml_util::Display::Instance()->GetWinWidth(),
+              sfml_util::Display::Instance()->GetWinHeight())
+        , adventureDisplayStagePtr_(nullptr)
+        , interactionManager_()
     {}
 
-
-    AdventureStage::~AdventureStage()
-    {}
-
+    AdventureStage::~AdventureStage() {}
 
     void AdventureStage::Setup()
     {
-        //TEMP TODO REMOVE -once done testing
-        //create a party of characters to work with during testing
+        // TEMP TODO REMOVE -once done testing
+        // create a party of characters to work with during testing
         state::GameStateFactory::Instance()->NewGame(player::PartyFactory::MakeFakeForTesting());
 
         adventureDisplayStagePtr_ = new AdventureDisplayStage(this, interactionManager_);
         adventureDisplayStagePtr_->Setup();
 
-        //See AdventureDisplayStage::Setup() for where this is actually done.
-        //The AdventureDisplayStage gives itself to the LoopManager so that it
-        //can do so before adding it's own substages, so that it will be drawn
-        //before those substages.
-        //game::LoopManager::Instance()->AddStage(adventureDisplayStagePtr_);
+        // See AdventureDisplayStage::Setup() for where this is actually done.
+        // The AdventureDisplayStage gives itself to the LoopManager so that it
+        // can do so before adding it's own substages, so that it will be drawn
+        // before those substages.
+        // game::LoopManager::Instance()->AddStage(adventureDisplayStagePtr_);
     }
 
-
-    void AdventureStage::UpdateTime(const float)
-    {
-        interactionManager_.Update();
-    }
-
+    void AdventureStage::UpdateTime(const float) { interactionManager_.Update(); }
 }
 }

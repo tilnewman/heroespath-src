@@ -31,17 +31,16 @@
 
 #include "sfml-util/gui/text-region.hpp"
 
-
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing the Image Fade Popup Stage.
+    // Responsible for implementing the Image Fade Popup Stage.
     class PopupStageImageFade : public PopupStageBase
     {
-        PopupStageImageFade(const PopupStageImageFade &) =delete;
-        PopupStageImageFade & operator=(const PopupStageImageFade &) =delete;
+        PopupStageImageFade(const PopupStageImageFade &) = delete;
+        PopupStageImageFade & operator=(const PopupStageImageFade &) = delete;
 
     public:
         explicit PopupStageImageFade(const PopupInfo &);
@@ -64,8 +63,7 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t titleTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGEIMAGEFADE_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGEIMAGEFADE_HPP_INCLUDED

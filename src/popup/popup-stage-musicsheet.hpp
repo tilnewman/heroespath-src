@@ -27,18 +27,17 @@
 //
 // popup-stage-musicsheet.hpp
 //
-#include "popup/popup-stage-base.hpp"
 #include "popup/popup-info.hpp"
+#include "popup/popup-stage-base.hpp"
 
-#include "sfml-util/gui/background-info.hpp"
-#include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/color-shaker.hpp"
-#include "sfml-util/sliders.hpp"
 #include "sfml-util/color-slider.hpp"
+#include "sfml-util/gui/background-info.hpp"
+#include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/sliders.hpp"
 
 #include <string>
-
 
 namespace heroespath
 {
@@ -52,14 +51,13 @@ namespace song
 namespace popup
 {
 
-    //Responsible for implementing the MusicSheet popup stage
+    // Responsible for implementing the MusicSheet popup stage
     class PopupStageMusicSheet
-    :
-        public PopupStageBase,
-        public sfml_util::gui::callback::IListBoxCallbackHandler
+        : public PopupStageBase
+        , public sfml_util::gui::callback::IListBoxCallbackHandler
     {
-        PopupStageMusicSheet(const PopupStageMusicSheet &) =delete;
-        PopupStageMusicSheet & operator=(const PopupStageMusicSheet &) =delete;
+        PopupStageMusicSheet(const PopupStageMusicSheet &) = delete;
+        PopupStageMusicSheet & operator=(const PopupStageMusicSheet &) = delete;
 
     public:
         explicit PopupStageMusicSheet(const popup::PopupInfo &);
@@ -70,7 +68,7 @@ namespace popup
             return PopupStageBase::HandlerName();
         }
 
-        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)override;
+        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
         using PopupStageBase::HandleCallback;
 
@@ -129,8 +127,7 @@ namespace popup
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED

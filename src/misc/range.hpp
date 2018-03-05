@@ -29,21 +29,19 @@
 //
 #include <algorithm>
 
-
 namespace heroespath
 {
 namespace misc
 {
 
-    //Responsible for wrapping two related immutable numbers.
-    template<typename T>
+    // Responsible for wrapping two related immutable numbers.
+    template <typename T>
     class Range
     {
     public:
         explicit Range(const T A = 0, const T B = 0)
-        :
-            a_(A),
-            b_(B)
+            : a_(A)
+            , b_(B)
         {}
 
         inline T A() const { return a_; }
@@ -69,8 +67,7 @@ namespace misc
         T a_;
         T b_;
     };
-
 }
 }
 
-#endif //HEROESPATH_MISC_FROMTO_HPP_INCLUDED
+#endif // HEROESPATH_MISC_FROMTO_HPP_INCLUDED

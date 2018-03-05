@@ -27,82 +27,80 @@
 //
 // random.hpp
 //
-#include "misc/real.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/real.hpp"
 
 #include <algorithm>
+#include <array>
+#include <cmath> //for std::nextafter()
+#include <limits> //for std::uniform_..._distribution() and numeric_limits<>
 #include <random>
 #include <vector>
-#include <limits> //for std::uniform_..._distribution() and numeric_limits<>
-#include <cmath> //for std::nextafter()
-#include <array>
-
 
 namespace heroespath
 {
 namespace misc
 {
-namespace random
-{
-
-    //This single engine and seed is used for all randomness in the game engine
-    struct MersenneTwister
+    namespace random
     {
-        static void Seed()
+
+        // This single engine and seed is used for all randomness in the game engine
+        struct MersenneTwister
         {
-            std::array<int, engine.state_size> seedData;
-            std::random_device randDevice;
-            std::generate_n(seedData.data(), seedData.size(), std::ref(randDevice));
-            std::seed_seq seedSequence(seedData.begin(), seedData.end());
-            engine.seed(seedSequence);
+            static void Seed()
+            {
+                std::array<int, engine.state_size> seedData;
+                std::random_device randDevice;
+                std::generate_n(seedData.data(), seedData.size(), std::ref(randDevice));
+                std::seed_seq seedSequence(seedData.begin(), seedData.end());
+                engine.seed(seedSequence);
+            }
+
+            static std::mt19937 engine;
+        };
+
+        template <typename T>
+        T Real(const T THE_MIN, const T THE_MAX)
+        {
+            if (misc::IsRealClose(THE_MIN, THE_MAX))
+            {
+                return THE_MIN;
+            }
+            else
+            {
+                // Tested uniform_real_distribution on both Windows and MacOS over ranges
+                // where min==max and where min>max.  In both cases the distribution didn't
+                // crash and behaved as expected.  So no need to check that min<max.
+
+                // uniform_real_distribution is [x,y) so the nextafter() call is needed
+                std::uniform_real_distribution<T> uniformDist(
+                    THE_MIN, std::nextafter(THE_MAX, std::numeric_limits<T>::max()));
+
+                return uniformDist(MersenneTwister::engine);
+            }
         }
 
-        static std::mt19937 engine;
-    };
-
-
-    template<typename T>
-    T Real(const T THE_MIN, const T THE_MAX)
-    {
-        if (misc::IsRealClose(THE_MIN, THE_MAX))
+        inline double Double(const double THE_MIN, const double THE_MAX)
         {
-            return THE_MIN;
+            return Real<double>(THE_MIN, THE_MAX);
         }
-        else
+
+        inline double Double(const double THE_MAX = 1.0) { return Double(0.0, THE_MAX); }
+
+        inline float Float(const float THE_MIN, const float THE_MAX)
         {
-            //Tested uniform_real_distribution on both Windows and MacOS over ranges
-            //where min==max and where min>max.  In both cases the distribution didn't
-            //crash and behaved as expected.  So no need to check that min<max.
-
-            //uniform_real_distribution is [x,y) so the nextafter() call is needed
-            std::uniform_real_distribution<T> uniformDist(
-                THE_MIN,
-                std::nextafter(THE_MAX, std::numeric_limits<T>::max()));
-
-            return uniformDist(MersenneTwister::engine);
+            return Real<float>(THE_MIN, THE_MAX);
         }
+
+        inline float Float(const float THE_MAX = 1.0f) { return Float(0.0f, THE_MAX); }
+
+        int Int(const int THE_MIN, const int THE_MAX);
+
+        inline int Int(const int THE_MAX) { return Int(0, THE_MAX); }
+
+        inline bool Bool() { return (Int(1) == 1); }
     }
-
-
-    inline double Double(const double THE_MIN, const double THE_MAX)    { return Real<double>(THE_MIN, THE_MAX); }
-
-    inline double Double(const double THE_MAX = 1.0)                    { return Double(0.0, THE_MAX); }
-
-
-    inline float Float(const float THE_MIN, const float THE_MAX)        { return Real<float>(THE_MIN, THE_MAX); }
-
-    inline float Float(const float THE_MAX = 1.0f)                      { return Float(0.0f, THE_MAX); }
-
-
-    int Int(const int THE_MIN, const int THE_MAX);
-
-    inline int Int(const int THE_MAX)                                   { return Int(0, THE_MAX); }
-
-
-    inline bool Bool()                                                  { return (Int(1) == 1); }
-
-}
 }
 }
 
-#endif //HEROESPATH_MISC_RANDOM_HPP_INCLUDED
+#endif // HEROESPATH_MISC_RANDOM_HPP_INCLUDED

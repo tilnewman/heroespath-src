@@ -29,31 +29,27 @@
 //
 #include "enchantment.hpp"
 
-#include "creature/creature.hpp"
 #include "creature/condition-algorithms.hpp"
+#include "creature/creature.hpp"
 #include "item/item-profile-warehouse.hpp"
 
 #include <sstream>
-
 
 namespace heroespath
 {
 namespace creature
 {
 
-    Enchantment::Enchantment(const EnchantmentType::Enum TYPE,
-                             const stats::TraitSet &     TRAIT_SET,
-                             const UseInfo &             USE_INFO)
-    :
-        type_    (TYPE),
-        traitSet_(TRAIT_SET),
-        useInfo_ (USE_INFO)
+    Enchantment::Enchantment(
+        const EnchantmentType::Enum TYPE,
+        const stats::TraitSet & TRAIT_SET,
+        const UseInfo & USE_INFO)
+        : type_(TYPE)
+        , traitSet_(TRAIT_SET)
+        , useInfo_(USE_INFO)
     {}
 
-
-    Enchantment::~Enchantment()
-    {}
-
+    Enchantment::~Enchantment() {}
 
     const std::string Enchantment::EffectStr(const CreaturePtr_t) const
     {
@@ -80,23 +76,23 @@ namespace creature
             auto const SPELL{ useInfo_.Spell() };
             if (SPELL != spell::Spells::Count)
             {
-                ss << SepIfNotEmpty(ss.str()) << "casts the "
-                    << spell::Spells::Name(SPELL) << " spell";
+                ss << SepIfNotEmpty(ss.str()) << "casts the " << spell::Spells::Name(SPELL)
+                   << " spell";
             }
 
             auto const CONDS_REMOVED_VEC{ useInfo_.ConditionsRemoved() };
             if (CONDS_REMOVED_VEC.empty())
             {
                 ss << SepIfNotEmpty(ss.str()) << "removes the conditions: "
-                    << creature::condition::Algorithms::Names(
-                        CONDS_REMOVED_VEC, misc::Vector::JoinOpt::And);
+                   << creature::condition::Algorithms::Names(
+                          CONDS_REMOVED_VEC, misc::Vector::JoinOpt::And);
             }
         }
 
         if (useInfo_.RestrictedToPhase() != game::Phase::NotAPhase)
         {
             ss << SepIfNotEmpty(ss.str()) << ", use only during "
-                << game::Phase::ToString(useInfo_.RestrictedToPhase(), false);
+               << game::Phase::ToString(useInfo_.RestrictedToPhase(), false);
         }
 
         auto const TRAITS_STR{ traitSet_.ToString(false, false, false, true) };
@@ -107,7 +103,6 @@ namespace creature
 
         return ss.str();
     }
-
 
     Score_t Enchantment::TreasureScore() const
     {
@@ -123,14 +118,13 @@ namespace creature
             score += 200_score;
         }
 
-        if ((type_ & EnchantmentType::BlessWithoutItem) ||
-            (type_ & EnchantmentType::CurseWithoutItem))
+        if ((type_ & EnchantmentType::BlessWithoutItem)
+            || (type_ & EnchantmentType::CurseWithoutItem))
         {
             score += 300_score;
         }
 
         return score;
     }
-
 }
 }

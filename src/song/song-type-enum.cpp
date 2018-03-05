@@ -29,9 +29,8 @@
 //
 #include "song-type-enum.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -42,8 +41,14 @@ namespace song
     {
         switch (E)
         {
-            case Guitar: { return "Guitar"; }
-            case Drum:   { return "Drum"; }
+            case Guitar:
+            {
+                return "Guitar";
+            }
+            case Drum:
+            {
+                return "Drum";
+            }
             case Count:
             default:
             {
@@ -53,6 +58,5 @@ namespace song
             }
         }
     }
-
 }
 }

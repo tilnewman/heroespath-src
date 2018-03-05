@@ -34,23 +34,20 @@
 
 #include "misc/assertlogandthrow.hpp"
 
-#include <sstream>
 #include <limits>
-
+#include <sstream>
 
 namespace heroespath
 {
 namespace creature
 {
 
-    Achievement::Achievement(const AchievementType::Enum WHICH,
-                             const TitleCountMap_t & TITLE_COUNT_MAP)
-    :
-        which_        (WHICH),
-        count_        (0),
-        titleCountMap_(TITLE_COUNT_MAP)
+    Achievement::Achievement(
+        const AchievementType::Enum WHICH, const TitleCountMap_t & TITLE_COUNT_MAP)
+        : which_(WHICH)
+        , count_(0)
+        , titleCountMap_(TITLE_COUNT_MAP)
     {}
-
 
     TitlePtr_t Achievement::GetCurrentTitle() const
     {
@@ -62,8 +59,8 @@ namespace creature
             for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
             {
                 auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_COUNTTITLE_PAIR.second) };
-                if ((NEXT_TITLE_PTR->AchievementCount() < count_) &&
-                    (NEXT_TITLE_PTR->AchievementCount() >= titlePtr->AchievementCount()))
+                if ((NEXT_TITLE_PTR->AchievementCount() < count_)
+                    && (NEXT_TITLE_PTR->AchievementCount() >= titlePtr->AchievementCount()))
                 {
                     titlePtr = NEXT_TITLE_PTR;
                 }
@@ -80,19 +77,18 @@ namespace creature
         }
     }
 
-
     TitlePtr_t Achievement::GetNextTitle() const
     {
         TitlePtr_t titlePtr{ nullptr };
 
         if (titleCountMap_.empty() == false)
         {
-            titlePtr = title::Warehouse::Get( titleCountMap_.begin()->second );
+            titlePtr = title::Warehouse::Get(titleCountMap_.begin()->second);
             for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
             {
                 auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_COUNTTITLE_PAIR.second) };
-                if ((NEXT_TITLE_PTR->AchievementCount() > count_) &&
-                    (NEXT_TITLE_PTR->AchievementCount() <= titlePtr->AchievementCount()))
+                if ((NEXT_TITLE_PTR->AchievementCount() > count_)
+                    && (NEXT_TITLE_PTR->AchievementCount() <= titlePtr->AchievementCount()))
                 {
                     titlePtr = NEXT_TITLE_PTR;
                 }
@@ -102,36 +98,32 @@ namespace creature
         return titlePtr;
     }
 
-
     const std::string Achievement::ToString() const
     {
         std::ostringstream ss;
-        ss << Name()
-           << "s current count=" << count_
+        ss << Name() << "s current count=" << count_
            << ", and has the following achievable titles: ";
 
         const std::string SEP_STR(", ");
         for (auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {
             ss << Titles::Name(NEXT_TITLE_COUNT_PAIR.second) << " at count "
-                << NEXT_TITLE_COUNT_PAIR.first << SEP_STR;
+               << NEXT_TITLE_COUNT_PAIR.first << SEP_STR;
         }
 
         return boost::algorithm::erase_last_copy(ss.str(), SEP_STR);
     }
-
 
     bool Achievement::IsRoleInList(const role::Enum E) const
     {
         return title::Warehouse::Get(titleCountMap_.begin()->second)->IsRoleInList(E);
     }
 
-
     TitlePtr_t Achievement::Increment(const creature::role::Enum ROLE_ENUM)
     {
-        //Keep incrementing past the count of the final Title so the player can track
-        //progress even if there are no more Titles to earn.  Don't stop until the
-        //count reaches a large recognizeable limit...something with lots of 9's...
+        // Keep incrementing past the count of the final Title so the player can track
+        // progress even if there are no more Titles to earn.  Don't stop until the
+        // count reaches a large recognizeable limit...something with lots of 9's...
         if (999'999'999_count == count_)
         {
             return nullptr;
@@ -143,8 +135,8 @@ namespace creature
         {
             auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_TITLE_COUNT_PAIR.second) };
 
-            if ((NEXT_TITLE_PTR->AchievementCount() == count_) &&
-                (NEXT_TITLE_PTR->IsRoleInList(ROLE_ENUM)))
+            if ((NEXT_TITLE_PTR->AchievementCount() == count_)
+                && (NEXT_TITLE_PTR->IsRoleInList(ROLE_ENUM)))
             {
                 return NEXT_TITLE_PTR;
             }
@@ -152,6 +144,5 @@ namespace creature
 
         return nullptr;
     }
-
 }
 }

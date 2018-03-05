@@ -37,18 +37,17 @@
 #include <memory>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
 {
-    //forward declarations
+    // forward declarations
     class Creature;
-    using CreaturePtr_t   = Creature *;
-    using CreatureCPtr_t  = const Creature *;
-    using CreaturePtrC_t  = Creature * const;
+    using CreaturePtr_t = Creature *;
+    using CreatureCPtr_t = const Creature *;
+    using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
-    using CreaturePVec_t  = std::vector<CreaturePtr_t>;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 }
 namespace player
 {
@@ -64,11 +63,11 @@ namespace non_player
 namespace combat
 {
 
-    //Manages an encounter with the player party
+    // Manages an encounter with the player party
     class Encounter
     {
-        Encounter(const Encounter &) =delete;
-        Encounter & operator=(const Encounter &) =delete;
+        Encounter(const Encounter &) = delete;
+        Encounter & operator=(const Encounter &) = delete;
 
     public:
         Encounter();
@@ -78,7 +77,7 @@ namespace combat
         static void Acquire();
         static void Release();
 
-        //the player party is kept by the State object
+        // the player party is kept by the State object
         non_player::Party & LivingNonPlayerParty();
         non_player::Party & DeadNonPlayerParty();
         non_player::Party & RunawayNonPlayerParty();
@@ -91,15 +90,12 @@ namespace combat
         bool IsRunaway(const creature::CreaturePtr_t) const;
         void Runaway(const creature::CreaturePtr_t);
 
-        inline std::size_t GetRoundCount()  { return roundCounter_; }
-        inline bool HasStarted() const      { return hasStarted_; }
+        inline std::size_t GetRoundCount() { return roundCounter_; }
+        inline bool HasStarted() const { return hasStarted_; }
 
         void Setup_First();
 
-        inline creature::CreaturePtr_t CurrentTurnCreature() const
-        {
-            return turnCreaturePtr_;
-        }
+        inline creature::CreaturePtr_t CurrentTurnCreature() const { return turnCreaturePtr_; }
 
         const TurnInfo GetTurnInfoCopy(const creature::CreaturePtrC_t P) const;
 
@@ -113,8 +109,7 @@ namespace combat
             turnInfoMap_[P].SetIsFlying(B);
         }
 
-        inline void SetTurnActionInfo(const creature::CreaturePtrC_t P,
-                                      const TurnActionInfo &         TAI)
+        inline void SetTurnActionInfo(const creature::CreaturePtrC_t P, const TurnActionInfo & TAI)
         {
             turnInfoMap_[P].SetTurnActionInfo(TAI);
         }
@@ -127,18 +122,14 @@ namespace combat
         item::TreasureImage::Enum BeginTreasureStageTasks();
 
         void EndTreasureStageTasks(
-            const item::ItemCache & ITEM_CACHE_WORN,
-            const item::ItemCache & ITEM_CACHE_OWNED);
+            const item::ItemCache & ITEM_CACHE_WORN, const item::ItemCache & ITEM_CACHE_OWNED);
 
         item::ItemCache TakeDeadNonPlayerItemsHeldCache();
         item::ItemCache TakeDeadNonPlayerItemsLockboxCache();
 
         bool DidAllEnemiesRunAway() const;
 
-        inline creature::CreaturePtr_t LockPickCreaturePtr() const
-        {
-            return lockPickCreaturePtr_;
-        }
+        inline creature::CreaturePtr_t LockPickCreaturePtr() const { return lockPickCreaturePtr_; }
 
         inline void LockPickCreaturePtr(const creature::CreaturePtr_t NEW_CREATURE_PTR)
         {
@@ -152,7 +143,7 @@ namespace combat
         void PopulateTurnInfoMap();
         void SortAndSetTurnCreature();
 
-        //These functions are where all non-player charater pointers are free'd
+        // These functions are where all non-player charater pointers are free'd
         void FreeThenResetLivingNonPlayerParty();
         void FreeThenResetDeadNonPlayerParty();
         void FreeThenResetRunawayNonPlayerParty();
@@ -161,35 +152,34 @@ namespace combat
     private:
         static std::unique_ptr<Encounter> instanceUPtr_;
 
-        //Non-player character pointers are owned by these party objects.
-        //Each non-player character pointer must only ever be in one of these vecs.
+        // Non-player character pointers are owned by these party objects.
+        // Each non-player character pointer must only ever be in one of these vecs.
         non_player::PartyUPtr_t nonPlayerPartyUPtr_;
         non_player::PartyUPtr_t deadNonPlayerPartyUPtr_;
         non_player::PartyUPtr_t runawayNonPlayerPartyUPtr_;
 
-        //copies of player character pointers are store temporarily in this vector
+        // copies of player character pointers are store temporarily in this vector
         creature::CreaturePVec_t runawayPlayersVec_;
 
-        std::size_t              roundCounter_;
-        bool                     hasStarted_;
+        std::size_t roundCounter_;
+        bool hasStarted_;
         creature::CreaturePVec_t turnOverPVec_;
-        std::size_t              turnIndex_;
-        TurnInfoMap_t            turnInfoMap_;
+        std::size_t turnIndex_;
+        TurnInfoMap_t turnInfoMap_;
 
-        //this member always stores a copy, and is never responsible for lifetime
-        creature::CreaturePtr_t  turnCreaturePtr_;
+        // this member always stores a copy, and is never responsible for lifetime
+        creature::CreaturePtr_t turnCreaturePtr_;
 
-        //contains all items the dead enemies were wearing or holding when killed
+        // contains all items the dead enemies were wearing or holding when killed
         item::ItemCache deadNonPlayerItemsHeld_;
 
-        //conatins all the items the dead enemies were holding in the chest/lockbox
+        // conatins all the items the dead enemies were holding in the chest/lockbox
         item::ItemCache deadNonPlayerItemsLockbox_;
 
-        //this member always stores a copy, and is never responsible for lifetime
+        // this member always stores a copy, and is never responsible for lifetime
         creature::CreaturePtr_t lockPickCreaturePtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_COMBAT_ENCOUNTER_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_ENCOUNTER_HPP_INCLUDED

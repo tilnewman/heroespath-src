@@ -29,28 +29,27 @@
 //
 #include "combat-anim.hpp"
 
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/sparks-animation.hpp"
-#include "sfml-util/cloud-animation.hpp"
-#include "sfml-util/sparkle-animation.hpp"
-#include "sfml-util/text-animation.hpp"
 #include "sfml-util/animation-factory.hpp"
-#include "sfml-util/song-animation.hpp"
+#include "sfml-util/cloud-animation.hpp"
+#include "sfml-util/display.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/song-animation.hpp"
+#include "sfml-util/sparkle-animation.hpp"
+#include "sfml-util/sparks-animation.hpp"
+#include "sfml-util/text-animation.hpp"
 
 #include "combat/combat-display.hpp"
-#include "combat/combat-text.hpp"
 #include "combat/combat-node.hpp"
-#include "item/item.hpp"
-#include "creature/creature.hpp"
+#include "combat/combat-text.hpp"
 #include "creature/algorithms.hpp"
+#include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
+#include "item/item.hpp"
 #include "spell/spell-base.hpp"
 
 #include <string>
-
 
 namespace heroespath
 {
@@ -60,89 +59,89 @@ namespace combat
     const float ShakeAnimInfo::PAUSE_DURATION_SEC{ 1.0f };
     const float ShakeAnimInfo::SHAKE_DURATION_SEC{ 0.65f };
 
-
     ShakeAnimInfo::ShakeAnimInfo()
-    :
-        slider(0.0f, 1.0f, 50.0f),
+        : slider(0.0f, 1.0f, 50.0f)
+        ,
 
-        //anything larger than PAUSE_DURATION_SEC will work here
-        pause_duration_timer_sec(PAUSE_DURATION_SEC + 1.0f),
+        // anything larger than PAUSE_DURATION_SEC will work here
+        pause_duration_timer_sec(PAUSE_DURATION_SEC + 1.0f)
+        ,
 
-        //anything larger than SHAKE_DURATION_SEC will work here
+        // anything larger than SHAKE_DURATION_SEC will work here
         shake_duration_timer_sec(SHAKE_DURATION_SEC + 1.0f)
     {}
 
-
     void ShakeAnimInfo::Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE)
     {
-        auto const SHAKE_DISTANCE{
-            CombatAnimation::ShakeAnimDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
+        auto const SHAKE_DISTANCE{ CombatAnimation::ShakeAnimDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
 
         slider.Reset(0.0f, SHAKE_DISTANCE, SLIDER_SPEED, (SHAKE_DISTANCE * 0.5f));
 
-        //anything larger than PAUSE_DURATION_SEC will work here
+        // anything larger than PAUSE_DURATION_SEC will work here
         pause_duration_timer_sec = ShakeAnimInfo::PAUSE_DURATION_SEC + 1.0f;
 
         shake_duration_timer_sec = 0.0f;
     }
 
+    const float CombatAnimation::SELECT_ANIM_SLIDER_SPEED_{ 8.0f };
+    const float CombatAnimation::ANIM_TIME_BETWEEN_FRAMES_DEFAULT_{ 0.06f };
 
-    const float       CombatAnimation::SELECT_ANIM_SLIDER_SPEED_        { 8.0f };
-    const float       CombatAnimation::ANIM_TIME_BETWEEN_FRAMES_DEFAULT_{ 0.06f };
+    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SPARKLE_{
+        "media-anim-image-flash-sparkle"
+    };
 
-    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SPARKLE_
-    { "media-anim-image-flash-sparkle" };
+    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SHIMMER_{
+        "media-anim-images-dir-shimmer"
+    };
 
-    const std::string CombatAnimation::ANIM_MEDIA_PATH_KEY_STR_SHIMMER_
-    { "media-anim-images-dir-shimmer" };
-
-    const sf::Uint8   CombatAnimation::ANIM_COLOR_ALT_VAL_              { 232 };
-
+    const sf::Uint8 CombatAnimation::ANIM_COLOR_ALT_VAL_{ 232 };
 
     CombatAnimation::CombatAnimation(const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
-    :
-        SCREEN_WIDTH_                    (sfml_util::Display::Instance()->GetWinWidth()),
-        SCREEN_HEIGHT_                   (sfml_util::Display::Instance()->GetWinHeight()),
+        : SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
+        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        ,
 
-        //found by experiment to be good speeds
-        BATTLEFIELD_CENTERING_SPEED_     (sfml_util::MapByRes(25.0f, 900.0f)),
+        // found by experiment to be good speeds
+        BATTLEFIELD_CENTERING_SPEED_(sfml_util::MapByRes(25.0f, 900.0f))
+        ,
 
-        combatDisplayStagePtr_           (COMBAT_DISPLAY_PTR),
+        combatDisplayStagePtr_(COMBAT_DISPLAY_PTR)
+        ,
 
-        //any value greater than zero will work temporarily here
-        slider_                          (1.0f),
+        // any value greater than zero will work temporarily here
+        slider_(1.0f)
+        ,
 
-        projAnimTexture_                 (),
-        projAnimSprite_                  (),
-        projAnimBeginPosV_               (0.0f, 0.0f),
-        projAnimEndPosV_                 (0.0f, 0.0f),
-        projAnimWillSpin_                (false),
-        projAnimWillDraw_                (false),
-        deadAnimNodesPVec_               (),
-        centeringAnimCombatNodePtr_      (nullptr),
-        centeringAnimCreaturesPVec_      (),
-        centeringAnimWillZoomOut_        (false),
-        repositionAnimCreaturePtr_       (nullptr),
-        repositionAnimPosV_              (0.0f, 0.0f),
-        meleeMoveAnimOrigPosV_           (0.0f, 0.0f),
-        meleeMoveAnimTargetPosV_         (0.0f, 0.0f),
-        meleeMoveAnimMovingCombatNodePtr_(nullptr),
-        meleeMoveAnimTargetCombatNodePtr_(nullptr),
-        shakeAnimCreatureWasCPtr_        (nullptr),
-        shakeAnimCreatureWasSpeed_       (0.0f),
-        shakeAnimInfoMap_                (),
-        selectAnimCombatNodePtr_         (nullptr),
-        sparksAnimUVec_                  (),
-        cloudAnimUVec_                   (),
-        animUVec_                        (),
-        songAnimUVec_                    (),
-        sparkleAnimUVec_                 (),
-        textAnimUVec_                    (),
-        runAnimCombatNodePtr_            (nullptr),
-        runAnimPosVTarget_               (0.0f, 0.0f),
-        runAnimPosVOrig_                 (0.0f, 0.0f)
+        projAnimTexture_()
+        , projAnimSprite_()
+        , projAnimBeginPosV_(0.0f, 0.0f)
+        , projAnimEndPosV_(0.0f, 0.0f)
+        , projAnimWillSpin_(false)
+        , projAnimWillDraw_(false)
+        , deadAnimNodesPVec_()
+        , centeringAnimCombatNodePtr_(nullptr)
+        , centeringAnimCreaturesPVec_()
+        , centeringAnimWillZoomOut_(false)
+        , repositionAnimCreaturePtr_(nullptr)
+        , repositionAnimPosV_(0.0f, 0.0f)
+        , meleeMoveAnimOrigPosV_(0.0f, 0.0f)
+        , meleeMoveAnimTargetPosV_(0.0f, 0.0f)
+        , meleeMoveAnimMovingCombatNodePtr_(nullptr)
+        , meleeMoveAnimTargetCombatNodePtr_(nullptr)
+        , shakeAnimCreatureWasCPtr_(nullptr)
+        , shakeAnimCreatureWasSpeed_(0.0f)
+        , shakeAnimInfoMap_()
+        , selectAnimCombatNodePtr_(nullptr)
+        , sparksAnimUVec_()
+        , cloudAnimUVec_()
+        , animUVec_()
+        , songAnimUVec_()
+        , sparkleAnimUVec_()
+        , textAnimUVec_()
+        , runAnimCombatNodePtr_(nullptr)
+        , runAnimPosVTarget_(0.0f, 0.0f)
+        , runAnimPosVOrig_(0.0f, 0.0f)
     {}
-
 
     void CombatAnimation::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
@@ -196,7 +195,6 @@ namespace combat
         }
     }
 
-
     void CombatAnimation::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         bool willRemoveNullShakeInfo(false);
@@ -208,28 +206,30 @@ namespace combat
                 continue;
             }
 
-            if (nextShakeInfoPair.second.shake_duration_timer_sec <
-                ShakeAnimInfo::SHAKE_DURATION_SEC)
+            if (nextShakeInfoPair.second.shake_duration_timer_sec
+                < ShakeAnimInfo::SHAKE_DURATION_SEC)
             {
                 nextShakeInfoPair.second.shake_duration_timer_sec += ELAPSED_TIME_SECONDS;
-                nextShakeInfoPair.first->SetImagePosOffset((ShakeAnimDistance(false) * -0.5f) +
-                    nextShakeInfoPair.second.slider.Update(ELAPSED_TIME_SECONDS), 0.0f);
+                nextShakeInfoPair.first->SetImagePosOffset(
+                    (ShakeAnimDistance(false) * -0.5f)
+                        + nextShakeInfoPair.second.slider.Update(ELAPSED_TIME_SECONDS),
+                    0.0f);
 
-                if (nextShakeInfoPair.second.shake_duration_timer_sec >
-                    ShakeAnimInfo::SHAKE_DURATION_SEC)
+                if (nextShakeInfoPair.second.shake_duration_timer_sec
+                    > ShakeAnimInfo::SHAKE_DURATION_SEC)
                 {
                     nextShakeInfoPair.second.pause_duration_timer_sec = 0.0f;
                     nextShakeInfoPair.first->SetImagePosOffset(0.0f, 0.0f);
                 }
             }
 
-            if (nextShakeInfoPair.second.pause_duration_timer_sec <
-                ShakeAnimInfo::PAUSE_DURATION_SEC)
+            if (nextShakeInfoPair.second.pause_duration_timer_sec
+                < ShakeAnimInfo::PAUSE_DURATION_SEC)
             {
                 nextShakeInfoPair.second.pause_duration_timer_sec += ELAPSED_TIME_SECONDS;
 
-                if (nextShakeInfoPair.second.pause_duration_timer_sec >
-                    ShakeAnimInfo::PAUSE_DURATION_SEC)
+                if (nextShakeInfoPair.second.pause_duration_timer_sec
+                    > ShakeAnimInfo::PAUSE_DURATION_SEC)
                 {
                     nextShakeInfoPair.second.shake_duration_timer_sec = 0.0f;
                 }
@@ -243,7 +243,7 @@ namespace combat
 
         if (selectAnimCombatNodePtr_ != nullptr)
         {
-            selectAnimCombatNodePtr_->SelectAnimUpdate( slider_.Update(ELAPSED_TIME_SECONDS) );
+            selectAnimCombatNodePtr_->SelectAnimUpdate(slider_.Update(ELAPSED_TIME_SECONDS));
             if (slider_.IsDone())
             {
                 SelectAnimStop();
@@ -259,18 +259,17 @@ namespace combat
         }
     }
 
-
     void CombatAnimation::ProjectileShootAnimStart(
         creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
         creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
-        const item::ItemPtr_t     WEAPON_PTR,
-        const bool                WILL_HIT)
+        const item::ItemPtr_t WEAPON_PTR,
+        const bool WILL_HIT)
     {
         projAnimWillDraw_ = true;
-        projAnimWillSpin_ = ! WILL_HIT;
+        projAnimWillSpin_ = !WILL_HIT;
 
-        //establish the game data file path key to the projectile image
-        const std::string PATH_KEY_BASE_STR{"media-images-combat-"};
+        // establish the game data file path key to the projectile image
+        const std::string PATH_KEY_BASE_STR{ "media-images-combat-" };
         std::string pathKey{ PATH_KEY_BASE_STR + "dart" };
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Bow)
         {
@@ -289,13 +288,13 @@ namespace combat
             pathKey = PATH_KEY_BASE_STR + "arrow4";
         }
 
-        //load the projectile image
-        sfml_util::LoadTexture(projAnimTexture_,
-            game::GameDataFile::Instance()->GetMediaPath(pathKey));
+        // load the projectile image
+        sfml_util::LoadTexture(
+            projAnimTexture_, game::GameDataFile::Instance()->GetMediaPath(pathKey));
 
-        //establish the creature positions
-        sf::Vector2f creatureAttackingCenterPosV{0.0f, 0.0f};
-        sf::Vector2f creatureDefendingCenterPosV{0.0f, 0.0f};
+        // establish the creature positions
+        sf::Vector2f creatureAttackingCenterPosV{ 0.0f, 0.0f };
+        sf::Vector2f creatureDefendingCenterPosV{ 0.0f, 0.0f };
         CombatNodePVec_t combatNodePVec;
         combatDisplayStagePtr_->CombatTreeObj().GetCombatNodes(combatNodePVec);
         for (auto const & NEXT_COMBANODE_SPTR : combatNodePVec)
@@ -304,26 +303,26 @@ namespace combat
             if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_ATTACKING_CPTRC)
             {
                 creatureAttackingCenterPosV.x = NEXT_REGION.left + NEXT_REGION.width * 0.5f;
-                creatureAttackingCenterPosV.y = NEXT_REGION.top +  NEXT_REGION.height * 0.5f;
+                creatureAttackingCenterPosV.y = NEXT_REGION.top + NEXT_REGION.height * 0.5f;
             }
             else if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_DEFENDING_CPTRC)
             {
                 creatureDefendingCenterPosV.x = NEXT_REGION.left + NEXT_REGION.width * 0.5f;
-                creatureDefendingCenterPosV.y = NEXT_REGION.top +  NEXT_REGION.height * 0.5f;
+                creatureDefendingCenterPosV.y = NEXT_REGION.top + NEXT_REGION.height * 0.5f;
             }
         }
 
         projAnimSprite_.setTexture(projAnimTexture_, true);
         projAnimSprite_.setColor(sf::Color(255, 255, 255, 127));
 
-        //scale the sprite down to a reasonable size
+        // scale the sprite down to a reasonable size
         projAnimSprite_.setOrigin(0.0f, 0.0f);
 
-        //this is the scale for Sling projectiles (stones)
+        // this is the scale for Sling projectiles (stones)
         auto scale{ sfml_util::MapByRes(0.05f, 0.55f) };
 
-        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bow) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow))
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bow)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow))
         {
             scale = sfml_util::MapByRes(0.3f, 2.0f);
         }
@@ -333,8 +332,9 @@ namespace combat
         }
         projAnimSprite_.setScale(scale, scale);
 
-        projAnimSprite_.setOrigin(projAnimSprite_.getLocalBounds().width * 0.5f,
-                                  projAnimSprite_.getLocalBounds().height * 0.5f);
+        projAnimSprite_.setOrigin(
+            projAnimSprite_.getLocalBounds().width * 0.5f,
+            projAnimSprite_.getLocalBounds().height * 0.5f);
 
         projAnimBeginPosV_ = creatureAttackingCenterPosV;
 
@@ -347,34 +347,36 @@ namespace combat
             projAnimEndPosV_ = sfml_util::ProjectToScreenEdge(
                 creatureAttackingCenterPosV,
                 creatureDefendingCenterPosV,
-                sf::Vector2f(projAnimSprite_.getGlobalBounds().width,
-                             projAnimSprite_.getGlobalBounds().height));
+                sf::Vector2f(
+                    projAnimSprite_.getGlobalBounds().width,
+                    projAnimSprite_.getGlobalBounds().height));
         }
 
-        projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f,
-                                  projAnimSprite_.getGlobalBounds().height * 0.5f);
+        projAnimSprite_.setOrigin(
+            projAnimSprite_.getGlobalBounds().width * 0.5f,
+            projAnimSprite_.getGlobalBounds().height * 0.5f);
 
-        projAnimSprite_.setRotation( sfml_util::GetAngleInDegrees(projAnimBeginPosV_,
-                                                                  projAnimEndPosV_) );
+        projAnimSprite_.setRotation(
+            sfml_util::GetAngleInDegrees(projAnimBeginPosV_, projAnimEndPosV_));
 
         projAnimSprite_.setOrigin(0.0f, 0.0f);
     }
 
-
     void CombatAnimation::ProjectileShootAnimUpdate(const float SLIDER_POS)
     {
-        auto const SPRITE_POS_HORIZ{ projAnimBeginPosV_.x +
-            ((projAnimEndPosV_.x - projAnimBeginPosV_.x) * SLIDER_POS) };
+        auto const SPRITE_POS_HORIZ{ projAnimBeginPosV_.x
+                                     + ((projAnimEndPosV_.x - projAnimBeginPosV_.x) * SLIDER_POS) };
 
-        auto const SPRITE_POS_VERT { projAnimBeginPosV_.y +
-            ((projAnimEndPosV_.y - projAnimBeginPosV_.y) * SLIDER_POS) };
+        auto const SPRITE_POS_VERT{ projAnimBeginPosV_.y
+                                    + ((projAnimEndPosV_.y - projAnimBeginPosV_.y) * SLIDER_POS) };
 
         projAnimSprite_.setPosition(SPRITE_POS_HORIZ, SPRITE_POS_VERT);
 
         if (projAnimWillSpin_)
         {
-            projAnimSprite_.setOrigin(projAnimSprite_.getGlobalBounds().width * 0.5f,
-                                      projAnimSprite_.getGlobalBounds().height * 0.5f);
+            projAnimSprite_.setOrigin(
+                projAnimSprite_.getGlobalBounds().width * 0.5f,
+                projAnimSprite_.getGlobalBounds().height * 0.5f);
 
             projAnimSprite_.rotate(3.0f);
             projAnimSprite_.setOrigin(0.0f, 0.0f);
@@ -383,26 +385,23 @@ namespace combat
         auto const PROJ_ANIM_SPRITE_GBOUNDS{ projAnimSprite_.getGlobalBounds() };
 
         if ((combatDisplayStagePtr_->BattlefieldRect().contains(
-            PROJ_ANIM_SPRITE_GBOUNDS.left, PROJ_ANIM_SPRITE_GBOUNDS.top) == false) ||
-            (combatDisplayStagePtr_->BattlefieldRect().contains(
-                PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width,
-                PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height) == false))
+                 PROJ_ANIM_SPRITE_GBOUNDS.left, PROJ_ANIM_SPRITE_GBOUNDS.top)
+             == false)
+            || (combatDisplayStagePtr_->BattlefieldRect().contains(
+                    PROJ_ANIM_SPRITE_GBOUNDS.left + PROJ_ANIM_SPRITE_GBOUNDS.width,
+                    PROJ_ANIM_SPRITE_GBOUNDS.top + PROJ_ANIM_SPRITE_GBOUNDS.height)
+                == false))
         {
             ProjectileShootAnimStop();
         }
     }
 
-
-    void CombatAnimation::ProjectileShootAnimStop()
-    {
-        projAnimWillDraw_ = false;
-    }
-
+    void CombatAnimation::ProjectileShootAnimStop() { projAnimWillDraw_ = false; }
 
     void CombatAnimation::DeathAnimStart(const creature::CreaturePVec_t & KILLED_CREATURES_PVEC)
     {
-        auto combatNodesPVec{
-            combatDisplayStagePtr_->GetCombatNodesForCreatures(KILLED_CREATURES_PVEC) };
+        auto combatNodesPVec{ combatDisplayStagePtr_->GetCombatNodesForCreatures(
+            KILLED_CREATURES_PVEC) };
 
         for (auto const nextCombatNodePtrC : combatNodesPVec)
         {
@@ -410,7 +409,6 @@ namespace combat
             deadAnimNodesPVec_.push_back(nextCombatNodePtrC);
         }
     }
-
 
     void CombatAnimation::DeathAnimUpdate(const float SLIDER_POS)
     {
@@ -420,30 +418,26 @@ namespace combat
         }
     }
 
-
     void CombatAnimation::DeathAnimStop()
     {
         combatDisplayStagePtr_->HandleDeaths(deadAnimNodesPVec_);
         deadAnimNodesPVec_.clear();
     }
 
-
     void CombatAnimation::CenteringStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        centeringAnimCombatNodePtr_ = combatDisplayStagePtr_->
-            CombatTreeObj().GetNode(CREATURE_CPTRC);
+        centeringAnimCombatNodePtr_
+            = combatDisplayStagePtr_->CombatTreeObj().GetNode(CREATURE_CPTRC);
 
         centeringAnimCreaturesPVec_.clear();
         centeringAnimWillZoomOut_ = false;
     }
 
-
     void CombatAnimation::CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y)
     {
         centeringAnimCombatNodePtr_ = nullptr;
-        combatDisplayStagePtr_->CenteringPosV( sf::Vector2f(TARGET_POS_X, TARGET_POS_Y) );
+        combatDisplayStagePtr_->CenteringPosV(sf::Vector2f(TARGET_POS_X, TARGET_POS_Y));
     }
-
 
     void CombatAnimation::CenteringStartTargetCenterOfBatllefield()
     {
@@ -451,21 +445,19 @@ namespace combat
         CenteringStart(BATTLEFIELD_CENTER_V.x, BATTLEFIELD_CENTER_V.y);
     }
 
-
     void CombatAnimation::CenteringStart(
         const creature::CreaturePVec_t & CREATURES_TO_CENTER_ON_PVEC)
     {
         centeringAnimCreaturesPVec_ = CREATURES_TO_CENTER_ON_PVEC;
 
-        auto const CENTER_POS_V{ combatDisplayStagePtr_->
-            FindCenterOfCreatures(CREATURES_TO_CENTER_ON_PVEC) };
+        auto const CENTER_POS_V{ combatDisplayStagePtr_->FindCenterOfCreatures(
+            CREATURES_TO_CENTER_ON_PVEC) };
 
         CenteringStart(CENTER_POS_V.x, CENTER_POS_V.y);
 
-        centeringAnimWillZoomOut_ = combatDisplayStagePtr_->
-            IsZoomOutRequired(centeringAnimCreaturesPVec_);
+        centeringAnimWillZoomOut_
+            = combatDisplayStagePtr_->IsZoomOutRequired(centeringAnimCreaturesPVec_);
     }
-
 
     bool CombatAnimation::CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND)
     {
@@ -476,11 +468,13 @@ namespace combat
         }
         else
         {
-            auto const TARGET_POS_X(centeringAnimCombatNodePtr_->GetEntityPos().x +
-                (centeringAnimCombatNodePtr_->GetEntityRegion().width  * 0.5f));
+            auto const TARGET_POS_X(
+                centeringAnimCombatNodePtr_->GetEntityPos().x
+                + (centeringAnimCombatNodePtr_->GetEntityRegion().width * 0.5f));
 
-            auto const TARGET_POS_Y(centeringAnimCombatNodePtr_->GetEntityPos().y +
-                (centeringAnimCombatNodePtr_->GetEntityRegion().height * 0.5f));
+            auto const TARGET_POS_Y(
+                centeringAnimCombatNodePtr_->GetEntityPos().y
+                + (centeringAnimCombatNodePtr_->GetEntityRegion().height * 0.5f));
 
             targetPosV = sf::Vector2f(TARGET_POS_X, TARGET_POS_Y);
         }
@@ -501,15 +495,16 @@ namespace combat
 
         if (centeringAnimCombatNodePtr_ == nullptr)
         {
-            return (centeringAnimWillZoomOut_ && (combatDisplayStagePtr_->
-                AreAllCreaturesVisible(centeringAnimCreaturesPVec_) == false));
+            return (
+                centeringAnimWillZoomOut_
+                && (combatDisplayStagePtr_->AreAllCreaturesVisible(centeringAnimCreaturesPVec_)
+                    == false));
         }
         else
         {
             return false;
         }
     }
-
 
     void CombatAnimation::CenteringStop()
     {
@@ -518,14 +513,12 @@ namespace combat
         centeringAnimWillZoomOut_ = false;
     }
 
-
     void CombatAnimation::RepositionAnimStart(creature::CreaturePtr_t creaturePtr)
     {
         repositionAnimCreaturePtr_ = creaturePtr;
         repositionAnimPosV_ = sf::Vector2f(0.0f, 0.0f);
         CenteringStart(creaturePtr);
     }
-
 
     void CombatAnimation::RepositionAnimStart(const sf::Vector2f & POS_V)
     {
@@ -534,17 +527,18 @@ namespace combat
         CenteringStart(POS_V.x, POS_V.y);
     }
 
-
     void CombatAnimation::RepositionAnimUpdate(const float SLIDER_POS)
     {
         auto nodePositionTrackerMap{ combatDisplayStagePtr_->NodePositionTrackerMap() };
         for (const auto & NEXT_NODEPOSTRACK_PAIR : nodePositionTrackerMap)
         {
-            const float NEW_POS_HORIZ(NEXT_NODEPOSTRACK_PAIR.second.posHorizOrig +
-                (NEXT_NODEPOSTRACK_PAIR.second.horizDiff * SLIDER_POS));
+            const float NEW_POS_HORIZ(
+                NEXT_NODEPOSTRACK_PAIR.second.posHorizOrig
+                + (NEXT_NODEPOSTRACK_PAIR.second.horizDiff * SLIDER_POS));
 
-            const float NEW_POS_VERT(NEXT_NODEPOSTRACK_PAIR.second.posVertOrig +
-                (NEXT_NODEPOSTRACK_PAIR.second.vertDiff * SLIDER_POS));
+            const float NEW_POS_VERT(
+                NEXT_NODEPOSTRACK_PAIR.second.posVertOrig
+                + (NEXT_NODEPOSTRACK_PAIR.second.vertDiff * SLIDER_POS));
 
             NEXT_NODEPOSTRACK_PAIR.first->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
         }
@@ -558,12 +552,11 @@ namespace combat
             CenteringStart(repositionAnimCreaturePtr_);
         }
 
-        //not sure why 1.0f does not work here and 10.0f is needed instead -zTn 2017-4-28
+        // not sure why 1.0f does not work here and 10.0f is needed instead -zTn 2017-4-28
         CenteringUpdate(10.0f, false);
 
         combatDisplayStagePtr_->UpdateWhichNodesWillDraw();
     }
-
 
     void CombatAnimation::RepositionAnimStop()
     {
@@ -572,48 +565,46 @@ namespace combat
         repositionAnimPosV_ = sf::Vector2f(0.0f, 0.0f);
     }
 
-
-    void CombatAnimation::MeleeMoveTowardAnimStart(creature::CreatureCPtrC_t CREATURE_MOVING_CPTRC,
-                                                   creature::CreatureCPtrC_t CREATURE_TARGET_CPTRC)
+    void CombatAnimation::MeleeMoveTowardAnimStart(
+        creature::CreatureCPtrC_t CREATURE_MOVING_CPTRC,
+        creature::CreatureCPtrC_t CREATURE_TARGET_CPTRC)
     {
-        meleeMoveAnimMovingCombatNodePtr_ = combatDisplayStagePtr_->
-            GetCombatNodeForCreature(CREATURE_MOVING_CPTRC);
+        meleeMoveAnimMovingCombatNodePtr_
+            = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_MOVING_CPTRC);
 
         meleeMoveAnimOrigPosV_ = meleeMoveAnimMovingCombatNodePtr_->GetEntityPos();
 
-        meleeMoveAnimTargetCombatNodePtr_ = combatDisplayStagePtr_->
-            GetCombatNodeForCreature(CREATURE_TARGET_CPTRC);
+        meleeMoveAnimTargetCombatNodePtr_
+            = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_TARGET_CPTRC);
 
         meleeMoveAnimTargetPosV_ = meleeMoveAnimTargetCombatNodePtr_->GetEntityPos();
 
         if (meleeMoveAnimOrigPosV_.x < meleeMoveAnimTargetPosV_.x)
         {
-            meleeMoveAnimTargetPosV_.x -= (
-                meleeMoveAnimTargetCombatNodePtr_->GetEntityRegion().width * 0.65f);
+            meleeMoveAnimTargetPosV_.x
+                -= (meleeMoveAnimTargetCombatNodePtr_->GetEntityRegion().width * 0.65f);
         }
         else
         {
-            meleeMoveAnimTargetPosV_.x += (
-                meleeMoveAnimTargetCombatNodePtr_->GetEntityRegion().width * 0.65f);
+            meleeMoveAnimTargetPosV_.x
+                += (meleeMoveAnimTargetCombatNodePtr_->GetEntityRegion().width * 0.65f);
         }
     }
 
-
     void CombatAnimation::MeleeMoveTowardAnimUpdate(const float SLIDER_POS)
     {
-        auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x +
-            ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x) * SLIDER_POS) };
+        auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x
+                                  + ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x)
+                                     * SLIDER_POS) };
 
-        auto const NEW_POS_VERT { meleeMoveAnimOrigPosV_.y +
-            ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y) * SLIDER_POS) };
+        auto const NEW_POS_VERT{ meleeMoveAnimOrigPosV_.y
+                                 + ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y)
+                                    * SLIDER_POS) };
 
         meleeMoveAnimMovingCombatNodePtr_->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
     }
 
-
-    void CombatAnimation::MeleeMoveTowardAnimStop()
-    {}
-
+    void CombatAnimation::MeleeMoveTowardAnimStop() {}
 
     void CombatAnimation::MeleeMoveBackAnimStart()
     {
@@ -622,18 +613,18 @@ namespace combat
         meleeMoveAnimOrigPosV_ = TEMP_TARGET_POS_V;
     }
 
-
     void CombatAnimation::MeleeMoveBackAnimUpdate(const float SLIDER_POS)
     {
-        auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x +
-            ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x) * SLIDER_POS) };
+        auto const NEW_POS_HORIZ{ meleeMoveAnimOrigPosV_.x
+                                  + ((meleeMoveAnimTargetPosV_.x - meleeMoveAnimOrigPosV_.x)
+                                     * SLIDER_POS) };
 
-        auto const NEW_POS_VERT{ meleeMoveAnimOrigPosV_.y +
-            ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y) * SLIDER_POS) };
+        auto const NEW_POS_VERT{ meleeMoveAnimOrigPosV_.y
+                                 + ((meleeMoveAnimTargetPosV_.y - meleeMoveAnimOrigPosV_.y)
+                                    * SLIDER_POS) };
 
         meleeMoveAnimMovingCombatNodePtr_->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
     }
-
 
     void CombatAnimation::MeleeMoveBackAnimStop()
     {
@@ -642,33 +633,26 @@ namespace combat
         meleeMoveAnimMovingCombatNodePtr_ = nullptr;
     }
 
-
     void CombatAnimation::ImpactAnimStart(const float CREATURE_SHAKE_SLIDER_SPEED)
     {
-        if ((meleeMoveAnimMovingCombatNodePtr_ != nullptr) &&
-            (meleeMoveAnimTargetCombatNodePtr_ != nullptr))
+        if ((meleeMoveAnimMovingCombatNodePtr_ != nullptr)
+            && (meleeMoveAnimTargetCombatNodePtr_ != nullptr))
         {
-            ShakeAnimStart(meleeMoveAnimMovingCombatNodePtr_->Creature(),
-                           CREATURE_SHAKE_SLIDER_SPEED,
-                           true);
+            ShakeAnimStart(
+                meleeMoveAnimMovingCombatNodePtr_->Creature(), CREATURE_SHAKE_SLIDER_SPEED, true);
 
-            ShakeAnimStart(meleeMoveAnimTargetCombatNodePtr_->Creature(),
-                           CREATURE_SHAKE_SLIDER_SPEED,
-                           true);
+            ShakeAnimStart(
+                meleeMoveAnimTargetCombatNodePtr_->Creature(), CREATURE_SHAKE_SLIDER_SPEED, true);
         }
     }
 
-
-    void CombatAnimation::ImpactAnimUpdate(const float)
-    {}
-
+    void CombatAnimation::ImpactAnimUpdate(const float) {}
 
     void CombatAnimation::ImpactAnimStop()
     {
-        //nullptr means stop ALL creature shaking
+        // nullptr means stop ALL creature shaking
         ShakeAnimStop(nullptr);
     }
-
 
     float CombatAnimation::ShakeAnimDistance(const bool WILL_DOUBLE)
     {
@@ -682,10 +666,10 @@ namespace combat
         return distance;
     }
 
-
-    void CombatAnimation::ShakeAnimStart(creature::CreaturePVec_t & CREATURE_PVEC,
-                                         const float                SLIDER_SPEED,
-                                         const bool                 WILL_DOUBLE_SHAKE_DISTANCE)
+    void CombatAnimation::ShakeAnimStart(
+        creature::CreaturePVec_t & CREATURE_PVEC,
+        const float SLIDER_SPEED,
+        const bool WILL_DOUBLE_SHAKE_DISTANCE)
     {
         for (auto const NEXT_CREATURE_PTR : CREATURE_PVEC)
         {
@@ -693,10 +677,10 @@ namespace combat
         }
     }
 
-
-    void CombatAnimation::ShakeAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC,
-                                         const float               SLIDER_SPEED,
-                                         const bool                WILL_DOUBLE_SHAKE_DISTANCE)
+    void CombatAnimation::ShakeAnimStart(
+        creature::CreatureCPtrC_t CREATURE_CPTRC,
+        const float SLIDER_SPEED,
+        const bool WILL_DOUBLE_SHAKE_DISTANCE)
     {
         auto combatNodePtr{ combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_CPTRC) };
         if (combatNodePtr != nullptr)
@@ -706,15 +690,14 @@ namespace combat
         }
     }
 
-
     void CombatAnimation::ShakeAnimStop(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
         CombatNodePVec_t combatNodesToErasePVec;
         for (auto & nextShakeInfoPair : shakeAnimInfoMap_)
         {
-            //if given a nullptr then stop all shaking
-            if ((CREATURE_CPTRC == nullptr) ||
-                (nextShakeInfoPair.first->Creature() == CREATURE_CPTRC))
+            // if given a nullptr then stop all shaking
+            if ((CREATURE_CPTRC == nullptr)
+                || (nextShakeInfoPair.first->Creature() == CREATURE_CPTRC))
             {
                 nextShakeInfoPair.first->SetImagePosOffset(0.0f, 0.0f);
                 combatNodesToErasePVec.push_back(nextShakeInfoPair.first);
@@ -726,7 +709,6 @@ namespace combat
             shakeAnimInfoMap_.erase(NEXT_COMBATNODE_PTR);
         }
     }
-
 
     void CombatAnimation::ShakeAnimTemporaryStop(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
@@ -741,18 +723,15 @@ namespace combat
         }
     }
 
-
     void CombatAnimation::ShakeAnimRestart()
     {
         ShakeAnimStart(shakeAnimCreatureWasCPtr_, shakeAnimCreatureWasSpeed_, false);
         shakeAnimCreatureWasCPtr_ = nullptr;
     }
 
-
     void CombatAnimation::SelectAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
-        selectAnimCombatNodePtr_ = combatDisplayStagePtr_->
-            GetCombatNodeForCreature(CREATURE_CPTRC);
+        selectAnimCombatNodePtr_ = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_CPTRC);
 
         if (selectAnimCombatNodePtr_ != nullptr)
         {
@@ -760,7 +739,6 @@ namespace combat
             slider_.Reset(SELECT_ANIM_SLIDER_SPEED_);
         }
     }
-
 
     void CombatAnimation::SelectAnimStop()
     {
@@ -771,15 +749,16 @@ namespace combat
         }
     }
 
-
-    void CombatAnimation::SpellAnimStart(const spell::SpellPtr_t          SPELL_PTR,
-                                         const creature::CreatureCPtrC_t  CASTING_CREATURE_CPTRC,
-                                         const combat::CombatNodePVec_t & TARGETS_PVEC)
+    void CombatAnimation::SpellAnimStart(
+        const spell::SpellPtr_t SPELL_PTR,
+        const creature::CreatureCPtrC_t CASTING_CREATURE_CPTRC,
+        const combat::CombatNodePVec_t & TARGETS_PVEC)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((TARGETS_PVEC.empty() == false),
-            "combat::CombatAnimation::SpellAnimStart(spell=" << SPELL_PTR->Name()
-            << ", caster=" << CASTING_CREATURE_CPTRC->Name()
-            << ") was given an empty targets vec.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (TARGETS_PVEC.empty() == false),
+            "combat::CombatAnimation::SpellAnimStart(spell="
+                << SPELL_PTR->Name() << ", caster=" << CASTING_CREATURE_CPTRC->Name()
+                << ") was given an empty targets vec.");
 
         switch (SPELL_PTR->Which())
         {
@@ -791,101 +770,111 @@ namespace combat
 
             case spell::Spells::Bandage:
             {
-                SetupAnimations(TARGETS_PVEC,
-                                sfml_util::Animations::FlashSparkle,
-                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
-                                sf::Color::White,
-                                sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(
+                    TARGETS_PVEC,
+                    sfml_util::Animations::FlashSparkle,
+                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                    sf::Color::White,
+                    sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
             case spell::Spells::Sleep:
             {
-                SetupAnimations(TARGETS_PVEC,
-                                sfml_util::Animations::Shimmer,
-                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
-                                sf::Color::White,
-                                sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
+                SetupAnimations(
+                    TARGETS_PVEC,
+                    sfml_util::Animations::Shimmer,
+                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
+                    sf::Color::White,
+                    sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
                 return;
             }
 
             case spell::Spells::Awaken:
             {
-                SetupAnimations(TARGETS_PVEC,
-                                sfml_util::Animations::FlashSparkle,
-                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
-                                sf::Color::White,
-                                sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(
+                    TARGETS_PVEC,
+                    sfml_util::Animations::FlashSparkle,
+                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                    sf::Color::White,
+                    sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
             case spell::Spells::Trip:
             {
-                SetupAnimations(TARGETS_PVEC,
-                                sfml_util::Animations::Shimmer,
-                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.03f,
-                                sf::Color::White,
-                                sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(
+                    TARGETS_PVEC,
+                    sfml_util::Animations::Shimmer,
+                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.03f,
+                    sf::Color::White,
+                    sf::Color(255, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
             case spell::Spells::Lift:
             {
-                SetupAnimations(TARGETS_PVEC,
-                                sfml_util::Animations::FlashSparkle,
-                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
-                                sf::Color::White,
-                                sf::Color(ANIM_COLOR_ALT_VAL_, 255, 255));
+                SetupAnimations(
+                    TARGETS_PVEC,
+                    sfml_util::Animations::FlashSparkle,
+                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                    sf::Color::White,
+                    sf::Color(ANIM_COLOR_ALT_VAL_, 255, 255));
                 return;
             }
 
             case spell::Spells::Daze:
             {
-                SetupAnimations(TARGETS_PVEC,
-                                sfml_util::Animations::Shimmer,
-                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
-                                sf::Color::White,
-                                sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(
+                    TARGETS_PVEC,
+                    sfml_util::Animations::Shimmer,
+                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                    sf::Color::White,
+                    sf::Color(255, ANIM_COLOR_ALT_VAL_, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
             case spell::Spells::Panic:
             {
-                SetupAnimations(TARGETS_PVEC,
-                                sfml_util::Animations::Shimmer,
-                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
-                                sf::Color::White,
-                                sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
+                SetupAnimations(
+                    TARGETS_PVEC,
+                    sfml_util::Animations::Shimmer,
+                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.015f,
+                    sf::Color::White,
+                    sf::Color(255, ANIM_COLOR_ALT_VAL_, 255));
                 return;
             }
 
             case spell::Spells::ClearMind:
             {
-                SetupAnimations(TARGETS_PVEC,
-                                sfml_util::Animations::FlashSparkle,
-                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.015f,
-                                sf::Color::White,
-                                sf::Color::White);
+                SetupAnimations(
+                    TARGETS_PVEC,
+                    sfml_util::Animations::FlashSparkle,
+                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ - 0.015f,
+                    sf::Color::White,
+                    sf::Color::White);
                 return;
             }
 
             case spell::Spells::Poison:
             {
-                SetupAnimations(TARGETS_PVEC,
-                                sfml_util::Animations::Shimmer,
-                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
-                                sf::Color::White,
-                                sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(
+                    TARGETS_PVEC,
+                    sfml_util::Animations::Shimmer,
+                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_ + 0.03f,
+                    sf::Color::White,
+                    sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
             case spell::Spells::Antidote:
             {
-                SetupAnimations(TARGETS_PVEC,
-                                sfml_util::Animations::FlashSparkle,
-                                ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
-                                sf::Color::White,
-                                sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
+                SetupAnimations(
+                    TARGETS_PVEC,
+                    sfml_util::Animations::FlashSparkle,
+                    ANIM_TIME_BETWEEN_FRAMES_DEFAULT_,
+                    sf::Color::White,
+                    sf::Color(ANIM_COLOR_ALT_VAL_, 255, ANIM_COLOR_ALT_VAL_));
                 return;
             }
 
@@ -902,14 +891,14 @@ namespace combat
             }
         }
 
-        M_HP_LOG_ERR("combat::CombatAnimation::SpellAnimStart(spell=" << SPELL_PTR->Name()
-            << ", caster=" << CASTING_CREATURE_CPTRC->Name() << ", targets=" << TARGETS_PVEC.size()
-            << ") failed to trigger the start of any animation.");
+        M_HP_LOG_ERR(
+            "combat::CombatAnimation::SpellAnimStart(spell="
+            << SPELL_PTR->Name() << ", caster=" << CASTING_CREATURE_CPTRC->Name() << ", targets="
+            << TARGETS_PVEC.size() << ") failed to trigger the start of any animation.");
     }
 
-
-    bool CombatAnimation::SpellAnimUpdate(const spell::SpellPtr_t SPELL_PTR,
-                                          const float             ELAPSED_TIME_SEC)
+    bool CombatAnimation::SpellAnimUpdate(
+        const spell::SpellPtr_t SPELL_PTR, const float ELAPSED_TIME_SEC)
     {
         if (SPELL_PTR->Which() == spell::Spells::Sparks)
         {
@@ -935,7 +924,6 @@ namespace combat
         }
     }
 
-
     void CombatAnimation::SpellAnimStop(const spell::SpellPtr_t SPELL_PTR)
     {
         if (SPELL_PTR->Which() == spell::Spells::Sparks)
@@ -952,9 +940,9 @@ namespace combat
         }
     }
 
-
-    void CombatAnimation::SparksAnimStart(const creature::CreatureCPtrC_t  CASTING_CREATURE_CPTRC,
-                                          const combat::CombatNodePVec_t & COMBAT_NODE_PVEC)
+    void CombatAnimation::SparksAnimStart(
+        const creature::CreatureCPtrC_t CASTING_CREATURE_CPTRC,
+        const combat::CombatNodePVec_t & COMBAT_NODE_PVEC)
     {
         sparksAnimUVec_.clear();
 
@@ -962,18 +950,17 @@ namespace combat
         {
             if (NEXT_COMBATNODE_PTR->GetEntityWillDraw())
             {
-                sparksAnimUVec_.push_back( std::make_unique<sfml_util::animation::SparksAnimation>(
-                    ! NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter(),
+                sparksAnimUVec_.push_back(std::make_unique<sfml_util::animation::SparksAnimation>(
+                    !NEXT_COMBATNODE_PTR->Creature()->IsPlayerCharacter(),
                     NEXT_COMBATNODE_PTR->GetEntityRegion(),
                     0.33f,
                     sfml_util::MapByRes(0.15f, 0.45f),
                     0.9f,
                     CASTING_CREATURE_CPTRC->RankRatio(),
-                    1.25f) );
+                    1.25f));
             }
         }
     }
-
 
     bool CombatAnimation::SparksAnimUpdate(const float ELAPSED_TIME_SEC)
     {
@@ -990,12 +977,7 @@ namespace combat
         return areAllSparksAnimFinished;
     }
 
-
-    void CombatAnimation::SparksAnimStop()
-    {
-        sparksAnimUVec_.clear();
-    }
-
+    void CombatAnimation::SparksAnimStop() { sparksAnimUVec_.clear(); }
 
     void CombatAnimation::PoisonCloudAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC)
     {
@@ -1005,7 +987,7 @@ namespace combat
         {
             if (NEXT_COMBATNODE_PTR->GetEntityWillDraw())
             {
-                cloudAnimUVec_.push_back( std::make_unique<sfml_util::animation::CloudAnimation>(
+                cloudAnimUVec_.push_back(std::make_unique<sfml_util::animation::CloudAnimation>(
                     NEXT_COMBATNODE_PTR->GetEntityRegion(),
                     0.35f,
                     sfml_util::MapByRes(0.1f, 0.35f),
@@ -1018,11 +1000,10 @@ namespace combat
                     1.0f,
                     0.5f,
                     1.0f,
-                    0.5f) );
+                    0.5f));
             }
         }
     }
-
 
     bool CombatAnimation::PoisonCloudAnimUpdate(const float ELAPSED_TIME_SEC)
     {
@@ -1039,19 +1020,14 @@ namespace combat
         return areAllCloudAnimFinished;
     }
 
-
-    void CombatAnimation::PoisonCloudAnimStop()
-    {
-        cloudAnimUVec_.clear();
-    }
-
+    void CombatAnimation::PoisonCloudAnimStop() { cloudAnimUVec_.clear(); }
 
     void CombatAnimation::SetupAnimations(
-        const combat::CombatNodePVec_t &  TARGETS_PVEC,
+        const combat::CombatNodePVec_t & TARGETS_PVEC,
         const sfml_util::Animations::Enum ENUM,
-        const float                       FRAME_DELAY_SEC,
-        const sf::Color &                 COLOR_FROM,
-        const sf::Color &                 COLOR_TO)
+        const float FRAME_DELAY_SEC,
+        const sf::Color & COLOR_FROM,
+        const sf::Color & COLOR_TO)
     {
         animUVec_.clear();
 
@@ -1065,7 +1041,7 @@ namespace combat
             auto region{ sfml_util::MakeMinimalSquareAndCenter(
                 NEXT_COMBATNODE_PTR->GetEntityRegion()) };
 
-            //grow the shimmer animation to better cover the creature image
+            // grow the shimmer animation to better cover the creature image
             if (ENUM == sfml_util::Animations::Shimmer)
             {
                 auto const ADJ{ sfml_util::MapByRes(40.0f, 120.0f) };
@@ -1075,15 +1051,10 @@ namespace combat
                 region.height += ADJ * 2.0f;
             }
 
-            animUVec_.push_back( sfml_util::AnimationFactory::Make(
-                ENUM,
-                region,
-                FRAME_DELAY_SEC,
-                COLOR_FROM,
-                COLOR_TO) );
+            animUVec_.push_back(sfml_util::AnimationFactory::Make(
+                ENUM, region, FRAME_DELAY_SEC, COLOR_FROM, COLOR_TO));
         }
     }
-
 
     void CombatAnimation::SongAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC)
     {
@@ -1096,24 +1067,22 @@ namespace combat
                 continue;
             }
 
-            songAnimUVec_.push_back(
-                std::make_unique<sfml_util::animation::SongAnimation>(
-                    NEXT_COMBATNODE_PTR->GetEntityRegion(),
-                    0.1f,
-                    sfml_util::MapByRes(0.1f, 0.25f),
-                    0.25f,
-                    sfml_util::MapByRes(0.35f, 0.9f),
-                    0.25f,
-                    6.0f,
-                    0.75f,
-                    5.0f,
-                    1.25f,
-                    0.5f,
-                    1.0f,
-                    0.0f) );
+            songAnimUVec_.push_back(std::make_unique<sfml_util::animation::SongAnimation>(
+                NEXT_COMBATNODE_PTR->GetEntityRegion(),
+                0.1f,
+                sfml_util::MapByRes(0.1f, 0.25f),
+                0.25f,
+                sfml_util::MapByRes(0.35f, 0.9f),
+                0.25f,
+                6.0f,
+                0.75f,
+                5.0f,
+                1.25f,
+                0.5f,
+                1.0f,
+                0.0f));
         }
     }
-
 
     bool CombatAnimation::SongAnimUpdate(const float ELAPSED_TIME_SEC)
     {
@@ -1130,12 +1099,7 @@ namespace combat
         return areAllSongAnimFinished;
     }
 
-
-    void CombatAnimation::SongAnimStop()
-    {
-        songAnimUVec_.clear();
-    }
-
+    void CombatAnimation::SongAnimStop() { songAnimUVec_.clear(); }
 
     void CombatAnimation::SparkleAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC)
     {
@@ -1148,7 +1112,7 @@ namespace combat
                 continue;
             }
 
-            sparkleAnimUVec_.push_back( std::make_unique<sfml_util::animation::SparkleAnimation>(
+            sparkleAnimUVec_.push_back(std::make_unique<sfml_util::animation::SparkleAnimation>(
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 sfml_util::MapByRes(0.333f, 1.0f),
                 0.5f,
@@ -1156,10 +1120,9 @@ namespace combat
                 0.5f,
                 3.0f,
                 4.0f,
-                0.5f) );
+                0.5f));
         }
     }
-
 
     bool CombatAnimation::SparkleAnimUpdate(const float ELAPSED_TIME_SEC)
     {
@@ -1176,14 +1139,13 @@ namespace combat
         return areAllSparkleAnimFinished;
     }
 
-
     bool CombatAnimation::SparkleAnimIsDone()
     {
         auto areAllAnimsDone{ true };
         for (auto const & NEXT_SPARKLEANIM_UPTR : sparkleAnimUVec_)
         {
-            if ((NEXT_SPARKLEANIM_UPTR.get() != nullptr) &&
-                (NEXT_SPARKLEANIM_UPTR->IsFinished() == false))
+            if ((NEXT_SPARKLEANIM_UPTR.get() != nullptr)
+                && (NEXT_SPARKLEANIM_UPTR->IsFinished() == false))
             {
                 areAllAnimsDone = false;
             }
@@ -1192,29 +1154,22 @@ namespace combat
         return areAllAnimsDone;
     }
 
+    void CombatAnimation::SparkleAnimStop() { sparkleAnimUVec_.clear(); }
 
-    void CombatAnimation::SparkleAnimStop()
+    void CombatAnimation::TextAnimStart(
+        const Health_t & DAMAGE, const combat::CombatNodePtr_t TARGET_PTR)
     {
-        sparkleAnimUVec_.clear();
+        TextAnimStart(std::vector<Health_t>(1, DAMAGE), combat::CombatNodePVec_t(1, TARGET_PTR));
     }
 
-
-    void CombatAnimation::TextAnimStart(const Health_t & DAMAGE,
-                                        const combat::CombatNodePtr_t TARGET_PTR)
+    void CombatAnimation::TextAnimStart(
+        const std::vector<Health_t> & DAMAGE_VEC, const combat::CombatNodePVec_t & TARGETS_PVEC)
     {
-        TextAnimStart(
-            std::vector<Health_t>(1, DAMAGE),
-            combat::CombatNodePVec_t(1, TARGET_PTR));
-    }
-
-
-    void CombatAnimation::TextAnimStart(const std::vector<Health_t> & DAMAGE_VEC,
-                                        const combat::CombatNodePVec_t &     TARGETS_PVEC)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((DAMAGE_VEC.size() == TARGETS_PVEC.size()),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (DAMAGE_VEC.size() == TARGETS_PVEC.size()),
             "combat::CombatAnimation::TextAnimStart(damage_vec_size="
-            << DAMAGE_VEC.size() << ", combat_node_vec_size=" << TARGETS_PVEC.size()
-            << ") sizes do not match.");
+                << DAMAGE_VEC.size() << ", combat_node_vec_size=" << TARGETS_PVEC.size()
+                << ") sizes do not match.");
 
         textAnimUVec_.clear();
 
@@ -1223,8 +1178,7 @@ namespace combat
         {
             auto const NEXT_DAMAGE_VALUE{ DAMAGE_VEC[damageIndex++] };
 
-            if ((NEXT_DAMAGE_VALUE.IsZero()) ||
-                (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false))
+            if ((NEXT_DAMAGE_VALUE.IsZero()) || (NEXT_COMBATNODE_PTR->GetEntityWillDraw() == false))
             {
                 continue;
             }
@@ -1243,23 +1197,18 @@ namespace combat
 
             ss << NEXT_DAMAGE_VALUE;
 
-            textAnimUVec_.push_back( std::make_unique<sfml_util::animation::TextAnimation>(
+            textAnimUVec_.push_back(std::make_unique<sfml_util::animation::TextAnimation>(
                 ss.str(),
                 NEXT_COMBATNODE_PTR->GetEntityRegion(),
                 1.0f,
                 1,
                 sfml_util::FontManager::Instance()->Size_Larger() + 64,
                 startColor,
-                endColor) );
+                endColor));
         }
     }
 
-
-    void CombatAnimation::TextAnimStop()
-    {
-        textAnimUVec_.clear();
-    }
-
+    void CombatAnimation::TextAnimStop() { textAnimUVec_.clear(); }
 
     void CombatAnimation::RunAnimStart(const creature::CreaturePtr_t CREATURE_PTR)
     {
@@ -1273,23 +1222,21 @@ namespace combat
         }
         else
         {
-            runAnimPosVTarget_ = sf::Vector2f(sfml_util::Display::Instance()->GetWinWidth() +
-                OFFSCREEN_PAD, 0.0f);
+            runAnimPosVTarget_
+                = sf::Vector2f(sfml_util::Display::Instance()->GetWinWidth() + OFFSCREEN_PAD, 0.0f);
         }
     }
 
-
     void CombatAnimation::RunAnimUpdate(const float SLIDER_POS)
     {
-        auto const POS_LEFT{ runAnimPosVOrig_.x +
-            ((runAnimPosVTarget_.x - runAnimPosVOrig_.x) * SLIDER_POS) };
+        auto const POS_LEFT{ runAnimPosVOrig_.x
+                             + ((runAnimPosVTarget_.x - runAnimPosVOrig_.x) * SLIDER_POS) };
 
-        auto const POS_TOP{ runAnimPosVOrig_.y +
-            ((runAnimPosVTarget_.y - runAnimPosVOrig_.y) * SLIDER_POS) };
+        auto const POS_TOP{ runAnimPosVOrig_.y
+                            + ((runAnimPosVTarget_.y - runAnimPosVOrig_.y) * SLIDER_POS) };
 
         runAnimCombatNodePtr_->SetEntityPos(POS_LEFT, POS_TOP);
     }
-
 
     creature::CreaturePtr_t CombatAnimation::RunAnimStop()
     {
@@ -1299,7 +1246,6 @@ namespace combat
         runAnimPosVTarget_ = sf::Vector2f(0.0f, 0.0f);
         return CREATURE_PTR;
     }
-
 
     void CombatAnimation::EndOfCombatCleanup()
     {
@@ -1313,6 +1259,5 @@ namespace combat
         selectAnimCombatNodePtr_ = nullptr;
         runAnimCombatNodePtr_ = nullptr;
     }
-
 }
 }

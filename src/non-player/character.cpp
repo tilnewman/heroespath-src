@@ -32,99 +32,97 @@
 #include "sfml-util/date-time.hpp"
 
 #include "creature/body-type.hpp"
+#include "creature/condition.hpp"
+#include "creature/title.hpp"
+#include "item/inventory.hpp"
 #include "spell/spell-base.hpp"
 #include "stats/stat-set.hpp"
-#include "creature/title.hpp"
-#include "creature/condition.hpp"
-#include "item/inventory.hpp"
 
 #include "misc/vectors.hpp"
-
 
 namespace heroespath
 {
 namespace non_player
 {
 
-    Character::Character(const std::string &              NAME,
-                         const creature::sex::Enum        SEX,
-                         const creature::BodyType &       BODY_TYPE,
-                         const creature::race::Enum &     RACE,
-                         const creature::role::Enum &     ROLE,
-                         const stats::StatSet &           STATS,
-                         const Health_t &                 HEALTH,
-                         const Rank_t &                   RANK,
-                         const Experience_t &             EXPERIENCE,
-                         const creature::CondEnumVec_t &  CONDITIONS_VEC,
-                         const creature::TitleEnumVec_t & TITLES_VEC,
-                         const item::Inventory &          INVENTORY,
-                         const sfml_util::DateTime &      DATE_TIME,
-                         const std::string &              IMAGE_FILENAME,
-                         const spell::SpellVec_t &        SPELLS_VEC,
-                         const Mana_t &                   MANA,
-                         const song::SongVec_t &          SONG_VEC)
-    :
-        Creature(NAME,
-                 SEX,
-                 BODY_TYPE,
-                 RACE,
-                 ROLE,
-                 STATS,
-                 HEALTH,
-                 RANK,
-                 EXPERIENCE,
-                 CONDITIONS_VEC,
-                 TITLES_VEC,
-                 INVENTORY,
-                 DATE_TIME,
-                 IMAGE_FILENAME,
-                 SPELLS_VEC,
-                 MANA,
-                 SONG_VEC)
+    Character::Character(
+        const std::string & NAME,
+        const creature::sex::Enum SEX,
+        const creature::BodyType & BODY_TYPE,
+        const creature::race::Enum & RACE,
+        const creature::role::Enum & ROLE,
+        const stats::StatSet & STATS,
+        const Health_t & HEALTH,
+        const Rank_t & RANK,
+        const Experience_t & EXPERIENCE,
+        const creature::CondEnumVec_t & CONDITIONS_VEC,
+        const creature::TitleEnumVec_t & TITLES_VEC,
+        const item::Inventory & INVENTORY,
+        const sfml_util::DateTime & DATE_TIME,
+        const std::string & IMAGE_FILENAME,
+        const spell::SpellVec_t & SPELLS_VEC,
+        const Mana_t & MANA,
+        const song::SongVec_t & SONG_VEC)
+        : Creature(
+              NAME,
+              SEX,
+              BODY_TYPE,
+              RACE,
+              ROLE,
+              STATS,
+              HEALTH,
+              RANK,
+              EXPERIENCE,
+              CONDITIONS_VEC,
+              TITLES_VEC,
+              INVENTORY,
+              DATE_TIME,
+              IMAGE_FILENAME,
+              SPELLS_VEC,
+              MANA,
+              SONG_VEC)
     {}
 
-
-    Character::~Character()
-    {}
-
+    Character::~Character() {}
 
     bool operator==(const Character & L, const Character & R)
     {
-        if ( std::tie(L.name_,
-                      L.imageFilename_,
-                      L.sex_,
-                      L.bodyType_,
-                      L.race_,
-                      L.role_,
-                      L.serialNumber_,
-                      L.dateTimeCreated_,
-                      L.achievements_,
-                      L.lastSpellCastNum_,
-                      L.lastSongPlayedNum_,
-                      L.healthCurrent_,
-                      L.healthNormal_,
-                      L.rank_,
-                      L.experience_,
-                      L.actualSet_,
-                      L.bonusSet_)
-                !=
-                std::tie(R.name_,
-                         R.imageFilename_,
-                         R.sex_,
-                         R.bodyType_,
-                         R.race_,
-                         R.role_,
-                         R.serialNumber_,
-                         R.dateTimeCreated_,
-                         R.achievements_,
-                         R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_,
-                         R.healthCurrent_,
-                         R.healthNormal_,
-                         R.rank_,
-                         R.experience_,
-                         R.actualSet_,
-                         R.bonusSet_))
+        if (std::tie(
+                L.name_,
+                L.imageFilename_,
+                L.sex_,
+                L.bodyType_,
+                L.race_,
+                L.role_,
+                L.serialNumber_,
+                L.dateTimeCreated_,
+                L.achievements_,
+                L.lastSpellCastNum_,
+                L.lastSongPlayedNum_,
+                L.healthCurrent_,
+                L.healthNormal_,
+                L.rank_,
+                L.experience_,
+                L.actualSet_,
+                L.bonusSet_)
+            != std::tie(
+                   R.name_,
+                   R.imageFilename_,
+                   R.sex_,
+                   R.bodyType_,
+                   R.race_,
+                   R.role_,
+                   R.serialNumber_,
+                   R.dateTimeCreated_,
+                   R.achievements_,
+                   R.lastSpellCastNum_,
+                   R.lastSongPlayedNum_,
+                   R.healthCurrent_,
+                   R.healthNormal_,
+                   R.rank_,
+                   R.experience_,
+                   R.actualSet_,
+                   R.bonusSet_))
         {
             return false;
         }
@@ -147,44 +145,44 @@ namespace non_player
         return misc::Vector::OrderlessCompareEqual(L.spellsVec_, R.spellsVec_);
     }
 
-
     bool operator<(const Character & L, const Character & R)
     {
-        if ( std::tie(L.name_,
-                      L.imageFilename_,
-                      L.sex_,
-                      L.bodyType_,
-                      L.race_,
-                      L.role_,
-                      L.serialNumber_,
-                      L.dateTimeCreated_,
-                      L.achievements_,
-                      L.lastSpellCastNum_,
-                      L.lastSongPlayedNum_,
-                      L.healthCurrent_,
-                      L.healthNormal_,
-                      L.rank_,
-                      L.experience_,
-                      L.actualSet_,
-                      L.bonusSet_)
-                <
-                std::tie(R.name_,
-                         R.imageFilename_,
-                         R.sex_,
-                         R.bodyType_,
-                         R.race_,
-                         R.role_,
-                         R.serialNumber_,
-                         R.dateTimeCreated_,
-                         R.achievements_,
-                         R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_,
-                         R.healthCurrent_,
-                         R.healthNormal_,
-                         R.rank_,
-                         R.experience_,
-                         R.actualSet_,
-                         R.bonusSet_))
+        if (std::tie(
+                L.name_,
+                L.imageFilename_,
+                L.sex_,
+                L.bodyType_,
+                L.race_,
+                L.role_,
+                L.serialNumber_,
+                L.dateTimeCreated_,
+                L.achievements_,
+                L.lastSpellCastNum_,
+                L.lastSongPlayedNum_,
+                L.healthCurrent_,
+                L.healthNormal_,
+                L.rank_,
+                L.experience_,
+                L.actualSet_,
+                L.bonusSet_)
+            < std::tie(
+                  R.name_,
+                  R.imageFilename_,
+                  R.sex_,
+                  R.bodyType_,
+                  R.race_,
+                  R.role_,
+                  R.serialNumber_,
+                  R.dateTimeCreated_,
+                  R.achievements_,
+                  R.lastSpellCastNum_,
+                  R.lastSongPlayedNum_,
+                  R.healthCurrent_,
+                  R.healthNormal_,
+                  R.rank_,
+                  R.experience_,
+                  R.actualSet_,
+                  R.bonusSet_))
         {
             return true;
         }
@@ -206,6 +204,5 @@ namespace non_player
 
         return misc::Vector::OrderlessCompareLess(L.spellsVec_, R.spellsVec_);
     }
-
 }
 }

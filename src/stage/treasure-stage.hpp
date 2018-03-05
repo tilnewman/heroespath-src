@@ -28,37 +28,36 @@
 // treasure-stage.hpp
 //  A Stage class that allows finding treasure and advancing after combat.
 //
+#include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
-#include "sfml-util/gui/list-box.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
-#include "combat/turn-action-info.hpp"
 #include "combat/fight-results.hpp"
+#include "combat/trap.hpp"
+#include "combat/turn-action-info.hpp"
 #include "creature/race-enum.hpp"
-#include "item/treasure-image-enum.hpp"
+#include "interact/lock-interactions.hpp"
 #include "item/item-cache.hpp"
 #include "item/treasure-available-enum.hpp"
-#include "combat/trap.hpp"
+#include "item/treasure-image-enum.hpp"
 #include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enum
-#include "interact/lock-interactions.hpp"
 
 #include "misc/handy-types.hpp"
 
 #include <memory>
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-    class TextRegion;
-    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-}
+    namespace gui
+    {
+        class TextRegion;
+        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    }
 }
 
 namespace stage
@@ -66,15 +65,13 @@ namespace stage
 
     class TreasureDisplayStage;
 
-
-    //A Stage class that allows starting the game
+    // A Stage class that allows starting the game
     class TreasureStage
-    :
-        public sfml_util::Stage,
-        public popup::IPopupHandler_t
+        : public sfml_util::Stage
+        , public popup::IPopupHandler_t
     {
-        TreasureStage(const TreasureStage &) =delete;
-        TreasureStage & operator=(const TreasureStage &) =delete;
+        TreasureStage(const TreasureStage &) = delete;
+        TreasureStage & operator=(const TreasureStage &) = delete;
 
     public:
         TreasureStage();
@@ -100,8 +97,7 @@ namespace stage
         void SetupAfterDelay();
 
         item::TreasureAvailable::Enum DetermineTreasureAvailableState(
-            const item::ItemCache & CACHE_HELD,
-            const item::ItemCache & CACHE_LOCKBOX);
+            const item::ItemCache & CACHE_HELD, const item::ItemCache & CACHE_LOCKBOX);
 
         void PromptUserBasedonTreasureAvailability(
             const item::TreasureAvailable::Enum, const item::TreasureImage::Enum);
@@ -122,7 +118,7 @@ namespace stage
 
         DamagePopup PromptPlayerWithDamagePopups();
 
-        //returns true if all characters were killed by the trap
+        // returns true if all characters were killed by the trap
         bool CheckAndHandleAllKilledByTrap();
 
         void LockboxOpen();
@@ -133,7 +129,7 @@ namespace stage
             Gems
         };
 
-        //returns true if a popup was displayed
+        // returns true if a popup was displayed
         bool ShareAndShowPopupIfNeeded(const ShareType);
 
         int Share(const ShareType);
@@ -152,7 +148,7 @@ namespace stage
 
         void UpdateItemDisplay();
 
-        //returns true if a popup is displayed
+        // returns true if a popup is displayed
         bool ProcessLockpickTitleAndPopupIfNeeded();
 
         void TransitionToAdventureStage();
@@ -186,8 +182,7 @@ namespace stage
         bool willProcessLockpickTitle_;
         interact::LockPicking lockPicking_;
     };
-
 }
 }
 
-#endif //HEROESPATH_TREASURESTAGE_HPP_INCLUDED
+#endif // HEROESPATH_TREASURESTAGE_HPP_INCLUDED

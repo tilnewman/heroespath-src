@@ -32,17 +32,16 @@
 
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //Responsible for drawing the title text and symbol at the top of a main menu stage screen.
+    // Responsible for drawing the title text and symbol at the top of a main menu stage screen.
     class MainMenuTitle : public sf::Drawable
     {
     public:
-        //this constructor calls Setup() and SetPositionAndSize()
+        // this constructor calls Setup() and SetPositionAndSize()
         explicit MainMenuTitle(
             const std::string & TITLE_IMAGE_FILENAME = "",
             const bool WILL_INVERT_SYMBOL = false,
@@ -58,8 +57,7 @@ namespace sfml_util
             const float SYMBOL_SCALE_VERT = 1.0f);
 
         void SetPositionAndSize(
-            const float SYMBOL_SCALE_HORIZ = 1.0f,
-            const float SYMBOL_SCALE_VERT  = 1.0f);
+            const float SYMBOL_SCALE_HORIZ = 1.0f, const float SYMBOL_SCALE_VERT = 1.0f);
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
@@ -74,13 +72,12 @@ namespace sfml_util
 
     private:
         sf::Texture symbolTexture_;
-        sf::Sprite  symbolSprite_;
+        sf::Sprite symbolSprite_;
         sf::Texture titleTexture_;
-        sf::Sprite  titleSprite_;
+        sf::Sprite titleSprite_;
         bool willDrawTitle_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_MAINMENUTITLE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_MAINMENUTITLE_HPP_INCLUDED

@@ -32,7 +32,6 @@
 
 #include <vector>
 
-
 namespace heroespath
 {
 namespace avatar
@@ -41,8 +40,7 @@ namespace avatar
     using FrameNum_t = int;
     using FrameNumVec_t = std::vector<FrameNum_t>;
 
-
-    //Responsible for wrapping all the information needed to animate an NPC.
+    // Responsible for wrapping all the information needed to animate an NPC.
     struct Animation
     {
         Animation(
@@ -51,12 +49,11 @@ namespace avatar
             const std::vector<FrameNum_t> FRAME_NUM_VEC,
             const float FRAME_DURATION,
             const bool WILL_LOOP)
-        :
-            pose(POSE),
-            direction(DIRECTION),
-            frame_num_vec(FRAME_NUM_VEC),
-            frame_duration(FRAME_DURATION),
-            will_loop(WILL_LOOP)
+            : pose(POSE)
+            , direction(DIRECTION)
+            , frame_num_vec(FRAME_NUM_VEC)
+            , frame_duration(FRAME_DURATION)
+            , will_loop(WILL_LOOP)
         {}
 
         Pose::Enum pose;
@@ -65,8 +62,7 @@ namespace avatar
         float frame_duration;
         bool will_loop;
     };
-
 }
 }
 
-#endif //HEROESPATH_AVATAR_ANIMATION_HPP_INCLUDED
+#endif // HEROESPATH_AVATAR_ANIMATION_HPP_INCLUDED

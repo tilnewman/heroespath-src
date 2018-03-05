@@ -27,20 +27,19 @@
 //
 // maps.hpp
 //
-#include "state/level.hpp"
 #include "map/level-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "state/level.hpp"
 
-#include <vector>
 #include <memory>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace state
 {
 
-    //Responsible for storing all states that represent the game world contained in maps.
+    // Responsible for storing all states that represent the game world contained in maps.
     class Maps
     {
     public:
@@ -58,15 +57,14 @@ namespace state
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & level_;
             ar & levels_;
         }
     };
-
 }
 }
 
-#endif //HEROESPATH_STATE_MAPS_HPP_INCLUDED
+#endif // HEROESPATH_STATE_MAPS_HPP_INCLUDED

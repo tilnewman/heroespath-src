@@ -28,19 +28,18 @@
 // party-factory.hpp
 //  A singleton class that creates parties of creatures that confront the player characters.
 //
-#include "misc/types.hpp"
-#include "stats/trait.hpp"
-#include "stats/stat-set.hpp"
-#include "creature/sex-enum.hpp"
+#include "creature/dragon-class-enum.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "creature/sex-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
-#include "creature/dragon-class-enum.hpp"
+#include "misc/types.hpp"
+#include "stats/stat-set.hpp"
+#include "stats/trait.hpp"
 
 #include <memory>
-#include <vector>
 #include <string>
-
+#include <vector>
 
 namespace heroespath
 {
@@ -55,11 +54,11 @@ namespace non_player
 namespace combat
 {
 
-    //Creates partys of creatures that confront the player characters
+    // Creates partys of creatures that confront the player characters
     class PartyFactory
     {
-        PartyFactory(const PartyFactory &) =delete;
-        PartyFactory & operator=(const PartyFactory &) =delete;
+        PartyFactory(const PartyFactory &) = delete;
+        PartyFactory & operator=(const PartyFactory &) = delete;
 
     public:
         PartyFactory();
@@ -89,8 +88,7 @@ namespace combat
     private:
         static std::unique_ptr<PartyFactory> instanceUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_COMBAT_PARTYFACTORY_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_PARTYFACTORY_HPP_INCLUDED

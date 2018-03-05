@@ -33,34 +33,32 @@
 #include <memory>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
 {
-    //forward declarations
+    // forward declarations
     class Title;
     using TitlePtr_t = Title *;
     using TitleUPtr_t = std::unique_ptr<Title>;
     using TitleUVec_t = std::vector<TitleUPtr_t>;
 
-namespace title
-{
-
-    class Warehouse
+    namespace title
     {
-    public:
-        static void Fill();
-        static void Empty();
-        static bool Test();
-        static TitlePtr_t Get(const Titles::Enum);
 
-    private:
-        static TitleUVec_t titleUVec_;
-    };
+        class Warehouse
+        {
+        public:
+            static void Fill();
+            static void Empty();
+            static bool Test();
+            static TitlePtr_t Get(const Titles::Enum);
 
+        private:
+            static TitleUVec_t titleUVec_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED

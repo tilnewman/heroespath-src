@@ -33,7 +33,6 @@
 
 #include "misc/assertlogandthrow.hpp"
 
-
 namespace heroespath
 {
 namespace log
@@ -41,19 +40,11 @@ namespace log
 
     std::unique_ptr<Logger> Logger::instanceUPtr_{ nullptr };
 
-
     Logger::Logger()
-    :
-        LogBase(
-            LogBase::FILE_NAME_DEFAULT,
-            LogBase::FILE_NAME_EXT_DEFAULT,
-            "")
+        : LogBase(LogBase::FILE_NAME_DEFAULT, LogBase::FILE_NAME_EXT_DEFAULT, "")
     {}
 
-
-    Logger::~Logger()
-    {}
-
+    Logger::~Logger() {}
 
     Logger * Logger::Instance()
     {
@@ -65,7 +56,6 @@ namespace log
         return instanceUPtr_.get();
     }
 
-
     void Logger::Acquire()
     {
         if (instanceUPtr_.get() == nullptr)
@@ -74,12 +64,12 @@ namespace log
         }
     }
 
-
     void Logger::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "log::Logger::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
+            "log::Logger::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
-
 }
 }

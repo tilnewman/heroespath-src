@@ -28,35 +28,34 @@
 // party-stage.hpp
 //  A Stage class that allows grouping of saved characters into a party.
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
-#include "sfml-util/stage.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/sliders.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/ouroboros.hpp"
 #include "sfml-util/horiz-symbol.hpp"
+#include "sfml-util/main-menu-buttons.hpp"
 #include "sfml-util/main-menu-title.hpp"
+#include "sfml-util/ouroboros.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-system.hpp"
+#include "sfml-util/sliders.hpp"
+#include "sfml-util/stage.hpp"
 
 #include "avatar/avatar-enum.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
 #include <memory>
-#include <string>
 #include <set>
-
+#include <string>
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-    class TextRegion;
-    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-}
+    namespace gui
+    {
+        class TextRegion;
+        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    }
 }
 
 namespace player
@@ -69,16 +68,15 @@ namespace player
 namespace stage
 {
 
-    //A Stage class that displays saved characters and allows grouping them into a party of six
+    // A Stage class that displays saved characters and allows grouping them into a party of six
     class PartyStage
-    :
-        public sfml_util::Stage,
-        public sfml_util::gui::callback::IListBoxCallbackHandler,
-        public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t,
-        public popup::IPopupHandler_t
+        : public sfml_util::Stage
+        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        , public popup::IPopupHandler_t
     {
-        PartyStage(const PartyStage &) =delete;
-        PartyStage & operator=(const PartyStage &) =delete;
+        PartyStage(const PartyStage &) = delete;
+        PartyStage & operator=(const PartyStage &) = delete;
 
     public:
         PartyStage();
@@ -86,7 +84,8 @@ namespace stage
 
         inline virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
-        virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
+        virtual bool
+            HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
         virtual bool HandleCallback(const popup::PopupResponse &);
         //
         virtual bool HandleCallback_BackButton();
@@ -148,25 +147,24 @@ namespace stage
         sfml_util::BottomSymbol bottomSymbol_;
         bool willDisplayCharacterCountWarningText_;
 
-        //mouseover popup and animation members
-        bool            willShowMouseOverPopup_;
-        float           mouseOverPopupTimerSec_;
+        // mouseover popup and animation members
+        bool willShowMouseOverPopup_;
+        float mouseOverPopupTimerSec_;
         sf::VertexArray mouseOverQuad_;
-        float           mouseOverBoxWidth_;
-        float           mouseOverBoxHeight_;
-        sf::Vector2f    mouseOverPosV_;
-        sf::Sprite      mouseOverSprite_;
+        float mouseOverBoxWidth_;
+        float mouseOverBoxHeight_;
+        sf::Vector2f mouseOverPosV_;
+        sf::Sprite mouseOverSprite_;
         player::CharacterPtr_t mouseOverCharPtr_;
-        sf::Texture     mouseOverTexture_;
-        bool            isMouseOverTexture_;
+        sf::Texture mouseOverTexture_;
+        bool isMouseOverTexture_;
         sfml_util::gui::TextRegionUPtr_t mouseOverTextRegionUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
 
         //
         player::CharacterPSet_t charactersPSet_;
     };
-
 }
 }
 
-#endif //HEROESPATH_PARTYSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_PARTYSTAGE_HPP_INCLUDED

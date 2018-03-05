@@ -31,19 +31,17 @@
 
 #include <string>
 
-
 namespace heroespath
 {
 namespace creature
 {
 
-    //Stat Modifier Game Data File Loading helper functions.
+    // Stat Modifier Game Data File Loading helper functions.
     struct StatModifierLoader
     {
         static const stats::StatSet ConvertStringToStatSet(const std::string & DATA_FILE_VALUE_STR);
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_STATMODIFIERLOADER_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_STATMODIFIERLOADER_HPP_INCLUDED

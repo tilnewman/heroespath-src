@@ -28,40 +28,38 @@
 // settings-stage.hpp
 //  A Stage class that allows changing system and game settings.
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
-#include "sfml-util/stage.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/sliderbar-music.hpp"
-#include "sfml-util/sliderbar-effects.hpp"
-#include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/radio-button.hpp"
+#include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/i-callback-handler.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-system.hpp"
+#include "sfml-util/sliderbar-effects.hpp"
+#include "sfml-util/sliderbar-music.hpp"
+#include "sfml-util/stage.hpp"
 
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/horiz-symbol.hpp"
 #include "popup/i-popup-callback.hpp"
+#include "sfml-util/horiz-symbol.hpp"
+#include "sfml-util/main-menu-buttons.hpp"
 #include "sfml-util/main-menu-title.hpp"
 
 #include <memory>
 #include <string>
-
 
 namespace heroespath
 {
 namespace stage
 {
 
-    //A simple class that displays the system and game settings
+    // A simple class that displays the system and game settings
     class SettingsStage
-    :
-        public sfml_util::Stage,
-        public popup::IPopupHandler_t,
-        public sfml_util::callback::IRadioButtonSetCallbackHandler_t
+        : public sfml_util::Stage
+        , public popup::IPopupHandler_t
+        , public sfml_util::callback::IRadioButtonSetCallbackHandler_t
     {
-        SettingsStage(const SettingsStage &) =delete;
-        SettingsStage & operator=(const SettingsStage &) =delete;
+        SettingsStage(const SettingsStage &) = delete;
+        SettingsStage & operator=(const SettingsStage &) = delete;
 
     public:
         SettingsStage();
@@ -100,8 +98,7 @@ namespace stage
         const sfml_util::gui::MouseTextInfo CreateSliderbarValueTextInfoSet() const;
 
         float HorizPositionOfColumn(
-            const std::size_t COLUMN_NUM,
-            const sf::FloatRect & BG_BOX_INNER_RECT);
+            const std::size_t COLUMN_NUM, const sf::FloatRect & BG_BOX_INNER_RECT);
 
         float SliderLabelVertPad() const;
 
@@ -126,8 +123,7 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t musicInfoDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t revLabelTextRegionUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SETTINGSSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_SETTINGSSTAGE_HPP_INCLUDED

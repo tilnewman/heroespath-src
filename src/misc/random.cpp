@@ -31,34 +31,31 @@
 
 #include <random>
 
-
 namespace heroespath
 {
 namespace misc
 {
-namespace random
-{
-
-    std::mt19937 MersenneTwister::engine;
-
-
-    int Int(const int THE_MIN, const int THE_MAX)
+    namespace random
     {
-        //Tested uniform_int_distribution<int> on both Windows and MacOS over ranges where
-        //min==max and where min>max.  In both cases the distribution didn't crash and behaved
-        //as expected, except when min>max when it seemed to return random out-of-range values.
-        //So to ensure results within range check that min<=max.
 
-        M_ASSERT_OR_LOGANDTHROW_SS((THE_MIN <= THE_MAX),
-            "misc::random::Int(min=" << THE_MIN
-            << ", max=" << THE_MAX
-            << ")  The min was not <= the max.");
+        std::mt19937 MersenneTwister::engine;
 
-        //uniform_int_distribution is [x,y] so no nextafter() call is needed
-        std::uniform_int_distribution<int> uni_int_dist(THE_MIN, THE_MAX);
-        return uni_int_dist(MersenneTwister::engine);
+        int Int(const int THE_MIN, const int THE_MAX)
+        {
+            // Tested uniform_int_distribution<int> on both Windows and MacOS over ranges where
+            // min==max and where min>max.  In both cases the distribution didn't crash and behaved
+            // as expected, except when min>max when it seemed to return random out-of-range values.
+            // So to ensure results within range check that min<=max.
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (THE_MIN <= THE_MAX),
+                "misc::random::Int(min=" << THE_MIN << ", max=" << THE_MAX
+                                         << ")  The min was not <= the max.");
+
+            // uniform_int_distribution is [x,y] so no nextafter() call is needed
+            std::uniform_int_distribution<int> uni_int_dist(THE_MIN, THE_MAX);
+            return uni_int_dist(MersenneTwister::engine);
+        }
     }
-
-}
 }
 }

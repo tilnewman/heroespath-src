@@ -32,7 +32,6 @@
 #include <string>
 #include <utility> //for std::pair
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -45,7 +44,7 @@ namespace sfml_util
             Burst = 0,
             Campfire,
             CandleFlame,
-            CandleFlame2, //a very small pixel animation for candles on the map
+            CandleFlame2, // a very small pixel animation for candles on the map
             DualCharge,
             DualSwirl,
             ExplosionLarge,
@@ -83,8 +82,7 @@ namespace sfml_util
         static float TimePerFrameSec(const Enum);
         static const MusicEnumVec_t Sfx(const Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE
+#endif // HEROESPATH_SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE

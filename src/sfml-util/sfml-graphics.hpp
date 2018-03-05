@@ -28,7 +28,7 @@
 // sfml-graphics.hpp
 //
 
-//prevent warnings that can be ignored in SFML
+// prevent warnings that can be ignored in SFML
 #include "misc/platform.hpp"
 #ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
@@ -42,19 +42,18 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
+#include <list>
 #include <memory>
 #include <vector>
-#include <list>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    using TextureVec_t  = std::vector<sf::Texture>;
-    using TextureLst_t  = std::list<sf::Texture>;
-    using TexturePtr_t  = sf::Texture *;
+    using TextureVec_t = std::vector<sf::Texture>;
+    using TextureLst_t = std::list<sf::Texture>;
+    using TexturePtr_t = sf::Texture *;
     using TextureUPtr_t = std::unique_ptr<sf::Texture>;
     using TextureUVec_t = std::vector<TextureUPtr_t>;
     //
@@ -62,16 +61,15 @@ namespace sfml_util
     //
     using RendTextSPtr_t = std::shared_ptr<sf::RenderTexture>;
     //
-    using FontPtr_t  = sf::Font *;
+    using FontPtr_t = sf::Font *;
     using FontUPtr_t = std::unique_ptr<sf::Font>;
     using FontUVec_t = std::vector<FontUPtr_t>;
     //
     using FloatRectVec_t = std::vector<sf::FloatRect>;
     //
-    using WinPtr_t  = sf::RenderWindow *;
+    using WinPtr_t = sf::RenderWindow *;
     using WinUPtr_t = std::unique_ptr<sf::RenderWindow>;
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_SFMLGRAPHICS_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SFMLGRAPHICS_HPP_INCLUDED

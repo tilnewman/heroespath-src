@@ -35,9 +35,8 @@
 #include <SFML/System/Vector2.hpp>
 
 #include <memory>
-#include <vector>
 #include <utility>
-
+#include <vector>
 
 namespace heroespath
 {
@@ -47,8 +46,7 @@ namespace avatar
     struct IView;
     using IViewUPtr_t = std::unique_ptr<IView>;
 
-
-    //Responsible for all state and non-drawing behavior of an NPC.
+    // Responsible for all state and non-drawing behavior of an NPC.
     class Model
     {
     public:
@@ -58,7 +56,7 @@ namespace avatar
 
         void Update(const float TIME_ELAPSED);
 
-        inline const IView & GetView() const { return * viewUPtr_; }
+        inline const IView & GetView() const { return *viewUPtr_; }
 
         void SetWalkAnim(const sfml_util::Direction::Enum, const bool WILL_START_OR_STOP);
 
@@ -90,8 +88,8 @@ namespace avatar
 
         const sf::Vector2f RandomWalkTarget() const;
 
-        sfml_util::Direction::Enum WalkDirection(
-            const sfml_util::Direction::Enum DIRECTION_TO_MAINTAIN) const;
+        sfml_util::Direction::Enum
+            WalkDirection(const sfml_util::Direction::Enum DIRECTION_TO_MAINTAIN) const;
 
     private:
         static const float NUM_BLINKS_TIME_WINDOW_SEC_;
@@ -119,8 +117,7 @@ namespace avatar
         float walkingIntoTimerSec_;
         std::size_t walkingIntoIndex_;
     };
-
 }
 }
 
-#endif //HEROESPATH_AVATAR_MODEL_HPP_INCLUDED
+#endif // HEROESPATH_AVATAR_MODEL_HPP_INCLUDED

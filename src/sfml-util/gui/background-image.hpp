@@ -27,78 +27,89 @@
 //
 // background-image.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/gui/background-info.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
 #include <string>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //Encapsulates a GuiEntity that manages a single background image with possible gradients.
-    //If both path.empty() and textureSPtr.get==nullptr, then a simple rectangle will be drawn and filled with the given color.
-    class BackgroundImage : public sf::Drawable
+    namespace gui
     {
-        BackgroundImage(const BackgroundImage &) =delete;
-        BackgroundImage & operator=(const BackgroundImage &) =delete;
 
-    public:
-        //if using this constructor then Setup() must be called before any other function
-        BackgroundImage();
+        // Encapsulates a GuiEntity that manages a single background image with possible gradients.
+        // If both path.empty() and textureSPtr.get==nullptr, then a simple rectangle will be drawn
+        // and filled with the given color.
+        class BackgroundImage : public sf::Drawable
+        {
+            BackgroundImage(const BackgroundImage &) = delete;
+            BackgroundImage & operator=(const BackgroundImage &) = delete;
 
-        explicit BackgroundImage(const BackgroundInfo & BG_INFO,
-                                 const float            IMAGE_SCALE       = 1.0f,
-                                 const bool             WILL_SMOOTH_IMAGE = false);
+        public:
+            // if using this constructor then Setup() must be called before any other function
+            BackgroundImage();
 
-        //use this constructor to create a background tile that is scaled per resolution like is used on the main menu backgrounds
-        explicit BackgroundImage(const std::string & MEDIA_PATH_KEY_STR);
+            explicit BackgroundImage(
+                const BackgroundInfo & BG_INFO,
+                const float IMAGE_SCALE = 1.0f,
+                const bool WILL_SMOOTH_IMAGE = false);
 
-        virtual ~BackgroundImage();
+            // use this constructor to create a background tile that is scaled per resolution like
+            // is used on the main menu backgrounds
+            explicit BackgroundImage(const std::string & MEDIA_PATH_KEY_STR);
 
-        void Setup(const BackgroundInfo & BG_INFO,
-                   const float            SCALE             = 1.0f,
-                   const bool             WILL_SMOOTH_IMAGE = false);
+            virtual ~BackgroundImage();
 
-        void Reset();
+            void Setup(
+                const BackgroundInfo & BG_INFO,
+                const float SCALE = 1.0f,
+                const bool WILL_SMOOTH_IMAGE = false);
 
-        //The only member required by sf::Drawable.
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+            void Reset();
 
-        virtual void SetColor(const sf::Color & NEW_COLOR);
+            // The only member required by sf::Drawable.
+            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-        virtual void SetPosition(const float POS_LEFT, const float POS_TOP);
-        virtual void MovePosition(const float HORIZ, const float VERT);
+            virtual void SetColor(const sf::Color & NEW_COLOR);
 
-        inline virtual const sf::Color      GetColor() const     { return bgInfo_.color; }
-        inline virtual const sf::FloatRect  GetRegion() const    { return bgInfo_.region; }
-        inline virtual bool                 IsImage() const      { return (sprite_.getTexture() != nullptr); }
-        inline virtual bool                 IsRectangle() const  { return ! IsImage(); }
+            virtual void SetPosition(const float POS_LEFT, const float POS_TOP);
+            virtual void MovePosition(const float HORIZ, const float VERT);
 
-        void SetImageDetails(const float SCALE = 1.0f, const bool WILL_SMOOTH = false);
+            inline virtual const sf::Color GetColor() const { return bgInfo_.color; }
+            inline virtual const sf::FloatRect GetRegion() const { return bgInfo_.region; }
+            inline virtual bool IsImage() const { return (sprite_.getTexture() != nullptr); }
+            inline virtual bool IsRectangle() const { return !IsImage(); }
 
-        inline const sfml_util::GradientInfo GradientInfo() const { return bgInfo_.gradient_info; }
+            void SetImageDetails(const float SCALE = 1.0f, const bool WILL_SMOOTH = false);
 
-        inline const BackgroundInfo BgInfo() const { return bgInfo_; }
+            inline const sfml_util::GradientInfo GradientInfo() const
+            {
+                return bgInfo_.gradient_info;
+            }
 
-        inline float ImageScale() const { return sprite_.getScale().x; }
+            inline const BackgroundInfo BgInfo() const { return bgInfo_; }
 
-        inline bool IsTextureSmoothed() const { if (false == bgInfo_.hasTexture) return false; else return true; }
+            inline float ImageScale() const { return sprite_.getScale().x; }
 
-    protected:
-        GradientRect gradient_;
-        sfml_util::gui::BackgroundInfo bgInfo_;
-        sf::Sprite sprite_;
-    };
+            inline bool IsTextureSmoothed() const
+            {
+                if (false == bgInfo_.hasTexture)
+                    return false;
+                else
+                    return true;
+            }
 
+        protected:
+            GradientRect gradient_;
+            sfml_util::gui::BackgroundInfo bgInfo_;
+            sf::Sprite sprite_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_BACKGROUNDIMAGE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_BACKGROUNDIMAGE_HPP_INCLUDED

@@ -31,12 +31,11 @@
 
 #include "creature/creature.hpp"
 
-#include "misc/strings.hpp"
 #include "misc/random.hpp"
+#include "misc/strings.hpp"
 
-#include <sstream>
 #include <algorithm>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -45,7 +44,6 @@ namespace song
 
     const std::string Song::RESISTED_STR_{ " resisted." };
     const std::string Song::FAILED_STR_{ " failed on " };
-
 
     Song::Song(
         const Songs::Enum WHICH,
@@ -57,42 +55,38 @@ namespace song
         const combat::TargetType::Enum TARGET_TYPE,
         const std::string & VERB_THIRD_PERSON,
         const std::string & VERB_PAST_TENSE)
-    :
-        which_          (WHICH),
-        type_           (TYPE),
-        effectType_     (EFFECT_TYPE),
-        rank_           (RANK),
-        validPhases_    (VALID_PHASES),
-        manaCost_       (MANA_COST),
-        targetType_     (TARGET_TYPE),
-        verbThirdPerson_(VERB_THIRD_PERSON),
-        verbPastTense_  (VERB_PAST_TENSE)
+        : which_(WHICH)
+        , type_(TYPE)
+        , effectType_(EFFECT_TYPE)
+        , rank_(RANK)
+        , validPhases_(VALID_PHASES)
+        , manaCost_(MANA_COST)
+        , targetType_(TARGET_TYPE)
+        , verbThirdPerson_(VERB_THIRD_PERSON)
+        , verbPastTense_(VERB_PAST_TENSE)
     {
-        //only some TargetTypes are valid for songs
-        M_ASSERT_OR_LOGANDTHROW_SS((
-            (TARGET_TYPE == combat::TargetType::AllCompanions) ||
-            (TARGET_TYPE == combat::TargetType::AllOpponents) ||
-            (TARGET_TYPE == combat::TargetType::QuestSpecific)),
-            "song::Song::Constructor(which=" << Songs::ToString(WHICH) << ", song_type="
-            << SongType::ToString(TYPE) << ", effect_type=" << combat::EffectType::ToString(EFFECT_TYPE)
-            << ", mana_cost=" << MANA_COST << ", rank=" << RANK
-            << ") had an invalid TargetType of " << combat::TargetType::ToString(TARGET_TYPE)
-            << ".  The only allowed TargetTypes are AllCompanions, AllOpponents, and "
-            << "QuestSpecific.");
+        // only some TargetTypes are valid for songs
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            ((TARGET_TYPE == combat::TargetType::AllCompanions)
+             || (TARGET_TYPE == combat::TargetType::AllOpponents)
+             || (TARGET_TYPE == combat::TargetType::QuestSpecific)),
+            "song::Song::Constructor(which="
+                << Songs::ToString(WHICH) << ", song_type=" << SongType::ToString(TYPE)
+                << ", effect_type=" << combat::EffectType::ToString(EFFECT_TYPE)
+                << ", mana_cost=" << MANA_COST << ", rank=" << RANK
+                << ") had an invalid TargetType of " << combat::TargetType::ToString(TARGET_TYPE)
+                << ".  The only allowed TargetTypes are AllCompanions, AllOpponents, and "
+                << "QuestSpecific.");
     }
 
-
-    Song::~Song()
-    {}
-
+    Song::~Song() {}
 
     const std::string Song::ToString() const
     {
         std::ostringstream ss;
-        ss  << Name() << "  -" << DescDetails();
+        ss << Name() << "  -" << DescDetails();
         return ss.str();
     }
-
 
     const std::string Song::DescDetails() const
     {
@@ -110,12 +104,11 @@ namespace song
         }
 
         ss << " that can be played during " << game::Phase::ToString(validPhases_, false)
-           << ", targeting " << combat::TargetType::Name(targetType_)
-           << ", and costing " << manaCost_ << " mana.";
+           << ", targeting " << combat::TargetType::Name(targetType_) << ", and costing "
+           << manaCost_ << " mana.";
 
         return ss.str();
     }
-
 
     const std::string Song::DescComplete() const
     {
@@ -124,12 +117,7 @@ namespace song
         return ss.str();
     }
 
-
-    bool Song::EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const
-    {
-        return false;
-    }
-
+    bool Song::EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const { return false; }
 
     const std::string Song::ActionPhrasePreamble() const
     {
@@ -141,12 +129,28 @@ namespace song
         {
             ss << "fingers ";
 
-            switch(misc::random::Int(3))
+            switch (misc::random::Int(3))
             {
-                case 1:     { ss << "tickle";  break; }
-                case 2:     { ss << "pluck";  break; }
-                case 3:     { ss << "strum";  break; }
-                default:    { ss << "dance along";  break; }
+                case 1:
+                {
+                    ss << "tickle";
+                    break;
+                }
+                case 2:
+                {
+                    ss << "pluck";
+                    break;
+                }
+                case 3:
+                {
+                    ss << "strum";
+                    break;
+                }
+                default:
+                {
+                    ss << "dance along";
+                    break;
+                }
             }
 
             ss << " the strings";
@@ -155,12 +159,28 @@ namespace song
         {
             ss << "hands ";
 
-            switch(misc::random::Int(3))
+            switch (misc::random::Int(3))
             {
-                case 1:     { ss << "tap";  break; }
-                case 2:     { ss << "rap";  break; }
-                case 3:     { ss << "drum"; break; }
-                default:    { ss << "pound";  break; }
+                case 1:
+                {
+                    ss << "tap";
+                    break;
+                }
+                case 2:
+                {
+                    ss << "rap";
+                    break;
+                }
+                case 3:
+                {
+                    ss << "drum";
+                    break;
+                }
+                default:
+                {
+                    ss << "pound";
+                    break;
+                }
             }
 
             ss << " the back of the lute";
@@ -169,31 +189,53 @@ namespace song
         return ss.str();
     }
 
-
     const std::string Song::TypeToVerb() const
     {
         if (SongType::Guitar == type_)
         {
             switch (misc::random::Int(3))
             {
-                case 1:     { return "melody";    }
-                case 2:     { return "tune";      }
-                case 3:     { return "song";      }
-                default:    { return "strumming"; }
+                case 1:
+                {
+                    return "melody";
+                }
+                case 2:
+                {
+                    return "tune";
+                }
+                case 3:
+                {
+                    return "song";
+                }
+                default:
+                {
+                    return "strumming";
+                }
             }
         }
         else
         {
             switch (misc::random::Int(3))
             {
-                case 1:     { return "drumming"; }
-                case 2:     { return "pounding"; }
-                case 3:     { return "rapping";  }
-                default:    { return "tapping";  }
+                case 1:
+                {
+                    return "drumming";
+                }
+                case 2:
+                {
+                    return "pounding";
+                }
+                case 3:
+                {
+                    return "rapping";
+                }
+                default:
+                {
+                    return "tapping";
+                }
             }
         }
     }
-
 
     const std::string Song::TypeToNoun() const
     {
@@ -201,9 +243,18 @@ namespace song
         {
             switch (misc::random::Int(2))
             {
-                case 1:  { return "melody"; }
-                case 2:  { return "tune";   }
-                default: { return "song";   }
+                case 1:
+                {
+                    return "melody";
+                }
+                case 2:
+                {
+                    return "tune";
+                }
+                default:
+                {
+                    return "song";
+                }
             }
         }
         else
@@ -218,6 +269,5 @@ namespace song
             }
         }
     }
-
 }
 }

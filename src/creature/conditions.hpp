@@ -35,258 +35,266 @@
 #include <string>
 #include <utility>
 
-
 namespace heroespath
 {
 namespace creature
 {
-namespace condition
-{
-
-    class Good : public Condition
+    namespace condition
     {
-    public:
-        Good() : Condition() {}
-        virtual ~Good() {}
-    };
 
+        class Good : public Condition
+        {
+        public:
+            Good()
+                : Condition()
+            {}
+            virtual ~Good() {}
+        };
 
-    class Bold : public Condition
-    {
-    public:
-        Bold() : Condition(
-            Conditions::Bold,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, 25),
-                std::make_pair(stats::Traits::Accuracy, 25),
-                std::make_pair(stats::Traits::Charm, 25),
-                std::make_pair(stats::Traits::Luck, 25),
-                std::make_pair(stats::Traits::Speed, 25),
-                std::make_pair(stats::Traits::Intelligence, 25) } ) ) {}
+        class Bold : public Condition
+        {
+        public:
+            Bold()
+                : Condition(
+                      Conditions::Bold,
+                      false,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Strength, 25),
+                                        std::make_pair(stats::Traits::Accuracy, 25),
+                                        std::make_pair(stats::Traits::Charm, 25),
+                                        std::make_pair(stats::Traits::Luck, 25),
+                                        std::make_pair(stats::Traits::Speed, 25),
+                                        std::make_pair(stats::Traits::Intelligence, 25) }))
+            {}
 
-        virtual ~Bold() {}
-    };
+            virtual ~Bold() {}
+        };
 
+        class Heroic : public Condition
+        {
+        public:
+            Heroic()
+                : Condition(
+                      Conditions::Heroic,
+                      false,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Strength, 50),
+                                        std::make_pair(stats::Traits::Accuracy, 50),
+                                        std::make_pair(stats::Traits::Charm, 50),
+                                        std::make_pair(stats::Traits::Luck, 50),
+                                        std::make_pair(stats::Traits::Speed, 50),
+                                        std::make_pair(stats::Traits::Intelligence, 50) }))
+            {}
 
-    class Heroic : public Condition
-    {
-    public:
-        Heroic() : Condition(
-            Conditions::Heroic,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, 50),
-                std::make_pair(stats::Traits::Accuracy, 50),
-                std::make_pair(stats::Traits::Charm, 50),
-                std::make_pair(stats::Traits::Luck, 50),
-                std::make_pair(stats::Traits::Speed, 50),
-                std::make_pair(stats::Traits::Intelligence, 50) } ) ) {}
+            virtual ~Heroic() {}
+        };
 
-        virtual ~Heroic() {}
-    };
+        class Daunted : public Condition
+        {
+        public:
+            Daunted()
+                : Condition(
+                      Conditions::Daunted,
+                      false,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Accuracy, -25),
+                                        std::make_pair(stats::Traits::Charm, -25),
+                                        std::make_pair(stats::Traits::Speed, -16),
+                                        std::make_pair(stats::Traits::Intelligence, -25) }))
+            {}
 
+            virtual ~Daunted() {}
+        };
 
-    class Daunted : public Condition
-    {
-    public:
-        Daunted() : Condition(
-            Conditions::Daunted,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Accuracy, -25),
-                std::make_pair(stats::Traits::Charm, -25),
-                std::make_pair(stats::Traits::Speed, -16),
-                std::make_pair(stats::Traits::Intelligence, -25) } ) ) {}
+        class Panic : public Condition
+        {
+        public:
+            Panic()
+                : Condition(
+                      Conditions::Panic,
+                      false,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Accuracy, -50),
+                                        std::make_pair(stats::Traits::Charm, -50),
+                                        std::make_pair(stats::Traits::Speed, -33),
+                                        std::make_pair(stats::Traits::Intelligence, -50) }))
+            {}
 
-        virtual ~Daunted() {}
-    };
+            virtual ~Panic() {}
+        };
 
+        class Tripped : public Condition
+        {
+        public:
+            Tripped()
+                : Condition(
+                      Conditions::Tripped,
+                      false,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Strength, -75),
+                                        std::make_pair(stats::Traits::Accuracy, -75),
+                                        std::make_pair(stats::Traits::Speed, -75) }))
+            {}
 
-    class Panic : public Condition
-    {
-    public:
-        Panic() : Condition(
-            Conditions::Panic,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Accuracy, -50),
-                std::make_pair(stats::Traits::Charm, -50),
-                std::make_pair(stats::Traits::Speed, -33),
-                std::make_pair(stats::Traits::Intelligence, -50) } ) ) {}
+            virtual ~Tripped() {}
 
-        virtual ~Panic() {}
-    };
+            virtual void PerTurnEffect(
+                CreaturePtr_t creaturePtr,
+                combat::HitInfoVec_t & hitInfoVec,
+                bool & hasTurnBeenConsumed) const;
+        };
 
+        class Pounced : public Condition
+        {
+        public:
+            Pounced()
+                : Condition(
+                      Conditions::Pounced,
+                      false,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Strength, -75),
+                                        std::make_pair(stats::Traits::Accuracy, -75),
+                                        std::make_pair(stats::Traits::Speed, -75) }))
+            {}
 
-    class Tripped : public Condition
-    {
-    public:
-        Tripped() : Condition(
-            Conditions::Tripped,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, -75),
-                std::make_pair(stats::Traits::Accuracy, -75),
-                std::make_pair(stats::Traits::Speed, -75) } ) ) {}
+            virtual ~Pounced() {}
 
-        virtual ~Tripped() {}
+            virtual void PerTurnEffect(
+                CreaturePtr_t creaturePtr,
+                combat::HitInfoVec_t & hitInfoVec,
+                bool & hasTurnBeenConsumed) const;
+        };
 
-        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                   combat::HitInfoVec_t & hitInfoVec,
-                                   bool &                 hasTurnBeenConsumed) const;
-    };
+        class Dazed : public Condition
+        {
+        public:
+            Dazed()
+                : Condition(
+                      Conditions::Dazed,
+                      false,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Strength, -50),
+                                        std::make_pair(stats::Traits::Accuracy, -66),
+                                        std::make_pair(stats::Traits::Speed, -66),
+                                        std::make_pair(stats::Traits::Intelligence, -50) }))
+            {}
 
+            virtual ~Dazed() {}
 
-    class Pounced : public Condition
-    {
-    public:
-        Pounced() : Condition(
-            Conditions::Pounced,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, -75),
-                std::make_pair(stats::Traits::Accuracy, -75),
-                std::make_pair(stats::Traits::Speed, -75) } ) ) {}
+            virtual void PerTurnEffect(
+                CreaturePtr_t creaturePtr,
+                combat::HitInfoVec_t & hitInfoVec,
+                bool & hasTurnBeenConsumed) const;
+        };
 
-        virtual ~Pounced() {}
+        class Unconscious : public Condition
+        {
+        public:
+            Unconscious()
+                : Condition(
+                      Conditions::Unconscious,
+                      false,
+                      stats::TraitSet({
+                          std::make_pair(stats::Traits::Strength, -9999),
+                          std::make_pair(stats::Traits::Accuracy, -9999),
+                          std::make_pair(stats::Traits::Charm, -9999),
+                          std::make_pair(stats::Traits::Speed, -9999),
+                          std::make_pair(stats::Traits::Intelligence, -9999),
+                      }))
+            {}
 
-        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                   combat::HitInfoVec_t & hitInfoVec,
-                                   bool &                 hasTurnBeenConsumed) const;
-    };
+            virtual ~Unconscious() {}
+        };
 
+        class Stone : public Condition
+        {
+        public:
+            Stone()
+                : Condition(
+                      Conditions::Stone,
+                      true,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Strength, -9999),
+                                        std::make_pair(stats::Traits::Accuracy, -9999),
+                                        std::make_pair(stats::Traits::Charm, -9999),
+                                        std::make_pair(stats::Traits::Speed, -9999),
+                                        std::make_pair(stats::Traits::Intelligence, -9999) }))
+            {}
 
-    class Dazed : public Condition
-    {
-    public:
-        Dazed() : Condition(
-            Conditions::Dazed,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, -50),
-                std::make_pair(stats::Traits::Accuracy, -66),
-                std::make_pair(stats::Traits::Speed, -66),
-                std::make_pair(stats::Traits::Intelligence, -50) } ) ) {}
+            virtual ~Stone() {}
+        };
 
-        virtual ~Dazed() {}
+        class Dead : public Condition
+        {
+        public:
+            Dead()
+                : Condition(
+                      Conditions::Dead,
+                      false,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Strength, -9999),
+                                        std::make_pair(stats::Traits::Accuracy, -9999),
+                                        std::make_pair(stats::Traits::Charm, -9999),
+                                        std::make_pair(stats::Traits::Luck, -9999),
+                                        std::make_pair(stats::Traits::Speed, -9999),
+                                        std::make_pair(stats::Traits::Intelligence, -9999) }))
+            {}
 
-        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                   combat::HitInfoVec_t & hitInfoVec,
-                                   bool &                 hasTurnBeenConsumed) const;
-    };
+            virtual ~Dead() {}
+        };
 
+        class AsleepNatural : public Condition
+        {
+        public:
+            AsleepNatural()
+                : Condition(
+                      Conditions::AsleepNatural,
+                      false,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Strength, -9999),
+                                        std::make_pair(stats::Traits::Accuracy, -9999),
+                                        std::make_pair(stats::Traits::Speed, -9999) }))
+            {}
 
-    class Unconscious : public Condition
-    {
-    public:
-        Unconscious() : Condition(
-            Conditions::Unconscious,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, -9999),
-                std::make_pair(stats::Traits::Accuracy, -9999),
-                std::make_pair(stats::Traits::Charm, -9999),
-                std::make_pair(stats::Traits::Speed, -9999),
-                std::make_pair(stats::Traits::Intelligence, -9999), } ) ) {}
+            virtual ~AsleepNatural() {}
 
-        virtual ~Unconscious() {}
-    };
+            virtual void PerTurnEffect(
+                CreaturePtr_t creaturePtr,
+                combat::HitInfoVec_t & hitInfoVec,
+                bool & hasTurnBeenConsumed) const;
+        };
 
+        class AsleepMagical : public Condition
+        {
+        public:
+            AsleepMagical()
+                : Condition(
+                      Conditions::AsleepMagical,
+                      true,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Strength, -9999),
+                                        std::make_pair(stats::Traits::Accuracy, -9999),
+                                        std::make_pair(stats::Traits::Speed, -9999) }))
+            {}
 
-    class Stone : public Condition
-    {
-    public:
-        Stone() : Condition(
-            Conditions::Stone,
-            true,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, -9999),
-                std::make_pair(stats::Traits::Accuracy, -9999),
-                std::make_pair(stats::Traits::Charm, -9999),
-                std::make_pair(stats::Traits::Speed, -9999),
-                std::make_pair(stats::Traits::Intelligence, -9999) } ) ) {}
+            virtual ~AsleepMagical() {}
 
-        virtual ~Stone() {}
-    };
+            virtual void PerTurnEffect(
+                CreaturePtr_t creaturePtr,
+                combat::HitInfoVec_t & hitInfoVec,
+                bool & hasTurnBeenConsumed) const;
+        };
 
+        class Poisoned : public Condition
+        {
+        public:
+            Poisoned()
+                : Condition(
+                      Conditions::Poisoned,
+                      false,
+                      stats::TraitSet({ std::make_pair(stats::Traits::Strength, -25),
+                                        std::make_pair(stats::Traits::Charm, -50),
+                                        std::make_pair(stats::Traits::Speed, -25) }))
+            {}
 
-    class Dead : public Condition
-    {
-    public:
-        Dead() : Condition(
-            Conditions::Dead,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, -9999),
-                std::make_pair(stats::Traits::Accuracy, -9999),
-                std::make_pair(stats::Traits::Charm, -9999),
-                std::make_pair(stats::Traits::Luck, -9999),
-                std::make_pair(stats::Traits::Speed, -9999),
-                std::make_pair(stats::Traits::Intelligence, -9999) } ) ) {}
+            virtual ~Poisoned() {}
 
-        virtual ~Dead() {}
-    };
-
-
-    class AsleepNatural : public Condition
-    {
-    public:
-        AsleepNatural() : Condition(
-            Conditions::AsleepNatural,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, -9999),
-                std::make_pair(stats::Traits::Accuracy, -9999),
-                std::make_pair(stats::Traits::Speed, -9999) } ) ) {}
-
-        virtual ~AsleepNatural() {}
-
-        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                   combat::HitInfoVec_t & hitInfoVec,
-                                   bool &                 hasTurnBeenConsumed) const;
-    };
-
-
-    class AsleepMagical : public Condition
-    {
-    public:
-        AsleepMagical() : Condition(
-            Conditions::AsleepMagical,
-            true,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, -9999),
-                std::make_pair(stats::Traits::Accuracy, -9999),
-                std::make_pair(stats::Traits::Speed, -9999) } ) ) {}
-
-        virtual ~AsleepMagical() {}
-
-        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                   combat::HitInfoVec_t & hitInfoVec,
-                                   bool &                 hasTurnBeenConsumed) const;
-    };
-
-
-    class Poisoned : public Condition
-    {
-    public:
-        Poisoned() : Condition(
-            Conditions::Poisoned,
-            false,
-            stats::TraitSet( {
-                std::make_pair(stats::Traits::Strength, -25),
-                std::make_pair(stats::Traits::Charm, -50),
-                std::make_pair(stats::Traits::Speed, -25) } ) ) {}
-
-        virtual ~Poisoned() {}
-
-        virtual void PerTurnEffect(CreaturePtr_t          creaturePtr,
-                                   combat::HitInfoVec_t & hitInfoVec,
-                                   bool &                 hasTurnBeenConsumed) const;
-    };
-
+            virtual void PerTurnEffect(
+                CreaturePtr_t creaturePtr,
+                combat::HitInfoVec_t & hitInfoVec,
+                bool & hasTurnBeenConsumed) const;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_CREATURE_CONDITIONS_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_CONDITIONS_HPP_INCLUDED

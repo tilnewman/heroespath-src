@@ -29,8 +29,8 @@
 //
 #include "creature-effect.hpp"
 
-#include "creature/condition.hpp"
 #include "creature/condition-algorithms.hpp"
+#include "creature/condition.hpp"
 #include "creature/creature.hpp"
 
 #include "misc/vectors.hpp"
@@ -39,43 +39,38 @@
 
 #include <algorithm>
 
-
 namespace heroespath
 {
 namespace combat
 {
 
-    CreatureEffect::CreatureEffect(const creature::CreaturePtr_t CREATURE_PTR,
-                                   const HitInfoVec_t &          HIT_INFO_VEC)
-    :
-        hitInfoVec_ (HIT_INFO_VEC),
-        creaturePtr_(CREATURE_PTR)
+    CreatureEffect::CreatureEffect(
+        const creature::CreaturePtr_t CREATURE_PTR, const HitInfoVec_t & HIT_INFO_VEC)
+        : hitInfoVec_(HIT_INFO_VEC)
+        , creaturePtr_(CREATURE_PTR)
     {}
 
-
     CreatureEffect::CreatureEffect(const CreatureEffect & CE)
-    :
-        hitInfoVec_(CE.hitInfoVec_),
+        : hitInfoVec_(CE.hitInfoVec_)
+        ,
 
-        //The lifetime of these objects is not managed by this class.
-        //Usage is short-term observation only, so ptr copying is safe.
+        // The lifetime of these objects is not managed by this class.
+        // Usage is short-term observation only, so ptr copying is safe.
         creaturePtr_(CE.creaturePtr_)
     {}
 
-
     CreatureEffect & CreatureEffect::operator=(const CreatureEffect & CE)
     {
-        if (& CE != this)
+        if (&CE != this)
         {
             hitInfoVec_ = CE.hitInfoVec_;
 
-            //see copy constructor comment regarding these pointers
+            // see copy constructor comment regarding these pointers
             creaturePtr_ = CE.creaturePtr_;
         }
 
-        return * this;
+        return *this;
     }
-
 
     bool CreatureEffect::GetWasHit() const
     {
@@ -90,7 +85,6 @@ namespace combat
         return false;
     }
 
-
     Health_t CreatureEffect::GetDamageTotal() const
     {
         Health_t damageTotal{ 0_health };
@@ -103,7 +97,6 @@ namespace combat
         return damageTotal;
     }
 
-
     const creature::CondEnumVec_t CreatureEffect::GetAllCondsAdded() const
     {
         creature::CondEnumVec_t conditionsVec;
@@ -114,15 +107,13 @@ namespace combat
 
             if (NEXT_CONDITION_VEC.empty() == false)
             {
-                conditionsVec.insert(conditionsVec.end(),
-                                     NEXT_CONDITION_VEC.begin(),
-                                     NEXT_CONDITION_VEC.end());
+                conditionsVec.insert(
+                    conditionsVec.end(), NEXT_CONDITION_VEC.begin(), NEXT_CONDITION_VEC.end());
             }
         }
 
         return conditionsVec;
     }
-
 
     const creature::CondEnumVec_t CreatureEffect::GetAllCondsRemoved() const
     {
@@ -134,15 +125,13 @@ namespace combat
 
             if (NEXT_CONDITION_VEC.empty() == false)
             {
-                conditionsVec.insert(conditionsVec.end(),
-                                     NEXT_CONDITION_VEC.begin(),
-                                     NEXT_CONDITION_VEC.end());
+                conditionsVec.insert(
+                    conditionsVec.end(), NEXT_CONDITION_VEC.begin(), NEXT_CONDITION_VEC.end());
             }
         }
 
         return conditionsVec;
     }
-
 
     bool CreatureEffect::GetAllCondsAddedContains(const creature::Conditions::Enum E) const
     {
@@ -150,13 +139,11 @@ namespace combat
         return (std::find(VEC.begin(), VEC.end(), E) != VEC.end());
     }
 
-
     bool CreatureEffect::GetAllCondsRemovedContains(const creature::Conditions::Enum E) const
     {
         const auto VEC{ GetAllCondsRemoved() };
         return (std::find(VEC.begin(), VEC.end(), E) != VEC.end());
     }
-
 
     bool CreatureEffect::AllCondsAddedRemove(const creature::Conditions::Enum E)
     {
@@ -173,7 +160,6 @@ namespace combat
         return wasCondRemoved;
     }
 
-
     bool CreatureEffect::AllCondsRemovedRemove(const creature::Conditions::Enum E)
     {
         auto wasCondRemoved{ false };
@@ -189,25 +175,14 @@ namespace combat
         return wasCondRemoved;
     }
 
-
     bool operator<(const CreatureEffect & L, const CreatureEffect & R)
     {
-        return std::tie(L.hitInfoVec_,
-                        L.creaturePtr_)
-               <
-               std::tie(R.hitInfoVec_,
-                        R.creaturePtr_);
+        return std::tie(L.hitInfoVec_, L.creaturePtr_) < std::tie(R.hitInfoVec_, R.creaturePtr_);
     }
-
 
     bool operator==(const CreatureEffect & L, const CreatureEffect & R)
     {
-        return std::tie(L.hitInfoVec_,
-                        L.creaturePtr_)
-               ==
-               std::tie(R.hitInfoVec_,
-                        R.creaturePtr_);
+        return std::tie(L.hitInfoVec_, L.creaturePtr_) == std::tie(R.hitInfoVec_, R.creaturePtr_);
     }
-
 }
 }

@@ -33,62 +33,56 @@
 
 #include "misc/assertlogandthrow.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    std::unique_ptr<SpellImageManager> SpellImageManager::instanceUPtr_{ nullptr };
-
-
-    SpellImageManager::SpellImageManager()
+    namespace gui
     {
-        M_HP_LOG_DBG("Singleton Construction: SpellImageManager");
-    }
 
+        std::unique_ptr<SpellImageManager> SpellImageManager::instanceUPtr_{ nullptr };
 
-    SpellImageManager::~SpellImageManager()
-    {
-        M_HP_LOG_DBG("Singleton Destruction: SpellImageManager");
-    }
-
-
-    SpellImageManager * SpellImageManager::Instance()
-    {
-        if (instanceUPtr_.get() == nullptr)
+        SpellImageManager::SpellImageManager()
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): SpellImageManager");
-            Acquire();
+            M_HP_LOG_DBG("Singleton Construction: SpellImageManager");
         }
 
-        return instanceUPtr_.get();
-    }
-
-
-    void SpellImageManager::Acquire()
-    {
-        if (instanceUPtr_.get() == nullptr)
+        SpellImageManager::~SpellImageManager()
         {
-            instanceUPtr_ = std::make_unique<SpellImageManager>();
+            M_HP_LOG_DBG("Singleton Destruction: SpellImageManager");
         }
-        else
+
+        SpellImageManager * SpellImageManager::Instance()
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: SpellImageManager");
+            if (instanceUPtr_.get() == nullptr)
+            {
+                M_HP_LOG_WRN("Singleton Instance() before Acquire(): SpellImageManager");
+                Acquire();
+            }
+
+            return instanceUPtr_.get();
+        }
+
+        void SpellImageManager::Acquire()
+        {
+            if (instanceUPtr_.get() == nullptr)
+            {
+                instanceUPtr_ = std::make_unique<SpellImageManager>();
+            }
+            else
+            {
+                M_HP_LOG_WRN("Singleton Acquire() after Construction: SpellImageManager");
+            }
+        }
+
+        void SpellImageManager::Release()
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (instanceUPtr_.get() != nullptr),
+                "SpellImageManager::Release() found instanceUPtr that was null.");
+
+            instanceUPtr_.reset();
         }
     }
-
-
-    void SpellImageManager::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "SpellImageManager::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
-}
 }
 }

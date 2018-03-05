@@ -27,20 +27,19 @@
 //
 // popup-stage-char-select.hpp
 //
-#include "popup/popup-stage-image-select.hpp"
 #include "popup/popup-info.hpp"
+#include "popup/popup-stage-image-select.hpp"
 
 #include "sfml-util/gui/text-region.hpp"
 
 #include <string>
-
 
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing the Character Select Popup Stage.
+    // Responsible for implementing the Character Select Popup Stage.
     class PopupStageCharacterSelect : public PopupStageImageSelect
     {
         PopupStageCharacterSelect(const PopupStageCharacterSelect &);
@@ -50,8 +49,8 @@ namespace popup
         explicit PopupStageCharacterSelect(const PopupInfo &);
         virtual ~PopupStageCharacterSelect();
 
-        using PopupStageBase::HandlerName;
         using PopupStageBase::HandleCallback;
+        using PopupStageBase::HandlerName;
 
         virtual void Setup() override;
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -69,8 +68,7 @@ namespace popup
     private:
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGECHARSELECT_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGECHARSELECT_HPP_INCLUDED

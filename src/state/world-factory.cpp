@@ -28,9 +28,8 @@
 // world-factory.cpp
 //
 #include "world-factory.hpp"
-#include "state/world.hpp"
 #include "state/level.hpp"
-
+#include "state/world.hpp"
 
 namespace heroespath
 {
@@ -44,7 +43,6 @@ namespace state
         return worldUPtr;
     }
 
-
     void WorldFactory::SetupLevelForNewGame(Level & level)
     {
         if (level.Which() == map::Level::Thornberry)
@@ -53,6 +51,5 @@ namespace state
             level.IsDoorLocked(map::Level::Thornberry_GuardPostEast, true);
         }
     }
-
 }
 }

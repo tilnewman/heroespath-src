@@ -29,17 +29,16 @@
 //
 #include "popup/popup-stage-base.hpp"
 
-
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing the System Error Popup Stage.
+    // Responsible for implementing the System Error Popup Stage.
     class PopupStageSystemError : public PopupStageBase
     {
-        PopupStageSystemError(const PopupStageSystemError &) =delete;
-        PopupStageSystemError & operator=(const PopupStageSystemError &) =delete;
+        PopupStageSystemError(const PopupStageSystemError &) = delete;
+        PopupStageSystemError & operator=(const PopupStageSystemError &) = delete;
 
     public:
         explicit PopupStageSystemError(const PopupInfo &);
@@ -52,8 +51,7 @@ namespace popup
         sf::Texture bgTexture_;
         sf::Sprite bgSprite_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGESYSTEMERROR_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGESYSTEMERROR_HPP_INCLUDED

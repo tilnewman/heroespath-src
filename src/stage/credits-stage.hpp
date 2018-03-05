@@ -28,29 +28,28 @@
 // credits-stage.hpp
 //  A Stage class that displays the rolling credits of the app.
 //
+#include "sfml-util/gui/background-image.hpp"
+#include "sfml-util/gui/box.hpp"
+#include "sfml-util/music-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
-#include "sfml-util/music-enum.hpp"
-#include "sfml-util/gui/box.hpp"
-#include "sfml-util/gui/background-image.hpp"
 
 #include "stage/credit.hpp"
 
 #include <memory>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace stage
 {
 
-    //A simple class that displays the credits
+    // A simple class that displays the credits
     class CreditsStage : public sfml_util::Stage
     {
-        CreditsStage(const CreditsStage &) =delete;
-        CreditsStage & operator=(const CreditsStage &) =delete;
+        CreditsStage(const CreditsStage &) = delete;
+        CreditsStage & operator=(const CreditsStage &) = delete;
 
     public:
         CreditsStage();
@@ -74,20 +73,19 @@ namespace stage
         const float SCREEN_HEIGHT_;
         const float CREDITBOX_POS_LEFT_;
         //
-        float           creditBoxPosTop_;
-        float           creditBoxHeight_;
-        float           totalHeight_;
-        float           heightTracker_;
-        sf::Texture     hpTitleTexture_;
-        sf::Sprite      bpTitleSprite_;
+        float creditBoxPosTop_;
+        float creditBoxHeight_;
+        float totalHeight_;
+        float heightTracker_;
+        sf::Texture hpTitleTexture_;
+        sf::Sprite bpTitleSprite_;
         sfml_util::gui::box::Box box_;
         sfml_util::gui::BackgroundImage backgroundImage_;
-        CreditSVec_t    creditSVec_;
-        float           scrollSpeed_;
-        bool            isKeyHeldDown_;
+        CreditSVec_t creditSVec_;
+        float scrollSpeed_;
+        bool isKeyHeldDown_;
     };
-
 }
 }
 
-#endif //HEROESPATH_CREDITSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_CREDITSTAGE_HPP_INCLUDED

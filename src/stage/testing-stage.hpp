@@ -28,37 +28,35 @@
 // testing-stage.hpp
 //  A Stage class that allows visualization of testing routines.
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/stage.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/ouroboros.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/stage.hpp"
 
 #include "game/loop-manager.hpp"
 #include "stats/stat-set.hpp"
 
-#include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
+#include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
 #include <memory>
-#include <string>
-#include <vector>
-#include <utility>
 #include <sstream>
-
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace heroespath
 {
 namespace stage
 {
 
-    using StrSizePair_t     = std::pair<std::string, std::size_t>;
-    using StrSizePairVec_t  = std::vector<StrSizePair_t>;
+    using StrSizePair_t = std::pair<std::string, std::size_t>;
+    using StrSizePairVec_t = std::vector<StrSizePair_t>;
 
-
-    //A Stage class that allows visualizing testing info
+    // A Stage class that allows visualizing testing info
     class TestingStage : public sfml_util::Stage
     {
-        TestingStage(const TestingStage &) =delete;
-        TestingStage & operator=(const TestingStage &) =delete;
+        TestingStage(const TestingStage &) = delete;
+        TestingStage & operator=(const TestingStage &) = delete;
 
     public:
         TestingStage();
@@ -96,14 +94,12 @@ namespace stage
         bool TestAnimations();
         bool TestInventoryFactory();
 
-        template<typename ManagerType_t, typename EnumType_t>
+        template <typename ManagerType_t, typename EnumType_t>
         bool TestImageManager()
         {
             std::ostringstream managerTypeNameSS;
-            managerTypeNameSS
-                << boost::typeindex::type_id<ManagerType_t>().pretty_name()
-                << "<" << boost::typeindex::type_id<EnumType_t>().pretty_name()
-                << ">";
+            managerTypeNameSS << boost::typeindex::type_id<ManagerType_t>().pretty_name() << "<"
+                              << boost::typeindex::type_id<EnumType_t>().pretty_name() << ">";
 
             static auto hasInitialPrompt{ false };
             if (false == hasInitialPrompt)
@@ -125,8 +121,7 @@ namespace stage
                 game::LoopManager::Instance()->TestingImageSet(texture);
 
                 game::LoopManager::Instance()->TestingStrAppend(
-                    managerTypeNameSS.str() + " Tested "
-                    + EnumType_t::ImageFilename(ENUM)
+                    managerTypeNameSS.str() + " Tested " + EnumType_t::ImageFilename(ENUM)
                     + ((willFlip) ? "HORIZ_FLIPPED" : ""));
 
                 if (willFlip)
@@ -134,7 +129,7 @@ namespace stage
                     ++imageIndex;
                 }
 
-                willFlip = ! willFlip;
+                willFlip = !willFlip;
                 return false;
             }
 
@@ -146,8 +141,8 @@ namespace stage
 
         bool DoesImageHaveOutline(const sf::Texture & TEXTURE) const;
 
-        //see comment in .cpp file
-        //void ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const;
+        // see comment in .cpp file
+        // void ReSaveWithBlackBorder(const std::string & IMAGES_DIR_KEY_STR) const;
 
     public:
         static const std::size_t TEXT_LINES_COUNT_MAX_;
@@ -166,9 +161,7 @@ namespace stage
         int imageCount_;
         bool willImageCheck_;
     };
-
 }
 }
 
-#endif //HEROESPATH_STAGE_TESTINGSTAGE_HPP_INCLUDED
-
+#endif // HEROESPATH_STAGE_TESTINGSTAGE_HPP_INCLUDED

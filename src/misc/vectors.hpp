@@ -28,21 +28,20 @@
 // vectors.hpp
 //  A set of helper functions for working with vectors
 //
-#include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/random.hpp"
 
-#include <vector>
-#include <sstream>
 #include <algorithm>
+#include <sstream>
 #include <string>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace misc
 {
 
-    //simple wrapper for vector helper functions
+    // simple wrapper for vector helper functions
     struct Vector
     {
 
@@ -52,13 +51,12 @@ namespace misc
             SortAndUnique
         };
 
-
-        //appends A into B, stable unless WILL_UNIQUE
-        template<typename T>
+        // appends A into B, stable unless WILL_UNIQUE
+        template <typename T>
         static void Append(
             const std::vector<T> & A_VEC,
-            std::vector<T> &       b_vec,
-            const SortOpt          SORT_OPTION = SortOpt::None)
+            std::vector<T> & b_vec,
+            const SortOpt SORT_OPTION = SortOpt::None)
         {
             std::copy(A_VEC.begin(), A_VEC.end(), back_inserter(b_vec));
 
@@ -69,33 +67,27 @@ namespace misc
             }
         }
 
-
-        template<typename T>
+        template <typename T>
         static std::vector<T> AndCopy(
             const std::vector<T> & A_VEC,
             const std::vector<T> & B_VEC,
-            const SortOpt          SORT_OPTION = SortOpt::None)
+            const SortOpt SORT_OPTION = SortOpt::None)
         {
             std::vector<T> finalVec{ A_VEC };
             Append(B_VEC, finalVec, SORT_OPTION);
             return finalVec;
         }
 
-
-        template<typename T>
-        static const std::vector<T> Exclude(
-            const std::vector<T> & ORIG_VEC,
-            const T toExclude)
+        template <typename T>
+        static const std::vector<T> Exclude(const std::vector<T> & ORIG_VEC, const T toExclude)
         {
             std::vector<T> v{ toExclude };
             return Exclude(ORIG_VEC, v);
         }
 
-
-        template<typename T>
-        static const std::vector<T> Exclude(
-            const std::vector<T> & ORIG,
-            const std::vector<T> & EXCLUDED)
+        template <typename T>
+        static const std::vector<T>
+            Exclude(const std::vector<T> & ORIG, const std::vector<T> & EXCLUDED)
         {
             if (EXCLUDED.empty())
             {
@@ -109,18 +101,15 @@ namespace misc
                 ORIG.begin(),
                 ORIG.end(),
                 back_inserter(finalVec),
-                [&EXCLUDED] (const auto & FROM_ORIG)
-                {
-                    return (std::find(
-                        EXCLUDED.begin(),
-                        EXCLUDED.end(), FROM_ORIG) == EXCLUDED.end());
+                [&EXCLUDED](const auto & FROM_ORIG) {
+                    return (
+                        std::find(EXCLUDED.begin(), EXCLUDED.end(), FROM_ORIG) == EXCLUDED.end());
                 });
 
             return finalVec;
         }
 
-
-        template<typename T>
+        template <typename T>
         static void ShuffleVec(std::vector<T> & v)
         {
             if (v.size() > 1)
@@ -129,49 +118,39 @@ namespace misc
             }
         }
 
-
-        template<typename T>
+        template <typename T>
         static T SelectRandom(const std::vector<T> & V)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((V.empty() == false),
-                "misc::Vector::SelectRandom() was given an empty vector.");
-            
-            return V[static_cast<std::size_t>(
-                    misc::random::Int(static_cast<int>(V.size()) - 1))];
-        }
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (V.empty() == false), "misc::Vector::SelectRandom() was given an empty vector.");
 
+            return V[static_cast<std::size_t>(misc::random::Int(static_cast<int>(V.size()) - 1))];
+        }
 
         enum JoinOpt : unsigned
         {
-            None     = 0,
-            Wrap     = 1 << 0,
-            And      = 1 << 1,
+            None = 0,
+            Wrap = 1 << 0,
+            And = 1 << 1,
             Ellipsis = 1 << 2
         };
 
-
-        template<typename T>
+        template <typename T>
         static const std::string Join(
             const std::vector<T> & VEC,
-            const std::size_t      MAX_COUNT = 0,
-            const JoinOpt          OPTIONS   = JoinOpt::None,
-            const std::string(*TO_STRING_FUNC)(const T) =
-                [](const T x) -> const std::string
-                {
-                    std::ostringstream ss;
-                    ss << x;
-                    return ss.str();
-                },
-            bool(*ONLY_IF_FUNC)(const T) =
-                [](const T) -> bool
-                {
-                    return true;
-                })
+            const std::size_t MAX_COUNT = 0,
+            const JoinOpt OPTIONS = JoinOpt::None,
+            const std::string (*TO_STRING_FUNC)(const T) = [](const T x) -> const std::string {
+                std::ostringstream ss;
+                ss << x;
+                return ss.str();
+            },
+            bool (*ONLY_IF_FUNC)(const T) = [](const T) -> bool { return true; })
         {
             const std::size_t VEC_ELEMENT_COUNT{ VEC.size() };
             if (VEC_ELEMENT_COUNT == 0)
             {
-                return "";//skip wrapping on empty case
+                return ""; // skip wrapping on empty case
             }
 
             std::size_t toJoinCount{ 0 };
@@ -191,7 +170,7 @@ namespace misc
             const std::size_t TO_JOIN_ELEMENT_COUNT{ toJoinVec.size() };
             if (TO_JOIN_ELEMENT_COUNT == 0)
             {
-                return "";//skip wrapping on empty case
+                return ""; // skip wrapping on empty case
             }
 
             std::ostringstream ss;
@@ -202,19 +181,16 @@ namespace misc
                     ss << ", ";
                 }
 
-                if ((OPTIONS & JoinOpt::And) &&
-                    (TO_JOIN_ELEMENT_COUNT > 2) &&
-                    (i >= 2) &&
-                    ((TO_JOIN_ELEMENT_COUNT - 1) == i))
+                if ((OPTIONS & JoinOpt::And) && (TO_JOIN_ELEMENT_COUNT > 2) && (i >= 2)
+                    && ((TO_JOIN_ELEMENT_COUNT - 1) == i))
                 {
                     ss << "and ";
                 }
 
                 ss << TO_STRING_FUNC(toJoinVec[i]);
 
-                if ((OPTIONS & JoinOpt::Ellipsis) &&
-                    (TO_JOIN_ELEMENT_COUNT < VEC_ELEMENT_COUNT) &&
-                    ((TO_JOIN_ELEMENT_COUNT - 1) == i))
+                if ((OPTIONS & JoinOpt::Ellipsis) && (TO_JOIN_ELEMENT_COUNT < VEC_ELEMENT_COUNT)
+                    && ((TO_JOIN_ELEMENT_COUNT - 1) == i))
                 {
                     ss << "...";
                 }
@@ -230,8 +206,7 @@ namespace misc
             }
         }
 
-
-        template<typename T>
+        template <typename T>
         static T Average(const std::vector<T> & V)
         {
             if (V.empty())
@@ -248,12 +223,10 @@ namespace misc
             return sum / static_cast<T>(V.size());
         }
 
-
-        //skip the first value because that is an invalid framerate value
-        template<typename T>
-        static T StandardDeviation(const std::vector<T> & V,
-                                   const std::size_t      COUNT,
-                                   const T                AVERAGE)
+        // skip the first value because that is an invalid framerate value
+        template <typename T>
+        static T
+            StandardDeviation(const std::vector<T> & V, const std::size_t COUNT, const T AVERAGE)
         {
             if ((COUNT <= 1) || ((COUNT - 1) > V.size()))
             {
@@ -271,10 +244,8 @@ namespace misc
             return static_cast<T>(std::sqrt(deviationSum / static_cast<double>(COUNT - 1)));
         }
 
-
-        template<typename T>
-        static bool OrderlessCompareEqual(const std::vector<T> & A,
-                                          const std::vector<T> & B)
+        template <typename T>
+        static bool OrderlessCompareEqual(const std::vector<T> & A, const std::vector<T> & B)
         {
             if (A.size() != B.size())
             {
@@ -292,10 +263,8 @@ namespace misc
             return true;
         }
 
-
-        template<typename T>
-        static bool OrderlessCompareLess(const std::vector<T> & A,
-                                         const std::vector<T> & B)
+        template <typename T>
+        static bool OrderlessCompareLess(const std::vector<T> & A, const std::vector<T> & B)
         {
             auto a{ A };
             auto b{ B };
@@ -305,10 +274,8 @@ namespace misc
 
             return a < b;
         }
-
     };
-
 }
 }
 
-#endif //HEROESPATH_MISC_VECTOROPERATIONS_HPP_INCLUDED
+#endif // HEROESPATH_MISC_VECTOROPERATIONS_HPP_INCLUDED

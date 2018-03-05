@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -42,9 +41,18 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Up:   { return "Up";   }
-            case Over: { return "Over"; }
-            case Down: { return "Down"; }
+            case Up:
+            {
+                return "Up";
+            }
+            case Over:
+            {
+                return "Over";
+            }
+            case Down:
+            {
+                return "Down";
+            }
             case Count:
             default:
             {
@@ -55,18 +63,22 @@ namespace sfml_util
         }
     }
 
-
     bool MouseState::IsValid(const MouseState::Enum E)
     {
         switch (E)
         {
             case Up:
             case Over:
-            case Down: { return true; }
+            case Down:
+            {
+                return true;
+            }
             case Count:
-            default: { return false; }
+            default:
+            {
+                return false;
+            }
         }
     }
-
 }
 }

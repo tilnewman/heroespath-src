@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace item
@@ -50,12 +49,10 @@ namespace item
         static const std::string ToString(const TreasureImage::Enum);
         static const std::string ToImageKey(const TreasureImage::Enum);
 
-        static const std::string ToContainerName(
-            const TreasureImage::Enum,
-            const bool WILL_CAPITALIZE = false);
+        static const std::string
+            ToContainerName(const TreasureImage::Enum, const bool WILL_CAPITALIZE = false);
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_TREASUREIMAGEENUM_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_TREASUREIMAGEENUM_HPP_INCLUDED

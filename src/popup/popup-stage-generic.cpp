@@ -29,27 +29,21 @@
 //
 #include "popup-stage-generic.hpp"
 
-
 namespace heroespath
 {
 namespace popup
 {
 
     PopupStageGeneric::PopupStageGeneric(const PopupInfo & POPUP_INFO)
-    :
-        PopupStageBase(POPUP_INFO)
+        : PopupStageBase(POPUP_INFO)
     {}
 
-
-    PopupStageGeneric::~PopupStageGeneric()
-    {}
-
+    PopupStageGeneric::~PopupStageGeneric() {}
 
     void PopupStageGeneric::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
         Stage::Draw(target, STATES);
     }
-
 }
 }

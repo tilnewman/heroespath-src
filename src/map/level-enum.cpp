@@ -36,7 +36,6 @@
 
 #include <boost/algorithm/string.hpp>
 
-
 namespace heroespath
 {
 namespace map
@@ -46,10 +45,22 @@ namespace map
     {
         switch (E)
         {
-            case Town:      { return "Town"; }
-            case Hideaway:  { return "Hideaway"; }
-            case Inside:    { return "Inside"; }
-            case Realm:     { return "Realm"; }
+            case Town:
+            {
+                return "Town";
+            }
+            case Hideaway:
+            {
+                return "Hideaway";
+            }
+            case Inside:
+            {
+                return "Inside";
+            }
+            case Realm:
+            {
+                return "Realm";
+            }
             case Count:
             default:
             {
@@ -60,21 +71,34 @@ namespace map
         }
     }
 
-
     const std::string Level::FILENAME_EXTENSION{ ".tmx" };
-
 
     const std::string Level::ToString(const Level::Enum E)
     {
         switch (E)
         {
-            case Thornberry:                { return "Thornberry"; }
-            case Thornberry_GuardPostWest:  { return "Thornberry_GuardPostWest"; }
-            case Thornberry_GuardPostEast:  { return "Thornberry_GuardPostEast"; }
-            case ThornberryMeadows:         { return "ThornberryMeadows"; }
-            case ThornberryHighlands:       { return "ThornberryHighlands"; }
-            //case Mudgate:                   { return "Mudgate"; }
-            //case Bridgeway:                 { return "Bridgeway"; }
+            case Thornberry:
+            {
+                return "Thornberry";
+            }
+            case Thornberry_GuardPostWest:
+            {
+                return "Thornberry_GuardPostWest";
+            }
+            case Thornberry_GuardPostEast:
+            {
+                return "Thornberry_GuardPostEast";
+            }
+            case ThornberryMeadows:
+            {
+                return "ThornberryMeadows";
+            }
+            case ThornberryHighlands:
+            {
+                return "ThornberryHighlands";
+            }
+            // case Mudgate:                   { return "Mudgate"; }
+            // case Bridgeway:                 { return "Bridgeway"; }
             case Count:
             default:
             {
@@ -85,13 +109,11 @@ namespace map
         }
     }
 
-
     const std::string Level::Path(const Level::Enum E)
     {
-        return game::GameDataFile::Instance()->GetMediaPath("media-maps-dir") +
-            ToString(E) + FILENAME_EXTENSION;
+        return game::GameDataFile::Instance()->GetMediaPath("media-maps-dir") + ToString(E)
+            + FILENAME_EXTENSION;
     }
-
 
     Level::Enum Level::FromString(const std::string & NAME)
     {
@@ -112,16 +134,30 @@ namespace map
         throw std::runtime_error(ss.str());
     }
 
-
     LevelType::Enum Level::Type(const Level::Enum E)
     {
         switch (E)
         {
-            case Thornberry:                { return LevelType::Town; }
-            case Thornberry_GuardPostWest:  { return LevelType::Inside; }
-            case Thornberry_GuardPostEast:  { return LevelType::Inside; }
-            case ThornberryMeadows:         { return LevelType::Realm; }
-            case ThornberryHighlands:       { return LevelType::Realm; }
+            case Thornberry:
+            {
+                return LevelType::Town;
+            }
+            case Thornberry_GuardPostWest:
+            {
+                return LevelType::Inside;
+            }
+            case Thornberry_GuardPostEast:
+            {
+                return LevelType::Inside;
+            }
+            case ThornberryMeadows:
+            {
+                return LevelType::Realm;
+            }
+            case ThornberryHighlands:
+            {
+                return LevelType::Realm;
+            }
             case Count:
             default:
             {
@@ -131,6 +167,5 @@ namespace map
             }
         }
     }
-
 }
 }

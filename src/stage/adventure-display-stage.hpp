@@ -28,18 +28,17 @@
 // adventure-display-stage.hpp
 //
 #include "interact/interaction-manager.hpp"
+#include "sfml-util/direction-enum.hpp"
+#include "sfml-util/gui/picture-frame.hpp"
+#include "sfml-util/horiz-symbol.hpp"
+#include "sfml-util/main-menu-title.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-title.hpp"
-#include "sfml-util/direction-enum.hpp"
-#include "sfml-util/gui/picture-frame.hpp"
 
 #include "stage/adventure-stage-char-list.hpp"
 
 #include <memory>
-
 
 namespace heroespath
 {
@@ -54,8 +53,7 @@ namespace stage
     class InteractStage;
     class AdventureStage;
 
-
-    //Responsible for all drawing operations of the AdventureStage.
+    // Responsible for all drawing operations of the AdventureStage.
     class AdventureDisplayStage : public sfml_util::Stage
     {
         AdventureDisplayStage(const AdventureDisplayStage &) = delete;
@@ -75,9 +73,7 @@ namespace stage
         const sf::FloatRect Setup_Map();
 
         void HandleMovementKeypresses(
-            const sfml_util::Direction::Enum,
-            bool & wasPressed,
-            const bool IS_PRESSED);
+            const sfml_util::Direction::Enum, bool & wasPressed, const bool IS_PRESSED);
 
         const sf::FloatRect CalcInteractRegion(const sf::FloatRect & MAP_REGION) const;
 
@@ -99,8 +95,7 @@ namespace stage
         bool wasPressedUp_;
         bool wasPressedDown_;
     };
-
 }
 }
 
-#endif //HEROESPATH_STAGE_ADVENTUREDISPLAYSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_ADVENTUREDISPLAYSTAGE_HPP_INCLUDED

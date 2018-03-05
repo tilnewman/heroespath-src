@@ -32,7 +32,6 @@
 
 #include <memory>
 
-
 namespace heroespath
 {
 namespace creature
@@ -59,12 +58,12 @@ namespace song
 namespace combat
 {
 
-    //Stores combat sound effects in memory and provides a simple
-    //interface to play them.
+    // Stores combat sound effects in memory and provides a simple
+    // interface to play them.
     class CombatSoundEffects
     {
-        CombatSoundEffects & operator=(const CombatSoundEffects &) =delete;
-        CombatSoundEffects(const CombatSoundEffects &) =delete;
+        CombatSoundEffects & operator=(const CombatSoundEffects &) = delete;
+        CombatSoundEffects(const CombatSoundEffects &) = delete;
 
     public:
         CombatSoundEffects();
@@ -79,8 +78,7 @@ namespace combat
     private:
         void GetDeathSfx(creature::CreaturePtr_t, sfml_util::SfxEnumVec_t &) const;
     };
-
 }
 }
 
-#endif //HEROESPATH_GAME_COMBAT_COMBATSOUNDEFFECTS_HPP_INCLUDED
+#endif // HEROESPATH_GAME_COMBAT_COMBATSOUNDEFFECTS_HPP_INCLUDED

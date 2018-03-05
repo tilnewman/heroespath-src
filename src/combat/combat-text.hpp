@@ -27,14 +27,13 @@
 //
 // combat-text.hpp
 //
-#include "combat/turn-action-info.hpp"
 #include "combat/fight-results.hpp"
+#include "combat/turn-action-info.hpp"
 
-#include <string>
-#include <vector>
 #include <memory>
+#include <string>
 #include <utility>
-
+#include <vector>
 
 namespace heroespath
 {
@@ -45,7 +44,7 @@ namespace item
 }
 namespace creature
 {
-    //forward declarations
+    // forward declarations
     class Creature;
     using CreaturePtr_t = Creature *;
     using CreatureCPtr_t = const Creature *;
@@ -55,15 +54,14 @@ namespace creature
 }
 namespace combat
 {
-    //forward declarations
+    // forward declarations
     class CombatDisplay;
     using CombatDisplayPtr_t = CombatDisplay *;
     using CombatDisplayCPtr_t = const CombatDisplay *;
     using CombatDisplayPtrC_t = CombatDisplay * const;
     using CombatDisplayCPtrC_t = const CombatDisplay * const;
 
-
-    //A collection of functions that generate text used during combat.
+    // A collection of functions that generate text used during combat.
     struct Text
     {
         static const std::string TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_;
@@ -80,126 +78,118 @@ namespace combat
         static const std::string TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_;
         static const std::string TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_;
 
-        static const std::string MouseOverTextAttackStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextAttackStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextFightStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextFightStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextCastStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextCastStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextPlayStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextPlayStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextAdvanceStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextAdvanceStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextRetreatStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextRetreatStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextBlockStr(
-            creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextBlockStr(creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextFlyStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextFlyStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextLandStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextLandStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextRoarStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextRoarStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextPounceStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextPounceStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextRunStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextRunStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
-        static const std::string MouseOverTextSkipStr(
-            const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+        static const std::string
+            MouseOverTextSkipStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
 
         static const std::string ActionText(
             const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
-            const TurnActionInfo &        TURN_ACTION_INFO,
-            const FightResult &           FIGHT_RESULT,
-            const bool                    WILL_USE_NAME       = false,
-            const bool                    IS_STATUS_VERSION   = false,
-            const bool                    IS_PREAMBLE_VERSION = false);
+            const TurnActionInfo & TURN_ACTION_INFO,
+            const FightResult & FIGHT_RESULT,
+            const bool WILL_USE_NAME = false,
+            const bool IS_STATUS_VERSION = false,
+            const bool IS_PREAMBLE_VERSION = false);
 
         static const std::string ActionTextIndexed(
             const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
-            const TurnActionInfo &        TURN_ACTION_INFO,
-            const FightResult &           FIGHT_RESULT,
-            const bool                    WILL_USE_NAME,
-            const std::size_t             EFFECT_INDEX,
-            const std::size_t             HIT_INDEX,
-            bool &                        wasCollapsed);
+            const TurnActionInfo & TURN_ACTION_INFO,
+            const FightResult & FIGHT_RESULT,
+            const bool WILL_USE_NAME,
+            const std::size_t EFFECT_INDEX,
+            const std::size_t HIT_INDEX,
+            bool & wasCollapsed);
 
-        static const std::string WeaponActionVerb(
-            const item::ItemPtr_t WEAPON_PTR,
-            const bool            WILL_APPEND_ING = false);
+        static const std::string
+            WeaponActionVerb(const item::ItemPtr_t WEAPON_PTR, const bool WILL_APPEND_ING = false);
 
-        static const std::string AttackDescriptionStatusVersion(
-            const FightResult & FIGHT_RESULT);
+        static const std::string AttackDescriptionStatusVersion(const FightResult & FIGHT_RESULT);
 
-        static const std::string AttackDescriptionPreambleVersion(
-            const FightResult & FIGHT_RESULT);
+        static const std::string AttackDescriptionPreambleVersion(const FightResult & FIGHT_RESULT);
 
         static const std::string AttackDescriptionFullVersion(
             const FightResult & FIGHT_RESULT,
-            const std::size_t   EFFECT_INDEX,
-            const std::size_t   HIT_INDEX);
+            const std::size_t EFFECT_INDEX,
+            const std::size_t HIT_INDEX);
 
         static const std::string CastDescriptionStatusVersion(
-            const TurnActionInfo & TURN_ACTION_INFO,
-            const FightResult &    FIGHT_RESULT);
+            const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT);
 
         static const std::string CastDescriptionPreambleVersion(
-            const TurnActionInfo & TURN_ACTION_INFO,
-            const FightResult &    FIGHT_RESULT);
+            const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT);
 
         static const std::string CastDescriptionFullVersion(
             const creature::CreaturePtr_t CREATURE_CASTING_PTR,
-            const TurnActionInfo &        TURN_ACTION_INFO,
-            const FightResult &           FIGHT_RESULT,
-            const std::size_t             EFFECT_INDEX,
-            const std::size_t             HIT_INDEX,
-            bool &                        wasCollapsed);
+            const TurnActionInfo & TURN_ACTION_INFO,
+            const FightResult & FIGHT_RESULT,
+            const std::size_t EFFECT_INDEX,
+            const std::size_t HIT_INDEX,
+            bool & wasCollapsed);
 
         static const std::string PlaySongDescriptionStatusVersion(
-            const TurnActionInfo & TURN_ACTION_INFO,
-            const FightResult &    FIGHT_RESULT);
+            const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT);
 
         static const std::string PlaySongDescriptionPreambleVersion(
-            const TurnActionInfo & TURN_ACTION_INFO,
-            const FightResult &    FIGHT_RESULT);
+            const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT);
 
         static const std::string PlaySongDescriptionFullVersion(
             const creature::CreaturePtr_t CREATURE_PLAYINGING_PTR,
-            const TurnActionInfo &        TURN_ACTION_INFO,
-            const FightResult &           FIGHT_RESULT,
-            const std::size_t             EFFECT_INDEX,
-            const std::size_t             HIT_INDEX,
-            bool &                        wasCollapsed);
+            const TurnActionInfo & TURN_ACTION_INFO,
+            const FightResult & FIGHT_RESULT,
+            const std::size_t EFFECT_INDEX,
+            const std::size_t HIT_INDEX,
+            bool & wasCollapsed);
 
         static const std::string RoarDescriptionFullVersion(
             const creature::CreaturePtr_t CREATURE_ROARING_PTR,
-            const TurnActionInfo &        TURN_ACTION_INFO,
-            const FightResult &           FIGHT_RESULT,
-            const std::size_t             EFFECT_INDEX,
-            const std::size_t             HIT_INDEX,
-            bool &                        wasCollapsed);
+            const TurnActionInfo & TURN_ACTION_INFO,
+            const FightResult & FIGHT_RESULT,
+            const std::size_t EFFECT_INDEX,
+            const std::size_t HIT_INDEX,
+            bool & wasCollapsed);
 
         static const std::string TrapDescriptionFullVersion(
             const creature::CreaturePtr_t CREATURE_UNLOCKING_PTR,
-            const FightResult &           FIGHT_RESULT,
-            const std::size_t             EFFECT_INDEX,
-            const std::size_t             HIT_INDEX);
+            const FightResult & FIGHT_RESULT,
+            const std::size_t EFFECT_INDEX,
+            const std::size_t HIT_INDEX);
 
-        static const std::string WeaponActionVerbList(
-            const HitInfoVec_t & HIT_INFO_VEC,
-            const bool           WILL_SKIP_MISSES);
+        static const std::string
+            WeaponActionVerbList(const HitInfoVec_t & HIT_INFO_VEC, const bool WILL_SKIP_MISSES);
 
         static const std::string CountPhrase(const HitInfoVec_t &);
 
@@ -207,25 +197,23 @@ namespace combat
 
         static const std::string ConditionNameList(
             const creature::CondEnumVec_t & CONDITIONS_VEC,
-            const bool                           WILL_EXCLUDE_DEAD,
-            const std::size_t                    NUM_TO_LIST);
+            const bool WILL_EXCLUDE_DEAD,
+            const std::size_t NUM_TO_LIST);
 
-        static const std::string AttackConditionsSummaryList(
-            const CreatureEffect & CREATURE_EFFECT);
+        static const std::string
+            AttackConditionsSummaryList(const CreatureEffect & CREATURE_EFFECT);
 
         static const std::string NamePhrase(const creature::CreaturePtr_t);
 
         static const std::string InitialCombatStatusMessagePrefix();
 
         static const FightResultSummary SummarizeFightResult(
-            const creature::CreaturePtr_t CREATURE_INITIATING_PTR,
-            const FightResult &);
+            const creature::CreaturePtr_t CREATURE_INITIATING_PTR, const FightResult &);
 
-        static bool SummarizeCreatureEffect(FightResultSummary &   frs,
-                                            const CreatureEffect & CREATURE_EFFECT);
+        static bool SummarizeCreatureEffect(
+            FightResultSummary & frs, const CreatureEffect & CREATURE_EFFECT);
     };
-
 }
 }
 
-#endif //HEROESPATH_GAME_COMBAT_COMBATTEXT_HPP_INCLUDED
+#endif // HEROESPATH_GAME_COMBAT_COMBATTEXT_HPP_INCLUDED

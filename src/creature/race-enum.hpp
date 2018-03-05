@@ -30,18 +30,17 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
+#include "creature/rank.hpp"
+#include "creature/role-enum.hpp"
+#include "item/treasure-scores.hpp"
 #include "misc/types.hpp"
 #include "stats/trait.hpp"
-#include "item/treasure-scores.hpp"
-#include "creature/role-enum.hpp"
-#include "creature/rank.hpp"
 
 #include "misc/handy-types.hpp"
 
-#include <tuple>
 #include <string>
+#include <tuple>
 #include <vector>
-
 
 namespace heroespath
 {
@@ -64,7 +63,6 @@ namespace creature
     };
 
     using OriginTypeVec_t = std::vector<origin_type::Enum>;
-
 
     struct race
     {
@@ -135,26 +133,24 @@ namespace creature
         static const misc::StrVec_t CorpseImageKeys(const race::Enum);
     };
 
-
     class SummonInfo
     {
     public:
         explicit SummonInfo(
             const origin_type::Enum ORIGIN = origin_type::Count,
-            const race::Enum        RACE   = creature::race::Count,
-            const role::Enum        ROLE   = creature::role::Count)
-        :
-            origin_ (ORIGIN),
-            race_   (RACE),
-            role_   (ROLE),
-            count_  (origin_type::UseCount(ORIGIN))
+            const race::Enum RACE = creature::race::Count,
+            const role::Enum ROLE = creature::role::Count)
+            : origin_(ORIGIN)
+            , race_(RACE)
+            , role_(ROLE)
+            , count_(origin_type::UseCount(ORIGIN))
         {}
 
         inline origin_type::Enum OriginType() const { return origin_; }
-        inline race::Enum Race() const              { return race_; }
-        inline role::Enum Role() const              { return role_; }
-        inline std::size_t Count() const            { return count_; }
-        inline bool WillSummon() const              { return count_ != 0; }
+        inline race::Enum Race() const { return race_; }
+        inline role::Enum Role() const { return role_; }
+        inline std::size_t Count() const { return count_; }
+        inline bool WillSummon() const { return count_ != 0; }
 
         friend bool operator==(const SummonInfo & L, const SummonInfo & R);
         friend bool operator<(const SummonInfo & L, const SummonInfo & R);
@@ -167,7 +163,7 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & origin_;
@@ -177,41 +173,22 @@ namespace creature
         }
     };
 
-
     inline bool operator==(const SummonInfo & L, const SummonInfo & R)
     {
-        return (std::tie(L.origin_,
-                         L.race_,
-                         L.role_,
-                         L.count_)
-                 ==
-                std::tie(R.origin_,
-                         R.race_,
-                         R.role_,
-                         R.count_));
+        return (
+            std::tie(L.origin_, L.race_, L.role_, L.count_)
+            == std::tie(R.origin_, R.race_, R.role_, R.count_));
     }
 
-
-    inline bool operator!=(const SummonInfo & L, const SummonInfo & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const SummonInfo & L, const SummonInfo & R) { return !(L == R); }
 
     inline bool operator<(const SummonInfo & L, const SummonInfo & R)
     {
-        return (std::tie(L.origin_,
-                         L.race_,
-                         L.role_,
-                         L.count_)
-                 <
-                std::tie(R.origin_,
-                         R.race_,
-                         R.role_,
-                         R.count_));
+        return (
+            std::tie(L.origin_, L.race_, L.role_, L.count_)
+            < std::tie(R.origin_, R.race_, R.role_, R.count_));
     }
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_RACEENUM_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_RACEENUM_HPP_INCLUDED

@@ -29,37 +29,29 @@
 //
 #include "name-info.hpp"
 
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include "log/log-macros.hpp"
 
 #include <sstream>
 #include <string>
 
-
 namespace heroespath
 {
 namespace creature
 {
 
-    std::unique_ptr<NameInfo>  NameInfo::instanceUPtr_{ nullptr };
-
+    std::unique_ptr<NameInfo> NameInfo::instanceUPtr_{ nullptr };
 
     NameInfo::NameInfo()
-    :
-        sizeMap_()
+        : sizeMap_()
     {
         M_HP_LOG_DBG("Singleton Construction: NameInfo");
     }
 
-
-    NameInfo::~NameInfo()
-    {
-        M_HP_LOG_DBG("Singleton Destruction: NameInfo");
-    }
-
+    NameInfo::~NameInfo() { M_HP_LOG_DBG("Singleton Destruction: NameInfo"); }
 
     NameInfo * NameInfo::Instance()
     {
@@ -71,7 +63,6 @@ namespace creature
 
         return instanceUPtr_.get();
     }
-
 
     void NameInfo::Acquire()
     {
@@ -85,25 +76,23 @@ namespace creature
         }
     }
 
-
     void NameInfo::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr), "NameInfo::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
+            "NameInfo::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
-
 
     sfml_util::FontPtr_t NameInfo::DefaultFont() const
     {
         return sfml_util::FontManager::Instance()->Font_Default2();
     }
 
-
     unsigned int NameInfo::DefaultSize() const
     {
         return sfml_util::FontManager::Instance()->Size_Normal();
     }
-
 
     float NameInfo::LengthMax(const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE)
     {
@@ -112,8 +101,10 @@ namespace creature
 
         if (ORIG_WIDTH < 1.0f)
         {
-            const sfml_util::gui::TextInfo TEXT_INFO(LargestName(), FONT_PTR, CHAR_SIZE, sf::Color::White, sfml_util::Justified::Left);
-            sfml_util::gui::TextRegion textRegion("CreatureNameInfoLengthDeterminer", TEXT_INFO, sf::FloatRect());
+            const sfml_util::gui::TextInfo TEXT_INFO(
+                LargestName(), FONT_PTR, CHAR_SIZE, sf::Color::White, sfml_util::Justified::Left);
+            sfml_util::gui::TextRegion textRegion(
+                "CreatureNameInfoLengthDeterminer", TEXT_INFO, sf::FloatRect());
 
             const float NAME_WIDTH(textRegion.GetEntityRegion().width);
             sizeMap_[FONT_SIZE_PAIR] = NAME_WIDTH;
@@ -124,18 +115,20 @@ namespace creature
             return ORIG_WIDTH;
     }
 
-
-    float NameInfo::Length(const std::string & TEXT, const sfml_util::FontPtr_t FONT_PTR, const unsigned int CHAR_SIZE) const
+    float NameInfo::Length(
+        const std::string & TEXT,
+        const sfml_util::FontPtr_t FONT_PTR,
+        const unsigned int CHAR_SIZE) const
     {
-        return Length(sfml_util::gui::TextInfo(TEXT, FONT_PTR, CHAR_SIZE, sf::Color::White, sfml_util::Justified::Left));
+        return Length(sfml_util::gui::TextInfo(
+            TEXT, FONT_PTR, CHAR_SIZE, sf::Color::White, sfml_util::Justified::Left));
     }
-
 
     float NameInfo::Length(const sfml_util::gui::TextInfo & TEXT_INFO) const
     {
-        sfml_util::gui::TextRegion textRegion("CreatureNameInfoLengthDeterminer", TEXT_INFO, sf::FloatRect());
+        sfml_util::gui::TextRegion textRegion(
+            "CreatureNameInfoLengthDeterminer", TEXT_INFO, sf::FloatRect());
         return textRegion.GetEntityRegion().width;
     }
-
 }
 }

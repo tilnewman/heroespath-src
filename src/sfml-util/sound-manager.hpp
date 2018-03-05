@@ -28,22 +28,21 @@
 // sound-manager.hpp
 //  Aound managing class that handles both sf::Sound and sf::Music instances.
 //
-#include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/music-enum.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
 #include "sfml-util/music-operator.hpp"
 #include "sfml-util/music-set.hpp"
-#include "sfml-util/songs.hpp"
-#include "sfml-util/sound-effects-set.hpp"
+#include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sfx-set-enum.hpp"
 #include "sfml-util/sfx-wrapper.hpp"
+#include "sfml-util/songs.hpp"
+#include "sfml-util/sound-effects-enum.hpp"
+#include "sfml-util/sound-effects-set.hpp"
 
 #include <memory>
 #include <string>
-#include <vector>
 #include <tuple>
 #include <utility>
-
+#include <vector>
 
 namespace heroespath
 {
@@ -53,12 +52,11 @@ namespace sfml_util
     using SfxDelayPair_t = std::pair<sound_effect::Enum, float>;
     using SfxDelayVec_t = std::vector<SfxDelayPair_t>;
 
-
-    //A class that loads, stores, and distributes sounds
+    // A class that loads, stores, and distributes sounds
     class SoundManager
     {
-        SoundManager(const SoundManager &) =delete;
-        SoundManager & operator=(const SoundManager &) =delete;
+        SoundManager(const SoundManager &) = delete;
+        SoundManager & operator=(const SoundManager &) = delete;
 
     public:
         SoundManager();
@@ -69,27 +67,26 @@ namespace sfml_util
         static void Release();
 
         static void SetSoundsDirectory(
-            const std::string & SOUND_DIR_PATH,
-            const std::string & MUSIC_DIR_PATH);
+            const std::string & SOUND_DIR_PATH, const std::string & MUSIC_DIR_PATH);
 
         bool Test();
         bool TestSfxSet(SfxSet &, const std::size_t INDEX);
 
         void LoadSoundSets();
 
-        //throws range_error on invalid enum input.
+        // throws range_error on invalid enum input.
         void MusicStart(
             const music::Enum WHICH,
             const float FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_IN_,
-            const float VOLUME    = MusicOperator::VOLUME_USE_GLOBAL_);
+            const float VOLUME = MusicOperator::VOLUME_USE_GLOBAL_);
 
         void MusicStart(
             const MusicEnumVec_t & WHICH_VEC,
-            const bool             WILL_RANDOMIZE       = true,
-            const bool             WILL_START_AT_RANDOM = true,
-            const float            FADE_MULT            = MusicOperator::FADE_MULT_DEFAULT_IN_,
-            const float            VOLUME               = MusicOperator::VOLUME_USE_GLOBAL_,
-            const bool             WILL_LOOP            = true);
+            const bool WILL_RANDOMIZE = true,
+            const bool WILL_START_AT_RANDOM = true,
+            const float FADE_MULT = MusicOperator::FADE_MULT_DEFAULT_IN_,
+            const float VOLUME = MusicOperator::VOLUME_USE_GLOBAL_,
+            const bool WILL_LOOP = true);
 
         void MusicStop(
             const music::Enum WHICH = sfml_util::music::All,
@@ -108,22 +105,20 @@ namespace sfml_util
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
-        //Note:  These functions don't actually change the volume of any sound objects in memory.
+        // Note:  These functions don't actually change the volume of any sound objects in memory.
         //       See Loop::Start/StopMusic() functions for the actual volume handling code.
         //       All background music shares a volume, and all sound effects share a volume.
         inline float MusicVolume() const { return musicVolume_; }
         void MusicVolumeSet(const float);
         //
-        inline float SoundEffectVolume() const  { return effectsVolume_; }
+        inline float SoundEffectVolume() const { return effectsVolume_; }
         void SoundEffectVolumeSet(const float V);
 
         void MusicVolumeFadeToCurrent(const music::Enum);
 
         const SfxSet & Getsound_effect_set(const sound_effect_set::Enum) const;
 
-        void SoundEffectPlay(
-            const sound_effect::Enum SFX_ENUM,
-            const float PRE_DELAY_SEC = 0.0f);
+        void SoundEffectPlay(const sound_effect::Enum SFX_ENUM, const float PRE_DELAY_SEC = 0.0f);
 
         void SoundEffectPlayNow(const sound_effect::Enum);
 
@@ -139,15 +134,12 @@ namespace sfml_util
 
     private:
         MusicUPtr_t OpenMusic(
-            const std::string & MUSIC_FILE_NAME,
-            const std::string & MUSIC_DIR_NAME) const;
+            const std::string & MUSIC_FILE_NAME, const std::string & MUSIC_DIR_NAME) const;
 
         void CacheMusicInfo_CombatIntro();
 
         MusicOperator MakeAndStartMusicOperator(
-            const music::Enum MUSIC_ENUM,
-            const float       FADE_MULT,
-            const float       VOLUME) const;
+            const music::Enum MUSIC_ENUM, const float FADE_MULT, const float VOLUME) const;
 
         void SongsUpdate(const float ELAPSED_TIME_SEC);
 
@@ -173,8 +165,7 @@ namespace sfml_util
         SfxDelayVec_t sfxToPlayPairsVec_;
         SfxWrapperVec_t sfxWrapperVec_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_SOUNDMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SOUNDMANAGER_HPP_INCLUDED

@@ -32,53 +32,52 @@
 
 #include "misc/assertlogandthrow.hpp"
 
-#include <string>
-#include <memory>
-#include <vector>
-#include <sstream>
 #include <exception>
-
+#include <memory>
+#include <sstream>
+#include <string>
+#include <vector>
 
 namespace heroespath
 {
 namespace misc
 {
 
-    //Template responsible for the lifetimes of various objects.  This class does
-    //not new the objects, but it does delete them, hence the name 'warehouse'.
-    template<typename T>
+    // Template responsible for the lifetimes of various objects.  This class does
+    // not new the objects, but it does delete them, hence the name 'warehouse'.
+    template <typename T>
     class Warehouse
     {
-        Warehouse(const Warehouse &) =delete;
-        Warehouse & operator=(const Warehouse &) =delete;
+        Warehouse(const Warehouse &) = delete;
+        Warehouse & operator=(const Warehouse &) = delete;
 
     public:
         Warehouse()
-        :
-            uPtrVec_()
+            : uPtrVec_()
         {}
 
         inline std::size_t Size() const { return uPtrVec_.size(); }
 
-        //returns the pointer given for caller ease of use only
+        // returns the pointer given for caller ease of use only
         T * Store(T * ptr_to_store, const std::string & NAME)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((ptr_to_store != nullptr),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ptr_to_store != nullptr),
                 "Warehouse::Store(name=\"" << NAME << "\") given a nullptr.");
 
             std::size_t indexToSaveAt{ uPtrVec_.size() };
 
-            //Ensure this object is not already stored, and along the way,
-            //look for an abandoned slot to use as indexToSaveAt.
+            // Ensure this object is not already stored, and along the way,
+            // look for an abandoned slot to use as indexToSaveAt.
             auto const NUM_OBJECTS{ indexToSaveAt };
-            for (std::size_t i(0); i<NUM_OBJECTS; ++i)
+            for (std::size_t i(0); i < NUM_OBJECTS; ++i)
             {
                 auto const NEXT_PTR{ uPtrVec_[i].get() };
                 if (NEXT_PTR == ptr_to_store)
                 {
                     std::ostringstream ss;
                     ss << "Warehouse::Store((" << ptr_to_store << ")"
-                        << ", name=\"" << NAME << "\") was already stored.";
+                       << ", name=\"" << NAME << "\") was already stored.";
 
                     throw std::runtime_error(ss.str());
                 }
@@ -96,15 +95,16 @@ namespace misc
             {
                 std::unique_ptr<T> tempUPtr;
                 tempUPtr.reset(ptr_to_store);
-                uPtrVec_.push_back( std::move(tempUPtr) );
+                uPtrVec_.push_back(std::move(tempUPtr));
             }
 
             return ptr_to_store;
         }
 
-        void Free(T * & ptr_to_free, const std::string & NAME)
+        void Free(T *& ptr_to_free, const std::string & NAME)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((ptr_to_free != nullptr),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ptr_to_free != nullptr),
                 "Warehouse::Free(name=\"" << NAME << "\") given a nullptr.");
 
             for (auto & nextUPtr : uPtrVec_)
@@ -117,15 +117,14 @@ namespace misc
                 }
             }
 
-            M_HP_LOG_ERR("Warehouse::Free((" << ptr_to_free
-                << "), name=\"" << NAME << "\") not found.");
+            M_HP_LOG_ERR(
+                "Warehouse::Free((" << ptr_to_free << "), name=\"" << NAME << "\") not found.");
         }
 
     private:
-        std::vector< std::unique_ptr<T> > uPtrVec_;
+        std::vector<std::unique_ptr<T>> uPtrVec_;
     };
-
 }
 }
 
-#endif //HEROESPATH_MISC_WAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_MISC_WAREHOUSE_HPP_INCLUDED

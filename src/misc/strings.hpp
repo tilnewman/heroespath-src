@@ -27,9 +27,8 @@
 //
 // strings.hpp
 //
-#include <string>
 #include <sstream>
-
+#include <string>
 
 namespace heroespath
 {
@@ -39,7 +38,7 @@ namespace misc
     struct String
     {
 
-        template<typename T>
+        template <typename T>
         static const std::string DecorateNumber(const T NUMBER)
         {
             std::ostringstream ss;
@@ -64,10 +63,8 @@ namespace misc
 
             return ss.str();
         }
-
     };
-
 }
 }
 
-#endif //HEROESPATH_MISC_STRINGS_HPP_INCLUDED
+#endif // HEROESPATH_MISC_STRINGS_HPP_INCLUDED

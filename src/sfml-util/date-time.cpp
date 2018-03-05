@@ -29,7 +29,7 @@
 //
 #include "date-time.hpp"
 
-//suppress warnings that are safe to ignore in boost
+// suppress warnings that are safe to ignore in boost
 #include "misc/platform.hpp"
 #ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
@@ -43,25 +43,20 @@
 #pragma GCC diagnostic warning "-Wswitch-enum"
 #endif
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    Date::Date(const int YEAR,
-               const int MONTH,
-               const int DAY)
-    :
-        year(YEAR),
-        month(MONTH),
-        day(DAY)
+    Date::Date(const int YEAR, const int MONTH, const int DAY)
+        : year(YEAR)
+        , month(MONTH)
+        , day(DAY)
     {}
-
 
     const std::string Date::ToString() const
     {
@@ -70,12 +65,7 @@ namespace sfml_util
         return ss.str();
     }
 
-
-    bool Date::IsValid() const
-    {
-        return ((year > 0) && (month > 0) && (day > 0));
-    }
-
+    bool Date::IsValid() const { return ((year > 0) && (month > 0) && (day > 0)); }
 
     const Date Date::CurrentDate()
     {
@@ -83,30 +73,21 @@ namespace sfml_util
         return Date(DATE.year(), DATE.month(), DATE.day());
     }
 
-
     bool operator==(const Date & L, const Date & R)
     {
-        return ((L.year == R.year) &&
-                (L.month == R.month) &&
-                (L.day == R.day));
+        return ((L.year == R.year) && (L.month == R.month) && (L.day == R.day));
     }
 
-
-    Time::Time(const int HOURS,
-               const int MINUTES,
-               const int SECONDS)
-    :
-        hours(HOURS),
-        minutes(MINUTES),
-        seconds(SECONDS)
+    Time::Time(const int HOURS, const int MINUTES, const int SECONDS)
+        : hours(HOURS)
+        , minutes(MINUTES)
+        , seconds(SECONDS)
     {}
 
-
     Time::Time(const sf::Time & TIME_OBJ)
-    :
-        hours(0),
-        minutes(0),
-        seconds(0)
+        : hours(0)
+        , minutes(0)
+        , seconds(0)
     {
         const int SECONDS_INT(static_cast<int>(TIME_OBJ.asSeconds()));
         hours = SECONDS_INT / SECONDS_IN_HOUR_;
@@ -116,24 +97,16 @@ namespace sfml_util
             seconds = 0;
     }
 
-
     const std::string Time::ToString() const
     {
         std::ostringstream ss;
-        ss << std::setfill('0')
-           << std::setw(2) << hours << ":"
-           << std::setw(2) << minutes << ":"
+        ss << std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2) << minutes << ":"
            << std::setw(2) << seconds;
 
         return ss.str();
     }
 
-
-    bool Time::IsValid() const
-    {
-        return ((hours >= 0) && (minutes >= 0) && (seconds >= 0));
-    }
-
+    bool Time::IsValid() const { return ((hours >= 0) && (minutes >= 0) && (seconds >= 0)); }
 
     const Time Time::CurrentTime()
     {
@@ -141,14 +114,11 @@ namespace sfml_util
         return Time(TOD.hours(), TOD.minutes(), TOD.seconds());
     }
 
-
-    //simple wrapper for date and time
+    // simple wrapper for date and time
     DateTime::DateTime(const Date & DATE, const Time & TIME)
-    :
-        date(DATE),
-        time(TIME)
+        : date(DATE)
+        , time(TIME)
     {}
-
 
     const std::string DateTime::ToString() const
     {
@@ -156,6 +126,5 @@ namespace sfml_util
         ss << date.ToString() << " " << time.ToString();
         return ss.str();
     }
-
 }
 }

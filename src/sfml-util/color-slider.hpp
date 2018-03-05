@@ -27,57 +27,48 @@
 //
 // color-slider.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/pos-slider.hpp"
 #include "sfml-util/moving-enum.hpp"
+#include "sfml-util/pos-slider.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //Similar to the PositionSlider, ColorSlider presents a simple interface for controlling a
-    //color that starts at a given FROM and then moves toward a TO color.  Calling Update()
-    //periodically with the time elapsed advances the position.  ChangeDirection() does not
-    //change the current position, it sets FROM to the current position and sets TO to either
-    //the original FROM or TO.
+    // Similar to the PositionSlider, ColorSlider presents a simple interface for controlling a
+    // color that starts at a given FROM and then moves toward a TO color.  Calling Update()
+    // periodically with the time elapsed advances the position.  ChangeDirection() does not
+    // change the current position, it sets FROM to the current position and sets TO to either
+    // the original FROM or TO.
     class ColorSlider
     {
     public:
         ColorSlider();
 
         explicit ColorSlider(
-            const sf::Color & FROM_COLOR,
-            const sf::Color & TO_COLOR,
-            const float SPEED);
+            const sf::Color & FROM_COLOR, const sf::Color & TO_COLOR, const float SPEED);
 
-        void Setup(
-            const sf::Color & FROM_COLOR,
-            const sf::Color & TO_COLOR,
-            const float SPEED);
+        void Setup(const sf::Color & FROM_COLOR, const sf::Color & TO_COLOR, const float SPEED);
 
         void ChangeDirection();
 
-        //returns true if the position was changed
+        // returns true if the position was changed
         bool UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         const sf::Color Current() const;
 
-        inline float                    ProgressRatio() const   { return slider_.Current(); }
-        inline sfml_util::Moving::Enum  Direction() const       { return direction_; }
-        inline const sf::Color          To() const              { return toColor_; }
-        inline const sf::Color          From() const            { return fromColor_; }
-        inline float                    Speed() const           { return slider_.Speed(); }
-        inline bool                     IsMoving() const        { return isMoving_; }
-        inline void                     Start()                 { isMoving_ = true; }
-        inline void                     Stop()                  { isMoving_ = false; }
+        inline float ProgressRatio() const { return slider_.Current(); }
+        inline sfml_util::Moving::Enum Direction() const { return direction_; }
+        inline const sf::Color To() const { return toColor_; }
+        inline const sf::Color From() const { return fromColor_; }
+        inline float Speed() const { return slider_.Speed(); }
+        inline bool IsMoving() const { return isMoving_; }
+        inline void Start() { isMoving_ = true; }
+        inline void Stop() { isMoving_ = false; }
 
-        inline void Speed(const float S)
-        {
-            slider_.Reset(S, slider_.Current());
-        }
+        inline void Speed(const float S) { slider_.Reset(S, slider_.Current()); }
 
     private:
         sf::Color fromColor_;
@@ -88,8 +79,7 @@ namespace sfml_util
         bool isMoving_;
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_COLOR_SLIDER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_COLOR_SLIDER_HPP_INCLUDED

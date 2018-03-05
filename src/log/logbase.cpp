@@ -29,29 +29,26 @@
 //
 #include "logbase.hpp"
 //
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <exception>
 #include <algorithm>
 #include <cassert>
-
+#include <exception>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 namespace bfs = boost::filesystem;
-
 
 namespace heroespath
 {
 namespace log
 {
 
-    //static member initializers
-    const std::string   LogBase::FILE_NAME_DEFAULT      { "log" };
-    const std::string   LogBase::FILE_NAME_EXT_DEFAULT  { ".txt"};
-    const std::string   LogBase::FILE_PATH_DEFAULT      { "log_files"};
-    const std::size_t   LogBase::FILE_NUM_MIN           { 2 };
+    // static member initializers
+    const std::string LogBase::FILE_NAME_DEFAULT{ "log" };
+    const std::string LogBase::FILE_NAME_EXT_DEFAULT{ ".txt" };
+    const std::string LogBase::FILE_PATH_DEFAULT{ "log_files" };
+    const std::size_t LogBase::FILE_NUM_MIN{ 2 };
     const unsigned long LogBase::FILE_SIZE_LIMIT_DEFAULT{ 1 << 30 };
-
 
     LogBase::LogBase(
         const std::string & fileName,
@@ -60,20 +57,18 @@ namespace log
         const std::size_t fileCountMax,
         const unsigned long fileSizeMaxBytes,
         const LogPri::Enum consoleEchoPri)
-    :
-        FILE_NAME_              ((fileName.empty() == true) ? FILE_NAME_DEFAULT : fileName),
-        FILE_NAME_EXT_          (fileNameExt),
-        FILE_PATH_              (bfs::current_path() / bfs::path(std::string(filePath))),
-        FILE_NUM_MAX_           ((fileCountMax < FILE_NUM_MIN) ? FILE_NUM_MIN : fileCountMax ),
-        FILE_SIZE_LIMIT_BYTES_  (fileSizeMaxBytes),
-        CONSOLE_ECHO_PRIORITY_  (consoleEchoPri),
-        fileNum_                (0),
-        fileStream_             (),
-        isDestructing_          (false)
+        : FILE_NAME_((fileName.empty() == true) ? FILE_NAME_DEFAULT : fileName)
+        , FILE_NAME_EXT_(fileNameExt)
+        , FILE_PATH_(bfs::current_path() / bfs::path(std::string(filePath)))
+        , FILE_NUM_MAX_((fileCountMax < FILE_NUM_MIN) ? FILE_NUM_MIN : fileCountMax)
+        , FILE_SIZE_LIMIT_BYTES_(fileSizeMaxBytes)
+        , CONSOLE_ECHO_PRIORITY_(consoleEchoPri)
+        , fileNum_(0)
+        , fileStream_()
+        , isDestructing_(false)
     {
         OpenNextFile();
     }
-
 
     LogBase::~LogBase()
     {
@@ -82,61 +77,30 @@ namespace log
         {
             OnFileClose(false);
         }
-        catch(...)
+        catch (...)
         {}
     }
 
+    void LogBase::Log(const std::string & MSG) { FlushWrapper(MSG); }
 
-    void LogBase::Log(const std::string & MSG)
-    {
-        FlushWrapper(MSG);
-    }
-
-
-    void LogBase::Log(
-        const std::string & FILE,
-        const int LINE,
-        const std::string & MSG)
+    void LogBase::Log(const std::string & FILE, const int LINE, const std::string & MSG)
     {
         FlushWrapper(MSG, LogPri::Default, FILE, LINE);
     }
 
+    void LogBase::Log(const LogPri::Enum PRI, const std::string & MSG) { FlushWrapper(MSG, PRI); }
 
     void LogBase::Log(
-        const LogPri::Enum  PRI,
-        const std::string & MSG)
-    {
-        FlushWrapper(MSG, PRI);
-    }
-
-
-    void LogBase::Log(
-        const LogPri::Enum  PRI,
-        const std::string & FILE,
-        const int           LINE,
-        const std::string & MSG)
+        const LogPri::Enum PRI, const std::string & FILE, const int LINE, const std::string & MSG)
     {
         FlushWrapper(MSG, PRI, FILE, LINE);
     }
 
+    unsigned long LogBase::GetFileSizeLimitBytes() const { return FILE_SIZE_LIMIT_BYTES_; }
 
-    unsigned long LogBase::GetFileSizeLimitBytes() const
-    {
-        return FILE_SIZE_LIMIT_BYTES_;
-    }
+    std::size_t LogBase::GetFileNumMax() const { return FILE_NUM_MAX_; }
 
-
-    std::size_t LogBase::GetFileNumMax() const
-    {
-        return FILE_NUM_MAX_;
-    }
-
-
-    std::size_t LogBase::GetFileNum() const
-    {
-        return fileNum_;
-    }
-
+    std::size_t LogBase::GetFileNum() const { return fileNum_; }
 
     const std::string LogBase::GetFileName() const
     {
@@ -145,42 +109,49 @@ namespace log
         return ss.str();
     }
 
-
-    const std::string LogBase::GetFilePath() const
-    {
-        return FILE_PATH_.string();
-    }
-
+    const std::string LogBase::GetFilePath() const { return FILE_PATH_.string(); }
 
     const std::string LogBase::GetFilePathFull() const
     {
         std::ostringstream fileNameStream;
         AppendFileName(fileNameStream);
 
-        auto const FULL_PATH{
-            bfs::system_complete(bfs::path(FILE_PATH_ / fileNameStream.str())) };
+        auto const FULL_PATH{ bfs::system_complete(bfs::path(FILE_PATH_ / fileNameStream.str())) };
 
         return FULL_PATH.string();
     }
 
-
-    LogPri::Enum LogBase::GetConsoleEchoPriority() const
-    {
-        return CONSOLE_ECHO_PRIORITY_;
-    }
-
+    LogPri::Enum LogBase::GetConsoleEchoPriority() const { return CONSOLE_ECHO_PRIORITY_; }
 
     const std::string LogBase::GetLogPriName(const LogPri::Enum PRI) const
     {
-        switch(PRI)
+        switch (PRI)
         {
-            case LogPri::None:      { return "---"; }
-            case LogPri::Debug:     { return "DBG"; }
-            case LogPri::Default:   { return "DEF"; }
-            case LogPri::Warn:      { return "WRN"; }
-            case LogPri::Error:     { return "ERR"; }
-            case LogPri::Fatal:     { return "FAT"; }
-            case LogPri::Count:     //intentional fall-through
+            case LogPri::None:
+            {
+                return "---";
+            }
+            case LogPri::Debug:
+            {
+                return "DBG";
+            }
+            case LogPri::Default:
+            {
+                return "DEF";
+            }
+            case LogPri::Warn:
+            {
+                return "WRN";
+            }
+            case LogPri::Error:
+            {
+                return "ERR";
+            }
+            case LogPri::Fatal:
+            {
+                return "FAT";
+            }
+            case LogPri::Count: // intentional fall-through
             default:
             {
                 assert(!"LogBase::Enum value in LogBase::GetLogPriName()");
@@ -189,33 +160,52 @@ namespace log
         }
     }
 
-
     const std::string LogBase::GetLogPriColor(const LogPri::Enum PRI) const
     {
-        //prevent the \e below from generating warnings in visual studio
-        #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
-        #pragma warning(push)
-        #pragma warning(disable : 4129)
-        #endif
+// prevent the \e below from generating warnings in visual studio
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
+#pragma warning(push)
+#pragma warning(disable : 4129)
+#endif
 
-        switch(PRI)
+        switch (PRI)
         {
-            case LogPri::None:      { return ""; }
-            case LogPri::Debug:     { return "\033[36;40m"; } //cyan on black
-            case LogPri::Default:   { return ""; }
-            case LogPri::Warn:      { return "\033[33;40m"; } //yellow on black
-            case LogPri::Error:     { return "\033[31;40m"; } //red on black
-            case LogPri::Fatal:     { return "\033[30;41m"; } //black on red
-            //note how the Count enum is used as a special case for terminating color output
-            case LogPri::Count:     //intentional fall-through
-            default:                { return "\033[0;0m"; } //diable color, return to default
+            case LogPri::None:
+            {
+                return "";
+            }
+            case LogPri::Debug:
+            {
+                return "\033[36;40m";
+            } // cyan on black
+            case LogPri::Default:
+            {
+                return "";
+            }
+            case LogPri::Warn:
+            {
+                return "\033[33;40m";
+            } // yellow on black
+            case LogPri::Error:
+            {
+                return "\033[31;40m";
+            } // red on black
+            case LogPri::Fatal:
+            {
+                return "\033[30;41m";
+            } // black on red
+            // note how the Count enum is used as a special case for terminating color output
+            case LogPri::Count: // intentional fall-through
+            default:
+            {
+                return "\033[0;0m";
+            } // diable color, return to default
         }
 
-        #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
-        #pragma warning(pop)
-        #endif
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
+#pragma warning(pop)
+#endif
     }
-
 
     void LogBase::FlushWrapper(
         const std::string & MSG,
@@ -223,16 +213,16 @@ namespace log
         const std::string & FILE,
         const int LINE)
     {
-        //This project turned out to be single-threaded so there is no need for this
-        //boost::recursive_mutex::scoped_lock lock(fileAccessMutex_);
+        // This project turned out to be single-threaded so there is no need for this
+        // boost::recursive_mutex::scoped_lock lock(fileAccessMutex_);
 
-        //handle file rotation, if it is limited, and we are over the limit
+        // handle file rotation, if it is limited, and we are over the limit
         if (static_cast<unsigned long>(fileStream_.tellp()) >= FILE_SIZE_LIMIT_BYTES_)
         {
             OpenNextFile();
         }
 
-        //temp to allow On..() functions to change the priority if needed
+        // temp to allow On..() functions to change the priority if needed
         LogPri::Enum tempPri(PRI);
 
         OnFlushBeforeFileWrite(MSG, tempPri);
@@ -240,7 +230,6 @@ namespace log
         OnFlushBeforeConsoleWrite(MSG, tempPri);
         EchoToConsole(MSG, tempPri, FILE, LINE);
     }
-
 
     void LogBase::FlushActual(
         const std::string & MSG,
@@ -260,79 +249,75 @@ namespace log
         AppendFileLine(fileStream_, FILE, LINE);
         fileStream_ << "  ";
 
-        //NOTE: std::endl forces the stream to flush
+        // NOTE: std::endl forces the stream to flush
         fileStream_ << MSG << std::endl;
     }
 
-
     void LogBase::OpenNextFile(void)
     {
-        //close if needed
+        // close if needed
         if (true == fileStream_.is_open())
         {
             OnFileClose(true);
             fileStream_.close();
         }
 
-        //create directory if needed
+        // create directory if needed
         if (false == bfs::exists(FILE_PATH_))
         {
-            const bool DIR_CREATE_RESULT( bfs::create_directories(FILE_PATH_) );
+            const bool DIR_CREATE_RESULT(bfs::create_directories(FILE_PATH_));
             if (false == DIR_CREATE_RESULT)
             {
                 std::ostringstream es;
                 es << "LogBase was unable to create the log directory \"" << GetFilePath() << "\"";
                 std::cerr << es.str() << std::endl;
 
-                throw std::runtime_error( es.str() );
+                throw std::runtime_error(es.str());
             }
         }
 
-        //which file to use next
+        // which file to use next
         if (++fileNum_ > FILE_NUM_MAX_)
         {
             fileNum_ = FILE_NUM_MIN;
         }
 
-        //new file name (complete with file number, and extension postfixes)
+        // new file name (complete with file number, and extension postfixes)
         std::ostringstream fileNameStream;
         AppendFileName(fileNameStream);
 
-        //boost path object for that file
-        auto filePath( bfs::system_complete(bfs::path(FILE_PATH_ /
-            fileNameStream.str()) ) );
+        // boost path object for that file
+        auto filePath(bfs::system_complete(bfs::path(FILE_PATH_ / fileNameStream.str())));
 
-        //check for pre-existing files
+        // check for pre-existing files
         while (bfs::exists(filePath))
         {
             ++fileNum_;
             fileNameStream.str("");
             AppendFileName(fileNameStream);
-            filePath = bfs::system_complete(bfs::path(FILE_PATH_ /
-                fileNameStream.str()));
+            filePath = bfs::system_complete(bfs::path(FILE_PATH_ / fileNameStream.str()));
         }
 
-        //open the file
-        //NOTE:  Since there are always multiple log files used in rotation,
+        // open the file
+        // NOTE:  Since there are always multiple log files used in rotation,
         //       there is no need to append.
         //       Everytime we switch to a new file, the entire file gets erased.
         //       (enforced by the std::ios::out flag)
         fileStream_.open(filePath.string().c_str(), std::ios::out);
         fileStream_.seekp(0, std::ios::beg);
 
-        //verify the file stream is open and ready
+        // verify the file stream is open and ready
         if (false == IsFileReady())
         {
             std::ostringstream es;
             es << "LogBase was unable to open \"" << filePath.string() << "\" for writing.";
             std::cerr << es.str() << std::endl;
 
-            throw std::runtime_error( es.str() );
+            throw std::runtime_error(es.str());
         }
 
         OnFileOpen();
     }
-
 
     void LogBase::EchoToConsole(
         const std::string & MSG,
@@ -340,69 +325,54 @@ namespace log
         const std::string & FILE,
         const int LINE)
     {
-        if ((PRI >= CONSOLE_ECHO_PRIORITY_) &&
-            (PRI != LogPri::None) &&
-            (PRI != LogPri::Count))
+        if ((PRI >= CONSOLE_ECHO_PRIORITY_) && (PRI != LogPri::None) && (PRI != LogPri::Count))
         {
-            //NOTE: std::endl forces the stream to flush
+            // NOTE: std::endl forces the stream to flush
             std::clog << LogBase::GetLogPriColor(PRI);
 
             AppendFileLine(std::clog, FILE, LINE);
             AppendPriority(std::clog, PRI);
 
-            std::clog << " "
-                      << MSG
-                      << LogBase::GetLogPriColor(LogPri::Count)
-                      << std::endl;
+            std::clog << " " << MSG << LogBase::GetLogPriColor(LogPri::Count) << std::endl;
         }
     }
 
-
     void LogBase::AppendFileName(std::ostream & stream) const
     {
-        stream  << FILE_NAME_ << "-" << fileNum_ << FILE_NAME_EXT_;
+        stream << FILE_NAME_ << "-" << fileNum_ << FILE_NAME_EXT_;
     }
-
 
     void LogBase::AppendPriority(std::ostream & stream, const LogPri::Enum PRI) const
     {
         stream << LogBase::GetLogPriName(PRI);
     }
 
-
     void LogBase::AppendDate(std::ostream & stream) const
     {
         auto const DATE_INFO{
-            boost::posix_time::microsec_clock::universal_time().date().year_month_day() };
+            boost::posix_time::microsec_clock::universal_time().date().year_month_day()
+        };
 
-        stream  << std::setfill('0')
-                << DATE_INFO.year
-                << "-"
-                << std::setw(2) << static_cast<int>(DATE_INFO.month)
-                << "-"
-                << std::setw(2) << DATE_INFO.day;
+        stream << std::setfill('0') << DATE_INFO.year << "-" << std::setw(2)
+               << static_cast<int>(DATE_INFO.month) << "-" << std::setw(2) << DATE_INFO.day;
     }
-
 
     void LogBase::AppendTime(std::ostream & stream) const
     {
         auto const TIME_OF_DAY_DURATION{
-            boost::posix_time::microsec_clock::local_time().time_of_day() };
+            boost::posix_time::microsec_clock::local_time().time_of_day()
+        };
 
-        stream << std::setfill('0')
-               << std::setw(2) << TIME_OF_DAY_DURATION.hours() << ":"
-               << std::setw(2) << TIME_OF_DAY_DURATION.minutes() << ":"
-               << std::setw(2) << TIME_OF_DAY_DURATION.seconds() << ":"
-               << std::setw(6) << TIME_OF_DAY_DURATION.fractional_seconds();
+        stream << std::setfill('0') << std::setw(2) << TIME_OF_DAY_DURATION.hours() << ":"
+               << std::setw(2) << TIME_OF_DAY_DURATION.minutes() << ":" << std::setw(2)
+               << TIME_OF_DAY_DURATION.seconds() << ":" << std::setw(6)
+               << TIME_OF_DAY_DURATION.fractional_seconds();
     }
 
-
     void LogBase::AppendFileLine(
-        std::ostream & stream,
-        const std::string & FILE,
-        const int LINE) const
+        std::ostream & stream, const std::string & FILE, const int LINE) const
     {
-        //skip if no file/line specified
+        // skip if no file/line specified
         if (false == FILE.empty())
         {
             std::string fileNameOnly("");
@@ -423,26 +393,23 @@ namespace log
         }
     }
 
-
-    //NOTE:  When writing to the log in these overrides, always use FlushActual()!
+    // NOTE:  When writing to the log in these overrides, always use FlushActual()!
     void LogBase::OnFlushBeforeFileWrite(const std::string &, LogPri::Enum &)
     {
-        //no-op until overridden
+        // no-op until overridden
     }
 
-
-    //NOTE:  When writing to the log in these overrides, always use FlushActual()!
+    // NOTE:  When writing to the log in these overrides, always use FlushActual()!
     void LogBase::OnFlushBeforeConsoleWrite(const std::string &, LogPri::Enum &)
     {
-        //no-op until overridden
+        // no-op until overridden
     }
 
-
-    //NOTE:  When writing to the log in these overrides, always use FlushActual()!
+    // NOTE:  When writing to the log in these overrides, always use FlushActual()!
     void LogBase::OnFileOpen()
     {
         std::ostringstream s1;
-        s1  << "Start of logfile:  " << GetFileName();
+        s1 << "Start of logfile:  " << GetFileName();
         s1 << "  (which is " << GetFileNum() << " of " << GetFileNumMax() << ")";
         FlushActual(s1.str(), LogPri::None, __FILE__, __LINE__);
 
@@ -451,22 +418,21 @@ namespace log
         FlushActual(s2.str(), LogPri::None, __FILE__, __LINE__);
     }
 
-
-    //NOTE:  When writing to the log in these overrides, always use FlushActual()!
+    // NOTE:  When writing to the log in these overrides, always use FlushActual()!
     void LogBase::OnFileClose(const bool WAS_SIZE_EXCEEDED)
     {
         if (IsFileReady())
         {
             std::ostringstream s1;
-            s1  << "End of logfile:  " << GetFileName();
+            s1 << "End of logfile:  " << GetFileName();
             s1 << "  (which is " << GetFileNum() << " of " << GetFileNumMax() << ")";
             FlushActual(s1.str(), LogPri::None, __FILE__, __LINE__);
 
             std::ostringstream s2;
             if (WAS_SIZE_EXCEEDED)
             {
-                s2 << "This log file is ending after exceeding the size limit of " <<
-                    GetFileSizeLimitBytes() << "bytes.";
+                s2 << "This log file is ending after exceeding the size limit of "
+                   << GetFileSizeLimitBytes() << "bytes.";
             }
             else
             {
@@ -477,11 +443,6 @@ namespace log
         }
     }
 
-
-    bool LogBase::IsFileReady()
-    {
-        return (fileStream_.good()) && (fileStream_.is_open());
-    }
-
+    bool LogBase::IsFileReady() { return (fileStream_.good()) && (fileStream_.is_open()); }
 }
 }

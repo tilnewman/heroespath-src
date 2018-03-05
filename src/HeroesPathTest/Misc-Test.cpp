@@ -30,9 +30,7 @@
 
 #include "misc/real.hpp"
 
-
 using namespace heroespath::misc;
-
 
 BOOST_AUTO_TEST_CASE(Real_IsRealZero)
 {
@@ -42,13 +40,12 @@ BOOST_AUTO_TEST_CASE(Real_IsRealZero)
     BOOST_CHECK(IsRealZero(1.0) == false);
     BOOST_CHECK(IsRealZero(1.0f) == false);
 
-    BOOST_CHECK(IsRealZero( 0.00001) == false);
+    BOOST_CHECK(IsRealZero(0.00001) == false);
     BOOST_CHECK(IsRealZero(-0.00001f) == false);
 
     BOOST_CHECK(IsRealZero(0.0 + std::numeric_limits<double>::epsilon()) == false);
     BOOST_CHECK(IsRealZero(0.0 - std::numeric_limits<double>::epsilon()) == false);
 }
-
 
 BOOST_AUTO_TEST_CASE(Real_IsRealOne)
 {
@@ -64,7 +61,6 @@ BOOST_AUTO_TEST_CASE(Real_IsRealOne)
     BOOST_CHECK(IsRealOne(1.0 + std::numeric_limits<double>::epsilon()) == false);
     BOOST_CHECK(IsRealOne(1.0 - std::numeric_limits<double>::epsilon()) == false);
 }
-
 
 BOOST_AUTO_TEST_CASE(Real_IsRealClose)
 {

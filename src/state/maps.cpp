@@ -30,30 +30,26 @@
 #include "maps.hpp"
 #include "state/world-factory.hpp"
 
-
 namespace heroespath
 {
 namespace state
 {
 
     Maps::Maps()
-    :
-        level_(map::Level::Count),
-        levels_()
+        : level_(map::Level::Count)
+        , levels_()
     {}
-
 
     void Maps::SetupForNewGame()
     {
         level_ = map::Level::Thornberry;
         levels_.clear();
-        
+
         for (int i(0); i < map::Level::Count; ++i)
         {
-            levels_.push_back( Level(static_cast<map::Level::Enum>(i)) );
+            levels_.push_back(Level(static_cast<map::Level::Enum>(i)));
             WorldFactory::SetupLevelForNewGame(levels_[levels_.size() - 1]);
         }
     }
-
 }
 }

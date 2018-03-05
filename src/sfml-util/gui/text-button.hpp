@@ -28,72 +28,69 @@
 // text-button.hpp
 //  Drawing and handling code for buttons that are only text.
 //
-#include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/gui/gui-entity-text.hpp"
+#include "sfml-util/i-callback-handler.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    class MouseTextInfo;
-
-
-    class TextButton;
-    namespace callback
+    namespace gui
     {
-        using TextButtonCallbackPackage_t =
-            sfml_util::callback::PtrWrapper<TextButton>;
 
-        using ITextButtonCallbackHandler_t =
-            sfml_util::callback::ICallbackHandler<TextButtonCallbackPackage_t, bool>;
+        class MouseTextInfo;
+
+        class TextButton;
+        namespace callback
+        {
+            using TextButtonCallbackPackage_t = sfml_util::callback::PtrWrapper<TextButton>;
+
+            using ITextButtonCallbackHandler_t
+                = sfml_util::callback::ICallbackHandler<TextButtonCallbackPackage_t, bool>;
+        }
+
+        // Base class for a text button that has different text styles for mouse positions
+        class TextButton : public GuiText
+        {
+            TextButton(const TextButton &) = delete;
+            TextButton & operator=(const TextButton &) = delete;
+
+        public:
+            // if using this constructor, Setup() must be called before any other functions
+            explicit TextButton(
+                const std::string & NAME,
+                callback::ITextButtonCallbackHandler_t * callbackHandlerPtr);
+
+            TextButton(
+                const std::string & NAME,
+                const float POS_LEFT,
+                const float POS_TOP,
+                const MouseTextInfo & MOUSE_TEXT_INFO,
+                callback::ITextButtonCallbackHandler_t * callbackHandlerPtr);
+
+            virtual ~TextButton();
+
+            void Setup(
+                const float POS_LEFT,
+                const float POS_TOP,
+                const MouseTextInfo & MOUSE_TEXT_INFO,
+                callback::ITextButtonCallbackHandler_t * callbackHandlerPtr);
+
+        protected:
+            virtual void OnClick(const sf::Vector2f &);
+
+        private:
+            callback::ITextButtonCallbackHandler_t * callbackHandlerPtr_;
+        };
+
+        using TextButtonUPtr_t = std::unique_ptr<TextButton>;
+        using TextButtonUVec_t = std::vector<TextButtonUPtr_t>;
     }
-
-
-    //Base class for a text button that has different text styles for mouse positions
-    class TextButton : public GuiText
-    {
-        TextButton(const TextButton &) =delete;
-        TextButton & operator=(const TextButton &) =delete;
-
-    public:
-        //if using this constructor, Setup() must be called before any other functions
-        explicit TextButton(
-            const std::string & NAME,
-            callback::ITextButtonCallbackHandler_t * callbackHandlerPtr);
-
-        TextButton(const std::string &   NAME,
-                   const float           POS_LEFT,
-                   const float           POS_TOP,
-                   const MouseTextInfo & MOUSE_TEXT_INFO,
-                   callback::ITextButtonCallbackHandler_t * callbackHandlerPtr);
-
-        virtual ~TextButton();
-
-        void Setup(const float           POS_LEFT,
-                   const float           POS_TOP,
-                   const MouseTextInfo & MOUSE_TEXT_INFO,
-                   callback::ITextButtonCallbackHandler_t * callbackHandlerPtr);
-
-    protected:
-        virtual void OnClick(const sf::Vector2f &);
-
-    private:
-        callback::ITextButtonCallbackHandler_t * callbackHandlerPtr_;
-    };
-
-    using TextButtonUPtr_t = std::unique_ptr<TextButton>;
-    using TextButtonUVec_t = std::vector<TextButtonUPtr_t>;
-
-}
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_TEXTBUTTON_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_TEXTBUTTON_HPP_INCLUDED

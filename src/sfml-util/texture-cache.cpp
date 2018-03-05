@@ -31,20 +31,19 @@
 
 #include "sfml-util/loaders.hpp"
 
-#include "log/log-macros.hpp"
 #include "game/game-data-file.hpp"
+#include "log/log-macros.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <map>
-#include <vector>
-#include <cctype>
-#include <utility>
 #include <algorithm>
-
+#include <cctype>
+#include <map>
+#include <utility>
+#include <vector>
 
 namespace heroespath
 {
@@ -53,28 +52,21 @@ namespace sfml_util
 
     std::unique_ptr<TextureCache> TextureCache::instanceUPtr_{ nullptr };
 
-
     TextureCache::TextureCache()
-    :
-        cacheUVec_  (),
-        strToVecMap_()
+        : cacheUVec_()
+        , strToVecMap_()
     {
         M_HP_LOG_DBG("Singleton Construction: TextureCache");
 
-        //Any value greater than (about) a thousand will work here.
-        //Even an aggressize stage should not exceed 500.
+        // Any value greater than (about) a thousand will work here.
+        // Even an aggressize stage should not exceed 500.
         cacheUVec_.reserve(1024);
 
-        //put an empty image at index zero so there is something to return by default
+        // put an empty image at index zero so there is something to return by default
         cacheUVec_.push_back(std::make_unique<sf::Texture>());
     }
 
-
-    TextureCache::~TextureCache()
-    {
-        M_HP_LOG_DBG("Singleton Construction: TextureCache");
-    }
-
+    TextureCache::~TextureCache() { M_HP_LOG_DBG("Singleton Construction: TextureCache"); }
 
     TextureCache * TextureCache::Instance()
     {
@@ -86,7 +78,6 @@ namespace sfml_util
 
         return instanceUPtr_.get();
     }
-
 
     void TextureCache::Acquire()
     {
@@ -100,96 +91,96 @@ namespace sfml_util
         }
     }
 
-
     void TextureCache::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
             "sfml_util::TextureCache::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
 
-
-    std::size_t TextureCache::AddByKey(
-        const std::string & GAMEDATAFILE_KEY_STR,
-        const bool          WILL_SMOOTH)
+    std::size_t
+        TextureCache::AddByKey(const std::string & GAMEDATAFILE_KEY_STR, const bool WILL_SMOOTH)
     {
         return AddByPath(
             game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR), WILL_SMOOTH);
     }
 
-
-    std::size_t TextureCache::AddByPath(
-        const std::string & PATH_TO_TEXTURE_STR,
-        const bool          WILL_SMOOTH)
+    std::size_t
+        TextureCache::AddByPath(const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH)
     {
         auto const FOUND_ITER{ strToVecMap_.find(PATH_TO_TEXTURE_STR) };
         if (FOUND_ITER != strToVecMap_.end())
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER->second.empty() == false),
-                "sfml_util::TextureCache::AddByPath(path=\"" << PATH_TO_TEXTURE_STR
-                << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
-                << ") failed because strToVecMap_ entry was an empty vec.");
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (FOUND_ITER->second.empty() == false),
+                "sfml_util::TextureCache::AddByPath(path=\""
+                    << PATH_TO_TEXTURE_STR << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
+                    << ") failed because strToVecMap_ entry was an empty vec.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER->second[0] < cacheUVec_.size()),
-                "sfml_util::TextureCache::AddByPath(path=\"" << PATH_TO_TEXTURE_STR
-                << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
-                << ") failed because strToVecMap_ entry=" << FOUND_ITER->second[0]
-                << " was out of bounds with cacheUVec_.size()=" << cacheUVec_.size() << ".");
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (FOUND_ITER->second[0] < cacheUVec_.size()),
+                "sfml_util::TextureCache::AddByPath(path=\""
+                    << PATH_TO_TEXTURE_STR << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
+                    << ") failed because strToVecMap_ entry=" << FOUND_ITER->second[0]
+                    << " was out of bounds with cacheUVec_.size()=" << cacheUVec_.size() << ".");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((cacheUVec_[FOUND_ITER->second[0]].get() != nullptr),
-                "sfml_util::TextureCache::AddByPath(path=\"" << PATH_TO_TEXTURE_STR
-                << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
-                << ") failed because strToVecMap_ entry pointed to a null pointer.");
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (cacheUVec_[FOUND_ITER->second[0]].get() != nullptr),
+                "sfml_util::TextureCache::AddByPath(path=\""
+                    << PATH_TO_TEXTURE_STR << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
+                    << ") failed because strToVecMap_ entry pointed to a null pointer.");
 
             return FOUND_ITER->second[0];
         }
 
         auto const INDEX{ AddByPathInternal(PATH_TO_TEXTURE_STR, WILL_SMOOTH) };
-        strToVecMap_.insert( std::make_pair(PATH_TO_TEXTURE_STR, misc::SizetVec_t(1, INDEX)) );
+        strToVecMap_.insert(std::make_pair(PATH_TO_TEXTURE_STR, misc::SizetVec_t(1, INDEX)));
         return INDEX;
     }
 
-
     const misc::SizetVec_t TextureCache::AddAllInDirectoryByKey(
-        const std::string & DIR_PATH_KEY,
-        const bool          WILL_SMOOTH)
+        const std::string & DIR_PATH_KEY, const bool WILL_SMOOTH)
     {
-        return AddAllInDirectoryByPath(game::GameDataFile::Instance()->GetMediaPath(
-            DIR_PATH_KEY), WILL_SMOOTH);
+        return AddAllInDirectoryByPath(
+            game::GameDataFile::Instance()->GetMediaPath(DIR_PATH_KEY), WILL_SMOOTH);
     }
 
-
     const misc::SizetVec_t TextureCache::AddAllInDirectoryByPath(
-        const std::string & DIR_PATH_PARAM_STR,
-        const bool WILL_SMOOTH)
+        const std::string & DIR_PATH_PARAM_STR, const bool WILL_SMOOTH)
     {
         auto const FOUND_ITER{ strToVecMap_.find(DIR_PATH_PARAM_STR) };
         if (FOUND_ITER != strToVecMap_.end())
         {
-            M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER->second.empty() == false),
-                "sfml_util::TextureCache::AddAllInDirectoryByPath(path=\"" << DIR_PATH_PARAM_STR
-                << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
-                << ") failed because strToVecMap_ entry was an empty vec.");
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (FOUND_ITER->second.empty() == false),
+                "sfml_util::TextureCache::AddAllInDirectoryByPath(path=\""
+                    << DIR_PATH_PARAM_STR << "\", will_smooth=" << std::boolalpha << WILL_SMOOTH
+                    << ") failed because strToVecMap_ entry was an empty vec.");
 
             return FOUND_ITER->second;
         }
 
-        //verify directory exists
+        // verify directory exists
         namespace bfs = boost::filesystem;
 
         auto const DIR_PATH{ bfs::system_complete(bfs::path(DIR_PATH_PARAM_STR)) };
         auto const DIR_PATH_COMPLETE_STR{ DIR_PATH.string() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((bfs::exists(DIR_PATH)), "sfml_util::TextureCache::"
-            << "AddAllInDirectory(\"" << DIR_PATH_COMPLETE_STR
-            << "\") failed because that path does not exist!");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (bfs::exists(DIR_PATH)),
+            "sfml_util::TextureCache::"
+                << "AddAllInDirectory(\"" << DIR_PATH_COMPLETE_STR
+                << "\") failed because that path does not exist!");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((bfs::is_directory(DIR_PATH)), "sfml_util::TextureCache::"
-            << "AddAllInDirectory(\"" << DIR_PATH_COMPLETE_STR
-            << "\") failed because that is not a directory.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (bfs::is_directory(DIR_PATH)),
+            "sfml_util::TextureCache::"
+                << "AddAllInDirectory(\"" << DIR_PATH_COMPLETE_STR
+                << "\") failed because that is not a directory.");
 
-        //collect all valid file paths in pathVec (not in any order)
+        // collect all valid file paths in pathVec (not in any order)
         std::vector<std::string> pathVec;
 
         bfs::directory_iterator endItr;
@@ -200,11 +191,8 @@ namespace sfml_util
                 continue;
             }
 
-            const std::vector<std::string> INVALID_TEXT_VEC = { ".txt",
-                                                                ".DS_Store",
-                                                                "sample.gif",
-                                                                ".html",
-                                                                ".htm"};
+            const std::vector<std::string> INVALID_TEXT_VEC
+                = { ".txt", ".DS_Store", "sample.gif", ".html", ".htm" };
 
             auto const NEXT_PATH_STR{ dirItr->path().string() };
 
@@ -228,68 +216,75 @@ namespace sfml_util
             }
         }
 
-        //order the path strings by the last occurring numbers in the filenames
+        // order the path strings by the last occurring numbers in the filenames
         ReorderByLastNumber(pathVec);
 
-        //add each file to indexVec (now in order)
+        // add each file to indexVec (now in order)
         misc::SizetVec_t indexVec;
         for (auto const & PATH_STR : pathVec)
         {
             indexVec.push_back(AddByPathInternal(PATH_STR, WILL_SMOOTH));
         }
 
-        //verify that at least one valid file was found
-        M_ASSERT_OR_LOGANDTHROW_SS((indexVec.empty() == false), "sfml_util::TextureCache::"
-            << "AddAllInDirectory(\"" << DIR_PATH_COMPLETE_STR
-            << "\") failed to find any valid images.");
+        // verify that at least one valid file was found
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (indexVec.empty() == false),
+            "sfml_util::TextureCache::"
+                << "AddAllInDirectory(\"" << DIR_PATH_COMPLETE_STR
+                << "\") failed to find any valid images.");
 
-        //keep track of which texture indexes were associated with which directory
+        // keep track of which texture indexes were associated with which directory
         strToVecMap_.insert(std::make_pair(DIR_PATH_PARAM_STR, indexVec));
         return indexVec;
     }
-
 
     void TextureCache::RemoveByKey(const std::string & GAMEDATAFILE_KEY_STR)
     {
         RemoveByPath(game::GameDataFile::Instance()->GetMediaPath(GAMEDATAFILE_KEY_STR));
     }
 
-
     void TextureCache::RemoveByPath(const std::string & PATH_TO_TEXTURE_STR)
     {
         auto const FOUND_ITER{ strToVecMap_.find(PATH_TO_TEXTURE_STR) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER != strToVecMap_.end()),
-            "sfml_util::TextureCache::RemoveByPath(\"" << PATH_TO_TEXTURE_STR
-            << ") failed because that path was not found.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (FOUND_ITER != strToVecMap_.end()),
+            "sfml_util::TextureCache::RemoveByPath(\""
+                << PATH_TO_TEXTURE_STR << ") failed because that path was not found.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((FOUND_ITER->second.empty() == false),
-            "sfml_util::TextureCache::RemoveByPath(\"" << PATH_TO_TEXTURE_STR
-            << ") failed because strToVecMap_ entry was an empty vec.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (FOUND_ITER->second.empty() == false),
+            "sfml_util::TextureCache::RemoveByPath(\""
+                << PATH_TO_TEXTURE_STR << ") failed because strToVecMap_ entry was an empty vec.");
 
-        //make a copy of the vector because RemoveByIndexVec() may delete FOUND_ITER
+        // make a copy of the vector because RemoveByIndexVec() may delete FOUND_ITER
         auto const VEC_COPY{ FOUND_ITER->second };
 
         RemoveByIndexVec(VEC_COPY);
     }
 
-
     void TextureCache::RemoveByIndex(const std::size_t INDEX)
     {
         if (INDEX == 0)
         {
-            M_HP_LOG_ERR("sfml_util::TextureCache::RemoveByIndex(0) "
+            M_HP_LOG_ERR(
+                "sfml_util::TextureCache::RemoveByIndex(0) "
                 << "failed because zero is invalid.");
 
             return;
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < cacheUVec_.size()), "sfml_util::TextureCache::"
-            << "RemoveByIndex(" << INDEX << "\") failed because that index is out of range."
-            << "(size=" << cacheUVec_.size() << ")");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (INDEX < cacheUVec_.size()),
+            "sfml_util::TextureCache::"
+                << "RemoveByIndex(" << INDEX << "\") failed because that index is out of range."
+                << "(size=" << cacheUVec_.size() << ")");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((cacheUVec_[INDEX].get() != nullptr),"sfml_util::TextureCache::"
-            << "RemoveByIndex(" << INDEX << "\") failed because that pointer was already null.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (cacheUVec_[INDEX].get() != nullptr),
+            "sfml_util::TextureCache::"
+                << "RemoveByIndex(" << INDEX
+                << "\") failed because that pointer was already null.");
 
         cacheUVec_[INDEX].reset();
 
@@ -308,7 +303,6 @@ namespace sfml_util
         }
     }
 
-
     void TextureCache::RemoveByIndexVec(const misc::SizetVec_t & INDEX_VEC)
     {
         auto const NUM_INDEXES{ INDEX_VEC.size() };
@@ -317,7 +311,8 @@ namespace sfml_util
             auto const NEXT_INDEX{ INDEX_VEC[i] };
             if (NEXT_INDEX == 0)
             {
-                M_HP_LOG_ERR("sfml_util::TextureCache::RemoveByIndexVec(INDEX_VEC.size()="
+                M_HP_LOG_ERR(
+                    "sfml_util::TextureCache::RemoveByIndexVec(INDEX_VEC.size()="
                     << NUM_INDEXES << ") failed at INDEX_VEC[" << i
                     << "] because it contained zero.");
             }
@@ -328,10 +323,9 @@ namespace sfml_util
         }
     }
 
-
     void TextureCache::RemoveAll()
     {
-        for(auto & u_ptr : cacheUVec_)
+        for (auto & u_ptr : cacheUVec_)
         {
             u_ptr.reset();
         }
@@ -341,43 +335,44 @@ namespace sfml_util
         cacheUVec_[0] = std::make_unique<sf::Texture>();
     }
 
-
     const sf::Texture & TextureCache::GetByIndex(const std::size_t INDEX) const
     {
         if (INDEX == 0)
         {
-            M_HP_LOG_ERR("sfml_util::TextureCache::GetByIndex(0"
+            M_HP_LOG_ERR(
+                "sfml_util::TextureCache::GetByIndex(0"
                 << "\") failed because zero is always an invalid index.");
 
-            return * cacheUVec_[0];
+            return *cacheUVec_[0];
         }
 
         if (INDEX >= cacheUVec_.size())
         {
-            M_HP_LOG_ERR("sfml_util::TextureCache::GetByIndex(" << INDEX
-                << "\") failed because that index is out of range."
+            M_HP_LOG_ERR(
+                "sfml_util::TextureCache::GetByIndex("
+                << INDEX << "\") failed because that index is out of range."
                 << "(size=" << cacheUVec_.size() << ")");
 
-            return * cacheUVec_[0];
+            return *cacheUVec_[0];
         }
 
         if (cacheUVec_[INDEX].get() == nullptr)
         {
-            M_HP_LOG_ERR("sfml_util::TextureCache::GetByIndex(" << INDEX
-                << "\") failed because the pointer at that index is null.");
+            M_HP_LOG_ERR(
+                "sfml_util::TextureCache::GetByIndex("
+                << INDEX << "\") failed because the pointer at that index is null.");
 
-            return * cacheUVec_[0];
+            return *cacheUVec_[0];
         }
 
-        return * cacheUVec_[INDEX];
+        return *cacheUVec_[INDEX];
     }
-
 
     std::size_t TextureCache::EstablishNextAvailableIndex()
     {
         auto const NUM_TEXTURES{ cacheUVec_.size() };
 
-        //start at one because zero is always an invalid index
+        // start at one because zero is always an invalid index
         for (std::size_t i(1); i < NUM_TEXTURES; ++i)
         {
             if (cacheUVec_[i].get() == nullptr)
@@ -386,13 +381,12 @@ namespace sfml_util
             }
         }
 
-        cacheUVec_.push_back( std::make_unique<sf::Texture>() );
+        cacheUVec_.push_back(std::make_unique<sf::Texture>());
         return NUM_TEXTURES;
     }
 
-
-    std::size_t TextureCache::AddByPathInternal(const std::string & PATH_TO_TEXTURE_STR,
-                                                const bool          WILL_SMOOTH)
+    std::size_t TextureCache::AddByPathInternal(
+        const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH)
     {
         auto const INDEX{ EstablishNextAvailableIndex() };
 
@@ -403,7 +397,7 @@ namespace sfml_util
 
         try
         {
-            sfml_util::LoadTexture( * cacheUVec_[INDEX], PATH_TO_TEXTURE_STR, WILL_SMOOTH);
+            sfml_util::LoadTexture(*cacheUVec_[INDEX], PATH_TO_TEXTURE_STR, WILL_SMOOTH);
         }
         catch (...)
         {
@@ -414,15 +408,13 @@ namespace sfml_util
         return INDEX;
     }
 
-
     void TextureCache::ReorderByLastNumber(std::vector<std::string> & strVec)
     {
         std::multimap<std::size_t, std::string> numberToStrMMap;
 
         for (auto const & STR : strVec)
         {
-            numberToStrMMap.insert(
-                std::pair<std::size_t, std::string>(FindLastNumber(STR), STR) );
+            numberToStrMMap.insert(std::pair<std::size_t, std::string>(FindLastNumber(STR), STR));
         }
 
         strVec.clear();
@@ -432,7 +424,6 @@ namespace sfml_util
             strVec.push_back(NUM_STR_PAIR.second);
         }
     }
-
 
     std::size_t TextureCache::FindLastNumber(const std::string & FILE_NAME)
     {
@@ -460,7 +451,6 @@ namespace sfml_util
             --i;
         } while (i != 0);
 
-
         std::reverse(numberStr.begin(), numberStr.end());
 
         try
@@ -472,6 +462,5 @@ namespace sfml_util
             return 0;
         }
     }
-
 }
 }

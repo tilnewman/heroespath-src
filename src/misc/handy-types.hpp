@@ -27,10 +27,9 @@
 //
 // handy-types.hpp
 //
+#include <cstddef>
 #include <string>
 #include <vector>
-#include <cstddef>
-
 
 namespace heroespath
 {
@@ -39,8 +38,7 @@ namespace misc
 
     using StrVec_t = std::vector<std::string>;
     using SizetVec_t = std::vector<std::size_t>;
-
 }
 }
 
-#endif //HEROESPATH_MISC_HANDYTYPES_HPP_INCLUDED
+#endif // HEROESPATH_MISC_HANDYTYPES_HPP_INCLUDED

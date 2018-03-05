@@ -28,76 +28,68 @@
 // mouse-text-info.hpp
 //  A handy wrapper struct that holds three colors relating to mouse position.
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/text-info.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include "popup/popup-enums.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    class MouseTextInfo
+    namespace gui
     {
-    public:
-        MouseTextInfo();
 
-        explicit MouseTextInfo(const TextInfo & TEXT_INFO);
+        class MouseTextInfo
+        {
+        public:
+            MouseTextInfo();
 
-        MouseTextInfo(
-            const TextInfo & UP,
-            const TextInfo & DOWN,
-            const TextInfo & OVER);
+            explicit MouseTextInfo(const TextInfo & TEXT_INFO);
 
-        MouseTextInfo(
-            const TextInfo & TEXT_INFO_UP,
-            const sf::Color & COLOR_DOWN,
-            const sf::Color & COLOR_OVER);
+            MouseTextInfo(const TextInfo & UP, const TextInfo & DOWN, const TextInfo & OVER);
 
-        MouseTextInfo(
-            const std::string & TEXT,
-            const FontPtr_t FONT_PTR,
-            const unsigned int  SIZE,
-            const sf::Color & COLOR_UP   = sf::Color(220,220,220),
-            const sf::Color & COLOR_DOWN = sf::Color::White,
-            const sf::Color & COLOR_OVER = sf::Color::White);
+            MouseTextInfo(
+                const TextInfo & TEXT_INFO_UP,
+                const sf::Color & COLOR_DOWN,
+                const sf::Color & COLOR_OVER);
 
-        //MouseTextInfo generating helper functions
-        static const MouseTextInfo Make_PopupButtonSet(
-            const std::string & NAME,
-            const popup::PopupButtonColor::Enum);
+            MouseTextInfo(
+                const std::string & TEXT,
+                const FontPtr_t FONT_PTR,
+                const unsigned int SIZE,
+                const sf::Color & COLOR_UP = sf::Color(220, 220, 220),
+                const sf::Color & COLOR_DOWN = sf::Color::White,
+                const sf::Color & COLOR_OVER = sf::Color::White);
 
-        static const MouseTextInfo Make_InteractionButtonSet(const std::string & NAME);
+            // MouseTextInfo generating helper functions
+            static const MouseTextInfo
+                Make_PopupButtonSet(const std::string & NAME, const popup::PopupButtonColor::Enum);
 
-        TextInfo up;
-        TextInfo down;
-        TextInfo over;
-    };
+            static const MouseTextInfo Make_InteractionButtonSet(const std::string & NAME);
 
+            TextInfo up;
+            TextInfo down;
+            TextInfo over;
+        };
 
-    using MouseTextInfoUPtr_t = std::unique_ptr<MouseTextInfo>;
-    using MouseTextInfoVec_t  = std::vector<MouseTextInfo>;
+        using MouseTextInfoUPtr_t = std::unique_ptr<MouseTextInfo>;
+        using MouseTextInfoVec_t = std::vector<MouseTextInfo>;
 
+        bool operator<(const MouseTextInfo & L, const MouseTextInfo & R);
 
-    bool operator<(const MouseTextInfo & L, const MouseTextInfo & R);
+        bool operator==(const MouseTextInfo & L, const MouseTextInfo & R);
 
-    bool operator==(const MouseTextInfo & L, const MouseTextInfo & R);
-
-    inline bool operator!=(const MouseTextInfo & L, const MouseTextInfo & R)
-    {
-        return ! (L == R);
+        inline bool operator!=(const MouseTextInfo & L, const MouseTextInfo & R)
+        {
+            return !(L == R);
+        }
     }
-
-}
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_GUI_MOUSETEXTINFO_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_MOUSETEXTINFO_HPP_INCLUDED

@@ -27,11 +27,10 @@
 //
 // turn-action-info.hpp
 //
-#include "combat/turn-action-enum.hpp"
 #include "combat/strategy-enums.hpp"
+#include "combat/turn-action-enum.hpp"
 
 #include <vector>
-
 
 namespace heroespath
 {
@@ -47,34 +46,34 @@ namespace song
 }
 namespace creature
 {
-    //forward declarations
+    // forward declarations
     class Creature;
-    using CreaturePtr_t  = Creature *;
+    using CreaturePtr_t = Creature *;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 }
 namespace combat
 {
 
-    //Everything required to describe what an enemy did on its turn
+    // Everything required to describe what an enemy did on its turn
     class TurnActionInfo
     {
     public:
         explicit TurnActionInfo(
-            const TurnAction::Enum           ACTION       = TurnAction::Nothing,
+            const TurnAction::Enum ACTION = TurnAction::Nothing,
             const creature::CreaturePVec_t & TARGETS_PVEC = creature::CreaturePVec_t());
 
-        TurnActionInfo(const spell::SpellPtr_t          SPELL_PTR,
-                       const creature::CreaturePVec_t & TARGET_PVEC);
+        TurnActionInfo(
+            const spell::SpellPtr_t SPELL_PTR, const creature::CreaturePVec_t & TARGET_PVEC);
 
-        TurnActionInfo(const song::SongPtr_t            SONG_PTR,
-                       const creature::CreaturePVec_t & TARGET_PVEC);
+        TurnActionInfo(
+            const song::SongPtr_t SONG_PTR, const creature::CreaturePVec_t & TARGET_PVEC);
 
         TurnActionInfo(const TurnActionInfo &);
         TurnActionInfo & operator=(const TurnActionInfo &);
 
-        inline TurnAction::Enum                 Action() const  { return actionType_; }
-        inline spell::SpellPtr_t                Spell() const   { return spellPtr_; }
-        inline song::SongPtr_t                  Song() const    { return songPtr_; }
+        inline TurnAction::Enum Action() const { return actionType_; }
+        inline spell::SpellPtr_t Spell() const { return spellPtr_; }
+        inline song::SongPtr_t Song() const { return songPtr_; }
         inline const creature::CreaturePVec_t & Targets() const { return targetsPVec_; }
 
         creature::CreaturePtr_t Target() const;
@@ -83,23 +82,18 @@ namespace combat
         friend bool operator==(const TurnActionInfo & A, const TurnActionInfo & B);
 
     private:
-        TurnAction::Enum         actionType_;
+        TurnAction::Enum actionType_;
         creature::CreaturePVec_t targetsPVec_;
-        spell::SpellPtr_t        spellPtr_;
-        song::SongPtr_t          songPtr_;
+        spell::SpellPtr_t spellPtr_;
+        song::SongPtr_t songPtr_;
     };
-
 
     bool operator<(const TurnActionInfo & L, const TurnActionInfo & R);
 
     bool operator==(const TurnActionInfo & L, const TurnActionInfo & R);
 
-    inline bool operator!=(const TurnActionInfo & L, const TurnActionInfo & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const TurnActionInfo & L, const TurnActionInfo & R) { return !(L == R); }
 }
 }
 
-#endif //HEROESPATH_COMBAT_TURNACTIONINFO_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_TURNACTIONINFO_HPP_INCLUDED

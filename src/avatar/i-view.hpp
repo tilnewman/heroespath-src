@@ -27,16 +27,15 @@
 //
 // i-view.hpp
 //
-#include "avatar/pose-enum.hpp"
 #include "avatar/avatar-enum.hpp"
+#include "avatar/pose-enum.hpp"
 #include "sfml-util/direction-enum.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <memory>
 
-
 namespace sf
 {
-    class Sprite;
+class Sprite;
 }
 
 namespace heroespath
@@ -44,14 +43,14 @@ namespace heroespath
 namespace avatar
 {
 
-    //Pure virtual interface for all NPC classes.
+    // Pure virtual interface for all NPC classes.
     struct IView
     {
         virtual ~IView() {}
 
         virtual void Set(const Pose::Enum, const sfml_util::Direction::Enum) = 0;
 
-        //returns true if the current animation finished
+        // returns true if the current animation finished
         virtual bool Update(const float TIME_ELAPSED) = 0;
 
         virtual void UpdatePos(const sf::Vector2f &) = 0;
@@ -68,9 +67,7 @@ namespace avatar
     };
 
     using IViewUPtr_t = std::unique_ptr<IView>;
-
 }
 }
 
-
-#endif //HEROESPATH_AVATAR_IVIEW_HPP_INCLUDED
+#endif // HEROESPATH_AVATAR_IVIEW_HPP_INCLUDED

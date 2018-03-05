@@ -28,12 +28,11 @@
 // role-stats.hpp
 //  Specific creature role stat modifiers.
 //
-#include "stats/stat-set.hpp"
 #include "creature/role-enum.hpp"
+#include "stats/stat-set.hpp"
 
 #include <map>
 #include <string>
-
 
 namespace heroespath
 {
@@ -42,9 +41,8 @@ namespace creature
 
     using RoleStatSetMap_t = std::map<role::Enum, stats::StatSet>;
 
-
-    //Responsible for role related stat modifiers, for loading them from the
-    //game data file and for providing access to them.
+    // Responsible for role related stat modifiers, for loading them from the
+    // game data file and for providing access to them.
     struct RoleStatModifier
     {
         static const stats::StatSet Get(const role::Enum);
@@ -52,8 +50,7 @@ namespace creature
     private:
         static RoleStatSetMap_t roleStatSetMap_;
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_ROLESTATS_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_ROLESTATS_HPP_INCLUDED

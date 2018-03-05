@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -39,19 +38,18 @@ namespace sfml_util
     {
         enum Enum : unsigned int
         {
-            Error   = 0,
-            None    = Error,
-            Top     = 1 << 0,
-            Bottom  = 1 << 1,
-            Left    = 1 << 2,
-            Right   = 1 << 3
+            Error = 0,
+            None = Error,
+            Top = 1 << 0,
+            Bottom = 1 << 1,
+            Left = 1 << 2,
+            Right = 1 << 3
         };
 
         static const std::string ToString(const Side::Enum E);
         static bool IsValid(const Side::Enum E);
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_SIDE_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SIDE_ENUM_HPP_INCLUDED

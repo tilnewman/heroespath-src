@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -42,13 +41,34 @@ namespace sfml_util
     {
         switch (E)
         {
-            case None:            { return "None"; }
-            case Click:           { return "Click"; }
-            case DoubleClick:     { return "DoubleClick"; }
-            case MouseWheel:      { return "MouseWheel"; }
-            case SelectionChange: { return "SelectionChange"; }
-            case Keypress:        { return "Keypress"; }
-            case FocusChange:     { return "FocusChange"; }
+            case None:
+            {
+                return "None";
+            }
+            case Click:
+            {
+                return "Click";
+            }
+            case DoubleClick:
+            {
+                return "DoubleClick";
+            }
+            case MouseWheel:
+            {
+                return "MouseWheel";
+            }
+            case SelectionChange:
+            {
+                return "SelectionChange";
+            }
+            case Keypress:
+            {
+                return "Keypress";
+            }
+            case FocusChange:
+            {
+                return "FocusChange";
+            }
             default:
             {
                 std::ostringstream ss;
@@ -58,12 +78,11 @@ namespace sfml_util
         }
     }
 
-
     bool GuiEvent::IsValid(const GuiEvent::Enum E)
     {
-        const unsigned MAX(None | Click | DoubleClick | MouseWheel | SelectionChange | Keypress | FocusChange);
+        const unsigned MAX(
+            None | Click | DoubleClick | MouseWheel | SelectionChange | Keypress | FocusChange);
         return (static_cast<unsigned>(E) <= MAX);
     }
-
 }
 }

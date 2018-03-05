@@ -29,9 +29,8 @@
 //
 #include "name-position-enum.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -42,13 +41,34 @@ namespace combat
     {
         switch (E)
         {
-            case NoName:            { return "NoName"; }
-            case SourceBefore:      { return "SourceBefore"; }
-            case SourceAfter:       { return "SourceAfter"; }
-            case SourceThenTarget:  { return "SourceThenTarget"; }
-            case TargetBefore:      { return "TargetBefore"; }
-            case TargetAfter:       { return "TargetAfter"; }
-            case TargetThenSource:  { return "TargetThenSource"; }
+            case NoName:
+            {
+                return "NoName";
+            }
+            case SourceBefore:
+            {
+                return "SourceBefore";
+            }
+            case SourceAfter:
+            {
+                return "SourceAfter";
+            }
+            case SourceThenTarget:
+            {
+                return "SourceThenTarget";
+            }
+            case TargetBefore:
+            {
+                return "TargetBefore";
+            }
+            case TargetAfter:
+            {
+                return "TargetAfter";
+            }
+            case TargetThenSource:
+            {
+                return "TargetThenSource";
+            }
             case Count:
             default:
             {
@@ -59,58 +79,51 @@ namespace combat
         }
     }
 
-
     ContentAndNamePos::ContentAndNamePos(
         const std::string & PRE_STR,
         const std::string & CONTENT_STR,
         const std::string & POST_STR,
         const NamePosition::Enum NAME_POS_ENUM)
-    :
-        pre_    (PRE_STR),
-        content_(CONTENT_STR),
-        post_   (POST_STR),
-        posEnum_(NAME_POS_ENUM)
+        : pre_(PRE_STR)
+        , content_(CONTENT_STR)
+        , post_(POST_STR)
+        , posEnum_(NAME_POS_ENUM)
     {}
-
 
     ContentAndNamePos::ContentAndNamePos(
-        const std::string & CONTENT_STR,
-        const NamePosition::Enum NAME_POS_ENUM)
-    :
-        pre_    (""),
-        content_(CONTENT_STR),
-        post_   (""),
-        posEnum_(NAME_POS_ENUM)
+        const std::string & CONTENT_STR, const NamePosition::Enum NAME_POS_ENUM)
+        : pre_("")
+        , content_(CONTENT_STR)
+        , post_("")
+        , posEnum_(NAME_POS_ENUM)
     {}
 
-
     const std::string ContentAndNamePos::Compose(
-        const std::string & SOURCE_NAME,
-        const std::string & TARGET_NAME) const
+        const std::string & SOURCE_NAME, const std::string & TARGET_NAME) const
     {
         std::ostringstream ss;
         ss << pre_;
 
-        if ((NamePosition::SourceThenTarget == posEnum_) ||
-            (NamePosition::SourceBefore == posEnum_))
+        if ((NamePosition::SourceThenTarget == posEnum_)
+            || (NamePosition::SourceBefore == posEnum_))
         {
             ss << SOURCE_NAME;
         }
-        else if ((NamePosition::TargetThenSource == posEnum_) ||
-                 (NamePosition::TargetBefore == posEnum_))
+        else if (
+            (NamePosition::TargetThenSource == posEnum_)
+            || (NamePosition::TargetBefore == posEnum_))
         {
             ss << TARGET_NAME;
         }
 
         ss << content_;
 
-        if ((NamePosition::TargetThenSource == posEnum_) ||
-            (NamePosition::SourceAfter == posEnum_))
+        if ((NamePosition::TargetThenSource == posEnum_) || (NamePosition::SourceAfter == posEnum_))
         {
             ss << SOURCE_NAME;
         }
-        else if ((NamePosition::SourceThenTarget == posEnum_) ||
-                 (NamePosition::TargetAfter == posEnum_))
+        else if (
+            (NamePosition::SourceThenTarget == posEnum_) || (NamePosition::TargetAfter == posEnum_))
         {
             ss << TARGET_NAME;
         }
@@ -119,6 +132,5 @@ namespace combat
 
         return ss.str();
     }
-
 }
 }

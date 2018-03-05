@@ -33,29 +33,29 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //Enapsulates everything about a screen resolution
+    // Enapsulates everything about a screen resolution
     struct Resolution
     {
-        explicit Resolution(const unsigned int  WIDTH          = 0,
-                            const unsigned int  HEIGHT         = 0,
-                            const unsigned int  BITS_PER_PIXEL = 0,
-                            const std::string & NAME           = "",
-                            const std::string & ASPECT_RATIO   = "");
+        explicit Resolution(
+            const unsigned int WIDTH = 0,
+            const unsigned int HEIGHT = 0,
+            const unsigned int BITS_PER_PIXEL = 0,
+            const std::string & NAME = "",
+            const std::string & ASPECT_RATIO = "");
 
         explicit Resolution(const sf::VideoMode & VM);
 
         const std::string ToString(const bool WILL_WRAP = true) const;
 
-        std::string  name;
+        std::string name;
         unsigned int width;
         unsigned int height;
-        std::string  aspect_ratio;
+        std::string aspect_ratio;
         unsigned int bits_per_pixel;
     };
 
@@ -63,20 +63,12 @@ namespace sfml_util
 
     bool operator==(const Resolution & L, const Resolution & R);
 
-    inline bool operator!=(const Resolution & L, const Resolution & R)
-    {
-        return ! (L == R);
-    }
+    inline bool operator!=(const Resolution & L, const Resolution & R) { return !(L == R); }
 
     bool operator==(const Resolution & R, const sf::VideoMode & V);
 
-    inline bool operator!=(const Resolution & R, const sf::VideoMode & V)
-    {
-        return ! (R == V);
-    }
-
-
+    inline bool operator!=(const Resolution & R, const sf::VideoMode & V) { return !(R == V); }
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_RESOLUTION_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_RESOLUTION_HPP_INCLUDED

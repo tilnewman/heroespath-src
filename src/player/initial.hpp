@@ -28,21 +28,19 @@
 // initial.hpp
 //  A collection of functions that performs initial setup of a player character
 //
+#include "item/item-type-enum.hpp"
 #include "misc/types.hpp"
 #include "stats/trait.hpp"
-#include "item/item-type-enum.hpp"
-
 
 namespace heroespath
 {
 namespace player
 {
 
-    //forward declarations
+    // forward declarations
     class Character;
-    using CharacterPtrC_t  = Character * const;
+    using CharacterPtrC_t = Character * const;
     using CharacterCPtrC_t = const Character * const;
-
 
     class Initial
     {
@@ -59,8 +57,7 @@ namespace player
         static void SetStartingMana(CharacterPtrC_t);
         static item::material::Enum HardOrSoftLeatherRand();
     };
-
 }
 }
 
-#endif //HEROESPATH_PLAYER_INITIAL_HPP_INCLUDED
+#endif // HEROESPATH_PLAYER_INITIAL_HPP_INCLUDED

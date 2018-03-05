@@ -30,7 +30,6 @@
 #include "sfml-util/animation-base.hpp"
 #include "sfml-util/animation-enum.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -40,36 +39,35 @@ namespace sfml_util
     {
         static AnimationUPtr_t Make(
             const Animations::Enum ENUM,
-            const float            SCALE,
-            const float            TIME_PER_FRAME_SEC,
-            const sf::Color &      COLOR      = sf::Color::White,
-            const sf::BlendMode &  BLEND_MODE = sf::BlendAdd);
+            const float SCALE,
+            const float TIME_PER_FRAME_SEC,
+            const sf::Color & COLOR = sf::Color::White,
+            const sf::BlendMode & BLEND_MODE = sf::BlendAdd);
 
         static AnimationUPtr_t Make(
             const Animations::Enum ENUM,
-            const float            SCALE,
-            const float            TIME_PER_FRAME_SEC,
-            const sf::Color &      COLOR_FROM,
-            const sf::Color &      COLOR_TO,
-            const sf::BlendMode &  BLEND_MODE = sf::BlendAdd);
+            const float SCALE,
+            const float TIME_PER_FRAME_SEC,
+            const sf::Color & COLOR_FROM,
+            const sf::Color & COLOR_TO,
+            const sf::BlendMode & BLEND_MODE = sf::BlendAdd);
 
         static AnimationUPtr_t Make(
             const Animations::Enum ENUM,
-            const sf::FloatRect &  REGION,
-            const float            TIME_PER_FRAME_SEC,
-            const sf::Color &      COLOR              = sf::Color::White,
-            const sf::BlendMode &  BLEND_MODE         = sf::BlendAdd);
+            const sf::FloatRect & REGION,
+            const float TIME_PER_FRAME_SEC,
+            const sf::Color & COLOR = sf::Color::White,
+            const sf::BlendMode & BLEND_MODE = sf::BlendAdd);
 
         static AnimationUPtr_t Make(
             const Animations::Enum ENUM,
-            const sf::FloatRect &  REGION,
-            const float            TIME_PER_FRAME_SEC,
-            const sf::Color &      COLOR_FROM,
-            const sf::Color &      COLOR_TO,
-            const sf::BlendMode &  BLEND_MODE = sf::BlendAdd);
+            const sf::FloatRect & REGION,
+            const float TIME_PER_FRAME_SEC,
+            const sf::Color & COLOR_FROM,
+            const sf::Color & COLOR_TO,
+            const sf::BlendMode & BLEND_MODE = sf::BlendAdd);
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE
+#endif // HEROESPATH_SFMLUTIL_ANIMATIONFACTORY_HPP_INCLUDE

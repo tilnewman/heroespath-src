@@ -28,23 +28,22 @@
 // load-game-menu-stage.hpp
 //  A Stage class that allows players to load previous games
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
-#include "sfml-util/stage.hpp"
-#include "sfml-util/sliders.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-system.hpp"
+#include "sfml-util/sliders.hpp"
+#include "sfml-util/stage.hpp"
 
-#include "sfml-util/main-menu-buttons.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/horiz-symbol.hpp"
+#include "sfml-util/main-menu-buttons.hpp"
 #include "sfml-util/main-menu-title.hpp"
 
 #include <memory>
-#include <vector>
-#include <string>
 #include <set>
-
+#include <string>
+#include <vector>
 
 namespace heroespath
 {
@@ -71,22 +70,22 @@ namespace state
 namespace stage
 {
 
-    //A Stage class that allows players to load saved games
+    // A Stage class that allows players to load saved games
     class LoadGameStage
-    :
-        public sfml_util::Stage,
-        public sfml_util::gui::callback::IListBoxCallbackHandler,
-        public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        : public sfml_util::Stage
+        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
-        LoadGameStage(const LoadGameStage &) =delete;
-        LoadGameStage & operator=(const LoadGameStage &) =delete;
+        LoadGameStage(const LoadGameStage &) = delete;
+        LoadGameStage & operator=(const LoadGameStage &) = delete;
 
     public:
         LoadGameStage();
         virtual ~LoadGameStage();
 
         inline virtual const std::string HandlerName() const { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
+        virtual bool
+            HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
 
         virtual void Setup();
@@ -119,8 +118,7 @@ namespace stage
         //
         state::GameStatePSet_t gamestatePSet_;
     };
-
 }
 }
 
-#endif //HEROESPATH_STAGE_LOADGAMEMENU_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_LOADGAMEMENU_HPP_INCLUDED

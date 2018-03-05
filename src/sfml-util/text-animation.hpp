@@ -30,61 +30,60 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-    class TextRegion;
-    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-}
-
-namespace animation
-{
-
-    //Responsible for drawing emitted sparks
-    class TextAnimation : public sf::Drawable
+    namespace gui
     {
-        TextAnimation(const TextAnimation &);
-        TextAnimation & operator=(const TextAnimation &);
+        class TextRegion;
+        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    }
 
-    public:
-        explicit TextAnimation(const std::string &   TEXT,
-                               const sf::FloatRect & REGION,
-                               const float           SPEED,
-                               const unsigned int    START_FONT_SIZE,
-                               const unsigned int    END_FONT_SIZE,
-                               const sf::Color &     START_COLOR,
-                               const sf::Color &     END_COLOR);
+    namespace animation
+    {
 
-        inline bool IsFinished() const { return isFinished_; }
-        void Update(const float ELAPSED_TIME_SEC);
-        void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+        // Responsible for drawing emitted sparks
+        class TextAnimation : public sf::Drawable
+        {
+            TextAnimation(const TextAnimation &);
+            TextAnimation & operator=(const TextAnimation &);
 
-    private:
-        const std::string TEXT_;
-        const unsigned int START_FONT_SIZE_;
-        const unsigned int END_FONT_SIZE_;
-        const sf::Color START_COLOR_;
-        const sf::Color END_COLOR_;
-        sf::Vector2f startPosV_;
-        sf::Vector2f endPosV_;
-        bool isFinished_;
-        gui::TextRegionUPtr_t textRegionUPtr_;
-        sliders::ZeroSliderOnce<float> slider_;
-    };
+        public:
+            explicit TextAnimation(
+                const std::string & TEXT,
+                const sf::FloatRect & REGION,
+                const float SPEED,
+                const unsigned int START_FONT_SIZE,
+                const unsigned int END_FONT_SIZE,
+                const sf::Color & START_COLOR,
+                const sf::Color & END_COLOR);
 
-    using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;
-    using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
+            inline bool IsFinished() const { return isFinished_; }
+            void Update(const float ELAPSED_TIME_SEC);
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
+        private:
+            const std::string TEXT_;
+            const unsigned int START_FONT_SIZE_;
+            const unsigned int END_FONT_SIZE_;
+            const sf::Color START_COLOR_;
+            const sf::Color END_COLOR_;
+            sf::Vector2f startPosV_;
+            sf::Vector2f endPosV_;
+            bool isFinished_;
+            gui::TextRegionUPtr_t textRegionUPtr_;
+            sliders::ZeroSliderOnce<float> slider_;
+        };
+
+        using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;
+        using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_TEXTANIMATION_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_TEXTANIMATION_HPP_INCLUDED

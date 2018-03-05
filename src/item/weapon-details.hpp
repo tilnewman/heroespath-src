@@ -30,77 +30,73 @@
 //
 #include "non-player/ownership-profile.hpp"
 
-#include <memory>
 #include <map>
+#include <memory>
 #include <string>
-
 
 namespace heroespath
 {
 namespace item
 {
-namespace weapon
-{
-
-    //a simple wrapper for weapon details
-    struct WeaponDetails
+    namespace weapon
     {
-        WeaponDetails()
-        :
-            name            (),
-            description     (),
-            price           (0),
-            weight          (0),
-            damage_min      (0),
-            damage_max      (0),
-            handedness      (item::category::OneHanded),
-            complexity      (non_player::ownership::complexity_type::Count)
-        {}
 
-        std::string name;
-        std::string description;
-        Coin_t price;
-        Weight_t weight;
-        Health_t damage_min;
-        Health_t damage_max;
-        item::category::Enum handedness;
-        non_player::ownership::complexity_type::Enum complexity;
-    };
+        // a simple wrapper for weapon details
+        struct WeaponDetails
+        {
+            WeaponDetails()
+                : name()
+                , description()
+                , price(0)
+                , weight(0)
+                , damage_min(0)
+                , damage_max(0)
+                , handedness(item::category::OneHanded)
+                , complexity(non_player::ownership::complexity_type::Count)
+            {}
 
+            std::string name;
+            std::string description;
+            Coin_t price;
+            Weight_t weight;
+            Health_t damage_min;
+            Health_t damage_max;
+            item::category::Enum handedness;
+            non_player::ownership::complexity_type::Enum complexity;
+        };
 
-    //name to details mapping
-    using WeaponDetailMap_t = std::map<std::string, WeaponDetails>;
+        // name to details mapping
+        using WeaponDetailMap_t = std::map<std::string, WeaponDetails>;
 
+        // A singleton class that loads detailed weapon info from the GameDataFile.
+        class WeaponDetailLoader
+        {
+            WeaponDetailLoader & operator=(const WeaponDetailLoader &) = delete;
+            WeaponDetailLoader(const WeaponDetailLoader &) = delete;
 
-    //A singleton class that loads detailed weapon info from the GameDataFile.
-    class WeaponDetailLoader
-    {
-        WeaponDetailLoader & operator=(const WeaponDetailLoader &) =delete;
-        WeaponDetailLoader(const WeaponDetailLoader &) =delete;
+        public:
+            WeaponDetailLoader();
+            ~WeaponDetailLoader();
 
-    public:
-        WeaponDetailLoader();
-        ~WeaponDetailLoader();
+            static WeaponDetailLoader * Instance();
+            static void Acquire();
+            static void Release();
 
-        static WeaponDetailLoader * Instance();
-        static void Acquire();
-        static void Release();
+            const WeaponDetails LookupWeaponDetails(const std::string & NAME);
 
-        const WeaponDetails LookupWeaponDetails(const std::string & NAME);
+        private:
+            void LoadWeaponDeatilsFromGameDataFile();
+            void LoadDetailsForKey(const std::string & WEAPON_NAME);
+            int StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR);
+            const std::string
+                CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
 
-    private:
-        void LoadWeaponDeatilsFromGameDataFile();
-        void LoadDetailsForKey(const std::string & WEAPON_NAME);
-        int StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR);
-        const std::string CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
-
-    private:
-        static std::unique_ptr<WeaponDetailLoader> instanceUPtr_;
-        WeaponDetailMap_t weaponDetailsMap_;
-    };
-
+        private:
+            static std::unique_ptr<WeaponDetailLoader> instanceUPtr_;
+            WeaponDetailMap_t weaponDetailsMap_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_ITEM_WEAPONFDETAILS_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_WEAPONFDETAILS_HPP_INCLUDED

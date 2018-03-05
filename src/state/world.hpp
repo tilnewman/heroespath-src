@@ -28,22 +28,21 @@
 // world.hpp
 //  A class that represents the entire state of the game world.
 //
-#include "state/maps.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "state/maps.hpp"
 
 #include <memory>
-
 
 namespace heroespath
 {
 namespace state
 {
 
-    //Encapsulates all states that describe the game world.
+    // Encapsulates all states that describe the game world.
     class World
     {
-        World(const World &) =delete;
-        World & operator=(const World &) =delete;
+        World(const World &) = delete;
+        World & operator=(const World &) = delete;
 
     public:
         World();
@@ -53,14 +52,14 @@ namespace state
         inline void EncounterCountInc() { ++encounterCount_; }
 
     private:
-        //TODO quests
-        //TODO events
+        // TODO quests
+        // TODO events
         Maps maps_;
         std::size_t encounterCount_;
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & encounterCount_;
@@ -68,8 +67,7 @@ namespace state
     };
 
     using WorldUPtr_t = std::unique_ptr<World>;
-
 }
 }
 
-#endif //HEROESPATH_STATE_WORLDcd_HPP_INCLUDED
+#endif // HEROESPATH_STATE_WORLDcd_HPP_INCLUDED

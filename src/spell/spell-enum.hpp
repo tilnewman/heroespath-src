@@ -30,7 +30,6 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace spell
@@ -38,7 +37,7 @@ namespace spell
 
     struct Spells
     {
-        //Note:  Keep in sync with:
+        // Note:  Keep in sync with:
         //          spell::Warehouse::Fill()
         //          spells.hpp
         //          CombatAnimation::SpellAnimStart()
@@ -56,15 +55,15 @@ namespace spell
             Panic,
             ClearMind,
             Poison,
-            Antidote,//cures poison
+            Antidote, // cures poison
             PoisonCloud,
             Count
         };
 
-        //straight name without spaces
+        // straight name without spaces
         static const std::string ToString(const Enum);
 
-        //human readable with spaces
+        // human readable with spaces
         static const std::string Name(const Enum);
         static const std::string ShortDesc(const Enum);
         static const std::string ExtraDesc(const Enum);
@@ -72,8 +71,7 @@ namespace spell
     };
 
     using SpellVec_t = std::vector<Spells::Enum>;
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_SPELL_SPELLENUM_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_SPELL_SPELLENUM_HPP_INCLUDED

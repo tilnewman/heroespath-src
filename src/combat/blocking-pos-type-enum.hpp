@@ -29,13 +29,12 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace combat
 {
 
-    //Responsible for enumerating blocking position types.
+    // Responsible for enumerating blocking position types.
     struct BlockingPosType
     {
         enum Enum
@@ -51,9 +50,7 @@ namespace combat
 
         static const std::string ToString(const Enum);
     };
-
-
 }
 }
 
-#endif //HEROESPATH_COMBAT_BLOCKINGPOS_TYPE_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_BLOCKINGPOS_TYPE_ENUM_HPP_INCLUDED

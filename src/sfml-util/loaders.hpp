@@ -28,35 +28,29 @@
 // loaders.hpp
 //  Functions that help load assests and media.
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-audio.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <string>
 #include <vector>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    void LoadTexture(sf::Texture &       texture,
-                     const std::string & PATH_STR,
-                     const bool          WILL_SMOOTH = true);
-
+    void LoadTexture(
+        sf::Texture & texture, const std::string & PATH_STR, const bool WILL_SMOOTH = true);
 
     std::size_t LoadAllTexturesInDir(
         std::vector<sf::Texture> & textureVec,
-        const std::string &        DIR_STR,
-        const bool                 WILL_SMOOTH = true);
-
+        const std::string & DIR_STR,
+        const bool WILL_SMOOTH = true);
 
     void LoadFont(sf::Font & font, const std::string & PATH_STR);
 
-
     MusicUPtr_t LoadMusic(const std::string & PATH_STR);
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_LOADERS_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_LOADERS_HPP_INCLUDED

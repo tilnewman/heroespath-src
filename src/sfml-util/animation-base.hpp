@@ -28,14 +28,13 @@
 // animation-base.hpp
 //  A class responsible for common state and operation of all animation objects.
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/animation-enum.hpp"
+#include "sfml-util/gui/gui-entity.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-
 
 namespace heroespath
 {
@@ -48,12 +47,13 @@ namespace sfml_util
         Animation & operator=(const Animation &) = delete;
 
     public:
-        Animation(const Animations::Enum ENUM,
-                  const sf::FloatRect &  REGION,
-                  const float            TIME_PER_FRAME_SEC,
-                  const sf::BlendMode &  BLEND_MODE,
-                  const sf::Color &      COLOR_FROM,
-                  const sf::Color &      COLOR_TO);
+        Animation(
+            const Animations::Enum ENUM,
+            const sf::FloatRect & REGION,
+            const float TIME_PER_FRAME_SEC,
+            const sf::BlendMode & BLEND_MODE,
+            const sf::Color & COLOR_FROM,
+            const sf::Color & COLOR_TO);
 
         virtual ~Animation();
 
@@ -64,7 +64,7 @@ namespace sfml_util
 
         virtual void SetEntityRegion(const sf::FloatRect & R) = 0;
 
-        //returns true if frame count wrapped around back to zero
+        // returns true if frame count wrapped around back to zero
         virtual bool UpdateTime(const float SECONDS) = 0;
 
         virtual std::size_t FrameCount() const = 0;
@@ -75,45 +75,25 @@ namespace sfml_util
 
         virtual const sf::Sprite Sprite() const = 0;
 
-        inline virtual void OnClick(const sf::Vector2f &)
-        {}
+        inline virtual void OnClick(const sf::Vector2f &) {}
 
-        inline std::size_t CurrentFrame() const
-        {
-            return currentFrame_;
-        }
+        inline std::size_t CurrentFrame() const { return currentFrame_; }
 
-        inline float TimePerFrame() const
-        {
-            return timePerFrameSec_;
-        }
+        inline float TimePerFrame() const { return timePerFrameSec_; }
 
-        inline void TimePerFrameSet(const float TBF)
-        {
-            timePerFrameSec_ = TBF;
-        }
+        inline void TimePerFrameSet(const float TBF) { timePerFrameSec_ = TBF; }
 
-        inline void TimePerFrameAdj(const float ADJ)
-        {
-            timePerFrameSec_ += ADJ;
-        }
+        inline void TimePerFrameAdj(const float ADJ) { timePerFrameSec_ += ADJ; }
 
-        inline void ColorTransition(const sf::Color & FROM,
-                                    const sf::Color & TO)
+        inline void ColorTransition(const sf::Color & FROM, const sf::Color & TO)
         {
             colorFrom_ = FROM;
             colorTo_ = TO;
         }
 
-        inline bool IsFinished() const
-        {
-            return isFinished_;
-        }
+        inline bool IsFinished() const { return isFinished_; }
 
-        inline Animations::Enum Which() const
-        {
-            return which_;
-        }
+        inline Animations::Enum Which() const { return which_; }
 
         void RandomVaryTimePerFrame();
 
@@ -122,7 +102,7 @@ namespace sfml_util
         sf::BlendMode blendMode_;
         float timePerFrameSec_;
 
-        //counts up to total then restarts at zero
+        // counts up to total then restarts at zero
         std::size_t currentFrame_;
 
         float frameTimerSec_;
@@ -131,12 +111,10 @@ namespace sfml_util
         bool isFinished_;
     };
 
-
     using AnimationPtr_t = Animation *;
     using AnimationUPtr_t = std::unique_ptr<Animation>;
     using AnimationUVec_t = std::vector<AnimationUPtr_t>;
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_ANIMATIONBASE_HPP_INCLUDED

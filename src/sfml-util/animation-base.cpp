@@ -30,34 +30,30 @@
 #include "animation-base.hpp"
 #include "misc/random.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    Animation::Animation(const Animations::Enum ENUM,
-                         const sf::FloatRect &  REGION,
-                         const float            TIME_PER_FRAME_SEC,
-                         const sf::BlendMode &  BLEND_MODE,
-                         const sf::Color &      COLOR_FROM,
-                         const sf::Color &      COLOR_TO)
-    :
-        gui::GuiEntity  (Animations::ToString(ENUM) + "_Animation", REGION),
-        which_          (ENUM),
-        blendMode_      (BLEND_MODE),
-        timePerFrameSec_(TIME_PER_FRAME_SEC),
-        currentFrame_   (0),
-        frameTimerSec_  (0.0f),
-        colorFrom_      (COLOR_FROM),
-        colorTo_        (COLOR_TO),
-        isFinished_     (false)
+    Animation::Animation(
+        const Animations::Enum ENUM,
+        const sf::FloatRect & REGION,
+        const float TIME_PER_FRAME_SEC,
+        const sf::BlendMode & BLEND_MODE,
+        const sf::Color & COLOR_FROM,
+        const sf::Color & COLOR_TO)
+        : gui::GuiEntity(Animations::ToString(ENUM) + "_Animation", REGION)
+        , which_(ENUM)
+        , blendMode_(BLEND_MODE)
+        , timePerFrameSec_(TIME_PER_FRAME_SEC)
+        , currentFrame_(0)
+        , frameTimerSec_(0.0f)
+        , colorFrom_(COLOR_FROM)
+        , colorTo_(COLOR_TO)
+        , isFinished_(false)
     {}
 
-
-    Animation::~Animation()
-    {}
-
+    Animation::~Animation() {}
 
     void Animation::RandomVaryTimePerFrame()
     {
@@ -65,6 +61,5 @@ namespace sfml_util
         timePerFrameSec_ -= VARY_SEC_MAX * 0.5f;
         timePerFrameSec_ += misc::random::Float(VARY_SEC_MAX);
     }
-
 }
 }

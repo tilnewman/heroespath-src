@@ -30,7 +30,6 @@
 //
 #include <memory>
 
-
 namespace heroespath
 {
 
@@ -44,11 +43,11 @@ namespace state
 namespace game
 {
 
-    //Singleton class that provides access to all game information
+    // Singleton class that provides access to all game information
     class Game
     {
-        Game(const Game &) =delete;
-        Game & operator=(const Game &) =delete;
+        Game(const Game &) = delete;
+        Game & operator=(const Game &) = delete;
 
     public:
         Game();
@@ -65,8 +64,7 @@ namespace game
         static std::unique_ptr<Game> instanceUPtr_;
         state::GameStateUPtr_t stateUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_GAME_HEROESPATH_HPP_INCLUDED
+#endif // HEROESPATH_GAME_HEROESPATH_HPP_INCLUDED

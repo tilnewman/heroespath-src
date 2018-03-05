@@ -36,7 +36,6 @@
 
 #include <memory>
 
-
 namespace heroespath
 {
 namespace spell
@@ -44,32 +43,27 @@ namespace spell
 
     SpellUVec_t Warehouse::spellsUVec_;
 
-
     void Warehouse::Fill()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((spellsUVec_.empty()), "spell::Warehouse::Setup() was called twice.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (spellsUVec_.empty()), "spell::Warehouse::Setup() was called twice.");
 
-        //Note::Keep order in sync with spell::Spells::Enum
-        spellsUVec_.push_back( std::make_unique<Sparks>() );
-        spellsUVec_.push_back( std::make_unique<Bandage>() );
-        spellsUVec_.push_back( std::make_unique<Sleep>() );
-        spellsUVec_.push_back( std::make_unique<Awaken>() );
-        spellsUVec_.push_back( std::make_unique<Trip>() );
-        spellsUVec_.push_back( std::make_unique<Lift>() );
-        spellsUVec_.push_back( std::make_unique<Daze>() );
-        spellsUVec_.push_back( std::make_unique<Panic>() );
-        spellsUVec_.push_back( std::make_unique<ClearMind>() );
-        spellsUVec_.push_back( std::make_unique<Poison>() );
-        spellsUVec_.push_back( std::make_unique<Antidote>() );
-        spellsUVec_.push_back( std::make_unique<PoisonCloud>() );
+        // Note::Keep order in sync with spell::Spells::Enum
+        spellsUVec_.push_back(std::make_unique<Sparks>());
+        spellsUVec_.push_back(std::make_unique<Bandage>());
+        spellsUVec_.push_back(std::make_unique<Sleep>());
+        spellsUVec_.push_back(std::make_unique<Awaken>());
+        spellsUVec_.push_back(std::make_unique<Trip>());
+        spellsUVec_.push_back(std::make_unique<Lift>());
+        spellsUVec_.push_back(std::make_unique<Daze>());
+        spellsUVec_.push_back(std::make_unique<Panic>());
+        spellsUVec_.push_back(std::make_unique<ClearMind>());
+        spellsUVec_.push_back(std::make_unique<Poison>());
+        spellsUVec_.push_back(std::make_unique<Antidote>());
+        spellsUVec_.push_back(std::make_unique<PoisonCloud>());
     }
 
-
-    void Warehouse::Empty()
-    {
-        spellsUVec_.clear();
-    }
-
+    void Warehouse::Empty() { spellsUVec_.clear(); }
 
     bool Warehouse::Test()
     {
@@ -86,33 +80,40 @@ namespace spell
         {
             auto const NEXT_ENUM{ static_cast<Spells::Enum>(spellIndex) };
             auto spellPtr{ Get(NEXT_ENUM) };
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr != nullptr),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (spellPtr != nullptr),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                << "\") Get() resulted in a nullptr being returned.");
+                                            << "\") Get() resulted in a nullptr being returned.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Name().empty() == false),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (spellPtr->Name().empty() == false),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                << "\") resulted in an empty Name().");
+                                            << "\") resulted in an empty Name().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Desc().empty() == false),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (spellPtr->Desc().empty() == false),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                << "\") resulted in an empty Desc().");
+                                            << "\") resulted in an empty Desc().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->DescExtra().empty() == false),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (spellPtr->DescExtra().empty() == false),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                << "\") resulted in an empty DescExtra().");
+                                            << "\") resulted in an empty DescExtra().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->ManaCost().IsNonZero()),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (spellPtr->ManaCost().IsNonZero()),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                << "\") resulted in a zero Mana cost.");
+                                            << "\") resulted in a zero Mana cost.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Rank().IsNonZero()),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (spellPtr->Rank().IsNonZero()),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                << "\") resulted in a zero Rank.");
+                                            << "\") resulted in a zero Rank.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((spellPtr->Name() == Spells::Name(NEXT_ENUM)),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (spellPtr->Name() == Spells::Name(NEXT_ENUM)),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                << "\") Spell is out of order.");
+                                            << "\") Spell is out of order.");
 
             ++spellIndex;
 
@@ -128,19 +129,19 @@ namespace spell
         return true;
     }
 
-
     SpellPtr_t Warehouse::Get(const Spells::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((spellsUVec_.empty() == false),
-            "spell::Warehouse::Get(" << Spells::ToString(E)
-            << ") was called before Setup().");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (spellsUVec_.empty() == false),
+            "spell::Warehouse::Get(" << Spells::ToString(E) << ") was called before Setup().");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < spellsUVec_.size()),
-            "spell::Warehouse::Get(" << Spells::ToString(E)
-            << ") found insuff sized spellsUVec_, probably from a bug in Setup().");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (static_cast<std::size_t>(E) < spellsUVec_.size()),
+            "spell::Warehouse::Get("
+                << Spells::ToString(E)
+                << ") found insuff sized spellsUVec_, probably from a bug in Setup().");
 
         return spellsUVec_.at(static_cast<std::size_t>(E)).get();
     }
-
 }
 }

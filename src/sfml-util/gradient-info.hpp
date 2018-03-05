@@ -33,36 +33,32 @@
 
 #include <SFML/Graphics/Color.hpp>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //Encapsulates everything needed to draw a gradient.
-    //Note: Designed so that using the constructor (with all default, or no params)
+    // Encapsulates everything needed to draw a gradient.
+    // Note: Designed so that using the constructor (with all default, or no params)
     //      is safe and will cause nothing (no gradient) to be drawn.
     struct GradientInfo
     {
-        explicit GradientInfo(const sf::Color &  COLOR_TO   = sf::Color::Transparent,
-                              const unsigned int CORNERS    = sfml_util::Corner::None,
-                              const unsigned int SIDES      = sfml_util::Side::None,
-                              const sf::Color &  COLOR_FROM = sf::Color::Transparent);
+        explicit GradientInfo(
+            const sf::Color & COLOR_TO = sf::Color::Transparent,
+            const unsigned int CORNERS = sfml_util::Corner::None,
+            const unsigned int SIDES = sfml_util::Side::None,
+            const sf::Color & COLOR_FROM = sf::Color::Transparent);
 
         unsigned int sides;
         unsigned int corners;
-        sf::Color    color_from;
-        sf::Color    color_to;
+        sf::Color color_from;
+        sf::Color color_to;
     };
 
     bool operator==(const GradientInfo & L, const GradientInfo & R);
 
-    inline bool operator!=(const GradientInfo & L, const GradientInfo & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const GradientInfo & L, const GradientInfo & R) { return !(L == R); }
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_GRADIENTINFO_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GRADIENTINFO_HPP_INCLUDED

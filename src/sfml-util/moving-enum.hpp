@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -47,13 +46,9 @@ namespace sfml_util
 
         static const std::string ToString(const Moving::Enum);
 
-        inline static bool IsMoving(const Moving::Enum E)
-        {
-            return ((E == Toward) || (E == Away));
-        }
+        inline static bool IsMoving(const Moving::Enum E) { return ((E == Toward) || (E == Away)); }
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_MOVING_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_MOVING_ENUM_HPP_INCLUDED

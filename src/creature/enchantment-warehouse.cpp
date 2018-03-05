@@ -29,9 +29,8 @@
 //
 #include "enchantment-warehouse.hpp"
 
-#include "log/log-macros.hpp"
 #include "creature/enchantment.hpp"
-
+#include "log/log-macros.hpp"
 
 namespace heroespath
 {
@@ -40,20 +39,16 @@ namespace creature
 
     std::unique_ptr<EnchantmentWarehouse> EnchantmentWarehouse::instanceUPtr_{ nullptr };
 
-
     EnchantmentWarehouse::EnchantmentWarehouse()
-    :
-        warehouse_()
+        : warehouse_()
     {
         M_HP_LOG_DBG("Singleton Construction: EnchantmentWarehouse");
     }
-
 
     EnchantmentWarehouse::~EnchantmentWarehouse()
     {
         M_HP_LOG_DBG("Singleton Destruction: EnchantmentWarehouse");
     }
-
 
     EnchantmentWarehouse * EnchantmentWarehouse::Instance()
     {
@@ -65,7 +60,6 @@ namespace creature
 
         return instanceUPtr_.get();
     }
-
 
     void EnchantmentWarehouse::Acquire()
     {
@@ -79,32 +73,29 @@ namespace creature
         }
     }
 
-
     void EnchantmentWarehouse::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
             "creature::EnchantmentWarehouse::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
 
-
     EnchantmentPtr_t EnchantmentWarehouse::Store(const EnchantmentPtr_t ENCHANTMENT_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ENCHANTMENT_PTR != nullptr),
-            "creature::EnchantmentWarehouse::Store() given nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ENCHANTMENT_PTR != nullptr), "creature::EnchantmentWarehouse::Store() given nullptr.");
 
         return warehouse_.Store(ENCHANTMENT_PTR, ENCHANTMENT_PTR->EffectStr());
     }
 
-
     void EnchantmentWarehouse::Free(EnchantmentPtr_t & enchantment_ptr)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((enchantment_ptr != nullptr),
-            "creature::EnchantmentWarehouse::Free() given nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (enchantment_ptr != nullptr), "creature::EnchantmentWarehouse::Free() given nullptr.");
 
         warehouse_.Free(enchantment_ptr, enchantment_ptr->EffectStr());
     }
-
 }
 }

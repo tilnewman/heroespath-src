@@ -31,47 +31,47 @@
 
 #include "sfml-util/sound-manager.hpp"
 
+#include "creature/creature.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
-#include "spell/spell-base.hpp"
 #include "song/song.hpp"
-#include "creature/creature.hpp"
+#include "spell/spell-base.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
-
 
 namespace heroespath
 {
 namespace combat
 {
 
-    CombatSoundEffects::CombatSoundEffects()
-    {}
-
+    CombatSoundEffects::CombatSoundEffects() {}
 
     void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((WEAPON_PTR != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (WEAPON_PTR != nullptr),
             "combat::CombatSoundEffects::PlayShoot() was given a nullptr WEAPON_PTR.");
 
         auto const WEAPON_TYPE{ WEAPON_PTR->WeaponType() };
 
-        if ((WEAPON_TYPE & item::weapon_type::Blowpipe) ||
-            (WEAPON_TYPE & item::weapon_type::Sling))
+        if ((WEAPON_TYPE & item::weapon_type::Blowpipe) || (WEAPON_TYPE & item::weapon_type::Sling))
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::BlowpipeShoot).PlayRandom();
+            sfml_util::SoundManager::Instance()
+                ->Getsound_effect_set(sfml_util::sound_effect_set::BlowpipeShoot)
+                .PlayRandom();
         }
-        else if ((WEAPON_TYPE & item::weapon_type::Bow) ||
-            (WEAPON_TYPE & item::weapon_type::Crossbow))
+        else if (
+            (WEAPON_TYPE & item::weapon_type::Bow) || (WEAPON_TYPE & item::weapon_type::Crossbow))
         {
-            sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                sfml_util::sound_effect_set::ArrowShoot).PlayRandom();
+            sfml_util::SoundManager::Instance()
+                ->Getsound_effect_set(sfml_util::sound_effect_set::ArrowShoot)
+                .PlayRandom();
         }
         else
         {
-            M_HP_LOG_ERR("combat::CombatSoundEffects::PlayShoot(weapon=\""
+            M_HP_LOG_ERR(
+                "combat::CombatSoundEffects::PlayShoot(weapon=\""
                 << WEAPON_PTR->Name() << "\", category=\""
                 << item::category::ToString(WEAPON_PTR->Category(), false)
                 << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, false)
@@ -79,14 +79,14 @@ namespace combat
         }
     }
 
-
-    void CombatSoundEffects::PlayHitOrMiss(const creature::CreaturePtr_t CREATURE_PTR,
-                                           const HitInfo &               HIT_INFO) const
+    void CombatSoundEffects::PlayHitOrMiss(
+        const creature::CreaturePtr_t CREATURE_PTR, const HitInfo & HIT_INFO) const
     {
         auto const WEAPON_PTR{ HIT_INFO.Weapon() };
         if (WEAPON_PTR == nullptr)
         {
-            M_HP_LOG_ERR("combat::CombatSoundEffects::PlayHitOrMiss() "
+            M_HP_LOG_ERR(
+                "combat::CombatSoundEffects::PlayHitOrMiss() "
                 << "was given a nullptr WEAPON_PTR.  HIT_INFO=" << HIT_INFO.ToString());
 
             return;
@@ -98,53 +98,62 @@ namespace combat
         {
             if (WEAPON_TYPE & item::weapon_type::Blowpipe)
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::BlowpipeHit).PlayRandom();
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::BlowpipeHit)
+                    .PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Sling)
             {
-                //The horn hit sfx sounded good for slings too
-                return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                        sfml_util::sound_effect::MaterialHitHorn);
+                // The horn hit sfx sounded good for slings too
+                return sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                    .Play(sfml_util::sound_effect::MaterialHitHorn);
             }
-            else if ((WEAPON_TYPE & item::weapon_type::Bow) ||
-                (WEAPON_TYPE & item::weapon_type::Crossbow))
+            else if (
+                (WEAPON_TYPE & item::weapon_type::Bow)
+                || (WEAPON_TYPE & item::weapon_type::Crossbow))
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::ArrowHit).PlayRandom();
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::ArrowHit)
+                    .PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Fists)
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::FistHit).PlayRandom();
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::FistHit)
+                    .PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Tendrils)
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::TendrilHit).PlayRandom();
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::TendrilHit)
+                    .PlayRandom();
             }
-            else if ((WEAPON_TYPE & item::weapon_type::Breath) &&
-                     (CREATURE_PTR->Role() == creature::role::Firebrand))
+            else if (
+                (WEAPON_TYPE & item::weapon_type::Breath)
+                && (CREATURE_PTR->Role() == creature::role::Firebrand))
             {
-                sfml_util::SoundManager::Instance()->
-                    SoundEffectPlay(sfml_util::sound_effect::BreathHitFirebrand);
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::BreathHitFirebrand);
             }
-            else if ((WEAPON_TYPE & item::weapon_type::Breath) &&
-                     (CREATURE_PTR->Role() == creature::role::Sylavin))
+            else if (
+                (WEAPON_TYPE & item::weapon_type::Breath)
+                && (CREATURE_PTR->Role() == creature::role::Sylavin))
             {
-                sfml_util::SoundManager::Instance()->
-                    SoundEffectPlay(sfml_util::sound_effect::BreathHitSylavin);
+                sfml_util::SoundManager::Instance()->SoundEffectPlay(
+                    sfml_util::sound_effect::BreathHitSylavin);
             }
             else if (WEAPON_TYPE & item::weapon_type::Claws)
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::ClawHit).PlayRandom();
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::ClawHit)
+                    .PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Whip)
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::WhipHit).PlayRandom();
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::WhipHit)
+                    .PlayRandom();
             }
             else
             {
@@ -153,61 +162,61 @@ namespace combat
 
                     case item::material::Wood:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitWood);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitWood);
                     }
 
                     case item::material::HardLeather:
                     case item::material::SoftLeather:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitLeather);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitLeather);
                     }
 
                     case item::material::Bone:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitBone);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitBone);
                     }
 
                     case item::material::Water:
                     case item::material::Acid:
                     case item::material::Blood:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitLiquid);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitLiquid);
                     }
 
                     case item::material::Plant:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitPlant);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitPlant);
                     }
 
                     case item::material::Flesh:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitFlesh);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitFlesh);
                     }
 
                     case item::material::Scale:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitScale);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitScale);
                     }
 
                     case item::material::Hide:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitHide);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitHide);
                     }
 
                     case item::material::Stone:
@@ -221,32 +230,32 @@ namespace combat
                     case item::material::Sapphire:
                     case item::material::Diamond:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitStone);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitStone);
                     }
 
                     case item::material::Rope:
                     case item::material::Cloth:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitCloth);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitCloth);
                     }
 
                     case item::material::Claw:
                     case item::material::Horn:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitHorn);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitHorn);
                     }
 
                     case item::material::Tooth:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitTooth);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitTooth);
                     }
 
                     case item::material::Tin:
@@ -257,8 +266,9 @@ namespace combat
                     case item::material::Steel:
                     case item::material::Platinum:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMetal).PlayRandom();
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMetal)
+                            .PlayRandom();
                     }
 
                     case item::material::Feather:
@@ -273,9 +283,9 @@ namespace combat
                     case item::material::Count:
                     default:
                     {
-                        return sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                            sfml_util::sound_effect_set::MaterialHitMisc).Play(
-                                sfml_util::sound_effect::MaterialHitMisc);
+                        return sfml_util::SoundManager::Instance()
+                            ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
+                            .Play(sfml_util::sound_effect::MaterialHitMisc);
                     }
                 }
             }
@@ -284,24 +294,27 @@ namespace combat
         {
             if (WEAPON_TYPE & item::weapon_type::Projectile)
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::ProjectileMiss).PlayRandom();
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::ProjectileMiss)
+                    .PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Whip)
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::WhipMiss).PlayRandom();
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::WhipMiss)
+                    .PlayRandom();
             }
             else if (WEAPON_TYPE & item::weapon_type::Melee)
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::MeleeMiss).PlayRandom();
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::MeleeMiss)
+                    .PlayRandom();
             }
             else
             {
-                M_HP_LOG_ERR("combat::CombatSoundEffects::PlayHitOrMiss("
-                    << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole()
-                    << "\", weapon=\""
+                M_HP_LOG_ERR(
+                    "combat::CombatSoundEffects::PlayHitOrMiss("
+                    << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole() << "\", weapon=\""
                     << WEAPON_PTR->Name() << "\", category=\""
                     << item::category::ToString(WEAPON_PTR->Category(), false)
                     << "\", weapon_type=" << item::weapon_type::ToString(WEAPON_TYPE, false)
@@ -309,7 +322,6 @@ namespace combat
             }
         }
     }
-
 
     void CombatSoundEffects::PlaySpell(const spell::SpellPtr_t SPELL_PTR) const
     {
@@ -323,8 +335,9 @@ namespace combat
             }
             case spell::Spells::Bandage:
             {
-                sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                    sfml_util::sound_effect_set::SpellBandage).PlayRandom();
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::SpellBandage)
+                    .PlayRandom();
                 break;
             }
             case spell::Spells::Sleep:
@@ -393,12 +406,12 @@ namespace combat
             case spell::Spells::Count:
             default:
             {
-                M_HP_LOG_ERR("combat::CombatSoundEffects::PlaySpell(" << SPELL_PTR->Name()
-                    << ") failed to play a sound effect.");
+                M_HP_LOG_ERR(
+                    "combat::CombatSoundEffects::PlaySpell(" << SPELL_PTR->Name()
+                                                             << ") failed to play a sound effect.");
             }
         }
     }
-
 
     void CombatSoundEffects::PlaySong(const song::SongPtr_t SONG_PTR) const
     {
@@ -443,12 +456,12 @@ namespace combat
             case song::Songs::Count:
             default:
             {
-                M_HP_LOG_ERR("combat::CombatSoundEffects::PlaySong(" << SONG_PTR->Name()
-                    << ") failed to play a sound effect.");
+                M_HP_LOG_ERR(
+                    "combat::CombatSoundEffects::PlaySong(" << SONG_PTR->Name()
+                                                            << ") failed to play a sound effect.");
             }
         }
     }
-
 
     void CombatSoundEffects::PlayRoar(const creature::CreaturePtr_t CREATURE_PTR) const
     {
@@ -538,7 +551,8 @@ namespace combat
                         sfml_util::sound_effect::RoarDragonFirebrandWyrm);
                     return;
                 }
-                case creature::dragon_class::Skycaster: {
+                case creature::dragon_class::Skycaster:
+                {
                     sfml_util::SoundManager::Instance()->SoundEffectPlay(
                         sfml_util::sound_effect::RoarDragonFirebrandSkycaster);
                     return;
@@ -594,7 +608,8 @@ namespace combat
                         sfml_util::sound_effect::RoarDragonSylavinWyrm);
                     return;
                 }
-                case creature::dragon_class::Skycaster: {
+                case creature::dragon_class::Skycaster:
+                {
                     sfml_util::SoundManager::Instance()->SoundEffectPlay(
                         sfml_util::sound_effect::RoarDragonSylavinSkycaster);
                     return;
@@ -610,12 +625,12 @@ namespace combat
                 {}
             }
 
-            M_HP_LOG_ERR("combat::CombatSoundEffects::PlayRoar("
+            M_HP_LOG_ERR(
+                "combat::CombatSoundEffects::PlayRoar("
                 << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole()
                 << ") failed to find an sfx to play.");
         }
     }
-
 
     void CombatSoundEffects::PlayDeath(const creature::CreaturePtr_t CREATURE_PTR) const
     {
@@ -624,20 +639,20 @@ namespace combat
 
         if (sfxVec.empty())
         {
-            M_HP_LOG_ERR("combat::CombatSoundEffects::PlayDeath("
+            M_HP_LOG_ERR(
+                "combat::CombatSoundEffects::PlayDeath("
                 << "creature=\"" << CREATURE_PTR->NameAndRaceAndRole()
                 << ") failed to find an sfx to play.");
         }
         else
         {
             sfml_util::SoundManager::Instance()->SoundEffectPlay(
-                misc::Vector::SelectRandom(sfxVec) );
+                misc::Vector::SelectRandom(sfxVec));
         }
     }
 
-
-    void CombatSoundEffects::GetDeathSfx(creature::CreaturePtr_t           CREATURE_PTR,
-                                         sfml_util::SfxEnumVec_t & sfxVec_OutParam) const
+    void CombatSoundEffects::GetDeathSfx(
+        creature::CreaturePtr_t CREATURE_PTR, sfml_util::SfxEnumVec_t & sfxVec_OutParam) const
     {
         switch (CREATURE_PTR->Race())
         {
@@ -892,6 +907,5 @@ namespace combat
             {}
         }
     }
-
 }
 }

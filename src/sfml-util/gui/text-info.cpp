@@ -29,194 +29,189 @@
 //
 #include "text-info.hpp"
 
+#include "misc/platform.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/sfml-util.hpp"
-#include "misc/platform.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 
 #include <tuple>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    TextInfo::TextInfo(
-        const std::string & TEXT,
-        const FontPtr_t FONT_PTR,
-        const unsigned int CHAR_SIZE,
-        const sf::Color & COLOR,
-        const sf::BlendMode & BLEND_MODE,
-        const sf::Uint32 STYLE,
-        const Justified::Enum JUSTIFIED,
-        const bool IS_OUTLINE_ONLY,
-        const float OUTLINE_THICKNESS)
-    :
-        text	        (TEXT),
-        fontPtr	        (FONT_PTR),
-        charSize	    (CHAR_SIZE),
-        color	        (COLOR),
-        blendMode       (BLEND_MODE),
-        style	        (STYLE),
-        justified       (JUSTIFIED),
-        isOutlineOnly	(IS_OUTLINE_ONLY),
-        outlineThickness(OUTLINE_THICKNESS)
-    {}
-
-
-    TextInfo::TextInfo(
-        const std::string & TEXT,
-        const FontPtr_t FONT_PTR,
-        const unsigned int CHAR_SIZE,
-        const sf::Color & COLOR,
-        const Justified::Enum JUSTIFIED)
-    :
-        text	        (TEXT),
-        fontPtr	        (FONT_PTR),
-        charSize	    (CHAR_SIZE),
-        color	        (COLOR),
-        blendMode       (sf::BlendAlpha),
-        style	        (sf::Text::Style::Regular),
-        justified       (JUSTIFIED),
-        isOutlineOnly	(false),
-        outlineThickness(0.0f)
-    {}
-
-
-    TextInfo::TextInfo(const TextInfo & TI)
-    :
-        text	        (TI.text),
-
-        //The TextInfo class is a temporary observer class that does not
-        //participate in managing the lifetime of Font objects, so copying
-        //this pointer is safe.
-        fontPtr	        (TI.fontPtr),
-
-        charSize	    (TI.charSize),
-        color	        (TI.color),
-        blendMode       (TI.blendMode),
-        style	        (TI.style),
-        justified       (TI.justified),
-        isOutlineOnly	(TI.isOutlineOnly),
-        outlineThickness(TI.outlineThickness)
-    {}
-
-
-    TextInfo & TextInfo::operator=(const TextInfo & TI)
+    namespace gui
     {
-        if (this != & TI)
+
+        TextInfo::TextInfo(
+            const std::string & TEXT,
+            const FontPtr_t FONT_PTR,
+            const unsigned int CHAR_SIZE,
+            const sf::Color & COLOR,
+            const sf::BlendMode & BLEND_MODE,
+            const sf::Uint32 STYLE,
+            const Justified::Enum JUSTIFIED,
+            const bool IS_OUTLINE_ONLY,
+            const float OUTLINE_THICKNESS)
+            : text(TEXT)
+            , fontPtr(FONT_PTR)
+            , charSize(CHAR_SIZE)
+            , color(COLOR)
+            , blendMode(BLEND_MODE)
+            , style(STYLE)
+            , justified(JUSTIFIED)
+            , isOutlineOnly(IS_OUTLINE_ONLY)
+            , outlineThickness(OUTLINE_THICKNESS)
+        {}
+
+        TextInfo::TextInfo(
+            const std::string & TEXT,
+            const FontPtr_t FONT_PTR,
+            const unsigned int CHAR_SIZE,
+            const sf::Color & COLOR,
+            const Justified::Enum JUSTIFIED)
+            : text(TEXT)
+            , fontPtr(FONT_PTR)
+            , charSize(CHAR_SIZE)
+            , color(COLOR)
+            , blendMode(sf::BlendAlpha)
+            , style(sf::Text::Style::Regular)
+            , justified(JUSTIFIED)
+            , isOutlineOnly(false)
+            , outlineThickness(0.0f)
+        {}
+
+        TextInfo::TextInfo(const TextInfo & TI)
+            : text(TI.text)
+            ,
+
+            // The TextInfo class is a temporary observer class that does not
+            // participate in managing the lifetime of Font objects, so copying
+            // this pointer is safe.
+            fontPtr(TI.fontPtr)
+            ,
+
+            charSize(TI.charSize)
+            , color(TI.color)
+            , blendMode(TI.blendMode)
+            , style(TI.style)
+            , justified(TI.justified)
+            , isOutlineOnly(TI.isOutlineOnly)
+            , outlineThickness(TI.outlineThickness)
+        {}
+
+        TextInfo & TextInfo::operator=(const TextInfo & TI)
         {
-            text	        = TI.text;
+            if (this != &TI)
+            {
+                text = TI.text;
 
-            //see comment above in copy constructor regarding this pointer
-            fontPtr	        = TI.fontPtr;
+                // see comment above in copy constructor regarding this pointer
+                fontPtr = TI.fontPtr;
 
-            charSize	    = TI.charSize;
-            color	        = TI.color;
-            blendMode       = TI.blendMode;
-            style	        = TI.style;
-            justified       = TI.justified;
-            isOutlineOnly	= TI.isOutlineOnly;
-            outlineThickness= TI.outlineThickness;
+                charSize = TI.charSize;
+                color = TI.color;
+                blendMode = TI.blendMode;
+                style = TI.style;
+                justified = TI.justified;
+                isOutlineOnly = TI.isOutlineOnly;
+                outlineThickness = TI.outlineThickness;
+            }
+
+            return *this;
         }
 
-        return * this;
-    }
-
-
-    bool operator<(const TextInfo & L, const TextInfo & R)
-    {
-        if (L.color != R.color)
+        bool operator<(const TextInfo & L, const TextInfo & R)
         {
-            return sfml_util::color::ColorLess(L.color, R.color);
+            if (L.color != R.color)
+            {
+                return sfml_util::color::ColorLess(L.color, R.color);
+            }
+
+            if (L.blendMode != R.blendMode)
+            {
+                return sfml_util::color::BlendModeLess(L.blendMode, R.blendMode);
+            }
+
+            return std::tie(
+                       L.text,
+                       L.fontPtr,
+                       L.charSize,
+                       L.style,
+                       L.justified,
+                       L.isOutlineOnly,
+                       L.outlineThickness)
+                < std::tie(
+                       R.text,
+                       R.fontPtr,
+                       R.charSize,
+                       R.style,
+                       R.justified,
+                       R.isOutlineOnly,
+                       R.outlineThickness);
         }
 
-        if (L.blendMode != R.blendMode)
+        bool operator==(const TextInfo & L, const TextInfo & R)
         {
-            return sfml_util::color::BlendModeLess(L.blendMode, R.blendMode);
+            if (misc::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
+            {
+                return false;
+            }
+
+            return std::tie(
+                       L.text,
+                       L.fontPtr,
+                       L.charSize,
+                       L.color,
+                       L.blendMode,
+                       L.style,
+                       L.justified,
+                       L.isOutlineOnly)
+                == std::tie(
+                       R.text,
+                       R.fontPtr,
+                       R.charSize,
+                       R.color,
+                       R.blendMode,
+                       R.style,
+                       R.justified,
+                       R.isOutlineOnly);
         }
 
-        return std::tie(L.text,
-                        L.fontPtr,
-                        L.charSize,
-                        L.style,
-                        L.justified,
-                        L.isOutlineOnly,
-                        L.outlineThickness)
-               <
-               std::tie(R.text,
-                        R.fontPtr,
-                        R.charSize,
-                        R.style,
-                        R.justified,
-                        R.isOutlineOnly,
-                        R.outlineThickness);
-    }
-
-
-    bool operator==(const TextInfo & L, const TextInfo & R)
-    {
-        if (misc::IsRealClose(L.outlineThickness, R.outlineThickness) == false)
+        void SetupText(sf::Text & text, const TextInfo & TEXT_INFO)
         {
-            return false;
-        }
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (false == TEXT_INFO.text.empty()),
+                "sfml_util::gui::SetupText() given a TEXT_INFO.string that was empty.");
 
-        return std::tie(L.text,
-                        L.fontPtr,
-                        L.charSize,
-                        L.color,
-                        L.blendMode,
-                        L.style,
-                        L.justified,
-                        L.isOutlineOnly)
-               ==
-               std::tie(R.text,
-                        R.fontPtr,
-                        R.charSize,
-                        R.color,
-                        R.blendMode,
-                        R.style,
-                        R.justified,
-                        R.isOutlineOnly);
-    }
+            text.setString(TEXT_INFO.text);
 
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (nullptr != TEXT_INFO.fontPtr),
+                "sfml_util::gui::SetupText(\"" << TEXT_INFO.text
+                                               << "\") was given a null font pointer.");
 
-    void SetupText(sf::Text & text, const TextInfo & TEXT_INFO)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((false == TEXT_INFO.text.empty()),
-            "sfml_util::gui::SetupText() given a TEXT_INFO.string that was empty.");
+            text.setFont(*TEXT_INFO.fontPtr);
+            text.setStyle(TEXT_INFO.style);
+            text.setCharacterSize(TEXT_INFO.charSize);
 
-        text.setString(TEXT_INFO.text);
-
-        M_ASSERT_OR_LOGANDTHROW_SS((nullptr != TEXT_INFO.fontPtr),
-            "sfml_util::gui::SetupText(\"" << TEXT_INFO.text
-            << "\") was given a null font pointer.");
-
-        text.setFont( * TEXT_INFO.fontPtr);
-        text.setStyle(TEXT_INFO.style);
-        text.setCharacterSize(TEXT_INFO.charSize);
-
-//linux SFML lib does not seem to support outline fonts...
+// linux SFML lib does not seem to support outline fonts...
 #ifdef PLATFORM_DETECTED_IS_LINUX
-        text.setColor(TEXT_INFO.color);
+            text.setColor(TEXT_INFO.color);
 #else
-        if (TEXT_INFO.isOutlineOnly)
-        {
-            text.setFillColor(sf::Color::Transparent);
-            text.setOutlineColor(TEXT_INFO.color);
-            text.setOutlineThickness(TEXT_INFO.outlineThickness);
-        }
-        else
-        {
-            text.setFillColor(TEXT_INFO.color);
-        }
+            if (TEXT_INFO.isOutlineOnly)
+            {
+                text.setFillColor(sf::Color::Transparent);
+                text.setOutlineColor(TEXT_INFO.color);
+                text.setOutlineThickness(TEXT_INFO.outlineThickness);
+            }
+            else
+            {
+                text.setFillColor(TEXT_INFO.color);
+            }
 #endif
+        }
     }
-
-}
 }
 }

@@ -27,25 +27,24 @@
 //
 // song.hpp
 //
+#include "combat/effect-type-enum.hpp"
+#include "combat/name-position-enum.hpp"
+#include "combat/target-enum.hpp"
+#include "creature/condition-enum.hpp"
+#include "game/phase-enum.hpp"
 #include "misc/types.hpp"
 #include "song/song-enum.hpp"
 #include "song/song-type-enum.hpp"
-#include "game/phase-enum.hpp"
-#include "combat/target-enum.hpp"
-#include "combat/effect-type-enum.hpp"
-#include "creature/condition-enum.hpp"
-#include "combat/name-position-enum.hpp"
 
-#include <string>
-#include <vector>
-#include <tuple>
 #include <memory>
-
+#include <string>
+#include <tuple>
+#include <vector>
 
 namespace heroespath
 {
 
-//forward declarations
+// forward declarations
 namespace creature
 {
     class Creature;
@@ -61,19 +60,20 @@ namespace item
 namespace song
 {
 
-    //common base code to all song classes
+    // common base code to all song classes
     class Song
     {
     public:
-        Song(const Songs::Enum WHICH,
-             const SongType::Enum SONG_TYPE,
-             const combat::EffectType::Enum EFFECT_TYPE,
-             const game::Phase::Enum VALID_PHASES,
-             const Mana_t & MANA_COST,
-             const Rank_t & RANK,
-             const combat::TargetType::Enum TARGET_TYPE,
-             const std::string & VERB_THIRD_PERSON,
-             const std::string & VERB_PAST_TENSE);
+        Song(
+            const Songs::Enum WHICH,
+            const SongType::Enum SONG_TYPE,
+            const combat::EffectType::Enum EFFECT_TYPE,
+            const game::Phase::Enum VALID_PHASES,
+            const Mana_t & MANA_COST,
+            const Rank_t & RANK,
+            const combat::TargetType::Enum TARGET_TYPE,
+            const std::string & VERB_THIRD_PERSON,
+            const std::string & VERB_PAST_TENSE);
 
         virtual ~Song();
 
@@ -97,7 +97,7 @@ namespace song
         inline Rank_t Rank() const { return rank_; }
         inline combat::TargetType::Enum Target() const { return targetType_; }
 
-        //Allows the spell to change the target creature.
+        // Allows the spell to change the target creature.
         virtual bool EffectCreature(
             creature::CreaturePtr_t creaturePlayingPtr,
             creature::CreaturePtr_t creatureListeningPtr,
@@ -106,7 +106,7 @@ namespace song
             creature::CondEnumVec_t & condsRemovedVec,
             combat::ContentAndNamePos & actionPhraseCNP) const = 0;
 
-        //Allows the spell to change the target item.
+        // Allows the spell to change the target item.
         virtual bool EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const;
 
         const std::string ActionPhrasePreamble() const;
@@ -132,67 +132,61 @@ namespace song
         std::string verbPastTense_;
     };
 
-
-    using SongPtr_t       = Song *;
-    using SongPVec_t      = std::vector<SongPtr_t>;
-    using SongPVecIter_t  = SongPVec_t::iterator;
+    using SongPtr_t = Song *;
+    using SongPVec_t = std::vector<SongPtr_t>;
+    using SongPVecIter_t = SongPVec_t::iterator;
     using SongPVecCIter_t = SongPVec_t::const_iterator;
-
 
     inline bool operator<(const Song & L, const Song & R)
     {
-        return std::tie(L.which_,
-                        L.effectType_,
-                        L.effectType_,
-                        L.rank_,
-                        L.validPhases_,
-                        L.manaCost_,
-                        L.targetType_,
-                        L.verbThirdPerson_,
-                        L.verbPastTense_)
-                <
-               std::tie(R.which_,
-                        R.type_,
-                        R.effectType_,
-                        R.rank_,
-                        R.validPhases_,
-                        R.manaCost_,
-                        R.targetType_,
-                        R.verbThirdPerson_,
-                        R.verbPastTense_);
+        return std::tie(
+                   L.which_,
+                   L.effectType_,
+                   L.effectType_,
+                   L.rank_,
+                   L.validPhases_,
+                   L.manaCost_,
+                   L.targetType_,
+                   L.verbThirdPerson_,
+                   L.verbPastTense_)
+            < std::tie(
+                   R.which_,
+                   R.type_,
+                   R.effectType_,
+                   R.rank_,
+                   R.validPhases_,
+                   R.manaCost_,
+                   R.targetType_,
+                   R.verbThirdPerson_,
+                   R.verbPastTense_);
     }
-
 
     inline bool operator==(const Song & L, const Song & R)
     {
-        return std::tie(L.which_,
-                        L.type_,
-                        L.effectType_,
-                        L.rank_,
-                        L.validPhases_,
-                        L.manaCost_,
-                        L.targetType_,
-                        L.verbThirdPerson_,
-                        L.verbPastTense_)
-                ==
-               std::tie(R.which_,
-                        R.type_,
-                        R.effectType_,
-                        R.rank_,
-                        R.validPhases_,
-                        R.manaCost_,
-                        R.targetType_,
-                        R.verbThirdPerson_,
-                        R.verbPastTense_);
+        return std::tie(
+                   L.which_,
+                   L.type_,
+                   L.effectType_,
+                   L.rank_,
+                   L.validPhases_,
+                   L.manaCost_,
+                   L.targetType_,
+                   L.verbThirdPerson_,
+                   L.verbPastTense_)
+            == std::tie(
+                   R.which_,
+                   R.type_,
+                   R.effectType_,
+                   R.rank_,
+                   R.validPhases_,
+                   R.manaCost_,
+                   R.targetType_,
+                   R.verbThirdPerson_,
+                   R.verbPastTense_);
     }
 
-
-    inline bool operator!=(const Song & L, const Song & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const Song & L, const Song & R) { return !(L == R); }
 }
 }
 
-#endif //HEROESPATH_SONG_SONG_HPP_INCLUDED
+#endif // HEROESPATH_SONG_SONG_HPP_INCLUDED

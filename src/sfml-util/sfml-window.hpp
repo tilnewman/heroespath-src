@@ -28,7 +28,7 @@
 // sfml-window.hpp
 //
 
-//prevent warnings that can be ignored in SFML
+// prevent warnings that can be ignored in SFML
 #include "misc/platform.hpp"
 #ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
@@ -42,4 +42,4 @@
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 
-#endif //HEROESPATH_SFMLUTIL_SFMLWINDOW_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SFMLWINDOW_HPP_INCLUDED

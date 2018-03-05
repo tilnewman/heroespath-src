@@ -31,30 +31,30 @@
 
 #include <SFML/Graphics/Color.hpp>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //Responsible for alternating between two colors at the given speed.
+    // Responsible for alternating between two colors at the given speed.
     class ColorShaker
     {
     public:
-        explicit ColorShaker(const sf::Color & COLOR_ORIG,
-                             const sf::Color & COLOR_ALT  = sf::Color::White,
-                             const float       SPEED      = 50.0f,
-                             const bool        WILL_START = true);
+        explicit ColorShaker(
+            const sf::Color & COLOR_ORIG,
+            const sf::Color & COLOR_ALT = sf::Color::White,
+            const float SPEED = 50.0f,
+            const bool WILL_START = true);
 
         const sf::Color Update(const float ELAPSED_TIME_SECONDS);
 
         void Reset();
 
-        inline void Start()                     { isShaking_ = true; }
-        inline void Stop()                      { isShaking_ = false; }
-        inline float Speed() const              { return static_cast<float>(slider_.Speed()); }
-        inline bool IsShaking() const           { return isShaking_; }
-        inline const sf::Color Current() const  { return colorCurr_; }
+        inline void Start() { isShaking_ = true; }
+        inline void Stop() { isShaking_ = false; }
+        inline float Speed() const { return static_cast<float>(slider_.Speed()); }
+        inline bool IsShaking() const { return isShaking_; }
+        inline const sf::Color Current() const { return colorCurr_; }
 
     private:
         sliders::Slider<float> slider_;
@@ -67,8 +67,7 @@ namespace sfml_util
         float blueDiff_;
         float alphaDiff_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_COLORSHAKER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_COLORSHAKER_HPP_INCLUDED

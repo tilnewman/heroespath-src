@@ -1,17 +1,17 @@
-//This is an open source non-commercial project. Dear PVS-Studio, please check it.
-//PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
-//Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
-//Copyright (C) 2017 Ziesche Til Newman (tilnewman@gmail.com)
+// Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
+// Copyright (C) 2017 Ziesche Til Newman (tilnewman@gmail.com)
 //
-//This software is provided 'as-is', without any express or implied warranty.
-//In no event will the authors be held liable for any damages arising from
-//the use of this software.
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from
+// the use of this software.
 //
-//Permission is granted to anyone to use this software for any purpose,
-//including commercial applications, and to alter it and redistribute it
-//freely, subject to the following restrictions:
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
 //
 // 1. The origin of this software must not be misrepresented; you must not
 //    claim that you wrote the original software.  If you use this software
@@ -29,48 +29,46 @@
 //
 #include "parser.hpp"
 
-#include "map/tiles-panel.hpp"
-#include "map/shadow-masker.hpp"
-#include "log/log-macros.hpp"
 #include "game/game-data-file.hpp"
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/loaders.hpp"
+#include "log/log-macros.hpp"
+#include "map/shadow-masker.hpp"
+#include "map/tiles-panel.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-util.hpp"
 
-#include <boost/lexical_cast.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/algorithm.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <algorithm>
-
 
 namespace heroespath
 {
 namespace map
 {
-    //all of these strings must be lower case
-    const std::string Parser::XML_NODE_NAME_MAP_            { "map" };
-    const std::string Parser::XML_NODE_NAME_TILE_LAYER_     { "layer" };
-    const std::string Parser::XML_NODE_NAME_OBJECTS_LAYER_  { "objectgroup" };
-    const std::string Parser::XML_NODE_NAME_OBJECT_         { "object" };
-    const std::string Parser::XML_NODE_NAME_TILESET_        { "tileset" };
-    const std::string Parser::XML_NODE_NAME_PROPERTIES_     { "properties" };
-    const std::string Parser::XML_NODE_NAME_PROPERTY_       { "property" };
-    const std::string Parser::XML_NODE_NAME_ANIMATIONS_     { "animations" };
-    const std::string Parser::XML_NODE_NAME_WALKSFX_        { "walk-sfx" };
-    const std::string Parser::XML_ATTRIB_FETCH_PREFIX_      { "<xmlattr>." };
-    const std::string Parser::XML_ATTRIB_NAME_COLLISIONS_   { "collision" };
-    const std::string Parser::XML_ATTRIB_NAME_SHADOW_       { "shadow" };
-    const std::string Parser::XML_ATTRIB_NAME_GROUND_       { "ground" };
-    const std::string Parser::XML_ATTRIB_NAME_TYPE_         { "type" };
-    const std::string Parser::XML_ATTRIB_NAME_LEVEL_        { "level" };
-    const std::string Parser::XML_ATTRIB_NAME_TRANSITIONS_  { "transitions" };
-    const std::string Parser::XML_ATTRIB_NAME_VALUE_        { "value" };
-    const std::string Parser::XML_ATTRIB_NAME_WALKBOUNDS_   { "walk-bounds" };
-    const std::string Parser::XML_ATTRIB_NAME_NAME_         { "name" };
-    const std::string Parser::XML_ATTRIB_NAME_DOORSFX_      { "doorsfx" };
-
+    // all of these strings must be lower case
+    const std::string Parser::XML_NODE_NAME_MAP_{ "map" };
+    const std::string Parser::XML_NODE_NAME_TILE_LAYER_{ "layer" };
+    const std::string Parser::XML_NODE_NAME_OBJECTS_LAYER_{ "objectgroup" };
+    const std::string Parser::XML_NODE_NAME_OBJECT_{ "object" };
+    const std::string Parser::XML_NODE_NAME_TILESET_{ "tileset" };
+    const std::string Parser::XML_NODE_NAME_PROPERTIES_{ "properties" };
+    const std::string Parser::XML_NODE_NAME_PROPERTY_{ "property" };
+    const std::string Parser::XML_NODE_NAME_ANIMATIONS_{ "animations" };
+    const std::string Parser::XML_NODE_NAME_WALKSFX_{ "walk-sfx" };
+    const std::string Parser::XML_ATTRIB_FETCH_PREFIX_{ "<xmlattr>." };
+    const std::string Parser::XML_ATTRIB_NAME_COLLISIONS_{ "collision" };
+    const std::string Parser::XML_ATTRIB_NAME_SHADOW_{ "shadow" };
+    const std::string Parser::XML_ATTRIB_NAME_GROUND_{ "ground" };
+    const std::string Parser::XML_ATTRIB_NAME_TYPE_{ "type" };
+    const std::string Parser::XML_ATTRIB_NAME_LEVEL_{ "level" };
+    const std::string Parser::XML_ATTRIB_NAME_TRANSITIONS_{ "transitions" };
+    const std::string Parser::XML_ATTRIB_NAME_VALUE_{ "value" };
+    const std::string Parser::XML_ATTRIB_NAME_WALKBOUNDS_{ "walk-bounds" };
+    const std::string Parser::XML_ATTRIB_NAME_NAME_{ "name" };
+    const std::string Parser::XML_ATTRIB_NAME_DOORSFX_{ "doorsfx" };
 
     void Parser::Parse(ParsePacket & packet) const
     {
@@ -80,8 +78,9 @@ namespace map
         }
         catch (const std::exception & E)
         {
-            M_HP_LOG_ERR("map::Parser::Parse(" << packet.file_path << ") threw '"
-                << E.what() << "' exception.");
+            M_HP_LOG_ERR(
+                "map::Parser::Parse(" << packet.file_path << ") threw '" << E.what()
+                                      << "' exception.");
 
             throw E;
         }
@@ -94,14 +93,13 @@ namespace map
         }
     }
 
-
     void Parser::Parse_Implementation(ParsePacket & packet) const
     {
         packet.collision_vec.clear();
-        packet.collision_vec.reserve(1024);//found by experiment to be a good upper bound
+        packet.collision_vec.reserve(1024); // found by experiment to be a good upper bound
 
         packet.transition_vec.clear();
-        packet.transition_vec.reserve(8);//found by experiment to be a good upper bound
+        packet.transition_vec.reserve(8); // found by experiment to be a good upper bound
 
         packet.walk_region_vecmap.Clear();
 
@@ -115,7 +113,7 @@ namespace map
 
         using BPTreeValue_t = boost::property_tree::ptree::value_type;
 
-        //loop over all layers in the map file and parse them separately
+        // loop over all layers in the map file and parse them separately
         for (const BPTreeValue_t & CHILD_PAIR : XML_PTREE_ROOT.get_child(XML_NODE_NAME_MAP_))
         {
             namespace ba = boost::algorithm;
@@ -123,8 +121,8 @@ namespace map
 
             if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_OBJECTS_LAYER_))
             {
-                auto const OBJECT_LAYER_NAME_LOWER{
-                    ba::to_lower_copy(FetchXMLAttributeName(CHILD_PAIR.second)) };
+                auto const OBJECT_LAYER_NAME_LOWER{ ba::to_lower_copy(
+                    FetchXMLAttributeName(CHILD_PAIR.second)) };
 
                 if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_ATTRIB_NAME_COLLISIONS_))
                 {
@@ -142,7 +140,7 @@ namespace map
                 {
                     Parse_Layer_Animations(CHILD_PAIR.second, packet.animation_vec);
                 }
-                else if(ba::contains(OBJECT_LAYER_NAME_LOWER, XML_NODE_NAME_WALKSFX_))
+                else if (ba::contains(OBJECT_LAYER_NAME_LOWER, XML_NODE_NAME_WALKSFX_))
                 {
                     Parse_Layer_WalkSfxs(CHILD_PAIR.second, packet.walkSfxLayers);
                 }
@@ -155,8 +153,8 @@ namespace map
             }
             else if (ba::contains(NODENAME_LOWER, XML_NODE_NAME_TILE_LAYER_))
             {
-                auto const LAYER_TYPE{ LayerTypeFromName(ba::to_lower_copy(
-                    FetchXMLAttributeName(CHILD_PAIR.second))) };
+                auto const LAYER_TYPE{ LayerTypeFromName(
+                    ba::to_lower_copy(FetchXMLAttributeName(CHILD_PAIR.second))) };
 
                 Prase_Layer_Generic(CHILD_PAIR.second, packet.layout, LAYER_TYPE);
             }
@@ -169,15 +167,12 @@ namespace map
             std::end(packet.walkSfxLayers.bottom_layers));
 
         std::sort(
-            std::begin(packet.walkSfxLayers.top_layers),
-            std::end(packet.walkSfxLayers.top_layers));
+            std::begin(packet.walkSfxLayers.top_layers), std::end(packet.walkSfxLayers.top_layers));
 
         ShadowMasker::ChangeColors(XML_ATTRIB_NAME_SHADOW_, packet.layout);
     }
 
-
-    const boost::property_tree::ptree Parser::Parse_XML(
-        const std::string & MAP_FILE_PATH_STR) const
+    const boost::property_tree::ptree Parser::Parse_XML(const std::string & MAP_FILE_PATH_STR) const
     {
         boost::property_tree::ptree xmlPropertyTree;
 
@@ -187,8 +182,10 @@ namespace map
         }
         catch (const std::exception & E)
         {
-            M_HP_LOG_ERR("map::Parser::Parse_XML(\"" << MAP_FILE_PATH_STR
-                << "\") boost::property_tree::read_xml() threw '" << E.what() << "' exception.");
+            M_HP_LOG_ERR(
+                "map::Parser::Parse_XML(\""
+                << MAP_FILE_PATH_STR << "\") boost::property_tree::read_xml() threw '" << E.what()
+                << "' exception.");
 
             throw;
         }
@@ -196,7 +193,7 @@ namespace map
         {
             std::ostringstream ss;
             ss << "map::Parser::Parse_XML(\"" << MAP_FILE_PATH_STR
-                << "\") boost::property_tree::read_xml() threw an unknown exception.";
+               << "\") boost::property_tree::read_xml() threw an unknown exception.";
 
             M_HP_LOG_ERR(ss.str());
             throw std::runtime_error(ss.str());
@@ -205,10 +202,8 @@ namespace map
         return xmlPropertyTree;
     }
 
-
-    void Parser::Parse_MapSizes(
-        const boost::property_tree::ptree & MAP_PTREE,
-        Layout & layout) const
+    void
+        Parser::Parse_MapSizes(const boost::property_tree::ptree & MAP_PTREE, Layout & layout) const
     {
         try
         {
@@ -219,24 +214,23 @@ namespace map
         }
         catch (const std::exception & E)
         {
-            M_HP_LOG_FAT("map::Parser::Parse_MapSizes() threw exception when parsing \""
+            M_HP_LOG_FAT(
+                "map::Parser::Parse_MapSizes() threw exception when parsing \""
                 << FetchXMLAttributeName(MAP_PTREE) << "\".  what=\"" << E.what() << "\".");
 
             throw E;
         }
     }
 
-
     void Parser::Parse_Layer_Tileset(
-        const boost::property_tree::ptree & TILESET_PTREE,
-        Layout & layout) const
+        const boost::property_tree::ptree & TILESET_PTREE, Layout & layout) const
     {
         auto const IMAGE_PROPTREE{ TILESET_PTREE.get_child("image") };
 
         layout.texture_vec.push_back(sf::Texture());
         auto const TEXTURE_INDEX{ layout.texture_vec.size() - 1 };
 
-        layout.tiles_panel_vec.push_back( TilesPanel(
+        layout.tiles_panel_vec.push_back(TilesPanel(
             FetchXMLAttribute<std::string>(TILESET_PTREE, "name"),
             FetchXMLAttribute<std::string>(IMAGE_PROPTREE, "source"),
             FetchXMLAttribute<int>(TILESET_PTREE, "firstgid"),
@@ -248,12 +242,11 @@ namespace map
 
         namespace bfs = boost::filesystem;
         tilesPanel.path_obj = bfs::system_complete(
-            bfs::path(game::GameDataFile::Instance()->GetMediaPath("media-maps-tile-dir")) /
-                bfs::path(tilesPanel.path_rel).leaf());
+            bfs::path(game::GameDataFile::Instance()->GetMediaPath("media-maps-tile-dir"))
+            / bfs::path(tilesPanel.path_rel).leaf());
 
         sfml_util::LoadTexture(layout.texture_vec[TEXTURE_INDEX], tilesPanel.path_obj.string());
     }
-
 
     void Parser::Parse_Layer_Collisions(
         const boost::property_tree::ptree & OBJGROUP_PTREE,
@@ -261,7 +254,6 @@ namespace map
     {
         Parse_Rects(OBJGROUP_PTREE, XML_NODE_NAME_OBJECT_, collisionRects);
     }
-
 
     void Parser::Prase_Layer_Generic(
         const boost::property_tree::ptree & PTREE,
@@ -271,7 +263,7 @@ namespace map
         std::stringstream ssAllData;
         ssAllData << PTREE.get_child("data").data();
 
-        layout.layer_vec.push_back( Layer() );
+        layout.layer_vec.push_back(Layer());
         Layer & layer{ layout.layer_vec[layout.layer_vec.size() - 1] };
 
         layer.type = TYPE;
@@ -279,12 +271,10 @@ namespace map
         Parse_Layer_Generic_Tiles(layer.mapid_vec, ssAllData);
     }
 
-
     void Parser::Parse_Layer_Generic_Tiles(
-        std::vector<int> & mapIDs,
-        std::stringstream & tileLayerDataSS) const
+        std::vector<int> & mapIDs, std::stringstream & tileLayerDataSS) const
     {
-        //found by experiment to be a reliable upper bound for typical maps
+        // found by experiment to be a reliable upper bound for typical maps
         mapIDs.reserve(20'000);
 
         std::string nextLine("");
@@ -301,7 +291,7 @@ namespace map
             ssLine << nextLine;
             std::string nextValStr("");
 
-            //loop through each line reading numbers between the commas
+            // loop through each line reading numbers between the commas
             while (ssLine)
             {
                 std::getline(ssLine, nextValStr, ',');
@@ -313,13 +303,15 @@ namespace map
 
                 try
                 {
-                    //using boost::lexical_cast instead of std::stoi because it tested faster
-                    mapIDs.push_back( boost::lexical_cast<int>(nextValStr) );
+                    // using boost::lexical_cast instead of std::stoi because it tested faster
+                    mapIDs.push_back(boost::lexical_cast<int>(nextValStr));
                 }
                 catch (const std::exception & E)
                 {
-                    M_HP_LOG("map::Parser::Parse_Layer_Generic_Tiles("
-                        << nextLine << ") " << "boost::lexical_cast<int>("
+                    M_HP_LOG(
+                        "map::Parser::Parse_Layer_Generic_Tiles("
+                        << nextLine << ") "
+                        << "boost::lexical_cast<int>("
                         << "\"" << nextValStr << "\") threw '" << E.what() << "' exception.");
 
                     throw;
@@ -327,9 +319,9 @@ namespace map
                 catch (...)
                 {
                     std::ostringstream ss;
-                    ss << "map::Parser::Parse_Layer_Generic_Tiles("
-                        << nextLine << ") " << "boost::lexical_cast<int>("
-                        << "\"" << nextValStr << "\") threw unknown exception.";
+                    ss << "map::Parser::Parse_Layer_Generic_Tiles(" << nextLine << ") "
+                       << "boost::lexical_cast<int>("
+                       << "\"" << nextValStr << "\") threw unknown exception.";
 
                     M_HP_LOG(ss.str());
                     throw std::runtime_error(ss.str());
@@ -338,10 +330,8 @@ namespace map
         }
     }
 
-
     void Parser::Parse_Layer_WalkBounds(
-        const boost::property_tree::ptree & PTREE,
-        WalkRectMap_t & walkRectMap) const
+        const boost::property_tree::ptree & PTREE, WalkRectMap_t & walkRectMap) const
     {
         namespace ba = boost::algorithm;
 
@@ -351,9 +341,9 @@ namespace map
             {
                 auto const OBJECT_PTREE{ CHILD_PAIR.second };
 
-                //the index is stored in an attribute field named "type"
-                auto const WALK_RECT_INDEX{
-                    FetchXMLAttribute<std::size_t>(OBJECT_PTREE, XML_ATTRIB_NAME_TYPE_) };
+                // the index is stored in an attribute field named "type"
+                auto const WALK_RECT_INDEX{ FetchXMLAttribute<std::size_t>(
+                    OBJECT_PTREE, XML_ATTRIB_NAME_TYPE_) };
 
                 sf::FloatRect rect;
 
@@ -366,10 +356,11 @@ namespace map
                 }
                 catch (const std::exception & E)
                 {
-                    M_HP_LOG_FAT("map::Parser::Parse_Layer_WalkBounds() threw "
+                    M_HP_LOG_FAT(
+                        "map::Parser::Parse_Layer_WalkBounds() threw "
                         << "std::exception when parsing the rect from a node named \""
-                        << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\""
-                        << E.what() << "\".");
+                        << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\"" << E.what()
+                        << "\".");
 
                     throw E;
                 }
@@ -379,10 +370,8 @@ namespace map
         }
     }
 
-
     void Parser::Parse_Layer_Animations(
-        const boost::property_tree::ptree & PTREE,
-        MapAnimVec_t & anims_) const
+        const boost::property_tree::ptree & PTREE, MapAnimVec_t & anims_) const
     {
         namespace ba = boost::algorithm;
 
@@ -392,15 +381,16 @@ namespace map
             {
                 auto const OBJECT_PTREE{ CHILD_PAIR.second };
 
-                //the anim enum name is stored in an attribute field named "name"
-                auto const ANIM_NAME{
-                    FetchXMLAttribute<std::string>(OBJECT_PTREE, XML_ATTRIB_NAME_NAME_) };
+                // the anim enum name is stored in an attribute field named "name"
+                auto const ANIM_NAME{ FetchXMLAttribute<std::string>(
+                    OBJECT_PTREE, XML_ATTRIB_NAME_NAME_) };
 
                 auto const ANIM_ENUM{ sfml_util::Animations::FromString(ANIM_NAME) };
 
-                M_ASSERT_OR_LOGANDTHROW_SS((ANIM_ENUM != sfml_util::Animations::Count),
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (ANIM_ENUM != sfml_util::Animations::Count),
                     "map::Parser::Parse_Layer_Animations() got an invalid animation name \""
-                    << ANIM_NAME << "\"");
+                        << ANIM_NAME << "\"");
 
                 sf::FloatRect rect;
 
@@ -413,26 +403,22 @@ namespace map
                 }
                 catch (const std::exception & E)
                 {
-                    M_HP_LOG_FAT("map::Parser::Parse_Layer_Animations() threw "
+                    M_HP_LOG_FAT(
+                        "map::Parser::Parse_Layer_Animations() threw "
                         << "std::exception when parsing the rect from a node named \""
-                        << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\""
-                        << E.what() << "\".");
+                        << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\"" << E.what()
+                        << "\".");
 
                     throw E;
                 }
 
-                anims_.push_back( MapAnim(
-                    ANIM_ENUM,
-                    rect,
-                    sfml_util::Animations::Sfx(ANIM_ENUM)) );
+                anims_.push_back(MapAnim(ANIM_ENUM, rect, sfml_util::Animations::Sfx(ANIM_ENUM)));
             }
         }
     }
 
-
     void Parser::Parse_Layer_Transitions(
-        const boost::property_tree::ptree & PTREE,
-        TransitionVec_t & transitionVec) const
+        const boost::property_tree::ptree & PTREE, TransitionVec_t & transitionVec) const
     {
         namespace ba = boost::algorithm;
 
@@ -445,9 +431,7 @@ namespace map
         }
     }
 
-
-    const Transition Parser::Parse_Transition(
-        const boost::property_tree::ptree & PTREE) const
+    const Transition Parser::Parse_Transition(const boost::property_tree::ptree & PTREE) const
     {
         namespace ba = boost::algorithm;
 
@@ -462,10 +446,10 @@ namespace map
         }
         catch (const std::exception & E)
         {
-            M_HP_LOG_FAT("map::Parser::Parse_Transition() threw "
+            M_HP_LOG_FAT(
+                "map::Parser::Parse_Transition() threw "
                 << "std::exception when parsing the rect from a node named \""
-                << FetchXMLAttributeName(PTREE) << "\".  what=\""
-                << E.what() << "\".");
+                << FetchXMLAttributeName(PTREE) << "\".  what=\"" << E.what() << "\".");
 
             throw E;
         }
@@ -474,7 +458,8 @@ namespace map
         Level::Enum level{ Level::Count };
 
         sfml_util::sound_effect::MapTransition transSfxType{
-            sfml_util::sound_effect::MapTransition::Count };
+            sfml_util::sound_effect::MapTransition::Count
+        };
 
         for (const boost::property_tree::ptree::value_type & CHILD_PAIR : PTREE)
         {
@@ -486,7 +471,6 @@ namespace map
 
         return Transition(isEntry, level, rect, transSfxType);
     }
-
 
     void Parser::Parse_Transition_Properties(
         const boost::property_tree::ptree & PTREE,
@@ -507,8 +491,8 @@ namespace map
 
             auto const NAME_STR{ FetchXMLAttributeName(CHILD_PAIR.second) };
 
-            auto const VALUE_STR{
-                FetchXMLAttribute<std::string>(CHILD_PAIR.second, XML_ATTRIB_NAME_VALUE_) };
+            auto const VALUE_STR{ FetchXMLAttribute<std::string>(
+                CHILD_PAIR.second, XML_ATTRIB_NAME_VALUE_) };
 
             if (NAME_STR == XML_ATTRIB_NAME_TYPE_)
             {
@@ -529,13 +513,13 @@ namespace map
                 {
                     level = Level::FromString(VALUE_STR);
                 }
-                catch(...)
+                catch (...)
                 {
                     std::ostringstream ss;
 
                     ss << "map::Parser::Parse_Transition_Properties() found a level "
-                        "property in a map file \"" << VALUE_STR
-                        << "\", but that is not a valid level name.";
+                          "property in a map file \""
+                       << VALUE_STR << "\", but that is not a valid level name.";
 
                     throw std::runtime_error(ss.str());
                 }
@@ -551,25 +535,25 @@ namespace map
                     std::ostringstream ss;
 
                     ss << "map::Parser::Parse_Transition_Properties() found a doorSfxType "
-                        "property in a map file \"" << VALUE_STR
-                        << "\", but that is not a valid name.";
+                          "property in a map file \""
+                       << VALUE_STR << "\", but that is not a valid name.";
 
                     throw std::runtime_error(ss.str());
                 }
             }
         }
 
-        M_ASSERT_OR_LOGANDTHROW_SS((wasEntrySet),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (wasEntrySet),
             "map::Parser::Parse_Transition_Properties() was unable to parse an entry type.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((level != Level::Count),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (level != Level::Count),
             "map::Parser::Parse_Transition_Properties() was unable to parse a Level::Enum.");
     }
 
-
     void Parser::Parse_Layer_WalkSfxs(
-        const boost::property_tree::ptree & PTREE,
-        WalkSfxRegionLayers & walkSfxLayers) const
+        const boost::property_tree::ptree & PTREE, WalkSfxRegionLayers & walkSfxLayers) const
     {
         namespace ba = boost::algorithm;
 
@@ -582,10 +566,8 @@ namespace map
         }
     }
 
-
     void Parser::Parse_WalkSfx(
-        const boost::property_tree::ptree & PTREE,
-        WalkSfxRegionLayers & walkSfxLayers) const
+        const boost::property_tree::ptree & PTREE, WalkSfxRegionLayers & walkSfxLayers) const
     {
         namespace ba = boost::algorithm;
 
@@ -602,22 +584,22 @@ namespace map
         }
         catch (const std::exception & E)
         {
-            M_HP_LOG_FAT("map::Parser::Parse_WalkSfx() threw "
+            M_HP_LOG_FAT(
+                "map::Parser::Parse_WalkSfx() threw "
                 << "std::exception when parsing the rect from a node named \""
-                << FetchXMLAttributeName(PTREE) << "\".  what=\""
-                << E.what() << "\".");
+                << FetchXMLAttributeName(PTREE) << "\".  what=\"" << E.what() << "\".");
 
             throw E;
         }
 
-        auto const MUSIC{ 
-            sfml_util::music::FootstepToMusic( sfml_util::Footstep::FromString(footstepName)) };
+        auto const MUSIC{ sfml_util::music::FootstepToMusic(
+            sfml_util::Footstep::FromString(footstepName)) };
 
         if (MUSIC == sfml_util::music::Count)
         {
             std::ostringstream ss;
             ss << "map::Parser::Parse_WalkSfx() failed to translate footstep sfx name \""
-                << footstepName << "\" into a valid Footstep and then a valid music::Enum.";
+               << footstepName << "\" into a valid Footstep and then a valid music::Enum.";
 
             throw std::runtime_error(ss.str());
         }
@@ -634,7 +616,7 @@ namespace map
 
         if ("0" == typeStr)
         {
-            walkSfxLayers.bottom_layers.push_back( WalkSfxRegion(rect, MUSIC) );
+            walkSfxLayers.bottom_layers.push_back(WalkSfxRegion(rect, MUSIC));
         }
         else
         {
@@ -642,15 +624,15 @@ namespace map
         }
     }
 
-
     void Parser::SetupEmptyTexture(Layout & layout) const
     {
         auto const TILE_WIDTH{ static_cast<unsigned>(layout.tile_size_v.x) };
         auto const TILE_HEIGHT{ static_cast<unsigned>(layout.tile_size_v.y) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(layout.empty_texture.create(TILE_WIDTH, TILE_HEIGHT),
-            "map::Parser::SetupEmptyTexture() sf::RenderTexture::create(" << layout.tile_size_v.x << "x"
-            << layout.tile_size_v.y << ") failed.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            layout.empty_texture.create(TILE_WIDTH, TILE_HEIGHT),
+            "map::Parser::SetupEmptyTexture() sf::RenderTexture::create("
+                << layout.tile_size_v.x << "x" << layout.tile_size_v.y << ") failed.");
 
         layout.empty_texture.clear(sf::Color::Transparent);
         layout.empty_texture.display();
@@ -659,29 +641,26 @@ namespace map
         layout.texture_vec.resize(EMPTY_TEXTURE_INDEX + 1);
         layout.texture_vec[EMPTY_TEXTURE_INDEX] = layout.empty_texture.getTexture();
 
-        layout.tiles_panel_vec.push_back( map::TilesPanel(
+        layout.tiles_panel_vec.push_back(map::TilesPanel(
             layout.EmptyTilesPanelName(),
-            "",//the empty/transparent texture has no file
+            "", // the empty/transparent texture has no file
             0,
             1,
             1,
             EMPTY_TEXTURE_INDEX));
     }
 
-
-    const std::string Parser::FetchXMLAttributeName(
-        const boost::property_tree::ptree & PTREE) const
+    const std::string Parser::FetchXMLAttributeName(const boost::property_tree::ptree & PTREE) const
     {
         try
         {
             return FetchXMLAttribute<std::string>(PTREE, "name");
         }
-        catch(...)
+        catch (...)
         {
             return "";
         }
     }
-
 
     void Parser::Parse_Rects(
         const boost::property_tree::ptree & PTREE,
@@ -711,7 +690,8 @@ namespace map
             }
             catch (const std::exception & E)
             {
-                M_HP_LOG_FAT("map::Parser::Parse_Rects() threw "
+                M_HP_LOG_FAT(
+                    "map::Parser::Parse_Rects() threw "
                     << "std::exception when parsing \"" << FetchXMLAttributeName(CHILD_PAIR.second)
                     << "\".  what=\"" << E.what() << "\".");
 
@@ -719,7 +699,6 @@ namespace map
             }
         }
     }
-
 
     LayerType::Enum Parser::LayerTypeFromName(const std::string & NAME) const
     {
@@ -738,6 +717,5 @@ namespace map
             return LayerType::Object;
         }
     }
-
 }
 }

@@ -27,24 +27,23 @@
 //
 // spell-base.hpp
 //
+#include "combat/effect-type-enum.hpp"
+#include "combat/name-position-enum.hpp"
+#include "combat/target-enum.hpp"
+#include "creature/condition-enum.hpp"
+#include "game/phase-enum.hpp"
 #include "misc/types.hpp"
 #include "spell/spell-enum.hpp"
-#include "combat/effect-type-enum.hpp"
-#include "combat/target-enum.hpp"
-#include "game/phase-enum.hpp"
-#include "creature/condition-enum.hpp"
-#include "combat/name-position-enum.hpp"
 
-#include <string>
-#include <vector>
-#include <tuple>
 #include <memory>
-
+#include <string>
+#include <tuple>
+#include <vector>
 
 namespace heroespath
 {
 
-//forward declarations
+// forward declarations
 namespace creature
 {
     class Creature;
@@ -60,7 +59,7 @@ namespace item
 namespace spell
 {
 
-    //common base code to all spell classes
+    // common base code to all spell classes
     class Spell
     {
     public:
@@ -81,10 +80,10 @@ namespace spell
         const std::string ToString() const;
 
         inline const std::string VerbThirdPerson() const { return verbThirdPerson_; }
-        inline const std::string VerbPastTense() const   { return verbPastTense_; }
+        inline const std::string VerbPastTense() const { return verbPastTense_; }
 
-        inline const std::string Desc() const       { return Spells::ShortDesc(which_); }
-        inline const std::string DescExtra() const  { return Spells::ExtraDesc(which_); }
+        inline const std::string Desc() const { return Spells::ShortDesc(which_); }
+        inline const std::string DescExtra() const { return Spells::ExtraDesc(which_); }
         const std::string DescDetails() const;
         const std::string DescComplete() const;
 
@@ -95,9 +94,9 @@ namespace spell
         inline Rank_t Rank() const { return rank_; }
         inline combat::TargetType::Enum Target() const { return targetType_; }
 
-        //Allows the spell to change the target creature.
-        //Don't adjust creatureCastUponPtr's health, that will be done in Fight.cpp.
-        //Don't check if creatureCastUponPtr is already dead, that will be done in fight.cpp
+        // Allows the spell to change the target creature.
+        // Don't adjust creatureCastUponPtr's health, that will be done in Fight.cpp.
+        // Don't check if creatureCastUponPtr is already dead, that will be done in fight.cpp
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
             creature::CreaturePtr_t creatureCastUponPtr,
@@ -106,10 +105,8 @@ namespace spell
             creature::CondEnumVec_t & condsRemovedVec,
             combat::ContentAndNamePos & actionPhraseCNP) const = 0;
 
-        //Allows the spell to change the target item.
-        virtual const std::string EffectItem(
-            creature::CreaturePtr_t,
-            item::ItemPtr_t) const;
+        // Allows the spell to change the target item.
+        virtual const std::string EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const;
 
         friend bool operator<(const Spell & L, const Spell & R);
         friend bool operator==(const Spell & L, const Spell & R);
@@ -129,64 +126,60 @@ namespace spell
         std::string verbPastTense_;
     };
 
-
-    using SpellPtr_t       = Spell *;
-    using SpellPVec_t      = std::vector<SpellPtr_t>;
-    using SpellPVecIter_t  = SpellPVec_t::iterator;
+    using SpellPtr_t = Spell *;
+    using SpellPVec_t = std::vector<SpellPtr_t>;
+    using SpellPVecIter_t = SpellPVec_t::iterator;
     using SpellPVecCIter_t = SpellPVec_t::const_iterator;
 
     using SpellSPtr_t = std::shared_ptr<Spell>;
     using SpellSVec_t = std::vector<SpellSPtr_t>;
 
-
     inline bool operator<(const Spell & L, const Spell & R)
     {
-        return std::tie(L.which_,
-                        L.rank_,
-                        L.effectType_,
-                        L.validPhases_,
-                        L.manaCost_,
-                        L.targetType_,
-                        L.verbThirdPerson_,
-                        L.verbPastTense_)
-                <
-               std::tie(R.which_,
-                        R.rank_,
-                        R.effectType_,
-                        R.validPhases_,
-                        R.manaCost_,
-                        R.targetType_,
-                        R.verbThirdPerson_,
-                        R.verbPastTense_);
+        return std::tie(
+                   L.which_,
+                   L.rank_,
+                   L.effectType_,
+                   L.validPhases_,
+                   L.manaCost_,
+                   L.targetType_,
+                   L.verbThirdPerson_,
+                   L.verbPastTense_)
+            < std::tie(
+                   R.which_,
+                   R.rank_,
+                   R.effectType_,
+                   R.validPhases_,
+                   R.manaCost_,
+                   R.targetType_,
+                   R.verbThirdPerson_,
+                   R.verbPastTense_);
     }
 
     inline bool operator==(const Spell & L, const Spell & R)
     {
-        return std::tie(L.which_,
-                        L.rank_,
-                        L.effectType_,
-                        L.validPhases_,
-                        L.manaCost_,
-                        L.targetType_,
-                        L.verbThirdPerson_,
-                        L.verbPastTense_)
-                ==
-               std::tie(R.which_,
-                        R.rank_,
-                        R.effectType_,
-                        R.validPhases_,
-                        R.manaCost_,
-                        R.targetType_,
-                        R.verbThirdPerson_,
-                        R.verbPastTense_);
+        return std::tie(
+                   L.which_,
+                   L.rank_,
+                   L.effectType_,
+                   L.validPhases_,
+                   L.manaCost_,
+                   L.targetType_,
+                   L.verbThirdPerson_,
+                   L.verbPastTense_)
+            == std::tie(
+                   R.which_,
+                   R.rank_,
+                   R.effectType_,
+                   R.validPhases_,
+                   R.manaCost_,
+                   R.targetType_,
+                   R.verbThirdPerson_,
+                   R.verbPastTense_);
     }
 
-    inline bool operator!=(const Spell & L, const Spell & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const Spell & L, const Spell & R) { return !(L == R); }
 }
 }
 
-#endif //HEROESPATH_SPELL_Spell_HPP_INCLUDED
+#endif // HEROESPATH_SPELL_Spell_HPP_INCLUDED

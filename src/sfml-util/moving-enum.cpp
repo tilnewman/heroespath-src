@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -40,11 +39,20 @@ namespace sfml_util
 
     const std::string Moving::ToString(const Moving::Enum E)
     {
-        switch(E)
+        switch (E)
         {
-            case Still:  { return "Still"; }
-            case Toward: { return "Toward"; }
-            case Away:   { return "Away"; }
+            case Still:
+            {
+                return "Still";
+            }
+            case Toward:
+            {
+                return "Toward";
+            }
+            case Away:
+            {
+                return "Away";
+            }
             case Count:
             default:
             {
@@ -54,6 +62,5 @@ namespace sfml_util
             }
         };
     }
-
 }
 }

@@ -32,7 +32,6 @@
 
 #include <string>
 
-
 namespace heroespath
 {
 namespace creature
@@ -56,15 +55,11 @@ namespace creature
         static const std::string Name(const dragon_class::Enum);
         static const std::string Desc(const dragon_class::Enum);
 
-        inline static const std::string ToString(const dragon_class::Enum E)
-        {
-            return Name(E);
-        }
+        inline static const std::string ToString(const dragon_class::Enum E) { return Name(E); }
 
         static dragon_class::Enum ClassFromRank(const Rank_t &);
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_DRAGONCLASSENUM_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_DRAGONCLASSENUM_HPP_INCLUDED

@@ -29,41 +29,38 @@
 //
 #include "party-factory.hpp"
 
-#include "stats/stat-set.hpp"
-#include "player/party.hpp"
+#include "creature/name-info.hpp"
 #include "player/character.hpp"
 #include "player/initial.hpp"
-#include "creature/name-info.hpp"
+#include "player/party.hpp"
+#include "stats/stat-set.hpp"
 
-#include "misc/random.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/random.hpp"
 
-#include <string>
 #include <algorithm>
-
+#include <string>
 
 namespace heroespath
 {
 namespace player
 {
 
-    PartyUPtr_t PartyFactory::Make(
-        const avatar::Avatar::Enum AVATAR,
-        const CharacterPVec_t & CHARACTERS)
+    PartyUPtr_t
+        PartyFactory::Make(const avatar::Avatar::Enum AVATAR, const CharacterPVec_t & CHARACTERS)
     {
         return std::make_unique<Party>(AVATAR, CHARACTERS);
     }
-
 
     PartyUPtr_t PartyFactory::MakeFakeForTesting()
     {
         std::string errMsgIgnored{ "" };
         auto partyUPtr{ std::make_unique<player::Party>() };
 
-        const int STAT_BASE_HIGH{18};
-        const int STAT_BASE_MED{9};
-        const int STAT_BASE_LOW{5};
-        const int STAT_RAND{6};
+        const int STAT_BASE_HIGH{ 18 };
+        const int STAT_BASE_MED{ 9 };
+        const int STAT_BASE_LOW{ 5 };
+        const int STAT_RAND{ 6 };
         /*
         {
             const stats::StatSet KNIGHT_STATS(
@@ -95,17 +92,17 @@ namespace player
             const stats::StatSet FIREBRAND_STATS(
                 Strength_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
                 Accuracy_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-                Charm_t   (STAT_BASE_LOW  + misc::random::Int(STAT_RAND)),
-                Luck_t    (STAT_BASE_LOW  + misc::random::Int(STAT_RAND)),
-                Speed_t   (STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-                Intell_t  (STAT_BASE_MED  + misc::random::Int(STAT_RAND)));
+                Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Luck_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Speed_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
+                Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
 
             const std::string FIREBRAND_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "F"));
 
-            auto firebrandPtr{  new player::Character(
+            auto firebrandPtr{ new player::Character(
                 FIREBRAND_NAME,
                 creature::sex::Male,
                 creature::BodyType::Make_Dragon(),
@@ -173,10 +170,10 @@ namespace player
             const stats::StatSet BARD_STATS(
                 Strength_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
                 Accuracy_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
-                Charm_t   (STAT_BASE_MED + misc::random::Int(STAT_RAND)),
-                Luck_t    (STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
-                Speed_t   (STAT_BASE_MED + misc::random::Int(STAT_RAND)),
-                Intell_t  (STAT_BASE_MED + misc::random::Int(STAT_RAND)));
+                Charm_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
+                Luck_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Speed_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
+                Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
 
             const std::string BARD_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -198,11 +195,11 @@ namespace player
         {
             const stats::StatSet BEASTMASTER_STATS(
                 Strength_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-                Accuracy_t(STAT_BASE_MED  + misc::random::Int(STAT_RAND)),
-                Charm_t   (STAT_BASE_LOW  + misc::random::Int(STAT_RAND)),
-                Luck_t    (STAT_BASE_LOW  + misc::random::Int(STAT_RAND)),
-                Speed_t   (STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-                Intell_t  (STAT_BASE_MED  + misc::random::Int(STAT_RAND)));
+                Accuracy_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
+                Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Luck_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Speed_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
+                Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
 
             const std::string BEASTMASTER_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -223,12 +220,12 @@ namespace player
 
         {
             const stats::StatSet THEIF_STATS(
-                Strength_t(STAT_BASE_LOW  +     misc::random::Int(STAT_RAND)),
-                Accuracy_t(STAT_BASE_LOW  +     misc::random::Int(STAT_RAND)),
-                Charm_t   (STAT_BASE_LOW  +     misc::random::Int(STAT_RAND)),
-                Luck_t    (STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND)),
-                Speed_t   (STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND)),
-                Intell_t  (STAT_BASE_LOW  +     misc::random::Int(STAT_RAND)));
+                Strength_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Accuracy_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Luck_t(STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND)),
+                Speed_t(STAT_BASE_HIGH + 7 + misc::random::Int(STAT_RAND)),
+                Intell_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)));
 
             const std::string THEIF_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -249,12 +246,12 @@ namespace player
 
         {
             const stats::StatSet CLERIC_STATS(
-                Strength_t(1             +       misc::random::Int(STAT_RAND)),
-                Accuracy_t(STAT_BASE_LOW +       misc::random::Int(STAT_RAND)),
-                Charm_t   (STAT_BASE_HIGH +      misc::random::Int(STAT_RAND)),
-                Luck_t    (STAT_BASE_MED +       misc::random::Int(STAT_RAND)),
-                Speed_t   (STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND)),
-                Intell_t  (STAT_BASE_HIGH +      misc::random::Int(STAT_RAND)));
+                Strength_t(1 + misc::random::Int(STAT_RAND)),
+                Accuracy_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Charm_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
+                Luck_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)),
+                Speed_t(STAT_BASE_HIGH + 20 + misc::random::Int(STAT_RAND)),
+                Intell_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)));
 
             const std::string CLERIC_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -303,10 +300,10 @@ namespace player
             const stats::StatSet SYLAVIN_STATS(
                 Strength_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
                 Accuracy_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-                Charm_t   (STAT_BASE_LOW  + misc::random::Int(STAT_RAND)),
-                Luck_t    (STAT_BASE_LOW  + misc::random::Int(STAT_RAND)),
-                Speed_t   (STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
-                Intell_t  (STAT_BASE_MED  + misc::random::Int(STAT_RAND)));
+                Charm_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Luck_t(STAT_BASE_LOW + misc::random::Int(STAT_RAND)),
+                Speed_t(STAT_BASE_HIGH + misc::random::Int(STAT_RAND)),
+                Intell_t(STAT_BASE_MED + misc::random::Int(STAT_RAND)));
 
             const std::string SYLAVIN_NAME(boost::algorithm::replace_last_copy(
                 creature::NameInfo::Instance()->LargestName(),
@@ -327,6 +324,5 @@ namespace player
 
         return partyUPtr;
     }
-
 }
 }

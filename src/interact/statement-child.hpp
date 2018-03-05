@@ -30,65 +30,54 @@
 #include "interact/statement.hpp"
 #include "map/level-enum.hpp"
 #include "player/party.hpp"
-#include <string>
 #include <algorithm>
-
+#include <string>
 
 namespace heroespath
 {
 namespace interact
 {
-namespace talk
-{
-
-    namespace compose
+    namespace talk
     {
-        inline const StrVec_t Parents()
+
+        namespace compose
         {
-            return {
-                "mother",
-                "father",
-                "mom",
-                "dad",
-                "mommy",
-                "daddy",
-                "ma",
-                "pa" };
+            inline const StrVec_t Parents()
+            {
+                return { "mother", "father", "mom", "dad", "mommy", "daddy", "ma", "pa" };
+            }
+
+            inline const StrVec_t Relations()
+            {
+                return { "sister",
+                         "brother",
+                         "big sister",
+                         "big brother",
+                         "little sister",
+                         "little brother",
+                         "uncle",
+                         "aunt",
+                         "cousin"
+                         "grandma",
+                         "grandpa" };
+            }
+
+            inline const StrVec_t ParentsAndRelations()
+            {
+                StrVec_t allVec{ Relations() };
+                const StrVec_t PARENTS_VEC{ Parents() };
+                std::copy(
+                    std::begin(PARENTS_VEC), std::end(PARENTS_VEC), std::back_inserter(allVec));
+                return allVec;
+            }
         }
 
-        inline const StrVec_t Relations()
+        struct ChildTalk
         {
-            return {
-                "sister",
-                "brother",
-                "big sister",
-                "big brother",
-                "little sister",
-                "little brother",
-                "uncle",
-                "aunt",
-                "cousin"
-                "grandma",
-                "grandpa" };
-        }
-
-        inline const StrVec_t ParentsAndRelations()
-        {
-            StrVec_t allVec{ Relations() };
-            const StrVec_t PARENTS_VEC{ Parents() };
-            std::copy(std::begin(PARENTS_VEC), std::end(PARENTS_VEC), std::back_inserter(allVec));
-            return allVec;
-        }
+            static const std::string Compose(const player::Party &);
+        };
     }
-
-
-    struct ChildTalk
-    {
-        static const std::string Compose(const player::Party &);
-    };
-
-}
 }
 }
 
-#endif //HEROESPATH_INTERACT_STATEMENTCHILD_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_STATEMENTCHILD_HPP_INCLUDED

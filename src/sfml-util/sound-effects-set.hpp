@@ -33,13 +33,12 @@
 #include <memory>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //Wraps a set of sound effects for easy playing of a random selection
+    // Wraps a set of sound effects for easy playing of a random selection
     class SfxSet
     {
     public:
@@ -47,21 +46,19 @@ namespace sfml_util
 
         explicit SfxSet(const sound_effect::Enum);
 
-        SfxSet(
-            const sound_effect::Enum FIRST_ENUM,
-            const sound_effect::Enum LAST_ENUM);
+        SfxSet(const sound_effect::Enum FIRST_ENUM, const sound_effect::Enum LAST_ENUM);
 
-        //throws runtime_error if given is not in the set
+        // throws runtime_error if given is not in the set
         void Play(const sound_effect::Enum) const;
 
-        //throws range_error if out of bounds
+        // throws range_error if out of bounds
         void PlayAt(const std::size_t) const;
 
         void PlayRandom() const;
 
         inline std::size_t Size() const { return sfxEnums_.size(); }
 
-        inline bool IsValid() const { return ! sfxEnums_.empty(); }
+        inline bool IsValid() const { return !sfxEnums_.empty(); }
 
         sound_effect::Enum SelectRandom() const;
 
@@ -70,8 +67,7 @@ namespace sfml_util
     };
 
     using SfxSetVec_t = std::vector<SfxSet>;
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_SOUNDEFFECTSSET_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SOUNDEFFECTSSET_HPP_INCLUDED

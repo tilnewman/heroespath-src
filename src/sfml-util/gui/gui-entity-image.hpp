@@ -27,69 +27,67 @@
 //
 // gui-entity-image.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //Encapsulates a GuiEntity that manages three images based on entityMouseState_.
-    class GuiImage : public GuiEntity
+    namespace gui
     {
-    public:
-        GuiImage(
-            const std::string &   NAME,
-            const sf::FloatRect & SCREEN_REGION,
-            const sf::Sprite &    SPRITE_UP   = sf::Sprite(),
-            const sf::Sprite &    SPRITE_DOWN = sf::Sprite(),
-            const sf::Sprite &    SPRITE_OVER = sf::Sprite());
 
-        GuiImage(
-            const std::string & NAME,
-            const float         POS_LEFT,
-            const float         POS_TOP,
-            const sf::Sprite &  SPRITE_UP   = sf::Sprite(),
-            const sf::Sprite &  SPRITE_DOWN = sf::Sprite(),
-            const sf::Sprite &  SPRITE_OVER = sf::Sprite());
+        // Encapsulates a GuiEntity that manages three images based on entityMouseState_.
+        class GuiImage : public GuiEntity
+        {
+        public:
+            GuiImage(
+                const std::string & NAME,
+                const sf::FloatRect & SCREEN_REGION,
+                const sf::Sprite & SPRITE_UP = sf::Sprite(),
+                const sf::Sprite & SPRITE_DOWN = sf::Sprite(),
+                const sf::Sprite & SPRITE_OVER = sf::Sprite());
 
-        virtual ~GuiImage();
+            GuiImage(
+                const std::string & NAME,
+                const float POS_LEFT,
+                const float POS_TOP,
+                const sf::Sprite & SPRITE_UP = sf::Sprite(),
+                const sf::Sprite & SPRITE_DOWN = sf::Sprite(),
+                const sf::Sprite & SPRITE_OVER = sf::Sprite());
 
-        virtual void Setup(const float POS_LEFT, const float POS_TOP);
+            virtual ~GuiImage();
 
-        //The only member required by sf::Drawable.
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+            virtual void Setup(const float POS_LEFT, const float POS_TOP);
 
-        virtual void SpriteColorsSet(const sf::Color & NEW_COLOR);
-        virtual void SpriteColorsReset();
+            // The only member required by sf::Drawable.
+            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        inline sf::Sprite & GetUpSprite()   { return upSprite_;   }
-        inline sf::Sprite & GetDownSprite() { return downSprite_; }
-        inline sf::Sprite & GetOverSprite() { return overSprite_; }
+            virtual void SpriteColorsSet(const sf::Color & NEW_COLOR);
+            virtual void SpriteColorsReset();
 
-        virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
-        virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
+            inline sf::Sprite & GetUpSprite() { return upSprite_; }
+            inline sf::Sprite & GetDownSprite() { return downSprite_; }
+            inline sf::Sprite & GetOverSprite() { return overSprite_; }
 
-    protected:
-        inline virtual void OnClick(const sf::Vector2f &) override {}
+            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-        sf::Sprite upSprite_;
-        sf::Sprite downSprite_;
-        sf::Sprite overSprite_;
-    };
+        protected:
+            inline virtual void OnClick(const sf::Vector2f &) override {}
 
-    using GuiImageUPtr_t = std::unique_ptr<GuiImage>;
+            sf::Sprite upSprite_;
+            sf::Sprite downSprite_;
+            sf::Sprite overSprite_;
+        };
 
+        using GuiImageUPtr_t = std::unique_ptr<GuiImage>;
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUIIMAGE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUIIMAGE_HPP_INCLUDED

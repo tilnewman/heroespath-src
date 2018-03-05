@@ -29,23 +29,22 @@
 //
 #include "sound-manager.hpp"
 
-#include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/music-info.hpp"
+#include "sfml-util/sfml-util.hpp"
 
-#include "log/log-macros.hpp"
 #include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
 
 #include "stringutil/stringhelp.hpp"
 
-#include "misc/random.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/random.hpp"
 
 #include <boost/filesystem.hpp>
 
 #include <chrono>
 #include <thread>
-
 
 namespace heroespath
 {
@@ -56,16 +55,14 @@ namespace sfml_util
     std::string SoundManager::musicDirectoryPath_("");
     std::unique_ptr<SoundManager> SoundManager::instanceUPtr_{ nullptr };
 
-
     SoundManager::SoundManager()
-    :
-        musicVolume_            (0.0f),
-        effectsVolume_          (0.0f),
-        sfxSetVec_              (),
-        combatIntroMusicInfoVec_(),
-        songSetVec_             (),
-        sfxToPlayPairsVec_      (),
-        sfxWrapperVec_          ()
+        : musicVolume_(0.0f)
+        , effectsVolume_(0.0f)
+        , sfxSetVec_()
+        , combatIntroMusicInfoVec_()
+        , songSetVec_()
+        , sfxToPlayPairsVec_()
+        , sfxWrapperVec_()
     {
         M_HP_LOG_DBG("Singleton Construction: SoundManager");
         CacheMusicInfo_CombatIntro();
@@ -73,12 +70,7 @@ namespace sfml_util
         sfxSetVec_.resize(static_cast<std::size_t>(sound_effect_set::Count));
     }
 
-
-    SoundManager::~SoundManager()
-    {
-        M_HP_LOG_DBG("Singleton Destruction: SoundManager");
-    }
-
+    SoundManager::~SoundManager() { M_HP_LOG_DBG("Singleton Destruction: SoundManager"); }
 
     SoundManager * SoundManager::Instance()
     {
@@ -90,7 +82,6 @@ namespace sfml_util
 
         return instanceUPtr_.get();
     }
-
 
     void SoundManager::Acquire()
     {
@@ -104,286 +95,240 @@ namespace sfml_util
         }
     }
 
-
     void SoundManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
             "sfml_util::SoundManager::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 
-
-    void SoundManager::SetSoundsDirectory(const std::string & SOUND_DIR_PATH,
-                                          const std::string & MUSIC_DIR_PATH)
+    void SoundManager::SetSoundsDirectory(
+        const std::string & SOUND_DIR_PATH, const std::string & MUSIC_DIR_PATH)
     {
         soundsDirectoryPath_ = SOUND_DIR_PATH;
         musicDirectoryPath_ = MUSIC_DIR_PATH;
     }
 
-
     void SoundManager::LoadSoundSets()
     {
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Prompt)] = SfxSet(SfxEnumVec_t
-            { sound_effect::PromptGeneric,
-              sound_effect::PromptQuestion,
-              sound_effect::PromptWarn });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Prompt)] = SfxSet(SfxEnumVec_t{
+            sound_effect::PromptGeneric, sound_effect::PromptQuestion, sound_effect::PromptWarn });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Switch)] = SfxSet(SfxEnumVec_t
-            { sound_effect::Switch1,
-              sound_effect::Switch2,
-              sound_effect::Switch3 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Switch)] = SfxSet(
+            SfxEnumVec_t{ sound_effect::Switch1, sound_effect::Switch2, sound_effect::Switch3 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::TickOn)] = SfxSet(SfxEnumVec_t
-            { sound_effect::TickOn1,
-              sound_effect::TickOn2 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::TickOn)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::TickOn1, sound_effect::TickOn2 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::TickOff)] = SfxSet(SfxEnumVec_t
-            { sound_effect::TickOff1,
-              sound_effect::TickOff2 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::TickOff)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::TickOff1, sound_effect::TickOff2 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Thock)] = SfxSet(SfxEnumVec_t
-            { sound_effect::Thock1,
-              sound_effect::Thock2,
-              sound_effect::Thock3,
-              sound_effect::Thock4,
-              sound_effect::Thock5,
-              sound_effect::Thock6 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Thock)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::Thock1,
+                                   sound_effect::Thock2,
+                                   sound_effect::Thock3,
+                                   sound_effect::Thock4,
+                                   sound_effect::Thock5,
+                                   sound_effect::Thock6 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Coin)] = SfxSet(SfxEnumVec_t
-            { sound_effect::Coins1,
-              sound_effect::Coins2,
-              sound_effect::Coins3,
-              sound_effect::Coins4,
-              sound_effect::Coins5,
-              sound_effect::Coins6,
-              sound_effect::Coins7,
-              sound_effect::Coins8,
-              sound_effect::Coins9,
-              sound_effect::Coins10,
-              sound_effect::Coins11,
-              sound_effect::Coins12,
-              sound_effect::Coins13,
-              sound_effect::Coins14,
-              sound_effect::Coins15,
-              sound_effect::Coins16 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Coin)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::Coins1,
+                                   sound_effect::Coins2,
+                                   sound_effect::Coins3,
+                                   sound_effect::Coins4,
+                                   sound_effect::Coins5,
+                                   sound_effect::Coins6,
+                                   sound_effect::Coins7,
+                                   sound_effect::Coins8,
+                                   sound_effect::Coins9,
+                                   sound_effect::Coins10,
+                                   sound_effect::Coins11,
+                                   sound_effect::Coins12,
+                                   sound_effect::Coins13,
+                                   sound_effect::Coins14,
+                                   sound_effect::Coins15,
+                                   sound_effect::Coins16 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Gem)] = SfxSet(SfxEnumVec_t
-            { sound_effect::Gems });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Gem)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::Gems });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::MeteorShard)] = SfxSet(SfxEnumVec_t
-            { sound_effect::MeteorShards });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::MeteorShard)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::MeteorShards });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ItemGive)] = SfxSet(SfxEnumVec_t
-            { sound_effect::ItemGive });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ItemGive)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::ItemGive });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ItemDrop)] = SfxSet(SfxEnumVec_t
-            { sound_effect::ItemDrop });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ItemDrop)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::ItemDrop });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::BlowpipeShoot)] = SfxSet(SfxEnumVec_t
-            { sound_effect::BlowpipeShoot1,
-              sound_effect::BlowpipeShoot2,
-              sound_effect::BlowpipeShoot3 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::BlowpipeShoot)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::BlowpipeShoot1,
+                                   sound_effect::BlowpipeShoot2,
+                                   sound_effect::BlowpipeShoot3 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::BlowpipeHit)] = SfxSet(SfxEnumVec_t
-            { sound_effect::BlowpipeHit1,
-              sound_effect::BlowpipeHit2,
-              sound_effect::BlowpipeHit3 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::BlowpipeHit)] = SfxSet(SfxEnumVec_t{
+            sound_effect::BlowpipeHit1, sound_effect::BlowpipeHit2, sound_effect::BlowpipeHit3 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ArrowShoot)] = SfxSet(SfxEnumVec_t
-            { sound_effect::ArrowShoot1,
-              sound_effect::ArrowShoot2,
-              sound_effect::ArrowShoot3,
-              sound_effect::ArrowShoot4,
-              sound_effect::ArrowShoot5,
-              sound_effect::ArrowShoot6 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ArrowShoot)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::ArrowShoot1,
+                                   sound_effect::ArrowShoot2,
+                                   sound_effect::ArrowShoot3,
+                                   sound_effect::ArrowShoot4,
+                                   sound_effect::ArrowShoot5,
+                                   sound_effect::ArrowShoot6 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ArrowHit)] = SfxSet(SfxEnumVec_t
-            { sound_effect::ArrowHit });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ArrowHit)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::ArrowHit });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ProjectileMiss)] =
-            SfxSet(SfxEnumVec_t
-            { sound_effect::ProjectileMiss1,
-              sound_effect::ProjectileMiss2,
-              sound_effect::ProjectileMiss3,
-              sound_effect::ProjectileMiss4,
-              sound_effect::ProjectileMiss5,
-              sound_effect::ProjectileMiss6,
-              sound_effect::ProjectileMiss7,
-              sound_effect::ProjectileMiss8,
-              sound_effect::ProjectileMiss9,
-              sound_effect::ProjectileMiss10,
-              sound_effect::ProjectileMiss11,
-              sound_effect::ProjectileMiss12,
-              sound_effect::ProjectileMiss13 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ProjectileMiss)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::ProjectileMiss1,
+                                   sound_effect::ProjectileMiss2,
+                                   sound_effect::ProjectileMiss3,
+                                   sound_effect::ProjectileMiss4,
+                                   sound_effect::ProjectileMiss5,
+                                   sound_effect::ProjectileMiss6,
+                                   sound_effect::ProjectileMiss7,
+                                   sound_effect::ProjectileMiss8,
+                                   sound_effect::ProjectileMiss9,
+                                   sound_effect::ProjectileMiss10,
+                                   sound_effect::ProjectileMiss11,
+                                   sound_effect::ProjectileMiss12,
+                                   sound_effect::ProjectileMiss13 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::MeleeMiss)] = SfxSet(SfxEnumVec_t
-            { sound_effect::MeleeMiss1,
-              sound_effect::MeleeMiss2,
-              sound_effect::MeleeMiss3,
-              sound_effect::MeleeMiss4,
-              sound_effect::MeleeMiss5,
-              sound_effect::MeleeMiss6,
-              sound_effect::MeleeMiss7,
-              sound_effect::MeleeMiss8,
-              sound_effect::MeleeMiss9,
-              sound_effect::MeleeMiss10,
-              sound_effect::MeleeMiss11,
-              sound_effect::MeleeMiss12,
-              sound_effect::MeleeMiss13,
-              sound_effect::MeleeMiss14,
-              sound_effect::MeleeMiss15,
-              sound_effect::MeleeMiss16,
-              sound_effect::MeleeMiss17,
-              sound_effect::MeleeMiss18,
-              sound_effect::MeleeMiss19,
-              sound_effect::MeleeMiss20,
-              sound_effect::MeleeMiss21,
-              sound_effect::MeleeMiss22,
-              sound_effect::MeleeMiss23 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::MeleeMiss)] = SfxSet(SfxEnumVec_t{
+            sound_effect::MeleeMiss1,  sound_effect::MeleeMiss2,  sound_effect::MeleeMiss3,
+            sound_effect::MeleeMiss4,  sound_effect::MeleeMiss5,  sound_effect::MeleeMiss6,
+            sound_effect::MeleeMiss7,  sound_effect::MeleeMiss8,  sound_effect::MeleeMiss9,
+            sound_effect::MeleeMiss10, sound_effect::MeleeMiss11, sound_effect::MeleeMiss12,
+            sound_effect::MeleeMiss13, sound_effect::MeleeMiss14, sound_effect::MeleeMiss15,
+            sound_effect::MeleeMiss16, sound_effect::MeleeMiss17, sound_effect::MeleeMiss18,
+            sound_effect::MeleeMiss19, sound_effect::MeleeMiss20, sound_effect::MeleeMiss21,
+            sound_effect::MeleeMiss22, sound_effect::MeleeMiss23 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::FistHit)] = SfxSet(SfxEnumVec_t
-            { sound_effect::FistHit1,
-              sound_effect::FistHit2,
-              sound_effect::FistHit3,
-              sound_effect::FistHit4,
-              sound_effect::FistHit5,
-              sound_effect::FistHit6,
-              sound_effect::FistHit7,
-              sound_effect::FistHit8 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::FistHit)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::FistHit1,
+                                   sound_effect::FistHit2,
+                                   sound_effect::FistHit3,
+                                   sound_effect::FistHit4,
+                                   sound_effect::FistHit5,
+                                   sound_effect::FistHit6,
+                                   sound_effect::FistHit7,
+                                   sound_effect::FistHit8 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::TendrilHit)] = SfxSet(SfxEnumVec_t
-            { sound_effect::TendrilHit1,
-              sound_effect::TendrilHit2,
-              sound_effect::TendrilHit3,
-              sound_effect::TendrilHit4 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::TendrilHit)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::TendrilHit1,
+                                   sound_effect::TendrilHit2,
+                                   sound_effect::TendrilHit3,
+                                   sound_effect::TendrilHit4 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::WhipHit)] = SfxSet(SfxEnumVec_t
-            { sound_effect::WhipHit });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::WhipHit)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::WhipHit });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::WhipMiss)] = SfxSet(SfxEnumVec_t
-            { sound_effect::WhipMiss1,
-              sound_effect::WhipMiss2,
-              sound_effect::WhipMiss3,
-              sound_effect::WhipMiss4,
-              sound_effect::WhipMiss5,
-              sound_effect::WhipMiss6,
-              sound_effect::WhipMiss7,
-              sound_effect::WhipMiss8,
-              sound_effect::WhipMiss9,
-              sound_effect::WhipMiss10 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::WhipMiss)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::WhipMiss1,
+                                   sound_effect::WhipMiss2,
+                                   sound_effect::WhipMiss3,
+                                   sound_effect::WhipMiss4,
+                                   sound_effect::WhipMiss5,
+                                   sound_effect::WhipMiss6,
+                                   sound_effect::WhipMiss7,
+                                   sound_effect::WhipMiss8,
+                                   sound_effect::WhipMiss9,
+                                   sound_effect::WhipMiss10 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::MaterialHitMetal)] =
-            SfxSet(SfxEnumVec_t
-            { sound_effect::MaterialHitMetal1,
-              sound_effect::MaterialHitMetal2,
-              sound_effect::MaterialHitMetal3,
-              sound_effect::MaterialHitMetal4,
-              sound_effect::MaterialHitMetal5 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::MaterialHitMetal)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::MaterialHitMetal1,
+                                   sound_effect::MaterialHitMetal2,
+                                   sound_effect::MaterialHitMetal3,
+                                   sound_effect::MaterialHitMetal4,
+                                   sound_effect::MaterialHitMetal5 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::MaterialHitMisc)] =
-            SfxSet(SfxEnumVec_t
-            { sound_effect::MaterialHitBone,
-              sound_effect::MaterialHitCloth,
-              sound_effect::MaterialHitFlesh,
-              sound_effect::MaterialHitHide,
-              sound_effect::MaterialHitHorn,
-              sound_effect::MaterialHitLeather,
-              sound_effect::MaterialHitLiquid,
-              sound_effect::MaterialHitPlant,
-              sound_effect::MaterialHitScale,
-              sound_effect::MaterialHitStone,
-              sound_effect::MaterialHitTooth,
-              sound_effect::MaterialHitWood,
-              sound_effect::MaterialHitMisc });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::MaterialHitMisc)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::MaterialHitBone,
+                                   sound_effect::MaterialHitCloth,
+                                   sound_effect::MaterialHitFlesh,
+                                   sound_effect::MaterialHitHide,
+                                   sound_effect::MaterialHitHorn,
+                                   sound_effect::MaterialHitLeather,
+                                   sound_effect::MaterialHitLiquid,
+                                   sound_effect::MaterialHitPlant,
+                                   sound_effect::MaterialHitScale,
+                                   sound_effect::MaterialHitStone,
+                                   sound_effect::MaterialHitTooth,
+                                   sound_effect::MaterialHitWood,
+                                   sound_effect::MaterialHitMisc });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ClawHit)] = SfxSet(SfxEnumVec_t
-            { sound_effect::ClawTear });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::ClawHit)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::ClawTear });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Wind)] = SfxSet(SfxEnumVec_t
-            { sound_effect::WindGust1,
-              sound_effect::WindGust2,
-              sound_effect::WindGust3 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::Wind)] = SfxSet(SfxEnumVec_t{
+            sound_effect::WindGust1, sound_effect::WindGust2, sound_effect::WindGust3 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::SpellSelect)] = SfxSet(SfxEnumVec_t
-            { sound_effect::SpellSelect1,
-              sound_effect::SpellSelect2,
-              sound_effect::SpellSelect3 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::SpellSelect)] = SfxSet(SfxEnumVec_t{
+            sound_effect::SpellSelect1, sound_effect::SpellSelect2, sound_effect::SpellSelect3 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::SpellBandage)] = SfxSet(SfxEnumVec_t
-            { sound_effect::SpellBandage1,
-              sound_effect::SpellBandage2,
-              sound_effect::SpellBandage3,
-              sound_effect::SpellBandage4 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::SpellBandage)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::SpellBandage1,
+                                   sound_effect::SpellBandage2,
+                                   sound_effect::SpellBandage3,
+                                   sound_effect::SpellBandage4 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::DrumBlip)] = SfxSet(SfxEnumVec_t
-            { sound_effect::DrumBlip1,
-              sound_effect::DrumBlip2,
-              sound_effect::DrumBlip3,
-              sound_effect::DrumBlip4,
-              sound_effect::DrumBlip5,
-              sound_effect::DrumBlip6 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::DrumBlip)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::DrumBlip1,
+                                   sound_effect::DrumBlip2,
+                                   sound_effect::DrumBlip3,
+                                   sound_effect::DrumBlip4,
+                                   sound_effect::DrumBlip5,
+                                   sound_effect::DrumBlip6 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::GuitarStrum)] = SfxSet(SfxEnumVec_t
-            { sound_effect::GuitarStrum1,
-              sound_effect::GuitarStrum2 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::GuitarStrum)]
+            = SfxSet(SfxEnumVec_t{ sound_effect::GuitarStrum1, sound_effect::GuitarStrum2 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::CombatWin)] = SfxSet(SfxEnumVec_t
-            { sound_effect::CombatWin1,
-              sound_effect::CombatWin2,
-              sound_effect::CombatWin3 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::CombatWin)] = SfxSet(SfxEnumVec_t{
+            sound_effect::CombatWin1, sound_effect::CombatWin2, sound_effect::CombatWin3 });
 
-        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::CombatLose)] = SfxSet(SfxEnumVec_t
-            { sound_effect::CombatLose1,
-              sound_effect::CombatLose2,
-              sound_effect::CombatLose3 });
+        sfxSetVec_[static_cast<std::size_t>(sound_effect_set::CombatLose)] = SfxSet(SfxEnumVec_t{
+            sound_effect::CombatLose1, sound_effect::CombatLose2, sound_effect::CombatLose3 });
     }
 
-
-    void SoundManager::MusicStart(const music::Enum WHICH,
-                                  const float       FADE_MULT,
-                                  const float       VOLUME)
+    void
+        SoundManager::MusicStart(const music::Enum WHICH, const float FADE_MULT, const float VOLUME)
     {
-        MusicStart(MusicEnumVec_t(1, WHICH),
-                   false,
-                   false,
-                   FADE_MULT,
-                   VOLUME,
-                   music::IsLooped(WHICH));
+        MusicStart(
+            MusicEnumVec_t(1, WHICH), false, false, FADE_MULT, VOLUME, music::IsLooped(WHICH));
     }
 
-
-    void SoundManager::MusicStart(const MusicEnumVec_t & WHICH_VEC,
-                                  const bool             WILL_RANDOMIZE,
-                                  const bool             WILL_START_AT_RANDOM,
-                                  const float            FADE_MULT,
-                                  const float            VOLUME,
-                                  const bool             WILL_LOOP)
+    void SoundManager::MusicStart(
+        const MusicEnumVec_t & WHICH_VEC,
+        const bool WILL_RANDOMIZE,
+        const bool WILL_START_AT_RANDOM,
+        const float FADE_MULT,
+        const float VOLUME,
+        const bool WILL_LOOP)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((WHICH_VEC.empty() == false),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (WHICH_VEC.empty() == false),
             "SoundManager::MusicStart(vector version) given an empty vector.");
 
-        //use the global volume if an invalid volume is specified
+        // use the global volume if an invalid volume is specified
         const float VOLUME_TO_USE((VOLUME < 0.0f) ? musicVolume_ : VOLUME);
 
-        //Create the MusicSet object here, before we know if it is needed, because its
-        //constructor is where the CurrentlyPlaying() song must be selected from among WHICH_VEC.
-        MusicSet musicSet(WHICH_VEC,
-                          WILL_RANDOMIZE,
-                          WILL_START_AT_RANDOM,
-                          FADE_MULT,
-                          VOLUME_TO_USE,
-                          WILL_LOOP);
+        // Create the MusicSet object here, before we know if it is needed, because its
+        // constructor is where the CurrentlyPlaying() song must be selected from among WHICH_VEC.
+        MusicSet musicSet(
+            WHICH_VEC, WILL_RANDOMIZE, WILL_START_AT_RANDOM, FADE_MULT, VOLUME_TO_USE, WILL_LOOP);
 
         const music::Enum WHICH_MUSIC_TO_START_PLAYING(musicSet.CurrentlyPlaying());
 
-        //if there is only one song in the vector, and it is the music that should start,
-        //and it is already playing, then simply set the volume to whatever is specified
+        // if there is only one song in the vector, and it is the music that should start,
+        // and it is already playing, then simply set the volume to whatever is specified
         if (WHICH_VEC.size() == 1)
         {
             for (auto & songSet : songSetVec_)
             {
-                if (songSet.IsValid() &&
-                    (songSet.set.CurrentlyPlaying() == WHICH_MUSIC_TO_START_PLAYING))
+                if (songSet.IsValid()
+                    && (songSet.set.CurrentlyPlaying() == WHICH_MUSIC_TO_START_PLAYING))
                 {
                     songSet.op.VolumeFadeTo(VOLUME_TO_USE, FADE_MULT);
                     songSet.op.WillKillAfterFadeOut(false);
@@ -392,25 +337,23 @@ namespace sfml_util
             }
         }
 
-        songSetVec_.push_back( SongSet(
+        songSetVec_.push_back(SongSet(
             musicSet,
-            MakeAndStartMusicOperator(WHICH_MUSIC_TO_START_PLAYING, FADE_MULT, VOLUME_TO_USE)) );
+            MakeAndStartMusicOperator(WHICH_MUSIC_TO_START_PLAYING, FADE_MULT, VOLUME_TO_USE)));
     }
-
 
     void SoundManager::MusicStop(const music::Enum WHICH, const float FADE_MULT)
     {
         for (auto & songSet : songSetVec_)
         {
-            if (songSet.IsValid() &&
-                (((songSet.set.Count() == 1) && (songSet.op.Info().Which() == WHICH)) ||
-                (WHICH == music::All)))
+            if (songSet.IsValid()
+                && (((songSet.set.Count() == 1) && (songSet.op.Info().Which() == WHICH))
+                    || (WHICH == music::All)))
             {
                 songSet.op.VolumeFadeOut(FADE_MULT, true);
             }
         }
     }
-
 
     void SoundManager::MusicStop(const MusicEnumVec_t & MUSIC_ENUMS, const float FADE_MULT)
     {
@@ -418,9 +361,7 @@ namespace sfml_util
         {
             if (songSet.IsValid())
             {
-                auto const CONTAINS_ALL{
-                    [&]()
-                {
+                auto const CONTAINS_ALL{ [&]() {
                     for (auto const MUSIC : MUSIC_ENUMS)
                     {
                         if (songSet.set.Contains(MUSIC) == false)
@@ -440,7 +381,6 @@ namespace sfml_util
         }
     }
 
-
     const MusicInfoVec_t SoundManager::MusicInfoSet() const
     {
         MusicInfoVec_t musicInfos;
@@ -456,29 +396,24 @@ namespace sfml_util
         return musicInfos;
     }
 
-
     void SoundManager::MusicVolume(
-        const MusicEnumVec_t & MUSIC_ENUMS,
-        const float NEW_VOLUME,
-        const float FADE_MULT)
+        const MusicEnumVec_t & MUSIC_ENUMS, const float NEW_VOLUME, const float FADE_MULT)
     {
         for (auto & songSet : songSetVec_)
         {
             if (songSet.IsValid())
             {
-                auto const CONTAINS_ALL{
-                    [&]()
+                auto const CONTAINS_ALL{ [&]() {
+                    for (auto const MUSIC : MUSIC_ENUMS)
                     {
-                        for (auto const MUSIC : MUSIC_ENUMS)
+                        if (songSet.set.Contains(MUSIC) == false)
                         {
-                            if (songSet.set.Contains(MUSIC) == false)
-                            {
-                                return false;
-                            }
+                            return false;
                         }
+                    }
 
-                        return true;
-                    }() };
+                    return true;
+                }() };
 
                 if (CONTAINS_ALL)
                 {
@@ -488,13 +423,11 @@ namespace sfml_util
         }
     }
 
-
     void SoundManager::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         SongsUpdate(ELAPSED_TIME_SECONDS);
         SoundEffectsUpdate(ELAPSED_TIME_SECONDS);
     }
-
 
     void SoundManager::MusicVolumeSet(const float NEW_VOLUME)
     {
@@ -509,25 +442,22 @@ namespace sfml_util
         }
     }
 
-
     void SoundManager::SoundEffectVolumeSet(const float V)
     {
         effectsVolume_ = V;
 
         for (auto & sfxWrapper : sfxWrapperVec_)
         {
-            //the Volume() function pre-checks if IsValid(), so this is safe
+            // the Volume() function pre-checks if IsValid(), so this is safe
             sfxWrapper.Volume(effectsVolume_);
         }
     }
-
 
     void SoundManager::MusicVolumeFadeToCurrent(const music::Enum MUSIC_ENUM)
     {
         for (auto & songSet : songSetVec_)
         {
-            if ((songSet.IsValid()) &&
-                (songSet.op.Info().Which() == MUSIC_ENUM))
+            if ((songSet.IsValid()) && (songSet.op.Info().Which() == MUSIC_ENUM))
             {
                 const float CURRENT_VOLUME(songSet.op.Volume());
                 const float INTENDED_VOLUME(sfml_util::SoundManager::Instance()->MusicVolume());
@@ -542,9 +472,9 @@ namespace sfml_util
                     {
                         songSet.op.VolumeFadeTo(
                             INTENDED_VOLUME,
-                            ((CURRENT_VOLUME < INTENDED_VOLUME) ?
-                                sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_ :
-                                sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
+                            ((CURRENT_VOLUME < INTENDED_VOLUME)
+                                 ? sfml_util::MusicOperator::FADE_MULT_DEFAULT_IN_
+                                 : sfml_util::MusicOperator::FADE_MULT_DEFAULT_OUT_));
                     }
                 }
             }
@@ -555,25 +485,22 @@ namespace sfml_util
     {
         auto const INDEX{ static_cast<std::size_t>(E) };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < sfxSetVec_.size()),
-            "SoundManager::Getsound_effect_set(enum=" << E << ", index=" << INDEX
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (INDEX < sfxSetVec_.size()),
+            "SoundManager::Getsound_effect_set(enum="
+                << E << ", index=" << INDEX
                 << ") index was out of range with sfxSetVec_.size()=" << sfxSetVec_.size());
 
         return sfxSetVec_[INDEX];
     }
 
-
-    void SoundManager::SoundEffectPlay(const sound_effect::Enum E,
-                                       const float PRE_DELAY_SEC)
+    void SoundManager::SoundEffectPlay(const sound_effect::Enum E, const float PRE_DELAY_SEC)
     {
-        if ((E != sound_effect::None) &&
-            (E != sound_effect::Count &&
-            (E != sound_effect::Random)))
+        if ((E != sound_effect::None) && (E != sound_effect::Count && (E != sound_effect::Random)))
         {
             sfxToPlayPairsVec_.push_back(std::make_pair(E, PRE_DELAY_SEC));
         }
     }
-
 
     void SoundManager::SoundEffectPlayNow(const sound_effect::Enum SFX_ENUM)
     {
@@ -581,67 +508,48 @@ namespace sfml_util
 
         if (sfxWrapper.IsValid() == false)
         {
-            sfxWrapper = SfxWrapper(
-                SFX_ENUM,
-                std::make_unique<sf::Sound>(),
-                LoadSfxBuffer(SFX_ENUM));
+            sfxWrapper
+                = SfxWrapper(SFX_ENUM, std::make_unique<sf::Sound>(), LoadSfxBuffer(SFX_ENUM));
 
             sfxWrapper.Volume(SoundEffectVolume());
         }
 
-        //This restarts play from the beginning, which is the
-        //desired behavior even if it was already playing,
-        //because I decided that repeated plays of the same
-        //sfx will restart if not allowed to finish.
+        // This restarts play from the beginning, which is the
+        // desired behavior even if it was already playing,
+        // because I decided that repeated plays of the same
+        // sfx will restart if not allowed to finish.
         sfxWrapper.Play();
     }
-
 
     void SoundManager::PlaySfx_AckMinor()
     {
         Getsound_effect_set(sfml_util::sound_effect_set::Switch).PlayRandom();
     }
 
-
     void SoundManager::PlaySfx_AckMajor()
     {
         Getsound_effect_set(sfml_util::sound_effect_set::Thock).PlayRandom();
     }
 
-
-    void SoundManager::PlaySfx_Reject()
-    {
-        SoundEffectPlay(sfml_util::sound_effect::PromptWarn);
-    }
-
+    void SoundManager::PlaySfx_Reject() { SoundEffectPlay(sfml_util::sound_effect::PromptWarn); }
 
     void SoundManager::PlaySfx_TickOn()
     {
         Getsound_effect_set(sfml_util::sound_effect_set::TickOn).PlayRandom();
     }
 
-
     void SoundManager::PlaySfx_TickOff()
     {
         Getsound_effect_set(sfml_util::sound_effect_set::TickOff).PlayRandom();
     }
 
+    void SoundManager::PlaySfx_Keypress() { PlaySfx_AckMinor(); }
 
-    void SoundManager::PlaySfx_Keypress()
-    {
-        PlaySfx_AckMinor();
-    }
-
-
-    void SoundManager::PlaySfx_MouseClick()
-    {
-        PlaySfx_AckMinor();
-    }
-
+    void SoundManager::PlaySfx_MouseClick() { PlaySfx_AckMinor(); }
 
     void SoundManager::ClearSoundEffectsCache(const bool WILL_STOP_PLAYING_SFX)
     {
-        //eliminate buffers for sound effects that are done playing
+        // eliminate buffers for sound effects that are done playing
         for (auto & sfxWrapper : sfxWrapperVec_)
         {
             if (sfxWrapper.IsValid())
@@ -664,34 +572,34 @@ namespace sfml_util
         }
     }
 
-
-    MusicUPtr_t SoundManager::OpenMusic(const std::string & MUSIC_FILE_NAME,
-                                        const std::string & MUSIC_DIR_NAME) const
+    MusicUPtr_t SoundManager::OpenMusic(
+        const std::string & MUSIC_FILE_NAME, const std::string & MUSIC_DIR_NAME) const
     {
         namespace bfs = boost::filesystem;
 
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(musicDirectoryPath_) /
-                                 bfs::path(MUSIC_DIR_NAME) /
-                                 bfs::path(MUSIC_FILE_NAME)));
+        const bfs::path PATH_OBJ(bfs::system_complete(
+            bfs::path(musicDirectoryPath_) / bfs::path(MUSIC_DIR_NAME)
+            / bfs::path(MUSIC_FILE_NAME)));
 
         return sfml_util::LoadMusic(PATH_OBJ.string());
     }
 
-
     void SoundManager::CacheMusicInfo_CombatIntro()
     {
-        //configure the path
+        // configure the path
         namespace bfs = boost::filesystem;
-        const bfs::path DIR_OBJ(bfs::system_complete(bfs::path(musicDirectoryPath_) /
-            bfs::path(music::Directory(music::CombatIntro))));
+        const bfs::path DIR_OBJ(bfs::system_complete(
+            bfs::path(musicDirectoryPath_) / bfs::path(music::Directory(music::CombatIntro))));
 
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(DIR_OBJ),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            bfs::exists(DIR_OBJ),
             "sfml_util::SoundManager::CacheMusicInfo_CombatIntro()  directory \""
-            << DIR_OBJ.string() << "\" does not exist.");
+                << DIR_OBJ.string() << "\" does not exist.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_directory(DIR_OBJ),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            bfs::is_directory(DIR_OBJ),
             "sfml_util::SoundManager::CacheMusicInfo_CombatIntro()  directory \""
-            << DIR_OBJ.string() << "\" exists but is not a directory.");
+                << DIR_OBJ.string() << "\" exists but is not a directory.");
 
         combatIntroMusicInfoVec_.clear();
 
@@ -707,8 +615,8 @@ namespace sfml_util
 
             auto const NEXT_FILENAME(NEXT_PATH_OBJ.leaf().string());
 
-            if ((boost::algorithm::icontains(NEXT_FILENAME, ".txt")) ||
-                (boost::algorithm::icontains(NEXT_FILENAME, ".DS_Store")))
+            if ((boost::algorithm::icontains(NEXT_FILENAME, ".txt"))
+                || (boost::algorithm::icontains(NEXT_FILENAME, ".DS_Store")))
             {
                 continue;
             }
@@ -723,19 +631,19 @@ namespace sfml_util
             const std::string NEXT_ARTIST_NAME(filenamePartsVec.at(1));
             const std::string NEXT_TRACK_NAME(filenamePartsVec.at(2));
 
-            const std::string NEXT_LICENSE_NAME(boost::algorithm::erase_all_copy(
-                filenamePartsVec.at(3), music::FileExt()));
+            const std::string NEXT_LICENSE_NAME(
+                boost::algorithm::erase_all_copy(filenamePartsVec.at(3), music::FileExt()));
 
-            combatIntroMusicInfoVec_.push_back(MusicInfo(music::CombatIntro,
-                                                         false,
-                                                         NEXT_ARTIST_NAME,
-                                                         NEXT_TRACK_NAME,
-                                                         NEXT_LICENSE_NAME,
-                                                         NEXT_FILENAME,
-                                                         DIR_OBJ.string()));
+            combatIntroMusicInfoVec_.push_back(MusicInfo(
+                music::CombatIntro,
+                false,
+                NEXT_ARTIST_NAME,
+                NEXT_TRACK_NAME,
+                NEXT_LICENSE_NAME,
+                NEXT_FILENAME,
+                DIR_OBJ.string()));
         }
     }
-
 
     MusicOperator SoundManager::MakeAndStartMusicOperator(
         const music::Enum MUSIC_ENUM, const float FADE_MULT, const float VOLUME) const
@@ -767,7 +675,6 @@ namespace sfml_util
         return musicOperator;
     }
 
-
     bool SoundManager::Test()
     {
         static auto hasInitialPrompt{ false };
@@ -782,7 +689,7 @@ namespace sfml_util
         static auto playOrStop{ false };
         static auto const MUSIC_COUNT_MAX{ 200 };
 
-        //test sound effects individually
+        // test sound effects individually
         {
             static auto hasSFXPromptedStart{ false };
             if (false == hasSFXPromptedStart)
@@ -819,7 +726,7 @@ namespace sfml_util
             }
         }
 
-        //test sound effects through SfxSet interface
+        // test sound effects through SfxSet interface
         {
             static auto hasStaticSFXPromptedStart{ false };
             if (false == hasStaticSFXPromptedStart)
@@ -835,14 +742,14 @@ namespace sfml_util
             {
                 static std::size_t sfxSetInnerIndex{ 0 };
 
-                M_ASSERT_OR_LOGANDTHROW_SS((sfxSetVec_.at(sfxSetIndex).IsValid()),
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (sfxSetVec_.at(sfxSetIndex).IsValid()),
                     "sfml_util::SoundManager::Test() While testing SoudEffectsSets #"
-                    << sfxSetIndex << ", enum="
-                    << sound_effect::ToString(static_cast<sound_effect::Enum>(sfxSetIndex))
-                    << " found IsValid()==false.");
+                        << sfxSetIndex << ", enum="
+                        << sound_effect::ToString(static_cast<sound_effect::Enum>(sfxSetIndex))
+                        << " found IsValid()==false.");
 
-                if (false == TestSfxSet(
-                    sfxSetVec_.at(sfxSetIndex), sfxSetInnerIndex))
+                if (false == TestSfxSet(sfxSetVec_.at(sfxSetIndex), sfxSetInnerIndex))
                 {
                     ++sfxSetInnerIndex;
                     return false;
@@ -872,7 +779,7 @@ namespace sfml_util
             }
         }
 
-        //test regular music
+        // test regular music
         static auto musicIndex{ 0 };
         {
             if (musicIndex < music::Count)
@@ -919,9 +826,7 @@ namespace sfml_util
         return true;
     }
 
-
-    bool SoundManager::TestSfxSet(SfxSet & soundEffectsSet,
-                                           const std::size_t INDEX)
+    bool SoundManager::TestSfxSet(SfxSet & soundEffectsSet, const std::size_t INDEX)
     {
         if (INDEX < soundEffectsSet.Size())
         {
@@ -957,8 +862,8 @@ namespace sfml_util
 
                     if (songSet.set.WillLoop())
                     {
-                        const float VOLUME_TO_USE((songSet.set.Volume() < 0.0f) ?
-                            musicVolume_ : songSet.set.Volume());
+                        const float VOLUME_TO_USE(
+                            (songSet.set.Volume() < 0.0f) ? musicVolume_ : songSet.set.Volume());
 
                         songSet.op = MakeAndStartMusicOperator(
                             songSet.set.Advance(), songSet.set.FadeInMult(), VOLUME_TO_USE);
@@ -974,16 +879,14 @@ namespace sfml_util
 
         if (willCleanup)
         {
-            songSetVec_.erase(std::remove_if(
-                songSetVec_.begin(),
-                songSetVec_.end(),
-                [](const auto & SONG_SET)
-                {
-                    return (SONG_SET.IsValid() == false);
-                }), songSetVec_.end());
+            songSetVec_.erase(
+                std::remove_if(
+                    songSetVec_.begin(),
+                    songSetVec_.end(),
+                    [](const auto & SONG_SET) { return (SONG_SET.IsValid() == false); }),
+                songSetVec_.end());
         }
     }
-
 
     void SoundManager::SoundEffectsUpdate(const float ELAPSED_TIME_SEC)
     {
@@ -1001,51 +904,48 @@ namespace sfml_util
         }
 
         if (willCleanup)
-        {   
+        {
             sfxToPlayPairsVec_.erase(
                 std::remove_if(
                     sfxToPlayPairsVec_.begin(),
                     sfxToPlayPairsVec_.end(),
-                    [this](const auto & SFX_DELAY_PAIR)
-                    {
+                    [this](const auto & SFX_DELAY_PAIR) {
                         return this->IsSfxDelayPairReadyToPlay(SFX_DELAY_PAIR);
                     }),
-                sfxToPlayPairsVec_.end() );
+                sfxToPlayPairsVec_.end());
         }
     }
-
 
     SoundBufferUPtr_t SoundManager::LoadSfxBuffer(const sound_effect::Enum ENUM) const
     {
         namespace bfs = boost::filesystem;
 
-        const bfs::path PATH_OBJ(bfs::system_complete(bfs::path(soundsDirectoryPath_) /
-            bfs::path(sound_effect::Directory(ENUM)) /
-            bfs::path(sound_effect::Filename(ENUM))));
+        const bfs::path PATH_OBJ(bfs::system_complete(
+            bfs::path(soundsDirectoryPath_) / bfs::path(sound_effect::Directory(ENUM))
+            / bfs::path(sound_effect::Filename(ENUM))));
 
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::exists(PATH_OBJ),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            bfs::exists(PATH_OBJ),
             "sfml_util::SoundManager::LoadSound("
-            << sound_effect::ToString(ENUM)
-            << "), attempting path=\"" << PATH_OBJ.string()
-            << "\", failed because that file does not exist.");
+                << sound_effect::ToString(ENUM) << "), attempting path=\"" << PATH_OBJ.string()
+                << "\", failed because that file does not exist.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(bfs::is_regular_file(PATH_OBJ),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            bfs::is_regular_file(PATH_OBJ),
             "sfml_util::SoundManager::LoadSound("
-            << sound_effect::ToString(ENUM)
-            << "), attempting path=\"" << PATH_OBJ.string()
-            << "\", failed because that is not a regular file.");
+                << sound_effect::ToString(ENUM) << "), attempting path=\"" << PATH_OBJ.string()
+                << "\", failed because that is not a regular file.");
 
         auto bufferUPtr{ std::make_unique<sf::SoundBuffer>() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS(bufferUPtr->loadFromFile(PATH_OBJ.string().c_str()),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            bufferUPtr->loadFromFile(PATH_OBJ.string().c_str()),
             "sfml_util::SoundManager::LoadSound("
-            << sound_effect::ToString(ENUM)
-            << "), attempting path=\"" << PATH_OBJ.string()
-            << "\", sf::SoundBuffer::loadFromFile() returned false.  See console output"
-            << " for more information.");
+                << sound_effect::ToString(ENUM) << "), attempting path=\"" << PATH_OBJ.string()
+                << "\", sf::SoundBuffer::loadFromFile() returned false.  See console output"
+                << " for more information.");
 
         return bufferUPtr;
     }
-
 }
 }

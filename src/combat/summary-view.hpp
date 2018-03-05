@@ -26,25 +26,25 @@
 #define HEROESPATH_COMBAT_SUMMARY_VIEW_HPP_INCLUDED
 //
 // summary-view.hpp
-//  A collection of classes that are responsible for displaying creature details on the Combat Display
+//  A collection of classes that are responsible for displaying creature details on the Combat
+//  Display
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/gui-entity-slider.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
 #include <vector>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-    class TextRegion;
-    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
-}
+    namespace gui
+    {
+        class TextRegion;
+        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+        using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
+    }
 }
 
 namespace item
@@ -59,8 +59,7 @@ namespace combat
     class CombatNode;
     using CombatNodePtr_t = CombatNode *;
 
-
-    //wraps an image with text for display on the screen
+    // wraps an image with text for display on the screen
     struct ItemWithText
     {
         explicit ItemWithText(const item::ItemPtr_t ITEM_PTR = nullptr);
@@ -79,20 +78,20 @@ namespace combat
 
     using ItemWithTextVec_t = std::vector<ItemWithText>;
 
-
-    //the infomation that displays when the mouse cursor is held over an enemy
+    // the infomation that displays when the mouse cursor is held over an enemy
     class SummaryView
     {
-        SummaryView(const SummaryView &) =delete;
-        SummaryView & operator=(const SummaryView &) =delete;
+        SummaryView(const SummaryView &) = delete;
+        SummaryView & operator=(const SummaryView &) = delete;
 
     public:
         SummaryView();
 
         void StartTransitionBack();
-        void StartTransitionTo(CombatNodePtr_t       combatNodePtr,
-                               const sf::Vector2f &  DEST_POS_V,
-                               const sf::FloatRect & ENEMYDISPLAY_RECT);
+        void StartTransitionTo(
+            CombatNodePtr_t combatNodePtr,
+            const sf::Vector2f & DEST_POS_V,
+            const sf::FloatRect & ENEMYDISPLAY_RECT);
 
         void BackgroundColor(const sf::Color &);
         const sf::Color BackgroundColor() const;
@@ -106,21 +105,21 @@ namespace combat
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
-        void SetupAndStartTransition(CombatNodePtr_t       combatNodePtr,
-                                     const sf::FloatRect & COMABT_REGION);
+        void SetupAndStartTransition(
+            CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMABT_REGION);
 
-        inline float GetTransitionStatus() const                { return geSlider_.ProgressRatio(); }
+        inline float GetTransitionStatus() const { return geSlider_.ProgressRatio(); }
 
-        inline bool IsTransitionToComplete() const              { return isTransToComplete_; }
-        inline bool IsTransitionBackComplete() const            { return isTransBackComplete_; }
+        inline bool IsTransitionToComplete() const { return isTransToComplete_; }
+        inline bool IsTransitionBackComplete() const { return isTransBackComplete_; }
 
-        inline sfml_util::Moving::Enum MovingDir() const        { return movingDir_; }
-        inline void MovingDir(const sfml_util::Moving::Enum E)  { movingDir_ = E; }
+        inline sfml_util::Moving::Enum MovingDir() const { return movingDir_; }
+        inline void MovingDir(const sfml_util::Moving::Enum E) { movingDir_ = E; }
 
-        inline CombatNodePtr_t CombatNodePtr()                  { return combatNodePtr_; }
+        inline CombatNodePtr_t CombatNodePtr() { return combatNodePtr_; }
 
-        inline bool WillPreventNextTransition() const           { return preventNextTrans_; }
-        inline void WillPreventNextTransition(const bool B)     { preventNextTrans_ = B; }
+        inline bool WillPreventNextTransition() const { return preventNextTrans_; }
+        inline void WillPreventNextTransition(const bool B) { preventNextTrans_ = B; }
 
         inline void ReleaseCombatNodePointer()
         {
@@ -133,29 +132,28 @@ namespace combat
         static const float SLIDER_SPEED_;
 
     private:
-        const float                      BLOCK_POS_LEFT_;
-        const float                      BLOCK_POS_TOP_;
-        const float                      IMAGE_EDGE_PAD_;
-        const float                      IMAGE_BETWEEN_PAD_;
-        const sf::Uint8                  IMAGE_COLOR_ALPHA_;
+        const float BLOCK_POS_LEFT_;
+        const float BLOCK_POS_TOP_;
+        const float IMAGE_EDGE_PAD_;
+        const float IMAGE_BETWEEN_PAD_;
+        const sf::Uint8 IMAGE_COLOR_ALPHA_;
         //
-        bool                             isTransToComplete_;
-        bool                             isTransBackComplete_;
-        sfml_util::Moving::Enum          movingDir_;
-        ItemWithTextVec_t                itemWithTextVec_;
-        sf::VertexArray                  bgQuads_;
-        CombatNodePtr_t                  combatNodePtr_;
+        bool isTransToComplete_;
+        bool isTransBackComplete_;
+        sfml_util::Moving::Enum movingDir_;
+        ItemWithTextVec_t itemWithTextVec_;
+        sf::VertexArray bgQuads_;
+        CombatNodePtr_t combatNodePtr_;
         sfml_util::gui::TextRegionUPtr_t nameTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t rankTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t healthTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t condTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t armorTextRegionUPtr_;
-        sfml_util::gui::GuiEntitySlider  geSlider_;
-        bool                             preventNextTrans_;
+        sfml_util::gui::GuiEntitySlider geSlider_;
+        bool preventNextTrans_;
     };
-
 }
 }
 
-#endif //HEROESPATH_COMBAT_SUMMARY_VIEW_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_SUMMARY_VIEW_HPP_INCLUDED

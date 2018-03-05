@@ -34,10 +34,9 @@
 
 #include "misc/assertlogandthrow.hpp"
 
+#include <exception>
 #include <memory>
 #include <sstream>
-#include <exception>
-
 
 namespace heroespath
 {
@@ -46,20 +45,13 @@ namespace game
 
     std::unique_ptr<Game> Game::instanceUPtr_{ nullptr };
 
-
     Game::Game()
-    :
-        stateUPtr_()
+        : stateUPtr_()
     {
         M_HP_LOG_DBG("Singleton Construction: Game");
     }
 
-
-    Game::~Game()
-    {
-        M_HP_LOG_DBG("Singleton Destruction: Game");
-    }
-
+    Game::~Game() { M_HP_LOG_DBG("Singleton Destruction: Game"); }
 
     Game * game::Game::Instance()
     {
@@ -71,7 +63,6 @@ namespace game
 
         return instanceUPtr_.get();
     }
-
 
     void Game::Acquire()
     {
@@ -85,14 +76,12 @@ namespace game
         }
     }
 
-
     void Game::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "Game::Release() found instanceUPtr that was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr), "Game::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
-
 
     state::GameState & Game::State() const
     {
@@ -104,21 +93,20 @@ namespace game
         }
         else
         {
-            return * stateUPtr_;
+            return *stateUPtr_;
         }
     }
-
 
     void Game::StateStore(const state::GameStatePtr_t STATE_PTR)
     {
         if (stateUPtr_.get() != nullptr)
         {
-            M_HP_LOG_WRN("Game::StateSet() is going to free an old game state"
+            M_HP_LOG_WRN(
+                "Game::StateSet() is going to free an old game state"
                 << " and replace it with a new one.");
         }
 
         stateUPtr_.reset(STATE_PTR);
     }
-
 }
 }

@@ -29,9 +29,8 @@
 //
 #include "enchantment-type.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -52,7 +51,7 @@ namespace creature
             {
                 ss << "when used:";
             }
-            else  if (E & WhenHeld)
+            else if (E & WhenHeld)
             {
                 ss << "when held:";
             }
@@ -61,7 +60,7 @@ namespace creature
                 ss << "when equipped:";
             }
 
-            //intentionally no text for "ChangesCreature"
+            // intentionally no text for "ChangesCreature"
             // " " for "RemoveAfterUse"
 
             if (E & AllowsFlight)
@@ -71,12 +70,14 @@ namespace creature
 
             if (E & CurseWithoutItem)
             {
-                ss << ((ss.str().empty()) ? "" : "  ") << "allows casting curse without a cursed item";
+                ss << ((ss.str().empty()) ? "" : "  ")
+                   << "allows casting curse without a cursed item";
             }
 
             if (E & BlessWithoutItem)
             {
-                ss << ((ss.str().empty()) ? "" : "  ") << "allows casting bless without a blessed item";
+                ss << ((ss.str().empty()) ? "" : "  ")
+                   << "allows casting bless without a blessed item";
             }
         }
 
@@ -89,6 +90,5 @@ namespace creature
 
         return ss.str();
     }
-
 }
 }

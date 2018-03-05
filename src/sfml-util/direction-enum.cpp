@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -42,10 +41,22 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Left:  { return "Left"; }
-            case Right: { return "Right"; }
-            case Up:    { return "Up"; }
-            case Down:  { return "Down"; }
+            case Left:
+            {
+                return "Left";
+            }
+            case Right:
+            {
+                return "Right";
+            }
+            case Up:
+            {
+                return "Up";
+            }
+            case Down:
+            {
+                return "Down";
+            }
             case Count:
             default:
             {
@@ -56,16 +67,30 @@ namespace sfml_util
         }
     }
 
-
     sfml_util::Direction::Enum Direction::Opposite(const Direction::Enum E)
     {
         switch (E)
         {
-            case Left:  { return Direction::Right; }
-            case Right: { return Direction::Left; }
-            case Up:    { return Direction::Down; }
-            case Down:  { return Direction::Up; }
-            case Count: { return Direction::Count; }
+            case Left:
+            {
+                return Direction::Right;
+            }
+            case Right:
+            {
+                return Direction::Left;
+            }
+            case Up:
+            {
+                return Direction::Down;
+            }
+            case Down:
+            {
+                return Direction::Up;
+            }
+            case Count:
+            {
+                return Direction::Count;
+            }
             default:
             {
                 std::ostringstream ss;
@@ -74,6 +99,5 @@ namespace sfml_util
             }
         }
     }
-
 }
 }

@@ -31,7 +31,6 @@
 
 #include "creature/creature.hpp"
 
-
 namespace heroespath
 {
 namespace creature
@@ -39,65 +38,52 @@ namespace creature
 
     void Enchantment_PixieBell::UseEffect(const CreaturePtr_t)
     {
-        //TODO
+        // TODO
     }
-
 
     void Enchantment_CrystalChimes::UseEffect(const CreaturePtr_t)
     {
-        //TODO
+        // TODO
     }
-
 
     void Enchantment_GoldenGong::UseEffect(const CreaturePtr_t)
     {
-        //TODO
+        // TODO
     }
-
 
     void Enchantment_DragonToothWhistle::UseEffect(const CreaturePtr_t)
     {
-        //TODO
+        // TODO
     }
-
 
     void Enchantment_DoveBloodVial::UseEffect(const CreaturePtr_t)
     {
-        //TODO
+        // TODO
     }
-
 
     void Enchantment_DriedEdible::UseEffect(const CreaturePtr_t)
     {
-        //TODO
+        // TODO
     }
-
 
     void Enchantment_ShamanRainmaker::UseEffect(const CreaturePtr_t)
     {
-        //TODO
+        // TODO
     }
-
 
     void Enchantment_SpecterChains::UseEffect(const CreaturePtr_t)
     {
-        //TODO
+        // TODO
     }
-
 
     void Enchantment_VultureGizzard::UseEffect(const CreaturePtr_t)
     {
-        //TODO
+        // TODO
     }
-
 
     void Enchantment_WarTrumpet::UseEffect(const CreaturePtr_t)
     {
-        //TODO
+        // TODO
     }
-
-
-
-
 }
 }

@@ -29,41 +29,36 @@
 //
 #include "combat/trap.hpp"
 
-#include <vector>
 #include <memory>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace combat
 {
-namespace trap
-{
-
-    //Responsible for storing Trap instances and for presenting Trap access functions.
-    struct Warehouse
+    namespace trap
     {
-        static void Fill();
-        static void Empty();
 
-        static const TrapVec_t Get();
-        static int GetMinSeverity();
-        static int GetMaxSeverity();
+        // Responsible for storing Trap instances and for presenting Trap access functions.
+        struct Warehouse
+        {
+            static void Fill();
+            static void Empty();
 
-        static const TrapVec_t GetWithSeverityRatioBetween(
-            const float THE_MIN,
-            const float THE_MAX);
+            static const TrapVec_t Get();
+            static int GetMinSeverity();
+            static int GetMaxSeverity();
 
-        static const Trap SelectRandomWithSeverityRatioNear(const float);
+            static const TrapVec_t
+                GetWithSeverityRatioBetween(const float THE_MIN, const float THE_MAX);
 
-    private:
-        static TrapVec_t traps_;
-    };
+            static const Trap SelectRandomWithSeverityRatioNear(const float);
 
+        private:
+            static TrapVec_t traps_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_COMBAT_TRAP_TRAPWAREHOUSE_HPP_INCLUDED
-
-
+#endif // HEROESPATH_COMBAT_TRAP_TRAPWAREHOUSE_HPP_INCLUDED

@@ -30,7 +30,6 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
@@ -68,8 +67,7 @@ namespace creature
     };
 
     using AchievementTypeVec_t = std::vector<AchievementType::Enum>;
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_ACHIEVEMENT_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_ACHIEVEMENT_ENUM_HPP_INCLUDED

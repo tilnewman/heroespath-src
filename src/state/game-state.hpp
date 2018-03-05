@@ -32,9 +32,8 @@
 #include "sfml-util/date-time.hpp"
 
 #include <memory>
-#include <vector>
 #include <set>
-
+#include <vector>
 
 namespace heroespath
 {
@@ -46,16 +45,15 @@ namespace player
 namespace state
 {
 
-    //forward declarations
+    // forward declarations
     class World;
     using WorldUPtr_t = std::unique_ptr<World>;
 
-
-    //Encapsulates everything about a saved game.
+    // Encapsulates everything about a saved game.
     class GameState
     {
-        GameState(const GameState &) =delete;
-        GameState & operator=(const GameState &) =delete;
+        GameState(const GameState &) = delete;
+        GameState & operator=(const GameState &) = delete;
 
     public:
         explicit GameState(
@@ -68,30 +66,15 @@ namespace state
 
         player::Party & Party();
 
-        inline bool IsNewGame() const
-        {
-            return isGameNew_;
-        }
+        inline bool IsNewGame() const { return isGameNew_; }
 
-        inline void IsNewGameSet(const bool B)
-        {
-            isGameNew_ = B;
-        }
+        inline void IsNewGameSet(const bool B) { isGameNew_ = B; }
 
-        inline const sfml_util::DateTime DateTimeStarted() const
-        {
-            return dateTimeStarted_;
-        }
+        inline const sfml_util::DateTime DateTimeStarted() const { return dateTimeStarted_; }
 
-        inline void DateTimeStartedSet(const sfml_util::DateTime & DT)
-        {
-            dateTimeStarted_ = DT;
-        }
+        inline void DateTimeStartedSet(const sfml_util::DateTime & DT) { dateTimeStarted_ = DT; }
 
-        inline const sfml_util::DateTime DateTimeOfLastSave() const
-        {
-            return dateTimeLastSave_;
-        }
+        inline const sfml_util::DateTime DateTimeOfLastSave() const { return dateTimeLastSave_; }
 
         inline void DateTimeOfLastSaveSet(const sfml_util::DateTime & DT)
         {
@@ -102,15 +85,15 @@ namespace state
         friend bool operator==(const GameState & L, const GameState & R);
 
     private:
-        player::PartyUPtr_t      partyUPtr_;
-        WorldUPtr_t              worldUPtr_;
-        bool                     isGameNew_;
-        sfml_util::DateTime      dateTimeStarted_;
-        sfml_util::DateTime      dateTimeLastSave_;
+        player::PartyUPtr_t partyUPtr_;
+        WorldUPtr_t worldUPtr_;
+        bool isGameNew_;
+        sfml_util::DateTime dateTimeStarted_;
+        sfml_util::DateTime dateTimeLastSave_;
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & partyUPtr_;
@@ -121,21 +104,15 @@ namespace state
         }
     };
 
-
-    using GameStatePtr_t  = GameState *;
+    using GameStatePtr_t = GameState *;
     using GameStatePSet_t = std::set<GameStatePtr_t>;
-
 
     bool operator<(const GameState & L, const GameState & R);
 
     bool operator==(const GameState & L, const GameState & R);
 
-    inline bool operator!=(const GameState & L, const GameState & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const GameState & L, const GameState & R) { return !(L == R); }
 }
 }
 
-#endif //HEROESPATH_STATE_GAMESTATE_HPP_INCLUDED
+#endif // HEROESPATH_STATE_GAMESTATE_HPP_INCLUDED

@@ -31,13 +31,12 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
 {
 
-    //Note:  Must be in order of increasing severity.
+    // Note:  Must be in order of increasing severity.
     //
     //  Keep in sync with:
     //      conditions in conditions.hpp
@@ -76,36 +75,35 @@ namespace creature
     };
 
     using CondEnumVec_t = std::vector<Conditions::Enum>;
-    using ConditionEnumVecIter_t  = CondEnumVec_t::iterator;
+    using ConditionEnumVecIter_t = CondEnumVec_t::iterator;
     using ConditionEnumVecCIter_t = CondEnumVec_t::const_iterator;
 
-namespace condition
-{
-
-    struct Severity
+    namespace condition
     {
-        //Note:  Keep the GOOD condition at a different Severity from
-        //       LEAST_BENEFITIAL, so that GOOD can be avoided when
-        //       displaying conditions on the battlefield.
-        //
-        //       Keep ALL equal to zero so that min severity works.
-        //
-        //       Keep LEAST_... < MOST_... so descending sort works.
-        //
-        static const std::size_t ALL;
-        static const std::size_t GOOD;
-        static const std::size_t LEAST_BENEFITIAL;
-        static const std::size_t MOST_BENEFITIAL;
-        static const std::size_t LEAST_HARMFUL;
-        static const std::size_t MOST_HARMFUL;
 
-        //Note:  Larger return values are more harmful.
-        //       Each Condition must have a unique Severity.
-        static std::size_t Get(const Conditions::Enum);
-    };
+        struct Severity
+        {
+            // Note:  Keep the GOOD condition at a different Severity from
+            //       LEAST_BENEFITIAL, so that GOOD can be avoided when
+            //       displaying conditions on the battlefield.
+            //
+            //       Keep ALL equal to zero so that min severity works.
+            //
+            //       Keep LEAST_... < MOST_... so descending sort works.
+            //
+            static const std::size_t ALL;
+            static const std::size_t GOOD;
+            static const std::size_t LEAST_BENEFITIAL;
+            static const std::size_t MOST_BENEFITIAL;
+            static const std::size_t LEAST_HARMFUL;
+            static const std::size_t MOST_HARMFUL;
 
+            // Note:  Larger return values are more harmful.
+            //       Each Condition must have a unique Severity.
+            static std::size_t Get(const Conditions::Enum);
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_CONDITIONENUM_HPP_INCLUDED
+#endif // HEROESPATH_CONDITIONENUM_HPP_INCLUDED

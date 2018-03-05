@@ -32,7 +32,6 @@
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
 
-
 namespace heroespath
 {
 namespace stage
@@ -40,8 +39,7 @@ namespace stage
 
     class AdventureDisplayStage;
 
-
-    //Responsible for managing all AdventureStage interactions with the player.
+    // Responsible for managing all AdventureStage interactions with the player.
     class AdventureStage : public sfml_util::Stage
     {
         AdventureStage(const AdventureStage &) = delete;
@@ -58,8 +56,7 @@ namespace stage
         AdventureDisplayStage * adventureDisplayStagePtr_;
         interact::InteractionManager interactionManager_;
     };
-
 }
 }
 
-#endif //HEROESPATH_STAGE_ADVENTURESTAGE_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_ADVENTURESTAGE_HPP_INCLUDED

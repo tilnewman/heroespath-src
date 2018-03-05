@@ -31,9 +31,8 @@
 
 #include "misc/assertlogandthrow.hpp"
 
-#include <string>
 #include <sstream>
-
+#include <string>
 
 namespace heroespath
 {
@@ -41,8 +40,7 @@ namespace stats
 {
 
     TraitSet::TraitSet(const TraitValueVec_t & TRAITS_VEC)
-    :
-        traitVec_()
+        : traitVec_()
     {
         traitVec_.resize(static_cast<std::size_t>(Traits::Count));
 
@@ -52,29 +50,27 @@ namespace stats
         }
     }
 
-
     Trait & TraitSet::Get(const Traits::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((E < Traits::Count), "stats::TraitSet::Get("
-            << E << ")_InvalidValueError");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (E < Traits::Count), "stats::TraitSet::Get(" << E << ")_InvalidValueError");
 
         return traitVec_[static_cast<std::size_t>(E)];
     }
-
 
     const Trait & TraitSet::GetCopy(const Traits::Enum E) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((E < Traits::Count), "stats::TraitSet::GetCopy("
-            << E << ")_InvalidValueError");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (E < Traits::Count), "stats::TraitSet::GetCopy(" << E << ")_InvalidValueError");
 
         return traitVec_[static_cast<std::size_t>(E)];
     }
 
-
-    const std::string TraitSet::ToString(const bool WILL_WRAP,
-                                         const bool WILL_ABBR,
-                                         const bool WILL_PREVENT_NEGATIVE,
-                                         const bool WILL_PREFIX_PERCENT) const
+    const std::string TraitSet::ToString(
+        const bool WILL_WRAP,
+        const bool WILL_ABBR,
+        const bool WILL_PREVENT_NEGATIVE,
+        const bool WILL_PREFIX_PERCENT) const
     {
         std::ostringstream ss;
 
@@ -124,17 +120,14 @@ namespace stats
         }
     }
 
-
     const std::string TraitSet::StatsString(const bool WILL_WRAP) const
     {
         std::ostringstream ss;
 
         ss << StatStringHelper(stats::Traits::Strength, false)
-            << StatStringHelper(stats::Traits::Accuracy)
-            << StatStringHelper(stats::Traits::Charm)
-            << StatStringHelper(stats::Traits::Luck)
-            << StatStringHelper(stats::Traits::Speed)
-            << StatStringHelper(stats::Traits::Intelligence);
+           << StatStringHelper(stats::Traits::Accuracy) << StatStringHelper(stats::Traits::Charm)
+           << StatStringHelper(stats::Traits::Luck) << StatStringHelper(stats::Traits::Speed)
+           << StatStringHelper(stats::Traits::Intelligence);
 
         if (WILL_WRAP)
         {
@@ -146,9 +139,8 @@ namespace stats
         }
     }
 
-
-    const std::string TraitSet::StatStringHelper(const stats::Traits::Enum E,
-                                                 const bool                WILL_PREFIX) const
+    const std::string
+        TraitSet::StatStringHelper(const stats::Traits::Enum E, const bool WILL_PREFIX) const
     {
         std::ostringstream ss;
 
@@ -170,6 +162,5 @@ namespace stats
 
         return ss.str();
     }
-
 }
 }

@@ -30,22 +30,20 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
-#include "misc/types.hpp"
-#include "spell/spell-enum.hpp"
-#include "song/song-enum.hpp"
-#include "misc/types.hpp"
-#include "creature/sex-enum.hpp"
 #include "creature/creature.hpp"
-#include "creature/title-enum.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "creature/sex-enum.hpp"
+#include "creature/title-enum.hpp"
+#include "misc/types.hpp"
+#include "song/song-enum.hpp"
+#include "spell/spell-enum.hpp"
 #include "stats/trait.hpp"
 
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
-
 
 namespace heroespath
 {
@@ -72,27 +70,28 @@ namespace non_player
 
     class Character : public creature::Creature
     {
-        Character(const Character &) =delete;
-        Character & operator=(const Character &) =delete;
+        Character(const Character &) = delete;
+        Character & operator=(const Character &) = delete;
 
     public:
-        explicit Character(const std::string &              NAME           = "no_name_error",
-                           const creature::sex::Enum        SEX            = creature::sex::Unknown,
-                           const creature::BodyType &       BODY_TYPE      = creature::BodyType(),
-                           const creature::race::Enum &     RACE           = creature::race::Human,
-                           const creature::role::Enum &     ROLE           = creature::role::Archer,
-                           const stats::StatSet &           STATS          = stats::StatSet(),
-                           const Health_t &                 HEALTH         = 0_health,
-                           const Rank_t &                   RANK           = 1_rank,
-                           const Experience_t &             EXPERIENCE     = 0_exp,
-                           const creature::CondEnumVec_t &  CONDITIONS_VEC = creature::CondEnumVec_t(),
-                           const creature::TitleEnumVec_t & TITLES_VEC     = creature::TitleEnumVec_t(),
-                           const item::Inventory &          INVENTORY      = item::Inventory(),
-                           const sfml_util::DateTime &      DATE_TIME      = sfml_util::DateTime(),
-                           const std::string &              IMAGE_FILENAME = "",
-                           const spell::SpellVec_t &        SPELLS_VEC     = spell::SpellVec_t(),
-                           const Mana_t &                   MANA           = 0_mana,
-                           const song::SongVec_t &          SONG_VEC       = song::SongVec_t());
+        explicit Character(
+            const std::string & NAME = "no_name_error",
+            const creature::sex::Enum SEX = creature::sex::Unknown,
+            const creature::BodyType & BODY_TYPE = creature::BodyType(),
+            const creature::race::Enum & RACE = creature::race::Human,
+            const creature::role::Enum & ROLE = creature::role::Archer,
+            const stats::StatSet & STATS = stats::StatSet(),
+            const Health_t & HEALTH = 0_health,
+            const Rank_t & RANK = 1_rank,
+            const Experience_t & EXPERIENCE = 0_exp,
+            const creature::CondEnumVec_t & CONDITIONS_VEC = creature::CondEnumVec_t(),
+            const creature::TitleEnumVec_t & TITLES_VEC = creature::TitleEnumVec_t(),
+            const item::Inventory & INVENTORY = item::Inventory(),
+            const sfml_util::DateTime & DATE_TIME = sfml_util::DateTime(),
+            const std::string & IMAGE_FILENAME = "",
+            const spell::SpellVec_t & SPELLS_VEC = spell::SpellVec_t(),
+            const Mana_t & MANA = 0_mana,
+            const song::SongVec_t & SONG_VEC = song::SongVec_t());
 
         virtual ~Character();
 
@@ -101,7 +100,7 @@ namespace non_player
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Creature>(*this);
@@ -116,17 +115,12 @@ namespace non_player
     using CharacterPVec_t = std::vector<CharacterPtr_t>;
     using CharacterPSet_t = std::set<CharacterPtr_t>;
 
-
     bool operator==(const Character & L, const Character & R);
 
-    inline bool operator!=(const Character & L, const Character & R)
-    {
-        return ! (L == R);
-    }
+    inline bool operator!=(const Character & L, const Character & R) { return !(L == R); }
 
     bool operator<(const Character & L, const Character & R);
-
 }
 }
 
-#endif //HEROESPATH_NONPLAYER_CHARACTER_HPP_INCLUDED
+#endif // HEROESPATH_NONPLAYER_CHARACTER_HPP_INCLUDED

@@ -28,19 +28,18 @@
 // camp-stage.hpp
 //  A Stage class that allows characters to camp the game
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/stage.hpp"
-#include "sfml-util/sliders.hpp"
 #include "sfml-util/gui/background-image.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sliders.hpp"
+#include "sfml-util/stage.hpp"
 
+#include "popup/i-popup-callback.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-buttons.hpp"
-#include "popup/i-popup-callback.hpp"
 #include "sfml-util/main-menu-title.hpp"
 
 #include <memory>
 #include <string>
-
 
 namespace heroespath
 {
@@ -56,14 +55,13 @@ namespace sfml_util
 namespace stage
 {
 
-    //A Stage class that allows the party to camp for resting and healing
+    // A Stage class that allows the party to camp for resting and healing
     class CampStage
-    :
-        public sfml_util::Stage,
-        public popup::IPopupHandler_t
+        : public sfml_util::Stage
+        , public popup::IPopupHandler_t
     {
-        CampStage(const CampStage &) =delete;
-        CampStage & operator=(const CampStage &) =delete;
+        CampStage(const CampStage &) = delete;
+        CampStage & operator=(const CampStage &) = delete;
 
     public:
         CampStage();
@@ -103,9 +101,7 @@ namespace stage
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol botSymbol_;
     };
-
 }
 }
 
-#endif //HEROESPATH_CAMPTAGE_HPP_INCLUDED
-
+#endif // HEROESPATH_CAMPTAGE_HPP_INCLUDED

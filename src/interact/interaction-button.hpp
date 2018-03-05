@@ -32,31 +32,29 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace interact
 {
 
-    //Responsible for wrapping all the information needed to implement a
-    //button used by interactions.
+    // Responsible for wrapping all the information needed to implement a
+    // button used by interactions.
     class Button
     {
     public:
         explicit Button(
-            const std::string & NAME,
-            const sf::Keyboard::Key KEY = sf::Keyboard::Unknown);
+            const std::string & NAME, const sf::Keyboard::Key KEY = sf::Keyboard::Unknown);
 
         const std::string Name() const { return name_; }
         sf::Keyboard::Key Key() const { return key_; }
-        
+
         bool DoPointersMatch(const sfml_util::gui::TextButton * const P) const
         {
             return (P == ptr_);
         }
 
-        sfml_util::gui::TextButtonUPtr_t Make(
-            sfml_util::gui::callback::ITextButtonCallbackHandler_t *);
+        sfml_util::gui::TextButtonUPtr_t
+            Make(sfml_util::gui::callback::ITextButtonCallbackHandler_t *);
 
     private:
         std::string name_;
@@ -65,8 +63,7 @@ namespace interact
     };
 
     using ButtonVec_t = std::vector<Button>;
-
 }
 }
 
-#endif //HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED

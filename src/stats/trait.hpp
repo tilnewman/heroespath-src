@@ -33,16 +33,15 @@
 //  something other than normal.  Eventually, the temporary condition will expire
 //  and the current will return to 'normal'.
 //
-#include "stats/trait.hpp"
 #include "stats/trait-enum.hpp"
+#include "stats/trait.hpp"
 
-#include "misc/real.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/real.hpp"
 
-#include <tuple>
 #include <string>
+#include <tuple>
 #include <vector>
-
 
 namespace heroespath
 {
@@ -51,40 +50,45 @@ namespace stats
 
     using Trait_t = int;
 
-
-    //Maintains a creature variable or 'trait' as a current and normal value.
-    //This class is also used to store trait percent bonuses.
+    // Maintains a creature variable or 'trait' as a current and normal value.
+    // This class is also used to store trait percent bonuses.
     class Trait
     {
     public:
-        explicit Trait(
-            const Traits::Enum TYPE = Traits::Count,
-            const Trait_t NORMAL = 0);
+        explicit Trait(const Traits::Enum TYPE = Traits::Count, const Trait_t NORMAL = 0);
 
-        inline Traits::Enum Which() const           { return type_; }
-        inline const std::string Name() const       { return Traits::Name(type_); }
-        inline const std::string Desc() const       { return Traits::Desc(type_); }
-        inline Trait_t Normal() const               { return normal_; }
-        inline Trait_t Current() const              { return current_; }
+        inline Traits::Enum Which() const { return type_; }
+        inline const std::string Name() const { return Traits::Name(type_); }
+        inline const std::string Desc() const { return Traits::Desc(type_); }
+        inline Trait_t Normal() const { return normal_; }
+        inline Trait_t Current() const { return current_; }
 
-        inline float NormalRatio() const    { return static_cast<float>(current_) / 100.0f; }
-        inline float CurrentRatio() const   { return static_cast<float>(normal_) / 100.0f; }
+        inline float NormalRatio() const { return static_cast<float>(current_) / 100.0f; }
+        inline float CurrentRatio() const { return static_cast<float>(normal_) / 100.0f; }
 
-        inline bool ResetCurrentToNormal() const    { return (current_ == normal_); }
+        inline bool ResetCurrentToNormal() const { return (current_ == normal_); }
 
-        inline Trait_t NormalAdj(const Trait_t X)   { return normal_ += X; }
-        inline Trait_t CurrentAdj(const Trait_t X)  { return current_ += X; }
-        inline void CurrAndNormAdj(const Trait_t X) { NormalAdj(X); CurrentAdj(X); }
+        inline Trait_t NormalAdj(const Trait_t X) { return normal_ += X; }
+        inline Trait_t CurrentAdj(const Trait_t X) { return current_ += X; }
+        inline void CurrAndNormAdj(const Trait_t X)
+        {
+            NormalAdj(X);
+            CurrentAdj(X);
+        }
 
-        inline void NormalSet(const Trait_t X)      { normal_ = X; }
-        inline void CurrentSet(const Trait_t X)     { current_ = X; }
-        inline void CurrAndNormSet(const Trait_t X) { NormalSet(X); CurrentSet(X); }
+        inline void NormalSet(const Trait_t X) { normal_ = X; }
+        inline void CurrentSet(const Trait_t X) { current_ = X; }
+        inline void CurrAndNormSet(const Trait_t X)
+        {
+            NormalSet(X);
+            CurrentSet(X);
+        }
 
-        inline void SetCurrentToNormal()            { current_ = normal_; }
+        inline void SetCurrentToNormal() { current_ = normal_; }
 
-        //the given Trait's current value is used to modify
-        inline void NormalAdj(const Trait & RS)     { normal_ += RS.current_; }
-        inline void CurrentAdj(const Trait & RS)    { current_ += RS.current_; }
+        // the given Trait's current value is used to modify
+        inline void NormalAdj(const Trait & RS) { normal_ += RS.current_; }
+        inline void CurrentAdj(const Trait & RS) { current_ += RS.current_; }
 
         const std::string ToString(const bool WILL_PREPEND_PLUS = true) const;
 
@@ -102,7 +106,7 @@ namespace stats
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & type_;
@@ -113,29 +117,18 @@ namespace stats
 
     using TraitVec_t = std::vector<Trait>;
 
-
     inline bool operator==(const Trait & L, const Trait & R)
     {
-        return std::tie(L.type_, L.normal_, L.current_)
-                ==
-               std::tie(R.type_, R.normal_, R.current_);
+        return std::tie(L.type_, L.normal_, L.current_) == std::tie(R.type_, R.normal_, R.current_);
     }
 
-
-    inline bool operator!=(const Trait & L, const Trait & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const Trait & L, const Trait & R) { return !(L == R); }
 
     inline bool operator<(const Trait & L, const Trait & R)
     {
-        return std::tie(L.type_, L.normal_, L.current_)
-                <
-               std::tie(R.type_, R.normal_, R.current_);
+        return std::tie(L.type_, L.normal_, L.current_) < std::tie(R.type_, R.normal_, R.current_);
     }
-
 }
 }
 
-#endif //HEROESPATH_STATS_TRAIT_HPP_INCLUDED
+#endif // HEROESPATH_STATS_TRAIT_HPP_INCLUDED

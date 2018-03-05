@@ -33,9 +33,8 @@
 
 #include "misc/boost-string-includes.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -46,12 +45,30 @@ namespace song
     {
         switch (E)
         {
-            case RallyDrum:         { return "RallyDrum"; }
-            case SpiritResonance:   { return "SpiritResonance"; }
-            case RousingRhythm:     { return "RousingRhythm"; }
-            case TripBeat:          { return "TripBeat"; }
-            case PanicStrings:      { return "PanicStrings"; }
-            case Lullaby:           { return "Lullaby"; }
+            case RallyDrum:
+            {
+                return "RallyDrum";
+            }
+            case SpiritResonance:
+            {
+                return "SpiritResonance";
+            }
+            case RousingRhythm:
+            {
+                return "RousingRhythm";
+            }
+            case TripBeat:
+            {
+                return "TripBeat";
+            }
+            case PanicStrings:
+            {
+                return "PanicStrings";
+            }
+            case Lullaby:
+            {
+                return "Lullaby";
+            }
             case Count:
             default:
             {
@@ -62,17 +79,34 @@ namespace song
         }
     }
 
-
     const std::string Songs::Name(const Enum E)
     {
         switch (E)
         {
-            case RallyDrum:         { return "Rally Drum"; }
-            case SpiritResonance:   { return "Spirit Resonance"; }
-            case RousingRhythm:     { return "Rousing Rhythm"; }
-            case TripBeat:          { return "Tri pBeat"; }
-            case PanicStrings:      { return "Panic Strings"; }
-            case Lullaby:           { return "Lullaby"; }
+            case RallyDrum:
+            {
+                return "Rally Drum";
+            }
+            case SpiritResonance:
+            {
+                return "Spirit Resonance";
+            }
+            case RousingRhythm:
+            {
+                return "Rousing Rhythm";
+            }
+            case TripBeat:
+            {
+                return "Tri pBeat";
+            }
+            case PanicStrings:
+            {
+                return "Panic Strings";
+            }
+            case Lullaby:
+            {
+                return "Lullaby";
+            }
             case Count:
             default:
             {
@@ -83,14 +117,12 @@ namespace song
         }
     }
 
-
     const std::string Songs::ShortDesc(const Songs::Enum E)
     {
         std::ostringstream keySS;
         keySS << "heroespath-song-" << ToString(E) << "-short-desc";
         return game::GameDataFile::Instance()->GetCopyStr(keySS.str());
     }
-
 
     const std::string Songs::ExtraDesc(const Songs::Enum E)
     {
@@ -99,11 +131,9 @@ namespace song
         return game::GameDataFile::Instance()->GetCopyStr(keySS.str());
     }
 
-
     const std::string Songs::ImageFilename(const Songs::Enum E)
     {
         return boost::algorithm::to_lower_copy(ToString(E) + ".png");
     }
-
 }
 }

@@ -34,7 +34,6 @@
 
 #include <string>
 
-
 namespace heroespath
 {
 namespace creature
@@ -44,18 +43,14 @@ namespace creature
     {
     public:
         Enchantment_PixieBell()
-        :
-            Enchantment(
-                static_cast<EnchantmentType::Enum>(
-                    EnchantmentType::BoundToItem |
-                    EnchantmentType::WhenUsed),
-                stats::TraitSet(),
-                UseInfo(
-                    -1,
-                    static_cast<game::Phase::Enum>(
-                        game::Phase::Combat |
-                        game::Phase::Exploring |
-                        game::Phase::Inventory)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                  stats::TraitSet(),
+                  UseInfo(
+                      -1,
+                      static_cast<game::Phase::Enum>(
+                          game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -69,26 +64,25 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_CrystalChimes : public Enchantment
     {
     public:
         Enchantment_CrystalChimes()
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenUsed),
-                        stats::TraitSet(),
-                        UseInfo(-1,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Exploring |
-                                                         game::Phase::Inventory)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                  stats::TraitSet(),
+                  UseInfo(
+                      -1,
+                      static_cast<game::Phase::Enum>(
+                          game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -102,31 +96,31 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_GoldenGong : public Enchantment
     {
     public:
         Enchantment_GoldenGong()
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenUsed),
-                        stats::TraitSet(),
-                        UseInfo(-1,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Exploring |
-                                                         game::Phase::Inventory)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                  stats::TraitSet(),
+                  UseInfo(
+                      -1,
+                      static_cast<game::Phase::Enum>(
+                          game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
         {
-            return "Adds 20% Mana and removes the conditions: Dazed, Asleep Natural, Daunted, and Panicked.";
+            return "Adds 20% Mana and removes the conditions: Dazed, Asleep Natural, Daunted, and "
+                   "Panicked.";
         }
 
         virtual void UseEffect(const CreaturePtr_t);
@@ -135,25 +129,24 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_DragonToothWhistle : public Enchantment
     {
     public:
         Enchantment_DragonToothWhistle()
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenUsed),
-                        stats::TraitSet(),
-                        UseInfo(-1,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Inventory)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                  stats::TraitSet(),
+                  UseInfo(
+                      -1,
+                      static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -167,26 +160,25 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_DoveBloodVial : public Enchantment
     {
     public:
         Enchantment_DoveBloodVial()
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenUsed),
-                        stats::TraitSet(),
-                        UseInfo(10,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Exploring |
-                                                         game::Phase::Inventory)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                  stats::TraitSet(),
+                  UseInfo(
+                      10,
+                      static_cast<game::Phase::Enum>(
+                          game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -200,26 +192,25 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_DriedEdible : public Enchantment
     {
     public:
         Enchantment_DriedEdible()
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenUsed),
-                        stats::TraitSet(),
-                        UseInfo(1,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Exploring |
-                                                         game::Phase::Inventory)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                  stats::TraitSet(),
+                  UseInfo(
+                      1,
+                      static_cast<game::Phase::Enum>(
+                          game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -233,26 +224,25 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_ShamanRainmaker : public Enchantment
     {
     public:
         Enchantment_ShamanRainmaker()
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenUsed),
-                        stats::TraitSet(),
-                        UseInfo(-1,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Exploring |
-                                                         game::Phase::Inventory)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                  stats::TraitSet(),
+                  UseInfo(
+                      -1,
+                      static_cast<game::Phase::Enum>(
+                          game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -266,25 +256,24 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_SpecterChains : public Enchantment
     {
     public:
         Enchantment_SpecterChains()
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenUsed),
-                        stats::TraitSet(),
-                        UseInfo(-1,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Inventory)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                  stats::TraitSet(),
+                  UseInfo(
+                      -1,
+                      static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -298,26 +287,25 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_VultureGizzard : public Enchantment
     {
     public:
         Enchantment_VultureGizzard()
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenUsed),
-                        stats::TraitSet(),
-                        UseInfo(3,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Exploring |
-                                                         game::Phase::Inventory)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                  stats::TraitSet(),
+                  UseInfo(
+                      3,
+                      static_cast<game::Phase::Enum>(
+                          game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -331,25 +319,24 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_WarTrumpet : public Enchantment
     {
     public:
         Enchantment_WarTrumpet()
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenUsed),
-                        stats::TraitSet(),
-                        UseInfo(-1,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Inventory)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                  stats::TraitSet(),
+                  UseInfo(
+                      -1,
+                      static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -363,27 +350,26 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_MiscBlessed : public Enchantment
     {
     public:
         explicit Enchantment_MiscBlessed(const int USE_COUNT)
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenHeld),
-                        stats::TraitSet( { std::make_pair(stats::Traits::Encounter, 3),
-                                           std::make_pair(stats::Traits::BlessEffect, 3) } ),
-                        UseInfo(USE_COUNT,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Inventory |
-                                                         game::Phase::Exploring)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenHeld),
+                  stats::TraitSet({ std::make_pair(stats::Traits::Encounter, 3),
+                                    std::make_pair(stats::Traits::BlessEffect, 3) }),
+                  UseInfo(
+                      USE_COUNT,
+                      static_cast<game::Phase::Enum>(
+                          game::Phase::Combat | game::Phase::Inventory | game::Phase::Exploring)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -397,27 +383,26 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
 
-
     class Enchantment_MiscCursed : public Enchantment
     {
     public:
         explicit Enchantment_MiscCursed(const int USE_COUNT)
-        :
-            Enchantment(static_cast<EnchantmentType::Enum>(EnchantmentType::BoundToItem |
-                                                           EnchantmentType::WhenHeld),
-                        stats::TraitSet( { std::make_pair(stats::Traits::Luck, -3),
-                                           std::make_pair(stats::Traits::CurseEffect, 3) } ),
-                        UseInfo(USE_COUNT,
-                                static_cast<game::Phase::Enum>(game::Phase::Combat |
-                                                         game::Phase::Inventory |
-                                                         game::Phase::Exploring)))
+            : Enchantment(
+                  static_cast<EnchantmentType::Enum>(
+                      EnchantmentType::BoundToItem | EnchantmentType::WhenHeld),
+                  stats::TraitSet({ std::make_pair(stats::Traits::Luck, -3),
+                                    std::make_pair(stats::Traits::CurseEffect, 3) }),
+                  UseInfo(
+                      USE_COUNT,
+                      static_cast<game::Phase::Enum>(
+                          game::Phase::Combat | game::Phase::Inventory | game::Phase::Exploring)))
         {}
 
         inline virtual const std::string EffectStr(const CreaturePtr_t) const
@@ -431,14 +416,13 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_ENCHANTMENTS_HPP_INCLUDE
+#endif // HEROESPATH_CREATURE_ENCHANTMENTS_HPP_INCLUDE

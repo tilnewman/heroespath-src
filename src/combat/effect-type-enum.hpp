@@ -30,7 +30,6 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace combat
@@ -57,8 +56,7 @@ namespace combat
     };
 
     using EffectTypeVec_t = std::vector<EffectType::Enum>;
-
 }
 }
 
-#endif //HEROESPATH_COMBAT_EFFECTTYPEENUM_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_EFFECTTYPEENUM_HPP_INCLUDED

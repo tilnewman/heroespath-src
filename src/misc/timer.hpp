@@ -28,21 +28,19 @@
 // timer.hpp
 //
 
-
 namespace heroespath
 {
 namespace misc
 {
 
-    //Responsible for keep track of a timer's current and max value
-    //through recurring calls to Update().
+    // Responsible for keep track of a timer's current and max value
+    // through recurring calls to Update().
     class Timer
     {
     public:
         Timer(const float DURATION)
-        :
-            timeSec_(0.0f),
-            durationSec_(DURATION)
+            : timeSec_(0.0f)
+            , durationSec_(DURATION)
         {}
 
         inline float Time() const { return timeSec_; }
@@ -71,4 +69,4 @@ namespace misc
 }
 }
 
-#endif //HEROESPATH_MISC_TIMER_HPP_INCLUDED
+#endif // HEROESPATH_MISC_TIMER_HPP_INCLUDED

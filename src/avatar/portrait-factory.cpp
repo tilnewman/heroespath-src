@@ -30,7 +30,6 @@
 #include "portrait-factory.hpp"
 #include "sfml-util/loaders.hpp"
 
-
 namespace heroespath
 {
 namespace avatar
@@ -53,6 +52,5 @@ namespace avatar
 
         finalTexture = renderTexture.getTexture();
     }
-
 }
 }

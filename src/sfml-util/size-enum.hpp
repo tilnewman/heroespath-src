@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -47,8 +46,7 @@ namespace sfml_util
 
         const std::string ToString(const Size::Enum);
     }
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_SIZE_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SIZE_ENUM_HPP_INCLUDED

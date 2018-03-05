@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -42,10 +41,22 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Top:    { return "Top"; }
-            case Bottom: { return "Bottom";  }
-            case Left:   { return "Left"; }
-            case Right:  { return "Right"; }
+            case Top:
+            {
+                return "Top";
+            }
+            case Bottom:
+            {
+                return "Bottom";
+            }
+            case Left:
+            {
+                return "Left";
+            }
+            case Right:
+            {
+                return "Right";
+            }
             case Error:
             default:
             {
@@ -56,12 +67,10 @@ namespace sfml_util
         }
     }
 
-
     bool Side::IsValid(const Side::Enum E)
     {
         const unsigned MAX(None | Top | Bottom | Left | Right);
         return (static_cast<unsigned>(E) <= MAX);
     }
-
 }
 }

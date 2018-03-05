@@ -33,34 +33,32 @@
 
 #include <memory>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //Loads images and delivers sf::Textures to them on demand.
-    class SpellImageManager : public ImageManagerBase<spell::Spells>
+    namespace gui
     {
-        SpellImageManager(const SpellImageManager &) =delete;
-        SpellImageManager & operator=(const SpellImageManager &) =delete;
 
-    public:
-        SpellImageManager();
-        virtual ~SpellImageManager();
+        // Loads images and delivers sf::Textures to them on demand.
+        class SpellImageManager : public ImageManagerBase<spell::Spells>
+        {
+            SpellImageManager(const SpellImageManager &) = delete;
+            SpellImageManager & operator=(const SpellImageManager &) = delete;
 
-        static SpellImageManager * Instance();
-        static void Acquire();
-        static void Release();
+        public:
+            SpellImageManager();
+            virtual ~SpellImageManager();
 
-    private:
-        static std::unique_ptr<SpellImageManager> instanceUPtr_;
-    };
+            static SpellImageManager * Instance();
+            static void Acquire();
+            static void Release();
 
+        private:
+            static std::unique_ptr<SpellImageManager> instanceUPtr_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUI_SPELLIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_SPELLIMAGEMANAGER_HPP_INCLUDED

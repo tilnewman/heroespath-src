@@ -31,10 +31,9 @@
 //
 #include "sfml-util/gui/text-region.hpp"
 
-#include <vector>
 #include <memory>
 #include <string>
-
+#include <vector>
 
 namespace heroespath
 {
@@ -54,7 +53,7 @@ namespace creature
     using TitlePtrC_t = Title * const;
 
     class Condition;
-    using ConditionPtr_t  = Condition *;
+    using ConditionPtr_t = Condition *;
     using ConditionPtrC_t = Condition * const;
 }
 namespace item
@@ -75,98 +74,98 @@ namespace player
 
 namespace sfml_util
 {
-namespace gui
-{
-
-    class TextInfo;
-
-
-    //TextRegion wrapper for anything the ListBox class may need to list...
-    class ListBoxItem : public sfml_util::gui::TextRegion
+    namespace gui
     {
-        ListBoxItem(const ListBoxItem &) =delete;
-        ListBoxItem & operator=(const ListBoxItem &) =delete;
 
-    public:
-        explicit ListBoxItem(const std::string & NAME,
-                             const bool          IS_VALID = true);
+        class TextInfo;
 
-        //used by the Combat Stage for a ListBox of text lines
-        ListBoxItem(const std::string &              NAME,
-                    const sfml_util::gui::TextInfo & TEXT_INFO,
-                    const bool                       IS_VALID = true);
+        // TextRegion wrapper for anything the ListBox class may need to list...
+        class ListBoxItem : public sfml_util::gui::TextRegion
+        {
+            ListBoxItem(const ListBoxItem &) = delete;
+            ListBoxItem & operator=(const ListBoxItem &) = delete;
 
-        //used by the Party Stage for a ListBox of Characters
-        ListBoxItem(const std::string &                NAME,
-                    const sfml_util::gui::TextInfo &   TEXT_INFO,
-                    const player::CharacterPtr_t CHARACTER_PTR,
-                    const bool                         IS_VALID = true);
+        public:
+            explicit ListBoxItem(const std::string & NAME, const bool IS_VALID = true);
 
-        //used by the LoadGame Stage for a ListBox of GameStates
-        ListBoxItem(const std::string &               NAME,
-                    const sfml_util::gui::TextInfo &  TEXT_INFO,
-                    const state::GameStatePtr_t GAMESTATE_PTR,
-                    const bool                        IS_VALID = true);
+            // used by the Combat Stage for a ListBox of text lines
+            ListBoxItem(
+                const std::string & NAME,
+                const sfml_util::gui::TextInfo & TEXT_INFO,
+                const bool IS_VALID = true);
 
-        //used by the inventory stage to list items
-        ListBoxItem(const std::string &              NAME,
-                    const sfml_util::gui::TextInfo & TEXT_INFO,
-                    const item::ItemPtr_t      ITEM_PTR,
-                    const bool                       IS_VALID = true);
+            // used by the Party Stage for a ListBox of Characters
+            ListBoxItem(
+                const std::string & NAME,
+                const sfml_util::gui::TextInfo & TEXT_INFO,
+                const player::CharacterPtr_t CHARACTER_PTR,
+                const bool IS_VALID = true);
 
-        //used by the inventory stage to list conditions
-        ListBoxItem(const std::string &                  NAME,
-                    const sfml_util::gui::TextInfo &     TEXT_INFO,
-                    const creature::ConditionPtr_t CONDITION_PTR_PARAM,
-                    const bool                           IS_VALID = true);
+            // used by the LoadGame Stage for a ListBox of GameStates
+            ListBoxItem(
+                const std::string & NAME,
+                const sfml_util::gui::TextInfo & TEXT_INFO,
+                const state::GameStatePtr_t GAMESTATE_PTR,
+                const bool IS_VALID = true);
 
-        //used by the inventory stage to list titles
-        ListBoxItem(const std::string &               NAME,
-                    const sfml_util::gui::TextInfo &  TEXT_INFO,
-                    const creature::TitlePtrC_t TITLE_CPTRC_PARAM,
-                    const bool                        IS_VALID = true);
+            // used by the inventory stage to list items
+            ListBoxItem(
+                const std::string & NAME,
+                const sfml_util::gui::TextInfo & TEXT_INFO,
+                const item::ItemPtr_t ITEM_PTR,
+                const bool IS_VALID = true);
 
-        //used by the inventory stage to list spells
-        ListBoxItem(const std::string &              NAME,
-                    const sfml_util::gui::TextInfo & TEXT_INFO,
-                    const spell::SpellPtrC_t   SPELL_CPTRC_PARAM,
-                    const bool                       IS_VALID = true);
+            // used by the inventory stage to list conditions
+            ListBoxItem(
+                const std::string & NAME,
+                const sfml_util::gui::TextInfo & TEXT_INFO,
+                const creature::ConditionPtr_t CONDITION_PTR_PARAM,
+                const bool IS_VALID = true);
 
-        //used by the inventory stage to list spells
-        ListBoxItem(const std::string &              NAME,
-                    const sfml_util::gui::TextInfo & TEXT_INFO,
-                    const song::SongPtrC_t     SONG_CPTRC_PARAM,
-                    const bool                       IS_VALID = true);
+            // used by the inventory stage to list titles
+            ListBoxItem(
+                const std::string & NAME,
+                const sfml_util::gui::TextInfo & TEXT_INFO,
+                const creature::TitlePtrC_t TITLE_CPTRC_PARAM,
+                const bool IS_VALID = true);
 
-        const player::CharacterPtr_t    CHARACTER_CPTR;
-        const state::GameStatePtr_t     GAMESTATE_CPTR;
-        const item::ItemPtr_t           ITEM_CPTR;
-        const creature::ConditionPtrC_t COND_CPTRC;
-        const creature::TitlePtrC_t     TITLE_CPTRC;
-        const spell::SpellPtrC_t        SPELL_CPTRC;
-        const song::SongPtrC_t          SONG_CPTRC;
-        bool                                  is_valid;
+            // used by the inventory stage to list spells
+            ListBoxItem(
+                const std::string & NAME,
+                const sfml_util::gui::TextInfo & TEXT_INFO,
+                const spell::SpellPtrC_t SPELL_CPTRC_PARAM,
+                const bool IS_VALID = true);
 
-        friend bool operator==(const ListBoxItem & L, const ListBoxItem & R);
-        friend bool operator<(const ListBoxItem & L, const ListBoxItem & R);
-    };
+            // used by the inventory stage to list spells
+            ListBoxItem(
+                const std::string & NAME,
+                const sfml_util::gui::TextInfo & TEXT_INFO,
+                const song::SongPtrC_t SONG_CPTRC_PARAM,
+                const bool IS_VALID = true);
 
+            const player::CharacterPtr_t CHARACTER_CPTR;
+            const state::GameStatePtr_t GAMESTATE_CPTR;
+            const item::ItemPtr_t ITEM_CPTR;
+            const creature::ConditionPtrC_t COND_CPTRC;
+            const creature::TitlePtrC_t TITLE_CPTRC;
+            const spell::SpellPtrC_t SPELL_CPTRC;
+            const song::SongPtrC_t SONG_CPTRC;
+            bool is_valid;
 
-    using ListBoxItemSPtr_t = std::shared_ptr<ListBoxItem>;
-    using ListBoxItemSVec_t = std::vector<ListBoxItemSPtr_t>;
+            friend bool operator==(const ListBoxItem & L, const ListBoxItem & R);
+            friend bool operator<(const ListBoxItem & L, const ListBoxItem & R);
+        };
 
+        using ListBoxItemSPtr_t = std::shared_ptr<ListBoxItem>;
+        using ListBoxItemSVec_t = std::vector<ListBoxItemSPtr_t>;
 
-    bool operator==(const ListBoxItem & L, const ListBoxItem & R);
+        bool operator==(const ListBoxItem & L, const ListBoxItem & R);
 
-    inline bool operator!=(const ListBoxItem & L, const ListBoxItem & R)
-    {
-        return ! (L == R);
+        inline bool operator!=(const ListBoxItem & L, const ListBoxItem & R) { return !(L == R); }
+
+        bool operator<(const ListBoxItem & L, const ListBoxItem & R);
     }
-
-    bool operator<(const ListBoxItem & L, const ListBoxItem & R);
-
-}
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_GUI_LISTBOXITEM_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_LISTBOXITEM_HPP_INCLUDED

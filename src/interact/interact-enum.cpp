@@ -31,7 +31,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace interact
@@ -41,38 +40,48 @@ namespace interact
     {
         switch (INTERACTION_TYPE)
         {
-            case Interact::Lock:          { return "Lock"; }
-            case Interact::Conversation:  { return "Conversation"; }
+            case Interact::Lock:
+            {
+                return "Lock";
+            }
+            case Interact::Conversation:
+            {
+                return "Conversation";
+            }
             case Interact::Count:
             default:
             {
                 std::ostringstream ss;
                 ss << "map::Interact::Enum::ToString(" << INTERACTION_TYPE
-                    << ")_InvalidValueError.";
+                   << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());
             }
         }
     }
-
 
     const std::string Interact::ImageKey(const Interact::Enum INTERACTION_TYPE)
     {
         switch (INTERACTION_TYPE)
         {
-            case Interact::Lock:          { return "media-images-misc-lock"; }
-            case Interact::Conversation:  { return "media-images-misc-talk"; }
+            case Interact::Lock:
+            {
+                return "media-images-misc-lock";
+            }
+            case Interact::Conversation:
+            {
+                return "media-images-misc-talk";
+            }
             case Interact::Count:
             default:
             {
                 std::ostringstream ss;
                 ss << "map::Interact::Enum::ImageKey(" << INTERACTION_TYPE
-                    << ")_InvalidValueError.";
+                   << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());
             }
         }
     }
-
 }
 }

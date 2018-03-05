@@ -31,62 +31,44 @@
 #include "player/party.hpp"
 #include <string>
 
-
 namespace heroespath
 {
 namespace interact
 {
-namespace talk
-{
-
-    namespace compose
+    namespace talk
     {
-        static inline const StrVec_t TavernServers()
+
+        namespace compose
         {
-            return {
-                "server",
-                "barkeep",
-                "barwhipe",
-                "bartender",
-                "wench",
-                "serving girl",
-                "bar maid" };
+            static inline const StrVec_t TavernServers()
+            {
+                return { "server", "barkeep",      "barwhipe", "bartender",
+                         "wench",  "serving girl", "bar maid" };
+            }
+
+            static inline const StrVec_t TavernDrinks()
+            {
+                return { "ale", "drink", "beer", "mead", "brew", "swill" };
+            }
+
+            static inline const StrVec_t TavernDrinkAdjectives()
+            {
+                return { "delightful", "dreadful", "horrid",   "stinking",  "festering",
+                         "rotting",    "murky",    "bubbling", "tasteless", "sour" };
+            }
+
+            static inline const StrVec_t TavernNoises()
+            {
+                return { "(hiccup)", "(burp)", "(grumble)", "(mutter)", "(laughs)" };
+            }
         }
 
-        static inline const StrVec_t TavernDrinks()
+        struct TavernTalk
         {
-            return { "ale", "drink", "beer", "mead", "brew", "swill" };
-        }
-
-        static inline const StrVec_t TavernDrinkAdjectives()
-        {
-            return {
-                "delightful",
-                "dreadful",
-                "horrid",
-                "stinking",
-                "festering",
-                "rotting",
-                "murky",
-                "bubbling",
-                "tasteless",
-                "sour" };
-        }
-
-        static inline const StrVec_t TavernNoises()
-        {
-            return { "(hiccup)", "(burp)", "(grumble)", "(mutter)", "(laughs)" };
-        }
+            static const std::string Compose(const player::Party &);
+        };
     }
-
-
-    struct TavernTalk
-    {
-        static const std::string Compose(const player::Party &);
-    };
-
-}
 }
 }
 
-#endif //HEROESPATH_INTERACT_STATEMENTTAVERN_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_STATEMENTTAVERN_HPP_INCLUDED

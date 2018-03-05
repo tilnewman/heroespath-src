@@ -28,76 +28,72 @@
 // armor-details.hpp
 //  Code that loads detailed armor data from the GameDataFile.
 //
-#include "stats/trait.hpp"
 #include "non-player/ownership-profile.hpp"
+#include "stats/trait.hpp"
 
-#include <memory>
 #include <map>
+#include <memory>
 #include <string>
-
 
 namespace heroespath
 {
 namespace item
 {
-namespace armor
-{
-
-    //a simple wrapper for armor details
-    struct ArmorDetails
+    namespace armor
     {
-        ArmorDetails()
-        :
-            name            (),
-            description     (),
-            price           (0),
-            weight          (0),
-            armor_rating    (0),
-            complexity      (non_player::ownership::complexity_type::Count)
-        {}
 
-        std::string name;
-        std::string description;
-        Coin_t      price;
-        Weight_t    weight;
-        Armor_t     armor_rating;
-        non_player::ownership::complexity_type::Enum complexity;
-    };
+        // a simple wrapper for armor details
+        struct ArmorDetails
+        {
+            ArmorDetails()
+                : name()
+                , description()
+                , price(0)
+                , weight(0)
+                , armor_rating(0)
+                , complexity(non_player::ownership::complexity_type::Count)
+            {}
 
+            std::string name;
+            std::string description;
+            Coin_t price;
+            Weight_t weight;
+            Armor_t armor_rating;
+            non_player::ownership::complexity_type::Enum complexity;
+        };
 
-    //name to details mapping
-    using ArmorDetailMap_t = std::map<std::string, ArmorDetails>;
+        // name to details mapping
+        using ArmorDetailMap_t = std::map<std::string, ArmorDetails>;
 
+        // A singleton class that loads detailed armor info from the GameDataFile.
+        class ArmorDetailLoader
+        {
+            ArmorDetailLoader & operator=(const ArmorDetailLoader &) = delete;
+            ArmorDetailLoader(const ArmorDetailLoader &) = delete;
 
-    //A singleton class that loads detailed armor info from the GameDataFile.
-    class ArmorDetailLoader
-    {
-        ArmorDetailLoader & operator=(const ArmorDetailLoader &) =delete;
-        ArmorDetailLoader(const ArmorDetailLoader &) =delete;
+        public:
+            ArmorDetailLoader();
+            ~ArmorDetailLoader();
 
-    public:
-        ArmorDetailLoader();
-        ~ArmorDetailLoader();
+            static ArmorDetailLoader * Instance();
+            static void Acquire();
+            static void Release();
 
-        static ArmorDetailLoader * Instance();
-        static void Acquire();
-        static void Release();
+            const ArmorDetails LookupArmorDetails(const std::string & NAME);
 
-        const ArmorDetails LookupArmorDetails(const std::string & NAME);
+        private:
+            void LoadArmorDeatilsFromGameDataFile();
+            void LoadDetailsForKey(const std::string & ARMOR_NAME);
+            int StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR);
+            const std::string
+                CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
 
-    private:
-        void LoadArmorDeatilsFromGameDataFile();
-        void LoadDetailsForKey(const std::string & ARMOR_NAME);
-        int StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR);
-        const std::string CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
-
-    private:
-        static std::unique_ptr<ArmorDetailLoader> instanceUPtr_;
-        ArmorDetailMap_t armorDetailsMap_;
-    };
-
+        private:
+            static std::unique_ptr<ArmorDetailLoader> instanceUPtr_;
+            ArmorDetailMap_t armorDetailsMap_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_ITEM_ARMORDETAILS_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_ARMORDETAILS_HPP_INCLUDED

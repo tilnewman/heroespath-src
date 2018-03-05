@@ -28,9 +28,8 @@
 // combat-over-enum.cpp
 //
 #include "combat-over-enum.hpp"
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -41,9 +40,18 @@ namespace combat
     {
         switch (E)
         {
-            case Win:   { return "Win"; }
-            case Lose:  { return "Lose"; }
-            case Ran:   { return "Ran"; }
+            case Win:
+            {
+                return "Win";
+            }
+            case Lose:
+            {
+                return "Lose";
+            }
+            case Ran:
+            {
+                return "Ran";
+            }
             case Count:
             default:
             {
@@ -53,6 +61,5 @@ namespace combat
             }
         }
     }
-
 }
 }

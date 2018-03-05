@@ -29,21 +29,20 @@
 //
 #include "sfml-util/direction-enum.hpp"
 
-#include "map/level-enum.hpp"
-#include "map/transition.hpp"
-#include "map/parser.hpp"
-#include "map/walk-sfx.hpp"
-#include "misc/timer.hpp"
 #include "avatar/model.hpp"
 #include "interact/interaction-manager.hpp"
+#include "map/level-enum.hpp"
+#include "map/parser.hpp"
+#include "map/transition.hpp"
+#include "map/walk-sfx.hpp"
+#include "misc/timer.hpp"
 
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics/Drawable.hpp>
 
 #include <memory>
 #include <vector>
-
 
 namespace heroespath
 {
@@ -53,8 +52,7 @@ namespace map
     class MapDisplay;
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
 
-
-    //Responsible for all state and operation of a 2D map of the game world.
+    // Responsible for all state and operation of a 2D map of the game world.
     class Map : public sf::Drawable
     {
         Map(const Map &) = delete;
@@ -88,18 +86,13 @@ namespace map
         inline const std::vector<avatar::Model> & NonPlayers() const { return nonPlayers_; }
 
         void EntryAndExitLevels(
-            std::vector<Level::Enum> & entryLevels,
-            std::vector<Level::Enum> & exitLevels);
+            std::vector<Level::Enum> & entryLevels, std::vector<Level::Enum> & exitLevels);
 
     private:
-        bool DoesAdjPlayerPosCollide(
-            const sfml_util::Direction::Enum DIR,
-            const float ADJ);
+        bool DoesAdjPlayerPosCollide(const sfml_util::Direction::Enum DIR, const float ADJ);
 
         const sf::Vector2f FindStartPos(
-            const TransitionVec_t &,
-            const Level::Enum LEVEL_TO_LOAD,
-            const Level::Enum LEVEL_FROM);
+            const TransitionVec_t &, const Level::Enum LEVEL_TO_LOAD, const Level::Enum LEVEL_FROM);
 
         bool CheckIfEnteringTransition(
             const sfml_util::Direction::Enum DIRECTION,
@@ -109,12 +102,10 @@ namespace map
         void HandleEnteringTransition(const Transition &);
 
         const sf::Vector2f CalcAdjPlayerPos(
-            const sfml_util::Direction::Enum DIRECTION,
-            const float ADJUSTMENT) const;
+            const sfml_util::Direction::Enum DIRECTION, const float ADJUSTMENT) const;
 
         void PlayTransitionSfx(
-            const sfml_util::sound_effect::MapTransition,
-            const bool IS_DOOR_OPENING) const;
+            const sfml_util::sound_effect::MapTransition, const bool IS_DOOR_OPENING) const;
 
         void UpdateWalkMusic();
 
@@ -140,8 +131,7 @@ namespace map
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;
-
 }
 }
 
-#endif //HEROESPATH_MAP_MAP_HPP_INCLUDED
+#endif // HEROESPATH_MAP_MAP_HPP_INCLUDED

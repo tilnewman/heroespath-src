@@ -33,17 +33,16 @@
 #include <memory>
 #include <string>
 
-
 namespace heroespath
 {
 namespace log
 {
 
-    //Singleton class that logs to a file and std out
+    // Singleton class that logs to a file and std out
     class Logger : public LogBase
     {
-        Logger(const Logger &) =delete;
-        Logger & operator=(const Logger &) =delete;
+        Logger(const Logger &) = delete;
+        Logger & operator=(const Logger &) = delete;
 
     public:
         Logger();
@@ -56,8 +55,7 @@ namespace log
     private:
         static std::unique_ptr<Logger> instanceUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_LOG_LOGGER_HPP_INCLUDED
+#endif // HEROESPATH_LOG_LOGGER_HPP_INCLUDED

@@ -30,25 +30,23 @@
 #include "popup/popup-stage-base.hpp"
 
 #include "sfml-util/gui/sliderbar.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
+#include "sfml-util/gui/text-region.hpp"
 
 #include <string>
-
 
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing the Number Selection Popup Stage.
+    // Responsible for implementing the Number Selection Popup Stage.
     class PopupStageNumberSelect
-    :
-        public PopupStageBase,
-        public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
+        : public PopupStageBase
+        , public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
     {
-        PopupStageNumberSelect(const PopupStageNumberSelect &) =delete;
-        PopupStageNumberSelect & operator=(const PopupStageNumberSelect &) =delete;
+        PopupStageNumberSelect(const PopupStageNumberSelect &) = delete;
+        PopupStageNumberSelect & operator=(const PopupStageNumberSelect &) = delete;
 
     public:
         explicit PopupStageNumberSelect(const PopupInfo & POPUP_INFO);
@@ -61,8 +59,8 @@ namespace popup
             return PopupStageBase::HandlerName();
         }
 
-        virtual bool HandleCallback(
-            const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        virtual bool
+            HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
         virtual bool HandleCallback(
             const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &) override;
@@ -85,8 +83,7 @@ namespace popup
         bool willSliderbarUpdate_;
         bool willTextBoxUpdate_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGENUMSELECT_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGENUMSELECT_HPP_INCLUDED

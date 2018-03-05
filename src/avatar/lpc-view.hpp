@@ -27,20 +27,19 @@
 //
 // lpc-npc-view.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/direction-enum.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
+#include "avatar/animation.hpp"
 #include "avatar/i-view.hpp"
 #include "avatar/pose-enum.hpp"
-#include "avatar/animation.hpp"
-
 
 namespace heroespath
 {
 namespace avatar
 {
 
-    //Responsible for drawing an LPC-style NPC.
+    // Responsible for drawing an LPC-style NPC.
     class LPCView : public IView
     {
     public:
@@ -51,10 +50,7 @@ namespace avatar
 
         virtual bool Update(const float TIME_ELAPSED) override;
 
-        inline virtual void UpdatePos(const sf::Vector2f & V) override
-        {
-            sprite_.setPosition(V);
-        }
+        inline virtual void UpdatePos(const sf::Vector2f & V) override { sprite_.setPosition(V); }
 
         inline virtual sfml_util::Direction::Enum Direction() const override
         {
@@ -67,23 +63,17 @@ namespace avatar
 
         inline virtual const sf::Vector2f SpriteSize() const override
         {
-            return sf::Vector2f(
-                sprite_.getGlobalBounds().width,
-                sprite_.getGlobalBounds().height);
+            return sf::Vector2f(sprite_.getGlobalBounds().width, sprite_.getGlobalBounds().height);
         }
 
         inline virtual Avatar::Enum WhichAvatar() const override { return whichAvatar_; }
 
     private:
-        const FrameNumVec_t FrameNumbers(
-            const Pose::Enum,
-            const sfml_util::Direction::Enum) const;
+        const FrameNumVec_t FrameNumbers(const Pose::Enum, const sfml_util::Direction::Enum) const;
 
         const sf::IntRect FrameRect(const FrameNum_t FRAME_NUM) const;
 
-        const Animation CreateAnimation(
-            const Pose::Enum,
-            const sfml_util::Direction::Enum) const;
+        const Animation CreateAnimation(const Pose::Enum, const sfml_util::Direction::Enum) const;
 
         float FrameDuration(const Pose::Enum) const;
 
@@ -104,8 +94,7 @@ namespace avatar
         float frameTimerSec_;
         std::size_t frameIndex_;
     };
-
 }
 }
 
-#endif //HEROESPATH_AVATAR_LPCVIEW_HPP_INCLUDED
+#endif // HEROESPATH_AVATAR_LPCVIEW_HPP_INCLUDED

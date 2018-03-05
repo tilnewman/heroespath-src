@@ -33,62 +33,56 @@
 
 #include "misc/assertlogandthrow.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    std::unique_ptr<CombatImageManager> CombatImageManager::instanceUPtr_{ nullptr };
-
-
-    CombatImageManager::CombatImageManager()
+    namespace gui
     {
-        M_HP_LOG_DBG("Singleton Construction: CombatImageManager");
-    }
 
+        std::unique_ptr<CombatImageManager> CombatImageManager::instanceUPtr_{ nullptr };
 
-    CombatImageManager::~CombatImageManager()
-    {
-        M_HP_LOG_DBG("Singleton Destruction: CombatImageManager");
-    }
-
-
-    CombatImageManager * CombatImageManager::Instance()
-    {
-        if (instanceUPtr_.get() == nullptr)
+        CombatImageManager::CombatImageManager()
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): CombatImageManager");
-            Acquire();
+            M_HP_LOG_DBG("Singleton Construction: CombatImageManager");
         }
 
-        return instanceUPtr_.get();
-    }
-
-
-    void CombatImageManager::Acquire()
-    {
-        if (instanceUPtr_.get() == nullptr)
+        CombatImageManager::~CombatImageManager()
         {
-            instanceUPtr_ = std::make_unique<CombatImageManager>();
+            M_HP_LOG_DBG("Singleton Destruction: CombatImageManager");
         }
-        else
+
+        CombatImageManager * CombatImageManager::Instance()
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: CombatImageManager");
+            if (instanceUPtr_.get() == nullptr)
+            {
+                M_HP_LOG_WRN("Singleton Instance() before Acquire(): CombatImageManager");
+                Acquire();
+            }
+
+            return instanceUPtr_.get();
+        }
+
+        void CombatImageManager::Acquire()
+        {
+            if (instanceUPtr_.get() == nullptr)
+            {
+                instanceUPtr_ = std::make_unique<CombatImageManager>();
+            }
+            else
+            {
+                M_HP_LOG_WRN("Singleton Acquire() after Construction: CombatImageManager");
+            }
+        }
+
+        void CombatImageManager::Release()
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (instanceUPtr_.get() != nullptr),
+                "sfml_util::gui::CombatImageManager::Release() found instanceUPtr that was null.");
+
+            instanceUPtr_.reset();
         }
     }
-
-
-    void CombatImageManager::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "sfml_util::gui::CombatImageManager::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
-}
 }
 }

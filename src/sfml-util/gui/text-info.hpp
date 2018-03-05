@@ -28,86 +28,81 @@
 // text-info.hpp
 //  Code regarding the details about drawn text.
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/justified-enum.hpp"
 #include "sfml-util/font-manager.hpp"
+#include "sfml-util/justified-enum.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //Encapsulates all required information about drawing text except for position.
-    //Note:  Using all default values is not generally safe, and may cause some
-    //       functions to throw exceptions.  To be safe, always provide a non-empty
-    //       TEXT parameter, and a non-null FONT pointer, that will always work with
-    //       all functions.  You can use the IsValid() function to check these conditions.
-    class TextInfo
+    namespace gui
     {
-    public:
-        explicit TextInfo(
-            const std::string &   TEXT              = "",
-            const FontPtr_t       FONT_PTR          = nullptr,
-            const unsigned int    CHAR_SIZE         = FontManager::Instance()->Size_Normal(),
-            const sf::Color &     COLOR             = sf::Color::White,
-            const sf::BlendMode & BLEND_MODE        = sf::BlendAlpha,
-            const sf::Uint32      STYLE             = sf::Text::Style::Regular,
-            const Justified::Enum JUSTIFIED         = Justified::Left,
-            const bool            IS_OUTLINE_ONLY   = false,
-            const float           OUTLINE_THICKNESS = 0.0f);
 
-        TextInfo(
-            const std::string &   TEXT,
-            const FontPtr_t       FONT_PTR,
-            const unsigned int    CHAR_SIZE,
-            const sf::Color &     COLOR,
-            const Justified::Enum JUSTIFIED);
+        // Encapsulates all required information about drawing text except for position.
+        // Note:  Using all default values is not generally safe, and may cause some
+        //       functions to throw exceptions.  To be safe, always provide a non-empty
+        //       TEXT parameter, and a non-null FONT pointer, that will always work with
+        //       all functions.  You can use the IsValid() function to check these conditions.
+        class TextInfo
+        {
+        public:
+            explicit TextInfo(
+                const std::string & TEXT = "",
+                const FontPtr_t FONT_PTR = nullptr,
+                const unsigned int CHAR_SIZE = FontManager::Instance()->Size_Normal(),
+                const sf::Color & COLOR = sf::Color::White,
+                const sf::BlendMode & BLEND_MODE = sf::BlendAlpha,
+                const sf::Uint32 STYLE = sf::Text::Style::Regular,
+                const Justified::Enum JUSTIFIED = Justified::Left,
+                const bool IS_OUTLINE_ONLY = false,
+                const float OUTLINE_THICKNESS = 0.0f);
 
-        TextInfo(const TextInfo &);
+            TextInfo(
+                const std::string & TEXT,
+                const FontPtr_t FONT_PTR,
+                const unsigned int CHAR_SIZE,
+                const sf::Color & COLOR,
+                const Justified::Enum JUSTIFIED);
 
-        TextInfo & operator=(const TextInfo &);
+            TextInfo(const TextInfo &);
 
-        //returns true if there is non-empty text and a non-null font pointer
-        inline bool IsValid() const { return ((false == text.empty()) && (fontPtr != nullptr)); }
+            TextInfo & operator=(const TextInfo &);
 
-        std::string     text;
-        FontPtr_t       fontPtr;
-        unsigned int    charSize;
-        sf::Color       color;
-        sf::BlendMode   blendMode;
-        sf::Uint32      style;
-        Justified::Enum justified;
-        bool            isOutlineOnly;
-        float           outlineThickness;
-    };
+            // returns true if there is non-empty text and a non-null font pointer
+            inline bool IsValid() const
+            {
+                return ((false == text.empty()) && (fontPtr != nullptr));
+            }
 
+            std::string text;
+            FontPtr_t fontPtr;
+            unsigned int charSize;
+            sf::Color color;
+            sf::BlendMode blendMode;
+            sf::Uint32 style;
+            Justified::Enum justified;
+            bool isOutlineOnly;
+            float outlineThickness;
+        };
 
-    bool operator<(const TextInfo & L, const TextInfo & R);
+        bool operator<(const TextInfo & L, const TextInfo & R);
 
-    bool operator==(const TextInfo & L, const TextInfo & R);
+        bool operator==(const TextInfo & L, const TextInfo & R);
 
-    inline bool operator!=(const TextInfo & L, const TextInfo & R)
-    {
-        return ! (L == R);
+        inline bool operator!=(const TextInfo & L, const TextInfo & R) { return !(L == R); }
+
+        using TextInfoUPtr_t = std::unique_ptr<TextInfo>;
+        using TextInfoVec_t = std::vector<TextInfo>;
+
+        // Helper function used to setup an sf::Text object
+        void SetupText(sf::Text & text, const TextInfo & TEXT_INFO);
     }
-
-
-    using TextInfoUPtr_t = std::unique_ptr<TextInfo>;
-    using TextInfoVec_t  = std::vector<TextInfo>;
-
-
-    //Helper function used to setup an sf::Text object
-    void SetupText(sf::Text & text, const TextInfo & TEXT_INFO);
-
-}
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_GUI_TEXTINFO_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_TEXTINFO_HPP_INCLUDED

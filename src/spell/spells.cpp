@@ -29,17 +29,16 @@
 //
 #include "spells.hpp"
 
-#include "log/log-macros.hpp"
+#include "combat/encounter.hpp"
+#include "creature/conditions.hpp"
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
-#include "creature/conditions.hpp"
-#include "combat/encounter.hpp"
+#include "log/log-macros.hpp"
 
-#include "misc/real.hpp"
 #include "misc/random.hpp"
+#include "misc/real.hpp"
 
 #include <string>
-
 
 namespace heroespath
 {
@@ -53,29 +52,23 @@ namespace spell
         if (RANDOM_VALUE == 0)
         {
             return combat::ContentAndNamePos(
-                " shoots sparks at ",
-                combat::NamePosition::SourceThenTarget);
+                " shoots sparks at ", combat::NamePosition::SourceThenTarget);
         }
         else if (RANDOM_VALUE == 1)
         {
             return combat::ContentAndNamePos(
-                " is sprayed with sparks ",
-                combat::NamePosition::TargetBefore);
+                " is sprayed with sparks ", combat::NamePosition::TargetBefore);
         }
         else if (RANDOM_VALUE == 2)
         {
             return combat::ContentAndNamePos(
-                "A sputter of sparks hits ",
-                combat::NamePosition::TargetAfter);
+                "A sputter of sparks hits ", combat::NamePosition::TargetAfter);
         }
         else
         {
-            return combat::ContentAndNamePos(
-                "Sparks shower ",
-                combat::NamePosition::TargetAfter);
+            return combat::ContentAndNamePos("Sparks shower ", combat::NamePosition::TargetAfter);
         }
     }
-
 
     bool Sparks::EffectCreature(
         creature::CreaturePtr_t castingCreaturePtr,
@@ -92,13 +85,12 @@ namespace spell
             0.5f,
             0,
             static_cast<creature::Stats::With>(
-                creature::Stats::With::Luck |
-                creature::Stats::With::RaceRoleBonus))) };
+                creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus))) };
 
         auto const DAMAGE_ABS_MAX{ creatureCastUponPtr->HealthCurrent() };
 
-        auto const DAMAGE_ABS_FINAL{ ((DAMAGE_ABS_ORIG > DAMAGE_ABS_MAX) ?
-            DAMAGE_ABS_MAX : DAMAGE_ABS_ORIG) };
+        auto const DAMAGE_ABS_FINAL{ (
+            (DAMAGE_ABS_ORIG > DAMAGE_ABS_MAX) ? DAMAGE_ABS_MAX : DAMAGE_ABS_ORIG) };
 
         healthAdj = Health_t(-1) * DAMAGE_ABS_FINAL;
 
@@ -106,30 +98,24 @@ namespace spell
         return true;
     }
 
-
     const combat::ContentAndNamePos Bandage::ActionPhrase() const
     {
         auto const RANDOM_VALUE{ misc::random::Int(3) };
 
         if (RANDOM_VALUE == 0)
         {
-            return combat::ContentAndNamePos(" magically bandages ", combat::NamePosition::SourceThenTarget);
+            return combat::ContentAndNamePos(
+                " magically bandages ", combat::NamePosition::SourceThenTarget);
         }
         else if (RANDOM_VALUE == 1)
         {
             return combat::ContentAndNamePos(
-                "",
-                " magically bandages ",
-                "'s wounds ",
-                combat::NamePosition::SourceThenTarget);
+                "", " magically bandages ", "'s wounds ", combat::NamePosition::SourceThenTarget);
         }
         else if (RANDOM_VALUE == 2)
         {
             return combat::ContentAndNamePos(
-                "",
-                "Magical bandages wrap ",
-                "'s injuries ",
-                combat::NamePosition::TargetAfter);
+                "", "Magical bandages wrap ", "'s injuries ", combat::NamePosition::TargetAfter);
         }
         else
         {
@@ -137,7 +123,6 @@ namespace spell
                 "'s wounds are magically bandaged ", combat::NamePosition::TargetBefore);
         }
     }
-
 
     bool Bandage::EffectCreature(
         creature::CreaturePtr_t castingCreaturePtr,
@@ -154,13 +139,11 @@ namespace spell
             0.5f,
             castingCreaturePtr->TraitBonusCurrent(stats::Traits::MagicEffect),
             static_cast<creature::Stats::With>(
-                creature::Stats::With::Luck |
-                creature::Stats::With::RaceRoleBonus))) };
+                creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus))) };
 
         auto const HEALTH_GAIN_MAX{ creatureCastUponPtr->HealthMissing() };
 
-        healthAdj =
-            ((HEALTH_GAIN_ORIG > HEALTH_GAIN_MAX) ? HEALTH_GAIN_MAX : HEALTH_GAIN_ORIG);
+        healthAdj = ((HEALTH_GAIN_ORIG > HEALTH_GAIN_MAX) ? HEALTH_GAIN_MAX : HEALTH_GAIN_ORIG);
 
         if (0_health == healthAdj)
         {
@@ -179,17 +162,12 @@ namespace spell
         }
     }
 
-
     const combat::ContentAndNamePos Sleep::ActionPhrase() const
     {
-        //TODO add more phrases
+        // TODO add more phrases
         return combat::ContentAndNamePos(
-            "",
-            "'s magic forces ",
-            " to sleep.",
-            combat::NamePosition::SourceThenTarget);
+            "", "'s magic forces ", " to sleep.", combat::NamePosition::SourceThenTarget);
     }
-
 
     bool Sleep::EffectCreature(
         creature::CreaturePtr_t,
@@ -199,10 +177,10 @@ namespace spell
         creature::CondEnumVec_t &,
         combat::ContentAndNamePos & actionPhraseCNP) const
     {
-        if (creatureCastUponPtr->HasCondition(creature::Conditions::AsleepNatural) ||
-            creatureCastUponPtr->HasCondition(creature::Conditions::AsleepMagical))
+        if (creatureCastUponPtr->HasCondition(creature::Conditions::AsleepNatural)
+            || creatureCastUponPtr->HasCondition(creature::Conditions::AsleepMagical))
         {
-            actionPhraseCNP =  combat::ContentAndNamePos(
+            actionPhraseCNP = combat::ContentAndNamePos(
                 Spell::FAILED_BECAUSE_STR_,
                 " is already asleep.",
                 "",
@@ -220,16 +198,11 @@ namespace spell
         }
     }
 
-
     const combat::ContentAndNamePos Awaken::ActionPhrase() const
     {
         return combat::ContentAndNamePos(
-            "",
-            "'s magic forces ",
-            " to wake.",
-            combat::NamePosition::SourceThenTarget);
+            "", "'s magic forces ", " to wake.", combat::NamePosition::SourceThenTarget);
     }
-
 
     bool Awaken::EffectCreature(
         creature::CreaturePtr_t,
@@ -239,10 +212,9 @@ namespace spell
         creature::CondEnumVec_t & condsRemovedVec,
         combat::ContentAndNamePos & actionPhraseCNP) const
     {
-        const creature::CondEnumVec_t CONDS_TO_REMOVE_VEC{
-            creature::Conditions::AsleepNatural,
-            creature::Conditions::AsleepMagical,
-            creature::Conditions::Unconscious };
+        const creature::CondEnumVec_t CONDS_TO_REMOVE_VEC{ creature::Conditions::AsleepNatural,
+                                                           creature::Conditions::AsleepMagical,
+                                                           creature::Conditions::Unconscious };
 
         auto wereAnyCondsRemoved{ false };
         for (auto const NEXT_COND_ENUM_TO_REMOVE : CONDS_TO_REMOVE_VEC)
@@ -272,15 +244,11 @@ namespace spell
         }
     }
 
-
     const combat::ContentAndNamePos Trip::ActionPhrase() const
     {
-        return combat::ContentAndNamePos("",
-                                 "'s spell trips ",
-                                 ".",
-                                 combat::NamePosition::SourceThenTarget);
+        return combat::ContentAndNamePos(
+            "", "'s spell trips ", ".", combat::NamePosition::SourceThenTarget);
     }
-
 
     bool Trip::EffectCreature(
         creature::CreaturePtr_t,
@@ -319,9 +287,8 @@ namespace spell
         }
     }
 
-
-    const combat::ContentAndNamePos Lift::ActionPhrase(
-        creature::CreaturePtr_t creatureCastUponPtr) const
+    const combat::ContentAndNamePos
+        Lift::ActionPhrase(creature::CreaturePtr_t creatureCastUponPtr) const
     {
         return combat::ContentAndNamePos(
             "",
@@ -329,7 +296,6 @@ namespace spell
             " to " + creature::sex::HisHerIts(creatureCastUponPtr->Sex(), false, false) + " feet.",
             combat::NamePosition::SourceThenTarget);
     }
-
 
     bool Lift::EffectCreature(
         creature::CreaturePtr_t,
@@ -346,7 +312,7 @@ namespace spell
             actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
             return true;
         }
-        else if(creatureCastUponPtr->HasCondition(creature::Conditions::Pounced))
+        else if (creatureCastUponPtr->HasCondition(creature::Conditions::Pounced))
         {
             creatureCastUponPtr->ConditionRemove(creature::Conditions::Pounced);
             condsRemovedVec.push_back(creature::Conditions::Pounced);
@@ -364,16 +330,11 @@ namespace spell
         }
     }
 
-
     const combat::ContentAndNamePos Daze::ActionPhrase() const
     {
         return combat::ContentAndNamePos(
-            "",
-            "'s magic puts ",
-            " in a daze.",
-            combat::NamePosition::SourceThenTarget);
+            "", "'s magic puts ", " in a daze.", combat::NamePosition::SourceThenTarget);
     }
-
 
     bool Daze::EffectCreature(
         creature::CreaturePtr_t,
@@ -402,16 +363,11 @@ namespace spell
         }
     }
 
-
     const combat::ContentAndNamePos Panic::ActionPhrase() const
     {
         return combat::ContentAndNamePos(
-            "",
-            "'s spell panics ",
-            ".",
-            combat::NamePosition::SourceThenTarget);
+            "", "'s spell panics ", ".", combat::NamePosition::SourceThenTarget);
     }
-
 
     bool Panic::EffectCreature(
         creature::CreaturePtr_t,
@@ -440,16 +396,11 @@ namespace spell
         }
     }
 
-
     const combat::ContentAndNamePos ClearMind::ActionPhrase() const
     {
         return combat::ContentAndNamePos(
-            "",
-            "'s spell clears ",
-            "'s mind.",
-            combat::NamePosition::SourceThenTarget);
+            "", "'s spell clears ", "'s mind.", combat::NamePosition::SourceThenTarget);
     }
-
 
     bool ClearMind::EffectCreature(
         creature::CreaturePtr_t,
@@ -460,9 +411,8 @@ namespace spell
         combat::ContentAndNamePos & actionPhraseCNP) const
     {
         const creature::CondEnumVec_t CONDS_TO_REMOVE_VEC{
-            creature::Conditions::Panic,
-            creature::Conditions::Daunted,
-            creature::Conditions::Dazed };
+            creature::Conditions::Panic, creature::Conditions::Daunted, creature::Conditions::Dazed
+        };
 
         auto wereAnyCondsRemoved{ false };
         for (auto const NEXT_COND_ENUM_TO_REMOVE : CONDS_TO_REMOVE_VEC)
@@ -492,16 +442,11 @@ namespace spell
         }
     }
 
-
     const combat::ContentAndNamePos Poison::ActionPhrase() const
     {
         return combat::ContentAndNamePos(
-            "",
-            "'s spell poisons ",
-            ".",
-            combat::NamePosition::SourceThenTarget);
+            "", "'s spell poisons ", ".", combat::NamePosition::SourceThenTarget);
     }
-
 
     bool Poison::EffectCreature(
         creature::CreaturePtr_t,
@@ -530,16 +475,11 @@ namespace spell
         }
     }
 
-
     const combat::ContentAndNamePos Antidote::ActionPhrase() const
     {
         return combat::ContentAndNamePos(
-            "",
-            "'s spell cures ",
-            ".",
-            combat::NamePosition::SourceThenTarget);
+            "", "'s spell cures ", ".", combat::NamePosition::SourceThenTarget);
     }
-
 
     bool Antidote::EffectCreature(
         creature::CreaturePtr_t,
@@ -568,16 +508,11 @@ namespace spell
         }
     }
 
-
     const combat::ContentAndNamePos PoisonCloud::ActionPhrase() const
     {
         return combat::ContentAndNamePos(
-            "",
-            "'s spell poisons the ",
-            ".",
-            combat::NamePosition::SourceThenTarget);
+            "", "'s spell poisons the ", ".", combat::NamePosition::SourceThenTarget);
     }
-
 
     bool PoisonCloud::EffectCreature(
         creature::CreaturePtr_t castingCreaturePtr,
@@ -599,20 +534,20 @@ namespace spell
         }
         else
         {
-            auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(castingCreaturePtr,
+            auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(
+                castingCreaturePtr,
                 stats::Traits::Intelligence,
                 creatureCastUponPtr,
                 stats::Traits::Count,
                 0,
                 0,
                 static_cast<creature::Stats::With>(
-                    creature::Stats::With::Luck |
-                    creature::Stats::With::RaceRoleBonus |
-                    creature::Stats::With::RankBonus |
-                    creature::Stats::With::PlayerNaturalWins)) };
+                    creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus
+                    | creature::Stats::With::RankBonus
+                    | creature::Stats::With::PlayerNaturalWins)) };
 
-            auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
-                castingCreaturePtr->TraitBonusTest(stats::Traits::MagicCast) };
+            auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{ castingCreaturePtr->TraitBonusTest(
+                stats::Traits::MagicCast) };
 
             if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
             {
@@ -633,6 +568,5 @@ namespace spell
             }
         }
     }
-
 }
 }

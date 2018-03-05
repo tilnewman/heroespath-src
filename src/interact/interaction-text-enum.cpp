@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace interact
@@ -42,38 +41,38 @@ namespace interact
     {
         switch (TEXT_TYPE)
         {
-            case Text::System: { return "System"; }
-            case Text::Dialog: { return "Dialog"; }
+            case Text::System:
+                return "System";
+            case Text::Dialog:
+                return "Dialog";
             case Text::Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "interact::Text::Enum::ToString(" << TEXT_TYPE
-                    << ")_InvalidValueError.";
+                ss << "interact::Text::Enum::ToString(" << TEXT_TYPE << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());
             }
         }
     }
-
 
     sfml_util::FontPtr_t Text::Font(const Text::Enum TEXT_TYPE)
     {
         switch (TEXT_TYPE)
         {
-            case Text::System: { return sfml_util::FontManager::Instance()->Font_Default1(); }
-            case Text::Dialog: { return sfml_util::FontManager::Instance()->Font_Dialog1(); }
+            case Text::System:
+                return sfml_util::FontManager::Instance()->Font_Default1();
+            case Text::Dialog:
+                return sfml_util::FontManager::Instance()->Font_Dialog1();
             case Text::Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "interact::Text::Enum::Font(" << TEXT_TYPE
-                    << ")_InvalidValueError.";
+                ss << "interact::Text::Enum::Font(" << TEXT_TYPE << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());
             }
         }
     }
-
 }
 }

@@ -29,7 +29,6 @@
 //
 #include <memory>
 
-
 namespace heroespath
 {
 namespace state
@@ -38,18 +37,15 @@ namespace state
     class World;
     using WorldUPtr_t = std::unique_ptr<World>;
 
-
     class Level;
 
-
-    //Responsible for making World objects, specifically new World objects for new games.
+    // Responsible for making World objects, specifically new World objects for new games.
     struct WorldFactory
     {
         static WorldUPtr_t MakeForNewGame();
         static void SetupLevelForNewGame(Level &);
     };
-        
 }
 }
 
-#endif //HEROESPATH_STATE_WORLD_FACTORY_HPP_INCLUDED
+#endif // HEROESPATH_STATE_WORLD_FACTORY_HPP_INCLUDED

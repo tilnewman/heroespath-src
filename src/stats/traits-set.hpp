@@ -27,13 +27,12 @@
 //
 // traits-set.hpp
 //
+#include "misc/boost-serialize-includes.hpp"
 #include "trait-enum.hpp"
 #include "trait.hpp"
-#include "misc/boost-serialize-includes.hpp"
 
 #include <string>
 #include <vector>
-
 
 namespace heroespath
 {
@@ -60,41 +59,33 @@ namespace stats
         friend bool operator<(const TraitSet & L, const TraitSet & R);
 
     private:
-        const std::string StatStringHelper(
-            const stats::Traits::Enum,
-            const bool WILL_PREFIX = true) const;
+        const std::string
+            StatStringHelper(const stats::Traits::Enum, const bool WILL_PREFIX = true) const;
 
     private:
         TraitVec_t traitVec_;
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & traitVec_;
         }
     };
 
-
     inline bool operator==(const TraitSet & L, const TraitSet & R)
     {
         return (L.traitVec_ == R.traitVec_);
     }
 
-
-    inline bool operator!=(const TraitSet & L, const TraitSet & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const TraitSet & L, const TraitSet & R) { return !(L == R); }
 
     inline bool operator<(const TraitSet & L, const TraitSet & R)
     {
         return (L.traitVec_ < R.traitVec_);
     }
-
 }
 }
 
-#endif //HEROESPATH_STATS_TRAITSSET_HPP_INCLUDED
+#endif // HEROESPATH_STATS_TRAITSSET_HPP_INCLUDED

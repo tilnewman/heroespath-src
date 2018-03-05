@@ -33,74 +33,70 @@
 
 #include "log/macros.hpp"
 
-#include "sfml-util/loop.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
+#include "sfml-util/gui/combat-image-manager.hpp"
+#include "sfml-util/gui/condition-image-manager.hpp"
+#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/gui/item-image-manager.hpp"
+#include "sfml-util/gui/song-image-manager.hpp"
+#include "sfml-util/gui/spell-image-manager.hpp"
+#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/loop.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/texture-cache.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
-#include "sfml-util/gui/spell-image-manager.hpp"
-#include "sfml-util/gui/condition-image-manager.hpp"
-#include "sfml-util/gui/combat-image-manager.hpp"
-#include "sfml-util/gui/song-image-manager.hpp"
 
 #include "popup/popup-manager.hpp"
 
 #include "log/logger.hpp"
 
-#include "game/loop-manager.hpp"
-#include "game/game-data-file.hpp"
-#include "config/settings-file.hpp"
-#include "game/game.hpp"
-#include "creature/title-warehouse.hpp"
-#include "creature/condition-warehouse.hpp"
-#include "creature/enchantment-warehouse.hpp"
-#include "creature/enchantment-factory.hpp"
-#include "creature/name-info.hpp"
-#include "spell/spell-warehouse.hpp"
-#include "state/game-state-factory.hpp"
 #include "combat/encounter.hpp"
 #include "combat/party-factory.hpp"
 #include "combat/strategy-details.hpp"
+#include "combat/trap-warehouse.hpp"
+#include "config/settings-file.hpp"
+#include "creature/condition-warehouse.hpp"
+#include "creature/enchantment-factory.hpp"
+#include "creature/enchantment-warehouse.hpp"
+#include "creature/name-info.hpp"
+#include "creature/title-warehouse.hpp"
+#include "game/game-data-file.hpp"
+#include "game/game.hpp"
+#include "game/loop-manager.hpp"
 #include "item/armor-details.hpp"
 #include "item/armor-factory.hpp"
-#include "item/weapon-details.hpp"
-#include "item/item-warehouse.hpp"
-#include "item/weapon-factory.hpp"
 #include "item/armor-ratings.hpp"
-#include "item/item-profile-warehouse.hpp"
 #include "item/item-factory.hpp"
+#include "item/item-profile-warehouse.hpp"
+#include "item/item-warehouse.hpp"
 #include "item/misc-item-factory.hpp"
-#include "player/character-warehouse.hpp"
-#include "non-player/inventory-factory.hpp"
+#include "item/weapon-details.hpp"
+#include "item/weapon-factory.hpp"
 #include "non-player/character-warehouse.hpp"
+#include "non-player/inventory-factory.hpp"
+#include "player/character-warehouse.hpp"
 #include "song/song-warehouse.hpp"
-#include "combat/trap-warehouse.hpp"
+#include "spell/spell-warehouse.hpp"
+#include "state/game-state-factory.hpp"
 
-#include "misc/random.hpp"
 #include "misc/platform.hpp"
+#include "misc/random.hpp"
 
 #include <cstdlib>
-#include <iostream>
 #include <exception>
-
+#include <iostream>
 
 namespace heroespath
 {
 namespace game
 {
 
-    bool StartupShutdown::Setup(
-        const std::string & APPLICATION_NAME,
-        const int ARGC,
-        char * argv[])
+    bool StartupShutdown::Setup(const std::string & APPLICATION_NAME, const int ARGC, char * argv[])
     {
         try
         {
-            //initialize the log first so that all Setup() actions can be logged
+            // initialize the log first so that all Setup() actions can be logged
             log::Logger::Acquire();
 
             DetectLogAndCheckPlatform();
@@ -109,10 +105,10 @@ namespace game
 
             ParseCommandLineArguments(ARGC, argv);
 
-            //for this point forward the GameDataFile is required, so initialize it here
+            // for this point forward the GameDataFile is required, so initialize it here
             GameDataFile::Acquire();
 
-            //this order is critical
+            // this order is critical
             SetupDisplay(APPLICATION_NAME);
             SetManagerClassResourcePaths();
             SingletonsAcquireAndInitialize();
@@ -121,18 +117,19 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
+            M_LOG_FAT(
+                *log::Logger::Instance(),
                 "Appication Setup Framework threw std::exception \"" << E.what() << "\"");
         }
         catch (...)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
+            M_LOG_FAT(
+                *log::Logger::Instance(),
                 "Appication Setup Framework threw unknown (non-std) exception.");
         }
 
         return false;
     }
-
 
     int StartupShutdown::Run()
     {
@@ -145,18 +142,18 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
+            M_LOG_FAT(
+                *log::Logger::Instance(),
                 "Application threw std::exception \"" << E.what() << "\"");
         }
         catch (...)
         {
-            M_LOG_FAT( * log::Logger::Instance(),
-                "Application threw an unknown (non-std) exception.");
+            M_LOG_FAT(
+                *log::Logger::Instance(), "Application threw an unknown (non-std) exception.");
         }
 
         return EXIT_FAILURE;
     }
-
 
     int StartupShutdown::Teardown()
     {
@@ -171,7 +168,6 @@ namespace game
         return exitCode;
     }
 
-
     void StartupShutdown::Teardown_SettingsFile(int & exitCode_OutParam)
     {
         try
@@ -180,27 +176,28 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(*log::Logger::Instance(),
-                "SettingsFile::Teardown_SettingsFile() threw std::exception \""
-                << E.what() << "\"");
+            M_LOG_FAT(
+                *log::Logger::Instance(),
+                "SettingsFile::Teardown_SettingsFile() threw std::exception \"" << E.what()
+                                                                                << "\"");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG_FAT(*log::Logger::Instance(),
+            M_LOG_FAT(
+                *log::Logger::Instance(),
                 "SettingsFile::Teardown_SettingsFile() threw an unknown (non-std) exception.");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
     }
 
-
     void StartupShutdown::Teardown_CloseDisplay(int & exitCode_OutParam)
     {
         try
         {
-            //close the display window before free'ing resources
+            // close the display window before free'ing resources
             if (sfml_util::Display::Instance()->GetWindow()->isOpen())
             {
                 sfml_util::Display::Instance()->GetWindow()->close();
@@ -208,21 +205,22 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(*log::Logger::Instance(),
-                "StartupShutdown::Teardown_CloseDisplay() threw std::exception \""
-                << E.what() << "\"");
+            M_LOG_FAT(
+                *log::Logger::Instance(),
+                "StartupShutdown::Teardown_CloseDisplay() threw std::exception \"" << E.what()
+                                                                                   << "\"");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG(*log::Logger::Instance(),
+            M_LOG(
+                *log::Logger::Instance(),
                 "StartupShutdown::Teardown_CloseDisplay() threw an unknown (non-std) exception.");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
     }
-
 
     void StartupShutdown::Teardown_EmptyWarehouses(int & exitCode_OutParam)
     {
@@ -232,22 +230,23 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(*log::Logger::Instance(),
-                "StartupShutdown::Teardown_EmptyWarehouses() threw std::exception \""
-                << E.what() << "\"");
+            M_LOG_FAT(
+                *log::Logger::Instance(),
+                "StartupShutdown::Teardown_EmptyWarehouses() threw std::exception \"" << E.what()
+                                                                                      << "\"");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG_FAT(*log::Logger::Instance(),
+            M_LOG_FAT(
+                *log::Logger::Instance(),
                 "StartupShutdown::Teardown_EmptyWarehouses() "
-                << "threw an unknown (non-std) exception.");
+                    << "threw an unknown (non-std) exception.");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
     }
-
 
     void StartupShutdown::Teardown_ReleaseSingletons(int & exitCode_OutParam)
     {
@@ -257,22 +256,23 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(*log::Logger::Instance(),
-                "StartupShutdown::Teardown_ReleaseSingletons() threw std::exception \""
-                << E.what() << "\"");
+            M_LOG_FAT(
+                *log::Logger::Instance(),
+                "StartupShutdown::Teardown_ReleaseSingletons() threw std::exception \"" << E.what()
+                                                                                        << "\"");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG_FAT(*log::Logger::Instance(),
+            M_LOG_FAT(
+                *log::Logger::Instance(),
                 "StartupShutdown::Teardown_ReleaseSingletons() "
-                << "threw an unknown (non-std) exception.");
+                    << "threw an unknown (non-std) exception.");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
     }
-
 
     void StartupShutdown::Teardown_Logger(int & exitCode_OutParam)
     {
@@ -282,21 +282,21 @@ namespace game
         }
         catch (const std::exception & E)
         {
-            M_LOG_FAT(*log::Logger::Instance(),
-                "StartupShutdown::Teardown_Logger() threw std::exception \""
-                << E.what() << "\"");
+            M_LOG_FAT(
+                *log::Logger::Instance(),
+                "StartupShutdown::Teardown_Logger() threw std::exception \"" << E.what() << "\"");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
         catch (...)
         {
-            M_LOG_FAT(*log::Logger::Instance(),
+            M_LOG_FAT(
+                *log::Logger::Instance(),
                 "StartupShutdown::Teardown_Logger() threw an unknown (non-std) exception.");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
     }
-
 
     void StartupShutdown::ParseCommandLineArguments(const int ARGC, char * argv[])
     {
@@ -309,13 +309,12 @@ namespace game
             {
                 for (int i(2); i < ARGC; ++i)
                 {
-                    std::cout << "Ignoring extra command line argument: \""
-                        << argv[i] << "\"" << std::endl;
+                    std::cout << "Ignoring extra command line argument: \"" << argv[i] << "\""
+                              << std::endl;
                 }
             }
         }
     }
-
 
     void StartupShutdown::DetectLogAndCheckPlatform()
     {
@@ -328,7 +327,6 @@ namespace game
                 "This system (platform) is not supported.  See log for details.");
         }
     }
-
 
     void StartupShutdown::SetupDisplay(const std::string & APPLICATION_NAME)
     {
@@ -344,7 +342,6 @@ namespace game
         winPtr->setVerticalSyncEnabled(
             game::GameDataFile::Instance()->GetCopyBool("system-window-sync"));
     }
-
 
     void StartupShutdown::SetManagerClassResourcePaths()
     {
@@ -381,7 +378,6 @@ namespace game
             game::GameDataFile::Instance()->GetMediaPath("media-images-combat-dir"));
     }
 
-
     void StartupShutdown::WarehousesFill()
     {
         sfml_util::FontManager::Fill();
@@ -392,7 +388,6 @@ namespace game
         combat::trap::Warehouse::Fill();
     }
 
-
     void StartupShutdown::WarehousesEmpty()
     {
         combat::trap::Warehouse::Empty();
@@ -402,7 +397,6 @@ namespace game
         creature::title::Warehouse::Empty();
         sfml_util::FontManager::Empty();
     }
-
 
     void StartupShutdown::SingletonsAcquireAndInitialize()
     {
@@ -441,7 +435,7 @@ namespace game
         config::SettingsFile::Acquire();
         config::SettingsFile::Instance()->LoadAndRestore();
 
-        //NOTE:  LoadSoundSets() must occur after SettingsFile's
+        // NOTE:  LoadSoundSets() must occur after SettingsFile's
         //       LoadAndRestore(), so that the sound effects created
         //       here have the correct volume loaded from the settings
         //       file.
@@ -450,10 +444,9 @@ namespace game
         popup::PopupManager::Instance()->LoadAccentImagePaths();
         item::ArmorRatings::Instance()->Setup();
 
-        //LoopManager must be last
+        // LoopManager must be last
         LoopManager::Acquire();
     }
-
 
     void StartupShutdown::SingletonsRelease()
     {
@@ -494,6 +487,5 @@ namespace game
         misc::Platform::Release();
         sfml_util::TextureCache::Release();
     }
-
 }
 }

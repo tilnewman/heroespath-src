@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -48,8 +47,7 @@ namespace sfml_util
         static const std::string ToString(const MouseState::Enum E);
         static bool IsValid(const MouseState::Enum E);
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_MOUSE_STATE_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_MOUSE_STATE_ENUM_HPP_INCLUDED

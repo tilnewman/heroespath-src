@@ -35,47 +35,45 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t   = Creature *;
+    using CreaturePtr_t = Creature *;
     using CreatureCPtrC_t = const Creature * const;
 }
 
 namespace player
 {
 
-    //forward declarations
+    // forward declarations
     class Character;
-    using CharacterPtr_t  = Character *;
+    using CharacterPtr_t = Character *;
     using CharacterPVec_t = std::vector<CharacterPtr_t>;
 
-
-    //encapsulates a set of Characters under control of the user
+    // encapsulates a set of Characters under control of the user
     class Party
     {
-        Party(const Party &) =delete;
-        Party & operator=(const Party &) =delete;
+        Party(const Party &) = delete;
+        Party & operator=(const Party &) = delete;
 
     public:
         explicit Party(
             const avatar::Avatar::Enum PARTY_AVATAR = avatar::Avatar::Player_First,
             const CharacterPVec_t & CHARACTER_PVEC = CharacterPVec_t());
-        
+
         virtual ~Party();
 
         inline const CharacterPVec_t Characters() const { return charactersPVec_; }
 
-        //Sets error_msg to a message describing why upon failure,
-        //otherwise error_msg is not changed.
+        // Sets error_msg to a message describing why upon failure,
+        // otherwise error_msg is not changed.
         bool Add(const CharacterPtr_t CHARACTER_PTR, std::string & error_msg);
 
         bool IsAddAllowed(const CharacterPtr_t CHARACTER_PTR, std::string & error_msg);
 
-        //returns true if the character existed in the charactersSVec_ and was removed.
+        // returns true if the character existed in the charactersSVec_ and was removed.
         bool Remove(CharacterPtr_t);
 
         inline creature::CreaturePtr_t GetNextInOrderAfter(const creature::CreaturePtr_t C_PTR)
@@ -100,9 +98,9 @@ namespace player
 
         creature::CreaturePtr_t GetNextInOrder(creature::CreatureCPtrC_t, const bool);
 
-        creature::CreaturePtr_t GetAtOrderPos(const std::size_t);//zero indexed
+        creature::CreaturePtr_t GetAtOrderPos(const std::size_t); // zero indexed
 
-        std::size_t GetOrderNum(creature::CreatureCPtrC_t) const;//zero indexed
+        std::size_t GetOrderNum(creature::CreatureCPtrC_t) const; // zero indexed
 
         std::size_t GetNumHumanoid() const;
 
@@ -117,7 +115,7 @@ namespace player
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & charactersPVec_;
@@ -125,8 +123,7 @@ namespace player
     };
 
     using PartyUPtr_t = std::unique_ptr<Party>;
-
 }
 }
 
-#endif //HEROESPATH_PLAYER_PARTY_HPP_INCLUDED
+#endif // HEROESPATH_PLAYER_PARTY_HPP_INCLUDED

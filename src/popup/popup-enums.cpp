@@ -29,9 +29,8 @@
 //
 #include "popup-enums.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -42,14 +41,38 @@ namespace popup
     {
         switch (E)
         {
-            case None:         { return "None"; }
-            case Okay:         { return "Okay";         }
-            case Select:       { return "Select";       }
-            case Cancel:       { return "Cancel";       }
-            case SelectCancel: { return "SelectCancel"; }
-            case Continue:     { return "Continue";     }
-            case YesNo:        { return "YesNo";        }
-            case YesNoCancel:  { return "YesNoCancel";  }
+            case None:
+            {
+                return "None";
+            }
+            case Okay:
+            {
+                return "Okay";
+            }
+            case Select:
+            {
+                return "Select";
+            }
+            case Cancel:
+            {
+                return "Cancel";
+            }
+            case SelectCancel:
+            {
+                return "SelectCancel";
+            }
+            case Continue:
+            {
+                return "Continue";
+            }
+            case YesNo:
+            {
+                return "YesNo";
+            }
+            case YesNoCancel:
+            {
+                return "YesNoCancel";
+            }
             default:
             {
                 std::ostringstream ss;
@@ -58,7 +81,6 @@ namespace popup
             }
         }
     }
-
 
     bool PopupButtons::IsValid(const PopupButtons::Enum E)
     {
@@ -71,18 +93,29 @@ namespace popup
             case SelectCancel:
             case Continue:
             case YesNo:
-            case YesNoCancel: { return true;  }
-            default:          { return false; }
+            case YesNoCancel:
+            {
+                return true;
+            }
+            default:
+            {
+                return false;
+            }
         }
     }
 
-
     const std::string PopupButtonColor::ToString(const PopupButtonColor::Enum E)
     {
-        switch(E)
+        switch (E)
         {
-            case Light: { return "Light"; }
-            case Dark:  { return "Dark";  }
+            case Light:
+            {
+                return "Light";
+            }
+            case Dark:
+            {
+                return "Dark";
+            }
             case Count:
             default:
             {
@@ -93,31 +126,59 @@ namespace popup
         }
     }
 
-
     bool PopupButtonColor::IsValid(const PopupButtonColor::Enum E)
     {
         switch (E)
         {
             case Light:
-            case Dark:  { return true;  }
+            case Dark:
+            {
+                return true;
+            }
             case Count:
-            default:    { return false; }
+            default:
+            {
+                return false;
+            }
         }
     }
-
 
     const std::string PopupImage::ToString(const PopupImage::Enum E)
     {
         switch (E)
         {
-            case Banner:            { return "Banner"; }
-            case Regular:           { return "Regular"; }
-            case RegularSidebar:    { return "RegularSidebar"; }
-            case Large:             { return "Large"; }
-            case LargeSidebar:      { return "LargeSidebar"; }
-            case Custom:            { return "Custom"; }
-            case Spellbook:         { return "Spellbook"; }
-            case MusicSheet:        { return "MusicSheet"; }
+            case Banner:
+            {
+                return "Banner";
+            }
+            case Regular:
+            {
+                return "Regular";
+            }
+            case RegularSidebar:
+            {
+                return "RegularSidebar";
+            }
+            case Large:
+            {
+                return "Large";
+            }
+            case LargeSidebar:
+            {
+                return "LargeSidebar";
+            }
+            case Custom:
+            {
+                return "Custom";
+            }
+            case Spellbook:
+            {
+                return "Spellbook";
+            }
+            case MusicSheet:
+            {
+                return "MusicSheet";
+            }
             case Count:
             default:
             {
@@ -127,7 +188,6 @@ namespace popup
             }
         }
     }
-
 
     bool PopupImage::IsValid(const PopupImage::Enum E)
     {
@@ -140,11 +200,16 @@ namespace popup
             case LargeSidebar:
             case Custom:
             case Spellbook:
-            case MusicSheet: { return true;  }
+            case MusicSheet:
+            {
+                return true;
+            }
             case Count:
-            default:         { return false; }
+            default:
+            {
+                return false;
+            }
         }
     }
-
 }
 }

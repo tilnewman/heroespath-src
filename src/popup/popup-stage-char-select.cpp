@@ -29,15 +29,14 @@
 //
 #include "popup-stage-char-select.hpp"
 
-#include "game/game.hpp"
-#include "state/game-state.hpp"
-#include "player/party.hpp"
 #include "creature/creature.hpp"
+#include "game/game.hpp"
 #include "game/loop-manager.hpp"
+#include "player/party.hpp"
+#include "state/game-state.hpp"
 
-#include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
-
+#include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
 {
@@ -45,15 +44,11 @@ namespace popup
 {
 
     PopupStageCharacterSelect::PopupStageCharacterSelect(const PopupInfo & POPUP_INFO)
-    :
-        PopupStageImageSelect(POPUP_INFO),
-        charDetailsTextRegionUPtr_()
+        : PopupStageImageSelect(POPUP_INFO)
+        , charDetailsTextRegionUPtr_()
     {}
 
-
-    PopupStageCharacterSelect::~PopupStageCharacterSelect()
-    {}
-
+    PopupStageCharacterSelect::~PopupStageCharacterSelect() {}
 
     void PopupStageCharacterSelect::Setup()
     {
@@ -61,8 +56,7 @@ namespace popup
 
         imagesRect_ = textRegion_;
 
-        imagesRect_.top =
-            textRegionUPtr_->GetEntityPos().y + sfml_util::MapByRes(70.0f, 120.0f);
+        imagesRect_.top = textRegionUPtr_->GetEntityPos().y + sfml_util::MapByRes(70.0f, 120.0f);
 
         imagesRect_.height = sfml_util::MapByRes(125.0f, 625.0f);
 
@@ -87,15 +81,14 @@ namespace popup
             charDetailsTextInfo,
             charDetailsTextRegion);
 
-        //sliderbar setup
+        // sliderbar setup
         const float SLIDERBAR_LENGTH(textRegion_.width * 0.5f);
-        const float SLIDERBAR_POS_LEFT(textRegion_.left +
-            ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f));
+        const float SLIDERBAR_POS_LEFT(
+            textRegion_.left + ((textRegion_.width - SLIDERBAR_LENGTH) * 0.5f));
 
-        sliderbarPosTop_ =
-            charDetailsTextRegionUPtr_->GetEntityRegion().top +
-            charDetailsTextRegionUPtr_->GetEntityRegion().height +
-            sfml_util::MapByRes(60.0f, 300.0f);
+        sliderbarPosTop_ = charDetailsTextRegionUPtr_->GetEntityRegion().top
+            + charDetailsTextRegionUPtr_->GetEntityRegion().height
+            + sfml_util::MapByRes(60.0f, 300.0f);
 
         if (sliderbarUPtr_.get() != nullptr)
         {
@@ -112,13 +105,12 @@ namespace popup
 
         EntityAdd(sliderbarUPtr_.get());
 
-        isChangingImageAllowed_ =
-            (game::Game::Instance()->State().Party().Characters().size() != 0);
+        isChangingImageAllowed_
+            = (game::Game::Instance()->State().Party().Characters().size() != 0);
 
         imageMoveQueue_.push(0);
         EnqueueImagesFromCurrentToTarget(imageIndex_, popupInfo_.InitialSelection());
     }
-
 
     void PopupStageCharacterSelect::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
@@ -127,16 +119,14 @@ namespace popup
         PopupStageBase::DrawRedX(target, STATES);
     }
 
-
     std::size_t PopupStageCharacterSelect::CountMax() const
     {
         return game::Game::Instance()->State().Party().Characters().size();
     }
 
-
     bool PopupStageCharacterSelect::HandleSelect()
     {
-        //attempt to select the value most recently enqueued
+        // attempt to select the value most recently enqueued
         if (imageMoveQueue_.empty() == false)
         {
             if (popupInfo_.TextVec()[imageMoveQueue_.back()].empty() == false)
@@ -154,8 +144,7 @@ namespace popup
             selection_ = static_cast<int>(imageIndex_);
         }
 
-        if ((selection_ < 0) ||
-            (selection_ >= static_cast<int>(popupInfo_.TextVec().size())))
+        if ((selection_ < 0) || (selection_ >= static_cast<int>(popupInfo_.TextVec().size())))
         {
             PlayInvalidKeypressSoundEffect();
             return false;
@@ -170,13 +159,11 @@ namespace popup
         return PopupStageBase::HandleSelect();
     }
 
-
     void PopupStageCharacterSelect::SetupContent(const bool WILL_ERASE)
     {
         SetupCharacterSelectDetailText(WILL_ERASE);
         SetupCharacterSelectionRejectImage(WILL_ERASE);
     }
-
 
     void PopupStageCharacterSelect::SetupCharacterSelectDetailText(const bool WILL_ERASE)
     {
@@ -186,12 +173,11 @@ namespace popup
             return;
         }
 
-        auto const CREATURE_PTR{
-            game::Game::Instance()->State().Party().GetAtOrderPos(imageIndex_) };
+        auto const CREATURE_PTR{ game::Game::Instance()->State().Party().GetAtOrderPos(
+            imageIndex_) };
 
         std::ostringstream ss;
-        ss << CREATURE_PTR->Name() << "\n"
-            << CREATURE_PTR->RaceName();
+        ss << CREATURE_PTR->Name() << "\n" << CREATURE_PTR->RaceName();
 
         if (CREATURE_PTR->IsBeast())
         {
@@ -203,17 +189,15 @@ namespace popup
         }
         else
         {
-            ss << " " << CREATURE_PTR->RankClassName() << " "
-                << CREATURE_PTR->RoleName() << "\n";
+            ss << " " << CREATURE_PTR->RankClassName() << " " << CREATURE_PTR->RoleName() << "\n";
         }
 
-        ss << "Health:  " << CREATURE_PTR->HealthCurrent() << "/"
-            << CREATURE_PTR->HealthNormal() << "\n"
-            << "Condition:  " << CREATURE_PTR->ConditionNames(3) << "\n";
+        ss << "Health:  " << CREATURE_PTR->HealthCurrent() << "/" << CREATURE_PTR->HealthNormal()
+           << "\n"
+           << "Condition:  " << CREATURE_PTR->ConditionNames(3) << "\n";
 
         charDetailsTextRegionUPtr_->SetText(ss.str());
     }
-
 
     void PopupStageCharacterSelect::SetupCharacterSelectionRejectImage(const bool WILL_ERASE)
     {
@@ -227,7 +211,7 @@ namespace popup
             }
             else
             {
-                selection_ = -1;//any negative value will work here
+                selection_ = -1; // any negative value will work here
             }
 
             if (TEXT.empty() || WILL_ERASE)
@@ -245,17 +229,13 @@ namespace popup
         }
     }
 
-
     void PopupStageCharacterSelect::SetCurrentTexture(const std::size_t IMAGE_INDEX)
     {
-        auto const CREATURE_PTR{
-            game::Game::Instance()->State().Party().GetAtOrderPos(IMAGE_INDEX) };
+        auto const CREATURE_PTR{ game::Game::Instance()->State().Party().GetAtOrderPos(
+            IMAGE_INDEX) };
 
         sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-            textureCurr_,
-            CREATURE_PTR->ImageFilename(),
-            true);
+            textureCurr_, CREATURE_PTR->ImageFilename(), true);
     }
-
 }
 }

@@ -28,21 +28,20 @@
 // trait-enum.hpp
 //
 #include <string>
-#include <vector>
 #include <utility>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace stats
 {
 
-    //Identifies a RatioStat
+    // Identifies a RatioStat
     struct Traits
     {
         enum Enum
         {
-            //Keep stats starting at zero and in order.
+            // Keep stats starting at zero and in order.
             Strength = 0,
             Accuracy,
             Charm,
@@ -97,12 +96,10 @@ namespace stats
         static const std::string Desc(const Enum);
     };
 
-
     using TraitsVec_t = std::vector<Traits::Enum>;
     using TraitValuePair_t = std::pair<Traits::Enum, int>;
     using TraitValueVec_t = std::vector<TraitValuePair_t>;
-
 }
 }
 
-#endif //HEROESPATH_STATS_TRAITENUM_HPP_INCLUDED
+#endif // HEROESPATH_STATS_TRAITENUM_HPP_INCLUDED

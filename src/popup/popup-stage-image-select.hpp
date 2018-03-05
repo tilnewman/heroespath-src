@@ -27,22 +27,21 @@
 //
 // popup-stage-image-select.hpp
 //
-#include "popup/popup-stage-base.hpp"
 #include "popup/popup-info.hpp"
+#include "popup/popup-stage-base.hpp"
 
-#include "sfml-util/sliders.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/sliders.hpp"
 
 #include <queue>
 #include <string>
-
 
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing the Image Select Popup Stage.
+    // Responsible for implementing the Image Select Popup Stage.
     class PopupStageImageSelect : public PopupStageBase
     {
         PopupStageImageSelect(const PopupStageImageSelect &);
@@ -52,10 +51,11 @@ namespace popup
         explicit PopupStageImageSelect(const PopupInfo &);
         virtual ~PopupStageImageSelect();
 
-        using PopupStageBase::HandlerName;
         using PopupStageBase::HandleCallback;
+        using PopupStageBase::HandlerName;
 
-        virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        virtual bool
+            HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
         virtual void Setup() override;
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -82,8 +82,7 @@ namespace popup
 
     protected:
         void EnqueueImagesFromCurrentToTarget(
-            const std::size_t CURRENT_INDEX,
-            const std::size_t TARGET_INDEX);
+            const std::size_t CURRENT_INDEX, const std::size_t TARGET_INDEX);
 
         bool HandleSelect() override;
 
@@ -114,8 +113,7 @@ namespace popup
         sfml_util::sliders::ZeroSliderOnce<float> imageSlider_;
         float imagePosTop_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGEIMAGESELECT_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGEIMAGESELECT_HPP_INCLUDED

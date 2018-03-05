@@ -29,80 +29,78 @@
 //
 #include "creature.hpp"
 
+#include "creature/condition-algorithms.hpp"
+#include "creature/condition-warehouse.hpp"
+#include "creature/condition.hpp"
+#include "creature/conditions.hpp"
+#include "creature/title-warehouse.hpp"
 #include "game/game-data-file.hpp"
+#include "item/algorithms.hpp"
+#include "item/item.hpp"
 #include "log/log-macros.hpp"
-#include "song/song.hpp"
 #include "song/song-warehouse.hpp"
+#include "song/song.hpp"
 #include "spell/spell-base.hpp"
 #include "spell/spell-warehouse.hpp"
-#include "item/item.hpp"
-#include "item/algorithms.hpp"
-#include "creature/conditions.hpp"
-#include "creature/condition.hpp"
-#include "creature/condition-warehouse.hpp"
-#include "creature/condition-algorithms.hpp"
-#include "creature/title-warehouse.hpp"
 
-#include "misc/real.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "misc/vectors.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
+#include "misc/real.hpp"
+#include "misc/vectors.hpp"
 
 #include <algorithm>
-
 
 namespace heroespath
 {
 namespace creature
 {
 
-    std::size_t       Creature::globalSerialNumber_{ 0 };
+    std::size_t Creature::globalSerialNumber_{ 0 };
     const std::string Creature::ITEM_ACTION_SUCCESS_STR_{ "" };
 
-
-    Creature::Creature(const std::string &         NAME,
-                       const sex::Enum             SEX,
-                       const BodyType &            BODY_TYPE,
-                       const race::Enum &          RACE,
-                       const role::Enum &          ROLE,
-                       const stats::StatSet &      STATS,
-                       const Health_t &            HEALTH,
-                       const Rank_t &              RANK,
-                       const Experience_t &        EXPERIENCE,
-                       const CondEnumVec_t &       CONDITIONS_VEC,
-                       const TitleEnumVec_t &      TITLE_VEC,
-                       const item::Inventory &     INVENTORY,
-                       const sfml_util::DateTime & DATE_TIME,
-                       const std::string &         IMAGE_FILENAME,
-                       const spell::SpellVec_t &   SPELL_VEC,
-                       const Mana_t &              MANA,
-                       const song::SongVec_t &     SONG_VEC)
-    :
-        name_             (NAME),
-        imageFilename_    (IMAGE_FILENAME),
-        sex_              (SEX),
-        bodyType_         (BODY_TYPE),
-        race_             (RACE),
-        role_             (ROLE),
-        serialNumber_     (globalSerialNumber_++),
-        conditionsVec_    (CONDITIONS_VEC),
-        titlesVec_        (TITLE_VEC),
-        inventory_        (INVENTORY),
-        dateTimeCreated_  (DATE_TIME),
-        spellsVec_        (SPELL_VEC),
-        achievements_     (NAME, ROLE),
-        currWeaponsPVec_  (),
-        lastSpellCastNum_ (0),
-        songsVec_         (SONG_VEC),
-        lastSongPlayedNum_(0),
-        healthCurrent_    (HEALTH),
-        healthNormal_     (HEALTH),
-        rank_             (RANK),
-        experience_       (EXPERIENCE),
-        actualSet_        (),
-        bonusSet_         (),
-        enchantmentsPVec_ ()
+    Creature::Creature(
+        const std::string & NAME,
+        const sex::Enum SEX,
+        const BodyType & BODY_TYPE,
+        const race::Enum & RACE,
+        const role::Enum & ROLE,
+        const stats::StatSet & STATS,
+        const Health_t & HEALTH,
+        const Rank_t & RANK,
+        const Experience_t & EXPERIENCE,
+        const CondEnumVec_t & CONDITIONS_VEC,
+        const TitleEnumVec_t & TITLE_VEC,
+        const item::Inventory & INVENTORY,
+        const sfml_util::DateTime & DATE_TIME,
+        const std::string & IMAGE_FILENAME,
+        const spell::SpellVec_t & SPELL_VEC,
+        const Mana_t & MANA,
+        const song::SongVec_t & SONG_VEC)
+        : name_(NAME)
+        , imageFilename_(IMAGE_FILENAME)
+        , sex_(SEX)
+        , bodyType_(BODY_TYPE)
+        , race_(RACE)
+        , role_(ROLE)
+        , serialNumber_(globalSerialNumber_++)
+        , conditionsVec_(CONDITIONS_VEC)
+        , titlesVec_(TITLE_VEC)
+        , inventory_(INVENTORY)
+        , dateTimeCreated_(DATE_TIME)
+        , spellsVec_(SPELL_VEC)
+        , achievements_(NAME, ROLE)
+        , currWeaponsPVec_()
+        , lastSpellCastNum_(0)
+        , songsVec_(SONG_VEC)
+        , lastSongPlayedNum_(0)
+        , healthCurrent_(HEALTH)
+        , healthNormal_(HEALTH)
+        , rank_(RANK)
+        , experience_(EXPERIENCE)
+        , actualSet_()
+        , bonusSet_()
+        , enchantmentsPVec_()
     {
         actualSet_.Get(stats::Traits::Mana).CurrAndNormSet(MANA.As<int>());
         actualSet_.Get(stats::Traits::Strength).CurrAndNormSet(STATS.Str().As<int>());
@@ -112,17 +110,14 @@ namespace creature
         actualSet_.Get(stats::Traits::Speed).CurrAndNormSet(STATS.Spd().As<int>());
         actualSet_.Get(stats::Traits::Intelligence).CurrAndNormSet(STATS.Int().As<int>());
 
-        //verify valid RACE and ROLE combination
+        // verify valid RACE and ROLE combination
         auto const ROLE_VEC{ race::Roles(race_) };
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (std::find(
-                ROLE_VEC.begin(),
-                ROLE_VEC.end(),
-                role_) != ROLE_VEC.end()),
-            "creature::Creature::Constructor(race=" << RaceName()
-            << ", role=" << RoleName() << ") invalid race/role combination.");
+            (std::find(ROLE_VEC.begin(), ROLE_VEC.end(), role_) != ROLE_VEC.end()),
+            "creature::Creature::Constructor(race=" << RaceName() << ", role=" << RoleName()
+                                                    << ") invalid race/role combination.");
 
-        //set the default condition if not already there
+        // set the default condition if not already there
         if (conditionsVec_.empty())
         {
             ConditionAdd(Conditions::Good);
@@ -131,12 +126,10 @@ namespace creature
         ReCalculateTraitBonuses();
     }
 
-
     Creature::~Creature()
     {
-        //Items and their Enchantments are free'd when the Inventory is destructed.
+        // Items and their Enchantments are free'd when the Inventory is destructed.
     }
-
 
     const std::string Creature::NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
     {
@@ -159,7 +152,6 @@ namespace creature
             return boost::algorithm::to_lower_copy(ss.str());
         }
     }
-
 
     const std::string Creature::NameAndRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
     {
@@ -200,11 +192,11 @@ namespace creature
         }
     }
 
-
     float Creature::RankRatio() const
     {
-        const float GRANDMASTER_RANK_F{
-            game::GameDataFile::Instance()->GetCopyFloat("heroespath-rankclass-Master-rankmax") + 1.0f };
+        const float GRANDMASTER_RANK_F{ game::GameDataFile::Instance()->GetCopyFloat(
+                                            "heroespath-rankclass-Master-rankmax")
+                                        + 1.0f };
 
         auto rankRatio{ rank_.As<float>() / GRANDMASTER_RANK_F };
         if (rankRatio > 1.0f)
@@ -214,7 +206,6 @@ namespace creature
 
         return rankRatio;
     }
-
 
     Health_t Creature::HealthCurrentAdj(const Health_t & HEALTH_ADJ)
     {
@@ -233,7 +224,6 @@ namespace creature
         return healthCurrent_;
     }
 
-
     Health_t Creature::HealthNormalAdj(const Health_t & HEALTH_ADJ)
     {
         healthNormal_ += HEALTH_ADJ;
@@ -251,7 +241,6 @@ namespace creature
         return healthNormal_;
     }
 
-
     void Creature::TitleAdd(const Titles::Enum E, const bool ALLOW_CHANGES)
     {
         if (ALLOW_CHANGES)
@@ -262,17 +251,15 @@ namespace creature
         titlesVec_.push_back(E);
     }
 
-
     const TitlePVec_t Creature::TitlesPVec() const
     {
         TitlePVec_t titlePVec;
 
         for (auto const NEXT_TITLE_ENUM : titlesVec_)
-            titlePVec.push_back( title::Warehouse::Get(NEXT_TITLE_ENUM) );
+            titlePVec.push_back(title::Warehouse::Get(NEXT_TITLE_ENUM));
 
         return titlePVec;
     }
-
 
     const std::string Creature::HealthPercentStr(const bool WILL_APPEND_SYMBOL) const
     {
@@ -301,37 +288,33 @@ namespace creature
         return ss.str();
     }
 
-
     bool Creature::ConditionAdd(const Conditions::Enum E, const bool ALLOW_CHANGES)
     {
-        const ConditionEnumVecCIter_t COND_GOOD_ITER( std::find(
-            conditionsVec_.begin(),
-            conditionsVec_.end(),
-            Conditions::Good) );
+        const ConditionEnumVecCIter_t COND_GOOD_ITER(
+            std::find(conditionsVec_.begin(), conditionsVec_.end(), Conditions::Good));
 
         if (COND_GOOD_ITER != conditionsVec_.end())
         {
-            //prevent multiple 'Good' conditions
+            // prevent multiple 'Good' conditions
             if (E == Conditions::Good)
             {
                 return false;
             }
             else
             {
-                //remove (all) the 'Good' conditions before adding the 'not so good' condition
-                conditionsVec_.erase(std::remove(conditionsVec_.begin(),
-                                                 conditionsVec_.end(),
-                                                 Conditions::Good), conditionsVec_.end());
+                // remove (all) the 'Good' conditions before adding the 'not so good' condition
+                conditionsVec_.erase(
+                    std::remove(conditionsVec_.begin(), conditionsVec_.end(), Conditions::Good),
+                    conditionsVec_.end());
             }
         }
 
-        //verify the condition is not already in the list
-        if (conditionsVec_.end() == std::find(
-            conditionsVec_.begin(), conditionsVec_.end(), E))
+        // verify the condition is not already in the list
+        if (conditionsVec_.end() == std::find(conditionsVec_.begin(), conditionsVec_.end(), E))
         {
             conditionsVec_.push_back(E);
 
-            //make the change to the creature
+            // make the change to the creature
             if (ALLOW_CHANGES)
             {
                 condition::Warehouse::Get(E)->InitialChange(this);
@@ -343,7 +326,6 @@ namespace creature
 
         return false;
     }
-
 
     bool Creature::ConditionRemove(const Conditions::Enum E)
     {
@@ -361,9 +343,8 @@ namespace creature
         {
             wasAnyConditionRemoved = true;
             condition::Warehouse::Get(NEXT_CONDITION_TO_REMOVE_ENUM)->FinalChange(this);
-            conditionsVec_.erase(std::find(conditionsVec_.begin(),
-                                           conditionsVec_.end(),
-                                           NEXT_CONDITION_TO_REMOVE_ENUM));
+            conditionsVec_.erase(std::find(
+                conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM));
         }
 
         if (conditionsVec_.size() == 0)
@@ -379,12 +360,11 @@ namespace creature
         return wasAnyConditionRemoved;
     }
 
-
     std::size_t Creature::ConditionRemoveAll()
     {
         const std::size_t ORIG_COND_COUNT(conditionsVec_.size());
 
-        //undo the changes made by the conditions that will be removed
+        // undo the changes made by the conditions that will be removed
         for (auto const NEXT_COND_ENUM : conditionsVec_)
         {
             condition::Warehouse::Get(NEXT_COND_ENUM)->FinalChange(this);
@@ -396,17 +376,15 @@ namespace creature
         return ORIG_COND_COUNT;
     }
 
-
     const ConditionPVec_t Creature::ConditionsPVec() const
     {
         ConditionPVec_t conditionPVec;
 
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
-            conditionPVec.push_back( condition::Warehouse::Get(NEXT_CONDITION_ENUM) );
+            conditionPVec.push_back(condition::Warehouse::Get(NEXT_CONDITION_ENUM));
 
         return conditionPVec;
     }
-
 
     bool Creature::HasCondition(const Conditions::Enum E) const
     {
@@ -421,22 +399,19 @@ namespace creature
         return false;
     }
 
-
     bool Creature::HasConditionNotAThreatTemp() const
     {
-        return (HasCondition(Conditions::Dazed) ||
-                HasCondition(Conditions::Tripped) ||
-                HasCondition(Conditions::Pounced));
+        return (
+            HasCondition(Conditions::Dazed) || HasCondition(Conditions::Tripped)
+            || HasCondition(Conditions::Pounced));
     }
-
 
     bool Creature::HasConditionNotAThreatPerm(const UnconOpt UNCON_OPTION) const
     {
-        return (HasCondition(Conditions::Dead) ||
-                HasCondition(Conditions::Stone) ||
-                ((UNCON_OPTION == UnconOpt::Include) && HasCondition(Conditions::Unconscious)));
+        return (
+            HasCondition(Conditions::Dead) || HasCondition(Conditions::Stone)
+            || ((UNCON_OPTION == UnconOpt::Include) && HasCondition(Conditions::Unconscious)));
     }
-
 
     std::size_t Creature::GetWorstConditionSeverity() const
     {
@@ -452,16 +427,16 @@ namespace creature
         {
             CondEnumVec_t tempCondVec(conditionsVec_);
 
-            std::sort(tempCondVec.begin(),
-                      tempCondVec.end(),
-                      []
-                      (const Conditions::Enum A, const Conditions::Enum B)
-                      { return condition::Severity::Get(A) > condition::Severity::Get(B); });
+            std::sort(
+                tempCondVec.begin(),
+                tempCondVec.end(),
+                [](const Conditions::Enum A, const Conditions::Enum B) {
+                    return condition::Severity::Get(A) > condition::Severity::Get(B);
+                });
 
             return condition::Severity::Get(tempCondVec[0]);
         }
     }
-
 
     bool Creature::HasMagicalCondition() const
     {
@@ -476,9 +451,8 @@ namespace creature
         return false;
     }
 
-
-    const std::string Creature::ConditionNames(const std::size_t MAX_TO_LIST,
-                                               const size_t      MIN_SEVERITY)
+    const std::string
+        Creature::ConditionNames(const std::size_t MAX_TO_LIST, const size_t MIN_SEVERITY)
     {
         return creature::condition::Algorithms::Names(
             conditionsVec_,
@@ -487,7 +461,6 @@ namespace creature
             condition::Algorithms::SortOpt::Descending,
             misc::Vector::JoinOpt::Ellipsis);
     }
-
 
     const std::string Creature::CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX) const
     {
@@ -532,13 +505,12 @@ namespace creature
         return "";
     }
 
-
     const std::string Creature::ItemAdd(const item::ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
-            "Creature::ItemAdd() was given a null ITEM_PTR.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR != nullptr), "Creature::ItemAdd() was given a null ITEM_PTR.");
 
-        const std::string IS_ALLOWED_STR( ItemIsAddAllowed(ITEM_PTR) );
+        const std::string IS_ALLOWED_STR(ItemIsAddAllowed(ITEM_PTR));
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
             inventory_.ItemAdd(ITEM_PTR);
@@ -547,35 +519,34 @@ namespace creature
         }
         else
         {
-            M_HP_LOG_ERR("creature::ItemAdd(creature_name=\"" << Name() << "\", item_name=\""
-                << ITEM_PTR->Name() << "\") item add failed:  \"" << IS_ALLOWED_STR << "\".");
+            M_HP_LOG_ERR(
+                "creature::ItemAdd(creature_name=\""
+                << Name() << "\", item_name=\"" << ITEM_PTR->Name() << "\") item add failed:  \""
+                << IS_ALLOWED_STR << "\".");
         }
 
         return IS_ALLOWED_STR;
     }
 
-
     const std::string Creature::ItemIsAddAllowed(const item::ItemPtr_t ITEM_PTR) const
     {
-        //always allow bodypart items
+        // always allow bodypart items
         if (ITEM_PTR->IsBodypart())
         {
             return ITEM_ACTION_SUCCESS_STR_;
         }
 
-        //verify strength/weight
-        if (IsPlayerCharacter() &&
-            ((inventory_.Weight() + ITEM_PTR->Weight()) > WeightCanCarry()))
+        // verify strength/weight
+        if (IsPlayerCharacter() && ((inventory_.Weight() + ITEM_PTR->Weight()) > WeightCanCarry()))
         {
             std::ostringstream ss;
             ss << "item weighs " << ITEM_PTR->Weight() << " which is "
-                << (inventory_.Weight() + ITEM_PTR->Weight()) - WeightCanCarry() << " too heavy";
+               << (inventory_.Weight() + ITEM_PTR->Weight()) - WeightCanCarry() << " too heavy";
             return ss.str();
         }
 
-        //verify armor vs race
-        if (ITEM_PTR->IsArmor() &&
-            ((race_ == race::Dragon) || (race_ == race::Wolfen)))
+        // verify armor vs race
+        if (ITEM_PTR->IsArmor() && ((race_ == race::Dragon) || (race_ == race::Wolfen)))
         {
             std::ostringstream ss;
             ss << race::Name(race_) << "s cannot be given armor";
@@ -585,33 +556,31 @@ namespace creature
         return ITEM_ACTION_SUCCESS_STR_;
     }
 
-
     void Creature::ItemRemove(const item::ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
-            "Creature::ItemRemove() was given a null ITEM_PTR.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR != nullptr), "Creature::ItemRemove() was given a null ITEM_PTR.");
 
         EnchantmentsApplyOrRemoveByType(ITEM_PTR->Enchantments(), EnchantmentType::WhenHeld, false);
         inventory_.ItemRemove(ITEM_PTR);
     }
 
-
     const std::string Creature::ItemEquip(const item::ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
-            "Creature::ItemEquip(nullptr) was given a null ITEM_PTR.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR != nullptr), "Creature::ItemEquip(nullptr) was given a null ITEM_PTR.");
 
-        const std::string IS_ALLOWED_STR( ItemIsEquipAllowed(ITEM_PTR) );
+        const std::string IS_ALLOWED_STR(ItemIsEquipAllowed(ITEM_PTR));
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
-            EnchantmentsApplyOrRemoveByType(ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, true);
+            EnchantmentsApplyOrRemoveByType(
+                ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, true);
             inventory_.ItemEquip(ITEM_PTR);
             SetCurrentWeaponsToBest();
         }
 
         return IS_ALLOWED_STR;
     }
-
 
     const std::string Creature::ItemIsEquipAllowed(const item::ItemPtr_t ITEM_PTR) const
     {
@@ -647,56 +616,56 @@ namespace creature
 
         const std::string SEP("  ");
 
-        //collect all the remaining reasons why the equip is not possible into one
+        // collect all the remaining reasons why the equip is not possible into one
         std::ostringstream resultSS;
 
-        //TODO? verify strength limit of the item?
+        // TODO? verify strength limit of the item?
 
-        //verify role, such as Sorcerers not being able to use swords
-        const std::string CAN_EQUIP_BY_ROLE_STR( ItemIsEquipAllowedByRole(ITEM_PTR) );
+        // verify role, such as Sorcerers not being able to use swords
+        const std::string CAN_EQUIP_BY_ROLE_STR(ItemIsEquipAllowedByRole(ITEM_PTR));
         if (CAN_EQUIP_BY_ROLE_STR != ITEM_ACTION_SUCCESS_STR_)
         {
             resultSS << CAN_EQUIP_BY_ROLE_STR << SEP;
         }
 
-        //verify invalid duplicates
-        if ((CATEGORY & item::category::OneHanded) &&
-            (inventory_.CountItemOfCategoryEquipped(item::category::OneHanded) > 2))
+        // verify invalid duplicates
+        if ((CATEGORY & item::category::OneHanded)
+            && (inventory_.CountItemOfCategoryEquipped(item::category::OneHanded) > 2))
         {
             resultSS << "Can't equip three one-handed items." << SEP;
         }
 
         if (CATEGORY & item::category::TwoHanded)
         {
-            auto const NONBODYPART_TWOHANDED_WEAPONS_SVEC{
+            auto const NONBODYPART_TWOHANDED_WEAPONS_SVEC{ item::Algorithms::FindByCategory(
                 item::Algorithms::FindByCategory(
-                    item::Algorithms::FindByCategory(
-                        inventory_.ItemsEquipped(), item::category::TwoHanded),
-                    item::category::BodyPart, item::Algorithms::MatchOpt::NotEqual) };
+                    inventory_.ItemsEquipped(), item::category::TwoHanded),
+                item::category::BodyPart,
+                item::Algorithms::MatchOpt::NotEqual) };
 
             if (NONBODYPART_TWOHANDED_WEAPONS_SVEC.empty() == false)
             {
                 resultSS << "Can't equip multiple two-handed items. ("
-                    << item::Algorithms::Names(NONBODYPART_TWOHANDED_WEAPONS_SVEC)
-                    << " is already equipped)" << SEP;
+                         << item::Algorithms::Names(NONBODYPART_TWOHANDED_WEAPONS_SVEC)
+                         << " is already equipped)" << SEP;
             }
         }
 
-        if ((MISC_TYPE == item::misc_type::Wand) &&
-            (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::Wand) > 0))
+        if ((MISC_TYPE == item::misc_type::Wand)
+            && (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::Wand) > 0))
         {
             resultSS << "Can't equip more than one wand at a time." << SEP;
         }
 
-        //verify valid duplicates upper limits
-        if ((MISC_TYPE == item::misc_type::Ring) &&
-            (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::Ring) == 10))
+        // verify valid duplicates upper limits
+        if ((MISC_TYPE == item::misc_type::Ring)
+            && (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::Ring) == 10))
         {
             resultSS << "Can't equip more than ten rings at once." << SEP;
         }
 
-        if ((MISC_TYPE == item::misc_type::Mask) &&
-            (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::Mask) > 0))
+        if ((MISC_TYPE == item::misc_type::Mask)
+            && (inventory_.CountItemOfMiscTypeEquipped(item::misc_type::Mask) > 0))
         {
             resultSS << "Can't wear more than one mask at the same time." << SEP;
         }
@@ -708,10 +677,8 @@ namespace creature
 
         const item::armor_type::Enum ARMOR_TYPE(ITEM_PTR->ArmorType());
 
-        if ((CATEGORY & item::category::Armor) ||
-            (ARMOR_TYPE == item::armor_type::Boots) ||
-            (ARMOR_TYPE == item::armor_type::Pants) ||
-            (ARMOR_TYPE == item::armor_type::Shirt))
+        if ((CATEGORY & item::category::Armor) || (ARMOR_TYPE == item::armor_type::Boots)
+            || (ARMOR_TYPE == item::armor_type::Pants) || (ARMOR_TYPE == item::armor_type::Shirt))
         {
             if ((ARMOR_TYPE & item::armor_type::Bracer) && (Body().HasArms() == false))
             {
@@ -738,17 +705,18 @@ namespace creature
                 resultSS << RaceName() << "'s can't wear helms becaus they have horns." << SEP;
             }
 
-            if ((ARMOR_TYPE & item::armor_type::Aventail) &&
-                (item::Algorithms::FindByArmorType(
-                    inventory_.ItemsEquipped(), item::armor_type::Helm).empty()))
+            if ((ARMOR_TYPE & item::armor_type::Aventail)
+                && (item::Algorithms::FindByArmorType(
+                        inventory_.ItemsEquipped(), item::armor_type::Helm)
+                        .empty()))
             {
                 resultSS << "Can't wear an aventail without first wearing a helm." << SEP;
             }
 
             std::size_t armorEquipLimit{ 1 };
 
-            if ((ARMOR_TYPE & item::armor_type::Bracer) ||
-                (ARMOR_TYPE & item::armor_type::Gauntlets))
+            if ((ARMOR_TYPE & item::armor_type::Bracer)
+                || (ARMOR_TYPE & item::armor_type::Gauntlets))
             {
                 armorEquipLimit = Body().NumArms() / 2;
             }
@@ -780,7 +748,7 @@ namespace creature
 
             if (inventory_.CountItemOfArmorTypeEquipped(ARMOR_TYPE) >= armorEquipLimit)
             {
-                const std::string ARMOR_TYPE_STR( item::armor_type::ToString(ARMOR_TYPE, false) );
+                const std::string ARMOR_TYPE_STR(item::armor_type::ToString(ARMOR_TYPE, false));
 
                 std::ostringstream ss;
                 ss << "Can't equip more than " << armorEquipLimit;
@@ -791,8 +759,8 @@ namespace creature
 
                 ss << " of " << ARMOR_TYPE_STR << "." << SEP;
 
-                //make an exception for cover_type::Vest, which can be equipped along with the
-                //other cover_types: cape, robe, and cloak -which are otherwise mutually exclusive
+                // make an exception for cover_type::Vest, which can be equipped along with the
+                // other cover_types: cape, robe, and cloak -which are otherwise mutually exclusive
                 if (ITEM_PTR->Armor_Info().cover == item::armor::cover_type::Vest)
                 {
                     bool alraedyHasVestEquipped(false);
@@ -806,17 +774,19 @@ namespace creature
 
                     if (alraedyHasVestEquipped)
                     {
-                        resultSS << ss.str() << "  " << "(Already has a vest equipped)" << SEP;
+                        resultSS << ss.str() << "  "
+                                 << "(Already has a vest equipped)" << SEP;
                     }
                 }
-                else if ((ITEM_PTR->Armor_Info().cover != item::armor::cover_type::Vest) &&
-                    (ARMOR_TYPE & item::armor_type::Covering))
+                else if (
+                    (ITEM_PTR->Armor_Info().cover != item::armor::cover_type::Vest)
+                    && (ARMOR_TYPE & item::armor_type::Covering))
                 {
                     auto alreadyHasNonVestCovering{ false };
                     for (auto const NEXT_ITEM_PTR : inventory_.ItemsEquipped())
                     {
-                        if ((NEXT_ITEM_PTR->ArmorType() & item::armor_type::Covering) &&
-                            (NEXT_ITEM_PTR->Armor_Info().cover != item::armor::cover_type::Vest))
+                        if ((NEXT_ITEM_PTR->ArmorType() & item::armor_type::Covering)
+                            && (NEXT_ITEM_PTR->Armor_Info().cover != item::armor::cover_type::Vest))
                         {
                             alreadyHasNonVestCovering = true;
                         }
@@ -844,7 +814,6 @@ namespace creature
         }
     }
 
-
     const std::string Creature::ItemIsEquipAllowedByRole(const item::ItemPtr_t ITEM_PTR) const
     {
         const creature::role::Enum EXCLUSIVE_ROLE(ITEM_PTR->ExclusiveRole());
@@ -860,24 +829,21 @@ namespace creature
         auto const MATERIAL_PRI{ ITEM_PTR->MaterialPrimary() };
         auto const MISC_TYPE{ ITEM_PTR->MiscType() };
 
-        if ((role_ != role::Knight) &&
-            ((WEAPON_TYPE & item::weapon_type::BladedStaff) > 0) &&
-            ((WEAPON_TYPE & item::weapon_type::Spear) == 0))
+        if ((role_ != role::Knight) && ((WEAPON_TYPE & item::weapon_type::BladedStaff) > 0)
+            && ((WEAPON_TYPE & item::weapon_type::Spear) == 0))
         {
             return "Only knights may equip non-simple-spear bladed staff weapons.";
         }
 
-        if ((role_ != role::Knight) &&
-            (ITEM_PTR->IsArmor()) &&
-            (ITEM_PTR->Armor_Info().base == item::armor::base_type::Plate))
+        if ((role_ != role::Knight) && (ITEM_PTR->IsArmor())
+            && (ITEM_PTR->Armor_Info().base == item::armor::base_type::Plate))
         {
             return "Only knights may equip plate armor.";
         }
 
-        if ((role_ != role::Knight) &&
-            (ITEM_PTR->IsArmor()) &&
-            ((ITEM_PTR->Armor_Info().shield == item::armor::shield_type::Heater) ||
-             (ITEM_PTR->Armor_Info().shield == item::armor::shield_type::Pavis)))
+        if ((role_ != role::Knight) && (ITEM_PTR->IsArmor())
+            && ((ITEM_PTR->Armor_Info().shield == item::armor::shield_type::Heater)
+                || (ITEM_PTR->Armor_Info().shield == item::armor::shield_type::Pavis)))
         {
             return "Only knights may equip Pavis or Heater shields.";
         }
@@ -904,29 +870,29 @@ namespace creature
         {
             if (ITEM_PTR->IsWeapon())
             {
-                if (((WEAPON_TYPE & item::weapon_type::Blowpipe) == 0) &&
-                    ((WEAPON_TYPE & item::weapon_type::Knife) == 0) &&
-                    ((WEAPON_TYPE & item::weapon_type::Sling) == 0) &&
-                    ((WEAPON_TYPE & item::weapon_type::Staff) == 0) &&
-                    ((WEAPON_TYPE & item::weapon_type::Whip) == 0))
+                if (((WEAPON_TYPE & item::weapon_type::Blowpipe) == 0)
+                    && ((WEAPON_TYPE & item::weapon_type::Knife) == 0)
+                    && ((WEAPON_TYPE & item::weapon_type::Sling) == 0)
+                    && ((WEAPON_TYPE & item::weapon_type::Staff) == 0)
+                    && ((WEAPON_TYPE & item::weapon_type::Whip) == 0))
                 {
                     std::ostringstream scSS;
                     scSS << ((role_ == role::Cleric) ? "Clerics" : "Sorcerers")
-                        << " can only equip staffs, knives, daggers, whips, slings, "
-                        << "and blowpipes.";
+                         << " can only equip staffs, knives, daggers, whips, slings, "
+                         << "and blowpipes.";
                     return scSS.str();
                 }
             }
 
             if (ITEM_PTR->IsArmor())
             {
-                if (((MATERIAL_PRI & item::material::Cloth) == 0) &&
-                    ((MATERIAL_PRI & item::material::SoftLeather) == 0) &&
-                    ((MATERIAL_PRI & item::material::HardLeather) == 0))
+                if (((MATERIAL_PRI & item::material::Cloth) == 0)
+                    && ((MATERIAL_PRI & item::material::SoftLeather) == 0)
+                    && ((MATERIAL_PRI & item::material::HardLeather) == 0))
                 {
                     std::ostringstream scSS;
                     scSS << ((role_ == role::Cleric) ? "Clerics" : "Sorcerers")
-                        << " can only equip armor made from cloth or leather.";
+                         << " can only equip armor made from cloth or leather.";
                     return scSS.str();
                 }
             }
@@ -934,14 +900,13 @@ namespace creature
 
         if (role_ == role::Bard)
         {
-            if ((WEAPON_TYPE & item::weapon_type::Axe) ||
-                (WEAPON_TYPE & item::weapon_type::Club))
+            if ((WEAPON_TYPE & item::weapon_type::Axe) || (WEAPON_TYPE & item::weapon_type::Club))
             {
                 return "Bards cannot equip axes or clubs made for war.";
             }
 
-            if ((WEAPON_TYPE & item::weapon_type::BladedStaff) ||
-                (WEAPON_TYPE & item::weapon_type::Spear))
+            if ((WEAPON_TYPE & item::weapon_type::BladedStaff)
+                || (WEAPON_TYPE & item::weapon_type::Spear))
             {
                 return "Bards cannot equip bladed staffs.";
             }
@@ -949,14 +914,13 @@ namespace creature
 
         if (role_ == role::Archer)
         {
-            if ((WEAPON_TYPE & item::weapon_type::Axe) ||
-                (WEAPON_TYPE & item::weapon_type::Club))
+            if ((WEAPON_TYPE & item::weapon_type::Axe) || (WEAPON_TYPE & item::weapon_type::Club))
             {
                 return "Archers cannot equip axes or clubs made for war.";
             }
 
-            if ((WEAPON_TYPE & item::weapon_type::BladedStaff) ||
-                (WEAPON_TYPE & item::weapon_type::Spear))
+            if ((WEAPON_TYPE & item::weapon_type::BladedStaff)
+                || (WEAPON_TYPE & item::weapon_type::Spear))
             {
                 return "Archers cannot equip bladed staffs.";
             }
@@ -964,32 +928,30 @@ namespace creature
 
         if (role_ == role::Thief)
         {
-            if ((CATEGORY & item::category::TwoHanded) &&
-                (CATEGORY & item::category::Weapon) &&
-                ((WEAPON_TYPE & item::weapon_type::Sling) == 0) &&
-                ((WEAPON_TYPE & item::weapon_type::Blowpipe) == 0))
+            if ((CATEGORY & item::category::TwoHanded) && (CATEGORY & item::category::Weapon)
+                && ((WEAPON_TYPE & item::weapon_type::Sling) == 0)
+                && ((WEAPON_TYPE & item::weapon_type::Blowpipe) == 0))
             {
                 return "Thieves cannot equip two-handed weapons except for Slings and Blowpipes.";
             }
 
-            if (((WEAPON_TYPE & item::weapon_type::Axe) > 0) ||
-                ((WEAPON_TYPE & item::weapon_type::Sword) > 0) ||
-                ((WEAPON_TYPE & item::weapon_type::Club) > 0))
+            if (((WEAPON_TYPE & item::weapon_type::Axe) > 0)
+                || ((WEAPON_TYPE & item::weapon_type::Sword) > 0)
+                || ((WEAPON_TYPE & item::weapon_type::Club) > 0))
             {
                 std::ostringstream ss;
-                ss << "Thieves cannot equip "
-                   << item::weapon_type::ToString(WEAPON_TYPE, false)<< "s.";
+                ss << "Thieves cannot equip " << item::weapon_type::ToString(WEAPON_TYPE, false)
+                   << "s.";
             }
         }
 
         return ITEM_ACTION_SUCCESS_STR_;
     }
 
-
     const std::string Creature::ItemUnEquip(const item::ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
-            "Creature::ItemUnEquip() was given a null ITEM_PTR.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR != nullptr), "Creature::ItemUnEquip() was given a null ITEM_PTR.");
 
         auto const IS_ITEM_UNEQUIP_ALLOWED_STR(IsItemUnqeuipAllowed(ITEM_PTR));
         if (IS_ITEM_UNEQUIP_ALLOWED_STR != ITEM_ACTION_SUCCESS_STR_)
@@ -997,12 +959,12 @@ namespace creature
             return IS_ITEM_UNEQUIP_ALLOWED_STR;
         }
 
-        EnchantmentsApplyOrRemoveByType(ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, false);
+        EnchantmentsApplyOrRemoveByType(
+            ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, false);
         inventory_.ItemUnEquip(ITEM_PTR);
         SetCurrentWeaponsToBestIfInvalidated();
         return ITEM_ACTION_SUCCESS_STR_;
     }
-
 
     const std::string Creature::IsItemUnqeuipAllowed(const item::ItemPtr_t ITEM_PTR)
     {
@@ -1016,10 +978,9 @@ namespace creature
         }
     }
 
-
     const item::ItemPVec_t Creature::CurrentWeaponsInc()
     {
-        //compose a vec of weapon vecs that can be considered equipped current weapon sets
+        // compose a vec of weapon vecs that can be considered equipped current weapon sets
         auto const WEAPONS_PVEC_VEC{ ComposeWeaponsList() };
 
         if (currWeaponsPVec_.empty())
@@ -1037,7 +998,7 @@ namespace creature
         }
         else
         {
-            //find where in the weaponsPVecVec the currWeapons_ is
+            // find where in the weaponsPVecVec the currWeapons_ is
             auto const NUM_WEAPONS_SVECS(WEAPONS_PVEC_VEC.size());
             for (std::size_t i(0); i < NUM_WEAPONS_SVECS; ++i)
             {
@@ -1056,16 +1017,15 @@ namespace creature
                 }
             }
 
-            //if not in the vec then choose the first (most desirable) set of weapons
+            // if not in the vec then choose the first (most desirable) set of weapons
             currWeaponsPVec_ = WEAPONS_PVEC_VEC[0];
             return currWeaponsPVec_;
         }
     }
 
-
     void Creature::SetCurrentWeaponsToBest()
     {
-        //compose a vec of weapon vecs that can be considered equipped current weapon sets
+        // compose a vec of weapon vecs that can be considered equipped current weapon sets
         auto const WEAPONS_PVEC_VEC{ ComposeWeaponsList() };
 
         if (WEAPONS_PVEC_VEC.empty())
@@ -1078,20 +1038,18 @@ namespace creature
         }
     }
 
-
     void Creature::SetCurrentWeaponsToBestIfInvalidated()
     {
         auto EQUIPPED_ITEMS_PVEC{ Inventory().ItemsEquipped() };
 
-        //determine if the currrent weapon set is valid
+        // determine if the currrent weapon set is valid
         bool isValid(true);
         for (auto const NEXT_ITEM_PTR : currWeaponsPVec_)
         {
-            auto const FOUND_CITER{ std::find_if(EQUIPPED_ITEMS_PVEC.begin(),
-                                                 EQUIPPED_ITEMS_PVEC.end(),
-                                                 [NEXT_ITEM_PTR]
-                                                 (const item::ItemPtr_t P)
-                                                 { return NEXT_ITEM_PTR == P; }) };
+            auto const FOUND_CITER{ std::find_if(
+                EQUIPPED_ITEMS_PVEC.begin(),
+                EQUIPPED_ITEMS_PVEC.end(),
+                [NEXT_ITEM_PTR](const item::ItemPtr_t P) { return NEXT_ITEM_PTR == P; }) };
 
             if (FOUND_CITER == EQUIPPED_ITEMS_PVEC.end())
             {
@@ -1106,12 +1064,11 @@ namespace creature
         }
     }
 
-
     std::size_t Creature::WeaponsCount() const
     {
         std::size_t count(0);
 
-        //wands do not count as weapons
+        // wands do not count as weapons
         if (currWeaponsPVec_.empty() == false)
         {
             for (auto const NEXT_ITEM_PTR : currWeaponsPVec_)
@@ -1126,15 +1083,14 @@ namespace creature
         return count;
     }
 
-
     bool Creature::IsHoldingProjectileWeapon() const
     {
         bool isHoldingProjectileWeapon(false);
 
         for (auto const NEXT_ITEM_PTR : currWeaponsPVec_)
         {
-            if (NEXT_ITEM_PTR->IsWeapon() &&
-                (NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Projectile))
+            if (NEXT_ITEM_PTR->IsWeapon()
+                && (NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Projectile))
             {
                 isHoldingProjectileWeapon = true;
                 break;
@@ -1144,25 +1100,21 @@ namespace creature
         return isHoldingProjectileWeapon;
     }
 
-
     const std::string Creature::WeaponsString() const
     {
         const std::string SEPARATOR(", ");
 
-        //use a temp to avoid re-ordering the original currWeaponsPVec_
+        // use a temp to avoid re-ordering the original currWeaponsPVec_
         auto tempPVec{ currWeaponsPVec_ };
 
-        //sort by 'most damage'
+        // sort by 'most damage'
         if (tempPVec.size() > 1)
         {
             std::sort(
                 tempPVec.begin(),
                 tempPVec.end(),
-                []
-                (const item::ItemPtr_t A, const item::ItemPtr_t & B)
-                {
-                  return (A->DamageMin() + A->DamageMax()) >
-                         (B->DamageMin() + B->DamageMax());
+                [](const item::ItemPtr_t A, const item::ItemPtr_t & B) {
+                    return (A->DamageMin() + A->DamageMax()) > (B->DamageMin() + B->DamageMax());
                 });
         }
 
@@ -1174,7 +1126,6 @@ namespace creature
 
         return boost::algorithm::erase_last_copy(ss.str(), SEPARATOR);
     }
-
 
     const std::string Creature::ArmorString() const
     {
@@ -1189,16 +1140,15 @@ namespace creature
             }
         }
 
-        //sort by armor rating
+        // sort by armor rating
         if (armorItemsPVec.size() > 1)
         {
-            std::sort(armorItemsPVec.begin(),
-                      armorItemsPVec.end(),
-                      []
-                      (const item::ItemPtr_t A, const item::ItemPtr_t B)
-                      {
-                          return A->ArmorRating() > B->ArmorRating();
-                      });
+            std::sort(
+                armorItemsPVec.begin(),
+                armorItemsPVec.end(),
+                [](const item::ItemPtr_t A, const item::ItemPtr_t B) {
+                    return A->ArmorRating() > B->ArmorRating();
+                });
         }
 
         std::ostringstream ss;
@@ -1211,12 +1161,7 @@ namespace creature
         return boost::algorithm::erase_last_copy(ss.str(), SEPARATOR);
     }
 
-
-    Armor_t Creature::ArmorRating() const
-    {
-        return inventory_.ArmorRating();
-    }
-
+    Armor_t Creature::ArmorRating() const { return inventory_.ArmorRating(); }
 
     const std::string Creature::CanCastSpellsStr(const bool WILL_PREFIX_AND_POSTFIX) const
     {
@@ -1228,7 +1173,7 @@ namespace creature
             return RESPONSE_PREFIX + "knights cannot cast spells" + RESPONSE_POSTFIX;
         }
 
-        const std::string CAN_TAKE_ACTION_STR( CanTakeActionStr(false) );
+        const std::string CAN_TAKE_ACTION_STR(CanTakeActionStr(false));
 
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
@@ -1237,37 +1182,35 @@ namespace creature
 
         if (spellsVec_.empty())
         {
-            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no spells" + RESPONSE_POSTFIX;
+            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no spells"
+                + RESPONSE_POSTFIX;
         }
 
         if (TraitWorking(stats::Traits::Mana) <= 0)
         {
-            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left" + RESPONSE_POSTFIX;
+            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left"
+                + RESPONSE_POSTFIX;
         }
 
         if (inventory_.CountItemOfCategory(item::category::AllowsCasting) == 0)
         {
-            return RESPONSE_PREFIX +
-                creature::sex::HeSheIt(sex_, false) +
-                " has no wand or other casting item" + RESPONSE_POSTFIX;
+            return RESPONSE_PREFIX + creature::sex::HeSheIt(sex_, false)
+                + " has no wand or other casting item" + RESPONSE_POSTFIX;
         }
 
         return "";
     }
 
-
     bool Creature::CanCastSpellByEffectType(const combat::EffectType::Enum E) const
     {
-        return CanCastSpellByEffectType( combat::EffectTypeVec_t(1, E) );
+        return CanCastSpellByEffectType(combat::EffectTypeVec_t(1, E));
     }
-
 
     bool Creature::CanCastSpellByEffectType(const combat::EffectTypeVec_t & EFFECT_TYPE_VEC) const
     {
         for (auto const NEXT_SPELL_ENUM : spellsVec_)
         {
-            auto const NEXT_EFFECT_TYPE_SOURCE{
-                spell::Warehouse::Get(NEXT_SPELL_ENUM)->Effect() };
+            auto const NEXT_EFFECT_TYPE_SOURCE{ spell::Warehouse::Get(NEXT_SPELL_ENUM)->Effect() };
 
             for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
             {
@@ -1281,7 +1224,6 @@ namespace creature
         return false;
     }
 
-
     const spell::SpellPVec_t Creature::SpellsPVec() const
     {
         spell::SpellPVec_t spellsPVec;
@@ -1293,7 +1235,6 @@ namespace creature
 
         return spellsPVec;
     }
-
 
     bool Creature::SpellAdd(const spell::Spells::Enum E)
     {
@@ -1307,7 +1248,6 @@ namespace creature
             return false;
         }
     }
-
 
     bool Creature::SpellRemove(const spell::Spells::Enum E)
     {
@@ -1324,10 +1264,10 @@ namespace creature
         }
     }
 
-
     const std::string Creature::CanPlaySongsStr(const bool WILL_PREFIX_AND_POSTFIX) const
     {
-        const std::string RESPONSE_PREFIX((WILL_PREFIX_AND_POSTFIX) ? "Cannot play song because " : "");
+        const std::string RESPONSE_PREFIX(
+            (WILL_PREFIX_AND_POSTFIX) ? "Cannot play song because " : "");
         const std::string RESPONSE_POSTFIX((WILL_PREFIX_AND_POSTFIX) ? "." : "");
 
         if (role_ != role::Bard)
@@ -1344,30 +1284,29 @@ namespace creature
 
         if (songsVec_.empty())
         {
-            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no songs" + RESPONSE_POSTFIX;
+            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " knows no songs"
+                + RESPONSE_POSTFIX;
         }
 
         if (TraitWorking(stats::Traits::Mana) <= 0)
         {
-            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left" + RESPONSE_POSTFIX;
+            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left"
+                + RESPONSE_POSTFIX;
         }
 
         return "";
     }
-
 
     bool Creature::CanPlaySongsByEffectType(const combat::EffectType::Enum E) const
     {
         return CanPlaySongsByEffectType(combat::EffectTypeVec_t(1, E));
     }
 
-
     bool Creature::CanPlaySongsByEffectType(const combat::EffectTypeVec_t & EFFECT_TYPE_VEC) const
     {
         for (auto const NEXT_SONG_ENUM : songsVec_)
         {
-            auto const NEXT_EFFECT_TYPE_SOURCE{
-                song::Warehouse::Get(NEXT_SONG_ENUM)->Effect() };
+            auto const NEXT_EFFECT_TYPE_SOURCE{ song::Warehouse::Get(NEXT_SONG_ENUM)->Effect() };
 
             for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
             {
@@ -1381,7 +1320,6 @@ namespace creature
         return false;
     }
 
-
     const song::SongPVec_t Creature::SongsPVec() const
     {
         song::SongPVec_t songsPVec;
@@ -1393,7 +1331,6 @@ namespace creature
 
         return songsPVec;
     }
-
 
     bool Creature::SongAdd(const song::Songs::Enum E)
     {
@@ -1407,7 +1344,6 @@ namespace creature
             return false;
         }
     }
-
 
     bool Creature::SongRemove(const song::Songs::Enum E)
     {
@@ -1429,18 +1365,12 @@ namespace creature
         std::ostringstream ss;
 
         ss << "\"" << name_ << "\""
-            << ", " << sex::ToString(sex_)
-            << ", " << race::Name(race_)
-            << ", " << role::Name(role_)
-            << ", " << actualSet_.StatsString(false)
-            << ", health=" << healthCurrent_
-            << "/" << healthNormal_
-            << ", mana=" << TraitWorking(stats::Traits::Mana)
-            << "/" << TraitNormal(stats::Traits::Mana)
-            << ", rank=" << Rank()
-            << ", exp=" << Exp()
-            << ", body[" << bodyType_.ToString() << "]"
-            << ", serial#" << serialNumber_;
+           << ", " << sex::ToString(sex_) << ", " << race::Name(race_) << ", " << role::Name(role_)
+           << ", " << actualSet_.StatsString(false) << ", health=" << healthCurrent_ << "/"
+           << healthNormal_ << ", mana=" << TraitWorking(stats::Traits::Mana) << "/"
+           << TraitNormal(stats::Traits::Mana) << ", rank=" << Rank() << ", exp=" << Exp()
+           << ", body[" << bodyType_.ToString() << "]"
+           << ", serial#" << serialNumber_;
 
         ss << ", conds=";
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
@@ -1459,15 +1389,10 @@ namespace creature
         return ss.str();
     }
 
+    void Creature::StoreItemsInWarehouseAfterLoad() { inventory_.StoreItemsInWarehouseAfterLoad(); }
 
-    void Creature::StoreItemsInWarehouseAfterLoad()
-    {
-        inventory_.StoreItemsInWarehouseAfterLoad();
-    }
-
-
-    void Creature::EnchantmentApplyOrRemove(const EnchantmentPtr_t ENCHANTMENT_PTR,
-                                            const bool             WILL_APPLY)
+    void Creature::EnchantmentApplyOrRemove(
+        const EnchantmentPtr_t ENCHANTMENT_PTR, const bool WILL_APPLY)
     {
         if (WILL_APPLY)
         {
@@ -1479,15 +1404,13 @@ namespace creature
         {
             ENCHANTMENT_PTR->CreatureChangeRemove(this);
 
-            enchantmentsPVec_.erase(std::remove(enchantmentsPVec_.begin(),
-                enchantmentsPVec_.end(),
-                ENCHANTMENT_PTR),
+            enchantmentsPVec_.erase(
+                std::remove(enchantmentsPVec_.begin(), enchantmentsPVec_.end(), ENCHANTMENT_PTR),
                 enchantmentsPVec_.end());
 
             ReCalculateTraitBonuses();
         }
     }
-
 
     Weight_t Creature::WeightCanCarry() const
     {
@@ -1536,7 +1459,6 @@ namespace creature
         return Weight_t(base + ((Strength().As<int>() * multiplier) / divisor));
     }
 
-
     void Creature::ReCalculateTraitBonuses()
     {
         for (int i(0); i < stats::Traits::StatCount; ++i)
@@ -1547,14 +1469,15 @@ namespace creature
 
             for (auto const NEXT_COND_ENUM : conditionsVec_)
             {
-                traitPercent += condition::Warehouse::Get(NEXT_COND_ENUM)->
-                    Traits().GetCopy(NEXT_TRAIT_ENUM).Current();
+                traitPercent += condition::Warehouse::Get(NEXT_COND_ENUM)
+                                    ->Traits()
+                                    .GetCopy(NEXT_TRAIT_ENUM)
+                                    .Current();
             }
 
             for (auto const NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
             {
-                traitPercent += NEXT_ENCHANTMENT_PTR->
-                    Traits().GetCopy(NEXT_TRAIT_ENUM).Current();
+                traitPercent += NEXT_ENCHANTMENT_PTR->Traits().GetCopy(NEXT_TRAIT_ENUM).Current();
             }
 
             traitPercent += bonusSet_.GetCopy(NEXT_TRAIT_ENUM).Normal();
@@ -1563,30 +1486,26 @@ namespace creature
         }
     }
 
-
     stats::Trait_t Creature::TraitWorking(const stats::Traits::Enum E) const
     {
-        auto const ACTUAL{ static_cast<float>(TraitCurrent(E)) +
-            (TraitBonusActualAsRatio(E) * static_cast<float>(TraitCurrent(E))) };
+        auto const ACTUAL{ static_cast<float>(TraitCurrent(E))
+                           + (TraitBonusActualAsRatio(E) * static_cast<float>(TraitCurrent(E))) };
 
         return (ACTUAL < 0.0f) ? 0 : static_cast<stats::Trait_t>(ACTUAL);
     }
 
-
-    stats::Trait_t Creature::TraitBonusNormalAdj(
-        const stats::Traits::Enum E, const stats::Trait_t ADJ)
+    stats::Trait_t
+        Creature::TraitBonusNormalAdj(const stats::Traits::Enum E, const stats::Trait_t ADJ)
     {
         auto const NEW_NORMAL{ bonusSet_.Get(E).NormalAdj(ADJ) };
         ReCalculateTraitBonuses();
         return NEW_NORMAL;
     }
 
-
     bool Creature::TraitBonusTest(const stats::Traits::Enum E) const
     {
         return (misc::random::Int(100) < bonusSet_.GetCopy(E).Current());
     }
-
 
     const stats::TraitSet Creature::TraitsWorking() const
     {
@@ -1601,10 +1520,8 @@ namespace creature
         return set;
     }
 
-
-    const std::string Creature::TraitModifiedString(
-        const stats::Traits::Enum E,
-        const bool WILL_WRAP) const
+    const std::string
+        Creature::TraitModifiedString(const stats::Traits::Enum E, const bool WILL_WRAP) const
     {
         auto const WORKING{ TraitWorking(E) };
         auto const NORMAL{ TraitNormal(E) };
@@ -1638,7 +1555,6 @@ namespace creature
         }
     }
 
-
     void Creature::StatTraitsModify(const stats::StatSet & STAT_SET)
     {
         TraitNormalAdj(stats::Traits::Strength, STAT_SET.Str().As<int>());
@@ -1649,18 +1565,16 @@ namespace creature
         TraitNormalAdj(stats::Traits::Intelligence, STAT_SET.Int().As<int>());
     }
 
-
     const item::ItemPVecVec_t Creature::ComposeWeaponsList() const
     {
         item::ItemPVecVec_t weaponsPVecVec;
         auto const EQUIPPED_ITEMS_PVEC{ Inventory().ItemsEquipped() };
 
-        //the vec of non-bodypart equipped weapons is always first
+        // the vec of non-bodypart equipped weapons is always first
         item::ItemPVec_t ssNonBPWeaponsPVec;
         for (auto const NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
-            if ((NEXT_ITEM_PTR->IsWeapon()) &&
-                (NEXT_ITEM_PTR->IsBodypart() == false))
+            if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
             {
                 ssNonBPWeaponsPVec.push_back(NEXT_ITEM_PTR);
             }
@@ -1677,10 +1591,9 @@ namespace creature
         //...if the creature is a spellcaster then wands are considered a separate weapon set/vec
         if (CanCastSpells())
         {
-            const item::ItemPVec_t NOT_BROKEN_WANDS_PVEC{
-                item::Algorithms::FindByBroken(
-                    item::Algorithms::FindByMiscType(EQUIPPED_ITEMS_PVEC, item::misc_type::Wand),
-                    item::Algorithms::BrokenOpt::Discard) };
+            const item::ItemPVec_t NOT_BROKEN_WANDS_PVEC{ item::Algorithms::FindByBroken(
+                item::Algorithms::FindByMiscType(EQUIPPED_ITEMS_PVEC, item::misc_type::Wand),
+                item::Algorithms::BrokenOpt::Discard) };
 
             if (NOT_BROKEN_WANDS_PVEC.empty() == false)
             {
@@ -1688,14 +1601,13 @@ namespace creature
             }
         }
 
-        //the equipped body part weapons that are not bite/claws are always second
+        // the equipped body part weapons that are not bite/claws are always second
         item::ItemPVec_t ssBPNonBCWeaponsPVec;
         for (auto const NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
-            if ((NEXT_ITEM_PTR->IsWeapon()) &&
-                NEXT_ITEM_PTR->IsBodypart() &&
-                ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Bite) == 0) &&
-                ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Claws) == 0))
+            if ((NEXT_ITEM_PTR->IsWeapon()) && NEXT_ITEM_PTR->IsBodypart()
+                && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Bite) == 0)
+                && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Claws) == 0))
             {
                 ssBPNonBCWeaponsPVec.push_back(NEXT_ITEM_PTR);
             }
@@ -1706,14 +1618,13 @@ namespace creature
             weaponsPVecVec.push_back(ssBPNonBCWeaponsPVec);
         }
 
-        //the equipped body part weapons that ARE bite/claws always come after
+        // the equipped body part weapons that ARE bite/claws always come after
         item::ItemPVec_t ssBPBCWeaponsPVec;
         for (auto const NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
-            if ((NEXT_ITEM_PTR->IsWeapon()) &&
-                NEXT_ITEM_PTR->IsBodypart() &&
-                ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Bite) ||
-                (NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Claws)))
+            if ((NEXT_ITEM_PTR->IsWeapon()) && NEXT_ITEM_PTR->IsBodypart()
+                && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Bite)
+                    || (NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Claws)))
             {
                 ssBPBCWeaponsPVec.push_back(NEXT_ITEM_PTR);
             }
@@ -1727,44 +1638,44 @@ namespace creature
         return weaponsPVecVec;
     }
 
-
     bool operator==(const Creature & L, const Creature & R)
     {
-        if ( std::tie(L.name_,
-                      L.imageFilename_,
-                      L.sex_,
-                      L.bodyType_,
-                      L.race_,
-                      L.role_,
-                      L.serialNumber_,
-                      L.dateTimeCreated_,
-                      L.achievements_,
-                      L.lastSpellCastNum_,
-                      L.lastSongPlayedNum_,
-                      L.healthCurrent_,
-                      L.healthNormal_,
-                      L.rank_,
-                      L.experience_,
-                      L.actualSet_,
-                      L.bonusSet_)
-                !=
-                std::tie(R.name_,
-                         R.imageFilename_,
-                         R.sex_,
-                         R.bodyType_,
-                         R.race_,
-                         R.role_,
-                         R.serialNumber_,
-                         R.dateTimeCreated_,
-                         R.achievements_,
-                         R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_,
-                         R.healthCurrent_,
-                         R.healthNormal_,
-                         R.rank_,
-                         R.experience_,
-                         R.actualSet_,
-                         R.bonusSet_))
+        if (std::tie(
+                L.name_,
+                L.imageFilename_,
+                L.sex_,
+                L.bodyType_,
+                L.race_,
+                L.role_,
+                L.serialNumber_,
+                L.dateTimeCreated_,
+                L.achievements_,
+                L.lastSpellCastNum_,
+                L.lastSongPlayedNum_,
+                L.healthCurrent_,
+                L.healthNormal_,
+                L.rank_,
+                L.experience_,
+                L.actualSet_,
+                L.bonusSet_)
+            != std::tie(
+                   R.name_,
+                   R.imageFilename_,
+                   R.sex_,
+                   R.bodyType_,
+                   R.race_,
+                   R.role_,
+                   R.serialNumber_,
+                   R.dateTimeCreated_,
+                   R.achievements_,
+                   R.lastSpellCastNum_,
+                   R.lastSongPlayedNum_,
+                   R.healthCurrent_,
+                   R.healthNormal_,
+                   R.rank_,
+                   R.experience_,
+                   R.actualSet_,
+                   R.bonusSet_))
         {
             return false;
         }
@@ -1792,44 +1703,44 @@ namespace creature
         return misc::Vector::OrderlessCompareEqual(L.spellsVec_, R.spellsVec_);
     }
 
-
     bool operator<(const Creature & L, const Creature & R)
     {
-        if ( std::tie(L.name_,
-                      L.imageFilename_,
-                      L.sex_,
-                      L.bodyType_,
-                      L.race_,
-                      L.role_,
-                      L.serialNumber_,
-                      L.dateTimeCreated_,
-                      L.achievements_,
-                      L.lastSpellCastNum_,
-                      L.lastSongPlayedNum_,
-                      L.healthCurrent_,
-                      L.healthNormal_,
-                      L.rank_,
-                      L.experience_,
-                      L.actualSet_,
-                      L.bonusSet_)
-                <
-                std::tie(R.name_,
-                         R.imageFilename_,
-                         R.sex_,
-                         R.bodyType_,
-                         R.race_,
-                         R.role_,
-                         R.serialNumber_,
-                         R.dateTimeCreated_,
-                         R.achievements_,
-                         R.lastSpellCastNum_,
-                         R.lastSongPlayedNum_,
-                         R.healthCurrent_,
-                         R.healthNormal_,
-                         R.rank_,
-                         R.experience_,
-                         R.actualSet_,
-                         R.bonusSet_))
+        if (std::tie(
+                L.name_,
+                L.imageFilename_,
+                L.sex_,
+                L.bodyType_,
+                L.race_,
+                L.role_,
+                L.serialNumber_,
+                L.dateTimeCreated_,
+                L.achievements_,
+                L.lastSpellCastNum_,
+                L.lastSongPlayedNum_,
+                L.healthCurrent_,
+                L.healthNormal_,
+                L.rank_,
+                L.experience_,
+                L.actualSet_,
+                L.bonusSet_)
+            < std::tie(
+                  R.name_,
+                  R.imageFilename_,
+                  R.sex_,
+                  R.bodyType_,
+                  R.race_,
+                  R.role_,
+                  R.serialNumber_,
+                  R.dateTimeCreated_,
+                  R.achievements_,
+                  R.lastSpellCastNum_,
+                  R.lastSongPlayedNum_,
+                  R.healthCurrent_,
+                  R.healthNormal_,
+                  R.rank_,
+                  R.experience_,
+                  R.actualSet_,
+                  R.bonusSet_))
         {
             return true;
         }
@@ -1857,10 +1768,8 @@ namespace creature
         return misc::Vector::OrderlessCompareLess(L.spellsVec_, R.spellsVec_);
     }
 
-
-    void Creature::EnchantmentsApplyOrRemoveByType(const EnchantmentPVec_t &   PVEC,
-                                                   const EnchantmentType::Enum TYPE,
-                                                   const bool                  WILL_APPLY)
+    void Creature::EnchantmentsApplyOrRemoveByType(
+        const EnchantmentPVec_t & PVEC, const EnchantmentType::Enum TYPE, const bool WILL_APPLY)
     {
         for (auto const NEXT_ENCHANTMENT_PTR : PVEC)
         {
@@ -1870,7 +1779,6 @@ namespace creature
             }
         }
     }
-
 
     bool Creature::HasEnchantmentType(const EnchantmentType::Enum TYPE_ENUM) const
     {
@@ -1884,6 +1792,5 @@ namespace creature
 
         return false;
     }
-
 }
 }

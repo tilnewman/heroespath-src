@@ -29,14 +29,14 @@
 //
 #include "inn-stage.hpp"
 
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/tile.hpp"
-#include "sfml-util/sliders.hpp"
 #include "sfml-util/animation-factory.hpp"
+#include "sfml-util/display.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/loaders.hpp"
 #include "sfml-util/ouroboros.hpp"
+#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sliders.hpp"
+#include "sfml-util/tile.hpp"
 
 #include "misc/real.hpp"
 
@@ -47,37 +47,30 @@
 
 #include "state/game-state-factory.hpp"
 
-
 namespace heroespath
 {
 namespace stage
 {
 
     InnStage::InnStage()
-    :
-        Stage              ("Inn"),
-        SCREEN_WIDTH_      (sfml_util::Display::Instance()->GetWinWidth()),
-        SCREEN_HEIGHT_     (sfml_util::Display::Instance()->GetWinHeight()),
-        titleSymbolTexture_(),
-        titleSymbolSprite_ (),
-        backgroundImage_   ("media-images-backgrounds-tile-darkknot"),
-        candleTexture_     (),
-        candleSprite_      (),
-        candleAnimUPtr_    (),
-        ouroborosUPtr_     (),
-        bottomSymbol_      ()
+        : Stage("Inn")
+        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
+        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        , titleSymbolTexture_()
+        , titleSymbolSprite_()
+        , backgroundImage_("media-images-backgrounds-tile-darkknot")
+        , candleTexture_()
+        , candleSprite_()
+        , candleAnimUPtr_()
+        , ouroborosUPtr_()
+        , bottomSymbol_()
     {}
 
-
-    InnStage::~InnStage()
-    {
-        ClearAllEntities();
-    }
-
+    InnStage::~InnStage() { ClearAllEntities(); }
 
     void InnStage::Setup()
     {
-        //title symbol
+        // title symbol
         sfml_util::LoadTexture(
             titleSymbolTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol2"));
@@ -86,32 +79,27 @@ namespace stage
         titleSymbolSprite_.setScale(0.60f, 0.60f);
 
         titleSymbolSprite_.setPosition(
-            (SCREEN_WIDTH_ * 0.5f) - (titleSymbolSprite_.getGlobalBounds().width * 0.5f),
-            10.0f);
+            (SCREEN_WIDTH_ * 0.5f) - (titleSymbolSprite_.getGlobalBounds().width * 0.5f), 10.0f);
 
-        //ouroboros
+        // ouroboros
         ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("InnStage's");
         EntityAdd(ouroborosUPtr_.get());
 
-        //candle
+        // candle
         sfml_util::LoadTexture(
-            candleTexture_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-candle"));
+            candleTexture_, game::GameDataFile::Instance()->GetMediaPath("media-images-candle"));
 
         candleSprite_.setTexture(candleTexture_);
         candleSprite_.setPosition(SCREEN_WIDTH_ - 200.0f, SCREEN_HEIGHT_ - 200.0f);
 
-        //candle anim
-        candleAnimUPtr_ = sfml_util::AnimationFactory::Make(
-            sfml_util::Animations::CandleFlame,
-            1.0f,
-            0.05f);
+        // candle anim
+        candleAnimUPtr_
+            = sfml_util::AnimationFactory::Make(sfml_util::Animations::CandleFlame, 1.0f, 0.05f);
 
         candleAnimUPtr_->SetEntityPos(SCREEN_WIDTH_ - 225.0f, SCREEN_HEIGHT_ - 290.0f);
 
         EntityAdd(candleAnimUPtr_.get());
     }
-
 
     void InnStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
@@ -119,6 +107,5 @@ namespace stage
         target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);
     }
-
 }
 }

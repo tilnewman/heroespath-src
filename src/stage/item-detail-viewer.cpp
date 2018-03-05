@@ -31,12 +31,11 @@
 
 #include "item/item.hpp"
 
-#include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/display.hpp"
+#include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 #include <sstream>
-
 
 namespace heroespath
 {
@@ -44,40 +43,38 @@ namespace stage
 {
 
     ItemDetailViewer::ItemDetailViewer()
-    :
-        SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth()),
-        HALF_SCREEN_WIDTH_(SCREEN_WIDTH_ * 0.5f),
-        SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight()),
-        IMAGE_TOP_SPACER_(sfml_util::MapByRes(35.0f, 100.0f)),
-        INNER_SPACER_( 20.0f ),
-        DOUBLE_INNER_SPACER_(INNER_SPACER_ * 2.0f),
-        TARGET_WIDTH_(SCREEN_WIDTH_ * 0.75f),
-        TARGET_RECT_(
-            HALF_SCREEN_WIDTH_ - (TARGET_WIDTH_ * 0.5f),
-            sfml_util::MapByRes(35.0f, 100.0f),
-            TARGET_WIDTH_,
-            SCREEN_HEIGHT_ * 0.85f),
-        SLIDER_SPEED_(6.0f),
-        backgroundQuads_(sf::Quads, 4),
-        texture_(),
-        sprite_(),
-        slider_(),
-        textRegionUPtr_(),
-        sourceRect(),
-        itemPtr_(nullptr),
-        willShowImage_(false),
-        isBeforeAnyChange_(true),
-        isShowing_(false)
+        : SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
+        , HALF_SCREEN_WIDTH_(SCREEN_WIDTH_ * 0.5f)
+        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        , IMAGE_TOP_SPACER_(sfml_util::MapByRes(35.0f, 100.0f))
+        , INNER_SPACER_(20.0f)
+        , DOUBLE_INNER_SPACER_(INNER_SPACER_ * 2.0f)
+        , TARGET_WIDTH_(SCREEN_WIDTH_ * 0.75f)
+        , TARGET_RECT_(
+              HALF_SCREEN_WIDTH_ - (TARGET_WIDTH_ * 0.5f),
+              sfml_util::MapByRes(35.0f, 100.0f),
+              TARGET_WIDTH_,
+              SCREEN_HEIGHT_ * 0.85f)
+        , SLIDER_SPEED_(6.0f)
+        , backgroundQuads_(sf::Quads, 4)
+        , texture_()
+        , sprite_()
+        , slider_()
+        , textRegionUPtr_()
+        , sourceRect()
+        , itemPtr_(nullptr)
+        , willShowImage_(false)
+        , isBeforeAnyChange_(true)
+        , isShowing_(false)
     {
         slider_.Setup(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1.0f, 1.0f), SLIDER_SPEED_);
         slider_.ChangeDirection();
     }
 
-
     void ItemDetailViewer::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        //Always draw because it is a fast operation and will
-        //be fully transparent when should not be drawn.
+        // Always draw because it is a fast operation and will
+        // be fully transparent when should not be drawn.
         target.draw(backgroundQuads_, states);
 
         if (willShowImage_)
@@ -87,10 +84,9 @@ namespace stage
 
         if (textRegionUPtr_.get() != nullptr)
         {
-            target.draw( * textRegionUPtr_, states);
+            target.draw(*textRegionUPtr_, states);
         }
     }
-
 
     void ItemDetailViewer::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
@@ -98,8 +94,8 @@ namespace stage
         auto const IS_FINISHED_MOVING{ slider_.UpdateTime(ELAPSED_TIME_SECONDS) };
         auto const IS_MOVING_TOWARD{ slider_.Direction() == sfml_util::Moving::Toward };
 
-        auto const PROGRESS_RATIO{ ((IS_MOVING_TOWARD) ?
-            slider_.ProgressRatio() : (1.0f - slider_.ProgressRatio())) };
+        auto const PROGRESS_RATIO{ (
+            (IS_MOVING_TOWARD) ? slider_.ProgressRatio() : (1.0f - slider_.ProgressRatio())) };
 
         if (slider_.ProgressRatio() > 0.1f)
         {
@@ -117,16 +113,13 @@ namespace stage
 
         SetupBackgroundQuadPositions(PROGRESS_RATIO);
 
-        if (IS_FINISHED_MOVING &&
-            PRE_IS_MOVING_TOWARD &&
-            (slider_.IsMoving() == false))
+        if (IS_FINISHED_MOVING && PRE_IS_MOVING_TOWARD && (slider_.IsMoving() == false))
         {
             SetupImage(itemPtr_);
             SetupText(itemPtr_);
             isShowing_ = true;
         }
     }
-
 
     void ItemDetailViewer::FadeIn(const item::ItemPtr_t ITEM_PTR, const sf::FloatRect & RECT)
     {
@@ -141,7 +134,6 @@ namespace stage
             sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
         }
     }
-
 
     void ItemDetailViewer::FadeOut()
     {
@@ -159,21 +151,16 @@ namespace stage
         }
     }
 
-
     void ItemDetailViewer::SetupBackgroundQuadColors(const float PROGRESS_RATIO)
     {
         auto const BACKGROUND_COLOR{ sf::Color(
-            0,
-            0,
-            0,
-            static_cast<sf::Uint8>(PROGRESS_RATIO * 255.0f)) };
+            0, 0, 0, static_cast<sf::Uint8>(PROGRESS_RATIO * 255.0f)) };
 
         backgroundQuads_[0].color = BACKGROUND_COLOR;
         backgroundQuads_[1].color = BACKGROUND_COLOR;
         backgroundQuads_[2].color = BACKGROUND_COLOR;
         backgroundQuads_[3].color = BACKGROUND_COLOR;
     }
-
 
     void ItemDetailViewer::SetupBackgroundQuadPositions(const float RATIO)
     {
@@ -207,7 +194,6 @@ namespace stage
         backgroundQuads_[3].position = sf::Vector2f(LEFT, BOT);
     }
 
-
     void ItemDetailViewer::SetupImage(const item::ItemPtr_t ITEM_PTR)
     {
         if (ITEM_PTR == nullptr)
@@ -222,7 +208,7 @@ namespace stage
 
         sprite_.setTexture(texture_, true);
 
-        //found by experiment to look good at various resolutions
+        // found by experiment to look good at various resolutions
         const float SCALE(sfml_util::MapByRes(0.75f, 1.25f));
         sprite_.setScale(SCALE, SCALE);
 
@@ -230,7 +216,6 @@ namespace stage
             HALF_SCREEN_WIDTH_ - (sprite_.getGlobalBounds().width * 0.5f),
             TARGET_RECT_.left + INNER_SPACER_);
     }
-
 
     void ItemDetailViewer::SetupText(const item::ItemPtr_t ITEM_PTR)
     {
@@ -242,19 +227,19 @@ namespace stage
 
         std::ostringstream ss;
         ss << ITEM_PTR->Name() << "\n"
-            << ITEM_PTR->Desc() << "\n\n"
-            << item::category::ToString(ITEM_PTR->Category(), true) << "\n";
+           << ITEM_PTR->Desc() << "\n\n"
+           << item::category::ToString(ITEM_PTR->Category(), true) << "\n";
 
         if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
         {
-            ss << "(can only be used by "
-                << creature::role::ToString(ITEM_PTR->ExclusiveRole()) << "s)\n";
+            ss << "(can only be used by " << creature::role::ToString(ITEM_PTR->ExclusiveRole())
+               << "s)\n";
         }
 
         ss << "\n";
 
         ss << "weighs " << ITEM_PTR->Weight() << "\n"
-            << "worth about " << ITEM_PTR->Price() << " coins\n";
+           << "worth about " << ITEM_PTR->Price() << " coins\n";
 
         if (ITEM_PTR->IsWeapon())
         {
@@ -276,8 +261,8 @@ namespace stage
 
         auto const TEXT_LEFT{ TARGET_RECT_.left + INNER_SPACER_ };
 
-        auto const TEXT_TOP{
-            sprite_.getGlobalBounds().top + sprite_.getGlobalBounds().height + INNER_SPACER_ };
+        auto const TEXT_TOP{ sprite_.getGlobalBounds().top + sprite_.getGlobalBounds().height
+                             + INNER_SPACER_ };
 
         auto const TEXT_WIDTH{ TARGET_RECT_.width - DOUBLE_INNER_SPACER_ };
 
@@ -290,6 +275,5 @@ namespace stage
         textRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "ItemDetailViewer'sTextRegion", TEXT_INFO, TEXT_RECT);
     }
-
 }
 }

@@ -27,33 +27,31 @@
 //
 // popup-stage-base.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-window.hpp"
-#include "sfml-util/stage.hpp"
-#include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/i-callback-handler.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-window.hpp"
+#include "sfml-util/stage.hpp"
 
 #include "popup/popup-info.hpp"
 
 #include <string>
-
 
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for encapsulating all state and operations common to popup windows.
+    // Responsible for encapsulating all state and operations common to popup windows.
     class PopupStageBase
-    :
-        public sfml_util::Stage,
-        public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
-        public sfml_util::gui::callback::ITextButtonCallbackHandler_t
+        : public sfml_util::Stage
+        , public sfml_util::gui::callback::ISliderBarCallbackHandler_t
+        , public sfml_util::gui::callback::ITextButtonCallbackHandler_t
     {
-        PopupStageBase(const PopupStageBase &) =delete;
-        PopupStageBase & operator=(const PopupStageBase &) =delete;
+        PopupStageBase(const PopupStageBase &) = delete;
+        PopupStageBase & operator=(const PopupStageBase &) = delete;
 
     public:
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
@@ -61,11 +59,11 @@ namespace popup
 
         inline virtual const std::string HandlerName() const override { return GetStageName(); }
 
-        virtual bool HandleCallback(
-            const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        virtual bool
+            HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
-        virtual bool HandleCallback(
-            const sfml_util::gui::callback::TextButtonCallbackPackage_t &) override;
+        virtual bool
+            HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) override;
 
         virtual void Setup() override;
 
@@ -103,9 +101,7 @@ namespace popup
         void SetupAccentSprite();
         void SetupRedXImage();
 
-        const sf::IntRect BackgroundImageRect(
-            const PopupImage::Enum PI,
-            const float SCALE) const;
+        const sf::IntRect BackgroundImageRect(const PopupImage::Enum PI, const float SCALE) const;
 
         virtual inline bool WillPressingCKeyClosePopup() const { return false; }
 
@@ -146,8 +142,7 @@ namespace popup
         sf::Texture xSymbolTexture_;
         float keepAliveTimerSec_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGEBASE_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGEBASE_HPP_INCLUDED

@@ -32,7 +32,6 @@
 
 #include <string>
 
-
 namespace heroespath
 {
 namespace creature
@@ -56,8 +55,7 @@ namespace creature
         inline static const std::string ToString(const wolfen_class::Enum E) { return Name(E); }
         static wolfen_class::Enum ClassFromRank(const Rank_t &);
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_WOLFENCLASSENUM_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_WOLFENCLASSENUM_HPP_INCLUDED

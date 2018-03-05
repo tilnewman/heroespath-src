@@ -28,34 +28,33 @@
 // character-stage.hpp
 //  A Stage class that displays the character creation screen.
 //
+#include "sfml-util/gradient.hpp"
+#include "sfml-util/gui/background-image.hpp"
+#include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/gui/radio-button.hpp"
+#include "sfml-util/gui/sliderbar.hpp"
+#include "sfml-util/gui/text-entry-box.hpp"
+#include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
-#include "sfml-util/stage.hpp"
-#include "sfml-util/gradient.hpp"
 #include "sfml-util/sliders.hpp"
-#include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/gui/background-image.hpp"
-#include "sfml-util/gui/radio-button.hpp"
-#include "sfml-util/gui/text-entry-box.hpp"
-#include "sfml-util/gui/four-state-button.hpp"
-#include "sfml-util/gui/sliderbar.hpp"
+#include "sfml-util/stage.hpp"
 
-#include "sfml-util/main-menu-buttons.hpp"
-#include "stats/stat-set.hpp"
-#include "stage/character-stage-anim-num.hpp"
 #include "creature/race-stats.hpp"
 #include "creature/role-stats.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-title.hpp"
 #include "player/character.hpp"
+#include "sfml-util/horiz-symbol.hpp"
+#include "sfml-util/main-menu-buttons.hpp"
+#include "sfml-util/main-menu-title.hpp"
+#include "stage/character-stage-anim-num.hpp"
+#include "stats/stat-set.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
-
 
 namespace heroespath
 {
@@ -69,23 +68,23 @@ namespace sfml_util
 
     namespace gui
     {
-    namespace box
-    {
-        class Box;
-        using BoxUPtr_t = std::unique_ptr<Box>;
-    }
+        namespace box
+        {
+            class Box;
+            using BoxUPtr_t = std::unique_ptr<Box>;
+        }
     }
 }
 
 namespace stage
 {
 
-    //wrapper class for the lower meny buttons
+    // wrapper class for the lower meny buttons
     class CharacterStage;
     class MenuButton : public sfml_util::gui::FourStateButton
     {
-        MenuButton(const MenuButton &) =delete;
-        MenuButton & operator=(const MenuButton &) =delete;
+        MenuButton(const MenuButton &) = delete;
+        MenuButton & operator=(const MenuButton &) = delete;
 
     public:
         MenuButton(
@@ -107,21 +106,19 @@ namespace stage
     };
     using MenuButtonUPtr_t = std::unique_ptr<MenuButton>;
 
-
-    //encapsulates a stat modifier that is drawn to the screen
+    // encapsulates a stat modifier that is drawn to the screen
     struct StatModText : public sf::Drawable
     {
         StatModText(
             const stats::Traits::Enum STAT,
-            const std::string & NAME, //name of race or role
+            const std::string & NAME, // name of race or role
             const stats::Trait_t VAL,
             const float POS_LEFT,
             const float POS_TOP)
-        :
-            value(VAL),
-            stat(STAT),
-            text_region_sptr(std::make_shared<sfml_util::gui::TextRegion>(
-                std::string(NAME).append("StatModText")) )
+            : value(VAL)
+            , stat(STAT)
+            , text_region_sptr(std::make_shared<sfml_util::gui::TextRegion>(
+                  std::string(NAME).append("StatModText")))
         {
             const sf::Int8 COLOR_BASE(100);
             sf::Color color(COLOR_BASE, 255, COLOR_BASE);
@@ -145,12 +142,11 @@ namespace stage
             text_region_sptr->Setup(TEXT_INFO, RECT);
         }
 
-        virtual ~StatModText()
-        {}
+        virtual ~StatModText() {}
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
-            target.draw( * text_region_sptr, states);
+            target.draw(*text_region_sptr, states);
         }
 
         stats::Trait_t value;
@@ -160,34 +156,31 @@ namespace stage
 
     using StatModTextVec_t = std::vector<StatModText>;
 
-
-
-    //manages the CharacterCreation process
+    // manages the CharacterCreation process
     class CharacterStage
-    :
-        public sfml_util::Stage,
-        public sfml_util::callback::IRadioButtonSetCallbackHandler_t,
-        public popup::IPopupHandler_t,
-        public sfml_util::gui::callback::ISliderBarCallbackHandler_t,
-        public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        : public sfml_util::Stage
+        , public sfml_util::callback::IRadioButtonSetCallbackHandler_t
+        , public popup::IPopupHandler_t
+        , public sfml_util::gui::callback::ISliderBarCallbackHandler_t
+        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
-        CharacterStage(const CharacterStage &) =delete;
-        CharacterStage & operator=(const CharacterStage &) =delete;
+        CharacterStage(const CharacterStage &) = delete;
+        CharacterStage & operator=(const CharacterStage &) = delete;
 
     public:
         CharacterStage();
         virtual ~CharacterStage();
 
-        //required by callback handler
+        // required by callback handler
         inline virtual const std::string HandlerName() const override { return GetStageName(); }
 
-        virtual bool HandleCallback(
-            const sfml_util::callback::RadioButtonCallbackPackage_t &) override;
+        virtual bool
+            HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &) override;
 
         virtual bool HandleCallback(const popup::PopupResponse &) override;
 
-        virtual bool HandleCallback(
-            const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        virtual bool
+            HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
         virtual bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
@@ -198,7 +191,8 @@ namespace stage
         virtual bool KeyPress(const sf::Event::KeyEvent & KE) override;
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE) override;
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
-        virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        virtual sfml_util::gui::IGuiEntityPtr_t
+            UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
         virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
         virtual bool AreAnyAnimNumStillMoving() const;
 
@@ -215,14 +209,13 @@ namespace stage
         void Setup_StatBackgroundBox(const float STATBOX_POS_TOP);
 
         void Setup_StatLabels(
-            const float STATBOX_POS_TOP,
-            const sfml_util::gui::TextInfo & STAT_TEXT_INFO);
+            const float STATBOX_POS_TOP, const sfml_util::gui::TextInfo & STAT_TEXT_INFO);
 
         void Setup_StatNumberPositions();
         void Setup_FixedStats(const sfml_util::gui::TextInfo &);
         void Setup_SmokeAnimation(const float ATTRIB_BOX_TOP);
 
-        //returns the vertical position on screen
+        // returns the vertical position on screen
         float Setup_AttributeDescriptionBox();
 
         void Setup_Attribute(
@@ -254,10 +247,9 @@ namespace stage
         void AdjustRoleRadioButtonsForRace(const creature::race::Enum WHICH_RACE);
         float GetAttributeNumPosTop(const stats::Traits::Enum STAT);
 
-        //returns true if any text was set that needs to be displayed
+        // returns true if any text was set that needs to be displayed
         bool GetStatHelpText(
-            const stats::Traits::Enum WHICH_STAT,
-            sfml_util::gui::TextInfo & textInfo) const;
+            const stats::Traits::Enum WHICH_STAT, sfml_util::gui::TextInfo & textInfo) const;
 
         void UndoAndClearStatModifierChanges();
         void SetVisibleStatsToStatSetBase();
@@ -265,12 +257,12 @@ namespace stage
         void CreateStatModifers();
         void ApplyStatModifiersToStatSetBase();
 
-        //these functions return stats::Traits::Count on error or none result
+        // these functions return stats::Traits::Count on error or none result
         stats::Traits::Enum GetHeldDownStat() const;
         stats::Traits::Enum GetStatAbove(const stats::Traits::Enum STAT) const;
         stats::Traits::Enum GetStatBelow(const stats::Traits::Enum STAT) const;
 
-        float GetStatPosTop(const stats::Traits::Enum STAT) const;//returns <0.0f on error
+        float GetStatPosTop(const stats::Traits::Enum STAT) const; // returns <0.0f on error
         bool AreAnyStatsIgnored() const;
         void HandleAttributeDragging(const sf::Vector2f & MOUSE_POS_V);
         void ProduceAnimatingDigits(const float ELAPSED_TIME_SECONDS);
@@ -321,8 +313,8 @@ namespace stage
         //
         sfml_util::sliders::Drifter<float> smokeAnimDrifterX_;
         sfml_util::sliders::Drifter<float> smokeAnimDrifterY_;
-        sfml_util::gui::BackgroundImage    backgroundImage_;
-        sfml_util::AnimationUPtr_t         smokeAnimUPtr_;
+        sfml_util::gui::BackgroundImage backgroundImage_;
+        sfml_util::AnimationUPtr_t smokeAnimUPtr_;
         //
         MenuButtonUPtr_t backButtonUPtr_;
         MenuButtonUPtr_t saveButtonUPtr_;
@@ -362,37 +354,36 @@ namespace stage
         //
         sfml_util::gui::box::BoxUPtr_t statsBoxUPtr_;
         //
-        bool          isAnimStats_;
-        bool          isWaitingForStats_;
-        float         animStatsDelayPerSec_;
-        float         animStatsTimeCounterSec_;
+        bool isAnimStats_;
+        bool isWaitingForStats_;
+        float animStatsDelayPerSec_;
+        float animStatsTimeCounterSec_;
         AnimNumSVec_t animStatsSVec_;
         AnimNumSVec_t fixedStatsSVec_;
-        int           initialRollCounter_;
+        int initialRollCounter_;
         //
         float dragStartY_;
         stats::Traits::Enum closestDragStat_;
         //
         sfml_util::gui::RadioButtonSetUPtr_t raceRadioButtonUPtr_;
-        sfml_util::gui::TextRegionUPtr_t     racetDescTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t racetDescTextRegionUPtr_;
         sfml_util::gui::RadioButtonSetUPtr_t roleRadioButtonSPtr_;
-        sfml_util::gui::TextRegionUPtr_t     roletDescTextRegionUPtr_;
+        sfml_util::gui::TextRegionUPtr_t roletDescTextRegionUPtr_;
         sfml_util::gui::RadioButtonSetUPtr_t sexRadioButtonUPtr_;
-        sfml_util::gui::TextEntryBoxUPtr_t   nameTextEntryBoxUPtr_;
+        sfml_util::gui::TextEntryBoxUPtr_t nameTextEntryBoxUPtr_;
         //
         sfml_util::gui::TextRegionUPtr_t attrDescTextRegionUPtr_;
         //
-        sfml_util::gui::TextRegionUPtr_t              sbInsTextRegionUPtr_;
-        sfml_util::sliders::Slider<sf::Uint8, float>  sbInsTextSlider_;
-        sfml_util::gui::TextRegionUPtr_t              nInsTextRegionUPtr_;
-        sfml_util::sliders::Slider<sf::Uint8, float>  nInsTextSlider_;
+        sfml_util::gui::TextRegionUPtr_t sbInsTextRegionUPtr_;
+        sfml_util::sliders::Slider<sf::Uint8, float> sbInsTextSlider_;
+        sfml_util::gui::TextRegionUPtr_t nInsTextRegionUPtr_;
+        sfml_util::sliders::Slider<sf::Uint8, float> nInsTextSlider_;
         //
         sfml_util::BottomSymbol bottomSymbol_;
         //
         std::size_t selectedImageIndex_;
     };
-
 }
 }
 
-#endif //HEROESPATH_CHARACTERSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_CHARACTERSTAGE_HPP_INCLUDED

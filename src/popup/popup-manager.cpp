@@ -29,60 +29,52 @@
 //
 #include "popup-manager.hpp"
 
+#include "sfml-util/display.hpp"
+#include "sfml-util/gui/box-info.hpp"
+#include "sfml-util/gui/box.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/gui/box.hpp"
-#include "sfml-util/gui/box-info.hpp"
 
-#include "log/log-macros.hpp"
-#include "game/loop-manager.hpp"
-#include "creature/title.hpp"
 #include "creature/creature.hpp"
+#include "creature/title.hpp"
+#include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
 
 #include "popup/popup-stage-generic.hpp"
 
-#include "misc/types.hpp"
 #include "misc/random.hpp"
+#include "misc/types.hpp"
 #include "misc/vectors.hpp"
 
 #include <boost/algorithm/algorithm.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include <string>
+#include <exception>
 #include <memory>
 #include <sstream>
-#include <exception>
-
+#include <string>
 
 namespace heroespath
 {
 namespace popup
 {
 
-    std::string PopupManager::windowTextureDirectoryPath_    { "" };
-    std::string PopupManager::accentTextureDirectoryPath_    { "" };
+    std::string PopupManager::windowTextureDirectoryPath_{ "" };
+    std::string PopupManager::accentTextureDirectoryPath_{ "" };
 
-    //set to match sfml_util::FontManager::Color_GrayDarker() before being set in the constructor
-    sf::Color   PopupManager::fontColor_                     { sf::Color(64, 64, 64, 255) };
+    // set to match sfml_util::FontManager::Color_GrayDarker() before being set in the constructor
+    sf::Color PopupManager::fontColor_{ sf::Color(64, 64, 64, 255) };
 
     std::unique_ptr<PopupManager> PopupManager::instanceUPtr_{ nullptr };
 
-
     PopupManager::PopupManager()
-    :
-        accentPathsVec_()
+        : accentPathsVec_()
     {
         M_HP_LOG_DBG("Singleton Construction: PopupManager");
         fontColor_ = sfml_util::FontManager::Color_GrayDarker();
     }
 
-
-    PopupManager::~PopupManager()
-    {
-        M_HP_LOG_DBG("Singleton Destruction: PopupManager");
-    }
-
+    PopupManager::~PopupManager() { M_HP_LOG_DBG("Singleton Destruction: PopupManager"); }
 
     PopupManager * PopupManager::Instance()
     {
@@ -94,7 +86,6 @@ namespace popup
 
         return instanceUPtr_.get();
     }
-
 
     void PopupManager::Acquire()
     {
@@ -108,23 +99,20 @@ namespace popup
         }
     }
 
-
     void PopupManager::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
             "popup::PopupManager::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 
-
     void PopupManager::SetTexturesDirectoryPaths(
-        const std::string & WINDOWS_PATH,
-        const std::string & ACCENTS_PATH)
+        const std::string & WINDOWS_PATH, const std::string & ACCENTS_PATH)
     {
         windowTextureDirectoryPath_ = WINDOWS_PATH;
         accentTextureDirectoryPath_ = ACCENTS_PATH;
     }
-
 
     bool PopupManager::Test()
     {
@@ -136,7 +124,7 @@ namespace popup
                 "popup::PopupManager::Test() Starting Tests...");
         }
 
-        //TODO
+        // TODO
 
         game::LoopManager::Instance()->TestingStrAppend(
             "sfml_util::gui::SpellImageManager::Test()  ALL TESTS PASSED.");
@@ -144,39 +132,64 @@ namespace popup
         return true;
     }
 
-
-    const std::string PopupManager::BackgroundImagePath(
-        const PopupImage::Enum IMAGE) const
+    const std::string PopupManager::BackgroundImagePath(const PopupImage::Enum IMAGE) const
     {
         std::string filename{ "" };
         switch (IMAGE)
         {
-            case PopupImage::Banner:         { filename = "paper-banner.png"; break; }
-            case PopupImage::Regular:        { filename = "paper-regular.png"; break; }
-            case PopupImage::RegularSidebar: { filename = "paper-regular-bar.png"; break; }
-            case PopupImage::Large:          { filename = "paper-large.png"; break; }
-            case PopupImage::LargeSidebar:   { filename = "paper-large-bar.png"; break; }
-            case PopupImage::Spellbook:      { filename = "spellbook.png"; break; }
-            case PopupImage::MusicSheet:     { filename = "music-sheet.png"; break; }
+            case PopupImage::Banner:
+            {
+                filename = "paper-banner.png";
+                break;
+            }
+            case PopupImage::Regular:
+            {
+                filename = "paper-regular.png";
+                break;
+            }
+            case PopupImage::RegularSidebar:
+            {
+                filename = "paper-regular-bar.png";
+                break;
+            }
+            case PopupImage::Large:
+            {
+                filename = "paper-large.png";
+                break;
+            }
+            case PopupImage::LargeSidebar:
+            {
+                filename = "paper-large-bar.png";
+                break;
+            }
+            case PopupImage::Spellbook:
+            {
+                filename = "spellbook.png";
+                break;
+            }
+            case PopupImage::MusicSheet:
+            {
+                filename = "music-sheet.png";
+                break;
+            }
             case PopupImage::Custom:
             case PopupImage::Count:
             default:
             {
                 std::ostringstream ss;
-                ss << "sfml_util::PopupManager::BackgroundImagePath("
-                    << IMAGE << ")_InvalidValueError.";
+                ss << "sfml_util::PopupManager::BackgroundImagePath(" << IMAGE
+                   << ")_InvalidValueError.";
 
                 throw std::range_error(ss.str());
             }
         }
 
         namespace bfs = boost::filesystem;
-        auto const PATH{ bfs::system_complete(bfs::path(windowTextureDirectoryPath_) /
-            bfs::path(filename)) };
+        auto const PATH{ bfs::system_complete(
+            bfs::path(windowTextureDirectoryPath_) / bfs::path(filename)) };
 
         return PATH.string();
     }
-
 
     const sfml_util::gui::TextInfo PopupManager::TextInfoDefault(
         const std::string & TEXT,
@@ -190,7 +203,6 @@ namespace popup
             fontColor_,
             JUSTIFIED);
     }
-
 
     const PopupInfo PopupManager::CreatePopupInfo(
         const std::string & POPUP_NAME,
@@ -209,7 +221,6 @@ namespace popup
             SOUND_EFFECT);
     }
 
-
     const PopupInfo PopupManager::CreateBoxedPopupInfo(
         const std::string & POPUP_NAME,
         const std::string & PROMPT_TEXT,
@@ -223,21 +234,13 @@ namespace popup
         sfml_util::gui::TextInfo ti(TextInfoDefault(PROMPT_TEXT, JUSTIFIED, FONT_SIZE));
         ti.color = TEXT_COLOR;
 
-        return PopupInfo(
-            POPUP_NAME,
-            ti,
-            BUTTONS,
-            BOX_INFO,
-            0.25f,
-            0.5f,
-            SOUND_EFFECT);
+        return PopupInfo(POPUP_NAME, ti, BUTTONS, BOX_INFO, 0.25f, 0.5f, SOUND_EFFECT);
     }
-
 
     const PopupInfo PopupManager::CreateImageSelectionPopupInfo(
         const std::string & POPUP_NAME,
         const std::string & PROMPT_TEXT,
-        const sfml_util::TextureVec_t &     TEXTURE_VEC,
+        const sfml_util::TextureVec_t & TEXTURE_VEC,
         const bool ARE_IMAGES_CREATURES,
         const std::size_t INITIAL_SELECTION,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
@@ -252,7 +255,6 @@ namespace popup
             SOUND_EFFECT);
     }
 
-
     const PopupInfo PopupManager::CreateNumberSelectionPopupInfo(
         const std::string & POPUP_NAME,
         const std::string & PROMPT_TEXT,
@@ -266,7 +268,6 @@ namespace popup
             THE_MIN,
             THE_MAX);
     }
-
 
     const PopupInfo PopupManager::CreateCharacterSelectPopupInfo(
         const std::string & POPUP_NAME,
@@ -288,7 +289,6 @@ namespace popup
         return popupInfo;
     }
 
-
     const PopupInfo PopupManager::CreateImageFadePopupInfo(
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CREATURE_PTR,
@@ -299,61 +299,60 @@ namespace popup
     {
         using namespace misc;
 
-        M_ASSERT_OR_LOGANDTHROW_SS((TO_IMAGE_PTR != nullptr),
-            "popup::PopupManager::CreateImageFadePopupInfo(\""
-            << POPUP_NAME << "\")  TO_IMAGE_PTR was null.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (TO_IMAGE_PTR != nullptr),
+            "popup::PopupManager::CreateImageFadePopupInfo(\"" << POPUP_NAME
+                                                               << "\")  TO_IMAGE_PTR was null.");
 
         std::ostringstream titleSS;
         titleSS << "New Title!";
 
         std::ostringstream descSS;
-        descSS << "Congradulations!\n\nAfter a total of " << TO_TITLE_PTR->AchievementCount()
-            << " " << creature::AchievementType::Name(TO_TITLE_PTR->GetAchievementType())
-            << " " << CREATURE_PTR->Name();
+        descSS << "Congradulations!\n\nAfter a total of " << TO_TITLE_PTR->AchievementCount() << " "
+               << creature::AchievementType::Name(TO_TITLE_PTR->GetAchievementType()) << " "
+               << CREATURE_PTR->Name();
 
         if (FROM_TITLE_PTR == nullptr)
         {
-            descSS << " has earned the title of "
-                << creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
+            descSS << " has earned the title of " << creature::Titles::Name(TO_TITLE_PTR->Which())
+                   << ".";
         }
         else
         {
-            descSS << " has transitioned from a "
-                << creature::Titles::Name(FROM_TITLE_PTR->Which())
-                << " to a "
-                << creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
+            descSS << " has transitioned from a " << creature::Titles::Name(FROM_TITLE_PTR->Which())
+                   << " to a " << creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
         }
 
         descSS << "  This title comes with the following stats bonus: "
-            << TO_TITLE_PTR->StatBonus().ToString(false) << ".";
+               << TO_TITLE_PTR->StatBonus().ToString(false) << ".";
 
         if (TO_TITLE_PTR->ExpBonus() > 0_exp)
         {
-            descSS << "  There is also an experience bonus of " << TO_TITLE_PTR->ExpBonus()
-                << "!  " << CREATURE_PTR->Name() << "'s experience is now " << CREATURE_PTR->Exp()
-                << "!!";
+            descSS << "  There is also an experience bonus of " << TO_TITLE_PTR->ExpBonus() << "!  "
+                   << CREATURE_PTR->Name() << "'s experience is now " << CREATURE_PTR->Exp()
+                   << "!!";
         }
 
         if (TO_TITLE_PTR->HealthBonus() > 0_health)
         {
             descSS << "  There is also a health bonus of " << TO_TITLE_PTR->HealthBonus() << "!  "
-                << CREATURE_PTR->Name() << "'s maximum health is now "
-                << CREATURE_PTR->HealthNormal() << "!!";
+                   << CREATURE_PTR->Name() << "'s maximum health is now "
+                   << CREATURE_PTR->HealthNormal() << "!!";
         }
 
         if (TO_TITLE_PTR->RankBonus() > 0_rank)
         {
             descSS << "  There is even a rank bonus of " << TO_TITLE_PTR->RankBonus() << "!  "
-                << CREATURE_PTR->Name() << "'s rank is now " << CREATURE_PTR->Rank() << "!!";
+                   << CREATURE_PTR->Name() << "'s rank is now " << CREATURE_PTR->Rank() << "!!";
         }
 
         sfml_util::TextureVec_t textureVec;
         if ((FROM_TITLE_PTR != nullptr) && (FROM_IMAGE_PTR != nullptr))
         {
-            textureVec.push_back( * FROM_IMAGE_PTR);
+            textureVec.push_back(*FROM_IMAGE_PTR);
         }
 
-        textureVec.push_back( * TO_IMAGE_PTR);
+        textureVec.push_back(*TO_IMAGE_PTR);
 
         return PopupInfo(
             POPUP_NAME,
@@ -379,7 +378,6 @@ namespace popup
             TO_TITLE_PTR);
     }
 
-
     const PopupInfo PopupManager::CreateSpellbookPopupInfo(
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CREATURE_CPTR,
@@ -403,7 +401,6 @@ namespace popup
             CREATURE_CPTR,
             INITIAL_SELECTION);
     }
-
 
     const PopupInfo PopupManager::CreateMusicPopupInfo(
         const std::string & POPUP_NAME,
@@ -429,10 +426,8 @@ namespace popup
             INITIAL_SELECTION);
     }
 
-
     const PopupInfo PopupManager::CreateCombatOverPopupInfo(
-        const std::string &                 POPUP_NAME,
-        const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const
+        const std::string & POPUP_NAME, const combat::CombatEnd::Enum HOW_COMBAT_ENDED) const
     {
         return PopupInfo(
             POPUP_NAME,
@@ -440,11 +435,10 @@ namespace popup
                 " ",
                 sfml_util::Justified::Center,
                 sfml_util::FontManager::Instance()->Size_Large()),
-            ((HOW_COMBAT_ENDED == combat::CombatEnd::Ran) ?
-                PopupButtons::Continue : PopupButtons::YesNo),
+            ((HOW_COMBAT_ENDED == combat::CombatEnd::Ran) ? PopupButtons::Continue
+                                                          : PopupButtons::YesNo),
             HOW_COMBAT_ENDED);
     }
-
 
     const PopupInfo PopupManager::CreateSystemErrorPopupInfo(
         const std::string & POPUP_NAME,
@@ -488,9 +482,8 @@ namespace popup
             false);
     }
 
-
-    const PopupInfo PopupManager::CreateItemProfilePleaseWaitPopupInfo(
-        const std::string & POPUP_NAME) const
+    const PopupInfo
+        PopupManager::CreateItemProfilePleaseWaitPopupInfo(const std::string & POPUP_NAME) const
     {
         return PopupInfo(
             POPUP_NAME,
@@ -501,7 +494,6 @@ namespace popup
             PopupButtons::None,
             PopupImage::Banner);
     }
-
 
     const PopupInfo PopupManager::CreateKeepAlivePopupInfo(
         const std::string & POPUP_NAME,
@@ -534,7 +526,6 @@ namespace popup
             KEEP_ALIVE_SECONDS);
     }
 
-
     const PopupInfo PopupManager::CreateInventoryPromptPopupInfo(
         const std::string & POPUP_NAME,
         const std::string & PROMPT_TEXT,
@@ -557,7 +548,6 @@ namespace popup
         return popupInfo;
     }
 
-
     const PopupInfo PopupManager::CreateTrapPopupInfo(
         const std::string & POPUP_NAME,
         const std::string & TRAP_DESCRIPTION,
@@ -572,12 +562,14 @@ namespace popup
             SOUND_EFFECT);
     }
 
-
-
     void PopupManager::LoadRandomAccentImage(sf::Texture & texture) const
     {
-        sfml_util::LoadTexture(texture, accentPathsVec_.at(static_cast<std::size_t>(
-            misc::random::Int(static_cast<int>(accentPathsVec_.size()) - 1))).string());
+        sfml_util::LoadTexture(
+            texture,
+            accentPathsVec_
+                .at(static_cast<std::size_t>(
+                    misc::random::Int(static_cast<int>(accentPathsVec_.size()) - 1)))
+                .string());
 
         if (misc::random::Bool())
         {
@@ -585,33 +577,33 @@ namespace popup
         }
     }
 
-
     void PopupManager::LoadAccentImagePaths()
     {
         namespace bfs = boost::filesystem;
 
-        const bfs::path   DIR_OBJ(bfs::system_complete(accentTextureDirectoryPath_));
+        const bfs::path DIR_OBJ(bfs::system_complete(accentTextureDirectoryPath_));
 
-        M_ASSERT_OR_LOGANDTHROW_SS((bfs::exists(DIR_OBJ)),
-            "popup::PopupManager::LoadAssets() accents dir path not found \""
-            << DIR_OBJ.string() << "\".");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (bfs::exists(DIR_OBJ)),
+            "popup::PopupManager::LoadAssets() accents dir path not found \"" << DIR_OBJ.string()
+                                                                              << "\".");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((bfs::is_directory(DIR_OBJ)),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (bfs::is_directory(DIR_OBJ)),
             "sfml_util::PopupManager::LoadAssets() accents dir path found but it is not a dir \""
-            << DIR_OBJ.string() << "\".");
+                << DIR_OBJ.string() << "\".");
 
-        //create a vector of paths to saved games
+        // create a vector of paths to saved games
         bfs::directory_iterator end_itr; // default construction yields past-the-end
         for (bfs::directory_iterator itr(DIR_OBJ); itr != end_itr; ++itr)
         {
-            if ((bfs::is_regular_file(itr->path())) &&
-                (boost::algorithm::starts_with(itr->path().leaf().string(), "accent-")) &&
-                (boost::algorithm::ends_with(itr->path().leaf().string(), ".png")))
+            if ((bfs::is_regular_file(itr->path()))
+                && (boost::algorithm::starts_with(itr->path().leaf().string(), "accent-"))
+                && (boost::algorithm::ends_with(itr->path().leaf().string(), ".png")))
             {
                 accentPathsVec_.push_back(itr->path());
             }
         }
     }
-
 }
 }

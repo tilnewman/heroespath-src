@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -45,9 +44,18 @@ namespace sfml_util
         {
             switch (E)
             {
-                case Small:  { return "Small"; }
-                case Medium: { return "Medium"; }
-                case Large:  { return "Large"; }
+                case Small:
+                {
+                    return "Small";
+                }
+                case Medium:
+                {
+                    return "Medium";
+                }
+                case Large:
+                {
+                    return "Large";
+                }
                 case Count:
                 default:
                 {
@@ -57,8 +65,6 @@ namespace sfml_util
                 }
             }
         }
-
     }
-
 }
 }

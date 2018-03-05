@@ -28,24 +28,23 @@
 // loop-manager.hpp
 //  A class that controls the running game loop with a queue of commands
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/loop-cmd.hpp"
-#include "sfml-util/loop-cmd-popup.hpp"
-#include "sfml-util/resolution.hpp"
-#include "sfml-util/music-enum.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/loop.hpp"
+#include "sfml-util/loop-cmd-popup.hpp"
+#include "sfml-util/loop-cmd.hpp"
 #include "sfml-util/loop-state-enum.hpp"
+#include "sfml-util/loop.hpp"
+#include "sfml-util/music-enum.hpp"
+#include "sfml-util/resolution.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include "popup/popup-info.hpp"
-#include "popup/popup-stage-generic.hpp"
 #include "popup/popup-response-enum.hpp"
+#include "popup/popup-stage-generic.hpp"
 
 #include "game/phase-enum.hpp"
 
 #include <queue>
 #include <string>
-
 
 namespace heroespath
 {
@@ -59,11 +58,11 @@ namespace creature
 namespace game
 {
 
-    //Singleton class that keeps track of the game state
+    // Singleton class that keeps track of the game state
     class LoopManager
     {
-        LoopManager(const LoopManager &) =delete;
-        LoopManager & operator=(const LoopManager &) =delete;
+        LoopManager(const LoopManager &) = delete;
+        LoopManager & operator=(const LoopManager &) = delete;
 
     public:
         LoopManager();
@@ -81,10 +80,7 @@ namespace game
         inline sfml_util::LoopState::Enum GetState() const { return state_; }
         inline sfml_util::LoopState::Enum GetPrevState() const { return prevState_; }
 
-        inline popup::ResponseTypes::Enum GetPopupResponse() const
-        {
-            return popupResponse_;
-        }
+        inline popup::ResponseTypes::Enum GetPopupResponse() const { return popupResponse_; }
 
         inline std::size_t GetPopupSelection() const { return popupSelection_; }
 
@@ -103,10 +99,9 @@ namespace game
 
         bool Execute();
 
-        template<typename PopupType_t>
+        template <typename PopupType_t>
         void PopupWaitBeginSpecific(
-            popup::IPopupHandler_t * const HANDLER_PTR,
-            const popup::PopupInfo & POPUP_INFO)
+            popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
         {
             popupResponse_ = popup::ResponseTypes::None;
             popupSelection_ = 0;
@@ -114,23 +109,21 @@ namespace game
         }
 
         inline void PopupWaitBegin(
-            popup::IPopupHandler_t * const HANDLER_PTR,
-            const popup::PopupInfo & POPUP_INFO)
+            popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
         {
             PopupWaitBeginSpecific<popup::PopupStageGeneric>(HANDLER_PTR, POPUP_INFO);
         }
 
         void PopupWaitEnd(
-            const popup::ResponseTypes::Enum RESPONSE,
-            const std::size_t SELECTION = 0);
+            const popup::ResponseTypes::Enum RESPONSE, const std::size_t SELECTION = 0);
 
         void TransitionTo_Previous(const bool WILL_ADVANCE_TURN = false);
 
         sfml_util::DisplayChangeResult::Enum ChangeResolution(
-            sfml_util::IStage * const         currentStagePtr_,
+            sfml_util::IStage * const currentStagePtr_,
             popup::IPopupHandler_t * const HANDLER_PTR,
-            const sfml_util::Resolution &     NEW_RES,
-            const unsigned                    ANTIALIAS_LEVEL);
+            const sfml_util::Resolution & NEW_RES,
+            const unsigned ANTIALIAS_LEVEL);
 
         inline void SetTransitionBeforeFade(const sfml_util::LoopState::Enum E)
         {
@@ -141,49 +134,26 @@ namespace game
 
         void FakeMouseClick(const sf::Vector2f &);
 
-        inline void AddStage(sfml_util::IStagePtr_t stagePtr)
-        {
-            loop_.AddStage(stagePtr);
-        }
+        inline void AddStage(sfml_util::IStagePtr_t stagePtr) { loop_.AddStage(stagePtr); }
 
-        inline bool IsFading() const
-        {
-            return loop_.IsFading();
-        }
+        inline bool IsFading() const { return loop_.IsFading(); }
 
-        inline bool GetIgnoreMouse() const
-        {
-            return loop_.GetIgnoreMouse();
-        }
+        inline bool GetIgnoreMouse() const { return loop_.GetIgnoreMouse(); }
 
-        inline void SetIgnoreMouse(const bool B)
-        {
-            loop_.SetIgnoreMouse(B);
-        }
+        inline void SetIgnoreMouse(const bool B) { loop_.SetIgnoreMouse(B); }
 
-        inline void TestingStrAppend(const std::string & S)
-        {
-            loop_.TestingStrAppend(S);
-        }
+        inline void TestingStrAppend(const std::string & S) { loop_.TestingStrAppend(S); }
 
-        inline void TestingStrIncrement(const std::string & S)
-        {
-            loop_.TestingStrIncrement(S);
-        }
+        inline void TestingStrIncrement(const std::string & S) { loop_.TestingStrIncrement(S); }
 
         inline void TestingImageSet(
             const sf::Texture & TEXTURE,
             const bool WILL_CHECK_FOR_OUTLINE = false,
             const std::string & CATEGORY_NAME = "",
             const std::string & TYPE_NAME = "",
-            const std::string & PATH= "")
+            const std::string & PATH = "")
         {
-            loop_.TestingImageSet(
-                TEXTURE,
-                WILL_CHECK_FOR_OUTLINE,
-                CATEGORY_NAME,
-                TYPE_NAME,
-                PATH);
+            loop_.TestingImageSet(TEXTURE, WILL_CHECK_FOR_OUTLINE, CATEGORY_NAME, TYPE_NAME, PATH);
         }
 
         inline void SetExitSuccess(const bool WAS_SUCCESS) { exitSuccess_ = WAS_SUCCESS; }
@@ -207,18 +177,14 @@ namespace game
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
             const game::Phase::Enum CURRENT_PHASE);
 
-        inline sfml_util::Loop & CommandLoopAccess(const sfml_util::ILoopCmd *)
-        {
-            return loop_;
-        }
+        inline sfml_util::Loop & CommandLoopAccess(const sfml_util::ILoopCmd *) { return loop_; }
 
     private:
         void TransitionTo_Intro();
 
-        template<typename PopupType_t>
+        template <typename PopupType_t>
         void TransitionTo_Popup(
-            popup::IPopupHandler_t * const HANDLER_PTR,
-            const popup::PopupInfo & POPUP_INFO)
+            popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
         {
             CommandQueueClear();
             loop_.Exit();
@@ -227,17 +193,17 @@ namespace game
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(false));
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(false));
 
-            cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Popup));
+            cmdQueue_.push(
+                std::make_shared<sfml_util::LoopCmd_StateChange>(sfml_util::LoopState::Popup));
 
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_FadeOut>(
-                popup::PopupManager::Color_Fade(),
-                popup::PopupManager::SpeedMult_Fade(),
-                true));
+                popup::PopupManager::Color_Fade(), popup::PopupManager::SpeedMult_Fade(), true));
 
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
 
-            cmdQueue_.push(std::make_shared<
-                sfml_util::LoopCmd_AddStage_Popup_Specific<PopupType_t> >(loop_, POPUP_INFO));
+            cmdQueue_.push(
+                std::make_shared<sfml_util::LoopCmd_AddStage_Popup_Specific<PopupType_t>>(
+                    loop_, POPUP_INFO));
 
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_Execute>());
         }
@@ -248,19 +214,19 @@ namespace game
 
         enum TransOpt : unsigned
         {
-            None         = 0,
-            ClearQueue   = 1 << 0,
-            MouseIgnore  = 1 << 1,
+            None = 0,
+            ClearQueue = 1 << 0,
+            MouseIgnore = 1 << 1,
             MouseRestore = 1 << 2,
             FinalExecute = 1 << 3,
-            All          = ClearQueue | MouseIgnore | MouseRestore | FinalExecute
+            All = ClearQueue | MouseIgnore | MouseRestore | FinalExecute
         };
 
         void TransitionHelper(
             const TransOpt OPTIONS,
             const sfml_util::LoopState::Enum NEW_STATE,
             const sfml_util::ILoopCmdSPtr_t & ADD_STAGE_LOOP_CMD,
-            const sfml_util::music::Enum MUSIC_TO_STOP  = sfml_util::music::All,
+            const sfml_util::music::Enum MUSIC_TO_STOP = sfml_util::music::All,
             const sfml_util::music::Enum MUSIC_TO_START = sfml_util::music::None);
 
         void CommandQueueClear();
@@ -279,8 +245,7 @@ namespace game
         sfml_util::LoopState::Enum stateBeforeFade_;
         bool exitSuccess_;
     };
-
 }
 }
 
-#endif //HEROESPATH_LOOPMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_LOOPMANAGER_HPP_INCLUDED

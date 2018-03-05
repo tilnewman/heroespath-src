@@ -30,7 +30,6 @@
 #include <memory>
 #include <string>
 
-
 namespace heroespath
 {
 namespace item
@@ -40,11 +39,10 @@ namespace item
     class Item;
     using ItemPtr_t = Item *;
 
-
-    //Responsible for making new (and properly stored) item objects from fat ItemProfiles.
+    // Responsible for making new (and properly stored) item objects from fat ItemProfiles.
     class ItemFactory
     {
-        ItemFactory(const ItemFactory &) =delete;
+        ItemFactory(const ItemFactory &) = delete;
         ItemFactory & operator=(const ItemFactory &) = delete;
 
     public:
@@ -56,9 +54,10 @@ namespace item
         static void Release();
         static bool Test();
 
-        static void TestItem(const std::string & WHICH_TEST,
-                             const ItemPtr_t     ITEM_PTR,
-                             const ItemProfile & ITEM_PROFILE);
+        static void TestItem(
+            const std::string & WHICH_TEST,
+            const ItemPtr_t ITEM_PTR,
+            const ItemProfile & ITEM_PROFILE);
 
         ItemPtr_t Make(const ItemProfile &) const;
 
@@ -69,8 +68,7 @@ namespace item
     private:
         static std::unique_ptr<ItemFactory> instanceUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_ITEMFACTORY_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_ITEMFACTORY_HPP_INCLUDED

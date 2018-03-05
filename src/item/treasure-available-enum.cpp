@@ -29,9 +29,8 @@
 //
 #include "treasure-available-enum.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -42,10 +41,22 @@ namespace item
     {
         switch (E)
         {
-            case NoTreasure:        { return "NoTreasure"; }
-            case HeldOnly:          { return "HeldOnly"; }
-            case LockboxOnly:       { return "LockboxOnly"; }
-            case HeldAndLockbox:    { return "HeldAndLockbox"; }
+            case NoTreasure:
+            {
+                return "NoTreasure";
+            }
+            case HeldOnly:
+            {
+                return "HeldOnly";
+            }
+            case LockboxOnly:
+            {
+                return "LockboxOnly";
+            }
+            case HeldAndLockbox:
+            {
+                return "HeldAndLockbox";
+            }
             case Count:
             default:
             {
@@ -55,6 +66,5 @@ namespace item
             }
         }
     }
-
 }
 }

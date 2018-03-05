@@ -36,7 +36,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace misc
@@ -46,11 +45,26 @@ namespace misc
     {
         switch (E)
         {
-            case Unknown:     { return "Unknown"; }
-            case Windows:     { return "Windows"; }
-            case Linux:       { return "Linux"; }
-            case Apple:       { return "Apple"; }
-            case Unsupported: { return "Unsupported"; }
+            case Unknown:
+            {
+                return "Unknown";
+            }
+            case Windows:
+            {
+                return "Windows";
+            }
+            case Linux:
+            {
+                return "Linux";
+            }
+            case Apple:
+            {
+                return "Apple";
+            }
+            case Unsupported:
+            {
+                return "Unsupported";
+            }
             case Count:
             default:
             {
@@ -61,23 +75,18 @@ namespace misc
         }
     }
 
-
     std::unique_ptr<Platform> Platform::instanceUPtr_{ nullptr };
 
-
     Platform::Platform()
-    :
-        platform_(platform_type::Unknown)
+        : platform_(platform_type::Unknown)
     {
         M_HP_LOG_DBG("Singleton Construction: Platform");
     }
 
-
     Platform::~Platform()
     {
-        //M_HP_LOG_DBG("Singleton Destruction: Platform");
+        // M_HP_LOG_DBG("Singleton Destruction: Platform");
     }
-
 
     Platform * Platform::Instance()
     {
@@ -89,7 +98,6 @@ namespace misc
 
         return instanceUPtr_.get();
     }
-
 
     void Platform::Acquire()
     {
@@ -103,15 +111,14 @@ namespace misc
         }
     }
 
-
     void Platform::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
             "misc::Platform::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
-
 
     void Platform::DetectAndLog()
     {
@@ -159,9 +166,9 @@ namespace misc
             ss << "(None!  This unknown platform is probably not supported...)";
         }
 
-        M_HP_LOG("Platform(s) Detected:  " << ss.str()
-            << "  The platform_type has been set to " << GetName() << ".");
+        M_HP_LOG(
+            "Platform(s) Detected:  " << ss.str() << "  The platform_type has been set to "
+                                      << GetName() << ".");
     }
-
 }
 }

@@ -27,23 +27,22 @@
 //
 // songs.hpp
 //
+#include "combat/name-position-enum.hpp"
+#include "combat/target-enum.hpp"
+#include "creature/condition.hpp"
+#include "game/phase-enum.hpp"
 #include "misc/types.hpp"
 #include "song/song-enum.hpp"
 #include "song/song-type-enum.hpp"
 #include "song/song.hpp"
 #include "stats/trait.hpp"
-#include "game/phase-enum.hpp"
-#include "combat/target-enum.hpp"
-#include "creature/condition.hpp"
-#include "combat/name-position-enum.hpp"
 
 #include <string>
-
 
 namespace heroespath
 {
 
-//forward declarations
+// forward declarations
 namespace creature
 {
     class Creature;
@@ -62,16 +61,17 @@ namespace song
     class RallyDrum : public Song
     {
     public:
-        RallyDrum() : Song(
-            Songs::RallyDrum,
-            SongType::Drum,
-            combat::EffectType::CreatureHelpMisc,
-            static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory),
-            1_mana,
-            1_rank,
-            combat::TargetType::AllCompanions,
-            "emboldens",
-            "emboldened")
+        RallyDrum()
+            : Song(
+                  Songs::RallyDrum,
+                  SongType::Drum,
+                  combat::EffectType::CreatureHelpMisc,
+                  static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory),
+                  1_mana,
+                  1_rank,
+                  combat::TargetType::AllCompanions,
+                  "emboldens",
+                  "emboldened")
         {}
 
         virtual ~RallyDrum() {}
@@ -85,20 +85,20 @@ namespace song
             combat::ContentAndNamePos & actionPhraseCNP) const;
     };
 
-
     class SpiritResonance : public Song
     {
     public:
-        SpiritResonance() : Song(
-            Songs::SpiritResonance,
-            SongType::Guitar,
-            combat::EffectType::CreatureHelpMisc,
-            static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory),
-            5_mana,
-            1_rank,
-            combat::TargetType::AllCompanions,
-            "recharges",
-            "recharged")
+        SpiritResonance()
+            : Song(
+                  Songs::SpiritResonance,
+                  SongType::Guitar,
+                  combat::EffectType::CreatureHelpMisc,
+                  static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory),
+                  5_mana,
+                  1_rank,
+                  combat::TargetType::AllCompanions,
+                  "recharges",
+                  "recharged")
         {}
 
         virtual ~SpiritResonance() {}
@@ -112,20 +112,20 @@ namespace song
             combat::ContentAndNamePos & actionPhraseCNP) const;
     };
 
-
     class RousingRhythm : public Song
     {
     public:
-        RousingRhythm() : Song(
-            Songs::RousingRhythm,
-            SongType::Drum,
-            combat::EffectType::CreatureHelpMisc,
-            static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory),
-            3_mana,
-            1_rank,
-            combat::TargetType::AllCompanions,
-            "rouses",
-            "roused")
+        RousingRhythm()
+            : Song(
+                  Songs::RousingRhythm,
+                  SongType::Drum,
+                  combat::EffectType::CreatureHelpMisc,
+                  static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory),
+                  3_mana,
+                  1_rank,
+                  combat::TargetType::AllCompanions,
+                  "rouses",
+                  "roused")
         {}
 
         virtual ~RousingRhythm() {}
@@ -139,20 +139,20 @@ namespace song
             combat::ContentAndNamePos & actionPhraseCNP) const;
     };
 
-
     class TripBeat : public Song
     {
     public:
-        TripBeat() : Song(
-            Songs::TripBeat,
-            SongType::Drum,
-            combat::EffectType::CreatureHarmMisc,
-            game::Phase::Combat,
-            1_mana,
-            1_rank,
-            combat::TargetType::AllOpponents,
-            "trips",
-            "tripped")
+        TripBeat()
+            : Song(
+                  Songs::TripBeat,
+                  SongType::Drum,
+                  combat::EffectType::CreatureHarmMisc,
+                  game::Phase::Combat,
+                  1_mana,
+                  1_rank,
+                  combat::TargetType::AllOpponents,
+                  "trips",
+                  "tripped")
         {}
 
         virtual ~TripBeat() {}
@@ -166,20 +166,20 @@ namespace song
             combat::ContentAndNamePos & actionPhraseCNP) const;
     };
 
-
     class PanicStrings : public Song
     {
     public:
-        PanicStrings() : Song(
-            Songs::PanicStrings,
-            SongType::Guitar,
-            combat::EffectType::CreatureHarmMisc,
-            game::Phase::Combat,
-            2_mana,
-            1_rank,
-            combat::TargetType::AllOpponents,
-            "panics",
-            "panicked")
+        PanicStrings()
+            : Song(
+                  Songs::PanicStrings,
+                  SongType::Guitar,
+                  combat::EffectType::CreatureHarmMisc,
+                  game::Phase::Combat,
+                  2_mana,
+                  1_rank,
+                  combat::TargetType::AllOpponents,
+                  "panics",
+                  "panicked")
         {}
 
         virtual ~PanicStrings() {}
@@ -193,20 +193,20 @@ namespace song
             combat::ContentAndNamePos & actionPhraseCNP) const;
     };
 
-
     class Lullaby : public Song
     {
     public:
-        Lullaby() : Song(
-            Songs::Lullaby,
-            SongType::Guitar,
-            combat::EffectType::CreatureHarmMisc,
-            game::Phase::Combat,
-            2_mana,
-            1_rank,
-            combat::TargetType::AllOpponents,
-            "sleeps",
-            "slept")
+        Lullaby()
+            : Song(
+                  Songs::Lullaby,
+                  SongType::Guitar,
+                  combat::EffectType::CreatureHarmMisc,
+                  game::Phase::Combat,
+                  2_mana,
+                  1_rank,
+                  combat::TargetType::AllOpponents,
+                  "sleeps",
+                  "slept")
         {}
 
         virtual ~Lullaby() {}
@@ -219,8 +219,7 @@ namespace song
             creature::CondEnumVec_t & condsRemovedVec,
             combat::ContentAndNamePos & actionPhraseCNP) const;
     };
-
 }
 }
 
-#endif //HEROESPATH_SONG_SONGS_HPP_INCLUDED
+#endif // HEROESPATH_SONG_SONGS_HPP_INCLUDED

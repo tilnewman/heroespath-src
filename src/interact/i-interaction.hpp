@@ -29,11 +29,10 @@
 //
 #include "interact/interact-enum.hpp"
 #include "interact/interaction-button.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-button.hpp"
+#include "sfml-util/gui/text-info.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 #include <memory>
-
 
 namespace heroespath
 {
@@ -44,7 +43,7 @@ namespace stage
 namespace interact
 {
 
-    //Pure virtual interface for all Interactions objects.
+    // Pure virtual interface for all Interactions objects.
     struct IInteraction
     {
         virtual ~IInteraction() {}
@@ -56,13 +55,11 @@ namespace interact
         virtual void PlayEnterSfx() const = 0;
         virtual void PlayExitSfx() const = 0;
 
-        virtual bool OnButtonClick(
-            stage::InteractStage * const,
-            const sfml_util::gui::TextButton * const) = 0;
+        virtual bool
+            OnButtonClick(stage::InteractStage * const, const sfml_util::gui::TextButton * const)
+            = 0;
 
-        virtual bool OnKeyRelease(
-            stage::InteractStage * const, 
-            const sf::Keyboard::Key) = 0;
+        virtual bool OnKeyRelease(stage::InteractStage * const, const sf::Keyboard::Key) = 0;
 
         virtual void Lock() = 0;
         virtual void Unlock() = 0;
@@ -73,8 +70,7 @@ namespace interact
     };
 
     using InteractionUPtr_t = std::unique_ptr<IInteraction>;
-
 }
 }
 
-#endif //HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED

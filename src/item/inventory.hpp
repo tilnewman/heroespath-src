@@ -30,36 +30,35 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
+#include "item/item-type-enum.hpp"
 #include "misc/types.hpp"
 #include "stats/trait.hpp"
-#include "item/item-type-enum.hpp"
 
-#include <string>
 #include <memory>
-#include <vector>
 #include <sstream>
-
+#include <string>
+#include <vector>
 
 namespace heroespath
 {
 namespace item
 {
 
-    //foward declarations
+    // foward declarations
     class Item;
     using ItemPtr_t = Item *;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 
-
-    //A class that encapsolates a collection of Items.
+    // A class that encapsolates a collection of Items.
     class Inventory
     {
     public:
-        explicit Inventory(const Coin_t &        COINS               = 0_coin,
-                           const MeteorShard_t & METEOR_SHARDS       = 0_mshard,
-                           const Gem_t &         GEMS                = 0_gem,
-                           const ItemPVec_t &    ITEMS_PVEC          = ItemPVec_t(),
-                           const ItemPVec_t &    EQUIPPED_ITEMS_PVEC = ItemPVec_t());
+        explicit Inventory(
+            const Coin_t & COINS = 0_coin,
+            const MeteorShard_t & METEOR_SHARDS = 0_mshard,
+            const Gem_t & GEMS = 0_gem,
+            const ItemPVec_t & ITEMS_PVEC = ItemPVec_t(),
+            const ItemPVec_t & EQUIPPED_ITEMS_PVEC = ItemPVec_t());
 
         ~Inventory();
 
@@ -67,21 +66,21 @@ namespace item
         inline MeteorShard_t MeteorShards() const { return meteorShards_; }
         inline Gem_t Gems() const { return gems_; }
 
-        //these functions return false if attempt to reduce below zero
+        // these functions return false if attempt to reduce below zero
         bool CoinsAdj(const Coin_t &);
         bool MeteorShardsAdj(const MeteorShard_t &);
         bool GemsAdj(const Gem_t &);
 
-        inline const ItemPVec_t Items() const           { return itemsPVec_; }
-        inline const ItemPVec_t ItemsEquipped() const   { return equippedItemsPVec_; }
+        inline const ItemPVec_t Items() const { return itemsPVec_; }
+        inline const ItemPVec_t ItemsEquipped() const { return equippedItemsPVec_; }
 
         void ItemAdd(const ItemPtr_t);
         void ItemRemove(const ItemPtr_t);
 
-        //moves the item from itemsSVec_ to equippedItemsSVec_
+        // moves the item from itemsSVec_ to equippedItemsSVec_
         void ItemEquip(const ItemPtr_t);
 
-        //moves the item from equippedItemsSVec_ to itemsSVec_
+        // moves the item from equippedItemsSVec_ to itemsSVec_
         void ItemUnEquip(const ItemPtr_t);
 
         bool ContainsItem(const ItemPtr_t) const;
@@ -119,15 +118,15 @@ namespace item
         void FreeAllItemsFromWarehouse();
 
     private:
-        Coin_t         coins_;
-        MeteorShard_t  meteorShards_;
-        Gem_t          gems_;
-        ItemPVec_t     itemsPVec_;
-        ItemPVec_t     equippedItemsPVec_;
+        Coin_t coins_;
+        MeteorShard_t meteorShards_;
+        Gem_t gems_;
+        ItemPVec_t itemsPVec_;
+        ItemPVec_t equippedItemsPVec_;
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & coins_;
@@ -138,16 +137,10 @@ namespace item
         }
     };
 
-
     bool operator==(const Inventory & L, const Inventory & R);
 
-
-    inline bool operator!=(const Inventory & L, const Inventory & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const Inventory & L, const Inventory & R) { return !(L == R); }
 }
 }
 
-#endif //HEROESPATH_ITEM_INVENTORY_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_INVENTORY_HPP_INCLUDED

@@ -31,30 +31,24 @@
 
 #include "game/loop-manager.hpp"
 
-
 namespace heroespath
 {
 namespace popup
 {
 
     PopupStageResChange::PopupStageResChange(const PopupInfo & POPUP_INFO)
-    :
-        PopupStageBase(POPUP_INFO),
-        elapsedTimeCounter_(0.0f),
-        secondCounter_(10)
+        : PopupStageBase(POPUP_INFO)
+        , elapsedTimeCounter_(0.0f)
+        , secondCounter_(10)
     {}
 
-
-    PopupStageResChange::~PopupStageResChange()
-    {}
-
+    PopupStageResChange::~PopupStageResChange() {}
 
     void PopupStageResChange::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
         Stage::Draw(target, STATES);
     }
-
 
     void PopupStageResChange::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
@@ -78,10 +72,7 @@ namespace popup
 
                     textInfo.text = ss.str();
 
-                    textRegionUPtr_->Setup(
-                        textInfo,
-                        textRegion_,
-                        this);
+                    textRegionUPtr_->Setup(textInfo, textRegion_, this);
                 }
                 else
                 {
@@ -90,6 +81,5 @@ namespace popup
             }
         }
     }
-
 }
 }

@@ -27,38 +27,38 @@
 //
 // strong-numeric-type.hpp
 //
-#include "strong-type.hpp"
 #include "misc/real.hpp"
+#include "strong-type.hpp"
 #include <cmath>
 #include <ostream>
 #include <type_traits>
-
 
 namespace heroespath
 {
 namespace misc
 {
 
-    //Responsible for wrapping StrongType with functions useful for numeric types.
-    template<typename T, typename Parameter>
+    // Responsible for wrapping StrongType with functions useful for numeric types.
+    template <typename T, typename Parameter>
     struct StrongNumericType : public StrongType<T, Parameter>
     {
         explicit StrongNumericType(const T & VALUE = T(0))
-         :
-            StrongType<T, Parameter>(VALUE)
+            : StrongType<T, Parameter>(VALUE)
         {}
 
-        virtual ~StrongNumericType()
-        {}
+        virtual ~StrongNumericType() {}
 
-        template<typename AsType_t>
-        AsType_t As() const { return static_cast<AsType_t>(this->Get()); }
+        template <typename AsType_t>
+        AsType_t As() const
+        {
+            return static_cast<AsType_t>(this->Get());
+        }
 
-        //Note:  There are no StrongNumericTypes defined where T is real,
+        // Note:  There are no StrongNumericTypes defined where T is real,
         //       so comparrison to zero here is okay.
         bool IsZero() const { return (this->m_value == T(0)); }
 
-        bool IsNonZero() const { return ! IsZero(); }
+        bool IsNonZero() const { return !IsZero(); }
 
         const StrongNumericType Abs() const
         {
@@ -68,82 +68,64 @@ namespace misc
         StrongNumericType & operator=(const StrongNumericType & RHS)
         {
             this->Get() = RHS.Get();
-            return * this;
+            return *this;
         }
 
         StrongNumericType & operator+=(const StrongNumericType & RHS)
         {
             this->Get() += RHS.Get();
-            return * this;
+            return *this;
         }
 
         StrongNumericType & operator-=(const StrongNumericType & RHS)
         {
             this->Get() -= RHS.Get();
-            return * this;
+            return *this;
         }
 
         StrongNumericType & operator*=(const StrongNumericType & RHS)
         {
             this->Get() *= RHS.Get();
-            return * this;
+            return *this;
         }
 
         StrongNumericType & operator/=(const StrongNumericType & RHS)
         {
             this->Get() /= RHS.Get();
-            return * this;
+            return *this;
         }
 
         StrongNumericType operator+(const StrongNumericType & RHS) const
         {
-            return StrongNumericType( * this) += RHS;
+            return StrongNumericType(*this) += RHS;
         }
 
         StrongNumericType operator-(const StrongNumericType & RHS) const
         {
-            return StrongNumericType( * this) -= RHS;
+            return StrongNumericType(*this) -= RHS;
         }
 
         StrongNumericType operator*(const StrongNumericType & RHS) const
         {
-            return StrongNumericType( * this) *= RHS;
+            return StrongNumericType(*this) *= RHS;
         }
 
         StrongNumericType operator/(const StrongNumericType & RHS) const
         {
-            return StrongNumericType( * this) /= RHS;
+            return StrongNumericType(*this) /= RHS;
         }
 
-        bool operator==(const StrongNumericType & RHS) const
-        {
-            return this->Get() == RHS.Get();
-        }
+        bool operator==(const StrongNumericType & RHS) const { return this->Get() == RHS.Get(); }
 
-        bool operator!=(const StrongNumericType & RHS) const
-        {
-            return this->Get() != RHS.Get();
-        }
+        bool operator!=(const StrongNumericType & RHS) const { return this->Get() != RHS.Get(); }
 
-        bool operator<(const StrongNumericType & RHS) const
-        {
-            return this->Get() < RHS.Get();
-        }
+        bool operator<(const StrongNumericType & RHS) const { return this->Get() < RHS.Get(); }
 
-        bool operator<=(const StrongNumericType & RHS) const
-        {
-            return this->Get() <= RHS.Get();
-        }
+        bool operator<=(const StrongNumericType & RHS) const { return this->Get() <= RHS.Get(); }
 
-        bool operator>(const StrongNumericType & RHS) const
-        {
-            return this->Get() > RHS.Get();
-        }
+        bool operator>(const StrongNumericType & RHS) const { return this->Get() > RHS.Get(); }
 
-        bool operator>=(const StrongNumericType & RHS) const
-        {
-            return this->Get() >= RHS.Get();
-        }
+        bool operator>=(const StrongNumericType & RHS) const { return this->Get() >= RHS.Get(); }
 
         StrongNumericType & operator++()
         {
@@ -153,7 +135,7 @@ namespace misc
 
         StrongNumericType operator++(int)
         {
-            StrongNumericType temp{ * this };
+            StrongNumericType temp{ *this };
             operator++();
             return temp;
         }
@@ -166,51 +148,43 @@ namespace misc
 
         StrongNumericType operator--(int)
         {
-            StrongNumericType temp{ * this };
+            StrongNumericType temp{ *this };
             operator--();
             return temp;
         }
     };
 
-
-    template<typename T, typename Parameter>
-    std::ostream & operator<<(
-        std::ostream & os,
-        const StrongNumericType<T, Parameter> & RHS)
+    template <typename T, typename Parameter>
+    std::ostream & operator<<(std::ostream & os, const StrongNumericType<T, Parameter> & RHS)
     {
         os << RHS.Get();
         return os;
     }
 
-
-    template<typename T, typename Parameter>
+    template <typename T, typename Parameter>
     bool operator==(const int LEFT_INT, const StrongNumericType<T, Parameter> RIGHT_SNT)
     {
         return (LEFT_INT == RIGHT_SNT.template As<int>());
     }
 
-
-    template<typename T, typename Parameter>
+    template <typename T, typename Parameter>
     bool operator==(const StrongNumericType<T, Parameter> LEFT_SNT, const int RIGHT_INT)
     {
         return (LEFT_SNT.template As<int>() == RIGHT_INT);
     }
 
-
-    template<typename T, typename Parameter>
+    template <typename T, typename Parameter>
     bool operator!=(const int LEFT_INT, const StrongNumericType<T, Parameter> RIGHT_SNT)
     {
         return (LEFT_INT != RIGHT_SNT.template As<int>());
     }
 
-
-    template<typename T, typename Parameter>
+    template <typename T, typename Parameter>
     bool operator!=(const StrongNumericType<T, Parameter> LEFT_SNT, const int RIGHT_INT)
     {
         return (LEFT_SNT.template As<int>() != RIGHT_INT);
     }
-
 }
 }
 
-#endif //HEROESPATH_MISC_STRONGNUMERICTYPE_HPP_INCLUDED
+#endif // HEROESPATH_MISC_STRONGNUMERICTYPE_HPP_INCLUDED

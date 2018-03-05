@@ -32,7 +32,6 @@
 
 #include <cstdlib>
 
-
 int main(int argc, char * argv[])
 {
     using namespace heroespath::game;
@@ -46,6 +45,7 @@ int main(int argc, char * argv[])
 
     auto const TEARDOWN_EXIT_CODE{ StartupShutdown::Teardown() };
 
-    return (((EXIT_SUCCESS == runExitCode) &&
-        (TEARDOWN_EXIT_CODE == EXIT_SUCCESS)) ? EXIT_SUCCESS : EXIT_FAILURE );
+    return (
+        ((EXIT_SUCCESS == runExitCode) && (TEARDOWN_EXIT_CODE == EXIT_SUCCESS)) ? EXIT_SUCCESS
+                                                                                : EXIT_FAILURE);
 }

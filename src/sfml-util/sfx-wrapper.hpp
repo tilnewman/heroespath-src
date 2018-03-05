@@ -30,28 +30,27 @@
 #include "sfml-util/sfml-audio.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
+#include <memory>
 #include <tuple>
 #include <vector>
-#include <memory>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //Responsible for storing all sfml objects relating to a single sound effect,
-    //and presenting an interface for controlling it.
+    // Responsible for storing all sfml objects relating to a single sound effect,
+    // and presenting an interface for controlling it.
     class SfxWrapper
     {
-        SfxWrapper(const SfxWrapper &) =delete;
-        SfxWrapper & operator=(const SfxWrapper &) =delete;
+        SfxWrapper(const SfxWrapper &) = delete;
+        SfxWrapper & operator=(const SfxWrapper &) = delete;
 
     public:
         explicit SfxWrapper(
-            const sound_effect::Enum ENUM        = sound_effect::Count,
-            SoundUPtr_t              soundUPtr   = SoundUPtr_t(),
-            SoundBufferUPtr_t        BUFFER_UPTR = SoundBufferUPtr_t());
+            const sound_effect::Enum ENUM = sound_effect::Count,
+            SoundUPtr_t soundUPtr = SoundUPtr_t(),
+            SoundBufferUPtr_t BUFFER_UPTR = SoundBufferUPtr_t());
 
         ~SfxWrapper();
 
@@ -63,10 +62,7 @@ namespace sfml_util
 
         void Reset();
 
-        inline sound_effect::Enum Which() const
-        {
-            return which_;
-        }
+        inline sound_effect::Enum Which() const { return which_; }
 
         inline void Play()
         {
@@ -84,10 +80,7 @@ namespace sfml_util
             }
         }
 
-        inline float Volume() const
-        {
-            return ((IsValid()) ? soundUPtr_->getVolume() : 0.0f);
-        }
+        inline float Volume() const { return ((IsValid()) ? soundUPtr_->getVolume() : 0.0f); }
 
         inline void Volume(const float V)
         {
@@ -111,30 +104,22 @@ namespace sfml_util
         SoundBufferUPtr_t bufferUPtr_;
     };
 
-
     inline bool operator==(const SfxWrapper & L, const SfxWrapper & R)
     {
-        return std::tie(L.which_, L.soundUPtr_, L.bufferUPtr_) ==
-               std::tie(R.which_, R.soundUPtr_, R.bufferUPtr_);
+        return std::tie(L.which_, L.soundUPtr_, L.bufferUPtr_)
+            == std::tie(R.which_, R.soundUPtr_, R.bufferUPtr_);
     }
 
-
-    inline bool operator!=(const SfxWrapper & L, const SfxWrapper & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const SfxWrapper & L, const SfxWrapper & R) { return !(L == R); }
 
     inline bool operator<(const SfxWrapper & L, const SfxWrapper & R)
     {
-        return std::tie(L.which_, L.soundUPtr_, L.bufferUPtr_) <
-               std::tie(R.which_, R.soundUPtr_, R.bufferUPtr_);
+        return std::tie(L.which_, L.soundUPtr_, L.bufferUPtr_)
+            < std::tie(R.which_, R.soundUPtr_, R.bufferUPtr_);
     }
 
-
     using SfxWrapperVec_t = std::vector<SfxWrapper>;
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_SFXWRAPPER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SFXWRAPPER_HPP_INCLUDED

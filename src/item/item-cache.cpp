@@ -31,19 +31,16 @@
 
 #include "item/item.hpp"
 
-
 namespace heroespath
 {
 namespace item
 {
 
     ItemCache::ItemCache()
-     :
-        coins(0_coin),
-        gems(0_gem),
-        items_pvec()
+        : coins(0_coin)
+        , gems(0_gem)
+        , items_pvec()
     {}
-
 
     Weight_t ItemCache::Weight() const
     {
@@ -56,6 +53,5 @@ namespace item
 
         return sum;
     }
-
 }
 }

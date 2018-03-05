@@ -31,20 +31,16 @@
 
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace stats
 {
 
-    Trait::Trait(const Traits::Enum TYPE,
-                 const Trait_t NORMAL)
-    :
-        type_   (TYPE),
-        normal_ (NORMAL),
-        current_(NORMAL)
+    Trait::Trait(const Traits::Enum TYPE, const Trait_t NORMAL)
+        : type_(TYPE)
+        , normal_(NORMAL)
+        , current_(NORMAL)
     {}
-
 
     const std::string Trait::ToString(const bool WILL_PREPEND_PLUS) const
     {
@@ -59,7 +55,5 @@ namespace stats
 
         return ss.str();
     }
-
 }
 }
-

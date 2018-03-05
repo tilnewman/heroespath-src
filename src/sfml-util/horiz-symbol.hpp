@@ -30,40 +30,39 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //Responsible for drawing the horizontal symbols at the bottom of Stages.
-    //A positive VERT_OFFSET_RATIO will move the symbols down, negative moves them up.
-    //The Bottom() of the symbol is always the bottom of the screen, even if
-    //VERT_OFFSET_RATIO is > 0 and some of the symbol is offscreen.
+    // Responsible for drawing the horizontal symbols at the bottom of Stages.
+    // A positive VERT_OFFSET_RATIO will move the symbols down, negative moves them up.
+    // The Bottom() of the symbol is always the bottom of the screen, even if
+    // VERT_OFFSET_RATIO is > 0 and some of the symbol is offscreen.
     class BottomSymbol : public sf::Drawable
     {
-        BottomSymbol(const BottomSymbol &) =delete;
-        BottomSymbol & operator=(const BottomSymbol &) =delete;
+        BottomSymbol(const BottomSymbol &) = delete;
+        BottomSymbol & operator=(const BottomSymbol &) = delete;
 
     public:
         explicit BottomSymbol(
-            const float       VERT_SCALE        = 1.0f,
-            const bool        WILL_INVERT_COLOR = false,
-            const sf::Color & COLOR             = DEFAULT_COLOR_,
-            const float       VERT_OFFSET_RATIO = 0.0f);
+            const float VERT_SCALE = 1.0f,
+            const bool WILL_INVERT_COLOR = false,
+            const sf::Color & COLOR = DEFAULT_COLOR_,
+            const float VERT_OFFSET_RATIO = 0.0f);
 
         virtual ~BottomSymbol();
 
         void Setup(
-            const float       VERT_SCALE        = 1.0f,
-            const bool        WILL_INVERT_COLOR = false,
-            const sf::Color & COLOR             = DEFAULT_COLOR_,
-            const float       VERT_OFFSET_RATIO = 0.0f);
+            const float VERT_SCALE = 1.0f,
+            const bool WILL_INVERT_COLOR = false,
+            const sf::Color & COLOR = DEFAULT_COLOR_,
+            const float VERT_OFFSET_RATIO = 0.0f);
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
         inline float Height() const { return Bottom() - Top(); }
-        inline float Top() const    { return sprite1_.getGlobalBounds().top; }
+        inline float Top() const { return sprite1_.getGlobalBounds().top; }
         inline float Middle() const { return Top() + (Height() * 0.5f); }
         float Bottom() const;
 
@@ -77,8 +76,7 @@ namespace sfml_util
         sf::Sprite sprite4_;
         sf::Texture texture_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED

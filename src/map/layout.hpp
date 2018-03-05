@@ -27,29 +27,27 @@
 //
 // layout.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "map/layer.hpp"
 #include "map/tiles-panel.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <string>
-
 
 namespace heroespath
 {
 namespace map
 {
 
-    //Responsible for wrapping all image and state of a single loaded map.
+    // Responsible for wrapping all image and state of a single loaded map.
     struct Layout
     {
         Layout()
-        :
-            tile_size_v(0, 0),
-            tile_count_v(0, 0),
-            layer_vec(),
-            tiles_panel_vec(),
-            texture_vec(),
-            empty_texture()
+            : tile_size_v(0, 0)
+            , tile_count_v(0, 0)
+            , layer_vec()
+            , tiles_panel_vec()
+            , texture_vec()
+            , empty_texture()
         {}
 
         void Reset()
@@ -72,9 +70,7 @@ namespace map
         sfml_util::TextureVec_t texture_vec;
         sf::RenderTexture empty_texture;
     };
-
 }
 }
 
-
-#endif //HEROESPATH_LAYOUT_HPP_INCLUDED
+#endif // HEROESPATH_LAYOUT_HPP_INCLUDED

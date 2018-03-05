@@ -31,11 +31,10 @@
 
 #include "log/log-macros.hpp"
 
-#include "misc/platform.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/platform.hpp"
 
 #include <memory>
-
 
 namespace heroespath
 {
@@ -43,21 +42,17 @@ namespace game
 {
     std::unique_ptr<GameDataFile> GameDataFile::instanceUPtr_{ nullptr };
 
-
     GameDataFile::GameDataFile()
-    :
-        ConfigBase("game-data.txt", "=", "#")
+        : ConfigBase("game-data.txt", "=", "#")
     {
         M_HP_LOG_DBG("Singleton Construction: GameDataFile");
         Load();
     }
 
-
     GameDataFile::~GameDataFile()
     {
-        //M_HP_LOG_DBG("Singleton Destruction: GameDataFile");
+        // M_HP_LOG_DBG("Singleton Destruction: GameDataFile");
     }
-
 
     GameDataFile * game::GameDataFile::Instance()
     {
@@ -69,7 +64,6 @@ namespace game
 
         return instanceUPtr_.get();
     }
-
 
     void GameDataFile::Acquire()
     {
@@ -83,28 +77,27 @@ namespace game
         }
     }
 
-
     void GameDataFile::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
             "GameDataFile::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
 
-
     const std::string GameDataFile::GetMediaPath(const std::string & KEY) const
     {
         const std::string PATH(GetCopyStr(KEY));
-        M_ASSERT_OR_LOGANDTHROW_SS((PATH.empty() == false),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (PATH.empty() == false),
             "GameDataFile::GetMediaPath(\"" << KEY
-            << "\") failed to find that key in the config file.");
+                                            << "\") failed to find that key in the config file.");
 
         std::ostringstream ss;
         ss << GetMediaBasePathStr() << PATH;
         return ss.str();
     }
-
 
     const std::string GameDataFile::CreateMediaPath(const std::string & PATH) const
     {
@@ -113,20 +106,20 @@ namespace game
         return ss.str();
     }
 
-
     const std::string GameDataFile::GetMediaBasePathStr() const
     {
-        const std::string MEDIA_BASE_PATH_KEY_STR((misc::Platform::Instance()->IsWindows()) ?
-            "system-media-dir-win" : "system-media-dir-linux");
+        const std::string MEDIA_BASE_PATH_KEY_STR(
+            (misc::Platform::Instance()->IsWindows()) ? "system-media-dir-win"
+                                                      : "system-media-dir-linux");
 
-        const std::string MEDIA_BASE_PATH_STR( GetCopyStr(MEDIA_BASE_PATH_KEY_STR) );
+        const std::string MEDIA_BASE_PATH_STR(GetCopyStr(MEDIA_BASE_PATH_KEY_STR));
 
-        M_ASSERT_OR_LOGANDTHROW_SS((MEDIA_BASE_PATH_STR.empty() == false),
-            "GameDataFile::GetMediaBasePathStr(key=\"" << MEDIA_BASE_PATH_KEY_STR
-            << "\") failed to find that key in the config file.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (MEDIA_BASE_PATH_STR.empty() == false),
+            "GameDataFile::GetMediaBasePathStr(key=\""
+                << MEDIA_BASE_PATH_KEY_STR << "\") failed to find that key in the config file.");
 
         return MEDIA_BASE_PATH_STR;
     }
-
 }
 }

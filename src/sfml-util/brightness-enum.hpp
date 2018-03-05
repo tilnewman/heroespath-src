@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -39,7 +38,7 @@ namespace sfml_util
     {
         enum Enum
         {
-            Bright = 0, //Default
+            Bright = 0, // Default
             Medium,
             Dark,
             Count
@@ -48,8 +47,7 @@ namespace sfml_util
         static const std::string ToString(const Brightness::Enum E);
         static bool IsValid(const Brightness::Enum E);
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_BRIGHTNESS_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_BRIGHTNESS_ENUM_HPP_INCLUDED

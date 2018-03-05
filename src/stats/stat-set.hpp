@@ -30,34 +30,33 @@
 #include "misc/types.hpp"
 #include "stats/trait-enum.hpp"
 
-#include <tuple>
 #include <string>
-
+#include <tuple>
 
 namespace heroespath
 {
 namespace stats
 {
 
-    //Convenience warpper for creature stat values.
-    //Because sometimes the TraitSet class is just cumbersome overkill.
+    // Convenience warpper for creature stat values.
+    // Because sometimes the TraitSet class is just cumbersome overkill.
     class StatSet
     {
     public:
         explicit StatSet(
             const Strength_t & STR = 0_str,
             const Accuracy_t & ACC = 0_acc,
-            const Charm_t &    CHA = 0_cha,
-            const Luck_t &     LCK = 0_lck,
-            const Speed_t &    SPD = 0_spd,
-            const Intell_t &   INT = 0_int);
+            const Charm_t & CHA = 0_cha,
+            const Luck_t & LCK = 0_lck,
+            const Speed_t & SPD = 0_spd,
+            const Intell_t & INT = 0_int);
 
         inline Strength_t Str() const { return str_; }
         inline Accuracy_t Acc() const { return acc_; }
-        inline Charm_t    Cha() const { return cha_; }
-        inline Luck_t     Lck() const { return lck_; }
-        inline Speed_t    Spd() const { return spd_; }
-        inline Intell_t   Int() const { return int_; }
+        inline Charm_t Cha() const { return cha_; }
+        inline Luck_t Lck() const { return lck_; }
+        inline Speed_t Spd() const { return spd_; }
+        inline Intell_t Int() const { return int_; }
 
         stats::Trait_t Get(const Traits::Enum) const;
         void Set(const Traits::Enum, const stats::Trait_t);
@@ -76,29 +75,20 @@ namespace stats
         Intell_t int_;
     };
 
-
     inline bool operator==(const StatSet & L, const StatSet & R)
     {
         return std::tie(L.str_, L.acc_, L.cha_, L.lck_, L.spd_, L.int_)
-                ==
-               std::tie(R.str_, R.acc_, R.cha_, R.lck_, R.spd_, R.int_);
+            == std::tie(R.str_, R.acc_, R.cha_, R.lck_, R.spd_, R.int_);
     }
 
-
-    inline bool operator!=(const StatSet & L, const StatSet & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const StatSet & L, const StatSet & R) { return !(L == R); }
 
     inline bool operator<(const StatSet & L, const StatSet & R)
     {
         return std::tie(L.str_, L.acc_, L.cha_, L.lck_, L.spd_, L.int_)
-                <
-               std::tie(R.str_, R.acc_, R.cha_, R.lck_, R.spd_, R.int_);
+            < std::tie(R.str_, R.acc_, R.cha_, R.lck_, R.spd_, R.int_);
     }
-
 }
 }
 
-#endif //HEROESPATH_STATS_STATSET_HPP_INCLUDED
+#endif // HEROESPATH_STATS_STATSET_HPP_INCLUDED

@@ -31,27 +31,22 @@
 
 #include "misc/assertlogandthrow.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
     SfxWrapper::SfxWrapper(
-        const sound_effect::Enum ENUM,
-        SoundUPtr_t              soundUPtr,
-        SoundBufferUPtr_t        BUFFER_UPTR)
-    :
-        which_      (ENUM),
-        soundUPtr_  (std::move(soundUPtr)),
-        bufferUPtr_ (std::move(BUFFER_UPTR))
+        const sound_effect::Enum ENUM, SoundUPtr_t soundUPtr, SoundBufferUPtr_t BUFFER_UPTR)
+        : which_(ENUM)
+        , soundUPtr_(std::move(soundUPtr))
+        , bufferUPtr_(std::move(BUFFER_UPTR))
     {
         if (IsValid())
         {
-            soundUPtr_->setBuffer( * bufferUPtr_);
+            soundUPtr_->setBuffer(*bufferUPtr_);
         }
     }
-
 
     SfxWrapper::~SfxWrapper()
     {
@@ -61,14 +56,11 @@ namespace sfml_util
         }
     }
 
-
     SfxWrapper::SfxWrapper(SfxWrapper && SFXW)
-    :
-        which_      (SFXW.which_),
-        soundUPtr_  (std::move(SFXW.soundUPtr_)),
-        bufferUPtr_ (std::move(SFXW.bufferUPtr_))
+        : which_(SFXW.which_)
+        , soundUPtr_(std::move(SFXW.soundUPtr_))
+        , bufferUPtr_(std::move(SFXW.bufferUPtr_))
     {}
-
 
     SfxWrapper & SfxWrapper::operator=(SfxWrapper && SFXW)
     {
@@ -79,18 +71,15 @@ namespace sfml_util
             bufferUPtr_ = std::move(SFXW.bufferUPtr_);
         }
 
-        return * this;
+        return *this;
     }
-
 
     bool SfxWrapper::IsValid() const
     {
-        return ((which_ != sound_effect::Count) &&
-                (which_ != sound_effect::None) &&
-                (soundUPtr_.get() != nullptr) &&
-                (bufferUPtr_.get() != nullptr));
+        return (
+            (which_ != sound_effect::Count) && (which_ != sound_effect::None)
+            && (soundUPtr_.get() != nullptr) && (bufferUPtr_.get() != nullptr));
     }
-
 
     void SfxWrapper::Reset()
     {
@@ -103,6 +92,5 @@ namespace sfml_util
         soundUPtr_.reset();
         bufferUPtr_.reset();
     }
-
 }
 }

@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace combat
@@ -60,13 +59,9 @@ namespace combat
         static const std::string ToString(const TurnAction::Enum);
         static const std::string Name(const TurnAction::Enum);
 
-        inline static bool IsMove(const Enum E)
-        {
-            return ((E == Advance) || (E == Retreat));
-        }
+        inline static bool IsMove(const Enum E) { return ((E == Advance) || (E == Retreat)); }
     };
-
 }
 }
 
-#endif //HEROESPATH_COMBAT_TURNSTATE_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_TURNSTATE_ENUM_HPP_INCLUDED

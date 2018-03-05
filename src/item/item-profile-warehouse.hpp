@@ -27,14 +27,13 @@
 //
 // item-profile-warehouse.hpp
 //
-#include "misc/types.hpp"
 #include "item/item-profile.hpp"
+#include "misc/types.hpp"
 #include "stats/traits-set.hpp"
 
 #include <memory>
-#include <vector>
 #include <utility>
-
+#include <vector>
 
 namespace heroespath
 {
@@ -44,12 +43,11 @@ namespace item
     using BaseMaterialVecPair_t = std::pair<armor::base_type::Enum, MaterialVecPair_t>;
     using BaseMaterialVecPairVec_t = std::vector<BaseMaterialVecPair_t>;
 
-
-    //Responsible for storing an ItemProfile for each possible item in the game.
+    // Responsible for storing an ItemProfile for each possible item in the game.
     class ItemProfileWarehouse
     {
-        ItemProfileWarehouse(const ItemProfileWarehouse &) =delete;
-        ItemProfileWarehouse & operator=(const ItemProfileWarehouse &) =delete;
+        ItemProfileWarehouse(const ItemProfileWarehouse &) = delete;
+        ItemProfileWarehouse & operator=(const ItemProfileWarehouse &) = delete;
 
     public:
         ItemProfileWarehouse();
@@ -77,7 +75,8 @@ namespace item
 
         static Score_t Score(const stats::TraitSet &);
 
-        static Score_t Score(const item::material::Enum PRI,
+        static Score_t Score(
+            const item::material::Enum PRI,
             const item::material::Enum SEC = item::material::Nothing);
 
         static Score_t Score(const item::weapon::axe_type::Enum);
@@ -106,9 +105,9 @@ namespace item
 
     private:
         void SetupFromThinProfile(
-            const ItemProfile &    THIN_PROFILE,
+            const ItemProfile & THIN_PROFILE,
             const named_type::Enum NAMED_TYPE,
-            const set_type::Enum   SET_TYPE);
+            const set_type::Enum SET_TYPE);
 
         void SetupFromThinProfile(
             const ItemProfile &,
@@ -127,8 +126,7 @@ namespace item
             const BaseMaterialVecPairVec_t &);
 
         const BaseMaterialVecPairVec_t GetMaterialsFromThinProfile(
-            const ItemProfile &    THIN_PROFILE,
-            const named_type::Enum NAMED_TYPE);
+            const ItemProfile & THIN_PROFILE, const named_type::Enum NAMED_TYPE);
 
         void SetupProfilesForMiscType(const item::misc_type::Enum);
 
@@ -155,10 +153,13 @@ namespace item
         static const item::MaterialVecPair_t MaterialsPants(item::armor::base_type::Enum);
         static const item::MaterialVecPair_t MaterialsGauntlets(item::armor::base_type::Enum);
 
-        static const item::MaterialVec_t MaterialsPrimaryFromArmorBaseType(const item::armor::base_type::Enum);
+        static const item::MaterialVec_t
+            MaterialsPrimaryFromArmorBaseType(const item::armor::base_type::Enum);
 
-        static const item::MaterialVecPair_t MaterialsFromBaseType(const item::armor::base_type::Enum);
-        static const item::MaterialVecPair_t MaterialsFromBaseTypeNoCloth(const item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t
+            MaterialsFromBaseType(const item::armor::base_type::Enum);
+        static const item::MaterialVecPair_t
+            MaterialsFromBaseTypeNoCloth(const item::armor::base_type::Enum);
 
         static const item::ItemProfileVec_t ThinProfilesWeaponsSwords();
         static const item::ItemProfileVec_t ThinProfilesWeaponsProjectiles();
@@ -171,8 +172,7 @@ namespace item
         static std::unique_ptr<ItemProfileWarehouse> instanceUPtr_;
         ItemProfileVec_t profiles_;
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_ITEMPROFILEWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_ITEMPROFILEWAREHOUSE_HPP_INCLUDED

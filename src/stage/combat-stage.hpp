@@ -27,64 +27,63 @@
 //
 // combat-stage.hpp
 //
+#include "sfml-util/color-shaker.hpp"
+#include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/gui/sliderbar.hpp"
+#include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
-#include "sfml-util/stage.hpp"
-#include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "sfml-util/sliders.hpp"
-#include "sfml-util/color-shaker.hpp"
-#include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/gui/four-state-button.hpp"
-#include "sfml-util/gui/sliderbar.hpp"
+#include "sfml-util/sound-manager.hpp"
+#include "sfml-util/stage.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
-#include "sfml-util/horiz-symbol.hpp"
+#include "combat/combat-restore-info.hpp"
+#include "combat/combat-sound-effects.hpp"
+#include "combat/fight-results.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-action-info.hpp"
-#include "combat/fight-results.hpp"
-#include "combat/combat-sound-effects.hpp"
-#include "combat/combat-restore-info.hpp"
 #include "creature/achievement-enum.hpp"
 #include "creature/title.hpp"
+#include "sfml-util/horiz-symbol.hpp"
 
 #include "misc/handy-types.hpp"
 
-#include <set>
-#include <tuple>
 #include <memory>
-#include <vector>
+#include <set>
 #include <string>
+#include <tuple>
 #include <utility>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-    namespace box
+    namespace gui
     {
-        class Box;
-        using BoxUPtr_t = std::unique_ptr<Box>;
-    }
+        namespace box
+        {
+            class Box;
+            using BoxUPtr_t = std::unique_ptr<Box>;
+        }
 
-    class TextRegion;
-    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-}
+        class TextRegion;
+        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    }
 }
 
 namespace creature
 {
-    //forward declarations
+    // forward declarations
     class Creature;
-    using CreaturePtr_t   = Creature *;
-    using CreatureCPtr_t  = const Creature *;
-    using CreaturePtrC_t  = Creature * const;
+    using CreaturePtr_t = Creature *;
+    using CreatureCPtr_t = const Creature *;
+    using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
-    using CreaturePVec_t  = std::vector<CreaturePtr_t>;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 
     class Title;
     using TitlePtr_t = Title *;
@@ -92,11 +91,11 @@ namespace creature
 
 namespace combat
 {
-    //forward declarations
+    // forward declarations
     class CombatDisplay;
-    using CombatDisplayPtr_t   = CombatDisplay *;
-    using CombatDisplayCPtr_t  = const CombatDisplay *;
-    using CombatDisplayPtrC_t  = CombatDisplay * const;
+    using CombatDisplayPtr_t = CombatDisplay *;
+    using CombatDisplayCPtr_t = const CombatDisplay *;
+    using CombatDisplayPtrC_t = CombatDisplay * const;
     using CombatDisplayCPtrC_t = const CombatDisplay * const;
 
     class Encounter;
@@ -108,15 +107,12 @@ namespace combat
 
 namespace stage
 {
-    //Responsible for wrapping all the perform report indicies.
+    // Responsible for wrapping all the perform report indicies.
     struct ReportIndicies
     {
-        ReportIndicies(
-            const std::size_t EFFECT_INDEX,
-            const std::size_t HIT_INDEX)
-        :
-            effect(EFFECT_INDEX),
-            hit(HIT_INDEX)
+        ReportIndicies(const std::size_t EFFECT_INDEX, const std::size_t HIT_INDEX)
+            : effect(EFFECT_INDEX)
+            , hit(HIT_INDEX)
         {}
 
         std::size_t effect;
@@ -132,20 +128,18 @@ namespace stage
 
     using ReportIndexesSet_t = std::set<ReportIndicies>;
 
-
-    //A Stage class that allows camping characters
+    // A Stage class that allows camping characters
     class CombatStage
-    :
-        public sfml_util::Stage,
-        public popup::IPopupHandler_t,
-        public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t,
-        public sfml_util::gui::callback::IListBoxCallbackHandler,
-        public sfml_util::gui::callback::ISliderBarCallbackHandler_t
+        : public sfml_util::Stage
+        , public popup::IPopupHandler_t
+        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::ISliderBarCallbackHandler_t
     {
-        CombatStage(const CombatStage &) =delete;
-        CombatStage & operator=(const CombatStage &) =delete;
+        CombatStage(const CombatStage &) = delete;
+        CombatStage & operator=(const CombatStage &) = delete;
 
-        //defines what phase of the initial zoom and pan currently in
+        // defines what phase of the initial zoom and pan currently in
         enum class PreTurnPhase
         {
             Start = 0,
@@ -157,12 +151,12 @@ namespace stage
             Count
         };
 
-        //defines what stage of a creature's turn we are in
+        // defines what stage of a creature's turn we are in
         enum class TurnPhase
         {
             NotATurn = 0,
 
-            //center on turn creature
+            // center on turn creature
             CenterAndZoomIn,
 
             PostCenterAndZoomInPause,
@@ -170,14 +164,14 @@ namespace stage
             TargetSelect,
             ConditionEffectPause,
 
-            //center on turn creature and targets of whatever
-            //action the turn creature is taking (performType_)
+            // center on turn creature and targets of whatever
+            // action the turn creature is taking (performType_)
             CenterAndZoomOut,
 
             PostCenterAndZoomOutPause,
 
-            //see enum PerformType for which anim is performed here and
-            //PerformAnimPhase for which phase that anim is in
+            // see enum PerformType for which anim is performed here and
+            // PerformAnimPhase for which phase that anim is in
             PerformAnim,
 
             PerformReport,
@@ -191,7 +185,7 @@ namespace stage
             Count
         };
 
-        //defines what type of action a creature is performing on his/her/it turn
+        // defines what type of action a creature is performing on his/her/it turn
         enum class TurnActionPhase
         {
             None = 0,
@@ -210,7 +204,7 @@ namespace stage
             Count
         };
 
-        //definese what phase of the perform action animation is currently displaying
+        // definese what phase of the perform action animation is currently displaying
         enum class AnimPhase
         {
             NotAnimating = 0,
@@ -238,7 +232,8 @@ namespace stage
 
         inline virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
-        virtual bool HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
+        virtual bool
+            HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
         virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &);
         virtual bool HandleCallback(const popup::PopupResponse &);
 
@@ -286,12 +281,13 @@ namespace stage
         bool HandleWeaponChange();
         bool HandleRun();
         void MoveTurnBoxObjectsOffScreen();
-        void SetupTurnBoxButtons(const creature::CreaturePtrC_t CREATURE_PTR,
-                                 const bool                     WILL_DISABLE_ALL = false);
+        void SetupTurnBoxButtons(
+            const creature::CreaturePtrC_t CREATURE_PTR, const bool WILL_DISABLE_ALL = false);
 
-        void QuickSmallPopup(const std::string & PROMPT,
-                             const bool          IS_SOUNDEFFECT_NORMAL,
-                             const bool          WILL_PREPEND_NEWLINE);
+        void QuickSmallPopup(
+            const std::string & PROMPT,
+            const bool IS_SOUNDEFFECT_NORMAL,
+            const bool WILL_PREPEND_NEWLINE);
 
         void SetupTurnBox();
         void StartPerformAnim();
@@ -305,7 +301,8 @@ namespace stage
 
         inline void SetTurnPhase(const TurnPhase TP)
         {
-            turnPhase_ = TP; UpdateTestingText();
+            turnPhase_ = TP;
+            UpdateTestingText();
         }
 
         inline void SetPreTurnPhase(const PreTurnPhase PTP)
@@ -351,7 +348,7 @@ namespace stage
             const std::string & TECH_ERROR_MSG,
             const std::string & TITLE_MSG = "");
 
-        //returns true if any Titles were conferred
+        // returns true if any Titles were conferred
         bool PopulateAchievementsVec();
 
         void HandleAchievementEnqueue(
@@ -422,7 +419,7 @@ namespace stage
         static const sf::Color LISTBOX_LINE_COLOR_;
 
     private:
-        //stores information about the state of combat when temporarily in another stage.
+        // stores information about the state of combat when temporarily in another stage.
         //(inventory, Setup, etc.)
         static combat::RestoreInfo restoreInfo_;
         //
@@ -430,54 +427,54 @@ namespace stage
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         //
-        sfml_util::gui::box::BoxUPtr_t   commandBoxUPtr_;
-        sfml_util::gui::ListBoxUPtr_t    statusBoxUPtr_;
-        sfml_util::gui::TextInfo         statusBoxTextInfo_;
-        sfml_util::gui::SliderBarUPtr_t  zoomSliderBarUPtr_;
-        sfml_util::gui::box::BoxUPtr_t   turnBoxUPtr_;
-        sf::FloatRect                    turnBoxRegion_;
-        combat::CombatSoundEffects       combatSoundEffects_;
-        ReportIndexesSet_t               soundEffectsPlayedSet_;
-        TurnPhase                        turnPhase_;
-        PreTurnPhase                     preTurnPhase_;
-        TurnActionPhase                  turnActionPhase_;
-        AnimPhase                        animPhase_;
-        spell::SpellPtr_t                spellBeingCastPtr_;
-        song::SongPtr_t                  songBeingPlayedPtr_;
-        std::size_t                      performReportEffectIndex_;
-        std::size_t                      performReportHitIndex_;
-        float                            zoomSliderOrigPos_;
-        bool                             willClrShkInitStatusMsg_;
-        bool                             isShortPostZoomOutPause_;
-        bool                             hasCombatEnded_;
-        bool                             isRepositionAnimAfterRun_;
+        sfml_util::gui::box::BoxUPtr_t commandBoxUPtr_;
+        sfml_util::gui::ListBoxUPtr_t statusBoxUPtr_;
+        sfml_util::gui::TextInfo statusBoxTextInfo_;
+        sfml_util::gui::SliderBarUPtr_t zoomSliderBarUPtr_;
+        sfml_util::gui::box::BoxUPtr_t turnBoxUPtr_;
+        sf::FloatRect turnBoxRegion_;
+        combat::CombatSoundEffects combatSoundEffects_;
+        ReportIndexesSet_t soundEffectsPlayedSet_;
+        TurnPhase turnPhase_;
+        PreTurnPhase preTurnPhase_;
+        TurnActionPhase turnActionPhase_;
+        AnimPhase animPhase_;
+        spell::SpellPtr_t spellBeingCastPtr_;
+        song::SongPtr_t songBeingPlayedPtr_;
+        std::size_t performReportEffectIndex_;
+        std::size_t performReportHitIndex_;
+        float zoomSliderOrigPos_;
+        bool willClrShkInitStatusMsg_;
+        bool isShortPostZoomOutPause_;
+        bool hasCombatEnded_;
+        bool isRepositionAnimAfterRun_;
 
-        //members that manage condition effects per turn
-        combat::HitInfoVec_t             conditionEffectsVec_;
-        std::size_t                      conditionEffectsIndex_;
-        bool                             conditionEffectsTookTurn_;
-        sf::Vector2f                     conditionEffectsCenterPosV_;
-        bool                             conditionEffectsWillSkip_;
+        // members that manage condition effects per turn
+        combat::HitInfoVec_t conditionEffectsVec_;
+        std::size_t conditionEffectsIndex_;
+        bool conditionEffectsTookTurn_;
+        sf::Vector2f conditionEffectsCenterPosV_;
+        bool conditionEffectsWillSkip_;
 
-        //A slider member that is used for various slider tasks
+        // A slider member that is used for various slider tasks
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
-        //The scope of this is controlled by Loop,
-        //so check before use during shutdown of the stage.
+        // The scope of this is controlled by Loop,
+        // so check before use during shutdown of the stage.
         combat::CombatDisplayPtr_t combatDisplayStagePtr_;
 
-        //this member controls combat related animations
+        // this member controls combat related animations
         combat::CombatAnimationUPtr_t combatAnimationUPtr_;
 
         sfml_util::gui::FourStateButtonUPtr_t settingsButtonUPtr_;
 
-        //members that control pausing the CombatStage
+        // members that control pausing the CombatStage
         float pauseDurationSec_;
         float pauseElapsedSec_;
         bool isPauseCanceled_;
 
-        //members that deal with which creature's turn it is and
-        //the timing of taking turns
+        // members that deal with which creature's turn it is and
+        // the timing of taking turns
         creature::CreaturePtr_t turnCreaturePtr_;
         sfml_util::ColorShaker goldTextColorShaker_;
         sfml_util::ColorShaker redTextColorShaker_;
@@ -486,7 +483,7 @@ namespace stage
         bool willRedColorShakeWeaponText_;
         bool isFightResultCollapsed_;
 
-        //members displaying a player character's turn
+        // members displaying a player character's turn
         sfml_util::gui::TextRegionUPtr_t titleTBoxTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t weaponTBoxTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t armorTBoxTextRegionUPtr_;
@@ -507,27 +504,26 @@ namespace stage
         sfml_util::gui::FourStateButtonUPtr_t pounceTBoxButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t runTBoxButtonUPtr_;
 
-        //members that manage the status message animations
+        // members that manage the status message animations
         float statusMsgAnimTimerSec_;
         sfml_util::ColorShaker statusMsgAnimColorShaker_;
 
-        //testing display members
+        // testing display members
         sfml_util::gui::TextRegionUPtr_t testingTextRegionUPtr_;
         std::string pauseTitle_;
 
-        //members supporting double-click
+        // members supporting double-click
         float clickTimerSec_;
         sf::Vector2f clickPosV_;
 
-        //members that support playing songs
+        // members that support playing songs
         bool isSongAnim1Done_;
         bool isSongAnim2Done_;
 
-        //members that support achievements and titles
+        // members that support achievements and titles
         creature::TitleTransitionVec_t creatureTitlesVec_;
     };
-
 }
 }
 
-#endif //HEROESPATH_COMBATSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_COMBATSTAGE_HPP_INCLUDED

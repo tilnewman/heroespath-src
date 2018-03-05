@@ -36,7 +36,6 @@
 #include <string>
 #include <utility>
 
-
 namespace heroespath
 {
 namespace creature
@@ -44,11 +43,9 @@ namespace creature
 
     using RankRange_t = misc::Range<Rank_t>;
 
-
     class rank_class
     {
     public:
-
         enum Enum
         {
             Novice = 0,
@@ -62,13 +59,12 @@ namespace creature
 
         static rank_class::Enum FromRank(const Rank_t & RANK);
 
-        //returns a second/max of zero to represent limitless
+        // returns a second/max of zero to represent limitless
         static const RankRange_t RankRangeByClass(const rank_class::Enum E);
 
         static const std::string ToString(const rank_class::Enum E);
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_RANK_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_RANK_HPP_INCLUDED

@@ -29,28 +29,26 @@
 //
 #include "color-shaker.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    ColorShaker::ColorShaker(const sf::Color & COLOR_ORIG,
-                             const sf::Color & COLOR_ALT,
-                             const float       SPEED,
-                             const bool        WILL_START)
-    :
-        slider_   (0.0f, 1.0f, SPEED),
-        colorOrig_(COLOR_ORIG),
-        colorAlt_ (COLOR_ALT),
-        colorCurr_(COLOR_ORIG),
-        isShaking_(WILL_START),
-        redDiff_  (static_cast<float>(COLOR_ALT.r - COLOR_ORIG.r)),
-        greenDiff_(static_cast<float>(COLOR_ALT.g - COLOR_ORIG.g)),
-        blueDiff_ (static_cast<float>(COLOR_ALT.b - COLOR_ORIG.b)),
-        alphaDiff_(static_cast<float>(COLOR_ALT.a - COLOR_ORIG.a))
+    ColorShaker::ColorShaker(
+        const sf::Color & COLOR_ORIG,
+        const sf::Color & COLOR_ALT,
+        const float SPEED,
+        const bool WILL_START)
+        : slider_(0.0f, 1.0f, SPEED)
+        , colorOrig_(COLOR_ORIG)
+        , colorAlt_(COLOR_ALT)
+        , colorCurr_(COLOR_ORIG)
+        , isShaking_(WILL_START)
+        , redDiff_(static_cast<float>(COLOR_ALT.r - COLOR_ORIG.r))
+        , greenDiff_(static_cast<float>(COLOR_ALT.g - COLOR_ORIG.g))
+        , blueDiff_(static_cast<float>(COLOR_ALT.b - COLOR_ORIG.b))
+        , alphaDiff_(static_cast<float>(COLOR_ALT.a - COLOR_ORIG.a))
     {}
-
 
     const sf::Color ColorShaker::Update(const float ELAPSED_TIME_SECONDS)
     {
@@ -76,12 +74,10 @@ namespace sfml_util
         return colorCurr_;
     }
 
-
     void ColorShaker::Reset()
     {
         colorCurr_ = colorOrig_;
         slider_.Reset(0.0f, 1.0f);
     }
-
 }
 }

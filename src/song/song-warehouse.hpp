@@ -29,24 +29,22 @@
 //
 #include "song/song-enum.hpp"
 
-#include <vector>
 #include <memory>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace song
 {
 
-    //forward declarations
+    // forward declarations
     class Song;
-    using SongPtr_t  = Song *;
+    using SongPtr_t = Song *;
     using SongUPtr_t = std::unique_ptr<Song>;
     using SongUVec_t = std::vector<SongUPtr_t>;
 
-
-    //Responsible for pre-game-start creation and testing of all spells, and
-    //then providing access to them.
+    // Responsible for pre-game-start creation and testing of all spells, and
+    // then providing access to them.
     struct Warehouse
     {
         static void Fill();
@@ -57,8 +55,7 @@ namespace song
     private:
         static SongUVec_t songsUVec_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SONG_SONGWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_SONG_SONGWAREHOUSE_HPP_INCLUDED

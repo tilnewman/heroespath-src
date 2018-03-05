@@ -27,10 +27,9 @@
 //
 // item-detail-viewer.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/pos-slider.hpp"
 #include "sfml-util/gui/text-region.hpp"
-
+#include "sfml-util/pos-slider.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 namespace heroespath
 {
@@ -42,12 +41,12 @@ namespace item
 namespace stage
 {
 
-    //Responsible for displaying details about an item that fades in and out.
-    //Tolerates repeated calls to FadeIn() and FadeOut() in any order.
+    // Responsible for displaying details about an item that fades in and out.
+    // Tolerates repeated calls to FadeIn() and FadeOut() in any order.
     class ItemDetailViewer : public sf::Drawable
     {
-        ItemDetailViewer(const ItemDetailViewer &) =delete;
-        ItemDetailViewer & operator=(const ItemDetailViewer &) =delete;
+        ItemDetailViewer(const ItemDetailViewer &) = delete;
+        ItemDetailViewer & operator=(const ItemDetailViewer &) = delete;
 
     public:
         ItemDetailViewer();
@@ -90,8 +89,7 @@ namespace stage
         bool isBeforeAnyChange_;
         bool isShowing_;
     };
-
 }
 }
 
-#endif //HEROESPATH_STAGE_ITEMDETAILVIEWER_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_ITEMDETAILVIEWER_HPP_INCLUDED

@@ -30,18 +30,17 @@
 #include "hit-info.hpp"
 
 #include "creature/condition-warehouse.hpp"
+#include "creature/condition.hpp"
 #include "item/item.hpp"
 #include "song/song.hpp"
 #include "spell/spell-base.hpp"
-#include "creature/condition.hpp"
 
 #include "misc/vectors.hpp"
 
-#include <sstream>
-#include <exception>
 #include <algorithm>
+#include <exception>
+#include <sstream>
 #include <tuple>
-
 
 namespace heroespath
 {
@@ -52,13 +51,34 @@ namespace combat
     {
         switch (E)
         {
-            case Weapon:    { return "Weapon"; }
-            case Spell:     { return "Spell"; }
-            case Song:      { return "Song"; }
-            case Pounce:    { return "Pounce"; }
-            case Roar:      { return "Roar"; }
-            case Condition: { return "Condition"; }
-            case Trap:      { return "Trap"; }
+            case Weapon:
+            {
+                return "Weapon";
+            }
+            case Spell:
+            {
+                return "Spell";
+            }
+            case Song:
+            {
+                return "Song";
+            }
+            case Pounce:
+            {
+                return "Pounce";
+            }
+            case Roar:
+            {
+                return "Roar";
+            }
+            case Condition:
+            {
+                return "Condition";
+            }
+            case Trap:
+            {
+                return "Trap";
+            }
             case Count:
             default:
             {
@@ -69,207 +89,201 @@ namespace combat
         }
     }
 
-
-    HitInfo::HitInfo(const bool                      WAS_HIT,
-                     const item::ItemPtr_t           ITEM_PTR,
-                     const Health_t &                DAMAGE,
-                     const bool                      IS_CRITICAL_HIT,
-                     const bool                      IS_POWER_HIT,
-                     const bool                      DID_ARMOR_ABSORB,
-                     const creature::CondEnumVec_t & CONDS_ADDED_VEC,
-                     const creature::CondEnumVec_t & CONDS_REMOVED_VEC,
-                     const std::string &             ACTION_VERB)
-    :
-        wasHit_         (WAS_HIT),
-        hitType_        (HitType::Weapon),
-        weaponPtr_      (ITEM_PTR),
-        damage_         (DAMAGE),
-        isCritical_     (IS_CRITICAL_HIT),
-        isPower_        (IS_POWER_HIT),
-        condsAddedVec_  (CONDS_ADDED_VEC),
-        condsRemovedVec_(CONDS_REMOVED_VEC),
-        actionVerb_     (ACTION_VERB),
-        spellPtr_       (nullptr),
-        actionPhraseCNP_(),
-        songPtr_        (nullptr),
-        didArmorAbsorb_ (DID_ARMOR_ABSORB),
-        conditionPtr_   (nullptr)
+    HitInfo::HitInfo(
+        const bool WAS_HIT,
+        const item::ItemPtr_t ITEM_PTR,
+        const Health_t & DAMAGE,
+        const bool IS_CRITICAL_HIT,
+        const bool IS_POWER_HIT,
+        const bool DID_ARMOR_ABSORB,
+        const creature::CondEnumVec_t & CONDS_ADDED_VEC,
+        const creature::CondEnumVec_t & CONDS_REMOVED_VEC,
+        const std::string & ACTION_VERB)
+        : wasHit_(WAS_HIT)
+        , hitType_(HitType::Weapon)
+        , weaponPtr_(ITEM_PTR)
+        , damage_(DAMAGE)
+        , isCritical_(IS_CRITICAL_HIT)
+        , isPower_(IS_POWER_HIT)
+        , condsAddedVec_(CONDS_ADDED_VEC)
+        , condsRemovedVec_(CONDS_REMOVED_VEC)
+        , actionVerb_(ACTION_VERB)
+        , spellPtr_(nullptr)
+        , actionPhraseCNP_()
+        , songPtr_(nullptr)
+        , didArmorAbsorb_(DID_ARMOR_ABSORB)
+        , conditionPtr_(nullptr)
     {}
-
-
-    HitInfo::HitInfo(const bool                      WAS_HIT,
-                     const spell::SpellPtr_t         SPELL_CPTR,
-                     const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                     const Health_t &                DAMAGE,
-                     const creature::CondEnumVec_t & CONDS_ADDED_VEC,
-                     const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
-    :
-        wasHit_         (WAS_HIT),
-        hitType_        (HitType::Spell),
-        weaponPtr_      (nullptr),
-        damage_         (DAMAGE),
-        isCritical_     (false),
-        isPower_        (false),
-        condsAddedVec_  (CONDS_ADDED_VEC),
-        condsRemovedVec_(CONDS_REMOVED_VEC),
-        actionVerb_     ("casts"),
-        spellPtr_       (SPELL_CPTR),
-        actionPhraseCNP_(ACTION_PHRASE_CNP),
-        songPtr_        (nullptr),
-        didArmorAbsorb_ (false),
-        conditionPtr_   (nullptr)
-    {}
-
-
-    HitInfo::HitInfo(const bool                      WAS_HIT,
-                     const song::SongPtr_t           SONG_CPTR,
-                     const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                     const Health_t &                DAMAGE,
-                     const creature::CondEnumVec_t & CONDS_ADDED_VEC,
-                     const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
-    :
-        wasHit_         (WAS_HIT),
-        hitType_        (HitType::Song),
-        weaponPtr_      (nullptr),
-        damage_         (DAMAGE),
-        isCritical_     (false),
-        isPower_        (false),
-        condsAddedVec_  (CONDS_ADDED_VEC),
-        condsRemovedVec_(CONDS_REMOVED_VEC),
-        actionVerb_     ("plays"),
-        spellPtr_       (nullptr),
-        actionPhraseCNP_(ACTION_PHRASE_CNP),
-        songPtr_        (SONG_CPTR),
-        didArmorAbsorb_ (false),
-        conditionPtr_   (nullptr)
-    {}
-
-
-    HitInfo::HitInfo(const bool                       WAS_HIT,
-                     const creature::Conditions::Enum COND_ENUM,
-                     const ContentAndNamePos &        ACTION_PHRASE_CNP,
-                     const Health_t &                 DAMAGE,
-                     const creature::CondEnumVec_t &  CONDS_ADDED_VEC,
-                     const creature::CondEnumVec_t &  CONDS_REMOVED_VEC)
-    :
-        wasHit_         (WAS_HIT),
-        hitType_        (HitType::Song),
-        weaponPtr_      (nullptr),
-        damage_         (DAMAGE),
-        isCritical_     (false),
-        isPower_        (false),
-        condsAddedVec_  (CONDS_ADDED_VEC),
-        condsRemovedVec_(CONDS_REMOVED_VEC),
-        actionVerb_     ("plays"),
-        spellPtr_       (nullptr),
-        actionPhraseCNP_(ACTION_PHRASE_CNP),
-        songPtr_        (nullptr),
-        didArmorAbsorb_ (false),
-        conditionPtr_   (creature::condition::Warehouse::Get(COND_ENUM))
-    {}
-
-
-    HitInfo::HitInfo(const bool                      WAS_HIT,
-                     const HitType::Enum             HIT_TYPE,
-                     const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                     const Health_t &                DAMAGE,
-                     const creature::CondEnumVec_t & CONDS_ADDED_VEC,
-                     const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
-    :
-        wasHit_         (WAS_HIT),
-        hitType_        (HIT_TYPE),
-        weaponPtr_      (nullptr),
-        damage_         (DAMAGE),
-        isCritical_     (false),
-        isPower_        (false),
-        condsAddedVec_  (CONDS_ADDED_VEC),
-        condsRemovedVec_(CONDS_REMOVED_VEC),
-        actionVerb_     (""),
-        spellPtr_       (nullptr),
-        actionPhraseCNP_(ACTION_PHRASE_CNP),
-        songPtr_        (nullptr),
-        didArmorAbsorb_ (false),
-        conditionPtr_   (nullptr)
-    {}
-
-
-    HitInfo::HitInfo(const HitType::Enum       HIT_TYPE,
-                     const ContentAndNamePos & ACTION_PHRASE_CNP)
-    :
-        wasHit_         (false),
-        hitType_        (HIT_TYPE),
-        weaponPtr_      (nullptr),
-        damage_         (0),
-        isCritical_     (false),
-        isPower_        (false),
-        condsAddedVec_  (),
-        condsRemovedVec_(),
-        actionVerb_     (""),
-        spellPtr_       (nullptr),
-        actionPhraseCNP_(ACTION_PHRASE_CNP),
-        songPtr_        (nullptr),
-        didArmorAbsorb_ (false),
-        conditionPtr_   (nullptr)
-    {}
-
 
     HitInfo::HitInfo(
-        const Health_t &                DAMAGE,
-        const std::string &             ACTION_VERB,
+        const bool WAS_HIT,
+        const spell::SpellPtr_t SPELL_CPTR,
+        const ContentAndNamePos & ACTION_PHRASE_CNP,
+        const Health_t & DAMAGE,
         const creature::CondEnumVec_t & CONDS_ADDED_VEC,
         const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
-    :
-        wasHit_         (true),
-        hitType_        (HitType::Trap),
-        weaponPtr_      (nullptr),
-        damage_         (DAMAGE),
-        isCritical_     (false),
-        isPower_        (false),
-        condsAddedVec_  (CONDS_ADDED_VEC),
-        condsRemovedVec_(CONDS_REMOVED_VEC),
-        actionVerb_     (ACTION_VERB),
-        spellPtr_       (nullptr),
-        actionPhraseCNP_(),
-        songPtr_        (nullptr),
-        didArmorAbsorb_ (false),
-        conditionPtr_   (nullptr)
+        : wasHit_(WAS_HIT)
+        , hitType_(HitType::Spell)
+        , weaponPtr_(nullptr)
+        , damage_(DAMAGE)
+        , isCritical_(false)
+        , isPower_(false)
+        , condsAddedVec_(CONDS_ADDED_VEC)
+        , condsRemovedVec_(CONDS_REMOVED_VEC)
+        , actionVerb_("casts")
+        , spellPtr_(SPELL_CPTR)
+        , actionPhraseCNP_(ACTION_PHRASE_CNP)
+        , songPtr_(nullptr)
+        , didArmorAbsorb_(false)
+        , conditionPtr_(nullptr)
     {}
 
+    HitInfo::HitInfo(
+        const bool WAS_HIT,
+        const song::SongPtr_t SONG_CPTR,
+        const ContentAndNamePos & ACTION_PHRASE_CNP,
+        const Health_t & DAMAGE,
+        const creature::CondEnumVec_t & CONDS_ADDED_VEC,
+        const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
+        : wasHit_(WAS_HIT)
+        , hitType_(HitType::Song)
+        , weaponPtr_(nullptr)
+        , damage_(DAMAGE)
+        , isCritical_(false)
+        , isPower_(false)
+        , condsAddedVec_(CONDS_ADDED_VEC)
+        , condsRemovedVec_(CONDS_REMOVED_VEC)
+        , actionVerb_("plays")
+        , spellPtr_(nullptr)
+        , actionPhraseCNP_(ACTION_PHRASE_CNP)
+        , songPtr_(SONG_CPTR)
+        , didArmorAbsorb_(false)
+        , conditionPtr_(nullptr)
+    {}
+
+    HitInfo::HitInfo(
+        const bool WAS_HIT,
+        const creature::Conditions::Enum COND_ENUM,
+        const ContentAndNamePos & ACTION_PHRASE_CNP,
+        const Health_t & DAMAGE,
+        const creature::CondEnumVec_t & CONDS_ADDED_VEC,
+        const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
+        : wasHit_(WAS_HIT)
+        , hitType_(HitType::Song)
+        , weaponPtr_(nullptr)
+        , damage_(DAMAGE)
+        , isCritical_(false)
+        , isPower_(false)
+        , condsAddedVec_(CONDS_ADDED_VEC)
+        , condsRemovedVec_(CONDS_REMOVED_VEC)
+        , actionVerb_("plays")
+        , spellPtr_(nullptr)
+        , actionPhraseCNP_(ACTION_PHRASE_CNP)
+        , songPtr_(nullptr)
+        , didArmorAbsorb_(false)
+        , conditionPtr_(creature::condition::Warehouse::Get(COND_ENUM))
+    {}
+
+    HitInfo::HitInfo(
+        const bool WAS_HIT,
+        const HitType::Enum HIT_TYPE,
+        const ContentAndNamePos & ACTION_PHRASE_CNP,
+        const Health_t & DAMAGE,
+        const creature::CondEnumVec_t & CONDS_ADDED_VEC,
+        const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
+        : wasHit_(WAS_HIT)
+        , hitType_(HIT_TYPE)
+        , weaponPtr_(nullptr)
+        , damage_(DAMAGE)
+        , isCritical_(false)
+        , isPower_(false)
+        , condsAddedVec_(CONDS_ADDED_VEC)
+        , condsRemovedVec_(CONDS_REMOVED_VEC)
+        , actionVerb_("")
+        , spellPtr_(nullptr)
+        , actionPhraseCNP_(ACTION_PHRASE_CNP)
+        , songPtr_(nullptr)
+        , didArmorAbsorb_(false)
+        , conditionPtr_(nullptr)
+    {}
+
+    HitInfo::HitInfo(const HitType::Enum HIT_TYPE, const ContentAndNamePos & ACTION_PHRASE_CNP)
+        : wasHit_(false)
+        , hitType_(HIT_TYPE)
+        , weaponPtr_(nullptr)
+        , damage_(0)
+        , isCritical_(false)
+        , isPower_(false)
+        , condsAddedVec_()
+        , condsRemovedVec_()
+        , actionVerb_("")
+        , spellPtr_(nullptr)
+        , actionPhraseCNP_(ACTION_PHRASE_CNP)
+        , songPtr_(nullptr)
+        , didArmorAbsorb_(false)
+        , conditionPtr_(nullptr)
+    {}
+
+    HitInfo::HitInfo(
+        const Health_t & DAMAGE,
+        const std::string & ACTION_VERB,
+        const creature::CondEnumVec_t & CONDS_ADDED_VEC,
+        const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
+        : wasHit_(true)
+        , hitType_(HitType::Trap)
+        , weaponPtr_(nullptr)
+        , damage_(DAMAGE)
+        , isCritical_(false)
+        , isPower_(false)
+        , condsAddedVec_(CONDS_ADDED_VEC)
+        , condsRemovedVec_(CONDS_REMOVED_VEC)
+        , actionVerb_(ACTION_VERB)
+        , spellPtr_(nullptr)
+        , actionPhraseCNP_()
+        , songPtr_(nullptr)
+        , didArmorAbsorb_(false)
+        , conditionPtr_(nullptr)
+    {}
 
     HitInfo::HitInfo(const HitInfo & HI)
-    :
-        wasHit_(HI.wasHit_),
-        hitType_(HI.hitType_),
+        : wasHit_(HI.wasHit_)
+        , hitType_(HI.hitType_)
+        ,
 
-        //The lifetime of this object is not managed by this class.
-        //Usage is short-term observation only, so ptr copying is safe.
-        weaponPtr_(HI.weaponPtr_),
+        // The lifetime of this object is not managed by this class.
+        // Usage is short-term observation only, so ptr copying is safe.
+        weaponPtr_(HI.weaponPtr_)
+        ,
 
-        damage_         (HI.damage_),
-        isCritical_     (HI.isCritical_),
-        isPower_        (HI.isPower_),
-        condsAddedVec_  (HI.condsAddedVec_),
-        condsRemovedVec_(HI.condsRemovedVec_),
-        actionVerb_     (HI.actionVerb_),
+        damage_(HI.damage_)
+        , isCritical_(HI.isCritical_)
+        , isPower_(HI.isPower_)
+        , condsAddedVec_(HI.condsAddedVec_)
+        , condsRemovedVec_(HI.condsRemovedVec_)
+        , actionVerb_(HI.actionVerb_)
+        ,
 
-        //see the comment above regarding pointers in this class
-        spellPtr_(HI.spellPtr_),
+        // see the comment above regarding pointers in this class
+        spellPtr_(HI.spellPtr_)
+        ,
 
-        actionPhraseCNP_(HI.actionPhraseCNP_),
+        actionPhraseCNP_(HI.actionPhraseCNP_)
+        ,
 
-        //see the comment above regarding pointers in this class
-        songPtr_(HI.songPtr_),
+        // see the comment above regarding pointers in this class
+        songPtr_(HI.songPtr_)
+        ,
 
-        didArmorAbsorb_(HI.didArmorAbsorb_),
+        didArmorAbsorb_(HI.didArmorAbsorb_)
+        ,
 
-        //see the comment above regarding pointers in this class
+        // see the comment above regarding pointers in this class
         conditionPtr_(HI.conditionPtr_)
     {}
 
-
     HitInfo & HitInfo::operator=(const HitInfo & HI)
     {
-        if (& HI != this)
+        if (&HI != this)
         {
             wasHit_ = HI.wasHit_;
             hitType_ = HI.hitType_;
@@ -282,23 +296,20 @@ namespace combat
             actionPhraseCNP_ = HI.actionPhraseCNP_;
             didArmorAbsorb_ = HI.didArmorAbsorb_;
 
-            //see copy constructor comment regarding these pointers
+            // see copy constructor comment regarding these pointers
             weaponPtr_ = HI.weaponPtr_;
             spellPtr_ = HI.spellPtr_;
             songPtr_ = HI.songPtr_;
             conditionPtr_ = HI.conditionPtr_;
         }
 
-        return * this;
+        return *this;
     }
-
 
     bool HitInfo::CondsAddedContains(const creature::Conditions::Enum E) const
     {
-        return (std::find(condsAddedVec_.begin(), condsAddedVec_.end(), E) !=
-            condsAddedVec_.end());
+        return (std::find(condsAddedVec_.begin(), condsAddedVec_.end(), E) != condsAddedVec_.end());
     }
-
 
     bool HitInfo::CondsAddedRemove(const creature::Conditions::Enum E)
     {
@@ -319,22 +330,21 @@ namespace combat
 
         for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
         {
-            condsAddedVec_.erase(std::remove(condsAddedVec_.begin(),
-                                             condsAddedVec_.end(),
-                                             NEXT_CONDITION_TO_REMOVE_ENUM),
-                                 condsAddedVec_.end());
+            condsAddedVec_.erase(
+                std::remove(
+                    condsAddedVec_.begin(), condsAddedVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM),
+                condsAddedVec_.end());
         }
 
         return true;
     }
 
-
     bool HitInfo::CondsRemovedContains(const creature::Conditions::Enum E) const
     {
-        return (std::find(condsRemovedVec_.begin(), condsRemovedVec_.end(), E) !=
-            condsRemovedVec_.end());
+        return (
+            std::find(condsRemovedVec_.begin(), condsRemovedVec_.end(), E)
+            != condsRemovedVec_.end());
     }
-
 
     bool HitInfo::CondsRemovedRemove(const creature::Conditions::Enum E)
     {
@@ -355,15 +365,16 @@ namespace combat
 
         for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : condsToRemoveVec)
         {
-            condsRemovedVec_.erase(std::remove(condsRemovedVec_.begin(),
-                                               condsRemovedVec_.end(),
-                                               NEXT_CONDITION_TO_REMOVE_ENUM),
-                                   condsRemovedVec_.end());
+            condsRemovedVec_.erase(
+                std::remove(
+                    condsRemovedVec_.begin(),
+                    condsRemovedVec_.end(),
+                    NEXT_CONDITION_TO_REMOVE_ENUM),
+                condsRemovedVec_.end());
         }
 
         return true;
     }
-
 
     bool HitInfo::IsValid() const
     {
@@ -375,13 +386,13 @@ namespace combat
             }
             case HitType::Spell:
             {
-                return ((spellPtr_ != nullptr) &&
-                        (actionPhraseCNP_.NamePos() != NamePosition::Count));
+                return (
+                    (spellPtr_ != nullptr) && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
             case HitType::Song:
             {
-                return ((songPtr_ != nullptr) &&
-                        (actionPhraseCNP_.NamePos() != NamePosition::Count));
+                return (
+                    (songPtr_ != nullptr) && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
             case HitType::Pounce:
             case HitType::Roar:
@@ -390,8 +401,9 @@ namespace combat
             }
             case HitType::Condition:
             {
-                return ((conditionPtr_ != nullptr) &&
-                        (actionPhraseCNP_.NamePos() != NamePosition::Count));
+                return (
+                    (conditionPtr_ != nullptr)
+                    && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
             case HitType::Trap:
             {
@@ -405,7 +417,6 @@ namespace combat
         }
     }
 
-
     bool HitInfo::IsCloseEnoughToEqual(const HitInfo & HI) const
     {
         if (misc::Vector::OrderlessCompareEqual(condsAddedVec_, HI.condsAddedVec_) == false)
@@ -418,29 +429,29 @@ namespace combat
             return false;
         }
 
-        return std::tie(hitType_,
-                        wasHit_,
-                        weaponPtr_,
-                        damage_,
-                        isCritical_,
-                        isPower_,
-                        spellPtr_,
-                        songPtr_,
-                        didArmorAbsorb_,
-                        conditionPtr_)
-               ==
-               std::tie(HI.hitType_,
-                        HI.wasHit_,
-                        HI.weaponPtr_,
-                        HI.damage_,
-                        HI.isCritical_,
-                        HI.isPower_,
-                        HI.spellPtr_,
-                        HI.songPtr_,
-                        HI.didArmorAbsorb_,
-                        HI.conditionPtr_);
+        return std::tie(
+                   hitType_,
+                   wasHit_,
+                   weaponPtr_,
+                   damage_,
+                   isCritical_,
+                   isPower_,
+                   spellPtr_,
+                   songPtr_,
+                   didArmorAbsorb_,
+                   conditionPtr_)
+            == std::tie(
+                   HI.hitType_,
+                   HI.wasHit_,
+                   HI.weaponPtr_,
+                   HI.damage_,
+                   HI.isCritical_,
+                   HI.isPower_,
+                   HI.spellPtr_,
+                   HI.songPtr_,
+                   HI.didArmorAbsorb_,
+                   HI.conditionPtr_);
     }
-
 
     const std::string HitInfo::ToString() const
     {
@@ -485,13 +496,10 @@ namespace combat
             }
         }
 
-        ss << ", was_hit=" << std::boolalpha << WasHit()
-            << ", damage=" << damage_
-            << ", was_kill=" << WasKill()
-            << ", is_critical=" << isCritical_
-            << ", is_power=" << isPower_
-            << ", did_armor_absorb=" << didArmorAbsorb_
-            << ", conds_added=[";
+        ss << ", was_hit=" << std::boolalpha << WasHit() << ", damage=" << damage_
+           << ", was_kill=" << WasKill() << ", is_critical=" << isCritical_
+           << ", is_power=" << isPower_ << ", did_armor_absorb=" << didArmorAbsorb_
+           << ", conds_added=[";
 
         for (auto const NEXT_COND_ENUM : condsAddedVec_)
         {
@@ -510,7 +518,6 @@ namespace combat
         return ss.str();
     }
 
-
     bool operator<(const HitInfo & L, const HitInfo & R)
     {
         if (misc::Vector::OrderlessCompareLess(L.condsAddedVec_, R.condsAddedVec_))
@@ -523,33 +530,33 @@ namespace combat
             return true;
         }
 
-        return std::tie(L.hitType_,
-                        L.wasHit_,
-                        L.weaponPtr_,
-                        L.damage_,
-                        L.isCritical_,
-                        L.isPower_,
-                        L.actionVerb_,
-                        L.spellPtr_,
-                        L.actionPhraseCNP_,
-                        L.songPtr_,
-                        L.didArmorAbsorb_,
-                        L.conditionPtr_)
-               <
-               std::tie(R.hitType_,
-                        R.wasHit_,
-                        R.weaponPtr_,
-                        R.damage_,
-                        R.isCritical_,
-                        R.isPower_,
-                        R.actionVerb_,
-                        R.spellPtr_,
-                        R.actionPhraseCNP_,
-                        R.songPtr_,
-                        R.didArmorAbsorb_,
-                        R.conditionPtr_);
+        return std::tie(
+                   L.hitType_,
+                   L.wasHit_,
+                   L.weaponPtr_,
+                   L.damage_,
+                   L.isCritical_,
+                   L.isPower_,
+                   L.actionVerb_,
+                   L.spellPtr_,
+                   L.actionPhraseCNP_,
+                   L.songPtr_,
+                   L.didArmorAbsorb_,
+                   L.conditionPtr_)
+            < std::tie(
+                   R.hitType_,
+                   R.wasHit_,
+                   R.weaponPtr_,
+                   R.damage_,
+                   R.isCritical_,
+                   R.isPower_,
+                   R.actionVerb_,
+                   R.spellPtr_,
+                   R.actionPhraseCNP_,
+                   R.songPtr_,
+                   R.didArmorAbsorb_,
+                   R.conditionPtr_);
     }
-
 
     bool operator==(const HitInfo & L, const HitInfo & R)
     {
@@ -563,32 +570,32 @@ namespace combat
             return false;
         }
 
-        return std::tie(L.hitType_,
-                        L.wasHit_,
-                        L.weaponPtr_,
-                        L.damage_,
-                        L.isCritical_,
-                        L.isPower_,
-                        L.actionVerb_,
-                        L.spellPtr_,
-                        L.actionPhraseCNP_,
-                        L.songPtr_,
-                        L.didArmorAbsorb_,
-                        L.conditionPtr_)
-               ==
-               std::tie(R.hitType_,
-                        R.wasHit_,
-                        R.weaponPtr_,
-                        R.damage_,
-                        R.isCritical_,
-                        R.isPower_,
-                        R.actionVerb_,
-                        R.spellPtr_,
-                        R.actionPhraseCNP_,
-                        R.songPtr_,
-                        R.didArmorAbsorb_,
-                        R.conditionPtr_);
+        return std::tie(
+                   L.hitType_,
+                   L.wasHit_,
+                   L.weaponPtr_,
+                   L.damage_,
+                   L.isCritical_,
+                   L.isPower_,
+                   L.actionVerb_,
+                   L.spellPtr_,
+                   L.actionPhraseCNP_,
+                   L.songPtr_,
+                   L.didArmorAbsorb_,
+                   L.conditionPtr_)
+            == std::tie(
+                   R.hitType_,
+                   R.wasHit_,
+                   R.weaponPtr_,
+                   R.damage_,
+                   R.isCritical_,
+                   R.isPower_,
+                   R.actionVerb_,
+                   R.spellPtr_,
+                   R.actionPhraseCNP_,
+                   R.songPtr_,
+                   R.didArmorAbsorb_,
+                   R.conditionPtr_);
     }
-
 }
 }

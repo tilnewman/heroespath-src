@@ -36,7 +36,6 @@
 
 #include <memory>
 
-
 namespace heroespath
 {
 namespace song
@@ -44,27 +43,21 @@ namespace song
 
     SongUVec_t Warehouse::songsUVec_;
 
-
     void Warehouse::Fill()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((songsUVec_.empty()),
-            "song::Warehouse::Setup() was called twice.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (songsUVec_.empty()), "song::Warehouse::Setup() was called twice.");
 
-        //Note::Keep order in sync with song::Songs::Enum
-        songsUVec_.push_back( std::make_unique<RallyDrum>() );
-        songsUVec_.push_back( std::make_unique<SpiritResonance>() );
-        songsUVec_.push_back( std::make_unique<RousingRhythm>() );
-        songsUVec_.push_back( std::make_unique<TripBeat>() );
-        songsUVec_.push_back( std::make_unique<PanicStrings>() );
-        songsUVec_.push_back( std::make_unique<Lullaby>() );
+        // Note::Keep order in sync with song::Songs::Enum
+        songsUVec_.push_back(std::make_unique<RallyDrum>());
+        songsUVec_.push_back(std::make_unique<SpiritResonance>());
+        songsUVec_.push_back(std::make_unique<RousingRhythm>());
+        songsUVec_.push_back(std::make_unique<TripBeat>());
+        songsUVec_.push_back(std::make_unique<PanicStrings>());
+        songsUVec_.push_back(std::make_unique<Lullaby>());
     }
 
-
-    void Warehouse::Empty()
-    {
-        songsUVec_.clear();
-    }
-
+    void Warehouse::Empty() { songsUVec_.clear(); }
 
     bool Warehouse::Test()
     {
@@ -82,37 +75,44 @@ namespace song
             auto const NEXT_ENUM{ static_cast<Songs::Enum>(songIndex) };
             auto songPtr{ Get(NEXT_ENUM) };
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr != nullptr),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (songPtr != nullptr),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                << "\") Get() resulted in a nullptr being returned.");
+                                           << "\") Get() resulted in a nullptr being returned.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->Name().empty() == false),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (songPtr->Name().empty() == false),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                << "\") resulted in an empty Name().");
+                                           << "\") resulted in an empty Name().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->Desc().empty() == false),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (songPtr->Desc().empty() == false),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                << "\") resulted in an empty Desc().");
+                                           << "\") resulted in an empty Desc().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->DescExtra().empty() == false),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (songPtr->DescExtra().empty() == false),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                << "\") resulted in an empty DescExtra().");
+                                           << "\") resulted in an empty DescExtra().");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->ManaCost().IsNonZero()),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (songPtr->ManaCost().IsNonZero()),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                << "\") resulted in a zero Mana cost.");
+                                           << "\") resulted in a zero Mana cost.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->Rank().IsNonZero()),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (songPtr->Rank().IsNonZero()),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                << "\") resulted in a zero Rank.");
+                                           << "\") resulted in a zero Rank.");
 
-            M_ASSERT_OR_LOGANDTHROW_SS((songPtr->Name() == Songs::Name(NEXT_ENUM)),
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (songPtr->Name() == Songs::Name(NEXT_ENUM)),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                << "\") Song is out of order.");
+                                           << "\") Song is out of order.");
 
             ++songIndex;
-            game::LoopManager::Instance()->TestingStrIncrement("Song Test \"" +
-                songPtr->Name() + "\"");
+            game::LoopManager::Instance()->TestingStrIncrement(
+                "Song Test \"" + songPtr->Name() + "\"");
 
             return false;
         }
@@ -123,19 +123,19 @@ namespace song
         return true;
     }
 
-
     SongPtr_t Warehouse::Get(const Songs::Enum E)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((songsUVec_.empty() == false),
-            "song::Warehouse::Get(" << Songs::ToString(E)
-            << ") was called before Setup().");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (songsUVec_.empty() == false),
+            "song::Warehouse::Get(" << Songs::ToString(E) << ") was called before Setup().");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((static_cast<std::size_t>(E) < songsUVec_.size()),
-            "song::Warehouse::Get(" << Songs::ToString(E)
-            << ") found insuff sized songsUVec_, probably from a bug in Setup().");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (static_cast<std::size_t>(E) < songsUVec_.size()),
+            "song::Warehouse::Get("
+                << Songs::ToString(E)
+                << ") found insuff sized songsUVec_, probably from a bug in Setup().");
 
         return songsUVec_.at(static_cast<std::size_t>(E)).get();
     }
-
 }
 }

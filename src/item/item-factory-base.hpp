@@ -33,17 +33,16 @@
 #include <memory>
 #include <string>
 
-
 namespace heroespath
 {
 namespace item
 {
 
-    //A base class for all item factories.
+    // A base class for all item factories.
     class FactoryBase
     {
-        FactoryBase(const FactoryBase &) =delete;
-        FactoryBase & operator=(const FactoryBase &) =delete;
+        FactoryBase(const FactoryBase &) = delete;
+        FactoryBase & operator=(const FactoryBase &) = delete;
 
     public:
         FactoryBase();
@@ -51,43 +50,43 @@ namespace item
 
     protected:
         static const std::string Make_Name(
-            const std::string &  BASE_NAME,
+            const std::string & BASE_NAME,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
-            const bool           IS_PIXIE_ITEM = false);
+            const bool IS_PIXIE_ITEM = false);
 
         static const std::string Make_Desc(
-            const std::string &  DESC,
+            const std::string & DESC,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
-            const std::string &  EXTRA_NAME = "",
-            const bool           IS_PIXIE_ITEM = false);
+            const std::string & EXTRA_NAME = "",
+            const bool IS_PIXIE_ITEM = false);
 
         static const std::string Make_Desc_Clasped(
-            const std::string &  DESC,
+            const std::string & DESC,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
-            const bool           IS_PIXIE_ITEM = false);
+            const bool IS_PIXIE_ITEM = false);
 
         static const std::string Make_Desc_BladdedStaff(
-            const std::string &  BASE_NAME,
-            const bool           IS_SPEAR,
+            const std::string & BASE_NAME,
+            const bool IS_SPEAR,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC);
 
         static void AdjustPrice(
-            Coin_t &             price,
+            Coin_t & price,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
-            const bool           IS_PIXIE_ITEM = false);
+            const bool IS_PIXIE_ITEM = false);
 
         static void AdjustWeight(
-            Weight_t &           weight,
+            Weight_t & weight,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC);
 
         static void AdjustArmorRating(
-            Armor_t &            armorRating,
+            Armor_t & armorRating,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC);
 
@@ -105,8 +104,7 @@ namespace item
 
         static const std::string RandomClaspNoun();
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_ITEMFACTORYBASE_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_ITEMFACTORYBASE_HPP_INCLUDED

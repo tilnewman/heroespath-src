@@ -30,11 +30,10 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
-#include <set>
-#include <string>
 #include <memory>
+#include <set>
 #include <sstream>
-
+#include <string>
 
 namespace heroespath
 {
@@ -51,17 +50,16 @@ namespace player
 namespace state
 {
 
-    //forward declarations
+    // forward declarations
     class GameState;
     using GameStatePtr_t = GameState *;
     using GameStatePSet_t = std::set<GameStatePtr_t>;
 
-
-    //Creates game states either new or from a previous save to disc.
+    // Creates game states either new or from a previous save to disc.
     class GameStateFactory
     {
-        GameStateFactory(const GameStateFactory &) =delete;
-        GameStateFactory & operator=(const GameStateFactory &) =delete;
+        GameStateFactory(const GameStateFactory &) = delete;
+        GameStateFactory & operator=(const GameStateFactory &) = delete;
 
     public:
         GameStateFactory();
@@ -73,22 +71,22 @@ namespace state
 
         void NewGame(player::PartyUPtr_t) const;
 
-        //Caller is responsible for the lifetime of the returned GameState objects.
+        // Caller is responsible for the lifetime of the returned GameState objects.
         GameStatePSet_t LoadAllGames() const;
 
         void SaveGame(const GameStatePtr_t) const;
 
-        //Loaded Characters are not stored in player::CharacterWarehouse,
-        //so the caller is responsible for the lifetime of the returned objects.
+        // Loaded Characters are not stored in player::CharacterWarehouse,
+        // so the caller is responsible for the lifetime of the returned objects.
         player::CharacterPSet_t LoadAllCompanions() const;
 
         void SaveCharacter(const player::CharacterPtr_t) const;
         bool DeleteCharacter(const player::CharacterPtr_t) const;
 
     private:
-        //hack'ish function that saves either the game or the character
-        //depending on which pointer is null...because can't include the
-        //boost serializer includes here in this header file...grumble...zTn 2016-10-26
+        // hack'ish function that saves either the game or the character
+        // depending on which pointer is null...because can't include the
+        // boost serializer includes here in this header file...grumble...zTn 2016-10-26
         void Save(
             const GameStatePtr_t HEROESPATH_PTR,
             const player::CharacterPtr_t CHARACTER_PTR,
@@ -105,8 +103,7 @@ namespace state
         //
         static std::unique_ptr<GameStateFactory> instanceUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_STATE_GAMESTATEFACTORY_HPP_INCLUDED
+#endif // HEROESPATH_STATE_GAMESTATEFACTORY_HPP_INCLUDED

@@ -28,17 +28,16 @@
 // enchantment-factory.hpp
 //  Responsibel for making (new'ing) all Enchantment objects.
 //
+#include "creature/condition-enum.hpp"
 #include "creature/enchantment-type.hpp"
 #include "creature/enchantment.hpp"
-#include "creature/condition-enum.hpp"
+#include "item/item-type-enum.hpp"
 #include "stats/trait.hpp"
 #include "stats/traits-set.hpp"
-#include "item/item-type-enum.hpp"
 
-#include <string>
 #include <memory>
+#include <string>
 #include <vector>
-
 
 namespace heroespath
 {
@@ -50,12 +49,12 @@ namespace item
 namespace creature
 {
 
-    //Responsible for making all Enchantment objects, and automatically
-    //storing them in the EnchantmentWarehouse for safe keeping.
+    // Responsible for making all Enchantment objects, and automatically
+    // storing them in the EnchantmentWarehouse for safe keeping.
     class EnchantmentFactory
     {
-        EnchantmentFactory(const EnchantmentFactory &) =delete;
-        EnchantmentFactory & operator=(const EnchantmentFactory &) =delete;
+        EnchantmentFactory(const EnchantmentFactory &) = delete;
+        EnchantmentFactory & operator=(const EnchantmentFactory &) = delete;
 
     public:
         EnchantmentFactory();
@@ -65,19 +64,17 @@ namespace creature
         static void Acquire();
         static void Release();
 
-        //use to make/store/attach/return enchantments base on item type
+        // use to make/store/attach/return enchantments base on item type
         item::ItemPtr_t MakeStoreAttachReturn(item::ItemPtr_t) const;
 
-        //use to make/store/attach/return custom enchantments
+        // use to make/store/attach/return custom enchantments
         item::ItemPtr_t MakeStoreAttachReturn(
-            item::ItemPtr_t             itemPtr,
+            item::ItemPtr_t itemPtr,
             const EnchantmentType::Enum TYPE,
-            const stats::TraitSet &     TRAIT_SET,
-            const UseInfo &             USE_INFO    = UseInfo()) const;
+            const stats::TraitSet & TRAIT_SET,
+            const UseInfo & USE_INFO = UseInfo()) const;
 
-        Score_t TreasureScore(
-            const item::unique_type::Enum,
-            const item::material::Enum) const;
+        Score_t TreasureScore(const item::unique_type::Enum, const item::material::Enum) const;
 
         Score_t TreasureScore(
             const item::misc_type::Enum,
@@ -93,18 +90,13 @@ namespace creature
             const bool IS_ARMOR) const;
 
         Score_t TreasureScore(
-            const item::element_type::Enum,
-            const bool IS_WEAPON,
-            const item::material::Enum) const;
+            const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
 
     private:
-        item::ItemPtr_t StoreAttachReturn(
-            item::ItemPtr_t,
-            Enchantment * const) const;
+        item::ItemPtr_t StoreAttachReturn(item::ItemPtr_t, Enchantment * const) const;
 
-        std::vector<Enchantment *> MakeFromUniqueType(
-            const item::unique_type::Enum,
-            const item::material::Enum) const;
+        std::vector<Enchantment *>
+            MakeFromUniqueType(const item::unique_type::Enum, const item::material::Enum) const;
 
         Enchantment * MakeFromMiscType(
             const item::misc_type::Enum,
@@ -115,9 +107,7 @@ namespace creature
         Enchantment * MakeFromSetCompleteType(const item::set_type::Enum) const;
 
         Enchantment * MakeFromElementType(
-            const item::element_type::Enum,
-            const bool IS_WEAPON,
-            const item::material::Enum) const;
+            const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
 
         Enchantment * MakeFromNamedType(
             const item::named_type::Enum,
@@ -128,8 +118,7 @@ namespace creature
     private:
         static std::unique_ptr<EnchantmentFactory> instanceUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_ENCHANTMENTFACTORY_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_ENCHANTMENTFACTORY_HPP_INCLUDED

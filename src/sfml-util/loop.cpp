@@ -29,14 +29,14 @@
 //
 #include "loop.hpp"
 
-#include "sfml-util/stage.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/sound-manager.hpp"
-#include "sfml-util/music-operator.hpp"
 #include "sfml-util/date-time.hpp"
+#include "sfml-util/display.hpp"
+#include "sfml-util/music-operator.hpp"
+#include "sfml-util/sound-manager.hpp"
+#include "sfml-util/stage.hpp"
 
-#include "log/log-macros.hpp"
 #include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
@@ -46,7 +46,6 @@
 
 #include <iomanip>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -55,56 +54,51 @@ namespace sfml_util
     const float Loop::NO_HOLD_TIME_(-1.0f);
     const float Loop::INVALID_MUSIC_FADE_VALUE_(-1.0f);
 
-
     Loop::Loop(const std::string & NAME)
-    :
-        NAME_                (std::string(NAME).append("_Loop")),
-        stagePVec_           (),
-        clock_               (),
-        oneSecondTimerSec_   (0.0f),
-        winPtr_              (Display::Instance()->GetWindow()),
-        fader_               (0.0f, 0.0f, Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight()),
-        willHoldFade_        (false),
-        continueFading_      (false),
-        willExitAfterFade_   (false),
-        willExit_            (false),
-        popupStagePtr_       (),
-        elapsedTimeSec_      (0.0f),
-        fatalExitEvent_      (false),
-        holdTime_            (NO_HOLD_TIME_),
-        holdTimeCounter_     (0.0f),
-        willExitOnKeypress_  (false),
-        willExitOnMouseclick_(false),
-        entityWithFocusSPtr_ (nullptr),
-        willIgnoreMouse_     (false),
-        willIgnoreKeystrokes_(false),
-        popupInfo_           (" ", sfml_util::gui::TextInfo(" ")),//okay to be initially without meaningful values
-        hasFadeStarted_      (false),
-        prevEventType_       (sf::Event::EventType::Count),
-        prevKeyPressed_      (sf::Keyboard::Key::Unknown),
-        isMouseHovering_     (false),
-        takeScreenshot_      (false),
-        popupCallbackPtr_    (),
-        state_               (LoopState::Intro),
-        frameRateVec_        (),
-        frameRateSampleCount_(0),
-        willLogFrameRate_    (false)
+        : NAME_(std::string(NAME).append("_Loop"))
+        , stagePVec_()
+        , clock_()
+        , oneSecondTimerSec_(0.0f)
+        , winPtr_(Display::Instance()->GetWindow())
+        , fader_(
+              0.0f, 0.0f, Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight())
+        , willHoldFade_(false)
+        , continueFading_(false)
+        , willExitAfterFade_(false)
+        , willExit_(false)
+        , popupStagePtr_()
+        , elapsedTimeSec_(0.0f)
+        , fatalExitEvent_(false)
+        , holdTime_(NO_HOLD_TIME_)
+        , holdTimeCounter_(0.0f)
+        , willExitOnKeypress_(false)
+        , willExitOnMouseclick_(false)
+        , entityWithFocusSPtr_(nullptr)
+        , willIgnoreMouse_(false)
+        , willIgnoreKeystrokes_(false)
+        , popupInfo_(" ", sfml_util::gui::TextInfo(" "))
+        , // okay to be initially without meaningful values
+        hasFadeStarted_(false)
+        , prevEventType_(sf::Event::EventType::Count)
+        , prevKeyPressed_(sf::Keyboard::Key::Unknown)
+        , isMouseHovering_(false)
+        , takeScreenshot_(false)
+        , popupCallbackPtr_()
+        , state_(LoopState::Intro)
+        , frameRateVec_()
+        , frameRateSampleCount_(0)
+        , willLogFrameRate_(false)
     {}
 
-
-    Loop::~Loop()
-    {
-        FreeAllStages();
-    }
-
+    Loop::~Loop() { FreeAllStages(); }
 
     void Loop::ConsumeEvents()
     {
         sf::Event e;
         while (winPtr_->pollEvent(e))
-        {}
+        {
+        }
     }
-
 
     void Loop::RemoveFocus()
     {
@@ -115,7 +109,6 @@ namespace sfml_util
             nextStagePtr->RemoveFocus();
         }
     }
-
 
     bool Loop::SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR)
     {
@@ -134,22 +127,18 @@ namespace sfml_util
         return foundStageOwningEntityWithFocus;
     }
 
-
     void Loop::AssignPopupCallbackHandlerInfo(
-        popup::IPopupHandler_t * const HANDLER_PTR,
-        const popup::PopupInfo & POPUP_INFO)
+        popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
     {
         popupInfo_ = POPUP_INFO;
         popupCallbackPtr_ = HANDLER_PTR;
     }
-
 
     void Loop::FakeMouseClick(const sf::Vector2f & MOUSE_POS_V)
     {
         ProcessMouseButtonLeftPressed(MOUSE_POS_V);
         ProcessMouseButtonLeftReleased(MOUSE_POS_V);
     }
-
 
     void Loop::TestingStrAppend(const std::string & S)
     {
@@ -159,7 +148,6 @@ namespace sfml_util
         }
     }
 
-
     void Loop::TestingStrIncrement(const std::string & S)
     {
         for (auto & nextStagePtr : stagePVec_)
@@ -167,7 +155,6 @@ namespace sfml_util
             nextStagePtr->TestingStrIncrement(S);
         }
     }
-
 
     void Loop::TestingImageSet(
         const sf::Texture & TEXTURE,
@@ -179,25 +166,16 @@ namespace sfml_util
         for (auto & nextStagePtr : stagePVec_)
         {
             nextStagePtr->TestingImageSet(
-                TEXTURE,
-                WILL_CHECK_FOR_OUTLINE,
-                CATEGORY_NAME,
-                TYPE_NAME,
-                PATH);
+                TEXTURE, WILL_CHECK_FOR_OUTLINE, CATEGORY_NAME, TYPE_NAME, PATH);
         }
-    }    
-
-
-    void Loop::AddStage(IStagePtr_t stageSPtr)
-    {
-        stagePVec_.push_back(stageSPtr);
     }
 
+    void Loop::AddStage(IStagePtr_t stageSPtr) { stagePVec_.push_back(stageSPtr); }
 
     void Loop::FreeAllStages()
     {
         auto const NUM_STAGES{ stagePVec_.size() };
-        for (std::size_t i(0); i<NUM_STAGES; ++i)
+        for (std::size_t i(0); i < NUM_STAGES; ++i)
         {
             if (stagePVec_[i] != nullptr)
             {
@@ -211,7 +189,6 @@ namespace sfml_util
         FreePopupStage();
     }
 
-
     void Loop::FreePopupStage()
     {
         if (popupStagePtr_ != nullptr)
@@ -221,18 +198,17 @@ namespace sfml_util
         }
     }
 
-
     void Loop::LogFrameRate()
     {
         if (willLogFrameRate_ && (frameRateSampleCount_ > 0))
         {
-            //find min, max, and average framerate
+            // find min, max, and average framerate
             auto min{ frameRateVec_[0] };
             auto max{ 0.0f };
             auto sum{ 0.0f };
 
-            //Skip the first framerate number because it includes time spent
-            //logging the prev framerate.
+            // Skip the first framerate number because it includes time spent
+            // logging the prev framerate.
             for (std::size_t i(1); i < frameRateSampleCount_; ++i)
             {
                 auto const NEXT_FRAMERATE{ frameRateVec_[i] };
@@ -253,15 +229,12 @@ namespace sfml_util
             auto const AVERAGE_FRAMERATE{ sum / static_cast<float>(frameRateSampleCount_) };
 
             const float STANDARD_DEVIATION{ misc::Vector::StandardDeviation(
-                frameRateVec_,
-                frameRateSampleCount_,
-                AVERAGE_FRAMERATE) };
+                frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE) };
 
-            M_HP_LOG("Frame rate min=" << min
-                << ", max=" << max
-                << ", count=" << frameRateSampleCount_ - 1
-                << ", avg=" << AVERAGE_FRAMERATE
-                << ", std_dev=" << STANDARD_DEVIATION);
+            M_HP_LOG(
+                "Frame rate min=" << min << ", max=" << max << ", count="
+                                  << frameRateSampleCount_ - 1 << ", avg=" << AVERAGE_FRAMERATE
+                                  << ", std_dev=" << STANDARD_DEVIATION);
         }
         else
         {
@@ -271,10 +244,7 @@ namespace sfml_util
         frameRateSampleCount_ = 0;
     }
 
-
-    bool Loop::ProcessOneSecondTasks(
-        const sf::Vector2i & NEW_MOUSE_POS,
-        const bool HAS_MOUSE_MOVED)
+    bool Loop::ProcessOneSecondTasks(const sf::Vector2i & NEW_MOUSE_POS, const bool HAS_MOUSE_MOVED)
     {
         auto willProcessOneSecondTasks{ false };
 
@@ -291,15 +261,14 @@ namespace sfml_util
 
             LogFrameRate();
 
-            if ((false == continueFading_) &&
-                (HAS_MOUSE_MOVED == false) &&
-                (isMouseHovering_ == false))
+            if ((false == continueFading_) && (HAS_MOUSE_MOVED == false)
+                && (isMouseHovering_ == false))
             {
                 isMouseHovering_ = true;
 
                 auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
 
-                //popup stages process exclusively when present
+                // popup stages process exclusively when present
                 if (nullptr == popupStagePtr_)
                 {
                     for (auto & nextStagePtr : stagePVec_)
@@ -317,10 +286,7 @@ namespace sfml_util
         return willProcessOneSecondTasks;
     }
 
-
-    void Loop::ProcessMouseHover(
-        const sf::Vector2i & NEW_MOUSE_POS,
-        bool HAS_MOUSE_MOVED)
+    void Loop::ProcessMouseHover(const sf::Vector2i & NEW_MOUSE_POS, bool HAS_MOUSE_MOVED)
     {
         if (isMouseHovering_ && HAS_MOUSE_MOVED)
         {
@@ -328,7 +294,7 @@ namespace sfml_util
 
             auto const MOUSE_POS_NEW_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
 
-            //popup stages process exclusively when present
+            // popup stages process exclusively when present
             if (nullptr == popupStagePtr_)
             {
                 for (auto & nextStagePtr : stagePVec_)
@@ -343,7 +309,6 @@ namespace sfml_util
         }
     }
 
-
     void Loop::ProcessHoldTime()
     {
         if (holdTime_ > 0.0f)
@@ -357,7 +322,6 @@ namespace sfml_util
         }
     }
 
-
     void Loop::ProcessFader()
     {
         if ((hasFadeStarted_) && ((continueFading_ || willHoldFade_)))
@@ -369,7 +333,7 @@ namespace sfml_util
         {
             game::LoopManager::Instance()->HandleTransitionBeforeFade();
 
-            continueFading_ = ! fader_.Update(elapsedTimeSec_);
+            continueFading_ = !fader_.Update(elapsedTimeSec_);
 
             hasFadeStarted_ = true;
 
@@ -380,7 +344,6 @@ namespace sfml_util
         }
     }
 
-
     void Loop::ProcessPopup()
     {
         if (nullptr != popupStagePtr_)
@@ -388,14 +351,11 @@ namespace sfml_util
             popupStagePtr_->UpdateTime(elapsedTimeSec_);
 
             sf::RenderStates states;
-            popupStagePtr_->Draw( * winPtr_, states);
+            popupStagePtr_->Draw(*winPtr_, states);
         }
     }
 
-
-    void Loop::ProcessEvents(
-        const sf::Vector2i & NEW_MOUSE_POS,
-        bool HAS_MOUSE_MOVED)
+    void Loop::ProcessEvents(const sf::Vector2i & NEW_MOUSE_POS, bool HAS_MOUSE_MOVED)
     {
         if ((false == willIgnoreMouse_) && HAS_MOUSE_MOVED)
         {
@@ -405,7 +365,7 @@ namespace sfml_util
         sf::Event e;
         if (winPtr_->pollEvent(e))
         {
-            //unexpected window close exit condition
+            // unexpected window close exit condition
             if (e.type == sf::Event::Closed)
             {
                 M_HP_LOG(NAME_ << " UNEXPECTED WINDOW CLOSE");
@@ -422,8 +382,8 @@ namespace sfml_util
             {
                 if (e.mouseButton.button == sf::Mouse::Left)
                 {
-                    auto const NEW_MOUSE_POS_F{
-                        sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+                    auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(
+                        NEW_MOUSE_POS) };
 
                     ProcessMouseButtonLeftPressed(NEW_MOUSE_POS_F);
                 }
@@ -437,8 +397,8 @@ namespace sfml_util
             {
                 if (e.mouseButton.button == sf::Mouse::Left)
                 {
-                    auto const NEW_MOUSE_POS_F{
-                        sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
+                    auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(
+                        NEW_MOUSE_POS) };
 
                     ProcessMouseButtonLeftReleased(NEW_MOUSE_POS_F);
                 }
@@ -455,7 +415,6 @@ namespace sfml_util
         }
     }
 
-
     void Loop::ProcessKeyStrokes(const sf::Event & EVENT)
     {
         if ((EVENT.type != prevEventType_) || (EVENT.key.code != prevKeyPressed_))
@@ -465,13 +424,13 @@ namespace sfml_util
 
             std::ostringstream ss;
             ss << "Key " << ((EVENT.type == sf::Event::KeyReleased) ? "released" : "pressed")
-               << ": "   << sfml_util::KeyCodeToString(EVENT.key.code)
+               << ": " << sfml_util::KeyCodeToString(EVENT.key.code)
                << ((willIgnoreKeystrokes_) ? " IGNORED" : "");
 
             M_HP_LOG(ss.str());
         }
 
-        //allow screenshots even if keystrokes are ignored
+        // allow screenshots even if keystrokes are ignored
         if (EVENT.key.code == sf::Keyboard::F12)
         {
             takeScreenshot_ = true;
@@ -482,10 +441,10 @@ namespace sfml_util
             return;
         }
 
-        //popup stages process exclusively when present
+        // popup stages process exclusively when present
         if (nullptr == popupStagePtr_)
         {
-            //give event to stages for processing
+            // give event to stages for processing
             for (auto & nextStagePtr : stagePVec_)
             {
                 if (EVENT.type == sf::Event::KeyPressed)
@@ -535,7 +494,6 @@ namespace sfml_util
         }
     }
 
-
     void Loop::ProcessMouseMove(const sf::Vector2i & NEW_MOUSE_POS)
     {
         if (nullptr == popupStagePtr_)
@@ -550,7 +508,6 @@ namespace sfml_util
             popupStagePtr_->UpdateMousePos(NEW_MOUSE_POS);
         }
     }
-
 
     void Loop::ProcessMouseButtonLeftPressed(const sf::Vector2f & MOUSE_POS_V)
     {
@@ -574,7 +531,6 @@ namespace sfml_util
         }
     }
 
-
     void Loop::ProcessMouseButtonLeftReleased(const sf::Vector2f & MOUSE_POS_V)
     {
         if (nullptr == popupStagePtr_)
@@ -585,7 +541,8 @@ namespace sfml_util
 
                 if (newEntityWithFocusPtr != nullptr)
                 {
-                    M_HP_LOG("MouseButtonLeftReleased caused focus in stage \""
+                    M_HP_LOG(
+                        "MouseButtonLeftReleased caused focus in stage \""
                         << nextStagePtr->GetStageName() << "\" on entity \""
                         << newEntityWithFocusPtr->GetEntityName() << "\"");
 
@@ -608,10 +565,7 @@ namespace sfml_util
         }
     }
 
-
-    void Loop::ProcessMouseWheelRoll(
-        const sf::Event & EVENT,
-        const sf::Vector2i & NEW_MOUSE_POS)
+    void Loop::ProcessMouseWheelRoll(const sf::Event & EVENT, const sf::Vector2i & NEW_MOUSE_POS)
     {
         auto const NEW_MOUSE_POS_F{ sfml_util::ConvertVector<int, float>(NEW_MOUSE_POS) };
 
@@ -628,7 +582,6 @@ namespace sfml_util
         }
     }
 
-
     void Loop::ProcessPopupCallback()
     {
         if (popupCallbackPtr_ == nullptr)
@@ -641,18 +594,16 @@ namespace sfml_util
 
         if (POPUP_RESPONSE_ENUM != popup::ResponseTypes::None)
         {
-            M_HP_LOG("PopupCallback resp=\""
-                << popup::ResponseTypes::ToString(POPUP_RESPONSE_ENUM)
-                << "\" with selection=" << POPUP_SELECTION
-                << " to popup=\"" << popupInfo_.Name() << "\"");
+            M_HP_LOG(
+                "PopupCallback resp=\"" << popup::ResponseTypes::ToString(POPUP_RESPONSE_ENUM)
+                                        << "\" with selection=" << POPUP_SELECTION << " to popup=\""
+                                        << popupInfo_.Name() << "\"");
 
             const popup::PopupResponse POPUP_RESPONSE_OBJ(
-                popupInfo_,
-                POPUP_RESPONSE_ENUM,
-                POPUP_SELECTION);
+                popupInfo_, POPUP_RESPONSE_ENUM, POPUP_SELECTION);
 
-            auto const WILL_RESET_CALLBACKHANDLER{
-                popupCallbackPtr_->HandleCallback(POPUP_RESPONSE_OBJ) };
+            auto const WILL_RESET_CALLBACKHANDLER{ popupCallbackPtr_->HandleCallback(
+                POPUP_RESPONSE_OBJ) };
 
             game::LoopManager::Instance()->ClearPopupResponse();
 
@@ -663,59 +614,58 @@ namespace sfml_util
         }
     }
 
-
     void Loop::ProcessScreenshot()
     {
         if (takeScreenshot_)
         {
             takeScreenshot_ = false;
 
-            //acquire screenshot
+            // acquire screenshot
             const sf::Vector2u WINDOW_SIZE(Display::Instance()->GetWindow()->getSize());
             sf::Texture texture;
             if (texture.create(WINDOW_SIZE.x, WINDOW_SIZE.y) == false)
             {
-                M_HP_LOG_ERR("texture.create(" << WINDOW_SIZE.x << "x" << WINDOW_SIZE.y << ") "
-                    << "returned false. Unable to take screenshot.");
+                M_HP_LOG_ERR(
+                    "texture.create(" << WINDOW_SIZE.x << "x" << WINDOW_SIZE.y << ") "
+                                      << "returned false. Unable to take screenshot.");
                 return;
             }
 
-            texture.update( * Display::Instance()->GetWindow());
+            texture.update(*Display::Instance()->GetWindow());
 
             const sf::Image SCREENSHOT_IMAGE(texture.copyToImage());
 
             namespace bfs = boost::filesystem;
 
-            //establish the path
-            const bfs::path DIR_OBJ(bfs::system_complete(bfs::current_path() / bfs::path("screenshots")));
+            // establish the path
+            const bfs::path DIR_OBJ(
+                bfs::system_complete(bfs::current_path() / bfs::path("screenshots")));
 
-            //create directory if missing
+            // create directory if missing
             if (bfs::exists(DIR_OBJ) == false)
             {
                 boost::system::error_code ec;
                 if (bfs::create_directory(DIR_OBJ, ec) == false)
                 {
-                    M_HP_LOG_ERR("sfml_util::Loop::ProcessScreenshot() was unable to create the "
-                        << "screenshot directory \"" << DIR_OBJ.string()
-                        << "\".  Error code=" << ec << ".  Unable to take screenshot.");
+                    M_HP_LOG_ERR(
+                        "sfml_util::Loop::ProcessScreenshot() was unable to create the "
+                        << "screenshot directory \"" << DIR_OBJ.string() << "\".  Error code=" << ec
+                        << ".  Unable to take screenshot.");
                     return;
                 }
             }
 
-            //find the next available filename
+            // find the next available filename
             const sfml_util::DateTime DATE_TIME(sfml_util::DateTime::CurrentDateTime());
             std::ostringstream ss;
             bfs::path filePathObj;
-            for (std::size_t i(0); ; ++i)
+            for (std::size_t i(0);; ++i)
             {
                 ss.str("");
                 ss << "screenshot"
-                    << "_" << DATE_TIME.date.year
-                    << "_" << DATE_TIME.date.month
-                    << "_" << DATE_TIME.date.day
-                    << "__" << DATE_TIME.time.hours
-                    << "_" << DATE_TIME.time.minutes
-                    << "_" << DATE_TIME.time.seconds;
+                   << "_" << DATE_TIME.date.year << "_" << DATE_TIME.date.month << "_"
+                   << DATE_TIME.date.day << "__" << DATE_TIME.time.hours << "_"
+                   << DATE_TIME.time.minutes << "_" << DATE_TIME.time.seconds;
 
                 if (i > 0)
                 {
@@ -733,7 +683,8 @@ namespace sfml_util
 
                 if (i >= 10000)
                 {
-                    M_HP_LOG_ERR("Loop::ProcessScreenshot() failed to find an available filename"
+                    M_HP_LOG_ERR(
+                        "Loop::ProcessScreenshot() failed to find an available filename"
                         << "after 10,000 tries.  Either 10,000 screenshots have been saved or "
                         << "there is something wrong with this code.  Unable to take screenshot");
                     return;
@@ -742,12 +693,12 @@ namespace sfml_util
 
             if (SCREENSHOT_IMAGE.saveToFile(filePathObj.string()) == false)
             {
-                M_HP_LOG("Loop::ProcessScreenshot() failed screenshot saveToFile() \""
+                M_HP_LOG(
+                    "Loop::ProcessScreenshot() failed screenshot saveToFile() \""
                     << filePathObj.string() << "\"");
             }
         }
     }
-
 
     void Loop::ProcessFramerate()
     {
@@ -761,7 +712,6 @@ namespace sfml_util
         }
     }
 
-
     void Loop::ProcessTimeUpdate()
     {
         for (auto & nextStagePtr : stagePVec_)
@@ -770,16 +720,14 @@ namespace sfml_util
         }
     }
 
-
     void Loop::ProcessDrawing()
     {
         sf::RenderStates states;
         for (auto & nextStagePtr : stagePVec_)
         {
-            nextStagePtr->Draw( * winPtr_, states);
+            nextStagePtr->Draw(*winPtr_, states);
         }
     }
-
 
     void Loop::PerformNextTest()
     {
@@ -789,23 +737,22 @@ namespace sfml_util
         }
     }
 
-
     bool Loop::Execute()
     {
-        //reset loop variables
+        // reset loop variables
         willExit_ = false;
         fatalExitEvent_ = false;
         auto soundManagerPtr{ sfml_util::SoundManager::Instance() };
         frameRateVec_.resize(4096);
-        sf::Vector2i prevMousePos{ sf::Mouse::getPosition( * winPtr_) };
+        sf::Vector2i prevMousePos{ sf::Mouse::getPosition(*winPtr_) };
 
-        //consume pre-events
+        // consume pre-events
         ConsumeEvents();
 
         clock_.restart();
         while (winPtr_->isOpen() && (false == willExit_))
         {
-            auto const NEW_MOUSE_POS{ sf::Mouse::getPosition( * winPtr_) };
+            auto const NEW_MOUSE_POS{ sf::Mouse::getPosition(*winPtr_) };
             auto const HAS_MOUSE_MOVED{ NEW_MOUSE_POS != prevMousePos };
 
             winPtr_->clear(sf::Color::Black);
@@ -832,39 +779,36 @@ namespace sfml_util
 
         ConsumeEvents();
 
-        //reset hold time
+        // reset hold time
         holdTime_ = NO_HOLD_TIME_;
         holdTimeCounter_ = 0.0f;
 
-        //reset fader
+        // reset fader
         willExitAfterFade_ = false;
 
         return fatalExitEvent_;
     }
 
-
-    void Loop::FadeOut( const sf::Color & FADE_TO_COLOR,
-                        const float       SPEED_MULT,
-                        const bool        WILL_HOLD_FADE )
+    void Loop::FadeOut(
+        const sf::Color & FADE_TO_COLOR, const float SPEED_MULT, const bool WILL_HOLD_FADE)
     {
-        fader_.UpdateRegion(Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight());
+        fader_.UpdateRegion(
+            Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight());
         fader_.FadeTo(FADE_TO_COLOR, SPEED_MULT);
         continueFading_ = true;
         willExitAfterFade_ = true;
         willHoldFade_ = WILL_HOLD_FADE;
     }
 
-
-    void Loop::FadeIn(const sf::Color & FADE_FROM_COLOR,
-                      const float       SPEED_MULT,
-                      const bool        WILL_HOLD_FADE)
+    void Loop::FadeIn(
+        const sf::Color & FADE_FROM_COLOR, const float SPEED_MULT, const bool WILL_HOLD_FADE)
     {
-        fader_.UpdateRegion(Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight());
+        fader_.UpdateRegion(
+            Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight());
         fader_.Reset(FADE_FROM_COLOR);
         fader_.FadeTo(sf::Color::Transparent, SPEED_MULT);
         continueFading_ = true;
         willHoldFade_ = WILL_HOLD_FADE;
     }
-
 }
 }

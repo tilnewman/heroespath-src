@@ -28,109 +28,106 @@
 // gui-entity-text.hpp
 //  Code for handling a piece of text that can be in one of three states.
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
-#include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
+#include "sfml-util/gui/text-info.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/text-rendering.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //Base class for gui text that can be in any of MouseState::Enum states.
-    class GuiText : public GuiEntity
+    namespace gui
     {
-        GuiText(const GuiText &) =delete;
-        GuiText & operator=(const GuiText &) =delete;
 
-    public:
-        //if this constructor is used, then Setup() must be called before any other functions
-        explicit GuiText(
-            const std::string & NAME,
-            const float TEXT_WIDTH_LIMIT = 0.0f,
-            const FontPtr_t NUMBERS_FONT_PTR = nullptr);
+        // Base class for gui text that can be in any of MouseState::Enum states.
+        class GuiText : public GuiEntity
+        {
+            GuiText(const GuiText &) = delete;
+            GuiText & operator=(const GuiText &) = delete;
 
-        GuiText(
-            const std::string &   NAME,
-            const sf::FloatRect & REGION,
-            const MouseTextInfo & MOUSE_TEXT_INFO,
-            const float TEXT_WIDTH_LIMIT = 0.0f,
-            const FontPtr_t NUMBERS_FONT_PTR = nullptr);
+        public:
+            // if this constructor is used, then Setup() must be called before any other functions
+            explicit GuiText(
+                const std::string & NAME,
+                const float TEXT_WIDTH_LIMIT = 0.0f,
+                const FontPtr_t NUMBERS_FONT_PTR = nullptr);
 
-        GuiText(
-            const std::string & NAME,
-            const float POS_LEFT,
-            const float POS_TOP,
-            const MouseTextInfo & MOUSE_TEXT_INFO,
-            const float TEXT_WIDTH_LIMIT = 0.0f,
-            const FontPtr_t NUMBERS_FONT_PTR = nullptr);
+            GuiText(
+                const std::string & NAME,
+                const sf::FloatRect & REGION,
+                const MouseTextInfo & MOUSE_TEXT_INFO,
+                const float TEXT_WIDTH_LIMIT = 0.0f,
+                const FontPtr_t NUMBERS_FONT_PTR = nullptr);
 
-        virtual ~GuiText();
+            GuiText(
+                const std::string & NAME,
+                const float POS_LEFT,
+                const float POS_TOP,
+                const MouseTextInfo & MOUSE_TEXT_INFO,
+                const float TEXT_WIDTH_LIMIT = 0.0f,
+                const FontPtr_t NUMBERS_FONT_PTR = nullptr);
 
-        virtual void SetMouseState(const MouseState::Enum E);
+            virtual ~GuiText();
 
-        virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);
-        virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V);
+            virtual void SetMouseState(const MouseState::Enum E);
 
-        virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
+            virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);
+            virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V);
 
-        inline virtual const std::string GetText() const { return text_; }
+            virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
 
-        inline virtual float GetTextWidth() const { return sprite_.getLocalBounds().width; }
-        inline virtual float GetTextHeight() const { return sprite_.getLocalBounds().height; }
+            inline virtual const std::string GetText() const { return text_; }
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+            inline virtual float GetTextWidth() const { return sprite_.getLocalBounds().width; }
+            inline virtual float GetTextHeight() const { return sprite_.getLocalBounds().height; }
 
-        virtual void SetNewColors(
-            const sf::Color & UP_COLOR,
-            const sf::Color & DOWN_COLOR,
-            const sf::Color & OVER_COLOR);
+            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-        virtual void SpriteColorSet(const sf::Color & NEW_COLOR);
-        virtual void SpriteColorReset();
+            virtual void SetNewColors(
+                const sf::Color & UP_COLOR,
+                const sf::Color & DOWN_COLOR,
+                const sf::Color & OVER_COLOR);
 
-        void Setup(
-            const std::string & TEXT,
-            const float POS_LEFT,
-            const float POS_TOP,
-            const MouseTextInfo & MOUSE_TEXT_INFO,
-            const float TEXT_WIDTH_LIMIT = 0.0f,
-            const FontPtr_t NUMBERS_FONT_PTR = nullptr);
+            virtual void SpriteColorSet(const sf::Color & NEW_COLOR);
+            virtual void SpriteColorReset();
 
-        virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
-        virtual void MoveEntityPos(const float HORIZ, const float VERT);
+            void Setup(
+                const std::string & TEXT,
+                const float POS_LEFT,
+                const float POS_TOP,
+                const MouseTextInfo & MOUSE_TEXT_INFO,
+                const float TEXT_WIDTH_LIMIT = 0.0f,
+                const FontPtr_t NUMBERS_FONT_PTR = nullptr);
 
-    protected:
-        virtual void ResetText();
-        inline virtual void OnClick(const sf::Vector2f &) {}
+            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
+            virtual void MoveEntityPos(const float HORIZ, const float VERT);
 
-    protected:
-        std::string text_;
-        TextInfo upTextInfo_;
-        TextInfo downTextInfo_;
-        TextInfo overTextInfo_;
-        FontPtr_t numberFontPtr_;
-        sf::RenderTexture offscreenTexture_;
-        sf::Sprite sprite_;
-        float textWidthLimit_;
-        text_render::RenderedText renderedText_;
-    };
+        protected:
+            virtual void ResetText();
+            inline virtual void OnClick(const sf::Vector2f &) {}
 
+        protected:
+            std::string text_;
+            TextInfo upTextInfo_;
+            TextInfo downTextInfo_;
+            TextInfo overTextInfo_;
+            FontPtr_t numberFontPtr_;
+            sf::RenderTexture offscreenTexture_;
+            sf::Sprite sprite_;
+            float textWidthLimit_;
+            text_render::RenderedText renderedText_;
+        };
 
-    using GuiTextSPtr_t = std::shared_ptr<GuiText>;
-    using GuiTextSVec_t = std::vector<GuiTextSPtr_t>;
-
+        using GuiTextSPtr_t = std::shared_ptr<GuiText>;
+        using GuiTextSVec_t = std::vector<GuiTextSPtr_t>;
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUITEXT_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUITEXT_HPP_INCLUDED

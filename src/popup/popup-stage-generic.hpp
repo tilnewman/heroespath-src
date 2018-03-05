@@ -32,17 +32,16 @@
 
 #include <string>
 
-
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing a generic popup window stage.
+    // Responsible for implementing a generic popup window stage.
     class PopupStageGeneric : public PopupStageBase
     {
-        PopupStageGeneric(const PopupStageGeneric &) =delete;
-        PopupStageGeneric & operator=(const PopupStageGeneric &) =delete;
+        PopupStageGeneric(const PopupStageGeneric &) = delete;
+        PopupStageGeneric & operator=(const PopupStageGeneric &) = delete;
 
     public:
         explicit PopupStageGeneric(const PopupInfo & POPUP_INFO);
@@ -55,8 +54,7 @@ namespace popup
 
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGEGENERIC_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGEGENERIC_HPP_INCLUDED

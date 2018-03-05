@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace popup
@@ -39,22 +38,21 @@ namespace popup
     {
         enum Enum : unsigned int
         {
-            Error    = 0,
-            None     = Error,
-            Okay     = 1 << 0,
+            Error = 0,
+            None = Error,
+            Okay = 1 << 0,
             Continue = 1 << 1,
-            Yes      = 1 << 2,
-            No       = 1 << 3,
-            Cancel   = 1 << 4,
-            Select   = 1 << 5
+            Yes = 1 << 2,
+            No = 1 << 3,
+            Cancel = 1 << 4,
+            Select = 1 << 5
         };
 
         static const std::string ToString(const ResponseTypes::Enum E);
         static bool IsValid(const ResponseTypes::Enum E);
         static bool IsAffirmative(const ResponseTypes::Enum E);
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPRESPONSEENUM_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPRESPONSEENUM_HPP_INCLUDED

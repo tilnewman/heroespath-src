@@ -29,31 +29,30 @@
 //
 #include "load-game-menu-stage.hpp"
 
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/loaders.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/tile.hpp"
-#include "sfml-util/sound-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/loaders.hpp"
 #include "sfml-util/ouroboros.hpp"
+#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sound-manager.hpp"
+#include "sfml-util/tile.hpp"
 
 #include "popup/popup-manager.hpp"
 
 #include "game/game-data-file.hpp"
-#include "state/game-state.hpp"
-#include "state/game-state-factory.hpp"
-#include "state/world.hpp"
 #include "game/loop-manager.hpp"
-#include "player/party.hpp"
 #include "player/character.hpp"
+#include "player/party.hpp"
+#include "state/game-state-factory.hpp"
+#include "state/game-state.hpp"
+#include "state/world.hpp"
 
 #include "misc/real.hpp"
 
 #include <list>
 #include <string>
-
 
 namespace heroespath
 {
@@ -61,26 +60,24 @@ namespace stage
 {
 
     LoadGameStage::LoadGameStage()
-    :
-        Stage                   ("LoadGameMenu"),
-        SCREEN_WIDTH_           (sfml_util::Display::Instance()->GetWinWidth()),
-        SCREEN_HEIGHT_          (sfml_util::Display::Instance()->GetWinHeight()),
-        mainMenuTitle_          ("resume_button_normal.png"),
-        backgroundImage_        ("media-images-backgrounds-tile-darkknot"),
-        backButtonUPtr_         (),
-        gsListBoxUPtr_          (),
-        locTextRegionUPtr_      (),
-        charTextRegionUVec_     (),
-        charLabelTextRegionUPtr_(),
-        gsListBoxPosLeft_       (0.0f),
-        gsListBoxPosTop_        (0.0f),
-        gsListBoxPosWidth_      (0.0f),
-        gsListBoxPosHeight_     (0.0f),
-        ouroborosUPtr_          (),
-        bottomSymbol_           (),
-        gamestatePSet_          ()
+        : Stage("LoadGameMenu")
+        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
+        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        , mainMenuTitle_("resume_button_normal.png")
+        , backgroundImage_("media-images-backgrounds-tile-darkknot")
+        , backButtonUPtr_()
+        , gsListBoxUPtr_()
+        , locTextRegionUPtr_()
+        , charTextRegionUVec_()
+        , charLabelTextRegionUPtr_()
+        , gsListBoxPosLeft_(0.0f)
+        , gsListBoxPosTop_(0.0f)
+        , gsListBoxPosWidth_(0.0f)
+        , gsListBoxPosHeight_(0.0f)
+        , ouroborosUPtr_()
+        , bottomSymbol_()
+        , gamestatePSet_()
     {}
-
 
     LoadGameStage::~LoadGameStage()
     {
@@ -94,7 +91,6 @@ namespace stage
         gamestatePSet_.clear();
     }
 
-
     bool LoadGameStage::HandleCallback(
         const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
     {
@@ -107,29 +103,26 @@ namespace stage
         return false;
     }
 
-
-    bool LoadGameStage::HandleCallback(
-        const sfml_util::gui::callback::ListBoxEventPackage &)
+    bool LoadGameStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)
     {
-        //TODO Handle selection of a game to load and then load it,
-        //including a call to all creatures StoreItemsInWarehouseAfterLoad(),
-        //and Party::Add/or re-add pointers using player::CharacterWarehouse::Store(),
-        //and call gamestatePSet_.erase(ptr)
+        // TODO Handle selection of a game to load and then load it,
+        // including a call to all creatures StoreItemsInWarehouseAfterLoad(),
+        // and Party::Add/or re-add pointers using player::CharacterWarehouse::Store(),
+        // and call gamestatePSet_.erase(ptr)
 
         SetupGameInfoDisplay();
         return true;
     }
 
-
     void LoadGameStage::Setup()
     {
-        //ouroboros
+        // ouroboros
         ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("LoadGameStage's");
         EntityAdd(ouroborosUPtr_.get());
 
-        //back button
-        auto const BUTTONS_PATH{
-            game::GameDataFile::Instance()->GetMediaPath("media-images-buttons-mainmenu-dir") };
+        // back button
+        auto const BUTTONS_PATH{ game::GameDataFile::Instance()->GetMediaPath(
+            "media-images-buttons-mainmenu-dir") };
 
         backButtonUPtr_ = std::make_unique<sfml_util::gui::FourStateButton>(
             "Back",
@@ -142,21 +135,18 @@ namespace stage
         backButtonUPtr_->SetCallbackHandler(this);
         EntityAdd(backButtonUPtr_.get());
 
-        //GameState ListBox
+        // GameState ListBox
         //
-        //determine position on screen
-        gsListBoxPosLeft_  = ((SCREEN_WIDTH_ * 0.1f) - 85.0f) + sfml_util::MapByRes(0.0f, 800.0f);
+        // determine position on screen
+        gsListBoxPosLeft_ = ((SCREEN_WIDTH_ * 0.1f) - 85.0f) + sfml_util::MapByRes(0.0f, 800.0f);
         gsListBoxPosWidth_ = 610.0f;
-        gsListBoxPosHeight_= SCREEN_HEIGHT_ * 0.5f;
-        gsListBoxPosTop_   = ((SCREEN_HEIGHT_ * 0.5f) - (gsListBoxPosHeight_ * 0.5f)) + 50.0f;
+        gsListBoxPosHeight_ = SCREEN_HEIGHT_ * 0.5f;
+        gsListBoxPosTop_ = ((SCREEN_HEIGHT_ * 0.5f) - (gsListBoxPosHeight_ * 0.5f)) + 50.0f;
 
         sf::FloatRect GS_LB_RECT(
-            gsListBoxPosLeft_,
-            gsListBoxPosTop_,
-            gsListBoxPosWidth_,
-            gsListBoxPosHeight_);
+            gsListBoxPosLeft_, gsListBoxPosTop_, gsListBoxPosWidth_, gsListBoxPosHeight_);
 
-        //hand all GameState objects to the ListBox
+        // hand all GameState objects to the ListBox
         gamestatePSet_ = state::GameStateFactory::Instance()->LoadAllGames();
         sfml_util::gui::ListBoxItemSVec_t listBoxItemSVec;
         std::size_t gameStateCount(0);
@@ -164,18 +154,17 @@ namespace stage
         for (auto const NEXT_GAMESTATE_PTR : gamestatePSet_)
         {
             std::ostringstream ss;
-            ss  << "Started "
-                /*TODO MAP NAME INSTEAD OF STARTED DATE*/
-                << NEXT_GAMESTATE_PTR->DateTimeStarted().date.year << "-"
-                << NEXT_GAMESTATE_PTR->DateTimeStarted().date.month << "-"
-                << NEXT_GAMESTATE_PTR->DateTimeStarted().date.day
-                << ", Saved "
-                << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().date.year << "-"
-                << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().date.month << "-"
-                << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().date.day << "  "
-                << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.hours << ":"
-                << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.minutes << ":"
-                << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.seconds;
+            ss << "Started "
+               /*TODO MAP NAME INSTEAD OF STARTED DATE*/
+               << NEXT_GAMESTATE_PTR->DateTimeStarted().date.year << "-"
+               << NEXT_GAMESTATE_PTR->DateTimeStarted().date.month << "-"
+               << NEXT_GAMESTATE_PTR->DateTimeStarted().date.day << ", Saved "
+               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().date.year << "-"
+               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().date.month << "-"
+               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().date.day << "  "
+               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.hours << ":"
+               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.minutes << ":"
+               << NEXT_GAMESTATE_PTR->DateTimeOfLastSave().time.seconds;
 
             const sfml_util::gui::TextInfo TEXT_INFO(
                 ss.str(),
@@ -188,16 +177,14 @@ namespace stage
             ss << ++gameStateCount;
 
             auto const LBI_SPTR = std::make_shared<sfml_util::gui::ListBoxItem>(
-                ss.str(),
-                TEXT_INFO,
-                NEXT_GAMESTATE_PTR);
+                ss.str(), TEXT_INFO, NEXT_GAMESTATE_PTR);
 
             listBoxItemSVec.push_back(LBI_SPTR);
         }
-        
-        //establish the boxing options
-        auto const BG_COLOR{
-            sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220) };
+
+        // establish the boxing options
+        auto const BG_COLOR{ sfml_util::FontManager::Color_Orange()
+                             - sf::Color(100, 100, 100, 220) };
 
         const sfml_util::gui::BackgroundInfo BG_INFO(BG_COLOR);
 
@@ -208,12 +195,12 @@ namespace stage
             sfml_util::gui::ColorSet(
                 sfml_util::FontManager::Color_Orange(),
                 BG_COLOR,
-                sfml_util::FontManager::Color_Orange() -
-                    sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
-                BG_COLOR - sf::Color(40,40,40,0)),
+                sfml_util::FontManager::Color_Orange()
+                    - sfml_util::gui::ColorSet::DEFAULT_OFFSET_COLOR_,
+                BG_COLOR - sf::Color(40, 40, 40, 0)),
             BG_INFO);
 
-        //reate the ListBox
+        // reate the ListBox
         gsListBoxUPtr_ = std::make_unique<sfml_util::gui::ListBox>(
             "GameStateToLoad",
             GS_LB_RECT,
@@ -230,10 +217,9 @@ namespace stage
         SetupGameInfoDisplay();
     }
 
-
     void LoadGameStage::SetupGameInfoDisplay()
     {
-        //free any existing TextRegion objects
+        // free any existing TextRegion objects
         for (auto const & NEXT_TEXTREGION_UPTR : charTextRegionUVec_)
         {
             EntityRemove(NEXT_TEXTREGION_UPTR.get());
@@ -241,22 +227,24 @@ namespace stage
 
         charTextRegionUVec_.clear();
 
-        //establish which item is selected and get the player list from that
-        //GameState's Party object
+        // establish which item is selected and get the player list from that
+        // GameState's Party object
         if (gsListBoxUPtr_->Empty())
         {
             return;
         }
 
         auto listBoxItemSPtr{ gsListBoxUPtr_->Selected() };
-        M_ASSERT_OR_LOGANDTHROW_SS((listBoxItemSPtr.get() != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (listBoxItemSPtr.get() != nullptr),
             "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
-            << " returned a nullptr.");
+                << " returned a nullptr.");
 
         auto gameStatePtr(listBoxItemSPtr->GAMESTATE_CPTR);
-        M_ASSERT_OR_LOGANDTHROW_SS((gameStatePtr != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (gameStatePtr != nullptr),
             "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
-            << " returned a GAMESTATE_CPTR that was null.");
+                << " returned a GAMESTATE_CPTR that was null.");
 
         sfml_util::gui::TextInfo descTextInfo(
             "",
@@ -265,63 +253,55 @@ namespace stage
             sf::Color::White,
             sfml_util::Justified::Left);
 
-        //establish positions
+        // establish positions
         auto const CHAR_LIST_POS_LEFT{ gsListBoxPosLeft_ + gsListBoxPosWidth_ + 75.0f };
         auto const CHAR_LIST_POS_TOP{ gsListBoxPosTop_ + 100.0f };
 
-        //setup location text
+        // setup location text
         if (locTextRegionUPtr_.get() == nullptr)
         {
-            locTextRegionUPtr_ =
-                std::make_unique<sfml_util::gui::TextRegion>("LoadGameLocation");
+            locTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("LoadGameLocation");
 
             EntityAdd(locTextRegionUPtr_.get());
         }
 
-        descTextInfo.text =
-            std::string("Location:        ").append(gameStatePtr->World().GetMaps().Current().Name());
+        descTextInfo.text = std::string("Location:        ")
+                                .append(gameStatePtr->World().GetMaps().Current().Name());
 
         const sf::FloatRect LOC_TEXT_RECT(
-            CHAR_LIST_POS_LEFT,
-            CHAR_LIST_POS_TOP - 35.0f,
-            0.0f,
-            0.0f);
+            CHAR_LIST_POS_LEFT, CHAR_LIST_POS_TOP - 35.0f, 0.0f, 0.0f);
 
         locTextRegionUPtr_->Setup(descTextInfo, LOC_TEXT_RECT);
 
-        //setup character list label text
+        // setup character list label text
         if (charLabelTextRegionUPtr_.get() == nullptr)
         {
-            charLabelTextRegionUPtr_ =
-                std::make_unique<sfml_util::gui::TextRegion>("CharacterListLabel");
+            charLabelTextRegionUPtr_
+                = std::make_unique<sfml_util::gui::TextRegion>("CharacterListLabel");
 
             EntityAdd(charLabelTextRegionUPtr_.get());
         }
 
         descTextInfo.text = "Characters:";
         const sf::FloatRect CHAR_TEXT_RECT(
-            CHAR_LIST_POS_LEFT,
-            CHAR_LIST_POS_TOP - 5.0f,
-            0.0f,
-            0.0f);
+            CHAR_LIST_POS_LEFT, CHAR_LIST_POS_TOP - 5.0f, 0.0f, 0.0f);
 
         charLabelTextRegionUPtr_->Setup(descTextInfo, CHAR_TEXT_RECT);
 
-        //setup characters list
+        // setup characters list
         auto const CHAR_PVEC{ gameStatePtr->Party().Characters() };
         auto posY{ CHAR_LIST_POS_TOP + 30.0f };
 
         auto const NUM_CHARS{ CHAR_PVEC.size() };
-        for (std::size_t i(0); i<NUM_CHARS; ++i)
+        for (std::size_t i(0); i < NUM_CHARS; ++i)
         {
             std::ostringstream ss;
             ss << "CharList_" << i << "_" << CHAR_PVEC[i]->Name();
             auto const TEXT_REGION_ENTITY_NAME{ ss.str() };
 
             ss.str("");
-            ss  << CHAR_PVEC[i]->Name()
-                << ", " << CHAR_PVEC[i]->RoleName()
-                << ", rank: " << CHAR_PVEC[i]->Rank();
+            ss << CHAR_PVEC[i]->Name() << ", " << CHAR_PVEC[i]->RoleName()
+               << ", rank: " << CHAR_PVEC[i]->Rank();
 
             descTextInfo.text = ss.str();
 
@@ -332,10 +312,9 @@ namespace stage
 
             EntityAdd(textRegionUPtr.get());
             posY += textRegionUPtr->GetEntityRegion().height - 25.0f;
-            charTextRegionUVec_.push_back( std::move(textRegionUPtr) );
+            charTextRegionUVec_.push_back(std::move(textRegionUPtr));
         }
     }
-
 
     void LoadGameStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
@@ -344,7 +323,6 @@ namespace stage
         target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);
     }
-
 
     bool LoadGameStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
@@ -364,6 +342,5 @@ namespace stage
             return false;
         }
     }
-
 }
 }

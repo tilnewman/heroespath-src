@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -42,9 +41,18 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Bright: { return "Bright"; }
-            case Medium: { return "Medium"; }
-            case Dark:   { return "Dark"; }
+            case Bright:
+            {
+                return "Bright";
+            }
+            case Medium:
+            {
+                return "Medium";
+            }
+            case Dark:
+            {
+                return "Dark";
+            }
             case Count:
             default:
             {
@@ -55,18 +63,22 @@ namespace sfml_util
         }
     }
 
-
     bool Brightness::IsValid(const Brightness::Enum E)
     {
         switch (E)
         {
             case Bright:
             case Medium:
-            case Dark:  { return true; }
+            case Dark:
+            {
+                return true;
+            }
             case Count:
-            default:    { return false; }
+            default:
+            {
+                return false;
+            }
         }
     }
-
 }
 }

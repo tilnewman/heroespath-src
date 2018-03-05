@@ -29,20 +29,19 @@
 //
 #include "popup/popup-stage-base.hpp"
 
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/text-region.hpp"
-
+#include "sfml-util/sfml-graphics.hpp"
 
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing the Image Fade Popup Stage.
+    // Responsible for implementing the Image Fade Popup Stage.
     class PopupStageCombatOver : public PopupStageBase
     {
-        PopupStageCombatOver(const PopupStageCombatOver &) =delete;
-        PopupStageCombatOver & operator=(const PopupStageCombatOver &) =delete;
+        PopupStageCombatOver(const PopupStageCombatOver &) = delete;
+        PopupStageCombatOver & operator=(const PopupStageCombatOver &) = delete;
 
     public:
         explicit PopupStageCombatOver(const PopupInfo &);
@@ -57,8 +56,7 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t titleTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGECOMBATOVER_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGECOMBATOVER_HPP_INCLUDED

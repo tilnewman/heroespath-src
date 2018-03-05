@@ -35,27 +35,25 @@
 #include "misc/vectors.hpp"
 
 #include <memory>
-#include <vector>
 #include <string>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace item
 {
 
-    //forward declarations
+    // forward declarations
     class Item;
     using ItemPtr_t = Item *;
     using ItemPVec_t = std::vector<ItemPtr_t>;
-
 
     struct Algorithms
     {
         static const std::string Names(
             const ItemPVec_t &,
-            const std::size_t           MAX_COUNT = 0,
-            const misc::Vector::JoinOpt OPTIONS   = misc::Vector::JoinOpt::None);
+            const std::size_t MAX_COUNT = 0,
+            const misc::Vector::JoinOpt OPTIONS = misc::Vector::JoinOpt::None);
 
         enum class MatchOpt
         {
@@ -64,28 +62,27 @@ namespace item
         };
 
         static const ItemPVec_t FindByCategory(
-            const ItemPVec_t &   itemSVec,
+            const ItemPVec_t & itemSVec,
             const category::Enum CATEGORY_TYPE,
-            const MatchOpt       MATCH_OPTION = MatchOpt::Equal);
+            const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t FindByWeaponType(
-            const ItemPVec_t &      itemSVec,
+            const ItemPVec_t & itemSVec,
             const weapon_type::Enum WEAPON_TYPE,
-            const MatchOpt          MATCH_OPTION = MatchOpt::Equal);
+            const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t FindByArmorType(
-            const ItemPVec_t &     itemSVec,
+            const ItemPVec_t & itemSVec,
             const armor_type::Enum ARMOR_TYPE,
-            const MatchOpt         MATCH_OPTION = MatchOpt::Equal);
+            const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         static const ItemPVec_t FindByMiscType(
-            const ItemPVec_t &    itemSVec,
-            const misc_type::Enum MISC_TYPE,
-            const MatchOpt        MATCH_OPTION = MatchOpt::Equal);
-
-        static const ItemPVec_t FindByPixie(
             const ItemPVec_t & itemSVec,
-            const MatchOpt     MATCH_OPTION = MatchOpt::Equal);
+            const misc_type::Enum MISC_TYPE,
+            const MatchOpt MATCH_OPTION = MatchOpt::Equal);
+
+        static const ItemPVec_t
+            FindByPixie(const ItemPVec_t & itemSVec, const MatchOpt MATCH_OPTION = MatchOpt::Equal);
 
         enum class BrokenOpt
         {
@@ -93,12 +90,10 @@ namespace item
             Discard
         };
 
-        static const ItemPVec_t FindByBroken(
-            const ItemPVec_t & ITEM_SVEC,
-            const BrokenOpt    KEEP_BROKEN_OPTION);
+        static const ItemPVec_t
+            FindByBroken(const ItemPVec_t & ITEM_SVEC, const BrokenOpt KEEP_BROKEN_OPTION);
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_ALGORITHMS_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_ALGORITHMS_HPP_INCLUDED

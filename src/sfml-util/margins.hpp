@@ -29,7 +29,6 @@
 //  Margins code
 //
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -37,15 +36,15 @@ namespace sfml_util
 
     struct Margins
     {
-        explicit Margins(const float LEFT   = 0.0f,
-                         const float RIGHT  = 0.0f,
-                         const float TOP    = 0.0f,
-                         const float BOTTOM = 0.0f)
-        :
-            left(LEFT),
-            right(RIGHT),
-            top(TOP),
-            bottom(BOTTOM)
+        explicit Margins(
+            const float LEFT = 0.0f,
+            const float RIGHT = 0.0f,
+            const float TOP = 0.0f,
+            const float BOTTOM = 0.0f)
+            : left(LEFT)
+            , right(RIGHT)
+            , top(TOP)
+            , bottom(BOTTOM)
         {}
 
         virtual ~Margins() {}
@@ -55,8 +54,7 @@ namespace sfml_util
         float top;
         float bottom;
     };
-
 }
 }
 
-#endif //HEROESPATH_GAME_MARGINS_HPP_INCLUDED
+#endif // HEROESPATH_GAME_MARGINS_HPP_INCLUDED

@@ -29,31 +29,25 @@
 //
 #include "condition.hpp"
 
-#include "misc/assertlogandthrow.hpp"
 #include "creature/creature.hpp"
+#include "misc/assertlogandthrow.hpp"
 
 #include <sstream>
 #include <tuple>
-
 
 namespace heroespath
 {
 namespace creature
 {
 
-    Condition::Condition(const Conditions::Enum  TYPE,
-                         const bool              IS_MAGICAL,
-                         const stats::TraitSet & TRAIT_SET)
-    :
-        type_     (TYPE),
-        isMagical_(IS_MAGICAL),
-        traitSet_ (TRAIT_SET)
+    Condition::Condition(
+        const Conditions::Enum TYPE, const bool IS_MAGICAL, const stats::TraitSet & TRAIT_SET)
+        : type_(TYPE)
+        , isMagical_(IS_MAGICAL)
+        , traitSet_(TRAIT_SET)
     {}
 
-
-    Condition::~Condition()
-    {}
-
+    Condition::~Condition() {}
 
     const std::string Condition::ToString() const
     {
@@ -65,7 +59,7 @@ namespace creature
             ss << " (magical)";
         }
 
-        ss  << ".  " << Conditions::Desc(type_);
+        ss << ".  " << Conditions::Desc(type_);
 
         auto const TRAIT_STR{ traitSet_.ToString(false, false, false, true) };
         if (TRAIT_STR.empty() == false)
@@ -75,7 +69,6 @@ namespace creature
 
         return ss.str();
     }
-
 
     const std::string Condition::LongDesc() const
     {
@@ -97,44 +90,23 @@ namespace creature
         return ss.str();
     }
 
-
     bool operator<(const Condition & L, const Condition & R)
     {
-        return std::tie(L.type_,
-                        L.isMagical_,
-                        L.traitSet_)
-               <
-               std::tie(R.type_,
-                        R.isMagical_,
-                        R.traitSet_);
+        return std::tie(L.type_, L.isMagical_, L.traitSet_)
+            < std::tie(R.type_, R.isMagical_, R.traitSet_);
     }
-
 
     bool operator==(const Condition & L, const Condition & R)
     {
-        return std::tie(L.type_,
-                        L.isMagical_,
-                        L.traitSet_)
-               ==
-               std::tie(R.type_,
-                        R.isMagical_,
-                        R.traitSet_);
+        return std::tie(L.type_, L.isMagical_, L.traitSet_)
+            == std::tie(R.type_, R.isMagical_, R.traitSet_);
     }
 
+    // InitialChange() does not alter stats, see creature.cpp::ConditionAdd() for that
+    void Condition::InitialChange(CreaturePtrC_t) const {}
 
-    //InitialChange() does not alter stats, see creature.cpp::ConditionAdd() for that
-    void Condition::InitialChange(CreaturePtrC_t) const
-    {}
+    void Condition::FinalChange(CreaturePtrC_t) const {}
 
-
-    void Condition::FinalChange(CreaturePtrC_t) const
-    {}
-
-
-    void Condition::PerTurnEffect(CreaturePtr_t,
-                                  combat::HitInfoVec_t &,
-                                  bool &) const
-    {}
-
+    void Condition::PerTurnEffect(CreaturePtr_t, combat::HitInfoVec_t &, bool &) const {}
 }
 }

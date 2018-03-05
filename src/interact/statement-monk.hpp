@@ -31,36 +31,27 @@
 #include "player/party.hpp"
 #include <string>
 
-
 namespace heroespath
 {
 namespace interact
 {
-namespace talk
-{
-
-    namespace compose
+    namespace talk
     {
-        static inline const StrVec_t MonkThings()
+
+        namespace compose
         {
-            return {
-                "the light",
-                "peace",
-                "wisdom",
-                "enlightenment",
-                "truth",
-                "nirvana" };
+            static inline const StrVec_t MonkThings()
+            {
+                return { "the light", "peace", "wisdom", "enlightenment", "truth", "nirvana" };
+            }
         }
+
+        struct MonkTalk
+        {
+            static const std::string Compose();
+        };
     }
-
-
-    struct MonkTalk
-    {
-        static const std::string Compose();
-    };
-
-}
 }
 }
 
-#endif //HEROESPATH_INTERACT_STATEMENTMONK_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_STATEMENTMONK_HPP_INCLUDED

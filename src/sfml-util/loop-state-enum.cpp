@@ -31,9 +31,8 @@
 
 #include "misc/boost-string-includes.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -44,24 +43,78 @@ namespace sfml_util
     {
         switch (E)
         {
-            case None:              { return "None"; }
-            case Intro:             { return "Intro"; }
-            case MainMenu:          { return "MainMenu"; }
-            case LoadGameMenu:      { return "LoadGameMenu"; }
-            case CharacterCreation: { return "CharacterCreation"; }
-            case PartyCreation:     { return "PartyCreation"; }
-            case Adventure:         { return "Adventure"; }
-            case Combat:            { return "Combat"; }
-            case Camp:              { return "Camp"; }
-            case Inn:               { return "Inn"; }
-            case Query:             { return "Query"; }
-            case Popup:             { return "Popup"; }
-            case Credits:           { return "Credits"; }
-            case Settings:          { return "Settings"; }
-            case Exit:              { return "Exit"; }
-            case Inventory:         { return "Inventory"; }
-            case Treasure:          { return "Treasure"; }
-            case Test:              { return "Test"; }
+            case None:
+            {
+                return "None";
+            }
+            case Intro:
+            {
+                return "Intro";
+            }
+            case MainMenu:
+            {
+                return "MainMenu";
+            }
+            case LoadGameMenu:
+            {
+                return "LoadGameMenu";
+            }
+            case CharacterCreation:
+            {
+                return "CharacterCreation";
+            }
+            case PartyCreation:
+            {
+                return "PartyCreation";
+            }
+            case Adventure:
+            {
+                return "Adventure";
+            }
+            case Combat:
+            {
+                return "Combat";
+            }
+            case Camp:
+            {
+                return "Camp";
+            }
+            case Inn:
+            {
+                return "Inn";
+            }
+            case Query:
+            {
+                return "Query";
+            }
+            case Popup:
+            {
+                return "Popup";
+            }
+            case Credits:
+            {
+                return "Credits";
+            }
+            case Settings:
+            {
+                return "Settings";
+            }
+            case Exit:
+            {
+                return "Exit";
+            }
+            case Inventory:
+            {
+                return "Inventory";
+            }
+            case Treasure:
+            {
+                return "Treasure";
+            }
+            case Test:
+            {
+                return "Test";
+            }
             case Count:
             default:
             {
@@ -71,7 +124,6 @@ namespace sfml_util
             }
         }
     }
-
 
     LoopState::Enum LoopState::FromString(const std::string & ENUM_STR)
     {
@@ -142,7 +194,5 @@ namespace sfml_util
             throw std::runtime_error(ss.str());
         }
     }
-
 }
 }
-

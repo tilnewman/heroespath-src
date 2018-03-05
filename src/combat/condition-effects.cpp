@@ -29,30 +29,30 @@
 //
 #include "condition-effects.hpp"
 
-#include "creature/creature.hpp"
 #include "creature/condition.hpp"
+#include "creature/creature.hpp"
 
 #include <algorithm>
-
 
 namespace heroespath
 {
 namespace combat
 {
 
-    bool ConditionEffects::Process(const game::Phase::Enum,
-                                   creature::CreaturePtr_t creaturePtr,
-                                   HitInfoVec_t &          hitInfoVec_OuParam)
+    bool ConditionEffects::Process(
+        const game::Phase::Enum,
+        creature::CreaturePtr_t creaturePtr,
+        HitInfoVec_t & hitInfoVec_OuParam)
     {
         auto condsPVec{ creaturePtr->ConditionsPVec() };
 
-        //sort conditions by decreasing severity
-        std::sort(condsPVec.begin(),
-                  condsPVec.end(),
-                  [](const creature::ConditionPtr_t A, const creature::ConditionPtr_t B)
-                    {
-                        return (A->Severity() > B->Severity());
-                    });
+        // sort conditions by decreasing severity
+        std::sort(
+            condsPVec.begin(),
+            condsPVec.end(),
+            [](const creature::ConditionPtr_t A, const creature::ConditionPtr_t B) {
+                return (A->Severity() > B->Severity());
+            });
 
         auto hasTurnBeenConsumed{ false };
         for (auto const NEXT_COND_PTR : condsPVec)
@@ -62,6 +62,5 @@ namespace combat
 
         return hasTurnBeenConsumed;
     }
-
 }
 }

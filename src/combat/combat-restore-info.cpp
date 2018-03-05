@@ -29,9 +29,8 @@
 //
 #include "combat-restore-info.hpp"
 
-#include "combat/combat-node.hpp"
 #include "combat/combat-display.hpp"
-
+#include "combat/combat-node.hpp"
 
 namespace heroespath
 {
@@ -39,13 +38,11 @@ namespace combat
 {
 
     RestoreInfo::RestoreInfo()
-    :
-        canTurnAdvance_             (false),
-        hasRestored_                (false),
-        creaturesFlyingPVec_        (),
-        creatureBlockingPosMap_     ()
+        : canTurnAdvance_(false)
+        , hasRestored_(false)
+        , creaturesFlyingPVec_()
+        , creatureBlockingPosMap_()
     {}
-
 
     void RestoreInfo::PrepareForStageChange(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
     {
@@ -53,14 +50,12 @@ namespace combat
         Save(COMBAT_DISPLAY_CPTRC);
     }
 
-
     void RestoreInfo::Save(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
     {
         CreatureHealthSave(COMBAT_DISPLAY_CPTRC);
         FlyingCreaturesSave(COMBAT_DISPLAY_CPTRC);
         CreaturePositionsSave(COMBAT_DISPLAY_CPTRC);
     }
-
 
     void RestoreInfo::Restore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
     {
@@ -70,12 +65,10 @@ namespace combat
         CreaturePositionsRestore(combatDisplayPtrC);
     }
 
-
     void RestoreInfo::CreatureHealthSave(const combat::CombatDisplayPtrC_t)
     {
-        //nothing to do, health is saved in the creature owned by State in a shared_ptr
+        // nothing to do, health is saved in the creature owned by State in a shared_ptr
     }
-
 
     void RestoreInfo::CreatureHealthRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
     {
@@ -85,7 +78,6 @@ namespace combat
         for (auto const nextCombatNodePtrC : combatNodesPVec)
             nextCombatNodePtrC->HealthChangeTasks();
     }
-
 
     void RestoreInfo::FlyingCreaturesSave(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
     {
@@ -103,7 +95,6 @@ namespace combat
         }
     }
 
-
     void RestoreInfo::FlyingCreaturesRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
     {
         for (auto const nextFlyingCreaturePtr : creaturesFlyingPVec_)
@@ -111,7 +102,6 @@ namespace combat
             combatDisplayPtrC->HandleFlyingChange(nextFlyingCreaturePtr, true);
         }
     }
-
 
     void RestoreInfo::CreaturePositionsSave(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
     {
@@ -122,11 +112,10 @@ namespace combat
 
         for (auto const nextCombatNodePtrC : combatNodesPVec)
         {
-            creatureBlockingPosMap_[nextCombatNodePtrC->Creature()] =
-                nextCombatNodePtrC->GetBlockingPos();
+            creatureBlockingPosMap_[nextCombatNodePtrC->Creature()]
+                = nextCombatNodePtrC->GetBlockingPos();
         }
     }
-
 
     void RestoreInfo::CreaturePositionsRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
     {
@@ -148,6 +137,5 @@ namespace combat
         combatDisplayPtrC->PositionCombatTreeCells(false);
         combatDisplayPtrC->UpdateWhichNodesWillDraw();
     }
-
 }
 }

@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace item
@@ -48,8 +47,7 @@ namespace item
 
         static const std::string ToString(const Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_TREASUREAVAILABLEENUM_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_TREASUREAVAILABLEENUM_HPP_INCLUDED

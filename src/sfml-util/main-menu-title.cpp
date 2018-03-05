@@ -34,7 +34,6 @@
 #include "sfml-util/display.hpp"
 #include "sfml-util/loaders.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -45,20 +44,16 @@ namespace sfml_util
         const bool WILL_INVERT_SYMBOL,
         const float SYMBOL_SCALE_HORIZ,
         const float SYMBOL_SCALE_VERT)
-    :
-        symbolTexture_(),
-        symbolSprite_ (),
-        titleTexture_ (),
-        titleSprite_  (),
-        willDrawTitle_(false)
+        : symbolTexture_()
+        , symbolSprite_()
+        , titleTexture_()
+        , titleSprite_()
+        , willDrawTitle_(false)
     {
         Setup(TITLE_KEY_STR, WILL_INVERT_SYMBOL, SYMBOL_SCALE_HORIZ, SYMBOL_SCALE_VERT);
     }
 
-
-    MainMenuTitle::~MainMenuTitle()
-    {}
-
+    MainMenuTitle::~MainMenuTitle() {}
 
     void MainMenuTitle::Setup(
         const std::string & TITLE_IMAGE_FILENAME,
@@ -81,8 +76,9 @@ namespace sfml_util
         {
             willDrawTitle_ = true;
 
-            auto const TITLE_IMAGE_PATH{ game::GameDataFile::Instance()->
-                GetMediaPath("media-images-buttons-mainmenu-dir") + TITLE_IMAGE_FILENAME };
+            auto const TITLE_IMAGE_PATH{ game::GameDataFile::Instance()->GetMediaPath(
+                                             "media-images-buttons-mainmenu-dir")
+                                         + TITLE_IMAGE_FILENAME };
 
             sfml_util::LoadTexture(titleTexture_, TITLE_IMAGE_PATH);
             titleSprite_.setTexture(titleTexture_, true);
@@ -91,23 +87,19 @@ namespace sfml_util
         SetPositionAndSize(SYMBOL_SCALE_HORIZ, SYMBOL_SCALE_VERT);
     }
 
-
     void MainMenuTitle::SetPositionAndSize(
-        const float SYMBOL_SCALE_HORIZ,
-        const float SYMBOL_SCALE_VERT)
+        const float SYMBOL_SCALE_HORIZ, const float SYMBOL_SCALE_VERT)
     {
         auto const SYMBOL_IMAGE_SCALE{ sfml_util::MapByRes(0.6f, 2.5f) };
 
         symbolSprite_.setScale(
-            SYMBOL_IMAGE_SCALE * SYMBOL_SCALE_HORIZ,
-            SYMBOL_IMAGE_SCALE * SYMBOL_SCALE_VERT);
+            SYMBOL_IMAGE_SCALE * SYMBOL_SCALE_HORIZ, SYMBOL_IMAGE_SCALE * SYMBOL_SCALE_VERT);
 
         auto const HALF_SCREEN_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() * 0.5f };
         auto const HALF_SYMBOL_WIDTH{ symbolSprite_.getGlobalBounds().width * 0.5f };
 
         symbolSprite_.setPosition(
-            HALF_SCREEN_WIDTH - HALF_SYMBOL_WIDTH,
-            sfml_util::MapByRes(10.0f, 30.0f));
+            HALF_SCREEN_WIDTH - HALF_SYMBOL_WIDTH, sfml_util::MapByRes(10.0f, 30.0f));
 
         if (willDrawTitle_)
         {
@@ -124,7 +116,6 @@ namespace sfml_util
         }
     }
 
-
     void MainMenuTitle::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
         target.draw(symbolSprite_, states);
@@ -134,6 +125,5 @@ namespace sfml_util
             target.draw(titleSprite_, states);
         }
     }
-
 }
 }

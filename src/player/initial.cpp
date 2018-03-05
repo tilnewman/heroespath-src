@@ -31,22 +31,21 @@
 
 #include "sfml-util/gui/creature-image-manager.hpp"
 
-#include "player/character.hpp"
-#include "log/log-macros.hpp"
+#include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
-#include "item/weapon-factory.hpp"
 #include "item/armor-factory.hpp"
 #include "item/misc-item-factory.hpp"
-#include "creature/creature.hpp"
-#include "spell/spell-enum.hpp"
+#include "item/weapon-factory.hpp"
+#include "log/log-macros.hpp"
+#include "player/character.hpp"
 #include "song/song-enum.hpp"
+#include "spell/spell-enum.hpp"
 
 #include "misc/random.hpp"
 
 #include <exception>
 #include <sstream>
 #include <string>
-
 
 namespace heroespath
 {
@@ -63,20 +62,15 @@ namespace player
         EnsureValidImageFilename(characterPtrC);
     }
 
-
     void Initial::EnsureValidImageFilename(CharacterPtrC_t characterPtrC)
     {
         if (characterPtrC->ImageFilename().empty())
         {
-            characterPtrC->ImageFilename(sfml_util::gui::CreatureImageManager::Instance()->
-                GetFilename(
-                    characterPtrC->Race(),
-                    characterPtrC->Role(),
-                    characterPtrC->Sex(),
-                    true));
+            characterPtrC->ImageFilename(
+                sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
+                    characterPtrC->Race(), characterPtrC->Role(), characterPtrC->Sex(), true));
         }
     }
-
 
     void Initial::SetupInventory(CharacterPtrC_t characterPtrC)
     {
@@ -88,33 +82,26 @@ namespace player
 
         if (ROLE_ENUM == creature::role::Knight)
         {
-            ItemPtr_t weaponPtr = [&]()
+            ItemPtr_t weaponPtr = [&]() {
+                switch (misc::random::Int(2))
                 {
-                    switch(misc::random::Int(2))
+                    case 1:
                     {
-                        case 1:
-                        {
-                            return weapon::WeaponFactory::Make_Sword(
-                                weapon::sword_type::Shortsword,
-                                material::Steel,
-                                material::Wood);
-                        }
-                        case 2:
-                        {
-                            return weapon::WeaponFactory::Make_Sword(
-                                weapon::sword_type::Cutlass,
-                                material::Steel,
-                                material::Wood);
-                        }
-                        default:
-                        {
-                            return weapon::WeaponFactory::Make_Axe(
-                                weapon::axe_type::Sickle,
-                                material::Steel,
-                                material::Wood);
-                        }
+                        return weapon::WeaponFactory::Make_Sword(
+                            weapon::sword_type::Shortsword, material::Steel, material::Wood);
                     }
-                }();
+                    case 2:
+                    {
+                        return weapon::WeaponFactory::Make_Sword(
+                            weapon::sword_type::Cutlass, material::Steel, material::Wood);
+                    }
+                    default:
+                    {
+                        return weapon::WeaponFactory::Make_Axe(
+                            weapon::axe_type::Sickle, material::Steel, material::Wood);
+                    }
+                }
+            }();
 
             characterPtrC->ItemAdd(weaponPtr);
             characterPtrC->ItemEquip(weaponPtr);
@@ -148,33 +135,26 @@ namespace player
 
         if (ROLE_ENUM == creature::role::Beastmaster)
         {
-            ItemPtr_t weaponPtr = [&]()
+            ItemPtr_t weaponPtr = [&]() {
+                switch (misc::random::Int(2))
                 {
-                    switch(misc::random::Int(2))
+                    case 1:
                     {
-                        case 1:
-                        {
-                            return weapon::WeaponFactory::Make_Sword(
-                                weapon::sword_type::Shortsword,
-                                material::Steel,
-                                material::Wood);
-                        }
-                        case 2:
-                        {
-                            return weapon::WeaponFactory::Make_Sword(
-                                weapon::sword_type::Cutlass,
-                                material::Steel,
-                                material::Wood);
-                        }
-                        default:
-                        {
-                            return weapon::WeaponFactory::Make_Axe(
-                                weapon::axe_type::Sickle,
-                                material::Steel,
-                                material::Wood);
-                        }
+                        return weapon::WeaponFactory::Make_Sword(
+                            weapon::sword_type::Shortsword, material::Steel, material::Wood);
                     }
-                }();
+                    case 2:
+                    {
+                        return weapon::WeaponFactory::Make_Sword(
+                            weapon::sword_type::Cutlass, material::Steel, material::Wood);
+                    }
+                    default:
+                    {
+                        return weapon::WeaponFactory::Make_Axe(
+                            weapon::axe_type::Sickle, material::Steel, material::Wood);
+                    }
+                }
+            }();
 
             characterPtrC->ItemAdd(weaponPtr);
             characterPtrC->ItemEquip(weaponPtr);
@@ -347,8 +327,7 @@ namespace player
             characterPtrC->ItemAdd(pantsPtr);
             characterPtrC->ItemEquip(pantsPtr);
 
-            auto wandPtr{ item::MiscItemFactory::Make_Wand(
-                material::Glass, material::Nothing) };
+            auto wandPtr{ item::MiscItemFactory::Make_Wand(material::Glass, material::Nothing) };
 
             characterPtrC->ItemAdd(wandPtr);
             characterPtrC->ItemEquip(wandPtr);
@@ -392,28 +371,27 @@ namespace player
             return;
         }
 
-        if ((ROLE_ENUM == creature::role::Wolfen) ||
-            (ROLE_ENUM == creature::role::Sylavin) ||
-            (ROLE_ENUM == creature::role::Firebrand))
+        if ((ROLE_ENUM == creature::role::Wolfen) || (ROLE_ENUM == creature::role::Sylavin)
+            || (ROLE_ENUM == creature::role::Firebrand))
         {
             auto const SKIN_ITEM_PTR{ item::armor::ArmorFactory::Instance()->Make_Skin(
-                ((ROLE_ENUM == creature::role::Wolfen) ?
-                    item::material::Hide : item::material::Scale), 1_rank, false) };
+                ((ROLE_ENUM == creature::role::Wolfen) ? item::material::Hide
+                                                       : item::material::Scale),
+                1_rank,
+                false) };
 
             characterPtrC->ItemAdd(SKIN_ITEM_PTR);
             characterPtrC->ItemEquip(SKIN_ITEM_PTR);
             return;
         }
 
-
         std::ostringstream ss;
-        ss << "player::Initial::SetupInventory(\"" << characterPtrC->Name() << "\", race="
-            << characterPtrC->RaceName() << ", role=" << characterPtrC->RoleName()
-            << ")  failed to assign any items.";
+        ss << "player::Initial::SetupInventory(\"" << characterPtrC->Name()
+           << "\", race=" << characterPtrC->RaceName() << ", role=" << characterPtrC->RoleName()
+           << ")  failed to assign any items.";
 
         throw std::runtime_error(ss.str());
     }
-
 
     void Initial::SetupSpellsAndSongs(CharacterPtrC_t characterPtrC)
     {
@@ -449,15 +427,14 @@ namespace player
         }
     }
 
-
     void Initial::EquipBodyParts(CharacterPtrC_t characterPtrC)
     {
         auto const & BODY{ characterPtrC->Body() };
 
         if (BODY.HasBreath())
         {
-            auto const BREATH_WEAPON_ITEM_PTR{
-                item::weapon::WeaponFactory::Instance()->Make_Breath(characterPtrC) };
+            auto const BREATH_WEAPON_ITEM_PTR{ item::weapon::WeaponFactory::Instance()->Make_Breath(
+                characterPtrC) };
 
             characterPtrC->ItemAdd(BREATH_WEAPON_ITEM_PTR);
             characterPtrC->ItemEquip(BREATH_WEAPON_ITEM_PTR);
@@ -465,8 +442,8 @@ namespace player
 
         if (BODY.HasClaws())
         {
-            auto const CLAWS_WEAPON_ITEM_PTR{
-                item::weapon::WeaponFactory::Instance()->Make_Claws(characterPtrC) };
+            auto const CLAWS_WEAPON_ITEM_PTR{ item::weapon::WeaponFactory::Instance()->Make_Claws(
+                characterPtrC) };
 
             characterPtrC->ItemAdd(CLAWS_WEAPON_ITEM_PTR);
             characterPtrC->ItemEquip(CLAWS_WEAPON_ITEM_PTR);
@@ -474,8 +451,8 @@ namespace player
 
         if (BODY.HasBite())
         {
-            auto const BITE_WEAPON_ITEM_PTR{
-                item::weapon::WeaponFactory::Instance()->Make_Bite(characterPtrC) };
+            auto const BITE_WEAPON_ITEM_PTR{ item::weapon::WeaponFactory::Instance()->Make_Bite(
+                characterPtrC) };
 
             characterPtrC->ItemAdd(BITE_WEAPON_ITEM_PTR);
             characterPtrC->ItemEquip(BITE_WEAPON_ITEM_PTR);
@@ -484,29 +461,28 @@ namespace player
         if ((BODY.IsHumanoid()) && (characterPtrC->IsPixie() == false))
         {
             auto const FISTS_WEAPON_ITEM_PTR{
-                item::weapon::WeaponFactory::Instance()->Make_Fists() };
+                item::weapon::WeaponFactory::Instance()->Make_Fists()
+            };
 
             characterPtrC->ItemAdd(FISTS_WEAPON_ITEM_PTR);
             characterPtrC->ItemEquip(FISTS_WEAPON_ITEM_PTR);
         }
     }
 
-
     Health_t Initial::GetStartingHealth(CharacterCPtrC_t CHARACTER_CPTRC)
     {
         std::ostringstream ss;
         ss << "heroespath-player-race-health-initial-"
-            << creature::race::ToString(CHARACTER_CPTRC->Race());
+           << creature::race::ToString(CHARACTER_CPTRC->Race());
 
         auto const HEALTH_BASE{ Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str())) };
 
         ss.str("");
         ss << "heroespath-player-role-health-adjustment-initial-"
-            << creature::role::ToString(CHARACTER_CPTRC->Role());
+           << creature::role::ToString(CHARACTER_CPTRC->Role());
 
         return HEALTH_BASE + Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str()));
     }
-
 
     void Initial::SetStartingHealth(CharacterPtrC_t characterPtrC)
     {
@@ -515,13 +491,11 @@ namespace player
         characterPtrC->HealthCurrentSet(STARTING_HEALTH);
     }
 
-
     void Initial::SetStartingMana(CharacterPtrC_t characterPtrC)
     {
         auto const ROLE_ENUM{ characterPtrC->Role() };
 
-        if ((ROLE_ENUM == creature::role::Sorcerer) ||
-            (ROLE_ENUM == creature::role::Cleric))
+        if ((ROLE_ENUM == creature::role::Sorcerer) || (ROLE_ENUM == creature::role::Cleric))
         {
             auto const INITIAL_MANA{ characterPtrC->TraitNormal(stats::Traits::Intelligence) / 2 };
             characterPtrC->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
@@ -529,14 +503,14 @@ namespace player
         }
         else if (ROLE_ENUM == creature::role::Bard)
         {
-            auto const INITIAL_MANA{ (characterPtrC->TraitNormal(stats::Traits::Intelligence) +
-                characterPtrC->TraitNormal(stats::Traits::Charm)) / 4 };
+            auto const INITIAL_MANA{ (characterPtrC->TraitNormal(stats::Traits::Intelligence)
+                                      + characterPtrC->TraitNormal(stats::Traits::Charm))
+                                     / 4 };
 
             characterPtrC->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
             characterPtrC->TraitCurrentSet(stats::Traits::Mana, INITIAL_MANA);
         }
     }
-
 
     item::material::Enum Initial::HardOrSoftLeatherRand()
     {
@@ -549,6 +523,5 @@ namespace player
             return item::material::HardLeather;
         }
     }
-
 }
 }

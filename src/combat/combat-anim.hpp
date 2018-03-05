@@ -27,18 +27,17 @@
 //
 // combat-anim.hpp
 //
+#include "sfml-util/animation-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
-#include "sfml-util/animation-enum.hpp"
 
 #include "misc/types.hpp"
 #include "stats/trait.hpp"
 
-#include <vector>
+#include <map>
 #include <memory>
 #include <string>
-#include <map>
-
+#include <vector>
 
 namespace heroespath
 {
@@ -48,28 +47,28 @@ namespace sfml_util
     using AnimationUPtr_t = std::unique_ptr<Animation>;
     using AnimationUVec_t = std::vector<AnimationUPtr_t>;
 
-namespace animation
-{
-    class SparksAnimation;
-    using SparksAnimationUPtr_t = std::unique_ptr<SparksAnimation>;
-    using SparksAnimationUVec_t = std::vector<SparksAnimationUPtr_t>;
+    namespace animation
+    {
+        class SparksAnimation;
+        using SparksAnimationUPtr_t = std::unique_ptr<SparksAnimation>;
+        using SparksAnimationUVec_t = std::vector<SparksAnimationUPtr_t>;
 
-    class CloudAnimation;
-    using CloudAnimationUPtr_t = std::unique_ptr<CloudAnimation>;
-    using CloudAnimationUVec_t = std::vector<CloudAnimationUPtr_t>;
+        class CloudAnimation;
+        using CloudAnimationUPtr_t = std::unique_ptr<CloudAnimation>;
+        using CloudAnimationUVec_t = std::vector<CloudAnimationUPtr_t>;
 
-    class SongAnimation;
-    using SongAnimationUPtr_t = std::unique_ptr<SongAnimation>;
-    using SongAnimationUVec_t = std::vector<SongAnimationUPtr_t>;
+        class SongAnimation;
+        using SongAnimationUPtr_t = std::unique_ptr<SongAnimation>;
+        using SongAnimationUVec_t = std::vector<SongAnimationUPtr_t>;
 
-    class SparkleAnimation;
-    using SparkleAnimationUPtr_t = std::unique_ptr<SparkleAnimation>;
-    using SparkleAnimationUVec_t = std::vector<SparkleAnimationUPtr_t>;
+        class SparkleAnimation;
+        using SparkleAnimationUPtr_t = std::unique_ptr<SparkleAnimation>;
+        using SparkleAnimationUVec_t = std::vector<SparkleAnimationUPtr_t>;
 
-    class TextAnimation;
-    using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;
-    using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
-}
+        class TextAnimation;
+        using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;
+        using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
+    }
 }
 
 namespace item
@@ -85,10 +84,10 @@ namespace spell
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t   = Creature *;
-    using CreatureCPtr_t  = const Creature *;
+    using CreaturePtr_t = Creature *;
+    using CreatureCPtr_t = const Creature *;
     using CreatureCPtrC_t = const Creature * const;
-    using CreaturePVec_t  = std::vector<CreaturePtr_t>;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 }
 namespace combat
 {
@@ -97,11 +96,10 @@ namespace combat
     using CombatDisplayPtr_t = CombatDisplay *;
 
     class CombatNode;
-    using CombatNodePtr_t  = CombatNode *;
+    using CombatNodePtr_t = CombatNode *;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
 
-
-    //All the info required to shake a creature image on the battlefield.
+    // All the info required to shake a creature image on the battlefield.
     struct ShakeAnimInfo
     {
         ShakeAnimInfo();
@@ -118,12 +116,11 @@ namespace combat
 
     using SakeInfoMap_t = std::map<combat::CombatNodePtr_t, ShakeAnimInfo>;
 
-
-    //Responsible for displaying combat related animations.
+    // Responsible for displaying combat related animations.
     class CombatAnimation
     {
-        CombatAnimation(const CombatAnimation &) =delete;
-        CombatAnimation & operator=(const CombatAnimation &) =delete;
+        CombatAnimation(const CombatAnimation &) = delete;
+        CombatAnimation & operator=(const CombatAnimation &) = delete;
 
     public:
         explicit CombatAnimation(const CombatDisplayPtr_t);
@@ -132,50 +129,52 @@ namespace combat
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
-        void ProjectileShootAnimStart(creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
-                                      creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
-                                      const item::ItemPtr_t     WEAPON_PTR,
-                                      const bool                WILL_HIT);
+        void ProjectileShootAnimStart(
+            creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
+            creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
+            const item::ItemPtr_t WEAPON_PTR,
+            const bool WILL_HIT);
 
         void ProjectileShootAnimUpdate(const float SLIDER_POS);
         void ProjectileShootAnimStop();
 
-        //The Death Animation is only for non-player characters
+        // The Death Animation is only for non-player characters
         void DeathAnimStart(const creature::CreaturePVec_t &);
         void DeathAnimUpdate(const float SLIDER_POS);
         void DeathAnimStop();
 
-        //The Centering Animation slides all creatures into the center of the
-        //battlefield.
+        // The Centering Animation slides all creatures into the center of the
+        // battlefield.
         void CenteringStart(creature::CreatureCPtrC_t);
         void CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y);
         void CenteringStartTargetCenterOfBatllefield();
         void CenteringStart(const creature::CreaturePVec_t &);
 
-        //returns true if CombatStage should zoom out,
-        //or if (centeringAnimWillZoomOut_ && ! AreAllCreaturesVisible())
+        // returns true if CombatStage should zoom out,
+        // or if (centeringAnimWillZoomOut_ && ! AreAllCreaturesVisible())
         bool CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND = true);
 
         void CenteringStop();
 
-        //The Reposition Animation slides all creatures around after a blocking
-        //position change, which has the effecting of looking like the battlefield
-        //camera is moving.
+        // The Reposition Animation slides all creatures around after a blocking
+        // position change, which has the effecting of looking like the battlefield
+        // camera is moving.
         void RepositionAnimStart(creature::CreaturePtr_t);
         void RepositionAnimStart(const sf::Vector2f &);
         void RepositionAnimUpdate(const float SLIDER_POS);
         void RepositionAnimStop();
 
-        //The Melee Move Toward Animation moves a creature toward their target during
-        //melee attacks.
-        void MeleeMoveTowardAnimStart(creature::CreatureCPtrC_t CREATURE_MOVING_CPTRC,
-                                      creature::CreatureCPtrC_t CREATURE_TARGET_CPTRC);
+        // The Melee Move Toward Animation moves a creature toward their target during
+        // melee attacks.
+        void MeleeMoveTowardAnimStart(
+            creature::CreatureCPtrC_t CREATURE_MOVING_CPTRC,
+            creature::CreatureCPtrC_t CREATURE_TARGET_CPTRC);
 
         void MeleeMoveTowardAnimUpdate(const float SLIDER_POS);
         void MeleeMoveTowardAnimStop();
 
-        //The Melee Move Back Animation moves a creature back to original position
-        //before the Move Toward Animation.
+        // The Melee Move Back Animation moves a creature back to original position
+        // before the Move Toward Animation.
         void MeleeMoveBackAnimStart();
         void MeleeMoveBackAnimUpdate(const float SLIDER_POS);
         void MeleeMoveBackAnimStop();
@@ -184,21 +183,26 @@ namespace combat
         void ImpactAnimUpdate(const float SLIDER_POS);
         void ImpactAnimStop();
 
-        //The Shake Animation wiggles a creature on the battlefield back and forth.
+        // The Shake Animation wiggles a creature on the battlefield back and forth.
         static float ShakeAnimDistance(const bool WILL_DOUBLE);
 
-        void ShakeAnimStart(creature::CreaturePVec_t & CREATURE_PVEC,
-                            const float                SLIDER_SPEED,
-                            const bool                 WILL_DOUBLE_SHAKE_DISTANCE);
+        void ShakeAnimStart(
+            creature::CreaturePVec_t & CREATURE_PVEC,
+            const float SLIDER_SPEED,
+            const bool WILL_DOUBLE_SHAKE_DISTANCE);
 
-        void ShakeAnimStart(creature::CreatureCPtrC_t CREATURE_CPTRC,
-                            const float               SLIDER_SPEED,
-                            const bool                WILL_DOUBLE_SHAKE_DISTANCE);
+        void ShakeAnimStart(
+            creature::CreatureCPtrC_t CREATURE_CPTRC,
+            const float SLIDER_SPEED,
+            const bool WILL_DOUBLE_SHAKE_DISTANCE);
 
-        //if a nullptr is given then all creatures will stop shaking
+        // if a nullptr is given then all creatures will stop shaking
         void ShakeAnimStop(creature::CreatureCPtrC_t);
 
-        inline creature::CreatureCPtr_t ShakeAnimCreatureCPtr() { return shakeAnimCreatureWasCPtr_; }
+        inline creature::CreatureCPtr_t ShakeAnimCreatureCPtr()
+        {
+            return shakeAnimCreatureWasCPtr_;
+        }
 
         void ShakeAnimTemporaryStop(creature::CreatureCPtrC_t);
         void ShakeAnimRestart();
@@ -206,17 +210,18 @@ namespace combat
         void SelectAnimStart(creature::CreatureCPtrC_t);
         void SelectAnimStop();
 
-        void SpellAnimStart(const spell::SpellPtr_t          SPELL_PTR,
-                            const creature::CreatureCPtrC_t  CASTING_CREATURE_CPTRC,
-                            const combat::CombatNodePVec_t & TARGETS_PVEC);
+        void SpellAnimStart(
+            const spell::SpellPtr_t SPELL_PTR,
+            const creature::CreatureCPtrC_t CASTING_CREATURE_CPTRC,
+            const combat::CombatNodePVec_t & TARGETS_PVEC);
 
-        bool SpellAnimUpdate(const spell::SpellPtr_t SPELL_PTR,
-                             const float             ELAPSED_TIME_SEC);
+        bool SpellAnimUpdate(const spell::SpellPtr_t SPELL_PTR, const float ELAPSED_TIME_SEC);
 
         void SpellAnimStop(const spell::SpellPtr_t SPELL_PTR);
 
-        void SparksAnimStart(const creature::CreatureCPtrC_t  CASTING_CREATURE_CPTRC,
-                             const combat::CombatNodePVec_t & TARGETS_PVEC);
+        void SparksAnimStart(
+            const creature::CreatureCPtrC_t CASTING_CREATURE_CPTRC,
+            const combat::CombatNodePVec_t & TARGETS_PVEC);
 
         bool SparksAnimUpdate(const float ELAPSED_TIME_SEC);
 
@@ -226,11 +231,12 @@ namespace combat
         bool PoisonCloudAnimUpdate(const float ELAPSED_TIME_SEC);
         void PoisonCloudAnimStop();
 
-        void SetupAnimations(const combat::CombatNodePVec_t &  TARGETS_PVEC,
-                             const sfml_util::Animations::Enum ENUM,
-                             const float                       FRAME_DELAY_SEC,
-                             const sf::Color &                 COLOR_FROM,
-                             const sf::Color &                 COLOR_TO);
+        void SetupAnimations(
+            const combat::CombatNodePVec_t & TARGETS_PVEC,
+            const sfml_util::Animations::Enum ENUM,
+            const float FRAME_DELAY_SEC,
+            const sf::Color & COLOR_FROM,
+            const sf::Color & COLOR_TO);
 
         void SongAnimStart(const combat::CombatNodePVec_t & TARGETS_PVEC);
         bool SongAnimUpdate(const float ELAPSED_TIME_SEC);
@@ -241,11 +247,11 @@ namespace combat
         bool SparkleAnimIsDone();
         void SparkleAnimStop();
 
-        void TextAnimStart(const Health_t & DAMAGE,
-                           const combat::CombatNodePtr_t TARGET_PTR);
+        void TextAnimStart(const Health_t & DAMAGE, const combat::CombatNodePtr_t TARGET_PTR);
 
-        void TextAnimStart(const std::vector<Health_t> & DAMAGE_VEC,
-                           const combat::CombatNodePVec_t & TARGETS_PVEC);
+        void TextAnimStart(
+            const std::vector<Health_t> & DAMAGE_VEC,
+            const combat::CombatNodePVec_t & TARGETS_PVEC);
 
         void TextAnimStop();
 
@@ -270,7 +276,7 @@ namespace combat
 
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
-        //members supporting the Projectile Shoot Animation
+        // members supporting the Projectile Shoot Animation
         sf::Texture projAnimTexture_;
         sf::Sprite projAnimSprite_;
         sf::Vector2f projAnimBeginPosV_;
@@ -278,51 +284,50 @@ namespace combat
         bool projAnimWillSpin_;
         bool projAnimWillDraw_;
 
-        //members supporting the Death Animation
+        // members supporting the Death Animation
         CombatNodePVec_t deadAnimNodesPVec_;
 
-        //members supporting the Centering Animation
+        // members supporting the Centering Animation
         combat::CombatNodePtr_t centeringAnimCombatNodePtr_;
         creature::CreaturePVec_t centeringAnimCreaturesPVec_;
         bool centeringAnimWillZoomOut_;
 
-        //member supporting the Reposition Animation
+        // member supporting the Reposition Animation
         creature::CreaturePtr_t repositionAnimCreaturePtr_;
         sf::Vector2f repositionAnimPosV_;
 
-        //members supporting the Melee Move Animations
+        // members supporting the Melee Move Animations
         sf::Vector2f meleeMoveAnimOrigPosV_;
         sf::Vector2f meleeMoveAnimTargetPosV_;
         CombatNodePtr_t meleeMoveAnimMovingCombatNodePtr_;
         CombatNodePtr_t meleeMoveAnimTargetCombatNodePtr_;
 
-        //members to shake a creature image on the battlefield
+        // members to shake a creature image on the battlefield
         creature::CreatureCPtr_t shakeAnimCreatureWasCPtr_;
         float shakeAnimCreatureWasSpeed_;
         SakeInfoMap_t shakeAnimInfoMap_;
 
-        //members to perform the selection animation
+        // members to perform the selection animation
         CombatNodePtr_t selectAnimCombatNodePtr_;
 
         sfml_util::animation::SparksAnimationUVec_t sparksAnimUVec_;
         sfml_util::animation::CloudAnimationUVec_t cloudAnimUVec_;
 
-        //members that control animations in general
+        // members that control animations in general
         sfml_util::AnimationUVec_t animUVec_;
 
         sfml_util::animation::SongAnimationUVec_t songAnimUVec_;
         sfml_util::animation::SparkleAnimationUVec_t sparkleAnimUVec_;
         sfml_util::animation::TextAnimationUVec_t textAnimUVec_;
 
-        //members that control the run animation
+        // members that control the run animation
         CombatNodePtr_t runAnimCombatNodePtr_;
         sf::Vector2f runAnimPosVTarget_;
         sf::Vector2f runAnimPosVOrig_;
     };
 
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;
-
 }
 }
 
-#endif //HEROESPATH_GAME_COMBAT_COMBATANIM_HPP_INCLUDED
+#endif // HEROESPATH_GAME_COMBAT_COMBATANIM_HPP_INCLUDED

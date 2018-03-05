@@ -31,21 +31,19 @@
 #include "player/party.hpp"
 #include <string>
 
-
 namespace heroespath
 {
 namespace interact
 {
-namespace talk
-{
-
-    struct CommonTalk
+    namespace talk
     {
-        static const std::string Compose(const player::Party &);
-    };
 
-}
+        struct CommonTalk
+        {
+            static const std::string Compose(const player::Party &);
+        };
+    }
 }
 }
 
-#endif //HEROESPATH_INTERACT_STATEMENTCOMMONHPP_INCLUDED
+#endif // HEROESPATH_INTERACT_STATEMENTCOMMONHPP_INCLUDED

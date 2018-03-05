@@ -29,13 +29,12 @@
 //  Code that manages the display.
 //  For example, the window size and color depth, etc.
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/resolution.hpp"
 #include "popup/popup-manager.hpp"
+#include "sfml-util/resolution.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
 #include <string>
-
 
 namespace heroespath
 {
@@ -46,16 +45,16 @@ namespace sfml_util
     {
         enum Enum
         {
-            //the new video mode was achieved
+            // the new video mode was achieved
             Success = 0,
 
-            //failed to set new video mode so reverted back to the original
+            // failed to set new video mode so reverted back to the original
             FailThenRevert,
 
-            //failed to set new video mode and SFML set the mode back to what it was automatically
+            // failed to set new video mode and SFML set the mode back to what it was automatically
             FailNoChange,
 
-            //failed to set new video mode and SFML set the mode to something completely different
+            // failed to set new video mode and SFML set the mode to something completely different
             FailChange,
 
             Count
@@ -64,12 +63,11 @@ namespace sfml_util
         static const std::string ToString(const DisplayChangeResult::Enum E);
     };
 
-
-    //A singleton that retains details pertaining to an sfml application.
+    // A singleton that retains details pertaining to an sfml application.
     class Display
     {
-        Display(const Display &) =delete;
-        Display & operator=(const Display &) =delete;
+        Display(const Display &) = delete;
+        Display & operator=(const Display &) = delete;
 
     public:
         Display();
@@ -77,16 +75,15 @@ namespace sfml_util
 
         static Display * Instance();
 
-        static void Acquire(const std::string & TITLE,
-                            const sf::Uint32    STYLE,
-                            const unsigned      ANTIALIAS_LEVEL);
+        static void Acquire(
+            const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
 
         static void Release();
 
         inline WinPtr_t GetWindow() const { return winUPtr_.get(); }
 
-        float        GetWinWidth() const;
-        float        GetWinHeight() const;
+        float GetWinWidth() const;
+        float GetWinHeight() const;
         unsigned int GetWinWidthu() const;
         unsigned int GetWinHeightu() const;
         unsigned int WinColorDepth() const;
@@ -99,39 +96,37 @@ namespace sfml_util
 
         inline const sf::IntRect FullScreenRecti() const
         {
-            return sf::IntRect(0,
-                               0,
-                               static_cast<int>(GetWinWidth()),
-                               static_cast<int>(GetWinHeight()));
+            return sf::IntRect(
+                0, 0, static_cast<int>(GetWinWidth()), static_cast<int>(GetWinHeight()));
         }
 
-        inline void SetWindowTitle(const std::string & TITLE_STR)   { winTitle_ = TITLE_STR; }
-        inline const std::string GetWindowTitle() const             { return winTitle_; }
+        inline void SetWindowTitle(const std::string & TITLE_STR) { winTitle_ = TITLE_STR; }
+        inline const std::string GetWindowTitle() const { return winTitle_; }
 
-        inline void SetWindowStyle(const sf::Uint32 STYLE)  { winStyle_ = STYLE; }
-        inline sf::Uint32 GetWindowStyle() const            { return winStyle_;  }
+        inline void SetWindowStyle(const sf::Uint32 STYLE) { winStyle_ = STYLE; }
+        inline sf::Uint32 GetWindowStyle() const { return winStyle_; }
 
         void SetFrameRateLimit(const int LIMIT);
-        inline int GetFrameRateLimit() const    { return frameRateLimit_; }
+        inline int GetFrameRateLimit() const { return frameRateLimit_; }
 
         void SetVerticalSync(const bool WILL_SYNC);
-        inline bool GetVerticalSync() const     { return willVerticalSync_; }
+        inline bool GetVerticalSync() const { return willVerticalSync_; }
 
-        inline static float GetWinWidthMin()    { return 1280.0f; }
-        inline static float GetWinHeightMin()   { return 900.0f;  }
+        inline static float GetWinWidthMin() { return 1280.0f; }
+        inline static float GetWinHeightMin() { return 900.0f; }
 
-        //These are not enfoced.  They exist only to aid in setting screen positions
-        //that are relative to min/max sizes.
-        inline static float GetWinWidthMax()    { return 7680.0f; }
-        inline static float GetWinHeightMax()   { return 4800.0f; }
+        // These are not enfoced.  They exist only to aid in setting screen positions
+        // that are relative to min/max sizes.
+        inline static float GetWinWidthMax() { return 7680.0f; }
+        inline static float GetWinHeightMax() { return 4800.0f; }
 
         static bool IsResolutionListed(const Resolution & RES);
         static bool IsVideoModeListed(const sf::VideoMode & VM);
 
         static bool SetResolutionNameAndRatio(Resolution & res);
 
-        //Decided to allow resolutions that are equal or greater than the
-        //min required res.  zTn 2016-10-10
+        // Decided to allow resolutions that are equal or greater than the
+        // min required res.  zTn 2016-10-10
         inline static bool IsVideoModeSupported(const sf::VideoMode & V)
         {
             return ((V.width >= GetWinWidthMin()) && (V.height >= GetWinHeightMin()));
@@ -149,42 +144,40 @@ namespace sfml_util
 
         static void LogAllFullScreenVideoModes();
 
-        //returns the number of supported fullscreen video modes that were supported.
+        // returns the number of supported fullscreen video modes that were supported.
         static std::size_t ComposeSupportedFullScreenVideoModesVec(ResolutionVec_t & vec);
 
-        //returns the number of supported fullscreen video modes that were listed.
+        // returns the number of supported fullscreen video modes that were listed.
         static std::size_t LogAllSupportedFullScreenVideoModes();
 
         static const sf::VideoMode EstablishVideoMode();
 
-        void OpenRenderWindow(const std::string & TITLE,
-                              const sf::Uint32    STYLE,
-                              const unsigned      ANTIALIAS_LEVEL);
+        void OpenRenderWindow(
+            const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
 
         void CloseRenderWindow();
 
         static const sf::VideoMode GetCurrentVideoMode();
-        static const Resolution    GetCurrentResolution();
+        static const Resolution GetCurrentResolution();
 
-        static DisplayChangeResult::Enum ChangeVideoMode(const Resolution & RES,
-                                                         const unsigned ANTIALIAS_LEVEL);
+        static DisplayChangeResult::Enum
+            ChangeVideoMode(const Resolution & RES, const unsigned ANTIALIAS_LEVEL);
 
-        static DisplayChangeResult::Enum ChangeVideoMode(const sf::VideoMode & VM,
-                                                         const unsigned ANTIALIAS_LEVEL);
+        static DisplayChangeResult::Enum
+            ChangeVideoMode(const sf::VideoMode & VM, const unsigned ANTIALIAS_LEVEL);
 
         static Resolution ConvertVideoModeToReslution(const sf::VideoMode & VM);
 
     private:
         static std::unique_ptr<Display> instanceUPtr_;
         //
-        WinUPtr_t   winUPtr_;
+        WinUPtr_t winUPtr_;
         std::string winTitle_;
-        sf::Uint32  winStyle_;
-        int         frameRateLimit_;
-        bool        willVerticalSync_;
+        sf::Uint32 winStyle_;
+        int frameRateLimit_;
+        bool willVerticalSync_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_DISPLAY_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_DISPLAY_HPP_INCLUDED

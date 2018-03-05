@@ -31,88 +31,80 @@
 
 #include <memory>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //Responsible for drawing a celtic knot border around a given region.
-    //OuterSize() is the width of the frame border, while InnerSize() is the rest of
-    //the image width.
-    class KnotFrame : public sf::Drawable
+    namespace gui
     {
-        KnotFrame(const KnotFrame &) =delete;
-        KnotFrame & operator=(const KnotFrame &) =delete;
 
-    public:
-
-        //If using this constructor, calling Setup(...) is required before drawing.
-        KnotFrame();
-
-        //The INNER_REGION is the region to be framed, not the outer limit of the frame.
-        KnotFrame(
-            const sf::FloatRect & INNER_REGION,
-            const float SIZE,
-            const sf::Color & COLOR);
-
-        void Setup(
-            const sf::FloatRect & INNER_REGION,
-            const float SIZE,
-            const sf::Color & COLOR);
-
-        inline const sf::FloatRect RegionInner() const { return regionInner_; }
-        inline void RegionInner(const sf::FloatRect & R) { Setup(R, size_, color_); }
-
-        inline const sf::FloatRect RegionOuter() const { return regionOuter_; }
-        inline const sf::FloatRect Region() const { return RegionOuter(); }
-
-        inline const sf::Color Color() const { return color_; }
-        inline void Color(const sf::Color & C) { Setup(regionInner_, size_, C); }
-
-        inline float Size() const { return size_; }
-        inline void Size(const float S) { Setup(regionInner_, S, color_); }
-
-        inline float InnerSize() const
+        // Responsible for drawing a celtic knot border around a given region.
+        // OuterSize() is the width of the frame border, while InnerSize() is the rest of
+        // the image width.
+        class KnotFrame : public sf::Drawable
         {
-            return topLeftSprite_.getGlobalBounds().width * INNER_WIDTH_RATIO_;
-        }
+            KnotFrame(const KnotFrame &) = delete;
+            KnotFrame & operator=(const KnotFrame &) = delete;
 
-        inline float OuterSize() const
-        {
-            return topLeftSprite_.getGlobalBounds().width * OUTER_WIDTH_RATIO_;
-        }
+        public:
+            // If using this constructor, calling Setup(...) is required before drawing.
+            KnotFrame();
 
-        inline float FrameSize() const
-        {
-            return topLeftSprite_.getGlobalBounds().width * FRAME_WIDTH_RATIO_;
-        }
+            // The INNER_REGION is the region to be framed, not the outer limit of the frame.
+            KnotFrame(
+                const sf::FloatRect & INNER_REGION, const float SIZE, const sf::Color & COLOR);
 
-        virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
+            void Setup(
+                const sf::FloatRect & INNER_REGION, const float SIZE, const sf::Color & COLOR);
 
-    private:
-        static const float OUTER_WIDTH_RATIO_;
-        static const float INNER_WIDTH_RATIO_;
-        static const float FRAME_WIDTH_RATIO_;
-        sf::FloatRect regionInner_;
-        sf::FloatRect regionOuter_;
-        float size_;
-        sf::Color color_;
-        std::vector<sf::Vertex> quadVerts_;
-        sf::Texture texture_;
-        sf::Sprite  topLeftSprite_;
-        sf::Sprite  topRightSprite_;
-        sf::Sprite  botLeftSprite_;
-        sf::Sprite  botRightSprite_;
-    };
+            inline const sf::FloatRect RegionInner() const { return regionInner_; }
+            inline void RegionInner(const sf::FloatRect & R) { Setup(R, size_, color_); }
 
+            inline const sf::FloatRect RegionOuter() const { return regionOuter_; }
+            inline const sf::FloatRect Region() const { return RegionOuter(); }
 
-    using KnotFrameUPtr_t = std::unique_ptr<KnotFrame>;
+            inline const sf::Color Color() const { return color_; }
+            inline void Color(const sf::Color & C) { Setup(regionInner_, size_, C); }
 
+            inline float Size() const { return size_; }
+            inline void Size(const float S) { Setup(regionInner_, S, color_); }
+
+            inline float InnerSize() const
+            {
+                return topLeftSprite_.getGlobalBounds().width * INNER_WIDTH_RATIO_;
+            }
+
+            inline float OuterSize() const
+            {
+                return topLeftSprite_.getGlobalBounds().width * OUTER_WIDTH_RATIO_;
+            }
+
+            inline float FrameSize() const
+            {
+                return topLeftSprite_.getGlobalBounds().width * FRAME_WIDTH_RATIO_;
+            }
+
+            virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
+
+        private:
+            static const float OUTER_WIDTH_RATIO_;
+            static const float INNER_WIDTH_RATIO_;
+            static const float FRAME_WIDTH_RATIO_;
+            sf::FloatRect regionInner_;
+            sf::FloatRect regionOuter_;
+            float size_;
+            sf::Color color_;
+            std::vector<sf::Vertex> quadVerts_;
+            sf::Texture texture_;
+            sf::Sprite topLeftSprite_;
+            sf::Sprite topRightSprite_;
+            sf::Sprite botLeftSprite_;
+            sf::Sprite botRightSprite_;
+        };
+
+        using KnotFrameUPtr_t = std::unique_ptr<KnotFrame>;
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUI_KNOTFRAME_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_KNOTFRAME_HPP_INCLUDED

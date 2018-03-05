@@ -33,23 +33,21 @@
 #include <memory>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
 {
 
-    //forward declarations
+    // forward declarations
     class Enchantment;
     using EnchantmentPtr_t = Enchantment *;
 
-
-    //Singleton responsible for the lifetimes of Enchantment objects.
-    //This class does not new the objects, but it does delete them.
+    // Singleton responsible for the lifetimes of Enchantment objects.
+    // This class does not new the objects, but it does delete them.
     class EnchantmentWarehouse
     {
-        EnchantmentWarehouse(const EnchantmentWarehouse &) =delete;
-        EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) =delete;
+        EnchantmentWarehouse(const EnchantmentWarehouse &) = delete;
+        EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) = delete;
 
     public:
         EnchantmentWarehouse();
@@ -66,8 +64,7 @@ namespace creature
         static std::unique_ptr<EnchantmentWarehouse> instanceUPtr_;
         misc::Warehouse<Enchantment> warehouse_;
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_ENCHANTMENTWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_ENCHANTMENTWAREHOUSE_HPP_INCLUDED

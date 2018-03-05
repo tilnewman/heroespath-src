@@ -31,51 +31,43 @@
 #include "sfml-util/brightness-enum.hpp"
 #include "sfml-util/orientation-enum.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //encapsulates all the the style elements of a SliderBar
-    struct SliderStyle
+    namespace gui
     {
-        explicit SliderStyle(const Orientation::Enum ORIENTATION       = Orientation::Vert,
-                             const Brightness::Enum  BRIGHTNESS        = Brightness::Bright,
-                             const bool              WILL_LABEL_ARROWS = true,
-                             const bool              IS_LINE_LARGE     = true)
-        :
-            orientation    (ORIENTATION),
-            brightness     (BRIGHTNESS),
-            willLabelArrows(WILL_LABEL_ARROWS),
-            isLineLarge    (IS_LINE_LARGE)
-        {}
 
-        Orientation::Enum orientation;
-        Brightness::Enum  brightness;
-        bool              willLabelArrows;
-        bool              isLineLarge;
-    };
+        // encapsulates all the the style elements of a SliderBar
+        struct SliderStyle
+        {
+            explicit SliderStyle(
+                const Orientation::Enum ORIENTATION = Orientation::Vert,
+                const Brightness::Enum BRIGHTNESS = Brightness::Bright,
+                const bool WILL_LABEL_ARROWS = true,
+                const bool IS_LINE_LARGE = true)
+                : orientation(ORIENTATION)
+                , brightness(BRIGHTNESS)
+                , willLabelArrows(WILL_LABEL_ARROWS)
+                , isLineLarge(IS_LINE_LARGE)
+            {}
 
+            Orientation::Enum orientation;
+            Brightness::Enum brightness;
+            bool willLabelArrows;
+            bool isLineLarge;
+        };
 
-    inline bool operator==(const SliderStyle & L, const SliderStyle & R)
-    {
-        return ((L.brightness == R.brightness) &&
-                (L.isLineLarge == R.isLineLarge) &&
-                (L.orientation == R.orientation) &&
-                (L.willLabelArrows == R.willLabelArrows));
+        inline bool operator==(const SliderStyle & L, const SliderStyle & R)
+        {
+            return (
+                (L.brightness == R.brightness) && (L.isLineLarge == R.isLineLarge)
+                && (L.orientation == R.orientation) && (L.willLabelArrows == R.willLabelArrows));
+        }
+
+        inline bool operator!=(const SliderStyle & L, const SliderStyle & R) { return !(L == R); }
     }
-
-
-    inline bool operator!=(const SliderStyle & L, const SliderStyle & R)
-    {
-        return ! (L == R);
-    }
-
-}
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_SLIDERBARSYLE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SLIDERBARSYLE_HPP_INCLUDED

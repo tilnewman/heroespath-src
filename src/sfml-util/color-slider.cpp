@@ -29,43 +29,34 @@
 //
 #include "color-slider.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
     ColorSlider::ColorSlider()
-    :
-        fromColor_(sf::Color::Transparent),
-        toColor_(sf::Color::Transparent),
-        origFromColor_(sf::Color::Transparent),
-        origToColor_(sf::Color::Transparent),
-        direction_(sfml_util::Moving::Count),
-        isMoving_(false),
-        slider_()
+        : fromColor_(sf::Color::Transparent)
+        , toColor_(sf::Color::Transparent)
+        , origFromColor_(sf::Color::Transparent)
+        , origToColor_(sf::Color::Transparent)
+        , direction_(sfml_util::Moving::Count)
+        , isMoving_(false)
+        , slider_()
     {}
-
 
     ColorSlider::ColorSlider(
-        const sf::Color & FROM_COLOR,
-        const sf::Color & TO_COLOR,
-        const float SPEED)
-    :
-        fromColor_(FROM_COLOR),
-        toColor_(TO_COLOR),
-        origFromColor_(FROM_COLOR),
-        origToColor_(TO_COLOR),
-        direction_(sfml_util::Moving::Toward),
-        isMoving_(false),
-        slider_(SPEED)
+        const sf::Color & FROM_COLOR, const sf::Color & TO_COLOR, const float SPEED)
+        : fromColor_(FROM_COLOR)
+        , toColor_(TO_COLOR)
+        , origFromColor_(FROM_COLOR)
+        , origToColor_(TO_COLOR)
+        , direction_(sfml_util::Moving::Toward)
+        , isMoving_(false)
+        , slider_(SPEED)
     {}
 
-
     void ColorSlider::Setup(
-        const sf::Color & FROM_COLOR,
-        const sf::Color & TO_COLOR,
-        const float SPEED)
+        const sf::Color & FROM_COLOR, const sf::Color & TO_COLOR, const float SPEED)
     {
         fromColor_ = FROM_COLOR;
         toColor_ = TO_COLOR;
@@ -75,8 +66,6 @@ namespace sfml_util
         isMoving_ = false;
         slider_.Reset(SPEED);
     }
-
-
 
     void ColorSlider::ChangeDirection()
     {
@@ -96,13 +85,12 @@ namespace sfml_util
         }
     }
 
-
     bool ColorSlider::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         if (isMoving_)
         {
             slider_.Update(ELAPSED_TIME_SECONDS);
-            isMoving_ = ! slider_.IsDone();
+            isMoving_ = !slider_.IsDone();
             return true;
         }
         else
@@ -110,7 +98,6 @@ namespace sfml_util
             return false;
         }
     }
-
 
     const sf::Color ColorSlider::Current() const
     {
@@ -132,6 +119,5 @@ namespace sfml_util
             static_cast<sf::Uint8>(BLUE),
             static_cast<sf::Uint8>(ALPHA));
     }
-
 }
 }

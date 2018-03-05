@@ -29,104 +29,73 @@
 //
 #include "collision-quad-tree.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //This size was found by experiment to work well the the typical map found in the game.
+    // This size was found by experiment to work well the the typical map found in the game.
     const float QuadTree::MIN_QUAD_SIZE_{ 800.0f };
 
-
     void QuadTree::Setup(
-        const float MAP_WIDTH,
-        const float MAP_HEIGHT,
-        const FloatRectVec_t & COLL_RECTS_VEC)
+        const float MAP_WIDTH, const float MAP_HEIGHT, const FloatRectVec_t & COLL_RECTS_VEC)
     {
         PopulateQuadAndRecurse(
-            headQuad_,
-            sf::FloatRect(0.0f, 0.0f, MAP_WIDTH, MAP_HEIGHT),
-            COLL_RECTS_VEC);
+            headQuad_, sf::FloatRect(0.0f, 0.0f, MAP_WIDTH, MAP_HEIGHT), COLL_RECTS_VEC);
     }
 
-
     void QuadTree::PopulateQuadAndRecurse(
-        Quad & quad,
-        const sf::FloatRect &  RECT,
-        const FloatRectVec_t & COLL_RECTS_VEC)
+        Quad & quad, const sf::FloatRect & RECT, const FloatRectVec_t & COLL_RECTS_VEC)
     {
         for (auto const & NEXT_COLL_RECT : COLL_RECTS_VEC)
         {
-            if ((RECT.left < (NEXT_COLL_RECT.left + NEXT_COLL_RECT.width)) &&
-                ((RECT.left + RECT.width) > NEXT_COLL_RECT.left) &&
-                (RECT.top < (NEXT_COLL_RECT.top + NEXT_COLL_RECT.height)) &&
-                ((RECT.height + RECT.top) > NEXT_COLL_RECT.top))
+            if ((RECT.left < (NEXT_COLL_RECT.left + NEXT_COLL_RECT.width))
+                && ((RECT.left + RECT.width) > NEXT_COLL_RECT.left)
+                && (RECT.top < (NEXT_COLL_RECT.top + NEXT_COLL_RECT.height))
+                && ((RECT.height + RECT.top) > NEXT_COLL_RECT.top))
             {
                 quad.coll_rects_vec.push_back(NEXT_COLL_RECT);
             }
         }
 
-        if ((quad.coll_rects_vec.empty() == false) &&
-            (RECT.width > MIN_QUAD_SIZE_) &&
-            (RECT.height > MIN_QUAD_SIZE_))
+        if ((quad.coll_rects_vec.empty() == false) && (RECT.width > MIN_QUAD_SIZE_)
+            && (RECT.height > MIN_QUAD_SIZE_))
         {
             auto const HALF_WIDTH{ RECT.width * 0.5f };
             auto const HALF_HEIGHT{ RECT.height * 0.5f };
 
-            quad.quad_rects_vec.push_back(sf::FloatRect(
-                RECT.left,
-                RECT.top,
-                HALF_WIDTH,
-                HALF_HEIGHT));
+            quad.quad_rects_vec.push_back(
+                sf::FloatRect(RECT.left, RECT.top, HALF_WIDTH, HALF_HEIGHT));
+
+            quad.quad_rects_vec.push_back(
+                sf::FloatRect(RECT.left + HALF_WIDTH, RECT.top, HALF_WIDTH, HALF_HEIGHT));
+
+            quad.quad_rects_vec.push_back(
+                sf::FloatRect(RECT.left, RECT.top + HALF_HEIGHT, HALF_WIDTH, HALF_HEIGHT));
 
             quad.quad_rects_vec.push_back(sf::FloatRect(
-                RECT.left + HALF_WIDTH,
-                RECT.top,
-                HALF_WIDTH,
-                HALF_HEIGHT));
-
-            quad.quad_rects_vec.push_back(sf::FloatRect(
-                RECT.left,
-                RECT.top + HALF_HEIGHT,
-                HALF_WIDTH,
-                HALF_HEIGHT));
-
-            quad.quad_rects_vec.push_back(sf::FloatRect(
-                RECT.left + HALF_WIDTH,
-                RECT.top + HALF_HEIGHT,
-                HALF_WIDTH,
-                HALF_HEIGHT));
+                RECT.left + HALF_WIDTH, RECT.top + HALF_HEIGHT, HALF_WIDTH, HALF_HEIGHT));
 
             for (std::size_t i(0); i < 4; ++i)
             {
-                quad.child_quads_vec.push_back( Quad() );
+                quad.child_quads_vec.push_back(Quad());
                 PopulateQuadAndRecurse(
-                    quad.child_quads_vec[i],
-                    quad.quad_rects_vec[i],
-                    quad.coll_rects_vec);
+                    quad.child_quads_vec[i], quad.quad_rects_vec[i], quad.coll_rects_vec);
             }
 
             quad.coll_rects_vec.clear();
         }
     }
 
-
     bool QuadTree::IsPointWithinCollisionRect(const sf::Vector2f & POINT) const
     {
         return IsPointWithinCollisionRect_Impl(headQuad_, POINT);
     }
 
-
-    void QuadTree::Clear()
-    {
-        headQuad_ = Quad();
-    }
-
+    void QuadTree::Clear() { headQuad_ = Quad(); }
 
     bool QuadTree::IsPointWithinCollisionRect_Impl(
-        const Quad & QUAD,
-        const sf::Vector2f & POINT) const
+        const Quad & QUAD, const sf::Vector2f & POINT) const
     {
         if (QUAD.quad_rects_vec.empty())
         {
@@ -166,6 +135,5 @@ namespace sfml_util
             }
         }
     }
-
 }
 }

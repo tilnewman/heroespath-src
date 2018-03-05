@@ -28,37 +28,35 @@
 // credits-stage.hpp
 //  A Stage class that displays the rolling credits of the app.
 //
+#include "sfml-util/gradient.hpp"
+#include "sfml-util/gui/background-image.hpp"
+#include "sfml-util/gui/box.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
-#include "sfml-util/gui/box.hpp"
-#include "sfml-util/gradient.hpp"
-#include "sfml-util/gui/background-image.hpp"
 
 #include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/ouroboros.hpp"
 #include "sfml-util/main-menu-buttons.hpp"
+#include "sfml-util/ouroboros.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
 #include <memory>
 #include <string>
 
-
 namespace heroespath
 {
 namespace stage
 {
 
-    //Responsible for displaying and managing mouse-clicks of five menu options:
-    //Resume Game, Create Characters, Settings, Credits, Exit
+    // Responsible for displaying and managing mouse-clicks of five menu options:
+    // Resume Game, Create Characters, Settings, Credits, Exit
     class MainMenuStage
-    :
-        public sfml_util::Stage,
-        public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        : public sfml_util::Stage
+        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
-        MainMenuStage(const MainMenuStage &) =delete;
-        MainMenuStage & operator=(const MainMenuStage &) =delete;
+        MainMenuStage(const MainMenuStage &) = delete;
+        MainMenuStage & operator=(const MainMenuStage &) = delete;
 
     public:
         MainMenuStage();
@@ -93,8 +91,7 @@ namespace stage
     };
 
     using MainMenuStageSPtr_t = std::shared_ptr<MainMenuStage>;
-
 }
 }
 
-#endif //HEROESPATH_MAINMENUSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_MAINMENUSTAGE_HPP_INCLUDED

@@ -29,25 +29,24 @@
 //
 #include "main-menu-stage.hpp"
 
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/loaders.hpp"
+#include "sfml-util/display.hpp"
+#include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/text-info.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/tile.hpp"
-#include "sfml-util/display.hpp"
+#include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
+#include "sfml-util/tile.hpp"
 
 #include "log/log-macros.hpp"
 
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 
-#include "state/game-state.hpp"
 #include "state/game-state-factory.hpp"
+#include "state/game-state.hpp"
 
 #include "misc/real.hpp"
-
 
 namespace heroespath
 {
@@ -55,55 +54,34 @@ namespace stage
 {
 
     MainMenuStage::MainMenuStage()
-    :
-        Stage              ("MainMenu"),
-        SCREEN_WIDTH_      (sfml_util::Display::Instance()->GetWinWidth()),
-        SCREEN_HEIGHT_     (sfml_util::Display::Instance()->GetWinHeight()),
-        SCREEN_RECT_       (
-            0.0f,
-            0.0f,
-            sfml_util::Display::Instance()->GetWinWidth(),
-            sfml_util::Display::Instance()->GetWinHeight()),
-        BUTTON_SCALE_      (sfml_util::MapByRes(1.0f, 3.0f)),
-        titleTexture_      (),
-        titleSprite_       (),
-        gradient_          (),
-        resumeButtonUPtr_  ( std::make_unique<sfml_util::main_menu_buttons::ResumeButton>(
-            0.0f,
-            0.0f,
-            BUTTON_SCALE_,
-            false) ),
-        createButtonUPtr_  ( std::make_unique<sfml_util::main_menu_buttons::CreateCharactersButton>(
-            0.0f,
-            0.0f,
-            BUTTON_SCALE_,
-            false) ),
-        settingsButtonUPtr_( std::make_unique<sfml_util::main_menu_buttons::SettingsButton>(
-            0.0f,
-            0.0f,
-            BUTTON_SCALE_,
-            false) ),
-        creditsButtonUPtr_ ( std::make_unique<sfml_util::main_menu_buttons::CreditsButton>(
-            0.0f,
-            0.0f,
-            BUTTON_SCALE_,
-            false) ),
-        exitButtonUPtr_    ( std::make_unique<sfml_util::main_menu_buttons::ExitButton>(
-            0.0f,
-            0.0f,
-            BUTTON_SCALE_,
-            false) ),
-        ouroborosUPtr_     (),
-        bottomSymbol_      (),
-        backgroundImage_   ("media-images-backgrounds-tile-darkknot")
+        : Stage("MainMenu")
+        , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
+        , SCREEN_HEIGHT_(sfml_util::Display::Instance()->GetWinHeight())
+        , SCREEN_RECT_(
+              0.0f,
+              0.0f,
+              sfml_util::Display::Instance()->GetWinWidth(),
+              sfml_util::Display::Instance()->GetWinHeight())
+        , BUTTON_SCALE_(sfml_util::MapByRes(1.0f, 3.0f))
+        , titleTexture_()
+        , titleSprite_()
+        , gradient_()
+        , resumeButtonUPtr_(std::make_unique<sfml_util::main_menu_buttons::ResumeButton>(
+              0.0f, 0.0f, BUTTON_SCALE_, false))
+        , createButtonUPtr_(std::make_unique<sfml_util::main_menu_buttons::CreateCharactersButton>(
+              0.0f, 0.0f, BUTTON_SCALE_, false))
+        , settingsButtonUPtr_(std::make_unique<sfml_util::main_menu_buttons::SettingsButton>(
+              0.0f, 0.0f, BUTTON_SCALE_, false))
+        , creditsButtonUPtr_(std::make_unique<sfml_util::main_menu_buttons::CreditsButton>(
+              0.0f, 0.0f, BUTTON_SCALE_, false))
+        , exitButtonUPtr_(std::make_unique<sfml_util::main_menu_buttons::ExitButton>(
+              0.0f, 0.0f, BUTTON_SCALE_, false))
+        , ouroborosUPtr_()
+        , bottomSymbol_()
+        , backgroundImage_("media-images-backgrounds-tile-darkknot")
     {}
 
-
-    MainMenuStage::~MainMenuStage()
-    {
-        ClearAllEntities();
-    }
-
+    MainMenuStage::~MainMenuStage() { ClearAllEntities(); }
 
     bool MainMenuStage::HandleCallback(
         const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)
@@ -118,11 +96,11 @@ namespace stage
         return false;
     }
 
-
     void MainMenuStage::Setup()
     {
-        //title image
-        sfml_util::LoadTexture(titleTexture_,
+        // title image
+        sfml_util::LoadTexture(
+            titleTexture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-title-blacksymbol"));
 
         titleSprite_.setTexture(titleTexture_);
@@ -133,18 +111,18 @@ namespace stage
             (SCREEN_WIDTH_ * 0.5f) - (titleSprite_.getGlobalBounds().width * 0.5f),
             sfml_util::MapByRes(20.0f, 188.0f));
 
-        //gradient
+        // gradient
         gradient_.Setup(
             SCREEN_RECT_,
             sfml_util::GradientInfo(
-                sf::Color(0,0,0,200),
-                sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight) );
+                sf::Color(0, 0, 0, 200),
+                sfml_util::Corner::TopLeft | sfml_util::Corner::BottomRight));
 
-        //Ouroboros
+        // Ouroboros
         ouroborosUPtr_ = std::make_unique<sfml_util::Ouroboros>("MainMenu's");
         EntityAdd(ouroborosUPtr_.get());
 
-        //buttons
+        // buttons
         resumeButtonUPtr_->SetScaleToRes();
         createButtonUPtr_->SetScaleToRes();
         settingsButtonUPtr_->SetScaleToRes();
@@ -155,45 +133,43 @@ namespace stage
         auto const TITLE_TO_BUTTONS_SPACER{ sfml_util::MapByRes(160.0f, 1000.0f) };
 
         resumeButtonUPtr_->SetEntityPos(
-            (SCREEN_WIDTH_ * 0.5f) - (resumeButtonUPtr_->GetEntityRegion().width   * 0.5f),
-            titleSprite_.getGlobalBounds().top + titleSprite_.getGlobalBounds().height +
-                TITLE_TO_BUTTONS_SPACER);
+            (SCREEN_WIDTH_ * 0.5f) - (resumeButtonUPtr_->GetEntityRegion().width * 0.5f),
+            titleSprite_.getGlobalBounds().top + titleSprite_.getGlobalBounds().height
+                + TITLE_TO_BUTTONS_SPACER);
 
         createButtonUPtr_->SetEntityPos(
-            (SCREEN_WIDTH_ * 0.5f) - (createButtonUPtr_->GetEntityRegion().width   * 0.5f),
-            resumeButtonUPtr_->GetEntityRegion().top +
-                resumeButtonUPtr_->GetEntityRegion().height + SPACE_BETWEEN_BUTTONS);
+            (SCREEN_WIDTH_ * 0.5f) - (createButtonUPtr_->GetEntityRegion().width * 0.5f),
+            resumeButtonUPtr_->GetEntityRegion().top + resumeButtonUPtr_->GetEntityRegion().height
+                + SPACE_BETWEEN_BUTTONS);
 
         settingsButtonUPtr_->SetEntityPos(
             (SCREEN_WIDTH_ * 0.5f) - (settingsButtonUPtr_->GetEntityRegion().width * 0.5f),
-            createButtonUPtr_->GetEntityRegion().top +
-                createButtonUPtr_->GetEntityRegion().height + SPACE_BETWEEN_BUTTONS);
+            createButtonUPtr_->GetEntityRegion().top + createButtonUPtr_->GetEntityRegion().height
+                + SPACE_BETWEEN_BUTTONS);
 
         creditsButtonUPtr_->SetEntityPos(
-            (SCREEN_WIDTH_ * 0.5f) - (creditsButtonUPtr_->GetEntityRegion().width  * 0.5f),
-            settingsButtonUPtr_->GetEntityRegion().top +
-                settingsButtonUPtr_->GetEntityRegion().height + SPACE_BETWEEN_BUTTONS);
+            (SCREEN_WIDTH_ * 0.5f) - (creditsButtonUPtr_->GetEntityRegion().width * 0.5f),
+            settingsButtonUPtr_->GetEntityRegion().top
+                + settingsButtonUPtr_->GetEntityRegion().height + SPACE_BETWEEN_BUTTONS);
 
         exitButtonUPtr_->SetEntityPos(
             (SCREEN_WIDTH_ * 0.5f) - (exitButtonUPtr_->GetEntityRegion().width * 0.5f),
-            creditsButtonUPtr_->GetEntityRegion().top  +
-                creditsButtonUPtr_->GetEntityRegion().height  + SPACE_BETWEEN_BUTTONS);
+            creditsButtonUPtr_->GetEntityRegion().top + creditsButtonUPtr_->GetEntityRegion().height
+                + SPACE_BETWEEN_BUTTONS);
 
-        
         resumeButtonUPtr_->SetCallbackHandler(this);
 
-        auto const ARE_THERE_GAMES_TO_LOAD{ []()
-            {
-                auto const GAMESTATE_PSET{ state::GameStateFactory::Instance()->LoadAllGames() };
-                auto const ARE_THERE_GAMES{ (GAMESTATE_PSET.empty() == false) };
-                
-                for (auto const NEXT_GAMESTATE_PTR : GAMESTATE_PSET)
-                {
-                    delete NEXT_GAMESTATE_PTR;
-                }
+        auto const ARE_THERE_GAMES_TO_LOAD{ []() {
+            auto const GAMESTATE_PSET{ state::GameStateFactory::Instance()->LoadAllGames() };
+            auto const ARE_THERE_GAMES{ (GAMESTATE_PSET.empty() == false) };
 
-                return ARE_THERE_GAMES;
-            }() };
+            for (auto const NEXT_GAMESTATE_PTR : GAMESTATE_PSET)
+            {
+                delete NEXT_GAMESTATE_PTR;
+            }
+
+            return ARE_THERE_GAMES;
+        }() };
 
         resumeButtonUPtr_->SetIsDisabled(ARE_THERE_GAMES_TO_LOAD == false);
 
@@ -204,7 +180,6 @@ namespace stage
         EntityAdd(exitButtonUPtr_.get());
     }
 
-
     void MainMenuStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(backgroundImage_, STATES);
@@ -213,7 +188,6 @@ namespace stage
         target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);
     }
-
 
     bool MainMenuStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
@@ -242,8 +216,7 @@ namespace stage
             game::LoopManager::Instance()->TransitionTo_Credits();
             return true;
         }
-        else if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
-                 (KEY_EVENT.code == sf::Keyboard::E))
+        else if ((KEY_EVENT.code == sf::Keyboard::Escape) || (KEY_EVENT.code == sf::Keyboard::E))
         {
             exitButtonUPtr_->SetMouseState(sfml_util::MouseState::Over);
             sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
@@ -263,6 +236,5 @@ namespace stage
 
         return false;
     }
-
 }
 }

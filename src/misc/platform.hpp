@@ -28,11 +28,11 @@
 // platform.hpp
 //  Code that detects the platform and stores it.
 //
-#include <string>
 #include <memory>
+#include <string>
 
-
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(WIN64) || defined(_WIN64) || defined(__WINDOWS__)
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(WIN64) || defined(_WIN64)   \
+    || defined(__WINDOWS__)
 #define HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
 #elif defined(macintosh) || defined(Macintosh)
 #define HEROESPATH_PLATFORM_DETECTED_IS_APPLE9
@@ -58,13 +58,12 @@
 #define HEROESPATH_PLATFORM_DETECTED_IS_LINUX_GNU
 #endif
 
-
 namespace heroespath
 {
 namespace misc
 {
 
-    //defines supported platforms
+    // defines supported platforms
     struct platform_type
     {
         enum Enum
@@ -80,12 +79,11 @@ namespace misc
         static const std::string ToString(const platform_type::Enum);
     };
 
-
-    //singleton responsible for detecting, logging, and storing the system platform
+    // singleton responsible for detecting, logging, and storing the system platform
     class Platform
     {
-        Platform(const Platform &) =delete;
-        Platform & operator=(const Platform &) =delete;
+        Platform(const Platform &) = delete;
+        Platform & operator=(const Platform &) = delete;
 
     public:
         Platform();
@@ -109,16 +107,15 @@ namespace misc
 
         inline bool IsSupported() const
         {
-            return (platform_type::Unknown != platform_) &&
-                (platform_type::Unsupported != platform_);
+            return (platform_type::Unknown != platform_)
+                && (platform_type::Unsupported != platform_);
         }
 
     private:
         static std::unique_ptr<Platform> instanceUPtr_;
         platform_type::Enum platform_;
     };
-
 }
 }
 
-#endif //HEROESPATH_MISC_PLATFORM_HPP_INCLUDED
+#endif // HEROESPATH_MISC_PLATFORM_HPP_INCLUDED

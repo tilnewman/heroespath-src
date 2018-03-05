@@ -27,31 +27,29 @@
 //
 // adventure-stage-char-list.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/i-stage.hpp"
-#include "sfml-util/gui/gui-entity.hpp"
-#include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/line.hpp"
+#include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/i-stage.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
-#include "player/character.hpp"
 #include "misc/vector-map.hpp"
+#include "player/character.hpp"
 
 #include <memory>
 #include <vector>
-
 
 namespace heroespath
 {
 namespace stage
 {
 
-    //Responsible for displaying and managing player interactions with a
-    //list of characters and associated information about them.
+    // Responsible for displaying and managing player interactions with a
+    // list of characters and associated information about them.
     class AdventureCharacterList
-    :
-        public sfml_util::gui::GuiEntity,
-        public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        : public sfml_util::gui::GuiEntity
+        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
         AdventureCharacterList(const AdventureCharacterList &);
         AdventureCharacterList & operator=(const AdventureCharacterList &);
@@ -139,10 +137,8 @@ namespace stage
         sfml_util::gui::Line charListSepLine_;
     };
 
-
     using AdventureCharacterListUPtr_t = std::unique_ptr<AdventureCharacterList>;
-
 }
 }
 
-#endif //HEROESPATH_STAGE_ADVENTURESTAGECHARLIST_STAGE_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_ADVENTURESTAGECHARLIST_STAGE_HPP_INCLUDED

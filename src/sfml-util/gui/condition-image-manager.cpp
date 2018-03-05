@@ -33,62 +33,57 @@
 
 #include "misc/assertlogandthrow.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    std::unique_ptr<ConditionImageManager> ConditionImageManager::instanceUPtr_{ nullptr };
-
-
-    ConditionImageManager::ConditionImageManager()
+    namespace gui
     {
-        M_HP_LOG_DBG("Singleton Construction: ConditionImageManager");
-    }
 
+        std::unique_ptr<ConditionImageManager> ConditionImageManager::instanceUPtr_{ nullptr };
 
-    ConditionImageManager::~ConditionImageManager()
-    {
-        M_HP_LOG_DBG("Singleton Destruction: ConditionImageManager");
-    }
-
-
-    ConditionImageManager * ConditionImageManager::Instance()
-    {
-        if (instanceUPtr_.get() == nullptr)
+        ConditionImageManager::ConditionImageManager()
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): ConditionImageManager");
-            Acquire();
+            M_HP_LOG_DBG("Singleton Construction: ConditionImageManager");
         }
 
-        return instanceUPtr_.get();
-    }
-
-
-    void ConditionImageManager::Acquire()
-    {
-        if (instanceUPtr_.get() == nullptr)
+        ConditionImageManager::~ConditionImageManager()
         {
-            instanceUPtr_ = std::make_unique<ConditionImageManager>();
+            M_HP_LOG_DBG("Singleton Destruction: ConditionImageManager");
         }
-        else
+
+        ConditionImageManager * ConditionImageManager::Instance()
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: ConditionImageManager");
+            if (instanceUPtr_.get() == nullptr)
+            {
+                M_HP_LOG_WRN("Singleton Instance() before Acquire(): ConditionImageManager");
+                Acquire();
+            }
+
+            return instanceUPtr_.get();
+        }
+
+        void ConditionImageManager::Acquire()
+        {
+            if (instanceUPtr_.get() == nullptr)
+            {
+                instanceUPtr_ = std::make_unique<ConditionImageManager>();
+            }
+            else
+            {
+                M_HP_LOG_WRN("Singleton Acquire() after Construction: ConditionImageManager");
+            }
+        }
+
+        void ConditionImageManager::Release()
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (instanceUPtr_.get() != nullptr),
+                "sfml_util::gui::ConditionImageManager::Release() found instanceUPtr that was "
+                "null.");
+
+            instanceUPtr_.reset();
         }
     }
-
-
-    void ConditionImageManager::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "sfml_util::gui::ConditionImageManager::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
-}
 }
 }

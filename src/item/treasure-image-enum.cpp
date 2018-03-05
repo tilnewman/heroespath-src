@@ -31,9 +31,8 @@
 
 #include "misc/random.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -44,11 +43,26 @@ namespace item
     {
         switch (E)
         {
-            case BonePile:      { return "BonePile"; }
-            case ChestClosed:   { return "ChestClosed"; }
-            case ChestOpen:     { return "ChestOpen"; }
-            case LockboxClosed: { return "LockboxClosed"; }
-            case LockboxOpen:   { return "LockboxOpen"; }
+            case BonePile:
+            {
+                return "BonePile";
+            }
+            case ChestClosed:
+            {
+                return "ChestClosed";
+            }
+            case ChestOpen:
+            {
+                return "ChestOpen";
+            }
+            case LockboxClosed:
+            {
+                return "LockboxClosed";
+            }
+            case LockboxOpen:
+            {
+                return "LockboxOpen";
+            }
             case Count:
             default:
             {
@@ -58,7 +72,6 @@ namespace item
             }
         }
     }
-
 
     const std::string TreasureImage::ToImageKey(const TreasureImage::Enum E)
     {
@@ -80,10 +93,22 @@ namespace item
                     return "media-images-bones-bone-pile-3";
                 }
             }
-            case ChestClosed:   { return "media-images-chest-closed"; }
-            case ChestOpen:     { return "media-images-chest-open"; }
-            case LockboxClosed: { return "media-images-lockbox-closed"; }
-            case LockboxOpen:   { return "media-images-lockbox-open"; }
+            case ChestClosed:
+            {
+                return "media-images-chest-closed";
+            }
+            case ChestOpen:
+            {
+                return "media-images-chest-open";
+            }
+            case LockboxClosed:
+            {
+                return "media-images-lockbox-closed";
+            }
+            case LockboxOpen:
+            {
+                return "media-images-lockbox-open";
+            }
             case Count:
             default:
             {
@@ -94,10 +119,8 @@ namespace item
         }
     }
 
-
-    const std::string TreasureImage::ToContainerName(
-        const TreasureImage::Enum E,
-        const bool WILL_CAPITALIZE)
+    const std::string
+        TreasureImage::ToContainerName(const TreasureImage::Enum E, const bool WILL_CAPITALIZE)
     {
         if ((E == ChestClosed) || (E == ChestOpen))
         {
@@ -126,6 +149,5 @@ namespace item
             return "";
         }
     }
-
 }
 }

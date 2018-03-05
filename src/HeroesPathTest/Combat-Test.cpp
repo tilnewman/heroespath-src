@@ -30,28 +30,27 @@
 
 #include "Test-stuff.hpp"
 
+#include "combat/combat-node.hpp"
+#include "combat/combat-tree.hpp"
+#include "combat/encounter.hpp"
+#include "creature/creature.hpp"
 #include "game/startup-shutdown.hpp"
-#include "state/game-state-factory.hpp"
+#include "player/character.hpp"
 #include "player/party-factory.hpp"
 #include "player/party.hpp"
-#include "player/character.hpp"
-#include "combat/encounter.hpp"
-#include "combat/combat-tree.hpp"
-#include "combat/combat-node.hpp"
-#include "creature/creature.hpp"
+#include "state/game-state-factory.hpp"
 
 #include <exception>
-
 
 using namespace heroespath;
 using namespace heroespath::game;
 
 namespace ts = test_stuff;
 
-
 BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 {
-    BOOST_CHECK_MESSAGE(StartupShutdown::Setup("Heroes' Path Unit Tests", 0, nullptr),
+    BOOST_CHECK_MESSAGE(
+        StartupShutdown::Setup("Heroes' Path Unit Tests", 0, nullptr),
         "StartupShutdown::Setup() failed");
 
     combat::CombatTree combatTree;
@@ -66,11 +65,11 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 
     BOOST_CHECK_THROW(combatTree.SetNode(0_id, combat::CombatNodeSPtr_t()), std::invalid_argument);
 
-    BOOST_CHECK_THROW(combatTree.GetNodeId(
-        combat::CombatNodePtr_t(nullptr)), std::invalid_argument);
+    BOOST_CHECK_THROW(
+        combatTree.GetNodeId(combat::CombatNodePtr_t(nullptr)), std::invalid_argument);
 
-    BOOST_CHECK_THROW(combatTree.GetNodeId(
-        creature::CreaturePtr_t(nullptr)), std::invalid_argument);
+    BOOST_CHECK_THROW(
+        combatTree.GetNodeId(creature::CreaturePtr_t(nullptr)), std::invalid_argument);
 
     {
         IDVec_t ids;
@@ -109,8 +108,10 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 
     BOOST_CHECK(combatTree.EdgesString(false).empty());
 
-    BOOST_CHECK_THROW(combatTree.AddEdge(0_id, 0_id, combat::EdgeType::Blocking), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.AddEdge(0_id, 1_id, combat::EdgeType::Blocking), std::invalid_argument);
+    BOOST_CHECK_THROW(
+        combatTree.AddEdge(0_id, 0_id, combat::EdgeType::Blocking), std::invalid_argument);
+    BOOST_CHECK_THROW(
+        combatTree.AddEdge(0_id, 1_id, combat::EdgeType::Blocking), std::invalid_argument);
 
     BOOST_CHECK_THROW(combatTree.RemoveEdge(0_id, 0_id), std::invalid_argument);
     BOOST_CHECK_THROW(combatTree.RemoveEdge(0_id, 1_id), std::invalid_argument);
@@ -121,8 +122,8 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 
     BOOST_CHECK_THROW(combatTree.GetEdgeType(0_id, 1_id), std::invalid_argument);
 
-    BOOST_CHECK_THROW(combatTree.SetEdgeType(
-        0_id, 1_id, combat::EdgeType::Blocking), std::invalid_argument);
+    BOOST_CHECK_THROW(
+        combatTree.SetEdgeType(0_id, 1_id, combat::EdgeType::Blocking), std::invalid_argument);
 
     {
         IDVec_t ids;
@@ -176,7 +177,6 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 
     StartupShutdown::Teardown();
 }
-
 
 BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
 {
@@ -433,8 +433,9 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     BOOST_CHECK(combatTree.Edges(combat::EdgeType::ShoulderToShoulder).empty());
     BOOST_CHECK(combatTree.Edges(combat::EdgeType::Count).empty());
     BOOST_CHECK(combatTree.EdgesString(false).empty());
-    BOOST_CHECK_THROW(combatTree.AddEdge(0_id, 0_id, combat::EdgeType::Blocking), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.AddEdge(0_id, 1_id, combat::EdgeType::Blocking), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.AddEdge(0_id, 0_id, combat::EdgeType::Blocking),
+    std::invalid_argument); BOOST_CHECK_THROW(combatTree.AddEdge(0_id, 1_id,
+    combat::EdgeType::Blocking), std::invalid_argument);
     BOOST_CHECK_THROW(combatTree.RemoveEdge(0_id, 0_id), std::invalid_argument);
     BOOST_CHECK_THROW(combatTree.RemoveEdge(0_id, 1_id), std::invalid_argument);
     BOOST_CHECK(combatTree.DoesVertexExist(0_id) == false);

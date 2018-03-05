@@ -32,7 +32,6 @@
 #include <memory>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
@@ -42,22 +41,21 @@ namespace creature
     using ConditionUPtr_t = std::unique_ptr<Condition>;
     using ConditionUVec_t = std::vector<ConditionUPtr_t>;
 
-namespace condition
-{
-
-    struct Warehouse
+    namespace condition
     {
-        static void Fill();
-        static void Empty();
-        static bool Test();
-        static ConditionPtr_t Get(const Conditions::Enum);
 
-    private:
-        static ConditionUVec_t conditionsUVec_;
-    };
+        struct Warehouse
+        {
+            static void Fill();
+            static void Empty();
+            static bool Test();
+            static ConditionPtr_t Get(const Conditions::Enum);
 
+        private:
+            static ConditionUVec_t conditionsUVec_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_CREATURE_CONDITIONWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_CONDITIONWAREHOUSE_HPP_INCLUDED

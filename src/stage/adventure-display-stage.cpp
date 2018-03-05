@@ -29,20 +29,19 @@
 //
 #include "adventure-display-stage.hpp"
 
-#include "map/map.hpp"
-#include "map/map-display.hpp"
-#include "map/level-enum.hpp"
+#include "avatar/i-view.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
-#include "stage/adventure-stage.hpp"
-#include "avatar/i-view.hpp"
+#include "map/level-enum.hpp"
+#include "map/map-display.hpp"
+#include "map/map.hpp"
 #include "stage/adventure-stage-interact-stage.hpp"
+#include "stage/adventure-stage.hpp"
 
-#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/direction-enum.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/loaders.hpp"
-#include "sfml-util/direction-enum.hpp"
-
+#include "sfml-util/sfml-util.hpp"
 
 namespace heroespath
 {
@@ -51,36 +50,30 @@ namespace stage
 
     const float AdventureDisplayStage::TIME_BETWEEN_MAP_MOVES_SEC_{ 0.0333f };
 
-
     AdventureDisplayStage::AdventureDisplayStage(
-        AdventureStage * const,
-        interact::InteractionManager & interactionManager)
-    :
-        Stage(
-            "AdventureDisplay",
-            0.0f,
-            0.0f,
-            sfml_util::Display::Instance()->GetWinWidth(),
-            sfml_util::Display::Instance()->GetWinHeight()),
-        interactStagePtr_(nullptr),
-        interactionManager_(interactionManager),
-        characterListUPtr_(std::make_unique<AdventureCharacterList>(this)),
-        backgroundTexture_(),
-        bottomImage_(0.75f, true, sf::Color::White),
-        topImage_("", true, 1.0f, 0.75f),
-        mapUPtr_(),
-        mapFrame_(),
-        moveTimerSec_(0.0f),
-        wasPressedLeft_(false),
-        wasPressedRight_(false),
-        wasPressedUp_(false),
-        wasPressedDown_(false)
+        AdventureStage * const, interact::InteractionManager & interactionManager)
+        : Stage(
+              "AdventureDisplay",
+              0.0f,
+              0.0f,
+              sfml_util::Display::Instance()->GetWinWidth(),
+              sfml_util::Display::Instance()->GetWinHeight())
+        , interactStagePtr_(nullptr)
+        , interactionManager_(interactionManager)
+        , characterListUPtr_(std::make_unique<AdventureCharacterList>(this))
+        , backgroundTexture_()
+        , bottomImage_(0.75f, true, sf::Color::White)
+        , topImage_("", true, 1.0f, 0.75f)
+        , mapUPtr_()
+        , mapFrame_()
+        , moveTimerSec_(0.0f)
+        , wasPressedLeft_(false)
+        , wasPressedRight_(false)
+        , wasPressedUp_(false)
+        , wasPressedDown_(false)
     {}
 
-
-    AdventureDisplayStage::~AdventureDisplayStage()
-    {}
-
+    AdventureDisplayStage::~AdventureDisplayStage() {}
 
     void AdventureDisplayStage::Setup()
     {
@@ -89,35 +82,31 @@ namespace stage
         auto const MAP_REGION{ Setup_Map() };
 
         interactStagePtr_ = new stage::InteractStage(
-            * mapUPtr_,
-            CalcInteractRegion(MAP_REGION),
-            interactionManager_);
+            *mapUPtr_, CalcInteractRegion(MAP_REGION), interactionManager_);
 
         interactStagePtr_->Setup();
 
-        //give control of Stages object lifetime to the Loop class
+        // give control of Stages object lifetime to the Loop class
         game::LoopManager::Instance()->AddStage(this);
         game::LoopManager::Instance()->AddStage(interactStagePtr_);
     }
-
 
     void AdventureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         target.draw(backgroundSprite_, STATES);
         target.draw(bottomImage_, STATES);
         target.draw(topImage_, STATES);
-        target.draw( * characterListUPtr_, STATES);
-        target.draw( * mapUPtr_, STATES);
+        target.draw(*characterListUPtr_, STATES);
+        target.draw(*mapUPtr_, STATES);
         target.draw(mapFrame_, STATES);
         Stage::Draw(target, STATES);
     }
-
 
     void AdventureDisplayStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         mapUPtr_->Update(ELAPSED_TIME_SECONDS);
 
-        //don't process map moves every frame to save resources
+        // don't process map moves every frame to save resources
         moveTimerSec_ += ELAPSED_TIME_SECONDS;
         if (moveTimerSec_ > TIME_BETWEEN_MAP_MOVES_SEC_)
         {
@@ -147,24 +136,20 @@ namespace stage
         }
     }
 
-
     void AdventureDisplayStage::Setup_CharacterList()
     {
         characterListUPtr_->Setup();
 
-        auto const CHARACTER_LIST_LEFT{
-            (sfml_util::Display::Instance()->GetWinWidth() * 0.5f) -
-            (characterListUPtr_->GetEntityRegion().width * 0.5f) };
+        auto const CHARACTER_LIST_LEFT{ (sfml_util::Display::Instance()->GetWinWidth() * 0.5f)
+                                        - (characterListUPtr_->GetEntityRegion().width * 0.5f) };
 
-        auto const CHARACTER_LIST_TOP{
-            sfml_util::Display::Instance()->GetWinHeight() -
-            characterListUPtr_->GetEntityRegion().height -
-            bottomImage_.Height() -
-            sfml_util::MapByRes(30.0f, 90.0f)};
+        auto const CHARACTER_LIST_TOP{ sfml_util::Display::Instance()->GetWinHeight()
+                                       - characterListUPtr_->GetEntityRegion().height
+                                       - bottomImage_.Height()
+                                       - sfml_util::MapByRes(30.0f, 90.0f) };
 
         characterListUPtr_->SetEntityPos(CHARACTER_LIST_LEFT, CHARACTER_LIST_TOP);
     }
-
 
     void AdventureDisplayStage::Setup_BackgroundImage()
     {
@@ -178,12 +163,11 @@ namespace stage
         backgroundSprite_.setPosition(0.0f, 0.0f);
 
         backgroundSprite_.setScale(
-            sfml_util::Display::Instance()->GetWinWidth() /
-                backgroundSprite_.getLocalBounds().width,
-            sfml_util::Display::Instance()->GetWinHeight() /
-                backgroundSprite_.getLocalBounds().height);
+            sfml_util::Display::Instance()->GetWinWidth()
+                / backgroundSprite_.getLocalBounds().width,
+            sfml_util::Display::Instance()->GetWinHeight()
+                / backgroundSprite_.getLocalBounds().height);
     }
-
 
     const sf::FloatRect AdventureDisplayStage::Setup_Map()
     {
@@ -193,9 +177,7 @@ namespace stage
             sfml_util::MapByRes(500.0f, 3000.0f),
             sfml_util::MapByRes(250.0f, 2500.0f));
 
-        auto const MAP_INNER_REGION{ mapFrame_.Setup(
-            MAP_OUTER_REGION,
-            sf::Color(239, 220, 234)) };
+        auto const MAP_INNER_REGION{ mapFrame_.Setup(MAP_OUTER_REGION, sf::Color(239, 220, 234)) };
 
         mapUPtr_ = std::make_unique<map::Map>(MAP_INNER_REGION, interactionManager_);
         mapUPtr_->Load(map::Level::Thornberry_GuardPostWest, map::Level::Thornberry);
@@ -203,11 +185,8 @@ namespace stage
         return MAP_OUTER_REGION;
     }
 
-
     void AdventureDisplayStage::HandleMovementKeypresses(
-        const sfml_util::Direction::Enum DIRECTION,
-        bool & wasPressed,
-        const bool IS_PRESSED)
+        const sfml_util::Direction::Enum DIRECTION, bool & wasPressed, const bool IS_PRESSED)
     {
         if ((false == wasPressed) && IS_PRESSED)
         {
@@ -217,8 +196,8 @@ namespace stage
         {
             mapUPtr_->SetPlayerWalkAnim(DIRECTION, false);
 
-            if ((DIRECTION == sfml_util::Direction::Up) ||
-                (DIRECTION == sfml_util::Direction::Down))
+            if ((DIRECTION == sfml_util::Direction::Up)
+                || (DIRECTION == sfml_util::Direction::Down))
             {
                 if (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left))
                 {
@@ -228,13 +207,15 @@ namespace stage
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Right, true);
                 }
-                else if ((DIRECTION == sfml_util::Direction::Up) &&
-                    (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down)))
+                else if (
+                    (DIRECTION == sfml_util::Direction::Up)
+                    && (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Down)))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Down, true);
                 }
-                else if ((DIRECTION == sfml_util::Direction::Down) &&
-                    (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up)))
+                else if (
+                    (DIRECTION == sfml_util::Direction::Down)
+                    && (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Up)))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Up, true);
                 }
@@ -249,13 +230,15 @@ namespace stage
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Down, true);
                 }
-                else if ((DIRECTION == sfml_util::Direction::Left) &&
-                    (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right)))
+                else if (
+                    (DIRECTION == sfml_util::Direction::Left)
+                    && (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Right)))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Right, true);
                 }
-                else if ((DIRECTION == sfml_util::Direction::Right) &&
-                    (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left)))
+                else if (
+                    (DIRECTION == sfml_util::Direction::Right)
+                    && (game::LoopManager::Instance()->IsKeyPressed(sf::Keyboard::Left)))
                 {
                     mapUPtr_->SetPlayerWalkAnim(sfml_util::Direction::Left, true);
                 }
@@ -270,27 +253,21 @@ namespace stage
         wasPressed = IS_PRESSED;
     }
 
-
-    const sf::FloatRect AdventureDisplayStage::CalcInteractRegion(
-        const sf::FloatRect & MAP_REGION) const
+    const sf::FloatRect
+        AdventureDisplayStage::CalcInteractRegion(const sf::FloatRect & MAP_REGION) const
     {
         sf::FloatRect interactRegion{ MAP_REGION };
 
-        auto const BETWEEN_MAP_AND_INTERACT_REGION_WIDTH{
-            sfml_util::MapByRes(30.0f, 150.0f) };
+        auto const BETWEEN_MAP_AND_INTERACT_REGION_WIDTH{ sfml_util::MapByRes(30.0f, 150.0f) };
 
-        interactRegion.left =
-            MAP_REGION.left +
-            MAP_REGION.width +
-            BETWEEN_MAP_AND_INTERACT_REGION_WIDTH;
+        interactRegion.left
+            = MAP_REGION.left + MAP_REGION.width + BETWEEN_MAP_AND_INTERACT_REGION_WIDTH;
 
         auto const RIGHT_MARGIN{ sfml_util::MapByRes(50.0f, 300.0f) };
 
-        interactRegion.width =
-            (StageRegion().width - interactRegion.left) - RIGHT_MARGIN;
+        interactRegion.width = (StageRegion().width - interactRegion.left) - RIGHT_MARGIN;
 
         return interactRegion;
     }
-
 }
 }

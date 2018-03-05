@@ -29,10 +29,9 @@
 //
 #include "stat-set.hpp"
 
-#include <string>
-#include <sstream>
 #include <exception>
-
+#include <sstream>
+#include <string>
 
 namespace heroespath
 {
@@ -42,52 +41,89 @@ namespace stats
     StatSet::StatSet(
         const Strength_t & STR,
         const Accuracy_t & ACC,
-        const Charm_t &    CHA,
-        const Luck_t &     LCK,
-        const Speed_t &    SPD,
-        const Intell_t &   INT)
-    :
-        str_(STR),
-        acc_(ACC),
-        cha_(CHA),
-        lck_(LCK),
-        spd_(SPD),
-        int_(INT)
+        const Charm_t & CHA,
+        const Luck_t & LCK,
+        const Speed_t & SPD,
+        const Intell_t & INT)
+        : str_(STR)
+        , acc_(ACC)
+        , cha_(CHA)
+        , lck_(LCK)
+        , spd_(SPD)
+        , int_(INT)
     {}
-
 
     stats::Trait_t StatSet::Get(const stats::Traits::Enum E) const
     {
-        if (E == Traits::Strength)      { return str_.Get(); }
-        if (E == Traits::Accuracy)      { return acc_.Get(); }
-        if (E == Traits::Charm)         { return cha_.Get(); }
-        if (E == Traits::Luck)          { return lck_.Get(); }
-        if (E == Traits::Speed)         { return spd_.Get(); }
-        if (E == Traits::Intelligence)  { return int_.Get(); }
+        if (E == Traits::Strength)
+        {
+            return str_.Get();
+        }
+        if (E == Traits::Accuracy)
+        {
+            return acc_.Get();
+        }
+        if (E == Traits::Charm)
+        {
+            return cha_.Get();
+        }
+        if (E == Traits::Luck)
+        {
+            return lck_.Get();
+        }
+        if (E == Traits::Speed)
+        {
+            return spd_.Get();
+        }
+        if (E == Traits::Intelligence)
+        {
+            return int_.Get();
+        }
 
         std::ostringstream ss;
         ss << "stats::StatSet::Get(" << E << ")_InvalidValueError.";
         throw std::range_error(ss.str());
     }
 
-
     void StatSet::Set(const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
     {
-        if (E == Traits::Strength)      { str_ = Strength_t(NEW_VALUE); return; }
-        if (E == Traits::Accuracy)      { acc_ = Accuracy_t(NEW_VALUE); return; }
-        if (E == Traits::Charm)         { cha_ = Charm_t(NEW_VALUE);    return; }
-        if (E == Traits::Luck)          { lck_ = Luck_t(NEW_VALUE);     return; }
-        if (E == Traits::Speed)         { spd_ = Speed_t(NEW_VALUE);    return; }
-        if (E == Traits::Intelligence)  { int_ = Intell_t(NEW_VALUE);   return; }
+        if (E == Traits::Strength)
+        {
+            str_ = Strength_t(NEW_VALUE);
+            return;
+        }
+        if (E == Traits::Accuracy)
+        {
+            acc_ = Accuracy_t(NEW_VALUE);
+            return;
+        }
+        if (E == Traits::Charm)
+        {
+            cha_ = Charm_t(NEW_VALUE);
+            return;
+        }
+        if (E == Traits::Luck)
+        {
+            lck_ = Luck_t(NEW_VALUE);
+            return;
+        }
+        if (E == Traits::Speed)
+        {
+            spd_ = Speed_t(NEW_VALUE);
+            return;
+        }
+        if (E == Traits::Intelligence)
+        {
+            int_ = Intell_t(NEW_VALUE);
+            return;
+        }
 
         std::ostringstream ss;
 
-        ss << "stats::StatSet::Set(" << E << ", new_value=" << NEW_VALUE
-            << ")_InvalidValueError.";
+        ss << "stats::StatSet::Set(" << E << ", new_value=" << NEW_VALUE << ")_InvalidValueError.";
 
         throw std::range_error(ss.str());
     }
-
 
     const std::string StatSet::ToString(const bool WILL_WRAP) const
     {
@@ -132,6 +168,5 @@ namespace stats
             return ss.str();
         }
     }
-
 }
 }

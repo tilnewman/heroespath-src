@@ -33,34 +33,32 @@
 
 #include <memory>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //Loads images and delivers sf::Textures to them on demand.
-    class SongImageManager : public ImageManagerBase<song::Songs>
+    namespace gui
     {
-        SongImageManager(const SongImageManager &) =delete;
-        SongImageManager & operator=(const SongImageManager &) =delete;
 
-    public:
-        SongImageManager();
-        virtual ~SongImageManager();
+        // Loads images and delivers sf::Textures to them on demand.
+        class SongImageManager : public ImageManagerBase<song::Songs>
+        {
+            SongImageManager(const SongImageManager &) = delete;
+            SongImageManager & operator=(const SongImageManager &) = delete;
 
-        static SongImageManager * Instance();
-        static void Acquire();
-        static void Release();
+        public:
+            SongImageManager();
+            virtual ~SongImageManager();
 
-    private:
-        static std::unique_ptr<SongImageManager> instanceUPtr_;
-    };
+            static SongImageManager * Instance();
+            static void Acquire();
+            static void Release();
 
+        private:
+            static std::unique_ptr<SongImageManager> instanceUPtr_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED

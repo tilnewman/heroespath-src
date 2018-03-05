@@ -30,7 +30,6 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace song
@@ -57,8 +56,7 @@ namespace song
     };
 
     using SongVec_t = std::vector<Songs::Enum>;
-
 }
 }
 
-#endif //HEROESPATH_SONG_SONGENUM_HPP_INCLUDED
+#endif // HEROESPATH_SONG_SONGENUM_HPP_INCLUDED

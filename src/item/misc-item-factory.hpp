@@ -28,12 +28,11 @@
 // misc-item-factory.hpp
 //  Responsible for making individual item objects.
 //
-#include "item/item-type-enum.hpp"
 #include "item/item-factory-base.hpp"
+#include "item/item-type-enum.hpp"
 
 #include <memory>
 #include <string>
-
 
 namespace heroespath
 {
@@ -45,12 +44,11 @@ namespace item
 
     class ItemProfile;
 
-
-    //A singleton class responsible for making misc item objects.
+    // A singleton class responsible for making misc item objects.
     class MiscItemFactory : public FactoryBase
     {
-        MiscItemFactory(const MiscItemFactory &) =delete;
-        MiscItemFactory & operator=(const MiscItemFactory &) =delete;
+        MiscItemFactory(const MiscItemFactory &) = delete;
+        MiscItemFactory & operator=(const MiscItemFactory &) = delete;
 
     public:
         MiscItemFactory();
@@ -99,7 +97,7 @@ namespace item
 
         static ItemPtr_t Make_MiscBlessedOrCursed(const ItemProfile &);
 
-        //to support the older InventoryFactory
+        // to support the older InventoryFactory
         static ItemPtr_t Make_Ring(const material::Enum, const material::Enum);
         static ItemPtr_t Make_Wand(const material::Enum, const material::Enum);
         static ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM);
@@ -114,8 +112,7 @@ namespace item
     private:
         static std::unique_ptr<MiscItemFactory> instanceUPtr_;
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_MISCITEMFACTORY_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_MISCITEMFACTORY_HPP_INCLUDED

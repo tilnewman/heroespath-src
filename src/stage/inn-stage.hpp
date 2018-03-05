@@ -28,16 +28,15 @@
 // inn-stage.hpp
 //  A Stage class that allows starting the game
 //
+#include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
-#include "sfml-util/gui/background-image.hpp"
 
-#include "sfml-util/main-menu-buttons.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/horiz-symbol.hpp"
+#include "sfml-util/main-menu-buttons.hpp"
 
 #include <memory>
-
 
 namespace heroespath
 {
@@ -53,13 +52,11 @@ namespace sfml_util
 namespace stage
 {
 
-    //A Stage class that allows starting the game
-    class InnStage
-    :
-        public sfml_util::Stage
+    // A Stage class that allows starting the game
+    class InnStage : public sfml_util::Stage
     {
-        InnStage(const InnStage &) =delete;
-        InnStage & operator=(const InnStage &) =delete;
+        InnStage(const InnStage &) = delete;
+        InnStage & operator=(const InnStage &) = delete;
 
     public:
         InnStage();
@@ -73,16 +70,15 @@ namespace stage
         const float SCREEN_HEIGHT_;
         //
         sf::Texture titleSymbolTexture_;
-        sf::Sprite  titleSymbolSprite_;
+        sf::Sprite titleSymbolSprite_;
         sfml_util::gui::BackgroundImage backgroundImage_;
         sf::Texture candleTexture_;
-        sf::Sprite  candleSprite_;
+        sf::Sprite candleSprite_;
         sfml_util::AnimationUPtr_t candleAnimUPtr_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol bottomSymbol_;
     };
-
 }
 }
 
-#endif //HEROESPATH_INNSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_INNSTAGE_HPP_INCLUDED

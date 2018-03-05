@@ -27,35 +27,34 @@
 //
 // treasure-display-stage.hpp
 //
-#include "sfml-util/stage.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/background-info.hpp"
-#include "sfml-util/gui/gui-entity-image.hpp"
+#include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
-#include "sfml-util/ouroboros.hpp"
+#include "sfml-util/gui/gui-entity-image.hpp"
+#include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-title.hpp"
+#include "sfml-util/ouroboros.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/stage.hpp"
 
+#include "item/item-cache.hpp"
+#include "item/treasure-available-enum.hpp"
+#include "item/treasure-image-enum.hpp"
 #include "stage/item-detail-viewer.hpp"
 #include "stage/treasure-stage-mover.hpp"
-#include "item/treasure-image-enum.hpp"
-#include "item/treasure-available-enum.hpp"
-#include "item/item-cache.hpp"
 
 #include <memory>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-    class TextRegion;
-    using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-}
+    namespace gui
+    {
+        class TextRegion;
+        using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
+    }
 }
 
 namespace creature
@@ -66,108 +65,97 @@ namespace creature
 
 namespace stage
 {
-namespace treasure
-{
-
-    //There are two listboxes.  On the left is the Treasure listbox which contains either the
-    //items worn/held by defeated enemies or the contents of the lockbox carried by defeated
-    //enemies.  On the right is the inventory listbox which contains the unequipped items
-    //carried by one of the player's characters.
-    enum class WhichListbox
+    namespace treasure
     {
-        Treasure,
-        Inventory
-    };
 
-
-    //Responsible for calculating and wrapping colors used by TreasureDisplayStage.
-    struct ListboxColors
-    {
-        ListboxColors();
-
-        sf::Color image;
-        sf::Color line;
-        sf::Color foreground;
-        sf::Color background;
-        sf::Color title;
-        sfml_util::gui::ColorSet colorSet;
-        sf::Color icon;
-    };
-
-
-    //Responsible for calculating and wrapping positions used by TreasureDisplayStage.
-    struct DisplayMeasurements
-    {
-        DisplayMeasurements(
-            const float COINS_IMAGE_BOTTOM,
-            const float BOTTOM_SYMBOL_HEIGHT);
-
-        float screenWidth;
-        float screenHeight;
-        float innerPad;
-        sf::FloatRect innerRect;
-        float listboxScreenEdgeMargin;
-        float listboxBetweenSpacer;
-        float listboxWidth;
-        float treasureListboxLeft;
-        float inventoryListboxLeft;
-        float listboxTop;
-        float listboxHeight;
-        sf::FloatRect treasureListboxRegion;
-        sf::FloatRect inventoryListboxRegion;
-        float listboxMargin;
-        float listboxItemSpacer;
-        float characterImageLeft;
-        float characterImageScale;
-        float listboxSortIconScale;
-        float listboxSortIconSpacer;
-        float listboxSortIconTop;
-    };
-
-
-    //Responsible for wrapping all the info needed to display item details.
-    struct ItemDetails
-    {
-        ItemDetails(
-            const sf::FloatRect & RECT = sfml_util::gui::ListBox::ERROR_RECT_,
-            const item::ItemPtr_t ITEM_PTR = nullptr)
-        :
-            rect(RECT),
-            item_ptr(ITEM_PTR)
-        {}
-
-        inline bool IsValid() const
+        // There are two listboxes.  On the left is the Treasure listbox which contains either the
+        // items worn/held by defeated enemies or the contents of the lockbox carried by defeated
+        // enemies.  On the right is the inventory listbox which contains the unequipped items
+        // carried by one of the player's characters.
+        enum class WhichListbox
         {
-            return (
-                (sfml_util::gui::ListBox::ERROR_RECT_ != rect) &&
-                (nullptr != item_ptr) );
-        }
+            Treasure,
+            Inventory
+        };
 
-        sf::FloatRect rect;
-        item::ItemPtr_t item_ptr;
-    };
-}
+        // Responsible for calculating and wrapping colors used by TreasureDisplayStage.
+        struct ListboxColors
+        {
+            ListboxColors();
 
+            sf::Color image;
+            sf::Color line;
+            sf::Color foreground;
+            sf::Color background;
+            sf::Color title;
+            sfml_util::gui::ColorSet colorSet;
+            sf::Color icon;
+        };
+
+        // Responsible for calculating and wrapping positions used by TreasureDisplayStage.
+        struct DisplayMeasurements
+        {
+            DisplayMeasurements(const float COINS_IMAGE_BOTTOM, const float BOTTOM_SYMBOL_HEIGHT);
+
+            float screenWidth;
+            float screenHeight;
+            float innerPad;
+            sf::FloatRect innerRect;
+            float listboxScreenEdgeMargin;
+            float listboxBetweenSpacer;
+            float listboxWidth;
+            float treasureListboxLeft;
+            float inventoryListboxLeft;
+            float listboxTop;
+            float listboxHeight;
+            sf::FloatRect treasureListboxRegion;
+            sf::FloatRect inventoryListboxRegion;
+            float listboxMargin;
+            float listboxItemSpacer;
+            float characterImageLeft;
+            float characterImageScale;
+            float listboxSortIconScale;
+            float listboxSortIconSpacer;
+            float listboxSortIconTop;
+        };
+
+        // Responsible for wrapping all the info needed to display item details.
+        struct ItemDetails
+        {
+            ItemDetails(
+                const sf::FloatRect & RECT = sfml_util::gui::ListBox::ERROR_RECT_,
+                const item::ItemPtr_t ITEM_PTR = nullptr)
+                : rect(RECT)
+                , item_ptr(ITEM_PTR)
+            {}
+
+            inline bool IsValid() const
+            {
+                return ((sfml_util::gui::ListBox::ERROR_RECT_ != rect) && (nullptr != item_ptr));
+            }
+
+            sf::FloatRect rect;
+            item::ItemPtr_t item_ptr;
+        };
+    }
 
     class TreasureStage;
 
-
-    //Responsible for all displaying everything (images, listboxes, etc.) for the Treasure Stage.
+    // Responsible for all displaying everything (images, listboxes, etc.) for the Treasure Stage.
     class TreasureDisplayStage
-    :
-        public sfml_util::Stage,
-        public sfml_util::gui::callback::IListBoxCallbackHandler,
-        public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        : public sfml_util::Stage
+        , public sfml_util::gui::callback::IListBoxCallbackHandler
+        , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
-        TreasureDisplayStage(const TreasureDisplayStage &) =delete;
-        TreasureDisplayStage & operator=(const TreasureDisplayStage &) =delete;
+        TreasureDisplayStage(const TreasureDisplayStage &) = delete;
+        TreasureDisplayStage & operator=(const TreasureDisplayStage &) = delete;
 
     public:
         explicit TreasureDisplayStage(TreasureStage *);
         virtual ~TreasureDisplayStage() {}
 
         inline virtual const std::string HandlerName() const override { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)override;
+        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
         virtual bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
@@ -187,8 +175,7 @@ namespace treasure
         void SetupAfterPleaseWait(const item::TreasureImage::Enum);
 
         void SetupForCollection(
-            const item::TreasureAvailable::Enum,
-            const item::TreasureImage::Enum);
+            const item::TreasureAvailable::Enum, const item::TreasureImage::Enum);
 
         void UpdateTreasureImage(const item::TreasureImage::Enum);
 
@@ -200,8 +187,7 @@ namespace treasure
         void TreasureChange() const;
 
         void UpdateItemCaches(
-            const item::ItemCache & HELD_CACHE,
-            const item::ItemCache & LOCKBOX_CACHE);
+            const item::ItemCache & HELD_CACHE, const item::ItemCache & LOCKBOX_CACHE);
 
         std::size_t CharacterIndex() const;
         std::size_t CharacterIndexMax() const;
@@ -287,17 +273,14 @@ namespace treasure
 
         float CalculateInventoryTextPosLeft() const;
 
-        float CalculateInventoryTextVertShift() const
-        {
-            return sfml_util::MapByRes(10.0f, 70.0f);
-        }
+        float CalculateInventoryTextVertShift() const { return sfml_util::MapByRes(10.0f, 70.0f); }
 
         void ItemViewerInterruption();
 
-        const treasure::ItemDetails MouseOverListboxItemDetails(
-            const sf::Vector2f & MOUSE_POS) const;
+        const treasure::ItemDetails
+            MouseOverListboxItemDetails(const sf::Vector2f & MOUSE_POS) const;
 
-        template<typename T>
+        template <typename T>
         sfml_util::gui::IGuiEntityPtr_t GetGuiEntityPtrAndRemoveIfNeeded(const T & GUI_ENTITY_UPTR)
         {
             const sfml_util::gui::IGuiEntityPtr_t ENTITY_PTR{ GUI_ENTITY_UPTR.get() };
@@ -389,12 +372,11 @@ namespace treasure
         sfml_util::gui::FourStateButtonUPtr_t takeAllButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t doneButtonUPtr_;
 
-        //These members are copies of the real data in TreasureStage
+        // These members are copies of the real data in TreasureStage
         item::ItemCache heldCache_;
         item::ItemCache lockboxCache_;
     };
-
 }
 }
 
-#endif //HEROESPATH_STAGE_TREASUREDISPLAYSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_STAGE_TREASUREDISPLAYSTAGE_HPP_INCLUDED

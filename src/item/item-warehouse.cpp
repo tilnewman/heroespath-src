@@ -29,9 +29,8 @@
 //
 #include "item-warehouse.hpp"
 
-#include "log/log-macros.hpp"
 #include "item/item.hpp"
-
+#include "log/log-macros.hpp"
 
 namespace heroespath
 {
@@ -40,20 +39,13 @@ namespace item
 
     std::unique_ptr<ItemWarehouse> ItemWarehouse::instanceUPtr_{ nullptr };
 
-
     ItemWarehouse::ItemWarehouse()
-    :
-        warehouse_()
+        : warehouse_()
     {
         M_HP_LOG_DBG("Singleton Construction: ItemWarehouse");
     }
 
-
-    ItemWarehouse::~ItemWarehouse()
-    {
-        M_HP_LOG_DBG("Singleton Destruction: ItemWarehouse");
-    }
-
+    ItemWarehouse::~ItemWarehouse() { M_HP_LOG_DBG("Singleton Destruction: ItemWarehouse"); }
 
     ItemWarehouse * ItemWarehouse::Instance()
     {
@@ -65,7 +57,6 @@ namespace item
 
         return instanceUPtr_.get();
     }
-
 
     void ItemWarehouse::Acquire()
     {
@@ -79,32 +70,29 @@ namespace item
         }
     }
 
-
     void ItemWarehouse::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
             "item::ItemWarehouse::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
 
-
     ItemPtr_t ItemWarehouse::Store(const ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR != nullptr),
-            "item::ItemWarehouse::Store() given nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR != nullptr), "item::ItemWarehouse::Store() given nullptr.");
 
         return warehouse_.Store(ITEM_PTR, ITEM_PTR->Name());
     }
 
-
     void ItemWarehouse::Free(ItemPtr_t & item_ptr)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((item_ptr != nullptr),
-            "item::ItemWarehouse::Free() given nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (item_ptr != nullptr), "item::ItemWarehouse::Free() given nullptr.");
 
         warehouse_.Free(item_ptr, item_ptr->Name());
     }
-
 }
 }

@@ -27,12 +27,11 @@
 //
 // armor-ratings.hpp
 //
-#include "misc/types.hpp"
 #include "item/item-type-enum.hpp"
+#include "misc/types.hpp"
 
 #include <memory>
 #include <vector>
-
 
 namespace heroespath
 {
@@ -42,7 +41,6 @@ namespace item
     class Item;
     using ItemPtr_t = Item *;
     using ItemPVec_t = std::vector<ItemPtr_t>;
-
 
     class ArmorRatings
     {
@@ -59,51 +57,23 @@ namespace item
 
         void Setup();
 
+        inline Armor_t FullyClothedCloth() const { return clothesCloth_; }
 
-        inline Armor_t FullyClothedCloth() const
-        {
-            return clothesCloth_;
-        }
+        inline Armor_t FullyClothedSoftLeather() const { return clothesSoftLeather_; }
 
-        inline Armor_t FullyClothedSoftLeather() const
-        {
-            return clothesSoftLeather_;
-        }
+        inline Armor_t FullyClothedHardLeather() const { return clothesHardLeather_; }
 
-        inline Armor_t FullyClothedHardLeather() const
-        {
-            return clothesHardLeather_;
-        }
+        inline Armor_t ArmoredLesserSoftLeather() const { return armoredLesserSoftLeather_; }
 
-        inline Armor_t ArmoredLesserSoftLeather() const
-        {
-            return armoredLesserSoftLeather_;
-        }
+        inline Armor_t ArmoredLesserSteel() const { return armoredLesserSteel_; }
 
-        inline Armor_t ArmoredLesserSteel() const
-        {
-            return armoredLesserSteel_;
-        }
+        inline Armor_t ArmoredLesserDiamond() const { return armoredLesserDiamond_; }
 
-        inline Armor_t ArmoredLesserDiamond() const
-        {
-            return armoredLesserDiamond_;
-        }
+        inline Armor_t ArmoredGreaterSoftLeather() const { return armoredGreaterSoftLeather_; }
 
-        inline Armor_t ArmoredGreaterSoftLeather() const
-        {
-            return armoredGreaterSoftLeather_;
-        }
+        inline Armor_t ArmoredGreaterSteel() const { return armoredGreaterSteel_; }
 
-        inline Armor_t ArmoredGreaterSteel() const
-        {
-            return armoredGreaterSteel_;
-        }
-
-        inline Armor_t ArmoredGreaterDiamond() const
-        {
-            return armoredGreaterDiamond_;
-        }
+        inline Armor_t ArmoredGreaterDiamond() const { return armoredGreaterDiamond_; }
 
     private:
         Armor_t ClothesSetRating(const item::material::Enum) const;
@@ -124,8 +94,7 @@ namespace item
         Armor_t armoredGreaterSteel_;
         Armor_t armoredGreaterDiamond_;
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_ARMORRATINGS_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_ARMORRATINGS_HPP_INCLUDED

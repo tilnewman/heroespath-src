@@ -30,37 +30,30 @@
 #include "interaction-button.hpp"
 #include "sfml-util/sfml-util.hpp"
 
-
 namespace heroespath
 {
 namespace interact
 {
 
-    Button::Button(
-        const std::string & NAME,
-        const sf::Keyboard::Key KEY)
-    :
-        name_(NAME),
-        key_(KEY),
-        ptr_(nullptr)
+    Button::Button(const std::string & NAME, const sf::Keyboard::Key KEY)
+        : name_(NAME)
+        , key_(KEY)
+        , ptr_(nullptr)
     {}
 
-
-    sfml_util::gui::TextButtonUPtr_t Button::Make(
-        sfml_util::gui::callback::ITextButtonCallbackHandler_t * callbackHandlerPtr)
+    sfml_util::gui::TextButtonUPtr_t
+        Button::Make(sfml_util::gui::callback::ITextButtonCallbackHandler_t * callbackHandlerPtr)
     {
-        auto const DISPLAYED_NAME{
-            [&]()
+        auto const DISPLAYED_NAME{ [&]() {
+            if ((sf::Keyboard::KeyCount == key_) || (sf::Keyboard::Unknown == key_))
             {
-                if ((sf::Keyboard::KeyCount == key_) || (sf::Keyboard::Unknown == key_))
-                {
-                    return name_;
-                }
-                else
-                {
-                    return name_ + "(" + sfml_util::KeyCodeToString(key_) + ")";
-                }
-            }() };
+                return name_;
+            }
+            else
+            {
+                return name_ + "(" + sfml_util::KeyCodeToString(key_) + ")";
+            }
+        }() };
 
         auto uptr{ std::make_unique<sfml_util::gui::TextButton>(
             name_,
@@ -72,6 +65,5 @@ namespace interact
         ptr_ = uptr.get();
         return uptr;
     }
-
 }
 }

@@ -28,7 +28,7 @@
 // sfml-audio.hpp
 //
 
-//prevent warnings that can be ignored in SFML
+// prevent warnings that can be ignored in SFML
 #include "misc/platform.hpp"
 #ifdef PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
@@ -45,7 +45,6 @@
 #include <memory>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -56,4 +55,4 @@ namespace sfml_util
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_SFMLAUDIO_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SFMLAUDIO_HPP_INCLUDED

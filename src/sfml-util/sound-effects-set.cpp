@@ -34,53 +34,46 @@
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
     SfxSet::SfxSet(const SfxEnumVec_t & ENUM_VEC)
-    :
-        sfxEnums_(ENUM_VEC)
+        : sfxEnums_(ENUM_VEC)
     {
-        //no error checking of empty vector here because that is the default case
+        // no error checking of empty vector here because that is the default case
     }
 
-
     SfxSet::SfxSet(const sound_effect::Enum ENUM)
-    :
-        sfxEnums_(1, ENUM)
+        : sfxEnums_(1, ENUM)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             ((ENUM != sound_effect::None) && (ENUM != sound_effect::Count)),
             "SfxSet::Constructor(enum=" << ENUM << ") enum was invalid.");
     }
 
-
-    SfxSet::SfxSet(const sound_effect::Enum FIRST_ENUM,
-                     const sound_effect::Enum LAST_ENUM)
-    :
-        sfxEnums_()
+    SfxSet::SfxSet(const sound_effect::Enum FIRST_ENUM, const sound_effect::Enum LAST_ENUM)
+        : sfxEnums_()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             ((FIRST_ENUM != sound_effect::None) && (FIRST_ENUM != sound_effect::Count)),
             "SfxSet::Constructor(first=" << FIRST_ENUM << ", last=" << LAST_ENUM
-                << ") first was invalid.");
+                                         << ") first was invalid.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             ((LAST_ENUM != sound_effect::None) && (LAST_ENUM != sound_effect::Count)),
             "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
-                << ", last=" << LAST_ENUM << ") last was invalid.");
+                                         << ", last=" << LAST_ENUM << ") last was invalid.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (FIRST_ENUM != LAST_ENUM),
             "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
-                << ", last=" << sound_effect::ToString(LAST_ENUM)
-                << ") first and last were the same.");
+                                         << ", last=" << sound_effect::ToString(LAST_ENUM)
+                                         << ") first and last were the same.");
 
         auto const FIRST{ static_cast<int>(FIRST_ENUM) };
-        auto const LAST { static_cast<int>(LAST_ENUM) };
+        auto const LAST{ static_cast<int>(LAST_ENUM) };
         sfxEnums_.reserve(static_cast<std::size_t>((LAST - FIRST) + 1));
 
         for (int i(FIRST); i <= LAST; ++i)
@@ -91,10 +84,9 @@ namespace sfml_util
         M_ASSERT_OR_LOGANDTHROW_SS(
             (sfxEnums_.empty() == false),
             "SfxSet::Constructor(first=" << sound_effect::ToString(FIRST_ENUM)
-                << ", last=" << sound_effect::ToString(LAST_ENUM)
-                << ") resulted in an empty sfxEnums_ vector.");
+                                         << ", last=" << sound_effect::ToString(LAST_ENUM)
+                                         << ") resulted in an empty sfxEnums_ vector.");
     }
-
 
     void SfxSet::Play(const sound_effect::Enum E) const
     {
@@ -121,20 +113,19 @@ namespace sfml_util
 
             std::ostringstream ssErr;
             ssErr << "sfml_util::SfxSet::Play(" << sound_effect::ToString(E)
-                << ") did not find that sound effect amoung the static sounds.";
+                  << ") did not find that sound effect amoung the static sounds.";
             throw std::range_error(ssErr.str());
         }
     }
 
-
     void SfxSet::PlayAt(const std::size_t INDEX) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((INDEX < sfxEnums_.size()),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (INDEX < sfxEnums_.size()),
             "sfml_util::SfxSet::PlayAt(" << INDEX << ") was given an index out of range.");
 
         SoundManager::Instance()->SoundEffectPlay(sfxEnums_[INDEX]);
     }
-
 
     void SfxSet::PlayRandom() const
     {
@@ -153,7 +144,6 @@ namespace sfml_util
         }
     }
 
-
     sound_effect::Enum SfxSet::SelectRandom() const
     {
         if (sfxEnums_.empty())
@@ -165,6 +155,5 @@ namespace sfml_util
             return misc::Vector::SelectRandom(sfxEnums_);
         }
     }
-
 }
 }

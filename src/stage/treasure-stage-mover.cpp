@@ -33,230 +33,205 @@
 
 #include "sfml-util/gui/gui-entity.hpp"
 
-
 namespace heroespath
 {
 namespace stage
 {
-namespace treasure
-{
-
-    const float StageMover::SLIDE_SPEED_{ 4.0f };
-
-
-    StageMover::StageMover(
-        const Type INITIAL_TREASURE_TYPE,
-        const std::size_t INITIAL_CHARACTER_INDEX)
-    :
-        inventoryCharIndex_(INITIAL_CHARACTER_INDEX),
-        treasureType_(INITIAL_TREASURE_TYPE),
-        treasureSliders_(),
-        inventorySliders_()
-    {}
-
-
-    void StageMover::StartAll()
+    namespace treasure
     {
-        for (auto & slider : treasureSliders_)
+
+        const float StageMover::SLIDE_SPEED_{ 4.0f };
+
+        StageMover::StageMover(
+            const Type INITIAL_TREASURE_TYPE, const std::size_t INITIAL_CHARACTER_INDEX)
+            : inventoryCharIndex_(INITIAL_CHARACTER_INDEX)
+            , treasureType_(INITIAL_TREASURE_TYPE)
+            , treasureSliders_()
+            , inventorySliders_()
+        {}
+
+        void StageMover::StartAll()
         {
-            slider.Start();
-        }
-
-        for (auto & slider : inventorySliders_)
-        {
-            slider.Start();
-        }
-    }
-
-
-    void StageMover::StopAll()
-    {
-        for (auto & slider : treasureSliders_)
-        {
-            slider.Stop();
-        }
-
-        for (auto & slider : inventorySliders_)
-        {
-            slider.Stop();
-        }
-    }
-
-
-    bool StageMover::AreTreasureObjectsMoving() const
-    {
-        for (auto const & SLIDER : treasureSliders_)
-        {
-            if (SLIDER.IsMoving())
+            for (auto & slider : treasureSliders_)
             {
-                return true;
+                slider.Start();
             }
-        }
-
-        return false;
-    }
-
-
-    bool StageMover::AreInventoryObjectsMoving() const
-    {
-        for (auto const & SLIDER : inventorySliders_)
-        {
-            if (SLIDER.IsMoving())
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    void StageMover::AddTreasureObject(
-        const sfml_util::gui::IGuiEntityPtr_t IGUI_ENTITY_PTR,
-        const sf::Vector2f & ONSCREEN_POS,
-        const sf::Vector2f & OFFSCREEN_POS)
-    {
-        treasureSliders_.push_back( sfml_util::gui::GuiEntitySlider(
-            IGUI_ENTITY_PTR,
-            OFFSCREEN_POS,
-            ONSCREEN_POS,
-            SLIDE_SPEED_) );
-    }
-
-
-    void StageMover::AddInventoryObject(
-        const sfml_util::gui::IGuiEntityPtr_t IGUI_ENTITY_PTR,
-        const sf::Vector2f & ONSCREEN_POS,
-        const sf::Vector2f & OFFSCREEN_POS)
-    {
-        inventorySliders_.push_back(sfml_util::gui::GuiEntitySlider(
-            IGUI_ENTITY_PTR,
-            OFFSCREEN_POS,
-            ONSCREEN_POS,
-            SLIDE_SPEED_));
-    }
-
-
-    Type StageMover::TreasureSwitch()
-    {
-        for (auto & slider : treasureSliders_)
-        {
-            slider.ChangeDirection();
-            slider.Start();
-        }
-
-        if (Type::Held == treasureType_)
-        {
-            treasureType_ = Type::Container;
-        }
-        else
-        {
-            treasureType_ = Type::Held;
-        }
-
-        return treasureType_;
-    }
-
-
-    void StageMover::InventoryIndexSet(const std::size_t NEW_INDEX)
-    {
-        if (inventoryCharIndex_ != NEW_INDEX)
-        {
-            inventoryCharIndex_ = NEW_INDEX;
 
             for (auto & slider : inventorySliders_)
             {
-                if (slider.Direction() == sfml_util::Moving::Toward)
-                {
-                    slider.ChangeDirection();
-                }
-
                 slider.Start();
             }
         }
-    }
 
-
-    bool StageMover::UpdateTimeTreasure(const float ELAPSED_TIME_SECONDS)
-    {
-        auto areAnyFinished{ false };
-        for (auto & slider : treasureSliders_)
+        void StageMover::StopAll()
         {
-            if (UpdateTime(slider, ELAPSED_TIME_SECONDS))
+            for (auto & slider : treasureSliders_)
             {
-                areAnyFinished = true;
+                slider.Stop();
+            }
+
+            for (auto & slider : inventorySliders_)
+            {
+                slider.Stop();
             }
         }
 
-        if (areAnyFinished)
+        bool StageMover::AreTreasureObjectsMoving() const
+        {
+            for (auto const & SLIDER : treasureSliders_)
+            {
+                if (SLIDER.IsMoving())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        bool StageMover::AreInventoryObjectsMoving() const
+        {
+            for (auto const & SLIDER : inventorySliders_)
+            {
+                if (SLIDER.IsMoving())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        void StageMover::AddTreasureObject(
+            const sfml_util::gui::IGuiEntityPtr_t IGUI_ENTITY_PTR,
+            const sf::Vector2f & ONSCREEN_POS,
+            const sf::Vector2f & OFFSCREEN_POS)
+        {
+            treasureSliders_.push_back(sfml_util::gui::GuiEntitySlider(
+                IGUI_ENTITY_PTR, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
+        }
+
+        void StageMover::AddInventoryObject(
+            const sfml_util::gui::IGuiEntityPtr_t IGUI_ENTITY_PTR,
+            const sf::Vector2f & ONSCREEN_POS,
+            const sf::Vector2f & OFFSCREEN_POS)
+        {
+            inventorySliders_.push_back(sfml_util::gui::GuiEntitySlider(
+                IGUI_ENTITY_PTR, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
+        }
+
+        Type StageMover::TreasureSwitch()
         {
             for (auto & slider : treasureSliders_)
             {
                 slider.ChangeDirection();
                 slider.Start();
             }
+
+            if (Type::Held == treasureType_)
+            {
+                treasureType_ = Type::Container;
+            }
+            else
+            {
+                treasureType_ = Type::Held;
+            }
+
+            return treasureType_;
         }
 
-        return areAnyFinished;
-    }
-
-
-    bool StageMover::UpdateTimeInventory(const float ELAPSED_TIME_SECONDS)
-    {
-        auto areAnyFinished{ false };
-        for (auto & slider : inventorySliders_)
+        void StageMover::InventoryIndexSet(const std::size_t NEW_INDEX)
         {
-            if (UpdateTime(slider, ELAPSED_TIME_SECONDS))
+            if (inventoryCharIndex_ != NEW_INDEX)
             {
-                areAnyFinished = true;
+                inventoryCharIndex_ = NEW_INDEX;
+
+                for (auto & slider : inventorySliders_)
+                {
+                    if (slider.Direction() == sfml_util::Moving::Toward)
+                    {
+                        slider.ChangeDirection();
+                    }
+
+                    slider.Start();
+                }
             }
         }
 
-        if (areAnyFinished)
+        bool StageMover::UpdateTimeTreasure(const float ELAPSED_TIME_SECONDS)
         {
+            auto areAnyFinished{ false };
+            for (auto & slider : treasureSliders_)
+            {
+                if (UpdateTime(slider, ELAPSED_TIME_SECONDS))
+                {
+                    areAnyFinished = true;
+                }
+            }
+
+            if (areAnyFinished)
+            {
+                for (auto & slider : treasureSliders_)
+                {
+                    slider.ChangeDirection();
+                    slider.Start();
+                }
+            }
+
+            return areAnyFinished;
+        }
+
+        bool StageMover::UpdateTimeInventory(const float ELAPSED_TIME_SECONDS)
+        {
+            auto areAnyFinished{ false };
             for (auto & slider : inventorySliders_)
             {
-                slider.ChangeDirection();
-                slider.Start();
+                if (UpdateTime(slider, ELAPSED_TIME_SECONDS))
+                {
+                    areAnyFinished = true;
+                }
             }
-        }
 
-        return areAnyFinished;
-    }
-
-
-    void StageMover::ReplaceEntity(
-        const sfml_util::gui::IGuiEntityPtr_t FROM,
-        const sfml_util::gui::IGuiEntityPtr_t TO)
-    {
-        for (auto & slider : treasureSliders_)
-        {
-            if (slider.GetEntity() == FROM)
+            if (areAnyFinished)
             {
-                slider.SetEntity(TO);
-                TO->SetEntityPos(slider.Position());
+                for (auto & slider : inventorySliders_)
+                {
+                    slider.ChangeDirection();
+                    slider.Start();
+                }
             }
+
+            return areAnyFinished;
         }
 
-        for (auto & slider : inventorySliders_)
+        void StageMover::ReplaceEntity(
+            const sfml_util::gui::IGuiEntityPtr_t FROM, const sfml_util::gui::IGuiEntityPtr_t TO)
         {
-            if (slider.GetEntity() == FROM)
-             {
-                slider.SetEntity(TO);
-                TO->SetEntityPos(slider.Position());
+            for (auto & slider : treasureSliders_)
+            {
+                if (slider.GetEntity() == FROM)
+                {
+                    slider.SetEntity(TO);
+                    TO->SetEntityPos(slider.Position());
+                }
+            }
+
+            for (auto & slider : inventorySliders_)
+            {
+                if (slider.GetEntity() == FROM)
+                {
+                    slider.SetEntity(TO);
+                    TO->SetEntityPos(slider.Position());
+                }
             }
         }
+
+        bool StageMover::UpdateTime(
+            sfml_util::gui::GuiEntitySlider & slider, const float ELAPSED_TIME_SECONDS)
+        {
+            auto const IS_STILL_MOVING{ slider.UpdateTime(ELAPSED_TIME_SECONDS) };
+            return (IS_STILL_MOVING == false) && (slider.Direction() == sfml_util::Moving::Away);
+        }
     }
-
-
-    bool StageMover::UpdateTime(
-        sfml_util::gui::GuiEntitySlider & slider,
-        const float ELAPSED_TIME_SECONDS)
-    {
-        auto const IS_STILL_MOVING{ slider.UpdateTime(ELAPSED_TIME_SECONDS) };
-        return (IS_STILL_MOVING == false) && (slider.Direction() == sfml_util::Moving::Away);
-    }
-
-}
 }
 }

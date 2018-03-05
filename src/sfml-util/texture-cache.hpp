@@ -32,9 +32,8 @@
 #include "misc/handy-types.hpp"
 
 #include <map>
-#include <string>
 #include <memory>
-
+#include <string>
 
 namespace heroespath
 {
@@ -43,10 +42,9 @@ namespace sfml_util
 
     using StrToSizetVecMap_t = std::map<std::string, misc::SizetVec_t>;
 
-
-    //stores textures in a single location and makes them available by index.
-    //Index zero is always invalid.  Attempting to use index zero in these
-    //functions will result in an error log, not an exception.
+    // stores textures in a single location and makes them available by index.
+    // Index zero is always invalid.  Attempting to use index zero in these
+    // functions will result in an error log, not an exception.
     class TextureCache
     {
         TextureCache(const TextureCache &);
@@ -60,23 +58,19 @@ namespace sfml_util
         static void Acquire();
         static void Release();
 
-        std::size_t AddByKey(
-            const std::string & GAMEDATAFILE_KEY_STR,
-            const bool          WILL_SMOOTH = true);
+        std::size_t
+            AddByKey(const std::string & GAMEDATAFILE_KEY_STR, const bool WILL_SMOOTH = true);
 
-        std::size_t AddByPath(
-            const std::string & PATH_TO_TEXTURE_STR,
-            const bool          WILL_SMOOTH = true);
+        std::size_t
+            AddByPath(const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH = true);
 
-        //not recursive
-        const misc::SizetVec_t AddAllInDirectoryByKey(
-            const std::string & DIR_PATH_KEY,
-            const bool          WILL_SMOOTH = true);
+        // not recursive
+        const misc::SizetVec_t
+            AddAllInDirectoryByKey(const std::string & DIR_PATH_KEY, const bool WILL_SMOOTH = true);
 
-        //not recursive
+        // not recursive
         const misc::SizetVec_t AddAllInDirectoryByPath(
-            const std::string & DIR_PATH_PARAM_STR,
-            const bool          WILL_SMOOTH = true);
+            const std::string & DIR_PATH_PARAM_STR, const bool WILL_SMOOTH = true);
 
         void RemoveByKey(const std::string & GAMEDATAFILE_KEY_STR);
 
@@ -93,9 +87,8 @@ namespace sfml_util
     private:
         std::size_t EstablishNextAvailableIndex();
 
-        std::size_t AddByPathInternal(
-            const std::string & PATH_TO_TEXTURE_STR,
-            const bool WILL_SMOOTH);
+        std::size_t
+            AddByPathInternal(const std::string & PATH_TO_TEXTURE_STR, const bool WILL_SMOOTH);
 
         static void ReorderByLastNumber(std::vector<std::string> &);
 
@@ -105,11 +98,11 @@ namespace sfml_util
         static std::unique_ptr<TextureCache> instanceUPtr_;
         TextureUVec_t cacheUVec_;
 
-        //Keys on the result of GameDataFile::GetMediaPath(),
-        //NOT the complete system path.
+        // Keys on the result of GameDataFile::GetMediaPath(),
+        // NOT the complete system path.
         StrToSizetVecMap_t strToVecMap_;
     };
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_TEXTURECACHE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_TEXTURECACHE_HPP_INCLUDED

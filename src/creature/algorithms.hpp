@@ -34,7 +34,6 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
@@ -46,25 +45,21 @@ namespace creature
 
         enum PlayerOpt : unsigned
         {
-            None             = 0,
-            Living           = 1 << 0,
-            Runaway          = 1 << 1,
+            None = 0,
+            Living = 1 << 0,
+            Runaway = 1 << 1,
             LivingAndRunaway = Living | Runaway,
         };
 
-        static std::size_t Players(
-            CreaturePVec_t & pVec_OutParam,
-            const PlayerOpt  OPTIONS = PlayerOpt::None);
+        static std::size_t
+            Players(CreaturePVec_t & pVec_OutParam, const PlayerOpt OPTIONS = PlayerOpt::None);
 
-        static const CreaturePVec_t Players(
-            const PlayerOpt OPTIONS = PlayerOpt::None);
+        static const CreaturePVec_t Players(const PlayerOpt OPTIONS = PlayerOpt::None);
 
-        static std::size_t NonPlayers(
-            CreaturePVec_t & pVec_OutParam,
-            const PlayerOpt  OPTIONS = PlayerOpt::None);
+        static std::size_t
+            NonPlayers(CreaturePVec_t & pVec_OutParam, const PlayerOpt OPTIONS = PlayerOpt::None);
 
-        static const CreaturePVec_t NonPlayers(
-            const PlayerOpt OPTIONS = PlayerOpt::None);
+        static const CreaturePVec_t NonPlayers(const PlayerOpt OPTIONS = PlayerOpt::None);
 
         enum class TypeOpt
         {
@@ -74,12 +69,11 @@ namespace creature
 
         static std::size_t PlayersByType(
             CreaturePVec_t & pVec_OutParam,
-            const TypeOpt    TYPE_OPTION,
-            const PlayerOpt  PLAYER_OPTIONS = PlayerOpt::None);
+            const TypeOpt TYPE_OPTION,
+            const PlayerOpt PLAYER_OPTIONS = PlayerOpt::None);
 
-        static const CreaturePVec_t PlayersByType(
-            const TypeOpt    TYPE_OPTION,
-            const PlayerOpt  OPTIONS = PlayerOpt::None);
+        static const CreaturePVec_t
+            PlayersByType(const TypeOpt TYPE_OPTION, const PlayerOpt OPTIONS = PlayerOpt::None);
 
         enum class NamesOpt
         {
@@ -89,9 +83,9 @@ namespace creature
 
         static const std::string Names(
             const CreaturePVec_t &,
-            const std::size_t           MAX_COUNT    = 0,
+            const std::size_t MAX_COUNT = 0,
             const misc::Vector::JoinOpt JOIN_OPTIONS = misc::Vector::JoinOpt::None,
-            const NamesOpt              OPTIONS      = NamesOpt::NameOnly);
+            const NamesOpt OPTIONS = NamesOpt::NameOnly);
 
         enum class CriteriaOpt
         {
@@ -100,8 +94,7 @@ namespace creature
         };
 
         static const CreaturePVec_t FindByAlive(
-            const CreaturePVec_t &,
-            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
+            const CreaturePVec_t &, const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static void SortByLowestHealthNormal(CreaturePVec_t &);
         static const CreaturePVec_t FindLowestHealthNormal(const CreaturePVec_t &);
@@ -120,12 +113,11 @@ namespace creature
 
         static const CreaturePVec_t FindByConditionMeaningNotAThreatPermenantly(
             const CreaturePVec_t &,
-            const CondSingleOpt      CONDITION_OPTION   = CondSingleOpt::Has,
+            const CondSingleOpt CONDITION_OPTION = CondSingleOpt::Has,
             const creature::UnconOpt UNCONSCIOUS_OPTION = UnconOpt::Exclude);
 
         static const CreaturePVec_t FindByConditionMeaningNotAThreatTemporarily(
-            const CreaturePVec_t &,
-            const CondSingleOpt CONDITION_OPTION = CondSingleOpt::Has);
+            const CreaturePVec_t &, const CondSingleOpt CONDITION_OPTION = CondSingleOpt::Has);
 
         static const CreaturePVec_t FindByRace(
             const CreaturePVec_t &,
@@ -138,28 +130,22 @@ namespace creature
             const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static const CreaturePVec_t FindByCanCast(
-            const CreaturePVec_t &,
-            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
+            const CreaturePVec_t &, const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static const CreaturePVec_t FindByIsBeast(
-            const CreaturePVec_t &,
-            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
+            const CreaturePVec_t &, const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static const CreaturePVec_t FindByIsHoldingProjWeapon(
-            const CreaturePVec_t &,
-            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
+            const CreaturePVec_t &, const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static const CreaturePVec_t FindByCanFly(
-            const CreaturePVec_t &,
-            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
+            const CreaturePVec_t &, const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static const CreaturePVec_t FindByIsFlying(
-            const CreaturePVec_t &,
-            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
+            const CreaturePVec_t &, const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         static const CreaturePVec_t FindByCanTakeAction(
-            const CreaturePVec_t &,
-            const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
+            const CreaturePVec_t &, const CriteriaOpt CRITERIA_OPTION = CriteriaOpt::Meets);
 
         enum class CondAllOpt
         {
@@ -170,17 +156,16 @@ namespace creature
         static const CreaturePVec_t FindByHasCondition(
             const CreaturePVec_t &,
             const Conditions::Enum,
-            const CondAllOpt    COND_ALL_OPTION    = CondAllOpt::HasAll,
+            const CondAllOpt COND_ALL_OPTION = CondAllOpt::HasAll,
             const CondSingleOpt COND_SINGLE_OPTION = CondSingleOpt::Has);
 
         static const CreaturePVec_t FindByHasConditions(
             const CreaturePVec_t &,
             const CondEnumVec_t &,
-            const CondAllOpt    COND_ALL_OPTION    = CondAllOpt::HasAll,
+            const CondAllOpt COND_ALL_OPTION = CondAllOpt::HasAll,
             const CondSingleOpt COND_SINGLE_OPTION = CondSingleOpt::Has);
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_CREATUREVECALGORITHMS_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_CREATUREVECALGORITHMS_HPP_INCLUDED

@@ -30,12 +30,11 @@
 //
 #include "misc/types.hpp"
 
-#include "item/treasure-scores.hpp"
 #include "item/item-profile.hpp"
 #include "item/treasure-image-enum.hpp"
+#include "item/treasure-scores.hpp"
 
 #include <vector>
-
 
 namespace heroespath
 {
@@ -50,44 +49,35 @@ namespace item
 
     struct ItemCache;
 
-
     class Item;
     using ItemPtr_t = Item *;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 
-
     struct TreasureFactory
     {
-        //Decides what treasure the given creatures have and adds it
-        //to items_OutParam.  It is assumed, but not required, that
-        //items_OutParam is empty when Make is called.
-        static TreasureImage::Enum Make(
-            const non_player::CharacterPVec_t & CHARACTER_PVEC,
-            ItemCache & items_OutParam);
+        // Decides what treasure the given creatures have and adds it
+        // to items_OutParam.  It is assumed, but not required, that
+        // items_OutParam is empty when Make is called.
+        static TreasureImage::Enum
+            Make(const non_player::CharacterPVec_t & CHARACTER_PVEC, ItemCache & items_OutParam);
 
         static float TreasureRatioPer(const non_player::CharacterPVec_t &);
 
     private:
         static TreasureImage::Enum DetermineWhichTreasureImage(const TreasureScores &);
 
-        //uses a TreasureInfo object to hold/return sum values
-        static const TreasureScores CalculateTreasureSums(
-            const non_player::CharacterPVec_t &);
+        // uses a TreasureInfo object to hold/return sum values
+        static const TreasureScores CalculateTreasureSums(const non_player::CharacterPVec_t &);
 
-        static const TreasureScores MakeRandTreasureInfo(
-            const non_player::CharacterPVec_t &);
+        static const TreasureScores MakeRandTreasureInfo(const non_player::CharacterPVec_t &);
 
         static std::size_t SelectItems(
-            const Score_t & TREASURE_SCORE,
-            const bool IS_RELIGIOUS,
-            ItemCache & items_OutParam);
+            const Score_t & TREASURE_SCORE, const bool IS_RELIGIOUS, ItemCache & items_OutParam);
 
         static void ForceItemSelection(ItemCache & items_OutParam);
 
         static void RemoveTreasureScoresHigherThan(
-            const Score_t &,
-            item::ItemProfileVec_t &,
-            const bool IS_RELIGIOUS);
+            const Score_t &, item::ItemProfileVec_t &, const bool IS_RELIGIOUS);
 
         static std::size_t SelectRandomWeighted(const item::ItemProfileVec_t &);
 
@@ -97,8 +87,7 @@ namespace item
 
         static const item::ItemProfile ItemToSetItemProfile(const item::ItemPtr_t);
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_TREASURE_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_TREASURE_HPP_INCLUDED

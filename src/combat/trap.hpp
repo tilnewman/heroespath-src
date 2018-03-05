@@ -37,7 +37,6 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace combat
@@ -46,8 +45,7 @@ namespace combat
     using SizeRange_t = misc::Range<std::size_t>;
     using HealthRange_t = misc::Range<Health_t>;
 
-
-    //Responsible for wrapping common state and operations of traps.
+    // Responsible for wrapping common state and operations of traps.
     class Trap
     {
     public:
@@ -97,10 +95,8 @@ namespace combat
         std::string hitVerb_;
     };
 
-
     using TrapVec_t = std::vector<Trap>;
-
 }
 }
 
-#endif //HEROESPATH_COMBAT_TRAP_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_TRAP_HPP_INCLUDED

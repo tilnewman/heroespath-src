@@ -34,14 +34,12 @@
 #include <string>
 #include <vector>
 
-
-
 namespace heroespath
 {
 namespace map
 {
 
-    //Responsible for wrapping all the details about a single panel of map tile images.
+    // Responsible for wrapping all the details about a single panel of map tile images.
     struct TilesPanel
     {
         explicit TilesPanel(
@@ -51,14 +49,13 @@ namespace map
             const int & TILE_COUNT = 1,
             const int & COLUMN = 1,
             const std::size_t & TEXTURE_INDEX = 0)
-        :
-            name(NAME),
-            path_rel(RELATIVE_PATH),
-            first_id(FIRST_ID),
-            tile_count(TILE_COUNT),
-            column(COLUMN),
-            texture_index(TEXTURE_INDEX),
-            path_obj()
+            : name(NAME)
+            , path_rel(RELATIVE_PATH)
+            , first_id(FIRST_ID)
+            , tile_count(TILE_COUNT)
+            , column(COLUMN)
+            , texture_index(TEXTURE_INDEX)
+            , path_obj()
         {}
 
         inline bool OwnsId(const int ID) const
@@ -67,7 +64,7 @@ namespace map
         }
 
         std::string name;
-        std::string path_rel; //path string relative to the .tmx map path
+        std::string path_rel; // path string relative to the .tmx map path
         int first_id;
         int tile_count;
         int column;
@@ -77,15 +74,13 @@ namespace map
 
     using TilesPanelVec_t = std::vector<TilesPanel>;
 
-
-    //Responsible for wrapping only the details layers need about a single panel
-    //of map tiles images.
+    // Responsible for wrapping only the details layers need about a single panel
+    // of map tiles images.
     struct TilesPanelForLayers
     {
         TilesPanelForLayers(const bool IS_EMPTY, const std::size_t TEXTURE_INDEX)
-        :
-            is_empty(IS_EMPTY),
-            texture_index(TEXTURE_INDEX)
+            : is_empty(IS_EMPTY)
+            , texture_index(TEXTURE_INDEX)
         {}
 
         bool is_empty;
@@ -93,9 +88,7 @@ namespace map
     };
 
     using TilesPanelForLayersVec_t = std::vector<TilesPanelForLayers>;
-
 }
 }
 
-
-#endif //HEROESPATH_TILESIMAGE_HPP_INCLUDED
+#endif // HEROESPATH_TILESIMAGE_HPP_INCLUDED

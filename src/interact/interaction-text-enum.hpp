@@ -29,10 +29,9 @@
 //
 #include <string>
 
-
 namespace sf
 {
-    class Font;
+class Font;
 }
 
 namespace heroespath
@@ -56,8 +55,7 @@ namespace interact
         static const std::string ToString(const Enum);
         static sfml_util::FontPtr_t Font(const Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_MAP_INTERACTION_TEXT_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_MAP_INTERACTION_TEXT_ENUM_HPP_INCLUDED

@@ -32,7 +32,6 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
@@ -105,8 +104,7 @@ namespace creature
     };
 
     using RoleVec_t = std::vector<role::Enum>;
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_ROLEENUM_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_ROLEENUM_HPP_INCLUDED

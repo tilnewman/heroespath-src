@@ -29,50 +29,44 @@
 //
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/sfml-util.hpp"
-#include <vector>
 #include <algorithm>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace map
 {
 
-    //Responsible for wrapping a region of the map with the walk sfx that goes with it.
+    // Responsible for wrapping a region of the map with the walk sfx that goes with it.
     struct WalkSfxRegion
     {
         WalkSfxRegion(
             const sf::FloatRect & REGION = sf::FloatRect(),
             const sfml_util::music::Enum MUSIC = sfml_util::music::Count)
-        :
-            region(REGION),
-            music(MUSIC)
+            : region(REGION)
+            , music(MUSIC)
         {}
 
         sf::FloatRect region;
         sfml_util::music::Enum music;
     };
 
-
     inline bool operator<(const WalkSfxRegion & L, const WalkSfxRegion & R)
     {
-        //Only consider the region when sorting
+        // Only consider the region when sorting
         return L.region < R.region;
     }
 
-
     using WalkSfxRegionVec_t = std::vector<WalkSfxRegion>;
 
-
-    //Responsible for sorting and wrapping the bottom layer WalkSfxRegions and the top layer.
+    // Responsible for sorting and wrapping the bottom layer WalkSfxRegions and the top layer.
     struct WalkSfxRegionLayers
     {
         WalkSfxRegionLayers(
             const WalkSfxRegionVec_t & BOTTOM_LAYERS = WalkSfxRegionVec_t(),
             const WalkSfxRegionVec_t & TOP_LAYERS = WalkSfxRegionVec_t())
-        :
-            bottom_layers(BOTTOM_LAYERS),
-            top_layers(TOP_LAYERS)
+            : bottom_layers(BOTTOM_LAYERS)
+            , top_layers(TOP_LAYERS)
         {}
 
         inline sfml_util::music::Enum FindSfx(const sf::Vector2f & POSITION) const
@@ -99,8 +93,7 @@ namespace map
         WalkSfxRegionVec_t bottom_layers;
         WalkSfxRegionVec_t top_layers;
     };
-
 }
 }
 
-#endif //HEROESPATH_MAP_WALK_SFX_HPP_INCLUDED
+#endif // HEROESPATH_MAP_WALK_SFX_HPP_INCLUDED

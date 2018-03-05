@@ -31,24 +31,19 @@
 #include "interact/i-interaction.hpp"
 #include "log/log-macros.hpp"
 
-
 namespace heroespath
 {
 namespace interact
 {
 
     InteractionManager::InteractionManager()
-    :
-        currentUPtr_(),
-        nextUPtr_(),
-        hasCurrentChanged_(true),
-        isRemoveCurrentPending_(false)
+        : currentUPtr_()
+        , nextUPtr_()
+        , hasCurrentChanged_(true)
+        , isRemoveCurrentPending_(false)
     {}
 
-
-    InteractionManager::~InteractionManager()
-    {}
-
+    InteractionManager::~InteractionManager() {}
 
     bool InteractionManager::HasCurrentChanged() const
     {
@@ -63,18 +58,12 @@ namespace interact
         }
     }
 
-
-    void InteractionManager::RemoveCurrent()
-    {
-        isRemoveCurrentPending_ = true;
-    }
-
+    void InteractionManager::RemoveCurrent() { isRemoveCurrentPending_ = true; }
 
     void InteractionManager::SetNext(InteractionUPtr_t NEXT_UPTR)
     {
         nextUPtr_ = std::move(NEXT_UPTR);
     }
-
 
     bool InteractionManager::Update()
     {
@@ -105,7 +94,6 @@ namespace interact
         }
     }
 
-
     void InteractionManager::Lock()
     {
         if (currentUPtr_.get() != nullptr)
@@ -114,7 +102,6 @@ namespace interact
         }
     }
 
-
     void InteractionManager::Unlock()
     {
         if (currentUPtr_.get() != nullptr)
@@ -122,7 +109,6 @@ namespace interact
             currentUPtr_->Unlock();
         }
     }
-
 
     bool InteractionManager::IsLocked() const
     {
@@ -135,6 +121,5 @@ namespace interact
             return false;
         }
     }
-
 }
 }

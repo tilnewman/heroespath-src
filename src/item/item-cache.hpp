@@ -31,7 +31,6 @@
 
 #include <vector>
 
-
 namespace heroespath
 {
 namespace item
@@ -41,9 +40,8 @@ namespace item
     using ItemPtr_t = Item *;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 
-
-    //Handy container of items used by Encounter to store treasure
-    //both on enemy creatures and cached in the chest/lockbox.
+    // Handy container of items used by Encounter to store treasure
+    // both on enemy creatures and cached in the chest/lockbox.
     struct ItemCache
     {
         ItemCache();
@@ -52,7 +50,7 @@ namespace item
         Gem_t gems{ 0_gem };
         item::ItemPVec_t items_pvec;
 
-        //coins and gems weigh nothing
+        // coins and gems weigh nothing
         Weight_t Weight() const;
 
         inline bool Empty() const
@@ -65,8 +63,7 @@ namespace item
             return ((0_coin == coins) && (0_gem == gems) && (items_pvec.empty() == false));
         }
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_ITEMCACHE_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_ITEMCACHE_HPP_INCLUDED

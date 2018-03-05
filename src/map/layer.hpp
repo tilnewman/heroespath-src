@@ -27,31 +27,30 @@
 //
 // layer.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "map/tiles-panel.hpp"
 #include "map/layer-type-enum.hpp"
+#include "map/tiles-panel.hpp"
 #include "misc/types.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <vector>
-
 
 namespace heroespath
 {
 namespace map
 {
 
-    //Responsible for wrapping all data about a single map layer.
+    // Responsible for wrapping all data about a single map layer.
     struct Layer
     {
         LayerType::Enum type;
 
-        //only stores verts for drawn map tiles
+        // only stores verts for drawn map tiles
         sf::VertexArray vert_array;
 
-        //copies of TileImages that are used by vert_array
+        // copies of TileImages that are used by vert_array
         TilesPanelForLayersVec_t tiles_panel_vec;
 
-        //the map IDs that make up this panel
+        // the map IDs that make up this panel
         std::vector<int> mapid_vec;
 
         void ResetForReDraw()
@@ -62,9 +61,7 @@ namespace map
     };
 
     using LayerVec_t = std::vector<Layer>;
-
 }
 }
 
-
-#endif //HEROESPATH_LAYER_HPP_INCLUDED
+#endif // HEROESPATH_LAYER_HPP_INCLUDED

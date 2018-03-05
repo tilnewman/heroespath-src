@@ -32,22 +32,17 @@
 #include "game/loop-manager.hpp"
 #include "item/item-profile-warehouse.hpp"
 
-
 namespace heroespath
 {
 namespace popup
 {
 
     PopupStageItemProfileWait::PopupStageItemProfileWait(const PopupInfo & POPUP_INFO)
-    :
-        PopupStageBase(POPUP_INFO),
-        drawCountdown_(3)
+        : PopupStageBase(POPUP_INFO)
+        , drawCountdown_(3)
     {}
 
-
-    PopupStageItemProfileWait::~PopupStageItemProfileWait()
-    {}
-
+    PopupStageItemProfileWait::~PopupStageItemProfileWait() {}
 
     void PopupStageItemProfileWait::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
@@ -64,6 +59,5 @@ namespace popup
 
         Stage::Draw(target, STATES);
     }
-
 }
 }

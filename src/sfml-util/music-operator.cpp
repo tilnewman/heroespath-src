@@ -40,7 +40,6 @@
 #include <sstream>
 #include <tuple>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -50,13 +49,34 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Stopped:       { return "Stopped"; }
-            case Playing:       { return "Playing"; }
-            case FadingOut:     { return "FadingOut"; }
-            case FadedOut:      { return "FadedOut"; }
-            case FadedOutKill:  { return "FadedOutKill"; }
-            case FadingIn:      { return "FadingIn"; }
-            case FadedIn:       { return "FadedIn"; }
+            case Stopped:
+            {
+                return "Stopped";
+            }
+            case Playing:
+            {
+                return "Playing";
+            }
+            case FadingOut:
+            {
+                return "FadingOut";
+            }
+            case FadedOut:
+            {
+                return "FadedOut";
+            }
+            case FadedOutKill:
+            {
+                return "FadedOutKill";
+            }
+            case FadingIn:
+            {
+                return "FadingIn";
+            }
+            case FadedIn:
+            {
+                return "FadedIn";
+            }
             case Count:
             default:
             {
@@ -67,24 +87,22 @@ namespace sfml_util
         }
     }
 
-
-    const float MusicOperator::VOLUME_USE_GLOBAL_(-1.0f); //any negative value will work here
-    const float MusicOperator::FADE_MULT_IMMEDIATE_(-1.0f);   //""
+    const float MusicOperator::VOLUME_USE_GLOBAL_(-1.0f); // any negative value will work here
+    const float MusicOperator::FADE_MULT_IMMEDIATE_(-1.0f); //""
     const float MusicOperator::FADE_MULT_DEFAULT_IN_(50.0f);
     const float MusicOperator::FADE_MULT_DEFAULT_OUT_(30.0f);
 
-
-    MusicOperator::MusicOperator(const MusicInfo & MUSIC_INFO,
-                                 MusicUPtr_t       MUSIC_UPTR,
-                                 const float       FADE_IN_MULT,
-                                 const float       TARGET_VOLUME)
-    :
-        info_            (MUSIC_INFO),
-        targetVolume_    (TARGET_VOLUME),
-        fadeInMult_      (FADE_IN_MULT),
-        fadeOutMult_     (0.0f),
-        killAfterFadeOut_(false),
-        musicUPtr_       (std::move(MUSIC_UPTR))
+    MusicOperator::MusicOperator(
+        const MusicInfo & MUSIC_INFO,
+        MusicUPtr_t MUSIC_UPTR,
+        const float FADE_IN_MULT,
+        const float TARGET_VOLUME)
+        : info_(MUSIC_INFO)
+        , targetVolume_(TARGET_VOLUME)
+        , fadeInMult_(FADE_IN_MULT)
+        , fadeOutMult_(0.0f)
+        , killAfterFadeOut_(false)
+        , musicUPtr_(std::move(MUSIC_UPTR))
     {
         if (IsValid())
         {
@@ -93,42 +111,36 @@ namespace sfml_util
         }
     }
 
-
     MusicOperator::MusicOperator(MusicOperator && MO)
-    :
-        info_            (MO.info_),
-        targetVolume_    (MO.targetVolume_),
-        fadeInMult_      (MO.fadeInMult_),
-        fadeOutMult_     (MO.fadeOutMult_),
-        killAfterFadeOut_(MO.killAfterFadeOut_),
-        musicUPtr_       (std::move(MO.musicUPtr_))
+        : info_(MO.info_)
+        , targetVolume_(MO.targetVolume_)
+        , fadeInMult_(MO.fadeInMult_)
+        , fadeOutMult_(MO.fadeOutMult_)
+        , killAfterFadeOut_(MO.killAfterFadeOut_)
+        , musicUPtr_(std::move(MO.musicUPtr_))
     {}
-
 
     MusicOperator & MusicOperator::operator=(MusicOperator && MO)
     {
-        if (& MO != this)
+        if (&MO != this)
         {
-            info_               = MO.info_;
-            targetVolume_       = MO.targetVolume_;
-            fadeInMult_         = MO.fadeInMult_;
-            fadeOutMult_        = MO.fadeOutMult_;
-            killAfterFadeOut_   = MO.killAfterFadeOut_;
-            musicUPtr_          = std::move(MO.musicUPtr_);
+            info_ = MO.info_;
+            targetVolume_ = MO.targetVolume_;
+            fadeInMult_ = MO.fadeInMult_;
+            fadeOutMult_ = MO.fadeOutMult_;
+            killAfterFadeOut_ = MO.killAfterFadeOut_;
+            musicUPtr_ = std::move(MO.musicUPtr_);
         }
 
-        return * this;
+        return *this;
     }
-
 
     bool MusicOperator::IsValid() const
     {
-        return ((info_.Which() != music::Count) &&
-                (info_.Which() != music::All) &&
-                (info_.Which() != music::None) &&
-                (musicUPtr_.get() != nullptr));
+        return (
+            (info_.Which() != music::Count) && (info_.Which() != music::All)
+            && (info_.Which() != music::None) && (musicUPtr_.get() != nullptr));
     }
-
 
     MusicOperator::~MusicOperator()
     {
@@ -137,7 +149,6 @@ namespace sfml_util
             musicUPtr_->stop();
         }
     }
-
 
     void MusicOperator::VolumeFadeTo(const float TARGET_VOL, const float FADE_MULT)
     {
@@ -160,12 +171,10 @@ namespace sfml_util
         }
     }
 
-
     void MusicOperator::VolumeFadeToGlobal(const float FADE_MULT)
     {
         VolumeFadeTo(sfml_util::SoundManager::Instance()->MusicVolume(), FADE_MULT);
     }
-
 
     void MusicOperator::VolumeFadeOut(const float FADE_MULT, const bool WILL_KILL_AFTER)
     {
@@ -174,7 +183,6 @@ namespace sfml_util
         fadeOutMult_ = FADE_MULT;
         killAfterFadeOut_ = WILL_KILL_AFTER;
     }
-
 
     music_update_status::Enum MusicOperator::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
@@ -244,23 +252,23 @@ namespace sfml_util
         }
     }
 
-
     bool operator==(const MusicOperator & L, const MusicOperator & R)
     {
-        return (std::tie(L.info_,
-                         L.targetVolume_,
-                         L.fadeInMult_,
-                         L.fadeOutMult_,
-                         L.killAfterFadeOut_,
-                         L.musicUPtr_)
-                ==
-                std::tie(R.info_,
-                         R.targetVolume_,
-                         R.fadeInMult_,
-                         R.fadeOutMult_,
-                         R.killAfterFadeOut_,
-                         R.musicUPtr_));
+        return (
+            std::tie(
+                L.info_,
+                L.targetVolume_,
+                L.fadeInMult_,
+                L.fadeOutMult_,
+                L.killAfterFadeOut_,
+                L.musicUPtr_)
+            == std::tie(
+                   R.info_,
+                   R.targetVolume_,
+                   R.fadeInMult_,
+                   R.fadeOutMult_,
+                   R.killAfterFadeOut_,
+                   R.musicUPtr_));
     }
-
 }
 }

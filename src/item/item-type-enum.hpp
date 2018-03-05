@@ -28,14 +28,13 @@
 // item-type-enum.hpp
 //  Enumerations for all of an Item's various types.
 //
+#include "creature/role-enum.hpp"
 #include "misc/types.hpp"
 #include "stats/trait.hpp"
-#include "creature/role-enum.hpp"
 
 #include <string>
-#include <vector>
 #include <utility>
-
+#include <vector>
 
 namespace heroespath
 {
@@ -46,37 +45,36 @@ namespace item
     {
         enum Enum : unsigned int
         {
-            None            = 0,
-            Broken          = 1 << 0, //useless, unable to do or be used for anything
-            Weapon          = 1 << 1,
-            Armor           = 1 << 2,
-            Useable         = 1 << 3,
-            Equippable      = 1 << 4,
-            BodyPart        = 1 << 5,
-            Wearable        = 1 << 6, //if not wearable then it must be one or two-handed
-            OneHanded       = 1 << 7,
-            TwoHanded       = 1 << 8,
-            QuestItem       = 1 << 9,
-            Blessed         = 1 << 10,
-            Cursed          = 1 << 11,
-            AllowsCasting   = 1 << 12,
-            ConsumedOnUse   = 1 << 13,
-            ShowsEnemyInfo  = 1 << 14
+            None = 0,
+            Broken = 1 << 0, // useless, unable to do or be used for anything
+            Weapon = 1 << 1,
+            Armor = 1 << 2,
+            Useable = 1 << 3,
+            Equippable = 1 << 4,
+            BodyPart = 1 << 5,
+            Wearable = 1 << 6, // if not wearable then it must be one or two-handed
+            OneHanded = 1 << 7,
+            TwoHanded = 1 << 8,
+            QuestItem = 1 << 9,
+            Blessed = 1 << 10,
+            Cursed = 1 << 11,
+            AllowsCasting = 1 << 12,
+            ConsumedOnUse = 1 << 13,
+            ShowsEnemyInfo = 1 << 14
         };
 
         static const std::string ToString(const category::Enum E, const bool WILL_WRAP);
     };
 
-
     struct material
     {
         enum Enum
         {
-            //Use Nothing as default instead of Error so that an Item's
-            //materialSec_ can be Nothing.
+            // Use Nothing as default instead of Error so that an Item's
+            // materialSec_ can be Nothing.
             Nothing = 0,
 
-            //what Ghosts and Shades are made of
+            // what Ghosts and Shades are made of
             Spirit,
 
             Gas,
@@ -104,33 +102,36 @@ namespace item
             Wood,
             Stone,
             Obsidian,
-            Tin,        // 18 /  7.3 -modulus of rigidity / density
-            Bronze,     // 45 /  7.5
-            Iron,       // 41 /  7.8
-            Steel,      // 77 /  8.0
+            Tin, // 18 /  7.3 -modulus of rigidity / density
+            Bronze, // 45 /  7.5
+            Iron, // 41 /  7.8
+            Steel, // 77 /  8.0
             Jade,
             Amethyst,
             Emerald,
             Pearl,
             Ruby,
             Lazuli,
-            Silver,     // 48 / 10.5
+            Silver, // 48 / 10.5
             Sapphire,
-            Gold,       // 27 / 19.3
-            Platinum,   // 82 / 21.5
+            Gold, // 27 / 19.3
+            Platinum, // 82 / 21.5
             Diamond,
             Count
         };
 
         static const std::string ToString(const material::Enum);
         static const std::string ToReadableString(const material::Enum);
-        static Armor_t ArmorRatingBonus(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
+        static Armor_t
+            ArmorRatingBonus(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
         static Armor_t ArmorRatingBonusPri(const material::Enum MATERIAL_PRI);
         static Armor_t ArmorRatingBonusSec(const material::Enum MATERIAL_SEC);
-        static Coin_t PriceAdj(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
+        static Coin_t
+            PriceAdj(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
         static Coin_t PriceAdjPri(const material::Enum MATERIAL_PRI);
         static Coin_t PriceAdjSec(const material::Enum MATERIAL_SEC);
-        static float WeightMult(const material::Enum MATEIAL_PRI, const material::Enum MATERIAL_SEC);
+        static float
+            WeightMult(const material::Enum MATEIAL_PRI, const material::Enum MATERIAL_SEC);
         static float WeightMultPri(const material::Enum MATERIAL_PRI);
         static float WeightMultSec(const material::Enum MATERIAL_SEC);
 
@@ -141,7 +142,8 @@ namespace item
         static const std::vector<material::Enum> CoreMisc(const bool WILL_INCLUDE_NOTHING = false);
         static const std::vector<material::Enum> CorePrimary();
         static const std::vector<material::Enum> CorePrimaryNoPearl();
-        static const std::vector<material::Enum> CoreSecondary(const bool WILL_INCLUDE_NOTHING = true);
+        static const std::vector<material::Enum>
+            CoreSecondary(const bool WILL_INCLUDE_NOTHING = true);
 
         static void AppendCoreMetal(std::vector<material::Enum> &);
         static void AppendCoreJewel(std::vector<material::Enum> &);
@@ -150,31 +152,31 @@ namespace item
         static void AppendCorePrimaryNoPearl(std::vector<material::Enum> &);
         static void AppendCoreSecondary(std::vector<material::Enum> &);
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum> >
+        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CorePrimaryAndSecondary()
         {
             return std::make_pair(CorePrimary(), CoreSecondary());
         }
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum> >
+        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CorePrimaryAndNoSecondary()
         {
             return std::make_pair(CorePrimary(), std::vector<material::Enum>());
         }
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum> >
+        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CoreMetalAndCoreSecondary()
         {
             return std::make_pair(CoreMetal(), CoreSecondary());
         }
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum> >
+        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CoreJewelAndCoreSecondary()
         {
             return std::make_pair(CoreJewel(), CoreSecondary());
         }
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum> >
+        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CoreMetalJewelAndCoreSecondary()
         {
             std::vector<material::Enum> v;
@@ -183,45 +185,57 @@ namespace item
             return std::make_pair(v, CoreSecondary());
         }
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum> >
+        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CorePrimaryNoPearlAndSecondary()
         {
             return std::make_pair(CorePrimaryNoPearl(), CoreSecondary());
         }
 
-        static bool IsMagical(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        static bool
+            IsMagical(const material::Enum PRI, const material::Enum SEC = material::Nothing);
         static bool IsLiquid(const material::Enum MATERIAL);
         static bool IsSolid(const material::Enum MATERIAL);
         static bool IsBendy(const material::Enum MATERIAL);
         static bool IsRigid(const material::Enum MATERIAL);
-        static bool ContainsSpirit(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        static bool IsBloody(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        static bool ContainsFlesh(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        static float FireDamageRatio(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        static bool
+            ContainsSpirit(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        static bool
+            IsBloody(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        static bool
+            ContainsFlesh(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        static float
+            FireDamageRatio(const material::Enum PRI, const material::Enum SEC = material::Nothing);
         static bool IsMetal(const material::Enum MATERIAL);
         static bool ContainsMetal(const material::Enum PRI, const material::Enum SEC);
         static bool IsStone(const material::Enum PRI);
         static bool IsPrecious(const material::Enum MATERIAL);
-        static bool ContiansPrecious(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        static bool ContiansPrecious(
+            const material::Enum PRI, const material::Enum SEC = material::Nothing);
         static bool IsJewel(const material::Enum MATERIAL);
-        static bool ContainsJewel(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        inline bool static IsLeather(const material::Enum M) { return ((M == material::SoftLeather) || (M == material::HardLeather)); }
-        inline bool static IsClothOrLeather(const material::Enum M) { return ((M == material::Cloth) || IsLeather(M)); }
+        static bool
+            ContainsJewel(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+        inline bool static IsLeather(const material::Enum M)
+        {
+            return ((M == material::SoftLeather) || (M == material::HardLeather));
+        }
+        inline bool static IsClothOrLeather(const material::Enum M)
+        {
+            return ((M == material::Cloth) || IsLeather(M));
+        }
     };
 
     using MaterialVec_t = std::vector<material::Enum>;
     using MaterialVecPair_t = std::pair<MaterialVec_t, MaterialVec_t>;
 
-
     struct element_type
     {
         enum Enum : unsigned int
         {
-            None    = 0,
-            Fire    = 1 << 0,
-            Frost   = 1 << 1,
-            Honor   = 1 << 2,
-            Shadow  = 1 << 3
+            None = 0,
+            Fire = 1 << 0,
+            Frost = 1 << 1,
+            Honor = 1 << 2,
+            Shadow = 1 << 3
         };
 
         static const std::string ToString(const Enum, const bool WILL_WRAP = false);
@@ -229,16 +243,14 @@ namespace item
         static const std::vector<element_type::Enum> Combinations(const Enum);
         static const std::vector<element_type::Enum> AllCombinations()
         {
-            return Combinations(static_cast<element_type::Enum>(element_type::Fire |
-                                                                element_type::Frost |
-                                                                element_type::Honor |
-                                                                element_type::Shadow));
+            return Combinations(static_cast<element_type::Enum>(
+                element_type::Fire | element_type::Frost | element_type::Honor
+                | element_type::Shadow));
         }
         static bool IsValid(const Enum);
     };
 
     using ElementTypeVec_t = std::vector<element_type::Enum>;
-
 
     struct misc_type
     {
@@ -413,7 +425,6 @@ namespace item
         static bool IsCursed(const Enum);
     };
 
-
     struct set_type
     {
         enum Enum
@@ -458,7 +469,6 @@ namespace item
         static const std::string Name(const Enum);
         static creature::role::Enum Role(const Enum);
     };
-
 
     struct unique_type
     {
@@ -603,7 +613,6 @@ namespace item
         static float ReligiousRatio(const Enum);
     };
 
-
     struct named_type
     {
         enum Enum
@@ -677,61 +686,58 @@ namespace item
         static const MaterialVecPair_t Materials(const Enum);
     };
 
-
     struct weapon_type
     {
         enum Enum : unsigned int
         {
-            NotAWeapon  = 0,
-            Melee       = 1 << 0,
-            Projectile  = 1 << 1,
-            Bladed      = 1 << 2,
-            Pointed     = 1 << 3,
-            Claws       = 1 << 4,
-            Bite        = 1 << 5,
-            Sword       = 1 << 6,
-            Axe         = 1 << 7,
-            Whip        = 1 << 8,
-            Blowpipe    = 1 << 9,
-            Bow         = 1 << 10,
-            Crossbow    = 1 << 11,
-            Spear       = 1 << 12,
-            Knife       = 1 << 13,
-            Club        = 1 << 14,
-            Staff       = 1 << 15,
-            Sling       = 1 << 16,
+            NotAWeapon = 0,
+            Melee = 1 << 0,
+            Projectile = 1 << 1,
+            Bladed = 1 << 2,
+            Pointed = 1 << 3,
+            Claws = 1 << 4,
+            Bite = 1 << 5,
+            Sword = 1 << 6,
+            Axe = 1 << 7,
+            Whip = 1 << 8,
+            Blowpipe = 1 << 9,
+            Bow = 1 << 10,
+            Crossbow = 1 << 11,
+            Spear = 1 << 12,
+            Knife = 1 << 13,
+            Club = 1 << 14,
+            Staff = 1 << 15,
+            Sling = 1 << 16,
             BladedStaff = 1 << 17,
-            Fists       = 1 << 18,
-            Tendrils    = 1 << 19,
-            Breath      = 1 << 20
+            Fists = 1 << 18,
+            Tendrils = 1 << 19,
+            Breath = 1 << 20
         };
 
         static const std::string ToString(const weapon_type::Enum E, const bool WILL_WRAP);
         static weapon_type::Enum FromString(const std::string &);
     };
 
-
     struct armor_type
     {
         enum Enum : unsigned int
         {
-            NotArmor    = 0,
-            Sheild      = 1 << 0,
-            Helm        = 1 << 1,
-            Gauntlets   = 1 << 2,
-            Pants       = 1 << 3,
-            Boots       = 1 << 4,
-            Shirt       = 1 << 5,//includes torso coverings, i.e. plate/mail/scale/etc.
-            Bracer      = 1 << 6,//forearm covering
-            Aventail    = 1 << 7,//neck covering attached to the bottom of a helm
-            Covering    = 1 << 8,//vest/robe/cloak
-            Skin        = 1 << 9 //hide or scales for beast creatures
+            NotArmor = 0,
+            Sheild = 1 << 0,
+            Helm = 1 << 1,
+            Gauntlets = 1 << 2,
+            Pants = 1 << 3,
+            Boots = 1 << 4,
+            Shirt = 1 << 5, // includes torso coverings, i.e. plate/mail/scale/etc.
+            Bracer = 1 << 6, // forearm covering
+            Aventail = 1 << 7, // neck covering attached to the bottom of a helm
+            Covering = 1 << 8, // vest/robe/cloak
+            Skin = 1 << 9 // hide or scales for beast creatures
         };
 
         static const std::string ToString(const armor_type::Enum E, const bool WILL_WRAP);
     };
-
 }
 }
 
-#endif //HEROESPATH_ITEM_ITEMTYPEENUM_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_ITEMTYPEENUM_HPP_INCLUDED

@@ -29,17 +29,16 @@
 //
 #include "popup/popup-stage-base.hpp"
 
-
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing the System Error Popup Stage.
+    // Responsible for implementing the System Error Popup Stage.
     class PopupStageInventoryPrompt : public PopupStageBase
     {
-        PopupStageInventoryPrompt(const PopupStageInventoryPrompt &) =delete;
-        PopupStageInventoryPrompt & operator=(const PopupStageInventoryPrompt &) =delete;
+        PopupStageInventoryPrompt(const PopupStageInventoryPrompt &) = delete;
+        PopupStageInventoryPrompt & operator=(const PopupStageInventoryPrompt &) = delete;
 
     public:
         explicit PopupStageInventoryPrompt(const PopupInfo &);
@@ -51,8 +50,7 @@ namespace popup
     private:
         inline virtual bool WillPressingCKeyClosePopup() const override { return true; }
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGEINVENTORYPROMPT_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGEINVENTORYPROMPT_HPP_INCLUDED

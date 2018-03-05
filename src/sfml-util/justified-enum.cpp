@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -42,9 +41,18 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Left:   { return "Left";   }
-            case Right:  { return "Right";  }
-            case Center: { return "Center"; }
+            case Left:
+            {
+                return "Left";
+            }
+            case Right:
+            {
+                return "Right";
+            }
+            case Center:
+            {
+                return "Center";
+            }
             case Count:
             default:
             {
@@ -55,18 +63,22 @@ namespace sfml_util
         }
     }
 
-
     bool Justified::IsValid(const Justified::Enum E)
     {
         switch (E)
         {
             case Left:
             case Right:
-            case Center: { return true; }
+            case Center:
+            {
+                return true;
+            }
             case Count:
-            default: { return false; }
+            default:
+            {
+                return false;
+            }
         }
     }
-
 }
 }

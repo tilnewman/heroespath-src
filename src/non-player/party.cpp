@@ -30,8 +30,8 @@
 #include "party.hpp"
 
 #include "log/log-macros.hpp"
-#include "non-player/character.hpp"
 #include "non-player/character-warehouse.hpp"
+#include "non-player/character.hpp"
 
 #include "misc/boost-string-includes.hpp"
 
@@ -39,22 +39,19 @@
 #include <sstream>
 #include <utility>
 
-
 namespace heroespath
 {
 namespace non_player
 {
 
     Party::Party(const CharacterPVec_t & CHARACTERS_PVEC)
-    :
-        charactersPVec_()
+        : charactersPVec_()
     {
-        for(auto const NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
+        for (auto const NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
         {
-            charactersPVec_.push_back( CharacterWarehouse::Instance()->Store(NEXT_CHARACTER_PTR) );
+            charactersPVec_.push_back(CharacterWarehouse::Instance()->Store(NEXT_CHARACTER_PTR));
         }
     }
-
 
     Party::~Party()
     {
@@ -66,12 +63,11 @@ namespace non_player
         charactersPVec_.clear();
     }
 
-
     void Party::Add(const CharacterPtr_t CHARACTER_PTR, const bool WILL_STORE)
     {
         if (WILL_STORE)
         {
-            charactersPVec_.push_back( CharacterWarehouse::Instance()->Store(CHARACTER_PTR) );
+            charactersPVec_.push_back(CharacterWarehouse::Instance()->Store(CHARACTER_PTR));
         }
         else
         {
@@ -79,18 +75,17 @@ namespace non_player
         }
     }
 
-
     bool Party::Remove(CharacterPtr_t characterPtr, const bool WILL_FREE)
     {
-        auto const FOUND_ITER{ std::find(charactersPVec_.begin(),
-                                         charactersPVec_.end(),
-                                         characterPtr) };
+        auto const FOUND_ITER{ std::find(
+            charactersPVec_.begin(), charactersPVec_.end(), characterPtr) };
 
         if (FOUND_ITER == charactersPVec_.end())
         {
-            M_HP_LOG_ERR("non-player::Party::Remove(will_free=" << std::boolalpha
-                << WILL_FREE << ", ptr=" << characterPtr << ", name="
-                << characterPtr->Name() << ") was not found in the party.");
+            M_HP_LOG_ERR(
+                "non-player::Party::Remove(will_free="
+                << std::boolalpha << WILL_FREE << ", ptr=" << characterPtr
+                << ", name=" << characterPtr->Name() << ") was not found in the party.");
 
             return false;
         }
@@ -106,7 +101,6 @@ namespace non_player
         }
     }
 
-
     CharacterPtr_t Party::FindByCreaturePtr(creature::CreatureCPtrC_t CREATURE_CPTRC) const
     {
         for (auto const NEXT_CHARACTER_PTR : charactersPVec_)
@@ -120,26 +114,24 @@ namespace non_player
         return nullptr;
     }
 
-
     const std::string Party::Summary() const
     {
         using RaceRolePair_t = std::pair<std::string, std::string>;
         using RaceRoleCountMap_t = std::map<RaceRolePair_t, std::size_t>;
         RaceRoleCountMap_t raceRoleMap;
 
-        //count all race/role combinations
+        // count all race/role combinations
         for (auto const NEXT_CHAR_PTR : charactersPVec_)
         {
-            raceRoleMap[ std::make_pair(NEXT_CHAR_PTR->RaceName(),
-                NEXT_CHAR_PTR->RoleName()) ]++;
+            raceRoleMap[std::make_pair(NEXT_CHAR_PTR->RaceName(), NEXT_CHAR_PTR->RoleName())]++;
         }
 
-        //make a single string summary of all race/role combinations
+        // make a single string summary of all race/role combinations
         std::ostringstream ss;
         using RaceRoleCountMapIter_t = RaceRoleCountMap_t::iterator;
         for (RaceRoleCountMapIter_t itr(raceRoleMap.begin()); itr != raceRoleMap.end(); ++itr)
         {
-            auto const NEXT_RACEROLECOUNT_PAIR{ * itr };
+            auto const NEXT_RACEROLECOUNT_PAIR{ *itr };
 
             if (itr != raceRoleMap.begin())
             {
@@ -153,14 +145,12 @@ namespace non_player
                 }
             }
 
-            ss << NEXT_RACEROLECOUNT_PAIR.second
-               << " " << NEXT_RACEROLECOUNT_PAIR.first.first
+            ss << NEXT_RACEROLECOUNT_PAIR.second << " " << NEXT_RACEROLECOUNT_PAIR.first.first
                << " " << NEXT_RACEROLECOUNT_PAIR.first.second
                << ((NEXT_RACEROLECOUNT_PAIR.second > 1) ? "s" : "");
         }
 
         return ss.str();
     }
-
 }
 }

@@ -28,15 +28,13 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "sfml-util/texture-cache.hpp"
 #include "game/game-data-file.hpp"
+#include "sfml-util/texture-cache.hpp"
 
 #include <cstdlib>
 #include <exception>
 
-
 using namespace heroespath::sfml_util;
-
 
 BOOST_AUTO_TEST_CASE(TextureCache_InvalidFunctionCallsAfterDefaultConstruction)
 {
@@ -56,15 +54,15 @@ BOOST_AUTO_TEST_CASE(TextureCache_InvalidFunctionCallsAfterDefaultConstruction)
 
     BOOST_REQUIRE_NO_THROW(tc.RemoveByIndexVec({ 0 }));
 
-    //empty vectors result in no operations, so no exception is raised
+    // empty vectors result in no operations, so no exception is raised
     BOOST_REQUIRE_NO_THROW(tc.RemoveByIndexVec({}));
 
-    //RemoveAll() should never throw
+    // RemoveAll() should never throw
     BOOST_REQUIRE_NO_THROW(tc.RemoveAll());
 }
 
-
-BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveBykey_and_RemoveByIndex_and_CheckSlotReuse)
+BOOST_AUTO_TEST_CASE(
+    TextureCache_LoadAndRemoveSingle_RemoveBykey_and_RemoveByIndex_and_CheckSlotReuse)
 {
     TextureCache tc;
     auto const KEY{ "media-images-gui-elements" };
@@ -82,7 +80,6 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveBykey_and_RemoveByIn
     BOOST_CHECK(tc.GetByIndex(ID1).getSize().x < 1.0f);
 }
 
-
 BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByPath)
 {
     TextureCache tc;
@@ -95,7 +92,6 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByPath)
     BOOST_CHECK(tc.GetByIndex(ID2).getSize().x < 1.0f);
 }
 
-
 BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByIndexVec)
 {
     TextureCache tc;
@@ -106,7 +102,6 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveByIndexVec)
     BOOST_REQUIRE_NO_THROW(tc.RemoveByIndexVec({ ID3 }));
     BOOST_CHECK(tc.GetByIndex(ID3).getSize().x < 1.0f);
 }
-
 
 BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveAll)
 {
@@ -119,7 +114,6 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadAndRemoveSingle_RemoveAll)
     BOOST_CHECK(tc.GetByIndex(ID4).getSize().x < 1.0f);
 }
 
-
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveIndividually)
 {
     TextureCache tc;
@@ -128,13 +122,13 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveIndividually)
     auto const IDS_SIZE{ IDS.size() };
     BOOST_CHECK(IDS_SIZE > 0);
 
-    //verify the IDs supplied started at one and didn't skip any
+    // verify the IDs supplied started at one and didn't skip any
     for (std::size_t i(1); i <= IDS_SIZE; ++i)
     {
         BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
     }
 
-    //verify and remove one-at-a-time
+    // verify and remove one-at-a-time
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
@@ -142,13 +136,12 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveIndividually)
         BOOST_REQUIRE_NO_THROW(tc.RemoveByIndex(ID));
     }
 
-    //verify they are all removed
+    // verify they are all removed
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
     }
 }
-
 
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveAll)
 {
@@ -158,13 +151,13 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveAll)
     auto const IDS_SIZE{ IDS.size() };
     BOOST_CHECK(IDS_SIZE > 0);
 
-    //verify the IDs supplied started at one and didn't skip any
+    // verify the IDs supplied started at one and didn't skip any
     for (std::size_t i(1); i <= IDS_SIZE; ++i)
     {
         BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
     }
 
-    //verify each
+    // verify each
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
@@ -173,13 +166,12 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveAll)
 
     tc.RemoveAll();
 
-    //verify they are all removed
+    // verify they are all removed
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
     }
 }
-
 
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByIndexVec)
 {
@@ -189,13 +181,13 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByIndexVec)
     auto const IDS_SIZE{ IDS.size() };
     BOOST_CHECK(IDS_SIZE > 0);
 
-    //verify the IDs supplied started at one and didn't skip any
+    // verify the IDs supplied started at one and didn't skip any
     for (std::size_t i(1); i <= IDS_SIZE; ++i)
     {
         BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
     }
 
-    //verify each
+    // verify each
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
@@ -204,13 +196,12 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByIndexVec)
 
     tc.RemoveByIndexVec(IDS);
 
-    //verify they are all removed
+    // verify they are all removed
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);
     }
 }
-
 
 BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByKey)
 {
@@ -220,13 +211,13 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByKey)
     auto const IDS_SIZE{ IDS.size() };
     BOOST_CHECK(IDS_SIZE > 0);
 
-    //verify the IDs supplied started at one and didn't skip any
+    // verify the IDs supplied started at one and didn't skip any
     for (std::size_t i(1); i <= IDS_SIZE; ++i)
     {
         BOOST_CHECK(std::find(begin(IDS), end(IDS), i) != end(IDS));
     }
 
-    //verify each
+    // verify each
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).isSmooth());
@@ -235,7 +226,7 @@ BOOST_AUTO_TEST_CASE(TextureCache_LoadMultipleAndRemoveByKey)
 
     tc.RemoveByKey(KEY);
 
-    //verify they are all removed
+    // verify they are all removed
     for (auto const ID : IDS)
     {
         BOOST_CHECK(tc.GetByIndex(ID).getSize().x < 1.0f);

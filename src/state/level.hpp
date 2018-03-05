@@ -33,14 +33,13 @@
 
 #include <memory>
 
-
 namespace heroespath
 {
 namespace state
 {
 
-    //Responsible for storing all states that represent
-    //the game world contained in a specific level.
+    // Responsible for storing all states that represent
+    // the game world contained in a specific level.
     class Level
     {
     public:
@@ -63,15 +62,14 @@ namespace state
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & level_;
             ar & doorLockMap_;
         }
     };
-
 }
 }
 
-#endif //HEROESPATH_STATE_LEVEL_HPP_INCLUDED
+#endif // HEROESPATH_STATE_LEVEL_HPP_INCLUDED

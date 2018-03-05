@@ -32,7 +32,6 @@
 #include "log/log-macros.hpp"
 #include "non-player/character.hpp"
 
-
 namespace heroespath
 {
 namespace non_player
@@ -40,20 +39,16 @@ namespace non_player
 
     std::unique_ptr<CharacterWarehouse> CharacterWarehouse::instanceUPtr_{ nullptr };
 
-
     CharacterWarehouse::CharacterWarehouse()
-    :
-        warehouse_()
+        : warehouse_()
     {
         M_HP_LOG_DBG("Singleton Construction: Non-Player CharacterWarehouse");
     }
-
 
     CharacterWarehouse::~CharacterWarehouse()
     {
         M_HP_LOG_DBG("Singleton Destruction: Non-Player CharacterWarehouse");
     }
-
 
     CharacterWarehouse * CharacterWarehouse::Instance()
     {
@@ -65,7 +60,6 @@ namespace non_player
 
         return instanceUPtr_.get();
     }
-
 
     void CharacterWarehouse::Acquire()
     {
@@ -79,32 +73,29 @@ namespace non_player
         }
     }
 
-
     void CharacterWarehouse::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
             "non_player::CharacterWarehouse::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
 
-
     CharacterPtr_t CharacterWarehouse::Store(const CharacterPtr_t CHARACTER_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((CHARACTER_PTR != nullptr),
-            "non_player::CharacterWarehouse::Store() given nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (CHARACTER_PTR != nullptr), "non_player::CharacterWarehouse::Store() given nullptr.");
 
         return warehouse_.Store(CHARACTER_PTR, CHARACTER_PTR->Name());
     }
 
-
     void CharacterWarehouse::Free(CharacterPtr_t & character_ptr)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((character_ptr != nullptr),
-            "non_player::CharacterWarehouse::Free() given nullptr.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (character_ptr != nullptr), "non_player::CharacterWarehouse::Free() given nullptr.");
 
         warehouse_.Free(character_ptr, character_ptr->Name());
     }
-
 }
 }

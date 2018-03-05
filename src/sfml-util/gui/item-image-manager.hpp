@@ -30,16 +30,15 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "item/item-type-enum.hpp"
-#include "item/weapon-info.hpp"
-#include "item/armor-info.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "item/armor-info.hpp"
+#include "item/item-type-enum.hpp"
+#include "item/weapon-info.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
-
 
 namespace heroespath
 {
@@ -51,77 +50,72 @@ namespace item
 
 namespace sfml_util
 {
-namespace gui
-{
-
-    //A class that loads, stores, and distributes creature images.
-    class ItemImageManager
+    namespace gui
     {
-        ItemImageManager(const ItemImageManager &) =delete;
-        ItemImageManager & operator=(const ItemImageManager &) =delete;
 
-    public:
-        ItemImageManager();
-        ~ItemImageManager();
+        // A class that loads, stores, and distributes creature images.
+        class ItemImageManager
+        {
+            ItemImageManager(const ItemImageManager &) = delete;
+            ItemImageManager & operator=(const ItemImageManager &) = delete;
 
-        static ItemImageManager * Instance();
-        static void Acquire();
-        static void Release();
+        public:
+            ItemImageManager();
+            ~ItemImageManager();
 
-        static bool Test();
+            static ItemImageManager * Instance();
+            static void Acquire();
+            static void Release();
 
-        static void SetItemImageDirectory(const std::string & PATH);
-        static inline float GetMaxDimmension() { return 256.0f; }
-        static inline const std::string FileExtension() { return FILE_EXT_STR_; }
+            static bool Test();
 
-        void Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const;
+            static void SetItemImageDirectory(const std::string & PATH);
+            static inline float GetMaxDimmension() { return 256.0f; }
+            static inline const std::string FileExtension() { return FILE_EXT_STR_; }
 
-        void Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const;
+            void Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const;
 
-        void Load(
-            sf::Texture &                     texture,
-            const item::misc_type::Enum ITEM_ENUM,
-            const bool                        IS_JEWELED = false,
-            const bool                        IS_BONE = false,
-            const bool                        WILL_RANDOMIZE = true) const;
+            void Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const;
 
-        const std::string GetImageFilename(
-            const item::ItemPtr_t ITEM_PTR,
-            const bool                  WILL_RANDOMIZE = true) const;
+            void Load(
+                sf::Texture & texture,
+                const item::misc_type::Enum ITEM_ENUM,
+                const bool IS_JEWELED = false,
+                const bool IS_BONE = false,
+                const bool WILL_RANDOMIZE = true) const;
 
-        const std::string GetImageFilename(
-            const item::weapon::WeaponInfo & WEAPON_INFO,
-            const bool                             IS_JEWELED = false) const;
+            const std::string GetImageFilename(
+                const item::ItemPtr_t ITEM_PTR, const bool WILL_RANDOMIZE = true) const;
 
-        const std::string GetImageFilename(
-            const item::armor::ArmorInfo & ARMOR_INFO) const;
+            const std::string GetImageFilename(
+                const item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED = false) const;
 
-        const std::string GetSkinImageFilename(
-            const item::ItemPtr_t ITEM_PTR) const;
+            const std::string GetImageFilename(const item::armor::ArmorInfo & ARMOR_INFO) const;
 
-        const std::string GetImageFilename(
-            const item::misc_type::Enum ITEM_ENUM,
-            const bool                        IS_JEWELED     = false,
-            const bool                        IS_BONE        = false,
-            const bool                        WILL_RANDOMIZE = false,
-            const creature::race::Enum  RACE_ENUM = creature::race::Count,
-            const creature::role::Enum  ROLE_ENUM = creature::role::Count) const;
+            const std::string GetSkinImageFilename(const item::ItemPtr_t ITEM_PTR) const;
 
-        const std::vector<std::string> GetImageFilenames(
-            const item::misc_type::Enum ITEM_ENUM,
-            const bool                        IS_JEWELED = false,
-            const bool                        IS_BONE    = false,
-            const creature::race::Enum  RACE_ENUM  = creature::race::Count,
-            const creature::role::Enum  ROLE_ENUM  = creature::role::Count) const;
+            const std::string GetImageFilename(
+                const item::misc_type::Enum ITEM_ENUM,
+                const bool IS_JEWELED = false,
+                const bool IS_BONE = false,
+                const bool WILL_RANDOMIZE = false,
+                const creature::race::Enum RACE_ENUM = creature::race::Count,
+                const creature::role::Enum ROLE_ENUM = creature::role::Count) const;
 
-    private:
-        static std::unique_ptr<ItemImageManager> instanceUPtr_;
-        static std::string imagesDirectoryPath_;
-        static const std::string FILE_EXT_STR_;
-    };
+            const std::vector<std::string> GetImageFilenames(
+                const item::misc_type::Enum ITEM_ENUM,
+                const bool IS_JEWELED = false,
+                const bool IS_BONE = false,
+                const creature::race::Enum RACE_ENUM = creature::race::Count,
+                const creature::role::Enum ROLE_ENUM = creature::role::Count) const;
 
+        private:
+            static std::unique_ptr<ItemImageManager> instanceUPtr_;
+            static std::string imagesDirectoryPath_;
+            static const std::string FILE_EXT_STR_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUI_ITEMIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_ITEMIMAGEMANAGER_HPP_INCLUDED

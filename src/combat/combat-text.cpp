@@ -29,73 +29,71 @@
 //
 #include "combat-text.hpp"
 
-#include "log/log-macros.hpp"
-#include "creature/creature.hpp"
-#include "creature/conditions.hpp"
-#include "creature/condition-algorithms.hpp"
 #include "combat/combat-display.hpp"
 #include "combat/encounter.hpp"
-#include "item/item.hpp"
+#include "creature/condition-algorithms.hpp"
+#include "creature/conditions.hpp"
+#include "creature/creature.hpp"
 #include "item/algorithms.hpp"
-#include "spell/spell-base.hpp"
+#include "item/item.hpp"
+#include "log/log-macros.hpp"
 #include "song/song.hpp"
+#include "spell/spell-base.hpp"
 
-#include "misc/vectors.hpp"
 #include "misc/boost-string-includes.hpp"
+#include "misc/vectors.hpp"
 
 #include <boost/algorithm/algorithm.hpp>
 
 #include <algorithm>
-
 
 namespace heroespath
 {
 namespace combat
 {
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_
-        ("Click or press 'a' to automatically fight the enemy who appears weakest.");
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_(
+        "Click or press 'a' to automatically fight the enemy who appears weakest.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_
-        ("Click or press 'f' to fight a creature of your choice.");
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_(
+        "Click or press 'f' to fight a creature of your choice.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_
-        ("Click or press 's' to cast a spell.");
+    const std::string
+        Text::TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_("Click or press 's' to cast a spell.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_
-        ("Click or press 's' to play a magical song.");
+    const std::string
+        Text::TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_("Click or press 's' to play a magical song.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_
-        ("Click, press the right arrow, or press 'd' to move forward.");
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_(
+        "Click, press the right arrow, or press 'd' to move forward.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_
-        ("Click, press the left arrow, or press 'e' to move backward.");
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_(
+        "Click, press the left arrow, or press 'e' to move backward.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_
-        ("Click or press 'b' to prepare for attack and prevent enemies from passing.");
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_(
+        "Click or press 'b' to prepare for attack and prevent enemies from passing.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_
-        ("Click or press 'k' to take no action and skip this turn.");
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_SKIP_(
+        "Click or press 'k' to take no action and skip this turn.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_
-        ("Click or press 'y' to fly into the air.");
+    const std::string
+        Text::TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_("Click or press 'y' to fly into the air.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_
-        ("Click or press 'l' to stop flying and land.");
+    const std::string
+        Text::TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_("Click or press 'l' to stop flying and land.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_
-        ("Click or press 'r' to roar and attempt to panic enemies.");
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_(
+        "Click or press 'r' to roar and attempt to panic enemies.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_
-        ("Click or press 'p' to attempt to pounce on an enemy.");
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_(
+        "Click or press 'p' to attempt to pounce on an enemy.");
 
-    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_
-        { "Click or press 'u' to attempt to run away." };
-
+    const std::string Text::TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_{
+        "Click or press 'u' to attempt to run away."
+    };
 
     const std::string Text::MouseOverTextAttackStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -105,7 +103,8 @@ namespace combat
 
         creature::CreaturePVec_t ignoredPVec;
         if (COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(
-            ignoredPVec, CREATURE_CPTRC, !CREATURE_CPTRC->IsPlayerCharacter()) == 0)
+                ignoredPVec, CREATURE_CPTRC, !CREATURE_CPTRC->IsPlayerCharacter())
+            == 0)
         {
             return "Cannot Attack because there are no enemies in range.";
         }
@@ -118,10 +117,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_ATTACK_;
     }
 
-
     const std::string Text::MouseOverTextFightStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -129,7 +126,8 @@ namespace combat
 
         creature::CreaturePVec_t ignoredPVec;
         if (COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(
-            ignoredPVec, CREATURE_CPTRC, !CREATURE_CPTRC->IsPlayerCharacter()) == 0)
+                ignoredPVec, CREATURE_CPTRC, !CREATURE_CPTRC->IsPlayerCharacter())
+            == 0)
         {
             return "Cannot Fight because there are no enemies in range.";
         }
@@ -141,10 +139,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_;
     }
 
-
     const std::string Text::MouseOverTextPlayStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
     {
         auto const CAN_PLAY_STR(CREATURE_CPTRC->CanPlaySongsStr());
         if (CAN_PLAY_STR.empty() == false)
@@ -155,10 +151,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_;
     }
 
-
     const std::string Text::MouseOverTextCastStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
     {
         auto const CAN_CAST_STR(CREATURE_CPTRC->CanCastSpellsStr());
         if (CAN_CAST_STR.empty() == false)
@@ -169,10 +163,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_CAST_;
     }
 
-
     const std::string Text::MouseOverTextAdvanceStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -180,8 +172,7 @@ namespace combat
             return CAN_TAKE_ACTION_STR;
         }
 
-        auto const CAN_ADVANCE_STR(COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(
-            CREATURE_CPTRC, true));
+        auto const CAN_ADVANCE_STR(COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_CPTRC, true));
 
         if (CAN_ADVANCE_STR.empty() == false)
         {
@@ -191,10 +182,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_ADVANCE_;
     }
 
-
     const std::string Text::MouseOverTextRetreatStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t           COMBAT_DISPLAY_CPTRC)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -202,8 +191,8 @@ namespace combat
             return CAN_TAKE_ACTION_STR;
         }
 
-        auto const CAN_RETREAT_STR(COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(
-            CREATURE_CPTRC, false));
+        auto const CAN_RETREAT_STR(
+            COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_CPTRC, false));
 
         if (CAN_RETREAT_STR.empty() == false)
         {
@@ -213,10 +202,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_RETREAT_;
     }
 
-
     const std::string Text::MouseOverTextBlockStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -227,10 +214,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_;
     }
 
-
     const std::string Text::MouseOverTextFlyStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -251,10 +236,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_;
     }
 
-
     const std::string Text::MouseOverTextLandStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -270,10 +253,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_;
     }
 
-
     const std::string Text::MouseOverTextRoarStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -289,10 +270,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_;
     }
 
-
-    const std::string Text::MouseOverTextPounceStr(
-        const creature::CreaturePtrC_t,
-        CombatDisplayCPtrC_t)
+    const std::string
+        Text::MouseOverTextPounceStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t)
     {
         /*
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
@@ -312,10 +291,8 @@ namespace combat
         return "Pounce is not yet implemented.";
     }
 
-
     const std::string Text::MouseOverTextRunStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
@@ -326,10 +303,8 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_;
     }
 
-
     const std::string Text::MouseOverTextSkipStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC,
-        CombatDisplayCPtrC_t)
+        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
     {
         auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty())
@@ -342,13 +317,13 @@ namespace combat
         }
     }
 
-
-    const std::string Text::ActionText(const creature::CreaturePtr_t  CREATURE_ATTACKING_PTR,
-                                       const combat::TurnActionInfo & TURN_ACTION_INFO,
-                                       const combat::FightResult &    FIGHT_RESULT,
-                                       const bool                     WILL_USE_NAME,
-                                       const bool                     IS_STATUS_VERSION,
-                                       const bool                     IS_PREAMBLE_VERSION)
+    const std::string Text::ActionText(
+        const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+        const combat::TurnActionInfo & TURN_ACTION_INFO,
+        const combat::FightResult & FIGHT_RESULT,
+        const bool WILL_USE_NAME,
+        const bool IS_STATUS_VERSION,
+        const bool IS_PREAMBLE_VERSION)
     {
         std::ostringstream ss;
 
@@ -424,10 +399,9 @@ namespace combat
                         ss << "s";
                     }
 
-                    ss << " to " << item::Algorithms::Names(
-                        CURRENT_WEAPONS_SVEC,
-                        0,
-                        misc::Vector::JoinOpt::And);
+                    ss << " to "
+                       << item::Algorithms::Names(
+                              CURRENT_WEAPONS_SVEC, 0, misc::Vector::JoinOpt::And);
                 }
 
                 break;
@@ -435,11 +409,9 @@ namespace combat
 
             case combat::TurnAction::LandPounce:
             {
-                std::vector<std::string> strVec{ "surges",
-                                                 "charages",
-                                                 "leaps",
-                                                 "rushes",
-                                                 "springs" };
+                std::vector<std::string> strVec{
+                    "surges", "charages", "leaps", "rushes", "springs"
+                };
 
                 ss << strVec.at(static_cast<std::size_t>(
                     misc::random::Int(static_cast<int>(strVec.size()) - 1)));
@@ -491,15 +463,14 @@ namespace combat
         return ss.str();
     }
 
-
     const std::string Text::ActionTextIndexed(
-        const creature::CreaturePtr_t  CREATURE_ATTACKING_PTR,
+        const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
         const combat::TurnActionInfo & TURN_ACTION_INFO,
-        const combat::FightResult &    FIGHT_RESULT,
-        const bool                     WILL_USE_NAME,
-        const std::size_t              EFFECT_INDEX,
-        const std::size_t              HIT_INDEX,
-        bool &                         wasCollapsed)
+        const combat::FightResult & FIGHT_RESULT,
+        const bool WILL_USE_NAME,
+        const std::size_t EFFECT_INDEX,
+        const std::size_t HIT_INDEX,
+        bool & wasCollapsed)
     {
         wasCollapsed = false;
 
@@ -524,183 +495,283 @@ namespace combat
         }
         else if (TURN_ACTION == combat::TurnAction::Cast)
         {
-            return CastDescriptionFullVersion(CREATURE_ATTACKING_PTR,
-                                              TURN_ACTION_INFO,
-                                              FIGHT_RESULT,
-                                              EFFECT_INDEX,
-                                              HIT_INDEX,
-                                              wasCollapsed);
+            return CastDescriptionFullVersion(
+                CREATURE_ATTACKING_PTR,
+                TURN_ACTION_INFO,
+                FIGHT_RESULT,
+                EFFECT_INDEX,
+                HIT_INDEX,
+                wasCollapsed);
         }
         else if (TURN_ACTION == combat::TurnAction::PlaySong)
         {
-            return PlaySongDescriptionFullVersion(CREATURE_ATTACKING_PTR,
-                                                  TURN_ACTION_INFO,
-                                                  FIGHT_RESULT,
-                                                  EFFECT_INDEX,
-                                                  HIT_INDEX,
-                                                  wasCollapsed);
+            return PlaySongDescriptionFullVersion(
+                CREATURE_ATTACKING_PTR,
+                TURN_ACTION_INFO,
+                FIGHT_RESULT,
+                EFFECT_INDEX,
+                HIT_INDEX,
+                wasCollapsed);
         }
         else if (TURN_ACTION == combat::TurnAction::Block)
         {
-            return ActionText(CREATURE_ATTACKING_PTR,
-                              TURN_ACTION_INFO,
-                              FIGHT_RESULT,
-                              WILL_USE_NAME,
-                              false,
-                              false);
+            return ActionText(
+                CREATURE_ATTACKING_PTR,
+                TURN_ACTION_INFO,
+                FIGHT_RESULT,
+                WILL_USE_NAME,
+                false,
+                false);
         }
         else if (TURN_ACTION == combat::TurnAction::Roar)
         {
-            return RoarDescriptionFullVersion(CREATURE_ATTACKING_PTR,
-                                              TURN_ACTION_INFO,
-                                              FIGHT_RESULT,
-                                              EFFECT_INDEX,
-                                              HIT_INDEX,
-                                              wasCollapsed);
+            return RoarDescriptionFullVersion(
+                CREATURE_ATTACKING_PTR,
+                TURN_ACTION_INFO,
+                FIGHT_RESULT,
+                EFFECT_INDEX,
+                HIT_INDEX,
+                wasCollapsed);
         }
         else if (TURN_ACTION == combat::TurnAction::TreasureUnlock)
         {
             return TrapDescriptionFullVersion(
-                CREATURE_ATTACKING_PTR,
-                FIGHT_RESULT,
-                EFFECT_INDEX,
-                HIT_INDEX);
+                CREATURE_ATTACKING_PTR, FIGHT_RESULT, EFFECT_INDEX, HIT_INDEX);
         }
         else
         {
             std::ostringstream ss;
             ss << "(error: invalid TurnAction (" << combat::TurnAction::ToString(TURN_ACTION)
-                << ") for indexed version of combat::Text::ActionText)";
+               << ") for indexed version of combat::Text::ActionText)";
 
             return ss.str();
         }
     }
 
-
-    const std::string Text::WeaponActionVerb(
-        const item::ItemPtr_t WEAPON_PTR,
-        const bool            WILL_APPEND_ING)
+    const std::string
+        Text::WeaponActionVerb(const item::ItemPtr_t WEAPON_PTR, const bool WILL_APPEND_ING)
     {
         std::vector<std::string> strVec;
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Axe)
         {
-            if (WILL_APPEND_ING) strVec.push_back("chopping"); else strVec.push_back("chops");
-            if (WILL_APPEND_ING) strVec.push_back("hacking"); else strVec.push_back("hacks");
-            if (WILL_APPEND_ING) strVec.push_back("swinging"); else strVec.push_back("swings");
+            if (WILL_APPEND_ING)
+                strVec.push_back("chopping");
+            else
+                strVec.push_back("chops");
+            if (WILL_APPEND_ING)
+                strVec.push_back("hacking");
+            else
+                strVec.push_back("hacks");
+            if (WILL_APPEND_ING)
+                strVec.push_back("swinging");
+            else
+                strVec.push_back("swings");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Bite)
         {
-            if (WILL_APPEND_ING) strVec.push_back("bitting"); else strVec.push_back("bites");
-            if (WILL_APPEND_ING) strVec.push_back("snapping"); else strVec.push_back("snaps");
-            if (WILL_APPEND_ING) strVec.push_back("gnawing"); else strVec.push_back("gnaws");
-            if (WILL_APPEND_ING) strVec.push_back("chewing"); else strVec.push_back("chews");
+            if (WILL_APPEND_ING)
+                strVec.push_back("bitting");
+            else
+                strVec.push_back("bites");
+            if (WILL_APPEND_ING)
+                strVec.push_back("snapping");
+            else
+                strVec.push_back("snaps");
+            if (WILL_APPEND_ING)
+                strVec.push_back("gnawing");
+            else
+                strVec.push_back("gnaws");
+            if (WILL_APPEND_ING)
+                strVec.push_back("chewing");
+            else
+                strVec.push_back("chews");
         }
 
-        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bladed) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::BladedStaff) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Knife) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Sword))
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Bladed)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::BladedStaff)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::Knife)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::Sword))
         {
-            if (WILL_APPEND_ING) strVec.push_back("slicing"); else strVec.push_back("slices");
-            if (WILL_APPEND_ING) strVec.push_back("slashing"); else strVec.push_back("slashes");
-            if (WILL_APPEND_ING) strVec.push_back("cutting"); else strVec.push_back("cuts");
-            if (WILL_APPEND_ING) strVec.push_back("swinging"); else strVec.push_back("swings");
+            if (WILL_APPEND_ING)
+                strVec.push_back("slicing");
+            else
+                strVec.push_back("slices");
+            if (WILL_APPEND_ING)
+                strVec.push_back("slashing");
+            else
+                strVec.push_back("slashes");
+            if (WILL_APPEND_ING)
+                strVec.push_back("cutting");
+            else
+                strVec.push_back("cuts");
+            if (WILL_APPEND_ING)
+                strVec.push_back("swinging");
+            else
+                strVec.push_back("swings");
         }
 
-        if ((WEAPON_PTR->WeaponType() & item::weapon_type::BladedStaff) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Pointed) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Knife) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Spear))
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::BladedStaff)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::Pointed)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::Knife)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::Spear))
         {
-            if (WILL_APPEND_ING) strVec.push_back("stabbing"); else strVec.push_back("stabs");
-            if (WILL_APPEND_ING) strVec.push_back("thrusting"); else strVec.push_back("thrusts");
-            if (WILL_APPEND_ING) strVec.push_back("jabbing"); else strVec.push_back("jabs");
+            if (WILL_APPEND_ING)
+                strVec.push_back("stabbing");
+            else
+                strVec.push_back("stabs");
+            if (WILL_APPEND_ING)
+                strVec.push_back("thrusting");
+            else
+                strVec.push_back("thrusts");
+            if (WILL_APPEND_ING)
+                strVec.push_back("jabbing");
+            else
+                strVec.push_back("jabs");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe)
         {
-            if (WILL_APPEND_ING) strVec.push_back("darting"); else strVec.push_back("darts");
+            if (WILL_APPEND_ING)
+                strVec.push_back("darting");
+            else
+                strVec.push_back("darts");
         }
 
-        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Bow) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Projectile))
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Blowpipe)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::Bow)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::Crossbow)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::Projectile))
         {
-            if (WILL_APPEND_ING) strVec.push_back("shooting"); else strVec.push_back("shoots");
-            if (WILL_APPEND_ING) strVec.push_back("firing"); else strVec.push_back("fires");
+            if (WILL_APPEND_ING)
+                strVec.push_back("shooting");
+            else
+                strVec.push_back("shoots");
+            if (WILL_APPEND_ING)
+                strVec.push_back("firing");
+            else
+                strVec.push_back("fires");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Breath)
         {
-            if (WILL_APPEND_ING) strVec.push_back("breathing"); else strVec.push_back("breathes");
+            if (WILL_APPEND_ING)
+                strVec.push_back("breathing");
+            else
+                strVec.push_back("breathes");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Claws)
         {
-            if (WILL_APPEND_ING) strVec.push_back("tearing"); else strVec.push_back("tears");
-            if (WILL_APPEND_ING) strVec.push_back("slashing"); else strVec.push_back("slashes");
-            if (WILL_APPEND_ING) strVec.push_back("clawing"); else strVec.push_back("claws");
-            if (WILL_APPEND_ING) strVec.push_back("ripping"); else strVec.push_back("rips");
+            if (WILL_APPEND_ING)
+                strVec.push_back("tearing");
+            else
+                strVec.push_back("tears");
+            if (WILL_APPEND_ING)
+                strVec.push_back("slashing");
+            else
+                strVec.push_back("slashes");
+            if (WILL_APPEND_ING)
+                strVec.push_back("clawing");
+            else
+                strVec.push_back("claws");
+            if (WILL_APPEND_ING)
+                strVec.push_back("ripping");
+            else
+                strVec.push_back("rips");
         }
 
-        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Club) ||
-            (WEAPON_PTR->WeaponType() & item::weapon_type::Staff))
+        if ((WEAPON_PTR->WeaponType() & item::weapon_type::Club)
+            || (WEAPON_PTR->WeaponType() & item::weapon_type::Staff))
         {
-            if (WILL_APPEND_ING) strVec.push_back("swinging"); else strVec.push_back("swings");
-            if (WILL_APPEND_ING) strVec.push_back("bashing"); else strVec.push_back("bashes");
-            if (WILL_APPEND_ING) strVec.push_back("smashing"); else strVec.push_back("smashes");
-            if (WILL_APPEND_ING) strVec.push_back("slamming"); else strVec.push_back("slams");
-            if (WILL_APPEND_ING) strVec.push_back("crushing"); else strVec.push_back("crushes");
+            if (WILL_APPEND_ING)
+                strVec.push_back("swinging");
+            else
+                strVec.push_back("swings");
+            if (WILL_APPEND_ING)
+                strVec.push_back("bashing");
+            else
+                strVec.push_back("bashes");
+            if (WILL_APPEND_ING)
+                strVec.push_back("smashing");
+            else
+                strVec.push_back("smashes");
+            if (WILL_APPEND_ING)
+                strVec.push_back("slamming");
+            else
+                strVec.push_back("slams");
+            if (WILL_APPEND_ING)
+                strVec.push_back("crushing");
+            else
+                strVec.push_back("crushes");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Sling)
         {
-            if (WILL_APPEND_ING) strVec.push_back("slinging"); else strVec.push_back("slings");
+            if (WILL_APPEND_ING)
+                strVec.push_back("slinging");
+            else
+                strVec.push_back("slings");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Whip)
         {
-            if (WILL_APPEND_ING) strVec.push_back("whipping"); else strVec.push_back("whips");
+            if (WILL_APPEND_ING)
+                strVec.push_back("whipping");
+            else
+                strVec.push_back("whips");
         }
 
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Tendrils)
         {
-            if (WILL_APPEND_ING) strVec.push_back("whipping"); else strVec.push_back("whips");
-            if (WILL_APPEND_ING) strVec.push_back("sliming"); else strVec.push_back("slimes");
-            if (WILL_APPEND_ING) strVec.push_back("slapping"); else strVec.push_back("slaps");
-            if (WILL_APPEND_ING) strVec.push_back("squeezing"); else strVec.push_back("squeezes");
+            if (WILL_APPEND_ING)
+                strVec.push_back("whipping");
+            else
+                strVec.push_back("whips");
+            if (WILL_APPEND_ING)
+                strVec.push_back("sliming");
+            else
+                strVec.push_back("slimes");
+            if (WILL_APPEND_ING)
+                strVec.push_back("slapping");
+            else
+                strVec.push_back("slaps");
+            if (WILL_APPEND_ING)
+                strVec.push_back("squeezing");
+            else
+                strVec.push_back("squeezes");
         }
 
         if (strVec.empty())
         {
-            if (WILL_APPEND_ING) strVec.push_back("attacking"); else strVec.push_back("attacks");
+            if (WILL_APPEND_ING)
+                strVec.push_back("attacking");
+            else
+                strVec.push_back("attacks");
         }
 
         std::sort(strVec.begin(), strVec.end());
         strVec.erase(std::unique(strVec.begin(), strVec.end()), strVec.end());
 
-        return strVec.at(static_cast<std::size_t>(misc::random::Int(
-            static_cast<int>(strVec.size()) - 1)));
+        return strVec.at(
+            static_cast<std::size_t>(misc::random::Int(static_cast<int>(strVec.size()) - 1)));
     }
 
-
-    const std::string Text::AttackDescriptionStatusVersion(
-        const combat::FightResult & FIGHT_RESULT)
+    const std::string Text::AttackDescriptionStatusVersion(const combat::FightResult & FIGHT_RESULT)
     {
-        //assume weapon attacks can only effect one target creature
-        M_ASSERT_OR_LOGANDTHROW_SS((FIGHT_RESULT.Count() == 1),
+        // assume weapon attacks can only effect one target creature
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (FIGHT_RESULT.Count() == 1),
             "combat::Text::AttackDescriptionStatusVersion() was given "
-            << "a FIGHT_RESULT with " << FIGHT_RESULT.Count()
-            << " CreatureEffects, when only 1 is supported.");
+                << "a FIGHT_RESULT with " << FIGHT_RESULT.Count()
+                << " CreatureEffects, when only 1 is supported.");
 
         auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[0] };
 
         std::ostringstream ss;
         ss << WeaponActionVerbList(CREATURE_EFFECT.GetHitInfoVec(), false) << " "
-            << NamePhrase(CREATURE_EFFECT.GetCreature()) << " ";
+           << NamePhrase(CREATURE_EFFECT.GetCreature()) << " ";
 
         if (CREATURE_EFFECT.GetWasHit())
         {
@@ -708,8 +779,8 @@ namespace combat
 
             if (CREATURE_EFFECT.WasKill())
             {
-                ss << "killing " << creature::sex::HimHerIt(
-                    CREATURE_EFFECT.GetCreature()->Sex(), false);
+                ss << "killing "
+                   << creature::sex::HimHerIt(CREATURE_EFFECT.GetCreature()->Sex(), false);
             }
             else
             {
@@ -727,58 +798,61 @@ namespace combat
         return ss.str();
     }
 
-
     const std::string Text::AttackDescriptionPreambleVersion(const FightResult & FIGHT_RESULT)
     {
-        //assume weapon attacks can only effect one target creature
-        M_ASSERT_OR_LOGANDTHROW_SS((FIGHT_RESULT.Count() == 1),
+        // assume weapon attacks can only effect one target creature
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (FIGHT_RESULT.Count() == 1),
             "combat::Text::AttackDescriptionPreambleVersion() was given "
-            << "a FIGHT_RESULT with " << FIGHT_RESULT.Count()
-            << " CreatureEffects, when only 1 is supported.");
+                << "a FIGHT_RESULT with " << FIGHT_RESULT.Count()
+                << " CreatureEffects, when only 1 is supported.");
 
         std::ostringstream ss;
 
         auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[0] };
         ss << WeaponActionVerbList(CREATURE_EFFECT.GetHitInfoVec(), false) << " "
-            << NamePhrase(CREATURE_EFFECT.GetCreature()) << "...";
+           << NamePhrase(CREATURE_EFFECT.GetCreature()) << "...";
 
         return ss.str();
     }
 
-
-    const std::string Text::AttackDescriptionFullVersion(const FightResult & FIGHT_RESULT,
-                                                         const std::size_t   EFFECT_INDEX,
-                                                         const std::size_t   HIT_INDEX)
+    const std::string Text::AttackDescriptionFullVersion(
+        const FightResult & FIGHT_RESULT,
+        const std::size_t EFFECT_INDEX,
+        const std::size_t HIT_INDEX)
     {
-        //assume weapon attacks can only effect one target creature
-        M_ASSERT_OR_LOGANDTHROW_SS((EFFECT_INDEX == 0),
+        // assume weapon attacks can only effect one target creature
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (EFFECT_INDEX == 0),
             "combat::Text::AttackDescriptionFullVersion() was given "
-            << "a EFFECT_INDEX=" << EFFECT_INDEX << " when only 0 is supported.");
+                << "a EFFECT_INDEX=" << EFFECT_INDEX << " when only 0 is supported.");
         //
-        M_ASSERT_OR_LOGANDTHROW_SS((FIGHT_RESULT.Effects().size() == 1),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (FIGHT_RESULT.Effects().size() == 1),
             "combat::Text::AttackDescriptionFullVersion() was given "
-            << "a FIGHT_RESULT with " << FIGHT_RESULT.Count()
-            << " CreatureEffects, when only 1 is supported.");
+                << "a FIGHT_RESULT with " << FIGHT_RESULT.Count()
+                << " CreatureEffects, when only 1 is supported.");
 
         auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
         auto const HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((HIT_INFO_VEC.empty() == false),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (HIT_INFO_VEC.empty() == false),
             "combat::Text::AttackDescriptionFullVersion(effect_index="
-            << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
-            << ") was given an empty HIT_INFO_VEC.");
+                << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
+                << ") was given an empty HIT_INFO_VEC.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((HIT_INDEX < HIT_INFO_VEC.size()),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (HIT_INDEX < HIT_INFO_VEC.size()),
             "combat::Text::AttackDescriptionFullVersion(effect_index="
-            << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
-            <<") hit_index was out of bounds with HIT_INFO_VEC.size()="
-            << HIT_INFO_VEC.size() << ".");
+                << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
+                << ") hit_index was out of bounds with HIT_INFO_VEC.size()=" << HIT_INFO_VEC.size()
+                << ".");
 
         auto const HIT_INFO{ HIT_INFO_VEC[HIT_INDEX] };
 
         std::ostringstream ss;
-        ss << HIT_INFO.ActionVerb() << " "
-            << NamePhrase(CREATURE_EFFECT.GetCreature()) << "...\n";
+        ss << HIT_INFO.ActionVerb() << " " << NamePhrase(CREATURE_EFFECT.GetCreature()) << "...\n";
 
         if (HIT_INFO.WasHit())
         {
@@ -848,19 +922,17 @@ namespace combat
         return ss.str();
     }
 
-
     const std::string Text::CastDescriptionStatusVersion(
-        const TurnActionInfo & TURN_ACTION_INFO,
-        const FightResult &    FIGHT_RESULT)
+        const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
 
         auto const SPELL_PTR{ TURN_ACTION_INFO.Spell() };
         ss << "casts the " << SPELL_PTR->Name() << " spell "
-            << TargetType::ActionPhrase(SPELL_PTR->Target());
+           << TargetType::ActionPhrase(SPELL_PTR->Target());
 
-        if ((SPELL_PTR->Target() == TargetType::AllCompanions) ||
-            (SPELL_PTR->Target() == TargetType::AllOpponents))
+        if ((SPELL_PTR->Target() == TargetType::AllCompanions)
+            || (SPELL_PTR->Target() == TargetType::AllOpponents))
         {
             ss << " at " << FIGHT_RESULT.Count();
         }
@@ -869,10 +941,8 @@ namespace combat
         return ss.str();
     }
 
-
     const std::string Text::CastDescriptionPreambleVersion(
-        const TurnActionInfo & TURN_ACTION_INFO,
-        const FightResult &    FIGHT_RESULT)
+        const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
         ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << " spell ";
@@ -913,14 +983,13 @@ namespace combat
         return ss.str();
     }
 
-
     const std::string Text::CastDescriptionFullVersion(
         const creature::CreaturePtr_t CREATURE_CASTING_PTR,
-        const TurnActionInfo &        TURN_ACTION_INFO,
-        const FightResult &           FIGHT_RESULT,
-        const std::size_t             EFFECT_INDEX,
-        const std::size_t             HIT_INDEX,
-        bool &                        wasCollapsed)
+        const TurnActionInfo & TURN_ACTION_INFO,
+        const FightResult & FIGHT_RESULT,
+        const std::size_t EFFECT_INDEX,
+        const std::size_t HIT_INDEX,
+        bool & wasCollapsed)
     {
         wasCollapsed = false;
 
@@ -929,14 +998,13 @@ namespace combat
             return "(error: TURN_ACTION_INFO.Spell() null)";
         }
 
-        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(CREATURE_CASTING_PTR,
-                                                              FIGHT_RESULT) };
+        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(CREATURE_CASTING_PTR, FIGHT_RESULT) };
 
         if (FIGHT_RESULT_SUMMARY.IsValid())
         {
             wasCollapsed = true;
-            return FIGHT_RESULT_SUMMARY.Compose(CREATURE_CASTING_PTR->Name(),
-                TURN_ACTION_INFO.Spell()->VerbPastTense());
+            return FIGHT_RESULT_SUMMARY.Compose(
+                CREATURE_CASTING_PTR->Name(), TURN_ACTION_INFO.Spell()->VerbPastTense());
         }
 
         if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
@@ -955,8 +1023,8 @@ namespace combat
 
         std::ostringstream ss;
 
-        ss << HIT_INFO.ActionPhrase().Compose(CREATURE_CASTING_PTR->Name(),
-                                              CREATURE_EFFECT.GetCreature()->Name());
+        ss << HIT_INFO.ActionPhrase().Compose(
+            CREATURE_CASTING_PTR->Name(), CREATURE_EFFECT.GetCreature()->Name());
 
         auto const DAMAGE{ HIT_INFO.Damage() };
 
@@ -972,19 +1040,17 @@ namespace combat
         return ss.str();
     }
 
-
     const std::string Text::PlaySongDescriptionStatusVersion(
-        const TurnActionInfo & TURN_ACTION_INFO,
-        const FightResult &    FIGHT_RESULT)
+        const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
 
         auto const SONG_PTR{ TURN_ACTION_INFO.Song() };
         ss << "plays the " << SONG_PTR->Name() << " " << SONG_PTR->TypeToNoun() << " "
-            << TargetType::ActionPhrase(SONG_PTR->Target());
+           << TargetType::ActionPhrase(SONG_PTR->Target());
 
-        if ((SONG_PTR->Target() == TargetType::AllCompanions) ||
-            (SONG_PTR->Target() == TargetType::AllOpponents))
+        if ((SONG_PTR->Target() == TargetType::AllCompanions)
+            || (SONG_PTR->Target() == TargetType::AllOpponents))
         {
             ss << " at " << FIGHT_RESULT.Count();
         }
@@ -993,14 +1059,12 @@ namespace combat
         return ss.str();
     }
 
-
     const std::string Text::PlaySongDescriptionPreambleVersion(
-        const TurnActionInfo & TURN_ACTION_INFO,
-        const FightResult &    FIGHT_RESULT)
+        const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
         ss << "plays the " << TURN_ACTION_INFO.Song()->Name() << " "
-            << TURN_ACTION_INFO.Song()->TypeToNoun() << " ";
+           << TURN_ACTION_INFO.Song()->TypeToNoun() << " ";
 
         if (FIGHT_RESULT.Count() == 1)
         {
@@ -1039,14 +1103,13 @@ namespace combat
         return ss.str();
     }
 
-
     const std::string Text::PlaySongDescriptionFullVersion(
         const creature::CreaturePtr_t CREATURE_PLAYINGING_PTR,
-        const TurnActionInfo &        TURN_ACTION_INFO,
-        const FightResult &           FIGHT_RESULT,
-        const std::size_t             EFFECT_INDEX,
-        const std::size_t             HIT_INDEX,
-        bool &                        wasCollapsed)
+        const TurnActionInfo & TURN_ACTION_INFO,
+        const FightResult & FIGHT_RESULT,
+        const std::size_t EFFECT_INDEX,
+        const std::size_t HIT_INDEX,
+        bool & wasCollapsed)
     {
         wasCollapsed = false;
 
@@ -1055,14 +1118,14 @@ namespace combat
             return "(error: TURN_ACTION_INFO.Song() null)";
         }
 
-        auto const FIGHT_RESULT_SUMMARY{
-            SummarizeFightResult(CREATURE_PLAYINGING_PTR, FIGHT_RESULT) };
+        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(
+            CREATURE_PLAYINGING_PTR, FIGHT_RESULT) };
 
         if (FIGHT_RESULT_SUMMARY.IsValid())
         {
             wasCollapsed = true;
-            return FIGHT_RESULT_SUMMARY.Compose(CREATURE_PLAYINGING_PTR->Name(),
-                TURN_ACTION_INFO.Song()->VerbPastTense());
+            return FIGHT_RESULT_SUMMARY.Compose(
+                CREATURE_PLAYINGING_PTR->Name(), TURN_ACTION_INFO.Song()->VerbPastTense());
         }
 
         if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
@@ -1081,8 +1144,8 @@ namespace combat
 
         std::ostringstream ss;
 
-        ss << HIT_INFO.ActionPhrase().Compose(CREATURE_PLAYINGING_PTR->Name(),
-                                              CREATURE_EFFECT.GetCreature()->Name());
+        ss << HIT_INFO.ActionPhrase().Compose(
+            CREATURE_PLAYINGING_PTR->Name(), CREATURE_EFFECT.GetCreature()->Name());
 
         auto const DAMAGE{ HIT_INFO.Damage() };
 
@@ -1098,19 +1161,17 @@ namespace combat
         return ss.str();
     }
 
-
     const std::string Text::RoarDescriptionFullVersion(
         const creature::CreaturePtr_t CREATURE_ROARING_PTR,
         const TurnActionInfo &,
-        const FightResult &           FIGHT_RESULT,
-        const std::size_t             EFFECT_INDEX,
-        const std::size_t             HIT_INDEX,
-        bool &                        wasCollapsed)
+        const FightResult & FIGHT_RESULT,
+        const std::size_t EFFECT_INDEX,
+        const std::size_t HIT_INDEX,
+        bool & wasCollapsed)
     {
         wasCollapsed = false;
 
-        auto const FIGHT_RESULT_SUMMARY{
-            SummarizeFightResult(CREATURE_ROARING_PTR, FIGHT_RESULT) };
+        auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(CREATURE_ROARING_PTR, FIGHT_RESULT) };
 
         if (FIGHT_RESULT_SUMMARY.IsValid())
         {
@@ -1134,59 +1195,56 @@ namespace combat
 
         std::ostringstream ss;
 
-        ss << HIT_INFO.ActionPhrase().Compose(CREATURE_ROARING_PTR->Name(),
-            CREATURE_EFFECT.GetCreature()->Name());
+        ss << HIT_INFO.ActionPhrase().Compose(
+            CREATURE_ROARING_PTR->Name(), CREATURE_EFFECT.GetCreature()->Name());
 
         return ss.str();
     }
 
-
     const std::string Text::TrapDescriptionFullVersion(
         const creature::CreaturePtr_t CREATURE_UNLOCKING_PTR,
-        const FightResult &           FIGHT_RESULT,
-        const std::size_t             EFFECT_INDEX,
-        const std::size_t             HIT_INDEX)
+        const FightResult & FIGHT_RESULT,
+        const std::size_t EFFECT_INDEX,
+        const std::size_t HIT_INDEX)
     {
         auto const CREATURE_EFFECTS{ FIGHT_RESULT.Effects() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((EFFECT_INDEX < CREATURE_EFFECTS.size()),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (EFFECT_INDEX < CREATURE_EFFECTS.size()),
             "combat::Text::TrapDescriptionFullVersion(creature="
-            << CREATURE_UNLOCKING_PTR->NameAndRaceAndRole()
-            << ", effect_index=" << EFFECT_INDEX
-            << ", hit_index=" << HIT_INDEX
-            << ") but there were only " << CREATURE_EFFECTS.size() << " creature effects.");
+                << CREATURE_UNLOCKING_PTR->NameAndRaceAndRole() << ", effect_index=" << EFFECT_INDEX
+                << ", hit_index=" << HIT_INDEX << ") but there were only "
+                << CREATURE_EFFECTS.size() << " creature effects.");
 
         auto const CREATURE_EFFECT{ CREATURE_EFFECTS.at(EFFECT_INDEX) };
 
         auto const HIT_INFOS{ CREATURE_EFFECT.GetHitInfoVec() };
 
-        M_ASSERT_OR_LOGANDTHROW_SS((HIT_INDEX < HIT_INFOS.size()),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (HIT_INDEX < HIT_INFOS.size()),
             "combat::Text::TrapDescriptionFullVersion(creature="
-            << CREATURE_UNLOCKING_PTR->NameAndRaceAndRole()
-            << ", effect_index=" << EFFECT_INDEX
-            << ", hit_index=" << HIT_INDEX
-            << ") but there were only " << HIT_INFOS.size() << " hit infos.");
+                << CREATURE_UNLOCKING_PTR->NameAndRaceAndRole() << ", effect_index=" << EFFECT_INDEX
+                << ", hit_index=" << HIT_INDEX << ") but there were only " << HIT_INFOS.size()
+                << " hit infos.");
 
         auto const HIT_INFO{ HIT_INFOS.at(HIT_INDEX) };
 
         std::ostringstream ss;
-        ss << CREATURE_UNLOCKING_PTR->Name() << " is " << HIT_INFO.ActionVerb()
-            << " for " << HIT_INFO.Damage().Abs() << " damage"
-            << AttackConditionsSummaryList(CREATURE_EFFECT);
+        ss << CREATURE_UNLOCKING_PTR->Name() << " is " << HIT_INFO.ActionVerb() << " for "
+           << HIT_INFO.Damage().Abs() << " damage" << AttackConditionsSummaryList(CREATURE_EFFECT);
 
         return ss.str();
     }
 
-
-    const std::string Text::WeaponActionVerbList(const HitInfoVec_t & HIT_INFO_VEC,
-                                                 const bool           WILL_SKIP_MISSES)
+    const std::string
+        Text::WeaponActionVerbList(const HitInfoVec_t & HIT_INFO_VEC, const bool WILL_SKIP_MISSES)
     {
         std::vector<std::string> strVec;
 
         for (auto const & NEXT_HIT_INFO : HIT_INFO_VEC)
         {
-            if ((WILL_SKIP_MISSES == false) ||
-                (WILL_SKIP_MISSES && (NEXT_HIT_INFO.WasHit() == true)))
+            if ((WILL_SKIP_MISSES == false)
+                || (WILL_SKIP_MISSES && (NEXT_HIT_INFO.WasHit() == true)))
             {
                 strVec.push_back(NEXT_HIT_INFO.ActionVerb());
             }
@@ -1208,7 +1266,6 @@ namespace combat
         }
     }
 
-
     const std::string Text::CountPhrase(const HitInfoVec_t & HIT_INFO_VEC)
     {
         std::size_t count{ 0 };
@@ -1222,7 +1279,6 @@ namespace combat
 
         return CountPhrase(count);
     }
-
 
     const std::string Text::CountPhrase(const std::size_t COUNT)
     {
@@ -1242,21 +1298,23 @@ namespace combat
         }
     }
 
-
     const std::string Text::AttackConditionsSummaryList(const CreatureEffect & CREATURE_EFFECT)
     {
         std::ostringstream ss;
 
         const std::size_t NUM_CONDS_TO_LIST{ 3 };
 
-        auto const ADDED_CONDS_EXCLUDING_DEAD_VEC{
-            misc::Vector::Exclude(CREATURE_EFFECT.GetAllCondsAdded(), creature::Conditions::Dead) };
+        auto const ADDED_CONDS_EXCLUDING_DEAD_VEC{ misc::Vector::Exclude(
+            CREATURE_EFFECT.GetAllCondsAdded(), creature::Conditions::Dead) };
 
         auto const NUM_ADDED_CONDS{ ADDED_CONDS_EXCLUDING_DEAD_VEC.size() };
         if (NUM_ADDED_CONDS > 0)
         {
-            ss << ", causing " << creature::condition::Algorithms::Names(
-                ADDED_CONDS_EXCLUDING_DEAD_VEC, NUM_CONDS_TO_LIST, misc::Vector::JoinOpt::And);
+            ss << ", causing "
+               << creature::condition::Algorithms::Names(
+                      ADDED_CONDS_EXCLUDING_DEAD_VEC,
+                      NUM_CONDS_TO_LIST,
+                      misc::Vector::JoinOpt::And);
 
             if (NUM_ADDED_CONDS > NUM_CONDS_TO_LIST)
             {
@@ -1269,8 +1327,9 @@ namespace combat
 
         if (NUM_REMOVED_CONDS > 0)
         {
-            ss << ", and eliminating " << creature::condition::Algorithms::Names(
-                REMOVED_CONDS_SVEC, NUM_CONDS_TO_LIST, misc::Vector::JoinOpt::And);
+            ss << ", and eliminating "
+               << creature::condition::Algorithms::Names(
+                      REMOVED_CONDS_SVEC, NUM_CONDS_TO_LIST, misc::Vector::JoinOpt::And);
 
             if (NUM_REMOVED_CONDS > NUM_CONDS_TO_LIST)
             {
@@ -1280,7 +1339,6 @@ namespace combat
 
         return ss.str();
     }
-
 
     const std::string Text::NamePhrase(const creature::CreaturePtr_t CREATURE_PTR)
     {
@@ -1298,24 +1356,36 @@ namespace combat
         return ss.str();
     }
 
-
     const std::string Text::InitialCombatStatusMessagePrefix()
     {
         switch (misc::random::Int(4))
         {
-            case 0: { return "You face"; }
-            case 1: { return "Before you rage"; }
-            case 2: { return "Before you stand"; }
-            case 3: { return "Attacking you are"; }
+            case 0:
+            {
+                return "You face";
+            }
+            case 1:
+            {
+                return "Before you rage";
+            }
+            case 2:
+            {
+                return "Before you stand";
+            }
+            case 3:
+            {
+                return "Attacking you are";
+            }
             case 4:
-            default: { return "You encounter"; }
+            default:
+            {
+                return "You encounter";
+            }
         }
     }
 
-
     const FightResultSummary Text::SummarizeFightResult(
-        const creature::CreaturePtr_t CREATURE_INITIATING_PTR,
-        const FightResult &           FIGHT_RESULT)
+        const creature::CreaturePtr_t CREATURE_INITIATING_PTR, const FightResult & FIGHT_RESULT)
     {
         auto const & CREATURE_EFFECT_VEC{ FIGHT_RESULT.Effects() };
         auto const CREATURE_EFFECTS_COUNT{ CREATURE_EFFECT_VEC.size() };
@@ -1341,14 +1411,14 @@ namespace combat
 
         FightResultSummary frs;
 
-        frs.areResistedNotEffected_ = (CREATURE_INITIATING_PTR->IsPlayerCharacter() ==
-            effectedCreaturesPVec[0]->IsPlayerCharacter());
+        frs.areResistedNotEffected_
+            = (CREATURE_INITIATING_PTR->IsPlayerCharacter()
+               == effectedCreaturesPVec[0]->IsPlayerCharacter());
 
         frs.hit_type = FIRST_HIT_INFO.TypeOfHit();
 
-        if ((HitType::Roar != frs.hit_type) &&
-            (HitType::Song != frs.hit_type) &&
-            (HitType::Spell != frs.hit_type))
+        if ((HitType::Roar != frs.hit_type) && (HitType::Song != frs.hit_type)
+            && (HitType::Spell != frs.hit_type))
         {
             return FightResultSummary();
         }
@@ -1362,7 +1432,7 @@ namespace combat
             frs.song_ptr = FIRST_HIT_INFO.SongPtr();
         }
 
-        for (std::size_t i(0); i<CREATURE_EFFECTS_COUNT; ++i)
+        for (std::size_t i(0); i < CREATURE_EFFECTS_COUNT; ++i)
         {
             if (SummarizeCreatureEffect(frs, CREATURE_EFFECT_VEC[i]) == false)
             {
@@ -1373,9 +1443,8 @@ namespace combat
         return frs;
     }
 
-
-    bool Text::SummarizeCreatureEffect(FightResultSummary &   frs,
-                                       const CreatureEffect & CREATURE_EFFECT)
+    bool Text::SummarizeCreatureEffect(
+        FightResultSummary & frs, const CreatureEffect & CREATURE_EFFECT)
     {
         auto const NEXT_HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
         if (NEXT_HIT_INFO_VEC.size() != 1)
@@ -1386,30 +1455,31 @@ namespace combat
         auto const NEXT_HIT_INFO{ NEXT_HIT_INFO_VEC[0] };
         auto const NEXT_ACTION_STR{ NEXT_HIT_INFO.ActionPhrase().Compose("", "") };
 
-        if ((boost::algorithm::contains(NEXT_ACTION_STR, spell::Spell::FAILED_BECAUSE_STR_)) ||
-            (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::FAILED_STR_)) ||
-            (boost::algorithm::contains(NEXT_ACTION_STR, "resisted")))
+        if ((boost::algorithm::contains(NEXT_ACTION_STR, spell::Spell::FAILED_BECAUSE_STR_))
+            || (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::FAILED_STR_))
+            || (boost::algorithm::contains(NEXT_ACTION_STR, "resisted")))
         {
             if (boost::algorithm::contains(NEXT_ACTION_STR, "already"))
             {
-                if (frs.already_vec.empty() ||
-                    (frs.already_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
+                if (frs.already_vec.empty()
+                    || (frs.already_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
                 {
                     frs.already_vec.push_back(
-                        std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO) );
+                        std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO));
 
                     return true;
                 }
             }
-            else if ((boost::algorithm::contains(NEXT_ACTION_STR, spell::Spell::RESISTED_STR_)) ||
-                     (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::RESISTED_STR_)) ||
-                     (boost::algorithm::contains(NEXT_ACTION_STR, "resisted")))
+            else if (
+                (boost::algorithm::contains(NEXT_ACTION_STR, spell::Spell::RESISTED_STR_))
+                || (boost::algorithm::contains(NEXT_ACTION_STR, song::Song::RESISTED_STR_))
+                || (boost::algorithm::contains(NEXT_ACTION_STR, "resisted")))
             {
-                if (frs.resisted_vec.empty() ||
-                    (frs.resisted_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
+                if (frs.resisted_vec.empty()
+                    || (frs.resisted_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
                 {
                     frs.resisted_vec.push_back(
-                        std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO) );
+                        std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO));
 
                     return true;
                 }
@@ -1417,11 +1487,11 @@ namespace combat
         }
         else
         {
-            if (frs.effected_vec.empty() ||
-                (frs.effected_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
+            if (frs.effected_vec.empty()
+                || (frs.effected_vec[0].second.IsCloseEnoughToEqual(NEXT_HIT_INFO)))
             {
                 frs.effected_vec.push_back(
-                    std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO) );
+                    std::make_pair(CREATURE_EFFECT.GetCreature(), NEXT_HIT_INFO));
 
                 return true;
             }
@@ -1429,6 +1499,5 @@ namespace combat
 
         return false;
     }
-
 }
 }

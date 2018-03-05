@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -39,20 +38,19 @@ namespace sfml_util
     {
         enum Enum : unsigned int
         {
-            None             = 0,
-            Click            = 1 << 0,
-            DoubleClick      = 1 << 1,
-            MouseWheel       = 1 << 2,
-            SelectionChange  = 1 << 3,
-            Keypress         = 1 << 4,
-            FocusChange      = 1 << 5
+            None = 0,
+            Click = 1 << 0,
+            DoubleClick = 1 << 1,
+            MouseWheel = 1 << 2,
+            SelectionChange = 1 << 3,
+            Keypress = 1 << 4,
+            FocusChange = 1 << 5
         };
 
         static const std::string ToString(const GuiEvent::Enum);
         static bool IsValid(const GuiEvent::Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_GUIEVENT_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUIEVENT_ENUM_HPP_INCLUDED

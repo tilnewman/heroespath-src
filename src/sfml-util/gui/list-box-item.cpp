@@ -29,243 +29,212 @@
 //
 #include "list-box-item.hpp"
 
-#include "player/character.hpp"
-#include "state/game-state.hpp"
-#include "item/item.hpp"
 #include "creature/condition.hpp"
 #include "creature/title.hpp"
-#include "spell/spell-base.hpp"
+#include "item/item.hpp"
+#include "player/character.hpp"
 #include "song/song.hpp"
+#include "spell/spell-base.hpp"
+#include "state/game-state.hpp"
 
-#include <tuple>
 #include <string>
-
+#include <tuple>
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    ListBoxItem::ListBoxItem(
-        const std::string & NAME,
-        const bool IS_VALID)
-    :
-            TextRegion    (std::string(NAME).append("_ListBoxItemBase")),
-            CHARACTER_CPTR(nullptr),
-            GAMESTATE_CPTR(nullptr),
-            ITEM_CPTR     (nullptr),
-            COND_CPTRC    (nullptr),
-            TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr),
-            SONG_CPTRC    (nullptr),
-            is_valid      (IS_VALID)
-    {}
-
-
-    ListBoxItem::ListBoxItem(
-        const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
-        const bool IS_VALID)
-    :
-            TextRegion    (std::string(NAME).append("_ListBoxItemTextOnly"),
-                           TEXT_INFO,
-                           sf::FloatRect()),
-            CHARACTER_CPTR(nullptr),
-            GAMESTATE_CPTR(nullptr),
-            ITEM_CPTR     (nullptr),
-            COND_CPTRC    (nullptr),
-            TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr),
-            SONG_CPTRC    (nullptr),
-            is_valid      (IS_VALID)
-    {}
-
-
-    ListBoxItem::ListBoxItem(
-        const std::string & NAME,
-        const sfml_util::gui::TextInfo &   TEXT_INFO,
-        const player::CharacterPtr_t CHARACTER_PTR,
-        const bool IS_VALID)
-    :
-            TextRegion    (std::string(NAME).append("_ListBoxItemPlayerCharacter"),
-                           TEXT_INFO,
-                           sf::FloatRect()),
-            CHARACTER_CPTR(CHARACTER_PTR),
-            GAMESTATE_CPTR(nullptr),
-            ITEM_CPTR     (nullptr),
-            COND_CPTRC    (nullptr),
-            TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr),
-            SONG_CPTRC    (nullptr),
-            is_valid      (IS_VALID)
-    {}
-
-
-    ListBoxItem::ListBoxItem(
-        const std::string & NAME,
-        const sfml_util::gui::TextInfo &  TEXT_INFO,
-        const state::GameStatePtr_t GAMESTATE_PTR,
-        const bool IS_VALID)
-    :
-            TextRegion    (std::string(NAME).append("_ListBoxItemGameState"),
-                           TEXT_INFO,
-                           sf::FloatRect()),
-            CHARACTER_CPTR(nullptr),
-            GAMESTATE_CPTR(GAMESTATE_PTR),
-            ITEM_CPTR     (nullptr),
-            COND_CPTRC    (nullptr),
-            TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr),
-            SONG_CPTRC    (nullptr),
-            is_valid      (IS_VALID)
-    {}
-
-
-    ListBoxItem::ListBoxItem(
-        const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
-        const creature::ConditionPtr_t CONDITION_CPTRC_PARAM,
-        const bool IS_VALID)
-    :
-            TextRegion    (std::string(NAME).append("_ListBoxItemCondition"),
-                           TEXT_INFO,
-                           sf::FloatRect()),
-            CHARACTER_CPTR(nullptr),
-            GAMESTATE_CPTR(nullptr),
-            ITEM_CPTR     (nullptr),
-            COND_CPTRC    (CONDITION_CPTRC_PARAM),
-            TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr),
-            SONG_CPTRC    (nullptr),
-            is_valid      (IS_VALID)
-    {}
-
-
-    ListBoxItem::ListBoxItem(
-        const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
-        const item::ItemPtr_t ITEM_PTR,
-        const bool IS_VALID)
-    :
-            TextRegion    (std::string(NAME).append("_ListBoxItemItem"),
-                           TEXT_INFO,
-                           sf::FloatRect()),
-            CHARACTER_CPTR(nullptr),
-            GAMESTATE_CPTR(nullptr),
-            ITEM_CPTR     (ITEM_PTR),
-            COND_CPTRC    (nullptr),
-            TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr),
-            SONG_CPTRC    (nullptr),
-            is_valid      (IS_VALID)
-    {}
-
-
-    ListBoxItem::ListBoxItem(
-        const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
-        const creature::TitlePtrC_t TITLE_CPTRC_PARAM,
-        const bool IS_VALID)
-    :
-            TextRegion    (std::string(NAME).append("_ListBoxItemTitle"),
-                           TEXT_INFO,
-                           sf::FloatRect()),
-            CHARACTER_CPTR(nullptr),
-            GAMESTATE_CPTR(nullptr),
-            ITEM_CPTR     (nullptr),
-            COND_CPTRC    (nullptr),
-            TITLE_CPTRC   (TITLE_CPTRC_PARAM),
-            SPELL_CPTRC   (nullptr),
-            SONG_CPTRC    (nullptr),
-            is_valid      (IS_VALID)
-    {}
-
-
-    ListBoxItem::ListBoxItem(
-        const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
-        const spell::SpellPtrC_t SPELL_CPTRC_PARAM,
-        const bool IS_VALID)
-    :
-            TextRegion    (std::string(NAME).append("_ListBoxItemSpell"),
-                           TEXT_INFO,
-                           sf::FloatRect()),
-            CHARACTER_CPTR(nullptr),
-            GAMESTATE_CPTR(nullptr),
-            ITEM_CPTR     (nullptr),
-            COND_CPTRC    (nullptr),
-            TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (SPELL_CPTRC_PARAM),
-            SONG_CPTRC    (nullptr),
-            is_valid      (IS_VALID)
-    {}
-
-
-    ListBoxItem::ListBoxItem(
-        const std::string & NAME,
-        const sfml_util::gui::TextInfo & TEXT_INFO,
-        const song::SongPtrC_t SONG_CPTRC_PARAM,
-        const bool IS_VALID)
-    :
-            TextRegion    (std::string(NAME).append("_ListBoxItemSong"),
-                           TEXT_INFO,
-                           sf::FloatRect()),
-            CHARACTER_CPTR(nullptr),
-            GAMESTATE_CPTR(nullptr),
-            ITEM_CPTR     (nullptr),
-            COND_CPTRC    (nullptr),
-            TITLE_CPTRC   (nullptr),
-            SPELL_CPTRC   (nullptr),
-            SONG_CPTRC    (SONG_CPTRC_PARAM),
-            is_valid      (IS_VALID)
-    {}
-
-
-    bool operator==(const ListBoxItem & L, const ListBoxItem & R)
+    namespace gui
     {
-        return std::tie(L.CHARACTER_CPTR,
-                        L.GAMESTATE_CPTR,
-                        L.ITEM_CPTR,
-                        L.COND_CPTRC,
-                        L.TITLE_CPTRC,
-                        L.SPELL_CPTRC,
-                        L.SONG_CPTRC,
-                        L.is_valid)
-               ==
-               std::tie(R.CHARACTER_CPTR,
-                        R.GAMESTATE_CPTR,
-                        R.ITEM_CPTR,
-                        R.COND_CPTRC,
-                        R.TITLE_CPTRC,
-                        R.SPELL_CPTRC,
-                        R.SONG_CPTRC,
-                        R.is_valid);
+
+        ListBoxItem::ListBoxItem(const std::string & NAME, const bool IS_VALID)
+            : TextRegion(std::string(NAME).append("_ListBoxItemBase"))
+            , CHARACTER_CPTR(nullptr)
+            , GAMESTATE_CPTR(nullptr)
+            , ITEM_CPTR(nullptr)
+            , COND_CPTRC(nullptr)
+            , TITLE_CPTRC(nullptr)
+            , SPELL_CPTRC(nullptr)
+            , SONG_CPTRC(nullptr)
+            , is_valid(IS_VALID)
+        {}
+
+        ListBoxItem::ListBoxItem(
+            const std::string & NAME,
+            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const bool IS_VALID)
+            : TextRegion(
+                  std::string(NAME).append("_ListBoxItemTextOnly"), TEXT_INFO, sf::FloatRect())
+            , CHARACTER_CPTR(nullptr)
+            , GAMESTATE_CPTR(nullptr)
+            , ITEM_CPTR(nullptr)
+            , COND_CPTRC(nullptr)
+            , TITLE_CPTRC(nullptr)
+            , SPELL_CPTRC(nullptr)
+            , SONG_CPTRC(nullptr)
+            , is_valid(IS_VALID)
+        {}
+
+        ListBoxItem::ListBoxItem(
+            const std::string & NAME,
+            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const player::CharacterPtr_t CHARACTER_PTR,
+            const bool IS_VALID)
+            : TextRegion(
+                  std::string(NAME).append("_ListBoxItemPlayerCharacter"),
+                  TEXT_INFO,
+                  sf::FloatRect())
+            , CHARACTER_CPTR(CHARACTER_PTR)
+            , GAMESTATE_CPTR(nullptr)
+            , ITEM_CPTR(nullptr)
+            , COND_CPTRC(nullptr)
+            , TITLE_CPTRC(nullptr)
+            , SPELL_CPTRC(nullptr)
+            , SONG_CPTRC(nullptr)
+            , is_valid(IS_VALID)
+        {}
+
+        ListBoxItem::ListBoxItem(
+            const std::string & NAME,
+            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const state::GameStatePtr_t GAMESTATE_PTR,
+            const bool IS_VALID)
+            : TextRegion(
+                  std::string(NAME).append("_ListBoxItemGameState"), TEXT_INFO, sf::FloatRect())
+            , CHARACTER_CPTR(nullptr)
+            , GAMESTATE_CPTR(GAMESTATE_PTR)
+            , ITEM_CPTR(nullptr)
+            , COND_CPTRC(nullptr)
+            , TITLE_CPTRC(nullptr)
+            , SPELL_CPTRC(nullptr)
+            , SONG_CPTRC(nullptr)
+            , is_valid(IS_VALID)
+        {}
+
+        ListBoxItem::ListBoxItem(
+            const std::string & NAME,
+            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const creature::ConditionPtr_t CONDITION_CPTRC_PARAM,
+            const bool IS_VALID)
+            : TextRegion(
+                  std::string(NAME).append("_ListBoxItemCondition"), TEXT_INFO, sf::FloatRect())
+            , CHARACTER_CPTR(nullptr)
+            , GAMESTATE_CPTR(nullptr)
+            , ITEM_CPTR(nullptr)
+            , COND_CPTRC(CONDITION_CPTRC_PARAM)
+            , TITLE_CPTRC(nullptr)
+            , SPELL_CPTRC(nullptr)
+            , SONG_CPTRC(nullptr)
+            , is_valid(IS_VALID)
+        {}
+
+        ListBoxItem::ListBoxItem(
+            const std::string & NAME,
+            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const item::ItemPtr_t ITEM_PTR,
+            const bool IS_VALID)
+            : TextRegion(std::string(NAME).append("_ListBoxItemItem"), TEXT_INFO, sf::FloatRect())
+            , CHARACTER_CPTR(nullptr)
+            , GAMESTATE_CPTR(nullptr)
+            , ITEM_CPTR(ITEM_PTR)
+            , COND_CPTRC(nullptr)
+            , TITLE_CPTRC(nullptr)
+            , SPELL_CPTRC(nullptr)
+            , SONG_CPTRC(nullptr)
+            , is_valid(IS_VALID)
+        {}
+
+        ListBoxItem::ListBoxItem(
+            const std::string & NAME,
+            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const creature::TitlePtrC_t TITLE_CPTRC_PARAM,
+            const bool IS_VALID)
+            : TextRegion(std::string(NAME).append("_ListBoxItemTitle"), TEXT_INFO, sf::FloatRect())
+            , CHARACTER_CPTR(nullptr)
+            , GAMESTATE_CPTR(nullptr)
+            , ITEM_CPTR(nullptr)
+            , COND_CPTRC(nullptr)
+            , TITLE_CPTRC(TITLE_CPTRC_PARAM)
+            , SPELL_CPTRC(nullptr)
+            , SONG_CPTRC(nullptr)
+            , is_valid(IS_VALID)
+        {}
+
+        ListBoxItem::ListBoxItem(
+            const std::string & NAME,
+            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const spell::SpellPtrC_t SPELL_CPTRC_PARAM,
+            const bool IS_VALID)
+            : TextRegion(std::string(NAME).append("_ListBoxItemSpell"), TEXT_INFO, sf::FloatRect())
+            , CHARACTER_CPTR(nullptr)
+            , GAMESTATE_CPTR(nullptr)
+            , ITEM_CPTR(nullptr)
+            , COND_CPTRC(nullptr)
+            , TITLE_CPTRC(nullptr)
+            , SPELL_CPTRC(SPELL_CPTRC_PARAM)
+            , SONG_CPTRC(nullptr)
+            , is_valid(IS_VALID)
+        {}
+
+        ListBoxItem::ListBoxItem(
+            const std::string & NAME,
+            const sfml_util::gui::TextInfo & TEXT_INFO,
+            const song::SongPtrC_t SONG_CPTRC_PARAM,
+            const bool IS_VALID)
+            : TextRegion(std::string(NAME).append("_ListBoxItemSong"), TEXT_INFO, sf::FloatRect())
+            , CHARACTER_CPTR(nullptr)
+            , GAMESTATE_CPTR(nullptr)
+            , ITEM_CPTR(nullptr)
+            , COND_CPTRC(nullptr)
+            , TITLE_CPTRC(nullptr)
+            , SPELL_CPTRC(nullptr)
+            , SONG_CPTRC(SONG_CPTRC_PARAM)
+            , is_valid(IS_VALID)
+        {}
+
+        bool operator==(const ListBoxItem & L, const ListBoxItem & R)
+        {
+            return std::tie(
+                       L.CHARACTER_CPTR,
+                       L.GAMESTATE_CPTR,
+                       L.ITEM_CPTR,
+                       L.COND_CPTRC,
+                       L.TITLE_CPTRC,
+                       L.SPELL_CPTRC,
+                       L.SONG_CPTRC,
+                       L.is_valid)
+                == std::tie(
+                       R.CHARACTER_CPTR,
+                       R.GAMESTATE_CPTR,
+                       R.ITEM_CPTR,
+                       R.COND_CPTRC,
+                       R.TITLE_CPTRC,
+                       R.SPELL_CPTRC,
+                       R.SONG_CPTRC,
+                       R.is_valid);
+        }
+
+        bool operator<(const ListBoxItem & L, const ListBoxItem & R)
+        {
+            return std::tie(
+                       L.CHARACTER_CPTR,
+                       L.GAMESTATE_CPTR,
+                       L.ITEM_CPTR,
+                       L.COND_CPTRC,
+                       L.TITLE_CPTRC,
+                       L.SPELL_CPTRC,
+                       L.SONG_CPTRC,
+                       L.is_valid)
+                < std::tie(
+                       R.CHARACTER_CPTR,
+                       R.GAMESTATE_CPTR,
+                       R.ITEM_CPTR,
+                       R.COND_CPTRC,
+                       R.TITLE_CPTRC,
+                       R.SPELL_CPTRC,
+                       R.SONG_CPTRC,
+                       R.is_valid);
+        }
     }
-
-
-    bool operator<(const ListBoxItem & L, const ListBoxItem & R)
-    {
-        return std::tie(L.CHARACTER_CPTR,
-                        L.GAMESTATE_CPTR,
-                        L.ITEM_CPTR,
-                        L.COND_CPTRC,
-                        L.TITLE_CPTRC,
-                        L.SPELL_CPTRC,
-                        L.SONG_CPTRC,
-                        L.is_valid)
-               <
-               std::tie(R.CHARACTER_CPTR,
-                        R.GAMESTATE_CPTR,
-                        R.ITEM_CPTR,
-                        R.COND_CPTRC,
-                        R.TITLE_CPTRC,
-                        R.SPELL_CPTRC,
-                        R.SONG_CPTRC,
-                        R.is_valid);
-    }
-
-}
 }
 }

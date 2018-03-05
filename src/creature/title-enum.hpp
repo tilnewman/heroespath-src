@@ -31,7 +31,6 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace creature
@@ -39,7 +38,7 @@ namespace creature
 
     struct Titles
     {
-        //Note:  Keep order in sync with creature::title::Warehouse::Fill()
+        // Note:  Keep order in sync with creature::title::Warehouse::Fill()
         enum Enum
         {
             ProtectorOfThornberry = 0,
@@ -220,22 +219,21 @@ namespace creature
             Count
         };
 
-        //returns the straight name with no spaces that matches the enum name
+        // returns the straight name with no spaces that matches the enum name
         static const std::string ToString(const Enum);
 
-        //returns the human readable (GUI) version with spaces
+        // returns the human readable (GUI) version with spaces
         static const std::string Name(const Enum);
 
-        //returns the value from the game data file
+        // returns the value from the game data file
         static const std::string Desc(const Enum);
 
-        //returns the filename and extension only, not a complete path
+        // returns the filename and extension only, not a complete path
         static const std::string ImageFilename(const Enum);
     };
 
     using TitleEnumVec_t = std::vector<Titles::Enum>;
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_TITLEENUM_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_TITLEENUM_HPP_INCLUDED

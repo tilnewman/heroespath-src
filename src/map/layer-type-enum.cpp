@@ -29,9 +29,8 @@
 //
 #include "layer-type-enum.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -42,9 +41,18 @@ namespace map
     {
         switch (E)
         {
-            case Ground: { return "Ground"; }
-            case Object: { return "Object"; }
-            case Shadow: { return "Shadow"; }
+            case Ground:
+            {
+                return "Ground";
+            }
+            case Object:
+            {
+                return "Object";
+            }
+            case Shadow:
+            {
+                return "Shadow";
+            }
             case Count:
             default:
             {
@@ -54,6 +62,5 @@ namespace map
             }
         }
     }
-
 }
 }

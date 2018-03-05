@@ -31,9 +31,8 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -91,7 +90,6 @@ namespace game
         }
     }
 
-
     game::Phase::Enum game::Phase::FromString(const std::string & S)
     {
         if (S == game::Phase::ToString(Phase::NotAPhase, false))
@@ -102,32 +100,32 @@ namespace game
         auto lowerCaseStr{ boost::algorithm::to_lower_copy(S) };
 
         unsigned int x{ 0 };
-        if (boost::contains(lowerCaseStr,
-                            boost::to_lower_copy(Phase::ToString(Phase::Combat, false))))
+        if (boost::contains(
+                lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Combat, false))))
         {
             x = x | game::Phase::Combat;
         }
 
-        if (boost::contains(lowerCaseStr,
-                            boost::to_lower_copy(Phase::ToString(Phase::Exploring, false))))
+        if (boost::contains(
+                lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Exploring, false))))
         {
             x = x | game::Phase::Exploring;
         }
 
-        if (boost::contains(lowerCaseStr,
-                            boost::to_lower_copy(Phase::ToString(Phase::Conversation, false))))
+        if (boost::contains(
+                lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Conversation, false))))
         {
             x = x | game::Phase::Conversation;
         }
 
-        if (boost::contains(lowerCaseStr,
-                            boost::to_lower_copy(Phase::ToString(Phase::Quest, false))))
+        if (boost::contains(
+                lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Quest, false))))
         {
             x = x | game::Phase::Quest;
         }
 
-        if (boost::contains(lowerCaseStr,
-                            boost::to_lower_copy(Phase::ToString(Phase::Inventory, false))))
+        if (boost::contains(
+                lowerCaseStr, boost::to_lower_copy(Phase::ToString(Phase::Inventory, false))))
         {
             x = x | game::Phase::Inventory;
         }
@@ -135,12 +133,12 @@ namespace game
         if (0 == x)
         {
             std::ostringstream ssErr;
-            ssErr << "Phase::FromString(\"" << S << "\") unable to convert that string into a set of game::Phase::Enum flags.";
+            ssErr << "Phase::FromString(\"" << S
+                  << "\") unable to convert that string into a set of game::Phase::Enum flags.";
             throw std::runtime_error(ssErr.str());
         }
 
         return static_cast<game::Phase::Enum>(x);
     }
-
 }
 }

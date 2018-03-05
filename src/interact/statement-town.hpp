@@ -32,23 +32,19 @@
 #include "player/party.hpp"
 #include <string>
 
-
 namespace heroespath
 {
 namespace interact
 {
-namespace talk
-{
-
-    struct TownTalk
+    namespace talk
     {
-        static const std::string Compose(
-            const player::Party &,
-            const map::Level::Enum);
-    };
 
-}
+        struct TownTalk
+        {
+            static const std::string Compose(const player::Party &, const map::Level::Enum);
+        };
+    }
 }
 }
 
-#endif //HEROESPATH_INTERACT_STATEMENTTOWN_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_STATEMENTTOWN_HPP_INCLUDED

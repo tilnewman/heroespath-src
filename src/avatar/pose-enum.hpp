@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace avatar
@@ -51,8 +50,7 @@ namespace avatar
 
         static const std::string ToString(const Pose::Enum E);
     };
-
 }
 }
 
-#endif //HEROESPATH_AVATAR_POSEENUM_HPP_INCLUDED
+#endif // HEROESPATH_AVATAR_POSEENUM_HPP_INCLUDED

@@ -33,23 +33,21 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace map
 {
 
-    //Responsible for wrapping all the data about an animation in the map.
+    // Responsible for wrapping all the data about an animation in the map.
     struct MapAnim
     {
         MapAnim(
             const sfml_util::Animations::Enum ENUM = sfml_util::Animations::Count,
             const sf::FloatRect & RECT = sf::FloatRect(),
             const sfml_util::MusicEnumVec_t & MUSIC_VEC = sfml_util::MusicEnumVec_t())
-        :
-            which_anim(ENUM),
-            rect(RECT),
-            music_vec(MUSIC_VEC)
+            : which_anim(ENUM)
+            , rect(RECT)
+            , music_vec(MUSIC_VEC)
         {}
 
         sfml_util::Animations::Enum which_anim;
@@ -58,8 +56,7 @@ namespace map
     };
 
     using MapAnimVec_t = std::vector<MapAnim>;
-
 }
 }
 
-#endif //HEROESPATH_MAP_LEVELENUM_HPP_INCLUDED
+#endif // HEROESPATH_MAP_LEVELENUM_HPP_INCLUDED

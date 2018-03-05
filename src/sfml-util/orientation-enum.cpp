@@ -31,7 +31,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -58,11 +57,9 @@ namespace sfml_util
         }
     }
 
-
     bool Orientation::IsValid(const Orientation::Enum E)
     {
         return ((E == Orientation::Horiz) || (E == Orientation::Vert));
     }
-
 }
 }

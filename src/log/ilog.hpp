@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace log
@@ -52,20 +51,37 @@ namespace log
 
         static const std::string GetName(const Enum X)
         {
-            switch(X)
+            switch (X)
             {
-                case Debug:     { return "Debug";   }
-                case Default:   { return "Default"; }
-                case Warn:      { return "Warning"; }
-                case Error:     { return "Error";   }
-                case Fatal:     { return "Fatal";   }
+                case Debug:
+                {
+                    return "Debug";
+                }
+                case Default:
+                {
+                    return "Default";
+                }
+                case Warn:
+                {
+                    return "Warning";
+                }
+                case Error:
+                {
+                    return "Error";
+                }
+                case Fatal:
+                {
+                    return "Fatal";
+                }
                 case None:
                 case Count:
-                default:        { return "None";    }
+                default:
+                {
+                    return "None";
+                }
             }
         }
     };
-
 
     class ILog
     {
@@ -74,20 +90,22 @@ namespace log
 
         virtual void Log(const std::string & MSG) = 0;
 
-        virtual void Log(const std::string & FILE,
-                         const int LINE, //why signed?
-                         const std::string & MSG) = 0;
+        virtual void
+            Log(const std::string & FILE,
+                const int LINE, // why signed?
+                const std::string & MSG)
+            = 0;
 
-        virtual void Log(const LogPri::Enum Default,
-                         const std::string & MSG) = 0;
+        virtual void Log(const LogPri::Enum Default, const std::string & MSG) = 0;
 
-        virtual void Log(const LogPri::Enum Default,
-                         const std::string & FILE,
-                         const int LINE, //why signed?
-                         const std::string & MSG) = 0;
+        virtual void
+            Log(const LogPri::Enum Default,
+                const std::string & FILE,
+                const int LINE, // why signed?
+                const std::string & MSG)
+            = 0;
     };
-
 }
 }
 
-#endif //HEROESPATH_LOG_ILOG_HPP_INCLUDED
+#endif // HEROESPATH_LOG_ILOG_HPP_INCLUDED

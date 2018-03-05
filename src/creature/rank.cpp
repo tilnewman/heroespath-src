@@ -31,10 +31,9 @@
 
 #include "game/game-data-file.hpp"
 
+#include <algorithm>
 #include <exception>
 #include <sstream>
-#include <algorithm>
-
 
 namespace heroespath
 {
@@ -62,7 +61,6 @@ namespace creature
         return static_cast<rank_class::Enum>(rank_class::Count - 1);
     }
 
-
     const RankRange_t rank_class::RankRangeByClass(const rank_class::Enum E)
     {
         Rank_t min{ 0_rank };
@@ -70,8 +68,10 @@ namespace creature
 
         if (E == GrandMaster)
         {
-            min = Rank_t(game::GameDataFile::Instance()->GetCopyInt(
-                "heroespath-rankclass-" + ToString(Master) + "-rankmax") + 1);
+            min = Rank_t(
+                game::GameDataFile::Instance()->GetCopyInt(
+                    "heroespath-rankclass-" + ToString(Master) + "-rankmax")
+                + 1);
         }
         else if (E == Novice)
         {
@@ -82,9 +82,11 @@ namespace creature
         }
         else
         {
-            min = Rank_t(game::GameDataFile::Instance()->GetCopyInt(
-                "heroespath-rankclass-" + ToString(
-                    static_cast<rank_class::Enum>(E - 1)) + "-rankmax") + 1);
+            min = Rank_t(
+                game::GameDataFile::Instance()->GetCopyInt(
+                    "heroespath-rankclass-" + ToString(static_cast<rank_class::Enum>(E - 1))
+                    + "-rankmax")
+                + 1);
 
             max = Rank_t(game::GameDataFile::Instance()->GetCopyInt(
                 "heroespath-rankclass-" + ToString(E) + "-rankmax"));
@@ -93,17 +95,34 @@ namespace creature
         return RankRange_t(min, max);
     }
 
-
     const std::string rank_class::ToString(const rank_class::Enum E)
     {
         switch (E)
         {
-            case Novice:      { return "Novice"; }
-            case Trainee:     { return "Trainee"; }
-            case Skilled:     { return "Skilled"; }
-            case Expert:      { return "Expert"; }
-            case Master:      { return "Master"; }
-            case GrandMaster: { return "GrandMaster"; }
+            case Novice:
+            {
+                return "Novice";
+            }
+            case Trainee:
+            {
+                return "Trainee";
+            }
+            case Skilled:
+            {
+                return "Skilled";
+            }
+            case Expert:
+            {
+                return "Expert";
+            }
+            case Master:
+            {
+                return "Master";
+            }
+            case GrandMaster:
+            {
+                return "GrandMaster";
+            }
             case Count:
             default:
             {
@@ -113,6 +132,5 @@ namespace creature
             }
         }
     }
-
 }
 }

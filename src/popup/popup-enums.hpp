@@ -31,7 +31,6 @@
 
 #include <string>
 
-
 namespace heroespath
 {
 namespace popup
@@ -41,20 +40,19 @@ namespace popup
     {
         enum Enum : unsigned
         {
-            None         = 0,
-            Okay         = ResponseTypes::Okay,
-            Select       = ResponseTypes::Select,
-            Cancel       = ResponseTypes::Cancel,
+            None = 0,
+            Okay = ResponseTypes::Okay,
+            Select = ResponseTypes::Select,
+            Cancel = ResponseTypes::Cancel,
             SelectCancel = ResponseTypes::Select | ResponseTypes::Cancel,
-            Continue     = ResponseTypes::Continue,
-            YesNo        = ResponseTypes::Yes | ResponseTypes::No,
-            YesNoCancel  = ResponseTypes::Yes | ResponseTypes::No | ResponseTypes::Cancel
+            Continue = ResponseTypes::Continue,
+            YesNo = ResponseTypes::Yes | ResponseTypes::No,
+            YesNoCancel = ResponseTypes::Yes | ResponseTypes::No | ResponseTypes::Cancel
         };
 
         static const std::string ToString(const PopupButtons::Enum E);
         static bool IsValid(const PopupButtons::Enum E);
     };
-
 
     struct PopupButtonColor
     {
@@ -68,7 +66,6 @@ namespace popup
         static const std::string ToString(const PopupButtonColor::Enum);
         static bool IsValid(const PopupButtonColor::Enum);
     };
-
 
     struct PopupImage
     {
@@ -88,8 +85,7 @@ namespace popup
         static const std::string ToString(const PopupImage::Enum);
         static bool IsValid(const PopupImage::Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPENUMS_HPP_INCLUDE
+#endif // HEROESPATH_POPUP_POPUPENUMS_HPP_INCLUDE

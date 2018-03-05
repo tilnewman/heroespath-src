@@ -30,7 +30,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace creature
@@ -40,23 +39,22 @@ namespace creature
     {
         enum Enum : unsigned int
         {
-            None                = 0,
-            WhenUsed            = 1 << 0,
-            WhenHeld            = 1 << 1,
-            WhenEquipped        = 1 << 2,
-            RemoveAfterUse      = 1 << 3,
-            BoundToNothing      = 1 << 4,
-            BoundToItem         = 1 << 5,
-            AllowsFlight        = 1 << 6,
-            CurseWithoutItem    = 1 << 7,
-            BlessWithoutItem    = 1 << 8,
+            None = 0,
+            WhenUsed = 1 << 0,
+            WhenHeld = 1 << 1,
+            WhenEquipped = 1 << 2,
+            RemoveAfterUse = 1 << 3,
+            BoundToNothing = 1 << 4,
+            BoundToItem = 1 << 5,
+            AllowsFlight = 1 << 6,
+            CurseWithoutItem = 1 << 7,
+            BlessWithoutItem = 1 << 8,
             OnlyIfSetIsComplete = 1 << 9
         };
 
         static const std::string ToString(const Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_ENCHANTMENTTYPE_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_ENCHANTMENTTYPE_HPP_INCLUDED

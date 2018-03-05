@@ -28,10 +28,9 @@
 // music-enum.hpp
 //  An enum defining the various background music files
 //
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
-
 
 namespace heroespath
 {
@@ -92,8 +91,7 @@ namespace sfml_util
 
     using MusicEnumVec_t = std::vector<music::Enum>;
     using MusicEnumSet_t = std::set<music::Enum>;
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_MUSICENUM_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_MUSICENUM_HPP_INCLUDED

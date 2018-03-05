@@ -27,31 +27,31 @@
 //
 // animation-single.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/animation-enum.hpp"
 #include "sfml-util/animation-base.hpp"
+#include "sfml-util/animation-enum.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <vector>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //An animation that is sourced from a single texture
+    // An animation that is sourced from a single texture
     class AnimationSingleTexture : public Animation
     {
-        AnimationSingleTexture(const AnimationSingleTexture &) =delete;
-        AnimationSingleTexture & operator=(const AnimationSingleTexture &) =delete;
+        AnimationSingleTexture(const AnimationSingleTexture &) = delete;
+        AnimationSingleTexture & operator=(const AnimationSingleTexture &) = delete;
 
     public:
-        AnimationSingleTexture(const Animations::Enum ENUM,
-                               const sf::FloatRect &  REGION,
-                               const float            TIME_PER_FRAME_SEC,
-                               const sf::BlendMode &  BLEND_MODE,
-                               const sf::Color &      COLOR_FROM,
-                               const sf::Color &      COLOR_TO);
+        AnimationSingleTexture(
+            const Animations::Enum ENUM,
+            const sf::FloatRect & REGION,
+            const float TIME_PER_FRAME_SEC,
+            const sf::BlendMode & BLEND_MODE,
+            const sf::Color & COLOR_FROM,
+            const sf::Color & COLOR_TO);
 
         virtual ~AnimationSingleTexture();
 
@@ -62,32 +62,25 @@ namespace sfml_util
 
         virtual void SetEntityRegion(const sf::FloatRect & R) override;
 
-        inline virtual std::size_t FrameCount() const override
-        {
-            return rects_.size();
-        }
+        inline virtual std::size_t FrameCount() const override { return rects_.size(); }
 
-        inline virtual const sf::Vector2f OrigSize() const override
-        {
-            return origSizeV_;
-        }
+        inline virtual const sf::Vector2f OrigSize() const override { return origSizeV_; }
 
         virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-        //returns true if frame count wrapped around back to zero
+        // returns true if frame count wrapped around back to zero
         virtual bool UpdateTime(const float SECONDS) override;
 
-        virtual const sf::Sprite Sprite() const  override { return sprite_; }
+        virtual const sf::Sprite Sprite() const override { return sprite_; }
 
     protected:
-        sf::Sprite   sprite_;
+        sf::Sprite sprite_;
         sf::Vector2f origSizeV_;
 
-        //the size of this vector acts as a total frame count.
+        // the size of this vector acts as a total frame count.
         std::vector<sf::IntRect> rects_;
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_ANIMATIONSINGLE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_ANIMATIONSINGLE_HPP_INCLUDED

@@ -34,13 +34,12 @@
 
 #include <vector>
 
-
 namespace heroespath
 {
 namespace map
 {
 
-    //Responsible for storing all the information about a transition between two maps.
+    // Responsible for storing all the information about a transition between two maps.
     class Transition
     {
     public:
@@ -48,13 +47,12 @@ namespace map
             const bool IS_ENTRY = true,
             const Level::Enum LEVEL = Level::Count,
             const sf::FloatRect & RECT = sf::FloatRect(),
-            const sfml_util::sound_effect::MapTransition TRANS_TYPE =
-                sfml_util::sound_effect::MapTransition::Count)
-        :
-            isEntry_(IS_ENTRY),
-            level_(LEVEL),
-            rect_(RECT),
-            transSfxType_(TRANS_TYPE)
+            const sfml_util::sound_effect::MapTransition TRANS_TYPE
+            = sfml_util::sound_effect::MapTransition::Count)
+            : isEntry_(IS_ENTRY)
+            , level_(LEVEL)
+            , rect_(RECT)
+            , transSfxType_(TRANS_TYPE)
         {}
 
         inline bool IsEntry() const { return isEntry_; }
@@ -65,8 +63,7 @@ namespace map
         inline const sf::Vector2f Center() const
         {
             return sf::Vector2f(
-                rect_.left + (rect_.width * 0.5f),
-                rect_.top + (rect_.height * 0.5f));
+                rect_.left + (rect_.width * 0.5f), rect_.top + (rect_.height * 0.5f));
         }
 
     private:
@@ -77,8 +74,7 @@ namespace map
     };
 
     using TransitionVec_t = std::vector<Transition>;
-
 }
 }
 
-#endif //HEROESPATH_MAP_TRANSITION_HPP_INCLUDED
+#endif // HEROESPATH_MAP_TRANSITION_HPP_INCLUDED

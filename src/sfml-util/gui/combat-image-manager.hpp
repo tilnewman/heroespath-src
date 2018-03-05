@@ -32,39 +32,37 @@
 
 #include <memory>
 
-
 namespace sf
 {
-    class Texture;
+class Texture;
 }
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //singleton responsible for loading and dispensing combat image sf::Textures
-    class CombatImageManager : public ImageManagerBase<CombatImageType>
+    namespace gui
     {
-        CombatImageManager & operator=(const CombatImageManager &) =delete;
-        CombatImageManager(const CombatImageManager &) =delete;
 
-    public:
-        CombatImageManager();
-        virtual ~CombatImageManager();
+        // singleton responsible for loading and dispensing combat image sf::Textures
+        class CombatImageManager : public ImageManagerBase<CombatImageType>
+        {
+            CombatImageManager & operator=(const CombatImageManager &) = delete;
+            CombatImageManager(const CombatImageManager &) = delete;
 
-        static CombatImageManager * Instance();
-        static void Acquire();
-        static void Release();
+        public:
+            CombatImageManager();
+            virtual ~CombatImageManager();
 
-    private:
-        static std::unique_ptr<CombatImageManager> instanceUPtr_;
-    };
+            static CombatImageManager * Instance();
+            static void Acquire();
+            static void Release();
 
+        private:
+            static std::unique_ptr<CombatImageManager> instanceUPtr_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_COMBATIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_COMBATIMAGEMANAGER_HPP_INCLUDED

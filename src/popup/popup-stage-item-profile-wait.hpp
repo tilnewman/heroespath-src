@@ -29,17 +29,16 @@
 //
 #include "popup/popup-stage-base.hpp"
 
-
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing the System Error Popup Stage.
+    // Responsible for implementing the System Error Popup Stage.
     class PopupStageItemProfileWait : public PopupStageBase
     {
-        PopupStageItemProfileWait(const PopupStageItemProfileWait &) =delete;
-        PopupStageItemProfileWait & operator=(const PopupStageItemProfileWait &) =delete;
+        PopupStageItemProfileWait(const PopupStageItemProfileWait &) = delete;
+        PopupStageItemProfileWait & operator=(const PopupStageItemProfileWait &) = delete;
 
     public:
         explicit PopupStageItemProfileWait(const PopupInfo &);
@@ -50,8 +49,7 @@ namespace popup
     private:
         int drawCountdown_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED

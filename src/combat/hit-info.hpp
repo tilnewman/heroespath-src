@@ -27,15 +27,14 @@
 //
 // hit-info.hpp
 //
-#include "misc/types.hpp"
-#include "stats/trait.hpp"
 #include "creature/condition-enum.hpp"
+#include "misc/types.hpp"
 #include "name-position-enum.hpp"
+#include "stats/trait.hpp"
 
-#include <string>
 #include <memory>
+#include <string>
 #include <vector>
-
 
 namespace heroespath
 {
@@ -80,99 +79,93 @@ namespace combat
         static const std::string ToString(const Enum);
     };
 
-
-    //Everything required to describe an attempted combat action.
-    //Note:  It is possible to hit with a weapon and cause no damage.
+    // Everything required to describe an attempted combat action.
+    // Note:  It is possible to hit with a weapon and cause no damage.
     class HitInfo
     {
     public:
-        //use this constructor when a weapon is used to hit
+        // use this constructor when a weapon is used to hit
         explicit HitInfo(
-            const bool                      WAS_HIT           = false,
-            const item::ItemPtr_t           ITEM_PTR          = nullptr,
-            const Health_t &                DAMAGE            = 0_health,
-            const bool                      IS_CRITICAL_HIT   = false,
-            const bool                      IS_POWER_HIT      = false,
-            const bool                      DID_ARMOR_ABSORB  = false,
-            const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
+            const bool WAS_HIT = false,
+            const item::ItemPtr_t ITEM_PTR = nullptr,
+            const Health_t & DAMAGE = 0_health,
+            const bool IS_CRITICAL_HIT = false,
+            const bool IS_POWER_HIT = false,
+            const bool DID_ARMOR_ABSORB = false,
+            const creature::CondEnumVec_t & CONDS_ADDED_VEC = creature::CondEnumVec_t(),
             const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t(),
-            const std::string &             ACTION_VERB       = "");
+            const std::string & ACTION_VERB = "");
 
-        //use this constructor for spells
-        HitInfo(const bool                      WAS_HIT,
-                const spell::SpellPtr_t         SPELL_CPTR,
-                const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                const Health_t &                DAMAGE            = 0_health,
-                const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
-                const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
-
-        //use this constructor for songs
-        HitInfo(const bool                      WAS_HIT,
-                const song::SongPtr_t           SONG_CPTR,
-                const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                const Health_t &                DAMAGE            = 0_health,
-                const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
-                const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
-
-        //use this constructor for condition effects
-        HitInfo(const bool                       WAS_HIT,
-                const creature::Conditions::Enum COND_ENUM,
-                const ContentAndNamePos &        ACTION_PHRASE_CNP,
-                const Health_t &                 DAMAGE            = 0_health,
-                const creature::CondEnumVec_t &  CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
-                const creature::CondEnumVec_t &  CONDS_REMOVED_VEC = creature::CondEnumVec_t());
-
-        //use this constructor for pounce and roar
-        HitInfo(const bool                      WAS_HIT,
-                const HitType::Enum             HIT_TYPE,
-                const ContentAndNamePos &       ACTION_PHRASE_CNP,
-                const Health_t &                DAMAGE            = 0_health,
-                const creature::CondEnumVec_t & CONDS_ADDED_VEC   = creature::CondEnumVec_t(),
-                const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
-
-        //use this constructor for treasure trap hits
+        // use this constructor for spells
         HitInfo(
-            const Health_t &                DAMAGE,
-            const std::string &             ACTION_VERB,
+            const bool WAS_HIT,
+            const spell::SpellPtr_t SPELL_CPTR,
+            const ContentAndNamePos & ACTION_PHRASE_CNP,
+            const Health_t & DAMAGE = 0_health,
             const creature::CondEnumVec_t & CONDS_ADDED_VEC = creature::CondEnumVec_t(),
             const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
 
-        //use this constructor when the attempt failed/missed
+        // use this constructor for songs
+        HitInfo(
+            const bool WAS_HIT,
+            const song::SongPtr_t SONG_CPTR,
+            const ContentAndNamePos & ACTION_PHRASE_CNP,
+            const Health_t & DAMAGE = 0_health,
+            const creature::CondEnumVec_t & CONDS_ADDED_VEC = creature::CondEnumVec_t(),
+            const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
+
+        // use this constructor for condition effects
+        HitInfo(
+            const bool WAS_HIT,
+            const creature::Conditions::Enum COND_ENUM,
+            const ContentAndNamePos & ACTION_PHRASE_CNP,
+            const Health_t & DAMAGE = 0_health,
+            const creature::CondEnumVec_t & CONDS_ADDED_VEC = creature::CondEnumVec_t(),
+            const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
+
+        // use this constructor for pounce and roar
+        HitInfo(
+            const bool WAS_HIT,
+            const HitType::Enum HIT_TYPE,
+            const ContentAndNamePos & ACTION_PHRASE_CNP,
+            const Health_t & DAMAGE = 0_health,
+            const creature::CondEnumVec_t & CONDS_ADDED_VEC = creature::CondEnumVec_t(),
+            const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
+
+        // use this constructor for treasure trap hits
+        HitInfo(
+            const Health_t & DAMAGE,
+            const std::string & ACTION_VERB,
+            const creature::CondEnumVec_t & CONDS_ADDED_VEC = creature::CondEnumVec_t(),
+            const creature::CondEnumVec_t & CONDS_REMOVED_VEC = creature::CondEnumVec_t());
+
+        // use this constructor when the attempt failed/missed
         HitInfo(const HitType::Enum HIT_TYPE, const ContentAndNamePos & ACTION_PHRASE_CNP);
 
         HitInfo(const HitInfo &);
         HitInfo & operator=(const HitInfo &);
 
-        inline bool              WasHit() const     { return wasHit_; }
-        inline HitType::Enum     TypeOfHit() const  { return hitType_; }
-        inline item::ItemPtr_t   Weapon() const     { return weaponPtr_; }
-        inline Health_t          Damage() const     { return damage_; }
-        inline bool              IsCritical() const { return isCritical_; }
-        inline bool              IsPowerHit() const { return isPower_; }
+        inline bool WasHit() const { return wasHit_; }
+        inline HitType::Enum TypeOfHit() const { return hitType_; }
+        inline item::ItemPtr_t Weapon() const { return weaponPtr_; }
+        inline Health_t Damage() const { return damage_; }
+        inline bool IsCritical() const { return isCritical_; }
+        inline bool IsPowerHit() const { return isPower_; }
         inline const std::string ActionVerb() const { return actionVerb_; }
-        inline spell::SpellPtr_t SpellPtr() const   { return spellPtr_; }
-        inline song::SongPtr_t   SongPtr() const    { return songPtr_; }
-        inline bool              IsSpell() const    { return (spellPtr_ != nullptr); }
-        inline bool              IsWeapon() const   { return (weaponPtr_ != nullptr); }
+        inline spell::SpellPtr_t SpellPtr() const { return spellPtr_; }
+        inline song::SongPtr_t SongPtr() const { return songPtr_; }
+        inline bool IsSpell() const { return (spellPtr_ != nullptr); }
+        inline bool IsWeapon() const { return (weaponPtr_ != nullptr); }
 
         inline creature::ConditionPtr_t ConditionPtr() const { return conditionPtr_; }
 
         inline bool DidArmorAbsorb() const { return didArmorAbsorb_; }
 
-        inline const ContentAndNamePos ActionPhrase() const
-        {
-            return actionPhraseCNP_;
-        }
+        inline const ContentAndNamePos ActionPhrase() const { return actionPhraseCNP_; }
 
-        inline const creature::CondEnumVec_t CondsAdded() const
-        {
-            return condsAddedVec_;
-        }
+        inline const creature::CondEnumVec_t CondsAdded() const { return condsAddedVec_; }
 
-        inline const creature::CondEnumVec_t CondsRemoved() const
-        {
-            return condsRemovedVec_;
-        }
+        inline const creature::CondEnumVec_t CondsRemoved() const { return condsRemovedVec_; }
 
         bool CondsAddedContains(const creature::Conditions::Enum) const;
         bool CondsAddedRemove(const creature::Conditions::Enum);
@@ -192,35 +185,30 @@ namespace combat
         friend bool operator==(const HitInfo & L, const HitInfo & R);
 
     private:
-        bool                     wasHit_;
-        HitType::Enum            hitType_;
-        item::ItemPtr_t          weaponPtr_;
-        Health_t                 damage_;
-        bool                     isCritical_;
-        bool                     isPower_;
-        creature::CondEnumVec_t  condsAddedVec_;
-        creature::CondEnumVec_t  condsRemovedVec_;
-        std::string              actionVerb_;
-        spell::SpellPtr_t        spellPtr_;
-        ContentAndNamePos        actionPhraseCNP_;
-        song::SongPtr_t          songPtr_;
-        bool                     didArmorAbsorb_;
+        bool wasHit_;
+        HitType::Enum hitType_;
+        item::ItemPtr_t weaponPtr_;
+        Health_t damage_;
+        bool isCritical_;
+        bool isPower_;
+        creature::CondEnumVec_t condsAddedVec_;
+        creature::CondEnumVec_t condsRemovedVec_;
+        std::string actionVerb_;
+        spell::SpellPtr_t spellPtr_;
+        ContentAndNamePos actionPhraseCNP_;
+        song::SongPtr_t songPtr_;
+        bool didArmorAbsorb_;
         creature::ConditionPtr_t conditionPtr_;
     };
 
     using HitInfoVec_t = std::vector<HitInfo>;
 
-
     bool operator<(const HitInfo & L, const HitInfo & R);
 
     bool operator==(const HitInfo & L, const HitInfo & R);
 
-    inline bool operator!=(const HitInfo & L, const HitInfo & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const HitInfo & L, const HitInfo & R) { return !(L == R); }
 }
 }
 
-#endif //HEROESPATH_COMBAT_HITINFO_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_HITINFO_HPP_INCLUDED

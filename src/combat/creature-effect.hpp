@@ -29,11 +29,10 @@
 //
 #include "hit-info.hpp"
 
-#include "stats/trait.hpp"
 #include "creature/condition-enum.hpp"
+#include "stats/trait.hpp"
 
 #include <vector>
-
 
 namespace heroespath
 {
@@ -57,20 +56,20 @@ namespace creature
 namespace combat
 {
 
-    //Everything required to describe all the effects a fight had on a creature.
+    // Everything required to describe all the effects a fight had on a creature.
     class CreatureEffect
     {
     public:
         explicit CreatureEffect(
             const creature::CreaturePtr_t CREATURE_PTR = nullptr,
-            const HitInfoVec_t &          HIT_INFO_VEC = HitInfoVec_t());
+            const HitInfoVec_t & HIT_INFO_VEC = HitInfoVec_t());
 
         CreatureEffect(const CreatureEffect &);
         CreatureEffect & operator=(const CreatureEffect &);
 
-        inline std::size_t             GetCount() const         { return hitInfoVec_.size(); }
-        inline const HitInfoVec_t &    GetHitInfoVec() const    { return hitInfoVec_; }
-        inline creature::CreaturePtr_t GetCreature() const      { return creaturePtr_; }
+        inline std::size_t GetCount() const { return hitInfoVec_.size(); }
+        inline const HitInfoVec_t & GetHitInfoVec() const { return hitInfoVec_; }
+        inline creature::CreaturePtr_t GetCreature() const { return creaturePtr_; }
 
         bool GetWasHit() const;
 
@@ -97,17 +96,12 @@ namespace combat
 
     using CreatureEffectVec_t = std::vector<CreatureEffect>;
 
-
     bool operator<(const CreatureEffect & L, const CreatureEffect & R);
 
     bool operator==(const CreatureEffect & L, const CreatureEffect & R);
 
-    inline bool operator!=(const CreatureEffect & L, const CreatureEffect & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const CreatureEffect & L, const CreatureEffect & R) { return !(L == R); }
 }
 }
 
-#endif //HEROESPATH_GAME_COMBAT_CREATUREEFFEC_HPP_INCLUDED
+#endif // HEROESPATH_GAME_COMBAT_CREATUREEFFEC_HPP_INCLUDED

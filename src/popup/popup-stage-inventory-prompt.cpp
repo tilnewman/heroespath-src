@@ -33,30 +33,22 @@
 
 #include "sfml-util/sound-manager.hpp"
 
-
 namespace heroespath
 {
 namespace popup
 {
 
     PopupStageInventoryPrompt::PopupStageInventoryPrompt(const PopupInfo & POPUP_INFO)
-    :
-        PopupStageBase(POPUP_INFO)
+        : PopupStageBase(POPUP_INFO)
     {}
 
+    PopupStageInventoryPrompt::~PopupStageInventoryPrompt() {}
 
-    PopupStageInventoryPrompt::~PopupStageInventoryPrompt()
-    {}
-
-
-    void PopupStageInventoryPrompt::Draw(
-        sf::RenderTarget & target,
-        const sf::RenderStates & STATES)
+    void PopupStageInventoryPrompt::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
         Stage::Draw(target, STATES);
     }
-
 
     bool PopupStageInventoryPrompt::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
@@ -99,6 +91,5 @@ namespace popup
 
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
-
 }
 }

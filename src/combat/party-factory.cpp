@@ -29,15 +29,14 @@
 //
 #include "party-factory.hpp"
 
-#include "stats/stat-set.hpp"
-#include "non-player/party.hpp"
 #include "non-player/character.hpp"
 #include "non-player/inventory-factory.hpp"
+#include "non-player/party.hpp"
+#include "stats/stat-set.hpp"
 
 #include "sfml-util/gui/creature-image-manager.hpp"
 
 #include "misc/random.hpp"
-
 
 namespace heroespath
 {
@@ -46,18 +45,9 @@ namespace combat
 
     std::unique_ptr<PartyFactory> PartyFactory::instanceUPtr_{ nullptr };
 
+    PartyFactory::PartyFactory() { M_HP_LOG_DBG("Singleton Construction: PartyFactory"); }
 
-    PartyFactory::PartyFactory()
-    {
-        M_HP_LOG_DBG("Singleton Construction: PartyFactory");
-    }
-
-
-    PartyFactory::~PartyFactory()
-    {
-        M_HP_LOG_DBG("Singleton Destruction: PartyFactory");
-    }
-
+    PartyFactory::~PartyFactory() { M_HP_LOG_DBG("Singleton Destruction: PartyFactory"); }
 
     PartyFactory * PartyFactory::Instance()
     {
@@ -69,7 +59,6 @@ namespace combat
 
         return instanceUPtr_.get();
     }
-
 
     void PartyFactory::Acquire()
     {
@@ -83,15 +72,14 @@ namespace combat
         }
     }
 
-
     void PartyFactory::Release()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
             "PartyFactory::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
-
 
     non_player::PartyUPtr_t PartyFactory::MakeParty_FirstEncounter() const
     {
@@ -99,55 +87,53 @@ namespace combat
 
         for (std::size_t i(0); i < 10; ++i)
         {
-            partyUPtr->Add( MakeCharacter_GoblinGrunt() );
+            partyUPtr->Add(MakeCharacter_GoblinGrunt());
         }
 
         return partyUPtr;
     }
-
 
     non_player::CharacterPtr_t PartyFactory::MakeCharacter_GoblinGrunt() const
     {
         const stats::StatSet STATS(
             Strength_t(13 + misc::random::Int(5)),
             Accuracy_t(13 + misc::random::Int(5)),
-            Charm_t   ( 5 + misc::random::Int(5)),
-            Luck_t    ( 5 + misc::random::Int(5)),
-            Speed_t   (13 + misc::random::Int(5)),
-            Intell_t  ( 3 + misc::random::Int(5)) );
+            Charm_t(5 + misc::random::Int(5)),
+            Luck_t(5 + misc::random::Int(5)),
+            Speed_t(13 + misc::random::Int(5)),
+            Intell_t(3 + misc::random::Int(5)));
 
         auto characterPtr{ MakeCharacter(
             STATS,
-            10_health, 20_health,
+            10_health,
+            20_health,
             ((misc::random::Int(100) < 75) ? creature::sex::Male : creature::sex::Female),
             creature::race::Goblin,
             creature::role::Grunt) };
 
-        non_player::ownership::InventoryFactory::Instance()->
-            SetupCreatureInventory(characterPtr);
+        non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(characterPtr);
 
         return characterPtr;
     }
-
 
     non_player::CharacterPtr_t PartyFactory::MakeCharacter_Boar() const
     {
         const stats::StatSet STATS(
             Strength_t(13 + misc::random::Int(3)),
             Accuracy_t(10 + misc::random::Int(2)),
-            Charm_t   (4  + misc::random::Int(2)),
-            Luck_t    (5  + misc::random::Int(5)),
-            Speed_t   (13 + misc::random::Int(5)),
-            Intell_t  (1) );
+            Charm_t(4 + misc::random::Int(2)),
+            Luck_t(5 + misc::random::Int(5)),
+            Speed_t(13 + misc::random::Int(5)),
+            Intell_t(1));
 
         return MakeCharacter(
             STATS,
-            13_health, 18_health,
+            13_health,
+            18_health,
             ((misc::random::Bool()) ? creature::sex::Male : creature::sex::Female),
             creature::race::Boar,
             creature::role::Boar);
     }
-
 
     non_player::CharacterPtr_t PartyFactory::MakeCharacter(
         const stats::StatSet & STATS,
@@ -178,17 +164,10 @@ namespace combat
             spell::SpellVec_t(),
             MANA) };
 
-        characterPtr->ImageFilename(
-            sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
-                RACE,
-                ROLE,
-                SEX,
-                true,
-                characterPtr->WolfenClass(),
-                characterPtr->DragonClass()) );
+        characterPtr->ImageFilename(sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
+            RACE, ROLE, SEX, true, characterPtr->WolfenClass(), characterPtr->DragonClass()));
 
         return characterPtr;
     }
-
 }
 }

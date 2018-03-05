@@ -30,11 +30,10 @@
 #include "horiz-symbol.hpp"
 
 #include "sfml-util/display.hpp"
-#include "sfml-util/sfml-util.hpp"
 #include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-util.hpp"
 
 #include "game/game-data-file.hpp"
-
 
 namespace heroespath
 {
@@ -43,26 +42,21 @@ namespace sfml_util
 
     const sf::Color BottomSymbol::DEFAULT_COLOR_{ sf::Color(255, 255, 255, 127) };
 
-
     BottomSymbol::BottomSymbol(
-        const float       VERT_SCALE,
-        const bool        WILL_INVERT_COLOR,
+        const float VERT_SCALE,
+        const bool WILL_INVERT_COLOR,
         const sf::Color & COLOR,
-        const float       VERT_OFFSET_RATIO)
-    :
-        sprite1_(),
-        sprite2_(),
-        sprite3_(),
-        sprite4_(),
-        texture_()
+        const float VERT_OFFSET_RATIO)
+        : sprite1_()
+        , sprite2_()
+        , sprite3_()
+        , sprite4_()
+        , texture_()
     {
         Setup(VERT_SCALE, WILL_INVERT_COLOR, COLOR, VERT_OFFSET_RATIO);
     }
 
-
-    BottomSymbol::~BottomSymbol()
-    {}
-
+    BottomSymbol::~BottomSymbol() {}
 
     void BottomSymbol::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
@@ -72,14 +66,14 @@ namespace sfml_util
         target.draw(sprite4_, states);
     }
 
-
     void BottomSymbol::Setup(
-        const float       VERT_SCALE,
-        const bool        WILL_INVERT_COLOR,
+        const float VERT_SCALE,
+        const bool WILL_INVERT_COLOR,
         const sf::Color & COLOR,
-        const float       VERT_OFFSET_RATIO)
+        const float VERT_OFFSET_RATIO)
     {
-        sfml_util::LoadTexture(texture_,
+        sfml_util::LoadTexture(
+            texture_,
             game::GameDataFile::Instance()->GetMediaPath("media-images-gui-accents-symbol1"));
 
         if (WILL_INVERT_COLOR)
@@ -105,9 +99,9 @@ namespace sfml_util
 
         auto const VERT_OFFSET{ sprite1_.getGlobalBounds().height * VERT_OFFSET_RATIO };
 
-        auto const TOP{
-            (sfml_util::Display::Instance()->GetWinHeight() - sprite1_.getGlobalBounds().height) +
-                VERT_OFFSET };
+        auto const TOP{ (sfml_util::Display::Instance()->GetWinHeight()
+                         - sprite1_.getGlobalBounds().height)
+                        + VERT_OFFSET };
 
         auto const PAD{ 8.0f };
         auto const THREE_PADS{ PAD * 3.0f };
@@ -124,11 +118,6 @@ namespace sfml_util
             ((HALF_SCREEN_WIDTH + sprite1_.getGlobalBounds().width) - THREE_PADS), TOP);
     }
 
-
-    float BottomSymbol::Bottom() const
-    {
-        return sfml_util::Display::Instance()->GetWinHeight();
-    }
-
+    float BottomSymbol::Bottom() const { return sfml_util::Display::Instance()->GetWinHeight(); }
 }
 }

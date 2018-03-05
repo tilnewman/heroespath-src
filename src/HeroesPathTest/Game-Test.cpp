@@ -32,39 +32,39 @@
 
 #include "misc/warehouse.hpp"
 
-#include <string>
 #include <exception>
-
+#include <string>
 
 using namespace heroespath;
 namespace ts = test_stuff;
 
-
-//responsible for keeping a track of a static reference count
+// responsible for keeping a track of a static reference count
 struct Counted
 {
     Counted() { ++m_refCount; }
     ~Counted() { --m_refCount; }
     static inline int refCount() { return m_refCount; }
+
 private:
     static int m_refCount;
 };
 
 int Counted::m_refCount{ 0 };
 
-
-//responsible for implementing a warehouse of Counted objects
+// responsible for implementing a warehouse of Counted objects
 class CountedWarehouse
 {
 public:
-    CountedWarehouse() : m_warehouse() {}
+    CountedWarehouse()
+        : m_warehouse()
+    {}
     inline Counted * store(Counted * ptr) { return m_warehouse.Store(ptr, ""); }
-    inline void free(Counted * & ptr) { m_warehouse.Free(ptr, ""); }
+    inline void free(Counted *& ptr) { m_warehouse.Free(ptr, ""); }
     inline std::size_t size() const { return m_warehouse.Size(); }
+
 private:
     misc::Warehouse<Counted> m_warehouse;
 };
-
 
 BOOST_AUTO_TEST_CASE(Warehouse_Construction)
 {
@@ -76,7 +76,6 @@ BOOST_AUTO_TEST_CASE(Warehouse_Construction)
     Counted * nPtr{ nullptr };
     BOOST_CHECK_THROW(warehouse.free(nPtr), std::runtime_error);
 }
-
 
 BOOST_AUTO_TEST_CASE(Warehouse_StoreAndFree)
 {
@@ -109,14 +108,15 @@ BOOST_AUTO_TEST_CASE(Warehouse_StoreAndFree)
     BOOST_CHECK(ptr1 == nullptr);
     BOOST_CHECK(Counted::refCount() == 1);
 
-    BOOST_CHECK_MESSAGE(warehouse.size() == 2,
-        "The warehouse slot should be set to nullptr but it should remain.");
+    BOOST_CHECK_MESSAGE(
+        warehouse.size() == 2, "The warehouse slot should be set to nullptr but it should remain.");
 
     auto ptr3{ new Counted() };
     BOOST_CHECK(Counted::refCount() == 2);
 
     warehouse.store(ptr3);
-    BOOST_CHECK_MESSAGE(warehouse.size() == 2,
+    BOOST_CHECK_MESSAGE(
+        warehouse.size() == 2,
         "The warehouse slot that was previously used for pt2 should now be used by ptr3.");
 
     warehouse.free(ptr2);
@@ -125,6 +125,7 @@ BOOST_AUTO_TEST_CASE(Warehouse_StoreAndFree)
     BOOST_CHECK(ptr2 == nullptr);
     BOOST_CHECK(Counted::refCount() == 0);
 
-    BOOST_CHECK_MESSAGE(warehouse.size() == 2,
+    BOOST_CHECK_MESSAGE(
+        warehouse.size() == 2,
         "All warehouse slots should remain but be set to nullptr (be empty).");
 }

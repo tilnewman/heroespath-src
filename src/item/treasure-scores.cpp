@@ -31,31 +31,25 @@
 
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace item
 {
 
     TreasureScores::TreasureScores(
-        const Score_t & COIN,
-        const Score_t & GEM,
-        const Score_t & MAGIC,
-        const Score_t & RELIGIOUS)
-    :
-        coin_     (COIN),
-        gem_      (GEM),
-        magic_    (MAGIC),
-        religious_(RELIGIOUS)
+        const Score_t & COIN, const Score_t & GEM, const Score_t & MAGIC, const Score_t & RELIGIOUS)
+        : coin_(COIN)
+        , gem_(GEM)
+        , magic_(MAGIC)
+        , religious_(RELIGIOUS)
     {}
-
 
     const std::string TreasureScores::ToString(const bool WILL_WRAP) const
     {
         std::ostringstream ss;
 
-        ss << "Coin=" << coin_ << ", Gem=" << gem_
-            << ", Magic=" << magic_ << ", Religious=" << religious_;
+        ss << "Coin=" << coin_ << ", Gem=" << gem_ << ", Magic=" << magic_
+           << ", Religious=" << religious_;
 
         if (WILL_WRAP)
         {
@@ -67,16 +61,14 @@ namespace item
         }
     }
 
-
     TreasureScores & TreasureScores::operator+=(const TreasureScores & RHS)
     {
         coin_ += RHS.coin_;
         gem_ += RHS.gem_;
         magic_ += RHS.magic_;
         religious_ += RHS.religious_;
-        return * this;
+        return *this;
     }
-
 
     TreasureScores & TreasureScores::operator-=(const TreasureScores & RHS)
     {
@@ -87,16 +79,14 @@ namespace item
         return *this;
     }
 
-
     TreasureScores & TreasureScores::operator*=(const TreasureScores & RHS)
     {
         coin_ *= RHS.coin_;
         gem_ *= RHS.gem_;
         magic_ *= RHS.magic_;
         religious_ *= RHS.religious_;
-        return * this;
+        return *this;
     }
-
 
     TreasureScores & TreasureScores::operator/=(const TreasureScores & RHS)
     {
@@ -104,32 +94,27 @@ namespace item
         gem_ /= RHS.gem_;
         magic_ /= RHS.magic_;
         religious_ /= RHS.religious_;
-        return * this;
+        return *this;
     }
-
 
     TreasureScores TreasureScores::operator+(const TreasureScores & RHS)
     {
-        return TreasureScores( * this) += RHS;
+        return TreasureScores(*this) += RHS;
     }
-
 
     TreasureScores TreasureScores::operator-(const TreasureScores & RHS)
     {
-        return TreasureScores( * this) -= RHS;
+        return TreasureScores(*this) -= RHS;
     }
-
 
     TreasureScores TreasureScores::operator*(const TreasureScores & RHS)
     {
-        return TreasureScores( * this) *= RHS;
+        return TreasureScores(*this) *= RHS;
     }
-
 
     TreasureScores TreasureScores::operator/(const TreasureScores & RHS)
     {
-        return TreasureScores( * this) /= RHS;
+        return TreasureScores(*this) /= RHS;
     }
-
 }
 }

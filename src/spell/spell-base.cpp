@@ -31,12 +31,11 @@
 
 #include "creature/creature.hpp"
 
-#include "misc/strings.hpp"
 #include "misc/random.hpp"
+#include "misc/strings.hpp"
 
-#include <sstream>
 #include <algorithm>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -45,7 +44,6 @@ namespace spell
 
     const std::string Spell::RESISTED_STR_{ " resisted." };
     const std::string Spell::FAILED_BECAUSE_STR_{ "Spell failed because " };
-
 
     Spell::Spell(
         const Spells::Enum WHICH,
@@ -56,42 +54,36 @@ namespace spell
         const combat::TargetType::Enum TARGET_TYPE,
         const std::string & VERB_THIRD_PERSON,
         const std::string & VERB_PAST_TENSE)
-    :
-        which_          (WHICH),
-        rank_           (RANK),
-        effectType_     (EFFECT_TYPE),
-        validPhases_    (VALID_PHASES),
-        manaCost_       (MANA_COST),
-        targetType_     (TARGET_TYPE),
-        verbThirdPerson_(VERB_THIRD_PERSON),
-        verbPastTense_  (VERB_PAST_TENSE)
+        : which_(WHICH)
+        , rank_(RANK)
+        , effectType_(EFFECT_TYPE)
+        , validPhases_(VALID_PHASES)
+        , manaCost_(MANA_COST)
+        , targetType_(TARGET_TYPE)
+        , verbThirdPerson_(VERB_THIRD_PERSON)
+        , verbPastTense_(VERB_PAST_TENSE)
     {}
 
-
-    Spell::~Spell()
-    {}
-
+    Spell::~Spell() {}
 
     const std::string Spell::ToString() const
     {
         std::ostringstream ss;
-        ss  << Name() << "  -" << DescDetails();
+        ss << Name() << "  -" << DescDetails();
         return ss.str();
     }
-
 
     const std::string Spell::DescDetails() const
     {
         std::ostringstream ss;
-        ss  << "A " << misc::String::DecorateNumber(rank_.As<int>()) << " rank"
-            << " " << combat::EffectType::Name(effectType_) << " spell"
-            << " that can be cast during " << game::Phase::ToString(validPhases_, false)
-            << ", targeting " << combat::TargetType::Name(targetType_)
-            << ", and costing " << manaCost_ << " mana.";
+        ss << "A " << misc::String::DecorateNumber(rank_.As<int>()) << " rank"
+           << " " << combat::EffectType::Name(effectType_) << " spell"
+           << " that can be cast during " << game::Phase::ToString(validPhases_, false)
+           << ", targeting " << combat::TargetType::Name(targetType_) << ", and costing "
+           << manaCost_ << " mana.";
 
         return ss.str();
     }
-
 
     const std::string Spell::DescComplete() const
     {
@@ -100,11 +92,9 @@ namespace spell
         return ss.str();
     }
 
-
     const std::string Spell::EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const
     {
         return "Nothing to do.";
     }
-
 }
 }

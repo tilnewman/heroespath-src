@@ -27,49 +27,37 @@
 //
 // tile-offsets.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "misc/types.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <tuple>
-
-
 
 namespace heroespath
 {
 namespace map
 {
 
-    //Responsible for wrapping the range of tile positions that are drawn on the map.
+    // Responsible for wrapping the range of tile positions that are drawn on the map.
     struct TileOffsets
     {
         TileOffsets(
             const sf::Vector2i BEGIN_V = sf::Vector2i(0, 0),
             const sf::Vector2i END_V = sf::Vector2i(0, 0))
-        :
-            begin_v(BEGIN_V),
-            end_v(END_V)
+            : begin_v(BEGIN_V)
+            , end_v(END_V)
         {}
 
         sf::Vector2i begin_v;
         sf::Vector2i end_v;
     };
 
-
     inline bool operator==(const TileOffsets & L, const TileOffsets & R)
     {
-        return std::tie(L.begin_v, L.end_v)
-                ==
-               std::tie(R.begin_v, R.end_v);
+        return std::tie(L.begin_v, L.end_v) == std::tie(R.begin_v, R.end_v);
     }
 
-
-    inline bool operator!=(const TileOffsets & L, const TileOffsets & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const TileOffsets & L, const TileOffsets & R) { return !(L == R); }
 }
 }
 
-
-#endif //HEROESPATH_TILEOFFSETS_HPP_INCLUDED
+#endif // HEROESPATH_TILEOFFSETS_HPP_INCLUDED

@@ -33,24 +33,19 @@
 
 #include "sfml-util/loaders.hpp"
 
-
 namespace heroespath
 {
 namespace popup
 {
 
     PopupStageTreasureTrap::PopupStageTreasureTrap(const PopupInfo & POPUP_INFO)
-    :
-        PopupStageBase(POPUP_INFO),
-        trapTexture_(),
-        trapSprite_(),
-        descTextRegionUPtr_()
+        : PopupStageBase(POPUP_INFO)
+        , trapTexture_()
+        , trapSprite_()
+        , descTextRegionUPtr_()
     {}
 
-
-    PopupStageTreasureTrap::~PopupStageTreasureTrap()
-    {}
-
+    PopupStageTreasureTrap::~PopupStageTreasureTrap() {}
 
     void PopupStageTreasureTrap::Setup()
     {
@@ -60,13 +55,11 @@ namespace popup
         SetupAccentImage();
     }
 
-
     void PopupStageTreasureTrap::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
         PopupStageBase::Draw(target, STATES);
         Stage::Draw(target, STATES);
     }
-
 
     void PopupStageTreasureTrap::SetupTitleText()
     {
@@ -83,12 +76,8 @@ namespace popup
             sfml_util::Justified::Center);
 
         textRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "PopupStageTreasureTrap's_Title",
-            TITLE_TEXTINFO,
-            tempRect,
-            this);
+            "PopupStageTreasureTrap's_Title", TITLE_TEXTINFO, tempRect, this);
     }
-
 
     void PopupStageTreasureTrap::SetupDescriptionText()
     {
@@ -104,30 +93,21 @@ namespace popup
             sfml_util::Justified::Center);
 
         descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "PopupStageTreasureTrap's_Desc",
-            DESC_TEXTINFO,
-            tempRect,
-            this);
+            "PopupStageTreasureTrap's_Desc", DESC_TEXTINFO, tempRect, this);
 
         Stage::EntityAdd(descTextRegionUPtr_.get());
     }
 
-
     void PopupStageTreasureTrap::SetupAccentImage()
     {
         sfml_util::LoadTexture(
-            accentTexture1_,
-            game::GameDataFile::Instance()->GetMediaPath("media-images-trap"));
+            accentTexture1_, game::GameDataFile::Instance()->GetMediaPath("media-images-trap"));
 
         accentSprite1_.setTexture(accentTexture1_, true);
 
-        sfml_util::CenterAndScaleSpriteToFit(
-            accentSprite1_,
-            textRegion_,
-            0.65f);
+        sfml_util::CenterAndScaleSpriteToFit(accentSprite1_, textRegion_, 0.65f);
 
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
-
 }
 }

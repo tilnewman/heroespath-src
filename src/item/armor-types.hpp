@@ -30,84 +30,84 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace item
 {
-namespace armor
-{
-
-    struct shield_type
+    namespace armor
     {
-        enum Enum
+
+        struct shield_type
         {
-            Buckler = 0,
-            Kite,
-            Heater,
-            Pavis,
-            Count
+            enum Enum
+            {
+                Buckler = 0,
+                Kite,
+                Heater,
+                Pavis,
+                Count
+            };
+
+            static const std::string ToString(const shield_type::Enum);
+            inline static const std::string ToStringFull(const shield_type::Enum E)
+            {
+                return ToString(E) + " Shield";
+            }
+            static shield_type::Enum FromString(const std::string &);
         };
 
-        static const std::string ToString(const shield_type::Enum);
-        inline static const std::string ToStringFull(const shield_type::Enum E) { return ToString(E) + " Shield"; }
-        static shield_type::Enum FromString(const std::string &);
-    };
-
-
-    struct helm_type
-    {
-        enum Enum
+        struct helm_type
         {
-            Leather = 0,
-            MailCoif,
-            Kettle,
-            Archers,
-            Bascinet,
-            Great,
-            Count
+            enum Enum
+            {
+                Leather = 0,
+                MailCoif,
+                Kettle,
+                Archers,
+                Bascinet,
+                Great,
+                Count
+            };
+
+            static const std::string ToString(const helm_type::Enum);
+            inline static const std::string ToStringFull(const helm_type::Enum E)
+            {
+                return ToString(E) + " Helm";
+            }
+            static helm_type::Enum FromString(const std::string &);
         };
 
-        static const std::string ToString(const helm_type::Enum);
-        inline static const std::string ToStringFull(const helm_type::Enum E) { return ToString(E) + " Helm"; }
-        static helm_type::Enum FromString(const std::string &);
-    };
-
-
-    struct base_type
-    {
-        enum Enum
+        struct base_type
         {
-            Plain = 0,
-            Mail,
-            Scale,
-            Plate,
-            Count
+            enum Enum
+            {
+                Plain = 0,
+                Mail,
+                Scale,
+                Plate,
+                Count
+            };
+
+            static const std::string ToString(const base_type::Enum);
+            static base_type::Enum FromString(const std::string &);
         };
 
-        static const std::string ToString(const base_type::Enum);
-        static base_type::Enum FromString(const std::string &);
-    };
-
-
-    struct cover_type
-    {
-        enum Enum
+        struct cover_type
         {
-            Cape = 0,
-            Vest,
-            Robe,
-            Cloak,
-            Count
+            enum Enum
+            {
+                Cape = 0,
+                Vest,
+                Robe,
+                Cloak,
+                Count
+            };
+
+            static const std::string ToString(const cover_type::Enum);
+            static cover_type::Enum FromString(const std::string &);
         };
-
-        static const std::string ToString(const cover_type::Enum);
-        static cover_type::Enum FromString(const std::string &);
-    };
-
-
+    }
 }
 }
-}
 
-#endif //HEROESPATH_ITEM_ARMORTYPES_HPP_INCLUDED
+#endif // HEROESPATH_ITEM_ARMORTYPES_HPP_INCLUDED

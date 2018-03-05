@@ -29,20 +29,19 @@
 //
 #include "fight-results.hpp"
 
-#include "item/item.hpp"
-#include "creature/condition.hpp"
 #include "creature/condition-algorithms.hpp"
+#include "creature/condition.hpp"
 #include "creature/creature.hpp"
-#include "spell/spell-base.hpp"
+#include "item/item.hpp"
 #include "song/song.hpp"
+#include "spell/spell-base.hpp"
 
 #include "misc/vectors.hpp"
 
-#include <string>
-#include <sstream>
-#include <exception>
 #include <algorithm>
-
+#include <exception>
+#include <sstream>
+#include <string>
 
 namespace heroespath
 {
@@ -50,58 +49,54 @@ namespace combat
 {
 
     FightResultSummary::FightResultSummary()
-    :
-        hit_type                (HitType::Count),
-        song_ptr                (nullptr),
-        spell_ptr               (nullptr),
-        effected_vec            (),
-        resisted_vec            (),
-        already_vec             (),
-        areResistedNotEffected_ (false)
+        : hit_type(HitType::Count)
+        , song_ptr(nullptr)
+        , spell_ptr(nullptr)
+        , effected_vec()
+        , resisted_vec()
+        , already_vec()
+        , areResistedNotEffected_(false)
     {}
-
 
     FightResultSummary::FightResultSummary(const FightResultSummary & FRS)
-    :
-        hit_type                (FRS.hit_type),
+        : hit_type(FRS.hit_type)
+        ,
 
-        //The lifetime of these objects is not managed by this class.
-        //Usage is short-term observation only, so ptr copying is safe.
-        song_ptr                (FRS.song_ptr),
-        spell_ptr               (FRS.spell_ptr),
+        // The lifetime of these objects is not managed by this class.
+        // Usage is short-term observation only, so ptr copying is safe.
+        song_ptr(FRS.song_ptr)
+        , spell_ptr(FRS.spell_ptr)
+        ,
 
-        effected_vec            (FRS.effected_vec),
-        resisted_vec            (FRS.resisted_vec),
-        already_vec             (FRS.already_vec),
-        areResistedNotEffected_ (FRS.areResistedNotEffected_)
+        effected_vec(FRS.effected_vec)
+        , resisted_vec(FRS.resisted_vec)
+        , already_vec(FRS.already_vec)
+        , areResistedNotEffected_(FRS.areResistedNotEffected_)
     {}
-
 
     FightResultSummary & FightResultSummary::operator=(const FightResultSummary & FRS)
     {
-        if ( & FRS != this)
+        if (&FRS != this)
         {
-            hit_type                = FRS.hit_type;
+            hit_type = FRS.hit_type;
 
-            //see copy constructor comment regarding these pointers
-            song_ptr                = FRS.song_ptr;
-            spell_ptr               = FRS.spell_ptr;
+            // see copy constructor comment regarding these pointers
+            song_ptr = FRS.song_ptr;
+            spell_ptr = FRS.spell_ptr;
 
-            effected_vec            = FRS.effected_vec;
-            resisted_vec            = FRS.resisted_vec;
-            already_vec             = FRS.already_vec;
+            effected_vec = FRS.effected_vec;
+            resisted_vec = FRS.resisted_vec;
+            already_vec = FRS.already_vec;
             areResistedNotEffected_ = FRS.areResistedNotEffected_;
         }
 
         return *this;
     }
 
-
     std::size_t FightResultSummary::PtrCount() const
     {
         return (effected_vec.size() + resisted_vec.size() + already_vec.size());
     }
-
 
     bool FightResultSummary::IsValid() const
     {
@@ -110,9 +105,8 @@ namespace combat
             return false;
         }
 
-        if ((HitType::Roar != hit_type) &&
-            (HitType::Song != hit_type) &&
-            (HitType::Spell != hit_type))
+        if ((HitType::Roar != hit_type) && (HitType::Song != hit_type)
+            && (HitType::Spell != hit_type))
         {
             return false;
         }
@@ -130,7 +124,6 @@ namespace combat
         return true;
     }
 
-
     const std::string FightResultSummary::VerbThirdPerson() const
     {
         if (HitType::Song == hit_type)
@@ -141,16 +134,14 @@ namespace combat
         {
             return spell_ptr->VerbThirdPerson();
         }
-        else //roar case
+        else // roar case
         {
             return "panics";
         }
     }
 
-
     const std::string FightResultSummary::Compose(
-        const std::string & FIGHTING_CREATURE_NAME,
-        const std::string & VERB_PAST_TENSE) const
+        const std::string & FIGHTING_CREATURE_NAME, const std::string & VERB_PAST_TENSE) const
     {
         if (IsValid() == false)
         {
@@ -166,7 +157,7 @@ namespace combat
         }
         else if (HitType::Song == hit_type)
         {
-            //intentionally no prepend of empty space so that preamble can start with "'s"
+            // intentionally no prepend of empty space so that preamble can start with "'s"
             preSS << song_ptr->ActionPhrasePreamble() << " playing " << song_ptr->Name();
         }
         else
@@ -227,21 +218,16 @@ namespace combat
         return preSS.str() + postSS.str();
     }
 
-
     FightResult::FightResult(const CreatureEffectVec_t & CREATURE_EFFECT_VEC)
-    :
-        creatureEffectVec_(CREATURE_EFFECT_VEC)
+        : creatureEffectVec_(CREATURE_EFFECT_VEC)
     {}
-
 
     FightResult::FightResult(const CreatureEffect & CREATURE_EFFECT)
-    :
-        creatureEffectVec_(1, CREATURE_EFFECT)
+        : creatureEffectVec_(1, CREATURE_EFFECT)
     {}
 
-
-    const HitInfo FightResult::GetHitInfo(const std::size_t EFFECT_INDEX,
-                                          const std::size_t HIT_INDEX) const
+    const HitInfo
+        FightResult::GetHitInfo(const std::size_t EFFECT_INDEX, const std::size_t HIT_INDEX) const
     {
         if (EFFECT_INDEX < creatureEffectVec_.size())
         {
@@ -252,13 +238,12 @@ namespace combat
             }
         }
 
-        //invalid HitInfo object
+        // invalid HitInfo object
         return HitInfo();
     }
 
-
-    std::size_t FightResult::EffectedCreatures(
-        creature::CreaturePVec_t & CreaturePVec_OutParam) const
+    std::size_t
+        FightResult::EffectedCreatures(creature::CreaturePVec_t & CreaturePVec_OutParam) const
     {
         for (auto const & NEXT_CREATURE_EFFECT : creatureEffectVec_)
         {
@@ -267,6 +252,5 @@ namespace combat
 
         return creatureEffectVec_.size();
     }
-
 }
 }

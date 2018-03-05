@@ -29,19 +29,15 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace game
 {
 
-    //responsible for starting and stopping the application
+    // responsible for starting and stopping the application
     struct StartupShutdown
     {
-        static bool Setup(
-            const std::string & APPLICATION_NAME,
-            int ARGC,
-            char * argv[]);
+        static bool Setup(const std::string & APPLICATION_NAME, int ARGC, char * argv[]);
 
         static int Run();
 
@@ -62,8 +58,7 @@ namespace game
         static void SingletonsAcquireAndInitialize();
         static void SingletonsRelease();
     };
-
 }
 }
 
-#endif //HEROESPATH_GAME_STARTUPSHUTDOWN_HPP_INCLUDED
+#endif // HEROESPATH_GAME_STARTUPSHUTDOWN_HPP_INCLUDED

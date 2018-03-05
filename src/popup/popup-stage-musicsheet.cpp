@@ -29,9 +29,9 @@
 //
 #include "popup-stage-musicsheet.hpp"
 
-#include "song/song.hpp"
 #include "creature/creature.hpp"
 #include "game/loop-manager.hpp"
+#include "song/song.hpp"
 
 #include "popup/popup-manager.hpp"
 
@@ -41,64 +41,62 @@
 
 #include "misc/random.hpp"
 
-#include <sstream>
 #include <algorithm>
-
+#include <sstream>
 
 namespace heroespath
 {
 namespace popup
 {
 
-    const float     PopupStageMusicSheet::BACKGROUND_WIDTH_RATIO_           { 0.9f };
-    const float     PopupStageMusicSheet::COLOR_FADE_SPEED_                 { 6.0f };
+    const float PopupStageMusicSheet::BACKGROUND_WIDTH_RATIO_{ 0.9f };
+    const float PopupStageMusicSheet::COLOR_FADE_SPEED_{ 6.0f };
     const sf::Color PopupStageMusicSheet::UNABLE_TEXT_COLOR_{ sf::Color(127, 32, 32) };
-    const sf::Uint8 PopupStageMusicSheet::IMAGE_ALPHA_                      { 192 };
-    const float     PopupStageMusicSheet::WARNING_DURATION_SEC_             { 2.0f };
-
+    const sf::Uint8 PopupStageMusicSheet::IMAGE_ALPHA_{ 192 };
+    const float PopupStageMusicSheet::WARNING_DURATION_SEC_{ 2.0f };
 
     PopupStageMusicSheet::PopupStageMusicSheet(const PopupInfo & POPUP_INFO)
-        :
-        PopupStageBase(POPUP_INFO),
-        currentSongPtr_(nullptr),
-        charDetailsTextRegionUPtr_(),
-        listBoxLabelTextRegionUPtr_(),
-        listBoxUPtr_(),
-        playerTexture_(),
-        playerSprite_(),
-        pageRectLeft_(),
-        pageRectRight_(),
-        titleTextRegionUPtr_(),
-        detailsTextUPtr_(),
-        unableTextUPtr_(),
-        descTextUPtr_(),
-        songTexture_(),
-        songSprite_(),
-        warnColorShaker_(UNABLE_TEXT_COLOR_, sf::Color::Transparent, 20.0f),
-        LISTBOX_IMAGE_COLOR_(sf::Color(255, 255, 255, 190)),
-        LISTBOX_LINE_COLOR_(sfml_util::FontManager::Color_GrayDark()),
-        LISTBOX_COLOR_FG_(LISTBOX_LINE_COLOR_),
+        : PopupStageBase(POPUP_INFO)
+        , currentSongPtr_(nullptr)
+        , charDetailsTextRegionUPtr_()
+        , listBoxLabelTextRegionUPtr_()
+        , listBoxUPtr_()
+        , playerTexture_()
+        , playerSprite_()
+        , pageRectLeft_()
+        , pageRectRight_()
+        , titleTextRegionUPtr_()
+        , detailsTextUPtr_()
+        , unableTextUPtr_()
+        , descTextUPtr_()
+        , songTexture_()
+        , songSprite_()
+        , warnColorShaker_(UNABLE_TEXT_COLOR_, sf::Color::Transparent, 20.0f)
+        , LISTBOX_IMAGE_COLOR_(sf::Color(255, 255, 255, 190))
+        , LISTBOX_LINE_COLOR_(sfml_util::FontManager::Color_GrayDark())
+        , LISTBOX_COLOR_FG_(LISTBOX_LINE_COLOR_)
+        ,
 
-        LISTBOX_COLOR_BG_(sfml_util::FontManager::Color_Orange() -
-            sf::Color(100, 100, 100, 220)),
+        LISTBOX_COLOR_BG_(sfml_util::FontManager::Color_Orange() - sf::Color(100, 100, 100, 220))
+        ,
 
-        LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_),
-        LISTBOX_BG_INFO_(LISTBOX_COLOR_BG_),
+        LISTBOX_COLORSET_(LISTBOX_COLOR_FG_, LISTBOX_COLOR_BG_)
+        , LISTBOX_BG_INFO_(LISTBOX_COLOR_BG_)
+        ,
 
-        listBoxItemTextInfo_(" ",
+        listBoxItemTextInfo_(
+            " ",
             sfml_util::FontManager::Instance()->Font_Default2(),
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_GrayDarker(),
-            sfml_util::Justified::Left),
+            sfml_util::Justified::Left)
+        ,
 
-        imageColorSlider_(sf::Color::Transparent, sf::Color::White, COLOR_FADE_SPEED_),
-        textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
+        imageColorSlider_(sf::Color::Transparent, sf::Color::White, COLOR_FADE_SPEED_)
+        , textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
     {}
 
-
-    PopupStageMusicSheet::~PopupStageMusicSheet()
-    {}
-
+    PopupStageMusicSheet::~PopupStageMusicSheet() {}
 
     bool PopupStageMusicSheet::HandleCallback(
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
@@ -108,13 +106,13 @@ namespace popup
             return false;
         }
 
-        if ((PACKAGE.gui_event == sfml_util::GuiEvent::Click) ||
-            (PACKAGE.gui_event == sfml_util::GuiEvent::SelectionChange) ||
-            (PACKAGE.keypress_event.code == sf::Keyboard::Up) ||
-            (PACKAGE.keypress_event.code == sf::Keyboard::Down))
+        if ((PACKAGE.gui_event == sfml_util::GuiEvent::Click)
+            || (PACKAGE.gui_event == sfml_util::GuiEvent::SelectionChange)
+            || (PACKAGE.keypress_event.code == sf::Keyboard::Up)
+            || (PACKAGE.keypress_event.code == sf::Keyboard::Down))
         {
-            if ((PACKAGE.package.PTR_->Selected() != nullptr) &&
-                (currentSongPtr_ != PACKAGE.package.PTR_->Selected()->SONG_CPTRC))
+            if ((PACKAGE.package.PTR_->Selected() != nullptr)
+                && (currentSongPtr_ != PACKAGE.package.PTR_->Selected()->SONG_CPTRC))
             {
                 if (currentSongPtr_ != PACKAGE.package.PTR_->Selected()->SONG_CPTRC)
                 {
@@ -132,8 +130,9 @@ namespace popup
                 return true;
             }
         }
-        else if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick) ||
-                    (PACKAGE.keypress_event.code == sf::Keyboard::Return))
+        else if (
+            (PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
+            || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
         {
             if (PACKAGE.package.PTR_->Selected()->SONG_CPTRC != nullptr)
             {
@@ -143,7 +142,6 @@ namespace popup
 
         return false;
     }
-
 
     void PopupStageMusicSheet::Setup()
     {
@@ -157,12 +155,12 @@ namespace popup
         SetupListboxLabelText();
         SetupListbox();
 
-        //Force song listbox to take focus so that user up/down
-        //keystrokes work without having to click on the listbox.
+        // Force song listbox to take focus so that user up/down
+        // keystrokes work without having to click on the listbox.
         SetFocus(listBoxUPtr_.get());
 
-        //Force song listbox selection up and down to force colors to be correct.
-        //For some reason the colors of the listbox are not correct when first drawn...
+        // Force song listbox selection up and down to force colors to be correct.
+        // For some reason the colors of the listbox are not correct when first drawn...
         listBoxUPtr_->WillPlaySoundEffects(false);
         sf::Event::KeyEvent keyEvent;
         keyEvent.code = sf::Keyboard::Down;
@@ -171,11 +169,10 @@ namespace popup
         listBoxUPtr_->KeyRelease(keyEvent);
         listBoxUPtr_->WillPlaySoundEffects(true);
 
-        //setup initial values for songbook page right text and colors
+        // setup initial values for songbook page right text and colors
         currentSongPtr_ = listBoxUPtr_->At(0)->SONG_CPTRC;
         SetupPageRightText(currentSongPtr_);
     }
-
 
     void PopupStageMusicSheet::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
@@ -202,7 +199,6 @@ namespace popup
         PopupStageBase::DrawRedX(target, STATES);
     }
 
-
     void PopupStageMusicSheet::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
@@ -212,11 +208,10 @@ namespace popup
 
         SetPageRightColors(imageColorSlider_.Current(), textColorSlider_.Current());
 
-        if ((imageColorSlider_.IsMoving() == false) &&
-            (imageColorSlider_.Direction() == sfml_util::Moving::Away))
+        if ((imageColorSlider_.IsMoving() == false)
+            && (imageColorSlider_.Direction() == sfml_util::Moving::Away))
         {
-            sfml_util::SoundManager::Instance()->
-                SoundEffectPlay(sfml_util::sound_effect::Magic1);
+            sfml_util::SoundManager::Instance()->SoundEffectPlay(sfml_util::sound_effect::Magic1);
 
             SetupPageRightText(currentSongPtr_);
             imageColorSlider_.ChangeDirection();
@@ -227,23 +222,19 @@ namespace popup
 
         if (willShowXImage_)
         {
-            unableTextUPtr_->SetEntityColorFgBoth(
-                warnColorShaker_.Update(ELAPSED_TIME_SECONDS));
+            unableTextUPtr_->SetEntityColorFgBoth(warnColorShaker_.Update(ELAPSED_TIME_SECONDS));
         }
     }
 
-
     bool PopupStageMusicSheet::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if ((KEY_EVENT.code == sf::Keyboard::Escape) ||
-            (KEY_EVENT.code == sf::Keyboard::Space))
+        if ((KEY_EVENT.code == sf::Keyboard::Escape) || (KEY_EVENT.code == sf::Keyboard::Space))
         {
             PlayValidKeypressSoundEffect();
             game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel, 0);
             return true;
         }
-        else if ((KEY_EVENT.code == sf::Keyboard::Return) ||
-                  (KEY_EVENT.code == sf::Keyboard::C))
+        else if ((KEY_EVENT.code == sf::Keyboard::Return) || (KEY_EVENT.code == sf::Keyboard::C))
         {
             return HandleSongPlay();
         }
@@ -251,21 +242,19 @@ namespace popup
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
 
-
     void PopupStageMusicSheet::SetupOuterAndInnerRegion()
     {
-        auto const MUSICSHEET_WIDTH{ sfml_util::Display::Instance()->GetWinWidth() *
-            BACKGROUND_WIDTH_RATIO_ };
+        auto const MUSICSHEET_WIDTH{ sfml_util::Display::Instance()->GetWinWidth()
+                                     * BACKGROUND_WIDTH_RATIO_ };
 
-        auto const MUSICSHEET_HEIGHT{ (static_cast<float>(backgroundTexture_.getSize().y) *
-            MUSICSHEET_WIDTH) / static_cast<float>(backgroundTexture_.getSize().x) };
+        auto const MUSICSHEET_HEIGHT{ (static_cast<float>(backgroundTexture_.getSize().y)
+                                       * MUSICSHEET_WIDTH)
+                                      / static_cast<float>(backgroundTexture_.getSize().x) };
 
         sf::FloatRect region;
-        region.left =
-            (sfml_util::Display::Instance()->GetWinWidth() - MUSICSHEET_WIDTH) * 0.5f;
+        region.left = (sfml_util::Display::Instance()->GetWinWidth() - MUSICSHEET_WIDTH) * 0.5f;
 
-        region.top =
-            (sfml_util::Display::Instance()->GetWinHeight() - MUSICSHEET_HEIGHT) * 0.5f;
+        region.top = (sfml_util::Display::Instance()->GetWinHeight() - MUSICSHEET_HEIGHT) * 0.5f;
 
         region.width = MUSICSHEET_WIDTH;
         region.height = MUSICSHEET_HEIGHT;
@@ -273,18 +262,16 @@ namespace popup
         SetupFullscreenRegionsAndBackgroundImage(region);
     }
 
-
     void PopupStageMusicSheet::SetupRegions()
     {
-        auto const LEFT_SIDE_RECT_RAW { sfml_util::ConvertRect<int, float>(
+        auto const LEFT_SIDE_RECT_RAW{ sfml_util::ConvertRect<int, float>(
             PopupManager::Rect_MusicSheet_LeftSide()) };
 
-        auto const SCALE(innerRegion_.width /
-            static_cast<float>(backgroundTexture_.getSize().x));
+        auto const SCALE(innerRegion_.width / static_cast<float>(backgroundTexture_.getSize().x));
 
-        pageRectLeft_.left   = innerRegion_.left + (LEFT_SIDE_RECT_RAW.left * SCALE);
-        pageRectLeft_.top    = innerRegion_.top + (LEFT_SIDE_RECT_RAW.top * SCALE);
-        pageRectLeft_.width  = LEFT_SIDE_RECT_RAW.width * SCALE;
+        pageRectLeft_.left = innerRegion_.left + (LEFT_SIDE_RECT_RAW.left * SCALE);
+        pageRectLeft_.top = innerRegion_.top + (LEFT_SIDE_RECT_RAW.top * SCALE);
+        pageRectLeft_.width = LEFT_SIDE_RECT_RAW.width * SCALE;
         pageRectLeft_.height = LEFT_SIDE_RECT_RAW.height * SCALE;
 
         auto const RIGHT_SIDE_RECT_RAW{ sfml_util::ConvertRect<int, float>(
@@ -296,20 +283,16 @@ namespace popup
         pageRectRight_.height = RIGHT_SIDE_RECT_RAW.height * SCALE;
     }
 
-
     void PopupStageMusicSheet::SetupLeftAccentImage()
     {
         PopupManager::Instance()->LoadRandomAccentImage(accentTexture1_);
         accentSprite1_.setTexture(accentTexture1_);
 
         sfml_util::CenterAndScaleSpriteToFit(
-            accentSprite1_,
-            pageRectLeft_,
-            ACCENT_IMAGE_SCALEDOWN_RATIO_);
+            accentSprite1_, pageRectLeft_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
 
         accentSprite1_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
-
 
     void PopupStageMusicSheet::SetupRightAccentImage()
     {
@@ -317,13 +300,10 @@ namespace popup
         accentSprite2_.setTexture(accentTexture2_);
 
         sfml_util::CenterAndScaleSpriteToFit(
-            accentSprite2_,
-            pageRectRight_,
-            ACCENT_IMAGE_SCALEDOWN_RATIO_);
+            accentSprite2_, pageRectRight_, ACCENT_IMAGE_SCALEDOWN_RATIO_);
 
         accentSprite2_.setColor(sf::Color(255, 255, 255, ACCENT_IMAGE_ALPHA_));
     }
-
 
     void PopupStageMusicSheet::SetupPlayerImage()
     {
@@ -339,7 +319,6 @@ namespace popup
         playerSprite_.setColor(sf::Color(255, 255, 255, 192));
         playerSprite_.setPosition(pageRectLeft_.left, pageRectLeft_.top);
     }
-
 
     void PopupStageMusicSheet::SetupPlayerDetailsText()
     {
@@ -361,14 +340,14 @@ namespace popup
         else
         {
             ss << creaturePtr->RankClassName() << " " << creaturePtr->RoleName() << "\n"
-                << creaturePtr->RaceName() << "\n";
+               << creaturePtr->RaceName() << "\n";
         }
 
         ss << "Rank:  " << creaturePtr->Rank() << "\n"
-            << "Health:  " << creaturePtr->HealthCurrent() << "/" << creaturePtr->HealthNormal() << " "
-            << creaturePtr->HealthPercentStr() << "\n"
-            << "Mana:  " << creaturePtr->Mana() << "/" << creaturePtr->ManaNormal() << "\n"
-            << "\n";
+           << "Health:  " << creaturePtr->HealthCurrent() << "/" << creaturePtr->HealthNormal()
+           << " " << creaturePtr->HealthPercentStr() << "\n"
+           << "Mana:  " << creaturePtr->Mana() << "/" << creaturePtr->ManaNormal() << "\n"
+           << "\n";
 
         const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
             ss.str(),
@@ -378,19 +357,16 @@ namespace popup
             sfml_util::Justified::Left);
 
         const sf::FloatRect DETAILS_TEXT_RECT{
-            pageRectLeft_.left +
-            playerSprite_.getGlobalBounds().width +
-            sfml_util::MapByRes(10.0f, 40.0f),
+            pageRectLeft_.left + playerSprite_.getGlobalBounds().width
+                + sfml_util::MapByRes(10.0f, 40.0f),
             pageRectLeft_.top + sfml_util::MapByRes(20.0f, 80.0f),
             0.0f,
-            0.0f };
+            0.0f
+        };
 
         charDetailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "MusicSheetPopupWindowDetails",
-            DETAILS_TEXTINFO,
-            DETAILS_TEXT_RECT);
+            "MusicSheetPopupWindowDetails", DETAILS_TEXTINFO, DETAILS_TEXT_RECT);
     }
-
 
     void PopupStageMusicSheet::SetupListboxLabelText()
     {
@@ -403,44 +379,37 @@ namespace popup
 
         const sf::FloatRect LISTBOX_LABEL_TEXTRECT{
             pageRectLeft_.left + sfml_util::MapByRes(10.0f, 40.0f),
-            playerSprite_.getGlobalBounds().top +
-            playerSprite_.getGlobalBounds().height +
-            sfml_util::MapByRes(20.0f, 80.0f),
+            playerSprite_.getGlobalBounds().top + playerSprite_.getGlobalBounds().height
+                + sfml_util::MapByRes(20.0f, 80.0f),
             0.0f,
-            0.0f };
+            0.0f
+        };
 
         listBoxLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "MusicSheetPopupWindowSongListLabel",
-            LISTBOX_LABEL_TEXTINFO,
-            LISTBOX_LABEL_TEXTRECT);
+            "MusicSheetPopupWindowSongListLabel", LISTBOX_LABEL_TEXTINFO, LISTBOX_LABEL_TEXTRECT);
     }
-
 
     void PopupStageMusicSheet::SetupListbox()
     {
-        auto const LISTBOX_MARGIN     { sfml_util::MapByRes(15.0f, 45.0f) };
-        auto const LISTBOX_RECT_LEFT  { pageRectLeft_.left + LISTBOX_MARGIN };
+        auto const LISTBOX_MARGIN{ sfml_util::MapByRes(15.0f, 45.0f) };
+        auto const LISTBOX_RECT_LEFT{ pageRectLeft_.left + LISTBOX_MARGIN };
 
-        auto const LISTBOX_RECT_TOP   { listBoxLabelTextRegionUPtr_->GetEntityRegion().top +
-            listBoxLabelTextRegionUPtr_->GetEntityRegion().height + LISTBOX_MARGIN };
+        auto const LISTBOX_RECT_TOP{ listBoxLabelTextRegionUPtr_->GetEntityRegion().top
+                                     + listBoxLabelTextRegionUPtr_->GetEntityRegion().height
+                                     + LISTBOX_MARGIN };
 
-        auto const LISTBOX_RECT_WIDTH { pageRectLeft_.width - (LISTBOX_MARGIN * 2.0f) };
+        auto const LISTBOX_RECT_WIDTH{ pageRectLeft_.width - (LISTBOX_MARGIN * 2.0f) };
 
-        auto const LISTBOX_RECT_HEIGHT{ ((pageRectLeft_.top + pageRectLeft_.height) -
-            LISTBOX_RECT_TOP) - (LISTBOX_MARGIN * 2.0f) };
+        auto const LISTBOX_RECT_HEIGHT{ ((pageRectLeft_.top + pageRectLeft_.height)
+                                         - LISTBOX_RECT_TOP)
+                                        - (LISTBOX_MARGIN * 2.0f) };
 
         const sf::FloatRect LISTBOX_RECT{
-            LISTBOX_RECT_LEFT,
-            LISTBOX_RECT_TOP,
-            LISTBOX_RECT_WIDTH,
-            LISTBOX_RECT_HEIGHT };
+            LISTBOX_RECT_LEFT, LISTBOX_RECT_TOP, LISTBOX_RECT_WIDTH, LISTBOX_RECT_HEIGHT
+        };
 
         const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
-            1,
-            true,
-            LISTBOX_RECT,
-            LISTBOX_COLORSET_,
-            LISTBOX_BG_INFO_);
+            1, true, LISTBOX_RECT, LISTBOX_COLORSET_, LISTBOX_BG_INFO_);
 
         sfml_util::gui::ListBoxItemSVec_t listBoxItemsSVec;
         auto const SONG_PVEC{ popupInfo_.CreaturePtr()->SongsPVec() };
@@ -448,11 +417,11 @@ namespace popup
         {
             listBoxItemTextInfo_.text = NEXT_SONG_PTR->Name();
 
-            auto const LISTBOXITEM_SPTR( std::make_shared<sfml_util::gui::ListBoxItem>(
+            auto const LISTBOXITEM_SPTR(std::make_shared<sfml_util::gui::ListBoxItem>(
                 NEXT_SONG_PTR->Name() + "_MusicListBoxEntry",
                 listBoxItemTextInfo_,
                 NEXT_SONG_PTR,
-                CanPlaySong(NEXT_SONG_PTR)) );
+                CanPlaySong(NEXT_SONG_PTR)));
 
             listBoxItemsSVec.push_back(LISTBOXITEM_SPTR);
         }
@@ -473,7 +442,6 @@ namespace popup
         listBoxUPtr_->ImageColor(LISTBOX_IMAGE_COLOR_);
     }
 
-
     void PopupStageMusicSheet::SetupPageRightText(const song::SongPtrC_t SONG_CPTRC)
     {
         if (SONG_CPTRC == nullptr)
@@ -481,7 +449,7 @@ namespace popup
             return;
         }
 
-        //setup song title text
+        // setup song title text
         const sfml_util::gui::TextInfo SONG_TITLE_TEXTINFO(
             SONG_CPTRC->Name(),
             sfml_util::FontManager::Instance()->Font_Default1(),
@@ -489,51 +457,49 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
 
-        const sf::FloatRect SONG_TITLE_TEXTRECT{ pageRectRight_.left,
-                                                 pageRectRight_.top,
-                                                 pageRectRight_.width,
-                                                 0.0f };
+        const sf::FloatRect SONG_TITLE_TEXTRECT{
+            pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
+        };
 
         if (titleTextRegionUPtr_.get() == nullptr)
         {
             titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "MusicSheetPopupWindowSongTitle",
-                SONG_TITLE_TEXTINFO,
-                SONG_TITLE_TEXTRECT);
+                "MusicSheetPopupWindowSongTitle", SONG_TITLE_TEXTINFO, SONG_TITLE_TEXTRECT);
         }
         else
         {
             titleTextRegionUPtr_->SetText(SONG_CPTRC->Name());
         }
 
-        //setup song image
-        sfml_util::gui::SongImageManager::Instance()->Get(songTexture_,
-                                                          SONG_CPTRC->Which());
+        // setup song image
+        sfml_util::gui::SongImageManager::Instance()->Get(songTexture_, SONG_CPTRC->Which());
 
         songSprite_.setTexture(songTexture_);
         auto const SONG_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
         songSprite_.setScale(SONG_IMAGE_SCALE, SONG_IMAGE_SCALE);
         songSprite_.setColor(imageColorSlider_.Current());
 
-        songSprite_.setPosition((pageRectRight_.left + (pageRectRight_.width * 0.5f)) -
-            (songSprite_.getGlobalBounds().width * 0.5f),
-                titleTextRegionUPtr_->GetEntityRegion().top + titleTextRegionUPtr_->
-                    GetEntityRegion().height + sfml_util::MapByRes(5.0f, 60.0f));
+        songSprite_.setPosition(
+            (pageRectRight_.left + (pageRectRight_.width * 0.5f))
+                - (songSprite_.getGlobalBounds().width * 0.5f),
+            titleTextRegionUPtr_->GetEntityRegion().top
+                + titleTextRegionUPtr_->GetEntityRegion().height
+                + sfml_util::MapByRes(5.0f, 60.0f));
 
         auto const SYM_SCALE{ sfml_util::MapByRes(0.75f, 3.75f) };
         xSymbolSprite_.setScale(SYM_SCALE, SYM_SCALE);
 
-        auto const X_SYM_POS_LEFT{ (songSprite_.getGlobalBounds().left +
-            (songSprite_.getGlobalBounds().width * 0.5f)) -
-            (xSymbolSprite_.getGlobalBounds().width * 0.5f) };
+        auto const X_SYM_POS_LEFT{ (songSprite_.getGlobalBounds().left
+                                    + (songSprite_.getGlobalBounds().width * 0.5f))
+                                   - (xSymbolSprite_.getGlobalBounds().width * 0.5f) };
 
-        auto const X_SYM_POS_TOP{ (songSprite_.getGlobalBounds().top +
-            (songSprite_.getGlobalBounds().height * 0.5f)) -
-            (xSymbolSprite_.getGlobalBounds().height * 0.5f) };
+        auto const X_SYM_POS_TOP{ (songSprite_.getGlobalBounds().top
+                                   + (songSprite_.getGlobalBounds().height * 0.5f))
+                                  - (xSymbolSprite_.getGlobalBounds().height * 0.5f) };
 
         xSymbolSprite_.setPosition(X_SYM_POS_LEFT, X_SYM_POS_TOP);
 
-        //setup song details text
+        // setup song details text
         std::ostringstream ss;
         ss << "Mana Cost: " << SONG_CPTRC->ManaCost() << "\n"
            << "Rank: " << SONG_CPTRC->Rank() << "\n"
@@ -547,13 +513,14 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
 
-        auto const SONGDETAILS_TEXTRECT_LEFT   { pageRectRight_.left };
+        auto const SONGDETAILS_TEXTRECT_LEFT{ pageRectRight_.left };
 
-        auto const SONGDETAILS_TEXTRECT_TOP    { songSprite_.getGlobalBounds().top +
-            songSprite_.getGlobalBounds().height + sfml_util::MapByRes(10.0f, 90.0f) };
+        auto const SONGDETAILS_TEXTRECT_TOP{ songSprite_.getGlobalBounds().top
+                                             + songSprite_.getGlobalBounds().height
+                                             + sfml_util::MapByRes(10.0f, 90.0f) };
 
-        auto const SONGDETAILS_TEXTRECT_WIDTH  { pageRectRight_.width };
-        auto const SONGDETAILS_TEXTRECT_HEIGHT { 0.0f };
+        auto const SONGDETAILS_TEXTRECT_WIDTH{ pageRectRight_.width };
+        auto const SONGDETAILS_TEXTRECT_HEIGHT{ 0.0f };
 
         const sf::FloatRect SONG_DETAILS_TEXTRECT{ SONGDETAILS_TEXTRECT_LEFT,
                                                    SONGDETAILS_TEXTRECT_TOP,
@@ -563,16 +530,14 @@ namespace popup
         if (detailsTextUPtr_.get() == nullptr)
         {
             detailsTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "MusicsheetPopupWindowSongDetails",
-                SONG_DETAILS_TEXTINFO,
-                SONG_DETAILS_TEXTRECT);
+                "MusicsheetPopupWindowSongDetails", SONG_DETAILS_TEXTINFO, SONG_DETAILS_TEXTRECT);
         }
         else
         {
             detailsTextUPtr_->SetText(ss.str());
         }
 
-        //setup song 'unable to cast' text
+        // setup song 'unable to cast' text
         willShowXImage_ = false;
         ss.str(" ");
         if (DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) == false)
@@ -604,8 +569,8 @@ namespace popup
             }
             else
             {
-                ss << "Only during "
-                    << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false) << ".";
+                ss << "Only during " << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false)
+                   << ".";
             }
         }
 
@@ -620,26 +585,24 @@ namespace popup
 
         auto const VERT_SPACER{ sfml_util::MapByRes(15.0f, 60.0f) };
 
-        auto const SONG_UNABLE_TEXTRECT_LEFT   { pageRectRight_.left };
+        auto const SONG_UNABLE_TEXTRECT_LEFT{ pageRectRight_.left };
 
-        auto const SONG_UNABLE_TEXTRECT_TOP    { detailsTextUPtr_->GetEntityRegion().top +
-            detailsTextUPtr_->GetEntityRegion().height + VERT_SPACER };
+        auto const SONG_UNABLE_TEXTRECT_TOP{ detailsTextUPtr_->GetEntityRegion().top
+                                             + detailsTextUPtr_->GetEntityRegion().height
+                                             + VERT_SPACER };
 
-        auto const SONG_UNABLE_TEXTRECT_WIDTH  { pageRectRight_.width };
-        auto const SONG_UNABLE_TEXTRECT_HEIGHT { 0.0f };
+        auto const SONG_UNABLE_TEXTRECT_WIDTH{ pageRectRight_.width };
+        auto const SONG_UNABLE_TEXTRECT_HEIGHT{ 0.0f };
 
-        const sf::FloatRect SONG_UNABLE_TEXTRECT{
-            SONG_UNABLE_TEXTRECT_LEFT,
-            SONG_UNABLE_TEXTRECT_TOP,
-            SONG_UNABLE_TEXTRECT_WIDTH,
-            SONG_UNABLE_TEXTRECT_HEIGHT };
+        const sf::FloatRect SONG_UNABLE_TEXTRECT{ SONG_UNABLE_TEXTRECT_LEFT,
+                                                  SONG_UNABLE_TEXTRECT_TOP,
+                                                  SONG_UNABLE_TEXTRECT_WIDTH,
+                                                  SONG_UNABLE_TEXTRECT_HEIGHT };
 
         unableTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "MusicsheetPopupWindowSongUnableToCast",
-            SONG_UNABLE_TEXTINFO,
-            SONG_UNABLE_TEXTRECT);
+            "MusicsheetPopupWindowSongUnableToCast", SONG_UNABLE_TEXTINFO, SONG_UNABLE_TEXTRECT);
 
-        //setup song description text
+        // setup song description text
         ss.str("");
         ss << SONG_CPTRC->Desc() << "  " << SONG_CPTRC->DescExtra();
 
@@ -655,19 +618,20 @@ namespace popup
         auto songDescTextRectTop{ 0.0f };
         if (willShowXImage_)
         {
-            songDescTextRectTop = unableTextUPtr_->GetEntityRegion().top +
-                unableTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+            songDescTextRectTop = unableTextUPtr_->GetEntityRegion().top
+                + unableTextUPtr_->GetEntityRegion().height + VERT_SPACER;
         }
         else
         {
-            songDescTextRectTop = detailsTextUPtr_->GetEntityRegion().top +
-                detailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
+            songDescTextRectTop = detailsTextUPtr_->GetEntityRegion().top
+                + detailsTextUPtr_->GetEntityRegion().height + VERT_SPACER;
         }
-        auto const SONG_DESC_TEXTRECT_WIDTH{ pageRectRight_.width -
-            (SONG_DESC_HORIZ_MARGIN * 2.0f) };
+        auto const SONG_DESC_TEXTRECT_WIDTH{ pageRectRight_.width
+                                             - (SONG_DESC_HORIZ_MARGIN * 2.0f) };
 
-        auto const SONG_DESC_TEXTRECT_HEIGHT{ ((pageRectRight_.top + pageRectRight_.height) -
-            songDescTextRectTop) - VERT_SPACER };
+        auto const SONG_DESC_TEXTRECT_HEIGHT{
+            ((pageRectRight_.top + pageRectRight_.height) - songDescTextRectTop) - VERT_SPACER
+        };
 
         const sf::FloatRect SONG_DESC_TEXTRECT{ SONG_DESC_TEXTRECT_LEFT,
                                                 songDescTextRectTop,
@@ -677,9 +641,7 @@ namespace popup
         if (descTextUPtr_.get() == nullptr)
         {
             descTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "SongnbookPopupWindowSongDescription",
-                SONG_DESC_TEXTINFO,
-                SONG_DESC_TEXTRECT);
+                "SongnbookPopupWindowSongDescription", SONG_DESC_TEXTINFO, SONG_DESC_TEXTRECT);
         }
         else
         {
@@ -687,17 +649,13 @@ namespace popup
         }
     }
 
-
     void PopupStageMusicSheet::SetPageRightColors(
         const sf::Color & IMAGE_COLOR, const sf::Color & TEXT_COLOR)
     {
         songSprite_.setColor(IMAGE_COLOR);
 
         const sfml_util::gui::ColorSet TEXT_COLOR_SET(
-            TEXT_COLOR,
-            TEXT_COLOR,
-            TEXT_COLOR,
-            TEXT_COLOR);
+            TEXT_COLOR, TEXT_COLOR, TEXT_COLOR, TEXT_COLOR);
 
         titleTextRegionUPtr_->SetEntityColors(TEXT_COLOR_SET);
         detailsTextUPtr_->SetEntityColors(TEXT_COLOR_SET);
@@ -707,10 +665,7 @@ namespace popup
         unableTextColor.a = TEXT_COLOR.a;
 
         const sfml_util::gui::ColorSet UNABLE_EXT_COLOR_SET(
-            unableTextColor,
-            unableTextColor,
-            unableTextColor,
-            unableTextColor);
+            unableTextColor, unableTextColor, unableTextColor, unableTextColor);
 
         unableTextUPtr_->SetEntityColors(UNABLE_EXT_COLOR_SET);
 
@@ -719,26 +674,22 @@ namespace popup
         xSymbolSprite_.setColor(redXColor);
     }
 
-
     bool PopupStageMusicSheet::DoesCharacterHaveEnoughManaToPlaySong(
         const song::SongPtrC_t SONG_CPTRC) const
     {
         return (popupInfo_.CreaturePtr()->Mana() >= SONG_CPTRC->ManaCost());
     }
 
-
     bool PopupStageMusicSheet::CanPlaySongInPhase(const song::SongPtrC_t SONG_CPTRC) const
     {
         return (SONG_CPTRC->ValidPhases() & game::LoopManager::Instance()->GetPhase());
     }
 
-
     bool PopupStageMusicSheet::CanPlaySong(const song::SongPtrC_t SONG_CPTRC) const
     {
-        return (DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) &&
-            CanPlaySongInPhase(SONG_CPTRC));
+        return (
+            DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) && CanPlaySongInPhase(SONG_CPTRC));
     }
-
 
     bool PopupStageMusicSheet::HandleSongPlay()
     {
@@ -748,13 +699,15 @@ namespace popup
             {
                 if (currentSongPtr_->Type() == song::SongType::Drum)
                 {
-                    sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                        sfml_util::sound_effect_set::DrumBlip).PlayRandom();
+                    sfml_util::SoundManager::Instance()
+                        ->Getsound_effect_set(sfml_util::sound_effect_set::DrumBlip)
+                        .PlayRandom();
                 }
                 else if (currentSongPtr_->Type() == song::SongType::Guitar)
                 {
-                    sfml_util::SoundManager::Instance()->Getsound_effect_set(
-                        sfml_util::sound_effect_set::GuitarStrum).PlayRandom();
+                    sfml_util::SoundManager::Instance()
+                        ->Getsound_effect_set(sfml_util::sound_effect_set::GuitarStrum)
+                        .PlayRandom();
                 }
             }
 
@@ -770,6 +723,5 @@ namespace popup
             return false;
         }
     }
-
 }
 }

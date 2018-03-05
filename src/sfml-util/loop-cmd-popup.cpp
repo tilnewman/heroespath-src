@@ -31,12 +31,11 @@
 
 #include "sfml-util/display.hpp"
 
-#include "popup/popup-stage-generic.hpp"
-#include "popup/popup-manager.hpp"
 #include "popup/i-popup-callback.hpp"
+#include "popup/popup-manager.hpp"
+#include "popup/popup-stage-generic.hpp"
 
 #include "game/loop-manager.hpp"
-
 
 namespace heroespath
 {
@@ -44,20 +43,15 @@ namespace sfml_util
 {
 
     LoopCmd_RemoveStage_Popup::LoopCmd_RemoveStage_Popup()
-    :
-        LoopCmd("RemoveStage_Popup")
+        : LoopCmd("RemoveStage_Popup")
     {}
 
-
-    LoopCmd_RemoveStage_Popup::~LoopCmd_RemoveStage_Popup()
-    {}
-
+    LoopCmd_RemoveStage_Popup::~LoopCmd_RemoveStage_Popup() {}
 
     bool LoopCmd_RemoveStage_Popup::Execute()
     {
         game::LoopManager::Instance()->CommandLoopAccess(this).FreePopupStage();
         return true;
     }
-
 }
 }

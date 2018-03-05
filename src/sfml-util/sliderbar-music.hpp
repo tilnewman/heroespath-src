@@ -28,42 +28,41 @@
 // sliderbar-music.hpp
 //  A SliderBar that controls the music volume.
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/gui/sliderbar-labeled.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
-#include <string>
 #include <memory>
+#include <string>
 #include <vector>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //forward declaration
+    // forward declaration
     namespace gui
     {
         class MouseTextInfo;
     }
 
-
-    //Encapsulates a gui sliderbar with a label that controls the music volume.
+    // Encapsulates a gui sliderbar with a label that controls the music volume.
     class SliderBarLabeled_Music : public gui::SliderBarLabeled
     {
-        SliderBarLabeled_Music(const SliderBarLabeled_Music &) =delete;
-        SliderBarLabeled_Music & operator=(const SliderBarLabeled_Music &) =delete;
+        SliderBarLabeled_Music(const SliderBarLabeled_Music &) = delete;
+        SliderBarLabeled_Music & operator=(const SliderBarLabeled_Music &) = delete;
 
     public:
-        SliderBarLabeled_Music(const std::string &        NAME,
-                               const float                POS_LEFT,
-                               const float                POS_TOP,
-                               const float                LENGTH,
-                               const gui::SliderStyle &   STYLE,
-                               const gui::MouseTextInfo & THREE_TEXT_INFOS_HOLDER,
-                               const float                INITIAL_VALUE           = 0.0f,
-                               const float                RELATIVE_LABEL_POS_LEFT = 0.0f,
-                               const float                RELATIVE_LABEL_POS_TOP  = 0.0f);//must be [0.0f, 1.0f]
+        SliderBarLabeled_Music(
+            const std::string & NAME,
+            const float POS_LEFT,
+            const float POS_TOP,
+            const float LENGTH,
+            const gui::SliderStyle & STYLE,
+            const gui::MouseTextInfo & THREE_TEXT_INFOS_HOLDER,
+            const float INITIAL_VALUE = 0.0f,
+            const float RELATIVE_LABEL_POS_LEFT = 0.0f,
+            const float RELATIVE_LABEL_POS_TOP = 0.0f); // must be [0.0f, 1.0f]
 
         virtual ~SliderBarLabeled_Music();
 
@@ -74,8 +73,7 @@ namespace sfml_util
     };
 
     using SliderBarLabeled_MusicUPtr_t = std::unique_ptr<SliderBarLabeled_Music>;
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_SLIDERBARMUSIC_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SLIDERBARMUSIC_HPP_INCLUDED

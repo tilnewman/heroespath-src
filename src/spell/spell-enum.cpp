@@ -33,9 +33,8 @@
 
 #include "misc/boost-string-includes.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -46,18 +45,54 @@ namespace spell
     {
         switch (E)
         {
-            case Sparks:        { return "Sparks"; }
-            case Bandage:       { return "Bandage"; }
-            case Sleep:         { return "Sleep"; }
-            case Awaken:        { return "Awaken"; }
-            case Trip:          { return "Trip"; }
-            case Lift:          { return "Lift"; }
-            case Daze:          { return "Daze"; }
-            case Panic:         { return "Panic"; }
-            case ClearMind:     { return "ClearMind"; }
-            case Poison:        { return "Poison"; }
-            case Antidote:      { return "Antidote"; }
-            case PoisonCloud:   { return "PoisonCloud"; }
+            case Sparks:
+            {
+                return "Sparks";
+            }
+            case Bandage:
+            {
+                return "Bandage";
+            }
+            case Sleep:
+            {
+                return "Sleep";
+            }
+            case Awaken:
+            {
+                return "Awaken";
+            }
+            case Trip:
+            {
+                return "Trip";
+            }
+            case Lift:
+            {
+                return "Lift";
+            }
+            case Daze:
+            {
+                return "Daze";
+            }
+            case Panic:
+            {
+                return "Panic";
+            }
+            case ClearMind:
+            {
+                return "ClearMind";
+            }
+            case Poison:
+            {
+                return "Poison";
+            }
+            case Antidote:
+            {
+                return "Antidote";
+            }
+            case PoisonCloud:
+            {
+                return "PoisonCloud";
+            }
             case Count:
             default:
             {
@@ -68,23 +103,58 @@ namespace spell
         }
     }
 
-
     const std::string Spells::Name(const Spells::Enum E)
     {
         switch (E)
         {
-            case Sparks:        { return "Sparks"; }
-            case Bandage:       { return "Bandage"; }
-            case Sleep:         { return "Sleep"; }
-            case Awaken:        { return "Awaken"; }
-            case Trip:          { return "Trip"; }
-            case Lift:          { return "Lift"; }
-            case Daze:          { return "Daze"; }
-            case Panic:         { return "Panic"; }
-            case ClearMind:     { return "Clear Mind"; }
-            case Poison:        { return "Poison"; }
-            case Antidote:      { return "Antidote"; }
-            case PoisonCloud:   { return "Poison Cloud"; }
+            case Sparks:
+            {
+                return "Sparks";
+            }
+            case Bandage:
+            {
+                return "Bandage";
+            }
+            case Sleep:
+            {
+                return "Sleep";
+            }
+            case Awaken:
+            {
+                return "Awaken";
+            }
+            case Trip:
+            {
+                return "Trip";
+            }
+            case Lift:
+            {
+                return "Lift";
+            }
+            case Daze:
+            {
+                return "Daze";
+            }
+            case Panic:
+            {
+                return "Panic";
+            }
+            case ClearMind:
+            {
+                return "Clear Mind";
+            }
+            case Poison:
+            {
+                return "Poison";
+            }
+            case Antidote:
+            {
+                return "Antidote";
+            }
+            case PoisonCloud:
+            {
+                return "Poison Cloud";
+            }
             case Count:
             default:
             {
@@ -95,14 +165,12 @@ namespace spell
         }
     }
 
-
     const std::string Spells::ShortDesc(const Spells::Enum E)
     {
         std::ostringstream keySS;
         keySS << "heroespath-spell-" << ToString(E) << "-short-desc";
         return game::GameDataFile::Instance()->GetCopyStr(keySS.str());
     }
-
 
     const std::string Spells::ExtraDesc(const Spells::Enum E)
     {
@@ -111,11 +179,9 @@ namespace spell
         return game::GameDataFile::Instance()->GetCopyStr(keySS.str());
     }
 
-
     const std::string Spells::ImageFilename(const Spells::Enum E)
     {
         return boost::algorithm::to_lower_copy(ToString(E) + ".png");
     }
-
 }
 }

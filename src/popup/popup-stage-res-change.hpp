@@ -29,13 +29,12 @@
 //
 #include "popup/popup-stage-base.hpp"
 
-
 namespace heroespath
 {
 namespace popup
 {
 
-    //Responsible for implementing the System Error Popup Stage.
+    // Responsible for implementing the System Error Popup Stage.
     class PopupStageResChange : public PopupStageBase
     {
         PopupStageResChange(const PopupStageResChange &) = delete;
@@ -52,8 +51,7 @@ namespace popup
         float elapsedTimeCounter_;
         std::size_t secondCounter_;
     };
-
 }
 }
 
-#endif //HEROESPATH_POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED
+#endif // HEROESPATH_POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED

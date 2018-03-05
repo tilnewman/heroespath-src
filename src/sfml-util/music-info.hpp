@@ -28,39 +28,39 @@
 // music-info.hpp
 //  A class that completely defines a piece of music.
 //
-#include "sfml-util/music-enum.hpp"
 #include "sfml-util/date-time.hpp"
+#include "sfml-util/music-enum.hpp"
 
 #include <string>
 #include <vector>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //simple wrapper class for information known about a piece of music
+    // simple wrapper class for information known about a piece of music
     class MusicInfo
     {
     public:
-        explicit MusicInfo(const music::Enum       WHICH_MUSIC      = music::None,
-                           const bool              IS_LOOPED        = false,
-                           const std::string &     ARTIST_NAME      = "",
-                           const std::string &     SONG_NAME        = "",
-                           const std::string &     LICENSE_TITLE    = "",
-                           const std::string &     FILE_NAME        = "",
-                           const std::string &     DIR_NAME         = "",
-                           const sfml_util::Time & DURATION         = sfml_util::Time());
+        explicit MusicInfo(
+            const music::Enum WHICH_MUSIC = music::None,
+            const bool IS_LOOPED = false,
+            const std::string & ARTIST_NAME = "",
+            const std::string & SONG_NAME = "",
+            const std::string & LICENSE_TITLE = "",
+            const std::string & FILE_NAME = "",
+            const std::string & DIR_NAME = "",
+            const sfml_util::Time & DURATION = sfml_util::Time());
 
-        inline music::Enum Which() const                { return which_; }
-        inline bool IsLooped() const                    { return isLooped_; }
-        inline const std::string WhichName() const      { return music::ToString(which_); }
-        inline const std::string ArtistName() const     { return artistName_; }
-        inline const std::string SongName() const       { return songName_; }
-        inline const std::string LicenseTitle() const   { return licenseTitle_; }
-        inline const std::string Filename() const       { return filename_; }
-        inline const std::string DirName() const        { return dirName_; }
+        inline music::Enum Which() const { return which_; }
+        inline bool IsLooped() const { return isLooped_; }
+        inline const std::string WhichName() const { return music::ToString(which_); }
+        inline const std::string ArtistName() const { return artistName_; }
+        inline const std::string SongName() const { return songName_; }
+        inline const std::string LicenseTitle() const { return licenseTitle_; }
+        inline const std::string Filename() const { return filename_; }
+        inline const std::string DirName() const { return dirName_; }
 
         inline const sfml_util::Time Duration() const { return duration_; }
         inline void Duration(const sfml_util::Time & DURATION) { duration_ = DURATION; }
@@ -71,7 +71,7 @@ namespace sfml_util
 
     private:
         music::Enum which_;
-        bool        isLooped_;
+        bool isLooped_;
         std::string artistName_;
         std::string songName_;
         std::string licenseTitle_;
@@ -84,12 +84,8 @@ namespace sfml_util
 
     bool operator==(const MusicInfo & L, const MusicInfo & R);
 
-    inline bool operator!=(const MusicInfo & L, const MusicInfo & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const MusicInfo & L, const MusicInfo & R) { return !(L == R); }
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_MUSICINFO_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_MUSICINFO_HPP_INCLUDED

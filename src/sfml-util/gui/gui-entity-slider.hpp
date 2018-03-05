@@ -27,53 +27,50 @@
 //
 //  gui-entity-slider.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/pos-slider.hpp"
-
+#include "sfml-util/sfml-graphics.hpp"
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //forward declarations
-    class IGuiEntity;
-    using IGuiEntityPtr_t = IGuiEntity *;
-
-
-    //Responsible for moving a GuiEntity back and forth between two points using the slider method.
-    class GuiEntitySlider : public sliders::PosSlider
+    namespace gui
     {
-    public:
-        explicit GuiEntitySlider(
-            IGuiEntityPtr_t      guiEntityPtr = nullptr,
-            const sf::Vector2f & FROM_POS_V   = sf::Vector2f(0.0f, 0.0f),
-            const sf::Vector2f & TO_POS_V     = sf::Vector2f(0.0f, 0.0f),
-            const float          SLIDER_SPEED = 1.0f);
 
-        virtual ~GuiEntitySlider();
+        // forward declarations
+        class IGuiEntity;
+        using IGuiEntityPtr_t = IGuiEntity *;
 
-        void Setup(
-            IGuiEntityPtr_t      guiEntityPtr  = nullptr,
-            const sf::Vector2f & FROM_POS_V    = sf::Vector2f(0.0f, 0.0f),
-            const sf::Vector2f & TO_POS_V      = sf::Vector2f(0.0f, 0.0f),
-            const float          SLIDER_SPEED  = 1.0f);
+        // Responsible for moving a GuiEntity back and forth between two points using the slider
+        // method.
+        class GuiEntitySlider : public sliders::PosSlider
+        {
+        public:
+            explicit GuiEntitySlider(
+                IGuiEntityPtr_t guiEntityPtr = nullptr,
+                const sf::Vector2f & FROM_POS_V = sf::Vector2f(0.0f, 0.0f),
+                const sf::Vector2f & TO_POS_V = sf::Vector2f(0.0f, 0.0f),
+                const float SLIDER_SPEED = 1.0f);
 
-        virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+            virtual ~GuiEntitySlider();
 
-        inline IGuiEntityPtr_t GetEntity() const { return guiEntityPtr_; }
-        inline void SetEntity(const IGuiEntityPtr_t PTR) { guiEntityPtr_ = PTR; }
+            void Setup(
+                IGuiEntityPtr_t guiEntityPtr = nullptr,
+                const sf::Vector2f & FROM_POS_V = sf::Vector2f(0.0f, 0.0f),
+                const sf::Vector2f & TO_POS_V = sf::Vector2f(0.0f, 0.0f),
+                const float SLIDER_SPEED = 1.0f);
 
-    private:
+            virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
-        //This is an observer pointer that does not control the lifetime of the object.
-        IGuiEntityPtr_t guiEntityPtr_;
-    };
+            inline IGuiEntityPtr_t GetEntity() const { return guiEntityPtr_; }
+            inline void SetEntity(const IGuiEntityPtr_t PTR) { guiEntityPtr_ = PTR; }
 
+        private:
+            // This is an observer pointer that does not control the lifetime of the object.
+            IGuiEntityPtr_t guiEntityPtr_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUI_GUI_ENTITY_SLIDER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_GUI_ENTITY_SLIDER_HPP_INCLUDED

@@ -28,85 +28,80 @@
 // line.hpp
 //  Line drawing utility class
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/orientation-enum.hpp"
-#include "sfml-util/side-enum.hpp"
 #include "gui-entity.hpp"
+#include "sfml-util/orientation-enum.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/side-enum.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //A simple line drawing gui entity
-    class Line : public GuiEntity
+    namespace gui
     {
-        Line(const Line &) =delete;
-        Line & operator=(const Line &) =delete;
 
-    public:
-        Line(
-            const std::string & NAME,
-            const float LEFT,
-            const float TOP,
-            const std::size_t LENGTH,
-            Orientation::Enum ORIENTATION,
-            const Side::Enum SIDE,
-            const bool WILL_CAP_ENDS = true);
+        // A simple line drawing gui entity
+        class Line : public GuiEntity
+        {
+            Line(const Line &) = delete;
+            Line & operator=(const Line &) = delete;
 
-        //Use this constructor when position and length are not initially known,
-        //but must still call Setup() before any other functions.
-        Line(
-            const std::string & NAME,
-            Orientation::Enum ORIENTATION,
-            const Side::Enum SIDE,
-            const bool WILL_CAP_ENDS);
+        public:
+            Line(
+                const std::string & NAME,
+                const float LEFT,
+                const float TOP,
+                const std::size_t LENGTH,
+                Orientation::Enum ORIENTATION,
+                const Side::Enum SIDE,
+                const bool WILL_CAP_ENDS = true);
 
-        virtual ~Line() {}
+            // Use this constructor when position and length are not initially known,
+            // but must still call Setup() before any other functions.
+            Line(
+                const std::string & NAME,
+                Orientation::Enum ORIENTATION,
+                const Side::Enum SIDE,
+                const bool WILL_CAP_ENDS);
 
-        void Setup(
-            const float LEFT,
-            const float TOP,
-            const std::size_t LENGTH);
+            virtual ~Line() {}
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+            void Setup(const float LEFT, const float TOP, const std::size_t LENGTH);
 
-        inline virtual bool UpdateMousePos(const sf::Vector2f &) { return false; }
+            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-        virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
-        virtual void MoveEntityPos(const float HORIZ, const float VERT);
+            inline virtual bool UpdateMousePos(const sf::Vector2f &) { return false; }
 
-    protected:
-        inline virtual void OnClick(const sf::Vector2f &) {}
-        virtual void OnColorChange();
+            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
+            virtual void MoveEntityPos(const float HORIZ, const float VERT);
 
-        void SetupBaseSprites();
-        void SetupMiddleSprites();
-        void SetupOffScreenTexture();
+        protected:
+            inline virtual void OnClick(const sf::Vector2f &) {}
+            virtual void OnColorChange();
 
-    private:
-        std::size_t length_;
-        const Orientation::Enum ORIENTATION_;
-        const Side::Enum SIDE_;
-        const bool WILL_CAP_ENDS_;
-        std::size_t pixelsOfMiddleToUse_;
-        std::size_t middleCount_;
-        sf::Sprite middleSprite_;
-        sf::Sprite endTopOrLeftSprite_;
-        sf::Sprite endBotOrRightSprite_;
-        sf::Sprite finalSprite_;//used to draw to screen
-        sf::RenderTexture offScreenTexture_;
-    };
+            void SetupBaseSprites();
+            void SetupMiddleSprites();
+            void SetupOffScreenTexture();
 
+        private:
+            std::size_t length_;
+            const Orientation::Enum ORIENTATION_;
+            const Side::Enum SIDE_;
+            const bool WILL_CAP_ENDS_;
+            std::size_t pixelsOfMiddleToUse_;
+            std::size_t middleCount_;
+            sf::Sprite middleSprite_;
+            sf::Sprite endTopOrLeftSprite_;
+            sf::Sprite endBotOrRightSprite_;
+            sf::Sprite finalSprite_; // used to draw to screen
+            sf::RenderTexture offScreenTexture_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_LINE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_LINE_HPP_INCLUDED

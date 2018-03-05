@@ -31,32 +31,32 @@
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/gui/sliderbar-labeled.hpp"
 
-#include <string>
 #include <memory>
+#include <string>
 #include <vector>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //Encapsulates a gui sliderbar with a label that controls the sound effects volume.
+    // Encapsulates a gui sliderbar with a label that controls the sound effects volume.
     class SliderBarLabeled_Effects : public gui::SliderBarLabeled
     {
-        SliderBarLabeled_Effects(const SliderBarLabeled_Effects &) =delete;
-        SliderBarLabeled_Effects & operator=(const SliderBarLabeled_Effects &) =delete;
+        SliderBarLabeled_Effects(const SliderBarLabeled_Effects &) = delete;
+        SliderBarLabeled_Effects & operator=(const SliderBarLabeled_Effects &) = delete;
 
     public:
-        SliderBarLabeled_Effects(const std::string &        NAME,
-                                 const float                POS_LEFT,
-                                 const float                POS_TOP,
-                                 const float                LENGTH,
-                                 const gui::SliderStyle &   STYLE,
-                                 const gui::MouseTextInfo & THREE_TEXT_INFOS_HOLDER,
-                                 const float                INITIAL_VALUE           = 0.0f,
-                                 const float                RELATIVE_LABEL_POS_LEFT = 0.0f,
-                                 const float                RELATIVE_LABEL_POS_TOP  = 0.0f);//must be [0.0f, 1.0f]
+        SliderBarLabeled_Effects(
+            const std::string & NAME,
+            const float POS_LEFT,
+            const float POS_TOP,
+            const float LENGTH,
+            const gui::SliderStyle & STYLE,
+            const gui::MouseTextInfo & THREE_TEXT_INFOS_HOLDER,
+            const float INITIAL_VALUE = 0.0f,
+            const float RELATIVE_LABEL_POS_LEFT = 0.0f,
+            const float RELATIVE_LABEL_POS_TOP = 0.0f); // must be [0.0f, 1.0f]
 
         virtual ~SliderBarLabeled_Effects();
 
@@ -66,7 +66,10 @@ namespace sfml_util
         virtual void SetCurrentValueFromScreenCoords(const sf::Vector2f & NEW_COORD_V) override;
         virtual bool UpdateTime(const float) override;
 
-        static inline void SetPreventSoundEffect(const bool WILL_PREVENT)   { willPreventPlayingSound_ = WILL_PREVENT; }
+        static inline void SetPreventSoundEffect(const bool WILL_PREVENT)
+        {
+            willPreventPlayingSound_ = WILL_PREVENT;
+        }
 
     private:
         static bool willPreventPlayingSound_;
@@ -75,8 +78,7 @@ namespace sfml_util
     };
 
     using SliderBarLabeled_EffectsUPtr_t = std::unique_ptr<SliderBarLabeled_Effects>;
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_SLIDERBAREFFECTS_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_SLIDERBAREFFECTS_HPP_INCLUDED

@@ -32,7 +32,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace heroespath
 {
 namespace popup
@@ -42,12 +41,30 @@ namespace popup
     {
         switch (E)
         {
-            case Okay:     { return "Okay";     }
-            case Continue: { return "Continue"; }
-            case Yes:      { return "Yes";      }
-            case No:       { return "No";       }
-            case Cancel:   { return "Cancel";   }
-            case Select:   { return "Select";   }
+            case Okay:
+            {
+                return "Okay";
+            }
+            case Continue:
+            {
+                return "Continue";
+            }
+            case Yes:
+            {
+                return "Yes";
+            }
+            case No:
+            {
+                return "No";
+            }
+            case Cancel:
+            {
+                return "Cancel";
+            }
+            case Select:
+            {
+                return "Select";
+            }
             case Error:
             default:
             {
@@ -58,13 +75,11 @@ namespace popup
         }
     }
 
-
     bool ResponseTypes::IsValid(const ResponseTypes::Enum E)
     {
         const unsigned MAX(None | Okay | Continue | Yes | No | Cancel | Select);
         return (static_cast<unsigned>(E) <= MAX);
     }
-
 
     bool ResponseTypes::IsAffirmative(const ResponseTypes::Enum E)
     {
@@ -73,9 +88,15 @@ namespace popup
             case Okay:
             case Continue:
             case Yes:
-            case Select:    { return true;  }
+            case Select:
+            {
+                return true;
+            }
             case No:
-            case Cancel:    { return false; }
+            case Cancel:
+            {
+                return false;
+            }
             case Error:
             default:
             {
@@ -85,6 +106,5 @@ namespace popup
             }
         }
     }
-
 }
 }

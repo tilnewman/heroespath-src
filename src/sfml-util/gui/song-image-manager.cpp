@@ -33,62 +33,56 @@
 
 #include "misc/assertlogandthrow.hpp"
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    std::unique_ptr<SongImageManager> SongImageManager::instanceUPtr_{ nullptr };
-
-
-    SongImageManager::SongImageManager()
+    namespace gui
     {
-        M_HP_LOG_DBG("Singleton Construction: SongImageManager");
-    }
 
+        std::unique_ptr<SongImageManager> SongImageManager::instanceUPtr_{ nullptr };
 
-    SongImageManager::~SongImageManager()
-    {
-        M_HP_LOG_DBG("Singleton Destruction: SongImageManager");
-    }
-
-
-    SongImageManager * SongImageManager::Instance()
-    {
-        if (instanceUPtr_.get() == nullptr)
+        SongImageManager::SongImageManager()
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): SongImageManager");
-            Acquire();
+            M_HP_LOG_DBG("Singleton Construction: SongImageManager");
         }
 
-        return instanceUPtr_.get();
-    }
-
-
-    void SongImageManager::Acquire()
-    {
-        if (instanceUPtr_.get() == nullptr)
+        SongImageManager::~SongImageManager()
         {
-            instanceUPtr_ = std::make_unique<SongImageManager>();
+            M_HP_LOG_DBG("Singleton Destruction: SongImageManager");
         }
-        else
+
+        SongImageManager * SongImageManager::Instance()
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: SongImageManager");
+            if (instanceUPtr_.get() == nullptr)
+            {
+                M_HP_LOG_WRN("Singleton Instance() before Acquire(): SongImageManager");
+                Acquire();
+            }
+
+            return instanceUPtr_.get();
+        }
+
+        void SongImageManager::Acquire()
+        {
+            if (instanceUPtr_.get() == nullptr)
+            {
+                instanceUPtr_ = std::make_unique<SongImageManager>();
+            }
+            else
+            {
+                M_HP_LOG_WRN("Singleton Acquire() after Construction: SongImageManager");
+            }
+        }
+
+        void SongImageManager::Release()
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (instanceUPtr_.get() != nullptr),
+                "SongImageManager::Release() found instanceUPtr that was null.");
+
+            instanceUPtr_.reset();
         }
     }
-
-
-    void SongImageManager::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS((instanceUPtr_.get() != nullptr),
-            "SongImageManager::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
-}
 }
 }

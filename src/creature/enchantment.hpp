@@ -28,58 +28,55 @@
 // enchantment.hpp
 //  Similar to a Condition, an enchantment is something that changes a creature.
 //
-#include "misc/types.hpp"
-#include "game/phase-enum.hpp"
+#include "creature/condition-enum.hpp"
+#include "creature/enchantment-type.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
-#include "creature/enchantment-type.hpp"
-#include "creature/condition-enum.hpp"
-#include "stats/traits-set.hpp"
-#include "stats/trait.hpp"
+#include "game/phase-enum.hpp"
+#include "misc/types.hpp"
 #include "spell/spell-enum.hpp"
+#include "stats/trait.hpp"
+#include "stats/traits-set.hpp"
 
 #include "misc/boost-serialize-includes.hpp"
 
-#include <string>
 #include <memory>
+#include <string>
 #include <vector>
-
 
 namespace heroespath
 {
 namespace creature
 {
-    //forward declarations
+    // forward declarations
     class Creature;
     using CreaturePtr_t = Creature *;
 
-
-    //all the 'use' info about an enchantment
+    // all the 'use' info about an enchantment
     class UseInfo
     {
     public:
         explicit UseInfo(
-            const int COUNT = 0,//negative means infinite
+            const int COUNT = 0, // negative means infinite
             const game::Phase::Enum PHASE_RESTRICT = game::Phase::NotAPhase,
             const spell::Spells::Enum SPELL = spell::Spells::Count,
             const CondEnumVec_t & CONDS_REMOVED_VEC = CondEnumVec_t())
-        :
-            countOrig_      (COUNT),
-            countRemain_    (COUNT),
-            phase_          (PHASE_RESTRICT),
-            spell_          (SPELL),
-            condsRemovedVec_(CONDS_REMOVED_VEC)
+            : countOrig_(COUNT)
+            , countRemain_(COUNT)
+            , phase_(PHASE_RESTRICT)
+            , spell_(SPELL)
+            , condsRemovedVec_(CONDS_REMOVED_VEC)
         {}
 
-        inline int CountOrig() const                            { return countOrig_; }
-        inline int CountRemaining() const                       { return countRemain_; }
-        inline void CountConsume()                              { --countRemain_; }
-        inline game::Phase::Enum RestrictedToPhase() const      { return phase_; }
-        inline spell::Spells::Enum Spell() const                { return spell_; }
-        inline const CondEnumVec_t & ConditionsRemoved() const  { return condsRemovedVec_; }
+        inline int CountOrig() const { return countOrig_; }
+        inline int CountRemaining() const { return countRemain_; }
+        inline void CountConsume() { --countRemain_; }
+        inline game::Phase::Enum RestrictedToPhase() const { return phase_; }
+        inline spell::Spells::Enum Spell() const { return spell_; }
+        inline const CondEnumVec_t & ConditionsRemoved() const { return condsRemovedVec_; }
 
     private:
-        //negative means infinite
+        // negative means infinite
         int countOrig_;
         int countRemain_;
 
@@ -89,7 +86,7 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & countOrig_;
@@ -100,28 +97,27 @@ namespace creature
         }
     };
 
-
-    //Responsible for storing all the info of an Enchantment,
-    //and for applying and removing related changes to a creature.
+    // Responsible for storing all the info of an Enchantment,
+    // and for applying and removing related changes to a creature.
     class Enchantment
     {
     public:
         explicit Enchantment(
-            const EnchantmentType::Enum TYPE      = EnchantmentType::None,
-            const stats::TraitSet &     TRAIT_SET = stats::TraitSet(),
-            const UseInfo &             USE_INFO  = UseInfo());
+            const EnchantmentType::Enum TYPE = EnchantmentType::None,
+            const stats::TraitSet & TRAIT_SET = stats::TraitSet(),
+            const UseInfo & USE_INFO = UseInfo());
 
         virtual ~Enchantment();
 
-        inline EnchantmentType::Enum Type() const               { return type_; }
+        inline EnchantmentType::Enum Type() const { return type_; }
         inline bool IsType(const EnchantmentType::Enum E) const { return (E & type_); }
-        inline const stats::TraitSet & Traits() const           { return traitSet_; }
-        inline const UseInfo & Use() const                      { return useInfo_; }
-        inline void UseCountConsume()                           { useInfo_.CountConsume(); }
+        inline const stats::TraitSet & Traits() const { return traitSet_; }
+        inline const UseInfo & Use() const { return useInfo_; }
+        inline void UseCountConsume() { useInfo_.CountConsume(); }
 
         inline bool IsUseableEver() const
         {
-            //negative useCountOrig_ means infinite
+            // negative useCountOrig_ means infinite
             return ((type_ & EnchantmentType::WhenUsed) && (useInfo_.CountOrig() != 0));
         }
 
@@ -132,9 +128,9 @@ namespace creature
 
         virtual const std::string EffectStr(const CreaturePtr_t CREATURE_PTR = nullptr) const;
 
-        virtual inline void CreatureChangeApply(const CreaturePtr_t)    {}
-        virtual inline void CreatureChangeRemove(const CreaturePtr_t)   {}
-        virtual inline void UseEffect(const CreaturePtr_t)              {}
+        virtual inline void CreatureChangeApply(const CreaturePtr_t) {}
+        virtual inline void CreatureChangeRemove(const CreaturePtr_t) {}
+        virtual inline void UseEffect(const CreaturePtr_t) {}
 
         virtual Score_t TreasureScore() const;
 
@@ -145,13 +141,13 @@ namespace creature
         }
 
     private:
-        EnchantmentType::Enum   type_;
-        stats::TraitSet         traitSet_;
-        UseInfo                 useInfo_;
+        EnchantmentType::Enum type_;
+        stats::TraitSet traitSet_;
+        UseInfo useInfo_;
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & type_;
@@ -162,8 +158,7 @@ namespace creature
 
     using EnchantmentPtr_t = Enchantment *;
     using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_ENCHANTMENT_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_ENCHANTMENT_HPP_INCLUDED

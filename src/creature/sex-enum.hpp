@@ -30,7 +30,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace creature
@@ -40,7 +39,7 @@ namespace creature
     {
         enum Enum
         {
-            Unknown = 0, //some creatures are too bizarre and don't have a sex
+            Unknown = 0, // some creatures are too bizarre and don't have a sex
             Male,
             Female,
             Count
@@ -52,14 +51,12 @@ namespace creature
 
         static const std::string HeSheIt(const sex::Enum E, const bool WILL_CAPITALIZE);
 
-        static const std::string HisHerIts(const sex::Enum E,
-                                           const bool      WILL_CAPITALIZE,
-                                           const bool      WILL_POSSESSIVE_HER);
+        static const std::string HisHerIts(
+            const sex::Enum E, const bool WILL_CAPITALIZE, const bool WILL_POSSESSIVE_HER);
 
         static const std::string HimHerIt(const sex::Enum E, const bool WILL_CAPITALIZE);
     };
-
 }
 }
 
-#endif //HEROESPATH_CREATURE_SEXENUM_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_SEXENUM_HPP_INCLUDED

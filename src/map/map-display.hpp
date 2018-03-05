@@ -27,21 +27,20 @@
 //
 // map-display.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/direction-enum.hpp"
-#include "sfml-util/collision-quad-tree.hpp"
 #include "sfml-util/animation-base.hpp"
 #include "sfml-util/animation-factory.hpp"
+#include "sfml-util/collision-quad-tree.hpp"
+#include "sfml-util/direction-enum.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
-#include "map/layout.hpp"
 #include "map/layer.hpp"
-#include "map/tiles-panel.hpp"
-#include "map/tile-offsets.hpp"
+#include "map/layout.hpp"
 #include "map/map-anim.hpp"
+#include "map/tile-offsets.hpp"
+#include "map/tiles-panel.hpp"
 #include "misc/types.hpp"
 
 #include <string>
-
 
 namespace heroespath
 {
@@ -50,8 +49,7 @@ namespace map
 
     class Map;
 
-
-    //Encapsulates a tiled map, along with the player's position.
+    // Encapsulates a tiled map, along with the player's position.
     class MapDisplay : public sf::Drawable
     {
         MapDisplay(const MapDisplay &) = delete;
@@ -110,45 +108,45 @@ namespace map
         void SetupNPCShadowImage();
 
         void SetupAnimations();
-        
+
         void StartAnimMusic();
         void StopAnimMusic();
 
         float CalcAnimationVolume(const float DISTANCE_TO_PLAYER) const;
 
     public:
-        //how many extra tiles to draw offscreen that are outside the visible map area
+        // how many extra tiles to draw offscreen that are outside the visible map area
         static const int EXTRA_OFFSCREEN_TILE_COUNT_;
         static const std::size_t VERTS_PER_QUAD_;
 
     private:
         const Map & MAP_;
 
-        //This is how close the player position can get to
-        //the edge of the map before being forced to stop.
+        // This is how close the player position can get to
+        // the edge of the map before being forced to stop.
         const float BORDER_PAD_;
 
         const sf::Vector2f WIN_POS_V_;
         const sf::Vector2f WIN_SIZE_V_;
         const sf::Vector2f WIN_CENTER_V_;
-        
-        //These distances are in offscreen coordinates.
+
+        // These distances are in offscreen coordinates.
         const float ANIM_SFX_DISTANCE_MIN_;
         const float ANIM_SFX_DISTANCE_MAX_;
         const float ANIM_SFX_VOLUME_MIN_RATIO_;
-        
-        Layout             layout_;
-        TileOffsets        tileOffsets_;
-        sf::Vector2f       playerPosV_;
-        sf::Vector2f       playerPosOffsetV_;
-        sf::FloatRect      offScreenRect_;
-        sf::Sprite         offScreenSpriteAbove_;
-        sf::Sprite         offScreenSpriteBelow_;
-        sf::RenderTexture  offScreenTextureAbove_;
-        sf::RenderTexture  offScreenTextureBelow_;
-        sf::Vector2f       offScreenMapSize_;
-        sf::Texture        npcShadowTexture_;
-        sf::Sprite         npcShadowSprite_;
+
+        Layout layout_;
+        TileOffsets tileOffsets_;
+        sf::Vector2f playerPosV_;
+        sf::Vector2f playerPosOffsetV_;
+        sf::FloatRect offScreenRect_;
+        sf::Sprite offScreenSpriteAbove_;
+        sf::Sprite offScreenSpriteBelow_;
+        sf::RenderTexture offScreenTextureAbove_;
+        sf::RenderTexture offScreenTextureBelow_;
+        sf::Vector2f offScreenMapSize_;
+        sf::Texture npcShadowTexture_;
+        sf::Sprite npcShadowSprite_;
 
         MapAnimVec_t animInfoVec_;
         std::vector<sfml_util::AnimationUPtr_t> animUPtrVec_;
@@ -158,4 +156,4 @@ namespace map
 }
 }
 
-#endif //HEROESPATH_MAP_MAPDISPLAY_HPP_INCLUDED
+#endif // HEROESPATH_MAP_MAPDISPLAY_HPP_INCLUDED

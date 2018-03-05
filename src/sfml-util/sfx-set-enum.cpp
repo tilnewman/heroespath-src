@@ -29,9 +29,8 @@
 //
 #include "sfx-set-enum.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -42,36 +41,126 @@ namespace sfml_util
     {
         switch (E)
         {
-            case Prompt:            { return "Prompt"; }
-            case Switch:            { return "Switch"; }
-            case TickOn:            { return "TickOn"; }
-            case TickOff:           { return "TickOff"; }
-            case Thock:             { return "Thock"; }
-            case Coin:              { return "Coin"; }
-            case Gem:               { return "Gem"; }
-            case MeteorShard:       { return "MeteorShard"; }
-            case ItemGive:          { return "ItemGive"; }
-            case ItemDrop:          { return "ItemDrop"; }
-            case BlowpipeShoot:     { return "BlowpipeShoot"; }
-            case BlowpipeHit:       { return "BlowpipeHit"; }
-            case ArrowShoot:        { return "ArrowShoot"; }
-            case ArrowHit:          { return "ArrowHit"; }
-            case ProjectileMiss:    { return "ProjectileMiss"; }
-            case MeleeMiss:         { return "MeleeMiss"; }
-            case FistHit:           { return "FistHit"; }
-            case TendrilHit:        { return "TendrilHit"; }
-            case WhipHit:           { return "WhipHit"; }
-            case WhipMiss:          { return "WhipMiss"; }
-            case MaterialHitMetal:  { return "MaterialHitMetal"; }
-            case MaterialHitMisc:   { return "MaterialHitMisc"; }
-            case ClawHit:           { return "ClawHit"; }
-            case Wind:              { return "Wind"; }
-            case SpellSelect:       { return "SpellSelect"; }
-            case SpellBandage:      { return "SpellBandage"; }
-            case DrumBlip:          { return "DrumBlip"; }
-            case GuitarStrum:       { return "GuitarStrum"; }
-            case CombatWin:         { return "CombatWin"; }
-            case CombatLose:        { return "CombatLose"; }
+            case Prompt:
+            {
+                return "Prompt";
+            }
+            case Switch:
+            {
+                return "Switch";
+            }
+            case TickOn:
+            {
+                return "TickOn";
+            }
+            case TickOff:
+            {
+                return "TickOff";
+            }
+            case Thock:
+            {
+                return "Thock";
+            }
+            case Coin:
+            {
+                return "Coin";
+            }
+            case Gem:
+            {
+                return "Gem";
+            }
+            case MeteorShard:
+            {
+                return "MeteorShard";
+            }
+            case ItemGive:
+            {
+                return "ItemGive";
+            }
+            case ItemDrop:
+            {
+                return "ItemDrop";
+            }
+            case BlowpipeShoot:
+            {
+                return "BlowpipeShoot";
+            }
+            case BlowpipeHit:
+            {
+                return "BlowpipeHit";
+            }
+            case ArrowShoot:
+            {
+                return "ArrowShoot";
+            }
+            case ArrowHit:
+            {
+                return "ArrowHit";
+            }
+            case ProjectileMiss:
+            {
+                return "ProjectileMiss";
+            }
+            case MeleeMiss:
+            {
+                return "MeleeMiss";
+            }
+            case FistHit:
+            {
+                return "FistHit";
+            }
+            case TendrilHit:
+            {
+                return "TendrilHit";
+            }
+            case WhipHit:
+            {
+                return "WhipHit";
+            }
+            case WhipMiss:
+            {
+                return "WhipMiss";
+            }
+            case MaterialHitMetal:
+            {
+                return "MaterialHitMetal";
+            }
+            case MaterialHitMisc:
+            {
+                return "MaterialHitMisc";
+            }
+            case ClawHit:
+            {
+                return "ClawHit";
+            }
+            case Wind:
+            {
+                return "Wind";
+            }
+            case SpellSelect:
+            {
+                return "SpellSelect";
+            }
+            case SpellBandage:
+            {
+                return "SpellBandage";
+            }
+            case DrumBlip:
+            {
+                return "DrumBlip";
+            }
+            case GuitarStrum:
+            {
+                return "GuitarStrum";
+            }
+            case CombatWin:
+            {
+                return "CombatWin";
+            }
+            case CombatLose:
+            {
+                return "CombatLose";
+            }
             case Count:
             default:
             {
@@ -81,6 +170,5 @@ namespace sfml_util
             }
         }
     }
-
 }
 }

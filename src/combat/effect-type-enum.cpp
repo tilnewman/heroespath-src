@@ -29,9 +29,8 @@
 //
 #include "effect-type-enum.hpp"
 
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -42,15 +41,42 @@ namespace combat
     {
         switch (E)
         {
-            case CreatureHarmDamage:    { return "CreatureHarmDamage"; }
-            case CreatureHarmMisc:      { return "CreatureHarmMisc"; }
-            case CreatureHelpHeal:      { return "CreatureHelpHeal"; }
-            case CreatureHelpMisc:      { return "CreatureHelpMisc"; }
-            case ItemHarmBreak:         { return "ItemHarmBreak"; }
-            case ItemHarmMisc:          { return "ItemHarmMisc"; }
-            case ItemHelpFix:           { return "ItemHelpFix"; }
-            case ItemHelpMisc:          { return "ItemHelpMisc"; }
-            case Misc:                  { return "Misc"; }
+            case CreatureHarmDamage:
+            {
+                return "CreatureHarmDamage";
+            }
+            case CreatureHarmMisc:
+            {
+                return "CreatureHarmMisc";
+            }
+            case CreatureHelpHeal:
+            {
+                return "CreatureHelpHeal";
+            }
+            case CreatureHelpMisc:
+            {
+                return "CreatureHelpMisc";
+            }
+            case ItemHarmBreak:
+            {
+                return "ItemHarmBreak";
+            }
+            case ItemHarmMisc:
+            {
+                return "ItemHarmMisc";
+            }
+            case ItemHelpFix:
+            {
+                return "ItemHelpFix";
+            }
+            case ItemHelpMisc:
+            {
+                return "ItemHelpMisc";
+            }
+            case Misc:
+            {
+                return "Misc";
+            }
             case Count:
             default:
             {
@@ -61,20 +87,46 @@ namespace combat
         }
     }
 
-
     const std::string combat::EffectType::Name(const Enum E)
     {
         switch (E)
         {
-            case CreatureHarmDamage:    { return "Creature Damage"; }
-            case CreatureHarmMisc:      { return "Creature Harm"; }
-            case CreatureHelpHeal:      { return "Creature Heal"; }
-            case CreatureHelpMisc:      { return "Creature Help"; }
-            case ItemHarmBreak:         { return "Item Break"; }
-            case ItemHarmMisc:          { return "Item Harm"; }
-            case ItemHelpFix:           { return "Item Fix"; }
-            case ItemHelpMisc:          { return "Item Help"; }
-            case Misc:                  { return "Misc"; }
+            case CreatureHarmDamage:
+            {
+                return "Creature Damage";
+            }
+            case CreatureHarmMisc:
+            {
+                return "Creature Harm";
+            }
+            case CreatureHelpHeal:
+            {
+                return "Creature Heal";
+            }
+            case CreatureHelpMisc:
+            {
+                return "Creature Help";
+            }
+            case ItemHarmBreak:
+            {
+                return "Item Break";
+            }
+            case ItemHarmMisc:
+            {
+                return "Item Harm";
+            }
+            case ItemHelpFix:
+            {
+                return "Item Fix";
+            }
+            case ItemHelpMisc:
+            {
+                return "Item Help";
+            }
+            case Misc:
+            {
+                return "Misc";
+            }
             case Count:
             default:
             {
@@ -84,6 +136,5 @@ namespace combat
             }
         }
     }
-
 }
 }

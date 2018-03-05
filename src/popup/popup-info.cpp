@@ -41,84 +41,83 @@
 #include <sstream>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace popup
 {
 
-    const float PopupInfo::IMAGE_FADE_SPEED_DEFAULT_(-1.0f);//any negative value will work here
-
+    const float PopupInfo::IMAGE_FADE_SPEED_DEFAULT_(-1.0f); // any negative value will work here
 
     PopupInfo::PopupInfo(
-        const std::string &                 NAME,
-        const sfml_util::gui::TextInfo &    TEXT_INFO,
-        const PopupButtons::Enum            BUTTONS,
-        const PopupImage::Enum              IMAGE,
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const PopupButtons::Enum BUTTONS,
+        const PopupImage::Enum IMAGE,
         const sfml_util::sound_effect::Enum SOUND_EFFECT,
-        const PopupButtonColor::Enum        BUTTON_COLOR,
-        const bool                          WILL_ADD_RAND_IMAGE,
-        const std::vector<std::size_t> &    INVALID_CHAR_NUM_VEC,
-        const sfml_util::TextureVec_t &     TEXTURE_VEC,
-        const std::vector<std::string> &    TEXT_VEC,
-        const float                         IMAGE_FADE_SPEED,
-        const creature::CreaturePtr_t       CREATURE_CPTR,
-        const std::size_t                   INITIAL_SELECTION,
-        const bool                          ARE_IMAGES_CREATURES,
-        const std::string &                 TITLE_TEXT,
-        const std::string &                 DESC_TEXT,
-        const creature::TitlePtr_t          FROM_TITLE_PTR,
-        const creature::TitlePtr_t          TO_TITLE_PTR,
-        const float                         KEEP_ALIVE_SECONDS)
-    :
-        name_            (NAME),
-        textInfo_        (TEXT_INFO),
-        buttons_         (BUTTONS),
-        image_           (IMAGE),
-        soundEffect_     (SOUND_EFFECT),
-        boxInfo_         (),
-        ratioX_          (1.0f),
-        ratioY_          (1.0f),
-        buttonColor_     (BUTTON_COLOR),
-        willAddRandImage_(WILL_ADD_RAND_IMAGE),
-        textureVec_      (TEXTURE_VEC),
-        numberMin_       (0),
-        numberMax_       (0),
-        numberInvalidVec_(INVALID_CHAR_NUM_VEC),
-        imageFadeSpeed_  (IMAGE_FADE_SPEED),
-        creatureCPtr_    (CREATURE_CPTR),
-        initialSelection_(INITIAL_SELECTION),
-        areImgsCreatures_(ARE_IMAGES_CREATURES),
-        textVec_         (TEXT_VEC),
-        howCombatEnded_  (combat::CombatEnd::Count),
-        titleFromPtr_    (FROM_TITLE_PTR),
-        titleToPtr_      (TO_TITLE_PTR),
-        titleText_       (TITLE_TEXT),
-        descText_        (DESC_TEXT),
-        willIncludeItems_(false),
-        keepAliveSeconds_(KEEP_ALIVE_SECONDS)
+        const PopupButtonColor::Enum BUTTON_COLOR,
+        const bool WILL_ADD_RAND_IMAGE,
+        const std::vector<std::size_t> & INVALID_CHAR_NUM_VEC,
+        const sfml_util::TextureVec_t & TEXTURE_VEC,
+        const std::vector<std::string> & TEXT_VEC,
+        const float IMAGE_FADE_SPEED,
+        const creature::CreaturePtr_t CREATURE_CPTR,
+        const std::size_t INITIAL_SELECTION,
+        const bool ARE_IMAGES_CREATURES,
+        const std::string & TITLE_TEXT,
+        const std::string & DESC_TEXT,
+        const creature::TitlePtr_t FROM_TITLE_PTR,
+        const creature::TitlePtr_t TO_TITLE_PTR,
+        const float KEEP_ALIVE_SECONDS)
+        : name_(NAME)
+        , textInfo_(TEXT_INFO)
+        , buttons_(BUTTONS)
+        , image_(IMAGE)
+        , soundEffect_(SOUND_EFFECT)
+        , boxInfo_()
+        , ratioX_(1.0f)
+        , ratioY_(1.0f)
+        , buttonColor_(BUTTON_COLOR)
+        , willAddRandImage_(WILL_ADD_RAND_IMAGE)
+        , textureVec_(TEXTURE_VEC)
+        , numberMin_(0)
+        , numberMax_(0)
+        , numberInvalidVec_(INVALID_CHAR_NUM_VEC)
+        , imageFadeSpeed_(IMAGE_FADE_SPEED)
+        , creatureCPtr_(CREATURE_CPTR)
+        , initialSelection_(INITIAL_SELECTION)
+        , areImgsCreatures_(ARE_IMAGES_CREATURES)
+        , textVec_(TEXT_VEC)
+        , howCombatEnded_(combat::CombatEnd::Count)
+        , titleFromPtr_(FROM_TITLE_PTR)
+        , titleToPtr_(TO_TITLE_PTR)
+        , titleText_(TITLE_TEXT)
+        , descText_(DESC_TEXT)
+        , willIncludeItems_(false)
+        , keepAliveSeconds_(KEEP_ALIVE_SECONDS)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS((TEXT_INFO.text.empty() == false),
-            "popup::PopupInfo(name=\"" << name_ << "\", buttons="
-            << PopupButtons::ToString(BUTTONS) << ", image="
-            << PopupImage::ToString(IMAGE) << ", textInfo=\""
-            << TEXT_INFO.text << "\") was given TEXT_INFO.text that was empty.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (TEXT_INFO.text.empty() == false),
+            "popup::PopupInfo(name=\"" << name_ << "\", buttons=" << PopupButtons::ToString(BUTTONS)
+                                       << ", image=" << PopupImage::ToString(IMAGE)
+                                       << ", textInfo=\"" << TEXT_INFO.text
+                                       << "\") was given TEXT_INFO.text that was empty.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS((PopupImage::IsValid(IMAGE)),
-            "popup::PopupInfo(name=\"" << name_ << "\", buttons="
-            << PopupButtons::ToString(BUTTONS) << ", image="
-            << PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text <<
-            "\") was given an IMAGE value of " << IMAGE << ", which is invalid.");
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (PopupImage::IsValid(IMAGE)),
+            "popup::PopupInfo(name=\""
+                << name_ << "\", buttons=" << PopupButtons::ToString(BUTTONS)
+                << ", image=" << PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
+                << "\") was given an IMAGE value of " << IMAGE << ", which is invalid.");
 
         if ((imageFadeSpeed_ > 0.0f) && (textureVec_.empty()))
         {
             std::ostringstream ss;
-            ss << "popup::PopupInfo(name=" << name_ << "\", buttons="
-                << PopupButtons::ToString(BUTTONS) << ", image="
-                << PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
-                << "\") was given an image fade speed of " << IMAGE_FADE_SPEED
-                << " but the TEXTURE_VEC was empty, which makes no sense.  If there is a fade "
-                << "speed then there must be images to fade-in.";
+            ss << "popup::PopupInfo(name=" << name_
+               << "\", buttons=" << PopupButtons::ToString(BUTTONS)
+               << ", image=" << PopupImage::ToString(IMAGE) << ", textInfo=\"" << TEXT_INFO.text
+               << "\") was given an image fade speed of " << IMAGE_FADE_SPEED
+               << " but the TEXTURE_VEC was empty, which makes no sense.  If there is a fade "
+               << "speed then there must be images to fade-in.";
 
             throw std::runtime_error(ss.str());
         }
@@ -129,248 +128,238 @@ namespace popup
         }
     }
 
-
-    PopupInfo::PopupInfo(const std::string &                 NAME,
-                         const sfml_util::gui::TextInfo &    TEXT_INFO,
-                         const PopupButtons::Enum            BUTTONS,
-                         const sfml_util::gui::box::Info &   BOX_INFO,
-                         const float                         MAX_SIZE_RATIO_X,
-                         const float                         MAX_SIZE_RATIO_Y,
-                         const sfml_util::sound_effect::Enum SOUND_EFFECT,
-                         const PopupButtonColor::Enum        BUTTON_COLOR,
-                         const bool                          WILL_ADD_RAND_IMAGE)
-    :
-        name_            (NAME),
-        textInfo_        (TEXT_INFO),
-        buttons_         (BUTTONS),
-        image_           (PopupImage::Custom),
-        soundEffect_     (SOUND_EFFECT),
-        boxInfo_         (BOX_INFO),
-        ratioX_          (MAX_SIZE_RATIO_X),
-        ratioY_          (MAX_SIZE_RATIO_Y),
-        buttonColor_     (BUTTON_COLOR),
-        willAddRandImage_(WILL_ADD_RAND_IMAGE),
-        textureVec_      (),
-        numberMin_       (0),
-        numberMax_       (0),
-        numberInvalidVec_(),
-        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
-        creatureCPtr_    (nullptr),
-        initialSelection_(0),
-        areImgsCreatures_(false),
-        textVec_         (),
-        howCombatEnded_  (combat::CombatEnd::Count),
-        titleFromPtr_    (nullptr),
-        titleToPtr_      (nullptr),
-        titleText_       (""),
-        descText_        (""),
-        willIncludeItems_(false),
-        keepAliveSeconds_(-1.0f)//any negative will work here
+    PopupInfo::PopupInfo(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const PopupButtons::Enum BUTTONS,
+        const sfml_util::gui::box::Info & BOX_INFO,
+        const float MAX_SIZE_RATIO_X,
+        const float MAX_SIZE_RATIO_Y,
+        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const PopupButtonColor::Enum BUTTON_COLOR,
+        const bool WILL_ADD_RAND_IMAGE)
+        : name_(NAME)
+        , textInfo_(TEXT_INFO)
+        , buttons_(BUTTONS)
+        , image_(PopupImage::Custom)
+        , soundEffect_(SOUND_EFFECT)
+        , boxInfo_(BOX_INFO)
+        , ratioX_(MAX_SIZE_RATIO_X)
+        , ratioY_(MAX_SIZE_RATIO_Y)
+        , buttonColor_(BUTTON_COLOR)
+        , willAddRandImage_(WILL_ADD_RAND_IMAGE)
+        , textureVec_()
+        , numberMin_(0)
+        , numberMax_(0)
+        , numberInvalidVec_()
+        , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
+        , creatureCPtr_(nullptr)
+        , initialSelection_(0)
+        , areImgsCreatures_(false)
+        , textVec_()
+        , howCombatEnded_(combat::CombatEnd::Count)
+        , titleFromPtr_(nullptr)
+        , titleToPtr_(nullptr)
+        , titleText_("")
+        , descText_("")
+        , willIncludeItems_(false)
+        , keepAliveSeconds_(-1.0f) // any negative will work here
     {}
 
-
-    PopupInfo::PopupInfo(const std::string &                 NAME,
-                         const sfml_util::gui::TextInfo &    TEXT_INFO,
-                         const sfml_util::TextureVec_t &     TEXTURE_VEC,
-                         const bool                          ARE_IMAGES_CREATURES,
-                         const std::size_t                   INITIAL_SELECTION,
-                         const sfml_util::sound_effect::Enum SOUND_EFFECT,
-                         const PopupButtonColor::Enum        BUTTON_COLOR)
-    :
-        name_            (NAME),
-        textInfo_        (TEXT_INFO),
-        buttons_         (PopupButtons::SelectCancel),
-        image_           (PopupImage::Large),
-        soundEffect_     (SOUND_EFFECT),
-        boxInfo_         (),
-        ratioX_          (1.0f),
-        ratioY_          (1.0f),
-        buttonColor_     (BUTTON_COLOR),
-        willAddRandImage_(true),
-        textureVec_      (TEXTURE_VEC),
-        numberMin_       (0),
-        numberMax_       (0),
-        numberInvalidVec_(),
-        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
-        creatureCPtr_    (nullptr),
-        initialSelection_(INITIAL_SELECTION),
-        areImgsCreatures_(ARE_IMAGES_CREATURES),
-        textVec_         (),
-        howCombatEnded_  (combat::CombatEnd::Count),
-        titleFromPtr_    (nullptr),
-        titleToPtr_      (nullptr),
-        titleText_       (""),
-        descText_        (""),
-        willIncludeItems_(false),
-        keepAliveSeconds_(-1.0f)//any negative will work here
+    PopupInfo::PopupInfo(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const sfml_util::TextureVec_t & TEXTURE_VEC,
+        const bool ARE_IMAGES_CREATURES,
+        const std::size_t INITIAL_SELECTION,
+        const sfml_util::sound_effect::Enum SOUND_EFFECT,
+        const PopupButtonColor::Enum BUTTON_COLOR)
+        : name_(NAME)
+        , textInfo_(TEXT_INFO)
+        , buttons_(PopupButtons::SelectCancel)
+        , image_(PopupImage::Large)
+        , soundEffect_(SOUND_EFFECT)
+        , boxInfo_()
+        , ratioX_(1.0f)
+        , ratioY_(1.0f)
+        , buttonColor_(BUTTON_COLOR)
+        , willAddRandImage_(true)
+        , textureVec_(TEXTURE_VEC)
+        , numberMin_(0)
+        , numberMax_(0)
+        , numberInvalidVec_()
+        , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
+        , creatureCPtr_(nullptr)
+        , initialSelection_(INITIAL_SELECTION)
+        , areImgsCreatures_(ARE_IMAGES_CREATURES)
+        , textVec_()
+        , howCombatEnded_(combat::CombatEnd::Count)
+        , titleFromPtr_(nullptr)
+        , titleToPtr_(nullptr)
+        , titleText_("")
+        , descText_("")
+        , willIncludeItems_(false)
+        , keepAliveSeconds_(-1.0f) // any negative will work here
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            ((INITIAL_SELECTION < textureVec_.size()) ||
-            ((textureVec_.empty()) && areImgsCreatures_)),
+            ((INITIAL_SELECTION < textureVec_.size())
+             || ((textureVec_.empty()) && areImgsCreatures_)),
             "popup::PopupInfo::Constructor(image selection) INITIAL_SELECTION="
-            << INITIAL_SELECTION << " is NOT less than the texture_vec.size()"
-            << textureVec_.size());
+                << INITIAL_SELECTION << " is NOT less than the texture_vec.size()"
+                << textureVec_.size());
     }
 
-
-    PopupInfo::PopupInfo(const std::string &              NAME,
-                         const sfml_util::gui::TextInfo & TEXT_INFO,
-                         const std::size_t                THE_MIN,
-                         const std::size_t                THE_MAX)
-    :
-        name_            (NAME),
-        textInfo_        (TEXT_INFO),
-        buttons_         (PopupButtons::SelectCancel),
-        image_           (PopupImage::Large),
-        soundEffect_     (sfml_util::sound_effect::PromptQuestion),
-        boxInfo_         (),
-        ratioX_          (1.0f),
-        ratioY_          (1.0f),
-        buttonColor_     (PopupButtonColor::Dark),
-        willAddRandImage_(true),
-        textureVec_      (),
-        numberMin_       (THE_MIN),
-        numberMax_       (THE_MAX),
-        numberInvalidVec_(),
-        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
-        creatureCPtr_    (nullptr),
-        initialSelection_(0),
-        areImgsCreatures_(false),
-        textVec_         (),
-        howCombatEnded_  (combat::CombatEnd::Count),
-        titleFromPtr_    (nullptr),
-        titleToPtr_      (nullptr),
-        titleText_       (""),
-        descText_        (""),
-        willIncludeItems_(false),
-        keepAliveSeconds_(-1.0f)//any negative will work here
+    PopupInfo::PopupInfo(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const std::size_t THE_MIN,
+        const std::size_t THE_MAX)
+        : name_(NAME)
+        , textInfo_(TEXT_INFO)
+        , buttons_(PopupButtons::SelectCancel)
+        , image_(PopupImage::Large)
+        , soundEffect_(sfml_util::sound_effect::PromptQuestion)
+        , boxInfo_()
+        , ratioX_(1.0f)
+        , ratioY_(1.0f)
+        , buttonColor_(PopupButtonColor::Dark)
+        , willAddRandImage_(true)
+        , textureVec_()
+        , numberMin_(THE_MIN)
+        , numberMax_(THE_MAX)
+        , numberInvalidVec_()
+        , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
+        , creatureCPtr_(nullptr)
+        , initialSelection_(0)
+        , areImgsCreatures_(false)
+        , textVec_()
+        , howCombatEnded_(combat::CombatEnd::Count)
+        , titleFromPtr_(nullptr)
+        , titleToPtr_(nullptr)
+        , titleText_("")
+        , descText_("")
+        , willIncludeItems_(false)
+        , keepAliveSeconds_(-1.0f) // any negative will work here
     {}
 
-
-    PopupInfo::PopupInfo(const std::string &                 NAME,
-                         const sfml_util::gui::TextInfo &    TEXT_INFO,
-                         const PopupButtons::Enum            BUTTONS,
-                         const combat::CombatEnd::Enum       HOW_COMBAT_ENDED)
-    :
-        name_            (NAME),
-        textInfo_        (TEXT_INFO),
-        buttons_         (BUTTONS),
-        image_           (PopupImage::Large),
-        soundEffect_     (sfml_util::sound_effect::None),
-        boxInfo_         (),
-        ratioX_          (1.0f),
-        ratioY_          (1.0f),
-        buttonColor_     (PopupButtonColor::Dark),
-        willAddRandImage_(false),
-        textureVec_      (),
-        numberMin_       (0),
-        numberMax_       (0),
-        numberInvalidVec_(),
-        imageFadeSpeed_  (IMAGE_FADE_SPEED_DEFAULT_),
-        creatureCPtr_    (nullptr),
-        initialSelection_(0),
-        areImgsCreatures_(false),
-        textVec_         (),
-        howCombatEnded_  (HOW_COMBAT_ENDED),
-        titleFromPtr_    (nullptr),
-        titleToPtr_      (nullptr),
-        titleText_       (""),
-        descText_        (""),
-        willIncludeItems_(false),
-        keepAliveSeconds_(-1.0f)//any negative will work here
+    PopupInfo::PopupInfo(
+        const std::string & NAME,
+        const sfml_util::gui::TextInfo & TEXT_INFO,
+        const PopupButtons::Enum BUTTONS,
+        const combat::CombatEnd::Enum HOW_COMBAT_ENDED)
+        : name_(NAME)
+        , textInfo_(TEXT_INFO)
+        , buttons_(BUTTONS)
+        , image_(PopupImage::Large)
+        , soundEffect_(sfml_util::sound_effect::None)
+        , boxInfo_()
+        , ratioX_(1.0f)
+        , ratioY_(1.0f)
+        , buttonColor_(PopupButtonColor::Dark)
+        , willAddRandImage_(false)
+        , textureVec_()
+        , numberMin_(0)
+        , numberMax_(0)
+        , numberInvalidVec_()
+        , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
+        , creatureCPtr_(nullptr)
+        , initialSelection_(0)
+        , areImgsCreatures_(false)
+        , textVec_()
+        , howCombatEnded_(HOW_COMBAT_ENDED)
+        , titleFromPtr_(nullptr)
+        , titleToPtr_(nullptr)
+        , titleText_("")
+        , descText_("")
+        , willIncludeItems_(false)
+        , keepAliveSeconds_(-1.0f) // any negative will work here
     {}
 
-
-    PopupInfo::~PopupInfo()
-    {}
-
+    PopupInfo::~PopupInfo() {}
 
     PopupInfo::PopupInfo(const PopupInfo & PI)
-    :
-        name_            (PI.name_),
-        textInfo_        (PI.textInfo_),
-        buttons_         (PI.buttons_),
-        image_           (PI.image_),
-        soundEffect_     (PI.soundEffect_),
-        boxInfo_         (PI.boxInfo_),
-        ratioX_          (PI.ratioX_),
-        ratioY_          (PI.ratioY_),
-        buttonColor_     (PI.buttonColor_),
-        willAddRandImage_(PI.willAddRandImage_),
-        textureVec_      (PI.textureVec_),
-        numberMin_       (PI.numberMin_),
-        numberMax_       (PI.numberMax_),
-        numberInvalidVec_(PI.numberInvalidVec_),
-        imageFadeSpeed_  (PI.imageFadeSpeed_),
+        : name_(PI.name_)
+        , textInfo_(PI.textInfo_)
+        , buttons_(PI.buttons_)
+        , image_(PI.image_)
+        , soundEffect_(PI.soundEffect_)
+        , boxInfo_(PI.boxInfo_)
+        , ratioX_(PI.ratioX_)
+        , ratioY_(PI.ratioY_)
+        , buttonColor_(PI.buttonColor_)
+        , willAddRandImage_(PI.willAddRandImage_)
+        , textureVec_(PI.textureVec_)
+        , numberMin_(PI.numberMin_)
+        , numberMax_(PI.numberMax_)
+        , numberInvalidVec_(PI.numberInvalidVec_)
+        , imageFadeSpeed_(PI.imageFadeSpeed_)
+        ,
 
-        //The creature object is not managed by this class,
-        //so it is safe to copy here.
-        creatureCPtr_    (PI.creatureCPtr_),
+        // The creature object is not managed by this class,
+        // so it is safe to copy here.
+        creatureCPtr_(PI.creatureCPtr_)
+        ,
 
-        initialSelection_(PI.initialSelection_),
-        areImgsCreatures_(PI.areImgsCreatures_),
-        textVec_         (PI.textVec_),
-        howCombatEnded_  (PI.howCombatEnded_),
-        titleFromPtr_    (PI.titleFromPtr_),
-        titleToPtr_      (PI.titleToPtr_),
-        titleText_       (PI.titleText_),
-        descText_        (PI.descText_),
-        willIncludeItems_(PI.willIncludeItems_),
-        keepAliveSeconds_(PI.keepAliveSeconds_)
+        initialSelection_(PI.initialSelection_)
+        , areImgsCreatures_(PI.areImgsCreatures_)
+        , textVec_(PI.textVec_)
+        , howCombatEnded_(PI.howCombatEnded_)
+        , titleFromPtr_(PI.titleFromPtr_)
+        , titleToPtr_(PI.titleToPtr_)
+        , titleText_(PI.titleText_)
+        , descText_(PI.descText_)
+        , willIncludeItems_(PI.willIncludeItems_)
+        , keepAliveSeconds_(PI.keepAliveSeconds_)
     {}
-
 
     PopupInfo & PopupInfo::operator=(const PopupInfo & PI)
     {
-        if (& PI != this)
+        if (&PI != this)
         {
-            name_             = PI.name_;
-            textInfo_         = PI.textInfo_;
-            buttons_          = PI.buttons_;
-            image_            = PI.image_;
-            soundEffect_      = PI.soundEffect_;
-            boxInfo_          = PI.boxInfo_;
-            ratioX_           = PI.ratioX_;
-            ratioY_           = PI.ratioY_;
-            buttonColor_      = PI.buttonColor_;
+            name_ = PI.name_;
+            textInfo_ = PI.textInfo_;
+            buttons_ = PI.buttons_;
+            image_ = PI.image_;
+            soundEffect_ = PI.soundEffect_;
+            boxInfo_ = PI.boxInfo_;
+            ratioX_ = PI.ratioX_;
+            ratioY_ = PI.ratioY_;
+            buttonColor_ = PI.buttonColor_;
             willAddRandImage_ = PI.willAddRandImage_;
-            textureVec_       = PI.textureVec_;
-            numberMin_        = PI.numberMin_;
-            numberMax_        = PI.numberMax_;
+            textureVec_ = PI.textureVec_;
+            numberMin_ = PI.numberMin_;
+            numberMax_ = PI.numberMax_;
             numberInvalidVec_ = PI.numberInvalidVec_;
-            imageFadeSpeed_   = PI.imageFadeSpeed_;
+            imageFadeSpeed_ = PI.imageFadeSpeed_;
             areImgsCreatures_ = PI.areImgsCreatures_;
 
-            //The lifetime of these objects is not managed by this class.
-            //Usage is short-term observation only, so copying is safe.
-            creatureCPtr_     = PI.creatureCPtr_;
+            // The lifetime of these objects is not managed by this class.
+            // Usage is short-term observation only, so copying is safe.
+            creatureCPtr_ = PI.creatureCPtr_;
 
             initialSelection_ = PI.initialSelection_;
-            textVec_          = PI.textVec_;
-            howCombatEnded_   = PI.howCombatEnded_;
-            titleFromPtr_     = PI.titleFromPtr_;
-            titleToPtr_       = PI.titleToPtr_;
-            titleText_        = PI.titleText_;
-            descText_         = PI.descText_;
+            textVec_ = PI.textVec_;
+            howCombatEnded_ = PI.howCombatEnded_;
+            titleFromPtr_ = PI.titleFromPtr_;
+            titleToPtr_ = PI.titleToPtr_;
+            titleText_ = PI.titleText_;
+            descText_ = PI.descText_;
             willIncludeItems_ = PI.willIncludeItems_;
             keepAliveSeconds_ = PI.keepAliveSeconds_;
         }
 
-        return * this;
+        return *this;
     }
-
 
     const std::string PopupInfo::ToStringShort(const bool WILL_WRAP) const
     {
         return ToStringCommon(WILL_WRAP, true);
     }
 
-
     const std::string PopupInfo::ToStringFull(const bool WILL_WRAP) const
     {
         return ToStringCommon(WILL_WRAP, false);
     }
-
 
     const std::string PopupInfo::ToStringCommon(const bool WILL_WRAP, const bool WILL_SHORTEN) const
     {
@@ -381,8 +370,7 @@ namespace popup
             ss << "(";
         }
 
-        ss << "\"" << name_ << "\", "
-            << PopupButtons::ToString(buttons_) << ", ";
+        ss << "\"" << name_ << "\", " << PopupButtons::ToString(buttons_) << ", ";
 
         if (WILL_SHORTEN)
         {
@@ -485,7 +473,6 @@ namespace popup
         return ss.str();
     }
 
-
     bool PopupInfo::IsNumberValid(const std::size_t NUM) const
     {
         if (numberInvalidVec_.empty())
@@ -494,9 +481,10 @@ namespace popup
         }
         else
         {
-            return (std::find(numberInvalidVec_.begin(), numberInvalidVec_.end(), NUM) == numberInvalidVec_.end());
+            return (
+                std::find(numberInvalidVec_.begin(), numberInvalidVec_.end(), NUM)
+                == numberInvalidVec_.end());
         }
     }
-
 }
 }

@@ -34,34 +34,32 @@
 
 #include <memory>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //A class that loads, stores, and distributes creature images.
-    class TitleImageManager : public ImageManagerBase<creature::Titles>
+    namespace gui
     {
-        TitleImageManager(const TitleImageManager &) =delete;
-        TitleImageManager & operator=(const TitleImageManager &) =delete;
 
-    public:
-        TitleImageManager();
-        virtual ~TitleImageManager();
+        // A class that loads, stores, and distributes creature images.
+        class TitleImageManager : public ImageManagerBase<creature::Titles>
+        {
+            TitleImageManager(const TitleImageManager &) = delete;
+            TitleImageManager & operator=(const TitleImageManager &) = delete;
 
-        static TitleImageManager * Instance();
-        static void Acquire();
-        static void Release();
+        public:
+            TitleImageManager();
+            virtual ~TitleImageManager();
 
-    private:
-        static std::unique_ptr<TitleImageManager> instanceUPtr_;
-    };
+            static TitleImageManager * Instance();
+            static void Acquire();
+            static void Release();
 
+        private:
+            static std::unique_ptr<TitleImageManager> instanceUPtr_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUI_TITLEIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_TITLEIMAGEMANAGER_HPP_INCLUDED

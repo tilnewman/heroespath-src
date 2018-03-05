@@ -28,18 +28,17 @@
 // vector-map.hpp
 //
 #include "misc/boost-serialize-includes.hpp"
-#include <vector>
 #include <utility>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace misc
 {
 
-    //Responsible for implementing std::map with a vector in a way that performs
-    //no sorting.  (all operations are in linear time)
-    template<typename Key_t, typename Value_t>
+    // Responsible for implementing std::map with a vector in a way that performs
+    // no sorting.  (all operations are in linear time)
+    template <typename Key_t, typename Value_t>
     class VectorMap
     {
     public:
@@ -49,8 +48,7 @@ namespace misc
         using const_iterator = typename PairVec_t::const_iterator;
 
         VectorMap()
-        :
-            pairs_()
+            : pairs_()
         {}
 
         bool Exists(const Key_t & KEY) const
@@ -75,8 +73,8 @@ namespace misc
                     return pair.second;
                 }
             }
-            
-            pairs_.push_back( std::make_pair(KEY, Value_t()) );
+
+            pairs_.push_back(std::make_pair(KEY, Value_t()));
             return pairs_[pairs_.size() - 1].second;
         }
 
@@ -113,40 +111,39 @@ namespace misc
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & pairs_;
         }
     };
 
-
-    template<typename Key_t, typename Value_t>
+    template <typename Key_t, typename Value_t>
     inline typename VectorMap<Key_t, Value_t>::iterator begin(VectorMap<Key_t, Value_t> & cpm)
     {
         return cpm.begin();
     }
 
-    template<typename Key_t, typename Value_t>
+    template <typename Key_t, typename Value_t>
     inline typename VectorMap<Key_t, Value_t>::iterator end(VectorMap<Key_t, Value_t> & cpm)
     {
         return cpm.end();
     }
 
-
-    template<typename Key_t, typename Value_t>
-    inline const typename VectorMap<Key_t, Value_t>::const_iterator begin(const VectorMap<Key_t, Value_t> & CPM)
+    template <typename Key_t, typename Value_t>
+    inline const typename VectorMap<Key_t, Value_t>::const_iterator
+        begin(const VectorMap<Key_t, Value_t> & CPM)
     {
         return CPM.begin();
     }
 
-    template<typename Key_t, typename Value_t>
-    inline const typename VectorMap<Key_t, Value_t>::const_iterator end(const VectorMap<Key_t, Value_t> & CPM)
+    template <typename Key_t, typename Value_t>
+    inline const typename VectorMap<Key_t, Value_t>::const_iterator
+        end(const VectorMap<Key_t, Value_t> & CPM)
     {
         return CPM.end();
     }
-
 }
 }
 
-#endif //HEROESPATH_MISC_VECTORMAP_HPP_INCLUDED
+#endif // HEROESPATH_MISC_VECTORMAP_HPP_INCLUDED

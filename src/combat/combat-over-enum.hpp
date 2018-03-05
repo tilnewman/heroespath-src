@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace combat
@@ -47,8 +46,7 @@ namespace combat
 
         static const std::string ToString(const CombatEnd::Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_GAME_COMBAT_OVER_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_GAME_COMBAT_OVER_ENUM_HPP_INCLUDED

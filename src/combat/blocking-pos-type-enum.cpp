@@ -28,9 +28,8 @@
 // combat-over-enum.cpp
 //
 #include "blocking-pos-type-enum.hpp"
-#include <sstream>
 #include <exception>
-
+#include <sstream>
 
 namespace heroespath
 {
@@ -41,12 +40,30 @@ namespace combat
     {
         switch (E)
         {
-            case Front:             { return "Front"; }
-            case Support:           { return "Support"; }
-            case Commanders:        { return "Commanders"; }
-            case Reluctant:         { return "Reluctant"; }
-            case Casters:           { return "Casters"; }
-            case Last:              { return "Last"; }
+            case Front:
+            {
+                return "Front";
+            }
+            case Support:
+            {
+                return "Support";
+            }
+            case Commanders:
+            {
+                return "Commanders";
+            }
+            case Reluctant:
+            {
+                return "Reluctant";
+            }
+            case Casters:
+            {
+                return "Casters";
+            }
+            case Last:
+            {
+                return "Last";
+            }
             case Count:
             default:
             {
@@ -56,6 +73,5 @@ namespace combat
             }
         }
     }
-
 }
 }

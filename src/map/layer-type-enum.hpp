@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace map
@@ -47,9 +46,7 @@ namespace map
 
         static const std::string ToString(const LayerType::Enum);
     };
-
-
 }
 }
 
-#endif //HEROESPATH_MAP_LAYERTYPEENUM_HPP_INCLUDED
+#endif // HEROESPATH_MAP_LAYERTYPEENUM_HPP_INCLUDED

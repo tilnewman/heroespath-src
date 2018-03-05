@@ -30,7 +30,6 @@
 #include <string>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace avatar
@@ -40,29 +39,29 @@ namespace avatar
     {
         enum NameEnum
         {
-            //player avatars
+            // player avatars
             Metal,
             Puck,
             Sara,
 
-            //stereotypical young girl in a princess outfit
+            // stereotypical young girl in a princess outfit
             Girl,
 
-            //commoners
+            // commoners
             Circus,
-            Poor, //male only, leather scaps
-            Rags,  //leather tunic with ratty looking gray pants
-            Common, //male only,
-            Tunic, //female only, the only female in pants
-            Pants, //male only, the only male in pants
-            Maid, //female only, the bar wench
-            Robes, //male only, brown full length robes
-            Whitebeard, //male only, brown robes, single avatar
+            Poor, // male only, leather scaps
+            Rags, // leather tunic with ratty looking gray pants
+            Common, // male only,
+            Tunic, // female only, the only female in pants
+            Pants, // male only, the only male in pants
+            Maid, // female only, the bar wench
+            Robes, // male only, brown full length robes
+            Whitebeard, // male only, brown robes, single avatar
 
-            //richer woman in a light blue dress
+            // richer woman in a light blue dress
             Dress,
 
-            //millitary
+            // millitary
             Private,
             Private2nd,
             Private1st,
@@ -73,13 +72,13 @@ namespace avatar
             Knight,
             KnightGold,
 
-            //tough guys
+            // tough guys
             Thug,
             ManAtArms,
             Gladiator,
             Iron,
 
-            //bald in brown robes, no white guys
+            // bald in brown robes, no white guys
             Monk
         };
 
@@ -537,8 +536,7 @@ namespace avatar
         static const std::string ImagePath(const Enum);
         static NameEnum Name(const Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_AVATAR_AVATARENUM_HPP_INCLUDED
+#endif // HEROESPATH_AVATAR_AVATARENUM_HPP_INCLUDED

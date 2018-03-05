@@ -28,37 +28,33 @@
 // radio-button-display.hpp
 //  A specific RadioButtonSet for changing the display resolution.
 //
+#include "sfml-util/gui/radio-button.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/resolution.hpp"
-#include "sfml-util/gui/radio-button.hpp"
 
 #include "popup/i-popup-callback.hpp"
 
 #include <memory>
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //Represents a RadioButtonSet that changes the display
+    // Represents a RadioButtonSet that changes the display
     class RadioButtonSet_DisplayChange
-    :
-        public popup::IPopupHandler_t,
-        public sfml_util::gui::RadioButtonSet
+        : public popup::IPopupHandler_t
+        , public sfml_util::gui::RadioButtonSet
     {
-        RadioButtonSet_DisplayChange(const RadioButtonSet_DisplayChange &) =delete;
-        RadioButtonSet_DisplayChange & operator=(const RadioButtonSet_DisplayChange &) =delete;
+        RadioButtonSet_DisplayChange(const RadioButtonSet_DisplayChange &) = delete;
+        RadioButtonSet_DisplayChange & operator=(const RadioButtonSet_DisplayChange &) = delete;
 
     public:
-        //If Using this constructor, then one of the Setup()
-        //functions must be called before any other member.
+        // If Using this constructor, then one of the Setup()
+        // functions must be called before any other member.
         RadioButtonSet_DisplayChange(
-            const float POS_LEFT,
-            const float POS_TOP,
-            sfml_util::IStage * const OWNER_STAGE_PTR);
+            const float POS_LEFT, const float POS_TOP, sfml_util::IStage * const OWNER_STAGE_PTR);
 
         virtual ~RadioButtonSet_DisplayChange();
 
@@ -67,7 +63,7 @@ namespace sfml_util
         virtual bool HandleCallback(const popup::PopupResponse &);
 
     protected:
-        //if not found, resolutionVec_.size() is returned
+        // if not found, resolutionVec_.size() is returned
         std::size_t FindCurrentResolutionSelection();
         virtual void OnClick(const sf::Vector2f &);
 
@@ -81,8 +77,7 @@ namespace sfml_util
     };
 
     using RadioButtonSet_DisplayChangeSPtr_t = std::shared_ptr<RadioButtonSet_DisplayChange>;
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_RADIOBUTTONDISPLAY_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_RADIOBUTTONDISPLAY_HPP_INCLUDED

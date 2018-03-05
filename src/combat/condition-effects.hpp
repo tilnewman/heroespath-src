@@ -33,9 +33,8 @@
 #include "misc/handy-types.hpp"
 
 #include <string>
-#include <vector>
 #include <utility>
-
+#include <vector>
 
 namespace heroespath
 {
@@ -50,16 +49,15 @@ namespace combat
 
     struct ConditionEffects
     {
-        //returns true if an effect consumed the current turn
-        //fightResult_OutParam is guaranteed to to only have one CreatureEffect
-        //if hitInfoVec_OutParam is empty return value will be false
+        // returns true if an effect consumed the current turn
+        // fightResult_OutParam is guaranteed to to only have one CreatureEffect
+        // if hitInfoVec_OutParam is empty return value will be false
         static bool Process(
-            const game::Phase::Enum       HEROESPATH_PHASE,
+            const game::Phase::Enum HEROESPATH_PHASE,
             creature::CreaturePtr_t creaturePtr,
-            HitInfoVec_t &          hitInfoVec_OuParam);
+            HitInfoVec_t & hitInfoVec_OuParam);
     };
-
 }
 }
 
-#endif //HEROESPATH_COMBAT_CONDITIONEFFECTS_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_CONDITIONEFFECTS_HPP_INCLUDED

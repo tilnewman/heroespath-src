@@ -30,36 +30,33 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 
-#include "misc/types.hpp"
 #include "creature/achievement-enum.hpp"
-#include "creature/title.hpp"
 #include "creature/role-enum.hpp"
+#include "creature/title.hpp"
+#include "misc/types.hpp"
 
+#include <map>
 #include <memory>
 #include <string>
-#include <vector>
-#include <map>
 #include <tuple>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace creature
 {
 
-    //forward declarations
+    // forward declarations
     class Creature;
     using CreaturePtr_t = Creature *;
 
-
-    //Note:  Must store Titles::Enums and not TitlePtr_ts here because
+    // Note:  Must store Titles::Enums and not TitlePtr_ts here because
     //       Achievements are serialized, and Titles cannot be serialized.
     using TitleCountMap_t = std::map<Count_t, Titles::Enum>;
 
-
-    //Responsible for storing all the information about an achievement.
-    //An Achievement is a re-occurring event that is summed up until a
-    //Title is earned.
+    // Responsible for storing all the information about an achievement.
+    // An Achievement is a re-occurring event that is summed up until a
+    // Title is earned.
     class Achievement
     {
     public:
@@ -67,13 +64,13 @@ namespace creature
             const AchievementType::Enum WHICH = AchievementType::None,
             const TitleCountMap_t & TITLE_COUNT_MAP = TitleCountMap_t());
 
-        inline AchievementType::Enum Which() const              { return which_; }
-        inline Count_t Count() const                            { return count_; }
-        inline const std::string Name() const                   { return AchievementType::Name(which_); }
-        inline const TitleCountMap_t & TitleCountMap() const    { return titleCountMap_; }
+        inline AchievementType::Enum Which() const { return which_; }
+        inline Count_t Count() const { return count_; }
+        inline const std::string Name() const { return AchievementType::Name(which_); }
+        inline const TitleCountMap_t & TitleCountMap() const { return titleCountMap_; }
 
-        //These functions return pointers instead of enums because they
-        //need a way for them to return nothing.
+        // These functions return pointers instead of enums because they
+        // need a way for them to return nothing.
         TitlePtr_t GetCurrentTitle() const;
         TitlePtr_t GetNextTitle() const;
         TitlePtr_t Increment(const creature::role::Enum ROLE_ENUM);
@@ -92,7 +89,7 @@ namespace creature
 
     private:
         friend class boost::serialization::access;
-        template<typename Archive>
+        template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
             ar & which_;
@@ -101,29 +98,20 @@ namespace creature
         }
     };
 
-
     inline bool operator<(const Achievement & L, const Achievement & R)
     {
-        return  std::tie(L.which_, L.count_, L.titleCountMap_)
-                <
-                std::tie(R.which_, R.count_, R.titleCountMap_);
+        return std::tie(L.which_, L.count_, L.titleCountMap_)
+            < std::tie(R.which_, R.count_, R.titleCountMap_);
     }
-
 
     inline bool operator==(const Achievement & L, const Achievement & R)
     {
-        return  std::tie(L.which_, L.count_, L.titleCountMap_)
-                ==
-                std::tie(R.which_, R.count_, R.titleCountMap_);
+        return std::tie(L.which_, L.count_, L.titleCountMap_)
+            == std::tie(R.which_, R.count_, R.titleCountMap_);
     }
 
-
-    inline bool operator!=(const Achievement & L, const Achievement & R)
-    {
-        return ! (L == R);
-    }
-
+    inline bool operator!=(const Achievement & L, const Achievement & R) { return !(L == R); }
 }
 }
 
-#endif //HEROESPATH_CREATURE_ACHIEVEMENT_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_ACHIEVEMENT_HPP_INCLUDED

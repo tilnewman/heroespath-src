@@ -31,17 +31,16 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
 
-
 namespace heroespath
 {
 namespace stage
 {
 
-    //A simple Stage class that displays the intro title
+    // A simple Stage class that displays the intro title
     class IntroStage : public sfml_util::Stage
     {
-        IntroStage(const IntroStage &) =delete;
-        IntroStage & operator=(const IntroStage &) =delete;
+        IntroStage(const IntroStage &) = delete;
+        IntroStage & operator=(const IntroStage &) = delete;
 
     public:
         IntroStage();
@@ -56,11 +55,10 @@ namespace stage
 
     private:
         sf::Texture titleTexture_;
-        sf::Sprite  titleSprite_;
+        sf::Sprite titleSprite_;
         std::size_t initialDrawHoldCounter_;
     };
-
 }
 }
 
-#endif //HEROESPATH_INTROSTAGE_HPP_INCLUDED
+#endif // HEROESPATH_INTROSTAGE_HPP_INCLUDED

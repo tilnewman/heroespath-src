@@ -30,89 +30,90 @@
 //
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "creature/role-enum.hpp"
+#include "creature/dragon-class-enum.hpp"
 #include "creature/race-enum.hpp"
+#include "creature/role-enum.hpp"
 #include "creature/sex-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
-#include "creature/dragon-class-enum.hpp"
 
-#include <memory>
 #include <map>
-#include <tuple>
+#include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
-
 
 namespace heroespath
 {
 namespace sfml_util
 {
-namespace gui
-{
-
-    //A class that loads, stores, and distributes creature images.
-    class CreatureImageManager
+    namespace gui
     {
-        CreatureImageManager(const CreatureImageManager &) =delete;
-        CreatureImageManager & operator=(const CreatureImageManager &) =delete;
 
-    public:
-        CreatureImageManager();
-        virtual ~CreatureImageManager();
+        // A class that loads, stores, and distributes creature images.
+        class CreatureImageManager
+        {
+            CreatureImageManager(const CreatureImageManager &) = delete;
+            CreatureImageManager & operator=(const CreatureImageManager &) = delete;
 
-        static CreatureImageManager * Instance();
-        static void Acquire();
-        static void Release();
-        static void SetCreatureImageDirectory(const std::string & PATH);
+        public:
+            CreatureImageManager();
+            virtual ~CreatureImageManager();
 
-        static bool Test();
+            static CreatureImageManager * Instance();
+            static void Acquire();
+            static void Release();
+            static void SetCreatureImageDirectory(const std::string & PATH);
 
-        inline static float DimmensionMax() { return 256.0f; }
+            static bool Test();
 
-        const std::string GetFilename(
-            const creature::race::Enum         RACE,
-            const creature::role::Enum         ROLE,
-            const creature::sex::Enum          SEX,
-            const bool                               WILL_PICK_RANDOM = true,
-            const creature::wolfen_class::Enum WOLFEN_CLASS     = creature::wolfen_class::Pup,
-            const creature::dragon_class::Enum DRAGON_CLASS     = creature::dragon_class::Hatchling) const;
+            inline static float DimmensionMax() { return 256.0f; }
 
-        void GetImage(
-            sf::Texture & texture,
-            const creature::race::Enum         RACE,
-            const creature::role::Enum         ROLE,
-            const creature::sex::Enum          SEX              = creature::sex::Male,
-            const bool                               WILL_PICK_RANDOM = true,
-            const bool                               WILL_FACE_RIGHT  = false,
-            const creature::wolfen_class::Enum WOLFEN_CLASS     = creature::wolfen_class::Pup,
-            const creature::dragon_class::Enum DRAGON_CLASS     = creature::dragon_class::Hatchling) const;
+            const std::string GetFilename(
+                const creature::race::Enum RACE,
+                const creature::role::Enum ROLE,
+                const creature::sex::Enum SEX,
+                const bool WILL_PICK_RANDOM = true,
+                const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
+                const creature::dragon_class::Enum DRAGON_CLASS
+                = creature::dragon_class::Hatchling) const;
 
-        void GetImage(
-            sf::Texture &       texture,
-            const std::string & FILENAME,
-            const bool          WILL_FACE_RIGHT = false) const;
+            void GetImage(
+                sf::Texture & texture,
+                const creature::race::Enum RACE,
+                const creature::role::Enum ROLE,
+                const creature::sex::Enum SEX = creature::sex::Male,
+                const bool WILL_PICK_RANDOM = true,
+                const bool WILL_FACE_RIGHT = false,
+                const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
+                const creature::dragon_class::Enum DRAGON_CLASS
+                = creature::dragon_class::Hatchling) const;
 
-        void GetFilenames(
-            std::vector<std::string> &               outputVec,
-            const creature::race::Enum         RACE,
-            const creature::role::Enum         ROLE,
-            const creature::sex::Enum          SEX,
-            const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
-            const creature::dragon_class::Enum DRAGON_CLASS = creature::dragon_class::Hatchling) const;
+            void GetImage(
+                sf::Texture & texture,
+                const std::string & FILENAME,
+                const bool WILL_FACE_RIGHT = false) const;
 
-    private:
-        void LoadImage(
-            sf::Texture &       texture,
-            const std::string & IMAGE_FILE_NAME,
-            const bool          WILL_FACE_RIGHT = false) const;
+            void GetFilenames(
+                std::vector<std::string> & outputVec,
+                const creature::race::Enum RACE,
+                const creature::role::Enum ROLE,
+                const creature::sex::Enum SEX,
+                const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
+                const creature::dragon_class::Enum DRAGON_CLASS
+                = creature::dragon_class::Hatchling) const;
 
-    private:
-        static std::string imagesDirectoryPath_;
-        static std::unique_ptr<CreatureImageManager> instanceUPtr_;
-    };
+        private:
+            void LoadImage(
+                sf::Texture & texture,
+                const std::string & IMAGE_FILE_NAME,
+                const bool WILL_FACE_RIGHT = false) const;
 
+        private:
+            static std::string imagesDirectoryPath_;
+            static std::unique_ptr<CreatureImageManager> instanceUPtr_;
+        };
+    }
 }
 }
-}
 
-#endif //HEROESPATH_SFMLUTIL_GUI_CREATUREIMAGEMANAGER_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_GUI_CREATUREIMAGEMANAGER_HPP_INCLUDED

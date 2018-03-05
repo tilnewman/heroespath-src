@@ -29,18 +29,15 @@
 //
 #include "level.hpp"
 
-
 namespace heroespath
 {
 namespace state
 {
 
     Level::Level(const map::Level::Enum LEVEL)
-    :
-        level_(LEVEL),
-        doorLockMap_()
+        : level_(LEVEL)
+        , doorLockMap_()
     {}
-
 
     bool Level::IsDoorLocked(const map::Level::Enum LEVEL) const
     {
@@ -48,6 +45,5 @@ namespace state
         doorLockMap_.Find(LEVEL, isLocked);
         return isLocked;
     }
-
 }
 }

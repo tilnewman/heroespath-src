@@ -34,17 +34,16 @@
 #include <memory>
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
 {
 
-    //manages an animated snake image that spins, grows/shrinks, and fades in/out
+    // manages an animated snake image that spins, grows/shrinks, and fades in/out
     class Ouroboros : public gui::GuiEntity
     {
-        Ouroboros(const Ouroboros &) =delete;
-        Ouroboros & operator=(const Ouroboros &) =delete;
+        Ouroboros(const Ouroboros &) = delete;
+        Ouroboros & operator=(const Ouroboros &) = delete;
 
     public:
         explicit Ouroboros(const std::string & NAME, const bool WILL_INVERT = false);
@@ -53,6 +52,7 @@ namespace sfml_util
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
         virtual bool UpdateTime(const float ELAPSED_TIME_SEC);
         virtual void OnClick(const sf::Vector2f &) {}
+
     private:
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
@@ -66,8 +66,7 @@ namespace sfml_util
     };
 
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_OUROBOROS_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_OUROBOROS_HPP_INCLUDED

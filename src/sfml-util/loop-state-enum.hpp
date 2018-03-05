@@ -30,7 +30,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace sfml_util
@@ -64,8 +63,7 @@ namespace sfml_util
         static const std::string ToString(const LoopState::Enum E);
         static LoopState::Enum FromString(const std::string & ENUM_STR);
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_LOOPSTATE_HPP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_LOOPSTATE_HPP_INCLUDED

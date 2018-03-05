@@ -29,7 +29,6 @@
 //
 #include <string>
 
-
 namespace heroespath
 {
 namespace map
@@ -49,7 +48,6 @@ namespace map
         static const std::string ToString(const Enum);
     };
 
-
     struct Level
     {
         enum Enum
@@ -59,8 +57,8 @@ namespace map
             Thornberry_GuardPostEast,
             ThornberryMeadows,
             ThornberryHighlands,
-            //Mudgate,
-            //Bridgeway,
+            // Mudgate,
+            // Bridgeway,
             Count
         };
 
@@ -70,8 +68,7 @@ namespace map
         static const std::string Path(const Level::Enum);
         static LevelType::Enum Type(const Level::Enum);
     };
-
 }
 }
 
-#endif //HEROESPATH_MAP_LEVELENUM_HPP_INCLUDED
+#endif // HEROESPATH_MAP_LEVELENUM_HPP_INCLUDED

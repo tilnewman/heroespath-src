@@ -27,20 +27,19 @@
 //
 // fight-results.hpp
 //
-#include "hit-info.hpp"
 #include "creature-effect.hpp"
+#include "hit-info.hpp"
 
 #include <string>
-#include <vector>
 #include <utility>
-
+#include <vector>
 
 namespace heroespath
 {
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t  = Creature *;
+    using CreaturePtr_t = Creature *;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 }
 namespace item
@@ -55,8 +54,7 @@ namespace combat
     using CreatureHitInfoPair_t = std::pair<creature::CreaturePtr_t, HitInfo>;
     using CreatureHitInfoVec_t = std::vector<CreatureHitInfoPair_t>;
 
-
-    //Summarizes many HitInfo objects from a FightResult.
+    // Summarizes many HitInfo objects from a FightResult.
     struct FightResultSummary
     {
         FightResultSummary();
@@ -79,12 +77,10 @@ namespace combat
         const std::string VerbThirdPerson() const;
 
         const std::string Compose(
-            const std::string & FIGHTING_CREATURE_NAME,
-            const std::string & VERB_PAST_TENSE) const;
+            const std::string & FIGHTING_CREATURE_NAME, const std::string & VERB_PAST_TENSE) const;
     };
 
-
-    //Everything required to describe the results of a fight or fight action.
+    // Everything required to describe the results of a fight or fight action.
     class FightResult
     {
     public:
@@ -94,16 +90,15 @@ namespace combat
         inline const CreatureEffectVec_t & Effects() const { return creatureEffectVec_; }
         inline std::size_t Count() const { return creatureEffectVec_.size(); }
 
-        const HitInfo GetHitInfo(const std::size_t EFFECT_INDEX = 0,
-                                 const std::size_t HIT_INDEX    = 0) const;
+        const HitInfo
+            GetHitInfo(const std::size_t EFFECT_INDEX = 0, const std::size_t HIT_INDEX = 0) const;
 
         std::size_t EffectedCreatures(creature::CreaturePVec_t &) const;
 
     private:
         CreatureEffectVec_t creatureEffectVec_;
     };
-
 }
 }
 
-#endif //HEROESPATH_COMBAT_FIGHTRESULTS_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_FIGHTRESULTS_HPP_INCLUDED

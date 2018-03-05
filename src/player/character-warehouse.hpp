@@ -32,24 +32,22 @@
 #include <memory>
 #include <vector>
 
-
 namespace heroespath
 {
 namespace player
 {
 
-    //forward declarations
+    // forward declarations
     class Character;
     using CharacterPtr_t = Character *;
     using CharacterUPtr_t = std::unique_ptr<Character>;
     using CharacterUVec_t = std::vector<CharacterUPtr_t>;
 
-
-    //Singleton responsible for the lifetimes of player::Character objects.
+    // Singleton responsible for the lifetimes of player::Character objects.
     class CharacterWarehouse
     {
-        CharacterWarehouse(const CharacterWarehouse &) =delete;
-        CharacterWarehouse & operator=(const CharacterWarehouse &) =delete;
+        CharacterWarehouse(const CharacterWarehouse &) = delete;
+        CharacterWarehouse & operator=(const CharacterWarehouse &) = delete;
 
     public:
         CharacterWarehouse();
@@ -66,8 +64,7 @@ namespace player
         static std::unique_ptr<CharacterWarehouse> instanceUPtr_;
         misc::Warehouse<Character> warehouse_;
     };
-
 }
 }
 
-#endif //HEROESPATH_PLAYER_CHARACTERWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_PLAYER_CHARACTERWAREHOUSE_HPP_INCLUDED

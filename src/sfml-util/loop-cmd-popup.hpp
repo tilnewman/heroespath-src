@@ -32,10 +32,9 @@
 
 #include "popup/popup-info.hpp"
 
-#include <boost/type_index.hpp>//for boost::typeindex::type_id<T>().pretty_name()
+#include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
 #include <memory>
-
 
 namespace heroespath
 {
@@ -44,19 +43,16 @@ namespace sfml_util
 
     class Loop;
 
-
-    template<typename PopupType_t>
+    template <typename PopupType_t>
     class LoopCmd_AddStage_Popup_Specific : public LoopCmd
     {
     public:
-        LoopCmd_AddStage_Popup_Specific(
-            sfml_util::Loop & loop,
-            const popup::PopupInfo & POPUP_INFO)
-        :
-            LoopCmd("AddStage_Popup_Specific_" +
-                boost::typeindex::type_id<PopupType_t>().pretty_name()),
-            loop_(loop),
-            popupInfo_(POPUP_INFO)
+        LoopCmd_AddStage_Popup_Specific(sfml_util::Loop & loop, const popup::PopupInfo & POPUP_INFO)
+            : LoopCmd(
+                  "AddStage_Popup_Specific_"
+                  + boost::typeindex::type_id<PopupType_t>().pretty_name())
+            , loop_(loop)
+            , popupInfo_(POPUP_INFO)
         {}
 
         virtual ~LoopCmd_AddStage_Popup_Specific() {}
@@ -74,8 +70,7 @@ namespace sfml_util
         popup::PopupInfo popupInfo_;
     };
 
-
-    //A class that removes a popup from a Loop object
+    // A class that removes a popup from a Loop object
     class LoopCmd_RemoveStage_Popup : public LoopCmd
     {
     public:
@@ -83,8 +78,7 @@ namespace sfml_util
         virtual ~LoopCmd_RemoveStage_Popup();
         virtual bool Execute();
     };
-
 }
 }
 
-#endif //HEROESPATH_SFMLUTIL_LOOPCOMMANDPOPUP_INCLUDED
+#endif // HEROESPATH_SFMLUTIL_LOOPCOMMANDPOPUP_INCLUDED
