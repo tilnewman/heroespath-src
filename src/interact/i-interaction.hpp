@@ -46,7 +46,7 @@ namespace interact
     // Pure virtual interface for all Interactions objects.
     struct IInteraction
     {
-        virtual ~IInteraction() {}
+        virtual ~IInteraction() = default;
         virtual Interact::Enum Type() const = 0;
         virtual const sfml_util::gui::TextInfo & Text() const = 0;
         virtual ButtonVec_t & Buttons() = 0;
@@ -70,7 +70,7 @@ namespace interact
     };
 
     using InteractionUPtr_t = std::unique_ptr<IInteraction>;
-} // namespace interact
-} // namespace heroespath
+}
+}
 
 #endif // HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED

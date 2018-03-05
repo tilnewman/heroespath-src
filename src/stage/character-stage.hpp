@@ -92,7 +92,7 @@ namespace stage
             const std::string & IMAGE_FILENAME_UP,
             const std::string & IMAGE_FILENAME_OVER);
 
-        virtual ~MenuButton() {}
+        virtual ~MenuButton() = default;
         virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
 
         virtual void SetOwningCharacterStage(CharacterStage * const stagePtr)
@@ -142,7 +142,7 @@ namespace stage
             text_region_sptr->Setup(TEXT_INFO, RECT);
         }
 
-        virtual ~StatModText() {}
+        virtual ~StatModText() = default;
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const
         {

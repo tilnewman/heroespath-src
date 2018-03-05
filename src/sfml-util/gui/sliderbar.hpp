@@ -70,7 +70,7 @@ namespace sfml_util
                 callback::ISliderBarCallbackHandler_t * const CHANGE_HANDLER_PTR = nullptr,
                 const float INITIAL_VALUE = 0.0f); // must be [0.0f, 1.0f]
 
-            virtual ~SliderBar() {}
+            virtual ~SliderBar() = default;
 
             inline float GetCurrentValue() const { return currentVal_; }
             void SetCurrentValue(const float NEW_VAL);

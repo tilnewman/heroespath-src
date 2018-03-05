@@ -86,7 +86,7 @@ namespace log
     class ILog
     {
     public:
-        virtual ~ILog() {}
+        virtual ~ILog() = default;
 
         virtual void Log(const std::string & MSG) = 0;
 

@@ -54,14 +54,14 @@ namespace sfml_util
     {
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    } // namespace gui
-} // namespace sfml_util
+    }
+}
 
 namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-} // namespace creature
+}
 
 namespace stage
 {
@@ -137,7 +137,7 @@ namespace stage
             sf::FloatRect rect;
             item::ItemPtr_t item_ptr;
         };
-    } // namespace treasure
+    }
 
     class TreasureStage;
 
@@ -152,7 +152,7 @@ namespace stage
 
     public:
         explicit TreasureDisplayStage(TreasureStage *);
-        virtual ~TreasureDisplayStage() {}
+        virtual ~TreasureDisplayStage() = default;
 
         inline virtual const std::string HandlerName() const override { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
@@ -376,7 +376,7 @@ namespace stage
         item::ItemCache heldCache_;
         item::ItemCache lockboxCache_;
     };
-} // namespace stage
-} // namespace heroespath
+}
+}
 
 #endif // HEROESPATH_STAGE_TREASUREDISPLAYSTAGE_HPP_INCLUDED

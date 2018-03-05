@@ -48,7 +48,7 @@ namespace creature
             Good()
                 : Condition()
             {}
-            virtual ~Good() {}
+            virtual ~Good() = default;
         };
 
         class Bold : public Condition
@@ -66,7 +66,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Intelligence, 25) }))
             {}
 
-            virtual ~Bold() {}
+            virtual ~Bold() = default;
         };
 
         class Heroic : public Condition
@@ -84,7 +84,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Intelligence, 50) }))
             {}
 
-            virtual ~Heroic() {}
+            virtual ~Heroic() = default;
         };
 
         class Daunted : public Condition
@@ -100,7 +100,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Intelligence, -25) }))
             {}
 
-            virtual ~Daunted() {}
+            virtual ~Daunted() = default;
         };
 
         class Panic : public Condition
@@ -116,7 +116,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Intelligence, -50) }))
             {}
 
-            virtual ~Panic() {}
+            virtual ~Panic() = default;
         };
 
         class Tripped : public Condition
@@ -131,7 +131,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Speed, -75) }))
             {}
 
-            virtual ~Tripped() {}
+            virtual ~Tripped() = default;
 
             virtual void PerTurnEffect(
                 CreaturePtr_t creaturePtr,
@@ -151,7 +151,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Speed, -75) }))
             {}
 
-            virtual ~Pounced() {}
+            virtual ~Pounced() = default;
 
             virtual void PerTurnEffect(
                 CreaturePtr_t creaturePtr,
@@ -172,7 +172,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Intelligence, -50) }))
             {}
 
-            virtual ~Dazed() {}
+            virtual ~Dazed() = default;
 
             virtual void PerTurnEffect(
                 CreaturePtr_t creaturePtr,
@@ -196,7 +196,7 @@ namespace creature
                       }))
             {}
 
-            virtual ~Unconscious() {}
+            virtual ~Unconscious() = default;
         };
 
         class Stone : public Condition
@@ -213,7 +213,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Intelligence, -9999) }))
             {}
 
-            virtual ~Stone() {}
+            virtual ~Stone() = default;
         };
 
         class Dead : public Condition
@@ -231,7 +231,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Intelligence, -9999) }))
             {}
 
-            virtual ~Dead() {}
+            virtual ~Dead() = default;
         };
 
         class AsleepNatural : public Condition
@@ -246,7 +246,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Speed, -9999) }))
             {}
 
-            virtual ~AsleepNatural() {}
+            virtual ~AsleepNatural() = default;
 
             virtual void PerTurnEffect(
                 CreaturePtr_t creaturePtr,
@@ -266,7 +266,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Speed, -9999) }))
             {}
 
-            virtual ~AsleepMagical() {}
+            virtual ~AsleepMagical() = default;
 
             virtual void PerTurnEffect(
                 CreaturePtr_t creaturePtr,
@@ -286,7 +286,7 @@ namespace creature
                                         std::make_pair(stats::Traits::Speed, -25) }))
             {}
 
-            virtual ~Poisoned() {}
+            virtual ~Poisoned() = default;
 
             virtual void PerTurnEffect(
                 CreaturePtr_t creaturePtr,

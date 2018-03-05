@@ -52,7 +52,7 @@ namespace sfml_util
         {
         public:
             IGuiEntity() {}
-            virtual ~IGuiEntity() {}
+            virtual ~IGuiEntity() = default;
 
             virtual bool GetEntityWillDraw() const = 0;
             virtual void SetEntityWillDraw(const bool WILL_DRAW) = 0;

@@ -52,7 +52,7 @@ namespace sfml_util
                 const sf::Vector2f & TO_POS_V,
                 const float SLIDER_SPEED);
 
-            virtual ~PosSlider() {}
+            virtual ~PosSlider() = default;
 
             void Setup(
                 const sf::Vector2f & FROM_POS_V,

@@ -46,7 +46,7 @@ namespace sfml_util
                 const float SCALE = 1.0f,
                 const bool WILL_BOX = false);
 
-            virtual ~ResumeButton() {}
+            virtual ~ResumeButton() = default;
 
         protected:
             virtual void OnClick(const sf::Vector2f &);
@@ -63,7 +63,7 @@ namespace sfml_util
                 const float SCALE = 1.0f,
                 const bool WILL_BOX = false);
 
-            virtual ~StartGameButton() {}
+            virtual ~StartGameButton() = default;
 
         protected:
             virtual void OnClick(const sf::Vector2f &);
@@ -80,7 +80,7 @@ namespace sfml_util
                 const float SCALE = 1.0f,
                 const bool WILL_BOX = false);
 
-            virtual ~CreateCharactersButton() {}
+            virtual ~CreateCharactersButton() = default;
 
         protected:
             virtual void OnClick(const sf::Vector2f &);
@@ -97,7 +97,7 @@ namespace sfml_util
                 const float SCALE = 1.0f,
                 const bool WILL_BOX = false);
 
-            virtual ~SettingsButton() {}
+            virtual ~SettingsButton() = default;
 
         protected:
             virtual void OnClick(const sf::Vector2f &);
@@ -114,7 +114,7 @@ namespace sfml_util
                 const float SCALE = 1.0f,
                 const bool WILL_BOX = false);
 
-            virtual ~CreditsButton() {}
+            virtual ~CreditsButton() = default;
 
         protected:
             virtual void OnClick(const sf::Vector2f &);
@@ -131,7 +131,7 @@ namespace sfml_util
                 const float SCALE = 1.0f,
                 const bool WILL_BOX = false);
 
-            virtual ~ExitButton() {}
+            virtual ~ExitButton() = default;
 
         protected:
             virtual void OnClick(const sf::Vector2f &);
@@ -148,7 +148,7 @@ namespace sfml_util
                 const float SCALE = 1.0f,
                 const bool WILL_BOX = false);
 
-            virtual ~BackButton() {}
+            virtual ~BackButton() = default;
 
         protected:
             virtual void OnClick(const sf::Vector2f &);
@@ -165,7 +165,7 @@ namespace sfml_util
                 const float SCALE = 1.0f,
                 const bool WILL_BOX = false);
 
-            virtual ~DeleteButton() {}
+            virtual ~DeleteButton() = default;
 
         protected:
             virtual void OnClick(const sf::Vector2f &);

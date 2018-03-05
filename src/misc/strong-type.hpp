@@ -48,7 +48,7 @@ namespace misc
             : m_value(VALUE)
         {}
 
-        virtual ~StrongType() {}
+        virtual ~StrongType() = default;
 
         using type = T;
 

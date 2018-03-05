@@ -46,7 +46,7 @@ namespace avatar
     // Pure virtual interface for all NPC classes.
     struct IView
     {
-        virtual ~IView() {}
+        virtual ~IView() = default;
 
         virtual void Set(const Pose::Enum, const sfml_util::Direction::Enum) = 0;
 

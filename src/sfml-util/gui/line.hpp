@@ -68,7 +68,7 @@ namespace sfml_util
                 const Side::Enum SIDE,
                 const bool WILL_CAP_ENDS);
 
-            virtual ~Line() {}
+            virtual ~Line() = default;
 
             void Setup(const float LEFT, const float TOP, const std::size_t LENGTH);
 

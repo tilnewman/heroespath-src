@@ -46,7 +46,7 @@ namespace misc
             : StrongType<T, Parameter>(VALUE)
         {}
 
-        virtual ~StrongNumericType() {}
+        virtual ~StrongNumericType() = default;
 
         template <typename AsType_t>
         AsType_t As() const

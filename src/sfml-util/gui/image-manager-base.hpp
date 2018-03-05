@@ -56,7 +56,7 @@ namespace sfml_util
                       game::GameDataFile::Instance()->GetMediaPath("media-images-placeholder"))
             {}
 
-            virtual ~ImageManagerBase() {}
+            virtual ~ImageManagerBase() = default;
 
             static inline const std::string PathToImages() { return pathToImages_; }
 

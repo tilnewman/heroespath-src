@@ -74,7 +74,7 @@ namespace sfml_util
                 return *this;
             }
 
-            virtual ~PtrWrapper() {}
+            virtual ~PtrWrapper() = default;
 
             const T * const PTR_;
         };
@@ -83,7 +83,7 @@ namespace sfml_util
         template <typename Package_t, typename Return_t = void>
         struct ICallbackHandler
         {
-            virtual ~ICallbackHandler() {}
+            virtual ~ICallbackHandler() = default;
             virtual const std::string HandlerName() const = 0;
             virtual Return_t HandleCallback(const Package_t &) = 0;
         };

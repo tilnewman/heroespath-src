@@ -72,7 +72,7 @@ namespace stage
                           .append(boost::typeindex::type_id<StageType_t>().pretty_name()))
         {}
 
-        virtual ~LoopCmd_AddStage() {}
+        virtual ~LoopCmd_AddStage() = default;
 
         virtual bool Execute()
         {
@@ -94,7 +94,7 @@ namespace stage
             , willAdvanceTurn_(WILL_ADVANCE_TURN)
         {}
 
-        virtual ~LoopCmd_AddStage_Combat() {}
+        virtual ~LoopCmd_AddStage_Combat() = default;
 
         virtual bool Execute()
         {
@@ -133,7 +133,7 @@ namespace stage
                     << "INVENTORY_CREATURE_PTR.");
         }
 
-        virtual ~LoopCmd_AddStage_Inventory() {}
+        virtual ~LoopCmd_AddStage_Inventory() = default;
 
         virtual bool Execute()
         {

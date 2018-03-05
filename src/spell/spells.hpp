@@ -64,7 +64,7 @@ namespace spell
                   "sprayed with sparks")
         {}
 
-        virtual ~Sparks() {}
+        virtual ~Sparks() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -94,7 +94,7 @@ namespace spell
                   "bandaged")
         {}
 
-        virtual ~Bandage() {}
+        virtual ~Bandage() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -123,7 +123,7 @@ namespace spell
                   "slept")
         {}
 
-        virtual ~Sleep() {}
+        virtual ~Sleep() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -153,7 +153,7 @@ namespace spell
                   "awakened")
         {}
 
-        virtual ~Awaken() {}
+        virtual ~Awaken() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -182,7 +182,7 @@ namespace spell
                   "tripped")
         {}
 
-        virtual ~Trip() {}
+        virtual ~Trip() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -212,7 +212,7 @@ namespace spell
                   "lifted")
         {}
 
-        virtual ~Lift() {}
+        virtual ~Lift() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -242,7 +242,7 @@ namespace spell
                   "dazed")
         {}
 
-        virtual ~Daze() {}
+        virtual ~Daze() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -271,7 +271,7 @@ namespace spell
                   "panicked")
         {}
 
-        virtual ~Panic() {}
+        virtual ~Panic() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -301,7 +301,7 @@ namespace spell
                   "clear headed")
         {}
 
-        virtual ~ClearMind() {}
+        virtual ~ClearMind() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -330,7 +330,7 @@ namespace spell
                   "poisoned")
         {}
 
-        virtual ~Poison() {}
+        virtual ~Poison() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -360,7 +360,7 @@ namespace spell
                   "cured")
         {}
 
-        virtual ~Antidote() {}
+        virtual ~Antidote() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
@@ -389,7 +389,7 @@ namespace spell
                   "poisoned")
         {}
 
-        virtual ~PoisonCloud() {}
+        virtual ~PoisonCloud() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,

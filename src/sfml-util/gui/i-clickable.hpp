@@ -44,7 +44,7 @@ namespace sfml_util
         struct IClickable
         {
             IClickable() {}
-            virtual ~IClickable() {}
+            virtual ~IClickable() = default;
 
             virtual MouseState::Enum GetMouseState() const = 0;
             virtual void SetMouseState(const MouseState::Enum) = 0;

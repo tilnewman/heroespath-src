@@ -41,7 +41,7 @@ namespace config
     class IConfigBase
     {
     public:
-        virtual ~IConfigBase() {}
+        virtual ~IConfigBase() = default;
         //
         virtual bool Load() = 0;
 

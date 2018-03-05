@@ -60,7 +60,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t);
         inline virtual Score_t TreasureScore() const { return 1800_score; }
-        virtual ~Enchantment_PixieBell() {}
+        virtual ~Enchantment_PixieBell() = default;
 
     private:
         friend class boost::serialization::access;
@@ -92,7 +92,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t);
         inline virtual Score_t TreasureScore() const { return 2000_score; }
-        virtual ~Enchantment_CrystalChimes() {}
+        virtual ~Enchantment_CrystalChimes() = default;
 
     private:
         friend class boost::serialization::access;
@@ -125,7 +125,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t);
         inline virtual Score_t TreasureScore() const { return 2400_score; }
-        virtual ~Enchantment_GoldenGong() {}
+        virtual ~Enchantment_GoldenGong() = default;
 
     private:
         friend class boost::serialization::access;
@@ -156,7 +156,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t);
         inline virtual Score_t TreasureScore() const { return 1500_score; }
-        virtual ~Enchantment_DragonToothWhistle() {}
+        virtual ~Enchantment_DragonToothWhistle() = default;
 
     private:
         friend class boost::serialization::access;
@@ -188,7 +188,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t);
         inline virtual Score_t TreasureScore() const { return 1900_score; }
-        virtual ~Enchantment_DoveBloodVial() {}
+        virtual ~Enchantment_DoveBloodVial() = default;
 
     private:
         friend class boost::serialization::access;
@@ -220,7 +220,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t);
         inline virtual Score_t TreasureScore() const { return 800_score; }
-        virtual ~Enchantment_DriedEdible() {}
+        virtual ~Enchantment_DriedEdible() = default;
 
     private:
         friend class boost::serialization::access;
@@ -252,7 +252,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t);
         inline virtual Score_t TreasureScore() const { return 600_score; }
-        virtual ~Enchantment_ShamanRainmaker() {}
+        virtual ~Enchantment_ShamanRainmaker() = default;
 
     private:
         friend class boost::serialization::access;
@@ -283,7 +283,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t);
         inline virtual Score_t TreasureScore() const { return 1300_score; }
-        virtual ~Enchantment_SpecterChains() {}
+        virtual ~Enchantment_SpecterChains() = default;
 
     private:
         friend class boost::serialization::access;
@@ -315,7 +315,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t);
         inline virtual Score_t TreasureScore() const { return 1000_score; }
-        virtual ~Enchantment_VultureGizzard() {}
+        virtual ~Enchantment_VultureGizzard() = default;
 
     private:
         friend class boost::serialization::access;
@@ -346,7 +346,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t);
         inline virtual Score_t TreasureScore() const { return 1100_score; }
-        virtual ~Enchantment_WarTrumpet() {}
+        virtual ~Enchantment_WarTrumpet() = default;
 
     private:
         friend class boost::serialization::access;
@@ -379,7 +379,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t) {}
         inline virtual Score_t TreasureScore() const { return 250_score; }
-        virtual ~Enchantment_MiscBlessed() {}
+        virtual ~Enchantment_MiscBlessed() = default;
 
     private:
         friend class boost::serialization::access;
@@ -412,7 +412,7 @@ namespace creature
 
         virtual void UseEffect(const CreaturePtr_t) {}
         inline virtual Score_t TreasureScore() const { return 250_score; }
-        virtual ~Enchantment_MiscCursed() {}
+        virtual ~Enchantment_MiscCursed() = default;
 
     private:
         friend class boost::serialization::access;

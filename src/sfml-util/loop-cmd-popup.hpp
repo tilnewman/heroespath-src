@@ -55,7 +55,7 @@ namespace sfml_util
             , popupInfo_(POPUP_INFO)
         {}
 
-        virtual ~LoopCmd_AddStage_Popup_Specific() {}
+        virtual ~LoopCmd_AddStage_Popup_Specific() = default;
 
         virtual bool Execute()
         {

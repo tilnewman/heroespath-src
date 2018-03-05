@@ -50,7 +50,7 @@ namespace sfml_util
     class IStage
     {
     public:
-        virtual ~IStage() {}
+        virtual ~IStage() = default;
 
         virtual void Setup() = 0;
 

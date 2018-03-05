@@ -74,7 +74,7 @@ namespace song
                   "emboldened")
         {}
 
-        virtual ~RallyDrum() {}
+        virtual ~RallyDrum() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t creaturePlayingPtr,
@@ -101,7 +101,7 @@ namespace song
                   "recharged")
         {}
 
-        virtual ~SpiritResonance() {}
+        virtual ~SpiritResonance() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t creaturePlayingPtr,
@@ -128,7 +128,7 @@ namespace song
                   "roused")
         {}
 
-        virtual ~RousingRhythm() {}
+        virtual ~RousingRhythm() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t creaturePlayingPtr,
@@ -155,7 +155,7 @@ namespace song
                   "tripped")
         {}
 
-        virtual ~TripBeat() {}
+        virtual ~TripBeat() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t creaturePlayingPtr,
@@ -182,7 +182,7 @@ namespace song
                   "panicked")
         {}
 
-        virtual ~PanicStrings() {}
+        virtual ~PanicStrings() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t creaturePlayingPtr,
@@ -209,7 +209,7 @@ namespace song
                   "slept")
         {}
 
-        virtual ~Lullaby() {}
+        virtual ~Lullaby() = default;
 
         virtual bool EffectCreature(
             creature::CreaturePtr_t creaturePlayingPtr,

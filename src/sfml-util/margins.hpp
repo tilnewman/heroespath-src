@@ -47,7 +47,7 @@ namespace sfml_util
             , bottom(BOTTOM)
         {}
 
-        virtual ~Margins() {}
+        virtual ~Margins() = default;
 
         float left;
         float right;

@@ -49,7 +49,7 @@ namespace sfml_util
     class ILoopCmd
     {
     public:
-        virtual ~ILoopCmd() {}
+        virtual ~ILoopCmd() = default;
 
         // all loop commands have meaningful names for logging
         virtual const std::string GetName() const = 0;
@@ -88,7 +88,7 @@ namespace sfml_util
             : LoopCmd("Execute")
         {}
 
-        virtual ~LoopCmd_Execute() {}
+        virtual ~LoopCmd_Execute() = default;
 
         virtual bool Execute();
     };
@@ -102,7 +102,7 @@ namespace sfml_util
             , STATE_(STATE_NUM)
         {}
 
-        virtual ~LoopCmd_StateChange() {}
+        virtual ~LoopCmd_StateChange() = default;
 
         virtual bool Execute();
 
@@ -126,7 +126,7 @@ namespace sfml_util
             , IS_VISIBLE_(IS_VISIBLE)
         {}
 
-        virtual ~LoopCmd_SetMouseVisibility() {}
+        virtual ~LoopCmd_SetMouseVisibility() = default;
 
         virtual bool Execute();
 
@@ -155,7 +155,7 @@ namespace sfml_util
             , SPEED_MULT_(SPEED_MULT)
         {}
 
-        virtual ~LoopCmd_StartMusic() {}
+        virtual ~LoopCmd_StartMusic() = default;
 
         virtual bool Execute()
         {
@@ -193,7 +193,7 @@ namespace sfml_util
             , SPEED_MULT_(SPEED_MULT)
         {}
 
-        virtual ~LoopCmd_StopMusic() {}
+        virtual ~LoopCmd_StopMusic() = default;
 
         virtual bool Execute()
         {
@@ -224,7 +224,7 @@ namespace sfml_util
             : LoopCmd("AddStageDefault")
         {}
 
-        virtual ~LoopCmd_AddStage_Default() {}
+        virtual ~LoopCmd_AddStage_Default() = default;
 
         virtual bool Execute();
     };
@@ -238,7 +238,7 @@ namespace sfml_util
             , TIME_(SECONDS)
         {}
 
-        virtual ~LoopCmd_SetHoldTime() {}
+        virtual ~LoopCmd_SetHoldTime() = default;
 
         virtual bool Execute();
 
@@ -261,7 +261,7 @@ namespace sfml_util
             : LoopCmd("RemoveAllStages")
         {}
 
-        virtual ~LoopCmd_RemoveAllStages() {}
+        virtual ~LoopCmd_RemoveAllStages() = default;
 
         virtual bool Execute();
     };
@@ -274,7 +274,7 @@ namespace sfml_util
             : LoopCmd("ExitAfterFade")
         {}
 
-        virtual ~LoopCmd_ExitAfterFade() {}
+        virtual ~LoopCmd_ExitAfterFade() = default;
 
         virtual bool Execute();
     };
@@ -293,7 +293,7 @@ namespace sfml_util
             , WILL_HOLD_FADE_(WILL_HOLD_FADE)
         {}
 
-        virtual ~LoopCmd_FadeIn() {}
+        virtual ~LoopCmd_FadeIn() = default;
 
         virtual bool Execute();
 
@@ -326,7 +326,7 @@ namespace sfml_util
             , WILL_HOLD_FADE_(WILL_HOLD_FADE)
         {}
 
-        virtual ~LoopCmd_FadeOut() {}
+        virtual ~LoopCmd_FadeOut() = default;
 
         virtual bool Execute();
 
@@ -354,7 +354,7 @@ namespace sfml_util
             , WILL_EXIT_ON_KEYSTROKE_(WILL_EXIT_ON_KEYSTROKE)
         {}
 
-        virtual ~LoopCmd_ExitAfterKeypress() {}
+        virtual ~LoopCmd_ExitAfterKeypress() = default;
 
         virtual bool Execute();
 
@@ -378,7 +378,7 @@ namespace sfml_util
             , WILL_EXIT_ON_MOUSECLICK_(WILL_EXIT_ON_MOUSECLICK)
         {}
 
-        virtual ~LoopCmd_ExitAfterMouseclick() {}
+        virtual ~LoopCmd_ExitAfterMouseclick() = default;
 
         virtual bool Execute();
 
@@ -401,7 +401,7 @@ namespace sfml_util
             : LoopCmd("RemoveFocus")
         {}
 
-        virtual ~LoopCmd_RemoveFocus() {}
+        virtual ~LoopCmd_RemoveFocus() = default;
 
         virtual bool Execute();
     };
@@ -415,7 +415,7 @@ namespace sfml_util
             , WILL_IGNORE_MOUSE_(WILL_IGNORE_MOUSE)
         {}
 
-        virtual ~LoopCmd_IgnoreMouse() {}
+        virtual ~LoopCmd_IgnoreMouse() = default;
 
         virtual bool Execute();
 
@@ -432,7 +432,7 @@ namespace sfml_util
             , WILL_IGNORE_KEYSTROKES_(WILL_IGNORE_KEYSTROKES)
         {}
 
-        virtual ~LoopCmd_IgnoreKeystrokes() {}
+        virtual ~LoopCmd_IgnoreKeystrokes() = default;
 
         virtual bool Execute();
 
@@ -449,7 +449,7 @@ namespace sfml_util
             , MOUSE_CLICK_POS_(MOUSE_POS_V)
         {}
 
-        virtual ~LoopCmd_FakeMouseClick() {}
+        virtual ~LoopCmd_FakeMouseClick() = default;
 
         virtual bool Execute();
 
