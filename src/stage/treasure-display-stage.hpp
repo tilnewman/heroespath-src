@@ -147,6 +147,7 @@ namespace stage
         , public sfml_util::gui::callback::IListBoxCallbackHandler
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
+    public:
         TreasureDisplayStage(const TreasureDisplayStage &) = delete;
         TreasureDisplayStage(const TreasureDisplayStage &&) = delete;
         TreasureDisplayStage & operator=(const TreasureDisplayStage &) = delete;

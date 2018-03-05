@@ -136,6 +136,7 @@ namespace stage
         , public sfml_util::gui::callback::IListBoxCallbackHandler
         , public sfml_util::gui::callback::ISliderBarCallbackHandler_t
     {
+    public:
         CombatStage(const CombatStage &) = delete;
         CombatStage(const CombatStage &&) = delete;
         CombatStage & operator=(const CombatStage &) = delete;

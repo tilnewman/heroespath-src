@@ -89,12 +89,15 @@ namespace sfml_util
         , minutes(0)
         , seconds(0)
     {
-        const int SECONDS_INT(static_cast<int>(TIME_OBJ.asSeconds()));
+        auto const SECONDS_INT{ static_cast<int>(TIME_OBJ.asSeconds()) };
         hours = SECONDS_INT / SECONDS_IN_HOUR_;
         minutes = (SECONDS_INT % SECONDS_IN_HOUR_) / SECONDS_IN_MINUTE_;
         seconds = (SECONDS_INT - (hours * SECONDS_IN_HOUR_)) - (minutes * SECONDS_IN_MINUTE_);
+
         if (seconds < 0)
+        {
             seconds = 0;
+        }
     }
 
     const std::string Time::ToString() const

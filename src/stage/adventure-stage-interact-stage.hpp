@@ -64,6 +64,7 @@ namespace stage
         , public sfml_util::gui::callback::ITextButtonCallbackHandler_t
         , public popup::IPopupHandler_t
     {
+    public:
         InteractStage(const InteractStage &) = delete;
         InteractStage(const InteractStage &&) = delete;
         InteractStage & operator=(const InteractStage &) = delete;

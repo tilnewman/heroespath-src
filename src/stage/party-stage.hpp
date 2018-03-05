@@ -75,6 +75,7 @@ namespace stage
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
         , public popup::IPopupHandler_t
     {
+    public:
         PartyStage(const PartyStage &) = delete;
         PartyStage(const PartyStage &&) = delete;
         PartyStage & operator=(const PartyStage &) = delete;

@@ -58,6 +58,7 @@ namespace stage
         , public popup::IPopupHandler_t
         , public sfml_util::callback::IRadioButtonSetCallbackHandler_t
     {
+    public:
         SettingsStage(const SettingsStage &) = delete;
         SettingsStage(const SettingsStage &&) = delete;
         SettingsStage & operator=(const SettingsStage &) = delete;

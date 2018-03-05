@@ -70,6 +70,7 @@ namespace stage
         : public sfml_util::Stage
         , public popup::IPopupHandler_t
     {
+    public:
         TreasureStage(const TreasureStage &) = delete;
         TreasureStage(const TreasureStage &&) = delete;
         TreasureStage & operator=(const TreasureStage &) = delete;

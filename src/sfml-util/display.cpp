@@ -87,10 +87,7 @@ namespace sfml_util
         M_HP_LOG_DBG("Singleton Construction: Display");
     }
 
-    Display::~Display()
-    {
-        // M_HP_LOG_DBG("Singleton Destruction: Display");
-    }
+    Display::~Display() = default;
 
     Display * Display::Instance()
     {

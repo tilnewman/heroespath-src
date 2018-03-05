@@ -167,6 +167,7 @@ namespace stage
         , public sfml_util::gui::callback::ISliderBarCallbackHandler_t
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
+    public:
         CharacterStage(const CharacterStage &) = delete;
         CharacterStage(const CharacterStage &&) = delete;
         CharacterStage & operator=(const CharacterStage &) = delete;

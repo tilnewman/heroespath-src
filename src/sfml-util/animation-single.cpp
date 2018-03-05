@@ -65,7 +65,7 @@ namespace sfml_util
             true) };
 
         sprite_.setTexture(TextureCache::Instance()->GetByIndex(TEXTURE_ID_NUM));
-        sprite_.setPosition(GetEntityPos());
+        sprite_.setPosition(entityRegion_.left, entityRegion_.top);
         sprite_.setScale(entityRegion_.width / origSizeV_.x, entityRegion_.height / origSizeV_.y);
         sprite_.setColor(colorFrom_);
 

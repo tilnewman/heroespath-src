@@ -116,6 +116,7 @@ namespace sfml_util
             : public GuiEntity
             , public callback::ISliderBarCallbackHandler_t
         {
+        public:
             ListBox(const ListBox &) = delete;
             ListBox(const ListBox &&) = delete;
             ListBox & operator=(const ListBox &) = delete;

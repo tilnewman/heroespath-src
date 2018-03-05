@@ -60,6 +60,7 @@ namespace stage
         : public sfml_util::Stage
         , public popup::IPopupHandler_t
     {
+    public:
         CampStage(const CampStage &) = delete;
         CampStage(const CampStage &&) = delete;
         CampStage & operator=(const CampStage &) = delete;

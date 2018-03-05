@@ -55,6 +55,7 @@ namespace stage
         : public sfml_util::Stage
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
+    public:
         MainMenuStage(const MainMenuStage &) = delete;
         MainMenuStage(const MainMenuStage &&) = delete;
         MainMenuStage & operator=(const MainMenuStage &) = delete;

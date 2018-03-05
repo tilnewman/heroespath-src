@@ -56,6 +56,7 @@ namespace popup
         : public PopupStageBase
         , public sfml_util::gui::callback::IListBoxCallbackHandler
     {
+    public:
         PopupStageSpellbook(const PopupStageSpellbook &) = delete;
         PopupStageSpellbook(const PopupStageSpellbook &&) = delete;
         PopupStageSpellbook & operator=(const PopupStageSpellbook &) = delete;

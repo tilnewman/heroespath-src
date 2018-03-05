@@ -76,6 +76,7 @@ namespace stage
         , public sfml_util::gui::callback::IListBoxCallbackHandler
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
     {
+    public:
         LoadGameStage(const LoadGameStage &) = delete;
         LoadGameStage(const LoadGameStage &&) = delete;
         LoadGameStage & operator=(const LoadGameStage &) = delete;

@@ -45,6 +45,7 @@ namespace popup
         : public PopupStageBase
         , public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
     {
+    public:
         PopupStageNumberSelect(const PopupStageNumberSelect &) = delete;
         PopupStageNumberSelect(const PopupStageNumberSelect &&) = delete;
         PopupStageNumberSelect & operator=(const PopupStageNumberSelect &) = delete;

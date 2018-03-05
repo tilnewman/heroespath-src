@@ -61,6 +61,7 @@ namespace sfml_util
             : public GuiEntity
             , public callback::ISliderBarCallbackHandler_t
         {
+        public:
             TextRegion(const TextRegion &) = delete;
             TextRegion(const TextRegion &&) = delete;
             TextRegion & operator=(const TextRegion &) = delete;
