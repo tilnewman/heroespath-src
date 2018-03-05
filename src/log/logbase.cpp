@@ -444,5 +444,5 @@ namespace log
     }
 
     bool LogBase::IsFileReady() { return (fileStream_.good()) && (fileStream_.is_open()); }
-}
-}
+} // namespace log
+} // namespace heroespath

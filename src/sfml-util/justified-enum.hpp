@@ -47,7 +47,7 @@ namespace sfml_util
         static const std::string ToString(const Justified::Enum E);
         static bool IsValid(const Justified::Enum E);
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_JUSTIFIED_ENUM_HPP_INCLUDED

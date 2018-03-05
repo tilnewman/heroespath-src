@@ -199,5 +199,5 @@ namespace item
 
         return totalArmorRating;
     }
-}
-}
+} // namespace item
+} // namespace heroespath

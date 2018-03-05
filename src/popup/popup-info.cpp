@@ -486,5 +486,5 @@ namespace popup
                 == numberInvalidVec_.end());
         }
     }
-}
-}
+} // namespace popup
+} // namespace heroespath

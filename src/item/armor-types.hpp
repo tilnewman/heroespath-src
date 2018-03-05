@@ -106,8 +106,8 @@ namespace item
             static const std::string ToString(const cover_type::Enum);
             static cover_type::Enum FromString(const std::string &);
         };
-    }
-}
-}
+    } // namespace armor
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ARMORTYPES_HPP_INCLUDED

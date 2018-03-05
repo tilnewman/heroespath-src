@@ -42,8 +42,8 @@ namespace sfml_util
     {
         class IGuiEntity;
         using IGuiEntityPtr_t = IGuiEntity *;
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 
 namespace stage
 {
@@ -60,9 +60,9 @@ namespace stage
 
         // Responsible for managing the positions of GuiEntity objects that slide on and off screen.
         // Entities on the left side of the screen are called Treasure objects because they
-        // correspond to the source of Treasure.  Entities on the right side of the screen are called
-        // Inventory objects because they correspond to a character's inventory.  This class is
-        // responsible for managing the state of each object and for presenting an interface for
+        // correspond to the source of Treasure.  Entities on the right side of the screen are
+        // called Inventory objects because they correspond to a character's inventory.  This class
+        // is responsible for managing the state of each object and for presenting an interface for
         // sliding them on and off screen.
         class StageMover
         {
@@ -123,8 +123,8 @@ namespace stage
         };
 
         using StageMoverUPtr_t = std::unique_ptr<StageMover>;
-    }
-}
-}
+    } // namespace treasure
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_TREASURESTAGEMOVER_HPP_INCLUDED

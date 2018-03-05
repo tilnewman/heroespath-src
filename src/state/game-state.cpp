@@ -110,5 +110,5 @@ namespace state
                    R.dateTimeStarted_,
                    R.dateTimeLastSave_);
     }
-}
-}
+} // namespace state
+} // namespace heroespath

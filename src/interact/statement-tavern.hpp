@@ -61,14 +61,14 @@ namespace interact
             {
                 return { "(hiccup)", "(burp)", "(grumble)", "(mutter)", "(laughs)" };
             }
-        }
+        } // namespace compose
 
         struct TavernTalk
         {
             static const std::string Compose(const player::Party &);
         };
-    }
-}
-}
+    } // namespace talk
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_STATEMENTTAVERN_HPP_INCLUDED

@@ -690,5 +690,5 @@ namespace combat
     }
 
     void CombatNode::SelectAnimStop() { willShowSelectAnim_ = false; }
-}
-}
+} // namespace combat
+} // namespace heroespath

@@ -85,7 +85,7 @@ namespace stage
         float scrollSpeed_;
         bool isKeyHeldDown_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_CREDITSTAGE_HPP_INCLUDED

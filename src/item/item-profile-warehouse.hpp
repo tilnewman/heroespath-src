@@ -172,7 +172,7 @@ namespace item
         static std::unique_ptr<ItemProfileWarehouse> instanceUPtr_;
         ItemProfileVec_t profiles_;
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ITEMPROFILEWAREHOUSE_HPP_INCLUDED

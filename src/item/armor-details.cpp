@@ -217,6 +217,6 @@ namespace item
             else
                 return trim_copy(erase_all_copy(FIELD_STR, "\""));
         }
-    }
-}
-}
+    } // namespace armor
+} // namespace item
+} // namespace heroespath

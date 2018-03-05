@@ -50,7 +50,7 @@ namespace sfml_util
         static const std::string ToString(const GuiEvent::Enum);
         static bool IsValid(const GuiEvent::Enum);
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUIEVENT_ENUM_HPP_INCLUDED

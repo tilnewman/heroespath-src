@@ -77,7 +77,7 @@ namespace sfml_util
     };
 
     using RadioButtonSet_DisplayChangeSPtr_t = std::shared_ptr<RadioButtonSet_DisplayChange>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_RADIOBUTTONDISPLAY_HPP_INCLUDED

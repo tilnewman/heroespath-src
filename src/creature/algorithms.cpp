@@ -581,5 +581,5 @@ namespace creature
 
         return havingConditionPVec;
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

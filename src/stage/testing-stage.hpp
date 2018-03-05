@@ -161,7 +161,7 @@ namespace stage
         int imageCount_;
         bool willImageCheck_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_TESTINGSTAGE_HPP_INCLUDED

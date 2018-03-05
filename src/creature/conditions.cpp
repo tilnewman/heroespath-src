@@ -260,6 +260,6 @@ namespace creature
                     true, Which(), CNP, DAMAGE_FINAL, condsAddedVec, condsRemovedVec));
             }
         }
-    }
-}
-}
+    } // namespace condition
+} // namespace creature
+} // namespace heroespath

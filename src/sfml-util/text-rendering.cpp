@@ -544,6 +544,6 @@ namespace sfml_util
                 }
             }
         }
-    }
-}
-}
+    } // namespace text_render
+} // namespace sfml_util
+} // namespace heroespath

@@ -54,7 +54,7 @@ namespace sfml_util
         {
             class Box;
             using BoxUPtr_t = std::unique_ptr<Box>;
-        }
+        } // namespace box
 
         // Encapsulates text drawn and bounded to an area that might need a scroll bar
         class TextRegion
@@ -155,8 +155,8 @@ namespace sfml_util
         using TextRegionUVec_t = std::vector<TextRegionUPtr_t>;
 
         using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_TEXTREGION_HPP_INCLUDED

@@ -68,7 +68,7 @@ namespace popup
     private:
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGECHARSELECT_HPP_INCLUDED

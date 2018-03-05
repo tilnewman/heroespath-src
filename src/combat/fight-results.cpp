@@ -252,5 +252,5 @@ namespace combat
 
         return creatureEffectVec_.size();
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

@@ -67,7 +67,7 @@ namespace config
     private:
         static std::unique_ptr<SettingsFile> instanceUPtr_;
     };
-}
-}
+} // namespace config
+} // namespace heroespath
 
 #endif // HEROESPATH_CONFIG_SETTINGSFILE_HPP_INCLUDED

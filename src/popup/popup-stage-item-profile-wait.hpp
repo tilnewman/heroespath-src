@@ -49,7 +49,7 @@ namespace popup
     private:
         int drawCountdown_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGEITEMPROFILEWAIT_HPP_INCLUDED

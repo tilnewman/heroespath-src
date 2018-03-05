@@ -62,7 +62,7 @@ namespace sfml_util
         {
             const int ListBoxEventPackage::INVALID_SELECTION_{ -1 };
             const sf::Vector2f ListBoxEventPackage::INVALID_MOUSE_POS_V_{ -1.0f, -1.0f };
-        }
+        } // namespace callback
 
         const sf::FloatRect ListBox::ERROR_RECT_(-1.0f, -1.0f, -1.0f, -1.0f);
 
@@ -854,6 +854,6 @@ namespace sfml_util
                 && (POS_V.y
                     <= ITEM_SPTR->GetEntityRegion().top + ITEM_SPTR->GetEntityRegion().height));
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

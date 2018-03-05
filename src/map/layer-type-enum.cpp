@@ -62,5 +62,5 @@ namespace map
             }
         }
     }
-}
-}
+} // namespace map
+} // namespace heroespath

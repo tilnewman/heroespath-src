@@ -232,6 +232,6 @@ namespace stage
             auto const IS_STILL_MOVING{ slider.UpdateTime(ELAPSED_TIME_SECONDS) };
             return (IS_STILL_MOVING == false) && (slider.Direction() == sfml_util::Moving::Away);
         }
-    }
-}
-}
+    } // namespace treasure
+} // namespace stage
+} // namespace heroespath

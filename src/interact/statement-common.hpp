@@ -42,8 +42,8 @@ namespace interact
         {
             static const std::string Compose(const player::Party &);
         };
-    }
-}
-}
+    } // namespace talk
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_STATEMENTCOMMONHPP_INCLUDED

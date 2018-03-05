@@ -46,7 +46,7 @@ namespace map
 
         static const std::string ToString(const LayerType::Enum);
     };
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_LAYERTYPEENUM_HPP_INCLUDED

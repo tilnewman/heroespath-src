@@ -88,8 +88,8 @@ namespace combat
         bool operator==(const Info & L, const Info & R);
 
         inline bool operator!=(const Info & L, const Info & R) { return !(L == R); }
-    }
-}
-}
+    } // namespace strategy
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_STRATEGYINFO_HPP_INCLUDED

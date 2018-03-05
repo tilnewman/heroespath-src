@@ -2905,5 +2905,5 @@ namespace stage
         ResetForNewCharacterCreation();
         return false;
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

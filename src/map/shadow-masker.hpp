@@ -65,7 +65,7 @@ namespace map
 
         static const unsigned COLOR_COMPONENT_COUNT_;
     };
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_SHADOWMASKER_HPP_INCLUDED

@@ -52,7 +52,7 @@ namespace sfml_util
             using SliderBarCallbackPackage_t = sfml_util::callback::PtrWrapper<SliderBar>;
             using ISliderBarCallbackHandler_t
                 = sfml_util::callback::ICallbackHandler<SliderBarCallbackPackage_t, bool>;
-        }
+        } // namespace callback
 
         // Encapsulates a gui sliderbar with mouse clickable increment arrows and a slider pad.
         class SliderBar : public GuiEntity
@@ -119,8 +119,8 @@ namespace sfml_util
 
         using SliderBarPtr_t = SliderBar *;
         using SliderBarUPtr_t = std::unique_ptr<SliderBar>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SLIDERBAR_HPP_INCLUDED

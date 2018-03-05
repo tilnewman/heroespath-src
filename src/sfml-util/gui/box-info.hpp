@@ -129,9 +129,9 @@ namespace sfml_util
             bool operator==(const Info & L, const Info & R);
 
             inline bool operator!=(const Info & L, const Info & R) { return !(L == R); }
-        }
-    }
-}
-}
+        } // namespace box
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_BOXINFO_HPP_INCLUDED

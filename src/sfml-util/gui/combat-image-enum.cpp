@@ -147,6 +147,6 @@ namespace sfml_util
                 }
             }
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

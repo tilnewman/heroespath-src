@@ -82,5 +82,5 @@ namespace sfml_util
     }
 
     bool operator==(const sf::VideoMode & V, const Resolution & R) { return (R == V); }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

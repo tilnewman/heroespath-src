@@ -544,6 +544,6 @@ namespace sfml_util
 
             box_.MoveEntityPos(HORIZ, VERT);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

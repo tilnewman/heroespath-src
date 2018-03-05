@@ -810,5 +810,5 @@ namespace sfml_util
         continueFading_ = true;
         willHoldFade_ = WILL_HOLD_FADE;
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

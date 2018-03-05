@@ -130,8 +130,8 @@ namespace item
 
             static const std::string ToString(const bladedstaff_type::Enum);
         };
-    }
-}
-}
+    } // namespace weapon
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_WEAPONTYPES_HPP_INCLUDED

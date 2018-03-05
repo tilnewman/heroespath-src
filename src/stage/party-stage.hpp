@@ -55,15 +55,15 @@ namespace sfml_util
     {
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 
 namespace player
 {
     class Character;
     using CharacterPtr_t = Character *;
     using CharacterPSet_t = std::set<CharacterPtr_t>;
-}
+} // namespace player
 
 namespace stage
 {
@@ -164,7 +164,7 @@ namespace stage
         //
         player::CharacterPSet_t charactersPSet_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_PARTYSTAGE_HPP_INCLUDED

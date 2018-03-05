@@ -144,6 +144,6 @@ namespace sfml_util
             threeTextInfosHolder_ = TEXT_INFO_SET;
             OnChange(currentVal_);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

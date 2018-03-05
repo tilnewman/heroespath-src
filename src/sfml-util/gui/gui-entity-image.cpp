@@ -158,6 +158,6 @@ namespace sfml_util
             downSprite_.move(HORIZ, VERT);
             overSprite_.move(HORIZ, VERT);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

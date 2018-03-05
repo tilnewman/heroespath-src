@@ -53,7 +53,7 @@ namespace misc
     {
         return IsRealClose(X, static_cast<T>(0));
     }
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_REALUTILS_HPP_INCLUDED

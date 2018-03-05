@@ -133,8 +133,8 @@ namespace sfml_util
 
         using CloudAnimationUPtr_t = std::unique_ptr<CloudAnimation>;
         using CloudAnimationUVec_t = std::vector<CloudAnimationUPtr_t>;
-    }
-}
-}
+    } // namespace animation
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_CLOUDANIMATION_HPP_INCLUDED

@@ -66,7 +66,7 @@ namespace misc
         float timeSec_;
         float durationSec_;
     };
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_TIMER_HPP_INCLUDED

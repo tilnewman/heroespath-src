@@ -66,5 +66,5 @@ namespace item
             }
         }
     }
-}
-}
+} // namespace item
+} // namespace heroespath

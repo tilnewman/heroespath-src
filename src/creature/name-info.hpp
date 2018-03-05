@@ -116,7 +116,7 @@ namespace creature
         static std::unique_ptr<NameInfo> instanceUPtr_;
         FontSizeToWidthMap_t sizeMap_;
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_NAME_INFO_HPP_INCLUDED

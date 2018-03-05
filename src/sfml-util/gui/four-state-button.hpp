@@ -50,7 +50,7 @@ namespace sfml_util
         {
             class Box;
             using BoxUPtr_t = std::unique_ptr<Box>;
-        }
+        } // namespace box
 
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
@@ -63,7 +63,7 @@ namespace sfml_util
 
             using IFourStateButtonCallbackHandler_t
                 = sfml_util::callback::ICallbackHandler<FourStateButtonCallbackPackage_t, bool>;
-        }
+        } // namespace callback
 
         // Responsible for maintaining images and text for four possible states:
         // Mouse Not-Over (up), Mouse Over (over), Mouse Down (down), and also disabled.
@@ -217,8 +217,8 @@ namespace sfml_util
         using FourStateButtonUVec_t = std::vector<FourStateButtonUPtr_t>;
 
         using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_FOURSTATEBUTTON_HPP_INCLUDED

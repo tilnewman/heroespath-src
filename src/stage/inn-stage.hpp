@@ -47,7 +47,7 @@ namespace sfml_util
 
     class Ouroboros;
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
-}
+} // namespace sfml_util
 
 namespace stage
 {
@@ -78,7 +78,7 @@ namespace stage
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol bottomSymbol_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_INNSTAGE_HPP_INCLUDED

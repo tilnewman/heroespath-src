@@ -52,7 +52,7 @@ namespace item
         static const std::string
             ToContainerName(const TreasureImage::Enum, const bool WILL_CAPITALIZE = false);
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_TREASUREIMAGEENUM_HPP_INCLUDED

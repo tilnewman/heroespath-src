@@ -312,8 +312,8 @@ namespace non_player
             static chance::MaterialChanceMap_t materialChanceMapMetal_;
             static chance::MaterialChanceMap_t materialChanceMapPrecious_;
         };
-    }
-}
-}
+    } // namespace ownership
+} // namespace non_player
+} // namespace heroespath
 
 #endif // HEROESPATH_NONPLAYER_CHANCEFACTORY_INCLUDED

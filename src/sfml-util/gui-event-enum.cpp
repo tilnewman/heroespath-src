@@ -84,5 +84,5 @@ namespace sfml_util
             None | Click | DoubleClick | MouseWheel | SelectionChange | Keypress | FocusChange);
         return (static_cast<unsigned>(E) <= MAX);
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

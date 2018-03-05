@@ -112,7 +112,7 @@ namespace item
     private:
         static std::unique_ptr<MiscItemFactory> instanceUPtr_;
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_MISCITEMFACTORY_HPP_INCLUDED

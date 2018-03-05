@@ -144,6 +144,6 @@ namespace creature
 
             return conditionsUVec_.at(static_cast<std::size_t>(E)).get();
         }
-    }
-}
-}
+    } // namespace condition
+} // namespace creature
+} // namespace heroespath

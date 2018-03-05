@@ -443,5 +443,5 @@ namespace avatar
             }
         }
     }
-}
-}
+} // namespace avatar
+} // namespace heroespath

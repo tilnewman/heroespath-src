@@ -47,7 +47,7 @@ namespace item
 
         static const std::string ToString(const Enum);
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_TREASUREAVAILABLEENUM_HPP_INCLUDED

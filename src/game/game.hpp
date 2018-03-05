@@ -38,7 +38,7 @@ namespace state
     class GameState;
     using GameStatePtr_t = GameState *;
     using GameStateUPtr_t = std::unique_ptr<GameState>;
-}
+} // namespace state
 
 namespace game
 {
@@ -64,7 +64,7 @@ namespace game
         static std::unique_ptr<Game> instanceUPtr_;
         state::GameStateUPtr_t stateUPtr_;
     };
-}
-}
+} // namespace game
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_HEROESPATH_HPP_INCLUDED

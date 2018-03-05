@@ -155,5 +155,5 @@ namespace sfml_util
             return misc::Vector::SelectRandom(sfxEnums_);
         }
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

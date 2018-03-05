@@ -188,7 +188,7 @@ namespace creature
             std::tie(L.origin_, L.race_, L.role_, L.count_)
             < std::tie(R.origin_, R.race_, R.role_, R.count_));
     }
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_RACEENUM_HPP_INCLUDED

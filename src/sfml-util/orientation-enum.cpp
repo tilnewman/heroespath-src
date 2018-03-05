@@ -61,5 +61,5 @@ namespace sfml_util
     {
         return ((E == Orientation::Horiz) || (E == Orientation::Vert));
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

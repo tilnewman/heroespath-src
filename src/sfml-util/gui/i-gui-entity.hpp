@@ -113,8 +113,8 @@ namespace sfml_util
 
         using IGuiEntityPtr_t = IGuiEntity *;
         using IGuiEntityPVec_t = std::vector<IGuiEntityPtr_t>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_IGUIENTITY_HPP_INCLUDED

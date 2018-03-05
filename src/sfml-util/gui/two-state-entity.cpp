@@ -224,6 +224,6 @@ namespace sfml_util
             guiImage_.MoveEntityPos(HORIZ, VERT);
             guiText_.MoveEntityPos(HORIZ, VERT);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

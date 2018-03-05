@@ -46,7 +46,7 @@ namespace song
     class Song;
     using SongPtr_t = Song *;
     using SongPtrC_t = Song * const;
-}
+} // namespace song
 
 namespace popup
 {
@@ -127,7 +127,7 @@ namespace popup
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGEMUSICSHEET_HPP_INCLUDED

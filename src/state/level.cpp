@@ -45,5 +45,5 @@ namespace state
         doorLockMap_.Find(LEVEL, isLocked);
         return isLocked;
     }
-}
-}
+} // namespace state
+} // namespace heroespath

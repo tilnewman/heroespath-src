@@ -51,7 +51,7 @@ namespace sfml_util
 
             using ITextButtonCallbackHandler_t
                 = sfml_util::callback::ICallbackHandler<TextButtonCallbackPackage_t, bool>;
-        }
+        } // namespace callback
 
         // Base class for a text button that has different text styles for mouse positions
         class TextButton : public GuiText
@@ -89,8 +89,8 @@ namespace sfml_util
 
         using TextButtonUPtr_t = std::unique_ptr<TextButton>;
         using TextButtonUVec_t = std::vector<TextButtonUPtr_t>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_TEXTBUTTON_HPP_INCLUDED

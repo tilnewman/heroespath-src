@@ -67,7 +67,7 @@ namespace state
     };
 
     using WorldUPtr_t = std::unique_ptr<World>;
-}
-}
+} // namespace state
+} // namespace heroespath
 
 #endif // HEROESPATH_STATE_WORLDcd_HPP_INCLUDED

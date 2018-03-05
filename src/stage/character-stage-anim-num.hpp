@@ -126,7 +126,7 @@ namespace stage
     bool operator==(const AnimNum & L, const AnimNum & R);
 
     inline bool operator!=(const AnimNum & L, const AnimNum & R) { return !(L == R); }
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_CHARACTERSTAGEANIMNUM_HPP_INCLUDED

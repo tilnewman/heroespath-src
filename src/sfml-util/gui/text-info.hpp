@@ -101,8 +101,8 @@ namespace sfml_util
 
         // Helper function used to setup an sf::Text object
         void SetupText(sf::Text & text, const TextInfo & TEXT_INFO);
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_TEXTINFO_HPP_INCLUDED

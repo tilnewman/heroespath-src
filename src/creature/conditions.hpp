@@ -293,8 +293,8 @@ namespace creature
                 combat::HitInfoVec_t & hitInfoVec,
                 bool & hasTurnBeenConsumed) const;
         };
-    }
-}
-}
+    } // namespace condition
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_CONDITIONS_HPP_INCLUDED

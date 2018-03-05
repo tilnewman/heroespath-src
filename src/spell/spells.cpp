@@ -568,5 +568,5 @@ namespace spell
             }
         }
     }
-}
-}
+} // namespace spell
+} // namespace heroespath

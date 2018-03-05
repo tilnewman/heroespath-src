@@ -1916,5 +1916,5 @@ namespace sfml_util
         ss << "map::Level::Enum::MapTransitionFromString(\"" << NAME << "\")_InvalidValueError.";
         throw std::runtime_error(ss.str());
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

@@ -68,7 +68,7 @@ namespace item
     private:
         static std::unique_ptr<ItemFactory> instanceUPtr_;
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ITEMFACTORY_HPP_INCLUDED

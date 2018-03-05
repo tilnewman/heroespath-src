@@ -93,7 +93,7 @@ namespace item
         static const ItemPVec_t
             FindByBroken(const ItemPVec_t & ITEM_SVEC, const BrokenOpt KEEP_BROKEN_OPTION);
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ALGORITHMS_HPP_INCLUDED

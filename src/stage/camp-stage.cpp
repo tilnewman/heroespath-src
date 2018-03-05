@@ -447,5 +447,5 @@ namespace stage
         ss << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text9");
         return ss.str();
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

@@ -713,5 +713,5 @@ namespace stage
     }
 
     float SettingsStage::SliderLabelVertPad() const { return sfml_util::MapByRes(5.0f, 15.0f); }
-}
-}
+} // namespace stage
+} // namespace heroespath

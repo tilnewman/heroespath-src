@@ -57,8 +57,8 @@ namespace sfml_util
         private:
             static std::unique_ptr<SongImageManager> instanceUPtr_;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_SONGIMAGEMANAGER_HPP_INCLUDED

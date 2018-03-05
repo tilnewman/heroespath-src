@@ -1848,6 +1848,6 @@ namespace creature
 
             return true;
         }
-    }
-}
-}
+    } // namespace title
+} // namespace creature
+} // namespace heroespath

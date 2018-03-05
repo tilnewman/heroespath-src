@@ -50,7 +50,7 @@ namespace combat
 
         static const std::string ToString(const Enum);
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_BLOCKINGPOS_TYPE_ENUM_HPP_INCLUDED

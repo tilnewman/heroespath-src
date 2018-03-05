@@ -105,7 +105,7 @@ namespace log
                 const std::string & MSG)
             = 0;
     };
-}
-}
+} // namespace log
+} // namespace heroespath
 
 #endif // HEROESPATH_LOG_ILOG_HPP_INCLUDED

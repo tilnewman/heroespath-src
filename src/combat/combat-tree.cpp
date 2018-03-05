@@ -1011,5 +1011,5 @@ namespace combat
                 VERTEX.node_sptr->GetBlockingPos(), combat::EdgeType::ShoulderToShoulder);
         }
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

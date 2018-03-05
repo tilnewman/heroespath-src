@@ -169,5 +169,5 @@ namespace combat
 
         return characterPtr;
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

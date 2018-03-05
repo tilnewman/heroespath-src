@@ -128,7 +128,7 @@ namespace stats
     {
         return std::tie(L.type_, L.normal_, L.current_) < std::tie(R.type_, R.normal_, R.current_);
     }
-}
-}
+} // namespace stats
+} // namespace heroespath
 
 #endif // HEROESPATH_STATS_TRAIT_HPP_INCLUDED

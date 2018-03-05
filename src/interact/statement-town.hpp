@@ -43,8 +43,8 @@ namespace interact
         {
             static const std::string Compose(const player::Party &, const map::Level::Enum);
         };
-    }
-}
-}
+    } // namespace talk
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_STATEMENTTOWN_HPP_INCLUDED

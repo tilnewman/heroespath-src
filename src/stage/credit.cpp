@@ -304,5 +304,5 @@ namespace stage
             animUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

@@ -193,5 +193,5 @@ namespace popup
         fadeAlpha_ = 256.0f; // anything greater than 255.0f will work here
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
-}
-}
+} // namespace popup
+} // namespace heroespath

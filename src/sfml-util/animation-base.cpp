@@ -61,5 +61,5 @@ namespace sfml_util
         timePerFrameSec_ -= VARY_SEC_MAX * 0.5f;
         timePerFrameSec_ += misc::random::Float(VARY_SEC_MAX);
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

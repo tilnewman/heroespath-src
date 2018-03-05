@@ -462,5 +462,5 @@ namespace sfml_util
             return 0;
         }
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

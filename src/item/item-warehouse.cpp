@@ -94,5 +94,5 @@ namespace item
 
         warehouse_.Free(item_ptr, item_ptr->Name());
     }
-}
-}
+} // namespace item
+} // namespace heroespath

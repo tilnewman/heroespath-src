@@ -58,5 +58,5 @@ namespace creature
 
         return roleStatSetMap_[ENUM];
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

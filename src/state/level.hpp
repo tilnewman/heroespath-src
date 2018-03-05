@@ -69,7 +69,7 @@ namespace state
             ar & doorLockMap_;
         }
     };
-}
-}
+} // namespace state
+} // namespace heroespath
 
 #endif // HEROESPATH_STATE_LEVEL_HPP_INCLUDED

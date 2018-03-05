@@ -123,7 +123,7 @@ namespace player
     inline bool operator!=(const Character & L, const Character & R) { return !(L == R); }
 
     bool operator<(const Character & L, const Character & R);
-}
-}
+} // namespace player
+} // namespace heroespath
 
 #endif // HEROESPATH_PLAYER_CHARACTER_HPP_INCLUDED

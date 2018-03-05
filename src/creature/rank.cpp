@@ -132,5 +132,5 @@ namespace creature
             }
         }
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

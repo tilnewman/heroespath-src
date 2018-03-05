@@ -117,7 +117,7 @@ namespace avatar
         float walkingIntoTimerSec_;
         std::size_t walkingIntoIndex_;
     };
-}
-}
+} // namespace avatar
+} // namespace heroespath
 
 #endif // HEROESPATH_AVATAR_MODEL_HPP_INCLUDED

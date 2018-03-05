@@ -55,7 +55,7 @@ namespace log
     private:
         static std::unique_ptr<Logger> instanceUPtr_;
     };
-}
-}
+} // namespace log
+} // namespace heroespath
 
 #endif // HEROESPATH_LOG_LOGGER_HPP_INCLUDED

@@ -48,17 +48,17 @@ namespace creature
     using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace player
 {
     class Character;
     using CharacterPtrC_t = Character * const;
-}
+} // namespace player
 namespace non_player
 {
     class Party;
     using PartyUPtr_t = std::unique_ptr<Party>;
-}
+} // namespace non_player
 
 namespace combat
 {
@@ -179,7 +179,7 @@ namespace combat
         // this member always stores a copy, and is never responsible for lifetime
         creature::CreaturePtr_t lockPickCreaturePtr_;
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_ENCOUNTER_HPP_INCLUDED

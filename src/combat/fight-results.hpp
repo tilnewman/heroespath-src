@@ -41,12 +41,12 @@ namespace creature
     class Creature;
     using CreaturePtr_t = Creature *;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 
 namespace combat
 {
@@ -98,7 +98,7 @@ namespace combat
     private:
         CreatureEffectVec_t creatureEffectVec_;
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_FIGHTRESULTS_HPP_INCLUDED

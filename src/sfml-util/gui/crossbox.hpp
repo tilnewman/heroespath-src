@@ -119,9 +119,9 @@ namespace sfml_util
 
             using CrossBoxSPtr_t = std::shared_ptr<CrossBox>;
             using CrossBoxSVec_t = std::vector<CrossBoxSPtr_t>;
-        }
-    }
-}
-}
+        } // namespace box
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_CROSSBOX_HPP_INCLUDED

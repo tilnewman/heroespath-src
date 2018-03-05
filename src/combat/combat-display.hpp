@@ -52,11 +52,11 @@ namespace sfml_util
         {
             class Box;
             using BoxUPtr_t = std::unique_ptr<Box>;
-        }
+        } // namespace box
 
         class IGuiEntity;
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 
 namespace combat
 {
@@ -362,7 +362,7 @@ namespace combat
     using CombatDisplayCPtr_t = const CombatDisplay *;
     using CombatDisplayPtrC_t = CombatDisplay * const;
     using CombatDisplayCPtrC_t = const CombatDisplay * const;
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_COMBAT_COMBATDISPLAY_HPP_INCLUDED

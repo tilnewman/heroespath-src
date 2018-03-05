@@ -785,5 +785,5 @@ namespace item
 
         return itemPtr;
     }
-}
-}
+} // namespace item
+} // namespace heroespath

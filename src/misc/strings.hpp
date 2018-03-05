@@ -64,7 +64,7 @@ namespace misc
             return ss.str();
         }
     };
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_STRINGS_HPP_INCLUDED

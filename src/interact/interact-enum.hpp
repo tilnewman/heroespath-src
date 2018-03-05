@@ -46,7 +46,7 @@ namespace interact
         static const std::string ToString(const Interact::Enum);
         static const std::string ImageKey(const Interact::Enum);
     };
-}
-}
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_INTERACT_ENUM_HPP_INCLUDED

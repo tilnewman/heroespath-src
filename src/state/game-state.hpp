@@ -41,7 +41,7 @@ namespace player
 {
     class Party;
     using PartyUPtr_t = std::unique_ptr<Party>;
-}
+} // namespace player
 namespace state
 {
 
@@ -112,7 +112,7 @@ namespace state
     bool operator==(const GameState & L, const GameState & R);
 
     inline bool operator!=(const GameState & L, const GameState & R) { return !(L == R); }
-}
-}
+} // namespace state
+} // namespace heroespath
 
 #endif // HEROESPATH_STATE_GAMESTATE_HPP_INCLUDED

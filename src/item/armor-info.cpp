@@ -49,6 +49,6 @@ namespace item
             , helm(helm_type::Count)
             , shield(shield_type::Count)
         {}
-    }
-}
-}
+    } // namespace armor
+} // namespace item
+} // namespace heroespath

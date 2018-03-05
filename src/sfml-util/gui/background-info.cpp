@@ -101,6 +101,6 @@ namespace sfml_util
                        R.gradient_info,
                        R.hasTexture);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

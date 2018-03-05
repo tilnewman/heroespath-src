@@ -49,13 +49,13 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-}
+} // namespace creature
 
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 
 namespace song
 {
@@ -186,7 +186,7 @@ namespace song
     }
 
     inline bool operator!=(const Song & L, const Song & R) { return !(L == R); }
-}
-}
+} // namespace song
+} // namespace heroespath
 
 #endif // HEROESPATH_SONG_SONG_HPP_INCLUDED

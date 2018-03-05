@@ -54,7 +54,7 @@ namespace sfml_util
         float top;
         float bottom;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_MARGINS_HPP_INCLUDED

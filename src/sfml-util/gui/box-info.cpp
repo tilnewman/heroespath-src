@@ -158,7 +158,7 @@ namespace sfml_util
                                R.bg_info);
                 }
             }
-        }
-    }
-}
-}
+        } // namespace box
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

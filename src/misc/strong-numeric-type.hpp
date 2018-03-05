@@ -184,7 +184,7 @@ namespace misc
     {
         return (LEFT_SNT.template As<int>() != RIGHT_INT);
     }
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_STRONGNUMERICTYPE_HPP_INCLUDED

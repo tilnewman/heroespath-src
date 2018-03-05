@@ -119,5 +119,5 @@ namespace sfml_util
             static_cast<sf::Uint8>(BLUE),
             static_cast<sf::Uint8>(ALPHA));
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

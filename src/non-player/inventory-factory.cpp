@@ -979,6 +979,6 @@ namespace non_player
                     [&](const item::ItemPtr_t PTR) { return (PTR->ArmorType() == ENUM); }),
                 vec.end());
         }
-    }
-}
-}
+    } // namespace ownership
+} // namespace non_player
+} // namespace heroespath

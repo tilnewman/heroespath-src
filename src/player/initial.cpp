@@ -523,5 +523,5 @@ namespace player
             return item::material::HardLeather;
         }
     }
-}
-}
+} // namespace player
+} // namespace heroespath

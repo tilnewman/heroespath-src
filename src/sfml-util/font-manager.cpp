@@ -204,5 +204,5 @@ namespace sfml_util
         sfml_util::LoadFont(font, PATH_OBJ.string());
         return font;
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

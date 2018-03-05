@@ -235,6 +235,6 @@ namespace sfml_util
                        R.SONG_CPTRC,
                        R.is_valid);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

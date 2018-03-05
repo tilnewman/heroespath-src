@@ -93,8 +93,8 @@ namespace sfml_util
         bool operator==(const ColorSet & L, const ColorSet & R);
 
         inline bool operator!=(const ColorSet & L, const ColorSet & R) { return !(L == R); }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_COLORSET_HPP_INCLUDED

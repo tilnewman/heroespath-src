@@ -199,7 +199,7 @@ namespace sfml_util
         std::size_t frameRateSampleCount_;
         bool willLogFrameRate_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_LOOP_INCLUDED

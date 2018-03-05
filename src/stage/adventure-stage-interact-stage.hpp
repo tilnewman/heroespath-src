@@ -42,15 +42,15 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-}
+} // namespace creature
 namespace sfml_util
 {
     namespace gui
     {
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 namespace map
 {
     class Map;
@@ -110,7 +110,7 @@ namespace stage
         std::vector<sfml_util::gui::TextButtonUPtr_t> buttons_;
         interact::LockPicking lockPicking_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_ADVENTURE_STAGE_INTERACT_STAGE_REGION_HPP_INCLUDED

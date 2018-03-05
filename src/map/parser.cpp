@@ -717,5 +717,5 @@ namespace map
             return LayerType::Object;
         }
     }
-}
-}
+} // namespace map
+} // namespace heroespath

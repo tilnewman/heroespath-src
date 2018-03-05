@@ -41,7 +41,7 @@ namespace interact
     {
         static InteractionUPtr_t MakeLockedDoor(const map::Transition &);
     };
-}
-}
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED

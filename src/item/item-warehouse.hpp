@@ -65,7 +65,7 @@ namespace item
         static std::unique_ptr<ItemWarehouse> instanceUPtr_;
         misc::Warehouse<Item> warehouse_;
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ITEMWAREHOUSE_HPP_INCLUDED

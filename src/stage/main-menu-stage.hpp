@@ -91,7 +91,7 @@ namespace stage
     };
 
     using MainMenuStageSPtr_t = std::shared_ptr<MainMenuStage>;
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_MAINMENUSTAGE_HPP_INCLUDED

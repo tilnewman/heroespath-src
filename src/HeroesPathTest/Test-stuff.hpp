@@ -115,6 +115,6 @@ bool isSortedDescending(const std::vector<T> & VEC)
 
     return true;
 }
-}
+} // namespace test_stuff
 
 #endif // TEST_TESTSTUFF_INCLUDED

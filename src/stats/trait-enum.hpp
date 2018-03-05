@@ -99,7 +99,7 @@ namespace stats
     using TraitsVec_t = std::vector<Traits::Enum>;
     using TraitValuePair_t = std::pair<Traits::Enum, int>;
     using TraitValueVec_t = std::vector<TraitValuePair_t>;
-}
-}
+} // namespace stats
+} // namespace heroespath
 
 #endif // HEROESPATH_STATS_TRAITENUM_HPP_INCLUDED

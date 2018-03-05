@@ -57,8 +57,8 @@ namespace combat
         private:
             static TrapVec_t traps_;
         };
-    }
-}
-}
+    } // namespace trap
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_TRAP_TRAPWAREHOUSE_HPP_INCLUDED

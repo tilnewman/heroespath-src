@@ -136,8 +136,8 @@ namespace sfml_util
 
         using SongAnimationUPtr_t = std::unique_ptr<SongAnimation>;
         using SongAnimationUVec_t = std::vector<SongAnimationUPtr_t>;
-    }
-}
-}
+    } // namespace animation
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SONGANIMATION_HPP_INCLUDED

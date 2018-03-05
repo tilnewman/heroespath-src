@@ -86,8 +86,8 @@ namespace sfml_util
             bool isMoving_;
             sfml_util::sliders::ZeroSliderOnce<float> slider_;
         };
-    }
-}
-}
+    } // namespace sliders
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_POS_SLIDER_HPP_INCLUDED

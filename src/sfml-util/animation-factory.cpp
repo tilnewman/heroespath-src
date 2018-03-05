@@ -97,5 +97,5 @@ namespace sfml_util
                 ENUM, REGION, TIME_PER_FRAME_SEC, BLEND_MODE, COLOR_FROM, COLOR_TO);
         }
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

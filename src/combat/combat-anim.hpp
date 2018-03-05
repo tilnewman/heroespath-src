@@ -68,19 +68,19 @@ namespace sfml_util
         class TextAnimation;
         using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;
         using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
-    }
-}
+    } // namespace animation
+} // namespace sfml_util
 
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 namespace spell
 {
     class Spell;
     using SpellPtr_t = Spell *;
-}
+} // namespace spell
 namespace creature
 {
     class Creature;
@@ -88,7 +88,7 @@ namespace creature
     using CreatureCPtr_t = const Creature *;
     using CreatureCPtrC_t = const Creature * const;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace combat
 {
 
@@ -327,7 +327,7 @@ namespace combat
     };
 
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_COMBAT_COMBATANIM_HPP_INCLUDED

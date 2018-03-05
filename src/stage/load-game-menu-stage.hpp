@@ -57,15 +57,15 @@ namespace sfml_util
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
         using TextRegionUVec_t = std::vector<TextRegionUPtr_t>;
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 
 namespace state
 {
     class GameState;
     using GameStatePtr_t = GameState *;
     using GameStatePSet_t = std::set<GameStatePtr_t>;
-}
+} // namespace state
 
 namespace stage
 {
@@ -118,7 +118,7 @@ namespace stage
         //
         state::GameStatePSet_t gamestatePSet_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_LOADGAMEMENU_HPP_INCLUDED

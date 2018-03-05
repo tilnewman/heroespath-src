@@ -53,5 +53,5 @@ namespace item
 
         return sum;
     }
-}
-}
+} // namespace item
+} // namespace heroespath

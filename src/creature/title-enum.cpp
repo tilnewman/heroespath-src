@@ -1360,5 +1360,5 @@ namespace creature
     {
         return title::Warehouse::Get(E)->ImageFilename();
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

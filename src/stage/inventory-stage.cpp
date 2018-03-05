@@ -4348,5 +4348,5 @@ namespace stage
         listbox.Items(vec);
         isSortReversed = !isSortReversed;
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

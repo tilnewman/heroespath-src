@@ -625,6 +625,6 @@ namespace sfml_util
             textInfo_.color = TEXT_COLOR;
             UpdateText();
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

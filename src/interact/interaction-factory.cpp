@@ -39,5 +39,5 @@ namespace interact
     {
         return std::make_unique<LockedDoor>(TRANSITION);
     }
-}
-}
+} // namespace interact
+} // namespace heroespath

@@ -149,5 +149,5 @@ namespace item
             return "";
         }
     }
-}
-}
+} // namespace item
+} // namespace heroespath

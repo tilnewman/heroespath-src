@@ -372,6 +372,6 @@ namespace sfml_util
             GuiEntity::MoveEntityPos(HORIZ, VERT);
             finalSprite_.move(HORIZ, VERT);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

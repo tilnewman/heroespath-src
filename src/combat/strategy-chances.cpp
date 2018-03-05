@@ -409,6 +409,6 @@ namespace combat
                        R.flyPounceFreqChanceMap_,
                        R.standPounceFreqChanceMap_);
         }
-    }
-}
-}
+    } // namespace strategy
+} // namespace combat
+} // namespace heroespath

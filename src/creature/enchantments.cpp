@@ -85,5 +85,5 @@ namespace creature
     {
         // TODO
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

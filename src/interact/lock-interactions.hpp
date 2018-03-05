@@ -38,7 +38,7 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-}
+} // namespace creature
 namespace interact
 {
 
@@ -88,7 +88,7 @@ namespace interact
     private:
         creature::CreaturePtr_t characterPtr_;
     };
-}
-}
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_LOCK_INTERACTIONS_HPP_INCLUDED

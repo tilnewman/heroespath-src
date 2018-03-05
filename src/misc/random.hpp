@@ -99,8 +99,8 @@ namespace misc
         inline int Int(const int THE_MAX) { return Int(0, THE_MAX); }
 
         inline bool Bool() { return (Int(1) == 1); }
-    }
-}
-}
+    } // namespace random
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_RANDOM_HPP_INCLUDED

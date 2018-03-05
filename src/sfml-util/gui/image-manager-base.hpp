@@ -108,8 +108,8 @@ namespace sfml_util
 
         template <typename T>
         std::string ImageManagerBase<T>::pathToImages_{ "" };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_IMAGEMANAGERBASE_HPP_INCLUDED

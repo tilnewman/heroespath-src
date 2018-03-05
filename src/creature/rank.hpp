@@ -64,7 +64,7 @@ namespace creature
 
         static const std::string ToString(const rank_class::Enum E);
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_RANK_HPP_INCLUDED

@@ -454,6 +454,6 @@ namespace combat
                 throw std::runtime_error(ss.str());
             }
         }
-    }
-}
-}
+    } // namespace strategy
+} // namespace combat
+} // namespace heroespath

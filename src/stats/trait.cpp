@@ -55,5 +55,5 @@ namespace stats
 
         return ss.str();
     }
-}
-}
+} // namespace stats
+} // namespace heroespath

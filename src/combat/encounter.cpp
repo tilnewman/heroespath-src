@@ -512,5 +512,5 @@ namespace combat
 
         nonPlayerPartyUPtr = std::make_unique<non_player::Party>();
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

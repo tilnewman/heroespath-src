@@ -82,7 +82,7 @@ namespace sfml_util
         static float TimePerFrameSec(const Enum);
         static const MusicEnumVec_t Sfx(const Enum);
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_ANIMATIONENUM_HPP_INCLUDE

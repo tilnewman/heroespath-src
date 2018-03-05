@@ -184,5 +184,5 @@ namespace combat
     {
         return std::tie(L.hitInfoVec_, L.creaturePtr_) == std::tie(R.hitInfoVec_, R.creaturePtr_);
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

@@ -53,7 +53,7 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-}
+} // namespace creature
 
 namespace game
 {
@@ -245,7 +245,7 @@ namespace game
         sfml_util::LoopState::Enum stateBeforeFade_;
         bool exitSuccess_;
     };
-}
-}
+} // namespace game
+} // namespace heroespath
 
 #endif // HEROESPATH_LOOPMANAGER_HPP_INCLUDED

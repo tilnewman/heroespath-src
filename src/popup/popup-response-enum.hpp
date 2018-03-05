@@ -52,7 +52,7 @@ namespace popup
         static bool IsValid(const ResponseTypes::Enum E);
         static bool IsAffirmative(const ResponseTypes::Enum E);
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPRESPONSEENUM_HPP_INCLUDED

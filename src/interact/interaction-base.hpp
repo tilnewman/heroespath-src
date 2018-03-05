@@ -100,7 +100,7 @@ namespace interact
         sfml_util::sound_effect::Enum sfxExit_;
         bool isLocked_;
     };
-}
-}
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_INTERACTION_HPP_INCLUDED

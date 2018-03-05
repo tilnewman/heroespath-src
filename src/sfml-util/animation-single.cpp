@@ -164,5 +164,5 @@ namespace sfml_util
         GuiEntity::MoveEntityPos(HORIZ, VERT);
         sprite_.move(HORIZ, VERT);
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

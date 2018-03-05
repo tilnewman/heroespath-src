@@ -40,18 +40,18 @@ namespace spell
 {
     class Spell;
     using SpellPtr_t = Spell *;
-}
+} // namespace spell
 namespace song
 {
     class Song;
     using SongPtr_t = Song *;
-}
+} // namespace song
 namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 
 namespace combat
 {
@@ -101,7 +101,7 @@ namespace combat
     bool operator==(const CreatureEffect & L, const CreatureEffect & R);
 
     inline bool operator!=(const CreatureEffect & L, const CreatureEffect & R) { return !(L == R); }
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_COMBAT_CREATUREEFFEC_HPP_INCLUDED

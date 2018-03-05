@@ -847,5 +847,5 @@ namespace map
             return MIN_VOLUME + ((1.0f - (DISTANCE_TO_PLAYER / DIFF_DISTANCE)) * DIFF_VOLUME);
         }
     }
-}
-}
+} // namespace map
+} // namespace heroespath

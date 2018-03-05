@@ -42,7 +42,7 @@ namespace sfml_util
     {
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    }
+    } // namespace gui
 
     namespace animation
     {
@@ -82,8 +82,8 @@ namespace sfml_util
 
         using TextAnimationUPtr_t = std::unique_ptr<TextAnimation>;
         using TextAnimationUVec_t = std::vector<TextAnimationUPtr_t>;
-    }
-}
-}
+    } // namespace animation
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_TEXTANIMATION_HPP_INCLUDED

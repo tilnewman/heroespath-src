@@ -51,7 +51,7 @@ namespace popup
         float elapsedTimeCounter_;
         std::size_t secondCounter_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGERESCHANGE_HPP_INCLUDED

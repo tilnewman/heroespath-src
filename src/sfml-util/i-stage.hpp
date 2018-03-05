@@ -44,7 +44,7 @@ namespace sfml_util
     {
         class IGuiEntity;
         using IGuiEntityPtr_t = IGuiEntity *;
-    }
+    } // namespace gui
 
     // interface for all Stage classes
     class IStage
@@ -114,7 +114,7 @@ namespace sfml_util
 
     using IStagePtr_t = IStage *;
     using IStagePVec_t = std::vector<IStagePtr_t>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_ISTAGE_HPP_INCLUDED

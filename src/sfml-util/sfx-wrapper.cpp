@@ -92,5 +92,5 @@ namespace sfml_util
         soundUPtr_.reset();
         bufferUPtr_.reset();
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

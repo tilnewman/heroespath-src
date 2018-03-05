@@ -138,7 +138,7 @@ namespace stage
     };
 
     using AdventureCharacterListUPtr_t = std::unique_ptr<AdventureCharacterList>;
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_ADVENTURESTAGECHARLIST_STAGE_HPP_INCLUDED

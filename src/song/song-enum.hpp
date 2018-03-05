@@ -56,7 +56,7 @@ namespace song
     };
 
     using SongVec_t = std::vector<Songs::Enum>;
-}
-}
+} // namespace song
+} // namespace heroespath
 
 #endif // HEROESPATH_SONG_SONGENUM_HPP_INCLUDED

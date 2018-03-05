@@ -41,7 +41,7 @@ namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 namespace creature
 {
     // forward declarations
@@ -51,7 +51,7 @@ namespace creature
     using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace combat
 {
     // forward declarations
@@ -213,7 +213,7 @@ namespace combat
         static bool SummarizeCreatureEffect(
             FightResultSummary & frs, const CreatureEffect & CREATURE_EFFECT);
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_COMBAT_COMBATTEXT_HPP_INCLUDED

@@ -99,7 +99,7 @@ namespace sfml_util
 
     using FadeSPtr_t = std::shared_ptr<Fade>;
     using FadeSVec_t = std::vector<FadeSPtr_t>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_FADE_HPP_INCLUDED

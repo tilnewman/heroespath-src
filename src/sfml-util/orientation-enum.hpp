@@ -46,7 +46,7 @@ namespace sfml_util
         static const std::string ToString(const Orientation::Enum E);
         static bool IsValid(const Orientation::Enum E);
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_ORIENTATION_ENUM_HPP_INCLUDED

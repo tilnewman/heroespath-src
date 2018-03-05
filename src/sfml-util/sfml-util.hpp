@@ -51,7 +51,7 @@ inline bool operator<(const sf::Rect<T> & A, const sf::Rect<T> & B)
 {
     return std::tie(A.left, A.top, A.width, A.height) < std::tie(B.left, B.top, B.width, B.height);
 }
-}
+} // namespace sf
 
 namespace heroespath
 {
@@ -414,8 +414,8 @@ namespace sfml_util
             const sf::Color & FROM, const sf::Color & TO, const float RATIO_COMPLETE);
 
         const std::string ColorToString(const sf::Color & C, const bool WILL_WRAP = true);
-    }
-}
-}
+    } // namespace color
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SFMLUTIL_HPP_INCLUDED

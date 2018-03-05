@@ -746,6 +746,6 @@ namespace sfml_util
             box_.SetHasFocus(HAS_FOCUS);
             return DID_FOCUS_CHANGE;
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

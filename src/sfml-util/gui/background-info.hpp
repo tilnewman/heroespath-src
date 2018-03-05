@@ -90,8 +90,8 @@ namespace sfml_util
         {
             return !(L == R);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_BACKGROUNDINFO_HPP_INCLUDED

@@ -93,7 +93,7 @@ namespace map
         WalkSfxRegionVec_t bottom_layers;
         WalkSfxRegionVec_t top_layers;
     };
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_WALK_SFX_HPP_INCLUDED

@@ -57,8 +57,8 @@ namespace sfml_util
         private:
             static std::unique_ptr<ConditionImageManager> instanceUPtr_;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_CONDITIONIMAGEMANAGER_HPP_INCLUDED

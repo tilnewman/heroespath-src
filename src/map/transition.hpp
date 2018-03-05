@@ -74,7 +74,7 @@ namespace map
     };
 
     using TransitionVec_t = std::vector<Transition>;
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_TRANSITION_HPP_INCLUDED

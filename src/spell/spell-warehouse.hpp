@@ -55,7 +55,7 @@ namespace spell
     private:
         static SpellUVec_t spellsUVec_;
     };
-}
-}
+} // namespace spell
+} // namespace heroespath
 
 #endif // HEROESPATH_SPELL_SPELLWAREHOUSE_HPP_INCLUDED

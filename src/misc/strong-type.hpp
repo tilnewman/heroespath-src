@@ -102,7 +102,7 @@ namespace misc
         os << RHS.Get();
         return os;
     }
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_STRONGTYPE_HPP_INCLUDED

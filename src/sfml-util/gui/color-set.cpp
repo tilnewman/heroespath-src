@@ -135,6 +135,6 @@ namespace sfml_util
                        R.foreground_without_focus,
                        R.background_without_focus);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

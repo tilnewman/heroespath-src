@@ -195,7 +195,7 @@ namespace combat
     using CombatNodeSPtr_t = std::shared_ptr<CombatNode>;
 
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_COMBAT_COMBATNODE_HPP_INCLUDED

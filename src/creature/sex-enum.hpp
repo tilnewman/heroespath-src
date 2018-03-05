@@ -56,7 +56,7 @@ namespace creature
 
         static const std::string HimHerIt(const sex::Enum E, const bool WILL_CAPITALIZE);
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_SEXENUM_HPP_INCLUDED

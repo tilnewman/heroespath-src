@@ -55,7 +55,7 @@ namespace interact
         static const std::string ToString(const Enum);
         static sfml_util::FontPtr_t Font(const Enum);
     };
-}
-}
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_INTERACTION_TEXT_ENUM_HPP_INCLUDED

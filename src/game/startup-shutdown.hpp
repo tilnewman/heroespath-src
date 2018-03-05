@@ -58,7 +58,7 @@ namespace game
         static void SingletonsAcquireAndInitialize();
         static void SingletonsRelease();
     };
-}
-}
+} // namespace game
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_STARTUPSHUTDOWN_HPP_INCLUDED

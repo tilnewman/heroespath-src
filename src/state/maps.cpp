@@ -51,5 +51,5 @@ namespace state
             WorldFactory::SetupLevelForNewGame(levels_[levels_.size() - 1]);
         }
     }
-}
-}
+} // namespace state
+} // namespace heroespath

@@ -567,6 +567,6 @@ namespace non_player
                 throw std::runtime_error(ss.str());
             }
         }
-    }
-}
-}
+    } // namespace ownership
+} // namespace non_player
+} // namespace heroespath

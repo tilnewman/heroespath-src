@@ -212,8 +212,8 @@ namespace combat
         bool operator==(const Chances & L, const Chances & R);
 
         inline bool operator!=(const Chances & L, const Chances & R) { return !(L == R); }
-    }
-}
-}
+    } // namespace strategy
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_STRATEGYCHANCES_HPP_INCLUDED

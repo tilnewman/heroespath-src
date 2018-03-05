@@ -915,5 +915,5 @@ namespace sfml_util
         SetResolutionNameAndRatio(res);
         return res;
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

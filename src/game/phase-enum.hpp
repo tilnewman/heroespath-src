@@ -49,7 +49,7 @@ namespace game
         static const std::string ToString(const Enum, const bool WILL_WRAP);
         static Enum FromString(const std::string &);
     };
-}
-}
+} // namespace game
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_PHASEENUM_HPP_INCLUDED

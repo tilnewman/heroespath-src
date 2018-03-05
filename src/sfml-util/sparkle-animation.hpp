@@ -113,8 +113,8 @@ namespace sfml_util
 
         using SparkleAnimationUPtr_t = std::unique_ptr<SparkleAnimation>;
         using SparkleAnimationUVec_t = std::vector<SparkleAnimationUPtr_t>;
-    }
-}
-}
+    } // namespace animation
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SPARKLEANIMATION_HPP_INCLUDED

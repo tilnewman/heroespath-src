@@ -78,7 +78,7 @@ namespace sfml_util
     };
 
     using SliderBarLabeled_EffectsUPtr_t = std::unique_ptr<SliderBarLabeled_Effects>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SLIDERBAREFFECTS_HPP_INCLUDED

@@ -933,5 +933,5 @@ namespace stage
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageSelect>(
             this, POPUP_INFO);
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

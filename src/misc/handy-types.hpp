@@ -38,7 +38,7 @@ namespace misc
 
     using StrVec_t = std::vector<std::string>;
     using SizetVec_t = std::vector<std::size_t>;
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_HANDYTYPES_HPP_INCLUDED

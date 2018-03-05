@@ -50,7 +50,7 @@ namespace creature
     private:
         static RaceStatSetMap_t raceStatSetMap_;
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_RACESTATS_HPP_INCLUDED

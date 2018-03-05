@@ -737,7 +737,7 @@ namespace item
 
         static const std::string ToString(const armor_type::Enum E, const bool WILL_WRAP);
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ITEMTYPEENUM_HPP_INCLUDED

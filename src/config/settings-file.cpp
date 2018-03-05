@@ -231,5 +231,5 @@ namespace config
             sfml_util::SoundManager::Instance()->SoundEffectVolumeSet(50.0f);
         }
     }
-}
-}
+} // namespace config
+} // namespace heroespath

@@ -1259,5 +1259,5 @@ namespace combat
         selectAnimCombatNodePtr_ = nullptr;
         runAnimCombatNodePtr_ = nullptr;
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

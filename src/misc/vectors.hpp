@@ -275,7 +275,7 @@ namespace misc
             return a < b;
         }
     };
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_VECTOROPERATIONS_HPP_INCLUDED

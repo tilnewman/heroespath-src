@@ -175,5 +175,5 @@ namespace sfml_util
 
         return musicUPtr;
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

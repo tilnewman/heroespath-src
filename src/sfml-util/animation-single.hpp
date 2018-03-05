@@ -80,7 +80,7 @@ namespace sfml_util
         // the size of this vector acts as a total frame count.
         std::vector<sf::IntRect> rects_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_ANIMATIONSINGLE_HPP_INCLUDED

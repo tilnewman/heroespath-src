@@ -731,5 +731,5 @@ namespace combat
 
         StartTransitionTo(combatNodePtr, IMAGE_DEST_POS_V, SUMMARYVIEW_DISPLAY_REGION);
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

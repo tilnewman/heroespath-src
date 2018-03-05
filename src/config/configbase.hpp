@@ -308,7 +308,7 @@ namespace config
         std::string commentStr_;
         ConfigMap data_;
     };
-}
-}
+} // namespace config
+} // namespace heroespath
 
 #endif // HEROESPATH_CONFIG_CONFIGBASE_HPP_INCLUDED

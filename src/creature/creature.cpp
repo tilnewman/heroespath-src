@@ -1792,5 +1792,5 @@ namespace creature
 
         return false;
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

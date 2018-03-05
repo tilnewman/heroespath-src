@@ -1041,5 +1041,5 @@ namespace creature
                    R.skinMaterialInner_,
                    R.skinMaterialOuter_);
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

@@ -67,7 +67,7 @@ namespace creature
     };
 
     using AchievementTypeVec_t = std::vector<AchievementType::Enum>;
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_ACHIEVEMENT_ENUM_HPP_INCLUDED

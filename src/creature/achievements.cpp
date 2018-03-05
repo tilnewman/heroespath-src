@@ -182,5 +182,5 @@ namespace creature
 
         map_.insert(std::make_pair(ACHV_TYPE, Achievement(ACHV_TYPE, titleCountMap)));
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

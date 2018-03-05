@@ -102,7 +102,7 @@ namespace sfml_util
         // NOT the complete system path.
         StrToSizetVecMap_t strToVecMap_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_TEXTURECACHE_HPP_INCLUDED

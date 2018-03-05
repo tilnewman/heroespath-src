@@ -122,5 +122,5 @@ namespace combat
         return std::tie(L.actionType_, L.spellPtr_, L.songPtr_)
             == std::tie(R.actionType_, R.spellPtr_, R.songPtr_);
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

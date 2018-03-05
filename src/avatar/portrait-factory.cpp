@@ -52,5 +52,5 @@ namespace avatar
 
         finalTexture = renderTexture.getTexture();
     }
-}
-}
+} // namespace avatar
+} // namespace heroespath

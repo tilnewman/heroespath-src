@@ -59,7 +59,7 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-}
+} // namespace creature
 namespace stage
 {
 
@@ -150,7 +150,7 @@ namespace stage
         creature::CreaturePtr_t inventoryCreaturePtr;
         game::Phase::Enum currentPhase_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_GUIDEMO_LOOPCOMMANDADDSTAGE_HPP_INCLUDED

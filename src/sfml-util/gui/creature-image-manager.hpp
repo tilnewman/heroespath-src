@@ -112,8 +112,8 @@ namespace sfml_util
             static std::string imagesDirectoryPath_;
             static std::unique_ptr<CreatureImageManager> instanceUPtr_;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_CREATUREIMAGEMANAGER_HPP_INCLUDED

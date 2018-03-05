@@ -67,7 +67,7 @@ namespace sfml_util
         float blueDiff_;
         float alphaDiff_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_COLORSHAKER_HPP_INCLUDED

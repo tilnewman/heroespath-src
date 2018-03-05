@@ -117,6 +117,6 @@ namespace sfml_util
         {
             return std::tie(L.up, L.down, L.over) == std::tie(R.up, R.down, R.over);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

@@ -613,6 +613,6 @@ namespace sfml_util
                 callbackHandlerPtr_->HandleCallback(this);
             }
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

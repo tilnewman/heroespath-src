@@ -102,8 +102,8 @@ namespace creature
             //       Each Condition must have a unique Severity.
             static std::size_t Get(const Conditions::Enum);
         };
-    }
-}
-}
+    } // namespace condition
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CONDITIONENUM_HPP_INCLUDED

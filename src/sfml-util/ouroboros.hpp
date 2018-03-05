@@ -66,7 +66,7 @@ namespace sfml_util
     };
 
     using OuroborosUPtr_t = std::unique_ptr<Ouroboros>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_OUROBOROS_HPP_INCLUDED

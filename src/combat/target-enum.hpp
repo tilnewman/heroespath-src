@@ -52,7 +52,7 @@ namespace combat
         static const std::string Name(const Enum);
         static const std::string ActionPhrase(const Enum);
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_TARGETENUM_HPP_INCLUDED

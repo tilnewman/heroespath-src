@@ -72,9 +72,9 @@ namespace sfml_util
         {
             class Box;
             using BoxUPtr_t = std::unique_ptr<Box>;
-        }
-    }
-}
+        } // namespace box
+    } // namespace gui
+} // namespace sfml_util
 
 namespace stage
 {
@@ -383,7 +383,7 @@ namespace stage
         //
         std::size_t selectedImageIndex_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_CHARACTERSTAGE_HPP_INCLUDED

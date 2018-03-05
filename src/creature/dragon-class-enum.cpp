@@ -132,5 +132,5 @@ namespace creature
             return dragon_class::Whelp;
         }
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

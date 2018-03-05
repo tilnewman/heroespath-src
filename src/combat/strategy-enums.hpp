@@ -148,8 +148,8 @@ namespace combat
         using RetreatChanceMap_t = std::map<RetreatType::Enum, float>;
         using OutnumberRetreatChanceMap_t = std::map<std::size_t, float>;
         using FrequencyChanceMap_t = std::map<FrequencyType::Enum, float>;
-    }
-}
-}
+    } // namespace strategy
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_STRATEGYENUMS_HPP_INCLUDED

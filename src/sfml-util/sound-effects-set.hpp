@@ -67,7 +67,7 @@ namespace sfml_util
     };
 
     using SfxSetVec_t = std::vector<SfxSet>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SOUNDEFFECTSSET_HPP_INCLUDED

@@ -284,6 +284,6 @@ namespace sfml_util
                 return (BASE - (VARIATION_SPAN * 0.5f)) + misc::random::Float(VARIATION_SPAN);
             }
         }
-    }
-}
-}
+    } // namespace animation
+} // namespace sfml_util
+} // namespace heroespath

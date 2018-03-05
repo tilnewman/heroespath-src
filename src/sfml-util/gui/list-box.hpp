@@ -56,7 +56,7 @@ namespace sfml_util
         {
             class Box;
             using BoxUPtr_t = std::unique_ptr<Box>;
-        }
+        } // namespace box
 
         class ListBoxItem;
         using ListBoxItemSPtr_t = std::shared_ptr<ListBoxItem>;
@@ -108,7 +108,7 @@ namespace sfml_util
 
             using IListBoxCallbackHandler
                 = sfml_util::callback::ICallbackHandler<ListBoxEventPackage, bool>;
-        }
+        } // namespace callback
 
         // A class that manages a vertical list of IGuiEntitys that can be scrolled through and
         // selected. The template type Item_t must be/descend/implement IGuiEntity.
@@ -290,8 +290,8 @@ namespace sfml_util
 
             std::size_t countLimit_;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_LISTBOX_HPP_INCLUDED

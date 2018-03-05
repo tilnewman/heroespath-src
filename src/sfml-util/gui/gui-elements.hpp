@@ -66,8 +66,11 @@ namespace sfml_util
             {
                 return 8.0f;
             } // subtract this amount from left
-            inline float GetLineSmallBoxPadRight() const { return 9.0f; } // add this amount to
-                                                                          // right
+            inline float GetLineSmallBoxPadRight() const
+            {
+                return 9.0f;
+            } // add this amount to
+              // right
             inline float GetLineSmallBoxPadTop() const
             {
                 return 8.0f;
@@ -410,8 +413,8 @@ namespace sfml_util
             const sf::IntRect lineSmallTBotSpriteRect_;
             const sf::IntRect lineSmallTRightSpriteRect_;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUIELEMENTS_HPP_INCLUDED

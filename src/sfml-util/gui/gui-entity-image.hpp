@@ -86,8 +86,8 @@ namespace sfml_util
         };
 
         using GuiImageUPtr_t = std::unique_ptr<GuiImage>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUIIMAGE_HPP_INCLUDED

@@ -97,5 +97,5 @@ namespace non_player
 
         warehouse_.Free(character_ptr, character_ptr->Name());
     }
-}
-}
+} // namespace non_player
+} // namespace heroespath

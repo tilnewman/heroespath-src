@@ -691,6 +691,6 @@ namespace item
 
             return itemPtr;
         }
-    }
-}
-}
+    } // namespace armor
+} // namespace item
+} // namespace heroespath

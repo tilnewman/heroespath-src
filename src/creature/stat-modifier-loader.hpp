@@ -41,7 +41,7 @@ namespace creature
     {
         static const stats::StatSet ConvertStringToStatSet(const std::string & DATA_FILE_VALUE_STR);
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_STATMODIFIERLOADER_HPP_INCLUDED

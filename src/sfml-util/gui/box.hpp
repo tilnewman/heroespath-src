@@ -94,9 +94,9 @@ namespace sfml_util
             };
 
             using BoxUPtr_t = std::unique_ptr<Box>;
-        }
-    }
-}
-}
+        } // namespace box
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_BOX_HPP_INCLUDED

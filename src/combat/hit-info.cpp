@@ -597,5 +597,5 @@ namespace combat
                    R.didArmorAbsorb_,
                    R.conditionPtr_);
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

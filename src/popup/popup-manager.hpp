@@ -55,8 +55,8 @@ namespace sfml_util
         {
             class Info;
         }
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 
 namespace creature
 {
@@ -65,7 +65,7 @@ namespace creature
 
     class Title;
     using TitlePtr_t = Title *;
-}
+} // namespace creature
 
 namespace popup
 {
@@ -265,7 +265,7 @@ namespace popup
         //
         PathVec_t accentPathsVec_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPMANAGER_HPP_INCLUDED

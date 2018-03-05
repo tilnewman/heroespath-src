@@ -545,5 +545,5 @@ namespace popup
 
         return PopupStageBase::HandleSelect();
     }
-}
-}
+} // namespace popup
+} // namespace heroespath

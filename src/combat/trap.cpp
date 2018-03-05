@@ -155,5 +155,5 @@ namespace combat
 
         return rankSum / Rank_t(static_cast<int>(CHARACTER_PTRS.size()));
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

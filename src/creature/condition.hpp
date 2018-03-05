@@ -97,7 +97,7 @@ namespace creature
     bool operator==(const Condition & L, const Condition & R);
 
     inline bool operator!=(const Condition & L, const Condition & R) { return !(L == R); }
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_CONDITION_HPP_INCLUDED

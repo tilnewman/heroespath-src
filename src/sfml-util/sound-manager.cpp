@@ -947,5 +947,5 @@ namespace sfml_util
 
         return bufferUPtr;
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

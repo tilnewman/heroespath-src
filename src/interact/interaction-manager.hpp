@@ -62,7 +62,7 @@ namespace interact
         mutable bool hasCurrentChanged_;
         bool isRemoveCurrentPending_;
     };
-}
-}
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_INTERACTION_MANAGER_HPP_INCLUDED

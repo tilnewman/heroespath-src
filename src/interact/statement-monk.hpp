@@ -44,14 +44,14 @@ namespace interact
             {
                 return { "the light", "peace", "wisdom", "enlightenment", "truth", "nirvana" };
             }
-        }
+        } // namespace compose
 
         struct MonkTalk
         {
             static const std::string Compose();
         };
-    }
-}
-}
+    } // namespace talk
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_STATEMENTMONK_HPP_INCLUDED

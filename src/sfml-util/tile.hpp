@@ -185,7 +185,7 @@ namespace sfml_util
 
         TileFromVec(RECT, spriteVec, renderTarget, WILL_RANDOM_ORDER);
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_TILE_HPP_INCLUDED

@@ -76,7 +76,7 @@ namespace sfml_util
         sf::Sprite sprite4_;
         sf::Texture texture_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_HORIZSYMBOL_HPP_INCLUDED

@@ -165,7 +165,7 @@ namespace creature
             const CondAllOpt COND_ALL_OPTION = CondAllOpt::HasAll,
             const CondSingleOpt COND_SINGLE_OPTION = CondSingleOpt::Has);
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_CREATUREVECALGORITHMS_HPP_INCLUDED

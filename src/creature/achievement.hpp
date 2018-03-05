@@ -111,7 +111,7 @@ namespace creature
     }
 
     inline bool operator!=(const Achievement & L, const Achievement & R) { return !(L == R); }
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_ACHIEVEMENT_HPP_INCLUDED

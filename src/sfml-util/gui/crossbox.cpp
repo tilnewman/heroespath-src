@@ -260,8 +260,9 @@ namespace sfml_util
                 // second_int_wid=" << INTENDED_SECOND_WIDTH << ", min_wid=" << MIN_WIDTH << ",
                 // horiz_mid_len=" << HORIZ_MID_LEN << std::endl;
                 // M_ASSERT_OR_LOGANDTHROW_SS((HORIZ_MID_LEN == (FIRST_HORIZ_LEN +
-                // SECOND_HORIZ_LEN)), entityName_ << "'s first_horiz_len=" << FIRST_HORIZ_LEN << " +
-                // second_horiz_len=" << SECOND_HORIZ_LEN << " != horiz_mid_len=" << HORIZ_MID_LEN);
+                // SECOND_HORIZ_LEN)), entityName_ << "'s first_horiz_len=" << FIRST_HORIZ_LEN << "
+                // + second_horiz_len=" << SECOND_HORIZ_LEN << " != horiz_mid_len=" <<
+                // HORIZ_MID_LEN);
 
                 const float MIN_HEIGHT(GetMinHeight_CrossBox(WILL_GROW_TO_FIT));
                 M_ASSERT_OR_LOGANDTHROW_SS(
@@ -446,7 +447,7 @@ namespace sfml_util
                         static_cast<std::size_t>(SECOND_VERT_LEN));
                 }
             }
-        }
-    }
-}
-}
+        } // namespace box
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

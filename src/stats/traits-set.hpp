@@ -85,7 +85,7 @@ namespace stats
     {
         return (L.traitVec_ < R.traitVec_);
     }
-}
-}
+} // namespace stats
+} // namespace heroespath
 
 #endif // HEROESPATH_STATS_TRAITSSET_HPP_INCLUDED

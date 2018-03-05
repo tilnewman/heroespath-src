@@ -3383,5 +3383,5 @@ namespace creature
 
         return nullptr;
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

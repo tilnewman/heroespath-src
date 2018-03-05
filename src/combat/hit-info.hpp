@@ -42,22 +42,22 @@ namespace creature
 {
     class Condition;
     using ConditionPtr_t = Condition *;
-}
+} // namespace creature
 namespace spell
 {
     class Spell;
     using SpellPtr_t = Spell *;
-}
+} // namespace spell
 namespace song
 {
     class Song;
     using SongPtr_t = Song *;
-}
+} // namespace song
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 
 namespace combat
 {
@@ -208,7 +208,7 @@ namespace combat
     bool operator==(const HitInfo & L, const HitInfo & R);
 
     inline bool operator!=(const HitInfo & L, const HitInfo & R) { return !(L == R); }
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_HITINFO_HPP_INCLUDED

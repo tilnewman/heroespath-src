@@ -51,7 +51,7 @@ namespace popup
         sf::Texture bgTexture_;
         sf::Sprite bgSprite_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGESYSTEMERROR_HPP_INCLUDED

@@ -71,7 +71,7 @@ namespace spell
     };
 
     using SpellVec_t = std::vector<Spells::Enum>;
-}
-}
+} // namespace spell
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_SPELL_SPELLENUM_HPP_INCLUDED

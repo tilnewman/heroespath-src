@@ -105,7 +105,7 @@ namespace sfml_util
     bool operator==(const MusicSet & L, const MusicSet & R);
 
     inline bool operator!=(const MusicSet & L, const MusicSet & R) { return !(L == R); }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_MUSICSET_HPP_INCLUDED

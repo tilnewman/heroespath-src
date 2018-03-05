@@ -70,14 +70,14 @@ namespace interact
                     std::begin(PARENTS_VEC), std::end(PARENTS_VEC), std::back_inserter(allVec));
                 return allVec;
             }
-        }
+        } // namespace compose
 
         struct ChildTalk
         {
             static const std::string Compose(const player::Party &);
         };
-    }
-}
-}
+    } // namespace talk
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_STATEMENTCHILD_HPP_INCLUDED

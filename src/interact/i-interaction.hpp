@@ -70,7 +70,7 @@ namespace interact
     };
 
     using InteractionUPtr_t = std::unique_ptr<IInteraction>;
-}
-}
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED

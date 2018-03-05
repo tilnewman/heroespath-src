@@ -156,7 +156,7 @@ namespace creature
     }
 
     using TitleTransitionVec_t = std::vector<TitleTransition>;
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_Title_HPP_INCLUDED

@@ -108,5 +108,5 @@ namespace creature
     void Condition::FinalChange(CreaturePtrC_t) const {}
 
     void Condition::PerTurnEffect(CreaturePtr_t, combat::HitInfoVec_t &, bool &) const {}
-}
-}
+} // namespace creature
+} // namespace heroespath

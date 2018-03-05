@@ -62,7 +62,7 @@ namespace sfml_util
 
         class SongAnimation;
         using SongAnimationUPtr_t = std::unique_ptr<SongAnimation>;
-    }
+    } // namespace animation
 
     namespace gui
     {
@@ -73,9 +73,9 @@ namespace sfml_util
         {
             class Box;
             using BoxUPtr_t = std::unique_ptr<Box>;
-        }
-    }
-}
+        } // namespace box
+    } // namespace gui
+} // namespace sfml_util
 
 namespace creature
 {
@@ -84,17 +84,17 @@ namespace creature
     using CreatureCPtr_t = const Creature *;
     using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
-}
+} // namespace creature
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 namespace combat
 {
     class CombatSoundEffects;
     using CombatSoundEffectsUPtr_t = std::unique_ptr<CombatSoundEffects>;
-}
+} // namespace combat
 
 namespace stage
 {
@@ -491,7 +491,7 @@ namespace stage
         game::Phase::Enum currentPhase_;
         bool hasTakenActionSpellOrSong_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_INVENTORY_STAGE_HPP_INCLUDED

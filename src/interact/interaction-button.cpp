@@ -65,5 +65,5 @@ namespace interact
         ptr_ = uptr.get();
         return uptr;
     }
-}
-}
+} // namespace interact
+} // namespace heroespath

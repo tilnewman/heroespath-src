@@ -108,5 +108,5 @@ namespace game
 
         stateUPtr_.reset(STATE_PTR);
     }
-}
-}
+} // namespace game
+} // namespace heroespath

@@ -63,7 +63,7 @@ namespace interact
     };
 
     using ButtonVec_t = std::vector<Button>;
-}
-}
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED

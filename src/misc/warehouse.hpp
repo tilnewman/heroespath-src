@@ -124,7 +124,7 @@ namespace misc
     private:
         std::vector<std::unique_ptr<T>> uPtrVec_;
     };
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_WAREHOUSE_HPP_INCLUDED

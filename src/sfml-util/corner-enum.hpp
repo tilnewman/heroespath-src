@@ -49,7 +49,7 @@ namespace sfml_util
         static const std::string ToString(const Corner::Enum E);
         static bool IsValid(const Corner::Enum E);
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_CORNER_ENUM_HPP_INCLUDED

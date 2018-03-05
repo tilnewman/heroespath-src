@@ -49,7 +49,7 @@ namespace sfml_util
         static const std::string ToString(const Side::Enum E);
         static bool IsValid(const Side::Enum E);
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SIDE_ENUM_HPP_INCLUDED

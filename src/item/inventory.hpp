@@ -140,7 +140,7 @@ namespace item
     bool operator==(const Inventory & L, const Inventory & R);
 
     inline bool operator!=(const Inventory & L, const Inventory & R) { return !(L == R); }
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_INVENTORY_HPP_INCLUDED

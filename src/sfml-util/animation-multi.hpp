@@ -81,7 +81,7 @@ namespace sfml_util
         // the size of this vec acts as a total frame count
         misc::SizetVec_t textureIdVec_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_ANIMATIONMULTI_HPP_INCLUDED

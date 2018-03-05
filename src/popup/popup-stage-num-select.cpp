@@ -334,5 +334,5 @@ namespace popup
 
         EntityAdd(sliderbarUPtr_.get());
     }
-}
-}
+} // namespace popup
+} // namespace heroespath

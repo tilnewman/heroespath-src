@@ -116,5 +116,5 @@ namespace item
     {
         return TreasureScores(*this) /= RHS;
     }
-}
-}
+} // namespace item
+} // namespace heroespath

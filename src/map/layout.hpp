@@ -70,7 +70,7 @@ namespace map
         sfml_util::TextureVec_t texture_vec;
         sf::RenderTexture empty_texture;
     };
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_LAYOUT_HPP_INCLUDED

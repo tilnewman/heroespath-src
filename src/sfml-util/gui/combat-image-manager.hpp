@@ -61,8 +61,8 @@ namespace sfml_util
         private:
             static std::unique_ptr<CombatImageManager> instanceUPtr_;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_COMBATIMAGEMANAGER_HPP_INCLUDED

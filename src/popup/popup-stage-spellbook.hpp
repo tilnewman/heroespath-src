@@ -47,7 +47,7 @@ namespace spell
     class Spell;
     using SpellPtr_t = Spell *;
     using SpellPtrC_t = Spell * const;
-}
+} // namespace spell
 
 namespace popup
 {
@@ -137,7 +137,7 @@ namespace popup
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGESPELLBOOK_HPP_INCLUDED

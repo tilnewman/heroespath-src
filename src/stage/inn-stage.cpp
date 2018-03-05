@@ -107,5 +107,5 @@ namespace stage
         target.draw(bottomSymbol_, STATES);
         Stage::Draw(target, STATES);
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

@@ -466,7 +466,7 @@ namespace sfml_util
 
     using LoopCmdSPtr_t = std::shared_ptr<LoopCmd>;
     using LoopCmdSVec_t = std::vector<LoopCmdSPtr_t>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_LOOPCOMMAND_HPP_INCLUDED

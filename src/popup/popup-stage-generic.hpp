@@ -54,7 +54,7 @@ namespace popup
 
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGEGENERIC_HPP_INCLUDED

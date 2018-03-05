@@ -103,8 +103,8 @@ namespace sfml_util
         };
 
         using KnotFrameUPtr_t = std::unique_ptr<KnotFrame>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_KNOTFRAME_HPP_INCLUDED

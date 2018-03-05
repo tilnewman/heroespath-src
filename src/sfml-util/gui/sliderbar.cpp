@@ -640,6 +640,6 @@ namespace sfml_util
             GuiEntity::MoveEntityPos(HORIZ, VERT);
             SetupAllPositions();
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

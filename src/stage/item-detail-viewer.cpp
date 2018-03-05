@@ -275,5 +275,5 @@ namespace stage
         textRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "ItemDetailViewer'sTextRegion", TEXT_INFO, TEXT_RECT);
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

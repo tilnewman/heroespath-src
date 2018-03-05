@@ -85,7 +85,7 @@ namespace popup
         static const std::string ToString(const PopupImage::Enum);
         static bool IsValid(const PopupImage::Enum);
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPENUMS_HPP_INCLUDE

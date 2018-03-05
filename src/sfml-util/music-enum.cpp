@@ -490,5 +490,5 @@ namespace sfml_util
         else
             return music::Count;
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

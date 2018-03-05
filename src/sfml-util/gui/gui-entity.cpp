@@ -349,6 +349,6 @@ namespace sfml_util
                        R.entityClockUPtr_,
                        R.entityPrevPos_);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

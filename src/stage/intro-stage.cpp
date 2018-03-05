@@ -113,5 +113,5 @@ namespace stage
 
         titleSprite_.setPosition(TITLE_POS_LEFT, TITLE_POS_TOP);
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

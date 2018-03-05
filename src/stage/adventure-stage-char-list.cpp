@@ -719,5 +719,5 @@ namespace stage
         darkColor.a = ALPHA_FOR_CHAR_IMAGES_;
         return darkColor;
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

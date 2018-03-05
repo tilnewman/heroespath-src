@@ -88,7 +88,7 @@ namespace stats
         return std::tie(L.str_, L.acc_, L.cha_, L.lck_, L.spd_, L.int_)
             < std::tie(R.str_, R.acc_, R.cha_, R.lck_, R.spd_, R.int_);
     }
-}
-}
+} // namespace stats
+} // namespace heroespath
 
 #endif // HEROESPATH_STATS_STATSET_HPP_INCLUDED

@@ -218,5 +218,5 @@ namespace stage
                    R.isHeldDown_,
                    R.textInfo_);
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

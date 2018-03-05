@@ -91,7 +91,7 @@ namespace sfml_util
 
     using MusicEnumVec_t = std::vector<music::Enum>;
     using MusicEnumSet_t = std::set<music::Enum>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_MUSICENUM_HPP_INCLUDED

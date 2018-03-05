@@ -372,7 +372,7 @@ namespace sfml_util
 
                 return DID_FOCUS_CHANGE;
             }
-        }
-    }
-}
-}
+        } // namespace box
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

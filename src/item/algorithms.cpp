@@ -167,5 +167,5 @@ namespace item
 
         return resultSVec;
     }
-}
-}
+} // namespace item
+} // namespace heroespath

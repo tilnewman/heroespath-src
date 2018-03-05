@@ -42,7 +42,7 @@ namespace popup
     // Returns true if Loop's popup callback handler pointer should be reset to null.
     // This means you must return false if one popup will replace another.
     using IPopupHandler_t = sfml_util::callback::ICallbackHandler<PopupResponse, bool>;
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_IPOOPUPCALLBACK_HPP_INCLUDED

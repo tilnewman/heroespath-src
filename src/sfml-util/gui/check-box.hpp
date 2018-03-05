@@ -199,8 +199,8 @@ namespace sfml_util
 
         using CheckBoxSetSPtr_t = std::shared_ptr<CheckBoxSet>;
         using CheckBoxSetSVec_t = std::vector<CheckBoxSetSPtr_t>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_CHECKBOX_HPP_INCLUDED

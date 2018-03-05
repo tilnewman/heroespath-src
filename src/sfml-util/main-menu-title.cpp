@@ -125,5 +125,5 @@ namespace sfml_util
             target.draw(titleSprite_, states);
         }
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

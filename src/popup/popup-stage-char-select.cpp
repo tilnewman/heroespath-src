@@ -237,5 +237,5 @@ namespace popup
         sfml_util::gui::CreatureImageManager::Instance()->GetImage(
             textureCurr_, CREATURE_PTR->ImageFilename(), true);
     }
-}
-}
+} // namespace popup
+} // namespace heroespath

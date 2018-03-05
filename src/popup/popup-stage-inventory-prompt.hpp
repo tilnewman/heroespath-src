@@ -50,7 +50,7 @@ namespace popup
     private:
         inline virtual bool WillPressingCKeyClosePopup() const override { return true; }
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGEINVENTORYPROMPT_HPP_INCLUDED

@@ -375,5 +375,5 @@ namespace config
     const std::string ConfigBase::GetSeparatorStr() const { return sepStr_; }
 
     const std::string ConfigBase::GetCommentStr() const { return commentStr_; }
-}
-}
+} // namespace config
+} // namespace heroespath

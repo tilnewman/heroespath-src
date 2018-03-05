@@ -81,5 +81,5 @@ namespace creature
 
         return statSet;
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

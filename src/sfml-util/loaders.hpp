@@ -50,7 +50,7 @@ namespace sfml_util
     void LoadFont(sf::Font & font, const std::string & PATH_STR);
 
     MusicUPtr_t LoadMusic(const std::string & PATH_STR);
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_LOADERS_HPP_INCLUDED

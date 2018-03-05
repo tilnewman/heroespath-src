@@ -54,8 +54,8 @@ namespace creature
         private:
             static ConditionUVec_t conditionsUVec_;
         };
-    }
-}
-}
+    } // namespace condition
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_CONDITIONWAREHOUSE_HPP_INCLUDED

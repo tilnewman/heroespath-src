@@ -150,8 +150,8 @@ namespace combat
             //
             RaceRoleChancesMap_t raceRoleChancesMap_;
         };
-    }
-}
-}
+    } // namespace strategy
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_STRATEGYDETAILS_HPP_INCLUDED

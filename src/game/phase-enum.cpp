@@ -140,5 +140,5 @@ namespace game
 
         return static_cast<game::Phase::Enum>(x);
     }
-}
-}
+} // namespace game
+} // namespace heroespath

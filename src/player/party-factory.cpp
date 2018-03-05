@@ -324,5 +324,5 @@ namespace player
 
         return partyUPtr;
     }
-}
-}
+} // namespace player
+} // namespace heroespath

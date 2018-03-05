@@ -57,8 +57,8 @@ namespace sfml_util
     {
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 
 namespace stage
 {
@@ -182,7 +182,7 @@ namespace stage
         bool willProcessLockpickTitle_;
         interact::LockPicking lockPicking_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_TREASURESTAGE_HPP_INCLUDED

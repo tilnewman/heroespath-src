@@ -351,6 +351,6 @@ namespace combat
             return misc::Vector::SelectRandom(
                 GetWithSeverityRatioBetween(severityRatioMin, severityRatioMax));
         }
-    }
-}
-}
+    } // namespace trap
+} // namespace combat
+} // namespace heroespath

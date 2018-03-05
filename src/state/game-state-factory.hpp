@@ -45,7 +45,7 @@ namespace player
     class Character;
     using CharacterPtr_t = Character *;
     using CharacterPSet_t = std::set<CharacterPtr_t>;
-}
+} // namespace player
 
 namespace state
 {
@@ -103,7 +103,7 @@ namespace state
         //
         static std::unique_ptr<GameStateFactory> instanceUPtr_;
     };
-}
-}
+} // namespace state
+} // namespace heroespath
 
 #endif // HEROESPATH_STATE_GAMESTATEFACTORY_HPP_INCLUDED

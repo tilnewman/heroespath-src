@@ -331,6 +331,6 @@ namespace item
                         << name << "\") was not a recognized weapon.");
             }
         }
-    }
-}
-}
+    } // namespace weapon
+} // namespace item
+} // namespace heroespath

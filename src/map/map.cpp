@@ -548,5 +548,5 @@ namespace map
         walkMusicWhich_ = NEW_WALK_MUSIC;
         walkMusicIsWalking_ = NEW_IS_WALKING;
     }
-}
-}
+} // namespace map
+} // namespace heroespath

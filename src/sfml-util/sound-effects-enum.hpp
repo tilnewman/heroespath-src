@@ -390,7 +390,7 @@ namespace sfml_util
     };
 
     using SfxEnumVec_t = std::vector<sound_effect::Enum>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SOUNDEFFECTSENUM_HPP_INCLUDED

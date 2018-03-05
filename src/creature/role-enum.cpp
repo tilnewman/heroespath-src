@@ -393,5 +393,5 @@ namespace creature
 
         return rolesVec;
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

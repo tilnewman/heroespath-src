@@ -613,7 +613,7 @@ namespace item
                    R.score_,
                    R.summonInfo_);
     }
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ITEMPROFILE_HPP_INCLUDE

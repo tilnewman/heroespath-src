@@ -291,6 +291,6 @@ namespace sfml_util
         void GuiText::SpriteColorSet(const sf::Color & NEW_COLOR) { sprite_.setColor(NEW_COLOR); }
 
         void GuiText::SpriteColorReset() { sprite_.setColor(sf::Color::White); }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

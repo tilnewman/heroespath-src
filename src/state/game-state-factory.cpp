@@ -436,5 +436,5 @@ namespace state
             throw std::runtime_error(ss.str());
         }
     }
-}
-}
+} // namespace state
+} // namespace heroespath

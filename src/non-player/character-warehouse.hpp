@@ -65,7 +65,7 @@ namespace non_player
         static std::unique_ptr<CharacterWarehouse> instanceUPtr_;
         misc::Warehouse<Character> warehouse_;
     };
-}
-}
+} // namespace non_player
+} // namespace heroespath
 
 #endif // HEROESPATH_NONPLAYER_CHARACTERWAREHOUSE_HPP_INCLUDED

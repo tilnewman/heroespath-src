@@ -6630,5 +6630,5 @@ namespace item
             return ss.str();
         }
     }
-}
-}
+} // namespace item
+} // namespace heroespath

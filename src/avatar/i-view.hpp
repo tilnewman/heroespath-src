@@ -67,7 +67,7 @@ namespace avatar
     };
 
     using IViewUPtr_t = std::unique_ptr<IView>;
-}
-}
+} // namespace avatar
+} // namespace heroespath
 
 #endif // HEROESPATH_AVATAR_IVIEW_HPP_INCLUDED

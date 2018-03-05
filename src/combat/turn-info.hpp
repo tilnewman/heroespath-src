@@ -46,7 +46,7 @@ namespace creature
     using CreatureCPtr_t = const Creature *;
     using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
-}
+} // namespace creature
 namespace combat
 {
 
@@ -192,7 +192,7 @@ namespace combat
     bool operator==(const TurnInfo & L, const TurnInfo & R);
 
     inline bool operator!=(const TurnInfo & L, const TurnInfo & R) { return !(L == R); }
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_TURNINFO_HPP_INCLUDED

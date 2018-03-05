@@ -172,8 +172,8 @@ namespace sfml_util
         };
 
         using DeleteButtonUPtr_t = std::unique_ptr<DeleteButton>;
-    }
-}
-}
+    } // namespace main_menu_buttons
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_MAINMENUBUTTONS_HPP_INCLUDED

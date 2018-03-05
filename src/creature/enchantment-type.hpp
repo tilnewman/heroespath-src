@@ -54,7 +54,7 @@ namespace creature
 
         static const std::string ToString(const Enum);
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_ENCHANTMENTTYPE_HPP_INCLUDED

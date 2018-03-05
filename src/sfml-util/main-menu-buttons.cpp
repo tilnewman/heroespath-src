@@ -239,6 +239,6 @@ namespace sfml_util
         {
             game::LoopManager::Instance()->TransitionTo_Previous();
         }
-    }
-}
-}
+    } // namespace main_menu_buttons
+} // namespace sfml_util
+} // namespace heroespath

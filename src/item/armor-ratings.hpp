@@ -94,7 +94,7 @@ namespace item
         Armor_t armoredGreaterSteel_;
         Armor_t armoredGreaterDiamond_;
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ARMORRATINGS_HPP_INCLUDED

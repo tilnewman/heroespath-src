@@ -157,5 +157,5 @@ namespace creature
             return wolfen_class::Pup;
         }
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

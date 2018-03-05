@@ -152,9 +152,9 @@ namespace interact
                          "who sucks his thumb",       "who found a singing frog",
                          "who pee'd in the town well" };
             }
-        }
-    }
-}
-}
+        } // namespace compose
+    } // namespace talk
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_STATEMENT_HPP_INCLUDED

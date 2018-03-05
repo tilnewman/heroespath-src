@@ -93,7 +93,7 @@ namespace config
         virtual const std::string GetSeparatorStr() const = 0;
         virtual const std::string GetCommentStr() const = 0;
     };
-}
-}
+} // namespace config
+} // namespace heroespath
 
 #endif // HEROESPATH_CONFIG_ICONFIG_HPP_INCLUDED

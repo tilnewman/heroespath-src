@@ -56,7 +56,7 @@ namespace map
     };
 
     using MapAnimVec_t = std::vector<MapAnim>;
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_LEVELENUM_HPP_INCLUDED

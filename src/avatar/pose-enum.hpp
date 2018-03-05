@@ -50,7 +50,7 @@ namespace avatar
 
         static const std::string ToString(const Pose::Enum E);
     };
-}
-}
+} // namespace avatar
+} // namespace heroespath
 
 #endif // HEROESPATH_AVATAR_POSEENUM_HPP_INCLUDED

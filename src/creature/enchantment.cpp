@@ -126,5 +126,5 @@ namespace creature
 
         return score;
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

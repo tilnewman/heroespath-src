@@ -59,7 +59,7 @@ namespace creature
 
         static dragon_class::Enum ClassFromRank(const Rank_t &);
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_DRAGONCLASSENUM_HPP_INCLUDED

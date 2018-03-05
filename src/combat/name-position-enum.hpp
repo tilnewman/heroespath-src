@@ -97,7 +97,7 @@ namespace combat
         return std::tie(L.pre_, L.content_, L.post_, L.posEnum_)
             < std::tie(R.pre_, R.content_, R.post_, R.posEnum_);
     }
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_NAMEPOSITIONENUM_HPP_INCLUDED

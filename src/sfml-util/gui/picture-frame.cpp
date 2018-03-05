@@ -242,6 +242,6 @@ namespace sfml_util
 
             return innerRect_;
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

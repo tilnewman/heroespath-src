@@ -1499,5 +1499,5 @@ namespace combat
 
         return false;
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

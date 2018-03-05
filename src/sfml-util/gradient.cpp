@@ -134,5 +134,5 @@ namespace sfml_util
     {
         target.draw(quads_, states);
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

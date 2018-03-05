@@ -83,5 +83,5 @@ namespace interact
         stagePtr->InteractionManager().RemoveCurrent();
         return true;
     }
-}
-}
+} // namespace interact
+} // namespace heroespath

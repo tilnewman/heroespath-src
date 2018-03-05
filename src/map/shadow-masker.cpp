@@ -114,5 +114,5 @@ namespace map
 
         texture.update(destImage);
     }
-}
-}
+} // namespace map
+} // namespace heroespath

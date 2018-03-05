@@ -56,7 +56,7 @@ namespace stage
         AdventureDisplayStage * adventureDisplayStagePtr_;
         interact::InteractionManager interactionManager_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_ADVENTURESTAGE_HPP_INCLUDED

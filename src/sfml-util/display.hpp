@@ -177,7 +177,7 @@ namespace sfml_util
         int frameRateLimit_;
         bool willVerticalSync_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_DISPLAY_HPP_INCLUDED

@@ -59,7 +59,7 @@ namespace sfml_util
         using IRadioButtonSetCallbackHandler_t
             = ICallbackHandler<RadioButtonCallbackPackage_t, bool>;
         using RadioButtonCallbackHandlerPtrSet_t = std::set<IRadioButtonSetCallbackHandler_t *>;
-    }
+    } // namespace callback
 
     namespace gui
     {
@@ -275,8 +275,8 @@ namespace sfml_util
 
         using RadioButtonSetUPtr_t = std::unique_ptr<RadioButtonSet>;
         using RadioButtonSVec_t = std::vector<RadioButtonSPtr_t>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_RADIOBUTTON_HPP_INCLUDED

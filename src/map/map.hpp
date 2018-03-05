@@ -131,7 +131,7 @@ namespace map
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_MAP_HPP_INCLUDED

@@ -38,19 +38,19 @@ namespace spell
 {
     class Spell;
     using SpellPtr_t = Spell *;
-}
+} // namespace spell
 namespace song
 {
     class Song;
     using SongPtr_t = Song *;
-}
+} // namespace song
 namespace creature
 {
     // forward declarations
     class Creature;
     using CreaturePtr_t = Creature *;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace combat
 {
 
@@ -93,7 +93,7 @@ namespace combat
     bool operator==(const TurnActionInfo & L, const TurnActionInfo & R);
 
     inline bool operator!=(const TurnActionInfo & L, const TurnActionInfo & R) { return !(L == R); }
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_TURNACTIONINFO_HPP_INCLUDED

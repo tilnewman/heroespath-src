@@ -95,8 +95,8 @@ namespace item
             static std::unique_ptr<WeaponDetailLoader> instanceUPtr_;
             WeaponDetailMap_t weaponDetailsMap_;
         };
-    }
-}
-}
+    } // namespace weapon
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_WEAPONFDETAILS_HPP_INCLUDED

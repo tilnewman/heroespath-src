@@ -126,8 +126,8 @@ namespace sfml_util
 
         using GuiTextSPtr_t = std::shared_ptr<GuiText>;
         using GuiTextSVec_t = std::vector<GuiTextSPtr_t>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUITEXT_HPP_INCLUDED

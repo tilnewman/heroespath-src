@@ -143,5 +143,5 @@ namespace spell
 
         return spellsUVec_.at(static_cast<std::size_t>(E)).get();
     }
-}
-}
+} // namespace spell
+} // namespace heroespath

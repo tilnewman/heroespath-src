@@ -167,5 +167,5 @@ namespace sfml_util
 
         return resRadioButtonSetInitialSelection;
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

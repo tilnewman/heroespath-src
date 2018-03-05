@@ -129,8 +129,8 @@ namespace sfml_util
 
         using SparksAnimationUPtr_t = std::unique_ptr<SparksAnimation>;
         using SparksAnimationUVec_t = std::vector<SparksAnimationUPtr_t>;
-    }
-}
-}
+    } // namespace animation
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SPARKSANIMATION_HPP_INCLUDED

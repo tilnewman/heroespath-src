@@ -97,5 +97,5 @@ namespace creature
 
         warehouse_.Free(enchantment_ptr, enchantment_ptr->EffectStr());
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

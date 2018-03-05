@@ -422,7 +422,7 @@ namespace creature
             ar & boost::serialization::base_object<Enchantment>(*this);
         }
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_ENCHANTMENTS_HPP_INCLUDE

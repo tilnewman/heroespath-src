@@ -152,8 +152,8 @@ namespace non_player
         };
 
         float ConvertStringToFloat(const std::string & KEY, const std::string & STR_FLOAT);
-    }
-}
-}
+    } // namespace ownership
+} // namespace non_player
+} // namespace heroespath
 
 #endif // HEROESPATH_NONPLAYER_OWNERSHIPPROFILE_HPP_INCLUDED

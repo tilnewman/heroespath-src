@@ -75,5 +75,5 @@ namespace stage
     }
 
     void AdventureStage::UpdateTime(const float) { interactionManager_.Update(); }
-}
-}
+} // namespace stage
+} // namespace heroespath

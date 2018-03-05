@@ -224,5 +224,5 @@ namespace combat
                    R.songCount_,
                    R.wasHitLastTurn_);
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

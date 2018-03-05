@@ -71,8 +71,8 @@ namespace creature
             static const CondEnumVec_t RemoveByMinSeverityCopy(
                 const CondEnumVec_t & CONDITIONS_VEC, const std::size_t MIN_SEVERITY);
         };
-    }
-}
-}
+    } // namespace condition
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROSPATH_CREATURE_CONDITIONALGORITHMS_HPP_INCLUDED

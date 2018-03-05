@@ -269,5 +269,5 @@ namespace stage
 
         return interactRegion;
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

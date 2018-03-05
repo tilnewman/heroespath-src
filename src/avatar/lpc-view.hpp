@@ -94,7 +94,7 @@ namespace avatar
         float frameTimerSec_;
         std::size_t frameIndex_;
     };
-}
-}
+} // namespace avatar
+} // namespace heroespath
 
 #endif // HEROESPATH_AVATAR_LPCVIEW_HPP_INCLUDED

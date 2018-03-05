@@ -63,7 +63,7 @@ namespace item
             return ((0_coin == coins) && (0_gem == gems) && (items_pvec.empty() == false));
         }
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ITEMCACHE_HPP_INCLUDED

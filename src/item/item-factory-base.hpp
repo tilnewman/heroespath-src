@@ -104,7 +104,7 @@ namespace item
 
         static const std::string RandomClaspNoun();
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ITEMFACTORYBASE_HPP_INCLUDED

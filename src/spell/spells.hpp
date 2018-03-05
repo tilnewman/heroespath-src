@@ -44,7 +44,7 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-}
+} // namespace creature
 
 namespace spell
 {
@@ -402,7 +402,7 @@ namespace spell
     private:
         virtual const combat::ContentAndNamePos ActionPhrase() const;
     };
-}
-}
+} // namespace spell
+} // namespace heroespath
 
 #endif // HEROESPATH_SPELL_SPELLS_HPP_INCLUDED

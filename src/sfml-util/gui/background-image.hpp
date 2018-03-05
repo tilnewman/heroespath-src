@@ -108,8 +108,8 @@ namespace sfml_util
             sfml_util::gui::BackgroundInfo bgInfo_;
             sf::Sprite sprite_;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_BACKGROUNDIMAGE_HPP_INCLUDED

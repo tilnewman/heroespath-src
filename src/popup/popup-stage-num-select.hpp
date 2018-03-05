@@ -83,7 +83,7 @@ namespace popup
         bool willSliderbarUpdate_;
         bool willTextBoxUpdate_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGENUMSELECT_HPP_INCLUDED

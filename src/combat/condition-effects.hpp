@@ -42,7 +42,7 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-}
+} // namespace creature
 
 namespace combat
 {
@@ -57,7 +57,7 @@ namespace combat
             creature::CreaturePtr_t creaturePtr,
             HitInfoVec_t & hitInfoVec_OuParam);
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_CONDITIONEFFECTS_HPP_INCLUDED

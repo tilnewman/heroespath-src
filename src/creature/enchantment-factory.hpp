@@ -45,7 +45,7 @@ namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 namespace creature
 {
 
@@ -118,7 +118,7 @@ namespace creature
     private:
         static std::unique_ptr<EnchantmentFactory> instanceUPtr_;
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_ENCHANTMENTFACTORY_HPP_INCLUDED

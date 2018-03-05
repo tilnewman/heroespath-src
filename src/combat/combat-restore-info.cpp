@@ -137,5 +137,5 @@ namespace combat
         combatDisplayPtrC->PositionCombatTreeCells(false);
         combatDisplayPtrC->UpdateWhichNodesWillDraw();
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

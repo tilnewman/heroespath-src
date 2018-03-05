@@ -274,7 +274,7 @@ namespace item
     bool operator==(const Item & L, const Item & R);
 
     inline bool operator!=(const Item & L, const Item & R) { return !(L == R); }
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ITEM_HPP_INCLUDED

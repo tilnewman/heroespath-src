@@ -69,7 +69,7 @@ namespace sfml_util
 
     using GradientRectSPtr_t = std::shared_ptr<GradientRect>;
     using GradientRectSVec_t = std::vector<GradientRectSPtr_t>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GRADIENT_HPP_INCLUDED

@@ -100,8 +100,8 @@ namespace sfml_util
             sf::Sprite finalSprite_; // used to draw to screen
             sf::RenderTexture offScreenTexture_;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_LINE_HPP_INCLUDED

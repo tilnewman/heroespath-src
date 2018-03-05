@@ -61,7 +61,7 @@ namespace map
     };
 
     using LayerVec_t = std::vector<Layer>;
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_LAYER_HPP_INCLUDED

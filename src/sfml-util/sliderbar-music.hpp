@@ -73,7 +73,7 @@ namespace sfml_util
     };
 
     using SliderBarLabeled_MusicUPtr_t = std::unique_ptr<SliderBarLabeled_Music>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SLIDERBARMUSIC_HPP_INCLUDED

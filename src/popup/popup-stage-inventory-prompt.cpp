@@ -91,5 +91,5 @@ namespace popup
 
         return PopupStageBase::KeyRelease(KEY_EVENT);
     }
-}
-}
+} // namespace popup
+} // namespace heroespath

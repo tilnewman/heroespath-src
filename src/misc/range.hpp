@@ -67,7 +67,7 @@ namespace misc
         T a_;
         T b_;
     };
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_FROMTO_HPP_INCLUDED

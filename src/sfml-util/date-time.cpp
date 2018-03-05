@@ -126,5 +126,5 @@ namespace sfml_util
         ss << date.ToString() << " " << time.ToString();
         return ss.str();
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

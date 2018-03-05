@@ -135,5 +135,5 @@ namespace song
     {
         return boost::algorithm::to_lower_copy(ToString(E) + ".png");
     }
-}
-}
+} // namespace song
+} // namespace heroespath

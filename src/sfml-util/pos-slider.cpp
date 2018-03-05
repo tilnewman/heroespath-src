@@ -118,6 +118,6 @@ namespace sfml_util
             auto const POS_TOP{ fromPosV_.y + ((toPosV_.y - fromPosV_.y) * PROGRESS_RATIO) };
             return sf::Vector2f(POS_LEFT, POS_TOP);
         }
-    }
-}
-}
+    } // namespace sliders
+} // namespace sfml_util
+} // namespace heroespath

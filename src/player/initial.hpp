@@ -57,7 +57,7 @@ namespace player
         static void SetStartingMana(CharacterPtrC_t);
         static item::material::Enum HardOrSoftLeatherRand();
     };
-}
-}
+} // namespace player
+} // namespace heroespath
 
 #endif // HEROESPATH_PLAYER_INITIAL_HPP_INCLUDED

@@ -158,7 +158,7 @@ namespace creature
 
     using EnchantmentPtr_t = Enchantment *;
     using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_ENCHANTMENT_HPP_INCLUDED

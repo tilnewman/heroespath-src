@@ -62,5 +62,5 @@ namespace sfml_util
             }
         };
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

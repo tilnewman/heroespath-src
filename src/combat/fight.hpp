@@ -39,23 +39,23 @@ namespace spell
 {
     class Spell;
     using SpellPtr_t = Spell *;
-}
+} // namespace spell
 namespace song
 {
     class Song;
     using SongPtr_t = Song *;
-}
+} // namespace song
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 namespace creature
 {
     class Creature;
     using CreaturePtrC_t = Creature * const;
     using CreaturePtr_t = Creature *;
-}
+} // namespace creature
 namespace combat
 {
 
@@ -163,7 +163,7 @@ namespace combat
             const creature::CreaturePtrC_t CREATURE_PTR,
             const HitInfoVec_t & HIT_INFO_VEC);
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_FIGHT_HPP_INCLUDED

@@ -4406,5 +4406,5 @@ namespace stage
     {
         fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayStagePtr_);
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

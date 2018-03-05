@@ -45,8 +45,8 @@ namespace sfml_util
         };
 
         const std::string ToString(const Size::Enum);
-    }
-}
-}
+    } // namespace Size
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SIZE_ENUM_HPP_INCLUDED

@@ -225,6 +225,6 @@ namespace item
             else
                 return Count;
         }
-    }
-}
-}
+    } // namespace armor
+} // namespace item
+} // namespace heroespath

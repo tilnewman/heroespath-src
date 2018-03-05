@@ -130,5 +130,5 @@ namespace creature
             "CreatureNameInfoLengthDeterminer", TEXT_INFO, sf::FloatRect());
         return textRegion.GetEntityRegion().width;
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

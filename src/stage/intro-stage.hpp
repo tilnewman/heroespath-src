@@ -58,7 +58,7 @@ namespace stage
         sf::Sprite titleSprite_;
         std::size_t initialDrawHoldCounter_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_INTROSTAGE_HPP_INCLUDED

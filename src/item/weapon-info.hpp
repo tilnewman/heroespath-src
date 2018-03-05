@@ -198,8 +198,8 @@ namespace item
 
         using WeaponInfoVec_t = std::vector<WeaponInfo>;
         using WeaponInfoVecVec_t = std::vector<WeaponInfoVec_t>;
-    }
-}
-}
+    } // namespace weapon
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_WEAPONFINFO_HPP_INCLUDED

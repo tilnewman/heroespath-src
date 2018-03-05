@@ -42,7 +42,7 @@ namespace creature
     class Creature;
     using CreaturePtr_t = Creature *;
     using CreatureCPtrC_t = const Creature * const;
-}
+} // namespace creature
 
 namespace player
 {
@@ -123,7 +123,7 @@ namespace player
     };
 
     using PartyUPtr_t = std::unique_ptr<Party>;
-}
-}
+} // namespace player
+} // namespace heroespath
 
 #endif // HEROESPATH_PLAYER_PARTY_HPP_INCLUDED

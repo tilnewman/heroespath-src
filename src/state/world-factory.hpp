@@ -45,7 +45,7 @@ namespace state
         static WorldUPtr_t MakeForNewGame();
         static void SetupLevelForNewGame(Level &);
     };
-}
-}
+} // namespace state
+} // namespace heroespath
 
 #endif // HEROESPATH_STATE_WORLD_FACTORY_HPP_INCLUDED

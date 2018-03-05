@@ -64,7 +64,7 @@ namespace state
             ar & levels_;
         }
     };
-}
-}
+} // namespace state
+} // namespace heroespath
 
 #endif // HEROESPATH_STATE_MAPS_HPP_INCLUDED

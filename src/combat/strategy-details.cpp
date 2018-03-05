@@ -670,6 +670,6 @@ namespace combat
                 return -1.0f;
             }
         }
-    }
-}
-}
+    } // namespace strategy
+} // namespace combat
+} // namespace heroespath

@@ -183,5 +183,5 @@ namespace spell
     {
         return boost::algorithm::to_lower_copy(ToString(E) + ".png");
     }
-}
-}
+} // namespace spell
+} // namespace heroespath

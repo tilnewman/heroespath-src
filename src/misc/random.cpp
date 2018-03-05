@@ -56,6 +56,6 @@ namespace misc
             std::uniform_int_distribution<int> uni_int_dist(THE_MIN, THE_MAX);
             return uni_int_dist(MersenneTwister::engine);
         }
-    }
-}
-}
+    } // namespace random
+} // namespace misc
+} // namespace heroespath

@@ -139,8 +139,8 @@ namespace item
                        R.helm,
                        R.shield);
         }
-    }
-}
-}
+    } // namespace armor
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ARMORINFO_HPP_INCLUDED

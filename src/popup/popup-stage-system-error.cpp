@@ -83,5 +83,5 @@ namespace popup
         target.draw(bgSprite_, STATES);
         Stage::Draw(target, STATES);
     }
-}
-}
+} // namespace popup
+} // namespace heroespath

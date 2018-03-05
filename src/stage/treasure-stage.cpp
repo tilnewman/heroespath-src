@@ -1104,5 +1104,5 @@ namespace stage
 
         game::LoopManager::Instance()->TransitionTo_Adventure();
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

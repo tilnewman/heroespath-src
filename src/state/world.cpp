@@ -38,5 +38,5 @@ namespace state
         : maps_()
         , encounterCount_(0)
     {}
-}
-}
+} // namespace state
+} // namespace heroespath

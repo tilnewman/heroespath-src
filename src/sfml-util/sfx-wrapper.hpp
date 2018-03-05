@@ -119,7 +119,7 @@ namespace sfml_util
     }
 
     using SfxWrapperVec_t = std::vector<SfxWrapper>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SFXWRAPPER_HPP_INCLUDED

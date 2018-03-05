@@ -119,8 +119,8 @@ namespace stringhelp
     // An empty separator string will result in the entire unmodified input string being appended to
     // outContainer. Separator chars are removed, and not added to the outContainer in any way. Trim
     // chars will depend on boost's locale, but typically include:
-    // space,tab,carr-ret,newline,v-tab,form-feed If trim reduces a string to length of zero, then it
-    // will be excluded from the output if WILL_SKIP_EMPTY is true.
+    // space,tab,carr-ret,newline,v-tab,form-feed If trim reduces a string to length of zero, then
+    // it will be excluded from the output if WILL_SKIP_EMPTY is true.
     template <typename T>
     std::size_t SplitByChar(
         const std::string & INPUT_STR,

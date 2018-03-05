@@ -249,5 +249,5 @@ namespace stage
             target.draw(*textRegionUPtr_);
         }
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

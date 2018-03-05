@@ -51,5 +51,5 @@ namespace state
             level.IsDoorLocked(map::Level::Thornberry_GuardPostEast, true);
         }
     }
-}
-}
+} // namespace state
+} // namespace heroespath

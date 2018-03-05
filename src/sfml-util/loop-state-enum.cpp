@@ -194,5 +194,5 @@ namespace sfml_util
             throw std::runtime_error(ss.str());
         }
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

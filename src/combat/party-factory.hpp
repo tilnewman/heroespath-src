@@ -50,7 +50,7 @@ namespace non_player
 
     class Character;
     using CharacterPtr_t = Character *;
-}
+} // namespace non_player
 namespace combat
 {
 
@@ -88,7 +88,7 @@ namespace combat
     private:
         static std::unique_ptr<PartyFactory> instanceUPtr_;
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_PARTYFACTORY_HPP_INCLUDED

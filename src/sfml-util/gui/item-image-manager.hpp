@@ -46,7 +46,7 @@ namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 
 namespace sfml_util
 {
@@ -114,8 +114,8 @@ namespace sfml_util
             static std::string imagesDirectoryPath_;
             static const std::string FILE_EXT_STR_;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_ITEMIMAGEMANAGER_HPP_INCLUDED

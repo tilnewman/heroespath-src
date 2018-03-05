@@ -203,6 +203,6 @@ namespace sfml_util
             target.draw(botRightSprite_, states);
             target.draw(&quadVerts_[0], quadVerts_.size(), sf::Quads, states);
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

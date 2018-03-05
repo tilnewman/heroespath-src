@@ -605,5 +605,5 @@ namespace popup
             }
         }
     }
-}
-}
+} // namespace popup
+} // namespace heroespath

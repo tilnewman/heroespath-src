@@ -61,7 +61,7 @@ namespace combat
 
         inline static bool IsMove(const Enum E) { return ((E == Advance) || (E == Retreat)); }
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_TURNSTATE_ENUM_HPP_INCLUDED

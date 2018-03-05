@@ -89,5 +89,5 @@ namespace sfml_util
                    R.dirName_,
                    R.duration_);
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

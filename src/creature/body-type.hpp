@@ -162,7 +162,7 @@ namespace creature
     bool operator==(const BodyType & L, const BodyType & R);
 
     inline bool operator!=(const BodyType & L, const BodyType & R) { return !(L == R); }
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_BODYTYPE_INCLUDED

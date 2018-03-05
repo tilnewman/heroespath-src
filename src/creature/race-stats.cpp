@@ -58,5 +58,5 @@ namespace creature
 
         return raceStatSetMap_[ENUM];
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

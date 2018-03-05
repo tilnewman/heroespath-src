@@ -47,13 +47,13 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-}
+} // namespace creature
 
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 
 namespace song
 {
@@ -219,7 +219,7 @@ namespace song
             creature::CondEnumVec_t & condsRemovedVec,
             combat::ContentAndNamePos & actionPhraseCNP) const;
     };
-}
-}
+} // namespace song
+} // namespace heroespath
 
 #endif // HEROESPATH_SONG_SONGS_HPP_INCLUDED

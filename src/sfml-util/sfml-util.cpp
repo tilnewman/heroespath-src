@@ -846,6 +846,6 @@ namespace sfml_util
 
             return ss.str();
         }
-    }
-}
-}
+    } // namespace color
+} // namespace sfml_util
+} // namespace heroespath

@@ -339,5 +339,5 @@ namespace avatar
         auto const SCALE{ Avatar::Scale(Avatar::Name(whichAvatar_)) };
         sprite_.setScale(SCALE, SCALE);
     }
-}
-}
+} // namespace avatar
+} // namespace heroespath

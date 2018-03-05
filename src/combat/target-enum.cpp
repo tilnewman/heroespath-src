@@ -165,5 +165,5 @@ namespace combat
 
         return PREAMBLE + ss.str();
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

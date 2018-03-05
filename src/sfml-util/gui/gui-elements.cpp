@@ -166,6 +166,6 @@ namespace sfml_util
 
             instanceUPtr_.reset();
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

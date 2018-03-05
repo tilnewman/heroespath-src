@@ -52,7 +52,7 @@ namespace interact
         static const std::string BUTTON_NAME_UNLOCK_;
         map::Transition transition_;
     };
-}
-}
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_LOCKED_DOOR_HPP_INCLUDED

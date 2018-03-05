@@ -92,8 +92,8 @@ namespace item
             static std::unique_ptr<ArmorDetailLoader> instanceUPtr_;
             ArmorDetailMap_t armorDetailsMap_;
         };
-    }
-}
-}
+    } // namespace armor
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ARMORDETAILS_HPP_INCLUDED

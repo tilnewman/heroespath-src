@@ -61,7 +61,7 @@ namespace game
     private:
         static std::unique_ptr<GameDataFile> instanceUPtr_;
     };
-}
-}
+} // namespace game
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_GAMEDATAFILE_HPP_INCLUDED

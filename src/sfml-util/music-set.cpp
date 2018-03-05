@@ -165,5 +165,5 @@ namespace sfml_util
                    R.fadeInMult_,
                    R.volume_));
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

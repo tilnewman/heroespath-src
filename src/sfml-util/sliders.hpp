@@ -461,8 +461,8 @@ namespace sfml_util
             bool isIncreasing_;
             SliderOnce<Value_t, Speed_t> slider_;
         };
-    }
-}
-}
+    } // namespace sliders
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SLIDERS_HPP_INCLUDED

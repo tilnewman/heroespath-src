@@ -212,8 +212,8 @@ namespace sfml_util
         bool operator==(const GuiEntity & L, const GuiEntity & R);
 
         inline bool operator!=(const GuiEntity & L, const GuiEntity & R) { return !(L == R); }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUIENTITY_HPP_INCLUDED

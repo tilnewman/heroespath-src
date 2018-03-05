@@ -48,7 +48,7 @@ namespace sfml_util
         static const std::string ToString(const Direction::Enum);
         static sfml_util::Direction::Enum Opposite(const Direction::Enum);
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_DIRECTION_ENUM_HPP_INCLUDED

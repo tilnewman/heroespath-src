@@ -233,7 +233,7 @@ namespace creature
     };
 
     using TitleEnumVec_t = std::vector<Titles::Enum>;
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_TITLEENUM_HPP_INCLUDED

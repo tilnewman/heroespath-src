@@ -1210,5 +1210,5 @@ namespace item
         category_ = static_cast<category::Enum>(category_ | category::Equippable);
         score_ += Score_t(SCORE_BONUS);
     }
-}
-}
+} // namespace item
+} // namespace heroespath

@@ -96,7 +96,7 @@ namespace combat
     };
 
     using TrapVec_t = std::vector<Trap>;
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_TRAP_HPP_INCLUDED

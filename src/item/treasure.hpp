@@ -43,7 +43,7 @@ namespace non_player
     class Character;
     using CharacterPtr_t = Character *;
     using CharacterPVec_t = std::vector<CharacterPtr_t>;
-}
+} // namespace non_player
 namespace item
 {
 
@@ -87,7 +87,7 @@ namespace item
 
         static const item::ItemProfile ItemToSetItemProfile(const item::ItemPtr_t);
     };
-}
-}
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_TREASURE_HPP_INCLUDED

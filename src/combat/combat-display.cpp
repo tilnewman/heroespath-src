@@ -1695,5 +1695,5 @@ namespace combat
                 findMatchingRoleOfCombatNode),
             std::end(sourceCNodePVec));
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

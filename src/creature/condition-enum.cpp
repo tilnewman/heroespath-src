@@ -221,6 +221,6 @@ namespace creature
                 }
             }
         }
-    }
-}
-}
+    } // namespace condition
+} // namespace creature
+} // namespace heroespath

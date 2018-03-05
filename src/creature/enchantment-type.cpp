@@ -90,5 +90,5 @@ namespace creature
 
         return ss.str();
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

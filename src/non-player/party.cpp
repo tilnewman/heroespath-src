@@ -152,5 +152,5 @@ namespace non_player
 
         return ss.str();
     }
-}
-}
+} // namespace non_player
+} // namespace heroespath

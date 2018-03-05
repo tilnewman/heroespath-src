@@ -217,7 +217,7 @@ namespace log
         mLogBase.Log(ss.str());
         return mLogBase;
     }
-}
-}
+} // namespace log
+} // namespace heroespath
 
 #endif // HEROESPATH_LOG_LOGBASE_HPP_INCLUDED

@@ -56,7 +56,7 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t titleTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t descTextRegionUPtr_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGECOMBATOVER_HPP_INCLUDED

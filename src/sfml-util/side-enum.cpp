@@ -72,5 +72,5 @@ namespace sfml_util
         const unsigned MAX(None | Top | Bottom | Left | Right);
         return (static_cast<unsigned>(E) <= MAX);
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

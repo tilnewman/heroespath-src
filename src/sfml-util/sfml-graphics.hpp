@@ -69,7 +69,7 @@ namespace sfml_util
     //
     using WinPtr_t = sf::RenderWindow *;
     using WinUPtr_t = std::unique_ptr<sf::RenderWindow>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SFMLGRAPHICS_HPP_INCLUDED

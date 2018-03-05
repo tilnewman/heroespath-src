@@ -119,5 +119,5 @@ namespace sfml_util
     }
 
     float BottomSymbol::Bottom() const { return sfml_util::Display::Instance()->GetWinHeight(); }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

@@ -40,7 +40,7 @@ namespace creature
     class Creature;
     using CreaturePtr_t = Creature *;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace combat
 {
 
@@ -81,7 +81,7 @@ namespace combat
         creature::CreaturePVec_t creaturesFlyingPVec_;
         CreatureBlockingPosMap_t creatureBlockingPosMap_;
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_COMBAT_COMBATRESTOREINFO_HPP_INCLUDED

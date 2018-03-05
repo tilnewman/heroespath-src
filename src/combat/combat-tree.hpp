@@ -49,7 +49,7 @@ namespace creature
 {
     class Creature;
     using CreatureCPtrC_t = const Creature * const;
-}
+} // namespace creature
 
 namespace combat
 {
@@ -309,7 +309,7 @@ namespace combat
     {
         return !(L == R);
     }
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_COMBAT_COMBATTREE_HPP_INCLUDED

@@ -53,5 +53,5 @@ namespace sfml_util
         game::LoopManager::Instance()->CommandLoopAccess(this).FreePopupStage();
         return true;
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

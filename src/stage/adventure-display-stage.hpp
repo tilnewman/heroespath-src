@@ -46,7 +46,7 @@ namespace map
 {
     class Map;
     using MapUPtr_t = std::unique_ptr<Map>;
-}
+} // namespace map
 namespace stage
 {
 
@@ -95,7 +95,7 @@ namespace stage
         bool wasPressedUp_;
         bool wasPressedDown_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_ADVENTUREDISPLAYSTAGE_HPP_INCLUDED

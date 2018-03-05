@@ -73,7 +73,7 @@ namespace sfml_util
 
         const std::string ToString(const Enum);
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SFXSETENUM_HPP_INCLUDED

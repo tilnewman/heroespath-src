@@ -121,5 +121,5 @@ namespace game
 
         return MEDIA_BASE_PATH_STR;
     }
-}
-}
+} // namespace game
+} // namespace heroespath

@@ -44,7 +44,7 @@ namespace sfml_util
     {
         class SliderBar;
         using SliderBarPtr_t = SliderBar *;
-    }
+    } // namespace gui
 
     namespace text_render
     {
@@ -253,8 +253,8 @@ namespace sfml_util
             char & termChar);
 
         void GroupTextSnippets(TextSnippetVec_t & resultVec, const TextSnippetVec_t & inputVec);
-    }
-}
-}
+    } // namespace text_render
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_TEXTRENDERING_HPP_INCLUDED

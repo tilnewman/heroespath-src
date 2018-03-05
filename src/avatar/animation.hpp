@@ -62,7 +62,7 @@ namespace avatar
         float frame_duration;
         bool will_loop;
     };
-}
-}
+} // namespace avatar
+} // namespace heroespath
 
 #endif // HEROESPATH_AVATAR_ANIMATION_HPP_INCLUDED

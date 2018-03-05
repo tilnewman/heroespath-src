@@ -123,7 +123,7 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t musicInfoDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t revLabelTextRegionUPtr_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_SETTINGSSTAGE_HPP_INCLUDED

@@ -126,7 +126,7 @@ namespace creature
             const stats::Traits::Enum TRAIT_ENUM,
             const role::Enum ROLE_ENUM);
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_STATS_HPP_INCLUDED

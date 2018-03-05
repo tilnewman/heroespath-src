@@ -722,5 +722,5 @@ namespace item
             itemPtr->SetName(itemPtr->Name() + " " + element_type::Name(PROFILE.ElementType()));
         }
     }
-}
-}
+} // namespace item
+} // namespace heroespath

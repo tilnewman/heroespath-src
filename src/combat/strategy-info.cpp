@@ -133,6 +133,6 @@ namespace combat
                        R.flyPounceFreqType_,
                        R.standPounceFreqType_);
         }
-    }
-}
-}
+    } // namespace strategy
+} // namespace combat
+} // namespace heroespath

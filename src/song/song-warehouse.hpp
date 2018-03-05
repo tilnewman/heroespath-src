@@ -55,7 +55,7 @@ namespace song
     private:
         static SongUVec_t songsUVec_;
     };
-}
-}
+} // namespace song
+} // namespace heroespath
 
 #endif // HEROESPATH_SONG_SONGWAREHOUSE_HPP_INCLUDED

@@ -783,6 +783,6 @@ namespace item
 
             return itemPtr;
         }
-    }
-}
-}
+    } // namespace weapon
+} // namespace item
+} // namespace heroespath

@@ -50,7 +50,7 @@ namespace creature
 
     class Title;
     using TitlePtr_t = Title *;
-}
+} // namespace creature
 
 namespace popup
 {
@@ -212,7 +212,7 @@ namespace popup
         bool willIncludeItems_;
         float keepAliveSeconds_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPINFO_HPP_INCLUDED

@@ -120,7 +120,7 @@ namespace non_player
     inline bool operator!=(const Character & L, const Character & R) { return !(L == R); }
 
     bool operator<(const Character & L, const Character & R);
-}
-}
+} // namespace non_player
+} // namespace heroespath
 
 #endif // HEROESPATH_NONPLAYER_CHARACTER_HPP_INCLUDED

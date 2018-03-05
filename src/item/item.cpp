@@ -400,5 +400,5 @@ namespace item
             return misc::Vector::OrderlessCompareEqual(L.enchantmentsPVec_, R.enchantmentsPVec_);
         }
     }
-}
-}
+} // namespace item
+} // namespace heroespath

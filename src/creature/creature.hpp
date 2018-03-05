@@ -66,20 +66,20 @@ namespace song
     class Song;
     using SongPtr_t = Song *;
     using SongPVec_t = std::vector<SongPtr_t>;
-}
+} // namespace song
 namespace spell
 {
     class Spell;
     using SpellPtr_t = Spell *;
     using SpellPVec_t = std::vector<SpellPtr_t>;
-}
+} // namespace spell
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
     using ItemPVec_t = std::vector<ItemPtr_t>;
     using ItemPVecVec_t = std::vector<ItemPVec_t>;
-}
+} // namespace item
 
 namespace creature
 {
@@ -569,7 +569,7 @@ namespace creature
     using CreatureCPtrC_t = const Creature * const;
     using CreatureUPtr_t = std::unique_ptr<Creature>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_HPP_INCLUDED

@@ -130,5 +130,5 @@ namespace interact
             interactStagePtr->InteractionManager().RemoveCurrent();
         }
     }
-}
-}
+} // namespace interact
+} // namespace heroespath

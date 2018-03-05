@@ -168,7 +168,7 @@ namespace sfml_util
     {
         return std::tie(L.date, L.time) < std::tie(R.date, R.time);
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_DATETIME_HPP_INCLUDED

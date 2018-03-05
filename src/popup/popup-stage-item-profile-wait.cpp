@@ -59,5 +59,5 @@ namespace popup
 
         Stage::Draw(target, STATES);
     }
-}
-}
+} // namespace popup
+} // namespace heroespath

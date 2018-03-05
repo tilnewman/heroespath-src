@@ -56,7 +56,7 @@ namespace combat
     };
 
     using EffectTypeVec_t = std::vector<EffectType::Enum>;
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_EFFECTTYPEENUM_HPP_INCLUDED

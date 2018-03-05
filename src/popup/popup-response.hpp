@@ -58,7 +58,7 @@ namespace popup
         ResponseTypes::Enum response_;
         std::size_t selection_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPRESPONSE_HPP_INCLUDED

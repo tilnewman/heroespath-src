@@ -45,7 +45,7 @@ namespace creature
 {
     class Creature;
     using CreatureCPtrC_t = const Creature * const;
-}
+} // namespace creature
 namespace item
 {
     class Item;
@@ -124,8 +124,8 @@ namespace item
         private:
             static std::unique_ptr<WeaponFactory> instanceUPtr_;
         };
-    }
-}
-}
+    } // namespace weapon
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_WEAPONFACTORY_HPP_INCLUDED

@@ -612,5 +612,5 @@ namespace stats
         // TODO
         return Name(E);
     }
-}
-}
+} // namespace stats
+} // namespace heroespath

@@ -536,7 +536,7 @@ namespace avatar
         static const std::string ImagePath(const Enum);
         static NameEnum Name(const Enum);
     };
-}
-}
+} // namespace avatar
+} // namespace heroespath
 
 #endif // HEROESPATH_AVATAR_AVATARENUM_HPP_INCLUDED

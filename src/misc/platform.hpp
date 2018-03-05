@@ -115,7 +115,7 @@ namespace misc
         static std::unique_ptr<Platform> instanceUPtr_;
         platform_type::Enum platform_;
     };
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_PLATFORM_HPP_INCLUDED

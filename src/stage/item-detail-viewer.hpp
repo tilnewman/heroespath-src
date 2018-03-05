@@ -37,7 +37,7 @@ namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 namespace stage
 {
 
@@ -89,7 +89,7 @@ namespace stage
         bool isBeforeAnyChange_;
         bool isShowing_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_ITEMDETAILVIEWER_HPP_INCLUDED

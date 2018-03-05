@@ -182,7 +182,7 @@ namespace sfml_util
         static std::unique_ptr<FontManager> instanceUPtr_;
         static FontUVec_t fontUVec_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_FONTMANAGER_HPP_INCLUDED

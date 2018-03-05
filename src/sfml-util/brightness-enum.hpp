@@ -47,7 +47,7 @@ namespace sfml_util
         static const std::string ToString(const Brightness::Enum E);
         static bool IsValid(const Brightness::Enum E);
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_BRIGHTNESS_ENUM_HPP_INCLUDED

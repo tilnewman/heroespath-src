@@ -2003,6 +2003,6 @@ namespace non_player
                     DETAILS.weight);
             }
         }
-    }
-}
-}
+    } // namespace ownership
+} // namespace non_player
+} // namespace heroespath

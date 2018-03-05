@@ -42,7 +42,7 @@ namespace spell
 {
     class Spell;
     using SpellPtr_t = Spell *;
-}
+} // namespace spell
 namespace creature
 {
     // forward declarations
@@ -52,7 +52,7 @@ namespace creature
     using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace combat
 {
 
@@ -153,7 +153,7 @@ namespace combat
         static const EffectTypeVec_t HARM_EFFECTTYPES_VEC_;
         static const EffectTypeVec_t HELP_EFFECTTYPES_VEC_;
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_TURNDECIDER_HPP_INCLUDED

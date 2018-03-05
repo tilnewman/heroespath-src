@@ -111,8 +111,8 @@ namespace sfml_util
             // use guiImage_.upSprite_ as first state sprite, and guiImage_.downSprite for the
             // second state.
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_TWOSTATEENTITY_HPP_INCLUDED

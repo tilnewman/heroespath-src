@@ -63,7 +63,7 @@ namespace sfml_util
         static const std::string ToString(const LoopState::Enum E);
         static LoopState::Enum FromString(const std::string & ENUM_STR);
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_LOOPSTATE_HPP_INCLUDED

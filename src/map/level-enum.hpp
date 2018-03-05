@@ -68,7 +68,7 @@ namespace map
         static const std::string Path(const Level::Enum);
         static LevelType::Enum Type(const Level::Enum);
     };
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_LEVELENUM_HPP_INCLUDED

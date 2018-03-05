@@ -50,7 +50,7 @@ namespace creature
     private:
         static RoleStatSetMap_t roleStatSetMap_;
     };
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_ROLESTATS_HPP_INCLUDED

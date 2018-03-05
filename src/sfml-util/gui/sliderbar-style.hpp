@@ -66,8 +66,8 @@ namespace sfml_util
         }
 
         inline bool operator!=(const SliderStyle & L, const SliderStyle & R) { return !(L == R); }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SLIDERBARSYLE_HPP_INCLUDED

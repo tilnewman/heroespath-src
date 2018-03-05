@@ -56,8 +56,8 @@ namespace sfml_util
             static const std::string ToString(const Enum);
             static const std::string ImageFilename(const Enum);
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_COMBATIMAGEENUM_HPP_INCLUDED

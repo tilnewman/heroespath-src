@@ -136,5 +136,5 @@ namespace combat
             }
         }
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

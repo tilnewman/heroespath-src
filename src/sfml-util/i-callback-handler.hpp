@@ -87,8 +87,8 @@ namespace sfml_util
             virtual const std::string HandlerName() const = 0;
             virtual Return_t HandleCallback(const Package_t &) = 0;
         };
-    }
-}
-}
+    } // namespace callback
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_ICALLBACKHANDLER_HPP_INCLUDED

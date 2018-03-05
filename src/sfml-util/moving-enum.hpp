@@ -48,7 +48,7 @@ namespace sfml_util
 
         inline static bool IsMoving(const Moving::Enum E) { return ((E == Toward) || (E == Away)); }
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_MOVING_ENUM_HPP_INCLUDED

@@ -135,6 +135,6 @@ namespace sfml_util
             states.blendMode = sf::BlendAdd;
             target.draw(*textRegionUPtr_, states);
         }
-    }
-}
-}
+    } // namespace animation
+} // namespace sfml_util
+} // namespace heroespath

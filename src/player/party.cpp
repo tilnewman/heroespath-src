@@ -221,5 +221,5 @@ namespace player
 
         return count;
     }
-}
-}
+} // namespace player
+} // namespace heroespath

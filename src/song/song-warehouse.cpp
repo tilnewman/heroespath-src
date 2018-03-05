@@ -137,5 +137,5 @@ namespace song
 
         return songsUVec_.at(static_cast<std::size_t>(E)).get();
     }
-}
-}
+} // namespace song
+} // namespace heroespath

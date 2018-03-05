@@ -417,5 +417,5 @@ namespace item
 
         return misc::Vector::OrderlessCompareEqual(L.equippedItemsPVec_, R.equippedItemsPVec_);
     }
-}
-}
+} // namespace item
+} // namespace heroespath

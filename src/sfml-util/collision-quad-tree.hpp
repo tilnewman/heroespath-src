@@ -67,7 +67,7 @@ namespace sfml_util
         static const float MIN_QUAD_SIZE_;
         Quad headQuad_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_COLLISIONQUADTREE_HPP_INCLUDED

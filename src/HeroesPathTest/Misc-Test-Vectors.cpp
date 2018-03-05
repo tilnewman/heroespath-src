@@ -345,24 +345,6 @@ BOOST_AUTO_TEST_CASE(Vector_Exclude_Multiple)
                                              << ", expected=" << ts::vectorToString(EXPECTED));
 }
 
-BOOST_AUTO_TEST_CASE(Vector_ShuffleVec_Empty)
-{
-    ts::IntVec_t a;
-    auto const EMPTY_RESULT{ misc::Vector::ShuffleVec(a) };
-
-    BOOST_CHECK_MESSAGE(
-        (EMPTY_RESULT == false), "shuffle empty, result=" << std::boolalpha << EMPTY_RESULT);
-}
-
-BOOST_AUTO_TEST_CASE(Vector_ShuffleVec_Single)
-{
-    ts::IntVec_t a = { 1 };
-    auto const SINGLE_RESULT{ misc::Vector::ShuffleVec(a) };
-
-    BOOST_CHECK_MESSAGE(
-        (SINGLE_RESULT == false), "shuffle single, result=" << std::boolalpha << SINGLE_RESULT);
-}
-
 BOOST_AUTO_TEST_CASE(Vector_SelectRandom_Single)
 {
     ts::Constants constants;

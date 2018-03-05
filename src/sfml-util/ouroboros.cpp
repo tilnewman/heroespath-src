@@ -106,5 +106,5 @@ namespace sfml_util
 
         return true;
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

@@ -57,7 +57,7 @@ namespace map
     }
 
     inline bool operator!=(const TileOffsets & L, const TileOffsets & R) { return !(L == R); }
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_TILEOFFSETS_HPP_INCLUDED

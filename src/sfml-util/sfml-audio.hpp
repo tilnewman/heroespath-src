@@ -52,7 +52,7 @@ namespace sfml_util
     using MusicUPtr_t = std::unique_ptr<sf::Music>;
     using SoundUPtr_t = std::unique_ptr<sf::Sound>;
     using SoundBufferUPtr_t = std::unique_ptr<sf::SoundBuffer>;
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SFMLAUDIO_HPP_INCLUDED

@@ -165,7 +165,7 @@ namespace sfml_util
         SfxDelayVec_t sfxToPlayPairsVec_;
         SfxWrapperVec_t sfxWrapperVec_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_SOUNDMANAGER_HPP_INCLUDED

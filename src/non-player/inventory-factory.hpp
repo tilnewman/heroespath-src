@@ -43,7 +43,7 @@ namespace item
     class Item;
     using ItemPtr_t = Item *;
     using ItemPVec_t = std::vector<ItemPtr_t>;
-}
+} // namespace item
 namespace non_player
 {
     class Character;
@@ -175,8 +175,8 @@ namespace non_player
         private:
             static std::unique_ptr<InventoryFactory> instanceUPtr_;
         };
-    }
-}
-}
+    } // namespace ownership
+} // namespace non_player
+} // namespace heroespath
 
 #endif // HEROESPATH_NONPLAYER_INVENTORYFACTORY_HPP_INCLUDED

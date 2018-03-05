@@ -71,8 +71,8 @@ namespace sfml_util
         };
 
         using PictureFrameUPtr_t = std::unique_ptr<PictureFrame>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_PICTUREFRAME_HPP_INCLUDED

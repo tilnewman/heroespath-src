@@ -85,8 +85,8 @@ namespace sfml_util
             virtual void OnClick(const sf::Vector2f &) = 0;
             virtual void OnDoubleClick(const sf::Vector2f &) = 0;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_ICLICKABLE_HPP_INCLUDED

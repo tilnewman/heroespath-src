@@ -68,7 +68,7 @@ namespace sfml_util
     bool operator==(const Resolution & R, const sf::VideoMode & V);
 
     inline bool operator!=(const Resolution & R, const sf::VideoMode & V) { return !(R == V); }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_RESOLUTION_HPP_INCLUDED

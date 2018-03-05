@@ -69,8 +69,8 @@ namespace sfml_util
             // This is an observer pointer that does not control the lifetime of the object.
             IGuiEntityPtr_t guiEntityPtr_;
         };
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_GUI_ENTITY_SLIDER_HPP_INCLUDED

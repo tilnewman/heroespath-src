@@ -62,5 +62,5 @@ namespace combat
 
         return hasTurnBeenConsumed;
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

@@ -409,5 +409,5 @@ namespace item
                 item::named_type::NotNamed);
         }
     }
-}
-}
+} // namespace item
+} // namespace heroespath

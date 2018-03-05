@@ -259,6 +259,6 @@ namespace item
                 }
             }
         }
-    }
-}
-}
+    } // namespace weapon
+} // namespace item
+} // namespace heroespath

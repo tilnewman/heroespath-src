@@ -264,6 +264,6 @@ namespace interact
                 }
             }
         };
-    }
-}
-}
+    } // namespace talk
+} // namespace interact
+} // namespace heroespath

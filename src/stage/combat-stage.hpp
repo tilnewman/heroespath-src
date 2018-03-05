@@ -68,12 +68,12 @@ namespace sfml_util
         {
             class Box;
             using BoxUPtr_t = std::unique_ptr<Box>;
-        }
+        } // namespace box
 
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 
 namespace creature
 {
@@ -87,7 +87,7 @@ namespace creature
 
     class Title;
     using TitlePtr_t = Title *;
-}
+} // namespace creature
 
 namespace combat
 {
@@ -103,7 +103,7 @@ namespace combat
 
     class CombatAnimation;
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;
-}
+} // namespace combat
 
 namespace stage
 {
@@ -523,7 +523,7 @@ namespace stage
         // members that support achievements and titles
         creature::TitleTransitionVec_t creatureTitlesVec_;
     };
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBATSTAGE_HPP_INCLUDED

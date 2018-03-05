@@ -103,7 +103,7 @@ namespace interact
                     return s;
                 }
             }
-        }
-    }
-}
-}
+        } // namespace compose
+    } // namespace talk
+} // namespace interact
+} // namespace heroespath

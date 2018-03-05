@@ -49,7 +49,7 @@ namespace player
 
         static PartyUPtr_t MakeFakeForTesting();
     };
-}
-}
+} // namespace player
+} // namespace heroespath
 
 #endif // HEROESPATH_PLAYER_PARTY_FACTORY_HPP_INCLUDED

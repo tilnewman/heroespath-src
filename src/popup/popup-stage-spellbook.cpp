@@ -707,5 +707,5 @@ namespace popup
             return false;
         }
     }
-}
-}
+} // namespace popup
+} // namespace heroespath

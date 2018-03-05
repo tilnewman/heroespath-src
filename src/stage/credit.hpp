@@ -42,8 +42,8 @@ namespace sfml_util
     {
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 
 namespace stage
 {
@@ -125,7 +125,7 @@ namespace stage
 
     using CreditSPtr_t = std::shared_ptr<Credit>;
     using CreditSVec_t = std::vector<CreditSPtr_t>;
-}
-}
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_CREDIT_HPP_INCLUDED

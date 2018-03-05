@@ -71,5 +71,5 @@ namespace log
             "log::Logger::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
-}
-}
+} // namespace log
+} // namespace heroespath

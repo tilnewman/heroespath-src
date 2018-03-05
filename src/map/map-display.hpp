@@ -153,7 +153,7 @@ namespace map
     };
 
     using MapDisplayUPtr_t = std::unique_ptr<MapDisplay>;
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_MAPDISPLAY_HPP_INCLUDED

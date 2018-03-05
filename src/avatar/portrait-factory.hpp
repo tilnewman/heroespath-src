@@ -41,7 +41,7 @@ namespace avatar
     public:
         static void Make(const Avatar::Enum, sf::Texture &);
     };
-}
-}
+} // namespace avatar
+} // namespace heroespath
 
 #endif // HEROESPATH_AVATAR_PORTRAITFACTORY_HPP_INCLUDED

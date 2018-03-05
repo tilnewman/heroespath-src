@@ -219,6 +219,6 @@ namespace sfml_util
                 bgInfo_.texture.setSmooth(WILL_SMOOTH);
             }
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

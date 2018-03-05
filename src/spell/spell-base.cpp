@@ -96,5 +96,5 @@ namespace spell
     {
         return "Nothing to do.";
     }
-}
-}
+} // namespace spell
+} // namespace heroespath

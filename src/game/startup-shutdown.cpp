@@ -487,5 +487,5 @@ namespace game
         misc::Platform::Release();
         sfml_util::TextureCache::Release();
     }
-}
-}
+} // namespace game
+} // namespace heroespath

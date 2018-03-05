@@ -38,22 +38,22 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-}
+} // namespace creature
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 namespace spell
 {
     class Spell;
     using SpellPtr_t = Spell *;
-}
+} // namespace spell
 namespace song
 {
     class Song;
     using SongPtr_t = Song *;
-}
+} // namespace song
 
 namespace combat
 {
@@ -78,7 +78,7 @@ namespace combat
     private:
         void GetDeathSfx(creature::CreaturePtr_t, sfml_util::SfxEnumVec_t &) const;
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_GAME_COMBAT_COMBATSOUNDEFFECTS_HPP_INCLUDED

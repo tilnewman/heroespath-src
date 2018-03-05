@@ -330,5 +330,5 @@ namespace creature
         creaturePtr->HealthNormalAdj(healthBonus_);
         creaturePtr->HealthCurrentAdj(healthBonus_);
     }
-}
-}
+} // namespace creature
+} // namespace heroespath

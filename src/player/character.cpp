@@ -204,5 +204,5 @@ namespace player
 
         return misc::Vector::OrderlessCompareLess(L.spellsVec_, R.spellsVec_);
     }
-}
-}
+} // namespace player
+} // namespace heroespath

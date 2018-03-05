@@ -72,6 +72,6 @@ namespace sfml_util
 
             return RESULT;
         }
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath

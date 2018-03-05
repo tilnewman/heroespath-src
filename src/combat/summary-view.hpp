@@ -44,14 +44,14 @@ namespace sfml_util
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
         using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 
 namespace combat
 {
@@ -153,7 +153,7 @@ namespace combat
         sfml_util::gui::GuiEntitySlider geSlider_;
         bool preventNextTrans_;
     };
-}
-}
+} // namespace combat
+} // namespace heroespath
 
 #endif // HEROESPATH_COMBAT_SUMMARY_VIEW_HPP_INCLUDED

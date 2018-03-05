@@ -693,5 +693,5 @@ namespace game
             cmdQueue_.pop();
         }
     }
-}
-}
+} // namespace game
+} // namespace heroespath

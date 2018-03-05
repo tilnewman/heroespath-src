@@ -104,7 +104,7 @@ namespace creature
     };
 
     using RoleVec_t = std::vector<role::Enum>;
-}
-}
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_ROLEENUM_HPP_INCLUDED

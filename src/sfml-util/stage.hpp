@@ -50,8 +50,8 @@ namespace sfml_util
         {
             class Box;
             using BoxUPtr_t = std::unique_ptr<Box>;
-        }
-    }
+        } // namespace box
+    } // namespace gui
 
     // A base class for types that hold and draw a group of on screen resources.
     class Stage : public IStage
@@ -159,7 +159,7 @@ namespace sfml_util
         sf::Vector2f mouseDownPosV_;
         bool willClearCachesOnExit_;
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_STAGE_HPP_INCLUDED

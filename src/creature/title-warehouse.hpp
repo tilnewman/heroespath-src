@@ -57,8 +57,8 @@ namespace creature
         private:
             static TitleUVec_t titleUVec_;
         };
-    }
-}
-}
+    } // namespace title
+} // namespace creature
+} // namespace heroespath
 
 #endif // HEROESPATH_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED

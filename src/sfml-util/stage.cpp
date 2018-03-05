@@ -355,5 +355,5 @@ namespace sfml_util
             target.draw(hoverSfText_, STATES);
         }
     }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath

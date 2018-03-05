@@ -121,8 +121,8 @@ namespace item
         private:
             static std::unique_ptr<ArmorFactory> instanceUPtr_;
         };
-    }
-}
-}
+    } // namespace armor
+} // namespace item
+} // namespace heroespath
 
 #endif // HEROESPATH_ITEM_ARMORFACTORY_HPP_INCLUDED

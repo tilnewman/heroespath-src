@@ -170,5 +170,5 @@ namespace misc
             "Platform(s) Detected:  " << ss.str() << "  The platform_type has been set to "
                                       << GetName() << ".");
     }
-}
-}
+} // namespace misc
+} // namespace heroespath

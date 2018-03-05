@@ -54,7 +54,7 @@ namespace sfml_util
             using TextEntryBoxCallbackPackage_t = sfml_util::callback::PtrWrapper<TextEntryBox>;
             using ITextEntryBoxCallbackHandler_t
                 = sfml_util::callback::ICallbackHandler<TextEntryBoxCallbackPackage_t, bool>;
-        }
+        } // namespace callback
 
         // Encapsulates a single line of user type-able text with a blinking cursor
         class TextEntryBox : public GuiEntity
@@ -115,8 +115,8 @@ namespace sfml_util
         };
 
         using TextEntryBoxUPtr_t = std::unique_ptr<TextEntryBox>;
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_TEXTENTRYBOX_HPP_INCLUDED

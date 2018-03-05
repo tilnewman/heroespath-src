@@ -58,7 +58,7 @@ namespace sfml_util
     bool operator==(const GradientInfo & L, const GradientInfo & R);
 
     inline bool operator!=(const GradientInfo & L, const GradientInfo & R) { return !(L == R); }
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GRADIENTINFO_HPP_INCLUDED

@@ -451,9 +451,9 @@ namespace non_player
                 ClothingChances clothes;
                 ItemChancePair_t misc_items;
             };
-        }
-    }
-}
-}
+        } // namespace chance
+    } // namespace ownership
+} // namespace non_player
+} // namespace heroespath
 
 #endif // HEROESPATH_NONPLAYER_OWNERSHIPCHANCETYPES_HPP_INCLUDED

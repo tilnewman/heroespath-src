@@ -142,7 +142,7 @@ namespace popup
         sf::Texture xSymbolTexture_;
         float keepAliveTimerSec_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGEBASE_HPP_INCLUDED

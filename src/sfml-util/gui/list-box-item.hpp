@@ -41,12 +41,12 @@ namespace spell
 {
     class Spell;
     using SpellPtrC_t = Spell * const;
-}
+} // namespace spell
 namespace song
 {
     class Song;
     using SongPtrC_t = Song * const;
-}
+} // namespace song
 namespace creature
 {
     class Title;
@@ -55,22 +55,22 @@ namespace creature
     class Condition;
     using ConditionPtr_t = Condition *;
     using ConditionPtrC_t = Condition * const;
-}
+} // namespace creature
 namespace item
 {
     class Item;
     using ItemPtr_t = Item *;
-}
+} // namespace item
 namespace state
 {
     class GameState;
     using GameStatePtr_t = GameState *;
-}
+} // namespace state
 namespace player
 {
     class Character;
     using CharacterPtr_t = Character *;
-}
+} // namespace player
 
 namespace sfml_util
 {
@@ -164,8 +164,8 @@ namespace sfml_util
         inline bool operator!=(const ListBoxItem & L, const ListBoxItem & R) { return !(L == R); }
 
         bool operator<(const ListBoxItem & L, const ListBoxItem & R);
-    }
-}
-}
+    } // namespace gui
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_GUI_LISTBOXITEM_HPP_INCLUDED

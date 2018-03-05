@@ -88,7 +88,7 @@ namespace map
     };
 
     using TilesPanelForLayersVec_t = std::vector<TilesPanelForLayers>;
-}
-}
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_TILESIMAGE_HPP_INCLUDED

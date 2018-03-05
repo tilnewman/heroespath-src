@@ -113,7 +113,7 @@ namespace popup
         sfml_util::sliders::ZeroSliderOnce<float> imageSlider_;
         float imagePosTop_;
     };
-}
-}
+} // namespace popup
+} // namespace heroespath
 
 #endif // HEROESPATH_POPUP_POPUPSTAGEIMAGESELECT_HPP_INCLUDED

@@ -143,7 +143,7 @@ namespace misc
     {
         return CPM.end();
     }
-}
-}
+} // namespace misc
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_VECTORMAP_HPP_INCLUDED

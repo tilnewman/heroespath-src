@@ -1382,5 +1382,5 @@ namespace combat
                 creature::Algorithms::CondSingleOpt::DoesNotHave);
         }
     }
-}
-}
+} // namespace combat
+} // namespace heroespath

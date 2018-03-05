@@ -78,7 +78,7 @@ namespace sfml_util
         virtual ~LoopCmd_RemoveStage_Popup();
         virtual bool Execute();
     };
-}
-}
+} // namespace sfml_util
+} // namespace heroespath
 
 #endif // HEROESPATH_SFMLUTIL_LOOPCOMMANDPOPUP_INCLUDED

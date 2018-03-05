@@ -216,6 +216,6 @@ inline Column_t operator"" _column(unsigned long long column)
 using IDVec_t = std::vector<ID_t>;
 using IndexVec_t = std::vector<Index_t>;
 using CountVec_t = std::vector<Count_t>;
-}
+} // namespace heroespath
 
 #endif // HEROESPATH_MISC_TYPES_HPP_INCLUDED

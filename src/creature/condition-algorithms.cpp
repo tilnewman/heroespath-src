@@ -114,6 +114,6 @@ namespace creature
             RemoveByMinSeverity(tempVec, MIN_SEVERITY);
             return tempVec;
         }
-    }
-}
-}
+    } // namespace condition
+} // namespace creature
+} // namespace heroespath
