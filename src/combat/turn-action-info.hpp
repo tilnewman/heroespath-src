@@ -68,9 +68,6 @@ namespace combat
         TurnActionInfo(
             const song::SongPtr_t SONG_PTR, const creature::CreaturePVec_t & TARGET_PVEC);
 
-        TurnActionInfo(const TurnActionInfo &);
-        TurnActionInfo & operator=(const TurnActionInfo &);
-
         inline TurnAction::Enum Action() const { return actionType_; }
         inline spell::SpellPtr_t Spell() const { return spellPtr_; }
         inline song::SongPtr_t Song() const { return songPtr_; }

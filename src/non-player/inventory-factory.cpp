@@ -511,8 +511,7 @@ namespace non_player
                     const float RAND(misc::random::Float());
                     sfml_util::Size::Enum knifeSize(sfml_util::Size::Large);
                     //
-                    chance::SizeChanceMap_t::const_iterator CITER_SMALL(
-                        WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Small));
+                    auto CITER_SMALL{ WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Small) };
 
                     if (CITER_SMALL != WEAPON_CHANCES.knife.size_map.end())
                     {
@@ -524,8 +523,7 @@ namespace non_player
                     //
                     if (knifeSize != sfml_util::Size::Small)
                     {
-                        chance::SizeChanceMap_t::const_iterator CITER_MED(
-                            WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Medium));
+                        auto CITER_MED(WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Medium));
 
                         if (CITER_MED != WEAPON_CHANCES.knife.size_map.end())
                         {
@@ -575,12 +573,10 @@ namespace non_player
                 }
                 case item::weapon_type::Axe:
                 {
-                    const item::weapon::axe_type::Enum AXE_TYPE(
-                        static_cast<item::weapon::axe_type::Enum>(
-                            typeKindChanceMap[randomSelectedWeaponType].first));
+                    auto const AXE_TYPE(static_cast<item::weapon::axe_type::Enum>(
+                        typeKindChanceMap[randomSelectedWeaponType].first));
 
-                    const chance::AxeChanceMap_t::const_iterator CITER(
-                        WEAPON_CHANCES.axe_map.find(AXE_TYPE));
+                    auto const CITER{ WEAPON_CHANCES.axe_map.find(AXE_TYPE) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (CITER != WEAPON_CHANCES.axe_map.end()),
@@ -609,9 +605,8 @@ namespace non_player
                 }
                 case item::weapon_type::BladedStaff:
                 {
-                    const item::weapon::bladedstaff_type::Enum BLADEDSTAFF_TYPE(
-                        static_cast<item::weapon::bladedstaff_type::Enum>(
-                            typeKindChanceMap[randomSelectedWeaponType].first));
+                    auto const BLADEDSTAFF_TYPE(static_cast<item::weapon::bladedstaff_type::Enum>(
+                        typeKindChanceMap[randomSelectedWeaponType].first));
 
                     const chance::BladedStaffChanceMap_t::const_iterator CITER(
                         WEAPON_CHANCES.bladedstaff_map.find(BLADEDSTAFF_TYPE));
@@ -645,9 +640,8 @@ namespace non_player
                 }
                 case item::weapon_type::Club:
                 {
-                    const item::weapon::club_type::Enum CLUB_TYPE(
-                        static_cast<item::weapon::club_type::Enum>(
-                            typeKindChanceMap[randomSelectedWeaponType].first));
+                    auto const CLUB_TYPE(static_cast<item::weapon::club_type::Enum>(
+                        typeKindChanceMap[randomSelectedWeaponType].first));
 
                     const chance::ClubChanceMap_t::const_iterator CITER(
                         WEAPON_CHANCES.club_map.find(CLUB_TYPE));
@@ -677,9 +671,8 @@ namespace non_player
                 }
                 case item::weapon_type::Projectile:
                 {
-                    const item::weapon::projectile_type::Enum PROJECTILE_TYPE(
-                        static_cast<item::weapon::projectile_type::Enum>(
-                            typeKindChanceMap[randomSelectedWeaponType].first));
+                    auto const PROJECTILE_TYPE(static_cast<item::weapon::projectile_type::Enum>(
+                        typeKindChanceMap[randomSelectedWeaponType].first));
 
                     const chance::ProjectileChanceMap_t::const_iterator CITER(
                         WEAPON_CHANCES.projectile_map.find(PROJECTILE_TYPE));
@@ -705,9 +698,8 @@ namespace non_player
                 }
                 case item::weapon_type::Sword:
                 {
-                    const item::weapon::sword_type::Enum SWORD_TYPE(
-                        static_cast<item::weapon::sword_type::Enum>(
-                            typeKindChanceMap[randomSelectedWeaponType].first));
+                    auto const SWORD_TYPE{ static_cast<item::weapon::sword_type::Enum>(
+                        typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     const chance::SwordChanceMap_t::const_iterator CITER(
                         WEAPON_CHANCES.sword_map.find(SWORD_TYPE));
@@ -731,9 +723,8 @@ namespace non_player
                 }
                 case item::weapon_type::Whip:
                 {
-                    const item::weapon::whip_type::Enum WHIP_TYPE(
-                        static_cast<item::weapon::whip_type::Enum>(
-                            typeKindChanceMap[randomSelectedWeaponType].first));
+                    auto const WHIP_TYPE{ static_cast<item::weapon::whip_type::Enum>(
+                        typeKindChanceMap[randomSelectedWeaponType].first) };
 
                     const chance::WhipChanceMap_t::const_iterator CITER(
                         WEAPON_CHANCES.whip_map.find(WHIP_TYPE));

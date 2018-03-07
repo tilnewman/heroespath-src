@@ -119,8 +119,6 @@ namespace popup
             const PopupButtons::Enum BUTTONS,
             const combat::CombatEnd::Enum HOW_COMBAT_ENDED);
 
-        virtual ~PopupInfo();
-
         PopupInfo(const PopupInfo &);
         PopupInfo & operator=(const PopupInfo &);
 

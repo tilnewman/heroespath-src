@@ -82,46 +82,6 @@ namespace sfml_util
             , outlineThickness(0.0f)
         {}
 
-        TextInfo::TextInfo(const TextInfo & TI)
-            : text(TI.text)
-            ,
-
-            // The TextInfo class is a temporary observer class that does not
-            // participate in managing the lifetime of Font objects, so copying
-            // this pointer is safe.
-            fontPtr(TI.fontPtr)
-            ,
-
-            charSize(TI.charSize)
-            , color(TI.color)
-            , blendMode(TI.blendMode)
-            , style(TI.style)
-            , justified(TI.justified)
-            , isOutlineOnly(TI.isOutlineOnly)
-            , outlineThickness(TI.outlineThickness)
-        {}
-
-        TextInfo & TextInfo::operator=(const TextInfo & TI)
-        {
-            if (this != &TI)
-            {
-                text = TI.text;
-
-                // see comment above in copy constructor regarding this pointer
-                fontPtr = TI.fontPtr;
-
-                charSize = TI.charSize;
-                color = TI.color;
-                blendMode = TI.blendMode;
-                style = TI.style;
-                justified = TI.justified;
-                isOutlineOnly = TI.isOutlineOnly;
-                outlineThickness = TI.outlineThickness;
-            }
-
-            return *this;
-        }
-
         bool operator<(const TextInfo & L, const TextInfo & R)
         {
             if (L.color != R.color)

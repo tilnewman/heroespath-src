@@ -95,7 +95,7 @@ namespace stage
         // Camp Stage, then set it back again once leaving the Intro Stage.
         sfml_util::SoundManager::Instance()->MusicVolumeFadeToCurrent(sfml_util::music::Theme);
 
-        ClearAllEntities();
+        Stage::ClearAllEntities();
     }
 
     bool CampStage::HandleCallback(const popup::PopupResponse & PACKAGE)

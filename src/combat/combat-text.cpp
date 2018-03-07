@@ -834,7 +834,7 @@ namespace combat
                 << " CreatureEffects, when only 1 is supported.");
 
         auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[EFFECT_INDEX] };
-        auto const HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
+        auto const & HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (HIT_INFO_VEC.empty() == false),
@@ -1207,7 +1207,7 @@ namespace combat
         const std::size_t EFFECT_INDEX,
         const std::size_t HIT_INDEX)
     {
-        auto const CREATURE_EFFECTS{ FIGHT_RESULT.Effects() };
+        auto const & CREATURE_EFFECTS{ FIGHT_RESULT.Effects() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (EFFECT_INDEX < CREATURE_EFFECTS.size()),
@@ -1218,7 +1218,7 @@ namespace combat
 
         auto const CREATURE_EFFECT{ CREATURE_EFFECTS.at(EFFECT_INDEX) };
 
-        auto const HIT_INFOS{ CREATURE_EFFECT.GetHitInfoVec() };
+        auto const & HIT_INFOS{ CREATURE_EFFECT.GetHitInfoVec() };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (HIT_INDEX < HIT_INFOS.size()),
@@ -1446,7 +1446,7 @@ namespace combat
     bool Text::SummarizeCreatureEffect(
         FightResultSummary & frs, const CreatureEffect & CREATURE_EFFECT)
     {
-        auto const NEXT_HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
+        auto const & NEXT_HIT_INFO_VEC{ CREATURE_EFFECT.GetHitInfoVec() };
         if (NEXT_HIT_INFO_VEC.size() != 1)
         {
             return false;

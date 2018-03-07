@@ -86,12 +86,12 @@ namespace non_player
 
             using WeaponSetVec_t = std::vector<WeaponSet>;
 
+        public:
             ChanceFactory(const ChanceFactory &) = delete;
             ChanceFactory(const ChanceFactory &&) = delete;
             ChanceFactory & operator=(const ChanceFactory &) = delete;
             ChanceFactory & operator=(const ChanceFactory &&) = delete;
 
-        public:
             ChanceFactory();
             ~ChanceFactory();
 

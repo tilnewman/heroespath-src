@@ -68,12 +68,12 @@ namespace item
         // A singleton class that loads detailed armor info from the GameDataFile.
         class ArmorDetailLoader
         {
+        public:
             ArmorDetailLoader & operator=(const ArmorDetailLoader &) = delete;
             ArmorDetailLoader & operator=(const ArmorDetailLoader &&) = delete;
             ArmorDetailLoader(const ArmorDetailLoader &) = delete;
             ArmorDetailLoader(const ArmorDetailLoader &&) = delete;
 
-        public:
             ArmorDetailLoader();
             ~ArmorDetailLoader();
 

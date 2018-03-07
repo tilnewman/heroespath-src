@@ -312,7 +312,7 @@ namespace stage
     InventoryStage::~InventoryStage()
     {
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Inventory);
-        ClearAllEntities();
+        Stage::ClearAllEntities();
     }
 
     bool InventoryStage::HandleCallback(

@@ -124,7 +124,7 @@ namespace combat
 
         using VertexVec_t = std::vector<Vertex>;
 
-    private:
+    public:
         CombatTree(const CombatTree &) = delete;
         CombatTree(const CombatTree &&) = delete;
         CombatTree & operator=(const CombatTree &) = delete;

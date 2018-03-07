@@ -59,9 +59,6 @@ namespace combat
     {
         FightResultSummary();
 
-        FightResultSummary(const FightResultSummary &);
-        FightResultSummary & operator=(const FightResultSummary &);
-
         HitType::Enum hit_type;
         song::SongPtr_t song_ptr;
         spell::SpellPtr_t spell_ptr;

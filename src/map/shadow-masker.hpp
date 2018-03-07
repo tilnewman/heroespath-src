@@ -38,13 +38,13 @@ namespace map
     // Responsible for changing shadow place-holder colors into shades of gray.
     class ShadowMasker
     {
+    public:
         ShadowMasker() = delete;
         ShadowMasker(const ShadowMasker &) = delete;
         ShadowMasker(const ShadowMasker &&) = delete;
         ShadowMasker & operator=(const ShadowMasker &) = delete;
         ShadowMasker & operator=(const ShadowMasker &&) = delete;
 
-    public:
         static void ChangeColors(const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout);
         static void ChangeColors(sf::Texture &, const bool IS_SHADOW_IMAGE);
 

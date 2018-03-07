@@ -133,7 +133,7 @@ namespace stage
         , lockPicking_()
     {}
 
-    TreasureStage::~TreasureStage() { ClearAllEntities(); }
+    TreasureStage::~TreasureStage() { Stage::ClearAllEntities(); }
 
     bool TreasureStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {

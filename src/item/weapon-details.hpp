@@ -71,12 +71,12 @@ namespace item
         // A singleton class that loads detailed weapon info from the GameDataFile.
         class WeaponDetailLoader
         {
-            WeaponDetailLoader & operator=(const WeaponDetailLoader &) = delete;
-            WeaponDetailLoader & operator=(const WeaponDetailLoader &&) = delete;
+        public:
             WeaponDetailLoader(const WeaponDetailLoader &) = delete;
             WeaponDetailLoader(const WeaponDetailLoader &&) = delete;
+            WeaponDetailLoader & operator=(const WeaponDetailLoader &) = delete;
+            WeaponDetailLoader & operator=(const WeaponDetailLoader &&) = delete;
 
-        public:
             WeaponDetailLoader();
             ~WeaponDetailLoader();
 

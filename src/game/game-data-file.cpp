@@ -46,12 +46,7 @@ namespace game
         : ConfigBase("game-data.txt", "=", "#")
     {
         M_HP_LOG_DBG("Singleton Construction: GameDataFile");
-        Load();
-    }
-
-    GameDataFile::~GameDataFile()
-    {
-        // M_HP_LOG_DBG("Singleton Destruction: GameDataFile");
+        config::ConfigBase::Load();
     }
 
     GameDataFile * game::GameDataFile::Instance()

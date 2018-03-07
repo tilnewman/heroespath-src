@@ -64,10 +64,6 @@ namespace combat
     {
         explicit ItemWithText(const item::ItemPtr_t ITEM_PTR = nullptr);
 
-        ItemWithText(const ItemWithText &);
-
-        ItemWithText & operator=(const ItemWithText &);
-
         sf::Sprite sprite;
         sf::Texture texture;
         sfml_util::gui::TextRegionSPtr_t name_text_region_sptr;

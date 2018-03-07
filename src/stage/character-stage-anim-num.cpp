@@ -107,7 +107,7 @@ namespace stage
             textObj_.setScale(SCALE, SCALE);
 
             // color
-            const float COLOR_VALF(static_cast<float>(colorVal_));
+            auto const COLOR_VALF{ static_cast<float>(colorVal_) };
             color_.r = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
             color_.g = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
             color_.b = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
@@ -124,7 +124,7 @@ namespace stage
                 fadeCounter_ += ELAPSED_TIME_SEC * 600.0f;
                 if (color_.a > 0)
                 {
-                    const sf::Int8 ALPHA(static_cast<sf::Int8>(fadeCounter_));
+                    auto const ALPHA{ static_cast<sf::Int8>(fadeCounter_) };
                     if (fadeCounter_ < 254.0f)
                     {
                         color_.a = static_cast<sf::Uint8>(255 - static_cast<int>(ALPHA));

@@ -142,9 +142,6 @@ namespace combat
         // use this constructor when the attempt failed/missed
         HitInfo(const HitType::Enum HIT_TYPE, const ContentAndNamePos & ACTION_PHRASE_CNP);
 
-        HitInfo(const HitInfo &);
-        HitInfo & operator=(const HitInfo &);
-
         inline bool WasHit() const { return wasHit_; }
         inline HitType::Enum TypeOfHit() const { return hitType_; }
         inline item::ItemPtr_t Weapon() const { return weaponPtr_; }

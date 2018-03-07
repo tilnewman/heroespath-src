@@ -43,7 +43,7 @@ namespace sfml_util
         // Actions required of a gui element that is clickable.
         struct IClickable
         {
-            IClickable() {}
+            IClickable() = default;
             virtual ~IClickable() = default;
 
             virtual MouseState::Enum GetMouseState() const = 0;

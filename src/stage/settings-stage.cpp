@@ -79,7 +79,7 @@ namespace stage
         , revLabelTextRegionUPtr_()
     {}
 
-    SettingsStage::~SettingsStage() { ClearAllEntities(); }
+    SettingsStage::~SettingsStage() { Stage::ClearAllEntities(); }
 
     bool SettingsStage::HandleCallback(
         const sfml_util::callback::RadioButtonCallbackPackage_t & PACKAGE)

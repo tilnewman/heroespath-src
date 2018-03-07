@@ -47,9 +47,8 @@ namespace item
         FactoryBase & operator=(const FactoryBase &) = delete;
         FactoryBase & operator=(const FactoryBase &&) = delete;
 
-    public:
-        FactoryBase();
-        virtual ~FactoryBase();
+        FactoryBase() = default;
+        virtual ~FactoryBase() = default;
 
     protected:
         static const std::string Make_Name(

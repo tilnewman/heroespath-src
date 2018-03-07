@@ -45,8 +45,6 @@ namespace heroespath
 namespace combat
 {
 
-    CombatSoundEffects::CombatSoundEffects() {}
-
     void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR) const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(

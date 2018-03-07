@@ -88,9 +88,7 @@ namespace misc
         Platform & operator=(const Platform &) = delete;
         Platform & operator=(const Platform &&) = delete;
 
-    public:
         Platform();
-        ~Platform();
 
         static Platform * Instance();
         static void Acquire();

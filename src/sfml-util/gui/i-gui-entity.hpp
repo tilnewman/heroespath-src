@@ -51,7 +51,7 @@ namespace sfml_util
             , public IClickable
         {
         public:
-            IGuiEntity() {}
+            IGuiEntity() = default;
             virtual ~IGuiEntity() = default;
 
             virtual bool GetEntityWillDraw() const = 0;

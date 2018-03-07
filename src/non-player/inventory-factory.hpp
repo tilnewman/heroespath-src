@@ -68,7 +68,6 @@ namespace non_player
             InventoryFactory & operator=(const InventoryFactory &) = delete;
             InventoryFactory & operator=(const InventoryFactory &&) = delete;
 
-        public:
             InventoryFactory();
             ~InventoryFactory();
 
@@ -152,8 +151,7 @@ namespace non_player
                 for (auto const & NEXT_CHANCE_PAIR : MAP)
                 {
                     float nextChanceVal(0.0f);
-                    chance::CountChanceMap_t::const_iterator CITER(
-                        NEXT_CHANCE_PAIR.second.num_owned_map.find(1));
+                    auto CITER{ NEXT_CHANCE_PAIR.second.num_owned_map.find(1) };
 
                     if (CITER != NEXT_CHANCE_PAIR.second.num_owned_map.end())
                     {

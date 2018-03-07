@@ -136,12 +136,12 @@ namespace stage
         // used to remember which view each character was last using
         using CharViewMap_t = std::map<std::size_t, ViewType>;
 
+    public:
         InventoryStage(const InventoryStage &) = delete;
         InventoryStage(const InventoryStage &&) = delete;
         InventoryStage & operator=(const InventoryStage &) = delete;
         InventoryStage & operator=(const InventoryStage &&) = delete;
 
-    public:
         explicit InventoryStage(
             const creature::CreaturePtr_t TURN_CREATURE_PTR,
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,

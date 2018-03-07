@@ -56,37 +56,6 @@ namespace combat
         , item_ptr(ITEM_PTR)
     {}
 
-    ItemWithText::ItemWithText(const ItemWithText & IWT)
-        : sprite(IWT.sprite)
-        , texture(IWT.texture)
-        , name_text_region_sptr(IWT.name_text_region_sptr)
-        , desc_text_region_sptr(IWT.desc_text_region_sptr)
-        , info_text_region_sptr(IWT.info_text_region_sptr)
-        ,
-
-        // This class is a simple temporary observer and does not
-        // participate in the lifetime of Font objects, so this
-        // pointer copy is safe.
-        item_ptr(IWT.item_ptr)
-    {}
-
-    ItemWithText & ItemWithText::operator=(const ItemWithText & IWT)
-    {
-        if (this != &IWT)
-        {
-            sprite = IWT.sprite;
-            texture = IWT.texture;
-            name_text_region_sptr = IWT.name_text_region_sptr;
-            desc_text_region_sptr = IWT.desc_text_region_sptr;
-            info_text_region_sptr = IWT.info_text_region_sptr;
-
-            // see comment above in copy constructor regarding this pointer
-            item_ptr = IWT.item_ptr;
-        }
-
-        return *this;
-    }
-
     const float SummaryView::BACKGROUND_COLOR_ALPHA_(192.0f);
     const float SummaryView::SLIDER_SPEED_(4.0f);
 

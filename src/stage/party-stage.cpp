@@ -149,7 +149,7 @@ namespace stage
 
     PartyStage::~PartyStage()
     {
-        ClearAllEntities();
+        Stage::ClearAllEntities();
 
         for (auto & nextCharacterPtr : charactersPSet_)
         {

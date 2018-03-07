@@ -147,7 +147,7 @@ namespace combat
         , centeringToPosV_(-1.0f, -1.0f) // any negative values will work here
     {}
 
-    CombatDisplay::~CombatDisplay() { ClearAllEntities(); }
+    CombatDisplay::~CombatDisplay() { sfml_util::Stage::ClearAllEntities(); }
 
     void CombatDisplay::Setup()
     {

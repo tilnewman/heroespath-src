@@ -58,11 +58,6 @@ namespace config
         , data_()
     {}
 
-    ConfigBase::~ConfigBase()
-    {
-        // MUST CALL SAVE - not saved automatically upon destruction
-    }
-
     bool ConfigBase::Load()
     {
         boost::recursive_mutex::scoped_lock lock(dataAccessMutex_);
@@ -116,7 +111,7 @@ namespace config
         catch (...)
         {
             std::ostringstream ss;
-            ss << "Exception Error \"UNKNOWN\" during load of config file \"" << PATH.string()
+            ss << R"(Exception Error "UNKNOWN" during load of config file )" << PATH.string()
                << "\"";
             HandleLoadSaveError(ss.str());
         }
@@ -147,7 +142,7 @@ namespace config
             }
 
             // write
-            for (ConfigMap::const_iterator i(data_.begin()); data_.end() != i; ++i)
+            for (auto i{ data_.begin() }; data_.end() != i; ++i)
             {
                 SaveNextLine(i, fileStream);
             }
@@ -164,7 +159,7 @@ namespace config
         catch (...)
         {
             std::ostringstream ss;
-            std::cerr << "Exception Error \"UNKNOWN\" during save of file \"" << PATH.string()
+            std::cerr << R"(Exception Error "UNKNOWN" during save of file )" << PATH.string()
                       << "\"";
             HandleLoadSaveError(ss.str());
         }

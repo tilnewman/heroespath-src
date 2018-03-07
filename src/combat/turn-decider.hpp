@@ -74,9 +74,9 @@ namespace combat
     // abused here and there is no state! -zTn 2017-4-3
     class TurnDecider
     {
+    public:
         TurnDecider() = delete;
 
-    public:
         static const TurnActionInfo Decide(
             const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
             CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);

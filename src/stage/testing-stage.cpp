@@ -100,7 +100,7 @@ namespace stage
         , willImageCheck_(false)
     {}
 
-    TestingStage::~TestingStage() { ClearAllEntities(); }
+    TestingStage::~TestingStage() { Stage::ClearAllEntities(); }
 
     void TestingStage::Setup()
     {
@@ -132,7 +132,7 @@ namespace stage
             std::size_t imageDrawCount{ 0 };
             auto posLeft{ SCREEN_WIDTH_ };
 
-            sfml_util::TextureLst_t::reverse_iterator rItr(textureList_.rbegin());
+            auto rItr(textureList_.rbegin());
             for (; rItr != textureList_.rend(); ++rItr)
             {
                 sf::Sprite sprite;

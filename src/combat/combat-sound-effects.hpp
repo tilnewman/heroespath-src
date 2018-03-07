@@ -62,13 +62,13 @@ namespace combat
     // interface to play them.
     class CombatSoundEffects
     {
+    public:
         CombatSoundEffects & operator=(const CombatSoundEffects &) = delete;
         CombatSoundEffects & operator=(const CombatSoundEffects &&) = delete;
         CombatSoundEffects(const CombatSoundEffects &) = delete;
         CombatSoundEffects(const CombatSoundEffects &&) = delete;
 
-    public:
-        CombatSoundEffects();
+        CombatSoundEffects() = default;
 
         void PlayShoot(const item::ItemPtr_t) const;
         void PlayHitOrMiss(const creature::CreaturePtr_t, const HitInfo &) const;

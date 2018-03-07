@@ -165,8 +165,8 @@ namespace config
 
             const unsigned ERROR_VALUE(1024);
 
-            const unsigned SAVED_ANTIALIAS_LEVEL(
-                static_cast<unsigned>(GetWithDefaultInt(KEY_ANTIALIAS_LEVEL_, ERROR_VALUE)));
+            auto const SAVED_ANTIALIAS_LEVEL{ static_cast<unsigned>(
+                GetWithDefaultInt(KEY_ANTIALIAS_LEVEL_, ERROR_VALUE)) };
 
             if (SAVED_ANTIALIAS_LEVEL != ERROR_VALUE)
             {

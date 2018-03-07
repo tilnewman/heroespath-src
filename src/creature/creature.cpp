@@ -126,10 +126,8 @@ namespace creature
         ReCalculateTraitBonuses();
     }
 
-    Creature::~Creature()
-    {
-        // Items and their Enchantments are free'd when the Inventory is destructed.
-    }
+    // Items and their Enchantments are free'd when the Inventory is destructed.
+    Creature::~Creature() = default;
 
     const std::string Creature::NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
     {
@@ -272,18 +270,26 @@ namespace creature
         }
         else
         {
-            const int HEALTH_INT(static_cast<int>(HEALTH_RATIO * 100.0f));
+            auto const HEALTH_INT{ static_cast<int>(HEALTH_RATIO * 100.0f) };
 
             if (HEALTH_INT < 1)
+            {
                 ss << "1";
+            }
             else if (HEALTH_INT < 100)
+            {
                 ss << HEALTH_INT;
+            }
             else
+            {
                 ss << "100";
+            }
         }
 
         if (WILL_APPEND_SYMBOL)
+        {
             ss << "%";
+        }
 
         return ss.str();
     }

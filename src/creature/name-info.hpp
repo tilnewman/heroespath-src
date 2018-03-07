@@ -49,12 +49,12 @@ namespace creature
         using FontSizePair_t = std::pair<sfml_util::FontPtr_t, unsigned int>;
         using FontSizeToWidthMap_t = std::map<FontSizePair_t, float>;
 
+    public:
         NameInfo(const NameInfo &) = delete;
         NameInfo(const NameInfo &&) = delete;
         NameInfo & operator=(const NameInfo &) = delete;
         NameInfo & operator=(const NameInfo &&) = delete;
 
-    public:
         NameInfo();
         ~NameInfo();
 

@@ -84,7 +84,7 @@ namespace popup
         , keepAliveTimerSec_(POPUP_INFO.KeepAliveSec())
     {}
 
-    PopupStageBase::~PopupStageBase() { ClearAllEntities(); }
+    PopupStageBase::~PopupStageBase() { Stage::ClearAllEntities(); }
 
     bool
         PopupStageBase::HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &)

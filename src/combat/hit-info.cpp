@@ -245,67 +245,6 @@ namespace combat
         , conditionPtr_(nullptr)
     {}
 
-    HitInfo::HitInfo(const HitInfo & HI)
-        : wasHit_(HI.wasHit_)
-        , hitType_(HI.hitType_)
-        ,
-
-        // The lifetime of this object is not managed by this class.
-        // Usage is short-term observation only, so ptr copying is safe.
-        weaponPtr_(HI.weaponPtr_)
-        ,
-
-        damage_(HI.damage_)
-        , isCritical_(HI.isCritical_)
-        , isPower_(HI.isPower_)
-        , condsAddedVec_(HI.condsAddedVec_)
-        , condsRemovedVec_(HI.condsRemovedVec_)
-        , actionVerb_(HI.actionVerb_)
-        ,
-
-        // see the comment above regarding pointers in this class
-        spellPtr_(HI.spellPtr_)
-        ,
-
-        actionPhraseCNP_(HI.actionPhraseCNP_)
-        ,
-
-        // see the comment above regarding pointers in this class
-        songPtr_(HI.songPtr_)
-        ,
-
-        didArmorAbsorb_(HI.didArmorAbsorb_)
-        ,
-
-        // see the comment above regarding pointers in this class
-        conditionPtr_(HI.conditionPtr_)
-    {}
-
-    HitInfo & HitInfo::operator=(const HitInfo & HI)
-    {
-        if (&HI != this)
-        {
-            wasHit_ = HI.wasHit_;
-            hitType_ = HI.hitType_;
-            damage_ = HI.damage_;
-            isCritical_ = HI.isCritical_;
-            isPower_ = HI.isPower_;
-            condsAddedVec_ = HI.condsAddedVec_;
-            condsRemovedVec_ = HI.condsRemovedVec_;
-            actionVerb_ = HI.actionVerb_;
-            actionPhraseCNP_ = HI.actionPhraseCNP_;
-            didArmorAbsorb_ = HI.didArmorAbsorb_;
-
-            // see copy constructor comment regarding these pointers
-            weaponPtr_ = HI.weaponPtr_;
-            spellPtr_ = HI.spellPtr_;
-            songPtr_ = HI.songPtr_;
-            conditionPtr_ = HI.conditionPtr_;
-        }
-
-        return *this;
-    }
-
     bool HitInfo::CondsAddedContains(const creature::Conditions::Enum E) const
     {
         return (std::find(condsAddedVec_.begin(), condsAddedVec_.end(), E) != condsAddedVec_.end());

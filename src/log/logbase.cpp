@@ -67,7 +67,7 @@ namespace log
         , fileStream_()
         , isDestructing_(false)
     {
-        OpenNextFile();
+        LogBase::OpenNextFile();
     }
 
     LogBase::~LogBase()
@@ -75,10 +75,11 @@ namespace log
         isDestructing_ = true;
         try
         {
-            OnFileClose(false);
+            LogBase::OnFileClose(false);
         }
         catch (...)
-        {}
+        {
+        }
     }
 
     void LogBase::Log(const std::string & MSG) { FlushWrapper(MSG); }
@@ -253,7 +254,7 @@ namespace log
         fileStream_ << MSG << std::endl;
     }
 
-    void LogBase::OpenNextFile(void)
+    void LogBase::OpenNextFile()
     {
         // close if needed
         if (true == fileStream_.is_open())

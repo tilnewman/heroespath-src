@@ -77,7 +77,7 @@ namespace stage
     CreditsStage::~CreditsStage()
     {
         sfml_util::SoundManager::Instance()->MusicStop(sfml_util::music::Credits);
-        ClearAllEntities();
+        Stage::ClearAllEntities();
     }
 
     void CreditsStage::Setup()

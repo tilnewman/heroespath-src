@@ -47,7 +47,7 @@ namespace sfml_util
             , downSprite_(SPRITE_DOWN)
             , overSprite_(SPRITE_OVER)
         {
-            Setup(SCREEN_REGION.left, SCREEN_REGION.top);
+            GuiImage::Setup(SCREEN_REGION.left, SCREEN_REGION.top);
         }
 
         GuiImage::GuiImage(
@@ -62,7 +62,7 @@ namespace sfml_util
             , downSprite_(SPRITE_DOWN)
             , overSprite_(SPRITE_OVER)
         {
-            Setup(POS_LEFT, POS_TOP);
+            GuiImage::Setup(POS_LEFT, POS_TOP);
         }
 
         GuiImage::~GuiImage() = default;

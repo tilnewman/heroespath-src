@@ -357,14 +357,14 @@ namespace map
 
     void MapDisplay::UpdateAndDrawAnimations(const float TIME_ELAPSED)
     {
-        for (std::size_t i(0); i < animUPtrVec_.size(); ++i)
+        for (auto & animUPtr : animUPtrVec_)
         {
             if (TIME_ELAPSED > 0.0f)
             {
-                animUPtrVec_[i]->UpdateTime(TIME_ELAPSED);
+                animUPtr->UpdateTime(TIME_ELAPSED);
             }
 
-            auto sprite{ animUPtrVec_[i]->Sprite() };
+            auto sprite{ animUPtr->Sprite() };
             sprite.setPosition(OffScreenPosFromMapPos(sprite.getPosition()));
             offScreenTextureAbove_.draw(sprite);
         }

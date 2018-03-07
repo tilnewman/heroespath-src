@@ -47,12 +47,12 @@ namespace sfml_util
         // singleton responsible for loading and dispensing combat image sf::Textures
         class CombatImageManager : public ImageManagerBase<CombatImageType>
         {
+        public:
             CombatImageManager & operator=(const CombatImageManager &) = delete;
             CombatImageManager & operator=(const CombatImageManager &&) = delete;
             CombatImageManager(const CombatImageManager &) = delete;
             CombatImageManager(const CombatImageManager &&) = delete;
 
-        public:
             CombatImageManager();
             virtual ~CombatImageManager();
 

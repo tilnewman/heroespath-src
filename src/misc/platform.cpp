@@ -83,11 +83,6 @@ namespace misc
         M_HP_LOG_DBG("Singleton Construction: Platform");
     }
 
-    Platform::~Platform()
-    {
-        // M_HP_LOG_DBG("Singleton Destruction: Platform");
-    }
-
     Platform * Platform::Instance()
     {
         if (instanceUPtr_.get() == nullptr)

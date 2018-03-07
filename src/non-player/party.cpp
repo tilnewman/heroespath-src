@@ -129,7 +129,7 @@ namespace non_player
         // make a single string summary of all race/role combinations
         std::ostringstream ss;
         using RaceRoleCountMapIter_t = RaceRoleCountMap_t::iterator;
-        for (RaceRoleCountMapIter_t itr(raceRoleMap.begin()); itr != raceRoleMap.end(); ++itr)
+        for (auto itr(raceRoleMap.begin()); itr != raceRoleMap.end(); ++itr)
         {
             auto const NEXT_RACEROLECOUNT_PAIR{ *itr };
 

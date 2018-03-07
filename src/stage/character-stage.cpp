@@ -251,7 +251,7 @@ namespace stage
         , selectedImageIndex_(0)
     {}
 
-    CharacterStage::~CharacterStage() { ClearAllEntities(); }
+    CharacterStage::~CharacterStage() { Stage::ClearAllEntities(); }
 
     bool CharacterStage::HandleCallback(
         const sfml_util::callback::RadioButtonCallbackPackage_t & RADIOBUTTON_WRAPPER)

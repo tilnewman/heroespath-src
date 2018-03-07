@@ -81,7 +81,7 @@ namespace stage
         , backgroundImage_("media-images-backgrounds-tile-darkknot")
     {}
 
-    MainMenuStage::~MainMenuStage() { ClearAllEntities(); }
+    MainMenuStage::~MainMenuStage() { Stage::ClearAllEntities(); }
 
     bool MainMenuStage::HandleCallback(
         const sfml_util::gui::callback::FourStateButtonCallbackPackage_t & PACKAGE)

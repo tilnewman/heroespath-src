@@ -46,7 +46,7 @@ namespace avatar
         Animation(
             const Pose::Enum POSE,
             const sfml_util::Direction::Enum DIRECTION,
-            const std::vector<FrameNum_t> FRAME_NUM_VEC,
+            const std::vector<FrameNum_t> & FRAME_NUM_VEC,
             const float FRAME_DURATION,
             const bool WILL_LOOP)
             : pose(POSE)

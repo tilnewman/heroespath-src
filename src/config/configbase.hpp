@@ -84,14 +84,14 @@ namespace config
     //
     class ConfigBase : public IConfigBase
     {
-        // constructors / destructor
     public:
         explicit ConfigBase(
             const std::string & FILE_PATH_STR = FILE_PATH_DEFAULT_,
             const std::string & SEP_STR = SEP_STR_DEFAULT_,
             const std::string & COMMENT_STR = COMMENT_STR_DEFAULT_);
 
-        virtual ~ConfigBase();
+        // MUST CALL SAVE - not saved automatically upon destruction
+        virtual ~ConfigBase() = default;
 
         // custom types
     private:

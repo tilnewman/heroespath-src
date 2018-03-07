@@ -83,7 +83,7 @@ namespace sfml_util
             }
             inline virtual sf::Vector2f GetLabelOffset() const
             {
-                return sf::Vector2f(labelOffsetX_, labelOffsetY_);
+                return { labelOffsetX_, labelOffsetY_ };
             }
 
             void ChangeTextInfo(const MouseTextInfo &);

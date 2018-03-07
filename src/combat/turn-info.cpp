@@ -57,54 +57,6 @@ namespace combat
         , wasHitLastTurn_(false)
     {}
 
-    TurnInfo::TurnInfo(const TurnInfo & TI)
-        : isFlying_(TI.isFlying_)
-        , turnActionInfo_(TI.turnActionInfo_)
-        , strategyInfo_(TI.strategyInfo_)
-        ,
-
-        // The lifetime of these objects is not managed by this class.
-        // Usage is short-term observation only, so ptr copying is safe.
-        firstAttackedByCreaturePtr_(TI.firstAttackedByCreaturePtr_)
-        , firstHitByCreaturePtr_(TI.firstHitByCreaturePtr_)
-        , lastAttackedByCreaturePtr_(TI.lastAttackedByCreaturePtr_)
-        , lastHitByCreaturePtr_(TI.lastHitByCreaturePtr_)
-        , firstToMakeMusicPtr_(TI.firstToMakeMusicPtr_)
-        , lastToMakeMusicPtr_(TI.lastToMakeMusicPtr_)
-        , firstToCastPtr_(TI.firstToCastPtr_)
-        , lastToCastPtr_(TI.lastToCastPtr_)
-        ,
-
-        mostDamagePair_(TI.mostDamagePair_)
-        , castCount_(TI.castCount_)
-        , songCount_(TI.songCount_)
-        , wasHitLastTurn_(TI.wasHitLastTurn_)
-    {}
-
-    TurnInfo & TurnInfo::operator=(const TurnInfo & TI)
-    {
-        if (&TI != this)
-        {
-            isFlying_ = TI.isFlying_;
-            turnActionInfo_ = TI.turnActionInfo_;
-            strategyInfo_ = TI.strategyInfo_;
-            firstAttackedByCreaturePtr_ = TI.firstAttackedByCreaturePtr_;
-            firstHitByCreaturePtr_ = TI.firstHitByCreaturePtr_;
-            lastAttackedByCreaturePtr_ = TI.lastAttackedByCreaturePtr_;
-            lastHitByCreaturePtr_ = TI.lastHitByCreaturePtr_;
-            firstToMakeMusicPtr_ = TI.firstToMakeMusicPtr_;
-            lastToMakeMusicPtr_ = TI.lastToMakeMusicPtr_;
-            firstToCastPtr_ = TI.firstToCastPtr_;
-            lastToCastPtr_ = TI.lastToCastPtr_;
-            mostDamagePair_ = TI.mostDamagePair_;
-            castCount_ = TI.castCount_;
-            songCount_ = TI.songCount_;
-            wasHitLastTurn_ = TI.wasHitLastTurn_;
-        }
-
-        return *this;
-    }
-
     void TurnInfo::RemoveDeadCreatureTasks(creature::CreatureCPtrC_t CREATURE_CPTRC)
     {
         if (firstAttackedByCreaturePtr_ == CREATURE_CPTRC)

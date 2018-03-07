@@ -515,9 +515,8 @@ namespace stage
 
     treasure::DisplayMeasurements TreasureDisplayStage::CreateDisplayMeasurements() const
     {
-        return treasure::DisplayMeasurements(
-            coinsSprite_.getPosition().y + coinsSprite_.getGlobalBounds().height,
-            bottomImage_.Height());
+        return { coinsSprite_.getPosition().y + coinsSprite_.getGlobalBounds().height,
+                 bottomImage_.Height() };
     }
 
     void TreasureDisplayStage::SetupInitial_BackgroundImage()

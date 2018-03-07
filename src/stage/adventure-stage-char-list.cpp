@@ -500,10 +500,11 @@ namespace stage
             auto const NUM_ROWS{ nameColumnRects_.size() };
             for (std::size_t i(0); i < NUM_ROWS; ++i)
             {
-                for (float t(0.0f); t < CELL_LINE_THICKNESS_; t += 1.0f)
+                auto const CELL_LINE_THICKNESS_INT{ static_cast<int>(CELL_LINE_THICKNESS_) };
+                for (int t(0); t < CELL_LINE_THICKNESS_INT; ++t)
                 {
                     auto const HORIZ_LINE_TOP{ imageColumnRects_[i].top + nameColumnRects_[i].height
-                                               + t };
+                                               + static_cast<float>(t) };
 
                     lineVerts_.emplace_back(sf::Vertex(
                         sf::Vector2f(HORIZ_LINE_LEFT, HORIZ_LINE_TOP), FadedDarkColor_Line()));

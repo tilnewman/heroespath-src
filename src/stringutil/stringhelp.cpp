@@ -54,8 +54,8 @@ namespace stringhelp
 
         // add wrapping characters if needed
         if ((WRAP_LEFT.empty() == false) || (WRAP_RIGHT.empty() == false))
-            for (std::vector<std::string>::iterator i(v.begin()); i != v.end(); ++i)
-                (*i) = WRAP_LEFT + (*i) + WRAP_RIGHT;
+            for (auto & s : v)
+                s = (WRAP_LEFT + s).append(WRAP_RIGHT);
 
         // sort if needed, check for more efficient sort algorithm combinations
         if (WILL_SORT && WILL_UNIQUE)

@@ -101,7 +101,6 @@ namespace combat
 
     // Handles drawing the combat tree
     class CombatDisplay : public sfml_util::Stage
-
     {
     public:
         CombatDisplay(const CombatDisplay &) = delete;

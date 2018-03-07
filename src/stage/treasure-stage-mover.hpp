@@ -66,9 +66,9 @@ namespace stage
         // sliding them on and off screen.
         class StageMover
         {
+        public:
             StageMover() = delete;
 
-        public:
             StageMover(
                 const treasure::Type INITIAL_TREASURE_SOURCE,
                 const std::size_t INITIAL_CHARACTER_INDEX);

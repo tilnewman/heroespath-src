@@ -64,10 +64,10 @@ namespace sfml_util
         {
             if (IS_CHECKED)
             {
-                SetIsInFirstState(false);
+                TwoStateEntity::SetIsInFirstState(false);
             }
 
-            SetupSprites(BRIGHTNESS);
+            CheckBox::SetupSprites(BRIGHTNESS);
             Setup(POS_LEFT, POS_TOP, IS_INVALID);
         }
 
@@ -84,10 +84,10 @@ namespace sfml_util
         {
             if (IS_CHECKED)
             {
-                SetIsInFirstState(false);
+                TwoStateEntity::SetIsInFirstState(false);
             }
 
-            SetupSprites(BRIGHTNESS);
+            CheckBox::SetupSprites(BRIGHTNESS);
             Setup(POS_LEFT, POS_TOP, IS_INVALID);
         }
 
@@ -107,10 +107,10 @@ namespace sfml_util
         {
             if (IS_CHECKED)
             {
-                SetIsInFirstState(false);
+                TwoStateEntity::SetIsInFirstState(false);
             }
 
-            SetupSprites(BRIGHTNESS);
+            CheckBox::SetupSprites(BRIGHTNESS);
             Setup(POS_LEFT, POS_TOP, IS_INVALID);
         }
 

@@ -655,6 +655,11 @@ namespace item
                 SetTypesAndReturn(PROFILE, item::MiscItemFactory::Instance()->Make(PROFILE)));
         }
 
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (itemPtr != nullptr),
+            "item::ItemFactory::Make(profile="
+                << PROFILE.ToString() << ") failed to create an item based on that profile.");
+
         if (PROFILE.UniqueType() == unique_type::MagnifyingGlass)
         {
             itemPtr->AddCategory(category::ShowsEnemyInfo);
@@ -668,11 +673,6 @@ namespace item
         itemPtr->SetSummonInfo(PROFILE.Summoning());
 
         AppendElementTypeToName(itemPtr, PROFILE);
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (itemPtr != nullptr),
-            "item::ItemFactory::Make(profile="
-                << PROFILE.ToString() << ") failed to create an item based on that profile.");
 
         return itemPtr;
     }

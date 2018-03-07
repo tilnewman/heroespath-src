@@ -275,8 +275,6 @@ namespace popup
         , keepAliveSeconds_(-1.0f) // any negative will work here
     {}
 
-    PopupInfo::~PopupInfo() = default;
-
     PopupInfo::PopupInfo(const PopupInfo & PI)
         : name_(PI.name_)
         , textInfo_(PI.textInfo_)

@@ -106,7 +106,7 @@ namespace sfml_util
             , color_(SPRITE_COLOR)
             , callbackHandlerPtr_(nullptr)
         {
-            Setup(
+            FourStateButton::Setup(
                 POS_LEFT,
                 POS_TOP,
                 IMAGE_PATH_UP,
@@ -160,7 +160,7 @@ namespace sfml_util
             , color_(SPRITE_COLOR)
             , callbackHandlerPtr_(nullptr)
         {
-            Setup(
+            FourStateButton::Setup(
                 POS_LEFT,
                 POS_TOP,
                 IMAGE_UP,

@@ -81,7 +81,6 @@ namespace popup
         PopupManager & operator=(const PopupManager &) = delete;
         PopupManager & operator=(const PopupManager &&) = delete;
 
-    public:
         PopupManager();
         ~PopupManager();
 
@@ -98,42 +97,30 @@ namespace popup
         const std::string BackgroundImagePath(const PopupImage::Enum IMAGE) const;
 
         // colors
-        static inline sf::Color Color_Fade() { return sf::Color(0, 0, 0, 127); }
+        static inline sf::Color Color_Fade() { return { 0, 0, 0, 12 }; }
         static inline sf::Color Color_Font() { return fontColor_; }
 
         // speed multipliers
         static inline float SpeedMult_Fade() { return 500.0f; }
 
         // inner rects that content can appear within
-        static inline sf::IntRect Rect_Banner() { return sf::IntRect(78, 32, 338, 184); }
+        static inline sf::IntRect Rect_Banner() { return { 78, 32, 338, 18 }; }
 
-        static inline sf::IntRect Rect_Regular() { return sf::IntRect(32, 32, 431, 268); }
+        static inline sf::IntRect Rect_Regular() { return { 32, 32, 431, 26 }; }
 
-        static inline sf::IntRect Rect_RegularSidebar() { return sf::IntRect(115, 32, 347, 268); }
+        static inline sf::IntRect Rect_RegularSidebar() { return { 115, 32, 347, 26 }; }
 
-        static inline sf::IntRect Rect_Large() { return sf::IntRect(47, 47, 407, 403); }
+        static inline sf::IntRect Rect_Large() { return { 47, 47, 407, 40 }; }
 
-        static inline sf::IntRect Rect_LargeSidebar() { return sf::IntRect(85, 47, 360, 403); }
+        static inline sf::IntRect Rect_LargeSidebar() { return { 85, 47, 360, 40 }; }
 
-        static inline sf::IntRect Rect_Spellbook_PageLeft()
-        {
-            return sf::IntRect(165, 155, 652, 990);
-        }
+        static inline sf::IntRect Rect_Spellbook_PageLeft() { return { 165, 155, 652, 99 }; }
 
-        static inline sf::IntRect Rect_Spellbook_PageRight()
-        {
-            return sf::IntRect(932, 155, 652, 990);
-        }
+        static inline sf::IntRect Rect_Spellbook_PageRight() { return { 932, 155, 652, 99 }; }
 
-        static inline sf::IntRect Rect_MusicSheet_LeftSide()
-        {
-            return sf::IntRect(116, 116, 700, 843);
-        }
+        static inline sf::IntRect Rect_MusicSheet_LeftSide() { return { 116, 116, 700, 84 }; }
 
-        static inline sf::IntRect Rect_MusicSheet_RightSide()
-        {
-            return sf::IntRect(816, 116, 700, 843);
-        }
+        static inline sf::IntRect Rect_MusicSheet_RightSide() { return { 816, 116, 700, 84 }; }
 
         // throws range_error on an unknown enum value
         const sf::IntRect Rect(const PopupImage::Enum, const float SCALE = 1.0f) const;

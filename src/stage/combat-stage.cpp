@@ -289,7 +289,7 @@ namespace stage
         restoreInfo_.CanTurnAdvance(false);
     }
 
-    CombatStage::~CombatStage() { ClearAllEntities(); }
+    CombatStage::~CombatStage() { Stage::ClearAllEntities(); }
 
     bool CombatStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &)
     {

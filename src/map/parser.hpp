@@ -101,8 +101,7 @@ namespace map
         Parser & operator=(const Parser &) = delete;
         Parser & operator=(const Parser &&) = delete;
 
-    public:
-        Parser() {}
+        Parser() = default;
 
         void Parse(ParsePacket &) const;
 

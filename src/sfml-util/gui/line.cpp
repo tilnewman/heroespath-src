@@ -63,7 +63,7 @@ namespace sfml_util
             , offScreenTexture_()
         {
             Setup(POS_LEFT, POS_TOP, LENGTH);
-            SetWillAcceptFocus(false);
+            GuiEntity::SetWillAcceptFocus(false);
         }
 
         Line::Line(
@@ -85,7 +85,7 @@ namespace sfml_util
             , finalSprite_()
             , offScreenTexture_()
         {
-            SetWillAcceptFocus(false);
+            GuiEntity::SetWillAcceptFocus(false);
         }
 
         void Line::Setup(const float POS_LEFT, const float POS_TOP, const std::size_t LENGTH)
@@ -218,7 +218,7 @@ namespace sfml_util
             if (ORIENTATION_ == Orientation::Horiz)
             {
                 // create
-                unsigned int createWidthToUse(static_cast<unsigned int>(length_));
+                auto createWidthToUse(static_cast<unsigned int>(length_));
                 if ((0 == middleCount_) && (0 == pixelsOfMiddleToUse_) && (WILL_CAP_ENDS_))
                 {
                     createWidthToUse = static_cast<unsigned int>(
@@ -283,7 +283,7 @@ namespace sfml_util
             else
             {
                 // create off-screen texture
-                unsigned int createHeightToUse(static_cast<unsigned int>(length_));
+                auto createHeightToUse(static_cast<unsigned int>(length_));
                 if ((0 == middleCount_) && (0 == pixelsOfMiddleToUse_) && (WILL_CAP_ENDS_))
                 {
                     createHeightToUse = static_cast<unsigned int>(

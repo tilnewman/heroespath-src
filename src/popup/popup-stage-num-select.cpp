@@ -70,23 +70,10 @@ namespace popup
 
         selection_ = static_cast<int>(CURR_VAL);
 
-        std::ostringstream minNumSS;
-        minNumSS << popupInfo_.NumberSelMin();
-        std::string numStr(minNumSS.str());
-
-        try
-        {
-            numStr = boost::lexical_cast<std::string>(CURR_VAL);
-        }
-        catch (...)
-        {
-            numStr = minNumSS.str();
-        }
-
         if ((textEntryBoxUPtr_.get() != nullptr) && willSliderbarUpdate_)
         {
             willTextBoxUpdate_ = false;
-            textEntryBoxUPtr_->SetText(numStr);
+            textEntryBoxUPtr_->SetText(std::to_string(CURR_VAL));
             willTextBoxUpdate_ = true;
             SetupInfoText("");
         }

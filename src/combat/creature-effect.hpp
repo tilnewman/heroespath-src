@@ -64,9 +64,6 @@ namespace combat
             const creature::CreaturePtr_t CREATURE_PTR = nullptr,
             const HitInfoVec_t & HIT_INFO_VEC = HitInfoVec_t());
 
-        CreatureEffect(const CreatureEffect &);
-        CreatureEffect & operator=(const CreatureEffect &);
-
         inline std::size_t GetCount() const { return hitInfoVec_.size(); }
         inline const HitInfoVec_t & GetHitInfoVec() const { return hitInfoVec_; }
         inline creature::CreaturePtr_t GetCreature() const { return creaturePtr_; }

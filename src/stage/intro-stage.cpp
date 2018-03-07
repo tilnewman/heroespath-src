@@ -62,7 +62,7 @@ namespace stage
         // Intro Stage, then set it back again once leaving the Intro Stage.
         sfml_util::SoundManager::Instance()->MusicVolumeFadeToCurrent(sfml_util::music::Theme);
 
-        ClearAllEntities();
+        Stage::ClearAllEntities();
     }
 
     void IntroStage::Setup()

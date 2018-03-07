@@ -50,28 +50,6 @@ namespace combat
         , creaturePtr_(CREATURE_PTR)
     {}
 
-    CreatureEffect::CreatureEffect(const CreatureEffect & CE)
-        : hitInfoVec_(CE.hitInfoVec_)
-        ,
-
-        // The lifetime of these objects is not managed by this class.
-        // Usage is short-term observation only, so ptr copying is safe.
-        creaturePtr_(CE.creaturePtr_)
-    {}
-
-    CreatureEffect & CreatureEffect::operator=(const CreatureEffect & CE)
-    {
-        if (&CE != this)
-        {
-            hitInfoVec_ = CE.hitInfoVec_;
-
-            // see copy constructor comment regarding these pointers
-            creaturePtr_ = CE.creaturePtr_;
-        }
-
-        return *this;
-    }
-
     bool CreatureEffect::GetWasHit() const
     {
         for (auto const & NEXT_HIT_INFO : hitInfoVec_)

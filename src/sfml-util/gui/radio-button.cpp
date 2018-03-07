@@ -69,10 +69,10 @@ namespace sfml_util
         {
             if (IS_SELECTED)
             {
-                SetIsInFirstState(false);
+                TwoStateEntity::SetIsInFirstState(false);
             }
 
-            SetupSprites(BRIGHTNESS);
+            RadioButton::SetupSprites(BRIGHTNESS);
             Setup(POS_LEFT, POS_TOP, IS_INVALID);
         }
 
@@ -89,10 +89,10 @@ namespace sfml_util
         {
             if (IS_SELECTED)
             {
-                SetIsInFirstState(false);
+                TwoStateEntity::SetIsInFirstState(false);
             }
 
-            SetupSprites(BRIGHTNESS);
+            RadioButton::SetupSprites(BRIGHTNESS);
             Setup(POS_LEFT, POS_TOP, IS_INVALID);
         }
 
@@ -112,10 +112,10 @@ namespace sfml_util
         {
             if (IS_SELECTED)
             {
-                SetIsInFirstState(false);
+                TwoStateEntity::SetIsInFirstState(false);
             }
 
-            SetupSprites(BRIGHTNESS);
+            RadioButton::SetupSprites(BRIGHTNESS);
             Setup(POS_LEFT, POS_TOP, IS_INVALID);
         }
 

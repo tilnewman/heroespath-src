@@ -69,10 +69,6 @@ namespace sfml_util
                 const sf::Color & COLOR,
                 const Justified::Enum JUSTIFIED);
 
-            TextInfo(const TextInfo &);
-
-            TextInfo & operator=(const TextInfo &);
-
             // returns true if there is non-empty text and a non-null font pointer
             inline bool IsValid() const
             {

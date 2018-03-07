@@ -50,9 +50,8 @@ namespace game
         GameDataFile & operator=(const GameDataFile &) = delete;
         GameDataFile & operator=(const GameDataFile &&) = delete;
 
-    public:
         GameDataFile();
-        virtual ~GameDataFile();
+        virtual ~GameDataFile() = default;
         static GameDataFile * Instance();
         static void Acquire();
         static void Release();

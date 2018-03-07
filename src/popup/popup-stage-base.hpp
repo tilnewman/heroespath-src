@@ -56,7 +56,6 @@ namespace popup
         PopupStageBase & operator=(const PopupStageBase &) = delete;
         PopupStageBase & operator=(const PopupStageBase &&) = delete;
 
-    public:
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageBase();
 

@@ -81,7 +81,7 @@ namespace stage
 
     LoadGameStage::~LoadGameStage()
     {
-        ClearAllEntities();
+        Stage::ClearAllEntities();
 
         for (auto & nextGameStatePtr : gamestatePSet_)
         {

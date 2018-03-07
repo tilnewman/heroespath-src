@@ -114,7 +114,6 @@ namespace log
         LogBase & operator=(const LogBase &) = delete;
         LogBase & operator=(const LogBase &&) = delete;
 
-    public:
         explicit LogBase(
             const std::string & fileName = FILE_NAME_DEFAULT,
             const std::string & fileNameExt = FILE_NAME_EXT_DEFAULT,
@@ -163,7 +162,7 @@ namespace log
             const std::string & FILE = "",
             const int LINE = -1);
 
-        virtual void OpenNextFile();
+        void OpenNextFile();
 
         virtual void EchoToConsole(
             const std::string & MSG,
@@ -185,7 +184,7 @@ namespace log
         //
         // NOTE:  If writing to the log in these overrides, always
         //       use FlushActual() instead of FlushWrapper().
-        virtual void OnFileOpen();
+        void OnFileOpen();
         virtual void OnFileClose(const bool WAS_SIZE_EXCEEDED = false);
         virtual void OnFlushBeforeFileWrite(const std::string &, LogPri::Enum &);
         virtual void OnFlushBeforeConsoleWrite(const std::string &, LogPri::Enum &);

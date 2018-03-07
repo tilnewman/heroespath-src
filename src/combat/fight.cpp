@@ -1201,18 +1201,18 @@ namespace combat
         // In this case, everything that could be equal WAS equal, so let the player win.
         if (false == hasHitBeenDetermined)
         {
+            // hasHitBeenDetermined = true;
+
             if (creatureAttackingPtrC->IsPlayerCharacter()
                 && creatureDefendingPtrC->IsPlayerCharacter())
             {
                 // In this case, both attacker and defender are players,
                 // so let fair coin toss determine the hit.
                 wasHit = misc::random::Bool();
-                hasHitBeenDetermined = true;
             }
             else
             {
                 wasHit = creatureAttackingPtrC->IsPlayerCharacter();
-                hasHitBeenDetermined = true;
             }
         }
 
@@ -1220,7 +1220,7 @@ namespace combat
         if (WILL_FORCE_HIT && (false == wasHit))
         {
             wasHit = true;
-            hasHitBeenDetermined = true;
+            // hasHitBeenDetermined = true;
         }
 
         Health_t damage{ 0_health };

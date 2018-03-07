@@ -63,32 +63,6 @@ namespace combat
         , songPtr_(SONG_PTR)
     {}
 
-    TurnActionInfo::TurnActionInfo(const TurnActionInfo & TAI)
-        : actionType_(TAI.actionType_)
-        ,
-
-        // The lifetime of these objects is not managed by this class.
-        // Usage is short-term observation only, so ptr copying is safe.
-        targetsPVec_(TAI.targetsPVec_)
-        , spellPtr_(TAI.spellPtr_)
-        , songPtr_(TAI.songPtr_)
-    {}
-
-    TurnActionInfo & TurnActionInfo::operator=(const TurnActionInfo & TAI)
-    {
-        if (&TAI != this)
-        {
-            actionType_ = TAI.actionType_;
-
-            // See comment in the copy constructor regarding these pointers.
-            targetsPVec_ = TAI.targetsPVec_;
-            spellPtr_ = TAI.spellPtr_;
-            songPtr_ = TAI.songPtr_;
-        }
-
-        return *this;
-    }
-
     creature::CreaturePtr_t TurnActionInfo::Target() const
     {
         if (targetsPVec_.empty())

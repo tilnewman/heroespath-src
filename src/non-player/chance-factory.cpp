@@ -653,8 +653,7 @@ namespace non_player
 
                         for (int i(0); i < weapon::projectile_type::Count; ++i)
                         {
-                            const weapon::projectile_type::Enum TYPE(
-                                static_cast<weapon::projectile_type::Enum>(i));
+                            auto const TYPE{ static_cast<weapon::projectile_type::Enum>(i) };
 
                             SetWeaponChances<weapon::projectile_type::Enum>(
                                 weapon::projectile_type::ToString(TYPE),
@@ -1655,7 +1654,7 @@ namespace non_player
             for (auto const NEXT_MATERIAL : MATERIALS_VEC)
             {
                 auto const NEXT_VALUE_STR{ game::GameDataFile::Instance()->GetCopyStr(
-                    PREFIX + item::material::ToString(NEXT_MATERIAL) + POSTFIX) };
+                    (PREFIX + item::material::ToString(NEXT_MATERIAL)).append(POSTFIX)) };
 
                 if (NEXT_VALUE_STR == "remaining")
                 {
@@ -1664,7 +1663,7 @@ namespace non_player
                 else
                 {
                     auto const NEXT_VALUE_FLOAT{ game::GameDataFile::Instance()->GetCopyFloat(
-                        PREFIX + item::material::ToString(NEXT_MATERIAL) + POSTFIX) };
+                        (PREFIX + item::material::ToString(NEXT_MATERIAL)).append(POSTFIX)) };
 
                     if (false == misc::IsRealClose(0.0f, NEXT_VALUE_FLOAT))
                     {

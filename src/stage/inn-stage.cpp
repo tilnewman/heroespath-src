@@ -66,7 +66,7 @@ namespace stage
         , bottomSymbol_()
     {}
 
-    InnStage::~InnStage() { ClearAllEntities(); }
+    InnStage::~InnStage() { Stage::ClearAllEntities(); }
 
     void InnStage::Setup()
     {

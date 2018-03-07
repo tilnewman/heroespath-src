@@ -61,7 +61,7 @@ namespace item
         auto const MATERIAL_STRINGS{ boost::algorithm::erase_all_copy(
             *MATERIAL_STRING_ITER, "mat=") };
 
-        auto const COMMA_POS{ MATERIAL_STRINGS.find(",") };
+        auto const COMMA_POS{ MATERIAL_STRINGS.find(',') };
 
         auto const MATERIAL_STRING_PRI{ MATERIAL_STRINGS.substr(0, COMMA_POS) };
 

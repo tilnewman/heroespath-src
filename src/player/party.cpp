@@ -122,8 +122,7 @@ namespace player
 
         const creature::UniqueTraits_t TRAITS(CREATURE_CPTRC->UniqueTraits());
 
-        for (CharacterPVec_t::iterator iter(charactersPVec_.begin()); iter != charactersPVec_.end();
-             ++iter)
+        for (auto iter(charactersPVec_.begin()); iter != charactersPVec_.end(); ++iter)
         {
             if (TRAITS == (*iter)->UniqueTraits())
             {
@@ -169,8 +168,7 @@ namespace player
                 << charactersPVec_.size() - 1 << ")");
 
         std::size_t indexCounter(0);
-        for (CharacterPVec_t::iterator iter(charactersPVec_.begin()); iter != charactersPVec_.end();
-             ++iter)
+        for (auto iter(charactersPVec_.begin()); iter != charactersPVec_.end(); ++iter)
         {
             if (indexCounter++ == INDEX_NUM)
             {

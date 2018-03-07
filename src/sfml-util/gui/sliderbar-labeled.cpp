@@ -108,7 +108,7 @@ namespace sfml_util
 
         void SliderBarLabeled::OnChange(const float NEW_VALUE_FLOAT)
         {
-            const int NEW_VALUE_INT(static_cast<int>(NEW_VALUE_FLOAT * 100.0f));
+            auto const NEW_VALUE_INT{ static_cast<int>(NEW_VALUE_FLOAT * 100.0f) };
 
             TextInfo textInfo{ GetTextInfoFromSliderValue(NEW_VALUE_INT) };
 
