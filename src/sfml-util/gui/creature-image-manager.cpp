@@ -138,8 +138,7 @@ namespace sfml_util
                         auto const SEX_STR{ creature::sex::ToString(SEX_ENUM) };
 
                         // test to ensure that BodyType maker will not throw
-                        auto const BODY_TYPE{ creature::BodyType::Make_FromRaceAndRole(
-                            RACE_ENUM, ROLE_ENUM) };
+                        creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM);
 
                         if (RACE_ENUM == creature::race::Wolfen)
                         {
