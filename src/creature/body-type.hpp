@@ -63,8 +63,6 @@ namespace creature
             const std::size_t NUM_TENDRILS = 0,
             const bool HAS_BREATH = false);
 
-        virtual ~BodyType();
-
         inline auto NumHeads() const { return num_heads_; }
         inline auto NumArms() const { return num_arms_; }
         inline auto NumLegs() const { return num_legs_; }
