@@ -494,15 +494,7 @@ namespace sfml_util
         return sfxSetVec_[INDEX];
     }
 
-    void SoundManager::SoundEffectPlay(const sound_effect::Enum E, const float PRE_DELAY_SEC)
-    {
-        if ((E != sound_effect::None) && (E != sound_effect::Count && (E != sound_effect::Random)))
-        {
-            sfxToPlayPairsVec_.emplace_back(std::make_pair(E, PRE_DELAY_SEC));
-        }
-    }
-
-    void SoundManager::SoundEffectPlayNow(const sound_effect::Enum SFX_ENUM)
+    void SoundManager::SoundEffectPlay(const sound_effect::Enum SFX_ENUM)
     {
         auto & sfxWrapper{ sfxWrapperVec_[SFX_ENUM] };
 
@@ -519,6 +511,14 @@ namespace sfml_util
         // because I decided that repeated plays of the same
         // sfx will restart if not allowed to finish.
         sfxWrapper.Play();
+    }
+
+    void SoundManager::SoundEffectPlay(const sound_effect::Enum E, const float PRE_DELAY_SEC)
+    {
+        if ((E != sound_effect::None) && (E != sound_effect::Count && (E != sound_effect::Random)))
+        {
+            sfxToPlayPairsVec_.emplace_back(std::make_pair(E, PRE_DELAY_SEC));
+        }
     }
 
     void SoundManager::PlaySfx_AckMinor()
@@ -899,7 +899,7 @@ namespace sfml_util
             if (IsSfxDelayPairReadyToPlay(sfxDelayPair))
             {
                 willCleanup = true;
-                SoundEffectPlayNow(sfxDelayPair.first);
+                SoundEffectPlay(sfxDelayPair.first);
             }
         }
 

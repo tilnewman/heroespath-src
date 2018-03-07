@@ -506,7 +506,7 @@ namespace map
             {
                 if (IS_DOOR_OPENING)
                 {
-                    sfml_util::SoundManager::Instance()->SoundEffectPlayNow(TRANS_SFX);
+                    sfml_util::SoundManager::Instance()->SoundEffectPlay(TRANS_SFX);
                 }
                 else
                 {

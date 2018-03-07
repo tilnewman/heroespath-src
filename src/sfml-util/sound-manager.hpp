@@ -121,9 +121,9 @@ namespace sfml_util
 
         const SfxSet & Getsound_effect_set(const sound_effect_set::Enum) const;
 
-        void SoundEffectPlay(const sound_effect::Enum SFX_ENUM, const float PRE_DELAY_SEC = 0.0f);
+        void SoundEffectPlay(const sound_effect::Enum);
 
-        void SoundEffectPlayNow(const sound_effect::Enum);
+        void SoundEffectPlay(const sound_effect::Enum SFX_ENUM, const float PRE_DELAY_SEC);
 
         void PlaySfx_AckMinor();
         void PlaySfx_AckMajor();
