@@ -42,19 +42,19 @@ namespace interact
             {
                 case 0:
                 {
-                    return CapFirstLetter(Random(MonkThings())) + " is "
-                        + Random(StrVec_t{ "a", "your" }) + " choice.  "
-                        + Random(StrVec_t{ "What have you chosen?", "What will you choose?" });
+                    return CapFirstLetter(Random(MonkThings())) + " is " + Random({ "a", "your" })
+                        + " choice.  "
+                        + Random({ "What have you chosen?", "What will you choose?" });
                 }
                 case 1:
                 {
-                    return "May " + Random(MonkThings()) + Random(StrVec_t{ " be with ", " find " })
-                        + Random(StrVec_t{ "you.", "you all." });
+                    return "May " + Random(MonkThings()) + Random({ " be with ", " find " })
+                        + Random({ "you.", "you all." });
                 }
                 case 2:
                 {
-                    return "Peace " + Random(StrVec_t{ "be with ", "to " })
-                        + Random(StrVec_t{ "you.", "you all." });
+                    return "Peace " + Random({ "be with ", "to " })
+                        + Random({ "you.", "you all." });
                 }
                 case 3:
                 {
@@ -62,17 +62,17 @@ namespace interact
                 }
                 case 4:
                 {
-                    return "This is a place " + Random(StrVec_t{ "for ", "of " })
-                        + Random(MonkThings()) + ".";
+                    return "This is a place " + Random({ "for ", "of " }) + Random(MonkThings())
+                        + ".";
                 }
                 case 5:
                 {
-                    return "You " + Random(StrVec_t{ "have found ", "speak with " }) + "a humble "
-                        + Random(StrVec_t{ "brother.", "monk." });
+                    return "You " + Random({ "have found ", "speak with " }) + "a humble "
+                        + Random({ "brother.", "monk." });
                 }
                 case 6:
                 {
-                    return Random(StrVec_t{ "All are ", "You are all " }) + "welcome here.";
+                    return Random({ "All are ", "You are all " }) + "welcome here.";
                 }
                 case 7:
                 {
@@ -80,9 +80,8 @@ namespace interact
                 }
                 case 8:
                 {
-                    return "Your lives have led you " + Random(StrVec_t{ "here.  ", "to me.  " })
-                        + Random(StrVec_t{ "Think ", "Meditate " }) + "on "
-                        + Random(StrVec_t{ "it.", "that." });
+                    return "Your lives have led you " + Random({ "here.  ", "to me.  " })
+                        + Random({ "Think ", "Meditate " }) + "on " + Random({ "it.", "that." });
                 }
                 case 9:
                 {
@@ -90,54 +89,50 @@ namespace interact
                 }
                 case 10:
                 {
-                    return "I " + Random(StrVec_t{ "follow the ", "seek the " })
-                        + Random(StrVec_t{ "righteous ", "one true " })
-                        + Random(StrVec_t{ "path.", "way." });
+                    return "I " + Random({ "follow the ", "seek the " })
+                        + Random({ "righteous ", "one true " }) + Random({ "path.", "way." });
                 }
                 case 11:
                 {
-                    return Random(StrVec_t{ "The ", "My ", "Our " }) + "master is away.";
+                    return Random({ "The ", "My ", "Our " }) + "master is away.";
                 }
                 case 12:
                 {
-                    return "Find "
-                        + Random(StrVec_t{ "peace ", "your true calling ", "your path " })
-                        + Random(StrVec_t{ "here in ", "here with us among " })
-                        + Random(StrVec_t{ "the monks.", "the order.", "our order." });
+                    return "Find " + Random({ "peace ", "your true calling ", "your path " })
+                        + Random({ "here in ", "here with us among " })
+                        + Random({ "the monks.", "the order.", "our order." });
                 }
                 case 13:
                 {
-                    return Random(StrVec_t{
-                               "Have you found ", "Are you looking for ", "Are you seeking " })
+                    return Random({ "Have you found ", "Are you looking for ", "Are you seeking " })
                         + Random(MonkThings()) + "?";
                 }
                 case 14:
                 {
-                    return "Are you considering " + Random(StrVec_t{ "a life ", "life " })
-                        + Random(StrVec_t{ "among ", "with " })
-                        + Random(StrVec_t{ "us?", "the monks?", "the brothers?" });
+                    return "Are you considering " + Random({ "a life ", "life " })
+                        + Random({ "among ", "with " })
+                        + Random({ "us?", "the monks?", "the brothers?" });
                 }
                 case 15:
                 {
                     return "If I speak of " + Random(MonkThings()) + ", will you "
-                        + Random(StrVec_t{ "really listen?", "truly hear?" });
+                        + Random({ "really listen?", "truly hear?" });
                 }
                 case 16:
                 {
-                    return Random(StrVec_t{ "May our paths ", "Our paths " })
-                        + Random(StrVec_t{ "cross", "join" })
-                        + Random(StrVec_t{ " peacefully.", "." });
+                    return Random({ "May our paths ", "Our paths " }) + Random({ "cross", "join" })
+                        + Random({ " peacefully.", "." });
                 }
                 case 17:
                 {
-                    return Random(StrVec_t{ "May " + Random(MonkThings()),
-                                            CapFirstLetter(Random(MonkThings())) })
-                        + Random(StrVec_t{ " follow you.", " be with you." });
+                    return Random({ "May " + Random(MonkThings()),
+                                    CapFirstLetter(Random(MonkThings())) })
+                        + Random({ " follow you.", " be with you." });
                 }
                 default:
                 {
-                    return Random(StrVec_t{ "Do you dream of ", "Have you found " })
-                        + Random(MonkThings()) + "?";
+                    return Random({ "Do you dream of ", "Have you found " }) + Random(MonkThings())
+                        + "?";
                 }
             }
         };

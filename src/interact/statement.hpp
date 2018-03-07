@@ -47,11 +47,9 @@ namespace interact
 
             using StrVec_t = std::vector<std::string>;
 
-            template <typename T>
-            const std::string Random(const std::vector<T> & V)
+            const std::string Random(const std::vector<std::string> & V)
             {
-                return (
-                    (V.empty()) ? std::string(T()) : std::string(misc::Vector::SelectRandom(V)));
+                return ((V.empty()) ? std::string() : std::string(misc::Vector::SelectRandom(V)));
             }
 
             template <typename T>

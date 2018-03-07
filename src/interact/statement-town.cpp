@@ -43,73 +43,69 @@ namespace interact
 
             if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(party)))
             {
-                return "They let you "
-                    + Random(StrVec_t{ "walk around", "in here", "in " + TownName() }) + " with "
-                    + Random(Combinations({ "that" }, { "beast", "creature", "thing" }))
-                    + Random(StrVec_t{ "?", "?!" });
+                return "They let you " + Random({ "walk around", "in here", "in " + TownName() })
+                    + " with " + Random(Combinations({ "that" }, { "beast", "creature", "thing" }))
+                    + Random({ "?", "?!" });
             }
 
             if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(party)))
             {
-                return Random(StrVec_t{ "They ", "The guard ", "The guards " })
-                    + Random(StrVec_t{ "allowed ", "let " })
-                    + Random(StrVec_t{ "you in here ", "you in this town " }) + "with that beast"
-                    + Random(StrVec_t{ "?", "?!" });
+                return Random({ "They ", "The guard ", "The guards " })
+                    + Random({ "allowed ", "let " })
+                    + Random({ "you in here ", "you in this town " }) + "with that beast"
+                    + Random({ "?", "?!" });
             }
 
             switch (misc::random::Int(7))
             {
                 case 0:
                 {
-                    return Random(StrVec_t{ "You're not from ", "Not from " })
-                        + Random(StrVec_t{ "these parts", "around here", TownName() })
-                        + Random(StrVec_t{ " are you?", " eh?" });
+                    return Random({ "You're not from ", "Not from " })
+                        + Random({ "these parts", "around here", TownName() })
+                        + Random({ " are you?", " eh?" });
                 }
                 case 1:
                 {
-                    return Random(StrVec_t{ "New to ", "You all must be new to " }) + TownName()
-                        + ", eh?";
+                    return Random({ "New to ", "You all must be new to " }) + TownName() + ", eh?";
                 }
                 case 2:
                 {
                     return "Welcome to " + TownName()
-                        + Random(StrVec_t{
-                              " " + Random(PartyNames()) + PeriodOrBang(), PeriodOrBang() });
+                        + Random({ " " + Random(PartyNames()) + PeriodOrBang(), PeriodOrBang() });
                 }
                 case 3:
                 {
-                    return Random(StrVec_t{ "Are you ", "You " }) + "with the "
-                        + Random(StrVec_t{ "town", TownName() }) + " guard?";
+                    return Random({ "Are you ", "You " }) + "with the "
+                        + Random({ "town", TownName() }) + " guard?";
                 }
                 case 4:
                 {
                     return CapFirstLetter(Random(WeatherAdjectives())) + " " + Random(TimesOfDay())
-                        + PrependIf(Random(StrVec_t{ "here", "" }), " ")
-                        + PrependIf(Random(StrVec_t{ "in " + TownName(), "" }), " ")
-                        + Random(StrVec_t{ ".  Isn't it?", ".  Don't you think?", PeriodOrBang() });
+                        + PrependIf(Random({ "here", "" }), " ")
+                        + PrependIf(Random({ "in " + TownName(), "" }), " ")
+                        + Random({ ".  Isn't it?", ".  Don't you think?", PeriodOrBang() });
                 }
                 case 5:
                 {
-                    return "This is " + Random(StrVec_t{ "such a ", "a " })
-                        + Random(WeatherAdjectives()) + Random(StrVec_t{ " place.", " town." });
+                    return "This is " + Random({ "such a ", "a " }) + Random(WeatherAdjectives())
+                        + Random({ " place.", " town." });
                 }
                 case 6:
                 {
-                    return "Ever " + Random(StrVec_t{ "been to ", "seen " }) + "such a "
-                        + Random(WeatherAdjectives()) + Random(StrVec_t{ " place?", " town?" });
+                    return "Ever " + Random({ "been to ", "seen " }) + "such a "
+                        + Random(WeatherAdjectives()) + Random({ " place?", " town?" });
                 }
                 default:
                 {
-                    return Random(StrVec_t{ "I guess ", "So " })
-                        + Random(StrVec_t{ "they",
-                                           "the guard",
-                                           "the guards",
-                                           "the " + TownName() + " guard",
-                                           "the " + TownName() + " guards" })
-                        + Random(StrVec_t{ " will let anyone ", " let anyone " })
-                        + Random(StrVec_t{ "in", "through the gate", "through the gates" })
-                        + Random(StrVec_t{ " these days", " anymore", " nowadays" })
-                        + PeriodOrBang();
+                    return Random({ "I guess ", "So " })
+                        + Random({ "they",
+                                   "the guard",
+                                   "the guards",
+                                   "the " + TownName() + " guard",
+                                   "the " + TownName() + " guards" })
+                        + Random({ " will let anyone ", " let anyone " })
+                        + Random({ "in", "through the gate", "through the gates" })
+                        + Random({ " these days", " anymore", " nowadays" }) + PeriodOrBang();
                 }
             }
         };

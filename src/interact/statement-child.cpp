@@ -47,11 +47,9 @@ namespace interact
             {
                 case 0:
                 {
-                    return Random(
-                               StrVec_t{ "I'm not supposed to", "Not supposed to", "I shouldn't" })
-                        + " talk " + Random(StrVec_t{ "with", "to" })
-                        + Random(StrVec_t{ " strangers", " " + Random(PartyNames()) })
-                        + PeriodOrBang();
+                    return Random({ "I'm not supposed to", "Not supposed to", "I shouldn't" })
+                        + " talk " + Random({ "with", "to" })
+                        + Random({ " strangers", " " + Random(PartyNames()) }) + PeriodOrBang();
                 }
                 case 1:
                 {
@@ -59,14 +57,13 @@ namespace interact
                 }
                 case 2:
                 {
-                    return "I'll run and tell " + Random(StrVec_t{ "my ", "" }) + Random(Parents())
-                        + Random(StrVec_t{ " on you", "" }) + PeriodOrBang();
+                    return "I'll run and tell " + Random({ "my ", "" }) + Random(Parents())
+                        + Random({ " on you", "" }) + PeriodOrBang();
                 }
                 case 3:
                 {
                     return CapFirstLetter(Random(Parents()))
-                        + Random(StrVec_t{ "", "!  Strangers", "!  " + Random(PartyNames()) })
-                        + "!";
+                        + Random({ "", "!  Strangers", "!  " + Random(PartyNames()) }) + "!";
                 }
                 case 4:
                 {
@@ -78,9 +75,8 @@ namespace interact
                 }
                 case 6:
                 {
-                    const std::string COUNT{ Random(StrVec_t{ "a ", "two ", "three " }) };
-                    return "I have " + COUNT
-                        + Random(StrVec_t{ "", Random(JokeAdjectives()) + " " })
+                    const std::string COUNT{ Random({ "a ", "two ", "three " }) };
+                    return "I have " + COUNT + Random({ "", Random(JokeAdjectives()) + " " })
                         + Random(Relations()) + ((COUNT == "a") ? "" : "s") + ".";
                 }
                 case 7:
@@ -96,8 +92,7 @@ namespace interact
                 case 9:
                 {
                     return "Do you have "
-                        + Random(StrVec_t{
-                              "a " + Random(Relations()), "any " + Random(Relations()) + "s" })
+                        + Random({ "a " + Random(Relations()), "any " + Random(Relations()) + "s" })
                         + "?";
                 }
                 case 10:
@@ -116,39 +111,39 @@ namespace interact
                 case 13:
                 {
                     return "Wanna play "
-                        + Random(StrVec_t{ "hide and seek",
-                                           "lick the fish",
-                                           "chase the pixie",
-                                           "guess what you're eating",
-                                           "who can spit the farthest",
-                                           "who can eat the most pond scum",
-                                           "angry birds" })
-                        + "?" + Random(StrVec_t{ "  Bet you I'll win!", "" });
+                        + Random({ "hide and seek",
+                                   "lick the fish",
+                                   "chase the pixie",
+                                   "guess what you're eating",
+                                   "who can spit the farthest",
+                                   "who can eat the most pond scum",
+                                   "angry birds" })
+                        + "?" + Random({ "  Bet you I'll win!", "" });
                 }
                 case 14:
                 {
                     const std::string DAREME{ "Dare me to" };
                     const std::string WANNA{ "Wanna" };
 
-                    const std::string PROP{ Random(StrVec_t{
-                        "Dare you to", DAREME, WANNA, "Let's", "Bet you can't", "I'm gonna " }) };
+                    const std::string PROP{ Random(
+                        { "Dare you to", DAREME, WANNA, "Let's", "Bet you can't", "I'm gonna " }) };
 
                     auto const WAS_QUESTION{ (PROP == WANNA) || (PROP == DAREME) };
 
                     return PROP + " "
-                        + Random(StrVec_t{ "throw rocks at a town guard",
-                                           "eat cowpies",
-                                           "pee in the town well",
-                                           "light a monk's robe on fire",
-                                           "put a bullfrog up my sister's skirt",
-                                           "tease the king",
-                                           "eat this mushroom",
-                                           "lick this toad",
-                                           "kiss my ugly " + Random(Relations()),
-                                           "take the pants off a sleeping drunkard",
-                                           "steal from my " + Random(ParentsAndRelations()),
-                                           "eat from a witch's garden",
-                                           "put boogers in the baker's dough" })
+                        + Random({ "throw rocks at a town guard",
+                                   "eat cowpies",
+                                   "pee in the town well",
+                                   "light a monk's robe on fire",
+                                   "put a bullfrog up my sister's skirt",
+                                   "tease the king",
+                                   "eat this mushroom",
+                                   "lick this toad",
+                                   "kiss my ugly " + Random(Relations()),
+                                   "take the pants off a sleeping drunkard",
+                                   "steal from my " + Random(ParentsAndRelations()),
+                                   "eat from a witch's garden",
+                                   "put boogers in the baker's dough" })
                         + ((WAS_QUESTION) ? std::string("?") : std::string("."));
                 }
                 default:
