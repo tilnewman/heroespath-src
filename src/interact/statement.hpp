@@ -104,18 +104,21 @@ namespace interact
             // Not using the real list because not all sound right in conversation.
             inline const StrVec_t RaceNames()
             {
-                return { "Gnome", "Pixie", "Wolfen",      "Dragon", "Goblin",       "Troll",
-                         "Orc",   "Newt",  "CaveCrawler", "Hydra",  "LizardWalker", "Minotaur",
-                         "Ogre",  "Demon", "Griffin",     "Cobra",  "Werewolf",     "Wyvern",
-                         "Giant", "Ghoul", "Witch",       "Golem" };
+                return { "Gnome", "Pixie",   "Wolfen",      "Dragon", "Goblin",       "Troll",
+                         "Orc",   "Newt",    "CaveCrawler", "Hydra",  "LizardWalker", "Minotaur",
+                         "Ogre",  "Demon",   "Griffin",     "Cobra",  "Werewolf",     "Wyvern",
+                         "Giant", "Ghoul",   "Witch",       "Golem",  "Pig",          "Yack",
+                         "Goat",  "Monster", "Toad" };
             }
 
             // Not using the real list because not all sound right in conversation.
             inline const StrVec_t RoleNames()
             {
-                return { "Archer",   "Bard",    "Beastmaster", "Cleric",    "Knight",
-                         "Sorcerer", "Thief",   "Mugger",      "Drunk",     "Berserker",
-                         "Shaman",   "Soldier", "Ranger",      "Blacksmith" };
+                return { "Archer",   "Bard",    "Beastmaster", "Cleric",      "Knight",
+                         "Sorcerer", "Thief",   "Mugger",      "Drunk",       "Berserker",
+                         "Shaman",   "Soldier", "Ranger",      "Blacksmith",  "Farmer",
+                         "Friar",    "Tart",    "Loon",        "Foot-Licker", "Harpy",
+                         "Mother",   "Father" };
             }
 
             inline const std::string RandomRaceOrRole()
@@ -138,21 +141,61 @@ namespace interact
 
             static inline const StrVec_t JokeAdjectives()
             {
-                return { "drunken", "blind",     "one-legged",    "one-eyed",
-                         "idiot",   "murdering", "nine-fingured", "nine-toed",
-                         "shy",     "dying",     "dwarf",         "rich",
-                         "poor",    "ugly",      "back-bearded",  "thumb-sucking" };
+                return { "drunken",
+                         "blind",
+                         "one-legged",
+                         "one-eyed",
+                         "idiot",
+                         "murdering",
+                         "nine-fingured",
+                         "nine-toed",
+                         "shy",
+                         "dying",
+                         "dwarf",
+                         "rich",
+                         "poor",
+                         "ugly",
+                         "back-bearded",
+                         "thumb-sucking",
+                         "cross-eyed",
+                         "slack-jawed",
+                         "mud covered"
+                         "pig-eyed",
+                         "stock-eyed",
+                         "three-inch",
+                         "forwnward",
+                         "sick",
+                         "bearded",
+                         "lily-liver'd",
+                         "pigeon-liver'd"
+                         "mustard crusted",
+                         "villainous",
+                         "fork-tounged",
+                         "rank",
+                         "googly-eyed",
+                         "sodden-witted",
+                         "beslubbering",
+                         "logger-headed",
+                         "puking",
+                         "beef-witted",
+                         "boil-brained",
+                         "dizzy",
+                         "flea-covered",
+                         "foolish",
+                         "villainous",
+                         "spotted" };
             }
 
             static inline const StrVec_t JokeDescriptions()
             {
-                return { "who ate his dog",           "who can't tell time",
-                         "who can't count",           "who can't blink",
-                         "who kissed a monk",         "who saw the king naked",
-                         "who slapped the king",      "who picked his friend's nose",
-                         "who drank goblin piss",     "who stepped in dragon droppings",
-                         "who sucks his thumb",       "who found a singing frog",
-                         "who pee'd in the town well" };
+                return { "who ate his dog",         "who jumped down the well",
+                         "who can't count",         "who can't blink",
+                         "who kissed a monk",       "who saw the queen naked",
+                         "who slapped the king",    "who picked his friend's nose",
+                         "who drank goblin pizzel", "who stepped in dragon droppings",
+                         "who sucks his thumb",     "who found a singing frog",
+                         "who pee'd in the well",   "who eats worms",
+                         "who didn't have a nose",  "who could spit over the castle" };
             }
         } // namespace compose
     } // namespace talk
