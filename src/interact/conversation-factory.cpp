@@ -22,35 +22,22 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_INTERACT_STATEMENTTOWN_HPP_INCLUDED
-#define HEROESPATH_INTERACT_STATEMENTTOWN_HPP_INCLUDED
 //
-// statement-town.hpp
+// conversation-factory.hpp
 //
-#include "interact/statement.hpp"
-#include "map/level-enum.hpp"
-#include "player/party.hpp"
-#include <string>
+#include "conversation-factory.hpp"
+#include "interact/interaction-button-enum.hpp"
+#include "interact/statement-factory.hpp"
 
 namespace heroespath
 {
 namespace interact
 {
-    namespace talk
+
+    const Conversation ConversationFactory::Make(
+        const talk::Mood MOOD, const talk::CategoryVec_t & TALK_CATEGORIES)
     {
-
-        struct TownTalk
-        {
-            static const std::string
-                Compose(const Mood, const player::Party &, const map::Level::Enum);
-
-        private:
-            static const std::string ComposeKind(const player::Party &, const map::Level::Enum);
-            static const std::string ComposeMean(const player::Party &, const map::Level::Enum);
-        };
-
-    } // namespace talk
-} // namespace interact
-} // namespace heroespath
-
-#endif // HEROESPATH_INTERACT_STATEMENTTOWN_HPP_INCLUDED
+        return Conversation(talk::Factory::Make(TALK_CATEGORIES, MOOD), Buttons::Goodbye);
+    }
+}
+}

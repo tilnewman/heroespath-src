@@ -30,7 +30,6 @@
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "misc/vectors.hpp"
-#include "player/party.hpp"
 
 #include <algorithm>
 #include <string>
@@ -38,16 +37,38 @@
 
 namespace heroespath
 {
+namespace player
+{
+    class Party;
+}
 namespace interact
 {
     namespace talk
     {
+
+        enum class Mood
+        {
+            Kind,
+            Mean
+        };
+
+        enum class Category
+        {
+            Common,
+            Town,
+            Child,
+            Monk,
+            Drunk,
+            Guard
+        };
+
+        using CategoryVec_t = std::vector<Category>;
+
         namespace compose
         {
-
             using StrVec_t = std::vector<std::string>;
 
-            const std::string Random(const std::vector<std::string> & V)
+            inline const std::string Random(const std::vector<std::string> & V)
             {
                 return ((V.empty()) ? std::string() : std::string(misc::Vector::SelectRandom(V)));
             }
@@ -183,7 +204,8 @@ namespace interact
                          "flea-covered",
                          "foolish",
                          "villainous",
-                         "spotted" };
+                         "spotted",
+                         "club-footed" };
             }
 
             static inline const StrVec_t JokeDescriptions()

@@ -45,11 +45,20 @@ namespace state
 
     void WorldFactory::SetupLevelForNewGame(Level & level)
     {
-        if (level.Which() == map::Level::Thornberry)
+        if ((level.Which() == map::Level::Thornberry_GuardPostWest)
+            || (level.Which() == map::Level::Thornberry_GuardPostEast))
         {
-            level.IsDoorLocked(map::Level::Thornberry_GuardPostWest, true);
-            level.IsDoorLocked(map::Level::Thornberry_GuardPostEast, true);
+            level.AddNpcPlaceholder(NpcPlaceholder(
+                1,
+                1,
+                { avatar::Avatar::NameEnum::Private,
+                  avatar::Avatar::NameEnum::Private1st,
+                  avatar::Avatar::NameEnum::Private2nd,
+                  avatar::Avatar::NameEnum::Corporal },
+                0,
+                false));
         }
     }
+
 } // namespace state
 } // namespace heroespath

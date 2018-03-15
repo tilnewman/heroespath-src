@@ -35,20 +35,70 @@ namespace interact
     namespace talk
     {
 
-        const std::string TavernTalk::Compose(const player::Party & party)
+        const std::string TavernTalk::Compose(const Mood MOOD, const player::Party & PARTY)
+        {
+            if (MOOD == Mood::Kind)
+            {
+                return ComposeKind(PARTY);
+            }
+            else
+            {
+                return ComposeMean(PARTY);
+            }
+        }
+
+        const std::string TavernTalk::ComposeMean(const player::Party & PARTY)
         {
             using namespace compose;
 
-            if ((misc::random::Int(10) == 0) && (DoesPartyHaveBeasts(party)))
+            if ((misc::random::Int(10) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 auto const BEAST_RACE_NAME{ (
-                    (DoesPartyHaveWolfens(party)) ? std::string("wolfen ")
+                    (DoesPartyHaveWolfens(PARTY)) ? std::string("wolfen ")
                                                   : std::string("dragon ")) };
 
-                if ((misc::random::Int(7) == 0) && (DoesPartyHaveBeasts(party)))
+                return "Is that " + std::string(BEAST_RACE_NAME) + "allowed in here?";
+            }
+
+            switch (misc::random::Int(5))
+            {
+                case 1:
                 {
-                    return "Is that " + std::string(BEAST_RACE_NAME) + "allowed in here?";
+                    return Random({ "Do I look like the ", "Do I look like the " })
+                        + Random(TavernServers()) + "?";
                 }
+                case 2:
+                {
+                    return Random({ "I'm here to ", "I'd rather " })
+                        + Random({ "drink my ", "drown my " }) + Random({ "woes ", "sorrows " })
+                        + "alone.";
+                }
+                case 3:
+                {
+                    return Random({ "Why do they ", "They shouldn't " })
+                        + Random({ "allow ", "let " }) + "your kind in here.";
+                }
+                case 4:
+                {
+                    return "What are " + AppendIf(RandomOrEmpty({ "all", "all of" }), " ")
+                        + "you looking at" + Random({ "?", "?!" });
+                }
+                default:
+                {
+                    return "You " + Random(PartyNames()) + " talk'n to me" + Random({ "?", "?!" });
+                }
+            }
+        }
+
+        const std::string TavernTalk::ComposeKind(const player::Party & PARTY)
+        {
+            using namespace compose;
+
+            if ((misc::random::Int(10) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            {
+                auto const BEAST_RACE_NAME{ (
+                    (DoesPartyHaveWolfens(PARTY)) ? std::string("wolfen ")
+                                                  : std::string("dragon ")) };
 
                 auto const FIRST_PART{ Random(
                     { "Does your " + std::string(BEAST_RACE_NAME),
@@ -60,7 +110,7 @@ namespace interact
                     case 0:
                     {
                         secondPart = Random({ "burp", "fart", "cough up", "hack up", "poop" }) + " "
-                            + ((DoesPartyHaveWolfens(party)) ? "hairballs" : "lava");
+                            + ((DoesPartyHaveWolfens(PARTY)) ? "hairballs" : "lava");
 
                         break;
                     }
@@ -99,7 +149,7 @@ namespace interact
                 return AppendIf(RandomOrEmpty(TavernNoises())) + FIRST_PART + secondPart + "?";
             }
 
-            switch (misc::random::Int(24))
+            switch (misc::random::Int(20))
             {
                 case 0:
                 {
@@ -108,13 +158,14 @@ namespace interact
                 case 1:
                 {
                     return AppendIf(RandomOrEmpty(TavernNoises()))
-                        + "I've had too much wine women and song.  "
-                        + AppendIf(RandomOrEmpty(TavernNoises())) + "So don't sing so loud.";
+                        + "Have you heard the one about the " + Random(RaceNames()) + " "
+                        + Random(JokeDescriptions()) + "?";
                 }
                 case 2:
                 {
-                    return Random({ "Do I look like the ", "Do I look like the " })
-                        + Random(TavernServers()) + "?";
+                    return AppendIf(RandomOrEmpty(TavernNoises()))
+                        + "I've had too much wine women and song.  "
+                        + AppendIf(RandomOrEmpty(TavernNoises())) + "So don't sing so loud.";
                 }
                 case 3:
                 {
@@ -123,9 +174,9 @@ namespace interact
                 }
                 case 4:
                 {
-                    return Random({ "I'm here to ", "I'd rather " })
-                        + Random({ "drink my ", "drown my " }) + Random({ "woes ", "sorrows " })
-                        + "alone.";
+                    return AppendIf(RandomOrEmpty(TavernNoises()))
+                        + "Have you heard the one about the " + Random(JokeAdjectives()) + " "
+                        + Random(RoleNames()) + "?";
                 }
                 case 5:
                 {
@@ -152,8 +203,12 @@ namespace interact
                 }
                 case 8:
                 {
-                    return Random({ "Why do they ", "They shouldn't " })
-                        + Random({ "allow ", "let " }) + "your kind in here.";
+                    return "You look like you could use "
+                        + Random(std::vector<StrVec_t>{
+                              { "a drink", "a beer", "an ale" },
+                              { "some of this "
+                                + Random(Combinations(TavernDrinkAdjectives(), TavernDrinks())) } })
+                        + ".";
                 }
                 case 9:
                 {
@@ -221,36 +276,6 @@ namespace interact
                         + Random({ "I've had", "I think I've had" }) + " too much of this "
                         + AppendIf(RandomOrEmpty(TavernDrinkAdjectives()), " ")
                         + Random(TavernDrinks()) + ".";
-                }
-                case 20:
-                {
-                    return "What are " + AppendIf(RandomOrEmpty({ "all", "all of" }), " ")
-                        + "you looking at" + Random({ "?", "?!" });
-                }
-                case 21:
-                {
-                    return "You " + Random(PartyNames()) + " talk'n to me" + Random({ "?", "?!" });
-                }
-                case 22:
-                {
-                    return "You look like you could use "
-                        + Random(std::vector<StrVec_t>{
-                              { "a drink", "a beer", "an ale" },
-                              { "some of this "
-                                + Random(Combinations(TavernDrinkAdjectives(), TavernDrinks())) } })
-                        + ".";
-                }
-                case 23:
-                {
-                    return AppendIf(RandomOrEmpty(TavernNoises()))
-                        + "Have you heard the one about the " + Random(JokeAdjectives()) + " "
-                        + Random(RoleNames()) + "?";
-                }
-                case 24:
-                {
-                    return AppendIf(RandomOrEmpty(TavernNoises()))
-                        + "Have you heard the one about the " + Random(RaceNames()) + " "
-                        + Random(JokeDescriptions()) + "?";
                 }
                 default:
                 {

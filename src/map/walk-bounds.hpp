@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,21 +22,23 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_MAP_WALK_BOUNDS_HPP_INCLUDED
+#define HEROESPATH_MAP_WALK_BOUNDS_HPP_INCLUDED
 //
-//  random.cpp
+// walk-bounds.hpp
 //
-#include "random.hpp"
-#include <random>
+#include "misc/vector-map.hpp"
+#include <SFML/Graphics/Rect.hpp>
+#include <vector>
 
 namespace heroespath
 {
-namespace misc
+namespace map
 {
-    namespace random
-    {
 
-        std::mt19937 MersenneTwister::engine;
+    using WalkRectMap_t = misc::VectorMap<std::size_t, std::vector<sf::FloatRect>>;
 
-    } // namespace random
-} // namespace misc
+} // namespace avatar
 } // namespace heroespath
+
+#endif // HEROESPATH_MAP_WALK_BOUNDS_HPP_INCLUDED

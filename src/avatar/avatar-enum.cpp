@@ -45,155 +45,159 @@ namespace avatar
     {
         switch (E)
         {
-            case Metal:
+            case NameEnum::Metal:
             {
                 return "Metal";
             }
-            case Puck:
+            case NameEnum::Puck:
             {
                 return "Puck";
             }
-            case Sara:
+            case NameEnum::Sara:
             {
                 return "Sara";
             }
-            case Girl:
+            case NameEnum::Girl:
             {
                 return "Girl";
             }
-            case Circus:
+            case NameEnum::Circus:
             {
                 return "Circus";
             }
-            case Poor:
+            case NameEnum::Poor:
             {
                 return "Poor";
             }
-            case Rags:
+            case NameEnum::Rags:
             {
                 return "Rags";
             }
-            case Common:
+            case NameEnum::Common:
             {
                 return "Common";
             }
-            case Tunic:
+            case NameEnum::Tunic:
             {
                 return "Tunic";
             }
-            case Pants:
+            case NameEnum::Pants:
             {
                 return "Pants";
             }
-            case Maid:
+            case NameEnum::Maid:
             {
                 return "Maid";
             }
-            case Robes:
+            case NameEnum::Robes:
             {
                 return "Robes";
             }
-            case Whitebeard:
+            case NameEnum::Whitebeard:
             {
                 return "Whitebeard";
             }
-            case Dress:
+            case NameEnum::Dress:
             {
                 return "Dress";
             }
-            case Private:
+            case NameEnum::Private:
             {
                 return "Private";
             }
-            case Private2nd:
+            case NameEnum::Private2nd:
             {
                 return "Private2nd";
             }
-            case Private1st:
+            case NameEnum::Private1st:
             {
                 return "Private1st";
             }
-            case Specialist:
+            case NameEnum::Specialist:
             {
                 return "Specialist";
             }
-            case Corporal:
+            case NameEnum::Corporal:
             {
                 return "Corporal";
             }
-            case Sergeant:
+            case NameEnum::Sergeant:
             {
                 return "Sergeant";
             }
-            case Major:
+            case NameEnum::Major:
             {
                 return "Major";
             }
-            case Knight:
+            case NameEnum::Knight:
             {
                 return "Knight";
             }
-            case KnightGold:
+            case NameEnum::KnightGold:
             {
                 return "KnightGold";
             }
-            case Thug:
+            case NameEnum::Thug:
             {
                 return "Thug";
             }
-            case ManAtArms:
+            case NameEnum::ManAtArms:
             {
                 return "ManAtArms";
             }
-            case Gladiator:
+            case NameEnum::Gladiator:
             {
                 return "Gladiator";
             }
-            case Iron:
+            case NameEnum::Iron:
             {
                 return "Iron";
             }
-            case Monk:
+            case NameEnum::Monk:
             {
                 return "Monk";
             }
             default:
             {
                 std::ostringstream ss;
-                ss << "avatar::Avatar::ToString(NameEnum=" << E << ")_InvalidValueError.";
+                ss << "avatar::Avatar::ToString(NameEnum=" << static_cast<int>(E)
+                   << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
     }
 
-    bool Avatar::IsPlayer(const NameEnum E) { return ((E == Metal) || (E == Puck) || (E == Sara)); }
+    bool Avatar::IsPlayer(const NameEnum E)
+    {
+        return ((E == NameEnum::Metal) || (E == NameEnum::Puck) || (E == NameEnum::Sara));
+    }
 
     const std::vector<Avatar::Enum> Avatar::Avatars(const NameEnum E)
     {
         switch (E)
         {
-            case Metal:
+            case NameEnum::Metal:
             {
                 return { Avatar::Metal_Female_Dark,
                          Avatar::Metal_Female_Light,
                          Avatar::Metal_Male_Dark,
                          Avatar::Metal_Male_Light };
             }
-            case Puck:
+            case NameEnum::Puck:
             {
                 return { Avatar::Puck_Female_Dark,
                          Avatar::Puck_Female_Light,
                          Avatar::Puck_Male_Dark,
                          Avatar::Puck_Male_Light };
             }
-            case Sara:
+            case NameEnum::Sara:
             {
                 return { Avatar::Sara_BlueWhite,
                          Avatar::Sara_Cyan,
                          Avatar::Sara_Green,
                          Avatar::Sara_White };
             }
-            case Girl:
+            case NameEnum::Girl:
             {
                 return { Avatar::Girl_Dark_Loose_Black,
                          Avatar::Girl_Dark_Loose_Brown,
@@ -248,7 +252,7 @@ namespace avatar
                          Avatar::Girl_Light_Unkempt_LightBlonde,
                          Avatar::Girl_Light_Unkempt_LightBlonde2 };
             }
-            case Circus:
+            case NameEnum::Circus:
             {
                 return {
                     Avatar::Leather_Circus1_Dark_Brunette,  Avatar::Leather_Circus1_Dark_Raven,
@@ -259,13 +263,13 @@ namespace avatar
                     Avatar::Leather_Circus2_Light_Brunette, Avatar::Leather_Circus2_Light_Raven
                 };
             }
-            case Poor:
+            case NameEnum::Poor:
             {
                 return { Avatar::Leather_Poor_Dark_Brunette,  Avatar::Leather_Poor_Dark_Raven,
                          Avatar::Leather_Poor_Dark_White,     Avatar::Leather_Poor_Light_Blonde,
                          Avatar::Leather_Poor_Light_Brunette, Avatar::Leather_Poor_Light_Raven };
             }
-            case Rags:
+            case NameEnum::Rags:
             {
                 return { Avatar::Rags_Female_Dark_Bangsshort_Black,
                          Avatar::Rags_Female_Dark_Bangsshort_Brown,
@@ -328,7 +332,7 @@ namespace avatar
                          Avatar::Rags_Male_Light_Plain_Raven,
                          Avatar::Rags_Male_Light_Plain_White };
             }
-            case Common:
+            case NameEnum::Common:
             {
                 return {
                     Avatar::Leather_Common1_Dark_Brunette,  Avatar::Leather_Common1_Dark_Raven,
@@ -342,7 +346,7 @@ namespace avatar
                     Avatar::Leather_Common3_Light_Brunette, Avatar::Leather_Common3_Light_Raven
                 };
             }
-            case Tunic:
+            case NameEnum::Tunic:
             {
                 return { Avatar::Tunic_Female_Dark_Bangsshort_Black,
                          Avatar::Tunic_Female_Dark_Bangsshort_Brown,
@@ -381,7 +385,7 @@ namespace avatar
                          Avatar::Tunic_Female_Light_Unkempt_Brunette2,
                          Avatar::Tunic_Female_Light_Unkempt_LightBlonde2 };
             }
-            case Pants:
+            case NameEnum::Pants:
             {
                 return { Avatar::Pants_Male_Dark_Bedhead_Brunette,
                          Avatar::Pants_Male_Dark_Bedhead_Raven,
@@ -408,7 +412,7 @@ namespace avatar
                          Avatar::Pants_Male_Light_Plain_Raven,
                          Avatar::Pants_Male_Light_Plain_White };
             }
-            case Maid:
+            case NameEnum::Maid:
             {
                 return { Avatar::Maid_Dark_Pixie_Black,
                          Maid_Dark_Pixie_Brown,
@@ -451,7 +455,7 @@ namespace avatar
                          Maid_Light_Swoop_Brunette,
                          Maid_Light_Swoop_Brunette2 };
             }
-            case Robes:
+            case NameEnum::Robes:
             {
                 return { Avatar::Robes_Male_Dark_Bedhead_Brunette,
                          Avatar::Robes_Male_Dark_Bedhead_Raven,
@@ -478,11 +482,11 @@ namespace avatar
                          Avatar::Robes_Male_Light_Plain_Raven,
                          Avatar::Robes_Male_Light_Plain_White };
             }
-            case Whitebeard:
+            case NameEnum::Whitebeard:
             {
                 return { Avatar::Robes_Whitebeard };
             }
-            case Dress:
+            case NameEnum::Dress:
             {
                 return { Avatar::Dress_Dark_Pixie_Black,
                          Avatar::Dress_Dark_Pixie_Brown,
@@ -529,7 +533,7 @@ namespace avatar
                          Avatar::Dress_Light_Swoop_Brunette2,
                          Avatar::Dress_Light_Swoop_Gray };
             }
-            case Private:
+            case NameEnum::Private:
             {
                 return {
                     Avatar::Leather_Private1_Dark_Brunette,  Avatar::Leather_Private1_Dark_Raven,
@@ -546,51 +550,51 @@ namespace avatar
                     Avatar::Leather_Private4_Light_Brunette, Avatar::Leather_Private4_Light_Raven
                 };
             }
-            case Private2nd:
+            case NameEnum::Private2nd:
             {
                 return { Avatar::Leather_Private2nd1_Dark, Avatar::Leather_Private2nd1_Light,
                          Avatar::Leather_Private2nd2_Dark, Avatar::Leather_Private2nd2_Light,
                          Avatar::Leather_Private2nd3_Dark, Avatar::Leather_Private2nd3_Light,
                          Avatar::Leather_Private2nd4_Dark, Avatar::Leather_Private2nd4_Light };
             }
-            case Private1st:
+            case NameEnum::Private1st:
             {
                 return { Avatar::Leather_Private1st1_Dark, Avatar::Leather_Private1st1_Light,
                          Avatar::Leather_Private1st2_Dark, Avatar::Leather_Private1st2_Light,
                          Avatar::Leather_Private1st3_Dark, Avatar::Leather_Private1st3_Light,
                          Avatar::Leather_Private1st4_Dark, Avatar::Leather_Private1st4_Light };
             }
-            case Specialist:
+            case NameEnum::Specialist:
             {
                 return { Avatar::Leather_Specialist1_Dark,
                          Avatar::Leather_Specialist1_Light,
                          Avatar::Leather_Specialist2_Dark,
                          Avatar::Leather_Specialist2_Light };
             }
-            case Corporal:
+            case NameEnum::Corporal:
             {
                 return { Avatar::Leather_Corporal1_Dark,
                          Avatar::Leather_Corporal1_Light,
                          Avatar::Leather_Corporal2_Dark,
                          Avatar::Leather_Corporal2_Light };
             }
-            case Sergeant:
+            case NameEnum::Sergeant:
             {
                 return { Avatar::Plate_Sergeant_Dark, Avatar::Plate_Sergeant_Light };
             }
-            case Major:
+            case NameEnum::Major:
             {
                 return { Avatar::Plate_Major_Dark, Avatar::Plate_Major_Light };
             }
-            case Knight:
+            case NameEnum::Knight:
             {
                 return { Avatar::Plate_Knight };
             }
-            case KnightGold:
+            case NameEnum::KnightGold:
             {
                 return { Avatar::Plate_Knight_Gold };
             }
-            case Thug:
+            case NameEnum::Thug:
             {
                 return { Avatar::Leather_Thug1_Dark_Brunette,  Avatar::Leather_Thug1_Dark_Raven,
                          Avatar::Leather_Thug1_Dark_White,     Avatar::Leather_Thug1_Light_Blonde,
@@ -599,7 +603,7 @@ namespace avatar
                          Avatar::Leather_Thug2_Dark_White,     Avatar::Leather_Thug2_Light_Blonde,
                          Avatar::Leather_Thug2_Light_Brunette, Avatar::Leather_Thug2_Light_Raven };
             }
-            case ManAtArms:
+            case NameEnum::ManAtArms:
             {
                 return {
                     Avatar::Plate_ManAtArms_Dark_Brunette,  Avatar::Plate_ManAtArms_Dark_Raven,
@@ -607,7 +611,7 @@ namespace avatar
                     Avatar::Plate_ManAtArms_Light_Brunette, Avatar::Plate_ManAtArms_Light_Raven
                 };
             }
-            case Gladiator:
+            case NameEnum::Gladiator:
             {
                 return {
                     Avatar::Plate_Gladiator_Dark_Brunette,  Avatar::Plate_Gladiator_Dark_Raven,
@@ -615,7 +619,7 @@ namespace avatar
                     Avatar::Plate_Gladiator_Light_Brunette, Avatar::Plate_Gladiator_Light_Raven
                 };
             }
-            case Iron:
+            case NameEnum::Iron:
             {
                 return {
                     Avatar::Leather_IronArms_Dark_Brunette,  Avatar::Leather_IronArms_Dark_Raven,
@@ -626,7 +630,7 @@ namespace avatar
                     Avatar::Leather_IronRich_Light_Brunette, Avatar::Leather_IronRich_Light_Raven
                 };
             }
-            case Monk:
+            case NameEnum::Monk:
             {
                 return { Avatar::Monk_BeltLeather_Dark_bracer,
                          Avatar::Monk_BeltLeather_Dark_nobracer,
@@ -648,7 +652,8 @@ namespace avatar
             default:
             {
                 std::ostringstream ss;
-                ss << "avatar::Avatar::Animations(NameEnum=" << E << ")_InvalidValueError.";
+                ss << "avatar::Avatar::Animations(NameEnum=" << static_cast<int>(E)
+                   << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
             }
         }
@@ -663,6 +668,52 @@ namespace avatar
         else
         {
             return 1.0f;
+        }
+    }
+
+    interact::talk::Category Avatar::TalkCategory(const NameEnum TYPE)
+    {
+        switch (TYPE)
+        {
+            case NameEnum::Metal:
+            case NameEnum::Puck:
+            case NameEnum::Circus:
+            case NameEnum::Poor:
+            case NameEnum::Rags:
+            case NameEnum::Common:
+            case NameEnum::Tunic:
+            case NameEnum::Pants:
+            case NameEnum::Maid:
+            case NameEnum::Robes:
+            case NameEnum::Whitebeard:
+            case NameEnum::Dress:
+            case NameEnum::Thug:
+            case NameEnum::ManAtArms:
+            case NameEnum::Gladiator:
+            case NameEnum::Iron:
+            case NameEnum::Sara:
+                return interact::talk::Category::Common;
+            case NameEnum::Girl:
+                return interact::talk::Category::Child;
+            case NameEnum::Private:
+            case NameEnum::Private2nd:
+            case NameEnum::Private1st:
+            case NameEnum::Specialist:
+            case NameEnum::Corporal:
+            case NameEnum::Sergeant:
+            case NameEnum::Major:
+            case NameEnum::Knight:
+            case NameEnum::KnightGold:
+                return interact::talk::Category::Guard;
+            case NameEnum::Monk:
+                return interact::talk::Category::Monk;
+            default:
+            {
+                std::ostringstream ss;
+                ss << "avatar::Avatar::TalkCategory(NameEnum=" << static_cast<int>(TYPE)
+                   << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
         }
     }
 

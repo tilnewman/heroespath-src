@@ -22,11 +22,12 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_INTERACT_BUTTON_ENUM_HPP_INCLUDED
-#define HEROESPATH_INTERACT_BUTTON_ENUM_HPP_INCLUDED
+#ifndef HEROESPATH_INTERACT_BUTTON_HPP_INCLUDED
+#define HEROESPATH_INTERACT_BUTTON_HPP_INCLUDED
 //
 // interact-button-enum.hpp
 //
+#include "interact/interaction-button-enum.hpp"
 #include "sfml-util/gui/text-button.hpp"
 #include <SFML/Window/Keyboard.hpp>
 #include <string>
@@ -42,11 +43,13 @@ namespace interact
     class Button
     {
     public:
-        explicit Button(
-            const std::string & NAME, const sf::Keyboard::Key KEY = sf::Keyboard::Unknown);
+        explicit Button(const Buttons::Enum WHICH_BUTTON = Buttons::Count);
 
-        const std::string Name() const { return name_; }
-        sf::Keyboard::Key Key() const { return key_; }
+        Buttons::Enum Which() const { return whichButton_; }
+
+        const std::string Name() const { return Buttons::ToString(whichButton_); }
+
+        sf::Keyboard::Key Key() const { return Buttons::Key(whichButton_); }
 
         bool DoPointersMatch(const sfml_util::gui::TextButton * const P) const
         {
@@ -57,8 +60,7 @@ namespace interact
             Make(sfml_util::gui::callback::ITextButtonCallbackHandler_t *);
 
     private:
-        std::string name_;
-        sf::Keyboard::Key key_;
+        Buttons::Enum whichButton_;
         sfml_util::gui::TextButton * ptr_;
     };
 
@@ -66,4 +68,4 @@ namespace interact
 } // namespace interact
 } // namespace heroespath
 
-#endif // HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED
+#endif // HEROESPATH_MAP_INTERACT_HPP_INCLUDED

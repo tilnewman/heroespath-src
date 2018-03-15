@@ -66,16 +66,23 @@ namespace interact
             {
                 StrVec_t allVec{ Relations() };
                 const StrVec_t PARENTS_VEC{ Parents() };
+
                 std::copy(
                     std::begin(PARENTS_VEC), std::end(PARENTS_VEC), std::back_inserter(allVec));
+
                 return allVec;
             }
         } // namespace compose
 
         struct ChildTalk
         {
-            static const std::string Compose(const player::Party &);
+            static const std::string Compose(const Mood, const player::Party &);
+
+        private:
+            static const std::string ComposeKind(const player::Party &);
+            static const std::string ComposeMean(const player::Party &);
         };
+
     } // namespace talk
 } // namespace interact
 } // namespace heroespath

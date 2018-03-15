@@ -34,16 +34,28 @@ namespace interact
     namespace talk
     {
 
-        const std::string ChildTalk::Compose(const player::Party & party)
+        const std::string ChildTalk::Compose(const Mood MOOD, const player::Party & PARTY)
+        {
+            if (MOOD == Mood::Kind)
+            {
+                return ComposeKind(PARTY);
+            }
+            else
+            {
+                return ComposeMean(PARTY);
+            }
+        }
+
+        const std::string ChildTalk::ComposeMean(const player::Party & PARTY)
         {
             using namespace compose;
 
-            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(party)))
+            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
-                return "A " + BeastRaceName(party) + "!";
+                return "A " + BeastRaceName(PARTY) + "!";
             }
 
-            switch (misc::random::Int(15))
+            switch (misc::random::Int(5))
             {
                 case 0:
                 {
@@ -69,46 +81,60 @@ namespace interact
                 {
                     return "I'm just a kid" + PeriodOrBang();
                 }
-                case 5:
+                default:
                 {
                     return "Strangers!";
                 }
-                case 6:
+            }
+        }
+
+        const std::string ChildTalk::ComposeKind(const player::Party & PARTY)
+        {
+            using namespace compose;
+
+            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
+            {
+                return "A " + BeastRaceName(PARTY) + "!";
+            }
+
+            switch (misc::random::Int(9))
+            {
+                case 0:
                 {
                     const std::string COUNT{ Random({ "a ", "two ", "three " }) };
                     return "I have " + COUNT + Random({ "", Random(JokeAdjectives()) + " " })
                         + Random(Relations()) + ((COUNT == "a") ? "" : "s") + ".";
                 }
-                case 7:
+                case 1:
                 {
                     return "I have a " + Random(ParentsAndRelations()) + " "
                         + Random(JokeDescriptions()) + ".";
                 }
-                case 8:
+                case 2:
                 {
                     return "My " + Random(ParentsAndRelations()) + " is "
                         + Random(WeatherAdjectives()) + ".";
                 }
-                case 9:
+                case 3:
                 {
                     return "Do you have "
                         + Random({ "a " + Random(Relations()), "any " + Random(Relations()) + "s" })
                         + "?";
                 }
-                case 10:
+                case 4:
                 {
                     return "Are you the one " + Random(JokeDescriptions()) + "?";
                 }
-                case 11:
+                case 5:
                 {
                     return "My " + Random(ParentsAndRelations()) + " says you're the one "
                         + Random(JokeDescriptions()) + PeriodOrBang();
                 }
-                case 12:
+                case 6:
                 {
                     return "You're " + Random(WeatherAdjectives()) + PeriodOrBang();
                 }
-                case 13:
+                case 7:
                 {
                     return "Wanna play "
                         + Random({ "hide and seek",
@@ -116,11 +142,10 @@ namespace interact
                                    "chase the pixie",
                                    "guess what you're eating",
                                    "who can spit the farthest",
-                                   "who can eat the most pond scum",
-                                   "angry birds" })
+                                   "who can eat the most pond scum" })
                         + "?" + Random({ "  Bet you I'll win!", "" });
                 }
-                case 14:
+                case 8:
                 {
                     const std::string DAREME{ "Dare me to" };
                     const std::string WANNA{ "Wanna" };
@@ -152,6 +177,7 @@ namespace interact
                 }
             }
         };
+
     } // namespace talk
 } // namespace interact
 } // namespace heroespath

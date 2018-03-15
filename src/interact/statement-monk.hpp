@@ -48,8 +48,13 @@ namespace interact
 
         struct MonkTalk
         {
-            static const std::string Compose();
+            static const std::string Compose(const Mood);
+
+        private:
+            static const std::string ComposeKind();
+            static const std::string ComposeMean();
         };
+
     } // namespace talk
 } // namespace interact
 } // namespace heroespath

@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,21 +22,41 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_INTERACT_BUTTON_ENUM_HPP_INCLUDED
+#define HEROESPATH_INTERACT_BUTTON_ENUM_HPP_INCLUDED
 //
-//  random.cpp
+// interact-button-enum.hpp
 //
-#include "random.hpp"
-#include <random>
+#include "sfml-util/gui/text-button.hpp"
+#include <SFML/Window/Keyboard.hpp>
+#include <string>
+#include <vector>
 
 namespace heroespath
 {
-namespace misc
+namespace interact
 {
-    namespace random
+
+    struct Buttons
     {
+        enum Enum
+        {
+            Ignore = 0,
+            Continue,
+            Goodbye,
+            Yes,
+            No,
+            Unlock,
+            Count
+        };
 
-        std::mt19937 MersenneTwister::engine;
+        static const std::string ToString(const Enum);
+        static sf::Keyboard::Key Key(const Enum);
+    };
 
-    } // namespace random
-} // namespace misc
+    using ButtonsVec_t = std::vector<Buttons::Enum>;
+
+} // namespace interact
 } // namespace heroespath
+
+#endif // HEROESPATH_MAP_INTERACT_ENUM_HPP_INCLUDED

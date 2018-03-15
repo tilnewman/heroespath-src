@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,21 +22,24 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_INTERACTION_INTERACTION_FACTORY_HPP_INCLUDED
+#define HEROESPATH_INTERACTION_INTERACTION_FACTORY_HPP_INCLUDED
 //
-//  random.cpp
+// conversation-factory.hpp
 //
-#include "random.hpp"
-#include <random>
+#include "interact/conversation.hpp"
+#include "interact/statement.hpp"
 
 namespace heroespath
 {
-namespace misc
+namespace interact
 {
-    namespace random
+
+    struct ConversationFactory
     {
+        static const Conversation Make(const talk::Mood, const talk::CategoryVec_t &);
+    };
+}
+}
 
-        std::mt19937 MersenneTwister::engine;
-
-    } // namespace random
-} // namespace misc
-} // namespace heroespath
+#endif // HEROESPATH_INTERACTION_INTERACTION_FACTORY_HPP_INCLUDED

@@ -38,5 +38,8 @@ namespace state
         : maps_()
         , encounterCount_(0)
     {}
+
+    void World::HandleLevelLoad(const map::Level::Enum LEVEL) { maps_.HandleLevelLoad(LEVEL); }
+
 } // namespace state
 } // namespace heroespath

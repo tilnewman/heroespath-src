@@ -34,7 +34,70 @@ namespace interact
     namespace talk
     {
 
-        const std::string MonkTalk::Compose()
+        const std::string MonkTalk::Compose(const Mood MOOD)
+        {
+            if (MOOD == Mood::Kind)
+            {
+                return ComposeKind();
+            }
+            else
+            {
+                return ComposeMean();
+            }
+        }
+
+        const std::string MonkTalk::ComposeMean()
+        {
+            using namespace compose;
+
+            const StrVec_t DISMISS_REASONS{ ".",
+                                            ".  Excuse me."
+                                            ".  I'm meditating.",
+                                            ".  This is my time for quiet reflection.",
+                                            ".  This space is sacred.",
+                                            ".  I'm having a vision.",
+                                            ".  I must reach nirvana.",
+                                            ".  Enlightenment is near.",
+                                            ".  I have nothing for you.",
+                                            ".  Our auras quarrel.",
+                                            ".  None of you could ever understand.",
+                                            ".  I have chores to do.",
+                                            ".  Students are waiting.",
+                                            ".  I must find my master.",
+                                            ".  The master needs me." };
+
+            switch (misc::random::Int(2))
+            {
+                case 0:
+                {
+                    return Random({ "No.  ", "No no.  ", "" }) + "Not "
+                        + Random({ "now", "just now", "today" }) + Random(DISMISS_REASONS);
+                }
+                case 1:
+                {
+                    return Random({ "Away",
+                                    "Away with you",
+                                    "Away with you",
+                                    "Away, all of you",
+                                    "Away with all of you" })
+                        + Random({ "", " now" })
+                        + Random({ "", ".  I have no time", ".  There is no time" })
+                        + Random(DISMISS_REASONS);
+                }
+                default:
+                {
+                    return Random({ "Please ", "Kindly " })
+                        + Random({ "give me space",
+                                   "leave me be",
+                                   "try someone else",
+                                   "step away",
+                                   "I must away" })
+                        + Random(DISMISS_REASONS);
+                }
+            }
+        }
+
+        const std::string MonkTalk::ComposeKind()
         {
             using namespace compose;
 

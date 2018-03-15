@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,21 +22,50 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_INTERACTION_CONVERSATION_HPP_INCLUDED
+#define HEROESPATH_INTERACTION_CONVERSATION_HPP_INCLUDED
 //
-//  random.cpp
+// conversation.hpp
 //
-#include "random.hpp"
-#include <random>
+#include "interact/conversation-point.hpp"
+#include "interact/interaction-button-enum.hpp"
+#include "misc/boost-serialize-includes.hpp"
+#include "misc/vector-map.hpp"
+#include <algorithm>
+#include <vector>
 
 namespace heroespath
 {
-namespace misc
+namespace interact
 {
-    namespace random
+
+    // Responsible for storing all things said in a conversation and where in that conversation the
+    // player is.
+    class Conversation
     {
+    public:
+        Conversation(const ConvPointVec_t & CONVERSATION_POINTS = ConvPointVec_t());
 
-        std::mt19937 MersenneTwister::engine;
+        Conversation(const std::string & TEXT, const Buttons::Enum BUTTON);
 
-    } // namespace random
-} // namespace misc
-} // namespace heroespath
+        const ConversationPoint & Current() const;
+
+        void ApplyResponse(const Buttons::Enum);
+
+    private:
+        std::size_t pointIndex_;
+        ConvPointVec_t convPoints_;
+
+    private:
+        friend class boost::serialization::access;
+        template <typename Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & pointIndex_;
+            ar & convPoints_;
+        }
+    };
+}
+}
+
+#endif // HEROESPATH_INTERACTION_CONVERSATION_HPP_INCLUDED

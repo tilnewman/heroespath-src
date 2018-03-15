@@ -39,8 +39,6 @@ namespace heroespath
 namespace interact
 {
 
-    const std::string InteractionBase::BUTTON_NAME_IGNORE_{ "Ignore" };
-
     InteractionBase::InteractionBase(
         const Interact::Enum INTERACTION_TYPE,
         const sfml_util::gui::TextInfo & TEXT,
@@ -57,8 +55,6 @@ namespace interact
         , sfxExit_(SFX_EXIT)
         , isLocked_(false)
     {
-        buttons_.emplace_back(Button(BUTTON_NAME_IGNORE_, sf::Keyboard::I));
-
         sfml_util::LoadTexture(
             subjectTexture_, game::GameDataFile::Instance()->GetMediaPath(SUBJECT_IMAGE_KEY));
 

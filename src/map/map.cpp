@@ -45,6 +45,9 @@
 #include "state/game-state.hpp"
 #include "state/world.hpp"
 
+#include <exception>
+#include <sstream>
+
 namespace heroespath
 {
 namespace map
@@ -107,13 +110,15 @@ namespace map
 
         level_ = LEVEL_TO_LOAD;
 
-        game::Game::Instance()->State().World().GetMaps().SetCurrent(LEVEL_TO_LOAD);
+        game::Game::Instance()->State().World().HandleLevelLoad(LEVEL_TO_LOAD);
 
         if (IS_TEST_LOAD == false)
         {
             mapDisplayUPtr_->Load(
                 FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM), animInfoVec);
         }
+
+        ResetNonPlayers();
     }
 
     bool Map::MovePlayer(const sfml_util::Direction::Enum DIRECTION)
@@ -547,6 +552,53 @@ namespace map
 
         walkMusicWhich_ = NEW_WALK_MUSIC;
         walkMusicIsWalking_ = NEW_IS_WALKING;
+    }
+
+    void Map::ResetNonPlayers()
+    {
+        nonPlayers_.clear();
+
+        for (auto const & NPC :
+             game::Game::Instance()->State().World().GetMaps().Current().SpecificNPCs())
+        {
+            AddNonPlayerAvatar(NPC);
+        }
+
+        for (auto const & NPC :
+             game::Game::Instance()->State().World().GetMaps().Current().RandomNPCs())
+        {
+            AddNonPlayerAvatar(NPC);
+        }
+    }
+
+    void Map::AddNonPlayerAvatar(const state::Npc & NPC)
+    {
+        std::vector<sf::FloatRect> walkRects;
+        auto const WAS_FOUND{ walkRectVecMap_.Find(NPC.WalkBoundsIndex(), walkRects) };
+
+        if (WAS_FOUND == false)
+        {
+            std::ostringstream ss;
+            ss << "map::Map::AddNonPlayerAvatar(avatar="
+               << avatar::Avatar::ToString(NPC.AvatarImage())
+               << ", walkBoundsIndex=" << NPC.WalkBoundsIndex()
+               << ") but that walkBoundsIndex was not found in all the walk bounds loaded from the "
+                  "map file.  Valid indexes are: [";
+
+            for (auto const & WALK_BOUNDS_PAIR : walkRectVecMap_)
+            {
+                ss << WALK_BOUNDS_PAIR.first << ", ";
+            }
+
+            ss << "]";
+
+            throw std::runtime_error(ss.str());
+        }
+        else
+        {
+            nonPlayers_.emplace_back(
+                avatar::Model(std::make_unique<avatar::LPCView>(NPC.AvatarImage()), walkRects));
+        }
     }
 }
 }

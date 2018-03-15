@@ -35,28 +35,26 @@ namespace heroespath
 namespace interact
 {
 
-    Button::Button(const std::string & NAME, const sf::Keyboard::Key KEY)
-        : name_(NAME)
-        , key_(KEY)
-        , ptr_(nullptr)
+    Button::Button(const Buttons::Enum WHICH_BUTTON)
+        : whichButton_(WHICH_BUTTON)
     {}
 
     sfml_util::gui::TextButtonUPtr_t
         Button::Make(sfml_util::gui::callback::ITextButtonCallbackHandler_t * callbackHandlerPtr)
     {
         auto const DISPLAYED_NAME{ [&]() {
-            if ((sf::Keyboard::KeyCount == key_) || (sf::Keyboard::Unknown == key_))
+            if ((sf::Keyboard::KeyCount == Key()) || (sf::Keyboard::Unknown == Key()))
             {
-                return name_;
+                return Name();
             }
             else
             {
-                return name_ + "(" + sfml_util::KeyCodeToString(key_) + ")";
+                return Name() + "(" + sfml_util::KeyCodeToString(Key()) + ")";
             }
         }() };
 
         auto uptr{ std::make_unique<sfml_util::gui::TextButton>(
-            name_,
+            Name(),
             0.0f,
             0.0f,
             sfml_util::gui::MouseTextInfo::Make_InteractionButtonSet(DISPLAYED_NAME),

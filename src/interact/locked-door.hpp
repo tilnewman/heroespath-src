@@ -49,7 +49,6 @@ namespace interact
         virtual bool OnInteraction(stage::InteractStage * const, const Button &) final;
 
     private:
-        static const std::string BUTTON_NAME_UNLOCK_;
         map::Transition transition_;
     };
 } // namespace interact

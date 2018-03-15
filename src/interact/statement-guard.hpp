@@ -22,14 +22,15 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_INTERACT_STATEMENTTOWN_HPP_INCLUDED
-#define HEROESPATH_INTERACT_STATEMENTTOWN_HPP_INCLUDED
+#ifndef HEROESPATH_INTERACT_STATEMENT_GUARD_HPP_INCLUDED
+#define HEROESPATH_INTERACT_STATEMENT_GUARD_HPP_INCLUDED
 //
-// statement-town.hpp
+// statement-guar.hpp
 //
 #include "interact/statement.hpp"
 #include "map/level-enum.hpp"
 #include "player/party.hpp"
+#include <algorithm>
 #include <string>
 
 namespace heroespath
@@ -39,18 +40,34 @@ namespace interact
     namespace talk
     {
 
-        struct TownTalk
+        namespace compose
         {
-            static const std::string
-                Compose(const Mood, const player::Party &, const map::Level::Enum);
+
+            inline const StrVec_t RankLow() { return { "Private", "Corporal" }; }
+
+            inline const StrVec_t RankHigh() { return { "Sergeant", "Sarge", "Major", "General" }; }
+
+            inline const StrVec_t RankAll()
+            {
+                StrVec_t rankAll{ RankLow() };
+                auto const RANK_HIGH{ RankHigh() };
+                std::copy(std::begin(RANK_HIGH), std::end(RANK_HIGH), std::back_inserter(rankAll));
+                return rankAll;
+            }
+
+        } // namespace compose
+
+        struct GuardTalk
+        {
+            static const std::string Compose(const Mood, const player::Party &);
 
         private:
-            static const std::string ComposeKind(const player::Party &, const map::Level::Enum);
-            static const std::string ComposeMean(const player::Party &, const map::Level::Enum);
+            static const std::string ComposeKind();
+            static const std::string ComposeMean();
         };
 
     } // namespace talk
 } // namespace interact
 } // namespace heroespath
 
-#endif // HEROESPATH_INTERACT_STATEMENTTOWN_HPP_INCLUDED
+#endif // HEROESPATH_INTERACT_STATEMENT_GUARD_HPP_INCLUDED

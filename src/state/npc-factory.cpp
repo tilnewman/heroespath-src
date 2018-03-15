@@ -25,61 +25,59 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// locked-door.cpp
+// world-factory.cpp
 //
-#include "locked-door.hpp"
+#include "npc-factory.hpp"
 #include "game/game.hpp"
-#include "interact/lock-interactions.hpp"
+#include "map/level-enum.hpp"
+#include "misc/random.hpp"
 #include "misc/vectors.hpp"
-#include "popup/popup-manager.hpp"
-#include "popup/popup-stage-char-select.hpp"
-#include "popup/popup-stage-treasure-trap.hpp"
-#include "stage/adventure-stage-interact-stage.hpp"
 #include "state/game-state.hpp"
 #include "state/maps.hpp"
 #include "state/world.hpp"
 
 namespace heroespath
 {
-namespace interact
+namespace state
 {
 
-    LockedDoor::LockedDoor(const map::Transition & TRANSITION)
-        : InteractionBase(
-              Interact::Lock,
-              InteractionBase::MakeTextInfo("This door is locked.", Text::System),
-              ButtonVec_t({ Button(Buttons::Unlock), Button(Buttons::Ignore) }),
-              "media-images-misc-door-locked",
-              sfml_util::sound_effect::DoorLocked)
-        , transition_(TRANSITION)
-    {}
-
-    bool LockedDoor::OnInteraction(
-        stage::InteractStage * const interactStagePtr, const Button & BUTTON)
+    const NpcVec_t NpcFactory::Make(const NpcPlaceholder & PLACEHOLDER)
     {
-        if (BUTTON.Which() == Buttons::Unlock)
+        NpcVec_t npcs;
+
+        auto const COUNT{ misc::random::SizeT(PLACEHOLDER.CountMin(), PLACEHOLDER.CountMax()) };
+
+        for (std::size_t i(0); i < COUNT; ++i)
         {
-            interactStagePtr->InteractionManager().RemoveCurrent();
-            return true;
-        }
-        else if (BUTTON.Which() == Buttons::Ignore)
-        {
-            Lock();
-            interactStagePtr->LockPick().PopupCharacterSelection(interactStagePtr);
-            return true;
+            auto AVATAR_TYPE{ misc::Vector::SelectRandom(PLACEHOLDER.AvatarTypeVec()) };
+            auto AVATAR{ misc::Vector::SelectRandom(avatar::Avatar::Avatars(AVATAR_TYPE)) };
+
+            interact::talk::CategoryVec_t talkCategories;
+
+            if (PLACEHOLDER.IsDrunk())
+            {
+                talkCategories.emplace_back(interact::talk::Category::Drunk);
+            }
+            else
+            {
+                talkCategories.emplace_back(avatar::Avatar::TalkCategory(AVATAR_TYPE));
+            }
+
+            if (map::LevelType::Town
+                == map::Level::Type(
+                       game::Game::Instance()->State().World().GetMaps().Current().Which()))
+            {
+                talkCategories.emplace_back(interact::talk::Category::Town);
+            }
+
+            auto const MOOD{ (
+                (misc::random::Bool()) ? interact::talk::Mood::Kind : interact::talk::Mood::Mean) };
+
+            npcs.emplace_back(Npc(AVATAR, talkCategories, MOOD, PLACEHOLDER.WalkBoundsIndex()));
         }
 
-        return false;
+        return npcs;
     }
 
-    bool LockedDoor::OnSuccess(stage::InteractStage * const stagePtr)
-    {
-        game::Game::Instance()->State().World().GetMaps().Current().IsDoorLocked(
-            transition_.Level(), false);
-
-        stagePtr->MapTransition(transition_);
-        stagePtr->InteractionManager().RemoveCurrent();
-        return true;
-    }
-} // namespace interact
+} // namespace state
 } // namespace heroespath

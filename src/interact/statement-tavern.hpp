@@ -59,13 +59,17 @@ namespace interact
 
             static inline const StrVec_t TavernNoises()
             {
-                return { "(hiccup)", "(burp)", "(grumble)", "(mutter)", "(laughs)" };
+                return { "(hiccup)", "(burp)", "(grumble)", "(mutter)", "(laugh)" };
             }
         } // namespace compose
 
         struct TavernTalk
         {
-            static const std::string Compose(const player::Party &);
+            static const std::string Compose(const Mood, const player::Party &);
+
+        private:
+            static const std::string ComposeKind(const player::Party &);
+            static const std::string ComposeMean(const player::Party &);
         };
     } // namespace talk
 } // namespace interact

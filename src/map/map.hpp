@@ -46,6 +46,10 @@
 
 namespace heroespath
 {
+namespace state
+{
+    class Npc;
+}
 namespace map
 {
 
@@ -112,6 +116,10 @@ namespace map
             const sfml_util::sound_effect::MapTransition, const bool IS_DOOR_OPENING) const;
 
         void UpdateWalkMusic();
+
+        void ResetNonPlayers();
+
+        void AddNonPlayerAvatar(const state::Npc &);
 
     private:
         static const float PLAYER_MOVE_DISTANCE_;

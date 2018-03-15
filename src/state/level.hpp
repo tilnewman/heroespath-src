@@ -30,6 +30,8 @@
 #include "map/level-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/vector-map.hpp"
+#include "state/npc-placeholder.hpp"
+#include "state/npc.hpp"
 
 #include <memory>
 
@@ -56,9 +58,27 @@ namespace state
             doorLockMap_[LEVEL] = IS_LOCKED;
         }
 
+        void HandleLevelLoad();
+
+        void AddSpecificNPC(const Npc & NPC) { specificNpcs_.emplace_back(NPC); }
+
+        void ResetRandomNPCs();
+
+        void AddNpcPlaceholder(const NpcPlaceholder & NPC_PLACEHOLDER)
+        {
+            placeholderNpcs_.emplace_back(NPC_PLACEHOLDER);
+        }
+
+        const NpcVec_t SpecificNPCs() const { return specificNpcs_; }
+
+        const NpcVec_t RandomNPCs() const { return randomNpcs_; }
+
     private:
         map::Level::Enum level_;
         misc::VectorMap<map::Level::Enum, bool> doorLockMap_;
+        NpcVec_t specificNpcs_;
+        NpcVec_t randomNpcs_;
+        NpcPlaceholderVec_t placeholderNpcs_;
 
     private:
         friend class boost::serialization::access;
@@ -67,6 +87,9 @@ namespace state
         {
             ar & level_;
             ar & doorLockMap_;
+            ar & specificNpcs_;
+            ar & randomNpcs_;
+            ar & placeholderNpcs_;
         }
     };
 } // namespace state

@@ -27,6 +27,7 @@
 //
 // avatar_enum.hpp
 //
+#include "interact/statement.hpp"
 #include <string>
 #include <vector>
 
@@ -37,7 +38,7 @@ namespace avatar
 
     struct Avatar
     {
-        enum NameEnum
+        enum class NameEnum
         {
             // player avatars
             Metal,
@@ -530,12 +531,16 @@ namespace avatar
         static bool IsPlayer(const NameEnum);
         static const std::vector<Enum> Avatars(const NameEnum);
         static float Scale(const NameEnum);
+        static heroespath::interact::talk::Category TalkCategory(const NameEnum);
 
         static const std::string ToString(const Enum);
         static bool IsPlayer(const Enum);
         static const std::string ImagePath(const Enum);
         static NameEnum Name(const Enum);
+
+        using NameVec_t = std::vector<NameEnum>;
     };
+
 } // namespace avatar
 } // namespace heroespath
 

@@ -51,5 +51,12 @@ namespace state
             WorldFactory::SetupLevelForNewGame(levels_[levels_.size() - 1]);
         }
     }
+
+    void Maps::HandleLevelLoad(const map::Level::Enum LEVEL)
+    {
+        level_ = LEVEL;
+        Current().HandleLevelLoad();
+    }
+
 } // namespace state
 } // namespace heroespath

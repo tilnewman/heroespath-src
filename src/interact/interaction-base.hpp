@@ -87,9 +87,6 @@ namespace interact
 
         void HandleIgnore(stage::InteractStage * const);
 
-    public:
-        static const std::string BUTTON_NAME_IGNORE_;
-
     private:
         Interact::Enum interactionType_;
         sfml_util::gui::TextInfo text_;

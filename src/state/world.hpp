@@ -28,6 +28,7 @@
 // world.hpp
 //  A class that represents the entire state of the game world.
 //
+#include "map/level-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
 #include "state/maps.hpp"
 
@@ -53,6 +54,7 @@ namespace state
         inline Maps & GetMaps() { return maps_; }
         inline std::size_t EncounterCount() const { return encounterCount_; }
         inline void EncounterCountInc() { ++encounterCount_; }
+        void HandleLevelLoad(const map::Level::Enum);
 
     private:
         // TODO quests

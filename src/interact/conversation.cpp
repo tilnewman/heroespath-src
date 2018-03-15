@@ -25,20 +25,48 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  random.cpp
+// conversation.cpp
 //
-#include "random.hpp"
-#include <random>
+#include "conversation.hpp"
 
 namespace heroespath
 {
-namespace misc
+namespace interact
 {
-    namespace random
+
+    Conversation::Conversation(const ConvPointVec_t & CONVERSATION_POINTS)
+        : pointIndex_(1)
+        , convPoints_(CONVERSATION_POINTS)
+    {}
+
+    Conversation::Conversation(const std::string & TEXT, const Buttons::Enum BUTTON)
+        : pointIndex_(1)
+        , convPoints_()
     {
+        convPoints_.emplace_back(ConversationPoint());
+        convPoints_.emplace_back(ConversationPoint(TEXT, BUTTON));
+    }
 
-        std::mt19937 MersenneTwister::engine;
+    const ConversationPoint & Conversation::Current() const
+    {
+        if (pointIndex_ >= convPoints_.size())
+        {
+            return convPoints_.at(0);
+        }
+        else
+        {
+            return convPoints_.at(pointIndex_);
+        }
+    }
 
-    } // namespace random
-} // namespace misc
-} // namespace heroespath
+    void Conversation::ApplyResponse(const Buttons::Enum BUTTON)
+    {
+        auto & convPoint{ Current() };
+
+        if (convPoint.IsValid())
+        {
+            pointIndex_ = convPoint.Transition(BUTTON);
+        }
+    }
+}
+}

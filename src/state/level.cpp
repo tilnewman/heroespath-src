@@ -28,6 +28,8 @@
 // level.cpp
 //
 #include "level.hpp"
+#include "state/npc-factory.hpp"
+#include <algorithm>
 
 namespace heroespath
 {
@@ -37,6 +39,8 @@ namespace state
     Level::Level(const map::Level::Enum LEVEL)
         : level_(LEVEL)
         , doorLockMap_()
+        , specificNpcs_()
+        , randomNpcs_()
     {}
 
     bool Level::IsDoorLocked(const map::Level::Enum LEVEL) const
@@ -45,5 +49,32 @@ namespace state
         doorLockMap_.Find(LEVEL, isLocked);
         return isLocked;
     }
+
+    void Level::HandleLevelLoad()
+    {
+        for (auto & npc : specificNpcs_)
+        {
+            npc.HandleLevelLoad();
+        }
+
+        ResetRandomNPCs();
+
+        for (auto & npc : randomNpcs_)
+        {
+            npc.HandleLevelLoad();
+        }
+    }
+
+    void Level::ResetRandomNPCs()
+    {
+        randomNpcs_.clear();
+
+        for (auto const & NPC_PLACEHOLDER : placeholderNpcs_)
+        {
+            auto const NPCS{ NpcFactory::Make(NPC_PLACEHOLDER) };
+            std::copy(std::begin(NPCS), std::end(NPCS), std::back_inserter(randomNpcs_));
+        }
+    }
+
 } // namespace state
 } // namespace heroespath

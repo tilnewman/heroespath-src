@@ -34,21 +34,34 @@ namespace interact
     namespace talk
     {
 
+        const std::string TownTalk::Compose(
+            const Mood MOOD, const player::Party & PARTY, const map::Level::Enum LEVEL)
+        {
+            if (MOOD == Mood::Kind)
+            {
+                return ComposeKind(PARTY, LEVEL);
+            }
+            else
+            {
+                return ComposeMean(PARTY, LEVEL);
+            }
+        }
+
         const std::string
-            TownTalk::Compose(const player::Party & party, const map::Level::Enum LEVEL)
+            TownTalk::ComposeMean(const player::Party & PARTY, const map::Level::Enum LEVEL)
         {
             using namespace compose;
 
             auto const TownName{ [LEVEL]() { return map::Level::ToString(LEVEL); } };
 
-            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(party)))
+            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 return "They let you " + Random({ "walk around", "in here", "in " + TownName() })
                     + " with " + Random(Combinations({ "that" }, { "beast", "creature", "thing" }))
                     + Random({ "?", "?!" });
             }
 
-            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(party)))
+            if ((misc::random::Int(6) == 0) && (DoesPartyHaveBeasts(PARTY)))
             {
                 return Random({ "They ", "The guard ", "The guards " })
                     + Random({ "allowed ", "let " })
@@ -56,13 +69,38 @@ namespace interact
                     + Random({ "?", "?!" });
             }
 
-            switch (misc::random::Int(7))
+            if (misc::random::Bool())
+            {
+                return Random({ "You're not from ", "Not from " })
+                    + Random({ "these parts", "around here", TownName() })
+                    + Random({ " are you?", " eh?" });
+            }
+            else
+            {
+                return Random({ "I guess ", "So " })
+                    + Random({ "they",
+                               "the guard",
+                               "the guards",
+                               "the " + TownName() + " guard",
+                               "the " + TownName() + " guards" })
+                    + Random({ " will let anyone ", " let anyone " })
+                    + Random({ "in", "through the gate", "through the gates" })
+                    + Random({ " these days", " anymore", " nowadays" }) + PeriodOrBang();
+            }
+        }
+
+        const std::string TownTalk::ComposeKind(const player::Party &, const map::Level::Enum LEVEL)
+        {
+            using namespace compose;
+
+            auto const TownName{ [LEVEL]() { return map::Level::ToString(LEVEL); } };
+
+            switch (misc::random::Int(5))
             {
                 case 0:
                 {
-                    return Random({ "You're not from ", "Not from " })
-                        + Random({ "these parts", "around here", TownName() })
-                        + Random({ " are you?", " eh?" });
+                    return "Ever " + Random({ "been to ", "seen " }) + "such a "
+                        + Random(WeatherAdjectives()) + Random({ " place?", " town?" });
                 }
                 case 1:
                 {
@@ -85,27 +123,10 @@ namespace interact
                         + PrependIf(Random({ "in " + TownName(), "" }), " ")
                         + Random({ ".  Isn't it?", ".  Don't you think?", PeriodOrBang() });
                 }
-                case 5:
+                default:
                 {
                     return "This is " + Random({ "such a ", "a " }) + Random(WeatherAdjectives())
                         + Random({ " place.", " town." });
-                }
-                case 6:
-                {
-                    return "Ever " + Random({ "been to ", "seen " }) + "such a "
-                        + Random(WeatherAdjectives()) + Random({ " place?", " town?" });
-                }
-                default:
-                {
-                    return Random({ "I guess ", "So " })
-                        + Random({ "they",
-                                   "the guard",
-                                   "the guards",
-                                   "the " + TownName() + " guard",
-                                   "the " + TownName() + " guards" })
-                        + Random({ " will let anyone ", " let anyone " })
-                        + Random({ "in", "through the gate", "through the gates" })
-                        + Random({ " these days", " anymore", " nowadays" }) + PeriodOrBang();
                 }
             }
         };

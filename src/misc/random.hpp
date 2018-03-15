@@ -35,6 +35,7 @@
 #include <cmath> //for std::nextafter()
 #include <limits> //for std::uniform_..._distribution() and numeric_limits<>
 #include <random>
+#include <typeinfo>
 #include <vector>
 
 namespace heroespath
@@ -94,9 +95,45 @@ namespace misc
 
         inline float Float(const float THE_MAX = 1.0f) { return Float(0.0f, THE_MAX); }
 
-        int Int(const int THE_MIN, const int THE_MAX);
+        // The result is undefined if T is not one of: short, int, long, long long, unsigned short,
+        // unsigned int, unsigned long, or unsigned long long.
+        template <typename T>
+        T NonReal(const T THE_MIN, const T THE_MAX)
+        {
+            // Tested uniform_int_distribution<int> on both Windows and MacOS over ranges where
+            // min==max and where min>max.  In both cases the distribution didn't crash and behaved
+            // as expected, except when min>max when it seemed to return random out-of-range values.
+            // So to ensure results within range check that min<=max.
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (THE_MIN <= THE_MAX),
+                "misc::random::NonReal<" << typeid(T).name() << ">(min=" << THE_MIN << ", max="
+                                         << THE_MAX << ")  The min was not <= the max.");
+
+            // uniform_int_distribution is [x,y] so no nextafter() call is needed
+            std::uniform_int_distribution<T> uni_dist(THE_MIN, THE_MAX);
+            return uni_dist(MersenneTwister::engine);
+        }
+
+        template <typename T>
+        T NonReal(const T THE_MAX)
+        {
+            return NonReal<T>(0, THE_MAX);
+        }
+
+        inline int Int(const int THE_MIN, const int THE_MAX)
+        {
+            return NonReal<int>(THE_MIN, THE_MAX);
+        }
 
         inline int Int(const int THE_MAX) { return Int(0, THE_MAX); }
+
+        inline std::size_t SizeT(const std::size_t THE_MIN, const std::size_t THE_MAX)
+        {
+            return NonReal<std::size_t>(THE_MIN, THE_MAX);
+        }
+
+        inline std::size_t SizeT(const std::size_t THE_MAX) { return SizeT(0, THE_MAX); }
 
         inline bool Bool() { return (Int(1) == 1); }
     } // namespace random

@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,21 +22,26 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_STATE_NPC_FACTORY_HPP_INCLUDED
+#define HEROESPATH_STATE_NPC_FACTORY_HPP_INCLUDED
 //
-//  random.cpp
+// npc-factory.hpp
 //
-#include "random.hpp"
-#include <random>
+#include "state/npc-placeholder.hpp"
+#include "state/npc.hpp"
 
 namespace heroespath
 {
-namespace misc
+namespace state
 {
-    namespace random
+
+    // Responsible for making random NPCs.
+    struct NpcFactory
     {
+        static const NpcVec_t Make(const NpcPlaceholder &);
+    };
 
-        std::mt19937 MersenneTwister::engine;
-
-    } // namespace random
-} // namespace misc
+} // namespace state
 } // namespace heroespath
+
+#endif // HEROESPATH_STATE_NPC_FACTORY_HPP_INCLUDED
