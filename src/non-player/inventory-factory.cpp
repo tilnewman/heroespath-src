@@ -470,14 +470,14 @@ namespace non_player
 
             // knife/dagger
             auto const KNIFE_ITER(WEAPON_CHANCES.knife.num_owned_map.find(1));
-            if (KNIFE_ITER != chance::CountChanceMap_t::const_iterator())
+            if (KNIFE_ITER != std::end(WEAPON_CHANCES.knife.num_owned_map))
             {
                 typeKindChanceMap[item::weapon_type::Knife] = std::make_pair(0, KNIFE_ITER->second);
             }
 
             // staff/quarterstaff
             auto const STAFF_ITER(WEAPON_CHANCES.staff.num_owned_map.find(1));
-            if (STAFF_ITER != chance::CountChanceMap_t::const_iterator())
+            if (STAFF_ITER != std::end(WEAPON_CHANCES.staff.num_owned_map))
             {
                 typeKindChanceMap[item::weapon_type::Staff] = std::make_pair(0, STAFF_ITER->second);
             }

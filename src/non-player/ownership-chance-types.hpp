@@ -213,6 +213,11 @@ namespace non_player
             template <typename T>
             std::pair<T, std::size_t> MappedRandomItemChance(const std::map<T, ItemChances> & MAP)
             {
+                if (MAP.empty())
+                {
+                    return std::make_pair(T(), 0);
+                }
+
                 float chanceSubTotal(0.0f);
                 for (auto const & NEXT_MAP_PAIR_OUTER : MAP)
                 {
