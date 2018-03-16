@@ -58,7 +58,6 @@ namespace map
 
     // Responsible for all state and operation of a 2D map of the game world.
     class Map : public sf::Drawable
-
     {
     public:
         Map(const Map &) = delete;

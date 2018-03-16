@@ -31,6 +31,7 @@
 #include "avatar/i-view.hpp"
 #include "avatar/lpc-view.hpp"
 #include "log/log-macros.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 
@@ -65,12 +66,18 @@ namespace avatar
         , timeUntilNextWalkSec_(RandomWalkDelay())
         , walkRects_(WALK_RECTS)
         , walkTargetPosV_()
-        , walkRectIndex_(RandomWalkRectIndex())
-        , posV_(RandomWalkTarget())
+        , walkRectIndex_(0)
+        , posV_(0.0f, 0.0f)
         , prevWalkDirection_(sfml_util::Direction::Count)
         , walkingIntoTimerSec_(0.0f)
         , walkingIntoIndex_(WALKING_INTO_INDEX_INVALID_)
-    {}
+    {
+        if (IsPlayer() == false)
+        {
+            walkRectIndex_ = RandomWalkRectIndex();
+            posV_ = RandomWalkTarget();
+        }
+    }
 
     void Model::Update(const float TIME_ELAPSED)
     {
@@ -308,7 +315,7 @@ namespace avatar
 
     std::size_t Model::RandomWalkRectIndex() const
     {
-        if (walkRects_.size() <= 1)
+        if (IsPlayer() || (walkRects_.size() == 1))
         {
             return 0;
         }
@@ -325,8 +332,7 @@ namespace avatar
 
             if (possibleWalkRectIndexes_.empty())
             {
-                return static_cast<std::size_t>(
-                    misc::random::Int(0, static_cast<int>(walkRects_.size())));
+                return misc::random::SizeT(walkRects_.size() - 1);
             }
             else if (possibleWalkRectIndexes_.size() > 1)
             {
@@ -352,6 +358,12 @@ namespace avatar
         }
         else
         {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (walkRectIndex_ < walkRects_.size()),
+                "avatar::Model::RandomWalkTarget() was called when walkRectIndex_ ("
+                    << walkRectIndex_ << ") was out of bounds with walkRects vector of size="
+                    << walkRects_.size() << ".");
+
             auto const RECT{ walkRects_[walkRectIndex_] };
 
             return sf::Vector2f(

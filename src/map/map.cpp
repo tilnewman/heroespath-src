@@ -65,8 +65,8 @@ namespace map
         , collisionVec_()
         , transitionVec_()
         , level_(Level::Count)
-        , player_(
-              std::make_unique<avatar::LPCView>(game::Game::Instance()->State().Party().Avatar()))
+        , player_(avatar::Model(
+              std::make_unique<avatar::LPCView>(game::Game::Instance()->State().Party().Avatar())))
         , nonPlayers_()
         , walkRectVecMap_()
         , walkSfxLayers_()
@@ -594,11 +594,18 @@ namespace map
 
             throw std::runtime_error(ss.str());
         }
-        else
-        {
-            nonPlayers_.emplace_back(
-                avatar::Model(std::make_unique<avatar::LPCView>(NPC.AvatarImage()), walkRects));
-        }
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (walkRects.empty() == false),
+            "map::Map::AddNonPlayerAvatar(avatar="
+                << avatar::Avatar::ToString(NPC.AvatarImage())
+                << ", walkBoundsIndex=" << NPC.WalkBoundsIndex()
+                << ") but that walkBoundsIndex, while valid, was "
+                   "not associated with any actual walk bounds.  "
+                   "The vector was empty.");
+
+        nonPlayers_.emplace_back(
+            avatar::Model(std::make_unique<avatar::LPCView>(NPC.AvatarImage()), walkRects));
     }
 }
 }

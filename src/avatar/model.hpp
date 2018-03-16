@@ -50,7 +50,7 @@ namespace avatar
     class Model
     {
     public:
-        Model(
+        explicit Model(
             IViewUPtr_t viewUPtr,
             const std::vector<sf::FloatRect> & WALK_RECTS = std::vector<sf::FloatRect>());
 
