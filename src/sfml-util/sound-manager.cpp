@@ -496,6 +496,12 @@ namespace sfml_util
 
     void SoundManager::SoundEffectPlay(const sound_effect::Enum SFX_ENUM)
     {
+        if ((SFX_ENUM == sound_effect::None) || (SFX_ENUM == sound_effect::Count)
+            || (SFX_ENUM == sound_effect::Random))
+        {
+            return;
+        }
+
         auto & sfxWrapper{ sfxWrapperVec_[SFX_ENUM] };
 
         if (sfxWrapper.IsValid() == false)
@@ -515,7 +521,7 @@ namespace sfml_util
 
     void SoundManager::SoundEffectPlay(const sound_effect::Enum E, const float PRE_DELAY_SEC)
     {
-        if ((E != sound_effect::None) && (E != sound_effect::Count && (E != sound_effect::Random)))
+        if ((E != sound_effect::None) && (E != sound_effect::Count) && (E != sound_effect::Random))
         {
             sfxToPlayPairsVec_.emplace_back(std::make_pair(E, PRE_DELAY_SEC));
         }
