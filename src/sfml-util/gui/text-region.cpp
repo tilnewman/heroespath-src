@@ -63,6 +63,7 @@ namespace sfml_util
             , smallFontSizeOrig_()
             , marginsOrig_()
             , allowScrollbarOrig_()
+            , textSnipsToDrawVec_()
         {}
 
         TextRegion::TextRegion(
@@ -85,6 +86,7 @@ namespace sfml_util
             , smallFontSizeOrig_()
             , marginsOrig_()
             , allowScrollbarOrig_()
+            , textSnipsToDrawVec_()
         {
             Setup(TEXT_INFO, REGION, SMALLER_FONT_SIZE, BOX_INFO, MARGINS);
         }
@@ -110,6 +112,7 @@ namespace sfml_util
             , smallFontSizeOrig_()
             , marginsOrig_()
             , allowScrollbarOrig_()
+            , textSnipsToDrawVec_()
         {
             Setup(TEXT_INFO, REGION, stagePtr_, SMALLER_FONT_SIZE, BOX_INFO, MARGINS, true);
         }
@@ -207,6 +210,7 @@ namespace sfml_util
             SetEntityRegion(OUTLINE_RECT);
             HandleBox(BOX_INFO);
             EstablishWhichLinesToDraw(0.0f);
+            ResetTextToDraw();
         }
 
         void TextRegion::HandleSliderBar(sfml_util::gui::SliderBarPtr_t newSliderBarPtr)
@@ -278,52 +282,22 @@ namespace sfml_util
         void TextRegion::draw(sf::RenderTarget & target, sf::RenderStates states) const
         {
             // Note:  Don't draw the Box or SliderBar here.  They are being drawn by the stage.
+
             if (false == entityWillDraw_)
             {
                 return;
             }
-            // don't draw farther down than the region extends, keep track with posY
-            auto posY{ 0.0f };
-            auto const NUM_LINES{ renderedText_.vec_vec.size() };
-            for (std::size_t l(startLine_); l < NUM_LINES; ++l)
+
+            for (auto const & TEXT_SNIP_NUMS : textSnipsToDrawVec_)
             {
-                if (renderedText_.vec_vec[l].empty())
+                if (TEXT_SNIP_NUMS.line_num < renderedText_.vec_vec.size())
                 {
-                    continue;
-                }
+                    auto const & SEG_VEC{ renderedText_.vec_vec[TEXT_SNIP_NUMS.line_num] };
 
-                // remove extra space created by newline characters
-                sf::Text t(renderedText_.vec_vec[l][0].sf_text);
-
-                t.setString(
-                    boost::algorithm::replace_all_copy(std::string(t.getString()), "\n", ""));
-
-                // there should be no empty lines, instead choose a value that fits
-                if (std::string(t.getString()).empty())
-                {
-                    t.setString("\n");
-
-                    // this magic number found by experiment
-                    posY += t.getGlobalBounds().height * 0.8f;
-                }
-                else
-                {
-                    posY += t.getGlobalBounds().height;
-                }
-
-                auto const SCROLL_PAD{ (sliderBarUPtr_.get() == nullptr)
-                                           ? 0.0f
-                                           : static_cast<float>(t.getCharacterSize()) };
-
-                if (posY > (entityRegion_.height - SCROLL_PAD))
-                {
-                    break;
-                }
-
-                auto const NUM_SNIPPETS{ renderedText_.vec_vec[l].size() };
-                for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
-                {
-                    target.draw(renderedText_.vec_vec[l][s].sf_text, states);
+                    if (TEXT_SNIP_NUMS.seg_num < SEG_VEC.size())
+                    {
+                        target.draw(SEG_VEC[TEXT_SNIP_NUMS.seg_num].sf_text, states);
+                    }
                 }
             }
         }
@@ -351,6 +325,8 @@ namespace sfml_util
             {
                 sliderBarUPtr_->MoveEntityPos(HORIZ, VERT);
             }
+
+            ResetTextToDraw();
         }
 
         void TextRegion::SetEntityPos(const float POS_LEFT, const float POS_TOP)
@@ -363,6 +339,7 @@ namespace sfml_util
             if (sliderBarUPtr_.get() != nullptr)
             {
                 EstablishWhichLinesToDraw(PACKAGE.PTR_->GetCurrentValue());
+                ResetTextToDraw();
                 return true;
             }
             else
@@ -413,6 +390,8 @@ namespace sfml_util
 
             // keep the text_ member accurate
             text_ += TEXT_REGION.text_;
+
+            ResetTextToDraw();
         }
 
         void TextRegion::OnColorChange()
@@ -445,6 +424,61 @@ namespace sfml_util
                 boxInfo_,
                 marginsOrig_,
                 allowScrollbarOrig_);
+        }
+
+        void TextRegion::ResetTextToDraw()
+        {
+            textSnipsToDrawVec_.clear();
+
+            // this number found by experiment to be a good upper bound
+            textSnipsToDrawVec_.reserve(100);
+
+            // don't draw farther down than the region extends, keep track with posY
+            auto posY{ 0.0f };
+            auto const NUM_LINES{ renderedText_.vec_vec.size() };
+            for (std::size_t l(startLine_); l < NUM_LINES; ++l)
+            {
+                auto const & SNIP_VEC{ renderedText_.vec_vec[l] };
+
+                if (SNIP_VEC.empty())
+                {
+                    continue;
+                }
+
+                // remove extra space created by newline characters
+                sf::Text t(SNIP_VEC[0].sf_text);
+
+                t.setString(
+                    boost::algorithm::replace_all_copy(std::string(t.getString()), "\n", ""));
+
+                // there should be no empty lines, instead choose a value that fits
+                if (std::string(t.getString()).empty())
+                {
+                    t.setString("\n");
+
+                    // this magic number found by experiment
+                    posY += t.getGlobalBounds().height * 0.8f;
+                }
+                else
+                {
+                    posY += t.getGlobalBounds().height;
+                }
+
+                auto const SCROLL_PAD{ (sliderBarUPtr_.get() == nullptr)
+                                           ? 0.0f
+                                           : static_cast<float>(t.getCharacterSize()) };
+
+                if (posY > (entityRegion_.height - SCROLL_PAD))
+                {
+                    break;
+                }
+
+                auto const NUM_SNIPPETS{ SNIP_VEC.size() };
+                for (std::size_t s(0); s < NUM_SNIPPETS; ++s)
+                {
+                    textSnipsToDrawVec_.emplace_back(TextSnipNum(l, s));
+                }
+            }
         }
 
         void TextRegion::EstablishWhichLinesToDraw(const float SCROLL_RATIO)
@@ -490,6 +524,7 @@ namespace sfml_util
                 }
             }
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

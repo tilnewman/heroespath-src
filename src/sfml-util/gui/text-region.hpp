@@ -56,6 +56,21 @@ namespace sfml_util
             using BoxUPtr_t = std::unique_ptr<Box>;
         } // namespace box
 
+        // Responsible for wrapping the line number and segment number combination of what text will
+        // be drawn.
+        struct TextSnipNum
+        {
+            TextSnipNum(const std::size_t LINE, const std::size_t SEGMENT)
+                : line_num(LINE)
+                , seg_num(SEGMENT)
+            {}
+
+            std::size_t line_num;
+            std::size_t seg_num;
+        };
+
+        using TextSnipNumVec_t = std::vector<TextSnipNum>;
+
         // Encapsulates text drawn and bounded to an area that might need a scroll bar
         class TextRegion
             : public GuiEntity
@@ -124,9 +139,6 @@ namespace sfml_util
             inline const std::string GetText() const { return text_; }
             void SetText(const std::string &);
 
-            void EstablishWhichLinesToDraw(const float SCROLL_RATIO);
-            void EstablishWhichLinesToDraw(const float SCROLL_RATIO, const float REGION_HEIGHT);
-
             void Append(const TextRegion &);
 
         protected:
@@ -135,6 +147,11 @@ namespace sfml_util
             // Changes the font color by applying the current entity foreground
             // color to the sprite and textInfo_ member, but does not re-render the text.
             virtual void OnColorChange();
+
+        private:
+            void ResetTextToDraw();
+            void EstablishWhichLinesToDraw(const float SCROLL_RATIO);
+            void EstablishWhichLinesToDraw(const float SCROLL_RATIO, const float REGION_HEIGHT);
 
         public:
             static const unsigned int DEFAULT_NO_RESIZE_;
@@ -152,6 +169,7 @@ namespace sfml_util
             unsigned int smallFontSizeOrig_;
             sfml_util::Margins marginsOrig_;
             bool allowScrollbarOrig_;
+            TextSnipNumVec_t textSnipsToDrawVec_;
         };
 
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
