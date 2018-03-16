@@ -4,7 +4,7 @@ project("Heroes' Path")
 message(STATUS "System Detected: ${CMAKE_SYSTEM}")
 
 set(CUSTOM_BUILD_FLAGS "")
-set(CUSTOM_LINK_FLAGS "-fsanitize=address")
+set(CUSTOM_LINK_FLAGS "")
 
 option(VALGRIND_BUILD "Build flags customized for Valgrind" OFF)
 
