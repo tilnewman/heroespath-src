@@ -473,8 +473,6 @@ namespace sfml_util
         if ((EVENT.type == sf::Event::KeyReleased) && (EVENT.key.code == sf::Keyboard::F1))
         {
             M_HP_LOG(NAME_ << " F1 KEY RELEASED.  Bail.");
-            sfml_util::SoundManager::Instance()->PlaySfx_Keypress();
-            game::LoopManager::Instance()->SetExitSuccess(false);
             game::LoopManager::Instance()->TransitionTo_Exit();
         }
         if ((EVENT.key.code == sf::Keyboard::Escape)

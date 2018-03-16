@@ -26,11 +26,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 // main.cpp
-//  Test SFML rendering to develop some gui classes.
 //
 #include "game/startup-shutdown.hpp"
-
 #include <cstdlib>
+#include <iostream>
 
 int main(int argc, char * argv[])
 {
@@ -45,7 +44,14 @@ int main(int argc, char * argv[])
 
     auto const TEARDOWN_EXIT_CODE{ StartupShutdown::Teardown() };
 
-    return (
-        ((EXIT_SUCCESS == runExitCode) && (TEARDOWN_EXIT_CODE == EXIT_SUCCESS)) ? EXIT_SUCCESS
-                                                                                : EXIT_FAILURE);
+    auto const SUCCESS{ ((EXIT_SUCCESS == runExitCode) && (TEARDOWN_EXIT_CODE == EXIT_SUCCESS)) };
+
+    if (SUCCESS == false)
+    {
+        std::cerr << "Heroes' Path error detected: run_exit_code=" << runExitCode
+                  << ", teardown_exit_code=" << TEARDOWN_EXIT_CODE << "  (" << EXIT_SUCCESS
+                  << " means success)" << std::endl;
+    }
+
+    return ((SUCCESS) ? EXIT_SUCCESS : EXIT_FAILURE);
 }
