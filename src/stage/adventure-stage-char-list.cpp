@@ -73,7 +73,6 @@ namespace stage
         , conditionColumnRects_()
         , lineVerts_()
         , quadVerts_()
-        , innerShadeQuadVerts_()
         , charImages_()
         , charListSepLine_(
               "AdventureStage_CharacterList_CharListSeparator_",
@@ -92,7 +91,6 @@ namespace stage
 
     void AdventureCharacterList::draw(sf::RenderTarget & target, sf::RenderStates states) const
     {
-        target.draw(&innerShadeQuadVerts_[0], innerShadeQuadVerts_.size(), sf::Quads, states);
         target.draw(&lineVerts_[0], lineVerts_.size(), sf::Lines, states);
         target.draw(&quadVerts_[0], quadVerts_.size(), sf::Quads, states);
         target.draw(charListSepLine_, states);
@@ -121,7 +119,6 @@ namespace stage
     {
         lineVerts_.clear();
         quadVerts_.clear();
-        innerShadeQuadVerts_.clear();
 
         SetupNameButtons();
         SetupHealthNumbersText();
