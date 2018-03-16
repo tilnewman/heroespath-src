@@ -81,6 +81,7 @@ namespace interact
             case Unlock:
                 return sf::Keyboard::U;
             case Count:
+            default:
             {
                 std::ostringstream ss;
                 ss << "map::Interact::Buttons::Enum::Key(" << BUTTON_TYPE << ")_InvalidValueError.";
