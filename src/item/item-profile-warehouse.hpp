@@ -62,7 +62,7 @@ namespace item
 
         void Setup();
 
-        void Setup_StandardEquipmen();
+        void Setup_StandardEquipment();
         void Setup_UniqueItems();
         void Setup_MiscItems();
         void Setup_NamedEquipment();

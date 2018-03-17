@@ -101,7 +101,7 @@ namespace item
         // As of 2017-8-17 there were 849299 raw item profiles created before reductions.
         profiles_.reserve(1000000);
 
-        Setup_StandardEquipmen();
+        Setup_StandardEquipment();
         Setup_UniqueItems();
         Setup_MiscItems();
         Setup_NamedEquipment();
@@ -123,7 +123,7 @@ namespace item
         // Setup_LogStatistics();
     }
 
-    void ItemProfileWarehouse::Setup_StandardEquipmen()
+    void ItemProfileWarehouse::Setup_StandardEquipment()
     {
         auto setupThinProfile = [this](const auto & THIN_PROFILE) {
             this->SetupFromThinProfile(THIN_PROFILE, named_type::NotNamed, set_type::NotASet);
@@ -1003,14 +1003,17 @@ namespace item
                     {
                         for (auto const NEXT_MATERIAL_SEC : NEXT_BASEMATERIALVECPAIR.second.second)
                         {
-                            SetupFromThinProfile(
-                                THIN_PROFILE,
-                                NAMED_TYPE,
-                                SET_TYPE,
-                                NEXT_ELEMENT_TYPE,
-                                NEXT_MATERIAL_PRI,
-                                NEXT_MATERIAL_SEC,
-                                NEXT_BASEMATERIALVECPAIR.first);
+                            if (NEXT_MATERIAL_SEC != item::material::Nothing)
+                            {
+                                SetupFromThinProfile(
+                                    THIN_PROFILE,
+                                    NAMED_TYPE,
+                                    SET_TYPE,
+                                    NEXT_ELEMENT_TYPE,
+                                    NEXT_MATERIAL_PRI,
+                                    NEXT_MATERIAL_SEC,
+                                    NEXT_BASEMATERIALVECPAIR.first);
+                            }
                         }
                     }
                 }
@@ -2089,12 +2092,6 @@ namespace item
         {
             ItemProfile thinProfile;
             thinProfile.SetShirt(base_type::Count);
-            v.emplace_back(thinProfile);
-        }
-
-        {
-            ItemProfile thinProfile;
-            thinProfile.SetGauntlets(base_type::Count);
             v.emplace_back(thinProfile);
         }
 
