@@ -500,103 +500,109 @@ namespace item
                         PROFILE.IsPixie())));
         }
 
-        if (PROFILE.ShieldType() != armor::shield_type::Count)
+        if (PROFILE.Category() & item::category::Armor)
         {
-            itemPtr
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    armor::ArmorFactory::Instance()->Make_Shield(
-                        PROFILE.ShieldType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary())));
+            if (PROFILE.ShieldType() != armor::shield_type::Count)
+            {
+                itemPtr = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
+                    SetTypesAndReturn(
+                        PROFILE,
+                        armor::ArmorFactory::Instance()->Make_Shield(
+                            PROFILE.ShieldType(),
+                            PROFILE.MaterialPrimary(),
+                            PROFILE.MaterialSecondary())));
+            }
+
+            if (PROFILE.CoverType() != armor::cover_type::Count)
+            {
+                itemPtr = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
+                    SetTypesAndReturn(
+                        PROFILE,
+                        armor::ArmorFactory::Instance()->Make_Cover(
+                            PROFILE.CoverType(),
+                            PROFILE.MaterialPrimary(),
+                            PROFILE.MaterialSecondary())));
+            }
+
+            if (PROFILE.HelmType() != armor::helm_type::Count)
+            {
+                itemPtr = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
+                    SetTypesAndReturn(
+                        PROFILE,
+                        armor::ArmorFactory::Instance()->Make_Helm(
+                            PROFILE.HelmType(),
+                            PROFILE.MaterialPrimary(),
+                            PROFILE.MaterialSecondary())));
+            }
         }
 
-        if (PROFILE.CoverType() != armor::cover_type::Count)
+        if (PROFILE.Category() & item::category::Weapon)
         {
-            itemPtr
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    armor::ArmorFactory::Instance()->Make_Cover(
-                        PROFILE.CoverType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary())));
-        }
+            if (PROFILE.SwordType() != weapon::sword_type::Count)
+            {
+                itemPtr = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
+                    SetTypesAndReturn(
+                        PROFILE,
+                        weapon::WeaponFactory::Instance()->Make_Sword(
+                            PROFILE.SwordType(),
+                            PROFILE.MaterialPrimary(),
+                            PROFILE.MaterialSecondary())));
+            }
 
-        if (PROFILE.HelmType() != armor::helm_type::Count)
-        {
-            itemPtr
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    armor::ArmorFactory::Instance()->Make_Helm(
-                        PROFILE.HelmType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary())));
-        }
+            if (PROFILE.AxeType() != weapon::axe_type::Count)
+            {
+                itemPtr = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
+                    SetTypesAndReturn(
+                        PROFILE,
+                        weapon::WeaponFactory::Instance()->Make_Axe(
+                            PROFILE.AxeType(),
+                            PROFILE.MaterialPrimary(),
+                            PROFILE.MaterialSecondary())));
+            }
 
-        if (PROFILE.SwordType() != weapon::sword_type::Count)
-        {
-            itemPtr
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    weapon::WeaponFactory::Instance()->Make_Sword(
-                        PROFILE.SwordType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary())));
-        }
+            if (PROFILE.ClubType() != weapon::club_type::Count)
+            {
+                itemPtr = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
+                    SetTypesAndReturn(
+                        PROFILE,
+                        weapon::WeaponFactory::Instance()->Make_Club(
+                            PROFILE.ClubType(),
+                            PROFILE.MaterialPrimary(),
+                            PROFILE.MaterialSecondary())));
+            }
 
-        if (PROFILE.AxeType() != weapon::axe_type::Count)
-        {
-            itemPtr
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    weapon::WeaponFactory::Instance()->Make_Axe(
-                        PROFILE.AxeType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary())));
-        }
+            if (PROFILE.WhipType() != weapon::whip_type::Count)
+            {
+                itemPtr = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
+                    SetTypesAndReturn(
+                        PROFILE,
+                        weapon::WeaponFactory::Instance()->Make_Whip(
+                            PROFILE.WhipType(),
+                            PROFILE.MaterialPrimary(),
+                            PROFILE.MaterialSecondary())));
+            }
 
-        if (PROFILE.ClubType() != weapon::club_type::Count)
-        {
-            itemPtr
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    weapon::WeaponFactory::Instance()->Make_Club(
-                        PROFILE.ClubType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary())));
-        }
+            if (PROFILE.ProjectileType() != weapon::projectile_type::Count)
+            {
+                itemPtr = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
+                    SetTypesAndReturn(
+                        PROFILE,
+                        weapon::WeaponFactory::Instance()->Make_Projectile(
+                            PROFILE.ProjectileType(),
+                            PROFILE.MaterialPrimary(),
+                            PROFILE.MaterialSecondary())));
+            }
 
-        if (PROFILE.WhipType() != weapon::whip_type::Count)
-        {
-            itemPtr
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    weapon::WeaponFactory::Instance()->Make_Whip(
-                        PROFILE.WhipType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary())));
-        }
-
-        if (PROFILE.ProjectileType() != weapon::projectile_type::Count)
-        {
-            itemPtr
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    weapon::WeaponFactory::Instance()->Make_Projectile(
-                        PROFILE.ProjectileType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary())));
-        }
-
-        if (PROFILE.BladedStaffType() != weapon::bladedstaff_type::Count)
-        {
-            itemPtr
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    weapon::WeaponFactory::Instance()->Make_BladedStaff(
-                        PROFILE.BladedStaffType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary())));
+            if (PROFILE.BladedStaffType() != weapon::bladedstaff_type::Count)
+            {
+                itemPtr = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
+                    SetTypesAndReturn(
+                        PROFILE,
+                        weapon::WeaponFactory::Instance()->Make_BladedStaff(
+                            PROFILE.BladedStaffType(),
+                            PROFILE.MaterialPrimary(),
+                            PROFILE.MaterialSecondary())));
+            }
         }
 
         if (PROFILE.IsKnife())

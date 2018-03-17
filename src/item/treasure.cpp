@@ -221,11 +221,11 @@ namespace item
                 std::remove_if(
                     profiles.begin(),
                     profiles.end(),
-                    [](const auto & PROFILE) { return (PROFILE.TreasureScore(true).IsZero()); }),
+                    [](const auto & PROFILE) { return (PROFILE.TreasureScore().IsZero()); }),
                 profiles.end());
         }
 
-        RemoveTreasureScoresHigherThan(amount, profiles, IS_RELIGIOUS);
+        RemoveTreasureScoresHigherThan(amount, profiles);
 
         RemoveSetItemsAlreadyOwned(profiles);
 
@@ -242,7 +242,7 @@ namespace item
                 item::ItemFactory::Instance()->Make(NEXT_ITEM_TO_ADD_PROFILE));
 
             amount -= NEXT_ITEM_TO_ADD_PROFILE.TreasureScore();
-            RemoveTreasureScoresHigherThan(amount, profiles, IS_RELIGIOUS);
+            RemoveTreasureScoresHigherThan(amount, profiles);
             ++count;
 
             // no more than five religious items will be allowed
@@ -281,9 +281,7 @@ namespace item
     }
 
     void TreasureFactory::RemoveTreasureScoresHigherThan(
-        const Score_t & REMOVE_IF_HIGHER,
-        item::ItemProfileVec_t & profiles,
-        const bool IS_RELIGIOUS)
+        const Score_t & REMOVE_IF_HIGHER, item::ItemProfileVec_t & profiles)
     {
         if ((REMOVE_IF_HIGHER <= 0_score) || profiles.empty())
         {
@@ -294,8 +292,8 @@ namespace item
             std::remove_if(
                 profiles.begin(),
                 profiles.end(),
-                [REMOVE_IF_HIGHER, IS_RELIGIOUS](const auto & PROFILE) {
-                    return (PROFILE.TreasureScore(IS_RELIGIOUS) > REMOVE_IF_HIGHER);
+                [REMOVE_IF_HIGHER](const auto & PROFILE) {
+                    return (PROFILE.TreasureScore() > REMOVE_IF_HIGHER);
                 }),
             profiles.end());
     }

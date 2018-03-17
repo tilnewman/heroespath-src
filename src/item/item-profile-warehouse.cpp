@@ -734,153 +734,28 @@ namespace item
             return;
         }
 
-        if (THIN_PROFILE.ShieldType() != armor::shield_type::Count)
+        if (THIN_PROFILE.Category() & item::category::Armor)
         {
-            ItemProfile fatProfile;
-            fatProfile.SetShield(
-                THIN_PROFILE.ShieldType(),
-                MATERIAL_PRI,
-                MATERIAL_SEC,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
-            return;
-        }
 
-        if (THIN_PROFILE.CoverType() != armor::cover_type::Count)
-        {
-            ItemProfile fatProfile;
-            fatProfile.SetCover(
-                THIN_PROFILE.CoverType(),
-                MATERIAL_PRI,
-                MATERIAL_SEC,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                false);
-            profiles_.emplace_back(fatProfile);
-
-            ItemProfile fatProfilePixie;
-            fatProfilePixie.SetCover(
-                THIN_PROFILE.CoverType(),
-                MATERIAL_PRI,
-                MATERIAL_SEC,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE,
-                true);
-            profiles_.emplace_back(fatProfilePixie);
-            return;
-        }
-
-        if (THIN_PROFILE.HelmType() != armor::helm_type::Count)
-        {
-            ItemProfile fatProfile;
-            fatProfile.SetHelm(
-                THIN_PROFILE.HelmType(),
-                MATERIAL_PRI,
-                MATERIAL_SEC,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
-            return;
-        }
-
-        if (THIN_PROFILE.SwordType() != weapon::sword_type::Count)
-        {
-            ItemProfile fatProfile;
-            fatProfile.SetSword(
-                THIN_PROFILE.SwordType(),
-                MATERIAL_PRI,
-                MATERIAL_SEC,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
-            return;
-        }
-
-        if (THIN_PROFILE.AxeType() != weapon::axe_type::Count)
-        {
-            ItemProfile fatProfile;
-            fatProfile.SetAxe(
-                THIN_PROFILE.AxeType(),
-                MATERIAL_PRI,
-                MATERIAL_SEC,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
-            return;
-        }
-
-        if (THIN_PROFILE.ClubType() != weapon::club_type::Count)
-        {
-            ItemProfile fatProfile;
-            fatProfile.SetClub(
-                THIN_PROFILE.ClubType(),
-                MATERIAL_PRI,
-                MATERIAL_SEC,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
-            return;
-        }
-
-        if (THIN_PROFILE.WhipType() != weapon::whip_type::Count)
-        {
-            ItemProfile fatProfile;
-            fatProfile.SetWhip(
-                THIN_PROFILE.WhipType(),
-                MATERIAL_PRI,
-                MATERIAL_SEC,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
-            return;
-        }
-
-        if (THIN_PROFILE.ProjectileType() != weapon::projectile_type::Count)
-        {
-            ItemProfile fatProfile;
-            fatProfile.SetProjectile(
-                THIN_PROFILE.ProjectileType(),
-                MATERIAL_PRI,
-                MATERIAL_SEC,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
-            return;
-        }
-
-        if (THIN_PROFILE.BladedStaffType() != weapon::bladedstaff_type::Count)
-        {
-            ItemProfile fatProfile;
-            fatProfile.SetBladedStaff(
-                THIN_PROFILE.BladedStaffType(),
-                MATERIAL_PRI,
-                MATERIAL_SEC,
-                NAMED_TYPE,
-                SET_TYPE,
-                ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
-            return;
-        }
-
-        if (THIN_PROFILE.IsKnife())
-        {
-            for (int i(0); i < sfml_util::Size::Count; ++i)
+            if (THIN_PROFILE.ShieldType() != armor::shield_type::Count)
             {
-                auto const NEXT_SIZE_ENUM{ static_cast<sfml_util::Size::Enum>(i) };
-
                 ItemProfile fatProfile;
-                fatProfile.SetKnife(
-                    NEXT_SIZE_ENUM,
+                fatProfile.SetShield(
+                    THIN_PROFILE.ShieldType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
+                profiles_.emplace_back(fatProfile);
+                return;
+            }
+
+            if (THIN_PROFILE.CoverType() != armor::cover_type::Count)
+            {
+                ItemProfile fatProfile;
+                fatProfile.SetCover(
+                    THIN_PROFILE.CoverType(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
@@ -890,8 +765,8 @@ namespace item
                 profiles_.emplace_back(fatProfile);
 
                 ItemProfile fatProfilePixie;
-                fatProfilePixie.SetKnife(
-                    NEXT_SIZE_ENUM,
+                fatProfilePixie.SetCover(
+                    THIN_PROFILE.CoverType(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
@@ -899,56 +774,189 @@ namespace item
                     ELEMENT_TYPE,
                     true);
                 profiles_.emplace_back(fatProfilePixie);
+                return;
             }
-            return;
-        }
 
-        if (THIN_PROFILE.IsDagger())
-        {
-            for (int i(0); i < sfml_util::Size::Count; ++i)
+            if (THIN_PROFILE.HelmType() != armor::helm_type::Count)
             {
-                auto const NEXT_SIZE_ENUM{ static_cast<sfml_util::Size::Enum>(i) };
-
                 ItemProfile fatProfile;
-                fatProfile.SetDagger(
-                    NEXT_SIZE_ENUM,
+                fatProfile.SetHelm(
+                    THIN_PROFILE.HelmType(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
                     SET_TYPE,
-                    ELEMENT_TYPE,
-                    false);
+                    ELEMENT_TYPE);
                 profiles_.emplace_back(fatProfile);
+                return;
+            }
+        }
 
-                ItemProfile fatProfilePixie;
-                fatProfilePixie.SetDagger(
-                    NEXT_SIZE_ENUM,
+        if (THIN_PROFILE.Category() & item::category::Weapon)
+        {
+
+            if (THIN_PROFILE.SwordType() != weapon::sword_type::Count)
+            {
+                ItemProfile fatProfile;
+                fatProfile.SetSword(
+                    THIN_PROFILE.SwordType(),
                     MATERIAL_PRI,
                     MATERIAL_SEC,
                     NAMED_TYPE,
                     SET_TYPE,
-                    ELEMENT_TYPE,
-                    true);
-                profiles_.emplace_back(fatProfilePixie);
+                    ELEMENT_TYPE);
+                profiles_.emplace_back(fatProfile);
+                return;
             }
-            return;
-        }
 
-        if (THIN_PROFILE.IsStaff())
-        {
-            ItemProfile fatProfile;
-            fatProfile.SetStaff(MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
-            return;
-        }
+            if (THIN_PROFILE.AxeType() != weapon::axe_type::Count)
+            {
+                ItemProfile fatProfile;
+                fatProfile.SetAxe(
+                    THIN_PROFILE.AxeType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
+                profiles_.emplace_back(fatProfile);
+                return;
+            }
 
-        if (THIN_PROFILE.IsQuarterStaff())
-        {
-            ItemProfile fatProfile;
-            fatProfile.SetQuarterStaff(
-                MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
-            return;
+            if (THIN_PROFILE.ClubType() != weapon::club_type::Count)
+            {
+                ItemProfile fatProfile;
+                fatProfile.SetClub(
+                    THIN_PROFILE.ClubType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
+                profiles_.emplace_back(fatProfile);
+                return;
+            }
+
+            if (THIN_PROFILE.WhipType() != weapon::whip_type::Count)
+            {
+                ItemProfile fatProfile;
+                fatProfile.SetWhip(
+                    THIN_PROFILE.WhipType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
+                profiles_.emplace_back(fatProfile);
+                return;
+            }
+
+            if (THIN_PROFILE.ProjectileType() != weapon::projectile_type::Count)
+            {
+                ItemProfile fatProfile;
+                fatProfile.SetProjectile(
+                    THIN_PROFILE.ProjectileType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
+                profiles_.emplace_back(fatProfile);
+                return;
+            }
+
+            if (THIN_PROFILE.BladedStaffType() != weapon::bladedstaff_type::Count)
+            {
+                ItemProfile fatProfile;
+                fatProfile.SetBladedStaff(
+                    THIN_PROFILE.BladedStaffType(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE);
+                profiles_.emplace_back(fatProfile);
+                return;
+            }
+
+            if (THIN_PROFILE.IsKnife())
+            {
+                for (int i(0); i < sfml_util::Size::Count; ++i)
+                {
+                    auto const NEXT_SIZE_ENUM{ static_cast<sfml_util::Size::Enum>(i) };
+
+                    ItemProfile fatProfile;
+                    fatProfile.SetKnife(
+                        NEXT_SIZE_ENUM,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        false);
+                    profiles_.emplace_back(fatProfile);
+
+                    ItemProfile fatProfilePixie;
+                    fatProfilePixie.SetKnife(
+                        NEXT_SIZE_ENUM,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        true);
+                    profiles_.emplace_back(fatProfilePixie);
+                }
+                return;
+            }
+
+            if (THIN_PROFILE.IsDagger())
+            {
+                for (int i(0); i < sfml_util::Size::Count; ++i)
+                {
+                    auto const NEXT_SIZE_ENUM{ static_cast<sfml_util::Size::Enum>(i) };
+
+                    ItemProfile fatProfile;
+                    fatProfile.SetDagger(
+                        NEXT_SIZE_ENUM,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        false);
+                    profiles_.emplace_back(fatProfile);
+
+                    ItemProfile fatProfilePixie;
+                    fatProfilePixie.SetDagger(
+                        NEXT_SIZE_ENUM,
+                        MATERIAL_PRI,
+                        MATERIAL_SEC,
+                        NAMED_TYPE,
+                        SET_TYPE,
+                        ELEMENT_TYPE,
+                        true);
+                    profiles_.emplace_back(fatProfilePixie);
+                }
+                return;
+            }
+
+            if (THIN_PROFILE.IsStaff())
+            {
+                ItemProfile fatProfile;
+                fatProfile.SetStaff(MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
+                profiles_.emplace_back(fatProfile);
+                return;
+            }
+
+            if (THIN_PROFILE.IsQuarterStaff())
+            {
+                ItemProfile fatProfile;
+                fatProfile.SetQuarterStaff(
+                    MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
+                profiles_.emplace_back(fatProfile);
+                return;
+            }
         }
 
         std::ostringstream ss;
@@ -1150,58 +1158,64 @@ namespace item
                 return v;
             }
 
-            if (THIN_PROFILE.ShieldType() != armor::shield_type::Count)
+            if (THIN_PROFILE.Category() & item::category::Armor)
             {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.ShieldType())) };
+                if (THIN_PROFILE.ShieldType() != armor::shield_type::Count)
+                {
+                    return { std::make_pair(
+                        armor::base_type::Count, Materials(THIN_PROFILE.ShieldType())) };
+                }
+
+                if (THIN_PROFILE.CoverType() != armor::cover_type::Count)
+                {
+                    return { std::make_pair(
+                        armor::base_type::Count, Materials(THIN_PROFILE.CoverType())) };
+                }
+
+                if (THIN_PROFILE.HelmType() != armor::helm_type::Count)
+                {
+                    return { std::make_pair(
+                        armor::base_type::Count, Materials(THIN_PROFILE.HelmType())) };
+                }
             }
 
-            if (THIN_PROFILE.CoverType() != armor::cover_type::Count)
+            if (THIN_PROFILE.Category() & item::category::Weapon)
             {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.CoverType())) };
-            }
+                if (THIN_PROFILE.SwordType() != weapon::sword_type::Count)
+                {
+                    return { std::make_pair(
+                        armor::base_type::Count, Materials(THIN_PROFILE.SwordType())) };
+                }
 
-            if (THIN_PROFILE.HelmType() != armor::helm_type::Count)
-            {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.HelmType())) };
-            }
+                if (THIN_PROFILE.AxeType() != weapon::axe_type::Count)
+                {
+                    return { std::make_pair(
+                        armor::base_type::Count, Materials(THIN_PROFILE.AxeType())) };
+                }
 
-            if (THIN_PROFILE.SwordType() != weapon::sword_type::Count)
-            {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.SwordType())) };
-            }
+                if (THIN_PROFILE.ClubType() != weapon::club_type::Count)
+                {
+                    return { std::make_pair(
+                        armor::base_type::Count, Materials(THIN_PROFILE.ClubType())) };
+                }
 
-            if (THIN_PROFILE.AxeType() != weapon::axe_type::Count)
-            {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.AxeType())) };
-            }
+                if (THIN_PROFILE.WhipType() != weapon::whip_type::Count)
+                {
+                    return { std::make_pair(
+                        armor::base_type::Count, Materials(THIN_PROFILE.WhipType())) };
+                }
 
-            if (THIN_PROFILE.ClubType() != weapon::club_type::Count)
-            {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.ClubType())) };
-            }
+                if (THIN_PROFILE.ProjectileType() != weapon::projectile_type::Count)
+                {
+                    return { std::make_pair(
+                        armor::base_type::Count, Materials(THIN_PROFILE.ProjectileType())) };
+                }
 
-            if (THIN_PROFILE.WhipType() != weapon::whip_type::Count)
-            {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.WhipType())) };
-            }
-
-            if (THIN_PROFILE.ProjectileType() != weapon::projectile_type::Count)
-            {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.ProjectileType())) };
-            }
-
-            if (THIN_PROFILE.BladedStaffType() != weapon::bladedstaff_type::Count)
-            {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.BladedStaffType())) };
+                if (THIN_PROFILE.BladedStaffType() != weapon::bladedstaff_type::Count)
+                {
+                    return { std::make_pair(
+                        armor::base_type::Count, Materials(THIN_PROFILE.BladedStaffType())) };
+                }
             }
 
             if (THIN_PROFILE.IsKnife())

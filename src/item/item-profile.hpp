@@ -31,6 +31,7 @@
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
+#include "log/log-macros.hpp"
 
 #include "sfml-util/size-enum.hpp"
 
@@ -69,6 +70,98 @@ namespace item
         misc::StrVec_t armorStrings;
     };
 
+    namespace profile
+    {
+        struct ArmorSettings
+        {
+            ArmorSettings()
+                : shield(armor::shield_type::Count)
+                , helm(armor::helm_type::Count)
+                , base(armor::base_type::Count)
+                , cover(armor::cover_type::Count)
+                , restriction(armor::base_type::Count)
+            {}
+
+            armor::shield_type::Enum shield;
+            armor::helm_type::Enum helm;
+            armor::base_type::Enum base;
+            armor::cover_type::Enum cover;
+            armor::base_type::Enum restriction;
+        };
+
+        inline bool operator==(const ArmorSettings & L, const ArmorSettings & R)
+        {
+            return std::tie(L.shield, L.helm, L.base, L.cover, L.restriction)
+                == std::tie(R.shield, R.helm, R.base, R.cover, R.restriction);
+        }
+
+        inline bool operator!=(const ArmorSettings & L, const ArmorSettings & R)
+        {
+            return !(L == R);
+        }
+
+        inline bool operator<(const ArmorSettings & L, const ArmorSettings & R)
+        {
+            return std::tie(L.shield, L.helm, L.base, L.cover, L.restriction)
+                < std::tie(R.shield, R.helm, R.base, R.cover, R.restriction);
+        }
+
+        struct WeaponSettings
+        {
+            WeaponSettings()
+                : sword(weapon::sword_type::Count)
+                , axe(weapon::axe_type::Count)
+                , club(weapon::club_type::Count)
+                , whip(weapon::whip_type::Count)
+                , proj(weapon::projectile_type::Count)
+                , bstaff(weapon::bladedstaff_type::Count)
+            {}
+
+            weapon::sword_type::Enum sword;
+            weapon::axe_type::Enum axe;
+            weapon::club_type::Enum club;
+            weapon::whip_type::Enum whip;
+            weapon::projectile_type::Enum proj;
+            weapon::bladedstaff_type::Enum bstaff;
+        };
+
+        inline bool operator==(const WeaponSettings & L, const WeaponSettings & R)
+        {
+            return std::tie(L.sword, L.axe, L.club, L.whip, L.proj, L.bstaff)
+                == std::tie(R.sword, R.axe, R.club, R.whip, R.proj, R.bstaff);
+        }
+
+        inline bool operator!=(const WeaponSettings & L, const WeaponSettings & R)
+        {
+            return !(L == R);
+        }
+
+        inline bool operator<(const WeaponSettings & L, const WeaponSettings & R)
+        {
+            return std::tie(L.sword, L.axe, L.club, L.whip, L.proj, L.bstaff)
+                < std::tie(R.sword, R.axe, R.club, R.whip, R.proj, R.bstaff);
+        }
+
+        struct IsSet
+        {
+            enum Enum : unsigned
+            {
+                None = 0,
+                Pixie = 1 << 0,
+                Aventail = 1 << 1,
+                Bracer = 1 << 2,
+                Shirt = 1 << 3,
+                Boots = 1 << 4,
+                Pants = 1 << 5,
+                Gauntlets = 1 << 6,
+                Knife = 1 << 7,
+                Dagger = 1 << 8,
+                Staff = 1 << 9,
+                QStaff = 1 << 10,
+            };
+        };
+    }
+
     // A collection of details about an item that uniquely idenify an item.
     // A "Thin" Profile is an incomplete profile used as a placeholder for a
     //"Fat" Profile.  A "Fat" Profile is a complete profile that is used as
@@ -101,51 +194,82 @@ namespace item
         inline set_type::Enum SetType() const { return set_; }
         inline named_type::Enum NamedType() const { return named_; }
         inline element_type::Enum ElementType() const { return element_; }
-        inline bool IsPixie() const { return isPixie_; }
 
-        inline armor::shield_type::Enum ShieldType() const { return shield_; }
-        inline armor::helm_type::Enum HelmType() const { return helm_; }
-        inline armor::base_type::Enum BaseType() const { return base_; }
-        inline armor::cover_type::Enum CoverType() const { return cover_; }
+        inline armor::shield_type::Enum ShieldType() const
+        {
+            return (
+                (category_ & category::Armor) ? settings_.armor.shield : armor::shield_type::Count);
+        }
+        inline armor::helm_type::Enum HelmType() const
+        {
+            return ((category_ & category::Armor) ? settings_.armor.helm : armor::helm_type::Count);
+        }
+        inline armor::base_type::Enum BaseType() const
+        {
+            return ((category_ & category::Armor) ? settings_.armor.base : armor::base_type::Count);
+        }
+        inline armor::cover_type::Enum CoverType() const
+        {
+            return (
+                (category_ & category::Armor) ? settings_.armor.cover : armor::cover_type::Count);
+        }
 
-        inline bool IsAventail() const { return isAventail_; }
-        inline bool IsBracer() const { return isBracer_; }
-        inline bool IsShirt() const { return isShirt_; }
-        inline bool IsBoots() const { return isBoots_; }
-        inline bool IsPants() const { return isPants_; }
-        inline bool IsGauntlets() const { return isGauntlets_; }
+        inline bool IsAventail() const { return (isSet_ & profile::IsSet::Aventail); }
+        inline bool IsBracer() const { return (isSet_ & profile::IsSet::Bracer); }
+        inline bool IsShirt() const { return (isSet_ & profile::IsSet::Shirt); }
+        inline bool IsBoots() const { return (isSet_ & profile::IsSet::Boots); }
+        inline bool IsPants() const { return (isSet_ & profile::IsSet::Pants); }
+        inline bool IsGauntlets() const { return (isSet_ & profile::IsSet::Gauntlets); }
+        inline bool IsKnife() const { return (isSet_ & profile::IsSet::Knife); }
+        inline bool IsDagger() const { return (isSet_ & profile::IsSet::Dagger); }
+        inline bool IsStaff() const { return (isSet_ & profile::IsSet::Staff); }
+        inline bool IsQuarterStaff() const { return (isSet_ & profile::IsSet::QStaff); }
+        inline bool IsPixie() const { return (isSet_ & profile::IsSet::Pixie); }
 
-        inline weapon::sword_type::Enum SwordType() const { return sword_; }
-        inline weapon::axe_type::Enum AxeType() const { return axe_; }
-        inline weapon::club_type::Enum ClubType() const { return club_; }
-        inline weapon::whip_type::Enum WhipType() const { return whip_; }
-        inline weapon::projectile_type::Enum ProjectileType() const { return proj_; }
-        inline weapon::bladedstaff_type::Enum BladedStaffType() const { return bstaff_; }
+        inline weapon::sword_type::Enum SwordType() const
+        {
+            return (
+                (category_ & category::Weapon) ? settings_.weapon.sword
+                                               : weapon::sword_type::Count);
+        }
+        inline weapon::axe_type::Enum AxeType() const
+        {
+            return (
+                (category_ & category::Weapon) ? settings_.weapon.axe : weapon::axe_type::Count);
+        }
+        inline weapon::club_type::Enum ClubType() const
+        {
+            return (
+                (category_ & category::Weapon) ? settings_.weapon.club : weapon::club_type::Count);
+        }
+        inline weapon::whip_type::Enum WhipType() const
+        {
+            return (
+                (category_ & category::Weapon) ? settings_.weapon.whip : weapon::whip_type::Count);
+        }
+        inline weapon::projectile_type::Enum ProjectileType() const
+        {
+            return (
+                (category_ & category::Weapon) ? settings_.weapon.proj
+                                               : weapon::projectile_type::Count);
+        }
+        inline weapon::bladedstaff_type::Enum BladedStaffType() const
+        {
+            return (
+                (category_ & category::Weapon) ? settings_.weapon.bstaff
+                                               : weapon::bladedstaff_type::Count);
+        }
 
         inline sfml_util::Size::Enum Size() const { return size_; }
-
-        inline bool IsKnife() const { return isKnife_; }
-        inline bool IsDagger() const { return isDagger_; }
-        inline bool IsStaff() const { return isStaff_; }
-        inline bool IsQuarterStaff() const { return isQStaff_; }
 
         inline material::Enum MaterialPrimary() const { return matPri_; }
         inline material::Enum MaterialSecondary() const { return matSec_; }
 
-        inline armor::base_type::Enum ArmorTypeRestriction() const { return armorType_; }
-
         inline creature::role::Enum Role() const { return role_; }
 
-        inline Score_t TreasureScore(const bool IS_RELIGIOUS = false) const
+        inline Score_t TreasureScore() const
         {
-            if (IS_RELIGIOUS)
-            {
-                return Score_t(static_cast<Score_t::type>(score_.As<float>() * religious_));
-            }
-            else
-            {
-                return score_;
-            }
+            return Score_t(static_cast<Score_t::type>(score_.As<float>() * religious_));
         }
 
         inline const creature::SummonInfo Summoning() const { return summonInfo_; }
@@ -371,12 +495,33 @@ namespace item
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None);
 
-        inline void SetArmorTypeRestriction(const armor::base_type::Enum E) { armorType_ = E; }
+        inline armor::base_type::Enum ArmorTypeRestriction() const
+        {
+            return settings_.armor.restriction;
+        }
+
+        inline void SetArmorTypeRestriction(const armor::base_type::Enum E)
+        {
+            settings_.armor.restriction = E;
+        }
 
         inline void Role(const creature::role::Enum E) { role_ = E; }
 
         friend bool operator==(const ItemProfile & L, const ItemProfile & R);
         friend bool operator<(const ItemProfile & L, const ItemProfile & R);
+
+    private:
+        inline void SetFlag(const bool WILL_SET, const profile::IsSet::Enum WHICH_BIT)
+        {
+            if (WILL_SET)
+            {
+                isSet_ = static_cast<profile::IsSet::Enum>(isSet_ | WHICH_BIT);
+            }
+            else
+            {
+                isSet_ = static_cast<profile::IsSet::Enum>(isSet_ & ~WHICH_BIT);
+            }
+        }
 
     private:
         void SetHelper(
@@ -398,7 +543,9 @@ namespace item
         void EquippableHelper(const int SCORE_BONUS);
 
     private:
-        std::string baseName_;
+        Score_t score_;
+        float religious_;
+
         category::Enum category_;
         armor_type::Enum armor_;
         weapon_type::Enum weapon_;
@@ -408,46 +555,28 @@ namespace item
         named_type::Enum named_;
         element_type::Enum element_;
 
-        bool isPixie_;
+        profile::IsSet::Enum isSet_;
 
-        armor::shield_type::Enum shield_;
-        armor::helm_type::Enum helm_;
-        armor::base_type::Enum base_;
-        armor::cover_type::Enum cover_;
+        union Settings
+        {
+            Settings()
+                : weapon()
+            {}
 
-        bool isAventail_;
-        bool isBracer_;
-        bool isShirt_;
-        bool isBoots_;
-        bool isPants_;
-        bool isGauntlets_;
-
-        weapon::sword_type::Enum sword_;
-        weapon::axe_type::Enum axe_;
-        weapon::club_type::Enum club_;
-        weapon::whip_type::Enum whip_;
-        weapon::projectile_type::Enum proj_;
-        weapon::bladedstaff_type::Enum bstaff_;
+            profile::WeaponSettings weapon;
+            profile::ArmorSettings armor;
+        } settings_;
 
         sfml_util::Size::Enum size_;
-
-        bool isKnife_;
-        bool isDagger_;
-        bool isStaff_;
-        bool isQStaff_;
 
         material::Enum matPri_;
         material::Enum matSec_;
 
-        armor::base_type::Enum armorType_;
-
         creature::role::Enum role_;
-
-        Score_t score_;
 
         creature::SummonInfo summonInfo_;
 
-        float religious_;
+        std::string baseName_;
     };
 
     using ItemProfileVec_t = std::vector<ItemProfile>;
@@ -455,7 +584,7 @@ namespace item
     inline bool operator==(const ItemProfile & L, const ItemProfile & R)
     {
         return std::tie(
-                   L.baseName_,
+                   L.score_,
                    L.category_,
                    L.armor_,
                    L.weapon_,
@@ -464,36 +593,18 @@ namespace item
                    L.set_,
                    L.named_,
                    L.element_,
-                   L.isPixie_,
-                   L.shield_,
-                   L.helm_,
-                   L.base_,
-                   L.cover_,
-                   L.isAventail_,
-                   L.isBracer_,
-                   L.isShirt_,
-                   L.isBoots_,
-                   L.isPants_,
-                   L.isGauntlets_,
-                   L.sword_,
-                   L.axe_,
-                   L.club_,
-                   L.whip_,
-                   L.proj_,
-                   L.bstaff_,
+                   L.isSet_,
+                   L.settings_.weapon,
+                   L.settings_.armor,
                    L.size_,
-                   L.isKnife_,
-                   L.isDagger_,
-                   L.isStaff_,
-                   L.isQStaff_,
                    L.matPri_,
                    L.matSec_,
-                   L.armorType_,
                    L.role_,
-                   L.score_,
-                   L.summonInfo_)
+                   L.baseName_,
+                   L.summonInfo_,
+                   L.religious_)
             == std::tie(
-                   R.baseName_,
+                   R.score_,
                    R.category_,
                    R.armor_,
                    R.weapon_,
@@ -502,34 +613,16 @@ namespace item
                    R.set_,
                    R.named_,
                    R.element_,
-                   R.isPixie_,
-                   R.shield_,
-                   R.helm_,
-                   R.base_,
-                   R.cover_,
-                   R.isAventail_,
-                   R.isBracer_,
-                   R.isShirt_,
-                   R.isBoots_,
-                   R.isPants_,
-                   R.isGauntlets_,
-                   R.sword_,
-                   R.axe_,
-                   R.club_,
-                   R.whip_,
-                   R.proj_,
-                   R.bstaff_,
+                   R.isSet_,
+                   R.settings_.weapon,
+                   R.settings_.armor,
                    R.size_,
-                   R.isKnife_,
-                   R.isDagger_,
-                   R.isStaff_,
-                   R.isQStaff_,
                    R.matPri_,
                    R.matSec_,
-                   R.armorType_,
                    R.role_,
-                   R.score_,
-                   R.summonInfo_);
+                   R.baseName_,
+                   R.summonInfo_,
+                   R.religious_);
     }
 
     inline bool operator!=(const ItemProfile & L, const ItemProfile & R) { return !(L == R); }
@@ -537,7 +630,7 @@ namespace item
     inline bool operator<(const ItemProfile & L, const ItemProfile & R)
     {
         return std::tie(
-                   L.baseName_,
+                   L.score_,
                    L.category_,
                    L.armor_,
                    L.weapon_,
@@ -546,36 +639,18 @@ namespace item
                    L.set_,
                    L.named_,
                    L.element_,
-                   L.isPixie_,
-                   L.shield_,
-                   L.helm_,
-                   L.base_,
-                   L.cover_,
-                   L.isAventail_,
-                   L.isBracer_,
-                   L.isShirt_,
-                   L.isBoots_,
-                   L.isPants_,
-                   L.isGauntlets_,
-                   L.sword_,
-                   L.axe_,
-                   L.club_,
-                   L.whip_,
-                   L.proj_,
-                   L.bstaff_,
+                   L.isSet_,
+                   L.settings_.weapon,
+                   L.settings_.armor,
                    L.size_,
-                   L.isKnife_,
-                   L.isDagger_,
-                   L.isStaff_,
-                   L.isQStaff_,
                    L.matPri_,
                    L.matSec_,
-                   L.armorType_,
                    L.role_,
-                   L.score_,
-                   L.summonInfo_)
+                   L.baseName_,
+                   L.summonInfo_,
+                   L.religious_)
             < std::tie(
-                   R.baseName_,
+                   R.score_,
                    R.category_,
                    R.armor_,
                    R.weapon_,
@@ -584,35 +659,18 @@ namespace item
                    R.set_,
                    R.named_,
                    R.element_,
-                   R.isPixie_,
-                   R.shield_,
-                   R.helm_,
-                   R.base_,
-                   R.cover_,
-                   R.isAventail_,
-                   R.isBracer_,
-                   R.isShirt_,
-                   R.isBoots_,
-                   R.isPants_,
-                   R.isGauntlets_,
-                   R.sword_,
-                   R.axe_,
-                   R.club_,
-                   R.whip_,
-                   R.proj_,
-                   R.bstaff_,
+                   R.isSet_,
+                   R.settings_.weapon,
+                   R.settings_.armor,
                    R.size_,
-                   R.isKnife_,
-                   R.isDagger_,
-                   R.isStaff_,
-                   R.isQStaff_,
                    R.matPri_,
                    R.matSec_,
-                   R.armorType_,
                    R.role_,
-                   R.score_,
-                   R.summonInfo_);
+                   R.baseName_,
+                   R.summonInfo_,
+                   R.religious_);
     }
+
 } // namespace item
 } // namespace heroespath
 

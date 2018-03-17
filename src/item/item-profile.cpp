@@ -32,6 +32,7 @@
 #include "creature/enchantment-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
 
+#include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
 
 #include <sstream>
@@ -153,7 +154,8 @@ namespace item
     }
 
     ItemProfile::ItemProfile()
-        : baseName_("")
+        : score_(0)
+        , religious_(1.0f)
         , category_(category::None)
         , armor_(armor_type::NotArmor)
         , weapon_(weapon_type::NotAWeapon)
@@ -162,35 +164,14 @@ namespace item
         , set_(set_type::NotASet)
         , named_(named_type::NotNamed)
         , element_(element_type::None)
-        , isPixie_(false)
-        , shield_(armor::shield_type::Count)
-        , helm_(armor::helm_type::Count)
-        , base_(armor::base_type::Count)
-        , cover_(armor::cover_type::Count)
-        , isAventail_(false)
-        , isBracer_(false)
-        , isShirt_(false)
-        , isBoots_(false)
-        , isPants_(false)
-        , isGauntlets_(false)
-        , sword_(weapon::sword_type::Count)
-        , axe_(weapon::axe_type::Count)
-        , club_(weapon::club_type::Count)
-        , whip_(weapon::whip_type::Count)
-        , proj_(weapon::projectile_type::Count)
-        , bstaff_(weapon::bladedstaff_type::Count)
+        , isSet_(profile::IsSet::None)
+        , settings_()
         , size_(sfml_util::Size::Medium)
-        , isKnife_(false)
-        , isDagger_(false)
-        , isStaff_(false)
-        , isQStaff_(false)
         , matPri_(material::Nothing)
         , matSec_(material::Nothing)
-        , armorType_(armor::base_type::Count)
         , role_(creature::role::Count)
-        , score_(0)
         , summonInfo_()
-        , religious_(0.0f)
+        , baseName_("")
     {}
 
     ItemProfile::ItemProfile(
@@ -287,108 +268,130 @@ namespace item
             normalStrings.emplace_back("element_type=" + element_type::ToString(element_));
         }
 
-        if (isPixie_)
+        if (IsPixie())
         {
             normalStrings.emplace_back("(Pixie)");
         }
 
-        if (shield_ != armor::shield_type::Count)
+        if (category_ & item::category::Armor)
         {
-            armorStrings.emplace_back("shield_type=" + armor::shield_type::ToString(shield_));
+            if (settings_.armor.shield != armor::shield_type::Count)
+            {
+                armorStrings.emplace_back(
+                    "shield_type=" + armor::shield_type::ToString(settings_.armor.shield));
+            }
+
+            if (settings_.armor.helm != armor::helm_type::Count)
+            {
+                armorStrings.emplace_back(
+                    "helm_type=" + armor::helm_type::ToString(settings_.armor.helm));
+            }
+
+            if (settings_.armor.base != armor::base_type::Count)
+            {
+                normalStrings.emplace_back(
+                    "base_type=" + armor::base_type::ToString(settings_.armor.base));
+            }
+
+            if (settings_.armor.cover != armor::cover_type::Count)
+            {
+                armorStrings.emplace_back(
+                    "cover_type=" + armor::cover_type::ToString(settings_.armor.cover));
+            }
+
+            if (settings_.armor.restriction != armor::base_type::Count)
+            {
+                normalStrings.emplace_back(
+                    "armor_type_restriction="
+                    + armor::base_type::ToString(settings_.armor.restriction));
+            }
         }
 
-        if (helm_ != armor::helm_type::Count)
-        {
-            armorStrings.emplace_back("helm_type=" + armor::helm_type::ToString(helm_));
-        }
-
-        if (base_ != armor::base_type::Count)
-        {
-            normalStrings.emplace_back("base_type=" + armor::base_type::ToString(base_));
-        }
-
-        if (cover_ != armor::cover_type::Count)
-        {
-            armorStrings.emplace_back("cover_type=" + armor::cover_type::ToString(cover_));
-        }
-
-        if (isAventail_)
+        if (IsAventail())
         {
             armorStrings.emplace_back("(Aventail)");
         }
 
-        if (isBracer_)
+        if (IsBracer())
         {
             armorStrings.emplace_back("(Bracer)");
         }
 
-        if (isShirt_)
+        if (IsShirt())
         {
             armorStrings.emplace_back("(Shirt)");
         }
 
-        if (isBoots_)
+        if (IsBoots())
         {
             armorStrings.emplace_back("(Boots)");
         }
 
-        if (isPants_)
+        if (IsPants())
         {
             armorStrings.emplace_back("(Pants)");
         }
 
-        if (isGauntlets_)
+        if (IsGauntlets())
         {
             armorStrings.emplace_back("(Gauntlets)");
         }
 
-        if (sword_ != weapon::sword_type::Count)
+        if (category_ & item::category::Weapon)
         {
-            weaponStrings.emplace_back("sword_type=" + weapon::sword_type::ToString(sword_));
+            if (settings_.weapon.sword != weapon::sword_type::Count)
+            {
+                weaponStrings.emplace_back(
+                    "sword_type=" + weapon::sword_type::ToString(settings_.weapon.sword));
+            }
+
+            if (settings_.weapon.axe != weapon::axe_type::Count)
+            {
+                weaponStrings.emplace_back(
+                    "axe_type=" + weapon::axe_type::ToString(settings_.weapon.axe));
+            }
+
+            if (settings_.weapon.club != weapon::club_type::Count)
+            {
+                weaponStrings.emplace_back(
+                    "club_type=" + weapon::club_type::ToString(settings_.weapon.club));
+            }
+
+            if (settings_.weapon.whip != weapon::whip_type::Count)
+            {
+                weaponStrings.emplace_back(
+                    "whip_type=" + weapon::whip_type::ToString(settings_.weapon.whip));
+            }
+
+            if (settings_.weapon.proj != weapon::projectile_type::Count)
+            {
+                weaponStrings.emplace_back(
+                    "proj_type=" + weapon::projectile_type::ToString(settings_.weapon.proj));
+            }
+
+            if (settings_.weapon.bstaff != weapon::bladedstaff_type::Count)
+            {
+                weaponStrings.emplace_back(
+                    "bstaff_type=" + weapon::bladedstaff_type::ToString(settings_.weapon.bstaff));
+            }
         }
 
-        if (axe_ != weapon::axe_type::Count)
-        {
-            weaponStrings.emplace_back("axe_type=" + weapon::axe_type::ToString(axe_));
-        }
-
-        if (club_ != weapon::club_type::Count)
-        {
-            weaponStrings.emplace_back("club_type=" + weapon::club_type::ToString(club_));
-        }
-
-        if (whip_ != weapon::whip_type::Count)
-        {
-            weaponStrings.emplace_back("whip_type=" + weapon::whip_type::ToString(whip_));
-        }
-
-        if (proj_ != weapon::projectile_type::Count)
-        {
-            weaponStrings.emplace_back("proj_type=" + weapon::projectile_type::ToString(proj_));
-        }
-
-        if (bstaff_ != weapon::bladedstaff_type::Count)
-        {
-            weaponStrings.emplace_back(
-                "bstaff_type=" + weapon::bladedstaff_type::ToString(bstaff_));
-        }
-
-        if (isKnife_)
+        if (IsKnife())
         {
             weaponStrings.emplace_back("(Knife)");
         }
 
-        if (isDagger_)
+        if (IsDagger())
         {
             weaponStrings.emplace_back("(Dagger)");
         }
 
-        if (isStaff_)
+        if (IsStaff())
         {
             weaponStrings.emplace_back("(Staff)");
         }
 
-        if (isQStaff_)
+        if (IsQuarterStaff())
         {
             weaponStrings.emplace_back("(QuarterStaff)");
         }
@@ -406,12 +409,6 @@ namespace item
                << "," << ((matSec_ == material::Count) ? "(count)" : material::ToString(matSec_));
 
             normalStrings.emplace_back(ss.str());
-        }
-
-        if (armorType_ != armor::base_type::Count)
-        {
-            normalStrings.emplace_back(
-                "armor_type_restriction=" + armor::base_type::ToString(armorType_));
         }
 
         if (role_ != creature::role::Count)
@@ -437,7 +434,7 @@ namespace item
             normalStrings.emplace_back(ss.str());
         }
 
-        if (religious_ > 0.0f)
+        if (religious_ < 1.0f)
         {
             std::ostringstream ss;
             ss << ((ss.str().empty()) ? "" : ", ") << "religious_ratio=" << religious_;
@@ -457,7 +454,7 @@ namespace item
         matPri_ = MATERIAL_PRIMARY;
         matSec_ = MATERIAL_SECONDARY;
         misc_ = unique_type::MiscType(E);
-        isPixie_ = false;
+        SetFlag(false, profile::IsSet::Pixie);
         religious_ = unique_type::ReligiousRatio(E);
 
         auto const IS_WEAPON{ (
@@ -485,7 +482,7 @@ namespace item
         misc_ = E;
         matPri_ = MATERIAL_PRIMARY;
         matSec_ = MATERIAL_SECONDARY;
-        isPixie_ = IS_PIXIE;
+        SetFlag(IS_PIXIE, profile::IsSet::Pixie);
 
         if (misc::IsRealZero(religious_))
         {
@@ -504,7 +501,8 @@ namespace item
             category_
                 = static_cast<category::Enum>(category_ | category::Armor | category::Equippable);
             armor_ = armor_type::Covering;
-            cover_ = armor::cover_type::Cape;
+            settings_.armor = profile::ArmorSettings();
+            settings_.armor.cover = armor::cover_type::Cape;
             score_ += ItemProfileWarehouse::Score(armor::cover_type::Cape);
         }
         else if (E == misc_type::Cloak)
@@ -512,7 +510,8 @@ namespace item
             category_ = static_cast<category::Enum>(
                 category_ | category::Armor | category::Equippable | category::Wearable);
             armor_ = armor_type::Covering;
-            cover_ = armor::cover_type::Cloak;
+            settings_.armor = profile::ArmorSettings();
+            settings_.armor.cover = armor::cover_type::Cloak;
             score_ += ItemProfileWarehouse::Score(armor::cover_type::Cloak);
         }
         else if (E == misc_type::LockPicks)
@@ -561,7 +560,7 @@ namespace item
 
             if (E == misc_type::Staff)
             {
-                isStaff_ = true;
+                SetFlag(true, profile::IsSet::Staff);
 
                 category_ = static_cast<category::Enum>(
                     category_ | category::Weapon | category::Equippable | category::TwoHanded);
@@ -627,7 +626,8 @@ namespace item
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        shield_ = E;
+        settings_.armor = profile::ArmorSettings();
+        settings_.armor.shield = E;
 
         category_ = static_cast<category::Enum>(
             category::Armor | category::Equippable | category::Wearable | category::OneHanded);
@@ -650,7 +650,8 @@ namespace item
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        helm_ = E;
+        settings_.armor = profile::ArmorSettings();
+        settings_.armor.helm = E;
 
         category_ = static_cast<category::Enum>(
             category::Armor | category::Equippable | category::Wearable);
@@ -674,7 +675,8 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        cover_ = E;
+        settings_.armor = profile::ArmorSettings();
+        settings_.armor.cover = E;
 
         category_ = static_cast<category::Enum>(
             category::Armor | category::Equippable | category::Wearable);
@@ -698,8 +700,9 @@ namespace item
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        isAventail_ = true;
-        base_ = E;
+        SetFlag(true, profile::IsSet::Aventail);
+        settings_.armor = profile::ArmorSettings();
+        settings_.armor.base = E;
 
         category_ = static_cast<category::Enum>(
             category::Armor | category::Equippable | category::Wearable);
@@ -723,8 +726,9 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        isBracer_ = true;
-        base_ = E;
+        SetFlag(true, profile::IsSet::Bracer);
+        settings_.armor = profile::ArmorSettings();
+        settings_.armor.base = E;
 
         category_ = static_cast<category::Enum>(
             category::Armor | category::Equippable | category::Wearable);
@@ -749,8 +753,9 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        isShirt_ = true;
-        base_ = E;
+        SetFlag(true, profile::IsSet::Shirt);
+        settings_.armor = profile::ArmorSettings();
+        settings_.armor.base = E;
 
         category_ = static_cast<category::Enum>(
             category::Armor | category::Equippable | category::Wearable);
@@ -775,8 +780,9 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        isBoots_ = true;
-        base_ = E;
+        SetFlag(true, profile::IsSet::Boots);
+        settings_.armor = profile::ArmorSettings();
+        settings_.armor.base = E;
 
         category_ = static_cast<category::Enum>(
             category::Armor | category::Equippable | category::Wearable);
@@ -801,8 +807,9 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        isPants_ = true;
-        base_ = E;
+        SetFlag(true, profile::IsSet::Pants);
+        settings_.armor = profile::ArmorSettings();
+        settings_.armor.base = E;
 
         category_ = static_cast<category::Enum>(
             category::Armor | category::Equippable | category::Wearable);
@@ -827,8 +834,9 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        isGauntlets_ = true;
-        base_ = E;
+        SetFlag(true, profile::IsSet::Gauntlets);
+        settings_.armor = profile::ArmorSettings();
+        settings_.armor.base = E;
 
         category_ = static_cast<category::Enum>(
             category::Armor | category::Equippable | category::Wearable);
@@ -855,7 +863,8 @@ namespace item
         using namespace item;
         using namespace weapon;
 
-        sword_ = E;
+        settings_.weapon = profile::WeaponSettings();
+        settings_.weapon.sword = E;
 
         auto const HANDED{ [E]() {
             if ((E == sword_type::Claymore) || (E == sword_type::Longsword)
@@ -892,7 +901,8 @@ namespace item
     {
         using namespace weapon;
 
-        axe_ = E;
+        settings_.weapon = profile::WeaponSettings();
+        settings_.weapon.axe = E;
 
         auto const HANDED{ [E]() {
             if ((E == axe_type::Battleaxe) || (E == axe_type::Waraxe))
@@ -928,7 +938,8 @@ namespace item
     {
         using namespace weapon;
 
-        club_ = E;
+        settings_.weapon = profile::WeaponSettings();
+        settings_.weapon.club = E;
 
         auto const HANDED{ [E]() {
             if ((E == club_type::Spiked))
@@ -963,7 +974,8 @@ namespace item
     {
         using namespace weapon;
 
-        whip_ = E;
+        settings_.weapon = profile::WeaponSettings();
+        settings_.weapon.whip = E;
 
         auto const HANDED{ [E]() {
             if ((E == whip_type::Flail))
@@ -999,7 +1011,8 @@ namespace item
         using namespace item;
         using namespace weapon;
 
-        proj_ = E;
+        settings_.weapon = profile::WeaponSettings();
+        settings_.weapon.proj = E;
 
         category_ = static_cast<category::Enum>(
             category::Weapon | category::Equippable | category::TwoHanded);
@@ -1041,7 +1054,8 @@ namespace item
         using namespace item;
         using namespace weapon;
 
-        bstaff_ = E;
+        settings_.weapon = profile::WeaponSettings();
+        settings_.weapon.bstaff = E;
 
         category_ = static_cast<category::Enum>(
             category::Weapon | category::Equippable | category::TwoHanded);
@@ -1076,7 +1090,7 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        isKnife_ = true;
+        SetFlag(true, profile::IsSet::Knife);
         size_ = E;
 
         category_ = static_cast<category::Enum>(
@@ -1103,7 +1117,7 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        isDagger_ = true;
+        SetFlag(true, profile::IsSet::Dagger);
         size_ = E;
 
         category_ = static_cast<category::Enum>(
@@ -1128,7 +1142,7 @@ namespace item
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        isStaff_ = true;
+        SetFlag(true, profile::IsSet::Staff);
 
         category_ = static_cast<category::Enum>(
             category::Weapon | category::Equippable | category::TwoHanded);
@@ -1150,7 +1164,7 @@ namespace item
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        isQStaff_ = true;
+        SetFlag(true, profile::IsSet::QStaff);
 
         category_ = static_cast<category::Enum>(
             category::Weapon | category::Equippable | category::TwoHanded);
@@ -1178,7 +1192,7 @@ namespace item
         named_ = NAMED_ENUM;
         set_ = SET_ENUM;
         element_ = ELEMENT_TYPE;
-        isPixie_ = IS_PIXIE;
+        SetFlag(IS_PIXIE, profile::IsSet::Pixie);
         role_ = set_type::Role(SET_ENUM);
     }
 
@@ -1211,5 +1225,6 @@ namespace item
         category_ = static_cast<category::Enum>(category_ | category::Equippable);
         score_ += Score_t(SCORE_BONUS);
     }
+
 } // namespace item
 } // namespace heroespath

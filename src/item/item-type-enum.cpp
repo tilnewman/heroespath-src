@@ -3975,11 +3975,11 @@ namespace item
         {
             case NotUnique:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CrystalChimes:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case DoveBloodVial:
             {
@@ -3987,51 +3987,51 @@ namespace item
             }
             case DragonToothWhistle:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case DriedFrog:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case DriedGecko:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case DriedIguana:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case DriedLizard:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case DriedSalamander:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case DriedSkink:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case DriedToad:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case DriedTurtle:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case ExoticGoldenGong:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case MagnifyingGlass:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case PixieBell:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case ShamanRainmaker:
             {
@@ -4043,11 +4043,11 @@ namespace item
             }
             case VultureGizzard:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case WarTrumpet:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case WraithTalisman:
             {
@@ -4055,11 +4055,11 @@ namespace item
             }
             case BasiliskTonge:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BerserkersBeard:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BishopsHanky:
             {
@@ -4071,59 +4071,59 @@ namespace item
             }
             case BloodyDragonScale:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BottleOfBansheeScreams:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BraceletCrown:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BraceletFeather:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BraceletFist:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BraceletHourglass:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BraceletKey:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BraceletMask:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BroochCrown:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BroochFeather:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BroochFist:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BroochHourglass:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BroochKey:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BroochMask:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case BurialShroud:
             {
@@ -4131,51 +4131,51 @@ namespace item
             }
             case CharmCrown:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CharmFeather:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CharmFist:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CharmHourglass:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CharmKey:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CharmMask:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case ChimeraBone:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CobraTooth:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CommandersCape:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CopperTroll:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CrystalCat:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case CyclopsEye:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case DemonDiary:
             {
@@ -4191,7 +4191,7 @@ namespace item
             }
             case FanaticsFlag:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case FriarsChronicle:
             {
@@ -4203,7 +4203,7 @@ namespace item
             }
             case GeneralsCape:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case GhostSheet:
             {
@@ -4211,27 +4211,27 @@ namespace item
             }
             case GiantOwlEye:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case GriffinFeather:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case HangmansNoose:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case HawkEye:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case HobgoblinNose:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case HoboRing:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case HolyEpic:
             {
@@ -4239,35 +4239,35 @@ namespace item
             }
             case HornOfTheHorde:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case ImpTail:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case IslanderHeaddress:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case JeweledAnkhNecklace:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case JeweledArmband:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case JeweledHandbag:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case JeweledPrincessVeil:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case KingsCape:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case LastRitesScroll:
             {
@@ -4279,11 +4279,11 @@ namespace item
             }
             case MadRatJuju:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case MagicHorseshoe:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case ManaAmulet:
             {
@@ -4295,7 +4295,7 @@ namespace item
             }
             case MinotaurHide:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case MonkRing:
             {
@@ -4307,35 +4307,35 @@ namespace item
             }
             case MournersMask:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case PantherPaw:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case PinCrown:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case PinFeather:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case PinFist:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case PinHourglass:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case PinKey:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case PinMask:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case PriestRing:
             {
@@ -4343,27 +4343,27 @@ namespace item
             }
             case RascalMask:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case RattlesnakeTail:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case RavenClaw:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case RazorFingerclaw:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case ReaperScythe:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case RegalCaptainsFlag:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case RequiemRegister:
             {
@@ -4371,7 +4371,7 @@ namespace item
             }
             case RoyalScoutSpyglass:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SaintCameoPin:
             {
@@ -4387,11 +4387,11 @@ namespace item
             }
             case ScorpionStingerFingerclaw:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case ScoundrelSack:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SepultureDecoration:
             {
@@ -4403,35 +4403,35 @@ namespace item
             }
             case SharkToothNecklace:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SignetCrown:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SignetFeather:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SignetFist:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SignetHourglass:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SignetKey:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SignetMask:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SirenConch:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SpecterRobe:
             {
@@ -4439,55 +4439,55 @@ namespace item
             }
             case SprintersLegtie:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case SwindlersBag:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case TribalFlag:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case TricksterPouch:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case TuningFork:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case TurtleShell:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case VampiresToothNecklace:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case ViperFangFingerclaw:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case WarhorseMarionette:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case WeaselTotem:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case WolfenFur:
             {
-                return 0.0f;
+                return 1.0f;
             }
             case Count:
             {
-                return 0.0f;
+                return 1.0f;
             }
             default:
             {
-                return 0.0f;
+                return 1.0f;
             }
         }
     }
