@@ -456,6 +456,7 @@ namespace item
         misc_ = unique_type::MiscType(E);
         SetFlag(false, profile::IsSet::Pixie);
         religious_ = unique_type::ReligiousRatio(E);
+        element_ = ELEMENT_TYPE;
 
         auto const IS_WEAPON{ (
             (E == unique_type::ViperFangFingerclaw) || (E == unique_type::ScorpionStingerFingerclaw)
@@ -484,7 +485,7 @@ namespace item
         matSec_ = MATERIAL_SECONDARY;
         SetFlag(IS_PIXIE, profile::IsSet::Pixie);
 
-        if (misc::IsRealZero(religious_))
+        if (misc::IsRealOne(religious_))
         {
             religious_ = misc_type::ReligiousRatio(E);
         }

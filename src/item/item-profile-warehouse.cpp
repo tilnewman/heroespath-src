@@ -41,6 +41,7 @@
 
 #include <algorithm>
 #include <exception>
+#include <set>
 #include <sstream>
 #include <string>
 
@@ -98,8 +99,9 @@ namespace item
     {
         profiles_.clear();
 
-        // As of 2017-8-17 there were 849299 raw item profiles created before reductions.
-        profiles_.reserve(1000000);
+        // As of 2017-8-17 there were 849299 raw item profiles created before cleanup.
+        // As of 2018-3-17 there were 465091 profiles with no duplicates to cleanup.
+        profiles_.reserve(500000);
 
         Setup_StandardEquipment();
         Setup_UniqueItems();
@@ -108,8 +110,9 @@ namespace item
         Setup_SetEquipment();
         Setup_SummoningItems();
 
-        Setup_EliminateDuplicates();
-        Setup_LogAndThrowOnInvalid();
+        // Setup_EliminateDuplicates();
+        profiles_.shrink_to_fit();
+        // Setup_LogAndThrowOnInvalid();
 
         // Sorting by treasure score will help speed up later uses of profiles_
         // during gameplay, and is required before Setup_LogStatistics().
@@ -151,6 +154,9 @@ namespace item
 
             for (auto const NEXT_ELEMENT_TYPE : ELEMENT_TYPE_COMBS_VEC)
             {
+                using MatPair_t = std::pair<item::material::Enum, item::material::Enum>;
+                std::set<MatPair_t> matPairSet;
+
                 auto const MATERIALS{ unique_type::Materials(NEXT_UNIQUE_ENUM) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
@@ -164,6 +170,16 @@ namespace item
                 {
                     if (MATERIALS.second.empty())
                     {
+                        auto const MAT_PAIR{ std::make_pair(
+                            NEXT_MATERIAL_PRIMARY, item::material::Nothing) };
+
+                        if (matPairSet.find(MAT_PAIR) != std::end(matPairSet))
+                        {
+                            continue;
+                        }
+
+                        matPairSet.insert(MAT_PAIR);
+
                         ItemProfile p;
 
                         p.SetUnique(
@@ -185,10 +201,21 @@ namespace item
                     {
                         for (auto const NEXT_MATERIAL_SECONDARY : MATERIALS.second)
                         {
-                            if (NEXT_MATERIAL_PRIMARY == NEXT_MATERIAL_SECONDARY)
+                            if ((NEXT_MATERIAL_PRIMARY == NEXT_MATERIAL_SECONDARY)
+                                || (NEXT_MATERIAL_SECONDARY == item::material::Nothing))
                             {
                                 continue;
                             }
+
+                            auto const MAT_PAIR{ std::make_pair(
+                                NEXT_MATERIAL_PRIMARY, item::material::Nothing) };
+
+                            if (matPairSet.find(MAT_PAIR) != std::end(matPairSet))
+                            {
+                                continue;
+                            }
+
+                            matPairSet.insert(MAT_PAIR);
 
                             ItemProfile p;
 
@@ -264,6 +291,8 @@ namespace item
 
     void ItemProfileWarehouse::Setup_SummoningItems()
     {
+        std::set<ItemProfile> set;
+
         auto const MATERIALS_VEC{ material::CorePrimaryNoPearl() };
 
         using namespace creature;
@@ -294,7 +323,7 @@ namespace item
                             p.SetSummoningAndAdjustScore(
                                 SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM));
 
-                            profiles_.emplace_back(p);
+                            set.insert(p);
                         }
                     }
                     else
@@ -326,16 +355,15 @@ namespace item
                         }() };
 
                         ItemProfile p;
-
                         p.SetMisc(MISC_TYPE, false, MATERIAL, material::Nothing, set_type::NotASet);
-
                         p.SetSummoningAndAdjustScore(SummonInfo(ORIGIN_ENUM, RACE_ENUM, ROLE_ENUM));
-
-                        profiles_.emplace_back(p);
+                        set.insert(p);
                     }
                 }
             }
         }
+
+        std::copy(std::begin(set), std::end(set), std::back_inserter(profiles_));
     }
 
     void ItemProfileWarehouse::Setup_EliminateDuplicates()
@@ -343,6 +371,7 @@ namespace item
         auto const RAW_COUNT{ profiles_.size() };
 
         std::sort(profiles_.begin(), profiles_.end());
+
         profiles_.erase(std::unique(profiles_.begin(), profiles_.end()), profiles_.end());
 
         auto const DUPLICATE_PROFILE_COUNT{ RAW_COUNT - profiles_.size() };
@@ -881,63 +910,55 @@ namespace item
 
             if (THIN_PROFILE.IsKnife())
             {
-                for (int i(0); i < sfml_util::Size::Count; ++i)
-                {
-                    auto const NEXT_SIZE_ENUM{ static_cast<sfml_util::Size::Enum>(i) };
+                ItemProfile fatProfile;
+                fatProfile.SetKnife(
+                    THIN_PROFILE.Size(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    false);
+                profiles_.emplace_back(fatProfile);
 
-                    ItemProfile fatProfile;
-                    fatProfile.SetKnife(
-                        NEXT_SIZE_ENUM,
-                        MATERIAL_PRI,
-                        MATERIAL_SEC,
-                        NAMED_TYPE,
-                        SET_TYPE,
-                        ELEMENT_TYPE,
-                        false);
-                    profiles_.emplace_back(fatProfile);
+                ItemProfile fatProfilePixie;
+                fatProfilePixie.SetKnife(
+                    THIN_PROFILE.Size(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    true);
+                profiles_.emplace_back(fatProfilePixie);
 
-                    ItemProfile fatProfilePixie;
-                    fatProfilePixie.SetKnife(
-                        NEXT_SIZE_ENUM,
-                        MATERIAL_PRI,
-                        MATERIAL_SEC,
-                        NAMED_TYPE,
-                        SET_TYPE,
-                        ELEMENT_TYPE,
-                        true);
-                    profiles_.emplace_back(fatProfilePixie);
-                }
                 return;
             }
 
             if (THIN_PROFILE.IsDagger())
             {
-                for (int i(0); i < sfml_util::Size::Count; ++i)
-                {
-                    auto const NEXT_SIZE_ENUM{ static_cast<sfml_util::Size::Enum>(i) };
+                ItemProfile fatProfile;
+                fatProfile.SetDagger(
+                    THIN_PROFILE.Size(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    false);
+                profiles_.emplace_back(fatProfile);
 
-                    ItemProfile fatProfile;
-                    fatProfile.SetDagger(
-                        NEXT_SIZE_ENUM,
-                        MATERIAL_PRI,
-                        MATERIAL_SEC,
-                        NAMED_TYPE,
-                        SET_TYPE,
-                        ELEMENT_TYPE,
-                        false);
-                    profiles_.emplace_back(fatProfile);
+                ItemProfile fatProfilePixie;
+                fatProfilePixie.SetDagger(
+                    THIN_PROFILE.Size(),
+                    MATERIAL_PRI,
+                    MATERIAL_SEC,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    true);
+                profiles_.emplace_back(fatProfilePixie);
 
-                    ItemProfile fatProfilePixie;
-                    fatProfilePixie.SetDagger(
-                        NEXT_SIZE_ENUM,
-                        MATERIAL_PRI,
-                        MATERIAL_SEC,
-                        NAMED_TYPE,
-                        SET_TYPE,
-                        ELEMENT_TYPE,
-                        true);
-                    profiles_.emplace_back(fatProfilePixie);
-                }
                 return;
             }
 
