@@ -51,7 +51,7 @@ namespace combat
         , lastToMakeMusicPtr_(nullptr)
         , firstToCastPtr_(nullptr)
         , lastToCastPtr_(nullptr)
-        , mostDamagePair_(std::make_pair(0, nullptr))
+        , mostDamagePair_(std::make_pair(0_health, nullptr))
         , castCount_(0)
         , songCount_(0)
         , wasHitLastTurn_(false)
