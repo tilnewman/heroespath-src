@@ -82,7 +82,7 @@ namespace map
 
         virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
-        inline Level::Enum Level() const { return level_; }
+        inline Level::Enum WhichLevel() const { return level_; }
 
         void Update(const float TIME_ELAPSED);
 
