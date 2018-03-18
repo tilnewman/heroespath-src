@@ -157,7 +157,7 @@ namespace sfml_util
             text.setCharacterSize(TEXT_INFO.charSize);
 
 // linux SFML lib does not seem to support outline fonts...
-#ifdef PLATFORM_DETECTED_IS_LINUX
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_LINUX
             text.setColor(TEXT_INFO.color);
 #else
             if (TEXT_INFO.isOutlineOnly)
