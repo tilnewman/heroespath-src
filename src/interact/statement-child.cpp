@@ -176,7 +176,7 @@ namespace interact
                     return "Tell me a story about " + Random(RaceNames()) + "s.";
                 }
             }
-        };
+        }
 
     } // namespace talk
 } // namespace interact

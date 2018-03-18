@@ -266,7 +266,7 @@ namespace stage
         }
 
         descTextInfo.text = std::string("Location:        ")
-                                .append(gameStatePtr->World().GetMaps().Current().Name());
+                                .append(gameStatePtr->GetWorld().GetMaps().Current().Name());
 
         const sf::FloatRect LOC_TEXT_RECT(
             CHAR_LIST_POS_LEFT, CHAR_LIST_POS_TOP - 35.0f, 0.0f, 0.0f);

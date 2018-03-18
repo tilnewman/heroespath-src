@@ -129,7 +129,7 @@ namespace interact
                         + Random({ " place.", " town." });
                 }
             }
-        };
+        }
     } // namespace talk
 } // namespace interact
 } // namespace heroespath

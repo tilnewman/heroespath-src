@@ -65,7 +65,7 @@ namespace state
 
         virtual ~GameState();
 
-        World & World();
+        World & GetWorld();
 
         player::Party & Party();
 

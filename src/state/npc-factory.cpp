@@ -65,7 +65,7 @@ namespace state
 
             if (map::LevelType::Town
                 == map::Level::Type(
-                       game::Game::Instance()->State().World().GetMaps().Current().Which()))
+                       game::Game::Instance()->State().GetWorld().GetMaps().Current().Which()))
             {
                 talkCategories.emplace_back(interact::talk::Category::Town);
             }

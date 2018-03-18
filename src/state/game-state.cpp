@@ -51,7 +51,7 @@ namespace state
 
     GameState::~GameState() = default;
 
-    World & GameState::World()
+    World & GameState::GetWorld()
     {
         if (worldUPtr_.get() == nullptr)
         {

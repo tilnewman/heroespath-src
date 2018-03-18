@@ -57,7 +57,9 @@ namespace interact
 
             auto const & PARTY{ game::Game::Instance()->State().Party() };
 
-            auto const LEVEL{ game::Game::Instance()->State().World().GetMaps().Current().Which() };
+            auto const LEVEL{
+                game::Game::Instance()->State().GetWorld().GetMaps().Current().Which()
+            };
 
             switch (CATEGORY)
             {

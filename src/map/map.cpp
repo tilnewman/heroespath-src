@@ -110,7 +110,7 @@ namespace map
 
         level_ = LEVEL_TO_LOAD;
 
-        game::Game::Instance()->State().World().HandleLevelLoad(LEVEL_TO_LOAD);
+        game::Game::Instance()->State().GetWorld().HandleLevelLoad(LEVEL_TO_LOAD);
 
         if (IS_TEST_LOAD == false)
         {
@@ -433,7 +433,7 @@ namespace map
         player_.StopWalking();
 
         auto const IS_LOCKED{
-            game::Game::Instance()->State().World().GetMaps().Current().IsDoorLocked(
+            game::Game::Instance()->State().GetWorld().GetMaps().Current().IsDoorLocked(
                 TRANSITION.WhichLevel())
         };
 
@@ -559,13 +559,13 @@ namespace map
         nonPlayers_.clear();
 
         for (auto const & NPC :
-             game::Game::Instance()->State().World().GetMaps().Current().SpecificNPCs())
+             game::Game::Instance()->State().GetWorld().GetMaps().Current().SpecificNPCs())
         {
             AddNonPlayerAvatar(NPC);
         }
 
         for (auto const & NPC :
-             game::Game::Instance()->State().World().GetMaps().Current().RandomNPCs())
+             game::Game::Instance()->State().GetWorld().GetMaps().Current().RandomNPCs())
         {
             AddNonPlayerAvatar(NPC);
         }

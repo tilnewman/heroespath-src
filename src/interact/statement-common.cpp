@@ -272,7 +272,7 @@ namespace interact
                         + PeriodOrBang();
                 }
             }
-        };
+        }
     } // namespace talk
 } // namespace interact
 } // namespace heroespath

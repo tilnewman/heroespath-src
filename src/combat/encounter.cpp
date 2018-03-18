@@ -267,7 +267,7 @@ namespace combat
         // nonPlayerPartyUPtr_ must be left alone because it will have already been populated
 
         roundCounter_ = 0;
-        game::Game::Instance()->State().World().EncounterCountInc();
+        game::Game::Instance()->State().GetWorld().EncounterCountInc();
 
         // TODO move this to the adventure stage
         // TODO Encounter will need a function that plays combat music and that takes a bool
