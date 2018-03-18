@@ -660,7 +660,7 @@ namespace sfml_util
 
     void SetTextColor(sf::Text & text, const sf::Color & COLOR)
     {
-#ifdef PLATFORM_DETECTED_IS_LINUX
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_LINUX
         text.setColor(COLOR);
 #else
         text.setFillColor(COLOR);
