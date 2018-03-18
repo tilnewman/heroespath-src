@@ -75,7 +75,7 @@ namespace interact
     bool LockedDoor::OnSuccess(stage::InteractStage * const stagePtr)
     {
         game::Game::Instance()->State().World().GetMaps().Current().IsDoorLocked(
-            transition_.Level(), false);
+            transition_.WhichLevel(), false);
 
         stagePtr->MapTransition(transition_);
         stagePtr->InteractionManager().RemoveCurrent();

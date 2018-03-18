@@ -56,7 +56,7 @@ namespace map
         {}
 
         inline bool IsEntry() const { return isEntry_; }
-        inline Level::Enum Level() const { return level_; }
+        inline Level::Enum WhichLevel() const { return level_; }
         inline const sf::FloatRect Rect() const { return rect_; }
         inline sfml_util::sound_effect::MapTransition TransType() const { return transSfxType_; }
 

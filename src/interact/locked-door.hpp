@@ -41,7 +41,7 @@ namespace interact
     public:
         LockedDoor(const map::Transition &);
 
-        map::Level::Enum ToLevel() const { return transition_.Level(); }
+        map::Level::Enum ToLevel() const { return transition_.WhichLevel(); }
 
         virtual bool OnSuccess(stage::InteractStage * const) final;
 

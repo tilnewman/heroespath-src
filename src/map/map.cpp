@@ -82,7 +82,7 @@ namespace map
     void Map::TransitionLevel(const Transition & TRANSITION)
     {
         PlayTransitionSfx(TRANSITION.TransType(), true);
-        Load(TRANSITION.Level(), level_);
+        Load(TRANSITION.WhichLevel(), level_);
         PlayTransitionSfx(TRANSITION.TransType(), false);
     }
 
@@ -320,11 +320,11 @@ namespace map
         {
             if (TRANSITION.IsEntry())
             {
-                entryLevels.emplace_back(TRANSITION.Level());
+                entryLevels.emplace_back(TRANSITION.WhichLevel());
             }
             else
             {
-                exitLevels.emplace_back(TRANSITION.Level());
+                exitLevels.emplace_back(TRANSITION.WhichLevel());
             }
         }
     }
@@ -393,7 +393,7 @@ namespace map
 
         for (auto const & TRANSITION : TRANS_VEC)
         {
-            if (TRANSITION.IsEntry() && (TRANSITION.Level() == LEVEL_FROM))
+            if (TRANSITION.IsEntry() && (TRANSITION.WhichLevel() == LEVEL_FROM))
             {
                 startPos = TRANSITION.Center();
                 break;
@@ -434,7 +434,7 @@ namespace map
 
         auto const IS_LOCKED{
             game::Game::Instance()->State().World().GetMaps().Current().IsDoorLocked(
-                TRANSITION.Level())
+                TRANSITION.WhichLevel())
         };
 
         if (IS_LOCKED)
