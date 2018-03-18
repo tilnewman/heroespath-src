@@ -210,7 +210,7 @@ namespace sfml_util
             SetEntityRegion(OUTLINE_RECT);
             HandleBox(BOX_INFO);
             EstablishWhichLinesToDraw(0.0f);
-            ResetTextToDraw();
+            ResetDrawCache();
         }
 
         void TextRegion::HandleSliderBar(sfml_util::gui::SliderBarPtr_t newSliderBarPtr)
@@ -326,7 +326,7 @@ namespace sfml_util
                 sliderBarUPtr_->MoveEntityPos(HORIZ, VERT);
             }
 
-            ResetTextToDraw();
+            ResetDrawCache();
         }
 
         void TextRegion::SetEntityPos(const float POS_LEFT, const float POS_TOP)
@@ -339,7 +339,7 @@ namespace sfml_util
             if (sliderBarUPtr_.get() != nullptr)
             {
                 EstablishWhichLinesToDraw(PACKAGE.PTR_->GetCurrentValue());
-                ResetTextToDraw();
+                ResetDrawCache();
                 return true;
             }
             else
@@ -391,7 +391,7 @@ namespace sfml_util
             // keep the text_ member accurate
             text_ += TEXT_REGION.text_;
 
-            ResetTextToDraw();
+            ResetDrawCache();
         }
 
         void TextRegion::OnColorChange()
@@ -426,7 +426,7 @@ namespace sfml_util
                 allowScrollbarOrig_);
         }
 
-        void TextRegion::ResetTextToDraw()
+        void TextRegion::ResetDrawCache()
         {
             textSnipsToDrawVec_.clear();
 

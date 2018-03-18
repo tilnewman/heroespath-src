@@ -149,7 +149,7 @@ namespace sfml_util
             virtual void OnColorChange();
 
         private:
-            void ResetTextToDraw();
+            void ResetDrawCache();
             void EstablishWhichLinesToDraw(const float SCROLL_RATIO);
             void EstablishWhichLinesToDraw(const float SCROLL_RATIO, const float REGION_HEIGHT);
 
