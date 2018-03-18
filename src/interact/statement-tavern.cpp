@@ -283,7 +283,7 @@ namespace interact
                         + PrependIf(RandomOrEmpty(TavernNoises()));
                 }
             }
-        };
+        }
     } // namespace talk
 } // namespace interact
 } // namespace heroespath
