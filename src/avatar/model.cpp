@@ -255,7 +255,7 @@ namespace avatar
 
     void Model::UpdateBlinking(const float TIME_ELAPSED)
     {
-        if (viewUPtr_->Pose() == Pose::Standing)
+        if (viewUPtr_->WhichPose() == Pose::Standing)
         {
             blinkTimerSec_ += TIME_ELAPSED;
             if (blinkTimerSec_ > timeUntilNextBlinkSec_)

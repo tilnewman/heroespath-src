@@ -57,7 +57,7 @@ namespace avatar
             return animation_.direction;
         }
 
-        inline virtual Pose::Enum Pose() const override { return animation_.pose; }
+        inline virtual Pose::Enum WhichPose() const override { return animation_.pose; }
 
         inline virtual const sf::Sprite & SpriteRef() const override { return sprite_; }
 

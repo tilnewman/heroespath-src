@@ -57,7 +57,7 @@ namespace avatar
 
         virtual sfml_util::Direction::Enum Direction() const = 0;
 
-        virtual Pose::Enum Pose() const = 0;
+        virtual Pose::Enum WhichPose() const = 0;
 
         virtual const sf::Sprite & SpriteRef() const = 0;
 

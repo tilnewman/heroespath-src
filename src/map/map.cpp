@@ -523,7 +523,7 @@ namespace map
 
     void Map::UpdateWalkMusic()
     {
-        auto const NEW_IS_WALKING{ (Player().GetView().Pose() == avatar::Pose::Walking) };
+        auto const NEW_IS_WALKING{ (Player().GetView().WhichPose() == avatar::Pose::Walking) };
         auto const NEW_WALK_MUSIC{ walkSfxLayers_.FindSfx(mapDisplayUPtr_->PlayerPosMap()) };
 
         if (NEW_IS_WALKING
