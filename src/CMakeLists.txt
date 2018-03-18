@@ -8,6 +8,8 @@ set(CUSTOM_LINK_FLAGS "")
 
 option(VALGRIND_BUILD "Build flags customized for Valgrind" OFF)
 
+option(ADDRESS_SANITIZER "Using Clang's Address Sanitizer" OFF)
+
 if(MSVC)
     set(SFML_PATH "C:/Program Files/SFML-2.4.1")
     message(STATUS "${PROJECT_NAME} will look for SFML here: \"" ${SFML_PATH} "\"")
@@ -112,6 +114,11 @@ endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL AppleClang)
     file (READ ../build-flags/build-flags-clang.txt CUSTOM_BUILD_FLAGS)
+    if(ADDRESS_SANITIZER)
+	message("Using Clang's Address Sanitizer")
+	set(CUSTOM_BUILD_FLAGS "${CUSTOM_BUILD_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+	set(CUSTOM_LINK_FLAGS "${CUSTOM_LINK_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+    endif()
 endif()
 
 add_definitions( ${CUSTOM_BUILD_FLAGS} )
