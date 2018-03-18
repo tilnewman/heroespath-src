@@ -29,6 +29,7 @@
 //  A class that represents a game in play.
 //
 #include "misc/boost-serialize-includes.hpp"
+#include "player/party.hpp"
 #include "sfml-util/date-time.hpp"
 
 #include <memory>
@@ -37,11 +38,6 @@
 
 namespace heroespath
 {
-namespace player
-{
-    class Party;
-    using PartyUPtr_t = std::unique_ptr<Party>;
-} // namespace player
 namespace state
 {
 

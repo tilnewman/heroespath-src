@@ -29,7 +29,6 @@
 //
 #include "game-state.hpp"
 
-#include "player/party.hpp"
 #include "state/world.hpp"
 
 #include <exception>
@@ -49,7 +48,7 @@ namespace state
         , dateTimeLastSave_()
     {}
 
-    GameState::~GameState() {}
+    GameState::~GameState() = default;
 
     World & GameState::GetWorld()
     {
