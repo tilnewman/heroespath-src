@@ -29,8 +29,6 @@
 //
 #include "game-state.hpp"
 
-#include "state/world.hpp"
-
 #include <exception>
 #include <sstream>
 #include <tuple>

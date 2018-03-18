@@ -31,6 +31,7 @@
 #include "misc/boost-serialize-includes.hpp"
 #include "player/party.hpp"
 #include "sfml-util/date-time.hpp"
+#include "state/world.hpp"
 
 #include <memory>
 #include <set>
@@ -40,10 +41,6 @@ namespace heroespath
 {
 namespace state
 {
-
-    // forward declarations
-    class World;
-    using WorldUPtr_t = std::unique_ptr<World>;
 
     // Encapsulates everything about a saved game.
     class GameState
