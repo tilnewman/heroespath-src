@@ -459,7 +459,7 @@ namespace sfml_util
                 TextSnippet nextTextSnippet;
 
                 // replace font of numbers to a special font that makes the numbers look cool
-                if (isdigit(currChar))
+                if (isdigit(static_cast<unsigned char>(currChar)))
                 {
                     nextTextSnippet.Setup(
                         textPos.x, textPos.y, std::string(1, currChar), TEXT_INFO_SET.ti_num);

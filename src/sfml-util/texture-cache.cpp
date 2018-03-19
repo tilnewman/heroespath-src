@@ -436,8 +436,8 @@ namespace sfml_util
         std::size_t i{ FILE_NAME.size() - 1 };
         do
         {
-            const char LETTER{ FILE_NAME[i] };
-            const bool IS_DIGIT{ std::isdigit(LETTER) != 0 };
+            auto const LETTER{ FILE_NAME[i] };
+            auto const IS_DIGIT{ std::isdigit(static_cast<unsigned char>(LETTER)) != 0 };
 
             if ((numberStr.empty() == false) && (IS_DIGIT == false))
             {
