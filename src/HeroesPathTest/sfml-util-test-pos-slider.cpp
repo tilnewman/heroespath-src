@@ -46,8 +46,7 @@ bool AreVectorsClose(const sf::Vector2f & A, const sf::Vector2f & B)
 bool AreVectorsCloseEnough(const sf::Vector2f & A, const sf::Vector2f & B)
 {
     Constants constants;
-    return IsRealClose(A.x, B.x, constants.CLOSE_ENOUGH_EPSILON_F)
-        && IsRealClose(A.y, B.y, constants.CLOSE_ENOUGH_EPSILON_F);
+    return IsRealClose(A.x, B.x) && IsRealClose(A.y, B.y);
 }
 
 BOOST_AUTO_TEST_CASE(PosSlider_Construction_DefaultValues)

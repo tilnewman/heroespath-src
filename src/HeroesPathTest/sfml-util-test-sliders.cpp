@@ -46,13 +46,13 @@ BOOST_AUTO_TEST_CASE(Sliders_ZeroSliderOnce_DefaultConstruction)
 
     sliders::ZeroSliderOnce<double> slider;
     BOOST_CHECK(slider.IsDone() == false);
-    BOOST_CHECK(IsRealClose(slider.Current(), 0.0, constants.CLOSE_ENOUGH_EPSILON));
-    BOOST_CHECK(IsRealClose(slider.Speed(), 1.0, constants.CLOSE_ENOUGH_EPSILON));
+    BOOST_CHECK(IsRealClose(slider.Current(), 0.0));
+    BOOST_CHECK(IsRealClose(slider.Speed(), 1.0));
 
     slider.Update(0.0);
     BOOST_CHECK(slider.IsDone() == false);
-    BOOST_CHECK(IsRealClose(slider.Current(), 0.0, constants.CLOSE_ENOUGH_EPSILON));
-    BOOST_CHECK(IsRealClose(slider.Speed(), 1.0, constants.CLOSE_ENOUGH_EPSILON));
+    BOOST_CHECK(IsRealClose(slider.Current(), 0.0));
+    BOOST_CHECK(IsRealClose(slider.Speed(), 1.0));
 }
 
 BOOST_AUTO_TEST_CASE(Sliders_ZeroSliderOnce_Updates)
@@ -64,8 +64,8 @@ BOOST_AUTO_TEST_CASE(Sliders_ZeroSliderOnce_Updates)
 
     slider.Update(0.1);
     BOOST_CHECK(slider.IsDone() == false);
-    BOOST_CHECK(IsRealClose(slider.Current(), 0.0, constants.CLOSE_ENOUGH_EPSILON) == false);
-    BOOST_CHECK(IsRealClose(slider.Speed(), 1.0, constants.CLOSE_ENOUGH_EPSILON));
+    BOOST_CHECK(IsRealClose(slider.Current(), 0.0) == false);
+    BOOST_CHECK(IsRealClose(slider.Speed(), 1.0));
 
     while (slider.IsDone() == false)
     {
@@ -87,14 +87,14 @@ BOOST_AUTO_TEST_CASE(Sliders_SliderOnce_DefaultConstruction)
     BOOST_CHECK(slider.IsDone() == false);
     BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
     BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));
-    BOOST_CHECK(IsRealClose(slider.Current(), THE_MIN, constants.CLOSE_ENOUGH_EPSILON));
+    BOOST_CHECK(IsRealClose(slider.Current(), THE_MIN));
     BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
 
     slider.Update(0.0);
     BOOST_CHECK(slider.IsDone() == false);
     BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
     BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));
-    BOOST_CHECK(IsRealClose(slider.Current(), THE_MIN, constants.CLOSE_ENOUGH_EPSILON));
+    BOOST_CHECK(IsRealClose(slider.Current(), THE_MIN));
     BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
 }
 
@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_CASE(Sliders_Slider_DefaultConstruction)
     BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));
     BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
 
-    BOOST_CHECK(IsRealClose(slider.Update(0.0), THE_MIN, constants.CLOSE_ENOUGH_EPSILON));
+    BOOST_CHECK(IsRealClose(slider.Update(0.0), THE_MIN));
     BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
     BOOST_CHECK(IsRealClose(slider.Max(), THE_MAX));
     BOOST_CHECK(IsRealClose(slider.Speed(), SPEED));
@@ -152,8 +152,7 @@ BOOST_AUTO_TEST_CASE(Sliders_Slider_Updates)
         auto const CURRENT{ slider.Update(0.1) };
 
         BOOST_CHECK(
-            IsRealClose(CURRENT, THE_MIN, constants.CLOSE_ENOUGH_EPSILON)
-            || IsRealClose(CURRENT, THE_MAX, constants.CLOSE_ENOUGH_EPSILON)
+            IsRealClose(CURRENT, THE_MIN) || IsRealClose(CURRENT, THE_MAX)
             || ((CURRENT > THE_MIN) && (CURRENT < THE_MAX)));
 
         BOOST_CHECK(IsRealClose(slider.Min(), THE_MIN));
