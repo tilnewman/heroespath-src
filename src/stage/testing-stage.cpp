@@ -1192,7 +1192,7 @@ namespace stage
         const unsigned RUN_LENGTH{ 20 };
 
         if ((TEXTURE.getSize().x < (OFFSET + RUN_LENGTH + 1))
-            || (TEXTURE.getSize().x < (OFFSET + RUN_LENGTH + 1)))
+            || (TEXTURE.getSize().y < (OFFSET + RUN_LENGTH + 1)))
         {
             // in this case, the image is too small to detect outlines
             return false;
