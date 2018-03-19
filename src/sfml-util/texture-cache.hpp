@@ -27,9 +27,9 @@
 //
 // texture-cache.hpp
 //
-#include "sfml-util/sfml-graphics.hpp"
-
 #include "misc/handy-types.hpp"
+#include "misc/vector-map.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <map>
 #include <memory>
@@ -40,7 +40,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    using StrToSizetVecMap_t = std::map<std::string, misc::SizetVec_t>;
+    using StrToSizetVecMap_t = misc::VectorMap<std::string, misc::SizetVec_t>;
 
     // stores textures in a single location and makes them available by index.
     // Index zero is always invalid.  Attempting to use index zero in these
