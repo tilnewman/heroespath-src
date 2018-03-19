@@ -29,6 +29,7 @@
 //
 #include <cmath> //for std::fabs
 #include <limits> //for epsilon
+#include <type_traits> // for enable_if
 
 namespace heroespath
 {
@@ -36,23 +37,44 @@ namespace misc
 {
 
     template <typename T>
-    inline bool
-        IsRealClose(const T A, const T B, const T TOLERANCE = std::numeric_limits<T>::epsilon())
+    typename std::enable_if<std::is_integral<T>::value, bool>::type
+        IsRealClose(const T A, const T B)
     {
-        return std::fabs(A - B) < TOLERANCE;
+        return (A == B);
     }
 
     template <typename T>
-    inline bool IsRealOne(const T X)
+    typename std::enable_if<!std::is_integral<T>::value, bool>::type
+        IsRealClose(const T A, const T B)
     {
-        return IsRealClose(X, static_cast<T>(1));
+        auto const MAX_OR_ONE{ std::max({ T(1), std::fabs(A), std::fabs(B) }) };
+        return (std::fabs(A - B) < std::numeric_limits<T>::epsilon() * MAX_OR_ONE);
     }
 
     template <typename T>
-    inline bool IsRealZero(const T X)
+    typename std::enable_if<std::is_integral<T>::value, bool>::type IsRealOne(const T X)
     {
-        return IsRealClose(X, static_cast<T>(0));
+        return (X == 1);
     }
+
+    template <typename T>
+    typename std::enable_if<!std::is_integral<T>::value, bool>::type IsRealOne(const T X)
+    {
+        return IsRealClose(X, T(1));
+    }
+
+    template <typename T>
+    typename std::enable_if<std::is_integral<T>::value, bool>::type IsRealZero(const T X)
+    {
+        return (X == 0);
+    }
+
+    template <typename T>
+    typename std::enable_if<!std::is_integral<T>::value, bool>::type IsRealZero(const T X)
+    {
+        return IsRealClose(X, T(0));
+    }
+
 } // namespace misc
 } // namespace heroespath
 
