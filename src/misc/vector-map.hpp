@@ -28,6 +28,7 @@
 // vector-map.hpp
 //
 #include "misc/boost-serialize-includes.hpp"
+#include <algorithm>
 #include <utility>
 #include <vector>
 
@@ -90,6 +91,16 @@ namespace misc
             }
 
             return false;
+        }
+
+        void Erase(const Key_t & KEY)
+        {
+            pairs_.erase(
+                std::remove_if(
+                    std::begin(pairs_),
+                    std::end(pairs_),
+                    [&KEY](auto const & PAIR) { return (PAIR.first == KEY); }),
+                std::end(pairs_));
         }
 
         std::size_t Size() const { return pairs_.size(); }
