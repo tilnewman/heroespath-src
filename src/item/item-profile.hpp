@@ -267,9 +267,16 @@ namespace item
 
         inline creature::role::Enum Role() const { return role_; }
 
-        inline Score_t TreasureScore() const
+        inline Score_t TreasureScore(const bool WILL_CALC_RELIGIOUS_SCORE = false) const
         {
-            return Score_t(static_cast<Score_t::type>(score_.As<float>() * religious_));
+            if (WILL_CALC_RELIGIOUS_SCORE)
+            {
+                return Score_t(static_cast<Score_t::type>(score_.As<float>() * religious_));
+            }
+            else
+            {
+                return score_;
+            }
         }
 
         inline const creature::SummonInfo Summoning() const { return summonInfo_; }
@@ -544,6 +551,8 @@ namespace item
 
     private:
         Score_t score_;
+
+        // this is a ratio of how religious the item is.
         float religious_;
 
         category::Enum category_;
@@ -583,8 +592,12 @@ namespace item
 
     inline bool operator==(const ItemProfile & L, const ItemProfile & R)
     {
+        if (L.score_ != R.score_)
+        {
+            return false;
+        }
+
         return std::tie(
-                   L.score_,
                    L.category_,
                    L.armor_,
                    L.weapon_,
@@ -595,7 +608,6 @@ namespace item
                    L.element_,
                    L.isSet_,
                    L.settings_.weapon,
-                   L.settings_.armor,
                    L.size_,
                    L.matPri_,
                    L.matSec_,
@@ -604,7 +616,6 @@ namespace item
                    L.summonInfo_,
                    L.religious_)
             == std::tie(
-                   R.score_,
                    R.category_,
                    R.armor_,
                    R.weapon_,
@@ -615,7 +626,6 @@ namespace item
                    R.element_,
                    R.isSet_,
                    R.settings_.weapon,
-                   R.settings_.armor,
                    R.size_,
                    R.matPri_,
                    R.matSec_,
@@ -629,8 +639,12 @@ namespace item
 
     inline bool operator<(const ItemProfile & L, const ItemProfile & R)
     {
+        if (L.score_ != R.score_)
+        {
+            return L.score_ < R.score_;
+        }
+
         return std::tie(
-                   L.score_,
                    L.category_,
                    L.armor_,
                    L.weapon_,
@@ -641,7 +655,6 @@ namespace item
                    L.element_,
                    L.isSet_,
                    L.settings_.weapon,
-                   L.settings_.armor,
                    L.size_,
                    L.matPri_,
                    L.matSec_,
@@ -650,7 +663,6 @@ namespace item
                    L.summonInfo_,
                    L.religious_)
             < std::tie(
-                   R.score_,
                    R.category_,
                    R.armor_,
                    R.weapon_,
@@ -661,7 +673,6 @@ namespace item
                    R.element_,
                    R.isSet_,
                    R.settings_.weapon,
-                   R.settings_.armor,
                    R.size_,
                    R.matPri_,
                    R.matSec_,

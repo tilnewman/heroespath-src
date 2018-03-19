@@ -76,7 +76,8 @@ namespace item
 
         static void ForceItemSelection(ItemCache & items_OutParam);
 
-        static void RemoveTreasureScoresHigherThan(const Score_t &, item::ItemProfileVec_t &);
+        static void RemoveTreasureScoresHigherThan(
+            const Score_t &, item::ItemProfileVec_t &, const bool IS_RELIGIOUS);
 
         static std::size_t SelectRandomWeighted(const item::ItemProfileVec_t &);
 

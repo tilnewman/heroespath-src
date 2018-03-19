@@ -155,7 +155,7 @@ namespace item
 
     ItemProfile::ItemProfile()
         : score_(0)
-        , religious_(1.0f)
+        , religious_(0.0f)
         , category_(category::None)
         , armor_(armor_type::NotArmor)
         , weapon_(weapon_type::NotAWeapon)
@@ -434,7 +434,7 @@ namespace item
             normalStrings.emplace_back(ss.str());
         }
 
-        if (religious_ < 1.0f)
+        if (religious_ > 0.0f)
         {
             std::ostringstream ss;
             ss << ((ss.str().empty()) ? "" : ", ") << "religious_ratio=" << religious_;
@@ -485,7 +485,7 @@ namespace item
         matSec_ = MATERIAL_SECONDARY;
         SetFlag(IS_PIXIE, profile::IsSet::Pixie);
 
-        if (misc::IsRealOne(religious_))
+        if (misc::IsRealZero(religious_))
         {
             religious_ = misc_type::ReligiousRatio(E);
         }

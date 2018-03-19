@@ -114,8 +114,7 @@ namespace item
         profiles_.shrink_to_fit();
         // Setup_LogAndThrowOnInvalid();
 
-        // Sorting by treasure score will help speed up later uses of profiles_
-        // during gameplay, and is required before Setup_LogStatistics().
+        // profiles_ is required to be sorted by treasure score
         std::sort(profiles_.begin(), profiles_.end(), [](const auto & A, const auto & B) {
             return A.TreasureScore() < B.TreasureScore();
         });
