@@ -44,24 +44,24 @@ namespace misc
             , b_(B)
         {}
 
-        inline T A() const { return a_; }
-        inline T B() const { return b_; }
+        constexpr T A() const { return a_; }
+        constexpr T B() const { return b_; }
 
-        inline T From() const { return a_; }
-        inline T To() const { return b_; }
+        constexpr T From() const { return a_; }
+        constexpr T To() const { return b_; }
 
-        inline T Min() const { return std::min(a_, b_); }
-        inline T Max() const { return std::max(a_, b_); }
+        constexpr T Min() const { return std::min(a_, b_); }
+        constexpr T Max() const { return std::max(a_, b_); }
 
-        inline T Diff() const { return Max() - Min(); }
+        constexpr T Diff() const { return Max() - Min(); }
 
-        inline T Mid() const { return Min() + (Diff() / T(2)); }
+        constexpr T Mid() const { return Min() + (Diff() / T(2)); }
 
-        inline T Avg() const { return (a_ + b_) / T(2); }
+        constexpr T Avg() const { return (a_ + b_) / T(2); }
 
-        inline float AvgFloat() const { return static_cast<float>(a_ + b_) * 0.5f; }
+        constexpr float AvgFloat() const { return static_cast<float>(a_ + b_) * 0.5f; }
 
-        inline double AvgDouble() const { return static_cast<double>(a_ + b_) * 0.5; }
+        constexpr double AvgDouble() const { return static_cast<double>(a_ + b_) * 0.5; }
 
     private:
         T a_;

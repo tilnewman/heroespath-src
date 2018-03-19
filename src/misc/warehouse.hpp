@@ -127,6 +127,7 @@ namespace misc
     private:
         std::vector<std::unique_ptr<T>> uPtrVec_;
     };
+
 } // namespace misc
 } // namespace heroespath
 

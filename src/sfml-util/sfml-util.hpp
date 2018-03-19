@@ -47,10 +47,11 @@ namespace sf
 {
 
 template <typename T>
-inline bool operator<(const sf::Rect<T> & A, const sf::Rect<T> & B)
+constexpr bool operator<(const sf::Rect<T> & A, const sf::Rect<T> & B)
 {
     return std::tie(A.left, A.top, A.width, A.height) < std::tie(B.left, B.top, B.width, B.height);
 }
+
 } // namespace sf
 
 namespace heroespath
@@ -59,7 +60,7 @@ namespace sfml_util
 {
 
     template <typename T>
-    bool DoRectsOverlap(const sf::Rect<T> & A, const sf::Rect<T> & B)
+    constexpr bool DoRectsOverlap(const sf::Rect<T> & A, const sf::Rect<T> & B)
     {
         return (
             (A.left < (B.left + B.width)) && ((A.left + A.width) > B.left)
@@ -67,13 +68,13 @@ namespace sfml_util
     }
 
     template <typename T>
-    T MagnitudeSFML(const sf::Vector2<T> & V)
+    constexpr T MagnitudeSFML(const sf::Vector2<T> & V)
     {
         return std::sqrt(V.x * V.x + V.y * V.y);
     }
 
     template <typename T>
-    void NormalizeSFML(sf::Vector2<T> & v)
+    constexpr void NormalizeSFML(sf::Vector2<T> & v)
     {
         const T M(MagnitudeSFML<T>(v));
         if (M > static_cast<T>(0))
@@ -81,7 +82,7 @@ namespace sfml_util
     }
 
     template <typename T>
-    T Distance(const sf::Vector2<T> & A, const sf::Vector2<T> & B)
+    constexpr T Distance(const sf::Vector2<T> & A, const sf::Vector2<T> & B)
     {
         auto const DIST_HORIZ{ static_cast<float>(B.x) - static_cast<float>(A.x) };
         auto const DIST_VERT{ static_cast<float>(B.y) - static_cast<float>(A.y) };
@@ -122,13 +123,13 @@ namespace sfml_util
         const sf::Vector2f & PROJECTED_IMAGE_SIZE);
 
     template <typename Before_t, typename After_t>
-    sf::Vector2<After_t> ConvertVector(const sf::Vector2<Before_t> & V)
+    constexpr const sf::Vector2<After_t> ConvertVector(const sf::Vector2<Before_t> & V)
     {
         return sf::Vector2<After_t>(static_cast<After_t>(V.x), static_cast<After_t>(V.y));
     }
 
     template <typename Before_t, typename After_t>
-    sf::Rect<After_t> ConvertRect(const sf::Rect<Before_t> & R)
+    constexpr const sf::Rect<After_t> ConvertRect(const sf::Rect<Before_t> & R)
     {
         sf::Rect<After_t> tempRect;
         tempRect.left = static_cast<After_t>(R.left);
@@ -312,7 +313,8 @@ namespace sfml_util
 
     // map a VAL within [IN_MIN, IN_MAX] to the range [OUT_MIN, OUT_MAX]
     template <typename T>
-    inline T Map(const T VAL, const T IN_MIN, const T IN_MAX, const T OUT_MIN, const T OUT_MAX)
+    inline constexpr T
+        Map(const T VAL, const T IN_MIN, const T IN_MAX, const T OUT_MIN, const T OUT_MAX)
     {
         return OUT_MIN + (((VAL - IN_MIN) * (OUT_MAX - OUT_MIN)) / (IN_MAX - IN_MIN));
     }
@@ -339,7 +341,7 @@ namespace sfml_util
     void SetTextColor(sf::Text & text, const sf::Color & COLOR);
 
     template <typename T>
-    void ScaleRect(sf::Rect<T> & rect, const float SCALE)
+    constexpr void ScaleRect(sf::Rect<T> & rect, const float SCALE)
     {
         rect.left = static_cast<T>(static_cast<float>(rect.left) * SCALE);
         rect.top = static_cast<T>(static_cast<float>(rect.top) * SCALE);
@@ -348,7 +350,7 @@ namespace sfml_util
     }
 
     template <typename T>
-    const sf::Rect<T> ScaleRectCopy(const sf::Rect<T> & RECT, const float SCALE)
+    constexpr const sf::Rect<T> ScaleRectCopy(const sf::Rect<T> & RECT, const float SCALE)
     {
         sf::Rect<T> r(RECT);
         ScaleRect<T>(r, SCALE);
@@ -356,7 +358,7 @@ namespace sfml_util
     }
 
     template <typename T>
-    T RelativeOffset(const T ORIG_POS, const T NEW_POS)
+    constexpr T RelativeOffset(const T ORIG_POS, const T NEW_POS)
     {
         auto const ORIG_POS_FLOAT{ static_cast<float>(ORIG_POS) };
         auto const NEW_POS_FLOAT{ static_cast<float>(NEW_POS) };
@@ -364,7 +366,7 @@ namespace sfml_util
     }
 
     template <typename T>
-    sf::Vector2<T> RelativeOffsetPosition(
+    constexpr const sf::Vector2<T> RelativeOffsetPosition(
         const T ORIG_LEFT, const T ORIG_TOP, const T NEW_LEFT, const T NEW_TOP)
     {
         return sf::Vector2<T>(
@@ -372,7 +374,7 @@ namespace sfml_util
     }
 
     template <typename T>
-    sf::Vector2<T>
+    constexpr const sf::Vector2<T>
         RelativeOffsetPosition(const sf::Vector2<T> & ORIG_POS_V, const sf::Vector2<T> & NEW_POS_V)
     {
         return RelativeOffsetPosition(ORIG_POS_V.x, ORIG_POS_V.y, NEW_POS_V.x, NEW_POS_V.y);
@@ -415,6 +417,7 @@ namespace sfml_util
 
         const std::string ColorToString(const sf::Color & C, const bool WILL_WRAP = true);
     } // namespace color
+
 } // namespace sfml_util
 } // namespace heroespath
 

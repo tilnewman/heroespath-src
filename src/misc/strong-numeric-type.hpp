@@ -49,16 +49,16 @@ namespace misc
         virtual ~StrongNumericType() = default;
 
         template <typename AsType_t>
-        AsType_t As() const
+        constexpr AsType_t As() const
         {
             return static_cast<AsType_t>(this->Get());
         }
 
         // Note:  There are no StrongNumericTypes defined where T is real,
         //       so comparrison to zero here is okay.
-        bool IsZero() const { return (this->m_value == T(0)); }
+        constexpr bool IsZero() const { return (this->m_value == T(0)); }
 
-        bool IsNonZero() const { return !IsZero(); }
+        constexpr bool IsNonZero() const { return !IsZero(); }
 
         const StrongNumericType Abs() const
         {
