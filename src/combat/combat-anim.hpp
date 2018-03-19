@@ -114,7 +114,7 @@ namespace combat
         void Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE);
     };
 
-    using SakeInfoMap_t = std::map<combat::CombatNodePtr_t, ShakeAnimInfo>;
+    using ShakeInfoMap_t = std::map<combat::CombatNodePtr_t, ShakeAnimInfo>;
 
     // Responsible for displaying combat related animations.
     class CombatAnimation
@@ -308,7 +308,7 @@ namespace combat
         // members to shake a creature image on the battlefield
         creature::CreatureCPtr_t shakeAnimCreatureWasCPtr_;
         float shakeAnimCreatureWasSpeed_;
-        SakeInfoMap_t shakeAnimInfoMap_;
+        ShakeInfoMap_t shakeAnimInfoMap_;
 
         // members to perform the selection animation
         CombatNodePtr_t selectAnimCombatNodePtr_;
