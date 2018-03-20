@@ -54,9 +54,7 @@ namespace misc
             return static_cast<AsType_t>(this->Get());
         }
 
-        // Note:  There are no StrongNumericTypes defined where T is real,
-        //       so comparrison to zero here is okay.
-        constexpr bool IsZero() const { return (this->m_value == T(0)); }
+        constexpr bool IsZero() const { return misc::IsRealZero(this->m_value); }
 
         constexpr bool IsNonZero() const { return !IsZero(); }
 

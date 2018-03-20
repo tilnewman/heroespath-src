@@ -109,10 +109,16 @@ namespace misc
                 (THE_MIN <= THE_MAX),
                 "misc::random::NonReal<" << typeid(T).name() << ">(min=" << THE_MIN << ", max="
                                          << THE_MAX << ")  The min was not <= the max.");
-
-            // uniform_int_distribution is [x,y] so no nextafter() call is needed
-            std::uniform_int_distribution<T> uni_dist(THE_MIN, THE_MAX);
-            return uni_dist(MersenneTwister::engine);
+            if (THE_MIN == THE_MAX)
+            {
+                return THE_MIN;
+            }
+            else
+            {
+                // uniform_int_distribution is [x,y] so no nextafter() call is needed
+                std::uniform_int_distribution<T> uni_dist(THE_MIN, THE_MAX);
+                return uni_dist(MersenneTwister::engine);
+            }
         }
 
         template <typename T>
