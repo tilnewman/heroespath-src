@@ -145,7 +145,7 @@ namespace item
             const bool IS_RELIGIOUS,
             const SetTypeProfileVec_t & OWNED_SET_PROFILES);
 
-        static void FindNewPossibleVectorAndUpdateWeightSum(
+        static void FindNewPossibleVectorLimitAndUpdateWeightSum(
             RandomSelectionVec_t & possibleVec,
             const Score_t & MAX_SCORE,
             std::size_t & possibleIndexLimit,

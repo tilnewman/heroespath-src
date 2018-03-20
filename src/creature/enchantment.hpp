@@ -42,6 +42,7 @@
 
 #include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace heroespath
@@ -75,6 +76,8 @@ namespace creature
         inline spell::Spells::Enum Spell() const { return spell_; }
         inline const CondEnumVec_t & ConditionsRemoved() const { return condsRemovedVec_; }
 
+        friend bool operator==(const UseInfo & L, const UseInfo & R);
+
     private:
         // negative means infinite
         int countOrig_;
@@ -96,6 +99,14 @@ namespace creature
             ar & condsRemovedVec_;
         }
     };
+
+    inline bool operator==(const UseInfo & L, const UseInfo & R)
+    {
+        return std::tie(L.countOrig_, L.countRemain_, L.phase_, L.spell_, L.condsRemovedVec_)
+            == std::tie(R.countOrig_, R.countRemain_, R.phase_, R.spell_, R.condsRemovedVec_);
+    }
+
+    inline bool operator!=(const UseInfo & L, const UseInfo & R) { return !(L == R); }
 
     // Responsible for storing all the info of an Enchantment,
     // and for applying and removing related changes to a creature.
@@ -134,6 +145,8 @@ namespace creature
 
         virtual Score_t TreasureScore() const;
 
+        friend bool operator==(const Enchantment & L, const Enchantment & R);
+
     private:
         inline const std::string SepIfNotEmpty(const std::string & S) const
         {
@@ -156,9 +169,18 @@ namespace creature
         }
     };
 
+    inline bool operator==(const Enchantment & L, const Enchantment & R)
+    {
+        return std::tie(L.type_, L.traitSet_, L.useInfo_)
+            == std::tie(R.type_, R.traitSet_, R.useInfo_);
+    }
+
+    inline bool operator!=(const Enchantment & L, const Enchantment & R) { return !(L == R); }
+
     using EnchantmentPtr_t = Enchantment *;
     using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
+
 } // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_CREATURE_ENCHANTMENT_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_ENCHANTMENT_HPP_INCRUDED

@@ -98,21 +98,41 @@ namespace creature
     private:
         item::ItemPtr_t StoreAttachReturn(item::ItemPtr_t, Enchantment * const) const;
 
-        std::vector<Enchantment *>
+        const std::vector<Enchantment>
             MakeFromUniqueType(const item::unique_type::Enum, const item::material::Enum) const;
 
-        Enchantment * MakeFromMiscType(
+        const std::vector<Enchantment *>
+            NewFromUniqueType(const item::unique_type::Enum, const item::material::Enum) const;
+
+        const Enchantment MakeFromMiscType(
             const item::misc_type::Enum,
             const item::material::Enum MATERIAL_PRIMARY,
             const item::material::Enum MATERIAL_SECONDARY) const;
 
-        Enchantment * MakeFromSetType(const item::set_type::Enum) const;
-        Enchantment * MakeFromSetCompleteType(const item::set_type::Enum) const;
+        Enchantment * NewFromMiscType(
+            const item::misc_type::Enum,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY) const;
 
-        Enchantment * MakeFromElementType(
+        const Enchantment MakeFromSetType(const item::set_type::Enum) const;
+        Enchantment * NewFromSetType(const item::set_type::Enum) const;
+
+        const Enchantment MakeFromSetCompleteType(const item::set_type::Enum) const;
+        Enchantment * NewFromSetCompleteType(const item::set_type::Enum) const;
+
+        const Enchantment MakeFromElementType(
             const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
 
-        Enchantment * MakeFromNamedType(
+        Enchantment * NewFromElementType(
+            const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
+
+        const Enchantment MakeFromNamedType(
+            const item::named_type::Enum,
+            const item::material::Enum,
+            const bool IS_WEAPON,
+            const bool IS_ARMOR) const;
+
+        Enchantment * NewFromNamedType(
             const item::named_type::Enum,
             const item::material::Enum,
             const bool IS_WEAPON,

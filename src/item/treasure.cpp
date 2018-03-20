@@ -278,7 +278,7 @@ namespace item
             }
             else
             {
-                FindNewPossibleVectorAndUpdateWeightSum(
+                FindNewPossibleVectorLimitAndUpdateWeightSum(
                     possibleVec, amount, possibleVecLimitIndex, weightSum);
             }
         }
@@ -423,7 +423,7 @@ namespace item
         return weightSum;
     }
 
-    void TreasureFactory::FindNewPossibleVectorAndUpdateWeightSum(
+    void TreasureFactory::FindNewPossibleVectorLimitAndUpdateWeightSum(
         RandomSelectionVec_t & possibleVec,
         const Score_t & MAX_SCORE,
         std::size_t & possibleIndexLimit,
