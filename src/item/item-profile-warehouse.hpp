@@ -68,13 +68,11 @@ namespace item
         void Setup_NamedEquipment();
         void Setup_SetEquipment();
         void Setup_SummoningItems();
-        void Setup_EliminateDuplicates();
-        void Setup_LogAndThrowOnInvalid() const;
-        void Setup_LogStatistics() const;
 
-        inline std::size_t Count() const { return profiles_.size(); }
+        bool IsSetup() const { return (profiles_.empty() == false); }
 
-        const ItemProfileVec_t & Get();
+        const ItemProfileVec_t & GetNormalProfiles();
+        const ItemProfileVec_t & GetReligiousProfiles();
 
         static Score_t Score(const stats::TraitSet &);
 
@@ -171,9 +169,22 @@ namespace item
         static const item::ItemProfileVec_t ThinProfiles(const item::named_type::Enum);
         static const item::ItemProfileVec_t ThinProfiles(const item::set_type::Enum);
 
+        inline void AppendProfileToTheCorrectVector(const ItemProfile & PROFILE)
+        {
+            if (PROFILE.IsReligious())
+            {
+                religiousProfiles_.emplace_back(PROFILE);
+            }
+            else
+            {
+                profiles_.emplace_back(PROFILE);
+            }
+        }
+
     private:
         static std::unique_ptr<ItemProfileWarehouse> instanceUPtr_;
         ItemProfileVec_t profiles_;
+        ItemProfileVec_t religiousProfiles_;
     };
 } // namespace item
 } // namespace heroespath

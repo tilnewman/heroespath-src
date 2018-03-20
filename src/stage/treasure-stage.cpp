@@ -326,7 +326,7 @@ namespace stage
         // give control of the TreasureDispayStage object lifetime to the Loop class
         game::LoopManager::Instance()->AddStage(displayStagePtr_);
 
-        if (item::ItemProfileWarehouse::Instance()->Count() == 0)
+        if (item::ItemProfileWarehouse::Instance()->IsSetup() == false)
         {
             // This number was found by experiment to be a good number of draw frames to allow the
             // background image to fade in a little bit before displaying the 'Please Wait' popup.

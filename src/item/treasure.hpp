@@ -53,6 +53,58 @@ namespace item
     using ItemPtr_t = Item *;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 
+    // Responsible for wrapping all the information about an Item's Set type, and for providing
+    // functions to compare that type against an Item or an ItemProfile.
+    class SetTypeProfile
+    {
+    public:
+        explicit SetTypeProfile(const ItemProfile & ITEM_PROFILE = ItemProfile())
+            : set(ITEM_PROFILE.SetType())
+            , weapon(ITEM_PROFILE.WeaponType())
+            , armor(ITEM_PROFILE.ArmorType())
+            , misc(ITEM_PROFILE.MiscType())
+        {}
+
+        explicit SetTypeProfile(const Item & ITEM);
+
+        bool DoesBelongToASet() const
+        {
+            return ((set_type::Count != set) && (set_type::NotASet != set));
+        }
+
+        bool DoesSetMatch(const ItemProfile & ITEM_PROFILE) const
+        {
+            return (
+                (ITEM_PROFILE.SetType() == set) && (ITEM_PROFILE.WeaponType() == weapon)
+                && (ITEM_PROFILE.ArmorType() == armor) && (ITEM_PROFILE.MiscType() == misc));
+        }
+
+        bool DoesSetMatch(const Item & ITEM) const;
+
+    private:
+        set_type::Enum set;
+        weapon_type::Enum weapon;
+        armor_type::Enum armor;
+        misc_type::Enum misc;
+    };
+
+    using SetTypeProfileVec_t = std::vector<SetTypeProfile>;
+
+    // Responsible for wrapping all the details about an ItemProfile in consideration for random
+    // selection
+    struct RandomSelection
+    {
+        RandomSelection(const std::size_t INDEX = 0, const Score_t SCORE = 0_score)
+            : score(SCORE)
+            , index(INDEX)
+        {}
+
+        Score_t score;
+        std::size_t index;
+    };
+
+    using RandomSelectionVec_t = std::vector<RandomSelection>;
+
     struct TreasureFactory
     {
         // Decides what treasure the given creatures have and adds it
@@ -76,17 +128,34 @@ namespace item
 
         static void ForceItemSelection(ItemCache & items_OutParam);
 
-        static void RemoveTreasureScoresHigherThan(
-            const Score_t &, item::ItemProfileVec_t &, const bool IS_RELIGIOUS);
+        static std::size_t SelectRandomWeighted(
+            const double WEIGHT_SUM, const RandomSelectionVec_t &, const std::size_t INDEX_LIMIT);
 
-        static std::size_t SelectRandomWeighted(const item::ItemProfileVec_t &);
+        static inline double TreasureScoreToWeight(const Score_t & SCORE)
+        {
+            return 1.0 / (SCORE.As<double>() * 0.1);
+        }
 
-        static double TreasureScoreToWeight(const Score_t &);
+        static const SetTypeProfileVec_t SetItemsAlreadyOwned();
 
-        static void RemoveSetItemsAlreadyOwned(item::ItemProfileVec_t &);
+        static double PopuplatePossibleVectorAndReturnWeightSum(
+            RandomSelectionVec_t & possibleVec,
+            const ItemProfileVec_t & PROFILES,
+            const Score_t MAX_SCORE,
+            const bool IS_RELIGIOUS,
+            const SetTypeProfileVec_t & OWNED_SET_PROFILES);
 
-        static const item::ItemProfile ItemToSetItemProfile(const item::ItemPtr_t);
+        static void FindNewPossibleVectorAndUpdateWeightSum(
+            RandomSelectionVec_t & possibleVec,
+            const Score_t & MAX_SCORE,
+            std::size_t & possibleIndexLimit,
+            double & weightSum);
+
+        static void PopulateFallbackItemProfiles();
+
+        static ItemProfileVec_t fallbackItemProfiles_;
     };
+
 } // namespace item
 } // namespace heroespath
 

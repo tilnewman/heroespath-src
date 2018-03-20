@@ -267,17 +267,14 @@ namespace item
 
         inline creature::role::Enum Role() const { return role_; }
 
-        inline Score_t TreasureScore(const bool WILL_CALC_RELIGIOUS_SCORE = false) const
+        inline Score_t TreasureScore() const { return score_; }
+
+        inline Score_t ReligiousScore() const
         {
-            if (WILL_CALC_RELIGIOUS_SCORE)
-            {
-                return Score_t(static_cast<Score_t::type>(score_.As<float>() * religious_));
-            }
-            else
-            {
-                return score_;
-            }
+            return Score_t(static_cast<Score_t::type>(score_.As<float>() * religious_));
         }
+
+        inline bool IsReligious() const { return (religious_ > 0.0f); }
 
         inline const creature::SummonInfo Summoning() const { return summonInfo_; }
 

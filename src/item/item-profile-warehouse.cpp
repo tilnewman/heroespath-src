@@ -54,6 +54,7 @@ namespace item
 
     ItemProfileWarehouse::ItemProfileWarehouse()
         : profiles_()
+        , religiousProfiles_()
     {
         M_HP_LOG_DBG("Singleton Construction: ItemProfileWarehouse");
     }
@@ -103,6 +104,9 @@ namespace item
         // As of 2018-3-17 there were 465091 profiles with no duplicates to cleanup.
         profiles_.reserve(500000);
 
+        // As of 2018-3-19 there were 251 religious profiles.
+        religiousProfiles_.reserve(256);
+
         Setup_StandardEquipment();
         Setup_UniqueItems();
         Setup_MiscItems();
@@ -110,19 +114,17 @@ namespace item
         Setup_SetEquipment();
         Setup_SummoningItems();
 
-        // Setup_EliminateDuplicates();
         profiles_.shrink_to_fit();
-        // Setup_LogAndThrowOnInvalid();
+        religiousProfiles_.shrink_to_fit();
 
-        // profiles_ is required to be sorted by treasure score
         std::sort(profiles_.begin(), profiles_.end(), [](const auto & A, const auto & B) {
             return A.TreasureScore() < B.TreasureScore();
         });
 
-        // This line adds lots of verbose details about item profiles to the log,
-        // which are not normally needed during a typical run of the game,
-        // so this line will normally be commented out.
-        // Setup_LogStatistics();
+        std::sort(
+            religiousProfiles_.begin(),
+            religiousProfiles_.end(),
+            [](const auto & A, const auto & B) { return A.ReligiousScore() < B.ReligiousScore(); });
     }
 
     void ItemProfileWarehouse::Setup_StandardEquipment()
@@ -193,7 +195,7 @@ namespace item
                             NEXT_MATERIAL_PRIMARY,
                             material::Nothing);
 
-                        profiles_.emplace_back(p);
+                        AppendProfileToTheCorrectVector(p);
                         didAddProfile = true;
                     }
                     else
@@ -230,7 +232,7 @@ namespace item
                                 NEXT_MATERIAL_PRIMARY,
                                 NEXT_MATERIAL_SECONDARY);
 
-                            profiles_.emplace_back(p);
+                            AppendProfileToTheCorrectVector(p);
                             didAddProfile = true;
                         }
                     }
@@ -365,206 +367,24 @@ namespace item
         std::copy(std::begin(set), std::end(set), std::back_inserter(profiles_));
     }
 
-    void ItemProfileWarehouse::Setup_EliminateDuplicates()
+    const ItemProfileVec_t & ItemProfileWarehouse::GetNormalProfiles()
     {
-        auto const RAW_COUNT{ profiles_.size() };
-
-        std::sort(profiles_.begin(), profiles_.end());
-
-        profiles_.erase(std::unique(profiles_.begin(), profiles_.end()), profiles_.end());
-
-        auto const DUPLICATE_PROFILE_COUNT{ RAW_COUNT - profiles_.size() };
-
-        profiles_.shrink_to_fit();
-
-        M_HP_LOG_DBG(
-            "ItemProfileWarehouse::Setup() resulted in "
-            << RAW_COUNT << " raw, " << DUPLICATE_PROFILE_COUNT << " duplicate, and "
-            << profiles_.size() << " final profiles, with a vector that is "
-            << ((profiles_.size() == profiles_.capacity()) ? "" : "NOT ") << "shrunk to fit.");
-    }
-
-    void ItemProfileWarehouse::Setup_LogAndThrowOnInvalid() const
-    {
-        auto didFindInvalid{ false };
-
-        for (auto const & PROFILE : profiles_)
-        {
-            if (PROFILE.IsValid() == false)
-            {
-                didFindInvalid = true;
-
-                M_HP_LOG_DBG(
-                    "ItemProfileWarehouse found invalid profiles during Setup():  \""
-                    << PROFILE.ToMemberStrings().InvalidString()
-                    << "\", profile=" << PROFILE.ToString());
-            }
-        }
-
-        if (didFindInvalid)
-        {
-            throw std::runtime_error("ItemProfileWarehouse found invalid profiles during Setup().");
-        }
-    }
-
-    void ItemProfileWarehouse::Setup_LogStatistics() const
-    {
-        struct ItemSet
-        {
-            ItemSet(
-                const std::string & NAME,
-                int DIVISION_SIZE,
-                const std::vector<ItemProfile> & PROFILES)
-                : name(NAME)
-                , division(DIVISION_SIZE)
-                , profiles()
-                , scores()
-                , divCountsScore(
-                      static_cast<std::size_t>(
-                          (PROFILES[PROFILES.size() - 1].TreasureScore().As<int>() / DIVISION_SIZE)
-                          + 1),
-                      0)
-                , sum(0)
-            {}
-
-            std::string name;
-            int division;
-            std::vector<ItemProfile> profiles;
-            std::vector<int> scores;
-            std::vector<int> divCountsScore;
-            long sum;
-
-            void Add(const ItemProfile & P)
-            {
-                profiles.emplace_back(P);
-                auto const TREASURE_SCORE_INT{ P.TreasureScore().As<int>() };
-                ++divCountsScore[static_cast<std::size_t>(TREASURE_SCORE_INT / division)];
-                sum += TREASURE_SCORE_INT;
-                scores.emplace_back(TREASURE_SCORE_INT);
-            }
-
-            void Log() const
-            {
-                M_HP_LOG_DBG(
-                    "ItemProfileWarehouse::Setup() ItemSet \""
-                    << name << "\" **********************************");
-
-                auto const MEAN{ static_cast<int>(sum / static_cast<long>(scores.size())) };
-
-                M_HP_LOG_DBG(
-                    "ItemProfileWarehouse::Setup() ItemSet \""
-                    << name << "\"\tcount=" << profiles.size() << ", min=" << scores[0]
-                    << ", mean=" << MEAN << ", median=" << scores[scores.size() / 2]
-                    << ", max=" << scores[scores.size() - 1] << ", std_dev="
-                    << misc::Vector::StandardDeviation(scores, scores.size(), MEAN));
-
-                M_HP_LOG_DBG(
-                    "ItemProfileWarehouse::Setup() ItemSet \""
-                    << name << "\" **********************************");
-
-                for (int d(0); d < static_cast<int>(divCountsScore.size()); ++d)
-                {
-                    M_HP_LOG_DBG(
-                        "ItemProfileWarehouse::Setup() ItemSet \""
-                        << name << "\" Treasure Score Division [" << d * division << "-"
-                        << (d + 1) * division
-                        << "]\t\t =" << divCountsScore[static_cast<std::size_t>(d)]);
-                }
-
-                M_HP_LOG_DBG(
-                    "ItemProfileWarehouse::Setup() ItemSet \""
-                    << name << "\" **********************************");
-
-                for (int d(0); d < static_cast<int>(divCountsScore.size()); ++d)
-                {
-                    auto const DIV_SCORE_START{ d * division };
-
-                    auto const FIRST_WITH_SCORE_ITER{ std::find_if(
-                        profiles.begin(), profiles.end(), [DIV_SCORE_START](const auto & P) {
-                            return P.TreasureScore().template As<int>() >= DIV_SCORE_START;
-                        }) };
-
-                    int i{ 0 };
-                    auto iter{ FIRST_WITH_SCORE_ITER };
-                    for (; iter != profiles.end() && i < 10; ++iter, ++i)
-                    {
-                        M_HP_LOG_DBG(
-                            "ItemProfileWarehouse::Setup() ItemSet \""
-                            << name << "\" Sample: " << iter->TreasureScore() << "\t"
-                            << iter->ToString());
-                    }
-                }
-
-                M_HP_LOG_DBG(
-                    "ItemProfileWarehouse::Setup() ItemSet \""
-                    << name << "\" **********************************");
-            }
-        };
-
-        ItemSet treasureScoreSet("TreasureScore", 500, profiles_);
-        ItemSet equipmentSet("Equipment", 200, profiles_);
-        ItemSet standardEquipmentSet("StandardEquipment", 200, profiles_);
-        ItemSet uniqueSet("Unique", 500, profiles_);
-        ItemSet setSet("Set", 500, profiles_);
-        ItemSet namedSet("Named", 500, profiles_);
-        ItemSet elementalSet("Elemental", 500, profiles_);
-
-        for (auto const & PROFILE : profiles_)
-        {
-            treasureScoreSet.Add(PROFILE);
-
-            if (PROFILE.IsEquipment())
-            {
-                equipmentSet.Add(PROFILE);
-
-                if (PROFILE.IsStandard())
-                {
-                    standardEquipmentSet.Add(PROFILE);
-                }
-            }
-
-            if ((PROFILE.IsUnique() == true) && (PROFILE.IsSet() == false)
-                && (PROFILE.IsNamed() == false) && (PROFILE.IsElemental() == false))
-            {
-                uniqueSet.Add(PROFILE);
-            }
-
-            if ((PROFILE.IsUnique() == false) && (PROFILE.IsSet() == true)
-                && (PROFILE.IsNamed() == false) && (PROFILE.IsElemental() == false))
-            {
-                setSet.Add(PROFILE);
-            }
-
-            if ((PROFILE.IsUnique() == false) && (PROFILE.IsSet() == false)
-                && (PROFILE.IsNamed() == true) && (PROFILE.IsElemental() == false))
-            {
-                namedSet.Add(PROFILE);
-            }
-
-            if ((PROFILE.IsUnique() == false) && (PROFILE.IsSet() == false)
-                && (PROFILE.IsNamed() == false) && (PROFILE.IsElemental() == true))
-            {
-                elementalSet.Add(PROFILE);
-            }
-        }
-
-        treasureScoreSet.Log();
-        equipmentSet.Log();
-        standardEquipmentSet.Log();
-        uniqueSet.Log();
-        setSet.Log();
-        namedSet.Log();
-        elementalSet.Log();
-    }
-
-    const ItemProfileVec_t & ItemProfileWarehouse::Get()
-    {
-        if (profiles_.empty())
+        if (IsSetup() == false)
         {
             Setup();
         }
 
         return profiles_;
+    }
+
+    const ItemProfileVec_t & ItemProfileWarehouse::GetReligiousProfiles()
+    {
+        if (IsSetup() == false)
+        {
+            Setup();
+        }
+
+        return religiousProfiles_;
     }
 
     Score_t ItemProfileWarehouse::Score(const stats::TraitSet & TRAIT_SET)
@@ -670,14 +490,14 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetMisc(
                 THIN_PROFILE.MiscType(), false, MATERIAL_PRI, MATERIAL_SEC, SET_TYPE);
-            profiles_.emplace_back(fatProfile);
+            AppendProfileToTheCorrectVector(fatProfile);
 
             if (misc_type::HasPixieVersion(THIN_PROFILE.MiscType()))
             {
                 ItemProfile fatProfilePixie;
                 fatProfilePixie.SetMisc(
                     THIN_PROFILE.MiscType(), true, MATERIAL_PRI, MATERIAL_SEC, SET_TYPE);
-                profiles_.emplace_back(fatProfilePixie);
+                AppendProfileToTheCorrectVector(fatProfilePixie);
             }
 
             return;
@@ -688,7 +508,7 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetAventail(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-            profiles_.emplace_back(fatProfile);
+            AppendProfileToTheCorrectVector(fatProfile);
             return;
         }
 
@@ -697,12 +517,12 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetBoots(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-            profiles_.emplace_back(fatProfile);
+            AppendProfileToTheCorrectVector(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetBoots(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
-            profiles_.emplace_back(fatProfilePixie);
+            AppendProfileToTheCorrectVector(fatProfilePixie);
             return;
         }
 
@@ -711,12 +531,12 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetBracer(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-            profiles_.emplace_back(fatProfile);
+            AppendProfileToTheCorrectVector(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetBracer(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
-            profiles_.emplace_back(fatProfilePixie);
+            AppendProfileToTheCorrectVector(fatProfilePixie);
             return;
         }
 
@@ -725,12 +545,12 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetGauntlets(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-            profiles_.emplace_back(fatProfile);
+            AppendProfileToTheCorrectVector(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetGauntlets(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
-            profiles_.emplace_back(fatProfilePixie);
+            AppendProfileToTheCorrectVector(fatProfilePixie);
             return;
         }
 
@@ -739,12 +559,12 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetPants(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-            profiles_.emplace_back(fatProfile);
+            AppendProfileToTheCorrectVector(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetPants(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
-            profiles_.emplace_back(fatProfilePixie);
+            AppendProfileToTheCorrectVector(fatProfilePixie);
             return;
         }
 
@@ -753,12 +573,12 @@ namespace item
             ItemProfile fatProfile;
             fatProfile.SetShirt(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-            profiles_.emplace_back(fatProfile);
+            AppendProfileToTheCorrectVector(fatProfile);
 
             ItemProfile fatProfilePixie;
             fatProfilePixie.SetShirt(
                 BASE_TYPE, MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
-            profiles_.emplace_back(fatProfilePixie);
+            AppendProfileToTheCorrectVector(fatProfilePixie);
             return;
         }
 
@@ -775,7 +595,7 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
                 return;
             }
 
@@ -790,7 +610,7 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     false);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
 
                 ItemProfile fatProfilePixie;
                 fatProfilePixie.SetCover(
@@ -801,7 +621,7 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     true);
-                profiles_.emplace_back(fatProfilePixie);
+                AppendProfileToTheCorrectVector(fatProfilePixie);
                 return;
             }
 
@@ -815,7 +635,7 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
                 return;
             }
         }
@@ -833,7 +653,7 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
                 return;
             }
 
@@ -847,7 +667,7 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
                 return;
             }
 
@@ -861,7 +681,7 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
                 return;
             }
 
@@ -875,7 +695,7 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
                 return;
             }
 
@@ -889,7 +709,7 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
                 return;
             }
 
@@ -903,7 +723,7 @@ namespace item
                     NAMED_TYPE,
                     SET_TYPE,
                     ELEMENT_TYPE);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
                 return;
             }
 
@@ -918,7 +738,7 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     false);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
 
                 ItemProfile fatProfilePixie;
                 fatProfilePixie.SetKnife(
@@ -929,7 +749,7 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     true);
-                profiles_.emplace_back(fatProfilePixie);
+                AppendProfileToTheCorrectVector(fatProfilePixie);
 
                 return;
             }
@@ -945,7 +765,7 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     false);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
 
                 ItemProfile fatProfilePixie;
                 fatProfilePixie.SetDagger(
@@ -956,7 +776,7 @@ namespace item
                     SET_TYPE,
                     ELEMENT_TYPE,
                     true);
-                profiles_.emplace_back(fatProfilePixie);
+                AppendProfileToTheCorrectVector(fatProfilePixie);
 
                 return;
             }
@@ -965,7 +785,7 @@ namespace item
             {
                 ItemProfile fatProfile;
                 fatProfile.SetStaff(MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
                 return;
             }
 
@@ -974,7 +794,7 @@ namespace item
                 ItemProfile fatProfile;
                 fatProfile.SetQuarterStaff(
                     MATERIAL_PRI, MATERIAL_SEC, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-                profiles_.emplace_back(fatProfile);
+                AppendProfileToTheCorrectVector(fatProfile);
                 return;
             }
         }
@@ -1275,7 +1095,7 @@ namespace item
             "ItemProfileWarehouse::SetupProfilesForMiscType() failed to find any "
                 << " primary materials for misc_type=" << misc_type::ToString(E));
 
-        auto const COUNT{ profiles_.size() };
+        auto const BEFORE_COUNT{ profiles_.size() + religiousProfiles_.size() };
 
         for (auto const NEXT_MATERIAL_PRIMARY : MATERIALS.first)
         {
@@ -1283,13 +1103,13 @@ namespace item
             {
                 ItemProfile p;
                 p.SetMisc(E, false, NEXT_MATERIAL_PRIMARY, material::Nothing);
-                profiles_.emplace_back(p);
+                AppendProfileToTheCorrectVector(p);
 
                 if (misc_type::HasPixieVersion(E))
                 {
                     ItemProfile pPixie;
                     pPixie.SetMisc(E, true, NEXT_MATERIAL_PRIMARY, material::Nothing);
-                    profiles_.emplace_back(pPixie);
+                    AppendProfileToTheCorrectVector(pPixie);
                 }
             }
             else
@@ -1303,20 +1123,22 @@ namespace item
 
                     ItemProfile p;
                     p.SetMisc(E, false, NEXT_MATERIAL_PRIMARY, NEXT_MATERIAL_SECONDARY);
-                    profiles_.emplace_back(p);
+                    AppendProfileToTheCorrectVector(p);
 
                     if (misc_type::HasPixieVersion(E))
                     {
                         ItemProfile pPixie;
                         pPixie.SetMisc(E, true, NEXT_MATERIAL_PRIMARY, NEXT_MATERIAL_SECONDARY);
-                        profiles_.emplace_back(pPixie);
+                        AppendProfileToTheCorrectVector(pPixie);
                     }
                 }
             }
         }
 
+        auto const AFTER_COUNT{ profiles_.size() + religiousProfiles_.size() };
+
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (profiles_.size() != COUNT),
+            (BEFORE_COUNT != AFTER_COUNT),
             "ItemProfileWarehouse::SetupProfilesForMiscType() failed to find any"
                 << " valid material combinations for misc_type=" << misc_type::ToString(E));
     }
@@ -3116,5 +2938,6 @@ namespace item
             }
         }
     }
+
 } // namespace item
 } // namespace heroespath

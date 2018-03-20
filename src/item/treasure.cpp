@@ -50,6 +50,22 @@ namespace heroespath
 namespace item
 {
 
+    ItemProfileVec_t TreasureFactory::fallbackItemProfiles_{};
+
+    SetTypeProfile::SetTypeProfile(const Item & ITEM)
+        : set(ITEM.SetType())
+        , weapon(ITEM.WeaponType())
+        , armor(ITEM.ArmorType())
+        , misc(ITEM.MiscType())
+    {}
+
+    bool SetTypeProfile::DoesSetMatch(const Item & ITEM) const
+    {
+        return (
+            (ITEM.SetType() == set) && (ITEM.WeaponType() == weapon) && (ITEM.ArmorType() == armor)
+            && (ITEM.MiscType() == misc));
+    }
+
     TreasureImage::Enum TreasureFactory::Make(
         const non_player::CharacterPVec_t & CHARACTER_PVEC, ItemCache & itemCache_OutParam)
     {
@@ -193,6 +209,9 @@ namespace item
     std::size_t TreasureFactory::SelectItems(
         const Score_t & TREASURE_SCORE, const bool IS_RELIGIOUS, ItemCache & itemCache_OutParam)
     {
+        // this function assumes that ItemProfileWarehouse::Instance()->Get() returns a vector
+        // sorted by TreasureScore()
+
         if (TREASURE_SCORE.IsZero())
         {
             return 0;
@@ -202,146 +221,125 @@ namespace item
         // as a measure of how rare items can possibly be
         auto amount{ TREASURE_SCORE };
 
-        auto profiles{ item::ItemProfileWarehouse::Instance()->Get() };
+        // this is the vector of ALL ItemProfiles that can be selected
+        auto const & PROFILES{ (
+            (IS_RELIGIOUS) ? ItemProfileWarehouse::Instance()->GetReligiousProfiles()
+                           : ItemProfileWarehouse::Instance()->GetNormalProfiles()) };
 
-        // can't randomly acquire quest items
-        profiles.erase(
-            std::remove_if(
-                profiles.begin(),
-                profiles.end(),
-                [](const auto & PROFILE) {
-                    return (PROFILE.Category() & item::category::QuestItem);
-                }),
-            profiles.end());
+        auto const OWNED_SET_PROFILES{ SetItemsAlreadyOwned() };
 
-        // Some items are 0% religious, and need to be removed if selecting a religious item.
-        if (IS_RELIGIOUS)
+        // this temp vector contains the indexes into PROFILES along with that profile's
+        // corresponding treasure score weight.  This vector defines which items are
+        // possible/available for random selection.
+        RandomSelectionVec_t possibleVec;
+        possibleVec.reserve(
+            PROFILES.size() / 4); // this value found by experiment to be a good guess
+
+        auto weightSum{ PopuplatePossibleVectorAndReturnWeightSum(
+            possibleVec, PROFILES, amount, IS_RELIGIOUS, OWNED_SET_PROFILES) };
+
+        if (possibleVec.empty())
         {
-            profiles.erase(
-                std::remove_if(
-                    profiles.begin(),
-                    profiles.end(),
-                    [](const auto & PROFILE) { return (PROFILE.TreasureScore(true).IsZero()); }),
-                profiles.end());
+            return 0;
         }
 
-        RemoveTreasureScoresHigherThan(amount, profiles, IS_RELIGIOUS);
+        // This is an index of possibleVec that defines it's useable size.  Rather than repeatedly
+        // populating possibleVec, this index allows it to be shrunk instead.  This also means that
+        // weightSum is not the sum of all in possibleVec but instead the sum from possibleVec[0] to
+        // possibleVec[possibleVecLimitIndex].
+        std::size_t possibleVecLimitIndex{ possibleVec.size() - 1 };
 
-        RemoveSetItemsAlreadyOwned(profiles);
+        // this vector keeps track of which PROFILES have already been randomly selected
+        misc::SizetVec_t selectedIndexVec;
+        selectedIndexVec.reserve(64); // found by experiment to be a good upper bound
 
-        std::size_t count{ 0 };
-        while (profiles.empty() == false)
+        while ((possibleVec.empty() == false) && (possibleVecLimitIndex > 0))
         {
-            auto const NEXT_ITEM_TO_ADD_PROFILE{ profiles[SelectRandomWeighted(profiles)] };
+            auto & randomSelection{
+                possibleVec[SelectRandomWeighted(weightSum, possibleVec, possibleVecLimitIndex)]
+            };
 
-            profiles.erase(
-                std::remove(profiles.begin(), profiles.end(), NEXT_ITEM_TO_ADD_PROFILE),
-                profiles.end());
+            if (randomSelection.score > 0_score)
+            {
+                amount -= randomSelection.score;
+                weightSum -= TreasureScoreToWeight(randomSelection.score);
 
-            itemCache_OutParam.items_pvec.emplace_back(
-                item::ItemFactory::Instance()->Make(NEXT_ITEM_TO_ADD_PROFILE));
+                // this is how we mark possibilities as already selected so they are not
+                // selected multiple times (prevents duplicates)
+                randomSelection.score = 0_score;
 
-            amount -= NEXT_ITEM_TO_ADD_PROFILE.TreasureScore();
-            RemoveTreasureScoresHigherThan(amount, profiles, IS_RELIGIOUS);
-            ++count;
+                selectedIndexVec.emplace_back(randomSelection.index);
+            }
 
             // no more than five religious items will be allowed
-            if (IS_RELIGIOUS && (count > 5))
+            if (IS_RELIGIOUS && (selectedIndexVec.size() > 5))
             {
                 break;
             }
+            else
+            {
+                FindNewPossibleVectorAndUpdateWeightSum(
+                    possibleVec, amount, possibleVecLimitIndex, weightSum);
+            }
         }
 
-        return count;
+        for (auto const PROFILE_INDEX : selectedIndexVec)
+        {
+            itemCache_OutParam.items_pvec.emplace_back(
+                ItemFactory::Instance()->Make(PROFILES[PROFILE_INDEX]));
+        }
+
+        return selectedIndexVec.size();
     }
 
     void TreasureFactory::ForceItemSelection(ItemCache & itemCache_OutParam)
     {
-        auto profiles{ item::ItemProfileWarehouse::Instance()->Get() };
+        if (fallbackItemProfiles_.empty())
+        {
+            PopulateFallbackItemProfiles();
+        }
 
-        std::sort(profiles.begin(), profiles.end(), [](const auto & A, const auto & B) {
-            return (A.TreasureScore() < B.TreasureScore());
-        });
-
-        auto const MAX_TREASURE_SCORE{ profiles[0].TreasureScore() * 2_score };
-
-        profiles.erase(
-            std::remove_if(
-                profiles.begin(),
-                profiles.end(),
-                [MAX_TREASURE_SCORE](const auto & PROFILE) {
-                    return (PROFILE.TreasureScore() > MAX_TREASURE_SCORE);
-                }),
-            profiles.end());
-
-        auto const ITEM_PTR{ item::ItemFactory::Instance()->Make(
-            misc::Vector::SelectRandom(profiles)) };
+        auto const ITEM_PTR{ ItemFactory::Instance()->Make(
+            misc::Vector::SelectRandom(fallbackItemProfiles_)) };
 
         itemCache_OutParam.items_pvec.emplace_back(ITEM_PTR);
     }
 
-    void TreasureFactory::RemoveTreasureScoresHigherThan(
-        const Score_t & REMOVE_IF_HIGHER,
-        item::ItemProfileVec_t & profiles,
-        const bool IS_RELIGIOUS)
-    {
-        if ((REMOVE_IF_HIGHER <= 0_score) || profiles.empty())
-        {
-            return;
-        }
-
-        profiles.erase(
-            std::remove_if(
-                profiles.begin(),
-                profiles.end(),
-                [REMOVE_IF_HIGHER, IS_RELIGIOUS](const auto & PROFILE) {
-                    return (PROFILE.TreasureScore(IS_RELIGIOUS) > REMOVE_IF_HIGHER);
-                }),
-            profiles.end());
-    }
-
-    std::size_t TreasureFactory::SelectRandomWeighted(const item::ItemProfileVec_t & PROFILES_ORIG)
+    std::size_t TreasureFactory::SelectRandomWeighted(
+        const double WEIGHT_SUM,
+        const RandomSelectionVec_t & POSSIBLE_SELECTIONS,
+        const std::size_t INDEX_LIMIT)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (PROFILES_ORIG.empty() == false),
+            (POSSIBLE_SELECTIONS.empty() == false),
             "combat::TreasureFactory::SelectRandomWeighted() was given an empty vector.");
 
-        auto profiles{ PROFILES_ORIG };
+        auto const RAND_WEIGHT{ misc::random::Double(WEIGHT_SUM) };
 
-        std::sort(profiles.begin(), profiles.end(), [](const auto & A, const auto & B) {
-            return (A.TreasureScore() < B.TreasureScore());
-        });
-
-        double weightSum{ 0.0 };
-
-        for (auto const & NEXT_PROFILE : profiles)
+        double runningWeightSum{ 0.0 };
+        for (std::size_t i(0); i <= INDEX_LIMIT; ++i)
         {
-            weightSum += TreasureScoreToWeight(NEXT_PROFILE.TreasureScore());
-        }
+            auto const SELECTION_SCORE{ POSSIBLE_SELECTIONS[i].score };
 
-        auto const RAND{ misc::random::Double(weightSum) };
-
-        double runningWeight{ 0.0 };
-        for (std::size_t i(0); i < profiles.size(); ++i)
-        {
-            runningWeight += TreasureScoreToWeight(profiles[i].TreasureScore());
-            if (RAND < runningWeight)
+            // skip possibilities with a score of zero, because that is how possibilties are marked
+            // as already selected (how duplicates are prevented)
+            if (0_score != SELECTION_SCORE)
             {
-                return i;
+                runningWeightSum += TreasureScoreToWeight(SELECTION_SCORE);
+                if (RAND_WEIGHT < runningWeightSum)
+                {
+                    return i;
+                }
             }
         }
 
-        return profiles.size() - 1;
+        return INDEX_LIMIT;
     }
 
-    double TreasureFactory::TreasureScoreToWeight(const Score_t & TREASURE_SCORE)
+    const SetTypeProfileVec_t TreasureFactory::SetItemsAlreadyOwned()
     {
-        return 1.0 / (TREASURE_SCORE.As<double>() * 0.1);
-    }
-
-    void TreasureFactory::RemoveSetItemsAlreadyOwned(item::ItemProfileVec_t & profiles)
-    {
-        item::ItemProfileVec_t setItemsOwnedProfiles;
+        SetTypeProfileVec_t ownedSetProfiles;
+        ownedSetProfiles.reserve(128); // found by experiment to be a good upper bound
 
         // populate setItemsOwnedProfiles with thin profiles of equipped and unequipped items
         auto const CREATURE_PVEC{ creature::Algorithms::Players(creature::Algorithms::Runaway) };
@@ -352,10 +350,10 @@ namespace item
 
             for (auto const UNEQUIPPED_ITEM_PTR : UNEQUIPPED_ITEM_PTRS)
             {
-                auto const SET_ITEM_PROFILE{ ItemToSetItemProfile(UNEQUIPPED_ITEM_PTR) };
-                if (SET_ITEM_PROFILE.IsSet())
+                auto const SET_TYPE_POFILE{ SetTypeProfile(*UNEQUIPPED_ITEM_PTR) };
+                if (SET_TYPE_POFILE.DoesBelongToASet())
                 {
-                    setItemsOwnedProfiles.emplace_back(SET_ITEM_PROFILE);
+                    ownedSetProfiles.emplace_back(SET_TYPE_POFILE);
                 }
             }
 
@@ -363,51 +361,124 @@ namespace item
 
             for (auto const EQUIPPED_ITEM_PTR : EQUIPPED_ITEM_PTRS)
             {
-                auto const SET_ITEM_PROFILE{ ItemToSetItemProfile(EQUIPPED_ITEM_PTR) };
-                if (SET_ITEM_PROFILE.IsSet())
+                auto const SET_TYPE_POFILE{ SetTypeProfile(*EQUIPPED_ITEM_PTR) };
+                if (SET_TYPE_POFILE.DoesBelongToASet())
                 {
-                    setItemsOwnedProfiles.emplace_back(SET_ITEM_PROFILE);
+                    ownedSetProfiles.emplace_back(SET_TYPE_POFILE);
                 }
             }
         }
 
-        // eliminate profiles that match the any in setItemsOwnedProfiles
-        for (auto const & PROFILE : setItemsOwnedProfiles)
+        return ownedSetProfiles;
+    }
+
+    double TreasureFactory::PopuplatePossibleVectorAndReturnWeightSum(
+        RandomSelectionVec_t & possibleVec,
+        const ItemProfileVec_t & PROFILES,
+        const Score_t MAX_SCORE,
+        const bool IS_RELIGIOUS,
+        const SetTypeProfileVec_t & OWNED_SET_PROFILES)
+    {
+        possibleVec.clear();
+
+        auto weightSum{ 0.0 };
+
+        auto const NUM_PROFILES{ PROFILES.size() };
+        for (std::size_t i(0); i < NUM_PROFILES; ++i)
         {
-            profiles.erase(
-                std::remove_if(
-                    profiles.begin(),
-                    profiles.end(),
-                    [&PROFILE](const auto & P) {
-                        return (
-                            (PROFILE.SetType() == P.SetType())
-                            && (PROFILE.WeaponType() == P.WeaponType())
-                            && (PROFILE.ArmorType() == P.ArmorType())
-                            && (PROFILE.MiscType() == P.MiscType()));
-                    }),
-                profiles.end());
+            auto const & PROFILE{ PROFILES[i] };
+
+            auto const SCORE{ (
+                (IS_RELIGIOUS) ? PROFILE.ReligiousScore() : PROFILE.TreasureScore()) };
+
+            if (SCORE > MAX_SCORE)
+            {
+                break;
+            }
+
+            if (PROFILE.Category() & item::category::QuestItem)
+            {
+                continue;
+            }
+
+            // skip if the party already owns this item in this set
+            if (std::find_if(
+                    std::begin(OWNED_SET_PROFILES),
+                    std::end(OWNED_SET_PROFILES),
+                    [&](auto const & SET_TYPE_PROFILE) {
+                        return SET_TYPE_PROFILE.DoesSetMatch(PROFILE);
+                    })
+                != std::end(OWNED_SET_PROFILES))
+            {
+                continue;
+            }
+
+            if (SCORE > 0_score)
+            {
+                possibleVec.emplace_back(RandomSelection(i, SCORE));
+                weightSum += TreasureScoreToWeight(SCORE);
+            }
+        }
+
+        return weightSum;
+    }
+
+    void TreasureFactory::FindNewPossibleVectorAndUpdateWeightSum(
+        RandomSelectionVec_t & possibleVec,
+        const Score_t & MAX_SCORE,
+        std::size_t & possibleIndexLimit,
+        double & weightSum)
+    {
+        for (;; --possibleIndexLimit)
+        {
+            auto const POSSIBLE_SELECTION_SCORE{ possibleVec[possibleIndexLimit].score };
+
+            // selections with a score of zero have already been randomly selected and the weightSum
+            // already adjusted so skip them
+            if (POSSIBLE_SELECTION_SCORE != 0_score)
+            {
+                if (POSSIBLE_SELECTION_SCORE < MAX_SCORE)
+                {
+                    break;
+                }
+                else
+                {
+                    weightSum -= TreasureScoreToWeight(POSSIBLE_SELECTION_SCORE);
+                }
+            }
+
+            if (0 == possibleIndexLimit)
+            {
+                break;
+            }
         }
     }
 
-    const item::ItemProfile TreasureFactory::ItemToSetItemProfile(const item::ItemPtr_t ITEM_PTR)
+    void TreasureFactory::PopulateFallbackItemProfiles()
     {
-        if ((ITEM_PTR->SetType() == item::set_type::Count)
-            || (ITEM_PTR->SetType() == item::set_type::NotASet))
+        fallbackItemProfiles_.reserve(745); // this was the size measured on 2018-3-19
+
+        auto const & PROFILES{ ItemProfileWarehouse::Instance()->GetNormalProfiles() };
+
+        auto const MAX_SCORE{ PROFILES[0].TreasureScore() * 2_score };
+
+        for (auto const & PROFILE : PROFILES)
         {
-            return item::ItemProfile();
+            if (PROFILE.TreasureScore() > MAX_SCORE)
+            {
+                break;
+            }
+            else
+            {
+                fallbackItemProfiles_.emplace_back(PROFILE);
+            }
         }
-        else
-        {
-            return item::ItemProfile(
-                "",
-                ITEM_PTR->Category(),
-                ITEM_PTR->ArmorType(),
-                ITEM_PTR->WeaponType(),
-                item::unique_type::NotUnique,
-                ITEM_PTR->MiscType(),
-                ITEM_PTR->SetType(),
-                item::named_type::NotNamed);
-        }
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (fallbackItemProfiles_.empty() == false),
+            "item::TreasureFactory::PopulateFallbackItemProfiles() failed to create any fallback "
+            "profiles.");
     }
+
 } // namespace item
 } // namespace heroespath

@@ -105,7 +105,74 @@ namespace item
             return false;
         }
 
-        static auto allItemProfilesVec{ ItemProfileWarehouse::Instance()->Get() };
+        static auto allItemProfilesVec{ ItemProfileWarehouse::Instance()->GetNormalProfiles() };
+
+        if (allItemProfilesVec.size()
+            == ItemProfileWarehouse::Instance()->GetNormalProfiles().size())
+        {
+            for (auto const & PROFILE : ItemProfileWarehouse::Instance()->GetReligiousProfiles())
+            {
+                allItemProfilesVec.emplace_back(PROFILE);
+            }
+        }
+
+        static auto hasTestedForDuplicates{ false };
+        if (false == hasTestedForDuplicates)
+        {
+            game::LoopManager::Instance()->TestingStrAppend(
+                "item::ItemFactory::Test() Starting Duplicate Test.  Please wait...");
+
+            std::sort(std::begin(allItemProfilesVec), std::end(allItemProfilesVec));
+
+            auto const UNIQUE_ITER{ std::unique(
+                std::begin(allItemProfilesVec), std::end(allItemProfilesVec)) };
+
+            if (UNIQUE_ITER != std::end(allItemProfilesVec))
+            {
+                std::ostringstream ss;
+                ss << "item::ItemFactory::Test() failed duplicate item profiles test:  Duplicate "
+                      "item profiles:  ";
+
+                for (auto iter(UNIQUE_ITER); iter != std::end(allItemProfilesVec); ++iter)
+                {
+                    ss << "{" << iter->ToString() << "}   ";
+                }
+                throw std::runtime_error(ss.str());
+            }
+
+            hasTestedForDuplicates = true;
+            return false;
+        }
+
+        static auto hasTestedForInvalid{ false };
+        if (false == hasTestedForInvalid)
+        {
+            game::LoopManager::Instance()->TestingStrAppend(
+                "item::ItemFactory::Test() Starting Invalid Test.  Please wait...");
+
+            ItemProfileVec_t invalidProfiles;
+            for (auto const & PROFILE : allItemProfilesVec)
+            {
+                if (PROFILE.IsValid() == false)
+                {
+                    invalidProfiles.emplace_back(PROFILE);
+                }
+            }
+
+            if (invalidProfiles.empty() == false)
+            {
+                std::ostringstream ss;
+                ss << "item::ItemFactory::Test() failed the invalid test.  Invalid Profiles:  ";
+                for (auto const & PROFILE : invalidProfiles)
+                {
+                    ss << "{" << PROFILE.ToString() << "}   ";
+                }
+                throw std::runtime_error(ss.str());
+            }
+
+            hasTestedForInvalid = true;
+            return false;
+        }
 
         static auto hasTestedMakingItems_NamedEquipment{ false };
         if (false == hasTestedMakingItems_NamedEquipment)
