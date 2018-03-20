@@ -124,7 +124,7 @@ namespace misc
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (V.empty() == false), "misc::Vector::SelectRandom() was given an empty vector.");
 
-            return V[misc::random::SizeT(V.size()) - 1];
+            return V[misc::random::SizeT(V.size() - 1)];
         }
 
         enum JoinOpt : unsigned
