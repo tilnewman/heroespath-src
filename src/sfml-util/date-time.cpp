@@ -31,14 +31,14 @@
 
 // suppress warnings that are safe to ignore in boost
 #include "misc/platform.hpp"
-#ifdef PLATFORM_DETECTED_IS_APPLE
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 #endif
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#ifdef PLATFORM_DETECTED_IS_APPLE
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic warning "-Wundef"
 #pragma GCC diagnostic warning "-Wswitch-enum"
 #endif

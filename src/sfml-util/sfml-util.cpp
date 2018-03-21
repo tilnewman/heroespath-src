@@ -32,13 +32,13 @@
 
 // prevent boost warnings that can be ignored
 #include "misc/platform.hpp"
-#ifdef PLATFORM_DETECTED_IS_APPLE
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #endif
 
 #include <boost/math/constants/constants.hpp> //for boost::math::constants::pi<double>() etc.
 
-#ifdef PLATFORM_DETECTED_IS_APPLE
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic warning "-Wundef"
 #endif
 

@@ -30,13 +30,13 @@
 //
 // suppress warnings that are safe to ignore in boost
 #include "misc/platform.hpp"
-#ifdef PLATFORM_DETECTED_IS_APPLE
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif
 
 #include <SFML/Graphics/Color.hpp>
 
-#ifdef PLATFORM_DETECTED_IS_APPLE
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic warning "-Wfloat-equal"
 #endif
 

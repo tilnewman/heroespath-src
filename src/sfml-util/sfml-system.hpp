@@ -30,14 +30,14 @@
 
 // prevent warnings that can be ignored in SFML
 #include "misc/platform.hpp"
-#ifdef PLATFORM_DETECTED_IS_APPLE
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif
 
 #include <SFML/System.hpp>
 
-#ifdef PLATFORM_DETECTED_IS_APPLE
+#ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE
 #pragma GCC diagnostic warning "-Wfloat-equal"
 #pragma GCC diagnostic warning "-Wundef"
 #endif
