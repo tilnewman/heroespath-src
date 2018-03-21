@@ -61,9 +61,9 @@ namespace sfml_util
         {
         public:
             TextEntryBox(const TextEntryBox &) = delete;
-            TextEntryBox(const TextEntryBox &&) = delete;
+            TextEntryBox(TextEntryBox &&) = delete;
             TextEntryBox & operator=(const TextEntryBox &) = delete;
-            TextEntryBox & operator=(const TextEntryBox &&) = delete;
+            TextEntryBox & operator=(TextEntryBox &&) = delete;
 
         public:
             // if using this constructor, Setup() must be called before any other function

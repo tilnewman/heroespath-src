@@ -87,9 +87,9 @@ namespace stage
     {
     public:
         LoopCmd_AddStage_Combat(const LoopCmd_AddStage_Combat &) = delete;
-        LoopCmd_AddStage_Combat(const LoopCmd_AddStage_Combat &&) = delete;
+        LoopCmd_AddStage_Combat(LoopCmd_AddStage_Combat &&) = delete;
         LoopCmd_AddStage_Combat & operator=(const LoopCmd_AddStage_Combat &) = delete;
-        LoopCmd_AddStage_Combat & operator=(const LoopCmd_AddStage_Combat &&) = delete;
+        LoopCmd_AddStage_Combat & operator=(LoopCmd_AddStage_Combat &&) = delete;
 
     public:
         explicit LoopCmd_AddStage_Combat(const bool WILL_ADVANCE_TURN)
@@ -115,9 +115,9 @@ namespace stage
     {
     public:
         LoopCmd_AddStage_Inventory(const LoopCmd_AddStage_Inventory &) = delete;
-        LoopCmd_AddStage_Inventory(const LoopCmd_AddStage_Inventory &&) = delete;
+        LoopCmd_AddStage_Inventory(LoopCmd_AddStage_Inventory &&) = delete;
         LoopCmd_AddStage_Inventory & operator=(const LoopCmd_AddStage_Inventory &) = delete;
-        LoopCmd_AddStage_Inventory & operator=(const LoopCmd_AddStage_Inventory &&) = delete;
+        LoopCmd_AddStage_Inventory & operator=(LoopCmd_AddStage_Inventory &&) = delete;
 
     public:
         LoopCmd_AddStage_Inventory(

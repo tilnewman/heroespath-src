@@ -77,9 +77,9 @@ namespace popup
     {
     public:
         PopupManager(const PopupManager &) = delete;
-        PopupManager(const PopupManager &&) = delete;
+        PopupManager(PopupManager &&) = delete;
         PopupManager & operator=(const PopupManager &) = delete;
-        PopupManager & operator=(const PopupManager &&) = delete;
+        PopupManager & operator=(PopupManager &&) = delete;
 
         PopupManager();
         ~PopupManager();

@@ -58,9 +58,9 @@ namespace creature
     {
     public:
         Title(const Title &) = delete;
-        Title(const Title &&) = delete;
+        Title(Title &&) = delete;
         Title & operator=(const Title &) = delete;
-        Title & operator=(const Title &&) = delete;
+        Title & operator=(Title &&) = delete;
 
     public:
         explicit Title(

@@ -79,9 +79,9 @@ namespace combat
     {
     public:
         SummaryView(const SummaryView &) = delete;
-        SummaryView(const SummaryView &&) = delete;
+        SummaryView(SummaryView &&) = delete;
         SummaryView & operator=(const SummaryView &) = delete;
-        SummaryView & operator=(const SummaryView &&) = delete;
+        SummaryView & operator=(SummaryView &&) = delete;
 
     public:
         SummaryView();

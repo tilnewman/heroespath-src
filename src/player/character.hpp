@@ -72,9 +72,9 @@ namespace player
     {
     public:
         Character(const Character &) = delete;
-        Character(const Character &&) = delete;
+        Character(Character &&) = delete;
         Character & operator=(const Character &) = delete;
-        Character & operator=(const Character &&) = delete;
+        Character & operator=(Character &&) = delete;
 
     public:
         explicit Character(

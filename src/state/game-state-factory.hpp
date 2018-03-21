@@ -60,9 +60,9 @@ namespace state
     {
     public:
         GameStateFactory(const GameStateFactory &) = delete;
-        GameStateFactory(const GameStateFactory &&) = delete;
+        GameStateFactory(GameStateFactory &&) = delete;
         GameStateFactory & operator=(const GameStateFactory &) = delete;
-        GameStateFactory & operator=(const GameStateFactory &&) = delete;
+        GameStateFactory & operator=(GameStateFactory &&) = delete;
 
     public:
         GameStateFactory();

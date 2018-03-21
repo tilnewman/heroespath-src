@@ -48,9 +48,9 @@ namespace sfml_util
         {
         public:
             BackgroundImage(const BackgroundImage &) = delete;
-            BackgroundImage(const BackgroundImage &&) = delete;
+            BackgroundImage(BackgroundImage &&) = delete;
             BackgroundImage & operator=(const BackgroundImage &) = delete;
-            BackgroundImage & operator=(const BackgroundImage &&) = delete;
+            BackgroundImage & operator=(BackgroundImage &&) = delete;
 
         public:
             // if using this constructor then Setup() must be called before any other function

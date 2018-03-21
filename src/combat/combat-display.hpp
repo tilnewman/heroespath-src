@@ -104,9 +104,9 @@ namespace combat
     {
     public:
         CombatDisplay(const CombatDisplay &) = delete;
-        CombatDisplay(const CombatDisplay &&) = delete;
+        CombatDisplay(CombatDisplay &&) = delete;
         CombatDisplay & operator=(const CombatDisplay &) = delete;
-        CombatDisplay & operator=(const CombatDisplay &&) = delete;
+        CombatDisplay & operator=(CombatDisplay &&) = delete;
 
     public:
         explicit CombatDisplay(const sf::FloatRect & REGION = sf::FloatRect());

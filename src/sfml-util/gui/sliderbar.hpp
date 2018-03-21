@@ -59,9 +59,9 @@ namespace sfml_util
         {
         public:
             SliderBar(const SliderBar &) = delete;
-            SliderBar(const SliderBar &&) = delete;
+            SliderBar(SliderBar &&) = delete;
             SliderBar & operator=(const SliderBar &) = delete;
-            SliderBar & operator=(const SliderBar &&) = delete;
+            SliderBar & operator=(SliderBar &&) = delete;
 
         public:
             SliderBar(

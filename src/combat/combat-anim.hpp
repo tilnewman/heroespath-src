@@ -121,9 +121,9 @@ namespace combat
     {
     public:
         CombatAnimation(const CombatAnimation &) = delete;
-        CombatAnimation(const CombatAnimation &&) = delete;
+        CombatAnimation(CombatAnimation &&) = delete;
         CombatAnimation & operator=(const CombatAnimation &) = delete;
-        CombatAnimation & operator=(const CombatAnimation &&) = delete;
+        CombatAnimation & operator=(CombatAnimation &&) = delete;
 
     public:
         explicit CombatAnimation(const CombatDisplayPtr_t);

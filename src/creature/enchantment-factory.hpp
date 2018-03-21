@@ -55,9 +55,9 @@ namespace creature
     {
     public:
         EnchantmentFactory(const EnchantmentFactory &) = delete;
-        EnchantmentFactory(const EnchantmentFactory &&) = delete;
+        EnchantmentFactory(EnchantmentFactory &&) = delete;
         EnchantmentFactory & operator=(const EnchantmentFactory &) = delete;
-        EnchantmentFactory & operator=(const EnchantmentFactory &&) = delete;
+        EnchantmentFactory & operator=(EnchantmentFactory &&) = delete;
 
     public:
         EnchantmentFactory();

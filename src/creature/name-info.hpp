@@ -51,9 +51,9 @@ namespace creature
 
     public:
         NameInfo(const NameInfo &) = delete;
-        NameInfo(const NameInfo &&) = delete;
+        NameInfo(NameInfo &&) = delete;
         NameInfo & operator=(const NameInfo &) = delete;
-        NameInfo & operator=(const NameInfo &&) = delete;
+        NameInfo & operator=(NameInfo &&) = delete;
 
         NameInfo();
         ~NameInfo();

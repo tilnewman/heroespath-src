@@ -57,9 +57,9 @@ namespace stage
     {
     public:
         InnStage(const InnStage &) = delete;
-        InnStage(const InnStage &&) = delete;
+        InnStage(InnStage &&) = delete;
         InnStage & operator=(const InnStage &) = delete;
-        InnStage & operator=(const InnStage &&) = delete;
+        InnStage & operator=(InnStage &&) = delete;
 
     public:
         InnStage();

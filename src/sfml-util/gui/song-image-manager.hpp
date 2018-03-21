@@ -45,9 +45,9 @@ namespace sfml_util
         {
         public:
             SongImageManager(const SongImageManager &) = delete;
-            SongImageManager(const SongImageManager &&) = delete;
+            SongImageManager(SongImageManager &&) = delete;
             SongImageManager & operator=(const SongImageManager &) = delete;
-            SongImageManager & operator=(const SongImageManager &&) = delete;
+            SongImageManager & operator=(SongImageManager &&) = delete;
 
         public:
             SongImageManager();

@@ -118,9 +118,9 @@ namespace sfml_util
         {
         public:
             ListBox(const ListBox &) = delete;
-            ListBox(const ListBox &&) = delete;
+            ListBox(ListBox &&) = delete;
             ListBox & operator=(const ListBox &) = delete;
-            ListBox & operator=(const ListBox &&) = delete;
+            ListBox & operator=(ListBox &&) = delete;
 
         public:
             explicit ListBox(

@@ -50,9 +50,9 @@ namespace misc
     {
     public:
         Warehouse(const Warehouse &) = delete;
-        Warehouse(const Warehouse &&) = delete;
+        Warehouse(Warehouse &&) = delete;
         Warehouse & operator=(const Warehouse &) = delete;
-        Warehouse & operator=(const Warehouse &&) = delete;
+        Warehouse & operator=(Warehouse &&) = delete;
 
     public:
         Warehouse()

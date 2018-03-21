@@ -58,9 +58,9 @@ namespace popup
     {
     public:
         PopupStageMusicSheet(const PopupStageMusicSheet &) = delete;
-        PopupStageMusicSheet(const PopupStageMusicSheet &&) = delete;
+        PopupStageMusicSheet(PopupStageMusicSheet &&) = delete;
         PopupStageMusicSheet & operator=(const PopupStageMusicSheet &) = delete;
-        PopupStageMusicSheet & operator=(const PopupStageMusicSheet &&) = delete;
+        PopupStageMusicSheet & operator=(PopupStageMusicSheet &&) = delete;
 
     public:
         explicit PopupStageMusicSheet(const popup::PopupInfo &);

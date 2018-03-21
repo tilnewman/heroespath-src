@@ -67,9 +67,9 @@ namespace sfml_util
     {
     public:
         LoopCmd(const LoopCmd &) = delete;
-        LoopCmd(const LoopCmd &&) = delete;
+        LoopCmd(LoopCmd &&) = delete;
         LoopCmd & operator=(const LoopCmd &) = delete;
-        LoopCmd & operator=(const LoopCmd &&) = delete;
+        LoopCmd & operator=(LoopCmd &&) = delete;
 
     public:
         explicit LoopCmd(const std::string & NAME);

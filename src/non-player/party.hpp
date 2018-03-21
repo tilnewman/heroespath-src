@@ -57,9 +57,9 @@ namespace non_player
     {
     public:
         Party(const Party &) = delete;
-        Party(const Party &&) = delete;
+        Party(Party &&) = delete;
         Party & operator=(const Party &) = delete;
-        Party & operator=(const Party &&) = delete;
+        Party & operator=(Party &&) = delete;
 
     public:
         explicit Party(const CharacterPVec_t & CHARACTER_PVEC = CharacterPVec_t());

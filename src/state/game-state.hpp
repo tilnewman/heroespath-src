@@ -47,9 +47,9 @@ namespace state
     {
     public:
         GameState(const GameState &) = delete;
-        GameState(const GameState &&) = delete;
+        GameState(GameState &&) = delete;
         GameState & operator=(const GameState &) = delete;
-        GameState & operator=(const GameState &&) = delete;
+        GameState & operator=(GameState &&) = delete;
 
     public:
         explicit GameState(

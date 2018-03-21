@@ -52,9 +52,9 @@ namespace sfml_util
         {
         public:
             TwoStateEntity(const TwoStateEntity &) = delete;
-            TwoStateEntity(const TwoStateEntity &&) = delete;
+            TwoStateEntity(TwoStateEntity &&) = delete;
             TwoStateEntity & operator=(const TwoStateEntity &) = delete;
-            TwoStateEntity & operator=(const TwoStateEntity &&) = delete;
+            TwoStateEntity & operator=(TwoStateEntity &&) = delete;
 
         public:
             TwoStateEntity(

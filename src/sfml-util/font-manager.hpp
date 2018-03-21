@@ -45,9 +45,9 @@ namespace sfml_util
     {
     public:
         FontManager(const FontManager &) = delete;
-        FontManager(const FontManager &&) = delete;
+        FontManager(FontManager &&) = delete;
         FontManager & operator=(const FontManager &) = delete;
-        FontManager & operator=(const FontManager &&) = delete;
+        FontManager & operator=(FontManager &&) = delete;
 
         // Note:  Keep order in sync with FontManager constructor
         enum class Fonts

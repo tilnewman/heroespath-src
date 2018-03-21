@@ -57,9 +57,9 @@ namespace stage
     {
     public:
         TestingStage(const TestingStage &) = delete;
-        TestingStage(const TestingStage &&) = delete;
+        TestingStage(TestingStage &&) = delete;
         TestingStage & operator=(const TestingStage &) = delete;
-        TestingStage & operator=(const TestingStage &&) = delete;
+        TestingStage & operator=(TestingStage &&) = delete;
 
     public:
         TestingStage();

@@ -60,9 +60,9 @@ namespace stage
     {
     public:
         SettingsStage(const SettingsStage &) = delete;
-        SettingsStage(const SettingsStage &&) = delete;
+        SettingsStage(SettingsStage &&) = delete;
         SettingsStage & operator=(const SettingsStage &) = delete;
-        SettingsStage & operator=(const SettingsStage &&) = delete;
+        SettingsStage & operator=(SettingsStage &&) = delete;
 
     public:
         SettingsStage();

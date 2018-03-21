@@ -53,9 +53,9 @@ namespace sfml_util
             {
             public:
                 CrossBox(const CrossBox &) = delete;
-                CrossBox(const CrossBox &&) = delete;
+                CrossBox(CrossBox &&) = delete;
                 CrossBox & operator=(const CrossBox &) = delete;
-                CrossBox & operator=(const CrossBox &&) = delete;
+                CrossBox & operator=(CrossBox &&) = delete;
 
             public:
                 CrossBox(

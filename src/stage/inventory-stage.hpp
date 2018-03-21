@@ -138,9 +138,9 @@ namespace stage
 
     public:
         InventoryStage(const InventoryStage &) = delete;
-        InventoryStage(const InventoryStage &&) = delete;
+        InventoryStage(InventoryStage &&) = delete;
         InventoryStage & operator=(const InventoryStage &) = delete;
-        InventoryStage & operator=(const InventoryStage &&) = delete;
+        InventoryStage & operator=(InventoryStage &&) = delete;
 
         explicit InventoryStage(
             const creature::CreaturePtr_t TURN_CREATURE_PTR,

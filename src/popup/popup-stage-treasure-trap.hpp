@@ -43,9 +43,9 @@ namespace popup
     {
     public:
         PopupStageTreasureTrap(const PopupStageTreasureTrap &) = delete;
-        PopupStageTreasureTrap(const PopupStageTreasureTrap &&) = delete;
+        PopupStageTreasureTrap(PopupStageTreasureTrap &&) = delete;
         PopupStageTreasureTrap & operator=(const PopupStageTreasureTrap &) = delete;
-        PopupStageTreasureTrap & operator=(const PopupStageTreasureTrap &&) = delete;
+        PopupStageTreasureTrap & operator=(PopupStageTreasureTrap &&) = delete;
 
     public:
         explicit PopupStageTreasureTrap(const PopupInfo & POPUP_INFO);

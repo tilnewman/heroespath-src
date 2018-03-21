@@ -42,9 +42,9 @@ namespace map
     public:
         ShadowMasker() = delete;
         ShadowMasker(const ShadowMasker &) = delete;
-        ShadowMasker(const ShadowMasker &&) = delete;
+        ShadowMasker(ShadowMasker &&) = delete;
         ShadowMasker & operator=(const ShadowMasker &) = delete;
-        ShadowMasker & operator=(const ShadowMasker &&) = delete;
+        ShadowMasker & operator=(ShadowMasker &&) = delete;
 
         static void ChangeColors(const std::string & XML_ATTRIB_NAME_SHADOWS, Layout & layout);
         static void ChangeColors(sf::Texture &, const bool IS_SHADOW_IMAGE);

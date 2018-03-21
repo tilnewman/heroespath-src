@@ -84,9 +84,9 @@ namespace misc
     {
     public:
         Platform(const Platform &) = delete;
-        Platform(const Platform &&) = delete;
+        Platform(Platform &&) = delete;
         Platform & operator=(const Platform &) = delete;
-        Platform & operator=(const Platform &&) = delete;
+        Platform & operator=(Platform &&) = delete;
 
         Platform();
 

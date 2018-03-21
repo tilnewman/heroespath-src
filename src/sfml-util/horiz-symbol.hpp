@@ -43,9 +43,9 @@ namespace sfml_util
     {
     public:
         BottomSymbol(const BottomSymbol &) = delete;
-        BottomSymbol(const BottomSymbol &&) = delete;
+        BottomSymbol(BottomSymbol &&) = delete;
         BottomSymbol & operator=(const BottomSymbol &) = delete;
-        BottomSymbol & operator=(const BottomSymbol &&) = delete;
+        BottomSymbol & operator=(BottomSymbol &&) = delete;
 
     public:
         explicit BottomSymbol(

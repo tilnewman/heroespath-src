@@ -47,9 +47,9 @@ namespace sfml_util
     {
     public:
         QuadTree(const QuadTree &) = delete;
-        QuadTree(const QuadTree &&) = delete;
+        QuadTree(QuadTree &&) = delete;
         QuadTree & operator=(const QuadTree &) = delete;
-        QuadTree & operator=(const QuadTree &&) = delete;
+        QuadTree & operator=(QuadTree &&) = delete;
 
     public:
         QuadTree() = default;

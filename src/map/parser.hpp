@@ -67,9 +67,9 @@ namespace map
     {
     public:
         Parser(const Parser &) = delete;
-        Parser(const Parser &&) = delete;
+        Parser(Parser &&) = delete;
         Parser & operator=(const Parser &) = delete;
-        Parser & operator=(const Parser &&) = delete;
+        Parser & operator=(Parser &&) = delete;
 
         Parser() = default;
 

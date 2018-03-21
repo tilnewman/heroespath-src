@@ -68,9 +68,9 @@ namespace stage
     {
     public:
         InteractStage(const InteractStage &) = delete;
-        InteractStage(const InteractStage &&) = delete;
+        InteractStage(InteractStage &&) = delete;
         InteractStage & operator=(const InteractStage &) = delete;
-        InteractStage & operator=(const InteractStage &&) = delete;
+        InteractStage & operator=(InteractStage &&) = delete;
 
     public:
         InteractStage(

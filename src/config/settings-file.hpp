@@ -43,9 +43,9 @@ namespace config
     {
     public:
         SettingsFile(const SettingsFile &) = delete;
-        SettingsFile(const SettingsFile &&) = delete;
+        SettingsFile(SettingsFile &&) = delete;
         SettingsFile & operator=(const SettingsFile &) = delete;
-        SettingsFile & operator=(const SettingsFile &&) = delete;
+        SettingsFile & operator=(SettingsFile &&) = delete;
 
     public:
         SettingsFile();

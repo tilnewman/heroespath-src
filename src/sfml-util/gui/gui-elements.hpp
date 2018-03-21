@@ -44,9 +44,9 @@ namespace sfml_util
         {
         public:
             GuiElements(const GuiElements &) = delete;
-            GuiElements(const GuiElements &&) = delete;
+            GuiElements(GuiElements &&) = delete;
             GuiElements & operator=(const GuiElements &) = delete;
-            GuiElements & operator=(const GuiElements &&) = delete;
+            GuiElements & operator=(GuiElements &&) = delete;
 
         public:
             GuiElements();

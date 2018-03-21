@@ -48,9 +48,9 @@ namespace combat
     {
     public:
         CombatNode(const CombatNode &) = delete;
-        CombatNode(const CombatNode &&) = delete;
+        CombatNode(CombatNode &&) = delete;
         CombatNode & operator=(const CombatNode &) = delete;
-        CombatNode & operator=(const CombatNode &&) = delete;
+        CombatNode & operator=(CombatNode &&) = delete;
 
     public:
         explicit CombatNode(const creature::CreaturePtr_t CREATURE_PTR);

@@ -48,9 +48,9 @@ namespace player
     {
     public:
         CharacterWarehouse(const CharacterWarehouse &) = delete;
-        CharacterWarehouse(const CharacterWarehouse &&) = delete;
+        CharacterWarehouse(CharacterWarehouse &&) = delete;
         CharacterWarehouse & operator=(const CharacterWarehouse &) = delete;
-        CharacterWarehouse & operator=(const CharacterWarehouse &&) = delete;
+        CharacterWarehouse & operator=(CharacterWarehouse &&) = delete;
 
     public:
         CharacterWarehouse();

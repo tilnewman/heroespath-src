@@ -50,9 +50,9 @@ namespace stage
     {
     public:
         CreditsStage(const CreditsStage &) = delete;
-        CreditsStage(const CreditsStage &&) = delete;
+        CreditsStage(CreditsStage &&) = delete;
         CreditsStage & operator=(const CreditsStage &) = delete;
-        CreditsStage & operator=(const CreditsStage &&) = delete;
+        CreditsStage & operator=(CreditsStage &&) = delete;
 
     public:
         CreditsStage();

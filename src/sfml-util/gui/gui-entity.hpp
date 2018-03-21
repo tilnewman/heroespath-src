@@ -50,9 +50,9 @@ namespace sfml_util
         {
         public:
             GuiEntity(const GuiEntity &) = delete;
-            GuiEntity(const GuiEntity &&) = delete;
+            GuiEntity(GuiEntity &&) = delete;
             GuiEntity & operator=(const GuiEntity &) = delete;
-            GuiEntity & operator=(const GuiEntity &&) = delete;
+            GuiEntity & operator=(GuiEntity &&) = delete;
 
         public:
             GuiEntity(

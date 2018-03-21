@@ -57,9 +57,9 @@ namespace sfml_util
     {
     public:
         SoundManager(const SoundManager &) = delete;
-        SoundManager(const SoundManager &&) = delete;
+        SoundManager(SoundManager &&) = delete;
         SoundManager & operator=(const SoundManager &) = delete;
-        SoundManager & operator=(const SoundManager &&) = delete;
+        SoundManager & operator=(SoundManager &&) = delete;
 
     public:
         SoundManager();

@@ -59,9 +59,9 @@ namespace combat
     {
     public:
         PartyFactory(const PartyFactory &) = delete;
-        PartyFactory(const PartyFactory &&) = delete;
+        PartyFactory(PartyFactory &&) = delete;
         PartyFactory & operator=(const PartyFactory &) = delete;
-        PartyFactory & operator=(const PartyFactory &&) = delete;
+        PartyFactory & operator=(PartyFactory &&) = delete;
 
     public:
         PartyFactory();

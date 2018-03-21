@@ -42,9 +42,9 @@ namespace popup
     {
     public:
         PopupStageGeneric(const PopupStageGeneric &) = delete;
-        PopupStageGeneric(const PopupStageGeneric &&) = delete;
+        PopupStageGeneric(PopupStageGeneric &&) = delete;
         PopupStageGeneric & operator=(const PopupStageGeneric &) = delete;
-        PopupStageGeneric & operator=(const PopupStageGeneric &&) = delete;
+        PopupStageGeneric & operator=(PopupStageGeneric &&) = delete;
 
     public:
         explicit PopupStageGeneric(const PopupInfo & POPUP_INFO);

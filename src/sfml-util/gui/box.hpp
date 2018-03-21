@@ -56,9 +56,9 @@ namespace sfml_util
             {
             public:
                 Box(const Box &) = delete;
-                Box(const Box &&) = delete;
+                Box(Box &&) = delete;
                 Box & operator=(const Box &) = delete;
-                Box & operator=(const Box &&) = delete;
+                Box & operator=(Box &&) = delete;
 
             public:
                 // if no box::Info object is given, then Setup() must be called before any other

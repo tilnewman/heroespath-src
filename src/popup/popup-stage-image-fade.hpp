@@ -41,9 +41,9 @@ namespace popup
     {
     public:
         PopupStageImageFade(const PopupStageImageFade &) = delete;
-        PopupStageImageFade(const PopupStageImageFade &&) = delete;
+        PopupStageImageFade(PopupStageImageFade &&) = delete;
         PopupStageImageFade & operator=(const PopupStageImageFade &) = delete;
-        PopupStageImageFade & operator=(const PopupStageImageFade &&) = delete;
+        PopupStageImageFade & operator=(PopupStageImageFade &&) = delete;
 
     public:
         explicit PopupStageImageFade(const PopupInfo &);

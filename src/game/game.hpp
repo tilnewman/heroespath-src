@@ -48,9 +48,9 @@ namespace game
     {
     public:
         Game(const Game &) = delete;
-        Game(const Game &&) = delete;
+        Game(Game &&) = delete;
         Game & operator=(const Game &) = delete;
-        Game & operator=(const Game &&) = delete;
+        Game & operator=(Game &&) = delete;
 
     public:
         Game();

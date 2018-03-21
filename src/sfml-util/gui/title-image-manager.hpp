@@ -46,9 +46,9 @@ namespace sfml_util
         {
         public:
             TitleImageManager(const TitleImageManager &) = delete;
-            TitleImageManager(const TitleImageManager &&) = delete;
+            TitleImageManager(TitleImageManager &&) = delete;
             TitleImageManager & operator=(const TitleImageManager &) = delete;
-            TitleImageManager & operator=(const TitleImageManager &&) = delete;
+            TitleImageManager & operator=(TitleImageManager &&) = delete;
 
         public:
             TitleImageManager();

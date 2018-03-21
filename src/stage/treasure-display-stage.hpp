@@ -151,9 +151,9 @@ namespace stage
     {
     public:
         TreasureDisplayStage(const TreasureDisplayStage &) = delete;
-        TreasureDisplayStage(const TreasureDisplayStage &&) = delete;
+        TreasureDisplayStage(TreasureDisplayStage &&) = delete;
         TreasureDisplayStage & operator=(const TreasureDisplayStage &) = delete;
-        TreasureDisplayStage & operator=(const TreasureDisplayStage &&) = delete;
+        TreasureDisplayStage & operator=(TreasureDisplayStage &&) = delete;
 
     public:
         explicit TreasureDisplayStage(TreasureStage *);

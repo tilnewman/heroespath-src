@@ -57,9 +57,9 @@ namespace stage
     {
     public:
         MainMenuStage(const MainMenuStage &) = delete;
-        MainMenuStage(const MainMenuStage &&) = delete;
+        MainMenuStage(MainMenuStage &&) = delete;
         MainMenuStage & operator=(const MainMenuStage &) = delete;
-        MainMenuStage & operator=(const MainMenuStage &&) = delete;
+        MainMenuStage & operator=(MainMenuStage &&) = delete;
 
     public:
         MainMenuStage();

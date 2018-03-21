@@ -58,9 +58,9 @@ namespace popup
     {
     public:
         PopupStageSpellbook(const PopupStageSpellbook &) = delete;
-        PopupStageSpellbook(const PopupStageSpellbook &&) = delete;
+        PopupStageSpellbook(PopupStageSpellbook &&) = delete;
         PopupStageSpellbook & operator=(const PopupStageSpellbook &) = delete;
-        PopupStageSpellbook & operator=(const PopupStageSpellbook &&) = delete;
+        PopupStageSpellbook & operator=(PopupStageSpellbook &&) = delete;
 
         // defines what is happening on the spellbook popup
         enum class FadeState

@@ -88,9 +88,9 @@ namespace non_player
 
         public:
             ChanceFactory(const ChanceFactory &) = delete;
-            ChanceFactory(const ChanceFactory &&) = delete;
+            ChanceFactory(ChanceFactory &&) = delete;
             ChanceFactory & operator=(const ChanceFactory &) = delete;
-            ChanceFactory & operator=(const ChanceFactory &&) = delete;
+            ChanceFactory & operator=(ChanceFactory &&) = delete;
 
             ChanceFactory();
             ~ChanceFactory();

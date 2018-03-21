@@ -49,9 +49,9 @@ namespace sfml_util
         {
         public:
             Line(const Line &) = delete;
-            Line(const Line &&) = delete;
+            Line(Line &&) = delete;
             Line & operator=(const Line &) = delete;
-            Line & operator=(const Line &&) = delete;
+            Line & operator=(Line &&) = delete;
 
         public:
             Line(

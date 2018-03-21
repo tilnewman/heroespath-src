@@ -56,9 +56,9 @@ namespace sfml_util
     {
     public:
         Loop(const Loop &) = delete;
-        Loop(const Loop &&) = delete;
+        Loop(Loop &&) = delete;
         Loop & operator=(const Loop &) = delete;
-        Loop & operator=(const Loop &&) = delete;
+        Loop & operator=(Loop &&) = delete;
 
     public:
         explicit Loop(const std::string & NAME);

@@ -45,9 +45,7 @@ namespace sfml_util
     {
     public:
         SfxWrapper(const SfxWrapper &) = delete;
-        SfxWrapper(const SfxWrapper &&) = delete;
         SfxWrapper & operator=(const SfxWrapper &) = delete;
-        SfxWrapper & operator=(const SfxWrapper &&) = delete;
 
     public:
         explicit SfxWrapper(

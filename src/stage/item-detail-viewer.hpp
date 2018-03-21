@@ -47,9 +47,9 @@ namespace stage
     {
     public:
         ItemDetailViewer(const ItemDetailViewer &) = delete;
-        ItemDetailViewer(const ItemDetailViewer &&) = delete;
+        ItemDetailViewer(ItemDetailViewer &&) = delete;
         ItemDetailViewer & operator=(const ItemDetailViewer &) = delete;
-        ItemDetailViewer & operator=(const ItemDetailViewer &&) = delete;
+        ItemDetailViewer & operator=(ItemDetailViewer &&) = delete;
 
     public:
         ItemDetailViewer();

@@ -49,9 +49,9 @@ namespace sfml_util
     {
     public:
         RadioButtonSet_DisplayChange(const RadioButtonSet_DisplayChange &) = delete;
-        RadioButtonSet_DisplayChange(const RadioButtonSet_DisplayChange &&) = delete;
+        RadioButtonSet_DisplayChange(RadioButtonSet_DisplayChange &&) = delete;
         RadioButtonSet_DisplayChange & operator=(const RadioButtonSet_DisplayChange &) = delete;
-        RadioButtonSet_DisplayChange & operator=(const RadioButtonSet_DisplayChange &&) = delete;
+        RadioButtonSet_DisplayChange & operator=(RadioButtonSet_DisplayChange &&) = delete;
 
         // If Using this constructor, then one of the Setup()
         // functions must be called before any other member.

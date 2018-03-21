@@ -85,9 +85,9 @@ namespace stage
     {
     public:
         MenuButton(const MenuButton &) = delete;
-        MenuButton(const MenuButton &&) = delete;
+        MenuButton(MenuButton &&) = delete;
         MenuButton & operator=(const MenuButton &) = delete;
-        MenuButton & operator=(const MenuButton &&) = delete;
+        MenuButton & operator=(MenuButton &&) = delete;
 
     public:
         MenuButton(
@@ -169,9 +169,9 @@ namespace stage
     {
     public:
         CharacterStage(const CharacterStage &) = delete;
-        CharacterStage(const CharacterStage &&) = delete;
+        CharacterStage(CharacterStage &&) = delete;
         CharacterStage & operator=(const CharacterStage &) = delete;
-        CharacterStage & operator=(const CharacterStage &&) = delete;
+        CharacterStage & operator=(CharacterStage &&) = delete;
 
     public:
         CharacterStage();

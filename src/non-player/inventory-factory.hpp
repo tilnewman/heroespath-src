@@ -64,9 +64,9 @@ namespace non_player
         {
         public:
             InventoryFactory(const InventoryFactory &) = delete;
-            InventoryFactory(const InventoryFactory &&) = delete;
+            InventoryFactory(InventoryFactory &&) = delete;
             InventoryFactory & operator=(const InventoryFactory &) = delete;
-            InventoryFactory & operator=(const InventoryFactory &&) = delete;
+            InventoryFactory & operator=(InventoryFactory &&) = delete;
 
             InventoryFactory();
             ~InventoryFactory();

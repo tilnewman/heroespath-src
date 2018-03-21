@@ -70,9 +70,9 @@ namespace item
         {
         public:
             ArmorDetailLoader & operator=(const ArmorDetailLoader &) = delete;
-            ArmorDetailLoader & operator=(const ArmorDetailLoader &&) = delete;
+            ArmorDetailLoader & operator=(ArmorDetailLoader &&) = delete;
             ArmorDetailLoader(const ArmorDetailLoader &) = delete;
-            ArmorDetailLoader(const ArmorDetailLoader &&) = delete;
+            ArmorDetailLoader(ArmorDetailLoader &&) = delete;
 
             ArmorDetailLoader();
             ~ArmorDetailLoader();

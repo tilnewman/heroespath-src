@@ -46,9 +46,9 @@ namespace game
     {
     public:
         GameDataFile(const GameDataFile &) = delete;
-        GameDataFile(const GameDataFile &&) = delete;
+        GameDataFile(GameDataFile &&) = delete;
         GameDataFile & operator=(const GameDataFile &) = delete;
-        GameDataFile & operator=(const GameDataFile &&) = delete;
+        GameDataFile & operator=(GameDataFile &&) = delete;
 
         GameDataFile();
         virtual ~GameDataFile() = default;

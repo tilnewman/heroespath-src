@@ -68,9 +68,9 @@ namespace combat
     {
     public:
         Encounter(const Encounter &) = delete;
-        Encounter(const Encounter &&) = delete;
+        Encounter(Encounter &&) = delete;
         Encounter & operator=(const Encounter &) = delete;
-        Encounter & operator=(const Encounter &&) = delete;
+        Encounter & operator=(Encounter &&) = delete;
 
     public:
         Encounter();

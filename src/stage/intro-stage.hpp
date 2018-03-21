@@ -41,9 +41,9 @@ namespace stage
     {
     public:
         IntroStage(const IntroStage &) = delete;
-        IntroStage(const IntroStage &&) = delete;
+        IntroStage(IntroStage &&) = delete;
         IntroStage & operator=(const IntroStage &) = delete;
-        IntroStage & operator=(const IntroStage &&) = delete;
+        IntroStage & operator=(IntroStage &&) = delete;
 
     public:
         IntroStage();

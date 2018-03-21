@@ -50,9 +50,9 @@ namespace item
     {
     public:
         MiscItemFactory(const MiscItemFactory &) = delete;
-        MiscItemFactory(const MiscItemFactory &&) = delete;
+        MiscItemFactory(MiscItemFactory &&) = delete;
         MiscItemFactory & operator=(const MiscItemFactory &) = delete;
-        MiscItemFactory & operator=(const MiscItemFactory &&) = delete;
+        MiscItemFactory & operator=(MiscItemFactory &&) = delete;
 
     public:
         MiscItemFactory();

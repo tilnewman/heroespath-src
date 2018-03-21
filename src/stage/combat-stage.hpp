@@ -138,9 +138,9 @@ namespace stage
     {
     public:
         CombatStage(const CombatStage &) = delete;
-        CombatStage(const CombatStage &&) = delete;
+        CombatStage(CombatStage &&) = delete;
         CombatStage & operator=(const CombatStage &) = delete;
-        CombatStage & operator=(const CombatStage &&) = delete;
+        CombatStage & operator=(CombatStage &&) = delete;
 
         // defines what phase of the initial zoom and pan currently in
         enum class PreTurnPhase

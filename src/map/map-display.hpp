@@ -56,9 +56,9 @@ namespace map
     {
     public:
         MapDisplay(const MapDisplay &) = delete;
-        MapDisplay(const MapDisplay &&) = delete;
+        MapDisplay(MapDisplay &&) = delete;
         MapDisplay & operator=(const MapDisplay &) = delete;
-        MapDisplay & operator=(const MapDisplay &&) = delete;
+        MapDisplay & operator=(MapDisplay &&) = delete;
 
     public:
         MapDisplay(const Map & MAP, const sf::FloatRect & REGION);

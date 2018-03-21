@@ -53,9 +53,9 @@ namespace creature
     {
     public:
         Condition(const Condition &) = delete;
-        Condition(const Condition &&) = delete;
+        Condition(Condition &&) = delete;
         Condition & operator=(const Condition &) = delete;
-        Condition & operator=(const Condition &&) = delete;
+        Condition & operator=(Condition &&) = delete;
 
     public:
         explicit Condition(

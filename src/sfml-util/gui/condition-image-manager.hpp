@@ -45,9 +45,9 @@ namespace sfml_util
         {
         public:
             ConditionImageManager(const ConditionImageManager &) = delete;
-            ConditionImageManager(const ConditionImageManager &&) = delete;
+            ConditionImageManager(ConditionImageManager &&) = delete;
             ConditionImageManager & operator=(const ConditionImageManager &) = delete;
-            ConditionImageManager & operator=(const ConditionImageManager &&) = delete;
+            ConditionImageManager & operator=(ConditionImageManager &&) = delete;
 
         public:
             ConditionImageManager();

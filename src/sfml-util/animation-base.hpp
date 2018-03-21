@@ -45,9 +45,9 @@ namespace sfml_util
     {
     public:
         Animation(const Animation &) = delete;
-        Animation(const Animation &&) = delete;
+        Animation(Animation &&) = delete;
         Animation & operator=(const Animation &) = delete;
-        Animation & operator=(const Animation &&) = delete;
+        Animation & operator=(Animation &&) = delete;
 
     public:
         Animation(

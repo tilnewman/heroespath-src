@@ -48,9 +48,9 @@ namespace item
     {
     public:
         ItemProfileWarehouse(const ItemProfileWarehouse &) = delete;
-        ItemProfileWarehouse(const ItemProfileWarehouse &&) = delete;
+        ItemProfileWarehouse(ItemProfileWarehouse &&) = delete;
         ItemProfileWarehouse & operator=(const ItemProfileWarehouse &) = delete;
-        ItemProfileWarehouse & operator=(const ItemProfileWarehouse &&) = delete;
+        ItemProfileWarehouse & operator=(ItemProfileWarehouse &&) = delete;
 
     public:
         ItemProfileWarehouse();

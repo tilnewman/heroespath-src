@@ -44,9 +44,9 @@ namespace sfml_util
     {
     public:
         Ouroboros(const Ouroboros &) = delete;
-        Ouroboros(const Ouroboros &&) = delete;
+        Ouroboros(Ouroboros &&) = delete;
         Ouroboros & operator=(const Ouroboros &) = delete;
-        Ouroboros & operator=(const Ouroboros &&) = delete;
+        Ouroboros & operator=(Ouroboros &&) = delete;
 
     public:
         explicit Ouroboros(const std::string & NAME, const bool WILL_INVERT = false);

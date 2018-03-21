@@ -70,9 +70,7 @@ namespace sfml_util
     {
     public:
         MusicOperator(const MusicOperator &) = delete;
-        MusicOperator(const MusicOperator &&) = delete;
         MusicOperator & operator=(const MusicOperator &) = delete;
-        MusicOperator & operator=(const MusicOperator &&) = delete;
 
     public:
         explicit MusicOperator(

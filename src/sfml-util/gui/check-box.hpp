@@ -104,9 +104,9 @@ namespace sfml_util
         {
         public:
             CheckBoxSet(const CheckBoxSet &) = delete;
-            CheckBoxSet(const CheckBoxSet &&) = delete;
+            CheckBoxSet(CheckBoxSet &&) = delete;
             CheckBoxSet & operator=(const CheckBoxSet &) = delete;
-            CheckBoxSet & operator=(const CheckBoxSet &&) = delete;
+            CheckBoxSet & operator=(CheckBoxSet &&) = delete;
 
         public:
             // Constructor for cases where each radio button's label text has a different style,

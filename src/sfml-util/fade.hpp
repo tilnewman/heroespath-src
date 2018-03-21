@@ -43,9 +43,9 @@ namespace sfml_util
     {
     public:
         Fade(const Fade &) = delete;
-        Fade(const Fade &&) = delete;
+        Fade(Fade &&) = delete;
         Fade & operator=(const Fade &) = delete;
-        Fade & operator=(const Fade &&) = delete;
+        Fade & operator=(Fade &&) = delete;
 
     public:
         Fade(); // must call Setup() before any other functinos if using this constructor

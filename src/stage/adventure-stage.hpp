@@ -45,9 +45,9 @@ namespace stage
     {
     public:
         AdventureStage(const AdventureStage &) = delete;
-        AdventureStage(const AdventureStage &&) = delete;
+        AdventureStage(AdventureStage &&) = delete;
         AdventureStage & operator=(const AdventureStage &) = delete;
-        AdventureStage & operator=(const AdventureStage &&) = delete;
+        AdventureStage & operator=(AdventureStage &&) = delete;
 
     public:
         AdventureStage();

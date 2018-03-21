@@ -112,9 +112,9 @@ namespace creature
     {
     public:
         Creature(const Creature &) = delete;
-        Creature(const Creature &&) = delete;
+        Creature(Creature &&) = delete;
         Creature & operator=(const Creature &) = delete;
-        Creature & operator=(const Creature &&) = delete;
+        Creature & operator=(Creature &&) = delete;
 
     public:
         // Note:  This constructor will add the default 'Good' status if CONDITIONS is empty.

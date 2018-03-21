@@ -63,9 +63,9 @@ namespace game
     {
     public:
         LoopManager(const LoopManager &) = delete;
-        LoopManager(const LoopManager &&) = delete;
+        LoopManager(LoopManager &&) = delete;
         LoopManager & operator=(const LoopManager &) = delete;
-        LoopManager & operator=(const LoopManager &&) = delete;
+        LoopManager & operator=(LoopManager &&) = delete;
 
     public:
         LoopManager();

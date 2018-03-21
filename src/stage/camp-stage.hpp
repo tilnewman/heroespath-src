@@ -62,9 +62,9 @@ namespace stage
     {
     public:
         CampStage(const CampStage &) = delete;
-        CampStage(const CampStage &&) = delete;
+        CampStage(CampStage &&) = delete;
         CampStage & operator=(const CampStage &) = delete;
-        CampStage & operator=(const CampStage &&) = delete;
+        CampStage & operator=(CampStage &&) = delete;
 
     public:
         CampStage();

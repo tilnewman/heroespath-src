@@ -39,9 +39,9 @@ namespace popup
     {
     public:
         PopupStageItemProfileWait(const PopupStageItemProfileWait &) = delete;
-        PopupStageItemProfileWait(const PopupStageItemProfileWait &&) = delete;
+        PopupStageItemProfileWait(PopupStageItemProfileWait &&) = delete;
         PopupStageItemProfileWait & operator=(const PopupStageItemProfileWait &) = delete;
-        PopupStageItemProfileWait & operator=(const PopupStageItemProfileWait &&) = delete;
+        PopupStageItemProfileWait & operator=(PopupStageItemProfileWait &&) = delete;
 
     public:
         explicit PopupStageItemProfileWait(const PopupInfo &);

@@ -45,9 +45,9 @@ namespace sfml_util
         {
         public:
             PictureFrame(const PictureFrame &) = delete;
-            PictureFrame(const PictureFrame &&) = delete;
+            PictureFrame(PictureFrame &&) = delete;
             PictureFrame & operator=(const PictureFrame &) = delete;
-            PictureFrame & operator=(const PictureFrame &&) = delete;
+            PictureFrame & operator=(PictureFrame &&) = delete;
 
         public:
             explicit PictureFrame(

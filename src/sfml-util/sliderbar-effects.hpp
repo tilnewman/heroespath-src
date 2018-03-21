@@ -45,9 +45,9 @@ namespace sfml_util
     {
     public:
         SliderBarLabeled_Effects(const SliderBarLabeled_Effects &) = delete;
-        SliderBarLabeled_Effects(const SliderBarLabeled_Effects &&) = delete;
+        SliderBarLabeled_Effects(SliderBarLabeled_Effects &&) = delete;
         SliderBarLabeled_Effects & operator=(const SliderBarLabeled_Effects &) = delete;
-        SliderBarLabeled_Effects & operator=(const SliderBarLabeled_Effects &&) = delete;
+        SliderBarLabeled_Effects & operator=(SliderBarLabeled_Effects &&) = delete;
 
         SliderBarLabeled_Effects(
             const std::string & NAME,

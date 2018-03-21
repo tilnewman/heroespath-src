@@ -39,9 +39,9 @@ namespace popup
     {
     public:
         PopupStageSystemError(const PopupStageSystemError &) = delete;
-        PopupStageSystemError(const PopupStageSystemError &&) = delete;
+        PopupStageSystemError(PopupStageSystemError &&) = delete;
         PopupStageSystemError & operator=(const PopupStageSystemError &) = delete;
-        PopupStageSystemError & operator=(const PopupStageSystemError &&) = delete;
+        PopupStageSystemError & operator=(PopupStageSystemError &&) = delete;
 
     public:
         explicit PopupStageSystemError(const PopupInfo &);

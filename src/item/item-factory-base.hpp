@@ -43,9 +43,9 @@ namespace item
     {
     public:
         FactoryBase(const FactoryBase &) = delete;
-        FactoryBase(const FactoryBase &&) = delete;
+        FactoryBase(FactoryBase &&) = delete;
         FactoryBase & operator=(const FactoryBase &) = delete;
-        FactoryBase & operator=(const FactoryBase &&) = delete;
+        FactoryBase & operator=(FactoryBase &&) = delete;
 
         FactoryBase() = default;
         virtual ~FactoryBase() = default;

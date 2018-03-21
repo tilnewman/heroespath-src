@@ -44,9 +44,9 @@ namespace sfml_util
     {
     public:
         AnimationMultiTexture(const AnimationMultiTexture &) = delete;
-        AnimationMultiTexture(const AnimationMultiTexture &&) = delete;
+        AnimationMultiTexture(AnimationMultiTexture &&) = delete;
         AnimationMultiTexture & operator=(const AnimationMultiTexture &) = delete;
-        AnimationMultiTexture & operator=(const AnimationMultiTexture &&) = delete;
+        AnimationMultiTexture & operator=(AnimationMultiTexture &&) = delete;
 
     public:
         AnimationMultiTexture(

@@ -84,9 +84,9 @@ namespace sfml_util
         {
         public:
             ListBoxItem(const ListBoxItem &) = delete;
-            ListBoxItem(const ListBoxItem &&) = delete;
+            ListBoxItem(ListBoxItem &&) = delete;
             ListBoxItem & operator=(const ListBoxItem &) = delete;
-            ListBoxItem & operator=(const ListBoxItem &&) = delete;
+            ListBoxItem & operator=(ListBoxItem &&) = delete;
 
         public:
             explicit ListBoxItem(const std::string & NAME, const bool IS_VALID = true);

@@ -44,9 +44,9 @@ namespace state
     {
     public:
         World(const World &) = delete;
-        World(const World &&) = delete;
+        World(World &&) = delete;
         World & operator=(const World &) = delete;
-        World & operator=(const World &&) = delete;
+        World & operator=(World &&) = delete;
 
     public:
         World();

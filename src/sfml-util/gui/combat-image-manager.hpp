@@ -49,9 +49,9 @@ namespace sfml_util
         {
         public:
             CombatImageManager & operator=(const CombatImageManager &) = delete;
-            CombatImageManager & operator=(const CombatImageManager &&) = delete;
+            CombatImageManager & operator=(CombatImageManager &&) = delete;
             CombatImageManager(const CombatImageManager &) = delete;
-            CombatImageManager(const CombatImageManager &&) = delete;
+            CombatImageManager(CombatImageManager &&) = delete;
 
             CombatImageManager();
             virtual ~CombatImageManager();

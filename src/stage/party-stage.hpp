@@ -77,9 +77,9 @@ namespace stage
     {
     public:
         PartyStage(const PartyStage &) = delete;
-        PartyStage(const PartyStage &&) = delete;
+        PartyStage(PartyStage &&) = delete;
         PartyStage & operator=(const PartyStage &) = delete;
-        PartyStage & operator=(const PartyStage &&) = delete;
+        PartyStage & operator=(PartyStage &&) = delete;
 
     public:
         PartyStage();

@@ -58,9 +58,9 @@ namespace sfml_util
         {
         public:
             TextButton(const TextButton &) = delete;
-            TextButton(const TextButton &&) = delete;
+            TextButton(TextButton &&) = delete;
             TextButton & operator=(const TextButton &) = delete;
-            TextButton & operator=(const TextButton &&) = delete;
+            TextButton & operator=(TextButton &&) = delete;
 
         public:
             // if using this constructor, Setup() must be called before any other functions

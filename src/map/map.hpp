@@ -61,9 +61,9 @@ namespace map
     {
     public:
         Map(const Map &) = delete;
-        Map(const Map &&) = delete;
+        Map(Map &&) = delete;
         Map & operator=(const Map &) = delete;
-        Map & operator=(const Map &&) = delete;
+        Map & operator=(Map &&) = delete;
 
     public:
         Map(const sf::FloatRect &, interact::InteractionManager &);

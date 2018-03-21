@@ -78,9 +78,9 @@ namespace stage
     {
     public:
         LoadGameStage(const LoadGameStage &) = delete;
-        LoadGameStage(const LoadGameStage &&) = delete;
+        LoadGameStage(LoadGameStage &&) = delete;
         LoadGameStage & operator=(const LoadGameStage &) = delete;
-        LoadGameStage & operator=(const LoadGameStage &&) = delete;
+        LoadGameStage & operator=(LoadGameStage &&) = delete;
 
     public:
         LoadGameStage();

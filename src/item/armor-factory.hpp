@@ -50,9 +50,9 @@ namespace item
         {
         public:
             ArmorFactory(const ArmorFactory &) = delete;
-            ArmorFactory(const ArmorFactory &&) = delete;
+            ArmorFactory(ArmorFactory &&) = delete;
             ArmorFactory & operator=(const ArmorFactory &) = delete;
-            ArmorFactory & operator=(const ArmorFactory &&) = delete;
+            ArmorFactory & operator=(ArmorFactory &&) = delete;
 
         public:
             ArmorFactory();

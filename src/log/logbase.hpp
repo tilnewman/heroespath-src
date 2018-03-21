@@ -110,9 +110,9 @@ namespace log
     {
     public:
         LogBase(const LogBase &) = delete;
-        LogBase(const LogBase &&) = delete;
+        LogBase(LogBase &&) = delete;
         LogBase & operator=(const LogBase &) = delete;
-        LogBase & operator=(const LogBase &&) = delete;
+        LogBase & operator=(LogBase &&) = delete;
 
         explicit LogBase(
             const std::string & fileName = FILE_NAME_DEFAULT,

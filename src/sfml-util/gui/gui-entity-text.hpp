@@ -50,9 +50,9 @@ namespace sfml_util
         {
         public:
             GuiText(const GuiText &) = delete;
-            GuiText(const GuiText &&) = delete;
+            GuiText(GuiText &&) = delete;
             GuiText & operator=(const GuiText &) = delete;
-            GuiText & operator=(const GuiText &&) = delete;
+            GuiText & operator=(GuiText &&) = delete;
 
         public:
             // if this constructor is used, then Setup() must be called before any other functions

@@ -47,9 +47,9 @@ namespace popup
     {
     public:
         PopupStageNumberSelect(const PopupStageNumberSelect &) = delete;
-        PopupStageNumberSelect(const PopupStageNumberSelect &&) = delete;
+        PopupStageNumberSelect(PopupStageNumberSelect &&) = delete;
         PopupStageNumberSelect & operator=(const PopupStageNumberSelect &) = delete;
-        PopupStageNumberSelect & operator=(const PopupStageNumberSelect &&) = delete;
+        PopupStageNumberSelect & operator=(PopupStageNumberSelect &&) = delete;
 
     public:
         explicit PopupStageNumberSelect(const PopupInfo & POPUP_INFO);

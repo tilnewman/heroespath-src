@@ -51,9 +51,9 @@ namespace sfml_util
     {
     public:
         SliderBarLabeled_Music(const SliderBarLabeled_Music &) = delete;
-        SliderBarLabeled_Music(const SliderBarLabeled_Music &&) = delete;
+        SliderBarLabeled_Music(SliderBarLabeled_Music &&) = delete;
         SliderBarLabeled_Music & operator=(const SliderBarLabeled_Music &) = delete;
-        SliderBarLabeled_Music & operator=(const SliderBarLabeled_Music &&) = delete;
+        SliderBarLabeled_Music & operator=(SliderBarLabeled_Music &&) = delete;
 
         SliderBarLabeled_Music(
             const std::string & NAME,

@@ -72,9 +72,9 @@ namespace stage
     {
     public:
         TreasureStage(const TreasureStage &) = delete;
-        TreasureStage(const TreasureStage &&) = delete;
+        TreasureStage(TreasureStage &&) = delete;
         TreasureStage & operator=(const TreasureStage &) = delete;
-        TreasureStage & operator=(const TreasureStage &&) = delete;
+        TreasureStage & operator=(TreasureStage &&) = delete;
 
     public:
         TreasureStage();

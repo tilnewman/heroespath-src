@@ -73,9 +73,9 @@ namespace item
         {
         public:
             WeaponDetailLoader(const WeaponDetailLoader &) = delete;
-            WeaponDetailLoader(const WeaponDetailLoader &&) = delete;
+            WeaponDetailLoader(WeaponDetailLoader &&) = delete;
             WeaponDetailLoader & operator=(const WeaponDetailLoader &) = delete;
-            WeaponDetailLoader & operator=(const WeaponDetailLoader &&) = delete;
+            WeaponDetailLoader & operator=(WeaponDetailLoader &&) = delete;
 
             WeaponDetailLoader();
             ~WeaponDetailLoader();

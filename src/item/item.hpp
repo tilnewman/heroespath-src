@@ -52,9 +52,9 @@ namespace item
     {
     public:
         Item(const Item &) = delete;
-        Item(const Item &&) = delete;
+        Item(Item &&) = delete;
         Item & operator=(const Item &) = delete;
-        Item & operator=(const Item &&) = delete;
+        Item & operator=(Item &&) = delete;
 
     public:
         explicit Item(

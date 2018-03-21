@@ -126,9 +126,9 @@ namespace combat
 
     public:
         CombatTree(const CombatTree &) = delete;
-        CombatTree(const CombatTree &&) = delete;
+        CombatTree(CombatTree &&) = delete;
         CombatTree & operator=(const CombatTree &) = delete;
-        CombatTree & operator=(const CombatTree &&) = delete;
+        CombatTree & operator=(CombatTree &&) = delete;
 
     public:
         CombatTree();

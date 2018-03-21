@@ -118,9 +118,9 @@ namespace sfml_util
         {
         public:
             RadioButtonSet(const RadioButtonSet &) = delete;
-            RadioButtonSet(const RadioButtonSet &&) = delete;
+            RadioButtonSet(RadioButtonSet &&) = delete;
             RadioButtonSet & operator=(const RadioButtonSet &) = delete;
-            RadioButtonSet & operator=(const RadioButtonSet &&) = delete;
+            RadioButtonSet & operator=(RadioButtonSet &&) = delete;
 
         public:
             // If Using this constructor, then one of the Setup() functions must be called before

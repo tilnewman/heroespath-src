@@ -52,9 +52,9 @@ namespace popup
     {
     public:
         PopupStageBase(const PopupStageBase &) = delete;
-        PopupStageBase(const PopupStageBase &&) = delete;
+        PopupStageBase(PopupStageBase &&) = delete;
         PopupStageBase & operator=(const PopupStageBase &) = delete;
-        PopupStageBase & operator=(const PopupStageBase &&) = delete;
+        PopupStageBase & operator=(PopupStageBase &&) = delete;
 
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageBase();

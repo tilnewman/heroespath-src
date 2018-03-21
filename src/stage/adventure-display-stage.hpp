@@ -59,9 +59,9 @@ namespace stage
     {
     public:
         AdventureDisplayStage(const AdventureDisplayStage &) = delete;
-        AdventureDisplayStage(const AdventureDisplayStage &&) = delete;
+        AdventureDisplayStage(AdventureDisplayStage &&) = delete;
         AdventureDisplayStage & operator=(const AdventureDisplayStage &) = delete;
-        AdventureDisplayStage & operator=(const AdventureDisplayStage &&) = delete;
+        AdventureDisplayStage & operator=(AdventureDisplayStage &&) = delete;
 
     public:
         AdventureDisplayStage(AdventureStage * const, interact::InteractionManager &);

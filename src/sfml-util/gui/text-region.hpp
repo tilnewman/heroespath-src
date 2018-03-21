@@ -78,9 +78,9 @@ namespace sfml_util
         {
         public:
             TextRegion(const TextRegion &) = delete;
-            TextRegion(const TextRegion &&) = delete;
+            TextRegion(TextRegion &&) = delete;
             TextRegion & operator=(const TextRegion &) = delete;
-            TextRegion & operator=(const TextRegion &&) = delete;
+            TextRegion & operator=(TextRegion &&) = delete;
 
         public:
             // if using this constructor, Setup() must be called before any other function
