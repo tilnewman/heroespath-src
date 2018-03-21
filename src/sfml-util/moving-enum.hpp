@@ -46,7 +46,7 @@ namespace sfml_util
 
         static const std::string ToString(const Moving::Enum);
 
-        inline static bool IsMoving(const Moving::Enum E) { return ((E == Toward) || (E == Away)); }
+        static bool IsMoving(const Moving::Enum E) { return ((E == Toward) || (E == Away)); }
     };
 } // namespace sfml_util
 } // namespace heroespath

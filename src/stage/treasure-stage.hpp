@@ -80,7 +80,7 @@ namespace stage
         TreasureStage();
         virtual ~TreasureStage();
 
-        inline const std::string HandlerName() const override { return GetStageName(); }
+        const std::string HandlerName() const override { return GetStageName(); }
         bool HandleCallback(const popup::PopupResponse &) override;
 
         void Setup() override;

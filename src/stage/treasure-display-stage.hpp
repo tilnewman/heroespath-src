@@ -131,7 +131,7 @@ namespace stage
                 , item_ptr(ITEM_PTR)
             {}
 
-            inline bool IsValid() const
+            bool IsValid() const
             {
                 return ((sfml_util::gui::ListBox::ERROR_RECT_ != rect) && (nullptr != item_ptr));
             }
@@ -159,10 +159,10 @@ namespace stage
         explicit TreasureDisplayStage(TreasureStage *);
         virtual ~TreasureDisplayStage() = default;
 
-        inline const std::string HandlerName() const override { return GetStageName(); }
+        const std::string HandlerName() const override { return GetStageName(); }
         bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
-        virtual bool HandleCallback(
+        bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
         void Setup() override;
@@ -199,10 +199,7 @@ namespace stage
 
         void InventoryChange(const std::size_t);
 
-        inline bool IsItemDetailMovingOrShowing() const
-        {
-            return itemDetailViewer_.IsMovingOrShowing();
-        }
+        bool IsItemDetailMovingOrShowing() const { return itemDetailViewer_.IsMovingOrShowing(); }
 
         std::size_t WhichCharacterInventoryIsDisplayedIndex();
 
@@ -210,7 +207,7 @@ namespace stage
 
         void RefreshAfterCacheUpdate();
 
-        inline void CanDisplayItemDetail(const bool CAN) { canDisplayItemDetail_ = CAN; }
+        void CanDisplayItemDetail(const bool CAN) { canDisplayItemDetail_ = CAN; }
 
     private:
         treasure::DisplayMeasurements CreateDisplayMeasurements() const;
@@ -271,7 +268,7 @@ namespace stage
             const float VERT_POS,
             const unsigned int FONT_SIZE);
 
-        inline float CalculateHorizOffscreenPos() const
+        float CalculateHorizOffscreenPos() const
         {
             return CreateDisplayMeasurements().screenWidth + 1.0f;
         }

@@ -63,9 +63,9 @@ namespace sfml_util
 
             virtual ~ImageManagerBase() = default;
 
-            static inline const std::string PathToImages() { return pathToImages_; }
+            static const std::string PathToImages() { return pathToImages_; }
 
-            static inline void PathToImages(const std::string & PATH) { pathToImages_ = PATH; }
+            static void PathToImages(const std::string & PATH) { pathToImages_ = PATH; }
 
             // all images are square with this as the side length
             float Dimmension() const { return 256.0f; }

@@ -139,125 +139,113 @@ namespace creature
 
         virtual ~Creature();
 
-        inline const BodyType Body() const { return bodyType_; }
+        const BodyType Body() const { return bodyType_; }
 
-        inline virtual bool IsPlayerCharacter() const { return false; }
+        virtual bool IsPlayerCharacter() const { return false; }
 
-        inline const std::string Name() const { return name_; }
-        inline void SetName(const std::string & N) { name_ = N; }
+        const std::string Name() const { return name_; }
+        void SetName(const std::string & N) { name_ = N; }
 
         const std::string NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS = true) const;
         const std::string NameAndRaceAndRole(const bool IS_FIRST_LETTER_CAPS = true) const;
 
-        inline const std::string ImageFilename() const { return imageFilename_; }
+        const std::string ImageFilename() const { return imageFilename_; }
         void ImageFilename(const std::string & S) { imageFilename_ = S; }
 
-        inline sex::Enum Sex() const { return sex_; }
+        sex::Enum Sex() const { return sex_; }
 
-        inline const std::string SexName() const { return creature::sex::ToString(sex_); }
+        const std::string SexName() const { return creature::sex::ToString(sex_); }
 
-        inline race::Enum Race() const { return race_; }
-        inline const std::string RaceName() const { return race::Name(race_); }
-        inline bool IsPixie() const { return (race_ == race::Pixie); }
+        race::Enum Race() const { return race_; }
+        const std::string RaceName() const { return race::Name(race_); }
+        bool IsPixie() const { return (race_ == race::Pixie); }
 
-        inline bool IsBeast() const
+        bool IsBeast() const
         {
             return ((race::HasTorso(race_) == false) || (Body().IsHumanoid() == false));
         }
 
-        inline dragon_class::Enum DragonClass() const
-        {
-            return dragon_class::ClassFromRank(Rank());
-        }
+        dragon_class::Enum DragonClass() const { return dragon_class::ClassFromRank(Rank()); }
 
-        inline wolfen_class::Enum WolfenClass() const
-        {
-            return wolfen_class::ClassFromRank(Rank());
-        }
+        wolfen_class::Enum WolfenClass() const { return wolfen_class::ClassFromRank(Rank()); }
 
-        inline Rank_t Rank() const { return rank_; }
+        Rank_t Rank() const { return rank_; }
 
-        inline rank_class::Enum RankClass() const { return rank_class::FromRank(Rank()); }
+        rank_class::Enum RankClass() const { return rank_class::FromRank(Rank()); }
 
         const std::string RankClassName() const;
         float RankRatio() const;
 
-        inline Rank_t IncreaseRank(const Rank_t & R) { return rank_ += R; }
+        Rank_t IncreaseRank(const Rank_t & R) { return rank_ += R; }
 
-        inline Experience_t Exp() const { return experience_; }
-        inline Experience_t IncreaseExp(const Experience_t & E) { return experience_ += E; }
+        Experience_t Exp() const { return experience_; }
+        Experience_t IncreaseExp(const Experience_t & E) { return experience_ += E; }
 
-        inline Health_t HealthCurrent() const { return healthCurrent_; }
-        inline void HealthCurrentSet(const Health_t & H) { healthCurrent_ = H; }
-        inline Health_t HealthNormal() const { return healthNormal_; }
-        inline void HealthNormalSet(const Health_t & H) { healthNormal_ = H; }
-        inline void HealthReset() { healthCurrent_ = healthNormal_; }
+        Health_t HealthCurrent() const { return healthCurrent_; }
+        void HealthCurrentSet(const Health_t & H) { healthCurrent_ = H; }
+        Health_t HealthNormal() const { return healthNormal_; }
+        void HealthNormalSet(const Health_t & H) { healthNormal_ = H; }
+        void HealthReset() { healthCurrent_ = healthNormal_; }
 
         Health_t HealthCurrentAdj(const Health_t &);
         Health_t HealthNormalAdj(const Health_t &);
 
-        inline role::Enum Role() const { return role_; }
-        inline const std::string RoleName() const { return role::Name(role_); }
+        role::Enum Role() const { return role_; }
+        const std::string RoleName() const { return role::Name(role_); }
 
         void TitleAdd(const Titles::Enum E, const bool ALLOW_CHANGES = true);
-        inline const TitleEnumVec_t Titles() const { return titlesVec_; }
+        const TitleEnumVec_t Titles() const { return titlesVec_; }
         const TitlePVec_t TitlesPVec() const;
 
-        inline float HealthRatio() const
+        float HealthRatio() const
         {
             return (healthCurrent_.As<float>() / healthNormal_.As<float>());
         }
 
-        inline Health_t HealthMissing() const { return healthNormal_ - healthCurrent_; }
+        Health_t HealthMissing() const { return healthNormal_ - healthCurrent_; }
 
-        inline Mana_t ManaMissing() const
+        Mana_t ManaMissing() const
         {
             return Mana_t(TraitNormal(stats::Traits::Mana) - TraitWorking(stats::Traits::Mana));
         }
 
-        inline Mana_t Mana() const { return Mana_t(TraitWorking(stats::Traits::Mana)); }
+        Mana_t Mana() const { return Mana_t(TraitWorking(stats::Traits::Mana)); }
 
-        inline Mana_t ManaAdj(const Mana_t & ADJ)
+        Mana_t ManaAdj(const Mana_t & ADJ)
         {
             return Mana_t(TraitCurrentAdj(stats::Traits::Mana, ADJ.As<int>()));
         }
 
-        inline Mana_t ManaNormal() const { return Mana_t(TraitNormal(stats::Traits::Mana)); }
+        Mana_t ManaNormal() const { return Mana_t(TraitNormal(stats::Traits::Mana)); }
 
-        inline Mana_t ManaNormalAdj(const Mana_t & ADJ)
+        Mana_t ManaNormalAdj(const Mana_t & ADJ)
         {
             return Mana_t(TraitNormalAdj(stats::Traits::Mana, ADJ.As<int>()));
         }
 
-        inline float ManaRatio() const { return (Mana().As<float>() / ManaNormal().As<float>()); }
+        float ManaRatio() const { return (Mana().As<float>() / ManaNormal().As<float>()); }
 
-        inline bool IsDead() const { return HasCondition(Conditions::Dead); }
-        inline bool IsAlive() const { return !IsDead(); }
+        bool IsDead() const { return HasCondition(Conditions::Dead); }
+        bool IsAlive() const { return !IsDead(); }
 
-        inline Strength_t Strength() const
-        {
-            return Strength_t(TraitWorking(stats::Traits::Strength));
-        }
+        Strength_t Strength() const { return Strength_t(TraitWorking(stats::Traits::Strength)); }
 
-        inline Accuracy_t Accuracy() const
-        {
-            return Accuracy_t(TraitWorking(stats::Traits::Accuracy));
-        }
+        Accuracy_t Accuracy() const { return Accuracy_t(TraitWorking(stats::Traits::Accuracy)); }
 
-        inline Charm_t Charm() const { return Charm_t(TraitWorking(stats::Traits::Charm)); }
+        Charm_t Charm() const { return Charm_t(TraitWorking(stats::Traits::Charm)); }
 
-        inline Luck_t Luck() const { return Luck_t(TraitWorking(stats::Traits::Luck)); }
+        Luck_t Luck() const { return Luck_t(TraitWorking(stats::Traits::Luck)); }
 
-        inline Speed_t Speed() const { return Speed_t(TraitWorking(stats::Traits::Speed)); }
+        Speed_t Speed() const { return Speed_t(TraitWorking(stats::Traits::Speed)); }
 
-        inline Intell_t Intelligence() const
+        Intell_t Intelligence() const
         {
             return Intell_t(TraitWorking(stats::Traits::Intelligence));
         }
 
-        inline const sfml_util::DateTime DateTimeCreated() const { return dateTimeCreated_; }
+        const sfml_util::DateTime DateTimeCreated() const { return dateTimeCreated_; }
 
-        inline const UniqueTraits_t UniqueTraits() const
+        const UniqueTraits_t UniqueTraits() const
         {
             return UniqueTraits_t(std::make_tuple(Name(), role_, DateTimeCreated(), serialNumber_));
         }
@@ -279,7 +267,7 @@ namespace creature
         // for each Condition, Condition::Undo() is called before removing
         std::size_t ConditionRemoveAll();
 
-        inline const CondEnumVec_t Conditions() const { return conditionsVec_; }
+        const CondEnumVec_t Conditions() const { return conditionsVec_; }
         const ConditionPVec_t ConditionsPVec() const;
 
         bool HasCondition(const Conditions::Enum) const;
@@ -296,18 +284,15 @@ namespace creature
             const std::size_t MAX_TO_LIST = 0,
             const size_t MIN_SEVERITY = condition::Severity::ALL);
 
-        inline bool CanTakeAction() const { return CanTakeActionStr().empty(); }
+        bool CanTakeAction() const { return CanTakeActionStr().empty(); }
         const std::string CanTakeActionStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
 
-        inline const item::Inventory & Inventory() const { return inventory_; }
+        const item::Inventory & Inventory() const { return inventory_; }
 
         // these functions return false if attempt to reduce beyond zero
-        inline bool CoinsAdj(const Coin_t & C) { return inventory_.CoinsAdj(C); }
-        inline bool MeteorShardsAdj(const MeteorShard_t & M)
-        {
-            return inventory_.MeteorShardsAdj(M);
-        }
-        inline bool GemsAdj(const Gem_t & G) { return inventory_.GemsAdj(G); }
+        bool CoinsAdj(const Coin_t & C) { return inventory_.CoinsAdj(C); }
+        bool MeteorShardsAdj(const MeteorShard_t & M) { return inventory_.MeteorShardsAdj(M); }
+        bool GemsAdj(const Gem_t & G) { return inventory_.GemsAdj(G); }
 
         // These functinons return the ITEM_ACTION_SUCCESS_STR_ (empty) string on success.
         // On failure, the string will be an explanation of the failure that can be shown to the
@@ -327,10 +312,10 @@ namespace creature
         const item::ItemPVec_t CurrentWeaponsInc();
         void SetCurrentWeaponsToBest();
         void SetCurrentWeaponsToBestIfInvalidated();
-        inline const item::ItemPVec_t CurrentWeaponsCopy() const { return currWeaponsPVec_; }
+        const item::ItemPVec_t CurrentWeaponsCopy() const { return currWeaponsPVec_; }
         std::size_t WeaponsCount() const;
-        inline bool HasWeapons() const { return WeaponsCount() > 0; }
-        inline bool HasWeaponsHeld() const { return CurrentWeaponsCopy().empty() == false; }
+        bool HasWeapons() const { return WeaponsCount() > 0; }
+        bool HasWeaponsHeld() const { return CurrentWeaponsCopy().empty() == false; }
         bool IsHoldingProjectileWeapon() const;
 
         const std::string WeaponsString() const;
@@ -339,14 +324,14 @@ namespace creature
         Armor_t ArmorRating() const;
 
         // spell related functions
-        inline bool CanCastSpells() const { return CanCastSpellsStr().empty(); }
+        bool CanCastSpells() const { return CanCastSpellsStr().empty(); }
 
         const std::string CanCastSpellsStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
 
         bool CanCastSpellByEffectType(const combat::EffectType::Enum) const;
         bool CanCastSpellByEffectType(const combat::EffectTypeVec_t &) const;
 
-        inline spell::SpellVec_t Spells() const { return spellsVec_; }
+        spell::SpellVec_t Spells() const { return spellsVec_; }
 
         const spell::SpellPVec_t SpellsPVec() const;
 
@@ -354,14 +339,14 @@ namespace creature
         bool SpellRemove(const spell::Spells::Enum);
 
         // song related functions
-        inline bool CanPlaySongs() const { return CanPlaySongsStr().empty(); }
+        bool CanPlaySongs() const { return CanPlaySongsStr().empty(); }
 
         const std::string CanPlaySongsStr(const bool WILL_PREFIX_AND_POSTFIX = true) const;
 
         bool CanPlaySongsByEffectType(const combat::EffectType::Enum) const;
         bool CanPlaySongsByEffectType(const combat::EffectTypeVec_t &) const;
 
-        inline song::SongVec_t Songs() const { return songsVec_; }
+        song::SongVec_t Songs() const { return songsVec_; }
 
         const song::SongPVec_t SongsPVec() const;
 
@@ -370,9 +355,9 @@ namespace creature
 
         Weight_t WeightCanCarry() const;
 
-        inline Achievements & GetAchievements() { return achievements_; }
+        Achievements & GetAchievements() { return achievements_; }
 
-        inline bool CanFly() const { return (race::CanFly(race_) && role::CanFly(role_)); }
+        bool CanFly() const { return (race::CanFly(race_) && role::CanFly(role_)); }
 
         const std::string ToString() const;
 
@@ -385,66 +370,66 @@ namespace creature
         std::size_t LastSongPlayedNum() const { return lastSongPlayedNum_; }
         void LastSongPlayedNum(const std::size_t N) { lastSongPlayedNum_ = N; }
 
-        inline const EnchantmentPVec_t Enchantments() const { return enchantmentsPVec_; }
+        const EnchantmentPVec_t Enchantments() const { return enchantmentsPVec_; }
 
         void EnchantmentApplyOrRemove(const EnchantmentPtr_t, const bool WILL_APPLY);
 
         void ReCalculateTraitBonuses();
 
-        inline int TraitNormal(const stats::Traits::Enum E) const
+        int TraitNormal(const stats::Traits::Enum E) const
         {
             return actualSet_.GetCopy(E).Normal();
         }
 
-        inline stats::Trait_t TraitNormalAdj(const stats::Traits::Enum E, const stats::Trait_t ADJ)
+        stats::Trait_t TraitNormalAdj(const stats::Traits::Enum E, const stats::Trait_t ADJ)
         {
             return actualSet_.Get(E).NormalAdj(ADJ);
         }
 
-        inline void TraitNormalSet(const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
+        void TraitNormalSet(const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
         {
             actualSet_.Get(E).NormalSet(NEW_VALUE);
         }
 
-        inline stats::Trait_t TraitCurrent(const stats::Traits::Enum E) const
+        stats::Trait_t TraitCurrent(const stats::Traits::Enum E) const
         {
             return actualSet_.GetCopy(E).Current();
         }
 
-        inline stats::Trait_t TraitCurrentAdj(const stats::Traits::Enum E, const stats::Trait_t ADJ)
+        stats::Trait_t TraitCurrentAdj(const stats::Traits::Enum E, const stats::Trait_t ADJ)
         {
             return actualSet_.Get(E).CurrentAdj(ADJ);
         }
 
-        inline void TraitCurrentSet(const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
+        void TraitCurrentSet(const stats::Traits::Enum E, const stats::Trait_t NEW_VALUE)
         {
             actualSet_.Get(E).CurrentSet(NEW_VALUE);
         }
 
         stats::Trait_t TraitWorking(const stats::Traits::Enum E) const;
 
-        inline stats::Trait_t TraitBonusNormal(const stats::Traits::Enum E) const
+        stats::Trait_t TraitBonusNormal(const stats::Traits::Enum E) const
         {
             return bonusSet_.GetCopy(E).Normal();
         }
 
         stats::Trait_t TraitBonusNormalAdj(const stats::Traits::Enum E, const stats::Trait_t ADJ);
 
-        inline stats::Trait_t TraitBonusCurrent(const stats::Traits::Enum E) const
+        stats::Trait_t TraitBonusCurrent(const stats::Traits::Enum E) const
         {
             return bonusSet_.GetCopy(E).Current();
         }
 
         bool TraitBonusTest(const stats::Traits::Enum) const;
 
-        inline float TraitBonusActualAsRatio(const stats::Traits::Enum E) const
+        float TraitBonusActualAsRatio(const stats::Traits::Enum E) const
         {
             return static_cast<float>(bonusSet_.GetCopy(E).Current()) / 100.0f;
         }
 
         const stats::TraitSet TraitsWorking() const;
 
-        inline const stats::TraitSet TraitsBonuses() const { return bonusSet_; }
+        const stats::TraitSet TraitsBonuses() const { return bonusSet_; }
 
         const std::string
             TraitModifiedString(const stats::Traits::Enum E, const bool WILL_WRAP) const;

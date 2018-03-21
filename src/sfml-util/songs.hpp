@@ -45,7 +45,7 @@ namespace sfml_util
 
         friend bool operator==(const SongSet & L, const SongSet & R);
 
-        inline bool IsValid() const { return (op.IsValid() && set.IsValid()); }
+        bool IsValid() const { return (op.IsValid() && set.IsValid()); }
 
         MusicSet set;
         MusicOperator op;

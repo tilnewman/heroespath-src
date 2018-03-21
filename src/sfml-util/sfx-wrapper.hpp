@@ -65,9 +65,9 @@ namespace sfml_util
 
         void Reset();
 
-        inline sound_effect::Enum Which() const { return which_; }
+        sound_effect::Enum Which() const { return which_; }
 
-        inline void Play()
+        void Play()
         {
             if (IsValid())
             {
@@ -75,7 +75,7 @@ namespace sfml_util
             }
         }
 
-        inline void Stop()
+        void Stop()
         {
             if (IsValid())
             {
@@ -83,9 +83,9 @@ namespace sfml_util
             }
         }
 
-        inline float Volume() const { return ((IsValid()) ? soundUPtr_->getVolume() : 0.0f); }
+        float Volume() const { return ((IsValid()) ? soundUPtr_->getVolume() : 0.0f); }
 
-        inline void Volume(const float V)
+        void Volume(const float V)
         {
             if (IsValid())
             {
@@ -93,7 +93,7 @@ namespace sfml_util
             }
         }
 
-        inline sf::SoundSource::Status Status() const
+        sf::SoundSource::Status Status() const
         {
             return ((IsValid()) ? soundUPtr_->getStatus() : sf::SoundSource::Stopped);
         }

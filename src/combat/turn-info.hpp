@@ -61,102 +61,78 @@ namespace combat
             const TurnAction::Enum TURN_STATE = TurnAction::Count,
             const strategy::Info & STRATEGY_INFO = strategy::Info());
 
-        inline bool GetIsFlying() const { return isFlying_; }
-        inline void SetIsFlying(const bool B) { isFlying_ = B; }
+        bool GetIsFlying() const { return isFlying_; }
+        void SetIsFlying(const bool B) { isFlying_ = B; }
 
-        inline const TurnActionInfo GetTurnActionInfo() const { return turnActionInfo_; }
-        inline void SetTurnActionInfo(const TurnActionInfo & TAI) { turnActionInfo_ = TAI; }
+        const TurnActionInfo GetTurnActionInfo() const { return turnActionInfo_; }
+        void SetTurnActionInfo(const TurnActionInfo & TAI) { turnActionInfo_ = TAI; }
 
-        inline strategy::Info GetStrategyInfo() const { return strategyInfo_; }
-        inline void SetStrategyInfo(const strategy::Info & SI) { strategyInfo_ = SI; }
+        strategy::Info GetStrategyInfo() const { return strategyInfo_; }
+        void SetStrategyInfo(const strategy::Info & SI) { strategyInfo_ = SI; }
 
-        inline creature::CreaturePtr_t GetFirstAttackedByCreature() const
+        creature::CreaturePtr_t GetFirstAttackedByCreature() const
         {
             return firstAttackedByCreaturePtr_;
         }
-        inline void SetFirstAttackedByCreature(creature::CreaturePtr_t P)
+        void SetFirstAttackedByCreature(creature::CreaturePtr_t P)
         {
             firstAttackedByCreaturePtr_ = P;
         }
 
-        inline creature::CreaturePtr_t GetLastAttackedByCreature() const
+        creature::CreaturePtr_t GetLastAttackedByCreature() const
         {
             return lastAttackedByCreaturePtr_;
         }
-        inline void SetLastAttackedByCreature(creature::CreaturePtr_t P)
+        void SetLastAttackedByCreature(creature::CreaturePtr_t P)
         {
             lastAttackedByCreaturePtr_ = P;
         }
 
-        inline creature::CreaturePtr_t GetFirstHitByCreature() const
-        {
-            return firstHitByCreaturePtr_;
-        }
-        inline void SetFirstHitByCreature(creature::CreaturePtr_t SPTR)
-        {
-            firstHitByCreaturePtr_ = SPTR;
-        }
+        creature::CreaturePtr_t GetFirstHitByCreature() const { return firstHitByCreaturePtr_; }
+        void SetFirstHitByCreature(creature::CreaturePtr_t SPTR) { firstHitByCreaturePtr_ = SPTR; }
 
-        inline creature::CreaturePtr_t GetLastHitByCreature() const
-        {
-            return lastHitByCreaturePtr_;
-        }
-        inline void SetLastHitByCreature(creature::CreaturePtr_t SPTR)
-        {
-            lastHitByCreaturePtr_ = SPTR;
-        }
+        creature::CreaturePtr_t GetLastHitByCreature() const { return lastHitByCreaturePtr_; }
+        void SetLastHitByCreature(creature::CreaturePtr_t SPTR) { lastHitByCreaturePtr_ = SPTR; }
 
-        inline creature::CreaturePtr_t GetFirstToMakeMusicCreature() const
-        {
-            return firstToMakeMusicPtr_;
-        }
-        inline void SetFirstToMakeMusicCreature(creature::CreaturePtr_t SPTR)
+        creature::CreaturePtr_t GetFirstToMakeMusicCreature() const { return firstToMakeMusicPtr_; }
+        void SetFirstToMakeMusicCreature(creature::CreaturePtr_t SPTR)
         {
             firstToMakeMusicPtr_ = SPTR;
         }
 
-        inline creature::CreaturePtr_t GetLastToMakeMusicCreature() const
-        {
-            return lastToMakeMusicPtr_;
-        }
-        inline void SetLastToMakeMusicCreature(creature::CreaturePtr_t SPTR)
+        creature::CreaturePtr_t GetLastToMakeMusicCreature() const { return lastToMakeMusicPtr_; }
+        void SetLastToMakeMusicCreature(creature::CreaturePtr_t SPTR)
         {
             lastToMakeMusicPtr_ = SPTR;
         }
 
-        inline bool IsFirstAttackedByAlsoFirstHitByCreature() const
+        bool IsFirstAttackedByAlsoFirstHitByCreature() const
         {
             return firstAttackedByCreaturePtr_ == firstHitByCreaturePtr_;
         }
-        inline bool IsLastAttackedByAlsoLastHitByCreature() const
+        bool IsLastAttackedByAlsoLastHitByCreature() const
         {
             return lastAttackedByCreaturePtr_ == lastHitByCreaturePtr_;
         }
 
-        inline creature::CreaturePtr_t GetFirstToCastCreature() const { return firstToCastPtr_; }
-        inline void SetFirstToCastCreature(creature::CreaturePtr_t SPTR) { firstToCastPtr_ = SPTR; }
+        creature::CreaturePtr_t GetFirstToCastCreature() const { return firstToCastPtr_; }
+        void SetFirstToCastCreature(creature::CreaturePtr_t SPTR) { firstToCastPtr_ = SPTR; }
 
-        inline creature::CreaturePtr_t GetLastToCastCreature() const { return lastToCastPtr_; }
-        inline void SetLastToCastCreature(creature::CreaturePtr_t SPTR) { lastToCastPtr_ = SPTR; }
+        creature::CreaturePtr_t GetLastToCastCreature() const { return lastToCastPtr_; }
+        void SetLastToCastCreature(creature::CreaturePtr_t SPTR) { lastToCastPtr_ = SPTR; }
 
         // stores the abs of the damage
-        inline const DamageCreaturePair_t GetMostDamageCreaturePair() const
-        {
-            return mostDamagePair_;
-        }
-        inline void SetMostDamageCreaturePair(const DamageCreaturePair_t & P)
-        {
-            mostDamagePair_ = P;
-        }
+        const DamageCreaturePair_t GetMostDamageCreaturePair() const { return mostDamagePair_; }
+        void SetMostDamageCreaturePair(const DamageCreaturePair_t & P) { mostDamagePair_ = P; }
 
-        inline std::size_t CastCount() const { return castCount_; }
-        inline std::size_t CastCountIncrement() { return ++castCount_; }
+        std::size_t CastCount() const { return castCount_; }
+        std::size_t CastCountIncrement() { return ++castCount_; }
 
-        inline std::size_t SongCount() const { return songCount_; }
-        inline std::size_t SongCountIncrement() { return ++songCount_; }
+        std::size_t SongCount() const { return songCount_; }
+        std::size_t SongCountIncrement() { return ++songCount_; }
 
-        inline bool GetWasHitLastTurn() const { return wasHitLastTurn_; }
-        inline void SetWasHitLastTurn(const bool B) { wasHitLastTurn_ = B; }
+        bool GetWasHitLastTurn() const { return wasHitLastTurn_; }
+        void SetWasHitLastTurn(const bool B) { wasHitLastTurn_ = B; }
 
         void RemoveDeadCreatureTasks(creature::CreatureCPtrC_t);
 

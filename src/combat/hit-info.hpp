@@ -142,27 +142,27 @@ namespace combat
         // use this constructor when the attempt failed/missed
         HitInfo(const HitType::Enum HIT_TYPE, const ContentAndNamePos & ACTION_PHRASE_CNP);
 
-        inline bool WasHit() const { return wasHit_; }
-        inline HitType::Enum TypeOfHit() const { return hitType_; }
-        inline item::ItemPtr_t Weapon() const { return weaponPtr_; }
-        inline Health_t Damage() const { return damage_; }
-        inline bool IsCritical() const { return isCritical_; }
-        inline bool IsPowerHit() const { return isPower_; }
-        inline const std::string ActionVerb() const { return actionVerb_; }
-        inline spell::SpellPtr_t SpellPtr() const { return spellPtr_; }
-        inline song::SongPtr_t SongPtr() const { return songPtr_; }
-        inline bool IsSpell() const { return (spellPtr_ != nullptr); }
-        inline bool IsWeapon() const { return (weaponPtr_ != nullptr); }
+        bool WasHit() const { return wasHit_; }
+        HitType::Enum TypeOfHit() const { return hitType_; }
+        item::ItemPtr_t Weapon() const { return weaponPtr_; }
+        Health_t Damage() const { return damage_; }
+        bool IsCritical() const { return isCritical_; }
+        bool IsPowerHit() const { return isPower_; }
+        const std::string ActionVerb() const { return actionVerb_; }
+        spell::SpellPtr_t SpellPtr() const { return spellPtr_; }
+        song::SongPtr_t SongPtr() const { return songPtr_; }
+        bool IsSpell() const { return (spellPtr_ != nullptr); }
+        bool IsWeapon() const { return (weaponPtr_ != nullptr); }
 
-        inline creature::ConditionPtr_t ConditionPtr() const { return conditionPtr_; }
+        creature::ConditionPtr_t ConditionPtr() const { return conditionPtr_; }
 
-        inline bool DidArmorAbsorb() const { return didArmorAbsorb_; }
+        bool DidArmorAbsorb() const { return didArmorAbsorb_; }
 
-        inline const ContentAndNamePos ActionPhrase() const { return actionPhraseCNP_; }
+        const ContentAndNamePos ActionPhrase() const { return actionPhraseCNP_; }
 
-        inline const creature::CondEnumVec_t CondsAdded() const { return condsAddedVec_; }
+        const creature::CondEnumVec_t CondsAdded() const { return condsAddedVec_; }
 
-        inline const creature::CondEnumVec_t CondsRemoved() const { return condsRemovedVec_; }
+        const creature::CondEnumVec_t CondsRemoved() const { return condsRemovedVec_; }
 
         bool CondsAddedContains(const creature::Conditions::Enum) const;
         bool CondsAddedRemove(const creature::Conditions::Enum);
@@ -170,7 +170,7 @@ namespace combat
         bool CondsRemovedContains(const creature::Conditions::Enum) const;
         bool CondsRemovedRemove(const creature::Conditions::Enum);
 
-        inline bool WasKill() const { return CondsAddedContains(creature::Conditions::Dead); }
+        bool WasKill() const { return CondsAddedContains(creature::Conditions::Dead); }
 
         bool IsValid() const;
 

@@ -107,20 +107,20 @@ namespace combat
         void SetupAndStartTransition(
             CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMABT_REGION);
 
-        inline float GetTransitionStatus() const { return geSlider_.ProgressRatio(); }
+        float GetTransitionStatus() const { return geSlider_.ProgressRatio(); }
 
-        inline bool IsTransitionToComplete() const { return isTransToComplete_; }
-        inline bool IsTransitionBackComplete() const { return isTransBackComplete_; }
+        bool IsTransitionToComplete() const { return isTransToComplete_; }
+        bool IsTransitionBackComplete() const { return isTransBackComplete_; }
 
-        inline sfml_util::Moving::Enum MovingDir() const { return movingDir_; }
-        inline void MovingDir(const sfml_util::Moving::Enum E) { movingDir_ = E; }
+        sfml_util::Moving::Enum MovingDir() const { return movingDir_; }
+        void MovingDir(const sfml_util::Moving::Enum E) { movingDir_ = E; }
 
-        inline CombatNodePtr_t CombatNodePtr() { return combatNodePtr_; }
+        CombatNodePtr_t CombatNodePtr() { return combatNodePtr_; }
 
-        inline bool WillPreventNextTransition() const { return preventNextTrans_; }
-        inline void WillPreventNextTransition(const bool B) { preventNextTrans_ = B; }
+        bool WillPreventNextTransition() const { return preventNextTrans_; }
+        void WillPreventNextTransition(const bool B) { preventNextTrans_ = B; }
 
-        inline void ReleaseCombatNodePointer()
+        void ReleaseCombatNodePointer()
         {
             combatNodePtr_ = nullptr;
             geSlider_.SetEntity(nullptr);

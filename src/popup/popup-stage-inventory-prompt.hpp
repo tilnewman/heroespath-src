@@ -51,7 +51,7 @@ namespace popup
         bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
-        inline bool WillPressingCKeyClosePopup() const override { return true; }
+        bool WillPressingCKeyClosePopup() const override { return true; }
     };
 } // namespace popup
 } // namespace heroespath

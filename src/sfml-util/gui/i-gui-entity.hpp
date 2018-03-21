@@ -86,8 +86,7 @@ namespace sfml_util
 
             // The only member required by sf::Drawable.
         public:
-            virtual void
-                draw(sf::RenderTarget & target, sf::RenderStates states) const override = 0;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override = 0;
 
             // IClickable
             MouseState::Enum GetMouseState() const override = 0;
@@ -96,7 +95,7 @@ namespace sfml_util
             bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override = 0;
             bool IsHeldDown() const override = 0;
             bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override = 0;
-            virtual bool UpdateMouseWheel(
+            bool UpdateMouseWheel(
                 const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION) override = 0;
             bool HasFocus() const override = 0;
             bool SetHasFocus(const bool) override = 0;

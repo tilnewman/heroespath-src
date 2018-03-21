@@ -73,8 +73,8 @@ namespace sfml_util
             static bool Test();
 
             static void SetItemImageDirectory(const std::string & PATH);
-            static inline float GetMaxDimmension() { return 256.0f; }
-            static inline const std::string FileExtension() { return FILE_EXT_STR_; }
+            static float GetMaxDimmension() { return 256.0f; }
+            static const std::string FileExtension() { return FILE_EXT_STR_; }
 
             void Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const;
 

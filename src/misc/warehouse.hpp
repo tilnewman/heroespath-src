@@ -59,7 +59,7 @@ namespace misc
             : uPtrVec_()
         {}
 
-        inline std::size_t Size() const { return uPtrVec_.size(); }
+        std::size_t Size() const { return uPtrVec_.size(); }
 
         // returns the pointer given for caller ease of use only
         T * Store(T * ptr_to_store, const std::string & NAME)

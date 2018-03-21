@@ -59,7 +59,7 @@ namespace combat
         static const std::string ToString(const TurnAction::Enum);
         static const std::string Name(const TurnAction::Enum);
 
-        inline static bool IsMove(const Enum E) { return ((E == Advance) || (E == Retreat)); }
+        static bool IsMove(const Enum E) { return ((E == Advance) || (E == Retreat)); }
     };
 } // namespace combat
 } // namespace heroespath

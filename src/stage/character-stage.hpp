@@ -178,17 +178,15 @@ namespace stage
         virtual ~CharacterStage();
 
         // required by callback handler
-        inline const std::string HandlerName() const override { return GetStageName(); }
+        const std::string HandlerName() const override { return GetStageName(); }
 
-        virtual bool
-            HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &) override;
+        bool HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &) override;
 
         bool HandleCallback(const popup::PopupResponse &) override;
 
-        virtual bool
-            HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
-        virtual bool HandleCallback(
+        bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
         void Setup() override;
@@ -197,8 +195,7 @@ namespace stage
         bool KeyPress(const sf::Event::KeyEvent & KE) override;
         bool KeyRelease(const sf::Event::KeyEvent & KE) override;
         void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
-        virtual sfml_util::gui::IGuiEntityPtr_t
-            UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+        sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
         void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
         virtual bool AreAnyAnimNumStillMoving() const;
 

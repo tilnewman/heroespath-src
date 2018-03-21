@@ -62,9 +62,9 @@ namespace creature
         static void Acquire();
         static void Release();
 
-        inline std::size_t MaxCharacterCount() const { return 13; }
+        std::size_t MaxCharacterCount() const { return 13; }
 
-        inline float TextEntryBoxWidth(
+        float TextEntryBoxWidth(
             const sfml_util::FontPtr_t FONT_PTR = NameInfo::Instance()->DefaultFont(),
             const unsigned int CHAR_SIZE = NameInfo::Instance()->DefaultSize()) const
         {
@@ -76,19 +76,16 @@ namespace creature
 
         unsigned int DefaultSize() const;
 
-        inline char LargestLetter() const { return 'M'; }
+        char LargestLetter() const { return 'M'; }
 
-        inline const std::string LargestName() const
+        const std::string LargestName() const
         {
             return std::string(MaxCharacterCount(), LargestLetter());
         }
 
-        inline const std::string LargestLetterString() const
-        {
-            return std::string(1, LargestLetter());
-        }
+        const std::string LargestLetterString() const { return std::string(1, LargestLetter()); }
 
-        inline const sfml_util::gui::TextInfo MakeTextInfo(
+        const sfml_util::gui::TextInfo MakeTextInfo(
             const std::string & TEXT = " ",
             const sf::Color & COLOR = sf::Color::White,
             const sfml_util::Justified::Enum JUSTIFICATION = sfml_util::Justified::Left) const
@@ -112,7 +109,7 @@ namespace creature
 
         float Length(const sfml_util::gui::TextInfo & TEXT_INFO) const;
 
-        inline float Length() { return Length(MakeTextInfo(LargestName())); }
+        float Length() { return Length(MakeTextInfo(LargestName())); }
 
     private:
         static std::unique_ptr<NameInfo> instanceUPtr_;

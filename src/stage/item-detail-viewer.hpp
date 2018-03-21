@@ -60,9 +60,9 @@ namespace stage
         void FadeIn(const item::ItemPtr_t, const sf::FloatRect &);
         void FadeOut();
 
-        inline bool IsShowing() const { return isShowing_; }
-        inline bool IsMoving() const { return slider_.IsMoving(); }
-        inline bool IsMovingOrShowing() const { return (IsShowing() || IsMoving()); }
+        bool IsShowing() const { return isShowing_; }
+        bool IsMoving() const { return slider_.IsMoving(); }
+        bool IsMovingOrShowing() const { return (IsShowing() || IsMoving()); }
 
     private:
         void SetupBackgroundQuadColors(const float PROGRESS_RATIO);

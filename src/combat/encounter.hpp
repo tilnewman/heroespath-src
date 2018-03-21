@@ -85,34 +85,31 @@ namespace combat
         non_player::Party & DeadNonPlayerParty();
         non_player::Party & RunawayNonPlayerParty();
 
-        inline const creature::CreaturePVec_t & RunawayPlayersVec() const
-        {
-            return runawayPlayersVec_;
-        }
+        const creature::CreaturePVec_t & RunawayPlayersVec() const { return runawayPlayersVec_; }
 
         bool IsRunaway(const creature::CreaturePtr_t) const;
         void Runaway(const creature::CreaturePtr_t);
 
-        inline std::size_t GetRoundCount() { return roundCounter_; }
-        inline bool HasStarted() const { return hasStarted_; }
+        std::size_t GetRoundCount() { return roundCounter_; }
+        bool HasStarted() const { return hasStarted_; }
 
         void Setup_First();
 
-        inline creature::CreaturePtr_t CurrentTurnCreature() const { return turnCreaturePtr_; }
+        creature::CreaturePtr_t CurrentTurnCreature() const { return turnCreaturePtr_; }
 
         const TurnInfo GetTurnInfoCopy(const creature::CreaturePtrC_t P) const;
 
-        inline void SetTurnInfo(const creature::CreaturePtrC_t P, const TurnInfo & TI)
+        void SetTurnInfo(const creature::CreaturePtrC_t P, const TurnInfo & TI)
         {
             turnInfoMap_[P] = TI;
         }
 
-        inline void SetIsFlying(const creature::CreaturePtrC_t P, const bool B)
+        void SetIsFlying(const creature::CreaturePtrC_t P, const bool B)
         {
             turnInfoMap_[P].SetIsFlying(B);
         }
 
-        inline void SetTurnActionInfo(const creature::CreaturePtrC_t P, const TurnActionInfo & TAI)
+        void SetTurnActionInfo(const creature::CreaturePtrC_t P, const TurnActionInfo & TAI)
         {
             turnInfoMap_[P].SetTurnActionInfo(TAI);
         }
@@ -132,9 +129,9 @@ namespace combat
 
         bool DidAllEnemiesRunAway() const;
 
-        inline creature::CreaturePtr_t LockPickCreaturePtr() const { return lockPickCreaturePtr_; }
+        creature::CreaturePtr_t LockPickCreaturePtr() const { return lockPickCreaturePtr_; }
 
-        inline void LockPickCreaturePtr(const creature::CreaturePtr_t NEW_CREATURE_PTR)
+        void LockPickCreaturePtr(const creature::CreaturePtr_t NEW_CREATURE_PTR)
         {
             lockPickCreaturePtr_ = NEW_CREATURE_PTR;
         }

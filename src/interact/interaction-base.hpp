@@ -56,15 +56,15 @@ namespace interact
 
         virtual ~InteractionBase() = default;
 
-        inline Interact::Enum Type() const final { return interactionType_; }
+        Interact::Enum Type() const final { return interactionType_; }
 
-        inline const sfml_util::gui::TextInfo & Text() const final { return text_; }
+        const sfml_util::gui::TextInfo & Text() const final { return text_; }
 
         ButtonVec_t & Buttons() final { return buttons_; }
 
-        inline const sf::Texture & SubjectTexture() const final { return subjectTexture_; }
+        const sf::Texture & SubjectTexture() const final { return subjectTexture_; }
 
-        inline const sf::Texture & ContextTexture() const final { return contextTexture_; }
+        const sf::Texture & ContextTexture() const final { return contextTexture_; }
 
         void PlayEnterSfx() const final;
 
@@ -73,7 +73,7 @@ namespace interact
         static const sfml_util::gui::TextInfo
             MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE);
 
-        virtual bool OnButtonClick(
+        bool OnButtonClick(
             stage::InteractStage * const, const sfml_util::gui::TextButton * const) final;
 
         bool OnKeyRelease(stage::InteractStage * const, const sf::Keyboard::Key) final;

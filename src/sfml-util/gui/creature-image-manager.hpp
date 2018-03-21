@@ -69,7 +69,7 @@ namespace sfml_util
 
             static bool Test();
 
-            inline static float DimmensionMax() { return 256.0f; }
+            static float DimmensionMax() { return 256.0f; }
 
             const std::string GetFilename(
                 const creature::race::Enum RACE,

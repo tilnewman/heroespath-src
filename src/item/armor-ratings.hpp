@@ -60,23 +60,23 @@ namespace item
 
         void Setup();
 
-        inline Armor_t FullyClothedCloth() const { return clothesCloth_; }
+        Armor_t FullyClothedCloth() const { return clothesCloth_; }
 
-        inline Armor_t FullyClothedSoftLeather() const { return clothesSoftLeather_; }
+        Armor_t FullyClothedSoftLeather() const { return clothesSoftLeather_; }
 
-        inline Armor_t FullyClothedHardLeather() const { return clothesHardLeather_; }
+        Armor_t FullyClothedHardLeather() const { return clothesHardLeather_; }
 
-        inline Armor_t ArmoredLesserSoftLeather() const { return armoredLesserSoftLeather_; }
+        Armor_t ArmoredLesserSoftLeather() const { return armoredLesserSoftLeather_; }
 
-        inline Armor_t ArmoredLesserSteel() const { return armoredLesserSteel_; }
+        Armor_t ArmoredLesserSteel() const { return armoredLesserSteel_; }
 
-        inline Armor_t ArmoredLesserDiamond() const { return armoredLesserDiamond_; }
+        Armor_t ArmoredLesserDiamond() const { return armoredLesserDiamond_; }
 
-        inline Armor_t ArmoredGreaterSoftLeather() const { return armoredGreaterSoftLeather_; }
+        Armor_t ArmoredGreaterSoftLeather() const { return armoredGreaterSoftLeather_; }
 
-        inline Armor_t ArmoredGreaterSteel() const { return armoredGreaterSteel_; }
+        Armor_t ArmoredGreaterSteel() const { return armoredGreaterSteel_; }
 
-        inline Armor_t ArmoredGreaterDiamond() const { return armoredGreaterDiamond_; }
+        Armor_t ArmoredGreaterDiamond() const { return armoredGreaterDiamond_; }
 
     private:
         Armor_t ClothesSetRating(const item::material::Enum) const;

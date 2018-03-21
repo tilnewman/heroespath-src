@@ -125,63 +125,62 @@ namespace config
             return x;
         }
         //
-        inline virtual const std::string
+        virtual const std::string
             GetWithDefaultStr(const std::string & KEY, const std::string & DEFAULT = "") const
         {
             return GetWithDefault<std::string>(KEY, DEFAULT);
         }
-        inline virtual int GetWithDefaultInt(const std::string & KEY, const int DEFAULT = 0) const
+        virtual int GetWithDefaultInt(const std::string & KEY, const int DEFAULT = 0) const
         {
             return GetWithDefault<int>(KEY, DEFAULT);
         }
-        inline virtual std::size_t
+        virtual std::size_t
             GetWithDefaultSizet(const std::string & KEY, const std::size_t DEFAULT = 0) const
         {
             return GetWithDefault<std::size_t>(KEY, DEFAULT);
         }
-        inline virtual float
-            GetWithDefaultFloat(const std::string & KEY, const float DEFAULT = 0.0f) const
+        virtual float GetWithDefaultFloat(const std::string & KEY, const float DEFAULT = 0.0f) const
         {
             return GetWithDefault<float>(KEY, DEFAULT);
         }
-        inline virtual double
+        virtual double
             GetWithDefaultDouble(const std::string & KEY, const double DEFAULT = 0.0) const
         {
             return GetWithDefault<double>(KEY, DEFAULT);
         }
         virtual bool GetWithDefaultBool(const std::string & KEY, const bool DEFAULT = false) const;
         //
-        inline virtual const std::string GetCopyStr(const std::string & KEY) const
+        virtual const std::string GetCopyStr(const std::string & KEY) const
         {
             std::string s;
             Get<std::string>(s, KEY);
             return s;
         }
-        inline virtual int GetCopyInt(const std::string & KEY) const
+        virtual int GetCopyInt(const std::string & KEY) const
         {
             int i;
             Get<int>(i, KEY);
             return i;
         }
-        inline virtual std::size_t GetCopySizet(const std::string & KEY) const
+        virtual std::size_t GetCopySizet(const std::string & KEY) const
         {
             std::size_t s;
             Get<std::size_t>(s, KEY);
             return s;
         }
-        inline virtual float GetCopyFloat(const std::string & KEY) const
+        virtual float GetCopyFloat(const std::string & KEY) const
         {
             float f;
             Get<float>(f, KEY);
             return f;
         }
-        inline virtual double GetCopyDouble(const std::string & KEY) const
+        virtual double GetCopyDouble(const std::string & KEY) const
         {
             double d;
             Get<double>(d, KEY);
             return d;
         }
-        inline virtual bool GetCopyBool(const std::string & KEY) const
+        virtual bool GetCopyBool(const std::string & KEY) const
         {
             bool b;
             GetBool(b, KEY);
@@ -193,19 +192,16 @@ namespace config
         // false is returned.
         //
         virtual void GetStr(std::string & val, const std::string & KEY) const;
-        inline virtual void GetInt(int & val, const std::string & KEY) const
-        {
-            return Get<int>(val, KEY);
-        }
-        inline virtual void GetSizet(std::size_t & val, const std::string & KEY) const
+        virtual void GetInt(int & val, const std::string & KEY) const { return Get<int>(val, KEY); }
+        virtual void GetSizet(std::size_t & val, const std::string & KEY) const
         {
             return Get<std::size_t>(val, KEY);
         }
-        inline virtual void GetFloat(float & val, const std::string & KEY) const
+        virtual void GetFloat(float & val, const std::string & KEY) const
         {
             return Get<float>(val, KEY);
         }
-        inline virtual void GetDouble(double & val, const std::string & KEY) const
+        virtual void GetDouble(double & val, const std::string & KEY) const
         {
             return Get<double>(val, KEY);
         }
@@ -213,23 +209,17 @@ namespace config
 
         // Sets the value at KEY to VALUE, creating the key if needed.
         virtual void SetStr(const std::string & KEY, const std::string & VALUE);
-        inline virtual void SetInt(const std::string & KEY, const int VALUE)
-        {
-            Set<int>(KEY, VALUE);
-        }
-        inline virtual void SetSizet(const std::string & KEY, const std::size_t VALUE)
+        virtual void SetInt(const std::string & KEY, const int VALUE) { Set<int>(KEY, VALUE); }
+        virtual void SetSizet(const std::string & KEY, const std::size_t VALUE)
         {
             Set<std::size_t>(KEY, VALUE);
         }
-        inline virtual void SetBool(const std::string & KEY, const bool VALUE)
-        {
-            Set<bool>(KEY, VALUE);
-        }
-        inline virtual void SetFloat(const std::string & KEY, const float VALUE)
+        virtual void SetBool(const std::string & KEY, const bool VALUE) { Set<bool>(KEY, VALUE); }
+        virtual void SetFloat(const std::string & KEY, const float VALUE)
         {
             Set<float>(KEY, VALUE);
         }
-        inline virtual void SetDouble(const std::string & KEY, const double VALUE)
+        virtual void SetDouble(const std::string & KEY, const double VALUE)
         {
             Set<double>(KEY, VALUE);
         }

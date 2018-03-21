@@ -61,9 +61,9 @@ namespace combat
         void Save(const CombatDisplayPtrC_t);
         void Restore(CombatDisplayPtrC_t);
 
-        inline bool HasRestored() const { return hasRestored_; }
-        inline bool CanTurnAdvance() const { return canTurnAdvance_; }
-        inline void CanTurnAdvance(const bool B) { canTurnAdvance_ = B; }
+        bool HasRestored() const { return hasRestored_; }
+        bool CanTurnAdvance() const { return canTurnAdvance_; }
+        void CanTurnAdvance(const bool B) { canTurnAdvance_ = B; }
 
     private:
         void CreatureHealthSave(const CombatDisplayPtrC_t);

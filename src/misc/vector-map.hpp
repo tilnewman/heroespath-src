@@ -130,26 +130,26 @@ namespace misc
     };
 
     template <typename Key_t, typename Value_t>
-    inline typename VectorMap<Key_t, Value_t>::iterator begin(VectorMap<Key_t, Value_t> & cpm)
+    typename VectorMap<Key_t, Value_t>::iterator begin(VectorMap<Key_t, Value_t> & cpm)
     {
         return cpm.begin();
     }
 
     template <typename Key_t, typename Value_t>
-    inline typename VectorMap<Key_t, Value_t>::iterator end(VectorMap<Key_t, Value_t> & cpm)
+    typename VectorMap<Key_t, Value_t>::iterator end(VectorMap<Key_t, Value_t> & cpm)
     {
         return cpm.end();
     }
 
     template <typename Key_t, typename Value_t>
-    inline const typename VectorMap<Key_t, Value_t>::const_iterator
+    const typename VectorMap<Key_t, Value_t>::const_iterator
         begin(const VectorMap<Key_t, Value_t> & CPM)
     {
         return CPM.begin();
     }
 
     template <typename Key_t, typename Value_t>
-    inline const typename VectorMap<Key_t, Value_t>::const_iterator
+    const typename VectorMap<Key_t, Value_t>::const_iterator
         end(const VectorMap<Key_t, Value_t> & CPM)
     {
         return CPM.end();

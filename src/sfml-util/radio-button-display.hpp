@@ -60,7 +60,7 @@ namespace sfml_util
 
         virtual ~RadioButtonSet_DisplayChange();
 
-        inline virtual const std::string HandlerName() const { return GetEntityName(); }
+        virtual const std::string HandlerName() const { return GetEntityName(); }
 
         virtual bool HandleCallback(const popup::PopupResponse &);
 

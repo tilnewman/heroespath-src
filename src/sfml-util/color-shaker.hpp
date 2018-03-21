@@ -50,11 +50,11 @@ namespace sfml_util
 
         void Reset();
 
-        inline void Start() { isShaking_ = true; }
-        inline void Stop() { isShaking_ = false; }
-        inline float Speed() const { return static_cast<float>(slider_.Speed()); }
-        inline bool IsShaking() const { return isShaking_; }
-        inline const sf::Color Current() const { return colorCurr_; }
+        void Start() { isShaking_ = true; }
+        void Stop() { isShaking_ = false; }
+        float Speed() const { return static_cast<float>(slider_.Speed()); }
+        bool IsShaking() const { return isShaking_; }
+        const sf::Color Current() const { return colorCurr_; }
 
     private:
         sliders::Slider<float> slider_;

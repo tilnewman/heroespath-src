@@ -111,10 +111,10 @@ namespace sfml_util
         // Note:  These functions don't actually change the volume of any sound objects in memory.
         //       See Loop::Start/StopMusic() functions for the actual volume handling code.
         //       All background music shares a volume, and all sound effects share a volume.
-        inline float MusicVolume() const { return musicVolume_; }
+        float MusicVolume() const { return musicVolume_; }
         void MusicVolumeSet(const float);
         //
-        inline float SoundEffectVolume() const { return effectsVolume_; }
+        float SoundEffectVolume() const { return effectsVolume_; }
         void SoundEffectVolumeSet(const float V);
 
         void MusicVolumeFadeToCurrent(const music::Enum);
@@ -150,7 +150,7 @@ namespace sfml_util
 
         SoundBufferUPtr_t LoadSfxBuffer(const sound_effect::Enum) const;
 
-        inline bool IsSfxDelayPairReadyToPlay(const SfxDelayPair_t & SDP) const
+        bool IsSfxDelayPairReadyToPlay(const SfxDelayPair_t & SDP) const
         {
             return (SDP.second < 0.0f);
         }

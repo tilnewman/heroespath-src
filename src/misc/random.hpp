@@ -61,7 +61,7 @@ namespace misc
         };
 
         template <typename T>
-        T Real(const T THE_MIN, const T THE_MAX)
+        inline T Real(const T THE_MIN, const T THE_MAX)
         {
             if (misc::IsRealClose(THE_MIN, THE_MAX))
             {
@@ -98,7 +98,7 @@ namespace misc
         // The result is undefined if T is not one of: short, int, long, long long, unsigned short,
         // unsigned int, unsigned long, or unsigned long long.
         template <typename T>
-        T NonReal(const T THE_MIN, const T THE_MAX)
+        inline T NonReal(const T THE_MIN, const T THE_MAX)
         {
             // Tested uniform_int_distribution<int> on both Windows and MacOS over ranges where
             // min==max and where min>max.  In both cases the distribution didn't crash and behaved
@@ -122,7 +122,7 @@ namespace misc
         }
 
         template <typename T>
-        T NonReal(const T THE_MAX)
+        inline T NonReal(const T THE_MAX)
         {
             return NonReal<T>(0, THE_MAX);
         }

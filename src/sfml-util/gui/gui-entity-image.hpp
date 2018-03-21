@@ -70,15 +70,15 @@ namespace sfml_util
             virtual void SpriteColorsSet(const sf::Color & NEW_COLOR);
             virtual void SpriteColorsReset();
 
-            inline sf::Sprite & GetUpSprite() { return upSprite_; }
-            inline sf::Sprite & GetDownSprite() { return downSprite_; }
-            inline sf::Sprite & GetOverSprite() { return overSprite_; }
+            sf::Sprite & GetUpSprite() { return upSprite_; }
+            sf::Sprite & GetDownSprite() { return downSprite_; }
+            sf::Sprite & GetOverSprite() { return overSprite_; }
 
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
         protected:
-            inline void OnClick(const sf::Vector2f &) override {}
+            void OnClick(const sf::Vector2f &) override {}
 
             sf::Sprite upSprite_;
             sf::Sprite downSprite_;

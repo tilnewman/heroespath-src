@@ -84,96 +84,81 @@ namespace item
 
         virtual ~Item();
 
-        inline const std::string Name() const { return name_; }
-        inline const std::string Desc() const { return desc_; }
+        const std::string Name() const { return name_; }
+        const std::string Desc() const { return desc_; }
 
-        inline const std::string ImageFilename() const { return imageFilename_; }
-        inline void ImageFilename(const std::string & S) { imageFilename_ = S; }
+        const std::string ImageFilename() const { return imageFilename_; }
+        void ImageFilename(const std::string & S) { imageFilename_ = S; }
 
-        inline const weapon::WeaponInfo Weapon_Info() const { return weaponInfo_; }
-        inline const armor::ArmorInfo Armor_Info() const { return armorInfo_; }
+        const weapon::WeaponInfo Weapon_Info() const { return weaponInfo_; }
+        const armor::ArmorInfo Armor_Info() const { return armorInfo_; }
 
-        inline category::Enum Category() const { return category_; }
-        inline material::Enum MaterialPrimary() const { return materialPri_; }
-        inline material::Enum MaterialSecondary() const { return materialSec_; }
-        inline weapon_type::Enum WeaponType() const { return weaponType_; }
-        inline armor_type::Enum ArmorType() const { return armorType_; }
-        inline misc_type::Enum MiscType() const { return miscType_; }
-        inline unique_type::Enum UniqueType() const { return uniqueType_; }
-        inline set_type::Enum SetType() const { return setType_; }
-        inline named_type::Enum NamedType() const { return namedType_; }
-        inline element_type::Enum ElementType() const { return elementType_; }
+        category::Enum Category() const { return category_; }
+        material::Enum MaterialPrimary() const { return materialPri_; }
+        material::Enum MaterialSecondary() const { return materialSec_; }
+        weapon_type::Enum WeaponType() const { return weaponType_; }
+        armor_type::Enum ArmorType() const { return armorType_; }
+        misc_type::Enum MiscType() const { return miscType_; }
+        unique_type::Enum UniqueType() const { return uniqueType_; }
+        set_type::Enum SetType() const { return setType_; }
+        named_type::Enum NamedType() const { return namedType_; }
+        element_type::Enum ElementType() const { return elementType_; }
 
-        inline bool IsCategoryType(const category::Enum E) const { return (category_ & E); }
-        inline bool IsWeaponType(const weapon_type::Enum E) const { return (weaponType_ & E); }
-        inline bool IsArmorType(const armor_type::Enum E) const { return (armorType_ & E); }
-        inline bool IsMiscType(const misc_type::Enum E) const { return (miscType_ & E); }
+        bool IsCategoryType(const category::Enum E) const { return (category_ & E); }
+        bool IsWeaponType(const weapon_type::Enum E) const { return (weaponType_ & E); }
+        bool IsArmorType(const armor_type::Enum E) const { return (armorType_ & E); }
+        bool IsMiscType(const misc_type::Enum E) const { return (miscType_ & E); }
 
-        inline Coin_t Price() const { return price_; }
-        inline Weight_t Weight() const { return weight_; }
+        Coin_t Price() const { return price_; }
+        Weight_t Weight() const { return weight_; }
 
-        inline Health_t DamageMin() const { return damageMin_; }
-        inline Health_t DamageMax() const { return damageMax_; }
-        inline Armor_t ArmorRating() const { return armorRating_; }
+        Health_t DamageMin() const { return damageMin_; }
+        Health_t DamageMax() const { return damageMax_; }
+        Armor_t ArmorRating() const { return armorRating_; }
 
-        inline bool IsBroken() const { return (category_ == category::Broken); }
-        inline bool IsArmor() const { return (category_ & category::Armor); }
-        inline bool IsWeapon() const { return (category_ & category::Weapon); }
-        inline bool IsWearable() const { return (category_ & category::Wearable); }
-        inline bool IsOneHanded() const { return (category_ & category::OneHanded); }
-        inline bool IsTwoHanded() const { return (category_ & category::TwoHanded); }
-        inline bool IsBodypart() const { return (category_ & category::BodyPart); }
+        bool IsBroken() const { return (category_ == category::Broken); }
+        bool IsArmor() const { return (category_ & category::Armor); }
+        bool IsWeapon() const { return (category_ & category::Weapon); }
+        bool IsWearable() const { return (category_ & category::Wearable); }
+        bool IsOneHanded() const { return (category_ & category::OneHanded); }
+        bool IsTwoHanded() const { return (category_ & category::TwoHanded); }
+        bool IsBodypart() const { return (category_ & category::BodyPart); }
 
-        inline bool IsRigid() const { return material::IsRigid(materialPri_); }
+        bool IsRigid() const { return material::IsRigid(materialPri_); }
 
-        inline bool ContainsSpirit() const
-        {
-            return material::ContainsSpirit(materialPri_, materialSec_);
-        }
+        bool ContainsSpirit() const { return material::ContainsSpirit(materialPri_, materialSec_); }
 
-        inline bool IsBloody() const { return material::IsBloody(materialPri_, materialSec_); }
+        bool IsBloody() const { return material::IsBloody(materialPri_, materialSec_); }
 
-        inline bool ContainsFlesh() const
-        {
-            return material::ContainsFlesh(materialPri_, materialSec_);
-        }
+        bool ContainsFlesh() const { return material::ContainsFlesh(materialPri_, materialSec_); }
 
-        inline float FireDamageRatio() const
+        float FireDamageRatio() const
         {
             return material::FireDamageRatio(materialPri_, materialSec_);
         }
 
-        inline bool ContainsMetal() const
-        {
-            return material::ContainsMetal(materialPri_, materialSec_);
-        }
+        bool ContainsMetal() const { return material::ContainsMetal(materialPri_, materialSec_); }
 
-        inline bool IsMetal() const { return material::IsMetal(materialPri_); }
+        bool IsMetal() const { return material::IsMetal(materialPri_); }
 
-        inline bool IsStone() const { return material::IsStone(materialPri_); }
+        bool IsStone() const { return material::IsStone(materialPri_); }
 
-        inline bool ContiansPrecious() const
+        bool ContiansPrecious() const
         {
             return material::ContiansPrecious(materialPri_, materialSec_);
         }
 
-        inline virtual creature::role::Enum ExclusiveRole() const { return exclusiveToRole_; }
+        virtual creature::role::Enum ExclusiveRole() const { return exclusiveToRole_; }
 
-        inline bool IsJeweled() const { return material::IsJewel(materialSec_); }
+        bool IsJeweled() const { return material::IsJewel(materialSec_); }
 
-        inline bool IsJeweledRing() const
-        {
-            return ((miscType_ == misc_type::Ring) && IsJeweled());
-        }
+        bool IsJeweledRing() const { return ((miscType_ == misc_type::Ring) && IsJeweled()); }
 
-        inline bool IsPixie() const { return isPixie_; }
+        bool IsPixie() const { return isPixie_; }
 
-        inline const creature::EnchantmentPVec_t & Enchantments() const
-        {
-            return enchantmentsPVec_;
-        }
+        const creature::EnchantmentPVec_t & Enchantments() const { return enchantmentsPVec_; }
 
-        inline void AddCategory(const category::Enum E)
+        void AddCategory(const category::Enum E)
         {
             category_ = static_cast<category::Enum>(category_ | E);
         }
@@ -186,23 +171,20 @@ namespace item
 
         const std::string BaseName() const;
 
-        inline void SetName(const std::string & NEW_NAME) { name_ = NEW_NAME; }
-        inline void SetElementType(const element_type::Enum E) { elementType_ = E; }
-        inline void SetUniqueType(const unique_type::Enum E) { uniqueType_ = E; }
-        inline void SetSetType(const set_type::Enum E) { setType_ = E; }
-        inline void SetNamedType(const named_type::Enum E) { namedType_ = E; }
-        inline void SetMiscType(const misc_type::Enum E) { miscType_ = E; }
-        inline void SetRestrictedRole(const creature::role::Enum R) { exclusiveToRole_ = R; }
+        void SetName(const std::string & NEW_NAME) { name_ = NEW_NAME; }
+        void SetElementType(const element_type::Enum E) { elementType_ = E; }
+        void SetUniqueType(const unique_type::Enum E) { uniqueType_ = E; }
+        void SetSetType(const set_type::Enum E) { setType_ = E; }
+        void SetNamedType(const named_type::Enum E) { namedType_ = E; }
+        void SetMiscType(const misc_type::Enum E) { miscType_ = E; }
+        void SetRestrictedRole(const creature::role::Enum R) { exclusiveToRole_ = R; }
 
-        inline void SetSummonInfo(const creature::SummonInfo & SI) { summonInfo_ = SI; }
-        inline const creature::SummonInfo & GetSummonInfo() const { return summonInfo_; }
+        void SetSummonInfo(const creature::SummonInfo & SI) { summonInfo_ = SI; }
+        const creature::SummonInfo & GetSummonInfo() const { return summonInfo_; }
 
-        inline bool IsSummoning() const { return summonInfo_.WillSummon(); }
+        bool IsSummoning() const { return summonInfo_.WillSummon(); }
 
-        inline bool IsEnchanted() const
-        {
-            return ((enchantmentsPVec_.empty() == false) || IsSummoning());
-        }
+        bool IsEnchanted() const { return ((enchantmentsPVec_.empty() == false) || IsSummoning()); }
 
         friend bool operator<(const Item & L, const Item & R);
         friend bool operator==(const Item & L, const Item & R);

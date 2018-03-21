@@ -74,69 +74,56 @@ namespace sfml_util
             virtual ~GuiEntity();
 
             // The only member required by sf::Drawable.
-            virtual void
-                draw(sf::RenderTarget & target, sf::RenderStates states) const override = 0;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override = 0;
 
             // Required by IClickable
-            inline MouseState::Enum GetMouseState() const override { return entityMouseState_; }
+            MouseState::Enum GetMouseState() const override { return entityMouseState_; }
 
-            inline void SetMouseState(const MouseState::Enum E) override { entityMouseState_ = E; }
+            void SetMouseState(const MouseState::Enum E) override { entityMouseState_ = E; }
 
             bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
             bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
-            inline bool IsHeldDown() const override
-            {
-                return (MouseState::Down == GetMouseState());
-            }
+            bool IsHeldDown() const override { return (MouseState::Down == GetMouseState()); }
 
             // returns true only if the MouseState changed
             bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
 
             // disabled until bug in wheel movement direction can be resolved zTn 2016-12-11
-            inline bool UpdateMouseWheel(const sf::Vector2f &, const float) override
-            {
-                return false;
-            }
+            bool UpdateMouseWheel(const sf::Vector2f &, const float) override { return false; }
 
-            inline bool HasFocus() const override { return entityHasFocus_; }
+            bool HasFocus() const override { return entityHasFocus_; }
             bool SetHasFocus(const bool) override;
-            inline bool WillAcceptFocus() const override { return entityWillFocus_; }
-            inline void SetWillAcceptFocus(const bool WILL) override { entityWillFocus_ = WILL; }
-            inline const std::string GetMouseHoverText() override { return entityMouseHoverText_; }
+            bool WillAcceptFocus() const override { return entityWillFocus_; }
+            void SetWillAcceptFocus(const bool WILL) override { entityWillFocus_ = WILL; }
+            const std::string GetMouseHoverText() override { return entityMouseHoverText_; }
 
-            inline void SetMouseHoverText(const std::string & S) override
-            {
-                entityMouseHoverText_ = S;
-            }
+            void SetMouseHoverText(const std::string & S) override { entityMouseHoverText_ = S; }
 
         protected:
             void OnClick(const sf::Vector2f &) override = 0;
-            inline void OnDoubleClick(const sf::Vector2f &) override {}
-            inline void OnColorChange() override {}
+            void OnDoubleClick(const sf::Vector2f &) override {}
+            void OnColorChange() override {}
             void ChangeColors();
 
             // Required by IGuiEntity
         public:
-            inline bool GetEntityWillDraw() const override { return entityWillDraw_; }
-            inline void SetEntityWillDraw(const bool WILL_DRAW) override
-            {
-                entityWillDraw_ = WILL_DRAW;
-            }
+            bool GetEntityWillDraw() const override { return entityWillDraw_; }
+            void SetEntityWillDraw(const bool WILL_DRAW) override { entityWillDraw_ = WILL_DRAW; }
 
-            inline const sf::Vector2f GetEntityPos() const override
+            const sf::Vector2f GetEntityPos() const override
             {
                 return sf::Vector2f(entityRegion_.left, entityRegion_.top);
             }
 
-            inline void SetEntityPos(const sf::Vector2f & V) override { SetEntityPos(V.x, V.y); }
+            void SetEntityPos(const sf::Vector2f & V) override { SetEntityPos(V.x, V.y); }
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
             void MoveEntityOffScreen();
             void MoveEntityBackFromOffScreen();
 
-            inline bool IsInEntityRegion(const sf::Vector2f & V) const override
+            bool IsInEntityRegion(const sf::Vector2f & V) const override
             {
                 return entityRegion_.contains(V);
             }
@@ -144,30 +131,21 @@ namespace sfml_util
             void SetEntityColors(const ColorSet & COLOR_SET) override;
             void SetEntityColorFg(const sf::Color & FG_COLOR) override;
             void SetEntityColorFgBoth(const sf::Color & FG_COLOR) override;
-            inline const ColorSet GetEntityColors() const override { return entityColorSet_; }
-            inline const sf::Color GetEntityColorForeground() const override
-            {
-                return entityFgColor_;
-            }
-            inline const sf::Color GetEntityColorBackground() const override
-            {
-                return entityBgColor_;
-            }
+            const ColorSet GetEntityColors() const override { return entityColorSet_; }
+            const sf::Color GetEntityColorForeground() const override { return entityFgColor_; }
+            const sf::Color GetEntityColorBackground() const override { return entityBgColor_; }
             void FakeColorSetAsIfFocusIs(const bool) override;
 
-            inline const std::string GetEntityName() const override { return entityName_; }
+            const std::string GetEntityName() const override { return entityName_; }
 
-            inline const sf::FloatRect GetEntityRegion() const override { return entityRegion_; }
+            const sf::FloatRect GetEntityRegion() const override { return entityRegion_; }
 
-            inline void SetEntityRegion(const sf::FloatRect & REGION) override
-            {
-                entityRegion_ = REGION;
-            }
+            void SetEntityRegion(const sf::FloatRect & REGION) override { entityRegion_ = REGION; }
 
-            inline bool UpdateTime(const float) override { return false; }
+            bool UpdateTime(const float) override { return false; }
 
-            inline bool KeyPress(const sf::Event::KeyEvent &) override { return false; }
-            inline bool KeyRelease(const sf::Event::KeyEvent &) override { return false; }
+            bool KeyPress(const sf::Event::KeyEvent &) override { return false; }
+            bool KeyRelease(const sf::Event::KeyEvent &) override { return false; }
 
             friend bool operator<(const GuiEntity & L, const GuiEntity & R);
             friend bool operator==(const GuiEntity & L, const GuiEntity & R);

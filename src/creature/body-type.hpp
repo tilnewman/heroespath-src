@@ -63,40 +63,40 @@ namespace creature
             const std::size_t NUM_TENDRILS = 0,
             const bool HAS_BREATH = false);
 
-        inline auto NumHeads() const { return num_heads_; }
-        inline auto NumArms() const { return num_arms_; }
-        inline auto NumLegs() const { return num_legs_; }
-        inline auto NumEyes() const { return num_eyes_; }
-        inline auto NumTendrils() const { return num_tendrils_; }
+        auto NumHeads() const { return num_heads_; }
+        auto NumArms() const { return num_arms_; }
+        auto NumLegs() const { return num_legs_; }
+        auto NumEyes() const { return num_eyes_; }
+        auto NumTendrils() const { return num_tendrils_; }
 
-        inline auto HasHead() const { return (num_heads_ > 0); }
-        inline auto HasArms() const { return (num_arms_ > 0); }
-        inline auto HasLegs() const { return (num_legs_ > 0); }
-        inline auto HasFangs() const { return has_fangs_; }
-        inline auto HasClaws() const { return has_claws_; }
-        inline auto HasWings() const { return has_wings_; }
-        inline auto HasEyes() const { return (num_eyes_ > 0); }
-        inline auto HasFingers() const { return has_fingers_; }
-        inline auto HasTail() const { return has_tail_; }
-        inline auto HasTendrils() const { return (num_tendrils_ > 0); }
-        inline auto HasSpikes() const { return has_spikes_; }
-        inline auto HasHorns() const { return has_horns_; }
-        inline auto HasBreath() const { return has_breath_; }
-        inline auto HasBite() const { return HasFangs(); }
+        auto HasHead() const { return (num_heads_ > 0); }
+        auto HasArms() const { return (num_arms_ > 0); }
+        auto HasLegs() const { return (num_legs_ > 0); }
+        auto HasFangs() const { return has_fangs_; }
+        auto HasClaws() const { return has_claws_; }
+        auto HasWings() const { return has_wings_; }
+        auto HasEyes() const { return (num_eyes_ > 0); }
+        auto HasFingers() const { return has_fingers_; }
+        auto HasTail() const { return has_tail_; }
+        auto HasTendrils() const { return (num_tendrils_ > 0); }
+        auto HasSpikes() const { return has_spikes_; }
+        auto HasHorns() const { return has_horns_; }
+        auto HasBreath() const { return has_breath_; }
+        auto HasBite() const { return HasFangs(); }
 
-        inline auto IsBiped() const { return (2 == num_legs_); }
-        inline auto IsQuadruped() const { return (4 == num_legs_); }
-        inline auto IsHumanoid() const
+        auto IsBiped() const { return (2 == num_legs_); }
+        auto IsQuadruped() const { return (4 == num_legs_); }
+        auto IsHumanoid() const
         {
             return (IsBiped() && (num_heads_ > 0) && (num_arms_ >= 2) && HasFingers());
         }
-        inline auto IsSerpentine() const
+        auto IsSerpentine() const
         {
             return ((false == HasArms()) && (false == HasLegs()) && HasTail());
         }
 
-        inline auto SkinMaterialInner() const { return skinMaterialInner_; }
-        inline auto SKinMaterialOuter() const { return skinMaterialOuter_; }
+        auto SkinMaterialInner() const { return skinMaterialInner_; }
+        auto SKinMaterialOuter() const { return skinMaterialOuter_; }
 
         const std::string ToString() const;
 

@@ -56,8 +56,8 @@ namespace sfml_util
 
         virtual const std::string GetStageName() const = 0;
 
-        inline virtual const sf::FloatRect StageRegion() const = 0;
-        inline virtual void StageRegionSet(const sf::FloatRect & RECT) = 0;
+        virtual const sf::FloatRect StageRegion() const = 0;
+        virtual void StageRegionSet(const sf::FloatRect & RECT) = 0;
 
         virtual float StageRegionLeft() const = 0;
         virtual float StageRegionTop() const = 0;

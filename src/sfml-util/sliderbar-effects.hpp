@@ -68,7 +68,7 @@ namespace sfml_util
         void SetCurrentValueFromScreenCoords(const sf::Vector2f & NEW_COORD_V) override;
         bool UpdateTime(const float) override;
 
-        static inline void SetPreventSoundEffect(const bool WILL_PREVENT)
+        static void SetPreventSoundEffect(const bool WILL_PREVENT)
         {
             willPreventPlayingSound_ = WILL_PREVENT;
         }

@@ -157,13 +157,12 @@ namespace sfml_util
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            inline virtual void
-                SetCallbackHandler(callback::IFourStateButtonCallbackHandler_t * const ptr)
+            virtual void SetCallbackHandler(callback::IFourStateButtonCallbackHandler_t * const ptr)
             {
                 callbackHandlerPtr_ = ptr;
             }
 
-            inline bool IsDisabled() const { return isDisabled_; }
+            bool IsDisabled() const { return isDisabled_; }
             void SetIsDisabled(const bool);
 
             void SetMouseState(const MouseState::Enum) override;
@@ -171,14 +170,14 @@ namespace sfml_util
             virtual void SetScaleToRes();
             virtual void SetVertPositionToBottomOfScreenByRes(const float POS_LEFT);
 
-            inline const sf::Color Color() const { return color_; }
-            inline void Color(const sf::Color & NEW_COLOR)
+            const sf::Color Color() const { return color_; }
+            void Color(const sf::Color & NEW_COLOR)
             {
                 color_ = NEW_COLOR;
                 Reset();
             }
 
-            inline float Scale() const { return scale_; }
+            float Scale() const { return scale_; }
             void Scale(const float NEW_SCALE);
 
             virtual void SetText(
@@ -188,7 +187,7 @@ namespace sfml_util
                 const std::string & TEXT_DISABLED = "");
 
         protected:
-            virtual void Reset();
+            void Reset();
             void OnClick(const sf::Vector2f &) override;
 
         protected:

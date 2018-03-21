@@ -146,17 +146,16 @@ namespace sfml_util
                 const sf::Color & LINE_COLOR = sf::Color::Transparent,
                 callback::IListBoxCallbackHandler * const callbackPtr = nullptr);
 
-            inline const std::string HandlerName() const override { return GetEntityName(); }
+            const std::string HandlerName() const override { return GetEntityName(); }
 
-            virtual bool
-                HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE) override;
+            bool HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE) override;
 
-            inline void ImageColor(const sf::Color & COLOR)
+            void ImageColor(const sf::Color & COLOR)
             {
                 imageColor_ = COLOR;
                 SetupForDraw();
             }
-            inline const sf::Color ImageColor() const { return imageColor_; }
+            const sf::Color ImageColor() const { return imageColor_; }
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
@@ -164,11 +163,11 @@ namespace sfml_util
 
             const ListBoxItemSPtr_t Selected() const;
 
-            inline std::size_t DisplayIndex() const { return displayIndex_; }
+            std::size_t DisplayIndex() const { return displayIndex_; }
 
             void DisplayIndex(const std::size_t);
 
-            inline std::size_t SelectedIndex() const
+            std::size_t SelectedIndex() const
             {
                 return selectionDisplayIndex_ + selectionOffsetIndex_;
             }
@@ -176,35 +175,32 @@ namespace sfml_util
             // sets displayIndex_ to whatever selectionDisplayIndex_ turns out to be
             void SelectedIndex(const std::size_t);
 
-            inline bool IsIndexValid(const std::size_t INDEX) const
-            {
-                return (INDEX < items_.size());
-            }
+            bool IsIndexValid(const std::size_t INDEX) const { return (INDEX < items_.size()); }
 
-            inline bool IsIndexVisible_Display(const std::size_t INDEX) const
+            bool IsIndexVisible_Display(const std::size_t INDEX) const
             {
                 return ((INDEX >= displayIndex_) && (INDEX <= CalcLastVisibleIndex_Display()));
             }
 
-            inline bool IsIndexVisible_Selection(const std::size_t INDEX) const
+            bool IsIndexVisible_Selection(const std::size_t INDEX) const
             {
                 return (
                     (INDEX >= selectionDisplayIndex_)
                     && (INDEX <= CalcLastVisibleIndex_Selection()));
             }
 
-            inline ListBoxItemSPtr_t At(const std::size_t INDEX) { return items_.at(INDEX); }
+            ListBoxItemSPtr_t At(const std::size_t INDEX) { return items_.at(INDEX); }
 
-            inline std::size_t Size() const { return items_.size(); }
-            inline bool Empty() const { return items_.empty(); }
+            std::size_t Size() const { return items_.size(); }
+            bool Empty() const { return items_.empty(); }
 
             // returns true if the item was added, returns false if failed to add due to countLimit_
             bool Add(const ListBoxItemSPtr_t & ITEM_SPTR);
 
             bool Remove(const ListBoxItemSPtr_t & THING_SPTR);
 
-            inline bool RemoveSelected() { return Remove(Selected()); }
-            inline void Clear() { items_.clear(); }
+            bool RemoveSelected() { return Remove(Selected()); }
+            void Clear() { items_.clear(); }
 
             bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
@@ -215,29 +211,26 @@ namespace sfml_util
 
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
 
-            inline const sf::Color GetHighlightColor() const { return highlightColor_; }
-            inline void SetHighlightColor(const sf::Color & C) { highlightColor_ = C; }
+            const sf::Color GetHighlightColor() const { return highlightColor_; }
+            void SetHighlightColor(const sf::Color & C) { highlightColor_ = C; }
 
-            inline bool WillPlaySoundEffects() const { return willPlaySfx_; }
-            inline void WillPlaySoundEffects(const bool B) { willPlaySfx_ = B; }
+            bool WillPlaySoundEffects() const { return willPlaySfx_; }
+            void WillPlaySoundEffects(const bool B) { willPlaySfx_ = B; }
 
-            inline const ListBoxItemSVec_t Items() const { return items_; }
+            const ListBoxItemSVec_t Items() const { return items_; }
             void Items(const ListBoxItemSVec_t & NEW_ITEMS_VEC);
 
             // these two functions return true if the selection changed
             bool SelectPrev();
             bool SelectNext();
 
-            inline std::size_t CountLimit() const { return countLimit_; }
-            inline void CountLimit(const std::size_t NEW_COUNT_LIMIT)
-            {
-                countLimit_ = NEW_COUNT_LIMIT;
-            }
+            std::size_t CountLimit() const { return countLimit_; }
+            void CountLimit(const std::size_t NEW_COUNT_LIMIT) { countLimit_ = NEW_COUNT_LIMIT; }
 
         protected:
             std::size_t CalcGreatestFirstDisplayedIndex() const;
             void CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT);
-            inline void OnClick(const sf::Vector2f &) override {}
+            void OnClick(const sf::Vector2f &) override {}
             void OnDoubleClick(const sf::Vector2f & MOUSE_POS_V) override;
             void SetupForDraw();
 

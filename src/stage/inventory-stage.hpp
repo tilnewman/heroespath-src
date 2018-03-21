@@ -149,11 +149,11 @@ namespace stage
 
         virtual ~InventoryStage();
 
-        inline const std::string HandlerName() const override { return GetStageName(); }
+        const std::string HandlerName() const override { return GetStageName(); }
 
         bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
-        virtual bool HandleCallback(
+        bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
         bool HandleCallback(const popup::PopupResponse &) override;
@@ -261,12 +261,12 @@ namespace stage
         void EndOfGiveShareGatherTasks();
         float UpdateImageDetailsPosition(); // returns the sprite width
 
-        inline bool IsDetailViewFading() const
+        bool IsDetailViewFading() const
         {
             return (isDetailViewFadingIn_ || isDetailViewFadingOut_);
         }
 
-        inline bool IsDetailViewFadingOrVisible() const
+        bool IsDetailViewFadingOrVisible() const
         {
             return (IsDetailViewFading() || isDetailViewDoneFading_);
         }

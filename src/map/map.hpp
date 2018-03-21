@@ -82,15 +82,15 @@ namespace map
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
-        inline Level::Enum WhichLevel() const { return level_; }
+        Level::Enum WhichLevel() const { return level_; }
 
         void Update(const float TIME_ELAPSED);
 
         void SetPlayerWalkAnim(const sfml_util::Direction::Enum, const bool);
 
-        inline const avatar::Model & Player() const { return player_; }
+        const avatar::Model & Player() const { return player_; }
 
-        inline const std::vector<avatar::Model> & NonPlayers() const { return nonPlayers_; }
+        const std::vector<avatar::Model> & NonPlayers() const { return nonPlayers_; }
 
         void EntryAndExitLevels(
             std::vector<Level::Enum> & entryLevels, std::vector<Level::Enum> & exitLevels);

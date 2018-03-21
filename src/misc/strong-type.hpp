@@ -73,17 +73,29 @@ namespace misc
 
         const std::string TypeName() const { return boost::typeindex::type_id<T>().pretty_name(); }
 
-        bool operator==(const StrongType & RHS) const { return this->m_value == RHS.m_value; }
+        inline bool operator==(const StrongType & RHS) const
+        {
+            return this->m_value == RHS.m_value;
+        }
 
-        bool operator!=(const StrongType & RHS) const { return this->m_value != RHS.m_value; }
+        inline bool operator!=(const StrongType & RHS) const
+        {
+            return this->m_value != RHS.m_value;
+        }
 
-        bool operator<(const StrongType & RHS) const { return this->m_value < RHS.m_value; }
+        inline bool operator<(const StrongType & RHS) const { return this->m_value < RHS.m_value; }
 
-        bool operator<=(const StrongType & RHS) const { return this->m_value <= RHS.m_value; }
+        inline bool operator<=(const StrongType & RHS) const
+        {
+            return this->m_value <= RHS.m_value;
+        }
 
-        bool operator>(const StrongType & RHS) const { return this->m_value > RHS.m_value; }
+        inline bool operator>(const StrongType & RHS) const { return this->m_value > RHS.m_value; }
 
-        bool operator>=(const StrongType & RHS) const { return this->m_value >= RHS.m_value; }
+        inline bool operator>=(const StrongType & RHS) const
+        {
+            return this->m_value >= RHS.m_value;
+        }
 
     protected:
         T m_value;

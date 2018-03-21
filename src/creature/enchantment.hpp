@@ -69,12 +69,12 @@ namespace creature
             , condsRemovedVec_(CONDS_REMOVED_VEC)
         {}
 
-        inline int CountOrig() const { return countOrig_; }
-        inline int CountRemaining() const { return countRemain_; }
-        inline void CountConsume() { --countRemain_; }
-        inline game::Phase::Enum RestrictedToPhase() const { return phase_; }
-        inline spell::Spells::Enum Spell() const { return spell_; }
-        inline const CondEnumVec_t & ConditionsRemoved() const { return condsRemovedVec_; }
+        int CountOrig() const { return countOrig_; }
+        int CountRemaining() const { return countRemain_; }
+        void CountConsume() { --countRemain_; }
+        game::Phase::Enum RestrictedToPhase() const { return phase_; }
+        spell::Spells::Enum Spell() const { return spell_; }
+        const CondEnumVec_t & ConditionsRemoved() const { return condsRemovedVec_; }
 
         friend bool operator==(const UseInfo & L, const UseInfo & R);
 
@@ -120,35 +120,32 @@ namespace creature
 
         virtual ~Enchantment();
 
-        inline EnchantmentType::Enum Type() const { return type_; }
-        inline bool IsType(const EnchantmentType::Enum E) const { return (E & type_); }
-        inline const stats::TraitSet & Traits() const { return traitSet_; }
-        inline const UseInfo & Use() const { return useInfo_; }
-        inline void UseCountConsume() { useInfo_.CountConsume(); }
+        EnchantmentType::Enum Type() const { return type_; }
+        bool IsType(const EnchantmentType::Enum E) const { return (E & type_); }
+        const stats::TraitSet & Traits() const { return traitSet_; }
+        const UseInfo & Use() const { return useInfo_; }
+        void UseCountConsume() { useInfo_.CountConsume(); }
 
-        inline bool IsUseableEver() const
+        bool IsUseableEver() const
         {
             // negative useCountOrig_ means infinite
             return ((type_ & EnchantmentType::WhenUsed) && (useInfo_.CountOrig() != 0));
         }
 
-        inline bool IsUseableNow() const
-        {
-            return (IsUseableEver() && (useInfo_.CountRemaining() > 0));
-        }
+        bool IsUseableNow() const { return (IsUseableEver() && (useInfo_.CountRemaining() > 0)); }
 
         virtual const std::string EffectStr(const CreaturePtr_t CREATURE_PTR = nullptr) const;
 
-        virtual inline void CreatureChangeApply(const CreaturePtr_t) {}
-        virtual inline void CreatureChangeRemove(const CreaturePtr_t) {}
-        virtual inline void UseEffect(const CreaturePtr_t) {}
+        virtual void CreatureChangeApply(const CreaturePtr_t) {}
+        virtual void CreatureChangeRemove(const CreaturePtr_t) {}
+        virtual void UseEffect(const CreaturePtr_t) {}
 
         virtual Score_t TreasureScore() const;
 
         friend bool operator==(const Enchantment & L, const Enchantment & R);
 
     private:
-        inline const std::string SepIfNotEmpty(const std::string & S) const
+        const std::string SepIfNotEmpty(const std::string & S) const
         {
             return ((S.empty()) ? "" : ", ");
         }

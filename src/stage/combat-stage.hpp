@@ -233,7 +233,7 @@ namespace stage
         explicit CombatStage(const bool WILL_ADVANCE_TURN);
         virtual ~CombatStage();
 
-        inline virtual const std::string HandlerName() const { return GetStageName(); }
+        virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
         virtual bool
             HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
@@ -247,7 +247,7 @@ namespace stage
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
         virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
-        inline bool IsPaused() const { return (pauseElapsedSec_ < pauseDurationSec_); }
+        bool IsPaused() const { return (pauseElapsedSec_ < pauseDurationSec_); }
 
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
 
@@ -302,25 +302,25 @@ namespace stage
 
         void UpdateTestingText();
 
-        inline void SetTurnPhase(const TurnPhase TP)
+        void SetTurnPhase(const TurnPhase TP)
         {
             turnPhase_ = TP;
             UpdateTestingText();
         }
 
-        inline void SetPreTurnPhase(const PreTurnPhase PTP)
+        void SetPreTurnPhase(const PreTurnPhase PTP)
         {
             preTurnPhase_ = PTP;
             UpdateTestingText();
         }
 
-        inline void SetAnimPhase(const AnimPhase AP)
+        void SetAnimPhase(const AnimPhase AP)
         {
             animPhase_ = AP;
             UpdateTestingText();
         }
 
-        inline void SetTurnActionPhase(const TurnActionPhase TAP)
+        void SetTurnActionPhase(const TurnActionPhase TAP)
         {
             turnActionPhase_ = TAP;
             UpdateTestingText();

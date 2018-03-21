@@ -68,7 +68,7 @@ namespace player
 
         virtual ~Party();
 
-        inline const CharacterPVec_t Characters() const { return charactersPVec_; }
+        const CharacterPVec_t Characters() const { return charactersPVec_; }
 
         // Sets error_msg to a message describing why upon failure,
         // otherwise error_msg is not changed.
@@ -79,22 +79,22 @@ namespace player
         // returns true if the character existed in the charactersSVec_ and was removed.
         bool Remove(CharacterPtr_t);
 
-        inline creature::CreaturePtr_t GetNextInOrderAfter(const creature::CreaturePtr_t C_PTR)
+        creature::CreaturePtr_t GetNextInOrderAfter(const creature::CreaturePtr_t C_PTR)
         {
             return GetNextInOrder(C_PTR, true);
         }
 
-        inline creature::CreaturePtr_t GetNextInOrderAfter(creature::CreatureCPtrC_t C_CPTRC)
+        creature::CreaturePtr_t GetNextInOrderAfter(creature::CreatureCPtrC_t C_CPTRC)
         {
             return GetNextInOrder(C_CPTRC, true);
         }
 
-        inline creature::CreaturePtr_t GetNextInOrderBefore(const creature::CreaturePtr_t C_PTR)
+        creature::CreaturePtr_t GetNextInOrderBefore(const creature::CreaturePtr_t C_PTR)
         {
             return GetNextInOrder(C_PTR, false);
         }
 
-        inline creature::CreaturePtr_t GetNextInOrderBefore(creature::CreatureCPtrC_t C_CPTRC)
+        creature::CreaturePtr_t GetNextInOrderBefore(creature::CreatureCPtrC_t C_CPTRC)
         {
             return GetNextInOrder(C_CPTRC, false);
         }
@@ -107,7 +107,7 @@ namespace player
 
         std::size_t GetNumHumanoid() const;
 
-        inline avatar::Avatar::Enum Avatar() const { return avatar_; }
+        avatar::Avatar::Enum Avatar() const { return avatar_; }
 
     public:
         static const std::size_t MAX_CHARACTER_COUNT_;

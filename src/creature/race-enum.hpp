@@ -146,11 +146,11 @@ namespace creature
             , count_(origin_type::UseCount(ORIGIN))
         {}
 
-        inline origin_type::Enum OriginType() const { return origin_; }
-        inline race::Enum Race() const { return race_; }
-        inline role::Enum Role() const { return role_; }
-        inline std::size_t Count() const { return count_; }
-        inline bool WillSummon() const { return count_ != 0; }
+        origin_type::Enum OriginType() const { return origin_; }
+        race::Enum Race() const { return race_; }
+        role::Enum Role() const { return role_; }
+        std::size_t Count() const { return count_; }
+        bool WillSummon() const { return count_ != 0; }
 
         friend bool operator==(const SummonInfo & L, const SummonInfo & R);
         friend bool operator<(const SummonInfo & L, const SummonInfo & R);

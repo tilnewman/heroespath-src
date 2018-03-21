@@ -62,8 +62,8 @@ namespace sfml_util
 
             bool UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
-            inline IGuiEntityPtr_t GetEntity() const { return guiEntityPtr_; }
-            inline void SetEntity(const IGuiEntityPtr_t PTR) { guiEntityPtr_ = PTR; }
+            IGuiEntityPtr_t GetEntity() const { return guiEntityPtr_; }
+            void SetEntity(const IGuiEntityPtr_t PTR) { guiEntityPtr_ = PTR; }
 
         private:
             // This is an observer pointer that does not control the lifetime of the object.

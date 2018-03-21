@@ -67,37 +67,22 @@ namespace combat
                 const FrequencyChanceMap_t & STAND_POUNCE_FREQ_CHANCES_MAP
                 = FrequencyChanceMap_t());
 
-            inline const SelectChanceMap_t SelectChanceMapCopy() const { return selectChanceMap_; }
-            inline const RefineChanceMap_t RefineChanceMapCopy() const { return refineChanceMap_; }
-            inline const AdvanceChanceMap_t AdvanceChanceMapCopy() const
-            {
-                return advanceChanceMap_;
-            }
-            inline const RetreatChanceMap_t RetreatChanceMapCopy() const
-            {
-                return retreatChanceMap_;
-            }
-            inline const OutnumberRetreatChanceMap_t OutnumberRetreatChanceMapCopy() const
+            const SelectChanceMap_t SelectChanceMapCopy() const { return selectChanceMap_; }
+            const RefineChanceMap_t RefineChanceMapCopy() const { return refineChanceMap_; }
+            const AdvanceChanceMap_t AdvanceChanceMapCopy() const { return advanceChanceMap_; }
+            const RetreatChanceMap_t RetreatChanceMapCopy() const { return retreatChanceMap_; }
+            const OutnumberRetreatChanceMap_t OutnumberRetreatChanceMapCopy() const
             {
                 return outnumberRetreatChanceMap_;
             }
-            inline const FrequencyChanceMap_t RoarFreqChanceMapCopy() const
-            {
-                return roarFreqChanceMap_;
-            }
-            inline const FrequencyChanceMap_t CastFreqChanceMapCopy() const
-            {
-                return castFreqChanceMap_;
-            }
-            inline const FrequencyChanceMap_t FlyFreqChanceMapCopy() const
-            {
-                return flyFreqChanceMap_;
-            }
-            inline const FrequencyChanceMap_t FlyPounceFreqChanceMapCopy() const
+            const FrequencyChanceMap_t RoarFreqChanceMapCopy() const { return roarFreqChanceMap_; }
+            const FrequencyChanceMap_t CastFreqChanceMapCopy() const { return castFreqChanceMap_; }
+            const FrequencyChanceMap_t FlyFreqChanceMapCopy() const { return flyFreqChanceMap_; }
+            const FrequencyChanceMap_t FlyPounceFreqChanceMapCopy() const
             {
                 return flyPounceFreqChanceMap_;
             }
-            inline const FrequencyChanceMap_t StandPounceFreqChanceMapCopy() const
+            const FrequencyChanceMap_t StandPounceFreqChanceMapCopy() const
             {
                 return standPounceFreqChanceMap_;
             }

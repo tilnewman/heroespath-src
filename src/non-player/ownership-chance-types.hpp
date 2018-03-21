@@ -128,26 +128,26 @@ namespace non_player
                     const item::material::Enum MATERIAL_PRIMARY,
                     const item::material::Enum MATERIAL_SECONDARY);
 
-                static inline ItemChances NoChance() { return ItemChances(); }
+                static ItemChances NoChance() { return ItemChances(); }
 
-                inline bool IsEquipped() const { return (misc::random::Float() < chance_equipped); }
+                bool IsEquipped() const { return (misc::random::Float() < chance_equipped); }
 
                 std::size_t CountOwned() const;
 
-                inline bool IsOwned() const { return (CountOwned() > 0); }
+                bool IsOwned() const { return (CountOwned() > 0); }
 
                 item::material::Enum RandomMaterialPri() const;
                 item::material::Enum RandomMaterialSec() const;
 
                 // make it so there is no chance this item will be owned
-                inline void SetCountChanceSingleNoChance()
+                void SetCountChanceSingleNoChance()
                 {
                     num_owned_map.clear();
                     num_owned_map[0] = 1.0f;
                 }
 
                 // set the likelyhood of a certain (1.0f) number of this items owned
-                inline void SetCountChance(const std::size_t COUNT = 1, const float CHANCE = 1.0f)
+                void SetCountChance(const std::size_t COUNT = 1, const float CHANCE = 1.0f)
                 {
                     num_owned_map[COUNT] = CHANCE;
                 }
@@ -164,10 +164,10 @@ namespace non_player
                 void SetCountChanceIncrement(const float CHANCE = 1.0f);
 
                 // same as SetCountChanceIncrement() but the CHANCE value set is 1.0f
-                inline void SetCountChanceIncrementCertain() { SetCountChanceIncrement(1.0f); }
+                void SetCountChanceIncrementCertain() { SetCountChanceIncrement(1.0f); }
 
                 // calls SetCountChanceIncrement() and sets chance_equipped
-                inline void SetCountChanceIncrementAndEquip(
+                void SetCountChanceIncrementAndEquip(
                     const float CHANCE = 1.0f, const float EQUIP_CHANCE = 1.0f)
                 {
                     SetCountChanceIncrement(CHANCE);
@@ -276,7 +276,7 @@ namespace non_player
                     const MaterialChanceMap_t & MAT_CH_MAP_PRI = MaterialChanceMap_t(),
                     const MaterialChanceMap_t & MAT_CH_MAP_SEC = MaterialChanceMap_t());
 
-                static inline ClothingChances NoClothes() { return ClothingChances(); }
+                static ClothingChances NoClothes() { return ClothingChances(); }
 
                 item::armor::cover_type::Enum RandomCoverType() const;
 
@@ -304,9 +304,9 @@ namespace non_player
                     const item::material::Enum MATERIAL_PRIMARY,
                     const item::material::Enum MATERIAL_SECONDARY);
 
-                static inline ArmorItemChances NoArmorChance() { return ArmorItemChances(); }
+                static ArmorItemChances NoArmorChance() { return ArmorItemChances(); }
 
-                inline item::armor::base_type::Enum RandomArmorBaseType() const
+                item::armor::base_type::Enum RandomArmorBaseType() const
                 {
                     return MappedRandomFloatChance<item::armor::base_type::Enum>(type_map);
                 }
@@ -329,7 +329,7 @@ namespace non_player
                     const CoverChanceMap_t & COVER_MAP = CoverChanceMap_t(),
                     const ShieldChanceMap_t & SHIELD_MAP = ShieldChanceMap_t());
 
-                static inline ArmorChances NoArmor() { return ArmorChances(); }
+                static ArmorChances NoArmor() { return ArmorChances(); }
 
                 const std::pair<item::armor::helm_type::Enum, std::size_t> RandomHelm() const
                 {
@@ -370,7 +370,7 @@ namespace non_player
                     const MaterialChanceMap_t & MAT_CH_MAP_PRI = MaterialChanceMap_t(),
                     const MaterialChanceMap_t & MAT_CH_MAP_SEC = MaterialChanceMap_t());
 
-                static inline KnifeItemChances NoKnife() { return KnifeItemChances(); }
+                static KnifeItemChances NoKnife() { return KnifeItemChances(); }
 
                 float is_dagger;
                 SizeChanceMap_t size_map;
@@ -409,7 +409,7 @@ namespace non_player
                     const ProjectileChanceMap_t & PROJECTILE_MAP = ProjectileChanceMap_t(),
                     const BladedStaffChanceMap_t & BLADEDSTAFF_MAP = BladedStaffChanceMap_t());
 
-                static inline WeaponChances NoWeapon() { return WeaponChances(); }
+                static WeaponChances NoWeapon() { return WeaponChances(); }
 
                 bool has_claws;
                 bool has_bite;
@@ -440,7 +440,7 @@ namespace non_player
                     const ArmorChances & ARMOR_CHANCES = ArmorChances::NoArmor(),
                     const ItemChancePair_t & MISC_ITEM_CHANCES = ItemChancePair_t());
 
-                inline Coin_t RandomCoins() const
+                Coin_t RandomCoins() const
                 {
                     return (
                         (coins_min < coins_max)

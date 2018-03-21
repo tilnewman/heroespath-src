@@ -53,12 +53,9 @@ namespace item
         // coins and gems weigh nothing
         Weight_t Weight() const;
 
-        inline bool Empty() const
-        {
-            return ((0_coin == coins) && (0_gem == gems) && items_pvec.empty());
-        }
+        bool Empty() const { return ((0_coin == coins) && (0_gem == gems) && items_pvec.empty()); }
 
-        inline bool ItemsOnly() const
+        bool ItemsOnly() const
         {
             return ((0_coin == coins) && (0_gem == gems) && (items_pvec.empty() == false));
         }

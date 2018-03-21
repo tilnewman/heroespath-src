@@ -65,14 +65,14 @@ namespace creature
 
         virtual ~Condition();
 
-        inline const std::string Name() const { return Conditions::Name(type_); }
-        inline Conditions::Enum Which() const { return type_; }
-        inline const std::string Desc() const { return Conditions::Desc(type_); }
+        const std::string Name() const { return Conditions::Name(type_); }
+        Conditions::Enum Which() const { return type_; }
+        const std::string Desc() const { return Conditions::Desc(type_); }
         const std::string ToString() const;
         const std::string LongDesc() const;
-        inline std::size_t Severity() const { return condition::Severity::Get(type_); }
-        inline bool IsMagical() const { return isMagical_; }
-        inline const stats::TraitSet Traits() const { return traitSet_; }
+        std::size_t Severity() const { return condition::Severity::Get(type_); }
+        bool IsMagical() const { return isMagical_; }
+        const stats::TraitSet Traits() const { return traitSet_; }
 
         // These two functions do not alter traits
         virtual void InitialChange(CreaturePtrC_t) const;

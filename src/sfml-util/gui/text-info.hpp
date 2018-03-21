@@ -70,10 +70,7 @@ namespace sfml_util
                 const Justified::Enum JUSTIFIED);
 
             // returns true if there is non-empty text and a non-null font pointer
-            inline bool IsValid() const
-            {
-                return ((false == text.empty()) && (fontPtr != nullptr));
-            }
+            bool IsValid() const { return ((false == text.empty()) && (fontPtr != nullptr)); }
 
             std::string text;
             FontPtr_t fontPtr;

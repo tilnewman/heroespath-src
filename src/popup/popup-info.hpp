@@ -122,60 +122,54 @@ namespace popup
         PopupInfo(const PopupInfo &);
         PopupInfo & operator=(const PopupInfo &);
 
-        inline const std::string Name() const { return name_; }
-        inline PopupButtons::Enum Buttons() const { return buttons_; }
-        inline PopupImage::Enum Image() const { return image_; }
-        inline const sfml_util::gui::TextInfo TextInfo() const { return textInfo_; }
-        inline sfml_util::sound_effect::Enum SoundEffect() const { return soundEffect_; }
-        inline const sfml_util::gui::box::Info BoxInfo() const { return boxInfo_; }
-        inline float SizeX() const { return ratioX_; }
-        inline float SizeY() const { return ratioY_; }
-        inline PopupButtonColor::Enum ButtonColor() const { return buttonColor_; }
-        inline bool WillAddRandImage() const { return willAddRandImage_; }
-        inline const sfml_util::TextureVec_t & Images() const { return textureVec_; }
-        inline std::size_t ImagesCount() const { return textureVec_.size(); }
-        inline std::size_t NumberSelMin() const { return numberMin_; }
-        inline std::size_t NumberSelMax() const { return numberMax_; }
-        inline const std::vector<std::size_t> NumberSelInvVec() const { return numberInvalidVec_; }
-        inline float ImageFadeSpeed() const { return imageFadeSpeed_; }
-        inline creature::CreaturePtr_t CreaturePtr() const { return creatureCPtr_; }
-        inline std::size_t InitialSelection() const { return initialSelection_; }
-        inline bool AreImagesCreatures() const { return areImgsCreatures_; }
-        inline const std::vector<std::string> & TextVec() const { return textVec_; }
-        inline combat::CombatEnd::Enum HowCombatEnded() const { return howCombatEnded_; }
-        inline creature::TitlePtr_t TitleFromPtr() const { return titleFromPtr_; }
-        inline creature::TitlePtr_t TitleToPtr() const { return titleToPtr_; }
-        inline const std::string TitleText() const { return titleText_; }
-        inline const std::string DescText() const { return descText_; }
-        inline bool WillIncludeItems() const { return willIncludeItems_; }
-        inline float KeepAliveSec() const { return keepAliveSeconds_; }
+        const std::string Name() const { return name_; }
+        PopupButtons::Enum Buttons() const { return buttons_; }
+        PopupImage::Enum Image() const { return image_; }
+        const sfml_util::gui::TextInfo TextInfo() const { return textInfo_; }
+        sfml_util::sound_effect::Enum SoundEffect() const { return soundEffect_; }
+        const sfml_util::gui::box::Info BoxInfo() const { return boxInfo_; }
+        float SizeX() const { return ratioX_; }
+        float SizeY() const { return ratioY_; }
+        PopupButtonColor::Enum ButtonColor() const { return buttonColor_; }
+        bool WillAddRandImage() const { return willAddRandImage_; }
+        const sfml_util::TextureVec_t & Images() const { return textureVec_; }
+        std::size_t ImagesCount() const { return textureVec_.size(); }
+        std::size_t NumberSelMin() const { return numberMin_; }
+        std::size_t NumberSelMax() const { return numberMax_; }
+        const std::vector<std::size_t> NumberSelInvVec() const { return numberInvalidVec_; }
+        float ImageFadeSpeed() const { return imageFadeSpeed_; }
+        creature::CreaturePtr_t CreaturePtr() const { return creatureCPtr_; }
+        std::size_t InitialSelection() const { return initialSelection_; }
+        bool AreImagesCreatures() const { return areImgsCreatures_; }
+        const std::vector<std::string> & TextVec() const { return textVec_; }
+        combat::CombatEnd::Enum HowCombatEnded() const { return howCombatEnded_; }
+        creature::TitlePtr_t TitleFromPtr() const { return titleFromPtr_; }
+        creature::TitlePtr_t TitleToPtr() const { return titleToPtr_; }
+        const std::string TitleText() const { return titleText_; }
+        const std::string DescText() const { return descText_; }
+        bool WillIncludeItems() const { return willIncludeItems_; }
+        float KeepAliveSec() const { return keepAliveSeconds_; }
 
-        inline const sf::Texture & ImagesAt(const std::size_t I) const { return textureVec_.at(I); }
+        const sf::Texture & ImagesAt(const std::size_t I) const { return textureVec_.at(I); }
 
-        inline static std::size_t ContentNum_Item() { return 0; }
-        inline static std::size_t ContentNum_Coins() { return 1; }
-        inline static std::size_t ContentNum_Gems() { return 2; }
-        inline static std::size_t ContentNum_MeteorShards() { return 3; }
+        static std::size_t ContentNum_Item() { return 0; }
+        static std::size_t ContentNum_Coins() { return 1; }
+        static std::size_t ContentNum_Gems() { return 2; }
+        static std::size_t ContentNum_MeteorShards() { return 3; }
 
         bool IsNumberValid(const std::size_t) const;
 
         const std::string ToStringShort(const bool WILL_WRAP = true) const;
         const std::string ToStringFull(const bool WILL_WRAP = true) const;
 
-        inline void SetBoxInfo(const sfml_util::gui::box::Info & NEW_BOX_INFO)
-        {
-            boxInfo_ = NEW_BOX_INFO;
-        }
+        void SetBoxInfo(const sfml_util::gui::box::Info & NEW_BOX_INFO) { boxInfo_ = NEW_BOX_INFO; }
 
-        inline void SetDoesIncludeItems(const bool WILL_INCLUDE_ITEMS)
+        void SetDoesIncludeItems(const bool WILL_INCLUDE_ITEMS)
         {
             willIncludeItems_ = WILL_INCLUDE_ITEMS;
         }
 
-        inline void TextVec(const std::vector<std::string> & NEW_TEXT_VEC)
-        {
-            textVec_ = NEW_TEXT_VEC;
-        }
+        void TextVec(const std::vector<std::string> & NEW_TEXT_VEC) { textVec_ = NEW_TEXT_VEC; }
 
     public:
         static const float IMAGE_FADE_SPEED_DEFAULT_;

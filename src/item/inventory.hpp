@@ -62,17 +62,17 @@ namespace item
 
         ~Inventory();
 
-        inline Coin_t Coins() const { return coins_; }
-        inline MeteorShard_t MeteorShards() const { return meteorShards_; }
-        inline Gem_t Gems() const { return gems_; }
+        Coin_t Coins() const { return coins_; }
+        MeteorShard_t MeteorShards() const { return meteorShards_; }
+        Gem_t Gems() const { return gems_; }
 
         // these functions return false if attempt to reduce below zero
         bool CoinsAdj(const Coin_t &);
         bool MeteorShardsAdj(const MeteorShard_t &);
         bool GemsAdj(const Gem_t &);
 
-        inline const ItemPVec_t Items() const { return itemsPVec_; }
-        inline const ItemPVec_t ItemsEquipped() const { return equippedItemsPVec_; }
+        const ItemPVec_t Items() const { return itemsPVec_; }
+        const ItemPVec_t ItemsEquipped() const { return equippedItemsPVec_; }
 
         void ItemAdd(const ItemPtr_t);
         void ItemRemove(const ItemPtr_t);

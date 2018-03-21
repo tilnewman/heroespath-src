@@ -85,10 +85,10 @@ namespace sfml_util
 
             virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
 
-            inline virtual const std::string GetText() const { return text_; }
+            virtual const std::string GetText() const { return text_; }
 
-            inline virtual float GetTextWidth() const { return sprite_.getLocalBounds().width; }
-            inline virtual float GetTextHeight() const { return sprite_.getLocalBounds().height; }
+            virtual float GetTextWidth() const { return sprite_.getLocalBounds().width; }
+            virtual float GetTextHeight() const { return sprite_.getLocalBounds().height; }
 
             virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
@@ -113,7 +113,7 @@ namespace sfml_util
 
         protected:
             virtual void ResetText();
-            inline virtual void OnClick(const sf::Vector2f &) {}
+            virtual void OnClick(const sf::Vector2f &) {}
 
         protected:
             std::string text_;

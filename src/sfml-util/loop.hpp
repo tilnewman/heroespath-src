@@ -64,7 +64,7 @@ namespace sfml_util
         explicit Loop(const std::string & NAME);
         ~Loop();
 
-        inline void Exit() { willExit_ = true; }
+        void Exit() { willExit_ = true; }
 
         void AddStage(IStagePtr_t);
         void FreeAllStages();
@@ -83,46 +83,46 @@ namespace sfml_util
             const float SPEED_MULT = 200.0f,
             const bool WILL_HOLD_FADE = false);
 
-        inline void SetPopup(IStagePtr_t popupStagePtr) { popupStagePtr_ = popupStagePtr; }
-        inline void SetHoldTime(const float SECONDS)
+        void SetPopup(IStagePtr_t popupStagePtr) { popupStagePtr_ = popupStagePtr; }
+        void SetHoldTime(const float SECONDS)
         {
             holdTimeCounter_ = 0.0f;
             holdTime_ = SECONDS;
         }
 
-        inline void SetWillExitAfterFade(const bool B) { willExitAfterFade_ = B; }
-        inline void SetWillHoldFade(const bool NEW_VAL) { willHoldFade_ = NEW_VAL; }
+        void SetWillExitAfterFade(const bool B) { willExitAfterFade_ = B; }
+        void SetWillHoldFade(const bool NEW_VAL) { willHoldFade_ = NEW_VAL; }
 
-        inline void SetMouseVisibility(const bool IS_VISIBLE)
+        void SetMouseVisibility(const bool IS_VISIBLE)
         {
             winPtr_->setMouseCursorVisible(IS_VISIBLE);
         }
 
-        inline void SetState(const LoopState::Enum E) { state_ = E; }
-        inline LoopState::Enum GetState() const { return state_; }
+        void SetState(const LoopState::Enum E) { state_ = E; }
+        LoopState::Enum GetState() const { return state_; }
 
         void ConsumeEvents();
 
-        inline void SetWillExitOnKeypress(const bool B) { willExitOnKeypress_ = B; }
-        inline void SetWillExitOnMouseclick(const bool B) { willExitOnMouseclick_ = B; }
+        void SetWillExitOnKeypress(const bool B) { willExitOnKeypress_ = B; }
+        void SetWillExitOnMouseclick(const bool B) { willExitOnMouseclick_ = B; }
 
         void RemoveFocus();
 
         // returns true if a stage was found owning the GuiEntity
         bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);
 
-        inline bool GetIgnoreMouse() const { return willIgnoreMouse_; }
-        inline void SetIgnoreMouse(const bool B) { willIgnoreMouse_ = B; }
+        bool GetIgnoreMouse() const { return willIgnoreMouse_; }
+        void SetIgnoreMouse(const bool B) { willIgnoreMouse_ = B; }
 
-        inline bool GetIgnoreKeystrokes() const { return willIgnoreKeystrokes_; }
-        inline void SetIgnoreKeystrokes(const bool B) { willIgnoreKeystrokes_ = B; }
+        bool GetIgnoreKeystrokes() const { return willIgnoreKeystrokes_; }
+        void SetIgnoreKeystrokes(const bool B) { willIgnoreKeystrokes_ = B; }
 
         void AssignPopupCallbackHandlerInfo(
             popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO);
 
         void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V);
 
-        inline bool IsFading() const { return continueFading_; }
+        bool IsFading() const { return continueFading_; }
 
         void TestingStrAppend(const std::string &);
         void TestingStrIncrement(const std::string &);
@@ -134,7 +134,7 @@ namespace sfml_util
             const std::string & = "",
             const std::string & = "");
 
-        inline bool IsKeyPressed(const sf::Keyboard::Key KEY) const
+        bool IsKeyPressed(const sf::Keyboard::Key KEY) const
         {
             return sf::Keyboard::isKeyPressed(KEY);
         }

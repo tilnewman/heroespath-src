@@ -83,7 +83,7 @@ namespace sfml_util
 
         static void Release();
 
-        inline WinPtr_t GetWindow() const { return winUPtr_.get(); }
+        WinPtr_t GetWindow() const { return winUPtr_.get(); }
 
         float GetWinWidth() const;
         float GetWinHeight() const;
@@ -92,36 +92,36 @@ namespace sfml_util
         unsigned int WinColorDepth() const;
         unsigned int AntialiasLevel() const;
 
-        inline const sf::FloatRect FullScreenRect() const
+        const sf::FloatRect FullScreenRect() const
         {
             return sf::FloatRect(0.0f, 0.0f, GetWinWidth(), GetWinHeight());
         }
 
-        inline const sf::IntRect FullScreenRecti() const
+        const sf::IntRect FullScreenRecti() const
         {
             return sf::IntRect(
                 0, 0, static_cast<int>(GetWinWidth()), static_cast<int>(GetWinHeight()));
         }
 
-        inline void SetWindowTitle(const std::string & TITLE_STR) { winTitle_ = TITLE_STR; }
-        inline const std::string GetWindowTitle() const { return winTitle_; }
+        void SetWindowTitle(const std::string & TITLE_STR) { winTitle_ = TITLE_STR; }
+        const std::string GetWindowTitle() const { return winTitle_; }
 
-        inline void SetWindowStyle(const sf::Uint32 STYLE) { winStyle_ = STYLE; }
-        inline sf::Uint32 GetWindowStyle() const { return winStyle_; }
+        void SetWindowStyle(const sf::Uint32 STYLE) { winStyle_ = STYLE; }
+        sf::Uint32 GetWindowStyle() const { return winStyle_; }
 
         void SetFrameRateLimit(const int LIMIT);
-        inline int GetFrameRateLimit() const { return frameRateLimit_; }
+        int GetFrameRateLimit() const { return frameRateLimit_; }
 
         void SetVerticalSync(const bool WILL_SYNC);
-        inline bool GetVerticalSync() const { return willVerticalSync_; }
+        bool GetVerticalSync() const { return willVerticalSync_; }
 
-        inline static float GetWinWidthMin() { return 1280.0f; }
-        inline static float GetWinHeightMin() { return 900.0f; }
+        static float GetWinWidthMin() { return 1280.0f; }
+        static float GetWinHeightMin() { return 900.0f; }
 
         // These are not enfoced.  They exist only to aid in setting screen positions
         // that are relative to min/max sizes.
-        inline static float GetWinWidthMax() { return 7680.0f; }
-        inline static float GetWinHeightMax() { return 4800.0f; }
+        static float GetWinWidthMax() { return 7680.0f; }
+        static float GetWinHeightMax() { return 4800.0f; }
 
         static bool IsResolutionListed(const Resolution & RES);
         static bool IsVideoModeListed(const sf::VideoMode & VM);
@@ -130,17 +130,17 @@ namespace sfml_util
 
         // Decided to allow resolutions that are equal or greater than the
         // min required res.  zTn 2016-10-10
-        inline static bool IsVideoModeSupported(const sf::VideoMode & V)
+        static bool IsVideoModeSupported(const sf::VideoMode & V)
         {
             return ((V.width >= GetWinWidthMin()) && (V.height >= GetWinHeightMin()));
         }
 
-        inline static bool IsResolutionSupported(const Resolution & R)
+        static bool IsResolutionSupported(const Resolution & R)
         {
             return ((R.width >= GetWinWidthMin()) && (R.height >= GetWinHeightMin()));
         }
 
-        inline static bool IsCurrentDesktopResolutionSupported()
+        static bool IsCurrentDesktopResolutionSupported()
         {
             return IsVideoModeSupported(sf::VideoMode::getDesktopMode());
         }

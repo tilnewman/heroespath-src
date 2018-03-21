@@ -51,12 +51,12 @@ namespace stats
             const Speed_t & SPD = 0_spd,
             const Intell_t & INT = 0_int);
 
-        inline Strength_t Str() const { return str_; }
-        inline Accuracy_t Acc() const { return acc_; }
-        inline Charm_t Cha() const { return cha_; }
-        inline Luck_t Lck() const { return lck_; }
-        inline Speed_t Spd() const { return spd_; }
-        inline Intell_t Int() const { return int_; }
+        Strength_t Str() const { return str_; }
+        Accuracy_t Acc() const { return acc_; }
+        Charm_t Cha() const { return cha_; }
+        Luck_t Lck() const { return lck_; }
+        Speed_t Spd() const { return spd_; }
+        Intell_t Int() const { return int_; }
 
         stats::Trait_t Get(const Traits::Enum) const;
         void Set(const Traits::Enum, const stats::Trait_t);

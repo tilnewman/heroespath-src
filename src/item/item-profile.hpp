@@ -60,7 +60,7 @@ namespace item
 
         const std::string InvalidString() const;
 
-        inline bool IsValid() const { return InvalidString().empty(); }
+        bool IsValid() const { return InvalidString().empty(); }
 
         const std::string ToString() const;
 
@@ -185,148 +185,145 @@ namespace item
             const set_type::Enum SET,
             const named_type::Enum NAMED);
 
-        inline const std::string BaseName() const { return baseName_; }
-        inline category::Enum Category() const { return category_; }
-        inline armor_type::Enum ArmorType() const { return armor_; }
-        inline weapon_type::Enum WeaponType() const { return weapon_; }
-        inline unique_type::Enum UniqueType() const { return unique_; }
-        inline misc_type::Enum MiscType() const { return misc_; }
-        inline set_type::Enum SetType() const { return set_; }
-        inline named_type::Enum NamedType() const { return named_; }
-        inline element_type::Enum ElementType() const { return element_; }
+        const std::string BaseName() const { return baseName_; }
+        category::Enum Category() const { return category_; }
+        armor_type::Enum ArmorType() const { return armor_; }
+        weapon_type::Enum WeaponType() const { return weapon_; }
+        unique_type::Enum UniqueType() const { return unique_; }
+        misc_type::Enum MiscType() const { return misc_; }
+        set_type::Enum SetType() const { return set_; }
+        named_type::Enum NamedType() const { return named_; }
+        element_type::Enum ElementType() const { return element_; }
 
-        inline armor::shield_type::Enum ShieldType() const
+        armor::shield_type::Enum ShieldType() const
         {
             return (
                 (category_ & category::Armor) ? settings_.armor.shield : armor::shield_type::Count);
         }
-        inline armor::helm_type::Enum HelmType() const
+        armor::helm_type::Enum HelmType() const
         {
             return ((category_ & category::Armor) ? settings_.armor.helm : armor::helm_type::Count);
         }
-        inline armor::base_type::Enum BaseType() const
+        armor::base_type::Enum BaseType() const
         {
             return ((category_ & category::Armor) ? settings_.armor.base : armor::base_type::Count);
         }
-        inline armor::cover_type::Enum CoverType() const
+        armor::cover_type::Enum CoverType() const
         {
             return (
                 (category_ & category::Armor) ? settings_.armor.cover : armor::cover_type::Count);
         }
 
-        inline bool IsAventail() const { return (isSet_ & profile::IsSet::Aventail); }
-        inline bool IsBracer() const { return (isSet_ & profile::IsSet::Bracer); }
-        inline bool IsShirt() const { return (isSet_ & profile::IsSet::Shirt); }
-        inline bool IsBoots() const { return (isSet_ & profile::IsSet::Boots); }
-        inline bool IsPants() const { return (isSet_ & profile::IsSet::Pants); }
-        inline bool IsGauntlets() const { return (isSet_ & profile::IsSet::Gauntlets); }
-        inline bool IsKnife() const { return (isSet_ & profile::IsSet::Knife); }
-        inline bool IsDagger() const { return (isSet_ & profile::IsSet::Dagger); }
-        inline bool IsStaff() const { return (isSet_ & profile::IsSet::Staff); }
-        inline bool IsQuarterStaff() const { return (isSet_ & profile::IsSet::QStaff); }
-        inline bool IsPixie() const { return (isSet_ & profile::IsSet::Pixie); }
+        bool IsAventail() const { return (isSet_ & profile::IsSet::Aventail); }
+        bool IsBracer() const { return (isSet_ & profile::IsSet::Bracer); }
+        bool IsShirt() const { return (isSet_ & profile::IsSet::Shirt); }
+        bool IsBoots() const { return (isSet_ & profile::IsSet::Boots); }
+        bool IsPants() const { return (isSet_ & profile::IsSet::Pants); }
+        bool IsGauntlets() const { return (isSet_ & profile::IsSet::Gauntlets); }
+        bool IsKnife() const { return (isSet_ & profile::IsSet::Knife); }
+        bool IsDagger() const { return (isSet_ & profile::IsSet::Dagger); }
+        bool IsStaff() const { return (isSet_ & profile::IsSet::Staff); }
+        bool IsQuarterStaff() const { return (isSet_ & profile::IsSet::QStaff); }
+        bool IsPixie() const { return (isSet_ & profile::IsSet::Pixie); }
 
-        inline weapon::sword_type::Enum SwordType() const
+        weapon::sword_type::Enum SwordType() const
         {
             return (
                 (category_ & category::Weapon) ? settings_.weapon.sword
                                                : weapon::sword_type::Count);
         }
-        inline weapon::axe_type::Enum AxeType() const
+        weapon::axe_type::Enum AxeType() const
         {
             return (
                 (category_ & category::Weapon) ? settings_.weapon.axe : weapon::axe_type::Count);
         }
-        inline weapon::club_type::Enum ClubType() const
+        weapon::club_type::Enum ClubType() const
         {
             return (
                 (category_ & category::Weapon) ? settings_.weapon.club : weapon::club_type::Count);
         }
-        inline weapon::whip_type::Enum WhipType() const
+        weapon::whip_type::Enum WhipType() const
         {
             return (
                 (category_ & category::Weapon) ? settings_.weapon.whip : weapon::whip_type::Count);
         }
-        inline weapon::projectile_type::Enum ProjectileType() const
+        weapon::projectile_type::Enum ProjectileType() const
         {
             return (
                 (category_ & category::Weapon) ? settings_.weapon.proj
                                                : weapon::projectile_type::Count);
         }
-        inline weapon::bladedstaff_type::Enum BladedStaffType() const
+        weapon::bladedstaff_type::Enum BladedStaffType() const
         {
             return (
                 (category_ & category::Weapon) ? settings_.weapon.bstaff
                                                : weapon::bladedstaff_type::Count);
         }
 
-        inline sfml_util::Size::Enum Size() const { return size_; }
+        sfml_util::Size::Enum Size() const { return size_; }
 
-        inline material::Enum MaterialPrimary() const { return matPri_; }
-        inline material::Enum MaterialSecondary() const { return matSec_; }
+        material::Enum MaterialPrimary() const { return matPri_; }
+        material::Enum MaterialSecondary() const { return matSec_; }
 
-        inline creature::role::Enum Role() const { return role_; }
+        creature::role::Enum Role() const { return role_; }
 
-        inline Score_t TreasureScore() const { return score_; }
+        Score_t TreasureScore() const { return score_; }
 
-        inline Score_t ReligiousScore() const
+        Score_t ReligiousScore() const
         {
             return Score_t(static_cast<Score_t::type>(score_.As<float>() * religious_));
         }
 
-        inline bool IsReligious() const { return (religious_ > 0.0f); }
+        bool IsReligious() const { return (religious_ > 0.0f); }
 
-        inline const creature::SummonInfo Summoning() const { return summonInfo_; }
+        const creature::SummonInfo Summoning() const { return summonInfo_; }
 
-        inline bool WillSummon() const { return summonInfo_.WillSummon(); }
+        bool WillSummon() const { return summonInfo_.WillSummon(); }
 
         void SetSummoningAndAdjustScore(const creature::SummonInfo &);
 
-        inline float Religious() const { return religious_; }
-        inline void Religious(const float F) { religious_ = F; }
+        float Religious() const { return religious_; }
+        void Religious(const float F) { religious_ = F; }
 
-        inline bool IsWeapon() const { return (weapon_ != weapon_type::NotAWeapon); }
+        bool IsWeapon() const { return (weapon_ != weapon_type::NotAWeapon); }
 
-        inline bool IsArmor() const { return (armor_ != armor_type::NotArmor); }
+        bool IsArmor() const { return (armor_ != armor_type::NotArmor); }
 
-        inline bool IsEquipment() const { return (IsWeapon() || IsArmor()); }
+        bool IsEquipment() const { return (IsWeapon() || IsArmor()); }
 
-        inline bool IsMisc() const
+        bool IsMisc() const
         {
             return ((misc_ != misc_type::Count) && (misc_ != misc_type::NotMisc));
         }
 
-        inline bool IsUnique() const
+        bool IsUnique() const
         {
             return ((unique_ != unique_type::Count) && (unique_ != unique_type::NotUnique));
         }
 
-        inline bool IsSet() const
-        {
-            return ((set_ != set_type::Count) && (set_ != set_type::NotASet));
-        }
+        bool IsSet() const { return ((set_ != set_type::Count) && (set_ != set_type::NotASet)); }
 
-        inline bool IsNamed() const
+        bool IsNamed() const
         {
             return ((named_ != named_type::Count) && (named_ != named_type::NotNamed));
         }
 
-        inline bool IsElemental() const { return (element_ != element_type::None); }
+        bool IsElemental() const { return (element_ != element_type::None); }
 
-        inline bool IsStandard() const
+        bool IsStandard() const
         {
             return (
                 (IsUnique() == false) && (IsSet() == false) && (IsNamed() == false)
                 && (IsElemental() == false));
         }
 
-        inline bool IsStandardEquipment() const { return (IsStandard() && IsEquipment()); }
+        bool IsStandardEquipment() const { return (IsStandard() && IsEquipment()); }
 
         const MemberStrings ToMemberStrings() const;
 
-        inline const std::string ToString() const { return ToMemberStrings().ToString(); }
+        const std::string ToString() const { return ToMemberStrings().ToString(); }
 
-        inline bool IsValid() const { return ToMemberStrings().IsValid(); }
+        bool IsValid() const { return ToMemberStrings().IsValid(); }
 
         void SetUnique(
             const unique_type::Enum,
@@ -499,23 +496,20 @@ namespace item
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None);
 
-        inline armor::base_type::Enum ArmorTypeRestriction() const
-        {
-            return settings_.armor.restriction;
-        }
+        armor::base_type::Enum ArmorTypeRestriction() const { return settings_.armor.restriction; }
 
-        inline void SetArmorTypeRestriction(const armor::base_type::Enum E)
+        void SetArmorTypeRestriction(const armor::base_type::Enum E)
         {
             settings_.armor.restriction = E;
         }
 
-        inline void Role(const creature::role::Enum E) { role_ = E; }
+        void Role(const creature::role::Enum E) { role_ = E; }
 
         friend bool operator==(const ItemProfile & L, const ItemProfile & R);
         friend bool operator<(const ItemProfile & L, const ItemProfile & R);
 
     private:
-        inline void SetFlag(const bool WILL_SET, const profile::IsSet::Enum WHICH_BIT)
+        void SetFlag(const bool WILL_SET, const profile::IsSet::Enum WHICH_BIT)
         {
             if (WILL_SET)
             {

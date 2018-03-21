@@ -43,7 +43,7 @@ struct Counted
 {
     Counted() { ++m_refCount; }
     ~Counted() { --m_refCount; }
-    static inline int refCount() { return m_refCount; }
+    static int refCount() { return m_refCount; }
 
 private:
     static int m_refCount;
@@ -58,9 +58,9 @@ public:
     CountedWarehouse()
         : m_warehouse()
     {}
-    inline Counted * store(Counted * ptr) { return m_warehouse.Store(ptr, ""); }
-    inline void free(Counted *& ptr) { m_warehouse.Free(ptr, ""); }
-    inline std::size_t size() const { return m_warehouse.Size(); }
+    Counted * store(Counted * ptr) { return m_warehouse.Store(ptr, ""); }
+    void free(Counted *& ptr) { m_warehouse.Free(ptr, ""); }
+    std::size_t size() const { return m_warehouse.Size(); }
 
 private:
     misc::Warehouse<Counted> m_warehouse;

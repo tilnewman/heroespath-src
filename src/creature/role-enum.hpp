@@ -94,7 +94,7 @@ namespace creature
         };
 
         static const std::string ToString(const role::Enum);
-        inline static const std::string Name(const role::Enum E) { return ToString(E); }
+        static const std::string Name(const role::Enum E) { return ToString(E); }
         static const std::string Desc(const role::Enum);
         static const std::string Abbr(const role::Enum);
         static bool CanFly(const role::Enum);

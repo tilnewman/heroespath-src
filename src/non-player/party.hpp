@@ -65,11 +65,11 @@ namespace non_player
         explicit Party(const CharacterPVec_t & CHARACTER_PVEC = CharacterPVec_t());
         virtual ~Party();
 
-        inline const CharacterPVec_t Characters() const { return charactersPVec_; }
+        const CharacterPVec_t Characters() const { return charactersPVec_; }
 
         void Add(const CharacterPtr_t, const bool WILL_STORE = true);
         bool Remove(CharacterPtr_t, const bool WILL_FREE = true);
-        inline void Clear() { charactersPVec_.clear(); }
+        void Clear() { charactersPVec_.clear(); }
 
         CharacterPtr_t FindByCreaturePtr(creature::CreatureCPtrC_t) const;
 

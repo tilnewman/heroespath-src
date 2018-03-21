@@ -49,9 +49,9 @@ namespace popup
             , selection_(SELECTION)
         {}
 
-        inline const PopupInfo Info() const { return info_; }
-        inline ResponseTypes::Enum Response() const { return response_; }
-        inline std::size_t Selection() const { return selection_; }
+        const PopupInfo Info() const { return info_; }
+        ResponseTypes::Enum Response() const { return response_; }
+        std::size_t Selection() const { return selection_; }
 
     private:
         PopupInfo info_;

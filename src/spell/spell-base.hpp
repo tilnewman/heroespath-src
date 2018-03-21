@@ -75,24 +75,24 @@ namespace spell
 
         virtual ~Spell();
 
-        inline const std::string Name() const { return Spells::Name(which_); }
+        const std::string Name() const { return Spells::Name(which_); }
 
         const std::string ToString() const;
 
-        inline const std::string VerbThirdPerson() const { return verbThirdPerson_; }
-        inline const std::string VerbPastTense() const { return verbPastTense_; }
+        const std::string VerbThirdPerson() const { return verbThirdPerson_; }
+        const std::string VerbPastTense() const { return verbPastTense_; }
 
-        inline const std::string Desc() const { return Spells::ShortDesc(which_); }
-        inline const std::string DescExtra() const { return Spells::ExtraDesc(which_); }
+        const std::string Desc() const { return Spells::ShortDesc(which_); }
+        const std::string DescExtra() const { return Spells::ExtraDesc(which_); }
         const std::string DescDetails() const;
         const std::string DescComplete() const;
 
-        inline Spells::Enum Which() const { return which_; }
-        inline combat::EffectType::Enum Effect() const { return effectType_; }
-        inline game::Phase::Enum ValidPhases() const { return validPhases_; }
-        inline Mana_t ManaCost() const { return manaCost_; }
-        inline Rank_t Rank() const { return rank_; }
-        inline combat::TargetType::Enum Target() const { return targetType_; }
+        Spells::Enum Which() const { return which_; }
+        combat::EffectType::Enum Effect() const { return effectType_; }
+        game::Phase::Enum ValidPhases() const { return validPhases_; }
+        Mana_t ManaCost() const { return manaCost_; }
+        Rank_t Rank() const { return rank_; }
+        combat::TargetType::Enum Target() const { return targetType_; }
 
         // Allows the spell to change the target creature.
         // Don't adjust creatureCastUponPtr's health, that will be done in Fight.cpp.

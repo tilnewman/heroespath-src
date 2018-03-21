@@ -66,16 +66,16 @@ namespace sfml_util
 
             const sf::Vector2f Position() const;
 
-            inline float ProgressRatio() const { return slider_.Current(); }
-            inline sfml_util::Moving::Enum Direction() const { return direction_; }
-            inline const sf::Vector2f To() const { return toPosV_; }
-            inline const sf::Vector2f From() const { return fromPosV_; }
-            inline float Speed() const { return slider_.Speed(); }
-            inline bool IsMoving() const { return isMoving_; }
-            inline void Start() { isMoving_ = true; }
-            inline void Stop() { isMoving_ = false; }
+            float ProgressRatio() const { return slider_.Current(); }
+            sfml_util::Moving::Enum Direction() const { return direction_; }
+            const sf::Vector2f To() const { return toPosV_; }
+            const sf::Vector2f From() const { return fromPosV_; }
+            float Speed() const { return slider_.Speed(); }
+            bool IsMoving() const { return isMoving_; }
+            void Start() { isMoving_ = true; }
+            void Stop() { isMoving_ = false; }
 
-            inline void Speed(const float S) { slider_.Reset(S, slider_.Current()); }
+            void Speed(const float S) { slider_.Reset(S, slider_.Current()); }
 
         protected:
             sf::Vector2f origFromPosV_;

@@ -49,7 +49,7 @@ namespace item
             };
 
             static const std::string ToString(const shield_type::Enum);
-            inline static const std::string ToStringFull(const shield_type::Enum E)
+            static const std::string ToStringFull(const shield_type::Enum E)
             {
                 return ToString(E) + " Shield";
             }
@@ -70,7 +70,7 @@ namespace item
             };
 
             static const std::string ToString(const helm_type::Enum);
-            inline static const std::string ToStringFull(const helm_type::Enum E)
+            static const std::string ToStringFull(const helm_type::Enum E)
             {
                 return ToString(E) + " Helm";
             }

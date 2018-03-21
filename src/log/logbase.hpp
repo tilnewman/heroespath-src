@@ -212,7 +212,7 @@ namespace log
 
     // stream helper function allowing { myLog << "Hello."; or myLog << myInt;}
     template <typename T>
-    inline LogBase & operator<<(LogBase & mLogBase, const T & M_VAL)
+    LogBase & operator<<(LogBase & mLogBase, const T & M_VAL)
     {
         std::ostringstream ss;
         ss << M_VAL;

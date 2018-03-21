@@ -78,25 +78,25 @@ namespace sfml_util
 
         virtual const sf::Sprite Sprite() const = 0;
 
-        inline virtual void OnClick(const sf::Vector2f &) {}
+        virtual void OnClick(const sf::Vector2f &) {}
 
-        inline std::size_t CurrentFrame() const { return currentFrame_; }
+        std::size_t CurrentFrame() const { return currentFrame_; }
 
-        inline float TimePerFrame() const { return timePerFrameSec_; }
+        float TimePerFrame() const { return timePerFrameSec_; }
 
-        inline void TimePerFrameSet(const float TBF) { timePerFrameSec_ = TBF; }
+        void TimePerFrameSet(const float TBF) { timePerFrameSec_ = TBF; }
 
-        inline void TimePerFrameAdj(const float ADJ) { timePerFrameSec_ += ADJ; }
+        void TimePerFrameAdj(const float ADJ) { timePerFrameSec_ += ADJ; }
 
-        inline void ColorTransition(const sf::Color & FROM, const sf::Color & TO)
+        void ColorTransition(const sf::Color & FROM, const sf::Color & TO)
         {
             colorFrom_ = FROM;
             colorTo_ = TO;
         }
 
-        inline bool IsFinished() const { return isFinished_; }
+        bool IsFinished() const { return isFinished_; }
 
-        inline Animations::Enum Which() const { return which_; }
+        Animations::Enum Which() const { return which_; }
 
         void RandomVaryTimePerFrame();
 

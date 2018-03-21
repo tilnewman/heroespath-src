@@ -69,27 +69,24 @@ namespace sfml_util
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            inline const sf::Vector2f GetLabelPos() const { return textRegion_.GetEntityPos(); }
+            const sf::Vector2f GetLabelPos() const { return textRegion_.GetEntityPos(); }
             void SetLabelPos(const float POS_LEFT, const float POS_TOP);
             void SetLabelPosRelative(const float POS_REL_LEFT, const float POS_REL_TOP);
 
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            inline virtual void SetLabelOffset(const float X, const float Y)
+            virtual void SetLabelOffset(const float X, const float Y)
             {
                 labelOffsetX_ = X;
                 labelOffsetY_ = Y;
             }
-            inline virtual sf::Vector2f GetLabelOffset() const
-            {
-                return { labelOffsetX_, labelOffsetY_ };
-            }
+            virtual sf::Vector2f GetLabelOffset() const { return { labelOffsetX_, labelOffsetY_ }; }
 
             void ChangeTextInfo(const MouseTextInfo &);
 
         protected:
-            inline void OnClick(const sf::Vector2f &) override {}
+            void OnClick(const sf::Vector2f &) override {}
 
             void OnChange(const float NEW_VALUE) override;
 

@@ -138,8 +138,8 @@ namespace sfml_util
         explicit DateTime(const Date & DATE = Date(), const Time & TIME = Time());
 
         const std::string ToString() const;
-        inline bool IsValid() const { return (date.IsValid() && time.IsValid()); }
-        static inline const DateTime CurrentDateTime()
+        bool IsValid() const { return (date.IsValid() && time.IsValid()); }
+        static const DateTime CurrentDateTime()
         {
             return DateTime(Date::CurrentDate(), Time::CurrentTime());
         }

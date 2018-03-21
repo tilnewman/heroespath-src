@@ -69,19 +69,19 @@ namespace sfml_util
 
                 virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-                inline virtual bool UpdateMousePos(const sf::Vector2f &) { return false; }
+                virtual bool UpdateMousePos(const sf::Vector2f &) { return false; }
 
                 void SetupBox(const box::Info & BOX_INFO = box::Info());
 
                 virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
                 virtual void MoveEntityPos(const float HORIZ, const float VERT);
 
-                inline virtual const box::Info BoxInfo() const { return boxInfo_; }
+                virtual const box::Info BoxInfo() const { return boxInfo_; }
 
                 virtual bool SetHasFocus(const bool);
 
             protected:
-                inline virtual void OnClick(const sf::Vector2f &) {}
+                virtual void OnClick(const sf::Vector2f &) {}
                 virtual void OnColorChange();
 
                 box::Info boxInfo_;

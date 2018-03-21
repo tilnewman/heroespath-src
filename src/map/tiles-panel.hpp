@@ -58,7 +58,7 @@ namespace map
             , path_obj()
         {}
 
-        inline bool OwnsId(const int ID) const
+        bool OwnsId(const int ID) const
         {
             return ((ID >= first_id) && (ID < (first_id + tile_count)));
         }

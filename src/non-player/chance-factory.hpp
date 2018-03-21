@@ -279,7 +279,7 @@ namespace non_player
                 const non_player::CharacterPtr_t CHARACTER_PTR,
                 const bool INCLUDE_WOOD);
 
-            static inline void ForceMinMax(
+            static void ForceMinMax(
                 float & val_OutParam,
                 const float MIN_VAL = CHANCE_MINIMUM_,
                 const float MAX_VAL = CHANCE_MAXIMUM_)
@@ -297,7 +297,7 @@ namespace non_player
                 }
             }
 
-            static inline void ForceMin(float val_OutParam, const float MIN = CHANCE_MINIMUM_)
+            static void ForceMin(float val_OutParam, const float MIN = CHANCE_MINIMUM_)
             {
                 ForceMinMax(val_OutParam, MIN, 0.0f);
             }

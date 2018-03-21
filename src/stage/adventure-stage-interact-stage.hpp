@@ -80,8 +80,7 @@ namespace stage
 
         const std::string HandlerName() const final { return GetStageName(); }
 
-        virtual bool
-            HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) final;
+        bool HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) final;
 
         bool HandleCallback(const popup::PopupResponse &) override;
 

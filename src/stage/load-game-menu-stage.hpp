@@ -86,7 +86,7 @@ namespace stage
         LoadGameStage();
         virtual ~LoadGameStage();
 
-        inline virtual const std::string HandlerName() const { return GetStageName(); }
+        virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool
             HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);

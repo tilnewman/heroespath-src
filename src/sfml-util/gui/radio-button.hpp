@@ -206,20 +206,14 @@ namespace sfml_util
 
             virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-            inline std::size_t GetSelectedNumber() const { return currentSelection_; }
-            inline const RadioButtonSPtr_t GetSelectedButton()
-            {
-                return buttonSVec_[currentSelection_];
-            }
+            std::size_t GetSelectedNumber() const { return currentSelection_; }
+            const RadioButtonSPtr_t GetSelectedButton() { return buttonSVec_[currentSelection_]; }
 
             // throws on out of bounds, but will allow setting a grayed-out number
             void SetSelectNumber(const std::size_t);
 
             void SetInvalidSelections(const misc::SizetVec_t & INVALID_SELECTIONS_VEC);
-            inline const misc::SizetVec_t GetInvalidSelections() const
-            {
-                return invalidSelectionVec_;
-            }
+            const misc::SizetVec_t GetInvalidSelections() const { return invalidSelectionVec_; }
 
             // returns true if the currentSelection_ changed
             virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);

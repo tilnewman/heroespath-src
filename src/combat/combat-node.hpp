@@ -67,12 +67,12 @@ namespace combat
 
         void SetCharacterSize(const unsigned int);
 
-        inline creature::CreaturePtr_t Creature() const { return creaturePtr_; }
+        creature::CreaturePtr_t Creature() const { return creaturePtr_; }
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-        inline int GetBlockingPos() const { return blockingPos_; }
-        inline void SetBlockingPos(const int NEW_POS) { blockingPos_ = NEW_POS; }
+        int GetBlockingPos() const { return blockingPos_; }
+        void SetBlockingPos(const int NEW_POS) { blockingPos_ = NEW_POS; }
 
         virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
         virtual void MoveEntityPos(const float HORIZ, const float VERT);
@@ -81,22 +81,22 @@ namespace combat
 
         void SetToneDown(const float TONE_DOWN_VAL);
 
-        inline bool IsSummaryView() const { return isSummaryView_; }
+        bool IsSummaryView() const { return isSummaryView_; }
         void IsSummaryView(const bool);
 
-        inline bool IsMoving() const { return isMoving_; }
-        inline void IsMoving(const bool B) { isMoving_ = B; }
+        bool IsMoving() const { return isMoving_; }
+        void IsMoving(const bool B) { isMoving_ = B; }
 
         void UpdateConditionText();
 
-        inline bool IsFlying() const { return isFlying_; }
+        bool IsFlying() const { return isFlying_; }
         void IsFlying(const bool);
 
         virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         void SetImagePosOffset(const float HORIZ, const float VERT);
 
-        inline const sf::FloatRect GetImageBounds() const { return sprite_.getGlobalBounds(); }
+        const sf::FloatRect GetImageBounds() const { return sprite_.getGlobalBounds(); }
 
         void HealthChangeTasks();
 
@@ -113,7 +113,7 @@ namespace combat
         void SelectAnimStop();
 
     protected:
-        inline virtual void OnClick(const sf::Vector2f &) {}
+        virtual void OnClick(const sf::Vector2f &) {}
         const sf::Color HealthColor() const;
         const sf::Color HealthColorRed() const;
         const sf::Color HealthColorTick() const;

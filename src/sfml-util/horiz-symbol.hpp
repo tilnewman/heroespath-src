@@ -64,9 +64,9 @@ namespace sfml_util
 
         void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        inline float Height() const { return Bottom() - Top(); }
-        inline float Top() const { return sprite1_.getGlobalBounds().top; }
-        inline float Middle() const { return Top() + (Height() * 0.5f); }
+        float Height() const { return Bottom() - Top(); }
+        float Top() const { return sprite1_.getGlobalBounds().top; }
+        float Middle() const { return Top() + (Height() * 0.5f); }
         float Bottom() const;
 
     public:

@@ -59,13 +59,11 @@ namespace popup
         explicit PopupStageBase(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageBase();
 
-        inline const std::string HandlerName() const override { return GetStageName(); }
+        const std::string HandlerName() const override { return GetStageName(); }
 
-        virtual bool
-            HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
-        virtual bool
-            HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) override;
+        bool HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) override;
 
         void Setup() override;
 
@@ -78,7 +76,7 @@ namespace popup
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
     protected:
-        inline float ButtonTextHeight() const { return buttonTextHeight_; }
+        float ButtonTextHeight() const { return buttonTextHeight_; }
 
         virtual bool HandleSelect();
 
@@ -105,7 +103,7 @@ namespace popup
 
         const sf::IntRect BackgroundImageRect(const PopupImage::Enum PI, const float SCALE) const;
 
-        virtual inline bool WillPressingCKeyClosePopup() const { return false; }
+        virtual bool WillPressingCKeyClosePopup() const { return false; }
 
         float calcBackgroundImageScale(const PopupImage::Enum) const;
 

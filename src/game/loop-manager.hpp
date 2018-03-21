@@ -75,19 +75,19 @@ namespace game
         static void Acquire();
         static void Release();
 
-        inline static void SetStartupStage(const std::string & STARTUP_STAGE_NAME)
+        static void SetStartupStage(const std::string & STARTUP_STAGE_NAME)
         {
             startupStage_ = STARTUP_STAGE_NAME;
         }
 
-        inline sfml_util::LoopState::Enum GetState() const { return state_; }
-        inline sfml_util::LoopState::Enum GetPrevState() const { return prevState_; }
+        sfml_util::LoopState::Enum GetState() const { return state_; }
+        sfml_util::LoopState::Enum GetPrevState() const { return prevState_; }
 
-        inline popup::ResponseTypes::Enum GetPopupResponse() const { return popupResponse_; }
+        popup::ResponseTypes::Enum GetPopupResponse() const { return popupResponse_; }
 
-        inline std::size_t GetPopupSelection() const { return popupSelection_; }
+        std::size_t GetPopupSelection() const { return popupSelection_; }
 
-        inline void ClearPopupResponse()
+        void ClearPopupResponse()
         {
             popupResponse_ = popup::ResponseTypes::None;
             popupSelection_ = 0;
@@ -95,10 +95,7 @@ namespace game
 
         game::Phase::Enum GetPhase() const;
 
-        inline bool IsKeyPressed(const sf::Keyboard::Key KEY) const
-        {
-            return loop_.IsKeyPressed(KEY);
-        }
+        bool IsKeyPressed(const sf::Keyboard::Key KEY) const { return loop_.IsKeyPressed(KEY); }
 
         bool Execute();
 
@@ -111,7 +108,7 @@ namespace game
             TransitionTo_Popup<PopupType_t>(HANDLER_PTR, POPUP_INFO);
         }
 
-        inline void PopupWaitBegin(
+        void PopupWaitBegin(
             popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
         {
             PopupWaitBeginSpecific<popup::PopupStageGeneric>(HANDLER_PTR, POPUP_INFO);
@@ -128,28 +125,25 @@ namespace game
             const sfml_util::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL);
 
-        inline void SetTransitionBeforeFade(const sfml_util::LoopState::Enum E)
-        {
-            stateBeforeFade_ = E;
-        }
+        void SetTransitionBeforeFade(const sfml_util::LoopState::Enum E) { stateBeforeFade_ = E; }
 
         void HandleTransitionBeforeFade();
 
         void FakeMouseClick(const sf::Vector2f &);
 
-        inline void AddStage(sfml_util::IStagePtr_t stagePtr) { loop_.AddStage(stagePtr); }
+        void AddStage(sfml_util::IStagePtr_t stagePtr) { loop_.AddStage(stagePtr); }
 
-        inline bool IsFading() const { return loop_.IsFading(); }
+        bool IsFading() const { return loop_.IsFading(); }
 
-        inline bool GetIgnoreMouse() const { return loop_.GetIgnoreMouse(); }
+        bool GetIgnoreMouse() const { return loop_.GetIgnoreMouse(); }
 
-        inline void SetIgnoreMouse(const bool B) { loop_.SetIgnoreMouse(B); }
+        void SetIgnoreMouse(const bool B) { loop_.SetIgnoreMouse(B); }
 
-        inline void TestingStrAppend(const std::string & S) { loop_.TestingStrAppend(S); }
+        void TestingStrAppend(const std::string & S) { loop_.TestingStrAppend(S); }
 
-        inline void TestingStrIncrement(const std::string & S) { loop_.TestingStrIncrement(S); }
+        void TestingStrIncrement(const std::string & S) { loop_.TestingStrIncrement(S); }
 
-        inline void TestingImageSet(
+        void TestingImageSet(
             const sf::Texture & TEXTURE,
             const bool WILL_CHECK_FOR_OUTLINE = false,
             const std::string & CATEGORY_NAME = "",
@@ -159,7 +153,7 @@ namespace game
             loop_.TestingImageSet(TEXTURE, WILL_CHECK_FOR_OUTLINE, CATEGORY_NAME, TYPE_NAME, PATH);
         }
 
-        inline void SetExitSuccess(const bool WAS_SUCCESS) { exitSuccess_ = WAS_SUCCESS; }
+        void SetExitSuccess(const bool WAS_SUCCESS) { exitSuccess_ = WAS_SUCCESS; }
 
         void TransitionTo_Exit();
         void TransitionTo_Credits();
@@ -180,7 +174,7 @@ namespace game
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
             const game::Phase::Enum CURRENT_PHASE);
 
-        inline sfml_util::Loop & CommandLoopAccess(const sfml_util::ILoopCmd *) { return loop_; }
+        sfml_util::Loop & CommandLoopAccess(const sfml_util::ILoopCmd *) { return loop_; }
 
     private:
         void TransitionTo_Intro();

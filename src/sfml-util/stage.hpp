@@ -79,17 +79,17 @@ namespace sfml_util
 
         virtual ~Stage();
 
-        inline virtual void Setup() {}
+        virtual void Setup() {}
 
-        inline virtual const std::string GetStageName() const { return STAGE_NAME_; }
+        virtual const std::string GetStageName() const { return STAGE_NAME_; }
 
-        inline virtual const sf::FloatRect StageRegion() const { return stageRegion_; }
-        inline virtual void StageRegionSet(const sf::FloatRect & RECT) { stageRegion_ = RECT; }
+        virtual const sf::FloatRect StageRegion() const { return stageRegion_; }
+        virtual void StageRegionSet(const sf::FloatRect & RECT) { stageRegion_ = RECT; }
 
-        inline virtual float StageRegionLeft() const { return stageRegion_.left; }
-        inline virtual float StageRegionTop() const { return stageRegion_.top; }
-        inline virtual float StageRegionWidth() const { return stageRegion_.width; }
-        inline virtual float StageRegionHeight() const { return stageRegion_.height; }
+        virtual float StageRegionLeft() const { return stageRegion_.left; }
+        virtual float StageRegionTop() const { return stageRegion_.top; }
+        virtual float StageRegionWidth() const { return stageRegion_.width; }
+        virtual float StageRegionHeight() const { return stageRegion_.height; }
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
         virtual void UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS);
@@ -102,10 +102,7 @@ namespace sfml_util
         virtual bool KeyPress(const sf::Event::KeyEvent & KE);
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
 
-        inline virtual gui::IGuiEntityPtr_t GetEntityWithFocus() const
-        {
-            return entityWithFocusPtr_;
-        }
+        virtual gui::IGuiEntityPtr_t GetEntityWithFocus() const { return entityWithFocusPtr_; }
 
         virtual void RemoveFocus();
         virtual bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);
@@ -123,10 +120,10 @@ namespace sfml_util
 
         virtual void SetMouseHover(const sf::Vector2f &, const bool);
 
-        inline virtual void TestingStrAppend(const std::string &) {}
-        inline virtual void TestingStrIncrement(const std::string &) {}
+        virtual void TestingStrAppend(const std::string &) {}
+        virtual void TestingStrIncrement(const std::string &) {}
 
-        inline virtual void TestingImageSet(
+        virtual void TestingImageSet(
             const sf::Texture &,
             const bool = false,
             const std::string & = "",
@@ -134,13 +131,13 @@ namespace sfml_util
             const std::string & = "")
         {}
 
-        inline virtual void PerformNextTest() {}
+        virtual void PerformNextTest() {}
 
         virtual void ClearAllEntities();
 
-        inline virtual bool IsMouseHeldDown() const { return isMouseHeldDown_; }
-        inline virtual bool IsMouseHeldDownAndMoving() const { return isMouseHeldDownAndMoving_; }
-        inline virtual const sf::Vector2f MouseDownPosV() const { return mouseDownPosV_; }
+        virtual bool IsMouseHeldDown() const { return isMouseHeldDown_; }
+        virtual bool IsMouseHeldDownAndMoving() const { return isMouseHeldDownAndMoving_; }
+        virtual const sf::Vector2f MouseDownPosV() const { return mouseDownPosV_; }
 
     protected:
         void DrawHoverText(sf::RenderTarget &, const sf::RenderStates &);

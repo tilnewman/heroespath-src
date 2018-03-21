@@ -54,8 +54,7 @@ namespace popup
         using PopupStageBase::HandleCallback;
         using PopupStageBase::HandlerName;
 
-        virtual bool
-            HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
         void Setup() override;
         void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
@@ -71,7 +70,7 @@ namespace popup
         float SetupSelectImage_CalcTravelDistancePrev();
 
         virtual std::size_t CountMax() const;
-        inline virtual void SetupContent(const bool) {}
+        virtual void SetupContent(const bool) {}
         virtual void SetCurrentTexture(const std::size_t IMAGE_INDEX);
 
         bool KeyReleaseHandleNumbers(const sf::Event::KeyEvent &);

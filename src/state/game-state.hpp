@@ -62,20 +62,17 @@ namespace state
 
         player::Party & Party();
 
-        inline bool IsNewGame() const { return isGameNew_; }
+        bool IsNewGame() const { return isGameNew_; }
 
-        inline void IsNewGameSet(const bool B) { isGameNew_ = B; }
+        void IsNewGameSet(const bool B) { isGameNew_ = B; }
 
-        inline const sfml_util::DateTime DateTimeStarted() const { return dateTimeStarted_; }
+        const sfml_util::DateTime DateTimeStarted() const { return dateTimeStarted_; }
 
-        inline void DateTimeStartedSet(const sfml_util::DateTime & DT) { dateTimeStarted_ = DT; }
+        void DateTimeStartedSet(const sfml_util::DateTime & DT) { dateTimeStarted_ = DT; }
 
-        inline const sfml_util::DateTime DateTimeOfLastSave() const { return dateTimeLastSave_; }
+        const sfml_util::DateTime DateTimeOfLastSave() const { return dateTimeLastSave_; }
 
-        inline void DateTimeOfLastSaveSet(const sfml_util::DateTime & DT)
-        {
-            dateTimeLastSave_ = DT;
-        }
+        void DateTimeOfLastSaveSet(const sfml_util::DateTime & DT) { dateTimeLastSave_ = DT; }
 
         friend bool operator<(const GameState & L, const GameState & R);
         friend bool operator==(const GameState & L, const GameState & R);

@@ -85,9 +85,9 @@ namespace sfml_util
                 Reset(SPEED, INITIAL);
             }
 
-            inline T Current() const { return val_; }
-            inline T Speed() const { return spd_; }
-            inline bool IsDone() const { return (false == willContinue_); }
+            T Current() const { return val_; }
+            T Speed() const { return spd_; }
+            bool IsDone() const { return (false == willContinue_); }
 
             void Reset(const T SPEED = 1.0, const T INITIAL = 0.0)
             {
@@ -179,15 +179,12 @@ namespace sfml_util
             // The current value is not cached, so this is an expensive call.
             // Polling this function is not reccomended, instead use
             // Update(time_delta_since_last_call) periodically as time passes.
-            inline Value_t Current() const { return ApplyRange(slider_.Current()); }
-            inline Math_t Speed() const { return slider_.Speed(); }
-            inline bool IsDone() const { return slider_.IsDone(); }
-            inline Value_t Min() const { return min_; }
+            Value_t Current() const { return ApplyRange(slider_.Current()); }
+            Math_t Speed() const { return slider_.Speed(); }
+            bool IsDone() const { return slider_.IsDone(); }
+            Value_t Min() const { return min_; }
 
-            inline Value_t Max() const
-            {
-                return static_cast<Value_t>(min_ + static_cast<Value_t>(diff_));
-            }
+            Value_t Max() const { return static_cast<Value_t>(min_ + static_cast<Value_t>(diff_)); }
 
             void Reset(const Value_t THE_MIN = 0, const Value_t THE_MAX = 1, const Math_t SPEED = 1)
             {
@@ -212,7 +209,7 @@ namespace sfml_util
             }
 
         private:
-            inline Value_t ApplyRange(const Math_t ORIG) const
+            Value_t ApplyRange(const Math_t ORIG) const
             {
                 return static_cast<Value_t>(static_cast<Math_t>(min_) + (ORIG * diff_));
             }
@@ -250,9 +247,9 @@ namespace sfml_util
                 Reset(THE_MIN, THE_MAX, SPEED, INITIAL);
             }
 
-            inline Value_t Min() const { return min_; }
-            inline Value_t Max() const { return max_; }
-            inline Speed_t Speed() const { return speed_; }
+            Value_t Min() const { return min_; }
+            Value_t Max() const { return max_; }
+            Speed_t Speed() const { return speed_; }
 
             // SPEED==0 means the speed will not be reset/changed
             // INITIAL==0 means the INITIAL will be THE_MIN
@@ -376,9 +373,9 @@ namespace sfml_util
                 Reset(THE_MIN, THE_MAX, SPEED_MIN, SPEED_MAX, INITIAL, TARGET);
             }
 
-            inline Value_t GetMin() const { return min_; }
-            inline Value_t GetMax() const { return max_; }
-            inline Speed_t Speed() const { return slider_.Speed(); }
+            Value_t GetMin() const { return min_; }
+            Value_t GetMax() const { return max_; }
+            Speed_t Speed() const { return slider_.Speed(); }
 
             void Reset(
                 const Value_t THE_MIN,

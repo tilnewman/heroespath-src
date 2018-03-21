@@ -96,17 +96,17 @@ namespace misc
 
         void DetectAndLog();
 
-        inline platform_type::Enum Get() const { return platform_; }
+        platform_type::Enum Get() const { return platform_; }
 
-        inline const std::string GetName() const { return platform_type::ToString(platform_); }
+        const std::string GetName() const { return platform_type::ToString(platform_); }
 
-        inline bool IsWindows() const { return (platform_type::Windows == platform_); }
+        bool IsWindows() const { return (platform_type::Windows == platform_); }
 
-        inline bool IsLinux() const { return (platform_type::Linux == platform_); }
+        bool IsLinux() const { return (platform_type::Linux == platform_); }
 
-        inline bool IsApple() const { return (platform_type::Apple == platform_); }
+        bool IsApple() const { return (platform_type::Apple == platform_); }
 
-        inline bool IsSupported() const
+        bool IsSupported() const
         {
             return (platform_type::Unknown != platform_)
                 && (platform_type::Unsupported != platform_);

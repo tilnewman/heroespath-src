@@ -62,29 +62,29 @@ namespace sfml_util
             void Setup(
                 const sf::FloatRect & INNER_REGION, const float SIZE, const sf::Color & COLOR);
 
-            inline const sf::FloatRect RegionInner() const { return regionInner_; }
-            inline void RegionInner(const sf::FloatRect & R) { Setup(R, size_, color_); }
+            const sf::FloatRect RegionInner() const { return regionInner_; }
+            void RegionInner(const sf::FloatRect & R) { Setup(R, size_, color_); }
 
-            inline const sf::FloatRect RegionOuter() const { return regionOuter_; }
-            inline const sf::FloatRect Region() const { return RegionOuter(); }
+            const sf::FloatRect RegionOuter() const { return regionOuter_; }
+            const sf::FloatRect Region() const { return RegionOuter(); }
 
-            inline const sf::Color Color() const { return color_; }
-            inline void Color(const sf::Color & C) { Setup(regionInner_, size_, C); }
+            const sf::Color Color() const { return color_; }
+            void Color(const sf::Color & C) { Setup(regionInner_, size_, C); }
 
-            inline float Size() const { return size_; }
-            inline void Size(const float S) { Setup(regionInner_, S, color_); }
+            float Size() const { return size_; }
+            void Size(const float S) { Setup(regionInner_, S, color_); }
 
-            inline float InnerSize() const
+            float InnerSize() const
             {
                 return topLeftSprite_.getGlobalBounds().width * INNER_WIDTH_RATIO_;
             }
 
-            inline float OuterSize() const
+            float OuterSize() const
             {
                 return topLeftSprite_.getGlobalBounds().width * OUTER_WIDTH_RATIO_;
             }
 
-            inline float FrameSize() const
+            float FrameSize() const
             {
                 return topLeftSprite_.getGlobalBounds().width * FRAME_WIDTH_RATIO_;
             }

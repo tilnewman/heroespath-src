@@ -54,7 +54,7 @@ namespace item
 
             void ProcessName();
 
-            inline bool IsAWeapon() const { return (type != weapon_type::NotAWeapon); }
+            bool IsAWeapon() const { return (type != weapon_type::NotAWeapon); }
 
             std::string name;
 

@@ -70,7 +70,7 @@ namespace combat
             const std::string & DESC_PREFIX,
             const std::string & DES_POSTFIX);
 
-        inline sfml_util::sound_effect::Enum SoundEffect() const { return soundEffect_; }
+        sfml_util::sound_effect::Enum SoundEffect() const { return soundEffect_; }
 
         const std::string Description(const std::string & CONTAINER_NAME) const;
 
@@ -80,7 +80,7 @@ namespace combat
 
         std::size_t RandomEffectedPlayersCount() const;
 
-        inline const std::string HitVerb() const { return hitVerb_; }
+        const std::string HitVerb() const { return hitVerb_; }
 
     private:
         Rank_t FindAveragePlayerRank() const;

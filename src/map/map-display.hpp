@@ -70,7 +70,7 @@ namespace map
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
-        inline const sf::Vector2f PlayerPosMap() const { return playerPosV_ + playerPosOffsetV_; }
+        const sf::Vector2f PlayerPosMap() const { return playerPosV_ + playerPosOffsetV_; }
 
         Layout & GetLayoutRef() { return layout_; }
 

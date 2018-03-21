@@ -63,7 +63,7 @@ namespace sfml_util
                 const sf::Color & START_COLOR,
                 const sf::Color & END_COLOR);
 
-            inline bool IsFinished() const { return isFinished_; }
+            bool IsFinished() const { return isFinished_; }
             void Update(const float ELAPSED_TIME_SEC);
             void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 

@@ -136,7 +136,7 @@ namespace sfml_util
             virtual const std::string HandlerName() const { return GetEntityName(); }
             virtual bool HandleCallback(const callback::SliderBarCallbackPackage_t &);
 
-            inline const std::string GetText() const { return text_; }
+            const std::string GetText() const { return text_; }
             void SetText(const std::string &);
 
             void Append(const TextRegion &);

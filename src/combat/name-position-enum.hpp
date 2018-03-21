@@ -63,10 +63,10 @@ namespace combat
 
         ContentAndNamePos(const std::string & CONTENT_STR, const NamePosition::Enum NAME_POS_ENUM);
 
-        inline const std::string Pre() const { return pre_; }
-        inline const std::string Content() const { return content_; }
-        inline const std::string Post() const { return post_; }
-        inline NamePosition::Enum NamePos() const { return posEnum_; }
+        const std::string Pre() const { return pre_; }
+        const std::string Content() const { return content_; }
+        const std::string Post() const { return post_; }
+        NamePosition::Enum NamePos() const { return posEnum_; }
 
         const std::string
             Compose(const std::string & SOURCE_NAME, const std::string & TARGET_NAME) const;

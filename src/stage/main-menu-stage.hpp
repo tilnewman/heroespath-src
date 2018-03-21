@@ -65,9 +65,9 @@ namespace stage
         MainMenuStage();
         virtual ~MainMenuStage();
 
-        inline const std::string HandlerName() const override { return GetStageName(); }
+        const std::string HandlerName() const override { return GetStageName(); }
 
-        virtual bool HandleCallback(
+        bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
         void Setup() override;

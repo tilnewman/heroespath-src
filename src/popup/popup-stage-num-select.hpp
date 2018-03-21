@@ -57,15 +57,11 @@ namespace popup
 
         using PopupStageBase::HandleCallback;
 
-        inline const std::string HandlerName() const override
-        {
-            return PopupStageBase::HandlerName();
-        }
+        const std::string HandlerName() const override { return PopupStageBase::HandlerName(); }
 
-        virtual bool
-            HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
+        bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &) override;
 
-        virtual bool HandleCallback(
+        bool HandleCallback(
             const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &) override;
 
         void Setup() override;

@@ -43,9 +43,9 @@ namespace misc
             , durationSec_(DURATION)
         {}
 
-        inline float Time() const { return timeSec_; }
-        inline float Duration() const { return durationSec_; }
-        inline void Reset() { timeSec_ = 0.0f; }
+        float Time() const { return timeSec_; }
+        float Duration() const { return durationSec_; }
+        void Reset() { timeSec_ = 0.0f; }
 
         bool Update(const float ELAPSED_TIME_SEC)
         {

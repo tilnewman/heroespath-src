@@ -82,23 +82,20 @@ namespace sfml_util
             virtual void SetPosition(const float POS_LEFT, const float POS_TOP);
             virtual void MovePosition(const float HORIZ, const float VERT);
 
-            inline virtual const sf::Color GetColor() const { return bgInfo_.color; }
-            inline virtual const sf::FloatRect GetRegion() const { return bgInfo_.region; }
-            inline virtual bool IsImage() const { return (sprite_.getTexture() != nullptr); }
-            inline virtual bool IsRectangle() const { return !IsImage(); }
+            virtual const sf::Color GetColor() const { return bgInfo_.color; }
+            virtual const sf::FloatRect GetRegion() const { return bgInfo_.region; }
+            virtual bool IsImage() const { return (sprite_.getTexture() != nullptr); }
+            virtual bool IsRectangle() const { return !IsImage(); }
 
             void SetImageDetails(const float SCALE = 1.0f, const bool WILL_SMOOTH = false);
 
-            inline const sfml_util::GradientInfo GradientInfo() const
-            {
-                return bgInfo_.gradient_info;
-            }
+            const sfml_util::GradientInfo GradientInfo() const { return bgInfo_.gradient_info; }
 
-            inline const BackgroundInfo BgInfo() const { return bgInfo_; }
+            const BackgroundInfo BgInfo() const { return bgInfo_; }
 
-            inline float ImageScale() const { return sprite_.getScale().x; }
+            float ImageScale() const { return sprite_.getScale().x; }
 
-            inline bool IsTextureSmoothed() const
+            bool IsTextureSmoothed() const
             {
                 if (false == bgInfo_.hasTexture)
                     return false;

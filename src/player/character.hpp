@@ -98,7 +98,7 @@ namespace player
 
         virtual ~Character();
 
-        inline virtual bool IsPlayerCharacter() const { return true; }
+        virtual bool IsPlayerCharacter() const { return true; }
 
         friend bool operator==(const Character & L, const Character & R);
         friend bool operator<(const Character & L, const Character & R);

@@ -93,7 +93,7 @@ namespace sfml_util
             virtual void SetupSprites(const Brightness::Enum BRIGHTNESS);
 
         protected:
-            inline virtual void OnClick(const sf::Vector2f &) {}
+            virtual void OnClick(const sf::Vector2f &) {}
         };
 
         using CheckBoxSPtr_t = std::shared_ptr<CheckBox>;
@@ -159,10 +159,7 @@ namespace sfml_util
             const std::vector<std::size_t> GetCheckedNumbers() const;
             const CheckBoxSVec_t GetCheckedBoxes();
 
-            inline const misc::SizetVec_t GetInvalidSelections() const
-            {
-                return invalidSelectionsVec_;
-            }
+            const misc::SizetVec_t GetInvalidSelections() const { return invalidSelectionsVec_; }
 
             // returns true if any boxes were checked or un-checked
             virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V);
@@ -177,7 +174,7 @@ namespace sfml_util
             virtual void MoveEntityPos(const float HORIZ, const float VERT);
 
         protected:
-            inline virtual void OnClick(const sf::Vector2f &) {}
+            virtual void OnClick(const sf::Vector2f &) {}
             virtual void OnColorChange();
 
             bool IsInvalid(const std::size_t INDEX);

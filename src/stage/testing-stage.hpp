@@ -74,7 +74,7 @@ namespace stage
         void TestingStrAppend(const std::string &) override;
         void TestingStrIncrement(const std::string &) override;
 
-        virtual void TestingImageSet(
+        void TestingImageSet(
             const sf::Texture &,
             const bool WILL_CHECK_FOR_OUTLINE = false,
             const std::string & CATEGORY_NAME = "",

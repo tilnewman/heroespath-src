@@ -78,10 +78,7 @@ namespace popup
 
         virtual ~PopupStageSpellbook();
 
-        inline const std::string HandlerName() const override
-        {
-            return PopupStageBase::HandlerName();
-        }
+        const std::string HandlerName() const override { return PopupStageBase::HandlerName(); }
 
         using PopupStageBase::HandleCallback;
         bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;

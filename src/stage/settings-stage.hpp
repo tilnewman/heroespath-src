@@ -68,7 +68,7 @@ namespace stage
         SettingsStage();
         virtual ~SettingsStage();
 
-        inline virtual const std::string HandlerName() const { return GetStageName(); }
+        virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::callback::RadioButtonCallbackPackage_t &);
         virtual bool HandleCallback(const popup::PopupResponse &);
 

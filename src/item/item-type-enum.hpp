@@ -152,31 +152,31 @@ namespace item
         static void AppendCorePrimaryNoPearl(std::vector<material::Enum> &);
         static void AppendCoreSecondary(std::vector<material::Enum> &);
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CorePrimaryAndSecondary()
         {
             return std::make_pair(CorePrimary(), CoreSecondary());
         }
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CorePrimaryAndNoSecondary()
         {
             return std::make_pair(CorePrimary(), std::vector<material::Enum>());
         }
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CoreMetalAndCoreSecondary()
         {
             return std::make_pair(CoreMetal(), CoreSecondary());
         }
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CoreJewelAndCoreSecondary()
         {
             return std::make_pair(CoreJewel(), CoreSecondary());
         }
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CoreMetalJewelAndCoreSecondary()
         {
             std::vector<material::Enum> v;
@@ -185,7 +185,7 @@ namespace item
             return std::make_pair(v, CoreSecondary());
         }
 
-        inline static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
             CorePrimaryNoPearlAndSecondary()
         {
             return std::make_pair(CorePrimaryNoPearl(), CoreSecondary());
@@ -214,11 +214,11 @@ namespace item
         static bool IsJewel(const material::Enum MATERIAL);
         static bool
             ContainsJewel(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        inline bool static IsLeather(const material::Enum M)
+        bool static IsLeather(const material::Enum M)
         {
             return ((M == material::SoftLeather) || (M == material::HardLeather));
         }
-        inline bool static IsClothOrLeather(const material::Enum M)
+        bool static IsClothOrLeather(const material::Enum M)
         {
             return ((M == material::Cloth) || IsLeather(M));
         }

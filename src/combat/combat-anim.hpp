@@ -202,10 +202,7 @@ namespace combat
         // if a nullptr is given then all creatures will stop shaking
         void ShakeAnimStop(creature::CreatureCPtrC_t);
 
-        inline creature::CreatureCPtr_t ShakeAnimCreatureCPtr()
-        {
-            return shakeAnimCreatureWasCPtr_;
-        }
+        creature::CreatureCPtr_t ShakeAnimCreatureCPtr() { return shakeAnimCreatureWasCPtr_; }
 
         void ShakeAnimTemporaryStop(creature::CreatureCPtrC_t);
         void ShakeAnimRestart();

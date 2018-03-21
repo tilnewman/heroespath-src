@@ -71,10 +71,7 @@ namespace sfml_util
                 const GradientInfo & GRADIENT_INFO = GradientInfo());
 
             // returns false if either region dimmension is zero or less
-            inline bool IsValid() const
-            {
-                return ((region.width > 0.0f) && (region.height > 0.0f));
-            }
+            bool IsValid() const { return ((region.width > 0.0f) && (region.height > 0.0f)); }
 
             sf::FloatRect region;
             sf::Texture texture;

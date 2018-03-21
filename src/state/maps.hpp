@@ -45,7 +45,7 @@ namespace state
     public:
         Maps();
 
-        inline Level & Current() { return levels_.at(static_cast<std::size_t>(level_)); }
+        Level & Current() { return levels_.at(static_cast<std::size_t>(level_)); }
 
         void SetupForNewGame();
 

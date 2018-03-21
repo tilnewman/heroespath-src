@@ -79,7 +79,7 @@ namespace sfml_util
 
             virtual ~TwoStateEntity();
 
-            inline virtual bool IsInFirstState() const
+            virtual bool IsInFirstState() const
             {
                 return (MouseState::Down != guiImage_.GetMouseState());
             }
@@ -89,7 +89,7 @@ namespace sfml_util
             virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V);
             virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
 
-            inline virtual const std::string GetText() const { return guiText_.GetText(); }
+            virtual const std::string GetText() const { return guiText_.GetText(); }
 
             virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
@@ -99,7 +99,7 @@ namespace sfml_util
             virtual void MoveEntityPos(const float HORIZ, const float VERT);
 
         protected:
-            inline virtual void OnClick(const sf::Vector2f &) {}
+            virtual void OnClick(const sf::Vector2f &) {}
 
             // call this function after constructors and after the sprites have been setup
             virtual void PostSpriteSetup(const float POS_LEFT, const float POS_TOP);

@@ -55,7 +55,7 @@ namespace sfml_util
                 const sf::Color & START_COLOR,
                 const sf::Color & END_COLOR);
 
-            inline bool IsFinished() const { return isFinished_; }
+            bool IsFinished() const { return isFinished_; }
 
             // Returns true if isFinished_, implying that moving/animating has
             // stopped and that this Spark can be discarded/ignored/not-drawn.
@@ -98,7 +98,7 @@ namespace sfml_util
                 const float ROTATION_SPEED_BASE = 20.0f,
                 const float ROTATION_SPEED_VARIATION_RATIO = 0.5f);
 
-            inline bool IsFinished() const { return isFinished_; }
+            bool IsFinished() const { return isFinished_; }
             void Update(const float ELAPSED_TIME_SEC);
             void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 

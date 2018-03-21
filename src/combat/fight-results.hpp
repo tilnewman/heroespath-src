@@ -84,8 +84,8 @@ namespace combat
         explicit FightResult(const CreatureEffectVec_t & CF_VEC = CreatureEffectVec_t());
         explicit FightResult(const CreatureEffect & CF);
 
-        inline const CreatureEffectVec_t & Effects() const { return creatureEffectVec_; }
-        inline std::size_t Count() const { return creatureEffectVec_.size(); }
+        const CreatureEffectVec_t & Effects() const { return creatureEffectVec_; }
+        std::size_t Count() const { return creatureEffectVec_.size(); }
 
         const HitInfo
             GetHitInfo(const std::size_t EFFECT_INDEX = 0, const std::size_t HIT_INDEX = 0) const;

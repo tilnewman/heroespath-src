@@ -47,22 +47,22 @@ namespace item
             const Score_t & MAGIC = 0_score,
             const Score_t & RELIGIOUS = 0_score);
 
-        inline Score_t Coin() const { return coin_; }
-        inline Score_t Gem() const { return gem_; }
-        inline Score_t Magic() const { return magic_; }
-        inline Score_t Religious() const { return religious_; }
+        Score_t Coin() const { return coin_; }
+        Score_t Gem() const { return gem_; }
+        Score_t Magic() const { return magic_; }
+        Score_t Religious() const { return religious_; }
 
-        inline void Coin(const Score_t & SCORE) { coin_ = SCORE; }
-        inline void Gem(const Score_t & SCORE) { gem_ = SCORE; }
-        inline void Magic(const Score_t & SCORE) { magic_ = SCORE; }
-        inline void Religious(const Score_t & SCORE) { religious_ = SCORE; }
+        void Coin(const Score_t & SCORE) { coin_ = SCORE; }
+        void Gem(const Score_t & SCORE) { gem_ = SCORE; }
+        void Magic(const Score_t & SCORE) { magic_ = SCORE; }
+        void Religious(const Score_t & SCORE) { religious_ = SCORE; }
 
-        inline Score_t AdjustCoin(const Score_t & SCORE) { return coin_ += SCORE; }
-        inline Score_t AdjustGem(const Score_t & SCORE) { return gem_ += SCORE; }
-        inline Score_t AdjustMagic(const Score_t & SCORE) { return magic_ += SCORE; }
-        inline Score_t AdjustReligious(const Score_t & SCORE) { return religious_ += SCORE; }
+        Score_t AdjustCoin(const Score_t & SCORE) { return coin_ += SCORE; }
+        Score_t AdjustGem(const Score_t & SCORE) { return gem_ += SCORE; }
+        Score_t AdjustMagic(const Score_t & SCORE) { return magic_ += SCORE; }
+        Score_t AdjustReligious(const Score_t & SCORE) { return religious_ += SCORE; }
 
-        inline bool IsEmpty() const
+        bool IsEmpty() const
         {
             return (
                 (0_score == coin_) && (0_score == gem_) && (0_score == magic_)

@@ -163,7 +163,7 @@ namespace combat
         // returns nullptr if there is no node at the position given
         CombatNodePtr_t GetNode(const float POS_X, const float POS_Y) const;
 
-        inline std::size_t VertexCount() const { return vertexes_.size(); }
+        std::size_t VertexCount() const { return vertexes_.size(); }
         std::size_t VertexCountByBlockingPos(const int BLOCKING_POS) const;
 
         const VertexVec_t Vertexes() const;
@@ -219,13 +219,12 @@ namespace combat
         std::size_t
             CountAdjacent(const ID_t & ID, const EdgeType::Enum EDGE_TYPE = EdgeType::All) const;
 
-        inline bool
-            AreAnyAdjacent(const ID_t & ID, const EdgeType::Enum EDGE_TYPE = EdgeType::All) const
+        bool AreAnyAdjacent(const ID_t & ID, const EdgeType::Enum EDGE_TYPE = EdgeType::All) const
         {
             return (CountAdjacent(ID, EDGE_TYPE) > 0);
         }
 
-        inline bool IsVertexLeaf(const ID_t & ID) const { return (CountAdjacent(ID) == 1); }
+        bool IsVertexLeaf(const ID_t & ID) const { return (CountAdjacent(ID) == 1); }
 
         const std::string ToString() const;
 
@@ -235,42 +234,30 @@ namespace combat
         int GetBlockingPosMin() const;
         int GetBlockingPosMax() const;
         int GetBlockingDistanceMax() const;
-        inline float GetBlockingPosMid() const
+        float GetBlockingPosMid() const
         {
             return (static_cast<float>(GetBlockingPosMax())
                     + static_cast<float>(GetBlockingPosMin()))
                 / 2.0f;
         }
 
-        inline float GetBlockingPosMidPercent() const
-        {
-            return (50.0f + (GetBlockingPosMid() * 10.0f));
-        }
+        float GetBlockingPosMidPercent() const { return (50.0f + (GetBlockingPosMid() * 10.0f)); }
 
-        inline float GetBlockingPosMidRatio() const
-        {
-            return (GetBlockingPosMidPercent() / 100.0f);
-        }
+        float GetBlockingPosMidRatio() const { return (GetBlockingPosMidPercent() / 100.0f); }
 
-        inline float GetBlockingPosMinPercent() const
+        float GetBlockingPosMinPercent() const
         {
             return (50.0f + (static_cast<float>(GetBlockingPosMin()) * 10.0f));
         }
 
-        inline float GetBlockingPosMinRatio() const
-        {
-            return (GetBlockingPosMinPercent() / 100.0f);
-        }
+        float GetBlockingPosMinRatio() const { return (GetBlockingPosMinPercent() / 100.0f); }
 
-        inline float GetBlockingPosMaxPercent() const
+        float GetBlockingPosMaxPercent() const
         {
             return (50.0f + (static_cast<float>(GetBlockingPosMax()) * 10.0f));
         }
 
-        inline float GetBlockingPosMaxRatio() const
-        {
-            return (GetBlockingPosMaxPercent() / 100.0f);
-        }
+        float GetBlockingPosMaxRatio() const { return (GetBlockingPosMaxPercent() / 100.0f); }
 
         std::size_t GetNodeIDsAtBlockingPos(IDVec_t & IdVec_OutParam, const int BLOCKING_POS) const;
 

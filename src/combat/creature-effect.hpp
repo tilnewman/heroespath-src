@@ -64,9 +64,9 @@ namespace combat
             const creature::CreaturePtr_t CREATURE_PTR = nullptr,
             const HitInfoVec_t & HIT_INFO_VEC = HitInfoVec_t());
 
-        inline std::size_t GetCount() const { return hitInfoVec_.size(); }
-        inline const HitInfoVec_t & GetHitInfoVec() const { return hitInfoVec_; }
-        inline creature::CreaturePtr_t GetCreature() const { return creaturePtr_; }
+        std::size_t GetCount() const { return hitInfoVec_.size(); }
+        const HitInfoVec_t & GetHitInfoVec() const { return hitInfoVec_; }
+        creature::CreaturePtr_t GetCreature() const { return creaturePtr_; }
 
         bool GetWasHit() const;
 
@@ -81,7 +81,7 @@ namespace combat
         bool AllCondsAddedRemove(const creature::Conditions::Enum);
         bool AllCondsRemovedRemove(const creature::Conditions::Enum);
 
-        inline bool WasKill() const { return GetAllCondsAddedContains(creature::Conditions::Dead); }
+        bool WasKill() const { return GetAllCondsAddedContains(creature::Conditions::Dead); }
 
         friend bool operator<(const CreatureEffect & L, const CreatureEffect & R);
         friend bool operator==(const CreatureEffect & L, const CreatureEffect & R);

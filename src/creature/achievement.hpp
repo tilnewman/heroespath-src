@@ -64,10 +64,10 @@ namespace creature
             const AchievementType::Enum WHICH = AchievementType::None,
             const TitleCountMap_t & TITLE_COUNT_MAP = TitleCountMap_t());
 
-        inline AchievementType::Enum Which() const { return which_; }
-        inline Count_t Count() const { return count_; }
-        inline const std::string Name() const { return AchievementType::Name(which_); }
-        inline const TitleCountMap_t & TitleCountMap() const { return titleCountMap_; }
+        AchievementType::Enum Which() const { return which_; }
+        Count_t Count() const { return count_; }
+        const std::string Name() const { return AchievementType::Name(which_); }
+        const TitleCountMap_t & TitleCountMap() const { return titleCountMap_; }
 
         // These functions return pointers instead of enums because they
         // need a way for them to return nothing.

@@ -56,9 +56,9 @@ namespace sfml_util
 
         void PlayRandom() const;
 
-        inline std::size_t Size() const { return sfxEnums_.size(); }
+        std::size_t Size() const { return sfxEnums_.size(); }
 
-        inline bool IsValid() const { return !sfxEnums_.empty(); }
+        bool IsValid() const { return !sfxEnums_.empty(); }
 
         sound_effect::Enum SelectRandom() const;
 

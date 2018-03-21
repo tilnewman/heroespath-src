@@ -66,10 +66,7 @@ namespace popup
         explicit PopupStageMusicSheet(const popup::PopupInfo &);
         virtual ~PopupStageMusicSheet();
 
-        inline const std::string HandlerName() const override
-        {
-            return PopupStageBase::HandlerName();
-        }
+        const std::string HandlerName() const override { return PopupStageBase::HandlerName(); }
 
         bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 

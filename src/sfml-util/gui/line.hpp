@@ -77,13 +77,13 @@ namespace sfml_util
 
             virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-            inline virtual bool UpdateMousePos(const sf::Vector2f &) { return false; }
+            virtual bool UpdateMousePos(const sf::Vector2f &) { return false; }
 
             virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
             virtual void MoveEntityPos(const float HORIZ, const float VERT);
 
         protected:
-            inline virtual void OnClick(const sf::Vector2f &) {}
+            virtual void OnClick(const sf::Vector2f &) {}
             virtual void OnColorChange();
 
             void SetupBaseSprites();

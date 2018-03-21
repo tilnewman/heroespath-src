@@ -69,9 +69,9 @@ namespace sfml_util
         // returns true if frame count wrapped around back to zero
         bool UpdateTime(const float SECONDS) override;
 
-        inline std::size_t FrameCount() const override { return textureIdVec_.size(); }
+        std::size_t FrameCount() const override { return textureIdVec_.size(); }
 
-        inline const sf::Vector2f OrigSize() const override { return origSizeV_; }
+        const sf::Vector2f OrigSize() const override { return origSizeV_; }
 
         void MoveEntityPos(const float HORIZ, const float VERT) override;
 

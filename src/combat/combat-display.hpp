@@ -216,55 +216,52 @@ namespace combat
 
         void SortCreatureListByDisplayedPosition(creature::CreaturePVec_t &) const;
 
-        inline void SetIsPlayerTurn(const bool B) { isPlayerTurn_ = B; }
+        void SetIsPlayerTurn(const bool B) { isPlayerTurn_ = B; }
 
-        inline int GetBlockingDistanceBetween(
+        int GetBlockingDistanceBetween(
             const creature::CreaturePtrC_t & A_CPTRC,
             const creature::CreaturePtrC_t & B_CPTRC) const
         {
             return combatTree_.GetBlockingDistanceBetween(A_CPTRC, B_CPTRC);
         }
 
-        inline int GetClosestBlockingDistanceByType(
+        int GetClosestBlockingDistanceByType(
             const creature::CreaturePtrC_t & CPTRC, const bool WILL_FIND_PLAYERS) const
         {
             return combatTree_.GetClosestBlockingDistanceByType(CPTRC, WILL_FIND_PLAYERS);
         }
 
-        inline bool GetIsStatusMessageAnimating() const { return isStatusMessageAnim_; }
+        bool GetIsStatusMessageAnimating() const { return isStatusMessageAnim_; }
 
-        inline void SetIsStatusMessageAnimating(const bool B) { isStatusMessageAnim_ = B; }
+        void SetIsStatusMessageAnimating(const bool B) { isStatusMessageAnim_ = B; }
 
-        inline bool GetIsSummaryViewInProgress() const { return isSummaryViewInProgress_; }
+        bool GetIsSummaryViewInProgress() const { return isSummaryViewInProgress_; }
 
-        inline void GetCombatNodes(CombatNodePVec_t & combatNodesPVec)
+        void GetCombatNodes(CombatNodePVec_t & combatNodesPVec)
         {
             combatTree_.GetCombatNodes(combatNodesPVec);
         }
 
-        inline void SetSummaryViewAllowed(const bool IS_SUMMARYVIEW_ALLOWED)
+        void SetSummaryViewAllowed(const bool IS_SUMMARYVIEW_ALLOWED)
         {
             isSummaryViewAllowed_ = IS_SUMMARYVIEW_ALLOWED;
         }
 
-        inline void SetScrollingAllowed(const bool IS_SCROLLING_ALLOWED)
+        void SetScrollingAllowed(const bool IS_SCROLLING_ALLOWED)
         {
             isScrollAllowed_ = IS_SCROLLING_ALLOWED;
         }
 
-        inline CombatTree & CombatTreeObj() { return combatTree_; }
+        CombatTree & CombatTreeObj() { return combatTree_; }
 
-        inline const sf::FloatRect BattlefieldRect() { return battlefieldRect_; }
+        const sf::FloatRect BattlefieldRect() const { return battlefieldRect_; }
 
-        inline const sf::Vector2f CenteringPosV() { return centeringToPosV_; }
-        inline void CenteringPosV(const sf::Vector2f & V) { centeringToPosV_ = V; }
+        const sf::Vector2f CenteringPosV() const { return centeringToPosV_; }
+        void CenteringPosV(const sf::Vector2f & V) { centeringToPosV_ = V; }
 
-        inline NodePosTrackerMap_t NodePositionTrackerMap() { return nodePosTrackerMap_; }
+        NodePosTrackerMap_t NodePositionTrackerMap() { return nodePosTrackerMap_; }
 
-        inline void SetCombatAnimationPtr(const CombatAnimationPtr_t ptr)
-        {
-            combatAnimationPtr_ = ptr;
-        }
+        void SetCombatAnimationPtr(const CombatAnimationPtr_t ptr) { combatAnimationPtr_ = ptr; }
 
         void EndOfCombatCleanup();
 
@@ -283,7 +280,7 @@ namespace combat
             creature::CreaturePVec_t & creaturesInRoaringDistancePVec_OutParam) const;
 
     protected:
-        inline void SetIsSummaryViewInProgress(const bool B) { isSummaryViewInProgress_ = B; }
+        void SetIsSummaryViewInProgress(const bool B) { isSummaryViewInProgress_ = B; }
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 

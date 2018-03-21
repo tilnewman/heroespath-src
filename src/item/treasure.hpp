@@ -131,7 +131,7 @@ namespace item
         static std::size_t SelectRandomWeighted(
             const double WEIGHT_SUM, const RandomSelectionVec_t &, const std::size_t INDEX_LIMIT);
 
-        static inline double TreasureScoreToWeight(const Score_t & SCORE)
+        static double TreasureScoreToWeight(const Score_t & SCORE)
         {
             return 1.0 / (SCORE.As<double>() * 0.1);
         }

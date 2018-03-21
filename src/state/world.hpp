@@ -51,9 +51,9 @@ namespace state
     public:
         World();
 
-        inline Maps & GetMaps() { return maps_; }
-        inline std::size_t EncounterCount() const { return encounterCount_; }
-        inline void EncounterCountInc() { ++encounterCount_; }
+        Maps & GetMaps() { return maps_; }
+        std::size_t EncounterCount() const { return encounterCount_; }
+        void EncounterCountInc() { ++encounterCount_; }
         void HandleLevelLoad(const map::Level::Enum);
 
     private:

@@ -63,27 +63,27 @@ namespace sfml_util
 
         bool IsValid() const;
 
-        inline std::size_t Count() const { return whichVec_.size(); }
-        inline bool IsSingleSong() const { return (whichVec_.size() == 1); }
+        std::size_t Count() const { return whichVec_.size(); }
+        bool IsSingleSong() const { return (whichVec_.size() == 1); }
 
-        inline bool WillLoop() const { return willLoop_; }
-        inline void WillLoop(const bool B) { willLoop_ = B; }
+        bool WillLoop() const { return willLoop_; }
+        void WillLoop(const bool B) { willLoop_ = B; }
 
-        inline music::Enum CurrentlyPlaying() const { return currentlyPlaying_; }
-        inline music::Enum PreviouslyPlaying() const { return previouslyPlaying_; }
+        music::Enum CurrentlyPlaying() const { return currentlyPlaying_; }
+        music::Enum PreviouslyPlaying() const { return previouslyPlaying_; }
 
-        inline bool IsRandom() const { return willRandomize_; }
-        inline void IsRandom(const bool B) { willRandomize_ = B; }
+        bool IsRandom() const { return willRandomize_; }
+        void IsRandom(const bool B) { willRandomize_ = B; }
 
-        inline float FadeInMult() const { return fadeInMult_; }
-        inline float Volume() const { return volume_; }
+        float FadeInMult() const { return fadeInMult_; }
+        float Volume() const { return volume_; }
 
         // Returns the next song that will play, put another way, the result of PickNextSong().
         music::Enum Advance();
 
         music::Enum PickNextSong();
 
-        inline bool Contains(const music::Enum E) const
+        bool Contains(const music::Enum E) const
         {
             return std::find(whichVec_.begin(), whichVec_.end(), E) != whichVec_.end();
         }

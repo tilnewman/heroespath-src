@@ -140,7 +140,7 @@ namespace sfml_util
     }
 
     template <typename T>
-    const std::string VectorToString(const sf::Vector2<T> & V, const bool WILL_WRAP = true)
+    inline const std::string VectorToString(const sf::Vector2<T> & V, const bool WILL_WRAP = true)
     {
         std::ostringstream ss;
         ss << ((WILL_WRAP) ? "(" : "") << V.x << "," << V.y << ((WILL_WRAP) ? ")" : "");
@@ -148,13 +148,13 @@ namespace sfml_util
     }
 
     template <typename T>
-    void VectorToStream(const sf::Vector2<T> & V, std::ostream & stream)
+    inline void VectorToStream(const sf::Vector2<T> & V, std::ostream & stream)
     {
         stream << Vector2String(V);
     }
 
     template <typename T>
-    const std::string RectToString(const sf::Rect<T> & R, const bool WILL_WRAP = true)
+    inline const std::string RectToString(const sf::Rect<T> & R, const bool WILL_WRAP = true)
     {
         std::ostringstream ss;
         ss << ((WILL_WRAP) ? "[" : "") << R.left << "," << R.top << " " << R.width << "x"
@@ -170,7 +170,7 @@ namespace sfml_util
 
     // Drawing rectangles easily is often handy when testing graphics.
     template <typename T = float>
-    void DrawRectangle(
+    inline void DrawRectangle(
         sf::RenderTarget & target,
         const sf::RenderStates & STATES,
         const T LEFT,
@@ -191,7 +191,7 @@ namespace sfml_util
     }
 
     template <typename PosV_t, typename SizeV_t, typename Thickness_t>
-    void DrawRectangle(
+    inline void DrawRectangle(
         sf::RenderTarget & target,
         const sf::RenderStates & STATES,
         const sf::Vector2<PosV_t> & POS_V,
@@ -213,7 +213,7 @@ namespace sfml_util
     }
 
     template <typename T>
-    void DrawRectangle(
+    inline void DrawRectangle(
         sf::RenderTarget & target,
         const sf::RenderStates & STATES,
         const sf::Rect<T> & REGION_RECT,
@@ -243,7 +243,7 @@ namespace sfml_util
         std::vector<sf::Vertex> & verts);
 
     template <typename Given_t, typename Return_t>
-    Return_t FindPowerOf2GreaterThan(const Given_t A)
+    inline Return_t FindPowerOf2GreaterThan(const Given_t A)
     {
         auto x{ static_cast<int>(A) };
         auto y{ x };
@@ -313,8 +313,7 @@ namespace sfml_util
 
     // map a VAL within [IN_MIN, IN_MAX] to the range [OUT_MIN, OUT_MAX]
     template <typename T>
-    inline constexpr T
-        Map(const T VAL, const T IN_MIN, const T IN_MAX, const T OUT_MIN, const T OUT_MAX)
+    constexpr T Map(const T VAL, const T IN_MIN, const T IN_MAX, const T OUT_MIN, const T OUT_MAX)
     {
         return OUT_MIN + (((VAL - IN_MIN) * (OUT_MAX - OUT_MIN)) / (IN_MAX - IN_MIN));
     }
@@ -322,7 +321,7 @@ namespace sfml_util
     // return a number within [OUT_MIN, OUT_MAX] proportional to the current resolution vs the max
     // supported resolution
     template <typename T>
-    T MapByRes(const T OUT_MIN, const T OUT_MAX)
+    inline T MapByRes(const T OUT_MIN, const T OUT_MAX)
     {
         float minResArea(0.0f);
         float maxResArea(0.0f);

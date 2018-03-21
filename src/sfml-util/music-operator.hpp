@@ -89,59 +89,59 @@ namespace sfml_util
 
         bool IsValid() const;
 
-        inline const MusicInfo Info() const { return info_; }
+        const MusicInfo Info() const { return info_; }
 
-        inline void Play()
+        void Play()
         {
             if (IsValid())
                 musicUPtr_->play();
         }
-        inline void Pause()
+        void Pause()
         {
             if (IsValid())
                 musicUPtr_->pause();
         }
-        inline void Stop()
+        void Stop()
         {
             if (IsValid())
                 musicUPtr_->stop();
         }
 
-        inline sf::Music::Status Status() const
+        sf::Music::Status Status() const
         {
             return ((IsValid()) ? musicUPtr_->getStatus() : sf::Music::Status::Stopped);
         }
 
-        inline bool IsLooped() const { return ((IsValid()) ? musicUPtr_->getLoop() : false); }
+        bool IsLooped() const { return ((IsValid()) ? musicUPtr_->getLoop() : false); }
 
-        inline void IsLooped(const bool B)
+        void IsLooped(const bool B)
         {
             if (IsValid())
                 musicUPtr_->setLoop(B);
         }
 
-        inline bool IsFadingIn() const { return (fadeInMult_ > 0.0f); }
-        inline bool IsFadingOut() const { return (fadeOutMult_ > 0.0f); }
+        bool IsFadingIn() const { return (fadeInMult_ > 0.0f); }
+        bool IsFadingOut() const { return (fadeOutMult_ > 0.0f); }
 
-        inline float FadingInMult() const { return fadeInMult_; }
-        inline void FadingInMult(const float F) { fadeInMult_ = F; }
+        float FadingInMult() const { return fadeInMult_; }
+        void FadingInMult(const float F) { fadeInMult_ = F; }
 
-        inline float FadingOutMult() const { return fadeOutMult_; }
-        inline void FadingOutMult(const float F) { fadeOutMult_ = F; }
+        float FadingOutMult() const { return fadeOutMult_; }
+        void FadingOutMult(const float F) { fadeOutMult_ = F; }
 
-        inline bool WillKillAfterFadeOut() const { return killAfterFadeOut_; }
-        inline void WillKillAfterFadeOut(const bool B) { killAfterFadeOut_ = B; }
+        bool WillKillAfterFadeOut() const { return killAfterFadeOut_; }
+        void WillKillAfterFadeOut(const bool B) { killAfterFadeOut_ = B; }
 
-        inline float Volume() const { return ((IsValid()) ? musicUPtr_->getVolume() : 0.0f); }
+        float Volume() const { return ((IsValid()) ? musicUPtr_->getVolume() : 0.0f); }
 
-        inline void Volume(const float F)
+        void Volume(const float F)
         {
             if (IsValid())
                 musicUPtr_->setVolume((F < 0.0f) ? 0.0f : ((F > 100.0f) ? 100.0f : F));
         }
 
-        inline float VolumeTarget() const { return targetVolume_; }
-        inline void VolumeTarget(const float F) { targetVolume_ = F; }
+        float VolumeTarget() const { return targetVolume_; }
+        void VolumeTarget(const float F) { targetVolume_ = F; }
 
         void VolumeFadeTo(const float TARGET_VOL, const float FADE_MULT = FADE_MULT_IMMEDIATE_);
         void VolumeFadeToGlobal(const float FADE_MULT = FADE_MULT_IMMEDIATE_);

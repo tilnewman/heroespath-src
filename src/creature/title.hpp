@@ -76,26 +76,23 @@ namespace creature
 
         virtual ~Title();
 
-        inline virtual const std::string Name() const { return Titles::Name(title_); }
-        inline virtual const std::string Desc() const { return Titles::Desc(title_); }
-        inline virtual Titles::Enum Which() const { return title_; }
-        inline virtual const stats::StatSet StatBonus() const { return statBonus_; }
-        inline virtual AchievementType::Enum GetAchievementType() const { return achievementType_; }
-        inline virtual Count_t AchievementCount() const { return achievementCount_; }
-        inline virtual Index_t AchievementIndex() const { return achievementIndex_; }
-        inline virtual void Roles(RoleVec_t & rolesVec_OutParam) const
-        {
-            rolesVec_OutParam = rolesVec_;
-        }
-        inline virtual const RoleVec_t RolesCopy() const { return rolesVec_; }
-        inline virtual bool IsRoleInList(const role::Enum E) const
+        virtual const std::string Name() const { return Titles::Name(title_); }
+        virtual const std::string Desc() const { return Titles::Desc(title_); }
+        virtual Titles::Enum Which() const { return title_; }
+        virtual const stats::StatSet StatBonus() const { return statBonus_; }
+        virtual AchievementType::Enum GetAchievementType() const { return achievementType_; }
+        virtual Count_t AchievementCount() const { return achievementCount_; }
+        virtual Index_t AchievementIndex() const { return achievementIndex_; }
+        virtual void Roles(RoleVec_t & rolesVec_OutParam) const { rolesVec_OutParam = rolesVec_; }
+        virtual const RoleVec_t RolesCopy() const { return rolesVec_; }
+        virtual bool IsRoleInList(const role::Enum E) const
         {
             return (std::find(rolesVec_.begin(), rolesVec_.end(), E) != rolesVec_.end());
         }
-        inline virtual const std::string ImageFilename() const { return fileName_; }
-        inline virtual Rank_t RankBonus() const { return rankBonus_; }
-        inline virtual Experience_t ExpBonus() const { return expBonus_; }
-        inline virtual Health_t HealthBonus() const { return healthBonus_; }
+        virtual const std::string ImageFilename() const { return fileName_; }
+        virtual Rank_t RankBonus() const { return rankBonus_; }
+        virtual Experience_t ExpBonus() const { return expBonus_; }
+        virtual Health_t HealthBonus() const { return healthBonus_; }
 
         virtual const std::string ToString() const;
         virtual const std::string LongDesc() const;

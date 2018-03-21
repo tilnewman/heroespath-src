@@ -89,13 +89,13 @@ namespace stage
                 const sf::Vector2f & ONSCREEN_POS,
                 const sf::Vector2f & OFFSCREEN_POS);
 
-            inline bool IsEitherMoving() const
+            bool IsEitherMoving() const
             {
                 return AreTreasureObjectsMoving() || AreInventoryObjectsMoving();
             }
 
-            inline treasure::Type Source() const { return treasureType_; }
-            inline std::size_t InventoryCharacterIndex() const { return inventoryCharIndex_; }
+            treasure::Type Source() const { return treasureType_; }
+            std::size_t InventoryCharacterIndex() const { return inventoryCharIndex_; }
 
             treasure::Type TreasureSwitch();
             void InventoryIndexSet(const std::size_t);

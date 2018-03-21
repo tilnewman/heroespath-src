@@ -65,9 +65,9 @@ namespace sfml_util
 
         void SetEntityRegion(const sf::FloatRect & R) override;
 
-        inline std::size_t FrameCount() const override { return rects_.size(); }
+        std::size_t FrameCount() const override { return rects_.size(); }
 
-        inline const sf::Vector2f OrigSize() const override { return origSizeV_; }
+        const sf::Vector2f OrigSize() const override { return origSizeV_; }
 
         void MoveEntityPos(const float HORIZ, const float VERT) override;
 

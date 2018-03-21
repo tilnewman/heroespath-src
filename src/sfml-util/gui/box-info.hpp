@@ -97,20 +97,17 @@ namespace sfml_util
                     const unsigned int BG_GRADIENT_SIDES = 0,
                     const unsigned int BG_GRADIENT_CORNERS = 0);
 
-                inline void SetBoxAndBackgroundRegion(const sf::FloatRect & R)
+                void SetBoxAndBackgroundRegion(const sf::FloatRect & R)
                 {
                     region = R;
                     bg_info.region = R;
                 }
 
-                inline bool IsValid() const
-                {
-                    return ((region.width > 0.0f) && (region.height > 0.0f));
-                }
+                bool IsValid() const { return ((region.width > 0.0f) && (region.height > 0.0f)); }
 
                 // returns true if either gold bars or lines are configured to be drawn, returns
                 // false if nothing will be drawn
-                inline bool WillBox() const
+                bool WillBox() const
                 {
                     return ((gold_bars || (line_thickness > 0.0f)) && IsValid());
                 }

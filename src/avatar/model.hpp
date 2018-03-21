@@ -56,11 +56,11 @@ namespace avatar
 
         void Update(const float TIME_ELAPSED);
 
-        inline const IView & GetView() const { return *viewUPtr_; }
+        const IView & GetView() const { return *viewUPtr_; }
 
         void SetWalkAnim(const sfml_util::Direction::Enum, const bool WILL_START_OR_STOP);
 
-        inline bool IsPlayer() const { return walkRects_.empty(); }
+        bool IsPlayer() const { return walkRects_.empty(); }
 
         void Move(const float AMOUNT);
 

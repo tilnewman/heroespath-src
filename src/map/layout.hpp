@@ -61,7 +61,7 @@ namespace map
             texture_vec.clear();
         }
 
-        inline const std::string EmptyTilesPanelName() const { return "empty"; }
+        const std::string EmptyTilesPanelName() const { return "empty"; }
 
         sf::Vector2i tile_size_v;
         sf::Vector2i tile_count_v;

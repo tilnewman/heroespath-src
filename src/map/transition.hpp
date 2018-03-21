@@ -55,12 +55,12 @@ namespace map
             , transSfxType_(TRANS_TYPE)
         {}
 
-        inline bool IsEntry() const { return isEntry_; }
-        inline Level::Enum WhichLevel() const { return level_; }
-        inline const sf::FloatRect Rect() const { return rect_; }
-        inline sfml_util::sound_effect::MapTransition TransType() const { return transSfxType_; }
+        bool IsEntry() const { return isEntry_; }
+        Level::Enum WhichLevel() const { return level_; }
+        const sf::FloatRect Rect() const { return rect_; }
+        sfml_util::sound_effect::MapTransition TransType() const { return transSfxType_; }
 
-        inline const sf::Vector2f Center() const
+        const sf::Vector2f Center() const
         {
             return sf::Vector2f(
                 rect_.left + (rect_.width * 0.5f), rect_.top + (rect_.height * 0.5f));

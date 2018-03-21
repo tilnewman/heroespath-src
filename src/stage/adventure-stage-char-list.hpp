@@ -60,9 +60,9 @@ namespace stage
         explicit AdventureCharacterList(sfml_util::IStage *);
         virtual ~AdventureCharacterList();
 
-        inline const std::string HandlerName() const override { return GetEntityName(); }
+        const std::string HandlerName() const override { return GetEntityName(); }
 
-        virtual bool HandleCallback(
+        bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
         void draw(sf::RenderTarget &, sf::RenderStates) const override;

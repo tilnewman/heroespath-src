@@ -53,13 +53,13 @@ namespace creature
                           game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        virtual const std::string EffectStr(const CreaturePtr_t) const
         {
             return "Adds 10% Mana and removes the conditions: Dazed, and Asleep Natural.";
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual Score_t TreasureScore() const { return 1800_score; }
+        virtual Score_t TreasureScore() const { return 1800_score; }
         virtual ~Enchantment_PixieBell() = default;
 
     private:
@@ -85,13 +85,13 @@ namespace creature
                           game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        virtual const std::string EffectStr(const CreaturePtr_t) const
         {
             return "Adds 15% Mana and removes the conditions: Dazed, Asleep Natural, and Daunted.";
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual Score_t TreasureScore() const { return 2000_score; }
+        virtual Score_t TreasureScore() const { return 2000_score; }
         virtual ~Enchantment_CrystalChimes() = default;
 
     private:
@@ -117,14 +117,14 @@ namespace creature
                           game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        virtual const std::string EffectStr(const CreaturePtr_t) const
         {
             return "Adds 20% Mana and removes the conditions: Dazed, Asleep Natural, Daunted, and "
                    "Panicked.";
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual Score_t TreasureScore() const { return 2400_score; }
+        virtual Score_t TreasureScore() const { return 2400_score; }
         virtual ~Enchantment_GoldenGong() = default;
 
     private:
@@ -149,13 +149,13 @@ namespace creature
                       static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        virtual const std::string EffectStr(const CreaturePtr_t) const
         {
             return "Panics non-dragon flying creatures.";
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual Score_t TreasureScore() const { return 1500_score; }
+        virtual Score_t TreasureScore() const { return 1500_score; }
         virtual ~Enchantment_DragonToothWhistle() = default;
 
     private:
@@ -181,13 +181,13 @@ namespace creature
                           game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        virtual const std::string EffectStr(const CreaturePtr_t) const
         {
             return "Removes conditions: Poison, Disease, Dazed, and Daunted.";
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual Score_t TreasureScore() const { return 1900_score; }
+        virtual Score_t TreasureScore() const { return 1900_score; }
         virtual ~Enchantment_DoveBloodVial() = default;
 
     private:
@@ -213,13 +213,13 @@ namespace creature
                           game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        virtual const std::string EffectStr(const CreaturePtr_t) const
         {
             return "Drains 10% Mana, and removes the Poison condition.";
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual Score_t TreasureScore() const { return 800_score; }
+        virtual Score_t TreasureScore() const { return 800_score; }
         virtual ~Enchantment_DriedEdible() = default;
 
     private:
@@ -245,13 +245,10 @@ namespace creature
                           game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
-        {
-            return "Adds 10% Mana.";
-        }
+        virtual const std::string EffectStr(const CreaturePtr_t) const { return "Adds 10% Mana."; }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual Score_t TreasureScore() const { return 600_score; }
+        virtual Score_t TreasureScore() const { return 600_score; }
         virtual ~Enchantment_ShamanRainmaker() = default;
 
     private:
@@ -276,13 +273,10 @@ namespace creature
                       static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
-        {
-            return "Panics enemies.";
-        }
+        virtual const std::string EffectStr(const CreaturePtr_t) const { return "Panics enemies."; }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual Score_t TreasureScore() const { return 1300_score; }
+        virtual Score_t TreasureScore() const { return 1300_score; }
         virtual ~Enchantment_SpecterChains() = default;
 
     private:
@@ -308,13 +302,10 @@ namespace creature
                           game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
-        {
-            return "Curse Poison.";
-        }
+        virtual const std::string EffectStr(const CreaturePtr_t) const { return "Curse Poison."; }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual Score_t TreasureScore() const { return 1000_score; }
+        virtual Score_t TreasureScore() const { return 1000_score; }
         virtual ~Enchantment_VultureGizzard() = default;
 
     private:
@@ -339,13 +330,13 @@ namespace creature
                       static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        virtual const std::string EffectStr(const CreaturePtr_t) const
         {
             return "Panics or Daunts enemies.";
         }
 
         virtual void UseEffect(const CreaturePtr_t);
-        inline virtual Score_t TreasureScore() const { return 1100_score; }
+        virtual Score_t TreasureScore() const { return 1100_score; }
         virtual ~Enchantment_WarTrumpet() = default;
 
     private:
@@ -372,13 +363,13 @@ namespace creature
                           game::Phase::Combat | game::Phase::Inventory | game::Phase::Exploring)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        virtual const std::string EffectStr(const CreaturePtr_t) const
         {
             return "Used when casting or playing a Bless.";
         }
 
         virtual void UseEffect(const CreaturePtr_t) {}
-        inline virtual Score_t TreasureScore() const { return 250_score; }
+        virtual Score_t TreasureScore() const { return 250_score; }
         virtual ~Enchantment_MiscBlessed() = default;
 
     private:
@@ -405,13 +396,13 @@ namespace creature
                           game::Phase::Combat | game::Phase::Inventory | game::Phase::Exploring)))
         {}
 
-        inline virtual const std::string EffectStr(const CreaturePtr_t) const
+        virtual const std::string EffectStr(const CreaturePtr_t) const
         {
             return "Used when casting or playing a Curse.";
         }
 
         virtual void UseEffect(const CreaturePtr_t) {}
-        inline virtual Score_t TreasureScore() const { return 250_score; }
+        virtual Score_t TreasureScore() const { return 250_score; }
         virtual ~Enchantment_MiscCursed() = default;
 
     private:

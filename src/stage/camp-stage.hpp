@@ -70,7 +70,7 @@ namespace stage
         CampStage();
         virtual ~CampStage();
 
-        inline virtual const std::string HandlerName() const { return GetStageName(); }
+        virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const popup::PopupResponse &);
 
         virtual void Setup();

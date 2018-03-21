@@ -75,14 +75,14 @@ namespace sfml_util
 
             virtual ~SliderBar() = default;
 
-            inline float GetCurrentValue() const { return currentVal_; }
+            float GetCurrentValue() const { return currentVal_; }
             void SetCurrentValue(const float NEW_VAL);
             virtual void SetCurrentValueFromScreenCoords(const sf::Vector2f & NEW_COORD_V);
 
             void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
             // Overrides from GuiEntity
-            virtual bool UpdateMouseWheel(
+            bool UpdateMouseWheel(
                 const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION) override;
             bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
             bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
@@ -90,16 +90,16 @@ namespace sfml_util
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            inline virtual void
+            virtual void
                 SetOnChangeHandler(callback::ISliderBarCallbackHandler_t * const CHANGE_HANDLER_PTR)
             {
                 changeHandlerPtr_ = CHANGE_HANDLER_PTR;
             }
 
-            inline float GetLength() const { return LENGTH_; }
+            float GetLength() const { return LENGTH_; }
 
         protected:
-            inline void OnClick(const sf::Vector2f &) override {}
+            void OnClick(const sf::Vector2f &) override {}
 
             virtual void OnChange(const float NEW_VALUE);
 

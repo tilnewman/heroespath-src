@@ -53,17 +53,17 @@ namespace sfml_util
             const std::string & DIR_NAME = "",
             const sfml_util::Time & DURATION = sfml_util::Time());
 
-        inline music::Enum Which() const { return which_; }
-        inline bool IsLooped() const { return isLooped_; }
-        inline const std::string WhichName() const { return music::ToString(which_); }
-        inline const std::string ArtistName() const { return artistName_; }
-        inline const std::string SongName() const { return songName_; }
-        inline const std::string LicenseTitle() const { return licenseTitle_; }
-        inline const std::string Filename() const { return filename_; }
-        inline const std::string DirName() const { return dirName_; }
+        music::Enum Which() const { return which_; }
+        bool IsLooped() const { return isLooped_; }
+        const std::string WhichName() const { return music::ToString(which_); }
+        const std::string ArtistName() const { return artistName_; }
+        const std::string SongName() const { return songName_; }
+        const std::string LicenseTitle() const { return licenseTitle_; }
+        const std::string Filename() const { return filename_; }
+        const std::string DirName() const { return dirName_; }
 
-        inline const sfml_util::Time Duration() const { return duration_; }
-        inline void Duration(const sfml_util::Time & DURATION) { duration_ = DURATION; }
+        const sfml_util::Time Duration() const { return duration_; }
+        void Duration(const sfml_util::Time & DURATION) { duration_ = DURATION; }
 
         void AutoSetup();
 

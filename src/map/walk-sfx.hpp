@@ -69,7 +69,7 @@ namespace map
             , top_layers(TOP_LAYERS)
         {}
 
-        inline sfml_util::music::Enum FindSfx(const sf::Vector2f & POSITION) const
+        sfml_util::music::Enum FindSfx(const sf::Vector2f & POSITION) const
         {
             for (auto const & SFX_REGION : top_layers)
             {
