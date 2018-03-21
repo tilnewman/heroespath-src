@@ -502,7 +502,7 @@ namespace sfml_util
             return;
         }
 
-        auto & sfxWrapper{ sfxWrapperVec_[SFX_ENUM] };
+        auto & sfxWrapper{ sfxWrapperVec_[static_cast<std::size_t>(SFX_ENUM)] };
 
         if (sfxWrapper.IsValid() == false)
         {

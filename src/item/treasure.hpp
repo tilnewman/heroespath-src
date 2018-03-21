@@ -94,7 +94,7 @@ namespace item
     // selection
     struct RandomSelection
     {
-        RandomSelection(const std::size_t INDEX = 0, const Score_t SCORE = 0_score)
+        RandomSelection(const std::size_t INDEX = 0, const Score_t & SCORE = 0_score)
             : score(SCORE)
             , index(INDEX)
         {}
@@ -141,7 +141,7 @@ namespace item
         static double PopuplatePossibleVectorAndReturnWeightSum(
             RandomSelectionVec_t & possibleVec,
             const ItemProfileVec_t & PROFILES,
-            const Score_t MAX_SCORE,
+            const Score_t & MAX_SCORE,
             const bool IS_RELIGIOUS,
             const SetTypeProfileVec_t & OWNED_SET_PROFILES);
 

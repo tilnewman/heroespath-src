@@ -293,9 +293,8 @@ namespace sfml_util
 
                     ++drawnCount;
 
-                    if ((countLimit_ > 0)
-                        && ((WERE_ANY_DRAWN && (drawnCount >= countLimit_))
-                            || ((WERE_ANY_DRAWN == false) && (drawnCount > countLimit_))))
+                    if ((WERE_ANY_DRAWN && (drawnCount >= countLimit_))
+                        || ((WERE_ANY_DRAWN == false) && (drawnCount > countLimit_)))
                     {
                         break;
                     }

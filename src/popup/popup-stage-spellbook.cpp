@@ -472,12 +472,12 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
 
-        const sf::FloatRect SPELL_TITLE_TEXTRECT{
-            pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
-        };
-
         if (spellTitleTextRegionUPtr_.get() == nullptr)
         {
+            const sf::FloatRect SPELL_TITLE_TEXTRECT{
+                pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
+            };
+
             spellTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SpellnbookPopupWindowSpellTitle", SPELL_TITLE_TEXTINFO, SPELL_TITLE_TEXTRECT);
         }
@@ -528,22 +528,22 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
 
-        auto const SPELLDETAILS_TEXTRECT_LEFT{ pageRectRight_.left };
-
-        auto const SPELLDETAILS_TEXTRECT_TOP{ spellSprite_.getGlobalBounds().top
-                                              + spellSprite_.getGlobalBounds().height
-                                              + sfml_util::MapByRes(10.0f, 90.0f) };
-
-        auto const SPELLDETAILS_TEXTRECT_WIDTH{ pageRectRight_.width };
-        auto const SPELLDETAILS_TEXTRECT_HEIGHT{ 0.0f };
-
-        const sf::FloatRect SPELL_DETAILS_TEXTRECT{ SPELLDETAILS_TEXTRECT_LEFT,
-                                                    SPELLDETAILS_TEXTRECT_TOP,
-                                                    SPELLDETAILS_TEXTRECT_WIDTH,
-                                                    SPELLDETAILS_TEXTRECT_HEIGHT };
-
         if (spellDetailsTextUPtr_.get() == nullptr)
         {
+            auto const SPELLDETAILS_TEXTRECT_LEFT{ pageRectRight_.left };
+
+            auto const SPELLDETAILS_TEXTRECT_TOP{ spellSprite_.getGlobalBounds().top
+                                                  + spellSprite_.getGlobalBounds().height
+                                                  + sfml_util::MapByRes(10.0f, 90.0f) };
+
+            auto const SPELLDETAILS_TEXTRECT_WIDTH{ pageRectRight_.width };
+            auto const SPELLDETAILS_TEXTRECT_HEIGHT{ 0.0f };
+
+            const sf::FloatRect SPELL_DETAILS_TEXTRECT{ SPELLDETAILS_TEXTRECT_LEFT,
+                                                        SPELLDETAILS_TEXTRECT_TOP,
+                                                        SPELLDETAILS_TEXTRECT_WIDTH,
+                                                        SPELLDETAILS_TEXTRECT_HEIGHT };
+
             spellDetailsTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SpellnbookPopupWindowSpellDetails",
                 SPELL_DETAILS_TEXTINFO,

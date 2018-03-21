@@ -1097,11 +1097,11 @@ namespace stage
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        const sf::FloatRect STATS_TEXT_RECT(
-            STATS_POS_LEFT_, mainMenuTitle_.Bottom(false) + 20.0f, 0.0f, 0.0f);
-
         if (statsTextRegionUPtr_.get() == nullptr)
         {
+            const sf::FloatRect STATS_TEXT_RECT(
+                STATS_POS_LEFT_, mainMenuTitle_.Bottom(false) + 20.0f, 0.0f, 0.0f);
+
             statsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "InventoryStage'sStats", STATS_TEXT_INFO, STATS_TEXT_RECT);
 
@@ -1132,9 +1132,6 @@ namespace stage
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        const sf::FloatRect CENTER_TEXT_RECT(
-            0.0f, mainMenuTitle_.Bottom(true) + sfml_util::MapByRes(5.0f, 30.0f), 0.0f, 0.0f);
-
         const bool WAS_ALREADY_INSTANTIATED{ centerTextRegionUPtr_.get() != nullptr };
 
         if (WAS_ALREADY_INSTANTIATED)
@@ -1143,6 +1140,9 @@ namespace stage
         }
         else
         {
+            const sf::FloatRect CENTER_TEXT_RECT(
+                0.0f, mainMenuTitle_.Bottom(true) + sfml_util::MapByRes(5.0f, 30.0f), 0.0f, 0.0f);
+
             centerTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "InventoryStage'sCenter", CENTER_TEXT_INFO, CENTER_TEXT_RECT);
 
@@ -3268,10 +3268,7 @@ namespace stage
             sfml_util::SoundManager::Instance()
                 ->Getsound_effect_set(sfml_util::sound_effect_set::Coin)
                 .PlayRandom();
-        }
 
-        if (WILL_TRIGGER_SECONDARY_ACTIONS)
-        {
             std::ostringstream ss;
             ss << "\n\n"
                << creaturePtr_->Name() << " gathered " << coinsOwnedByOtherPartyMembers
@@ -3311,10 +3308,7 @@ namespace stage
             sfml_util::SoundManager::Instance()
                 ->Getsound_effect_set(sfml_util::sound_effect_set::Gem)
                 .PlayRandom();
-        }
 
-        if (WILL_TRIGGER_SECONDARY_ACTIONS)
-        {
             std::ostringstream ss;
             ss << "\n\n"
                << creaturePtr_->Name() << " gathered " << gemsOwnedByOtherPartyMembers
@@ -3354,10 +3348,7 @@ namespace stage
             sfml_util::SoundManager::Instance()
                 ->Getsound_effect_set(sfml_util::sound_effect_set::MeteorShard)
                 .PlayRandom();
-        }
 
-        if (WILL_TRIGGER_SECONDARY_ACTIONS)
-        {
             std::ostringstream ss;
             ss << "\n\n"
                << creaturePtr_->Name() << " gathered " << shardsOwnedByOtherPartyMembers

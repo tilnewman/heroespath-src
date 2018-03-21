@@ -349,8 +349,14 @@ namespace creature
         {
             wasAnyConditionRemoved = true;
             condition::Warehouse::Get(NEXT_CONDITION_TO_REMOVE_ENUM)->FinalChange(this);
-            conditionsVec_.erase(std::find(
-                conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM));
+
+            auto const FOUND_ITER{ std::find(
+                conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM) };
+
+            if (FOUND_ITER != std::end(conditionsVec_))
+            {
+                conditionsVec_.erase(FOUND_ITER);
+            }
         }
 
         if (conditionsVec_.size() == 0)

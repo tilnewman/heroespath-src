@@ -457,12 +457,12 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
 
-        const sf::FloatRect SONG_TITLE_TEXTRECT{
-            pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
-        };
-
         if (titleTextRegionUPtr_.get() == nullptr)
         {
+            const sf::FloatRect SONG_TITLE_TEXTRECT{
+                pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
+            };
+
             titleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "MusicSheetPopupWindowSongTitle", SONG_TITLE_TEXTINFO, SONG_TITLE_TEXTRECT);
         }

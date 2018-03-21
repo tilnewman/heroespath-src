@@ -37,6 +37,7 @@ namespace interact
 
     Button::Button(const Buttons::Enum WHICH_BUTTON)
         : whichButton_(WHICH_BUTTON)
+        , ptr_(nullptr)
     {}
 
     sfml_util::gui::TextButtonUPtr_t

@@ -375,7 +375,7 @@ namespace item
     double TreasureFactory::PopuplatePossibleVectorAndReturnWeightSum(
         RandomSelectionVec_t & possibleVec,
         const ItemProfileVec_t & PROFILES,
-        const Score_t MAX_SCORE,
+        const Score_t & MAX_SCORE,
         const bool IS_RELIGIOUS,
         const SetTypeProfileVec_t & OWNED_SET_PROFILES)
     {

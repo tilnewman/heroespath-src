@@ -701,8 +701,7 @@ namespace non_player
                     auto const SWORD_TYPE{ static_cast<item::weapon::sword_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    const chance::SwordChanceMap_t::const_iterator CITER(
-                        WEAPON_CHANCES.sword_map.find(SWORD_TYPE));
+                    auto const CITER{ WEAPON_CHANCES.sword_map.find(SWORD_TYPE) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (CITER != WEAPON_CHANCES.sword_map.end()),

@@ -41,8 +41,8 @@ namespace map
     struct TileOffsets
     {
         TileOffsets(
-            const sf::Vector2i BEGIN_V = sf::Vector2i(0, 0),
-            const sf::Vector2i END_V = sf::Vector2i(0, 0))
+            const sf::Vector2i & BEGIN_V = sf::Vector2i(0, 0),
+            const sf::Vector2i & END_V = sf::Vector2i(0, 0))
             : begin_v(BEGIN_V)
             , end_v(END_V)
         {}
