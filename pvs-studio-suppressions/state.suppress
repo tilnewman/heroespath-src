@@ -55,4 +55,36 @@
     <CodeCurrent>3443139162</CodeCurrent>
     <CodeNext>4012745122</CodeNext>
   </State>
+  <State>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...t { return (_ == num_legs...</Message>
+    <CodePrev>891535403</CodePrev>
+    <CodeCurrent>872550379</CodeCurrent>
+    <CodeNext>863948355</CodeNext>
+  </State>
+  <State>
+    <FileName>vector-map.hpp</FileName>
+    <ErrorCode>V302</ErrorCode>
+    <Message>Instantiate misc::VectorMap &lt; map::Level::Enum, bool &gt;: Member operator[] of 'VectorMap' class has a _-bit type argument. Use memsize-type here.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2705219483</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </State>
+  <State>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3326398001</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </State>
+  <State>
+    <FileName>game-state-factory.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'itr-&gt;path()' expression repeatedly.</Message>
+    <CodePrev>3666833554</CodePrev>
+    <CodeCurrent>385586797</CodeCurrent>
+    <CodeNext>4137937981</CodeNext>
+  </State>
 </NewDataSet>

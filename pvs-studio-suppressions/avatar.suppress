@@ -11,7 +11,7 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="Log">
+          <xs:element name="Avatar">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="FileName" type="xs:string" default="" />
@@ -26,7 +26,7 @@
         </xs:choice>
       </xs:complexType>
       <xs:unique name="Constraint1" msdata:PrimaryKey="true">
-        <xs:selector xpath=".//Log" />
+        <xs:selector xpath=".//Avatar" />
         <xs:field xpath="FileName" />
         <xs:field xpath="ErrorCode" />
         <xs:field xpath="Message" />
@@ -39,20 +39,20 @@
   <SuppressVersion>
     <CurrentVersion>2</CurrentVersion>
   </SuppressVersion>
-  <Log>
-    <FileName>logbase.cpp</FileName>
-    <ErrorCode>V128</ErrorCode>
-    <Message>The 'fileNum_' variable of the memsize type is written to a stream. Consider verifying the compatibility of _ and _ bit versions of the application in the context of a stored data.</Message>
-    <CodePrev>123</CodePrev>
-    <CodeCurrent>1273400538</CodeCurrent>
-    <CodeNext>125</CodeNext>
-  </Log>
-  <Log>
-    <FileName>logbase.cpp</FileName>
+  <Avatar>
+    <FileName>lpc-view.cpp</FileName>
     <ErrorCode>V112</ErrorCode>
-    <Message>Dangerous magic number _ used: ...&lt; std::setw(_) &lt;&lt; LINE &lt;&lt;...</Message>
-    <CodePrev>0</CodePrev>
-    <CodeCurrent>153239025</CodeCurrent>
+    <Message>Dangerous magic number _ used: ..._, _, _, _, _ };.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1758759134</CodeCurrent>
     <CodeNext>125</CodeNext>
-  </Log>
+  </Avatar>
+  <Avatar>
+    <FileName>lpc-view.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: return { _, _, _, _, _, _, _ };.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>181957937</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Avatar>
 </NewDataSet>

@@ -63,4 +63,28 @@
     <CodeCurrent>1062758543</CodeCurrent>
     <CodeNext>3601251520</CodeNext>
   </Player>
+  <Player>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...t { return (_ == num_legs...</Message>
+    <CodePrev>891535403</CodePrev>
+    <CodeCurrent>872550379</CodeCurrent>
+    <CodeNext>863948355</CodeNext>
+  </Player>
+  <Player>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3326398001</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Player>
+  <Player>
+    <FileName>initial.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: / _ };.</Message>
+    <CodePrev>2620739223</CodePrev>
+    <CodeCurrent>361</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Player>
 </NewDataSet>

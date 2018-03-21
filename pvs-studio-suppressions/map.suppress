@@ -1,0 +1,130 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="SuppressVersion">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Map">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FileName" type="xs:string" default="" />
+                <xs:element name="ErrorCode" type="xs:string" default="" />
+                <xs:element name="Message" type="xs:string" default="" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" default="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Map" />
+        <xs:field xpath="FileName" />
+        <xs:field xpath="ErrorCode" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="CodePrev" />
+        <xs:field xpath="CodeCurrent" />
+        <xs:field xpath="CodeNext" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <SuppressVersion>
+    <CurrentVersion>2</CurrentVersion>
+  </SuppressVersion>
+  <Map>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3326398001</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Map>
+  <Map>
+    <FileName>map-display.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ..._PER_QUAD_{ _ };.</Message>
+    <CodePrev>1538629036</CodePrev>
+    <CodeCurrent>1353891741</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Map>
+  <Map>
+    <FileName>map-display.cpp</FileName>
+    <ErrorCode>V813</ErrorCode>
+    <Message>Decreased performance. The 'states' argument should probably be rendered as a constant reference.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>4169224898</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Map>
+  <Map>
+    <FileName>map-display.cpp</FileName>
+    <ErrorCode>V813</ErrorCode>
+    <Message>Decreased performance. The 'states' argument should probably be rendered as a constant reference.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2826266204</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Map>
+  <Map>
+    <FileName>map-display.cpp</FileName>
+    <ErrorCode>V813</ErrorCode>
+    <Message>Decreased performance. The 'states' argument should probably be rendered as a constant reference.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3465228755</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Map>
+  <Map>
+    <FileName>shadow-masker.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...ENT_COUNT_{ _ };.</Message>
+    <CodePrev>1063710207</CodePrev>
+    <CodeCurrent>216827183</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Map>
+  <Map>
+    <FileName>shadow-masker.cpp</FileName>
+    <ErrorCode>V537</ErrorCode>
+    <Message>Consider reviewing the correctness of 'x' item's usage.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2140894900</CodeCurrent>
+    <CodeNext>117728385</CodeNext>
+  </Map>
+  <Map>
+    <FileName>shadow-masker.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...COUNT; i += _).</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3296329284</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Map>
+  <Map>
+    <FileName>parser.cpp</FileName>
+    <ErrorCode>V815</ErrorCode>
+    <Message>Decreased performance. Consider replacing the expression 'typeStr = ""' with 'typeStr.clear()'.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>97535</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Map>
+  <Map>
+    <FileName>map.cpp</FileName>
+    <ErrorCode>V813</ErrorCode>
+    <Message>Decreased performance. The 'states' argument should probably be rendered as a constant reference.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2424374260</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Map>
+  <Map>
+    <FileName>vector-map.hpp</FileName>
+    <ErrorCode>V302</ErrorCode>
+    <Message>Instantiate misc::VectorMap &lt; map::Level::Enum, bool &gt;: Member operator[] of 'VectorMap' class has a _-bit type argument. Use memsize-type here.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2705219483</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Map>
+</NewDataSet>

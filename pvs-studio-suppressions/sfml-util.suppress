@@ -823,4 +823,124 @@
     <CodeCurrent>958171424</CodeCurrent>
     <CodeNext>0</CodeNext>
   </sfml-util>
+  <sfml-util>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...eturn { _, _, _, _ }; }.</Message>
+    <CodePrev>3644747448</CodePrev>
+    <CodeCurrent>183492126</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ return { _, _, _, _...</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>109104719</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...turn { _, _, _, _ }; }.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2541651813</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3326398001</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>resolution.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...&lt; std::setw(_) &lt;&lt; width &lt;...</Message>
+    <CodePrev>91128649</CodePrev>
+    <CodeCurrent>1243450518</CodeCurrent>
+    <CodeNext>4216002364</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-effects.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'padImage_.GetUpSprite()' expression repeatedly.</Message>
+    <CodePrev>2381691486</CodePrev>
+    <CodeCurrent>3133817752</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-music.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'padImage_.GetUpSprite()' expression repeatedly.</Message>
+    <CodePrev>2381691486</CodePrev>
+    <CodeCurrent>3133817752</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-effects.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>4083489379</CodePrev>
+    <CodeCurrent>2293455454</CodeCurrent>
+    <CodeNext>2381691486</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-effects.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>4083489379</CodePrev>
+    <CodeCurrent>229341133</CodeCurrent>
+    <CodeNext>440842189</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-music.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>4083489379</CodePrev>
+    <CodeCurrent>2293455454</CodeCurrent>
+    <CodeNext>2381691486</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sliderbar-music.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>4083489379</CodePrev>
+    <CodeCurrent>229341133</CodeCurrent>
+    <CodeNext>440842189</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>sparkle-animation.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'sprite_.getLocalBounds()' expression repeatedly.</Message>
+    <CodePrev>12546168</CodePrev>
+    <CodeCurrent>316664727</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>display.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'winUPtr_-&gt;getSettings()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>31882</CodeCurrent>
+    <CodeNext>2849508487</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>loaders.cpp</FileName>
+    <ErrorCode>V811</ErrorCode>
+    <Message>Decreased performance. Excessive type casting: string -&gt; char * -&gt; string. Consider inspecting first argument of the function loadFromFile.</Message>
+    <CodePrev>2945745</CodePrev>
+    <CodeCurrent>4175610667</CodeCurrent>
+    <CodeNext>3420385660</CodeNext>
+  </sfml-util>
+  <sfml-util>
+    <FileName>loaders.cpp</FileName>
+    <ErrorCode>V811</ErrorCode>
+    <Message>Decreased performance. Excessive type casting: string -&gt; char * -&gt; string. Consider inspecting first argument of the function loadFromFile.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>4175610667</CodeCurrent>
+    <CodeNext>3420429932</CodeNext>
+  </sfml-util>
 </NewDataSet>

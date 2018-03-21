@@ -519,4 +519,316 @@
     <CodeCurrent>2509440252</CodeCurrent>
     <CodeNext>123</CodeNext>
   </Stage>
+  <Stage>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...t { return (_ == num_legs...</Message>
+    <CodePrev>891535403</CodePrev>
+    <CodeCurrent>872550379</CodeCurrent>
+    <CodeNext>863948355</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...eturn { _, _, _, _ }; }.</Message>
+    <CodePrev>3644747448</CodePrev>
+    <CodeCurrent>183492126</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ return { _, _, _, _...</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>109104719</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...turn { _, _, _, _ }; }.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2541651813</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3326398001</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>vector-map.hpp</FileName>
+    <ErrorCode>V302</ErrorCode>
+    <Message>Instantiate misc::VectorMap &lt; map::Level::Enum, bool &gt;: Member operator[] of 'VectorMap' class has a _-bit type argument. Use memsize-type here.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2705219483</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Instantiate SliderOnce &lt; Value_t, Speed_t &gt;: Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>145916554</CodePrev>
+    <CodeCurrent>72820713</CodeCurrent>
+    <CodeNext>3985</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Instantiate SliderOnce &lt; Value_t, Speed_t &gt;: Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1883286596</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>adventure-stage-interact-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...AGE_ALPHA_{ _ };.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>369424586</CodeCurrent>
+    <CodeNext>41543279</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>settings-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...electNumber(_);.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>495685612</CodeCurrent>
+    <CodeNext>2337</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>settings-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...Selection = _;.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>77608327</CodeCurrent>
+    <CodeNext>2337</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>testing-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...tedCount &gt;= _);.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2847087642</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>treasure-stage.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: return _;.</Message>
+    <CodePrev>2766459246</CodePrev>
+    <CodeCurrent>11243</CodeCurrent>
+    <CodeNext>539</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>settings-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'aaRadioButtonSetUPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3935610151</CodeCurrent>
+    <CodeNext>3496140802</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>treasure-display-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'alphaSprite.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>727570246</CodePrev>
+    <CodeCurrent>2670954295</CodeCurrent>
+    <CodeNext>523470295</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>main-menu-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'createButtonUPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>1515587207</CodePrev>
+    <CodeCurrent>2870471076</CodeCurrent>
+    <CodeNext>3574202822</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>main-menu-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'creditsButtonUPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>3797288681</CodePrev>
+    <CodeCurrent>3237908680</CodeCurrent>
+    <CodeNext>1464235380</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'eqNameSprite.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3537435962</CodeCurrent>
+    <CodeNext>523470074</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'eqPriceSprite.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>3537435962</CodePrev>
+    <CodeCurrent>523470074</CodeCurrent>
+    <CodeNext>2093882718</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'equippedListBoxUPtr_-&gt;Selected()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>3341398219</CodeCurrent>
+    <CodeNext>2918424133</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'game::Game::Instance()-&gt;State().Party()' expression repeatedly.</Message>
+    <CodePrev>52456425</CodePrev>
+    <CodeCurrent>3257271792</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'game::Game::Instance()-&gt;State().Party()' expression repeatedly.</Message>
+    <CodePrev>12694921</CodePrev>
+    <CodeCurrent>3257271792</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>inventory-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'game::Game::Instance()-&gt;State().Party()' expression repeatedly.</Message>
+    <CodePrev>1419309674</CodePrev>
+    <CodeCurrent>3257271792</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>treasure-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'game::Game::Instance()-&gt;State().Party()' expression repeatedly.</Message>
+    <CodePrev>1518205785</CodePrev>
+    <CodeCurrent>2101929613</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>treasure-display-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'moneySprite.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>2670954295</CodePrev>
+    <CodeCurrent>523470295</CodeCurrent>
+    <CodeNext>2093881060</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>character-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'POPUP_RESPONSE.Info()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>228049829</CodeCurrent>
+    <CodeNext>2707068740</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>character-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'raceRadioButtonUPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>1147113616</CodePrev>
+    <CodeCurrent>2928623384</CodeCurrent>
+    <CodeNext>2375011918</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>adventure-stage-interact-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'RESPONSE.Info()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>1152226541</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>main-menu-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'resumeButtonUPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>1381369481</CodePrev>
+    <CodeCurrent>2869688740</CodeCurrent>
+    <CodeNext>1700754764</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>combat-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>1568611104</CodePrev>
+    <CodeCurrent>2538706750</CodeCurrent>
+    <CodeNext>1950447205</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>combat-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>46975156</CodePrev>
+    <CodeCurrent>1107625445</CodeCurrent>
+    <CodeNext>1769689</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>combat-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>375412384</CodePrev>
+    <CodeCurrent>3672775424</CodeCurrent>
+    <CodeNext>319343497</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>combat-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>375412384</CodePrev>
+    <CodeCurrent>738028288</CodeCurrent>
+    <CodeNext>2537583934</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>load-game-menu-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>455855471</CodePrev>
+    <CodeCurrent>4267573176</CodeCurrent>
+    <CodeNext>4240167169</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>main-menu-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'settingsButtonUPtr_-&gt;GetEntityRegion()' expression repeatedly.</Message>
+    <CodePrev>3931506191</CodePrev>
+    <CodeCurrent>391811600</CodeCurrent>
+    <CodeNext>3588944262</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>credit.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'sprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>212382971</CodePrev>
+    <CodeCurrent>864393774</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>item-detail-viewer.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'sprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3822670014</CodeCurrent>
+    <CodeNext>612957</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>testing-stage.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'TEXTURE.getSize()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2233287099</CodeCurrent>
+    <CodeNext>187089758</CodeNext>
+  </Stage>
+  <Stage>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the fourth function argument as a reference. Consider replacing 'const .. SPEED_MAX' with 'const .. &amp;SPEED_MAX'.</Message>
+    <CodePrev>146752332</CodePrev>
+    <CodeCurrent>146752325</CodeCurrent>
+    <CodeNext>245929</CodeNext>
+  </Stage>
 </NewDataSet>

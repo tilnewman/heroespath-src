@@ -335,4 +335,188 @@
     <CodeCurrent>1739514811</CodeCurrent>
     <CodeNext>123</CodeNext>
   </Combat>
+  <Combat>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...eturn { _, _, _, _ }; }.</Message>
+    <CodePrev>3644747448</CodePrev>
+    <CodeCurrent>183492126</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...{ return { _, _, _, _...</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>109104719</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>popup-manager.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...turn { _, _, _, _ }; }.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2541651813</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>body-type.hpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: ...t { return (_ == num_legs...</Message>
+    <CodePrev>891535403</CodePrev>
+    <CodeCurrent>872550379</CodeCurrent>
+    <CodeNext>863948355</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>font-manager.hpp</FileName>
+    <ErrorCode>V524</ErrorCode>
+    <Message>It is odd that the body of 'Font_Dialog_' function is fully equivalent to the body of 'Font_Default_' function.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>3326398001</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>vector-map.hpp</FileName>
+    <ErrorCode>V302</ErrorCode>
+    <Message>Instantiate misc::VectorMap &lt; map::Level::Enum, bool &gt;: Member operator[] of 'VectorMap' class has a _-bit type argument. Use memsize-type here.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2705219483</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>combat-node.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'sprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>697161504</CodePrev>
+    <CodeCurrent>4120494605</CodeCurrent>
+    <CodeNext>3598463532</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>combat-node.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'wingSprite_.getGlobalBounds()' expression repeatedly.</Message>
+    <CodePrev>4120494605</CodePrev>
+    <CodeCurrent>3598463532</CodeCurrent>
+    <CodeNext>3597077332</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>combat-node.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'wingSprite_.getLocalBounds()' expression repeatedly.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>2777272998</CodeCurrent>
+    <CodeNext>15353653</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Instantiate SliderOnce &lt; Value_t, Speed_t &gt;: Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>145916554</CodePrev>
+    <CodeCurrent>72820713</CodeCurrent>
+    <CodeNext>3985</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Instantiate SliderOnce &lt; Value_t, Speed_t &gt;: Decreased performance. It is better to redefine the third function argument as a reference. Consider replacing 'const .. SPEED' with 'const .. &amp;SPEED'.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1883286596</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>sliders.hpp</FileName>
+    <ErrorCode>V801</ErrorCode>
+    <Message>Decreased performance. It is better to redefine the fourth function argument as a reference. Consider replacing 'const .. SPEED_MAX' with 'const .. &amp;SPEED_MAX'.</Message>
+    <CodePrev>146752332</CodePrev>
+    <CodeCurrent>146752325</CodeCurrent>
+    <CodeNext>245929</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>party-factory.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: Charm_t(_ + misc::ran...</Message>
+    <CodePrev>3800200020</CodePrev>
+    <CodeCurrent>1300394104</CodeCurrent>
+    <CodeNext>1828876395</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>trap-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: _,.</Message>
+    <CodePrev>72</CodePrev>
+    <CodeCurrent>68</CodeCurrent>
+    <CodeNext>2940</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>trap-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: _,.</Message>
+    <CodePrev>1589430492</CodePrev>
+    <CodeCurrent>68</CodeCurrent>
+    <CodeNext>64</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>trap-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: _,.</Message>
+    <CodePrev>78</CodePrev>
+    <CodeCurrent>68</CodeCurrent>
+    <CodeNext>28028</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>trap-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: _,.</Message>
+    <CodePrev>72</CodePrev>
+    <CodeCurrent>68</CodeCurrent>
+    <CodeNext>1404</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>trap-warehouse.cpp</FileName>
+    <ErrorCode>V112</ErrorCode>
+    <Message>Dangerous magic number _ used: _,.</Message>
+    <CodePrev>72</CodePrev>
+    <CodeCurrent>68</CodeCurrent>
+    <CodeNext>27516</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>summary-view.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the same expression repeatedly.</Message>
+    <CodePrev>1799176978</CodePrev>
+    <CodeCurrent>2094914483</CodeCurrent>
+    <CodeNext>592</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>turn-decider.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'TURN_INFO.GetStrategyInfo()' expression repeatedly.</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>2415569666</CodeCurrent>
+    <CodeNext>1347112651</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>turn-decider.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'TURN_INFO.GetStrategyInfo()' expression repeatedly.</Message>
+    <CodePrev>3112227670</CodePrev>
+    <CodeCurrent>2921065112</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>turn-decider.cpp</FileName>
+    <ErrorCode>V807</ErrorCode>
+    <Message>Decreased performance. Consider creating a reference to avoid using the 'TURN_INFO.GetStrategyInfo()' expression repeatedly.</Message>
+    <CodePrev>1516637563</CodePrev>
+    <CodeCurrent>285533856</CodeCurrent>
+    <CodeNext>5269</CodeNext>
+  </Combat>
+  <Combat>
+    <FileName>level.hpp</FileName>
+    <ErrorCode>V108</ErrorCode>
+    <Message>Incorrect index type: doorLockMap_[not a memsize-type]. Use memsize type instead.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>298815399</CodeCurrent>
+    <CodeNext>125</CodeNext>
+  </Combat>
 </NewDataSet>
