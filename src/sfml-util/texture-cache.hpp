@@ -31,9 +31,9 @@
 #include "misc/vector-map.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
-#include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace heroespath
 {

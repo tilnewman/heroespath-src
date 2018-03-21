@@ -43,6 +43,7 @@
 #include "state/game-state.hpp"
 
 #include <algorithm>
+#include <vector>
 
 namespace heroespath
 {

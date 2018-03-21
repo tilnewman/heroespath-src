@@ -29,6 +29,7 @@
 //
 #include "statement-tavern.hpp"
 #include "player/character.hpp"
+#include <vector>
 
 namespace heroespath
 {

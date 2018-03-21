@@ -94,7 +94,7 @@ namespace item
     // selection
     struct RandomSelection
     {
-        RandomSelection(const std::size_t INDEX = 0, const Score_t & SCORE = 0_score)
+        explicit RandomSelection(const std::size_t INDEX = 0, const Score_t & SCORE = 0_score)
             : score(SCORE)
             , index(INDEX)
         {}

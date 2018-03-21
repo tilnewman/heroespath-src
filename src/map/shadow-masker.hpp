@@ -29,6 +29,7 @@
 //
 #include "map/layout.hpp"
 #include "sfml-util/sfml-graphics.hpp"
+#include <string>
 
 namespace heroespath
 {

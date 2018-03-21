@@ -31,6 +31,7 @@
 #include "interact/interaction-button.hpp"
 #include "interact/interaction-text-enum.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
+#include <string>
 
 namespace heroespath
 {
@@ -52,6 +53,8 @@ namespace interact
             const std::string & SUBJECT_IMAGE_KEY,
             const sfml_util::sound_effect::Enum SFX_ENTER = sfml_util::sound_effect::Count,
             const sfml_util::sound_effect::Enum SFX_EXIT = sfml_util::sound_effect::Count);
+
+        virtual ~InteractionBase() = default;
 
         inline virtual Interact::Enum Type() const final { return interactionType_; }
 

@@ -40,7 +40,7 @@ namespace interact
 
         namespace compose
         {
-            static inline const StrVec_t MonkThings()
+            inline const StrVec_t MonkThings()
             {
                 return { "the light", "peace", "wisdom", "enlightenment", "truth", "nirvana" };
             }

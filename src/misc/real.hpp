@@ -27,6 +27,7 @@
 //
 // real-utils.hpp
 //
+#include <algorithm>
 #include <cmath> //for std::fabs
 #include <limits> //for epsilon
 #include <type_traits> // for enable_if
@@ -39,7 +40,7 @@ namespace misc
     template <class T>
     constexpr T abs(const T X)
     {
-        return X < 0 ? -X : X;
+        return ((X < 0) ? -X : X);
     }
 
     template <typename T>

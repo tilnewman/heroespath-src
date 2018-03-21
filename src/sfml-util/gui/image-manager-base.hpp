@@ -36,6 +36,8 @@
 
 #include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
+#include <string>
+
 namespace heroespath
 {
 namespace sfml_util

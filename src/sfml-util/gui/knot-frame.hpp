@@ -30,6 +30,7 @@
 #include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
+#include <vector>
 
 namespace heroespath
 {

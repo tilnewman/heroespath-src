@@ -33,6 +33,7 @@
 #include "misc/strong-numeric-type.hpp"
 #include "misc/strong-type.hpp"
 
+#include <string>
 #include <utility>
 #include <vector>
 

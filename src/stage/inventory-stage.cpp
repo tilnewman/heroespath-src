@@ -72,6 +72,8 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/real.hpp"
 
+#include <algorithm>
+#include <string>
 #include <vector>
 
 namespace heroespath

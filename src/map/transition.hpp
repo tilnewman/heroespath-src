@@ -43,7 +43,7 @@ namespace map
     class Transition
     {
     public:
-        Transition(
+        explicit Transition(
             const bool IS_ENTRY = true,
             const Level::Enum LEVEL = Level::Count,
             const sf::FloatRect & RECT = sf::FloatRect(),

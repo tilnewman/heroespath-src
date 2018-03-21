@@ -38,6 +38,8 @@
 #include "player/character.hpp"
 
 #include <memory>
+#include <string>
+#include <utility>
 #include <vector>
 
 namespace heroespath
@@ -55,7 +57,7 @@ namespace stage
         AdventureCharacterList & operator=(const AdventureCharacterList &);
 
     public:
-        AdventureCharacterList(sfml_util::IStage *);
+        explicit AdventureCharacterList(sfml_util::IStage *);
         virtual ~AdventureCharacterList();
 
         virtual inline const std::string HandlerName() const override { return GetEntityName(); }

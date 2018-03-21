@@ -28,6 +28,7 @@
 // collision-quad-tree.hpp
 //
 #include "sfml-util/sfml-graphics.hpp"
+#include <vector>
 
 namespace heroespath
 {

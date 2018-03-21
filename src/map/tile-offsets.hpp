@@ -40,7 +40,7 @@ namespace map
     // Responsible for wrapping the range of tile positions that are drawn on the map.
     struct TileOffsets
     {
-        TileOffsets(
+        explicit TileOffsets(
             const sf::Vector2i & BEGIN_V = sf::Vector2i(0, 0),
             const sf::Vector2i & END_V = sf::Vector2i(0, 0))
             : begin_v(BEGIN_V)

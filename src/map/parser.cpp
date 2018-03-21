@@ -82,7 +82,7 @@ namespace map
                 "map::Parser::Parse(" << packet.file_path << ") threw '" << E.what()
                                       << "' exception.");
 
-            throw E;
+            throw;
         }
         catch (...)
         {
@@ -218,7 +218,7 @@ namespace map
                 "map::Parser::Parse_MapSizes() threw exception when parsing \""
                 << FetchXMLAttributeName(MAP_PTREE) << "\".  what=\"" << E.what() << "\".");
 
-            throw E;
+            throw;
         }
     }
 
@@ -275,7 +275,7 @@ namespace map
         std::vector<int> & mapIDs, std::stringstream & tileLayerDataSS) const
     {
         // found by experiment to be a reliable upper bound for typical maps
-        mapIDs.reserve(20'000);
+        mapIDs.reserve(20000);
 
         std::string nextLine("");
         while (tileLayerDataSS)
@@ -362,7 +362,7 @@ namespace map
                         << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\"" << E.what()
                         << "\".");
 
-                    throw E;
+                    throw;
                 }
 
                 walkRectMap[WALK_RECT_INDEX].emplace_back(rect);
@@ -409,7 +409,7 @@ namespace map
                         << FetchXMLAttributeName(OBJECT_PTREE) << "\".  what=\"" << E.what()
                         << "\".");
 
-                    throw E;
+                    throw;
                 }
 
                 anims_.emplace_back(
@@ -452,7 +452,7 @@ namespace map
                 << "std::exception when parsing the rect from a node named \""
                 << FetchXMLAttributeName(PTREE) << "\".  what=\"" << E.what() << "\".");
 
-            throw E;
+            throw;
         }
 
         auto isEntry{ false };
@@ -590,7 +590,7 @@ namespace map
                 << "std::exception when parsing the rect from a node named \""
                 << FetchXMLAttributeName(PTREE) << "\".  what=\"" << E.what() << "\".");
 
-            throw E;
+            throw;
         }
 
         auto const MUSIC{ sfml_util::music::FootstepToMusic(
@@ -696,7 +696,7 @@ namespace map
                     << "std::exception when parsing \"" << FetchXMLAttributeName(CHILD_PAIR.second)
                     << "\".  what=\"" << E.what() << "\".");
 
-                throw E;
+                throw;
             }
         }
     }

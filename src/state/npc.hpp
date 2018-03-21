@@ -44,7 +44,8 @@ namespace state
     class Npc
     {
     public:
-        Npc(const avatar::Avatar::Enum AVATAR = avatar::Avatar::Count,
+        explicit Npc(
+            const avatar::Avatar::Enum AVATAR = avatar::Avatar::Count,
             const interact::talk::CategoryVec_t & CONV_CATEGORIES = interact::talk::CategoryVec_t(),
             const interact::talk::Mood CONV_MOOD = interact::talk::Mood::Kind,
             const std::size_t WALK_BOUNDS_INDEX = 0);

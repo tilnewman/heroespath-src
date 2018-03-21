@@ -28,6 +28,7 @@
 // conversation.cpp
 //
 #include "conversation.hpp"
+#include <string>
 
 namespace heroespath
 {

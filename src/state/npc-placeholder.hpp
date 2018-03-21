@@ -41,7 +41,7 @@ namespace state
     class NpcPlaceholder
     {
     public:
-        NpcPlaceholder(
+        explicit NpcPlaceholder(
             const std::size_t COUNT_MIN = 1,
             const std::size_t COUNT_MAX = 1,
             const avatar::Avatar::NameVec_t & AVATAR_TYPE_VEC = avatar::Avatar::NameVec_t(),

@@ -74,7 +74,7 @@ namespace interact
             }
 
             template <typename T>
-            const std::string Random(const std::vector<std::vector<T>> & VV)
+            inline const std::string Random(const std::vector<std::vector<T>> & VV)
             {
                 return ((VV.empty()) ? std::string(T()) : Random(misc::Vector::SelectRandom(VV)));
             }
@@ -160,7 +160,7 @@ namespace interact
                          "grim",       "dreary",    "dismal",    "gloomy" };
             }
 
-            static inline const StrVec_t JokeAdjectives()
+            inline const StrVec_t JokeAdjectives()
             {
                 return { "drunken",
                          "blind",
@@ -208,7 +208,7 @@ namespace interact
                          "club-footed" };
             }
 
-            static inline const StrVec_t JokeDescriptions()
+            inline const StrVec_t JokeDescriptions()
             {
                 return { "who ate his dog",         "who jumped down the well",
                          "who can't count",         "who can't blink",

@@ -42,6 +42,7 @@
 #include <boost/algorithm/algorithm.hpp>
 #include <boost/algorithm/string.hpp>
 
+#include <algorithm>
 #include <exception>
 #include <sstream>
 

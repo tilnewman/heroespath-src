@@ -40,7 +40,7 @@ namespace map
     // Responsible for wrapping a region of the map with the walk sfx that goes with it.
     struct WalkSfxRegion
     {
-        WalkSfxRegion(
+        explicit WalkSfxRegion(
             const sf::FloatRect & REGION = sf::FloatRect(),
             const sfml_util::music::Enum MUSIC = sfml_util::music::Count)
             : region(REGION)
@@ -62,7 +62,7 @@ namespace map
     // Responsible for sorting and wrapping the bottom layer WalkSfxRegions and the top layer.
     struct WalkSfxRegionLayers
     {
-        WalkSfxRegionLayers(
+        explicit WalkSfxRegionLayers(
             const WalkSfxRegionVec_t & BOTTOM_LAYERS = WalkSfxRegionVec_t(),
             const WalkSfxRegionVec_t & TOP_LAYERS = WalkSfxRegionVec_t())
             : bottom_layers(BOTTOM_LAYERS)

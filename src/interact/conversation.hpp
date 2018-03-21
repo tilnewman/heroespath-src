@@ -32,6 +32,7 @@
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/vector-map.hpp"
 #include <algorithm>
+#include <string>
 #include <vector>
 
 namespace heroespath
@@ -44,7 +45,7 @@ namespace interact
     class Conversation
     {
     public:
-        Conversation(const ConvPointVec_t & CONVERSATION_POINTS = ConvPointVec_t());
+        explicit Conversation(const ConvPointVec_t & CONVERSATION_POINTS = ConvPointVec_t());
 
         Conversation(const std::string & TEXT, const Buttons::Enum BUTTON);
 

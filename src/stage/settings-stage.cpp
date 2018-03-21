@@ -46,6 +46,7 @@
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 
+#include <algorithm>
 #include <sstream>
 #include <string>
 #include <vector>

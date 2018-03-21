@@ -35,6 +35,8 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace heroespath
 {

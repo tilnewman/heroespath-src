@@ -38,7 +38,7 @@ namespace misc
     class Timer
     {
     public:
-        Timer(const float DURATION)
+        explicit Timer(const float DURATION)
             : timeSec_(0.0f)
             , durationSec_(DURATION)
         {}

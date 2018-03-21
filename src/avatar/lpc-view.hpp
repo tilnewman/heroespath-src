@@ -43,7 +43,7 @@ namespace avatar
     class LPCView : public IView
     {
     public:
-        LPCView(const Avatar::Enum);
+        explicit LPCView(const Avatar::Enum);
         virtual ~LPCView() = default;
 
         virtual void Set(const Pose::Enum, const sfml_util::Direction::Enum) override;

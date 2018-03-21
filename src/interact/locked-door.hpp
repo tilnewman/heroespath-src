@@ -39,7 +39,9 @@ namespace interact
     class LockedDoor : public InteractionBase
     {
     public:
-        LockedDoor(const map::Transition &);
+        explicit LockedDoor(const map::Transition &);
+
+        virtual ~LockedDoor() = default;
 
         map::Level::Enum ToLevel() const { return transition_.WhichLevel(); }
 

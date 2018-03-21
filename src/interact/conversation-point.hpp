@@ -31,6 +31,7 @@
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/vector-map.hpp"
 #include <algorithm>
+#include <string>
 #include <vector>
 
 namespace heroespath
@@ -44,7 +45,7 @@ namespace interact
     struct ConversationPoint
     {
         // default construction means IsValid() == false.
-        ConversationPoint(
+        explicit ConversationPoint(
             const std::string & TEXT = "",
             const ButtonsVec_t & BUTTONS = ButtonsVec_t(),
             const TransitionMap_t & TRANSITIONS = TransitionMap_t())

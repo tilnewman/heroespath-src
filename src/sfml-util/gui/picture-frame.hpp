@@ -50,7 +50,7 @@ namespace sfml_util
             PictureFrame & operator=(const PictureFrame &&) = delete;
 
         public:
-            PictureFrame(
+            explicit PictureFrame(
                 const sf::FloatRect & RECT = sf::FloatRect(0.0f, 0.0f, 0.0f, 0.0f),
                 const sf::Color & COLOR = sf::Color::White);
 

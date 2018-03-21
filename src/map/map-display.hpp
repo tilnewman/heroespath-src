@@ -41,6 +41,7 @@
 #include "misc/types.hpp"
 
 #include <string>
+#include <vector>
 
 namespace heroespath
 {

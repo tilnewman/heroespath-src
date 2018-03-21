@@ -44,7 +44,9 @@
 #include "stage/item-detail-viewer.hpp"
 #include "stage/treasure-stage-mover.hpp"
 
+#include <algorithm>
 #include <memory>
+#include <string>
 
 namespace heroespath
 {
@@ -122,7 +124,7 @@ namespace stage
         // Responsible for wrapping all the info needed to display item details.
         struct ItemDetails
         {
-            ItemDetails(
+            explicit ItemDetails(
                 const sf::FloatRect & RECT = sfml_util::gui::ListBox::ERROR_RECT_,
                 const item::ItemPtr_t ITEM_PTR = nullptr)
                 : rect(RECT)

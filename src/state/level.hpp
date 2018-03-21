@@ -34,6 +34,7 @@
 #include "state/npc.hpp"
 
 #include <memory>
+#include <string>
 
 namespace heroespath
 {
@@ -45,7 +46,7 @@ namespace state
     class Level
     {
     public:
-        Level(const map::Level::Enum = map::Level::Enum::Count);
+        explicit Level(const map::Level::Enum = map::Level::Enum::Count);
 
         inline map::Level::Enum Which() const { return level_; }
 

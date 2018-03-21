@@ -40,24 +40,24 @@ namespace interact
 
         namespace compose
         {
-            static inline const StrVec_t TavernServers()
+            inline const StrVec_t TavernServers()
             {
                 return { "server", "barkeep",      "barwhipe", "bartender",
                          "wench",  "serving girl", "bar maid" };
             }
 
-            static inline const StrVec_t TavernDrinks()
+            inline const StrVec_t TavernDrinks()
             {
                 return { "ale", "drink", "beer", "mead", "brew", "swill" };
             }
 
-            static inline const StrVec_t TavernDrinkAdjectives()
+            inline const StrVec_t TavernDrinkAdjectives()
             {
                 return { "delightful", "dreadful", "horrid",   "stinking",  "festering",
                          "rotting",    "murky",    "bubbling", "tasteless", "sour" };
             }
 
-            static inline const StrVec_t TavernNoises()
+            inline const StrVec_t TavernNoises()
             {
                 return { "(hiccup)", "(burp)", "(grumble)", "(mutter)", "(laugh)" };
             }
