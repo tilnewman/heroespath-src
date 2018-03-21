@@ -57,7 +57,7 @@ namespace sfml_util
             inline const sf::FloatRect OuterRect() const { return outerRect_; }
             inline const sf::FloatRect InnerRect() const { return innerRect_; }
 
-            virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
+            void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
             // returns the innerRect_
             const sf::FloatRect Setup(const sf::FloatRect & RECT, const sf::Color & COLOR);

@@ -50,12 +50,12 @@ namespace popup
         explicit PopupStageGeneric(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageGeneric();
 
-        inline virtual const std::string HandlerName() const override
+        inline const std::string HandlerName() const override
         {
             return PopupStageBase::HandlerName();
         }
 
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
     };
 } // namespace popup
 } // namespace heroespath

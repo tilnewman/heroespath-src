@@ -60,7 +60,7 @@ namespace sfml_util
                 const sf::Vector2f & TO_POS_V = sf::Vector2f(0.0f, 0.0f),
                 const float SLIDER_SPEED = 1.0f);
 
-            virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+            bool UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
             inline IGuiEntityPtr_t GetEntity() const { return guiEntityPtr_; }
             inline void SetEntity(const IGuiEntityPtr_t PTR) { guiEntityPtr_ = PTR; }

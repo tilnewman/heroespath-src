@@ -89,7 +89,7 @@ namespace sfml_util
                 return topLeftSprite_.getGlobalBounds().width * FRAME_WIDTH_RATIO_;
             }
 
-            virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
+            void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         private:
             static const float OUTER_WIDTH_RATIO_;

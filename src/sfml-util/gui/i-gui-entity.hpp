@@ -90,25 +90,25 @@ namespace sfml_util
                 draw(sf::RenderTarget & target, sf::RenderStates states) const override = 0;
 
             // IClickable
-            virtual MouseState::Enum GetMouseState() const override = 0;
-            virtual void SetMouseState(const MouseState::Enum) override = 0;
-            virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override = 0;
-            virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override = 0;
-            virtual bool IsHeldDown() const override = 0;
-            virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override = 0;
+            MouseState::Enum GetMouseState() const override = 0;
+            void SetMouseState(const MouseState::Enum) override = 0;
+            bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override = 0;
+            bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override = 0;
+            bool IsHeldDown() const override = 0;
+            bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override = 0;
             virtual bool UpdateMouseWheel(
                 const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION) override = 0;
-            virtual bool HasFocus() const override = 0;
-            virtual bool SetHasFocus(const bool) override = 0;
-            virtual bool WillAcceptFocus() const override = 0;
-            virtual void SetWillAcceptFocus(const bool) override = 0;
-            virtual void FakeColorSetAsIfFocusIs(const bool) override = 0;
-            virtual const std::string GetMouseHoverText() override = 0;
-            virtual void SetMouseHoverText(const std::string &) override = 0;
+            bool HasFocus() const override = 0;
+            bool SetHasFocus(const bool) override = 0;
+            bool WillAcceptFocus() const override = 0;
+            void SetWillAcceptFocus(const bool) override = 0;
+            void FakeColorSetAsIfFocusIs(const bool) override = 0;
+            const std::string GetMouseHoverText() override = 0;
+            void SetMouseHoverText(const std::string &) override = 0;
 
         protected:
-            virtual void OnClick(const sf::Vector2f &) override = 0;
-            virtual void OnDoubleClick(const sf::Vector2f &) override = 0;
+            void OnClick(const sf::Vector2f &) override = 0;
+            void OnDoubleClick(const sf::Vector2f &) override = 0;
         };
 
         using IGuiEntityPtr_t = IGuiEntity *;

@@ -62,11 +62,11 @@ namespace sfml_util
 
         virtual ~SliderBarLabeled_Effects();
 
-        virtual void OnChange(const float NEW_VALUE) override;
-        virtual void SetPadPosition() override;
-        virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
-        virtual void SetCurrentValueFromScreenCoords(const sf::Vector2f & NEW_COORD_V) override;
-        virtual bool UpdateTime(const float) override;
+        void OnChange(const float NEW_VALUE) override;
+        void SetPadPosition() override;
+        bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+        void SetCurrentValueFromScreenCoords(const sf::Vector2f & NEW_COORD_V) override;
+        bool UpdateTime(const float) override;
 
         static inline void SetPreventSoundEffect(const bool WILL_PREVENT)
         {

@@ -68,7 +68,7 @@ namespace map
 
         bool Move(const sfml_util::Direction::Enum, const float ADJUSTMENT);
 
-        virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         inline const sf::Vector2f PlayerPosMap() const { return playerPosV_ + playerPosOffsetV_; }
 

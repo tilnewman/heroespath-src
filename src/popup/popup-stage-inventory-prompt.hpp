@@ -47,11 +47,11 @@ namespace popup
         explicit PopupStageInventoryPrompt(const PopupInfo &);
         virtual ~PopupStageInventoryPrompt();
 
-        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
-        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
-        inline virtual bool WillPressingCKeyClosePopup() const override { return true; }
+        inline bool WillPressingCKeyClosePopup() const override { return true; }
     };
 } // namespace popup
 } // namespace heroespath

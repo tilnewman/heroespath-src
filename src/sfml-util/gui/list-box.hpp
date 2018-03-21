@@ -146,10 +146,7 @@ namespace sfml_util
                 const sf::Color & LINE_COLOR = sf::Color::Transparent,
                 callback::IListBoxCallbackHandler * const callbackPtr = nullptr);
 
-            inline virtual const std::string HandlerName() const override
-            {
-                return GetEntityName();
-            }
+            inline const std::string HandlerName() const override { return GetEntityName(); }
 
             virtual bool
                 HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE) override;
@@ -161,7 +158,7 @@ namespace sfml_util
             }
             inline const sf::Color ImageColor() const { return imageColor_; }
 
-            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
             ListBoxItemSPtr_t AtPos(const sf::Vector2f & POS_V);
 
@@ -209,14 +206,14 @@ namespace sfml_util
             inline bool RemoveSelected() { return Remove(Selected()); }
             inline void Clear() { items_.clear(); }
 
-            virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+            bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
 
-            virtual bool KeyRelease(const sf::Event::KeyEvent & KEY_EVENT) override;
+            bool KeyRelease(const sf::Event::KeyEvent & KEY_EVENT) override;
 
             // if there is an image at location, then return the rect of the image
             const sf::FloatRect ImageRectOfItemAtPos(const sf::Vector2f & MOUSE_POS_V);
 
-            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
 
             inline const sf::Color GetHighlightColor() const { return highlightColor_; }
             inline void SetHighlightColor(const sf::Color & C) { highlightColor_ = C; }
@@ -241,7 +238,7 @@ namespace sfml_util
             std::size_t CalcGreatestFirstDisplayedIndex() const;
             void CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT);
             inline void OnClick(const sf::Vector2f &) override {}
-            virtual void OnDoubleClick(const sf::Vector2f & MOUSE_POS_V) override;
+            void OnDoubleClick(const sf::Vector2f & MOUSE_POS_V) override;
             void SetupForDraw();
 
             void LoadImageAndSetPosition(

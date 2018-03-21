@@ -65,14 +65,14 @@ namespace stage
         MainMenuStage();
         virtual ~MainMenuStage();
 
-        inline virtual const std::string HandlerName() const override { return GetStageName(); }
+        inline const std::string HandlerName() const override { return GetStageName(); }
 
         virtual bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
-        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
     private:
         const float SCREEN_WIDTH_;

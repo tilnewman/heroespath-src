@@ -65,7 +65,7 @@ namespace sfml_util
             virtual void Setup(const float POS_LEFT, const float POS_TOP);
 
             // The only member required by sf::Drawable.
-            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
             virtual void SpriteColorsSet(const sf::Color & NEW_COLOR);
             virtual void SpriteColorsReset();
@@ -74,11 +74,11 @@ namespace sfml_util
             inline sf::Sprite & GetDownSprite() { return downSprite_; }
             inline sf::Sprite & GetOverSprite() { return overSprite_; }
 
-            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
-            virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
+            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            void MoveEntityPos(const float HORIZ, const float VERT) override;
 
         protected:
-            inline virtual void OnClick(const sf::Vector2f &) override {}
+            inline void OnClick(const sf::Vector2f &) override {}
 
             sf::Sprite upSprite_;
             sf::Sprite downSprite_;

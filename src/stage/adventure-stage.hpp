@@ -53,8 +53,8 @@ namespace stage
         AdventureStage();
         virtual ~AdventureStage();
 
-        virtual void Setup() override;
-        virtual void UpdateTime(const float ELAPSED_TIME_SEC) override;
+        void Setup() override;
+        void UpdateTime(const float ELAPSED_TIME_SEC) override;
 
     private:
         AdventureDisplayStage * adventureDisplayStagePtr_;

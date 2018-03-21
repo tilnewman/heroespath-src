@@ -159,19 +159,19 @@ namespace stage
         explicit TreasureDisplayStage(TreasureStage *);
         virtual ~TreasureDisplayStage() = default;
 
-        inline virtual const std::string HandlerName() const override { return GetStageName(); }
-        virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
+        inline const std::string HandlerName() const override { return GetStageName(); }
+        bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &) override;
 
         virtual bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
-        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
-        virtual void UpdateMousePos(const sf::Vector2i &) override;
-        virtual void UpdateMouseDown(const sf::Vector2f &) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
+        void UpdateMousePos(const sf::Vector2i &) override;
+        void UpdateMouseDown(const sf::Vector2f &) override;
 
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
         void UpdateTime_StageMover(const float ELAPSED_TIME_SECONDS);
         void UpdateTime_ItemDetailViewer(const float ELAPSED_TIME_SECONDS);
 

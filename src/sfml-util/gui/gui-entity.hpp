@@ -78,18 +78,12 @@ namespace sfml_util
                 draw(sf::RenderTarget & target, sf::RenderStates states) const override = 0;
 
             // Required by IClickable
-            inline virtual MouseState::Enum GetMouseState() const override
-            {
-                return entityMouseState_;
-            }
+            inline MouseState::Enum GetMouseState() const override { return entityMouseState_; }
 
-            inline virtual void SetMouseState(const MouseState::Enum E) override
-            {
-                entityMouseState_ = E;
-            }
+            inline void SetMouseState(const MouseState::Enum E) override { entityMouseState_ = E; }
 
-            virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
-            virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+            bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+            bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
             inline bool IsHeldDown() const override
             {
@@ -97,98 +91,83 @@ namespace sfml_util
             }
 
             // returns true only if the MouseState changed
-            virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
+            bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
 
             // disabled until bug in wheel movement direction can be resolved zTn 2016-12-11
-            inline virtual bool UpdateMouseWheel(const sf::Vector2f &, const float) override
+            inline bool UpdateMouseWheel(const sf::Vector2f &, const float) override
             {
                 return false;
             }
 
-            inline virtual bool HasFocus() const override { return entityHasFocus_; }
-            virtual bool SetHasFocus(const bool) override;
-            inline virtual bool WillAcceptFocus() const override { return entityWillFocus_; }
-            inline virtual void SetWillAcceptFocus(const bool WILL) override
-            {
-                entityWillFocus_ = WILL;
-            }
-            inline virtual const std::string GetMouseHoverText() override
-            {
-                return entityMouseHoverText_;
-            }
+            inline bool HasFocus() const override { return entityHasFocus_; }
+            bool SetHasFocus(const bool) override;
+            inline bool WillAcceptFocus() const override { return entityWillFocus_; }
+            inline void SetWillAcceptFocus(const bool WILL) override { entityWillFocus_ = WILL; }
+            inline const std::string GetMouseHoverText() override { return entityMouseHoverText_; }
 
-            inline virtual void SetMouseHoverText(const std::string & S) override
+            inline void SetMouseHoverText(const std::string & S) override
             {
                 entityMouseHoverText_ = S;
             }
 
         protected:
-            virtual void OnClick(const sf::Vector2f &) override = 0;
-            inline virtual void OnDoubleClick(const sf::Vector2f &) override {}
-            inline virtual void OnColorChange() override {}
+            void OnClick(const sf::Vector2f &) override = 0;
+            inline void OnDoubleClick(const sf::Vector2f &) override {}
+            inline void OnColorChange() override {}
             void ChangeColors();
 
             // Required by IGuiEntity
         public:
-            virtual inline bool GetEntityWillDraw() const override { return entityWillDraw_; }
-            virtual inline void SetEntityWillDraw(const bool WILL_DRAW) override
+            inline bool GetEntityWillDraw() const override { return entityWillDraw_; }
+            inline void SetEntityWillDraw(const bool WILL_DRAW) override
             {
                 entityWillDraw_ = WILL_DRAW;
             }
 
-            inline virtual const sf::Vector2f GetEntityPos() const override
+            inline const sf::Vector2f GetEntityPos() const override
             {
                 return sf::Vector2f(entityRegion_.left, entityRegion_.top);
             }
 
-            inline virtual void SetEntityPos(const sf::Vector2f & V) override
-            {
-                SetEntityPos(V.x, V.y);
-            }
-            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
-            virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
+            inline void SetEntityPos(const sf::Vector2f & V) override { SetEntityPos(V.x, V.y); }
+            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            void MoveEntityPos(const float HORIZ, const float VERT) override;
 
             void MoveEntityOffScreen();
             void MoveEntityBackFromOffScreen();
 
-            inline virtual bool IsInEntityRegion(const sf::Vector2f & V) const override
+            inline bool IsInEntityRegion(const sf::Vector2f & V) const override
             {
                 return entityRegion_.contains(V);
             }
 
-            virtual void SetEntityColors(const ColorSet & COLOR_SET) override;
-            virtual void SetEntityColorFg(const sf::Color & FG_COLOR) override;
-            virtual void SetEntityColorFgBoth(const sf::Color & FG_COLOR) override;
-            inline virtual const ColorSet GetEntityColors() const override
-            {
-                return entityColorSet_;
-            }
-            inline virtual const sf::Color GetEntityColorForeground() const override
+            void SetEntityColors(const ColorSet & COLOR_SET) override;
+            void SetEntityColorFg(const sf::Color & FG_COLOR) override;
+            void SetEntityColorFgBoth(const sf::Color & FG_COLOR) override;
+            inline const ColorSet GetEntityColors() const override { return entityColorSet_; }
+            inline const sf::Color GetEntityColorForeground() const override
             {
                 return entityFgColor_;
             }
-            inline virtual const sf::Color GetEntityColorBackground() const override
+            inline const sf::Color GetEntityColorBackground() const override
             {
                 return entityBgColor_;
             }
-            virtual void FakeColorSetAsIfFocusIs(const bool) override;
+            void FakeColorSetAsIfFocusIs(const bool) override;
 
-            inline virtual const std::string GetEntityName() const override { return entityName_; }
+            inline const std::string GetEntityName() const override { return entityName_; }
 
-            inline virtual const sf::FloatRect GetEntityRegion() const override
-            {
-                return entityRegion_;
-            }
+            inline const sf::FloatRect GetEntityRegion() const override { return entityRegion_; }
 
-            inline virtual void SetEntityRegion(const sf::FloatRect & REGION) override
+            inline void SetEntityRegion(const sf::FloatRect & REGION) override
             {
                 entityRegion_ = REGION;
             }
 
-            inline virtual bool UpdateTime(const float) override { return false; }
+            inline bool UpdateTime(const float) override { return false; }
 
-            inline virtual bool KeyPress(const sf::Event::KeyEvent &) override { return false; }
-            inline virtual bool KeyRelease(const sf::Event::KeyEvent &) override { return false; }
+            inline bool KeyPress(const sf::Event::KeyEvent &) override { return false; }
+            inline bool KeyRelease(const sf::Event::KeyEvent &) override { return false; }
 
             friend bool operator<(const GuiEntity & L, const GuiEntity & R);
             friend bool operator==(const GuiEntity & L, const GuiEntity & R);

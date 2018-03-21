@@ -78,17 +78,17 @@ namespace stage
 
         virtual ~InteractStage();
 
-        virtual const std::string HandlerName() const final { return GetStageName(); }
+        const std::string HandlerName() const final { return GetStageName(); }
 
         virtual bool
             HandleCallback(const sfml_util::gui::callback::TextButtonCallbackPackage_t &) final;
 
-        virtual bool HandleCallback(const popup::PopupResponse &) override;
+        bool HandleCallback(const popup::PopupResponse &) override;
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-        virtual bool KeyRelease(const sf::Event::KeyEvent &) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        bool KeyRelease(const sf::Event::KeyEvent &) override;
 
         interact::InteractionManager & InteractionManager() { return interactionManager_; }
 

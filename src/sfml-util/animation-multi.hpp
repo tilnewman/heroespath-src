@@ -59,23 +59,23 @@ namespace sfml_util
 
         virtual ~AnimationMultiTexture();
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-        virtual void SetEntityPos(const sf::Vector2f & V) override;
-        virtual void SetEntityPos(const float LEFT, const float TOP) override;
+        void SetEntityPos(const sf::Vector2f & V) override;
+        void SetEntityPos(const float LEFT, const float TOP) override;
 
-        virtual void SetEntityRegion(const sf::FloatRect & R) override;
+        void SetEntityRegion(const sf::FloatRect & R) override;
 
         // returns true if frame count wrapped around back to zero
-        virtual bool UpdateTime(const float SECONDS) override;
+        bool UpdateTime(const float SECONDS) override;
 
-        inline virtual std::size_t FrameCount() const override { return textureIdVec_.size(); }
+        inline std::size_t FrameCount() const override { return textureIdVec_.size(); }
 
-        inline virtual const sf::Vector2f OrigSize() const override { return origSizeV_; }
+        inline const sf::Vector2f OrigSize() const override { return origSizeV_; }
 
-        virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-        virtual const sf::Sprite Sprite() const override { return sprite_; }
+        const sf::Sprite Sprite() const override { return sprite_; }
 
     protected:
         sf::Sprite sprite_;

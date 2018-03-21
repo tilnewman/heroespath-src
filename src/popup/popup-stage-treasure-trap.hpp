@@ -51,13 +51,13 @@ namespace popup
         explicit PopupStageTreasureTrap(const PopupInfo & POPUP_INFO);
         virtual ~PopupStageTreasureTrap();
 
-        inline virtual const std::string HandlerName() const override
+        inline const std::string HandlerName() const override
         {
             return PopupStageBase::HandlerName();
         }
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
 
     private:
         void SetupTitleText();

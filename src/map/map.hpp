@@ -80,7 +80,7 @@ namespace map
 
         void MoveNonPlayers();
 
-        virtual void draw(sf::RenderTarget &, sf::RenderStates) const override;
+        void draw(sf::RenderTarget &, sf::RenderStates) const override;
 
         inline Level::Enum WhichLevel() const { return level_; }
 

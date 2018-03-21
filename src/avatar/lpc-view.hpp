@@ -46,27 +46,27 @@ namespace avatar
         explicit LPCView(const Avatar::Enum);
         virtual ~LPCView() = default;
 
-        virtual void Set(const Pose::Enum, const sfml_util::Direction::Enum) override;
+        void Set(const Pose::Enum, const sfml_util::Direction::Enum) override;
 
-        virtual bool Update(const float TIME_ELAPSED) override;
+        bool Update(const float TIME_ELAPSED) override;
 
-        inline virtual void UpdatePos(const sf::Vector2f & V) override { sprite_.setPosition(V); }
+        inline void UpdatePos(const sf::Vector2f & V) override { sprite_.setPosition(V); }
 
-        inline virtual sfml_util::Direction::Enum Direction() const override
+        inline sfml_util::Direction::Enum Direction() const override
         {
             return animation_.direction;
         }
 
-        inline virtual Pose::Enum WhichPose() const override { return animation_.pose; }
+        inline Pose::Enum WhichPose() const override { return animation_.pose; }
 
-        inline virtual const sf::Sprite & SpriteRef() const override { return sprite_; }
+        inline const sf::Sprite & SpriteRef() const override { return sprite_; }
 
-        inline virtual const sf::Vector2f SpriteSize() const override
+        inline const sf::Vector2f SpriteSize() const override
         {
             return sf::Vector2f(sprite_.getGlobalBounds().width, sprite_.getGlobalBounds().height);
         }
 
-        inline virtual Avatar::Enum WhichAvatar() const override { return whichAvatar_; }
+        inline Avatar::Enum WhichAvatar() const override { return whichAvatar_; }
 
     private:
         const FrameNumVec_t FrameNumbers(const Pose::Enum, const sfml_util::Direction::Enum) const;

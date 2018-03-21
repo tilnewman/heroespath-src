@@ -45,10 +45,10 @@ namespace interact
 
         map::Level::Enum ToLevel() const { return transition_.WhichLevel(); }
 
-        virtual bool OnSuccess(stage::InteractStage * const) final;
+        bool OnSuccess(stage::InteractStage * const) final;
 
     private:
-        virtual bool OnInteraction(stage::InteractStage * const, const Button &) final;
+        bool OnInteraction(stage::InteractStage * const, const Button &) final;
 
     private:
         map::Transition transition_;

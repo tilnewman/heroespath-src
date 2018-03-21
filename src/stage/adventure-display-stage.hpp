@@ -67,9 +67,9 @@ namespace stage
         AdventureDisplayStage(AdventureStage * const, interact::InteractionManager &);
         virtual ~AdventureDisplayStage();
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
     private:
         void Setup_CharacterList();

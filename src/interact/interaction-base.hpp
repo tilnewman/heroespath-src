@@ -56,19 +56,19 @@ namespace interact
 
         virtual ~InteractionBase() = default;
 
-        inline virtual Interact::Enum Type() const final { return interactionType_; }
+        inline Interact::Enum Type() const final { return interactionType_; }
 
-        inline virtual const sfml_util::gui::TextInfo & Text() const final { return text_; }
+        inline const sfml_util::gui::TextInfo & Text() const final { return text_; }
 
-        virtual ButtonVec_t & Buttons() final { return buttons_; }
+        ButtonVec_t & Buttons() final { return buttons_; }
 
-        inline virtual const sf::Texture & SubjectTexture() const final { return subjectTexture_; }
+        inline const sf::Texture & SubjectTexture() const final { return subjectTexture_; }
 
-        inline virtual const sf::Texture & ContextTexture() const final { return contextTexture_; }
+        inline const sf::Texture & ContextTexture() const final { return contextTexture_; }
 
-        virtual void PlayEnterSfx() const final;
+        void PlayEnterSfx() const final;
 
-        virtual void PlayExitSfx() const final;
+        void PlayExitSfx() const final;
 
         static const sfml_util::gui::TextInfo
             MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE);
@@ -76,14 +76,14 @@ namespace interact
         virtual bool OnButtonClick(
             stage::InteractStage * const, const sfml_util::gui::TextButton * const) final;
 
-        virtual bool OnKeyRelease(stage::InteractStage * const, const sf::Keyboard::Key) final;
+        bool OnKeyRelease(stage::InteractStage * const, const sf::Keyboard::Key) final;
 
-        virtual void Lock() final { isLocked_ = true; }
-        virtual void Unlock() final { isLocked_ = false; }
-        virtual bool IsLocked() const final { return isLocked_; }
+        void Lock() final { isLocked_ = true; }
+        void Unlock() final { isLocked_ = false; }
+        bool IsLocked() const final { return isLocked_; }
 
-        virtual bool OnSuccess(stage::InteractStage * const) override { return false; }
-        virtual bool OnFailure(stage::InteractStage * const) override { return false; }
+        bool OnSuccess(stage::InteractStage * const) override { return false; }
+        bool OnFailure(stage::InteractStage * const) override { return false; }
 
     private:
         virtual bool OnInteraction(stage::InteractStage * const, const Button &) = 0;

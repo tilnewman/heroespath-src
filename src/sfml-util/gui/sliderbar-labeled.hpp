@@ -67,14 +67,14 @@ namespace sfml_util
 
             virtual ~SliderBarLabeled();
 
-            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
             inline const sf::Vector2f GetLabelPos() const { return textRegion_.GetEntityPos(); }
             void SetLabelPos(const float POS_LEFT, const float POS_TOP);
             void SetLabelPosRelative(const float POS_REL_LEFT, const float POS_REL_TOP);
 
-            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
-            virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
+            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            void MoveEntityPos(const float HORIZ, const float VERT) override;
 
             inline virtual void SetLabelOffset(const float X, const float Y)
             {
@@ -89,9 +89,9 @@ namespace sfml_util
             void ChangeTextInfo(const MouseTextInfo &);
 
         protected:
-            inline virtual void OnClick(const sf::Vector2f &) override {}
+            inline void OnClick(const sf::Vector2f &) override {}
 
-            virtual void OnChange(const float NEW_VALUE) override;
+            void OnChange(const float NEW_VALUE) override;
 
             const TextInfo GetTextInfoFromSliderValue(const int SLIDER_VAL) const;
 

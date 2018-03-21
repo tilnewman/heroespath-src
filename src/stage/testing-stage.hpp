@@ -65,14 +65,14 @@ namespace stage
         TestingStage();
         virtual ~TestingStage();
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
-        virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
-        virtual bool KeyPress(const sf::Event::KeyEvent &) override;
-        virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget & target, const sf::RenderStates &) override;
+        void UpdateTime(const float ELAPSED_TIME_SECONDS) override;
+        bool KeyPress(const sf::Event::KeyEvent &) override;
+        void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
 
-        virtual void TestingStrAppend(const std::string &) override;
-        virtual void TestingStrIncrement(const std::string &) override;
+        void TestingStrAppend(const std::string &) override;
+        void TestingStrIncrement(const std::string &) override;
 
         virtual void TestingImageSet(
             const sf::Texture &,
@@ -81,7 +81,7 @@ namespace stage
             const std::string & TYPE_NAME = "",
             const std::string & PATH = "") override;
 
-        virtual void PerformNextTest() override;
+        void PerformNextTest() override;
         void PerformStatsTests();
 
     private:

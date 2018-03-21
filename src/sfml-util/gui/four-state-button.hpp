@@ -149,13 +149,13 @@ namespace sfml_util
                 const bool IS_DISABLED = false,
                 const sf::Color & SPRITE_COLOR = sf::Color::White);
 
-            virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+            void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
-            virtual bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
-            virtual bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
-            virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
-            virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
-            virtual void MoveEntityPos(const float HORIZ, const float VERT) override;
+            bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+            bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
+            bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
+            void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+            void MoveEntityPos(const float HORIZ, const float VERT) override;
 
             inline virtual void
                 SetCallbackHandler(callback::IFourStateButtonCallbackHandler_t * const ptr)
@@ -166,7 +166,7 @@ namespace sfml_util
             inline bool IsDisabled() const { return isDisabled_; }
             void SetIsDisabled(const bool);
 
-            virtual void SetMouseState(const MouseState::Enum) override;
+            void SetMouseState(const MouseState::Enum) override;
 
             virtual void SetScaleToRes();
             virtual void SetVertPositionToBottomOfScreenByRes(const float POS_LEFT);
@@ -189,7 +189,7 @@ namespace sfml_util
 
         protected:
             virtual void Reset();
-            virtual void OnClick(const sf::Vector2f &) override;
+            void OnClick(const sf::Vector2f &) override;
 
         protected:
             bool isDisabled_;

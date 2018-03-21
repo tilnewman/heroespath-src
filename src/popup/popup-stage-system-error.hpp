@@ -47,8 +47,8 @@ namespace popup
         explicit PopupStageSystemError(const PopupInfo &);
         virtual ~PopupStageSystemError();
 
-        virtual void Setup() override;
-        virtual void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
+        void Setup() override;
+        void Draw(sf::RenderTarget &, const sf::RenderStates &) override;
 
     private:
         sf::Texture bgTexture_;
