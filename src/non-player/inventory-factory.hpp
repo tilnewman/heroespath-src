@@ -29,10 +29,10 @@
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
 #include "item/item-type-enum.hpp"
+#include "misc/vector-map.hpp"
 #include "non-player/ownership-chance-types.hpp"
 #include "stats/trait.hpp"
 
-#include <map>
 #include <utility>
 #include <vector>
 
@@ -46,6 +46,7 @@ namespace item
 } // namespace item
 namespace non_player
 {
+
     class Character;
     using CharacterPtr_t = Character *;
 
@@ -56,7 +57,7 @@ namespace non_player
         using IItemPVecPair_t = std::pair<item::ItemPVec_t, item::ItemPVec_t>;
 
         // used by InventoryFactory
-        using MaterialChanceMap_t = std::map<item::material::Enum, float>;
+        using MaterialChanceMap_t = misc::VectorMap<item::material::Enum, float>;
 
         // A singleton class that is responsible for creating sets of items
         // that will equip non-player characters.
@@ -110,7 +111,7 @@ namespace non_player
             // can be selected among other weapon types, such as axes/clubs/whips/etc.
             template <typename T>
             static const std::pair<T, float>
-                RandomSelectWeapon(const std::map<T, chance::ItemChances> & MAP)
+                RandomSelectWeapon(const misc::VectorMap<T, chance::ItemChances> & MAP)
             {
                 // TOOD handle multiple weapons
 
@@ -118,17 +119,12 @@ namespace non_player
 
                 // find sum of all chances of this type, and the item with the highest chance
                 T highestChanceItem(T::Count);
-                float highestChance(0.0f);
-                float chanceTotal(0.0f);
+                auto highestChance{ 0.0f };
+                auto chanceTotal{ 0.0f };
                 for (auto const & NEXT_CHANCE_PAIR : MAP)
                 {
-                    float nextChanceVal(0.0f);
-                    auto CITER{ NEXT_CHANCE_PAIR.second.num_owned_map.find(1) };
-
-                    if (CITER != NEXT_CHANCE_PAIR.second.num_owned_map.end())
-                    {
-                        nextChanceVal = CITER->second;
-                    }
+                    auto nextChanceVal{ 0.0f };
+                    NEXT_CHANCE_PAIR.second.num_owned_map.Find(1, nextChanceVal);
 
                     chanceTotal += nextChanceVal;
                     if (nextChanceVal > highestChance)
@@ -144,19 +140,14 @@ namespace non_player
                     return std::make_pair(T::Count, 0.0f);
                 }
 
-                const float RAND(misc::random::Float(0.0f, chanceTotal));
+                auto const RAND{ misc::random::Float(0.0f, chanceTotal) };
 
                 // random selection of one of the items
-                float chanceCumulative(0.0f);
+                auto chanceCumulative{ 0.0f };
                 for (auto const & NEXT_CHANCE_PAIR : MAP)
                 {
-                    float nextChanceVal(0.0f);
-                    auto CITER{ NEXT_CHANCE_PAIR.second.num_owned_map.find(1) };
-
-                    if (CITER != NEXT_CHANCE_PAIR.second.num_owned_map.end())
-                    {
-                        nextChanceVal = CITER->second;
-                    }
+                    auto nextChanceVal{ 0.0f };
+                    NEXT_CHANCE_PAIR.second.num_owned_map.Find(1, nextChanceVal);
 
                     chanceCumulative += nextChanceVal;
                     if (RAND < chanceCumulative)

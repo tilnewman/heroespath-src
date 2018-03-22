@@ -48,7 +48,7 @@ namespace non_player
                 , mat_map_pri(MAT_CH_MAP_PRI)
                 , mat_map_sec(MAT_CH_MAP_SEC)
             {
-                if (num_owned_map.empty())
+                if (num_owned_map.Empty())
                 {
                     num_owned_map[0] = 1.0f;
                 }
@@ -84,7 +84,7 @@ namespace non_player
 
             std::size_t ItemChances::CountOwned() const
             {
-                if (num_owned_map.empty())
+                if (num_owned_map.Empty())
                 {
                     return 0;
                 }
@@ -97,7 +97,7 @@ namespace non_player
             item::material::Enum ItemChances::RandomMaterialPri() const
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (mat_map_pri.empty() == false),
+                    (mat_map_pri.Empty() == false),
                     "non_player::ownership::chances::ItemChances::RandomMaterialPri() "
                         << "called when mat_map_pri is empty.");
 
@@ -106,7 +106,7 @@ namespace non_player
 
             item::material::Enum ItemChances::RandomMaterialSec() const
             {
-                if (mat_map_sec.empty())
+                if (mat_map_sec.Empty())
                 {
                     return item::material::Nothing;
                 }
@@ -118,13 +118,13 @@ namespace non_player
 
             void ItemChances::SetCountChanceSingleCertain()
             {
-                num_owned_map.clear();
+                num_owned_map.Clear();
                 SetCountChanceSingle(1.0f);
             }
 
             void ItemChances::SetCountChanceSingle(const float CHANCE)
             {
-                num_owned_map.clear();
+                num_owned_map.Clear();
                 SetCountChance(1, CHANCE);
                 SetCountChance(0, 1.0f - CHANCE);
             }
@@ -271,7 +271,7 @@ namespace non_player
                 const ClothingChances & CLOTHES_CHANCES,
                 const WeaponChances & WEAPON_CHANCES,
                 const ArmorChances & ARMOR_CHANCES,
-                const ItemChancePair_t & MISC_ITEM_CHANCES)
+                const ItemChanceMap_t & MISC_ITEM_CHANCES)
                 : coins_min(COINS_MIN)
                 , coins_max(COINS_MAX)
                 , armor(ARMOR_CHANCES)

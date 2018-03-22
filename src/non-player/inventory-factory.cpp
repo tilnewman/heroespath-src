@@ -375,17 +375,16 @@ namespace non_player
             const item::armor::cover_type::Enum COVER_TYPE(CHANCES.RandomCoverType());
             if (COVER_TYPE != item::armor::cover_type::Count)
             {
-                auto ITER{ CHANCES.cover_map.find(COVER_TYPE) };
+                non_player::ownership::chance::ItemChances itemChances;
+                auto WAS_FOUND{ CHANCES.cover_map.Find(COVER_TYPE, itemChances) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (ITER != CHANCES.cover_map.end()),
+                    WAS_FOUND,
                     "non_player::ownership::InventoryFactory::MakeItemSet_Clothing() failed to"
                         << " find \"" << COVER_TYPE << "\".");
 
                 itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Cover(
-                    COVER_TYPE,
-                    ITER->second.RandomMaterialPri(),
-                    ITER->second.RandomMaterialSec()));
+                    COVER_TYPE, itemChances.RandomMaterialPri(), itemChances.RandomMaterialSec()));
             }
 
             return itemsPtrVecPair;
@@ -469,17 +468,21 @@ namespace non_player
             }
 
             // knife/dagger
-            auto const KNIFE_ITER(WEAPON_CHANCES.knife.num_owned_map.find(1));
-            if (KNIFE_ITER != std::end(WEAPON_CHANCES.knife.num_owned_map))
             {
-                typeKindChanceMap[item::weapon_type::Knife] = std::make_pair(0, KNIFE_ITER->second);
+                auto countChance{ 0.0f };
+                if (WEAPON_CHANCES.knife.num_owned_map.Find(1, countChance))
+                {
+                    typeKindChanceMap[item::weapon_type::Knife] = std::make_pair(0, countChance);
+                }
             }
 
             // staff/quarterstaff
-            auto const STAFF_ITER(WEAPON_CHANCES.staff.num_owned_map.find(1));
-            if (STAFF_ITER != std::end(WEAPON_CHANCES.staff.num_owned_map))
             {
-                typeKindChanceMap[item::weapon_type::Staff] = std::make_pair(0, STAFF_ITER->second);
+                auto countChance{ 0.0f };
+                if (WEAPON_CHANCES.staff.num_owned_map.Find(1, countChance))
+                {
+                    typeKindChanceMap[item::weapon_type::Staff] = std::make_pair(0, countChance);
+                }
             }
 
             // check for no-weapon case
@@ -508,44 +511,40 @@ namespace non_player
                 case item::weapon_type::Knife:
                 {
                     // determine which size the knife/dagger will be
-                    const float RAND(misc::random::Float());
-                    sfml_util::Size::Enum knifeSize(sfml_util::Size::Large);
-                    //
-                    auto CITER_SMALL{ WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Small) };
+                    auto const RAND{ misc::random::Float() };
+                    auto knifeSize{ sfml_util::Size::Large };
 
-                    if (CITER_SMALL != WEAPON_CHANCES.knife.size_map.end())
+                    auto chanceOfSmall{ 0.0f };
+                    auto const WAS_SMALL_FOUND{ WEAPON_CHANCES.knife.size_map.Find(
+                        sfml_util::Size::Small, chanceOfSmall) };
+
+                    if (WAS_SMALL_FOUND && (RAND < chanceOfSmall))
                     {
-                        if (RAND < CITER_SMALL->second)
-                        {
-                            knifeSize = sfml_util::Size::Small;
-                        }
+                        knifeSize = sfml_util::Size::Small;
                     }
-                    //
-                    if (knifeSize != sfml_util::Size::Small)
+                    else
                     {
-                        auto CITER_MED(WEAPON_CHANCES.knife.size_map.find(sfml_util::Size::Medium));
-
-                        if (CITER_MED != WEAPON_CHANCES.knife.size_map.end())
+                        auto chanceOfMedium{ 0.0f };
+                        if (WEAPON_CHANCES.knife.size_map.Find(
+                                sfml_util::Size::Medium, chanceOfMedium))
                         {
-                            float chance{ CITER_MED->second };
-
-                            if (CITER_SMALL != WEAPON_CHANCES.knife.size_map.end())
+                            if (WAS_SMALL_FOUND)
                             {
-                                chance += CITER_SMALL->second;
+                                chanceOfMedium += chanceOfSmall;
                             }
 
-                            if (RAND < chance)
+                            if (RAND < chanceOfMedium)
                             {
                                 knifeSize = sfml_util::Size::Medium;
                             }
                         }
                     }
 
-                    const bool IS_DAGGER(misc::random::Float() < WEAPON_CHANCES.knife.is_dagger);
+                    auto const IS_DAGGER{ misc::random::Float() < WEAPON_CHANCES.knife.is_dagger };
 
                     // prevent adding a dagger if invalid
-                    if (WEAPON_CHANCES.knife.size_map.empty()
-                        || WEAPON_CHANCES.knife.mat_map_pri.empty())
+                    if (WEAPON_CHANCES.knife.size_map.Empty()
+                        || WEAPON_CHANCES.knife.mat_map_pri.Empty())
                     {
                         break;
                     }
@@ -561,8 +560,8 @@ namespace non_player
                 }
                 case item::weapon_type::Staff:
                 {
-                    const bool IS_QUARTERSTAFF(
-                        misc::random::Float() < WEAPON_CHANCES.staff.is_quarterstaff);
+                    auto const IS_QUARTERSTAFF{ misc::random::Float()
+                                                < WEAPON_CHANCES.staff.is_quarterstaff };
 
                     itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Staff(
@@ -573,13 +572,14 @@ namespace non_player
                 }
                 case item::weapon_type::Axe:
                 {
-                    auto const AXE_TYPE(static_cast<item::weapon::axe_type::Enum>(
-                        typeKindChanceMap[randomSelectedWeaponType].first));
+                    auto const AXE_TYPE{ static_cast<item::weapon::axe_type::Enum>(
+                        typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    auto const CITER{ WEAPON_CHANCES.axe_map.find(AXE_TYPE) };
+                    non_player::ownership::chance::ItemChances axeChances;
+                    auto const WAS_AXE_FOUND{ WEAPON_CHANCES.axe_map.Find(AXE_TYPE, axeChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
-                        (CITER != WEAPON_CHANCES.axe_map.end()),
+                        WAS_AXE_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature_name=\"" << CHARACTER_PTR->Name()
                             << "\") randomly selected weapon type=\""
@@ -590,8 +590,8 @@ namespace non_player
 
                     // if the primary material is wood, make sure there is a valid secondary
                     // material
-                    const item::material::Enum MATERIAL_PRI(CITER->second.RandomMaterialPri());
-                    item::material::Enum materialSec(CITER->second.RandomMaterialSec());
+                    auto const MATERIAL_PRI{ axeChances.RandomMaterialPri() };
+                    auto materialSec{ axeChances.RandomMaterialSec() };
                     if ((MATERIAL_PRI == item::material::Wood)
                         && (item::material::Nothing == materialSec))
                     {
@@ -601,18 +601,21 @@ namespace non_player
                     itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Axe(
                             AXE_TYPE, MATERIAL_PRI, materialSec));
+
                     break;
                 }
                 case item::weapon_type::BladedStaff:
                 {
-                    auto const BLADEDSTAFF_TYPE(static_cast<item::weapon::bladedstaff_type::Enum>(
-                        typeKindChanceMap[randomSelectedWeaponType].first));
+                    auto const BLADEDSTAFF_TYPE{ static_cast<item::weapon::bladedstaff_type::Enum>(
+                        typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    const chance::BladedStaffChanceMap_t::const_iterator CITER(
-                        WEAPON_CHANCES.bladedstaff_map.find(BLADEDSTAFF_TYPE));
+                    non_player::ownership::chance::ItemChances bstaffChances;
+
+                    auto const WAS_BSTAFF_FOUND{ WEAPON_CHANCES.bladedstaff_map.Find(
+                        BLADEDSTAFF_TYPE, bstaffChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
-                        (CITER != WEAPON_CHANCES.bladedstaff_map.end()),
+                        WAS_BSTAFF_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
                             << "(creature_name=\"" << CHARACTER_PTR->Name()
                             << "\") randomly selected weapon type=\""
@@ -624,8 +627,8 @@ namespace non_player
 
                     // if the primary material is wood, make sure there is a valid secondary
                     // material
-                    const item::material::Enum MATERIAL_PRI(CITER->second.RandomMaterialPri());
-                    item::material::Enum materialSec(CITER->second.RandomMaterialSec());
+                    auto const MATERIAL_PRI{ bstaffChances.RandomMaterialPri() };
+                    auto materialSec{ bstaffChances.RandomMaterialSec() };
 
                     if ((MATERIAL_PRI == item::material::Wood)
                         && (item::material::Nothing == materialSec))
@@ -636,18 +639,21 @@ namespace non_player
                     itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_BladedStaff(
                             BLADEDSTAFF_TYPE, MATERIAL_PRI, materialSec));
+
                     break;
                 }
                 case item::weapon_type::Club:
                 {
-                    auto const CLUB_TYPE(static_cast<item::weapon::club_type::Enum>(
-                        typeKindChanceMap[randomSelectedWeaponType].first));
+                    auto const CLUB_TYPE{ static_cast<item::weapon::club_type::Enum>(
+                        typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    const chance::ClubChanceMap_t::const_iterator CITER(
-                        WEAPON_CHANCES.club_map.find(CLUB_TYPE));
+                    non_player::ownership::chance::ItemChances clubChances;
+
+                    auto const WAS_CLUB_FOUND{ WEAPON_CHANCES.club_map.Find(
+                        CLUB_TYPE, clubChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
-                        (CITER != WEAPON_CHANCES.club_map.end()),
+                        WAS_CLUB_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                             << "creature_name=\"" << CHARACTER_PTR->Name()
                             << "\") randomly selected weapon type=\""
@@ -658,27 +664,33 @@ namespace non_player
 
                     // if the primary material is wood, make sure there is a valid secondary
                     // material
-                    const item::material::Enum MATERIAL_PRI(CITER->second.RandomMaterialPri());
-                    item::material::Enum materialSec(CITER->second.RandomMaterialSec());
+                    auto const MATERIAL_PRI{ clubChances.RandomMaterialPri() };
+                    auto materialSec{ clubChances.RandomMaterialSec() };
+
                     if ((MATERIAL_PRI == item::material::Wood)
                         && (item::material::Nothing == materialSec))
+                    {
                         materialSec = item::material::Steel;
+                    }
 
                     itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Club(
                             CLUB_TYPE, MATERIAL_PRI, materialSec));
+
                     break;
                 }
                 case item::weapon_type::Projectile:
                 {
-                    auto const PROJECTILE_TYPE(static_cast<item::weapon::projectile_type::Enum>(
-                        typeKindChanceMap[randomSelectedWeaponType].first));
+                    auto const PROJECTILE_TYPE{ static_cast<item::weapon::projectile_type::Enum>(
+                        typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    const chance::ProjectileChanceMap_t::const_iterator CITER(
-                        WEAPON_CHANCES.projectile_map.find(PROJECTILE_TYPE));
+                    non_player::ownership::chance::ItemChances projChances;
+
+                    auto const WAS_PROJ_FOUND{ WEAPON_CHANCES.projectile_map.Find(
+                        PROJECTILE_TYPE, projChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
-                        (CITER != WEAPON_CHANCES.projectile_map.end()),
+                        WAS_PROJ_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                             << "creature_name=\"" << CHARACTER_PTR->Name()
                             << "\") randomly selected weapon type=\""
@@ -691,8 +703,8 @@ namespace non_player
                     itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Projectile(
                             PROJECTILE_TYPE,
-                            CITER->second.RandomMaterialPri(), //-V783
-                            CITER->second.RandomMaterialSec()));
+                            projChances.RandomMaterialPri(),
+                            projChances.RandomMaterialSec()));
 
                     break;
                 }
@@ -701,10 +713,13 @@ namespace non_player
                     auto const SWORD_TYPE{ static_cast<item::weapon::sword_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    auto const CITER{ WEAPON_CHANCES.sword_map.find(SWORD_TYPE) };
+                    non_player::ownership::chance::ItemChances swordChances;
+
+                    auto const WAS_SWORD_FOUND{ WEAPON_CHANCES.sword_map.Find(
+                        SWORD_TYPE, swordChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
-                        (CITER != WEAPON_CHANCES.sword_map.end()),
+                        WAS_SWORD_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                             << "creature_name=\"" << CHARACTER_PTR->Name()
                             << "\") randomly selected weapon type=\""
@@ -716,8 +731,9 @@ namespace non_player
                     itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Sword(
                             SWORD_TYPE,
-                            CITER->second.RandomMaterialPri(),
-                            CITER->second.RandomMaterialSec()));
+                            swordChances.RandomMaterialPri(),
+                            swordChances.RandomMaterialSec()));
+
                     break;
                 }
                 case item::weapon_type::Whip:
@@ -725,11 +741,13 @@ namespace non_player
                     auto const WHIP_TYPE{ static_cast<item::weapon::whip_type::Enum>(
                         typeKindChanceMap[randomSelectedWeaponType].first) };
 
-                    const chance::WhipChanceMap_t::const_iterator CITER(
-                        WEAPON_CHANCES.whip_map.find(WHIP_TYPE));
+                    non_player::ownership::chance::ItemChances whipChances;
+
+                    auto const WAS_WHIP_FOUND{ WEAPON_CHANCES.whip_map.Find(
+                        WHIP_TYPE, whipChances) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
-                        (CITER != WEAPON_CHANCES.whip_map.end()),
+                        WAS_WHIP_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
                             << "creature_name=\"" << CHARACTER_PTR->Name()
                             << "\") randomly selected weapon type=\""
@@ -741,8 +759,8 @@ namespace non_player
                     itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Whip(
                             WHIP_TYPE,
-                            CITER->second.RandomMaterialPri(), //-V783
-                            CITER->second.RandomMaterialSec()));
+                            whipChances.RandomMaterialPri(),
+                            whipChances.RandomMaterialSec()));
 
                     break;
                 }
@@ -829,14 +847,16 @@ namespace non_player
             }
 
             // covers (vest/robe/cloak/cape)
-            const std::pair<cover_type::Enum, std::size_t> COVER_PAIR(CHANCES.RandomCover());
+            auto const COVER_PAIR{ CHANCES.RandomCover() };
             if (COVER_PAIR.second > 0)
             {
-                const chance::CoverChanceMap_t::const_iterator COVER_CITER(
-                    CHANCES.cover_map.find(COVER_PAIR.first));
+                non_player::ownership::chance::ItemChances coverChances;
+
+                auto const WAS_COVER_FOUND{ CHANCES.cover_map.Find(
+                    COVER_PAIR.first, coverChances) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (COVER_CITER != CHANCES.cover_map.end()),
+                    WAS_COVER_FOUND,
                     "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\""
                         << CHARACTER_PTR->Name() << "\") ARMOR_CHANCES.RandomCover() returned \""
                         << cover_type::ToString(COVER_PAIR.first)
@@ -844,19 +864,20 @@ namespace non_player
 
                 itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Cover(
                     COVER_PAIR.first,
-                    COVER_CITER->second.RandomMaterialPri(),
-                    COVER_CITER->second.RandomMaterialSec()));
+                    coverChances.RandomMaterialPri(),
+                    coverChances.RandomMaterialSec()));
             }
 
             // helms
-            const std::pair<helm_type::Enum, std::size_t> HELM_PAIR(CHANCES.RandomHelm());
+            auto const HELM_PAIR{ CHANCES.RandomHelm() };
             if (HELM_PAIR.second > 0)
             {
-                const chance::HelmChanceMap_t::const_iterator HELM_CITER(
-                    CHANCES.helm_map.find(HELM_PAIR.first));
+                non_player::ownership::chance::ItemChances helmChances;
+
+                auto const WAS_HELM_FOUND{ CHANCES.helm_map.Find(HELM_PAIR.first, helmChances) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (HELM_CITER != CHANCES.helm_map.end()),
+                    WAS_HELM_FOUND,
                     "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\""
                         << CHARACTER_PTR->Name() << "\") ARMOR_CHANCES.RandomHelm() returned \""
                         << helm_type::ToString(HELM_PAIR.first)
@@ -864,19 +885,21 @@ namespace non_player
 
                 itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Helm(
                     HELM_PAIR.first,
-                    HELM_CITER->second.RandomMaterialPri(),
-                    HELM_CITER->second.RandomMaterialSec()));
+                    helmChances.RandomMaterialPri(),
+                    helmChances.RandomMaterialSec()));
             }
 
             // shields
-            const std::pair<shield_type::Enum, std::size_t> SHIELD_PAIR(CHANCES.RandomShield());
+            auto const SHIELD_PAIR{ CHANCES.RandomShield() };
             if (SHIELD_PAIR.second > 0)
             {
-                const chance::ShieldChanceMap_t::const_iterator SHIELD_CITER(
-                    CHANCES.shield_map.find(SHIELD_PAIR.first));
+                ownership::chance::ItemChances shieldChances;
+
+                auto const WAS_SHIELD_FOUND{ CHANCES.shield_map.Find(
+                    SHIELD_PAIR.first, shieldChances) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (SHIELD_CITER != CHANCES.shield_map.end()),
+                    WAS_SHIELD_FOUND,
                     "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\""
                         << CHARACTER_PTR->Name() << "\") ARMOR_CHANCES.RandomShield() returned \""
                         << shield_type::ToString(SHIELD_PAIR.first)
@@ -886,15 +909,15 @@ namespace non_player
                 {
                     itemsPtrVecPair.second.emplace_back(ArmorFactory::Instance()->Make_Shield(
                         SHIELD_PAIR.first,
-                        SHIELD_CITER->second.RandomMaterialPri(),
-                        SHIELD_CITER->second.RandomMaterialSec()));
+                        shieldChances.RandomMaterialPri(),
+                        shieldChances.RandomMaterialSec()));
                 }
                 else
                 {
                     itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Shield(
                         SHIELD_PAIR.first,
-                        SHIELD_CITER->second.RandomMaterialPri(),
-                        SHIELD_CITER->second.RandomMaterialSec()));
+                        shieldChances.RandomMaterialPri(),
+                        shieldChances.RandomMaterialSec()));
                 }
             }
 
@@ -969,6 +992,7 @@ namespace non_player
                     [&](const item::ItemPtr_t PTR) { return (PTR->ArmorType() == ENUM); }),
                 vec.end());
         }
+
     } // namespace ownership
 } // namespace non_player
 } // namespace heroespath

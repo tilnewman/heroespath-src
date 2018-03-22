@@ -33,12 +33,12 @@
 #include "game/game-data-file.hpp"
 #include "item/weapon-info.hpp"
 #include "misc/types.hpp"
+#include "misc/vector-map.hpp"
 #include "non-player/character.hpp"
 #include "non-player/ownership-chance-types.hpp"
 #include "non-player/ownership-profile.hpp"
 
 #include <cstddef> //for std::size_t
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -51,7 +51,7 @@ namespace non_player
     {
 
         template <typename T>
-        void NormalizeChanceMap(std::map<T, float> & map)
+        void NormalizeChanceMap(misc::VectorMap<T, float> & map)
         {
             float subtotal(0.0f);
             for (auto const & NEXT_CHANCE_PAIR : map)
@@ -59,7 +59,7 @@ namespace non_player
                 subtotal += NEXT_CHANCE_PAIR.second;
             }
 
-            const float NORMALIZE_ADJ((1.0f - subtotal) / static_cast<float>(map.size()));
+            const float NORMALIZE_ADJ((1.0f - subtotal) / static_cast<float>(map.Size()));
 
             for (auto & nextChancePair : map)
             {
@@ -81,7 +81,7 @@ namespace non_player
                 {}
 
                 std::size_t count;
-                std::map<item::weapon::WeaponInfo, float> chanceMap;
+                misc::VectorMap<item::weapon::WeaponInfo, float> chanceMap;
             };
 
             using WeaponSetVec_t = std::vector<WeaponSet>;
@@ -129,7 +129,7 @@ namespace non_player
             static const chance::ArmorChances Make_ArmorChances(
                 const Profile & PROFILE, const non_player::CharacterPtr_t CHARACTER_PTR);
 
-            static const chance::ItemChancePair_t Make_MiscItemChances(
+            static const chance::ItemChanceMap_t Make_MiscItemChances(
                 const Profile & PROFILE, const non_player::CharacterPtr_t CHARACTER_PTR);
 
             static const chance::ClothingChances Make_ClothingMaterialChances(
@@ -195,7 +195,7 @@ namespace non_player
                 const Profile & PROFILE,
                 const non_player::CharacterPtr_t CHARACTER_PTR,
                 const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
-                std::map<T, chance::ItemChances> & weaponChanceMap)
+                misc::VectorMap<T, chance::ItemChances> & weaponChanceMap)
             {
                 if (IsWeaponPossibleConsideringComplexity(WEAPON_NAME, PROFILE.complexityType)
                     == false)

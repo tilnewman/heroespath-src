@@ -34,6 +34,7 @@
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/vector-map.hpp"
 #include "stats/trait.hpp"
 
 #include "misc/random.hpp"
@@ -41,7 +42,6 @@
 #include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
 #include <cstddef> //for std::size_t
-#include <map>
 #include <utility>
 #include <vector>
 
@@ -54,21 +54,21 @@ namespace non_player
         namespace chance
         {
 
-            // all chances are float values [0.0f, 1.0f]
+            // all chances are float ratio values over [0.0f, 1.0f]
 
             // custom types
             using MaterialVec_t = std::vector<item::material::Enum>;
-            using CountChanceMap_t = std::map<std::size_t, float>;
-            using SizeChanceMap_t = std::map<sfml_util::Size::Enum, float>;
-            using MaterialChanceMap_t = std::map<item::material::Enum, float>;
-            using ArmorTypeChanceMap_t = std::map<item::armor::base_type::Enum, float>;
+            using CountChanceMap_t = misc::VectorMap<std::size_t, float>;
+            using SizeChanceMap_t = misc::VectorMap<sfml_util::Size::Enum, float>;
+            using MaterialChanceMap_t = misc::VectorMap<item::material::Enum, float>;
+            using ArmorTypeChanceMap_t = misc::VectorMap<item::armor::base_type::Enum, float>;
 
             // helper function that chooses a random value from the map types defined above
             template <typename T>
-            T MappedRandomFloatChance(const std::map<T, float> & MAP)
+            T MappedRandomFloatChance(const misc::VectorMap<T, float> & MAP)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (MAP.empty() == false),
+                    (MAP.Empty() == false),
                     "non_player::ownership::chance::MappedRandomFloatChance(T=\""
                         << boost::typeindex::type_id<T>().pretty_name()
                         << "\") called when the map was empty.");
@@ -82,7 +82,7 @@ namespace non_player
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     ((misc::IsRealZero(chanceSubTotal) == false) && (chanceSubTotal > 0.0f)),
                     "non_player::ownership::chance::MappedRandomFloatChance(T=\""
-                        << boost::typeindex::type_id<T>().pretty_name() << "\", size=" << MAP.size()
+                        << boost::typeindex::type_id<T>().pretty_name() << "\", size=" << MAP.Size()
                         << ") called when the map's chance total is zero or less.");
 
                 const float RAND(misc::random::Float(0.0f, chanceSubTotal));
@@ -142,7 +142,7 @@ namespace non_player
                 // make it so there is no chance this item will be owned
                 void SetCountChanceSingleNoChance()
                 {
-                    num_owned_map.clear();
+                    num_owned_map.Clear();
                     num_owned_map[0] = 1.0f;
                 }
 
@@ -193,27 +193,28 @@ namespace non_player
                 MaterialChanceMap_t mat_map_sec;
             };
 
-            using ItemChancePair_t = std::map<item::misc_type::Enum, ItemChances>;
-            using HelmChanceMap_t = std::map<item::armor::helm_type::Enum, ItemChances>;
-            using CoverChanceMap_t = std::map<item::armor::cover_type::Enum, ItemChances>;
-            using ShieldChanceMap_t = std::map<item::armor::shield_type::Enum, ItemChances>;
+            using ItemChanceMap_t = misc::VectorMap<item::misc_type::Enum, ItemChances>;
+            using HelmChanceMap_t = misc::VectorMap<item::armor::helm_type::Enum, ItemChances>;
+            using CoverChanceMap_t = misc::VectorMap<item::armor::cover_type::Enum, ItemChances>;
+            using ShieldChanceMap_t = misc::VectorMap<item::armor::shield_type::Enum, ItemChances>;
             //
-            using AxeChanceMap_t = std::map<item::weapon::axe_type::Enum, ItemChances>;
-            using ClubChanceMap_t = std::map<item::weapon::club_type::Enum, ItemChances>;
-            using WhipChanceMap_t = std::map<item::weapon::whip_type::Enum, ItemChances>;
-            using SwordChanceMap_t = std::map<item::weapon::sword_type::Enum, ItemChances>;
+            using AxeChanceMap_t = misc::VectorMap<item::weapon::axe_type::Enum, ItemChances>;
+            using ClubChanceMap_t = misc::VectorMap<item::weapon::club_type::Enum, ItemChances>;
+            using WhipChanceMap_t = misc::VectorMap<item::weapon::whip_type::Enum, ItemChances>;
+            using SwordChanceMap_t = misc::VectorMap<item::weapon::sword_type::Enum, ItemChances>;
             using ProjectileChanceMap_t
-                = std::map<item::weapon::projectile_type::Enum, ItemChances>;
+                = misc::VectorMap<item::weapon::projectile_type::Enum, ItemChances>;
             using BladedStaffChanceMap_t
-                = std::map<item::weapon::bladedstaff_type::Enum, ItemChances>;
+                = misc::VectorMap<item::weapon::bladedstaff_type::Enum, ItemChances>;
 
             // returns the type and count of the item selected in a pair
             // It is possible and valid for the MAP to be empty, or to have only chances for zero
             // counts. It is the caller's responsibility to check for a returned count of zero.
             template <typename T>
-            std::pair<T, std::size_t> MappedRandomItemChance(const std::map<T, ItemChances> & MAP)
+            std::pair<T, std::size_t>
+                MappedRandomItemChance(const misc::VectorMap<T, ItemChances> & MAP)
             {
-                if (MAP.empty())
+                if (MAP.Empty())
                 {
                     return std::make_pair(T(), 0);
                 }
@@ -438,7 +439,7 @@ namespace non_player
                     const ClothingChances & CLOTHES_CHANCES = ClothingChances::NoClothes(),
                     const WeaponChances & WEAPON_CHANCES = WeaponChances::NoWeapon(),
                     const ArmorChances & ARMOR_CHANCES = ArmorChances::NoArmor(),
-                    const ItemChancePair_t & MISC_ITEM_CHANCES = ItemChancePair_t());
+                    const ItemChanceMap_t & MISC_ITEM_CHANCES = ItemChanceMap_t());
 
                 Coin_t RandomCoins() const
                 {
@@ -454,7 +455,7 @@ namespace non_player
                 ArmorChances armor;
                 WeaponChances weapon;
                 ClothingChances clothes;
-                ItemChancePair_t misc_items;
+                ItemChanceMap_t misc_items;
             };
         } // namespace chance
     } // namespace ownership

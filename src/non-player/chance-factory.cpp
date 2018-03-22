@@ -325,16 +325,16 @@ namespace non_player
 
             if (BODY_TYPE.HasHead() == false)
             {
-                armorChances.helm_map.clear();
+                armorChances.helm_map.Clear();
             }
 
             return armorChances;
         }
 
-        const chance::ItemChancePair_t
+        const chance::ItemChanceMap_t
             ChanceFactory::Make_MiscItemChances(const Profile &, const non_player::CharacterPtr_t)
         {
-            chance::ItemChancePair_t miscItems;
+            chance::ItemChanceMap_t miscItems;
 
             // Leave this as is for now, since there will be code elsewhere that determines
             // what items are left behind by a party of enemies (non-player characters) after
@@ -1073,7 +1073,7 @@ namespace non_player
                         }
                         else if (NEXT_INSTRUCTION_STR == "[body]")
                         {
-                            nextWeaponSet.chanceMap.clear();
+                            nextWeaponSet.chanceMap.Clear();
                         }
                         else
                         {
@@ -1469,7 +1469,7 @@ namespace non_player
             }
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (materialsMap_OutParam.empty() == false),
+                (materialsMap_OutParam.Empty() == false),
                 "non_player::ownership::ChanceFactory::Make_MaterialChancesPrimary(\""
                     << CHARACTER_PTR->Name() << "\") final materials map was empty.");
 
@@ -1611,7 +1611,7 @@ namespace non_player
 
             if ((SUBTOTAL < 1.0f) && (RAND < (1.0f - SUBTOTAL)))
             {
-                materialsMap_OutParam.clear();
+                materialsMap_OutParam.Clear();
                 materialsMap_OutParam[item::material::Nothing] = 1.0f;
             }
             else
@@ -1684,7 +1684,7 @@ namespace non_player
 
         const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapCool()
         {
-            if (materialChanceMapCool_.empty())
+            if (materialChanceMapCool_.Empty())
             {
                 const chance::MaterialVec_t MATERIAL_VEC
                     = { item::material::Stone,    item::material::Bone,   item::material::Horn,
@@ -1701,7 +1701,7 @@ namespace non_player
 
         const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapPrecious()
         {
-            if (materialChanceMapPrecious_.empty())
+            if (materialChanceMapPrecious_.Empty())
             {
                 const chance::MaterialVec_t MATERIAL_VEC
                     = { item::material::Jade,     item::material::Amethyst, item::material::Emerald,
@@ -1718,7 +1718,7 @@ namespace non_player
 
         const chance::MaterialChanceMap_t ChanceFactory::Make_MaterialChanceMapMetal()
         {
-            if (materialChanceMapMetal_.empty())
+            if (materialChanceMapMetal_.Empty())
             {
                 const chance::MaterialVec_t MATERIAL_VEC
                     = { item::material::Tin,     item::material::Bronze, item::material::Iron,
@@ -1958,7 +1958,7 @@ namespace non_player
             if (PROFILE.complexityType < DETAILS.complexity)
             {
                 armorItemChances.SetCountChanceSingleNoChance();
-                armorItemChances.type_map.clear();
+                armorItemChances.type_map.Clear();
             }
             else
             {
