@@ -28,6 +28,7 @@
 // vector-map.hpp
 //
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/vectors.hpp"
 #include <algorithm>
 #include <utility>
 #include <vector>
@@ -36,6 +37,18 @@ namespace heroespath
 {
 namespace misc
 {
+
+    template <typename Key_t, typename Value_t>
+    class VectorMap;
+
+    template <typename Key_t, typename Value_t>
+    bool operator==(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
+
+    template <typename Key_t, typename Value_t>
+    bool operator!=(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
+
+    template <typename Key_t, typename Value_t>
+    bool operator<(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
 
     // Responsible for implementing std::map with a vector in a way that performs
     // no sorting.  (all operations are in linear time)
@@ -93,6 +106,32 @@ namespace misc
             return false;
         }
 
+        iterator Find(const Key_t & KEY)
+        {
+            for (iterator iter(pairs_.begin()); iter != std::end(pairs_); ++iter)
+            {
+                if (KEY == iter->first)
+                {
+                    return iter;
+                }
+            }
+
+            return std::end(pairs_);
+        }
+
+        const_iterator Find(const Key_t & KEY) const
+        {
+            for (const_iterator iter(pairs_.begin()); iter != std::end(pairs_); ++iter)
+            {
+                if (KEY == iter->first)
+                {
+                    return iter;
+                }
+            }
+
+            return std::end(pairs_);
+        }
+
         void Erase(const Key_t & KEY)
         {
             pairs_.erase(
@@ -116,6 +155,14 @@ namespace misc
 
         const const_iterator begin() const { return std::begin(pairs_); }
         const const_iterator end() const { return std::end(pairs_); }
+
+        // clang-format off
+        friend bool
+            operator== <> (const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
+
+        friend bool
+            operator< <> (const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R);
+        // clang-format on
 
     private:
         PairVec_t pairs_;
@@ -154,6 +201,25 @@ namespace misc
     {
         return CPM.end();
     }
+
+    template <typename Key_t, typename Value_t>
+    bool operator==(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R)
+    {
+        return misc::Vector::OrderlessCompareEqual(L.pairs_, R.pairs_);
+    }
+
+    template <typename Key_t, typename Value_t>
+    bool operator!=(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R)
+    {
+        return !(L == R);
+    }
+
+    template <typename Key_t, typename Value_t>
+    bool operator<(const VectorMap<Key_t, Value_t> & L, const VectorMap<Key_t, Value_t> & R)
+    {
+        return misc::Vector::OrderlessCompareLess(L.pairs_, R.pairs_);
+    }
+
 } // namespace misc
 } // namespace heroespath
 

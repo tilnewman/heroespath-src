@@ -32,12 +32,11 @@
 #include "combat/strategy-enums.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
-
+#include "misc/vector-map.hpp"
 #include "stringutil/stringhelp.hpp"
 
 #include <algorithm>
 #include <exception>
-#include <map>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -52,7 +51,7 @@ namespace combat
     {
 
         using RaceRolePair_t = std::pair<creature::race::Enum, creature::role::Enum>;
-        using RaceRoleChancesMap_t = std::map<RaceRolePair_t, Chances>;
+        using RaceRoleChancesMap_t = misc::VectorMap<RaceRolePair_t, Chances>;
 
         // forward declarations for the singleton implementation
         class ChanceFactory;
@@ -79,10 +78,12 @@ namespace combat
             void ParseSubPartsRefine(const std::vector<std::string> &, RefineChanceMap_t &) const;
             void ParseSubPartsAdvance(const std::vector<std::string> &, AdvanceChanceMap_t &) const;
             void ParseSubPartsRetreat(const std::vector<std::string> &, RetreatChanceMap_t &) const;
+
             void ParseSubPartsFrequency(
                 const std::string &,
                 const std::vector<std::string> &,
                 FrequencyChanceMap_t &) const;
+
             void ParseSubPartsOutnumberRetreat(
                 const std::vector<std::string> &, OutnumberRetreatChanceMap_t &) const;
 
@@ -90,7 +91,7 @@ namespace combat
             void ParseEnumColonChance(
                 const std::string & FUNCTION_NAME,
                 const std::string & SUB_STR,
-                std::map<EnumType, float> & OutParam_EnumChanceMap) const
+                misc::VectorMap<EnumType, float> & OutParam_EnumChanceMap) const
             {
                 std::vector<std::string> enumColonChanceStrVec;
                 appbase::stringhelp::SplitByChar(SUB_STR, enumColonChanceStrVec, ':', true, true);
@@ -100,6 +101,7 @@ namespace combat
                     std::ostringstream ss;
                     ss << "combat::strategy::ChanceFactory::" << FUNCTION_NAME
                        << "() Found invalid subparts string: \"" << SUB_STR << "\".";
+
                     throw std::runtime_error(ss.str());
                 }
 
@@ -111,12 +113,14 @@ namespace combat
                 catch (const std::exception & EX)
                 {
                     std::ostringstream exceptionSS;
+
                     exceptionSS
                         << "combat::strategy::ChanceFactory::" << FUNCTION_NAME
                         << "()  Threw exceptionn calling T::FromString(\""
                         << enumColonChanceStrVec.at(0)
                         << "\")  This is probably just a typo in the gamedatafile.  Exception: ["
                         << EX.what() << "].";
+
                     throw std::runtime_error(exceptionSS.str());
                 }
 
@@ -124,10 +128,12 @@ namespace combat
                 if ((CHANCE < 0.0f) || (CHANCE > 1.0f))
                 {
                     std::ostringstream ss;
+
                     ss << "combat::strategy::ChanceFactory::" << FUNCTION_NAME
                        << "()  Failed to parse \"" << enumColonChanceStrVec.at(1)
                        << "\" into a valid 'enum:float'.  Resulting float (chance) was: " << CHANCE
                        << ".";
+
                     throw std::runtime_error(ss.str());
                 }
 
@@ -153,6 +159,7 @@ namespace combat
             //
             RaceRoleChancesMap_t raceRoleChancesMap_;
         };
+
     } // namespace strategy
 } // namespace combat
 } // namespace heroespath

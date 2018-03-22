@@ -31,9 +31,9 @@
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-action-info.hpp"
 #include "misc/types.hpp"
+#include "misc/vector-map.hpp"
 #include "stats/trait.hpp"
 
-#include <map>
 #include <utility>
 
 namespace heroespath
@@ -110,6 +110,7 @@ namespace combat
         {
             return firstAttackedByCreaturePtr_ == firstHitByCreaturePtr_;
         }
+
         bool IsLastAttackedByAlsoLastHitByCreature() const
         {
             return lastAttackedByCreaturePtr_ == lastHitByCreaturePtr_;
@@ -157,13 +158,14 @@ namespace combat
         bool wasHitLastTurn_;
     };
 
-    using TurnInfoMap_t = std::map<creature::CreaturePtr_t, TurnInfo>;
+    using TurnInfoMap_t = misc::VectorMap<creature::CreaturePtr_t, TurnInfo>;
 
     bool operator<(const TurnInfo & L, const TurnInfo & R);
 
     bool operator==(const TurnInfo & L, const TurnInfo & R);
 
     inline bool operator!=(const TurnInfo & L, const TurnInfo & R) { return !(L == R); }
+
 } // namespace combat
 } // namespace heroespath
 

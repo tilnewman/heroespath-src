@@ -28,9 +28,8 @@
 // weapons-details.hpp
 //  Code that loads detailed weapon data from the GameDataFile.
 //
+#include "misc/vector-map.hpp"
 #include "non-player/ownership-profile.hpp"
-
-#include <map>
 #include <memory>
 #include <string>
 
@@ -66,7 +65,7 @@ namespace item
         };
 
         // name to details mapping
-        using WeaponDetailMap_t = std::map<std::string, WeaponDetails>;
+        using WeaponDetailMap_t = misc::VectorMap<std::string, WeaponDetails>;
 
         // A singleton class that loads detailed weapon info from the GameDataFile.
         class WeaponDetailLoader

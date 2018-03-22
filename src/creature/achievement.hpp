@@ -34,8 +34,8 @@
 #include "creature/role-enum.hpp"
 #include "creature/title.hpp"
 #include "misc/types.hpp"
+#include "misc/vector-map.hpp"
 
-#include <map>
 #include <memory>
 #include <string>
 #include <tuple>
@@ -52,7 +52,7 @@ namespace creature
 
     // Note:  Must store Titles::Enums and not TitlePtr_ts here because
     //       Achievements are serialized, and Titles cannot be serialized.
-    using TitleCountMap_t = std::map<Count_t, Titles::Enum>;
+    using TitleCountMap_t = misc::VectorMap<Count_t, Titles::Enum>;
 
     // Responsible for storing all the information about an achievement.
     // An Achievement is a re-occurring event that is summed up until a
@@ -111,6 +111,7 @@ namespace creature
     }
 
     inline bool operator!=(const Achievement & L, const Achievement & R) { return !(L == R); }
+
 } // namespace creature
 } // namespace heroespath
 

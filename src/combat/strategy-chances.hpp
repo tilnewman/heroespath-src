@@ -27,15 +27,13 @@
 //
 // strategy-chances.hpp
 //
-#include "misc/boost-string-includes.hpp"
-
 #include "combat/strategy-enums.hpp"
 #include "combat/strategy-info.hpp"
 #include "log/log-macros.hpp"
-
+#include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
+#include "misc/vector-map.hpp"
 
-#include <map>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -96,11 +94,13 @@ namespace combat
 
         private:
             template <typename T>
-            T SelectRandomTypeEnumDiscrete(const std::map<T, float> & ENUM_CHANCE_MAP) const
+            T SelectRandomTypeEnumDiscrete(const misc::VectorMap<T, float> & ENUM_CHANCE_MAP) const
             {
                 // handle case where the map is empty
-                if (ENUM_CHANCE_MAP.empty())
+                if (ENUM_CHANCE_MAP.Empty())
+                {
                     return T::None;
+                }
 
                 T e{ T::None }; // None is always zero
                 for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
@@ -123,13 +123,14 @@ namespace combat
             }
 
             template <typename T>
-            T SelectRandomTypeEnumContinuous(const std::map<T, float> & ENUM_CHANCE_MAP) const
+            T SelectRandomTypeEnumContinuous(
+                const misc::VectorMap<T, float> & ENUM_CHANCE_MAP) const
             {
-                if (ENUM_CHANCE_MAP.empty())
+                if (ENUM_CHANCE_MAP.Empty())
                 {
                     return T::None;
                 }
-                else if (ENUM_CHANCE_MAP.size() == 1)
+                else if (ENUM_CHANCE_MAP.Size() == 1)
                 {
                     return ENUM_CHANCE_MAP.begin()->first;
                 }
@@ -163,18 +164,23 @@ namespace combat
 
             template <typename StructType, typename EnumType>
             const std::string ChanceMapToString(
-                const std::map<EnumType, float> & CHANCE_MAP, const bool WILL_WRAP = false) const
+                const misc::VectorMap<EnumType, float> & CHANCE_MAP,
+                const bool WILL_WRAP = false) const
             {
                 const std::string SEP(", ");
 
                 std::ostringstream ss;
 
                 if (WILL_WRAP)
+                {
                     ss << "(";
+                }
 
                 for (auto const & NEXT_TYPECHANCE_PAIR : CHANCE_MAP)
+                {
                     ss << StructType::ToString(NEXT_TYPECHANCE_PAIR.first) << ":"
                        << NEXT_TYPECHANCE_PAIR.second << SEP;
+                }
 
                 return boost::algorithm::erase_last_copy(ss.str(), SEP) + ((WILL_WRAP) ? ")" : "");
             }
@@ -197,6 +203,7 @@ namespace combat
         bool operator==(const Chances & L, const Chances & R);
 
         inline bool operator!=(const Chances & L, const Chances & R) { return !(L == R); }
+
     } // namespace strategy
 } // namespace combat
 } // namespace heroespath

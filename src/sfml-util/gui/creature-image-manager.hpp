@@ -36,7 +36,6 @@
 #include "creature/sex-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
 
-#include <map>
 #include <memory>
 #include <string>
 #include <tuple>

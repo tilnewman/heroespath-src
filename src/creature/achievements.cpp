@@ -107,10 +107,10 @@ namespace creature
             Titles::DragonOfTheNightmareSky);
     }
 
-    const Achievement & Achievements::Get(const AchievementType::Enum E) const
+    const Achievement Achievements::Get(const AchievementType::Enum E) const
     {
-        auto const CITER{ map_.find(E) };
-        if (CITER == map_.end())
+        auto const FOUND_ITER{ map_.Find(E) };
+        if (FOUND_ITER == map_.end())
         {
             std::ostringstream ss;
             ss << "creature::Achievements::Get(" << E << ") not found in the map_.";
@@ -118,14 +118,14 @@ namespace creature
         }
         else
         {
-            return CITER->second;
+            return FOUND_ITER->second;
         }
     }
 
     TitlePtr_t Achievements::Increment(const AchievementType::Enum E)
     {
-        const AchievementMapIter_t ITER(map_.find(E));
-        if (ITER == map_.end())
+        auto const FOUND_ITER{ map_.Find(E) };
+        if (FOUND_ITER == map_.end())
         {
             std::ostringstream ss;
             ss << "creature::Achievements::Increment(which_enum=" << E
@@ -136,33 +136,33 @@ namespace creature
         }
         else
         {
-            return ITER->second.Increment(role_);
+            return FOUND_ITER->second.Increment(role_);
         }
     }
 
     TitlePtr_t Achievements::GetCurrentTitle(const AchievementType::Enum E) const
     {
-        const AchievementMapCIter_t CITER(map_.find(E));
-        if (CITER == map_.end())
+        auto const FOUND_ITER{ map_.Find(E) };
+        if (FOUND_ITER == map_.end())
         {
             return nullptr;
         }
         else
         {
-            return CITER->second.GetCurrentTitle();
+            return FOUND_ITER->second.GetCurrentTitle();
         }
     }
 
     TitlePtr_t Achievements::GetNextTitle(const AchievementType::Enum E) const
     {
-        const AchievementMapCIter_t CITER(map_.find(E));
-        if (CITER == map_.end())
+        auto const FOUND_ITER{ map_.Find(E) };
+        if (FOUND_ITER == map_.end())
         {
             return nullptr;
         }
         else
         {
-            return CITER->second.GetNextTitle();
+            return FOUND_ITER->second.GetNextTitle();
         }
     }
 
@@ -176,11 +176,11 @@ namespace creature
         for (int t(TITLE_FIRST); t <= TITLE_LAST; ++t)
         {
             auto const NEXT_ENUM{ static_cast<Titles::Enum>(t) };
-            auto const NEXT_TITLE_PTR(title::Warehouse::Get(NEXT_ENUM));
-            titleCountMap.insert(std::make_pair(NEXT_TITLE_PTR->AchievementCount(), NEXT_ENUM));
+            auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_ENUM) };
+            titleCountMap[NEXT_TITLE_PTR->AchievementCount()] = NEXT_ENUM;
         }
 
-        map_.insert(std::make_pair(ACHV_TYPE, Achievement(ACHV_TYPE, titleCountMap)));
+        map_[ACHV_TYPE] = Achievement(ACHV_TYPE, titleCountMap);
     }
 } // namespace creature
 } // namespace heroespath

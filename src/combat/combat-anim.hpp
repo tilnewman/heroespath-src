@@ -27,14 +27,13 @@
 //
 // combat-anim.hpp
 //
+#include "misc/types.hpp"
+#include "misc/vector-map.hpp"
 #include "sfml-util/animation-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
-
-#include "misc/types.hpp"
 #include "stats/trait.hpp"
 
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -114,7 +113,7 @@ namespace combat
         void Reset(const float SLIDER_SPEED, const bool WILL_DOUBLE_SHAKE_DISTANCE);
     };
 
-    using ShakeInfoMap_t = std::map<combat::CombatNodePtr_t, ShakeAnimInfo>;
+    using ShakeInfoMap_t = misc::VectorMap<combat::CombatNodePtr_t, ShakeAnimInfo>;
 
     // Responsible for displaying combat related animations.
     class CombatAnimation

@@ -28,10 +28,10 @@
 // armor-details.hpp
 //  Code that loads detailed armor data from the GameDataFile.
 //
+#include "misc/vector-map.hpp"
 #include "non-player/ownership-profile.hpp"
 #include "stats/trait.hpp"
 
-#include <map>
 #include <memory>
 #include <string>
 
@@ -63,7 +63,7 @@ namespace item
         };
 
         // name to details mapping
-        using ArmorDetailMap_t = std::map<std::string, ArmorDetails>;
+        using ArmorDetailMap_t = misc::VectorMap<std::string, ArmorDetails>;
 
         // A singleton class that loads detailed armor info from the GameDataFile.
         class ArmorDetailLoader
@@ -87,6 +87,7 @@ namespace item
             void LoadArmorDeatilsFromGameDataFile();
             void LoadDetailsForKey(const std::string & ARMOR_NAME);
             int StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR);
+
             const std::string
                 CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
 

@@ -30,12 +30,11 @@
 #include "party.hpp"
 
 #include "log/log-macros.hpp"
+#include "misc/boost-string-includes.hpp"
+#include "misc/vector-map.hpp"
 #include "non-player/character-warehouse.hpp"
 #include "non-player/character.hpp"
 
-#include "misc/boost-string-includes.hpp"
-
-#include <map>
 #include <sstream>
 #include <utility>
 
@@ -117,8 +116,7 @@ namespace non_player
     const std::string Party::Summary() const
     {
         using RaceRolePair_t = std::pair<std::string, std::string>;
-        using RaceRoleCountMap_t = std::map<RaceRolePair_t, std::size_t>;
-        RaceRoleCountMap_t raceRoleMap;
+        misc::VectorMap<RaceRolePair_t, std::size_t> raceRoleMap;
 
         // count all race/role combinations
         for (auto const NEXT_CHAR_PTR : charactersPVec_)

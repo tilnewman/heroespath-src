@@ -238,7 +238,7 @@ namespace combat
 
         if (willRemoveNullShakeInfo)
         {
-            shakeAnimInfoMap_.erase(nullptr);
+            shakeAnimInfoMap_.Erase(nullptr);
         }
 
         if (selectAnimCombatNodePtr_ != nullptr)
@@ -706,7 +706,7 @@ namespace combat
 
         for (auto const NEXT_COMBATNODE_PTR : combatNodesToErasePVec)
         {
-            shakeAnimInfoMap_.erase(NEXT_COMBATNODE_PTR);
+            shakeAnimInfoMap_.Erase(NEXT_COMBATNODE_PTR);
         }
     }
 

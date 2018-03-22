@@ -41,16 +41,19 @@ namespace creature
 
     const stats::StatSet RoleStatModifier::Get(const role::Enum ENUM)
     {
-        if (roleStatSetMap_.empty())
+        if (roleStatSetMap_.Empty())
         {
             for (int i(0); i < role::PlayerRoleCount; ++i)
             {
                 auto const NEXT_ENUM{ static_cast<role::Enum>(i) };
                 auto const NEXT_ENUM_STR{ role::ToString(NEXT_ENUM) };
+
                 auto const NEXT_KEY_STR{ "heroespath-creature-role-stat-modifiers-"
                                          + NEXT_ENUM_STR };
+
                 std::string nextStatSetStr{ "" };
                 game::GameDataFile::Instance()->GetStr(nextStatSetStr, NEXT_KEY_STR);
+
                 roleStatSetMap_[NEXT_ENUM]
                     = StatModifierLoader::ConvertStringToStatSet(nextStatSetStr);
             }
@@ -58,5 +61,6 @@ namespace creature
 
         return roleStatSetMap_[ENUM];
     }
+
 } // namespace creature
 } // namespace heroespath

@@ -303,12 +303,6 @@ namespace stage
         , hasTakenActionSpellOrSong_(false)
     {
         sfml_util::SoundManager::Instance()->MusicStart(sfml_util::music::Inventory);
-
-        auto const NUM_CHARACTERS(characterViewMap_.size());
-        for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
-        {
-            characterViewMap_[i] = ViewType::Count;
-        }
     }
 
     InventoryStage::~InventoryStage()

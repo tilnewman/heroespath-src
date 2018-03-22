@@ -217,7 +217,7 @@ namespace combat
             "combat::Encounter::GetTurnInfoCopy() was given a nullptr"
                 << " creature::CreaturePtr_t.");
 
-        auto const FOUND_ITER{ turnInfoMap_.find(PTR) };
+        auto const FOUND_ITER{ turnInfoMap_.Find(PTR) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (FOUND_ITER != turnInfoMap_.end()),
@@ -316,7 +316,7 @@ namespace combat
 
         turnCreaturePtr_ = nullptr;
         turnOverPVec_.clear();
-        turnInfoMap_.clear();
+        turnInfoMap_.Clear();
         roundCounter_ = 0;
         hasStarted_ = false;
         turnIndex_ = 0;
@@ -427,7 +427,7 @@ namespace combat
 
     void Encounter::PopulateTurnInfoMap()
     {
-        turnInfoMap_.clear();
+        turnInfoMap_.Clear();
 
         for (auto const NEXT_CHAR_PTR : nonPlayerPartyUPtr_->Characters())
         {

@@ -28,15 +28,14 @@
 // combat-display.hpp
 //  A class that handles drawing the combat tree.
 //
+#include "combat/combat-tree.hpp"
+#include "creature/creature.hpp"
+#include "misc/vector-map.hpp"
 #include "sfml-util/gui/gui-entity-slider.hpp"
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
 
-#include "combat/combat-tree.hpp"
-#include "creature/creature.hpp"
-
-#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -91,13 +90,14 @@ namespace combat
         float vertDiff;
     };
 
-    using NodePosTrackerMap_t = std::map<CombatNodePtr_t, NodePosTracker>;
+    using NodePosTrackerMap_t = misc::VectorMap<CombatNodePtr_t, NodePosTracker>;
 
     // this type maps an individual creature to a specific blocking position
     // used by players/users to save a blocking pattern they prefer
-    using BlockingMap_t = std::map<creature::UniqueTraits_t, int>;
+    using BlockingMap_t = misc::VectorMap<creature::UniqueTraits_t, int>;
 
-    using CombatNodeToIGuiEntityMap_t = std::map<CombatNodeSPtr_t, sfml_util::gui::IGuiEntityPtr_t>;
+    using CombatNodeToIGuiEntityMap_t
+        = misc::VectorMap<CombatNodeSPtr_t, sfml_util::gui::IGuiEntityPtr_t>;
 
     // Handles drawing the combat tree
     class CombatDisplay : public sfml_util::Stage
@@ -362,6 +362,7 @@ namespace combat
     using CombatDisplayCPtr_t = const CombatDisplay *;
     using CombatDisplayPtrC_t = CombatDisplay * const;
     using CombatDisplayCPtrC_t = const CombatDisplay * const;
+
 } // namespace combat
 } // namespace heroespath
 

@@ -38,6 +38,7 @@
 
 #include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
+#include <list>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -155,7 +156,11 @@ namespace stage
     private:
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
-        sfml_util::TextureLst_t textureList_;
+
+        // given how large sf::Textures are and how this class uses them, a std::list is a huge
+        // speed improvement over std::vector
+        std::list<sf::Texture> textureList_;
+
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         StrSizePairVec_t testingBlurbsVec_;
         int sleepMilliseconds_;

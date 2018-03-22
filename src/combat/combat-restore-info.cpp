@@ -105,7 +105,7 @@ namespace combat
 
     void RestoreInfo::CreaturePositionsSave(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
     {
-        creatureBlockingPosMap_.clear();
+        creatureBlockingPosMap_.Clear();
 
         combat::CombatNodePVec_t combatNodesPVec;
         COMBAT_DISPLAY_CPTRC->GetCombatNodes(combatNodesPVec);

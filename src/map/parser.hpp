@@ -34,11 +34,9 @@
 #include "map/transition.hpp"
 #include "map/walk-sfx.hpp"
 #include "misc/types.hpp"
-#include "misc/vector-map.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 
-#include <map>
 #include <string>
 #include <vector>
 

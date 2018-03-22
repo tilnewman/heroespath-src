@@ -30,9 +30,8 @@
 //  Often in the code base the max length of a character name is needed for GUI bounds/drawing,
 //  and this class answers that question.
 //
+#include "misc/vector-map.hpp"
 #include "sfml-util/gui/text-info.hpp"
-
-#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -47,7 +46,7 @@ namespace creature
     {
         // types used by NameInfo
         using FontSizePair_t = std::pair<sfml_util::FontPtr_t, unsigned int>;
-        using FontSizeToWidthMap_t = std::map<FontSizePair_t, float>;
+        using FontSizeToWidthMap_t = misc::VectorMap<FontSizePair_t, float>;
 
     public:
         NameInfo(const NameInfo &) = delete;

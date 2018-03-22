@@ -39,12 +39,11 @@
 #include "combat/fight-results.hpp"
 #include "creature/achievement-enum.hpp"
 #include "game/phase-enum.hpp"
+#include "misc/vector-map.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-title.hpp"
 
-#include "popup/i-popup-callback.hpp"
-
-#include <map>
 #include <memory>
 #include <string>
 
@@ -134,7 +133,7 @@ namespace stage
         };
 
         // used to remember which view each character was last using
-        using CharViewMap_t = std::map<std::size_t, ViewType>;
+        using CharViewMap_t = misc::VectorMap<std::size_t, ViewType>;
 
     public:
         InventoryStage(const InventoryStage &) = delete;

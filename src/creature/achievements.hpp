@@ -28,13 +28,12 @@
 // achievements.hpp
 //  A class that manages all the achievements (title statistics) for a creature
 //
-#include "misc/boost-serialize-includes.hpp"
-
 #include "creature/achievement.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/title-enum.hpp"
+#include "misc/boost-serialize-includes.hpp"
+#include "misc/vector-map.hpp"
 
-#include <map>
 #include <memory>
 #include <string>
 #include <tuple>
@@ -45,7 +44,7 @@ namespace creature
 {
 
     // handy types
-    using AchievementMap_t = std::map<AchievementType::Enum, Achievement>;
+    using AchievementMap_t = misc::VectorMap<AchievementType::Enum, Achievement>;
     using AchievementMapIter_t = AchievementMap_t::iterator;
     using AchievementMapCIter_t = AchievementMap_t::const_iterator;
 
@@ -61,7 +60,7 @@ namespace creature
             const creature::role::Enum & OWNING_CREATURE_ROLE = creature::role::Count);
 
         // these functions will throw on invalid enum or if a valid enum was not found in the map
-        const Achievement & Get(const AchievementType::Enum E) const;
+        const Achievement Get(const AchievementType::Enum E) const;
         TitlePtr_t Increment(const AchievementType::Enum E);
         TitlePtr_t GetCurrentTitle(const AchievementType::Enum E) const;
         TitlePtr_t GetNextTitle(const AchievementType::Enum E) const;
@@ -102,6 +101,7 @@ namespace creature
     }
 
     inline bool operator!=(const Achievements & L, const Achievements & R) { return !(L == R); }
+
 } // namespace creature
 } // namespace heroespath
 

@@ -35,7 +35,6 @@
 #include "map/walk-sfx.hpp"
 #include "misc/types.hpp"
 
-#include <map>
 #include <string>
 #include <vector>
 

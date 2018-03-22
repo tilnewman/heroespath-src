@@ -457,7 +457,7 @@ namespace combat
 
     void CombatDisplay::PositionCombatTreeCells(const bool WILL_DELAY)
     {
-        nodePosTrackerMap_.clear();
+        nodePosTrackerMap_.Clear();
 
         const CombatTree::VertexVec_t VERT_VEC(combatTree_.Vertexes());
 
@@ -550,33 +550,35 @@ namespace combat
             + (POSITIONING_MARGIN_VERT_ZOOM_ADJ * 2.0f);
 
         // set battlefield positions
-        std::map<int, std::size_t> shoulderToShoulderBlockingMap;
+        misc::VectorMap<int, std::size_t> shoulderToShoulderBlockingMap;
         for (auto const & NEXT_VERTEX : VERT_VEC)
         {
-            const int NEXT_BLOCKING_POS(NEXT_VERTEX.node_sptr->GetBlockingPos());
+            auto const NEXT_BLOCKING_POS{ NEXT_VERTEX.node_sptr->GetBlockingPos() };
 
             // count the number of verts are shoulder-to-shoulder (vertical on screen) with this one
-            const std::size_t SHOULDER_TO_SHOULDER_COUNT(
-                combatTree_.VertexCountByBlockingPos(NEXT_BLOCKING_POS));
+            auto const SHOULDER_TO_SHOULDER_COUNT{ combatTree_.VertexCountByBlockingPos(
+                NEXT_BLOCKING_POS) };
 
             // keep track of which shoulder-to-shoulder this vert/NEXT_BLOCKING_POS is
-            const std::size_t SHOULDER_TO_SHOULDER_POS(
-                shoulderToShoulderBlockingMap[NEXT_BLOCKING_POS]++);
+            auto const SHOULDER_TO_SHOULDER_POS{
+                shoulderToShoulderBlockingMap[NEXT_BLOCKING_POS]++
+            };
 
-            const float POS_LEFT(
-                (battlefieldWidth_ * 0.5f)
-                + (static_cast<float>(NEXT_BLOCKING_POS) * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER));
+            auto const POS_LEFT{ (battlefieldWidth_ * 0.5f)
+                                 + (static_cast<float>(NEXT_BLOCKING_POS)
+                                    * CELL_WIDTH_ZOOM_ADJ_WITH_SPACER) };
 
-            const float SHOULDER_TO_SHOULDER_TOTAL_HEIGHT_HALF(
+            auto const SHOULDER_TO_SHOULDER_TOTAL_HEIGHT_HALF{
                 (static_cast<float>(SHOULDER_TO_SHOULDER_COUNT) * 0.5f)
-                * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER);
+                * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER
+            };
 
-            const float SHOULDER_TO_SHOULDER_POS_HEIGHT(
-                static_cast<float>(SHOULDER_TO_SHOULDER_POS) * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER);
+            auto const SHOULDER_TO_SHOULDER_POS_HEIGHT{ static_cast<float>(SHOULDER_TO_SHOULDER_POS)
+                                                        * CELL_HEIGHT_ZOOM_ADJ_WITH_SPACER };
 
-            const float POS_TOP(
-                ((battlefieldHeight_ * 0.5f) - SHOULDER_TO_SHOULDER_TOTAL_HEIGHT_HALF)
-                + SHOULDER_TO_SHOULDER_POS_HEIGHT);
+            auto const POS_TOP{ ((battlefieldHeight_ * 0.5f)
+                                 - SHOULDER_TO_SHOULDER_TOTAL_HEIGHT_HALF)
+                                + SHOULDER_TO_SHOULDER_POS_HEIGHT };
 
             const sf::FloatRect RECT(POS_LEFT, POS_TOP, CELL_WIDTH_ZOOM_ADJ, CELL_HEIGHT_ZOOM_ADJ);
 
@@ -601,7 +603,7 @@ namespace combat
                 << "COMBAT_NODE_SPTR that was null.");
 
         auto const REMOVE_RESULT{ EntityRemove(combatNodeToGuiEntityMap_[COMBAT_NODE_SPTR]) };
-        combatNodeToGuiEntityMap_.erase(COMBAT_NODE_SPTR);
+        combatNodeToGuiEntityMap_.Erase(COMBAT_NODE_SPTR);
         return REMOVE_RESULT;
     }
 
@@ -1389,7 +1391,7 @@ namespace combat
     void CombatDisplay::InitialPlayerPartyCombatTreeSetup()
     {
         // apply the player's preferred blocking pattern if one is saved
-        if (blockingMap_.empty())
+        if (blockingMap_.Empty())
         {
             InitialCreaturePositionsSetup(true);
         }

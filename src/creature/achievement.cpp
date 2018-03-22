@@ -53,12 +53,13 @@ namespace creature
     {
         TitlePtr_t titlePtr{ nullptr };
 
-        if (titleCountMap_.empty() == false)
+        if (titleCountMap_.Empty() == false)
         {
             titlePtr = title::Warehouse::Get(titleCountMap_.begin()->second);
             for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
             {
                 auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_COUNTTITLE_PAIR.second) };
+
                 if ((NEXT_TITLE_PTR->AchievementCount() < count_)
                     && (NEXT_TITLE_PTR->AchievementCount() >= titlePtr->AchievementCount()))
                 {
@@ -81,12 +82,13 @@ namespace creature
     {
         TitlePtr_t titlePtr{ nullptr };
 
-        if (titleCountMap_.empty() == false)
+        if (titleCountMap_.Empty() == false)
         {
             titlePtr = title::Warehouse::Get(titleCountMap_.begin()->second);
             for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
             {
                 auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_COUNTTITLE_PAIR.second) };
+
                 if ((NEXT_TITLE_PTR->AchievementCount() > count_)
                     && (NEXT_TITLE_PTR->AchievementCount() <= titlePtr->AchievementCount()))
                 {
@@ -124,7 +126,7 @@ namespace creature
         // Keep incrementing past the count of the final Title so the player can track
         // progress even if there are no more Titles to earn.  Don't stop until the
         // count reaches a large recognizeable limit...something with lots of 9's...
-        if (999'999'999_count == count_)
+        if (999'999'999_count >= count_)
         {
             return nullptr;
         }

@@ -168,7 +168,7 @@ namespace non_player
 
             item::armor::cover_type::Enum ClothingChances::RandomCoverType() const
             {
-                std::map<item::armor::cover_type::Enum, float> coverChanceMap;
+                misc::VectorMap<item::armor::cover_type::Enum, float> coverChanceMap;
 
                 for (auto const & NEXT_CHANCE_PAIR : cover_map)
                 {
@@ -178,14 +178,14 @@ namespace non_player
                     }
                 }
 
-                if (coverChanceMap.size() == 1)
+                if (coverChanceMap.Size() == 1)
                 {
                     return coverChanceMap.begin()->first;
                 }
-                else if (coverChanceMap.size() > 1)
+                else if (coverChanceMap.Size() > 1)
                 {
-                    float highestChance(0.0f);
-                    item::armor::cover_type::Enum highestEnum(coverChanceMap.begin()->first);
+                    auto highestChance{ 0.0f };
+                    auto highestEnum{ coverChanceMap.begin()->first };
                     for (auto const & NEXT_CHANCE_PAIR : coverChanceMap)
                     {
                         if (NEXT_CHANCE_PAIR.second > highestChance)

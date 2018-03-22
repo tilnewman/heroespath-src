@@ -28,11 +28,9 @@
 // strategy-details.cpp
 //
 #include "strategy-details.hpp"
-
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
-
-#include <map>
+#include "misc/vector-map.hpp"
 #include <vector>
 
 namespace heroespath
@@ -108,13 +106,14 @@ namespace combat
                 {
                     std::vector<std::string> subPartsVec;
                     appbase::stringhelp::SplitByChar(NEXT_PART_STR, subPartsVec, ',', true, true);
+
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (subPartsVec.empty() == false),
                         "combat::strategy::ChanceFactory::Initialize()  (while parsing race=\""
                             << RACE_STR << "\")  Failed to parse \"" << NEXT_PART_STR
                             << "\" into any sub strings sep by comma.");
 
-                    const std::string SUBPART_TITLE_STR(subPartsVec.at(0));
+                    auto const SUBPART_TITLE_STR{ subPartsVec.at(0) };
                     if (SUBPART_TITLE_STR == SUBPART_TITLE_SELECT_)
                     {
                         ParseSubPartsSelect(subPartsVec, selectChanceMap);
@@ -183,7 +182,7 @@ namespace combat
                     standPounceFreqChanceMap);
             }
 
-            std::map<creature::role::Enum, Chances> roleChancesMap;
+            misc::VectorMap<creature::role::Enum, Chances> roleChancesMap;
             for (int i(0); i < creature::role::Count; ++i)
             {
                 auto const ROLE_ENUM(static_cast<creature::role::Enum>(i));
@@ -300,10 +299,7 @@ namespace combat
                 {
                     auto const CHANCES{ NEXT_RACECHANCES_PAIR.second.AdjustCopy(
                         NEXT_ROLECHANCES_PAIR.second) };
-                    // M_HP_LOG("ChanceFactory::Initialize() race=" <<
-                    // creature::race::ToString(NEXT_RACECHANCES_PAIR.first) << ", role=" <<
-                    // creature::role::ToString(NEXT_ROLECHANCES_PAIR.first) << ", \t\t" <<
-                    // CHANCES.ToString());
+
                     raceRoleChancesMap_[std::make_pair(
                         NEXT_RACECHANCES_PAIR.first, NEXT_ROLECHANCES_PAIR.first)]
                         = CHANCES;
@@ -315,11 +311,12 @@ namespace combat
             const creature::race::Enum RACE_ENUM, const creature::role::Enum ROLE_ENUM)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (raceRoleChancesMap_.empty() == false),
+                (raceRoleChancesMap_.Empty() == false),
                 "combat::strategy::ChanceFactory::Get("
                     << creature::race::ToString(RACE_ENUM) << ", "
                     << creature::role::ToString(ROLE_ENUM)
                     << ") called before Initialize() was called.");
+
             return raceRoleChancesMap_[std::make_pair(RACE_ENUM, ROLE_ENUM)];
         }
 
@@ -530,8 +527,10 @@ namespace combat
                 else
                 {
                     std::vector<std::string> countCountColonChanceStrVec;
+
                     appbase::stringhelp::SplitByChar(
                         NEXT_SUBSTRING, countCountColonChanceStrVec, ':', true, true);
+
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         ((countCountColonChanceStrVec.size() == 2)
                          || (countCountColonChanceStrVec.size() == 3)),
@@ -549,8 +548,10 @@ namespace combat
 
                         // split the number range into two numbers
                         std::vector<std::string> rangeNumberStrVec;
+
                         appbase::stringhelp::SplitByChar(
                             countCountColonChanceStrVec.at(0), rangeNumberStrVec, '-', true, true);
+
                         M_ASSERT_OR_LOGANDTHROW_SS(
                             ((rangeNumberStrVec.size() == 1) || (rangeNumberStrVec.size() == 2)),
                             "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid range "
@@ -571,6 +572,7 @@ namespace combat
                             {
                                 rangeEnd = -1;
                             }
+
                             M_ASSERT_OR_LOGANDTHROW_SS(
                                 (rangeEnd >= 0),
                                 "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid "
@@ -590,6 +592,7 @@ namespace combat
                         {
                             rangeStart = -1;
                         }
+
                         M_ASSERT_OR_LOGANDTHROW_SS(
                             (rangeStart >= 0),
                             "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid range "
@@ -616,8 +619,10 @@ namespace combat
                         {
                             // case where there is a valid range
                             for (int i(rangeStart); i <= rangeEnd; ++i)
+                            {
                                 OutParam_OutnumberRetreatChanceMap[static_cast<std::size_t>(i)]
                                     = CHANCE;
+                            }
                         }
                     }
                     else
@@ -639,6 +644,7 @@ namespace combat
                         {
                             initialCount = -1;
                         }
+
                         M_ASSERT_OR_LOGANDTHROW_SS(
                             (initialCount >= 0),
                             "combat::strategy::ParseSubPartsOutnumberRetreat() Found invalid "
@@ -650,9 +656,12 @@ namespace combat
                         {
                             OutParam_OutnumberRetreatChanceMap[static_cast<std::size_t>(i)]
                                 = initialChance;
+
                             initialChance = initialChance * 2.0f;
                             if (initialChance > 1.0f)
+                            {
                                 initialChance = 1.0f;
+                            }
                         }
                     }
                 }
@@ -670,6 +679,7 @@ namespace combat
                 return -1.0f;
             }
         }
+
     } // namespace strategy
 } // namespace combat
 } // namespace heroespath

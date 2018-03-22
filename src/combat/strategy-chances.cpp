@@ -28,8 +28,8 @@
 // strategy-chances.cpp
 //
 #include "strategy-chances.hpp"
-
 #include "misc/real.hpp"
+#include "misc/vector-map.hpp"
 
 #include <tuple>
 #include <utility>
@@ -87,32 +87,44 @@ namespace combat
             for (auto & nextSelectChancePair : chanceCopy.selectChanceMap_)
             {
                 nextSelectChancePair.second += adjSelectChanceMap[nextSelectChancePair.first];
+
                 if (nextSelectChancePair.second < 0.0f)
+                {
                     nextSelectChancePair.second = 0.0f;
+                }
             }
 
             RefineChanceMap_t adjRefineChanceMap(ADJUSTER.RefineChanceMapCopy());
             for (auto & nextRefineChancePair : chanceCopy.refineChanceMap_)
             {
                 nextRefineChancePair.second += adjRefineChanceMap[nextRefineChancePair.first];
+
                 if (nextRefineChancePair.second < 0.0f)
+                {
                     nextRefineChancePair.second = 0.0f;
+                }
             }
 
             AdvanceChanceMap_t adjAdvanceChanceMap(ADJUSTER.AdvanceChanceMapCopy());
             for (auto & nextAdvanceChancePair : chanceCopy.advanceChanceMap_)
             {
                 nextAdvanceChancePair.second += adjAdvanceChanceMap[nextAdvanceChancePair.first];
+
                 if (nextAdvanceChancePair.second < 0.0f)
+                {
                     nextAdvanceChancePair.second = 0.0f;
+                }
             }
 
             RetreatChanceMap_t adjRetreatChanceMap(ADJUSTER.RetreatChanceMapCopy());
             for (auto & nextRetreatChancePair : chanceCopy.retreatChanceMap_)
             {
                 nextRetreatChancePair.second += adjRetreatChanceMap[nextRetreatChancePair.first];
+
                 if (nextRetreatChancePair.second < 0.0f)
+                {
                     nextRetreatChancePair.second = 0.0f;
+                }
             }
 
             OutnumberRetreatChanceMap_t adjOutnumberRetreatChanceMap(
@@ -121,8 +133,11 @@ namespace combat
             {
                 nextOutnumberRetreatCountChancePair.second
                     += adjOutnumberRetreatChanceMap[nextOutnumberRetreatCountChancePair.first];
+
                 if (nextOutnumberRetreatCountChancePair.second < 0.0f)
+                {
                     nextOutnumberRetreatCountChancePair.second = 0.0f;
+                }
             }
 
             FrequencyChanceMap_t adjFrequencyChanceMap(ADJUSTER.RoarFreqChanceMapCopy());
@@ -130,8 +145,11 @@ namespace combat
             {
                 nextRoarFreqChancePair.second
                     += adjFrequencyChanceMap[nextRoarFreqChancePair.first];
+
                 if (nextRoarFreqChancePair.second < 0.0f)
+                {
                     nextRoarFreqChancePair.second = 0.0f;
+                }
             }
 
             FrequencyChanceMap_t adjCastFrequencyChanceMap(ADJUSTER.CastFreqChanceMapCopy());
@@ -139,8 +157,11 @@ namespace combat
             {
                 nextCastFreqChancePair.second
                     += adjCastFrequencyChanceMap[nextCastFreqChancePair.first];
+
                 if (nextCastFreqChancePair.second < 0.0f)
+                {
                     nextCastFreqChancePair.second = 0.0f;
+                }
             }
 
             FrequencyChanceMap_t adjFlyFrequencyChanceMap(ADJUSTER.FlyFreqChanceMapCopy());
@@ -148,28 +169,39 @@ namespace combat
             {
                 nextFlyFreqChancePair.second
                     += adjFlyFrequencyChanceMap[nextFlyFreqChancePair.first];
+
                 if (nextFlyFreqChancePair.second < 0.0f)
+                {
                     nextFlyFreqChancePair.second = 0.0f;
+                }
             }
 
             FrequencyChanceMap_t adjFlyPounceFrequencyChanceMap(
                 ADJUSTER.FlyPounceFreqChanceMapCopy());
+
             for (auto & nextFlyPounceFreqChancePair : chanceCopy.flyPounceFreqChanceMap_)
             {
                 nextFlyPounceFreqChancePair.second
                     += adjFlyPounceFrequencyChanceMap[nextFlyPounceFreqChancePair.first];
+
                 if (nextFlyPounceFreqChancePair.second < 0.0f)
+                {
                     nextFlyPounceFreqChancePair.second = 0.0f;
+                }
             }
 
             FrequencyChanceMap_t adjStandPounceFrequencyChanceMap(
                 ADJUSTER.StandPounceFreqChanceMapCopy());
+
             for (auto & nextStandPounceFreqChancePair : chanceCopy.standPounceFreqChanceMap_)
             {
                 nextStandPounceFreqChancePair.second
                     += adjStandPounceFrequencyChanceMap[nextStandPounceFreqChancePair.first];
+
                 if (nextStandPounceFreqChancePair.second < 0.0f)
+                {
                     nextStandPounceFreqChancePair.second = 0.0f;
+                }
             }
 
             return chanceCopy;
@@ -201,10 +233,12 @@ namespace combat
                       standPounceFreqChanceMap_, false)
                << "  |  RetreatCounts=(";
 
-            std::size_t count{ outnumberRetreatChanceMap_.size() };
+            auto count{ outnumberRetreatChanceMap_.Size() };
 
             if (count > 10)
+            {
                 count = 10;
+            }
 
             if (0 == count)
             {
@@ -217,11 +251,16 @@ namespace combat
                 {
                     ss << i << ":";
 
-                    auto const COUNTCHANCE_ITER{ outnumberRetreatChanceMap_.find(i) };
+                    auto const COUNTCHANCE_ITER{ outnumberRetreatChanceMap_.Find(i) };
+
                     if (COUNTCHANCE_ITER == outnumberRetreatChanceMap_.end())
+                    {
                         ss << "none";
+                    }
                     else
+                    {
                         ss << COUNTCHANCE_ITER->second;
+                    }
 
                     ss << SEP;
                 }
@@ -238,7 +277,7 @@ namespace combat
             // Handle case where there are multiple FrequencyTypes with certain or higher than
             // certain chance. Handle case where chances do not add up exactly to one, or 100%.
 
-            if (FREQ_CHANCE_MAP.empty())
+            if (FREQ_CHANCE_MAP.Empty())
             {
                 return FrequencyType::Never;
             }
@@ -251,6 +290,7 @@ namespace combat
             for (auto const & NEXT_FREQCHANCE_PAIR : FREQ_CHANCE_MAP)
             {
                 totalOfAllFreqTypes += NEXT_FREQCHANCE_PAIR.second;
+
                 if ((NEXT_FREQCHANCE_PAIR.second > 1.0f)
                     || misc::IsRealOne(NEXT_FREQCHANCE_PAIR.second))
                 {
@@ -290,6 +330,7 @@ namespace combat
                 // if there are no FrequencyTypes with certain or higher chance,
                 // then random select from any with a non-zero chance...
                 auto subtotal{ 0.0f };
+
                 auto const RAND{ misc::random::Float(
                     0.0f, ((DO_CHANCES_TOTAL_ONE_OR_LESS) ? 1.0f : totalOfAllFreqTypes)) };
 
@@ -318,11 +359,11 @@ namespace combat
         std::size_t Chances::SelectRandomNumberContinuous(
             const OutnumberRetreatChanceMap_t & OUTNUMBER_RETREAT_CHANCE_MAP) const
         {
-            if (OUTNUMBER_RETREAT_CHANCE_MAP.empty())
+            if (OUTNUMBER_RETREAT_CHANCE_MAP.Empty())
             {
                 return 0;
             }
-            else if (OUTNUMBER_RETREAT_CHANCE_MAP.size() == 1)
+            else if (OUTNUMBER_RETREAT_CHANCE_MAP.Size() == 1)
             {
                 return OUTNUMBER_RETREAT_CHANCE_MAP.begin()->first;
             }
@@ -409,6 +450,7 @@ namespace combat
                        R.flyPounceFreqChanceMap_,
                        R.standPounceFreqChanceMap_);
         }
+
     } // namespace strategy
 } // namespace combat
 } // namespace heroespath

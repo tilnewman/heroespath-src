@@ -397,8 +397,7 @@ namespace non_player
             IItemPVecPair_t itemsPtrVecPair;
 
             using KindChancePair_t = std::pair<int, float>;
-            using TypeKindChanceMap_t = std::map<item::weapon_type::Enum, KindChancePair_t>;
-            TypeKindChanceMap_t typeKindChanceMap;
+            misc::VectorMap<item::weapon_type::Enum, KindChancePair_t> typeKindChanceMap;
 
             // TODO handle multiple weapons of the same type/kind
 
@@ -486,15 +485,15 @@ namespace non_player
             }
 
             // check for no-weapon case
-            if (typeKindChanceMap.empty())
+            if (typeKindChanceMap.Empty())
             {
                 return itemsPtrVecPair;
             }
 
             // random select weapon
-            item::weapon_type::Enum randomSelectedWeaponType(typeKindChanceMap.begin()->first);
-            float chanceCumulative(0.0f);
-            const float RAND_WEAPON_TYPE_CHANCE(misc::random::Float());
+            auto randomSelectedWeaponType{ typeKindChanceMap.begin()->first };
+            auto chanceCumulative{ 0.0f };
+            auto const RAND_WEAPON_TYPE_CHANCE{ misc::random::Float() };
             for (auto const & NEXT_TYPEKIND_PAIR : typeKindChanceMap)
             {
                 chanceCumulative += NEXT_TYPEKIND_PAIR.second.second;

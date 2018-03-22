@@ -97,19 +97,15 @@ namespace item
 
         const WeaponDetails WeaponDetailLoader::LookupWeaponDetails(const std::string & NAME)
         {
-            const WeaponDetailMap_t::const_iterator CITER(weaponDetailsMap_.find(NAME));
-            if (CITER == weaponDetailsMap_.end())
-            {
-                std::ostringstream ss;
-                ss << "item::weapon::WeaponDetailLoader::LookupWeaponDetails(\"" << NAME
-                   << "\")  failed to find that name in weaponDetailsMap_.";
+            WeaponDetails details;
+            auto const WAS_FOUND{ weaponDetailsMap_.Find(NAME, details) };
 
-                throw std::runtime_error(ss.str());
-            }
-            else
-            {
-                return CITER->second;
-            }
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                WAS_FOUND,
+                "item::weapon::WeaponDetailLoader::LookupWeaponDetails(\""
+                    << NAME << "\")  failed to find that name in weaponDetailsMap_.");
+
+            return details;
         }
 
         void WeaponDetailLoader::LoadWeaponDeatilsFromGameDataFile()

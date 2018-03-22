@@ -92,19 +92,15 @@ namespace item
 
         const ArmorDetails ArmorDetailLoader::LookupArmorDetails(const std::string & NAME)
         {
-            const ArmorDetailMap_t::const_iterator CITER(armorDetailsMap_.find(NAME));
-            if (CITER == armorDetailsMap_.end())
-            {
-                std::ostringstream ss;
-                ss << "item::armor::ArmorDetailLoader::LookupArmorDetails(\"" << NAME
-                   << "\")  failed to find that name in armorDetailsMap_.";
+            ArmorDetails details;
+            auto const WAS_FOUND{ armorDetailsMap_.Find(NAME, details) };
 
-                throw std::runtime_error(ss.str());
-            }
-            else
-            {
-                return CITER->second;
-            }
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                WAS_FOUND,
+                "item::armor::ArmorDetailLoader::LookupArmorDetails(\""
+                    << NAME << "\")  failed to find that name in armorDetailsMap_.");
+
+            return details;
         }
 
         void ArmorDetailLoader::LoadArmorDeatilsFromGameDataFile()

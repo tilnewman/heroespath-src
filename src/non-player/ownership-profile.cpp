@@ -40,7 +40,6 @@
 #include "boost/lexical_cast.hpp"
 
 #include <exception>
-#include <map>
 #include <sstream>
 #include <string>
 
@@ -99,10 +98,9 @@ namespace non_player
         {
             auto const RANK_CLASS_STR{ creature::rank_class::ToString(RANK_CLASS) };
 
-            using WealthTypeChanceMap_t = std::map<wealth_type::Enum, float>;
-            WealthTypeChanceMap_t wealthChanceMap;
+            misc::VectorMap<wealth_type::Enum, float> wealthChanceMap;
 
-            auto wealthTypeChanceRemaining(wealth_type::Count);
+            auto wealthTypeChanceRemaining{ wealth_type::Count };
 
             for (std::size_t i(0); i < wealth_type::Count; ++i)
             {
@@ -120,7 +118,7 @@ namespace non_player
                     wealthTypeChanceRemaining = NEXT_WEALTH_TYPE;
                 }
 
-                float nextChanceValue(0.0f);
+                auto nextChanceValue{ 0.0f };
                 try
                 {
                     nextChanceValue = boost::lexical_cast<float>(NEXT_VALUE_STR);

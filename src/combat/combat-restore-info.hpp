@@ -27,9 +27,8 @@
 //
 // combat-restore-info.hpp
 //
+#include "misc/vector-map.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-
-#include <map>
 #include <vector>
 
 namespace heroespath
@@ -49,7 +48,7 @@ namespace combat
     using CombatDisplayPtr_t = CombatDisplay *;
     using CombatDisplayPtrC_t = CombatDisplay * const;
 
-    using CreatureBlockingPosMap_t = std::map<creature::CreaturePtr_t, int>;
+    using CreatureBlockingPosMap_t = misc::VectorMap<creature::CreaturePtr_t, int>;
 
     // Everything required to save the state of combat so it can be restored later.
     class RestoreInfo
@@ -81,6 +80,7 @@ namespace combat
         creature::CreaturePVec_t creaturesFlyingPVec_;
         CreatureBlockingPosMap_t creatureBlockingPosMap_;
     };
+
 } // namespace combat
 } // namespace heroespath
 

@@ -28,20 +28,16 @@
 // texture-cache.cpp
 //
 #include "texture-cache.hpp"
-
-#include "sfml-util/loaders.hpp"
-
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
-
 #include "misc/assertlogandthrow.hpp"
+#include "sfml-util/loaders.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <algorithm>
 #include <cctype>
-#include <map>
 #include <utility>
 #include <vector>
 

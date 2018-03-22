@@ -27,7 +27,7 @@
 //
 //  strategy-enums.hpp
 //
-#include <map>
+#include "misc/vector-map.hpp"
 #include <string>
 
 namespace heroespath
@@ -142,12 +142,13 @@ namespace combat
             static Enum FromString(const std::string &);
         };
 
-        using SelectChanceMap_t = std::map<SelectType::Enum, float>;
-        using RefineChanceMap_t = std::map<RefineType::Enum, float>;
-        using AdvanceChanceMap_t = std::map<AdvanceType::Enum, float>;
-        using RetreatChanceMap_t = std::map<RetreatType::Enum, float>;
-        using OutnumberRetreatChanceMap_t = std::map<std::size_t, float>;
-        using FrequencyChanceMap_t = std::map<FrequencyType::Enum, float>;
+        using SelectChanceMap_t = misc::VectorMap<SelectType::Enum, float>;
+        using RefineChanceMap_t = misc::VectorMap<RefineType::Enum, float>;
+        using AdvanceChanceMap_t = misc::VectorMap<AdvanceType::Enum, float>;
+        using RetreatChanceMap_t = misc::VectorMap<RetreatType::Enum, float>;
+        using OutnumberRetreatChanceMap_t = misc::VectorMap<std::size_t, float>;
+        using FrequencyChanceMap_t = misc::VectorMap<FrequencyType::Enum, float>;
+
     } // namespace strategy
 } // namespace combat
 } // namespace heroespath
