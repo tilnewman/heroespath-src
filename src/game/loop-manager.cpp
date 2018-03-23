@@ -66,15 +66,6 @@ namespace game
         , exitSuccess_(true)
     {
         M_HP_LOG_DBG("Singleton Construction: LoopManager");
-
-        if (startupStage_.empty())
-        {
-            TransitionTo(sfml_util::LoopState::Intro);
-        }
-        else
-        {
-            TransitionTo(sfml_util::LoopState::FromString(startupStage_));
-        }
     }
 
     LoopManager::~LoopManager() { M_HP_LOG_DBG("Singleton Destruction: LoopManager"); }
@@ -109,6 +100,22 @@ namespace game
             "LoopManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
+    }
+
+    void LoopManager::Initialize()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
+            "LoopManager::Initialize() found instanceUPtr that was null.");
+
+        if (instanceUPtr_->startupStage_.empty())
+        {
+            instanceUPtr_->TransitionTo(sfml_util::LoopState::Intro);
+        }
+        else
+        {
+            instanceUPtr_->TransitionTo(sfml_util::LoopState::FromString(startupStage_));
+        }
     }
 
     game::Phase::Enum LoopManager::GetPhase() const

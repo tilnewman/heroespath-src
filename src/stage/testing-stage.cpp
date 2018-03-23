@@ -336,6 +336,13 @@ namespace stage
             game::LoopManager::Instance()->TestingStrAppend("System Tests Starting...");
         }
 
+        static auto hasTestingCompleted_InventoryFactory{ false };
+        if (false == hasTestingCompleted_InventoryFactory)
+        {
+            hasTestingCompleted_InventoryFactory = TestInventoryFactory();
+            return;
+        }
+
         // See below (function ReSaveWithBlackBorder) for a comment explaining why
         // this code is commented out.
         // ReSaveWithBlackBorder("media-images-creaturess-dir");
@@ -345,7 +352,6 @@ namespace stage
         if (false == hasTestingCompleted_GameDataFile)
         {
             hasTestingCompleted_GameDataFile = PerformGameDataFileTests();
-            ;
             return;
         }
 
@@ -471,13 +477,6 @@ namespace stage
         if (false == hasTestingCompleted_ItemFactory)
         {
             hasTestingCompleted_ItemFactory = item::ItemFactory::Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_InventoryFactory{ false };
-        if (false == hasTestingCompleted_InventoryFactory)
-        {
-            hasTestingCompleted_InventoryFactory = TestInventoryFactory();
             return;
         }
 

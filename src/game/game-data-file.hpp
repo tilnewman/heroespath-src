@@ -55,6 +55,7 @@ namespace game
         static GameDataFile * Instance();
         static void Acquire();
         static void Release();
+        static void Initialize();
 
         const std::string GetMediaPath(const std::string & KEY) const;
         const std::string CreateMediaPath(const std::string & PATH) const;

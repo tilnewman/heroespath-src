@@ -102,6 +102,11 @@ namespace non_player
             instanceUPtr_.reset();
         }
 
+        void ChanceFactory::Initialize()
+        {
+            // TODO
+        }
+
         const chance::InventoryChances
             ChanceFactory::Make(const non_player::CharacterPtr_t CHARACTER_PTR)
         {

@@ -46,7 +46,6 @@ namespace game
         : ConfigBase("game-data.txt", "=", "#")
     {
         M_HP_LOG_DBG("Singleton Construction: GameDataFile");
-        config::ConfigBase::Load();
     }
 
     GameDataFile * game::GameDataFile::Instance()
@@ -79,6 +78,15 @@ namespace game
             "GameDataFile::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
+    }
+
+    void GameDataFile::Initialize()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
+            "GameDataFile::Initialize() found instanceUPtr that was null.");
+
+        instanceUPtr_->config::ConfigBase::Load();
     }
 
     const std::string GameDataFile::GetMediaPath(const std::string & KEY) const

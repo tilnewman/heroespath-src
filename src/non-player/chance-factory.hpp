@@ -104,6 +104,7 @@ namespace non_player
             static ChanceFactory * Instance();
             static void Acquire();
             static void Release();
+            static void Initialize();
 
             static const chance::InventoryChances
                 Make(const non_player::CharacterPtr_t CHARACTER_PTR);

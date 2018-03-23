@@ -74,6 +74,7 @@ namespace game
         static LoopManager * Instance();
         static void Acquire();
         static void Release();
+        static void Initialize();
 
         static void SetStartupStage(const std::string & STARTUP_STAGE_NAME)
         {

@@ -73,6 +73,7 @@
 #include "item/misc-item-factory.hpp"
 #include "item/weapon-details.hpp"
 #include "item/weapon-factory.hpp"
+#include "non-player/chance-factory.hpp"
 #include "non-player/character-warehouse.hpp"
 #include "non-player/inventory-factory.hpp"
 #include "player/character-warehouse.hpp"
@@ -101,18 +102,25 @@ namespace game
 
             DetectLogAndCheckPlatform();
 
+            srand(static_cast<unsigned>(time(NULL)));
             misc::random::MersenneTwister::Seed();
 
             ParseCommandLineArguments(ARGC, argv);
 
-            // for this point forward the GameDataFile is required, so initialize it here
-            GameDataFile::Acquire();
+            // GameDataFile is used everywhere so Acquire and Initialize it before everything else
+            game::GameDataFile::Acquire();
+            game::GameDataFile::Instance()->Initialize();
 
             // this order is critical
             SetupDisplay(APPLICATION_NAME);
             SetManagerClassResourcePaths();
-            SingletonsAcquireAndInitialize();
+            SingletonsAcquire();
+            SingletonsInitialize();
             WarehousesFill();
+
+            // this causes the initial stage transition/creation so it must occur last
+            LoopManager::Instance()->Initialize();
+
             return true;
         }
         catch (const std::exception & E)
@@ -398,7 +406,7 @@ namespace game
         sfml_util::FontManager::Empty();
     }
 
-    void StartupShutdown::SingletonsAcquireAndInitialize()
+    void StartupShutdown::SingletonsAcquire()
     {
         sfml_util::TextureCache::Acquire();
         creature::EnchantmentWarehouse::Acquire();
@@ -431,8 +439,13 @@ namespace game
         item::ArmorRatings::Acquire();
         item::ItemProfileWarehouse::Acquire();
         item::ItemFactory::Acquire();
-
+        non_player::ownership::ChanceFactory::Acquire();
         config::SettingsFile::Acquire();
+        LoopManager::Acquire();
+    }
+
+    void StartupShutdown::SingletonsInitialize()
+    {
         config::SettingsFile::Instance()->LoadAndRestore();
 
         // NOTE:  LoadSoundSets() must occur after SettingsFile's
@@ -440,12 +453,11 @@ namespace game
         //       here have the correct volume loaded from the settings
         //       file.
         sfml_util::SoundManager::Instance()->LoadSoundSets();
+
         combat::strategy::ChanceFactory::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
         item::ArmorRatings::Instance()->Setup();
-
-        // LoopManager must be last
-        LoopManager::Acquire();
+        non_player::ownership::ChanceFactory::Instance()->Initialize();
     }
 
     void StartupShutdown::SingletonsRelease()
@@ -475,7 +487,6 @@ namespace game
         sfml_util::FontManager::Release();
         popup::PopupManager::Release();
         sfml_util::SoundManager::Release();
-        GameDataFile::Release();
         item::MiscItemFactory::Release();
         item::weapon::WeaponFactory::Release();
         player::CharacterWarehouse::Release();
@@ -483,9 +494,11 @@ namespace game
         item::ItemWarehouse::Release();
         creature::EnchantmentFactory::Release();
         creature::EnchantmentWarehouse::Release();
+        non_player::ownership::ChanceFactory::Release();
         sfml_util::Display::Release();
         misc::Platform::Release();
         sfml_util::TextureCache::Release();
+        GameDataFile::Release();
     }
 } // namespace game
 } // namespace heroespath

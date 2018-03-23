@@ -38,9 +38,7 @@ namespace game
     struct StartupShutdown
     {
         static bool Setup(const std::string & APPLICATION_NAME, int ARGC, char * argv[]);
-
         static int Run();
-
         static int Teardown();
 
     private:
@@ -55,7 +53,8 @@ namespace game
         static void SetManagerClassResourcePaths();
         static void WarehousesFill();
         static void WarehousesEmpty();
-        static void SingletonsAcquireAndInitialize();
+        static void SingletonsAcquire();
+        static void SingletonsInitialize();
         static void SingletonsRelease();
     };
 } // namespace game
