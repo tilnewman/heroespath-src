@@ -303,8 +303,8 @@ namespace map
 
                 try
                 {
-                    // using boost::lexical_cast instead of std::stoi because it tested faster
-                    mapIDs.emplace_back(boost::lexical_cast<int>(nextValStr));
+                    // std::stoi tested faster than boost::lexical_cast 2018-3-19
+                    mapIDs.emplace_back(std::stoi(nextValStr));
                 }
                 catch (const std::exception & E)
                 {
