@@ -396,48 +396,28 @@ namespace map
         offScreenTextureAbove_.clear(sf::Color::Transparent);
 
         sf::RenderStates renderStates{ sf::RenderStates::Default };
-        sf::VertexArray quads(sf::Quads, VERTS_PER_QUAD_);
 
-        // draw all vertex arrays to the off-screen texture
         for (auto const & LAYER : layout_.layer_vec)
         {
-            std::size_t tilesPanelIndex{ 0 };
             auto const NUM_VERTS{ LAYER.vert_array.getVertexCount() };
-            for (std::size_t vertIndex(0); vertIndex < NUM_VERTS;)
+            for (std::size_t vertIndex(0), tilesPanelIndex{ 0 }; vertIndex < NUM_VERTS;
+                 vertIndex += VERTS_PER_QUAD_, ++tilesPanelIndex)
             {
-                // skip drawing empty tiles
-                if (LAYER.tiles_panel_vec[tilesPanelIndex].is_empty)
+                auto const & TILES_PANEL{ LAYER.tiles_panel_vec[tilesPanelIndex] };
+
+                if (TILES_PANEL.is_empty == false)
                 {
-                    ++tilesPanelIndex;
-                    vertIndex += VERTS_PER_QUAD_;
-                }
-                else
-                {
-                    quads[0].position = LAYER.vert_array[vertIndex].position;
-                    quads[0].texCoords = LAYER.vert_array[vertIndex++].texCoords;
-
-                    quads[1].position = LAYER.vert_array[vertIndex].position;
-                    quads[1].texCoords = LAYER.vert_array[vertIndex++].texCoords;
-
-                    quads[2].position = LAYER.vert_array[vertIndex].position;
-                    quads[2].texCoords = LAYER.vert_array[vertIndex++].texCoords;
-
-                    quads[3].position = LAYER.vert_array[vertIndex].position;
-                    quads[3].texCoords = LAYER.vert_array[vertIndex++].texCoords;
-
-                    renderStates.texture
-                        = &layout_
-                               .texture_vec[LAYER.tiles_panel_vec[tilesPanelIndex].texture_index];
-
-                    ++tilesPanelIndex;
+                    renderStates.texture = &layout_.texture_vec[TILES_PANEL.texture_index];
 
                     if (LAYER.type == LayerType::Ground)
                     {
-                        offScreenTextureBelow_.draw(quads, renderStates);
+                        offScreenTextureBelow_.draw(
+                            &LAYER.vert_array[vertIndex], VERTS_PER_QUAD_, sf::Quads, renderStates);
                     }
                     else
                     {
-                        offScreenTextureAbove_.draw(quads, renderStates);
+                        offScreenTextureAbove_.draw(
+                            &LAYER.vert_array[vertIndex], VERTS_PER_QUAD_, sf::Quads, renderStates);
                     }
                 }
             }
