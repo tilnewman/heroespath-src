@@ -92,6 +92,28 @@ namespace non_player
 
             using WeaponSetVec_t = std::vector<WeaponSet>;
 
+            // responsible for wrapping all the armor chance information per role
+            struct RoleArmorChance
+            {
+                RoleArmorChance(
+                    const std::string & NAME_SHORT = "",
+                    const std::string & NAME_COMPLETE = "",
+                    const float CHANCE = 0.0f,
+                    item::armor::base_type::Enum BASE_TYPE = item::armor::base_type::Count)
+                    : name_short(NAME_SHORT)
+                    , name_complete(NAME_COMPLETE)
+                    , chance(CHANCE)
+                    , base_type(BASE_TYPE)
+                {}
+
+                std::string name_short;
+                std::string name_complete;
+                float chance;
+                item::armor::base_type::Enum base_type;
+            };
+
+            using RoleArmorChanceVec_t = std::vector<RoleArmorChance>;
+
         public:
             ChanceFactory(const ChanceFactory &) = delete;
             ChanceFactory(ChanceFactory &&) = delete;
@@ -229,9 +251,7 @@ namespace non_player
 
                 auto const RANK_F{ CHARACTER_PTR->Rank().As<float>() };
 
-                auto const RANK_GRANDMASTER_F{ game::GameDataFile::Instance()->GetCopyFloat(
-                                                   "heroespath-rankclass-Master-rankmax")
-                                               + 1.0f };
+                auto const RANK_GRANDMASTER_F{ masterRankMax_ + 1.0f };
 
                 auto const RANK_RATIO{ RANK_F / RANK_GRANDMASTER_F };
 
@@ -309,6 +329,10 @@ namespace non_player
                 ForceMinMax(val_OutParam, MIN, 0.0f);
             }
 
+            static void CacheRoleArmorChances();
+
+            static void CacheGameDataFileFloats();
+
         private:
             static const float CHANCE_MINIMUM_;
             static const float CHANCE_MAXIMUM_;
@@ -320,7 +344,27 @@ namespace non_player
             static chance::MaterialChanceMap_t materialChanceMapCool_;
             static chance::MaterialChanceMap_t materialChanceMapMetal_;
             static chance::MaterialChanceMap_t materialChanceMapPrecious_;
+
+            static misc::VectorMap<creature::role::Enum, RoleArmorChanceVec_t> roleArmorChanceMap_;
+
+            // cache some floats from the GameDataFile that never change and are often used
+            static float masterRankMax_;
+            static float clothingChanceMin_;
+            static float clothingChanceMax_;
+            static float materialPrimaryChanceCool_;
+            static float materialPrimaryChanceMetal_;
+            static float materialPrimaryChancePrecious_;
+            static float collectorMaterialChanceIncreaseCool_;
+            static float collectorMaterialChanceIncreaseMetal_;
+            static float collectorMaterialChanceIncreasePrecious_;
+            static float collectorMaterialChancePerCool_;
+            static float collectorMaterialChancePerMetal_;
+            static float collectorMaterialChancePerPrecious_;
+            static float materialSecondaryChanceCool_;
+            static float materialSecondaryChanceMetal_;
+            static float materialSecondaryChancePrecious_;
         };
+
     } // namespace ownership
 } // namespace non_player
 } // namespace heroespath
