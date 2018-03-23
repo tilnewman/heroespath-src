@@ -40,6 +40,7 @@
 
 #include <cstddef> //for std::size_t
 #include <memory>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -53,17 +54,22 @@ namespace non_player
         template <typename T>
         void NormalizeChanceMap(misc::VectorMap<T, float> & map)
         {
-            float subtotal(0.0f);
-            for (auto const & NEXT_CHANCE_PAIR : map)
+            if (map.Empty() == false)
             {
-                subtotal += NEXT_CHANCE_PAIR.second;
-            }
+                auto const TOTAL{ std::accumulate(
+                    std::begin(map),
+                    std::end(map),
+                    0.0f,
+                    [](auto const SUB_TOTAL, auto const & PAIR) {
+                        return SUB_TOTAL + PAIR.second;
+                    }) };
 
-            const float NORMALIZE_ADJ((1.0f - subtotal) / static_cast<float>(map.Size()));
+                auto const NORMALIZE_ADJ{ (1.0f - TOTAL) / static_cast<float>(map.Size()) };
 
-            for (auto & nextChancePair : map)
-            {
-                nextChancePair.second += NORMALIZE_ADJ;
+                for (auto & nextChancePair : map)
+                {
+                    nextChancePair.second += NORMALIZE_ADJ;
+                }
             }
         }
 

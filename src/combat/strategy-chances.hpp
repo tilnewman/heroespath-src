@@ -34,6 +34,7 @@
 #include "misc/random.hpp"
 #include "misc/vector-map.hpp"
 
+#include <numeric>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -136,13 +137,15 @@ namespace combat
                 }
                 else
                 {
-                    auto total{ 0.0f };
-                    for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)
-                    {
-                        total += NEXT_ENUMCHANCE_PAIR.second;
-                    }
+                    auto const TOTAL{ std::accumulate(
+                        std::begin(ENUM_CHANCE_MAP),
+                        std::end(ENUM_CHANCE_MAP),
+                        0.0f,
+                        [](auto const SUBTOTAL, auto const & PAIR) {
+                            return SUBTOTAL + PAIR.second;
+                        }) };
 
-                    auto const RAND{ misc::random::Float(0.0f, total) };
+                    auto const RAND{ misc::random::Float(0.0f, TOTAL) };
 
                     auto subtotal{ 0.0f };
                     for (auto const & NEXT_ENUMCHANCE_PAIR : ENUM_CHANCE_MAP)

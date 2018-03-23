@@ -32,11 +32,11 @@
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 
 #include <algorithm>
+#include <numeric>
 
 namespace heroespath
 {
@@ -117,17 +117,17 @@ namespace creature
             (TRAIT_ENUM_VEC.empty() == false),
             "creature::Stats::Roll() called with TRAIT_ENUM_VEC empty.");
 
-        auto randSum{ 0.0f };
-        for (auto const NEXT_TRAIT_ENUM : TRAIT_ENUM_VEC)
-        {
-            auto const CURRENT{ static_cast<float>(CREATURE_PTR->TraitWorking(NEXT_TRAIT_ENUM)) };
+        auto const RAND_SUM{ std::accumulate(
+            std::begin(TRAIT_ENUM_VEC),
+            std::end(TRAIT_ENUM_VEC),
+            0.0f,
+            [&](auto const SUBTOTAL, auto const TRAIT) {
+                auto const CURRENT_VAL{ static_cast<float>(CREATURE_PTR->TraitWorking(TRAIT)) };
+                auto const RATIO{ Ratio(CREATURE_PTR, TRAIT_ENUM_VEC, OPTIONS) };
+                return SUBTOTAL + (CURRENT_VAL * RATIO);
+            }) };
 
-            auto const RATIO{ Ratio(CREATURE_PTR, TRAIT_ENUM_VEC, OPTIONS) };
-
-            randSum += (CURRENT * RATIO);
-        }
-
-        return static_cast<stats::Trait_t>(randSum / static_cast<float>(TRAIT_ENUM_VEC.size()));
+        return static_cast<stats::Trait_t>(RAND_SUM / static_cast<float>(TRAIT_ENUM_VEC.size()));
     }
 
     bool Stats::Test(
