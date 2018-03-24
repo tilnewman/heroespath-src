@@ -26,10 +26,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
 
-#include <boost/test/unit_test.hpp>
-
 #include "misc/not-null.hpp"
 #include "misc/real.hpp"
+#include <boost/optional.hpp>
+#include <boost/test/unit_test.hpp>
 
 using namespace heroespath::misc;
 
@@ -164,6 +164,9 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
 
     //*NOTNULL4 = 69; //should not compile
     // NOTNULL4.Obj() = 69; // should not compile
+
+    boost::optional<heroespath::misc::NotNull<int *>> optional{ boost::none };
+    BOOST_CHECK_THROW(optional.get().Ptr(), std::exception);
 
     // delete notNull2; should not compile
     delete p2;
