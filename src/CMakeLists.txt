@@ -16,9 +16,9 @@ if(MSVC)
 
     file (READ ../build-flags/build-flags-msvc.txt CUSTOM_BUILD_FLAGS)
 
-    set(BOOST_INCLUDEDIR "C:/local/boost_1_61_0")
-    set(BOOST_LIBRARYDIR "C:/local/boost_1_61_0/lib32-msvc-14.0")
-    set(BOOST_ROOT "C:/local/boost_1_61_0/boost")
+    set(BOOST_INCLUDEDIR "C:/local/boost_1_66_0")
+    set(BOOST_LIBRARYDIR "C:/local/boost_1_66_0/lib32-msvc-14.1")
+    set(BOOST_ROOT "C:/local/boost_1_66_0/boost")
 
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/configbase.suppress)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/configbase.suppress DESTINATION ${CMAKE_BINARY_DIR}/configbase)
@@ -126,11 +126,11 @@ SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${CUSTOM_LINK_FLAGS}" )
 
 message(STATUS "Compiler Detected: ${CMAKE_CXX_COMPILER_ID} with compile flags: ${CUSTOM_BUILD_FLAGS} and linker flags: ${CMAKE_EXE_LINKER_FLAGS}")
 
-set(CUSTOM_PROJECT_BOOST_VER "1.58.0")
+set(CUSTOM_PROJECT_BOOST_VER "1.62.0")
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON) #default is ON, but the consequences...
 set(Boost_ADDITIONAL_VERSIONS ${Boost_ADDITIONAL_VERSIONS} ${CUSTOM_PROJECT_BOOST_VER})
-FIND_PACKAGE(Boost ${CUSTOM_PROJECT_BOOST_VER} COMPONENTS system thread filesystem random serialization unit_test_framework)
+FIND_PACKAGE(Boost ${CUSTOM_PROJECT_BOOST_VER} COMPONENTS system thread filesystem serialization unit_test_framework)
 message(STATUS "Using boost version: " ${Boost_VERSION})
 
 include_directories(${include_directories} . ${Boost_INCLUDE_DIRS} ${BOOST_INCLUDEDIR})

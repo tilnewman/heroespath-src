@@ -114,7 +114,11 @@ namespace sfml_util
     const Time Time::CurrentTime()
     {
         auto const TOD{ boost::posix_time::microsec_clock::local_time().time_of_day() };
-        return Time(TOD.hours(), TOD.minutes(), TOD.seconds());
+
+        return Time(
+            static_cast<int>(TOD.hours()),
+            static_cast<int>(TOD.minutes()),
+            static_cast<int>(TOD.seconds()));
     }
 
     // simple wrapper for date and time
