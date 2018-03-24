@@ -33,6 +33,7 @@
 
 #include <exception>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 namespace heroespath
@@ -159,8 +160,7 @@ namespace config
         catch (...)
         {
             std::ostringstream ss;
-            std::cerr << R"(Exception Error "UNKNOWN" during save of file )" << PATH.string()
-                      << "\"";
+            ss << R"(Exception Error "UNKNOWN" during save of file )" << PATH.string() << "\"";
             HandleLoadSaveError(ss.str());
         }
 
