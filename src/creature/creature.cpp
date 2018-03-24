@@ -296,10 +296,8 @@ namespace creature
 
     bool Creature::ConditionAdd(const Conditions::Enum E, const bool ALLOW_CHANGES)
     {
-        const ConditionEnumVecCIter_t COND_GOOD_ITER(
-            std::find(conditionsVec_.begin(), conditionsVec_.end(), Conditions::Good));
-
-        if (COND_GOOD_ITER != conditionsVec_.end())
+        if (std::find(conditionsVec_.begin(), conditionsVec_.end(), Conditions::Good)
+            != conditionsVec_.end())
         {
             // prevent multiple 'Good' conditions
             if (E == Conditions::Good)

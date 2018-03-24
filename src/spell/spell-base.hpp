@@ -128,8 +128,6 @@ namespace spell
 
     using SpellPtr_t = Spell *;
     using SpellPVec_t = std::vector<SpellPtr_t>;
-    using SpellPVecIter_t = SpellPVec_t::iterator;
-    using SpellPVecCIter_t = SpellPVec_t::const_iterator;
 
     using SpellSPtr_t = std::shared_ptr<Spell>;
     using SpellSVec_t = std::vector<SpellSPtr_t>;

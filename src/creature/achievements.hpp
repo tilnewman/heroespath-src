@@ -45,8 +45,6 @@ namespace creature
 
     // handy types
     using AchievementMap_t = misc::VectorMap<AchievementType::Enum, Achievement>;
-    using AchievementMapIter_t = AchievementMap_t::iterator;
-    using AchievementMapCIter_t = AchievementMap_t::const_iterator;
 
     // Responsible for managing all the title/achievement statistics for a creature.
     // Each Achievements object contains a list (map) of all possible Achievements.

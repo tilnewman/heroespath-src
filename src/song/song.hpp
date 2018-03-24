@@ -134,8 +134,6 @@ namespace song
 
     using SongPtr_t = Song *;
     using SongPVec_t = std::vector<SongPtr_t>;
-    using SongPVecIter_t = SongPVec_t::iterator;
-    using SongPVecCIter_t = SongPVec_t::const_iterator;
 
     inline bool operator<(const Song & L, const Song & R)
     {

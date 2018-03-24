@@ -75,8 +75,6 @@ namespace creature
     };
 
     using CondEnumVec_t = std::vector<Conditions::Enum>;
-    using ConditionEnumVecIter_t = CondEnumVec_t::iterator;
-    using ConditionEnumVecCIter_t = CondEnumVec_t::const_iterator;
 
     namespace condition
     {
