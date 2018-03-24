@@ -42,9 +42,6 @@ BOOST_AUTO_TEST_CASE(Real_IsRealZero)
 
     BOOST_CHECK(IsRealZero(0.00001) == false);
     BOOST_CHECK(IsRealZero(-0.00001f) == false);
-
-    BOOST_CHECK(IsRealZero(0.0 + std::numeric_limits<double>::epsilon()) == false);
-    BOOST_CHECK(IsRealZero(0.0 - std::numeric_limits<double>::epsilon()) == false);
 }
 
 BOOST_AUTO_TEST_CASE(Real_IsRealOne)
@@ -57,9 +54,6 @@ BOOST_AUTO_TEST_CASE(Real_IsRealOne)
 
     BOOST_CHECK(IsRealOne(1.00001) == false);
     BOOST_CHECK(IsRealOne(0.9999f) == false);
-
-    BOOST_CHECK(IsRealOne(1.0 + std::numeric_limits<double>::epsilon()) == false);
-    BOOST_CHECK(IsRealOne(1.0 - std::numeric_limits<double>::epsilon()) == false);
 }
 
 BOOST_AUTO_TEST_CASE(Real_IsRealClose)
@@ -74,6 +68,4 @@ BOOST_AUTO_TEST_CASE(Real_IsRealClose)
 
     BOOST_CHECK(IsRealClose(0.0, 1.0) == false);
     BOOST_CHECK(IsRealClose(0.0, 0.00001) == false);
-    BOOST_CHECK(IsRealClose(0.0, std::numeric_limits<double>::epsilon()) == false);
-    BOOST_CHECK(IsRealClose(std::numeric_limits<double>::epsilon(), 0.0) == false);
 }
