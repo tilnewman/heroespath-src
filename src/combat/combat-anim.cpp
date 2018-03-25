@@ -47,7 +47,7 @@
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
 #include "item/item.hpp"
-#include "spell/spell-base.hpp"
+#include "spell/spell.hpp"
 
 #include <string>
 

@@ -84,7 +84,7 @@
 #include "sfml-util/text-animation.hpp"
 #include "sfml-util/tile.hpp"
 #include "song/song.hpp"
-#include "spell/spell-base.hpp"
+#include "spell/spell.hpp"
 #include "stage/achievement-handler.hpp"
 #include "state/game-state-factory.hpp"
 #include "state/game-state.hpp"

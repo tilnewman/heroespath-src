@@ -46,7 +46,7 @@
 #include "player/character.hpp"
 #include "player/party.hpp"
 #include "song/song.hpp"
-#include "spell/spell-base.hpp"
+#include "spell/spell.hpp"
 #include "state/game-state.hpp"
 
 #include "misc/random.hpp"

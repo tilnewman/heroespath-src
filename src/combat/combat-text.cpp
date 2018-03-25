@@ -38,7 +38,7 @@
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
 #include "song/song.hpp"
-#include "spell/spell-base.hpp"
+#include "spell/spell.hpp"
 
 #include "misc/boost-string-includes.hpp"
 #include "misc/vectors.hpp"
@@ -928,6 +928,7 @@ namespace combat
         std::ostringstream ss;
 
         auto const SPELL_PTR{ TURN_ACTION_INFO.Spell() };
+
         ss << "casts the " << SPELL_PTR->Name() << " spell "
            << TargetType::ActionPhrase(SPELL_PTR->Target());
 

@@ -47,7 +47,7 @@
 #include "log/log-macros.hpp"
 #include "player/character.hpp"
 #include "song/song.hpp"
-#include "spell/spells.hpp"
+#include "spell/spell.hpp"
 
 #include <vector>
 

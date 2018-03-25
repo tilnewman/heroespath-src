@@ -39,7 +39,6 @@ namespace spell
     {
         // Note:  Keep in sync with:
         //          spell::Warehouse::Fill()
-        //          spells.hpp
         //          CombatAnimation::SpellAnimStart()
         //          CombatSoundEffects::PlaySpell()
         //          Initial::SetupInventory()

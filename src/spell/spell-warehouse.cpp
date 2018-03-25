@@ -29,12 +29,11 @@
 //
 #include "spell-warehouse.hpp"
 
+#include "combat/effect-type-enum.hpp"
+#include "combat/target-enum.hpp"
 #include "game/loop-manager.hpp"
-#include "spell/spells.hpp"
-
 #include "misc/assertlogandthrow.hpp"
-
-#include <memory>
+#include "spell/spell.hpp"
 
 namespace heroespath
 {
@@ -49,18 +48,130 @@ namespace spell
             (spellsUVec_.empty()), "spell::Warehouse::Setup() was called twice.");
 
         // Note::Keep order in sync with spell::Spells::Enum
-        spellsUVec_.emplace_back(std::make_unique<Sparks>());
-        spellsUVec_.emplace_back(std::make_unique<Bandage>());
-        spellsUVec_.emplace_back(std::make_unique<Sleep>());
-        spellsUVec_.emplace_back(std::make_unique<Awaken>());
-        spellsUVec_.emplace_back(std::make_unique<Trip>());
-        spellsUVec_.emplace_back(std::make_unique<Lift>());
-        spellsUVec_.emplace_back(std::make_unique<Daze>());
-        spellsUVec_.emplace_back(std::make_unique<Panic>());
-        spellsUVec_.emplace_back(std::make_unique<ClearMind>());
-        spellsUVec_.emplace_back(std::make_unique<Poison>());
-        spellsUVec_.emplace_back(std::make_unique<Antidote>());
-        spellsUVec_.emplace_back(std::make_unique<PoisonCloud>());
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::Sparks,
+            combat::EffectType::CreatureHarmDamage,
+            game::Phase::Combat,
+            2_mana,
+            1_rank,
+            combat::TargetType::SingleOpponent,
+            "sprays with sparks",
+            "sprayed with sparks"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::Bandage,
+            combat::EffectType::CreatureHelpHeal,
+            static_cast<game::Phase::Enum>(
+                game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory),
+            1_mana,
+            1_rank,
+            combat::TargetType::SingleCompanion,
+            "bandages",
+            "bandaged"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::Sleep,
+            combat::EffectType::CreatureHarmMisc,
+            game::Phase::Combat,
+            1_mana,
+            1_rank,
+            combat::TargetType::SingleOpponent,
+            "sleeps",
+            "slept"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::Awaken,
+            combat::EffectType::CreatureHelpMisc,
+            static_cast<game::Phase::Enum>(
+                game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory),
+            1_mana,
+            1_rank,
+            combat::TargetType::SingleCompanion,
+            "awakens",
+            "awakened"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::Trip,
+            combat::EffectType::CreatureHarmMisc,
+            game::Phase::Combat,
+            1_mana,
+            1_rank,
+            combat::TargetType::SingleOpponent,
+            "trips",
+            "tripped"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::Lift,
+            combat::EffectType::CreatureHelpMisc,
+            static_cast<game::Phase::Enum>(
+                game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory),
+            1_mana,
+            1_rank,
+            combat::TargetType::SingleCompanion,
+            "lifts",
+            "lifted"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::Daze,
+            combat::EffectType::CreatureHarmMisc,
+            game::Phase::Combat,
+            1_mana,
+            1_rank,
+            combat::TargetType::SingleOpponent,
+            "dazes",
+            "dazed"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::Panic,
+            combat::EffectType::CreatureHarmMisc,
+            game::Phase::Combat,
+            1_mana,
+            1_rank,
+            combat::TargetType::SingleOpponent,
+            "panics",
+            "panicked"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::ClearMind,
+            combat::EffectType::CreatureHelpMisc,
+            static_cast<game::Phase::Enum>(
+                game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory),
+            1_mana,
+            1_rank,
+            combat::TargetType::SingleCompanion,
+            "clears the mind",
+            "clear headed"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::Poison,
+            combat::EffectType::CreatureHarmMisc,
+            game::Phase::Combat,
+            1_mana,
+            1_rank,
+            combat::TargetType::SingleOpponent,
+            "poisons",
+            "poisoned"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::Antidote,
+            combat::EffectType::CreatureHelpMisc,
+            static_cast<game::Phase::Enum>(
+                game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory),
+            1_mana,
+            1_rank,
+            combat::TargetType::SingleCompanion,
+            "cures",
+            "cured"));
+
+        spellsUVec_.emplace_back(std::make_unique<Spell>(
+            Spells::PoisonCloud,
+            combat::EffectType::CreatureHarmMisc,
+            game::Phase::Combat,
+            3_mana,
+            1_rank,
+            combat::TargetType::AllOpponents,
+            "poisons",
+            "poisoned"));
     }
 
     void Warehouse::Empty() { spellsUVec_.clear(); }
@@ -80,6 +191,7 @@ namespace spell
         {
             auto const NEXT_ENUM{ static_cast<Spells::Enum>(spellIndex) };
             auto spellPtr{ Get(NEXT_ENUM) };
+
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (spellPtr != nullptr),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)

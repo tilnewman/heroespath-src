@@ -22,10 +22,10 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SPELL_Spell_HPP_INCLUDED
-#define HEROESPATH_SPELL_Spell_HPP_INCLUDED
+#ifndef HEROESPATH_SPELL_SPELL_HPP_INCLUDED
+#define HEROESPATH_SPELL_SPELL_HPP_INCLUDED
 //
-// spell-base.hpp
+// spell.hpp
 //
 #include "combat/effect-type-enum.hpp"
 #include "combat/name-position-enum.hpp"
@@ -59,7 +59,7 @@ namespace item
 namespace spell
 {
 
-    // common base code to all spell classes
+    // Responsible for wrapping all information about a spell in the game.
     class Spell
     {
     public:
@@ -72,8 +72,6 @@ namespace spell
             const combat::TargetType::Enum TARGET_TYPE,
             const std::string & VERB_THIRD_PERSON,
             const std::string & VERB_PAST_TENSE);
-
-        virtual ~Spell();
 
         const std::string Name() const { return Spells::Name(which_); }
 
@@ -94,19 +92,22 @@ namespace spell
         Rank_t Rank() const { return rank_; }
         combat::TargetType::Enum Target() const { return targetType_; }
 
+        const combat::ContentAndNamePos
+            ActionPhrase(creature::CreaturePtr_t creatureCastUponPtr) const;
+
         // Allows the spell to change the target creature.
         // Don't adjust creatureCastUponPtr's health, that will be done in Fight.cpp.
         // Don't check if creatureCastUponPtr is already dead, that will be done in fight.cpp
-        virtual bool EffectCreature(
+        bool EffectCreature(
             creature::CreaturePtr_t castingCreaturePtr,
             creature::CreaturePtr_t creatureCastUponPtr,
             Health_t & healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
-            combat::ContentAndNamePos & actionPhraseCNP) const = 0;
+            combat::ContentAndNamePos & actionPhraseCNP) const;
 
         // Allows the spell to change the target item.
-        virtual const std::string EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const;
+        const std::string EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const;
 
         friend bool operator<(const Spell & L, const Spell & R);
         friend bool operator==(const Spell & L, const Spell & R);
@@ -128,9 +129,6 @@ namespace spell
 
     using SpellPtr_t = Spell *;
     using SpellPVec_t = std::vector<SpellPtr_t>;
-
-    using SpellSPtr_t = std::shared_ptr<Spell>;
-    using SpellSVec_t = std::vector<SpellSPtr_t>;
 
     inline bool operator<(const Spell & L, const Spell & R)
     {
@@ -177,7 +175,8 @@ namespace spell
     }
 
     inline bool operator!=(const Spell & L, const Spell & R) { return !(L == R); }
+
 } // namespace spell
 } // namespace heroespath
 
-#endif // HEROESPATH_SPELL_Spell_HPP_INCLUDED
+#endif // HEROESPATH_SPELL_SPELL_HPP_INCLUDED

@@ -31,7 +31,7 @@
 
 #include "creature/creature.hpp"
 #include "game/loop-manager.hpp"
-#include "spell/spell-base.hpp"
+#include "spell/spell.hpp"
 
 #include "popup/popup-manager.hpp"
 

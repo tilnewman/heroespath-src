@@ -37,7 +37,7 @@
 #include "game/game-data-file.hpp"
 #include "game/phase-enum.hpp"
 #include "log/log-macros.hpp"
-#include "spell/spell-base.hpp"
+#include "spell/spell.hpp"
 
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"

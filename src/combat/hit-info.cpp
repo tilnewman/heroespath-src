@@ -33,7 +33,7 @@
 #include "creature/condition.hpp"
 #include "item/item.hpp"
 #include "song/song.hpp"
-#include "spell/spell-base.hpp"
+#include "spell/spell.hpp"
 
 #include "misc/vectors.hpp"
 

@@ -40,8 +40,8 @@
 #include "log/log-macros.hpp"
 #include "song/song-warehouse.hpp"
 #include "song/song.hpp"
-#include "spell/spell-base.hpp"
 #include "spell/spell-warehouse.hpp"
+#include "spell/spell.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"

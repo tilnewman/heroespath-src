@@ -35,7 +35,7 @@
 #include "creature/condition.hpp"
 #include "creature/title.hpp"
 #include "item/inventory.hpp"
-#include "spell/spell-base.hpp"
+#include "spell/spell.hpp"
 #include "stats/stat-set.hpp"
 
 #include "misc/vectors.hpp"

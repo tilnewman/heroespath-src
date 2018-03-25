@@ -35,7 +35,7 @@
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
 #include "song/song.hpp"
-#include "spell/spell-base.hpp"
+#include "spell/spell.hpp"
 
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
