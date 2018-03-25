@@ -30,9 +30,8 @@
 #include "song-warehouse.hpp"
 
 #include "game/loop-manager.hpp"
-#include "song/songs.hpp"
-
 #include "misc/assertlogandthrow.hpp"
+#include "song/song.hpp"
 
 #include <memory>
 
@@ -49,12 +48,71 @@ namespace song
             (songsUVec_.empty()), "song::Warehouse::Setup() was called twice.");
 
         // Note::Keep order in sync with song::Songs::Enum
-        songsUVec_.emplace_back(std::make_unique<RallyDrum>());
-        songsUVec_.emplace_back(std::make_unique<SpiritResonance>());
-        songsUVec_.emplace_back(std::make_unique<RousingRhythm>());
-        songsUVec_.emplace_back(std::make_unique<TripBeat>());
-        songsUVec_.emplace_back(std::make_unique<PanicStrings>());
-        songsUVec_.emplace_back(std::make_unique<Lullaby>());
+        songsUVec_.emplace_back(std::make_unique<Song>(
+            Songs::RallyDrum,
+            SongType::Drum,
+            combat::EffectType::CreatureHelpMisc,
+            static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory),
+            1_mana,
+            1_rank,
+            combat::TargetType::AllCompanions,
+            "emboldens",
+            "emboldened"));
+
+        songsUVec_.emplace_back(std::make_unique<Song>(
+            Songs::SpiritResonance,
+            SongType::Guitar,
+            combat::EffectType::CreatureHelpMisc,
+            static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory),
+            5_mana,
+            1_rank,
+            combat::TargetType::AllCompanions,
+            "recharges",
+            "recharged"));
+
+        songsUVec_.emplace_back(std::make_unique<Song>(
+            Songs::RousingRhythm,
+            SongType::Drum,
+            combat::EffectType::CreatureHelpMisc,
+            static_cast<game::Phase::Enum>(game::Phase::Combat | game::Phase::Inventory),
+            3_mana,
+            1_rank,
+            combat::TargetType::AllCompanions,
+            "rouses",
+            "roused"));
+
+        songsUVec_.emplace_back(std::make_unique<Song>(
+            Songs::TripBeat,
+            SongType::Drum,
+            combat::EffectType::CreatureHarmMisc,
+            game::Phase::Combat,
+            1_mana,
+            1_rank,
+            combat::TargetType::AllOpponents,
+            "trips",
+            "tripped"));
+
+        songsUVec_.emplace_back(std::make_unique<Song>(
+            Songs::PanicStrings,
+            SongType::Guitar,
+            combat::EffectType::CreatureHarmMisc,
+            game::Phase::Combat,
+            2_mana,
+            1_rank,
+            combat::TargetType::AllOpponents,
+            "panics",
+            "panicked"));
+
+        songsUVec_.emplace_back(std::make_unique<Song>(
+            Songs::Lullaby,
+            SongType::Guitar,
+            combat::EffectType::CreatureHarmMisc,
+            game::Phase::Combat,
+            2_mana,
+            1_rank,
+            combat::TargetType::AllOpponents,
+            "sleeps",
+            "slept"));
     }
 
     void Warehouse::Empty() { songsUVec_.clear(); }

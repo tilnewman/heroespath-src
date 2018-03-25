@@ -55,6 +55,7 @@ namespace song
     private:
         static SongUVec_t songsUVec_;
     };
+
 } // namespace song
 } // namespace heroespath
 

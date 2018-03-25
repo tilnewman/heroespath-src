@@ -60,7 +60,7 @@ namespace item
 namespace song
 {
 
-    // common base code to all song classes
+    // Responsible for storing all the information about a Song in the game.
     class Song
     {
     public:
@@ -74,8 +74,6 @@ namespace song
             const combat::TargetType::Enum TARGET_TYPE,
             const std::string & VERB_THIRD_PERSON,
             const std::string & VERB_PAST_TENSE);
-
-        virtual ~Song();
 
         const std::string Name() const { return Songs::Name(which_); }
 
@@ -98,16 +96,16 @@ namespace song
         combat::TargetType::Enum Target() const { return targetType_; }
 
         // Allows the spell to change the target creature.
-        virtual bool EffectCreature(
+        bool EffectCreature(
             creature::CreaturePtr_t creaturePlayingPtr,
             creature::CreaturePtr_t creatureListeningPtr,
             Health_t & healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
-            combat::ContentAndNamePos & actionPhraseCNP) const = 0;
+            combat::ContentAndNamePos & actionPhraseCNP) const;
 
         // Allows the spell to change the target item.
-        virtual bool EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const;
+        bool EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const;
 
         const std::string ActionPhrasePreamble() const;
         const std::string TypeToVerb() const;
@@ -184,6 +182,7 @@ namespace song
     }
 
     inline bool operator!=(const Song & L, const Song & R) { return !(L == R); }
+
 } // namespace song
 } // namespace heroespath
 
