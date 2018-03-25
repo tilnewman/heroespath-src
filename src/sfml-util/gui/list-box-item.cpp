@@ -53,7 +53,7 @@ namespace sfml_util
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
-            , TITLE_CPTRC(nullptr)
+            , TITLE_PTR_OPT(boost::none)
             , SPELL_CPTRC(nullptr)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
@@ -69,7 +69,7 @@ namespace sfml_util
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
-            , TITLE_CPTRC(nullptr)
+            , TITLE_PTR_OPT(boost::none)
             , SPELL_CPTRC(nullptr)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
@@ -88,7 +88,7 @@ namespace sfml_util
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
-            , TITLE_CPTRC(nullptr)
+            , TITLE_PTR_OPT(boost::none)
             , SPELL_CPTRC(nullptr)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
@@ -105,7 +105,7 @@ namespace sfml_util
             , GAMESTATE_CPTR(GAMESTATE_PTR)
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
-            , TITLE_CPTRC(nullptr)
+            , TITLE_PTR_OPT(boost::none)
             , SPELL_CPTRC(nullptr)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
@@ -122,7 +122,7 @@ namespace sfml_util
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(CONDITION_CPTRC_PARAM)
-            , TITLE_CPTRC(nullptr)
+            , TITLE_PTR_OPT(boost::none)
             , SPELL_CPTRC(nullptr)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
@@ -138,7 +138,7 @@ namespace sfml_util
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(ITEM_PTR)
             , COND_CPTRC(nullptr)
-            , TITLE_CPTRC(nullptr)
+            , TITLE_PTR_OPT(boost::none)
             , SPELL_CPTRC(nullptr)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
@@ -147,14 +147,14 @@ namespace sfml_util
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const creature::TitlePtrC_t TITLE_CPTRC_PARAM,
+            const creature::TitlePtr_t & TITLE_PTR_PARAM,
             const bool IS_VALID)
             : TextRegion(std::string(NAME).append("_ListBoxItemTitle"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
-            , TITLE_CPTRC(TITLE_CPTRC_PARAM)
+            , TITLE_PTR_OPT(TITLE_PTR_PARAM)
             , SPELL_CPTRC(nullptr)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
@@ -170,7 +170,7 @@ namespace sfml_util
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
-            , TITLE_CPTRC(nullptr)
+            , TITLE_PTR_OPT(boost::none)
             , SPELL_CPTRC(SPELL_CPTRC_PARAM)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
@@ -186,7 +186,7 @@ namespace sfml_util
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
-            , TITLE_CPTRC(nullptr)
+            , TITLE_PTR_OPT(boost::none)
             , SPELL_CPTRC(nullptr)
             , SONG_CPTRC(SONG_CPTRC_PARAM)
             , is_valid(IS_VALID)
@@ -199,7 +199,7 @@ namespace sfml_util
                        L.GAMESTATE_CPTR,
                        L.ITEM_CPTR,
                        L.COND_CPTRC,
-                       L.TITLE_CPTRC,
+                       L.TITLE_PTR_OPT,
                        L.SPELL_CPTRC,
                        L.SONG_CPTRC,
                        L.is_valid)
@@ -208,7 +208,7 @@ namespace sfml_util
                        R.GAMESTATE_CPTR,
                        R.ITEM_CPTR,
                        R.COND_CPTRC,
-                       R.TITLE_CPTRC,
+                       R.TITLE_PTR_OPT,
                        R.SPELL_CPTRC,
                        R.SONG_CPTRC,
                        R.is_valid);
@@ -221,7 +221,7 @@ namespace sfml_util
                        L.GAMESTATE_CPTR,
                        L.ITEM_CPTR,
                        L.COND_CPTRC,
-                       L.TITLE_CPTRC,
+                       L.TITLE_PTR_OPT,
                        L.SPELL_CPTRC,
                        L.SONG_CPTRC,
                        L.is_valid)
@@ -230,7 +230,7 @@ namespace sfml_util
                        R.GAMESTATE_CPTR,
                        R.ITEM_CPTR,
                        R.COND_CPTRC,
-                       R.TITLE_CPTRC,
+                       R.TITLE_PTR_OPT,
                        R.SPELL_CPTRC,
                        R.SONG_CPTRC,
                        R.is_valid);

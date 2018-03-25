@@ -78,13 +78,13 @@ namespace misc
             return ptr_;
         }
 
-        auto & Obj() { return *Ptr(); }
-        auto & operator-> () { return *Ptr(); }
-        auto & operator*() { return *Ptr(); }
+        decltype(auto) Obj() { return *Ptr(); }
+        decltype(auto) operator-> () { return Ptr(); }
+        decltype(auto) operator*() { return *Ptr(); }
 
-        const auto & Obj() const { return *Ptr(); }
-        const auto & operator-> () const { return *Ptr(); }
-        const auto & operator*() const { return *Ptr(); }
+        decltype(auto) Obj() const { return *Ptr(); }
+        decltype(auto) operator-> () const { return Ptr(); }
+        decltype(auto) operator*() const { return *Ptr(); }
 
         operator T() const = delete;
 
@@ -115,6 +115,12 @@ namespace misc
     auto operator!=(const NotNull<T> & L, const NotNull<U> & R) -> decltype(L.Ptr() != R.Ptr())
     {
         return (L.Ptr() != R.Ptr());
+    }
+
+    template <typename T, typename U>
+    auto operator<(const NotNull<T> & L, const NotNull<U> & R) -> decltype(L.Ptr() < R.Ptr())
+    {
+        return (L.Ptr() < R.Ptr());
     }
 
     template <typename T>

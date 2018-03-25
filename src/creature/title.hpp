@@ -31,6 +31,8 @@
 #include "creature/achievement-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/title-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "stats/stat-set.hpp"
 
@@ -119,9 +121,8 @@ namespace creature
         Health_t healthBonus_;
     };
 
-    using TitlePtr_t = Title *;
-    using TitlePtrC_t = Title * const;
-    using TitleCPtrC_t = const Title * const;
+    using TitlePtr_t = misc::NotNull<Title *>;
+    using TitlePtrOpt_t = boost::optional<TitlePtr_t>;
     using TitlePVec_t = std::vector<TitlePtr_t>;
 
     bool operator<(const Title & L, const Title & R);
@@ -135,15 +136,15 @@ namespace creature
     {
         TitleTransition(
             const CreaturePtr_t CREATURE_PTR,
-            const TitlePtr_t FROM_TITLE_PTR,
+            const TitlePtrOpt_t FROM_TITLE_PTR_OPT,
             const TitlePtr_t TO_TITLE_PTR)
             : creaturePtr(CREATURE_PTR)
-            , fromTitlePtr(FROM_TITLE_PTR)
+            , fromTitlePtrOpt(FROM_TITLE_PTR_OPT)
             , toTitlePtr(TO_TITLE_PTR)
         {}
 
         CreaturePtr_t creaturePtr;
-        TitlePtr_t fromTitlePtr;
+        TitlePtrOpt_t fromTitlePtrOpt;
         TitlePtr_t toTitlePtr;
 
         friend bool operator==(const TitleTransition &, const TitleTransition &);
@@ -151,11 +152,12 @@ namespace creature
 
     inline bool operator==(const TitleTransition & L, const TitleTransition & R)
     {
-        return std::tie(L.creaturePtr, L.fromTitlePtr, L.toTitlePtr)
-            == std::tie(R.creaturePtr, R.fromTitlePtr, R.toTitlePtr);
+        return std::tie(L.creaturePtr, L.fromTitlePtrOpt, L.toTitlePtr)
+            == std::tie(R.creaturePtr, R.fromTitlePtrOpt, R.toTitlePtr);
     }
 
     using TitleTransitionVec_t = std::vector<TitleTransition>;
+
 } // namespace creature
 } // namespace heroespath
 

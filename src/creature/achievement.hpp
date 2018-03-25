@@ -71,9 +71,9 @@ namespace creature
 
         // These functions return pointers instead of enums because they
         // need a way for them to return nothing.
-        TitlePtr_t GetCurrentTitle() const;
-        TitlePtr_t GetNextTitle() const;
-        TitlePtr_t Increment(const creature::role::Enum ROLE_ENUM);
+        TitlePtrOpt_t GetCurrentTitle() const;
+        TitlePtrOpt_t GetNextTitle() const;
+        TitlePtrOpt_t Increment(const creature::role::Enum ROLE_ENUM);
 
         const std::string ToString() const;
 

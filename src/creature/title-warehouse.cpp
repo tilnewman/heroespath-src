@@ -1771,14 +1771,7 @@ namespace creature
                 "creature::Titles::Warehouse::Get(\""
                     << Titles::ToString(E) << "\") called before vec was populated by Setup().");
 
-            const TitlePtr_t TITLE_PTR(titleUVec_[static_cast<std::size_t>(E)].get());
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (TITLE_PTR != nullptr),
-                "creature::Titles::Warehouse::Get(\"" << Titles::ToString(E)
-                                                      << "\") found a nullptr in the vector.");
-
-            return TITLE_PTR;
+            return TitlePtr_t{ titleUVec_[static_cast<std::size_t>(E)].get() };
         }
 
         bool Warehouse::Test()
@@ -1796,11 +1789,6 @@ namespace creature
             {
                 auto const NEXT_ENUM(static_cast<Titles::Enum>(titleIndex));
                 auto TITLE_PTR{ Get(NEXT_ENUM) };
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (TITLE_PTR != nullptr),
-                    "creature::Titles::Warehouse::Test(\""
-                        << Titles::ToString(NEXT_ENUM)
-                        << "\") resulted in a nullptr being returned.");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (TITLE_PTR->Desc().empty() == false),

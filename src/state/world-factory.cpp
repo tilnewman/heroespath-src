@@ -58,6 +58,11 @@ namespace state
                 0,
                 false));
         }
+
+        if (level.Which() == map::Level::Thornberry)
+        {
+            level.IsDoorLocked(map::Level::Thornberry_GuardPostWest, true);
+        }
     }
 
 } // namespace state

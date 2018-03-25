@@ -1224,7 +1224,7 @@ namespace stage
             case ViewType::Count:
             default:
             {
-                for (auto const NEXT_TITLE_PTR : creaturePtr_->TitlesPVec())
+                for (auto const & NEXT_TITLE_PTR : creaturePtr_->TitlesPVec())
                 {
                     listBoxItemTextInfo_.text = NEXT_TITLE_PTR->Name();
 
@@ -3028,10 +3028,10 @@ namespace stage
                 ss << LISTBOX_ITEM_SPTR->COND_CPTRC->Name() << "\n\n"
                    << LISTBOX_ITEM_SPTR->COND_CPTRC->LongDesc();
             }
-            else if (LISTBOX_ITEM_SPTR->TITLE_CPTRC != nullptr)
+            else if (LISTBOX_ITEM_SPTR->TITLE_PTR_OPT)
             {
-                ss << LISTBOX_ITEM_SPTR->TITLE_CPTRC->Name() << "\n\n"
-                   << LISTBOX_ITEM_SPTR->TITLE_CPTRC->LongDesc();
+                ss << LISTBOX_ITEM_SPTR->TITLE_PTR_OPT->Obj().Name() << "\n\n"
+                   << LISTBOX_ITEM_SPTR->TITLE_PTR_OPT->Obj().LongDesc();
             }
 
             if (ss.str().empty() == false)
@@ -3800,16 +3800,18 @@ namespace stage
         const creature::AchievementType::Enum WHICH_ACHV) const
     {
         auto const & ACHIEVEMENTS{ CREATURE_PTR->GetAchievements() };
-        auto const TITLE_PTR{ ACHIEVEMENTS.GetNextTitle(WHICH_ACHV) };
+        auto const TITLE_PTR_OPT{ ACHIEVEMENTS.GetNextTitle(WHICH_ACHV) };
 
-        if (TITLE_PTR != nullptr)
+        if (TITLE_PTR_OPT)
         {
-            auto const ACHV_COUNT_REQUIRED{ TITLE_PTR->AchievementCount() };
+            auto const ACHV_COUNT_REQUIRED{ TITLE_PTR_OPT->Obj().AchievementCount() };
             auto const ACHV_COUNT_CURRENT{ ACHIEVEMENTS.Get(WHICH_ACHV).Count() };
             auto const NEEDED_COUNT{ ACHV_COUNT_REQUIRED - ACHV_COUNT_CURRENT };
 
             std::ostringstream ss;
-            ss << ", need  " << NEEDED_COUNT << " more to achieve \"" << TITLE_PTR->Name() << "\"";
+            ss << ", need  " << NEEDED_COUNT << " more to achieve \"" << TITLE_PTR_OPT->Obj().Name()
+               << "\"";
+
             return ss.str();
         }
         else

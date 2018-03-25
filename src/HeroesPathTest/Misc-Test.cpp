@@ -26,12 +26,28 @@
 ///////////////////////////////////////////////////////////////////////////////
 #define BOOST_TEST_MODULE "HeroesPathTestModule_Misc"
 
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/real.hpp"
-#include <boost/optional.hpp>
 #include <boost/test/unit_test.hpp>
+#include <iostream>
 
 using namespace heroespath::misc;
+
+// a simple class used to test working with non-POD
+class Thing
+{
+public:
+    Thing(const int NUMBER = 0)
+        : m_number(NUMBER)
+    {}
+
+    int get() const { return m_number; }
+    void set(const int NUM) { m_number = NUM; }
+
+private:
+    int m_number;
+};
 
 BOOST_AUTO_TEST_CASE(Real_IsRealZero)
 {
@@ -90,6 +106,9 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     BOOST_CHECK(notNull1A == &one);
     BOOST_CHECK(&one == notNull1A);
 
+    const int TEMP_ONE{ *notNull1A };
+    BOOST_CHECK(TEMP_ONE == 1);
+
     BOOST_CHECK((notNull1A.Ptr() != &one) == false);
     BOOST_CHECK((&one != notNull1A.Ptr()) == false);
     BOOST_CHECK((notNull1A != &one) == false);
@@ -124,7 +143,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     BOOST_CHECK(notNull2 == p2);
     BOOST_CHECK(p2 == notNull2);
 
-    // heroespath::misc::NotNull<int> notNullX{ *p2 }; // should not compile
+    // heroespath::misc::NotNull<int *> notNullX{ *p2 }; // should not compile
 
     BOOST_CHECK(notNull1A != notNull2);
     BOOST_CHECK(notNull1A.Ptr() != notNull2.Ptr());
@@ -162,14 +181,35 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     BOOST_CHECK(NOTNULL4.Ptr() != notNull3.Ptr());
     BOOST_CHECK(NOTNULL4.Obj() != notNull3.Obj());
 
-    //*NOTNULL4 = 69; //should not compile
+    // NOTNULL4 = 69; // should not compile
     // NOTNULL4.Obj() = 69; // should not compile
-
-    boost::optional<heroespath::misc::NotNull<int *>> optional{ boost::none };
-    BOOST_CHECK_THROW(optional.get().Ptr(), std::exception);
 
     // delete notNull2; should not compile
     delete p2;
     delete notNull3.Ptr();
     delete NOTNULL4.Ptr();
+
+    boost::optional<heroespath::misc::NotNull<Thing *>> notNullThing{ new Thing(69) };
+    BOOST_CHECK(notNullThing->Obj().get() == 69);
+    BOOST_CHECK((*notNullThing).Obj().get() == 69);
+    delete notNullThing->Ptr();
+}
+
+BOOST_AUTO_TEST_CASE(BoostOptionalTests)
+{
+    // In this codebase <boost/optional.hpp> is not included directly, instead a wrapper include is
+    // used "misc/boost-optional-that-throws.hpp". This forces any attempted access of an
+    // uninitialized boost::optional to throw a std::runtime_error. So these tests make sure that
+    // boost::optional behaves in the way required by the codebase.
+
+    boost::optional<Thing> optional{ boost::none };
+
+    BOOST_CHECK(optional.get_ptr() == nullptr);
+    BOOST_CHECK(optional.get_value_or(Thing(69)).get() == 69);
+    BOOST_CHECK(optional.is_initialized() == false);
+
+    BOOST_CHECK_THROW(optional->get(), std::exception);
+    BOOST_CHECK_THROW((*optional).get(), std::exception);
+    BOOST_CHECK_THROW(optional.value().get(), std::exception);
+    BOOST_CHECK_THROW(optional.get().get(), std::exception);
 }

@@ -22,43 +22,30 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED
-#define HEROESPATH_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED
+#ifndef HEROESPATH_MISC_BOOST_OPTIONAL_THAT_THROWS_HPP_INCLUDED
+#define HEROESPATH_MISC_BOOST_OPTIONAL_THAT_THROWS_HPP_INCLUDED
 //
-// title-warehouse.hpp
+// boost-optional-that-throws.hpp
 //
-#include "creature/role-enum.hpp"
-#include "creature/title-enum.hpp"
-#include "creature/title.hpp"
+#include <boost/exception/to_string.hpp>
+#include <string>
 
-#include <memory>
-#include <vector>
-
-namespace heroespath
+namespace boost
 {
-namespace creature
+[[noreturn]] inline void
+    assertion_failed(char const * expr, char const * function, char const * file, long line)
 {
+    throw std::runtime_error(
+        std::string() + "Boost Assertion Failed:  "
+        + ((std::string("this->is_initialized()") == expr)
+               ? "(a boost::optional was accessed without being initialized)  "
+               : "")
+        + "expr=" + expr + " at " + function + ":" + file + ":" + boost::to_string(line));
+}
+}
 
-    using TitleUPtr_t = std::unique_ptr<Title>;
-    using TitleUVec_t = std::vector<TitleUPtr_t>;
+#define BOOST_ENABLE_ASSERT_HANDLER
+#include <boost/optional.hpp>
+#undef BOOST_ENABLE_ASSERT_HANDLER
 
-    namespace title
-    {
-
-        class Warehouse
-        {
-        public:
-            static void Fill();
-            static void Empty();
-            static bool Test();
-            static TitlePtr_t Get(const Titles::Enum);
-
-        private:
-            static TitleUVec_t titleUVec_;
-        };
-
-    } // namespace title
-} // namespace creature
-} // namespace heroespath
-
-#endif // HEROESPATH_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_MISC_BOOST_OPTIONAL_THAT_THROWS_HPP_INCLUDED

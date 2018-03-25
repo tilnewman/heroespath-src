@@ -29,6 +29,8 @@
 //  A hack'ish extension of the TextRegion class that holds
 //  everything that the ListBox class might ever need to list...
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/text-region.hpp"
 
 #include <memory>
@@ -50,7 +52,8 @@ namespace song
 namespace creature
 {
     class Title;
-    using TitlePtrC_t = Title * const;
+    using TitlePtr_t = misc::NotNull<Title *>;
+    using TitlePtrOpt_t = boost::optional<TitlePtr_t>;
 
     class Condition;
     using ConditionPtr_t = Condition *;
@@ -129,7 +132,7 @@ namespace sfml_util
             ListBoxItem(
                 const std::string & NAME,
                 const sfml_util::gui::TextInfo & TEXT_INFO,
-                const creature::TitlePtrC_t TITLE_CPTRC_PARAM,
+                const creature::TitlePtr_t & TITLE_PTR_PARAM,
                 const bool IS_VALID = true);
 
             // used by the inventory stage to list spells
@@ -150,7 +153,7 @@ namespace sfml_util
             const state::GameStatePtr_t GAMESTATE_CPTR;
             const item::ItemPtr_t ITEM_CPTR;
             const creature::ConditionPtrC_t COND_CPTRC;
-            const creature::TitlePtrC_t TITLE_CPTRC;
+            const creature::TitlePtrOpt_t TITLE_PTR_OPT;
             const spell::SpellPtrC_t SPELL_CPTRC;
             const song::SongPtrC_t SONG_CPTRC;
             bool is_valid;
@@ -167,6 +170,7 @@ namespace sfml_util
         inline bool operator!=(const ListBoxItem & L, const ListBoxItem & R) { return !(L == R); }
 
         bool operator<(const ListBoxItem & L, const ListBoxItem & R);
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

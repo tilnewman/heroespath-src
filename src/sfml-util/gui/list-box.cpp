@@ -672,7 +672,7 @@ namespace sfml_util
             ImagePair_t imagePair;
 
             auto const DOES_IMAGE_EXIST{ (
-                (listBoxItemSPtr->ITEM_CPTR != nullptr) || (listBoxItemSPtr->TITLE_CPTRC != nullptr)
+                (listBoxItemSPtr->ITEM_CPTR != nullptr) || (listBoxItemSPtr->TITLE_PTR_OPT)
                 || (listBoxItemSPtr->CHARACTER_CPTR != nullptr)
                 || (listBoxItemSPtr->SPELL_CPTRC != nullptr)
                 || (listBoxItemSPtr->COND_CPTRC != nullptr)
@@ -691,10 +691,10 @@ namespace sfml_util
                         sfml_util::gui::ItemImageManager::Instance()->Load(
                             *imagePair.first, listBoxItemSPtr->ITEM_CPTR);
                     }
-                    else if (listBoxItemSPtr->TITLE_CPTRC != nullptr)
+                    else if (listBoxItemSPtr->TITLE_PTR_OPT)
                     {
                         sfml_util::gui::TitleImageManager::Instance()->Get(
-                            *imagePair.first, listBoxItemSPtr->TITLE_CPTRC->Which());
+                            *imagePair.first, listBoxItemSPtr->TITLE_PTR_OPT->Obj().Which());
                     }
                     else if (listBoxItemSPtr->CHARACTER_CPTR != nullptr)
                     {

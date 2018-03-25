@@ -49,55 +49,61 @@ namespace creature
         , titleCountMap_(TITLE_COUNT_MAP)
     {}
 
-    TitlePtr_t Achievement::GetCurrentTitle() const
+    // uh-oh, this function makes no sense to me, and it is clear it needs to have common code with
+    // GetNextTitle() refactored out... 2018-3-23
+    TitlePtrOpt_t Achievement::GetCurrentTitle() const
     {
-        TitlePtr_t titlePtr{ nullptr };
+        TitlePtrOpt_t titlePtrOpt{ boost::none };
 
         if (titleCountMap_.Empty() == false)
         {
-            titlePtr = title::Warehouse::Get(titleCountMap_.begin()->second);
+            titlePtrOpt = title::Warehouse::Get(titleCountMap_.begin()->second);
+
             for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
             {
                 auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_COUNTTITLE_PAIR.second) };
 
                 if ((NEXT_TITLE_PTR->AchievementCount() < count_)
-                    && (NEXT_TITLE_PTR->AchievementCount() >= titlePtr->AchievementCount()))
+                    && (NEXT_TITLE_PTR->AchievementCount()
+                        >= titlePtrOpt->Obj().AchievementCount()))
                 {
-                    titlePtr = NEXT_TITLE_PTR;
+                    titlePtrOpt = NEXT_TITLE_PTR;
                 }
             }
         }
 
-        if ((nullptr != titlePtr) && (titlePtr->AchievementCount() > count_))
+        if (titlePtrOpt && (titlePtrOpt->Obj().AchievementCount() > count_))
         {
-            return nullptr;
+            return boost::none;
         }
         else
         {
-            return titlePtr;
+            return titlePtrOpt;
         }
     }
 
-    TitlePtr_t Achievement::GetNextTitle() const
+    TitlePtrOpt_t Achievement::GetNextTitle() const
     {
-        TitlePtr_t titlePtr{ nullptr };
+        TitlePtrOpt_t titlePtrOpt{ boost::none };
 
         if (titleCountMap_.Empty() == false)
         {
-            titlePtr = title::Warehouse::Get(titleCountMap_.begin()->second);
+            titlePtrOpt = title::Warehouse::Get(titleCountMap_.begin()->second);
+
             for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
             {
                 auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_COUNTTITLE_PAIR.second) };
 
                 if ((NEXT_TITLE_PTR->AchievementCount() > count_)
-                    && (NEXT_TITLE_PTR->AchievementCount() <= titlePtr->AchievementCount()))
+                    && (NEXT_TITLE_PTR->AchievementCount()
+                        <= titlePtrOpt->Obj().AchievementCount()))
                 {
-                    titlePtr = NEXT_TITLE_PTR;
+                    titlePtrOpt = NEXT_TITLE_PTR;
                 }
             }
         }
 
-        return titlePtr;
+        return titlePtrOpt;
     }
 
     const std::string Achievement::ToString() const
@@ -106,7 +112,7 @@ namespace creature
         ss << Name() << "s current count=" << count_
            << ", and has the following achievable titles: ";
 
-        const std::string SEP_STR(", ");
+        auto const SEP_STR{ ", " };
         for (auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {
             ss << Titles::Name(NEXT_TITLE_COUNT_PAIR.second) << " at count "
@@ -121,14 +127,14 @@ namespace creature
         return title::Warehouse::Get(titleCountMap_.begin()->second)->IsRoleInList(E);
     }
 
-    TitlePtr_t Achievement::Increment(const creature::role::Enum ROLE_ENUM)
+    TitlePtrOpt_t Achievement::Increment(const creature::role::Enum ROLE_ENUM)
     {
         // Keep incrementing past the count of the final Title so the player can track
         // progress even if there are no more Titles to earn.  Don't stop until the
         // count reaches a large recognizeable limit...something with lots of 9's...
-        if (999'999'999_count >= count_)
+        if (999'999_count <= count_)
         {
-            return nullptr;
+            return boost::none;
         }
 
         ++count_;
@@ -144,7 +150,8 @@ namespace creature
             }
         }
 
-        return nullptr;
+        return boost::none;
     }
+
 } // namespace creature
 } // namespace heroespath

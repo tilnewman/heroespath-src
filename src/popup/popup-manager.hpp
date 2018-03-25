@@ -28,15 +28,15 @@
 // popup-manager.hpp
 //  Code to load and store popup window textures.
 //
-#include "sfml-util/justified-enum.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
-
+#include "combat/combat-over-enum.hpp"
+#include "creature/title.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "popup/popup-enums.hpp"
 #include "popup/popup-info.hpp"
-
-#include "combat/combat-over-enum.hpp"
+#include "sfml-util/justified-enum.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sound-effects-enum.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -61,9 +61,6 @@ namespace creature
 {
     class Creature;
     using CreaturePtr = Creature *;
-
-    class Title;
-    using TitlePtr_t = Title *;
 } // namespace creature
 
 namespace popup
@@ -182,13 +179,13 @@ namespace popup
             const std::size_t INITIAL_SELECTION = 0) const;
 
         // use this function to make image fade/transition popup windows
-        const PopupInfo CreateImageFadePopupInfo(
+        const PopupInfo CreateTitleFadePopupInfo(
             const std::string & POPUP_NAME,
             const creature::CreaturePtr_t CREATURE_PTR,
-            const creature::TitlePtr_t FROM_TITLE_PTR,
+            const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
             const creature::TitlePtr_t TO_TITLE_PTR,
-            const sf::Texture * const FROM_IMAGE_PTR,
-            const sf::Texture * const TO_IMAGE_PTR) const;
+            const boost::optional<sf::Texture> & FROM_TEXTURE_OPT,
+            const sf::Texture & TO_TEXTURE) const;
 
         // use this function to make the spellbook popup window
         const PopupInfo CreateSpellbookPopupInfo(

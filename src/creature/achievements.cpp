@@ -122,7 +122,7 @@ namespace creature
         }
     }
 
-    TitlePtr_t Achievements::Increment(const AchievementType::Enum E)
+    TitlePtrOpt_t Achievements::Increment(const AchievementType::Enum E)
     {
         auto const FOUND_ITER{ map_.Find(E) };
         if (FOUND_ITER == map_.end())
@@ -140,12 +140,12 @@ namespace creature
         }
     }
 
-    TitlePtr_t Achievements::GetCurrentTitle(const AchievementType::Enum E) const
+    TitlePtrOpt_t Achievements::GetCurrentTitle(const AchievementType::Enum E) const
     {
         auto const FOUND_ITER{ map_.Find(E) };
         if (FOUND_ITER == map_.end())
         {
-            return nullptr;
+            return boost::none;
         }
         else
         {
@@ -153,12 +153,12 @@ namespace creature
         }
     }
 
-    TitlePtr_t Achievements::GetNextTitle(const AchievementType::Enum E) const
+    TitlePtrOpt_t Achievements::GetNextTitle(const AchievementType::Enum E) const
     {
         auto const FOUND_ITER{ map_.Find(E) };
         if (FOUND_ITER == map_.end())
         {
-            return nullptr;
+            return boost::none;
         }
         else
         {
@@ -182,5 +182,6 @@ namespace creature
 
         map_[ACHV_TYPE] = Achievement(ACHV_TYPE, titleCountMap);
     }
+
 } // namespace creature
 } // namespace heroespath

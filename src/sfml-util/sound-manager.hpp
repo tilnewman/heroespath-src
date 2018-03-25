@@ -68,6 +68,7 @@ namespace sfml_util
         static SoundManager * Instance();
         static void Acquire();
         static void Release();
+        static void Initialize();
 
         static void SetSoundsDirectory(
             const std::string & SOUND_DIR_PATH, const std::string & MUSIC_DIR_PATH);

@@ -64,7 +64,8 @@ namespace interact
             popup::IPopupHandler_t * const, const std::string & NAME_OF_WHAT_OPENED) const;
 
         // returns true if a new title is achieved and the popup is displayed
-        bool HandleTitleAchievement(popup::IPopupHandler_t * const);
+        bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
+            popup::IPopupHandler_t * const);
 
         creature::CreaturePtr_t Character() { return characterPtr_; }
 

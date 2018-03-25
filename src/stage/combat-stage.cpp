@@ -29,27 +29,6 @@
 //
 #include "combat-stage.hpp"
 
-#include "sfml-util/animation-base.hpp"
-#include "sfml-util/cloud-animation.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/gui/box.hpp"
-#include "sfml-util/gui/list-box-item.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/song-animation.hpp"
-#include "sfml-util/sparkle-animation.hpp"
-#include "sfml-util/sparks-animation.hpp"
-#include "sfml-util/text-animation.hpp"
-#include "sfml-util/tile.hpp"
-
-#include "popup/popup-manager.hpp"
-#include "popup/popup-stage-combat-over.hpp"
-#include "popup/popup-stage-image-fade.hpp"
-#include "popup/popup-stage-musicsheet.hpp"
-#include "popup/popup-stage-spellbook.hpp"
-#include "popup/popup-stage-system-error.hpp"
-
 #include "combat/combat-anim.hpp"
 #include "combat/combat-display.hpp"
 #include "combat/combat-node.hpp"
@@ -75,6 +54,9 @@
 #include "item/item.hpp"
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
+#include "misc/random.hpp"
+#include "misc/real.hpp"
+#include "misc/vectors.hpp"
 #include "non-player/character.hpp"
 #include "non-player/party.hpp"
 #include "player/character-warehouse.hpp"
@@ -82,14 +64,30 @@
 #include "player/initial.hpp"
 #include "player/party-factory.hpp"
 #include "player/party.hpp"
+#include "popup/popup-manager.hpp"
+#include "popup/popup-stage-combat-over.hpp"
+#include "popup/popup-stage-image-fade.hpp"
+#include "popup/popup-stage-musicsheet.hpp"
+#include "popup/popup-stage-spellbook.hpp"
+#include "popup/popup-stage-system-error.hpp"
+#include "sfml-util/animation-base.hpp"
+#include "sfml-util/cloud-animation.hpp"
+#include "sfml-util/display.hpp"
+#include "sfml-util/gui/box.hpp"
+#include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/song-animation.hpp"
+#include "sfml-util/sparkle-animation.hpp"
+#include "sfml-util/sparks-animation.hpp"
+#include "sfml-util/text-animation.hpp"
+#include "sfml-util/tile.hpp"
 #include "song/song.hpp"
 #include "spell/spell-base.hpp"
+#include "stage/achievement-handler.hpp"
 #include "state/game-state-factory.hpp"
 #include "state/game-state.hpp"
-
-#include "misc/random.hpp"
-#include "misc/real.hpp"
-#include "misc/vectors.hpp"
 
 #include <exception>
 #include <sstream>
@@ -4340,13 +4338,14 @@ namespace stage
     {
         for (int i(0); i < COUNT; ++i)
         {
-            auto const FROM_TITLE_PTR{ CREATURE_PTR->GetAchievements().GetCurrentTitle(ACH_ENUM) };
-            auto const TO_TITLE_PTR{ CREATURE_PTR->GetAchievements().Increment(ACH_ENUM) };
+            creature::TitlePtrOpt_t fromTitlePtrOpt{ boost::none };
+            creature::TitlePtrOpt_t toTitlePtrOpt{ boost::none };
 
-            if ((TO_TITLE_PTR != nullptr) && (FROM_TITLE_PTR != TO_TITLE_PTR))
+            if (stage::IncrementAchievementAndReturnTrueIfProcessingRequired(
+                    CREATURE_PTR, ACH_ENUM, fromTitlePtrOpt, toTitlePtrOpt))
             {
                 creatureTitlesVec_.emplace_back(
-                    creature::TitleTransition(CREATURE_PTR, FROM_TITLE_PTR, TO_TITLE_PTR));
+                    creature::TitleTransition(CREATURE_PTR, fromTitlePtrOpt, toTitlePtrOpt.get()));
             }
         }
     }
@@ -4369,33 +4368,15 @@ namespace stage
                 std::remove(creatureTitlesVec_.begin(), creatureTitlesVec_.end(), TITLE_TRANSITION),
                 creatureTitlesVec_.end());
 
-            // here is where the Title actually changes the creature
-            TITLE_TRANSITION.toTitlePtr->Change(TITLE_TRANSITION.creaturePtr);
+            stage::ApplyTitleChangesToCreature(
+                TITLE_TRANSITION.creaturePtr, TITLE_TRANSITION.toTitlePtr);
 
-            sf::Texture fromTexture;
-            if (TITLE_TRANSITION.fromTitlePtr != nullptr)
-            {
-                sfml_util::gui::TitleImageManager::Instance()->Get(
-                    fromTexture, TITLE_TRANSITION.fromTitlePtr->Which());
-            }
-
-            sf::Texture toTexture;
-            if (TITLE_TRANSITION.toTitlePtr != nullptr)
-            {
-                sfml_util::gui::TitleImageManager::Instance()->Get(
-                    toTexture, TITLE_TRANSITION.toTitlePtr->Which());
-            }
-
-            auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageFadePopupInfo(
+            stage::TitleTransitionPopup(
+                this,
                 POPUP_NAME_ACHIEVEMENT_,
                 TITLE_TRANSITION.creaturePtr,
-                TITLE_TRANSITION.fromTitlePtr,
-                TITLE_TRANSITION.toTitlePtr,
-                &fromTexture,
-                &toTexture) };
-
-            game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageFade>(
-                this, POPUP_INFO);
+                TITLE_TRANSITION.fromTitlePtrOpt,
+                TITLE_TRANSITION.toTitlePtr);
 
             // return false because a popup will follow a popup
             return false;
@@ -4406,5 +4387,6 @@ namespace stage
     {
         fightResult_ = combat::FightClub::Roar(turnCreaturePtr_, combatDisplayStagePtr_);
     }
+
 } // namespace stage
 } // namespace heroespath

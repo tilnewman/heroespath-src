@@ -289,20 +289,15 @@ namespace popup
         return popupInfo;
     }
 
-    const PopupInfo PopupManager::CreateImageFadePopupInfo(
+    const PopupInfo PopupManager::CreateTitleFadePopupInfo(
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CREATURE_PTR,
-        const creature::TitlePtr_t FROM_TITLE_PTR,
+        const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
         const creature::TitlePtr_t TO_TITLE_PTR,
-        const sf::Texture * const FROM_IMAGE_PTR,
-        const sf::Texture * const TO_IMAGE_PTR) const
+        const boost::optional<sf::Texture> & FROM_TEXTURE_OPT,
+        const sf::Texture & TO_TEXTURE) const
     {
         using namespace misc;
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (TO_IMAGE_PTR != nullptr),
-            "popup::PopupManager::CreateImageFadePopupInfo(\"" << POPUP_NAME
-                                                               << "\")  TO_IMAGE_PTR was null.");
 
         std::ostringstream titleSS;
         titleSS << "New Title!";
@@ -312,15 +307,16 @@ namespace popup
                << creature::AchievementType::Name(TO_TITLE_PTR->GetAchievementType()) << " "
                << CREATURE_PTR->Name();
 
-        if (FROM_TITLE_PTR == nullptr)
+        if (FROM_TITLE_PTR_OPT)
         {
-            descSS << " has earned the title of " << creature::Titles::Name(TO_TITLE_PTR->Which())
-                   << ".";
+            descSS << " has transitioned from a "
+                   << creature::Titles::Name(FROM_TITLE_PTR_OPT->Obj().Which()) << " to a "
+                   << creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
         }
         else
         {
-            descSS << " has transitioned from a " << creature::Titles::Name(FROM_TITLE_PTR->Which())
-                   << " to a " << creature::Titles::Name(TO_TITLE_PTR->Which()) << ".";
+            descSS << " has earned the title of " << creature::Titles::Name(TO_TITLE_PTR->Which())
+                   << ".";
         }
 
         descSS << "  This title comes with the following stats bonus: "
@@ -347,12 +343,12 @@ namespace popup
         }
 
         sfml_util::TextureVec_t textureVec;
-        if ((FROM_TITLE_PTR != nullptr) && (FROM_IMAGE_PTR != nullptr))
+        if (FROM_TITLE_PTR_OPT && FROM_TEXTURE_OPT)
         {
-            textureVec.emplace_back(*FROM_IMAGE_PTR);
+            textureVec.emplace_back(*FROM_TEXTURE_OPT);
         }
 
-        textureVec.emplace_back(*TO_IMAGE_PTR);
+        textureVec.emplace_back(TO_TEXTURE);
 
         return PopupInfo(
             POPUP_NAME,
@@ -373,9 +369,7 @@ namespace popup
             0,
             false,
             titleSS.str(),
-            descSS.str(),
-            FROM_TITLE_PTR,
-            TO_TITLE_PTR);
+            descSS.str());
     }
 
     const PopupInfo PopupManager::CreateSpellbookPopupInfo(
@@ -521,8 +515,6 @@ namespace popup
             false,
             "",
             "",
-            nullptr,
-            nullptr,
             KEEP_ALIVE_SECONDS);
     }
 

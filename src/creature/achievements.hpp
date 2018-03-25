@@ -59,9 +59,9 @@ namespace creature
 
         // these functions will throw on invalid enum or if a valid enum was not found in the map
         const Achievement Get(const AchievementType::Enum E) const;
-        TitlePtr_t Increment(const AchievementType::Enum E);
-        TitlePtr_t GetCurrentTitle(const AchievementType::Enum E) const;
-        TitlePtr_t GetNextTitle(const AchievementType::Enum E) const;
+        TitlePtrOpt_t Increment(const AchievementType::Enum E);
+        TitlePtrOpt_t GetCurrentTitle(const AchievementType::Enum E) const;
+        TitlePtrOpt_t GetNextTitle(const AchievementType::Enum E) const;
 
         friend bool operator<(const Achievements & L, const Achievements & R);
         friend bool operator==(const Achievements & L, const Achievements & R);

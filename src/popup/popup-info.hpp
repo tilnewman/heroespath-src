@@ -29,14 +29,13 @@
 //  A class that encapsulates everything about a popup
 //  window except for drawing details such as position etc.
 //
+#include "combat/combat-over-enum.hpp"
+#include "creature/title.hpp"
+#include "popup/popup-enums.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
-
-#include "popup/popup-enums.hpp"
-
-#include "combat/combat-over-enum.hpp"
 
 #include <string>
 #include <vector>
@@ -47,9 +46,6 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = Creature *;
-
-    class Title;
-    using TitlePtr_t = Title *;
 } // namespace creature
 
 namespace popup
@@ -77,8 +73,6 @@ namespace popup
             const bool ARE_IMAGES_CREATURES = false,
             const std::string & TITLE_TEXT = "",
             const std::string & DESC_TEXT = "",
-            const creature::TitlePtr_t FROM_TITLE_PTR = nullptr,
-            const creature::TitlePtr_t TO_TITLE_PTR = nullptr,
             const float KEEP_ALIVE_SECONDS = -1.0f); // any negative works
 
         // use this constructor for boxed popups with no background image
@@ -143,8 +137,6 @@ namespace popup
         bool AreImagesCreatures() const { return areImgsCreatures_; }
         const std::vector<std::string> & TextVec() const { return textVec_; }
         combat::CombatEnd::Enum HowCombatEnded() const { return howCombatEnded_; }
-        creature::TitlePtr_t TitleFromPtr() const { return titleFromPtr_; }
-        creature::TitlePtr_t TitleToPtr() const { return titleToPtr_; }
         const std::string TitleText() const { return titleText_; }
         const std::string DescText() const { return descText_; }
         bool WillIncludeItems() const { return willIncludeItems_; }
@@ -197,13 +189,12 @@ namespace popup
         bool areImgsCreatures_;
         std::vector<std::string> textVec_;
         combat::CombatEnd::Enum howCombatEnded_;
-        creature::TitlePtr_t titleFromPtr_;
-        creature::TitlePtr_t titleToPtr_;
         std::string titleText_;
         std::string descText_;
         bool willIncludeItems_;
         float keepAliveSeconds_;
     };
+
 } // namespace popup
 } // namespace heroespath
 

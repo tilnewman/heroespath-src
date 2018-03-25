@@ -94,8 +94,10 @@ namespace stage
             // at this point the attempting popup has finished playing the sfx and closed
             if (lockPicking_.Attempt())
             {
-                if (lockPicking_.HandleTitleAchievement(this))
+                if (lockPicking_.HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(this))
                 {
+                    // return the opposite because we need to return false if actually opening a
+                    // popup window
                     return false;
                 }
                 else
@@ -106,6 +108,10 @@ namespace stage
                         return true;
                     }
                 }
+            }
+            else
+            {
+                interactionManager_.Unlock();
             }
         }
         else if (RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)

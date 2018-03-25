@@ -65,8 +65,6 @@ namespace popup
         const bool ARE_IMAGES_CREATURES,
         const std::string & TITLE_TEXT,
         const std::string & DESC_TEXT,
-        const creature::TitlePtr_t FROM_TITLE_PTR,
-        const creature::TitlePtr_t TO_TITLE_PTR,
         const float KEEP_ALIVE_SECONDS)
         : name_(NAME)
         , textInfo_(TEXT_INFO)
@@ -88,8 +86,6 @@ namespace popup
         , areImgsCreatures_(ARE_IMAGES_CREATURES)
         , textVec_(TEXT_VEC)
         , howCombatEnded_(combat::CombatEnd::Count)
-        , titleFromPtr_(FROM_TITLE_PTR)
-        , titleToPtr_(TO_TITLE_PTR)
         , titleText_(TITLE_TEXT)
         , descText_(DESC_TEXT)
         , willIncludeItems_(false)
@@ -158,8 +154,6 @@ namespace popup
         , areImgsCreatures_(false)
         , textVec_()
         , howCombatEnded_(combat::CombatEnd::Count)
-        , titleFromPtr_(nullptr)
-        , titleToPtr_(nullptr)
         , titleText_("")
         , descText_("")
         , willIncludeItems_(false)
@@ -194,8 +188,6 @@ namespace popup
         , areImgsCreatures_(ARE_IMAGES_CREATURES)
         , textVec_()
         , howCombatEnded_(combat::CombatEnd::Count)
-        , titleFromPtr_(nullptr)
-        , titleToPtr_(nullptr)
         , titleText_("")
         , descText_("")
         , willIncludeItems_(false)
@@ -234,8 +226,6 @@ namespace popup
         , areImgsCreatures_(false)
         , textVec_()
         , howCombatEnded_(combat::CombatEnd::Count)
-        , titleFromPtr_(nullptr)
-        , titleToPtr_(nullptr)
         , titleText_("")
         , descText_("")
         , willIncludeItems_(false)
@@ -267,8 +257,6 @@ namespace popup
         , areImgsCreatures_(false)
         , textVec_()
         , howCombatEnded_(HOW_COMBAT_ENDED)
-        , titleFromPtr_(nullptr)
-        , titleToPtr_(nullptr)
         , titleText_("")
         , descText_("")
         , willIncludeItems_(false)
@@ -302,8 +290,6 @@ namespace popup
         , areImgsCreatures_(PI.areImgsCreatures_)
         , textVec_(PI.textVec_)
         , howCombatEnded_(PI.howCombatEnded_)
-        , titleFromPtr_(PI.titleFromPtr_)
-        , titleToPtr_(PI.titleToPtr_)
         , titleText_(PI.titleText_)
         , descText_(PI.descText_)
         , willIncludeItems_(PI.willIncludeItems_)
@@ -338,8 +324,6 @@ namespace popup
             initialSelection_ = PI.initialSelection_;
             textVec_ = PI.textVec_;
             howCombatEnded_ = PI.howCombatEnded_;
-            titleFromPtr_ = PI.titleFromPtr_;
-            titleToPtr_ = PI.titleToPtr_;
             titleText_ = PI.titleText_;
             descText_ = PI.descText_;
             willIncludeItems_ = PI.willIncludeItems_;
@@ -484,5 +468,6 @@ namespace popup
                 == numberInvalidVec_.end());
         }
     }
+
 } // namespace popup
 } // namespace heroespath

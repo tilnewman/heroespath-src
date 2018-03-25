@@ -1090,7 +1090,7 @@ namespace stage
         if (willProcessLockpickTitle_)
         {
             willProcessLockpickTitle_ = false;
-            return lockPicking_.HandleTitleAchievement(this);
+            return lockPicking_.HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(this);
         }
         else
         {

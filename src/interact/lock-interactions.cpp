@@ -33,6 +33,7 @@
 #include "creature/stats.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/vectors.hpp"
 #include "player/character.hpp"
 #include "player/party.hpp"
@@ -40,6 +41,7 @@
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-image-fade.hpp"
 #include "sfml-util/gui/title-image-manager.hpp"
+#include "stage/achievement-handler.hpp"
 #include "state/game-state.hpp"
 
 #include <algorithm>
@@ -191,50 +193,13 @@ namespace interact
             popupHandlerPtr, POPUP_INFO);
     }
 
-    bool LockPicking::HandleTitleAchievement(popup::IPopupHandler_t * const popupHandlerPtr)
+    bool LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(popup::IPopupHandler_t * const popupHandlerPtr)
     {
-        if (nullptr != characterPtr_)
-        {
-            auto const FROM_TITLE_PTR{ characterPtr_->GetAchievements().GetCurrentTitle(
-                creature::AchievementType::LocksPicked) };
-
-            auto const TO_TITLE_PTR{ characterPtr_->GetAchievements().Increment(
-                creature::AchievementType::LocksPicked) };
-
-            if ((TO_TITLE_PTR != nullptr) && (FROM_TITLE_PTR != TO_TITLE_PTR))
-            {
-                TO_TITLE_PTR->Change(characterPtr_);
-
-                sf::Texture fromTexture;
-                if (FROM_TITLE_PTR != nullptr)
-                {
-                    sfml_util::gui::TitleImageManager::Instance()->Get(
-                        fromTexture, FROM_TITLE_PTR->Which());
-                }
-
-                sf::Texture toTexture;
-                if (TO_TITLE_PTR != nullptr)
-                {
-                    sfml_util::gui::TitleImageManager::Instance()->Get(
-                        toTexture, TO_TITLE_PTR->Which());
-                }
-
-                auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateImageFadePopupInfo(
-                    POPUP_NAME_TITLE_ARCHIEVED_,
-                    characterPtr_,
-                    FROM_TITLE_PTR,
-                    TO_TITLE_PTR,
-                    &fromTexture,
-                    &toTexture) };
-
-                game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageFade>(
-                    popupHandlerPtr, POPUP_INFO);
-
-                return true;
-            }
-        }
-
-        return false;
+        return stage::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
+            popupHandlerPtr,
+            POPUP_NAME_TITLE_ARCHIEVED_,
+            characterPtr_,
+            creature::AchievementType::LocksPicked);
     }
 
     const misc::StrVec_t LockPicking::MakeInvalidLockPickCharacterMessages() const

@@ -57,14 +57,14 @@ namespace interact
     bool LockedDoor::OnInteraction(
         stage::InteractStage * const interactStagePtr, const Button & BUTTON)
     {
-        if (BUTTON.Which() == Buttons::Unlock)
+        if (BUTTON.Which() == Buttons::Ignore)
         {
             interactStagePtr->InteractionManager().RemoveCurrent();
             return true;
         }
-        else if (BUTTON.Which() == Buttons::Ignore)
+        else if (BUTTON.Which() == Buttons::Unlock)
         {
-            Lock();
+            Lock(); // this refers to locking the interaction NOT the door
             interactStagePtr->LockPick().PopupCharacterSelection(interactStagePtr);
             return true;
         }

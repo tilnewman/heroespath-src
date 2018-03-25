@@ -446,14 +446,11 @@ namespace game
 
     void StartupShutdown::SingletonsInitialize()
     {
+        // SettingsFile::LoadAndRestore() must happen before initialization so that subsystems can
+        // use the settings saved from the last run of the game.
         config::SettingsFile::Instance()->LoadAndRestore();
 
-        // NOTE:  LoadSoundSets() must occur after SettingsFile's
-        //       LoadAndRestore(), so that the sound effects created
-        //       here have the correct volume loaded from the settings
-        //       file.
-        sfml_util::SoundManager::Instance()->LoadSoundSets();
-
+        sfml_util::SoundManager::Instance()->Initialize();
         combat::strategy::ChanceFactory::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
         item::ArmorRatings::Instance()->Setup();

@@ -27,19 +27,6 @@
 //
 // combat-stage.hpp
 //
-#include "sfml-util/color-shaker.hpp"
-#include "sfml-util/gui/four-state-button.hpp"
-#include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/gui/sliderbar.hpp"
-#include "sfml-util/i-callback-handler.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
-#include "sfml-util/sliders.hpp"
-#include "sfml-util/sound-manager.hpp"
-#include "sfml-util/stage.hpp"
-
-#include "popup/i-popup-callback.hpp"
-
 #include "combat/combat-restore-info.hpp"
 #include "combat/combat-sound-effects.hpp"
 #include "combat/fight-results.hpp"
@@ -47,9 +34,19 @@
 #include "combat/turn-action-info.hpp"
 #include "creature/achievement-enum.hpp"
 #include "creature/title.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-
 #include "misc/handy-types.hpp"
+#include "popup/i-popup-callback.hpp"
+#include "sfml-util/color-shaker.hpp"
+#include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/gui/sliderbar.hpp"
+#include "sfml-util/horiz-symbol.hpp"
+#include "sfml-util/i-callback-handler.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-system.hpp"
+#include "sfml-util/sliders.hpp"
+#include "sfml-util/sound-manager.hpp"
+#include "sfml-util/stage.hpp"
 
 #include <memory>
 #include <set>
@@ -84,9 +81,6 @@ namespace creature
     using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-
-    class Title;
-    using TitlePtr_t = Title *;
 } // namespace creature
 
 namespace combat

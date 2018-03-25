@@ -65,7 +65,6 @@ namespace sfml_util
         , sfxWrapperVec_()
     {
         M_HP_LOG_DBG("Singleton Construction: SoundManager");
-        CacheMusicInfo_CombatIntro();
         sfxWrapperVec_.resize(static_cast<std::size_t>(sound_effect::Count));
         sfxSetVec_.resize(static_cast<std::size_t>(sound_effect_set::Count));
     }
@@ -100,7 +99,18 @@ namespace sfml_util
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_.get() != nullptr),
             "sfml_util::SoundManager::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
+    }
+
+    void SoundManager::Initialize()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr),
+            "sfml_util::SoundManager::Initialize() found instanceUPtr that was null.");
+
+        instanceUPtr_->CacheMusicInfo_CombatIntro();
+        instanceUPtr_->LoadSoundSets();
     }
 
     void SoundManager::SetSoundsDirectory(
