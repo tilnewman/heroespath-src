@@ -31,7 +31,6 @@
 
 #include "creature/condition.hpp"
 #include "game/loop-manager.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 
 namespace heroespath
@@ -178,44 +177,40 @@ namespace creature
             if (condIndex < creature::Conditions::Count)
             {
                 auto const NEXT_ENUM{ static_cast<creature::Conditions::Enum>(condIndex) };
-                auto cndPtr{ Get(NEXT_ENUM) };
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (cndPtr != nullptr),
-                    "creature::condition::Warehouse::Test(\""
-                        << Conditions::ToString(NEXT_ENUM)
-                        << "\") resulted in a nullptr being returned.");
+                auto const CONDITION_PTR{ Get(NEXT_ENUM) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (cndPtr->Desc().empty() == false),
+                    (CONDITION_PTR->Desc().empty() == false),
                     "creature::condition::Warehouse::Test(\""
                         << Conditions::ToString(NEXT_ENUM) << "\") resulted in an empty Desc().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (cndPtr->LongDesc().empty() == false),
+                    (CONDITION_PTR->LongDesc().empty() == false),
                     "creature::condition::Warehouse::Test(\""
                         << Conditions::ToString(NEXT_ENUM)
                         << "\") resulted in an empty LongDesc().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (cndPtr->ToString().empty() == false),
+                    (CONDITION_PTR->ToString().empty() == false),
                     "creature::condition::Warehouse::Test(\""
                         << Conditions::ToString(NEXT_ENUM)
                         << "\") resulted in an empty ImageFilename().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (cndPtr->Name().empty() == false),
+                    (CONDITION_PTR->Name().empty() == false),
                     "creature::condition::Warehouse::Test(\""
                         << Conditions::ToString(NEXT_ENUM) << "\") resulted in an empty Name().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (cndPtr->Name() == Conditions::Name(NEXT_ENUM)),
+                    (CONDITION_PTR->Name() == Conditions::Name(NEXT_ENUM)),
                     "creature::condition::Warehouse::Test(ptr=\""
-                        << cndPtr->Name() << "\", enum=\"" << Conditions::ToString(NEXT_ENUM)
+                        << CONDITION_PTR->Name() << "\", enum=\"" << Conditions::ToString(NEXT_ENUM)
                         << "\") Condition is out of order.");
 
                 ++condIndex;
+
                 game::LoopManager::Instance()->TestingStrIncrement(
-                    "Condition Test \"" + cndPtr->Name() + "\"");
+                    "Condition Test \"" + CONDITION_PTR->Name() + "\"");
 
                 return false;
             }
@@ -226,21 +221,22 @@ namespace creature
             return true;
         }
 
-        ConditionPtr_t Warehouse::Get(const Conditions::Enum E)
+        const ConditionPtr_t Warehouse::Get(const Conditions::Enum E)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (conditionsUVec_.empty() == false),
                 "creature::condition::Warehouse::Get(" << Conditions::ToString(E)
-                                                       << ") was called before Setup().");
+                                                       << ") was called before Fill().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (static_cast<std::size_t>(E) < conditionsUVec_.size()),
                 "creature::condition::Warehouse::Get("
                     << Conditions::ToString(E)
-                    << ") found insuff sized conditionsUVec_, probably from a bug in Setup().");
+                    << ") found insuff sized conditionsUVec_, probably from a bug in Fill().");
 
             return conditionsUVec_.at(static_cast<std::size_t>(E)).get();
         }
+
     } // namespace condition
 } // namespace creature
 } // namespace heroespath

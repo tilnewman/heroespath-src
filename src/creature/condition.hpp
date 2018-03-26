@@ -31,6 +31,8 @@
 //
 #include "combat/hit-info.hpp"
 #include "creature/condition-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "stats/stat-set.hpp"
 #include "stats/traits-set.hpp"
 
@@ -90,7 +92,8 @@ namespace creature
         stats::TraitSet traitSet_;
     };
 
-    using ConditionPtr_t = Condition *;
+    using ConditionPtr_t = misc::NotNull<Condition *>;
+    using ConditionPtrOpt_t = boost::optional<ConditionPtr_t>;
     using ConditionPVec_t = std::vector<ConditionPtr_t>;
 
     bool operator<(const Condition & L, const Condition & R);

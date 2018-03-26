@@ -87,7 +87,7 @@ namespace creature
 
     // forward declarations
     class Condition;
-    using ConditionPtr_t = Condition *;
+    using ConditionPtr_t = misc::NotNull<Condition *>;
     using ConditionPVec_t = std::vector<ConditionPtr_t>;
 
     class Enchantment;

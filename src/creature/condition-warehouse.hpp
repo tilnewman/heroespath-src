@@ -28,6 +28,8 @@
 // condition-warehouse.hpp
 //
 #include "creature/condition-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 
 #include <memory>
 #include <vector>
@@ -37,7 +39,7 @@ namespace heroespath
 namespace creature
 {
     class Condition;
-    using ConditionPtr_t = Condition *;
+    using ConditionPtr_t = misc::NotNull<Condition *>;
     using ConditionUPtr_t = std::unique_ptr<Condition>;
     using ConditionUVec_t = std::vector<ConditionUPtr_t>;
 
@@ -49,7 +51,7 @@ namespace creature
             static void Fill();
             static void Empty();
             static bool Test();
-            static ConditionPtr_t Get(const Conditions::Enum);
+            static const ConditionPtr_t Get(const Conditions::Enum);
 
         private:
             static ConditionUVec_t conditionsUVec_;

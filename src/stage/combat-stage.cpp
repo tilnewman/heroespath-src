@@ -3378,7 +3378,7 @@ namespace stage
             auto const & HIT_INFO{ conditionEffectsVec_[conditionEffectsIndex_] };
 
             preambleSS << HIT_INFO.ActionPhrase().Compose(
-                HIT_INFO.ConditionPtr()->Name(), turnCreaturePtr_->Name());
+                HIT_INFO.ConditionPtrOpt()->Obj().Name(), turnCreaturePtr_->Name());
         }
         else
         {

@@ -43,7 +43,8 @@ namespace heroespath
 namespace creature
 {
     class Condition;
-    using ConditionPtr_t = Condition *;
+    using ConditionPtr_t = misc::NotNull<Condition *>;
+    using ConditionPtrOpt_t = boost::optional<ConditionPtr_t>;
 } // namespace creature
 namespace spell
 {
@@ -158,7 +159,7 @@ namespace combat
         bool IsSpell() const { return !!spellPtrOpt_; }
         bool IsWeapon() const { return (weaponPtr_ != nullptr); }
 
-        creature::ConditionPtr_t ConditionPtr() const { return conditionPtr_; }
+        const creature::ConditionPtrOpt_t ConditionPtrOpt() const { return conditionPtrOpt_; }
 
         bool DidArmorAbsorb() const { return didArmorAbsorb_; }
 
@@ -199,7 +200,7 @@ namespace combat
         ContentAndNamePos actionPhraseCNP_;
         song::SongPtrOpt_t songPtrOpt_;
         bool didArmorAbsorb_;
-        creature::ConditionPtr_t conditionPtr_;
+        creature::ConditionPtrOpt_t conditionPtrOpt_;
     };
 
     using HitInfoVec_t = std::vector<HitInfo>;

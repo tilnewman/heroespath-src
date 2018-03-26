@@ -61,8 +61,8 @@ namespace creature
     using TitlePtrOpt_t = boost::optional<TitlePtr_t>;
 
     class Condition;
-    using ConditionPtr_t = Condition *;
-    using ConditionPtrC_t = Condition * const;
+    using ConditionPtr_t = misc::NotNull<Condition *>;
+    using ConditionPtrOpt_t = boost::optional<ConditionPtr_t>;
 } // namespace creature
 namespace item
 {
@@ -152,7 +152,7 @@ namespace sfml_util
             const creature::CreaturePtr_t CHARACTER_CPTR;
             const state::GameStatePtr_t GAMESTATE_CPTR;
             const item::ItemPtr_t ITEM_CPTR;
-            const creature::ConditionPtrC_t COND_CPTRC;
+            const creature::ConditionPtrOpt_t COND_PTR_OPT;
             const creature::TitlePtrOpt_t TITLE_PTR_OPT;
             const spell::SpellPtrOpt_t SPELL_PTR_OPT;
             const song::SongPtrOpt_t SONG_PTR_OPT;

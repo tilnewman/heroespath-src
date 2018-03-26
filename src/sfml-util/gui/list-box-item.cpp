@@ -52,7 +52,7 @@ namespace sfml_util
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
-            , COND_CPTRC(nullptr)
+            , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
             , SONG_PTR_OPT(boost::none)
@@ -68,7 +68,7 @@ namespace sfml_util
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
-            , COND_CPTRC(nullptr)
+            , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
             , SONG_PTR_OPT(boost::none)
@@ -87,7 +87,7 @@ namespace sfml_util
             , CHARACTER_CPTR(CHARACTER_PTR)
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
-            , COND_CPTRC(nullptr)
+            , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
             , SONG_PTR_OPT(boost::none)
@@ -104,7 +104,7 @@ namespace sfml_util
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(GAMESTATE_PTR)
             , ITEM_CPTR(nullptr)
-            , COND_CPTRC(nullptr)
+            , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
             , SONG_PTR_OPT(boost::none)
@@ -114,14 +114,14 @@ namespace sfml_util
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const creature::ConditionPtr_t CONDITION_CPTRC_PARAM,
+            const creature::ConditionPtr_t CONDITION_PTR_PARAM,
             const bool IS_VALID)
             : TextRegion(
                   std::string(NAME).append("_ListBoxItemCondition"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
-            , COND_CPTRC(CONDITION_CPTRC_PARAM)
+            , COND_PTR_OPT(CONDITION_PTR_PARAM)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
             , SONG_PTR_OPT(boost::none)
@@ -137,7 +137,7 @@ namespace sfml_util
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(ITEM_PTR)
-            , COND_CPTRC(nullptr)
+            , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
             , SONG_PTR_OPT(boost::none)
@@ -153,7 +153,7 @@ namespace sfml_util
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
-            , COND_CPTRC(nullptr)
+            , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(TITLE_PTR_PARAM)
             , SPELL_PTR_OPT(boost::none)
             , SONG_PTR_OPT(boost::none)
@@ -169,7 +169,7 @@ namespace sfml_util
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
-            , COND_CPTRC(nullptr)
+            , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(SPELL_PTR_PARAM)
             , SONG_PTR_OPT(boost::none)
@@ -185,7 +185,7 @@ namespace sfml_util
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
             , ITEM_CPTR(nullptr)
-            , COND_CPTRC(nullptr)
+            , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
             , SONG_PTR_OPT(SONG_PTR_PARAM)
@@ -198,7 +198,7 @@ namespace sfml_util
                        L.CHARACTER_CPTR,
                        L.GAMESTATE_CPTR,
                        L.ITEM_CPTR,
-                       L.COND_CPTRC,
+                       L.COND_PTR_OPT,
                        L.TITLE_PTR_OPT,
                        L.SPELL_PTR_OPT,
                        L.SONG_PTR_OPT,
@@ -207,7 +207,7 @@ namespace sfml_util
                        R.CHARACTER_CPTR,
                        R.GAMESTATE_CPTR,
                        R.ITEM_CPTR,
-                       R.COND_CPTRC,
+                       R.COND_PTR_OPT,
                        R.TITLE_PTR_OPT,
                        R.SPELL_PTR_OPT,
                        R.SONG_PTR_OPT,
@@ -220,7 +220,7 @@ namespace sfml_util
                        L.CHARACTER_CPTR,
                        L.GAMESTATE_CPTR,
                        L.ITEM_CPTR,
-                       L.COND_CPTRC,
+                       L.COND_PTR_OPT,
                        L.TITLE_PTR_OPT,
                        L.SPELL_PTR_OPT,
                        L.SONG_PTR_OPT,
@@ -229,7 +229,7 @@ namespace sfml_util
                        R.CHARACTER_CPTR,
                        R.GAMESTATE_CPTR,
                        R.ITEM_CPTR,
-                       R.COND_CPTRC,
+                       R.COND_PTR_OPT,
                        R.TITLE_PTR_OPT,
                        R.SPELL_PTR_OPT,
                        R.SONG_PTR_OPT,

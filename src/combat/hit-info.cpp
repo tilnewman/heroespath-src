@@ -111,7 +111,7 @@ namespace combat
         , actionPhraseCNP_()
         , songPtrOpt_(boost::none)
         , didArmorAbsorb_(DID_ARMOR_ABSORB)
-        , conditionPtr_(nullptr)
+        , conditionPtrOpt_(boost::none)
     {}
 
     HitInfo::HitInfo(
@@ -134,7 +134,7 @@ namespace combat
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
-        , conditionPtr_(nullptr)
+        , conditionPtrOpt_(boost::none)
     {}
 
     HitInfo::HitInfo(
@@ -157,7 +157,7 @@ namespace combat
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtrOpt_(SONG_PTR)
         , didArmorAbsorb_(false)
-        , conditionPtr_(nullptr)
+        , conditionPtrOpt_(boost::none)
     {}
 
     HitInfo::HitInfo(
@@ -180,7 +180,7 @@ namespace combat
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
-        , conditionPtr_(creature::condition::Warehouse::Get(COND_ENUM))
+        , conditionPtrOpt_(creature::condition::Warehouse::Get(COND_ENUM))
     {}
 
     HitInfo::HitInfo(
@@ -203,7 +203,7 @@ namespace combat
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
-        , conditionPtr_(nullptr)
+        , conditionPtrOpt_(boost::none)
     {}
 
     HitInfo::HitInfo(const HitType::Enum HIT_TYPE, const ContentAndNamePos & ACTION_PHRASE_CNP)
@@ -220,7 +220,7 @@ namespace combat
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
-        , conditionPtr_(nullptr)
+        , conditionPtrOpt_(boost::none)
     {}
 
     HitInfo::HitInfo(
@@ -241,7 +241,7 @@ namespace combat
         , actionPhraseCNP_()
         , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
-        , conditionPtr_(nullptr)
+        , conditionPtrOpt_(boost::none)
     {}
 
     bool HitInfo::CondsAddedContains(const creature::Conditions::Enum E) const
@@ -337,9 +337,7 @@ namespace combat
             }
             case HitType::Condition:
             {
-                return (
-                    (conditionPtr_ != nullptr)
-                    && (actionPhraseCNP_.NamePos() != NamePosition::Count));
+                return (conditionPtrOpt_ && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
             case HitType::Trap:
             {
@@ -365,7 +363,7 @@ namespace combat
                 spellPtrOpt_,
                 songPtrOpt_,
                 didArmorAbsorb_,
-                conditionPtr_)
+                conditionPtrOpt_)
             != std::tie(
                    HI.hitType_,
                    HI.wasHit_,
@@ -376,7 +374,7 @@ namespace combat
                    HI.spellPtrOpt_,
                    HI.songPtrOpt_,
                    HI.didArmorAbsorb_,
-                   HI.conditionPtr_))
+                   HI.conditionPtrOpt_))
         {
             return false;
         }
@@ -424,7 +422,7 @@ namespace combat
             }
             case HitType::Condition:
             {
-                ss << "[" << conditionPtr_->Name() << "]";
+                ss << "[" << conditionPtrOpt_->Obj().Name() << "]";
                 break;
             }
             case HitType::Pounce:
@@ -483,7 +481,7 @@ namespace combat
                    L.actionPhraseCNP_,
                    L.songPtrOpt_,
                    L.didArmorAbsorb_,
-                   L.conditionPtr_)
+                   L.conditionPtrOpt_)
             < std::tie(
                    R.hitType_,
                    R.wasHit_,
@@ -496,7 +494,7 @@ namespace combat
                    R.actionPhraseCNP_,
                    R.songPtrOpt_,
                    R.didArmorAbsorb_,
-                   R.conditionPtr_);
+                   R.conditionPtrOpt_);
     }
 
     bool operator==(const HitInfo & L, const HitInfo & R)
@@ -523,7 +521,7 @@ namespace combat
                    L.actionPhraseCNP_,
                    L.songPtrOpt_,
                    L.didArmorAbsorb_,
-                   L.conditionPtr_)
+                   L.conditionPtrOpt_)
             == std::tie(
                    R.hitType_,
                    R.wasHit_,
@@ -536,7 +534,7 @@ namespace combat
                    R.actionPhraseCNP_,
                    R.songPtrOpt_,
                    R.didArmorAbsorb_,
-                   R.conditionPtr_);
+                   R.conditionPtrOpt_);
     }
 
 } // namespace combat

@@ -46,7 +46,6 @@ namespace combat
     {
         auto condsPVec{ creaturePtr->ConditionsPVec() };
 
-        // sort conditions by decreasing severity
         std::sort(
             condsPVec.begin(),
             condsPVec.end(),
@@ -55,12 +54,13 @@ namespace combat
             });
 
         auto hasTurnBeenConsumed{ false };
-        for (auto const NEXT_COND_PTR : condsPVec)
+        for (auto const & NEXT_COND_PTR : condsPVec)
         {
             NEXT_COND_PTR->PerTurnEffect(creaturePtr, hitInfoVec_OuParam, hasTurnBeenConsumed);
         }
 
         return hasTurnBeenConsumed;
     }
+
 } // namespace combat
 } // namespace heroespath

@@ -3014,10 +3014,10 @@ namespace stage
         {
             std::ostringstream ss;
 
-            if (LISTBOX_ITEM_SPTR->COND_CPTRC != nullptr)
+            if (LISTBOX_ITEM_SPTR->COND_PTR_OPT)
             {
-                ss << LISTBOX_ITEM_SPTR->COND_CPTRC->Name() << "\n\n"
-                   << LISTBOX_ITEM_SPTR->COND_CPTRC->LongDesc();
+                ss << LISTBOX_ITEM_SPTR->COND_PTR_OPT->Obj().Name() << "\n\n"
+                   << LISTBOX_ITEM_SPTR->COND_PTR_OPT->Obj().LongDesc();
             }
             else if (LISTBOX_ITEM_SPTR->TITLE_PTR_OPT)
             {

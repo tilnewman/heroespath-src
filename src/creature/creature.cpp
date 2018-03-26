@@ -388,7 +388,9 @@ namespace creature
         ConditionPVec_t conditionPVec;
 
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
+        {
             conditionPVec.emplace_back(condition::Warehouse::Get(NEXT_CONDITION_ENUM));
+        }
 
         return conditionPVec;
     }
