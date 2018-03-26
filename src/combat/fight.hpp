@@ -44,7 +44,7 @@ namespace spell
 namespace song
 {
     class Song;
-    using SongPtr_t = Song *;
+    using SongPtr_t = misc::NotNull<Song *>;
 } // namespace song
 namespace item
 {
@@ -116,7 +116,7 @@ namespace combat
             const creature::CreaturePVec_t & creaturesDefendingPVec);
 
         static const FightResult PlaySong(
-            const song::SongPtr_t SONG_CPTR,
+            const song::SongPtr_t SONG_PTR,
             creature::CreaturePtrC_t creaturePlayingPtrC,
             const creature::CreaturePVec_t & creaturesListeningPVec);
 

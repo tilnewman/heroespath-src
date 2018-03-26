@@ -27,9 +27,9 @@
 //
 // popup-stage-musicsheet.hpp
 //
+#include "misc/not-null.hpp"
 #include "popup/popup-info.hpp"
 #include "popup/popup-stage-base.hpp"
-
 #include "sfml-util/color-shaker.hpp"
 #include "sfml-util/color-slider.hpp"
 #include "sfml-util/gui/background-info.hpp"
@@ -44,8 +44,7 @@ namespace heroespath
 namespace song
 {
     class Song;
-    using SongPtr_t = Song *;
-    using SongPtrC_t = Song * const;
+    using SongPtr_t = misc::NotNull<Song *>;
 } // namespace song
 
 namespace popup
@@ -88,12 +87,13 @@ namespace popup
         void SetupListboxLabelText();
         void SetupListbox();
 
-        void SetupPageRightText(const song::SongPtrC_t);
+        void SetupPageRightText(const song::SongPtr_t);
         void SetPageRightColors(const sf::Color & IMAGE_COLOR, const sf::Color & TEXT_COLOR);
-        bool DoesCharacterHaveEnoughManaToPlaySong(const song::SongPtrC_t) const;
-        bool CanPlaySongInPhase(const song::SongPtrC_t) const;
-        bool CanPlaySong(const song::SongPtrC_t) const;
+        bool DoesCharacterHaveEnoughManaToPlaySong(const song::SongPtr_t) const;
+        bool CanPlaySongInPhase(const song::SongPtr_t) const;
+        bool CanPlaySong(const song::SongPtr_t) const;
         bool HandleSongPlay();
+        const song::SongPtr_t CurrentSelectedSong() const;
 
     private:
         static const float BACKGROUND_WIDTH_RATIO_;
@@ -102,7 +102,6 @@ namespace popup
         static const sf::Uint8 IMAGE_ALPHA_;
         static const float WARNING_DURATION_SEC_;
 
-        song::SongPtr_t currentSongPtr_;
         sfml_util::gui::TextRegionUPtr_t charDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t listBoxLabelTextRegionUPtr_;
         sfml_util::gui::ListBoxUPtr_t listBoxUPtr_;
@@ -126,6 +125,7 @@ namespace popup
         sfml_util::gui::TextInfo listBoxItemTextInfo_;
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
+        std::size_t currentSongIndex_;
     };
 } // namespace popup
 } // namespace heroespath

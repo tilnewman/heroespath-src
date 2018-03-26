@@ -362,15 +362,17 @@ namespace combat
                         << ", turn_action_info=Cast, will_use_name=" << std::boolalpha
                         << WILL_USE_NAME << ", is_status=" << IS_STATUS_VERSION
                         << ", is_preamble=" << IS_PREAMBLE_VERSION
-                        << ") was of cast type but spellPtrOpt was uninitialized.");
+                        << ") was of cast type but TURN_ACTION_INFO.Spell() was uninitialized.");
 
                 if (IS_PREAMBLE_VERSION)
                 {
-                    ss << CastDescriptionPreambleVersion(TURN_ACTION_INFO, FIGHT_RESULT);
+                    ss << CastDescriptionPreambleVersion(
+                        TURN_ACTION_INFO.Spell().value(), FIGHT_RESULT);
                 }
                 else if (IS_STATUS_VERSION)
                 {
-                    ss << CastDescriptionStatusVersion(TURN_ACTION_INFO, FIGHT_RESULT);
+                    ss << CastDescriptionStatusVersion(
+                        TURN_ACTION_INFO.Spell().value(), FIGHT_RESULT);
                 }
 
                 break;
@@ -378,13 +380,24 @@ namespace combat
 
             case combat::TurnAction::PlaySong:
             {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (!!TURN_ACTION_INFO.Song()),
+                    "combat::Text::ActionText(creature_attacking="
+                        << CREATURE_ATTACKING_PTR->Name()
+                        << ", turn_action_info=PlaySong, will_use_name=" << std::boolalpha
+                        << WILL_USE_NAME << ", is_status=" << IS_STATUS_VERSION
+                        << ", is_preamble=" << IS_PREAMBLE_VERSION
+                        << ") was of cast type but TURN_ACTION_INFO.Song() was uninitialized.");
+
                 if (IS_PREAMBLE_VERSION)
                 {
-                    ss << PlaySongDescriptionPreambleVersion(TURN_ACTION_INFO, FIGHT_RESULT);
+                    ss << PlaySongDescriptionPreambleVersion(
+                        TURN_ACTION_INFO.Song().get(), FIGHT_RESULT);
                 }
                 else if (IS_STATUS_VERSION)
                 {
-                    ss << PlaySongDescriptionStatusVersion(TURN_ACTION_INFO, FIGHT_RESULT);
+                    ss << PlaySongDescriptionStatusVersion(
+                        TURN_ACTION_INFO.Song().get(), FIGHT_RESULT);
                 }
 
                 break;
@@ -510,11 +523,11 @@ namespace combat
                     << ", turn_action_info=" << TURN_ACTION_INFO.ToString()
                     << ", will_use_name=" << std::boolalpha << WILL_USE_NAME
                     << ", effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
-                    << ") was cast but spellPtrOpt was uninitialized.");
+                    << ") was cast but TURN_ACTION_INFO.Spell() was uninitialized.");
 
             return CastDescriptionFullVersion(
                 CREATURE_ATTACKING_PTR,
-                TURN_ACTION_INFO,
+                TURN_ACTION_INFO.Spell().value(),
                 FIGHT_RESULT,
                 EFFECT_INDEX,
                 HIT_INDEX,
@@ -522,9 +535,18 @@ namespace combat
         }
         else if (TURN_ACTION == combat::TurnAction::PlaySong)
         {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (!!TURN_ACTION_INFO.Song()),
+                "comabt::Text::ActionTextIndexed(creature_attacking="
+                    << CREATURE_ATTACKING_PTR->Name()
+                    << ", turn_action_info=" << TURN_ACTION_INFO.ToString()
+                    << ", will_use_name=" << std::boolalpha << WILL_USE_NAME
+                    << ", effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
+                    << ") was cast but TURN_ACTION_INFO.Song() was uninitialized.");
+
             return PlaySongDescriptionFullVersion(
                 CREATURE_ATTACKING_PTR,
-                TURN_ACTION_INFO,
+                TURN_ACTION_INFO.Song().value(),
                 FIGHT_RESULT,
                 EFFECT_INDEX,
                 HIT_INDEX,
@@ -940,15 +962,12 @@ namespace combat
     }
 
     const std::string Text::CastDescriptionStatusVersion(
-        const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
+        const spell::SpellPtr_t & SPELL_PTR, const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
+        ss << "casts the " << SPELL_PTR->Name() << " spell ";
 
-        auto const SPELL_PTR{ TURN_ACTION_INFO.Spell() };
-
-        ss << "casts the " << SPELL_PTR->Obj().Name() << " spell ";
-
-        auto const SPELL_TARGET{ SPELL_PTR->Obj().Target() };
+        auto const SPELL_TARGET{ SPELL_PTR->Target() };
 
         ss << TargetType::ActionPhrase(SPELL_TARGET);
 
@@ -963,10 +982,11 @@ namespace combat
     }
 
     const std::string Text::CastDescriptionPreambleVersion(
-        const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
+        const spell::SpellPtr_t & SPELL_PTR, const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
-        ss << "casts the " << TURN_ACTION_INFO.Spell()->Obj().Name() << " spell ";
+        ss << "casts the " << SPELL_PTR->Name() << " spell ";
+
         if (FIGHT_RESULT.Count() == 1)
         {
             auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[0] };
@@ -997,7 +1017,7 @@ namespace combat
         }
         else
         {
-            ss << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->Obj().Target());
+            ss << TargetType::ActionPhrase(SPELL_PTR->Target());
         }
 
         ss << "...";
@@ -1006,7 +1026,7 @@ namespace combat
 
     const std::string Text::CastDescriptionFullVersion(
         const creature::CreaturePtr_t CREATURE_CASTING_PTR,
-        const TurnActionInfo & TURN_ACTION_INFO,
+        const spell::SpellPtr_t & SPELL_PTR,
         const FightResult & FIGHT_RESULT,
         const std::size_t EFFECT_INDEX,
         const std::size_t HIT_INDEX,
@@ -1020,7 +1040,7 @@ namespace combat
         {
             wasCollapsed = true;
             return FIGHT_RESULT_SUMMARY.Compose(
-                CREATURE_CASTING_PTR->Name(), TURN_ACTION_INFO.Spell()->Obj().VerbPastTense());
+                CREATURE_CASTING_PTR->Name(), SPELL_PTR->VerbPastTense());
         }
 
         if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
@@ -1057,11 +1077,10 @@ namespace combat
     }
 
     const std::string Text::PlaySongDescriptionStatusVersion(
-        const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
+        const song::SongPtr_t & SONG_PTR, const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
 
-        auto const SONG_PTR{ TURN_ACTION_INFO.Song() };
         ss << "plays the " << SONG_PTR->Name() << " " << SONG_PTR->TypeToNoun() << " "
            << TargetType::ActionPhrase(SONG_PTR->Target());
 
@@ -1076,11 +1095,10 @@ namespace combat
     }
 
     const std::string Text::PlaySongDescriptionPreambleVersion(
-        const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
+        const song::SongPtr_t & SONG_PTR, const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
-        ss << "plays the " << TURN_ACTION_INFO.Song()->Name() << " "
-           << TURN_ACTION_INFO.Song()->TypeToNoun() << " ";
+        ss << "plays the " << SONG_PTR->Name() << " " << SONG_PTR->TypeToNoun() << " ";
 
         if (FIGHT_RESULT.Count() == 1)
         {
@@ -1112,7 +1130,7 @@ namespace combat
         }
         else
         {
-            ss << TargetType::ActionPhrase(TURN_ACTION_INFO.Song()->Target());
+            ss << TargetType::ActionPhrase(SONG_PTR->Target());
         }
 
         ss << "...";
@@ -1121,18 +1139,13 @@ namespace combat
 
     const std::string Text::PlaySongDescriptionFullVersion(
         const creature::CreaturePtr_t CREATURE_PLAYINGING_PTR,
-        const TurnActionInfo & TURN_ACTION_INFO,
+        const song::SongPtr_t & SONG_PTR,
         const FightResult & FIGHT_RESULT,
         const std::size_t EFFECT_INDEX,
         const std::size_t HIT_INDEX,
         bool & wasCollapsed)
     {
         wasCollapsed = false;
-
-        if (TURN_ACTION_INFO.Song() == nullptr)
-        {
-            return "(error: TURN_ACTION_INFO.Song() null)";
-        }
 
         auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(
             CREATURE_PLAYINGING_PTR, FIGHT_RESULT) };
@@ -1141,7 +1154,7 @@ namespace combat
         {
             wasCollapsed = true;
             return FIGHT_RESULT_SUMMARY.Compose(
-                CREATURE_PLAYINGING_PTR->Name(), TURN_ACTION_INFO.Song()->VerbPastTense());
+                CREATURE_PLAYINGING_PTR->Name(), SONG_PTR->VerbPastTense());
         }
 
         if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
@@ -1445,7 +1458,7 @@ namespace combat
         }
         else if (FIRST_HIT_INFO.TypeOfHit() == HitType::Song)
         {
-            frs.song_ptr = FIRST_HIT_INFO.SongPtr();
+            frs.song_ptr_opt = FIRST_HIT_INFO.SongPtrOpt();
         }
 
         for (std::size_t i(0); i < CREATURE_EFFECTS_COUNT; ++i)

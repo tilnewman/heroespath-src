@@ -283,6 +283,7 @@ namespace sfml_util
 
             std::size_t countLimit_;
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

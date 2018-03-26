@@ -147,28 +147,28 @@ namespace combat
             const std::size_t HIT_INDEX);
 
         static const std::string CastDescriptionStatusVersion(
-            const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT);
+            const spell::SpellPtr_t & SPELL_PTR, const FightResult & FIGHT_RESULT);
 
         static const std::string CastDescriptionPreambleVersion(
-            const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT);
+            const spell::SpellPtr_t & SPELL_PTR, const FightResult & FIGHT_RESULT);
 
         static const std::string CastDescriptionFullVersion(
             const creature::CreaturePtr_t CREATURE_CASTING_PTR,
-            const TurnActionInfo & TURN_ACTION_INFO,
+            const spell::SpellPtr_t & SPELL_PTR,
             const FightResult & FIGHT_RESULT,
             const std::size_t EFFECT_INDEX,
             const std::size_t HIT_INDEX,
             bool & wasCollapsed);
 
         static const std::string PlaySongDescriptionStatusVersion(
-            const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT);
+            const song::SongPtr_t & SONG_PTR, const FightResult & FIGHT_RESULT);
 
         static const std::string PlaySongDescriptionPreambleVersion(
-            const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT);
+            const song::SongPtr_t & SONG_PTR, const FightResult & FIGHT_RESULT);
 
         static const std::string PlaySongDescriptionFullVersion(
             const creature::CreaturePtr_t CREATURE_PLAYINGING_PTR,
-            const TurnActionInfo & TURN_ACTION_INFO,
+            const song::SongPtr_t & SONG_PTR,
             const FightResult & FIGHT_RESULT,
             const std::size_t EFFECT_INDEX,
             const std::size_t HIT_INDEX,

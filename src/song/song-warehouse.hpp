@@ -27,6 +27,7 @@
 //
 // song-warehouse.hpp
 //
+#include "misc/not-null.hpp"
 #include "song/song-enum.hpp"
 
 #include <memory>
@@ -39,7 +40,7 @@ namespace song
 
     // forward declarations
     class Song;
-    using SongPtr_t = Song *;
+    using SongPtr_t = misc::NotNull<Song *>;
     using SongUPtr_t = std::unique_ptr<Song>;
     using SongUVec_t = std::vector<SongUPtr_t>;
 
@@ -50,7 +51,7 @@ namespace song
         static void Fill();
         static void Empty();
         static bool Test();
-        static SongPtr_t Get(const Songs::Enum);
+        static const SongPtr_t Get(const Songs::Enum);
 
     private:
         static SongUVec_t songsUVec_;

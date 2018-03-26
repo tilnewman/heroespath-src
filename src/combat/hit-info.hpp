@@ -54,7 +54,8 @@ namespace spell
 namespace song
 {
     class Song;
-    using SongPtr_t = Song *;
+    using SongPtr_t = misc::NotNull<Song *>;
+    using SongPtrOpt_t = boost::optional<SongPtr_t>;
 } // namespace song
 namespace item
 {
@@ -111,7 +112,7 @@ namespace combat
         // use this constructor for songs
         HitInfo(
             const bool WAS_HIT,
-            const song::SongPtr_t SONG_CPTR,
+            const song::SongPtr_t SONG_PTR,
             const ContentAndNamePos & ACTION_PHRASE_CNP,
             const Health_t & DAMAGE = 0_health,
             const creature::CondEnumVec_t & CONDS_ADDED_VEC = creature::CondEnumVec_t(),
@@ -153,7 +154,7 @@ namespace combat
         bool IsPowerHit() const { return isPower_; }
         const std::string ActionVerb() const { return actionVerb_; }
         const spell::SpellPtrOpt_t SpellPtrOpt() const { return spellPtrOpt_; }
-        song::SongPtr_t SongPtr() const { return songPtr_; }
+        const song::SongPtrOpt_t SongPtrOpt() const { return songPtrOpt_; }
         bool IsSpell() const { return !!spellPtrOpt_; }
         bool IsWeapon() const { return (weaponPtr_ != nullptr); }
 
@@ -196,7 +197,7 @@ namespace combat
         std::string actionVerb_;
         spell::SpellPtrOpt_t spellPtrOpt_;
         ContentAndNamePos actionPhraseCNP_;
-        song::SongPtr_t songPtr_;
+        song::SongPtrOpt_t songPtrOpt_;
         bool didArmorAbsorb_;
         creature::ConditionPtr_t conditionPtr_;
     };

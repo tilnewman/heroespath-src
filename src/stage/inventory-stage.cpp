@@ -285,7 +285,7 @@ namespace stage
         , detailViewTextUPtr_()
         , detailViewSlider_(DETAILVIEW_SLIDER_SPEED_)
         , spellBeingCastPtrOpt_(boost::none)
-        , songBeingPlayedPtr_(nullptr)
+        , songBeingPlayedPtrOpt_(boost::none)
         , turnActionInfo_()
         , fightResult_()
         , creatureEffectIndex_(0)
@@ -625,8 +625,7 @@ namespace stage
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_)
             && (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
-            const song::SongPVec_t SONGS_PVEC{ creaturePtr_->SongsPVec() };
-
+            auto const SONGS_PVEC{ creaturePtr_->SongsPVec() };
             auto const RESPONSE_SELECTION_INDEX{ POPUP_RESPONSE.Selection() };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
@@ -635,15 +634,8 @@ namespace stage
                     << POPUP_RESPONSE.Selection()
                     << ") Selection was greater than SongPVec.size=" << SONGS_PVEC.size());
 
-            auto const SONG_PTR{ SONGS_PVEC.at(RESPONSE_SELECTION_INDEX) };
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (SONG_PTR != nullptr),
-                "stage::InventoryStage::HandleCallback(SONG, selection="
-                    << POPUP_RESPONSE.Selection() << ")  SONGS_PVEC[selection] was null.");
-
             creaturePtr_->LastSongPlayedNum(RESPONSE_SELECTION_INDEX);
-            return HandleSong_Step1_Play(SONG_PTR);
+            return HandleSong_Step1_Play(SONGS_PVEC.at(RESPONSE_SELECTION_INDEX));
         }
 
         return false;
@@ -4149,7 +4141,7 @@ namespace stage
         }
         else
         {
-            songBeingPlayedPtr_ = SONG_PTR;
+            songBeingPlayedPtrOpt_ = SONG_PTR;
             combatSoundEffectsUPtr_->PlaySong(SONG_PTR);
 
             auto const TARGETS_PVEC{ (
@@ -4191,8 +4183,9 @@ namespace stage
 
     bool InventoryStage::HandleSong_Step2_DisplayResults()
     {
-        if (songBeingPlayedPtr_ == nullptr)
+        if (!songBeingPlayedPtrOpt_)
         {
+            // return true, because NOT displaying another popup
             return true;
         }
 
@@ -4224,7 +4217,7 @@ namespace stage
 
             if (isFightResultCollapsed || (++creatureEffectIndex_ >= CREATURE_EFFECTS_VEC.size()))
             {
-                songBeingPlayedPtr_ = nullptr;
+                songBeingPlayedPtrOpt_ = boost::none;
             }
         }
 
@@ -4336,5 +4329,6 @@ namespace stage
         listbox.Items(vec);
         isSortReversed = !isSortReversed;
     }
+
 } // namespace stage
 } // namespace heroespath

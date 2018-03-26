@@ -674,8 +674,7 @@ namespace sfml_util
             auto const DOES_IMAGE_EXIST{ (
                 (listBoxItemSPtr->ITEM_CPTR != nullptr) || listBoxItemSPtr->TITLE_PTR_OPT
                 || (listBoxItemSPtr->CHARACTER_CPTR != nullptr) || listBoxItemSPtr->SPELL_PTR_OPT
-                || (listBoxItemSPtr->COND_CPTRC != nullptr)
-                || (listBoxItemSPtr->SONG_CPTRC != nullptr)) };
+                || (listBoxItemSPtr->COND_CPTRC != nullptr) || listBoxItemSPtr->SONG_PTR_OPT) };
 
             if (DOES_IMAGE_EXIST)
             {
@@ -712,10 +711,10 @@ namespace sfml_util
                         sfml_util::gui::ConditionImageManager::Instance()->Get(
                             *imagePair.first, listBoxItemSPtr->COND_CPTRC->Which());
                     }
-                    else if (listBoxItemSPtr->SONG_CPTRC != nullptr)
+                    else if (listBoxItemSPtr->SONG_PTR_OPT)
                     {
                         sfml_util::gui::SongImageManager::Instance()->Get(
-                            *imagePair.first, listBoxItemSPtr->SONG_CPTRC->Which());
+                            *imagePair.first, listBoxItemSPtr->SONG_PTR_OPT->Obj().Which());
                     }
                 }
             }

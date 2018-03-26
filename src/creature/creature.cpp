@@ -75,7 +75,7 @@ namespace creature
         const std::string & IMAGE_FILENAME,
         const spell::SpellEnumVec_t & SPELL_VEC,
         const Mana_t & MANA,
-        const song::SongVec_t & SONG_VEC)
+        const song::SongEnumVec_t & SONG_VEC)
         : isPlayer_(IS_PLAYER)
         , name_(NAME)
         , imageFilename_(IMAGE_FILENAME)

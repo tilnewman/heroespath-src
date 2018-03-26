@@ -703,7 +703,7 @@ namespace popup
         M_ASSERT_OR_LOGANDTHROW_SS(
             (!!listBoxUPtr_->Selected()->SPELL_PTR_OPT),
             "popup::PopupStageSpellbook::CurrentSelectedSpell() called when the currently selected "
-            "spell was somehow not a spell.");
+            "spell was somehow not initialized.");
 
         return listBoxUPtr_->Selected()->SPELL_PTR_OPT.value();
     }

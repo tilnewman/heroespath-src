@@ -49,7 +49,7 @@ namespace combat
 
     FightResultSummary::FightResultSummary()
         : hit_type(HitType::Count)
-        , song_ptr(nullptr)
+        , song_ptr_opt(boost::none)
         , spell_ptr_opt(boost::none)
         , effected_vec()
         , resisted_vec()
@@ -80,7 +80,7 @@ namespace combat
             return false;
         }
 
-        if ((HitType::Song == hit_type) && (song_ptr == nullptr))
+        if ((HitType::Song == hit_type) && (!song_ptr_opt))
         {
             return false;
         }
@@ -92,7 +92,7 @@ namespace combat
     {
         if (HitType::Song == hit_type)
         {
-            return song_ptr->VerbThirdPerson();
+            return song_ptr_opt->Obj().VerbThirdPerson();
         }
         else if (HitType::Spell == hit_type)
         {
@@ -122,7 +122,8 @@ namespace combat
         else if (HitType::Song == hit_type)
         {
             // intentionally no prepend of empty space so that preamble can start with "'s"
-            preSS << song_ptr->ActionPhrasePreamble() << " playing " << song_ptr->Name();
+            preSS << song_ptr_opt->Obj().ActionPhrasePreamble() << " playing "
+                  << song_ptr_opt->Obj().Name();
         }
         else
         {

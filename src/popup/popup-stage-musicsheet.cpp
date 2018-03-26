@@ -31,15 +31,12 @@
 
 #include "creature/creature.hpp"
 #include "game/loop-manager.hpp"
-#include "song/song.hpp"
-
+#include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
-
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/song-image-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "misc/random.hpp"
+#include "song/song.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -57,7 +54,6 @@ namespace popup
 
     PopupStageMusicSheet::PopupStageMusicSheet(const PopupInfo & POPUP_INFO)
         : PopupStageBase(POPUP_INFO)
-        , currentSongPtr_(nullptr)
         , charDetailsTextRegionUPtr_()
         , listBoxLabelTextRegionUPtr_()
         , listBoxUPtr_()
@@ -94,6 +90,7 @@ namespace popup
 
         imageColorSlider_(sf::Color::Transparent, sf::Color::White, COLOR_FADE_SPEED_)
         , textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
+        , currentSongIndex_(0)
     {}
 
     PopupStageMusicSheet::~PopupStageMusicSheet() = default;
@@ -101,7 +98,8 @@ namespace popup
     bool PopupStageMusicSheet::HandleCallback(
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
-        if (PACKAGE.package.PTR_ == nullptr)
+        if ((PACKAGE.package.PTR_ == nullptr) || (PACKAGE.package.PTR_->Selected() == nullptr)
+            || (!PACKAGE.package.PTR_->Selected()->SONG_PTR_OPT))
         {
             return false;
         }
@@ -111,13 +109,9 @@ namespace popup
             || (PACKAGE.keypress_event.code == sf::Keyboard::Up)
             || (PACKAGE.keypress_event.code == sf::Keyboard::Down))
         {
-            if ((PACKAGE.package.PTR_->Selected() != nullptr)
-                && (currentSongPtr_ != PACKAGE.package.PTR_->Selected()->SONG_CPTRC))
+            if (currentSongIndex_ != PACKAGE.package.PTR_->SelectedIndex())
             {
-                if (currentSongPtr_ != PACKAGE.package.PTR_->Selected()->SONG_CPTRC)
-                {
-                    currentSongPtr_ = PACKAGE.package.PTR_->Selected()->SONG_CPTRC;
-                }
+                currentSongIndex_ = PACKAGE.package.PTR_->SelectedIndex();
 
                 if (imageColorSlider_.Direction() != sfml_util::Moving::Away)
                 {
@@ -134,10 +128,8 @@ namespace popup
             (PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
             || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
         {
-            if (PACKAGE.package.PTR_->Selected()->SONG_CPTRC != nullptr)
-            {
-                return HandleSongPlay();
-            }
+            currentSongIndex_ = PACKAGE.package.PTR_->SelectedIndex();
+            return HandleSongPlay();
         }
 
         return false;
@@ -170,8 +162,8 @@ namespace popup
         listBoxUPtr_->WillPlaySoundEffects(true);
 
         // setup initial values for songbook page right text and colors
-        currentSongPtr_ = listBoxUPtr_->At(0)->SONG_CPTRC;
-        SetupPageRightText(currentSongPtr_);
+        currentSongIndex_ = listBoxUPtr_->SelectedIndex();
+        SetupPageRightText(CurrentSelectedSong());
     }
 
     void PopupStageMusicSheet::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
@@ -213,7 +205,7 @@ namespace popup
         {
             sfml_util::SoundManager::Instance()->SoundEffectPlay(sfml_util::sound_effect::Magic1);
 
-            SetupPageRightText(currentSongPtr_);
+            SetupPageRightText(CurrentSelectedSong());
             imageColorSlider_.ChangeDirection();
             imageColorSlider_.Start();
             textColorSlider_.ChangeDirection();
@@ -228,15 +220,19 @@ namespace popup
 
     bool PopupStageMusicSheet::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if ((KEY_EVENT.code == sf::Keyboard::Escape) || (KEY_EVENT.code == sf::Keyboard::Space))
+        if (listBoxUPtr_.get() != nullptr)
         {
-            PlayValidKeypressSoundEffect();
-            game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel, 0);
-            return true;
-        }
-        else if ((KEY_EVENT.code == sf::Keyboard::Return) || (KEY_EVENT.code == sf::Keyboard::C))
-        {
-            return HandleSongPlay();
+            if ((KEY_EVENT.code == sf::Keyboard::Escape) || (KEY_EVENT.code == sf::Keyboard::Space))
+            {
+                PlayValidKeypressSoundEffect();
+                game::LoopManager::Instance()->PopupWaitEnd(ResponseTypes::Cancel, 0);
+                return true;
+            }
+            else if (
+                (KEY_EVENT.code == sf::Keyboard::Return) || (KEY_EVENT.code == sf::Keyboard::C))
+            {
+                return HandleSongPlay();
+            }
         }
 
         return PopupStageBase::KeyRelease(KEY_EVENT);
@@ -413,7 +409,7 @@ namespace popup
 
         sfml_util::gui::ListBoxItemSVec_t listBoxItemsSVec;
         auto const SONG_PVEC{ popupInfo_.CreaturePtr()->SongsPVec() };
-        for (auto const NEXT_SONG_PTR : SONG_PVEC)
+        for (auto const & NEXT_SONG_PTR : SONG_PVEC)
         {
             listBoxItemTextInfo_.text = NEXT_SONG_PTR->Name();
 
@@ -442,16 +438,11 @@ namespace popup
         listBoxUPtr_->ImageColor(LISTBOX_IMAGE_COLOR_);
     }
 
-    void PopupStageMusicSheet::SetupPageRightText(const song::SongPtrC_t SONG_CPTRC)
+    void PopupStageMusicSheet::SetupPageRightText(const song::SongPtr_t SONG_PTR)
     {
-        if (SONG_CPTRC == nullptr)
-        {
-            return;
-        }
-
         // setup song title text
         const sfml_util::gui::TextInfo SONG_TITLE_TEXTINFO(
-            SONG_CPTRC->Name(),
+            SONG_PTR->Name(),
             sfml_util::FontManager::Instance()->Font_Default1(),
             sfml_util::FontManager::Instance()->Size_Large(),
             sfml_util::FontManager::Color_GrayDarker(),
@@ -468,11 +459,11 @@ namespace popup
         }
         else
         {
-            titleTextRegionUPtr_->SetText(SONG_CPTRC->Name());
+            titleTextRegionUPtr_->SetText(SONG_PTR->Name());
         }
 
         // setup song image
-        sfml_util::gui::SongImageManager::Instance()->Get(songTexture_, SONG_CPTRC->Which());
+        sfml_util::gui::SongImageManager::Instance()->Get(songTexture_, SONG_PTR->Which());
 
         songSprite_.setTexture(songTexture_);
         auto const SONG_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
@@ -501,10 +492,10 @@ namespace popup
 
         // setup song details text
         std::ostringstream ss;
-        ss << "Mana Cost: " << SONG_CPTRC->ManaCost() << "\n"
-           << "Rank: " << SONG_CPTRC->Rank() << "\n"
-           << "Targets " << combat::TargetType::Name(SONG_CPTRC->Target()) << "\n"
-           << "Play during " << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false) << "\n";
+        ss << "Mana Cost: " << SONG_PTR->ManaCost() << "\n"
+           << "Rank: " << SONG_PTR->Rank() << "\n"
+           << "Targets " << combat::TargetType::Name(SONG_PTR->Target()) << "\n"
+           << "Play during " << game::Phase::ToString(SONG_PTR->ValidPhases(), false) << "\n";
 
         const sfml_util::gui::TextInfo SONG_DETAILS_TEXTINFO(
             ss.str(),
@@ -540,12 +531,12 @@ namespace popup
         // setup song 'unable to cast' text
         willShowXImage_ = false;
         ss.str(" ");
-        if (DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) == false)
+        if (DoesCharacterHaveEnoughManaToPlaySong(SONG_PTR) == false)
         {
             willShowXImage_ = true;
             ss << "Insufficient Mana";
         }
-        else if (CanPlaySongInPhase(SONG_CPTRC) == false)
+        else if (CanPlaySongInPhase(SONG_PTR) == false)
         {
             willShowXImage_ = true;
 
@@ -569,7 +560,7 @@ namespace popup
             }
             else
             {
-                ss << "Only during " << game::Phase::ToString(SONG_CPTRC->ValidPhases(), false)
+                ss << "Only during " << game::Phase::ToString(SONG_PTR->ValidPhases(), false)
                    << ".";
             }
         }
@@ -604,7 +595,7 @@ namespace popup
 
         // setup song description text
         ss.str("");
-        ss << SONG_CPTRC->Desc() << "  " << SONG_CPTRC->DescExtra();
+        ss << SONG_PTR->Desc() << "  " << SONG_PTR->DescExtra();
 
         const sfml_util::gui::TextInfo SONG_DESC_TEXTINFO(
             ss.str(),
@@ -675,40 +666,38 @@ namespace popup
     }
 
     bool PopupStageMusicSheet::DoesCharacterHaveEnoughManaToPlaySong(
-        const song::SongPtrC_t SONG_CPTRC) const
+        const song::SongPtr_t SONG_PTR) const
     {
-        return (popupInfo_.CreaturePtr()->Mana() >= SONG_CPTRC->ManaCost());
+        return (popupInfo_.CreaturePtr()->Mana() >= SONG_PTR->ManaCost());
     }
 
-    bool PopupStageMusicSheet::CanPlaySongInPhase(const song::SongPtrC_t SONG_CPTRC) const
+    bool PopupStageMusicSheet::CanPlaySongInPhase(const song::SongPtr_t SONG_PTR) const
     {
-        return (SONG_CPTRC->ValidPhases() & game::LoopManager::Instance()->GetPhase());
+        return (SONG_PTR->ValidPhases() & game::LoopManager::Instance()->GetPhase());
     }
 
-    bool PopupStageMusicSheet::CanPlaySong(const song::SongPtrC_t SONG_CPTRC) const
+    bool PopupStageMusicSheet::CanPlaySong(const song::SongPtr_t SONG_PTR) const
     {
-        return (
-            DoesCharacterHaveEnoughManaToPlaySong(SONG_CPTRC) && CanPlaySongInPhase(SONG_CPTRC));
+        return (DoesCharacterHaveEnoughManaToPlaySong(SONG_PTR) && CanPlaySongInPhase(SONG_PTR));
     }
 
     bool PopupStageMusicSheet::HandleSongPlay()
     {
-        if (CanPlaySong(listBoxUPtr_->Selected()->SONG_CPTRC))
+        auto const SONG_PTR{ CurrentSelectedSong() };
+
+        if (CanPlaySong(SONG_PTR))
         {
-            if (currentSongPtr_ != nullptr)
+            if (SONG_PTR->Type() == song::SongType::Drum)
             {
-                if (currentSongPtr_->Type() == song::SongType::Drum)
-                {
-                    sfml_util::SoundManager::Instance()
-                        ->Getsound_effect_set(sfml_util::sound_effect_set::DrumBlip)
-                        .PlayRandom();
-                }
-                else if (currentSongPtr_->Type() == song::SongType::Guitar)
-                {
-                    sfml_util::SoundManager::Instance()
-                        ->Getsound_effect_set(sfml_util::sound_effect_set::GuitarStrum)
-                        .PlayRandom();
-                }
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::DrumBlip)
+                    .PlayRandom();
+            }
+            else if (SONG_PTR->Type() == song::SongType::Guitar)
+            {
+                sfml_util::SoundManager::Instance()
+                    ->Getsound_effect_set(sfml_util::sound_effect_set::GuitarStrum)
+                    .PlayRandom();
             }
 
             game::LoopManager::Instance()->PopupWaitEnd(
@@ -723,5 +712,21 @@ namespace popup
             return false;
         }
     }
+
+    const song::SongPtr_t PopupStageMusicSheet::CurrentSelectedSong() const
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (listBoxUPtr_.get() != nullptr),
+            "popup::PopupStageMusicSheet::CurrentSelectedSong() called when listBoxUPtr_ was "
+            "null.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (!!listBoxUPtr_->Selected()->SONG_PTR_OPT),
+            "popup::PopupStageMusicSheet::CurrentSelectedSong() called when the currently selected "
+            "song was somehow not initialized.");
+
+        return listBoxUPtr_->Selected()->SONG_PTR_OPT.value();
+    }
+
 } // namespace popup
 } // namespace heroespath

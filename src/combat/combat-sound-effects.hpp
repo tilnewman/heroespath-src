@@ -53,7 +53,7 @@ namespace spell
 namespace song
 {
     class Song;
-    using SongPtr_t = Song *;
+    using SongPtr_t = misc::NotNull<Song *>;
 } // namespace song
 
 namespace combat
@@ -81,6 +81,7 @@ namespace combat
     private:
         void GetDeathSfx(creature::CreaturePtr_t, sfml_util::SfxEnumVec_t &) const;
     };
+
 } // namespace combat
 } // namespace heroespath
 

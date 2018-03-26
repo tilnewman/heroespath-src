@@ -65,7 +65,7 @@ namespace heroespath
 namespace song
 {
     class Song;
-    using SongPtr_t = Song *;
+    using SongPtr_t = misc::NotNull<Song *>;
     using SongPVec_t = std::vector<SongPtr_t>;
 } // namespace song
 namespace spell
@@ -138,7 +138,7 @@ namespace creature
             const std::string & IMAGE_FILENAME = "",
             const spell::SpellEnumVec_t & SPELL_VEC = spell::SpellEnumVec_t(),
             const Mana_t & MANA = 0_mana,
-            const song::SongVec_t & SONG_VEC = song::SongVec_t());
+            const song::SongEnumVec_t & SONG_VEC = song::SongEnumVec_t());
 
         const BodyType Body() const { return bodyType_; }
 
@@ -347,7 +347,7 @@ namespace creature
         bool CanPlaySongsByEffectType(const combat::EffectType::Enum) const;
         bool CanPlaySongsByEffectType(const combat::EffectTypeVec_t &) const;
 
-        song::SongVec_t Songs() const { return songsVec_; }
+        const song::SongEnumVec_t Songs() const { return songsVec_; }
 
         const song::SongPVec_t SongsPVec() const;
 
@@ -471,7 +471,7 @@ namespace creature
         Achievements achievements_;
         item::ItemPVec_t currWeaponsPVec_;
         std::size_t lastSpellCastNum_;
-        song::SongVec_t songsVec_;
+        song::SongEnumVec_t songsVec_;
         std::size_t lastSongPlayedNum_;
         Health_t healthCurrent_;
         Health_t healthNormal_;

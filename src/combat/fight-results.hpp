@@ -55,6 +55,12 @@ namespace spell
     using SpellPtr_t = misc::NotNull<Spell *>;
     using SpellPtrOpt_t = boost::optional<SpellPtr_t>;
 }
+namespace song
+{
+    class Song;
+    using SongPtr_t = misc::NotNull<Song *>;
+    using SongPtrOpt_t = boost::optional<SongPtr_t>;
+}
 namespace combat
 {
 
@@ -67,7 +73,7 @@ namespace combat
         FightResultSummary();
 
         HitType::Enum hit_type;
-        song::SongPtr_t song_ptr;
+        song::SongPtrOpt_t song_ptr_opt;
         spell::SpellPtrOpt_t spell_ptr_opt;
         CreatureHitInfoVec_t effected_vec;
         CreatureHitInfoVec_t resisted_vec;

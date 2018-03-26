@@ -199,7 +199,7 @@ namespace stage
         , turnActionPhase_(TurnActionPhase::None)
         , animPhase_(AnimPhase::NotAnimating)
         , spellBeingCastPtrOpt_(boost::none)
-        , songBeingPlayedPtr_(nullptr)
+        , songBeingPlayedPtrOpt_(boost::none)
         , performReportEffectIndex_(0)
         , performReportHitIndex_(0)
         , zoomSliderOrigPos_(0.0f)
@@ -421,24 +421,18 @@ namespace stage
         {
             if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
-                const song::SongPVec_t SONGS_PVEC{ turnCreaturePtr_->SongsPVec() };
+                auto const SONGS_PVEC{ turnCreaturePtr_->SongsPVec() };
+
+                auto const SELECTED_INDEX{ POPUP_RESPONSE.Selection() };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (POPUP_RESPONSE.Selection() < SONGS_PVEC.size()),
+                    (SELECTED_INDEX < SONGS_PVEC.size()),
                     "stage::CombatStage::HandleCallback(SONG_POPUP_RESPONSE, selection="
-                        << POPUP_RESPONSE.Selection()
+                        << SELECTED_INDEX
                         << ") Selection was greater than SongPVec.size=" << SONGS_PVEC.size());
 
-                auto const songPtr{ SONGS_PVEC.at(POPUP_RESPONSE.Selection()) };
-
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (songPtr != nullptr),
-                    "stage::CombatStage::HandleCallback(SONG_POPUP_RESPONSE, selection="
-                        << POPUP_RESPONSE.Selection() << ")  SONGS_PVEC[selection] was null.");
-
-                turnCreaturePtr_->LastSongPlayedNum(POPUP_RESPONSE.Selection());
-
-                songBeingPlayedPtr_ = songPtr;
+                turnCreaturePtr_->LastSongPlayedNum(SELECTED_INDEX);
+                songBeingPlayedPtrOpt_ = SONGS_PVEC.at(SELECTED_INDEX);
                 HandleSong_Step2_PerformOnTargets();
                 return true;
             }
@@ -453,14 +447,16 @@ namespace stage
             {
                 auto const SPELLS_PVEC{ turnCreaturePtr_->SpellsPVec() };
 
+                auto const SELECTED_INDEX{ POPUP_RESPONSE.Selection() };
+
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
+                    (SELECTED_INDEX < SPELLS_PVEC.size()),
                     "stage::CombatStage::HandleCallback(SPELL_POPUP_RESPONSE, selection="
-                        << POPUP_RESPONSE.Selection()
+                        << SELECTED_INDEX
                         << ") Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
 
-                spellBeingCastPtrOpt_ = SPELLS_PVEC.at(POPUP_RESPONSE.Selection());
-                turnCreaturePtr_->LastSpellCastNum(POPUP_RESPONSE.Selection());
+                spellBeingCastPtrOpt_ = SPELLS_PVEC.at(SELECTED_INDEX);
+                turnCreaturePtr_->LastSpellCastNum(SELECTED_INDEX);
                 HandleCast_Step2_SelectTargetOrPerformOnAll();
                 return true;
             }
@@ -2266,7 +2262,7 @@ namespace stage
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
 
                 fightResult_ = combat::FightClub::PlaySong(
-                    turnActionInfo_.Song(), turnCreaturePtr_, targetedCreaturesPVec);
+                    turnActionInfo_.Song().value(), turnCreaturePtr_, targetedCreaturesPVec);
 
                 SetupTurnBox();
 
@@ -2440,7 +2436,7 @@ namespace stage
 
         turnCreaturePtr_ = nullptr;
         spellBeingCastPtrOpt_ = boost::none;
-        songBeingPlayedPtr_ = nullptr;
+        songBeingPlayedPtrOpt_ = boost::none;
 
         MoveTurnBoxObjectsOffScreen();
 
@@ -2550,13 +2546,15 @@ namespace stage
 
     void CombatStage::HandleSong_Step2_PerformOnTargets()
     {
-        if ((songBeingPlayedPtr_->Target() == combat::TargetType::Item)
-            || (songBeingPlayedPtr_->Target() == combat::TargetType::QuestSpecific))
+        auto const SONG_TARGET{ songBeingPlayedPtrOpt_->Obj().Target() };
+
+        if ((SONG_TARGET == combat::TargetType::Item)
+            || (SONG_TARGET == combat::TargetType::QuestSpecific))
         {
             std::ostringstream ssErr;
             ssErr << "stage::CombatStage::HandleSong_Step2_SelectTargetOrPerformOnAll("
-                  << "song=" << songBeingPlayedPtr_->Name() << ") had a target_type of "
-                  << combat::TargetType::ToString(songBeingPlayedPtr_->Target())
+                  << "song=" << songBeingPlayedPtrOpt_->Obj().Name() << ") had a target_type of "
+                  << combat::TargetType::ToString(SONG_TARGET)
                   << " which is not yet supported in combat stage.";
 
             SystemErrorPopup("Playing this type of song is not yet supported.", ssErr.str());
@@ -2570,16 +2568,17 @@ namespace stage
             SetUserActionAllowed(false);
 
             auto creaturesListeningPVec{ (
-                (songBeingPlayedPtr_->Target() == combat::TargetType::AllCompanions)
+                (SONG_TARGET == combat::TargetType::AllCompanions)
                     ? creature::Algorithms::Players(creature::Algorithms::Living)
                     : creature::Algorithms::NonPlayers(creature::Algorithms::Living)) };
 
             combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(creaturesListeningPVec);
-            turnActionInfo_ = combat::TurnActionInfo(songBeingPlayedPtr_, creaturesListeningPVec);
+            turnActionInfo_
+                = combat::TurnActionInfo(songBeingPlayedPtrOpt_.value(), creaturesListeningPVec);
             combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
 
             fightResult_ = combat::FightClub::PlaySong(
-                songBeingPlayedPtr_, turnCreaturePtr_, creaturesListeningPVec);
+                songBeingPlayedPtrOpt_.value(), turnCreaturePtr_, creaturesListeningPVec);
 
             SetTurnActionPhase(TurnActionPhase::PlaySong);
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
@@ -2661,8 +2660,10 @@ namespace stage
         SetUserActionAllowed(false);
 
         combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(creaturesToCastUponPVec);
+
         turnActionInfo_
             = combat::TurnActionInfo(spellBeingCastPtrOpt_.value(), creaturesToCastUponPVec);
+
         combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
 
         fightResult_ = combat::FightClub::Cast(
@@ -3593,7 +3594,7 @@ namespace stage
                         turnCreaturePtr_, turnActionInfo_, fightResult_, true, true),
                     false);
 
-                combatSoundEffects_.PlaySong(songBeingPlayedPtr_);
+                combatSoundEffects_.PlaySong(songBeingPlayedPtrOpt_.value());
 
                 // start the song animation for the bard playing the music
                 combatAnimationUPtr_->SongAnimStart(

@@ -32,6 +32,8 @@
 #include "combat/target-enum.hpp"
 #include "creature/condition-enum.hpp"
 #include "game/phase-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "song/song-enum.hpp"
 #include "song/song-type-enum.hpp"
@@ -60,7 +62,7 @@ namespace item
 namespace song
 {
 
-    // Responsible for storing all the information about a Song in the game.
+    // Responsible for all state and operation of Songs in the game.
     class Song
     {
     public:
@@ -130,7 +132,8 @@ namespace song
         std::string verbPastTense_;
     };
 
-    using SongPtr_t = Song *;
+    using SongPtr_t = misc::NotNull<Song *>;
+    using SongPtrOPt_t = boost::optional<SongPtr_t>;
     using SongPVec_t = std::vector<SongPtr_t>;
 
     inline bool operator<(const Song & L, const Song & R)

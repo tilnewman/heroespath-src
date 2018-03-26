@@ -55,7 +55,7 @@ namespace song
         static const std::string ImageFilename(const Enum);
     };
 
-    using SongVec_t = std::vector<Songs::Enum>;
+    using SongEnumVec_t = std::vector<Songs::Enum>;
 
 } // namespace song
 } // namespace heroespath

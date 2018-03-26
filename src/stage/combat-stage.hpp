@@ -437,7 +437,7 @@ namespace stage
         TurnActionPhase turnActionPhase_;
         AnimPhase animPhase_;
         spell::SpellPtrOpt_t spellBeingCastPtrOpt_;
-        song::SongPtr_t songBeingPlayedPtr_;
+        song::SongPtrOpt_t songBeingPlayedPtrOpt_;
         std::size_t performReportEffectIndex_;
         std::size_t performReportHitIndex_;
         float zoomSliderOrigPos_;
@@ -520,6 +520,7 @@ namespace stage
         // members that support achievements and titles
         creature::TitleTransitionVec_t creatureTitlesVec_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

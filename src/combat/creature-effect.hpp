@@ -35,11 +35,6 @@
 
 namespace heroespath
 {
-namespace song
-{
-    class Song;
-    using SongPtr_t = Song *;
-} // namespace song
 namespace creature
 {
     class Creature;

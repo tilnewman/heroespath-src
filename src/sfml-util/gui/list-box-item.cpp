@@ -55,7 +55,7 @@ namespace sfml_util
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
-            , SONG_CPTRC(nullptr)
+            , SONG_PTR_OPT(boost::none)
             , is_valid(IS_VALID)
         {}
 
@@ -71,7 +71,7 @@ namespace sfml_util
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
-            , SONG_CPTRC(nullptr)
+            , SONG_PTR_OPT(boost::none)
             , is_valid(IS_VALID)
         {}
 
@@ -90,7 +90,7 @@ namespace sfml_util
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
-            , SONG_CPTRC(nullptr)
+            , SONG_PTR_OPT(boost::none)
             , is_valid(IS_VALID)
         {}
 
@@ -107,7 +107,7 @@ namespace sfml_util
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
-            , SONG_CPTRC(nullptr)
+            , SONG_PTR_OPT(boost::none)
             , is_valid(IS_VALID)
         {}
 
@@ -124,7 +124,7 @@ namespace sfml_util
             , COND_CPTRC(CONDITION_CPTRC_PARAM)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
-            , SONG_CPTRC(nullptr)
+            , SONG_PTR_OPT(boost::none)
             , is_valid(IS_VALID)
         {}
 
@@ -140,7 +140,7 @@ namespace sfml_util
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
-            , SONG_CPTRC(nullptr)
+            , SONG_PTR_OPT(boost::none)
             , is_valid(IS_VALID)
         {}
 
@@ -156,7 +156,7 @@ namespace sfml_util
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(TITLE_PTR_PARAM)
             , SPELL_PTR_OPT(boost::none)
-            , SONG_CPTRC(nullptr)
+            , SONG_PTR_OPT(boost::none)
             , is_valid(IS_VALID)
         {}
 
@@ -172,14 +172,14 @@ namespace sfml_util
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(SPELL_PTR_PARAM)
-            , SONG_CPTRC(nullptr)
+            , SONG_PTR_OPT(boost::none)
             , is_valid(IS_VALID)
         {}
 
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const song::SongPtrC_t SONG_CPTRC_PARAM,
+            const song::SongPtr_t SONG_PTR_PARAM,
             const bool IS_VALID)
             : TextRegion(std::string(NAME).append("_ListBoxItemSong"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
@@ -188,7 +188,7 @@ namespace sfml_util
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
-            , SONG_CPTRC(SONG_CPTRC_PARAM)
+            , SONG_PTR_OPT(SONG_PTR_PARAM)
             , is_valid(IS_VALID)
         {}
 
@@ -201,7 +201,7 @@ namespace sfml_util
                        L.COND_CPTRC,
                        L.TITLE_PTR_OPT,
                        L.SPELL_PTR_OPT,
-                       L.SONG_CPTRC,
+                       L.SONG_PTR_OPT,
                        L.is_valid)
                 == std::tie(
                        R.CHARACTER_CPTR,
@@ -210,7 +210,7 @@ namespace sfml_util
                        R.COND_CPTRC,
                        R.TITLE_PTR_OPT,
                        R.SPELL_PTR_OPT,
-                       R.SONG_CPTRC,
+                       R.SONG_PTR_OPT,
                        R.is_valid);
         }
 
@@ -223,7 +223,7 @@ namespace sfml_util
                        L.COND_CPTRC,
                        L.TITLE_PTR_OPT,
                        L.SPELL_PTR_OPT,
-                       L.SONG_CPTRC,
+                       L.SONG_PTR_OPT,
                        L.is_valid)
                 < std::tie(
                        R.CHARACTER_CPTR,
@@ -232,7 +232,7 @@ namespace sfml_util
                        R.COND_CPTRC,
                        R.TITLE_PTR_OPT,
                        R.SPELL_PTR_OPT,
-                       R.SONG_CPTRC,
+                       R.SONG_PTR_OPT,
                        R.is_valid);
         }
     } // namespace gui

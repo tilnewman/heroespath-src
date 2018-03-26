@@ -109,7 +109,7 @@ namespace combat
         , actionVerb_(ACTION_VERB)
         , spellPtrOpt_(boost::none)
         , actionPhraseCNP_()
-        , songPtr_(nullptr)
+        , songPtrOpt_(boost::none)
         , didArmorAbsorb_(DID_ARMOR_ABSORB)
         , conditionPtr_(nullptr)
     {}
@@ -132,14 +132,14 @@ namespace combat
         , actionVerb_("casts")
         , spellPtrOpt_(SPELL_PTR)
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
-        , songPtr_(nullptr)
+        , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
         , conditionPtr_(nullptr)
     {}
 
     HitInfo::HitInfo(
         const bool WAS_HIT,
-        const song::SongPtr_t SONG_CPTR,
+        const song::SongPtr_t SONG_PTR,
         const ContentAndNamePos & ACTION_PHRASE_CNP,
         const Health_t & DAMAGE,
         const creature::CondEnumVec_t & CONDS_ADDED_VEC,
@@ -155,7 +155,7 @@ namespace combat
         , actionVerb_("plays")
         , spellPtrOpt_(boost::none)
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
-        , songPtr_(SONG_CPTR)
+        , songPtrOpt_(SONG_PTR)
         , didArmorAbsorb_(false)
         , conditionPtr_(nullptr)
     {}
@@ -178,7 +178,7 @@ namespace combat
         , actionVerb_("plays")
         , spellPtrOpt_(boost::none)
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
-        , songPtr_(nullptr)
+        , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
         , conditionPtr_(creature::condition::Warehouse::Get(COND_ENUM))
     {}
@@ -201,7 +201,7 @@ namespace combat
         , actionVerb_("")
         , spellPtrOpt_(boost::none)
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
-        , songPtr_(nullptr)
+        , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
         , conditionPtr_(nullptr)
     {}
@@ -218,7 +218,7 @@ namespace combat
         , actionVerb_("")
         , spellPtrOpt_(boost::none)
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
-        , songPtr_(nullptr)
+        , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
         , conditionPtr_(nullptr)
     {}
@@ -239,7 +239,7 @@ namespace combat
         , actionVerb_(ACTION_VERB)
         , spellPtrOpt_(boost::none)
         , actionPhraseCNP_()
-        , songPtr_(nullptr)
+        , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
         , conditionPtr_(nullptr)
     {}
@@ -328,8 +328,7 @@ namespace combat
             }
             case HitType::Song:
             {
-                return (
-                    (songPtr_ != nullptr) && (actionPhraseCNP_.NamePos() != NamePosition::Count));
+                return (songPtrOpt_ && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
             case HitType::Pounce:
             case HitType::Roar:
@@ -364,7 +363,7 @@ namespace combat
                 isCritical_,
                 isPower_,
                 spellPtrOpt_,
-                songPtr_,
+                songPtrOpt_,
                 didArmorAbsorb_,
                 conditionPtr_)
             != std::tie(
@@ -375,7 +374,7 @@ namespace combat
                    HI.isCritical_,
                    HI.isPower_,
                    HI.spellPtrOpt_,
-                   HI.songPtr_,
+                   HI.songPtrOpt_,
                    HI.didArmorAbsorb_,
                    HI.conditionPtr_))
         {
@@ -420,7 +419,7 @@ namespace combat
             }
             case HitType::Song:
             {
-                ss << "[" << songPtr_->Name() << "]";
+                ss << "[" << songPtrOpt_->Obj().Name() << "]";
                 break;
             }
             case HitType::Condition:
@@ -482,7 +481,7 @@ namespace combat
                    L.actionVerb_,
                    L.spellPtrOpt_,
                    L.actionPhraseCNP_,
-                   L.songPtr_,
+                   L.songPtrOpt_,
                    L.didArmorAbsorb_,
                    L.conditionPtr_)
             < std::tie(
@@ -495,7 +494,7 @@ namespace combat
                    R.actionVerb_,
                    R.spellPtrOpt_,
                    R.actionPhraseCNP_,
-                   R.songPtr_,
+                   R.songPtrOpt_,
                    R.didArmorAbsorb_,
                    R.conditionPtr_);
     }
@@ -522,7 +521,7 @@ namespace combat
                    L.actionVerb_,
                    L.spellPtrOpt_,
                    L.actionPhraseCNP_,
-                   L.songPtr_,
+                   L.songPtrOpt_,
                    L.didArmorAbsorb_,
                    L.conditionPtr_)
             == std::tie(
@@ -535,7 +534,7 @@ namespace combat
                    R.actionVerb_,
                    R.spellPtrOpt_,
                    R.actionPhraseCNP_,
-                   R.songPtr_,
+                   R.songPtrOpt_,
                    R.didArmorAbsorb_,
                    R.conditionPtr_);
     }

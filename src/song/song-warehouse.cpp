@@ -131,46 +131,41 @@ namespace song
         if (songIndex < Songs::Count)
         {
             auto const NEXT_ENUM{ static_cast<Songs::Enum>(songIndex) };
-            auto songPtr{ Get(NEXT_ENUM) };
+            auto const SONG_PTR{ Get(NEXT_ENUM) };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (songPtr != nullptr),
-                "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                                           << "\") Get() resulted in a nullptr being returned.");
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (songPtr->Name().empty() == false),
+                (SONG_PTR->Name().empty() == false),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                                            << "\") resulted in an empty Name().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (songPtr->Desc().empty() == false),
+                (SONG_PTR->Desc().empty() == false),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                                            << "\") resulted in an empty Desc().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (songPtr->DescExtra().empty() == false),
+                (SONG_PTR->DescExtra().empty() == false),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                                            << "\") resulted in an empty DescExtra().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (songPtr->ManaCost().IsNonZero()),
+                (SONG_PTR->ManaCost().IsNonZero()),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                                            << "\") resulted in a zero Mana cost.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (songPtr->Rank().IsNonZero()),
+                (SONG_PTR->Rank().IsNonZero()),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                                            << "\") resulted in a zero Rank.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (songPtr->Name() == Songs::Name(NEXT_ENUM)),
+                (SONG_PTR->Name() == Songs::Name(NEXT_ENUM)),
                 "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
                                            << "\") Song is out of order.");
 
             ++songIndex;
             game::LoopManager::Instance()->TestingStrIncrement(
-                "Song Test \"" + songPtr->Name() + "\"");
+                "Song Test \"" + SONG_PTR->Name() + "\"");
 
             return false;
         }
@@ -181,7 +176,7 @@ namespace song
         return true;
     }
 
-    SongPtr_t Warehouse::Get(const Songs::Enum E)
+    const SongPtr_t Warehouse::Get(const Songs::Enum E)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (songsUVec_.empty() == false),
@@ -195,5 +190,6 @@ namespace song
 
         return songsUVec_.at(static_cast<std::size_t>(E)).get();
     }
+
 } // namespace song
 } // namespace heroespath

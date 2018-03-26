@@ -46,7 +46,8 @@ namespace spell
 namespace song
 {
     class Song;
-    using SongPtr_t = Song *;
+    using SongPtr_t = misc::NotNull<Song *>;
+    using SongPtrOpt_t = boost::optional<SongPtr_t>;
 } // namespace song
 namespace creature
 {
@@ -73,8 +74,8 @@ namespace combat
             const song::SongPtr_t SONG_PTR, const creature::CreaturePVec_t & TARGET_PVEC);
 
         TurnAction::Enum Action() const { return actionType_; }
-        spell::SpellPtrOpt_t Spell() const { return spellPtrOpt_; }
-        song::SongPtr_t Song() const { return songPtr_; }
+        const spell::SpellPtrOpt_t Spell() const { return spellPtrOpt_; }
+        const song::SongPtrOpt_t Song() const { return songPtrOpt_; }
         const creature::CreaturePVec_t & Targets() const { return targetsPVec_; }
         creature::CreaturePtr_t Target() const;
         const std::string ToString() const;
@@ -86,7 +87,7 @@ namespace combat
         TurnAction::Enum actionType_;
         creature::CreaturePVec_t targetsPVec_;
         spell::SpellPtrOpt_t spellPtrOpt_;
-        song::SongPtr_t songPtr_;
+        song::SongPtrOpt_t songPtrOpt_;
     };
 
     bool operator<(const TurnActionInfo & L, const TurnActionInfo & R);

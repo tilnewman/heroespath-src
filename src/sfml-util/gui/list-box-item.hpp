@@ -48,7 +48,8 @@ namespace spell
 namespace song
 {
     class Song;
-    using SongPtrC_t = Song * const;
+    using SongPtr_t = misc::NotNull<Song *>;
+    using SongPtrOpt_t = boost::optional<SongPtr_t>;
 } // namespace song
 namespace creature
 {
@@ -145,7 +146,7 @@ namespace sfml_util
             ListBoxItem(
                 const std::string & NAME,
                 const sfml_util::gui::TextInfo & TEXT_INFO,
-                const song::SongPtrC_t SONG_CPTRC_PARAM,
+                const song::SongPtr_t SONG_PTR_PARAM,
                 const bool IS_VALID = true);
 
             const creature::CreaturePtr_t CHARACTER_CPTR;
@@ -154,7 +155,7 @@ namespace sfml_util
             const creature::ConditionPtrC_t COND_CPTRC;
             const creature::TitlePtrOpt_t TITLE_PTR_OPT;
             const spell::SpellPtrOpt_t SPELL_PTR_OPT;
-            const song::SongPtrC_t SONG_CPTRC;
+            const song::SongPtrOpt_t SONG_PTR_OPT;
             bool is_valid;
 
             friend bool operator==(const ListBoxItem & L, const ListBoxItem & R);

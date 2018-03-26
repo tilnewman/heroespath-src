@@ -47,7 +47,7 @@ namespace combat
         : actionType_(ACTION)
         , targetsPVec_(TARGETS_PVEC)
         , spellPtrOpt_(boost::none)
-        , songPtr_(nullptr)
+        , songPtrOpt_(boost::none)
     {}
 
     TurnActionInfo::TurnActionInfo(
@@ -55,7 +55,7 @@ namespace combat
         : actionType_(TurnAction::Cast)
         , targetsPVec_(TARGET_PVEC)
         , spellPtrOpt_(SPELL_PTR)
-        , songPtr_(nullptr)
+        , songPtrOpt_(boost::none)
     {}
 
     TurnActionInfo::TurnActionInfo(
@@ -63,7 +63,7 @@ namespace combat
         : actionType_(TurnAction::PlaySong)
         , targetsPVec_(TARGET_PVEC)
         , spellPtrOpt_(boost::none)
-        , songPtr_(SONG_PTR)
+        , songPtrOpt_(SONG_PTR)
     {}
 
     creature::CreaturePtr_t TurnActionInfo::Target() const
@@ -89,9 +89,9 @@ namespace combat
             ss << ", spell=" << spellPtrOpt_->Obj().Name();
         }
 
-        if (nullptr != songPtr_)
+        if (songPtrOpt_)
         {
-            ss << ", song=" << songPtr_->Name();
+            ss << ", song=" << songPtrOpt_->Obj().Name();
         }
 
         ss << ", targets=";
@@ -120,14 +120,14 @@ namespace combat
             return true;
         }
 
-        return std::tie(L.actionType_, L.spellPtrOpt_, L.songPtr_)
-            < std::tie(R.actionType_, R.spellPtrOpt_, R.songPtr_);
+        return std::tie(L.actionType_, L.spellPtrOpt_, L.songPtrOpt_)
+            < std::tie(R.actionType_, R.spellPtrOpt_, R.songPtrOpt_);
     }
 
     bool operator==(const TurnActionInfo & L, const TurnActionInfo & R)
     {
-        if (std::tie(L.actionType_, L.spellPtrOpt_, L.songPtr_)
-            == std::tie(R.actionType_, R.spellPtrOpt_, R.songPtr_))
+        if (std::tie(L.actionType_, L.spellPtrOpt_, L.songPtrOpt_)
+            == std::tie(R.actionType_, R.spellPtrOpt_, R.songPtrOpt_))
         {
             return misc::Vector::OrderlessCompareEqual(L.targetsPVec_, R.targetsPVec_);
         }

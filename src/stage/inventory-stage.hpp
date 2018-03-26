@@ -480,7 +480,7 @@ namespace stage
 
         // members that support spell casting (and song playing)
         spell::SpellPtrOpt_t spellBeingCastPtrOpt_;
-        song::SongPtr_t songBeingPlayedPtr_;
+        song::SongPtrOpt_t songBeingPlayedPtrOpt_;
         combat::TurnActionInfo turnActionInfo_;
         combat::FightResult fightResult_;
         std::size_t creatureEffectIndex_;
@@ -494,6 +494,7 @@ namespace stage
         game::Phase::Enum currentPhase_;
         bool hasTakenActionSpellOrSong_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

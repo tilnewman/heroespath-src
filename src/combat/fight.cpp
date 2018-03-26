@@ -538,28 +538,25 @@ namespace combat
     }
 
     const FightResult FightClub::PlaySong(
-        const song::SongPtr_t SONG_CPTR,
+        const song::SongPtr_t SONG_PTR,
         creature::CreaturePtrC_t creaturePlayingPtr,
         const creature::CreaturePVec_t & creaturesListeningPVec)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (SONG_CPTR != nullptr), "combat::FightClub::PlaySong() was given a null SONG_CPTR.");
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
             (creaturesListeningPVec.empty() == false),
             "combat::FightClub::PlaySong(song="
-                << SONG_CPTR->Name()
+                << SONG_PTR->Name()
                 << ", creature_playing=" << creaturePlayingPtr->NameAndRaceAndRole()
                 << ", creatures_listening=empty) was given an empty creaturesListeningPVec.");
 
-        creaturePlayingPtr->ManaAdj(SONG_CPTR->ManaCost() * Mana_t(-1));
+        creaturePlayingPtr->ManaAdj(SONG_PTR->ManaCost() * Mana_t(-1));
 
-        if (((SONG_CPTR->Target() == TargetType::SingleCompanion)
-             || (SONG_CPTR->Target() == TargetType::SingleOpponent))
+        if (((SONG_PTR->Target() == TargetType::SingleCompanion)
+             || (SONG_PTR->Target() == TargetType::SingleOpponent))
             && (creaturesListeningPVec.size() > 1))
         {
             std::ostringstream ssErr;
-            ssErr << "combat::FightClub::PlaySong(song=" << SONG_CPTR->Name()
+            ssErr << "combat::FightClub::PlaySong(song=" << SONG_PTR->Name()
                   << ", creature_playing=" << creaturePlayingPtr->NameAndRaceAndRole()
                   << ", creatures_listening=\""
                   << creature::Algorithms::Names(
@@ -567,7 +564,7 @@ namespace combat
                          0,
                          misc::Vector::JoinOpt::None,
                          creature::Algorithms::NamesOpt::WithRaceAndRole)
-                  << "\") song target_type=" << TargetType::ToString(SONG_CPTR->Target())
+                  << "\") song target_type=" << TargetType::ToString(SONG_PTR->Target())
                   << " but there were " << creaturesListeningPVec.size()
                   << " creatures listening.  There should have been only 1.";
             throw std::runtime_error(ssErr.str());
@@ -580,7 +577,7 @@ namespace combat
 
         // update player's TurnActionInfo
         Encounter::Instance()->SetTurnActionInfo(
-            creaturePlayingPtr, TurnActionInfo(SONG_CPTR, creaturesListeningPVec));
+            creaturePlayingPtr, TurnActionInfo(SONG_PTR, creaturesListeningPVec));
 
         // attempt to have spell effect each target creature
         CreatureEffectVec_t creatureEffectVec;
@@ -590,7 +587,7 @@ namespace combat
             {
                 const ContentAndNamePos CNP(" is dead.", NamePosition::TargetBefore);
 
-                const HitInfo HIT_INFO(false, SONG_CPTR, CNP);
+                const HitInfo HIT_INFO(false, SONG_PTR, CNP);
 
                 creatureEffectVec.emplace_back(
                     CreatureEffect(nextCreatureCastUponPtr, HitInfoVec_t(1, HIT_INFO)));
@@ -602,7 +599,7 @@ namespace combat
                 creature::CondEnumVec_t condsAddedVec;
                 creature::CondEnumVec_t condsRemovedVec;
 
-                auto const DID_SONG_SUCCEED{ SONG_CPTR->EffectCreature(
+                auto const DID_SONG_SUCCEED{ SONG_PTR->EffectCreature(
                     creaturePlayingPtr,
                     nextCreatureCastUponPtr,
                     healthAdj,
@@ -624,7 +621,7 @@ namespace combat
 
                 hitInfoVec.emplace_back(HitInfo(
                     DID_SONG_SUCCEED,
-                    SONG_CPTR,
+                    SONG_PTR,
                     actionPhraseCNP,
                     healthAdj,
                     condsAddedVec,
@@ -644,8 +641,8 @@ namespace combat
 
                 turnInfo.SetWasHitLastTurn(false);
 
-                if ((SONG_CPTR->Effect() == combat::EffectType::CreatureHarmDamage)
-                    || (SONG_CPTR->Effect() == combat::EffectType::CreatureHarmMisc))
+                if ((SONG_PTR->Effect() == combat::EffectType::CreatureHarmDamage)
+                    || (SONG_PTR->Effect() == combat::EffectType::CreatureHarmMisc))
                 {
                     if (turnInfo.GetFirstAttackedByCreature() == nullptr)
                     {
