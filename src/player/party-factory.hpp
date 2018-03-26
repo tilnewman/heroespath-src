@@ -33,22 +33,24 @@
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
+}
 namespace player
 {
-
-    class Character;
-    using CharacterPtr_t = Character *;
-    using CharacterPVec_t = std::vector<CharacterPtr_t>;
 
     class Party;
     using PartyUPtr_t = std::unique_ptr<Party>;
 
     struct PartyFactory
     {
-        static PartyUPtr_t Make(const avatar::Avatar::Enum, const CharacterPVec_t &);
-
+        static PartyUPtr_t Make(const avatar::Avatar::Enum, const creature::CreaturePVec_t &);
         static PartyUPtr_t MakeFakeForTesting();
     };
+
 } // namespace player
 } // namespace heroespath
 

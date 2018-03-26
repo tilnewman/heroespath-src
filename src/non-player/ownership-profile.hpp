@@ -40,11 +40,13 @@
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+}
 namespace non_player
 {
-    class Character;
-    using CharacterPtr_t = Character *;
-
     namespace ownership
     {
 
@@ -66,7 +68,7 @@ namespace non_player
             static const std::string ToString(const wealth_type::Enum);
             static wealth_type::Enum FromRankType(const creature::rank_class::Enum RANK_CLASS);
             static wealth_type::Enum FromRank(const Rank_t & RANK);
-            static wealth_type::Enum FromCreature(const CharacterPtr_t CHARACTER_PTR);
+            static wealth_type::Enum FromCreature(const creature::CreaturePtr_t CHARACTER_PTR);
         };
 
         // defines the number of items a creature owns
@@ -91,7 +93,7 @@ namespace non_player
             };
 
             static const std::string ToString(const collector_type::Enum);
-            static collector_type::Enum FromCreature(const CharacterPtr_t CHARACTER_PTR);
+            static collector_type::Enum FromCreature(const creature::CreaturePtr_t CHARACTER_PTR);
         };
 
         // defines the frequency/power of magical items owned by the creature
@@ -105,7 +107,7 @@ namespace non_player
                 Count
             };
 
-            static owns_magic_type::Enum FromCreature(const CharacterPtr_t CHARACTER_PTR);
+            static owns_magic_type::Enum FromCreature(const creature::CreaturePtr_t CHARACTER_PTR);
         };
 
         // define the complexity of items owned by the creature
@@ -131,7 +133,7 @@ namespace non_player
 
             static const std::string ToString(const complexity_type::Enum);
             static complexity_type::Enum FromString(const std::string &);
-            static complexity_type::Enum FromCreature(const CharacterPtr_t CHARACTER_PTR);
+            static complexity_type::Enum FromCreature(const creature::CreaturePtr_t CHARACTER_PTR);
         };
 
         // wrapper for info that describes what a creature will own
@@ -143,7 +145,7 @@ namespace non_player
                 const owns_magic_type::Enum MAGIC_OWN_TYPE,
                 const complexity_type::Enum COMPLEXITY_TYPE);
 
-            static const Profile Make_FromCreature(const CharacterPtr_t CHARACTER_PTR);
+            static const Profile Make_FromCreature(const creature::CreaturePtr_t CHARACTER_PTR);
 
             wealth_type::Enum wealthType;
             collector_type::Enum collectorType;
@@ -152,6 +154,7 @@ namespace non_player
         };
 
         float ConvertStringToFloat(const std::string & KEY, const std::string & STR_FLOAT);
+
     } // namespace ownership
 } // namespace non_player
 } // namespace heroespath

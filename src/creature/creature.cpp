@@ -58,6 +58,7 @@ namespace creature
     const std::string Creature::ITEM_ACTION_SUCCESS_STR_{ "" };
 
     Creature::Creature(
+        const bool IS_PLAYER,
         const std::string & NAME,
         const sex::Enum SEX,
         const BodyType & BODY_TYPE,
@@ -75,7 +76,8 @@ namespace creature
         const spell::SpellVec_t & SPELL_VEC,
         const Mana_t & MANA,
         const song::SongVec_t & SONG_VEC)
-        : name_(NAME)
+        : isPlayer_(IS_PLAYER)
+        , name_(NAME)
         , imageFilename_(IMAGE_FILENAME)
         , sex_(SEX)
         , bodyType_(BODY_TYPE)
@@ -124,13 +126,10 @@ namespace creature
         ReCalculateTraitBonuses();
     }
 
-    // Items and their Enchantments are free'd when the Inventory is destructed.
-    Creature::~Creature() = default;
-
     const std::string Creature::NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
     {
         std::ostringstream ss;
-        if (IsPlayerCharacter())
+        if (isPlayer_)
         {
             ss << Name();
         }
@@ -545,7 +544,7 @@ namespace creature
         }
 
         // verify strength/weight
-        if (IsPlayerCharacter() && ((inventory_.Weight() + ITEM_PTR->Weight()) > WeightCanCarry()))
+        if (isPlayer_ && ((inventory_.Weight() + ITEM_PTR->Weight()) > WeightCanCarry()))
         {
             std::ostringstream ss;
             ss << "item weighs " << ITEM_PTR->Weight() << " which is "

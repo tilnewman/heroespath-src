@@ -34,29 +34,32 @@
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+    using CreaturePtrC_t = Creature * const;
+    using CreatureCPtrC_t = Creature const * const;
+}
 namespace player
 {
-
-    // forward declarations
-    class Character;
-    using CharacterPtrC_t = Character * const;
-    using CharacterCPtrC_t = const Character * const;
 
     class Initial
     {
     public:
-        static void Setup(CharacterPtrC_t);
+        static void Setup(creature::CreaturePtrC_t);
 
     private:
-        static void EnsureValidImageFilename(CharacterPtrC_t);
-        static void SetupInventory(CharacterPtrC_t);
-        static void SetupSpellsAndSongs(CharacterPtrC_t);
-        static void EquipBodyParts(CharacterPtrC_t);
-        static Health_t GetStartingHealth(CharacterCPtrC_t);
-        static void SetStartingHealth(CharacterPtrC_t);
-        static void SetStartingMana(CharacterPtrC_t);
+        static void EnsureValidImageFilename(creature::CreaturePtrC_t);
+        static void SetupInventory(creature::CreaturePtrC_t);
+        static void SetupSpellsAndSongs(creature::CreaturePtrC_t);
+        static void EquipBodyParts(creature::CreaturePtrC_t);
+        static Health_t GetStartingHealth(creature::CreatureCPtrC_t);
+        static void SetStartingHealth(creature::CreaturePtrC_t);
+        static void SetStartingMana(creature::CreaturePtrC_t);
         static item::material::Enum HardOrSoftLeatherRand();
     };
+
 } // namespace player
 } // namespace heroespath
 

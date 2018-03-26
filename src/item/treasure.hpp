@@ -28,21 +28,20 @@
 // treasure.hpp
 //  Functions that determine what treasure a defeated enemy party has.
 //
-#include "misc/types.hpp"
-
 #include "item/item-profile.hpp"
 #include "item/treasure-image-enum.hpp"
 #include "item/treasure-scores.hpp"
+#include "misc/types.hpp"
 
 #include <vector>
 
 namespace heroespath
 {
-namespace non_player
+namespace creature
 {
-    class Character;
-    using CharacterPtr_t = Character *;
-    using CharacterPVec_t = std::vector<CharacterPtr_t>;
+    class Creature;
+    using CreaturePtr_t = Creature *;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace non_player
 namespace item
 {
@@ -111,17 +110,17 @@ namespace item
         // to items_OutParam.  It is assumed, but not required, that
         // items_OutParam is empty when Make is called.
         static TreasureImage::Enum
-            Make(const non_player::CharacterPVec_t & CHARACTER_PVEC, ItemCache & items_OutParam);
+            Make(const creature::CreaturePVec_t & CHARACTER_PVEC, ItemCache & items_OutParam);
 
-        static float TreasureRatioPer(const non_player::CharacterPVec_t &);
+        static float TreasureRatioPer(const creature::CreaturePVec_t &);
 
     private:
         static TreasureImage::Enum DetermineWhichTreasureImage(const TreasureScores &);
 
         // uses a TreasureInfo object to hold/return sum values
-        static const TreasureScores CalculateTreasureSums(const non_player::CharacterPVec_t &);
+        static const TreasureScores CalculateTreasureSums(const creature::CreaturePVec_t &);
 
-        static const TreasureScores MakeRandTreasureInfo(const non_player::CharacterPVec_t &);
+        static const TreasureScores MakeRandTreasureInfo(const creature::CreaturePVec_t &);
 
         static std::size_t SelectItems(
             const Score_t & TREASURE_SCORE, const bool IS_RELIGIOUS, ItemCache & items_OutParam);

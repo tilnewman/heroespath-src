@@ -29,8 +29,8 @@
 //
 #include "trap.hpp"
 
+#include "creature/creature.hpp"
 #include "game/game.hpp"
-#include "player/character.hpp"
 #include "player/party.hpp"
 #include "state/game-state.hpp"
 

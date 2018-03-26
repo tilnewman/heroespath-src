@@ -43,13 +43,15 @@
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+}
 namespace non_player
 {
     class Party;
     using PartyUPtr_t = std::unique_ptr<Party>;
-
-    class Character;
-    using CharacterPtr_t = Character *;
 } // namespace non_player
 namespace combat
 {
@@ -74,10 +76,10 @@ namespace combat
         non_player::PartyUPtr_t MakeParty_FirstEncounter() const;
 
     private:
-        non_player::CharacterPtr_t MakeCharacter_GoblinGrunt() const;
-        non_player::CharacterPtr_t MakeCharacter_Boar() const;
+        creature::CreaturePtr_t MakeCharacter_GoblinGrunt() const;
+        creature::CreaturePtr_t MakeCharacter_Boar() const;
 
-        non_player::CharacterPtr_t MakeCharacter(
+        creature::CreaturePtr_t MakeCharacter(
             const stats::StatSet & STATS,
             const Health_t & HEALTH_MIN,
             const Health_t & HEALTH_MAX,

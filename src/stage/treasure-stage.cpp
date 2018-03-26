@@ -51,13 +51,12 @@
 #include "combat/fight.hpp"
 #include "combat/trap-warehouse.hpp"
 #include "creature/algorithms.hpp"
+#include "creature/creature.hpp"
 #include "creature/stats.hpp"
 #include "creature/title.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item.hpp"
-#include "non-player/character.hpp"
 #include "non-player/party.hpp"
-#include "player/character.hpp"
 #include "stage/treasure-display-stage.hpp"
 
 // TODO TEMP REMOVE -once done testing

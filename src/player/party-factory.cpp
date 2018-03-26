@@ -29,14 +29,13 @@
 //
 #include "party-factory.hpp"
 
+#include "creature/creature.hpp"
 #include "creature/name-info.hpp"
-#include "player/character.hpp"
+#include "misc/boost-string-includes.hpp"
+#include "misc/random.hpp"
 #include "player/initial.hpp"
 #include "player/party.hpp"
 #include "stats/stat-set.hpp"
-
-#include "misc/boost-string-includes.hpp"
-#include "misc/random.hpp"
 
 #include <algorithm>
 #include <string>
@@ -46,8 +45,8 @@ namespace heroespath
 namespace player
 {
 
-    PartyUPtr_t
-        PartyFactory::Make(const avatar::Avatar::Enum AVATAR, const CharacterPVec_t & CHARACTERS)
+    PartyUPtr_t PartyFactory::Make(
+        const avatar::Avatar::Enum AVATAR, const creature::CreaturePVec_t & CHARACTERS)
     {
         return std::make_unique<Party>(AVATAR, CHARACTERS);
     }
@@ -76,7 +75,8 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "K") );
 
-            auto knightPtr{ new player::Character(
+            auto knightPtr{ new creature::Creature(
+                true,
                 KNIGHT_NAME,
                 creature::sex::Male,
                 creature::BodyType::Make_Humanoid(),
@@ -102,7 +102,8 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "F"));
 
-            auto firebrandPtr{ new player::Character(
+            auto firebrandPtr{ new creature::Creature(
+                true,
                 FIREBRAND_NAME,
                 creature::sex::Male,
                 creature::BodyType::Make_Dragon(),
@@ -128,7 +129,8 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "A"));
 
-            auto archerPtr{ new player::Character(
+            auto archerPtr{ new creature::Creature(
+                true,
                 ARCHER_NAME,
                 creature::sex::Female,
                 creature::BodyType::Make_Humanoid(),
@@ -154,7 +156,8 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "W"));
 
-            auto wolfenPtr{ new player::Character(
+            auto wolfenPtr{ new creature::Creature(
+                true,
                 WOLFEN_NAME,
                 creature::sex::Female,
                 creature::BodyType::Make_Wolfen(),
@@ -180,7 +183,8 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "B"));
 
-            auto bardPtr{ new player::Character(
+            auto bardPtr{ new creature::Creature(
+                true,
                 BARD_NAME,
                 creature::sex::Male,
                 creature::BodyType::Make_Humanoid(),
@@ -206,7 +210,8 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "G"));
 
-            auto bmPtr{ new player::Character(
+            auto bmPtr{ new creature::Creature(
+                true,
                 BEASTMASTER_NAME,
                 creature::sex::Male,
                 creature::BodyType::Make_Humanoid(),
@@ -232,7 +237,8 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "T"));
 
-            auto thiefPtr{ new player::Character(
+            auto thiefPtr{ new creature::Creature(
+                true,
                 THEIF_NAME,
                 creature::sex::Male,
                 creature::BodyType::Make_Humanoid(),
@@ -258,7 +264,8 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "C"));
 
-            auto clericPtr{ new player::Character(
+            auto clericPtr{ new creature::Creature(
+                true,
                 CLERIC_NAME,
                 creature::sex::Female,
                 creature::BodyType::Make_Pixie(),
@@ -284,7 +291,8 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "S"));
 
-            auto sorcererPtr{ new player::Character(
+            auto sorcererPtr{ new creature::Creature(
+                true,
                 SORCERER_NAME,
                 creature::sex::Male,
                 creature::BodyType::Make_Pixie(),
@@ -310,7 +318,8 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "S"));
 
-            auto sylavinPtr{ new player::Character(
+            auto sylavinPtr{ new creature::Creature(
+                true,
                 SYLAVIN_NAME,
                 creature::sex::Male,
                 creature::BodyType::Make_Dragon(),
@@ -324,5 +333,6 @@ namespace player
 
         return partyUPtr;
     }
+
 } // namespace player
 } // namespace heroespath

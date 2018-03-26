@@ -680,7 +680,7 @@ namespace stage
     }
 
     const std::string
-        AdventureCharacterList::NameButtonMouseoverText(const player::CharacterPtr_t CHARACTER_PTR)
+        AdventureCharacterList::NameButtonMouseoverText(const creature::CreaturePtr_t CHARACTER_PTR)
     {
         auto const NAME_STR{ CHARACTER_PTR->Name() };
         auto const RACE_STR{ CHARACTER_PTR->RaceName() };

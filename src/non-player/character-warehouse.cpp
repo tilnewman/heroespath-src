@@ -29,8 +29,8 @@
 //
 #include "character-warehouse.hpp"
 
+#include "creature/creature.hpp"
 #include "log/log-macros.hpp"
-#include "non-player/character.hpp"
 
 namespace heroespath
 {
@@ -82,7 +82,7 @@ namespace non_player
         instanceUPtr_.reset();
     }
 
-    CharacterPtr_t CharacterWarehouse::Store(const CharacterPtr_t CHARACTER_PTR)
+    creature::CreaturePtr_t CharacterWarehouse::Store(const creature::CreaturePtr_t CHARACTER_PTR)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (CHARACTER_PTR != nullptr), "non_player::CharacterWarehouse::Store() given nullptr.");
@@ -90,12 +90,13 @@ namespace non_player
         return warehouse_.Store(CHARACTER_PTR, CHARACTER_PTR->Name());
     }
 
-    void CharacterWarehouse::Free(CharacterPtr_t & character_ptr)
+    void CharacterWarehouse::Free(creature::CreaturePtr_t & character_ptr)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (character_ptr != nullptr), "non_player::CharacterWarehouse::Free() given nullptr.");
 
         warehouse_.Free(character_ptr, character_ptr->Name());
     }
+
 } // namespace non_player
 } // namespace heroespath

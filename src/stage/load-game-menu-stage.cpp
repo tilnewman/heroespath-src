@@ -41,9 +41,9 @@
 
 #include "popup/popup-manager.hpp"
 
+#include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
-#include "player/character.hpp"
 #include "player/party.hpp"
 #include "state/game-state-factory.hpp"
 #include "state/game-state.hpp"

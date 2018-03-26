@@ -33,10 +33,9 @@
 #include "game/game.hpp"
 
 #include "combat/encounter.hpp"
+#include "creature/creature.hpp"
 #include "item/item.hpp"
-#include "non-player/character.hpp"
 #include "non-player/party.hpp"
-#include "player/character.hpp"
 #include "player/party.hpp"
 #include "stage/treasure-stage.hpp"
 #include "state/game-state.hpp"

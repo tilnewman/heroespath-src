@@ -35,7 +35,6 @@
 #include "game/loop-manager.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/vectors.hpp"
-#include "player/character.hpp"
 #include "player/party.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"

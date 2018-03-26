@@ -34,14 +34,15 @@
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+    using CreatureUPtr_t = std::unique_ptr<Creature>;
+    using CreatureUVec_t = std::vector<CreatureUPtr_t>;
+}
 namespace non_player
 {
-
-    // forward declarations
-    class Character;
-    using CharacterPtr_t = Character *;
-    using CharacterUPtr_t = std::unique_ptr<Character>;
-    using CharacterUVec_t = std::vector<CharacterUPtr_t>;
 
     // Singleton responsible for the lifetimes of player::Character objects.
     // This class does not new the objects, but it does delete them.
@@ -61,13 +62,14 @@ namespace non_player
         static void Acquire();
         static void Release();
 
-        CharacterPtr_t Store(const CharacterPtr_t);
-        void Free(CharacterPtr_t &);
+        creature::CreaturePtr_t Store(const creature::CreaturePtr_t);
+        void Free(creature::CreaturePtr_t &);
 
     private:
         static std::unique_ptr<CharacterWarehouse> instanceUPtr_;
-        misc::Warehouse<Character> warehouse_;
+        misc::Warehouse<creature::Creature> warehouse_;
     };
+
 } // namespace non_player
 } // namespace heroespath
 

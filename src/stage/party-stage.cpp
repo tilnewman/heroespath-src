@@ -29,6 +29,19 @@
 //
 #include "party-stage.hpp"
 
+#include "avatar/portrait-factory.hpp"
+#include "creature/creature.hpp"
+#include "creature/name-info.hpp"
+#include "game/game-data-file.hpp"
+#include "game/game.hpp"
+#include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
+#include "misc/real.hpp"
+#include "player/character-warehouse.hpp"
+#include "player/party-factory.hpp"
+#include "player/party.hpp"
+#include "popup/popup-manager.hpp"
+#include "popup/popup-stage-image-select.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
@@ -38,26 +51,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/tile.hpp"
-
-#include "popup/popup-manager.hpp"
-#include "popup/popup-stage-image-select.hpp"
-
-#include "log/log-macros.hpp"
-
-#include "game/game-data-file.hpp"
-#include "game/game.hpp"
-#include "game/loop-manager.hpp"
-
-#include "creature/name-info.hpp"
-#include "player/character-warehouse.hpp"
-#include "player/character.hpp"
-#include "player/party-factory.hpp"
-#include "player/party.hpp"
 #include "state/game-state-factory.hpp"
-
-#include "avatar/portrait-factory.hpp"
-
-#include "misc/real.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -601,7 +595,7 @@ namespace stage
         }
     }
 
-    player::CharacterPtr_t PartyStage::GetSelectedCharacter() const
+    creature::CreaturePtr_t PartyStage::GetSelectedCharacter() const
     {
         auto itemSPtr{ GetSelectedItemSPtr() };
 
@@ -773,7 +767,7 @@ namespace stage
     void PartyStage::StartNewGame(const avatar::Avatar::Enum PARTY_AVATAR)
     {
         // create a new party structure
-        player::CharacterPVec_t charPVec;
+        creature::CreaturePVec_t charPVec;
         {
             for (std::size_t i(0); i < partyListBoxUPtr_->Size(); ++i)
             {

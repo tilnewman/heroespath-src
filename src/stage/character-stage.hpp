@@ -41,9 +41,9 @@
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage.hpp"
 
+#include "creature/creature.hpp"
 #include "creature/race-stats.hpp"
 #include "creature/role-stats.hpp"
-#include "player/character.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-buttons.hpp"
 #include "sfml-util/main-menu-title.hpp"

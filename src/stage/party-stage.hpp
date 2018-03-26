@@ -28,6 +28,8 @@
 // party-stage.hpp
 //  A Stage class that allows grouping of saved characters into a party.
 //
+#include "avatar/avatar-enum.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/horiz-symbol.hpp"
@@ -38,10 +40,6 @@
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage.hpp"
-
-#include "avatar/avatar-enum.hpp"
-
-#include "popup/i-popup-callback.hpp"
 
 #include <memory>
 #include <set>
@@ -58,11 +56,11 @@ namespace sfml_util
     } // namespace gui
 } // namespace sfml_util
 
-namespace player
+namespace creature
 {
-    class Character;
-    using CharacterPtr_t = Character *;
-    using CharacterPSet_t = std::set<CharacterPtr_t>;
+    class Creature;
+    using CreaturePtr_t = Creature *;
+    using CreaturePSet_t = std::set<CreaturePtr_t>;
 } // namespace player
 
 namespace stage
@@ -99,7 +97,7 @@ namespace stage
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
         virtual std::size_t NumCharactersInTheParty() const;
         virtual sfml_util::gui::ListBoxItemSPtr_t GetSelectedItemSPtr() const;
-        virtual player::CharacterPtr_t GetSelectedCharacter() const;
+        virtual creature::CreaturePtr_t GetSelectedCharacter() const;
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
@@ -158,15 +156,16 @@ namespace stage
         float mouseOverBoxHeight_;
         sf::Vector2f mouseOverPosV_;
         sf::Sprite mouseOverSprite_;
-        player::CharacterPtr_t mouseOverCharPtr_;
+        creature::CreaturePtr_t mouseOverCharPtr_;
         sf::Texture mouseOverTexture_;
         bool isMouseOverTexture_;
         sfml_util::gui::TextRegionUPtr_t mouseOverTextRegionUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
 
         //
-        player::CharacterPSet_t charactersPSet_;
+        creature::CreaturePSet_t charactersPSet_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

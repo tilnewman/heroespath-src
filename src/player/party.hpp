@@ -42,15 +42,11 @@ namespace creature
     class Creature;
     using CreaturePtr_t = Creature *;
     using CreatureCPtrC_t = const Creature * const;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
 
 namespace player
 {
-
-    // forward declarations
-    class Character;
-    using CharacterPtr_t = Character *;
-    using CharacterPVec_t = std::vector<CharacterPtr_t>;
 
     // encapsulates a set of Characters under control of the user
     class Party
@@ -64,20 +60,20 @@ namespace player
     public:
         explicit Party(
             const avatar::Avatar::Enum PARTY_AVATAR = avatar::Avatar::Player_First,
-            const CharacterPVec_t & CHARACTER_PVEC = CharacterPVec_t());
+            const creature::CreaturePVec_t & CHARACTER_PVEC = creature::CreaturePVec_t());
 
-        virtual ~Party();
+        ~Party();
 
-        const CharacterPVec_t Characters() const { return charactersPVec_; }
+        const creature::CreaturePVec_t Characters() const { return charactersPVec_; }
 
         // Sets error_msg to a message describing why upon failure,
         // otherwise error_msg is not changed.
-        bool Add(const CharacterPtr_t CHARACTER_PTR, std::string & error_msg);
+        bool Add(const creature::CreaturePtr_t CHARACTER_PTR, std::string & error_msg);
 
-        bool IsAddAllowed(const CharacterPtr_t CHARACTER_PTR, std::string & error_msg);
+        bool IsAddAllowed(const creature::CreaturePtr_t CHARACTER_PTR, std::string & error_msg);
 
         // returns true if the character existed in the charactersSVec_ and was removed.
-        bool Remove(CharacterPtr_t);
+        bool Remove(creature::CreaturePtr_t);
 
         creature::CreaturePtr_t GetNextInOrderAfter(const creature::CreaturePtr_t C_PTR)
         {
@@ -114,7 +110,7 @@ namespace player
 
     private:
         avatar::Avatar::Enum avatar_;
-        CharacterPVec_t charactersPVec_;
+        creature::CreaturePVec_t charactersPVec_;
 
     private:
         friend class boost::serialization::access;
@@ -126,6 +122,7 @@ namespace player
     };
 
     using PartyUPtr_t = std::unique_ptr<Party>;
+
 } // namespace player
 } // namespace heroespath
 

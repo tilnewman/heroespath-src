@@ -49,11 +49,6 @@ namespace creature
     using CreatureCPtrC_t = const Creature * const;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
-namespace player
-{
-    class Character;
-    using CharacterPtrC_t = Character * const;
-} // namespace player
 namespace non_player
 {
     class Party;
@@ -114,7 +109,7 @@ namespace combat
             turnInfoMap_[P].SetTurnActionInfo(TAI);
         }
 
-        void HandleKilledCreature(creature::CreatureCPtrC_t);
+        void HandleKilledCreature(creature::CreaturePtrC_t);
         void IncrementTurn();
         void BeginCombatTasks();
         void EndCombatTasks();

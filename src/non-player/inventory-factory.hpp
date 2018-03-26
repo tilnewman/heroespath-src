@@ -38,6 +38,11 @@
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+}
 namespace item
 {
     class Item;
@@ -46,10 +51,6 @@ namespace item
 } // namespace item
 namespace non_player
 {
-
-    class Character;
-    using CharacterPtr_t = Character *;
-
     namespace ownership
     {
 
@@ -76,28 +77,27 @@ namespace non_player
             static void Acquire();
             static void Release();
 
-            static void SetupCreatureInventory(non_player::CharacterPtr_t creaturePtr);
+            static void SetupCreatureInventory(creature::CreaturePtr_t creaturePtr);
 
             static const IItemPVecPair_t MakeItemSet(
                 const chance::InventoryChances & CHANCES,
-                const non_player::CharacterPtr_t CHARACTER_PTR);
+                const creature::CreaturePtr_t CHARACTER_PTR);
 
         private:
             static const IItemPVecPair_t
                 MakeItemSet_Clothing(const chance::ClothingChances & CHANCES);
 
             static const IItemPVecPair_t MakeItemSet_Weapons(
-                const chance::WeaponChances & CHANCES,
-                const non_player::CharacterPtr_t CHARACTER_PTR);
+                const chance::WeaponChances & CHANCES, const creature::CreaturePtr_t CHARACTER_PTR);
 
             static const IItemPVecPair_t MakeItemSet_Armor(
                 const chance::ArmorChances & CHANCES,
-                const non_player::CharacterPtr_t CHARACTER_PTR,
+                const creature::CreaturePtr_t CHARACTER_PTR,
                 const bool HAS_TWO_HANDED_WEAPON_EQUIPPED);
 
             static const item::ItemPVec_t MakeItemSet_BodyWeapons(
                 const chance::WeaponChances & CHANCES,
-                const non_player::CharacterPtr_t CHARACTER_PTR,
+                const creature::CreaturePtr_t CHARACTER_PTR,
                 const bool HAS_TWO_HANDED_WEAPON_EQUIPPED);
 
             static Coin_t Make_Coins(const chance::InventoryChances & CHANCES);
@@ -167,6 +167,7 @@ namespace non_player
         private:
             static std::unique_ptr<InventoryFactory> instanceUPtr_;
         };
+
     } // namespace ownership
 } // namespace non_player
 } // namespace heroespath

@@ -29,12 +29,12 @@
 //
 #include "chance-factory.hpp"
 
+#include "creature/creature.hpp"
 #include "item/armor-details.hpp"
 #include "item/item.hpp"
 #include "item/weapon-details.hpp"
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
-#include "non-player/character.hpp"
 #include "stats/trait.hpp"
 
 #include "misc/assertlogandthrow.hpp"
@@ -126,13 +126,13 @@ namespace non_player
         }
 
         const chance::InventoryChances
-            ChanceFactory::Make(const non_player::CharacterPtr_t CHARACTER_PTR)
+            ChanceFactory::Make(const creature::CreaturePtr_t CHARACTER_PTR)
         {
             return Make(Profile::Make_FromCreature(CHARACTER_PTR), CHARACTER_PTR);
         }
 
         const chance::InventoryChances ChanceFactory::Make(
-            const Profile & PROFILE, const non_player::CharacterPtr_t CHARACTER_PTR)
+            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR)
         {
             auto coinsMin{ 0_coin };
             auto coinsMax{ 0_coin };
@@ -202,7 +202,7 @@ namespace non_player
         }
 
         const chance::ClothingChances ChanceFactory::Make_ClothingChances(
-            const Profile & PROFILE, const non_player::CharacterPtr_t CHARACTER_PTR)
+            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR)
         {
             using namespace item;
 
@@ -302,7 +302,7 @@ namespace non_player
         }
 
         const chance::WeaponChances ChanceFactory::Make_WeaponChances(
-            const Profile & PROFILE, const non_player::CharacterPtr_t CHARACTER_PTR)
+            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR)
         {
             chance::WeaponChances weaponChances(chance::WeaponChances::NoWeapon());
 
@@ -333,7 +333,7 @@ namespace non_player
         }
 
         const chance::ArmorChances ChanceFactory::Make_ArmorChances(
-            const Profile & PROFILE, const non_player::CharacterPtr_t CHARACTER_PTR)
+            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR)
         {
             auto armorChances{ chance::ArmorChances::NoArmor() };
             LookupPossibleArmorByRole(PROFILE, CHARACTER_PTR, armorChances);
@@ -355,7 +355,7 @@ namespace non_player
         }
 
         const chance::ItemChanceMap_t
-            ChanceFactory::Make_MiscItemChances(const Profile &, const non_player::CharacterPtr_t)
+            ChanceFactory::Make_MiscItemChances(const Profile &, const creature::CreaturePtr_t)
         {
             chance::ItemChanceMap_t miscItems;
 
@@ -372,7 +372,7 @@ namespace non_player
             chance::WeaponChances & weaponChances,
             const WeaponSet & WEAPON_SET,
             const Profile & PROFILE,
-            const non_player::CharacterPtr_t CHARACTER_PTR)
+            const creature::CreaturePtr_t CHARACTER_PTR)
         {
             // find the total chance of all weapon possibilities combined
             float chanceCombined(0.0f);
@@ -771,7 +771,7 @@ namespace non_player
 
         void ChanceFactory::LookupPossibleArmorByRole(
             const Profile & PROFILE,
-            const non_player::CharacterPtr_t CHARACTER_PTR,
+            const creature::CreaturePtr_t CHARACTER_PTR,
             chance::ArmorChances & armorChances)
         {
             using namespace boost::algorithm;
@@ -1135,7 +1135,7 @@ namespace non_player
 
         void ChanceFactory::LookupClothingMaterialChances(
             const Profile & PROFILE,
-            const non_player::CharacterPtr_t CHARACTER_PTR,
+            const creature::CreaturePtr_t CHARACTER_PTR,
             float & clothChance,
             float & softleatherChance,
             float & hardleatherChance)
@@ -1222,7 +1222,7 @@ namespace non_player
 
         void ChanceFactory::Make_ClothingMaterialChancesPrimary(
             const Profile & PROFILE,
-            const non_player::CharacterPtr_t CHARACTER_PTR,
+            const creature::CreaturePtr_t CHARACTER_PTR,
             chance::ItemChances & itemChancesBase)
         {
             // set the chance base object with data common to all clothing chances
@@ -1247,7 +1247,7 @@ namespace non_player
 
         void ChanceFactory::Make_MaterialChancesPrimary(
             const Profile & PROFILE,
-            const non_player::CharacterPtr_t CHARACTER_PTR,
+            const creature::CreaturePtr_t CHARACTER_PTR,
             const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
             const Weight_t & ITEM_WEIGHT,
             chance::MaterialChanceMap_t & materialsMap_OutParam)
@@ -1400,7 +1400,7 @@ namespace non_player
 
         void ChanceFactory::Make_MaterialChancesSecondary(
             const Profile & PROFILE,
-            const non_player::CharacterPtr_t CHARACTER_PTR,
+            const creature::CreaturePtr_t CHARACTER_PTR,
             chance::MaterialChanceMap_t & materialsMap_OutParam)
         {
             // establish the base chances for a secondary material
@@ -1622,7 +1622,7 @@ namespace non_player
         }
 
         const chance::ClothingChances ChanceFactory::Make_ClothingMaterialChances(
-            const Profile & PROFILE, const non_player::CharacterPtr_t CHARACTER_PTR)
+            const Profile & PROFILE, const creature::CreaturePtr_t CHARACTER_PTR)
         {
             chance::ItemChances itemChancesBase;
             Make_ClothingMaterialChancesPrimary(PROFILE, CHARACTER_PTR, itemChancesBase);
@@ -1723,7 +1723,7 @@ namespace non_player
             const std::string & WEAPON_NAME,
             const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
             const Profile & PROFILE,
-            const non_player::CharacterPtr_t CREATURE_PTR,
+            const creature::CreaturePtr_t CREATURE_PTR,
             chance::MaterialChanceMap_t & materialsMapPri,
             chance::MaterialChanceMap_t & materialsMapSec)
         {
@@ -1743,7 +1743,7 @@ namespace non_player
         void ChanceFactory::PopulatMaterials(
             const chance::MaterialChanceMap_t & TYPICAL_PRI_MATERIALS,
             const Profile & PROFILE,
-            const non_player::CharacterPtr_t CREATURE_PTR,
+            const creature::CreaturePtr_t CREATURE_PTR,
             chance::MaterialChanceMap_t & materialsMapPri,
             chance::MaterialChanceMap_t & materialsMapSec,
             const Weight_t & WEIGHT)
@@ -1805,7 +1805,7 @@ namespace non_player
         }
 
         const chance::MaterialChanceMap_t ChanceFactory::MakeTypicalArmorMaterials(
-            const Profile &, const non_player::CharacterPtr_t, const bool INCLUDE_WOOD)
+            const Profile &, const creature::CreaturePtr_t, const bool INCLUDE_WOOD)
         {
             chance::MaterialChanceMap_t materialChanceMap;
 
@@ -1838,7 +1838,7 @@ namespace non_player
             const item::armor::base_type::Enum TYPE,
             const float CHANCE,
             const Profile & PROFILE,
-            const non_player::CharacterPtr_t CREATURE_PTR,
+            const creature::CreaturePtr_t CREATURE_PTR,
             const bool WILL_MATERIALS_INCLUDED_WOOD)
         {
             auto const DETAILS{ item::armor::ArmorDetailLoader::Instance()->LookupArmorDetails(
@@ -1869,7 +1869,7 @@ namespace non_player
             const std::string & COMPLETE_NAME,
             const float CHANCE,
             const Profile & PROFILE,
-            const non_player::CharacterPtr_t CHARACTER_PTR,
+            const creature::CreaturePtr_t CHARACTER_PTR,
             const bool WILL_MATERIALS_INCLUDED_WOOD)
         {
             auto const DETAILS{ item::armor::ArmorDetailLoader::Instance()->LookupArmorDetails(

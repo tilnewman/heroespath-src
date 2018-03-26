@@ -32,11 +32,9 @@
 #include "creature/creature.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
-#include "non-player/chance-factory.hpp"
-#include "non-player/character.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
+#include "non-player/chance-factory.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -96,7 +94,7 @@ namespace non_player
             instanceUPtr_.reset();
         }
 
-        void InventoryFactory::SetupCreatureInventory(non_player::CharacterPtr_t creaturePtr)
+        void InventoryFactory::SetupCreatureInventory(creature::CreaturePtr_t creaturePtr)
         {
             auto const INVENTORY_CHANCES{ ChanceFactory::Make(creaturePtr) };
             creaturePtr->CoinsAdj(Make_Coins(INVENTORY_CHANCES));
@@ -152,8 +150,7 @@ namespace non_player
         }
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet(
-            const chance::InventoryChances & CHANCES,
-            const non_player::CharacterPtr_t CHARACTER_PTR)
+            const chance::InventoryChances & CHANCES, const creature::CreaturePtr_t CHARACTER_PTR)
         {
             IItemPVecPair_t itemsPtrVecPair;
 
@@ -392,7 +389,7 @@ namespace non_player
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet_Weapons(
             const chance::WeaponChances & WEAPON_CHANCES,
-            const non_player::CharacterPtr_t CHARACTER_PTR)
+            const creature::CreaturePtr_t CHARACTER_PTR)
         {
             IItemPVecPair_t itemsPtrVecPair;
 
@@ -794,7 +791,7 @@ namespace non_player
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet_Armor(
             const chance::ArmorChances & CHANCES,
-            const non_player::CharacterPtr_t CHARACTER_PTR,
+            const creature::CreaturePtr_t CHARACTER_PTR,
             const bool HAS_TWO_HANDED_WEAPON)
         {
             using namespace item::armor;
@@ -925,7 +922,7 @@ namespace non_player
 
         const item::ItemPVec_t InventoryFactory::MakeItemSet_BodyWeapons(
             const chance::WeaponChances & CHANCES,
-            const non_player::CharacterPtr_t CHARACTER_PTR,
+            const creature::CreaturePtr_t CHARACTER_PTR,
             const bool HAS_TWO_HANDED_WEAPON_EQUIPPED)
         {
             item::ItemPVec_t bodyWeaponsSVec;

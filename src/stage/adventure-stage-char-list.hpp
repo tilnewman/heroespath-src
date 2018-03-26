@@ -34,8 +34,8 @@
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
+#include "creature/creature.hpp"
 #include "misc/vector-map.hpp"
-#include "player/character.hpp"
 
 #include <memory>
 #include <string>
@@ -93,7 +93,7 @@ namespace stage
         void SetupMouseoverText();
         void SetupCharacterImages();
 
-        const std::string NameButtonMouseoverText(const player::CharacterPtr_t);
+        const std::string NameButtonMouseoverText(const creature::CreaturePtr_t);
 
         enum class WhichBar
         {
@@ -132,7 +132,7 @@ namespace stage
         std::vector<sf::Vertex> quadVerts_;
 
         using ImagePair_t = std::pair<sf::Texture, sf::Sprite>;
-        using CharImageMap_t = misc::VectorMap<player::CharacterPtr_t, ImagePair_t>;
+        using CharImageMap_t = misc::VectorMap<creature::CreaturePtr_t, ImagePair_t>;
         CharImageMap_t charImages_;
 
         sfml_util::gui::Line charListSepLine_;

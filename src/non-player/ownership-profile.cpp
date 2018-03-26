@@ -29,10 +29,9 @@
 //
 #include "ownership-profile.hpp"
 
+#include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
 #include "item/item.hpp"
-#include "non-player/character.hpp"
-
 #include "misc/handy-types.hpp"
 #include "misc/random.hpp"
 #include "stringutil/stringhelp.hpp"
@@ -155,7 +154,7 @@ namespace non_player
             return FromRankType(creature::rank_class::FromRank(RANK));
         }
 
-        wealth_type::Enum wealth_type::FromCreature(const CharacterPtr_t CHARACTER_PTR)
+        wealth_type::Enum wealth_type::FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
         {
             return FromRank(CHARACTER_PTR->Rank());
         }
@@ -192,7 +191,8 @@ namespace non_player
             return ss.str();
         }
 
-        collector_type::Enum collector_type::FromCreature(const CharacterPtr_t CHARACTER_PTR)
+        collector_type::Enum
+            collector_type::FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
         {
             auto const CHANCE_BASE(game::GameDataFile::Instance()->GetCopyFloat(
                 "heroespath-nonplayer-ownershipprofile-collectortype-chance-base"));
@@ -326,7 +326,8 @@ namespace non_player
             return collectorType;
         }
 
-        owns_magic_type::Enum owns_magic_type::FromCreature(const CharacterPtr_t CHARACTER_PTR)
+        owns_magic_type::Enum
+            owns_magic_type::FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
         {
             float chanceRarely(0.0f);
             float chanceReligous(0.0f);
@@ -511,7 +512,8 @@ namespace non_player
                 return Count;
         }
 
-        complexity_type::Enum complexity_type::FromCreature(const CharacterPtr_t CHARACTER_PTR)
+        complexity_type::Enum
+            complexity_type::FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
         {
             const complexity_type::Enum COMPLEXITY_BASED_ON_RACE(
                 FromString(game::GameDataFile::Instance()->GetCopyStr(
@@ -541,7 +543,7 @@ namespace non_player
             , complexityType(COMPLEXITY_TYPE)
         {}
 
-        const Profile Profile::Make_FromCreature(const CharacterPtr_t CHARACTER_PTR)
+        const Profile Profile::Make_FromCreature(const creature::CreaturePtr_t CHARACTER_PTR)
         {
             return Profile(
                 wealth_type::FromCreature(CHARACTER_PTR),
@@ -565,6 +567,7 @@ namespace non_player
                 throw std::runtime_error(ss.str());
             }
         }
+
     } // namespace ownership
 } // namespace non_player
 } // namespace heroespath

@@ -30,9 +30,9 @@
 #include "list-box-item.hpp"
 
 #include "creature/condition.hpp"
+#include "creature/creature.hpp"
 #include "creature/title.hpp"
 #include "item/item.hpp"
-#include "player/character.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 #include "state/game-state.hpp"
@@ -78,7 +78,7 @@ namespace sfml_util
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const player::CharacterPtr_t CHARACTER_PTR,
+            const creature::CreaturePtr_t CHARACTER_PTR,
             const bool IS_VALID)
             : TextRegion(
                   std::string(NAME).append("_ListBoxItemPlayerCharacter"),

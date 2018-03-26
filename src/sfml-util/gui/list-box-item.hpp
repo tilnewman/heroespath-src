@@ -51,6 +51,9 @@ namespace song
 } // namespace song
 namespace creature
 {
+    class Creature;
+    using CreaturePtr_t = Creature *;
+
     class Title;
     using TitlePtr_t = misc::NotNull<Title *>;
     using TitlePtrOpt_t = boost::optional<TitlePtr_t>;
@@ -69,11 +72,6 @@ namespace state
     class GameState;
     using GameStatePtr_t = GameState *;
 } // namespace state
-namespace player
-{
-    class Character;
-    using CharacterPtr_t = Character *;
-} // namespace player
 
 namespace sfml_util
 {
@@ -104,7 +102,7 @@ namespace sfml_util
             ListBoxItem(
                 const std::string & NAME,
                 const sfml_util::gui::TextInfo & TEXT_INFO,
-                const player::CharacterPtr_t CHARACTER_PTR,
+                const creature::CreaturePtr_t CHARACTER_PTR,
                 const bool IS_VALID = true);
 
             // used by the LoadGame Stage for a ListBox of GameStates
@@ -149,7 +147,7 @@ namespace sfml_util
                 const song::SongPtrC_t SONG_CPTRC_PARAM,
                 const bool IS_VALID = true);
 
-            const player::CharacterPtr_t CHARACTER_CPTR;
+            const creature::CreaturePtr_t CHARACTER_CPTR;
             const state::GameStatePtr_t GAMESTATE_CPTR;
             const item::ItemPtr_t ITEM_CPTR;
             const creature::ConditionPtrC_t COND_CPTRC;

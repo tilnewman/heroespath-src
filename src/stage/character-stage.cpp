@@ -51,6 +51,7 @@
 
 #include "creature/body-type.hpp"
 #include "creature/condition.hpp"
+#include "creature/creature.hpp"
 #include "creature/name-info.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/race-stats.hpp"
@@ -62,7 +63,6 @@
 #include "game/loop-manager.hpp"
 #include "item/inventory.hpp"
 #include "log/log-macros.hpp"
-#include "player/character.hpp"
 #include "player/initial.hpp"
 #include "player/party.hpp"
 #include "state/game-state-factory.hpp"
@@ -2884,7 +2884,8 @@ namespace stage
         sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(
             characterImageFilenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM);
 
-        auto newCharacterUPtr = std::make_unique<player::Character>(
+        auto newCharacterUPtr = std::make_unique<creature::Creature>(
+            true,
             NAME,
             SEX_ENUM,
             creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM),

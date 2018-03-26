@@ -29,11 +29,10 @@
 //
 #include "party.hpp"
 
+#include "creature/creature.hpp"
 #include "log/log-macros.hpp"
-#include "player/character-warehouse.hpp"
-#include "player/character.hpp"
-
 #include "misc/assertlogandthrow.hpp"
+#include "player/character-warehouse.hpp"
 
 #include <exception>
 #include <sstream>
@@ -43,9 +42,10 @@ namespace heroespath
 namespace player
 {
 
-    const std::size_t Party::MAX_CHARACTER_COUNT_(6);
+    const std::size_t Party::MAX_CHARACTER_COUNT_{ 6 };
 
-    Party::Party(const avatar::Avatar::Enum PARTY_AVATAR, const CharacterPVec_t & CHARACTERS_PVEC)
+    Party::Party(
+        const avatar::Avatar::Enum PARTY_AVATAR, const creature::CreaturePVec_t & CHARACTERS_PVEC)
         : avatar_(PARTY_AVATAR)
         , charactersPVec_()
     {
@@ -65,7 +65,7 @@ namespace player
         charactersPVec_.clear();
     }
 
-    bool Party::Add(const CharacterPtr_t CHARACTER_PTR, std::string & error_msg)
+    bool Party::Add(const creature::CreaturePtr_t CHARACTER_PTR, std::string & error_msg)
     {
         if (IsAddAllowed(CHARACTER_PTR, error_msg))
         {
@@ -78,7 +78,7 @@ namespace player
         }
     }
 
-    bool Party::IsAddAllowed(const CharacterPtr_t, std::string & error_msg)
+    bool Party::IsAddAllowed(const creature::CreaturePtr_t, std::string & error_msg)
     {
         if (charactersPVec_.size() < MAX_CHARACTER_COUNT_)
         {
@@ -91,7 +91,7 @@ namespace player
         }
     }
 
-    bool Party::Remove(CharacterPtr_t characterPtr)
+    bool Party::Remove(creature::CreaturePtr_t characterPtr)
     {
         auto const FOUND_ITER{ std::find(
             charactersPVec_.begin(), charactersPVec_.end(), characterPtr) };

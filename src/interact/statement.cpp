@@ -28,7 +28,7 @@
 // statement.cpp
 //
 #include "statement.hpp"
-#include "player/character.hpp"
+#include "creature/creature.hpp"
 #include "player/party.hpp"
 
 #include <boost/algorithm/string.hpp>

@@ -33,9 +33,9 @@
 // and it needs to stay that way.  zTn 2017-3-30
 #include "player/party-serialize-includes.hpp"
 
+#include "creature/creature.hpp"
 #include "game/game.hpp"
 #include "log/log-macros.hpp"
-#include "player/character.hpp"
 #include "player/party.hpp"
 #include "state/game-state.hpp"
 #include "state/world-factory.hpp"
@@ -190,7 +190,7 @@ namespace state
             SAVED_HEROESPATH_FILE_EXT_);
     }
 
-    player::CharacterPSet_t GameStateFactory::LoadAllCompanions() const
+    creature::CreaturePSet_t GameStateFactory::LoadAllCompanions() const
     {
         namespace bfs = boost::filesystem;
 
@@ -198,7 +198,7 @@ namespace state
         const bfs::path DIR_OBJ(
             bfs::system_complete(bfs::current_path() / bfs::path(SAVED_CHAR_DIR_NAME_)));
 
-        player::CharacterPSet_t characterPSet;
+        creature::CreaturePSet_t characterPSet;
 
         // check for early exit cases
         if (false == bfs::exists(DIR_OBJ))
@@ -227,7 +227,7 @@ namespace state
         const std::size_t NUM_FILES(pathVec.size());
         for (std::size_t i(0); i < NUM_FILES; ++i)
         {
-            auto nextCharacterPtr{ new player::Character() };
+            auto nextCharacterPtr{ new creature::Creature() };
 
             try
             {
@@ -256,7 +256,7 @@ namespace state
         return characterPSet;
     }
 
-    void GameStateFactory::SaveCharacter(const player::CharacterPtr_t CHARACTER_PTR) const
+    void GameStateFactory::SaveCharacter(const creature::CreaturePtr_t CHARACTER_PTR) const
     {
         Save(
             nullptr,
@@ -266,7 +266,7 @@ namespace state
             SAVED_CHAR_FILE_EXT_);
     }
 
-    bool GameStateFactory::DeleteCharacter(const player::CharacterPtr_t CHAR_TO_DELETE_PTR) const
+    bool GameStateFactory::DeleteCharacter(const creature::CreaturePtr_t CHAR_TO_DELETE_PTR) const
     {
         namespace bfs = boost::filesystem;
 
@@ -300,7 +300,7 @@ namespace state
         // loop over all paths to saved games and load then compare before deleting
         for (auto const & NEXT_PATH : pathVec)
         {
-            auto nextCharacterPtr{ new player::Character() };
+            auto nextCharacterPtr{ new creature::Creature() };
 
             try
             {
@@ -351,7 +351,7 @@ namespace state
 
     void GameStateFactory::Save(
         const GameStatePtr_t HEROESPATH_PTR,
-        const player::CharacterPtr_t CHARACTER_PTR,
+        const creature::CreaturePtr_t CHARACTER_PTR,
         const std::string & DIR_STR,
         const std::string & FILE_STR,
         const std::string & EXT_STR) const

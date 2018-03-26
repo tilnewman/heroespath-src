@@ -45,7 +45,6 @@
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
-#include "player/character.hpp"
 #include "player/party.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"

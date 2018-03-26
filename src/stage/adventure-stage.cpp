@@ -29,9 +29,9 @@
 //
 #include "adventure-stage.hpp"
 
+#include "creature/creature.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
-#include "player/character.hpp"
 #include "player/party-factory.hpp"
 #include "player/party.hpp"
 #include "stage/adventure-display-stage.hpp"

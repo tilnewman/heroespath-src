@@ -43,9 +43,6 @@ BOOST_CLASS_EXPORT(heroespath::item::Item)
 #include "creature/creature.hpp"
 BOOST_CLASS_EXPORT(heroespath::creature::Creature)
 
-#include "player/character.hpp"
-BOOST_CLASS_EXPORT(heroespath::player::Character)
-
 #include "player/party.hpp"
 BOOST_CLASS_EXPORT(heroespath::player::Party)
 

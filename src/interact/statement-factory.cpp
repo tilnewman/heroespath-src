@@ -28,6 +28,7 @@
 // statement-factory.hpp
 //
 #include "statement-factory.hpp"
+#include "creature/creature.hpp"
 #include "game/game.hpp"
 #include "interact/statement-child.hpp"
 #include "interact/statement-common.hpp"
@@ -37,7 +38,6 @@
 #include "interact/statement-town.hpp"
 #include "map/level-enum.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "player/character.hpp"
 #include "player/party.hpp"
 #include "state/game-state.hpp"
 #include "state/world.hpp"

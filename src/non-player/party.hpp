@@ -43,14 +43,10 @@ namespace creature
     using CreatureCPtr_t = const Creature *;
     using CreaturePtrC_t = Creature * const;
     using CreatureCPtrC_t = const Creature * const;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
 namespace non_player
 {
-
-    // forward declarations
-    class Character;
-    using CharacterPtr_t = Character *;
-    using CharacterPVec_t = std::vector<CharacterPtr_t>;
 
     // encapsulates a set of Characters under control of the user
     class Party
@@ -62,21 +58,20 @@ namespace non_player
         Party & operator=(Party &&) = delete;
 
     public:
-        explicit Party(const CharacterPVec_t & CHARACTER_PVEC = CharacterPVec_t());
-        virtual ~Party();
+        explicit Party(
+            const creature::CreaturePVec_t & CHARACTER_PVEC = creature::CreaturePVec_t());
 
-        const CharacterPVec_t Characters() const { return charactersPVec_; }
+        ~Party();
 
-        void Add(const CharacterPtr_t, const bool WILL_STORE = true);
-        bool Remove(CharacterPtr_t, const bool WILL_FREE = true);
+        const creature::CreaturePVec_t Characters() const { return charactersPVec_; }
+        void Add(const creature::CreaturePtr_t, const bool WILL_STORE = true);
+        bool Remove(creature::CreaturePtr_t, const bool WILL_FREE = true);
         void Clear() { charactersPVec_.clear(); }
-
-        CharacterPtr_t FindByCreaturePtr(creature::CreatureCPtrC_t) const;
-
         const std::string Summary() const;
+        bool Contains(const creature::CreaturePtr_t) const;
 
     private:
-        CharacterPVec_t charactersPVec_;
+        creature::CreaturePVec_t charactersPVec_;
 
     private:
         friend class boost::serialization::access;
@@ -88,6 +83,7 @@ namespace non_player
     };
 
     using PartyUPtr_t = std::unique_ptr<Party>;
+
 } // namespace non_player
 } // namespace heroespath
 

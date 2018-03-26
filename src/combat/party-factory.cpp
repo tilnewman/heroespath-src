@@ -29,7 +29,7 @@
 //
 #include "party-factory.hpp"
 
-#include "non-player/character.hpp"
+#include "creature/creature.hpp"
 #include "non-player/inventory-factory.hpp"
 #include "non-player/party.hpp"
 #include "stats/stat-set.hpp"
@@ -93,7 +93,7 @@ namespace combat
         return partyUPtr;
     }
 
-    non_player::CharacterPtr_t PartyFactory::MakeCharacter_GoblinGrunt() const
+    creature::CreaturePtr_t PartyFactory::MakeCharacter_GoblinGrunt() const
     {
         const stats::StatSet STATS(
             Strength_t(13 + misc::random::Int(5)),
@@ -116,7 +116,7 @@ namespace combat
         return characterPtr;
     }
 
-    non_player::CharacterPtr_t PartyFactory::MakeCharacter_Boar() const
+    creature::CreaturePtr_t PartyFactory::MakeCharacter_Boar() const
     {
         const stats::StatSet STATS(
             Strength_t(13 + misc::random::Int(3)),
@@ -135,7 +135,7 @@ namespace combat
             creature::role::Boar);
     }
 
-    non_player::CharacterPtr_t PartyFactory::MakeCharacter(
+    creature::CreaturePtr_t PartyFactory::MakeCharacter(
         const stats::StatSet & STATS,
         const Health_t & HEALTH_MIN,
         const Health_t & HEALTH_MAX,
@@ -146,7 +146,8 @@ namespace combat
         const Experience_t & EXPERIENCE,
         const Mana_t & MANA) const
     {
-        auto characterPtr{ new non_player::Character(
+        auto characterPtr{ new creature::Creature(
+            false,
             creature::race::Name(RACE),
             SEX,
             creature::BodyType::Make_FromRaceAndRole(RACE, ROLE),
@@ -169,5 +170,6 @@ namespace combat
 
         return characterPtr;
     }
+
 } // namespace combat
 } // namespace heroespath

@@ -29,11 +29,11 @@
 //
 #include "party.hpp"
 
+#include "creature/creature.hpp"
 #include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/vector-map.hpp"
 #include "non-player/character-warehouse.hpp"
-#include "non-player/character.hpp"
 
 #include <sstream>
 #include <utility>
@@ -43,7 +43,7 @@ namespace heroespath
 namespace non_player
 {
 
-    Party::Party(const CharacterPVec_t & CHARACTERS_PVEC)
+    Party::Party(const creature::CreaturePVec_t & CHARACTERS_PVEC)
         : charactersPVec_()
     {
         for (auto const NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
@@ -62,7 +62,7 @@ namespace non_player
         charactersPVec_.clear();
     }
 
-    void Party::Add(const CharacterPtr_t CHARACTER_PTR, const bool WILL_STORE)
+    void Party::Add(const creature::CreaturePtr_t CHARACTER_PTR, const bool WILL_STORE)
     {
         if (WILL_STORE)
         {
@@ -74,7 +74,7 @@ namespace non_player
         }
     }
 
-    bool Party::Remove(CharacterPtr_t characterPtr, const bool WILL_FREE)
+    bool Party::Remove(creature::CreaturePtr_t characterPtr, const bool WILL_FREE)
     {
         auto const FOUND_ITER{ std::find(
             charactersPVec_.begin(), charactersPVec_.end(), characterPtr) };
@@ -98,19 +98,6 @@ namespace non_player
             charactersPVec_.erase(FOUND_ITER);
             return true;
         }
-    }
-
-    CharacterPtr_t Party::FindByCreaturePtr(creature::CreatureCPtrC_t CREATURE_CPTRC) const
-    {
-        for (auto const NEXT_CHARACTER_PTR : charactersPVec_)
-        {
-            if (NEXT_CHARACTER_PTR == CREATURE_CPTRC)
-            {
-                return NEXT_CHARACTER_PTR;
-            }
-        }
-
-        return nullptr;
     }
 
     const std::string Party::Summary() const
@@ -149,5 +136,13 @@ namespace non_player
 
         return ss.str();
     }
+
+    bool Party::Contains(const creature::CreaturePtr_t CREATURE_PTR) const
+    {
+        return (
+            std::find(std::begin(charactersPVec_), std::end(charactersPVec_), CREATURE_PTR)
+            != std::end(charactersPVec_));
+    }
+
 } // namespace non_player
 } // namespace heroespath

@@ -42,11 +42,11 @@
 
 #include "creature/algorithms.hpp"
 #include "creature/body-type.hpp"
+#include "creature/creature.hpp"
 #include "creature/sex-enum.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
-#include "player/character.hpp"
 #include "player/party-factory.hpp"
 #include "player/party.hpp"
 #include "sfml-util/ouroboros.hpp"

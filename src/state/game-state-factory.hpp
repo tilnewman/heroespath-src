@@ -41,12 +41,13 @@ namespace player
 {
     class Party;
     using PartyUPtr_t = std::unique_ptr<Party>;
-
-    class Character;
-    using CharacterPtr_t = Character *;
-    using CharacterPSet_t = std::set<CharacterPtr_t>;
 } // namespace player
-
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = Creature *;
+    using CreaturePSet_t = std::set<CreaturePtr_t>;
+}
 namespace state
 {
 
@@ -81,10 +82,10 @@ namespace state
 
         // Loaded Characters are not stored in player::CharacterWarehouse,
         // so the caller is responsible for the lifetime of the returned objects.
-        player::CharacterPSet_t LoadAllCompanions() const;
+        creature::CreaturePSet_t LoadAllCompanions() const;
 
-        void SaveCharacter(const player::CharacterPtr_t) const;
-        bool DeleteCharacter(const player::CharacterPtr_t) const;
+        void SaveCharacter(const creature::CreaturePtr_t) const;
+        bool DeleteCharacter(const creature::CreaturePtr_t) const;
 
     private:
         // hack'ish function that saves either the game or the character
@@ -92,7 +93,7 @@ namespace state
         // boost serializer includes here in this header file...grumble...zTn 2016-10-26
         void Save(
             const GameStatePtr_t HEROESPATH_PTR,
-            const player::CharacterPtr_t CHARACTER_PTR,
+            const creature::CreaturePtr_t CHARACTER_PTR,
             const std::string & DIR_STR,
             const std::string & FILE_STR,
             const std::string & EXT_STR) const;
@@ -106,6 +107,7 @@ namespace state
         //
         static std::unique_ptr<GameStateFactory> instanceUPtr_;
     };
+
 } // namespace state
 } // namespace heroespath
 

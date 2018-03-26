@@ -42,10 +42,10 @@
 #include "sfml-util/sound-manager.hpp"
 
 #include "creature/condition.hpp"
+#include "creature/creature.hpp"
 #include "creature/title.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
-#include "player/character.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 

@@ -37,7 +37,6 @@
 #include "item/item-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item.hpp"
-#include "non-player/character.hpp"
 #include "non-player/ownership-profile.hpp"
 
 #include "misc/random.hpp"
@@ -67,7 +66,7 @@ namespace item
     }
 
     TreasureImage::Enum TreasureFactory::Make(
-        const non_player::CharacterPVec_t & CHARACTER_PVEC, ItemCache & itemCache_OutParam)
+        const creature::CreaturePVec_t & CHARACTER_PVEC, ItemCache & itemCache_OutParam)
     {
         auto const TREASURE_SCORES{ CalculateTreasureSums(CHARACTER_PVEC) };
 
@@ -87,7 +86,7 @@ namespace item
     }
 
     const TreasureScores
-        TreasureFactory::CalculateTreasureSums(const non_player::CharacterPVec_t & CHARACTER_PVEC)
+        TreasureFactory::CalculateTreasureSums(const creature::CreaturePVec_t & CHARACTER_PVEC)
     {
         TreasureScores scores;
 
@@ -121,7 +120,7 @@ namespace item
         }
     }
 
-    float TreasureFactory::TreasureRatioPer(const non_player::CharacterPVec_t & CHARACTER_PVEC)
+    float TreasureFactory::TreasureRatioPer(const creature::CreaturePVec_t & CHARACTER_PVEC)
     {
         TreasureScores scores;
 
@@ -153,7 +152,7 @@ namespace item
     }
 
     const TreasureScores
-        TreasureFactory::MakeRandTreasureInfo(const non_player::CharacterPVec_t & CHARACTER_PVEC)
+        TreasureFactory::MakeRandTreasureInfo(const creature::CreaturePVec_t & CHARACTER_PVEC)
     {
         TreasureScores scores;
 

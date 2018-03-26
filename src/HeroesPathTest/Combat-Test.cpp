@@ -35,7 +35,6 @@
 #include "combat/encounter.hpp"
 #include "creature/creature.hpp"
 #include "game/startup-shutdown.hpp"
-#include "player/character.hpp"
 #include "player/party-factory.hpp"
 #include "player/party.hpp"
 #include "state/game-state-factory.hpp"

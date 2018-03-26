@@ -107,7 +107,8 @@ namespace creature
         Exclude
     };
 
-    // base class for all creatures
+    // Responsible for all state and operation of all creatures in the game, including players and
+    // non-players.
     class Creature
     {
     public:
@@ -119,6 +120,7 @@ namespace creature
     public:
         // Note:  This constructor will add the default 'Good' status if CONDITIONS is empty.
         explicit Creature(
+            const bool IS_PLAYER = false,
             const std::string & NAME = "no_name_error",
             const sex::Enum SEX = creature::sex::Unknown,
             const BodyType & BODY_TYPE = BodyType(),
@@ -137,11 +139,9 @@ namespace creature
             const Mana_t & MANA = 0_mana,
             const song::SongVec_t & SONG_VEC = song::SongVec_t());
 
-        virtual ~Creature();
-
         const BodyType Body() const { return bodyType_; }
 
-        virtual bool IsPlayerCharacter() const { return false; }
+        bool IsPlayerCharacter() const { return isPlayer_; }
 
         const std::string Name() const { return name_; }
         void SetName(const std::string & N) { name_ = N; }
@@ -454,6 +454,7 @@ namespace creature
         static std::size_t globalSerialNumber_;
 
     protected:
+        bool isPlayer_;
         std::string name_;
         std::string imageFilename_;
         sex::Enum sex_;
@@ -519,6 +520,7 @@ namespace creature
         template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
+            ar & isPlayer_;
             ar & name_;
             ar & imageFilename_;
             ar & sex_;
@@ -557,6 +559,7 @@ namespace creature
     using CreatureCPtrC_t = const Creature * const;
     using CreatureUPtr_t = std::unique_ptr<Creature>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
+
 } // namespace creature
 } // namespace heroespath
 

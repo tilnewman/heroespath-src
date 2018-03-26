@@ -29,27 +29,24 @@
 //
 #include "encounter.hpp"
 
-#include "sfml-util/music-enum.hpp"
-#include "sfml-util/sound-manager.hpp"
-
 #include "combat/party-factory.hpp"
 #include "combat/strategy-details.hpp"
 #include "creature/algorithms.hpp"
+#include "creature/creature.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "item/treasure.hpp"
 #include "log/log-macros.hpp"
-#include "non-player/character.hpp"
-#include "non-player/party.hpp"
-#include "player/character.hpp"
-#include "player/party.hpp"
-#include "state/game-state.hpp"
-#include "state/world.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
+#include "non-player/party.hpp"
+#include "player/party.hpp"
+#include "sfml-util/music-enum.hpp"
+#include "sfml-util/sound-manager.hpp"
+#include "state/game-state.hpp"
+#include "state/world.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -174,7 +171,7 @@ namespace combat
         return (
             (std::find(runawayPlayersVec_.begin(), runawayPlayersVec_.end(), CREATURE_PTR)
              != runawayPlayersVec_.end())
-            || (runawayNonPlayerPartyUPtr_->FindByCreaturePtr(CREATURE_PTR) != nullptr));
+            || runawayNonPlayerPartyUPtr_->Contains(CREATURE_PTR));
     }
 
     void Encounter::Runaway(const creature::CreaturePtr_t CREATURE_PTR)
@@ -192,15 +189,8 @@ namespace combat
         }
         else
         {
-            auto const CHARACTER_PTR{ nonPlayerPartyUPtr_->FindByCreaturePtr(CREATURE_PTR) };
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (CHARACTER_PTR != nullptr),
-                "combat::Encounter::IsRunaway() given a non-player creature "
-                    << "that was not in nonPlayerPartyUPtr_.");
-
-            nonPlayerPartyUPtr_->Remove(CHARACTER_PTR, false);
-            runawayNonPlayerPartyUPtr_->Add(CHARACTER_PTR, false);
+            nonPlayerPartyUPtr_->Remove(CREATURE_PTR, false);
+            runawayNonPlayerPartyUPtr_->Add(CREATURE_PTR, false);
         }
     }
 
@@ -227,12 +217,12 @@ namespace combat
         return FOUND_ITER->second;
     }
 
-    void Encounter::HandleKilledCreature(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    void Encounter::HandleKilledCreature(creature::CreaturePtrC_t CREATURE_PTRC)
     {
         // make sure no TurnInfo objects refer to a killed creature
         for (auto & nextCreatureTurnInfoPair : turnInfoMap_)
         {
-            nextCreatureTurnInfoPair.second.RemoveDeadCreatureTasks(CREATURE_CPTRC);
+            nextCreatureTurnInfoPair.second.RemoveDeadCreatureTasks(CREATURE_PTRC);
         }
 
         // no need to remove from turnOverPVec_
@@ -240,11 +230,10 @@ namespace combat
         // no need to null out turnCreaturePtr_
 
         // move from the enemyParty to the deadNonPlayerParty for later use by the Treasure Stage
-        if (CREATURE_CPTRC->IsPlayerCharacter() == false)
+        if (CREATURE_PTRC->IsPlayerCharacter() == false)
         {
-            auto killedCharacterPtr{ nonPlayerPartyUPtr_->FindByCreaturePtr(CREATURE_CPTRC) };
-            nonPlayerPartyUPtr_->Remove(killedCharacterPtr, false);
-            deadNonPlayerPartyUPtr_->Add(killedCharacterPtr, false);
+            nonPlayerPartyUPtr_->Remove(CREATURE_PTRC, false);
+            deadNonPlayerPartyUPtr_->Add(CREATURE_PTRC, false);
         }
     }
 

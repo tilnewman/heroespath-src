@@ -30,10 +30,9 @@
 #include "algorithms.hpp"
 
 #include "combat/encounter.hpp"
+#include "creature/creature.hpp"
 #include "game/game.hpp"
-#include "non-player/character.hpp"
 #include "non-player/party.hpp"
-#include "player/character.hpp"
 #include "player/party.hpp"
 #include "state/game-state.hpp"
 

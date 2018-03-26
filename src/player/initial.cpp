@@ -29,19 +29,16 @@
 //
 #include "initial.hpp"
 
-#include "sfml-util/gui/creature-image-manager.hpp"
-
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
 #include "item/armor-factory.hpp"
 #include "item/misc-item-factory.hpp"
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
-#include "player/character.hpp"
+#include "misc/random.hpp"
+#include "sfml-util/gui/creature-image-manager.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
-
-#include "misc/random.hpp"
 
 #include <exception>
 #include <sstream>
@@ -52,7 +49,7 @@ namespace heroespath
 namespace player
 {
 
-    void Initial::Setup(CharacterPtrC_t characterPtrC)
+    void Initial::Setup(creature::CreaturePtrC_t characterPtrC)
     {
         SetupInventory(characterPtrC);
         SetupSpellsAndSongs(characterPtrC);
@@ -62,7 +59,7 @@ namespace player
         EnsureValidImageFilename(characterPtrC);
     }
 
-    void Initial::EnsureValidImageFilename(CharacterPtrC_t characterPtrC)
+    void Initial::EnsureValidImageFilename(creature::CreaturePtrC_t characterPtrC)
     {
         if (characterPtrC->ImageFilename().empty())
         {
@@ -72,7 +69,7 @@ namespace player
         }
     }
 
-    void Initial::SetupInventory(CharacterPtrC_t characterPtrC)
+    void Initial::SetupInventory(creature::CreaturePtrC_t characterPtrC)
     {
         EquipBodyParts(characterPtrC);
 
@@ -393,7 +390,7 @@ namespace player
         throw std::runtime_error(ss.str());
     }
 
-    void Initial::SetupSpellsAndSongs(CharacterPtrC_t characterPtrC)
+    void Initial::SetupSpellsAndSongs(creature::CreaturePtrC_t characterPtrC)
     {
         auto const ROLE_ENUM{ characterPtrC->Role() };
 
@@ -427,7 +424,7 @@ namespace player
         }
     }
 
-    void Initial::EquipBodyParts(CharacterPtrC_t characterPtrC)
+    void Initial::EquipBodyParts(creature::CreaturePtrC_t characterPtrC)
     {
         auto const & BODY{ characterPtrC->Body() };
 
@@ -469,7 +466,7 @@ namespace player
         }
     }
 
-    Health_t Initial::GetStartingHealth(CharacterCPtrC_t CHARACTER_CPTRC)
+    Health_t Initial::GetStartingHealth(creature::CreatureCPtrC_t CHARACTER_CPTRC)
     {
         std::ostringstream ss;
         ss << "heroespath-player-race-health-initial-"
@@ -484,14 +481,14 @@ namespace player
         return HEALTH_BASE + Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str()));
     }
 
-    void Initial::SetStartingHealth(CharacterPtrC_t characterPtrC)
+    void Initial::SetStartingHealth(creature::CreaturePtrC_t characterPtrC)
     {
         auto const STARTING_HEALTH{ GetStartingHealth(characterPtrC) };
         characterPtrC->HealthNormalSet(STARTING_HEALTH);
         characterPtrC->HealthCurrentSet(STARTING_HEALTH);
     }
 
-    void Initial::SetStartingMana(CharacterPtrC_t characterPtrC)
+    void Initial::SetStartingMana(creature::CreaturePtrC_t characterPtrC)
     {
         auto const ROLE_ENUM{ characterPtrC->Role() };
 
@@ -523,5 +520,6 @@ namespace player
             return item::material::HardLeather;
         }
     }
+
 } // namespace player
 } // namespace heroespath

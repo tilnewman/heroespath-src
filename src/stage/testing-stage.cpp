@@ -44,9 +44,7 @@
 #include "map/map.hpp"
 #include "misc/real.hpp"
 #include "misc/types.hpp"
-#include "non-player/character.hpp"
 #include "non-player/inventory-factory.hpp"
-#include "player/character.hpp"
 #include "player/party-factory.hpp"
 #include "player/party.hpp"
 #include "popup/popup-manager.hpp"
@@ -581,7 +579,8 @@ namespace stage
         TestStatSetsCurrentAndNormal("Base Set Mod1 INV x10 Current", actualSet, expectedSet);
 
         const stats::StatSet STAT_SET_CHAR_BASE{ 1000, 1000, 1000, 1000, 1000, 1000 };
-        auto playerSPtr( std::make_shared<player::Character>(
+        auto playerSPtr( std::make_shared<creature::Creature>(
+            true,
             "StatsTestingCreatureName",
             creature::sex::Female,
             creature::BodyType::Make_Wolfen(),
@@ -1177,7 +1176,8 @@ namespace stage
                     std::ostringstream nameSS;
                     nameSS << "Name_" << RACE_STR << "_" << ROLE_STR << "_" << rankIndex;
 
-                    auto characterUPtr = std::make_unique<non_player::Character>(
+                    auto characterUPtr = std::make_unique<creature::Creature>(
+                        false,
                         nameSS.str(),
                         creature::sex::Male,
                         creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM),
