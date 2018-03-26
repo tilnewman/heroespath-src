@@ -42,7 +42,8 @@ namespace heroespath
 namespace spell
 {
     class Spell;
-    using SpellPtrC_t = Spell * const;
+    using SpellPtr_t = misc::NotNull<Spell *>;
+    using SpellPtrOpt_t = boost::optional<SpellPtr_t>;
 } // namespace spell
 namespace song
 {
@@ -137,7 +138,7 @@ namespace sfml_util
             ListBoxItem(
                 const std::string & NAME,
                 const sfml_util::gui::TextInfo & TEXT_INFO,
-                const spell::SpellPtrC_t SPELL_CPTRC_PARAM,
+                const spell::SpellPtr_t SPELL_PTR_PARAM,
                 const bool IS_VALID = true);
 
             // used by the inventory stage to list spells
@@ -152,7 +153,7 @@ namespace sfml_util
             const item::ItemPtr_t ITEM_CPTR;
             const creature::ConditionPtrC_t COND_CPTRC;
             const creature::TitlePtrOpt_t TITLE_PTR_OPT;
-            const spell::SpellPtrC_t SPELL_CPTRC;
+            const spell::SpellPtrOpt_t SPELL_PTR_OPT;
             const song::SongPtrC_t SONG_CPTRC;
             bool is_valid;
 

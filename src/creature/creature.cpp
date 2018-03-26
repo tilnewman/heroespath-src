@@ -73,7 +73,7 @@ namespace creature
         const item::Inventory & INVENTORY,
         const sfml_util::DateTime & DATE_TIME,
         const std::string & IMAGE_FILENAME,
-        const spell::SpellVec_t & SPELL_VEC,
+        const spell::SpellEnumVec_t & SPELL_VEC,
         const Mana_t & MANA,
         const song::SongVec_t & SONG_VEC)
         : isPlayer_(IS_PLAYER)

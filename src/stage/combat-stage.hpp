@@ -436,7 +436,7 @@ namespace stage
         PreTurnPhase preTurnPhase_;
         TurnActionPhase turnActionPhase_;
         AnimPhase animPhase_;
-        spell::SpellPtr_t spellBeingCastPtr_;
+        spell::SpellPtrOpt_t spellBeingCastPtrOpt_;
         song::SongPtr_t songBeingPlayedPtr_;
         std::size_t performReportEffectIndex_;
         std::size_t performReportHitIndex_;

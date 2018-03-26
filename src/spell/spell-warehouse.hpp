@@ -27,6 +27,7 @@
 //
 // spell-warehouse.hpp
 //
+#include "misc/not-null.hpp"
 #include "spell/spell-enum.hpp"
 
 #include <memory>
@@ -39,7 +40,7 @@ namespace spell
 
     // forward declarations
     class Spell;
-    using SpellPtr_t = Spell *;
+    using SpellPtr_t = misc::NotNull<Spell *>;
     using SpellUPtr_t = std::unique_ptr<Spell>;
     using SpellUVec_t = std::vector<SpellUPtr_t>;
 
@@ -50,7 +51,7 @@ namespace spell
         static void Fill();
         static void Empty();
         static bool Test();
-        static SpellPtr_t Get(const Spells::Enum);
+        static const SpellPtr_t Get(const Spells::Enum);
 
     private:
         static SpellUVec_t spellsUVec_;

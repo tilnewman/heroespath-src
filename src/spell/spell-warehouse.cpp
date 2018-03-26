@@ -190,47 +190,42 @@ namespace spell
         if (spellIndex < Spells::Count)
         {
             auto const NEXT_ENUM{ static_cast<Spells::Enum>(spellIndex) };
-            auto spellPtr{ Get(NEXT_ENUM) };
+            auto const SPELL_PTR{ Get(NEXT_ENUM) };
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (spellPtr != nullptr),
-                "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                                            << "\") Get() resulted in a nullptr being returned.");
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (spellPtr->Name().empty() == false),
+                (SPELL_PTR->Name().empty() == false),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
                                             << "\") resulted in an empty Name().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (spellPtr->Desc().empty() == false),
+                (SPELL_PTR->Desc().empty() == false),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
                                             << "\") resulted in an empty Desc().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (spellPtr->DescExtra().empty() == false),
+                (SPELL_PTR->DescExtra().empty() == false),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
                                             << "\") resulted in an empty DescExtra().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (spellPtr->ManaCost().IsNonZero()),
+                (SPELL_PTR->ManaCost().IsNonZero()),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
                                             << "\") resulted in a zero Mana cost.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (spellPtr->Rank().IsNonZero()),
+                (SPELL_PTR->Rank().IsNonZero()),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
                                             << "\") resulted in a zero Rank.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (spellPtr->Name() == Spells::Name(NEXT_ENUM)),
+                (SPELL_PTR->Name() == Spells::Name(NEXT_ENUM)),
                 "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
                                             << "\") Spell is out of order.");
 
             ++spellIndex;
 
             game::LoopManager::Instance()->TestingStrIncrement(
-                "Spell Test \"" + spellPtr->Name() + "\"");
+                "Spell Test \"" + SPELL_PTR->Name() + "\"");
 
             return false;
         }
@@ -241,19 +236,18 @@ namespace spell
         return true;
     }
 
-    SpellPtr_t Warehouse::Get(const Spells::Enum E)
+    const SpellPtr_t Warehouse::Get(const Spells::Enum SPELL_ENUM)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (spellsUVec_.empty() == false),
-            "spell::Warehouse::Get(" << Spells::ToString(E) << ") was called before Setup().");
+        auto const SPELL_INDEX{ static_cast<std::size_t>(SPELL_ENUM) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (static_cast<std::size_t>(E) < spellsUVec_.size()),
-            "spell::Warehouse::Get("
-                << Spells::ToString(E)
-                << ") found insuff sized spellsUVec_, probably from a bug in Setup().");
+            (SPELL_INDEX < spellsUVec_.size()),
+            "spell::Warehouse::Get(spell_enum="
+                << SPELL_ENUM << ") that enum val was NOT less than the spellsUVec_.size()="
+                << spellsUVec_.size() << ".");
 
-        return spellsUVec_.at(static_cast<std::size_t>(E)).get();
+        return spellsUVec_[SPELL_INDEX].get();
     }
+
 } // namespace spell
 } // namespace heroespath

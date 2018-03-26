@@ -27,22 +27,21 @@
 //
 // inventory-stage.hpp
 //
-#include "sfml-util/gui/four-state-button.hpp"
-#include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/margins.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sfml-system.hpp"
-#include "sfml-util/sliders.hpp"
-#include "sfml-util/stage.hpp"
-
 #include "combat/combat-text.hpp"
 #include "combat/fight-results.hpp"
 #include "creature/achievement-enum.hpp"
 #include "game/phase-enum.hpp"
 #include "misc/vector-map.hpp"
 #include "popup/i-popup-callback.hpp"
+#include "sfml-util/gui/four-state-button.hpp"
+#include "sfml-util/gui/list-box.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-title.hpp"
+#include "sfml-util/margins.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sfml-system.hpp"
+#include "sfml-util/sliders.hpp"
+#include "sfml-util/stage.hpp"
 
 #include <memory>
 #include <string>
@@ -289,7 +288,10 @@ namespace stage
         void StartDetailViewFadeOutTasks();
         void HandleDetailViewMouseInterrupt(const sf::Vector2f & MOUSE_POS_V);
         bool HandleCast_Step1_TargetSelection(const spell::SpellPtr_t);
-        void HandleCast_Step2_PerformSpell(const creature::CreaturePVec_t &);
+
+        void HandleCast_Step2_PerformSpell(
+            const spell::SpellPtr_t, const creature::CreaturePVec_t &);
+
         bool HandleCast_Step3_DisplayResults();
         void ForceSelectionAndDrawOfListBox();
         bool HandleSpellsOrSongs();
@@ -477,7 +479,7 @@ namespace stage
         sfml_util::sliders::ZeroSliderOnce<float> detailViewSlider_;
 
         // members that support spell casting (and song playing)
-        spell::SpellPtr_t spellBeingCastPtr_;
+        spell::SpellPtrOpt_t spellBeingCastPtrOpt_;
         song::SongPtr_t songBeingPlayedPtr_;
         combat::TurnActionInfo turnActionInfo_;
         combat::FightResult fightResult_;

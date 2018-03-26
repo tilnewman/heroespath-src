@@ -31,15 +31,12 @@
 
 #include "creature/creature.hpp"
 #include "game/loop-manager.hpp"
-#include "spell/spell.hpp"
-
+#include "misc/random.hpp"
 #include "popup/popup-manager.hpp"
-
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/spell-image-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "misc/random.hpp"
+#include "spell/spell.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -82,10 +79,10 @@ namespace popup
         , spellDetailsTextUPtr_()
         , unableTextUPtr_()
         , spellDescTextUPtr_()
-        , currentSpellPtr_(nullptr)
         , warnColorShaker_(UNABLE_TEXT_COLOR_, sf::Color::Transparent, 20.0f)
         , imageColorSlider_(sf::Color::Transparent, sf::Color::White, COLOR_FADE_SPEED_)
         , textColorSlider_(sf::Color::Transparent, sf::Color::Black, COLOR_FADE_SPEED_)
+        , currentListboxIndex_(0)
     {}
 
     PopupStageSpellbook::~PopupStageSpellbook() = default;
@@ -93,7 +90,8 @@ namespace popup
     bool PopupStageSpellbook::HandleCallback(
         const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
     {
-        if (PACKAGE.package.PTR_ == nullptr)
+        if ((PACKAGE.package.PTR_ == nullptr) || (PACKAGE.package.PTR_->Selected() == nullptr)
+            || (!PACKAGE.package.PTR_->Selected()->SPELL_PTR_OPT))
         {
             return false;
         }
@@ -103,13 +101,9 @@ namespace popup
             || (PACKAGE.keypress_event.code == sf::Keyboard::Up)
             || (PACKAGE.keypress_event.code == sf::Keyboard::Down))
         {
-            if ((PACKAGE.package.PTR_->Selected() != nullptr)
-                && (currentSpellPtr_ != PACKAGE.package.PTR_->Selected()->SPELL_CPTRC))
+            if (currentListboxIndex_ != PACKAGE.package.PTR_->SelectedIndex())
             {
-                if (currentSpellPtr_ != PACKAGE.package.PTR_->Selected()->SPELL_CPTRC)
-                {
-                    currentSpellPtr_ = PACKAGE.package.PTR_->Selected()->SPELL_CPTRC;
-                }
+                currentListboxIndex_ = PACKAGE.package.PTR_->SelectedIndex();
 
                 if (imageColorSlider_.Direction() != sfml_util::Moving::Away)
                 {
@@ -126,10 +120,8 @@ namespace popup
             (PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
             || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
         {
-            if (PACKAGE.package.PTR_->Selected()->SPELL_CPTRC != nullptr)
-            {
-                return HandleSpellCast();
-            }
+            currentListboxIndex_ = PACKAGE.package.PTR_->SelectedIndex();
+            return HandleSpellCast();
         }
 
         return false;
@@ -161,8 +153,8 @@ namespace popup
         listBoxUPtr_->KeyRelease(keyEvent);
         listBoxUPtr_->WillPlaySoundEffects(true);
 
-        currentSpellPtr_ = listBoxUPtr_->At(0)->SPELL_CPTRC;
-        SetupPageRightText(currentSpellPtr_);
+        currentListboxIndex_ = listBoxUPtr_->SelectedIndex();
+        SetupPageRightText(CurrentSelectedSpell());
     }
 
     void PopupStageSpellbook::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
@@ -204,7 +196,7 @@ namespace popup
         {
             sfml_util::SoundManager::Instance()->SoundEffectPlay(sfml_util::sound_effect::Magic1);
 
-            SetupPageRightText(currentSpellPtr_);
+            SetupPageRightText(CurrentSelectedSpell());
             imageColorSlider_.ChangeDirection();
             imageColorSlider_.Start();
             textColorSlider_.ChangeDirection();
@@ -428,8 +420,7 @@ namespace popup
             1, true, LISTBOX_RECT, LISTBOX_COLORSET_, LISTBOX_BG_INFO_);
 
         sfml_util::gui::ListBoxItemSVec_t listBoxItemsSVec;
-        auto const SPELL_PVEC{ popupInfo_.CreaturePtr()->SpellsPVec() };
-        for (auto const NEXT_SPELL_PTR : SPELL_PVEC)
+        for (auto const & NEXT_SPELL_PTR : popupInfo_.CreaturePtr()->SpellsPVec())
         {
             listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
             auto const LISTBOXITEM_SPTR(std::make_shared<sfml_util::gui::ListBoxItem>(
@@ -457,16 +448,11 @@ namespace popup
         listBoxUPtr_->ImageColor(LISTBOX_IMAGE_COLOR_);
     }
 
-    void PopupStageSpellbook::SetupPageRightText(const spell::SpellPtrC_t SPELL_CPTRC)
+    void PopupStageSpellbook::SetupPageRightText(const spell::SpellPtr_t SPELL_PTR)
     {
-        if (SPELL_CPTRC == nullptr)
-        {
-            return;
-        }
-
         // setup spell title text
         const sfml_util::gui::TextInfo SPELL_TITLE_TEXTINFO(
-            SPELL_CPTRC->Name(),
+            SPELL_PTR->Name(),
             sfml_util::FontManager::Instance()->Font_Default1(),
             sfml_util::FontManager::Instance()->Size_Large(),
             sfml_util::FontManager::Color_GrayDarker(),
@@ -483,11 +469,11 @@ namespace popup
         }
         else
         {
-            spellTitleTextRegionUPtr_->SetText(SPELL_CPTRC->Name());
+            spellTitleTextRegionUPtr_->SetText(SPELL_PTR->Name());
         }
 
         // setup spell image
-        sfml_util::gui::SpellImageManager::Instance()->Get(spellTexture_, SPELL_CPTRC->Which());
+        sfml_util::gui::SpellImageManager::Instance()->Get(spellTexture_, SPELL_PTR->Which());
 
         spellSprite_.setTexture(spellTexture_);
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };
@@ -516,10 +502,10 @@ namespace popup
 
         // setup spell details text
         std::ostringstream ss;
-        ss << "Mana Cost: " << SPELL_CPTRC->ManaCost() << "\n"
-           << "Rank: " << SPELL_CPTRC->Rank() << "\n"
-           << "Targets " << combat::TargetType::Name(SPELL_CPTRC->Target()) << "\n"
-           << "Cast during " << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false) << "\n";
+        ss << "Mana Cost: " << SPELL_PTR->ManaCost() << "\n"
+           << "Rank: " << SPELL_PTR->Rank() << "\n"
+           << "Targets " << combat::TargetType::Name(SPELL_PTR->Target()) << "\n"
+           << "Cast during " << game::Phase::ToString(SPELL_PTR->ValidPhases(), false) << "\n";
 
         const sfml_util::gui::TextInfo SPELL_DETAILS_TEXTINFO(
             ss.str(),
@@ -557,12 +543,12 @@ namespace popup
         // setup spell 'unable to cast' text
         willShowXImage_ = false;
         ss.str(" ");
-        if (DoesCharacterHaveEnoughManaToCastSpell(SPELL_CPTRC) == false)
+        if (DoesCharacterHaveEnoughManaToCastSpell(SPELL_PTR) == false)
         {
             willShowXImage_ = true;
             ss << "Insufficient Mana";
         }
-        else if (CanCastSpellInPhase(SPELL_CPTRC) == false)
+        else if (CanCastSpellInPhase(SPELL_PTR) == false)
         {
             willShowXImage_ = true;
 
@@ -586,7 +572,7 @@ namespace popup
             }
             else
             {
-                ss << "Only during " << game::Phase::ToString(SPELL_CPTRC->ValidPhases(), false)
+                ss << "Only during " << game::Phase::ToString(SPELL_PTR->ValidPhases(), false)
                    << ".";
             }
         }
@@ -621,7 +607,7 @@ namespace popup
 
         // setup spell description text
         ss.str("");
-        ss << SPELL_CPTRC->Desc() << "  " << SPELL_CPTRC->DescExtra();
+        ss << SPELL_PTR->Desc() << "  " << SPELL_PTR->DescExtra();
 
         const sfml_util::gui::TextInfo SPELL_DESC_TEXTINFO(
             ss.str(),
@@ -668,26 +654,25 @@ namespace popup
     }
 
     bool PopupStageSpellbook::DoesCharacterHaveEnoughManaToCastSpell(
-        const spell::SpellPtrC_t SPELL_CPTRC) const
+        const spell::SpellPtr_t SPELL_PTR) const
     {
-        return (popupInfo_.CreaturePtr()->Mana() >= SPELL_CPTRC->ManaCost());
+        return (popupInfo_.CreaturePtr()->Mana() >= SPELL_PTR->ManaCost());
     }
 
-    bool PopupStageSpellbook::CanCastSpellInPhase(const spell::SpellPtrC_t SPELL_CPTRC) const
+    bool PopupStageSpellbook::CanCastSpellInPhase(const spell::SpellPtr_t SPELL_PTR) const
     {
-        return (SPELL_CPTRC->ValidPhases() & game::LoopManager::Instance()->GetPhase());
+        return (SPELL_PTR->ValidPhases() & game::LoopManager::Instance()->GetPhase());
     }
 
-    bool PopupStageSpellbook::CanCastSpell(const spell::SpellPtrC_t SPELL_CPTRC) const
+    bool PopupStageSpellbook::CanCastSpell(const spell::SpellPtr_t SPELL_PTR) const
     {
         return (
-            DoesCharacterHaveEnoughManaToCastSpell(SPELL_CPTRC)
-            && CanCastSpellInPhase(SPELL_CPTRC));
+            DoesCharacterHaveEnoughManaToCastSpell(SPELL_PTR) && CanCastSpellInPhase(SPELL_PTR));
     }
 
     bool PopupStageSpellbook::HandleSpellCast()
     {
-        if (CanCastSpell(listBoxUPtr_->Selected()->SPELL_CPTRC))
+        if (CanCastSpell(CurrentSelectedSpell()))
         {
             sfml_util::SoundManager::Instance()
                 ->Getsound_effect_set(sfml_util::sound_effect_set::SpellSelect)
@@ -707,5 +692,21 @@ namespace popup
             return false;
         }
     }
+
+    const spell::SpellPtr_t PopupStageSpellbook::CurrentSelectedSpell() const
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (listBoxUPtr_.get() != nullptr),
+            "popup::PopupStageSpellbook::CurrentSelectedSpell() called when listBoxUPtr_ was "
+            "null.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (!!listBoxUPtr_->Selected()->SPELL_PTR_OPT),
+            "popup::PopupStageSpellbook::CurrentSelectedSpell() called when the currently selected "
+            "spell was somehow not a spell.");
+
+        return listBoxUPtr_->Selected()->SPELL_PTR_OPT.value();
+    }
+
 } // namespace popup
 } // namespace heroespath

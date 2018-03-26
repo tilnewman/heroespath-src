@@ -28,6 +28,7 @@
 // fight.hpp
 //
 #include "combat/fight-results.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 
 #include <memory>
@@ -38,7 +39,7 @@ namespace heroespath
 namespace spell
 {
     class Spell;
-    using SpellPtr_t = Spell *;
+    using SpellPtr_t = misc::NotNull<Spell *>;
 } // namespace spell
 namespace song
 {
@@ -110,7 +111,7 @@ namespace combat
             creature::CondEnumVec_t & condsRemovedVec);
 
         static const FightResult Cast(
-            const spell::SpellPtr_t SPELL_CPTR,
+            const spell::SpellPtr_t SPELL_PTR,
             creature::CreaturePtrC_t creatureCastingPtrC,
             const creature::CreaturePVec_t & creaturesDefendingPVec);
 

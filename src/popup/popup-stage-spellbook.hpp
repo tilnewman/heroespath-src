@@ -29,8 +29,8 @@
 //
 #include "popup/popup-stage-base.hpp"
 
+#include "misc/not-null.hpp"
 #include "popup/popup-info.hpp"
-
 #include "sfml-util/color-shaker.hpp"
 #include "sfml-util/color-slider.hpp"
 #include "sfml-util/gui/background-info.hpp"
@@ -45,10 +45,8 @@ namespace heroespath
 namespace spell
 {
     class Spell;
-    using SpellPtr_t = Spell *;
-    using SpellPtrC_t = Spell * const;
+    using SpellPtr_t = misc::NotNull<Spell *>;
 } // namespace spell
-
 namespace popup
 {
 
@@ -99,11 +97,14 @@ namespace popup
         void SetupSpellListbox();
 
         void SetPageRightColors(const sf::Color & IMAGE_COLOR, const sf::Color & TEXT_COLOR);
-        void SetupPageRightText(const spell::SpellPtrC_t);
-        bool DoesCharacterHaveEnoughManaToCastSpell(const spell::SpellPtrC_t) const;
-        bool CanCastSpellInPhase(const spell::SpellPtrC_t) const;
-        bool CanCastSpell(const spell::SpellPtrC_t) const;
+        void SetupPageRightText(const spell::SpellPtr_t);
+        bool DoesCharacterHaveEnoughManaToCastSpell(const spell::SpellPtr_t) const;
+        bool CanCastSpellInPhase(const spell::SpellPtr_t) const;
+        bool CanCastSpell(const spell::SpellPtr_t) const;
         bool HandleSpellCast();
+
+    private:
+        const spell::SpellPtr_t CurrentSelectedSpell() const;
 
     private:
         static const float BACKGROUND_WIDTH_RATIO_;
@@ -132,11 +133,12 @@ namespace popup
         sfml_util::gui::TextRegionUPtr_t spellDetailsTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t unableTextUPtr_;
         sfml_util::gui::TextRegionUPtr_t spellDescTextUPtr_;
-        spell::SpellPtr_t currentSpellPtr_;
         sfml_util::ColorShaker warnColorShaker_;
         sfml_util::ColorSlider imageColorSlider_;
         sfml_util::ColorSlider textColorSlider_;
+        std::size_t currentListboxIndex_;
     };
+
 } // namespace popup
 } // namespace heroespath
 

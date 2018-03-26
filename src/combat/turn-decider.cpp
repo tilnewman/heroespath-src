@@ -155,7 +155,7 @@ namespace combat
             TURN_INFO, CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC) };
 
         if ((CASTING_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
-            && (CASTING_TURN_ACTION_INFO.Spell() != nullptr))
+            && CASTING_TURN_ACTION_INFO.Spell())
         {
             return CASTING_TURN_ACTION_INFO;
         }
@@ -262,7 +262,7 @@ namespace combat
                 CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC) };
 
             if ((SPELL_CAST_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
-                && (SPELL_CAST_TURN_ACTION_INFO.Spell() != nullptr))
+                && SPELL_CAST_TURN_ACTION_INFO.Spell())
             {
                 return SPELL_CAST_TURN_ACTION_INFO;
             }
@@ -1085,13 +1085,13 @@ namespace combat
             ALL_SPELLS_PVEC.begin(),
             ALL_SPELLS_PVEC.end(),
             back_inserter(combatSpellsPVec),
-            [](const spell::SpellPtr_t S_PTR) {
+            [](auto const SPELL_PTR) {
                 return (
-                    (S_PTR->Effect() != combat::EffectType::ItemHarmBreak)
-                    && (S_PTR->Effect() != combat::EffectType::ItemHarmMisc)
-                    && (S_PTR->Effect() != combat::EffectType::ItemHelpFix)
-                    && (S_PTR->Effect() != combat::EffectType::ItemHelpMisc)
-                    && (S_PTR->ValidPhases() & game::Phase::Combat));
+                    (SPELL_PTR->Effect() != combat::EffectType::ItemHarmBreak)
+                    && (SPELL_PTR->Effect() != combat::EffectType::ItemHarmMisc)
+                    && (SPELL_PTR->Effect() != combat::EffectType::ItemHelpFix)
+                    && (SPELL_PTR->Effect() != combat::EffectType::ItemHelpMisc)
+                    && (SPELL_PTR->ValidPhases() & game::Phase::Combat));
             });
 
         if (combatSpellsPVec.empty())
@@ -1118,29 +1118,22 @@ namespace combat
                 combatSpellsPVec.begin(),
                 combatSpellsPVec.end(),
                 back_inserter(finalSpellPVec),
-                [](const spell::SpellPtr_t S_PTR) {
-                    return (S_PTR->Effect() != combat::EffectType::CreatureHelpHeal);
+                [](auto const SPELL_PTR) {
+                    return (SPELL_PTR->Effect() != combat::EffectType::CreatureHelpHeal);
                 });
         }
-
-        spell::SpellPtr_t spellToCastPtr{ nullptr };
 
         if (finalSpellPVec.empty())
         {
             return TurnActionInfo();
         }
-        else if (finalSpellPVec.size() == 1)
-        {
-            spellToCastPtr = finalSpellPVec.at(0);
-        }
         else
         {
-            spellToCastPtr = finalSpellPVec.at(static_cast<std::size_t>(
-                misc::random::Int(static_cast<int>(finalSpellPVec.size()) - 1)));
+            return DecideSpell(
+                CREATURE_DECIDING_CPTRC,
+                MOST_DESIRED_TARGET_CPTRC,
+                { misc::Vector::SelectRandom(finalSpellPVec)->Effect() });
         }
-
-        return DecideSpell(
-            CREATURE_DECIDING_CPTRC, MOST_DESIRED_TARGET_CPTRC, { spellToCastPtr->Effect() });
     }
 
     const TurnActionInfo TurnDecider::DecideSpell(
@@ -1148,28 +1141,10 @@ namespace combat
         const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
         const EffectTypeVec_t & SPELL_EFFECTTYPES_VEC)
     {
-        auto spellPtr{ PickSpell(CREATURE_DECIDING_CPTRC, SPELL_EFFECTTYPES_VEC) };
-
-        if (spellPtr == nullptr)
-        {
-            auto const SPELL_TYPES_STR{ misc::Vector::Join<EffectType::Enum>(
-                SPELL_EFFECTTYPES_VEC,
-                0,
-                misc::Vector::JoinOpt::None,
-                &combat::EffectType::ToString) };
-
-            std::ostringstream ssErr;
-            ssErr << "combat::TurnDecider::DecideSpell(creature_deciding=\""
-                  << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole()
-                  << "\", most_desired_target_creature=\""
-                  << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", spell_types=("
-                  << SPELL_TYPES_STR << "))  result of PickSpell() was nullptr.";
-
-            throw std::runtime_error(ssErr.str());
-        }
+        auto const SPELL_PTR{ PickSpell(CREATURE_DECIDING_CPTRC, SPELL_EFFECTTYPES_VEC) };
 
         creature::CreaturePVec_t targetedCreaturesPVec;
-        if (spellPtr->Target() == TargetType::AllCompanions)
+        if (SPELL_PTR->Target() == TargetType::AllCompanions)
         {
             targetedCreaturesPVec = creature::Algorithms::PlayersByType(
                 ((CREATURE_DECIDING_CPTRC->IsPlayerCharacter())
@@ -1177,7 +1152,7 @@ namespace combat
                      : creature::Algorithms::TypeOpt::NonPlayer),
                 creature::Algorithms::Living);
         }
-        else if (spellPtr->Target() == TargetType::AllOpponents)
+        else if (SPELL_PTR->Target() == TargetType::AllOpponents)
         {
             targetedCreaturesPVec = creature::Algorithms::PlayersByType(
                 ((CREATURE_DECIDING_CPTRC->IsPlayerCharacter())
@@ -1186,8 +1161,8 @@ namespace combat
                 creature::Algorithms::Living);
         }
         else if (
-            (spellPtr->Target() == TargetType::SingleCompanion)
-            || (spellPtr->Target() == TargetType::SingleOpponent))
+            (SPELL_PTR->Target() == TargetType::SingleCompanion)
+            || (SPELL_PTR->Target() == TargetType::SingleOpponent))
         {
             targetedCreaturesPVec.emplace_back(MOST_DESIRED_TARGET_CPTRC);
         }
@@ -1198,34 +1173,42 @@ namespace combat
                   << CREATURE_DECIDING_CPTRC->NameAndRaceAndRole()
                   << "\", most_desired_target_creature=\""
                   << MOST_DESIRED_TARGET_CPTRC->NameAndRaceAndRole() << "\", chosen_spell=\""
-                  << spellPtr->Name() << "\") had a TargetType of \""
-                  << TargetType::ToString(spellPtr->Target()) << "\" -which is not yet supported.";
+                  << SPELL_PTR->Name() << "\") had a TargetType of \""
+                  << TargetType::ToString(SPELL_PTR->Target()) << "\" -which is not yet supported.";
 
             M_HP_LOG_ERR(ssErr.str());
 
             return TurnActionInfo();
         }
 
-        return TurnActionInfo(spellPtr, targetedCreaturesPVec);
+        return TurnActionInfo(SPELL_PTR, targetedCreaturesPVec);
     }
 
-    spell::SpellPtr_t TurnDecider::PickSpell(
+    const spell::SpellPtr_t TurnDecider::PickSpell(
         const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
         const combat::EffectType::Enum SPELL_EFFECTTYPE)
     {
         return PickSpell(CREATURE_DECIDING_CPTRC, EffectTypeVec_t{ SPELL_EFFECTTYPE });
     }
 
-    spell::SpellPtr_t TurnDecider::PickSpell(
+    const spell::SpellPtr_t TurnDecider::PickSpell(
         const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
         const EffectTypeVec_t & SPELL_EFFECTTYPE_VEC)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (SPELL_EFFECTTYPE_VEC.empty() == false),
+            "combat::TurnDecider::PickSpell(creature_deciding="
+                << CREATURE_DECIDING_CPTRC->Name() << ") but SPELL_EFFECTTYPE_VEC was empty.");
+
         auto const ALL_SPELLS_PVEC{ CREATURE_DECIDING_CPTRC->SpellsPVec() };
 
-        if (ALL_SPELLS_PVEC.empty())
-        {
-            return nullptr;
-        }
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ALL_SPELLS_PVEC.empty() == false),
+            "combat::TurnDecider::PickSpell(creature_deciding="
+                << CREATURE_DECIDING_CPTRC->Name() << ", SPELL_EFFECTTYPE_VEC.size()="
+                << SPELL_EFFECTTYPE_VEC.size() << ", SPELL_EFFECTTYPE_VEC[0]="
+                << combat::EffectType::ToString(SPELL_EFFECTTYPE_VEC[0])
+                << " but that creature has no spells.");
 
         spell::SpellPVec_t spellsOfTypePVec;
 
@@ -1233,11 +1216,11 @@ namespace combat
             ALL_SPELLS_PVEC.begin(),
             ALL_SPELLS_PVEC.end(),
             back_inserter(spellsOfTypePVec),
-            [&SPELL_EFFECTTYPE_VEC](const spell::SpellPtr_t S_PTR) {
+            [&SPELL_EFFECTTYPE_VEC](auto const SPELL_PTR) {
                 for (auto const NEXT_SPELL_EFFECTTYPE : SPELL_EFFECTTYPE_VEC)
                 {
-                    if ((S_PTR->ValidPhases() & game::Phase::Combat)
-                        && (NEXT_SPELL_EFFECTTYPE == S_PTR->Effect()))
+                    if ((SPELL_PTR->ValidPhases() & game::Phase::Combat)
+                        && (NEXT_SPELL_EFFECTTYPE == SPELL_PTR->Effect()))
                     {
                         return true;
                     }
@@ -1247,19 +1230,15 @@ namespace combat
 
         auto const SPELL_COUNT{ spellsOfTypePVec.size() };
 
-        if (SPELL_COUNT == 0)
-        {
-            return nullptr;
-        }
-        else if (SPELL_COUNT == 1)
-        {
-            return spellsOfTypePVec.at(0);
-        }
-        else
-        {
-            return spellsOfTypePVec.at(static_cast<std::size_t>(
-                misc::random::Int(static_cast<int>(spellsOfTypePVec.size()) - 1)));
-        }
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (SPELL_COUNT > 0),
+            "combat::TurnDecider::PickSpell(creature_deciding="
+                << CREATURE_DECIDING_CPTRC->Name() << ", SPELL_EFFECTTYPE_VEC.size()="
+                << SPELL_EFFECTTYPE_VEC.size() << ", SPELL_EFFECTTYPE_VEC[0]="
+                << combat::EffectType::ToString(SPELL_EFFECTTYPE_VEC[0])
+                << " resulted in no spells.");
+
+        return misc::Vector::SelectRandom(spellsOfTypePVec);
     }
 
     const TurnActionInfo TurnDecider::DecideIfFlying(

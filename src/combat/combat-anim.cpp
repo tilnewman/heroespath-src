@@ -29,6 +29,13 @@
 //
 #include "combat-anim.hpp"
 
+#include "combat/combat-display.hpp"
+#include "combat/combat-node.hpp"
+#include "combat/combat-text.hpp"
+#include "creature/algorithms.hpp"
+#include "creature/creature.hpp"
+#include "game/game-data-file.hpp"
+#include "item/item.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/cloud-animation.hpp"
 #include "sfml-util/display.hpp"
@@ -39,14 +46,6 @@
 #include "sfml-util/sparkle-animation.hpp"
 #include "sfml-util/sparks-animation.hpp"
 #include "sfml-util/text-animation.hpp"
-
-#include "combat/combat-display.hpp"
-#include "combat/combat-node.hpp"
-#include "combat/combat-text.hpp"
-#include "creature/algorithms.hpp"
-#include "creature/creature.hpp"
-#include "game/game-data-file.hpp"
-#include "item/item.hpp"
 #include "spell/spell.hpp"
 
 #include <string>

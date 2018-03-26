@@ -29,7 +29,10 @@
 //
 #include "turn-action-info.hpp"
 
+#include "creature/creature.hpp"
 #include "misc/vectors.hpp"
+#include "song/song.hpp"
+#include "spell/spell.hpp"
 
 #include <algorithm>
 #include <tuple>
@@ -43,7 +46,7 @@ namespace combat
         const TurnAction::Enum ACTION, const creature::CreaturePVec_t & TARGETS_PVEC)
         : actionType_(ACTION)
         , targetsPVec_(TARGETS_PVEC)
-        , spellPtr_(nullptr)
+        , spellPtrOpt_(boost::none)
         , songPtr_(nullptr)
     {}
 
@@ -51,7 +54,7 @@ namespace combat
         const spell::SpellPtr_t SPELL_PTR, const creature::CreaturePVec_t & TARGET_PVEC)
         : actionType_(TurnAction::Cast)
         , targetsPVec_(TARGET_PVEC)
-        , spellPtr_(SPELL_PTR)
+        , spellPtrOpt_(SPELL_PTR)
         , songPtr_(nullptr)
     {}
 
@@ -59,7 +62,7 @@ namespace combat
         const song::SongPtr_t SONG_PTR, const creature::CreaturePVec_t & TARGET_PVEC)
         : actionType_(TurnAction::PlaySong)
         , targetsPVec_(TARGET_PVEC)
-        , spellPtr_(nullptr)
+        , spellPtrOpt_(boost::none)
         , songPtr_(SONG_PTR)
     {}
 
@@ -75,6 +78,41 @@ namespace combat
         }
     }
 
+    const std::string TurnActionInfo::ToString() const
+    {
+        std::ostringstream ss;
+
+        ss << "{type=" << TurnAction::ToString(actionType_);
+
+        if (spellPtrOpt_)
+        {
+            ss << ", spell=" << spellPtrOpt_->Obj().Name();
+        }
+
+        if (nullptr != songPtr_)
+        {
+            ss << ", song=" << songPtr_->Name();
+        }
+
+        ss << ", targets=";
+
+        for (auto const CREATURE_PTR : targetsPVec_)
+        {
+            if (CREATURE_PTR == nullptr)
+            {
+                ss << "null, ";
+            }
+            else
+            {
+                ss << CREATURE_PTR->Name() << ", ";
+            }
+        }
+
+        ss << "}";
+
+        return ss.str();
+    }
+
     bool operator<(const TurnActionInfo & L, const TurnActionInfo & R)
     {
         if (misc::Vector::OrderlessCompareLess(L.targetsPVec_, R.targetsPVec_) == true)
@@ -82,19 +120,22 @@ namespace combat
             return true;
         }
 
-        return std::tie(L.actionType_, L.spellPtr_, L.songPtr_)
-            < std::tie(R.actionType_, R.spellPtr_, R.songPtr_);
+        return std::tie(L.actionType_, L.spellPtrOpt_, L.songPtr_)
+            < std::tie(R.actionType_, R.spellPtrOpt_, R.songPtr_);
     }
 
     bool operator==(const TurnActionInfo & L, const TurnActionInfo & R)
     {
-        if (misc::Vector::OrderlessCompareEqual(L.targetsPVec_, R.targetsPVec_) == false)
+        if (std::tie(L.actionType_, L.spellPtrOpt_, L.songPtr_)
+            == std::tie(R.actionType_, R.spellPtrOpt_, R.songPtr_))
+        {
+            return misc::Vector::OrderlessCompareEqual(L.targetsPVec_, R.targetsPVec_);
+        }
+        else
         {
             return false;
         }
-
-        return std::tie(L.actionType_, L.spellPtr_, L.songPtr_)
-            == std::tie(R.actionType_, R.spellPtr_, R.songPtr_);
     }
+
 } // namespace combat
 } // namespace heroespath

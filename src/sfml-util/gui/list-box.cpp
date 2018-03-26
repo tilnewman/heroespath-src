@@ -672,9 +672,8 @@ namespace sfml_util
             ImagePair_t imagePair;
 
             auto const DOES_IMAGE_EXIST{ (
-                (listBoxItemSPtr->ITEM_CPTR != nullptr) || (listBoxItemSPtr->TITLE_PTR_OPT)
-                || (listBoxItemSPtr->CHARACTER_CPTR != nullptr)
-                || (listBoxItemSPtr->SPELL_CPTRC != nullptr)
+                (listBoxItemSPtr->ITEM_CPTR != nullptr) || listBoxItemSPtr->TITLE_PTR_OPT
+                || (listBoxItemSPtr->CHARACTER_CPTR != nullptr) || listBoxItemSPtr->SPELL_PTR_OPT
                 || (listBoxItemSPtr->COND_CPTRC != nullptr)
                 || (listBoxItemSPtr->SONG_CPTRC != nullptr)) };
 
@@ -703,10 +702,10 @@ namespace sfml_util
                             listBoxItemSPtr->CHARACTER_CPTR->ImageFilename(),
                             true);
                     }
-                    else if (listBoxItemSPtr->SPELL_CPTRC != nullptr)
+                    else if (listBoxItemSPtr->SPELL_PTR_OPT)
                     {
                         sfml_util::gui::SpellImageManager::Instance()->Get(
-                            *imagePair.first, listBoxItemSPtr->SPELL_CPTRC->Which());
+                            *imagePair.first, listBoxItemSPtr->SPELL_PTR_OPT->Obj().Which());
                     }
                     else if (listBoxItemSPtr->COND_CPTRC != nullptr)
                     {

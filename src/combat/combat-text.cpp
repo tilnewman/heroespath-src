@@ -355,6 +355,15 @@ namespace combat
 
             case combat::TurnAction::Cast:
             {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (!!TURN_ACTION_INFO.Spell()),
+                    "combat::Text::ActionText(creature_attacking="
+                        << CREATURE_ATTACKING_PTR->Name()
+                        << ", turn_action_info=Cast, will_use_name=" << std::boolalpha
+                        << WILL_USE_NAME << ", is_status=" << IS_STATUS_VERSION
+                        << ", is_preamble=" << IS_PREAMBLE_VERSION
+                        << ") was of cast type but spellPtrOpt was uninitialized.");
+
                 if (IS_PREAMBLE_VERSION)
                 {
                     ss << CastDescriptionPreambleVersion(TURN_ACTION_INFO, FIGHT_RESULT);
@@ -494,6 +503,15 @@ namespace combat
         }
         else if (TURN_ACTION == combat::TurnAction::Cast)
         {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (!!TURN_ACTION_INFO.Spell()),
+                "comabt::Text::ActionTextIndexed(creature_attacking="
+                    << CREATURE_ATTACKING_PTR->Name()
+                    << ", turn_action_info=" << TURN_ACTION_INFO.ToString()
+                    << ", will_use_name=" << std::boolalpha << WILL_USE_NAME
+                    << ", effect_index=" << EFFECT_INDEX << ", hit_index=" << HIT_INDEX
+                    << ") was cast but spellPtrOpt was uninitialized.");
+
             return CastDescriptionFullVersion(
                 CREATURE_ATTACKING_PTR,
                 TURN_ACTION_INFO,
@@ -928,11 +946,14 @@ namespace combat
 
         auto const SPELL_PTR{ TURN_ACTION_INFO.Spell() };
 
-        ss << "casts the " << SPELL_PTR->Name() << " spell "
-           << TargetType::ActionPhrase(SPELL_PTR->Target());
+        ss << "casts the " << SPELL_PTR->Obj().Name() << " spell ";
 
-        if ((SPELL_PTR->Target() == TargetType::AllCompanions)
-            || (SPELL_PTR->Target() == TargetType::AllOpponents))
+        auto const SPELL_TARGET{ SPELL_PTR->Obj().Target() };
+
+        ss << TargetType::ActionPhrase(SPELL_TARGET);
+
+        if ((SPELL_TARGET == TargetType::AllCompanions)
+            || (SPELL_TARGET == TargetType::AllOpponents))
         {
             ss << " at " << FIGHT_RESULT.Count();
         }
@@ -945,7 +966,7 @@ namespace combat
         const TurnActionInfo & TURN_ACTION_INFO, const FightResult & FIGHT_RESULT)
     {
         std::ostringstream ss;
-        ss << "casts the " << TURN_ACTION_INFO.Spell()->Name() << " spell ";
+        ss << "casts the " << TURN_ACTION_INFO.Spell()->Obj().Name() << " spell ";
         if (FIGHT_RESULT.Count() == 1)
         {
             auto const CREATURE_EFFECT{ FIGHT_RESULT.Effects()[0] };
@@ -976,7 +997,7 @@ namespace combat
         }
         else
         {
-            ss << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->Target());
+            ss << TargetType::ActionPhrase(TURN_ACTION_INFO.Spell()->Obj().Target());
         }
 
         ss << "...";
@@ -993,18 +1014,13 @@ namespace combat
     {
         wasCollapsed = false;
 
-        if (TURN_ACTION_INFO.Spell() == nullptr)
-        {
-            return "(error: TURN_ACTION_INFO.Spell() null)";
-        }
-
         auto const FIGHT_RESULT_SUMMARY{ SummarizeFightResult(CREATURE_CASTING_PTR, FIGHT_RESULT) };
 
         if (FIGHT_RESULT_SUMMARY.IsValid())
         {
             wasCollapsed = true;
             return FIGHT_RESULT_SUMMARY.Compose(
-                CREATURE_CASTING_PTR->Name(), TURN_ACTION_INFO.Spell()->VerbPastTense());
+                CREATURE_CASTING_PTR->Name(), TURN_ACTION_INFO.Spell()->Obj().VerbPastTense());
         }
 
         if (EFFECT_INDEX >= FIGHT_RESULT.Effects().size())
@@ -1425,7 +1441,7 @@ namespace combat
 
         if (FIRST_HIT_INFO.TypeOfHit() == HitType::Spell)
         {
-            frs.spell_ptr = FIRST_HIT_INFO.SpellPtr();
+            frs.spell_ptr_opt = FIRST_HIT_INFO.SpellPtrOpt();
         }
         else if (FIRST_HIT_INFO.TypeOfHit() == HitType::Song)
         {

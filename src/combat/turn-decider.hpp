@@ -32,6 +32,7 @@
 #include "combat/strategy-info.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-action-info.hpp"
+#include "misc/not-null.hpp"
 
 #include <memory>
 #include <vector>
@@ -41,7 +42,7 @@ namespace heroespath
 namespace spell
 {
     class Spell;
-    using SpellPtr_t = Spell *;
+    using SpellPtr_t = misc::NotNull<Spell *>;
 } // namespace spell
 namespace creature
 {
@@ -130,11 +131,11 @@ namespace combat
             const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
             const EffectTypeVec_t & SPELL_TYPES_VEC);
 
-        static spell::SpellPtr_t PickSpell(
+        static const spell::SpellPtr_t PickSpell(
             const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
             const combat::EffectType::Enum SPELL_TYPE);
 
-        static spell::SpellPtr_t PickSpell(
+        static const spell::SpellPtr_t PickSpell(
             const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
             const EffectTypeVec_t & SPELL_TYPES_VEC);
 
@@ -153,6 +154,7 @@ namespace combat
         static const EffectTypeVec_t HARM_EFFECTTYPES_VEC_;
         static const EffectTypeVec_t HELP_EFFECTTYPES_VEC_;
     };
+
 } // namespace combat
 } // namespace heroespath
 

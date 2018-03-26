@@ -43,6 +43,7 @@
 #include "creature/title-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
 #include "item/inventory.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
@@ -70,7 +71,7 @@ namespace song
 namespace spell
 {
     class Spell;
-    using SpellPtr_t = Spell *;
+    using SpellPtr_t = misc::NotNull<Spell *>;
     using SpellPVec_t = std::vector<SpellPtr_t>;
 } // namespace spell
 namespace item
@@ -135,7 +136,7 @@ namespace creature
             const item::Inventory & INVENTORY = item::Inventory(),
             const sfml_util::DateTime & DATE_TIME = sfml_util::DateTime(),
             const std::string & IMAGE_FILENAME = "",
-            const spell::SpellVec_t & SPELL_VEC = spell::SpellVec_t(),
+            const spell::SpellEnumVec_t & SPELL_VEC = spell::SpellEnumVec_t(),
             const Mana_t & MANA = 0_mana,
             const song::SongVec_t & SONG_VEC = song::SongVec_t());
 
@@ -331,7 +332,7 @@ namespace creature
         bool CanCastSpellByEffectType(const combat::EffectType::Enum) const;
         bool CanCastSpellByEffectType(const combat::EffectTypeVec_t &) const;
 
-        spell::SpellVec_t Spells() const { return spellsVec_; }
+        const spell::SpellEnumVec_t Spells() const { return spellsVec_; }
 
         const spell::SpellPVec_t SpellsPVec() const;
 
@@ -466,7 +467,7 @@ namespace creature
         TitleEnumVec_t titlesVec_;
         item::Inventory inventory_;
         sfml_util::DateTime dateTimeCreated_;
-        spell::SpellVec_t spellsVec_;
+        spell::SpellEnumVec_t spellsVec_;
         Achievements achievements_;
         item::ItemPVec_t currWeaponsPVec_;
         std::size_t lastSpellCastNum_;

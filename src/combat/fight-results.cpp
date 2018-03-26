@@ -33,10 +33,9 @@
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
 #include "item/item.hpp"
+#include "misc/vectors.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
-
-#include "misc/vectors.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -51,7 +50,7 @@ namespace combat
     FightResultSummary::FightResultSummary()
         : hit_type(HitType::Count)
         , song_ptr(nullptr)
-        , spell_ptr(nullptr)
+        , spell_ptr_opt(boost::none)
         , effected_vec()
         , resisted_vec()
         , already_vec()
@@ -76,7 +75,7 @@ namespace combat
             return false;
         }
 
-        if ((HitType::Spell == hit_type) && (spell_ptr == nullptr))
+        if ((HitType::Spell == hit_type) && (!spell_ptr_opt))
         {
             return false;
         }
@@ -97,7 +96,7 @@ namespace combat
         }
         else if (HitType::Spell == hit_type)
         {
-            return spell_ptr->VerbThirdPerson();
+            return spell_ptr_opt->Obj().VerbThirdPerson();
         }
         else // roar case
         {
@@ -118,7 +117,7 @@ namespace combat
 
         if (HitType::Spell == hit_type)
         {
-            preSS << " casts " << spell_ptr->Name();
+            preSS << " casts " << spell_ptr_opt->Obj().Name();
         }
         else if (HitType::Song == hit_type)
         {
@@ -217,5 +216,6 @@ namespace combat
 
         return creatureEffectVec_.size();
     }
+
 } // namespace combat
 } // namespace heroespath

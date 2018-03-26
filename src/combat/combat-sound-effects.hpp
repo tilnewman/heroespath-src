@@ -28,6 +28,7 @@
 // combat-sound-effects.hpp
 //
 #include "combat/fight-results.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 
 #include <memory>
@@ -47,7 +48,7 @@ namespace item
 namespace spell
 {
     class Spell;
-    using SpellPtr_t = Spell *;
+    using SpellPtr_t = misc::NotNull<Spell *>;
 } // namespace spell
 namespace song
 {

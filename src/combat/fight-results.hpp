@@ -29,6 +29,8 @@
 //
 #include "creature-effect.hpp"
 #include "hit-info.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 
 #include <string>
 #include <utility>
@@ -47,7 +49,12 @@ namespace item
     class Item;
     using ItemPtr_t = Item *;
 } // namespace item
-
+namespace spell
+{
+    class Spell;
+    using SpellPtr_t = misc::NotNull<Spell *>;
+    using SpellPtrOpt_t = boost::optional<SpellPtr_t>;
+}
 namespace combat
 {
 
@@ -61,7 +68,7 @@ namespace combat
 
         HitType::Enum hit_type;
         song::SongPtr_t song_ptr;
-        spell::SpellPtr_t spell_ptr;
+        spell::SpellPtrOpt_t spell_ptr_opt;
         CreatureHitInfoVec_t effected_vec;
         CreatureHitInfoVec_t resisted_vec;
         CreatureHitInfoVec_t already_vec;
@@ -95,6 +102,7 @@ namespace combat
     private:
         CreatureEffectVec_t creatureEffectVec_;
     };
+
 } // namespace combat
 } // namespace heroespath
 

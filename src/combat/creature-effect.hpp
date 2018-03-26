@@ -27,20 +27,14 @@
 //
 // creature-effect.hpp
 //
-#include "hit-info.hpp"
-
 #include "creature/condition-enum.hpp"
+#include "hit-info.hpp"
 #include "stats/trait.hpp"
 
 #include <vector>
 
 namespace heroespath
 {
-namespace spell
-{
-    class Spell;
-    using SpellPtr_t = Spell *;
-} // namespace spell
 namespace song
 {
     class Song;
@@ -98,6 +92,7 @@ namespace combat
     bool operator==(const CreatureEffect & L, const CreatureEffect & R);
 
     inline bool operator!=(const CreatureEffect & L, const CreatureEffect & R) { return !(L == R); }
+
 } // namespace combat
 } // namespace heroespath
 

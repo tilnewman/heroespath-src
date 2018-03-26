@@ -28,6 +28,8 @@
 // hit-info.hpp
 //
 #include "creature/condition-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "name-position-enum.hpp"
 #include "stats/trait.hpp"
@@ -46,7 +48,8 @@ namespace creature
 namespace spell
 {
     class Spell;
-    using SpellPtr_t = Spell *;
+    using SpellPtr_t = misc::NotNull<Spell *>;
+    using SpellPtrOpt_t = boost::optional<SpellPtr_t>;
 } // namespace spell
 namespace song
 {
@@ -99,7 +102,7 @@ namespace combat
         // use this constructor for spells
         HitInfo(
             const bool WAS_HIT,
-            const spell::SpellPtr_t SPELL_CPTR,
+            const spell::SpellPtr_t SPELL_PTR,
             const ContentAndNamePos & ACTION_PHRASE_CNP,
             const Health_t & DAMAGE = 0_health,
             const creature::CondEnumVec_t & CONDS_ADDED_VEC = creature::CondEnumVec_t(),
@@ -149,9 +152,9 @@ namespace combat
         bool IsCritical() const { return isCritical_; }
         bool IsPowerHit() const { return isPower_; }
         const std::string ActionVerb() const { return actionVerb_; }
-        spell::SpellPtr_t SpellPtr() const { return spellPtr_; }
+        const spell::SpellPtrOpt_t SpellPtrOpt() const { return spellPtrOpt_; }
         song::SongPtr_t SongPtr() const { return songPtr_; }
-        bool IsSpell() const { return (spellPtr_ != nullptr); }
+        bool IsSpell() const { return !!spellPtrOpt_; }
         bool IsWeapon() const { return (weaponPtr_ != nullptr); }
 
         creature::ConditionPtr_t ConditionPtr() const { return conditionPtr_; }
@@ -191,7 +194,7 @@ namespace combat
         creature::CondEnumVec_t condsAddedVec_;
         creature::CondEnumVec_t condsRemovedVec_;
         std::string actionVerb_;
-        spell::SpellPtr_t spellPtr_;
+        spell::SpellPtrOpt_t spellPtrOpt_;
         ContentAndNamePos actionPhraseCNP_;
         song::SongPtr_t songPtr_;
         bool didArmorAbsorb_;
@@ -205,6 +208,7 @@ namespace combat
     bool operator==(const HitInfo & L, const HitInfo & R);
 
     inline bool operator!=(const HitInfo & L, const HitInfo & R) { return !(L == R); }
+
 } // namespace combat
 } // namespace heroespath
 

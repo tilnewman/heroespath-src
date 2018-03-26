@@ -54,7 +54,7 @@ namespace sfml_util
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
-            , SPELL_CPTRC(nullptr)
+            , SPELL_PTR_OPT(boost::none)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
         {}
@@ -70,7 +70,7 @@ namespace sfml_util
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
-            , SPELL_CPTRC(nullptr)
+            , SPELL_PTR_OPT(boost::none)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
         {}
@@ -89,7 +89,7 @@ namespace sfml_util
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
-            , SPELL_CPTRC(nullptr)
+            , SPELL_PTR_OPT(boost::none)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
         {}
@@ -106,7 +106,7 @@ namespace sfml_util
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
-            , SPELL_CPTRC(nullptr)
+            , SPELL_PTR_OPT(boost::none)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
         {}
@@ -123,7 +123,7 @@ namespace sfml_util
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(CONDITION_CPTRC_PARAM)
             , TITLE_PTR_OPT(boost::none)
-            , SPELL_CPTRC(nullptr)
+            , SPELL_PTR_OPT(boost::none)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
         {}
@@ -139,7 +139,7 @@ namespace sfml_util
             , ITEM_CPTR(ITEM_PTR)
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
-            , SPELL_CPTRC(nullptr)
+            , SPELL_PTR_OPT(boost::none)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
         {}
@@ -155,7 +155,7 @@ namespace sfml_util
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(TITLE_PTR_PARAM)
-            , SPELL_CPTRC(nullptr)
+            , SPELL_PTR_OPT(boost::none)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
         {}
@@ -163,7 +163,7 @@ namespace sfml_util
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const spell::SpellPtrC_t SPELL_CPTRC_PARAM,
+            const spell::SpellPtr_t SPELL_PTR_PARAM,
             const bool IS_VALID)
             : TextRegion(std::string(NAME).append("_ListBoxItemSpell"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
@@ -171,7 +171,7 @@ namespace sfml_util
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
-            , SPELL_CPTRC(SPELL_CPTRC_PARAM)
+            , SPELL_PTR_OPT(SPELL_PTR_PARAM)
             , SONG_CPTRC(nullptr)
             , is_valid(IS_VALID)
         {}
@@ -187,7 +187,7 @@ namespace sfml_util
             , ITEM_CPTR(nullptr)
             , COND_CPTRC(nullptr)
             , TITLE_PTR_OPT(boost::none)
-            , SPELL_CPTRC(nullptr)
+            , SPELL_PTR_OPT(boost::none)
             , SONG_CPTRC(SONG_CPTRC_PARAM)
             , is_valid(IS_VALID)
         {}
@@ -200,7 +200,7 @@ namespace sfml_util
                        L.ITEM_CPTR,
                        L.COND_CPTRC,
                        L.TITLE_PTR_OPT,
-                       L.SPELL_CPTRC,
+                       L.SPELL_PTR_OPT,
                        L.SONG_CPTRC,
                        L.is_valid)
                 == std::tie(
@@ -209,7 +209,7 @@ namespace sfml_util
                        R.ITEM_CPTR,
                        R.COND_CPTRC,
                        R.TITLE_PTR_OPT,
-                       R.SPELL_CPTRC,
+                       R.SPELL_PTR_OPT,
                        R.SONG_CPTRC,
                        R.is_valid);
         }
@@ -222,7 +222,7 @@ namespace sfml_util
                        L.ITEM_CPTR,
                        L.COND_CPTRC,
                        L.TITLE_PTR_OPT,
-                       L.SPELL_CPTRC,
+                       L.SPELL_PTR_OPT,
                        L.SONG_CPTRC,
                        L.is_valid)
                 < std::tie(
@@ -231,7 +231,7 @@ namespace sfml_util
                        R.ITEM_CPTR,
                        R.COND_CPTRC,
                        R.TITLE_PTR_OPT,
-                       R.SPELL_CPTRC,
+                       R.SPELL_PTR_OPT,
                        R.SONG_CPTRC,
                        R.is_valid);
         }

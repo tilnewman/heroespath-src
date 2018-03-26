@@ -162,7 +162,7 @@ namespace combat
             item::Inventory(),
             sfml_util::DateTime(),
             "",
-            spell::SpellVec_t(),
+            spell::SpellEnumVec_t(),
             MANA) };
 
         characterPtr->ImageFilename(sfml_util::gui::CreatureImageManager::Instance()->GetFilename(

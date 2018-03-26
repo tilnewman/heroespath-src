@@ -32,6 +32,8 @@
 #include "combat/target-enum.hpp"
 #include "creature/condition-enum.hpp"
 #include "game/phase-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "spell/spell-enum.hpp"
 
@@ -127,7 +129,8 @@ namespace spell
         std::string verbPastTense_;
     };
 
-    using SpellPtr_t = Spell *;
+    using SpellPtr_t = misc::NotNull<Spell *>;
+    using SpellPtrOpt_t = boost::optional<SpellPtr_t>;
     using SpellPVec_t = std::vector<SpellPtr_t>;
 
     inline bool operator<(const Spell & L, const Spell & R)

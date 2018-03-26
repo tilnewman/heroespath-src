@@ -29,6 +29,25 @@
 //
 #include "inventory-stage.hpp"
 
+#include "combat/combat-sound-effects.hpp"
+#include "combat/fight.hpp"
+#include "creature/algorithms.hpp"
+#include "creature/condition.hpp"
+#include "creature/creature.hpp"
+#include "game/game-data-file.hpp"
+#include "game/game.hpp"
+#include "game/loop-manager.hpp"
+#include "item/item-warehouse.hpp"
+#include "item/item.hpp"
+#include "misc/assertlogandthrow.hpp"
+#include "misc/real.hpp"
+#include "non-player/party.hpp"
+#include "player/party.hpp"
+#include "popup/popup-stage-char-select.hpp"
+#include "popup/popup-stage-inventory-prompt.hpp"
+#include "popup/popup-stage-musicsheet.hpp"
+#include "popup/popup-stage-num-select.hpp"
+#include "popup/popup-stage-spellbook.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/box.hpp"
@@ -44,31 +63,9 @@
 #include "sfml-util/song-animation.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/sparkle-animation.hpp"
-
-#include "popup/popup-stage-char-select.hpp"
-#include "popup/popup-stage-inventory-prompt.hpp"
-#include "popup/popup-stage-musicsheet.hpp"
-#include "popup/popup-stage-num-select.hpp"
-#include "popup/popup-stage-spellbook.hpp"
-
-#include "combat/combat-sound-effects.hpp"
-#include "combat/fight.hpp"
-#include "creature/algorithms.hpp"
-#include "creature/condition.hpp"
-#include "creature/creature.hpp"
-#include "game/game-data-file.hpp"
-#include "game/game.hpp"
-#include "game/loop-manager.hpp"
-#include "item/item-warehouse.hpp"
-#include "item/item.hpp"
-#include "non-player/party.hpp"
-#include "player/party.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 #include "state/game-state.hpp"
-
-#include "misc/assertlogandthrow.hpp"
-#include "misc/real.hpp"
 
 #include <algorithm>
 #include <string>
@@ -287,7 +284,7 @@ namespace stage
         , detailViewTexture_()
         , detailViewTextUPtr_()
         , detailViewSlider_(DETAILVIEW_SLIDER_SPEED_)
-        , spellBeingCastPtr_(nullptr)
+        , spellBeingCastPtrOpt_(boost::none)
         , songBeingPlayedPtr_(nullptr)
         , turnActionInfo_()
         , fightResult_()
@@ -497,11 +494,12 @@ namespace stage
                 return false;
             }
 
-            if (nullptr != spellBeingCastPtr_)
+            if (spellBeingCastPtrOpt_)
             {
                 creature::CreaturePVec_t spellTargetCreaturePVec;
                 spellTargetCreaturePVec.emplace_back(creatureToGiveToPtr_);
-                HandleCast_Step2_PerformSpell(spellTargetCreaturePVec);
+                HandleCast_Step2_PerformSpell(
+                    spellBeingCastPtrOpt_.value(), spellTargetCreaturePVec);
                 return true;
             }
 
@@ -609,40 +607,43 @@ namespace stage
             && (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
             const spell::SpellPVec_t SPELLS_PVEC{ creaturePtr_->SpellsPVec() };
+
+            auto const RESPONSE_SELECTION_INDEX{ POPUP_RESPONSE.Selection() };
+
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
+                (RESPONSE_SELECTION_INDEX < SPELLS_PVEC.size()),
                 "stage::InventoryStage::HandleCallback(SPELL, selection="
                     << POPUP_RESPONSE.Selection()
                     << ") Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
 
-            auto const spellPtr{ SPELLS_PVEC.at(POPUP_RESPONSE.Selection()) };
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (spellPtr != nullptr),
-                "stage::InventoryStage::HandleCallback(SPELL, selection="
-                    << POPUP_RESPONSE.Selection() << ")  SPELLS_PVEC[selection] was null.");
+            auto const SPELL_PTR{ SPELLS_PVEC.at(RESPONSE_SELECTION_INDEX) };
 
-            creaturePtr_->LastSpellCastNum(POPUP_RESPONSE.Selection());
-            return HandleCast_Step1_TargetSelection(SPELLS_PVEC[POPUP_RESPONSE.Selection()]);
+            creaturePtr_->LastSpellCastNum(RESPONSE_SELECTION_INDEX);
+            return HandleCast_Step1_TargetSelection(SPELL_PTR);
         }
         else if (
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_MUSICSHEET_)
             && (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
             const song::SongPVec_t SONGS_PVEC{ creaturePtr_->SongsPVec() };
+
+            auto const RESPONSE_SELECTION_INDEX{ POPUP_RESPONSE.Selection() };
+
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (POPUP_RESPONSE.Selection() < SONGS_PVEC.size()),
+                (RESPONSE_SELECTION_INDEX < SONGS_PVEC.size()),
                 "stage::InventoryStage::HandleCallback(SONG, selection="
                     << POPUP_RESPONSE.Selection()
                     << ") Selection was greater than SongPVec.size=" << SONGS_PVEC.size());
 
-            auto const songPtr{ SONGS_PVEC.at(POPUP_RESPONSE.Selection()) };
+            auto const SONG_PTR{ SONGS_PVEC.at(RESPONSE_SELECTION_INDEX) };
+
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (songPtr != nullptr),
+                (SONG_PTR != nullptr),
                 "stage::InventoryStage::HandleCallback(SONG, selection="
                     << POPUP_RESPONSE.Selection() << ")  SONGS_PVEC[selection] was null.");
 
-            creaturePtr_->LastSongPlayedNum(POPUP_RESPONSE.Selection());
-            return HandleSong_Step1_Play(SONGS_PVEC[POPUP_RESPONSE.Selection()]);
+            creaturePtr_->LastSongPlayedNum(RESPONSE_SELECTION_INDEX);
+            return HandleSong_Step1_Play(SONG_PTR);
         }
 
         return false;
@@ -1205,7 +1206,7 @@ namespace stage
             }
             case ViewType::Spells:
             {
-                for (auto const NEXT_SPELL_PTR : creaturePtr_->SpellsPVec())
+                for (auto const & NEXT_SPELL_PTR : creaturePtr_->SpellsPVec())
                 {
                     listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
 
@@ -3935,23 +3936,25 @@ namespace stage
 
     bool InventoryStage::HandleCast_Step1_TargetSelection(const spell::SpellPtr_t SPELL_PTR)
     {
-        spellBeingCastPtr_ = SPELL_PTR;
+        spellBeingCastPtrOpt_ = SPELL_PTR;
 
-        if (spellBeingCastPtr_->Target() == combat::TargetType::SingleCompanion)
+        auto const SPELL_NAME{ SPELL_PTR->Name() };
+        auto const SPELL_TARGET{ SPELL_PTR->Target() };
+
+        if (SPELL_TARGET == combat::TargetType::SingleCompanion)
         {
-            PopupCharacterSelectWindow(
-                "Cast " + spellBeingCastPtr_->Name() + " on who?", true, true);
+            PopupCharacterSelectWindow("Cast " + SPELL_NAME + " on who?", true, true);
         }
-        else if (spellBeingCastPtr_->Target() == combat::TargetType::AllCompanions)
+        else if (SPELL_TARGET == combat::TargetType::AllCompanions)
         {
-            HandleCast_Step2_PerformSpell(creature::Algorithms::Players());
+            HandleCast_Step2_PerformSpell(SPELL_PTR, creature::Algorithms::Players());
         }
         else
         {
             std::ostringstream ssErr;
             ssErr << "stage::InventoryStage::HandleCast Step2 SelectTargetOrPerformOnAll"
-                  << "(spell=" << spellBeingCastPtr_->Name() << ") had a target_type of "
-                  << combat::TargetType::ToString(spellBeingCastPtr_->Target())
+                  << "(spell=" << SPELL_NAME << ") had a target_type of "
+                  << combat::TargetType::ToString(SPELL_TARGET)
                   << " which is not yet supported while in Inventory stage.";
 
             SystemErrorPopup(
@@ -3962,14 +3965,13 @@ namespace stage
     }
 
     void InventoryStage::HandleCast_Step2_PerformSpell(
-        const creature::CreaturePVec_t & TARGET_CREATURES_PVEC)
+        const spell::SpellPtr_t SPELL_PTR, const creature::CreaturePVec_t & TARGET_CREATURES_PVEC)
     {
-        combatSoundEffectsUPtr_->PlaySpell(spellBeingCastPtr_);
+        combatSoundEffectsUPtr_->PlaySpell(SPELL_PTR);
 
-        turnActionInfo_ = combat::TurnActionInfo(spellBeingCastPtr_, TARGET_CREATURES_PVEC);
+        turnActionInfo_ = combat::TurnActionInfo(SPELL_PTR, TARGET_CREATURES_PVEC);
 
-        fightResult_
-            = combat::FightClub::Cast(spellBeingCastPtr_, creaturePtr_, TARGET_CREATURES_PVEC);
+        fightResult_ = combat::FightClub::Cast(SPELL_PTR, creaturePtr_, TARGET_CREATURES_PVEC);
 
         Setup_CreatureDetails(false);
         Setup_CreatureStats();
@@ -3993,7 +3995,7 @@ namespace stage
 
     bool InventoryStage::HandleCast_Step3_DisplayResults()
     {
-        if (spellBeingCastPtr_ == nullptr)
+        if (!spellBeingCastPtrOpt_)
         {
             return true;
         }
@@ -4026,7 +4028,7 @@ namespace stage
             hitInfoIndex_ = 0;
             if (isFightResultCollapsed || (++creatureEffectIndex_ >= CREATURE_EFFECTS_VEC.size()))
             {
-                spellBeingCastPtr_ = nullptr;
+                spellBeingCastPtrOpt_ = boost::none;
             }
         }
 
@@ -4191,7 +4193,6 @@ namespace stage
     {
         if (songBeingPlayedPtr_ == nullptr)
         {
-            // return false because one popup is NOT replacing another
             return true;
         }
 

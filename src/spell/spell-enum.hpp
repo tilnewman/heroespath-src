@@ -69,7 +69,8 @@ namespace spell
         static const std::string ImageFilename(const Enum);
     };
 
-    using SpellVec_t = std::vector<Spells::Enum>;
+    using SpellEnumVec_t = std::vector<Spells::Enum>;
+
 } // namespace spell
 } // namespace heroespath
 

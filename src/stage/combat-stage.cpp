@@ -198,7 +198,7 @@ namespace stage
         , preTurnPhase_(PreTurnPhase::Start)
         , turnActionPhase_(TurnActionPhase::None)
         , animPhase_(AnimPhase::NotAnimating)
-        , spellBeingCastPtr_(nullptr)
+        , spellBeingCastPtrOpt_(boost::none)
         , songBeingPlayedPtr_(nullptr)
         , performReportEffectIndex_(0)
         , performReportHitIndex_(0)
@@ -451,22 +451,16 @@ namespace stage
         {
             if (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
             {
-                const spell::SpellPVec_t SPELLS_PVEC(turnCreaturePtr_->SpellsPVec());
+                auto const SPELLS_PVEC{ turnCreaturePtr_->SpellsPVec() };
+
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (POPUP_RESPONSE.Selection() < SPELLS_PVEC.size()),
                     "stage::CombatStage::HandleCallback(SPELL_POPUP_RESPONSE, selection="
                         << POPUP_RESPONSE.Selection()
                         << ") Selection was greater than SpellPVec.size=" << SPELLS_PVEC.size());
 
-                auto const spellPtr{ SPELLS_PVEC.at(POPUP_RESPONSE.Selection()) };
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (spellPtr != nullptr),
-                    "stage::CombatStage::HandleCallback(SPELL_POPUP_RESPONSE, selection="
-                        << POPUP_RESPONSE.Selection() << ")  SPELLS_PVEC[selection] was null.");
-
+                spellBeingCastPtrOpt_ = SPELLS_PVEC.at(POPUP_RESPONSE.Selection());
                 turnCreaturePtr_->LastSpellCastNum(POPUP_RESPONSE.Selection());
-
-                spellBeingCastPtr_ = spellPtr;
                 HandleCast_Step2_SelectTargetOrPerformOnAll();
                 return true;
             }
@@ -1308,15 +1302,21 @@ namespace stage
 
         if ((TurnPhase::PerformAnim == turnPhase_) && (AnimPhase::Spell == animPhase_))
         {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (!!spellBeingCastPtrOpt_),
+                "stage::CombatStage::UpdateTime() turnPhase_=PerformAnim and animPhase_=Spell but "
+                "spellBeingCastPtrOpt_ was uninitialized.");
+
             if (combatAnimationUPtr_->SparkleAnimIsDone() == false)
             {
                 combatAnimationUPtr_->SparkleAnimUpdate(ELAPSED_TIME_SEC);
             }
 
-            if (combatAnimationUPtr_->SpellAnimUpdate(spellBeingCastPtr_, ELAPSED_TIME_SEC))
+            if (combatAnimationUPtr_->SpellAnimUpdate(
+                    spellBeingCastPtrOpt_.value(), ELAPSED_TIME_SEC))
             {
                 combatAnimationUPtr_->SparkleAnimStop();
-                combatAnimationUPtr_->SpellAnimStop(spellBeingCastPtr_);
+                combatAnimationUPtr_->SpellAnimStop(spellBeingCastPtrOpt_.value());
                 HandleApplyDamageTasks();
                 SetAnimPhase(AnimPhase::PostSpellPause);
                 StartPause(POST_SPELL_ANIM_PAUSE_SEC_, "PostSpell");
@@ -1601,7 +1601,7 @@ namespace stage
             return GUI_ENTITY_WITH_FOCUS;
         }
 
-        if (nullptr == spellBeingCastPtr_)
+        if (!spellBeingCastPtrOpt_)
         {
             if (creatureAtPosPtr->IsPlayerCharacter())
             {
@@ -1629,7 +1629,7 @@ namespace stage
                 }
             }
         }
-        else if (spellBeingCastPtr_->Target() == combat::TargetType::SingleOpponent)
+        else if (spellBeingCastPtrOpt_->Obj().Target() == combat::TargetType::SingleOpponent)
         {
             if (creatureAtPosPtr->IsPlayerCharacter())
             {
@@ -1645,7 +1645,7 @@ namespace stage
                 HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ creatureAtPosPtr });
             }
         }
-        else if (spellBeingCastPtr_->Target() == combat::TargetType::SingleCompanion)
+        else if (spellBeingCastPtrOpt_->Obj().Target() == combat::TargetType::SingleCompanion)
         {
             if (creatureAtPosPtr->IsPlayerCharacter() == false)
             {
@@ -2248,7 +2248,7 @@ namespace stage
                 combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(targetedCreaturesPVec);
 
                 fightResult_ = combat::FightClub::Cast(
-                    turnActionInfo_.Spell(), turnCreaturePtr_, targetedCreaturesPVec);
+                    turnActionInfo_.Spell().value(), turnCreaturePtr_, targetedCreaturesPVec);
 
                 SetupTurnBox();
 
@@ -2439,7 +2439,7 @@ namespace stage
         SetAnimPhase(AnimPhase::NotAnimating);
 
         turnCreaturePtr_ = nullptr;
-        spellBeingCastPtr_ = nullptr;
+        spellBeingCastPtrOpt_ = boost::none;
         songBeingPlayedPtr_ = nullptr;
 
         MoveTurnBoxObjectsOffScreen();
@@ -2554,12 +2554,12 @@ namespace stage
             || (songBeingPlayedPtr_->Target() == combat::TargetType::QuestSpecific))
         {
             std::ostringstream ssErr;
-            ssErr << "stage::CombatStage::HandleCast Step2 SelectTargetOrPerformOnAll("
-                  << "spell=" << spellBeingCastPtr_->Name() << ") had a target_type of "
-                  << combat::TargetType::ToString(spellBeingCastPtr_->Target())
+            ssErr << "stage::CombatStage::HandleSong_Step2_SelectTargetOrPerformOnAll("
+                  << "song=" << songBeingPlayedPtr_->Name() << ") had a target_type of "
+                  << combat::TargetType::ToString(songBeingPlayedPtr_->Target())
                   << " which is not yet supported in combat stage.";
 
-            SystemErrorPopup("Casting this type of spell is not yet supported.", ssErr.str());
+            SystemErrorPopup("Playing this type of song is not yet supported.", ssErr.str());
 
             SetTurnPhase(TurnPhase::PostTurnPause);
             SetAnimPhase(AnimPhase::NotAnimating);
@@ -2619,8 +2619,10 @@ namespace stage
 
     void CombatStage::HandleCast_Step2_SelectTargetOrPerformOnAll()
     {
-        if ((spellBeingCastPtr_->Target() == combat::TargetType::SingleCompanion)
-            || (spellBeingCastPtr_->Target() == combat::TargetType::SingleOpponent))
+        auto const SPELL_TARGET{ spellBeingCastPtrOpt_->Obj().Target() };
+
+        if ((SPELL_TARGET == combat::TargetType::SingleCompanion)
+            || (SPELL_TARGET == combat::TargetType::SingleOpponent))
         {
             SetUserActionAllowed(true);
             combatDisplayStagePtr_->SetSummaryViewAllowed(false);
@@ -2628,11 +2630,11 @@ namespace stage
             SetTurnPhase(TurnPhase::TargetSelect);
             SetupTurnBox();
         }
-        else if (spellBeingCastPtr_->Target() == combat::TargetType::AllCompanions)
+        else if (SPELL_TARGET == combat::TargetType::AllCompanions)
         {
             HandleCast_Step3_PerformOnTargets(creature::Algorithms::Players());
         }
-        else if (spellBeingCastPtr_->Target() == combat::TargetType::AllOpponents)
+        else if (SPELL_TARGET == combat::TargetType::AllOpponents)
         {
             HandleCast_Step3_PerformOnTargets(
                 creature::Algorithms::NonPlayers(creature::Algorithms::Living));
@@ -2641,8 +2643,8 @@ namespace stage
         {
             std::ostringstream ssErr;
             ssErr << "stage::CombatStage::HandleCast Step2 SelectTargetOrPerformOnAll("
-                  << "spell=" << spellBeingCastPtr_->Name() << ") had a target_type of "
-                  << combat::TargetType::ToString(spellBeingCastPtr_->Target())
+                  << "spell=" << spellBeingCastPtrOpt_->Obj().Name() << ") had a target_type of "
+                  << combat::TargetType::ToString(SPELL_TARGET)
                   << " which is not yet supported in combat stage.";
 
             SystemErrorPopup("Casting this type of spell is not yet supported.", ssErr.str());
@@ -2659,11 +2661,12 @@ namespace stage
         SetUserActionAllowed(false);
 
         combatDisplayStagePtr_->SortCreatureListByDisplayedPosition(creaturesToCastUponPVec);
-        turnActionInfo_ = combat::TurnActionInfo(spellBeingCastPtr_, creaturesToCastUponPVec);
+        turnActionInfo_
+            = combat::TurnActionInfo(spellBeingCastPtrOpt_.value(), creaturesToCastUponPVec);
         combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
 
         fightResult_ = combat::FightClub::Cast(
-            spellBeingCastPtr_, turnCreaturePtr_, creaturesToCastUponPVec);
+            spellBeingCastPtrOpt_.value(), turnCreaturePtr_, creaturesToCastUponPVec);
 
         SetTurnActionPhase(TurnActionPhase::Cast);
         SetTurnPhase(TurnPhase::CenterAndZoomOut);
@@ -3337,7 +3340,7 @@ namespace stage
 
             isPreambleShowing = true;
 
-            if (nullptr == spellBeingCastPtr_)
+            if (!spellBeingCastPtrOpt_)
             {
                 preambleSS << "Click to select who to fight...\n\n"
                            << "(Press Escape or X to Cancel)";
@@ -3346,16 +3349,17 @@ namespace stage
             {
                 preambleSS << "Click on the ";
 
-                if (spellBeingCastPtr_->Target() == combat::TargetType::SingleOpponent)
+                if (spellBeingCastPtrOpt_->Obj().Target() == combat::TargetType::SingleOpponent)
                 {
                     preambleSS << "enemy creature";
                 }
-                else if (spellBeingCastPtr_->Target() == combat::TargetType::SingleCompanion)
+                else if (
+                    spellBeingCastPtrOpt_->Obj().Target() == combat::TargetType::SingleCompanion)
                 {
                     preambleSS << "character";
                 }
 
-                preambleSS << " to cast " << spellBeingCastPtr_->Name() << " on...\n\n"
+                preambleSS << " to cast " << spellBeingCastPtrOpt_->Obj().Name() << " on...\n\n"
                            << "(Press Escape or X to Cancel)";
             }
         }
@@ -3545,7 +3549,7 @@ namespace stage
                         turnCreaturePtr_, turnActionInfo_, fightResult_, true, true),
                     false);
 
-                combatSoundEffects_.PlaySpell(spellBeingCastPtr_);
+                combatSoundEffects_.PlaySpell(spellBeingCastPtrOpt_.value());
 
                 // start sparkle anim for creature doing the casting
                 combatAnimationUPtr_->SparkleAnimStart(
@@ -3556,7 +3560,7 @@ namespace stage
                 fightResult_.EffectedCreatures(creaturesCastUponPVec);
 
                 combatAnimationUPtr_->SpellAnimStart(
-                    spellBeingCastPtr_,
+                    spellBeingCastPtrOpt_.value(),
                     turnCreaturePtr_,
                     combatDisplayStagePtr_->GetCombatNodesForCreatures(creaturesCastUponPVec));
 

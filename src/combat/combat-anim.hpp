@@ -27,6 +27,7 @@
 //
 // combat-anim.hpp
 //
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/animation-enum.hpp"
@@ -78,7 +79,7 @@ namespace item
 namespace spell
 {
     class Spell;
-    using SpellPtr_t = Spell *;
+    using SpellPtr_t = misc::NotNull<Spell *>;
 } // namespace spell
 namespace creature
 {

@@ -32,10 +32,9 @@
 #include "creature/condition-warehouse.hpp"
 #include "creature/condition.hpp"
 #include "item/item.hpp"
+#include "misc/vectors.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
-
-#include "misc/vectors.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -108,7 +107,7 @@ namespace combat
         , condsAddedVec_(CONDS_ADDED_VEC)
         , condsRemovedVec_(CONDS_REMOVED_VEC)
         , actionVerb_(ACTION_VERB)
-        , spellPtr_(nullptr)
+        , spellPtrOpt_(boost::none)
         , actionPhraseCNP_()
         , songPtr_(nullptr)
         , didArmorAbsorb_(DID_ARMOR_ABSORB)
@@ -117,7 +116,7 @@ namespace combat
 
     HitInfo::HitInfo(
         const bool WAS_HIT,
-        const spell::SpellPtr_t SPELL_CPTR,
+        const spell::SpellPtr_t SPELL_PTR,
         const ContentAndNamePos & ACTION_PHRASE_CNP,
         const Health_t & DAMAGE,
         const creature::CondEnumVec_t & CONDS_ADDED_VEC,
@@ -131,7 +130,7 @@ namespace combat
         , condsAddedVec_(CONDS_ADDED_VEC)
         , condsRemovedVec_(CONDS_REMOVED_VEC)
         , actionVerb_("casts")
-        , spellPtr_(SPELL_CPTR)
+        , spellPtrOpt_(SPELL_PTR)
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtr_(nullptr)
         , didArmorAbsorb_(false)
@@ -154,7 +153,7 @@ namespace combat
         , condsAddedVec_(CONDS_ADDED_VEC)
         , condsRemovedVec_(CONDS_REMOVED_VEC)
         , actionVerb_("plays")
-        , spellPtr_(nullptr)
+        , spellPtrOpt_(boost::none)
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtr_(SONG_CPTR)
         , didArmorAbsorb_(false)
@@ -177,7 +176,7 @@ namespace combat
         , condsAddedVec_(CONDS_ADDED_VEC)
         , condsRemovedVec_(CONDS_REMOVED_VEC)
         , actionVerb_("plays")
-        , spellPtr_(nullptr)
+        , spellPtrOpt_(boost::none)
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtr_(nullptr)
         , didArmorAbsorb_(false)
@@ -200,7 +199,7 @@ namespace combat
         , condsAddedVec_(CONDS_ADDED_VEC)
         , condsRemovedVec_(CONDS_REMOVED_VEC)
         , actionVerb_("")
-        , spellPtr_(nullptr)
+        , spellPtrOpt_(boost::none)
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtr_(nullptr)
         , didArmorAbsorb_(false)
@@ -217,7 +216,7 @@ namespace combat
         , condsAddedVec_()
         , condsRemovedVec_()
         , actionVerb_("")
-        , spellPtr_(nullptr)
+        , spellPtrOpt_(boost::none)
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtr_(nullptr)
         , didArmorAbsorb_(false)
@@ -238,7 +237,7 @@ namespace combat
         , condsAddedVec_(CONDS_ADDED_VEC)
         , condsRemovedVec_(CONDS_REMOVED_VEC)
         , actionVerb_(ACTION_VERB)
-        , spellPtr_(nullptr)
+        , spellPtrOpt_(boost::none)
         , actionPhraseCNP_()
         , songPtr_(nullptr)
         , didArmorAbsorb_(false)
@@ -325,8 +324,7 @@ namespace combat
             }
             case HitType::Spell:
             {
-                return (
-                    (spellPtr_ != nullptr) && (actionPhraseCNP_.NamePos() != NamePosition::Count));
+                return (spellPtrOpt_ && (actionPhraseCNP_.NamePos() != NamePosition::Count));
             }
             case HitType::Song:
             {
@@ -358,6 +356,32 @@ namespace combat
 
     bool HitInfo::IsCloseEnoughToEqual(const HitInfo & HI) const
     {
+        if (std::tie(
+                hitType_,
+                wasHit_,
+                weaponPtr_,
+                damage_,
+                isCritical_,
+                isPower_,
+                spellPtrOpt_,
+                songPtr_,
+                didArmorAbsorb_,
+                conditionPtr_)
+            != std::tie(
+                   HI.hitType_,
+                   HI.wasHit_,
+                   HI.weaponPtr_,
+                   HI.damage_,
+                   HI.isCritical_,
+                   HI.isPower_,
+                   HI.spellPtrOpt_,
+                   HI.songPtr_,
+                   HI.didArmorAbsorb_,
+                   HI.conditionPtr_))
+        {
+            return false;
+        }
+
         if (misc::Vector::OrderlessCompareEqual(condsAddedVec_, HI.condsAddedVec_) == false)
         {
             return false;
@@ -368,28 +392,7 @@ namespace combat
             return false;
         }
 
-        return std::tie(
-                   hitType_,
-                   wasHit_,
-                   weaponPtr_,
-                   damage_,
-                   isCritical_,
-                   isPower_,
-                   spellPtr_,
-                   songPtr_,
-                   didArmorAbsorb_,
-                   conditionPtr_)
-            == std::tie(
-                   HI.hitType_,
-                   HI.wasHit_,
-                   HI.weaponPtr_,
-                   HI.damage_,
-                   HI.isCritical_,
-                   HI.isPower_,
-                   HI.spellPtr_,
-                   HI.songPtr_,
-                   HI.didArmorAbsorb_,
-                   HI.conditionPtr_);
+        return true;
     }
 
     const std::string HitInfo::ToString() const
@@ -412,7 +415,7 @@ namespace combat
             }
             case HitType::Spell:
             {
-                ss << "[" << spellPtr_->Name() << "]";
+                ss << "[" << spellPtrOpt_->Obj().Name() << "]";
                 break;
             }
             case HitType::Song:
@@ -477,7 +480,7 @@ namespace combat
                    L.isCritical_,
                    L.isPower_,
                    L.actionVerb_,
-                   L.spellPtr_,
+                   L.spellPtrOpt_,
                    L.actionPhraseCNP_,
                    L.songPtr_,
                    L.didArmorAbsorb_,
@@ -490,7 +493,7 @@ namespace combat
                    R.isCritical_,
                    R.isPower_,
                    R.actionVerb_,
-                   R.spellPtr_,
+                   R.spellPtrOpt_,
                    R.actionPhraseCNP_,
                    R.songPtr_,
                    R.didArmorAbsorb_,
@@ -517,7 +520,7 @@ namespace combat
                    L.isCritical_,
                    L.isPower_,
                    L.actionVerb_,
-                   L.spellPtr_,
+                   L.spellPtrOpt_,
                    L.actionPhraseCNP_,
                    L.songPtr_,
                    L.didArmorAbsorb_,
@@ -530,11 +533,12 @@ namespace combat
                    R.isCritical_,
                    R.isPower_,
                    R.actionVerb_,
-                   R.spellPtr_,
+                   R.spellPtrOpt_,
                    R.actionPhraseCNP_,
                    R.songPtr_,
                    R.didArmorAbsorb_,
                    R.conditionPtr_);
     }
+
 } // namespace combat
 } // namespace heroespath

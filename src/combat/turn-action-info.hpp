@@ -29,7 +29,10 @@
 //
 #include "combat/strategy-enums.hpp"
 #include "combat/turn-action-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 
+#include <string>
 #include <vector>
 
 namespace heroespath
@@ -37,7 +40,8 @@ namespace heroespath
 namespace spell
 {
     class Spell;
-    using SpellPtr_t = Spell *;
+    using SpellPtr_t = misc::NotNull<Spell *>;
+    using SpellPtrOpt_t = boost::optional<SpellPtr_t>;
 } // namespace spell
 namespace song
 {
@@ -69,11 +73,11 @@ namespace combat
             const song::SongPtr_t SONG_PTR, const creature::CreaturePVec_t & TARGET_PVEC);
 
         TurnAction::Enum Action() const { return actionType_; }
-        spell::SpellPtr_t Spell() const { return spellPtr_; }
+        spell::SpellPtrOpt_t Spell() const { return spellPtrOpt_; }
         song::SongPtr_t Song() const { return songPtr_; }
         const creature::CreaturePVec_t & Targets() const { return targetsPVec_; }
-
         creature::CreaturePtr_t Target() const;
+        const std::string ToString() const;
 
         friend bool operator<(const TurnActionInfo & A, const TurnActionInfo & B);
         friend bool operator==(const TurnActionInfo & A, const TurnActionInfo & B);
@@ -81,7 +85,7 @@ namespace combat
     private:
         TurnAction::Enum actionType_;
         creature::CreaturePVec_t targetsPVec_;
-        spell::SpellPtr_t spellPtr_;
+        spell::SpellPtrOpt_t spellPtrOpt_;
         song::SongPtr_t songPtr_;
     };
 
@@ -90,6 +94,7 @@ namespace combat
     bool operator==(const TurnActionInfo & L, const TurnActionInfo & R);
 
     inline bool operator!=(const TurnActionInfo & L, const TurnActionInfo & R) { return !(L == R); }
+
 } // namespace combat
 } // namespace heroespath
 

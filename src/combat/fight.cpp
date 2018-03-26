@@ -396,28 +396,25 @@ namespace combat
     }
 
     const FightResult FightClub::Cast(
-        const spell::SpellPtr_t SPELL_CPTR,
+        const spell::SpellPtr_t SPELL_PTR,
         creature::CreaturePtrC_t creatureCastingPtr,
         const creature::CreaturePVec_t & creaturesCastUponPVec)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (SPELL_CPTR != nullptr), "combat::FightClub::Cast() was given a null SPELL_CPTR.");
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
             (creaturesCastUponPVec.empty() == false),
             "combat::FightClub::Cast(spell="
-                << SPELL_CPTR->Name()
+                << SPELL_PTR->Name()
                 << ", creature_casting=" << creatureCastingPtr->NameAndRaceAndRole()
                 << ", creatures_cast_upon=empty) was given an empty creaturesCastUponPVec.");
 
-        creatureCastingPtr->ManaAdj(SPELL_CPTR->ManaCost() * Mana_t(-1));
+        creatureCastingPtr->ManaAdj(SPELL_PTR->ManaCost() * Mana_t(-1));
 
-        if (((SPELL_CPTR->Target() == TargetType::SingleCompanion)
-             || (SPELL_CPTR->Target() == TargetType::SingleOpponent))
+        if (((SPELL_PTR->Target() == TargetType::SingleCompanion)
+             || (SPELL_PTR->Target() == TargetType::SingleOpponent))
             && (creaturesCastUponPVec.size() > 1))
         {
             std::ostringstream ssErr;
-            ssErr << "combat::FightClub::Cast(spell=" << SPELL_CPTR->Name()
+            ssErr << "combat::FightClub::Cast(spell=" << SPELL_PTR->Name()
                   << ", creature_casting=" << creatureCastingPtr->NameAndRaceAndRole()
                   << ", creatures_cast_upon=\""
                   << creature::Algorithms::Names(
@@ -425,7 +422,7 @@ namespace combat
                          0,
                          misc::Vector::JoinOpt::None,
                          creature::Algorithms::NamesOpt::WithRaceAndRole)
-                  << "\") spell target_type=" << TargetType::ToString(SPELL_CPTR->Target())
+                  << "\") spell target_type=" << TargetType::ToString(SPELL_PTR->Target())
                   << " but there were " << creaturesCastUponPVec.size()
                   << " creatures being cast upon.  There should have been only 1.";
             throw std::runtime_error(ssErr.str());
@@ -438,7 +435,7 @@ namespace combat
 
         // update caster's TurnActionInfo
         Encounter::Instance()->SetTurnActionInfo(
-            creatureCastingPtr, TurnActionInfo(SPELL_CPTR, creaturesCastUponPVec));
+            creatureCastingPtr, TurnActionInfo(SPELL_PTR, creaturesCastUponPVec));
 
         // attempt to have spell effect each target creature
         CreatureEffectVec_t creatureEffectVec;
@@ -448,7 +445,7 @@ namespace combat
             {
                 const ContentAndNamePos CNP(" is dead.", NamePosition::TargetBefore);
 
-                const HitInfo HIT_INFO(false, SPELL_CPTR, CNP);
+                const HitInfo HIT_INFO(false, SPELL_PTR, CNP);
 
                 creatureEffectVec.emplace_back(
                     CreatureEffect(nextCreatureCastUponPtr, HitInfoVec_t(1, HIT_INFO)));
@@ -460,7 +457,7 @@ namespace combat
                 creature::CondEnumVec_t condsAddedVec;
                 creature::CondEnumVec_t condsRemovedVec;
 
-                auto const DID_SPELL_SUCCEED{ SPELL_CPTR->EffectCreature(
+                auto const DID_SPELL_SUCCEED{ SPELL_PTR->EffectCreature(
                     creatureCastingPtr,
                     nextCreatureCastUponPtr,
                     healthAdj,
@@ -482,7 +479,7 @@ namespace combat
 
                 hitInfoVec.emplace_back(HitInfo(
                     DID_SPELL_SUCCEED,
-                    SPELL_CPTR,
+                    SPELL_PTR,
                     actionPhraseCNP,
                     healthAdj,
                     condsAddedVec,
@@ -495,8 +492,8 @@ namespace combat
 
                 turnInfo.SetWasHitLastTurn(false);
 
-                if ((SPELL_CPTR->Effect() == combat::EffectType::CreatureHarmDamage)
-                    || (SPELL_CPTR->Effect() == combat::EffectType::CreatureHarmMisc))
+                if ((SPELL_PTR->Effect() == combat::EffectType::CreatureHarmDamage)
+                    || (SPELL_PTR->Effect() == combat::EffectType::CreatureHarmMisc))
                 {
                     if (turnInfo.GetFirstAttackedByCreature() == nullptr)
                     {
