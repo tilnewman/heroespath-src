@@ -48,7 +48,7 @@ namespace creature
     using CreaturePtr_t = Creature *;
     using CreaturePtrC_t = Creature * const;
 
-    // base class for all conditions
+    // Responsible for all state and operation of all Conditions in the game.
     class Condition
     {
     public:
@@ -63,8 +63,6 @@ namespace creature
             const bool IS_MAGICAL = false,
             const stats::TraitSet & TRAIT_SET = stats::TraitSet());
 
-        virtual ~Condition();
-
         const std::string Name() const { return Conditions::Name(type_); }
         Conditions::Enum Which() const { return type_; }
         const std::string Desc() const { return Conditions::Desc(type_); }
@@ -75,10 +73,10 @@ namespace creature
         const stats::TraitSet Traits() const { return traitSet_; }
 
         // These two functions do not alter traits
-        virtual void InitialChange(CreaturePtrC_t) const;
-        virtual void FinalChange(CreaturePtrC_t) const;
+        void InitialChange(CreaturePtrC_t) const;
+        void FinalChange(CreaturePtrC_t) const;
 
-        virtual void PerTurnEffect(
+        void PerTurnEffect(
             CreaturePtr_t creaturePtr,
             combat::HitInfoVec_t & hitInfoVec,
             bool & hasTurnBeenConsumed) const;
@@ -100,6 +98,7 @@ namespace creature
     bool operator==(const Condition & L, const Condition & R);
 
     inline bool operator!=(const Condition & L, const Condition & R) { return !(L == R); }
+
 } // namespace creature
 } // namespace heroespath
 

@@ -39,7 +39,6 @@ namespace creature
     // Note:  Must be in order of increasing severity.
     //
     //  Keep in sync with:
-    //      conditions in conditions.hpp
     //      creature::HasConditionNotAThreatPerm() and HasConditionNotAThreatTemp()
     //      creature::CanTakeActionStr()
     //      CombatStage::RemoveSingleTurnTemporaryConditions()

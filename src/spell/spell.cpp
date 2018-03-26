@@ -30,7 +30,7 @@
 #include "spell.hpp"
 
 #include "combat/encounter.hpp"
-#include "creature/conditions.hpp"
+#include "creature/condition.hpp"
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
 #include "misc/random.hpp"

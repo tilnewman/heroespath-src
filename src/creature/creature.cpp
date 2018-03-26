@@ -32,22 +32,20 @@
 #include "creature/condition-algorithms.hpp"
 #include "creature/condition-warehouse.hpp"
 #include "creature/condition.hpp"
-#include "creature/conditions.hpp"
 #include "creature/title-warehouse.hpp"
 #include "game/game-data-file.hpp"
 #include "item/algorithms.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
-#include "song/song-warehouse.hpp"
-#include "song/song.hpp"
-#include "spell/spell-warehouse.hpp"
-#include "spell/spell.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
+#include "song/song-warehouse.hpp"
+#include "song/song.hpp"
+#include "spell/spell-warehouse.hpp"
+#include "spell/spell.hpp"
 
 #include <algorithm>
 

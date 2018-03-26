@@ -35,7 +35,7 @@
 #include "combat/name-position-enum.hpp"
 #include "combat/trap.hpp"
 #include "creature/algorithms.hpp"
-#include "creature/conditions.hpp"
+#include "creature/condition.hpp"
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
 #include "game/game-data-file.hpp"
@@ -43,14 +43,13 @@
 #include "item/armor-ratings.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
+#include "misc/random.hpp"
+#include "misc/vectors.hpp"
 #include "player/character.hpp"
 #include "player/party.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
 #include "state/game-state.hpp"
-
-#include "misc/random.hpp"
-#include "misc/vectors.hpp"
 
 #include <algorithm>
 #include <cmath>

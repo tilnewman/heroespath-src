@@ -29,7 +29,7 @@
 //
 #include "condition-warehouse.hpp"
 
-#include "creature/conditions.hpp"
+#include "creature/condition.hpp"
 #include "game/loop-manager.hpp"
 
 #include "misc/assertlogandthrow.hpp"
@@ -50,20 +50,116 @@ namespace creature
                 "creature::condition::Warehouse::Setup() was called twice.");
 
             // Note:  Keep order in sync with creature::Conditions::Enum
-            conditionsUVec_.emplace_back(std::make_unique<Good>());
-            conditionsUVec_.emplace_back(std::make_unique<Bold>());
-            conditionsUVec_.emplace_back(std::make_unique<Heroic>());
-            conditionsUVec_.emplace_back(std::make_unique<Daunted>());
-            conditionsUVec_.emplace_back(std::make_unique<Panic>());
-            conditionsUVec_.emplace_back(std::make_unique<Dazed>());
-            conditionsUVec_.emplace_back(std::make_unique<Tripped>());
-            conditionsUVec_.emplace_back(std::make_unique<AsleepNatural>());
-            conditionsUVec_.emplace_back(std::make_unique<Poisoned>());
-            conditionsUVec_.emplace_back(std::make_unique<Pounced>());
-            conditionsUVec_.emplace_back(std::make_unique<AsleepMagical>());
-            conditionsUVec_.emplace_back(std::make_unique<Unconscious>());
-            conditionsUVec_.emplace_back(std::make_unique<Stone>());
-            conditionsUVec_.emplace_back(std::make_unique<Dead>());
+            conditionsUVec_.emplace_back(std::make_unique<Condition>());
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Bold,
+                false,
+                stats::TraitSet({ std::make_pair(stats::Traits::Strength, 25),
+                                  std::make_pair(stats::Traits::Accuracy, 25),
+                                  std::make_pair(stats::Traits::Charm, 25),
+                                  std::make_pair(stats::Traits::Luck, 25),
+                                  std::make_pair(stats::Traits::Speed, 25),
+                                  std::make_pair(stats::Traits::Intelligence, 25) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Heroic,
+                false,
+                stats::TraitSet({ std::make_pair(stats::Traits::Strength, 50),
+                                  std::make_pair(stats::Traits::Accuracy, 50),
+                                  std::make_pair(stats::Traits::Charm, 50),
+                                  std::make_pair(stats::Traits::Luck, 50),
+                                  std::make_pair(stats::Traits::Speed, 50),
+                                  std::make_pair(stats::Traits::Intelligence, 50) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Daunted,
+                false,
+                stats::TraitSet({ std::make_pair(stats::Traits::Accuracy, -25),
+                                  std::make_pair(stats::Traits::Charm, -25),
+                                  std::make_pair(stats::Traits::Speed, -16),
+                                  std::make_pair(stats::Traits::Intelligence, -25) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Panic,
+                false,
+                stats::TraitSet({ std::make_pair(stats::Traits::Accuracy, -50),
+                                  std::make_pair(stats::Traits::Charm, -50),
+                                  std::make_pair(stats::Traits::Speed, -33),
+                                  std::make_pair(stats::Traits::Intelligence, -50) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Dazed,
+                false,
+                stats::TraitSet({ std::make_pair(stats::Traits::Strength, -50),
+                                  std::make_pair(stats::Traits::Accuracy, -66),
+                                  std::make_pair(stats::Traits::Speed, -66),
+                                  std::make_pair(stats::Traits::Intelligence, -50) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Tripped,
+                false,
+                stats::TraitSet({ std::make_pair(stats::Traits::Strength, -75),
+                                  std::make_pair(stats::Traits::Accuracy, -75),
+                                  std::make_pair(stats::Traits::Speed, -75) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::AsleepNatural,
+                false,
+                stats::TraitSet({ std::make_pair(stats::Traits::Strength, -9999),
+                                  std::make_pair(stats::Traits::Accuracy, -9999),
+                                  std::make_pair(stats::Traits::Speed, -9999) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Poisoned,
+                false,
+                stats::TraitSet({ std::make_pair(stats::Traits::Strength, -25),
+                                  std::make_pair(stats::Traits::Charm, -50),
+                                  std::make_pair(stats::Traits::Speed, -25) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Pounced,
+                false,
+                stats::TraitSet({ std::make_pair(stats::Traits::Strength, -75),
+                                  std::make_pair(stats::Traits::Accuracy, -75),
+                                  std::make_pair(stats::Traits::Speed, -75) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::AsleepMagical,
+                true,
+                stats::TraitSet({ std::make_pair(stats::Traits::Strength, -9999),
+                                  std::make_pair(stats::Traits::Accuracy, -9999),
+                                  std::make_pair(stats::Traits::Speed, -9999) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Unconscious,
+                false,
+                stats::TraitSet({
+                    std::make_pair(stats::Traits::Strength, -9999),
+                    std::make_pair(stats::Traits::Accuracy, -9999),
+                    std::make_pair(stats::Traits::Charm, -9999),
+                    std::make_pair(stats::Traits::Speed, -9999),
+                    std::make_pair(stats::Traits::Intelligence, -9999),
+                })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Stone,
+                true,
+                stats::TraitSet({ std::make_pair(stats::Traits::Strength, -9999),
+                                  std::make_pair(stats::Traits::Accuracy, -9999),
+                                  std::make_pair(stats::Traits::Charm, -9999),
+                                  std::make_pair(stats::Traits::Speed, -9999),
+                                  std::make_pair(stats::Traits::Intelligence, -9999) })));
+
+            conditionsUVec_.emplace_back(std::make_unique<Condition>(
+                Conditions::Dead,
+                false,
+                stats::TraitSet({ std::make_pair(stats::Traits::Strength, -9999),
+                                  std::make_pair(stats::Traits::Accuracy, -9999),
+                                  std::make_pair(stats::Traits::Charm, -9999),
+                                  std::make_pair(stats::Traits::Luck, -9999),
+                                  std::make_pair(stats::Traits::Speed, -9999),
+                                  std::make_pair(stats::Traits::Intelligence, -9999) })));
         }
 
         void Warehouse::Empty() { conditionsUVec_.clear(); }
@@ -126,6 +222,7 @@ namespace creature
 
             game::LoopManager::Instance()->TestingStrAppend(
                 "creature::title::Warehouse::Test()  ALL TESTS PASSED.");
+
             return true;
         }
 

@@ -32,16 +32,15 @@
 #include "combat/combat-display.hpp"
 #include "combat/encounter.hpp"
 #include "creature/condition-algorithms.hpp"
-#include "creature/conditions.hpp"
+#include "creature/condition.hpp"
 #include "creature/creature.hpp"
 #include "item/algorithms.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
-#include "song/song.hpp"
-#include "spell/spell.hpp"
-
 #include "misc/boost-string-includes.hpp"
 #include "misc/vectors.hpp"
+#include "song/song.hpp"
+#include "spell/spell.hpp"
 
 #include <boost/algorithm/algorithm.hpp>
 

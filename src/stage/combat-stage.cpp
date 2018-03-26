@@ -41,7 +41,7 @@
 #include "combat/turn-decider.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/condition-algorithms.hpp"
-#include "creature/conditions.hpp"
+#include "creature/condition.hpp"
 #include "creature/name-info.hpp"
 #include "creature/stats.hpp"
 #include "creature/title-warehouse.hpp"
