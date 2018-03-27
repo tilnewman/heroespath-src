@@ -651,6 +651,11 @@ namespace sfml_util
             for (std::size_t i(0); i < NUM_ITEMS; ++i)
             {
                 auto itemSPtr{ items_[i] };
+
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (itemSPtr.get() != nullptr),
+                    "sfml_util::gui::ListBox::SetupForDraw() found a null itemSPtr at index=" << i);
+
                 if (IsIndexVisible_Display(i))
                 {
                     itemSPtr->SetEntityWillDraw(true);
@@ -672,7 +677,7 @@ namespace sfml_util
             ImagePair_t imagePair;
 
             auto const DOES_IMAGE_EXIST{ (
-                (listBoxItemSPtr->ITEM_CPTR != nullptr) || listBoxItemSPtr->TITLE_PTR_OPT
+                listBoxItemSPtr->ITEM_PTR_OPT || listBoxItemSPtr->TITLE_PTR_OPT
                 || (listBoxItemSPtr->CHARACTER_CPTR != nullptr) || listBoxItemSPtr->SPELL_PTR_OPT
                 || listBoxItemSPtr->COND_PTR_OPT || listBoxItemSPtr->SONG_PTR_OPT) };
 
@@ -684,10 +689,10 @@ namespace sfml_util
                 {
                     imagePair.first = std::make_shared<sf::Texture>();
 
-                    if (listBoxItemSPtr->ITEM_CPTR != nullptr)
+                    if (listBoxItemSPtr->ITEM_PTR_OPT)
                     {
                         sfml_util::gui::ItemImageManager::Instance()->Load(
-                            *imagePair.first, listBoxItemSPtr->ITEM_CPTR);
+                            *imagePair.first, listBoxItemSPtr->ITEM_PTR_OPT.value());
                     }
                     else if (listBoxItemSPtr->TITLE_PTR_OPT)
                     {

@@ -30,7 +30,6 @@
 #include "item-detail-viewer.hpp"
 
 #include "item/item.hpp"
-
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/sound-manager.hpp"
@@ -62,7 +61,7 @@ namespace stage
         , slider_()
         , textRegionUPtr_()
         , sourceRect()
-        , itemPtr_(nullptr)
+        , itemPtrOpt_(boost::none)
         , willShowImage_(false)
         , isBeforeAnyChange_(true)
         , isShowing_(false)
@@ -115,8 +114,8 @@ namespace stage
 
         if (IS_FINISHED_MOVING && PRE_IS_MOVING_TOWARD && (slider_.IsMoving() == false))
         {
-            SetupImage(itemPtr_);
-            SetupText(itemPtr_);
+            SetupImage(itemPtrOpt_);
+            SetupText(itemPtrOpt_);
             isShowing_ = true;
         }
     }
@@ -126,7 +125,7 @@ namespace stage
         if (slider_.Direction() == sfml_util::Moving::Away)
         {
             sourceRect = RECT;
-            itemPtr_ = ITEM_PTR;
+            itemPtrOpt_ = ITEM_PTR;
 
             slider_.ChangeDirection();
             slider_.Start();
@@ -139,8 +138,8 @@ namespace stage
     {
         if (slider_.Direction() == sfml_util::Moving::Toward)
         {
-            SetupImage(nullptr);
-            SetupText(nullptr);
+            SetupImage(boost::none);
+            SetupText(boost::none);
 
             isShowing_ = false;
 
@@ -194,9 +193,9 @@ namespace stage
         backgroundQuads_[3].position = sf::Vector2f(LEFT, BOT);
     }
 
-    void ItemDetailViewer::SetupImage(const item::ItemPtr_t ITEM_PTR)
+    void ItemDetailViewer::SetupImage(const item::ItemPtrOpt_t ITEM_PTR_OPT)
     {
-        if (ITEM_PTR == nullptr)
+        if (!ITEM_PTR_OPT)
         {
             willShowImage_ = false;
             return;
@@ -204,7 +203,7 @@ namespace stage
 
         willShowImage_ = true;
 
-        sfml_util::gui::ItemImageManager::Instance()->Load(texture_, ITEM_PTR);
+        sfml_util::gui::ItemImageManager::Instance()->Load(texture_, ITEM_PTR_OPT.value());
 
         sprite_.setTexture(texture_, true);
 
@@ -217,13 +216,15 @@ namespace stage
             TARGET_RECT_.left + INNER_SPACER_);
     }
 
-    void ItemDetailViewer::SetupText(const item::ItemPtr_t ITEM_PTR)
+    void ItemDetailViewer::SetupText(const item::ItemPtrOpt_t ITEM_PTR_OPT)
     {
-        if (ITEM_PTR == nullptr)
+        if (!ITEM_PTR_OPT)
         {
             textRegionUPtr_.reset();
             return;
         }
+
+        auto const ITEM_PTR{ ITEM_PTR_OPT.value() };
 
         std::ostringstream ss;
         ss << ITEM_PTR->Name() << "\n"
@@ -275,5 +276,6 @@ namespace stage
         textRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "ItemDetailViewer'sTextRegion", TEXT_INFO, TEXT_RECT);
     }
+
 } // namespace stage
 } // namespace heroespath

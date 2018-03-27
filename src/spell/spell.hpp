@@ -55,7 +55,7 @@ namespace creature
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
 } // namespace item
 
 namespace spell
@@ -109,7 +109,7 @@ namespace spell
             combat::ContentAndNamePos & actionPhraseCNP) const;
 
         // Allows the spell to change the target item.
-        const std::string EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const;
+        const std::string EffectItem(creature::CreaturePtr_t, const item::ItemPtr_t) const;
 
         friend bool operator<(const Spell & L, const Spell & R);
         friend bool operator==(const Spell & L, const Spell & R);

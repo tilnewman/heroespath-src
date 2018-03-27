@@ -61,7 +61,8 @@ namespace song
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
+    using ItemPtrOpt_t = boost::optional<ItemPtr_t>;
 } // namespace item
 
 namespace combat
@@ -89,10 +90,13 @@ namespace combat
     class HitInfo
     {
     public:
+        // use this constructor to create invalid HitInfo objects
+        HitInfo();
+
         // use this constructor when a weapon is used to hit
-        explicit HitInfo(
-            const bool WAS_HIT = false,
-            const item::ItemPtr_t ITEM_PTR = nullptr,
+        HitInfo(
+            const bool WAS_HIT,
+            const item::ItemPtr_t ITEM_PTR,
             const Health_t & DAMAGE = 0_health,
             const bool IS_CRITICAL_HIT = false,
             const bool IS_POWER_HIT = false,
@@ -149,7 +153,7 @@ namespace combat
 
         bool WasHit() const { return wasHit_; }
         HitType::Enum TypeOfHit() const { return hitType_; }
-        item::ItemPtr_t Weapon() const { return weaponPtr_; }
+        const item::ItemPtrOpt_t Weapon() const { return weaponPtrOpt_; }
         Health_t Damage() const { return damage_; }
         bool IsCritical() const { return isCritical_; }
         bool IsPowerHit() const { return isPower_; }
@@ -157,7 +161,7 @@ namespace combat
         const spell::SpellPtrOpt_t SpellPtrOpt() const { return spellPtrOpt_; }
         const song::SongPtrOpt_t SongPtrOpt() const { return songPtrOpt_; }
         bool IsSpell() const { return !!spellPtrOpt_; }
-        bool IsWeapon() const { return (weaponPtr_ != nullptr); }
+        bool IsWeapon() const { return !!weaponPtrOpt_; }
 
         const creature::ConditionPtrOpt_t ConditionPtrOpt() const { return conditionPtrOpt_; }
 
@@ -189,7 +193,7 @@ namespace combat
     private:
         bool wasHit_;
         HitType::Enum hitType_;
-        item::ItemPtr_t weaponPtr_;
+        item::ItemPtrOpt_t weaponPtrOpt_;
         Health_t damage_;
         bool isCritical_;
         bool isPower_;

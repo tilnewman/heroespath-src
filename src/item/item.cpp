@@ -30,11 +30,11 @@
 #include "item.hpp"
 
 #include "creature/enchantment-warehouse.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
 
 #include <exception>
+#include <iomanip>
 #include <sstream>
 #include <tuple>
 
@@ -283,6 +283,33 @@ namespace item
         std::ostringstream ssErr;
         ssErr << "item::Item::BaseName(\"" << Name() << "\") found no base name.";
         throw std::runtime_error(ssErr.str());
+    }
+
+    const std::string Item::ToString() const
+    {
+        std::ostringstream ss;
+
+        ss << "name=" << std::quoted(name_) << ", desc=" << std::quoted(desc_)
+           << ", base_name=" << std::quoted(BaseName())
+           << ", category=" << category::ToString(category_, true)
+           << ", mat_pri=" << material::ToString(materialPri_)
+           << ", mat_sec=" << material::ToString(materialSec_)
+           << ", armor_type=" << armor_type::ToString(armorType_, true)
+           << ", weapon_type=" << weapon_type::ToString(weaponType_, true)
+           << ", misc_type=" << misc_type::ToString(miscType_)
+           << ", unique_type=" << unique_type::ToString(uniqueType_)
+           << ", set_type=" << set_type::ToString(setType_)
+           << ", named_type=" << named_type::ToString(namedType_)
+           << ", element_type=" << element_type::ToString(elementType_)
+           << ", is_pixie=" << std::boolalpha << isPixie_ << ", enchantments={";
+
+        for (auto const ENCHANTMENT_PTR : enchantmentsPVec_)
+        {
+            ss << ENCHANTMENT_PTR->ToString() << " | ";
+        }
+
+        ss << "}";
+        return ss.str();
     }
 
     bool operator<(const Item & L, const Item & R)

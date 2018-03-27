@@ -46,11 +46,8 @@ namespace creature
 namespace item
 {
 
-    struct ItemCache;
-
     class Item;
-    using ItemPtr_t = Item *;
-    using ItemPVec_t = std::vector<ItemPtr_t>;
+    struct ItemCache;
 
     // Responsible for wrapping all the information about an Item's Set type, and for providing
     // functions to compare that type against an Item or an ItemProfile.

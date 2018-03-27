@@ -35,9 +35,8 @@
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "item/weapon-details.hpp"
-#include "stats/trait.hpp"
-
 #include "sfml-util/gui/item-image-manager.hpp"
+#include "stats/trait.hpp"
 
 #include <exception>
 #include <sstream>
@@ -86,7 +85,7 @@ namespace item
             instanceUPtr_.reset();
         }
 
-        ItemPtr_t WeaponFactory::Make_Fists()
+        const ItemPtr_t WeaponFactory::Make_Fists()
         {
             WeaponInfo weaponInfo{ weapon_type::Fists };
             weaponInfo.is_fists = true;
@@ -120,7 +119,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Claws(creature::CreatureCPtrC_t CREATURE_CPTRC)
+        const ItemPtr_t WeaponFactory::Make_Claws(creature::CreatureCPtrC_t CREATURE_CPTRC)
         {
             WeaponInfo weaponInfo{ weapon_type::Claws };
             weaponInfo.is_claws = true;
@@ -160,7 +159,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Tendrils(creature::CreatureCPtrC_t CREATURE_CPTRC)
+        const ItemPtr_t WeaponFactory::Make_Tendrils(creature::CreatureCPtrC_t CREATURE_CPTRC)
         {
             WeaponInfo weaponInfo{ weapon_type::Tendrils };
             weaponInfo.is_tendrils = true;
@@ -200,7 +199,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Bite(creature::CreatureCPtrC_t CREATURE_CPTRC)
+        const ItemPtr_t WeaponFactory::Make_Bite(creature::CreatureCPtrC_t CREATURE_CPTRC)
         {
             WeaponInfo weaponInfo{ weapon_type::Bite };
             weaponInfo.is_bite = true;
@@ -239,7 +238,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Breath(creature::CreatureCPtrC_t CREATURE_CPTRC)
+        const ItemPtr_t WeaponFactory::Make_Breath(creature::CreatureCPtrC_t CREATURE_CPTRC)
         {
             WeaponInfo weaponInfo{ weapon_type::Breath };
             weaponInfo.is_breath = true;
@@ -292,7 +291,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Knife(
+        const ItemPtr_t WeaponFactory::Make_Knife(
             const bool IS_DAGGER,
             const sfml_util::Size::Enum SIZE,
             const material::Enum MATERIAL_PRI,
@@ -390,7 +389,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Sword(
+        const ItemPtr_t WeaponFactory::Make_Sword(
             const sword_type::Enum SWORD_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -440,7 +439,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Axe(
+        const ItemPtr_t WeaponFactory::Make_Axe(
             const axe_type::Enum AXE_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -483,7 +482,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Club(
+        const ItemPtr_t WeaponFactory::Make_Club(
             const club_type::Enum CLUB_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -525,7 +524,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Whip(
+        const ItemPtr_t WeaponFactory::Make_Whip(
             const whip_type::Enum WHIP_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -596,7 +595,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Projectile(
+        const ItemPtr_t WeaponFactory::Make_Projectile(
             const projectile_type::Enum PROJ_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -679,7 +678,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_Staff(
+        const ItemPtr_t WeaponFactory::Make_Staff(
             const bool IS_QUARTERSTAFF,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -730,7 +729,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t WeaponFactory::Make_BladedStaff(
+        const ItemPtr_t WeaponFactory::Make_BladedStaff(
             const bladedstaff_type::Enum STAFF_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -783,6 +782,7 @@ namespace item
 
             return itemPtr;
         }
+
     } // namespace weapon
 } // namespace item
 } // namespace heroespath

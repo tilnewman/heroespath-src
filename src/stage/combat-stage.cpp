@@ -2918,7 +2918,7 @@ namespace stage
     {
         turnActionInfo_ = combat::TurnActionInfo(combat::TurnAction::ChangeWeapon);
         combat::Encounter::Instance()->SetTurnActionInfo(turnCreaturePtr_, turnActionInfo_);
-        turnCreaturePtr_->CurrentWeaponsInc();
+        turnCreaturePtr_->IncrementHeldWeapons();
         SetupTurnBox();
         return true;
     }
@@ -3513,14 +3513,14 @@ namespace stage
                 {
                     // at this point we are guaranteed fightResult_ contains at least one
                     // CreatureEffect and one HitInfo
-                    auto const WEAPON_PTR{ HIT_INFO.Weapon() };
-                    if (WEAPON_PTR != nullptr)
+                    auto const WEAPON_PTR_OPT{ HIT_INFO.Weapon() };
+                    if (WEAPON_PTR_OPT)
                     {
-                        combatSoundEffects_.PlayShoot(WEAPON_PTR);
+                        combatSoundEffects_.PlayShoot(WEAPON_PTR_OPT.value());
                         combatAnimationUPtr_->ProjectileShootAnimStart(
                             turnCreaturePtr_,
                             fightResult_.Effects()[0].GetCreature(),
-                            WEAPON_PTR,
+                            WEAPON_PTR_OPT.value(),
                             HIT_INFO.WasHit());
 
                         slider_.Reset(ANIM_PROJECTILE_SHOOT_SLIDER_SPEED_);
@@ -3918,10 +3918,10 @@ namespace stage
         auto const HIT_INFO{ FIGHT_RESULT.GetHitInfo(0, 0) };
         if (HIT_INFO.IsValid())
         {
-            auto const WEAPON_PTR{ HIT_INFO.Weapon() };
-            if (WEAPON_PTR != nullptr)
+            auto const WEAPON_PTR_OPT{ HIT_INFO.Weapon() };
+            if (WEAPON_PTR_OPT)
             {
-                return GetTurnActionPhaseFromWeaponType(WEAPON_PTR);
+                return GetTurnActionPhaseFromWeaponType(WEAPON_PTR_OPT.value());
             }
         }
 
@@ -4258,18 +4258,20 @@ namespace stage
                     else if (
                         (NEXT_EFFECTED_CREATURE_PTR->IsPlayerCharacter() == false)
                         && (NEXT_HIT_INFO.TypeOfHit() == combat::HitType::Weapon)
-                        && (NEXT_HIT_INFO.Weapon() != nullptr) && NEXT_HIT_INFO.WasHit())
+                        && NEXT_HIT_INFO.Weapon() && NEXT_HIT_INFO.WasHit())
                     {
                         if (IS_TURN_CREATURE_FLYING)
                         {
                             ++flyingAttackHits;
                         }
 
-                        if (NEXT_HIT_INFO.Weapon()->WeaponType() & item::weapon_type::Projectile)
+                        if (NEXT_HIT_INFO.Weapon()->Obj().WeaponType()
+                            & item::weapon_type::Projectile)
                         {
                             ++projectileHits;
                         }
-                        else if (NEXT_HIT_INFO.Weapon()->WeaponType() & item::weapon_type::Melee)
+                        else if (
+                            NEXT_HIT_INFO.Weapon()->Obj().WeaponType() & item::weapon_type::Melee)
                         {
                             ++meleeHits;
                         }

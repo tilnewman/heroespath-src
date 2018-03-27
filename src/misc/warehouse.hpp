@@ -29,8 +29,9 @@
 //  A template for pointer storing (warehouse) (object lifetime management) classes.
 //
 #include "log/log-macros.hpp"
-
 #include "misc/assertlogandthrow.hpp"
+#include "misc/not-null.hpp"
+#include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
 #include <exception>
 #include <memory>
@@ -61,12 +62,15 @@ namespace misc
 
         std::size_t Size() const { return uPtrVec_.size(); }
 
+        const NotNull<T *> Store(const NotNull<T *> & NOT_NULL) { return Store(NOT_NULL.Ptr()); }
+
         // returns the pointer given for caller ease of use only
-        T * Store(T * ptr_to_store, const std::string & NAME)
+        T * const Store(T * PTR_TO_STORE)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (ptr_to_store != nullptr),
-                "Warehouse::Store(name=\"" << NAME << "\") given a nullptr.");
+                (PTR_TO_STORE != nullptr),
+                "misc::Warehouse<" << boost::typeindex::type_id<T>().pretty_name()
+                                   << ">::Store() given a nullptr.");
 
             std::size_t indexToSaveAt{ uPtrVec_.size() };
 
@@ -76,11 +80,12 @@ namespace misc
             for (std::size_t i(0); i < NUM_OBJECTS; ++i)
             {
                 auto const NEXT_PTR{ uPtrVec_[i].get() };
-                if (NEXT_PTR == ptr_to_store)
+                if (NEXT_PTR == PTR_TO_STORE)
                 {
                     std::ostringstream ss;
-                    ss << "Warehouse::Store((" << ptr_to_store << ")"
-                       << ", name=\"" << NAME << "\") was already stored.";
+                    ss << "misc::Warehouse<" << boost::typeindex::type_id<T>().pretty_name()
+                       << ">::Store((" << PTR_TO_STORE << "=" << PTR_TO_STORE->ToString()
+                       << ") was already stored.";
 
                     throw std::runtime_error(ss.str());
                 }
@@ -92,36 +97,47 @@ namespace misc
 
             if (indexToSaveAt < NUM_OBJECTS)
             {
-                uPtrVec_[indexToSaveAt].reset(ptr_to_store);
+                uPtrVec_[indexToSaveAt].reset(PTR_TO_STORE);
             }
             else
             {
-                std::unique_ptr<T> tempUPtr;
-                tempUPtr.reset(ptr_to_store);
-                uPtrVec_.emplace_back(std::move(tempUPtr));
+                uPtrVec_.emplace_back(std::unique_ptr<T>(PTR_TO_STORE));
             }
 
-            return ptr_to_store;
+            return PTR_TO_STORE;
         }
 
-        void Free(T *& ptr_to_free, const std::string & NAME)
+        void Free(std::vector<NotNull<T *>> & notNullVec)
+        {
+            for (auto const & NOT_NULL : notNullVec)
+            {
+                Free(NOT_NULL);
+            }
+
+            notNullVec.clear();
+        }
+
+        void Free(const NotNull<T *> & NOT_NULL) { Free(NOT_NULL.Ptr()); }
+
+        void Free(const T * const PTR)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (ptr_to_free != nullptr),
-                "Warehouse::Free(name=\"" << NAME << "\") given a nullptr.");
+                (PTR != nullptr),
+                "misc::Warehouse<" << boost::typeindex::type_id<T>().pretty_name()
+                                   << ">::Free() given a nullptr.");
 
             for (auto & nextUPtr : uPtrVec_)
             {
-                if (nextUPtr.get() == ptr_to_free)
+                if (nextUPtr.get() == PTR)
                 {
-                    ptr_to_free = nullptr;
                     nextUPtr.reset();
                     return;
                 }
             }
 
             M_HP_LOG_ERR(
-                "Warehouse::Free((" << ptr_to_free << "), name=\"" << NAME << "\") not found.");
+                "misc::Warehouse<" << boost::typeindex::type_id<T>().pretty_name() << ">::Free("
+                                   << PTR << "=" << PTR->ToString() << "\") not found.");
         }
 
     private:

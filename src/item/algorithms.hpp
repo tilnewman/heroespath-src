@@ -31,7 +31,7 @@
 //  functions will be added here as needed during development.
 //
 #include "item/item-type-enum.hpp"
-
+#include "misc/not-null.hpp"
 #include "misc/vectors.hpp"
 
 #include <memory>
@@ -45,7 +45,7 @@ namespace item
 
     // forward declarations
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 
     struct Algorithms
@@ -93,6 +93,7 @@ namespace item
         static const ItemPVec_t
             FindByBroken(const ItemPVec_t & ITEM_SVEC, const BrokenOpt KEEP_BROKEN_OPTION);
     };
+
 } // namespace item
 } // namespace heroespath
 

@@ -30,6 +30,7 @@
 //
 #include "item/item-factory-base.hpp"
 #include "item/item-type-enum.hpp"
+#include "misc/not-null.hpp"
 
 #include <memory>
 #include <string>
@@ -40,7 +41,7 @@ namespace item
 {
 
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
 
     class ItemProfile;
 
@@ -62,52 +63,52 @@ namespace item
         static void Acquire();
         static void Release();
 
-        static ItemPtr_t Make(const ItemProfile &);
+        static const ItemPtr_t Make(const ItemProfile &);
 
-        static ItemPtr_t Make_Amulet(const ItemProfile &);
-        static ItemPtr_t Make_Armband(const ItemProfile &);
-        static ItemPtr_t Make_BalmPot(const ItemProfile &);
-        static ItemPtr_t Make_Braid(const ItemProfile &);
-        static ItemPtr_t Make_Cape(const ItemProfile &);
-        static ItemPtr_t Make_DevilHorn(const ItemProfile &);
-        static ItemPtr_t Make_Doll(const ItemProfile &);
-        static ItemPtr_t Make_DrumLute(const ItemProfile &);
-        static ItemPtr_t Make_Egg(const ItemProfile &);
-        static ItemPtr_t Make_Embryo(const ItemProfile &);
-        static ItemPtr_t Make_Finger(const ItemProfile &);
-        static ItemPtr_t Make_Fingerclaw(const ItemProfile &);
-        static ItemPtr_t Make_Goblet(const ItemProfile &);
-        static ItemPtr_t Make_HurdyGurdy(const ItemProfile &);
-        static ItemPtr_t Make_Icicle(const ItemProfile &);
-        static ItemPtr_t Make_Litchhand(const ItemProfile &);
-        static ItemPtr_t Make_LockPicks(const ItemProfile &);
-        static ItemPtr_t Make_Lyre(const ItemProfile &);
-        static ItemPtr_t Make_MummyHand(const ItemProfile &);
-        static ItemPtr_t Make_Orb(const ItemProfile &);
-        static ItemPtr_t Make_PetrifiedSnake(const ItemProfile &);
-        static ItemPtr_t Make_PipeAndTabor(const ItemProfile &);
-        static ItemPtr_t Make_Recorder(const ItemProfile &);
-        static ItemPtr_t Make_Ring(const ItemProfile &);
-        static ItemPtr_t Make_Scepter(const ItemProfile &);
-        static ItemPtr_t Make_Seeds(const ItemProfile &);
-        static ItemPtr_t Make_Shard(const ItemProfile &);
-        static ItemPtr_t Make_SpiderEggs(const ItemProfile &);
-        static ItemPtr_t Make_Staff(const ItemProfile &);
-        static ItemPtr_t Make_SummoningStatue(const ItemProfile &);
-        static ItemPtr_t Make_UnicornHorn(const ItemProfile &);
-        static ItemPtr_t Make_Veil(const ItemProfile &);
-        static ItemPtr_t Make_Viol(const ItemProfile &);
-        static ItemPtr_t Make_Wand(const ItemProfile &);
+        static const ItemPtr_t Make_Amulet(const ItemProfile &);
+        static const ItemPtr_t Make_Armband(const ItemProfile &);
+        static const ItemPtr_t Make_BalmPot(const ItemProfile &);
+        static const ItemPtr_t Make_Braid(const ItemProfile &);
+        static const ItemPtr_t Make_Cape(const ItemProfile &);
+        static const ItemPtr_t Make_DevilHorn(const ItemProfile &);
+        static const ItemPtr_t Make_Doll(const ItemProfile &);
+        static const ItemPtr_t Make_DrumLute(const ItemProfile &);
+        static const ItemPtr_t Make_Egg(const ItemProfile &);
+        static const ItemPtr_t Make_Embryo(const ItemProfile &);
+        static const ItemPtr_t Make_Finger(const ItemProfile &);
+        static const ItemPtr_t Make_Fingerclaw(const ItemProfile &);
+        static const ItemPtr_t Make_Goblet(const ItemProfile &);
+        static const ItemPtr_t Make_HurdyGurdy(const ItemProfile &);
+        static const ItemPtr_t Make_Icicle(const ItemProfile &);
+        static const ItemPtr_t Make_Litchhand(const ItemProfile &);
+        static const ItemPtr_t Make_LockPicks(const ItemProfile &);
+        static const ItemPtr_t Make_Lyre(const ItemProfile &);
+        static const ItemPtr_t Make_MummyHand(const ItemProfile &);
+        static const ItemPtr_t Make_Orb(const ItemProfile &);
+        static const ItemPtr_t Make_PetrifiedSnake(const ItemProfile &);
+        static const ItemPtr_t Make_PipeAndTabor(const ItemProfile &);
+        static const ItemPtr_t Make_Recorder(const ItemProfile &);
+        static const ItemPtr_t Make_Ring(const ItemProfile &);
+        static const ItemPtr_t Make_Scepter(const ItemProfile &);
+        static const ItemPtr_t Make_Seeds(const ItemProfile &);
+        static const ItemPtr_t Make_Shard(const ItemProfile &);
+        static const ItemPtr_t Make_SpiderEggs(const ItemProfile &);
+        static const ItemPtr_t Make_Staff(const ItemProfile &);
+        static const ItemPtr_t Make_SummoningStatue(const ItemProfile &);
+        static const ItemPtr_t Make_UnicornHorn(const ItemProfile &);
+        static const ItemPtr_t Make_Veil(const ItemProfile &);
+        static const ItemPtr_t Make_Viol(const ItemProfile &);
+        static const ItemPtr_t Make_Wand(const ItemProfile &);
 
-        static ItemPtr_t Make_MiscBlessedOrCursed(const ItemProfile &);
+        static const ItemPtr_t Make_MiscBlessedOrCursed(const ItemProfile &);
 
         // to support the older InventoryFactory
-        static ItemPtr_t Make_Ring(const material::Enum, const material::Enum);
-        static ItemPtr_t Make_Wand(const material::Enum, const material::Enum);
-        static ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM);
+        static const ItemPtr_t Make_Ring(const material::Enum, const material::Enum);
+        static const ItemPtr_t Make_Wand(const material::Enum, const material::Enum);
+        static const ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM);
 
     private:
-        static ItemPtr_t Make_Helper(
+        static const ItemPtr_t Make_Helper(
             const ItemProfile & PROFILE,
             const Coin_t & BASE_PRICE,
             const Weight_t & BASE_WEIGHT,
@@ -116,6 +117,7 @@ namespace item
     private:
         static std::unique_ptr<MiscItemFactory> instanceUPtr_;
     };
+
 } // namespace item
 } // namespace heroespath
 

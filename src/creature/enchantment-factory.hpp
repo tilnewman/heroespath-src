@@ -32,6 +32,7 @@
 #include "creature/enchantment-type.hpp"
 #include "creature/enchantment.hpp"
 #include "item/item-type-enum.hpp"
+#include "misc/not-null.hpp"
 #include "stats/trait.hpp"
 #include "stats/traits-set.hpp"
 
@@ -44,7 +45,7 @@ namespace heroespath
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
 } // namespace item
 namespace creature
 {
@@ -68,11 +69,11 @@ namespace creature
         static void Release();
 
         // use to make/store/attach/return enchantments base on item type
-        item::ItemPtr_t MakeStoreAttachReturn(item::ItemPtr_t) const;
+        const item::ItemPtr_t MakeStoreAttachReturn(const item::ItemPtr_t) const;
 
         // use to make/store/attach/return custom enchantments
-        item::ItemPtr_t MakeStoreAttachReturn(
-            item::ItemPtr_t itemPtr,
+        const item::ItemPtr_t MakeStoreAttachReturn(
+            const item::ItemPtr_t ITEM_PTR,
             const EnchantmentType::Enum TYPE,
             const stats::TraitSet & TRAIT_SET,
             const UseInfo & USE_INFO = UseInfo()) const;
@@ -96,7 +97,7 @@ namespace creature
             const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
 
     private:
-        item::ItemPtr_t StoreAttachReturn(item::ItemPtr_t, Enchantment * const) const;
+        const item::ItemPtr_t StoreAttachReturn(const item::ItemPtr_t, Enchantment * const) const;
 
         const std::vector<Enchantment>
             MakeFromUniqueType(const item::unique_type::Enum, const item::material::Enum) const;
@@ -141,6 +142,7 @@ namespace creature
     private:
         static std::unique_ptr<EnchantmentFactory> instanceUPtr_;
     };
+
 } // namespace creature
 } // namespace heroespath
 

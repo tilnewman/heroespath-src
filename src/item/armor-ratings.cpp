@@ -192,12 +192,13 @@ namespace item
     {
         auto totalArmorRating{ 0_armor };
 
-        for (auto const NEXT_ITEM_PTR : ITEM_PVEC)
+        for (auto const & NEXT_ITEM_PTR : ITEM_PVEC)
         {
             totalArmorRating += NEXT_ITEM_PTR->ArmorRating();
         }
 
         return totalArmorRating;
     }
+
 } // namespace item
 } // namespace heroespath

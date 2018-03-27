@@ -43,6 +43,7 @@
 #include "creature/title-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
 #include "item/inventory.hpp"
+#include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "song/song-enum.hpp"
@@ -50,8 +51,6 @@
 #include "stats/stat-set.hpp"
 #include "stats/trait.hpp"
 #include "stats/traits-set.hpp"
-
-#include "misc/boost-serialize-includes.hpp"
 
 #include <memory>
 #include <string>
@@ -77,7 +76,7 @@ namespace spell
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPVec_t = std::vector<ItemPtr_t>;
     using ItemPVecVec_t = std::vector<ItemPVec_t>;
 } // namespace item
@@ -310,13 +309,13 @@ namespace creature
         const std::string ItemUnEquip(const item::ItemPtr_t);
         const std::string IsItemUnqeuipAllowed(const item::ItemPtr_t);
 
-        const item::ItemPVec_t CurrentWeaponsInc();
-        void SetCurrentWeaponsToBest();
-        void SetCurrentWeaponsToBestIfInvalidated();
-        const item::ItemPVec_t CurrentWeaponsCopy() const { return currWeaponsPVec_; }
-        std::size_t WeaponsCount() const;
-        bool HasWeapons() const { return WeaponsCount() > 0; }
-        bool HasWeaponsHeld() const { return CurrentWeaponsCopy().empty() == false; }
+        void IncrementHeldWeapons();
+        void SetHeldWeaponsToBest();
+        void SetHeldWeaponsToBestIfInvalidated();
+        const item::ItemPVec_t HeldWeapons() const { return heldWeaponsPVec_; }
+        std::size_t HeldWeaponsCount() const;
+        bool HasWeapons() const { return HeldWeaponsCount() > 0; }
+        bool HasWeaponsHeld() const { return heldWeaponsPVec_.empty() == false; }
         bool IsHoldingProjectileWeapon() const;
 
         const std::string WeaponsString() const;
@@ -361,9 +360,6 @@ namespace creature
         bool CanFly() const { return (race::CanFly(race_) && role::CanFly(role_)); }
 
         const std::string ToString() const;
-
-        // should only be called after loading a saved game
-        void StoreItemsInWarehouseAfterLoad();
 
         std::size_t LastSpellCastNum() const { return lastSpellCastNum_; }
         void LastSpellCastNum(const std::size_t N) { lastSpellCastNum_ = N; }
@@ -437,6 +433,14 @@ namespace creature
 
         void StatTraitsModify(const stats::StatSet &);
 
+        void PreSerialize() { inventory_.PreSerialize(); }
+
+        void PostSerialize()
+        {
+            inventory_.PostSerialize();
+            SetHeldWeaponsToBest();
+        }
+
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);
 
@@ -469,7 +473,7 @@ namespace creature
         sfml_util::DateTime dateTimeCreated_;
         spell::SpellEnumVec_t spellsVec_;
         Achievements achievements_;
-        item::ItemPVec_t currWeaponsPVec_;
+        item::ItemPVec_t heldWeaponsPVec_;
         std::size_t lastSpellCastNum_;
         song::SongEnumVec_t songsVec_;
         std::size_t lastSongPlayedNum_;
@@ -535,7 +539,6 @@ namespace creature
             ar & dateTimeCreated_;
             ar & spellsVec_;
             ar & achievements_;
-            ar & currWeaponsPVec_;
             ar & lastSpellCastNum_;
             ar & songsVec_;
             ar & lastSongPlayedNum_;

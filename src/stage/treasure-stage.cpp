@@ -392,18 +392,18 @@ namespace stage
     {
         auto const LISTBOX_ITEM_SPTR{ PACKAGE.package.PTR_->Selected() };
 
-        if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+        if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
         {
             if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
                 || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
             {
                 if (PACKAGE.package.PTR_ == TREASURE_LISTBOX_PTR)
                 {
-                    TakeItem(LISTBOX_ITEM_SPTR->ITEM_CPTR);
+                    TakeItem(LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value());
                 }
                 else if (PACKAGE.package.PTR_ == INVENTORY_LISTBOX_PTR)
                 {
-                    PutItemBack(LISTBOX_ITEM_SPTR->ITEM_CPTR);
+                    PutItemBack(LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value());
                 }
             }
 
@@ -418,7 +418,6 @@ namespace stage
         if (nullptr == displayStagePtr_)
         {
             sfml_util::SoundManager::Instance()->PlaySfx_Reject();
-
             return;
         }
 
@@ -429,7 +428,6 @@ namespace stage
         if (itemsPVec.empty())
         {
             sfml_util::SoundManager::Instance()->PlaySfx_Reject();
-
             return;
         }
 
@@ -454,7 +452,7 @@ namespace stage
         // for each item to be taken, attempt to give it to each possible character
         std::set<std::string> creatureNamesWhoTookItems;
         item::ItemPVec_t itemsToRemovePVec;
-        for (auto const ITEM_PTR : itemsPVec)
+        for (auto const & ITEM_PTR : itemsPVec)
         {
             for (auto creaturePtr : whoWillTakeItems)
             {
@@ -468,7 +466,7 @@ namespace stage
         }
 
         // remove the taken items from the cache
-        for (auto const ITEM_PTR : itemsToRemovePVec)
+        for (auto const & ITEM_PTR : itemsToRemovePVec)
         {
             itemsPVec.erase(
                 std::remove(itemsPVec.begin(), itemsPVec.end(), ITEM_PTR), itemsPVec.end());

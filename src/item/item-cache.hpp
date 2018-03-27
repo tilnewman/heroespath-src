@@ -27,6 +27,7 @@
 //
 // item-cache.hpp
 //
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 
 #include <vector>
@@ -37,7 +38,7 @@ namespace item
 {
 
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 
     // Handy container of items used by Encounter to store treasure
@@ -48,7 +49,7 @@ namespace item
 
         Coin_t coins{ 0_coin };
         Gem_t gems{ 0_gem };
-        item::ItemPVec_t items_pvec;
+        ItemPVec_t items_pvec;
 
         // coins and gems weigh nothing
         Weight_t Weight() const;
@@ -60,6 +61,7 @@ namespace item
             return ((0_coin == coins) && (0_gem == gems) && (items_pvec.empty() == false));
         }
     };
+
 } // namespace item
 } // namespace heroespath
 

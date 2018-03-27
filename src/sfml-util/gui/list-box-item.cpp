@@ -51,7 +51,7 @@ namespace sfml_util
             : TextRegion(std::string(NAME).append("_ListBoxItemBase"))
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
-            , ITEM_CPTR(nullptr)
+            , ITEM_PTR_OPT(boost::none)
             , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
@@ -67,7 +67,7 @@ namespace sfml_util
                   std::string(NAME).append("_ListBoxItemTextOnly"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
-            , ITEM_CPTR(nullptr)
+            , ITEM_PTR_OPT(boost::none)
             , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
@@ -86,7 +86,7 @@ namespace sfml_util
                   sf::FloatRect())
             , CHARACTER_CPTR(CHARACTER_PTR)
             , GAMESTATE_CPTR(nullptr)
-            , ITEM_CPTR(nullptr)
+            , ITEM_PTR_OPT(boost::none)
             , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
@@ -103,7 +103,7 @@ namespace sfml_util
                   std::string(NAME).append("_ListBoxItemGameState"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(GAMESTATE_PTR)
-            , ITEM_CPTR(nullptr)
+            , ITEM_PTR_OPT(boost::none)
             , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
@@ -120,7 +120,7 @@ namespace sfml_util
                   std::string(NAME).append("_ListBoxItemCondition"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
-            , ITEM_CPTR(nullptr)
+            , ITEM_PTR_OPT(boost::none)
             , COND_PTR_OPT(CONDITION_PTR_PARAM)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
@@ -131,12 +131,12 @@ namespace sfml_util
         ListBoxItem::ListBoxItem(
             const std::string & NAME,
             const sfml_util::gui::TextInfo & TEXT_INFO,
-            const item::ItemPtr_t ITEM_PTR,
+            const item::ItemPtr_t ITEM_PTR_PARAM,
             const bool IS_VALID)
             : TextRegion(std::string(NAME).append("_ListBoxItemItem"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
-            , ITEM_CPTR(ITEM_PTR)
+            , ITEM_PTR_OPT(ITEM_PTR_PARAM)
             , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
@@ -152,7 +152,7 @@ namespace sfml_util
             : TextRegion(std::string(NAME).append("_ListBoxItemTitle"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
-            , ITEM_CPTR(nullptr)
+            , ITEM_PTR_OPT(boost::none)
             , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(TITLE_PTR_PARAM)
             , SPELL_PTR_OPT(boost::none)
@@ -168,7 +168,7 @@ namespace sfml_util
             : TextRegion(std::string(NAME).append("_ListBoxItemSpell"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
-            , ITEM_CPTR(nullptr)
+            , ITEM_PTR_OPT(boost::none)
             , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(SPELL_PTR_PARAM)
@@ -184,7 +184,7 @@ namespace sfml_util
             : TextRegion(std::string(NAME).append("_ListBoxItemSong"), TEXT_INFO, sf::FloatRect())
             , CHARACTER_CPTR(nullptr)
             , GAMESTATE_CPTR(nullptr)
-            , ITEM_CPTR(nullptr)
+            , ITEM_PTR_OPT(boost::none)
             , COND_PTR_OPT(boost::none)
             , TITLE_PTR_OPT(boost::none)
             , SPELL_PTR_OPT(boost::none)
@@ -197,7 +197,7 @@ namespace sfml_util
             return std::tie(
                        L.CHARACTER_CPTR,
                        L.GAMESTATE_CPTR,
-                       L.ITEM_CPTR,
+                       L.ITEM_PTR_OPT,
                        L.COND_PTR_OPT,
                        L.TITLE_PTR_OPT,
                        L.SPELL_PTR_OPT,
@@ -206,7 +206,7 @@ namespace sfml_util
                 == std::tie(
                        R.CHARACTER_CPTR,
                        R.GAMESTATE_CPTR,
-                       R.ITEM_CPTR,
+                       R.ITEM_PTR_OPT,
                        R.COND_PTR_OPT,
                        R.TITLE_PTR_OPT,
                        R.SPELL_PTR_OPT,
@@ -219,7 +219,7 @@ namespace sfml_util
             return std::tie(
                        L.CHARACTER_CPTR,
                        L.GAMESTATE_CPTR,
-                       L.ITEM_CPTR,
+                       L.ITEM_PTR_OPT,
                        L.COND_PTR_OPT,
                        L.TITLE_PTR_OPT,
                        L.SPELL_PTR_OPT,
@@ -228,13 +228,14 @@ namespace sfml_util
                 < std::tie(
                        R.CHARACTER_CPTR,
                        R.GAMESTATE_CPTR,
-                       R.ITEM_CPTR,
+                       R.ITEM_PTR_OPT,
                        R.COND_PTR_OPT,
                        R.TITLE_PTR_OPT,
                        R.SPELL_PTR_OPT,
                        R.SONG_PTR_OPT,
                        R.is_valid);
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

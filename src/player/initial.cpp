@@ -53,7 +53,7 @@ namespace player
     {
         SetupInventory(characterPtrC);
         SetupSpellsAndSongs(characterPtrC);
-        characterPtrC->SetCurrentWeaponsToBest();
+        characterPtrC->SetHeldWeaponsToBest();
         SetStartingHealth(characterPtrC);
         SetStartingMana(characterPtrC);
         EnsureValidImageFilename(characterPtrC);

@@ -86,77 +86,68 @@ namespace creature
         instanceUPtr_.reset();
     }
 
-    item::ItemPtr_t EnchantmentFactory::MakeStoreAttachReturn(item::ItemPtr_t itemPtr) const
+    const item::ItemPtr_t
+        EnchantmentFactory::MakeStoreAttachReturn(const item::ItemPtr_t ITEM_PTR) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (itemPtr != nullptr),
-            "creature::EnchantmentFactory::MakeStoreAttachReturn(itemPtr version)"
-                << " was given a null itemPtr.");
-
-        if ((itemPtr->IsArmor() || itemPtr->IsWeapon())
-            && (itemPtr->ElementType() != item::element_type::None))
+        if ((ITEM_PTR->IsArmor() || ITEM_PTR->IsWeapon())
+            && (ITEM_PTR->ElementType() != item::element_type::None))
         {
             StoreAttachReturn(
-                itemPtr,
+                ITEM_PTR,
                 NewFromElementType(
-                    itemPtr->ElementType(), itemPtr->IsWeapon(), itemPtr->MaterialPrimary()));
+                    ITEM_PTR->ElementType(), ITEM_PTR->IsWeapon(), ITEM_PTR->MaterialPrimary()));
         }
 
-        if ((itemPtr->UniqueType() != item::unique_type::NotUnique)
-            && (itemPtr->UniqueType() != item::unique_type::Count))
+        if ((ITEM_PTR->UniqueType() != item::unique_type::NotUnique)
+            && (ITEM_PTR->UniqueType() != item::unique_type::Count))
         {
             for (auto const NEXT_ENCHANTMENT_PTR :
-                 NewFromUniqueType(itemPtr->UniqueType(), itemPtr->MaterialPrimary()))
+                 NewFromUniqueType(ITEM_PTR->UniqueType(), ITEM_PTR->MaterialPrimary()))
             {
-                StoreAttachReturn(itemPtr, NEXT_ENCHANTMENT_PTR);
+                StoreAttachReturn(ITEM_PTR, NEXT_ENCHANTMENT_PTR);
             }
 
-            return itemPtr;
+            return ITEM_PTR;
         }
 
-        if ((itemPtr->NamedType() != item::named_type::NotNamed)
-            && (itemPtr->NamedType() != item::named_type::Count))
+        if ((ITEM_PTR->NamedType() != item::named_type::NotNamed)
+            && (ITEM_PTR->NamedType() != item::named_type::Count))
         {
             return StoreAttachReturn(
-                itemPtr,
+                ITEM_PTR,
                 NewFromNamedType(
-                    itemPtr->NamedType(),
-                    itemPtr->MaterialPrimary(),
-                    (itemPtr->Category() & item::category::Armor),
-                    (itemPtr->Category() & item::category::Weapon)));
+                    ITEM_PTR->NamedType(),
+                    ITEM_PTR->MaterialPrimary(),
+                    (ITEM_PTR->Category() & item::category::Armor),
+                    (ITEM_PTR->Category() & item::category::Weapon)));
         }
 
-        if (itemPtr->SetType() != item::set_type::NotASet)
+        if (ITEM_PTR->SetType() != item::set_type::NotASet)
         {
-            return StoreAttachReturn(itemPtr, NewFromSetType(itemPtr->SetType()));
+            return StoreAttachReturn(ITEM_PTR, NewFromSetType(ITEM_PTR->SetType()));
         }
 
-        if (itemPtr->MiscType() != item::misc_type::NotMisc)
+        if (ITEM_PTR->MiscType() != item::misc_type::NotMisc)
         {
             auto const ENCHANTMENT_PTR{ NewFromMiscType(
-                itemPtr->MiscType(), itemPtr->MaterialPrimary(), itemPtr->MaterialSecondary()) };
+                ITEM_PTR->MiscType(), ITEM_PTR->MaterialPrimary(), ITEM_PTR->MaterialSecondary()) };
 
             if (ENCHANTMENT_PTR != nullptr)
             {
-                return StoreAttachReturn(itemPtr, ENCHANTMENT_PTR);
+                return StoreAttachReturn(ITEM_PTR, ENCHANTMENT_PTR);
             }
         }
 
-        return itemPtr;
+        return ITEM_PTR;
     }
 
-    item::ItemPtr_t EnchantmentFactory::MakeStoreAttachReturn(
-        item::ItemPtr_t itemPtr,
+    const item::ItemPtr_t EnchantmentFactory::MakeStoreAttachReturn(
+        const item::ItemPtr_t ITEM_PTR,
         const EnchantmentType::Enum TYPE,
         const stats::TraitSet & TRAIT_SET,
         const UseInfo & USE_INFO) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (itemPtr != nullptr),
-            "creature::EnchantmentFactory::MakeStoreAttachReturn(itemPtr/details version)"
-                << " was given a null itemPtr.");
-
-        return StoreAttachReturn(itemPtr, new Enchantment(TYPE, TRAIT_SET, USE_INFO));
+        return StoreAttachReturn(ITEM_PTR, new Enchantment(TYPE, TRAIT_SET, USE_INFO));
     }
 
     Score_t EnchantmentFactory::TreasureScore(
@@ -233,21 +224,16 @@ namespace creature
         return MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY).TreasureScore() + 750_score;
     }
 
-    item::ItemPtr_t EnchantmentFactory::StoreAttachReturn(
-        item::ItemPtr_t itemPtr, Enchantment * const enchantmentPtr) const
+    const item::ItemPtr_t EnchantmentFactory::StoreAttachReturn(
+        const item::ItemPtr_t ITEM_PTR, Enchantment * const enchantmentPtr) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (itemPtr != nullptr),
-            "creature::EnchantmentFactory::StoreAttachReturn(itemPtr/enchPtr version)"
-                << " was given a null itemPtr.");
-
         M_ASSERT_OR_LOGANDTHROW_SS(
             (enchantmentPtr != nullptr),
             "creature::EnchantmentFactory::StoreAttachReturn(item="
-                << itemPtr->Name() << ") was given a null enchantmentPtr.");
+                << ITEM_PTR->Name() << ") was given a null enchantmentPtr.");
 
-        itemPtr->EnchantmentAdd(EnchantmentWarehouse::Instance()->Store(enchantmentPtr));
-        return itemPtr;
+        ITEM_PTR->EnchantmentAdd(EnchantmentWarehouse::Instance()->Store(enchantmentPtr));
+        return ITEM_PTR;
     }
 
     const std::vector<Enchantment *> EnchantmentFactory::NewFromUniqueType(

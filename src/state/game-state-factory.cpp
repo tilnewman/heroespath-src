@@ -36,13 +36,12 @@
 #include "creature/creature.hpp"
 #include "game/game.hpp"
 #include "log/log-macros.hpp"
+#include "misc/assertlogandthrow.hpp"
+#include "misc/boost-string-includes.hpp"
 #include "player/party.hpp"
 #include "state/game-state.hpp"
 #include "state/world-factory.hpp"
 #include "state/world.hpp"
-
-#include "misc/assertlogandthrow.hpp"
-#include "misc/boost-string-includes.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -59,8 +58,8 @@ namespace state
     const std::string GameStateFactory::SAVED_HEROESPATH_FILE_NAME_("game");
     const std::string GameStateFactory::SAVED_HEROESPATH_FILE_EXT_(".dat");
     //
-    const std::string GameStateFactory::SAVED_CHAR_DIR_NAME_("unplayed_characters");
-    const std::string GameStateFactory::SAVED_CHAR_FILE_EXT_(".dat");
+    const std::string GameStateFactory::UNPLAYED_CHAR_DIR_NAME_("unplayed_characters");
+    const std::string GameStateFactory::UNPLAYED_CHAR_FILE_EXT_(".dat");
 
     GameStateFactory::GameStateFactory()
     {
@@ -159,6 +158,7 @@ namespace state
                 std::ifstream ifs(NEXT_PATH_OBJ.string());
                 boost::archive::text_iarchive ia(ifs);
                 ia >> *nextGameStatePtr;
+                nextGameStatePtr->PostSerialize();
                 gameStatePSet.insert(nextGameStatePtr);
             }
             catch (const std::exception & E)
@@ -190,13 +190,13 @@ namespace state
             SAVED_HEROESPATH_FILE_EXT_);
     }
 
-    creature::CreaturePSet_t GameStateFactory::LoadAllCompanions() const
+    creature::CreaturePSet_t GameStateFactory::LoadAllUnplayedCharacters() const
     {
         namespace bfs = boost::filesystem;
 
         // configure the path
         const bfs::path DIR_OBJ(
-            bfs::system_complete(bfs::current_path() / bfs::path(SAVED_CHAR_DIR_NAME_)));
+            bfs::system_complete(bfs::current_path() / bfs::path(UNPLAYED_CHAR_DIR_NAME_)));
 
         creature::CreaturePSet_t characterPSet;
 
@@ -216,7 +216,7 @@ namespace state
         bfs::directory_iterator end_itr; // default construction yields past-the-end
         for (bfs::directory_iterator itr(DIR_OBJ); itr != end_itr; ++itr)
         {
-            if ((boost::algorithm::ends_with(itr->path().leaf().string(), SAVED_CHAR_FILE_EXT_))
+            if ((boost::algorithm::ends_with(itr->path().leaf().string(), UNPLAYED_CHAR_FILE_EXT_))
                 && (bfs::is_regular_file(*itr)))
             {
                 pathVec.emplace_back(DIR_OBJ / itr->path().leaf());
@@ -234,20 +234,20 @@ namespace state
                 std::ifstream ifs(pathVec[i].string());
                 boost::archive::text_iarchive ia(ifs);
                 ia >> *nextCharacterPtr;
-
+                nextCharacterPtr->PostSerialize();
                 characterPSet.insert(nextCharacterPtr);
             }
             catch (const std::exception & E)
             {
                 M_HP_LOG(
-                    "state::GameStateFactory::LoadAllCompanions(), while trying to "
+                    "state::GameStateFactory::LoadAllUnplayedCharacters(), while trying to "
                     << "de-serialize/load saved game file \"" << pathVec[i].string()
                     << "\", threw std::exception(\"" << E.what() << "\")");
             }
             catch (...)
             {
                 M_HP_LOG(
-                    "state::GameStateFactory::LoadAllCompanions(), while trying to "
+                    "state::GameStateFactory::LoadAllUnplayedCharacters(), while trying to "
                     << "de-serialize/load saved game file \"" << pathVec[i].string()
                     << "\", threw UNKNOWN exception.");
             }
@@ -261,18 +261,19 @@ namespace state
         Save(
             nullptr,
             CHARACTER_PTR,
-            SAVED_CHAR_DIR_NAME_,
+            UNPLAYED_CHAR_DIR_NAME_,
             CHARACTER_PTR->Name(),
-            SAVED_CHAR_FILE_EXT_);
+            UNPLAYED_CHAR_FILE_EXT_);
     }
 
-    bool GameStateFactory::DeleteCharacter(const creature::CreaturePtr_t CHAR_TO_DELETE_PTR) const
+    bool GameStateFactory::DeleteUnplayedCharacterFile(
+        const creature::CreaturePtr_t CHAR_TO_DELETE_PTR) const
     {
         namespace bfs = boost::filesystem;
 
         // configure the path
         const bfs::path DIR_OBJ(
-            bfs::system_complete(bfs::current_path() / bfs::path(SAVED_CHAR_DIR_NAME_)));
+            bfs::system_complete(bfs::current_path() / bfs::path(UNPLAYED_CHAR_DIR_NAME_)));
 
         // check for early exit cases
         if (false == bfs::exists(DIR_OBJ))
@@ -290,7 +291,7 @@ namespace state
         bfs::directory_iterator end_itr; // default construction yields past-the-end
         for (bfs::directory_iterator itr(DIR_OBJ); itr != end_itr; ++itr)
         {
-            if ((boost::algorithm::ends_with(itr->path().leaf().string(), SAVED_CHAR_FILE_EXT_))
+            if ((boost::algorithm::ends_with(itr->path().leaf().string(), UNPLAYED_CHAR_FILE_EXT_))
                 && (bfs::is_regular_file(*itr)))
             {
                 pathVec.emplace_back(DIR_OBJ / itr->path().leaf());
@@ -300,17 +301,18 @@ namespace state
         // loop over all paths to saved games and load then compare before deleting
         for (auto const & NEXT_PATH : pathVec)
         {
-            auto nextCharacterPtr{ new creature::Creature() };
-
             try
             {
+                auto creatureUPtr{ std::make_unique<creature::Creature>() };
+
                 {
                     std::ifstream ifs(NEXT_PATH.string());
                     boost::archive::text_iarchive ia(ifs);
-                    ia >> *nextCharacterPtr;
+                    ia >> *creatureUPtr;
+                    creatureUPtr->PostSerialize();
                 }
 
-                if ((*nextCharacterPtr) == (*CHAR_TO_DELETE_PTR))
+                if ((*creatureUPtr) == (*CHAR_TO_DELETE_PTR))
                 {
                     boost::system::error_code errorCode;
                     if (bfs::remove(NEXT_PATH, errorCode))
@@ -320,7 +322,7 @@ namespace state
                     else
                     {
                         M_HP_LOG(
-                            "state::GameStateFactory::DeleteCharacter("
+                            "state::GameStateFactory::DeleteUnplayedCharacterFile("
                             << CHAR_TO_DELETE_PTR->Name() << "), while trying to delete "
                             << NEXT_PATH.string() << ", failed with error code=" << errorCode);
 
@@ -331,7 +333,7 @@ namespace state
             catch (const std::exception & E)
             {
                 M_HP_LOG(
-                    "state::GameStateFactory::DeleteCharacter("
+                    "state::GameStateFactory::DeleteUnplayedCharacterFile("
                     << CHAR_TO_DELETE_PTR->Name()
                     << "), while trying to de-serialize/load saved game file \""
                     << NEXT_PATH.string() << "\", threw std::exception(\"" << E.what() << "\")");
@@ -339,7 +341,7 @@ namespace state
             catch (...)
             {
                 M_HP_LOG(
-                    "state::GameStateFactory::DeleteCharacter("
+                    "state::GameStateFactory::DeleteUnplayedCharacterFile("
                     << CHAR_TO_DELETE_PTR->Name()
                     << "), while trying to de-serialize/load saved game file \""
                     << NEXT_PATH.string() << "\", threw UNKNOWN exception.");

@@ -27,6 +27,8 @@
 //
 // item-detail-viewer.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/pos-slider.hpp"
 #include "sfml-util/sfml-graphics.hpp"
@@ -36,7 +38,8 @@ namespace heroespath
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
+    using ItemPtrOpt_t = boost::optional<ItemPtr_t>;
 } // namespace item
 namespace stage
 {
@@ -67,8 +70,8 @@ namespace stage
     private:
         void SetupBackgroundQuadColors(const float PROGRESS_RATIO);
         void SetupBackgroundQuadPositions(const float PROGRESS_RATIO);
-        void SetupImage(const item::ItemPtr_t);
-        void SetupText(const item::ItemPtr_t);
+        void SetupImage(const item::ItemPtrOpt_t);
+        void SetupText(const item::ItemPtrOpt_t);
 
     private:
         const float SCREEN_WIDTH_;
@@ -87,11 +90,12 @@ namespace stage
         sfml_util::sliders::PosSlider slider_;
         sfml_util::gui::TextRegionUPtr_t textRegionUPtr_;
         sf::FloatRect sourceRect;
-        item::ItemPtr_t itemPtr_;
+        item::ItemPtrOpt_t itemPtrOpt_;
         bool willShowImage_;
         bool isBeforeAnyChange_;
         bool isShowing_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

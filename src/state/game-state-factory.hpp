@@ -82,10 +82,10 @@ namespace state
 
         // Loaded Characters are not stored in player::CharacterWarehouse,
         // so the caller is responsible for the lifetime of the returned objects.
-        creature::CreaturePSet_t LoadAllCompanions() const;
+        creature::CreaturePSet_t LoadAllUnplayedCharacters() const;
 
         void SaveCharacter(const creature::CreaturePtr_t) const;
-        bool DeleteCharacter(const creature::CreaturePtr_t) const;
+        bool DeleteUnplayedCharacterFile(const creature::CreaturePtr_t) const;
 
     private:
         // hack'ish function that saves either the game or the character
@@ -102,8 +102,8 @@ namespace state
         static const std::string SAVED_HEROESPATH_FILE_NAME_;
         static const std::string SAVED_HEROESPATH_FILE_EXT_;
         //
-        static const std::string SAVED_CHAR_DIR_NAME_;
-        static const std::string SAVED_CHAR_FILE_EXT_;
+        static const std::string UNPLAYED_CHAR_DIR_NAME_;
+        static const std::string UNPLAYED_CHAR_FILE_EXT_;
         //
         static std::unique_ptr<GameStateFactory> instanceUPtr_;
     };

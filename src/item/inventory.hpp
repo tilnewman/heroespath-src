@@ -28,9 +28,9 @@
 // inventory.hpp
 //  A class that encapsolates a collection of Items.
 //
-#include "misc/boost-serialize-includes.hpp"
-
 #include "item/item-type-enum.hpp"
+#include "misc/boost-serialize-includes.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "stats/trait.hpp"
 
@@ -46,7 +46,7 @@ namespace item
 
     // foward declarations
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 
     // A class that encapsolates a collection of Items.
@@ -109,12 +109,12 @@ namespace item
 
         const std::string ToString() const;
 
-        void StoreItemsInWarehouseAfterLoad();
+        void PreSerialize();
+        void PostSerialize();
 
         friend bool operator==(const Inventory & L, const Inventory & R);
 
     protected:
-        void StoreItemPVecInWarehouse(ItemPVec_t &) const;
         void FreeAllItemsFromWarehouse();
 
     private:
@@ -124,6 +124,12 @@ namespace item
         ItemPVec_t itemsPVec_;
         ItemPVec_t equippedItemsPVec_;
 
+        // boost serialization is not compatible with misc::NotNull because it requires default
+        // constructors which misc::NotNull cannot allow.  So this class cannot serialize a
+        // ItemPVec_t.  Instead this class serializes these vectors of raw pointers.
+        std::vector<Item *> itemsPVecToSerialize_;
+        std::vector<Item *> equippedItemsPVecToSerialize_;
+
     private:
         friend class boost::serialization::access;
         template <typename Archive>
@@ -132,14 +138,15 @@ namespace item
             ar & coins_;
             ar & meteorShards_;
             ar & gems_;
-            ar & itemsPVec_;
-            ar & equippedItemsPVec_;
+            ar & itemsPVecToSerialize_;
+            ar & equippedItemsPVecToSerialize_;
         }
     };
 
     bool operator==(const Inventory & L, const Inventory & R);
 
     inline bool operator!=(const Inventory & L, const Inventory & R) { return !(L == R); }
+
 } // namespace item
 } // namespace heroespath
 

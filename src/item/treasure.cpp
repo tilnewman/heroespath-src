@@ -37,10 +37,9 @@
 #include "item/item-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item.hpp"
-#include "non-player/ownership-profile.hpp"
-
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
+#include "non-player/ownership-profile.hpp"
 
 #include <algorithm>
 
@@ -345,9 +344,7 @@ namespace item
 
         for (auto const CREATURE_PTR : CREATURE_PVEC)
         {
-            auto const UNEQUIPPED_ITEM_PTRS{ CREATURE_PTR->Inventory().Items() };
-
-            for (auto const UNEQUIPPED_ITEM_PTR : UNEQUIPPED_ITEM_PTRS)
+            for (auto const & UNEQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().Items())
             {
                 auto const SET_TYPE_POFILE{ SetTypeProfile(*UNEQUIPPED_ITEM_PTR) };
                 if (SET_TYPE_POFILE.DoesBelongToASet())
@@ -356,9 +353,7 @@ namespace item
                 }
             }
 
-            auto const EQUIPPED_ITEM_PTRS{ CREATURE_PTR->Inventory().ItemsEquipped() };
-
-            for (auto const EQUIPPED_ITEM_PTR : EQUIPPED_ITEM_PTRS)
+            for (auto const & EQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().ItemsEquipped())
             {
                 auto const SET_TYPE_POFILE{ SetTypeProfile(*EQUIPPED_ITEM_PTR) };
                 if (SET_TYPE_POFILE.DoesBelongToASet())

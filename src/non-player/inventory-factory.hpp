@@ -29,6 +29,7 @@
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
 #include "item/item-type-enum.hpp"
+#include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "non-player/ownership-chance-types.hpp"
 #include "stats/trait.hpp"
@@ -46,7 +47,7 @@ namespace creature
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 } // namespace item
 namespace non_player

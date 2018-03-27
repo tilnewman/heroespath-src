@@ -87,7 +87,7 @@ namespace player
         M_ASSERT_OR_LOGANDTHROW_SS(
             (CHARACTER_PTR != nullptr), "player::CharacterWarehouse::Store() given nullptr.");
 
-        return warehouse_.Store(CHARACTER_PTR, CHARACTER_PTR->Name());
+        return warehouse_.Store(CHARACTER_PTR);
     }
 
     void CharacterWarehouse::Free(creature::CreaturePtr_t & character_ptr)
@@ -95,7 +95,7 @@ namespace player
         M_ASSERT_OR_LOGANDTHROW_SS(
             (character_ptr != nullptr), "player::CharacterWarehouse::Free() given nullptr.");
 
-        warehouse_.Free(character_ptr, character_ptr->Name());
+        warehouse_.Free(character_ptr);
     }
 
 } // namespace player

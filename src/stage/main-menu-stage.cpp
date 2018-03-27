@@ -160,6 +160,8 @@ namespace stage
         resumeButtonUPtr_->SetCallbackHandler(this);
 
         auto const ARE_THERE_GAMES_TO_LOAD{ []() {
+            // TODO this is wasteful in the extreme, need to add GameStateFactory::FindGameToLoad()
+            // that does not create all games in order to find just one
             auto const GAMESTATE_PSET{ state::GameStateFactory::Instance()->LoadAllGames() };
             auto const ARE_THERE_GAMES{ (GAMESTATE_PSET.empty() == false) };
 

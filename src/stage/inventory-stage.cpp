@@ -268,7 +268,7 @@ namespace stage
         , contentType_(ContentType::Count)
         , listBoxItemToGiveSPtr_()
         , creatureToGiveToPtr_()
-        , iItemToDropPtr_()
+        , itemToDropPtrOpt_(boost::none)
         , isDetailViewFadingIn_(false)
         , isDetailViewFadingOut_(false)
         , isDetailViewDoneFading_(false)
@@ -894,7 +894,7 @@ namespace stage
         {
             if (hasMouseMoved_ && (IsDetailViewFadingOrVisible() == false)
                 && (game::LoopManager::Instance()->IsFading() == false)
-                && (GetItemMouseIsOver(mousePosV_) != nullptr) && (false == isWaitingOnPopup_))
+                && GetItemMouseIsOver(mousePosV_) && (false == isWaitingOnPopup_))
             {
                 UpdateTime_DetailView(ELAPSED_TIME_SECONDS);
             }
@@ -1741,22 +1741,22 @@ namespace stage
 
         if (ViewType::Items == view_)
         {
-            auto selectedItemPtr{ unEquipListBoxUPtr_->Selected() };
+            auto selectedItemSPtr{ unEquipListBoxUPtr_->Selected() };
 
-            if ((selectedItemPtr != nullptr) && (selectedItemPtr->ITEM_CPTR != nullptr)
-                && (selectedItemPtr->ITEM_CPTR->Name().empty() == false))
+            if ((selectedItemSPtr != nullptr) && selectedItemSPtr->ITEM_PTR_OPT
+                && (selectedItemSPtr->ITEM_PTR_OPT->Obj().Name().empty() == false))
             {
                 equipButtonUPtr_->SetIsDisabled(false);
 
                 equipButtonUPtr_->SetMouseHoverText(
                     "Click here or press 'e' to equip the "
-                    + unEquipListBoxUPtr_->Selected()->ITEM_CPTR->Name() + ".");
+                    + unEquipListBoxUPtr_->Selected()->ITEM_PTR_OPT->Obj().Name() + ".");
 
                 dropButtonUPtr_->SetIsDisabled(false);
 
                 dropButtonUPtr_->SetMouseHoverText(
                     "(Click here or press 'd' to drop the "
-                    + unEquipListBoxUPtr_->Selected()->ITEM_CPTR->Name() + ")");
+                    + unEquipListBoxUPtr_->Selected()->ITEM_PTR_OPT->Obj().Name() + ")");
             }
             else
             {
@@ -1793,14 +1793,14 @@ namespace stage
         if (ViewType::Items == view_)
         {
             if ((equippedListBoxUPtr_->Selected().get() != nullptr)
-                && (equippedListBoxUPtr_->Selected()->ITEM_CPTR != nullptr)
-                && (equippedListBoxUPtr_->Selected()->ITEM_CPTR->Name().empty() == false))
+                && equippedListBoxUPtr_->Selected()->ITEM_PTR_OPT
+                && (equippedListBoxUPtr_->Selected()->ITEM_PTR_OPT->Obj().Name().empty() == false))
             {
                 unequipButtonUPtr_->SetIsDisabled(false);
 
                 unequipButtonUPtr_->SetMouseHoverText(
                     "Click here or press 'u' to unequip the "
-                    + equippedListBoxUPtr_->Selected()->ITEM_CPTR->Name() + ".");
+                    + equippedListBoxUPtr_->Selected()->ITEM_PTR_OPT->Obj().Name() + ".");
             }
             else
             {
@@ -2421,19 +2421,19 @@ namespace stage
                 }
                 else
                 {
-                    const item::ItemPtr_t IITEM_PTR(GetItemMouseIsOver(mousePosV_));
-                    if (IITEM_PTR == nullptr)
-                    {
-                        isDetailViewFadingIn_ = false;
-                        isDetailViewDoneFading_ = false;
-                        isDetailViewFadingOut_ = true;
-                    }
-                    else
+                    auto const ITEM_PTR_OPT{ GetItemMouseIsOver(mousePosV_) };
+                    if (ITEM_PTR_OPT)
                     {
                         isDetailViewFadingIn_ = false;
                         isDetailViewDoneFading_ = true;
                         isDetailViewFadingOut_ = false;
-                        SetupDetailViewItem(IITEM_PTR);
+                        SetupDetailViewItem(ITEM_PTR_OPT);
+                    }
+                    else
+                    {
+                        isDetailViewFadingIn_ = false;
+                        isDetailViewDoneFading_ = false;
+                        isDetailViewFadingOut_ = true;
                     }
                 }
             }
@@ -2534,10 +2534,10 @@ namespace stage
         {
             auto const LISTBOX_ITEM_SPTR{ unEquipListBoxUPtr_->Selected() };
 
-            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
             {
-                auto const IITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_CPTR };
-                auto const EQUIP_RESULT{ creaturePtr_->ItemEquip(IITEM_PTR) };
+                auto const ITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value() };
+                auto const EQUIP_RESULT{ creaturePtr_->ItemEquip(ITEM_PTR) };
                 if (EQUIP_RESULT.empty())
                 {
                     sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
@@ -2549,7 +2549,7 @@ namespace stage
                 else
                 {
                     std::ostringstream ss;
-                    ss << "Cannot equip the " << IITEM_PTR->Name() << " because: " << EQUIP_RESULT;
+                    ss << "Cannot equip the " << ITEM_PTR->Name() << " because: " << EQUIP_RESULT;
 
                     auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                         "InventoryStage'sEquipItemFailedPopup",
@@ -2588,10 +2588,12 @@ namespace stage
     {
         if ((ViewType::Items == view_) && (unequipButtonUPtr_->IsDisabled() == false))
         {
-            auto const LISTBOX_ITEM_SPTR(equippedListBoxUPtr_->Selected());
-            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+            auto const LISTBOX_ITEM_SPTR{ equippedListBoxUPtr_->Selected() };
+            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
             {
-                if (LISTBOX_ITEM_SPTR->ITEM_CPTR->IsBodypart())
+                auto const ITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value() };
+
+                if (ITEM_PTR->IsBodypart())
                 {
                     PopupDoneWindow("Bodypart items cannot be unequipped.", true);
                     return false;
@@ -2599,9 +2601,7 @@ namespace stage
                 else
                 {
                     sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
-
-                    auto const IITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_CPTR };
-                    creaturePtr_->ItemUnEquip(IITEM_PTR);
+                    creaturePtr_->ItemUnEquip(ITEM_PTR);
                     equippedListBoxUPtr_->Remove(LISTBOX_ITEM_SPTR);
                     unEquipListBoxUPtr_->Add(LISTBOX_ITEM_SPTR);
                     Setup_ButtonMouseoverText();
@@ -2647,14 +2647,11 @@ namespace stage
 
         listBoxItemToGiveSPtr_ = unEquipListBoxUPtr_->Selected();
 
-        if (listBoxItemToGiveSPtr_.get() != nullptr)
+        if ((listBoxItemToGiveSPtr_.get() != nullptr) && listBoxItemToGiveSPtr_->ITEM_PTR_OPT)
         {
-            auto const IITEM_PTR{ listBoxItemToGiveSPtr_->ITEM_CPTR };
-            if (IITEM_PTR != nullptr)
-            {
-                PopupCharacterSelectWindow("Give the " + IITEM_PTR->Name() + " to who?");
-                contentType_ = ContentType::Item;
-            }
+            auto const ITEM_PTR{ listBoxItemToGiveSPtr_->ITEM_PTR_OPT.value() };
+            PopupCharacterSelectWindow("Give the " + ITEM_PTR->Name() + " to who?");
+            contentType_ = ContentType::Item;
         }
         else
         {
@@ -2670,7 +2667,6 @@ namespace stage
         {
             std::ostringstream ss;
             ss << creaturePtr_->Name() << " has no coins to give!";
-
             PopupRejectionWindow(ss.str());
         }
         else
@@ -2752,23 +2748,21 @@ namespace stage
             return false;
         }
 
-        if (listBoxItemToGiveSPtr_.get() == nullptr)
+        if ((listBoxItemToGiveSPtr_.get() == nullptr) || (!listBoxItemToGiveSPtr_->ITEM_PTR_OPT))
         {
             return true;
         }
 
-        auto const IITEM_PTR{ listBoxItemToGiveSPtr_->ITEM_CPTR };
-
-        auto const CAN_GIVE_ITEM_STR{ creatureToGiveToPtr_->ItemIsAddAllowed(IITEM_PTR) };
-
+        auto const ITEM_PTR{ listBoxItemToGiveSPtr_->ITEM_PTR_OPT.value() };
+        auto const CAN_GIVE_ITEM_STR{ creatureToGiveToPtr_->ItemIsAddAllowed(ITEM_PTR) };
         if (CAN_GIVE_ITEM_STR.empty())
         {
             sfml_util::SoundManager::Instance()
                 ->Getsound_effect_set(sfml_util::sound_effect_set::ItemGive)
                 .PlayRandom();
 
-            creaturePtr_->ItemRemove(IITEM_PTR);
-            creatureToGiveToPtr_->ItemAdd(IITEM_PTR);
+            creaturePtr_->ItemRemove(ITEM_PTR);
+            creatureToGiveToPtr_->ItemAdd(ITEM_PTR);
             Setup_DescBox(false);
             EndOfGiveShareGatherTasks();
             return true;
@@ -2776,7 +2770,7 @@ namespace stage
         else
         {
             std::ostringstream ss;
-            ss << "Can't give the " << IITEM_PTR->Name() << " to " << creatureToGiveToPtr_->Name()
+            ss << "Can't give the " << ITEM_PTR->Name() << " to " << creatureToGiveToPtr_->Name()
                << " because:  " << CAN_GIVE_ITEM_STR;
 
             PopupRejectionWindow(ss.str());
@@ -2855,7 +2849,7 @@ namespace stage
         if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
             auto const LISTBOX_ITEM_SPTR{ unEquipListBoxUPtr_->Selected() };
-            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
             {
                 if ((game::Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
                 {
@@ -2867,15 +2861,15 @@ namespace stage
                     return false;
                 }
 
-                auto const IITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_CPTR };
+                auto const ITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value() };
 
-                iItemToDropPtr_ = IITEM_PTR;
+                itemToDropPtrOpt_ = ITEM_PTR;
 
                 actionType_ = ActionType::Drop;
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_DROPCONFIRM_,
-                    "\nAre you sure you want to drop the " + IITEM_PTR->Name() + "?",
+                    "\nAre you sure you want to drop the " + ITEM_PTR->Name() + "?",
                     popup::PopupButtons::YesNo,
                     popup::PopupImage::Regular,
                     sfml_util::Justified::Center,
@@ -2907,8 +2901,8 @@ namespace stage
                 ->Getsound_effect_set(sfml_util::sound_effect_set::ItemDrop)
                 .PlayRandom();
 
-            creaturePtr_->ItemRemove(iItemToDropPtr_);
-            item::ItemWarehouse::Instance()->Free(iItemToDropPtr_);
+            creaturePtr_->ItemRemove(itemToDropPtrOpt_.value());
+            item::ItemWarehouse::Instance()->Free(itemToDropPtrOpt_.value());
             EndOfGiveShareGatherTasks();
             Setup_DescBox(false);
             return true;
@@ -3559,7 +3553,7 @@ namespace stage
     {
         listBoxItemToGiveSPtr_.reset();
         creatureToGiveToPtr_ = nullptr;
-        iItemToDropPtr_ = nullptr;
+        itemToDropPtrOpt_ = boost::none;
         contentType_ = ContentType::Count;
         actionType_ = ActionType::Count;
         Setup_CreatureDetails(false);
@@ -3583,28 +3577,28 @@ namespace stage
         return sprite.getGlobalBounds().width;
     }
 
-    item::ItemPtr_t InventoryStage::GetItemMouseIsOver(const sf::Vector2f & MOUSE_POS_V)
+    const item::ItemPtrOpt_t InventoryStage::GetItemMouseIsOver(const sf::Vector2f & MOUSE_POS_V)
     {
         if (view_ == ViewType::Items)
         {
-            sfml_util::gui::ListBoxItemSPtr_t listBoxItemPtr;
+            sfml_util::gui::ListBoxItemSPtr_t listBoxItemSPtr;
 
             if (unEquipListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
-                listBoxItemPtr = unEquipListBoxUPtr_->AtPos(MOUSE_POS_V);
+                listBoxItemSPtr = unEquipListBoxUPtr_->AtPos(MOUSE_POS_V);
             }
             else if (equippedListBoxUPtr_->GetEntityRegion().contains(MOUSE_POS_V))
             {
-                listBoxItemPtr = equippedListBoxUPtr_->AtPos(MOUSE_POS_V);
+                listBoxItemSPtr = equippedListBoxUPtr_->AtPos(MOUSE_POS_V);
             }
 
-            if (listBoxItemPtr.get() != nullptr)
+            if ((listBoxItemSPtr.get() != nullptr) && listBoxItemSPtr->ITEM_PTR_OPT)
             {
-                return listBoxItemPtr->ITEM_CPTR;
+                return listBoxItemSPtr->ITEM_PTR_OPT.value();
             }
         }
 
-        return item::ItemPtr_t();
+        return boost::none;
     }
 
     const sf::FloatRect InventoryStage::GetItemRectMouseIsOver(const sf::Vector2f & MOUSE_POS_V)
@@ -3624,15 +3618,17 @@ namespace stage
         return sfml_util::gui::ListBox::ERROR_RECT_;
     }
 
-    void InventoryStage::SetupDetailViewItem(const item::ItemPtr_t IITEM_PTR)
+    void InventoryStage::SetupDetailViewItem(const item::ItemPtrOpt_t ITEM_PTR_OPT)
     {
-        if (IITEM_PTR == nullptr)
+        if (!ITEM_PTR_OPT)
         {
             detailViewTextUPtr_.reset();
             return;
         }
 
-        sfml_util::gui::ItemImageManager::Instance()->Load(detailViewTexture_, IITEM_PTR);
+        auto const ITEM_PTR{ ITEM_PTR_OPT.value() };
+
+        sfml_util::gui::ItemImageManager::Instance()->Load(detailViewTexture_, ITEM_PTR);
 
         detailViewSprite_.setTexture(detailViewTexture_, true);
 
@@ -3645,28 +3641,28 @@ namespace stage
             DETAILVIEW_POS_TOP_ + DETAILVIEW_INNER_PAD_);
 
         std::ostringstream ss;
-        ss << IITEM_PTR->Name() << "\n"
-           << IITEM_PTR->Desc() << "\n\n"
-           << item::category::ToString(IITEM_PTR->Category(), true) << "\n";
+        ss << ITEM_PTR->Name() << "\n"
+           << ITEM_PTR->Desc() << "\n\n"
+           << item::category::ToString(ITEM_PTR->Category(), true) << "\n";
 
-        if (IITEM_PTR->ExclusiveRole() != creature::role::Count)
+        if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
         {
-            ss << "(can only be used by " << creature::role::ToString(IITEM_PTR->ExclusiveRole())
+            ss << "(can only be used by " << creature::role::ToString(ITEM_PTR->ExclusiveRole())
                << "s)\n";
         }
 
         ss << "\n";
 
-        ss << "weighs " << IITEM_PTR->Weight() << "\n"
-           << "worth about " << IITEM_PTR->Price() << " coins\n";
+        ss << "weighs " << ITEM_PTR->Weight() << "\n"
+           << "worth about " << ITEM_PTR->Price() << " coins\n";
 
-        if (IITEM_PTR->IsWeapon())
+        if (ITEM_PTR->IsWeapon())
         {
-            ss << "Damage:  " << IITEM_PTR->DamageMin() << "-" << IITEM_PTR->DamageMax();
+            ss << "Damage:  " << ITEM_PTR->DamageMin() << "-" << ITEM_PTR->DamageMax();
         }
-        else if (IITEM_PTR->IsArmor())
+        else if (ITEM_PTR->IsArmor())
         {
-            ss << "Armor Bonus:  " << IITEM_PTR->ArmorRating();
+            ss << "Armor Bonus:  " << ITEM_PTR->ArmorRating();
         }
 
         ss << "\n\n";
@@ -3909,7 +3905,7 @@ namespace stage
         isDetailViewDoneFading_ = false;
         isDetailViewFadingOut_ = true;
         detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
-        SetupDetailViewItem(nullptr);
+        SetupDetailViewItem(boost::none);
         SetupDetailViewCreature(nullptr);
     }
 
@@ -4280,11 +4276,11 @@ namespace stage
         std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
             if (isSortReversed)
             {
-                return A->ITEM_CPTR->Name() > B->ITEM_CPTR->Name();
+                return A->ITEM_PTR_OPT->Obj().Name() > B->ITEM_PTR_OPT->Obj().Name();
             }
             else
             {
-                return A->ITEM_CPTR->Name() < B->ITEM_CPTR->Name();
+                return A->ITEM_PTR_OPT->Obj().Name() < B->ITEM_PTR_OPT->Obj().Name();
             }
         });
 
@@ -4299,11 +4295,11 @@ namespace stage
         std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
             if (isSortReversed)
             {
-                return A->ITEM_CPTR->Price() > B->ITEM_CPTR->Price();
+                return A->ITEM_PTR_OPT->Obj().Price() > B->ITEM_PTR_OPT->Obj().Price();
             }
             else
             {
-                return A->ITEM_CPTR->Price() < B->ITEM_CPTR->Price();
+                return A->ITEM_PTR_OPT->Obj().Price() < B->ITEM_PTR_OPT->Obj().Price();
             }
         });
 
@@ -4318,11 +4314,11 @@ namespace stage
         std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
             if (isSortReversed)
             {
-                return A->ITEM_CPTR->Weight() > B->ITEM_CPTR->Weight();
+                return A->ITEM_PTR_OPT->Obj().Weight() > B->ITEM_PTR_OPT->Obj().Weight();
             }
             else
             {
-                return A->ITEM_CPTR->Weight() < B->ITEM_CPTR->Weight();
+                return A->ITEM_PTR_OPT->Obj().Weight() < B->ITEM_PTR_OPT->Obj().Weight();
             }
         });
 

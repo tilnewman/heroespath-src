@@ -30,6 +30,7 @@
 //
 #include "item/armor-types.hpp"
 #include "item/item-factory-base.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 
 #include <memory>
@@ -40,7 +41,7 @@ namespace heroespath
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
 
     namespace armor
     {
@@ -63,60 +64,60 @@ namespace item
             static void Release();
 
             // primary material can be wood, secondary material can be Nothing
-            static ItemPtr_t Make_Shield(
+            static const ItemPtr_t Make_Shield(
                 const shield_type::Enum TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC = material::Nothing);
 
-            static ItemPtr_t Make_Helm(
+            static const ItemPtr_t Make_Helm(
                 const helm_type::Enum TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC = material::Nothing);
 
-            static ItemPtr_t Make_Gauntlets(
+            static const ItemPtr_t Make_Gauntlets(
                 const base_type::Enum TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC = material::Nothing,
                 const bool IS_PIXIE_ITEM = false);
 
-            static ItemPtr_t Make_Pants(
+            static const ItemPtr_t Make_Pants(
                 const base_type::Enum TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC = material::Nothing,
                 const bool IS_PIXIE_ITEM = false);
 
-            static ItemPtr_t Make_Boots(
+            static const ItemPtr_t Make_Boots(
                 const base_type::Enum TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC = material::Nothing,
                 const bool IS_PIXIE_ITEM = false);
 
-            static ItemPtr_t Make_Shirt(
+            static const ItemPtr_t Make_Shirt(
                 const base_type::Enum TYPE,
                 const material::Enum MATERIAL_PRI = material::Cloth,
                 const material::Enum MATERIAL_SEC = material::Nothing,
                 const bool IS_PIXIE_ITEM = false);
 
-            static ItemPtr_t Make_Bracer(
+            static const ItemPtr_t Make_Bracer(
                 const base_type::Enum TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC = material::Nothing,
                 const bool IS_PIXIE_ITEM = false);
 
-            static ItemPtr_t Make_Aventail(
+            static const ItemPtr_t Make_Aventail(
                 const base_type::Enum TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC = material::Nothing);
 
             // primary material should always be either cloth/softleather/hardleather
-            static ItemPtr_t Make_Cover(
+            static const ItemPtr_t Make_Cover(
                 const cover_type::Enum TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC = material::Nothing,
                 const bool IS_PIXIE_ITEM = false);
 
             // material must be plant, flesh, scale, hide, fur, or featers
-            static ItemPtr_t Make_Skin(
+            static const ItemPtr_t Make_Skin(
                 const material::Enum MATERIAL,
                 const Rank_t & CREATURE_RANK,
                 const bool IS_PIXIE_ITEM);
@@ -124,6 +125,7 @@ namespace item
         private:
             static std::unique_ptr<ArmorFactory> instanceUPtr_;
         };
+
     } // namespace armor
 } // namespace item
 } // namespace heroespath

@@ -56,7 +56,7 @@ namespace creature
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
 } // namespace item
 
 namespace song
@@ -107,7 +107,7 @@ namespace song
             combat::ContentAndNamePos & actionPhraseCNP) const;
 
         // Allows the spell to change the target item.
-        bool EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const;
+        bool EffectItem(creature::CreaturePtr_t, const item::ItemPtr_t) const;
 
         const std::string ActionPhrasePreamble() const;
         const std::string TypeToVerb() const;

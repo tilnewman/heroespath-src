@@ -33,12 +33,11 @@
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "game/phase-enum.hpp"
+#include "misc/boost-serialize-includes.hpp"
 #include "misc/types.hpp"
 #include "spell/spell-enum.hpp"
 #include "stats/trait.hpp"
 #include "stats/traits-set.hpp"
-
-#include "misc/boost-serialize-includes.hpp"
 
 #include <memory>
 #include <string>
@@ -143,6 +142,8 @@ namespace creature
         virtual Score_t TreasureScore() const;
 
         friend bool operator==(const Enchantment & L, const Enchantment & R);
+
+        const std::string ToString() const { return EffectStr(); }
 
     private:
         const std::string SepIfNotEmpty(const std::string & S) const

@@ -27,6 +27,10 @@
 //
 // treasure-display-stage.hpp
 //
+#include "item/item-cache.hpp"
+#include "item/treasure-available-enum.hpp"
+#include "item/treasure-image-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
@@ -37,10 +41,6 @@
 #include "sfml-util/ouroboros.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
-
-#include "item/item-cache.hpp"
-#include "item/treasure-available-enum.hpp"
-#include "item/treasure-image-enum.hpp"
 #include "stage/item-detail-viewer.hpp"
 #include "stage/treasure-stage-mover.hpp"
 
@@ -124,21 +124,16 @@ namespace stage
         // Responsible for wrapping all the info needed to display item details.
         struct ItemDetails
         {
-            explicit ItemDetails(
-                const sf::FloatRect & RECT = sfml_util::gui::ListBox::ERROR_RECT_,
-                const item::ItemPtr_t ITEM_PTR = nullptr)
+            explicit ItemDetails(const sf::FloatRect & RECT, const item::ItemPtr_t ITEM_PTR)
                 : rect(RECT)
                 , item_ptr(ITEM_PTR)
             {}
 
-            bool IsValid() const
-            {
-                return ((sfml_util::gui::ListBox::ERROR_RECT_ != rect) && (nullptr != item_ptr));
-            }
-
             sf::FloatRect rect;
             item::ItemPtr_t item_ptr;
         };
+
+        using ItemDetailsOpt_t = boost::optional<ItemDetails>;
     }
 
     class TreasureStage;
@@ -279,9 +274,6 @@ namespace stage
 
         void ItemViewerInterruption();
 
-        const treasure::ItemDetails
-            MouseOverListboxItemDetails(const sf::Vector2f & MOUSE_POS) const;
-
         template <typename T>
         sfml_util::gui::IGuiEntityPtr_t GetGuiEntityPtrAndRemoveIfNeeded(const T & GUI_ENTITY_UPTR)
         {
@@ -320,6 +312,10 @@ namespace stage
         void SortByName(sfml_util::gui::ListBox &, bool & isSortReversed);
         void SortByPrice(sfml_util::gui::ListBox &, bool & isSortReversed);
         void SortByWeight(sfml_util::gui::ListBox &, bool & isSortReversed);
+
+    private:
+        const treasure::ItemDetailsOpt_t
+            MouseOverListboxItemDetails(const sf::Vector2f & MOUSE_POS) const;
 
     private:
         static const float ITEM_DETAIL_TIMEOUT_SEC_;

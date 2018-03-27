@@ -29,6 +29,7 @@
 //  A collection of classes that are responsible for displaying creature details on the Combat
 //  Display
 //
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/gui-entity-slider.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
@@ -46,13 +47,11 @@ namespace sfml_util
         using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
     } // namespace gui
 } // namespace sfml_util
-
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
 } // namespace item
-
 namespace combat
 {
 
@@ -62,7 +61,7 @@ namespace combat
     // wraps an image with text for display on the screen
     struct ItemWithText
     {
-        explicit ItemWithText(const item::ItemPtr_t ITEM_PTR = nullptr);
+        explicit ItemWithText(const item::ItemPtr_t ITEM_PTR);
 
         sf::Sprite sprite;
         sf::Texture texture;
@@ -152,6 +151,7 @@ namespace combat
         sfml_util::gui::GuiEntitySlider geSlider_;
         bool preventNextTrans_;
     };
+
 } // namespace combat
 } // namespace heroespath
 

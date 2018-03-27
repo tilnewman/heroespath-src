@@ -101,13 +101,13 @@ namespace non_player
 
             //.first is for equipped items and .second is for unequipped items
             auto const ITEM_PVEC_PAIR{ MakeItemSet(INVENTORY_CHANCES, creaturePtr) };
-            for (auto const NEXT_ITEM_PTR : ITEM_PVEC_PAIR.first)
+            for (auto const & NEXT_ITEM_PTR : ITEM_PVEC_PAIR.first)
             {
                 auto const ITEM_ADD_RESULT(creaturePtr->ItemAdd(NEXT_ITEM_PTR));
                 if (ITEM_ADD_RESULT.empty() == false)
                 {
                     M_HP_LOG_ERR(
-                        "non-player::ownership::InventoryFactory::PopulateCreatureInventory"
+                        "non-player::ownership::InventoryFactory::SetupCreatureInventory"
                         << "[to equip - add step](creature=\"" << creaturePtr->ToString()
                         << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \""
                         << NEXT_ITEM_PTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT
@@ -122,7 +122,7 @@ namespace non_player
                         {
                             M_HP_LOG_ERR(
                                 "non-player::ownership::InventoryFactory::"
-                                << "PopulateCreatureInventory[to equip - equip step](creature=\""
+                                << "SetupCreatureInventory[to equip - equip step](creature=\""
                                 << creaturePtr->ToString() << "\") unable to add the item \""
                                 << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc()
                                 << "\"with reported error \"" << ITEM_EQUIP_RESULT
@@ -132,21 +132,21 @@ namespace non_player
                 }
             }
 
-            for (auto const NEXT_ITEM_PTR : ITEM_PVEC_PAIR.second)
+            for (auto const & NEXT_ITEM_PTR : ITEM_PVEC_PAIR.second)
             {
                 const std::string ITEM_ADD_RESULT(creaturePtr->ItemAdd(NEXT_ITEM_PTR));
                 if (ITEM_ADD_RESULT.empty() == false)
                 {
                     M_HP_LOG_ERR(
                         "non-player::ownership::InventoryFactory::"
-                        << "PopulateCreatureInventory[not to equip](creature=\""
+                        << "SetupCreatureInventory[not to equip](creature=\""
                         << creaturePtr->ToString() << "\") unable to add the item \""
                         << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc()
                         << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
                 }
             }
 
-            creaturePtr->SetCurrentWeaponsToBest();
+            creaturePtr->SetHeldWeaponsToBest();
         }
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet(
@@ -193,7 +193,7 @@ namespace non_player
                 MakeItemSet_Armor(CHANCES.armor, CHARACTER_PTR, HAS_TWOHANDED_WEAPON_EQUIPPED));
 
             // remove clothing items that might conflict with armor equipping
-            for (auto const NEXT_ITEM_PTR : armorItemsPVecPair.first)
+            for (auto const & NEXT_ITEM_PTR : armorItemsPVecPair.first)
             {
                 if (NEXT_ITEM_PTR->ArmorType() == item::armor_type::Boots)
                 {
@@ -967,9 +967,9 @@ namespace non_player
 
         bool InventoryFactory::ContainsTwoHandedWeapon(const item::ItemPVec_t & WEAPON_PVEC)
         {
-            for (auto const NEXT_WEAPON_SPTR : WEAPON_PVEC)
+            for (auto const & NEXT_WEAPON_PTR : WEAPON_PVEC)
             {
-                if (NEXT_WEAPON_SPTR->IsTwoHanded())
+                if (NEXT_WEAPON_PTR->IsTwoHanded())
                 {
                     return true;
                 }

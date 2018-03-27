@@ -420,7 +420,7 @@ namespace combat
         item::ItemPVec_t weaponItemsToIgnore;
 
         auto const ITEMS_EQUIPPED_VEC{ creaturePtr->Inventory().ItemsEquipped() };
-        for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+        for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
             {
@@ -431,7 +431,7 @@ namespace combat
         // only list bodypart weapons if there are not any others equipped
         if (weaponItemsToDisplay.empty())
         {
-            for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+            for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
             {
                 if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
                 {
@@ -441,7 +441,7 @@ namespace combat
         }
         else
         {
-            for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+            for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
             {
                 if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart()))
                 {
@@ -450,13 +450,13 @@ namespace combat
             }
         }
 
-        for (auto const NEXT_ITEM_PTR : weaponItemsToDisplay)
+        for (auto const & NEXT_ITEM_PTR : weaponItemsToDisplay)
         {
             itemWithTextVec_.emplace_back(ItemWithText(NEXT_ITEM_PTR));
         }
 
         // then armor
-        for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+        for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             if (NEXT_ITEM_PTR->IsArmor())
             {
@@ -465,7 +465,7 @@ namespace combat
         }
 
         // then misc
-        for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+        for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             if (NEXT_ITEM_PTR->MiscType() != item::misc_type::NotMisc)
             {
@@ -474,7 +474,7 @@ namespace combat
         }
 
         // then everything else (clothes, etc)
-        for (auto const NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
+        for (auto const & NEXT_ITEM_PTR : ITEMS_EQUIPPED_VEC)
         {
             auto const IWTV_CITER{ std::find_if(
                 itemWithTextVec_.begin(),

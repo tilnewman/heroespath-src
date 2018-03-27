@@ -90,7 +90,7 @@ namespace creature
         , dateTimeCreated_(DATE_TIME)
         , spellsVec_(SPELL_VEC)
         , achievements_(NAME, ROLE)
-        , currWeaponsPVec_()
+        , heldWeaponsPVec_()
         , lastSpellCastNum_(0)
         , songsVec_(SONG_VEC)
         , lastSongPlayedNum_(0)
@@ -516,10 +516,7 @@ namespace creature
 
     const std::string Creature::ItemAdd(const item::ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR != nullptr), "Creature::ItemAdd() was given a null ITEM_PTR.");
-
-        const std::string IS_ALLOWED_STR(ItemIsAddAllowed(ITEM_PTR));
+        auto const IS_ALLOWED_STR{ ItemIsAddAllowed(ITEM_PTR) };
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
             inventory_.ItemAdd(ITEM_PTR);
@@ -567,25 +564,19 @@ namespace creature
 
     void Creature::ItemRemove(const item::ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR != nullptr), "Creature::ItemRemove() was given a null ITEM_PTR.");
-
         EnchantmentsApplyOrRemoveByType(ITEM_PTR->Enchantments(), EnchantmentType::WhenHeld, false);
         inventory_.ItemRemove(ITEM_PTR);
     }
 
     const std::string Creature::ItemEquip(const item::ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR != nullptr), "Creature::ItemEquip(nullptr) was given a null ITEM_PTR.");
-
-        const std::string IS_ALLOWED_STR(ItemIsEquipAllowed(ITEM_PTR));
+        auto const IS_ALLOWED_STR{ ItemIsEquipAllowed(ITEM_PTR) };
         if (IS_ALLOWED_STR == ITEM_ACTION_SUCCESS_STR_)
         {
             EnchantmentsApplyOrRemoveByType(
                 ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, true);
             inventory_.ItemEquip(ITEM_PTR);
-            SetCurrentWeaponsToBest();
+            SetHeldWeaponsToBest();
         }
 
         return IS_ALLOWED_STR;
@@ -773,7 +764,7 @@ namespace creature
                 if (ITEM_PTR->Armor_Info().cover == item::armor::cover_type::Vest)
                 {
                     bool alraedyHasVestEquipped(false);
-                    for (auto const NEXT_ITEM_PTR : inventory_.ItemsEquipped())
+                    for (auto const & NEXT_ITEM_PTR : inventory_.ItemsEquipped())
                     {
                         if (NEXT_ITEM_PTR->Armor_Info().cover == item::armor::cover_type::Vest)
                         {
@@ -792,7 +783,7 @@ namespace creature
                     && (ARMOR_TYPE & item::armor_type::Covering))
                 {
                     auto alreadyHasNonVestCovering{ false };
-                    for (auto const NEXT_ITEM_PTR : inventory_.ItemsEquipped())
+                    for (auto const & NEXT_ITEM_PTR : inventory_.ItemsEquipped())
                     {
                         if ((NEXT_ITEM_PTR->ArmorType() & item::armor_type::Covering)
                             && (NEXT_ITEM_PTR->Armor_Info().cover != item::armor::cover_type::Vest))
@@ -825,7 +816,7 @@ namespace creature
 
     const std::string Creature::ItemIsEquipAllowedByRole(const item::ItemPtr_t ITEM_PTR) const
     {
-        const creature::role::Enum EXCLUSIVE_ROLE(ITEM_PTR->ExclusiveRole());
+        auto const EXCLUSIVE_ROLE{ ITEM_PTR->ExclusiveRole() };
         if ((EXCLUSIVE_ROLE != creature::role::Count) && (EXCLUSIVE_ROLE != role_))
         {
             std::ostringstream ss;
@@ -838,10 +829,11 @@ namespace creature
         auto const MATERIAL_PRI{ ITEM_PTR->MaterialPrimary() };
         auto const MISC_TYPE{ ITEM_PTR->MiscType() };
 
-        if ((role_ != role::Knight) && ((WEAPON_TYPE & item::weapon_type::BladedStaff) > 0)
+        if (((role_ != role::Knight) && (role_ != role::Warlord))
+            && ((WEAPON_TYPE & item::weapon_type::BladedStaff) > 0)
             && ((WEAPON_TYPE & item::weapon_type::Spear) == 0))
         {
-            return "Only knights may equip non-simple-spear bladed staff weapons.";
+            return "Only knights and warlords may equip non-simple-spear bladed staff weapons.";
         }
 
         if ((role_ != role::Knight) && (ITEM_PTR->IsArmor())
@@ -959,10 +951,7 @@ namespace creature
 
     const std::string Creature::ItemUnEquip(const item::ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR != nullptr), "Creature::ItemUnEquip() was given a null ITEM_PTR.");
-
-        auto const IS_ITEM_UNEQUIP_ALLOWED_STR(IsItemUnqeuipAllowed(ITEM_PTR));
+        auto const IS_ITEM_UNEQUIP_ALLOWED_STR{ IsItemUnqeuipAllowed(ITEM_PTR) };
         if (IS_ITEM_UNEQUIP_ALLOWED_STR != ITEM_ACTION_SUCCESS_STR_)
         {
             return IS_ITEM_UNEQUIP_ALLOWED_STR;
@@ -970,8 +959,9 @@ namespace creature
 
         EnchantmentsApplyOrRemoveByType(
             ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, false);
+
         inventory_.ItemUnEquip(ITEM_PTR);
-        SetCurrentWeaponsToBestIfInvalidated();
+        SetHeldWeaponsToBestIfInvalidated();
         return ITEM_ACTION_SUCCESS_STR_;
     }
 
@@ -987,23 +977,21 @@ namespace creature
         }
     }
 
-    const item::ItemPVec_t Creature::CurrentWeaponsInc()
+    void Creature::IncrementHeldWeapons()
     {
         // compose a vec of weapon vecs that can be considered equipped current weapon sets
         auto const WEAPONS_PVEC_VEC{ ComposeWeaponsList() };
 
-        if (currWeaponsPVec_.empty())
+        if (heldWeaponsPVec_.empty())
         {
             if (WEAPONS_PVEC_VEC.empty())
             {
-                currWeaponsPVec_.clear();
+                heldWeaponsPVec_.clear();
             }
             else
             {
-                currWeaponsPVec_ = WEAPONS_PVEC_VEC[0];
+                heldWeaponsPVec_ = WEAPONS_PVEC_VEC[0];
             }
-
-            return currWeaponsPVec_;
         }
         else
         {
@@ -1011,49 +999,48 @@ namespace creature
             auto const NUM_WEAPONS_SVECS(WEAPONS_PVEC_VEC.size());
             for (std::size_t i(0); i < NUM_WEAPONS_SVECS; ++i)
             {
-                if (currWeaponsPVec_ == WEAPONS_PVEC_VEC[i])
+                if (heldWeaponsPVec_ == WEAPONS_PVEC_VEC[i])
                 {
                     if (i == (NUM_WEAPONS_SVECS - 1))
                     {
-                        currWeaponsPVec_.clear();
+                        heldWeaponsPVec_.clear();
                     }
                     else
                     {
-                        currWeaponsPVec_ = WEAPONS_PVEC_VEC[i + 1];
+                        heldWeaponsPVec_ = WEAPONS_PVEC_VEC[i + 1];
                     }
 
-                    return currWeaponsPVec_;
+                    return;
                 }
             }
 
             // if not in the vec then choose the first (most desirable) set of weapons
-            currWeaponsPVec_ = WEAPONS_PVEC_VEC[0];
-            return currWeaponsPVec_;
+            heldWeaponsPVec_ = WEAPONS_PVEC_VEC[0];
         }
     }
 
-    void Creature::SetCurrentWeaponsToBest()
+    void Creature::SetHeldWeaponsToBest()
     {
         // compose a vec of weapon vecs that can be considered equipped current weapon sets
         auto const WEAPONS_PVEC_VEC{ ComposeWeaponsList() };
 
         if (WEAPONS_PVEC_VEC.empty())
         {
-            currWeaponsPVec_.clear();
+            heldWeaponsPVec_.clear();
         }
         else
         {
-            currWeaponsPVec_ = WEAPONS_PVEC_VEC[0];
+            heldWeaponsPVec_ = WEAPONS_PVEC_VEC[0];
         }
     }
 
-    void Creature::SetCurrentWeaponsToBestIfInvalidated()
+    void Creature::SetHeldWeaponsToBestIfInvalidated()
     {
         auto EQUIPPED_ITEMS_PVEC{ Inventory().ItemsEquipped() };
 
         // determine if the currrent weapon set is valid
         bool isValid(true);
-        for (auto const NEXT_ITEM_PTR : currWeaponsPVec_)
+        for (auto const & NEXT_ITEM_PTR : heldWeaponsPVec_)
         {
             auto const FOUND_CITER{ std::find_if(
                 EQUIPPED_ITEMS_PVEC.begin(),
@@ -1069,23 +1056,20 @@ namespace creature
 
         if (false == isValid)
         {
-            SetCurrentWeaponsToBest();
+            SetHeldWeaponsToBest();
         }
     }
 
-    std::size_t Creature::WeaponsCount() const
+    std::size_t Creature::HeldWeaponsCount() const
     {
-        std::size_t count(0);
+        std::size_t count{ 0 };
 
         // wands do not count as weapons
-        if (currWeaponsPVec_.empty() == false)
+        for (auto const & NEXT_ITEM_PTR : heldWeaponsPVec_)
         {
-            for (auto const NEXT_ITEM_PTR : currWeaponsPVec_)
+            if ((NEXT_ITEM_PTR->MiscType() & item::misc_type::Wand) == 0)
             {
-                if ((NEXT_ITEM_PTR->MiscType() & item::misc_type::Wand) == 0)
-                {
-                    ++count;
-                }
+                ++count;
             }
         }
 
@@ -1094,41 +1078,35 @@ namespace creature
 
     bool Creature::IsHoldingProjectileWeapon() const
     {
-        bool isHoldingProjectileWeapon(false);
-
-        for (auto const NEXT_ITEM_PTR : currWeaponsPVec_)
+        for (auto const & NEXT_ITEM_PTR : heldWeaponsPVec_)
         {
             if (NEXT_ITEM_PTR->IsWeapon()
                 && (NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Projectile))
             {
-                isHoldingProjectileWeapon = true;
-                break;
+                return true;
             }
         }
 
-        return isHoldingProjectileWeapon;
+        return false;
     }
 
     const std::string Creature::WeaponsString() const
     {
         const std::string SEPARATOR(", ");
 
-        // use a temp to avoid re-ordering the original currWeaponsPVec_
-        auto tempPVec{ currWeaponsPVec_ };
+        // use a temp to avoid re-ordering the original heldWeaponsPVec_
+        auto tempPVec{ heldWeaponsPVec_ };
 
         // sort by 'most damage'
         if (tempPVec.size() > 1)
         {
-            std::sort(
-                tempPVec.begin(),
-                tempPVec.end(),
-                [](const item::ItemPtr_t A, const item::ItemPtr_t & B) {
-                    return (A->DamageMin() + A->DamageMax()) > (B->DamageMin() + B->DamageMax());
-                });
+            std::sort(tempPVec.begin(), tempPVec.end(), [](auto const & A, auto const & B) {
+                return (A->DamageMin() + A->DamageMax()) > (B->DamageMin() + B->DamageMax());
+            });
         }
 
         std::ostringstream ss;
-        for (auto const NEXT_ITEM_PTR : tempPVec)
+        for (auto const & NEXT_ITEM_PTR : tempPVec)
         {
             ss << NEXT_ITEM_PTR->Name() << SEPARATOR;
         }
@@ -1141,7 +1119,7 @@ namespace creature
         item::ItemPVec_t armorItemsPVec;
         auto const EQUIPPED_ITEMS_PVEC{ Inventory().ItemsEquipped() };
 
-        for (auto const NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
+        for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
             if (NEXT_ITEM_PTR->Category() & item::category::Armor)
             {
@@ -1162,7 +1140,7 @@ namespace creature
 
         std::ostringstream ss;
         const std::string SEPARATOR(", ");
-        for (auto const NEXT_ITEM_PTR : armorItemsPVec)
+        for (auto const & NEXT_ITEM_PTR : armorItemsPVec)
         {
             ss << NEXT_ITEM_PTR->Name() << SEPARATOR;
         }
@@ -1398,8 +1376,6 @@ namespace creature
         return ss.str();
     }
 
-    void Creature::StoreItemsInWarehouseAfterLoad() { inventory_.StoreItemsInWarehouseAfterLoad(); }
-
     void Creature::EnchantmentApplyOrRemove(
         const EnchantmentPtr_t ENCHANTMENT_PTR, const bool WILL_APPLY)
     {
@@ -1581,7 +1557,7 @@ namespace creature
 
         // the vec of non-bodypart equipped weapons is always first
         item::ItemPVec_t ssNonBPWeaponsPVec;
-        for (auto const NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
+        for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
             if ((NEXT_ITEM_PTR->IsWeapon()) && (NEXT_ITEM_PTR->IsBodypart() == false))
             {
@@ -1612,7 +1588,7 @@ namespace creature
 
         // the equipped body part weapons that are not bite/claws are always second
         item::ItemPVec_t ssBPNonBCWeaponsPVec;
-        for (auto const NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
+        for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
             if ((NEXT_ITEM_PTR->IsWeapon()) && NEXT_ITEM_PTR->IsBodypart()
                 && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Bite) == 0)
@@ -1629,7 +1605,7 @@ namespace creature
 
         // the equipped body part weapons that ARE bite/claws always come after
         item::ItemPVec_t ssBPBCWeaponsPVec;
-        for (auto const NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
+        for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
             if ((NEXT_ITEM_PTR->IsWeapon()) && NEXT_ITEM_PTR->IsBodypart()
                 && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Bite)

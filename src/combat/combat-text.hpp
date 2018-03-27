@@ -29,6 +29,7 @@
 //
 #include "combat/fight-results.hpp"
 #include "combat/turn-action-info.hpp"
+#include "misc/not-null.hpp"
 
 #include <memory>
 #include <string>
@@ -40,7 +41,7 @@ namespace heroespath
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
 } // namespace item
 namespace creature
 {

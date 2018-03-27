@@ -28,9 +28,9 @@
 // game-state.cpp
 //
 #include "game-state.hpp"
+#include "creature/creature.hpp"
+#include "misc/assertlogandthrow.hpp"
 
-#include <exception>
-#include <sstream>
 #include <tuple>
 
 namespace heroespath
@@ -50,29 +50,43 @@ namespace state
 
     World & GameState::GetWorld()
     {
-        if (worldUPtr_.get() == nullptr)
-        {
-            std::ostringstream ss;
-            ss << "state::GameState::World() called when the world ptr was null.";
-            throw std::runtime_error(ss.str());
-        }
-        else
-        {
-            return *worldUPtr_;
-        }
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (worldUPtr_.get() != nullptr),
+            "state::GameState::GetWorld() called when the worldUptr_ was null.");
+
+        return *worldUPtr_;
     }
 
     player::Party & GameState::Party()
     {
-        if (partyUPtr_.get() == nullptr)
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (partyUPtr_.get() != nullptr),
+            "state::GameState::GetParty() called when the partyUptr_ was null.");
+
+        return *partyUPtr_;
+    }
+
+    void GameState::PreSerialize()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (partyUPtr_.get() != nullptr),
+            "state::GameState::PreSerialize() called when the partyUptr_ was null.");
+
+        for (auto creaturePtr : partyUPtr_->Characters())
         {
-            std::ostringstream ss;
-            ss << "state::GameState::Party() called when the party ptr was null.";
-            throw std::runtime_error(ss.str());
+            creaturePtr->PreSerialize();
         }
-        else
+    }
+
+    void GameState::PostSerialize()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (partyUPtr_.get() != nullptr),
+            "state::GameState::PostSerialize() called when the partyUptr_ was null.");
+
+        for (auto creaturePtr : partyUPtr_->Characters())
         {
-            return *partyUPtr_;
+            creaturePtr->PostSerialize();
         }
     }
 
@@ -107,5 +121,6 @@ namespace state
                    R.dateTimeStarted_,
                    R.dateTimeLastSave_);
     }
+
 } // namespace state
 } // namespace heroespath

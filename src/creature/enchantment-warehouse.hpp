@@ -67,6 +67,7 @@ namespace creature
         static std::unique_ptr<EnchantmentWarehouse> instanceUPtr_;
         misc::Warehouse<Enchantment> warehouse_;
     };
+
 } // namespace creature
 } // namespace heroespath
 

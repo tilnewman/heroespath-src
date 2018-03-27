@@ -27,6 +27,9 @@
 //
 // item-factory.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
+
 #include <memory>
 #include <string>
 
@@ -37,7 +40,8 @@ namespace item
     class ItemProfile;
 
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
+    using ItemPtrOpt_t = boost::optional<ItemPtr_t>;
 
     // Responsible for making new (and properly stored) item objects from fat ItemProfiles.
     class ItemFactory
@@ -50,7 +54,7 @@ namespace item
 
     public:
         ItemFactory();
-        virtual ~ItemFactory();
+        ~ItemFactory();
 
         static ItemFactory * Instance();
         static void Acquire();
@@ -59,18 +63,19 @@ namespace item
 
         static void TestItem(
             const std::string & WHICH_TEST,
-            const ItemPtr_t ITEM_PTR,
+            const ItemPtr_t & ITEM_PTR,
             const ItemProfile & ITEM_PROFILE);
 
-        ItemPtr_t Make(const ItemProfile &) const;
+        const ItemPtr_t Make(const ItemProfile &) const;
 
     private:
-        ItemPtr_t SetTypesAndReturn(const ItemProfile &, ItemPtr_t) const;
-        void AppendElementTypeToName(ItemPtr_t, const ItemProfile &) const;
+        const ItemPtr_t SetTypesAndReturn(const ItemProfile &, const ItemPtr_t &) const;
+        void AppendElementTypeToName(const ItemPtr_t &, const ItemProfile &) const;
 
     private:
         static std::unique_ptr<ItemFactory> instanceUPtr_;
     };
+
 } // namespace item
 } // namespace heroespath
 

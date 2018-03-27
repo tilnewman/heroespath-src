@@ -79,20 +79,14 @@ namespace item
         instanceUPtr_.reset();
     }
 
-    ItemPtr_t ItemWarehouse::Store(const ItemPtr_t ITEM_PTR)
+    const ItemPtr_t ItemWarehouse::Store(const ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR != nullptr), "item::ItemWarehouse::Store() given nullptr.");
-
-        return warehouse_.Store(ITEM_PTR, ITEM_PTR->Name());
+        return warehouse_.Store(ITEM_PTR);
     }
 
-    void ItemWarehouse::Free(ItemPtr_t & item_ptr)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (item_ptr != nullptr), "item::ItemWarehouse::Free() given nullptr.");
+    void ItemWarehouse::Free(const ItemPtr_t ITEM_PTR) { warehouse_.Free(ITEM_PTR); }
 
-        warehouse_.Free(item_ptr, item_ptr->Name());
-    }
+    void ItemWarehouse::Free(ItemPVec_t & itemPtrVec) { warehouse_.Free(itemPtrVec); }
+
 } // namespace item
 } // namespace heroespath

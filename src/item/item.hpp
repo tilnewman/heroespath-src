@@ -36,6 +36,8 @@
 #include "item/item-profile.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-info.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 
 #include <memory>
@@ -47,7 +49,7 @@ namespace heroespath
 namespace item
 {
 
-    // A base class for all items.
+    // Responsible for all state and operation of all items in the game.
     class Item
     {
     public:
@@ -82,7 +84,7 @@ namespace item
             const element_type::Enum ELEMENT_TYPE = element_type::None,
             const creature::SummonInfo & SUMMON_INFO = creature::SummonInfo());
 
-        virtual ~Item();
+        ~Item();
 
         const std::string Name() const { return name_; }
         const std::string Desc() const { return desc_; }
@@ -148,7 +150,7 @@ namespace item
             return material::ContiansPrecious(materialPri_, materialSec_);
         }
 
-        virtual creature::role::Enum ExclusiveRole() const { return exclusiveToRole_; }
+        creature::role::Enum ExclusiveRole() const { return exclusiveToRole_; }
 
         bool IsJeweled() const { return material::IsJewel(materialSec_); }
 
@@ -164,10 +166,6 @@ namespace item
         }
 
         void EnchantmentAdd(const creature::EnchantmentPtr_t ENCHANTMENT_PTR);
-
-        void EnchantmentRemoveAndFree(creature::EnchantmentPtr_t);
-
-        void EnchantmentRemoveAndFreeAll();
 
         const std::string BaseName() const;
 
@@ -186,8 +184,14 @@ namespace item
 
         bool IsEnchanted() const { return ((enchantmentsPVec_.empty() == false) || IsSummoning()); }
 
+        const std::string ToString() const;
+
         friend bool operator<(const Item & L, const Item & R);
         friend bool operator==(const Item & L, const Item & R);
+
+    private:
+        void EnchantmentRemoveAndFree(creature::EnchantmentPtr_t);
+        void EnchantmentRemoveAndFreeAll();
 
     protected:
         std::string name_;
@@ -250,7 +254,8 @@ namespace item
         }
     };
 
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
+    using ItemPtrOpt_t = boost::optional<ItemPtr_t>;
     using ItemUPtr_t = std::unique_ptr<Item>;
     using ItemUVec_t = std::vector<ItemUPtr_t>;
 
@@ -259,6 +264,7 @@ namespace item
     bool operator==(const Item & L, const Item & R);
 
     inline bool operator!=(const Item & L, const Item & R) { return !(L == R); }
+
 } // namespace item
 } // namespace heroespath
 

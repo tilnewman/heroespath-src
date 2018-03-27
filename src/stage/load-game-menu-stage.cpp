@@ -147,6 +147,8 @@ namespace stage
             gsListBoxPosLeft_, gsListBoxPosTop_, gsListBoxPosWidth_, gsListBoxPosHeight_);
 
         // hand all GameState objects to the ListBox
+        // TODO this is wasteful in the extreme, need a GameStateFactory::LoadAllSavedGameProfiles()
+        // function that doesn't actually load every game but a vector of profiles to use instead.
         gamestatePSet_ = state::GameStateFactory::Instance()->LoadAllGames();
         sfml_util::gui::ListBoxItemSVec_t listBoxItemSVec;
         std::size_t gameStateCount(0);

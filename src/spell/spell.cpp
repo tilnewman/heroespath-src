@@ -577,7 +577,7 @@ namespace spell
         }
     }
 
-    const std::string Spell::EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const
+    const std::string Spell::EffectItem(creature::CreaturePtr_t, const item::ItemPtr_t) const
     {
         // TODO
         return "";

@@ -464,7 +464,7 @@ namespace song
         }
     }
 
-    bool Song::EffectItem(creature::CreaturePtr_t, item::ItemPtr_t) const
+    bool Song::EffectItem(creature::CreaturePtr_t, const item::ItemPtr_t) const
     {
         // TODO
         return false;

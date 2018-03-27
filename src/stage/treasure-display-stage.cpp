@@ -330,11 +330,10 @@ namespace stage
         {
             itemDetailTimer_ = 0;
 
-            auto const ITEM_DETAILS{ MouseOverListboxItemDetails(mousePos_) };
-
-            if (ITEM_DETAILS.IsValid() && canDisplayItemDetail_)
+            auto const ITEM_DETAILS_OPT{ MouseOverListboxItemDetails(mousePos_) };
+            if (ITEM_DETAILS_OPT && canDisplayItemDetail_)
             {
-                itemDetailViewer_.FadeIn(ITEM_DETAILS.item_ptr, ITEM_DETAILS.rect);
+                itemDetailViewer_.FadeIn(ITEM_DETAILS_OPT->item_ptr, ITEM_DETAILS_OPT->rect);
             }
         }
     }
@@ -903,7 +902,7 @@ namespace stage
 
         sfml_util::gui::ListBoxItemSVec_t listboxItemsSVec;
 
-        for (auto const ITEM_PTR : ITEMS_PVEC)
+        for (auto const & ITEM_PTR : ITEMS_PVEC)
         {
             listboxTextInfo.text = ITEM_PTR->Name();
 
@@ -1301,7 +1300,7 @@ namespace stage
         itemDetailViewer_.FadeOut();
     }
 
-    const treasure::ItemDetails
+    const treasure::ItemDetailsOpt_t
         TreasureDisplayStage::MouseOverListboxItemDetails(const sf::Vector2f & MOUSE_POS) const
     {
         if ((treasureListboxUPtr_.get() != nullptr) && (inventoryListboxUPtr_.get() != nullptr))
@@ -1309,28 +1308,28 @@ namespace stage
             if (treasureListboxUPtr_->GetEntityRegion().contains(MOUSE_POS))
             {
                 auto const LISTBOX_ITEM_SPTR{ treasureListboxUPtr_->AtPos(MOUSE_POS) };
-                if ((LISTBOX_ITEM_SPTR.get() != nullptr)
-                    && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+
+                if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
                 {
                     return treasure::ItemDetails(
                         treasureListboxUPtr_->ImageRectOfItemAtPos(MOUSE_POS),
-                        LISTBOX_ITEM_SPTR->ITEM_CPTR);
+                        LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value());
                 }
             }
             else if (inventoryListboxUPtr_->GetEntityRegion().contains(MOUSE_POS))
             {
                 auto const LISTBOX_ITEM_SPTR{ inventoryListboxUPtr_->AtPos(MOUSE_POS) };
-                if ((LISTBOX_ITEM_SPTR.get() != nullptr)
-                    && (LISTBOX_ITEM_SPTR->ITEM_CPTR != nullptr))
+
+                if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
                 {
                     return treasure::ItemDetails(
                         inventoryListboxUPtr_->ImageRectOfItemAtPos(MOUSE_POS),
-                        LISTBOX_ITEM_SPTR->ITEM_CPTR);
+                        LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value());
                 }
             }
         }
 
-        return treasure::ItemDetails();
+        return boost::none;
     }
 
     void TreasureDisplayStage::SetupSortSprites(
@@ -1433,11 +1432,11 @@ namespace stage
         std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
             if (isSortReversed)
             {
-                return A->ITEM_CPTR->Name() > B->ITEM_CPTR->Name();
+                return A->ITEM_PTR_OPT->Obj().Name() > B->ITEM_PTR_OPT->Obj().Name();
             }
             else
             {
-                return A->ITEM_CPTR->Name() < B->ITEM_CPTR->Name();
+                return A->ITEM_PTR_OPT->Obj().Name() < B->ITEM_PTR_OPT->Obj().Name();
             }
         });
 
@@ -1452,11 +1451,11 @@ namespace stage
         std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
             if (isSortReversed)
             {
-                return A->ITEM_CPTR->Price() > B->ITEM_CPTR->Price();
+                return A->ITEM_PTR_OPT->Obj().Price() > B->ITEM_PTR_OPT->Obj().Price();
             }
             else
             {
-                return A->ITEM_CPTR->Price() < B->ITEM_CPTR->Price();
+                return A->ITEM_PTR_OPT->Obj().Price() < B->ITEM_PTR_OPT->Obj().Price();
             }
         });
 
@@ -1472,11 +1471,11 @@ namespace stage
         std::sort(std::begin(vec), std::end(vec), [isSortReversed](auto & A, auto & B) {
             if (isSortReversed)
             {
-                return A->ITEM_CPTR->Weight() > B->ITEM_CPTR->Weight();
+                return A->ITEM_PTR_OPT->Obj().Weight() > B->ITEM_PTR_OPT->Obj().Weight();
             }
             else
             {
-                return A->ITEM_CPTR->Weight() < B->ITEM_CPTR->Weight();
+                return A->ITEM_PTR_OPT->Obj().Weight() < B->ITEM_PTR_OPT->Obj().Weight();
             }
         });
 

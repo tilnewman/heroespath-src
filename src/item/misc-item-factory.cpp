@@ -29,22 +29,18 @@
 //
 #include "misc-item-factory.hpp"
 
-#include "sfml-util/gui/item-image-manager.hpp"
-
-#include "log/log-macros.hpp"
-
+#include "creature/enchantment-factory.hpp"
 #include "item/armor-details.hpp"
 #include "item/item-profile.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "item/weapon-details.hpp"
 #include "item/weapon-info.hpp"
-
-#include "creature/enchantment-factory.hpp"
-
+#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
+#include "sfml-util/gui/item-image-manager.hpp"
 
 #include <exception>
 #include <sstream>
@@ -92,7 +88,7 @@ namespace item
         instanceUPtr_.reset();
     }
 
-    ItemPtr_t MiscItemFactory::Make(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make(const ItemProfile & PROFILE)
     {
         auto const MISC_ENUM{ PROFILE.MiscType() };
 
@@ -238,34 +234,34 @@ namespace item
             return Make_MiscBlessedOrCursed(PROFILE);
         }
 
-        M_HP_LOG_ERR(
-            "item::MiscItemFactory::Make(profile="
-            << PROFILE.ToString() << ") was unable to make an item with that profile.");
+        std::ostringstream ss;
+        ss << "item::MiscItemFactory::Make(profile=" << PROFILE.ToString()
+           << ") was unable to make an item with that profile.";
 
-        return nullptr;
+        throw std::runtime_error(ss.str());
     }
 
-    ItemPtr_t MiscItemFactory::Make_Amulet(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Amulet(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 42_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Armband(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Armband(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 62_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_BalmPot(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_BalmPot(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 233_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Braid(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Braid(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 16_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Cape(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Cape(const ItemProfile & PROFILE)
     {
         Coin_t price{ TreasureScoreToCoins(PROFILE.TreasureScore()) };
         AdjustPrice(
@@ -335,17 +331,17 @@ namespace item
         return itemPtr;
     }
 
-    ItemPtr_t MiscItemFactory::Make_DevilHorn(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_DevilHorn(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 85_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Doll(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Doll(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 38_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_DrumLute(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_DrumLute(const ItemProfile & PROFILE)
     {
         return Make_Helper(
             PROFILE,
@@ -354,107 +350,107 @@ namespace item
             "An acoustic guitar with a round hollow body that can be drummed");
     }
 
-    ItemPtr_t MiscItemFactory::Make_Egg(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Egg(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 153_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Embryo(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Embryo(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 41_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Finger(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Finger(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 51_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Fingerclaw(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Fingerclaw(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 30_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Goblet(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Goblet(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 44_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_HurdyGurdy(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_HurdyGurdy(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 446_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Icicle(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Icicle(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 26_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Litchhand(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Litchhand(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 37_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_LockPicks(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_LockPicks(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 33_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Lyre(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Lyre(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 54_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_MummyHand(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_MummyHand(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 38_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Orb(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Orb(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 87_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_PetrifiedSnake(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_PetrifiedSnake(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 32_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_PipeAndTabor(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_PipeAndTabor(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 127_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Recorder(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Recorder(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 36_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Ring(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Ring(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 20_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Scepter(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Scepter(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 48_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Seeds(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Seeds(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 12_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Shard(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Shard(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 49_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_SpiderEggs(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_SpiderEggs(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 12_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Staff(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Staff(const ItemProfile & PROFILE)
     {
         Coin_t price{ TreasureScoreToCoins(PROFILE.TreasureScore()) };
         AdjustPrice(
@@ -513,32 +509,32 @@ namespace item
         return itemPtr;
     }
 
-    ItemPtr_t MiscItemFactory::Make_SummoningStatue(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_SummoningStatue(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 38_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_UnicornHorn(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_UnicornHorn(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 28_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Veil(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Veil(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 39_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Viol(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Viol(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 233_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_Wand(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_Wand(const ItemProfile & PROFILE)
     {
         return Make_Helper(PROFILE, TreasureScoreToCoins(PROFILE.TreasureScore()), 8_weight);
     }
 
-    ItemPtr_t MiscItemFactory::Make_MiscBlessedOrCursed(const ItemProfile & PROFILE)
+    const ItemPtr_t MiscItemFactory::Make_MiscBlessedOrCursed(const ItemProfile & PROFILE)
     {
         auto const MISC_ENUM{ PROFILE.MiscType() };
         auto const IS_BLESSED{ misc_type::IsBlessed(MISC_ENUM) };
@@ -623,7 +619,7 @@ namespace item
         return itemPtr;
     }
 
-    ItemPtr_t MiscItemFactory::Make_Ring(
+    const ItemPtr_t MiscItemFactory::Make_Ring(
         const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC)
     {
         auto price{ 5_coin };
@@ -651,7 +647,7 @@ namespace item
         return itemPtr;
     }
 
-    ItemPtr_t MiscItemFactory::Make_Wand(
+    const ItemPtr_t MiscItemFactory::Make_Wand(
         const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC)
     {
         auto price{ 437_coin };
@@ -679,7 +675,7 @@ namespace item
         return itemPtr;
     }
 
-    ItemPtr_t MiscItemFactory::Make_DrumLute(const bool IS_PIXIE_ITEM)
+    const ItemPtr_t MiscItemFactory::Make_DrumLute(const bool IS_PIXIE_ITEM)
     {
         auto price{ 1000_coin };
         auto weight{ 350_weight };
@@ -717,7 +713,7 @@ namespace item
         return itemPtr;
     }
 
-    ItemPtr_t MiscItemFactory::Make_Helper(
+    const ItemPtr_t MiscItemFactory::Make_Helper(
         const ItemProfile & PROFILE,
         const Coin_t & BASE_PRICE,
         const Weight_t & BASE_WEIGHT,
@@ -785,5 +781,6 @@ namespace item
 
         return itemPtr;
     }
+
 } // namespace item
 } // namespace heroespath

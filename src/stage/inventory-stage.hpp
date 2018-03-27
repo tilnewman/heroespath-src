@@ -31,6 +31,8 @@
 #include "combat/fight-results.hpp"
 #include "creature/achievement-enum.hpp"
 #include "game/phase-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
@@ -86,7 +88,8 @@ namespace creature
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
+    using ItemPtrOpt_t = boost::optional<ItemPtr_t>;
 } // namespace item
 namespace combat
 {
@@ -269,9 +272,9 @@ namespace stage
             return (IsDetailViewFading() || isDetailViewDoneFading_);
         }
 
-        item::ItemPtr_t GetItemMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
+        const item::ItemPtrOpt_t GetItemMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
         const sf::FloatRect GetItemRectMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
-        void SetupDetailViewItem(const item::ItemPtr_t);
+        void SetupDetailViewItem(const item::ItemPtrOpt_t);
         void SetupDetailViewCreature(const creature::CreaturePtr_t CREATURE_PTR);
 
         const std::string MakeTitleString(
@@ -459,7 +462,7 @@ namespace stage
         ContentType contentType_;
         sfml_util::gui::ListBoxItemSPtr_t listBoxItemToGiveSPtr_;
         creature::CreaturePtr_t creatureToGiveToPtr_;
-        item::ItemPtr_t iItemToDropPtr_;
+        item::ItemPtrOpt_t itemToDropPtrOpt_;
 
         // members that manage the item detail view
         bool isDetailViewFadingIn_;

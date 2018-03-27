@@ -1000,8 +1000,7 @@ namespace combat
     {
         HitInfoVec_t hitInfoVec;
 
-        auto const WEAPONS_PVEC{ creatureAttackingPtrC->CurrentWeaponsCopy() };
-        for (auto const NEXT_ITEM_PTR : WEAPONS_PVEC)
+        for (auto const & NEXT_ITEM_PTR : creatureAttackingPtrC->HeldWeapons())
         {
             if (NEXT_ITEM_PTR->IsWeapon())
             {
@@ -1262,7 +1261,7 @@ namespace combat
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Fists)
         {
             auto const EQUIPPED_ITEMS_PVEC{ creatureAttackingPtrC->Inventory().ItemsEquipped() };
-            for (auto const NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
+            for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
             {
                 if ((NEXT_ITEM_PTR->ArmorType() & item::armor_type::Gauntlets)
                     && (NEXT_ITEM_PTR->Armor_Info().base != item::armor::base_type::Plain))

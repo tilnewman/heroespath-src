@@ -88,6 +88,23 @@ namespace combat
         }
     }
 
+    HitInfo::HitInfo()
+        : wasHit_(false)
+        , hitType_(HitType::Count)
+        , weaponPtrOpt_(boost::none)
+        , damage_(0_health)
+        , isCritical_(false)
+        , isPower_(false)
+        , condsAddedVec_()
+        , condsRemovedVec_()
+        , actionVerb_("")
+        , spellPtrOpt_(boost::none)
+        , actionPhraseCNP_()
+        , songPtrOpt_(boost::none)
+        , didArmorAbsorb_(false)
+        , conditionPtrOpt_(boost::none)
+    {}
+
     HitInfo::HitInfo(
         const bool WAS_HIT,
         const item::ItemPtr_t ITEM_PTR,
@@ -100,7 +117,7 @@ namespace combat
         const std::string & ACTION_VERB)
         : wasHit_(WAS_HIT)
         , hitType_(HitType::Weapon)
-        , weaponPtr_(ITEM_PTR)
+        , weaponPtrOpt_(ITEM_PTR)
         , damage_(DAMAGE)
         , isCritical_(IS_CRITICAL_HIT)
         , isPower_(IS_POWER_HIT)
@@ -123,7 +140,7 @@ namespace combat
         const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
         : wasHit_(WAS_HIT)
         , hitType_(HitType::Spell)
-        , weaponPtr_(nullptr)
+        , weaponPtrOpt_(boost::none)
         , damage_(DAMAGE)
         , isCritical_(false)
         , isPower_(false)
@@ -146,7 +163,7 @@ namespace combat
         const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
         : wasHit_(WAS_HIT)
         , hitType_(HitType::Song)
-        , weaponPtr_(nullptr)
+        , weaponPtrOpt_(boost::none)
         , damage_(DAMAGE)
         , isCritical_(false)
         , isPower_(false)
@@ -169,7 +186,7 @@ namespace combat
         const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
         : wasHit_(WAS_HIT)
         , hitType_(HitType::Song)
-        , weaponPtr_(nullptr)
+        , weaponPtrOpt_(boost::none)
         , damage_(DAMAGE)
         , isCritical_(false)
         , isPower_(false)
@@ -192,7 +209,7 @@ namespace combat
         const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
         : wasHit_(WAS_HIT)
         , hitType_(HIT_TYPE)
-        , weaponPtr_(nullptr)
+        , weaponPtrOpt_(boost::none)
         , damage_(DAMAGE)
         , isCritical_(false)
         , isPower_(false)
@@ -209,7 +226,7 @@ namespace combat
     HitInfo::HitInfo(const HitType::Enum HIT_TYPE, const ContentAndNamePos & ACTION_PHRASE_CNP)
         : wasHit_(false)
         , hitType_(HIT_TYPE)
-        , weaponPtr_(nullptr)
+        , weaponPtrOpt_(boost::none)
         , damage_(0)
         , isCritical_(false)
         , isPower_(false)
@@ -230,7 +247,7 @@ namespace combat
         const creature::CondEnumVec_t & CONDS_REMOVED_VEC)
         : wasHit_(true)
         , hitType_(HitType::Trap)
-        , weaponPtr_(nullptr)
+        , weaponPtrOpt_(boost::none)
         , damage_(DAMAGE)
         , isCritical_(false)
         , isPower_(false)
@@ -320,7 +337,7 @@ namespace combat
         {
             case HitType::Weapon:
             {
-                return (weaponPtr_ != nullptr);
+                return !!weaponPtrOpt_;
             }
             case HitType::Spell:
             {
@@ -356,7 +373,7 @@ namespace combat
         if (std::tie(
                 hitType_,
                 wasHit_,
-                weaponPtr_,
+                weaponPtrOpt_,
                 damage_,
                 isCritical_,
                 isPower_,
@@ -367,7 +384,7 @@ namespace combat
             != std::tie(
                    HI.hitType_,
                    HI.wasHit_,
-                   HI.weaponPtr_,
+                   HI.weaponPtrOpt_,
                    HI.damage_,
                    HI.isCritical_,
                    HI.isPower_,
@@ -407,7 +424,7 @@ namespace combat
         {
             case HitType::Weapon:
             {
-                ss << "[" << weaponPtr_->Name() << "]";
+                ss << "[" << weaponPtrOpt_->Obj().Name() << "]";
                 break;
             }
             case HitType::Spell:
@@ -472,7 +489,7 @@ namespace combat
         return std::tie(
                    L.hitType_,
                    L.wasHit_,
-                   L.weaponPtr_,
+                   L.weaponPtrOpt_,
                    L.damage_,
                    L.isCritical_,
                    L.isPower_,
@@ -485,7 +502,7 @@ namespace combat
             < std::tie(
                    R.hitType_,
                    R.wasHit_,
-                   R.weaponPtr_,
+                   R.weaponPtrOpt_,
                    R.damage_,
                    R.isCritical_,
                    R.isPower_,
@@ -512,7 +529,7 @@ namespace combat
         return std::tie(
                    L.hitType_,
                    L.wasHit_,
-                   L.weaponPtr_,
+                   L.weaponPtrOpt_,
                    L.damage_,
                    L.isCritical_,
                    L.isPower_,
@@ -525,7 +542,7 @@ namespace combat
             == std::tie(
                    R.hitType_,
                    R.wasHit_,
-                   R.weaponPtr_,
+                   R.weaponPtrOpt_,
                    R.damage_,
                    R.isCritical_,
                    R.isPower_,

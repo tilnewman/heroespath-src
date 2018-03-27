@@ -241,7 +241,8 @@ namespace stage
             {
                 auto characterPtr{ selectedItemSPtr->CHARACTER_CPTR };
 
-                if (state::GameStateFactory::Instance()->DeleteCharacter(characterPtr) == false)
+                if (state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(characterPtr)
+                    == false)
                 {
                     M_HP_LOG_ERR(
                         "stage::PartyStage::HandleCallback(delete confirm popup)"
@@ -366,7 +367,7 @@ namespace stage
         }
 
         // load all players not yet assigned to a party/started game
-        charactersPSet_ = state::GameStateFactory::Instance()->LoadAllCompanions();
+        charactersPSet_ = state::GameStateFactory::Instance()->LoadAllUnplayedCharacters();
 
         // fill a list with TextRegions for the character names
         sfml_util::gui::ListBoxItemSVec_t itemSVec;
@@ -776,12 +777,13 @@ namespace stage
 
                 charactersPSet_.erase(characterPtr);
 
-                if (state::GameStateFactory::Instance()->DeleteCharacter(characterPtr) == false)
+                if (state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(characterPtr)
+                    == false)
                 {
                     M_HP_LOG_ERR(
                         "PartyStage::HandleCallback_StartButton() while trying to state::"
-                        << "GameStateFactory::DeleteCharacter(\"" << characterPtr->Name()
-                        << "\") failed.");
+                        << "GameStateFactory::DeleteUnplayedCharacterFile(\""
+                        << characterPtr->Name() << "\") failed.");
                 }
             }
         }

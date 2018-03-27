@@ -35,6 +35,7 @@
 #include "item/armor-info.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-info.hpp"
+#include "misc/not-null.hpp"
 
 #include <memory>
 #include <string>
@@ -45,7 +46,7 @@ namespace heroespath
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
 } // namespace item
 
 namespace sfml_util
@@ -117,6 +118,7 @@ namespace sfml_util
             static std::string imagesDirectoryPath_;
             static const std::string FILE_EXT_STR_;
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

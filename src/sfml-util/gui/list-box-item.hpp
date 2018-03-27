@@ -67,7 +67,8 @@ namespace creature
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
+    using ItemPtrOpt_t = boost::optional<ItemPtr_t>;
 } // namespace item
 namespace state
 {
@@ -118,7 +119,7 @@ namespace sfml_util
             ListBoxItem(
                 const std::string & NAME,
                 const sfml_util::gui::TextInfo & TEXT_INFO,
-                const item::ItemPtr_t ITEM_PTR,
+                const item::ItemPtr_t ITEM_PTR_PARAM,
                 const bool IS_VALID = true);
 
             // used by the inventory stage to list conditions
@@ -151,7 +152,7 @@ namespace sfml_util
 
             const creature::CreaturePtr_t CHARACTER_CPTR;
             const state::GameStatePtr_t GAMESTATE_CPTR;
-            const item::ItemPtr_t ITEM_CPTR;
+            const item::ItemPtrOpt_t ITEM_PTR_OPT;
             const creature::ConditionPtrOpt_t COND_PTR_OPT;
             const creature::TitlePtrOpt_t TITLE_PTR_OPT;
             const spell::SpellPtrOpt_t SPELL_PTR_OPT;

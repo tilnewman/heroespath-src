@@ -327,7 +327,7 @@ namespace combat
         {
             // unequip non-bodypart items
             auto const ITEMS_EQUIPPED_PVEC{ NEXT_CHARACTER_PTR->Inventory().ItemsEquipped() };
-            for (auto const NEXT_EQUIPPED_ITEM_PTR : ITEMS_EQUIPPED_PVEC)
+            for (auto const & NEXT_EQUIPPED_ITEM_PTR : ITEMS_EQUIPPED_PVEC)
             {
                 if (NEXT_EQUIPPED_ITEM_PTR->IsBodypart() == false)
                 {
@@ -337,7 +337,7 @@ namespace combat
 
             // move non-bodypart item pointers into deadNonPlayerItemsHeld_
             auto const ITEMS_UNEQUIPPED_PVEC{ NEXT_CHARACTER_PTR->Inventory().Items() };
-            for (auto const NEXT_UNEQUIPPED_ITEM_PTR : ITEMS_UNEQUIPPED_PVEC)
+            for (auto const & NEXT_UNEQUIPPED_ITEM_PTR : ITEMS_UNEQUIPPED_PVEC)
             {
                 if (NEXT_UNEQUIPPED_ITEM_PTR->IsBodypart() == false)
                 {
@@ -364,22 +364,11 @@ namespace combat
         //    zero'd.
         //  - deadNonPlayerPartyUPtr_ will be empty and all it's held pointers free'd.
         //
-
-        for (auto nextItemPtr : deadNonPlayerItemsHeld_.items_pvec)
-        {
-            item::ItemWarehouse::Instance()->Free(nextItemPtr);
-        }
-
-        deadNonPlayerItemsHeld_.items_pvec.clear();
+        item::ItemWarehouse::Instance()->Free(deadNonPlayerItemsHeld_.items_pvec);
         deadNonPlayerItemsHeld_.coins = 0_coin;
         deadNonPlayerItemsHeld_.gems = 0_gem;
 
-        for (auto nextItemPtr : deadNonPlayerItemsLockbox_.items_pvec)
-        {
-            item::ItemWarehouse::Instance()->Free(nextItemPtr);
-        }
-
-        deadNonPlayerItemsLockbox_.items_pvec.clear();
+        item::ItemWarehouse::Instance()->Free(deadNonPlayerItemsLockbox_.items_pvec);
         deadNonPlayerItemsLockbox_.coins = 0_coin;
         deadNonPlayerItemsLockbox_.gems = 0_gem;
 

@@ -46,12 +46,13 @@ namespace item
     {
         Weight_t sum{ 0_weight };
 
-        for (auto const NEXT_ITEM_PTR : items_pvec)
+        for (auto const & NEXT_ITEM_PTR : items_pvec)
         {
             sum += NEXT_ITEM_PTR->Weight();
         }
 
         return sum;
     }
+
 } // namespace item
 } // namespace heroespath

@@ -28,6 +28,7 @@
 // armor-ratings.hpp
 //
 #include "item/item-type-enum.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 
 #include <memory>
@@ -39,7 +40,7 @@ namespace item
 {
 
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPVec_t = std::vector<ItemPtr_t>;
 
     class ArmorRatings
@@ -97,6 +98,7 @@ namespace item
         Armor_t armoredGreaterSteel_;
         Armor_t armoredGreaterDiamond_;
     };
+
 } // namespace item
 } // namespace heroespath
 

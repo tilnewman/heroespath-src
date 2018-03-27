@@ -405,9 +405,9 @@ namespace combat
 
             case combat::TurnAction::ChangeWeapon:
             {
-                auto const CURRENT_WEAPONS_SVEC{ CREATURE_ATTACKING_PTR->CurrentWeaponsCopy() };
+                auto const HELD_WEAPONS_PVEC{ CREATURE_ATTACKING_PTR->HeldWeapons() };
 
-                if (CURRENT_WEAPONS_SVEC.empty())
+                if (HELD_WEAPONS_PVEC.empty())
                 {
                     ss << "fumbles around looking for a weapon";
                 }
@@ -415,14 +415,13 @@ namespace combat
                 {
                     ss << "changes weapon";
 
-                    if (CURRENT_WEAPONS_SVEC.size() > 1)
+                    if (HELD_WEAPONS_PVEC.size() > 1)
                     {
                         ss << "s";
                     }
 
                     ss << " to "
-                       << item::Algorithms::Names(
-                              CURRENT_WEAPONS_SVEC, 0, misc::Vector::JoinOpt::And);
+                       << item::Algorithms::Names(HELD_WEAPONS_PVEC, 0, misc::Vector::JoinOpt::And);
                 }
 
                 break;
@@ -792,9 +791,7 @@ namespace combat
 
         std::sort(strVec.begin(), strVec.end());
         strVec.erase(std::unique(strVec.begin(), strVec.end()), strVec.end());
-
-        return strVec.at(
-            static_cast<std::size_t>(misc::random::Int(static_cast<int>(strVec.size()) - 1)));
+        return misc::Vector::SelectRandom(strVec);
     }
 
     const std::string Text::AttackDescriptionStatusVersion(const combat::FightResult & FIGHT_RESULT)
@@ -909,7 +906,7 @@ namespace combat
             }
             else
             {
-                if (HIT_INFO.Weapon()->IsBodypart() == false)
+                if (HIT_INFO.Weapon()->Obj().IsBodypart() == false)
                 {
                     ss << "and hits ";
                 }

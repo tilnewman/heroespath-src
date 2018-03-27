@@ -31,7 +31,6 @@
 
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
 
@@ -107,12 +106,12 @@ namespace item
     {
         Weight_t totalWeight{ 0_weight };
 
-        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        for (auto const & NEXT_ITEM_PTR : itemsPVec_)
         {
             totalWeight += NEXT_ITEM_PTR->Weight();
         }
 
-        for (auto const NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
+        for (auto const & NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
         {
             totalWeight += NEXT_EQUIPPED_ITEM_PTR->Weight();
         }
@@ -130,7 +129,7 @@ namespace item
     std::size_t Inventory::CountItemOfArmorTypeHeld(const item::armor_type::Enum ARMOR_TYPE) const
     {
         std::size_t count(0);
-        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        for (auto const & NEXT_ITEM_PTR : itemsPVec_)
         {
             if (NEXT_ITEM_PTR->ArmorType() & ARMOR_TYPE)
             {
@@ -145,7 +144,7 @@ namespace item
         Inventory::CountItemOfArmorTypeEquipped(const item::armor_type::Enum ARMOR_TYPE) const
     {
         std::size_t count(0);
-        for (auto const NEXT_ITEM_PTR : equippedItemsPVec_)
+        for (auto const & NEXT_ITEM_PTR : equippedItemsPVec_)
         {
             if (NEXT_ITEM_PTR->ArmorType() & ARMOR_TYPE)
             {
@@ -164,7 +163,7 @@ namespace item
     std::size_t Inventory::CountItemOfWeaponTypeHeld(const item::armor_type::Enum WEAPON_TYPE) const
     {
         std::size_t count(0);
-        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        for (auto const & NEXT_ITEM_PTR : itemsPVec_)
         {
             if (NEXT_ITEM_PTR->WeaponType() & WEAPON_TYPE)
             {
@@ -179,7 +178,7 @@ namespace item
         Inventory::CountItemOfWeaponTypeEquipped(const item::armor_type::Enum WEAPON_TYPE) const
     {
         std::size_t count(0);
-        for (auto const NEXT_ITEM_PTR : equippedItemsPVec_)
+        for (auto const & NEXT_ITEM_PTR : equippedItemsPVec_)
         {
             if (NEXT_ITEM_PTR->WeaponType() & WEAPON_TYPE)
             {
@@ -199,7 +198,7 @@ namespace item
     {
         std::size_t count(0);
 
-        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        for (auto const & NEXT_ITEM_PTR : itemsPVec_)
         {
             if (NEXT_ITEM_PTR->Category() & ITEM_CATEGORY)
             {
@@ -215,7 +214,7 @@ namespace item
     {
         std::size_t count(0);
 
-        for (auto const NEXT_ITEM_PTR : equippedItemsPVec_)
+        for (auto const & NEXT_ITEM_PTR : equippedItemsPVec_)
         {
             if (NEXT_ITEM_PTR->Category() & ITEM_CATEGORY)
             {
@@ -234,7 +233,7 @@ namespace item
     std::size_t Inventory::CountItemOfMiscTypeHeld(const item::misc_type::Enum MISC_TYPE) const
     {
         std::size_t count(0);
-        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        for (auto const & NEXT_ITEM_PTR : itemsPVec_)
         {
             if (NEXT_ITEM_PTR->MiscType() & MISC_TYPE)
             {
@@ -248,7 +247,7 @@ namespace item
     std::size_t Inventory::CountItemOfMiscTypeEquipped(const item::misc_type::Enum MISC_TYPE) const
     {
         std::size_t count(0);
-        for (auto const NEXT_ITEM_PTR : equippedItemsPVec_)
+        for (auto const & NEXT_ITEM_PTR : equippedItemsPVec_)
         {
             if (NEXT_ITEM_PTR->MiscType() & MISC_TYPE)
             {
@@ -259,19 +258,10 @@ namespace item
         return count;
     }
 
-    void Inventory::ItemAdd(const ItemPtr_t ITEM_PTR)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR != nullptr), "Inventory::ItemAdd(nullptr) was given a null ITEM_PTR.");
-
-        itemsPVec_.emplace_back(ITEM_PTR);
-    }
+    void Inventory::ItemAdd(const ItemPtr_t ITEM_PTR) { itemsPVec_.emplace_back(ITEM_PTR); }
 
     void Inventory::ItemRemove(const ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR != nullptr), "Inventory::ItemRemove(nullptr) was given a null ITEM_PTR.");
-
         auto const FOUND_CITER(std::find(itemsPVec_.begin(), itemsPVec_.end(), ITEM_PTR));
 
         if (FOUND_CITER == itemsPVec_.end())
@@ -294,9 +284,6 @@ namespace item
 
     void Inventory::ItemUnEquip(const ItemPtr_t ITEM_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR != nullptr), "Inventory::ItemUnequip(nullptr) was given a null ITEM_PTR.");
-
         auto const FOUND_CITER(
             std::find(equippedItemsPVec_.begin(), equippedItemsPVec_.end(), ITEM_PTR));
 
@@ -311,9 +298,6 @@ namespace item
 
     bool Inventory::ContainsItem(const ItemPtr_t ITEM_PTR) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR != nullptr), "Inventory::ContainsItem(nullptr) was given a null ITEM_PTR.");
-
         auto const FOUND_CITER(std::find(itemsPVec_.begin(), itemsPVec_.end(), ITEM_PTR));
 
         if (FOUND_CITER != itemsPVec_.end())
@@ -336,7 +320,7 @@ namespace item
     {
         Armor_t armorRating{ 0_armor };
 
-        for (auto const NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
+        for (auto const & NEXT_EQUIPPED_ITEM_PTR : equippedItemsPVec_)
         {
             armorRating += NEXT_EQUIPPED_ITEM_PTR->ArmorRating();
         }
@@ -351,14 +335,14 @@ namespace item
         ss << "[coins=" << coins_ << ", shards=" << meteorShards_ << ", gems=" << gems_
            << ", itms_held=";
 
-        for (auto const NEXT_ITEM_PTR : itemsPVec_)
+        for (auto const & NEXT_ITEM_PTR : itemsPVec_)
         {
             ss << NEXT_ITEM_PTR->Name() << ",";
         }
 
         ss << ", items_equipped=";
 
-        for (auto const NEXT_EQ_ITEM_PTR : equippedItemsPVec_)
+        for (auto const & NEXT_EQ_ITEM_PTR : equippedItemsPVec_)
         {
             ss << NEXT_EQ_ITEM_PTR->Name() << ",";
         }
@@ -368,38 +352,42 @@ namespace item
         return ss.str();
     }
 
-    void Inventory::StoreItemsInWarehouseAfterLoad()
+    void Inventory::PreSerialize()
     {
-        StoreItemPVecInWarehouse(itemsPVec_);
-        StoreItemPVecInWarehouse(equippedItemsPVec_);
+        itemsPVecToSerialize_.clear();
+        for (auto const & ITEM_PTR : itemsPVec_)
+        {
+            itemsPVecToSerialize_.emplace_back(ITEM_PTR.Ptr());
+        }
+
+        equippedItemsPVecToSerialize_.clear();
+        for (auto const & ITEM_PTR : equippedItemsPVec_)
+        {
+            equippedItemsPVecToSerialize_.emplace_back(ITEM_PTR.Ptr());
+        }
     }
 
-    void Inventory::StoreItemPVecInWarehouse(ItemPVec_t & itemPVec) const
+    void Inventory::PostSerialize()
     {
-        auto const ITEMS_PVEC_COPY{ itemPVec };
-        itemPVec.clear();
-        auto itemWarehousePtr{ ItemWarehouse::Instance() };
-        for (auto const NEXT_ITEM_PTR : ITEMS_PVEC_COPY)
+        itemsPVec_.clear();
+        for (auto const ITEM_PTR : itemsPVecToSerialize_)
         {
-            itemPVec.emplace_back(itemWarehousePtr->Store(NEXT_ITEM_PTR));
+            itemsPVec_.emplace_back(ItemWarehouse::Instance()->Store(ITEM_PTR));
         }
+        itemsPVecToSerialize_.clear();
+
+        equippedItemsPVec_.clear();
+        for (auto const ITEM_PTR : equippedItemsPVecToSerialize_)
+        {
+            equippedItemsPVec_.emplace_back(ItemWarehouse::Instance()->Store(ITEM_PTR));
+        }
+        equippedItemsPVecToSerialize_.clear();
     }
 
     void Inventory::FreeAllItemsFromWarehouse()
     {
-        auto itemWarehousePtr{ ItemWarehouse::Instance() };
-
-        for (auto & nextItemPtr : itemsPVec_)
-        {
-            itemWarehousePtr->Free(nextItemPtr);
-        }
-        itemsPVec_.clear();
-
-        for (auto & nextItemPtr : equippedItemsPVec_)
-        {
-            itemWarehousePtr->Free(nextItemPtr);
-        }
-        equippedItemsPVec_.clear();
+        ItemWarehouse::Instance()->Free(itemsPVec_);
+        ItemWarehouse::Instance()->Free(equippedItemsPVec_);
     }
 
     bool operator==(const Inventory & L, const Inventory & R)
@@ -417,5 +405,6 @@ namespace item
 
         return misc::Vector::OrderlessCompareEqual(L.equippedItemsPVec_, R.equippedItemsPVec_);
     }
+
 } // namespace item
 } // namespace heroespath

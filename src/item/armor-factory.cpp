@@ -33,7 +33,6 @@
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "item/weapon-info.hpp"
-
 #include "sfml-util/gui/item-image-manager.hpp"
 
 namespace heroespath
@@ -77,10 +76,11 @@ namespace item
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (instanceUPtr_.get() != nullptr),
                 "item::armor::ArmorFactory::Release() found instanceUPtr that was null.");
+
             instanceUPtr_.reset();
         }
 
-        ItemPtr_t ArmorFactory::Make_Shield(
+        const ItemPtr_t ArmorFactory::Make_Shield(
             const shield_type::Enum SHIELD_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -189,7 +189,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t ArmorFactory::Make_Helm(
+        const ItemPtr_t ArmorFactory::Make_Helm(
             const helm_type::Enum HELM_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -248,7 +248,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t ArmorFactory::Make_Gauntlets(
+        const ItemPtr_t ArmorFactory::Make_Gauntlets(
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -310,7 +310,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t ArmorFactory::Make_Pants(
+        const ItemPtr_t ArmorFactory::Make_Pants(
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -367,7 +367,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t ArmorFactory::Make_Boots(
+        const ItemPtr_t ArmorFactory::Make_Boots(
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -423,7 +423,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t ArmorFactory::Make_Shirt(
+        const ItemPtr_t ArmorFactory::Make_Shirt(
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -482,7 +482,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t ArmorFactory::Make_Bracer(
+        const ItemPtr_t ArmorFactory::Make_Bracer(
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -536,7 +536,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t ArmorFactory::Make_Aventail(
+        const ItemPtr_t ArmorFactory::Make_Aventail(
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -591,7 +591,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t ArmorFactory::Make_Cover(
+        const ItemPtr_t ArmorFactory::Make_Cover(
             const cover_type::Enum COVER_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -641,7 +641,7 @@ namespace item
             return itemPtr;
         }
 
-        ItemPtr_t ArmorFactory::Make_Skin(
+        const ItemPtr_t ArmorFactory::Make_Skin(
             const material::Enum MATERIAL, const Rank_t & CREATURE_RANK, const bool IS_PIXIE_ITEM)
         {
             ArmorInfo armorInfo{ armor_type::Skin };

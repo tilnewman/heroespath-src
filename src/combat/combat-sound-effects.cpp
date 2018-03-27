@@ -29,16 +29,14 @@
 //
 #include "combat-sound-effects.hpp"
 
-#include "sfml-util/sound-manager.hpp"
-
 #include "creature/creature.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
-#include "song/song.hpp"
-#include "spell/spell.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
+#include "sfml-util/sound-manager.hpp"
+#include "song/song.hpp"
+#include "spell/spell.hpp"
 
 namespace heroespath
 {
@@ -47,10 +45,6 @@ namespace combat
 
     void CombatSoundEffects::PlayShoot(const item::ItemPtr_t WEAPON_PTR) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (WEAPON_PTR != nullptr),
-            "combat::CombatSoundEffects::PlayShoot() was given a nullptr WEAPON_PTR.");
-
         auto const WEAPON_TYPE{ WEAPON_PTR->WeaponType() };
 
         if ((WEAPON_TYPE & item::weapon_type::Blowpipe) || (WEAPON_TYPE & item::weapon_type::Sling))
@@ -80,16 +74,14 @@ namespace combat
     void CombatSoundEffects::PlayHitOrMiss(
         const creature::CreaturePtr_t CREATURE_PTR, const HitInfo & HIT_INFO) const
     {
-        auto const WEAPON_PTR{ HIT_INFO.Weapon() };
-        if (WEAPON_PTR == nullptr)
-        {
-            M_HP_LOG_ERR(
-                "combat::CombatSoundEffects::PlayHitOrMiss() "
+        auto const WEAPON_PTR_OPT{ HIT_INFO.Weapon() };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (!!WEAPON_PTR_OPT),
+            "combat::CombatSoundEffects::PlayHitOrMiss() "
                 << "was given a nullptr WEAPON_PTR.  HIT_INFO=" << HIT_INFO.ToString());
 
-            return;
-        }
-
+        auto const WEAPON_PTR{ WEAPON_PTR_OPT.value() };
         auto const WEAPON_TYPE{ WEAPON_PTR->WeaponType() };
 
         if (HIT_INFO.WasHit())

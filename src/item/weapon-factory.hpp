@@ -28,10 +28,10 @@
 // weapons-factory.hpp
 //  Code responsible for creating weapon objects.
 //
-#include "sfml-util/size-enum.hpp"
-
 #include "item/item-factory-base.hpp"
 #include "item/weapon-types.hpp"
+#include "misc/not-null.hpp"
+#include "sfml-util/size-enum.hpp"
 
 #include <memory>
 #include <string>
@@ -49,7 +49,7 @@ namespace creature
 namespace item
 {
     class Item;
-    using ItemPtr_t = Item *;
+    using ItemPtr_t = misc::NotNull<Item *>;
 
     namespace weapon
     {
@@ -71,55 +71,55 @@ namespace item
             static void Acquire();
             static void Release();
 
-            static ItemPtr_t Make_Fists();
+            static const ItemPtr_t Make_Fists();
 
-            static ItemPtr_t Make_Claws(creature::CreatureCPtrC_t);
+            static const ItemPtr_t Make_Claws(creature::CreatureCPtrC_t);
 
-            static ItemPtr_t Make_Tendrils(creature::CreatureCPtrC_t);
+            static const ItemPtr_t Make_Tendrils(creature::CreatureCPtrC_t);
 
-            static ItemPtr_t Make_Bite(creature::CreatureCPtrC_t);
+            static const ItemPtr_t Make_Bite(creature::CreatureCPtrC_t);
 
-            static ItemPtr_t Make_Breath(creature::CreatureCPtrC_t);
+            static const ItemPtr_t Make_Breath(creature::CreatureCPtrC_t);
 
-            static ItemPtr_t Make_Knife(
+            static const ItemPtr_t Make_Knife(
                 const bool IS_DAGGER = false,
                 const sfml_util::Size::Enum SIZE = sfml_util::Size::Medium,
                 const material::Enum MATERIAL_PRI = material::Steel,
                 const material::Enum MATERIAL_SEC = material::Nothing,
                 const bool IS_PIXIE_ITEM = false);
 
-            static ItemPtr_t Make_Sword(
+            static const ItemPtr_t Make_Sword(
                 const sword_type::Enum SWORD_TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC);
 
-            static ItemPtr_t Make_Axe(
+            static const ItemPtr_t Make_Axe(
                 const axe_type::Enum AXE_TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC);
 
-            static ItemPtr_t Make_Club(
+            static const ItemPtr_t Make_Club(
                 const club_type::Enum CLUB_TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC);
 
-            static ItemPtr_t Make_Whip(
+            static const ItemPtr_t Make_Whip(
                 const whip_type::Enum WHIP_TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC);
 
-            static ItemPtr_t Make_Projectile(
+            static const ItemPtr_t Make_Projectile(
                 const projectile_type::Enum PROJ_TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC);
 
-            static ItemPtr_t Make_Staff(
+            static const ItemPtr_t Make_Staff(
                 const bool IS_QUARTERSTAFF,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC,
                 const bool IS_PIXIE_ITEM = false);
 
-            static ItemPtr_t Make_BladedStaff(
+            static const ItemPtr_t Make_BladedStaff(
                 const bladedstaff_type::Enum STAFF_TYPE,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC);
@@ -127,6 +127,7 @@ namespace item
         private:
             static std::unique_ptr<WeaponFactory> instanceUPtr_;
         };
+
     } // namespace weapon
 } // namespace item
 } // namespace heroespath
