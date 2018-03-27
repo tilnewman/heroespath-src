@@ -43,19 +43,30 @@ namespace creature
     Enchantment::Enchantment(
         const EnchantmentType::Enum TYPE,
         const stats::TraitSet & TRAIT_SET,
-        const UseInfo & USE_INFO)
+        const UseInfo & USE_INFO,
+        const std::string & EFFECTS_STR,
+        const Score_t SCORE,
+        const UseEffectType EFFECT_TYPE)
         : type_(TYPE)
         , traitSet_(TRAIT_SET)
         , useInfo_(USE_INFO)
+        , effectsStr_(EFFECTS_STR)
+        , effectType_(EFFECT_TYPE)
+        , score_(((SCORE == 0_score) ? CalcTreasureScore() : SCORE))
     {}
 
-    Enchantment::~Enchantment() = default;
-
-    const std::string Enchantment::EffectStr(const CreaturePtr_t) const
+    const std::string Enchantment::EffectStr() const
     {
+        if (effectsStr_.empty() == false)
+        {
+            return effectsStr_;
+        }
+
         std::ostringstream ss;
 
         ss << EnchantmentType::ToString(type_);
+
+        auto const SepIfNotEmpty{ [](const std::string & S) { return ((S.empty()) ? "" : ", "); } };
 
         if (IsUseableEver())
         {
@@ -104,7 +115,79 @@ namespace creature
         return ss.str();
     }
 
-    Score_t Enchantment::TreasureScore() const
+    void Enchantment::UseEffect(CreaturePtr_t)
+    {
+        switch (effectType_)
+        {
+            case UseEffectType::PixieBell:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::CrystalChimes:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::GoldenGong:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::DragonToothWhistle:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::DoveBloodVial:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::DriedEdible:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::ShamanRainmaker:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::SpecterChains:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::VultureGizzard:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::WarTrumpet:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::Blessed:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::Cursed:
+            {
+                /*TODO*/
+                break;
+            }
+            case UseEffectType::None:
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    Score_t Enchantment::CalcTreasureScore() const
     {
         auto score{ item::ItemProfileWarehouse::Score(traitSet_) };
 
@@ -126,5 +209,6 @@ namespace creature
 
         return score;
     }
+
 } // namespace creature
 } // namespace heroespath

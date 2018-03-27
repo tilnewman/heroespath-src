@@ -1381,14 +1381,11 @@ namespace creature
     {
         if (WILL_APPLY)
         {
-            ENCHANTMENT_PTR->CreatureChangeApply(this);
             enchantmentsPVec_.emplace_back(ENCHANTMENT_PTR);
             ReCalculateTraitBonuses();
         }
         else
         {
-            ENCHANTMENT_PTR->CreatureChangeRemove(this);
-
             enchantmentsPVec_.erase(
                 std::remove(enchantmentsPVec_.begin(), enchantmentsPVec_.end(), ENCHANTMENT_PTR),
                 enchantmentsPVec_.end());

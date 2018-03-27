@@ -107,17 +107,34 @@ namespace creature
 
     inline bool operator!=(const UseInfo & L, const UseInfo & R) { return !(L == R); }
 
-    // Responsible for storing all the info of an Enchantment,
-    // and for applying and removing related changes to a creature.
+    // Responsible for all state and operation of Enchantments in the game.
     class Enchantment
     {
     public:
+        enum class UseEffectType
+        {
+            None,
+            PixieBell,
+            CrystalChimes,
+            GoldenGong,
+            DragonToothWhistle,
+            DoveBloodVial,
+            DriedEdible,
+            ShamanRainmaker,
+            SpecterChains,
+            VultureGizzard,
+            WarTrumpet,
+            Blessed,
+            Cursed
+        };
+
         explicit Enchantment(
             const EnchantmentType::Enum TYPE = EnchantmentType::None,
             const stats::TraitSet & TRAIT_SET = stats::TraitSet(),
-            const UseInfo & USE_INFO = UseInfo());
-
-        virtual ~Enchantment();
+            const UseInfo & USE_INFO = UseInfo(),
+            const std::string & EFFECTS_STR = "",
+            const Score_t SCORE = 0_score,
+            const UseEffectType EFFECT_TYPE = UseEffectType::None);
 
         EnchantmentType::Enum Type() const { return type_; }
         bool IsType(const EnchantmentType::Enum E) const { return (E & type_); }
@@ -133,28 +150,26 @@ namespace creature
 
         bool IsUseableNow() const { return (IsUseableEver() && (useInfo_.CountRemaining() > 0)); }
 
-        virtual const std::string EffectStr(const CreaturePtr_t CREATURE_PTR = nullptr) const;
+        const std::string EffectStr() const;
 
-        virtual void CreatureChangeApply(const CreaturePtr_t) {}
-        virtual void CreatureChangeRemove(const CreaturePtr_t) {}
-        virtual void UseEffect(const CreaturePtr_t) {}
+        void UseEffect(CreaturePtr_t);
 
-        virtual Score_t TreasureScore() const;
-
-        friend bool operator==(const Enchantment & L, const Enchantment & R);
+        Score_t TreasureScore() const { return score_; }
 
         const std::string ToString() const { return EffectStr(); }
 
+        friend bool operator==(const Enchantment & L, const Enchantment & R);
+
     private:
-        const std::string SepIfNotEmpty(const std::string & S) const
-        {
-            return ((S.empty()) ? "" : ", ");
-        }
+        Score_t CalcTreasureScore() const;
 
     private:
         EnchantmentType::Enum type_;
         stats::TraitSet traitSet_;
         UseInfo useInfo_;
+        std::string effectsStr_;
+        UseEffectType effectType_;
+        Score_t score_;
 
     private:
         friend class boost::serialization::access;
@@ -164,13 +179,16 @@ namespace creature
             ar & type_;
             ar & traitSet_;
             ar & useInfo_;
+            ar & effectsStr_;
+            ar & effectType_;
+            ar & score_;
         }
     };
 
     inline bool operator==(const Enchantment & L, const Enchantment & R)
     {
-        return std::tie(L.type_, L.traitSet_, L.useInfo_)
-            == std::tie(R.type_, R.traitSet_, R.useInfo_);
+        return std::tie(L.type_, L.traitSet_, L.useInfo_, L.effectsStr_, L.effectType_, L.score_)
+            == std::tie(R.type_, R.traitSet_, R.useInfo_, R.effectsStr_, R.effectType_, R.score_);
     }
 
     inline bool operator!=(const Enchantment & L, const Enchantment & R) { return !(L == R); }

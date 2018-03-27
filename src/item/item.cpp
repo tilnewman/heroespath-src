@@ -137,7 +137,7 @@ namespace item
 
         std::ostringstream ss;
 
-        ss << "item::Item::EnchantmentRemoveAndFree(" << enchantement_ptr->EffectStr(nullptr)
+        ss << "item::Item::EnchantmentRemoveAndFree(" << enchantement_ptr->EffectStr()
            << ") but the pointer to that enchantment was not found.";
 
         throw std::runtime_error(ss.str());

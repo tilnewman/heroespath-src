@@ -30,7 +30,7 @@
 #include "enchantment-factory.hpp"
 
 #include "creature/enchantment-warehouse.hpp"
-#include "creature/enchantments.hpp"
+#include "creature/enchantment.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -559,7 +559,17 @@ namespace creature
             }
             case item::unique_type::CrystalChimes:
             {
-                return { Enchantment_CrystalChimes() };
+                return { Enchantment(
+                    static_cast<EnchantmentType::Enum>(
+                        EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                    stats::TraitSet(),
+                    UseInfo(
+                        -1,
+                        static_cast<game::Phase::Enum>(
+                            game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)),
+                    "Adds 15% Mana and removes the conditions: Dazed, Asleep Natural, and Daunted.",
+                    2000_score,
+                    Enchantment::UseEffectType::CrystalChimes) };
             }
             case item::unique_type::CyclopsEye:
             {
@@ -585,11 +595,31 @@ namespace creature
             }
             case item::unique_type::DoveBloodVial:
             {
-                return { Enchantment_DoveBloodVial() };
+                return { Enchantment(
+                    static_cast<EnchantmentType::Enum>(
+                        EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                    stats::TraitSet(),
+                    UseInfo(
+                        10,
+                        static_cast<game::Phase::Enum>(
+                            game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)),
+                    "Removes conditions: Poison, Disease, Dazed, and Daunted.",
+                    1900_score,
+                    Enchantment::UseEffectType::DoveBloodVial) };
             }
             case item::unique_type::DragonToothWhistle:
             {
-                return { Enchantment_DragonToothWhistle() };
+                return { Enchantment(
+                    static_cast<EnchantmentType::Enum>(
+                        EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                    stats::TraitSet(),
+                    UseInfo(
+                        -1,
+                        static_cast<game::Phase::Enum>(
+                            game::Phase::Combat | game::Phase::Inventory)),
+                    "Panics non-dragon flying creatures.",
+                    1500_score,
+                    Enchantment::UseEffectType::DragonToothWhistle) };
             }
             case item::unique_type::DriedFrog:
             case item::unique_type::DriedGecko:
@@ -600,7 +630,17 @@ namespace creature
             case item::unique_type::DriedToad:
             case item::unique_type::DriedTurtle:
             {
-                return { Enchantment_DriedEdible() };
+                return { Enchantment(
+                    static_cast<EnchantmentType::Enum>(
+                        EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                    stats::TraitSet(),
+                    UseInfo(
+                        1,
+                        static_cast<game::Phase::Enum>(
+                            game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)),
+                    "Drains 10% Mana, and removes the Poison condition.",
+                    800_score,
+                    Enchantment::UseEffectType::DriedEdible) };
             }
             case item::unique_type::DruidLeaf:
             {
@@ -637,7 +677,18 @@ namespace creature
             }
             case item::unique_type::ExoticGoldenGong:
             {
-                return { Enchantment_GoldenGong() };
+                return { Enchantment(
+                    static_cast<EnchantmentType::Enum>(
+                        EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                    stats::TraitSet(),
+                    UseInfo(
+                        -1,
+                        static_cast<game::Phase::Enum>(
+                            game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)),
+                    "Adds 20% Mana and removes the conditions: Dazed, Asleep Natural, Daunted, and "
+                    "Panicked.",
+                    2400_score,
+                    Enchantment::UseEffectType::GoldenGong) };
             }
             case item::unique_type::FanaticsFlag:
             {
@@ -1048,7 +1099,17 @@ namespace creature
             }
             case item::unique_type::PixieBell:
             {
-                return { Enchantment_PixieBell() };
+                return { Enchantment(
+                    static_cast<EnchantmentType::Enum>(
+                        EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                    stats::TraitSet(),
+                    UseInfo(
+                        -1,
+                        static_cast<game::Phase::Enum>(
+                            game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)),
+                    "Adds 10% Mana and removes the conditions: Dazed, and Asleep Natural.",
+                    1800_score,
+                    Enchantment::UseEffectType::PixieBell) };
             }
             case item::unique_type::PriestRing:
             {
@@ -1223,7 +1284,18 @@ namespace creature
                                                std::make_pair(stats::Traits::MagicEffect, 18),
                                                std::make_pair(stats::Traits::BlessCast, 16),
                                                std::make_pair(stats::Traits::BlessEffect, 33) })),
-                         Enchantment_ShamanRainmaker() };
+                         Enchantment(
+                             static_cast<EnchantmentType::Enum>(
+                                 EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                             stats::TraitSet(),
+                             UseInfo(
+                                 -1,
+                                 static_cast<game::Phase::Enum>(
+                                     game::Phase::Combat | game::Phase::Exploring
+                                     | game::Phase::Inventory)),
+                             "Adds 10% Mana.",
+                             600_score,
+                             Enchantment::UseEffectType::ShamanRainmaker) };
             }
             case item::unique_type::SharkToothNecklace:
             {
@@ -1307,7 +1379,17 @@ namespace creature
                              stats::TraitSet({ std::make_pair(stats::Traits::Strength, 18),
                                                std::make_pair(stats::Traits::Encounter, -6),
                                                std::make_pair(stats::Traits::Charm, 13) })),
-                         Enchantment_SpecterChains() };
+                         Enchantment(
+                             static_cast<EnchantmentType::Enum>(
+                                 EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                             stats::TraitSet(),
+                             UseInfo(
+                                 -1,
+                                 static_cast<game::Phase::Enum>(
+                                     game::Phase::Combat | game::Phase::Inventory)),
+                             "Panics enemies.",
+                             1300_score,
+                             Enchantment::UseEffectType::SpecterChains) };
             }
             case item::unique_type::SpecterRobe:
             {
@@ -1397,7 +1479,17 @@ namespace creature
             }
             case item::unique_type::VultureGizzard:
             {
-                return { Enchantment_VultureGizzard() };
+                return { Enchantment(
+                    static_cast<EnchantmentType::Enum>(
+                        EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                    stats::TraitSet(),
+                    UseInfo(
+                        3,
+                        static_cast<game::Phase::Enum>(
+                            game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)),
+                    "Curse Poison.",
+                    1000_score,
+                    Enchantment::UseEffectType::VultureGizzard) };
             }
             case item::unique_type::WarhorseMarionette:
             {
@@ -1412,7 +1504,17 @@ namespace creature
             }
             case item::unique_type::WarTrumpet:
             {
-                return { Enchantment_WarTrumpet() };
+                return { Enchantment(
+                    static_cast<EnchantmentType::Enum>(
+                        EnchantmentType::BoundToItem | EnchantmentType::WhenUsed),
+                    stats::TraitSet(),
+                    UseInfo(
+                        -1,
+                        static_cast<game::Phase::Enum>(
+                            game::Phase::Combat | game::Phase::Inventory)),
+                    "Panics or Daunts enemies.",
+                    1100_score,
+                    Enchantment::UseEffectType::WarTrumpet) };
             }
             case item::unique_type::WeaselTotem:
             {
@@ -1494,15 +1596,37 @@ namespace creature
             (item::misc_type::IsBlessed(E)) && (MATERIAL_SECONDARY != item::material::Count)
             && (MATERIAL_SECONDARY != item::material::Nothing))
         {
-            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_SECONDARY) };
-            return Enchantment_MiscBlessed(MAT_BONUS);
+            auto const USE_COUNT{ item::material::Bonus(MATERIAL_SECONDARY) };
+            return Enchantment(
+                static_cast<EnchantmentType::Enum>(
+                    EnchantmentType::BoundToItem | EnchantmentType::WhenHeld),
+                stats::TraitSet({ std::make_pair(stats::Traits::Encounter, 3),
+                                  std::make_pair(stats::Traits::BlessEffect, 3) }),
+                UseInfo(
+                    USE_COUNT,
+                    static_cast<game::Phase::Enum>(
+                        game::Phase::Combat | game::Phase::Inventory | game::Phase::Exploring)),
+                "Used when casting or playing a Bless.",
+                250_score,
+                Enchantment::UseEffectType::Blessed);
         }
         else if (
             (item::misc_type::IsCursed(E)) && (MATERIAL_SECONDARY != item::material::Count)
             && (MATERIAL_SECONDARY != item::material::Nothing))
         {
-            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_SECONDARY) };
-            return Enchantment_MiscCursed(MAT_BONUS);
+            auto const USE_COUNT{ item::material::Bonus(MATERIAL_SECONDARY) };
+            return Enchantment(
+                static_cast<EnchantmentType::Enum>(
+                    EnchantmentType::BoundToItem | EnchantmentType::WhenHeld),
+                stats::TraitSet({ std::make_pair(stats::Traits::Luck, -3),
+                                  std::make_pair(stats::Traits::CurseEffect, 3) }),
+                UseInfo(
+                    USE_COUNT,
+                    static_cast<game::Phase::Enum>(
+                        game::Phase::Combat | game::Phase::Inventory | game::Phase::Exploring)),
+                "Used when casting or playing a Curse.",
+                250_score,
+                Enchantment::UseEffectType::Cursed);
         }
         else if (
             (E == item::misc_type::LockPicks) && (MATERIAL_PRIMARY != item::material::Count)
