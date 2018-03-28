@@ -28,6 +28,7 @@
 // enchantment-warehouse.hpp
 //  Responsible for managing the lifetime of all enchantment objects.
 //
+#include "misc/not-null.hpp"
 #include "misc/warehouse.hpp"
 
 #include <memory>
@@ -40,7 +41,8 @@ namespace creature
 
     // forward declarations
     class Enchantment;
-    using EnchantmentPtr_t = Enchantment *;
+    using EnchantmentPtr_t = misc::NotNull<Enchantment *>;
+    using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
 
     // Singleton responsible for the lifetimes of Enchantment objects.
     // This class does not new the objects, but it does delete them.
@@ -60,8 +62,9 @@ namespace creature
         static void Acquire();
         static void Release();
 
-        EnchantmentPtr_t Store(const EnchantmentPtr_t);
-        void Free(EnchantmentPtr_t &);
+        const EnchantmentPtr_t Store(const EnchantmentPtr_t);
+        void Free(const EnchantmentPtr_t);
+        void Free(EnchantmentPVec_t &);
 
     private:
         static std::unique_ptr<EnchantmentWarehouse> instanceUPtr_;

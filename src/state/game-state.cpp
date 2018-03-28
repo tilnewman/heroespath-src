@@ -66,27 +66,27 @@ namespace state
         return *partyUPtr_;
     }
 
-    void GameState::PreSerialize()
+    void GameState::BeforeSerialize()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (partyUPtr_.get() != nullptr),
-            "state::GameState::PreSerialize() called when the partyUptr_ was null.");
+            "state::GameState::BeforeSerialize() called when the partyUptr_ was null.");
 
         for (auto creaturePtr : partyUPtr_->Characters())
         {
-            creaturePtr->PreSerialize();
+            creaturePtr->BeforeSerialize();
         }
     }
 
-    void GameState::PostSerialize()
+    void GameState::AfterSerialize()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (partyUPtr_.get() != nullptr),
-            "state::GameState::PostSerialize() called when the partyUptr_ was null.");
+            "state::GameState::AfterSerialize() called when the partyUptr_ was null.");
 
         for (auto creaturePtr : partyUPtr_->Characters())
         {
-            creaturePtr->PostSerialize();
+            creaturePtr->AfterSerialize();
         }
     }
 

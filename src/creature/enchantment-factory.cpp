@@ -101,7 +101,7 @@ namespace creature
         if ((ITEM_PTR->UniqueType() != item::unique_type::NotUnique)
             && (ITEM_PTR->UniqueType() != item::unique_type::Count))
         {
-            for (auto const NEXT_ENCHANTMENT_PTR :
+            for (auto const & NEXT_ENCHANTMENT_PTR :
                  NewFromUniqueType(ITEM_PTR->UniqueType(), ITEM_PTR->MaterialPrimary()))
             {
                 StoreAttachReturn(ITEM_PTR, NEXT_ENCHANTMENT_PTR);
@@ -129,12 +129,12 @@ namespace creature
 
         if (ITEM_PTR->MiscType() != item::misc_type::NotMisc)
         {
-            auto const ENCHANTMENT_PTR{ NewFromMiscType(
+            auto const ENCHANTMENT_PTR_OPT{ NewFromMiscType(
                 ITEM_PTR->MiscType(), ITEM_PTR->MaterialPrimary(), ITEM_PTR->MaterialSecondary()) };
 
-            if (ENCHANTMENT_PTR != nullptr)
+            if (ENCHANTMENT_PTR_OPT)
             {
-                return StoreAttachReturn(ITEM_PTR, ENCHANTMENT_PTR);
+                return StoreAttachReturn(ITEM_PTR, ENCHANTMENT_PTR_OPT.value());
             }
         }
 
@@ -225,27 +225,18 @@ namespace creature
     }
 
     const item::ItemPtr_t EnchantmentFactory::StoreAttachReturn(
-        const item::ItemPtr_t ITEM_PTR, Enchantment * const enchantmentPtr) const
+        const item::ItemPtr_t ITEM_PTR, const EnchantmentPtr_t ENCHANTMENT_PTR) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (enchantmentPtr != nullptr),
-            "creature::EnchantmentFactory::StoreAttachReturn(item="
-                << ITEM_PTR->Name() << ") was given a null enchantmentPtr.");
-
-        ITEM_PTR->EnchantmentAdd(EnchantmentWarehouse::Instance()->Store(enchantmentPtr));
+        ITEM_PTR->EnchantmentAdd(EnchantmentWarehouse::Instance()->Store(ENCHANTMENT_PTR));
         return ITEM_PTR;
     }
 
-    const std::vector<Enchantment *> EnchantmentFactory::NewFromUniqueType(
+    const EnchantmentPVec_t EnchantmentFactory::NewFromUniqueType(
         const item::unique_type::Enum UNIQUE_ENUM,
         const item::material::Enum MATERIAL_PRIMARY) const
     {
-        auto const ENCHATMENTS{ MakeFromUniqueType(UNIQUE_ENUM, MATERIAL_PRIMARY) };
-
-        std::vector<Enchantment *> enchantmentPtrs;
-        enchantmentPtrs.reserve(ENCHATMENTS.size() + 1);
-
-        for (auto const & ENCHANTMENT : ENCHATMENTS)
+        EnchantmentPVec_t enchantmentPtrs;
+        for (auto const & ENCHANTMENT : MakeFromUniqueType(UNIQUE_ENUM, MATERIAL_PRIMARY))
         {
             enchantmentPtrs.emplace_back(new Enchantment(ENCHANTMENT));
         }
@@ -1565,7 +1556,7 @@ namespace creature
         }
     }
 
-    Enchantment * EnchantmentFactory::NewFromMiscType(
+    const EnchantmentPtrOpt_t EnchantmentFactory::NewFromMiscType(
         const item::misc_type::Enum E,
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY) const
@@ -1574,11 +1565,11 @@ namespace creature
 
         if (ENCHANTMENT == Enchantment())
         {
-            return nullptr;
+            return boost::none;
         }
         else
         {
-            return new Enchantment(ENCHANTMENT);
+            return EnchantmentPtrOpt_t(new Enchantment(ENCHANTMENT));
         }
     }
 
@@ -1858,7 +1849,7 @@ namespace creature
         return Enchantment();
     }
 
-    Enchantment * EnchantmentFactory::NewFromSetType(const item::set_type::Enum E) const
+    const EnchantmentPtr_t EnchantmentFactory::NewFromSetType(const item::set_type::Enum E) const
     {
         return new Enchantment(MakeFromSetType(E));
     }
@@ -2272,7 +2263,8 @@ namespace creature
         }
     }
 
-    Enchantment * EnchantmentFactory::NewFromSetCompleteType(const item::set_type::Enum E) const
+    const EnchantmentPtr_t
+        EnchantmentFactory::NewFromSetCompleteType(const item::set_type::Enum E) const
     {
         return new Enchantment(MakeFromSetCompleteType(E));
     }
@@ -2713,7 +2705,7 @@ namespace creature
         }
     }
 
-    Enchantment * EnchantmentFactory::NewFromElementType(
+    const EnchantmentPtr_t EnchantmentFactory::NewFromElementType(
         const item::element_type::Enum E,
         const bool IS_WEAPON,
         const item::material::Enum MATERIAL_PRIMARY) const
@@ -2854,7 +2846,7 @@ namespace creature
         return Enchantment(EnchantmentType::WhenEquipped, traits);
     }
 
-    Enchantment * EnchantmentFactory::NewFromNamedType(
+    const EnchantmentPtr_t EnchantmentFactory::NewFromNamedType(
         const item::named_type::Enum NAMED_ENUM,
         const item::material::Enum MATERIAL_ENUM,
         const bool IS_WEAPON,

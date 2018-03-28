@@ -105,51 +105,11 @@ namespace item
         }
     }
 
-    Item::~Item() { EnchantmentRemoveAndFreeAll(); }
+    Item::~Item() { creature::EnchantmentWarehouse::Instance()->Free(enchantmentsPVec_); }
 
     void Item::EnchantmentAdd(const creature::EnchantmentPtr_t ENCHANTMENT_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ENCHANTMENT_PTR != nullptr), "item::Item::EnchantmentAdd() was given a null ptr.");
-
         enchantmentsPVec_.emplace_back(ENCHANTMENT_PTR);
-    }
-
-    void Item::EnchantmentRemoveAndFree(creature::EnchantmentPtr_t enchantement_ptr)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (enchantement_ptr != nullptr),
-            "item::Item::EnchantmentRemoveAndFree() was given a null ptr.");
-
-        for (auto const NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
-        {
-            if (NEXT_ENCHANTMENT_PTR == enchantement_ptr)
-            {
-                enchantmentsPVec_.erase(
-                    std::remove(
-                        enchantmentsPVec_.begin(), enchantmentsPVec_.end(), enchantement_ptr),
-                    enchantmentsPVec_.end());
-
-                creature::EnchantmentWarehouse::Instance()->Free(enchantement_ptr);
-                return;
-            }
-        }
-
-        std::ostringstream ss;
-
-        ss << "item::Item::EnchantmentRemoveAndFree(" << enchantement_ptr->EffectStr()
-           << ") but the pointer to that enchantment was not found.";
-
-        throw std::runtime_error(ss.str());
-    }
-
-    void Item::EnchantmentRemoveAndFreeAll()
-    {
-        auto const ENCHANTMENT_PVEC_COPY{ enchantmentsPVec_ };
-        for (auto nextEnchantmentPtr : ENCHANTMENT_PVEC_COPY)
-        {
-            EnchantmentRemoveAndFree(nextEnchantmentPtr);
-        }
     }
 
     const std::string Item::BaseName() const
@@ -310,6 +270,27 @@ namespace item
 
         ss << "}";
         return ss.str();
+    }
+
+    void Item::BeforeSerialize()
+    {
+        enchantmentsToSerializePVec_.clear();
+        for (auto const & ENCHANTMENT_PTR : enchantmentsPVec_)
+        {
+            enchantmentsToSerializePVec_.emplace_back(ENCHANTMENT_PTR.Ptr());
+        }
+
+        // everything in enchantmentsPVec_ is free'd in the Item::~Item()
+    }
+
+    void Item::AfterSerialize()
+    {
+        enchantmentsPVec_.clear();
+        for (auto const ENCHANTMENT_RAW_PTR : enchantmentsToSerializePVec_)
+        {
+            enchantmentsPVec_.emplace_back(ENCHANTMENT_RAW_PTR);
+        }
+        enchantmentsToSerializePVec_.clear();
     }
 
     bool operator<(const Item & L, const Item & R)

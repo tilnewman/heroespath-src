@@ -109,8 +109,8 @@ namespace item
 
         const std::string ToString() const;
 
-        void PreSerialize();
-        void PostSerialize();
+        void BeforeSerialize();
+        void AfterSerialize();
 
         friend bool operator==(const Inventory & L, const Inventory & R);
 

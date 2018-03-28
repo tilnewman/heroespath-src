@@ -82,22 +82,19 @@ namespace creature
         instanceUPtr_.reset();
     }
 
-    EnchantmentPtr_t EnchantmentWarehouse::Store(const EnchantmentPtr_t ENCHANTMENT_PTR)
+    const EnchantmentPtr_t EnchantmentWarehouse::Store(const EnchantmentPtr_t ENCHANTMENT_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ENCHANTMENT_PTR != nullptr), "creature::EnchantmentWarehouse::Store() given nullptr.");
-
-        // TODO This hack is temporary until Enchantment inheritance is flattened and the raw
-        // EnchatmentPtr_t pointer is replaced with a misc::NotNull.
-        return const_cast<const EnchantmentPtr_t>(warehouse_.Store(ENCHANTMENT_PTR));
+        return warehouse_.Store(ENCHANTMENT_PTR);
     }
 
-    void EnchantmentWarehouse::Free(EnchantmentPtr_t & enchantment_ptr)
+    void EnchantmentWarehouse::Free(const EnchantmentPtr_t ENCHANTMENT_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (enchantment_ptr != nullptr), "creature::EnchantmentWarehouse::Free() given nullptr.");
+        warehouse_.Free(ENCHANTMENT_PTR);
+    }
 
-        warehouse_.Free(enchantment_ptr);
+    void EnchantmentWarehouse::Free(EnchantmentPVec_t & enchantmentPVec)
+    {
+        warehouse_.Free(enchantmentPVec);
     }
 
 } // namespace creature

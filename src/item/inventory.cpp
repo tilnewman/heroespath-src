@@ -352,34 +352,40 @@ namespace item
         return ss.str();
     }
 
-    void Inventory::PreSerialize()
+    void Inventory::BeforeSerialize()
     {
         itemsPVecToSerialize_.clear();
         for (auto const & ITEM_PTR : itemsPVec_)
         {
+            ITEM_PTR->BeforeSerialize();
             itemsPVecToSerialize_.emplace_back(ITEM_PTR.Ptr());
         }
+        // everything in itemsPVec is free'd in Inventory::~Inventory()
 
         equippedItemsPVecToSerialize_.clear();
         for (auto const & ITEM_PTR : equippedItemsPVec_)
         {
+            ITEM_PTR->BeforeSerialize();
             equippedItemsPVecToSerialize_.emplace_back(ITEM_PTR.Ptr());
         }
+        // everything in equippedItemsPVec_ is free'd in Inventory::~Inventory()
     }
 
-    void Inventory::PostSerialize()
+    void Inventory::AfterSerialize()
     {
         itemsPVec_.clear();
-        for (auto const ITEM_PTR : itemsPVecToSerialize_)
+        for (auto const ITEM_RAW_PTR : itemsPVecToSerialize_)
         {
-            itemsPVec_.emplace_back(ItemWarehouse::Instance()->Store(ITEM_PTR));
+            ITEM_RAW_PTR->AfterSerialize();
+            itemsPVec_.emplace_back(ItemWarehouse::Instance()->Store(ITEM_RAW_PTR));
         }
         itemsPVecToSerialize_.clear();
 
         equippedItemsPVec_.clear();
-        for (auto const ITEM_PTR : equippedItemsPVecToSerialize_)
+        for (auto const ITEM_RAW_PTR : equippedItemsPVecToSerialize_)
         {
-            equippedItemsPVec_.emplace_back(ItemWarehouse::Instance()->Store(ITEM_PTR));
+            ITEM_RAW_PTR->AfterSerialize();
+            equippedItemsPVec_.emplace_back(ItemWarehouse::Instance()->Store(ITEM_RAW_PTR));
         }
         equippedItemsPVecToSerialize_.clear();
     }

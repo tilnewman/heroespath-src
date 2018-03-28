@@ -97,12 +97,13 @@ namespace creature
             const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
 
     private:
-        const item::ItemPtr_t StoreAttachReturn(const item::ItemPtr_t, Enchantment * const) const;
+        const item::ItemPtr_t
+            StoreAttachReturn(const item::ItemPtr_t, const EnchantmentPtr_t) const;
 
         const std::vector<Enchantment>
             MakeFromUniqueType(const item::unique_type::Enum, const item::material::Enum) const;
 
-        const std::vector<Enchantment *>
+        const EnchantmentPVec_t
             NewFromUniqueType(const item::unique_type::Enum, const item::material::Enum) const;
 
         const Enchantment MakeFromMiscType(
@@ -110,21 +111,21 @@ namespace creature
             const item::material::Enum MATERIAL_PRIMARY,
             const item::material::Enum MATERIAL_SECONDARY) const;
 
-        Enchantment * NewFromMiscType(
+        const EnchantmentPtrOpt_t NewFromMiscType(
             const item::misc_type::Enum,
             const item::material::Enum MATERIAL_PRIMARY,
             const item::material::Enum MATERIAL_SECONDARY) const;
 
         const Enchantment MakeFromSetType(const item::set_type::Enum) const;
-        Enchantment * NewFromSetType(const item::set_type::Enum) const;
+        const EnchantmentPtr_t NewFromSetType(const item::set_type::Enum) const;
 
         const Enchantment MakeFromSetCompleteType(const item::set_type::Enum) const;
-        Enchantment * NewFromSetCompleteType(const item::set_type::Enum) const;
+        const EnchantmentPtr_t NewFromSetCompleteType(const item::set_type::Enum) const;
 
         const Enchantment MakeFromElementType(
             const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
 
-        Enchantment * NewFromElementType(
+        const EnchantmentPtr_t NewFromElementType(
             const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
 
         const Enchantment MakeFromNamedType(
@@ -133,7 +134,7 @@ namespace creature
             const bool IS_WEAPON,
             const bool IS_ARMOR) const;
 
-        Enchantment * NewFromNamedType(
+        const EnchantmentPtr_t NewFromNamedType(
             const item::named_type::Enum,
             const item::material::Enum,
             const bool IS_WEAPON,

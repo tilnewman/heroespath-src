@@ -1457,7 +1457,7 @@ namespace creature
                                     .Current();
             }
 
-            for (auto const NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
+            for (auto const & NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
             {
                 traitPercent += NEXT_ENCHANTMENT_PTR->Traits().GetCopy(NEXT_TRAIT_ENUM).Current();
             }
@@ -1545,6 +1545,14 @@ namespace creature
         TraitNormalAdj(stats::Traits::Luck, STAT_SET.Lck().As<int>());
         TraitNormalAdj(stats::Traits::Speed, STAT_SET.Spd().As<int>());
         TraitNormalAdj(stats::Traits::Intelligence, STAT_SET.Int().As<int>());
+    }
+
+    void Creature::BeforeSerialize() { inventory_.BeforeSerialize(); }
+
+    void Creature::AfterSerialize()
+    {
+        inventory_.AfterSerialize();
+        SetHeldWeaponsToBest();
     }
 
     const item::ItemPVecVec_t Creature::ComposeWeaponsList() const
@@ -1753,7 +1761,7 @@ namespace creature
     void Creature::EnchantmentsApplyOrRemoveByType(
         const EnchantmentPVec_t & PVEC, const EnchantmentType::Enum TYPE, const bool WILL_APPLY)
     {
-        for (auto const NEXT_ENCHANTMENT_PTR : PVEC)
+        for (auto const & NEXT_ENCHANTMENT_PTR : PVEC)
         {
             if (NEXT_ENCHANTMENT_PTR->Type() & TYPE)
             {
@@ -1764,7 +1772,7 @@ namespace creature
 
     bool Creature::HasEnchantmentType(const EnchantmentType::Enum TYPE_ENUM) const
     {
-        for (auto const NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
+        for (auto const & NEXT_ENCHANTMENT_PTR : enchantmentsPVec_)
         {
             if (NEXT_ENCHANTMENT_PTR->Type() & TYPE_ENUM)
             {

@@ -90,7 +90,7 @@ namespace creature
     using ConditionPVec_t = std::vector<ConditionPtr_t>;
 
     class Enchantment;
-    using EnchantmentPtr_t = Enchantment *;
+    using EnchantmentPtr_t = misc::NotNull<Enchantment *>;
     using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
 
     // unique ID for all creatures
@@ -433,13 +433,8 @@ namespace creature
 
         void StatTraitsModify(const stats::StatSet &);
 
-        void PreSerialize() { inventory_.PreSerialize(); }
-
-        void PostSerialize()
-        {
-            inventory_.PostSerialize();
-            SetHeldWeaponsToBest();
-        }
+        void BeforeSerialize();
+        void AfterSerialize();
 
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);

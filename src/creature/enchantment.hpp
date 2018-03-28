@@ -33,7 +33,9 @@
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "game/phase-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "spell/spell-enum.hpp"
 #include "stats/trait.hpp"
@@ -193,7 +195,8 @@ namespace creature
 
     inline bool operator!=(const Enchantment & L, const Enchantment & R) { return !(L == R); }
 
-    using EnchantmentPtr_t = Enchantment *;
+    using EnchantmentPtr_t = misc::NotNull<Enchantment *>;
+    using EnchantmentPtrOpt_t = boost::optional<EnchantmentPtr_t>;
     using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
 
 } // namespace creature

@@ -186,11 +186,14 @@ namespace item
 
         const std::string ToString() const;
 
+        void BeforeSerialize();
+        void AfterSerialize();
+
         friend bool operator<(const Item & L, const Item & R);
         friend bool operator==(const Item & L, const Item & R);
 
     private:
-        void EnchantmentRemoveAndFree(creature::EnchantmentPtr_t);
+        void EnchantmentRemoveAndFree(const creature::EnchantmentPtr_t);
         void EnchantmentRemoveAndFreeAll();
 
     protected:
@@ -219,8 +222,10 @@ namespace item
         creature::SummonInfo summonInfo_;
 
         // The Item class owns the Enchantment objects and is responsible
-        // for their lifetimes.
+        // for their lifetimes, but misc::NotNulls cannot be serialized so
+        // a separate vector of raw pointers is needed.
         creature::EnchantmentPVec_t enchantmentsPVec_;
+        std::vector<creature::Enchantment *> enchantmentsToSerializePVec_;
 
     private:
         friend class boost::serialization::access;
@@ -250,7 +255,7 @@ namespace item
             ar & namedType_;
             ar & elementType_;
             ar & summonInfo_;
-            ar & enchantmentsPVec_;
+            ar & enchantmentsToSerializePVec_;
         }
     };
 
