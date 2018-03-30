@@ -31,7 +31,6 @@
 
 #include "combat/combat-node.hpp"
 #include "creature/creature.hpp"
-
 #include "log/log-macros.hpp"
 
 #include <algorithm>
@@ -115,11 +114,11 @@ namespace combat
         throw std::invalid_argument(ss.str());
     }
 
-    CombatNodePtr_t CombatTree::GetNode(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    CombatNodePtr_t CombatTree::GetNode(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         for (auto const & VERTEX : vertexes_)
         {
-            if (VERTEX.node_sptr->Creature() == CREATURE_CPTRC)
+            if (VERTEX.node_sptr->Creature() == CREATURE_PTR)
             {
                 return VERTEX.node_sptr.get();
             }
@@ -128,11 +127,11 @@ namespace combat
         return nullptr;
     }
 
-    CombatNodeSPtr_t CombatTree::GetNodeSPtr(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    CombatNodeSPtr_t CombatTree::GetNodeSPtr(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         for (auto const & VERTEX : vertexes_)
         {
-            if (VERTEX.node_sptr->Creature() == CREATURE_CPTRC)
+            if (VERTEX.node_sptr->Creature() == CREATURE_PTR)
             {
                 return VERTEX.node_sptr;
             }
@@ -178,20 +177,19 @@ namespace combat
         throw std::invalid_argument(ss.str());
     }
 
-    ID_t CombatTree::GetNodeId(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    ID_t CombatTree::GetNodeId(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         for (auto const & VERTEX : vertexes_)
         {
-            if (VERTEX.node_sptr->Creature() == CREATURE_CPTRC)
+            if (VERTEX.node_sptr->Creature() == CREATURE_PTR)
             {
                 return VERTEX.id;
             }
         }
 
         std::ostringstream ss;
-        ss << "CombatTree::GetNodeId(CREATURE_CPTRC="
-           << ((CREATURE_CPTRC == nullptr) ? "(nullptr)" : CREATURE_CPTRC->Name())
-           << ") -but that creature sptr was not found";
+        ss << "CombatTree::GetNodeId(creature={" << CREATURE_PTR->ToString()
+           << "}) -but that creature was not found.";
 
         throw std::invalid_argument(ss.str());
     }
@@ -201,8 +199,7 @@ namespace combat
         std::size_t count(0);
         for (auto const & VERTEX : vertexes_)
         {
-            if ((VERTEX.node_sptr->Creature() != nullptr)
-                && (VERTEX.node_sptr->Creature()->Role() == ROLE))
+            if (VERTEX.node_sptr->Creature()->Role() == ROLE)
             {
                 ++count;
                 IDVec_OutParam.emplace_back(VERTEX.id);
@@ -217,8 +214,7 @@ namespace combat
         std::size_t count(0);
         for (auto const & VERTEX : vertexes_)
         {
-            if ((VERTEX.node_sptr->Creature() != nullptr)
-                && (VERTEX.node_sptr->Creature()->Race() == RACE))
+            if (VERTEX.node_sptr->Creature()->Race() == RACE)
             {
                 ++count;
                 IdVec_OutParam.emplace_back(VERTEX.id);
@@ -920,26 +916,25 @@ namespace combat
     }
 
     int CombatTree::GetBlockingDistanceBetween(
-        creature::CreatureCPtrC_t CREATURE_A_CPTRC,
-        creature::CreatureCPtrC_t CREATURE_B_CPTRC) const
+        creature::CreaturePtr_t CREATURE_A_PTR, creature::CreaturePtr_t CREATURE_B_PTR) const
     {
-        return GetNode(CREATURE_B_CPTRC)->GetBlockingPos()
-            - GetNode(CREATURE_A_CPTRC)->GetBlockingPos();
+        return GetNode(CREATURE_B_PTR)->GetBlockingPos()
+            - GetNode(CREATURE_A_PTR)->GetBlockingPos();
     }
 
     int CombatTree::GetClosestBlockingDistanceByType(
-        creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const
+        creature::CreaturePtr_t CREATURE_PTR, const bool WILL_FIND_PLAYERS) const
     {
         CombatNodeSPtr_t closestNodeSPtr{ nullptr };
         auto closestBlockingDistanceABS{ GetBlockingDistanceMax() + 1 };
 
         for (auto const & VERTEX : vertexes_)
         {
-            if ((VERTEX.node_sptr->Creature() != CREATURE_CPTRC)
+            if ((VERTEX.node_sptr->Creature() != CREATURE_PTR)
                 && (VERTEX.node_sptr->Creature()->IsPlayerCharacter() == WILL_FIND_PLAYERS))
             {
                 auto const ABS_DISTANCE{ std::abs(
-                    GetBlockingDistanceBetween(CREATURE_CPTRC, VERTEX.node_sptr->Creature())) };
+                    GetBlockingDistanceBetween(CREATURE_PTR, VERTEX.node_sptr->Creature())) };
 
                 if (ABS_DISTANCE < closestBlockingDistanceABS)
                 {
@@ -955,7 +950,7 @@ namespace combat
         }
         else
         {
-            return GetBlockingDistanceBetween(CREATURE_CPTRC, closestNodeSPtr->Creature());
+            return GetBlockingDistanceBetween(CREATURE_PTR, closestNodeSPtr->Creature());
         }
     }
 

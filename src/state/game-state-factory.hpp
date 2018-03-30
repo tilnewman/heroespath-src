@@ -28,12 +28,15 @@
 // game-state-factory.hpp
 //  Code that marshals GameState objects on and off disk, and creates new states.
 //
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/not-null.hpp"
 
 #include <memory>
 #include <set>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace heroespath
 {
@@ -45,8 +48,9 @@ namespace player
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreaturePSet_t = std::set<CreaturePtr_t>;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 }
 namespace state
 {
@@ -82,7 +86,7 @@ namespace state
 
         // Loaded Characters are not stored in player::CharacterWarehouse,
         // so the caller is responsible for the lifetime of the returned objects.
-        creature::CreaturePSet_t LoadAllUnplayedCharacters() const;
+        const creature::CreaturePVec_t LoadAllUnplayedCharacters() const;
 
         void SaveCharacter(const creature::CreaturePtr_t) const;
         bool DeleteUnplayedCharacterFile(const creature::CreaturePtr_t) const;
@@ -93,7 +97,7 @@ namespace state
         // boost serializer includes here in this header file...grumble...zTn 2016-10-26
         void Save(
             const GameStatePtr_t HEROESPATH_PTR,
-            const creature::CreaturePtr_t CHARACTER_PTR,
+            const creature::CreaturePtrOpt_t CHARACTER_PTR_OPT,
             const std::string & DIR_STR,
             const std::string & FILE_STR,
             const std::string & EXT_STR) const;

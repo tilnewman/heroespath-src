@@ -30,13 +30,10 @@
 #include "popup-info.hpp"
 
 #include "creature/creature.hpp"
-
-#include "sfml-util/sfml-util.hpp"
-
-#include "popup/i-popup-callback.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
+#include "popup/i-popup-callback.hpp"
+#include "sfml-util/sfml-util.hpp"
 
 #include <sstream>
 #include <vector>
@@ -60,7 +57,7 @@ namespace popup
         const sfml_util::TextureVec_t & TEXTURE_VEC,
         const std::vector<std::string> & TEXT_VEC,
         const float IMAGE_FADE_SPEED,
-        const creature::CreaturePtr_t CREATURE_CPTR,
+        const creature::CreaturePtrOpt_t CREATURE_PTR_OPT,
         const std::size_t INITIAL_SELECTION,
         const bool ARE_IMAGES_CREATURES,
         const std::string & TITLE_TEXT,
@@ -81,7 +78,7 @@ namespace popup
         , numberMax_(0)
         , numberInvalidVec_(INVALID_CHAR_NUM_VEC)
         , imageFadeSpeed_(IMAGE_FADE_SPEED)
-        , creatureCPtr_(CREATURE_CPTR)
+        , creaturePtrOpt_(CREATURE_PTR_OPT)
         , initialSelection_(INITIAL_SELECTION)
         , areImgsCreatures_(ARE_IMAGES_CREATURES)
         , textVec_(TEXT_VEC)
@@ -149,7 +146,7 @@ namespace popup
         , numberMax_(0)
         , numberInvalidVec_()
         , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
-        , creatureCPtr_(nullptr)
+        , creaturePtrOpt_(boost::none)
         , initialSelection_(0)
         , areImgsCreatures_(false)
         , textVec_()
@@ -183,7 +180,7 @@ namespace popup
         , numberMax_(0)
         , numberInvalidVec_()
         , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
-        , creatureCPtr_(nullptr)
+        , creaturePtrOpt_(boost::none)
         , initialSelection_(INITIAL_SELECTION)
         , areImgsCreatures_(ARE_IMAGES_CREATURES)
         , textVec_()
@@ -221,7 +218,7 @@ namespace popup
         , numberMax_(THE_MAX)
         , numberInvalidVec_()
         , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
-        , creatureCPtr_(nullptr)
+        , creaturePtrOpt_(boost::none)
         , initialSelection_(0)
         , areImgsCreatures_(false)
         , textVec_()
@@ -252,7 +249,7 @@ namespace popup
         , numberMax_(0)
         , numberInvalidVec_()
         , imageFadeSpeed_(IMAGE_FADE_SPEED_DEFAULT_)
-        , creatureCPtr_(nullptr)
+        , creaturePtrOpt_(boost::none)
         , initialSelection_(0)
         , areImgsCreatures_(false)
         , textVec_()
@@ -262,76 +259,6 @@ namespace popup
         , willIncludeItems_(false)
         , keepAliveSeconds_(-1.0f) // any negative will work here
     {}
-
-    PopupInfo::PopupInfo(const PopupInfo & PI)
-        : name_(PI.name_)
-        , textInfo_(PI.textInfo_)
-        , buttons_(PI.buttons_)
-        , image_(PI.image_)
-        , soundEffect_(PI.soundEffect_)
-        , boxInfo_(PI.boxInfo_)
-        , ratioX_(PI.ratioX_)
-        , ratioY_(PI.ratioY_)
-        , buttonColor_(PI.buttonColor_)
-        , willAddRandImage_(PI.willAddRandImage_)
-        , textureVec_(PI.textureVec_)
-        , numberMin_(PI.numberMin_)
-        , numberMax_(PI.numberMax_)
-        , numberInvalidVec_(PI.numberInvalidVec_)
-        , imageFadeSpeed_(PI.imageFadeSpeed_)
-        ,
-
-        // The creature object is not managed by this class,
-        // so it is safe to copy here.
-        creatureCPtr_(PI.creatureCPtr_)
-        ,
-
-        initialSelection_(PI.initialSelection_)
-        , areImgsCreatures_(PI.areImgsCreatures_)
-        , textVec_(PI.textVec_)
-        , howCombatEnded_(PI.howCombatEnded_)
-        , titleText_(PI.titleText_)
-        , descText_(PI.descText_)
-        , willIncludeItems_(PI.willIncludeItems_)
-        , keepAliveSeconds_(PI.keepAliveSeconds_)
-    {}
-
-    PopupInfo & PopupInfo::operator=(const PopupInfo & PI)
-    {
-        if (&PI != this)
-        {
-            name_ = PI.name_;
-            textInfo_ = PI.textInfo_;
-            buttons_ = PI.buttons_;
-            image_ = PI.image_;
-            soundEffect_ = PI.soundEffect_;
-            boxInfo_ = PI.boxInfo_;
-            ratioX_ = PI.ratioX_;
-            ratioY_ = PI.ratioY_;
-            buttonColor_ = PI.buttonColor_;
-            willAddRandImage_ = PI.willAddRandImage_;
-            textureVec_ = PI.textureVec_;
-            numberMin_ = PI.numberMin_;
-            numberMax_ = PI.numberMax_;
-            numberInvalidVec_ = PI.numberInvalidVec_;
-            imageFadeSpeed_ = PI.imageFadeSpeed_;
-            areImgsCreatures_ = PI.areImgsCreatures_;
-
-            // The lifetime of these objects is not managed by this class.
-            // Usage is short-term observation only, so copying is safe.
-            creatureCPtr_ = PI.creatureCPtr_;
-
-            initialSelection_ = PI.initialSelection_;
-            textVec_ = PI.textVec_;
-            howCombatEnded_ = PI.howCombatEnded_;
-            titleText_ = PI.titleText_;
-            descText_ = PI.descText_;
-            willIncludeItems_ = PI.willIncludeItems_;
-            keepAliveSeconds_ = PI.keepAliveSeconds_;
-        }
-
-        return *this;
-    }
 
     const std::string PopupInfo::ToStringShort(const bool WILL_WRAP) const
     {
@@ -398,9 +325,9 @@ namespace popup
             ss << ", fade_speed=" << imageFadeSpeed_;
         }
 
-        if (creatureCPtr_ != nullptr)
+        if (creaturePtrOpt_)
         {
-            ss << ", creature=" << creatureCPtr_->Name();
+            ss << ", creature=" << creaturePtrOpt_->Obj().Name();
         }
 
         if (initialSelection_ != 0)
@@ -422,9 +349,9 @@ namespace popup
             ss << ", invalid_selections=" << misc::Vector::Join(numberInvalidVec_);
         }
 
-        if (creatureCPtr_ != nullptr)
+        if (creaturePtrOpt_)
         {
-            ss << ", creature=" << creatureCPtr_->NameAndRaceAndRole();
+            ss << ", creature=" << creaturePtrOpt_->Obj().NameAndRaceAndRole();
         }
 
         if (areImgsCreatures_)

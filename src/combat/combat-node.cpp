@@ -29,6 +29,11 @@
 //
 #include "combat-node.hpp"
 
+#include "creature/condition-algorithms.hpp"
+#include "creature/creature.hpp"
+#include "creature/name-info.hpp"
+#include "game/game-data-file.hpp"
+#include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/combat-image-manager.hpp"
@@ -36,11 +41,6 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "creature/condition-algorithms.hpp"
-#include "creature/name-info.hpp"
-#include "game/game-data-file.hpp"
-#include "log/log-macros.hpp"
 
 #include "misc/random.hpp"
 

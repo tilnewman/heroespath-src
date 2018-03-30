@@ -59,9 +59,6 @@ namespace creature
         const With OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (CREATURE_PTR != nullptr), "creature::Stats::Ratio() called with a null CREATURE_PTR.");
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
             (TRAIT_ENUM_VEC.empty() == false),
             "creature::Stats::Ratio() called with TRAIT_ENUM_VEC empty.");
 
@@ -111,9 +108,6 @@ namespace creature
         const With OPTIONS)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (CREATURE_PTR != nullptr), "creature::Stats::Roll() called with a null CREATURE_PTR.");
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
             (TRAIT_ENUM_VEC.empty() == false),
             "creature::Stats::Roll() called with TRAIT_ENUM_VEC empty.");
 
@@ -141,9 +135,6 @@ namespace creature
         const stats::TraitsVec_t & TRAIT_ENUM_VEC,
         const With OPTIONS)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (CREATURE_PTR != nullptr), "creature::Stats::Test() called with a null CREATURE_PTR.");
-
         M_ASSERT_OR_LOGANDTHROW_SS(
             (TRAIT_ENUM_VEC.empty() == false),
             "creature::Stats::Test() called with TRAIT_ENUM_VEC empty.");
@@ -230,14 +221,6 @@ namespace creature
         const stats::Trait_t DEFENDER_BONUS_PER,
         const With OPTIONS)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (CHALLENGER_PTR != nullptr),
-            "creature::Stats::Versus() called with a null CHALLENGER_PTR.");
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (DEFENDER_PTR != nullptr),
-            "creature::Stats::Versus() called with a null DEFENDER_PTR.");
-
         M_ASSERT_OR_LOGANDTHROW_SS(
             (CHALLENGER_TRAIT_VEC.empty() == false),
             "creature::Stats::Versus() called with CHALLENGER_TRAIT_VEC empty.");
@@ -584,5 +567,6 @@ namespace creature
 
         return x;
     }
+
 } // namespace creature
 } // namespace heroespath

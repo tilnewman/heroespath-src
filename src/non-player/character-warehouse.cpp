@@ -54,7 +54,7 @@ namespace non_player
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): Non-Player CharacterWarehouse");
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): Non-Player CharacterWarehouse");
             Acquire();
         }
 
@@ -69,7 +69,7 @@ namespace non_player
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: Non-Player CharacterWarehouse");
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: Non-Player CharacterWarehouse");
         }
     }
 
@@ -82,20 +82,20 @@ namespace non_player
         instanceUPtr_.reset();
     }
 
-    creature::CreaturePtr_t CharacterWarehouse::Store(const creature::CreaturePtr_t CHARACTER_PTR)
+    const creature::CreaturePtr_t
+        CharacterWarehouse::Store(const creature::CreaturePtr_t CHARACTER_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (CHARACTER_PTR != nullptr), "non_player::CharacterWarehouse::Store() given nullptr.");
-
         return warehouse_.Store(CHARACTER_PTR);
     }
 
-    void CharacterWarehouse::Free(creature::CreaturePtr_t & character_ptr)
+    void CharacterWarehouse::Free(const creature::CreaturePtr_t CHARACTER_PTR)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (character_ptr != nullptr), "non_player::CharacterWarehouse::Free() given nullptr.");
+        warehouse_.Free(CHARACTER_PTR);
+    }
 
-        warehouse_.Free(character_ptr);
+    void CharacterWarehouse::Free(creature::CreaturePVec_t & creaturePVec)
+    {
+        warehouse_.Free(creaturePVec);
     }
 
 } // namespace non_player

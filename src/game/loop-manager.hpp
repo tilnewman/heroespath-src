@@ -28,6 +28,11 @@
 // loop-manager.hpp
 //  A class that controls the running game loop with a queue of commands
 //
+#include "game/phase-enum.hpp"
+#include "misc/not-null.hpp"
+#include "popup/popup-info.hpp"
+#include "popup/popup-response-enum.hpp"
+#include "popup/popup-stage-generic.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/loop-cmd-popup.hpp"
 #include "sfml-util/loop-cmd.hpp"
@@ -36,12 +41,6 @@
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/resolution.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-
-#include "popup/popup-info.hpp"
-#include "popup/popup-response-enum.hpp"
-#include "popup/popup-stage-generic.hpp"
-
-#include "game/phase-enum.hpp"
 
 #include <queue>
 #include <string>
@@ -52,7 +51,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
 
 namespace game

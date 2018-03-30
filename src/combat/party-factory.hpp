@@ -33,6 +33,7 @@
 #include "creature/role-enum.hpp"
 #include "creature/sex-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "stats/stat-set.hpp"
 #include "stats/trait.hpp"
@@ -46,7 +47,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 }
 namespace non_player
 {
@@ -76,10 +77,10 @@ namespace combat
         non_player::PartyUPtr_t MakeParty_FirstEncounter() const;
 
     private:
-        creature::CreaturePtr_t MakeCharacter_GoblinGrunt() const;
-        creature::CreaturePtr_t MakeCharacter_Boar() const;
+        const creature::CreaturePtr_t MakeCharacter_GoblinGrunt() const;
+        const creature::CreaturePtr_t MakeCharacter_Boar() const;
 
-        creature::CreaturePtr_t MakeCharacter(
+        const creature::CreaturePtr_t MakeCharacter(
             const stats::StatSet & STATS,
             const Health_t & HEALTH_MIN,
             const Health_t & HEALTH_MAX,
@@ -93,6 +94,7 @@ namespace combat
     private:
         static std::unique_ptr<PartyFactory> instanceUPtr_;
     };
+
 } // namespace combat
 } // namespace heroespath
 

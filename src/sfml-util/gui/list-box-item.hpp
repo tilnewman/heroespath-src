@@ -54,7 +54,8 @@ namespace song
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
 
     class Title;
     using TitlePtr_t = misc::NotNull<Title *>;
@@ -150,7 +151,7 @@ namespace sfml_util
                 const song::SongPtr_t SONG_PTR_PARAM,
                 const bool IS_VALID = true);
 
-            const creature::CreaturePtr_t CHARACTER_CPTR;
+            const creature::CreaturePtrOpt_t CHARACTER_PTR_OPT;
             const state::GameStatePtr_t GAMESTATE_CPTR;
             const item::ItemPtrOpt_t ITEM_PTR_OPT;
             const creature::ConditionPtrOpt_t COND_PTR_OPT;

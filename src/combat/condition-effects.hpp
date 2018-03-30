@@ -29,7 +29,7 @@
 //
 #include "combat/hit-info.hpp"
 #include "game/phase-enum.hpp"
-
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/handy-types.hpp"
 
 #include <string>
@@ -41,7 +41,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
 
 namespace combat
@@ -54,9 +54,10 @@ namespace combat
         // if hitInfoVec_OutParam is empty return value will be false
         static bool Process(
             const game::Phase::Enum HEROESPATH_PHASE,
-            creature::CreaturePtr_t creaturePtr,
+            const creature::CreaturePtr_t CREATURE_PTR,
             HitInfoVec_t & hitInfoVec_OuParam);
     };
+
 } // namespace combat
 } // namespace heroespath
 

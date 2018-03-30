@@ -29,6 +29,7 @@
 //
 #include "creature/condition-enum.hpp"
 #include "hit-info.hpp"
+#include "misc/not-null.hpp"
 #include "stats/trait.hpp"
 
 #include <vector>
@@ -38,8 +39,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreaturePVec_t = std::vector<CreaturePtr_t>;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
 
 namespace combat
@@ -50,12 +50,12 @@ namespace combat
     {
     public:
         explicit CreatureEffect(
-            const creature::CreaturePtr_t CREATURE_PTR = nullptr,
+            const creature::CreaturePtr_t CREATURE_PTR,
             const HitInfoVec_t & HIT_INFO_VEC = HitInfoVec_t());
 
         std::size_t GetCount() const { return hitInfoVec_.size(); }
         const HitInfoVec_t & GetHitInfoVec() const { return hitInfoVec_; }
-        creature::CreaturePtr_t GetCreature() const { return creaturePtr_; }
+        const creature::CreaturePtr_t GetCreature() const { return creaturePtr_; }
 
         bool GetWasHit() const;
 

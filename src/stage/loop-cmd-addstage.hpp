@@ -31,6 +31,8 @@
 #include "sfml-util/loop-cmd.hpp"
 
 #include "game/phase-enum.hpp"
+#include "misc/assertlogandthrow.hpp"
+#include "misc/not-null.hpp"
 #include "stage/adventure-stage.hpp"
 #include "stage/camp-stage.hpp"
 #include "stage/character-stage.hpp"
@@ -46,8 +48,6 @@
 #include "stage/testing-stage.hpp"
 #include "stage/treasure-stage.hpp"
 
-#include "misc/assertlogandthrow.hpp"
-
 #include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
 #include <memory>
@@ -58,7 +58,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
 namespace stage
 {
@@ -128,16 +128,7 @@ namespace stage
             , turnCreaturePtr(TURN_CREATURE_PTR)
             , inventoryCreaturePtr(INVENTORY_CREATURE_PTR)
             , currentPhase_(CURRENT_PHASE)
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (turnCreaturePtr != nullptr),
-                "stage::LoopCmd_AddStage_Inventory() was given a nullptr TURN_CREATURE_PTR.");
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (inventoryCreaturePtr != nullptr),
-                "stage::LoopCmd_AddStage_Inventory() was given a nullptr "
-                    << "INVENTORY_CREATURE_PTR.");
-        }
+        {}
 
         virtual ~LoopCmd_AddStage_Inventory() = default;
 
@@ -156,6 +147,7 @@ namespace stage
         creature::CreaturePtr_t inventoryCreaturePtr;
         game::Phase::Enum currentPhase_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

@@ -139,7 +139,7 @@ namespace sfml_util
         {
             if (instanceUPtr_.get() == nullptr)
             {
-                M_HP_LOG_WRN("Singleton Instance() before Acquire(): GuiElements");
+                M_HP_LOG_ERR("Singleton Instance() before Acquire(): GuiElements");
                 Acquire();
             }
 
@@ -154,7 +154,7 @@ namespace sfml_util
             }
             else
             {
-                M_HP_LOG_WRN("Singleton Acquire() after Construction: GuiElements");
+                M_HP_LOG_ERR("Singleton Acquire() after Construction: GuiElements");
             }
         }
 

@@ -152,7 +152,7 @@ namespace stage
 
         namesButtonUVec_.clear();
 
-        for (auto const CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
+        for (auto const & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
             const sfml_util::gui::TextInfo TEXT_INFO{
                 CHARACTER_PTR->Name(),
@@ -193,7 +193,7 @@ namespace stage
 
         healthTextRegionsUVec_.clear();
 
-        for (auto const CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
+        for (auto const & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
             std::ostringstream ss;
             ss << CHARACTER_PTR->HealthCurrent() << "/" << CHARACTER_PTR->HealthNormal();
@@ -229,7 +229,7 @@ namespace stage
 
         manaTextRegionsUVec_.clear();
 
-        for (auto const CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
+        for (auto const & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
             std::ostringstream ss;
             ss << CHARACTER_PTR->Mana() << "/" << CHARACTER_PTR->ManaNormal();

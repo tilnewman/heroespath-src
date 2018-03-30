@@ -65,7 +65,7 @@ namespace non_player
         {
             if (instanceUPtr_.get() == nullptr)
             {
-                M_HP_LOG_WRN("Singleton Instance() before Acquire(): InventoryFactory");
+                M_HP_LOG_ERR("Singleton Instance() before Acquire(): InventoryFactory");
                 Acquire();
             }
 
@@ -80,7 +80,7 @@ namespace non_player
             }
             else
             {
-                M_HP_LOG_WRN("Singleton Acquire() after Construction: InventoryFactory");
+                M_HP_LOG_ERR("Singleton Acquire() after Construction: InventoryFactory");
             }
         }
 
@@ -94,21 +94,21 @@ namespace non_player
             instanceUPtr_.reset();
         }
 
-        void InventoryFactory::SetupCreatureInventory(creature::CreaturePtr_t creaturePtr)
+        void InventoryFactory::SetupCreatureInventory(const creature::CreaturePtr_t CREATURE_PTR)
         {
-            auto const INVENTORY_CHANCES{ ChanceFactory::Make(creaturePtr) };
-            creaturePtr->CoinsAdj(Make_Coins(INVENTORY_CHANCES));
+            auto const INVENTORY_CHANCES{ ChanceFactory::Make(CREATURE_PTR) };
+            CREATURE_PTR->CoinsAdj(Make_Coins(INVENTORY_CHANCES));
 
             //.first is for equipped items and .second is for unequipped items
-            auto const ITEM_PVEC_PAIR{ MakeItemSet(INVENTORY_CHANCES, creaturePtr) };
+            auto const ITEM_PVEC_PAIR{ MakeItemSet(INVENTORY_CHANCES, CREATURE_PTR) };
             for (auto const & NEXT_ITEM_PTR : ITEM_PVEC_PAIR.first)
             {
-                auto const ITEM_ADD_RESULT(creaturePtr->ItemAdd(NEXT_ITEM_PTR));
+                auto const ITEM_ADD_RESULT(CREATURE_PTR->ItemAdd(NEXT_ITEM_PTR));
                 if (ITEM_ADD_RESULT.empty() == false)
                 {
                     M_HP_LOG_ERR(
                         "non-player::ownership::InventoryFactory::SetupCreatureInventory"
-                        << "[to equip - add step](creature=\"" << creaturePtr->ToString()
+                        << "[to equip - add step](creature=\"" << CREATURE_PTR->ToString()
                         << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \""
                         << NEXT_ITEM_PTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT
                         << "\".  Proceeding...");
@@ -117,13 +117,13 @@ namespace non_player
                 {
                     if (NEXT_ITEM_PTR->Category() & item::category::Equippable)
                     {
-                        auto const ITEM_EQUIP_RESULT(creaturePtr->ItemEquip(NEXT_ITEM_PTR));
+                        auto const ITEM_EQUIP_RESULT(CREATURE_PTR->ItemEquip(NEXT_ITEM_PTR));
                         if (ITEM_EQUIP_RESULT.empty() == false)
                         {
                             M_HP_LOG_ERR(
                                 "non-player::ownership::InventoryFactory::"
                                 << "SetupCreatureInventory[to equip - equip step](creature=\""
-                                << creaturePtr->ToString() << "\") unable to add the item \""
+                                << CREATURE_PTR->ToString() << "\") unable to add the item \""
                                 << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc()
                                 << "\"with reported error \"" << ITEM_EQUIP_RESULT
                                 << "\".  Proceeding...");
@@ -134,19 +134,19 @@ namespace non_player
 
             for (auto const & NEXT_ITEM_PTR : ITEM_PVEC_PAIR.second)
             {
-                const std::string ITEM_ADD_RESULT(creaturePtr->ItemAdd(NEXT_ITEM_PTR));
+                const std::string ITEM_ADD_RESULT(CREATURE_PTR->ItemAdd(NEXT_ITEM_PTR));
                 if (ITEM_ADD_RESULT.empty() == false)
                 {
                     M_HP_LOG_ERR(
                         "non-player::ownership::InventoryFactory::"
                         << "SetupCreatureInventory[not to equip](creature=\""
-                        << creaturePtr->ToString() << "\") unable to add the item \""
+                        << CREATURE_PTR->ToString() << "\") unable to add the item \""
                         << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc()
                         << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
                 }
             }
 
-            creaturePtr->SetHeldWeaponsToBest();
+            CREATURE_PTR->SetHeldWeaponsToBest();
         }
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet(
@@ -577,7 +577,7 @@ namespace non_player
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_AXE_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
-                            << "(creature_name=\"" << CHARACTER_PTR->Name()
+                            << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\"" << item::weapon::axe_type::ToString(AXE_TYPE)
@@ -613,7 +613,7 @@ namespace non_player
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_BSTAFF_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons"
-                            << "(creature_name=\"" << CHARACTER_PTR->Name()
+                            << "(creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\""
@@ -651,7 +651,7 @@ namespace non_player
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_CLUB_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
-                            << "creature_name=\"" << CHARACTER_PTR->Name()
+                            << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\"" << item::weapon::club_type::ToString(CLUB_TYPE)
@@ -688,7 +688,7 @@ namespace non_player
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_PROJ_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
-                            << "creature_name=\"" << CHARACTER_PTR->Name()
+                            << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\""
@@ -717,7 +717,7 @@ namespace non_player
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_SWORD_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
-                            << "creature_name=\"" << CHARACTER_PTR->Name()
+                            << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\"" << item::weapon::sword_type::ToString(SWORD_TYPE)
@@ -745,7 +745,7 @@ namespace non_player
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         WAS_WHIP_FOUND,
                         "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
-                            << "creature_name=\"" << CHARACTER_PTR->Name()
+                            << "creature=\"" << CHARACTER_PTR->ToString()
                             << "\") randomly selected weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\"" << item::weapon::whip_type::ToString(WHIP_TYPE)
@@ -778,7 +778,7 @@ namespace non_player
                 {
                     std::ostringstream ss;
                     ss << "non_player::ownership::InventoryFactory::MakeItemSet_Weapons("
-                       << "creature_name=\"" << CHARACTER_PTR->Name()
+                       << "creature=\"" << CHARACTER_PTR->ToString()
                        << "\") failed to find a valid random selected weapon.  (weapon_type="
                        << item::weapon_type::ToString(randomSelectedWeaponType, false) << "\")";
 
@@ -853,8 +853,9 @@ namespace non_player
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     WAS_COVER_FOUND,
-                    "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\""
-                        << CHARACTER_PTR->Name() << "\") ARMOR_CHANCES.RandomCover() returned \""
+                    "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
+                        << CHARACTER_PTR->ToString()
+                        << "\") ARMOR_CHANCES.RandomCover() returned \""
                         << cover_type::ToString(COVER_PAIR.first)
                         << "\", but that item was not found in the ARMOR_CHANCES.cover_map.");
 
@@ -874,8 +875,8 @@ namespace non_player
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     WAS_HELM_FOUND,
-                    "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\""
-                        << CHARACTER_PTR->Name() << "\") ARMOR_CHANCES.RandomHelm() returned \""
+                    "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
+                        << CHARACTER_PTR->ToString() << "\") ARMOR_CHANCES.RandomHelm() returned \""
                         << helm_type::ToString(HELM_PAIR.first)
                         << "\", but that item was not found in the ARMOR_CHANCES.helm_map.");
 
@@ -896,8 +897,9 @@ namespace non_player
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     WAS_SHIELD_FOUND,
-                    "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature_name=\""
-                        << CHARACTER_PTR->Name() << "\") ARMOR_CHANCES.RandomShield() returned \""
+                    "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
+                        << CHARACTER_PTR->ToString()
+                        << "\") ARMOR_CHANCES.RandomShield() returned \""
                         << shield_type::ToString(SHIELD_PAIR.first)
                         << "\", but that item was not found in the ARMOR_CHANCES.shield_map.");
 

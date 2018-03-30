@@ -34,7 +34,9 @@
 #include "combat/turn-action-info.hpp"
 #include "creature/achievement-enum.hpp"
 #include "creature/title.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/handy-types.hpp"
+#include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/color-shaker.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
@@ -76,11 +78,9 @@ namespace creature
 {
     // forward declarations
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreatureCPtr_t = const Creature *;
-    using CreaturePtrC_t = Creature * const;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
 } // namespace creature
 
 namespace combat
@@ -254,19 +254,25 @@ namespace stage
         void StartPause(const float DURATION_SEC, const std::string & TITLE);
         void EndPause();
         void HandlePerformReportPhaseOverTasks();
-        void HandleEnemyTurnStep1_Decide();
-        TurnActionPhase HandleEnemyTurnStep2_Perform();
+        void HandleEnemyTurnStep1_Decide(const creature::CreaturePtr_t TURN_CREATURE_PTR);
+        TurnActionPhase
+            HandleEnemyTurnStep2_Perform(const creature::CreaturePtr_t TURN_CREATURE_PTR);
         void StartTurn_Step1();
-        void StartTurn_Step2();
+        void StartTurn_Step2(const creature::CreaturePtr_t TURN_CREATURE_PTR);
         void EndTurn();
-        void PositionSlideStartTasks();
+        void PositionSlideStartTasks(const creature::CreaturePtr_t TURN_CREATURE_PTR);
         bool HandleAttack();
         bool HandleFight();
-        bool HandleSong_Step1_ValidatePlayAndSelectSong();
-        void HandleSong_Step2_PerformOnTargets();
-        bool HandleCast_Step1_ValidateCastAndSelectSpell();
+        bool HandleSong_Step1_ValidatePlayAndSelectSong(
+            const creature::CreaturePtr_t TURN_CREATURE_PTR);
+        void HandleSong_Step2_PerformOnTargets(const creature::CreaturePtr_t TURN_CREATURE_PTR);
+        bool HandleCast_Step1_ValidateCastAndSelectSpell(
+            const creature::CreaturePtr_t TURN_CREATURE_PTR);
         void HandleCast_Step2_SelectTargetOrPerformOnAll();
-        void HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t creaturesToCastUponPVec);
+
+        void HandleCast_Step3_PerformOnTargets(
+            const creature::CreaturePVec_t & CREATURES_TO_CAST_UPON_PVEC);
+
         bool HandleAdvance();
         bool HandleRetreat();
         bool HandleBlock();
@@ -278,8 +284,9 @@ namespace stage
         bool HandleWeaponChange();
         bool HandleRun();
         void MoveTurnBoxObjectsOffScreen();
+
         void SetupTurnBoxButtons(
-            const creature::CreaturePtrC_t CREATURE_PTR, const bool WILL_DISABLE_ALL = false);
+            const creature::CreaturePtrOpt_t CREATURE_PTR_OPT, const bool WILL_DISABLE_ALL = false);
 
         void QuickSmallPopup(
             const std::string & PROMPT,
@@ -328,7 +335,7 @@ namespace stage
         void HandleKilledCreatures();
         void HandleApplyDamageTasks();
 
-        void HandleAttackTasks(creature::CreaturePtr_t creatureToAttackPtr);
+        void HandleAttackTasks(const creature::CreaturePtr_t CREATURE_TO_ATTACK_PTR);
 
         bool HandleMiscCancelTasks();
 
@@ -472,7 +479,7 @@ namespace stage
 
         // members that deal with which creature's turn it is and
         // the timing of taking turns
-        creature::CreaturePtr_t turnCreaturePtr_;
+        creature::CreaturePtrOpt_t turnCreaturePtrOpt_;
         sfml_util::ColorShaker goldTextColorShaker_;
         sfml_util::ColorShaker redTextColorShaker_;
         combat::TurnActionInfo turnActionInfo_;

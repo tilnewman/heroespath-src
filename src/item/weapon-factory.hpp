@@ -44,7 +44,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
 namespace item
 {
@@ -73,13 +73,13 @@ namespace item
 
             static const ItemPtr_t Make_Fists();
 
-            static const ItemPtr_t Make_Claws(creature::CreatureCPtrC_t);
+            static const ItemPtr_t Make_Claws(const creature::CreaturePtr_t);
 
-            static const ItemPtr_t Make_Tendrils(creature::CreatureCPtrC_t);
+            static const ItemPtr_t Make_Tendrils(const creature::CreaturePtr_t);
 
-            static const ItemPtr_t Make_Bite(creature::CreatureCPtrC_t);
+            static const ItemPtr_t Make_Bite(const creature::CreaturePtr_t);
 
-            static const ItemPtr_t Make_Breath(creature::CreatureCPtrC_t);
+            static const ItemPtr_t Make_Breath(const creature::CreaturePtr_t);
 
             static const ItemPtr_t Make_Knife(
                 const bool IS_DAGGER = false,

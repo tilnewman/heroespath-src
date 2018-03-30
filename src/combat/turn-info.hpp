@@ -30,6 +30,8 @@
 #include "combat/strategy-info.hpp"
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-action-info.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 #include "stats/trait.hpp"
@@ -41,16 +43,11 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreatureCPtr_t = const Creature *;
-    using CreaturePtrC_t = Creature * const;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
 } // namespace creature
 namespace combat
 {
-
-    // stores the abs of the damage
-    using DamageCreaturePair_t = std::pair<Health_t, creature::CreaturePtr_t>;
 
     // Everything needed to decide what a creature will do during their turn in combat.
     class TurnInfo
@@ -70,61 +67,102 @@ namespace combat
         strategy::Info GetStrategyInfo() const { return strategyInfo_; }
         void SetStrategyInfo(const strategy::Info & SI) { strategyInfo_ = SI; }
 
-        creature::CreaturePtr_t GetFirstAttackedByCreature() const
+        const creature::CreaturePtrOpt_t GetFirstAttackedByCreaturePtrOpt() const
         {
-            return firstAttackedByCreaturePtr_;
-        }
-        void SetFirstAttackedByCreature(creature::CreaturePtr_t P)
-        {
-            firstAttackedByCreaturePtr_ = P;
+            return firstAttackedByCreaturePtrOpt_;
         }
 
-        creature::CreaturePtr_t GetLastAttackedByCreature() const
+        void SetFirstAttackedByCreature(const creature::CreaturePtr_t CREATURE_PTR)
         {
-            return lastAttackedByCreaturePtr_;
-        }
-        void SetLastAttackedByCreature(creature::CreaturePtr_t P)
-        {
-            lastAttackedByCreaturePtr_ = P;
+            firstAttackedByCreaturePtrOpt_ = CREATURE_PTR;
         }
 
-        creature::CreaturePtr_t GetFirstHitByCreature() const { return firstHitByCreaturePtr_; }
-        void SetFirstHitByCreature(creature::CreaturePtr_t SPTR) { firstHitByCreaturePtr_ = SPTR; }
-
-        creature::CreaturePtr_t GetLastHitByCreature() const { return lastHitByCreaturePtr_; }
-        void SetLastHitByCreature(creature::CreaturePtr_t SPTR) { lastHitByCreaturePtr_ = SPTR; }
-
-        creature::CreaturePtr_t GetFirstToMakeMusicCreature() const { return firstToMakeMusicPtr_; }
-        void SetFirstToMakeMusicCreature(creature::CreaturePtr_t SPTR)
+        const creature::CreaturePtrOpt_t GetLastAttackedByCreaturePtrOpt() const
         {
-            firstToMakeMusicPtr_ = SPTR;
+            return lastAttackedByCreaturePtrOpt_;
         }
 
-        creature::CreaturePtr_t GetLastToMakeMusicCreature() const { return lastToMakeMusicPtr_; }
-        void SetLastToMakeMusicCreature(creature::CreaturePtr_t SPTR)
+        void SetLastAttackedByCreature(const creature::CreaturePtr_t CREATURE_PTR)
         {
-            lastToMakeMusicPtr_ = SPTR;
+            lastAttackedByCreaturePtrOpt_ = CREATURE_PTR;
+        }
+
+        const creature::CreaturePtrOpt_t GetFirstHitByCreaturePtrOpt() const
+        {
+            return firstHitByCreaturePtrOpt_;
+        }
+
+        void SetFirstHitByCreature(const creature::CreaturePtr_t CREATURE_PTR)
+        {
+            firstHitByCreaturePtrOpt_ = CREATURE_PTR;
+        }
+
+        const creature::CreaturePtrOpt_t GetLastHitByCreaturePtrOpt() const
+        {
+            return lastHitByCreaturePtrOpt_;
+        }
+
+        void SetLastHitByCreature(const creature::CreaturePtr_t CREATURE_PTR)
+        {
+            lastHitByCreaturePtrOpt_ = CREATURE_PTR;
+        }
+
+        const creature::CreaturePtrOpt_t GetFirstToMakeMusicCreaturePtrOpt() const
+        {
+            return firstToMakeMusicPtrOpt_;
+        }
+
+        void SetFirstToMakeMusicCreature(const creature::CreaturePtr_t CREATURE_PTR)
+        {
+            firstToMakeMusicPtrOpt_ = CREATURE_PTR;
+        }
+
+        const creature::CreaturePtrOpt_t GetLastToMakeMusicCreaturePtrOpt() const
+        {
+            return lastToMakeMusicPtrOpt_;
+        }
+
+        void SetLastToMakeMusicCreature(const creature::CreaturePtr_t CREATURE_PTR)
+        {
+            lastToMakeMusicPtrOpt_ = CREATURE_PTR;
         }
 
         bool IsFirstAttackedByAlsoFirstHitByCreature() const
         {
-            return firstAttackedByCreaturePtr_ == firstHitByCreaturePtr_;
+            return firstAttackedByCreaturePtrOpt_ == firstHitByCreaturePtrOpt_;
         }
 
         bool IsLastAttackedByAlsoLastHitByCreature() const
         {
-            return lastAttackedByCreaturePtr_ == lastHitByCreaturePtr_;
+            return lastAttackedByCreaturePtrOpt_ == lastHitByCreaturePtrOpt_;
         }
 
-        creature::CreaturePtr_t GetFirstToCastCreature() const { return firstToCastPtr_; }
-        void SetFirstToCastCreature(creature::CreaturePtr_t SPTR) { firstToCastPtr_ = SPTR; }
+        const creature::CreaturePtrOpt_t GetFirstToCastCreaturePtrOpt() const
+        {
+            return firstToCastPtrOpt_;
+        }
 
-        creature::CreaturePtr_t GetLastToCastCreature() const { return lastToCastPtr_; }
-        void SetLastToCastCreature(creature::CreaturePtr_t SPTR) { lastToCastPtr_ = SPTR; }
+        void SetFirstToCastCreature(const creature::CreaturePtr_t CREATURE_PTR)
+        {
+            firstToCastPtrOpt_ = CREATURE_PTR;
+        }
 
-        // stores the abs of the damage
-        const DamageCreaturePair_t GetMostDamageCreaturePair() const { return mostDamagePair_; }
-        void SetMostDamageCreaturePair(const DamageCreaturePair_t & P) { mostDamagePair_ = P; }
+        const creature::CreaturePtrOpt_t GetLastToCastCreaturePtrOpt() const
+        {
+            return lastToCastPtrOpt_;
+        }
+
+        void SetLastToCastCreature(const creature::CreaturePtr_t CREATURE_PTR)
+        {
+            lastToCastPtrOpt_ = CREATURE_PTR;
+        }
+
+        void UpdateMostDamagedCreature(const Health_t DAMAGE_ABS, const creature::CreaturePtr_t);
+
+        const creature::CreaturePtrOpt_t MostDamagedCreaturePtrOpt() const
+        {
+            return mostDamagedCreaturePtrOpt_;
+        }
 
         std::size_t CastCount() const { return castCount_; }
         std::size_t CastCountIncrement() { return ++castCount_; }
@@ -135,7 +173,7 @@ namespace combat
         bool GetWasHitLastTurn() const { return wasHitLastTurn_; }
         void SetWasHitLastTurn(const bool B) { wasHitLastTurn_ = B; }
 
-        void RemoveDeadCreatureTasks(creature::CreatureCPtrC_t);
+        void RemoveDeadCreatureTasks(const creature::CreaturePtr_t);
 
         friend bool operator<(const TurnInfo & L, const TurnInfo & R);
         friend bool operator==(const TurnInfo & L, const TurnInfo & R);
@@ -144,15 +182,16 @@ namespace combat
         bool isFlying_;
         TurnActionInfo turnActionInfo_;
         strategy::Info strategyInfo_;
-        creature::CreaturePtr_t firstAttackedByCreaturePtr_;
-        creature::CreaturePtr_t firstHitByCreaturePtr_;
-        creature::CreaturePtr_t lastAttackedByCreaturePtr_;
-        creature::CreaturePtr_t lastHitByCreaturePtr_;
-        creature::CreaturePtr_t firstToMakeMusicPtr_;
-        creature::CreaturePtr_t lastToMakeMusicPtr_;
-        creature::CreaturePtr_t firstToCastPtr_;
-        creature::CreaturePtr_t lastToCastPtr_;
-        DamageCreaturePair_t mostDamagePair_;
+        creature::CreaturePtrOpt_t firstAttackedByCreaturePtrOpt_;
+        creature::CreaturePtrOpt_t firstHitByCreaturePtrOpt_;
+        creature::CreaturePtrOpt_t lastAttackedByCreaturePtrOpt_;
+        creature::CreaturePtrOpt_t lastHitByCreaturePtrOpt_;
+        creature::CreaturePtrOpt_t firstToMakeMusicPtrOpt_;
+        creature::CreaturePtrOpt_t lastToMakeMusicPtrOpt_;
+        creature::CreaturePtrOpt_t firstToCastPtrOpt_;
+        creature::CreaturePtrOpt_t lastToCastPtrOpt_;
+        Health_t mostDamagedHealthAbs_;
+        creature::CreaturePtrOpt_t mostDamagedCreaturePtrOpt_;
         std::size_t castCount_;
         std::size_t songCount_;
         bool wasHitLastTurn_;

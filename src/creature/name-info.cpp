@@ -57,7 +57,7 @@ namespace creature
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): NameInfo");
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): NameInfo");
             Acquire();
         }
 
@@ -72,7 +72,7 @@ namespace creature
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: NameInfo");
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: NameInfo");
         }
     }
 

@@ -28,11 +28,10 @@
 // achievement.hpp
 //  A class that manages all the information about a particular creature Achievement.
 //
-#include "misc/boost-serialize-includes.hpp"
-
 #include "creature/achievement-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/title.hpp"
+#include "misc/boost-serialize-includes.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 
@@ -45,10 +44,6 @@ namespace heroespath
 {
 namespace creature
 {
-
-    // forward declarations
-    class Creature;
-    using CreaturePtr_t = Creature *;
 
     // Note:  Must store Titles::Enums and not TitlePtr_ts here because
     //       Achievements are serialized, and Titles cannot be serialized.

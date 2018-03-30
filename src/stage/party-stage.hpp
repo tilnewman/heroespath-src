@@ -29,6 +29,8 @@
 //  A Stage class that allows grouping of saved characters into a party.
 //
 #include "avatar/avatar-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/list-box.hpp"
@@ -42,8 +44,8 @@
 #include "sfml-util/stage.hpp"
 
 #include <memory>
-#include <set>
 #include <string>
+#include <vector>
 
 namespace heroespath
 {
@@ -55,14 +57,13 @@ namespace sfml_util
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
     } // namespace gui
 } // namespace sfml_util
-
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreaturePSet_t = std::set<CreaturePtr_t>;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace player
-
 namespace stage
 {
 
@@ -97,7 +98,7 @@ namespace stage
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &);
         virtual std::size_t NumCharactersInTheParty() const;
         virtual sfml_util::gui::ListBoxItemSPtr_t GetSelectedItemSPtr() const;
-        virtual creature::CreaturePtr_t GetSelectedCharacter() const;
+        virtual const creature::CreaturePtrOpt_t GetSelectedCharacterPtrOpt() const;
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
@@ -156,14 +157,13 @@ namespace stage
         float mouseOverBoxHeight_;
         sf::Vector2f mouseOverPosV_;
         sf::Sprite mouseOverSprite_;
-        creature::CreaturePtr_t mouseOverCharPtr_;
         sf::Texture mouseOverTexture_;
         bool isMouseOverTexture_;
         sfml_util::gui::TextRegionUPtr_t mouseOverTextRegionUPtr_;
         sfml_util::sliders::ZeroSliderOnce<float> mouseOverSlider_;
 
         //
-        creature::CreaturePSet_t charactersPSet_;
+        creature::CreaturePVec_t unplayedCharactersPVec_;
     };
 
 } // namespace stage

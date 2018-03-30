@@ -58,17 +58,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 
     BOOST_CHECK_THROW(combatTree.GetNode(0_id), std::invalid_argument);
     BOOST_CHECK_THROW(combatTree.GetNodeSPtr(0_id), std::invalid_argument);
-
-    BOOST_CHECK(combatTree.GetNode(nullptr) == nullptr);
-    BOOST_CHECK(combatTree.GetNodeSPtr(nullptr) == nullptr);
-
     BOOST_CHECK_THROW(combatTree.SetNode(0_id, combat::CombatNodeSPtr_t()), std::invalid_argument);
-
-    BOOST_CHECK_THROW(
-        combatTree.GetNodeId(combat::CombatNodePtr_t(nullptr)), std::invalid_argument);
-
-    BOOST_CHECK_THROW(
-        combatTree.GetNodeId(creature::CreaturePtr_t(nullptr)), std::invalid_argument);
 
     {
         IDVec_t ids;

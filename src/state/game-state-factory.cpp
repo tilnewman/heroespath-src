@@ -75,7 +75,7 @@ namespace state
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): GameStateFactory");
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): GameStateFactory");
             Acquire();
         }
 
@@ -90,7 +90,7 @@ namespace state
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: GameStateFactory");
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: GameStateFactory");
         }
     }
 
@@ -184,13 +184,13 @@ namespace state
     {
         Save(
             HEROESPATH_PTR,
-            nullptr,
+            boost::none,
             SAVED_HEROESPATH_DIR_NAME_,
             SAVED_HEROESPATH_FILE_NAME_,
             SAVED_HEROESPATH_FILE_EXT_);
     }
 
-    creature::CreaturePSet_t GameStateFactory::LoadAllUnplayedCharacters() const
+    const creature::CreaturePVec_t GameStateFactory::LoadAllUnplayedCharacters() const
     {
         namespace bfs = boost::filesystem;
 
@@ -198,17 +198,17 @@ namespace state
         const bfs::path DIR_OBJ(
             bfs::system_complete(bfs::current_path() / bfs::path(UNPLAYED_CHAR_DIR_NAME_)));
 
-        creature::CreaturePSet_t characterPSet;
+        creature::CreaturePVec_t characterPVec;
 
         // check for early exit cases
         if (false == bfs::exists(DIR_OBJ))
         {
-            return characterPSet;
+            return characterPVec;
         }
 
         if (false == bfs::is_directory(DIR_OBJ))
         {
-            return characterPSet;
+            return characterPVec;
         }
 
         // create a vector of paths to saved characters
@@ -235,7 +235,7 @@ namespace state
                 boost::archive::text_iarchive ia(ifs);
                 ia >> *nextCharacterPtr;
                 nextCharacterPtr->AfterSerialize();
-                characterPSet.insert(nextCharacterPtr);
+                characterPVec.emplace_back(nextCharacterPtr);
             }
             catch (const std::exception & E)
             {
@@ -253,7 +253,7 @@ namespace state
             }
         }
 
-        return characterPSet;
+        return characterPVec;
     }
 
     void GameStateFactory::SaveCharacter(const creature::CreaturePtr_t CHARACTER_PTR) const
@@ -323,7 +323,7 @@ namespace state
                     {
                         M_HP_LOG(
                             "state::GameStateFactory::DeleteUnplayedCharacterFile("
-                            << CHAR_TO_DELETE_PTR->Name() << "), while trying to delete "
+                            << CHAR_TO_DELETE_PTR->ToString() << "), while trying to delete "
                             << NEXT_PATH.string() << ", failed with error code=" << errorCode);
 
                         return false;
@@ -334,7 +334,7 @@ namespace state
             {
                 M_HP_LOG(
                     "state::GameStateFactory::DeleteUnplayedCharacterFile("
-                    << CHAR_TO_DELETE_PTR->Name()
+                    << CHAR_TO_DELETE_PTR->ToString()
                     << "), while trying to de-serialize/load saved game file \""
                     << NEXT_PATH.string() << "\", threw std::exception(\"" << E.what() << "\")");
             }
@@ -342,7 +342,7 @@ namespace state
             {
                 M_HP_LOG(
                     "state::GameStateFactory::DeleteUnplayedCharacterFile("
-                    << CHAR_TO_DELETE_PTR->Name()
+                    << CHAR_TO_DELETE_PTR->ToString()
                     << "), while trying to de-serialize/load saved game file \""
                     << NEXT_PATH.string() << "\", threw UNKNOWN exception.");
             }
@@ -353,7 +353,7 @@ namespace state
 
     void GameStateFactory::Save(
         const GameStatePtr_t HEROESPATH_PTR,
-        const creature::CreaturePtr_t CHARACTER_PTR,
+        const creature::CreaturePtrOpt_t CHARACTER_PTR_OPT,
         const std::string & DIR_STR,
         const std::string & FILE_STR,
         const std::string & EXT_STR) const
@@ -367,6 +367,7 @@ namespace state
         if (false == bfs::exists(DIR_OBJ))
         {
             boost::system::error_code ec;
+
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (bfs::create_directory(DIR_OBJ, ec)),
                 "GameStateFactory::Save() was unable to create the save game directory \""
@@ -412,10 +413,7 @@ namespace state
             }
             else
             {
-                if (CHARACTER_PTR != nullptr)
-                {
-                    oa << *CHARACTER_PTR;
-                }
+                oa << CHARACTER_PTR_OPT->Obj();
             }
         }
         catch (const std::exception & E)
@@ -438,5 +436,6 @@ namespace state
             throw std::runtime_error(ss.str());
         }
     }
+
 } // namespace state
 } // namespace heroespath

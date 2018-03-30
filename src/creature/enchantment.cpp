@@ -115,7 +115,7 @@ namespace creature
         return ss.str();
     }
 
-    void Enchantment::UseEffect(CreaturePtr_t)
+    void Enchantment::UseEffect(const CreaturePtr_t)
     {
         switch (effectType_)
         {

@@ -678,7 +678,7 @@ namespace sfml_util
 
             auto const DOES_IMAGE_EXIST{ (
                 listBoxItemSPtr->ITEM_PTR_OPT || listBoxItemSPtr->TITLE_PTR_OPT
-                || (listBoxItemSPtr->CHARACTER_CPTR != nullptr) || listBoxItemSPtr->SPELL_PTR_OPT
+                || listBoxItemSPtr->CHARACTER_PTR_OPT || listBoxItemSPtr->SPELL_PTR_OPT
                 || listBoxItemSPtr->COND_PTR_OPT || listBoxItemSPtr->SONG_PTR_OPT) };
 
             if (DOES_IMAGE_EXIST)
@@ -699,11 +699,11 @@ namespace sfml_util
                         sfml_util::gui::TitleImageManager::Instance()->Get(
                             *imagePair.first, listBoxItemSPtr->TITLE_PTR_OPT->Obj().Which());
                     }
-                    else if (listBoxItemSPtr->CHARACTER_CPTR != nullptr)
+                    else if (listBoxItemSPtr->CHARACTER_PTR_OPT)
                     {
                         sfml_util::gui::CreatureImageManager::Instance()->GetImage(
                             *imagePair.first,
-                            listBoxItemSPtr->CHARACTER_CPTR->ImageFilename(),
+                            listBoxItemSPtr->CHARACTER_PTR_OPT->Obj().ImageFilename(),
                             true);
                     }
                     else if (listBoxItemSPtr->SPELL_PTR_OPT)

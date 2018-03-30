@@ -28,6 +28,7 @@
 // turn-info.cpp
 //
 #include "turn-info.hpp"
+#include "creature/creature.hpp"
 
 #include <tuple>
 
@@ -43,65 +44,79 @@ namespace combat
         : isFlying_(IS_FLYING)
         , turnActionInfo_(TURN_STATE)
         , strategyInfo_(STRATEGY_INFO)
-        , firstAttackedByCreaturePtr_(nullptr)
-        , firstHitByCreaturePtr_(nullptr)
-        , lastAttackedByCreaturePtr_(nullptr)
-        , lastHitByCreaturePtr_(nullptr)
-        , firstToMakeMusicPtr_(nullptr)
-        , lastToMakeMusicPtr_(nullptr)
-        , firstToCastPtr_(nullptr)
-        , lastToCastPtr_(nullptr)
-        , mostDamagePair_(std::make_pair(0_health, nullptr))
+        , firstAttackedByCreaturePtrOpt_(boost::none)
+        , firstHitByCreaturePtrOpt_(boost::none)
+        , lastAttackedByCreaturePtrOpt_(boost::none)
+        , lastHitByCreaturePtrOpt_(boost::none)
+        , firstToMakeMusicPtrOpt_(boost::none)
+        , lastToMakeMusicPtrOpt_(boost::none)
+        , firstToCastPtrOpt_(boost::none)
+        , lastToCastPtrOpt_(boost::none)
+        , mostDamagedHealthAbs_(0_health)
+        , mostDamagedCreaturePtrOpt_(boost::none)
         , castCount_(0)
         , songCount_(0)
         , wasHitLastTurn_(false)
     {}
 
-    void TurnInfo::RemoveDeadCreatureTasks(creature::CreatureCPtrC_t CREATURE_CPTRC)
+    void TurnInfo::UpdateMostDamagedCreature(
+        const Health_t DAMAGE_ABS, const creature::CreaturePtr_t CREATURE_PTR)
     {
-        if (firstAttackedByCreaturePtr_ == CREATURE_CPTRC)
+        if (DAMAGE_ABS > mostDamagedHealthAbs_)
         {
-            firstAttackedByCreaturePtr_ = nullptr;
+            mostDamagedHealthAbs_ = DAMAGE_ABS;
+            mostDamagedCreaturePtrOpt_ = CREATURE_PTR;
+        }
+    }
+
+    void TurnInfo::RemoveDeadCreatureTasks(const creature::CreaturePtr_t CREATURE_PTR)
+    {
+        auto const CREATURE_PTR_OPT{ creature::CreaturePtrOpt_t(CREATURE_PTR) };
+
+        if (firstAttackedByCreaturePtrOpt_ == CREATURE_PTR_OPT)
+        {
+            firstAttackedByCreaturePtrOpt_ = boost::none;
         }
 
-        if (firstHitByCreaturePtr_ == CREATURE_CPTRC)
+        if (firstHitByCreaturePtrOpt_ == CREATURE_PTR_OPT)
         {
-            firstHitByCreaturePtr_ = nullptr;
+            firstHitByCreaturePtrOpt_ = boost::none;
         }
 
-        if (lastAttackedByCreaturePtr_ == CREATURE_CPTRC)
+        if (lastAttackedByCreaturePtrOpt_ == CREATURE_PTR_OPT)
         {
-            lastAttackedByCreaturePtr_ = nullptr;
+            lastAttackedByCreaturePtrOpt_ = boost::none;
         }
 
-        if (lastHitByCreaturePtr_ == CREATURE_CPTRC)
+        if (lastHitByCreaturePtrOpt_ == CREATURE_PTR_OPT)
         {
-            lastHitByCreaturePtr_ = nullptr;
+            lastHitByCreaturePtrOpt_ = boost::none;
         }
 
-        if (firstToMakeMusicPtr_ == CREATURE_CPTRC)
+        if (firstToMakeMusicPtrOpt_ == CREATURE_PTR_OPT)
         {
-            firstToMakeMusicPtr_ = nullptr;
+            firstToMakeMusicPtrOpt_ = boost::none;
         }
 
-        if (lastToMakeMusicPtr_ == CREATURE_CPTRC)
+        if (lastToMakeMusicPtrOpt_ == CREATURE_PTR_OPT)
         {
-            lastToMakeMusicPtr_ = nullptr;
+            lastToMakeMusicPtrOpt_ = boost::none;
         }
 
-        if (firstToCastPtr_ == CREATURE_CPTRC)
+        if (firstToCastPtrOpt_ == CREATURE_PTR_OPT)
         {
-            firstToCastPtr_ = nullptr;
+            firstToCastPtrOpt_ = boost::none;
         }
 
-        if (lastToCastPtr_ == CREATURE_CPTRC)
+        if (lastToCastPtrOpt_ == CREATURE_PTR_OPT)
         {
-            lastToCastPtr_ = nullptr;
+            lastToCastPtrOpt_ = boost::none;
         }
 
-        if (mostDamagePair_.second == CREATURE_CPTRC)
+        if (mostDamagedCreaturePtrOpt_ == CREATURE_PTR_OPT)
         {
-            mostDamagePair_ = std::make_pair(0_health, nullptr);
+            mostDamagedCreaturePtrOpt_ = boost::none;
+            mostDamagedHealthAbs_ = 0_health;
         }
     }
 
@@ -111,15 +126,16 @@ namespace combat
                    L.isFlying_,
                    L.turnActionInfo_,
                    L.strategyInfo_,
-                   L.firstAttackedByCreaturePtr_,
-                   L.firstHitByCreaturePtr_,
-                   L.lastAttackedByCreaturePtr_,
-                   L.lastHitByCreaturePtr_,
-                   L.firstToMakeMusicPtr_,
-                   L.lastToMakeMusicPtr_,
-                   L.firstToCastPtr_,
-                   L.lastToCastPtr_,
-                   L.mostDamagePair_,
+                   L.firstAttackedByCreaturePtrOpt_,
+                   L.firstHitByCreaturePtrOpt_,
+                   L.lastAttackedByCreaturePtrOpt_,
+                   L.lastHitByCreaturePtrOpt_,
+                   L.firstToMakeMusicPtrOpt_,
+                   L.lastToMakeMusicPtrOpt_,
+                   L.firstToCastPtrOpt_,
+                   L.lastToCastPtrOpt_,
+                   L.mostDamagedHealthAbs_,
+                   L.mostDamagedCreaturePtrOpt_,
                    L.castCount_,
                    L.songCount_,
                    L.wasHitLastTurn_)
@@ -127,15 +143,16 @@ namespace combat
                    R.isFlying_,
                    R.turnActionInfo_,
                    R.strategyInfo_,
-                   R.firstAttackedByCreaturePtr_,
-                   R.firstHitByCreaturePtr_,
-                   R.lastAttackedByCreaturePtr_,
-                   R.lastHitByCreaturePtr_,
-                   R.firstToMakeMusicPtr_,
-                   R.lastToMakeMusicPtr_,
-                   R.firstToCastPtr_,
-                   R.lastToCastPtr_,
-                   R.mostDamagePair_,
+                   R.firstAttackedByCreaturePtrOpt_,
+                   R.firstHitByCreaturePtrOpt_,
+                   R.lastAttackedByCreaturePtrOpt_,
+                   R.lastHitByCreaturePtrOpt_,
+                   R.firstToMakeMusicPtrOpt_,
+                   R.lastToMakeMusicPtrOpt_,
+                   R.firstToCastPtrOpt_,
+                   R.lastToCastPtrOpt_,
+                   R.mostDamagedHealthAbs_,
+                   R.mostDamagedCreaturePtrOpt_,
                    R.castCount_,
                    R.songCount_,
                    R.wasHitLastTurn_);
@@ -147,15 +164,16 @@ namespace combat
                    L.isFlying_,
                    L.turnActionInfo_,
                    L.strategyInfo_,
-                   L.firstAttackedByCreaturePtr_,
-                   L.firstHitByCreaturePtr_,
-                   L.lastAttackedByCreaturePtr_,
-                   L.lastHitByCreaturePtr_,
-                   L.firstToMakeMusicPtr_,
-                   L.lastToMakeMusicPtr_,
-                   L.firstToCastPtr_,
-                   L.lastToCastPtr_,
-                   L.mostDamagePair_,
+                   L.firstAttackedByCreaturePtrOpt_,
+                   L.firstHitByCreaturePtrOpt_,
+                   L.lastAttackedByCreaturePtrOpt_,
+                   L.lastHitByCreaturePtrOpt_,
+                   L.firstToMakeMusicPtrOpt_,
+                   L.lastToMakeMusicPtrOpt_,
+                   L.firstToCastPtrOpt_,
+                   L.lastToCastPtrOpt_,
+                   L.mostDamagedHealthAbs_,
+                   L.mostDamagedCreaturePtrOpt_,
                    L.castCount_,
                    L.songCount_,
                    L.wasHitLastTurn_)
@@ -163,18 +181,20 @@ namespace combat
                    R.isFlying_,
                    R.turnActionInfo_,
                    R.strategyInfo_,
-                   R.firstAttackedByCreaturePtr_,
-                   R.firstHitByCreaturePtr_,
-                   R.lastAttackedByCreaturePtr_,
-                   R.lastHitByCreaturePtr_,
-                   R.firstToMakeMusicPtr_,
-                   R.lastToMakeMusicPtr_,
-                   R.firstToCastPtr_,
-                   R.lastToCastPtr_,
-                   R.mostDamagePair_,
+                   R.firstAttackedByCreaturePtrOpt_,
+                   R.firstHitByCreaturePtrOpt_,
+                   R.lastAttackedByCreaturePtrOpt_,
+                   R.lastHitByCreaturePtrOpt_,
+                   R.firstToMakeMusicPtrOpt_,
+                   R.lastToMakeMusicPtrOpt_,
+                   R.firstToCastPtrOpt_,
+                   R.lastToCastPtrOpt_,
+                   R.mostDamagedHealthAbs_,
+                   R.mostDamagedCreaturePtrOpt_,
                    R.castCount_,
                    R.songCount_,
                    R.wasHitLastTurn_);
     }
+
 } // namespace combat
 } // namespace heroespath

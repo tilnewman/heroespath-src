@@ -92,9 +92,9 @@ namespace combat
     };
 
     const std::string Text::MouseOverTextAttackStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
+        const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
@@ -102,13 +102,13 @@ namespace combat
 
         creature::CreaturePVec_t ignoredPVec;
         if (COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(
-                ignoredPVec, CREATURE_CPTRC, !CREATURE_CPTRC->IsPlayerCharacter())
+                ignoredPVec, CREATURE_PTR, !CREATURE_PTR->IsPlayerCharacter())
             == 0)
         {
             return "Cannot Attack because there are no enemies in range.";
         }
 
-        if (CREATURE_CPTRC->HasWeaponsHeld() == false)
+        if (CREATURE_PTR->HasWeaponsHeld() == false)
         {
             return "Cannot Attack because no weapons are held.";
         }
@@ -117,31 +117,31 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextFightStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
+        const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
             return CAN_TAKE_ACTION_STR;
 
         creature::CreaturePVec_t ignoredPVec;
         if (COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(
-                ignoredPVec, CREATURE_CPTRC, !CREATURE_CPTRC->IsPlayerCharacter())
+                ignoredPVec, CREATURE_PTR, !CREATURE_PTR->IsPlayerCharacter())
             == 0)
         {
             return "Cannot Fight because there are no enemies in range.";
         }
 
-        if (CREATURE_CPTRC->HasWeaponsHeld() == false)
+        if (CREATURE_PTR->HasWeaponsHeld() == false)
         {
             return "Cannot Fight because no weapons are held.";
         }
         return TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_;
     }
 
-    const std::string Text::MouseOverTextPlayStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
+    const std::string
+        Text::MouseOverTextPlayStr(const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t)
     {
-        auto const CAN_PLAY_STR(CREATURE_CPTRC->CanPlaySongsStr());
+        auto const CAN_PLAY_STR(CREATURE_PTR->CanPlaySongsStr());
         if (CAN_PLAY_STR.empty() == false)
         {
             return CAN_PLAY_STR;
@@ -150,10 +150,10 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_PLAY_;
     }
 
-    const std::string Text::MouseOverTextCastStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
+    const std::string
+        Text::MouseOverTextCastStr(const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t)
     {
-        auto const CAN_CAST_STR(CREATURE_CPTRC->CanCastSpellsStr());
+        auto const CAN_CAST_STR(CREATURE_PTR->CanCastSpellsStr());
         if (CAN_CAST_STR.empty() == false)
         {
             return CAN_CAST_STR;
@@ -163,15 +163,15 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextAdvanceStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
+        const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
         }
 
-        auto const CAN_ADVANCE_STR(COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_CPTRC, true));
+        auto const CAN_ADVANCE_STR(COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_PTR, true));
 
         if (CAN_ADVANCE_STR.empty() == false)
         {
@@ -182,16 +182,15 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextRetreatStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
+        const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
         }
 
-        auto const CAN_RETREAT_STR(
-            COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_CPTRC, false));
+        auto const CAN_RETREAT_STR(COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_PTR, false));
 
         if (CAN_RETREAT_STR.empty() == false)
         {
@@ -202,9 +201,9 @@ namespace combat
     }
 
     const std::string Text::MouseOverTextBlockStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
+        const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
@@ -213,38 +212,38 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_BLOCK_;
     }
 
-    const std::string Text::MouseOverTextFlyStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
+    const std::string
+        Text::MouseOverTextFlyStr(const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
         }
 
-        if (Encounter::Instance()->GetTurnInfoCopy(CREATURE_CPTRC).GetIsFlying())
+        if (Encounter::Instance()->GetTurnInfoCopy(CREATURE_PTR).GetIsFlying())
         {
             return "Cannot Fly because already flying.";
         }
 
-        if (CREATURE_CPTRC->CanFly() == false)
+        if (CREATURE_PTR->CanFly() == false)
         {
-            return CREATURE_CPTRC->RaceName() + "s cannot fly.";
+            return CREATURE_PTR->RaceName() + "s cannot fly.";
         }
 
         return TBOX_BUTTON_MOUSEHOVER_TEXT_FLY_;
     }
 
-    const std::string Text::MouseOverTextLandStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
+    const std::string
+        Text::MouseOverTextLandStr(const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
         }
 
-        if (Encounter::Instance()->GetTurnInfoCopy(CREATURE_CPTRC).GetIsFlying() == false)
+        if (Encounter::Instance()->GetTurnInfoCopy(CREATURE_PTR).GetIsFlying() == false)
         {
             return "Cannot Land because not currently flying.";
         }
@@ -252,36 +251,36 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_LAND_;
     }
 
-    const std::string Text::MouseOverTextRoarStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
+    const std::string
+        Text::MouseOverTextRoarStr(const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
         }
 
-        if (CREATURE_CPTRC->IsBeast() == false)
+        if (CREATURE_PTR->IsBeast() == false)
         {
-            return "Cannot Roar because " + CREATURE_CPTRC->Name() + " is not a beast.";
+            return "Cannot Roar because " + CREATURE_PTR->Name() + " is not a beast.";
         }
 
         return TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_;
     }
 
     const std::string
-        Text::MouseOverTextPounceStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t)
+        Text::MouseOverTextPounceStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t)
     {
         /*
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
         }
 
-        if (CREATURE_CPTRC->IsBeast() == false)
+        if (CREATURE_PTR->IsBeast() == false)
         {
-            return "Cannot Pounce because " + CREATURE_CPTRC->Name() + " is a not a beast.";
+            return "Cannot Pounce because " + CREATURE_PTR->Name() + " is a not a beast.";
         }
 
         return TBOX_BUTTON_MOUSEHOVER_TEXT_POUNCE_;
@@ -290,10 +289,10 @@ namespace combat
         return "Pounce is not yet implemented.";
     }
 
-    const std::string Text::MouseOverTextRunStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
+    const std::string
+        Text::MouseOverTextRunStr(const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
@@ -302,10 +301,10 @@ namespace combat
         return TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_;
     }
 
-    const std::string Text::MouseOverTextSkipStr(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, CombatDisplayCPtrC_t)
+    const std::string
+        Text::MouseOverTextSkipStr(const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_CPTRC->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
         if (CAN_TAKE_ACTION_STR.empty())
         {
             return "Cannot skip a turn if able to block.  Try blocking instead.";

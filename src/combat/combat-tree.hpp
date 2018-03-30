@@ -33,7 +33,7 @@
 //
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
-
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 
 #include <list>
@@ -48,9 +48,8 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
-
 namespace combat
 {
 
@@ -143,10 +142,10 @@ namespace combat
         CombatNodeSPtr_t GetNodeSPtr(const ID_t & ID) const;
 
         // returns nullptr if creature does not exist
-        CombatNodePtr_t GetNode(creature::CreatureCPtrC_t) const;
+        CombatNodePtr_t GetNode(const creature::CreaturePtr_t) const;
 
         // returns nullptr if creature does not exist
-        CombatNodeSPtr_t GetNodeSPtr(creature::CreatureCPtrC_t) const;
+        CombatNodeSPtr_t GetNodeSPtr(const creature::CreaturePtr_t) const;
 
         // throws std::invalid_argument if ID does not exist
         void SetNode(const ID_t & ID, const CombatNodeSPtr_t & NODE_SPTR);
@@ -155,7 +154,7 @@ namespace combat
         ID_t GetNodeId(const CombatNodePtr_t) const;
 
         // throws std::invalid_argument if creature does not exist
-        ID_t GetNodeId(creature::CreatureCPtrC_t) const;
+        ID_t GetNodeId(const creature::CreaturePtr_t) const;
 
         std::size_t GetNodeIds(IDVec_t & IdVec_OutParam, const creature::role::Enum ROLE);
         std::size_t GetNodeIds(IDVec_t & IdVec_OutParam, const creature::race::Enum RACE);
@@ -274,10 +273,11 @@ namespace combat
 
         void GetCombatNodesOfPlayerType(CombatNodePVec_t &, const bool FIND_PLAYERS) const;
 
-        int GetBlockingDistanceBetween(creature::CreatureCPtrC_t, creature::CreatureCPtrC_t) const;
+        int GetBlockingDistanceBetween(
+            const creature::CreaturePtr_t, const creature::CreaturePtr_t) const;
 
         int GetClosestBlockingDistanceByType(
-            creature::CreatureCPtrC_t, const bool WILL_FIND_PLAYERS) const;
+            const creature::CreaturePtr_t, const bool WILL_FIND_PLAYERS) const;
 
         const CombatNodePVec_t FindNodesClosestOfType(
             const int ORIGIN_BLOCKING_POS, const bool WILL_FIND_PLAYERS) const;
@@ -298,6 +298,7 @@ namespace combat
     {
         return !(L == R);
     }
+
 } // namespace combat
 } // namespace heroespath
 

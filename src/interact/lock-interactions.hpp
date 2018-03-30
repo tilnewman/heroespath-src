@@ -27,7 +27,9 @@
 //
 // lock-interactions.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/handy-types.hpp"
+#include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/sound-effects-enum.hpp"
 #include <string>
@@ -37,7 +39,8 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
 } // namespace creature
 namespace interact
 {
@@ -67,7 +70,7 @@ namespace interact
         bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
             popup::IPopupHandler_t * const);
 
-        creature::CreaturePtr_t Character() { return characterPtr_; }
+        const creature::CreaturePtrOpt_t CharacterPtrOpt() { return characterPtrOpt_; }
 
     private:
         const misc::StrVec_t MakeInvalidLockPickCharacterMessages() const;
@@ -87,8 +90,9 @@ namespace interact
         static const std::string POPUP_NAME_TITLE_ARCHIEVED_;
 
     private:
-        creature::CreaturePtr_t characterPtr_;
+        creature::CreaturePtrOpt_t characterPtrOpt_;
     };
+
 } // namespace interact
 } // namespace heroespath
 

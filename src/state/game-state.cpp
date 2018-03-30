@@ -76,6 +76,8 @@ namespace state
         {
             creaturePtr->BeforeSerialize();
         }
+
+        partyUPtr_->BeforeSerialize();
     }
 
     void GameState::AfterSerialize()
@@ -83,6 +85,8 @@ namespace state
         M_ASSERT_OR_LOGANDTHROW_SS(
             (partyUPtr_.get() != nullptr),
             "state::GameState::AfterSerialize() called when the partyUptr_ was null.");
+
+        partyUPtr_->AfterSerialize();
 
         for (auto creaturePtr : partyUPtr_->Characters())
         {

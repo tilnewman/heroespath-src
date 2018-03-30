@@ -106,7 +106,6 @@ BOOST_AUTO_TEST_CASE(Warehouse_StoreAndFree)
     BOOST_CHECK(Counted::refCount() == 2);
 
     warehouse.free(ptr1);
-    BOOST_CHECK(ptr1 == nullptr);
     BOOST_CHECK(Counted::refCount() == 1);
 
     BOOST_CHECK_MESSAGE(
@@ -123,7 +122,6 @@ BOOST_AUTO_TEST_CASE(Warehouse_StoreAndFree)
     warehouse.free(ptr2);
     warehouse.free(ptr3);
 
-    BOOST_CHECK(ptr2 == nullptr);
     BOOST_CHECK(Counted::refCount() == 0);
 
     BOOST_CHECK_MESSAGE(

@@ -66,18 +66,6 @@ namespace combat
         , songPtrOpt_(SONG_PTR)
     {}
 
-    creature::CreaturePtr_t TurnActionInfo::Target() const
-    {
-        if (targetsPVec_.empty())
-        {
-            return nullptr;
-        }
-        else
-        {
-            return targetsPVec_[0];
-        }
-    }
-
     const std::string TurnActionInfo::ToString() const
     {
         std::ostringstream ss;
@@ -96,16 +84,9 @@ namespace combat
 
         ss << ", targets=";
 
-        for (auto const CREATURE_PTR : targetsPVec_)
+        for (auto const & CREATURE_PTR : targetsPVec_)
         {
-            if (CREATURE_PTR == nullptr)
-            {
-                ss << "null, ";
-            }
-            else
-            {
-                ss << CREATURE_PTR->Name() << ", ";
-            }
+            ss << CREATURE_PTR->Name() << ", ";
         }
 
         ss << "}";

@@ -67,7 +67,7 @@ namespace interact
 
             bool DoesPartyHaveBeasts(const player::Party & party)
             {
-                for (auto const CHARACTER_PTR : party.Characters())
+                for (auto const & CHARACTER_PTR : party.Characters())
                 {
                     if (CHARACTER_PTR->IsBeast())
                     {
@@ -80,7 +80,7 @@ namespace interact
 
             bool DoesPartyHaveWolfens(const player::Party & party)
             {
-                for (auto const CHARACTER_PTR : party.Characters())
+                for (auto const & CHARACTER_PTR : party.Characters())
                 {
                     if (CHARACTER_PTR->Race() == creature::race::Wolfen)
                     {
@@ -104,6 +104,7 @@ namespace interact
                     return s;
                 }
             }
+
         } // namespace compose
     } // namespace talk
 } // namespace interact

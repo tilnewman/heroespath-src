@@ -29,7 +29,8 @@
 //  A class that handles drawing the combat tree.
 //
 #include "combat/combat-tree.hpp"
-#include "creature/creature.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/gui/gui-entity-slider.hpp"
 #include "sfml-util/i-callback-handler.hpp"
@@ -43,6 +44,13 @@
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
+}
 namespace sfml_util
 {
     namespace gui
@@ -92,10 +100,6 @@ namespace combat
 
     using NodePosTrackerMap_t = misc::VectorMap<CombatNodePtr_t, NodePosTracker>;
 
-    // this type maps an individual creature to a specific blocking position
-    // used by players/users to save a blocking pattern they prefer
-    using BlockingMap_t = misc::VectorMap<creature::UniqueTraits_t, int>;
-
     using CombatNodeToIGuiEntityMap_t
         = misc::VectorMap<CombatNodeSPtr_t, sfml_util::gui::IGuiEntityPtr_t>;
 
@@ -140,26 +144,26 @@ namespace combat
         void MoveBattlefieldHoriz(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
 
         const creature::CreaturePVec_t FindClosestLivingByType(
-            creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_FIND_PLAYERS) const;
+            const creature::CreaturePtr_t CREATURE_PTR, const bool WILL_FIND_PLAYERS) const;
 
         const creature::CreaturePVec_t FindClosestLiving(
-            creature::CreatureCPtrC_t CREATURE_CPTRC,
+            const creature::CreaturePtr_t CREATURE_PTR,
             const creature::CreaturePVec_t & AMONG_PVEC) const;
 
         std::size_t FindCreaturesThatCanBeAttackedOfType(
             creature::CreaturePVec_t & pVec_OutParam,
-            const creature::CreaturePtrC_t CREATURE_CPTRC,
+            const creature::CreaturePtr_t CREATURE_PTR,
             const bool WILL_FIND_PLAYERS) const;
 
         std::size_t FindCreaturesAllRoundOfType(
             creature::CreaturePVec_t & pVec_OutParam,
-            creature::CreatureCPtrC_t CREATURE_CPTRC,
+            const creature::CreaturePtr_t CREATURE_PTR,
             const bool WILL_FIND_PLAYERS,
             const bool LIVING_ONLY = false) const;
 
         std::size_t FindCreaturesInSameBlockingPosOfType(
             creature::CreaturePVec_t & pVec_OutParam,
-            creature::CreatureCPtrC_t CREATURE_CPTRC,
+            const creature::CreaturePtr_t CREATURE_PTR,
             const bool WILL_FIND_PLAYERS) const;
 
         std::size_t FindCreaturesAtBlockingPosOfType(
@@ -167,39 +171,38 @@ namespace combat
             const int BLOCKING_POS,
             const bool WILL_FIND_PLAYERS) const;
 
-        int FindBlockingPos(const creature::CreaturePtrC_t CREATURE_CPTRC) const;
+        int FindBlockingPos(const creature::CreaturePtr_t CREATURE_PTR) const;
 
         const creature::CreaturePVec_t FindClosestAmongOfType(
-            const creature::CreaturePtrC_t CREATURE_OF_ORIGIN_CPTRC,
+            const creature::CreaturePtr_t CREATURE_OF_ORIGIN_PTR,
             const creature::CreaturePVec_t & CREATURES_TO_FIND_AMONG_PVEC,
             const bool WILL_FIND_PLAYERS) const;
 
         bool IsCreatureAPossibleFightTarget(
-            const creature::CreaturePtrC_t CREATURE_FIGHTING_CPTRC,
-            const creature::CreaturePtrC_t CREATURE_TARGETED_CPTRC) const;
+            const creature::CreaturePtr_t CREATURE_FIGHTING_PTR,
+            const creature::CreaturePtr_t CREATURE_TARGETED_PTR) const;
 
-        CombatNodePtr_t GetCombatNodeForCreature(creature::CreatureCPtrC_t) const;
+        CombatNodePtr_t GetCombatNodeForCreature(const creature::CreaturePtr_t) const;
         CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
 
         // returns explanation of why not or an empty string if can
         const std::string CanAdvanceOrRetreat(
-            const creature::CreaturePtr_t CREATURE_CPTRC, const bool TRYING_TO_ADVANCE) const;
+            const creature::CreaturePtr_t CREATURE_PTR, const bool TRYING_TO_ADVANCE) const;
 
-        creature::CreaturePtr_t GetCreatureAtPos(const sf::Vector2f &);
+        const creature::CreaturePtrOpt_t GetCreatureAtPosPtrOpt(const sf::Vector2f &);
 
         void MoveCreatureBlockingPosition(
-            creature::CreatureCPtrC_t CREATURE_PTR, const bool WILL_MOVE_FORWARD);
+            const creature::CreaturePtr_t CREATURE_PTR, const bool WILL_MOVE_FORWARD);
 
         void CancelSummaryViewAndStartTransitionBack();
 
-        void
-            HandleFlyingChange(const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_FLYING);
+        void HandleFlyingChange(const creature::CreaturePtr_t CREATURE_PTR, const bool IS_FLYING);
 
         void HandleEndOfTurnTasks();
 
         void UpdateHealthTasks();
 
-        bool IsCreatureVisible(creature::CreatureCPtrC_t) const;
+        bool IsCreatureVisible(const creature::CreaturePtr_t) const;
 
         bool AreAllCreaturesVisible(const creature::CreaturePVec_t &);
 
@@ -208,7 +211,7 @@ namespace combat
         const sf::Vector2f FindCenterOfCreatures(const creature::CreaturePVec_t &) const;
 
         void SetCreatureHighlight(
-            creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_HIGHLIGHT);
+            const creature::CreaturePtr_t CREATURE_PTR, const bool WILL_HIGHLIGHT);
 
         void InitialPlayerPartyCombatTreeSetup();
 
@@ -219,14 +222,13 @@ namespace combat
         void SetIsPlayerTurn(const bool B) { isPlayerTurn_ = B; }
 
         int GetBlockingDistanceBetween(
-            const creature::CreaturePtrC_t & A_CPTRC,
-            const creature::CreaturePtrC_t & B_CPTRC) const
+            const creature::CreaturePtr_t & A_PTR, const creature::CreaturePtr_t & B_PTR) const
         {
-            return combatTree_.GetBlockingDistanceBetween(A_CPTRC, B_CPTRC);
+            return combatTree_.GetBlockingDistanceBetween(A_PTR, B_PTR);
         }
 
         int GetClosestBlockingDistanceByType(
-            const creature::CreaturePtrC_t & CPTRC, const bool WILL_FIND_PLAYERS) const
+            const creature::CreaturePtr_t & CPTRC, const bool WILL_FIND_PLAYERS) const
         {
             return combatTree_.GetClosestBlockingDistanceByType(CPTRC, WILL_FIND_PLAYERS);
         }
@@ -300,7 +302,6 @@ namespace combat
 
     public:
         static const float BATTLEFIELD_MARGIN_;
-        static BlockingMap_t blockingMap_;
         static const float POSITIONING_CELL_SIZE_RATIO_MIN_HORIZ_;
         static const float POSITIONING_CELL_SIZE_RATIO_MAX_HORIZ_;
         static const float POSITIONING_CELL_SIZE_RATIO_MIN_VERT_;

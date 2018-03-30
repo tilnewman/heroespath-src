@@ -45,10 +45,8 @@ namespace heroespath
 namespace creature
 {
 
-    // forward declarations
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreaturePtrC_t = Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 
     // Responsible for all state and operation of all Conditions in the game.
     class Condition
@@ -75,11 +73,11 @@ namespace creature
         const stats::TraitSet Traits() const { return traitSet_; }
 
         // These two functions do not alter traits
-        void InitialChange(CreaturePtrC_t) const;
-        void FinalChange(CreaturePtrC_t) const;
+        void InitialChange(const CreaturePtr_t) const;
+        void FinalChange(const CreaturePtr_t) const;
 
         void PerTurnEffect(
-            CreaturePtr_t creaturePtr,
+            const CreaturePtr_t CREATURE_PTR,
             combat::HitInfoVec_t & hitInfoVec,
             bool & hasTurnBeenConsumed) const;
 

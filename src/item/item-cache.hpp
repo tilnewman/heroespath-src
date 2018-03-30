@@ -47,10 +47,6 @@ namespace item
     {
         ItemCache();
 
-        Coin_t coins{ 0_coin };
-        Gem_t gems{ 0_gem };
-        ItemPVec_t items_pvec;
-
         // coins and gems weigh nothing
         Weight_t Weight() const;
 
@@ -60,6 +56,12 @@ namespace item
         {
             return ((0_coin == coins) && (0_gem == gems) && (items_pvec.empty() == false));
         }
+
+        void Reset();
+
+        Coin_t coins;
+        Gem_t gems;
+        ItemPVec_t items_pvec;
     };
 
 } // namespace item

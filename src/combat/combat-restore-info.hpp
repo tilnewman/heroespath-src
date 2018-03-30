@@ -27,6 +27,7 @@
 //
 // combat-restore-info.hpp
 //
+#include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include <vector>
@@ -35,9 +36,8 @@ namespace heroespath
 {
 namespace creature
 {
-    // forward declarations
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
 namespace combat

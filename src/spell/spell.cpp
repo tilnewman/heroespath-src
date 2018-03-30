@@ -94,7 +94,7 @@ namespace spell
     }
 
     const combat::ContentAndNamePos
-        Spell::ActionPhrase(creature::CreaturePtr_t creatureCastUponPtr) const
+        Spell::ActionPhrase(const creature::CreaturePtr_t CREATURE_CAST_UPON_PTR) const
     {
         switch (Which())
         {
@@ -175,7 +175,7 @@ namespace spell
                 return combat::ContentAndNamePos(
                     "",
                     "'s magic forces ",
-                    " to " + creature::sex::HisHerIts(creatureCastUponPtr->Sex(), false, false)
+                    " to " + creature::sex::HisHerIts(CREATURE_CAST_UPON_PTR->Sex(), false, false)
                         + " feet.",
                     combat::NamePosition::SourceThenTarget);
             }
@@ -214,7 +214,7 @@ namespace spell
             {
                 std::ostringstream ss;
                 ss << "spell::Spell::ActionPhrase(creatureCastUpon="
-                   << ((creatureCastUponPtr == nullptr) ? "null" : creatureCastUponPtr->Name())
+                   << CREATURE_CAST_UPON_PTR->ToString()
                    << ") was called when Which() was invalid (" << Which() << ").";
 
                 throw std::runtime_error(ss.str());
@@ -223,8 +223,8 @@ namespace spell
     }
 
     bool Spell::EffectCreature(
-        creature::CreaturePtr_t castingCreaturePtr,
-        creature::CreaturePtr_t creatureCastUponPtr,
+        const creature::CreaturePtr_t CREATURE_CASTING_PTR,
+        const creature::CreaturePtr_t CREATURE_CAST_UPON_PTR,
         Health_t & healthAdj,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t & condsRemovedVec,
@@ -235,7 +235,7 @@ namespace spell
             case Spells::Sparks:
             {
                 auto const DAMAGE_ABS_ORIG{ Health_t(creature::Stats::RandomRatio(
-                    castingCreaturePtr,
+                    CREATURE_CASTING_PTR,
                     stats::Traits::Intelligence,
                     8,
                     0.5f,
@@ -243,28 +243,28 @@ namespace spell
                     static_cast<creature::Stats::With>(
                         creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus))) };
 
-                auto const DAMAGE_ABS_MAX{ creatureCastUponPtr->HealthCurrent() };
+                auto const DAMAGE_ABS_MAX{ CREATURE_CAST_UPON_PTR->HealthCurrent() };
 
                 auto const DAMAGE_ABS_FINAL{ (
                     (DAMAGE_ABS_ORIG > DAMAGE_ABS_MAX) ? DAMAGE_ABS_MAX : DAMAGE_ABS_ORIG) };
 
                 healthAdj = Health_t(-1) * DAMAGE_ABS_FINAL;
 
-                actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                 return true;
             }
             case Spells::Bandage:
             {
                 auto const HEALTH_GAIN_ORIG{ Health_t(creature::Stats::RandomRatio(
-                    castingCreaturePtr,
+                    CREATURE_CASTING_PTR,
                     stats::Traits::Charm,
                     8,
                     0.5f,
-                    castingCreaturePtr->TraitBonusCurrent(stats::Traits::MagicEffect),
+                    CREATURE_CASTING_PTR->TraitBonusCurrent(stats::Traits::MagicEffect),
                     static_cast<creature::Stats::With>(
                         creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus))) };
 
-                auto const HEALTH_GAIN_MAX{ creatureCastUponPtr->HealthMissing() };
+                auto const HEALTH_GAIN_MAX{ CREATURE_CAST_UPON_PTR->HealthMissing() };
 
                 healthAdj
                     = ((HEALTH_GAIN_ORIG > HEALTH_GAIN_MAX) ? HEALTH_GAIN_MAX : HEALTH_GAIN_ORIG);
@@ -281,14 +281,14 @@ namespace spell
                 }
                 else
                 {
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                     return true;
                 }
             }
             case Spells::Sleep:
             {
-                if (creatureCastUponPtr->HasCondition(creature::Conditions::AsleepNatural)
-                    || creatureCastUponPtr->HasCondition(creature::Conditions::AsleepMagical))
+                if (CREATURE_CAST_UPON_PTR->HasCondition(creature::Conditions::AsleepNatural)
+                    || CREATURE_CAST_UPON_PTR->HasCondition(creature::Conditions::AsleepMagical))
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         Spell::FAILED_BECAUSE_STR_,
@@ -300,10 +300,10 @@ namespace spell
                 }
                 else
                 {
-                    creatureCastUponPtr->ConditionAdd(creature::Conditions::AsleepNatural);
+                    CREATURE_CAST_UPON_PTR->ConditionAdd(creature::Conditions::AsleepNatural);
                     condsAddedVec.emplace_back(creature::Conditions::AsleepNatural);
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
-                    combat::Encounter::Instance()->SetIsFlying(creatureCastUponPtr, false);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
+                    combat::Encounter::Instance()->SetIsFlying(CREATURE_CAST_UPON_PTR, false);
                     return true;
                 }
             }
@@ -318,9 +318,9 @@ namespace spell
                 auto wereAnyCondsRemoved{ false };
                 for (auto const NEXT_COND_ENUM_TO_REMOVE : CONDS_TO_REMOVE_VEC)
                 {
-                    if (creatureCastUponPtr->HasCondition(NEXT_COND_ENUM_TO_REMOVE))
+                    if (CREATURE_CAST_UPON_PTR->HasCondition(NEXT_COND_ENUM_TO_REMOVE))
                     {
-                        creatureCastUponPtr->ConditionRemove(NEXT_COND_ENUM_TO_REMOVE);
+                        CREATURE_CAST_UPON_PTR->ConditionRemove(NEXT_COND_ENUM_TO_REMOVE);
                         condsRemovedVec.emplace_back(NEXT_COND_ENUM_TO_REMOVE);
                         wereAnyCondsRemoved = true;
                     }
@@ -328,7 +328,7 @@ namespace spell
 
                 if (wereAnyCondsRemoved)
                 {
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                     return true;
                 }
                 else
@@ -344,7 +344,7 @@ namespace spell
             }
             case Spells::Trip:
             {
-                if (creatureCastUponPtr->HasCondition(creature::Conditions::Tripped))
+                if (CREATURE_CAST_UPON_PTR->HasCondition(creature::Conditions::Tripped))
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         Spell::FAILED_BECAUSE_STR_,
@@ -355,7 +355,7 @@ namespace spell
                     return false;
                 }
                 else if (combat::Encounter::Instance()
-                             ->GetTurnInfoCopy(creatureCastUponPtr)
+                             ->GetTurnInfoCopy(CREATURE_CAST_UPON_PTR)
                              .GetIsFlying())
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
@@ -368,26 +368,26 @@ namespace spell
                 }
                 else
                 {
-                    creatureCastUponPtr->ConditionAdd(creature::Conditions::Tripped);
+                    CREATURE_CAST_UPON_PTR->ConditionAdd(creature::Conditions::Tripped);
                     condsAddedVec.emplace_back(creature::Conditions::Tripped);
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                     return true;
                 }
             }
             case Spells::Lift:
             {
-                if (creatureCastUponPtr->HasCondition(creature::Conditions::Tripped))
+                if (CREATURE_CAST_UPON_PTR->HasCondition(creature::Conditions::Tripped))
                 {
-                    creatureCastUponPtr->ConditionRemove(creature::Conditions::Tripped);
+                    CREATURE_CAST_UPON_PTR->ConditionRemove(creature::Conditions::Tripped);
                     condsRemovedVec.emplace_back(creature::Conditions::Tripped);
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                     return true;
                 }
-                else if (creatureCastUponPtr->HasCondition(creature::Conditions::Pounced))
+                else if (CREATURE_CAST_UPON_PTR->HasCondition(creature::Conditions::Pounced))
                 {
-                    creatureCastUponPtr->ConditionRemove(creature::Conditions::Pounced);
+                    CREATURE_CAST_UPON_PTR->ConditionRemove(creature::Conditions::Pounced);
                     condsRemovedVec.emplace_back(creature::Conditions::Pounced);
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                     return true;
                 }
                 else
@@ -402,7 +402,7 @@ namespace spell
             }
             case Spells::Daze:
             {
-                if (creatureCastUponPtr->HasCondition(creature::Conditions::Dazed))
+                if (CREATURE_CAST_UPON_PTR->HasCondition(creature::Conditions::Dazed))
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         Spell::FAILED_BECAUSE_STR_,
@@ -414,15 +414,15 @@ namespace spell
                 }
                 else
                 {
-                    creatureCastUponPtr->ConditionAdd(creature::Conditions::Dazed);
+                    CREATURE_CAST_UPON_PTR->ConditionAdd(creature::Conditions::Dazed);
                     condsAddedVec.emplace_back(creature::Conditions::Dazed);
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                     return true;
                 }
             }
             case Spells::Panic:
             {
-                if (creatureCastUponPtr->HasCondition(creature::Conditions::Panic))
+                if (CREATURE_CAST_UPON_PTR->HasCondition(creature::Conditions::Panic))
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         Spell::FAILED_BECAUSE_STR_,
@@ -434,9 +434,9 @@ namespace spell
                 }
                 else
                 {
-                    creatureCastUponPtr->ConditionAdd(creature::Conditions::Panic);
+                    CREATURE_CAST_UPON_PTR->ConditionAdd(creature::Conditions::Panic);
                     condsAddedVec.emplace_back(creature::Conditions::Panic);
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                     return true;
                 }
             }
@@ -449,9 +449,9 @@ namespace spell
                 auto wereAnyCondsRemoved{ false };
                 for (auto const NEXT_COND_ENUM_TO_REMOVE : CONDS_TO_REMOVE_VEC)
                 {
-                    if (creatureCastUponPtr->HasCondition(NEXT_COND_ENUM_TO_REMOVE))
+                    if (CREATURE_CAST_UPON_PTR->HasCondition(NEXT_COND_ENUM_TO_REMOVE))
                     {
-                        creatureCastUponPtr->ConditionRemove(NEXT_COND_ENUM_TO_REMOVE);
+                        CREATURE_CAST_UPON_PTR->ConditionRemove(NEXT_COND_ENUM_TO_REMOVE);
                         condsRemovedVec.emplace_back(NEXT_COND_ENUM_TO_REMOVE);
                         wereAnyCondsRemoved = true;
                     }
@@ -459,7 +459,7 @@ namespace spell
 
                 if (wereAnyCondsRemoved)
                 {
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                     return true;
                 }
                 else
@@ -475,7 +475,7 @@ namespace spell
             }
             case Spells::Poison:
             {
-                if (creatureCastUponPtr->HasCondition(creature::Conditions::Poisoned))
+                if (CREATURE_CAST_UPON_PTR->HasCondition(creature::Conditions::Poisoned))
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         Spell::FAILED_BECAUSE_STR_,
@@ -487,19 +487,19 @@ namespace spell
                 }
                 else
                 {
-                    creatureCastUponPtr->ConditionAdd(creature::Conditions::Poisoned);
+                    CREATURE_CAST_UPON_PTR->ConditionAdd(creature::Conditions::Poisoned);
                     condsAddedVec.emplace_back(creature::Conditions::Poisoned);
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                     return true;
                 }
             }
             case Spells::Antidote:
             {
-                if (creatureCastUponPtr->HasCondition(creature::Conditions::Poisoned))
+                if (CREATURE_CAST_UPON_PTR->HasCondition(creature::Conditions::Poisoned))
                 {
-                    creatureCastUponPtr->ConditionRemove(creature::Conditions::Poisoned);
+                    CREATURE_CAST_UPON_PTR->ConditionRemove(creature::Conditions::Poisoned);
                     condsRemovedVec.emplace_back(creature::Conditions::Poisoned);
-                    actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                    actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                     return true;
                 }
                 else
@@ -515,7 +515,7 @@ namespace spell
             }
             case Spells::PoisonCloud:
             {
-                if (creatureCastUponPtr->HasCondition(creature::Conditions::Poisoned))
+                if (CREATURE_CAST_UPON_PTR->HasCondition(creature::Conditions::Poisoned))
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         Spell::FAILED_BECAUSE_STR_,
@@ -528,9 +528,9 @@ namespace spell
                 else
                 {
                     auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(
-                        castingCreaturePtr,
+                        CREATURE_CASTING_PTR,
                         stats::Traits::Intelligence,
-                        creatureCastUponPtr,
+                        CREATURE_CAST_UPON_PTR,
                         stats::Traits::Count,
                         0,
                         0,
@@ -540,14 +540,14 @@ namespace spell
                             | creature::Stats::With::PlayerNaturalWins)) };
 
                     auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
-                        castingCreaturePtr->TraitBonusTest(stats::Traits::MagicCast)
+                        CREATURE_CASTING_PTR->TraitBonusTest(stats::Traits::MagicCast)
                     };
 
                     if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
                     {
-                        creatureCastUponPtr->ConditionAdd(creature::Conditions::Poisoned);
+                        CREATURE_CAST_UPON_PTR->ConditionAdd(creature::Conditions::Poisoned);
                         condsAddedVec.emplace_back(creature::Conditions::Poisoned);
-                        actionPhraseCNP = ActionPhrase(creatureCastUponPtr);
+                        actionPhraseCNP = ActionPhrase(CREATURE_CAST_UPON_PTR);
                         return true;
                     }
                     else
@@ -567,9 +567,8 @@ namespace spell
             {
                 std::ostringstream ss;
                 ss << "spell::Spell::EffectCreature(castingCreature="
-                   << ((castingCreaturePtr == nullptr) ? "null" : castingCreaturePtr->Name())
-                   << ", creatureCastUpon="
-                   << ((creatureCastUponPtr == nullptr) ? "null" : creatureCastUponPtr->Name())
+                   << CREATURE_CASTING_PTR->ToString()
+                   << ", creatureCastUpon=" << CREATURE_CAST_UPON_PTR->ToString()
                    << ") was called when Which() was invalid (" << Which() << ").";
 
                 throw std::runtime_error(ss.str());
@@ -577,7 +576,7 @@ namespace spell
         }
     }
 
-    const std::string Spell::EffectItem(creature::CreaturePtr_t, const item::ItemPtr_t) const
+    const std::string Spell::EffectItem(const creature::CreaturePtr_t, const item::ItemPtr_t) const
     {
         // TODO
         return "";

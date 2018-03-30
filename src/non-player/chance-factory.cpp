@@ -90,7 +90,7 @@ namespace non_player
         {
             if (instanceUPtr_.get() == nullptr)
             {
-                M_HP_LOG_WRN("Singleton Instance() before Acquire(): ChanceFactory");
+                M_HP_LOG_ERR("Singleton Instance() before Acquire(): ChanceFactory");
                 Acquire();
             }
 
@@ -105,7 +105,7 @@ namespace non_player
             }
             else
             {
-                M_HP_LOG_WRN("Singleton Acquire() after Construction: ChanceFactory");
+                M_HP_LOG_ERR("Singleton Acquire() after Construction: ChanceFactory");
             }
         }
 
@@ -1386,8 +1386,8 @@ namespace non_player
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (materialsMap_OutParam.Empty() == false),
-                "non_player::ownership::ChanceFactory::Make_MaterialChancesPrimary(\""
-                    << CHARACTER_PTR->Name() << "\") final materials map was empty.");
+                "non_player::ownership::ChanceFactory::Make_MaterialChancesPrimary(creature={"
+                    << CHARACTER_PTR->ToString() << "}) final materials map was empty.");
 
             for (auto & nextPair : materialsMap_OutParam)
             {

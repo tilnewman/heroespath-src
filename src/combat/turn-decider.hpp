@@ -48,10 +48,7 @@ namespace creature
 {
     // forward declarations
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreatureCPtr_t = const Creature *;
-    using CreaturePtrC_t = Creature * const;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
 namespace combat
@@ -69,23 +66,21 @@ namespace combat
     using CombatDisplayPtrC_t = CombatDisplay * const;
     using CombatDisplayCPtrC_t = const CombatDisplay * const;
 
-    // Singletone that is responsible for deciding what a non-player creature will do during its
+    // Responsible for deciding what a non-player creature will do during its
     // turn in combat
-    // TODO change this into a struct of static functions since the singleton pattern is being
-    // abused here and there is no state! -zTn 2017-4-3
     class TurnDecider
     {
     public:
         TurnDecider() = delete;
 
         static const TurnActionInfo Decide(
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
             CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);
 
     private:
         static creature::CreaturePtr_t FindMostDesiredTarget(
             const TurnInfo & CREATURE_DECIDING_TURN_INFO,
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
             CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);
 
         static creature::CreaturePVec_t FindSelectedTargets(const TurnInfo & TURN_INFO);
@@ -97,19 +92,19 @@ namespace combat
 
         static const TurnActionInfo DecideIfRetreating(
             const TurnInfo & TURN_INFO,
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
             CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC,
             const std::size_t NUM_PLAYERS_IN_MELEE_RANGE,
             const std::size_t NUM_FELLOWS_IN_MELEE_RANGE);
 
         static const TurnActionInfo DecideIfCasting(
             const TurnInfo & TURN_INFO,
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-            const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC);
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
+            const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR);
 
         static const TurnActionInfo DecideIfMovingTowardsMostDesiredTarget(
             const TurnInfo & TURN_INFO,
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
             CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC,
             const int MOST_DESIRED_TARGET_DISTANCE,
             const bool NUM_PLAYERS_IN_ATTACK_RANGE,
@@ -117,34 +112,34 @@ namespace combat
 
         static const TurnActionInfo DecideIfDoingBeastAction(
             const TurnInfo & TURN_INFO,
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-            const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
+            const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR,
             const creature::CreaturePVec_t & PLAYERS_IN_MELEE_RANGE_PVEC,
             const int MOST_DESIRED_TARGET_CREATURE_DISTANCE);
 
         static const TurnActionInfo ForcePickSpellToCast(
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-            const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC);
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
+            const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR);
 
         static const TurnActionInfo DecideSpell(
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
-            const creature::CreaturePtrC_t MOST_DESIRED_TARGET_CPTRC,
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
+            const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR,
             const EffectTypeVec_t & SPELL_TYPES_VEC);
 
         static const spell::SpellPtr_t PickSpell(
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
             const combat::EffectType::Enum SPELL_TYPE);
 
         static const spell::SpellPtr_t PickSpell(
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
             const EffectTypeVec_t & SPELL_TYPES_VEC);
 
         static const TurnActionInfo DecideIfFlying(
-            const TurnInfo & TURN_INFO, const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC);
+            const TurnInfo & TURN_INFO, const creature::CreaturePtr_t CREATURE_DECIDING_PTR);
 
         static const TurnActionInfo DecideIfAdvancingTowardNonMostDesiredTarget(
             const TurnInfo & CREATURE_DECIDING_TURN_INFO,
-            const creature::CreaturePtrC_t CREATURE_DECIDING_CPTRC,
+            const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
             CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);
 
         static void AdjustCreatueVecForMurderousIntent(

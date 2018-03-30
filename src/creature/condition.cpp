@@ -105,12 +105,12 @@ namespace creature
     }
 
     // InitialChange() does not alter stats, see creature.cpp::ConditionAdd() for that
-    void Condition::InitialChange(CreaturePtrC_t) const {}
+    void Condition::InitialChange(const CreaturePtr_t) const {}
 
-    void Condition::FinalChange(CreaturePtrC_t) const {}
+    void Condition::FinalChange(const CreaturePtr_t) const {}
 
     void Condition::PerTurnEffect(
-        CreaturePtr_t creaturePtr,
+        const CreaturePtr_t CREATURE_PTR,
         combat::HitInfoVec_t & hitInfoVec,
         bool & hasTurnBeenConsumed) const
     {
@@ -127,9 +127,9 @@ namespace creature
                     }
                 }
 
-                if (misc::random::Int(100) < (10 + creaturePtr->Rank().As<int>()))
+                if (misc::random::Int(100) < (10 + CREATURE_PTR->Rank().As<int>()))
                 {
-                    creaturePtr->ConditionRemove(Conditions::Dazed);
+                    CREATURE_PTR->ConditionRemove(Conditions::Dazed);
 
                     const combat::ContentAndNamePos CNP(
                         "'s mind clears an is not Dazed anymore.",
@@ -159,12 +159,12 @@ namespace creature
                 }
 
                 // don't get up if can't take action
-                if (creaturePtr->CanTakeAction() == false)
+                if (CREATURE_PTR->CanTakeAction() == false)
                 {
                     return;
                 }
 
-                creaturePtr->ConditionRemove(Conditions::Tripped);
+                CREATURE_PTR->ConditionRemove(Conditions::Tripped);
 
                 const combat::ContentAndNamePos CNP(
                     " gets up after being tripped.", combat::NamePosition::TargetBefore);
@@ -188,9 +188,9 @@ namespace creature
                     }
                 }
 
-                if (misc::random::Int(100) < (15 + creaturePtr->Rank().As<int>()))
+                if (misc::random::Int(100) < (15 + CREATURE_PTR->Rank().As<int>()))
                 {
-                    creaturePtr->ConditionRemove(Conditions::AsleepNatural);
+                    CREATURE_PTR->ConditionRemove(Conditions::AsleepNatural);
 
                     const combat::ContentAndNamePos CNP(
                         " wakes from a natural sleep.", combat::NamePosition::TargetBefore);
@@ -204,7 +204,7 @@ namespace creature
             case Conditions::Poisoned:
             {
                 if (creature::Stats::Test(
-                        creaturePtr,
+                        CREATURE_PTR,
                         stats::Traits::Strength,
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus))
@@ -213,12 +213,12 @@ namespace creature
                     creature::CondEnumVec_t condsRemoved;
 
                     combat::FightClub::RemoveAddedCondition(
-                        creature::Conditions::Poisoned, creaturePtr, hitInfoVec, condsRemoved);
+                        creature::Conditions::Poisoned, CREATURE_PTR, hitInfoVec, condsRemoved);
 
                     std::ostringstream ss;
                     ss << "The poison has left ";
 
-                    if (creaturePtr->IsPlayerCharacter() == false)
+                    if (CREATURE_PTR->IsPlayerCharacter() == false)
                     {
                         ss << "the ";
                     }
@@ -232,10 +232,10 @@ namespace creature
                 else
                 {
                     auto const DAMAGE_BASE{ (
-                        (creaturePtr->IsPixie()) ? 0 : misc::random::Int(1, 5)) };
+                        (CREATURE_PTR->IsPixie()) ? 0 : misc::random::Int(1, 5)) };
 
                     auto const DAMAGE_RAND_MAX{ std::max(
-                        1, static_cast<int>(creaturePtr->HealthNormal().As<float>() * 0.1f)) };
+                        1, static_cast<int>(CREATURE_PTR->HealthNormal().As<float>() * 0.1f)) };
 
                     auto const DAMAGE_FROM_HEALTH_NORMAL{ misc::random::Int(1, DAMAGE_RAND_MAX) };
 
@@ -246,7 +246,7 @@ namespace creature
                     CondEnumVec_t condsRemovedVec;
 
                     combat::FightClub::HandleDamage(
-                        creaturePtr,
+                        CREATURE_PTR,
                         hitInfoVec,
                         DAMAGE_FINAL,
                         condsAddedVec,
@@ -254,8 +254,8 @@ namespace creature
                         false);
 
                     std::ostringstream ss;
-                    ss << " hurts " << creature::sex::HimHerIt(creaturePtr->Sex(), false) << " for "
-                       << DAMAGE_FINAL.Abs() << " damage.";
+                    ss << " hurts " << creature::sex::HimHerIt(CREATURE_PTR->Sex(), false)
+                       << " for " << DAMAGE_FINAL.Abs() << " damage.";
 
                     const combat::ContentAndNamePos CNP(
                         "The poison in ", ss.str(), "", combat::NamePosition::TargetBefore);
@@ -284,18 +284,18 @@ namespace creature
                 }
 
                 // can't get up if can't take action
-                if (creaturePtr->CanTakeAction() == false)
+                if (CREATURE_PTR->CanTakeAction() == false)
                 {
                     return;
                 }
 
                 if (creature::Stats::Test(
-                        creaturePtr,
+                        CREATURE_PTR,
                         stats::Traits::Strength,
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus)))
                 {
-                    creaturePtr->ConditionRemove(Conditions::Pounced);
+                    CREATURE_PTR->ConditionRemove(Conditions::Pounced);
 
                     const combat::ContentAndNamePos CNP(
                         " gets up after being pounced on.", combat::NamePosition::TargetBefore);
@@ -319,9 +319,9 @@ namespace creature
                     }
                 }
 
-                if (misc::random::Int(100) < (8 + creaturePtr->Rank().As<int>()))
+                if (misc::random::Int(100) < (8 + CREATURE_PTR->Rank().As<int>()))
                 {
-                    creaturePtr->ConditionRemove(Conditions::AsleepMagical);
+                    CREATURE_PTR->ConditionRemove(Conditions::AsleepMagical);
 
                     const combat::ContentAndNamePos CNP(
                         " wakes from a magical sleep.", combat::NamePosition::TargetBefore);

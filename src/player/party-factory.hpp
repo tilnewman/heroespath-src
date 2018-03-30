@@ -28,6 +28,7 @@
 // party-factory.hpp
 //
 #include "avatar/avatar-enum.hpp"
+#include "misc/not-null.hpp"
 #include <memory>
 #include <vector>
 
@@ -36,7 +37,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 }
 namespace player

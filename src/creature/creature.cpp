@@ -54,7 +54,6 @@ namespace heroespath
 namespace creature
 {
 
-    std::size_t Creature::globalSerialNumber_{ 0 };
     const std::string Creature::ITEM_ACTION_SUCCESS_STR_{ "" };
 
     Creature::Creature(
@@ -83,7 +82,6 @@ namespace creature
         , bodyType_(BODY_TYPE)
         , race_(RACE)
         , role_(ROLE)
-        , serialNumber_(globalSerialNumber_++)
         , conditionsVec_(CONDITIONS_VEC)
         , titlesVec_(TITLE_VEC)
         , inventory_(INVENTORY)
@@ -1356,8 +1354,7 @@ namespace creature
            << ", " << actualSet_.StatsString(false) << ", health=" << healthCurrent_ << "/"
            << healthNormal_ << ", mana=" << TraitWorking(stats::Traits::Mana) << "/"
            << TraitNormal(stats::Traits::Mana) << ", rank=" << Rank() << ", exp=" << Exp()
-           << ", body[" << bodyType_.ToString() << "]"
-           << ", serial#" << serialNumber_;
+           << ", body[" << bodyType_.ToString() << "]";
 
         ss << ", conds=";
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
@@ -1637,7 +1634,6 @@ namespace creature
                 L.bodyType_,
                 L.race_,
                 L.role_,
-                L.serialNumber_,
                 L.dateTimeCreated_,
                 L.achievements_,
                 L.lastSpellCastNum_,
@@ -1655,7 +1651,6 @@ namespace creature
                    R.bodyType_,
                    R.race_,
                    R.role_,
-                   R.serialNumber_,
                    R.dateTimeCreated_,
                    R.achievements_,
                    R.lastSpellCastNum_,
@@ -1697,13 +1692,12 @@ namespace creature
     {
         if (std::tie(
                 L.name_,
+                L.dateTimeCreated_,
                 L.imageFilename_,
                 L.sex_,
                 L.bodyType_,
                 L.race_,
                 L.role_,
-                L.serialNumber_,
-                L.dateTimeCreated_,
                 L.achievements_,
                 L.lastSpellCastNum_,
                 L.lastSongPlayedNum_,
@@ -1715,13 +1709,12 @@ namespace creature
                 L.bonusSet_)
             < std::tie(
                   R.name_,
+                  R.dateTimeCreated_,
                   R.imageFilename_,
                   R.sex_,
                   R.bodyType_,
                   R.race_,
                   R.role_,
-                  R.serialNumber_,
-                  R.dateTimeCreated_,
                   R.achievements_,
                   R.lastSpellCastNum_,
                   R.lastSongPlayedNum_,

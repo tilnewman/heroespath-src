@@ -87,7 +87,7 @@ namespace misc
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): Platform");
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): Platform");
             Acquire();
         }
 
@@ -102,7 +102,7 @@ namespace misc
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Constructor: Platform");
+            M_HP_LOG_ERR("Singleton Acquire() after Constructor: Platform");
         }
     }
 

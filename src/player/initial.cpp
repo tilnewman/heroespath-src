@@ -49,33 +49,33 @@ namespace heroespath
 namespace player
 {
 
-    void Initial::Setup(creature::CreaturePtrC_t characterPtrC)
+    void Initial::Setup(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        SetupInventory(characterPtrC);
-        SetupSpellsAndSongs(characterPtrC);
-        characterPtrC->SetHeldWeaponsToBest();
-        SetStartingHealth(characterPtrC);
-        SetStartingMana(characterPtrC);
-        EnsureValidImageFilename(characterPtrC);
+        SetupInventory(CREATURE_PTR);
+        SetupSpellsAndSongs(CREATURE_PTR);
+        CREATURE_PTR->SetHeldWeaponsToBest();
+        SetStartingHealth(CREATURE_PTR);
+        SetStartingMana(CREATURE_PTR);
+        EnsureValidImageFilename(CREATURE_PTR);
     }
 
-    void Initial::EnsureValidImageFilename(creature::CreaturePtrC_t characterPtrC)
+    void Initial::EnsureValidImageFilename(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        if (characterPtrC->ImageFilename().empty())
+        if (CREATURE_PTR->ImageFilename().empty())
         {
-            characterPtrC->ImageFilename(
+            CREATURE_PTR->ImageFilename(
                 sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
-                    characterPtrC->Race(), characterPtrC->Role(), characterPtrC->Sex(), true));
+                    CREATURE_PTR->Race(), CREATURE_PTR->Role(), CREATURE_PTR->Sex(), true));
         }
     }
 
-    void Initial::SetupInventory(creature::CreaturePtrC_t characterPtrC)
+    void Initial::SetupInventory(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        EquipBodyParts(characterPtrC);
+        EquipBodyParts(CREATURE_PTR);
 
         using namespace item;
 
-        auto const ROLE_ENUM{ characterPtrC->Role() };
+        auto const ROLE_ENUM{ CREATURE_PTR->Role() };
 
         if (ROLE_ENUM == creature::role::Knight)
         {
@@ -100,32 +100,32 @@ namespace player
                 }
             }();
 
-            characterPtrC->ItemAdd(weaponPtr);
-            characterPtrC->ItemEquip(weaponPtr);
+            CREATURE_PTR->ItemAdd(weaponPtr);
+            CREATURE_PTR->ItemEquip(weaponPtr);
 
             auto bootsPtr{ armor::ArmorFactory::Make_Boots(
                 armor::base_type::Plain, HardOrSoftLeatherRand(), material::Nothing) };
 
-            characterPtrC->ItemAdd(bootsPtr);
-            characterPtrC->ItemEquip(bootsPtr);
+            CREATURE_PTR->ItemAdd(bootsPtr);
+            CREATURE_PTR->ItemEquip(bootsPtr);
 
             auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
                 armor::base_type::Plain, HardOrSoftLeatherRand()) };
 
-            characterPtrC->ItemAdd(shirtPtr);
-            characterPtrC->ItemEquip(shirtPtr);
+            CREATURE_PTR->ItemAdd(shirtPtr);
+            CREATURE_PTR->ItemEquip(shirtPtr);
 
             auto pantsPtr{ armor::ArmorFactory::Make_Pants(
                 armor::base_type::Plain, HardOrSoftLeatherRand()) };
 
-            characterPtrC->ItemAdd(pantsPtr);
-            characterPtrC->ItemEquip(pantsPtr);
+            CREATURE_PTR->ItemAdd(pantsPtr);
+            CREATURE_PTR->ItemEquip(pantsPtr);
 
             auto helmPtr{ armor::ArmorFactory::Make_Helm(
                 armor::helm_type::Great, HardOrSoftLeatherRand(), material::Nothing) };
 
-            characterPtrC->ItemAdd(helmPtr);
-            characterPtrC->ItemEquip(helmPtr);
+            CREATURE_PTR->ItemAdd(helmPtr);
+            CREATURE_PTR->ItemEquip(helmPtr);
 
             return;
         }
@@ -153,31 +153,31 @@ namespace player
                 }
             }();
 
-            characterPtrC->ItemAdd(weaponPtr);
-            characterPtrC->ItemEquip(weaponPtr);
+            CREATURE_PTR->ItemAdd(weaponPtr);
+            CREATURE_PTR->ItemEquip(weaponPtr);
 
             auto bootsPtr{ armor::ArmorFactory::Make_Boots(
                 armor::base_type::Plain, HardOrSoftLeatherRand(), material::Nothing) };
 
-            characterPtrC->ItemAdd(bootsPtr);
-            characterPtrC->ItemEquip(bootsPtr);
+            CREATURE_PTR->ItemAdd(bootsPtr);
+            CREATURE_PTR->ItemEquip(bootsPtr);
 
             auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
                 armor::base_type::Plain, HardOrSoftLeatherRand()) };
 
-            characterPtrC->ItemAdd(shirtPtr);
-            characterPtrC->ItemEquip(shirtPtr);
+            CREATURE_PTR->ItemAdd(shirtPtr);
+            CREATURE_PTR->ItemEquip(shirtPtr);
 
             auto pantsPtr{ armor::ArmorFactory::Make_Pants(
                 armor::base_type::Plain, HardOrSoftLeatherRand()) };
 
-            characterPtrC->ItemAdd(pantsPtr);
-            characterPtrC->ItemEquip(pantsPtr);
+            CREATURE_PTR->ItemAdd(pantsPtr);
+            CREATURE_PTR->ItemEquip(pantsPtr);
 
             auto wandPtr{ item::MiscItemFactory::Make_Wand(material::Wood, material::Nothing) };
 
-            characterPtrC->ItemAdd(wandPtr);
-            characterPtrC->ItemEquip(wandPtr);
+            CREATURE_PTR->ItemAdd(wandPtr);
+            CREATURE_PTR->ItemEquip(wandPtr);
 
             return;
         }
@@ -187,26 +187,26 @@ namespace player
             auto shortbowPtr{ weapon::WeaponFactory::Make_Projectile(
                 weapon::projectile_type::Shortbow, material::Wood, material::Nothing) };
 
-            characterPtrC->ItemAdd(shortbowPtr);
-            characterPtrC->ItemEquip(shortbowPtr);
+            CREATURE_PTR->ItemAdd(shortbowPtr);
+            CREATURE_PTR->ItemEquip(shortbowPtr);
 
             auto bootsPtr{ armor::ArmorFactory::Make_Boots(
                 armor::base_type::Plain, HardOrSoftLeatherRand(), material::Nothing) };
 
-            characterPtrC->ItemAdd(bootsPtr);
-            characterPtrC->ItemEquip(bootsPtr);
+            CREATURE_PTR->ItemAdd(bootsPtr);
+            CREATURE_PTR->ItemEquip(bootsPtr);
 
             auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
                 armor::base_type::Plain, HardOrSoftLeatherRand()) };
 
-            characterPtrC->ItemAdd(shirtPtr);
-            characterPtrC->ItemEquip(shirtPtr);
+            CREATURE_PTR->ItemAdd(shirtPtr);
+            CREATURE_PTR->ItemEquip(shirtPtr);
 
             auto pantsPtr{ armor::ArmorFactory::Make_Pants(
                 armor::base_type::Plain, HardOrSoftLeatherRand()) };
 
-            characterPtrC->ItemAdd(pantsPtr);
-            characterPtrC->ItemEquip(pantsPtr);
+            CREATURE_PTR->ItemAdd(pantsPtr);
+            CREATURE_PTR->ItemEquip(pantsPtr);
 
             return;
         }
@@ -217,33 +217,33 @@ namespace player
                 armor::base_type::Plain,
                 HardOrSoftLeatherRand(),
                 material::Nothing,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(bootsPtr);
-            characterPtrC->ItemEquip(bootsPtr);
+            CREATURE_PTR->ItemAdd(bootsPtr);
+            CREATURE_PTR->ItemEquip(bootsPtr);
 
             auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
                 armor::base_type::Plain,
                 material::Cloth,
                 material::Nothing,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(shirtPtr);
-            characterPtrC->ItemEquip(shirtPtr);
+            CREATURE_PTR->ItemAdd(shirtPtr);
+            CREATURE_PTR->ItemEquip(shirtPtr);
 
             auto pantsPtr{ armor::ArmorFactory::Make_Pants(
                 armor::base_type::Plain,
                 HardOrSoftLeatherRand(),
                 material::Tin,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(pantsPtr);
-            characterPtrC->ItemEquip(pantsPtr);
+            CREATURE_PTR->ItemAdd(pantsPtr);
+            CREATURE_PTR->ItemEquip(pantsPtr);
 
-            auto drumLutePtr{ item::MiscItemFactory::Make_DrumLute(characterPtrC->IsPixie()) };
+            auto drumLutePtr{ item::MiscItemFactory::Make_DrumLute(CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(drumLutePtr);
-            characterPtrC->ItemEquip(drumLutePtr);
+            CREATURE_PTR->ItemAdd(drumLutePtr);
+            CREATURE_PTR->ItemEquip(drumLutePtr);
 
             return;
         }
@@ -255,41 +255,41 @@ namespace player
                 sfml_util::Size::Small,
                 material::Steel,
                 material::Wood,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(daggerPtr);
-            characterPtrC->ItemEquip(daggerPtr);
+            CREATURE_PTR->ItemAdd(daggerPtr);
+            CREATURE_PTR->ItemEquip(daggerPtr);
 
             auto bootsPtr{ armor::ArmorFactory::Make_Boots(
                 armor::base_type::Plain,
                 HardOrSoftLeatherRand(),
                 material::Nothing,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(bootsPtr);
-            characterPtrC->ItemEquip(bootsPtr);
+            CREATURE_PTR->ItemAdd(bootsPtr);
+            CREATURE_PTR->ItemEquip(bootsPtr);
 
             auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
                 armor::base_type::Plain,
                 material::Cloth,
                 material::Nothing,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(shirtPtr);
-            characterPtrC->ItemEquip(shirtPtr);
+            CREATURE_PTR->ItemAdd(shirtPtr);
+            CREATURE_PTR->ItemEquip(shirtPtr);
 
             auto pantsPtr{ armor::ArmorFactory::Make_Pants(
                 armor::base_type::Plain,
                 HardOrSoftLeatherRand(),
                 material::Tin,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(pantsPtr);
-            characterPtrC->ItemEquip(pantsPtr);
+            CREATURE_PTR->ItemAdd(pantsPtr);
+            CREATURE_PTR->ItemEquip(pantsPtr);
 
             for (int i(0); i < 9; ++i)
             {
-                characterPtrC->GetAchievements().Increment(creature::AchievementType::LocksPicked);
+                CREATURE_PTR->GetAchievements().Increment(creature::AchievementType::LocksPicked);
             }
 
             return;
@@ -301,33 +301,33 @@ namespace player
                 armor::base_type::Plain,
                 HardOrSoftLeatherRand(),
                 material::Nothing,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(bootsPtr);
-            characterPtrC->ItemEquip(bootsPtr);
+            CREATURE_PTR->ItemAdd(bootsPtr);
+            CREATURE_PTR->ItemEquip(bootsPtr);
 
             auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
                 armor::base_type::Plain,
                 material::Cloth,
                 material::Nothing,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(shirtPtr);
-            characterPtrC->ItemEquip(shirtPtr);
+            CREATURE_PTR->ItemAdd(shirtPtr);
+            CREATURE_PTR->ItemEquip(shirtPtr);
 
             auto pantsPtr{ armor::ArmorFactory::Make_Pants(
                 armor::base_type::Plain,
                 HardOrSoftLeatherRand(),
                 material::Tin,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(pantsPtr);
-            characterPtrC->ItemEquip(pantsPtr);
+            CREATURE_PTR->ItemAdd(pantsPtr);
+            CREATURE_PTR->ItemEquip(pantsPtr);
 
             auto wandPtr{ item::MiscItemFactory::Make_Wand(material::Glass, material::Nothing) };
 
-            characterPtrC->ItemAdd(wandPtr);
-            characterPtrC->ItemEquip(wandPtr);
+            CREATURE_PTR->ItemAdd(wandPtr);
+            CREATURE_PTR->ItemEquip(wandPtr);
 
             return;
         }
@@ -338,33 +338,33 @@ namespace player
                 armor::base_type::Plain,
                 HardOrSoftLeatherRand(),
                 material::Nothing,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(bootsPtr);
-            characterPtrC->ItemEquip(bootsPtr);
+            CREATURE_PTR->ItemAdd(bootsPtr);
+            CREATURE_PTR->ItemEquip(bootsPtr);
 
             auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
                 armor::base_type::Plain,
                 material::Cloth,
                 material::Nothing,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(shirtPtr);
-            characterPtrC->ItemEquip(shirtPtr);
+            CREATURE_PTR->ItemAdd(shirtPtr);
+            CREATURE_PTR->ItemEquip(shirtPtr);
 
             auto pantsPtr{ armor::ArmorFactory::Make_Pants(
                 armor::base_type::Plain,
                 HardOrSoftLeatherRand(),
                 material::Tin,
-                characterPtrC->IsPixie()) };
+                CREATURE_PTR->IsPixie()) };
 
-            characterPtrC->ItemAdd(pantsPtr);
-            characterPtrC->ItemEquip(pantsPtr);
+            CREATURE_PTR->ItemAdd(pantsPtr);
+            CREATURE_PTR->ItemEquip(pantsPtr);
 
             auto wandPtr{ item::MiscItemFactory::Make_Wand(material::Wood, material::Nothing) };
 
-            characterPtrC->ItemAdd(wandPtr);
-            characterPtrC->ItemEquip(wandPtr);
+            CREATURE_PTR->ItemAdd(wandPtr);
+            CREATURE_PTR->ItemEquip(wandPtr);
             return;
         }
 
@@ -377,135 +377,135 @@ namespace player
                 1_rank,
                 false) };
 
-            characterPtrC->ItemAdd(SKIN_ITEM_PTR);
-            characterPtrC->ItemEquip(SKIN_ITEM_PTR);
+            CREATURE_PTR->ItemAdd(SKIN_ITEM_PTR);
+            CREATURE_PTR->ItemEquip(SKIN_ITEM_PTR);
             return;
         }
 
         std::ostringstream ss;
-        ss << "player::Initial::SetupInventory(\"" << characterPtrC->Name()
-           << "\", race=" << characterPtrC->RaceName() << ", role=" << characterPtrC->RoleName()
+        ss << "player::Initial::SetupInventory(\"" << CREATURE_PTR->Name()
+           << "\", race=" << CREATURE_PTR->RaceName() << ", role=" << CREATURE_PTR->RoleName()
            << ")  failed to assign any items.";
 
         throw std::runtime_error(ss.str());
     }
 
-    void Initial::SetupSpellsAndSongs(creature::CreaturePtrC_t characterPtrC)
+    void Initial::SetupSpellsAndSongs(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        auto const ROLE_ENUM{ characterPtrC->Role() };
+        auto const ROLE_ENUM{ CREATURE_PTR->Role() };
 
         if (ROLE_ENUM == creature::role::Cleric)
         {
-            characterPtrC->SpellAdd(spell::Spells::Awaken);
-            characterPtrC->SpellAdd(spell::Spells::Bandage);
-            characterPtrC->SpellAdd(spell::Spells::ClearMind);
-            characterPtrC->SpellAdd(spell::Spells::Lift);
-            characterPtrC->SpellAdd(spell::Spells::Sleep);
-            characterPtrC->SpellAdd(spell::Spells::Antidote);
+            CREATURE_PTR->SpellAdd(spell::Spells::Awaken);
+            CREATURE_PTR->SpellAdd(spell::Spells::Bandage);
+            CREATURE_PTR->SpellAdd(spell::Spells::ClearMind);
+            CREATURE_PTR->SpellAdd(spell::Spells::Lift);
+            CREATURE_PTR->SpellAdd(spell::Spells::Sleep);
+            CREATURE_PTR->SpellAdd(spell::Spells::Antidote);
         }
         else if (ROLE_ENUM == creature::role::Sorcerer)
         {
-            characterPtrC->SpellAdd(spell::Spells::Daze);
-            characterPtrC->SpellAdd(spell::Spells::Panic);
-            characterPtrC->SpellAdd(spell::Spells::Sleep);
-            characterPtrC->SpellAdd(spell::Spells::Awaken);
-            characterPtrC->SpellAdd(spell::Spells::Poison);
-            characterPtrC->SpellAdd(spell::Spells::Sparks);
-            characterPtrC->SpellAdd(spell::Spells::Trip);
+            CREATURE_PTR->SpellAdd(spell::Spells::Daze);
+            CREATURE_PTR->SpellAdd(spell::Spells::Panic);
+            CREATURE_PTR->SpellAdd(spell::Spells::Sleep);
+            CREATURE_PTR->SpellAdd(spell::Spells::Awaken);
+            CREATURE_PTR->SpellAdd(spell::Spells::Poison);
+            CREATURE_PTR->SpellAdd(spell::Spells::Sparks);
+            CREATURE_PTR->SpellAdd(spell::Spells::Trip);
         }
         else if (ROLE_ENUM == creature::role::Bard)
         {
-            characterPtrC->SongAdd(song::Songs::RallyDrum);
-            characterPtrC->SongAdd(song::Songs::Lullaby);
-            characterPtrC->SongAdd(song::Songs::PanicStrings);
-            characterPtrC->SongAdd(song::Songs::RousingRhythm);
-            characterPtrC->SongAdd(song::Songs::TripBeat);
-            characterPtrC->SongAdd(song::Songs::SpiritResonance);
+            CREATURE_PTR->SongAdd(song::Songs::RallyDrum);
+            CREATURE_PTR->SongAdd(song::Songs::Lullaby);
+            CREATURE_PTR->SongAdd(song::Songs::PanicStrings);
+            CREATURE_PTR->SongAdd(song::Songs::RousingRhythm);
+            CREATURE_PTR->SongAdd(song::Songs::TripBeat);
+            CREATURE_PTR->SongAdd(song::Songs::SpiritResonance);
         }
     }
 
-    void Initial::EquipBodyParts(creature::CreaturePtrC_t characterPtrC)
+    void Initial::EquipBodyParts(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        auto const & BODY{ characterPtrC->Body() };
+        auto const & BODY{ CREATURE_PTR->Body() };
 
         if (BODY.HasBreath())
         {
             auto const BREATH_WEAPON_ITEM_PTR{ item::weapon::WeaponFactory::Instance()->Make_Breath(
-                characterPtrC) };
+                CREATURE_PTR) };
 
-            characterPtrC->ItemAdd(BREATH_WEAPON_ITEM_PTR);
-            characterPtrC->ItemEquip(BREATH_WEAPON_ITEM_PTR);
+            CREATURE_PTR->ItemAdd(BREATH_WEAPON_ITEM_PTR);
+            CREATURE_PTR->ItemEquip(BREATH_WEAPON_ITEM_PTR);
         }
 
         if (BODY.HasClaws())
         {
             auto const CLAWS_WEAPON_ITEM_PTR{ item::weapon::WeaponFactory::Instance()->Make_Claws(
-                characterPtrC) };
+                CREATURE_PTR) };
 
-            characterPtrC->ItemAdd(CLAWS_WEAPON_ITEM_PTR);
-            characterPtrC->ItemEquip(CLAWS_WEAPON_ITEM_PTR);
+            CREATURE_PTR->ItemAdd(CLAWS_WEAPON_ITEM_PTR);
+            CREATURE_PTR->ItemEquip(CLAWS_WEAPON_ITEM_PTR);
         }
 
         if (BODY.HasBite())
         {
             auto const BITE_WEAPON_ITEM_PTR{ item::weapon::WeaponFactory::Instance()->Make_Bite(
-                characterPtrC) };
+                CREATURE_PTR) };
 
-            characterPtrC->ItemAdd(BITE_WEAPON_ITEM_PTR);
-            characterPtrC->ItemEquip(BITE_WEAPON_ITEM_PTR);
+            CREATURE_PTR->ItemAdd(BITE_WEAPON_ITEM_PTR);
+            CREATURE_PTR->ItemEquip(BITE_WEAPON_ITEM_PTR);
         }
 
-        if ((BODY.IsHumanoid()) && (characterPtrC->IsPixie() == false))
+        if ((BODY.IsHumanoid()) && (CREATURE_PTR->IsPixie() == false))
         {
             auto const FISTS_WEAPON_ITEM_PTR{
                 item::weapon::WeaponFactory::Instance()->Make_Fists()
             };
 
-            characterPtrC->ItemAdd(FISTS_WEAPON_ITEM_PTR);
-            characterPtrC->ItemEquip(FISTS_WEAPON_ITEM_PTR);
+            CREATURE_PTR->ItemAdd(FISTS_WEAPON_ITEM_PTR);
+            CREATURE_PTR->ItemEquip(FISTS_WEAPON_ITEM_PTR);
         }
     }
 
-    Health_t Initial::GetStartingHealth(creature::CreatureCPtrC_t CHARACTER_CPTRC)
+    Health_t Initial::GetStartingHealth(const creature::CreaturePtr_t CHARACTER_PTR)
     {
         std::ostringstream ss;
         ss << "heroespath-player-race-health-initial-"
-           << creature::race::ToString(CHARACTER_CPTRC->Race());
+           << creature::race::ToString(CHARACTER_PTR->Race());
 
         auto const HEALTH_BASE{ Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str())) };
 
         ss.str("");
         ss << "heroespath-player-role-health-adjustment-initial-"
-           << creature::role::ToString(CHARACTER_CPTRC->Role());
+           << creature::role::ToString(CHARACTER_PTR->Role());
 
         return HEALTH_BASE + Health_t(game::GameDataFile::Instance()->GetCopyInt(ss.str()));
     }
 
-    void Initial::SetStartingHealth(creature::CreaturePtrC_t characterPtrC)
+    void Initial::SetStartingHealth(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        auto const STARTING_HEALTH{ GetStartingHealth(characterPtrC) };
-        characterPtrC->HealthNormalSet(STARTING_HEALTH);
-        characterPtrC->HealthCurrentSet(STARTING_HEALTH);
+        auto const STARTING_HEALTH{ GetStartingHealth(CREATURE_PTR) };
+        CREATURE_PTR->HealthNormalSet(STARTING_HEALTH);
+        CREATURE_PTR->HealthCurrentSet(STARTING_HEALTH);
     }
 
-    void Initial::SetStartingMana(creature::CreaturePtrC_t characterPtrC)
+    void Initial::SetStartingMana(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        auto const ROLE_ENUM{ characterPtrC->Role() };
+        auto const ROLE_ENUM{ CREATURE_PTR->Role() };
 
         if ((ROLE_ENUM == creature::role::Sorcerer) || (ROLE_ENUM == creature::role::Cleric))
         {
-            auto const INITIAL_MANA{ characterPtrC->TraitNormal(stats::Traits::Intelligence) / 2 };
-            characterPtrC->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
-            characterPtrC->TraitCurrentSet(stats::Traits::Mana, INITIAL_MANA);
+            auto const INITIAL_MANA{ CREATURE_PTR->TraitNormal(stats::Traits::Intelligence) / 2 };
+            CREATURE_PTR->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
+            CREATURE_PTR->TraitCurrentSet(stats::Traits::Mana, INITIAL_MANA);
         }
         else if (ROLE_ENUM == creature::role::Bard)
         {
-            auto const INITIAL_MANA{ (characterPtrC->TraitNormal(stats::Traits::Intelligence)
-                                      + characterPtrC->TraitNormal(stats::Traits::Charm))
+            auto const INITIAL_MANA{ (CREATURE_PTR->TraitNormal(stats::Traits::Intelligence)
+                                      + CREATURE_PTR->TraitNormal(stats::Traits::Charm))
                                      / 4 };
 
-            characterPtrC->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
-            characterPtrC->TraitCurrentSet(stats::Traits::Mana, INITIAL_MANA);
+            CREATURE_PTR->TraitNormalSet(stats::Traits::Mana, INITIAL_MANA);
+            CREATURE_PTR->TraitCurrentSet(stats::Traits::Mana, INITIAL_MANA);
         }
     }
 

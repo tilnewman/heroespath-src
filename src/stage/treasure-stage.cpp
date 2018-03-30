@@ -441,7 +441,7 @@ namespace stage
         creature::CreaturePVec_t whoWillTakeItems(
             1, game::Game::Instance()->State().Party().Characters()[CHARACTER_INDEX]);
 
-        for (auto const CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
+        for (auto const & CHARACTER_PTR : game::Game::Instance()->State().Party().Characters())
         {
             if ((CHARACTER_PTR->IsBeast() == false) && (CHARACTER_PTR != whoWillTakeItems[0]))
             {
@@ -560,7 +560,7 @@ namespace stage
         combat::Encounter::Instance()->BeginCombatTasks();
         //
         auto const NONPLAYER_CREATURE_PVEC{ creature::Algorithms::NonPlayers() };
-        for (auto const NEXT_CREATURE_PTR : NONPLAYER_CREATURE_PVEC)
+        for (auto const & NEXT_CREATURE_PTR : NONPLAYER_CREATURE_PVEC)
         {
             combat::Encounter::Instance()->HandleKilledCreature(NEXT_CREATURE_PTR);
         }
@@ -703,8 +703,17 @@ namespace stage
         trap_ = combat::trap::Warehouse::SelectRandomWithSeverityRatioNear(
             combat::Encounter::Instance()->DefeatedPartyTreasureRatioPer());
 
-        fightResult_ = combat::FightClub::TreasureTrap(
-            trap_, combat::Encounter::Instance()->LockPickCreaturePtr());
+        auto const LOCK_PICKING_CREATURE_PTR_OPT{
+            combat::Encounter::Instance()->LockPickCreaturePtrOpt()
+        };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (!!LOCK_PICKING_CREATURE_PTR_OPT),
+            "stage::TreasureStage::LockPickFailure() called when "
+            "combat::Encounter::Instance()->LockPickCreaturePtrOpt() returned uninitialized.");
+
+        fightResult_
+            = combat::FightClub::TreasureTrap(trap_, LOCK_PICKING_CREATURE_PTR_OPT.value());
 
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTrapPopupInfo(
             POPUP_NAME_LOCK_PICK_FAILURE_,
@@ -721,8 +730,17 @@ namespace stage
         {
             bool ignored{ false };
 
+            auto const LOCK_PICKING_CREATURE_PTR_OPT{
+                combat::Encounter::Instance()->LockPickCreaturePtrOpt()
+            };
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (!!LOCK_PICKING_CREATURE_PTR_OPT),
+                "stage::TreasureStage::PromptPlayerWithDamagePopups() called when "
+                "combat::Encounter::Instance()->LockPickCreaturePtrOpt() returned uninitialized.");
+
             auto const DAMAGE_TEXT{ combat::Text::ActionTextIndexed(
-                combat::Encounter::Instance()->LockPickCreaturePtr(),
+                LOCK_PICKING_CREATURE_PTR_OPT.value(),
                 combat::TurnActionInfo(combat::TurnAction::TreasureUnlock),
                 fightResult_,
                 false,

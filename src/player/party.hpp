@@ -30,6 +30,7 @@
 //
 #include "avatar/avatar-enum.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/not-null.hpp"
 
 #include <memory>
 #include <string>
@@ -40,11 +41,9 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
-
 namespace player
 {
 
@@ -73,51 +72,47 @@ namespace player
         bool IsAddAllowed(const creature::CreaturePtr_t CHARACTER_PTR, std::string & error_msg);
 
         // returns true if the character existed in the charactersSVec_ and was removed.
-        bool Remove(creature::CreaturePtr_t);
+        bool Remove(const creature::CreaturePtr_t);
 
-        creature::CreaturePtr_t GetNextInOrderAfter(const creature::CreaturePtr_t C_PTR)
+        const creature::CreaturePtr_t GetNextInOrderAfter(const creature::CreaturePtr_t C_PTR)
         {
             return GetNextInOrder(C_PTR, true);
         }
 
-        creature::CreaturePtr_t GetNextInOrderAfter(creature::CreatureCPtrC_t C_CPTRC)
-        {
-            return GetNextInOrder(C_CPTRC, true);
-        }
-
-        creature::CreaturePtr_t GetNextInOrderBefore(const creature::CreaturePtr_t C_PTR)
+        const creature::CreaturePtr_t GetNextInOrderBefore(const creature::CreaturePtr_t C_PTR)
         {
             return GetNextInOrder(C_PTR, false);
         }
 
-        creature::CreaturePtr_t GetNextInOrderBefore(creature::CreatureCPtrC_t C_CPTRC)
-        {
-            return GetNextInOrder(C_CPTRC, false);
-        }
+        const creature::CreaturePtr_t GetNextInOrder(const creature::CreaturePtr_t, const bool);
 
-        creature::CreaturePtr_t GetNextInOrder(creature::CreatureCPtrC_t, const bool);
+        const creature::CreaturePtr_t GetAtOrderPos(const std::size_t); // zero indexed
 
-        creature::CreaturePtr_t GetAtOrderPos(const std::size_t); // zero indexed
-
-        std::size_t GetOrderNum(creature::CreatureCPtrC_t) const; // zero indexed
+        std::size_t GetOrderNum(const creature::CreaturePtr_t) const; // zero indexed
 
         std::size_t GetNumHumanoid() const;
 
         avatar::Avatar::Enum Avatar() const { return avatar_; }
+
+        void BeforeSerialize();
+        void AfterSerialize();
 
     public:
         static const std::size_t MAX_CHARACTER_COUNT_;
 
     private:
         avatar::Avatar::Enum avatar_;
+
+        // misc::NotNulls cannot be serialized so the vector of raw pointers is required
         creature::CreaturePVec_t charactersPVec_;
+        std::vector<creature::Creature *> charactersToSerializePVec_;
 
     private:
         friend class boost::serialization::access;
         template <typename Archive>
         void serialize(Archive & ar, const unsigned int)
         {
-            ar & charactersPVec_;
+            ar & charactersToSerializePVec_;
         }
     };
 

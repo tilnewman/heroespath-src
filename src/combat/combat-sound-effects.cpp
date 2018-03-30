@@ -645,7 +645,7 @@ namespace combat
     }
 
     void CombatSoundEffects::GetDeathSfx(
-        creature::CreaturePtr_t CREATURE_PTR, sfml_util::SfxEnumVec_t & sfxVec_OutParam) const
+        const creature::CreaturePtr_t CREATURE_PTR, sfml_util::SfxEnumVec_t & sfxVec_OutParam) const
     {
         switch (CREATURE_PTR->Race())
         {
@@ -901,5 +901,6 @@ namespace combat
             }
         }
     }
+
 } // namespace combat
 } // namespace heroespath

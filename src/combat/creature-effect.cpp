@@ -32,7 +32,6 @@
 #include "creature/condition-algorithms.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
-
 #include "misc/vectors.hpp"
 
 #include <boost/algorithm/string.hpp>
@@ -162,5 +161,6 @@ namespace combat
     {
         return std::tie(L.hitInfoVec_, L.creaturePtr_) == std::tie(R.hitInfoVec_, R.creaturePtr_);
     }
+
 } // namespace combat
 } // namespace heroespath

@@ -134,24 +134,23 @@ namespace stage
         , mouseOverBoxHeight_(0.0f)
         , mouseOverPosV_()
         , mouseOverSprite_()
-        , mouseOverCharPtr_()
         , mouseOverTexture_()
         , isMouseOverTexture_(false)
         , mouseOverTextRegionUPtr_()
         , mouseOverSlider_(4.0f)
-        , charactersPSet_()
+        , unplayedCharactersPVec_()
     {}
 
     PartyStage::~PartyStage()
     {
         Stage::ClearAllEntities();
 
-        for (auto & nextCharacterPtr : charactersPSet_)
+        for (auto const & CHARACTER_PTR : unplayedCharactersPVec_)
         {
-            delete nextCharacterPtr;
+            delete CHARACTER_PTR.Ptr();
         }
 
-        charactersPSet_.clear();
+        unplayedCharactersPVec_.clear();
     }
 
     bool PartyStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)
@@ -236,17 +235,17 @@ namespace stage
         {
             auto selectedItemSPtr{ GetSelectedItemSPtr() };
 
-            if ((selectedItemSPtr.get() != nullptr)
-                && (selectedItemSPtr->CHARACTER_CPTR != nullptr))
+            if ((selectedItemSPtr.get() != nullptr) && selectedItemSPtr->CHARACTER_PTR_OPT)
             {
-                auto characterPtr{ selectedItemSPtr->CHARACTER_CPTR };
+                auto const CHARACTER_PTR{ selectedItemSPtr->CHARACTER_PTR_OPT.value() };
 
-                if (state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(characterPtr)
+                if (state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR)
                     == false)
                 {
                     M_HP_LOG_ERR(
                         "stage::PartyStage::HandleCallback(delete confirm popup)"
-                        << " unable to delete character \"" << characterPtr->Name() << "\" file.");
+                        << " unable to delete character \"" << CHARACTER_PTR->ToString()
+                        << "\" file.");
                 }
 
                 characterListBoxUPtr_->Remove(selectedItemSPtr);
@@ -296,15 +295,15 @@ namespace stage
 
     bool PartyStage::HandleCallback_DeleteButton()
     {
-        auto selectedCharPtr{ GetSelectedCharacter() };
+        auto const SELECTED_CHARACTER_PTR_OPT{ GetSelectedCharacterPtrOpt() };
 
-        if (selectedCharPtr == nullptr)
+        if (!SELECTED_CHARACTER_PTR_OPT)
         {
             return false;
         }
 
         std::ostringstream ss;
-        ss << "\n\nDelete " << selectedCharPtr->Name()
+        ss << "\n\nDelete " << SELECTED_CHARACTER_PTR_OPT.value()->Name()
            << "?  This cannot be undone.  Are you sure?";
 
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
@@ -367,7 +366,7 @@ namespace stage
         }
 
         // load all players not yet assigned to a party/started game
-        charactersPSet_ = state::GameStateFactory::Instance()->LoadAllUnplayedCharacters();
+        unplayedCharactersPVec_ = state::GameStateFactory::Instance()->LoadAllUnplayedCharacters();
 
         // fill a list with TextRegions for the character names
         sfml_util::gui::ListBoxItemSVec_t itemSVec;
@@ -380,7 +379,7 @@ namespace stage
 
         std::ostringstream ssCharText;
         std::ostringstream ssTitle;
-        for (auto const NEXT_CHAR_PTR : charactersPSet_)
+        for (auto const & NEXT_CHAR_PTR : unplayedCharactersPVec_)
         {
             ssCharText.str("");
             ssCharText << NEXT_CHAR_PTR->Name() << "'s_CharacterListing";
@@ -402,7 +401,7 @@ namespace stage
         }
 
         std::sort(std::begin(itemSVec), std::end(itemSVec), [](auto const & A, auto const & B) {
-            return (A->CHARACTER_CPTR->Name() < B->CHARACTER_CPTR->Name());
+            return (A->CHARACTER_PTR_OPT->Obj().Name() < B->CHARACTER_PTR_OPT->Obj().Name());
         });
 
         // establish the longest line that needs to fit in the listboxes
@@ -596,16 +595,16 @@ namespace stage
         }
     }
 
-    creature::CreaturePtr_t PartyStage::GetSelectedCharacter() const
+    const creature::CreaturePtrOpt_t PartyStage::GetSelectedCharacterPtrOpt() const
     {
         auto itemSPtr{ GetSelectedItemSPtr() };
 
         if (itemSPtr.get() != nullptr)
         {
-            return itemSPtr->CHARACTER_CPTR;
+            return itemSPtr->CHARACTER_PTR_OPT;
         }
 
-        return nullptr;
+        return boost::none;
     }
 
     void PartyStage::UpdateTime(const float ELAPSED_TIME_SECONDS)
@@ -632,6 +631,8 @@ namespace stage
 
         mouseOverPopupTimerSec_ += ELAPSED_TIME_SECONDS;
 
+        creature::CreaturePtrOpt_t mouseOverCharacterPtrOpt{ boost::none };
+
         if ((mouseOverPopupTimerSec_ > MOUSE_OVER_POPUP_DELAY_SEC_)
             && (false == isMouseOverTexture_))
         {
@@ -642,15 +643,15 @@ namespace stage
                 itemSPtr = partyListBoxUPtr_->AtPos(mouseOverPosV_);
             }
 
-            if ((itemSPtr.get() != nullptr) && (itemSPtr->CHARACTER_CPTR != nullptr)
-                && (itemSPtr->CHARACTER_CPTR->ImageFilename().empty() == false))
+            if ((itemSPtr.get() != nullptr) && itemSPtr->CHARACTER_PTR_OPT
+                && (itemSPtr->CHARACTER_PTR_OPT->Obj().ImageFilename().empty() == false))
             {
-                mouseOverCharPtr_ = itemSPtr->CHARACTER_CPTR;
+                mouseOverCharacterPtrOpt = itemSPtr->CHARACTER_PTR_OPT;
 
                 mouseOverSlider_.Reset(MOUSE_OVER_SLIDER_SPEED_);
 
                 sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-                    mouseOverTexture_, itemSPtr->CHARACTER_CPTR->ImageFilename());
+                    mouseOverTexture_, itemSPtr->CHARACTER_PTR_OPT->Obj().ImageFilename());
 
                 isMouseOverTexture_ = true;
                 mouseOverSprite_.setTexture(mouseOverTexture_);
@@ -722,20 +723,24 @@ namespace stage
 
             mouseOverSprite_.setPosition(SPRITE_POS_LEFT, SPRITE_POS_TOP);
 
-            if (mouseOverSlider_.IsDone())
+            if (mouseOverCharacterPtrOpt && (mouseOverSlider_.IsDone()))
             {
+                auto const MOUSE_OVER_CHARACTER_PTR{ mouseOverCharacterPtrOpt.value() };
+
                 std::ostringstream ss;
-                ss << "\"" << mouseOverCharPtr_->Name() << "\"\n"
-                   << mouseOverCharPtr_->SexName() << ", " << mouseOverCharPtr_->RaceName() << ", "
-                   << mouseOverCharPtr_->RoleName() << "\n"
-                   << "Created on " << mouseOverCharPtr_->DateTimeCreated().date.ToString()
-                   << " at " << mouseOverCharPtr_->DateTimeCreated().time.ToString() << "\n\n"
-                   << "Strength:        " << mouseOverCharPtr_->Strength() << "\n"
-                   << "Accuracy:       " << mouseOverCharPtr_->Accuracy() << "\n"
-                   << "Charm:           " << mouseOverCharPtr_->Charm() << "\n"
-                   << "Luck:              " << mouseOverCharPtr_->Luck() << "\n"
-                   << "Speed:            " << mouseOverCharPtr_->Speed() << "\n"
-                   << "Intelligence:    " << mouseOverCharPtr_->Intelligence();
+                ss << "\"" << MOUSE_OVER_CHARACTER_PTR->Name() << "\"\n"
+                   << MOUSE_OVER_CHARACTER_PTR->SexName() << ", "
+                   << MOUSE_OVER_CHARACTER_PTR->RaceName() << ", "
+                   << MOUSE_OVER_CHARACTER_PTR->RoleName() << "\n"
+                   << "Created on " << MOUSE_OVER_CHARACTER_PTR->DateTimeCreated().date.ToString()
+                   << " at " << MOUSE_OVER_CHARACTER_PTR->DateTimeCreated().time.ToString()
+                   << "\n\n"
+                   << "Strength:        " << MOUSE_OVER_CHARACTER_PTR->Strength() << "\n"
+                   << "Accuracy:       " << MOUSE_OVER_CHARACTER_PTR->Accuracy() << "\n"
+                   << "Charm:           " << MOUSE_OVER_CHARACTER_PTR->Charm() << "\n"
+                   << "Luck:              " << MOUSE_OVER_CHARACTER_PTR->Luck() << "\n"
+                   << "Speed:            " << MOUSE_OVER_CHARACTER_PTR->Speed() << "\n"
+                   << "Intelligence:    " << MOUSE_OVER_CHARACTER_PTR->Intelligence();
 
                 const sf::FloatRect TEXT_RECT(
                     MOUSE_OVER_POPUP_POS_LEFT_ + MOUSE_OVER_IMAGE_PAD_
@@ -767,24 +772,32 @@ namespace stage
 
     void PartyStage::StartNewGame(const avatar::Avatar::Enum PARTY_AVATAR)
     {
-        // create a new party structure
         creature::CreaturePVec_t charPVec;
+        for (auto const & ITEM_SPTR : partyListBoxUPtr_->Items())
         {
-            for (std::size_t i(0); i < partyListBoxUPtr_->Size(); ++i)
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (!!ITEM_SPTR->CHARACTER_PTR_OPT),
+                "stage::PartyStage::StartNewGame() found a partyListBoxUPtr_ ItemSPtr_t with an "
+                "uninitialized CHARACTER_PTR_OPT.");
+
+            auto const CHARACTER_PTR{ ITEM_SPTR->CHARACTER_PTR_OPT.value() };
+
+            charPVec.emplace_back(CHARACTER_PTR);
+
+            unplayedCharactersPVec_.erase(
+                std::remove(
+                    std::begin(unplayedCharactersPVec_),
+                    std::end(unplayedCharactersPVec_),
+                    CHARACTER_PTR),
+                std::end(unplayedCharactersPVec_));
+
+            if (state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR)
+                == false)
             {
-                auto characterPtr{ partyListBoxUPtr_->At(i)->CHARACTER_CPTR };
-                charPVec.emplace_back(characterPtr);
-
-                charactersPSet_.erase(characterPtr);
-
-                if (state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(characterPtr)
-                    == false)
-                {
-                    M_HP_LOG_ERR(
-                        "PartyStage::HandleCallback_StartButton() while trying to state::"
-                        << "GameStateFactory::DeleteUnplayedCharacterFile(\""
-                        << characterPtr->Name() << "\") failed.");
-                }
+                M_HP_LOG_ERR(
+                    "PartyStage::HandleCallback_StartButton() while trying to state::"
+                    << "GameStateFactory::DeleteUnplayedCharacterFile(\""
+                    << CHARACTER_PTR->ToString() << "\") failed.");
             }
         }
 
@@ -847,10 +860,9 @@ namespace stage
 
     bool PartyStage::AreAnyCharactersBeasts() const
     {
-        auto const NUM_CHARACTERS{ partyListBoxUPtr_->Size() };
-        for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+        for (auto const & ITEM_SPTR : partyListBoxUPtr_->Items())
         {
-            if (partyListBoxUPtr_->At(i)->CHARACTER_CPTR->IsBeast())
+            if (ITEM_SPTR->CHARACTER_PTR_OPT && (ITEM_SPTR->CHARACTER_PTR_OPT->Obj().IsBeast()))
             {
                 return true;
             }
@@ -861,10 +873,10 @@ namespace stage
 
     bool PartyStage::AreAnyCharactersBeastmasters() const
     {
-        auto const NUM_CHARACTERS{ partyListBoxUPtr_->Size() };
-        for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
+        for (auto const & ITEM_SPTR : partyListBoxUPtr_->Items())
         {
-            if (partyListBoxUPtr_->At(i)->CHARACTER_CPTR->Role() == creature::role::Beastmaster)
+            if (ITEM_SPTR->CHARACTER_PTR_OPT
+                && (ITEM_SPTR->CHARACTER_PTR_OPT->Obj().Role() == creature::role::Beastmaster))
             {
                 return true;
             }
@@ -930,5 +942,6 @@ namespace stage
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageSelect>(
             this, POPUP_INFO);
     }
+
 } // namespace stage
 } // namespace heroespath

@@ -28,7 +28,7 @@
 // party.hpp (non-player)
 //  A collection of characters NOT under control of the user.
 //
-#include "misc/boost-serialize-includes.hpp"
+#include "misc/not-null.hpp"
 
 #include <memory>
 #include <string>
@@ -39,10 +39,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreatureCPtr_t = const Creature *;
-    using CreaturePtrC_t = Creature * const;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
 namespace non_player
@@ -65,21 +62,13 @@ namespace non_player
 
         const creature::CreaturePVec_t Characters() const { return charactersPVec_; }
         void Add(const creature::CreaturePtr_t, const bool WILL_STORE = true);
-        bool Remove(creature::CreaturePtr_t, const bool WILL_FREE = true);
+        bool Remove(const creature::CreaturePtr_t, const bool WILL_FREE = true);
         void Clear() { charactersPVec_.clear(); }
         const std::string Summary() const;
         bool Contains(const creature::CreaturePtr_t) const;
 
     private:
         creature::CreaturePVec_t charactersPVec_;
-
-    private:
-        friend class boost::serialization::access;
-        template <typename Archive>
-        void serialize(Archive & ar, const unsigned int)
-        {
-            ar & charactersPVec_;
-        }
     };
 
     using PartyUPtr_t = std::unique_ptr<Party>;

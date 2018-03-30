@@ -27,6 +27,7 @@
 //
 // character-warehouse.hpp (non-player)
 //
+#include "misc/not-null.hpp"
 #include "misc/warehouse.hpp"
 
 #include <memory>
@@ -37,7 +38,8 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
     using CreatureUPtr_t = std::unique_ptr<Creature>;
     using CreatureUVec_t = std::vector<CreatureUPtr_t>;
 }
@@ -62,8 +64,9 @@ namespace non_player
         static void Acquire();
         static void Release();
 
-        creature::CreaturePtr_t Store(const creature::CreaturePtr_t);
-        void Free(creature::CreaturePtr_t &);
+        const creature::CreaturePtr_t Store(const creature::CreaturePtr_t);
+        void Free(const creature::CreaturePtr_t);
+        void Free(creature::CreaturePVec_t &);
 
     private:
         static std::unique_ptr<CharacterWarehouse> instanceUPtr_;

@@ -67,7 +67,7 @@ namespace item
         {
             if (instanceUPtr_.get() == nullptr)
             {
-                M_HP_LOG_WRN("Singleton Instance() before Acquire(): WeaponDetailLoader");
+                M_HP_LOG_ERR("Singleton Instance() before Acquire(): WeaponDetailLoader");
                 Acquire();
             }
 
@@ -82,7 +82,7 @@ namespace item
             }
             else
             {
-                M_HP_LOG_WRN("Singleton Acquire() after Construction: WeaponDetailLoader");
+                M_HP_LOG_ERR("Singleton Acquire() after Construction: WeaponDetailLoader");
             }
         }
 

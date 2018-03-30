@@ -54,8 +54,7 @@ namespace item
 namespace creature
 {
     class Creature;
-    using CreaturePtrC_t = Creature * const;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
 namespace combat
 {
@@ -74,13 +73,13 @@ namespace combat
             const stats::Trait_t STAT_VALUE, const stats::Trait_t STAT_MAX, const float RATIO);
 
         static const FightResult Fight(
-            creature::CreaturePtrC_t creatureAttackingPtrC,
-            creature::CreaturePtrC_t creatureDefendingPtrC,
+            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+            const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
             const bool WILL_FORCE_HIT = false);
 
         // negative values are damaging, positive values are healing
         static void HandleDamage(
-            creature::CreaturePtrC_t creatureDefendingPtrC,
+            const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
             HitInfoVec_t & hitInfoVec,
             const Health_t & HEALTH_ADJ,
             creature::CondEnumVec_t & condsAddedVec,
@@ -88,7 +87,7 @@ namespace combat
             const bool CAN_ADD_CONDITIONS = true);
 
         static void AddConditionsBasedOnDamage(
-            creature::CreaturePtrC_t creatureDefendingPtrC,
+            const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
             const Health_t & DAMAGE_ABS,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
@@ -98,7 +97,7 @@ namespace combat
         // not from the hitInfoVec
         static bool RemoveAddedConditions(
             const creature::CondEnumVec_t & CONDS_VEC,
-            creature::CreaturePtrC_t creaturePtrC,
+            const creature::CreaturePtr_t CREATURE_PTR,
             HitInfoVec_t & hitInfoVec,
             creature::CondEnumVec_t & condsRemovedVec);
 
@@ -106,64 +105,65 @@ namespace combat
         // not from the hitInfoVec
         static bool RemoveAddedCondition(
             const creature::Conditions::Enum COND_ENUM,
-            creature::CreaturePtrC_t creaturePtrC,
+            const creature::CreaturePtr_t CREATURE_PTR,
             HitInfoVec_t & hitInfoVec,
             creature::CondEnumVec_t & condsRemovedVec);
 
         static const FightResult Cast(
             const spell::SpellPtr_t SPELL_PTR,
-            creature::CreaturePtrC_t creatureCastingPtrC,
+            const creature::CreaturePtr_t CREATURE_CASTING_PTR,
             const creature::CreaturePVec_t & creaturesDefendingPVec);
 
         static const FightResult PlaySong(
             const song::SongPtr_t SONG_PTR,
-            creature::CreaturePtrC_t creaturePlayingPtrC,
+            const creature::CreaturePtr_t CREATURE_PLAYING_PTR,
             const creature::CreaturePVec_t & creaturesListeningPVec);
 
         static const FightResult Pounce(
-            creature::CreaturePtrC_t creaturePouncingPtrC,
-            creature::CreaturePtrC_t creatureDefendingPtrC);
+            const creature::CreaturePtr_t CREATURE_POUNCING_PTR,
+            const creature::CreaturePtr_t CREATURE_DEFENDING_PTR);
 
         static const FightResult Roar(
-            creature::CreaturePtrC_t creatureRoaringPtrC,
+            const creature::CreaturePtr_t CREATURE_ROARING_PTR,
             CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);
 
-        static creature::CreaturePtr_t FindNonPlayerCreatureToAttack(
-            creature::CreaturePtrC_t creatureAttackingtrC,
+        static const creature::CreaturePtr_t FindNonPlayerCreatureToAttack(
+            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
             CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);
 
         static const FightResult TreasureTrap(
-            const combat::Trap & TRAP, creature::CreaturePtrC_t creaturePickingTheLockPtr_C);
+            const combat::Trap & TRAP, const creature::CreaturePtr_t CREATURE_PICKING_THE_LOCK_PTR);
 
     private:
         static const creature::CreaturePVec_t RandomSelectWhoIsHurtByTrap(
-            const combat::Trap & TRAP, creature::CreaturePtrC_t creaturePickingTheLockPtr_C);
+            const combat::Trap & TRAP, const creature::CreaturePtr_t CREATURE_PICKING_THE_LOCK_PTR);
 
         static const HitInfoVec_t AttackWithAllWeapons(
-            creature::CreaturePtrC_t creatureAttackingPtrC,
-            creature::CreaturePtrC_t creatureDefendingPtrC,
+            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+            const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
             const bool WILL_FORCE_HIT = false);
 
         static const HitInfo AttackWithSingleWeapon(
             HitInfoVec_t & hitInfoVec,
             const item::ItemPtr_t WEAPON_PTR,
-            creature::CreaturePtrC_t creatureAttackingPtrC,
-            creature::CreaturePtrC_t creatureDefendingPtrC,
+            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+            const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
             const bool WILL_FORCE_HIT = false);
 
         static Health_t DetermineDamage(
             const item::ItemPtr_t WEAPON_PTR,
-            creature::CreaturePtrC_t creatureAttackingPtrC,
-            creature::CreaturePtrC_t creatureDefendingPtrC,
+            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+            const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
             bool & isPowerHit_OutParam,
             bool & isCriticalHit_OutParam,
             bool & didArmorAbsorb_OutParam);
 
         static bool AreAnyOfCondsContained(
             const creature::CondEnumVec_t & CONDS_VEC,
-            const creature::CreaturePtrC_t CREATURE_PTR,
+            const creature::CreaturePtr_t CREATURE_PTR,
             const HitInfoVec_t & HIT_INFO_VEC);
     };
+
 } // namespace combat
 } // namespace heroespath
 

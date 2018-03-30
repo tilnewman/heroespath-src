@@ -54,5 +54,12 @@ namespace item
         return sum;
     }
 
+    void ItemCache::Reset()
+    {
+        coins = 0_coin;
+        gems = 0_gem;
+        items_pvec.clear();
+    }
+
 } // namespace item
 } // namespace heroespath

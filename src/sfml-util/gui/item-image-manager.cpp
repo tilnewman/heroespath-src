@@ -76,7 +76,7 @@ namespace sfml_util
         {
             if (instanceUPtr_.get() == nullptr)
             {
-                M_HP_LOG_WRN("Singleton Instance() before Acquire(): ItemImageManager");
+                M_HP_LOG_ERR("Singleton Instance() before Acquire(): ItemImageManager");
                 Acquire();
             }
 
@@ -91,7 +91,7 @@ namespace sfml_util
             }
             else
             {
-                M_HP_LOG_WRN("Singleton Acquire() after Construction: ItemImageManager");
+                M_HP_LOG_ERR("Singleton Acquire() after Construction: ItemImageManager");
             }
         }
 

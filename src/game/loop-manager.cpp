@@ -74,7 +74,7 @@ namespace game
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): LoopManager");
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): LoopManager");
             Acquire();
         }
 
@@ -89,7 +89,7 @@ namespace game
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: LoopManager");
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: LoopManager");
         }
     }
 
@@ -700,5 +700,6 @@ namespace game
             cmdQueue_.pop();
         }
     }
+
 } // namespace game
 } // namespace heroespath

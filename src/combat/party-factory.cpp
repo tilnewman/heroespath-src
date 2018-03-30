@@ -30,13 +30,11 @@
 #include "party-factory.hpp"
 
 #include "creature/creature.hpp"
+#include "misc/random.hpp"
 #include "non-player/inventory-factory.hpp"
 #include "non-player/party.hpp"
-#include "stats/stat-set.hpp"
-
 #include "sfml-util/gui/creature-image-manager.hpp"
-
-#include "misc/random.hpp"
+#include "stats/stat-set.hpp"
 
 namespace heroespath
 {
@@ -53,7 +51,7 @@ namespace combat
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): PartyFactory");
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): PartyFactory");
             Acquire();
         }
 
@@ -68,7 +66,7 @@ namespace combat
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: PartyFactory");
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: PartyFactory");
         }
     }
 
@@ -93,7 +91,7 @@ namespace combat
         return partyUPtr;
     }
 
-    creature::CreaturePtr_t PartyFactory::MakeCharacter_GoblinGrunt() const
+    const creature::CreaturePtr_t PartyFactory::MakeCharacter_GoblinGrunt() const
     {
         const stats::StatSet STATS(
             Strength_t(13 + misc::random::Int(5)),
@@ -103,7 +101,7 @@ namespace combat
             Speed_t(13 + misc::random::Int(5)),
             Intell_t(3 + misc::random::Int(5)));
 
-        auto characterPtr{ MakeCharacter(
+        auto const CHARACTER_PTR{ MakeCharacter(
             STATS,
             10_health,
             20_health,
@@ -111,12 +109,12 @@ namespace combat
             creature::race::Goblin,
             creature::role::Grunt) };
 
-        non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(characterPtr);
+        non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(CHARACTER_PTR);
 
-        return characterPtr;
+        return CHARACTER_PTR;
     }
 
-    creature::CreaturePtr_t PartyFactory::MakeCharacter_Boar() const
+    const creature::CreaturePtr_t PartyFactory::MakeCharacter_Boar() const
     {
         const stats::StatSet STATS(
             Strength_t(13 + misc::random::Int(3)),
@@ -135,7 +133,7 @@ namespace combat
             creature::role::Boar);
     }
 
-    creature::CreaturePtr_t PartyFactory::MakeCharacter(
+    const creature::CreaturePtr_t PartyFactory::MakeCharacter(
         const stats::StatSet & STATS,
         const Health_t & HEALTH_MIN,
         const Health_t & HEALTH_MAX,
@@ -146,7 +144,7 @@ namespace combat
         const Experience_t & EXPERIENCE,
         const Mana_t & MANA) const
     {
-        auto characterPtr{ new creature::Creature(
+        const creature::CreaturePtr_t CHARACTER_PTR{ new creature::Creature(
             false,
             creature::race::Name(RACE),
             SEX,
@@ -165,10 +163,10 @@ namespace combat
             spell::SpellEnumVec_t(),
             MANA) };
 
-        characterPtr->ImageFilename(sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
-            RACE, ROLE, SEX, true, characterPtr->WolfenClass(), characterPtr->DragonClass()));
+        CHARACTER_PTR->ImageFilename(sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
+            RACE, ROLE, SEX, true, CHARACTER_PTR->WolfenClass(), CHARACTER_PTR->DragonClass()));
 
-        return characterPtr;
+        return CHARACTER_PTR;
     }
 
 } // namespace combat

@@ -49,6 +49,9 @@ private:
     int m_number;
 };
 
+inline bool operator==(const Thing & L, const Thing & R) { return (L.get() == R.get()); }
+inline bool operator!=(const Thing & L, const Thing & R) { return !(L == R); }
+
 BOOST_AUTO_TEST_CASE(Real_IsRealZero)
 {
     BOOST_CHECK(IsRealZero(0.0));
@@ -195,7 +198,7 @@ BOOST_AUTO_TEST_CASE(NotNull_Tests)
     delete notNullThing->Ptr();
 }
 
-BOOST_AUTO_TEST_CASE(BoostOptionalTests)
+BOOST_AUTO_TEST_CASE(BoostOptionalThrowOnUninitTests)
 {
     // In this codebase <boost/optional.hpp> is not included directly, instead a wrapper include is
     // used "misc/boost-optional-that-throws.hpp". This forces any attempted access of an
@@ -212,4 +215,35 @@ BOOST_AUTO_TEST_CASE(BoostOptionalTests)
     BOOST_CHECK_THROW((*optional).get(), std::exception);
     BOOST_CHECK_THROW(optional.value().get(), std::exception);
     BOOST_CHECK_THROW(optional.get().get(), std::exception);
+}
+
+BOOST_AUTO_TEST_CASE(BoostOptionalComparisonTests)
+{
+    using ThingPtr_t = heroespath::misc::NotNull<Thing *>;
+    using ThingPtrOpt_t = boost::optional<ThingPtr_t>;
+
+    Thing myThing1(1);
+    ThingPtr_t thingPtr1{ &myThing1 };
+
+    Thing myThing2(2);
+    ThingPtr_t thingPtr2{ &myThing2 };
+
+    ThingPtrOpt_t optInvalid{ boost::none };
+    ThingPtrOpt_t optValid1{ thingPtr1 };
+    ThingPtrOpt_t optValid2{ thingPtr2 };
+
+    BOOST_CHECK(optValid1 != optInvalid);
+    BOOST_CHECK(optValid2 != optInvalid);
+    BOOST_CHECK(optValid1 != optValid2);
+    BOOST_CHECK(optValid1.value() != optValid2.value());
+    BOOST_CHECK(optInvalid == ThingPtrOpt_t());
+
+    // these test are the real meat of this test set
+    BOOST_CHECK(optInvalid == boost::none);
+    BOOST_CHECK(optValid1 != boost::none);
+    BOOST_CHECK(optValid1 == thingPtr1);
+    BOOST_CHECK(optValid1 != thingPtr2);
+
+    ThingPtrOpt_t optExtra{ thingPtr1 };
+    BOOST_CHECK(optExtra == thingPtr1);
 }

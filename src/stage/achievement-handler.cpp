@@ -43,17 +43,14 @@ namespace stage
         creature::TitlePtrOpt_t & fromTitlePtrOpt,
         creature::TitlePtrOpt_t & toTitlePtrOpt)
     {
-        if (nullptr != CHARACTER_PTR)
-        {
-            fromTitlePtrOpt = CHARACTER_PTR->GetAchievements().GetCurrentTitle(ACHIEVEMENT_TYPE);
-            toTitlePtrOpt = CHARACTER_PTR->GetAchievements().Increment(ACHIEVEMENT_TYPE);
+        fromTitlePtrOpt = CHARACTER_PTR->GetAchievements().GetCurrentTitle(ACHIEVEMENT_TYPE);
+        toTitlePtrOpt = CHARACTER_PTR->GetAchievements().Increment(ACHIEVEMENT_TYPE);
 
-            if (toTitlePtrOpt)
+        if (toTitlePtrOpt)
+        {
+            if ((!fromTitlePtrOpt) || (fromTitlePtrOpt->Ptr() != toTitlePtrOpt->Ptr()))
             {
-                if ((!fromTitlePtrOpt) || (fromTitlePtrOpt->Ptr() != toTitlePtrOpt->Ptr()))
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -69,7 +66,7 @@ namespace stage
     void TitleTransitionPopup(
         popup::IPopupHandler_t * const popupHandlerPtr,
         const std::string & POPUP_NAME,
-        creature::CreaturePtr_t characterPtr,
+        const creature::CreaturePtr_t CREATURE_PTR,
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
         const creature::TitlePtr_t TO_TITLE_PTR)
     {
@@ -88,7 +85,7 @@ namespace stage
 
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTitleFadePopupInfo(
             POPUP_NAME,
-            characterPtr,
+            CREATURE_PTR,
             FROM_TITLE_PTR_OPT,
             TO_TITLE_PTR,
             fromTextureOpt,
@@ -101,19 +98,19 @@ namespace stage
     bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
         popup::IPopupHandler_t * const popupHandlerPtr,
         const std::string & POPUP_NAME,
-        creature::CreaturePtr_t characterPtr,
+        const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum ACHIEVEMENT_TYPE)
     {
         creature::TitlePtrOpt_t fromTitlePtrOpt{ boost::none };
         creature::TitlePtrOpt_t toTitlePtrOpt{ boost::none };
 
         if (IncrementAchievementAndReturnTrueIfProcessingRequired(
-                characterPtr, ACHIEVEMENT_TYPE, fromTitlePtrOpt, toTitlePtrOpt))
+                CREATURE_PTR, ACHIEVEMENT_TYPE, fromTitlePtrOpt, toTitlePtrOpt))
         {
-            ApplyTitleChangesToCreature(characterPtr, toTitlePtrOpt.get());
+            ApplyTitleChangesToCreature(CREATURE_PTR, toTitlePtrOpt.get());
 
             TitleTransitionPopup(
-                popupHandlerPtr, POPUP_NAME, characterPtr, fromTitlePtrOpt, toTitlePtrOpt.get());
+                popupHandlerPtr, POPUP_NAME, CREATURE_PTR, fromTitlePtrOpt, toTitlePtrOpt.get());
 
             return true;
         }

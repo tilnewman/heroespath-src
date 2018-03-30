@@ -40,11 +40,6 @@
 
 namespace heroespath
 {
-namespace creature
-{
-    class Creature;
-    using CreaturePtr_t = Creature *;
-} // namespace creature
 namespace sfml_util
 {
     namespace gui

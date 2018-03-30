@@ -31,6 +31,7 @@
 #include "combat/combat-over-enum.hpp"
 #include "creature/title.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "popup/popup-enums.hpp"
 #include "popup/popup-info.hpp"
@@ -60,7 +61,7 @@ namespace sfml_util
 namespace creature
 {
     class Creature;
-    using CreaturePtr = Creature *;
+    using CreaturePtr = misc::NotNull<Creature *>;
 } // namespace creature
 
 namespace popup
@@ -190,13 +191,13 @@ namespace popup
         // use this function to make the spellbook popup window
         const PopupInfo CreateSpellbookPopupInfo(
             const std::string & POPUP_NAME,
-            const creature::CreaturePtr_t CREATURE_CPTR,
+            const creature::CreaturePtr_t CREATURE_PTR,
             const std::size_t INITIAL_SELECTION) const;
 
         // use this function to make the music sheet popup window
         const PopupInfo CreateMusicPopupInfo(
             const std::string & POPUP_NAME,
-            const creature::CreaturePtr_t CREATURE_CPTR,
+            const creature::CreaturePtr_t CREATURE_PTR,
             const std::size_t INITIAL_SELECTION) const;
 
         // use this function to make the CombatOver popup window
@@ -251,6 +252,7 @@ namespace popup
         //
         PathVec_t accentPathsVec_;
     };
+
 } // namespace popup
 } // namespace heroespath
 

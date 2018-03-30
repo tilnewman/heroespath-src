@@ -89,7 +89,7 @@ namespace item
     {
         TreasureScores scores;
 
-        for (auto const NEXT_CHARACTER_PTR : CHARACTER_PVEC)
+        for (auto const & NEXT_CHARACTER_PTR : CHARACTER_PVEC)
         {
             using namespace non_player::ownership;
             if (complexity_type::FromCreature(NEXT_CHARACTER_PTR) != complexity_type::Animal)
@@ -123,7 +123,7 @@ namespace item
     {
         TreasureScores scores;
 
-        for (auto const NEXT_CHARACTER_PTR : CHARACTER_PVEC)
+        for (auto const & NEXT_CHARACTER_PTR : CHARACTER_PVEC)
         {
             scores += creature::race::TreasureScore(
                 NEXT_CHARACTER_PTR->Race(), NEXT_CHARACTER_PTR->Role());
@@ -155,7 +155,7 @@ namespace item
     {
         TreasureScores scores;
 
-        for (auto const NEXT_CHARACTER_PTR : CHARACTER_PVEC)
+        for (auto const & NEXT_CHARACTER_PTR : CHARACTER_PVEC)
         {
             scores += creature::race::TreasureScore(
                 NEXT_CHARACTER_PTR->Race(), NEXT_CHARACTER_PTR->Role());
@@ -342,7 +342,7 @@ namespace item
         // populate setItemsOwnedProfiles with thin profiles of equipped and unequipped items
         auto const CREATURE_PVEC{ creature::Algorithms::Players(creature::Algorithms::Runaway) };
 
-        for (auto const CREATURE_PTR : CREATURE_PVEC)
+        for (auto const & CREATURE_PTR : CREATURE_PVEC)
         {
             for (auto const & UNEQUIPPED_ITEM_PTR : CREATURE_PTR->Inventory().Items())
             {

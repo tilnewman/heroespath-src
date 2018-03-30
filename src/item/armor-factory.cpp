@@ -52,7 +52,7 @@ namespace item
         {
             if (instanceUPtr_.get() == nullptr)
             {
-                M_HP_LOG_WRN("Singleton Instance() before Acquire(): ArmorFactory");
+                M_HP_LOG_ERR("Singleton Instance() before Acquire(): ArmorFactory");
                 Acquire();
             }
 
@@ -67,7 +67,7 @@ namespace item
             }
             else
             {
-                M_HP_LOG_WRN("Singleton Acquire() after Construction: ArmorFactory");
+                M_HP_LOG_ERR("Singleton Acquire() after Construction: ArmorFactory");
             }
         }
 

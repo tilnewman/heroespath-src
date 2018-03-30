@@ -108,7 +108,7 @@ namespace sfml_util
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: Display");
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: Display");
         }
     }
 

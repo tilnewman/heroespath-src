@@ -117,8 +117,8 @@ namespace song
     }
 
     bool Song::EffectCreature(
-        creature::CreaturePtr_t creaturePlayingPtr,
-        creature::CreaturePtr_t creatureListeningPtr,
+        const creature::CreaturePtr_t CREATURE_PLAYING_PTR,
+        const creature::CreaturePtr_t CREATURE_LISTENING_PTR,
         Health_t &,
         creature::CondEnumVec_t & condsAddedVec,
         creature::CondEnumVec_t & condsRemovedVec,
@@ -128,12 +128,12 @@ namespace song
         {
             case Songs::RallyDrum:
             {
-                if (creatureListeningPtr->HasCondition(creature::Conditions::Bold))
+                if (CREATURE_LISTENING_PTR->HasCondition(creature::Conditions::Bold))
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " is already emboldened.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -142,18 +142,18 @@ namespace song
                 else
                 {
                     auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Test(
-                        creaturePlayingPtr,
+                        CREATURE_PLAYING_PTR,
                         { stats::Traits::Intelligence, stats::Traits::Charm },
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus)) };
 
                     auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
-                        creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast)
+                        CREATURE_PLAYING_PTR->TraitBonusTest(stats::Traits::MagicCast)
                     };
 
                     if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
                     {
-                        creatureListeningPtr->ConditionAdd(creature::Conditions::Bold);
+                        CREATURE_LISTENING_PTR->ConditionAdd(creature::Conditions::Bold);
                         condsAddedVec.emplace_back(creature::Conditions::Bold);
 
                         actionPhraseCNP = combat::ContentAndNamePos(
@@ -169,7 +169,8 @@ namespace song
                         actionPhraseCNP = combat::ContentAndNamePos(
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
-                            " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                            " because "
+                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -181,26 +182,26 @@ namespace song
 
             {
                 auto const RATIO_FROM_STATS{ creature::Stats::Ratio(
-                    creaturePlayingPtr,
+                    CREATURE_PLAYING_PTR,
                     { stats::Traits::Intelligence, stats::Traits::Charm },
                     (creature::Stats::Luck | creature::Stats::RaceRoleBonus)) };
 
                 auto const RATIO_FROM_TRAIT_BONUS{ static_cast<float>(
-                                                       creaturePlayingPtr->TraitBonusCurrent(
+                                                       CREATURE_PLAYING_PTR->TraitBonusCurrent(
                                                            stats::Traits::MagicEffect))
                                                    / 100.0f };
 
                 auto const MANA_GAIN_ORIG{ Mana_t(static_cast<Mana_t::type>(
                     10.0f * (RATIO_FROM_STATS + RATIO_FROM_TRAIT_BONUS))) };
 
-                auto const MANA_GAIN_MAX{ creatureListeningPtr->ManaMissing() };
+                auto const MANA_GAIN_MAX{ CREATURE_LISTENING_PTR->ManaMissing() };
 
                 auto const MANA_GAIN_FINAL{ (
                     (MANA_GAIN_ORIG > MANA_GAIN_MAX) ? MANA_GAIN_MAX : MANA_GAIN_ORIG) };
 
                 if (MANA_GAIN_FINAL > 0_mana)
                 {
-                    creatureListeningPtr->ManaAdj(MANA_GAIN_FINAL);
+                    CREATURE_LISTENING_PTR->ManaAdj(MANA_GAIN_FINAL);
 
                     std::ostringstream ss;
                     ss << "'s mana for " << MANA_GAIN_FINAL << ".";
@@ -218,7 +219,7 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " already has full mana.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -237,9 +238,9 @@ namespace song
                 creature::CondEnumVec_t condsToRemoveVec;
                 for (auto const NEXT_COND_TO_REMOVE_ENUM : CONDS_TO_REMOVE_VEC)
                 {
-                    if (creatureListeningPtr->HasCondition(NEXT_COND_TO_REMOVE_ENUM))
+                    if (CREATURE_LISTENING_PTR->HasCondition(NEXT_COND_TO_REMOVE_ENUM))
                     {
-                        creatureListeningPtr->ConditionRemove(NEXT_COND_TO_REMOVE_ENUM);
+                        CREATURE_LISTENING_PTR->ConditionRemove(NEXT_COND_TO_REMOVE_ENUM);
                         condsToRemoveVec.emplace_back(NEXT_COND_TO_REMOVE_ENUM);
                     }
                 }
@@ -249,7 +250,7 @@ namespace song
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " did not need rousing.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -271,25 +272,25 @@ namespace song
             }
             case Songs::TripBeat:
             {
-                if (creatureListeningPtr->HasCondition(creature::Conditions::Tripped))
+                if (CREATURE_LISTENING_PTR->HasCondition(creature::Conditions::Tripped))
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " is already tripped.",
                         combat::NamePosition::SourceThenTarget);
 
                     return false;
                 }
                 else if (combat::Encounter::Instance()
-                             ->GetTurnInfoCopy(creatureListeningPtr)
+                             ->GetTurnInfoCopy(CREATURE_LISTENING_PTR)
                              .GetIsFlying())
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " is flying.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -298,9 +299,9 @@ namespace song
                 else
                 {
                     auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(
-                        creaturePlayingPtr,
+                        CREATURE_PLAYING_PTR,
                         { stats::Traits::Intelligence, stats::Traits::Charm },
-                        creatureListeningPtr,
+                        CREATURE_LISTENING_PTR,
                         {},
                         0,
                         0,
@@ -310,12 +311,12 @@ namespace song
                             | creature::Stats::With::PlayerNaturalWins)) };
 
                     auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
-                        creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast)
+                        CREATURE_PLAYING_PTR->TraitBonusTest(stats::Traits::MagicCast)
                     };
 
                     if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
                     {
-                        creatureListeningPtr->ConditionAdd(creature::Conditions::Tripped);
+                        CREATURE_LISTENING_PTR->ConditionAdd(creature::Conditions::Tripped);
                         condsAddedVec.emplace_back(creature::Conditions::Tripped);
 
                         actionPhraseCNP = combat::ContentAndNamePos(
@@ -331,7 +332,8 @@ namespace song
                         actionPhraseCNP = combat::ContentAndNamePos(
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
-                            " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                            " because "
+                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -341,12 +343,12 @@ namespace song
             }
             case Songs::PanicStrings:
             {
-                if (creatureListeningPtr->HasCondition(creature::Conditions::Panic))
+                if (CREATURE_LISTENING_PTR->HasCondition(creature::Conditions::Panic))
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " is already panicked.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -355,9 +357,9 @@ namespace song
                 else
                 {
                     auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Versus(
-                        creaturePlayingPtr,
+                        CREATURE_PLAYING_PTR,
                         { stats::Traits::Intelligence, stats::Traits::Charm },
-                        creatureListeningPtr,
+                        CREATURE_LISTENING_PTR,
                         {},
                         0,
                         0,
@@ -367,12 +369,12 @@ namespace song
                             | creature::Stats::With::PlayerNaturalWins)) };
 
                     auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
-                        creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast)
+                        CREATURE_PLAYING_PTR->TraitBonusTest(stats::Traits::MagicCast)
                     };
 
                     if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
                     {
-                        creatureListeningPtr->ConditionAdd(creature::Conditions::Panic);
+                        CREATURE_LISTENING_PTR->ConditionAdd(creature::Conditions::Panic);
                         condsAddedVec.emplace_back(creature::Conditions::Panic);
 
                         actionPhraseCNP = combat::ContentAndNamePos(
@@ -388,7 +390,8 @@ namespace song
                         actionPhraseCNP = combat::ContentAndNamePos(
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
-                            " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                            " because "
+                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -398,13 +401,13 @@ namespace song
             }
             case Songs::Lullaby:
             {
-                if ((creatureListeningPtr->HasCondition(creature::Conditions::AsleepNatural))
-                    && (creatureListeningPtr->HasCondition(creature::Conditions::AsleepMagical)))
+                if ((CREATURE_LISTENING_PTR->HasCondition(creature::Conditions::AsleepNatural))
+                    && (CREATURE_LISTENING_PTR->HasCondition(creature::Conditions::AsleepMagical)))
                 {
                     actionPhraseCNP = combat::ContentAndNamePos(
                         "",
                         "'s " + TypeToVerb() + Song::FAILED_STR_,
-                        " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                        " because " + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                             + " is already sleeping.",
                         combat::NamePosition::SourceThenTarget);
 
@@ -413,18 +416,18 @@ namespace song
                 else
                 {
                     auto const DID_STAT_ROLL_SUCCEED{ creature::Stats::Test(
-                        creaturePlayingPtr,
+                        CREATURE_PLAYING_PTR,
                         { stats::Traits::Intelligence, stats::Traits::Charm },
                         static_cast<creature::Stats::With>(
                             creature::Stats::With::Luck | creature::Stats::With::RaceRoleBonus)) };
 
                     auto const DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED{
-                        creaturePlayingPtr->TraitBonusTest(stats::Traits::MagicCast)
+                        CREATURE_PLAYING_PTR->TraitBonusTest(stats::Traits::MagicCast)
                     };
 
                     if (DID_STAT_ROLL_SUCCEED || DID_MAGIC_CAST_TRAIT_BONUS_SUCCEED)
                     {
-                        creatureListeningPtr->ConditionAdd(creature::Conditions::AsleepNatural);
+                        CREATURE_LISTENING_PTR->ConditionAdd(creature::Conditions::AsleepNatural);
                         condsAddedVec.emplace_back(creature::Conditions::AsleepNatural);
 
                         actionPhraseCNP = combat::ContentAndNamePos(
@@ -433,7 +436,7 @@ namespace song
                             " into a peaceful slumber.",
                             combat::NamePosition::SourceThenTarget);
 
-                        combat::Encounter::Instance()->SetIsFlying(creatureListeningPtr, false);
+                        combat::Encounter::Instance()->SetIsFlying(CREATURE_LISTENING_PTR, false);
                         return true;
                     }
                     else
@@ -441,7 +444,8 @@ namespace song
                         actionPhraseCNP = combat::ContentAndNamePos(
                             "",
                             "'s " + TypeToVerb() + Song::FAILED_STR_,
-                            " because " + creature::sex::HeSheIt(creatureListeningPtr->Sex(), false)
+                            " because "
+                                + creature::sex::HeSheIt(CREATURE_LISTENING_PTR->Sex(), false)
                                 + Song::RESISTED_STR_,
                             combat::NamePosition::SourceThenTarget);
 
@@ -454,9 +458,8 @@ namespace song
             {
                 std::ostringstream ss;
                 ss << "song::Song::EffectCreature(creaturePlaying="
-                   << ((creaturePlayingPtr == nullptr) ? "null" : creaturePlayingPtr->Name())
-                   << ", creatureListening="
-                   << ((creatureListeningPtr == nullptr) ? "null" : creatureListeningPtr->Name())
+                   << CREATURE_PLAYING_PTR->ToString()
+                   << ", creatureListening=" << CREATURE_LISTENING_PTR->ToString()
                    << ") was called when Which() was invalid (" << Which() << ").";
 
                 throw std::runtime_error(ss.str());
@@ -464,7 +467,7 @@ namespace song
         }
     }
 
-    bool Song::EffectItem(creature::CreaturePtr_t, const item::ItemPtr_t) const
+    bool Song::EffectItem(const creature::CreaturePtr_t, const item::ItemPtr_t) const
     {
         // TODO
         return false;
@@ -620,5 +623,6 @@ namespace song
             }
         }
     }
+
 } // namespace song
 } // namespace heroespath

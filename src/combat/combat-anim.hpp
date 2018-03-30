@@ -27,6 +27,7 @@
 //
 // combat-anim.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
@@ -84,9 +85,8 @@ namespace spell
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreatureCPtr_t = const Creature *;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
 namespace combat
@@ -133,8 +133,8 @@ namespace combat
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         void ProjectileShootAnimStart(
-            creature::CreatureCPtrC_t CREATURE_ATTACKING_CPTRC,
-            creature::CreatureCPtrC_t CREATURE_DEFENDING_CPTRC,
+            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
+            const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
             const item::ItemPtr_t WEAPON_PTR,
             const bool WILL_HIT);
 
@@ -148,7 +148,7 @@ namespace combat
 
         // The Centering Animation slides all creatures into the center of the
         // battlefield.
-        void CenteringStart(creature::CreatureCPtrC_t);
+        void CenteringStart(const creature::CreaturePtr_t);
         void CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y);
         void CenteringStartTargetCenterOfBatllefield();
         void CenteringStart(const creature::CreaturePVec_t &);
@@ -162,7 +162,7 @@ namespace combat
         // The Reposition Animation slides all creatures around after a blocking
         // position change, which has the effecting of looking like the battlefield
         // camera is moving.
-        void RepositionAnimStart(creature::CreaturePtr_t);
+        void RepositionAnimStart(const creature::CreaturePtr_t);
         void RepositionAnimStart(const sf::Vector2f &);
         void RepositionAnimUpdate(const float SLIDER_POS);
         void RepositionAnimStop();
@@ -170,8 +170,8 @@ namespace combat
         // The Melee Move Toward Animation moves a creature toward their target during
         // melee attacks.
         void MeleeMoveTowardAnimStart(
-            creature::CreatureCPtrC_t CREATURE_MOVING_CPTRC,
-            creature::CreatureCPtrC_t CREATURE_TARGET_CPTRC);
+            const creature::CreaturePtr_t CREATURE_MOVING_PTR,
+            const creature::CreaturePtr_t CREATURE_TARGET_PTR);
 
         void MeleeMoveTowardAnimUpdate(const float SLIDER_POS);
         void MeleeMoveTowardAnimStop();
@@ -190,29 +190,32 @@ namespace combat
         static float ShakeAnimDistance(const bool WILL_DOUBLE);
 
         void ShakeAnimStart(
-            creature::CreaturePVec_t & CREATURE_PVEC,
+            const creature::CreaturePVec_t & CREATURE_PVEC,
             const float SLIDER_SPEED,
             const bool WILL_DOUBLE_SHAKE_DISTANCE);
 
         void ShakeAnimStart(
-            creature::CreatureCPtrC_t CREATURE_CPTRC,
+            const creature::CreaturePtr_t CREATURE_PTR,
             const float SLIDER_SPEED,
             const bool WILL_DOUBLE_SHAKE_DISTANCE);
 
         // if a nullptr is given then all creatures will stop shaking
-        void ShakeAnimStop(creature::CreatureCPtrC_t);
+        void ShakeAnimStop(const creature::CreaturePtrOpt_t);
 
-        creature::CreatureCPtr_t ShakeAnimCreatureCPtr() { return shakeAnimCreatureWasCPtr_; }
+        const creature::CreaturePtrOpt_t ShakeAnimCreaturePtrOpt()
+        {
+            return shakeAnimCreatureWasPtrOpt_;
+        }
 
-        void ShakeAnimTemporaryStop(creature::CreatureCPtrC_t);
+        void ShakeAnimTemporaryStop(const creature::CreaturePtr_t);
         void ShakeAnimRestart();
 
-        void SelectAnimStart(creature::CreatureCPtrC_t);
+        void SelectAnimStart(const creature::CreaturePtr_t);
         void SelectAnimStop();
 
         void SpellAnimStart(
             const spell::SpellPtr_t SPELL_PTR,
-            const creature::CreatureCPtrC_t CASTING_CREATURE_CPTRC,
+            const creature::CreaturePtr_t CASTING_CREATURE_PTR,
             const combat::CombatNodePVec_t & TARGETS_PVEC);
 
         bool SpellAnimUpdate(const spell::SpellPtr_t SPELL_PTR, const float ELAPSED_TIME_SEC);
@@ -220,7 +223,7 @@ namespace combat
         void SpellAnimStop(const spell::SpellPtr_t SPELL_PTR);
 
         void SparksAnimStart(
-            const creature::CreatureCPtrC_t CASTING_CREATURE_CPTRC,
+            const creature::CreaturePtr_t CASTING_CREATURE_PTR,
             const combat::CombatNodePVec_t & TARGETS_PVEC);
 
         bool SparksAnimUpdate(const float ELAPSED_TIME_SEC);
@@ -257,7 +260,7 @@ namespace combat
 
         void RunAnimStart(const creature::CreaturePtr_t CREATURE_PTR);
         void RunAnimUpdate(const float SLIDER_POS);
-        creature::CreaturePtr_t RunAnimStop();
+        const creature::CreaturePtr_t RunAnimStop();
 
         void EndOfCombatCleanup();
 
@@ -293,7 +296,7 @@ namespace combat
         bool centeringAnimWillZoomOut_;
 
         // member supporting the Reposition Animation
-        creature::CreaturePtr_t repositionAnimCreaturePtr_;
+        creature::CreaturePtrOpt_t repositionAnimCreaturePtrOpt_;
         sf::Vector2f repositionAnimPosV_;
 
         // members supporting the Melee Move Animations
@@ -303,7 +306,7 @@ namespace combat
         CombatNodePtr_t meleeMoveAnimTargetCombatNodePtr_;
 
         // members to shake a creature image on the battlefield
-        creature::CreatureCPtr_t shakeAnimCreatureWasCPtr_;
+        creature::CreaturePtrOpt_t shakeAnimCreatureWasPtrOpt_;
         float shakeAnimCreatureWasSpeed_;
         ShakeInfoMap_t shakeAnimInfoMap_;
 
@@ -327,6 +330,7 @@ namespace combat
     };
 
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;
+
 } // namespace combat
 } // namespace heroespath
 

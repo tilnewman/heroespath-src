@@ -58,7 +58,7 @@ namespace item
         {
             if (instanceUPtr_.get() == nullptr)
             {
-                M_HP_LOG_WRN("Singleton Instance() before Acquire(): WeaponFactory");
+                M_HP_LOG_ERR("Singleton Instance() before Acquire(): WeaponFactory");
                 Acquire();
             }
 
@@ -73,7 +73,7 @@ namespace item
             }
             else
             {
-                M_HP_LOG_WRN("Singleton Acquire() after Construction: WeaponFactory");
+                M_HP_LOG_ERR("Singleton Acquire() after Construction: WeaponFactory");
             }
         }
 
@@ -82,6 +82,7 @@ namespace item
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (instanceUPtr_.get() != nullptr),
                 "item::WeaponFactory::Release() found instanceUPtr that was null.");
+
             instanceUPtr_.reset();
         }
 
@@ -119,7 +120,7 @@ namespace item
             return itemPtr;
         }
 
-        const ItemPtr_t WeaponFactory::Make_Claws(creature::CreatureCPtrC_t CREATURE_CPTRC)
+        const ItemPtr_t WeaponFactory::Make_Claws(const creature::CreaturePtr_t CREATURE_PTR)
         {
             WeaponInfo weaponInfo{ weapon_type::Claws };
             weaponInfo.is_claws = true;
@@ -131,7 +132,7 @@ namespace item
             ssName << CLAWS_DETAILS.name;
 
             std::ostringstream ssDesc;
-            ssDesc << "The sharp tearing claws of a " << CREATURE_CPTRC->RaceName() << ".";
+            ssDesc << "The sharp tearing claws of a " << CREATURE_PTR->RaceName() << ".";
 
             auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
                 ssName.str(),
@@ -159,7 +160,7 @@ namespace item
             return itemPtr;
         }
 
-        const ItemPtr_t WeaponFactory::Make_Tendrils(creature::CreatureCPtrC_t CREATURE_CPTRC)
+        const ItemPtr_t WeaponFactory::Make_Tendrils(const creature::CreaturePtr_t CREATURE_PTR)
         {
             WeaponInfo weaponInfo{ weapon_type::Tendrils };
             weaponInfo.is_tendrils = true;
@@ -171,7 +172,7 @@ namespace item
             ssName << TENDRIL_DETAILS.name;
 
             std::ostringstream ssDesc;
-            ssDesc << "The writhing lengths of a " << CREATURE_CPTRC->RaceName() << ".";
+            ssDesc << "The writhing lengths of a " << CREATURE_PTR->RaceName() << ".";
 
             auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
                 ssName.str(),
@@ -199,7 +200,7 @@ namespace item
             return itemPtr;
         }
 
-        const ItemPtr_t WeaponFactory::Make_Bite(creature::CreatureCPtrC_t CREATURE_CPTRC)
+        const ItemPtr_t WeaponFactory::Make_Bite(const creature::CreaturePtr_t CREATURE_PTR)
         {
             WeaponInfo weaponInfo{ weapon_type::Bite };
             weaponInfo.is_bite = true;
@@ -211,7 +212,7 @@ namespace item
             ssName << BITE_DETAILS.name;
 
             std::ostringstream ssDesc;
-            ssDesc << "The fanged jaws of a " << CREATURE_CPTRC->RaceName() << ".";
+            ssDesc << "The fanged jaws of a " << CREATURE_PTR->RaceName() << ".";
 
             auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
                 ssName.str(),
@@ -238,26 +239,26 @@ namespace item
             return itemPtr;
         }
 
-        const ItemPtr_t WeaponFactory::Make_Breath(creature::CreatureCPtrC_t CREATURE_CPTRC)
+        const ItemPtr_t WeaponFactory::Make_Breath(const creature::CreaturePtr_t CREATURE_PTR)
         {
             WeaponInfo weaponInfo{ weapon_type::Breath };
             weaponInfo.is_breath = true;
 
             // Hydras and other dragons use the Firebrand breath weapon.
             auto const BREATH_DETAILS_TITLE{ (
-                (CREATURE_CPTRC->Role() == creature::role::Sylavin) ? "BreathSylavin"
-                                                                    : "BreathFirebrand") };
+                (CREATURE_PTR->Role() == creature::role::Sylavin) ? "BreathSylavin"
+                                                                  : "BreathFirebrand") };
 
             auto const BREATH_DETAILS{ WeaponDetailLoader::Instance()->LookupWeaponDetails(
                 BREATH_DETAILS_TITLE) };
 
             std::ostringstream ssName;
-            ssName << ((CREATURE_CPTRC->Role() == creature::role::Firebrand) ? "Fiery"
-                                                                             : "Toxic Freezing")
+            ssName << ((CREATURE_PTR->Role() == creature::role::Firebrand) ? "Fiery"
+                                                                           : "Toxic Freezing")
                    << " Breath";
 
             std::ostringstream ssDesc;
-            if (CREATURE_CPTRC->Role() == creature::role::Sylavin)
+            if (CREATURE_PTR->Role() == creature::role::Sylavin)
             {
                 ssDesc << "The toxic and freezing breath of a Sylavin dragon.";
             }

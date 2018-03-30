@@ -57,7 +57,7 @@ namespace game
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): Game");
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): Game");
             Acquire();
         }
 
@@ -72,7 +72,7 @@ namespace game
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: Game");
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: Game");
         }
     }
 
@@ -80,6 +80,7 @@ namespace game
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_.get() != nullptr), "Game::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
@@ -101,7 +102,7 @@ namespace game
     {
         if (stateUPtr_.get() != nullptr)
         {
-            M_HP_LOG_WRN(
+            M_HP_LOG_ERR(
                 "Game::StateSet() is going to free an old game state"
                 << " and replace it with a new one.");
         }

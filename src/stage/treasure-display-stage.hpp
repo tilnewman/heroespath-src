@@ -31,6 +31,7 @@
 #include "item/treasure-available-enum.hpp"
 #include "item/treasure-image-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
@@ -62,7 +63,7 @@ namespace sfml_util
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 }
 
 namespace stage
@@ -198,7 +199,7 @@ namespace stage
 
         std::size_t WhichCharacterInventoryIsDisplayedIndex();
 
-        creature::CreaturePtr_t WhichCharacterInventoryIsDisplayed();
+        const creature::CreaturePtr_t WhichCharacterInventoryIsDisplayed();
 
         void RefreshAfterCacheUpdate();
 

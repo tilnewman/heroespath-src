@@ -29,17 +29,6 @@
 //
 #include "camp-stage.hpp"
 
-#include "sfml-util/animation-factory.hpp"
-#include "sfml-util/display.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-#include "sfml-util/sound-effects-enum.hpp"
-#include "sfml-util/tile.hpp"
-
-#include "popup/popup-info.hpp"
-#include "popup/popup-manager.hpp"
-
 #include "creature/algorithms.hpp"
 #include "creature/body-type.hpp"
 #include "creature/creature.hpp"
@@ -47,14 +36,22 @@
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
-#include "player/party-factory.hpp"
-#include "player/party.hpp"
-#include "sfml-util/ouroboros.hpp"
-#include "state/game-state-factory.hpp"
-#include "state/game-state.hpp"
-
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
+#include "player/party-factory.hpp"
+#include "player/party.hpp"
+#include "popup/popup-info.hpp"
+#include "popup/popup-manager.hpp"
+#include "sfml-util/animation-factory.hpp"
+#include "sfml-util/display.hpp"
+#include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/loaders.hpp"
+#include "sfml-util/ouroboros.hpp"
+#include "sfml-util/sfml-util.hpp"
+#include "sfml-util/sound-effects-enum.hpp"
+#include "sfml-util/tile.hpp"
+#include "state/game-state-factory.hpp"
+#include "state/game-state.hpp"
 
 namespace heroespath
 {
@@ -271,7 +268,8 @@ namespace stage
 
     const std::string CampStage::ComposeNewGamePopupText3()
     {
-        auto charToUsePtr = creature::CreaturePtr_t{ nullptr };
+        auto charToUsePtrOpt = creature::CreaturePtrOpt_t{ boost::none };
+
         auto const PLAYERS_PVEC(creature::Algorithms::Players());
 
         auto const NOTBEASTS_PVEC(creature::Algorithms::FindByIsBeast(
@@ -282,68 +280,75 @@ namespace stage
 
         if (KNIGHT_PVEC.empty() == false)
         {
-            charToUsePtr = KNIGHT_PVEC[0];
+            charToUsePtrOpt = KNIGHT_PVEC[0];
         }
         else
         {
             auto const CLERIC_PVEC(
                 creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Cleric));
+
             if (CLERIC_PVEC.empty() == false)
             {
-                charToUsePtr = CLERIC_PVEC[0];
+                charToUsePtrOpt = CLERIC_PVEC[0];
             }
             else
             {
                 auto const BARD_PVEC(
                     creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Bard));
+
                 if (BARD_PVEC.empty() == false)
                 {
-                    charToUsePtr = BARD_PVEC[0];
+                    charToUsePtrOpt = BARD_PVEC[0];
                 }
                 else
                 {
                     auto const SORCERER_PVEC(
                         creature::Algorithms::FindByRole(PLAYERS_PVEC, creature::role::Sorcerer));
+
                     if (SORCERER_PVEC.empty() == false)
                     {
-                        charToUsePtr = SORCERER_PVEC[0];
+                        charToUsePtrOpt = SORCERER_PVEC[0];
                     }
                     else
                     {
                         auto const BEASTMASTER_PVEC(creature::Algorithms::FindByRole(
                             PLAYERS_PVEC, creature::role::Beastmaster));
+
                         if (BEASTMASTER_PVEC.empty() == false)
                         {
-                            charToUsePtr = BEASTMASTER_PVEC[0];
+                            charToUsePtrOpt = BEASTMASTER_PVEC[0];
                         }
                         else
                         {
                             auto const ARCHER_PVEC(creature::Algorithms::FindByRole(
                                 PLAYERS_PVEC, creature::role::Archer));
+
                             if (ARCHER_PVEC.empty() == false)
                             {
-                                charToUsePtr = ARCHER_PVEC[0];
+                                charToUsePtrOpt = ARCHER_PVEC[0];
                             }
                             else
                             {
                                 auto const HUMAN_PVEC(creature::Algorithms::FindByRace(
                                     PLAYERS_PVEC, creature::race::Human));
+
                                 if (HUMAN_PVEC.empty() == false)
                                 {
-                                    charToUsePtr = HUMAN_PVEC[0];
+                                    charToUsePtrOpt = HUMAN_PVEC[0];
                                 }
                                 else
                                 {
                                     auto const GNOME_PVEC(creature::Algorithms::FindByRace(
                                         PLAYERS_PVEC, creature::race::Gnome));
+
                                     if (GNOME_PVEC.empty() == false)
                                     {
-                                        charToUsePtr = GNOME_PVEC[0];
+                                        charToUsePtrOpt = GNOME_PVEC[0];
                                     }
                                     else
                                     {
                                         // give up and use the first non beast character
-                                        charToUsePtr = NOTBEASTS_PVEC.at(0);
+                                        charToUsePtrOpt = NOTBEASTS_PVEC.at(0);
                                     }
                                 }
                             }
@@ -355,14 +360,15 @@ namespace stage
 
         std::ostringstream ss;
         ss << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text5")
-           << charToUsePtr->Name() << " "
+           << charToUsePtrOpt->Obj().Name() << " "
            << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text6") << "  "
-           << creature::sex::HeSheIt(charToUsePtr->Sex(), false) << " "
+           << creature::sex::HeSheIt(charToUsePtrOpt->Obj().Sex(), false) << " "
            << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text7") << " "
-           << creature::sex::HimHerIt(charToUsePtr->Sex(), false) << ", but ";
+           << creature::sex::HimHerIt(charToUsePtrOpt->Obj().Sex(), false) << ", but ";
 
         auto const BEAST_PVEC{ creature::Algorithms::FindByIsBeast(PLAYERS_PVEC) };
-        auto const NONLOAD_NONBEAST_PVEC{ misc::Vector::Exclude(NOTBEASTS_PVEC, charToUsePtr) };
+        auto const NONLOAD_NONBEAST_PVEC{ misc::Vector::Exclude(
+            NOTBEASTS_PVEC, charToUsePtrOpt.value()) };
 
         if (NONLOAD_NONBEAST_PVEC.empty())
         {
@@ -438,6 +444,7 @@ namespace stage
 
         ss << " arrived.\n\n"
            << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text8");
+
         return ss.str();
     }
 
@@ -447,5 +454,6 @@ namespace stage
         ss << game::GameDataFile::Instance()->GetCopyStr("heroespath-intro-text9");
         return ss.str();
     }
+
 } // namespace stage
 } // namespace heroespath

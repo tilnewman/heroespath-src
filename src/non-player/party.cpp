@@ -46,21 +46,13 @@ namespace non_player
     Party::Party(const creature::CreaturePVec_t & CHARACTERS_PVEC)
         : charactersPVec_()
     {
-        for (auto const NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
+        for (auto const & NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
         {
             charactersPVec_.emplace_back(CharacterWarehouse::Instance()->Store(NEXT_CHARACTER_PTR));
         }
     }
 
-    Party::~Party()
-    {
-        for (auto & nextCharacterPtr : charactersPVec_)
-        {
-            CharacterWarehouse::Instance()->Free(nextCharacterPtr);
-        }
-
-        charactersPVec_.clear();
-    }
+    Party::~Party() { CharacterWarehouse::Instance()->Free(charactersPVec_); }
 
     void Party::Add(const creature::CreaturePtr_t CHARACTER_PTR, const bool WILL_STORE)
     {
@@ -74,17 +66,17 @@ namespace non_player
         }
     }
 
-    bool Party::Remove(creature::CreaturePtr_t characterPtr, const bool WILL_FREE)
+    bool Party::Remove(const creature::CreaturePtr_t CHARACTER_PTR, const bool WILL_FREE)
     {
         auto const FOUND_ITER{ std::find(
-            charactersPVec_.begin(), charactersPVec_.end(), characterPtr) };
+            charactersPVec_.begin(), charactersPVec_.end(), CHARACTER_PTR) };
 
         if (FOUND_ITER == charactersPVec_.end())
         {
             M_HP_LOG_ERR(
-                "non-player::Party::Remove(will_free="
-                << std::boolalpha << WILL_FREE << ", ptr=" << characterPtr
-                << ", name=" << characterPtr->Name() << ") was not found in the party.");
+                "non-player::Party::Remove(will_free=" << std::boolalpha << WILL_FREE
+                                                       << ", creature=" << CHARACTER_PTR->ToString()
+                                                       << ") was not found in the party.");
 
             return false;
         }
@@ -92,7 +84,7 @@ namespace non_player
         {
             if (WILL_FREE)
             {
-                CharacterWarehouse::Instance()->Free(characterPtr);
+                CharacterWarehouse::Instance()->Free(CHARACTER_PTR);
             }
 
             charactersPVec_.erase(FOUND_ITER);
@@ -106,7 +98,7 @@ namespace non_player
         misc::VectorMap<RaceRolePair_t, std::size_t> raceRoleMap;
 
         // count all race/role combinations
-        for (auto const NEXT_CHAR_PTR : charactersPVec_)
+        for (auto const & NEXT_CHAR_PTR : charactersPVec_)
         {
             raceRoleMap[std::make_pair(NEXT_CHAR_PTR->RaceName(), NEXT_CHAR_PTR->RoleName())]++;
         }

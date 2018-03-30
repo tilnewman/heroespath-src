@@ -42,8 +42,8 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
-}
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+} // namespace creature
 namespace item
 {
     class Item;
@@ -78,7 +78,7 @@ namespace non_player
             static void Acquire();
             static void Release();
 
-            static void SetupCreatureInventory(creature::CreaturePtr_t creaturePtr);
+            static void SetupCreatureInventory(const creature::CreaturePtr_t);
 
             static const IItemPVecPair_t MakeItemSet(
                 const chance::InventoryChances & CHANCES,

@@ -33,6 +33,8 @@
 #include "combat/turn-info.hpp"
 #include "item/item-cache.hpp"
 #include "item/treasure-image-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 
 #include <memory>
 #include <vector>
@@ -43,10 +45,7 @@ namespace creature
 {
     // forward declarations
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreatureCPtr_t = const Creature *;
-    using CreaturePtrC_t = Creature * const;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
 namespace non_player
@@ -90,26 +89,30 @@ namespace combat
 
         void Setup_First();
 
-        creature::CreaturePtr_t CurrentTurnCreature() const { return turnCreaturePtr_; }
-
-        const TurnInfo GetTurnInfoCopy(const creature::CreaturePtrC_t P) const;
-
-        void SetTurnInfo(const creature::CreaturePtrC_t P, const TurnInfo & TI)
+        const creature::CreaturePtrOpt_t CurrentTurnCreaturePtrOpt() const
         {
-            turnInfoMap_[P] = TI;
+            return turnCreaturePtrOpt_;
         }
 
-        void SetIsFlying(const creature::CreaturePtrC_t P, const bool B)
+        const TurnInfo GetTurnInfoCopy(const creature::CreaturePtr_t) const;
+
+        void SetTurnInfo(const creature::CreaturePtr_t CREATURE_PTR, const TurnInfo & TURN_INFO)
         {
-            turnInfoMap_[P].SetIsFlying(B);
+            turnInfoMap_[CREATURE_PTR] = TURN_INFO;
         }
 
-        void SetTurnActionInfo(const creature::CreaturePtrC_t P, const TurnActionInfo & TAI)
+        void SetIsFlying(const creature::CreaturePtr_t CREATURE_PTR, const bool IS_FLYING)
         {
-            turnInfoMap_[P].SetTurnActionInfo(TAI);
+            turnInfoMap_[CREATURE_PTR].SetIsFlying(IS_FLYING);
         }
 
-        void HandleKilledCreature(creature::CreaturePtrC_t);
+        void SetTurnActionInfo(
+            const creature::CreaturePtr_t CREATURE_PTR, const TurnActionInfo & TURN_ACTION_INFO)
+        {
+            turnInfoMap_[CREATURE_PTR].SetTurnActionInfo(TURN_ACTION_INFO);
+        }
+
+        void HandleKilledCreature(const creature::CreaturePtr_t);
         void IncrementTurn();
         void BeginCombatTasks();
         void EndCombatTasks();
@@ -124,11 +127,14 @@ namespace combat
 
         bool DidAllEnemiesRunAway() const;
 
-        creature::CreaturePtr_t LockPickCreaturePtr() const { return lockPickCreaturePtr_; }
-
-        void LockPickCreaturePtr(const creature::CreaturePtr_t NEW_CREATURE_PTR)
+        const creature::CreaturePtrOpt_t LockPickCreaturePtrOpt() const
         {
-            lockPickCreaturePtr_ = NEW_CREATURE_PTR;
+            return lockPickCreaturePtrOpt_;
+        }
+
+        void LockPickCreaturePtr(const creature::CreaturePtr_t CREATURE_PTR)
+        {
+            lockPickCreaturePtrOpt_ = CREATURE_PTR;
         }
 
         float DefeatedPartyTreasureRatioPer() const;
@@ -163,7 +169,7 @@ namespace combat
         TurnInfoMap_t turnInfoMap_;
 
         // this member always stores a copy, and is never responsible for lifetime
-        creature::CreaturePtr_t turnCreaturePtr_;
+        creature::CreaturePtrOpt_t turnCreaturePtrOpt_;
 
         // contains all items the dead enemies were wearing or holding when killed
         item::ItemCache deadNonPlayerItemsHeld_;
@@ -172,8 +178,9 @@ namespace combat
         item::ItemCache deadNonPlayerItemsLockbox_;
 
         // this member always stores a copy, and is never responsible for lifetime
-        creature::CreaturePtr_t lockPickCreaturePtr_;
+        creature::CreaturePtrOpt_t lockPickCreaturePtrOpt_;
     };
+
 } // namespace combat
 } // namespace heroespath
 

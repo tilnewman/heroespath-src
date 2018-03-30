@@ -292,7 +292,7 @@ namespace popup
     void PopupStageSpellbook::SetupPlayerImage()
     {
         sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-            playerTexture_, popupInfo_.CreaturePtr()->ImageFilename(), true);
+            playerTexture_, popupInfo_.CreaturePtrOpt()->Obj().ImageFilename(), true);
 
         sfml_util::Invert(playerTexture_);
         sfml_util::Mask(playerTexture_, sf::Color::White);
@@ -308,32 +308,32 @@ namespace popup
 
     void PopupStageSpellbook::SetupPlayerDetailsText()
     {
-        auto creaturePtr{ popupInfo_.CreaturePtr() };
+        auto const CREATURE_PTR{ popupInfo_.CreaturePtrOpt().value() };
 
         std::ostringstream ss;
-        ss << creaturePtr->Name() << "\n";
+        ss << CREATURE_PTR->Name() << "\n";
 
-        if (creaturePtr->IsBeast())
+        if (CREATURE_PTR->IsBeast())
         {
-            ss << creaturePtr->RaceName();
+            ss << CREATURE_PTR->RaceName();
 
-            if (creaturePtr->Race() != creature::race::Wolfen)
+            if (CREATURE_PTR->Race() != creature::race::Wolfen)
             {
-                ss << ", " << creaturePtr->RoleName();
+                ss << ", " << CREATURE_PTR->RoleName();
             }
 
-            ss << " " << creaturePtr->RankClassName() << "\n";
+            ss << " " << CREATURE_PTR->RankClassName() << "\n";
         }
         else
         {
-            ss << creaturePtr->RankClassName() << " " << creaturePtr->RoleName() << "\n"
-               << creaturePtr->RaceName() << "\n";
+            ss << CREATURE_PTR->RankClassName() << " " << CREATURE_PTR->RoleName() << "\n"
+               << CREATURE_PTR->RaceName() << "\n";
         }
 
-        ss << "Rank:  " << creaturePtr->Rank() << "\n"
-           << "Health:  " << creaturePtr->HealthCurrent() << "/" << creaturePtr->HealthNormal()
-           << " " << creaturePtr->HealthPercentStr() << "\n"
-           << "Mana:  " << creaturePtr->Mana() << "/" << creaturePtr->ManaNormal() << "\n"
+        ss << "Rank:  " << CREATURE_PTR->Rank() << "\n"
+           << "Health:  " << CREATURE_PTR->HealthCurrent() << "/" << CREATURE_PTR->HealthNormal()
+           << " " << CREATURE_PTR->HealthPercentStr() << "\n"
+           << "Mana:  " << CREATURE_PTR->Mana() << "/" << CREATURE_PTR->ManaNormal() << "\n"
            << "\n";
 
         const sfml_util::gui::TextInfo DETAILS_TEXTINFO(
@@ -420,7 +420,7 @@ namespace popup
             1, true, LISTBOX_RECT, LISTBOX_COLORSET_, LISTBOX_BG_INFO_);
 
         sfml_util::gui::ListBoxItemSVec_t listBoxItemsSVec;
-        for (auto const & NEXT_SPELL_PTR : popupInfo_.CreaturePtr()->SpellsPVec())
+        for (auto const & NEXT_SPELL_PTR : popupInfo_.CreaturePtrOpt()->Obj().SpellsPVec())
         {
             listBoxItemTextInfo_.text = NEXT_SPELL_PTR->Name();
             auto const LISTBOXITEM_SPTR(std::make_shared<sfml_util::gui::ListBoxItem>(
@@ -656,7 +656,7 @@ namespace popup
     bool PopupStageSpellbook::DoesCharacterHaveEnoughManaToCastSpell(
         const spell::SpellPtr_t SPELL_PTR) const
     {
-        return (popupInfo_.CreaturePtr()->Mana() >= SPELL_PTR->ManaCost());
+        return (popupInfo_.CreaturePtrOpt()->Obj().Mana() >= SPELL_PTR->ManaCost());
     }
 
     bool PopupStageSpellbook::CanCastSpellInPhase(const spell::SpellPtr_t SPELL_PTR) const

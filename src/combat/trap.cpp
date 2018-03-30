@@ -148,7 +148,7 @@ namespace combat
     {
         Rank_t rankSum{ 0_rank };
         auto const CHARACTER_PTRS{ game::Game::Instance()->State().Party().Characters() };
-        for (auto const CHARACTER_PTR : CHARACTER_PTRS)
+        for (auto const & CHARACTER_PTR : CHARACTER_PTRS)
         {
             rankSum += CHARACTER_PTR->Rank();
         }

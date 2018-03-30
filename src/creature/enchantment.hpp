@@ -50,9 +50,9 @@ namespace heroespath
 {
 namespace creature
 {
-    // forward declarations
+
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 
     // all the 'use' info about an enchantment
     class UseInfo
@@ -154,7 +154,7 @@ namespace creature
 
         const std::string EffectStr() const;
 
-        void UseEffect(CreaturePtr_t);
+        void UseEffect(const CreaturePtr_t);
 
         Score_t TreasureScore() const { return score_; }
 

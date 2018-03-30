@@ -38,7 +38,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
 namespace item
 {
@@ -79,7 +79,7 @@ namespace combat
         void PlayDeath(const creature::CreaturePtr_t) const;
 
     private:
-        void GetDeathSfx(creature::CreaturePtr_t, sfml_util::SfxEnumVec_t &) const;
+        void GetDeathSfx(const creature::CreaturePtr_t, sfml_util::SfxEnumVec_t &) const;
     };
 
 } // namespace combat

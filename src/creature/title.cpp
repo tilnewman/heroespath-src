@@ -33,11 +33,9 @@
 #include "creature/role-enum.hpp"
 #include "creature/title.hpp"
 #include "misc/assertlogandthrow.hpp"
-
-#include "sfml-util/gui/title-image-manager.hpp"
-
 #include "misc/boost-string-includes.hpp"
 #include "misc/vectors.hpp"
+#include "sfml-util/gui/title-image-manager.hpp"
 
 #include <sstream>
 #include <tuple>
@@ -128,8 +126,6 @@ namespace creature
         ss << ".png";
         fileName_ = ss.str();
     }
-
-    Title::~Title() = default;
 
     const std::string Title::ToString() const
     {
@@ -316,19 +312,15 @@ namespace creature
         }
     }
 
-    void Title::Change(Creature * const creaturePtr) const
+    void Title::Change(const CreaturePtr_t CREATURE_PTR) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (creaturePtr != nullptr),
-            "Title::Change(creaturePtr==nullptr)  title=\"" << Titles::ToString(title_)
-                                                            << "\"  was given a null creaturePtr.");
-
         // titles are permenant, so they effect both the normal and current stat values
-        creaturePtr->StatTraitsModify(statBonus_);
-        creaturePtr->IncreaseRank(rankBonus_);
-        creaturePtr->IncreaseExp(expBonus_);
-        creaturePtr->HealthNormalAdj(healthBonus_);
-        creaturePtr->HealthCurrentAdj(healthBonus_);
+        CREATURE_PTR->StatTraitsModify(statBonus_);
+        CREATURE_PTR->IncreaseRank(rankBonus_);
+        CREATURE_PTR->IncreaseExp(expBonus_);
+        CREATURE_PTR->HealthNormalAdj(healthBonus_);
+        CREATURE_PTR->HealthCurrentAdj(healthBonus_);
     }
+
 } // namespace creature
 } // namespace heroespath

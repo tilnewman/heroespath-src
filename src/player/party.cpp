@@ -49,21 +49,13 @@ namespace player
         : avatar_(PARTY_AVATAR)
         , charactersPVec_()
     {
-        for (auto const NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
+        for (auto const & NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
         {
             charactersPVec_.emplace_back(CharacterWarehouse::Instance()->Store(NEXT_CHARACTER_PTR));
         }
     }
 
-    Party::~Party()
-    {
-        for (auto & nextCharacterPtr : charactersPVec_)
-        {
-            CharacterWarehouse::Instance()->Free(nextCharacterPtr);
-        }
-
-        charactersPVec_.clear();
-    }
+    Party::~Party() { CharacterWarehouse::Instance()->Free(charactersPVec_); }
 
     bool Party::Add(const creature::CreaturePtr_t CHARACTER_PTR, std::string & error_msg)
     {
@@ -91,40 +83,33 @@ namespace player
         }
     }
 
-    bool Party::Remove(creature::CreaturePtr_t characterPtr)
+    bool Party::Remove(const creature::CreaturePtr_t CHARACTER_PTR)
     {
         auto const FOUND_ITER{ std::find(
-            charactersPVec_.begin(), charactersPVec_.end(), characterPtr) };
+            charactersPVec_.begin(), charactersPVec_.end(), CHARACTER_PTR) };
 
         if (FOUND_ITER == charactersPVec_.end())
         {
             M_HP_LOG_ERR(
-                "player::Party::Remove((" << characterPtr << ") name=\"" << characterPtr->Name()
-                                          << "\") was not found in the party.");
+                "player::Party::Remove((creature={" << CHARACTER_PTR->ToString()
+                                                    << "}) was not found in the party.");
 
             return false;
         }
         else
         {
-            CharacterWarehouse::Instance()->Free(characterPtr);
+            CharacterWarehouse::Instance()->Free(CHARACTER_PTR);
             charactersPVec_.erase(FOUND_ITER);
             return true;
         }
     }
 
-    creature::CreaturePtr_t Party::GetNextInOrder(
-        creature::CreatureCPtrC_t CREATURE_CPTRC, const bool WILL_CHOOSE_AFTER)
+    const creature::CreaturePtr_t Party::GetNextInOrder(
+        const creature::CreaturePtr_t CREATURE_PTR, const bool WILL_CHOOSE_AFTER)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (CREATURE_CPTRC != nullptr),
-            "player::party::GetNextInOrder(WILL_CHOOSE_AFTER="
-                << std::boolalpha << WILL_CHOOSE_AFTER << ") was given a null CREATURE_CPTRC.");
-
-        const creature::UniqueTraits_t TRAITS(CREATURE_CPTRC->UniqueTraits());
-
         for (auto iter(charactersPVec_.begin()); iter != charactersPVec_.end(); ++iter)
         {
-            if (TRAITS == (*iter)->UniqueTraits())
+            if (CREATURE_PTR == *iter)
             {
                 if (WILL_CHOOSE_AFTER)
                 {
@@ -152,14 +137,14 @@ namespace player
         }
 
         std::ostringstream ss;
-        ss << "player::party::GetNextInOrder(creature_name=" << CREATURE_CPTRC->Name()
-           << ", WILL_CHOOSE_AFTER=" << std::boolalpha << WILL_CHOOSE_AFTER
-           << ") but that CREATURE_CPTRC was not found in the party list.";
+        ss << "player::party::GetNextInOrder(creature={" << CREATURE_PTR->ToString()
+           << "}, WILL_CHOOSE_AFTER=" << std::boolalpha << WILL_CHOOSE_AFTER
+           << ") but that CREATURE_PTR was not found in the party list.";
 
         throw std::runtime_error(ss.str());
     }
 
-    creature::CreaturePtr_t Party::GetAtOrderPos(const std::size_t INDEX_NUM)
+    const creature::CreaturePtr_t Party::GetAtOrderPos(const std::size_t INDEX_NUM)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (INDEX_NUM < charactersPVec_.size()),
@@ -183,24 +168,20 @@ namespace player
         throw std::runtime_error(ss.str());
     }
 
-    std::size_t Party::GetOrderNum(creature::CreatureCPtrC_t CREATURE_CPTRC) const
+    std::size_t Party::GetOrderNum(const creature::CreaturePtr_t CREATURE_PTR) const
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (CREATURE_CPTRC != nullptr),
-            "player::party::GetOrderNum() was given a null CREATURE_CPTRC.");
-
         const std::size_t NUM_CHARACTERS(charactersPVec_.size());
         for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
         {
-            if (charactersPVec_[i] == CREATURE_CPTRC)
+            if (charactersPVec_[i] == CREATURE_PTR)
             {
                 return i;
             }
         }
 
         std::ostringstream ss;
-        ss << "player::party::GetOrderNum(creature_name=" << CREATURE_CPTRC->Name()
-           << ") never found that creature in the party vec.  Put another way, the function"
+        ss << "player::party::GetOrderNum(creature={" << CREATURE_PTR->ToString()
+           << "}) never found that creature in the party vec.  Put another way, the function"
            << "was given a creature that was not in the character vec.";
 
         throw std::runtime_error(ss.str());
@@ -209,7 +190,7 @@ namespace player
     std::size_t Party::GetNumHumanoid() const
     {
         std::size_t count(0);
-        for (auto const NEXT_CHARACTER_PTR : charactersPVec_)
+        for (auto const & NEXT_CHARACTER_PTR : charactersPVec_)
         {
             if (NEXT_CHARACTER_PTR->Body().IsHumanoid())
             {
@@ -219,5 +200,26 @@ namespace player
 
         return count;
     }
+
+    void Party::BeforeSerialize()
+    {
+        charactersToSerializePVec_.clear();
+        for (auto const & CREATURE_PTR : charactersPVec_)
+        {
+            charactersToSerializePVec_.emplace_back(CREATURE_PTR.Ptr());
+        }
+        // everything in charactersPVec_ is free'd in Party::~Party()
+    }
+
+    void Party::AfterSerialize()
+    {
+        charactersPVec_.clear();
+        for (auto const & CREATURE_RAW_PTR : charactersToSerializePVec_)
+        {
+            charactersPVec_.emplace_back(CREATURE_RAW_PTR);
+        }
+        charactersToSerializePVec_.clear();
+    }
+
 } // namespace player
 } // namespace heroespath

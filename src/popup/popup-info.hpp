@@ -31,6 +31,8 @@
 //
 #include "combat/combat-over-enum.hpp"
 #include "creature/title.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "popup/popup-enums.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/text-info.hpp"
@@ -45,7 +47,8 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
 } // namespace creature
 
 namespace popup
@@ -68,7 +71,7 @@ namespace popup
             const sfml_util::TextureVec_t & TEXTURE_VEC = sfml_util::TextureVec_t(),
             const std::vector<std::string> & TEXT_VEC = std::vector<std::string>(),
             const float IMAGE_FADE_SPEED = IMAGE_FADE_SPEED_DEFAULT_,
-            const creature::CreaturePtr_t CREATURE_CPTR = nullptr,
+            const creature::CreaturePtrOpt_t CREATURE_PTR_OPT = boost::none,
             const std::size_t INITIAL_SELECTION = 0,
             const bool ARE_IMAGES_CREATURES = false,
             const std::string & TITLE_TEXT = "",
@@ -113,9 +116,6 @@ namespace popup
             const PopupButtons::Enum BUTTONS,
             const combat::CombatEnd::Enum HOW_COMBAT_ENDED);
 
-        PopupInfo(const PopupInfo &);
-        PopupInfo & operator=(const PopupInfo &);
-
         const std::string Name() const { return name_; }
         PopupButtons::Enum Buttons() const { return buttons_; }
         PopupImage::Enum Image() const { return image_; }
@@ -132,7 +132,7 @@ namespace popup
         std::size_t NumberSelMax() const { return numberMax_; }
         const std::vector<std::size_t> NumberSelInvVec() const { return numberInvalidVec_; }
         float ImageFadeSpeed() const { return imageFadeSpeed_; }
-        creature::CreaturePtr_t CreaturePtr() const { return creatureCPtr_; }
+        const creature::CreaturePtrOpt_t CreaturePtrOpt() const { return creaturePtrOpt_; }
         std::size_t InitialSelection() const { return initialSelection_; }
         bool AreImagesCreatures() const { return areImgsCreatures_; }
         const std::vector<std::string> & TextVec() const { return textVec_; }
@@ -184,7 +184,7 @@ namespace popup
         std::size_t numberMax_;
         std::vector<std::size_t> numberInvalidVec_;
         float imageFadeSpeed_;
-        creature::CreaturePtr_t creatureCPtr_;
+        creature::CreaturePtrOpt_t creaturePtrOpt_;
         std::size_t initialSelection_;
         bool areImgsCreatures_;
         std::vector<std::string> textVec_;

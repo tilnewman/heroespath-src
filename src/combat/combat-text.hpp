@@ -47,10 +47,7 @@ namespace creature
 {
     // forward declarations
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreatureCPtr_t = const Creature *;
-    using CreaturePtrC_t = Creature * const;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
 namespace combat
@@ -80,43 +77,43 @@ namespace combat
         static const std::string TBOX_BUTTON_MOUSEHOVER_TEXT_RUN_;
 
         static const std::string
-            MouseOverTextAttackStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextAttackStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextFightStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextFightStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextCastStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextCastStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextPlayStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextPlayStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextAdvanceStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextAdvanceStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextRetreatStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextRetreatStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextBlockStr(creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextBlockStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextFlyStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextFlyStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextLandStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextLandStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextRoarStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextRoarStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextPounceStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextPounceStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextRunStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextRunStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string
-            MouseOverTextSkipStr(const creature::CreaturePtrC_t, CombatDisplayCPtrC_t);
+            MouseOverTextSkipStr(const creature::CreaturePtr_t, CombatDisplayCPtrC_t);
 
         static const std::string ActionText(
             const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
@@ -214,6 +211,7 @@ namespace combat
         static bool SummarizeCreatureEffect(
             FightResultSummary & frs, const CreatureEffect & CREATURE_EFFECT);
     };
+
 } // namespace combat
 } // namespace heroespath
 

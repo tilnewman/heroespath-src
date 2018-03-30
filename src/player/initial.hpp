@@ -29,6 +29,7 @@
 //  A collection of functions that performs initial setup of a player character
 //
 #include "item/item-type-enum.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "stats/trait.hpp"
 
@@ -37,9 +38,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreaturePtrC_t = Creature * const;
-    using CreatureCPtrC_t = Creature const * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 }
 namespace player
 {
@@ -47,16 +46,16 @@ namespace player
     class Initial
     {
     public:
-        static void Setup(creature::CreaturePtrC_t);
+        static void Setup(const creature::CreaturePtr_t);
 
     private:
-        static void EnsureValidImageFilename(creature::CreaturePtrC_t);
-        static void SetupInventory(creature::CreaturePtrC_t);
-        static void SetupSpellsAndSongs(creature::CreaturePtrC_t);
-        static void EquipBodyParts(creature::CreaturePtrC_t);
-        static Health_t GetStartingHealth(creature::CreatureCPtrC_t);
-        static void SetStartingHealth(creature::CreaturePtrC_t);
-        static void SetStartingMana(creature::CreaturePtrC_t);
+        static void EnsureValidImageFilename(const creature::CreaturePtr_t);
+        static void SetupInventory(const creature::CreaturePtr_t);
+        static void SetupSpellsAndSongs(const creature::CreaturePtr_t);
+        static void EquipBodyParts(const creature::CreaturePtr_t);
+        static Health_t GetStartingHealth(const creature::CreaturePtr_t);
+        static void SetStartingHealth(const creature::CreaturePtr_t);
+        static void SetStartingMana(const creature::CreaturePtr_t);
         static item::material::Enum HardOrSoftLeatherRand();
     };
 

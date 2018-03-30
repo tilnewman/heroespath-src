@@ -267,7 +267,7 @@ namespace stage
         , actionType_(ActionType::Count)
         , contentType_(ContentType::Count)
         , listBoxItemToGiveSPtr_()
-        , creatureToGiveToPtr_()
+        , creatureToGiveToPtrOpt_(boost::none)
         , itemToDropPtrOpt_(boost::none)
         , isDetailViewFadingIn_(false)
         , isDetailViewFadingOut_(false)
@@ -486,20 +486,19 @@ namespace stage
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_CHAR_SELECT_)
             && (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select))
         {
-            creatureToGiveToPtr_
+            creatureToGiveToPtrOpt_
                 = game::Game::Instance()->State().Party().GetAtOrderPos(POPUP_RESPONSE.Selection());
 
-            if (creatureToGiveToPtr_ == nullptr)
-            {
-                return false;
-            }
+            auto const CREATURE_TO_GIVE_TO_PTR{ creatureToGiveToPtrOpt_.value() };
 
             if (spellBeingCastPtrOpt_)
             {
                 creature::CreaturePVec_t spellTargetCreaturePVec;
-                spellTargetCreaturePVec.emplace_back(creatureToGiveToPtr_);
+                spellTargetCreaturePVec.emplace_back(CREATURE_TO_GIVE_TO_PTR);
+
                 HandleCast_Step2_PerformSpell(
                     spellBeingCastPtrOpt_.value(), spellTargetCreaturePVec);
+
                 return true;
             }
 
@@ -507,19 +506,19 @@ namespace stage
             {
                 case ContentType::Item:
                 {
-                    return HandleGiveActualItems();
+                    return HandleGiveActualItems(CREATURE_TO_GIVE_TO_PTR);
                 }
                 case ContentType::Coins:
                 {
-                    return HandleGiveActualCoins();
+                    return HandleGiveActualCoins(CREATURE_TO_GIVE_TO_PTR);
                 }
                 case ContentType::Gems:
                 {
-                    return HandleGiveActualGems();
+                    return HandleGiveActualGems(CREATURE_TO_GIVE_TO_PTR);
                 }
                 case ContentType::MeteorShards:
                 {
-                    return HandleGiveActualMeteorShards();
+                    return HandleGiveActualMeteorShards(CREATURE_TO_GIVE_TO_PTR);
                 }
                 case ContentType::Count:
                 default:
@@ -531,23 +530,25 @@ namespace stage
         else if (
             (POPUP_RESPONSE.Info().Name() == POPUP_NAME_NUMBER_SELECT_)
             && (POPUP_RESPONSE.Response() == popup::ResponseTypes::Select)
-            && (creatureToGiveToPtr_ != nullptr))
+            && creatureToGiveToPtrOpt_)
         {
+            auto const CREATURE_TO_GIVE_TO_PTR{ creatureToGiveToPtrOpt_.value() };
+
             switch (contentType_)
             {
                 case ContentType::MeteorShards:
                 {
-                    HandleMeteorShardsGive(POPUP_RESPONSE.Selection(), creatureToGiveToPtr_);
+                    HandleMeteorShardsGive(POPUP_RESPONSE.Selection(), CREATURE_TO_GIVE_TO_PTR);
                     return false;
                 }
                 case ContentType::Coins:
                 {
-                    HandleCoinsGive(POPUP_RESPONSE.Selection(), creatureToGiveToPtr_);
+                    HandleCoinsGive(POPUP_RESPONSE.Selection(), CREATURE_TO_GIVE_TO_PTR);
                     return false;
                 }
                 case ContentType::Gems:
                 {
-                    HandleGemsGive(POPUP_RESPONSE.Selection(), creatureToGiveToPtr_);
+                    HandleGemsGive(POPUP_RESPONSE.Selection(), CREATURE_TO_GIVE_TO_PTR);
                     return false;
                 }
                 case ContentType::Item:
@@ -924,7 +925,7 @@ namespace stage
         HandleDetailViewMouseInterrupt(MOUSE_POS_V);
         Stage::UpdateMouseDown(MOUSE_POS_V);
 
-        for (auto const NEXT_BUTTON_PTR : buttonPVec_)
+        for (auto const & NEXT_BUTTON_PTR : buttonPVec_)
         {
             if ((NEXT_BUTTON_PTR->IsDisabled())
                 && (NEXT_BUTTON_PTR->GetEntityRegion().contains(MOUSE_POS_V)))
@@ -2736,7 +2737,7 @@ namespace stage
         return false;
     }
 
-    bool InventoryStage::HandleGiveActualItems()
+    bool InventoryStage::HandleGiveActualItems(const creature::CreaturePtr_t)
     {
         if ((game::Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
         {
@@ -2754,7 +2755,7 @@ namespace stage
         }
 
         auto const ITEM_PTR{ listBoxItemToGiveSPtr_->ITEM_PTR_OPT.value() };
-        auto const CAN_GIVE_ITEM_STR{ creatureToGiveToPtr_->ItemIsAddAllowed(ITEM_PTR) };
+        auto const CAN_GIVE_ITEM_STR{ creatureToGiveToPtrOpt_->Obj().ItemIsAddAllowed(ITEM_PTR) };
         if (CAN_GIVE_ITEM_STR.empty())
         {
             sfml_util::SoundManager::Instance()
@@ -2762,7 +2763,7 @@ namespace stage
                 .PlayRandom();
 
             creaturePtr_->ItemRemove(ITEM_PTR);
-            creatureToGiveToPtr_->ItemAdd(ITEM_PTR);
+            creatureToGiveToPtrOpt_->Obj().ItemAdd(ITEM_PTR);
             Setup_DescBox(false);
             EndOfGiveShareGatherTasks();
             return true;
@@ -2770,24 +2771,25 @@ namespace stage
         else
         {
             std::ostringstream ss;
-            ss << "Can't give the " << ITEM_PTR->Name() << " to " << creatureToGiveToPtr_->Name()
-               << " because:  " << CAN_GIVE_ITEM_STR;
+            ss << "Can't give the " << ITEM_PTR->Name() << " to "
+               << creatureToGiveToPtrOpt_->Obj().Name() << " because:  " << CAN_GIVE_ITEM_STR;
 
             PopupRejectionWindow(ss.str());
             return false;
         }
     }
 
-    bool InventoryStage::HandleGiveActualCoins()
+    bool
+        InventoryStage::HandleGiveActualCoins(const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR)
     {
         if (creaturePtr_->Inventory().Coins() == 1_coin)
         {
-            HandleCoinsGive(1, creatureToGiveToPtr_);
+            HandleCoinsGive(1, CREATURE_TO_GIVE_TO_PTR);
         }
         else
         {
             std::ostringstream ss;
-            ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many coins?";
+            ss << "\nGive " << CREATURE_TO_GIVE_TO_PTR->Name() << " how many coins?";
 
             PopupNumberSelectWindow(ss.str(), creaturePtr_->Inventory().Coins().As<std::size_t>());
         }
@@ -2795,16 +2797,16 @@ namespace stage
         return false;
     }
 
-    bool InventoryStage::HandleGiveActualGems()
+    bool InventoryStage::HandleGiveActualGems(const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR)
     {
         if (creaturePtr_->Inventory().Gems() == 1_gem)
         {
-            HandleGemsGive(1, creatureToGiveToPtr_);
+            HandleGemsGive(1, CREATURE_TO_GIVE_TO_PTR);
         }
         else
         {
             std::ostringstream ss;
-            ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many gems?";
+            ss << "\nGive " << CREATURE_TO_GIVE_TO_PTR->Name() << " how many gems?";
 
             PopupNumberSelectWindow(ss.str(), creaturePtr_->Inventory().Gems().As<std::size_t>());
         }
@@ -2812,16 +2814,17 @@ namespace stage
         return false;
     }
 
-    bool InventoryStage::HandleGiveActualMeteorShards()
+    bool InventoryStage::HandleGiveActualMeteorShards(
+        const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR)
     {
         if (creaturePtr_->Inventory().MeteorShards() == 1_mshard)
         {
-            HandleMeteorShardsGive(1, creatureToGiveToPtr_);
+            HandleMeteorShardsGive(1, CREATURE_TO_GIVE_TO_PTR);
         }
         else
         {
             std::ostringstream ss;
-            ss << "\nGive " << creatureToGiveToPtr_->Name() << " how many Meteor Shards?";
+            ss << "\nGive " << CREATURE_TO_GIVE_TO_PTR->Name() << " how many Meteor Shards?";
 
             PopupNumberSelectWindow(
                 ss.str(), creaturePtr_->Inventory().MeteorShards().As<std::size_t>());
@@ -2940,7 +2943,7 @@ namespace stage
     }
 
     bool InventoryStage::HandlePlayerChangeTo(
-        const creature::CreaturePtrC_t CREATURE_CPTRC, const bool IS_SLIDING_LEFT)
+        const creature::CreaturePtr_t CREATURE_PTR, const bool IS_SLIDING_LEFT)
     {
         if (isSliderAnimating_)
         {
@@ -2948,13 +2951,13 @@ namespace stage
         }
         else
         {
-            creaturePtr_ = CREATURE_CPTRC;
+            creaturePtr_ = CREATURE_PTR;
             StartSlidingAnimation(IS_SLIDING_LEFT);
 
-            if (((ViewType::Titles == view_) && (CREATURE_CPTRC->Titles().empty()))
-                || ((ViewType::Spells == view_) && (CREATURE_CPTRC->Spells().empty()))
+            if (((ViewType::Titles == view_) && (CREATURE_PTR->Titles().empty()))
+                || ((ViewType::Spells == view_) && (CREATURE_PTR->Spells().empty()))
                 || ((ViewType::Conditions == view_)
-                    && (CREATURE_CPTRC->HasCondition(creature::Conditions::Good))))
+                    && (CREATURE_PTR->HasCondition(creature::Conditions::Good))))
             {
                 isViewForcedToItems_ = true;
             }
@@ -3345,7 +3348,7 @@ namespace stage
         // ensure there are any coins to share
         {
             Coin_t totalCoins{ 0 };
-            for (auto const CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            for (auto const & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalCoins += CREATURE_PTR->Inventory().Coins();
             }
@@ -3414,7 +3417,7 @@ namespace stage
         // ensure there are any gems to share
         {
             Gem_t totalGems{ 0 };
-            for (auto const CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            for (auto const & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalGems += CREATURE_PTR->Inventory().Gems();
             }
@@ -3482,7 +3485,7 @@ namespace stage
         // ensure there are any shards to share
         {
             MeteorShard_t totalShards{ 0 };
-            for (auto const CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
+            for (auto const & CREATURE_PTR : game::Game::Instance()->State().Party().Characters())
             {
                 totalShards += CREATURE_PTR->Inventory().MeteorShards();
             }
@@ -3552,7 +3555,7 @@ namespace stage
     void InventoryStage::EndOfGiveShareGatherTasks()
     {
         listBoxItemToGiveSPtr_.reset();
-        creatureToGiveToPtr_ = nullptr;
+        creatureToGiveToPtrOpt_ = boost::none;
         itemToDropPtrOpt_ = boost::none;
         contentType_ = ContentType::Count;
         actionType_ = ActionType::Count;
@@ -3694,13 +3697,15 @@ namespace stage
             "InventoryStage'sDetailViewForItems", TEXT_INFO, TEXT_RECT);
     }
 
-    void InventoryStage::SetupDetailViewCreature(const creature::CreaturePtr_t CREATURE_PTR)
+    void InventoryStage::SetupDetailViewCreature(const creature::CreaturePtrOpt_t CREATURE_PTR_OPT)
     {
-        if (CREATURE_PTR == nullptr)
+        if (!CREATURE_PTR_OPT)
         {
             detailViewTextUPtr_.reset();
             return;
         }
+
+        auto const CREATURE_PTR{ CREATURE_PTR_OPT.value() };
 
         sfml_util::gui::CreatureImageManager::Instance()->GetImage(
             detailViewTexture_, CREATURE_PTR->ImageFilename(), true);
@@ -3906,7 +3911,7 @@ namespace stage
         isDetailViewFadingOut_ = true;
         detailViewSlider_.Reset(DETAILVIEW_SLIDER_SPEED_);
         SetupDetailViewItem(boost::none);
-        SetupDetailViewCreature(nullptr);
+        SetupDetailViewCreature(boost::none);
     }
 
     void InventoryStage::HandleDetailViewMouseInterrupt(const sf::Vector2f & MOUSE_POS_V)

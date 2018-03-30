@@ -41,22 +41,19 @@ namespace combat
 
     bool ConditionEffects::Process(
         const game::Phase::Enum,
-        creature::CreaturePtr_t creaturePtr,
+        const creature::CreaturePtr_t CREATURE_PTR,
         HitInfoVec_t & hitInfoVec_OuParam)
     {
-        auto condsPVec{ creaturePtr->ConditionsPVec() };
+        auto condsPVec{ CREATURE_PTR->ConditionsPVec() };
 
-        std::sort(
-            condsPVec.begin(),
-            condsPVec.end(),
-            [](const creature::ConditionPtr_t A, const creature::ConditionPtr_t B) {
-                return (A->Severity() > B->Severity());
-            });
+        std::sort(condsPVec.begin(), condsPVec.end(), [](auto const A, auto const B) {
+            return (A->Severity() > B->Severity());
+        });
 
         auto hasTurnBeenConsumed{ false };
         for (auto const & NEXT_COND_PTR : condsPVec)
         {
-            NEXT_COND_PTR->PerTurnEffect(creaturePtr, hitInfoVec_OuParam, hasTurnBeenConsumed);
+            NEXT_COND_PTR->PerTurnEffect(CREATURE_PTR, hitInfoVec_OuParam, hasTurnBeenConsumed);
         }
 
         return hasTurnBeenConsumed;

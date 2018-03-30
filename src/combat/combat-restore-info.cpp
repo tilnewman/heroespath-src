@@ -76,7 +76,9 @@ namespace combat
         combatDisplayPtrC->GetCombatNodes(combatNodesPVec);
 
         for (auto const nextCombatNodePtrC : combatNodesPVec)
+        {
             nextCombatNodePtrC->HealthChangeTasks();
+        }
     }
 
     void RestoreInfo::FlyingCreaturesSave(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
@@ -97,9 +99,9 @@ namespace combat
 
     void RestoreInfo::FlyingCreaturesRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
     {
-        for (auto const nextFlyingCreaturePtr : creaturesFlyingPVec_)
+        for (auto const & FLYING_CREATURE_PTR : creaturesFlyingPVec_)
         {
-            combatDisplayPtrC->HandleFlyingChange(nextFlyingCreaturePtr, true);
+            combatDisplayPtrC->HandleFlyingChange(FLYING_CREATURE_PTR, true);
         }
     }
 
@@ -137,5 +139,6 @@ namespace combat
         combatDisplayPtrC->PositionCombatTreeCells(false);
         combatDisplayPtrC->UpdateWhichNodesWillDraw();
     }
+
 } // namespace combat
 } // namespace heroespath

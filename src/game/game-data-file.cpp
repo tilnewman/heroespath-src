@@ -52,7 +52,7 @@ namespace game
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): GameDataFile");
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): GameDataFile");
             Acquire();
         }
 
@@ -67,7 +67,7 @@ namespace game
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: GameDataFile");
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: GameDataFile");
         }
     }
 

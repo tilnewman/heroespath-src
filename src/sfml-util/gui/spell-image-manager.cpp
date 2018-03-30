@@ -56,7 +56,7 @@ namespace sfml_util
         {
             if (instanceUPtr_.get() == nullptr)
             {
-                M_HP_LOG_WRN("Singleton Instance() before Acquire(): SpellImageManager");
+                M_HP_LOG_ERR("Singleton Instance() before Acquire(): SpellImageManager");
                 Acquire();
             }
 
@@ -71,7 +71,7 @@ namespace sfml_util
             }
             else
             {
-                M_HP_LOG_WRN("Singleton Acquire() after Construction: SpellImageManager");
+                M_HP_LOG_ERR("Singleton Acquire() after Construction: SpellImageManager");
             }
         }
 

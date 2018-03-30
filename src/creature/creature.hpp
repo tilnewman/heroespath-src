@@ -28,8 +28,6 @@
 // creature.hpp
 //  A base class for all creatures
 //
-#include "sfml-util/date-time.hpp"
-
 #include "combat/effect-type-enum.hpp"
 #include "creature/achievements.hpp"
 #include "creature/body-type.hpp"
@@ -46,6 +44,7 @@
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
+#include "sfml-util/date-time.hpp"
 #include "song/song-enum.hpp"
 #include "spell/spell-enum.hpp"
 #include "stats/stat-set.hpp"
@@ -92,14 +91,6 @@ namespace creature
     class Enchantment;
     using EnchantmentPtr_t = misc::NotNull<Enchantment *>;
     using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
-
-    // unique ID for all creatures
-    using SerialNumber_t = unsigned long long;
-
-    // encapsulates everything permenant and unique about a creature
-    // name/role/date-time-created/serial-number
-    // Only non-player characters use the serial-number
-    using UniqueTraits_t = std::tuple<std::string, role::Enum, sfml_util::DateTime, SerialNumber_t>;
 
     enum class UnconOpt
     {
@@ -244,11 +235,6 @@ namespace creature
         }
 
         const sfml_util::DateTime DateTimeCreated() const { return dateTimeCreated_; }
-
-        const UniqueTraits_t UniqueTraits() const
-        {
-            return UniqueTraits_t(std::make_tuple(Name(), role_, DateTimeCreated(), serialNumber_));
-        }
 
         const std::string HealthPercentStr(const bool WILL_APPEND_SYMBOL = true) const;
 
@@ -451,7 +437,6 @@ namespace creature
 
     public:
         static const std::string ITEM_ACTION_SUCCESS_STR_;
-        static std::size_t globalSerialNumber_;
 
     protected:
         bool isPlayer_;
@@ -461,7 +446,6 @@ namespace creature
         BodyType bodyType_;
         race::Enum race_;
         role::Enum role_;
-        SerialNumber_t serialNumber_;
         CondEnumVec_t conditionsVec_;
         TitleEnumVec_t titlesVec_;
         item::Inventory inventory_;
@@ -527,7 +511,6 @@ namespace creature
             ar & bodyType_;
             ar & race_;
             ar & role_;
-            ar & serialNumber_;
             ar & conditionsVec_;
             ar & titlesVec_;
             ar & inventory_;
@@ -552,12 +535,11 @@ namespace creature
 
     bool operator<(const Creature & L, const Creature & R);
 
-    using CreaturePtr_t = Creature *;
-    using CreaturePtrC_t = Creature * const;
-    using CreatureCPtr_t = const Creature *;
-    using CreatureCPtrC_t = const Creature * const;
-    using CreatureUPtr_t = std::unique_ptr<Creature>;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
+    using CreatureUPtr_t = std::unique_ptr<Creature>;
+    using CreatureUPVec_t = std::vector<CreatureUPtr_t>;
 
 } // namespace creature
 } // namespace heroespath

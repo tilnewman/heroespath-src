@@ -47,6 +47,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace heroespath
 {
@@ -80,10 +81,9 @@ namespace sfml_util
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
-    using CreatureCPtr_t = const Creature *;
-    using CreaturePtrC_t = Creature * const;
-    using CreatureCPtrC_t = const Creature * const;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
 namespace item
 {
@@ -219,17 +219,17 @@ namespace stage
         bool HandleGiveRequestCoins();
         bool HandleGiveRequestGems();
         bool HandleGiveRequestMeteorShards();
-        bool HandleGiveActualItems();
-        bool HandleGiveActualCoins();
-        bool HandleGiveActualGems();
-        bool HandleGiveActualMeteorShards();
+        bool HandleGiveActualItems(const creature::CreaturePtr_t);
+        bool HandleGiveActualCoins(const creature::CreaturePtr_t);
+        bool HandleGiveActualGems(const creature::CreaturePtr_t);
+        bool HandleGiveActualMeteorShards(const creature::CreaturePtr_t);
         bool HandleShare();
         bool HandleGather();
         bool HandleDropRequest();
         bool HandleDropActual();
         bool HandlePlayerChangeBeforeOrAfter(const bool IS_NEXT_CREATURE_AFTER);
         bool HandlePlayerChangeIndex(const std::size_t CHARACTER_NUM); // zero indexed
-        bool HandlePlayerChangeTo(const creature::CreaturePtrC_t, const bool IS_SLIDING_LEFT);
+        bool HandlePlayerChangeTo(const creature::CreaturePtr_t, const bool IS_SLIDING_LEFT);
         void StartSlidingAnimation(const bool IS_SLIDING_LEFT);
         void SetDescBoxTextFromListBoxItem(const sfml_util::gui::ListBoxItemSPtr_t &);
         void SetDescBoxText(const std::string &);
@@ -246,12 +246,14 @@ namespace stage
         void PopupDoneWindow(const std::string &, const bool);
         void PopupContentSelectionWindow(const std::string &);
 
-        void HandleCoinsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr);
+        void HandleCoinsGive(
+            const std::size_t COUNT, const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR);
 
-        void HandleGemsGive(const std::size_t COUNT, creature::CreaturePtr_t creatureToGiveToPtr);
+        void HandleGemsGive(
+            const std::size_t COUNT, const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR);
 
         void HandleMeteorShardsGive(
-            const std::size_t COUNT, creature::CreaturePtr_t cretureToGiveToPtr);
+            const std::size_t COUNT, const creature::CreaturePtr_t CREATURE_TO_GIVE_TO_PTR);
 
         void HandleCoinsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
         void HandleGemsGather(const bool WILL_TRIGGER_SECONDARY_ACTIONS);
@@ -275,7 +277,7 @@ namespace stage
         const item::ItemPtrOpt_t GetItemMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
         const sf::FloatRect GetItemRectMouseIsOver(const sf::Vector2f & MOUSE_POS_V);
         void SetupDetailViewItem(const item::ItemPtrOpt_t);
-        void SetupDetailViewCreature(const creature::CreaturePtr_t CREATURE_PTR);
+        void SetupDetailViewCreature(const creature::CreaturePtrOpt_t CREATURE_PTR_OPT);
 
         const std::string MakeTitleString(
             const creature::CreaturePtr_t CREATURE_PTR,
@@ -461,7 +463,7 @@ namespace stage
         ActionType actionType_;
         ContentType contentType_;
         sfml_util::gui::ListBoxItemSPtr_t listBoxItemToGiveSPtr_;
-        creature::CreaturePtr_t creatureToGiveToPtr_;
+        creature::CreaturePtrOpt_t creatureToGiveToPtrOpt_;
         item::ItemPtrOpt_t itemToDropPtrOpt_;
 
         // members that manage the item detail view

@@ -28,15 +28,14 @@
 // camp-stage.hpp
 //  A Stage class that allows characters to camp the game
 //
-#include "sfml-util/gui/background-image.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/sliders.hpp"
-#include "sfml-util/stage.hpp"
-
 #include "popup/i-popup-callback.hpp"
+#include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/main-menu-buttons.hpp"
 #include "sfml-util/main-menu-title.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/sliders.hpp"
+#include "sfml-util/stage.hpp"
 
 #include <memory>
 #include <string>
@@ -104,6 +103,7 @@ namespace stage
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol botSymbol_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

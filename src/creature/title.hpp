@@ -48,7 +48,7 @@ namespace creature
 {
 
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 
     // A Title is earned after a certain number of Achievements.  (see ACHIEVEMENT_COUNT)
     // Titles can also be earned by specific quest events.  (see Titles::ProtectorOfThornberry)
@@ -76,30 +76,30 @@ namespace creature
             const Experience_t & EXPERIENCE_BONUS = 0_exp,
             const Health_t & HEALTH_BONUS = 0_health);
 
-        virtual ~Title();
+        const std::string Name() const { return Titles::Name(title_); }
+        const std::string Desc() const { return Titles::Desc(title_); }
+        Titles::Enum Which() const { return title_; }
+        const stats::StatSet StatBonus() const { return statBonus_; }
+        AchievementType::Enum GetAchievementType() const { return achievementType_; }
+        Count_t AchievementCount() const { return achievementCount_; }
+        Index_t AchievementIndex() const { return achievementIndex_; }
+        void Roles(RoleVec_t & rolesVec_OutParam) const { rolesVec_OutParam = rolesVec_; }
+        const RoleVec_t RolesCopy() const { return rolesVec_; }
 
-        virtual const std::string Name() const { return Titles::Name(title_); }
-        virtual const std::string Desc() const { return Titles::Desc(title_); }
-        virtual Titles::Enum Which() const { return title_; }
-        virtual const stats::StatSet StatBonus() const { return statBonus_; }
-        virtual AchievementType::Enum GetAchievementType() const { return achievementType_; }
-        virtual Count_t AchievementCount() const { return achievementCount_; }
-        virtual Index_t AchievementIndex() const { return achievementIndex_; }
-        virtual void Roles(RoleVec_t & rolesVec_OutParam) const { rolesVec_OutParam = rolesVec_; }
-        virtual const RoleVec_t RolesCopy() const { return rolesVec_; }
-        virtual bool IsRoleInList(const role::Enum E) const
+        bool IsRoleInList(const role::Enum E) const
         {
             return (std::find(rolesVec_.begin(), rolesVec_.end(), E) != rolesVec_.end());
         }
-        virtual const std::string ImageFilename() const { return fileName_; }
-        virtual Rank_t RankBonus() const { return rankBonus_; }
-        virtual Experience_t ExpBonus() const { return expBonus_; }
-        virtual Health_t HealthBonus() const { return healthBonus_; }
 
-        virtual const std::string ToString() const;
-        virtual const std::string LongDesc() const;
+        const std::string ImageFilename() const { return fileName_; }
+        Rank_t RankBonus() const { return rankBonus_; }
+        Experience_t ExpBonus() const { return expBonus_; }
+        Health_t HealthBonus() const { return healthBonus_; }
 
-        virtual void Change(Creature * const) const;
+        const std::string ToString() const;
+        const std::string LongDesc() const;
+
+        void Change(const CreaturePtr_t) const;
         // titles are permenant, so no need for an UndoChange() function here
 
         friend bool operator<(const Title & L, const Title & R);

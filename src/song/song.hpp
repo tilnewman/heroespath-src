@@ -45,20 +45,16 @@
 
 namespace heroespath
 {
-
-// forward declarations
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
-
 namespace item
 {
     class Item;
     using ItemPtr_t = misc::NotNull<Item *>;
 } // namespace item
-
 namespace song
 {
 
@@ -99,15 +95,15 @@ namespace song
 
         // Allows the spell to change the target creature.
         bool EffectCreature(
-            creature::CreaturePtr_t creaturePlayingPtr,
-            creature::CreaturePtr_t creatureListeningPtr,
+            const creature::CreaturePtr_t CREATURE_PLAYING_PTR,
+            const creature::CreaturePtr_t CREATURE_LISTENING_PTR,
             Health_t & healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             combat::ContentAndNamePos & actionPhraseCNP) const;
 
         // Allows the spell to change the target item.
-        bool EffectItem(creature::CreaturePtr_t, const item::ItemPtr_t) const;
+        bool EffectItem(const creature::CreaturePtr_t, const item::ItemPtr_t) const;
 
         const std::string ActionPhrasePreamble() const;
         const std::string TypeToVerb() const;

@@ -68,15 +68,15 @@ namespace interact
     };
 
     LockPicking::LockPicking()
-        : characterPtr_{ nullptr }
+        : characterPtrOpt_{ boost::none }
     {}
 
     bool LockPicking::Attempt() const
     {
-        if (characterPtr_ != nullptr)
+        if (characterPtrOpt_)
         {
             auto const DID_UNLOCK{ creature::Stats::Test(
-                characterPtr_,
+                characterPtrOpt_.value(),
                 stats::Traits::Luck,
                 static_cast<creature::Stats::With>(
                     creature::Stats::With::RaceRoleBonus | creature::Stats::With::StandardBonus)) };
@@ -110,7 +110,7 @@ namespace interact
             {
                 return MSG.empty();
             }) };
-        //clang-format on
+        // clang-format on
 
         if (ARE_ANY_INVALID_MSGS_EMPTY)
         {
@@ -148,14 +148,14 @@ namespace interact
 
             if (SELECTION < game::Game::Instance()->State().Party().Characters().size())
             {
-                characterPtr_ = game::Game::Instance()->State().Party().GetAtOrderPos(SELECTION);
-                combat::Encounter::Instance()->LockPickCreaturePtr(characterPtr_);
-                PopupAttempting(popupHandlerPtr, characterPtr_->Name());
+                characterPtrOpt_ = game::Game::Instance()->State().Party().GetAtOrderPos(SELECTION);
+                combat::Encounter::Instance()->LockPickCreaturePtr(characterPtrOpt_.value());
+                PopupAttempting(popupHandlerPtr, characterPtrOpt_->Obj().Name());
                 return true;
             }
         }
 
-        characterPtr_ = nullptr;
+        characterPtrOpt_ = boost::none;
         return false;
     }
 
@@ -192,12 +192,20 @@ namespace interact
             popupHandlerPtr, POPUP_INFO);
     }
 
-    bool LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(popup::IPopupHandler_t * const popupHandlerPtr)
+    bool LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
+        popup::IPopupHandler_t * const popupHandlerPtr)
     {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (!!characterPtrOpt_),
+            "interact::LockPicking::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup("
+            "popupHandler="
+                << popupHandlerPtr->HandlerName()
+                << ") was called when LockPicking::characterPtrOpt_ was uninitialized.");
+
         return stage::HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
             popupHandlerPtr,
             POPUP_NAME_TITLE_ARCHIEVED_,
-            characterPtr_,
+            characterPtrOpt_.value(),
             creature::AchievementType::LocksPicked);
     }
 
@@ -237,16 +245,16 @@ namespace interact
     {
         auto const NUM_CHARACTERS{ game::Game::Instance()->State().Party().Characters().size() };
 
-        auto const PREV_LOCKPICK_CREATURE_PTR{
-            combat::Encounter::Instance()->LockPickCreaturePtr()
+        auto const PREV_LOCKPICK_CREATURE_PTR_OPT{
+            combat::Encounter::Instance()->LockPickCreaturePtrOpt()
         };
 
-        if (PREV_LOCKPICK_CREATURE_PTR != nullptr)
+        if (PREV_LOCKPICK_CREATURE_PTR_OPT)
         {
             for (std::size_t i(0); i < NUM_CHARACTERS; ++i)
             {
                 auto const CREATURE_PTR{ game::Game::Instance()->State().Party().GetAtOrderPos(i) };
-                if (CREATURE_PTR == PREV_LOCKPICK_CREATURE_PTR)
+                if (CREATURE_PTR == PREV_LOCKPICK_CREATURE_PTR_OPT.value())
                 {
                     return i;
                 }

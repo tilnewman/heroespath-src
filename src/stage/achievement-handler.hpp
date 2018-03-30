@@ -49,14 +49,14 @@ namespace stage
     void TitleTransitionPopup(
         popup::IPopupHandler_t * const popupHandlerPtr,
         const std::string & POPUP_NAME,
-        creature::CreaturePtr_t characterPtr,
+        const creature::CreaturePtr_t CHARACTER_PTR,
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
         const creature::TitlePtr_t TO_TITLE_PTR);
 
     bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
         popup::IPopupHandler_t * const popupHandlerPtr,
         const std::string & POPUP_NAME,
-        creature::CreaturePtr_t characterPtr,
+        const creature::CreaturePtr_t CHARACTER_PTR,
         const creature::AchievementType::Enum ACHIEVEMENT_TYPE);
 }
 }

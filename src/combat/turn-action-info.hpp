@@ -53,7 +53,7 @@ namespace creature
 {
     // forward declarations
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
 namespace combat
@@ -77,7 +77,6 @@ namespace combat
         const spell::SpellPtrOpt_t Spell() const { return spellPtrOpt_; }
         const song::SongPtrOpt_t Song() const { return songPtrOpt_; }
         const creature::CreaturePVec_t & Targets() const { return targetsPVec_; }
-        creature::CreaturePtr_t Target() const;
         const std::string ToString() const;
 
         friend bool operator<(const TurnActionInfo & A, const TurnActionInfo & B);

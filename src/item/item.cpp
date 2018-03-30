@@ -263,7 +263,7 @@ namespace item
            << ", element_type=" << element_type::ToString(elementType_)
            << ", is_pixie=" << std::boolalpha << isPixie_ << ", enchantments={";
 
-        for (auto const ENCHANTMENT_PTR : enchantmentsPVec_)
+        for (auto const & ENCHANTMENT_PTR : enchantmentsPVec_)
         {
             ss << ENCHANTMENT_PTR->ToString() << " | ";
         }

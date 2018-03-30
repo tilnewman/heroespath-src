@@ -31,6 +31,7 @@
 #include "item/item-profile.hpp"
 #include "item/treasure-image-enum.hpp"
 #include "item/treasure-scores.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 
 #include <vector>
@@ -40,9 +41,9 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-} // namespace non_player
+} // namespace creature
 namespace item
 {
 

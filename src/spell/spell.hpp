@@ -49,7 +49,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 } // namespace creature
 
 namespace item
@@ -95,21 +95,21 @@ namespace spell
         combat::TargetType::Enum Target() const { return targetType_; }
 
         const combat::ContentAndNamePos
-            ActionPhrase(creature::CreaturePtr_t creatureCastUponPtr) const;
+            ActionPhrase(const creature::CreaturePtr_t CREATURE_CAST_UPON_PTR) const;
 
         // Allows the spell to change the target creature.
         // Don't adjust creatureCastUponPtr's health, that will be done in Fight.cpp.
         // Don't check if creatureCastUponPtr is already dead, that will be done in fight.cpp
         bool EffectCreature(
-            creature::CreaturePtr_t castingCreaturePtr,
-            creature::CreaturePtr_t creatureCastUponPtr,
+            const creature::CreaturePtr_t CREATURE_CASTING_PTR,
+            const creature::CreaturePtr_t CREATURE_CAST_UPON_PTR,
             Health_t & healthAdj,
             creature::CondEnumVec_t & condsAddedVec,
             creature::CondEnumVec_t & condsRemovedVec,
             combat::ContentAndNamePos & actionPhraseCNP) const;
 
         // Allows the spell to change the target item.
-        const std::string EffectItem(creature::CreaturePtr_t, const item::ItemPtr_t) const;
+        const std::string EffectItem(const creature::CreaturePtr_t, const item::ItemPtr_t) const;
 
         friend bool operator<(const Spell & L, const Spell & R);
         friend bool operator==(const Spell & L, const Spell & R);

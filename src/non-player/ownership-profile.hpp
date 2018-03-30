@@ -31,6 +31,7 @@
 //
 #include "creature/rank.hpp"
 #include "item/item-type-enum.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "non-player/ownership-chance-types.hpp"
 
@@ -43,7 +44,7 @@ namespace heroespath
 namespace creature
 {
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 }
 namespace non_player
 {

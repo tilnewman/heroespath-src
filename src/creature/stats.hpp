@@ -29,6 +29,7 @@
 //
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "misc/not-null.hpp"
 #include "stats/stat-set.hpp"
 
 namespace heroespath
@@ -38,7 +39,7 @@ namespace creature
 
     // forward declarations
     class Creature;
-    using CreaturePtr_t = Creature *;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
 
     // A collection of stat related creature functions.
     struct Stats
@@ -126,6 +127,7 @@ namespace creature
             const stats::Traits::Enum TRAIT_ENUM,
             const role::Enum ROLE_ENUM);
     };
+
 } // namespace creature
 } // namespace heroespath
 

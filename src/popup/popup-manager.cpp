@@ -80,7 +80,7 @@ namespace popup
     {
         if (instanceUPtr_.get() == nullptr)
         {
-            M_HP_LOG_WRN("Singleton Instance() before Acquire(): PopupManager");
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): PopupManager");
             Acquire();
         }
 
@@ -95,7 +95,7 @@ namespace popup
         }
         else
         {
-            M_HP_LOG_WRN("Singleton Acquire() after Construction: PopupManager");
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: PopupManager");
         }
     }
 
@@ -374,7 +374,7 @@ namespace popup
 
     const PopupInfo PopupManager::CreateSpellbookPopupInfo(
         const std::string & POPUP_NAME,
-        const creature::CreaturePtr_t CREATURE_CPTR,
+        const creature::CreaturePtr_t CREATURE_PTR,
         const std::size_t INITIAL_SELECTION) const
     {
         return PopupInfo(
@@ -392,13 +392,13 @@ namespace popup
             sfml_util::TextureVec_t(),
             std::vector<std::string>(),
             PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
-            CREATURE_CPTR,
+            CREATURE_PTR,
             INITIAL_SELECTION);
     }
 
     const PopupInfo PopupManager::CreateMusicPopupInfo(
         const std::string & POPUP_NAME,
-        const creature::CreaturePtr_t CREATURE_CPTR,
+        const creature::CreaturePtr_t CREATURE_PTR,
         const std::size_t INITIAL_SELECTION) const
     {
         return PopupInfo(
@@ -416,7 +416,7 @@ namespace popup
             sfml_util::TextureVec_t(),
             std::vector<std::string>(),
             PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
-            CREATURE_CPTR,
+            CREATURE_PTR,
             INITIAL_SELECTION);
     }
 
@@ -510,7 +510,7 @@ namespace popup
             sfml_util::TextureVec_t(),
             std::vector<std::string>(),
             popup::PopupInfo::IMAGE_FADE_SPEED_DEFAULT_,
-            nullptr,
+            boost::none,
             0,
             false,
             "",

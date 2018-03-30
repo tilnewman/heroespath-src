@@ -86,10 +86,12 @@ namespace creature
 
         auto IsBiped() const { return (2 == num_legs_); }
         auto IsQuadruped() const { return (4 == num_legs_); }
+
         auto IsHumanoid() const
         {
             return (IsBiped() && (num_heads_ > 0) && (num_arms_ >= 2) && HasFingers());
         }
+
         auto IsSerpentine() const
         {
             return ((false == HasArms()) && (false == HasLegs()) && HasTail());
@@ -160,6 +162,7 @@ namespace creature
     bool operator==(const BodyType & L, const BodyType & R);
 
     inline bool operator!=(const BodyType & L, const BodyType & R) { return !(L == R); }
+
 } // namespace creature
 } // namespace heroespath
 

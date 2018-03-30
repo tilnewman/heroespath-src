@@ -28,11 +28,10 @@
 // combat-node.hpp
 //  A class that handles drawing nodes on the combat tree.
 //
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sliders.hpp"
-
-#include "creature/creature.hpp"
 
 #include <memory>
 #include <string>
@@ -40,6 +39,12 @@
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+    using CreaturePVec_t = std::vector<CreaturePtr_t>;
+}
 namespace combat
 {
 
@@ -67,7 +72,7 @@ namespace combat
 
         void SetCharacterSize(const unsigned int);
 
-        creature::CreaturePtr_t Creature() const { return creaturePtr_; }
+        const creature::CreaturePtr_t Creature() const { return creaturePtr_; }
 
         virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 

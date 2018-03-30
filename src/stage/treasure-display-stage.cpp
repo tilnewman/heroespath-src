@@ -499,7 +499,7 @@ namespace stage
         }
     }
 
-    creature::CreaturePtr_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayed()
+    const creature::CreaturePtr_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayed()
     {
         return game::Game::Instance()->State().Party().GetAtOrderPos(
             WhichCharacterInventoryIsDisplayedIndex());
@@ -626,7 +626,7 @@ namespace stage
         };
 
         misc::StrVec_t corpseKeyStrVec;
-        for (auto const NEXT_ENEMY_CHARACTER_PTR : DEAD_ENEMY_CHARACTERS_PVEC)
+        for (auto const & NEXT_ENEMY_CHARACTER_PTR : DEAD_ENEMY_CHARACTERS_PVEC)
         {
             auto const CORPSE_KEY_STR_VEC{ creature::race::CorpseImageKeys(
                 NEXT_ENEMY_CHARACTER_PTR->Race()) };
@@ -1106,7 +1106,7 @@ namespace stage
             ss << CREATURE_PTR->Inventory().Coins() << "/";
 
             Coin_t coinSum{ 0_coin };
-            for (auto const NEXT_CREATURE_PTR :
+            for (auto const & NEXT_CREATURE_PTR :
                  game::Game::Instance()->State().Party().Characters())
             {
                 coinSum += NEXT_CREATURE_PTR->Inventory().Coins();
@@ -1140,7 +1140,7 @@ namespace stage
             ss << CREATURE_PTR->Inventory().Gems() << "/";
 
             Gem_t gemSum{ 0_gem };
-            for (auto const NEXT_CREATURE_PTR :
+            for (auto const & NEXT_CREATURE_PTR :
                  game::Game::Instance()->State().Party().Characters())
             {
                 gemSum += NEXT_CREATURE_PTR->Inventory().Gems();

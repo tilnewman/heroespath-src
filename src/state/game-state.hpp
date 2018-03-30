@@ -108,6 +108,7 @@ namespace state
     bool operator==(const GameState & L, const GameState & R);
 
     inline bool operator!=(const GameState & L, const GameState & R) { return !(L == R); }
+
 } // namespace state
 } // namespace heroespath
 
