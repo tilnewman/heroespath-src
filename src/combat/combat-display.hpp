@@ -68,10 +68,8 @@ namespace sfml_util
 namespace combat
 {
 
-    // forward declarations
     class CombatNode;
     using CombatNodePtr_t = CombatNode *;
-    using CombatNodeSPtr_t = std::shared_ptr<CombatNode>;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
 
     class SummaryView;
@@ -79,6 +77,8 @@ namespace combat
 
     class CombatAnimation;
     using CombatAnimationPtr_t = CombatAnimation *;
+
+    using CreatureBlockingPosMap_t = misc::VectorMap<creature::CreaturePtr_t, int>;
 
     // Assists with delayed position shifting of creature images on the battlefield,
     // allowing creature images on the battlefield to animate to new positions instead
@@ -99,9 +99,6 @@ namespace combat
     };
 
     using NodePosTrackerMap_t = misc::VectorMap<CombatNodePtr_t, NodePosTracker>;
-
-    using CombatNodeToIGuiEntityMap_t
-        = misc::VectorMap<CombatNodeSPtr_t, sfml_util::gui::IGuiEntityPtr_t>;
 
     // Handles drawing the combat tree
     class CombatDisplay : public sfml_util::Stage
@@ -136,10 +133,6 @@ namespace combat
 
         const sf::Vector2f GetCenterOfAllNodes() const;
 
-        void PositionCombatTreeCells(const bool WILL_DELAY);
-
-        bool RemoveCombatNode(const CombatNodeSPtr_t & COMBAT_NODE_SPTR);
-
         void MoveBattlefieldVert(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
         void MoveBattlefieldHoriz(const float AMOUNT, const bool WILL_MOVE_BACKGROUND = true);
 
@@ -150,26 +143,16 @@ namespace combat
             const creature::CreaturePtr_t CREATURE_PTR,
             const creature::CreaturePVec_t & AMONG_PVEC) const;
 
-        std::size_t FindCreaturesThatCanBeAttackedOfType(
-            creature::CreaturePVec_t & pVec_OutParam,
-            const creature::CreaturePtr_t CREATURE_PTR,
-            const bool WILL_FIND_PLAYERS) const;
+        const creature::CreaturePVec_t FindCreaturesThatCanBeAttackedOfType(
+            const creature::CreaturePtr_t CREATURE_PTR, const bool WILL_FIND_PLAYERS) const;
 
-        std::size_t FindCreaturesAllRoundOfType(
-            creature::CreaturePVec_t & pVec_OutParam,
+        const creature::CreaturePVec_t FindCreaturesAllRoundOfType(
             const creature::CreaturePtr_t CREATURE_PTR,
             const bool WILL_FIND_PLAYERS,
             const bool LIVING_ONLY = false) const;
 
-        std::size_t FindCreaturesInSameBlockingPosOfType(
-            creature::CreaturePVec_t & pVec_OutParam,
-            const creature::CreaturePtr_t CREATURE_PTR,
-            const bool WILL_FIND_PLAYERS) const;
-
-        std::size_t FindCreaturesAtBlockingPosOfType(
-            creature::CreaturePVec_t & pVec_OutParam,
-            const int BLOCKING_POS,
-            const bool WILL_FIND_PLAYERS) const;
+        const creature::CreaturePVec_t FindCreaturesAtBlockingPosOfType(
+            const int BLOCKING_POS, const bool WILL_FIND_PLAYERS) const;
 
         int FindBlockingPos(const creature::CreaturePtr_t CREATURE_PTR) const;
 
@@ -183,7 +166,7 @@ namespace combat
             const creature::CreaturePtr_t CREATURE_TARGETED_PTR) const;
 
         CombatNodePtr_t GetCombatNodeForCreature(const creature::CreaturePtr_t) const;
-        CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
+        const CombatNodePVec_t GetCombatNodesForCreatures(const creature::CreaturePVec_t &) const;
 
         // returns explanation of why not or an empty string if can
         const std::string CanAdvanceOrRetreat(
@@ -239,11 +222,6 @@ namespace combat
 
         bool GetIsSummaryViewInProgress() const { return isSummaryViewInProgress_; }
 
-        void GetCombatNodes(CombatNodePVec_t & combatNodesPVec)
-        {
-            combatTree_.GetCombatNodes(combatNodesPVec);
-        }
-
         void SetSummaryViewAllowed(const bool IS_SUMMARYVIEW_ALLOWED)
         {
             isSummaryViewAllowed_ = IS_SUMMARYVIEW_ALLOWED;
@@ -254,34 +232,42 @@ namespace combat
             isScrollAllowed_ = IS_SCROLLING_ALLOWED;
         }
 
-        CombatTree & CombatTreeObj() { return combatTree_; }
-
         const sf::FloatRect BattlefieldRect() const { return battlefieldRect_; }
 
         const sf::Vector2f CenteringPosV() const { return centeringToPosV_; }
         void CenteringPosV(const sf::Vector2f & V) { centeringToPosV_ = V; }
 
-        NodePosTrackerMap_t NodePositionTrackerMap() { return nodePosTrackerMap_; }
-
         void SetCombatAnimationPtr(const CombatAnimationPtr_t ptr) { combatAnimationPtr_ = ptr; }
 
         void EndOfCombatCleanup();
 
-        void HandleDeaths(const combat::CombatNodePVec_t &);
+        void HandleCombatNodeElimination(const combat::CombatNodePVec_t &);
 
         void HandleCombatNodeElimination(const creature::CreaturePtr_t);
-        void HandleCombatNodeElimination(const combat::CombatNodePtr_t);
 
-        std::size_t GetObstacleCreaturesAtBlockingPos(
-            creature::CreaturePVec_t & pVec_OutParam,
-            const creature::CreaturePtr_t CREATURE_ATTEMPTING_PTR,
-            const int BLOCKING_POS) const;
+        const creature::CreaturePVec_t GetObstacleCreaturesAtBlockingPos(
+            const creature::CreaturePtr_t CREATURE_ATTEMPTING_PTR, const int BLOCKING_POS) const;
 
-        std::size_t GetCreaturesInRoaringDistance(
-            const creature::CreaturePtr_t CREATURE_ROARING_PTR,
-            creature::CreaturePVec_t & creaturesInRoaringDistancePVec_OutParam) const;
+        const creature::CreaturePVec_t
+            GetCreaturesInRoaringDistance(const creature::CreaturePtr_t CREATURE_ROARING_PTR) const;
+
+        const creature::CreaturePVec_t GetCreaturesFlying() const;
+
+        const CreatureBlockingPosMap_t MakeCreatureBlockingMap() const;
+
+        void SetBlockingPositions(const CreatureBlockingPosMap_t &);
+
+        const sf::Vector2f GetCombatNodeCenter(const creature::CreaturePtr_t) const;
+
+        void SetInitiallyFlyingCreaturesToFlying();
+
+        void RepositionCombatNodesBasedOnSliderPosition(const float SLIDER_POS);
 
     protected:
+        void PositionCombatTreeCells(const bool WILL_DELAY);
+
+        void RemoveCombatNodes(const IDVec_t & COMBAT_TREE_IDS_TO_REMOVE_VEC);
+
         void SetIsSummaryViewInProgress(const bool B) { isSummaryViewInProgress_ = B; }
 
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
@@ -289,9 +275,6 @@ namespace combat
         void CreatureToneDown(const float TONE_DOWN_VAL);
 
         const std::string GetNodeTitle(const CombatNodePtr_t COMBAT_NODE_PTR);
-
-        bool SetBlockingPosOfType(
-            const bool IS_PLAYER, const creature::role::Enum ROLE, const int BLOCKING_POS);
 
         void InitialCreaturePositionsSetup(const bool WILL_POSITION_PLAYERS);
 
@@ -346,7 +329,6 @@ namespace combat
         bool isPlayerTurn_;
         bool isStatusMessageAnim_;
         bool isSummaryViewInProgress_;
-        CombatNodeToIGuiEntityMap_t combatNodeToGuiEntityMap_;
         CombatAnimationPtr_t combatAnimationPtr_;
         bool isCombatOver_;
 

@@ -291,25 +291,11 @@ namespace combat
         sfml_util::LoadTexture(
             projAnimTexture_, game::GameDataFile::Instance()->GetMediaPath(pathKey));
 
-        // establish the creature positions
-        sf::Vector2f creatureAttackingCenterPosV{ 0.0f, 0.0f };
-        sf::Vector2f creatureDefendingCenterPosV{ 0.0f, 0.0f };
-        CombatNodePVec_t combatNodePVec;
-        combatDisplayStagePtr_->CombatTreeObj().GetCombatNodes(combatNodePVec);
-        for (auto const & NEXT_COMBANODE_SPTR : combatNodePVec)
-        {
-            auto const NEXT_REGION{ NEXT_COMBANODE_SPTR->GetEntityRegion() };
-            if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_ATTACKING_PTR)
-            {
-                creatureAttackingCenterPosV.x = NEXT_REGION.left + NEXT_REGION.width * 0.5f;
-                creatureAttackingCenterPosV.y = NEXT_REGION.top + NEXT_REGION.height * 0.5f;
-            }
-            else if (NEXT_COMBANODE_SPTR->Creature() == CREATURE_DEFENDING_PTR)
-            {
-                creatureDefendingCenterPosV.x = NEXT_REGION.left + NEXT_REGION.width * 0.5f;
-                creatureDefendingCenterPosV.y = NEXT_REGION.top + NEXT_REGION.height * 0.5f;
-            }
-        }
+        auto const CREATURE_ATTACKING_CENTER_POSV{ combatDisplayStagePtr_->GetCombatNodeCenter(
+            CREATURE_ATTACKING_PTR) };
+
+        auto const CREATURE_DEFENDING_CENTER_POSV{ combatDisplayStagePtr_->GetCombatNodeCenter(
+            CREATURE_DEFENDING_PTR) };
 
         projAnimSprite_.setTexture(projAnimTexture_, true);
         projAnimSprite_.setColor(sf::Color(255, 255, 255, 127));
@@ -335,17 +321,17 @@ namespace combat
             projAnimSprite_.getLocalBounds().width * 0.5f,
             projAnimSprite_.getLocalBounds().height * 0.5f);
 
-        projAnimBeginPosV_ = creatureAttackingCenterPosV;
+        projAnimBeginPosV_ = CREATURE_ATTACKING_CENTER_POSV;
 
         if (WILL_HIT)
         {
-            projAnimEndPosV_ = creatureDefendingCenterPosV;
+            projAnimEndPosV_ = CREATURE_DEFENDING_CENTER_POSV;
         }
         else
         {
             projAnimEndPosV_ = sfml_util::ProjectToScreenEdge(
-                creatureAttackingCenterPosV,
-                creatureDefendingCenterPosV,
+                CREATURE_ATTACKING_CENTER_POSV,
+                CREATURE_DEFENDING_CENTER_POSV,
                 sf::Vector2f(
                     projAnimSprite_.getGlobalBounds().width,
                     projAnimSprite_.getGlobalBounds().height));
@@ -399,13 +385,11 @@ namespace combat
 
     void CombatAnimation::DeathAnimStart(const creature::CreaturePVec_t & KILLED_CREATURES_PVEC)
     {
-        auto combatNodesPVec{ combatDisplayStagePtr_->GetCombatNodesForCreatures(
-            KILLED_CREATURES_PVEC) };
-
-        for (auto const nextCombatNodePtrC : combatNodesPVec)
+        for (auto const COMBAT_NODE_PTR :
+             combatDisplayStagePtr_->GetCombatNodesForCreatures(KILLED_CREATURES_PVEC))
         {
-            nextCombatNodePtrC->SetDead(true);
-            deadAnimNodesPVec_.emplace_back(nextCombatNodePtrC);
+            COMBAT_NODE_PTR->SetDead(true);
+            deadAnimNodesPVec_.emplace_back(COMBAT_NODE_PTR);
         }
     }
 
@@ -419,13 +403,14 @@ namespace combat
 
     void CombatAnimation::DeathAnimStop()
     {
-        combatDisplayStagePtr_->HandleDeaths(deadAnimNodesPVec_);
+        combatDisplayStagePtr_->HandleCombatNodeElimination(deadAnimNodesPVec_);
         deadAnimNodesPVec_.clear();
     }
 
     void CombatAnimation::CenteringStart(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        centeringAnimCombatNodePtr_ = combatDisplayStagePtr_->CombatTreeObj().GetNode(CREATURE_PTR);
+        centeringAnimCombatNodePtr_
+            = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_PTR);
 
         centeringAnimCreaturesPVec_.clear();
         centeringAnimWillZoomOut_ = false;
@@ -527,19 +512,7 @@ namespace combat
 
     void CombatAnimation::RepositionAnimUpdate(const float SLIDER_POS)
     {
-        auto nodePositionTrackerMap{ combatDisplayStagePtr_->NodePositionTrackerMap() };
-        for (const auto & NEXT_NODEPOSTRACK_PAIR : nodePositionTrackerMap)
-        {
-            const float NEW_POS_HORIZ(
-                NEXT_NODEPOSTRACK_PAIR.second.posHorizOrig
-                + (NEXT_NODEPOSTRACK_PAIR.second.horizDiff * SLIDER_POS));
-
-            const float NEW_POS_VERT(
-                NEXT_NODEPOSTRACK_PAIR.second.posVertOrig
-                + (NEXT_NODEPOSTRACK_PAIR.second.vertDiff * SLIDER_POS));
-
-            NEXT_NODEPOSTRACK_PAIR.first->SetEntityPos(NEW_POS_HORIZ, NEW_POS_VERT);
-        }
+        combatDisplayStagePtr_->RepositionCombatNodesBasedOnSliderPosition(SLIDER_POS);
 
         if (repositionAnimCreaturePtrOpt_)
         {

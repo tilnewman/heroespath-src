@@ -72,29 +72,12 @@ namespace combat
 
     void RestoreInfo::CreatureHealthRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
     {
-        combat::CombatNodePVec_t combatNodesPVec;
-        combatDisplayPtrC->GetCombatNodes(combatNodesPVec);
-
-        for (auto const nextCombatNodePtrC : combatNodesPVec)
-        {
-            nextCombatNodePtrC->HealthChangeTasks();
-        }
+        combatDisplayPtrC->UpdateHealthTasks();
     }
 
     void RestoreInfo::FlyingCreaturesSave(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
     {
-        creaturesFlyingPVec_.clear();
-
-        combat::CombatNodePVec_t combatNodesPVec;
-        COMBAT_DISPLAY_CPTRC->GetCombatNodes(combatNodesPVec);
-
-        for (auto const nextCombatNodeCPtr : combatNodesPVec)
-        {
-            if (nextCombatNodeCPtr->IsFlying())
-            {
-                creaturesFlyingPVec_.emplace_back(nextCombatNodeCPtr->Creature());
-            }
-        }
+        creaturesFlyingPVec_ = COMBAT_DISPLAY_CPTRC->GetCreaturesFlying();
     }
 
     void RestoreInfo::FlyingCreaturesRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
@@ -107,37 +90,12 @@ namespace combat
 
     void RestoreInfo::CreaturePositionsSave(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
     {
-        creatureBlockingPosMap_.Clear();
-
-        combat::CombatNodePVec_t combatNodesPVec;
-        COMBAT_DISPLAY_CPTRC->GetCombatNodes(combatNodesPVec);
-
-        for (auto const nextCombatNodePtrC : combatNodesPVec)
-        {
-            creatureBlockingPosMap_[nextCombatNodePtrC->Creature()]
-                = nextCombatNodePtrC->GetBlockingPos();
-        }
+        creatureBlockingPosMap_ = COMBAT_DISPLAY_CPTRC->MakeCreatureBlockingMap();
     }
 
     void RestoreInfo::CreaturePositionsRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
     {
-        combat::CombatNodePVec_t combatNodesPVec;
-        combatDisplayPtrC->GetCombatNodes(combatNodesPVec);
-
-        for (auto const & NEXT_CREATUREPOS_PAIR : creatureBlockingPosMap_)
-        {
-            for (auto const nextCombatNodePtrC : combatNodesPVec)
-            {
-                if (NEXT_CREATUREPOS_PAIR.first == nextCombatNodePtrC->Creature())
-                {
-                    nextCombatNodePtrC->SetBlockingPos(NEXT_CREATUREPOS_PAIR.second);
-                }
-            }
-        }
-
-        combatDisplayPtrC->CombatTreeObj().ResetAllEdges();
-        combatDisplayPtrC->PositionCombatTreeCells(false);
-        combatDisplayPtrC->UpdateWhichNodesWillDraw();
+        combatDisplayPtrC->SetBlockingPositions(creatureBlockingPosMap_);
     }
 
 } // namespace combat

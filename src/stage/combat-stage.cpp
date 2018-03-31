@@ -1070,21 +1070,10 @@ namespace stage
         }
         else
         {
-            // Set initially flying creatures flying.
-            // While this doesn't technically set the flying state in Encounter,
+            // This is just so that restoreInfo_.Save() will save the correct initial flying state.
+            // This doesn't set the flying state in Encounter, but
             // the call to restoreInfo_.Restore() below will.
-            combat::CombatNodePVec_t combatNodesPVec;
-            combatDisplayStagePtr_->GetCombatNodes(combatNodesPVec);
-
-            for (auto const nextComabtNodeCPtr : combatNodesPVec)
-            {
-                if ((creature::race::WillInitiallyFly(nextComabtNodeCPtr->Creature()->Race()))
-                    || (creature::role::WillInitiallyFly(nextComabtNodeCPtr->Creature()->Role())))
-                {
-                    nextComabtNodeCPtr->IsFlying(true);
-                }
-            }
-
+            combatDisplayStagePtr_->SetInitiallyFlyingCreaturesToFlying();
             restoreInfo_.Save(combatDisplayStagePtr_);
         }
 
@@ -1261,7 +1250,6 @@ namespace stage
 
                 combatDisplayStagePtr_->HandleCombatNodeElimination(CREATURE_PTR);
                 combat::Encounter::Instance()->Runaway(CREATURE_PTR);
-                combatDisplayStagePtr_->PositionCombatTreeCells(true);
 
                 SetAnimPhase(AnimPhase::NotAnimating);
                 SetTurnPhase(TurnPhase::RepositionAnim);
@@ -2635,9 +2623,8 @@ namespace stage
             SetTurnActionPhase(TurnActionPhase::PlaySong);
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
             isShortPostZoomOutPause_ = true;
-            auto creaturesToCenterOnPVec{ creaturesListeningPVec };
-            creaturesToCenterOnPVec.emplace_back(TURN_CREATURE_PTR);
-            combatAnimationUPtr_->CenteringStart(creaturesToCenterOnPVec);
+            creaturesListeningPVec.emplace_back(TURN_CREATURE_PTR);
+            combatAnimationUPtr_->CenteringStart(creaturesListeningPVec);
             slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
             SetupTurnBox();
         }
@@ -2924,10 +2911,8 @@ namespace stage
         auto const MOUSEOVER_STR(
             combat::Text::MouseOverTextRoarStr(TURN_CREATURE_PTR, combatDisplayStagePtr_));
 
-        creature::CreaturePVec_t creaturesToCenterOnPVec;
-
-        combatDisplayStagePtr_->GetCreaturesInRoaringDistance(
-            TURN_CREATURE_PTR, creaturesToCenterOnPVec);
+        auto creaturesToCenterOnPVec{ combatDisplayStagePtr_->GetCreaturesInRoaringDistance(
+            TURN_CREATURE_PTR) };
 
         if (MOUSEOVER_STR != combat::Text::TBOX_BUTTON_MOUSEHOVER_TEXT_ROAR_)
         {

@@ -57,8 +57,6 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
     BOOST_CHECK(combatTree.NextAvailableId() == 0_id);
 
     BOOST_CHECK_THROW(combatTree.GetNode(0_id), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.GetNodeSPtr(0_id), std::invalid_argument);
-    BOOST_CHECK_THROW(combatTree.SetNode(0_id, combat::CombatNodeSPtr_t()), std::invalid_argument);
 
     {
         IDVec_t ids;
@@ -77,7 +75,6 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
     BOOST_CHECK(combatTree.VertexCount() == 0);
     BOOST_CHECK(combatTree.VertexCountByBlockingPos(0) == 0);
 
-    BOOST_CHECK(combatTree.Vertexes().empty());
     BOOST_CHECK(combatTree.VertexesString(false).empty());
 
     BOOST_CHECK_THROW(combatTree.RemoveVertex(0_id, false), std::invalid_argument);
@@ -127,42 +124,15 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
     }
 
     BOOST_CHECK(combatTree.CountAdjacent(0_id) == 0);
-
     BOOST_CHECK(combatTree.AreAnyAdjacent(0_id) == false);
-
     BOOST_CHECK(combatTree.GetBlockingPosMin() == 0);
     BOOST_CHECK(combatTree.GetBlockingPosMax() == 0);
     BOOST_CHECK(combatTree.GetBlockingDistanceMax() == 0);
-
-    {
-        IDVec_t ids;
-        BOOST_CHECK(combatTree.GetNodeIDsAtBlockingPos(ids, 0) == false);
-        BOOST_CHECK(ids.empty());
-    }
-
-    {
-        IDVec_t ids;
-        BOOST_CHECK(combatTree.GetNodeIDsAllAroundBlockingPos(ids, 0) == false);
-        BOOST_CHECK(ids.empty());
-    }
-
-    {
-        combat::CombatNodePVec_t combatNodePtrs;
-        BOOST_CHECK(combatTree.GetNodesAtBlockingPos(combatNodePtrs, 0) == false);
-        BOOST_CHECK(combatNodePtrs.empty());
-    }
-
-    {
-        combat::CombatNodePVec_t combatNodePtrs;
-        BOOST_CHECK(combatTree.GetNodesAllAroundBlockingPos(combatNodePtrs, 0) == false);
-        BOOST_CHECK(combatNodePtrs.empty());
-    }
-
-    {
-        combat::CombatNodePVec_t combatNodePtrs;
-        combatTree.GetCombatNodes(combatNodePtrs);
-        BOOST_CHECK(combatNodePtrs.empty());
-    }
+    BOOST_CHECK(combatTree.GetNodeIDsAtBlockingPos(0).empty());
+    BOOST_CHECK(combatTree.GetNodeIDsAllAroundBlockingPos(0).empty());
+    BOOST_CHECK(combatTree.GetNodesAtBlockingPos(0).empty());
+    BOOST_CHECK(combatTree.GetNodesAllAroundBlockingPos(0).empty());
+    BOOST_CHECK(combatTree.GetCombatNodes().empty());
 
     StartupShutdown::Teardown();
 }

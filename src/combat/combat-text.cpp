@@ -94,16 +94,16 @@ namespace combat
     const std::string Text::MouseOverTextAttackStr(
         const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
+        auto const CAN_TAKE_ACTION_STR{ CREATURE_PTR->CanTakeActionStr() };
         if (CAN_TAKE_ACTION_STR.empty() == false)
         {
             return CAN_TAKE_ACTION_STR;
         }
 
-        creature::CreaturePVec_t ignoredPVec;
-        if (COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(
-                ignoredPVec, CREATURE_PTR, !CREATURE_PTR->IsPlayerCharacter())
-            == 0)
+        if (COMBAT_DISPLAY_CPTRC
+                ->FindCreaturesThatCanBeAttackedOfType(
+                    CREATURE_PTR, !CREATURE_PTR->IsPlayerCharacter())
+                .empty())
         {
             return "Cannot Attack because there are no enemies in range.";
         }
@@ -119,14 +119,17 @@ namespace combat
     const std::string Text::MouseOverTextFightStr(
         const creature::CreaturePtr_t CREATURE_PTR, CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
-        auto const CAN_TAKE_ACTION_STR(CREATURE_PTR->CanTakeActionStr());
-        if (CAN_TAKE_ACTION_STR.empty() == false)
-            return CAN_TAKE_ACTION_STR;
+        auto const CAN_TAKE_ACTION_STR{ CREATURE_PTR->CanTakeActionStr() };
 
-        creature::CreaturePVec_t ignoredPVec;
-        if (COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(
-                ignoredPVec, CREATURE_PTR, !CREATURE_PTR->IsPlayerCharacter())
-            == 0)
+        if (CAN_TAKE_ACTION_STR.empty() == false)
+        {
+            return CAN_TAKE_ACTION_STR;
+        }
+
+        if (COMBAT_DISPLAY_CPTRC
+                ->FindCreaturesThatCanBeAttackedOfType(
+                    CREATURE_PTR, !CREATURE_PTR->IsPlayerCharacter())
+                .empty())
         {
             return "Cannot Fight because there are no enemies in range.";
         }
@@ -135,6 +138,7 @@ namespace combat
         {
             return "Cannot Fight because no weapons are held.";
         }
+
         return TBOX_BUTTON_MOUSEHOVER_TEXT_FIGHT_;
     }
 

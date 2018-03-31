@@ -122,16 +122,14 @@ namespace combat
             }
         }
 
-        auto const LIVING_PLAYERS_IN_ATTACK_RANGE{ [&]() {
-            creature::CreaturePVec_t livingPlayersInAttackRangePVec;
-            COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(
-                livingPlayersInAttackRangePVec, CREATURE_DECIDING_PTR, true);
-            return livingPlayersInAttackRangePVec;
-        }() };
+        auto const LIVING_PLAYERS_IN_ATTACK_RANGE{
+            COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(CREATURE_DECIDING_PTR, true)
+        };
 
-        creature::CreaturePVec_t fellowEnemiesInMeleeRangePVec;
-        COMBAT_DISPLAY_CPTRC->FindCreaturesAllRoundOfType(
-            fellowEnemiesInMeleeRangePVec, CREATURE_DECIDING_PTR, false, true);
+        auto const FELLOW_ENEMIES_IN_MELEE_RANGE_COUNT{
+            COMBAT_DISPLAY_CPTRC->FindCreaturesAllRoundOfType(CREATURE_DECIDING_PTR, false, true)
+                .size()
+        };
 
         // decide if running away (retreating), if cowardly or wary and outnumbered
         auto const RETREAT_TURN_ACTION_INFO{ DecideIfRetreating(
@@ -139,7 +137,7 @@ namespace combat
             CREATURE_DECIDING_PTR,
             COMBAT_DISPLAY_CPTRC,
             LIVING_PLAYERS_IN_ATTACK_RANGE.size(),
-            fellowEnemiesInMeleeRangePVec.size()) };
+            FELLOW_ENEMIES_IN_MELEE_RANGE_COUNT) };
 
         if (RETREAT_TURN_ACTION_INFO.Action() != TurnAction::Nothing)
         {
@@ -223,13 +221,10 @@ namespace combat
             && (TURN_INFO.GetStrategyInfo().Advance() != strategy::AdvanceType::Cowardly)
             && (COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, true).empty()))
         {
-            creature::CreaturePVec_t creaturesAheadPVec;
-            COMBAT_DISPLAY_CPTRC->FindCreaturesAtBlockingPosOfType(
-                creaturesAheadPVec,
-                COMBAT_DISPLAY_CPTRC->FindBlockingPos(CREATURE_DECIDING_PTR) - 1,
-                true);
+            auto const CREATURES_AHEAD_PVEC{ COMBAT_DISPLAY_CPTRC->FindCreaturesAtBlockingPosOfType(
+                COMBAT_DISPLAY_CPTRC->FindBlockingPos(CREATURE_DECIDING_PTR) - 1, true) };
 
-            if (creaturesAheadPVec.empty() == false)
+            if (CREATURES_AHEAD_PVEC.empty() == false)
             {
                 auto const DISTANCE_TO_CLOSEST_PLAYER{
                     COMBAT_DISPLAY_CPTRC->GetClosestBlockingDistanceByType(

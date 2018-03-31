@@ -765,14 +765,12 @@ namespace combat
     {
         using namespace creature;
 
-        creature::CreaturePVec_t listeningCreaturesPVec;
-
-        COMBAT_DISPLAY_CPTRC->GetCreaturesInRoaringDistance(
-            CREATURE_ROARING_PTR, listeningCreaturesPVec);
+        auto const LISTENING_CREATURES_PVEC{ COMBAT_DISPLAY_CPTRC->GetCreaturesInRoaringDistance(
+            CREATURE_ROARING_PTR) };
 
         // update player's TurnActionInfo
         Encounter::Instance()->SetTurnActionInfo(
-            CREATURE_ROARING_PTR, TurnActionInfo(TurnAction::Roar, listeningCreaturesPVec));
+            CREATURE_ROARING_PTR, TurnActionInfo(TurnAction::Roar, LISTENING_CREATURES_PVEC));
 
         CreatureEffectVec_t creatureEffectsVec;
 
@@ -783,7 +781,7 @@ namespace combat
         // Give each defending creature a chance to resist being panicked.
         // The farther away each defending creature is the better chance
         // of resisting he/she/it has.
-        for (auto const & NEXT_DEFEND_CREATURE_PTR : listeningCreaturesPVec)
+        for (auto const & NEXT_DEFEND_CREATURE_PTR : LISTENING_CREATURES_PVEC)
         {
             if (NEXT_DEFEND_CREATURE_PTR->HasCondition(Conditions::Panic))
             {
@@ -860,20 +858,20 @@ namespace combat
         const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
         CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
     {
-        creature::CreaturePVec_t attackableNonPlayerCreaturesPVec;
-
-        COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(
-            attackableNonPlayerCreaturesPVec, CREATURE_ATTACKING_PTR, false);
+        auto const ATTACKABLE_NONPLAYER_CREATURES_PVEC{
+            COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(
+                CREATURE_ATTACKING_PTR, false)
+        };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (attackableNonPlayerCreaturesPVec.empty() == false),
+            (ATTACKABLE_NONPLAYER_CREATURES_PVEC.empty() == false),
             "combat::FightClub::HandleAttack() FindNonPlayerCreatureToAttack() "
                 << "returned no attackable creatures.");
 
         // attack those with the lowest relative health first, which will correspond
         // to the health bar seen on screen
         auto const LIVE_ATTBLE_LOWH_NP_CRTS_PVEC{ creature::Algorithms::FindLowestHealthRatio(
-            attackableNonPlayerCreaturesPVec) };
+            ATTACKABLE_NONPLAYER_CREATURES_PVEC) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (LIVE_ATTBLE_LOWH_NP_CRTS_PVEC.empty() == false),

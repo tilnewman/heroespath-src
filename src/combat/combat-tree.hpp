@@ -138,17 +138,8 @@ namespace combat
         // throws std::invalid_argument if ID does not exist
         CombatNodePtr_t GetNode(const ID_t & ID) const;
 
-        // throws std::invalid_argument if ID does not exist
-        CombatNodeSPtr_t GetNodeSPtr(const ID_t & ID) const;
-
         // returns nullptr if creature does not exist
         CombatNodePtr_t GetNode(const creature::CreaturePtr_t) const;
-
-        // returns nullptr if creature does not exist
-        CombatNodeSPtr_t GetNodeSPtr(const creature::CreaturePtr_t) const;
-
-        // throws std::invalid_argument if ID does not exist
-        void SetNode(const ID_t & ID, const CombatNodeSPtr_t & NODE_SPTR);
 
         // throws std::invalid_argument if CombatNode does not exist
         ID_t GetNodeId(const CombatNodePtr_t) const;
@@ -165,15 +156,10 @@ namespace combat
         std::size_t VertexCount() const { return vertexes_.size(); }
         std::size_t VertexCountByBlockingPos(const int BLOCKING_POS) const;
 
-        const VertexVec_t Vertexes() const;
-
         const std::string VertexesString(const bool WILL_WRAP = true) const;
 
         // returns the id number of the vertex added
-        ID_t AddVertex(const CombatNodeSPtr_t & NODE_SPTR);
-
-        // throws std::invalid_argument if the vertex already existed
-        void AddVertex(const ID_t & ID, const CombatNodeSPtr_t & NODE_SPTR);
+        CombatNodePtr_t AddVertex(const creature::CreaturePtr_t CREATURE_PTR);
 
         // returns a vector of vertex IDs that were left without edges
         // throws std::invalid_argument if ID is not an existing vertex
@@ -233,45 +219,18 @@ namespace combat
         int GetBlockingPosMin() const;
         int GetBlockingPosMax() const;
         int GetBlockingDistanceMax() const;
-        float GetBlockingPosMid() const
-        {
-            return (static_cast<float>(GetBlockingPosMax())
-                    + static_cast<float>(GetBlockingPosMin()))
-                / 2.0f;
-        }
 
-        float GetBlockingPosMidPercent() const { return (50.0f + (GetBlockingPosMid() * 10.0f)); }
+        const IDVec_t GetNodeIDsAtBlockingPos(const int BLOCKING_POS) const;
 
-        float GetBlockingPosMidRatio() const { return (GetBlockingPosMidPercent() / 100.0f); }
+        const IDVec_t GetNodeIDsAllAroundBlockingPos(const int BLOCKING_POS) const;
 
-        float GetBlockingPosMinPercent() const
-        {
-            return (50.0f + (static_cast<float>(GetBlockingPosMin()) * 10.0f));
-        }
+        const CombatNodePVec_t GetNodesAtBlockingPos(const int BLOCKING_POS) const;
 
-        float GetBlockingPosMinRatio() const { return (GetBlockingPosMinPercent() / 100.0f); }
+        const CombatNodePVec_t GetNodesAllAroundBlockingPos(const int BLOCKING_POS) const;
 
-        float GetBlockingPosMaxPercent() const
-        {
-            return (50.0f + (static_cast<float>(GetBlockingPosMax()) * 10.0f));
-        }
+        const CombatNodePVec_t GetCombatNodes() const;
 
-        float GetBlockingPosMaxRatio() const { return (GetBlockingPosMaxPercent() / 100.0f); }
-
-        std::size_t GetNodeIDsAtBlockingPos(IDVec_t & IdVec_OutParam, const int BLOCKING_POS) const;
-
-        std::size_t
-            GetNodeIDsAllAroundBlockingPos(IDVec_t & IdVec_OutParam, const int BLOCKING_POS) const;
-
-        std::size_t GetNodesAtBlockingPos(
-            CombatNodePVec_t & NodePVec_OutParam, const int BLOCKING_POS) const;
-
-        std::size_t GetNodesAllAroundBlockingPos(
-            CombatNodePVec_t & NodePVec_OutParam, const int BLOCKING_POS) const;
-
-        void GetCombatNodes(CombatNodePVec_t &) const;
-
-        void GetCombatNodesOfPlayerType(CombatNodePVec_t &, const bool FIND_PLAYERS) const;
+        const CombatNodePVec_t GetCombatNodesOfPlayerType(const bool FIND_PLAYERS) const;
 
         int GetBlockingDistanceBetween(
             const creature::CreaturePtr_t, const creature::CreaturePtr_t) const;
@@ -283,6 +242,11 @@ namespace combat
             const int ORIGIN_BLOCKING_POS, const bool WILL_FIND_PLAYERS) const;
 
         void ResetAllEdges();
+
+        void ChangeBlockingPositionAndUpdateTree(
+            const ID_t ID_OF_VERTEX_TO_CHANGE, const int NEW_BLOCKING_POS);
+
+        const IDVec_t GetAllIds() const;
 
     private:
         EdgeVec_t edges_;

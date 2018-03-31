@@ -200,9 +200,8 @@ namespace combat
     using CombatNodeCPtr_t = const CombatNode *;
     using CombatNodePtrC_t = CombatNode * const;
     using CombatNodeCPtrC_t = const CombatNode * const;
-    using CombatNodeSPtr_t = std::shared_ptr<CombatNode>;
-
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
+
 } // namespace combat
 } // namespace heroespath
 
