@@ -35,7 +35,6 @@
 #include "combat/summary-view.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/creature.hpp"
-#include "creature/name-info.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "log/log-macros.hpp"
@@ -1283,10 +1282,7 @@ namespace combat
                 shoulderToShoulderMax = SHOULDER_TO_SHOULDER_COUNT;
             }
 
-            const float NEXT_NAME_WIDTH(creature::NameInfo::Instance()->Length(
-                GetNodeTitle(COMBAT_NODE_PTR),
-                creature::NameInfo::Instance()->DefaultFont(),
-                nameCharSizeCurr_));
+            auto const NEXT_NAME_WIDTH{ COMBAT_NODE_PTR->GetNameWidth() };
 
             if (maxNameWidth < NEXT_NAME_WIDTH)
             {
@@ -1447,19 +1443,6 @@ namespace combat
             {
                 COMBAT_NODE_PTR->SetToneDown(TONE_DOWN_VAL);
             }
-        }
-    }
-
-    const std::string CombatDisplay::GetNodeTitle(const CombatNodePtr_t COMBAT_NODE_PTR)
-    {
-        auto creaturePtr{ COMBAT_NODE_PTR->Creature() };
-        if (creaturePtr->IsPlayerCharacter())
-        {
-            return creaturePtr->Name();
-        }
-        else
-        {
-            return creaturePtr->Name() + " " + creaturePtr->RoleName();
         }
     }
 

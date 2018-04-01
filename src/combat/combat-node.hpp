@@ -75,15 +75,15 @@ namespace combat
 
         const creature::CreaturePtr_t Creature() const { return creaturePtr_; }
 
-        virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+        void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
         int GetBlockingPos() const { return blockingPos_; }
         void SetBlockingPos(const int NEW_POS) { blockingPos_ = NEW_POS; }
 
-        virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
-        virtual void MoveEntityPos(const float HORIZ, const float VERT);
+        void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
+        void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-        virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
+        bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
 
         void SetToneDown(const float TONE_DOWN_VAL);
 
@@ -98,7 +98,7 @@ namespace combat
         bool IsFlying() const { return isFlying_; }
         void IsFlying(const bool);
 
-        virtual bool UpdateTime(const float ELAPSED_TIME_SECONDS);
+        bool UpdateTime(const float ELAPSED_TIME_SECONDS) override;
 
         void SetImagePosOffset(const float HORIZ, const float VERT);
 
@@ -118,11 +118,14 @@ namespace combat
         void SelectAnimUpdate(const float SLIDER_RATIO);
         void SelectAnimStop();
 
+        float GetNameWidth() const { return nameTextObj_.getGlobalBounds().width; }
+
     protected:
-        virtual void OnClick(const sf::Vector2f &) {}
+        void OnClick(const sf::Vector2f &) override {}
         const sf::Color HealthColor() const;
         const sf::Color HealthColorRed() const;
         const sf::Color HealthColorTick() const;
+
         const sf::Color
             AdjustColorForToneDown(const sf::Color & ORIG_COLOR, const float TONE_DOWN_VAL) const;
 

@@ -228,6 +228,12 @@ namespace combat
             states.blendMode = ORIG_BLEND_MODE;
         }
 
+        if (isPlayer_)
+        {
+            target.draw(nameTextObj_, states);
+            target.draw(condTextObj_, states);
+        }
+
         if (false == isSummaryView_)
         {
             if (willShowCrossBones_)
@@ -247,7 +253,7 @@ namespace combat
                     target.draw(wingSprite_, states);
                 }
 
-                if (isPlayer_)
+                if (false == isPlayer_)
                 {
                     target.draw(nameTextObj_, states);
                     target.draw(condTextObj_, states);

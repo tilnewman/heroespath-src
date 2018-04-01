@@ -50,7 +50,7 @@ namespace creature
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace sfml_util
 {
     namespace gui
@@ -273,8 +273,6 @@ namespace combat
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         void CreatureToneDown(const float TONE_DOWN_VAL);
-
-        const std::string GetNodeTitle(const CombatNodePtr_t COMBAT_NODE_PTR);
 
         void InitialCreaturePositionsSetup(const bool WILL_POSITION_PLAYERS);
 
