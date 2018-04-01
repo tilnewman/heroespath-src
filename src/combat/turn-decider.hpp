@@ -61,10 +61,7 @@ namespace combat
     using TurnDeciderSPtr_t = std::shared_ptr<TurnDecider>;
 
     class CombatDisplay;
-    using CombatDisplayPtr_t = CombatDisplay *;
-    using CombatDisplayCPtr_t = const CombatDisplay *;
-    using CombatDisplayPtrC_t = CombatDisplay * const;
-    using CombatDisplayCPtrC_t = const CombatDisplay * const;
+    using CombatDisplayPtr_t = misc::NotNull<CombatDisplay *>;
 
     // Responsible for deciding what a non-player creature will do during its
     // turn in combat
@@ -75,13 +72,13 @@ namespace combat
 
         static const TurnActionInfo Decide(
             const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-            CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);
+            const CombatDisplayPtr_t COMBAT_DISPLAY_PTR);
 
     private:
         static creature::CreaturePtr_t FindMostDesiredTarget(
             const TurnInfo & CREATURE_DECIDING_TURN_INFO,
             const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-            CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);
+            const CombatDisplayPtr_t COMBAT_DISPLAY_PTR);
 
         static creature::CreaturePVec_t FindSelectedTargets(const TurnInfo & TURN_INFO);
 
@@ -93,7 +90,7 @@ namespace combat
         static const TurnActionInfo DecideIfRetreating(
             const TurnInfo & TURN_INFO,
             const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-            CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC,
+            const CombatDisplayPtr_t COMBAT_DISPLAY_PTR,
             const std::size_t NUM_PLAYERS_IN_MELEE_RANGE,
             const std::size_t NUM_FELLOWS_IN_MELEE_RANGE);
 
@@ -105,7 +102,7 @@ namespace combat
         static const TurnActionInfo DecideIfMovingTowardsMostDesiredTarget(
             const TurnInfo & TURN_INFO,
             const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-            CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC,
+            const CombatDisplayPtr_t COMBAT_DISPLAY_PTR,
             const int MOST_DESIRED_TARGET_DISTANCE,
             const bool NUM_PLAYERS_IN_ATTACK_RANGE,
             const bool CAN_ATTACK_MOST_DESIRED_TARGET_WITH);
@@ -140,7 +137,7 @@ namespace combat
         static const TurnActionInfo DecideIfAdvancingTowardNonMostDesiredTarget(
             const TurnInfo & CREATURE_DECIDING_TURN_INFO,
             const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-            CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);
+            const CombatDisplayPtr_t COMBAT_DISPLAY_PTR);
 
         static void AdjustCreatueVecForMurderousIntent(
             const TurnInfo & CREATURE_DECIDING_TURN_INFO, creature::CreaturePVec_t & pVec_OutParam);

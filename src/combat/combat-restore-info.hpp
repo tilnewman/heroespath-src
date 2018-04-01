@@ -45,8 +45,7 @@ namespace combat
 
     // forward declarations
     class CombatDisplay;
-    using CombatDisplayPtr_t = CombatDisplay *;
-    using CombatDisplayPtrC_t = CombatDisplay * const;
+    using CombatDisplayPtr_t = misc::NotNull<CombatDisplay *>;
 
     using CreatureBlockingPosMap_t = misc::VectorMap<creature::CreaturePtr_t, int>;
 
@@ -56,23 +55,23 @@ namespace combat
     public:
         RestoreInfo();
 
-        void PrepareForStageChange(const CombatDisplayPtrC_t);
-        void Save(const CombatDisplayPtrC_t);
-        void Restore(CombatDisplayPtrC_t);
+        void PrepareForStageChange(const CombatDisplayPtr_t);
+        void Save(const CombatDisplayPtr_t);
+        void Restore(const CombatDisplayPtr_t);
 
         bool HasRestored() const { return hasRestored_; }
         bool CanTurnAdvance() const { return canTurnAdvance_; }
         void CanTurnAdvance(const bool B) { canTurnAdvance_ = B; }
 
     private:
-        void CreatureHealthSave(const CombatDisplayPtrC_t);
-        void CreatureHealthRestore(CombatDisplayPtrC_t);
+        void CreatureHealthSave(const CombatDisplayPtr_t);
+        void CreatureHealthRestore(const CombatDisplayPtr_t);
 
-        void FlyingCreaturesSave(const CombatDisplayPtrC_t);
-        void FlyingCreaturesRestore(CombatDisplayPtrC_t);
+        void FlyingCreaturesSave(const CombatDisplayPtr_t);
+        void FlyingCreaturesRestore(const CombatDisplayPtr_t);
 
-        void CreaturePositionsSave(const CombatDisplayPtrC_t);
-        void CreaturePositionsRestore(CombatDisplayPtrC_t);
+        void CreaturePositionsSave(const CombatDisplayPtr_t);
+        void CreaturePositionsRestore(const CombatDisplayPtr_t);
 
     private:
         bool canTurnAdvance_;

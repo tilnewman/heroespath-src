@@ -44,58 +44,58 @@ namespace combat
         , creatureBlockingPosMap_()
     {}
 
-    void RestoreInfo::PrepareForStageChange(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
+    void RestoreInfo::PrepareForStageChange(const combat::CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
         CanTurnAdvance(false);
-        Save(COMBAT_DISPLAY_CPTRC);
+        Save(COMBAT_DISPLAY_PTR);
     }
 
-    void RestoreInfo::Save(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
+    void RestoreInfo::Save(const combat::CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
-        CreatureHealthSave(COMBAT_DISPLAY_CPTRC);
-        FlyingCreaturesSave(COMBAT_DISPLAY_CPTRC);
-        CreaturePositionsSave(COMBAT_DISPLAY_CPTRC);
+        CreatureHealthSave(COMBAT_DISPLAY_PTR);
+        FlyingCreaturesSave(COMBAT_DISPLAY_PTR);
+        CreaturePositionsSave(COMBAT_DISPLAY_PTR);
     }
 
-    void RestoreInfo::Restore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
+    void RestoreInfo::Restore(const combat::CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
         hasRestored_ = true;
-        CreatureHealthRestore(combatDisplayPtrC);
-        FlyingCreaturesRestore(combatDisplayPtrC);
-        CreaturePositionsRestore(combatDisplayPtrC);
+        CreatureHealthRestore(COMBAT_DISPLAY_PTR);
+        FlyingCreaturesRestore(COMBAT_DISPLAY_PTR);
+        CreaturePositionsRestore(COMBAT_DISPLAY_PTR);
     }
 
-    void RestoreInfo::CreatureHealthSave(const combat::CombatDisplayPtrC_t)
+    void RestoreInfo::CreatureHealthSave(const combat::CombatDisplayPtr_t)
     {
         // nothing to do, health is saved in the creature owned by State in a shared_ptr
     }
 
-    void RestoreInfo::CreatureHealthRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
+    void RestoreInfo::CreatureHealthRestore(const combat::CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
-        combatDisplayPtrC->UpdateHealthTasks();
+        COMBAT_DISPLAY_PTR->UpdateHealthTasks();
     }
 
-    void RestoreInfo::FlyingCreaturesSave(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
+    void RestoreInfo::FlyingCreaturesSave(const combat::CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
-        creaturesFlyingPVec_ = COMBAT_DISPLAY_CPTRC->GetCreaturesFlying();
+        creaturesFlyingPVec_ = COMBAT_DISPLAY_PTR->GetCreaturesFlying();
     }
 
-    void RestoreInfo::FlyingCreaturesRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
+    void RestoreInfo::FlyingCreaturesRestore(const combat::CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
         for (auto const & FLYING_CREATURE_PTR : creaturesFlyingPVec_)
         {
-            combatDisplayPtrC->HandleFlyingChange(FLYING_CREATURE_PTR, true);
+            COMBAT_DISPLAY_PTR->HandleFlyingChange(FLYING_CREATURE_PTR, true);
         }
     }
 
-    void RestoreInfo::CreaturePositionsSave(const combat::CombatDisplayPtrC_t COMBAT_DISPLAY_CPTRC)
+    void RestoreInfo::CreaturePositionsSave(const combat::CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
-        creatureBlockingPosMap_ = COMBAT_DISPLAY_CPTRC->MakeCreatureBlockingMap();
+        creatureBlockingPosMap_ = COMBAT_DISPLAY_PTR->MakeCreatureBlockingMap();
     }
 
-    void RestoreInfo::CreaturePositionsRestore(combat::CombatDisplayPtrC_t combatDisplayPtrC)
+    void RestoreInfo::CreaturePositionsRestore(const combat::CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
-        combatDisplayPtrC->SetBlockingPositions(creatureBlockingPosMap_);
+        COMBAT_DISPLAY_PTR->SetBlockingPositions(creatureBlockingPosMap_);
     }
 
 } // namespace combat

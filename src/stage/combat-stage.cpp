@@ -398,7 +398,7 @@ namespace stage
     bool CombatStage::HandleCallback(
         const sfml_util::gui::callback::SliderBarCallbackPackage_t & PACKAGE)
     {
-        if ((PACKAGE.PTR_ == zoomSliderBarUPtr_.get()) && (combatDisplayStagePtr_ != nullptr))
+        if (PACKAGE.PTR_ == zoomSliderBarUPtr_.get())
         {
             // only zoom out half the distance that the slider actually shows
             auto const HALF_ZOOM_DIFFERENCE{ 1.0f
@@ -1062,7 +1062,7 @@ namespace stage
         combatDisplayStagePtr_->Setup();
 
         // give control of the CombatDisplay object lifetime to the Loop class
-        game::LoopManager::Instance()->AddStage(combatDisplayStagePtr_);
+        game::LoopManager::Instance()->AddStage(combatDisplayStagePtr_.Ptr());
 
         if (restoreInfo_.HasRestored())
         {
@@ -1516,7 +1516,7 @@ namespace stage
         }
 
         // initial hook for taking action before the first turn (pre-turn logic)
-        if ((zoomSliderBarUPtr_.get() != nullptr) && (combatDisplayStagePtr_ != nullptr)
+        if ((zoomSliderBarUPtr_.get() != nullptr)
             && (game::LoopManager::Instance()->IsFading() == false)
             && (TurnPhase::NotATurn == turnPhase_) && (PreTurnPhase::Start == preTurnPhase_))
         {

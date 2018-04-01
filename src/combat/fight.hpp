@@ -60,11 +60,9 @@ namespace combat
 {
 
     class Trap;
+
     class CombatDisplay;
-    using CombatDisplayPtr_t = CombatDisplay *;
-    using CombatDisplayCPtr_t = const CombatDisplay *;
-    using CombatDisplayPtrC_t = CombatDisplay * const;
-    using CombatDisplayCPtrC_t = const CombatDisplay * const;
+    using CombatDisplayPtr_t = misc::NotNull<CombatDisplay *>;
 
     // all the functions required to allow two creatures to engage in one turn of fighting
     struct FightClub
@@ -125,11 +123,11 @@ namespace combat
 
         static const FightResult Roar(
             const creature::CreaturePtr_t CREATURE_ROARING_PTR,
-            CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);
+            const CombatDisplayPtr_t COMBAT_DISPLAY_PTR);
 
         static const creature::CreaturePtr_t FindNonPlayerCreatureToAttack(
             const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
-            CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC);
+            const CombatDisplayPtr_t COMBAT_DISPLAY_PTR);
 
         static const FightResult TreasureTrap(
             const combat::Trap & TRAP, const creature::CreaturePtr_t CREATURE_PICKING_THE_LOCK_PTR);

@@ -761,11 +761,11 @@ namespace combat
 
     const FightResult FightClub::Roar(
         const creature::CreaturePtr_t CREATURE_ROARING_PTR,
-        CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
         using namespace creature;
 
-        auto const LISTENING_CREATURES_PVEC{ COMBAT_DISPLAY_CPTRC->GetCreaturesInRoaringDistance(
+        auto const LISTENING_CREATURES_PVEC{ COMBAT_DISPLAY_PTR->GetCreaturesInRoaringDistance(
             CREATURE_ROARING_PTR) };
 
         // update player's TurnActionInfo
@@ -795,7 +795,7 @@ namespace combat
                 continue;
             }
 
-            auto nextBlockingDisatnce{ std::abs(COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(
+            auto nextBlockingDisatnce{ std::abs(COMBAT_DISPLAY_PTR->GetBlockingDistanceBetween(
                 CREATURE_ROARING_PTR, NEXT_DEFEND_CREATURE_PTR)) };
 
             // if flying, then consider it farther away and less likely to be panicked
@@ -856,11 +856,10 @@ namespace combat
 
     const creature::CreaturePtr_t FightClub::FindNonPlayerCreatureToAttack(
         const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
-        CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
         auto const ATTACKABLE_NONPLAYER_CREATURES_PVEC{
-            COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(
-                CREATURE_ATTACKING_PTR, false)
+            COMBAT_DISPLAY_PTR->FindCreaturesThatCanBeAttackedOfType(CREATURE_ATTACKING_PTR, false)
         };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
@@ -896,18 +895,18 @@ namespace combat
         {
             if (LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_CRTS_PVEC.empty())
             {
-                return misc::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestAmongOfType(
+                return misc::Vector::SelectRandom(COMBAT_DISPLAY_PTR->FindClosestAmongOfType(
                     CREATURE_ATTACKING_PTR, LIVE_ATTBLE_LOWH_NP_CRTS_PVEC, false));
             }
             else
             {
-                return misc::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestAmongOfType(
+                return misc::Vector::SelectRandom(COMBAT_DISPLAY_PTR->FindClosestAmongOfType(
                     CREATURE_ATTACKING_PTR, LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_CRTS_PVEC, false));
             }
         }
         else
         {
-            return misc::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestAmongOfType(
+            return misc::Vector::SelectRandom(COMBAT_DISPLAY_PTR->FindClosestAmongOfType(
                 CREATURE_ATTACKING_PTR, LIVE_ATTBLE_LOWH_NP_NOTPERMDIS_TMPDIS_CRTS_PVEC, false));
         }
     }

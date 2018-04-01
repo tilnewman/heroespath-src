@@ -87,10 +87,7 @@ namespace combat
 {
     // forward declarations
     class CombatDisplay;
-    using CombatDisplayPtr_t = CombatDisplay *;
-    using CombatDisplayCPtr_t = const CombatDisplay *;
-    using CombatDisplayPtrC_t = CombatDisplay * const;
-    using CombatDisplayCPtrC_t = const CombatDisplay * const;
+    using CombatDisplayPtr_t = misc::NotNull<CombatDisplay *>;
 
     class Encounter;
     using EncounterPtr_t = Encounter *;

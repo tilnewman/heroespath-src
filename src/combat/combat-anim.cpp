@@ -701,6 +701,7 @@ namespace combat
     {
         selectAnimCombatNodePtrOpt_
             = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_PTR);
+
         selectAnimCombatNodePtrOpt_->Obj().SelectAnimStart();
         slider_.Reset(SELECT_ANIM_SLIDER_SPEED_);
     }

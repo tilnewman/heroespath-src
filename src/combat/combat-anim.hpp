@@ -93,7 +93,7 @@ namespace combat
 {
 
     class CombatDisplay;
-    using CombatDisplayPtr_t = CombatDisplay *;
+    using CombatDisplayPtr_t = misc::NotNull<CombatDisplay *>;
 
     class CombatNode;
     using CombatNodePtr_t = misc::NotNull<CombatNode *>;

@@ -65,7 +65,7 @@ namespace combat
 
     const TurnActionInfo TurnDecider::Decide(
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
         // only do 'Nothing' if can't take any action
         if (CREATURE_DECIDING_PTR->CanTakeAction() == false)
@@ -123,11 +123,11 @@ namespace combat
         }
 
         auto const LIVING_PLAYERS_IN_ATTACK_RANGE{
-            COMBAT_DISPLAY_CPTRC->FindCreaturesThatCanBeAttackedOfType(CREATURE_DECIDING_PTR, true)
+            COMBAT_DISPLAY_PTR->FindCreaturesThatCanBeAttackedOfType(CREATURE_DECIDING_PTR, true)
         };
 
         auto const FELLOW_ENEMIES_IN_MELEE_RANGE_COUNT{
-            COMBAT_DISPLAY_CPTRC->FindCreaturesAllRoundOfType(CREATURE_DECIDING_PTR, false, true)
+            COMBAT_DISPLAY_PTR->FindCreaturesAllRoundOfType(CREATURE_DECIDING_PTR, false, true)
                 .size()
         };
 
@@ -135,7 +135,7 @@ namespace combat
         auto const RETREAT_TURN_ACTION_INFO{ DecideIfRetreating(
             TURN_INFO,
             CREATURE_DECIDING_PTR,
-            COMBAT_DISPLAY_CPTRC,
+            COMBAT_DISPLAY_PTR,
             LIVING_PLAYERS_IN_ATTACK_RANGE.size(),
             FELLOW_ENEMIES_IN_MELEE_RANGE_COUNT) };
 
@@ -145,7 +145,7 @@ namespace combat
         }
 
         const creature::CreaturePtr_t MOST_DESIRED_TARGET_PTR{ FindMostDesiredTarget(
-            TURN_INFO, CREATURE_DECIDING_PTR, COMBAT_DISPLAY_CPTRC) };
+            TURN_INFO, CREATURE_DECIDING_PTR, COMBAT_DISPLAY_PTR) };
 
         // decide if casting a spell
         auto const CASTING_TURN_ACTION_INFO{ DecideIfCasting(
@@ -157,7 +157,7 @@ namespace combat
             return CASTING_TURN_ACTION_INFO;
         }
 
-        auto const MOST_DESIRED_TARGET_DISTANCE{ COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(
+        auto const MOST_DESIRED_TARGET_DISTANCE{ COMBAT_DISPLAY_PTR->GetBlockingDistanceBetween(
             CREATURE_DECIDING_PTR, MOST_DESIRED_TARGET_PTR) };
 
         auto const IS_FLYING{ TURN_INFO.GetIsFlying() };
@@ -183,7 +183,7 @@ namespace combat
         auto const MOVE_TOWARD_TURN_ACTION_INFO{ DecideIfMovingTowardsMostDesiredTarget(
             TURN_INFO,
             CREATURE_DECIDING_PTR,
-            COMBAT_DISPLAY_CPTRC,
+            COMBAT_DISPLAY_PTR,
             MOST_DESIRED_TARGET_DISTANCE,
             LIVING_PLAYERS_IN_ATTACK_RANGE.size(),
             CAN_ATTACK_MOST_DESIRED_TARGET_WITH) };
@@ -219,15 +219,15 @@ namespace combat
         // fellow creatures ahead, then move toward the closest player
         if (LIVING_PLAYERS_IN_ATTACK_RANGE.empty() && (CREATURE_DECIDING_PTR->HasWeaponsHeld())
             && (TURN_INFO.GetStrategyInfo().Advance() != strategy::AdvanceType::Cowardly)
-            && (COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, true).empty()))
+            && (COMBAT_DISPLAY_PTR->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, true).empty()))
         {
-            auto const CREATURES_AHEAD_PVEC{ COMBAT_DISPLAY_CPTRC->FindCreaturesAtBlockingPosOfType(
-                COMBAT_DISPLAY_CPTRC->FindBlockingPos(CREATURE_DECIDING_PTR) - 1, true) };
+            auto const CREATURES_AHEAD_PVEC{ COMBAT_DISPLAY_PTR->FindCreaturesAtBlockingPosOfType(
+                COMBAT_DISPLAY_PTR->FindBlockingPos(CREATURE_DECIDING_PTR) - 1, true) };
 
             if (CREATURES_AHEAD_PVEC.empty() == false)
             {
                 auto const DISTANCE_TO_CLOSEST_PLAYER{
-                    COMBAT_DISPLAY_CPTRC->GetClosestBlockingDistanceByType(
+                    COMBAT_DISPLAY_PTR->GetClosestBlockingDistanceByType(
                         CREATURE_DECIDING_PTR, true)
                 };
 
@@ -272,7 +272,7 @@ namespace combat
 
         // see if there is a player to advance towards who is not the most desired target
         auto const IF_ADVANCING_TURNACTIONINFO{ DecideIfAdvancingTowardNonMostDesiredTarget(
-            TURN_INFO, CREATURE_DECIDING_PTR, COMBAT_DISPLAY_CPTRC) };
+            TURN_INFO, CREATURE_DECIDING_PTR, COMBAT_DISPLAY_PTR) };
         //
         if (IF_ADVANCING_TURNACTIONINFO.Action() != TurnAction::Nothing)
         {
@@ -308,7 +308,7 @@ namespace combat
     creature::CreaturePtr_t TurnDecider::FindMostDesiredTarget(
         const TurnInfo & CREATURE_DECIDING_TURN_INFO,
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
         // pick (select) favorite targets by type
         const creature::CreaturePVec_t SELECT_TARGETS_PVEC{ FindSelectedTargets(
@@ -333,8 +333,8 @@ namespace combat
                 }
             }
 
-            return misc::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestLiving(
-                CREATURE_DECIDING_PTR, REFINED_TARGETS_PVEC));
+            return misc::Vector::SelectRandom(
+                COMBAT_DISPLAY_PTR->FindClosestLiving(CREATURE_DECIDING_PTR, REFINED_TARGETS_PVEC));
         }
 
         if (SELECT_TARGETS_PVEC.empty() == false)
@@ -351,8 +351,8 @@ namespace combat
             }
 
             // select the closest of the select targets at random
-            return misc::Vector::SelectRandom(COMBAT_DISPLAY_CPTRC->FindClosestLiving(
-                CREATURE_DECIDING_PTR, SELECT_TARGETS_PVEC));
+            return misc::Vector::SelectRandom(
+                COMBAT_DISPLAY_PTR->FindClosestLiving(CREATURE_DECIDING_PTR, SELECT_TARGETS_PVEC));
         }
 
         auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(
@@ -392,7 +392,7 @@ namespace combat
                                                        : REACHABLE_AVAILABLE_TARGETS_PVEC) };
 
         // prefer those closest
-        auto const CLOSEST_POSSIBLE_TARGETS_PVEC{ COMBAT_DISPLAY_CPTRC->FindClosestLiving(
+        auto const CLOSEST_POSSIBLE_TARGETS_PVEC{ COMBAT_DISPLAY_PTR->FindClosestLiving(
             CREATURE_DECIDING_PTR, POSSIBLE_TARGETS_PVEC) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
@@ -803,11 +803,11 @@ namespace combat
     const TurnActionInfo TurnDecider::DecideIfRetreating(
         const TurnInfo & TURN_INFO,
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC,
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR,
         const std::size_t NUM_PLAYERS_IN_MELEE_RANGE,
         const std::size_t NUM_FELLOWS_IN_MELEE_RANGE)
     {
-        if (COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, false).empty())
+        if (COMBAT_DISPLAY_PTR->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, false).empty())
         {
             // separate chance to retreat if daunted
             if ((CREATURE_DECIDING_PTR->HasCondition(creature::Conditions::Daunted)
@@ -926,7 +926,7 @@ namespace combat
     const TurnActionInfo TurnDecider::DecideIfMovingTowardsMostDesiredTarget(
         const TurnInfo & TURN_INFO,
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC,
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR,
         const int MOST_DESIRED_TARGET_DISTANCE,
         const bool NUM_PLAYERS_IN_ATTACK_RANGE,
         const bool CAN_ATTACK_MOST_DESIRED_TARGET_WITH)
@@ -943,7 +943,7 @@ namespace combat
             {
                 if (MOST_DESIRED_TARGET_DISTANCE < 0)
                 {
-                    if (COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, true)
+                    if (COMBAT_DISPLAY_PTR->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, true)
                             .empty())
                     {
                         return TurnActionInfo(TurnAction::Advance);
@@ -951,7 +951,7 @@ namespace combat
                 }
                 else
                 {
-                    if (COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, false)
+                    if (COMBAT_DISPLAY_PTR->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, false)
                             .empty())
                     {
                         return TurnActionInfo(TurnAction::Retreat);
@@ -1259,7 +1259,7 @@ namespace combat
     const TurnActionInfo TurnDecider::DecideIfAdvancingTowardNonMostDesiredTarget(
         const TurnInfo & CREATURE_DECIDING_TURN_INFO,
         const creature::CreaturePtr_t CREATURE_DECIDING_PTR,
-        CombatDisplayCPtrC_t COMBAT_DISPLAY_CPTRC)
+        const CombatDisplayPtr_t COMBAT_DISPLAY_PTR)
     {
         auto const ALL_LIVING_PLAYERS_PVEC{ creature::Algorithms::Players(
             creature::Algorithms::Living) };
@@ -1295,7 +1295,7 @@ namespace combat
         }
 
         // prefer those closest
-        auto const CLOSEST_REACH_AVAIL_TARGETS_PVEC{ COMBAT_DISPLAY_CPTRC->FindClosestLiving(
+        auto const CLOSEST_REACH_AVAIL_TARGETS_PVEC{ COMBAT_DISPLAY_PTR->FindClosestLiving(
             CREATURE_DECIDING_PTR, REACHABLE_AVAILABLE_TARGETS_PVEC) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
@@ -1307,17 +1307,17 @@ namespace combat
         auto const TARGET_CREATURE_PTR{ misc::Vector::SelectRandom(
             CLOSEST_REACH_AVAIL_TARGETS_PVEC) };
 
-        auto const BLOCKING_DISTANCE_TO_TARGET{ COMBAT_DISPLAY_CPTRC->GetBlockingDistanceBetween(
+        auto const BLOCKING_DISTANCE_TO_TARGET{ COMBAT_DISPLAY_PTR->GetBlockingDistanceBetween(
             CREATURE_DECIDING_PTR, TARGET_CREATURE_PTR) };
 
         if ((BLOCKING_DISTANCE_TO_TARGET < 0)
-            && COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, true).empty())
+            && COMBAT_DISPLAY_PTR->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, true).empty())
         {
             return TurnActionInfo(TurnAction::Advance);
         }
 
         if ((BLOCKING_DISTANCE_TO_TARGET > 0)
-            && COMBAT_DISPLAY_CPTRC->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, false).empty())
+            && COMBAT_DISPLAY_PTR->CanAdvanceOrRetreat(CREATURE_DECIDING_PTR, false).empty())
         {
             return TurnActionInfo(TurnAction::Retreat);
         }

@@ -339,10 +339,7 @@ namespace combat
         sf::Vector2f centeringToPosV_;
     };
 
-    using CombatDisplayPtr_t = CombatDisplay *;
-    using CombatDisplayCPtr_t = const CombatDisplay *;
-    using CombatDisplayPtrC_t = CombatDisplay * const;
-    using CombatDisplayCPtrC_t = const CombatDisplay * const;
+    using CombatDisplayPtr_t = misc::NotNull<CombatDisplay *>;
 
 } // namespace combat
 } // namespace heroespath
