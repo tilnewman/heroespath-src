@@ -354,7 +354,7 @@ namespace combat
             auto const COMBAT_NODE_CLICKED_ON_PTR_OPT{ combatTree_.GetNodePtrOpt(
                 MOUSE_POS_V.x, MOUSE_POS_V.y) };
 
-            if (COMBAT_NODE_CLICKED_ON_PTR_OPT)
+            if (!COMBAT_NODE_CLICKED_ON_PTR_OPT)
             {
                 if (battlefieldRect_.contains(MOUSE_POS_V))
                 {
