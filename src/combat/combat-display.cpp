@@ -938,9 +938,9 @@ namespace combat
 
         auto const COMBATNODES_PVEC{ GetCombatNodesForCreatures(CREATURES_TO_CHECK_PVEC) };
 
-        for (auto const & nextCombatNodeCPtr : COMBATNODES_PVEC)
+        for (auto const & COMBAT_NODE_PTR : COMBATNODES_PVEC)
         {
-            if (nextCombatNodeCPtr->GetEntityWillDraw() == false)
+            if (COMBAT_NODE_PTR->GetEntityWillDraw() == false)
             {
                 return false;
             }

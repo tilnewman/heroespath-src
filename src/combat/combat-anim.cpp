@@ -384,9 +384,9 @@ namespace combat
 
     void CombatAnimation::DeathAnimUpdate(const float SLIDER_POS)
     {
-        for (auto const & nextCombatNodePtrC : deadAnimNodesPVec_)
+        for (auto const & COMBAT_NODE_PTR : deadAnimNodesPVec_)
         {
-            nextCombatNodePtrC->UpdateDeathAnim(SLIDER_POS);
+            COMBAT_NODE_PTR->UpdateDeathAnim(SLIDER_POS);
         }
     }
 
