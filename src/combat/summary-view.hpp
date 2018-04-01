@@ -29,6 +29,7 @@
 //  A collection of classes that are responsible for displaying creature details on the Combat
 //  Display
 //
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/gui/gui-entity-slider.hpp"
 #include "sfml-util/sfml-graphics.hpp"
@@ -56,7 +57,8 @@ namespace combat
 {
 
     class CombatNode;
-    using CombatNodePtr_t = CombatNode *;
+    using CombatNodePtr_t = misc::NotNull<CombatNode *>;
+    using CombatNodePtrOpt_t = boost::optional<CombatNodePtr_t>;
 
     // wraps an image with text for display on the screen
     struct ItemWithText
@@ -87,7 +89,7 @@ namespace combat
 
         void StartTransitionBack();
         void StartTransitionTo(
-            CombatNodePtr_t combatNodePtr,
+            const CombatNodePtr_t COMBAT_NODE_PTR,
             const sf::Vector2f & DEST_POS_V,
             const sf::FloatRect & ENEMYDISPLAY_RECT);
 
@@ -104,7 +106,7 @@ namespace combat
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         void SetupAndStartTransition(
-            CombatNodePtr_t combatNodePtr, const sf::FloatRect & COMABT_REGION);
+            const CombatNodePtr_t COMBAT_NODE_PTR, const sf::FloatRect & COMABT_REGION);
 
         float GetTransitionStatus() const { return geSlider_.ProgressRatio(); }
 
@@ -114,14 +116,14 @@ namespace combat
         sfml_util::Moving::Enum MovingDir() const { return movingDir_; }
         void MovingDir(const sfml_util::Moving::Enum E) { movingDir_ = E; }
 
-        CombatNodePtr_t CombatNodePtr() { return combatNodePtr_; }
+        const CombatNodePtrOpt_t CombatNodePtrOpt() const { return combatNodePtrOpt_; }
 
         bool WillPreventNextTransition() const { return preventNextTrans_; }
         void WillPreventNextTransition(const bool B) { preventNextTrans_ = B; }
 
         void ReleaseCombatNodePointer()
         {
-            combatNodePtr_ = nullptr;
+            combatNodePtrOpt_ = boost::none;
             geSlider_.SetEntity(nullptr);
         }
 
@@ -141,7 +143,7 @@ namespace combat
         sfml_util::Moving::Enum movingDir_;
         ItemWithTextVec_t itemWithTextVec_;
         sf::VertexArray bgQuads_;
-        CombatNodePtr_t combatNodePtr_;
+        CombatNodePtrOpt_t combatNodePtrOpt_;
         sfml_util::gui::TextRegionUPtr_t nameTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t rankTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t healthTextRegionUPtr_;

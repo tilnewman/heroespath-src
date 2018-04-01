@@ -29,32 +29,11 @@
 //
 #include "startup-shutdown.hpp"
 
-#include "config/configbase.hpp"
-
-#include "log/macros.hpp"
-
-#include "sfml-util/display.hpp"
-#include "sfml-util/font-manager.hpp"
-#include "sfml-util/gui/combat-image-manager.hpp"
-#include "sfml-util/gui/condition-image-manager.hpp"
-#include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
-#include "sfml-util/gui/song-image-manager.hpp"
-#include "sfml-util/gui/spell-image-manager.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
-#include "sfml-util/loop.hpp"
-#include "sfml-util/sound-manager.hpp"
-#include "sfml-util/texture-cache.hpp"
-
-#include "popup/popup-manager.hpp"
-
-#include "log/logger.hpp"
-
 #include "combat/encounter.hpp"
 #include "combat/party-factory.hpp"
 #include "combat/strategy-details.hpp"
 #include "combat/trap-warehouse.hpp"
+#include "config/configbase.hpp"
 #include "config/settings-file.hpp"
 #include "creature/condition-warehouse.hpp"
 #include "creature/enchantment-factory.hpp"
@@ -73,16 +52,31 @@
 #include "item/misc-item-factory.hpp"
 #include "item/weapon-details.hpp"
 #include "item/weapon-factory.hpp"
+#include "log/logger.hpp"
+#include "log/macros.hpp"
+#include "misc/platform.hpp"
+#include "misc/random.hpp"
 #include "non-player/chance-factory.hpp"
 #include "non-player/character-warehouse.hpp"
 #include "non-player/inventory-factory.hpp"
 #include "player/character-warehouse.hpp"
+#include "popup/popup-manager.hpp"
+#include "sfml-util/display.hpp"
+#include "sfml-util/font-manager.hpp"
+#include "sfml-util/gui/combat-image-manager.hpp"
+#include "sfml-util/gui/condition-image-manager.hpp"
+#include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/gui/item-image-manager.hpp"
+#include "sfml-util/gui/song-image-manager.hpp"
+#include "sfml-util/gui/spell-image-manager.hpp"
+#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/loop.hpp"
+#include "sfml-util/sound-manager.hpp"
+#include "sfml-util/texture-cache.hpp"
 #include "song/song-warehouse.hpp"
 #include "spell/spell-warehouse.hpp"
 #include "state/game-state-factory.hpp"
-
-#include "misc/platform.hpp"
-#include "misc/random.hpp"
 
 #include <cstdlib>
 #include <exception>
@@ -102,7 +96,7 @@ namespace game
 
             DetectLogAndCheckPlatform();
 
-            srand(static_cast<unsigned>(time(NULL)));
+            srand(static_cast<unsigned>(time(nullptr)));
             misc::random::MersenneTwister::Seed();
 
             ParseCommandLineArguments(ARGC, argv);

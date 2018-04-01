@@ -378,7 +378,7 @@ namespace creature
                 CREATURE_PVEC.end(),
                 back_inserter(byRacePVec),
                 [RACE_ENUM, CRITERIA_OPTION](auto const & PTR) {
-                    return (PTR->Race() == (CRITERIA_OPTION == CriteriaOpt::Meets));
+                    return (PTR->Race() == RACE_ENUM) == (CRITERIA_OPTION == CriteriaOpt::Meets);
                 });
         }
 

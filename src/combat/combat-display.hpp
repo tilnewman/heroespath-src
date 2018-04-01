@@ -69,7 +69,7 @@ namespace combat
 {
 
     class CombatNode;
-    using CombatNodePtr_t = CombatNode *;
+    using CombatNodePtr_t = misc::NotNull<CombatNode *>;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
 
     class SummaryView;

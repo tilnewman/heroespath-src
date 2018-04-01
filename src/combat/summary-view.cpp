@@ -29,18 +29,16 @@
 //
 #include "summary-view.hpp"
 
+#include "combat/combat-node.hpp"
+#include "creature/creature.hpp"
+#include "item/item.hpp"
+#include "log/log-macros.hpp"
+#include "misc/real.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "combat/combat-node.hpp"
-#include "creature/creature.hpp"
-#include "item/item.hpp"
-#include "log/log-macros.hpp"
-
-#include "misc/real.hpp"
 
 namespace heroespath
 {
@@ -70,7 +68,7 @@ namespace combat
         , movingDir_(sfml_util::Moving::Still)
         , itemWithTextVec_()
         , bgQuads_(sf::Quads, 4)
-        , combatNodePtr_()
+        , combatNodePtrOpt_(boost::none)
         , nameTextRegionUPtr_()
         , rankTextRegionUPtr_()
         , healthTextRegionUPtr_()
@@ -93,7 +91,7 @@ namespace combat
             return;
         }
 
-        if (combatNodePtr_ != nullptr)
+        if (combatNodePtrOpt_)
         {
             geSlider_.Speed(SLIDER_SPEED_ * 2.0f);
             geSlider_.ChangeDirection();
@@ -101,13 +99,13 @@ namespace combat
             movingDir_ = sfml_util::Moving::Away;
             isTransToComplete_ = false;
             isTransBackComplete_ = false;
-            combatNodePtr_->IsSummaryView(false);
-            combatNodePtr_->IsMoving(true);
+            combatNodePtrOpt_->Obj().IsSummaryView(false);
+            combatNodePtrOpt_->Obj().IsMoving(true);
         }
     }
 
     void SummaryView::StartTransitionTo(
-        CombatNodePtr_t combatNodePtr,
+        const CombatNodePtr_t COMBAT_NODE_PTR,
         const sf::Vector2f & DEST_POS_V,
         const sf::FloatRect & ENEMYDISPLAY_RECT)
     {
@@ -117,15 +115,18 @@ namespace combat
             return;
         }
 
-        combatNodePtr_ = combatNodePtr;
-        geSlider_.Setup(combatNodePtr, combatNodePtr->GetEntityPos(), DEST_POS_V, SLIDER_SPEED_);
+        combatNodePtrOpt_ = COMBAT_NODE_PTR;
+
+        geSlider_.Setup(
+            COMBAT_NODE_PTR.Ptr(), COMBAT_NODE_PTR->GetEntityPos(), DEST_POS_V, SLIDER_SPEED_);
+
         geSlider_.Start();
         BackgroundColor(sf::Color::Transparent);
         BackgroundRegion(ENEMYDISPLAY_RECT);
         movingDir_ = sfml_util::Moving::Toward;
         isTransToComplete_ = false;
         isTransBackComplete_ = false;
-        combatNodePtr->IsMoving(true);
+        COMBAT_NODE_PTR->IsMoving(true);
     }
 
     void SummaryView::BackgroundColor(const sf::Color & NEW_COLOR)
@@ -151,10 +152,11 @@ namespace combat
         isTransToComplete_ = true;
         isTransBackComplete_ = false;
         movingDir_ = sfml_util::Moving::Still;
-        if (combatNodePtr_ != nullptr)
+
+        if (combatNodePtrOpt_)
         {
-            combatNodePtr_->IsSummaryView(true);
-            combatNodePtr_->IsMoving(false);
+            combatNodePtrOpt_->Obj().IsSummaryView(true);
+            combatNodePtrOpt_->Obj().IsMoving(false);
         }
     }
 
@@ -164,11 +166,13 @@ namespace combat
         isTransBackComplete_ = true;
         movingDir_ = sfml_util::Moving::Still;
         itemWithTextVec_.clear();
-        if (combatNodePtr_ != nullptr)
+
+        if (combatNodePtrOpt_)
         {
-            combatNodePtr_->IsSummaryView(false);
-            combatNodePtr_->IsMoving(false);
+            combatNodePtrOpt_->Obj().IsSummaryView(false);
+            combatNodePtrOpt_->Obj().IsMoving(false);
         }
+
         ReleaseCombatNodePointer();
     }
 
@@ -178,14 +182,14 @@ namespace combat
         // and is an inexpensive vertex array operation
         target.draw(bgQuads_, states);
 
-        if (isTransToComplete_ && (combatNodePtr_ != nullptr))
+        if (isTransToComplete_ && combatNodePtrOpt_)
         {
             nameTextRegionUPtr_->draw(target, states);
             rankTextRegionUPtr_->draw(target, states);
             healthTextRegionUPtr_->draw(target, states);
             condTextRegionUPtr_->draw(target, states);
 
-            if (combatNodePtr_->Creature()->IsPlayerCharacter())
+            if (combatNodePtrOpt_->Obj().Creature()->IsPlayerCharacter())
             {
                 armorTextRegionUPtr_->draw(target, states);
             }
@@ -205,7 +209,7 @@ namespace combat
                 NEXT_ITEM_WITH_TEXT.info_text_region_sptr->draw(target, states);
             }
 
-            combatNodePtr_->draw(target, states);
+            combatNodePtrOpt_->Obj().draw(target, states);
         }
     }
 

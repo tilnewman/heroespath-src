@@ -96,7 +96,8 @@ namespace combat
     using CombatDisplayPtr_t = CombatDisplay *;
 
     class CombatNode;
-    using CombatNodePtr_t = CombatNode *;
+    using CombatNodePtr_t = misc::NotNull<CombatNode *>;
+    using CombatNodePtrOpt_t = boost::optional<CombatNodePtr_t>;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
 
     // All the info required to shake a creature image on the battlefield.
@@ -291,7 +292,7 @@ namespace combat
         CombatNodePVec_t deadAnimNodesPVec_;
 
         // members supporting the Centering Animation
-        combat::CombatNodePtr_t centeringAnimCombatNodePtr_;
+        combat::CombatNodePtrOpt_t centeringAnimCombatNodePtrOpt_;
         creature::CreaturePVec_t centeringAnimCreaturesPVec_;
         bool centeringAnimWillZoomOut_;
 
@@ -302,8 +303,8 @@ namespace combat
         // members supporting the Melee Move Animations
         sf::Vector2f meleeMoveAnimOrigPosV_;
         sf::Vector2f meleeMoveAnimTargetPosV_;
-        CombatNodePtr_t meleeMoveAnimMovingCombatNodePtr_;
-        CombatNodePtr_t meleeMoveAnimTargetCombatNodePtr_;
+        CombatNodePtrOpt_t meleeMoveAnimMovingCombatNodePtrOpt_;
+        CombatNodePtrOpt_t meleeMoveAnimTargetCombatNodePtrOpt_;
 
         // members to shake a creature image on the battlefield
         creature::CreaturePtrOpt_t shakeAnimCreatureWasPtrOpt_;
@@ -311,7 +312,7 @@ namespace combat
         ShakeInfoMap_t shakeAnimInfoMap_;
 
         // members to perform the selection animation
-        CombatNodePtr_t selectAnimCombatNodePtr_;
+        CombatNodePtrOpt_t selectAnimCombatNodePtrOpt_;
 
         sfml_util::animation::SparksAnimationUVec_t sparksAnimUVec_;
         sfml_util::animation::CloudAnimationUVec_t cloudAnimUVec_;
@@ -324,7 +325,7 @@ namespace combat
         sfml_util::animation::TextAnimationUVec_t textAnimUVec_;
 
         // members that control the run animation
-        CombatNodePtr_t runAnimCombatNodePtr_;
+        CombatNodePtrOpt_t runAnimCombatNodePtrOpt_;
         sf::Vector2f runAnimPosVTarget_;
         sf::Vector2f runAnimPosVOrig_;
     };

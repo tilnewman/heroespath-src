@@ -28,6 +28,7 @@
 // combat-node.hpp
 //  A class that handles drawing nodes on the combat tree.
 //
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/sfml-graphics.hpp"
@@ -196,10 +197,7 @@ namespace combat
         sf::Sprite selectAnimSprite_;
     };
 
-    using CombatNodePtr_t = CombatNode *;
-    using CombatNodeCPtr_t = const CombatNode *;
-    using CombatNodePtrC_t = CombatNode * const;
-    using CombatNodeCPtrC_t = const CombatNode * const;
+    using CombatNodePtr_t = misc::NotNull<CombatNode *>;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
 
 } // namespace combat

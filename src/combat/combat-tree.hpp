@@ -33,6 +33,7 @@
 //
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 
@@ -54,7 +55,8 @@ namespace combat
 {
 
     class CombatNode;
-    using CombatNodePtr_t = CombatNode *;
+    using CombatNodePtr_t = misc::NotNull<CombatNode *>;
+    using CombatNodePtrOpt_t = boost::optional<CombatNodePtr_t>;
     using CombatNodeSPtr_t = std::shared_ptr<CombatNode>;
     using CombatNodePVec_t = std::vector<CombatNodePtr_t>;
 
@@ -136,10 +138,10 @@ namespace combat
         ID_t NextAvailableId() const;
 
         // throws std::invalid_argument if ID does not exist
-        CombatNodePtr_t GetNode(const ID_t & ID) const;
+        CombatNodePtr_t GetNodePtr(const ID_t & ID) const;
 
         // returns nullptr if creature does not exist
-        CombatNodePtr_t GetNode(const creature::CreaturePtr_t) const;
+        CombatNodePtr_t GetNodePtr(const creature::CreaturePtr_t) const;
 
         // throws std::invalid_argument if CombatNode does not exist
         ID_t GetNodeId(const CombatNodePtr_t) const;
@@ -147,11 +149,8 @@ namespace combat
         // throws std::invalid_argument if creature does not exist
         ID_t GetNodeId(const creature::CreaturePtr_t) const;
 
-        std::size_t GetNodeIds(IDVec_t & IdVec_OutParam, const creature::role::Enum ROLE);
-        std::size_t GetNodeIds(IDVec_t & IdVec_OutParam, const creature::race::Enum RACE);
-
         // returns nullptr if there is no node at the position given
-        CombatNodePtr_t GetNode(const float POS_X, const float POS_Y) const;
+        const CombatNodePtrOpt_t GetNodePtrOpt(const float POS_X, const float POS_Y) const;
 
         std::size_t VertexCount() const { return vertexes_.size(); }
         std::size_t VertexCountByBlockingPos(const int BLOCKING_POS) const;

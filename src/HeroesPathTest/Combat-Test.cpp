@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 
     BOOST_CHECK(combatTree.NextAvailableId() == 0_id);
 
-    BOOST_CHECK_THROW(combatTree.GetNode(0_id), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.GetNodePtr(0_id), std::invalid_argument);
 
     {
         IDVec_t ids;
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
         BOOST_CHECK(ids.empty());
     }
 
-    BOOST_CHECK(combatTree.GetNode(0.0f, 0.0f) == nullptr);
+    BOOST_CHECK(combatTree.GetNodePtr(0.0f, 0.0f) == nullptr);
 
     BOOST_CHECK(combatTree.VertexCount() == 0);
     BOOST_CHECK(combatTree.VertexCountByBlockingPos(0) == 0);
@@ -165,9 +165,9 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     std::cout << "5" << std::endl;
     //tests after the single vertex insert
     BOOST_CHECK(combatTree.NextAvailableId() == 1_id);
-    BOOST_CHECK(combatTree.GetNode(VERT_ID0) == combatNodeSPtr0.get());
+    BOOST_CHECK(combatTree.GetNodePtr(VERT_ID0) == combatNodeSPtr0.get());
     BOOST_CHECK(combatTree.GetNodeSPtr(VERT_ID0) == combatNodeSPtr0);
-    BOOST_CHECK(combatTree.GetNode(CREATURE_PTR0) == combatNodeSPtr0.get());
+    BOOST_CHECK(combatTree.GetNodePtr(CREATURE_PTR0) == combatNodeSPtr0.get());
     BOOST_CHECK(combatTree.GetNodeSPtr(CREATURE_PTR0) == combatNodeSPtr0);
     BOOST_CHECK(combatTree.GetNodeId(combatNodeSPtr0.get()) == VERT_ID0);
     BOOST_CHECK(combatTree.GetNodeId(CREATURE_PTR0) == VERT_ID0);
@@ -256,9 +256,9 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
 
     //tests after the second vertex insert
     BOOST_CHECK(combatTree.NextAvailableId() == 2_id);
-    BOOST_CHECK(combatTree.GetNode(VERT_ID1) == combatNodeSPtr1.get());
+    BOOST_CHECK(combatTree.GetNodePtr(VERT_ID1) == combatNodeSPtr1.get());
     BOOST_CHECK(combatTree.GetNodeSPtr(VERT_ID1) == combatNodeSPtr1);
-    BOOST_CHECK(combatTree.GetNode(CREATURE_PTR1) == combatNodeSPtr1.get());
+    BOOST_CHECK(combatTree.GetNodePtr(CREATURE_PTR1) == combatNodeSPtr1.get());
     BOOST_CHECK(combatTree.GetNodeSPtr(CREATURE_PTR1) == combatNodeSPtr1);
     BOOST_CHECK(combatTree.GetNodeId(combatNodeSPtr1.get()) == VERT_ID1);
     BOOST_CHECK(combatTree.GetNodeId(CREATURE_PTR1) == VERT_ID1);
@@ -360,10 +360,10 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     //whole set of checks to be sure the combatTree is back in its inital (empty) state
     BOOST_CHECK(combatTree.NextAvailableId() == 0_id);
 
-    BOOST_CHECK_THROW(combatTree.GetNode(0_id), std::invalid_argument);
+    BOOST_CHECK_THROW(combatTree.GetNodePtr(0_id), std::invalid_argument);
     BOOST_CHECK_THROW(combatTree.GetNodeSPtr(0_id), std::invalid_argument);
 
-    BOOST_CHECK(combatTree.GetNode(nullptr) == nullptr);
+    BOOST_CHECK(combatTree.GetNodePtr(nullptr) == nullptr);
     BOOST_CHECK(combatTree.GetNodeSPtr(nullptr) == nullptr);
 
     BOOST_CHECK_THROW(combatTree.SetNode(0_id, combat::CombatNodeSPtr_t()), std::invalid_argument);
@@ -374,7 +374,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_DefaultParty)
     BOOST_CHECK_THROW(combatTree.GetNodeId(
         creature::CreaturePtr_t(nullptr)), std::invalid_argument);
 
-    BOOST_CHECK(combatTree.GetNode(0.0f, 0.0f) == nullptr);
+    BOOST_CHECK(combatTree.GetNodePtr(0.0f, 0.0f) == nullptr);
     BOOST_CHECK(combatTree.VertexCount() == 0);
     BOOST_CHECK(combatTree.VertexCountByBlockingPos(0) == 0);
     BOOST_CHECK(combatTree.Vertexes().empty());

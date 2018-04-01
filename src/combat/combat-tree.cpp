@@ -84,7 +84,7 @@ namespace combat
         return ID_t(NUM_VERTEXES);
     }
 
-    CombatNodePtr_t CombatTree::GetNode(const ID_t & ID) const
+    CombatNodePtr_t CombatTree::GetNodePtr(const ID_t & ID) const
     {
         for (auto const & VERTEX : vertexes_)
         {
@@ -95,11 +95,11 @@ namespace combat
         }
 
         std::ostringstream ss;
-        ss << "CombatTree::GetNode(id=" << ID << ") -but that vertex does not exist.";
+        ss << "CombatTree::GetNodePtr(id=" << ID << ") -but that vertex does not exist.";
         throw std::invalid_argument(ss.str());
     }
 
-    CombatNodePtr_t CombatTree::GetNode(const creature::CreaturePtr_t CREATURE_PTR) const
+    CombatNodePtr_t CombatTree::GetNodePtr(const creature::CreaturePtr_t CREATURE_PTR) const
     {
         for (auto const & VERTEX : vertexes_)
         {
@@ -109,23 +109,25 @@ namespace combat
             }
         }
 
-        return nullptr;
+        std::ostringstream ss;
+        ss << "CombatTree::GetNodePtr(creature=" << CREATURE_PTR->ToString()
+           << ") -but a vertex for that creature does not exist.";
+        throw std::invalid_argument(ss.str());
     }
 
-    ID_t CombatTree::GetNodeId(const CombatNodePtr_t COMBATNODE_PTR) const
+    ID_t CombatTree::GetNodeId(const CombatNodePtr_t COMBAT_NODE_PTR) const
     {
         for (auto const & VERTEX : vertexes_)
         {
-            if (VERTEX.node_sptr.get() == COMBATNODE_PTR)
+            if (VERTEX.node_sptr.get() == COMBAT_NODE_PTR)
             {
                 return VERTEX.id;
             }
         }
 
         std::ostringstream ss;
-        ss << "CombatTree::GetNodeId(COMBATNODE_PTR="
-           << ((COMBATNODE_PTR == nullptr) ? "nullptr" : COMBATNODE_PTR->ToString())
-           << ") -but that combat node ptr was not found.";
+        ss << "CombatTree::GetNodeId(combat_node=" << COMBAT_NODE_PTR->ToString()
+           << ") -but that combat_node was not found.";
 
         throw std::invalid_argument(ss.str());
     }
@@ -147,47 +149,17 @@ namespace combat
         throw std::invalid_argument(ss.str());
     }
 
-    std::size_t CombatTree::GetNodeIds(IDVec_t & IDVec_OutParam, const creature::role::Enum ROLE)
-    {
-        std::size_t count(0);
-        for (auto const & VERTEX : vertexes_)
-        {
-            if (VERTEX.node_sptr->Creature()->Role() == ROLE)
-            {
-                ++count;
-                IDVec_OutParam.emplace_back(VERTEX.id);
-            }
-        }
-
-        return count;
-    }
-
-    std::size_t CombatTree::GetNodeIds(IDVec_t & IdVec_OutParam, const creature::race::Enum RACE)
-    {
-        std::size_t count(0);
-        for (auto const & VERTEX : vertexes_)
-        {
-            if (VERTEX.node_sptr->Creature()->Race() == RACE)
-            {
-                ++count;
-                IdVec_OutParam.emplace_back(VERTEX.id);
-            }
-        }
-
-        return count;
-    }
-
-    CombatNodePtr_t CombatTree::GetNode(const float POS_X, const float POS_Y) const
+    const CombatNodePtrOpt_t CombatTree::GetNodePtrOpt(const float POS_X, const float POS_Y) const
     {
         for (auto const & VERTEX : vertexes_)
         {
             if (VERTEX.node_sptr->GetEntityRegion().contains(POS_X, POS_Y))
             {
-                return VERTEX.node_sptr.get();
+                return CombatNodePtrOpt_t(CombatNodePtr_t(VERTEX.node_sptr.get()));
             }
         }
 
-        return nullptr;
+        return boost::none;
     }
 
     std::size_t CombatTree::VertexCountByBlockingPos(const int BLOCKING_POS) const
@@ -281,7 +253,7 @@ namespace combat
             {
                 if (ORPHANED_VERT_ID != ID)
                 {
-                    orphanedBlockingIdSet.insert(GetNode(ORPHANED_VERT_ID)->GetBlockingPos());
+                    orphanedBlockingIdSet.insert(GetNodePtr(ORPHANED_VERT_ID)->GetBlockingPos());
                 }
             }
         }
@@ -769,7 +741,7 @@ namespace combat
 
         for (auto const & ID : GetNodeIDsAtBlockingPos(BLOCKING_POS))
         {
-            combatNodesPVec.emplace_back(GetNode(ID));
+            combatNodesPVec.emplace_back(GetNodePtr(ID));
         }
 
         if (combatNodesPVec.size() > 1)
@@ -791,7 +763,7 @@ namespace combat
 
         for (auto const & ID : GetNodeIDsAllAroundBlockingPos(BLOCKING_POS))
         {
-            combatNodesPVec.emplace_back(GetNode(ID));
+            combatNodesPVec.emplace_back(GetNodePtr(ID));
         }
 
         if (combatNodesPVec.size() > 1)
@@ -838,14 +810,14 @@ namespace combat
     int CombatTree::GetBlockingDistanceBetween(
         creature::CreaturePtr_t CREATURE_A_PTR, creature::CreaturePtr_t CREATURE_B_PTR) const
     {
-        return GetNode(CREATURE_B_PTR)->GetBlockingPos()
-            - GetNode(CREATURE_A_PTR)->GetBlockingPos();
+        return GetNodePtr(CREATURE_B_PTR)->GetBlockingPos()
+            - GetNodePtr(CREATURE_A_PTR)->GetBlockingPos();
     }
 
     int CombatTree::GetClosestBlockingDistanceByType(
         creature::CreaturePtr_t CREATURE_PTR, const bool WILL_FIND_PLAYERS) const
     {
-        CombatNodePtr_t closestNodePtr{ nullptr };
+        CombatNodePtrOpt_t closestNodePtrOpt{ boost::none };
         auto closestBlockingDistanceABS{ GetBlockingDistanceMax() + 1 };
 
         for (auto const & VERTEX : vertexes_)
@@ -859,18 +831,18 @@ namespace combat
                 if (ABS_DISTANCE < closestBlockingDistanceABS)
                 {
                     closestBlockingDistanceABS = ABS_DISTANCE;
-                    closestNodePtr = VERTEX.node_sptr.get();
+                    closestNodePtrOpt = VERTEX.node_sptr.get();
                 }
             }
         }
 
-        if (nullptr == closestNodePtr)
+        if (closestNodePtrOpt)
         {
-            return 0;
+            return GetBlockingDistanceBetween(CREATURE_PTR, closestNodePtrOpt->Obj().Creature());
         }
         else
         {
-            return GetBlockingDistanceBetween(CREATURE_PTR, closestNodePtr->Creature());
+            return 0;
         }
     }
 
