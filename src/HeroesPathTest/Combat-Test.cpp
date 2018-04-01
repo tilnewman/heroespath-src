@@ -58,19 +58,7 @@ BOOST_AUTO_TEST_CASE(CombatTree_Construction)
 
     BOOST_CHECK_THROW(combatTree.GetNodePtr(0_id), std::invalid_argument);
 
-    {
-        IDVec_t ids;
-        combatTree.GetNodeIds(ids, creature::role::Count);
-        BOOST_CHECK(ids.empty());
-    }
-
-    {
-        IDVec_t ids;
-        combatTree.GetNodeIds(ids, creature::race::Count);
-        BOOST_CHECK(ids.empty());
-    }
-
-    BOOST_CHECK(combatTree.GetNodePtr(0.0f, 0.0f) == nullptr);
+    BOOST_CHECK(combatTree.GetNodePtrOpt(0.0f, 0.0f) == boost::none);
 
     BOOST_CHECK(combatTree.VertexCount() == 0);
     BOOST_CHECK(combatTree.VertexCountByBlockingPos(0) == 0);
