@@ -229,8 +229,10 @@ namespace stage
 
         virtual const std::string HandlerName() const { return GetStageName(); }
         virtual bool HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage &);
+
         virtual bool
             HandleCallback(const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &);
+
         virtual bool HandleCallback(const sfml_util::gui::callback::SliderBarCallbackPackage_t &);
         virtual bool HandleCallback(const popup::PopupResponse &);
 
@@ -263,11 +265,15 @@ namespace stage
         void PositionSlideStartTasks(const creature::CreaturePtr_t TURN_CREATURE_PTR);
         bool HandleAttack();
         bool HandleFight();
+
         bool HandleSong_Step1_ValidatePlayAndSelectSong(
             const creature::CreaturePtr_t TURN_CREATURE_PTR);
+
         void HandleSong_Step2_PerformOnTargets(const creature::CreaturePtr_t TURN_CREATURE_PTR);
+
         bool HandleCast_Step1_ValidateCastAndSelectSpell(
             const creature::CreaturePtr_t TURN_CREATURE_PTR);
+
         void HandleCast_Step2_SelectTargetOrPerformOnAll();
 
         void HandleCast_Step3_PerformOnTargets(

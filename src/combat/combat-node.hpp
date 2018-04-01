@@ -45,7 +45,7 @@ namespace creature
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace combat
 {
 
@@ -135,6 +135,13 @@ namespace combat
         void SetImageScale();
         void SetCrossBonesImageScale();
 
+        void SetupHealthLines();
+
+        const sf::Color NameColor() const
+        {
+            return ((isPlayer_) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
+        }
+
     protected:
         static const sf::Uint8 HIGHLIGHT_ADJ_VALUE_;
         static const sf::Color HIGHLIGHT_ADJ_COLOR_;
@@ -151,13 +158,12 @@ namespace combat
         static const float WING_IMAGE_HORIZ_OFFSET_;
         static const float WING_IMAGE_ANIM_SPEED_;
         static const float WING_IMAGE_ROTATION_MAX_;
+        static const std::size_t HEALTH_LINE_COUNT_;
         //
+        bool isPlayer_;
         sf::Text nameTextObj_;
         sf::Text condTextObj_;
         int blockingPos_;
-        sf::Color healthLineColor_;
-        sf::Color healthLineColorRed_;
-        sf::Color healthLineColorTick_;
         sf::Texture texture_;
         sf::Sprite sprite_;
         sf::Color creatureImageColor_;
@@ -174,6 +180,10 @@ namespace combat
         // cached value, so that changes in health appear when they are
         // reported and not when they actually occur.
         float healthRatioDisplayed_;
+        sf::Color healthLineColor_;
+        sf::Color healthLineColorRed_;
+        sf::Color healthLineColorTick_;
+        sf::VertexArray healthLines_;
 
         // The changes in drawing when a creature dies (stop anim wing, stop
         // drawing conditions and health, etc.) does not occur when the

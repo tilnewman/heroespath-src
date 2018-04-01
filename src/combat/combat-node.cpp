@@ -83,33 +83,23 @@ namespace combat
     const float CombatNode::WING_IMAGE_HORIZ_OFFSET_(0.333f);
     const float CombatNode::WING_IMAGE_ANIM_SPEED_(8.0f);
     const float CombatNode::WING_IMAGE_ROTATION_MAX_(90.0f);
+    const std::size_t CombatNode::HEALTH_LINE_COUNT_{ 10 };
 
     CombatNode::CombatNode(const creature::CreaturePtr_t CREATURE_PTR)
         : GuiEntity(
               std::string("CombatNode_of_\"").append(CREATURE_PTR->Name()).append("\""),
               sf::FloatRect())
-        ,
-
-        nameTextObj_(
-            CREATURE_PTR->Name(),
-            *creature::NameInfo::Instance()->DefaultFont(),
-            sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
-        ,
-
-        condTextObj_(
-            "",
-            *creature::NameInfo::Instance()->DefaultFont(),
-            sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
-        ,
-
-        blockingPos_(0)
-        , healthLineColor_()
-        , // this initializer doesn't matter, see constructor body below
-        healthLineColorRed_()
-        , // "
-        healthLineColorTick_()
-        , // "
-        texture_()
+        , isPlayer_(CREATURE_PTR->IsPlayerCharacter())
+        , nameTextObj_(
+              CREATURE_PTR->Name(),
+              *creature::NameInfo::Instance()->DefaultFont(),
+              sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
+        , condTextObj_(
+              "",
+              *creature::NameInfo::Instance()->DefaultFont(),
+              sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
+        , blockingPos_(0)
+        , texture_()
         , sprite_()
         , creatureImageColor_()
         , isSummaryView_(false)
@@ -119,6 +109,13 @@ namespace combat
         , crossBonesSprite_()
         , willShowCrossBones_(false)
         , healthRatioDisplayed_(0.0f)
+
+        // these sf::Color initializers don't matter, see HealthChangeTasks() below
+        , healthLineColor_()
+        , healthLineColorRed_()
+        , healthLineColorTick_()
+
+        , healthLines_(sf::Lines, HEALTH_LINE_COUNT_)
         , isDead_(false)
         , wingTextureUPtr_()
         , wingSprite_()
@@ -129,10 +126,7 @@ namespace combat
         , willShowSelectAnim_(false)
         , selectAnimSprite_()
     {
-        const sf::Color NAME_COLOR(
-            (CREATURE_PTR->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
-
-        sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
+        sfml_util::SetTextColor(nameTextObj_, NameColor());
 
         UpdateConditionText();
         sfml_util::SetTextColor(condTextObj_, sf::Color(200, 200, 200, 200));
@@ -140,12 +134,11 @@ namespace combat
         HealthChangeTasks();
 
         sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-            texture_, CREATURE_PTR->ImageFilename(), CREATURE_PTR->IsPlayerCharacter());
+            texture_, CREATURE_PTR->ImageFilename(), isPlayer_);
 
         sprite_.setTexture(texture_);
 
-        // sprite color
-        if (CREATURE_PTR->IsPlayerCharacter())
+        if (isPlayer_)
         {
             creatureImageColor_ = CREATURE_IMAGE_COLOR_PLAYER_;
         }
@@ -159,6 +152,8 @@ namespace combat
         // um...This was the only way I could get it to work...zTn 2017-4-6
         IsFlying(true);
         IsFlying(false);
+
+        SetupHealthLines();
     }
 
     CombatNode::~CombatNode() = default;
@@ -166,10 +161,10 @@ namespace combat
     const std::string CombatNode::ToString() const
     {
         std::ostringstream ss;
-        ss << "CombatNode " << ((creaturePtr_->IsPlayerCharacter()) ? "Player " : "NonPlayer ")
-           << creaturePtr_->RaceName() << " " << creaturePtr_->RoleName();
+        ss << "CombatNode " << ((isPlayer_) ? "Player " : "NonPlayer ") << creaturePtr_->RaceName()
+           << " " << creaturePtr_->RoleName();
 
-        if (creaturePtr_->IsPlayerCharacter())
+        if (isPlayer_)
         {
             ss << " \"" << creaturePtr_->Name() << "\"";
         }
@@ -203,6 +198,7 @@ namespace combat
     {
         nameTextObj_.setCharacterSize(NEW_CHARACTER_SIZE);
         condTextObj_.setCharacterSize(NEW_CHARACTER_SIZE);
+        SetupHealthLines();
     }
 
     void CombatNode::draw(sf::RenderTarget & target, sf::RenderStates states) const
@@ -232,67 +228,31 @@ namespace combat
             states.blendMode = ORIG_BLEND_MODE;
         }
 
-        if (isFlying_ && (false == isDead_) && (false == isMoving_) && (false == isSummaryView_))
+        if (false == isSummaryView_)
         {
-            target.draw(wingSprite_, states);
-        }
+            if (willShowCrossBones_)
+            {
+                const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
+                states.blendMode = sf::BlendAdd;
+                target.draw(crossBonesSprite_, states);
+                states.blendMode = ORIG_BLEND_MODE;
+            }
 
-        if (willShowCrossBones_ && (false == isSummaryView_))
-        {
-            const sf::BlendMode ORIG_BLEND_MODE(states.blendMode);
-            states.blendMode = sf::BlendAdd;
-            target.draw(crossBonesSprite_, states);
-            states.blendMode = ORIG_BLEND_MODE;
-        }
+            if ((false == isDead_) && (false == isMoving_))
+            {
+                target.draw(healthLines_, states);
 
-        if ((false == isMoving_) && (false == isSummaryView_)
-            && ((false == isDead_) || (Creature()->IsPlayerCharacter())))
-        {
-            target.draw(nameTextObj_, states);
-            target.draw(condTextObj_, states);
-        }
+                if (isFlying_)
+                {
+                    target.draw(wingSprite_, states);
+                }
 
-        if ((false == isMoving_) && (false == isSummaryView_) && (false == isDead_))
-        {
-            // draw health lines
-            auto const POS_TOP{ nameTextObj_.getPosition().y
-                                + (nameTextObj_.getGlobalBounds().height * 2.0f) };
-
-            auto const LINE_LEN_MARGIN{ 0.25f * entityRegion_.width };
-
-            auto const LINE_POS_LEFT{ entityRegion_.left + LINE_LEN_MARGIN };
-
-            auto const LINE_LEN{ entityRegion_.width - (LINE_LEN_MARGIN * 2.0f) };
-
-            auto const LINE_TICK_HEIGHT{ 4.0f };
-
-            auto const LINE_RATIO_RIGHT{ LINE_POS_LEFT + (LINE_LEN * healthRatioDisplayed_) };
-
-            auto const LINE_TOTAL_RIGHT{ LINE_POS_LEFT + LINE_LEN };
-
-            sf::Vertex lines[]
-                = { sf::Vertex(sf::Vector2f(LINE_POS_LEFT, POS_TOP)),
-                    sf::Vertex(sf::Vector2f(LINE_RATIO_RIGHT, POS_TOP)),
-                    sf::Vertex(sf::Vector2f(LINE_POS_LEFT, POS_TOP + 1)),
-                    sf::Vertex(sf::Vector2f(LINE_RATIO_RIGHT, POS_TOP + 1)),
-                    sf::Vertex(sf::Vector2f(LINE_POS_LEFT, POS_TOP + 2)),
-                    sf::Vertex(sf::Vector2f(LINE_TOTAL_RIGHT, POS_TOP + 2)),
-                    sf::Vertex(sf::Vector2f(LINE_POS_LEFT, POS_TOP - LINE_TICK_HEIGHT)),
-                    sf::Vertex(sf::Vector2f(LINE_POS_LEFT, POS_TOP + LINE_TICK_HEIGHT + 2)),
-                    sf::Vertex(sf::Vector2f(LINE_TOTAL_RIGHT, POS_TOP - LINE_TICK_HEIGHT)),
-                    sf::Vertex(sf::Vector2f(LINE_TOTAL_RIGHT, POS_TOP + LINE_TICK_HEIGHT + 2)) };
-
-            lines[0].color = healthLineColor_;
-            lines[1].color = healthLineColor_;
-            lines[2].color = healthLineColor_;
-            lines[3].color = healthLineColor_;
-            lines[4].color = healthLineColor_;
-            lines[5].color = healthLineColorRed_;
-            lines[6].color = healthLineColorTick_;
-            lines[7].color = healthLineColorTick_;
-            lines[8].color = healthLineColorTick_;
-            lines[9].color = healthLineColorTick_;
-            target.draw(lines, 10, sf::Lines, states);
+                if (isPlayer_)
+                {
+                    target.draw(nameTextObj_, states);
+                    target.draw(condTextObj_, states);
+                }
+            }
         }
     }
 
@@ -334,6 +294,8 @@ namespace combat
 
         wingSprite_.move(HORIZ, VERT);
         crossBonesSprite_.move(HORIZ, VERT);
+
+        SetupHealthLines();
     }
 
     bool CombatNode::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
@@ -345,10 +307,7 @@ namespace combat
 
     void CombatNode::SetToneDown(const float TONE_DOWN_VAL)
     {
-        const sf::Color NAME_COLOR(
-            (creaturePtr_->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
-
-        sfml_util::SetTextColor(nameTextObj_, AdjustColorForToneDown(NAME_COLOR, TONE_DOWN_VAL));
+        sfml_util::SetTextColor(nameTextObj_, AdjustColorForToneDown(NameColor(), TONE_DOWN_VAL));
 
         sfml_util::SetTextColor(
             condTextObj_, AdjustColorForToneDown(CONDITION_COLOR_, TONE_DOWN_VAL));
@@ -382,9 +341,7 @@ namespace combat
             {
                 wingTextureUPtr_ = std::make_unique<sf::Texture>();
                 sfml_util::gui::CombatImageManager::Instance()->Get(
-                    *wingTextureUPtr_,
-                    sfml_util::gui::CombatImageType::Wing,
-                    !creaturePtr_->IsPlayerCharacter());
+                    *wingTextureUPtr_, sfml_util::gui::CombatImageType::Wing, !isPlayer_);
             }
 
             wingSprite_.setTexture(*wingTextureUPtr_, true);
@@ -407,7 +364,7 @@ namespace combat
     {
         if (isFlying_)
         {
-            if (creaturePtr_->IsPlayerCharacter())
+            if (isPlayer_)
             {
                 wingSprite_.setRotation(wingFlapSlider_.Update(ELAPSED_TIME_SECONDS) * -1.0f);
             }
@@ -430,8 +387,7 @@ namespace combat
     void CombatNode::HealthChangeTasks()
     {
         auto const WILL_SETUP_SKULL_IMAGE{ (
-            creaturePtr_->IsPlayerCharacter() && creaturePtr_->IsDead()
-            && (false == willShowCrossBones_)) };
+            isPlayer_ && creaturePtr_->IsDead() && (false == willShowCrossBones_)) };
 
         if (WILL_SETUP_SKULL_IMAGE)
         {
@@ -516,6 +472,8 @@ namespace combat
                     - (condTextObj_.getGlobalBounds().width * 0.5f),
                 COND_TEXT_POS_TOP);
         }
+
+        SetupHealthLines();
     }
 
     void CombatNode::SetWingImagePosition()
@@ -540,7 +498,7 @@ namespace combat
 
         wingSprite_.setScale(WING_SCALE, WING_SCALE);
 
-        if (creaturePtr_->IsPlayerCharacter())
+        if (isPlayer_)
         {
             wingSprite_.setOrigin(
                 wingSprite_.getLocalBounds().width, wingSprite_.getLocalBounds().height);
@@ -555,9 +513,6 @@ namespace combat
 
     void CombatNode::SetHighlight(const bool WILL_HIGHLIGHT, const bool WILL_PLAY_SOUND_EFFECT)
     {
-        const sf::Color NAME_COLOR(
-            (creaturePtr_->IsPlayerCharacter()) ? PLAYER_NAME_COLOR_ : NONPLAYER_NAME_COLOR_);
-
         if (WILL_HIGHLIGHT)
         {
             if (WILL_PLAY_SOUND_EFFECT)
@@ -565,7 +520,7 @@ namespace combat
                 sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
             }
 
-            sfml_util::SetTextColor(nameTextObj_, NAME_COLOR + HIGHLIGHT_ADJ_COLOR_);
+            sfml_util::SetTextColor(nameTextObj_, NameColor() + HIGHLIGHT_ADJ_COLOR_);
             sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_ + HIGHLIGHT_ADJ_COLOR_);
             healthLineColor_ = HealthColor() + HIGHLIGHT_ADJ_COLOR_;
             healthLineColorTick_ = HealthColorTick() + HIGHLIGHT_ADJ_COLOR_;
@@ -580,7 +535,7 @@ namespace combat
                 sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
             }
 
-            sfml_util::SetTextColor(nameTextObj_, NAME_COLOR);
+            sfml_util::SetTextColor(nameTextObj_, NameColor());
             sfml_util::SetTextColor(condTextObj_, CONDITION_COLOR_);
             healthLineColor_ = HealthColor();
             healthLineColorTick_ = HealthColorTick();
@@ -690,5 +645,46 @@ namespace combat
     }
 
     void CombatNode::SelectAnimStop() { willShowSelectAnim_ = false; }
+
+    void CombatNode::SetupHealthLines()
+    {
+        auto const POS_TOP{ nameTextObj_.getPosition().y
+                            + (nameTextObj_.getGlobalBounds().height * 2.0f) };
+
+        auto const LINE_LEN_MARGIN{ 0.25f * entityRegion_.width };
+
+        auto const LINE_POS_LEFT{ entityRegion_.left + LINE_LEN_MARGIN };
+
+        auto const LINE_LEN{ entityRegion_.width - (LINE_LEN_MARGIN * 2.0f) };
+
+        auto const LINE_TICK_HEIGHT{ 4.0f };
+
+        auto const LINE_RATIO_RIGHT{ LINE_POS_LEFT + (LINE_LEN * healthRatioDisplayed_) };
+
+        auto const LINE_TOTAL_RIGHT{ LINE_POS_LEFT + LINE_LEN };
+
+        healthLines_[0].position = sf::Vector2f(LINE_POS_LEFT, POS_TOP);
+        healthLines_[1].position = sf::Vector2f(LINE_RATIO_RIGHT, POS_TOP);
+        healthLines_[2].position = sf::Vector2f(LINE_POS_LEFT, POS_TOP + 1);
+        healthLines_[3].position = sf::Vector2f(LINE_RATIO_RIGHT, POS_TOP + 1);
+        healthLines_[4].position = sf::Vector2f(LINE_POS_LEFT, POS_TOP + 2);
+        healthLines_[5].position = sf::Vector2f(LINE_TOTAL_RIGHT, POS_TOP + 2);
+        healthLines_[6].position = sf::Vector2f(LINE_POS_LEFT, POS_TOP - LINE_TICK_HEIGHT);
+        healthLines_[7].position = sf::Vector2f(LINE_POS_LEFT, POS_TOP + LINE_TICK_HEIGHT + 2);
+        healthLines_[8].position = sf::Vector2f(LINE_TOTAL_RIGHT, POS_TOP - LINE_TICK_HEIGHT);
+        healthLines_[9].position = sf::Vector2f(LINE_TOTAL_RIGHT, POS_TOP + LINE_TICK_HEIGHT + 2);
+
+        healthLines_[0].color = healthLineColor_;
+        healthLines_[1].color = healthLineColor_;
+        healthLines_[2].color = healthLineColor_;
+        healthLines_[3].color = healthLineColor_;
+        healthLines_[4].color = healthLineColor_;
+        healthLines_[5].color = healthLineColorRed_;
+        healthLines_[6].color = healthLineColorTick_;
+        healthLines_[7].color = healthLineColorTick_;
+        healthLines_[8].color = healthLineColorTick_;
+        healthLines_[9].color = healthLineColorTick_;
+    }
+
 } // namespace combat
 } // namespace heroespath
