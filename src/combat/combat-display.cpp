@@ -93,7 +93,8 @@ namespace combat
     const float CombatDisplay::BATTLEFIELD_DRAG_SPEED_(3.0f);
     const std::size_t CombatDisplay::SHOULDER_TO_SHOULDER_MAX_(10);
 
-    CombatDisplay::CombatDisplay(const sf::FloatRect & REGION)
+    CombatDisplay::CombatDisplay(
+        const CombatAnimationPtr_t COMBAT_ANIM_PTR, const sf::FloatRect & REGION)
         : Stage("CombatDisplay", REGION)
         , POSITIONING_MARGIN_HORIZ_(sfml_util::MapByRes(50.0f, 300.0f))
         , POSITIONING_MARGIN_VERT_(sfml_util::MapByRes(50.0f, 300.0f))
@@ -131,7 +132,7 @@ namespace combat
         , isPlayerTurn_(false)
         , isStatusMessageAnim_(false)
         , isSummaryViewInProgress_(false)
-        , combatAnimationPtr_(nullptr)
+        , combatAnimationPtr_(COMBAT_ANIM_PTR)
         , isCombatOver_(false)
         , nodePosTrackerMap_()
         , centeringToPosV_(-1.0f, -1.0f) // any negative values will work here
@@ -905,13 +906,6 @@ namespace combat
     void CombatDisplay::HandleEndOfTurnTasks()
     {
         UpdateHealthTasks();
-
-        // stop all creature image shaking
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (combatAnimationPtr_ != nullptr),
-            "combat::CombatDisplay::HandleEndOfTurnTasks() found combatAnimationPtr_ "
-                << "to be null.");
-
         combatAnimationPtr_->ShakeAnimStop(boost::none);
     }
 
@@ -1422,12 +1416,7 @@ namespace combat
             {
                 SetIsSummaryViewInProgress(false);
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (combatAnimationPtr_ != nullptr),
-                    "combat::CombatDisplay::UpdateTime() found combatAnimationPtr_ "
-                        << "to be null.");
-
-                if (combatAnimationPtr_->ShakeAnimCreaturePtrOpt())
+                if (combatAnimationPtr_->IsThereAShakeAnimWasComabtNode())
                 {
                     combatAnimationPtr_->ShakeAnimRestart();
                 }

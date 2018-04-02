@@ -127,52 +127,63 @@ namespace combat
         CombatAnimation & operator=(CombatAnimation &&) = delete;
 
     public:
-        explicit CombatAnimation(const CombatDisplayPtr_t);
+        CombatAnimation();
 
         void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
         void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         void ProjectileShootAnimStart(
-            const creature::CreaturePtr_t CREATURE_ATTACKING_PTR,
-            const creature::CreaturePtr_t CREATURE_DEFENDING_PTR,
+            const sf::Vector2f & CREATURE_ATTACKING_CENTER_POSV,
+            const sf::Vector2f & CREATURE_DEFENDING_CENTER_POSV,
             const item::ItemPtr_t WEAPON_PTR,
             const bool WILL_HIT);
 
-        void ProjectileShootAnimUpdate(const float SLIDER_POS);
+        void ProjectileShootAnimUpdate(
+            const float SLIDER_POS, const sf::FloatRect & BATTLEFIELD_RECT);
+
         void ProjectileShootAnimStop();
 
         // The Death Animation is only for non-player characters
-        void DeathAnimStart(const creature::CreaturePVec_t &);
+        void DeathAnimStart(const CombatNodePVec_t &);
         void DeathAnimUpdate(const float SLIDER_POS);
-        void DeathAnimStop();
+        void DeathAnimStop(const CombatDisplayPtr_t);
 
         // The Centering Animation slides all creatures into the center of the
         // battlefield.
-        void CenteringStart(const creature::CreaturePtr_t);
-        void CenteringStart(const float TARGET_POS_X, const float TARGET_POS_Y);
-        void CenteringStartTargetCenterOfBatllefield();
-        void CenteringStart(const creature::CreaturePVec_t &);
+        void CenteringStart(const CombatNodePtr_t);
+
+        void CenteringStart(
+            const sf::Vector2f & TARGET_POSV, const CombatDisplayPtr_t COMBAT_DISPLAY_PTR);
+
+        void CenteringStart(
+            const creature::CreaturePVec_t &,
+            const sf::Vector2f & CENTER_POSV,
+            const bool IS_ZOOMOUT_REQUIRED,
+            const CombatDisplayPtr_t);
 
         // returns true if CombatStage should zoom out,
         // or if (centeringAnimWillZoomOut_ && ! AreAllCreaturesVisible())
-        bool CenteringUpdate(const float SLIDER_POS, const bool WILL_MOVE_BACKGROUND = true);
+        bool CenteringUpdate(
+            const float SLIDER_POS,
+            const CombatDisplayPtr_t COMBAT_DISPLAY_PTR,
+            const bool WILL_MOVE_BACKGROUND = true);
 
         void CenteringStop();
 
         // The Reposition Animation slides all creatures around after a blocking
         // position change, which has the effecting of looking like the battlefield
         // camera is moving.
-        void RepositionAnimStart(const creature::CreaturePtr_t);
-        void RepositionAnimStart(const sf::Vector2f &);
-        void RepositionAnimUpdate(const float SLIDER_POS);
+        void RepositionAnimStart(const CombatNodePtr_t);
+        void RepositionAnimStart(const sf::Vector2f &, const CombatDisplayPtr_t);
+        void RepositionAnimUpdate(const float SLIDER_POS, const CombatDisplayPtr_t);
         void RepositionAnimStop();
 
         // The Melee Move Toward Animation moves a creature toward their target during
         // melee attacks.
         void MeleeMoveTowardAnimStart(
-            const creature::CreaturePtr_t CREATURE_MOVING_PTR,
-            const creature::CreaturePtr_t CREATURE_TARGET_PTR);
+            const CombatNodePtr_t CREATURE_MOVING_COMBAT_NODE_PTR,
+            const CombatNodePtr_t CREATURE_TARGET_COMBAT_NODE_PTR);
 
         void MeleeMoveTowardAnimUpdate(const float SLIDER_POS);
         void MeleeMoveTowardAnimStop();
@@ -191,27 +202,24 @@ namespace combat
         static float ShakeAnimDistance(const bool WILL_DOUBLE);
 
         void ShakeAnimStart(
-            const creature::CreaturePVec_t & CREATURE_PVEC,
+            const CombatNodePVec_t COMBAT_NODES_PVEC,
             const float SLIDER_SPEED,
             const bool WILL_DOUBLE_SHAKE_DISTANCE);
 
         void ShakeAnimStart(
-            const creature::CreaturePtr_t CREATURE_PTR,
+            const CombatNodePtr_t COMBAT_NODE_PTR,
             const float SLIDER_SPEED,
             const bool WILL_DOUBLE_SHAKE_DISTANCE);
 
-        // if a nullptr is given then all creatures will stop shaking
-        void ShakeAnimStop(const creature::CreaturePtrOpt_t);
+        // if boost::none is given then all creatures will stop shaking
+        void ShakeAnimStop(const CombatNodePtrOpt_t);
 
-        const creature::CreaturePtrOpt_t ShakeAnimCreaturePtrOpt()
-        {
-            return shakeAnimCreatureWasPtrOpt_;
-        }
+        bool IsThereAShakeAnimWasComabtNode() { return !!shakeAnimWasCombatNodePtrOpt_; }
 
         void ShakeAnimTemporaryStop(const creature::CreaturePtr_t);
         void ShakeAnimRestart();
 
-        void SelectAnimStart(const creature::CreaturePtr_t);
+        void SelectAnimStart(const CombatNodePtr_t);
         void SelectAnimStop();
 
         void SpellAnimStart(
@@ -259,7 +267,7 @@ namespace combat
 
         void TextAnimStop();
 
-        void RunAnimStart(const creature::CreaturePtr_t CREATURE_PTR);
+        void RunAnimStart(const CombatNodePtr_t COMBAT_NODE_PTR);
         void RunAnimUpdate(const float SLIDER_POS);
         const creature::CreaturePtr_t RunAnimStop();
 
@@ -275,8 +283,6 @@ namespace combat
         const float SCREEN_WIDTH_;
         const float SCREEN_HEIGHT_;
         const float BATTLEFIELD_CENTERING_SPEED_;
-
-        CombatDisplayPtr_t combatDisplayStagePtr_;
 
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
@@ -297,7 +303,7 @@ namespace combat
         bool centeringAnimWillZoomOut_;
 
         // member supporting the Reposition Animation
-        creature::CreaturePtrOpt_t repositionAnimCreaturePtrOpt_;
+        CombatNodePtrOpt_t repositionAnimCombatNodePtrOpt_;
         sf::Vector2f repositionAnimPosV_;
 
         // members supporting the Melee Move Animations
@@ -307,7 +313,7 @@ namespace combat
         CombatNodePtrOpt_t meleeMoveAnimTargetCombatNodePtrOpt_;
 
         // members to shake a creature image on the battlefield
-        creature::CreaturePtrOpt_t shakeAnimCreatureWasPtrOpt_;
+        CombatNodePtrOpt_t shakeAnimWasCombatNodePtrOpt_;
         float shakeAnimCreatureWasSpeed_;
         ShakeInfoMap_t shakeAnimInfoMap_;
 

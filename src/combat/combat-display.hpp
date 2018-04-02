@@ -76,7 +76,7 @@ namespace combat
     using SummaryViewUPtr_t = std::unique_ptr<SummaryView>;
 
     class CombatAnimation;
-    using CombatAnimationPtr_t = CombatAnimation *;
+    using CombatAnimationPtr_t = misc::NotNull<CombatAnimation *>;
 
     using CreatureBlockingPosMap_t = misc::VectorMap<creature::CreaturePtr_t, int>;
 
@@ -110,7 +110,8 @@ namespace combat
         CombatDisplay & operator=(CombatDisplay &&) = delete;
 
     public:
-        explicit CombatDisplay(const sf::FloatRect & REGION = sf::FloatRect());
+        explicit CombatDisplay(
+            const CombatAnimationPtr_t, const sf::FloatRect & REGION = sf::FloatRect());
         virtual ~CombatDisplay();
 
         virtual void Setup();
@@ -238,8 +239,6 @@ namespace combat
 
         const sf::Vector2f CenteringPosV() const { return centeringToPosV_; }
         void CenteringPosV(const sf::Vector2f & V) { centeringToPosV_ = V; }
-
-        void SetCombatAnimationPtr(const CombatAnimationPtr_t ptr) { combatAnimationPtr_ = ptr; }
 
         void EndOfCombatCleanup();
 

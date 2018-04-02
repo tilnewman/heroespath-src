@@ -217,12 +217,9 @@ namespace stage
         // initiall speed ignored because speed is set before each use,
         // any value greater than zero will work here
         slider_(1.0f)
-        ,
 
-        combatDisplayStagePtr_(new combat::CombatDisplay())
-        ,
-
-        combatAnimationUPtr_(std::make_unique<combat::CombatAnimation>(combatDisplayStagePtr_))
+        , combatAnimationUPtr_(std::make_unique<combat::CombatAnimation>())
+        , combatDisplayStagePtr_(new combat::CombatDisplay(combatAnimationUPtr_.get()))
         , settingsButtonUPtr_()
         , pauseDurationSec_(0.0f)
         ,
@@ -491,8 +488,6 @@ namespace stage
 
     void CombatStage::Setup()
     {
-        combatDisplayStagePtr_->SetCombatAnimationPtr(combatAnimationUPtr_.get());
-
         // define combat region
         const float COMBAT_REGION_MARGIN(25.0f);
         const float COMBAT_REGION_TOP(COMBAT_REGION_MARGIN);
@@ -1235,7 +1230,7 @@ namespace stage
             if (slider_.IsDone())
             {
                 SetTurnPhase(TurnPhase::RepositionAnim);
-                combatAnimationUPtr_->DeathAnimStop();
+                combatAnimationUPtr_->DeathAnimStop(combatDisplayStagePtr_);
                 PositionSlideStartTasks(turnCreaturePtrOpt_.value());
             }
             return;
@@ -1261,7 +1256,9 @@ namespace stage
 
         if ((TurnPhase::PerformAnim == turnPhase_) && (AnimPhase::ProjectileShoot == animPhase_))
         {
-            combatAnimationUPtr_->ProjectileShootAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            combatAnimationUPtr_->ProjectileShootAnimUpdate(
+                slider_.Update(ELAPSED_TIME_SEC), combatDisplayStagePtr_->BattlefieldRect());
+
             if (slider_.IsDone())
             {
                 HandleApplyDamageTasks();
@@ -1391,7 +1388,8 @@ namespace stage
             zoomSliderBarUPtr_->SetCurrentValue(
                 zoomSliderOrigPos_ + (SLIDER_POS * (1.0f - zoomSliderOrigPos_)));
 
-            combatAnimationUPtr_->CenteringUpdate(SLIDER_POS);
+            combatAnimationUPtr_->CenteringUpdate(SLIDER_POS, combatDisplayStagePtr_);
+
             if (slider_.IsDone())
             {
                 StartTurn_Step2(turnCreaturePtrOpt_.value());
@@ -1405,7 +1403,9 @@ namespace stage
                 && ((TurnActionPhase::Advance == turnActionPhase_)
                     || (TurnActionPhase::Retreat == turnActionPhase_))))
         {
-            combatAnimationUPtr_->RepositionAnimUpdate(slider_.Update(ELAPSED_TIME_SEC));
+            combatAnimationUPtr_->RepositionAnimUpdate(
+                slider_.Update(ELAPSED_TIME_SEC), combatDisplayStagePtr_);
+
             if (slider_.IsDone())
             {
                 combatAnimationUPtr_->RepositionAnimStop();
@@ -1442,7 +1442,7 @@ namespace stage
         {
             auto const SLIDER_POS{ slider_.Update(ELAPSED_TIME_SEC) };
 
-            if (combatAnimationUPtr_->CenteringUpdate(SLIDER_POS))
+            if (combatAnimationUPtr_->CenteringUpdate(SLIDER_POS, combatDisplayStagePtr_))
             {
                 auto const ZOOM_CURR_VAL(1.0f - SLIDER_POS);
                 zoomSliderBarUPtr_->SetCurrentValue(ZOOM_CURR_VAL);
@@ -1477,7 +1477,8 @@ namespace stage
                 sliderPosAdj = 1.0f;
             }
 
-            combatAnimationUPtr_->CenteringUpdate(sliderPosAdj);
+            combatAnimationUPtr_->CenteringUpdate(sliderPosAdj, combatDisplayStagePtr_);
+
             if (slider_.IsDone())
             {
                 combatAnimationUPtr_->CenteringStop();
@@ -1522,7 +1523,10 @@ namespace stage
         {
             SetPreTurnPhase(PreTurnPhase::PanToCenter);
             slider_.Reset(ANIM_INITIAL_CENTERING_SLIDER_SPEED_);
-            combatAnimationUPtr_->CenteringStartTargetCenterOfBatllefield();
+
+            combatAnimationUPtr_->CenteringStart(
+                combatDisplayStagePtr_->GetCenterOfAllNodes(), combatDisplayStagePtr_);
+
             return;
         }
     }
@@ -1607,7 +1611,8 @@ namespace stage
                 if (combatDisplayStagePtr_->IsCreatureAPossibleFightTarget(
                         turnCreaturePtrOpt_.value(), CREATURE_AT_POS_PTR))
                 {
-                    combatAnimationUPtr_->SelectAnimStart(CREATURE_AT_POS_PTR);
+                    combatAnimationUPtr_->SelectAnimStart(
+                        combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_AT_POS_PTR));
                     HandleAttackTasks(CREATURE_AT_POS_PTR);
                 }
                 else
@@ -1632,7 +1637,8 @@ namespace stage
             }
             else
             {
-                combatAnimationUPtr_->SelectAnimStart(CREATURE_AT_POS_PTR);
+                combatAnimationUPtr_->SelectAnimStart(
+                    combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_AT_POS_PTR));
                 HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ CREATURE_AT_POS_PTR });
             }
         }
@@ -1648,7 +1654,8 @@ namespace stage
             }
             else
             {
-                combatAnimationUPtr_->SelectAnimStart(CREATURE_AT_POS_PTR);
+                combatAnimationUPtr_->SelectAnimStart(
+                    combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_AT_POS_PTR));
                 HandleCast_Step3_PerformOnTargets(creature::CreaturePVec_t{ CREATURE_AT_POS_PTR });
             }
         }
@@ -1940,13 +1947,12 @@ namespace stage
                                  "the current turnCreaturePtrOpt_.");
                 }
 
-                conditionEffectsCenterPosV_
-                    = combatDisplayStagePtr_->GetCombatNodeForCreature(CREATURE_PTR)
-                          ->GetEntityPos();
+                auto const COMBAT_NODE_PTR{ combatDisplayStagePtr_->GetCombatNodeForCreature(
+                    CREATURE_PTR) };
 
-                combatAnimationUPtr_->ShakeAnimStop(CREATURE_PTR);
-                combatAnimationUPtr_->DeathAnimStart({ CREATURE_PTR });
-
+                conditionEffectsCenterPosV_ = COMBAT_NODE_PTR->GetEntityPos();
+                combatAnimationUPtr_->ShakeAnimStop(COMBAT_NODE_PTR);
+                combatAnimationUPtr_->DeathAnimStart({ COMBAT_NODE_PTR });
                 slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
 
                 // This the first of two places where non-player death sfx is played,
@@ -2055,7 +2061,7 @@ namespace stage
                 else
                 {
                     SetTurnPhase(TurnPhase::CenterAndZoomOut);
-                    combatAnimationUPtr_->CenteringStart(allEffectedCreaturesPVec);
+                    AnimationCenteringStart(allEffectedCreaturesPVec);
                     slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
                 }
             }
@@ -2128,7 +2134,11 @@ namespace stage
             else
             {
                 SetTurnPhase(TurnPhase::DeathAnim);
-                combatAnimationUPtr_->DeathAnimStart(killedNonPlayerCreaturesPVec);
+
+                combatAnimationUPtr_->DeathAnimStart(
+                    combatDisplayStagePtr_->GetCombatNodesForCreatures(
+                        killedNonPlayerCreaturesPVec));
+
                 slider_.Reset(ANIM_DEATH_SLIDER_SPEED_);
 
                 // This is the second of two places where non-player death sfx is played,
@@ -2376,7 +2386,10 @@ namespace stage
             "something uninitialized.");
 
         SetTurnPhase(TurnPhase::CenterAndZoomIn);
-        combatAnimationUPtr_->CenteringStart(turnCreaturePtrOpt_.value());
+
+        combatAnimationUPtr_->CenteringStart(
+            combatDisplayStagePtr_->GetCombatNodeForCreature(turnCreaturePtrOpt_.value()));
+
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
     }
 
@@ -2389,7 +2402,9 @@ namespace stage
         combatAnimationUPtr_->CenteringStop();
 
         combatAnimationUPtr_->ShakeAnimStart(
-            TURN_CREATURE_PTR, ANIM_CREATURE_SHAKE_SLIDER_SPEED_, false);
+            combatDisplayStagePtr_->GetCombatNodeForCreature(TURN_CREATURE_PTR),
+            ANIM_CREATURE_SHAKE_SLIDER_SPEED_,
+            false);
 
         goldTextColorShaker_.Reset();
 
@@ -2494,22 +2509,25 @@ namespace stage
             isRepositionAnimAfterRun_ = false;
 
             combatAnimationUPtr_->RepositionAnimStart(
-                combatDisplayStagePtr_->GetCenterOfAllNodes());
+                combatDisplayStagePtr_->GetCenterOfAllNodes(), combatDisplayStagePtr_);
         }
         else
         {
             if ((misc::IsRealZero(conditionEffectsCenterPosV_.x))
                 && (misc::IsRealZero(conditionEffectsCenterPosV_.y)))
             {
-                combatAnimationUPtr_->RepositionAnimStart(TURN_CREATURE_PTR);
+                combatAnimationUPtr_->RepositionAnimStart(
+                    combatDisplayStagePtr_->GetCombatNodeForCreature(TURN_CREATURE_PTR));
             }
             else
             {
-                combatAnimationUPtr_->RepositionAnimStart(conditionEffectsCenterPosV_);
+                combatAnimationUPtr_->RepositionAnimStart(
+                    conditionEffectsCenterPosV_, combatDisplayStagePtr_);
             }
         }
 
-        combatAnimationUPtr_->ShakeAnimStop(TURN_CREATURE_PTR);
+        combatAnimationUPtr_->ShakeAnimStop(
+            combatDisplayStagePtr_->GetCombatNodeForCreature(TURN_CREATURE_PTR));
         slider_.Reset(ANIM_CREATURE_POS_SLIDER_SPEED_);
     }
 
@@ -2625,7 +2643,7 @@ namespace stage
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
             isShortPostZoomOutPause_ = true;
             creaturesListeningPVec.emplace_back(TURN_CREATURE_PTR);
-            combatAnimationUPtr_->CenteringStart(creaturesListeningPVec);
+            AnimationCenteringStart(creaturesListeningPVec);
             slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
             SetupTurnBox();
         }
@@ -2717,7 +2735,7 @@ namespace stage
         SetTurnPhase(TurnPhase::CenterAndZoomOut);
         isShortPostZoomOutPause_ = true;
         creaturesToCastUponCopyPVec.emplace_back(TURN_CREATURE_PTR);
-        combatAnimationUPtr_->CenteringStart(creaturesToCastUponCopyPVec);
+        AnimationCenteringStart(creaturesToCastUponCopyPVec);
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
         SetupTurnBox();
     }
@@ -2941,7 +2959,7 @@ namespace stage
                 false);
 
             creaturesToCenterOnPVec.emplace_back(TURN_CREATURE_PTR);
-            combatAnimationUPtr_->CenteringStart(creaturesToCenterOnPVec);
+            AnimationCenteringStart(creaturesToCenterOnPVec);
             slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
             SetTurnActionPhase(TurnActionPhase::Roar);
             SetTurnPhase(TurnPhase::CenterAndZoomOut);
@@ -3543,7 +3561,9 @@ namespace stage
         {
             case TurnActionPhase::Run:
             {
-                combatAnimationUPtr_->RunAnimStart(TURN_CREATURE_PTR);
+                combatAnimationUPtr_->RunAnimStart(
+                    combatDisplayStagePtr_->GetCombatNodeForCreature(TURN_CREATURE_PTR));
+
                 slider_.Reset(ANIM_RUN_SLIDER_SPEED_);
                 SetAnimPhase(AnimPhase::Run);
                 break;
@@ -3578,7 +3598,9 @@ namespace stage
                         << " instead of 1.");
 
                 combatAnimationUPtr_->MeleeMoveTowardAnimStart(
-                    TURN_CREATURE_PTR, CREATURE_EFFECTS_VEC[0].GetCreature());
+                    combatDisplayStagePtr_->GetCombatNodeForCreature(TURN_CREATURE_PTR),
+                    combatDisplayStagePtr_->GetCombatNodeForCreature(
+                        CREATURE_EFFECTS_VEC[0].GetCreature()));
 
                 slider_.Reset(ANIM_MELEE_MOVE_SLIDER_SPEED_);
                 break;
@@ -3600,9 +3622,18 @@ namespace stage
                     {
                         combatSoundEffects_.PlayShoot(WEAPON_PTR_OPT.value());
 
+                        auto const CREATURE_ATTACKING_CENTER_POSV{
+                            combatDisplayStagePtr_->GetCombatNodeCenter(TURN_CREATURE_PTR)
+                        };
+
+                        auto const CREATURE_DEFENDING_CENTER_POSV{
+                            combatDisplayStagePtr_->GetCombatNodeCenter(
+                                fightResult_.Effects()[0].GetCreature())
+                        };
+
                         combatAnimationUPtr_->ProjectileShootAnimStart(
-                            TURN_CREATURE_PTR,
-                            fightResult_.Effects()[0].GetCreature(),
+                            CREATURE_ATTACKING_CENTER_POSV,
+                            CREATURE_DEFENDING_CENTER_POSV,
                             WEAPON_PTR_OPT.value(),
                             HIT_INFO.WasHit());
 
@@ -3662,7 +3693,9 @@ namespace stage
                 creaturesToShakePVec.emplace_back(TURN_CREATURE_PTR);
 
                 combatAnimationUPtr_->ShakeAnimStart(
-                    creaturesToShakePVec, ANIM_IMPACT_SHAKE_SLIDER_SPEED_, true);
+                    combatDisplayStagePtr_->GetCombatNodesForCreatures(creaturesToShakePVec),
+                    ANIM_IMPACT_SHAKE_SLIDER_SPEED_,
+                    true);
 
                 slider_.Reset(ANIM_IMPACT_SLIDER_SPEED_);
 
@@ -4110,7 +4143,7 @@ namespace stage
 
         SetTurnPhase(TurnPhase::CenterAndZoomOut);
 
-        combatAnimationUPtr_->CenteringStart(
+        AnimationCenteringStart(
             creature::CreaturePVec_t{ TURN_CREATURE_PTR, CREATURE_TO_ATTACK_PTR });
 
         slider_.Reset(ANIM_CENTERING_SLIDER_SPEED_);
@@ -4475,6 +4508,15 @@ namespace stage
     void CombatStage::PerformRoarEffects()
     {
         fightResult_ = combat::FightClub::Roar(turnCreaturePtrOpt_.value(), combatDisplayStagePtr_);
+    }
+
+    void CombatStage::AnimationCenteringStart(const creature::CreaturePVec_t & CREATURE_PVEC)
+    {
+        combatAnimationUPtr_->CenteringStart(
+            CREATURE_PVEC,
+            combatDisplayStagePtr_->FindCenterOfCreatures(CREATURE_PVEC),
+            combatDisplayStagePtr_->IsZoomOutRequired(CREATURE_PVEC),
+            combatDisplayStagePtr_);
     }
 
 } // namespace stage

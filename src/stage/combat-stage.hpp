@@ -368,6 +368,8 @@ namespace stage
 
         void PerformRoarEffects();
 
+        void AnimationCenteringStart(const creature::CreaturePVec_t &);
+
     public:
         static const std::string POPUP_NAME_SPELLBOOK_;
         static const std::string POPUP_NAME_MUSICSHEET_;
@@ -467,12 +469,12 @@ namespace stage
         // A slider member that is used for various slider tasks
         sfml_util::sliders::ZeroSliderOnce<float> slider_;
 
+        // this member controls combat related animations
+        combat::CombatAnimationUPtr_t combatAnimationUPtr_;
+
         // The scope of this is controlled by Loop,
         // so check before use during shutdown of the stage.
         combat::CombatDisplayPtr_t combatDisplayStagePtr_;
-
-        // this member controls combat related animations
-        combat::CombatAnimationUPtr_t combatAnimationUPtr_;
 
         sfml_util::gui::FourStateButtonUPtr_t settingsButtonUPtr_;
 
