@@ -74,7 +74,8 @@ namespace item
 namespace state
 {
     class GameState;
-    using GameStatePtr_t = GameState *;
+    using GameStatePtr_t = misc::NotNull<GameState *>;
+    using GameStatePtrOpt_t = boost::optional<GameStatePtr_t>;
 } // namespace state
 
 namespace sfml_util
@@ -152,7 +153,7 @@ namespace sfml_util
                 const bool IS_VALID = true);
 
             const creature::CreaturePtrOpt_t CHARACTER_PTR_OPT;
-            const state::GameStatePtr_t GAMESTATE_CPTR;
+            const state::GameStatePtrOpt_t GAMESTATE_PTR_OPT;
             const item::ItemPtrOpt_t ITEM_PTR_OPT;
             const creature::ConditionPtrOpt_t COND_PTR_OPT;
             const creature::TitlePtrOpt_t TITLE_PTR_OPT;

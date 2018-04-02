@@ -28,15 +28,21 @@
 // game.hpp
 //  A class that provides access to all game information.
 //
+#include "misc/not-null.hpp"
+
 #include <memory>
 
 namespace heroespath
 {
-
+namespace player
+{
+    class Party;
+    using PartyUPtr_t = std::unique_ptr<Party>;
+} // namespace player
 namespace state
 {
     class GameState;
-    using GameStatePtr_t = GameState *;
+    using GameStatePtr_t = misc::NotNull<GameState *>;
     using GameStateUPtr_t = std::unique_ptr<GameState>;
 } // namespace state
 
@@ -61,12 +67,13 @@ namespace game
         static void Release();
 
         state::GameState & State() const;
-        void StateStore(const state::GameStatePtr_t);
+        const state::GameStatePtr_t MakeNewGame(player::PartyUPtr_t PARTY_UPTR);
 
     private:
         static std::unique_ptr<Game> instanceUPtr_;
         state::GameStateUPtr_t stateUPtr_;
     };
+
 } // namespace game
 } // namespace heroespath
 

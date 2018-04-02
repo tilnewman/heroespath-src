@@ -30,9 +30,10 @@
 #include "game.hpp"
 
 #include "log/log-macros.hpp"
-#include "state/game-state.hpp"
-
 #include "misc/assertlogandthrow.hpp"
+#include "player/party.hpp"
+#include "state/game-state.hpp"
+#include "state/world-factory.hpp"
 
 #include <exception>
 #include <memory>
@@ -86,28 +87,22 @@ namespace game
 
     state::GameState & Game::State() const
     {
-        if (stateUPtr_.get() == nullptr)
-        {
-            std::ostringstream ss;
-            ss << "Game::State() was called when there was no state.";
-            throw std::runtime_error(ss.str());
-        }
-        else
-        {
-            return *stateUPtr_;
-        }
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_.get() != nullptr), "Game::State() was called when there was no state.");
+
+        return *stateUPtr_;
     }
 
-    void Game::StateStore(const state::GameStatePtr_t STATE_PTR)
+    const state::GameStatePtr_t Game::MakeNewGame(player::PartyUPtr_t PARTY_UPTR)
     {
-        if (stateUPtr_.get() != nullptr)
-        {
-            M_HP_LOG_ERR(
-                "Game::StateSet() is going to free an old game state"
-                << " and replace it with a new one.");
-        }
+        stateUPtr_ = std::make_unique<state::GameState>(
+            std::move(PARTY_UPTR), state::WorldFactory::MakeForNewGame());
 
-        stateUPtr_.reset(STATE_PTR);
+        stateUPtr_->IsNewGameSet(true);
+        stateUPtr_->DateTimeStartedSet(sfml_util::DateTime::CurrentDateTime());
+
+        return stateUPtr_.get();
     }
+
 } // namespace game
 } // namespace heroespath

@@ -105,32 +105,26 @@ namespace state
 
     void GameStateFactory::NewGame(player::PartyUPtr_t PARTY_UPTR) const
     {
-        auto gameStatePtr = new GameState(std::move(PARTY_UPTR), WorldFactory::MakeForNewGame());
-        gameStatePtr->IsNewGameSet(true);
-        gameStatePtr->DateTimeStartedSet(sfml_util::DateTime::CurrentDateTime());
-        game::Game::Instance()->StateStore(gameStatePtr);
-        SaveGame(gameStatePtr);
+        SaveGame(game::Game::Instance()->MakeNewGame(std::move(PARTY_UPTR)));
     }
 
-    GameStatePSet_t GameStateFactory::LoadAllGames() const
+    const GameStatePVec_t GameStateFactory::LoadAllGames() const
     {
         namespace bfs = boost::filesystem;
 
-        // configure the path
         const bfs::path DIR_OBJ(
             bfs::system_complete(bfs::current_path() / bfs::path(SAVED_HEROESPATH_DIR_NAME_)));
 
-        GameStatePSet_t gameStatePSet;
+        GameStatePVec_t gameStatePVec;
 
-        // check for early exit cases
         if (false == bfs::exists(DIR_OBJ))
         {
-            return gameStatePSet;
+            return gameStatePVec;
         }
 
         if (false == bfs::is_directory(DIR_OBJ))
         {
-            return gameStatePSet;
+            return gameStatePVec;
         }
 
         // create a vector of paths to saved games
@@ -159,7 +153,7 @@ namespace state
                 boost::archive::text_iarchive ia(ifs);
                 ia >> *nextGameStatePtr;
                 nextGameStatePtr->AfterSerialize();
-                gameStatePSet.insert(nextGameStatePtr);
+                gameStatePVec.emplace_back(nextGameStatePtr);
             }
             catch (const std::exception & E)
             {
@@ -177,13 +171,13 @@ namespace state
             }
         }
 
-        return gameStatePSet;
+        return gameStatePVec;
     }
 
-    void GameStateFactory::SaveGame(const GameStatePtr_t HEROESPATH_PTR) const
+    void GameStateFactory::SaveGame(const GameStatePtr_t GAMESTATE_PTR) const
     {
         Save(
-            HEROESPATH_PTR,
+            state::GameStatePtrOpt_t(GAMESTATE_PTR),
             boost::none,
             SAVED_HEROESPATH_DIR_NAME_,
             SAVED_HEROESPATH_FILE_NAME_,
@@ -259,7 +253,7 @@ namespace state
     void GameStateFactory::SaveCharacter(const creature::CreaturePtr_t CHARACTER_PTR) const
     {
         Save(
-            nullptr,
+            boost::none,
             CHARACTER_PTR,
             UNPLAYED_CHAR_DIR_NAME_,
             CHARACTER_PTR->Name(),
@@ -352,7 +346,7 @@ namespace state
     }
 
     void GameStateFactory::Save(
-        const GameStatePtr_t HEROESPATH_PTR,
+        const GameStatePtrOpt_t GAMESTATE_PTR_OPT,
         const creature::CreaturePtrOpt_t CHARACTER_PTR_OPT,
         const std::string & DIR_STR,
         const std::string & FILE_STR,
@@ -396,9 +390,9 @@ namespace state
         }
 
         // set the date and time of last save
-        if (HEROESPATH_PTR != nullptr)
+        if (GAMESTATE_PTR_OPT)
         {
-            HEROESPATH_PTR->DateTimeOfLastSaveSet(sfml_util::DateTime::CurrentDateTime());
+            GAMESTATE_PTR_OPT->Obj().DateTimeOfLastSaveSet(sfml_util::DateTime::CurrentDateTime());
         }
 
         try
@@ -407,9 +401,9 @@ namespace state
             boost::archive::text_oarchive oa(ofs);
 
             // save either, not both
-            if (HEROESPATH_PTR != nullptr)
+            if (GAMESTATE_PTR_OPT)
             {
-                oa << *HEROESPATH_PTR;
+                oa << *GAMESTATE_PTR_OPT.value();
             }
             else
             {

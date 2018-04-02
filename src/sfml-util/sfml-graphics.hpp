@@ -54,7 +54,6 @@ namespace sfml_util
 {
 
     using TextureVec_t = std::vector<sf::Texture>;
-    using TexturePtr_t = sf::Texture *;
     using TextureUPtr_t = std::unique_ptr<sf::Texture>;
     using TextureUVec_t = std::vector<TextureUPtr_t>;
     //

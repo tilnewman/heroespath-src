@@ -28,13 +28,14 @@
 // game-state.hpp
 //  A class that represents a game in play.
 //
+#include "misc/boost-optional-that-throws.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/not-null.hpp"
 #include "player/party.hpp"
 #include "sfml-util/date-time.hpp"
 #include "state/world.hpp"
 
 #include <memory>
-#include <set>
 #include <vector>
 
 namespace heroespath
@@ -100,8 +101,8 @@ namespace state
         }
     };
 
-    using GameStatePtr_t = GameState *;
-    using GameStatePSet_t = std::set<GameStatePtr_t>;
+    using GameStatePtr_t = misc::NotNull<GameState *>;
+    using GameStatePVec_t = std::vector<GameStatePtr_t>;
 
     bool operator<(const GameState & L, const GameState & R);
 

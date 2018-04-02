@@ -33,7 +33,6 @@
 #include "misc/not-null.hpp"
 
 #include <memory>
-#include <set>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -51,14 +50,15 @@ namespace creature
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePtrOpt_t = boost::optional<CreaturePtr_t>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace state
 {
 
     // forward declarations
     class GameState;
-    using GameStatePtr_t = GameState *;
-    using GameStatePSet_t = std::set<GameStatePtr_t>;
+    using GameStatePtr_t = misc::NotNull<GameState *>;
+    using GameStatePtrOpt_t = boost::optional<GameStatePtr_t>;
+    using GameStatePVec_t = std::vector<GameStatePtr_t>;
 
     // Creates game states either new or from a previous save to disc.
     class GameStateFactory
@@ -80,7 +80,7 @@ namespace state
         void NewGame(player::PartyUPtr_t) const;
 
         // Caller is responsible for the lifetime of the returned GameState objects.
-        GameStatePSet_t LoadAllGames() const;
+        const GameStatePVec_t LoadAllGames() const;
 
         void SaveGame(const GameStatePtr_t) const;
 
@@ -96,7 +96,7 @@ namespace state
         // depending on which pointer is null...because can't include the
         // boost serializer includes here in this header file...grumble...zTn 2016-10-26
         void Save(
-            const GameStatePtr_t HEROESPATH_PTR,
+            const GameStatePtrOpt_t GAMESTATE_PTR_OPT,
             const creature::CreaturePtrOpt_t CHARACTER_PTR_OPT,
             const std::string & DIR_STR,
             const std::string & FILE_STR,

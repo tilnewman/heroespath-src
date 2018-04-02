@@ -29,6 +29,9 @@
 //
 #include "main-menu-stage.hpp"
 
+#include "game/game-data-file.hpp"
+#include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
@@ -37,12 +40,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/tile.hpp"
-
-#include "log/log-macros.hpp"
-
-#include "game/game-data-file.hpp"
-#include "game/loop-manager.hpp"
-
 #include "state/game-state-factory.hpp"
 #include "state/game-state.hpp"
 
@@ -162,15 +159,13 @@ namespace stage
         auto const ARE_THERE_GAMES_TO_LOAD{ []() {
             // TODO this is wasteful in the extreme, need to add GameStateFactory::FindGameToLoad()
             // that does not create all games in order to find just one
-            auto const GAMESTATE_PSET{ state::GameStateFactory::Instance()->LoadAllGames() };
-            auto const ARE_THERE_GAMES{ (GAMESTATE_PSET.empty() == false) };
-
-            for (auto const NEXT_GAMESTATE_PTR : GAMESTATE_PSET)
+            auto const GAMESTATE_PVEC{ state::GameStateFactory::Instance()->LoadAllGames() };
+            for (auto const & NEXT_GAMESTATE_PTR : GAMESTATE_PVEC)
             {
-                delete NEXT_GAMESTATE_PTR;
+                delete NEXT_GAMESTATE_PTR.Ptr();
             }
 
-            return ARE_THERE_GAMES;
+            return (GAMESTATE_PVEC.empty() == false);
         }() };
 
         resumeButtonUPtr_->SetIsDisabled(ARE_THERE_GAMES_TO_LOAD == false);

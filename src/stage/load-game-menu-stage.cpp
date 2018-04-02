@@ -29,6 +29,12 @@
 //
 #include "load-game-menu-stage.hpp"
 
+#include "creature/creature.hpp"
+#include "game/game-data-file.hpp"
+#include "game/loop-manager.hpp"
+#include "misc/real.hpp"
+#include "player/party.hpp"
+#include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
@@ -38,18 +44,9 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/tile.hpp"
-
-#include "popup/popup-manager.hpp"
-
-#include "creature/creature.hpp"
-#include "game/game-data-file.hpp"
-#include "game/loop-manager.hpp"
-#include "player/party.hpp"
 #include "state/game-state-factory.hpp"
 #include "state/game-state.hpp"
 #include "state/world.hpp"
-
-#include "misc/real.hpp"
 
 #include <list>
 #include <string>
@@ -76,19 +73,19 @@ namespace stage
         , gsListBoxPosHeight_(0.0f)
         , ouroborosUPtr_()
         , bottomSymbol_()
-        , gamestatePSet_()
+        , gamestatePVec_()
     {}
 
     LoadGameStage::~LoadGameStage()
     {
         Stage::ClearAllEntities();
 
-        for (auto & nextGameStatePtr : gamestatePSet_)
+        for (auto const & GAME_STATE_PTR : gamestatePVec_)
         {
-            delete nextGameStatePtr;
+            delete GAME_STATE_PTR.Ptr();
         }
 
-        gamestatePSet_.clear();
+        gamestatePVec_.clear();
     }
 
     bool LoadGameStage::HandleCallback(
@@ -149,11 +146,11 @@ namespace stage
         // hand all GameState objects to the ListBox
         // TODO this is wasteful in the extreme, need a GameStateFactory::LoadAllSavedGameProfiles()
         // function that doesn't actually load every game but a vector of profiles to use instead.
-        gamestatePSet_ = state::GameStateFactory::Instance()->LoadAllGames();
+        gamestatePVec_ = state::GameStateFactory::Instance()->LoadAllGames();
         sfml_util::gui::ListBoxItemSVec_t listBoxItemSVec;
         std::size_t gameStateCount(0);
 
-        for (auto const NEXT_GAMESTATE_PTR : gamestatePSet_)
+        for (auto const & NEXT_GAMESTATE_PTR : gamestatePVec_)
         {
             std::ostringstream ss;
             ss << "Started "
@@ -242,11 +239,7 @@ namespace stage
             "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
                 << " returned a nullptr.");
 
-        auto gameStatePtr(listBoxItemSPtr->GAMESTATE_CPTR);
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (gameStatePtr != nullptr),
-            "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
-                << " returned a GAMESTATE_CPTR that was null.");
+        auto const GAMESTATE_PTR{ listBoxItemSPtr->GAMESTATE_PTR_OPT.value() };
 
         sfml_util::gui::TextInfo descTextInfo(
             "",
@@ -268,7 +261,7 @@ namespace stage
         }
 
         descTextInfo.text = std::string("Location:        ")
-                                .append(gameStatePtr->GetWorld().GetMaps().Current().Name());
+                                .append(GAMESTATE_PTR->GetWorld().GetMaps().Current().Name());
 
         const sf::FloatRect LOC_TEXT_RECT(
             CHAR_LIST_POS_LEFT, CHAR_LIST_POS_TOP - 35.0f, 0.0f, 0.0f);
@@ -291,7 +284,7 @@ namespace stage
         charLabelTextRegionUPtr_->Setup(descTextInfo, CHAR_TEXT_RECT);
 
         // setup characters list
-        auto const CHAR_PVEC{ gameStatePtr->Party().Characters() };
+        auto const CHAR_PVEC{ GAMESTATE_PTR->Party().Characters() };
         auto posY{ CHAR_LIST_POS_TOP + 30.0f };
 
         auto const NUM_CHARS{ CHAR_PVEC.size() };
@@ -344,5 +337,6 @@ namespace stage
             return false;
         }
     }
+
 } // namespace stage
 } // namespace heroespath

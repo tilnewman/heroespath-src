@@ -28,20 +28,19 @@
 // load-game-menu-stage.hpp
 //  A Stage class that allows players to load previous games
 //
+#include "misc/not-null.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/horiz-symbol.hpp"
+#include "sfml-util/main-menu-buttons.hpp"
+#include "sfml-util/main-menu-title.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage.hpp"
 
-#include "popup/i-popup-callback.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/main-menu-title.hpp"
-
 #include <memory>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -63,8 +62,8 @@ namespace sfml_util
 namespace state
 {
     class GameState;
-    using GameStatePtr_t = GameState *;
-    using GameStatePSet_t = std::set<GameStatePtr_t>;
+    using GameStatePtr_t = misc::NotNull<GameState *>;
+    using GameStatePVec_t = std::vector<GameStatePtr_t>;
 } // namespace state
 
 namespace stage
@@ -119,7 +118,7 @@ namespace stage
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;
         sfml_util::BottomSymbol bottomSymbol_;
         //
-        state::GameStatePSet_t gamestatePSet_;
+        state::GameStatePVec_t gamestatePVec_;
     };
 } // namespace stage
 } // namespace heroespath
