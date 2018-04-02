@@ -158,7 +158,7 @@ namespace sfml_util
                                 << " that was empty.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (TEXT_INFO.fontPtr != nullptr),
+                (!!TEXT_INFO.fontPtrOpt),
                 GetEntityName() << " TextRegion::Setup(\"...\") was given an upTextInfo with a"
                                 << " null font pointer.");
 

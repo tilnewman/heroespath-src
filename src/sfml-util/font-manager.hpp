@@ -103,60 +103,72 @@ namespace sfml_util
             return Font_NumbersDefault1()->getInfo().family;
         }
 
-        FontPtr_t Font_NumbersDefault1()
+        const FontPtr_t Font_NumbersDefault1()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::QuillSword)].get();
         }
-        FontPtr_t Font_NumbersTypical1()
+
+        const FontPtr_t Font_NumbersTypical1()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::GentiumPlus)].get();
         }
-        FontPtr_t Font_NumbersTypical2()
-        {
-            return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get();
-        }
-        FontPtr_t Font_NumbersSmall()
+
+        const FontPtr_t Font_NumbersTypical2()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get();
         }
 
-        FontPtr_t Font_Default1()
+        const FontPtr_t Font_NumbersSmall()
+        {
+            return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get();
+        }
+
+        const FontPtr_t Font_Default1()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::Euler)].get();
         }
-        FontPtr_t Font_Default2()
+
+        const FontPtr_t Font_Default2()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::GentiumPlus)].get();
         }
-        FontPtr_t Font_Typical()
+
+        const FontPtr_t Font_Typical()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::GoudyBookletter)].get();
         }
 
-        FontPtr_t Font_Dialog1() { return fontUVec_[static_cast<std::size_t>(Fonts::Euler)].get(); }
-        FontPtr_t Font_Dialog2()
+        const FontPtr_t Font_Dialog1()
+        {
+            return fontUVec_[static_cast<std::size_t>(Fonts::Euler)].get();
+        }
+
+        const FontPtr_t Font_Dialog2()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::GentiumPlus)].get();
         }
-        FontPtr_t Font_Dialog3()
+
+        const FontPtr_t Font_Dialog3()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get();
         }
 
-        FontPtr_t Font_BigFlavor1()
+        const FontPtr_t Font_BigFlavor1()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::ModernAntiqua)].get();
         }
-        FontPtr_t Font_BigFlavor2()
+
+        const FontPtr_t Font_BigFlavor2()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::ValleyForge)].get();
         }
-        FontPtr_t Font_BigFlavor3()
+
+        const FontPtr_t Font_BigFlavor3()
         {
             return fontUVec_[static_cast<std::size_t>(Fonts::QueenCountry)].get();
         }
 
-        FontPtr_t Font_PopupButton() { return Font_BigFlavor2(); }
+        const FontPtr_t Font_PopupButton() { return Font_BigFlavor2(); }
 
     private:
         static const sf::Font LoadFont(const std::string & FONT_FILE_NAME);
@@ -182,6 +194,7 @@ namespace sfml_util
         static std::unique_ptr<FontManager> instanceUPtr_;
         static FontUVec_t fontUVec_;
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

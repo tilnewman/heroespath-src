@@ -27,6 +27,7 @@
 //
 // interaction-text-enum.hpp
 //
+#include "misc/not-null.hpp"
 #include <string>
 
 namespace sf
@@ -38,7 +39,7 @@ namespace heroespath
 {
 namespace sfml_util
 {
-    using FontPtr_t = sf::Font *;
+    using FontPtr_t = misc::NotNull<sf::Font *>;
 }
 namespace interact
 {
@@ -53,8 +54,9 @@ namespace interact
         };
 
         static const std::string ToString(const Enum);
-        static sfml_util::FontPtr_t Font(const Enum);
+        static const sfml_util::FontPtr_t Font(const Enum);
     };
+
 } // namespace interact
 } // namespace heroespath
 

@@ -29,11 +29,10 @@
 //
 #include "gui-entity-text.hpp"
 
+#include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/text-rendering.hpp"
-
-#include "misc/assertlogandthrow.hpp"
 
 namespace heroespath
 {
@@ -45,13 +44,13 @@ namespace sfml_util
         GuiText::GuiText(
             const std::string & NAME,
             const float TEXT_WIDTH_LIMIT,
-            const FontPtr_t NUMBERS_FONT_PTR)
+            const FontPtrOpt_t NUMBERS_FONT_PTR_OPT)
             : GuiEntity(std::string(NAME).append("_GuiText"), 0.0f, 0.0f)
             , text_("")
             , upTextInfo_()
             , downTextInfo_()
             , overTextInfo_()
-            , numberFontPtr_(NUMBERS_FONT_PTR)
+            , numberFontPtrOpt_(NUMBERS_FONT_PTR_OPT)
             , offscreenTexture_()
             , sprite_()
             , textWidthLimit_(TEXT_WIDTH_LIMIT)
@@ -63,13 +62,13 @@ namespace sfml_util
             const sf::FloatRect & REGION,
             const MouseTextInfo & MOUSE_TEXT_INFO,
             const float TEXT_WIDTH_LIMIT,
-            const FontPtr_t NUMBERS_FONT_PTR)
+            const FontPtrOpt_t NUMBERS_FONT_PTR_OPT)
             : GuiEntity(std::string(NAME).append("_GuiText"), REGION)
             , text_("")
             , upTextInfo_(MOUSE_TEXT_INFO.up)
             , downTextInfo_(MOUSE_TEXT_INFO.down)
             , overTextInfo_(MOUSE_TEXT_INFO.over)
-            , numberFontPtr_(NUMBERS_FONT_PTR)
+            , numberFontPtrOpt_(NUMBERS_FONT_PTR_OPT)
             , offscreenTexture_()
             , sprite_()
             , textWidthLimit_(TEXT_WIDTH_LIMIT)
@@ -81,7 +80,7 @@ namespace sfml_util
                 REGION.top,
                 MOUSE_TEXT_INFO,
                 TEXT_WIDTH_LIMIT,
-                NUMBERS_FONT_PTR);
+                NUMBERS_FONT_PTR_OPT);
         }
 
         GuiText::GuiText(
@@ -90,13 +89,13 @@ namespace sfml_util
             const float POS_TOP,
             const MouseTextInfo & MOUSE_TEXT_INFO,
             const float TEXT_WIDTH_LIMIT,
-            const FontPtr_t NUMBERS_FONT_PTR)
+            const FontPtrOpt_t NUMBERS_FONT_PTR_OPT)
             : GuiEntity(std::string(NAME).append("_GuiText"), POS_LEFT, POS_TOP)
             , text_("")
             , upTextInfo_(MOUSE_TEXT_INFO.up)
             , downTextInfo_(MOUSE_TEXT_INFO.down)
             , overTextInfo_(MOUSE_TEXT_INFO.over)
-            , numberFontPtr_(NUMBERS_FONT_PTR)
+            , numberFontPtrOpt_(NUMBERS_FONT_PTR_OPT)
             , offscreenTexture_()
             , sprite_()
             , textWidthLimit_(TEXT_WIDTH_LIMIT)
@@ -108,7 +107,7 @@ namespace sfml_util
                 POS_TOP,
                 MOUSE_TEXT_INFO,
                 TEXT_WIDTH_LIMIT,
-                NUMBERS_FONT_PTR);
+                NUMBERS_FONT_PTR_OPT);
         }
 
         GuiText::~GuiText() = default;
@@ -119,14 +118,14 @@ namespace sfml_util
             const float POS_TOP,
             const MouseTextInfo & MOUSE_TEXT_INFO,
             const float TEXT_WIDTH_LIMIT,
-            const FontPtr_t NUMBERS_FONT_PTR)
+            const FontPtrOpt_t NUMBERS_FONT_PTR_OPT)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (false == TEXT.empty()),
                 entityName_ << " GuiText::Setup() was given a TEXT string that was empty.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (MOUSE_TEXT_INFO.up.fontPtr != nullptr),
+                (!!MOUSE_TEXT_INFO.up.fontPtrOpt),
                 entityName_ << " GuiText::Setup(\"" << TEXT
                             << "\") was given an upTextInfo with a null font pointer.");
 
@@ -140,15 +139,13 @@ namespace sfml_util
             renderedText_.Reset();
 
             TextInfo textInfoChar(MOUSE_TEXT_INFO.up);
-            if ((MouseState::Down == entityMouseState_)
-                && (nullptr != MOUSE_TEXT_INFO.down.fontPtr))
+            if ((MouseState::Down == entityMouseState_) && MOUSE_TEXT_INFO.down.fontPtrOpt)
             {
                 textInfoChar = MOUSE_TEXT_INFO.down;
             }
             else
             {
-                if ((MouseState::Over == entityMouseState_)
-                    && (nullptr != MOUSE_TEXT_INFO.over.fontPtr))
+                if ((MouseState::Over == entityMouseState_) && MOUSE_TEXT_INFO.over.fontPtrOpt)
                 {
                     textInfoChar = MOUSE_TEXT_INFO.over;
                 }
@@ -156,21 +153,21 @@ namespace sfml_util
 
             TextInfo textInfoNum(textInfoChar);
 
-            if (nullptr == NUMBERS_FONT_PTR)
+            if (NUMBERS_FONT_PTR_OPT)
             {
-                if (nullptr == numberFontPtr_)
-                {
-                    textInfoNum.fontPtr = FontManager::Instance()->Font_NumbersDefault1();
-                }
-                else
-                {
-                    textInfoNum.fontPtr = numberFontPtr_;
-                }
+                textInfoNum.fontPtrOpt = NUMBERS_FONT_PTR_OPT;
+                numberFontPtrOpt_ = NUMBERS_FONT_PTR_OPT;
             }
             else
             {
-                textInfoNum.fontPtr = NUMBERS_FONT_PTR;
-                numberFontPtr_ = NUMBERS_FONT_PTR;
+                if (numberFontPtrOpt_)
+                {
+                    textInfoNum.fontPtrOpt = numberFontPtrOpt_;
+                }
+                else
+                {
+                    textInfoNum.fontPtrOpt = FontManager::Instance()->Font_NumbersDefault1();
+                }
             }
 
             text_render::Render(
@@ -227,7 +224,7 @@ namespace sfml_util
                 GetEntityPos().y,
                 MouseTextInfo(upTextInfo_, downTextInfo_, overTextInfo_),
                 textWidthLimit_,
-                numberFontPtr_);
+                numberFontPtrOpt_);
         }
 
         bool GuiText::MouseUp(const sf::Vector2f & MOUSE_POS_V)
@@ -291,6 +288,7 @@ namespace sfml_util
         void GuiText::SpriteColorSet(const sf::Color & NEW_COLOR) { sprite_.setColor(NEW_COLOR); }
 
         void GuiText::SpriteColorReset() { sprite_.setColor(sf::Color::White); }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

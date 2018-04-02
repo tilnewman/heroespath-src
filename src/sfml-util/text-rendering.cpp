@@ -210,8 +210,7 @@ namespace sfml_util
             const Margins & MARGINS)
         {
             gui::TextInfo numbersTextInfo(TEXT_INFO);
-            numbersTextInfo.fontPtr = sfml_util::FontManager::Instance()->Font_NumbersDefault1();
-
+            numbersTextInfo.fontPtrOpt = sfml_util::FontManager::Instance()->Font_NumbersDefault1();
             return Render(renderText, TEXT_INFO, numbersTextInfo, TEXT_INFO.text, REGION, MARGINS);
         }
 
@@ -227,12 +226,12 @@ namespace sfml_util
                 (false == TEXT.empty()), "TextRener::Render() was given an empty string.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (nullptr != TEXT_INFO_CHAR.fontPtr),
+                (!!TEXT_INFO_CHAR.fontPtrOpt),
                 "TextRender::Render(\"" << TEXT << "\") was given a TEXT_INFO_CHAR with a null"
                                         << " font pointer.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (nullptr != TEXT_INFO_NUM.fontPtr),
+                (!!TEXT_INFO_NUM.fontPtrOpt),
                 "TextRender::Render(\"" << TEXT << "\") was given a TEXT_INFO_NUM with a null"
                                         << " font pointer.");
 

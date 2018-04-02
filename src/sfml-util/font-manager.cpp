@@ -29,12 +29,10 @@
 //
 #include "font-manager.hpp"
 
+#include "log/log-macros.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "log/log-macros.hpp"
-
-#include "misc/assertlogandthrow.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -145,15 +143,21 @@ namespace sfml_util
     {
         // Note:  Keep order in sync with enum FontManager::Fonts
         fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/euler/euler.otf")));
+
         fontUVec_.emplace_back(
             std::make_unique<sf::Font>(LoadFont("/gentium-plus/gentium-plus.ttf")));
+
         fontUVec_.emplace_back(
             std::make_unique<sf::Font>(LoadFont("/goudy-bookletter/goudy-bookletter.otf")));
+
         fontUVec_.emplace_back(
             std::make_unique<sf::Font>(LoadFont("/modern-antiqua/modern-antiqua.ttf")));
+
         fontUVec_.emplace_back(
             std::make_unique<sf::Font>(LoadFont("/queen-country/queen-country.ttf")));
+
         fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/quill-sword/quillsword.ttf")));
+
         fontUVec_.emplace_back(
             std::make_unique<sf::Font>(LoadFont("/valley-forge/valleyforge.ttf")));
     }
@@ -200,11 +204,15 @@ namespace sfml_util
     const sf::Font FontManager::LoadFont(const std::string & FONT_FILE_NAME)
     {
         namespace bfs = boost::filesystem;
+
         const bfs::path PATH_OBJ(
             bfs::system_complete(bfs::path(fontsDirectoryPath_) / bfs::path(FONT_FILE_NAME)));
+
         sf::Font font;
         sfml_util::LoadFont(font, PATH_OBJ.string());
+
         return font;
     }
+
 } // namespace sfml_util
 } // namespace heroespath

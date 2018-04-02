@@ -53,7 +53,7 @@ namespace sfml_util
         public:
             explicit TextInfo(
                 const std::string & TEXT = "",
-                const FontPtr_t FONT_PTR = nullptr,
+                const FontPtrOpt_t FONT_PTR_OPT = boost::none,
                 const unsigned int CHAR_SIZE = FontManager::Instance()->Size_Normal(),
                 const sf::Color & COLOR = sf::Color::White,
                 const sf::BlendMode & BLEND_MODE = sf::BlendAlpha,
@@ -70,10 +70,10 @@ namespace sfml_util
                 const Justified::Enum JUSTIFIED);
 
             // returns true if there is non-empty text and a non-null font pointer
-            bool IsValid() const { return ((false == text.empty()) && (fontPtr != nullptr)); }
+            bool IsValid() const { return ((false == text.empty()) && fontPtrOpt); }
 
             std::string text;
-            FontPtr_t fontPtr;
+            FontPtrOpt_t fontPtrOpt;
             unsigned int charSize;
             sf::Color color;
             sf::BlendMode blendMode;
@@ -94,6 +94,7 @@ namespace sfml_util
 
         // Helper function used to setup an sf::Text object
         void SetupText(sf::Text & text, const TextInfo & TEXT_INFO);
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

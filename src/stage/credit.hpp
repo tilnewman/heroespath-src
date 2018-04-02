@@ -125,6 +125,7 @@ namespace stage
 
     using CreditSPtr_t = std::shared_ptr<Credit>;
     using CreditSVec_t = std::vector<CreditSPtr_t>;
+
 } // namespace stage
 } // namespace heroespath
 

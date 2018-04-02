@@ -56,7 +56,7 @@ namespace interact
         }
     }
 
-    sfml_util::FontPtr_t Text::Font(const Text::Enum TEXT_TYPE)
+    const sfml_util::FontPtr_t Text::Font(const Text::Enum TEXT_TYPE)
     {
         switch (TEXT_TYPE)
         {
@@ -74,5 +74,6 @@ namespace interact
             }
         }
     }
+
 } // namespace interact
 } // namespace heroespath

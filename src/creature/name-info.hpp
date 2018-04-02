@@ -71,7 +71,7 @@ namespace creature
                 std::string(MaxCharacterCount() + 1, LargestLetter()), FONT_PTR, CHAR_SIZE);
         } // The +1 is to accomodate the TextEntryBox's padding and margins
 
-        sfml_util::FontPtr_t DefaultFont() const;
+        const sfml_util::FontPtr_t DefaultFont() const;
 
         unsigned int DefaultSize() const;
 
@@ -114,6 +114,7 @@ namespace creature
         static std::unique_ptr<NameInfo> instanceUPtr_;
         FontSizeToWidthMap_t sizeMap_;
     };
+
 } // namespace creature
 } // namespace heroespath
 

@@ -29,11 +29,10 @@
 //
 #include "name-info.hpp"
 
+#include "log/log-macros.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-
-#include "log/log-macros.hpp"
 
 #include <sstream>
 #include <string>
@@ -81,10 +80,11 @@ namespace creature
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_.get() != nullptr),
             "NameInfo::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
 
-    sfml_util::FontPtr_t NameInfo::DefaultFont() const
+    const sfml_util::FontPtr_t NameInfo::DefaultFont() const
     {
         return sfml_util::FontManager::Instance()->Font_Default2();
     }
@@ -135,5 +135,6 @@ namespace creature
 
         return textRegion.GetEntityRegion().width;
     }
+
 } // namespace creature
 } // namespace heroespath

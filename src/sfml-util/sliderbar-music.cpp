@@ -82,12 +82,12 @@ namespace sfml_util
         {
             ss << "MUTE";
 
-            textInfo.fontPtr = FontManager::Instance()->Font_Typical();
+            textInfo.fontPtrOpt = FontManager::Instance()->Font_Typical();
         }
         else
         {
             ss << NEW_VALUE_RANGE_CORRECTED_INT;
-            textInfo.fontPtr = FontManager::Instance()->Font_NumbersDefault1();
+            textInfo.fontPtrOpt = FontManager::Instance()->Font_NumbersDefault1();
         }
 
         textInfo.text = ss.str();

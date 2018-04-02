@@ -28,10 +28,9 @@
 // mouse-text-info.hpp
 //  A handy wrapper struct that holds three colors relating to mouse position.
 //
+#include "popup/popup-enums.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-
-#include "popup/popup-enums.hpp"
 
 #include <memory>
 #include <string>
@@ -88,6 +87,7 @@ namespace sfml_util
         {
             return !(L == R);
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

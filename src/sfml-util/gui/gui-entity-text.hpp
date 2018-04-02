@@ -59,14 +59,14 @@ namespace sfml_util
             explicit GuiText(
                 const std::string & NAME,
                 const float TEXT_WIDTH_LIMIT = 0.0f,
-                const FontPtr_t NUMBERS_FONT_PTR = nullptr);
+                const FontPtrOpt_t NUMBERS_FONT_PTR_OPT = boost::none);
 
             GuiText(
                 const std::string & NAME,
                 const sf::FloatRect & REGION,
                 const MouseTextInfo & MOUSE_TEXT_INFO,
                 const float TEXT_WIDTH_LIMIT = 0.0f,
-                const FontPtr_t NUMBERS_FONT_PTR = nullptr);
+                const FontPtrOpt_t NUMBERS_FONT_PTR_OPT = boost::none);
 
             GuiText(
                 const std::string & NAME,
@@ -74,7 +74,7 @@ namespace sfml_util
                 const float POS_TOP,
                 const MouseTextInfo & MOUSE_TEXT_INFO,
                 const float TEXT_WIDTH_LIMIT = 0.0f,
-                const FontPtr_t NUMBERS_FONT_PTR = nullptr);
+                const FontPtrOpt_t NUMBERS_FONT_PTR_OPT = boost::none);
 
             virtual ~GuiText();
 
@@ -106,7 +106,7 @@ namespace sfml_util
                 const float POS_TOP,
                 const MouseTextInfo & MOUSE_TEXT_INFO,
                 const float TEXT_WIDTH_LIMIT = 0.0f,
-                const FontPtr_t NUMBERS_FONT_PTR = nullptr);
+                const FontPtrOpt_t NUMBERS_FONT_PTR_OPT = boost::none);
 
             virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
             virtual void MoveEntityPos(const float HORIZ, const float VERT);
@@ -120,7 +120,7 @@ namespace sfml_util
             TextInfo upTextInfo_;
             TextInfo downTextInfo_;
             TextInfo overTextInfo_;
-            FontPtr_t numberFontPtr_;
+            FontPtrOpt_t numberFontPtrOpt_;
             sf::RenderTexture offscreenTexture_;
             sf::Sprite sprite_;
             float textWidthLimit_;
@@ -129,6 +129,7 @@ namespace sfml_util
 
         using GuiTextSPtr_t = std::shared_ptr<GuiText>;
         using GuiTextSVec_t = std::vector<GuiTextSPtr_t>;
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

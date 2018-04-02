@@ -27,6 +27,8 @@
 //
 // sfml-graphics.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 
 // prevent warnings that can be ignored in SFML
 #include "misc/platform.hpp"
@@ -60,7 +62,8 @@ namespace sfml_util
     //
     using RendTextSPtr_t = std::shared_ptr<sf::RenderTexture>;
     //
-    using FontPtr_t = sf::Font *;
+    using FontPtr_t = misc::NotNull<sf::Font *>;
+    using FontPtrOpt_t = boost::optional<FontPtr_t>;
     using FontUPtr_t = std::unique_ptr<sf::Font>;
     using FontUVec_t = std::vector<FontUPtr_t>;
     //

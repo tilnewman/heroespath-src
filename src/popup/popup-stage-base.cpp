@@ -402,7 +402,7 @@ namespace popup
             creature::NameInfo::Instance()->LargestLetterString(), popupInfo_.ButtonColor()) };
 
         const sf::Text TEMP_TEXT_OBJ{ TEMP_MOUSE_TEXT_INFO.up.text,
-                                      *TEMP_MOUSE_TEXT_INFO.up.fontPtr,
+                                      *TEMP_MOUSE_TEXT_INFO.up.fontPtrOpt.value(),
                                       TEMP_MOUSE_TEXT_INFO.up.charSize };
 
         buttonTextHeight_ = TEMP_TEXT_OBJ.getGlobalBounds().height;

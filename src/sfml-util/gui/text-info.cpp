@@ -29,11 +29,10 @@
 //
 #include "text-info.hpp"
 
+#include "misc/assertlogandthrow.hpp"
 #include "misc/platform.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "misc/assertlogandthrow.hpp"
 
 #include <tuple>
 
@@ -46,7 +45,7 @@ namespace sfml_util
 
         TextInfo::TextInfo(
             const std::string & TEXT,
-            const FontPtr_t FONT_PTR,
+            const FontPtrOpt_t FONT_PTR_OPT,
             const unsigned int CHAR_SIZE,
             const sf::Color & COLOR,
             const sf::BlendMode & BLEND_MODE,
@@ -55,7 +54,7 @@ namespace sfml_util
             const bool IS_OUTLINE_ONLY,
             const float OUTLINE_THICKNESS)
             : text(TEXT)
-            , fontPtr(FONT_PTR)
+            , fontPtrOpt(FONT_PTR_OPT)
             , charSize(CHAR_SIZE)
             , color(COLOR)
             , blendMode(BLEND_MODE)
@@ -72,7 +71,7 @@ namespace sfml_util
             const sf::Color & COLOR,
             const Justified::Enum JUSTIFIED)
             : text(TEXT)
-            , fontPtr(FONT_PTR)
+            , fontPtrOpt(FONT_PTR)
             , charSize(CHAR_SIZE)
             , color(COLOR)
             , blendMode(sf::BlendAlpha)
@@ -96,7 +95,7 @@ namespace sfml_util
 
             return std::tie(
                        L.text,
-                       L.fontPtr,
+                       L.fontPtrOpt,
                        L.charSize,
                        L.style,
                        L.justified,
@@ -104,7 +103,7 @@ namespace sfml_util
                        L.outlineThickness)
                 < std::tie(
                        R.text,
-                       R.fontPtr,
+                       R.fontPtrOpt,
                        R.charSize,
                        R.style,
                        R.justified,
@@ -121,7 +120,7 @@ namespace sfml_util
 
             return std::tie(
                        L.text,
-                       L.fontPtr,
+                       L.fontPtrOpt,
                        L.charSize,
                        L.color,
                        L.blendMode,
@@ -130,7 +129,7 @@ namespace sfml_util
                        L.isOutlineOnly)
                 == std::tie(
                        R.text,
-                       R.fontPtr,
+                       R.fontPtrOpt,
                        R.charSize,
                        R.color,
                        R.blendMode,
@@ -148,11 +147,11 @@ namespace sfml_util
             text.setString(TEXT_INFO.text);
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (nullptr != TEXT_INFO.fontPtr),
+                (!!TEXT_INFO.fontPtrOpt),
                 "sfml_util::gui::SetupText(\"" << TEXT_INFO.text
-                                               << "\") was given a null font pointer.");
+                                               << "\") was given an uninitialized font pointer.");
 
-            text.setFont(*TEXT_INFO.fontPtr);
+            text.setFont(*TEXT_INFO.fontPtrOpt.value());
             text.setStyle(TEXT_INFO.style);
             text.setCharacterSize(TEXT_INFO.charSize);
 

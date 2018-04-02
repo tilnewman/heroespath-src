@@ -270,7 +270,7 @@ namespace sfml_util
             if (MOUSE_TEXT_INFO.up.text.empty() == false)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (MOUSE_TEXT_INFO.up.fontPtr != nullptr),
+                    (!!MOUSE_TEXT_INFO.up.fontPtrOpt),
                     "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.up.text
                                                 << "\") (UP) was given a null font pointer.");
             }
@@ -278,7 +278,7 @@ namespace sfml_util
             if (MOUSE_TEXT_INFO.down.text.empty() == false)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (MOUSE_TEXT_INFO.down.fontPtr != nullptr),
+                    (!!MOUSE_TEXT_INFO.down.fontPtrOpt),
                     "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.down.text
                                                 << "\") (DOWN) was given a null font pointer.");
             }
@@ -286,7 +286,7 @@ namespace sfml_util
             if (MOUSE_TEXT_INFO.over.text.empty() == false)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (MOUSE_TEXT_INFO.over.fontPtr != nullptr),
+                    (!!MOUSE_TEXT_INFO.over.fontPtrOpt),
                     "FourStateButton::Setup(\"" << MOUSE_TEXT_INFO.over.text
                                                 << "\") (OVER) was given a null font pointer.");
             }
@@ -294,7 +294,7 @@ namespace sfml_util
             if (TEXT_INFO_DISABLED.text.empty() == false)
             {
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (TEXT_INFO_DISABLED.fontPtr != nullptr),
+                    (!!TEXT_INFO_DISABLED.fontPtrOpt),
                     "FourStateButton::Setup(\"" << TEXT_INFO_DISABLED.text
                                                 << "\") (DISABLED) was given a null font pointer.");
             }
@@ -314,8 +314,7 @@ namespace sfml_util
 
             sf::FloatRect tempRect(POS_LEFT, POS_TOP, 0.0f, 0.0f);
 
-            if ((MOUSE_TEXT_INFO.up.fontPtr != nullptr)
-                && (MOUSE_TEXT_INFO.up.text.empty() == false))
+            if (MOUSE_TEXT_INFO.up.fontPtrOpt && (MOUSE_TEXT_INFO.up.text.empty() == false))
             {
                 textRegionUpUPtr_ = std::make_unique<TextRegion>(
                     GetEntityName() + "Up", MOUSE_TEXT_INFO.up, tempRect);
@@ -350,22 +349,19 @@ namespace sfml_util
                 }
             }
 
-            if ((MOUSE_TEXT_INFO.down.fontPtr != nullptr)
-                && (MOUSE_TEXT_INFO.down.text.empty() == false))
+            if (MOUSE_TEXT_INFO.down.fontPtrOpt && (MOUSE_TEXT_INFO.down.text.empty() == false))
             {
                 textRegionDownUPtr_ = std::make_unique<TextRegion>(
                     GetEntityName() + "Down", MOUSE_TEXT_INFO.down, GetEntityRegion());
             }
 
-            if ((MOUSE_TEXT_INFO.over.fontPtr != nullptr)
-                && (MOUSE_TEXT_INFO.over.text.empty() == false))
+            if (MOUSE_TEXT_INFO.over.fontPtrOpt && (MOUSE_TEXT_INFO.over.text.empty() == false))
             {
                 textRegionOverUPtr_ = std::make_unique<TextRegion>(
                     GetEntityName() + "Over", MOUSE_TEXT_INFO.over, GetEntityRegion());
             }
 
-            if ((TEXT_INFO_DISABLED.fontPtr != nullptr)
-                && (TEXT_INFO_DISABLED.text.empty() == false))
+            if (TEXT_INFO_DISABLED.fontPtrOpt && (TEXT_INFO_DISABLED.text.empty() == false))
             {
                 textRegionDisabledUPtr_ = std::make_unique<TextRegion>(
                     GetEntityName() + "Diabled", TEXT_INFO_DISABLED, GetEntityRegion());
@@ -613,6 +609,7 @@ namespace sfml_util
                 callbackHandlerPtr_->HandleCallback(this);
             }
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
