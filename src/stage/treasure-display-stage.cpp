@@ -677,7 +677,9 @@ namespace stage
             MEASUREMENTS.treasureListboxRegion.top) };
 
         stageMoverUPtr_->AddTreasureObject(
-            treasureListboxUPtr_.get(), TREASURE_ONSCREEN_POS_V, TREASURE_OFFSCREEN_POS_V);
+            sfml_util::gui::IGuiEntityPtrOpt_t(treasureListboxUPtr_.get()),
+            TREASURE_ONSCREEN_POS_V,
+            TREASURE_OFFSCREEN_POS_V);
     }
 
     void TreasureDisplayStage::SetupForCollection_InventoryListbox()
@@ -696,7 +698,9 @@ namespace stage
             CalculateHorizOffscreenPos(), MEASUREMENTS.inventoryListboxRegion.top) };
 
         stageMoverUPtr_->AddInventoryObject(
-            inventoryListboxUPtr_.get(), INVENTORY_ONSCREEN_POS_V, INVENTORY_OFFSCREEN_POS_V);
+            sfml_util::gui::IGuiEntityPtrOpt_t(inventoryListboxUPtr_.get()),
+            INVENTORY_ONSCREEN_POS_V,
+            INVENTORY_OFFSCREEN_POS_V);
     }
 
     void TreasureDisplayStage::SetupForCollection_TreasureListboxLabel()
@@ -704,7 +708,7 @@ namespace stage
         SetupTreasure_ListboxLabel();
 
         stageMoverUPtr_->AddTreasureObject(
-            treasureLabelUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(treasureLabelUPtr_.get()),
             treasureLabelUPtr_->GetEntityPos(),
             sf::Vector2f(-750.0f, treasureLabelUPtr_->GetEntityPos().y));
     }
@@ -718,17 +722,17 @@ namespace stage
         auto const OFFSCREEN_POS_HORIZ{ -300.0f };
 
         stageMoverUPtr_->AddTreasureObject(
-            treasureAlphaButtonUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(treasureAlphaButtonUPtr_.get()),
             treasureAlphaButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureAlphaButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddTreasureObject(
-            treasureMoneyButtonUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(treasureMoneyButtonUPtr_.get()),
             treasureMoneyButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureMoneyButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddTreasureObject(
-            treasureWeightButtonUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(treasureWeightButtonUPtr_.get()),
             treasureWeightButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, treasureWeightButtonUPtr_->GetEntityPos().y));
     }
@@ -738,7 +742,7 @@ namespace stage
         SetupInventory_ListboxLabel();
 
         stageMoverUPtr_->AddInventoryObject(
-            inventoryLabelUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(inventoryLabelUPtr_.get()),
             inventoryLabelUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), inventoryLabelUPtr_->GetEntityPos().y));
     }
@@ -748,7 +752,7 @@ namespace stage
         SetupInventory_CoinsText();
 
         stageMoverUPtr_->AddInventoryObject(
-            coinsTextUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(coinsTextUPtr_.get()),
             coinsTextUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), coinsTextUPtr_->GetEntityPos().y));
     }
@@ -758,7 +762,7 @@ namespace stage
         SetupInventory_GemsText();
 
         stageMoverUPtr_->AddInventoryObject(
-            gemsTextUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(gemsTextUPtr_.get()),
             gemsTextUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), gemsTextUPtr_->GetEntityPos().y));
     }
@@ -768,7 +772,7 @@ namespace stage
         SetupInventory_CharacterImage();
 
         stageMoverUPtr_->AddInventoryObject(
-            characterImageUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(characterImageUPtr_.get()),
             characterImageUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), characterImageUPtr_->GetEntityPos().y));
     }
@@ -778,7 +782,7 @@ namespace stage
         SetupInventory_WeightText();
 
         stageMoverUPtr_->AddInventoryObject(
-            weightTextUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(weightTextUPtr_.get()),
             weightTextUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), weightTextUPtr_->GetEntityPos().y));
     }
@@ -788,7 +792,7 @@ namespace stage
         SetupInventory_RedXImage();
 
         stageMoverUPtr_->AddInventoryObject(
-            redXImageUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(redXImageUPtr_.get()),
             inventoryListboxUPtr_->GetEntityPos(),
             sf::Vector2f(CalculateHorizOffscreenPos(), inventoryListboxUPtr_->GetEntityPos().y));
     }
@@ -802,17 +806,17 @@ namespace stage
         auto const OFFSCREEN_POS_HORIZ{ MEASUREMENTS.screenWidth + MEASUREMENTS.listboxWidth };
 
         stageMoverUPtr_->AddInventoryObject(
-            inventoryAlphaButtonUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(inventoryAlphaButtonUPtr_.get()),
             inventoryAlphaButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryAlphaButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddInventoryObject(
-            inventoryMoneyButtonUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(inventoryMoneyButtonUPtr_.get()),
             inventoryMoneyButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryMoneyButtonUPtr_->GetEntityPos().y));
 
         stageMoverUPtr_->AddInventoryObject(
-            inventoryWeightButtonUPtr_.get(),
+            sfml_util::gui::IGuiEntityPtrOpt_t(inventoryWeightButtonUPtr_.get()),
             inventoryWeightButtonUPtr_->GetEntityPos(),
             sf::Vector2f(OFFSCREEN_POS_HORIZ, inventoryWeightButtonUPtr_->GetEntityPos().y));
     }
@@ -1393,7 +1397,7 @@ namespace stage
     }
 
     void TreasureDisplayStage::GuiEntityPtrAddCurrAndReplacePrevIfNeeded(
-        const sfml_util::gui::IGuiEntityPtr_t PREV_GUI_ENTITY_PTR,
+        const sfml_util::gui::IGuiEntityPtrOpt_t PREV_GUI_ENTITY_PTR_OPT,
         const sfml_util::gui::IGuiEntityPtr_t CURR_GUI_ENTITY_PTR,
         const StageAddEntity WILL_ADD)
     {
@@ -1402,9 +1406,9 @@ namespace stage
             EntityAdd(CURR_GUI_ENTITY_PTR);
         }
 
-        if ((stageMoverUPtr_.get() != nullptr) && (PREV_GUI_ENTITY_PTR != nullptr))
+        if ((stageMoverUPtr_.get() != nullptr) && PREV_GUI_ENTITY_PTR_OPT)
         {
-            stageMoverUPtr_->ReplaceEntity(PREV_GUI_ENTITY_PTR, CURR_GUI_ENTITY_PTR);
+            stageMoverUPtr_->ReplaceEntity(PREV_GUI_ENTITY_PTR_OPT.value(), CURR_GUI_ENTITY_PTR);
         }
     }
 

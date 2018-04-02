@@ -365,7 +365,8 @@ namespace combat
         prevMousePos_ = MOUSE_POS_V;
     }
 
-    sfml_util::gui::IGuiEntityPtr_t CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    const sfml_util::gui::IGuiEntityPtrOpt_t
+        CombatDisplay::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         if (isScrollAllowed_)
         {
@@ -374,7 +375,7 @@ namespace combat
         }
         else
         {
-            return nullptr;
+            return boost::none;
         }
     }
 

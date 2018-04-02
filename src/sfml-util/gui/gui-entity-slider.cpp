@@ -39,39 +39,40 @@ namespace sfml_util
     {
 
         GuiEntitySlider::GuiEntitySlider(
-            IGuiEntityPtr_t guiEntityPtr,
+            const IGuiEntityPtrOpt_t ENTITY_PTR_OPT,
             const sf::Vector2f & FROM_POS_V,
             const sf::Vector2f & TO_POS_V,
             const float SLIDER_SPEED)
             : PosSlider(FROM_POS_V, TO_POS_V, SLIDER_SPEED)
-            , guiEntityPtr_(guiEntityPtr)
+            , guiEntityPtrOpt_(ENTITY_PTR_OPT)
         {
-            Setup(guiEntityPtr_, FROM_POS_V, TO_POS_V, SLIDER_SPEED);
+            Setup(guiEntityPtrOpt_, FROM_POS_V, TO_POS_V, SLIDER_SPEED);
         }
 
         GuiEntitySlider::~GuiEntitySlider() = default;
 
         void GuiEntitySlider::Setup(
-            IGuiEntityPtr_t guiEntityPtr,
+            const IGuiEntityPtrOpt_t ENTITY_PTR_OPT,
             const sf::Vector2f & FROM_POS_V,
             const sf::Vector2f & TO_POS_V,
             const float SLIDER_SPEED)
         {
-            guiEntityPtr_ = guiEntityPtr;
+            guiEntityPtrOpt_ = ENTITY_PTR_OPT;
             PosSlider::Setup(FROM_POS_V, TO_POS_V, SLIDER_SPEED);
         }
 
         bool GuiEntitySlider::UpdateTime(const float ELAPSED_TIME_SECONDS)
         {
-            const bool RESULT(PosSlider::UpdateTime(ELAPSED_TIME_SECONDS));
+            const bool RESULT{ PosSlider::UpdateTime(ELAPSED_TIME_SECONDS) };
 
-            if (RESULT && (guiEntityPtr_ != nullptr))
+            if (RESULT && guiEntityPtrOpt_)
             {
-                guiEntityPtr_->SetEntityPos(Position());
+                guiEntityPtrOpt_->Obj().SetEntityPos(Position());
             }
 
             return RESULT;
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

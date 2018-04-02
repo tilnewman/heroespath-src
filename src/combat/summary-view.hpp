@@ -121,10 +121,11 @@ namespace combat
         bool WillPreventNextTransition() const { return preventNextTrans_; }
         void WillPreventNextTransition(const bool B) { preventNextTrans_ = B; }
 
+    private:
         void ReleaseCombatNodePointer()
         {
             combatNodePtrOpt_ = boost::none;
-            geSlider_.SetEntity(nullptr);
+            geSlider_.SetEntity(boost::none);
         }
 
     public:

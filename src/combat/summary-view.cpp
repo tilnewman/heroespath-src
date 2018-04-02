@@ -118,7 +118,10 @@ namespace combat
         combatNodePtrOpt_ = COMBAT_NODE_PTR;
 
         geSlider_.Setup(
-            COMBAT_NODE_PTR.Ptr(), COMBAT_NODE_PTR->GetEntityPos(), DEST_POS_V, SLIDER_SPEED_);
+            sfml_util::gui::IGuiEntityPtrOpt_t(COMBAT_NODE_PTR.Ptr()),
+            COMBAT_NODE_PTR->GetEntityPos(),
+            DEST_POS_V,
+            SLIDER_SPEED_);
 
         geSlider_.Start();
         BackgroundColor(sf::Color::Transparent);

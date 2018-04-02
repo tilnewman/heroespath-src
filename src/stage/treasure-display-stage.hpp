@@ -57,14 +57,14 @@ namespace sfml_util
     {
         class TextRegion;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
-    }
-}
+    } // namespace gui
+} // namespace sfml_util
 
 namespace creature
 {
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
-}
+} // namespace creature
 
 namespace stage
 {
@@ -135,7 +135,7 @@ namespace stage
         };
 
         using ItemDetailsOpt_t = boost::optional<ItemDetails>;
-    }
+    } // namespace treasure
 
     class TreasureStage;
 
@@ -276,16 +276,19 @@ namespace stage
         void ItemViewerInterruption();
 
         template <typename T>
-        sfml_util::gui::IGuiEntityPtr_t GetGuiEntityPtrAndRemoveIfNeeded(const T & GUI_ENTITY_UPTR)
+        const sfml_util::gui::IGuiEntityPtrOpt_t
+            GetGuiEntityPtrAndRemoveIfNeeded(const T & GUI_ENTITY_UPTR)
         {
-            const sfml_util::gui::IGuiEntityPtr_t ENTITY_PTR{ GUI_ENTITY_UPTR.get() };
-
-            if (ENTITY_PTR != nullptr)
+            if (GUI_ENTITY_UPTR.get() != nullptr)
             {
+                const sfml_util::gui::IGuiEntityPtr_t ENTITY_PTR{ GUI_ENTITY_UPTR.get() };
                 EntityRemove(ENTITY_PTR);
+                return ENTITY_PTR;
             }
-
-            return ENTITY_PTR;
+            else
+            {
+                return boost::none;
+            }
         }
 
         void SetupSortSprites(
@@ -301,7 +304,7 @@ namespace stage
         };
 
         void GuiEntityPtrAddCurrAndReplacePrevIfNeeded(
-            const sfml_util::gui::IGuiEntityPtr_t PREV_GUI_ENTITY_PTR,
+            const sfml_util::gui::IGuiEntityPtrOpt_t PREV_GUI_ENTITY_PTR_OPT,
             const sfml_util::gui::IGuiEntityPtr_t CURR_GUI_ENTITY_PTR,
             const StageAddEntity WILL_ADD = StageAddEntity::Will);
 
@@ -375,7 +378,8 @@ namespace stage
         item::ItemCache heldCache_;
         item::ItemCache lockboxCache_;
     };
-}
-}
+
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_TREASUREDISPLAYSTAGE_HPP_INCLUDED

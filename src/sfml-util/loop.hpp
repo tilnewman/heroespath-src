@@ -28,13 +28,12 @@
 // loop.hpp
 //  Code to manage an event/draw loop.
 //
+#include "popup/i-popup-callback.hpp"
+#include "popup/popup-info.hpp"
 #include "sfml-util/fade.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/loop-state-enum.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-
-#include "popup/i-popup-callback.hpp"
-#include "popup/popup-info.hpp"
 
 #include <list>
 #include <memory>
@@ -108,8 +107,7 @@ namespace sfml_util
 
         void RemoveFocus();
 
-        // returns true if a stage was found owning the GuiEntity
-        bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);
+        void SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);
 
         bool GetIgnoreMouse() const { return willIgnoreMouse_; }
         void SetIgnoreMouse(const bool B) { willIgnoreMouse_ = B; }
@@ -187,7 +185,7 @@ namespace sfml_util
         float holdTimeCounter_;
         bool willExitOnKeypress_;
         bool willExitOnMouseclick_;
-        gui::IGuiEntityPtr_t entityWithFocusSPtr_;
+        gui::IGuiEntityPtrOpt_t entityWithFocusPtrOpt_;
         bool willIgnoreMouse_;
         bool willIgnoreKeystrokes_;
         popup::PopupInfo popupInfo_;

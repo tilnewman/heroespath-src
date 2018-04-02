@@ -27,6 +27,8 @@
 //
 // treasure-stage-listbox-mover.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/gui-entity-slider.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/sfml-graphics.hpp"
@@ -41,7 +43,8 @@ namespace sfml_util
     namespace gui
     {
         class IGuiEntity;
-        using IGuiEntityPtr_t = IGuiEntity *;
+        using IGuiEntityPtr_t = misc::NotNull<IGuiEntity *>;
+        using IGuiEntityPtrOpt_t = boost::optional<IGuiEntityPtr_t>;
     } // namespace gui
 } // namespace sfml_util
 
@@ -80,12 +83,12 @@ namespace stage
             bool AreInventoryObjectsMoving() const;
 
             void AddTreasureObject(
-                const sfml_util::gui::IGuiEntityPtr_t IGUI_ENTITY_PTR,
+                const sfml_util::gui::IGuiEntityPtrOpt_t IGUI_ENTITY_PTR_OPT,
                 const sf::Vector2f & ONSCREEN_POS,
                 const sf::Vector2f & OFFSCREEN_POS);
 
             void AddInventoryObject(
-                const sfml_util::gui::IGuiEntityPtr_t IGUI_ENTITY_PTR,
+                const sfml_util::gui::IGuiEntityPtrOpt_t IGUI_ENTITY_PTR_OPT,
                 const sf::Vector2f & ONSCREEN_POS,
                 const sf::Vector2f & OFFSCREEN_POS);
 
@@ -106,8 +109,8 @@ namespace stage
             bool UpdateTimeInventory(const float ELAPSED_TIME_SECONDS);
 
             void ReplaceEntity(
-                const sfml_util::gui::IGuiEntityPtr_t FROM,
-                const sfml_util::gui::IGuiEntityPtr_t TO);
+                const sfml_util::gui::IGuiEntityPtr_t FROM_ENTITY_PTR,
+                const sfml_util::gui::IGuiEntityPtr_t TO_ENTITY_PTR);
 
         private:
             bool UpdateTime(
@@ -123,6 +126,7 @@ namespace stage
         };
 
         using StageMoverUPtr_t = std::unique_ptr<StageMover>;
+
     } // namespace treasure
 } // namespace stage
 } // namespace heroespath

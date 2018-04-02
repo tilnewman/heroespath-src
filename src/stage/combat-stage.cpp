@@ -1543,15 +1543,16 @@ namespace stage
         }
     }
 
-    sfml_util::gui::IGuiEntityPtr_t CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    const sfml_util::gui::IGuiEntityPtrOpt_t
+        CombatStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         auto const WAS_MOUSE_HELD_DOWN_AND_MOVING{ isMouseHeldDownAndMoving_ };
 
-        auto const GUI_ENTITY_WITH_FOCUS{ Stage::UpdateMouseUp(MOUSE_POS_V) };
+        auto const GUI_ENTITY_WITH_FOCUS_PTR_OPT{ Stage::UpdateMouseUp(MOUSE_POS_V) };
 
         if (WAS_MOUSE_HELD_DOWN_AND_MOVING)
         {
-            return GUI_ENTITY_WITH_FOCUS;
+            return GUI_ENTITY_WITH_FOCUS_PTR_OPT;
         }
 
         auto const CREATURE_AT_POS_PTR_OPT{ combatDisplayStagePtr_->GetCreatureAtPosPtrOpt(
@@ -1560,7 +1561,7 @@ namespace stage
         if (!CREATURE_AT_POS_PTR_OPT)
         {
             HandleMiscCancelTasks();
-            return GUI_ENTITY_WITH_FOCUS;
+            return GUI_ENTITY_WITH_FOCUS_PTR_OPT;
         }
 
         auto const CREATURE_AT_POS_PTR{ CREATURE_AT_POS_PTR_OPT.value() };
@@ -1582,13 +1583,13 @@ namespace stage
                 game::LoopManager::Instance()->TransitionTo_Inventory(
                     turnCreaturePtrOpt_.value(), CREATURE_AT_POS_PTR, game::Phase::Combat);
 
-                return GUI_ENTITY_WITH_FOCUS;
+                return GUI_ENTITY_WITH_FOCUS_PTR_OPT;
             }
         }
 
         if (TurnPhase::TargetSelect != turnPhase_)
         {
-            return GUI_ENTITY_WITH_FOCUS;
+            return GUI_ENTITY_WITH_FOCUS_PTR_OPT;
         }
 
         if (!spellBeingCastPtrOpt_)
@@ -1652,7 +1653,7 @@ namespace stage
             }
         }
 
-        return GUI_ENTITY_WITH_FOCUS;
+        return GUI_ENTITY_WITH_FOCUS_PTR_OPT;
     }
 
     bool CombatStage::KeyRelease(const sf::Event::KeyEvent & KE)

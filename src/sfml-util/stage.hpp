@@ -28,6 +28,8 @@
 // stage.hpp
 //  Helper classes and functions for managing GuiEntity's in a collection on screen.
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
@@ -43,8 +45,9 @@ namespace sfml_util
     namespace gui
     {
         class IGuiEntity;
-        using IGuiEntityPtr_t = IGuiEntity *;
+        using IGuiEntityPtr_t = misc::NotNull<IGuiEntity *>;
         using IGuiEntityPVec_t = std::vector<IGuiEntityPtr_t>;
+        using IGuiEntityPtrOpt_t = boost::optional<IGuiEntityPtr_t>;
 
         namespace box
         {
@@ -94,18 +97,22 @@ namespace sfml_util
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
         virtual void UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS);
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
+
         virtual void
             UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA);
 
-        virtual gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
+        virtual const gui::IGuiEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
         virtual bool KeyPress(const sf::Event::KeyEvent & KE);
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE);
 
-        virtual gui::IGuiEntityPtr_t GetEntityWithFocus() const { return entityWithFocusPtr_; }
+        virtual const gui::IGuiEntityPtrOpt_t GetEntityWithFocus() const
+        {
+            return entityWithFocusPtrOpt_;
+        }
 
         virtual void RemoveFocus();
-        virtual bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);
+        virtual void SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR);
 
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates & STATES);
 
@@ -147,8 +154,13 @@ namespace sfml_util
         //
         const std::string STAGE_NAME_;
         sf::FloatRect stageRegion_;
+
+        // these are observer pointers whose lifetime is not controlled by this class
         gui::IGuiEntityPVec_t entityPVec_;
-        gui::IGuiEntityPtr_t entityWithFocusPtr_; // a copy of a ptr in entityPVec_
+
+        // a copy of a ptr in entityPVec_
+        gui::IGuiEntityPtrOpt_t entityWithFocusPtrOpt_;
+
         gui::box::BoxUPtr_t hoverTextBoxUPtr_;
         sf::Text hoverSfText_;
 
@@ -158,6 +170,7 @@ namespace sfml_util
         sf::Vector2f mouseDownPosV_;
         bool willClearCachesOnExit_;
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

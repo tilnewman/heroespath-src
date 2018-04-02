@@ -2355,15 +2355,16 @@ namespace stage
         return -1.0f;
     }
 
-    sfml_util::gui::IGuiEntityPtr_t CharacterStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
+    const sfml_util::gui::IGuiEntityPtrOpt_t
+        CharacterStage::UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V)
     {
         if (AreAnyAnimNumStillMoving())
         {
-            return nullptr;
+            return boost::none;
         }
 
         // process MouseUp() on all other entitys
-        auto entityWithFocusPtr{ Stage::UpdateMouseUp(MOUSE_POS_V) };
+        auto entityWithFocusPtrOpt{ Stage::UpdateMouseUp(MOUSE_POS_V) };
 
         // remove animations that are finished from the vector
         animStatsSVec_.clear();
@@ -2400,7 +2401,7 @@ namespace stage
             sfml_util::SoundManager::Instance()->PlaySfx_AckMajor();
         }
 
-        return entityWithFocusPtr;
+        return entityWithFocusPtrOpt;
     }
 
     void CharacterStage::UpdateMousePos(const sf::Vector2i & NEW_MOUSE_POS_V)

@@ -29,18 +29,15 @@
 //
 #include "loop.hpp"
 
+#include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
+#include "misc/vectors.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "sfml-util/date-time.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/music-operator.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/stage.hpp"
-
-#include "game/loop-manager.hpp"
-#include "log/log-macros.hpp"
-
-#include "popup/i-popup-callback.hpp"
-
-#include "misc/vectors.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -73,7 +70,7 @@ namespace sfml_util
         , holdTimeCounter_(0.0f)
         , willExitOnKeypress_(false)
         , willExitOnMouseclick_(false)
-        , entityWithFocusSPtr_(nullptr)
+        , entityWithFocusPtrOpt_(boost::none)
         , willIgnoreMouse_(false)
         , willIgnoreKeystrokes_(false)
         , popupInfo_(" ", sfml_util::gui::TextInfo(" "))
@@ -102,7 +99,7 @@ namespace sfml_util
 
     void Loop::RemoveFocus()
     {
-        entityWithFocusSPtr_ = nullptr;
+        entityWithFocusPtrOpt_ = boost::none;
 
         for (auto & nextStagePtr : stagePVec_)
         {
@@ -110,21 +107,14 @@ namespace sfml_util
         }
     }
 
-    bool Loop::SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR)
+    void Loop::SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR)
     {
-        bool foundStageOwningEntityWithFocus(false);
-
-        entityWithFocusSPtr_ = ENTITY_PTR;
+        entityWithFocusPtrOpt_ = ENTITY_PTR;
 
         for (auto & nextStagePtr : stagePVec_)
         {
-            if (nextStagePtr->SetFocus(ENTITY_PTR))
-            {
-                foundStageOwningEntityWithFocus = true;
-            }
+            nextStagePtr->SetFocus(ENTITY_PTR);
         }
-
-        return foundStageOwningEntityWithFocus;
     }
 
     void Loop::AssignPopupCallbackHandlerInfo(
@@ -535,30 +525,36 @@ namespace sfml_util
         {
             for (auto & nextStagePtr : stagePVec_)
             {
-                auto newEntityWithFocusPtr{ nextStagePtr->UpdateMouseUp(MOUSE_POS_V) };
+                auto newEntityWithFocusPtrOpt{ nextStagePtr->UpdateMouseUp(MOUSE_POS_V) };
 
-                if (newEntityWithFocusPtr != nullptr)
+                if (newEntityWithFocusPtrOpt)
                 {
+                    auto const NEW_ENTITY_WITH_FOCUS_PTR{ newEntityWithFocusPtrOpt.value() };
+
                     M_HP_LOG(
                         "MouseButtonLeftReleased caused focus in stage \""
                         << nextStagePtr->GetStageName() << "\" on entity \""
-                        << newEntityWithFocusPtr->GetEntityName() << "\"");
+                        << NEW_ENTITY_WITH_FOCUS_PTR->GetEntityName() << "\"");
 
                     RemoveFocus();
-                    newEntityWithFocusPtr->SetHasFocus(true);
-                    SetFocus(newEntityWithFocusPtr);
+                    NEW_ENTITY_WITH_FOCUS_PTR->SetHasFocus(true);
+                    SetFocus(NEW_ENTITY_WITH_FOCUS_PTR);
+
+                    // TODO um...shoudln't we break here?
                 }
             }
         }
         else
         {
-            auto newEntityWithFocusPtr{ popupStagePtr_->UpdateMouseUp(MOUSE_POS_V) };
+            auto newEntityWithFocusPtrOpt{ popupStagePtr_->UpdateMouseUp(MOUSE_POS_V) };
 
-            if (newEntityWithFocusPtr != nullptr)
+            if (newEntityWithFocusPtrOpt)
             {
+                auto const NEW_ENTITY_WITH_FOCUS_PTR{ newEntityWithFocusPtrOpt.value() };
+
                 RemoveFocus();
-                newEntityWithFocusPtr->SetHasFocus(true);
-                SetFocus(newEntityWithFocusPtr);
+                NEW_ENTITY_WITH_FOCUS_PTR->SetHasFocus(true);
+                SetFocus(NEW_ENTITY_WITH_FOCUS_PTR);
             }
         }
     }
@@ -626,6 +622,7 @@ namespace sfml_util
                 M_HP_LOG_ERR(
                     "texture.create(" << WINDOW_SIZE.x << "x" << WINDOW_SIZE.y << ") "
                                       << "returned false. Unable to take screenshot.");
+
                 return;
             }
 
@@ -649,6 +646,7 @@ namespace sfml_util
                         "sfml_util::Loop::ProcessScreenshot() was unable to create the "
                         << "screenshot directory \"" << DIR_OBJ.string() << "\".  Error code=" << ec
                         << ".  Unable to take screenshot.");
+
                     return;
                 }
             }
@@ -685,6 +683,7 @@ namespace sfml_util
                         "Loop::ProcessScreenshot() failed to find an available filename"
                         << "after 10,000 tries.  Either 10,000 screenshots have been saved or "
                         << "there is something wrong with this code.  Unable to take screenshot");
+
                     return;
                 }
             }
@@ -792,6 +791,7 @@ namespace sfml_util
     {
         fader_.UpdateRegion(
             Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight());
+
         fader_.FadeTo(FADE_TO_COLOR, SPEED_MULT);
         continueFading_ = true;
         willExitAfterFade_ = true;
@@ -803,10 +803,12 @@ namespace sfml_util
     {
         fader_.UpdateRegion(
             Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight());
+
         fader_.Reset(FADE_FROM_COLOR);
         fader_.FadeTo(sf::Color::Transparent, SPEED_MULT);
         continueFading_ = true;
         willHoldFade_ = WILL_HOLD_FADE;
     }
+
 } // namespace sfml_util
 } // namespace heroespath

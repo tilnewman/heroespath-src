@@ -195,7 +195,10 @@ namespace stage
         bool KeyPress(const sf::Event::KeyEvent & KE) override;
         bool KeyRelease(const sf::Event::KeyEvent & KE) override;
         void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) override;
-        sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+
+        const sfml_util::gui::IGuiEntityPtrOpt_t
+            UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) override;
+
         void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) override;
         virtual bool AreAnyAnimNumStillMoving() const;
 

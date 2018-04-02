@@ -28,6 +28,8 @@
 // i-gui-entity.hpp
 //  Common interface for all gui elements
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/i-clickable.hpp"
 #include "sfml-util/mouse-state-enum.hpp"
@@ -110,8 +112,10 @@ namespace sfml_util
             void OnDoubleClick(const sf::Vector2f &) override = 0;
         };
 
-        using IGuiEntityPtr_t = IGuiEntity *;
+        using IGuiEntityPtr_t = misc::NotNull<IGuiEntity *>;
         using IGuiEntityPVec_t = std::vector<IGuiEntityPtr_t>;
+        using IGuiEntityPtrOpt_t = boost::optional<IGuiEntityPtr_t>;
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

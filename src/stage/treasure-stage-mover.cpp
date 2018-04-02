@@ -103,21 +103,21 @@ namespace stage
         }
 
         void StageMover::AddTreasureObject(
-            const sfml_util::gui::IGuiEntityPtr_t IGUI_ENTITY_PTR,
+            const sfml_util::gui::IGuiEntityPtrOpt_t IGUI_ENTITY_PTR_OPT,
             const sf::Vector2f & ONSCREEN_POS,
             const sf::Vector2f & OFFSCREEN_POS)
         {
             treasureSliders_.emplace_back(sfml_util::gui::GuiEntitySlider(
-                IGUI_ENTITY_PTR, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
+                IGUI_ENTITY_PTR_OPT, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
         }
 
         void StageMover::AddInventoryObject(
-            const sfml_util::gui::IGuiEntityPtr_t IGUI_ENTITY_PTR,
+            const sfml_util::gui::IGuiEntityPtrOpt_t IGUI_ENTITY_PTR_OPT,
             const sf::Vector2f & ONSCREEN_POS,
             const sf::Vector2f & OFFSCREEN_POS)
         {
             inventorySliders_.emplace_back(sfml_util::gui::GuiEntitySlider(
-                IGUI_ENTITY_PTR, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
+                IGUI_ENTITY_PTR_OPT, OFFSCREEN_POS, ONSCREEN_POS, SLIDE_SPEED_));
         }
 
         Type StageMover::TreasureSwitch()
@@ -205,23 +205,24 @@ namespace stage
         }
 
         void StageMover::ReplaceEntity(
-            const sfml_util::gui::IGuiEntityPtr_t FROM, const sfml_util::gui::IGuiEntityPtr_t TO)
+            const sfml_util::gui::IGuiEntityPtr_t FROM_ENTITY_PTR,
+            const sfml_util::gui::IGuiEntityPtr_t TO_ENTITY_PTR)
         {
             for (auto & slider : treasureSliders_)
             {
-                if (slider.GetEntity() == FROM)
+                if (slider.GetEntity() == FROM_ENTITY_PTR)
                 {
-                    slider.SetEntity(TO);
-                    TO->SetEntityPos(slider.Position());
+                    slider.SetEntity(TO_ENTITY_PTR);
+                    TO_ENTITY_PTR->SetEntityPos(slider.Position());
                 }
             }
 
             for (auto & slider : inventorySliders_)
             {
-                if (slider.GetEntity() == FROM)
+                if (slider.GetEntity() == FROM_ENTITY_PTR)
                 {
-                    slider.SetEntity(TO);
-                    TO->SetEntityPos(slider.Position());
+                    slider.SetEntity(TO_ENTITY_PTR);
+                    TO_ENTITY_PTR->SetEntityPos(slider.Position());
                 }
             }
         }
@@ -232,6 +233,7 @@ namespace stage
             auto const IS_STILL_MOVING{ slider.UpdateTime(ELAPSED_TIME_SECONDS) };
             return (IS_STILL_MOVING == false) && (slider.Direction() == sfml_util::Moving::Away);
         }
+
     } // namespace treasure
 } // namespace stage
 } // namespace heroespath

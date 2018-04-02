@@ -238,7 +238,8 @@ namespace stage
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS);
 
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V);
-        virtual sfml_util::gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
+        virtual const sfml_util::gui::IGuiEntityPtrOpt_t
+            UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V);
 
         bool IsPaused() const { return (pauseElapsedSec_ < pauseDurationSec_); }
 

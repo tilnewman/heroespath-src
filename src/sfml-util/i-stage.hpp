@@ -28,6 +28,8 @@
 // i-stage.hpp
 //  Interface for all Stage objects.
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
@@ -43,7 +45,8 @@ namespace sfml_util
     namespace gui
     {
         class IGuiEntity;
-        using IGuiEntityPtr_t = IGuiEntity *;
+        using IGuiEntityPtr_t = misc::NotNull<IGuiEntity *>;
+        using IGuiEntityPtrOpt_t = boost::optional<IGuiEntityPtr_t>;
     } // namespace gui
 
     // interface for all Stage classes
@@ -67,18 +70,19 @@ namespace sfml_util
         virtual void UpdateTime(const float ELAPSED_TIME_SECONDS) = 0;
         virtual void UpdateMousePos(const sf::Vector2i & MOUSE_POS_V) = 0;
         virtual void UpdateMouseDown(const sf::Vector2f & MOUSE_POS_V) = 0;
+
         virtual void
             UpdateMouseWheel(const sf::Vector2f & MOUSE_POS_V, const float MOUSEWHEEL_DELTA)
             = 0;
 
-        virtual gui::IGuiEntityPtr_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) = 0;
+        virtual const gui::IGuiEntityPtrOpt_t UpdateMouseUp(const sf::Vector2f & MOUSE_POS_V) = 0;
 
         virtual bool KeyPress(const sf::Event::KeyEvent & KE) = 0;
         virtual bool KeyRelease(const sf::Event::KeyEvent & KE) = 0;
 
-        virtual gui::IGuiEntityPtr_t GetEntityWithFocus() const = 0;
+        virtual const gui::IGuiEntityPtrOpt_t GetEntityWithFocus() const = 0;
         virtual void RemoveFocus() = 0;
-        virtual bool SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR) = 0;
+        virtual void SetFocus(const gui::IGuiEntityPtr_t ENTITY_PTR) = 0;
 
         virtual void Draw(sf::RenderTarget & target, const sf::RenderStates &) = 0;
 
@@ -114,6 +118,7 @@ namespace sfml_util
 
     using IStagePtr_t = IStage *;
     using IStagePVec_t = std::vector<IStagePtr_t>;
+
 } // namespace sfml_util
 } // namespace heroespath
 
