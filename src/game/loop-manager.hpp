@@ -131,7 +131,7 @@ namespace game
 
         void FakeMouseClick(const sf::Vector2f &);
 
-        void AddStage(sfml_util::IStagePtr_t stagePtr) { loop_.AddStage(stagePtr); }
+        void AddStage(const sfml_util::IStagePtr_t ISTAGE_PTR) { loop_.AddStage(ISTAGE_PTR); }
 
         bool IsFading() const { return loop_.IsFading(); }
 
@@ -242,6 +242,7 @@ namespace game
         sfml_util::LoopState::Enum stateBeforeFade_;
         bool exitSuccess_;
     };
+
 } // namespace game
 } // namespace heroespath
 

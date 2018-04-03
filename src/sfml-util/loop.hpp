@@ -28,6 +28,8 @@
 // loop.hpp
 //  Code to manage an event/draw loop.
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "popup/popup-info.hpp"
 #include "sfml-util/fade.hpp"
@@ -45,9 +47,9 @@ namespace heroespath
 namespace sfml_util
 {
 
-    // forward declaration
     class IStage;
-    using IStagePtr_t = IStage *;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+    using IStagePtrOpt_t = boost::optional<IStagePtr_t>;
     using IStagePVec_t = std::vector<IStagePtr_t>;
 
     // A type that manages an event/draw loop
@@ -65,7 +67,8 @@ namespace sfml_util
 
         void Exit() { willExit_ = true; }
 
-        void AddStage(IStagePtr_t);
+        void AddStage(const IStagePtr_t ISTAGE_PTR) { stagePVec_.emplace_back(ISTAGE_PTR); }
+
         void FreeAllStages();
         void FreePopupStage();
 
@@ -82,7 +85,8 @@ namespace sfml_util
             const float SPEED_MULT = 200.0f,
             const bool WILL_HOLD_FADE = false);
 
-        void SetPopup(IStagePtr_t popupStagePtr) { popupStagePtr_ = popupStagePtr; }
+        void SetPopup(const IStagePtr_t POPUP_ISTAGE_PTR) { popupStagePtrOpt_ = POPUP_ISTAGE_PTR; }
+
         void SetHoldTime(const float SECONDS)
         {
             holdTimeCounter_ = 0.0f;
@@ -169,7 +173,10 @@ namespace sfml_util
         static const float INVALID_MUSIC_FADE_VALUE_;
         //
         const std::string NAME_;
+
+        // This class owns the lifetime of Stages through these pointers
         IStagePVec_t stagePVec_;
+
         sf::Clock clock_;
         float oneSecondTimerSec_;
         WinPtr_t winPtr_;
@@ -178,7 +185,10 @@ namespace sfml_util
         bool continueFading_;
         bool willExitAfterFade_;
         bool willExit_;
-        IStagePtr_t popupStagePtr_;
+
+        // this is also an ownership pointer that is NOT a copy of anything in stagePVec_
+        IStagePtrOpt_t popupStagePtrOpt_;
+
         float elapsedTimeSec_;
         bool fatalExitEvent_;
         float holdTime_;
@@ -200,6 +210,7 @@ namespace sfml_util
         std::size_t frameRateSampleCount_;
         bool willLogFrameRate_;
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

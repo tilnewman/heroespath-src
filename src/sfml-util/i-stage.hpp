@@ -41,7 +41,6 @@ namespace heroespath
 namespace sfml_util
 {
 
-    // forward declarations
     namespace gui
     {
         class IGuiEntity;
@@ -116,7 +115,7 @@ namespace sfml_util
         virtual const sf::Vector2f MouseDownPosV() const = 0;
     };
 
-    using IStagePtr_t = IStage *;
+    using IStagePtr_t = misc::NotNull<IStage *>;
     using IStagePVec_t = std::vector<IStagePtr_t>;
 
 } // namespace sfml_util

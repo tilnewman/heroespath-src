@@ -76,9 +76,9 @@ namespace stage
 
         virtual bool Execute()
         {
-            auto stagePtr(new StageType_t());
-            stagePtr->Setup();
-            game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(stagePtr);
+            const sfml_util::IStagePtr_t ISTAGE_PTR{ new StageType_t() };
+            ISTAGE_PTR->Setup();
+            game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(ISTAGE_PTR);
             return true;
         }
     };
@@ -101,9 +101,9 @@ namespace stage
 
         virtual bool Execute()
         {
-            auto stagePtr(new stage::CombatStage(willAdvanceTurn_));
-            stagePtr->Setup();
-            game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(stagePtr);
+            const sfml_util::IStagePtr_t ISTAGE_PTR(new stage::CombatStage(willAdvanceTurn_));
+            ISTAGE_PTR->Setup();
+            game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(ISTAGE_PTR);
             return true;
         }
 
@@ -134,11 +134,11 @@ namespace stage
 
         virtual bool Execute()
         {
-            auto inventoryStagePtr(
+            const sfml_util::IStagePtr_t ISTAGE_PTR(
                 new InventoryStage(turnCreaturePtr, inventoryCreaturePtr, currentPhase_));
 
-            inventoryStagePtr->Setup();
-            game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(inventoryStagePtr);
+            ISTAGE_PTR->Setup();
+            game::LoopManager::Instance()->CommandLoopAccess(this).AddStage(ISTAGE_PTR);
             return true;
         }
 

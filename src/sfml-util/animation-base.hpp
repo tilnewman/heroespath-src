@@ -114,7 +114,6 @@ namespace sfml_util
         bool isFinished_;
     };
 
-    using AnimationPtr_t = Animation *;
     using AnimationUPtr_t = std::unique_ptr<Animation>;
     using AnimationUVec_t = std::vector<AnimationUPtr_t>;
 } // namespace sfml_util

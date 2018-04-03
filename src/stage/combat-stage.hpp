@@ -89,9 +89,6 @@ namespace combat
     class CombatDisplay;
     using CombatDisplayPtr_t = misc::NotNull<CombatDisplay *>;
 
-    class Encounter;
-    using EncounterPtr_t = Encounter *;
-
     class CombatAnimation;
     using CombatAnimationUPtr_t = std::unique_ptr<CombatAnimation>;
 } // namespace combat
