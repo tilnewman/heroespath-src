@@ -1264,12 +1264,12 @@ namespace stage
             "InventoryStage'sLeftListBox",
             LISTBOX_REGION_,
             listBoxItemsSVec,
-            this,
+            sfml_util::IStagePtr_t(this),
             10.0f,
             6.0f,
             LISTBOX_BOX_INFO,
             LISTBOX_COLOR_LINE_,
-            this);
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
         EntityAdd(equippedListBoxUPtr_.get());
 
@@ -1312,12 +1312,12 @@ namespace stage
             "InventoryStage'sUnEquipped",
             DESCBOX_REGION_,
             unEquipItemsSVec,
-            this,
+            sfml_util::IStagePtr_t(this),
             10.0f,
             6.0f,
             LISTBOX_BOX_INFO,
             LISTBOX_COLOR_LINE_,
-            this);
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
         EntityAdd(unEquipListBoxUPtr_.get());
 

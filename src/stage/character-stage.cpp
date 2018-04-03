@@ -775,13 +775,18 @@ namespace stage
         if (racetDescTextRegionUPtr_.get() == nullptr)
         {
             racetDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "RaceDescription", raceDescTextInfo, REGION, this, SMALL_FONT_SIZE_);
+                "RaceDescription",
+                raceDescTextInfo,
+                REGION,
+                sfml_util::IStagePtr_t(this),
+                SMALL_FONT_SIZE_);
 
             EntityAdd(racetDescTextRegionUPtr_.get());
         }
         else
         {
-            racetDescTextRegionUPtr_->Setup(raceDescTextInfo, REGION, this, SMALL_FONT_SIZE_);
+            racetDescTextRegionUPtr_->Setup(
+                raceDescTextInfo, REGION, sfml_util::IStagePtr_t(this), SMALL_FONT_SIZE_);
         }
     }
 
@@ -814,13 +819,18 @@ namespace stage
         if (roletDescTextRegionUPtr_.get() == nullptr)
         {
             roletDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "RoleDescription", roleDescTextInfo, REGION, this, SMALL_FONT_SIZE_);
+                "RoleDescription",
+                roleDescTextInfo,
+                REGION,
+                sfml_util::IStagePtr_t(this),
+                SMALL_FONT_SIZE_);
 
             EntityAdd(roletDescTextRegionUPtr_.get());
         }
         else
         {
-            roletDescTextRegionUPtr_->Setup(roleDescTextInfo, REGION, this, SMALL_FONT_SIZE_);
+            roletDescTextRegionUPtr_->Setup(
+                roleDescTextInfo, REGION, sfml_util::IStagePtr_t(this), SMALL_FONT_SIZE_);
         }
     }
 
@@ -1204,13 +1214,13 @@ namespace stage
         if (attrDescTextRegionUPtr_.get() == nullptr)
         {
             attrDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "AttributeDescription", descTextInfo, REGION, this);
+                "AttributeDescription", descTextInfo, REGION, sfml_util::IStagePtr_t(this));
 
             EntityAdd(attrDescTextRegionUPtr_.get());
         }
         else
         {
-            attrDescTextRegionUPtr_->Setup(descTextInfo, REGION, this);
+            attrDescTextRegionUPtr_->Setup(descTextInfo, REGION, sfml_util::IStagePtr_t(this));
         }
 
         for (auto const & NEXT_TR_UPTR : textRegionUVec)

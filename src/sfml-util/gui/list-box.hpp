@@ -28,6 +28,8 @@
 // list-box.hpp
 //  A class that manages a list of some template GuiEntity types wrapped in a box
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/gui-event-enum.hpp"
 #include "sfml-util/gui/box-info.hpp"
@@ -48,6 +50,8 @@ namespace heroespath
 namespace sfml_util
 {
     class IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+    using IStagePtrOpt_t = boost::optional<IStagePtr_t>;
 
     namespace gui
     {
@@ -108,6 +112,10 @@ namespace sfml_util
 
             using IListBoxCallbackHandler
                 = sfml_util::callback::ICallbackHandler<ListBoxEventPackage, bool>;
+
+            using IListBoxCallbackHandlerPtr_t = misc::NotNull<IListBoxCallbackHandler *>;
+            using IListBoxCallbackHandlerPtrOpt_t = boost::optional<IListBoxCallbackHandlerPtr_t>;
+
         } // namespace callback
 
         // A class that manages a vertical list of IGuiEntitys that can be scrolled through and
@@ -127,24 +135,24 @@ namespace sfml_util
                 const std::string & NAME,
                 const sf::FloatRect & REGION = sf::FloatRect(),
                 const ListBoxItemSVec_t & ITEM_VEC = ListBoxItemSVec_t(),
-                IStage * const stagePtr = nullptr,
+                const IStagePtrOpt_t STAGE_PTR_OPT = boost::none,
                 const float MARGIN = 0.0f,
                 const float BETWEEN_PAD = 0.0f,
                 const box::Info & BOX_INFO = box::Info(),
                 const sf::Color & LINE_COLOR = sf::Color::Transparent,
-                callback::IListBoxCallbackHandler * const callbackPtr = nullptr);
+                const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT = boost::none);
 
             virtual ~ListBox();
 
             void Setup(
                 const sf::FloatRect & REGION = sf::FloatRect(),
                 const ListBoxItemSVec_t & ITEM_VEC = ListBoxItemSVec_t(),
-                IStage * const stagePtr = nullptr,
+                const IStagePtrOpt_t STAGE_PTR_OPT = boost::none,
                 const float MARGIN = 0.0f,
                 const float BETWEEN_PAD = 0.0f,
                 const box::Info & BOX_INFO = box::Info(),
                 const sf::Color & LINE_COLOR = sf::Color::Transparent,
-                callback::IListBoxCallbackHandler * const callbackPtr = nullptr);
+                const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT = boost::none);
 
             const std::string HandlerName() const override { return GetEntityName(); }
 
@@ -262,12 +270,12 @@ namespace sfml_util
             sf::Color highlightColor_;
             float margin_;
             float betweenPad_;
-            IStage * stagePtr_;
+            IStagePtrOpt_t stagePtrOpt_;
             ListBoxItemSVec_t items_;
             ImageMap_t imageMap_;
             sf::Color imageColor_;
             bool willPlaySfx_;
-            callback::IListBoxCallbackHandler * callbackPtr_;
+            callback::IListBoxCallbackHandlerPtrOpt_t callbackPtrOpt_;
 
             // which item is displayed at the top of the list
             std::size_t displayIndex_;

@@ -29,16 +29,14 @@
 //
 #include "radio-button-display.hpp"
 
+#include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
+#include "misc/handy-types.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/gui/background-info.hpp"
 #include "sfml-util/gui/box-info.hpp"
 #include "sfml-util/gui/text-info.hpp"
-
-#include "game/loop-manager.hpp"
-#include "log/log-macros.hpp"
-
-#include "misc/handy-types.hpp"
 
 namespace heroespath
 {
@@ -48,9 +46,9 @@ namespace sfml_util
     const std::size_t RadioButtonSet_DisplayChange::MAX_NUM_RES_DISPLAYABLE_(10);
 
     RadioButtonSet_DisplayChange::RadioButtonSet_DisplayChange(
-        const float POS_LEFT, const float POS_TOP, sfml_util::IStage * const OWNER_STAGE_PTR)
+        const float POS_LEFT, const float POS_TOP, const sfml_util::IStagePtr_t OWNER_ISTAGE_PTR)
         : RadioButtonSet("DisplayChange")
-        , ownerStagePtr_(OWNER_STAGE_PTR)
+        , ownerStagePtr_(OWNER_ISTAGE_PTR)
         , resolutionVec_()
         , ORIG_INVALID_SELECTION_(
               sfml_util::Display::ComposeSupportedFullScreenVideoModesVec(resolutionVec_))
@@ -119,12 +117,6 @@ namespace sfml_util
 
         ChangeCurrentSelection(FindCurrentResolutionSelection());
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (nullptr != ownerStagePtr_),
-            GetEntityName() << "'s RadioButtonSet_DisplayChange::HandlePopupCallback("
-                            << popup::ResponseTypes::ToString(POPUP.Response())
-                            << ") was called when the ownerStagePtr_ was null.");
-
         ownerStagePtr_->HandleResolutionChange();
 
         return true;
@@ -139,11 +131,6 @@ namespace sfml_util
             this,
             resolutionVec_[currentSelection_],
             sfml_util::Display::Instance()->AntialiasLevel());
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (nullptr != ownerStagePtr_),
-            GetEntityName() << "'s RadioButtonSet_DisplayChange::OnClick() was called "
-                            << "when the ownerStagePtr_ was null.");
 
         ownerStagePtr_->HandleResolutionChange();
     }
@@ -167,5 +154,6 @@ namespace sfml_util
 
         return resRadioButtonSetInitialSelection;
     }
+
 } // namespace sfml_util
 } // namespace heroespath

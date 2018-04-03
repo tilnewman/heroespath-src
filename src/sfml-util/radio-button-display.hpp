@@ -28,13 +28,11 @@
 // radio-button-display.hpp
 //  A specific RadioButtonSet for changing the display resolution.
 //
+#include "popup/i-popup-callback.hpp"
 #include "sfml-util/gui/radio-button.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/resolution.hpp"
 
-#include "popup/i-popup-callback.hpp"
-
-#include <memory>
 #include <string>
 
 namespace heroespath
@@ -56,7 +54,9 @@ namespace sfml_util
         // If Using this constructor, then one of the Setup()
         // functions must be called before any other member.
         RadioButtonSet_DisplayChange(
-            const float POS_LEFT, const float POS_TOP, sfml_util::IStage * const OWNER_STAGE_PTR);
+            const float POS_LEFT,
+            const float POS_TOP,
+            const sfml_util::IStagePtr_t OWNER_ISTAGE_PTR);
 
         virtual ~RadioButtonSet_DisplayChange();
 
@@ -72,13 +72,12 @@ namespace sfml_util
     private:
         static const std::size_t MAX_NUM_RES_DISPLAYABLE_;
         //
-        sfml_util::IStage * const ownerStagePtr_;
+        sfml_util::IStagePtr_t ownerStagePtr_;
         sfml_util::ResolutionVec_t resolutionVec_;
         const std::size_t ORIG_INVALID_SELECTION_;
         sfml_util::Resolution prevResolution_;
     };
 
-    using RadioButtonSet_DisplayChangeSPtr_t = std::shared_ptr<RadioButtonSet_DisplayChange>;
 } // namespace sfml_util
 } // namespace heroespath
 

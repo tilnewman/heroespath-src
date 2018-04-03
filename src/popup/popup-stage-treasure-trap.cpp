@@ -76,7 +76,10 @@ namespace popup
             sfml_util::Justified::Center);
 
         textRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "PopupStageTreasureTrap's_Title", TITLE_TEXTINFO, tempRect, this);
+            "PopupStageTreasureTrap's_Title",
+            TITLE_TEXTINFO,
+            tempRect,
+            sfml_util::IStagePtr_t(this));
     }
 
     void PopupStageTreasureTrap::SetupDescriptionText()
@@ -93,7 +96,7 @@ namespace popup
             sfml_util::Justified::Center);
 
         descTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "PopupStageTreasureTrap's_Desc", DESC_TEXTINFO, tempRect, this);
+            "PopupStageTreasureTrap's_Desc", DESC_TEXTINFO, tempRect, sfml_util::IStagePtr_t(this));
 
         Stage::EntityAdd(descTextRegionUPtr_.get());
     }

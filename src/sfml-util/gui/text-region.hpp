@@ -28,6 +28,8 @@
 // text-region.hpp
 //  A class that encapsulates text drawn to a bounded region that may need a scrollbar.
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/box-info.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
@@ -46,10 +48,11 @@ namespace heroespath
 namespace sfml_util
 {
     class IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
+    using IStagePtrOpt_t = boost::optional<IStagePtr_t>;
 
     namespace gui
     {
-
         namespace box
         {
             class Box;
@@ -100,7 +103,7 @@ namespace sfml_util
                 const std::string & NAME,
                 const TextInfo & TEXT_INFO,
                 const sf::FloatRect & REGION,
-                IStage * const stagePtr,
+                const IStagePtr_t ISTAGE_PTR,
                 const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
                 const box::Info & BOX_INFO = gui::box::Info(),
                 const Margins & MARGINS = Margins());
@@ -119,7 +122,7 @@ namespace sfml_util
             void Setup(
                 const TextInfo & TEXT_INFO,
                 const sf::FloatRect & REGION,
-                IStage * const stagePtr,
+                const IStagePtrOpt_t ISTAGE_PTR_OPT,
                 const unsigned int SMALLER_FONT_SIZE = DEFAULT_NO_RESIZE_,
                 const box::Info & BOX_INFO = box::Info(),
                 const Margins & MARGINS = Margins(),
@@ -160,7 +163,7 @@ namespace sfml_util
             box::Info boxInfo_;
             box::BoxUPtr_t boxUPtr_;
             gui::SliderBarUPtr_t sliderBarUPtr_;
-            IStage * stagePtr_;
+            IStagePtrOpt_t stagePtrOpt_;
             std::string text_;
             text_render::RenderedText renderedText_;
             std::size_t startLine_;
@@ -174,8 +177,8 @@ namespace sfml_util
 
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
         using TextRegionUVec_t = std::vector<TextRegionUPtr_t>;
-
         using TextRegionSPtr_t = std::shared_ptr<TextRegion>;
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

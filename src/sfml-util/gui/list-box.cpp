@@ -29,6 +29,11 @@
 //
 #include "list-box.hpp"
 
+#include "creature/condition.hpp"
+#include "creature/creature.hpp"
+#include "creature/title.hpp"
+#include "item/item.hpp"
+#include "log/log-macros.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/condition-image-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -40,16 +45,8 @@
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "creature/condition.hpp"
-#include "creature/creature.hpp"
-#include "creature/title.hpp"
-#include "item/item.hpp"
-#include "log/log-macros.hpp"
 #include "song/song.hpp"
 #include "spell/spell.hpp"
-
-#include <vector>
 
 namespace heroespath
 {
@@ -70,12 +67,12 @@ namespace sfml_util
             const std::string & NAME,
             const sf::FloatRect & REGION,
             const ListBoxItemSVec_t & ITEM_VEC,
-            IStage * const stagePtr,
+            const IStagePtrOpt_t ISTAGE_PTR_OPT,
             const float MARGIN,
             const float BETWEEN_PAD,
             const box::Info & BOX_INFO,
             const sf::Color & LINE_COLOR,
-            callback::IListBoxCallbackHandler * const callbackPtr)
+            const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT)
             : GuiEntity(std::string(NAME).append("_ListBox"), REGION)
             , IMAGE_HORIZ_PAD_(10.0f)
             , IMAGE_SIZE_(sfml_util::MapByRes(50.0f, 150.0f))
@@ -85,12 +82,12 @@ namespace sfml_util
             , highlightColor_(BOX_INFO.bg_info.color + sf::Color(20, 20, 20, 20))
             , margin_(MARGIN)
             , betweenPad_(BETWEEN_PAD)
-            , stagePtr_(stagePtr)
+            , stagePtrOpt_(ISTAGE_PTR_OPT)
             , items_(ITEM_VEC)
             , imageMap_()
             , imageColor_(sf::Color::White)
             , willPlaySfx_(true)
-            , callbackPtr_(callbackPtr)
+            , callbackPtrOpt_(CALLBACK_PTR_OPT)
             , displayIndex_(0)
             , selectionDisplayIndex_(0)
             , selectionOffsetIndex_(0)
@@ -98,21 +95,28 @@ namespace sfml_util
             , countLimit_(0)
         {
             Setup(
-                REGION, ITEM_VEC, stagePtr, MARGIN, BETWEEN_PAD, BOX_INFO, LINE_COLOR, callbackPtr);
+                REGION,
+                ITEM_VEC,
+                ISTAGE_PTR_OPT,
+                MARGIN,
+                BETWEEN_PAD,
+                BOX_INFO,
+                LINE_COLOR,
+                callbackPtrOpt_);
         }
 
         ListBox::~ListBox()
         {
-            if (stagePtr_ != nullptr)
+            if (stagePtrOpt_)
             {
                 if (boxUPtr_.get() != nullptr)
                 {
-                    stagePtr_->EntityRemove(boxUPtr_.get());
+                    stagePtrOpt_->Obj().EntityRemove(boxUPtr_.get());
                 }
 
                 if (sliderbarUPtr_.get() != nullptr)
                 {
-                    stagePtr_->EntityRemove(sliderbarUPtr_.get());
+                    stagePtrOpt_->Obj().EntityRemove(sliderbarUPtr_.get());
                 }
             }
         }
@@ -120,27 +124,27 @@ namespace sfml_util
         void ListBox::Setup(
             const sf::FloatRect & REGION,
             const ListBoxItemSVec_t & ITEM_VEC,
-            IStage * const stagePtr,
+            const IStagePtrOpt_t ISTAGE_PTR_OPT,
             const float MARGIN,
             const float BETWEEN_PAD,
             const box::Info & BOX_INFO,
             const sf::Color & LINE_COLOR,
-            callback::IListBoxCallbackHandler * const callbackPtr)
+            const callback::IListBoxCallbackHandlerPtrOpt_t CALLBACK_PTR_OPT)
         {
             SetEntityRegion(REGION);
 
             items_.clear();
             items_ = ITEM_VEC;
-            stagePtr_ = stagePtr;
+            stagePtrOpt_ = ISTAGE_PTR_OPT;
             margin_ = MARGIN;
             betweenPad_ = BETWEEN_PAD;
             lineColor_ = LINE_COLOR;
-            callbackPtr_ = callbackPtr;
+            callbackPtrOpt_ = CALLBACK_PTR_OPT;
 
-            if (boxUPtr_.get() == nullptr)
+            if (stagePtrOpt_ && (boxUPtr_.get() == nullptr))
             {
                 boxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("ListBox's", BOX_INFO);
-                stagePtr->EntityAdd(boxUPtr_.get());
+                stagePtrOpt_->Obj().EntityAdd(boxUPtr_.get());
             }
             else
             {
@@ -149,7 +153,7 @@ namespace sfml_util
 
             boxUPtr_->SetWillAcceptFocus(false);
 
-            if (sliderbarUPtr_.get() == nullptr)
+            if (stagePtrOpt_ && (sliderbarUPtr_.get() == nullptr))
             {
                 sliderbarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
                     "ListBox's",
@@ -159,7 +163,7 @@ namespace sfml_util
                     sfml_util::gui::SliderStyle(),
                     this);
 
-                stagePtr->EntityAdd(sliderbarUPtr_.get());
+                stagePtrOpt_->Obj().EntityAdd(sliderbarUPtr_.get());
             }
             else
             {
@@ -456,14 +460,14 @@ namespace sfml_util
 
                     boxUPtr_->FakeColorSetAsIfFocusIs(true);
 
-                    if (callbackPtr_ != nullptr)
+                    if (callbackPtrOpt_)
                     {
                         const callback::ListBoxPtrPackage_t PTR_PACKAGE{ this };
 
                         const callback::ListBoxEventPackage PACKAGE(
                             PTR_PACKAGE, sfml_util::GuiEvent::Click, MOUSE_POS_V);
 
-                        callbackPtr_->HandleCallback(PACKAGE);
+                        callbackPtrOpt_->Obj().HandleCallback(PACKAGE);
 
                         SetupForDraw();
                     }
@@ -610,7 +614,7 @@ namespace sfml_util
 
         void ListBox::CreateKeypressPackageAndCallHandler(const sf::Event::KeyEvent & KEY_EVENT)
         {
-            if (callbackPtr_ != nullptr)
+            if (callbackPtrOpt_)
             {
                 const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
 
@@ -622,7 +626,7 @@ namespace sfml_util
                     false,
                     KEY_EVENT);
 
-                callbackPtr_->HandleCallback(PACKAGE);
+                callbackPtrOpt_->Obj().HandleCallback(PACKAGE);
 
                 SetupForDraw();
             }
@@ -630,14 +634,14 @@ namespace sfml_util
 
         void ListBox::OnDoubleClick(const sf::Vector2f & MOUSE_POS_V)
         {
-            if (callbackPtr_ != nullptr)
+            if (callbackPtrOpt_)
             {
                 const callback::ListBoxPtrPackage_t PTR_PACKAGE(this);
 
                 const callback::ListBoxEventPackage PACKAGE(
                     PTR_PACKAGE, sfml_util::GuiEvent::DoubleClick, MOUSE_POS_V);
 
-                callbackPtr_->HandleCallback(PACKAGE);
+                callbackPtrOpt_->Obj().HandleCallback(PACKAGE);
 
                 SetupForDraw();
             }

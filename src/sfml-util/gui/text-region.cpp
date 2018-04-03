@@ -29,14 +29,12 @@
 //
 #include "text-region.hpp"
 
+#include "log/log-macros.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui/box-info.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "log/log-macros.hpp"
-
-#include "misc/assertlogandthrow.hpp"
 
 #include <algorithm>
 
@@ -54,7 +52,7 @@ namespace sfml_util
             , boxInfo_()
             , boxUPtr_()
             , sliderBarUPtr_()
-            , stagePtr_(nullptr)
+            , stagePtrOpt_(boost::none)
             , text_("")
             , renderedText_()
             , startLine_(0)
@@ -77,7 +75,7 @@ namespace sfml_util
             , boxInfo_()
             , boxUPtr_()
             , sliderBarUPtr_()
-            , stagePtr_(nullptr)
+            , stagePtrOpt_(boost::none)
             , text_("")
             , renderedText_()
             , startLine_(0)
@@ -95,7 +93,7 @@ namespace sfml_util
             const std::string & NAME,
             const TextInfo & TEXT_INFO,
             const sf::FloatRect & REGION,
-            IStage * const stagePtr,
+            const IStagePtr_t ISTAGE_PTR,
             const unsigned int SMALLER_FONT_SIZE,
             const box::Info & BOX_INFO,
             const Margins & MARGINS)
@@ -103,7 +101,7 @@ namespace sfml_util
             , boxInfo_()
             , boxUPtr_()
             , sliderBarUPtr_()
-            , stagePtr_(stagePtr)
+            , stagePtrOpt_(ISTAGE_PTR)
             , text_("")
             , renderedText_()
             , startLine_(0)
@@ -114,21 +112,21 @@ namespace sfml_util
             , allowScrollbarOrig_()
             , textSnipsToDrawVec_()
         {
-            Setup(TEXT_INFO, REGION, stagePtr_, SMALLER_FONT_SIZE, BOX_INFO, MARGINS, true);
+            Setup(TEXT_INFO, REGION, stagePtrOpt_, SMALLER_FONT_SIZE, BOX_INFO, MARGINS, true);
         }
 
         TextRegion::~TextRegion()
         {
-            if (stagePtr_ != nullptr)
+            if (stagePtrOpt_)
             {
                 if (sliderBarUPtr_.get() != nullptr)
                 {
-                    stagePtr_->EntityRemove(sliderBarUPtr_.get());
+                    stagePtrOpt_->Obj().EntityRemove(sliderBarUPtr_.get());
                 }
 
                 if (boxUPtr_.get() != nullptr)
                 {
-                    stagePtr_->EntityRemove(boxUPtr_.get());
+                    stagePtrOpt_->Obj().EntityRemove(boxUPtr_.get());
                 }
             }
         }
@@ -140,13 +138,13 @@ namespace sfml_util
             const box::Info & BOX_INFO,
             const Margins & MARGINS)
         {
-            Setup(TEXT_INFO, REGION, stagePtr_, SMALLER_FONT_SIZE, BOX_INFO, MARGINS, false);
+            Setup(TEXT_INFO, REGION, stagePtrOpt_, SMALLER_FONT_SIZE, BOX_INFO, MARGINS, false);
         }
 
         void TextRegion::Setup(
             const TextInfo & TEXT_INFO,
             const sf::FloatRect & REGION,
-            IStage * const stagePtrParam,
+            const IStagePtrOpt_t ISTAGE_PTR_OPT,
             const unsigned int SMALLER_FONT_SIZE,
             const box::Info & BOX_INFO,
             const Margins & MARGINS,
@@ -172,7 +170,7 @@ namespace sfml_util
             SetWillAcceptFocus(false);
 
             text_ = TEXT_INFO.text;
-            stagePtr_ = stagePtrParam;
+            stagePtrOpt_ = ISTAGE_PTR_OPT;
 
             HandleSliderBar(text_render::RenderToArea(
                 GetEntityName(),
@@ -215,11 +213,11 @@ namespace sfml_util
 
         void TextRegion::HandleSliderBar(sfml_util::gui::SliderBarPtr_t newSliderBarPtr)
         {
-            if (stagePtr_ != nullptr)
+            if (stagePtrOpt_)
             {
                 if (sliderBarUPtr_.get() != nullptr)
                 {
-                    stagePtr_->EntityRemove(sliderBarUPtr_.get());
+                    stagePtrOpt_->Obj().EntityRemove(sliderBarUPtr_.get());
                     sliderBarUPtr_.reset();
                 }
 
@@ -228,7 +226,7 @@ namespace sfml_util
                     sliderBarUPtr_.reset(newSliderBarPtr);
                     sliderBarUPtr_->SetOnChangeHandler(this);
                     sliderBarUPtr_->SetCurrentValue(0.0f);
-                    stagePtr_->EntityAdd(sliderBarUPtr_.get());
+                    stagePtrOpt_->Obj().EntityAdd(sliderBarUPtr_.get());
                 }
             }
             else
@@ -240,8 +238,7 @@ namespace sfml_util
         void TextRegion::HandleBox(const box::Info & BOX_INFO)
         {
             // deal with the Box that may need to be created or destroyed
-            if ((stagePtr_ != nullptr) && (boxInfo_ != BOX_INFO)
-                && (renderedText_.vec_vec.empty() == false)
+            if (stagePtrOpt_ && (boxInfo_ != BOX_INFO) && (renderedText_.vec_vec.empty() == false)
                 && (renderedText_.vec_vec[0].empty() == false))
             {
                 boxInfo_ = BOX_INFO;
@@ -263,7 +260,7 @@ namespace sfml_util
 
                 if (boxUPtr_.get() != nullptr)
                 {
-                    stagePtr_->EntityRemove(boxUPtr_.get());
+                    stagePtrOpt_->Obj().EntityRemove(boxUPtr_.get());
                 }
 
                 boxUPtr_ = std::make_unique<box::Box>("TextRegion's", boxInfo_);
@@ -275,7 +272,7 @@ namespace sfml_util
                 // Q: So what to do when the stage draws the box AFTER and on top of the text,
                 //   such as the box's gradient covering the text?
                 // A: Have whatever stage owns this TextRegion draw this TextRegion last.
-                stagePtr_->EntityAdd(boxUPtr_.get());
+                stagePtrOpt_->Obj().EntityAdd(boxUPtr_.get());
             }
         }
 
@@ -419,7 +416,7 @@ namespace sfml_util
             Setup(
                 textInfoOrig_,
                 regionOrig_,
-                stagePtr_,
+                stagePtrOpt_,
                 smallFontSizeOrig_,
                 boxInfo_,
                 marginsOrig_,

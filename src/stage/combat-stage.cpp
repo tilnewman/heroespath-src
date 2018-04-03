@@ -493,6 +493,7 @@ namespace stage
         const float COMBAT_REGION_TOP(COMBAT_REGION_MARGIN);
         const float COMBAT_REGION_LEFT(COMBAT_REGION_MARGIN);
         const float COMBAT_REGION_WIDTH(SCREEN_WIDTH_ - (COMBAT_REGION_MARGIN * 2.0f) + 10.0f);
+
         const float COMBAT_REGION_HEIGHT(
             (SCREEN_HEIGHT_ - (COMBAT_REGION_MARGIN * 2.0f)) - sfml_util::MapByRes(200.0f, 800.0f));
 
@@ -504,10 +505,13 @@ namespace stage
         const float STATUS_REGION_WIDTH_RATIO(0.666f);
         const float STATUS_REGION_SLIDERBAR_WIDTH(35.0f);
         const float STATUS_REGION_LEFT(COMBAT_REGION_LEFT);
+
         const float STATUS_REGION_TOP(
             COMBAT_REGION_TOP + COMBAT_REGION_HEIGHT + SLIDERBAR_VERT_SPACER);
+
         const float STATUS_REGION_WIDTH(
             (SCREEN_WIDTH_ * STATUS_REGION_WIDTH_RATIO) - STATUS_REGION_SLIDERBAR_WIDTH);
+
         const float STATUS_REGION_HEIGHT(
             (((SCREEN_HEIGHT_ - COMBAT_REGION_TOP) - COMBAT_REGION_HEIGHT) - SLIDERBAR_VERT_SPACER)
             - 25.0f);
@@ -519,8 +523,10 @@ namespace stage
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"),
             STATUS_REGION,
             LISTBOX_BACKGROUND_COLOR_);
+
         const sfml_util::gui::ColorSet STATUS_COLORSET(
             LISTBOX_SELECTED_COLOR_, LISTBOX_NOTSELECTED_COLOR_);
+
         const sfml_util::gui::box::Info STATUS_BOX_INFO(
             true, STATUS_REGION, STATUS_COLORSET, STATUS_BACKGROUNDINFO);
 
@@ -528,12 +534,12 @@ namespace stage
             "ComabtStage'sStatus",
             STATUS_REGION,
             sfml_util::gui::ListBoxItemSVec_t(),
-            this,
+            sfml_util::IStagePtr_t(this),
             15.0f,
             0.0f,
             STATUS_BOX_INFO,
             LISTBOX_LINE_COLOR_,
-            this);
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
         statusBoxUPtr_->SetHighlightColor(LISTBOX_HIGHLIGHT_COLOR_);
         EntityAdd(statusBoxUPtr_.get());
@@ -541,22 +547,29 @@ namespace stage
         // command box
         const float COMMAND_REGION_HORIZ_SPACER(25.0f);
         const float COMMAND_REGION_VERT_SPACER(25.0f);
+
         const float COMMAND_REGION_LEFT(
             STATUS_REGION_LEFT + STATUS_REGION_WIDTH + COMMAND_REGION_HORIZ_SPACER
             + STATUS_REGION_SLIDERBAR_WIDTH);
+
         const float COMMAND_REGION_TOP(
             COMBAT_REGION_TOP + COMBAT_REGION_HEIGHT + COMMAND_REGION_VERT_SPACER);
+
         const float COMMAND_REGION_WIDTH(
             ((((SCREEN_WIDTH_ - COMMAND_REGION_HORIZ_SPACER) - COMBAT_REGION_MARGIN)
               - STATUS_REGION_WIDTH)
              - 15.0f)
             - STATUS_REGION_SLIDERBAR_WIDTH);
+
         const float COMMAND_REGION_HEIGHT(STATUS_REGION_HEIGHT);
+
         const sf::FloatRect COMMAND_REGION(
             COMMAND_REGION_LEFT, COMMAND_REGION_TOP, COMMAND_REGION_WIDTH, COMMAND_REGION_HEIGHT);
+
         const sfml_util::gui::BackgroundInfo COMMAND_BACKGROUNDINFO(
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"),
             COMMAND_REGION);
+
         const sfml_util::gui::box::Info COMMAND_REGION_BOXINFO(
             true, COMMAND_REGION, sfml_util::gui::ColorSet(), COMMAND_BACKGROUNDINFO);
         commandBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>(
@@ -569,6 +582,7 @@ namespace stage
         const sfml_util::gui::BackgroundInfo TURNBOX_BACKGROUNDINFO(
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-darkknot"),
             turnBoxRegion_);
+
         const sfml_util::gui::box::Info TURNBOX_REGION_BOXINFO(
             true, turnBoxRegion_, sfml_util::gui::ColorSet(), TURNBOX_BACKGROUNDINFO);
         turnBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>(
@@ -670,12 +684,14 @@ namespace stage
 
         const sf::Color TURNBUTTON_DISABLED_COLOR(
             sfml_util::FontManager::Color_Orange() - sf::Color(0, 0, 0, 176));
+
         sfml_util::gui::TextInfo turnButtonTextInfoDisabled(turnButtonTextInfo);
         turnButtonTextInfoDisabled.color = TURNBUTTON_DISABLED_COLOR;
 
         // attack button
         turnButtonTextInfo.text = "(A)ttack";
         turnButtonTextInfoDisabled.text = "(A)ttack";
+
         const sfml_util::gui::MouseTextInfo ATTACKBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -699,6 +715,7 @@ namespace stage
         // fight button
         turnButtonTextInfo.text = "(F)ight";
         turnButtonTextInfoDisabled.text = "(F)ight";
+
         const sfml_util::gui::MouseTextInfo FIGHTBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -722,6 +739,7 @@ namespace stage
         // spell/song button
         turnButtonTextInfo.text = "(S)pell";
         turnButtonTextInfoDisabled.text = "(S)pell";
+
         const sfml_util::gui::MouseTextInfo CASTBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -745,6 +763,7 @@ namespace stage
         // advance button
         turnButtonTextInfo.text = "A(d)vance";
         turnButtonTextInfoDisabled.text = "A(d)vance";
+
         const sfml_util::gui::MouseTextInfo ADVANCEBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -769,6 +788,7 @@ namespace stage
         // retreat button
         turnButtonTextInfo.text = "R(e)treat";
         turnButtonTextInfoDisabled.text = "R(e)treat";
+
         const sfml_util::gui::MouseTextInfo RETREATBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -793,6 +813,7 @@ namespace stage
         // block button
         turnButtonTextInfo.text = "(B)lock";
         turnButtonTextInfoDisabled.text = "(B)lock";
+
         const sfml_util::gui::MouseTextInfo BLOCKBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -816,6 +837,7 @@ namespace stage
         // skip button
         turnButtonTextInfo.text = "S(k)ip";
         turnButtonTextInfoDisabled.text = "S(k)ip";
+
         const sfml_util::gui::MouseTextInfo SKIPBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -839,6 +861,7 @@ namespace stage
         // fly button
         turnButtonTextInfo.text = "Fl(y)";
         turnButtonTextInfoDisabled.text = "Fl(y)";
+
         const sfml_util::gui::MouseTextInfo FLYBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -862,6 +885,7 @@ namespace stage
         // land button
         turnButtonTextInfo.text = "(L)and";
         turnButtonTextInfoDisabled.text = "(L)and";
+
         const sfml_util::gui::MouseTextInfo LANDBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -883,6 +907,7 @@ namespace stage
         // roar button
         turnButtonTextInfo.text = "(R)oar";
         turnButtonTextInfoDisabled.text = "(R)oar";
+
         const sfml_util::gui::MouseTextInfo ROARBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -906,6 +931,7 @@ namespace stage
         // pounce button
         turnButtonTextInfo.text = "(P)ounce";
         turnButtonTextInfoDisabled.text = "(P)ounce";
+
         const sfml_util::gui::MouseTextInfo POUNCEBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -929,6 +955,7 @@ namespace stage
         // run button
         turnButtonTextInfo.text = "R(u)n";
         turnButtonTextInfoDisabled.text = "R(u)n";
+
         const sfml_util::gui::MouseTextInfo RUNBUTTON_MOUSETEXTINFO(
             turnButtonTextInfo, sfml_util::FontManager::Color_Light(), sf::Color::White);
 
@@ -1079,13 +1106,13 @@ namespace stage
             sfml_util::FontManager::Instance()->Size_Smallish(),
             sfml_util::FontManager::Color_Light(),
             sfml_util::Justified::Left);
-        //
+
         const sf::FloatRect ZOOMSLIDER_LABEL_RECT(
             0.0f, COMMAND_REGION_TOP + COMMAND_REGION_PAD, 0.0f, 0.0f);
-        //
+
         zoomLabelTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
             "ZoomSlider's", ZOOMSLIDER_LABEL_TEXT_INFO, ZOOMSLIDER_LABEL_RECT);
-        //
+
         zoomSliderBarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
             "CombatStageZoom",
             COMMAND_REGION_LEFT + COMMAND_REGION_PAD,
@@ -1102,7 +1129,7 @@ namespace stage
              + (zoomSliderBarUPtr_->GetEntityRegion().width * 0.5f))
                 - (zoomLabelTextRegionUPtr_->GetEntityRegion().width * 0.5f),
             zoomLabelTextRegionUPtr_->GetEntityPos().y);
-        //
+
         EntityAdd(zoomLabelTextRegionUPtr_.get());
         EntityAdd(zoomSliderBarUPtr_.get());
 

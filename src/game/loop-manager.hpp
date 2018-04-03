@@ -120,7 +120,7 @@ namespace game
         void TransitionTo_Previous(const bool WILL_ADVANCE_TURN = false);
 
         sfml_util::DisplayChangeResult::Enum ChangeResolution(
-            sfml_util::IStage * const currentStagePtr_,
+            const sfml_util::IStagePtr_t CURRENT_ISTAGE_PTR,
             popup::IPopupHandler_t * const HANDLER_PTR,
             const sfml_util::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL);

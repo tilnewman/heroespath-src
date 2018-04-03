@@ -204,12 +204,12 @@ namespace stage
             "GameStateToLoad",
             GS_LB_RECT,
             listBoxItemSVec,
-            this,
+            sfml_util::IStagePtr_t(this),
             10.0f,
             6.0f,
             BOX_INFO,
             sfml_util::FontManager::Color_Orange(),
-            this);
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
         EntityAdd(gsListBoxUPtr_.get());
 

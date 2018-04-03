@@ -554,7 +554,7 @@ namespace popup
         tempRect.height = 0.0f;
 
         textRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-            "PopupStage's", popupInfo_.TextInfo(), tempRect, this);
+            "PopupStage's", popupInfo_.TextInfo(), tempRect, sfml_util::IStagePtr_t(this));
 
         if ((textRegionUPtr_->GetEntityRegion().top + textRegionUPtr_->GetEntityRegion().height)
             > (textRegion_.top + textRegion_.height))
@@ -562,7 +562,7 @@ namespace popup
             tempRect.height = textRegion_.height;
 
             textRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
-                "PopupStage's", popupInfo_.TextInfo(), tempRect, this);
+                "PopupStage's", popupInfo_.TextInfo(), tempRect, sfml_util::IStagePtr_t(this));
         }
     }
 

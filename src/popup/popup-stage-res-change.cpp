@@ -72,7 +72,7 @@ namespace popup
 
                     textInfo.text = ss.str();
 
-                    textRegionUPtr_->Setup(textInfo, textRegion_, this);
+                    textRegionUPtr_->Setup(textInfo, textRegion_, sfml_util::IStagePtr_t(this));
                 }
                 else
                 {

@@ -938,12 +938,12 @@ namespace stage
             "TreasureDisplayStage's_CharacterInventoryListBox",
             LISTBOX_REGION,
             listboxItemsSVec,
-            this,
+            sfml_util::IStagePtr_t(this),
             MEASUREMENTS.listboxMargin,
             MEASUREMENTS.listboxItemSpacer,
             LISTBOX_BOXINFO,
             listboxColors.line,
-            this);
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
         listboxUPtr->SelectedIndex(0);
         listboxUPtr->ImageColor(listboxColors.image);

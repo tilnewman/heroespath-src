@@ -436,12 +436,12 @@ namespace popup
             "PopupStage'sSpellListBox",
             LISTBOX_RECT,
             listBoxItemsSVec,
-            this,
+            sfml_util::IStagePtr_t(this),
             10.0f,
             6.0f,
             LISTBOX_BOX_INFO,
             LISTBOX_LINE_COLOR_,
-            this);
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
         EntityAdd(listBoxUPtr_.get());
         listBoxUPtr_->SelectedIndex(0);
@@ -649,7 +649,8 @@ namespace popup
         }
         else
         {
-            spellDescTextUPtr_->Setup(SPELL_DESC_TEXTINFO, SPELL_DESC_TEXTRECT, this);
+            spellDescTextUPtr_->Setup(
+                SPELL_DESC_TEXTINFO, SPELL_DESC_TEXTRECT, sfml_util::IStagePtr_t(this));
         }
     }
 

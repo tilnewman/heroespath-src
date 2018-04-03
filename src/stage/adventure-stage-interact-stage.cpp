@@ -161,9 +161,9 @@ namespace stage
         map_.TransitionLevel(TRANSITION);
     }
 
-    void InteractStage::SetupInteractionForDrawing(interact::IInteraction * const interactionPTr)
+    void InteractStage::SetupInteractionForDrawing(interact::IInteraction * const interactionPtr)
     {
-        if (interactionPTr != nullptr)
+        if (interactionPtr != nullptr)
         {
             const sf::FloatRect SUBJECT_REGION{ StageRegionLeft(),
                                                 StageRegionTop(),
@@ -186,18 +186,19 @@ namespace stage
                                                 TEXT_REGION.width,
                                                 TEXT_REGION.height + BUTTON_REGION.height };
 
-            contextSprite_.setTexture(interactionPTr->ContextTexture(), true);
+            contextSprite_.setTexture(interactionPtr->ContextTexture(), true);
             contextSprite_.setColor(sf::Color(255, 255, 255, CONTEXT_IMAGE_ALPHA_));
 
             sfml_util::CenterAndScaleSpriteToFit(
                 contextSprite_, CONTEXT_REGION, CONTEXT_IMAGE_PAD_RATIO_);
 
-            subjectSprite_.setTexture(interactionPTr->SubjectTexture(), true);
+            subjectSprite_.setTexture(interactionPtr->SubjectTexture(), true);
 
             sfml_util::CenterAndScaleSpriteToFit(
                 subjectSprite_, SUBJECT_REGION, SUBJECT_IMAGE_PAD_RATIO_);
 
-            textRegionUPtr_->Setup(interactionPTr->Text(), TEXT_REGION, this);
+            textRegionUPtr_->Setup(
+                interactionPtr->Text(), TEXT_REGION, sfml_util::IStagePtr_t(this));
 
             for (auto & buttonUPtr : buttons_)
             {
@@ -206,7 +207,7 @@ namespace stage
 
             buttons_.clear();
 
-            for (auto & button : interactionPTr->Buttons())
+            for (auto & button : interactionPtr->Buttons())
             {
                 buttons_.emplace_back(button.Make(this));
             }

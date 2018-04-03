@@ -27,15 +27,14 @@
 //
 // adventure-stage-char-list.hpp
 //
+#include "creature/creature.hpp"
+#include "misc/vector-map.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/line.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/i-stage.hpp"
 #include "sfml-util/sfml-graphics.hpp"
-
-#include "creature/creature.hpp"
-#include "misc/vector-map.hpp"
 
 #include <memory>
 #include <string>
@@ -57,7 +56,7 @@ namespace stage
         AdventureCharacterList & operator=(const AdventureCharacterList &);
 
     public:
-        explicit AdventureCharacterList(sfml_util::IStage *);
+        explicit AdventureCharacterList(const sfml_util::IStagePtr_t);
         virtual ~AdventureCharacterList();
 
         const std::string HandlerName() const override { return GetEntityName(); }
@@ -118,7 +117,7 @@ namespace stage
         const float MANA_COLUMN_WIDTH_;
         const float CELL_TEXT_LEFT_SPACER_;
         const float CHARLIST_SEP_SPACER_;
-        sfml_util::IStage * stagePtr_;
+        sfml_util::IStagePtr_t stagePtr_;
         sfml_util::gui::FourStateButtonUVec_t namesButtonUVec_;
         sfml_util::gui::TextRegionUVec_t condsTextRegionsUVec_;
         sfml_util::gui::TextRegionUVec_t healthTextRegionsUVec_;
@@ -139,6 +138,7 @@ namespace stage
     };
 
     using AdventureCharacterListUPtr_t = std::unique_ptr<AdventureCharacterList>;
+
 } // namespace stage
 } // namespace heroespath
 

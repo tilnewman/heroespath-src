@@ -451,12 +451,12 @@ namespace stage
             "PartyStage'sCharacter",
             CHAR_LIST_RECT,
             itemSVec,
-            this,
+            sfml_util::IStagePtr_t(this),
             10.0f,
             6.0f,
             boxInfo,
             sfml_util::FontManager::Color_Orange(),
-            this);
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
         characterListBoxUPtr_->ImageColor(sf::Color(255, 255, 255, 190));
 
@@ -477,12 +477,12 @@ namespace stage
             "PartyStage'sParty",
             PARTY_LIST_RECT,
             sfml_util::gui::ListBoxItemSVec_t(),
-            this,
+            sfml_util::IStagePtr_t(this),
             10.0f,
             6.0f,
             boxInfo,
             sfml_util::FontManager::Color_Orange(),
-            this);
+            sfml_util::gui::callback::IListBoxCallbackHandlerPtr_t(this));
 
         partyListBoxUPtr_->ImageColor(sf::Color(255, 255, 255, 190));
         partyListBoxUPtr_->CountLimit(player::Party::MAX_CHARACTER_COUNT_);

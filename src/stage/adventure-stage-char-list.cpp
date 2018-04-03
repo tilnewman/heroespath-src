@@ -33,13 +33,12 @@
 #include "game/game.hpp"
 #include "log/log-macros.hpp"
 #include "player/party.hpp"
-#include "state/game-state.hpp"
-
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
+#include "state/game-state.hpp"
 
 #include <algorithm>
 #include <vector>
@@ -49,7 +48,7 @@ namespace heroespath
 namespace stage
 {
 
-    AdventureCharacterList::AdventureCharacterList(sfml_util::IStage * stagePtr)
+    AdventureCharacterList::AdventureCharacterList(const sfml_util::IStagePtr_t ISTAGE_PTR)
         : sfml_util::gui::GuiEntity("AdventureStage'sCharacterList", 0.0f, 0.0f)
         , ALPHA_FOR_LINES_(180)
         , ALPHA_FOR_TEXT_(160)
@@ -61,7 +60,7 @@ namespace stage
         , MANA_COLUMN_WIDTH_(HEALTH_COLUMN_WIDTH_)
         , CELL_TEXT_LEFT_SPACER_(sfml_util::MapByRes(12.0f, 25.0f))
         , CHARLIST_SEP_SPACER_(sfml_util::MapByRes(15.0f, 150.0f))
-        , stagePtr_(stagePtr)
+        , stagePtr_(ISTAGE_PTR)
         , namesButtonUVec_()
         , condsTextRegionsUVec_()
         , healthTextRegionsUVec_()

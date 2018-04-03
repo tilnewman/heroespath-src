@@ -35,13 +35,12 @@
 #include "map/level-enum.hpp"
 #include "map/map-display.hpp"
 #include "map/map.hpp"
-#include "stage/adventure-stage-interact-stage.hpp"
-#include "stage/adventure-stage.hpp"
-
 #include "sfml-util/direction-enum.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
+#include "stage/adventure-stage-interact-stage.hpp"
+#include "stage/adventure-stage.hpp"
 
 namespace heroespath
 {
@@ -269,5 +268,5 @@ namespace stage
 
         return interactRegion;
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

@@ -29,6 +29,10 @@
 //
 #include "settings-stage.hpp"
 
+#include "game/game-data-file.hpp"
+#include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
+#include "misc/real.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
@@ -38,13 +42,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/tile.hpp"
-
-#include "misc/real.hpp"
-
-#include "log/log-macros.hpp"
-
-#include "game/game-data-file.hpp"
-#include "game/loop-manager.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -315,7 +312,7 @@ namespace stage
             resRadioButtonSetUPtr_ = std::make_unique<sfml_util::RadioButtonSet_DisplayChange>(
                 BG_BOX_INNER_RECT.left,
                 BG_BOX_INNER_RECT.top + sfml_util::MapByRes(20.0f, 50.0f),
-                this);
+                sfml_util::IStagePtr_t(this));
 
             resRadioButtonSetUPtr_->SetEntityColors(sfml_util::gui::ColorSet(
                 sf::Color(180, 180, 180),
