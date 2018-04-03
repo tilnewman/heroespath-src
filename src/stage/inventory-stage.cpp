@@ -248,7 +248,6 @@ namespace stage
         , equipButtonUPtr_()
         , unequipButtonUPtr_()
         , dropButtonUPtr_()
-        , buttonPVec_()
         , sortButtonNameTexture_()
         , sortButtonPriceTexture_()
         , sortButtonWeightTexture_()
@@ -925,15 +924,38 @@ namespace stage
         HandleDetailViewMouseInterrupt(MOUSE_POS_V);
         Stage::UpdateMouseDown(MOUSE_POS_V);
 
-        for (auto const & NEXT_BUTTON_PTR : buttonPVec_)
-        {
-            if ((NEXT_BUTTON_PTR->IsDisabled())
-                && (NEXT_BUTTON_PTR->GetEntityRegion().contains(MOUSE_POS_V)))
-            {
-                PopupRejectionWindow(NEXT_BUTTON_PTR->GetMouseHoverText());
-                break;
-            }
-        }
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(backButtonUPtr_, MOUSE_POS_V))
+            return;
+
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(itemsButtonUPtr_, MOUSE_POS_V))
+            return;
+
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(titlesButtonUPtr_, MOUSE_POS_V))
+            return;
+
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(condsButtonUPtr_, MOUSE_POS_V))
+            return;
+
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(spellsButtonUPtr_, MOUSE_POS_V))
+            return;
+
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(giveButtonUPtr_, MOUSE_POS_V))
+            return;
+
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(shareButtonUPtr_, MOUSE_POS_V))
+            return;
+
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(gatherButtonUPtr_, MOUSE_POS_V))
+            return;
+
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(equipButtonUPtr_, MOUSE_POS_V))
+            return;
+
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(unequipButtonUPtr_, MOUSE_POS_V))
+            return;
+
+        if (IfMouseDownIsOnDisabledButtonPopupRejection(dropButtonUPtr_, MOUSE_POS_V))
+            return;
     }
 
     void InventoryStage::Setup_PaperBackground()
@@ -1620,7 +1642,6 @@ namespace stage
 
         buttonUPtr->SetCallbackHandler(this);
         EntityAdd(buttonUPtr.get());
-        buttonPVec_.emplace_back(buttonUPtr.get());
     }
 
     void InventoryStage::Setup_ButtonMouseoverText()
@@ -4329,6 +4350,20 @@ namespace stage
 
         listbox.Items(vec);
         isSortReversed = !isSortReversed;
+    }
+
+    bool InventoryStage::IfMouseDownIsOnDisabledButtonPopupRejection(
+        const sfml_util::gui::FourStateButtonUPtr_t & BUTTON_UPTR, const sf::Vector2f & MOUSE_POS_V)
+    {
+        if (BUTTON_UPTR->IsDisabled() && BUTTON_UPTR->GetEntityRegion().contains(MOUSE_POS_V))
+        {
+            PopupRejectionWindow(BUTTON_UPTR->GetMouseHoverText());
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 } // namespace stage

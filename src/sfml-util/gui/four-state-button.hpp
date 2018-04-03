@@ -45,7 +45,6 @@ namespace sfml_util
     namespace gui
     {
 
-        // forward declarations
         namespace box
         {
             class Box;
@@ -212,13 +211,10 @@ namespace sfml_util
             callback::IFourStateButtonCallbackHandler_t * callbackHandlerPtr_;
         };
 
-        using FourStateButtonPtr_t = FourStateButton *;
-        using FourStateButtonPVec_t = std::vector<FourStateButtonPtr_t>;
-
         using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
         using FourStateButtonUVec_t = std::vector<FourStateButtonUPtr_t>;
-
         using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

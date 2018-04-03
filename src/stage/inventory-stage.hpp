@@ -314,6 +314,10 @@ namespace stage
         void SortByPrice(sfml_util::gui::ListBox & listbox, bool & isSortReversed);
         void SortByWeight(sfml_util::gui::ListBox & listbox, bool & isSortReversed);
 
+        bool IfMouseDownIsOnDisabledButtonPopupRejection(
+            const sfml_util::gui::FourStateButtonUPtr_t & BUTTON_UPTR,
+            const sf::Vector2f & MOUSE_POS_V);
+
     public:
         static const float VIEW_CHANGE_SLIDER_SPEED_;
         static const float VIEW_CHANGE_BETWEEN_TIME_SEC_;
@@ -441,7 +445,6 @@ namespace stage
         sfml_util::gui::FourStateButtonUPtr_t equipButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t unequipButtonUPtr_;
         sfml_util::gui::FourStateButtonUPtr_t dropButtonUPtr_;
-        sfml_util::gui::FourStateButtonPVec_t buttonPVec_;
 
         sf::Texture sortButtonNameTexture_;
         sf::Texture sortButtonPriceTexture_;
