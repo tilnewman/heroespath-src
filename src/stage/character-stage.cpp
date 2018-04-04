@@ -29,6 +29,26 @@
 //
 #include "character-stage.hpp"
 
+#include "creature/body-type.hpp"
+#include "creature/condition.hpp"
+#include "creature/creature.hpp"
+#include "creature/name-info.hpp"
+#include "creature/race-enum.hpp"
+#include "creature/race-stats.hpp"
+#include "creature/role-enum.hpp"
+#include "creature/role-stats.hpp"
+#include "creature/sex-enum.hpp"
+#include "creature/title.hpp"
+#include "game/game-data-file.hpp"
+#include "game/loop-manager.hpp"
+#include "item/inventory.hpp"
+#include "log/log-macros.hpp"
+#include "misc/random.hpp"
+#include "misc/real.hpp"
+#include "player/initial.hpp"
+#include "player/party.hpp"
+#include "popup/popup-manager.hpp"
+#include "popup/popup-stage-image-select.hpp"
 #include "sfml-util/animation-factory.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -45,30 +65,7 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/tile.hpp"
-
-#include "popup/popup-manager.hpp"
-#include "popup/popup-stage-image-select.hpp"
-
-#include "creature/body-type.hpp"
-#include "creature/condition.hpp"
-#include "creature/creature.hpp"
-#include "creature/name-info.hpp"
-#include "creature/race-enum.hpp"
-#include "creature/race-stats.hpp"
-#include "creature/role-enum.hpp"
-#include "creature/role-stats.hpp"
-#include "creature/sex-enum.hpp"
-#include "creature/title.hpp"
-#include "game/game-data-file.hpp"
-#include "game/loop-manager.hpp"
-#include "item/inventory.hpp"
-#include "log/log-macros.hpp"
-#include "player/initial.hpp"
-#include "player/party.hpp"
 #include "state/game-state-factory.hpp"
-
-#include "misc/random.hpp"
-#include "misc/real.hpp"
 
 #include <memory>
 #include <sstream>
@@ -81,9 +78,10 @@ namespace stage
     MenuButton::MenuButton(
         const std::string & NAME,
         const std::string & IMAGE_FILENAME_UP,
-        const std::string & IMAGE_FILENAME_OVER)
+        const std::string & IMAGE_FILENAME_OVER,
+        const CharacterStagePtr_t CHARACTER_STAGE_PTR)
         : FourStateButton(std::string(NAME).append("_MenuButton"))
-        , stagePtr_()
+        , characterStagePtr_(CHARACTER_STAGE_PTR)
     {
         auto const BUTTONS_PATH{ game::GameDataFile::Instance()->GetMediaPath(
             "media-images-buttons-mainmenu-dir") };
@@ -100,44 +98,15 @@ namespace stage
             false);
     }
 
-    bool MenuButton::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
+    void MenuButton::OnMousePosStateChange()
     {
-        auto const DID_STATE_CHANGE{ GuiEntity::UpdateMousePos(MOUSE_POS_V) };
-
-        if (DID_STATE_CHANGE)
+        if (characterStagePtr_->AreAnyAnimNumStillMoving() == false)
         {
-            if (GetMouseState() == sfml_util::MouseState::Over)
-            {
-                sfml_util::SoundManager::Instance()->PlaySfx_TickOn();
-            }
-            else
-            {
-                sfml_util::SoundManager::Instance()->PlaySfx_TickOff();
-            }
-
-            if (stagePtr_ == nullptr)
-            {
-                Reset();
-            }
-            else
-            {
-                if (stagePtr_->AreAnyAnimNumStillMoving() == false)
-                {
-                    Reset();
-                }
-            }
-        }
-
-        return DID_STATE_CHANGE;
-    }
-
-    void MenuButton::OnClick(const sf::Vector2f &)
-    {
-        if (stagePtr_ != nullptr)
-        {
-            stagePtr_->HandleCallback(this);
+            FourStateButton::OnMousePosStateChange();
         }
     }
+
+    void MenuButton::OnClick(const sf::Vector2f &) { characterStagePtr_->HandleCallback(this); }
 
     const sfml_util::gui::ColorSet CharacterStage::GUI_DEFAULT_COLORSET_{ sf::Color(220, 220, 220),
                                                                           sf::Color(220, 220, 220),
@@ -191,14 +160,14 @@ namespace stage
         , // these drifter values are reset below
         backgroundImage_("media-images-backgrounds-tile-darkknot")
         , smokeAnimUPtr_()
-        , backButtonUPtr_(
-              std::make_unique<MenuButton>("Back", "back_button_normal.png", "back_button_lit.png"))
-        , saveButtonUPtr_(
-              std::make_unique<MenuButton>("Save", "save_button_normal.png", "save_button_lit.png"))
-        , helpButtonUPtr_(
-              std::make_unique<MenuButton>("Help", "help_button_normal.png", "help_button_lit.png"))
-        , nextButtonUPtr_(
-              std::make_unique<MenuButton>("Next", "next_button_normal.png", "next_button_lit.png"))
+        , backButtonUPtr_(std::make_unique<MenuButton>(
+              "Back", "back_button_normal.png", "back_button_lit.png", this))
+        , saveButtonUPtr_(std::make_unique<MenuButton>(
+              "Save", "save_button_normal.png", "save_button_lit.png", this))
+        , helpButtonUPtr_(std::make_unique<MenuButton>(
+              "Help", "help_button_normal.png", "help_button_lit.png", this))
+        , nextButtonUPtr_(std::make_unique<MenuButton>(
+              "Next", "next_button_normal.png", "next_button_lit.png", this))
         , statSetBase_()
         , statSetRace_()
         , statSetRole_()
@@ -661,7 +630,6 @@ namespace stage
         buttonUPtr->SetScaleToRes();
         buttonUPtr->SetVertPositionToBottomOfScreenByRes(VERT_POS);
         EntityAdd(buttonUPtr.get());
-        buttonUPtr->SetOwningCharacterStage(this);
     }
 
     void CharacterStage::Setup_RaceRadioButtons()

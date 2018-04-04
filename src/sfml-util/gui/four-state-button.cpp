@@ -438,28 +438,16 @@ namespace sfml_util
 
         bool FourStateButton::UpdateMousePos(const sf::Vector2f & MOUSE_POS_V)
         {
-            if (isDisabled_)
+            if (false == isDisabled_)
             {
-                return false;
+                if (GuiEntity::UpdateMousePos(MOUSE_POS_V))
+                {
+                    OnMousePosStateChange();
+                    return true;
+                }
             }
 
-            const bool DID_STATE_CHANGE(GuiEntity::UpdateMousePos(MOUSE_POS_V));
-
-            if (DID_STATE_CHANGE)
-            {
-                if (GetMouseState() == MouseState::Over)
-                {
-                    SoundManager::Instance()->PlaySfx_TickOn();
-                }
-                else
-                {
-                    SoundManager::Instance()->PlaySfx_TickOff();
-                }
-
-                Reset();
-            }
-
-            return DID_STATE_CHANGE;
+            return false;
         }
 
         void FourStateButton::SetEntityPos(const float POS_LEFT, const float POS_TOP)
@@ -607,6 +595,24 @@ namespace sfml_util
             if ((false == isDisabled_) && (callbackHandlerPtr_ != nullptr))
             {
                 callbackHandlerPtr_->HandleCallback(this);
+            }
+        }
+
+        void FourStateButton::OnMousePosStateChange()
+        {
+            PlayMouseStateSfx();
+            Reset();
+        }
+
+        void FourStateButton::PlayMouseStateSfx()
+        {
+            if (GetMouseState() == MouseState::Over)
+            {
+                SoundManager::Instance()->PlaySfx_TickOn();
+            }
+            else
+            {
+                SoundManager::Instance()->PlaySfx_TickOff();
             }
         }
 

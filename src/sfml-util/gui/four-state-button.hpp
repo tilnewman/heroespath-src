@@ -188,6 +188,8 @@ namespace sfml_util
         protected:
             void Reset();
             void OnClick(const sf::Vector2f &) override;
+            virtual void OnMousePosStateChange();
+            virtual void PlayMouseStateSfx();
 
         protected:
             bool isDisabled_;

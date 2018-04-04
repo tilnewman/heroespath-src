@@ -28,6 +28,11 @@
 // character-stage.hpp
 //  A Stage class that displays the character creation screen.
 //
+#include "creature/creature.hpp"
+#include "creature/race-stats.hpp"
+#include "creature/role-stats.hpp"
+#include "misc/not-null.hpp"
+#include "popup/i-popup-callback.hpp"
 #include "sfml-util/gradient.hpp"
 #include "sfml-util/gui/background-image.hpp"
 #include "sfml-util/gui/four-state-button.hpp"
@@ -35,22 +40,16 @@
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
 #include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/horiz-symbol.hpp"
 #include "sfml-util/i-callback-handler.hpp"
+#include "sfml-util/main-menu-buttons.hpp"
+#include "sfml-util/main-menu-title.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/sliders.hpp"
 #include "sfml-util/stage.hpp"
-
-#include "creature/creature.hpp"
-#include "creature/race-stats.hpp"
-#include "creature/role-stats.hpp"
-#include "sfml-util/horiz-symbol.hpp"
-#include "sfml-util/main-menu-buttons.hpp"
-#include "sfml-util/main-menu-title.hpp"
 #include "stage/character-stage-anim-num.hpp"
 #include "stats/stat-set.hpp"
-
-#include "popup/i-popup-callback.hpp"
 
 #include <memory>
 #include <string>
@@ -79,8 +78,10 @@ namespace sfml_util
 namespace stage
 {
 
-    // wrapper class for the lower meny buttons
     class CharacterStage;
+    using CharacterStagePtr_t = misc::NotNull<CharacterStage *>;
+
+    // wrapper class for the lower menu buttons
     class MenuButton : public sfml_util::gui::FourStateButton
     {
     public:
@@ -89,23 +90,20 @@ namespace stage
         MenuButton & operator=(const MenuButton &) = delete;
         MenuButton & operator=(MenuButton &&) = delete;
 
-    public:
         MenuButton(
             const std::string & NAME,
             const std::string & IMAGE_FILENAME_UP,
-            const std::string & IMAGE_FILENAME_OVER);
+            const std::string & IMAGE_FILENAME_OVER,
+            const CharacterStagePtr_t CHARACTER_STAGE_PTR);
 
         virtual ~MenuButton() = default;
-        virtual bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V);
-
-        virtual void SetOwningCharacterStage(CharacterStage * const stagePtr)
-        {
-            stagePtr_ = stagePtr;
-        }
 
     protected:
-        virtual void OnClick(const sf::Vector2f &);
-        CharacterStage * stagePtr_;
+        void OnMousePosStateChange() override;
+        void OnClick(const sf::Vector2f &) override;
+
+    private:
+        CharacterStagePtr_t characterStagePtr_;
     };
     using MenuButtonUPtr_t = std::unique_ptr<MenuButton>;
 
@@ -389,6 +387,7 @@ namespace stage
         //
         std::size_t selectedImageIndex_;
     };
+
 } // namespace stage
 } // namespace heroespath
 
