@@ -28,6 +28,7 @@
 // adventure-stage.hpp
 //
 #include "interact/interaction-manager.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
@@ -38,10 +39,10 @@ namespace stage
 {
 
     class AdventureDisplayStage;
+    using AdventureDisplayStagePtr_t = misc::NotNull<AdventureDisplayStage *>;
 
     // Responsible for managing all AdventureStage interactions with the player.
     class AdventureStage : public sfml_util::Stage
-
     {
     public:
         AdventureStage(const AdventureStage &) = delete;
@@ -57,10 +58,11 @@ namespace stage
         void UpdateTime(const float ELAPSED_TIME_SEC) override;
 
     private:
-        AdventureDisplayStage * adventureDisplayStagePtr_;
         interact::InteractionManager interactionManager_;
+        AdventureDisplayStagePtr_t adventureDisplayStagePtr_;
     };
-}
-}
+
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_ADVENTURESTAGE_HPP_INCLUDED

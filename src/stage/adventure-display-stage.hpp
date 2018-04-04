@@ -28,6 +28,7 @@
 // adventure-display-stage.hpp
 //
 #include "interact/interaction-manager.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/direction-enum.hpp"
 #include "sfml-util/gui/picture-frame.hpp"
 #include "sfml-util/horiz-symbol.hpp"
@@ -35,7 +36,6 @@
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-system.hpp"
 #include "sfml-util/stage.hpp"
-
 #include "stage/adventure-stage-char-list.hpp"
 
 #include <memory>
@@ -46,16 +46,15 @@ namespace map
 {
     class Map;
     using MapUPtr_t = std::unique_ptr<Map>;
-}
+} // namespace map
 namespace stage
 {
 
     class InteractStage;
-    class AdventureStage;
+    using InteractStagePtr_t = misc::NotNull<InteractStage *>;
 
     // Responsible for all drawing operations of the AdventureStage.
     class AdventureDisplayStage : public sfml_util::Stage
-
     {
     public:
         AdventureDisplayStage(const AdventureDisplayStage &) = delete;
@@ -64,7 +63,7 @@ namespace stage
         AdventureDisplayStage & operator=(AdventureDisplayStage &&) = delete;
 
     public:
-        AdventureDisplayStage(AdventureStage * const, interact::InteractionManager &);
+        AdventureDisplayStage(interact::InteractionManager &);
         virtual ~AdventureDisplayStage();
 
         void Setup() override;
@@ -74,7 +73,7 @@ namespace stage
     private:
         void Setup_CharacterList();
         void Setup_BackgroundImage();
-        const sf::FloatRect Setup_Map();
+        void Setup_Map();
 
         void HandleMovementKeypresses(
             const sfml_util::Direction::Enum, bool & wasPressed, const bool IS_PRESSED);
@@ -84,22 +83,25 @@ namespace stage
     private:
         static const float TIME_BETWEEN_MAP_MOVES_SEC_;
 
-        InteractStage * interactStagePtr_;
         interact::InteractionManager & interactionManager_;
+        sfml_util::MainMenuTitle topImage_;
+        sfml_util::BottomSymbol bottomImage_;
+        const sf::FloatRect MAP_OUTER_REGION_;
+        sfml_util::gui::PictureFrame mapFrame_;
+        const sf::FloatRect MAP_INNER_REGION_;
+        map::MapUPtr_t mapUPtr_;
+        InteractStagePtr_t interactStagePtr_;
         AdventureCharacterListUPtr_t characterListUPtr_;
         sf::Texture backgroundTexture_;
         sf::Sprite backgroundSprite_;
-        sfml_util::BottomSymbol bottomImage_;
-        sfml_util::MainMenuTitle topImage_;
-        map::MapUPtr_t mapUPtr_;
-        sfml_util::gui::PictureFrame mapFrame_;
         float moveTimerSec_;
         bool wasPressedLeft_;
         bool wasPressedRight_;
         bool wasPressedUp_;
         bool wasPressedDown_;
     };
-}
-}
+
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_ADVENTUREDISPLAYSTAGE_HPP_INCLUDED

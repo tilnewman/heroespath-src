@@ -34,11 +34,10 @@
 #include "game/loop-manager.hpp"
 #include "player/party-factory.hpp"
 #include "player/party.hpp"
+#include "sfml-util/display.hpp"
 #include "stage/adventure-display-stage.hpp"
 #include "state/game-state-factory.hpp"
 #include "state/game-state.hpp"
-
-#include "sfml-util/display.hpp"
 
 namespace heroespath
 {
@@ -52,19 +51,14 @@ namespace stage
               0.0f,
               sfml_util::Display::Instance()->GetWinWidth(),
               sfml_util::Display::Instance()->GetWinHeight())
-        , adventureDisplayStagePtr_(nullptr)
         , interactionManager_()
+        , adventureDisplayStagePtr_(new AdventureDisplayStage(interactionManager_))
     {}
 
     AdventureStage::~AdventureStage() = default;
 
     void AdventureStage::Setup()
     {
-        // TEMP TODO REMOVE -once done testing
-        // create a party of characters to work with during testing
-        state::GameStateFactory::Instance()->NewGame(player::PartyFactory::MakeFakeForTesting());
-
-        adventureDisplayStagePtr_ = new AdventureDisplayStage(this, interactionManager_);
         adventureDisplayStagePtr_->Setup();
 
         // See AdventureDisplayStage::Setup() for where this is actually done.
@@ -75,5 +69,6 @@ namespace stage
     }
 
     void AdventureStage::UpdateTime(const float) { interactionManager_.Update(); }
-}
-}
+
+} // namespace stage
+} // namespace heroespath

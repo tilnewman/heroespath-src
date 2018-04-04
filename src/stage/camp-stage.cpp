@@ -147,8 +147,6 @@ namespace stage
 
         EntityAdd(fireAnimUPtr_.get());
 
-        // TEMP TODO REMOVE -make a party to test this stage with
-        state::GameStateFactory::Instance()->NewGame(player::PartyFactory::MakeFakeForTesting());
         showNewGamePopup1_ = game::Game::Instance()->State().IsNewGame();
     }
 

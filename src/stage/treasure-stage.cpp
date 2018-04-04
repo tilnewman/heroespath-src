@@ -551,10 +551,6 @@ namespace stage
 
     void TreasureStage::SetupAfterDelay()
     {
-        // TEMP TODO REMOVE -once done testing
-        // create a party of characters to work with during testing
-        state::GameStateFactory::Instance()->NewGame(player::PartyFactory::MakeFakeForTesting());
-
         // TODO TEMP REMOVE -once finished testing
         // create a fake collection of dead creatures, using the predetermined initial encounter
         combat::Encounter::Instance()->BeginCombatTasks();
@@ -1119,5 +1115,5 @@ namespace stage
 
         game::LoopManager::Instance()->TransitionTo_Adventure();
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

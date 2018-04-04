@@ -32,6 +32,7 @@
 #include "avatar/i-view.hpp"
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
+#include "log/log-macros.hpp"
 #include "map/level-enum.hpp"
 #include "map/map-display.hpp"
 #include "map/map.hpp"
@@ -49,22 +50,28 @@ namespace stage
 
     const float AdventureDisplayStage::TIME_BETWEEN_MAP_MOVES_SEC_{ 0.0333f };
 
-    AdventureDisplayStage::AdventureDisplayStage(
-        AdventureStage * const, interact::InteractionManager & interactionManager)
+    AdventureDisplayStage::AdventureDisplayStage(interact::InteractionManager & interactionManager)
         : Stage(
               "AdventureDisplay",
               0.0f,
               0.0f,
               sfml_util::Display::Instance()->GetWinWidth(),
               sfml_util::Display::Instance()->GetWinHeight())
-        , interactStagePtr_(nullptr)
         , interactionManager_(interactionManager)
+        , topImage_("", true, 1.0f, 0.75f)
+        , bottomImage_(0.75f, true, sf::Color::White)
+        , MAP_OUTER_REGION_(
+              sfml_util::MapByRes(75.0f, 100.0f),
+              topImage_.Bottom() - sfml_util::MapByRes(25.0f, 75.0f),
+              sfml_util::MapByRes(500.0f, 3000.0f),
+              sfml_util::MapByRes(250.0f, 2500.0f))
+        , mapFrame_()
+        , MAP_INNER_REGION_(mapFrame_.Setup(MAP_OUTER_REGION_, sf::Color(239, 220, 234)))
+        , mapUPtr_(std::make_unique<map::Map>(MAP_INNER_REGION_, interactionManager_))
+        , interactStagePtr_(new stage::InteractStage(
+              *mapUPtr_, CalcInteractRegion(MAP_OUTER_REGION_), interactionManager_))
         , characterListUPtr_(std::make_unique<AdventureCharacterList>(this))
         , backgroundTexture_()
-        , bottomImage_(0.75f, true, sf::Color::White)
-        , topImage_("", true, 1.0f, 0.75f)
-        , mapUPtr_()
-        , mapFrame_()
         , moveTimerSec_(0.0f)
         , wasPressedLeft_(false)
         , wasPressedRight_(false)
@@ -78,16 +85,12 @@ namespace stage
     {
         Setup_CharacterList();
         Setup_BackgroundImage();
-        auto const MAP_REGION{ Setup_Map() };
-
-        interactStagePtr_ = new stage::InteractStage(
-            *mapUPtr_, CalcInteractRegion(MAP_REGION), interactionManager_);
-
+        Setup_Map();
         interactStagePtr_->Setup();
 
         // give control of Stages object lifetime to the Loop class
         game::LoopManager::Instance()->AddStage(this);
-        game::LoopManager::Instance()->AddStage(interactStagePtr_);
+        game::LoopManager::Instance()->AddStage(interactStagePtr_.Ptr());
     }
 
     void AdventureDisplayStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
@@ -168,20 +171,9 @@ namespace stage
                 / backgroundSprite_.getLocalBounds().height);
     }
 
-    const sf::FloatRect AdventureDisplayStage::Setup_Map()
+    void AdventureDisplayStage::Setup_Map()
     {
-        const sf::FloatRect MAP_OUTER_REGION(
-            sfml_util::MapByRes(75.0f, 100.0f),
-            topImage_.Bottom() - sfml_util::MapByRes(25.0f, 75.0f),
-            sfml_util::MapByRes(500.0f, 3000.0f),
-            sfml_util::MapByRes(250.0f, 2500.0f));
-
-        auto const MAP_INNER_REGION{ mapFrame_.Setup(MAP_OUTER_REGION, sf::Color(239, 220, 234)) };
-
-        mapUPtr_ = std::make_unique<map::Map>(MAP_INNER_REGION, interactionManager_);
         mapUPtr_->Load(map::Level::Thornberry_GuardPostWest, map::Level::Thornberry);
-
-        return MAP_OUTER_REGION;
     }
 
     void AdventureDisplayStage::HandleMovementKeypresses(
@@ -268,5 +260,6 @@ namespace stage
 
         return interactRegion;
     }
+
 } // namespace stage
 } // namespace heroespath

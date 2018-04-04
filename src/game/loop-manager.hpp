@@ -77,7 +77,7 @@ namespace game
 
         static void SetStartupStage(const std::string & STARTUP_STAGE_NAME)
         {
-            startupStage_ = STARTUP_STAGE_NAME;
+            startupStageName_ = STARTUP_STAGE_NAME;
         }
 
         sfml_util::LoopState::Enum GetState() const { return state_; }
@@ -230,7 +230,7 @@ namespace game
 
     private:
         static std::unique_ptr<LoopManager> instanceUPtr_;
-        static std::string startupStage_;
+        static std::string startupStageName_;
         //
         sfml_util::LoopState::Enum state_;
         std::queue<sfml_util::ILoopCmdSPtr_t> cmdQueue_;

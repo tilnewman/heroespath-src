@@ -1072,10 +1072,6 @@ namespace stage
             // TEMP TODO set to Start when done testing
             preTurnPhase_ = PreTurnPhase::End;
 
-            // TEMP TODO REMOVE create new game and player party object
-            state::GameStateFactory::Instance()->NewGame(
-                player::PartyFactory::MakeFakeForTesting());
-
             combat::Encounter::Instance()->BeginCombatTasks();
         }
 

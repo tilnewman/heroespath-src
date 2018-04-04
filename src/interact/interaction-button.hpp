@@ -65,6 +65,7 @@ namespace interact
     };
 
     using ButtonVec_t = std::vector<Button>;
+
 } // namespace interact
 } // namespace heroespath
 

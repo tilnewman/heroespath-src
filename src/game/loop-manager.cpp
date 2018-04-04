@@ -29,21 +29,19 @@
 //
 #include "loop-manager.hpp"
 
-#include "sfml-util/loop-cmd-popup.hpp"
-#include "sfml-util/loop.hpp"
-
-#include "popup/popup-info.hpp"
-#include "popup/popup-manager.hpp"
-#include "popup/popup-stage-res-change.hpp"
-
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
-#include "stage/loop-cmd-addstage.hpp"
-
 #include "misc/assertlogandthrow.hpp"
-
-#include <string>
+#include "player/party-factory.hpp"
+#include "player/party.hpp"
+#include "popup/popup-info.hpp"
+#include "popup/popup-manager.hpp"
+#include "popup/popup-stage-res-change.hpp"
+#include "sfml-util/loop-cmd-popup.hpp"
+#include "sfml-util/loop.hpp"
+#include "stage/loop-cmd-addstage.hpp"
+#include "state/game-state-factory.hpp"
 
 namespace heroespath
 {
@@ -51,7 +49,8 @@ namespace game
 {
 
     std::unique_ptr<LoopManager> LoopManager::instanceUPtr_{ nullptr };
-    std::string LoopManager::startupStage_{ sfml_util::LoopState::ToString(
+
+    std::string LoopManager::startupStageName_{ sfml_util::LoopState::ToString(
         sfml_util::LoopState::Intro) };
 
     LoopManager::LoopManager()
@@ -108,14 +107,17 @@ namespace game
             (instanceUPtr_.get() != nullptr),
             "LoopManager::Initialize() found instanceUPtr that was null.");
 
-        if (instanceUPtr_->startupStage_.empty())
+        auto const STARTUP_STAGE_ENUM{ sfml_util::LoopState::FromString(startupStageName_) };
+
+        if (STARTUP_STAGE_ENUM != sfml_util::LoopState::Intro)
         {
-            instanceUPtr_->TransitionTo(sfml_util::LoopState::Intro);
+            // TEMP TODO REMOVE -once done testing
+            // create a party of characters to work with during testing
+            state::GameStateFactory::Instance()->NewGame(
+                player::PartyFactory::MakeFakeForTesting());
         }
-        else
-        {
-            instanceUPtr_->TransitionTo(sfml_util::LoopState::FromString(startupStage_));
-        }
+
+        instanceUPtr_->TransitionTo(STARTUP_STAGE_ENUM);
     }
 
     game::Phase::Enum LoopManager::GetPhase() const

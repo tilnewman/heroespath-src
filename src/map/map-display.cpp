@@ -31,6 +31,7 @@
 
 #include "avatar/lpc-view.hpp"
 #include "game/game-data-file.hpp"
+#include "log/log-macros.hpp"
 #include "map/map.hpp"
 #include "map/parser.hpp"
 #include "map/shadow-masker.hpp"
@@ -828,5 +829,5 @@ namespace map
             return MIN_VOLUME + ((1.0f - (DISTANCE_TO_PLAYER / DIFF_DISTANCE)) * DIFF_VOLUME);
         }
     }
-}
-}
+} // namespace map
+} // namespace heroespath
