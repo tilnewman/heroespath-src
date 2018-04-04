@@ -120,7 +120,7 @@ namespace sfml_util
         void SetIgnoreKeystrokes(const bool B) { willIgnoreKeystrokes_ = B; }
 
         void AssignPopupCallbackHandlerInfo(
-            popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO);
+            const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupInfo & POPUP_INFO);
 
         void FakeMouseClick(const sf::Vector2f & MOUSE_POS_V);
 
@@ -204,7 +204,7 @@ namespace sfml_util
         sf::Keyboard::Key prevKeyPressed_;
         bool isMouseHovering_;
         bool takeScreenshot_;
-        popup::IPopupHandler_t * popupCallbackPtr_;
+        popup::IPopupHandlerPtrOpt_t popupCallbackPtrOpt_;
         LoopState::Enum state_;
         std::vector<float> frameRateVec_;
         std::size_t frameRateSampleCount_;

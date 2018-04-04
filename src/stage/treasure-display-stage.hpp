@@ -138,6 +138,7 @@ namespace stage
     } // namespace treasure
 
     class TreasureStage;
+    using TreasureStagePtr_t = misc::NotNull<TreasureStage *>;
 
     // Responsible for all displaying everything (images, listboxes, etc.) for the Treasure Stage.
     class TreasureDisplayStage
@@ -152,7 +153,7 @@ namespace stage
         TreasureDisplayStage & operator=(TreasureDisplayStage &&) = delete;
 
     public:
-        explicit TreasureDisplayStage(TreasureStage *);
+        explicit TreasureDisplayStage(const TreasureStagePtr_t);
         virtual ~TreasureDisplayStage() = default;
 
         const std::string HandlerName() const override { return GetStageName(); }
@@ -324,7 +325,7 @@ namespace stage
     private:
         static const float ITEM_DETAIL_TIMEOUT_SEC_;
 
-        TreasureStage * treasureStagePtr_;
+        TreasureStagePtr_t treasureStagePtr_;
         sfml_util::MainMenuTitle titleImage_;
         sfml_util::BottomSymbol bottomImage_;
         sfml_util::OuroborosUPtr_t ouroborosUPtr_;

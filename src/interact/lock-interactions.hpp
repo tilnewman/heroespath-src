@@ -53,22 +53,21 @@ namespace interact
 
         bool Attempt() const;
 
-        void PopupCharacterSelection(popup::IPopupHandler_t * const) const;
+        void PopupCharacterSelection(const popup::IPopupHandlerPtr_t) const;
 
         // returns true if a character was selected and characterPtr_ is not null,
         // if returns false then characterPtr_ is null.
         bool HandleCharacterSelectionPopupResponse(
-            popup::IPopupHandler_t * const, const popup::PopupResponse &);
+            const popup::IPopupHandlerPtr_t, const popup::PopupResponse &);
 
-        void PopupAttempting(
-            popup::IPopupHandler_t * const popupHandlerPtr, const std::string &) const;
+        void PopupAttempting(const popup::IPopupHandlerPtr_t, const std::string &) const;
 
         void PopupSuccess(
-            popup::IPopupHandler_t * const, const std::string & NAME_OF_WHAT_OPENED) const;
+            const popup::IPopupHandlerPtr_t, const std::string & NAME_OF_WHAT_OPENED) const;
 
         // returns true if a new title is achieved and the popup is displayed
         bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-            popup::IPopupHandler_t * const);
+            const popup::IPopupHandlerPtr_t);
 
         const creature::CreaturePtrOpt_t CharacterPtrOpt() { return characterPtrOpt_; }
 

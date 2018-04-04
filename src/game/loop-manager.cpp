@@ -624,7 +624,7 @@ namespace game
 
     sfml_util::DisplayChangeResult::Enum LoopManager::ChangeResolution(
         const sfml_util::IStagePtr_t CURRENT_ISTAGE_PTR,
-        popup::IPopupHandler_t * const HANDLER_PTR,
+        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
         const sfml_util::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL)
     {
@@ -681,11 +681,11 @@ namespace game
 
         if (isPopupTypeResolutionChange)
         {
-            PopupWaitBeginSpecific<popup::PopupStageResChange>(HANDLER_PTR, POPUP_INFO);
+            PopupWaitBeginSpecific<popup::PopupStageResChange>(POPUP_HANDLER_PTR, POPUP_INFO);
         }
         else
         {
-            PopupWaitBegin(HANDLER_PTR, POPUP_INFO);
+            PopupWaitBegin(POPUP_HANDLER_PTR, POPUP_INFO);
         }
 
         return CHANGE_RESULT;

@@ -64,7 +64,7 @@ namespace stage
     }
 
     void TitleTransitionPopup(
-        popup::IPopupHandler_t * const popupHandlerPtr,
+        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
@@ -92,11 +92,11 @@ namespace stage
             toTexture) };
 
         game::LoopManager::Instance()->PopupWaitBeginSpecific<popup::PopupStageImageFade>(
-            popupHandlerPtr, POPUP_INFO);
+            POPUP_HANDLER_PTR, POPUP_INFO);
     }
 
     bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-        popup::IPopupHandler_t * const popupHandlerPtr,
+        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CREATURE_PTR,
         const creature::AchievementType::Enum ACHIEVEMENT_TYPE)
@@ -110,7 +110,7 @@ namespace stage
             ApplyTitleChangesToCreature(CREATURE_PTR, toTitlePtrOpt.get());
 
             TitleTransitionPopup(
-                popupHandlerPtr, POPUP_NAME, CREATURE_PTR, fromTitlePtrOpt, toTitlePtrOpt.get());
+                POPUP_HANDLER_PTR, POPUP_NAME, CREATURE_PTR, fromTitlePtrOpt, toTitlePtrOpt.get());
 
             return true;
         }
@@ -119,5 +119,5 @@ namespace stage
             return false;
         }
     }
-}
-}
+} // namespace stage
+} // namespace heroespath

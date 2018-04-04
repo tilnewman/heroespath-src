@@ -47,18 +47,19 @@ namespace stage
         const creature::CreaturePtr_t CHARACTER_PTR, const creature::TitlePtr_t & TITLE_PTR);
 
     void TitleTransitionPopup(
-        popup::IPopupHandler_t * const popupHandlerPtr,
+        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CHARACTER_PTR,
         const creature::TitlePtrOpt_t & FROM_TITLE_PTR_OPT,
         const creature::TitlePtr_t TO_TITLE_PTR);
 
     bool HandleAchievementIncrementAndReturnTrueOnNewTitleWithPopup(
-        popup::IPopupHandler_t * const popupHandlerPtr,
+        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
         const std::string & POPUP_NAME,
         const creature::CreaturePtr_t CHARACTER_PTR,
         const creature::AchievementType::Enum ACHIEVEMENT_TYPE);
-}
-}
+
+} // namespace stage
+} // namespace heroespath
 
 #endif // HEROESPATH_STAGE_ACHIEVEMENT_HANDLER_HPP_INCLUDED

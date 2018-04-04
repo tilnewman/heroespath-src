@@ -80,7 +80,7 @@ namespace sfml_util
         , prevKeyPressed_(sf::Keyboard::Key::Unknown)
         , isMouseHovering_(false)
         , takeScreenshot_(false)
-        , popupCallbackPtr_()
+        , popupCallbackPtrOpt_(boost::none)
         , state_(LoopState::Intro)
         , frameRateVec_()
         , frameRateSampleCount_(0)
@@ -118,10 +118,10 @@ namespace sfml_util
     }
 
     void Loop::AssignPopupCallbackHandlerInfo(
-        popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
+        const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
     {
         popupInfo_ = POPUP_INFO;
-        popupCallbackPtr_ = HANDLER_PTR;
+        popupCallbackPtrOpt_ = POPUP_HANDLER_PTR;
     }
 
     void Loop::FakeMouseClick(const sf::Vector2f & MOUSE_POS_V)
@@ -570,7 +570,7 @@ namespace sfml_util
 
     void Loop::ProcessPopupCallback()
     {
-        if (popupCallbackPtr_ == nullptr)
+        if (!popupCallbackPtrOpt_)
         {
             return;
         }
@@ -588,14 +588,14 @@ namespace sfml_util
             const popup::PopupResponse POPUP_RESPONSE_OBJ(
                 popupInfo_, POPUP_RESPONSE_ENUM, POPUP_SELECTION);
 
-            auto const WILL_RESET_CALLBACKHANDLER{ popupCallbackPtr_->HandleCallback(
+            auto const WILL_RESET_CALLBACKHANDLER{ popupCallbackPtrOpt_->Obj().HandleCallback(
                 POPUP_RESPONSE_OBJ) };
 
             game::LoopManager::Instance()->ClearPopupResponse();
 
             if (WILL_RESET_CALLBACKHANDLER)
             {
-                popupCallbackPtr_ = nullptr;
+                popupCallbackPtrOpt_ = boost::none;
             }
         }
     }
@@ -620,7 +620,7 @@ namespace sfml_util
 
             texture.update(*Display::Instance()->GetWindow());
 
-            const sf::Image SCREENSHOT_IMAGE(texture.copyToImage());
+            auto const SCREENSHOT_IMAGE{ texture.copyToImage() };
 
             namespace bfs = boost::filesystem;
 

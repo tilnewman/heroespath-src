@@ -29,23 +29,6 @@
 //
 #include "treasure-stage.hpp"
 
-#include "sfml-util/gui/list-box-item.hpp"
-#include "sfml-util/gui/text-region.hpp"
-#include "sfml-util/gui/title-image-manager.hpp"
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-
-#include "popup/popup-manager.hpp"
-#include "popup/popup-stage-char-select.hpp"
-#include "popup/popup-stage-combat-over.hpp"
-#include "popup/popup-stage-image-fade.hpp"
-#include "popup/popup-stage-item-profile-wait.hpp"
-#include "popup/popup-stage-treasure-trap.hpp"
-
-#include "game/game-data-file.hpp"
-#include "game/game.hpp"
-#include "game/loop-manager.hpp"
-
 #include "combat/combat-text.hpp"
 #include "combat/encounter.hpp"
 #include "combat/fight.hpp"
@@ -54,20 +37,29 @@
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
 #include "creature/title.hpp"
+#include "game/game-data-file.hpp"
+#include "game/game.hpp"
+#include "game/loop-manager.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item.hpp"
-#include "non-player/party.hpp"
-#include "stage/treasure-display-stage.hpp"
-
-// TODO TEMP REMOVE -once done testing
-#include "player/party-factory.hpp"
-#include "player/party.hpp"
-#include "state/game-state-factory.hpp"
-#include "state/game-state.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
+#include "non-player/party.hpp"
+#include "player/party.hpp"
+#include "popup/popup-manager.hpp"
+#include "popup/popup-stage-char-select.hpp"
+#include "popup/popup-stage-combat-over.hpp"
+#include "popup/popup-stage-image-fade.hpp"
+#include "popup/popup-stage-item-profile-wait.hpp"
+#include "popup/popup-stage-treasure-trap.hpp"
+#include "sfml-util/gui/list-box-item.hpp"
+#include "sfml-util/gui/text-region.hpp"
+#include "sfml-util/gui/title-image-manager.hpp"
+#include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-util.hpp"
+#include "stage/treasure-display-stage.hpp"
+#include "state/game-state.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -118,7 +110,7 @@ namespace stage
 
     TreasureStage::TreasureStage()
         : Stage("Treasure")
-        , displayStagePtr_(nullptr)
+        , displayStagePtr_(new TreasureDisplayStage(this))
         , setupCountdown_(0)
         , treasureImageType_(item::TreasureImage::Count)
         , itemCacheHeld_()
@@ -319,7 +311,6 @@ namespace stage
 
     void TreasureStage::Setup()
     {
-        displayStagePtr_ = new TreasureDisplayStage(this);
         displayStagePtr_->Setup();
 
         // give control of the TreasureDispayStage object lifetime to the Loop class
@@ -352,7 +343,7 @@ namespace stage
 
     bool TreasureStage::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if ((displayStagePtr_ != nullptr) && (displayStagePtr_->IsItemDetailMovingOrShowing()))
+        if (displayStagePtr_->IsItemDetailMovingOrShowing())
         {
             return false;
         }
@@ -415,12 +406,6 @@ namespace stage
 
     void TreasureStage::TakeAllItems()
     {
-        if (nullptr == displayStagePtr_)
-        {
-            sfml_util::SoundManager::Instance()->PlaySfx_Reject();
-            return;
-        }
-
         item::ItemPVec_t & itemsPVec{ (
             (displayStagePtr_->IsShowingHeldItems()) ? itemCacheHeld_.items_pvec
                                                      : itemCacheLockbox_.items_pvec) };
@@ -522,15 +507,7 @@ namespace stage
         }
     }
 
-    void TreasureStage::Exit()
-    {
-        if (nullptr == displayStagePtr_)
-        {
-            return;
-        }
-
-        TransitionToAdventureStage();
-    }
+    void TreasureStage::Exit() { TransitionToAdventureStage(); }
 
     void TreasureStage::HandleCountdownAndPleaseWaitPopup()
     {
@@ -893,66 +870,57 @@ namespace stage
 
     void TreasureStage::SetupForCollection()
     {
-        if (displayStagePtr_ != nullptr)
-        {
-            displayStagePtr_->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
-            displayStagePtr_->SetupForCollection(treasureAvailable_, treasureImageType_);
-        }
+        displayStagePtr_->UpdateItemCaches(itemCacheHeld_, itemCacheLockbox_);
+        displayStagePtr_->SetupForCollection(treasureAvailable_, treasureImageType_);
     }
 
     bool TreasureStage::HandleKeypress_Space()
     {
-        if (displayStagePtr_ != nullptr)
+        if (displayStagePtr_->CanTreasureChange())
         {
-            if (displayStagePtr_->CanTreasureChange())
-            {
-                displayStagePtr_->TreasureChange();
-                PlaySoundEffect_KeypressValid();
-                return true;
-            }
+            displayStagePtr_->TreasureChange();
+            PlaySoundEffect_KeypressValid();
+            return true;
         }
-
-        PlaySoundEffect_KeypressInvalid();
-        return false;
+        else
+        {
+            PlaySoundEffect_KeypressInvalid();
+            return false;
+        }
     }
 
     bool TreasureStage::HandleKeypress_Number(const sf::Keyboard::Key KEY)
     {
-        if (displayStagePtr_ != nullptr)
+        PlaySoundEffect_KeypressValid();
+
+        auto characterIndex{ [KEY]() -> std::size_t {
+            if (KEY == sf::Keyboard::Num1)
+                return 0;
+            else if (KEY == sf::Keyboard::Num2)
+                return 1;
+            else if (KEY == sf::Keyboard::Num3)
+                return 2;
+            else if (KEY == sf::Keyboard::Num4)
+                return 3;
+            else if (KEY == sf::Keyboard::Num5)
+                return 4;
+            else
+                return 5;
+        }() };
+
+        auto const CHARACTER_INDEX_MAX{ displayStagePtr_->CharacterIndexMax() };
+        if (characterIndex > CHARACTER_INDEX_MAX)
         {
-            PlaySoundEffect_KeypressValid();
-
-            auto characterIndex{ [KEY]() -> std::size_t {
-                if (KEY == sf::Keyboard::Num1)
-                    return 0;
-                else if (KEY == sf::Keyboard::Num2)
-                    return 1;
-                else if (KEY == sf::Keyboard::Num3)
-                    return 2;
-                else if (KEY == sf::Keyboard::Num4)
-                    return 3;
-                else if (KEY == sf::Keyboard::Num5)
-                    return 4;
-                else
-                    return 5;
-            }() };
-
-            auto const CHARACTER_INDEX_MAX{ displayStagePtr_->CharacterIndexMax() };
-            if (characterIndex > CHARACTER_INDEX_MAX)
-            {
-                characterIndex = CHARACTER_INDEX_MAX;
-            }
-
-            displayStagePtr_->InventoryChange(characterIndex);
-            return true;
+            characterIndex = CHARACTER_INDEX_MAX;
         }
 
-        return false;
+        displayStagePtr_->InventoryChange(characterIndex);
+        return true;
     }
 
     bool TreasureStage::HandleKeypress_LeftRight(const sf::Keyboard::Key KEY)
     {
-        if ((KEY == sf::Keyboard::Left) && (displayStagePtr_ != nullptr))
+        if (KEY == sf::Keyboard::Left)
         {
             PlaySoundEffect_KeypressValid();
 
@@ -972,7 +940,7 @@ namespace stage
             return true;
         }
 
-        if ((KEY == sf::Keyboard::Right) && (displayStagePtr_ != nullptr))
+        if (KEY == sf::Keyboard::Right)
         {
             PlaySoundEffect_KeypressValid();
 
@@ -1007,11 +975,6 @@ namespace stage
 
     void TreasureStage::TakeItem(const item::ItemPtr_t ITEM_PTR)
     {
-        if (nullptr == displayStagePtr_)
-        {
-            return;
-        }
-
         auto creaturePtr{ displayStagePtr_->WhichCharacterInventoryIsDisplayed() };
         auto const IS_ITEM_ADD_ALLOWED_STR{ creaturePtr->ItemIsAddAllowed(ITEM_PTR) };
 
@@ -1066,11 +1029,6 @@ namespace stage
 
     void TreasureStage::PutItemBack(const item::ItemPtr_t ITEM_PTR)
     {
-        if (nullptr == displayStagePtr_)
-        {
-            return;
-        }
-
         sfml_util::SoundManager::Instance()
             ->Getsound_effect_set(sfml_util::sound_effect_set::ItemDrop)
             .PlayRandom();
@@ -1115,5 +1073,6 @@ namespace stage
 
         game::LoopManager::Instance()->TransitionTo_Adventure();
     }
+
 } // namespace stage
 } // namespace heroespath

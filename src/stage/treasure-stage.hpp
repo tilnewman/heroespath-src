@@ -28,12 +28,6 @@
 // treasure-stage.hpp
 //  A Stage class that allows finding treasure and advancing after combat.
 //
-#include "sfml-util/gui/list-box.hpp"
-#include "sfml-util/sfml-graphics.hpp"
-#include "sfml-util/stage.hpp"
-
-#include "popup/i-popup-callback.hpp"
-
 #include "combat/fight-results.hpp"
 #include "combat/trap.hpp"
 #include "combat/turn-action-info.hpp"
@@ -42,9 +36,13 @@
 #include "item/item-cache.hpp"
 #include "item/treasure-available-enum.hpp"
 #include "item/treasure-image-enum.hpp"
-#include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enum
-
 #include "misc/handy-types.hpp"
+#include "misc/not-null.hpp"
+#include "popup/i-popup-callback.hpp"
+#include "sfml-util/gui/list-box.hpp"
+#include "sfml-util/sfml-graphics.hpp"
+#include "sfml-util/stage.hpp"
+#include "stage/treasure-stage-mover.hpp" //for treasure::Type::Enum
 
 #include <memory>
 #include <string>
@@ -64,6 +62,7 @@ namespace stage
 {
 
     class TreasureDisplayStage;
+    using TreasureDisplayStagePtr_t = misc::NotNull<TreasureDisplayStage *>;
 
     // A Stage class that allows starting the game
     class TreasureStage
@@ -171,8 +170,7 @@ namespace stage
         static const std::string POPUP_NAME_ALL_ITEMS_TAKEN_;
         static const std::string POPUP_NAME_NOT_ALL_ITEMS_TAKEN_;
 
-    private:
-        TreasureDisplayStage * displayStagePtr_;
+        TreasureDisplayStagePtr_t displayStagePtr_;
         int setupCountdown_;
         item::TreasureImage::Enum treasureImageType_;
         item::ItemCache itemCacheHeld_;
@@ -185,6 +183,7 @@ namespace stage
         bool willProcessLockpickTitle_;
         interact::LockPicking lockPicking_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

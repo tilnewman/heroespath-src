@@ -28,11 +28,10 @@
 // i-popup-callback.hpp
 //  Interface for all objects that can handle popup button responses.
 //
-#include "sfml-util/i-callback-handler.hpp"
-
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "popup/popup-response.hpp"
-
-#include <string>
+#include "sfml-util/i-callback-handler.hpp"
 
 namespace heroespath
 {
@@ -42,6 +41,9 @@ namespace popup
     // Returns true if Loop's popup callback handler pointer should be reset to null.
     // This means you must return false if one popup will replace another.
     using IPopupHandler_t = sfml_util::callback::ICallbackHandler<PopupResponse, bool>;
+    using IPopupHandlerPtr_t = misc::NotNull<IPopupHandler_t *>;
+    using IPopupHandlerPtrOpt_t = boost::optional<IPopupHandlerPtr_t>;
+
 } // namespace popup
 } // namespace heroespath
 

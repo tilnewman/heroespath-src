@@ -101,17 +101,17 @@ namespace game
 
         template <typename PopupType_t>
         void PopupWaitBeginSpecific(
-            popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
+            const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
         {
             popupResponse_ = popup::ResponseTypes::None;
             popupSelection_ = 0;
-            TransitionTo_Popup<PopupType_t>(HANDLER_PTR, POPUP_INFO);
+            TransitionTo_Popup<PopupType_t>(POPUP_HANDLER_PTR, POPUP_INFO);
         }
 
         void PopupWaitBegin(
-            popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
+            const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
         {
-            PopupWaitBeginSpecific<popup::PopupStageGeneric>(HANDLER_PTR, POPUP_INFO);
+            PopupWaitBeginSpecific<popup::PopupStageGeneric>(POPUP_HANDLER_PTR, POPUP_INFO);
         }
 
         void PopupWaitEnd(
@@ -121,7 +121,7 @@ namespace game
 
         sfml_util::DisplayChangeResult::Enum ChangeResolution(
             const sfml_util::IStagePtr_t CURRENT_ISTAGE_PTR,
-            popup::IPopupHandler_t * const HANDLER_PTR,
+            const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR,
             const sfml_util::Resolution & NEW_RES,
             const unsigned ANTIALIAS_LEVEL);
 
@@ -181,12 +181,12 @@ namespace game
 
         template <typename PopupType_t>
         void TransitionTo_Popup(
-            popup::IPopupHandler_t * const HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
+            const popup::IPopupHandlerPtr_t POPUP_HANDLER_PTR, const popup::PopupInfo & POPUP_INFO)
         {
             CommandQueueClear();
             loop_.Exit();
 
-            loop_.AssignPopupCallbackHandlerInfo(HANDLER_PTR, POPUP_INFO);
+            loop_.AssignPopupCallbackHandlerInfo(POPUP_HANDLER_PTR, POPUP_INFO);
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterKeypress>(false));
             cmdQueue_.push(std::make_shared<sfml_util::LoopCmd_ExitAfterMouseclick>(false));
 

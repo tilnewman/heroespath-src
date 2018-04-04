@@ -29,17 +29,14 @@
 //
 #include "treasure-display-stage.hpp"
 
-#include "game/game-data-file.hpp"
-#include "game/game.hpp"
-
 #include "combat/encounter.hpp"
 #include "creature/creature.hpp"
+#include "game/game-data-file.hpp"
+#include "game/game.hpp"
 #include "item/item.hpp"
+#include "misc/vectors.hpp"
 #include "non-player/party.hpp"
 #include "player/party.hpp"
-#include "stage/treasure-stage.hpp"
-#include "state/game-state.hpp"
-
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
@@ -47,8 +44,8 @@
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "misc/vectors.hpp"
+#include "stage/treasure-stage.hpp"
+#include "state/game-state.hpp"
 
 namespace heroespath
 {
@@ -103,9 +100,9 @@ namespace stage
 
     const float TreasureDisplayStage::ITEM_DETAIL_TIMEOUT_SEC_{ 3.0f };
 
-    TreasureDisplayStage::TreasureDisplayStage(TreasureStage * treasureStagePtr)
+    TreasureDisplayStage::TreasureDisplayStage(const TreasureStagePtr_t TREASURE_STAGE_PTR)
         : Stage("TreasureDisplay", false)
-        , treasureStagePtr_(treasureStagePtr)
+        , treasureStagePtr_(TREASURE_STAGE_PTR)
         , titleImage_("treasure-button.png", true, 1.0f, 0.75f)
         , bottomImage_(0.75f, true, sf::Color::White, 0.4f)
         , ouroborosUPtr_()
@@ -199,19 +196,13 @@ namespace stage
         }
         else if (PACKAGE.PTR_ == takeAllButtonUPtr_.get())
         {
-            if (treasureStagePtr_ != nullptr)
-            {
-                treasureStagePtr_->TakeAllItems();
-                return true;
-            }
+            treasureStagePtr_->TakeAllItems();
+            return true;
         }
         else if (PACKAGE.PTR_ == doneButtonUPtr_.get())
         {
-            if (treasureStagePtr_ != nullptr)
-            {
-                treasureStagePtr_->Exit();
-                return true;
-            }
+            treasureStagePtr_->Exit();
+            return true;
         }
 
         return false;
