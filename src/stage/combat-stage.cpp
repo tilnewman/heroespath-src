@@ -1117,7 +1117,7 @@ namespace stage
             (settingsButtonUPtr_->GetEntityPos().x - COMMAND_REGION_LEFT)
                 - (COMMAND_REGION_PAD * 2.0f),
             sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
-            this);
+            sfml_util::gui::callback::ISliderBarCallbackHandlerPtr_t(this));
 
         zoomSliderBarUPtr_->SetCurrentValue(1.0f);
         zoomLabelTextRegionUPtr_->SetEntityPos(

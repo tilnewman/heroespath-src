@@ -29,6 +29,8 @@
 //  Code that draws a sliderbar with buttons at either end and a carrot in the center that can be
 //  dragged.
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/gui-entity-image.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/sliderbar-style.hpp"
@@ -50,8 +52,14 @@ namespace sfml_util
         namespace callback
         {
             using SliderBarCallbackPackage_t = sfml_util::callback::PtrWrapper<SliderBar>;
+
             using ISliderBarCallbackHandler_t
                 = sfml_util::callback::ICallbackHandler<SliderBarCallbackPackage_t, bool>;
+
+            using ISliderBarCallbackHandlerPtr_t = misc::NotNull<ISliderBarCallbackHandler_t *>;
+
+            using ISliderBarCallbackHandlerPtrOpt_t
+                = boost::optional<ISliderBarCallbackHandlerPtr_t>;
         } // namespace callback
 
         // Encapsulates a gui sliderbar with mouse clickable increment arrows and a slider pad.
@@ -70,7 +78,8 @@ namespace sfml_util
                 const float POS_TOP,
                 const float LENGTH,
                 const SliderStyle & STYLE,
-                callback::ISliderBarCallbackHandler_t * const CHANGE_HANDLER_PTR = nullptr,
+                const callback::ISliderBarCallbackHandlerPtrOpt_t CHANGE_HANDLER_PTR_OPT
+                = boost::none,
                 const float INITIAL_VALUE = 0.0f); // must be [0.0f, 1.0f]
 
             virtual ~SliderBar() = default;
@@ -84,25 +93,24 @@ namespace sfml_util
             // Overrides from GuiEntity
             bool UpdateMouseWheel(
                 const sf::Vector2f & MOUSE_POS_V, const float WHEEL_MOTION) override;
+
             bool MouseDown(const sf::Vector2f & MOUSE_POS_V) override;
             bool MouseUp(const sf::Vector2f & MOUSE_POS_V) override;
             bool UpdateMousePos(const sf::Vector2f & MOUSE_POS_V) override;
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            virtual void
-                SetOnChangeHandler(callback::ISliderBarCallbackHandler_t * const CHANGE_HANDLER_PTR)
+            virtual void SetOnChangeHandler(
+                const callback::ISliderBarCallbackHandlerPtr_t CHANGE_HANDLER_PTR)
             {
-                changeHandlerPtr_ = CHANGE_HANDLER_PTR;
+                changeHandlerPtrOpt_ = CHANGE_HANDLER_PTR;
             }
 
             float GetLength() const { return LENGTH_; }
 
         protected:
             void OnClick(const sf::Vector2f &) override {}
-
             virtual void OnChange(const float NEW_VALUE);
-
             void Setup();
             virtual void SetPadPosition();
             void SetupAllPositions();
@@ -117,11 +125,13 @@ namespace sfml_util
             GuiImage topOrRightImage_;
             GuiImage barImage_;
             GuiImage padImage_;
-            callback::ISliderBarCallbackHandler_t * changeHandlerPtr_;
+            callback::ISliderBarCallbackHandlerPtrOpt_t changeHandlerPtrOpt_;
         };
 
-        using SliderBarPtr_t = SliderBar *;
+        using SliderBarPtr_t = misc::NotNull<SliderBar *>;
+        using SliderBarPtrOpt_t = boost::optional<SliderBarPtr_t>;
         using SliderBarUPtr_t = std::unique_ptr<SliderBar>;
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

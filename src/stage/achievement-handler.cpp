@@ -119,5 +119,6 @@ namespace stage
             return false;
         }
     }
+
 } // namespace stage
 } // namespace heroespath

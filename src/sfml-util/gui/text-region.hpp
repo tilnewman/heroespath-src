@@ -128,7 +128,7 @@ namespace sfml_util
                 const Margins & MARGINS = Margins(),
                 const bool WILL_ALLOW_SCROLLBAR = true);
 
-            void HandleSliderBar(sfml_util::gui::SliderBarPtr_t newSliderBarPtr);
+            void HandleSliderBar(const sfml_util::gui::SliderBarPtrOpt_t);
             void HandleBox(const box::Info & BOX_INFO);
 
             virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;

@@ -29,13 +29,12 @@
 //
 #include "text-rendering.hpp"
 
+#include "log/log-macros.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "log/log-macros.hpp"
-#include "misc/assertlogandthrow.hpp"
 
 #include <cctype> //for isDigit()
 #include <numeric>
@@ -49,7 +48,7 @@ namespace sfml_util
 
         const float Constants::SLIDERBAR_HORIZ_OFFSET_{ 18.0f };
 
-        gui::SliderBarPtr_t RenderToArea(
+        const gui::SliderBarPtrOpt_t RenderToArea(
             const std::string & NAME,
             const gui::TextInfo & TEXT_INFO,
             RenderedText & renderedText,
@@ -58,7 +57,7 @@ namespace sfml_util
             const Margins & MARGINS,
             const bool WILL_ALLOW_SCROLLBAR)
         {
-            gui::SliderBarPtr_t sliderbarPtr{ nullptr };
+            gui::SliderBarPtrOpt_t sliderbarPtrOpt{ boost::none };
 
             // render the prompt text for the popup
             text_render::Render(renderedText, TEXT_INFO, REGION.width, MARGINS);
@@ -102,14 +101,12 @@ namespace sfml_util
                 {
                     // if the text still won't fit vertically, add the sliderbar, re-calculate,
                     // and then configure the sliderbar.
-                    sliderbarPtr = new gui::SliderBar(
+                    sliderbarPtrOpt = new gui::SliderBar(
                         std::string(NAME).append("Vertical"),
                         (REGION.left + REGION.width) - Constants::SLIDERBAR_HORIZ_OFFSET_,
                         REGION.top + 5.0f,
                         REGION.height - 10.0f,
-                        gui::SliderStyle(Orientation::Vert, Brightness::Bright, true, true),
-                        nullptr,
-                        0.0f);
+                        gui::SliderStyle(Orientation::Vert, Brightness::Bright, true, true));
 
                     // re-render the text with the reduced horiz space to make room for the
                     // sliderbar
@@ -121,15 +118,15 @@ namespace sfml_util
                 }
             }
 
-            return sliderbarPtr;
+            return sliderbarPtrOpt;
         }
 
-        gui::SliderBarPtr_t ApplyToArea(
+        const gui::SliderBarPtrOpt_t ApplyToArea(
             const std::string & NAME,
             const RenderedText & RENDERED_TEXT,
             const sf::FloatRect & REGION)
         {
-            gui::SliderBarPtr_t sliderbarPtr{ nullptr };
+            gui::SliderBarPtrOpt_t sliderbarPtrOpt{ boost::none };
 
             // calculate the text's vertical position, which is vertically centered,
             // then verify still within bounds
@@ -146,17 +143,15 @@ namespace sfml_util
                 && (REGION.height > 0.0f))
             {
                 // if the text won't fit vertically, add the sliderbar
-                sliderbarPtr = new gui::SliderBar(
+                sliderbarPtrOpt = new gui::SliderBar(
                     std::string(NAME).append("Vertical"),
                     (REGION.left + REGION.width) - Constants::SLIDERBAR_HORIZ_OFFSET_,
                     REGION.top + 5.0f,
                     REGION.height - 10.0f,
-                    gui::SliderStyle(Orientation::Vert, Brightness::Bright, true, true),
-                    nullptr,
-                    0.0f);
+                    gui::SliderStyle(Orientation::Vert, Brightness::Bright, true, true));
             }
 
-            return sliderbarPtr;
+            return sliderbarPtrOpt;
         }
 
         void RenderAndDraw(RenderedText & renderedText, sf::RenderTexture & renderTexture)

@@ -211,7 +211,7 @@ namespace sfml_util
             ResetDrawCache();
         }
 
-        void TextRegion::HandleSliderBar(sfml_util::gui::SliderBarPtr_t newSliderBarPtr)
+        void TextRegion::HandleSliderBar(const sfml_util::gui::SliderBarPtrOpt_t SLIDERBAR_PTR_OPT)
         {
             if (stagePtrOpt_)
             {
@@ -221,9 +221,9 @@ namespace sfml_util
                     sliderBarUPtr_.reset();
                 }
 
-                if (newSliderBarPtr != nullptr)
+                if (SLIDERBAR_PTR_OPT)
                 {
-                    sliderBarUPtr_.reset(newSliderBarPtr);
+                    sliderBarUPtr_.reset(SLIDERBAR_PTR_OPT->Ptr());
                     sliderBarUPtr_->SetOnChangeHandler(this);
                     sliderBarUPtr_->SetCurrentValue(0.0f);
                     stagePtrOpt_->Obj().EntityAdd(sliderBarUPtr_.get());
@@ -231,7 +231,10 @@ namespace sfml_util
             }
             else
             {
-                delete newSliderBarPtr;
+                if (SLIDERBAR_PTR_OPT)
+                {
+                    delete SLIDERBAR_PTR_OPT->Ptr();
+                }
             }
         }
 

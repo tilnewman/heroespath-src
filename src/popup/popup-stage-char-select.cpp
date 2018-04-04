@@ -101,7 +101,7 @@ namespace popup
             sliderbarPosTop_,
             SLIDERBAR_LENGTH,
             sfml_util::gui::SliderStyle(sfml_util::Orientation::Horiz),
-            this);
+            sfml_util::gui::callback::ISliderBarCallbackHandlerPtr_t(this));
 
         EntityAdd(sliderbarUPtr_.get());
 

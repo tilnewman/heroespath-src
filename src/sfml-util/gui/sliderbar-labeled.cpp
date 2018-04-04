@@ -55,7 +55,7 @@ namespace sfml_util
                   POS_TOP,
                   LENGTH,
                   STYLE,
-                  nullptr,
+                  boost::none,
                   INITIAL_VALUE)
             , threeTextInfosHolder_(THREE_TEXT_INFOS_HOLDER)
             , textRegion_("SliderBarLabeled's")

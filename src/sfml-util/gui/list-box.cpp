@@ -161,7 +161,7 @@ namespace sfml_util
                     REGION.top + 10.0f,
                     REGION.height - 20.0f,
                     sfml_util::gui::SliderStyle(),
-                    this);
+                    sfml_util::gui::callback::ISliderBarCallbackHandlerPtr_t(this));
 
                 stagePtrOpt_->Obj().EntityAdd(sliderbarUPtr_.get());
             }

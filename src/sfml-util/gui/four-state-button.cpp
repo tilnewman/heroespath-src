@@ -29,14 +29,13 @@
 //
 #include "four-state-button.hpp"
 
+#include "misc/assertlogandthrow.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "misc/assertlogandthrow.hpp"
 
 #include <exception>
 #include <sstream>
@@ -60,7 +59,7 @@ namespace sfml_util
             , hasOver_(false)
             , hasDisabled_(false)
             , buttonSprite_()
-            , textRegionCurrPtr_(nullptr)
+            , textRegionCurrPtrOpt_(boost::none)
             , textRegionUpUPtr_()
             , textRegionDownUPtr_()
             , textRegionOverUPtr_()
@@ -68,7 +67,7 @@ namespace sfml_util
             , boxUPtr_()
             , scale_(1.0f)
             , color_(sf::Color::White)
-            , callbackHandlerPtr_(nullptr)
+            , callbackHandlerPtrOpt_(boost::none)
         {}
 
         FourStateButton::FourStateButton(
@@ -96,7 +95,7 @@ namespace sfml_util
             , hasOver_(false)
             , hasDisabled_(false)
             , buttonSprite_()
-            , textRegionCurrPtr_(nullptr)
+            , textRegionCurrPtrOpt_(boost::none)
             , textRegionUpUPtr_()
             , textRegionDownUPtr_()
             , textRegionOverUPtr_()
@@ -104,7 +103,7 @@ namespace sfml_util
             , boxUPtr_()
             , scale_(SCALE)
             , color_(SPRITE_COLOR)
-            , callbackHandlerPtr_(nullptr)
+            , callbackHandlerPtrOpt_(boost::none)
         {
             FourStateButton::Setup(
                 POS_LEFT,
@@ -150,7 +149,7 @@ namespace sfml_util
             , hasOver_(false)
             , hasDisabled_(false)
             , buttonSprite_()
-            , textRegionCurrPtr_(nullptr)
+            , textRegionCurrPtrOpt_(boost::none)
             , textRegionUpUPtr_()
             , textRegionDownUPtr_()
             , textRegionOverUPtr_()
@@ -158,7 +157,7 @@ namespace sfml_util
             , boxUPtr_()
             , scale_(SCALE)
             , color_(SPRITE_COLOR)
-            , callbackHandlerPtr_(nullptr)
+            , callbackHandlerPtrOpt_(boost::none)
         {
             FourStateButton::Setup(
                 POS_LEFT,
@@ -389,9 +388,9 @@ namespace sfml_util
                 target.draw(buttonSprite_, states);
             }
 
-            if (textRegionCurrPtr_ != nullptr)
+            if (textRegionCurrPtrOpt_)
             {
-                textRegionCurrPtr_->draw(target, states);
+                textRegionCurrPtrOpt_->Obj().draw(target, states);
             }
 
             if (boxUPtr_.get() != nullptr)
@@ -533,7 +532,7 @@ namespace sfml_util
             {
                 if (textRegionDisabledUPtr_.get() != nullptr)
                 {
-                    textRegionCurrPtr_ = textRegionDisabledUPtr_.get();
+                    textRegionCurrPtrOpt_ = textRegionDisabledUPtr_.get();
                 }
 
                 if (hasDisabled_)
@@ -550,7 +549,7 @@ namespace sfml_util
 
                 if (textRegionUpUPtr_.get() != nullptr)
                 {
-                    textRegionCurrPtr_ = textRegionUpUPtr_.get();
+                    textRegionCurrPtrOpt_ = textRegionUpUPtr_.get();
                 }
             }
             else
@@ -568,13 +567,13 @@ namespace sfml_util
                 if ((MouseState::Down == entityMouseState_)
                     && (textRegionDownUPtr_.get() != nullptr))
                 {
-                    textRegionCurrPtr_ = textRegionDownUPtr_.get();
+                    textRegionCurrPtrOpt_ = textRegionDownUPtr_.get();
                 }
 
                 if ((MouseState::Over == entityMouseState_)
                     && (textRegionOverUPtr_.get() != nullptr))
                 {
-                    textRegionCurrPtr_ = textRegionOverUPtr_.get();
+                    textRegionCurrPtrOpt_ = textRegionOverUPtr_.get();
                 }
             }
 
@@ -584,17 +583,18 @@ namespace sfml_util
             Scale(scale_);
 
             // center the text within the button image
-            if (textRegionCurrPtr_ != nullptr)
+            if (textRegionCurrPtrOpt_)
             {
-                textRegionCurrPtr_->SetEntityPos(GetEntityRegion().left, GetEntityRegion().top);
+                textRegionCurrPtrOpt_->Obj().SetEntityPos(
+                    GetEntityRegion().left, GetEntityRegion().top);
             }
         }
 
         void FourStateButton::OnClick(const sf::Vector2f &)
         {
-            if ((false == isDisabled_) && (callbackHandlerPtr_ != nullptr))
+            if ((false == isDisabled_) && callbackHandlerPtrOpt_)
             {
-                callbackHandlerPtr_->HandleCallback(this);
+                callbackHandlerPtrOpt_->Obj().HandleCallback(this);
             }
         }
 

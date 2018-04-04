@@ -28,6 +28,8 @@
 // four-state-button.hpp
 //  Drawing and handling code for a button type that has four visual and four text states.
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
 #include "sfml-util/gui/mouse-text-info.hpp"
 #include "sfml-util/gui/text-info.hpp"
@@ -52,6 +54,8 @@ namespace sfml_util
         } // namespace box
 
         class TextRegion;
+        using TextRegionPtr_t = misc::NotNull<TextRegion *>;
+        using TextRegionPtrOpt_t = boost::optional<TextRegionPtr_t>;
         using TextRegionUPtr_t = std::unique_ptr<TextRegion>;
 
         class FourStateButton;
@@ -62,6 +66,12 @@ namespace sfml_util
 
             using IFourStateButtonCallbackHandler_t
                 = sfml_util::callback::ICallbackHandler<FourStateButtonCallbackPackage_t, bool>;
+
+            using IFourStateButtonCallbackHandlerPtr_t
+                = misc::NotNull<IFourStateButtonCallbackHandler_t *>;
+
+            using IFourStateButtonCallbackHandlerPtrOpt_t
+                = boost::optional<IFourStateButtonCallbackHandlerPtr_t>;
         } // namespace callback
 
         // Responsible for maintaining images and text for four possible states:
@@ -156,9 +166,10 @@ namespace sfml_util
             void SetEntityPos(const float POS_LEFT, const float POS_TOP) override;
             void MoveEntityPos(const float HORIZ, const float VERT) override;
 
-            virtual void SetCallbackHandler(callback::IFourStateButtonCallbackHandler_t * const ptr)
+            virtual void
+                SetCallbackHandler(const callback::IFourStateButtonCallbackHandlerPtr_t PTR)
             {
-                callbackHandlerPtr_ = ptr;
+                callbackHandlerPtrOpt_ = PTR;
             }
 
             bool IsDisabled() const { return isDisabled_; }
@@ -202,7 +213,7 @@ namespace sfml_util
             bool hasOver_;
             bool hasDisabled_;
             sf::Sprite buttonSprite_;
-            TextRegion * textRegionCurrPtr_;
+            TextRegionPtrOpt_t textRegionCurrPtrOpt_;
             TextRegionUPtr_t textRegionUpUPtr_;
             TextRegionUPtr_t textRegionDownUPtr_;
             TextRegionUPtr_t textRegionOverUPtr_;
@@ -210,7 +221,7 @@ namespace sfml_util
             box::BoxUPtr_t boxUPtr_;
             float scale_;
             sf::Color color_;
-            callback::IFourStateButtonCallbackHandler_t * callbackHandlerPtr_;
+            callback::IFourStateButtonCallbackHandlerPtrOpt_t callbackHandlerPtrOpt_;
         };
 
         using FourStateButtonUPtr_t = std::unique_ptr<FourStateButton>;

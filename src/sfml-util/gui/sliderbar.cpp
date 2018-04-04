@@ -29,10 +29,9 @@
 //
 #include "sliderbar.hpp"
 
+#include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "misc/assertlogandthrow.hpp"
 
 namespace heroespath
 {
@@ -47,7 +46,7 @@ namespace sfml_util
             const float POS_TOP,
             const float LENGTH,
             const SliderStyle & STYLE,
-            callback::ISliderBarCallbackHandler_t * const CHANGE_HANDLER_PTR,
+            const callback::ISliderBarCallbackHandlerPtrOpt_t CHANGE_HANDLER_PTR_OPT,
             const float INITIAL_VALUE)
             : GuiEntity(std::string(NAME).append("_SliderBar"), POS_LEFT, POS_TOP)
             , currentVal_(INITIAL_VALUE)
@@ -67,7 +66,7 @@ namespace sfml_util
                   0.0f)
             , barImage_(std::string(NAME).append("SliderBar's"), 0.0f, 0.0f)
             , padImage_(std::string(NAME).append("SliderBar's"), 0.0f, 0.0f)
-            , changeHandlerPtr_(CHANGE_HANDLER_PTR)
+            , changeHandlerPtrOpt_(CHANGE_HANDLER_PTR_OPT)
         {
             Setup();
         }
@@ -170,9 +169,9 @@ namespace sfml_util
 
         void SliderBar::OnChange(const float)
         {
-            if (changeHandlerPtr_ != nullptr)
+            if (changeHandlerPtrOpt_)
             {
-                changeHandlerPtr_->HandleCallback(this);
+                changeHandlerPtrOpt_->Obj().HandleCallback(this);
             }
         }
 

@@ -28,6 +28,8 @@
 // text-rendering.hpp
 //  Code that draws text to an off-screen texture one character at a time.
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/margins.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -43,7 +45,8 @@ namespace sfml_util
     namespace gui
     {
         class SliderBar;
-        using SliderBarPtr_t = SliderBar *;
+        using SliderBarPtr_t = misc::NotNull<SliderBar *>;
+        using SliderBarPtrOpt_t = boost::optional<SliderBarPtr_t>;
     } // namespace gui
 
     namespace text_render
@@ -194,7 +197,7 @@ namespace sfml_util
         }
 
         // The caller is responsible for the sliderBarPtr that may new'd and returned.
-        gui::SliderBarPtr_t RenderToArea(
+        const gui::SliderBarPtrOpt_t RenderToArea(
             const std::string & NAME,
             const gui::TextInfo & TEXT_INFO,
             RenderedText & renderedText,
@@ -204,7 +207,7 @@ namespace sfml_util
             const bool WILL_ALLOW_SCROLLBAR = true);
 
         // The caller is responsible for the sliderBarPtr that may new'd and returned.
-        gui::SliderBarPtr_t ApplyToArea(
+        const gui::SliderBarPtrOpt_t ApplyToArea(
             const std::string & NAME,
             const RenderedText & RENDERED_TEXT,
             const sf::FloatRect & REGION);
@@ -253,6 +256,7 @@ namespace sfml_util
             char & termChar);
 
         void GroupTextSnippets(TextSnippetVec_t & resultVec, const TextSnippetVec_t & inputVec);
+
     } // namespace text_render
 } // namespace sfml_util
 } // namespace heroespath
