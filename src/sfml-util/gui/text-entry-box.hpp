@@ -28,6 +28,7 @@
 // text-entry-box.hpp
 //  Code for a box that users can type a single line of text into, with a blinking cursor, etc.
 //
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/box-info.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
@@ -52,8 +53,13 @@ namespace sfml_util
         namespace callback
         {
             using TextEntryBoxCallbackPackage_t = sfml_util::callback::PtrWrapper<TextEntryBox>;
+
             using ITextEntryBoxCallbackHandler_t
                 = sfml_util::callback::ICallbackHandler<TextEntryBoxCallbackPackage_t, bool>;
+
+            using ITextEntryBoxCallbackHandlerPtr_t
+                = misc::NotNull<ITextEntryBoxCallbackHandler_t *>;
+
         } // namespace callback
 
         // Encapsulates a single line of user type-able text with a blinking cursor
@@ -66,16 +72,13 @@ namespace sfml_util
             TextEntryBox & operator=(TextEntryBox &&) = delete;
 
         public:
-            // if using this constructor, Setup() must be called before any other function
-            explicit TextEntryBox(const std::string & NAME);
-
             TextEntryBox(
+                const callback::ITextEntryBoxCallbackHandlerPtr_t,
                 const std::string & NAME,
                 const sf::FloatRect & REGION,
                 const TextInfo & TEXT_INFO,
                 const sf::Color & CURSOR_COLOR = sf::Color::White,
-                const box::Info & BOX_INFO = box::Info(),
-                callback::ITextEntryBoxCallbackHandler_t * const CHANGE_HANDLER_PTR = nullptr);
+                const box::Info & BOX_INFO = box::Info());
 
             virtual ~TextEntryBox();
 
@@ -114,10 +117,11 @@ namespace sfml_util
             TextRegionUPtr_t textRegionUPtr_;
             bool willDrawCursor_;
             float cursorBlinkTimer_;
-            callback::ITextEntryBoxCallbackHandler_t * callbackHandlerPtr_;
+            callback::ITextEntryBoxCallbackHandlerPtr_t callbackHandlerPtr_;
         };
 
         using TextEntryBoxUPtr_t = std::unique_ptr<TextEntryBox>;
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

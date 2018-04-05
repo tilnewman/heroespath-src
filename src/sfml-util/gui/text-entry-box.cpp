@@ -29,13 +29,11 @@
 //
 #include "text-entry-box.hpp"
 
+#include "log/log-macros.hpp"
+#include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "misc/assertlogandthrow.hpp"
-
-#include "log/log-macros.hpp"
 
 namespace heroespath
 {
@@ -48,26 +46,13 @@ namespace sfml_util
         const float TextEntryBox::CURSOR_WIDTH_(0.0f);
         const float TextEntryBox::CURSOR_BLINK_DELAY_SEC_(0.5);
 
-        TextEntryBox::TextEntryBox(const std::string & NAME)
-            : GuiEntity(std::string(NAME).append("_TextEntryBox"), 0.0f, 0.0f)
-            , box_("TextEntryBox's")
-            , textInfo_()
-            , cursorRect_()
-            , cursorColor_()
-            , innerRegion_()
-            , textRegionUPtr_()
-            , willDrawCursor_(false)
-            , cursorBlinkTimer_(0.0f)
-            , callbackHandlerPtr_(nullptr)
-        {}
-
         TextEntryBox::TextEntryBox(
+            const callback::ITextEntryBoxCallbackHandlerPtr_t CALLBACK_HANDLER_PTR,
             const std::string & NAME,
             const sf::FloatRect & REGION,
             const TextInfo & TEXT_INFO,
             const sf::Color & CURSOR_COLOR,
-            const box::Info & BOX_INFO,
-            callback::ITextEntryBoxCallbackHandler_t * const CHANGE_HANDLER_PTR)
+            const box::Info & BOX_INFO)
             : GuiEntity(std::string(NAME).append("_TextEntryBox"), REGION)
             , box_("TextEntryBox's")
             , textInfo_(TEXT_INFO)
@@ -77,7 +62,7 @@ namespace sfml_util
             , textRegionUPtr_()
             , willDrawCursor_(false)
             , cursorBlinkTimer_(0.0f)
-            , callbackHandlerPtr_(CHANGE_HANDLER_PTR)
+            , callbackHandlerPtr_(CALLBACK_HANDLER_PTR)
         {
             Setup(REGION, TEXT_INFO, BOX_INFO);
         }
@@ -127,10 +112,7 @@ namespace sfml_util
                 textRegionUPtr_.reset();
             }
 
-            if (callbackHandlerPtr_ != nullptr)
-            {
-                callbackHandlerPtr_->HandleCallback(this);
-            }
+            callbackHandlerPtr_->HandleCallback(this);
         }
 
         void TextEntryBox::draw(sf::RenderTarget & target, sf::RenderStates states) const

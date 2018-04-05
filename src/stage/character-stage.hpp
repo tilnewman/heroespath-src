@@ -164,6 +164,7 @@ namespace stage
         , public popup::IPopupHandler_t
         , public sfml_util::gui::callback::ISliderBarCallbackHandler_t
         , public sfml_util::gui::callback::IFourStateButtonCallbackHandler_t
+        , public sfml_util::gui::callback::ITextEntryBoxCallbackHandler_t
     {
     public:
         CharacterStage(const CharacterStage &) = delete;
@@ -186,6 +187,12 @@ namespace stage
 
         bool HandleCallback(
             const sfml_util::gui::callback::FourStateButtonCallbackPackage_t &) override;
+
+        bool
+            HandleCallback(const sfml_util::gui::callback::TextEntryBoxCallbackPackage_t &) override
+        {
+            return false;
+        }
 
         void Setup() override;
         void UpdateTime(const float ELAPSED_TIME_SECONDS) override;

@@ -147,12 +147,12 @@ namespace popup
             true, TEXTENTRY_REGION, sfml_util::gui::ColorSet(sf::Color::White), TEXTENTRY_BG_INFO);
 
         textEntryBoxUPtr_ = std::make_unique<sfml_util::gui::TextEntryBox>(
+            sfml_util::gui::callback::ITextEntryBoxCallbackHandlerPtr_t(this),
             "PopupStage's",
             TEXTENTRY_REGION,
             TEXTENTRY_TEXT_INFO,
             sfml_util::FontManager::Color_Light(),
-            TEXTENTRY_BOX_INFO,
-            this);
+            TEXTENTRY_BOX_INFO);
 
         textEntryBoxUPtr_->SetText(minNumSS.str());
         EntityAdd(textEntryBoxUPtr_.get());

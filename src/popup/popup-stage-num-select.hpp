@@ -28,7 +28,6 @@
 // popup-stage-num-select.hpp
 //
 #include "popup/popup-stage-base.hpp"
-
 #include "sfml-util/gui/sliderbar.hpp"
 #include "sfml-util/gui/text-entry-box.hpp"
 #include "sfml-util/gui/text-region.hpp"
