@@ -211,17 +211,50 @@ namespace non_player
 
             // capes, cloaks, and robes are mutually exclusive, so pre-select which (if any) are
             // worn
-            if (clothingChances.cover_map[armor::cover_type::Cloak].IsOwned())
+
+            auto const IS_CLOAK_OWNED{ [&]() {
+                try
+                {
+                    return clothingChances.cover_map[armor::cover_type::Cloak].IsOwned();
+                }
+                catch (...)
+                {
+                    M_HP_LOG_ERR(
+                        "non_player::ownership::Make_ClothingChances(creature={"
+                        << CHARACTER_PTR->ToString()
+                        << "})  threw exception during "
+                           "clothingChances.cover_map[armor::cover_type::Cloak].IsOwned()");
+
+                    throw;
+                }
+            }() };
+
+            if (IS_CLOAK_OWNED)
             {
                 clothingChances.cover_map[armor::cover_type::Cloak].SetCountChanceSingleCertain();
-
                 clothingChances.cover_map[armor::cover_type::Cape].SetCountChanceSingleNoChance();
-
                 clothingChances.cover_map[armor::cover_type::Robe].SetCountChanceSingleNoChance();
             }
             else
             {
-                if (clothingChances.cover_map[armor::cover_type::Robe].IsOwned())
+                auto const IS_ROBE_OWNED{ [&]() {
+                    try
+                    {
+                        return clothingChances.cover_map[armor::cover_type::Robe].IsOwned();
+                    }
+                    catch (...)
+                    {
+                        M_HP_LOG_ERR(
+                            "non_player::ownership::Make_ClothingChances(creature={"
+                            << CHARACTER_PTR->ToString()
+                            << "})  threw exception during "
+                               "clothingChances.cover_map[armor::cover_type::Robe].IsOwned()");
+
+                        throw;
+                    }
+                }() };
+
+                if (IS_ROBE_OWNED)
                 {
                     clothingChances.cover_map[armor::cover_type::Cloak]
                         .SetCountChanceSingleNoChance();
@@ -234,7 +267,24 @@ namespace non_player
                 }
                 else
                 {
-                    if (clothingChances.cover_map[armor::cover_type::Cape].IsOwned())
+                    auto const IS_CAPE_OWNED{ [&]() {
+                        try
+                        {
+                            return clothingChances.cover_map[armor::cover_type::Cape].IsOwned();
+                        }
+                        catch (...)
+                        {
+                            M_HP_LOG_ERR(
+                                "non_player::ownership::Make_ClothingChances(creature={"
+                                << CHARACTER_PTR->ToString()
+                                << "})  threw exception during "
+                                   "clothingChances.cover_map[armor::cover_type::Cape].IsOwned()");
+
+                            throw;
+                        }
+                    }() };
+
+                    if (IS_CAPE_OWNED)
                     {
                         clothingChances.cover_map[armor::cover_type::Cloak]
                             .SetCountChanceSingleNoChance();

@@ -798,125 +798,235 @@ namespace non_player
 
             IItemPVecPair_t itemsPtrVecPair;
 
-            if (CHANCES.aventail.IsOwned())
+            try
             {
-                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Aventail(
-                    CHANCES.aventail.RandomArmorBaseType(),
-                    CHANCES.aventail.RandomMaterialPri(),
-                    CHANCES.aventail.RandomMaterialSec()));
+                if (CHANCES.aventail.IsOwned())
+                {
+                    itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Aventail(
+                        CHANCES.aventail.RandomArmorBaseType(),
+                        CHANCES.aventail.RandomMaterialPri(),
+                        CHANCES.aventail.RandomMaterialSec()));
+                }
+            }
+            catch (...)
+            {
+                M_HP_LOG_ERR(
+                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
+                    << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking aventail.");
+
+                throw;
             }
 
-            if (CHANCES.boots.IsOwned())
+            try
             {
-                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Boots(
-                    CHANCES.boots.RandomArmorBaseType(),
-                    CHANCES.boots.RandomMaterialPri(),
-                    CHANCES.boots.RandomMaterialSec()));
+                if (CHANCES.boots.IsOwned())
+                {
+                    itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Boots(
+                        CHANCES.boots.RandomArmorBaseType(),
+                        CHANCES.boots.RandomMaterialPri(),
+                        CHANCES.boots.RandomMaterialSec()));
+                }
+            }
+            catch (...)
+            {
+                M_HP_LOG_ERR(
+                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
+                    << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking boots.");
+
+                throw;
             }
 
-            if (CHANCES.bracers.IsOwned())
+            try
             {
-                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Bracer(
-                    CHANCES.bracers.RandomArmorBaseType(),
-                    CHANCES.bracers.RandomMaterialPri(),
-                    CHANCES.bracers.RandomMaterialSec()));
+                if (CHANCES.bracers.IsOwned())
+                {
+                    itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Bracer(
+                        CHANCES.bracers.RandomArmorBaseType(),
+                        CHANCES.bracers.RandomMaterialPri(),
+                        CHANCES.bracers.RandomMaterialSec()));
+                }
+            }
+            catch (...)
+            {
+                M_HP_LOG_ERR(
+                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
+                    << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking bracers.");
+
+                throw;
             }
 
-            if (CHANCES.gauntlets.IsOwned())
+            try
             {
-                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Gauntlets(
-                    CHANCES.gauntlets.RandomArmorBaseType(),
-                    CHANCES.gauntlets.RandomMaterialPri(),
-                    CHANCES.gauntlets.RandomMaterialSec()));
+                if (CHANCES.gauntlets.IsOwned())
+                {
+                    itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Gauntlets(
+                        CHANCES.gauntlets.RandomArmorBaseType(),
+                        CHANCES.gauntlets.RandomMaterialPri(),
+                        CHANCES.gauntlets.RandomMaterialSec()));
+                }
+            }
+            catch (...)
+            {
+                M_HP_LOG_ERR(
+                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
+                    << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking gauntlets.");
+
+                throw;
             }
 
-            if (CHANCES.pants.IsOwned())
+            try
             {
-                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Pants(
-                    CHANCES.pants.RandomArmorBaseType(), CHANCES.pants.RandomMaterialSec()));
+                if (CHANCES.pants.IsOwned())
+                {
+                    itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Pants(
+                        CHANCES.pants.RandomArmorBaseType(), CHANCES.pants.RandomMaterialSec()));
+                }
+            }
+            catch (...)
+            {
+                M_HP_LOG_ERR(
+                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
+                    << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking pants.");
+
+                throw;
             }
 
-            if (CHANCES.shirt.IsOwned())
+            try
             {
-                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Shirt(
-                    CHANCES.shirt.RandomArmorBaseType(), CHANCES.shirt.RandomMaterialSec()));
+                if (CHANCES.shirt.IsOwned())
+                {
+                    itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Shirt(
+                        CHANCES.shirt.RandomArmorBaseType(), CHANCES.shirt.RandomMaterialSec()));
+                }
+            }
+            catch (...)
+            {
+                M_HP_LOG_ERR(
+                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
+                    << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking shirt.");
+
+                throw;
             }
 
             // covers (vest/robe/cloak/cape)
-            auto const COVER_PAIR{ CHANCES.RandomCover() };
-            if (COVER_PAIR.second > 0)
+            try
             {
-                non_player::ownership::chance::ItemChances coverChances;
+                auto const COVER_PAIR{ CHANCES.RandomCover() };
+                if (COVER_PAIR.second > 0)
+                {
+                    non_player::ownership::chance::ItemChances coverChances;
 
-                auto const WAS_COVER_FOUND{ CHANCES.cover_map.Find(
-                    COVER_PAIR.first, coverChances) };
+                    auto const WAS_COVER_FOUND{ CHANCES.cover_map.Find(
+                        COVER_PAIR.first, coverChances) };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    WAS_COVER_FOUND,
-                    "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
-                        << CHARACTER_PTR->ToString()
-                        << "\") ARMOR_CHANCES.RandomCover() returned \""
-                        << cover_type::ToString(COVER_PAIR.first)
-                        << "\", but that item was not found in the ARMOR_CHANCES.cover_map.");
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        WAS_COVER_FOUND,
+                        "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
+                            << CHARACTER_PTR->ToString()
+                            << "\") ARMOR_CHANCES.RandomCover() returned \""
+                            << cover_type::ToString(COVER_PAIR.first)
+                            << "\", but that item was not found in the ARMOR_CHANCES.cover_map.");
 
-                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Cover(
-                    COVER_PAIR.first,
-                    coverChances.RandomMaterialPri(),
-                    coverChances.RandomMaterialSec()));
+                    itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Cover(
+                        COVER_PAIR.first,
+                        coverChances.RandomMaterialPri(),
+                        coverChances.RandomMaterialSec()));
+                }
+            }
+            catch (...)
+            {
+                M_HP_LOG_ERR(
+                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
+                    << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking covers.");
+
+                throw;
             }
 
             // helms
-            auto const HELM_PAIR{ CHANCES.RandomHelm() };
-            if (HELM_PAIR.second > 0)
+            try
             {
-                non_player::ownership::chance::ItemChances helmChances;
+                auto const HELM_PAIR{ CHANCES.RandomHelm() };
+                if (HELM_PAIR.second > 0)
+                {
+                    non_player::ownership::chance::ItemChances helmChances;
 
-                auto const WAS_HELM_FOUND{ CHANCES.helm_map.Find(HELM_PAIR.first, helmChances) };
+                    auto const WAS_HELM_FOUND{ CHANCES.helm_map.Find(
+                        HELM_PAIR.first, helmChances) };
 
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    WAS_HELM_FOUND,
-                    "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
-                        << CHARACTER_PTR->ToString() << "\") ARMOR_CHANCES.RandomHelm() returned \""
-                        << helm_type::ToString(HELM_PAIR.first)
-                        << "\", but that item was not found in the ARMOR_CHANCES.helm_map.");
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        WAS_HELM_FOUND,
+                        "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
+                            << CHARACTER_PTR->ToString()
+                            << "\") ARMOR_CHANCES.RandomHelm() returned \""
+                            << helm_type::ToString(HELM_PAIR.first)
+                            << "\", but that item was not found in the ARMOR_CHANCES.helm_map.");
 
-                itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Helm(
-                    HELM_PAIR.first,
-                    helmChances.RandomMaterialPri(),
-                    helmChances.RandomMaterialSec()));
+                    itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Helm(
+                        HELM_PAIR.first,
+                        helmChances.RandomMaterialPri(),
+                        helmChances.RandomMaterialSec()));
+                }
+            }
+            catch (...)
+            {
+                M_HP_LOG_ERR(
+                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
+                    << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking helms.");
+
+                throw;
             }
 
             // shields
-            auto const SHIELD_PAIR{ CHANCES.RandomShield() };
-            if (SHIELD_PAIR.second > 0)
+            try
             {
-                ownership::chance::ItemChances shieldChances;
-
-                auto const WAS_SHIELD_FOUND{ CHANCES.shield_map.Find(
-                    SHIELD_PAIR.first, shieldChances) };
-
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    WAS_SHIELD_FOUND,
-                    "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
-                        << CHARACTER_PTR->ToString()
-                        << "\") ARMOR_CHANCES.RandomShield() returned \""
-                        << shield_type::ToString(SHIELD_PAIR.first)
-                        << "\", but that item was not found in the ARMOR_CHANCES.shield_map.");
-
-                if (HAS_TWO_HANDED_WEAPON)
+                auto const SHIELD_PAIR{ CHANCES.RandomShield() };
+                if (SHIELD_PAIR.second > 0)
                 {
-                    itemsPtrVecPair.second.emplace_back(ArmorFactory::Instance()->Make_Shield(
-                        SHIELD_PAIR.first,
-                        shieldChances.RandomMaterialPri(),
-                        shieldChances.RandomMaterialSec()));
+                    ownership::chance::ItemChances shieldChances;
+
+                    auto const WAS_SHIELD_FOUND{ CHANCES.shield_map.Find(
+                        SHIELD_PAIR.first, shieldChances) };
+
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        WAS_SHIELD_FOUND,
+                        "non_player::ownership::InventoryFactory::MakeItemSet_Armor(creature=\""
+                            << CHARACTER_PTR->ToString()
+                            << "\") ARMOR_CHANCES.RandomShield() returned \""
+                            << shield_type::ToString(SHIELD_PAIR.first)
+                            << "\", but that item was not found in the ARMOR_CHANCES.shield_map.");
+
+                    if (HAS_TWO_HANDED_WEAPON)
+                    {
+                        itemsPtrVecPair.second.emplace_back(ArmorFactory::Instance()->Make_Shield(
+                            SHIELD_PAIR.first,
+                            shieldChances.RandomMaterialPri(),
+                            shieldChances.RandomMaterialSec()));
+                    }
+                    else
+                    {
+                        itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Shield(
+                            SHIELD_PAIR.first,
+                            shieldChances.RandomMaterialPri(),
+                            shieldChances.RandomMaterialSec()));
+                    }
                 }
-                else
-                {
-                    itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Shield(
-                        SHIELD_PAIR.first,
-                        shieldChances.RandomMaterialPri(),
-                        shieldChances.RandomMaterialSec()));
-                }
+            }
+            catch (...)
+            {
+                M_HP_LOG_ERR(
+                    "non_player::ownership::MakeItemSet_Armor(creature={"
+                    << CHARACTER_PTR->ToString() << "}, has_two_handed_weapon=" << std::boolalpha
+                    << HAS_TWO_HANDED_WEAPON << ")  exception thrown while checking shields.");
+
+                throw;
             }
 
             return itemsPtrVecPair;

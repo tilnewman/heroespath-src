@@ -34,10 +34,9 @@
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/random.hpp"
 #include "misc/vector-map.hpp"
 #include "stats/trait.hpp"
-
-#include "misc/random.hpp"
 
 #include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
@@ -73,7 +72,7 @@ namespace non_player
                         << boost::typeindex::type_id<T>().pretty_name()
                         << "\") called when the map was empty.");
 
-                float chanceSubTotal(0.0f);
+                auto chanceSubTotal{ 0.0f };
                 for (auto const & NEXT_MAP_PAIR : MAP)
                 {
                     chanceSubTotal += NEXT_MAP_PAIR.second;
@@ -85,9 +84,9 @@ namespace non_player
                         << boost::typeindex::type_id<T>().pretty_name() << "\", size=" << MAP.Size()
                         << ") called when the map's chance total is zero or less.");
 
-                const float RAND(misc::random::Float(0.0f, chanceSubTotal));
+                auto const RAND{ misc::random::Float(0.0f, chanceSubTotal) };
 
-                float cumulativeChance(0.0f);
+                auto cumulativeChance{ 0.0f };
                 for (auto const & NEXT_MAP_PAIR : MAP)
                 {
                     cumulativeChance += NEXT_MAP_PAIR.second;
@@ -97,13 +96,42 @@ namespace non_player
                     }
                 }
 
-                M_HP_LOG(
-                    "WARNING:  non_player::ownership::chance::MappedRandomFloatChance(T=\""
-                    << boost::typeindex::type_id<T>().pretty_name()
-                    << "\") failed to random select.  Choosing first with a count of one by "
-                       "default.");
+                // if we get here something is wrong, so log everything
 
-                return MAP.begin()->first;
+                std::ostringstream ss;
+                ss << "non_player::ownership::chance::MappedRandomFloatChance(T=\""
+                   << boost::typeindex::type_id<T>().pretty_name()
+                   << "\") failed to random select.  chanceSubTotal=" << chanceSubTotal
+                   << ", RAND=" << RAND << ", MAP={";
+
+                for (auto const & NEXT_MAP_PAIR : MAP)
+                {
+                    ss << NEXT_MAP_PAIR.second << ", ";
+                }
+
+                ss << "}  ";
+
+                std::size_t i{ 0 };
+                for (auto const & NEXT_MAP_PAIR : MAP)
+                {
+                    if (NEXT_MAP_PAIR.second > 0.0f)
+                    {
+                        ss << "picking " << static_cast<int>(NEXT_MAP_PAIR.first)
+                           << " with chance=" << NEXT_MAP_PAIR.second << " at index=" << i;
+
+                        M_HP_LOG_WRN(ss.str());
+                        return NEXT_MAP_PAIR.first;
+                    }
+                    else
+                    {
+                        ++i;
+                    }
+                }
+
+                ss << "-MORE problems: Could not find any chance greater-than zero so raising this "
+                      "to an exception and throwing.";
+
+                throw std::runtime_error(ss.str());
             }
 
             // A wrapper for all information needed to determine if an item is owned, and what
