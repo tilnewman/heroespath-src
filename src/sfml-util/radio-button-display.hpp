@@ -56,7 +56,8 @@ namespace sfml_util
         RadioButtonSet_DisplayChange(
             const float POS_LEFT,
             const float POS_TOP,
-            const sfml_util::IStagePtr_t OWNER_ISTAGE_PTR);
+            const sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t,
+            const sfml_util::IStagePtr_t);
 
         virtual ~RadioButtonSet_DisplayChange();
 

@@ -225,10 +225,6 @@ namespace stage
     bool CharacterStage::HandleCallback(
         const sfml_util::callback::RadioButtonCallbackPackage_t & RADIOBUTTON_WRAPPER)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (RADIOBUTTON_WRAPPER.PTR_ != nullptr),
-            "CharacterStage::HandleCallback() given a null RADIOBUTTON_PACKAGE.PTR_.");
-
         // was change to race
         if (raceRadioButtonUPtr_.get() == RADIOBUTTON_WRAPPER.PTR_)
         {
@@ -656,6 +652,7 @@ namespace stage
         const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
         raceRadioButtonUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
+            sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t(this),
             "RaceSelection",
             REGION.left,
             REGION.top,
@@ -668,7 +665,6 @@ namespace stage
             sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
             0.0f);
 
-        raceRadioButtonUPtr_->CallbackHandlerAdd(this);
         EntityAdd(raceRadioButtonUPtr_.get());
     }
 
@@ -703,6 +699,7 @@ namespace stage
         const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
         roleRadioButtonSPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
+            sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t(this),
             "RoleSelection",
             REGION.left,
             REGION.top,
@@ -715,7 +712,6 @@ namespace stage
             sfml_util::gui::RadioButtonSet::BETWEEN_PAD_DEFAULT_,
             -5.0f);
 
-        roleRadioButtonSPtr_->CallbackHandlerAdd(this);
         EntityAdd(roleRadioButtonSPtr_.get());
     }
 
@@ -873,6 +869,7 @@ namespace stage
             true, TEMP_EMPTY_REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
         sexRadioButtonUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
+            sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t(this),
             "SexSelection",
             0.0f,
             0.0f,
@@ -1383,8 +1380,7 @@ namespace stage
 
     void CharacterStage::CharacterImageSelectionPopup(const std::string & CHARACTER_NAME)
     {
-        auto const SEX{ (sexRadioButtonUPtr_->GetSelectedNumber() == 0) ? creature::sex::Male
-                                                                        : creature::sex::Female };
+        auto const SEX{ GetCurrentSelectedSex() };
 
         auto const RACE{ static_cast<creature::race::Enum>(
             raceRadioButtonUPtr_->GetSelectedNumber()) };
@@ -1520,7 +1516,7 @@ namespace stage
 
         auto const CHARACTER_NAME{ boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
 
-        const bool IS_MALE{ sexRadioButtonUPtr_->GetSelectedNumber() == 0 };
+        const bool IS_MALE{ GetCurrentSelectedSex() == creature::sex::Male };
 
         auto const RACE{ static_cast<creature::race::Enum>(
             raceRadioButtonUPtr_->GetSelectedNumber()) };
@@ -2885,5 +2881,13 @@ namespace stage
         ResetForNewCharacterCreation();
         return false;
     }
+
+    creature::sex::Enum CharacterStage::GetCurrentSelectedSex() const
+    {
+        return (
+            (sexRadioButtonUPtr_->GetSelectedNumber() == 0) ? creature::sex::Male
+                                                            : creature::sex::Female);
+    }
+
 } // namespace stage
 } // namespace heroespath

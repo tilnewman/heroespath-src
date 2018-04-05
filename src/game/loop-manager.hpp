@@ -174,7 +174,7 @@ namespace game
             const creature::CreaturePtr_t INVENTORY_CREATURE_PTR,
             const game::Phase::Enum CURRENT_PHASE);
 
-        sfml_util::Loop & CommandLoopAccess(const sfml_util::ILoopCmd *) { return loop_; }
+        sfml_util::Loop & CommandLoopAccess(const sfml_util::ILoopCmdPtr_t) { return loop_; }
 
     private:
         void TransitionTo_Intro();

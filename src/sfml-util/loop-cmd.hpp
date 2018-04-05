@@ -28,12 +28,12 @@
 // loop-cmd.hpp
 //  Code that encapsulates a command that performs some action on a Loop object.
 //
+#include "misc/not-null.hpp"
+#include "sfml-util/loop-state-enum.hpp"
 #include "sfml-util/loop.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/stage.hpp"
-
-#include "sfml-util/loop-state-enum.hpp"
 
 #include <memory>
 #include <sstream>
@@ -59,6 +59,7 @@ namespace sfml_util
         virtual bool Execute() = 0;
     };
 
+    using ILoopCmdPtr_t = misc::NotNull<ILoopCmd *>;
     using ILoopCmdSPtr_t = std::shared_ptr<ILoopCmd>;
     using ILoopCmdSVec_t = std::vector<ILoopCmdSPtr_t>;
 

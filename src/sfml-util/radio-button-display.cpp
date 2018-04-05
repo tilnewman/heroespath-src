@@ -46,8 +46,11 @@ namespace sfml_util
     const std::size_t RadioButtonSet_DisplayChange::MAX_NUM_RES_DISPLAYABLE_(10);
 
     RadioButtonSet_DisplayChange::RadioButtonSet_DisplayChange(
-        const float POS_LEFT, const float POS_TOP, const sfml_util::IStagePtr_t OWNER_ISTAGE_PTR)
-        : RadioButtonSet("DisplayChange")
+        const float POS_LEFT,
+        const float POS_TOP,
+        const sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t CALLBACK_HANDLER_PTR,
+        const sfml_util::IStagePtr_t OWNER_ISTAGE_PTR)
+        : RadioButtonSet(CALLBACK_HANDLER_PTR, "DisplayChange")
         , ownerStagePtr_(OWNER_ISTAGE_PTR)
         , resolutionVec_()
         , ORIG_INVALID_SELECTION_(

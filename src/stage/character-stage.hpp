@@ -277,6 +277,7 @@ namespace stage
         bool RaceChange(const creature::race::Enum);
         bool RoleChange();
         bool CreateCharacter();
+        creature::sex::Enum GetCurrentSelectedSex() const;
 
     private:
         static const stats::Trait_t STAT_INVALID_;

@@ -28,6 +28,9 @@
 // radio-button.hpp
 //  Radio button drawing and handling code.
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/handy-types.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/brightness-enum.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/gui-entity.hpp"
@@ -36,10 +39,7 @@
 #include "sfml-util/i-callback-handler.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
-#include "misc/handy-types.hpp"
-
 #include <memory>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -56,9 +56,12 @@ namespace sfml_util
     {
         using RadioButtonCallbackPackage_t
             = sfml_util::callback::PtrWrapper<sfml_util::gui::RadioButtonSet>;
+
         using IRadioButtonSetCallbackHandler_t
             = ICallbackHandler<RadioButtonCallbackPackage_t, bool>;
-        using RadioButtonCallbackHandlerPtrSet_t = std::set<IRadioButtonSetCallbackHandler_t *>;
+
+        using RadioButtonSetCallbackHandlerPtr_t
+            = misc::NotNull<IRadioButtonSetCallbackHandler_t *>;
     } // namespace callback
 
     namespace gui
@@ -125,37 +128,14 @@ namespace sfml_util
         public:
             // If Using this constructor, then one of the Setup() functions must be called before
             // any other member
-            explicit RadioButtonSet(const std::string & NAME);
-
-            // Constructor for cases where each radio button's label text has a different style,
-            // size, etc.
-            RadioButtonSet(
-                const std::string & NAME,
-                const float POS_LEFT,
-                const float POS_TOP,
-                const TextInfoVec_t & TEXT_INFO_VEC,
-                const std::size_t INITIAL_SELECTION,
-                const Brightness::Enum BRIGHTNESS,
-                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
-                const box::Info & BOX_INFO = box::Info(),
-                const float OUTER_PAD = OUTER_PAD_DEFAULT_,
-                const float BETWEEN_PAD = BETWEEN_PAD_DEFAULT_);
-
-            RadioButtonSet(
-                const std::string & NAME,
-                const float POS_LEFT,
-                const float POS_TOP,
-                const MouseTextInfoVec_t & TEXT_INFO_VEC,
-                const std::size_t INITIAL_SELECTION,
-                const Brightness::Enum BRIGHTNESS,
-                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
-                const box::Info & BOX_INFO = box::Info(),
-                const float OUTER_PAD = OUTER_PAD_DEFAULT_,
-                const float BETWEEN_PAD = BETWEEN_PAD_DEFAULT_);
+            explicit RadioButtonSet(
+                const sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t,
+                const std::string & NAME);
 
             // Constructor for cases where each radio button's label text has the same style, size,
             // etc.
             RadioButtonSet(
+                const sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t,
                 const std::string & NAME,
                 const float POS_LEFT,
                 const float POS_TOP,
@@ -173,30 +153,19 @@ namespace sfml_util
             void Setup(
                 const float POS_LEFT,
                 const float POS_TOP,
-                const TextInfoVec_t & TEXT_INFO_VEC,
-                const std::size_t INITIAL_SELECTION,
-                const Brightness::Enum BRIGHTNESS,
-                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
-                const box::Info & BOX_INFO = box::Info(),
-                const float OUTER_PAD = OUTER_PAD_DEFAULT_,
-                const float BETWEEN_PAD = BETWEEN_PAD_DEFAULT_);
-
-            void Setup(
-                const float POS_LEFT,
-                const float POS_TOP,
-                const MouseTextInfoVec_t & TEXT_INFO_VEC,
-                const std::size_t INITIAL_SELECTION,
-                const Brightness::Enum BRIGHTNESS,
-                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
-                const box::Info & BOX_INFO = box::Info(),
-                const float OUTER_PAD = OUTER_PAD_DEFAULT_,
-                const float BETWEEN_PAD = BETWEEN_PAD_DEFAULT_);
-
-            void Setup(
-                const float POS_LEFT,
-                const float POS_TOP,
                 const TextInfo & TEXT_INFO,
                 const std::vector<std::string> & LABEL_VEC,
+                const std::size_t INITIAL_SELECTION,
+                const Brightness::Enum BRIGHTNESS,
+                const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
+                const box::Info & BOX_INFO = box::Info(),
+                const float OUTER_PAD = OUTER_PAD_DEFAULT_,
+                const float BETWEEN_PAD = BETWEEN_PAD_DEFAULT_);
+
+            void Setup(
+                const float POS_LEFT,
+                const float POS_TOP,
+                const MouseTextInfoVec_t & MOUSE_TEXT_INFO_VEC,
                 const std::size_t INITIAL_SELECTION,
                 const Brightness::Enum BRIGHTNESS,
                 const misc::SizetVec_t & INVALID_SEL_VEC = misc::SizetVec_t(),
@@ -227,11 +196,6 @@ namespace sfml_util
             virtual void SetEntityPos(const float POS_LEFT, const float POS_TOP);
             virtual void MoveEntityPos(const float HORIZ, const float VERT);
 
-            void CallbackHandlerAdd(
-                sfml_util::callback::IRadioButtonSetCallbackHandler_t * const handlerPtr);
-            bool CallbackHandlerRemove(
-                sfml_util::callback::IRadioButtonSetCallbackHandler_t * const handlerPtr);
-
             virtual bool SetHasFocus(const bool);
 
         protected:
@@ -257,7 +221,7 @@ namespace sfml_util
             static const float BETWEEN_PAD_DEFAULT_;
 
         protected:
-            //
+            sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t callbackHandlerPtr_;
             float outerPad_;
             float betweenPad_;
             std::size_t currentSelection_;
@@ -266,12 +230,11 @@ namespace sfml_util
             std::size_t downInWhichRegion_;
             misc::SizetVec_t invalidSelectionVec_;
             std::size_t prevSelection_;
-            //
-            sfml_util::callback::RadioButtonCallbackHandlerPtrSet_t callbackHandlerPtrSet_;
         };
 
         using RadioButtonSetUPtr_t = std::unique_ptr<RadioButtonSet>;
         using RadioButtonSVec_t = std::vector<RadioButtonSPtr_t>;
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

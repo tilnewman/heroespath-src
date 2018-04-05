@@ -312,6 +312,7 @@ namespace stage
             resRadioButtonSetUPtr_ = std::make_unique<sfml_util::RadioButtonSet_DisplayChange>(
                 BG_BOX_INNER_RECT.left,
                 BG_BOX_INNER_RECT.top + sfml_util::MapByRes(20.0f, 50.0f),
+                sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t(this),
                 sfml_util::IStagePtr_t(this));
 
             resRadioButtonSetUPtr_->SetEntityColors(sfml_util::gui::ColorSet(
@@ -424,6 +425,7 @@ namespace stage
             }
 
             aaRadioButtonSetUPtr_ = std::make_unique<sfml_util::gui::RadioButtonSet>(
+                sfml_util::callback::RadioButtonSetCallbackHandlerPtr_t(this),
                 "Antialias",
                 0.0f,
                 0.0f,
@@ -439,8 +441,6 @@ namespace stage
                 sf::Color(0, 0, 0, 60),
                 sf::Color(180, 180, 180),
                 sf::Color(0, 0, 0, 60)));
-
-            aaRadioButtonSetUPtr_->CallbackHandlerAdd(this);
 
             EntityAdd(aaRadioButtonSetUPtr_.get());
         }
@@ -711,5 +711,6 @@ namespace stage
     }
 
     float SettingsStage::SliderLabelVertPad() const { return sfml_util::MapByRes(5.0f, 15.0f); }
+
 } // namespace stage
 } // namespace heroespath
