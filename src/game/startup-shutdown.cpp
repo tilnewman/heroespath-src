@@ -199,10 +199,9 @@ namespace game
     {
         try
         {
-            // close the display window before free'ing resources
-            if (sfml_util::Display::Instance()->GetWindow()->isOpen())
+            if (sfml_util::Display::Instance()->IsOpen())
             {
-                sfml_util::Display::Instance()->GetWindow()->close();
+                sfml_util::Display::Instance()->Close();
             }
         }
         catch (const std::exception & E)
@@ -216,7 +215,7 @@ namespace game
         }
         catch (...)
         {
-            M_LOG(
+            M_LOG_FAT(
                 *log::Logger::Instance(),
                 "StartupShutdown::Teardown_CloseDisplay() threw an unknown (non-std) exception.");
 
@@ -336,12 +335,10 @@ namespace game
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
         sfml_util::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0);
 
-        auto winPtr{ sfml_util::Display::Instance()->GetWindow() };
+        sfml_util::Display::Instance()->SetFrameRateLimit(
+            game::GameDataFile::Instance()->GetCopyInt("system-window-frame-rate-limit"));
 
-        winPtr->setFramerateLimit(static_cast<unsigned int>(
-            game::GameDataFile::Instance()->GetCopyInt("system-window-frame-rate-limit")));
-
-        winPtr->setVerticalSyncEnabled(
+        sfml_util::Display::Instance()->SetVerticalSync(
             game::GameDataFile::Instance()->GetCopyBool("system-window-sync"));
     }
 

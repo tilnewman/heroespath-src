@@ -172,9 +172,6 @@ namespace config
                 M_HP_LOG(
                     "SettingsFile::LoadAndRestore() setting display antialias level to "
                     << SAVED_ANTIALIAS_LEVEL);
-
-                sfml_util::Display::Instance()->SetFrameRateLimit(
-                    static_cast<int>(SAVED_ANTIALIAS_LEVEL));
             }
 
             const int WIDTH(GetWithDefaultInt(KEY_RESOLUTION_WIDTH_, -1));
@@ -195,7 +192,8 @@ namespace config
                     << sfml_util::VideoModeToString(NEW_VIDEO_MODE)
                     << " AA=" << SAVED_ANTIALIAS_LEVEL);
 
-                sfml_util::Display::ChangeVideoMode(NEW_VIDEO_MODE, SAVED_ANTIALIAS_LEVEL);
+                sfml_util::Display::Instance()->ChangeVideoMode(
+                    NEW_VIDEO_MODE, SAVED_ANTIALIAS_LEVEL);
             }
 
             const int SAVED_FRAME_RATE_LIMIT(GetWithDefaultInt(KEY_FRAMERATE_LIMIT_, -1));

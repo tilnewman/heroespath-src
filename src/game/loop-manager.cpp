@@ -626,7 +626,8 @@ namespace game
         const sfml_util::Resolution & NEW_RES,
         const unsigned ANTIALIAS_LEVEL)
     {
-        auto const CHANGE_RESULT{ sfml_util::Display::ChangeVideoMode(NEW_RES, ANTIALIAS_LEVEL) };
+        auto const CHANGE_RESULT{ sfml_util::Display::Instance()->ChangeVideoMode(
+            NEW_RES, ANTIALIAS_LEVEL) };
 
         CURRENT_ISTAGE_PTR->HandleResolutionChange();
 

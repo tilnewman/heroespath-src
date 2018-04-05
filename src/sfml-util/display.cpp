@@ -29,11 +29,12 @@
 //
 #include "display.hpp"
 
-#include "sfml-util/sfml-util.hpp"
-
 #include "log/log-macros.hpp"
-
 #include "misc/assertlogandthrow.hpp"
+#include "sfml-util/date-time.hpp"
+#include "sfml-util/fade.hpp"
+#include "sfml-util/i-stage.hpp"
+#include "sfml-util/sfml-util.hpp"
 
 #include <exception>
 #include <sstream>
@@ -77,17 +78,42 @@ namespace sfml_util
 
     std::unique_ptr<Display> Display::instanceUPtr_;
 
-    Display::Display()
-        : winUPtr_()
-        , winTitle_("")
-        , winStyle_(0)
-        , frameRateLimit_(0)
-        , willVerticalSync_(false)
+    Display::Display(
+        const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL)
+        : winTitle_(TITLE)
+        , winStyle_(STYLE)
+        , winUPtr_(std::make_unique<sf::RenderWindow>(
+              EstablishVideoMode(), TITLE, STYLE, sf::ContextSettings(0, 0, ANTIALIAS_LEVEL)))
     {
         M_HP_LOG_DBG("Singleton Construction: Display");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            winUPtr_->isOpen(),
+            "Unable to open render window.  Check console for explanation.  Bail.");
+
+        M_HP_LOG(
+            "Window open " << winUPtr_->getSize().x << "x" << winUPtr_->getSize().y
+                           << " with color depth reported as " << winUPtr_->getSettings().depthBits
+                           << ((0 == winUPtr_->getSettings().depthBits)
+                                   ? "(which is really 32...), "
+                                   : ", ")
+                           << "AA=" << winUPtr_->getSettings().antialiasingLevel << ".");
+
+        if (winUPtr_->getSettings().antialiasingLevel != ANTIALIAS_LEVEL)
+        {
+            M_HP_LOG(
+                "Window antialias level changed automatically from requested "
+                << ANTIALIAS_LEVEL << " to " << winUPtr_->getSettings().antialiasingLevel << ".");
+        }
     }
 
-    Display::~Display() = default;
+    Display::~Display()
+    {
+        if (winUPtr_->isOpen())
+        {
+            winUPtr_->close();
+        }
+    }
 
     Display * Display::Instance()
     {
@@ -102,8 +128,7 @@ namespace sfml_util
     {
         if (!instanceUPtr_)
         {
-            instanceUPtr_ = std::make_unique<Display>();
-            instanceUPtr_->OpenRenderWindow(TITLE, STYLE, ANTIALIAS_LEVEL);
+            instanceUPtr_ = std::make_unique<Display>(TITLE, STYLE, ANTIALIAS_LEVEL);
         }
         else
         {
@@ -116,7 +141,6 @@ namespace sfml_util
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_), "sfml_util::Display::Release() found instanceUPtr that was null.");
 
-        Display::Instance()->CloseRenderWindow();
         instanceUPtr_.reset();
     }
 
@@ -135,16 +159,103 @@ namespace sfml_util
         return winUPtr_->getSettings().antialiasingLevel;
     }
 
-    void Display::SetFrameRateLimit(const int LIMIT)
+    void Display::ConsumeEvents()
     {
-        frameRateLimit_ = LIMIT;
-        winUPtr_->setFramerateLimit(static_cast<unsigned int>(LIMIT));
+        sf::Event ignored;
+        while (winUPtr_->pollEvent(ignored))
+        {
+        }
     }
 
-    void Display::SetVerticalSync(const bool WILL_SYNC)
+    void Display::DrawFader(const Fade & fader) const { winUPtr_->draw(fader); }
+
+    void Display::DrawStage(const IStagePtr_t ISTAGE_PTR)
     {
-        willVerticalSync_ = WILL_SYNC;
-        winUPtr_->setVerticalSyncEnabled(WILL_SYNC);
+        ISTAGE_PTR->Draw(*winUPtr_, sf::RenderStates());
+    }
+
+    void Display::TakeScreenshot()
+    {
+        // acquire screenshot
+        auto const WINDOW_SIZE{ winUPtr_->getSize() };
+        sf::Texture texture;
+        if (texture.create(WINDOW_SIZE.x, WINDOW_SIZE.y) == false)
+        {
+            M_HP_LOG_ERR(
+                "texture.create(" << WINDOW_SIZE.x << "x" << WINDOW_SIZE.y << ") "
+                                  << "returned false. Unable to take screenshot.");
+
+            return;
+        }
+
+        texture.update(*winUPtr_);
+
+        auto const SCREENSHOT_IMAGE{ texture.copyToImage() };
+
+        namespace bfs = boost::filesystem;
+
+        // establish the path
+        const bfs::path DIR_OBJ(
+            bfs::system_complete(bfs::current_path() / bfs::path("screenshots")));
+
+        // create directory if missing
+        if (bfs::exists(DIR_OBJ) == false)
+        {
+            boost::system::error_code ec;
+            if (bfs::create_directory(DIR_OBJ, ec) == false)
+            {
+                M_HP_LOG_ERR(
+                    "sfml_util::Loop::ProcessScreenshot() was unable to create the "
+                    << "screenshot directory \"" << DIR_OBJ.string() << "\".  Error code=" << ec
+                    << ".  Unable to take screenshot.");
+
+                return;
+            }
+        }
+
+        // find the next available filename
+        auto const DATE_TIME{ sfml_util::DateTime::CurrentDateTime() };
+        std::ostringstream ss;
+        bfs::path filePathObj;
+        for (std::size_t i(0);; ++i)
+        {
+            ss.str("");
+            ss << "screenshot"
+               << "_" << DATE_TIME.date.year << "_" << DATE_TIME.date.month << "_"
+               << DATE_TIME.date.day << "__" << DATE_TIME.time.hours << "_"
+               << DATE_TIME.time.minutes << "_" << DATE_TIME.time.seconds;
+
+            if (i > 0)
+            {
+                ss << "__" << i;
+            }
+
+            ss << ".png";
+
+            filePathObj = (DIR_OBJ / bfs::path(ss.str()));
+
+            if (bfs::exists(filePathObj) == false)
+            {
+                break;
+            }
+
+            if (i >= 10000)
+            {
+                M_HP_LOG_ERR(
+                    "Loop::ProcessScreenshot() failed to find an available filename"
+                    << "after 10,000 tries.  Either 10,000 screenshots have been saved or "
+                    << "there is something wrong with this code.  Unable to take screenshot");
+
+                return;
+            }
+        }
+
+        if (SCREENSHOT_IMAGE.saveToFile(filePathObj.string()) == false)
+        {
+            M_HP_LOG_ERR(
+                "Loop::ProcessScreenshot() failed screenshot saveToFile() \""
+                << filePathObj.string() << "\"");
+        }
     }
 
     bool Display::IsResolutionListed(const Resolution & RES)
@@ -708,52 +819,6 @@ namespace sfml_util
         return videoMode;
     }
 
-    void Display::OpenRenderWindow(
-        const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (!winUPtr_), "sfml_util::Display::OpenRenderWindow() called twice.");
-
-        const sf::VideoMode VIDEO_MODE(EstablishVideoMode());
-
-        sf::ContextSettings contextSettings;
-        contextSettings.antialiasingLevel = ANTIALIAS_LEVEL;
-
-        winUPtr_ = std::make_unique<sf::RenderWindow>(VIDEO_MODE, TITLE, STYLE, contextSettings);
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            winUPtr_->isOpen(),
-            "Unable to open render window.  Check console for explanation.  Bail.");
-
-        M_HP_LOG(
-            "Window open " << winUPtr_->getSize().x << "x" << winUPtr_->getSize().y
-                           << " with color depth reported as " << winUPtr_->getSettings().depthBits
-                           << ((0 == winUPtr_->getSettings().depthBits)
-                                   ? "(which is really 32...), "
-                                   : ", ")
-                           << "AA=" << winUPtr_->getSettings().antialiasingLevel << ".");
-
-        if (winUPtr_->getSettings().antialiasingLevel != ANTIALIAS_LEVEL)
-        {
-            M_HP_LOG(
-                "Window antialias level changed automatically from requested "
-                << ANTIALIAS_LEVEL << " to " << winUPtr_->getSettings().antialiasingLevel << ".");
-        }
-
-        SetWindowTitle(TITLE);
-        SetWindowStyle(STYLE);
-    }
-
-    void Display::CloseRenderWindow()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (winUPtr_),
-            "sfml_util::Display::CloseRenderWindow() called before OpenRenderWindow().");
-
-        winUPtr_->close();
-        winUPtr_.reset();
-    }
-
     const sf::VideoMode Display::GetCurrentVideoMode()
     {
         sf::VideoMode currentVideoMode(sf::VideoMode::getDesktopMode());
@@ -778,42 +843,35 @@ namespace sfml_util
     {
         Resolution resToUse(RES_PARAM);
         SetResolutionNameAndRatio(resToUse);
-        auto winPtr{ Instance()->GetWindow() };
+
         return ChangeVideoMode(
             sf::VideoMode(
                 resToUse.width,
                 resToUse.height,
-                ((0 == winPtr->getSettings().depthBits) ? 32 : winPtr->getSettings().depthBits)),
+                ((0 == winUPtr_->getSettings().depthBits) ? 32
+                                                          : winUPtr_->getSettings().depthBits)),
             ANTIALIAS_LEVEL);
     }
 
     DisplayChangeResult::Enum Display::ChangeVideoMode(
         const sf::VideoMode & VM_PARAM, const unsigned ANTIALIAS_LEVEL_PARAM)
     {
-        // verify window pointer
-        auto winPtr{ Instance()->GetWindow() };
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (winPtr != nullptr),
-            "sfml_util::Display::ChangeVideoMode(to=\""
-                << ConvertVideoModeToReslution(VM_PARAM).ToString() << "\", AA="
-                << ANTIALIAS_LEVEL_PARAM << ") was called while there was a null window pointer.");
-
         // construct the intended video mode with 32bpp if the bpp was originally zero
         const sf::VideoMode INTENDED_VIDEO_MODE(
             VM_PARAM.width,
             VM_PARAM.height,
             ((0 == VM_PARAM.bitsPerPixel) ? 32 : VM_PARAM.bitsPerPixel));
 
-        const unsigned INTENDED_ANTIALIAS_LEVEL(ANTIALIAS_LEVEL_PARAM);
+        auto const INTENDED_ANTIALIAS_LEVEL{ ANTIALIAS_LEVEL_PARAM };
 
         // save original video mode for later comparrison
-        const sf::VideoMode ORIG_VIDEO_MODE(GetCurrentVideoMode());
-        const unsigned ORIG_ANTIALIAS_LEVEL(winPtr->getSettings().antialiasingLevel);
+        auto const ORIG_VIDEO_MODE{ GetCurrentVideoMode() };
+        auto const ORIG_ANTIALIAS_LEVEL{ winUPtr_->getSettings().antialiasingLevel };
 
         if ((INTENDED_VIDEO_MODE == ORIG_VIDEO_MODE)
             && (ORIG_ANTIALIAS_LEVEL == ANTIALIAS_LEVEL_PARAM))
         {
-            M_HP_LOG(
+            M_HP_LOG_WRN(
                 "Asked to change to a resolution and AA that matches the current"
                 << "resolution and AA.  Ignoring...");
 
@@ -827,28 +885,25 @@ namespace sfml_util
             << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString()
             << " AA=" << INTENDED_ANTIALIAS_LEVEL << ".");
 
-        winPtr->close();
+        winUPtr_->close();
 
         // re-open
         sf::ContextSettings contextSettings(0, 0, ANTIALIAS_LEVEL_PARAM);
-        winPtr->create(
-            INTENDED_VIDEO_MODE,
-            Instance()->GetWindowTitle(),
-            Instance()->GetWindowStyle(),
-            contextSettings);
 
-        const bool WAS_SUCCESS(winPtr->isOpen());
+        winUPtr_->create(INTENDED_VIDEO_MODE, winTitle_, winStyle_, contextSettings);
+
+        const bool WAS_SUCCESS(winUPtr_->isOpen());
         if (WAS_SUCCESS)
         {
-            const sf::VideoMode NEW_VIDEO_MODE(GetCurrentVideoMode());
-            const unsigned NEW_ANTIALIAS_LEVEL(winPtr->getSettings().antialiasingLevel);
+            auto const NEW_VIDEO_MODE{ GetCurrentVideoMode() };
+            auto const NEW_ANTIALIAS_LEVEL{ winUPtr_->getSettings().antialiasingLevel };
 
             // for some reason sfml is finiky on some hardware and has a habit of switching
             // back to the original video mode without warning or error
             if ((NEW_VIDEO_MODE == ORIG_VIDEO_MODE)
                 && (NEW_ANTIALIAS_LEVEL == ORIG_ANTIALIAS_LEVEL))
             {
-                M_HP_LOG(
+                M_HP_LOG_ERR(
                     "Failed to change video mode to the intended "
                     << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString()
                     << " AA=" << INTENDED_ANTIALIAS_LEVEL
@@ -872,7 +927,7 @@ namespace sfml_util
                 }
                 else
                 {
-                    M_HP_LOG(
+                    M_HP_LOG_ERR(
                         "Failed to change video mode to "
                         << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString()
                         << " AA=" << NEW_ANTIALIAS_LEVEL
@@ -886,7 +941,7 @@ namespace sfml_util
         }
         else
         {
-            M_HP_LOG(
+            M_HP_LOG_ERR(
                 "Failed to change video mode to "
                 << ConvertVideoModeToReslution(INTENDED_VIDEO_MODE).ToString() << " AA="
                 << INTENDED_ANTIALIAS_LEVEL << ".  Reverting back to original video mode of "
@@ -894,11 +949,8 @@ namespace sfml_util
                 << " AA=" << ORIG_ANTIALIAS_LEVEL << " instead.");
 
             contextSettings.antialiasingLevel = ORIG_ANTIALIAS_LEVEL;
-            winPtr->create(
-                ORIG_VIDEO_MODE,
-                Instance()->GetWindowTitle(),
-                Instance()->GetWindowStyle(),
-                contextSettings);
+
+            winUPtr_->create(ORIG_VIDEO_MODE, winTitle_, winStyle_, contextSettings);
 
             return DisplayChangeResult::FailThenRevert;
         }
@@ -910,5 +962,6 @@ namespace sfml_util
         SetResolutionNameAndRatio(res);
         return res;
     }
+
 } // namespace sfml_util
 } // namespace heroespath

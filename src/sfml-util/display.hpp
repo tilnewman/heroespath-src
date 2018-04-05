@@ -40,6 +40,10 @@ namespace heroespath
 {
 namespace sfml_util
 {
+    class Fade;
+
+    class IStage;
+    using IStagePtr_t = misc::NotNull<IStage *>;
 
     struct DisplayChangeResult
     {
@@ -73,7 +77,7 @@ namespace sfml_util
         Display & operator=(Display &&) = delete;
 
     public:
-        Display();
+        Display(const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
         ~Display();
 
         static Display * Instance();
@@ -82,8 +86,6 @@ namespace sfml_util
             const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
 
         static void Release();
-
-        WinPtr_t GetWindow() const { return winUPtr_.get(); }
 
         float GetWinWidth() const;
         float GetWinHeight() const;
@@ -103,17 +105,40 @@ namespace sfml_util
                 0, 0, static_cast<int>(GetWinWidth()), static_cast<int>(GetWinHeight()));
         }
 
-        void SetWindowTitle(const std::string & TITLE_STR) { winTitle_ = TITLE_STR; }
-        const std::string GetWindowTitle() const { return winTitle_; }
+        void SetFrameRateLimit(const int LIMIT)
+        {
+            winUPtr_->setFramerateLimit(static_cast<unsigned>(LIMIT));
+        }
 
-        void SetWindowStyle(const sf::Uint32 STYLE) { winStyle_ = STYLE; }
-        sf::Uint32 GetWindowStyle() const { return winStyle_; }
-
-        void SetFrameRateLimit(const int LIMIT);
         int GetFrameRateLimit() const { return frameRateLimit_; }
 
-        void SetVerticalSync(const bool WILL_SYNC);
+        void SetVerticalSync(const bool WILL_SYNC) { winUPtr_->setVerticalSyncEnabled(WILL_SYNC); }
         bool GetVerticalSync() const { return willVerticalSync_; }
+
+        void ConsumeEvents();
+
+        void DrawFader(const Fade &) const;
+
+        void DrawStage(const IStagePtr_t);
+
+        bool PollEvent(sf::Event & e) { return winUPtr_->pollEvent(e); }
+
+        void TakeScreenshot();
+
+        void Close() { winUPtr_->close(); }
+
+        void SetMouseCursorVisibility(const bool IS_VISIBLE)
+        {
+            winUPtr_->setMouseCursorVisible(IS_VISIBLE);
+        }
+
+        const sf::Vector2i GetMousePosition() { return sf::Mouse::getPosition(*winUPtr_); }
+
+        bool IsOpen() const { return winUPtr_->isOpen(); }
+
+        void ClearToBlack() { winUPtr_->clear(sf::Color::Black); }
+
+        void DisplayFrameBuffer() { winUPtr_->display(); }
 
         static float GetWinWidthMin() { return 1280.0f; }
         static float GetWinHeightMin() { return 900.0f; }
@@ -155,31 +180,27 @@ namespace sfml_util
 
         static const sf::VideoMode EstablishVideoMode();
 
-        void OpenRenderWindow(
-            const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
-
-        void CloseRenderWindow();
-
         static const sf::VideoMode GetCurrentVideoMode();
         static const Resolution GetCurrentResolution();
 
-        static DisplayChangeResult::Enum
+        DisplayChangeResult::Enum
             ChangeVideoMode(const Resolution & RES, const unsigned ANTIALIAS_LEVEL);
 
-        static DisplayChangeResult::Enum
+        DisplayChangeResult::Enum
             ChangeVideoMode(const sf::VideoMode & VM, const unsigned ANTIALIAS_LEVEL);
 
         static Resolution ConvertVideoModeToReslution(const sf::VideoMode & VM);
 
     private:
         static std::unique_ptr<Display> instanceUPtr_;
-        //
-        WinUPtr_t winUPtr_;
+
         std::string winTitle_;
         sf::Uint32 winStyle_;
         int frameRateLimit_;
         bool willVerticalSync_;
+        WinUPtr_t winUPtr_;
     };
+
 } // namespace sfml_util
 } // namespace heroespath
 

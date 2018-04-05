@@ -56,7 +56,6 @@ namespace sfml_util
         , stagePVec_()
         , clock_()
         , oneSecondTimerSec_(0.0f)
-        , winPtr_(Display::Instance()->GetWindow())
         , fader_(
               0.0f, 0.0f, Display::Instance()->GetWinWidth(), Display::Instance()->GetWinHeight())
         , willHoldFade_(false)
@@ -88,14 +87,6 @@ namespace sfml_util
     {}
 
     Loop::~Loop() { FreeAllStages(); }
-
-    void Loop::ConsumeEvents()
-    {
-        sf::Event e;
-        while (winPtr_->pollEvent(e))
-        {
-        }
-    }
 
     void Loop::RemoveFocus()
     {
@@ -308,7 +299,7 @@ namespace sfml_util
     {
         if ((hasFadeStarted_) && ((continueFading_ || willHoldFade_)))
         {
-            winPtr_->draw(fader_);
+            Display::Instance()->DrawFader(fader_);
         }
 
         if (continueFading_)
@@ -331,8 +322,7 @@ namespace sfml_util
         if (popupStagePtrOpt_)
         {
             popupStagePtrOpt_->Obj().UpdateTime(elapsedTimeSec_);
-            sf::RenderStates states;
-            popupStagePtrOpt_->Obj().Draw(*winPtr_, states);
+            Display::Instance()->DrawStage(popupStagePtrOpt_.value());
         }
     }
 
@@ -344,13 +334,13 @@ namespace sfml_util
         }
 
         sf::Event e;
-        if (winPtr_->pollEvent(e))
+        if (Display::Instance()->PollEvent(e))
         {
             // unexpected window close exit condition
             if (e.type == sf::Event::Closed)
             {
-                M_HP_LOG(NAME_ << " UNEXPECTED WINDOW CLOSE");
-                winPtr_->close();
+                M_HP_LOG_WRN(NAME_ << " UNEXPECTED WINDOW CLOSE");
+                Display::Instance()->Close();
                 fatalExitEvent_ = true;
             }
 
@@ -605,87 +595,7 @@ namespace sfml_util
         if (takeScreenshot_)
         {
             takeScreenshot_ = false;
-
-            // acquire screenshot
-            const sf::Vector2u WINDOW_SIZE(Display::Instance()->GetWindow()->getSize());
-            sf::Texture texture;
-            if (texture.create(WINDOW_SIZE.x, WINDOW_SIZE.y) == false)
-            {
-                M_HP_LOG_ERR(
-                    "texture.create(" << WINDOW_SIZE.x << "x" << WINDOW_SIZE.y << ") "
-                                      << "returned false. Unable to take screenshot.");
-
-                return;
-            }
-
-            texture.update(*Display::Instance()->GetWindow());
-
-            auto const SCREENSHOT_IMAGE{ texture.copyToImage() };
-
-            namespace bfs = boost::filesystem;
-
-            // establish the path
-            const bfs::path DIR_OBJ(
-                bfs::system_complete(bfs::current_path() / bfs::path("screenshots")));
-
-            // create directory if missing
-            if (bfs::exists(DIR_OBJ) == false)
-            {
-                boost::system::error_code ec;
-                if (bfs::create_directory(DIR_OBJ, ec) == false)
-                {
-                    M_HP_LOG_ERR(
-                        "sfml_util::Loop::ProcessScreenshot() was unable to create the "
-                        << "screenshot directory \"" << DIR_OBJ.string() << "\".  Error code=" << ec
-                        << ".  Unable to take screenshot.");
-
-                    return;
-                }
-            }
-
-            // find the next available filename
-            const sfml_util::DateTime DATE_TIME(sfml_util::DateTime::CurrentDateTime());
-            std::ostringstream ss;
-            bfs::path filePathObj;
-            for (std::size_t i(0);; ++i)
-            {
-                ss.str("");
-                ss << "screenshot"
-                   << "_" << DATE_TIME.date.year << "_" << DATE_TIME.date.month << "_"
-                   << DATE_TIME.date.day << "__" << DATE_TIME.time.hours << "_"
-                   << DATE_TIME.time.minutes << "_" << DATE_TIME.time.seconds;
-
-                if (i > 0)
-                {
-                    ss << "__" << i;
-                }
-
-                ss << ".png";
-
-                filePathObj = (DIR_OBJ / bfs::path(ss.str()));
-
-                if (bfs::exists(filePathObj) == false)
-                {
-                    break;
-                }
-
-                if (i >= 10000)
-                {
-                    M_HP_LOG_ERR(
-                        "Loop::ProcessScreenshot() failed to find an available filename"
-                        << "after 10,000 tries.  Either 10,000 screenshots have been saved or "
-                        << "there is something wrong with this code.  Unable to take screenshot");
-
-                    return;
-                }
-            }
-
-            if (SCREENSHOT_IMAGE.saveToFile(filePathObj.string()) == false)
-            {
-                M_HP_LOG(
-                    "Loop::ProcessScreenshot() failed screenshot saveToFile() \""
-                    << filePathObj.string() << "\"");
-            }
+            Display::Instance()->TakeScreenshot();
         }
     }
 
@@ -711,10 +621,9 @@ namespace sfml_util
 
     void Loop::ProcessDrawing()
     {
-        sf::RenderStates states;
-        for (auto & nextStagePtr : stagePVec_)
+        for (auto const & ISTAGE_PTR : stagePVec_)
         {
-            nextStagePtr->Draw(*winPtr_, states);
+            Display::Instance()->DrawStage(ISTAGE_PTR);
         }
     }
 
@@ -733,18 +642,18 @@ namespace sfml_util
         fatalExitEvent_ = false;
         auto soundManagerPtr{ sfml_util::SoundManager::Instance() };
         frameRateVec_.resize(4096);
-        sf::Vector2i prevMousePos{ sf::Mouse::getPosition(*winPtr_) };
+        auto prevMousePos{ Display::Instance()->GetMousePosition() };
 
         // consume pre-events
-        ConsumeEvents();
+        Display::Instance()->ConsumeEvents();
 
         clock_.restart();
-        while (winPtr_->isOpen() && (false == willExit_))
+        while (Display::Instance()->IsOpen() && (false == willExit_))
         {
-            auto const NEW_MOUSE_POS{ sf::Mouse::getPosition(*winPtr_) };
+            auto const NEW_MOUSE_POS{ Display::Instance()->GetMousePosition() };
             auto const HAS_MOUSE_MOVED{ NEW_MOUSE_POS != prevMousePos };
 
-            winPtr_->clear(sf::Color::Black);
+            Display::Instance()->ClearToBlack();
             ProcessFramerate();
             soundManagerPtr->UpdateTime(elapsedTimeSec_);
             PerformNextTest();
@@ -757,7 +666,7 @@ namespace sfml_util
             ProcessFader();
             ProcessPopup();
             ProcessPopupCallback();
-            winPtr_->display();
+            Display::Instance()->DisplayFrameBuffer();
             ProcessScreenshot();
 
             if (HAS_MOUSE_MOVED)
@@ -766,7 +675,7 @@ namespace sfml_util
             }
         }
 
-        ConsumeEvents();
+        Display::Instance()->ConsumeEvents();
 
         // reset hold time
         holdTime_ = NO_HOLD_TIME_;
@@ -800,6 +709,11 @@ namespace sfml_util
         fader_.FadeTo(sf::Color::Transparent, SPEED_MULT);
         continueFading_ = true;
         willHoldFade_ = WILL_HOLD_FADE;
+    }
+
+    void Loop::SetMouseVisibility(const bool IS_VISIBLE)
+    {
+        Display::Instance()->SetMouseCursorVisibility(IS_VISIBLE);
     }
 
 } // namespace sfml_util

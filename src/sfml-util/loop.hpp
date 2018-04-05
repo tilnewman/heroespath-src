@@ -96,15 +96,10 @@ namespace sfml_util
         void SetWillExitAfterFade(const bool B) { willExitAfterFade_ = B; }
         void SetWillHoldFade(const bool NEW_VAL) { willHoldFade_ = NEW_VAL; }
 
-        void SetMouseVisibility(const bool IS_VISIBLE)
-        {
-            winPtr_->setMouseCursorVisible(IS_VISIBLE);
-        }
+        void SetMouseVisibility(const bool IS_VISIBLE);
 
         void SetState(const LoopState::Enum E) { state_ = E; }
         LoopState::Enum GetState() const { return state_; }
-
-        void ConsumeEvents();
 
         void SetWillExitOnKeypress(const bool B) { willExitOnKeypress_ = B; }
         void SetWillExitOnMouseclick(const bool B) { willExitOnMouseclick_ = B; }
@@ -143,23 +138,16 @@ namespace sfml_util
 
     protected:
         void LogFrameRate();
-
         bool ProcessOneSecondTasks(const sf::Vector2i & NEW_MOUSE_POS, bool HAS_MOUSE_MOVED);
-
         void ProcessMouseHover(const sf::Vector2i & NEW_MOUSE_POS, bool HAS_MOUSE_MOVED);
-
         void ProcessFader();
         void ProcessPopup();
-
         void ProcessEvents(const sf::Vector2i & NEW_MOUSE_POS, bool HAS_MOUSE_MOVED);
-
         void ProcessKeyStrokes(const sf::Event & EVENT);
         void ProcessMouseMove(const sf::Vector2i & NEW_MOUSE_POS);
         void ProcessMouseButtonLeftPressed(const sf::Vector2f &);
         void ProcessMouseButtonLeftReleased(const sf::Vector2f &);
-
         void ProcessMouseWheelRoll(const sf::Event & EVENT, const sf::Vector2i & NEW_MOUSE_POS);
-
         void ProcessPopupCallback();
         void ProcessTimeUpdate();
         void ProcessDrawing();
@@ -179,7 +167,6 @@ namespace sfml_util
 
         sf::Clock clock_;
         float oneSecondTimerSec_;
-        WinPtr_t winPtr_;
         Fade fader_;
         bool willHoldFade_;
         bool continueFading_;
