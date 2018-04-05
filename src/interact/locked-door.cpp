@@ -55,31 +55,32 @@ namespace interact
     {}
 
     bool LockedDoor::OnInteraction(
-        stage::InteractStage * const interactStagePtr, const Button & BUTTON)
+        const stage::InteractStagePtr_t INTERACTION_STAGE_PTR, const Button & BUTTON)
     {
         if (BUTTON.Which() == Buttons::Ignore)
         {
-            interactStagePtr->InteractionManager().RemoveCurrent();
+            INTERACTION_STAGE_PTR->InteractionManager().RemoveCurrent();
             return true;
         }
         else if (BUTTON.Which() == Buttons::Unlock)
         {
             Lock(); // this refers to locking the interaction NOT the door
-            interactStagePtr->LockPick().PopupCharacterSelection(interactStagePtr);
+            INTERACTION_STAGE_PTR->LockPick().PopupCharacterSelection(INTERACTION_STAGE_PTR);
             return true;
         }
 
         return false;
     }
 
-    bool LockedDoor::OnSuccess(stage::InteractStage * const stagePtr)
+    bool LockedDoor::OnSuccess(const stage::InteractStagePtr_t INTERACTION_STAGE_PTR)
     {
         game::Game::Instance()->State().GetWorld().GetMaps().Current().IsDoorLocked(
             transition_.WhichLevel(), false);
 
-        stagePtr->MapTransition(transition_);
-        stagePtr->InteractionManager().RemoveCurrent();
+        INTERACTION_STAGE_PTR->MapTransition(transition_);
+        INTERACTION_STAGE_PTR->InteractionManager().RemoveCurrent();
         return true;
     }
+
 } // namespace interact
 } // namespace heroespath

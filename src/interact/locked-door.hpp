@@ -45,14 +45,15 @@ namespace interact
 
         map::Level::Enum ToLevel() const { return transition_.WhichLevel(); }
 
-        bool OnSuccess(stage::InteractStage * const) final;
+        bool OnSuccess(const stage::InteractStagePtr_t) final;
 
     private:
-        bool OnInteraction(stage::InteractStage * const, const Button &) final;
+        bool OnInteraction(const stage::InteractStagePtr_t, const Button &) final;
 
     private:
         map::Transition transition_;
     };
+
 } // namespace interact
 } // namespace heroespath
 

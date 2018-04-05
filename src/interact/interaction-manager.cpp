@@ -45,6 +45,18 @@ namespace interact
 
     InteractionManager::~InteractionManager() = default;
 
+    const IInteractionPtrOpt_t InteractionManager::Current()
+    {
+        if (currentUPtr_)
+        {
+            return IInteractionPtr_t(currentUPtr_.get());
+        }
+        else
+        {
+            return boost::none;
+        }
+    }
+
     bool InteractionManager::HasCurrentChanged() const
     {
         if (hasCurrentChanged_)
@@ -121,5 +133,6 @@ namespace interact
             return false;
         }
     }
+
 } // namespace interact
 } // namespace heroespath

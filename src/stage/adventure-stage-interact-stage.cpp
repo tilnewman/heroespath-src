@@ -66,10 +66,10 @@ namespace stage
     bool InteractStage::HandleCallback(
         const sfml_util::gui::callback::TextButtonCallbackPackage_t & PACKAGE)
     {
-        auto interactionPtr{ interactionManager_.Current() };
-        if (interactionPtr != nullptr)
+        auto const INTERACTION_PTR_OPT{ interactionManager_.Current() };
+        if (INTERACTION_PTR_OPT)
         {
-            return interactionPtr->OnButtonClick(this, PACKAGE.PTR_);
+            return INTERACTION_PTR_OPT->Obj().OnButtonClick(this, PACKAGE.PTR_);
         }
 
         return false;
@@ -102,9 +102,9 @@ namespace stage
                 }
                 else
                 {
-                    if (interactionManager_.Current() != nullptr)
+                    if (interactionManager_.Current())
                     {
-                        interactionManager_.Current()->OnSuccess(this);
+                        interactionManager_.Current()->Obj().OnSuccess(this);
                         return true;
                     }
                 }
@@ -116,9 +116,9 @@ namespace stage
         }
         else if (RESPONSE.Info().Name() == lockPicking_.POPUP_NAME_TITLE_ARCHIEVED_)
         {
-            if (interactionManager_.Current() != nullptr)
+            if (interactionManager_.Current())
             {
-                interactionManager_.Current()->OnSuccess(this);
+                interactionManager_.Current()->Obj().OnSuccess(this);
                 return true;
             }
         }
@@ -146,10 +146,10 @@ namespace stage
     {
         if (interactionManager_.IsLocked() == false)
         {
-            auto interactionPtr{ interactionManager_.Current() };
-            if (interactionPtr != nullptr)
+            auto const INTERACTION_PTR_OPT{ interactionManager_.Current() };
+            if (INTERACTION_PTR_OPT)
             {
-                return interactionPtr->OnKeyRelease(this, KEY_EVENT.code);
+                return INTERACTION_PTR_OPT->Obj().OnKeyRelease(this, KEY_EVENT.code);
             }
         }
 
@@ -161,10 +161,13 @@ namespace stage
         map_.TransitionLevel(TRANSITION);
     }
 
-    void InteractStage::SetupInteractionForDrawing(interact::IInteraction * const interactionPtr)
+    void InteractStage::SetupInteractionForDrawing(
+        const interact::IInteractionPtrOpt_t INTERACTION_PTR_OPT)
     {
-        if (interactionPtr != nullptr)
+        if (INTERACTION_PTR_OPT)
         {
+            auto const INTERACTION_PTR{ INTERACTION_PTR_OPT.value() };
+
             const sf::FloatRect SUBJECT_REGION{ StageRegionLeft(),
                                                 StageRegionTop(),
                                                 StageRegionWidth() * SUBJECT_REGION_WIDTH_RATIO_,
@@ -186,19 +189,19 @@ namespace stage
                                                 TEXT_REGION.width,
                                                 TEXT_REGION.height + BUTTON_REGION.height };
 
-            contextSprite_.setTexture(interactionPtr->ContextTexture(), true);
+            contextSprite_.setTexture(INTERACTION_PTR->ContextTexture(), true);
             contextSprite_.setColor(sf::Color(255, 255, 255, CONTEXT_IMAGE_ALPHA_));
 
             sfml_util::CenterAndScaleSpriteToFit(
                 contextSprite_, CONTEXT_REGION, CONTEXT_IMAGE_PAD_RATIO_);
 
-            subjectSprite_.setTexture(interactionPtr->SubjectTexture(), true);
+            subjectSprite_.setTexture(INTERACTION_PTR->SubjectTexture(), true);
 
             sfml_util::CenterAndScaleSpriteToFit(
                 subjectSprite_, SUBJECT_REGION, SUBJECT_IMAGE_PAD_RATIO_);
 
             textRegionUPtr_->Setup(
-                interactionPtr->Text(), TEXT_REGION, sfml_util::IStagePtr_t(this));
+                INTERACTION_PTR->Text(), TEXT_REGION, sfml_util::IStagePtr_t(this));
 
             for (auto & buttonUPtr : buttons_)
             {
@@ -207,7 +210,7 @@ namespace stage
 
             buttons_.clear();
 
-            for (auto & button : interactionPtr->Buttons())
+            for (auto & button : INTERACTION_PTR->Buttons())
             {
                 buttons_.emplace_back(button.Make(this));
             }
@@ -249,12 +252,13 @@ namespace stage
 
     void InteractStage::DrawInteraction(sf::RenderTarget & target) const
     {
-        if (interactionManager_.Current() != nullptr)
+        if (interactionManager_.Current())
         {
             target.draw(contextSprite_);
             target.draw(subjectSprite_);
             target.draw(*textRegionUPtr_);
         }
     }
+
 } // namespace stage
 } // namespace heroespath

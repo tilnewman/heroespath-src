@@ -29,6 +29,7 @@
 //
 #include "interact/interact-enum.hpp"
 #include "interact/interaction-button.hpp"
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/sfml-graphics.hpp"
@@ -39,7 +40,8 @@ namespace heroespath
 namespace stage
 {
     class InteractStage;
-}
+    using InteractStagePtr_t = misc::NotNull<InteractStage *>;
+} // namespace stage
 namespace interact
 {
 
@@ -56,21 +58,21 @@ namespace interact
         virtual void PlayExitSfx() const = 0;
 
         virtual bool
-            OnButtonClick(stage::InteractStage * const, const sfml_util::gui::TextButton * const)
+            OnButtonClick(const stage::InteractStagePtr_t, const sfml_util::gui::TextButton * const)
             = 0;
 
-        virtual bool OnKeyRelease(stage::InteractStage * const, const sf::Keyboard::Key) = 0;
+        virtual bool OnKeyRelease(const stage::InteractStagePtr_t, const sf::Keyboard::Key) = 0;
 
         virtual void Lock() = 0;
         virtual void Unlock() = 0;
         virtual bool IsLocked() const = 0;
 
-        virtual bool OnSuccess(stage::InteractStage * const) = 0;
-        virtual bool OnFailure(stage::InteractStage * const) = 0;
+        virtual bool OnSuccess(const stage::InteractStagePtr_t) = 0;
+        virtual bool OnFailure(const stage::InteractStagePtr_t) = 0;
     };
 
     using InteractionUPtr_t = std::unique_ptr<IInteraction>;
-}
-}
+} // namespace interact
+} // namespace heroespath
 
 #endif // HEROESPATH_INTERACT_I_INTERACTION_HPP_INCLUDED

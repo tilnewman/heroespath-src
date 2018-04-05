@@ -91,14 +91,14 @@ namespace interact
     }
 
     bool InteractionBase::OnButtonClick(
-        stage::InteractStage * const interactStagePtr,
+        const stage::InteractStagePtr_t INTERACTION_STAGE_PTR,
         const sfml_util::gui::TextButton * const TEXT_BUTTON_PTR)
     {
         for (auto const & BUTTON : buttons_)
         {
             if (BUTTON.DoPointersMatch(TEXT_BUTTON_PTR))
             {
-                return OnInteraction(interactStagePtr, BUTTON);
+                return OnInteraction(INTERACTION_STAGE_PTR, BUTTON);
             }
         }
 
@@ -106,25 +106,23 @@ namespace interact
     }
 
     bool InteractionBase::OnKeyRelease(
-        stage::InteractStage * const interactStagePtr, const sf::Keyboard::Key KEY)
+        const stage::InteractStagePtr_t INTERACTION_STAGE_PTR, const sf::Keyboard::Key KEY)
     {
         for (auto const & BUTTON : buttons_)
         {
             if (BUTTON.Key() == KEY)
             {
-                return OnInteraction(interactStagePtr, BUTTON);
+                return OnInteraction(INTERACTION_STAGE_PTR, BUTTON);
             }
         }
 
         return false;
     }
 
-    void InteractionBase::HandleIgnore(stage::InteractStage * const interactStagePtr)
+    void InteractionBase::HandleIgnore(const stage::InteractStagePtr_t INTERACTION_STAGE_PTR)
     {
-        if (nullptr != interactStagePtr)
-        {
-            interactStagePtr->InteractionManager().RemoveCurrent();
-        }
+        INTERACTION_STAGE_PTR->InteractionManager().RemoveCurrent();
     }
-}
-}
+
+} // namespace interact
+} // namespace heroespath

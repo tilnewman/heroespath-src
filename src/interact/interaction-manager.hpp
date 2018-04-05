@@ -27,6 +27,8 @@
 //
 // interaction-manager.hpp
 //
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include <memory>
 
 namespace heroespath
@@ -35,6 +37,8 @@ namespace interact
 {
 
     struct IInteraction;
+    using IInteractionPtr_t = misc::NotNull<IInteraction *>;
+    using IInteractionPtrOpt_t = boost::optional<IInteractionPtr_t>;
     using InteractionUPtr_t = std::unique_ptr<IInteraction>;
 
     // Responsible for the lifetimes of interactions.
@@ -50,7 +54,7 @@ namespace interact
         InteractionManager();
         ~InteractionManager();
 
-        IInteraction * Current() { return currentUPtr_.get(); }
+        const IInteractionPtrOpt_t Current();
         bool HasCurrentChanged() const;
         void RemoveCurrent();
         void SetNext(InteractionUPtr_t);

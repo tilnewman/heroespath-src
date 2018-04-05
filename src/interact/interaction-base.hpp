@@ -74,21 +74,21 @@ namespace interact
             MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE);
 
         bool OnButtonClick(
-            stage::InteractStage * const, const sfml_util::gui::TextButton * const) final;
+            const stage::InteractStagePtr_t, const sfml_util::gui::TextButton * const) final;
 
-        bool OnKeyRelease(stage::InteractStage * const, const sf::Keyboard::Key) final;
+        bool OnKeyRelease(const stage::InteractStagePtr_t, const sf::Keyboard::Key) final;
 
         void Lock() final { isLocked_ = true; }
         void Unlock() final { isLocked_ = false; }
         bool IsLocked() const final { return isLocked_; }
 
-        bool OnSuccess(stage::InteractStage * const) override { return false; }
-        bool OnFailure(stage::InteractStage * const) override { return false; }
+        bool OnSuccess(const stage::InteractStagePtr_t) override { return false; }
+        bool OnFailure(const stage::InteractStagePtr_t) override { return false; }
 
     private:
-        virtual bool OnInteraction(stage::InteractStage * const, const Button &) = 0;
+        virtual bool OnInteraction(const stage::InteractStagePtr_t, const Button &) = 0;
 
-        void HandleIgnore(stage::InteractStage * const);
+        void HandleIgnore(const stage::InteractStagePtr_t);
 
     private:
         Interact::Enum interactionType_;
@@ -100,6 +100,7 @@ namespace interact
         sfml_util::sound_effect::Enum sfxExit_;
         bool isLocked_;
     };
+
 } // namespace interact
 } // namespace heroespath
 

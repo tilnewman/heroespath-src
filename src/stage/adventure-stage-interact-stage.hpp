@@ -30,10 +30,13 @@
 #include "interact/interaction-manager.hpp"
 #include "interact/lock-interactions.hpp"
 #include "map/transition.hpp"
+#include "misc/boost-optional-that-throws.hpp"
+#include "misc/not-null.hpp"
 #include "popup/i-popup-callback.hpp"
 #include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/stage.hpp"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -91,7 +94,7 @@ namespace stage
         void MapTransition(const map::Transition &);
 
     private:
-        void SetupInteractionForDrawing(interact::IInteraction * const);
+        void SetupInteractionForDrawing(const interact::IInteractionPtrOpt_t);
         void DrawInteraction(sf::RenderTarget &) const;
 
     private:
@@ -109,6 +112,10 @@ namespace stage
         std::vector<sfml_util::gui::TextButtonUPtr_t> buttons_;
         interact::LockPicking lockPicking_;
     };
+
+    using InteractStagePtr_t = misc::NotNull<InteractStage *>;
+    using InteractStagePtrOpt_t = boost::optional<InteractStagePtr_t>;
+
 } // namespace stage
 } // namespace heroespath
 
