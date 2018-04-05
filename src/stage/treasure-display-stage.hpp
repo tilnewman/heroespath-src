@@ -280,7 +280,7 @@ namespace stage
         const sfml_util::gui::IGuiEntityPtrOpt_t
             GetGuiEntityPtrAndRemoveIfNeeded(const T & GUI_ENTITY_UPTR)
         {
-            if (GUI_ENTITY_UPTR.get() != nullptr)
+            if (GUI_ENTITY_UPTR)
             {
                 const sfml_util::gui::IGuiEntityPtr_t ENTITY_PTR{ GUI_ENTITY_UPTR.get() };
                 EntityRemove(ENTITY_PTR);

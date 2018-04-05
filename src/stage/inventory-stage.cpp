@@ -1765,7 +1765,7 @@ namespace stage
         {
             auto selectedItemSPtr{ unEquipListBoxUPtr_->Selected() };
 
-            if ((selectedItemSPtr != nullptr) && selectedItemSPtr->ITEM_PTR_OPT
+            if (selectedItemSPtr && selectedItemSPtr->ITEM_PTR_OPT
                 && (selectedItemSPtr->ITEM_PTR_OPT->Obj().Name().empty() == false))
             {
                 equipButtonUPtr_->SetIsDisabled(false);
@@ -2556,7 +2556,7 @@ namespace stage
         {
             auto const LISTBOX_ITEM_SPTR{ unEquipListBoxUPtr_->Selected() };
 
-            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
+            if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
             {
                 auto const ITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value() };
                 auto const EQUIP_RESULT{ creaturePtr_->ItemEquip(ITEM_PTR) };
@@ -2611,7 +2611,7 @@ namespace stage
         if ((ViewType::Items == view_) && (unequipButtonUPtr_->IsDisabled() == false))
         {
             auto const LISTBOX_ITEM_SPTR{ equippedListBoxUPtr_->Selected() };
-            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
+            if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
             {
                 auto const ITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value() };
 
@@ -2873,7 +2873,7 @@ namespace stage
         if ((ViewType::Items == view_) && (equipButtonUPtr_->IsDisabled() == false))
         {
             auto const LISTBOX_ITEM_SPTR{ unEquipListBoxUPtr_->Selected() };
-            if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
+            if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
             {
                 if ((game::Phase::Combat == currentPhase_) && (creaturePtr_ != turnCreaturePtr_))
                 {
@@ -3028,7 +3028,7 @@ namespace stage
     void InventoryStage::SetDescBoxTextFromListBoxItem(
         const sfml_util::gui::ListBoxItemSPtr_t & LISTBOX_ITEM_SPTR)
     {
-        if (LISTBOX_ITEM_SPTR.get() != nullptr)
+        if (LISTBOX_ITEM_SPTR)
         {
             std::ostringstream ss;
 

@@ -1080,8 +1080,7 @@ namespace combat
         auto areAllAnimsDone{ true };
         for (auto const & NEXT_SPARKLEANIM_UPTR : sparkleAnimUVec_)
         {
-            if ((NEXT_SPARKLEANIM_UPTR.get() != nullptr)
-                && (NEXT_SPARKLEANIM_UPTR->IsFinished() == false))
+            if ((NEXT_SPARKLEANIM_UPTR) && (NEXT_SPARKLEANIM_UPTR->IsFinished() == false))
             {
                 areAllAnimsDone = false;
             }

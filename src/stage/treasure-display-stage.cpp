@@ -1304,7 +1304,7 @@ namespace stage
             {
                 auto const LISTBOX_ITEM_SPTR{ treasureListboxUPtr_->AtPos(MOUSE_POS) };
 
-                if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
+                if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
                 {
                     return treasure::ItemDetails(
                         treasureListboxUPtr_->ImageRectOfItemAtPos(MOUSE_POS),
@@ -1315,7 +1315,7 @@ namespace stage
             {
                 auto const LISTBOX_ITEM_SPTR{ inventoryListboxUPtr_->AtPos(MOUSE_POS) };
 
-                if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
+                if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
                 {
                     return treasure::ItemDetails(
                         inventoryListboxUPtr_->ImageRectOfItemAtPos(MOUSE_POS),

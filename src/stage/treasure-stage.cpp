@@ -383,7 +383,7 @@ namespace stage
     {
         auto const LISTBOX_ITEM_SPTR{ PACKAGE.package.PTR_->Selected() };
 
-        if ((LISTBOX_ITEM_SPTR.get() != nullptr) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
+        if ((LISTBOX_ITEM_SPTR) && LISTBOX_ITEM_SPTR->ITEM_PTR_OPT)
         {
             if ((PACKAGE.gui_event == sfml_util::GuiEvent::DoubleClick)
                 || (PACKAGE.keypress_event.code == sf::Keyboard::Return))
