@@ -74,7 +74,7 @@ namespace interact
             MakeTextInfo(const std::string & TEXT, const Text::Enum TYPE);
 
         bool OnButtonClick(
-            const stage::InteractStagePtr_t, const sfml_util::gui::TextButton * const) final;
+            const stage::InteractStagePtr_t, const sfml_util::gui::TextButtonPtr_t) final;
 
         bool OnKeyRelease(const stage::InteractStagePtr_t, const sf::Keyboard::Key) final;
 

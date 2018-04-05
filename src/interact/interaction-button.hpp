@@ -28,13 +28,21 @@
 // interact-button-enum.hpp
 //
 #include "interact/interaction-button-enum.hpp"
-#include "sfml-util/gui/text-button.hpp"
 #include <SFML/Window/Keyboard.hpp>
 #include <string>
 #include <vector>
 
 namespace heroespath
 {
+namespace sfml_util
+{
+    namespace gui
+    {
+        class TextButton;
+        using TextButtonPtr_t = misc::NotNull<TextButton *>;
+        using TextButtonPtrOpt_t = boost::optional<TextButtonPtr_t>;
+    } // namespace gui
+} // namespace sfml_util
 namespace interact
 {
 
@@ -51,17 +59,17 @@ namespace interact
 
         sf::Keyboard::Key Key() const { return Buttons::Key(whichButton_); }
 
-        bool DoPointersMatch(const sfml_util::gui::TextButton * const P) const
+        bool DoPointersMatch(const sfml_util::gui::TextButtonPtr_t P) const
         {
-            return (P == ptr_);
+            return (P == ptrOpt_);
         }
 
         sfml_util::gui::TextButtonUPtr_t
-            Make(sfml_util::gui::callback::ITextButtonCallbackHandler_t *);
+            Make(const sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t);
 
     private:
         Buttons::Enum whichButton_;
-        sfml_util::gui::TextButton * ptr_;
+        sfml_util::gui::TextButtonPtrOpt_t ptrOpt_;
     };
 
     using ButtonVec_t = std::vector<Button>;

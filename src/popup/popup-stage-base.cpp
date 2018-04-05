@@ -429,7 +429,7 @@ namespace popup
                 StageRegionLeft() + innerRegion_.left + (innerRegion_.width / 4.0f) - 50.0f,
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("Yes", popupInfo_.ButtonColor()),
-                this);
+                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
 
             EntityAdd(buttonYesUPtr_.get());
         }
@@ -442,7 +442,7 @@ namespace popup
                     - 40.0f,
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet("No", popupInfo_.ButtonColor()),
-                this);
+                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
 
             EntityAdd(buttonNoUPtr_.get());
         }
@@ -456,7 +456,7 @@ namespace popup
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
                     "Cancel", popupInfo_.ButtonColor()),
-                this);
+                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
 
             EntityAdd(buttonCancelUPtr_.get());
         }
@@ -472,7 +472,7 @@ namespace popup
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
                     "Continue", popupInfo_.ButtonColor()),
-                this);
+                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
 
             if (popupInfo_.Image() == PopupImage::Custom)
             {
@@ -497,7 +497,7 @@ namespace popup
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
                     "Okay", popupInfo_.ButtonColor()),
-                this);
+                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
 
             if (popupInfo_.Image() == PopupImage::Custom)
             {
@@ -522,7 +522,7 @@ namespace popup
                 buttonVertPos_,
                 sfml_util::gui::MouseTextInfo::Make_PopupButtonSet(
                     "Select", popupInfo_.ButtonColor()),
-                this);
+                sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t(this));
 
             if (popupInfo_.Image() == PopupImage::Custom)
             {

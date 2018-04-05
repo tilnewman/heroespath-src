@@ -69,7 +69,10 @@ namespace stage
         auto const INTERACTION_PTR_OPT{ interactionManager_.Current() };
         if (INTERACTION_PTR_OPT)
         {
-            return INTERACTION_PTR_OPT->Obj().OnButtonClick(this, PACKAGE.PTR_);
+            return INTERACTION_PTR_OPT->Obj().OnButtonClick(
+                this,
+                sfml_util::gui::TextButtonPtr_t(
+                    const_cast<sfml_util::gui::TextButton *>(PACKAGE.PTR_)));
         }
 
         return false;

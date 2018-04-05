@@ -92,7 +92,7 @@ namespace interact
 
     bool InteractionBase::OnButtonClick(
         const stage::InteractStagePtr_t INTERACTION_STAGE_PTR,
-        const sfml_util::gui::TextButton * const TEXT_BUTTON_PTR)
+        const sfml_util::gui::TextButtonPtr_t TEXT_BUTTON_PTR)
     {
         for (auto const & BUTTON : buttons_)
         {

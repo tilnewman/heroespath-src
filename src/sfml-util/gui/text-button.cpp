@@ -39,9 +39,10 @@ namespace sfml_util
     {
 
         TextButton::TextButton(
-            const std::string & NAME, callback::ITextButtonCallbackHandler_t * callbackHandlerPtr)
+            const std::string & NAME,
+            const callback::ITextButtonCallbackHandlerPtr_t CALLBACK_HANLER_PTR)
             : GuiText(std::string(NAME).append("_TextButton"))
-            , callbackHandlerPtr_(callbackHandlerPtr)
+            , callbackHandlerPtr_(CALLBACK_HANLER_PTR)
         {}
 
         TextButton::TextButton(
@@ -49,11 +50,11 @@ namespace sfml_util
             const float POS_LEFT,
             const float POS_TOP,
             const MouseTextInfo & MOUSE_TEXT_INFO,
-            callback::ITextButtonCallbackHandler_t * callbackHandlerPtr)
+            const callback::ITextButtonCallbackHandlerPtr_t CALLBACK_HANLER_PTR)
             : GuiText(std::string(NAME).append("_TextButton"), POS_LEFT, POS_TOP, MOUSE_TEXT_INFO)
-            , callbackHandlerPtr_(callbackHandlerPtr)
+            , callbackHandlerPtr_(CALLBACK_HANLER_PTR)
         {
-            Setup(POS_LEFT, POS_TOP, MOUSE_TEXT_INFO, callbackHandlerPtr);
+            Setup(POS_LEFT, POS_TOP, MOUSE_TEXT_INFO, CALLBACK_HANLER_PTR);
         }
 
         TextButton::~TextButton() = default;
@@ -62,18 +63,15 @@ namespace sfml_util
             const float POS_LEFT,
             const float POS_TOP,
             const MouseTextInfo & MOUSE_TEXT_INFO,
-            callback::ITextButtonCallbackHandler_t * callbackHandlerPtr)
+            const callback::ITextButtonCallbackHandlerPtr_t CALLBACK_HANLER_PTR)
         {
             GuiText::Setup(MOUSE_TEXT_INFO.up.text, POS_LEFT, POS_TOP, MOUSE_TEXT_INFO);
-            callbackHandlerPtr_ = callbackHandlerPtr;
+            callbackHandlerPtr_ = CALLBACK_HANLER_PTR;
         }
 
         void TextButton::OnClick(const sf::Vector2f &)
         {
-            if (nullptr != callbackHandlerPtr_)
-            {
-                callbackHandlerPtr_->HandleCallback(this);
-            }
+            callbackHandlerPtr_->HandleCallback(this);
         }
 
     } // namespace gui

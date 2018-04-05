@@ -28,6 +28,7 @@
 // interaction-button.cpp
 //
 #include "interaction-button.hpp"
+#include "sfml-util/gui/text-button.hpp"
 #include "sfml-util/sfml-util.hpp"
 
 namespace heroespath
@@ -37,11 +38,11 @@ namespace interact
 
     Button::Button(const Buttons::Enum WHICH_BUTTON)
         : whichButton_(WHICH_BUTTON)
-        , ptr_(nullptr)
+        , ptrOpt_(boost::none)
     {}
 
-    sfml_util::gui::TextButtonUPtr_t
-        Button::Make(sfml_util::gui::callback::ITextButtonCallbackHandler_t * callbackHandlerPtr)
+    sfml_util::gui::TextButtonUPtr_t Button::Make(
+        const sfml_util::gui::callback::ITextButtonCallbackHandlerPtr_t CALLBACK_HANDLER_PTR)
     {
         auto const DISPLAYED_NAME{ [&]() {
             if ((sf::Keyboard::KeyCount == Key()) || (sf::Keyboard::Unknown == Key()))
@@ -59,10 +60,11 @@ namespace interact
             0.0f,
             0.0f,
             sfml_util::gui::MouseTextInfo::Make_InteractionButtonSet(DISPLAYED_NAME),
-            callbackHandlerPtr) };
+            CALLBACK_HANDLER_PTR) };
 
-        ptr_ = uptr.get();
+        ptrOpt_ = uptr.get();
         return uptr;
     }
+
 } // namespace interact
 } // namespace heroespath

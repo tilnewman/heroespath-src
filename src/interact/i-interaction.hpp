@@ -58,7 +58,7 @@ namespace interact
         virtual void PlayExitSfx() const = 0;
 
         virtual bool
-            OnButtonClick(const stage::InteractStagePtr_t, const sfml_util::gui::TextButton * const)
+            OnButtonClick(const stage::InteractStagePtr_t, const sfml_util::gui::TextButtonPtr_t)
             = 0;
 
         virtual bool OnKeyRelease(const stage::InteractStagePtr_t, const sf::Keyboard::Key) = 0;
