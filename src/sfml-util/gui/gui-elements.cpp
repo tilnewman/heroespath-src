@@ -137,7 +137,7 @@ namespace sfml_util
 
         GuiElements * GuiElements::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): GuiElements");
                 Acquire();
@@ -148,7 +148,7 @@ namespace sfml_util
 
         void GuiElements::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<GuiElements>();
             }
@@ -161,7 +161,7 @@ namespace sfml_util
         void GuiElements::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
+                (instanceUPtr_),
                 "sfml_util::gui::GuiElements::Release() found instanceUPtr that was null.");
 
             instanceUPtr_.reset();

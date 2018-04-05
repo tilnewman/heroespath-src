@@ -697,7 +697,7 @@ namespace popup
     const spell::SpellPtr_t PopupStageSpellbook::CurrentSelectedSpell() const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (listBoxUPtr_.get() != nullptr),
+            (listBoxUPtr_),
             "popup::PopupStageSpellbook::CurrentSelectedSpell() called when listBoxUPtr_ was "
             "null.");
 

@@ -125,7 +125,7 @@ namespace popup
                 "PopupStage'sImageSelectionion", TEXT_INFO, region);
 
             EntityAdd(imageWrnTextRegionUPtr_.get());
-            if (sliderbarUPtr_.get() != nullptr)
+            if (sliderbarUPtr_)
             {
                 EntityRemove(sliderbarUPtr_.get());
             }
@@ -143,7 +143,7 @@ namespace popup
             target.draw(spritePrev_, STATES);
         }
 
-        if (willShowImageCount_ && (imageNumTextRegionUPtr_.get() != nullptr))
+        if (willShowImageCount_ && (imageNumTextRegionUPtr_))
         {
             imageNumTextRegionUPtr_->draw(target, STATES);
         }

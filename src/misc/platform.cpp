@@ -85,7 +85,7 @@ namespace misc
 
     Platform * Platform::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): Platform");
             Acquire();
@@ -96,7 +96,7 @@ namespace misc
 
     void Platform::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<Platform>();
         }
@@ -109,8 +109,7 @@ namespace misc
     void Platform::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "misc::Platform::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "misc::Platform::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

@@ -109,12 +109,12 @@ namespace sfml_util
         {
             if (stagePtrOpt_)
             {
-                if (boxUPtr_.get() != nullptr)
+                if (boxUPtr_)
                 {
                     stagePtrOpt_->Obj().EntityRemove(boxUPtr_.get());
                 }
 
-                if (sliderbarUPtr_.get() != nullptr)
+                if (sliderbarUPtr_)
                 {
                     stagePtrOpt_->Obj().EntityRemove(sliderbarUPtr_.get());
                 }
@@ -550,7 +550,7 @@ namespace sfml_util
                 NEXT_IMAGE_PAIR.second.second.move(DIFF_HORIZ, DIFF_VERT);
             }
 
-            if (boxUPtr_.get() != nullptr)
+            if (boxUPtr_)
             {
                 boxUPtr_->MoveEntityPos(DIFF_HORIZ, DIFF_VERT);
             }
@@ -657,7 +657,7 @@ namespace sfml_util
                 auto itemSPtr{ items_[i] };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (itemSPtr.get() != nullptr),
+                    (itemSPtr),
                     "sfml_util::gui::ListBox::SetupForDraw() found a null itemSPtr at index=" << i);
 
                 if (IsIndexVisible_Display(i))

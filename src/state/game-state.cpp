@@ -51,8 +51,7 @@ namespace state
     World & GameState::GetWorld()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (worldUPtr_.get() != nullptr),
-            "state::GameState::GetWorld() called when the worldUptr_ was null.");
+            (worldUPtr_), "state::GameState::GetWorld() called when the worldUptr_ was null.");
 
         return *worldUPtr_;
     }
@@ -60,8 +59,7 @@ namespace state
     player::Party & GameState::Party()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (partyUPtr_.get() != nullptr),
-            "state::GameState::GetParty() called when the partyUptr_ was null.");
+            (partyUPtr_), "state::GameState::GetParty() called when the partyUptr_ was null.");
 
         return *partyUPtr_;
     }
@@ -69,7 +67,7 @@ namespace state
     void GameState::BeforeSerialize()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (partyUPtr_.get() != nullptr),
+            (partyUPtr_),
             "state::GameState::BeforeSerialize() called when the partyUptr_ was null.");
 
         for (auto creaturePtr : partyUPtr_->Characters())
@@ -83,7 +81,7 @@ namespace state
     void GameState::AfterSerialize()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (partyUPtr_.get() != nullptr),
+            (partyUPtr_),
             "state::GameState::AfterSerialize() called when the partyUptr_ was null.");
 
         partyUPtr_->AfterSerialize();

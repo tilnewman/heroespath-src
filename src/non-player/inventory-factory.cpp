@@ -63,7 +63,7 @@ namespace non_player
 
         InventoryFactory * InventoryFactory::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): InventoryFactory");
                 Acquire();
@@ -74,7 +74,7 @@ namespace non_player
 
         void InventoryFactory::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<InventoryFactory>();
             }
@@ -87,7 +87,7 @@ namespace non_player
         void InventoryFactory::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
+                (instanceUPtr_),
                 "non_player::ownership::InventoryFactory::Release() found "
                     << "instanceUPtr that was null.");
 

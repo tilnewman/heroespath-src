@@ -50,7 +50,7 @@ namespace game
 
     GameDataFile * game::GameDataFile::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): GameDataFile");
             Acquire();
@@ -61,7 +61,7 @@ namespace game
 
     void GameDataFile::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<GameDataFile>();
         }
@@ -74,8 +74,7 @@ namespace game
     void GameDataFile::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "GameDataFile::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "GameDataFile::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
@@ -83,8 +82,7 @@ namespace game
     void GameDataFile::Initialize()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "GameDataFile::Initialize() found instanceUPtr that was null.");
+            (instanceUPtr_), "GameDataFile::Initialize() found instanceUPtr that was null.");
 
         instanceUPtr_->config::ConfigBase::Load();
     }

@@ -71,7 +71,7 @@ namespace game
 
     LoopManager * game::LoopManager::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): LoopManager");
             Acquire();
@@ -82,7 +82,7 @@ namespace game
 
     void LoopManager::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<LoopManager>();
         }
@@ -95,8 +95,7 @@ namespace game
     void LoopManager::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "LoopManager::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "LoopManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
@@ -104,8 +103,7 @@ namespace game
     void LoopManager::Initialize()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "LoopManager::Initialize() found instanceUPtr that was null.");
+            (instanceUPtr_), "LoopManager::Initialize() found instanceUPtr that was null.");
 
         auto const STARTUP_STAGE_ENUM{ sfml_util::LoopState::FromString(startupStageName_) };
 

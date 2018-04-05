@@ -65,7 +65,7 @@ namespace item
 
         WeaponDetailLoader * WeaponDetailLoader::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): WeaponDetailLoader");
                 Acquire();
@@ -76,7 +76,7 @@ namespace item
 
         void WeaponDetailLoader::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<WeaponDetailLoader>();
             }
@@ -89,7 +89,7 @@ namespace item
         void WeaponDetailLoader::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
+                (instanceUPtr_),
                 "item::weapon::WeaponDetailLoader::Release() found instanceUPtr that was null.");
 
             instanceUPtr_.reset();

@@ -54,7 +54,7 @@ namespace sfml_util
 
         TitleImageManager * TitleImageManager::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): TitleImageManager");
                 Acquire();
@@ -65,7 +65,7 @@ namespace sfml_util
 
         void TitleImageManager::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<TitleImageManager>();
             }
@@ -78,7 +78,7 @@ namespace sfml_util
         void TitleImageManager::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
+                (instanceUPtr_),
                 "sfml_util::gui::TitleImageManager::Release() found instanceUPtr that was null.");
 
             instanceUPtr_.reset();

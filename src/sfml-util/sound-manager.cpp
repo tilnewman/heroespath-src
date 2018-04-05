@@ -73,7 +73,7 @@ namespace sfml_util
 
     SoundManager * SoundManager::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): SoundManager");
             Acquire();
@@ -84,7 +84,7 @@ namespace sfml_util
 
     void SoundManager::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<SoundManager>();
         }
@@ -97,7 +97,7 @@ namespace sfml_util
     void SoundManager::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
+            (instanceUPtr_),
             "sfml_util::SoundManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
@@ -106,7 +106,7 @@ namespace sfml_util
     void SoundManager::Initialize()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
+            (instanceUPtr_),
             "sfml_util::SoundManager::Initialize() found instanceUPtr that was null.");
 
         instanceUPtr_->CacheMusicInfo_CombatIntro();

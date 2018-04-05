@@ -1197,7 +1197,7 @@ namespace stage
 
         if (TurnPhase::ConditionEffectPause == turnPhase_)
         {
-            if (enemyActionTBoxRegionUPtr_.get() != nullptr)
+            if (enemyActionTBoxRegionUPtr_)
             {
                 enemyActionTBoxRegionUPtr_->SetEntityColorFgBoth(
                     goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
@@ -1540,8 +1540,7 @@ namespace stage
         }
 
         // initial hook for taking action before the first turn (pre-turn logic)
-        if ((zoomSliderBarUPtr_.get() != nullptr)
-            && (game::LoopManager::Instance()->IsFading() == false)
+        if ((zoomSliderBarUPtr_) && (game::LoopManager::Instance()->IsFading() == false)
             && (TurnPhase::NotATurn == turnPhase_) && (PreTurnPhase::Start == preTurnPhase_))
         {
             SetPreTurnPhase(PreTurnPhase::PanToCenter);

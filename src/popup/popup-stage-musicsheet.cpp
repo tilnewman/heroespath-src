@@ -220,7 +220,7 @@ namespace popup
 
     bool PopupStageMusicSheet::KeyRelease(const sf::Event::KeyEvent & KEY_EVENT)
     {
-        if (listBoxUPtr_.get() != nullptr)
+        if (listBoxUPtr_)
         {
             if ((KEY_EVENT.code == sf::Keyboard::Escape) || (KEY_EVENT.code == sf::Keyboard::Space))
             {
@@ -718,7 +718,7 @@ namespace popup
     const song::SongPtr_t PopupStageMusicSheet::CurrentSelectedSong() const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (listBoxUPtr_.get() != nullptr),
+            (listBoxUPtr_),
             "popup::PopupStageMusicSheet::CurrentSelectedSong() called when listBoxUPtr_ was "
             "null.");
 

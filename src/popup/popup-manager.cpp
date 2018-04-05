@@ -78,7 +78,7 @@ namespace popup
 
     PopupManager * PopupManager::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): PopupManager");
             Acquire();
@@ -89,7 +89,7 @@ namespace popup
 
     void PopupManager::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<PopupManager>();
         }
@@ -102,8 +102,7 @@ namespace popup
     void PopupManager::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "popup::PopupManager::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "popup::PopupManager::Release() found instanceUPtr that was null.");
         instanceUPtr_.reset();
     }
 

@@ -319,7 +319,7 @@ namespace sfml_util
                     GetEntityName() + "Up", MOUSE_TEXT_INFO.up, tempRect);
             }
 
-            if (textRegionUpUPtr_.get() != nullptr)
+            if (textRegionUpUPtr_)
             {
                 SetEntityRegion(sf::FloatRect(
                     POS_LEFT,
@@ -393,7 +393,7 @@ namespace sfml_util
                 textRegionCurrPtrOpt_->Obj().draw(target, states);
             }
 
-            if (boxUPtr_.get() != nullptr)
+            if (boxUPtr_)
             {
                 target.draw(*boxUPtr_, states);
             }
@@ -521,7 +521,7 @@ namespace sfml_util
 
         void FourStateButton::Reset()
         {
-            if (boxUPtr_.get() != nullptr)
+            if (boxUPtr_)
             {
                 boxUPtr_ = std::make_unique<box::Box>(
                     "FourStateButton's",
@@ -530,7 +530,7 @@ namespace sfml_util
 
             if (isDisabled_)
             {
-                if (textRegionDisabledUPtr_.get() != nullptr)
+                if (textRegionDisabledUPtr_)
                 {
                     textRegionCurrPtrOpt_ = textRegionDisabledUPtr_.get();
                 }
@@ -547,7 +547,7 @@ namespace sfml_util
                     buttonSprite_.setTexture(textureUp_, true);
                 }
 
-                if (textRegionUpUPtr_.get() != nullptr)
+                if (textRegionUpUPtr_)
                 {
                     textRegionCurrPtrOpt_ = textRegionUpUPtr_.get();
                 }
@@ -564,14 +564,12 @@ namespace sfml_util
                     buttonSprite_.setTexture(textureOver_, true);
                 }
 
-                if ((MouseState::Down == entityMouseState_)
-                    && (textRegionDownUPtr_.get() != nullptr))
+                if ((MouseState::Down == entityMouseState_) && (textRegionDownUPtr_))
                 {
                     textRegionCurrPtrOpt_ = textRegionDownUPtr_.get();
                 }
 
-                if ((MouseState::Over == entityMouseState_)
-                    && (textRegionOverUPtr_.get() != nullptr))
+                if ((MouseState::Over == entityMouseState_) && (textRegionOverUPtr_))
                 {
                     textRegionCurrPtrOpt_ = textRegionOverUPtr_.get();
                 }

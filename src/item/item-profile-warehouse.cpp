@@ -66,7 +66,7 @@ namespace item
 
     ItemProfileWarehouse * ItemProfileWarehouse::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): ItemProfileWarehouse");
             Acquire();
@@ -77,7 +77,7 @@ namespace item
 
     void ItemProfileWarehouse::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<ItemProfileWarehouse>();
         }
@@ -90,7 +90,7 @@ namespace item
     void ItemProfileWarehouse::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
+            (instanceUPtr_),
             "creature::ItemProfileWarehouse::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();

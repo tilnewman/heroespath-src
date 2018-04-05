@@ -169,7 +169,7 @@ namespace stage
         {
             auto itemSPtr{ characterListBoxUPtr_->AtPos(PACKAGE.mouse_pos) };
 
-            if (itemSPtr.get() != nullptr)
+            if (itemSPtr)
             {
                 if (partyListBoxUPtr_->Size() < partyListBoxUPtr_->CountLimit())
                 {
@@ -189,7 +189,7 @@ namespace stage
         {
             auto itemSPtr{ partyListBoxUPtr_->AtPos(PACKAGE.mouse_pos) };
 
-            if (itemSPtr.get() != nullptr)
+            if (itemSPtr)
             {
                 characterListBoxUPtr_->Add(itemSPtr);
                 partyListBoxUPtr_->Remove(itemSPtr);
@@ -235,7 +235,7 @@ namespace stage
         {
             auto selectedItemSPtr{ GetSelectedItemSPtr() };
 
-            if ((selectedItemSPtr.get() != nullptr) && selectedItemSPtr->CHARACTER_PTR_OPT)
+            if ((selectedItemSPtr) && selectedItemSPtr->CHARACTER_PTR_OPT)
             {
                 auto const CHARACTER_PTR{ selectedItemSPtr->CHARACTER_PTR_OPT.value() };
 
@@ -574,7 +574,7 @@ namespace stage
             target.draw(mouseOverQuad_, STATES);
             target.draw(mouseOverSprite_, STATES);
 
-            if (mouseOverTextRegionUPtr_.get() != nullptr)
+            if (mouseOverTextRegionUPtr_)
             {
                 mouseOverTextRegionUPtr_->draw(target, STATES);
             }
@@ -599,7 +599,7 @@ namespace stage
     {
         auto itemSPtr{ GetSelectedItemSPtr() };
 
-        if (itemSPtr.get() != nullptr)
+        if (itemSPtr)
         {
             return itemSPtr->CHARACTER_PTR_OPT;
         }
@@ -643,7 +643,7 @@ namespace stage
                 itemSPtr = partyListBoxUPtr_->AtPos(mouseOverPosV_);
             }
 
-            if ((itemSPtr.get() != nullptr) && itemSPtr->CHARACTER_PTR_OPT
+            if ((itemSPtr) && itemSPtr->CHARACTER_PTR_OPT
                 && (itemSPtr->CHARACTER_PTR_OPT->Obj().ImageFilename().empty() == false))
             {
                 mouseOverCharacterPtrOpt = itemSPtr->CHARACTER_PTR_OPT;

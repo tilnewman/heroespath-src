@@ -256,17 +256,17 @@ namespace stage
 
     void Credit::Draw(sf::RenderTarget & target, sf::RenderStates states)
     {
-        if (titleTextUPtr_.get() != nullptr)
+        if (titleTextUPtr_)
         {
             target.draw(*titleTextUPtr_, states);
         }
 
-        if (contentTextUPtr_.get() != nullptr)
+        if (contentTextUPtr_)
         {
             target.draw(*contentTextUPtr_, states);
         }
 
-        if (animUPtr_.get() != nullptr)
+        if (animUPtr_)
         {
             animUPtr_->draw(target, states);
         }
@@ -279,7 +279,7 @@ namespace stage
 
     void Credit::UpdateTime(const float ELAPSED_TIME_SECONDS)
     {
-        if (animUPtr_.get() != nullptr)
+        if (animUPtr_)
         {
             animUPtr_->UpdateTime(ELAPSED_TIME_SECONDS);
         }
@@ -287,19 +287,19 @@ namespace stage
 
     void Credit::Move(const float ADJ_HORIZ, const float ADJ_VERT)
     {
-        if (titleTextUPtr_.get() != nullptr)
+        if (titleTextUPtr_)
         {
             titleTextUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
 
-        if (contentTextUPtr_.get() != nullptr)
+        if (contentTextUPtr_)
         {
             contentTextUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }
 
         sprite_.move(ADJ_HORIZ, ADJ_VERT);
 
-        if (animUPtr_.get() != nullptr)
+        if (animUPtr_)
         {
             animUPtr_->MoveEntityPos(ADJ_HORIZ, ADJ_VERT);
         }

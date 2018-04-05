@@ -52,7 +52,7 @@ namespace creature
 
     EnchantmentWarehouse * EnchantmentWarehouse::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): EnchantmentWarehouse");
             Acquire();
@@ -63,7 +63,7 @@ namespace creature
 
     void EnchantmentWarehouse::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<EnchantmentWarehouse>();
         }
@@ -76,7 +76,7 @@ namespace creature
     void EnchantmentWarehouse::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
+            (instanceUPtr_),
             "creature::EnchantmentWarehouse::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();

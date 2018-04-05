@@ -74,9 +74,9 @@ namespace interact
             hasCurrentChanged_ = true;
         }
 
-        if (nextUPtr_.get() != nullptr)
+        if (nextUPtr_)
         {
-            if (currentUPtr_.get() != nullptr)
+            if (currentUPtr_)
             {
                 currentUPtr_->PlayExitSfx();
             }
@@ -96,7 +96,7 @@ namespace interact
 
     void InteractionManager::Lock()
     {
-        if (currentUPtr_.get() != nullptr)
+        if (currentUPtr_)
         {
             currentUPtr_->Lock();
         }
@@ -104,7 +104,7 @@ namespace interact
 
     void InteractionManager::Unlock()
     {
-        if (currentUPtr_.get() != nullptr)
+        if (currentUPtr_)
         {
             currentUPtr_->Unlock();
         }
@@ -112,7 +112,7 @@ namespace interact
 
     bool InteractionManager::IsLocked() const
     {
-        if (currentUPtr_.get() != nullptr)
+        if (currentUPtr_)
         {
             return currentUPtr_->IsLocked();
         }
@@ -121,5 +121,5 @@ namespace interact
             return false;
         }
     }
-}
-}
+} // namespace interact
+} // namespace heroespath

@@ -58,7 +58,7 @@ namespace item
 
     ItemFactory * ItemFactory::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): ItemFactory");
             Acquire();
@@ -69,7 +69,7 @@ namespace item
 
     void ItemFactory::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<ItemFactory>();
         }
@@ -82,8 +82,7 @@ namespace item
     void ItemFactory::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "creature::ItemFactory::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "creature::ItemFactory::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

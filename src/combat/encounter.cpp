@@ -91,7 +91,7 @@ namespace combat
 
     Encounter * Encounter::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): Encounter");
             Acquire();
@@ -102,7 +102,7 @@ namespace combat
 
     void Encounter::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<Encounter>();
         }
@@ -115,8 +115,7 @@ namespace combat
     void Encounter::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "combat::Encounter::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "combat::Encounter::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
@@ -124,7 +123,7 @@ namespace combat
     non_player::Party & Encounter::LivingNonPlayerParty()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (nonPlayerPartyUPtr_.get() != nullptr),
+            (nonPlayerPartyUPtr_),
             "combat::Encounter::LivingNonPlayerParty() called when ptr was null.");
 
         return *nonPlayerPartyUPtr_;
@@ -133,7 +132,7 @@ namespace combat
     non_player::Party & Encounter::DeadNonPlayerParty()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (deadNonPlayerPartyUPtr_.get() != nullptr),
+            (deadNonPlayerPartyUPtr_),
             "combat::Encounter::DeadNonPlayerParty() called when ptr was null.");
 
         return *deadNonPlayerPartyUPtr_;
@@ -142,7 +141,7 @@ namespace combat
     non_player::Party & Encounter::RunawayNonPlayerParty()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (runawayNonPlayerPartyUPtr_.get() != nullptr),
+            (runawayNonPlayerPartyUPtr_),
             "combat::Encounter::RunawayNonPlayerParty() called when ptr was null.");
 
         return *runawayNonPlayerPartyUPtr_;
@@ -445,7 +444,7 @@ namespace combat
 
     void Encounter::FreeThenReset(non_player::PartyUPtr_t & nonPlayerPartyUPtr)
     {
-        if (nonPlayerPartyUPtr.get() != nullptr)
+        if (nonPlayerPartyUPtr)
         {
             for (auto const & NEXT_CHARACTER_PTR : nonPlayerPartyUPtr->Characters())
             {

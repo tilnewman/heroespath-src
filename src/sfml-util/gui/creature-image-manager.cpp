@@ -66,7 +66,7 @@ namespace sfml_util
 
         CreatureImageManager * CreatureImageManager::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): CreatureImageManager");
                 Acquire();
@@ -77,7 +77,7 @@ namespace sfml_util
 
         void CreatureImageManager::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<CreatureImageManager>();
             }
@@ -90,7 +90,7 @@ namespace sfml_util
         void CreatureImageManager::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
+                (instanceUPtr_),
                 "sfml_util::gui::CreatureImageManager::Release() found instanceUPtr that was "
                 "null.");
 

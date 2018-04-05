@@ -54,7 +54,7 @@ namespace creature
 
     NameInfo * NameInfo::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): NameInfo");
             Acquire();
@@ -65,7 +65,7 @@ namespace creature
 
     void NameInfo::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<NameInfo>();
         }
@@ -78,8 +78,7 @@ namespace creature
     void NameInfo::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "NameInfo::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "NameInfo::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

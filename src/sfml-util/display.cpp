@@ -92,8 +92,7 @@ namespace sfml_util
     Display * Display::Instance()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "sfml_util::Display::Instance() found instanceUPtr that was null.");
+            (instanceUPtr_), "sfml_util::Display::Instance() found instanceUPtr that was null.");
 
         return instanceUPtr_.get();
     }
@@ -101,7 +100,7 @@ namespace sfml_util
     void Display::Acquire(
         const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL)
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<Display>();
             instanceUPtr_->OpenRenderWindow(TITLE, STYLE, ANTIALIAS_LEVEL);
@@ -115,8 +114,7 @@ namespace sfml_util
     void Display::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "sfml_util::Display::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "sfml_util::Display::Release() found instanceUPtr that was null.");
 
         Display::Instance()->CloseRenderWindow();
         instanceUPtr_.reset();
@@ -749,7 +747,7 @@ namespace sfml_util
     void Display::CloseRenderWindow()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (winUPtr_.get() != nullptr),
+            (winUPtr_),
             "sfml_util::Display::CloseRenderWindow() called before OpenRenderWindow().");
 
         winUPtr_->close();

@@ -74,7 +74,7 @@ namespace sfml_util
 
         ItemImageManager * ItemImageManager::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): ItemImageManager");
                 Acquire();
@@ -85,7 +85,7 @@ namespace sfml_util
 
         void ItemImageManager::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<ItemImageManager>();
             }
@@ -98,7 +98,7 @@ namespace sfml_util
         void ItemImageManager::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
+                (instanceUPtr_),
                 "sfml_util::gui::ItemImageManager::Release() found instanceUPtr that was null.");
             instanceUPtr_.reset();
         }

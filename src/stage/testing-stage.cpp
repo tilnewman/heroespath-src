@@ -115,7 +115,7 @@ namespace stage
     {
         Stage::Draw(target, STATES);
 
-        if (animUPtr_.get() != nullptr)
+        if (animUPtr_)
         {
             target.draw(animBGSprite_, STATES);
             animUPtr_->draw(target, STATES);

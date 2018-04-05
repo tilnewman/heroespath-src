@@ -139,12 +139,12 @@ namespace sfml_util
     {
         return (
             (info_.Which() != music::Count) && (info_.Which() != music::All)
-            && (info_.Which() != music::None) && (musicUPtr_.get() != nullptr));
+            && (info_.Which() != music::None) && (musicUPtr_));
     }
 
     MusicOperator::~MusicOperator()
     {
-        if (musicUPtr_.get() != nullptr)
+        if (musicUPtr_)
         {
             musicUPtr_->stop();
         }

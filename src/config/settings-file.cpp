@@ -62,7 +62,7 @@ namespace config
 
     SettingsFile * SettingsFile::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): SettingsFile");
             Acquire();
@@ -73,7 +73,7 @@ namespace config
 
     void SettingsFile::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<SettingsFile>();
         }
@@ -86,8 +86,7 @@ namespace config
     void SettingsFile::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "SettingsFile::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "SettingsFile::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

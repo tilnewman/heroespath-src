@@ -283,7 +283,7 @@ namespace sfml_util
 
             if (hoverText.empty())
             {
-                if (hoverTextBoxUPtr_.get() != nullptr)
+                if (hoverTextBoxUPtr_)
                 {
                     hoverTextBoxUPtr_.reset();
                 }
@@ -328,7 +328,7 @@ namespace sfml_util
         }
         else
         {
-            if (hoverTextBoxUPtr_.get() != nullptr)
+            if (hoverTextBoxUPtr_)
             {
                 hoverTextBoxUPtr_.reset();
             }
@@ -343,7 +343,7 @@ namespace sfml_util
 
     void Stage::DrawHoverText(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
-        if (hoverTextBoxUPtr_.get() != nullptr)
+        if (hoverTextBoxUPtr_)
         {
             target.draw(*hoverTextBoxUPtr_, STATES);
             target.draw(hoverSfText_, STATES);

@@ -673,7 +673,7 @@ namespace stage
         // be fully transparent when should not be drawn.
         target.draw(detailViewQuads_, STATES);
 
-        if (detailViewTextUPtr_.get() != nullptr)
+        if (detailViewTextUPtr_)
         {
             sf::RenderStates statesBlendAdd{ STATES };
             statesBlendAdd.blendMode = sf::BlendAdd;
@@ -685,12 +685,12 @@ namespace stage
         auto newBlendModeStates{ STATES };
         newBlendModeStates.blendMode = sf::BlendAdd;
 
-        if (sparkleAnimUPtr_.get() != nullptr)
+        if (sparkleAnimUPtr_)
         {
             target.draw(*sparkleAnimUPtr_, newBlendModeStates);
         }
 
-        if (songAnimUPtr_.get() != nullptr)
+        if (songAnimUPtr_)
         {
             target.draw(*songAnimUPtr_, newBlendModeStates);
         }
@@ -1053,7 +1053,7 @@ namespace stage
             0.0f,
             0.0f);
 
-        if ((WILL_UPDATE_POSITION == false) && (detailsTextRegionUPtr_.get() != nullptr))
+        if ((WILL_UPDATE_POSITION == false) && (detailsTextRegionUPtr_))
         {
             detailsTextRect.left = detailsTextRegionUPtr_->GetEntityPos().x;
         }
@@ -1142,7 +1142,7 @@ namespace stage
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        const bool WAS_ALREADY_INSTANTIATED{ centerTextRegionUPtr_.get() != nullptr };
+        const bool WAS_ALREADY_INSTANTIATED{ centerTextRegionUPtr_ };
 
         if (WAS_ALREADY_INSTANTIATED)
         {
@@ -1253,7 +1253,7 @@ namespace stage
             }
         }
 
-        const bool IS_ALREADY_INSTANTIATED{ equippedListBoxUPtr_.get() != nullptr };
+        const bool IS_ALREADY_INSTANTIATED{ equippedListBoxUPtr_ };
 
         if (IS_ALREADY_INSTANTIATED)
         {
@@ -1298,7 +1298,7 @@ namespace stage
         const sfml_util::gui::box::Info LISTBOX_BOX_INFO(
             1, true, DESCBOX_REGION_, LISTBOX_COLORSET_, LISTBOX_BG_INFO_);
 
-        const bool IS_EQ_ALREADY_INSTANTIATED{ unEquipListBoxUPtr_.get() != nullptr };
+        const bool IS_EQ_ALREADY_INSTANTIATED{ unEquipListBoxUPtr_ };
 
         sf::Vector2f origPosV(OUT_OF_SIGHT_POS_, OUT_OF_SIGHT_POS_);
 
@@ -1350,7 +1350,7 @@ namespace stage
         descTextInfo.color = DESCBOX_TEXT_COLOR_;
         descTextInfo.text = " ";
 
-        const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionUPtr_.get() != nullptr);
+        const bool IS_DTR_ALREADY_INSTANTIATED(descTextRegionUPtr_);
 
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
@@ -2501,7 +2501,7 @@ namespace stage
 
     void InventoryStage::UpdateTime_SparkleAnimation(const float ELAPSED_TIME_SECONDS)
     {
-        if (sparkleAnimUPtr_.get() != nullptr)
+        if (sparkleAnimUPtr_)
         {
             sparkleAnimUPtr_->Update(ELAPSED_TIME_SECONDS);
 
@@ -2515,7 +2515,7 @@ namespace stage
 
     void InventoryStage::UpdateTime_SongAnimation(const float ELAPSED_TIME_SECONDS)
     {
-        if (songAnimUPtr_.get() != nullptr)
+        if (songAnimUPtr_)
         {
             songAnimUPtr_->Update(ELAPSED_TIME_SECONDS);
 
@@ -2669,7 +2669,7 @@ namespace stage
 
         listBoxItemToGiveSPtr_ = unEquipListBoxUPtr_->Selected();
 
-        if ((listBoxItemToGiveSPtr_.get() != nullptr) && listBoxItemToGiveSPtr_->ITEM_PTR_OPT)
+        if ((listBoxItemToGiveSPtr_) && listBoxItemToGiveSPtr_->ITEM_PTR_OPT)
         {
             auto const ITEM_PTR{ listBoxItemToGiveSPtr_->ITEM_PTR_OPT.value() };
             PopupCharacterSelectWindow("Give the " + ITEM_PTR->Name() + " to who?");
@@ -3057,7 +3057,7 @@ namespace stage
         descTextInfo.charSize = DESCBOX_TEXT_SIZE_;
         descTextInfo.text = TEXT;
 
-        const bool IS_DTR_ALREADY_INSTANTIATED{ descTextRegionUPtr_.get() != nullptr };
+        const bool IS_DTR_ALREADY_INSTANTIATED{ descTextRegionUPtr_ };
 
         if (IS_DTR_ALREADY_INSTANTIATED)
         {
@@ -3616,7 +3616,7 @@ namespace stage
                 listBoxItemSPtr = equippedListBoxUPtr_->AtPos(MOUSE_POS_V);
             }
 
-            if ((listBoxItemSPtr.get() != nullptr) && listBoxItemSPtr->ITEM_PTR_OPT)
+            if ((listBoxItemSPtr) && listBoxItemSPtr->ITEM_PTR_OPT)
             {
                 return listBoxItemSPtr->ITEM_PTR_OPT.value();
             }

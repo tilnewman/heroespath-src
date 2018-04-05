@@ -90,7 +90,7 @@ namespace popup
             + charDetailsTextRegionUPtr_->GetEntityRegion().height
             + sfml_util::MapByRes(60.0f, 300.0f);
 
-        if (sliderbarUPtr_.get() != nullptr)
+        if (sliderbarUPtr_)
         {
             EntityRemove(sliderbarUPtr_.get());
         }

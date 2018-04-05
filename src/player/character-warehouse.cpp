@@ -52,7 +52,7 @@ namespace player
 
     CharacterWarehouse * CharacterWarehouse::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): Player CharacterWarehouse");
             Acquire();
@@ -63,7 +63,7 @@ namespace player
 
     void CharacterWarehouse::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<CharacterWarehouse>();
         }
@@ -76,7 +76,7 @@ namespace player
     void CharacterWarehouse::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
+            (instanceUPtr_),
             "player::CharacterWarehouse::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();

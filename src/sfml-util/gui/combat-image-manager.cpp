@@ -54,7 +54,7 @@ namespace sfml_util
 
         CombatImageManager * CombatImageManager::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): CombatImageManager");
                 Acquire();
@@ -65,7 +65,7 @@ namespace sfml_util
 
         void CombatImageManager::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<CombatImageManager>();
             }
@@ -78,7 +78,7 @@ namespace sfml_util
         void CombatImageManager::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
+                (instanceUPtr_),
                 "sfml_util::gui::CombatImageManager::Release() found instanceUPtr that was null.");
 
             instanceUPtr_.reset();

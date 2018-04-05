@@ -235,7 +235,7 @@ namespace stage
 
         auto listBoxItemSPtr{ gsListBoxUPtr_->Selected() };
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (listBoxItemSPtr.get() != nullptr),
+            (listBoxItemSPtr),
             "LoadGameStage::SetupGameInfoDisplay() The ListBox was not empty but GetSelected()"
                 << " returned a nullptr.");
 

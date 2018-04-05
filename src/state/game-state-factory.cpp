@@ -73,7 +73,7 @@ namespace state
 
     GameStateFactory * GameStateFactory::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): GameStateFactory");
             Acquire();
@@ -84,7 +84,7 @@ namespace state
 
     void GameStateFactory::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<GameStateFactory>();
         }
@@ -97,8 +97,7 @@ namespace state
     void GameStateFactory::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "GameStateFactory::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "GameStateFactory::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

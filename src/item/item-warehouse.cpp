@@ -49,7 +49,7 @@ namespace item
 
     ItemWarehouse * ItemWarehouse::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): ItemWarehouse");
             Acquire();
@@ -60,7 +60,7 @@ namespace item
 
     void ItemWarehouse::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<ItemWarehouse>();
         }
@@ -73,8 +73,7 @@ namespace item
     void ItemWarehouse::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "item::ItemWarehouse::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "item::ItemWarehouse::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

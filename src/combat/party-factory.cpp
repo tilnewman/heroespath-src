@@ -49,7 +49,7 @@ namespace combat
 
     PartyFactory * PartyFactory::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): PartyFactory");
             Acquire();
@@ -60,7 +60,7 @@ namespace combat
 
     void PartyFactory::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<PartyFactory>();
         }
@@ -73,8 +73,7 @@ namespace combat
     void PartyFactory::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "PartyFactory::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "PartyFactory::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

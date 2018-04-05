@@ -56,7 +56,7 @@ namespace game
 
     Game * game::Game::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): Game");
             Acquire();
@@ -67,7 +67,7 @@ namespace game
 
     void Game::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<Game>();
         }
@@ -80,7 +80,7 @@ namespace game
     void Game::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr), "Game::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "Game::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
@@ -88,7 +88,7 @@ namespace game
     state::GameState & Game::State() const
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr), "Game::State() was called when there was no state.");
+            (instanceUPtr_), "Game::State() was called when there was no state.");
 
         return *stateUPtr_;
     }

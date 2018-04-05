@@ -50,7 +50,7 @@ namespace item
 
         ArmorFactory * ArmorFactory::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): ArmorFactory");
                 Acquire();
@@ -61,7 +61,7 @@ namespace item
 
         void ArmorFactory::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<ArmorFactory>();
             }
@@ -74,7 +74,7 @@ namespace item
         void ArmorFactory::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
+                (instanceUPtr_),
                 "item::armor::ArmorFactory::Release() found instanceUPtr that was null.");
 
             instanceUPtr_.reset();

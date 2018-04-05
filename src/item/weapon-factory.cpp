@@ -56,7 +56,7 @@ namespace item
 
         WeaponFactory * WeaponFactory::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): WeaponFactory");
                 Acquire();
@@ -67,7 +67,7 @@ namespace item
 
         void WeaponFactory::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<WeaponFactory>();
             }
@@ -80,7 +80,7 @@ namespace item
         void WeaponFactory::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
+                (instanceUPtr_),
                 "item::WeaponFactory::Release() found instanceUPtr that was null.");
 
             instanceUPtr_.reset();

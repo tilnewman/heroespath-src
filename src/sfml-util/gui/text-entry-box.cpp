@@ -137,7 +137,7 @@ namespace sfml_util
         {
             target.draw(box_, states);
 
-            if (textRegionUPtr_.get() != nullptr)
+            if (textRegionUPtr_)
             {
                 textRegionUPtr_->draw(target, states);
             }
@@ -578,7 +578,7 @@ namespace sfml_util
             }
 
             bool isWithinBounds(true);
-            if (textRegionUPtr_.get() != nullptr)
+            if (textRegionUPtr_)
             {
                 if (false == textRegionUPtr_->GetText().empty())
                 {

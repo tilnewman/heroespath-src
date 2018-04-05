@@ -227,12 +227,12 @@ namespace stage
         target.draw(corpseSprite_, STATES);
         target.draw(treasureSprite_, STATES);
 
-        if (instrTextUPtr_.get() != nullptr)
+        if (instrTextUPtr_)
         {
             target.draw(*instrTextUPtr_, STATES);
         }
 
-        if (characterImageUPtr_.get() != nullptr)
+        if (characterImageUPtr_)
         {
             target.draw(*characterImageUPtr_, STATES);
         }
@@ -245,7 +245,7 @@ namespace stage
 
         Stage::Draw(target, STATES);
 
-        if (redXImageUPtr_.get() != nullptr)
+        if (redXImageUPtr_)
         {
             target.draw(*redXImageUPtr_, STATES);
         }
@@ -290,7 +290,7 @@ namespace stage
 
     void TreasureDisplayStage::UpdateTime_StageMover(const float ELAPSED_TIME_SECONDS)
     {
-        if (stageMoverUPtr_.get() != nullptr)
+        if (stageMoverUPtr_)
         {
             if (stageMoverUPtr_->UpdateTimeTreasure(ELAPSED_TIME_SECONDS))
             {
@@ -426,7 +426,7 @@ namespace stage
 
     void TreasureDisplayStage::TreasureChange() const
     {
-        if (stageMoverUPtr_.get() != nullptr)
+        if (stageMoverUPtr_)
         {
             stageMoverUPtr_->TreasureSwitch();
         }
@@ -458,7 +458,7 @@ namespace stage
 
     void TreasureDisplayStage::InventoryChange(const std::size_t CHARACTER_INDEX)
     {
-        if (stageMoverUPtr_.get() != nullptr)
+        if (stageMoverUPtr_)
         {
             UpdateInventoryVisuals();
             stageMoverUPtr_->InventoryIndexSet(CHARACTER_INDEX);
@@ -1298,7 +1298,7 @@ namespace stage
     const treasure::ItemDetailsOpt_t
         TreasureDisplayStage::MouseOverListboxItemDetails(const sf::Vector2f & MOUSE_POS) const
     {
-        if ((treasureListboxUPtr_.get() != nullptr) && (inventoryListboxUPtr_.get() != nullptr))
+        if ((treasureListboxUPtr_) && (inventoryListboxUPtr_))
         {
             if (treasureListboxUPtr_->GetEntityRegion().contains(MOUSE_POS))
             {
@@ -1397,7 +1397,7 @@ namespace stage
             EntityAdd(CURR_GUI_ENTITY_PTR);
         }
 
-        if ((stageMoverUPtr_.get() != nullptr) && PREV_GUI_ENTITY_PTR_OPT)
+        if ((stageMoverUPtr_) && PREV_GUI_ENTITY_PTR_OPT)
         {
             stageMoverUPtr_->ReplaceEntity(PREV_GUI_ENTITY_PTR_OPT.value(), CURR_GUI_ENTITY_PTR);
         }

@@ -60,7 +60,7 @@ namespace item
 
     ArmorRatings * ArmorRatings::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): ArmorRatings");
             Acquire();
@@ -71,7 +71,7 @@ namespace item
 
     void ArmorRatings::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<ArmorRatings>();
         }
@@ -84,7 +84,7 @@ namespace item
     void ArmorRatings::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
+            (instanceUPtr_),
             "sfml_util::ArmorRatings::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();

@@ -50,7 +50,7 @@ namespace sfml_util
 
     SfxWrapper::~SfxWrapper()
     {
-        if (soundUPtr_.get() != nullptr)
+        if (soundUPtr_)
         {
             soundUPtr_->stop();
         }
@@ -77,13 +77,13 @@ namespace sfml_util
     bool SfxWrapper::IsValid() const
     {
         return (
-            (which_ != sound_effect::Count) && (which_ != sound_effect::None)
-            && (soundUPtr_.get() != nullptr) && (bufferUPtr_.get() != nullptr));
+            (which_ != sound_effect::Count) && (which_ != sound_effect::None) && (soundUPtr_)
+            && (bufferUPtr_));
     }
 
     void SfxWrapper::Reset()
     {
-        if (soundUPtr_.get() != nullptr)
+        if (soundUPtr_)
         {
             soundUPtr_->stop();
         }

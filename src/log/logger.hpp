@@ -58,6 +58,7 @@ namespace log
     private:
         static std::unique_ptr<Logger> instanceUPtr_;
     };
+
 } // namespace log
 } // namespace heroespath
 

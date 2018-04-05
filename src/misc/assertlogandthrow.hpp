@@ -47,7 +47,7 @@
 #define M_ASSERT_OR_LOGANDTHROW(exp, str_static)                                                   \
     {                                                                                              \
         {                                                                                          \
-            if (false == (exp))                                                                    \
+            if (!(exp))                                                                            \
             {                                                                                      \
                 M_LOG_FAT(*heroespath::log::Logger::Instance(), (str_static));                     \
                 throw std::runtime_error((str_static));                                            \
@@ -58,7 +58,7 @@
 #define M_ASSERT_OR_LOGANDTHROW_SS(exp, str_stream)                                                \
     {                                                                                              \
         {                                                                                          \
-            if (false == (exp))                                                                    \
+            if (!(exp))                                                                            \
             {                                                                                      \
                 std::ostringstream _m_oss_logandthrow_temp;                                        \
                 _m_oss_logandthrow_temp << str_stream;                                             \
@@ -75,7 +75,7 @@
 #define M_ASSERT_OR_LOGANDTHROW(exp, str_static)                                                   \
     {                                                                                              \
         {                                                                                          \
-            if (false == (exp))                                                                    \
+            if (!(exp))                                                                            \
             {                                                                                      \
                 std::cerr << (str_static) << std::endl;                                            \
                 M_LOG_FAT(*heroespath::log::Logger::Instance(), (str_static));                     \
@@ -87,7 +87,7 @@
 #define M_ASSERT_OR_LOGANDTHROW_SS(exp, str_stream)                                                \
     {                                                                                              \
         {                                                                                          \
-            if (false == (exp))                                                                    \
+            if (!(exp))                                                                            \
             {                                                                                      \
                 std::ostringstream _m_oss_logandthrow_temp;                                        \
                 _m_oss_logandthrow_temp << "Assert failed " << __FILE__ << "::" << __LINE__        \

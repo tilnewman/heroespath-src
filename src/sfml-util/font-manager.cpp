@@ -73,7 +73,7 @@ namespace sfml_util
 
     FontManager * FontManager::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             M_HP_LOG_ERR("Singleton Instance() before Acquire(): FontManager");
             Acquire();
@@ -84,7 +84,7 @@ namespace sfml_util
 
     void FontManager::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<FontManager>();
         }
@@ -97,8 +97,7 @@ namespace sfml_util
     void FontManager::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "sfml_util::FontManager::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "sfml_util::FontManager::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }

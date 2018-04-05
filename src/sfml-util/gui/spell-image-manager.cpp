@@ -54,7 +54,7 @@ namespace sfml_util
 
         SpellImageManager * SpellImageManager::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): SpellImageManager");
                 Acquire();
@@ -65,7 +65,7 @@ namespace sfml_util
 
         void SpellImageManager::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<SpellImageManager>();
             }
@@ -78,8 +78,7 @@ namespace sfml_util
         void SpellImageManager::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
-                "SpellImageManager::Release() found instanceUPtr that was null.");
+                (instanceUPtr_), "SpellImageManager::Release() found instanceUPtr that was null.");
 
             instanceUPtr_.reset();
         }

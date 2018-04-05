@@ -88,7 +88,7 @@ namespace non_player
 
         ChanceFactory * ChanceFactory::Instance()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 M_HP_LOG_ERR("Singleton Instance() before Acquire(): ChanceFactory");
                 Acquire();
@@ -99,7 +99,7 @@ namespace non_player
 
         void ChanceFactory::Acquire()
         {
-            if (instanceUPtr_.get() == nullptr)
+            if (!instanceUPtr_)
             {
                 instanceUPtr_ = std::make_unique<ChanceFactory>();
             }
@@ -112,7 +112,7 @@ namespace non_player
         void ChanceFactory::Release()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_.get() != nullptr),
+                (instanceUPtr_),
                 "non_player::ownership::ChanceFactory::Release() "
                     << "found instanceUPtr that was null.");
 

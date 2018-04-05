@@ -119,12 +119,12 @@ namespace sfml_util
         {
             if (stagePtrOpt_)
             {
-                if (sliderBarUPtr_.get() != nullptr)
+                if (sliderBarUPtr_)
                 {
                     stagePtrOpt_->Obj().EntityRemove(sliderBarUPtr_.get());
                 }
 
-                if (boxUPtr_.get() != nullptr)
+                if (boxUPtr_)
                 {
                     stagePtrOpt_->Obj().EntityRemove(boxUPtr_.get());
                 }
@@ -215,7 +215,7 @@ namespace sfml_util
         {
             if (stagePtrOpt_)
             {
-                if (sliderBarUPtr_.get() != nullptr)
+                if (sliderBarUPtr_)
                 {
                     stagePtrOpt_->Obj().EntityRemove(sliderBarUPtr_.get());
                     sliderBarUPtr_.reset();
@@ -254,14 +254,14 @@ namespace sfml_util
                 newRegion.top = entityRegion_.top - FIRST_LINE_HEIGHT;
                 newRegion.height = entityRegion_.height + FIRST_LINE_HEIGHT;
 
-                if (sliderBarUPtr_.get() != nullptr)
+                if (sliderBarUPtr_)
                 {
                     sliderBarUPtr_->MoveEntityPos(25.0f, 0.0f);
                 }
 
                 boxInfo_.SetBoxAndBackgroundRegion(newRegion);
 
-                if (boxUPtr_.get() != nullptr)
+                if (boxUPtr_)
                 {
                     stagePtrOpt_->Obj().EntityRemove(boxUPtr_.get());
                 }
@@ -316,12 +316,12 @@ namespace sfml_util
                 }
             }
 
-            if (boxUPtr_.get() != nullptr)
+            if (boxUPtr_)
             {
                 boxUPtr_->MoveEntityPos(HORIZ, VERT);
             }
 
-            if (sliderBarUPtr_.get() != nullptr)
+            if (sliderBarUPtr_)
             {
                 sliderBarUPtr_->MoveEntityPos(HORIZ, VERT);
             }
@@ -336,7 +336,7 @@ namespace sfml_util
 
         bool TextRegion::HandleCallback(const callback::SliderBarCallbackPackage_t & PACKAGE)
         {
-            if (sliderBarUPtr_.get() != nullptr)
+            if (sliderBarUPtr_)
             {
                 EstablishWhichLinesToDraw(PACKAGE.PTR_->GetCurrentValue());
                 ResetDrawCache();
@@ -406,7 +406,7 @@ namespace sfml_util
                 }
             }
 
-            if (boxUPtr_.get() != nullptr)
+            if (boxUPtr_)
             {
                 boxUPtr_->SetEntityColors(entityColorSet_);
             }

@@ -70,7 +70,7 @@ namespace popup
 
         selection_ = static_cast<int>(CURR_VAL);
 
-        if ((textEntryBoxUPtr_.get() != nullptr) && willSliderbarUpdate_)
+        if ((textEntryBoxUPtr_) && willSliderbarUpdate_)
         {
             willTextBoxUpdate_ = false;
             textEntryBoxUPtr_->SetText(std::to_string(CURR_VAL));
@@ -280,7 +280,7 @@ namespace popup
         {
             SetupInfoText("");
 
-            if (sliderbarUPtr_.get() != nullptr)
+            if (sliderbarUPtr_)
             {
                 willSliderbarUpdate_ = false;
 

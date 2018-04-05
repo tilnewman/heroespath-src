@@ -81,7 +81,7 @@ namespace stage
             target.draw(sprite_, states);
         }
 
-        if (textRegionUPtr_.get() != nullptr)
+        if (textRegionUPtr_)
         {
             target.draw(*textRegionUPtr_, states);
         }

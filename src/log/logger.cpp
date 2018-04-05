@@ -30,7 +30,6 @@
 #include "logger.hpp"
 
 #include "log/log-macros.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 
 namespace heroespath
@@ -48,7 +47,7 @@ namespace log
 
     Logger * Logger::Instance()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             Acquire();
         }
@@ -58,7 +57,7 @@ namespace log
 
     void Logger::Acquire()
     {
-        if (instanceUPtr_.get() == nullptr)
+        if (!instanceUPtr_)
         {
             instanceUPtr_ = std::make_unique<Logger>();
         }
@@ -67,9 +66,10 @@ namespace log
     void Logger::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_.get() != nullptr),
-            "log::Logger::Release() found instanceUPtr that was null.");
+            (instanceUPtr_), "log::Logger::Release() found instanceUPtr that was null.");
+
         instanceUPtr_.reset();
     }
+
 } // namespace log
 } // namespace heroespath
