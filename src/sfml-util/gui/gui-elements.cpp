@@ -43,7 +43,7 @@ namespace sfml_util
     namespace gui
     {
 
-        std::unique_ptr<GuiElements> GuiElements::instanceUPtr_{ nullptr };
+        std::unique_ptr<GuiElements> GuiElements::instanceUPtr_;
 
         GuiElements::GuiElements()
             : elementsTexture_()

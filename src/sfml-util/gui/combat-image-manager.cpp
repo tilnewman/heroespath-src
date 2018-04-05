@@ -40,7 +40,7 @@ namespace sfml_util
     namespace gui
     {
 
-        std::unique_ptr<CombatImageManager> CombatImageManager::instanceUPtr_{ nullptr };
+        std::unique_ptr<CombatImageManager> CombatImageManager::instanceUPtr_;
 
         CombatImageManager::CombatImageManager()
         {

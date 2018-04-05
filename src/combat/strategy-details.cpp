@@ -51,7 +51,7 @@ namespace combat
         const std::string ChanceFactory::SUBPART_TITLE_FREQ_FLYPOUNCE_("FlyPounceFreq");
         const std::string ChanceFactory::SUBPART_TITLE_FREQ_STANDPOUNCE_("StandingPounceFreq");
         //
-        DetailsSPtr_t ChanceFactory::instance_(nullptr);
+        DetailsSPtr_t ChanceFactory::instance_;
 
         ChanceFactory::ChanceFactory()
             : raceRoleChancesMap_()
@@ -61,7 +61,7 @@ namespace combat
 
         DetailsSPtr_t ChanceFactory::Instance()
         {
-            if (instance_.get() == nullptr)
+            if (!instance_)
             {
                 instance_ = std::make_unique<ChanceFactory>();
             }

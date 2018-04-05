@@ -253,7 +253,7 @@ namespace stage
         auto const CHAR_LIST_POS_TOP{ gsListBoxPosTop_ + 100.0f };
 
         // setup location text
-        if (locTextRegionUPtr_.get() == nullptr)
+        if (!locTextRegionUPtr_)
         {
             locTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>("LoadGameLocation");
 
@@ -269,7 +269,7 @@ namespace stage
         locTextRegionUPtr_->Setup(descTextInfo, LOC_TEXT_RECT);
 
         // setup character list label text
-        if (charLabelTextRegionUPtr_.get() == nullptr)
+        if (!charLabelTextRegionUPtr_)
         {
             charLabelTextRegionUPtr_
                 = std::make_unique<sfml_util::gui::TextRegion>("CharacterListLabel");

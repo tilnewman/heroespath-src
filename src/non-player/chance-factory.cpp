@@ -60,7 +60,7 @@ namespace non_player
         const float ChanceFactory::CHANCE_MAXIMUM_{ 0.999f };
         const float ChanceFactory::CHANCE_WEAPON_ENUM_POS_ADJ_SET_{ 0.5f };
         const float ChanceFactory::CHANCE_WEAPON_ENUM_POS_ADJ_INDIVIDUAL_{ 0.1f };
-        std::unique_ptr<ChanceFactory> ChanceFactory::instanceUPtr_{ nullptr };
+        std::unique_ptr<ChanceFactory> ChanceFactory::instanceUPtr_;
         chance::MaterialChanceMap_t ChanceFactory::materialChanceMapCool_;
         chance::MaterialChanceMap_t ChanceFactory::materialChanceMapMetal_;
         chance::MaterialChanceMap_t ChanceFactory::materialChanceMapPrecious_;

@@ -464,7 +464,7 @@ namespace sfml_util
                     posY += t.getGlobalBounds().height;
                 }
 
-                auto const SCROLL_PAD{ (sliderBarUPtr_.get() == nullptr)
+                auto const SCROLL_PAD{ (!sliderBarUPtr_)
                                            ? 0.0f
                                            : static_cast<float>(t.getCharacterSize()) };
 

@@ -49,7 +49,7 @@ namespace item
     namespace weapon
     {
 
-        std::unique_ptr<WeaponDetailLoader> WeaponDetailLoader::instanceUPtr_{ nullptr };
+        std::unique_ptr<WeaponDetailLoader> WeaponDetailLoader::instanceUPtr_;
 
         WeaponDetailLoader::WeaponDetailLoader()
             : weaponDetailsMap_()

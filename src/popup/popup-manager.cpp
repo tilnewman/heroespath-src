@@ -65,7 +65,7 @@ namespace popup
     // set to match sfml_util::FontManager::Color_GrayDarker() before being set in the constructor
     sf::Color PopupManager::fontColor_{ sf::Color(64, 64, 64, 255) };
 
-    std::unique_ptr<PopupManager> PopupManager::instanceUPtr_{ nullptr };
+    std::unique_ptr<PopupManager> PopupManager::instanceUPtr_;
 
     PopupManager::PopupManager()
         : accentPathsVec_()

@@ -88,7 +88,7 @@ namespace sfml_util
 
                     bool didDoubleClickAlready(false);
 
-                    if (entityClockUPtr_.get() == nullptr)
+                    if (!entityClockUPtr_)
                     {
                         // the sf::Clock starts once constructed
                         entityClockUPtr_ = std::make_unique<sf::Clock>();

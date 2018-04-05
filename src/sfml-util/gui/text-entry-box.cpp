@@ -154,7 +154,7 @@ namespace sfml_util
             textInfo_.text = NEW_TEXT;
             UpdateText();
 
-            if (textRegionUPtr_.get() == nullptr)
+            if (!textRegionUPtr_)
             {
                 cursorRect_.left = innerRegion_.left;
             }
@@ -166,7 +166,7 @@ namespace sfml_util
 
         const std::string TextEntryBox::GetText() const
         {
-            if (textRegionUPtr_.get() == nullptr)
+            if (!textRegionUPtr_)
             {
                 return "";
             }

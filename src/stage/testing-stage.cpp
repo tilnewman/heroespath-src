@@ -1084,7 +1084,7 @@ namespace stage
 
         if (animIndex < sfml_util::Animations::Count)
         {
-            if (animUPtr_.get() == nullptr)
+            if (!animUPtr_)
             {
                 auto const ENUM{ static_cast<sfml_util::Animations::Enum>(animIndex) };
 

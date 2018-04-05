@@ -740,7 +740,7 @@ namespace stage
             DESC_TEXT_COLOR_,
             sfml_util::Justified::Left);
 
-        if (racetDescTextRegionUPtr_.get() == nullptr)
+        if (!racetDescTextRegionUPtr_)
         {
             racetDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "RaceDescription",
@@ -784,7 +784,7 @@ namespace stage
             DESC_TEXT_COLOR_,
             sfml_util::Justified::Left);
 
-        if (roletDescTextRegionUPtr_.get() == nullptr)
+        if (!roletDescTextRegionUPtr_)
         {
             roletDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "RoleDescription",
@@ -1179,7 +1179,7 @@ namespace stage
 
         // setup the final TextRegion that will be drawn to the screen
         descTextInfo.text = STRENGTH_BASE_TEXT;
-        if (attrDescTextRegionUPtr_.get() == nullptr)
+        if (!attrDescTextRegionUPtr_)
         {
             attrDescTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "AttributeDescription", descTextInfo, REGION, sfml_util::IStagePtr_t(this));

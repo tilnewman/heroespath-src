@@ -58,7 +58,7 @@ namespace sfml_util
     namespace gui
     {
 
-        std::unique_ptr<ItemImageManager> ItemImageManager::instanceUPtr_{ nullptr };
+        std::unique_ptr<ItemImageManager> ItemImageManager::instanceUPtr_;
         std::string ItemImageManager::imagesDirectoryPath_{ "" };
         const std::string ItemImageManager::FILE_EXT_STR_{ ".png" };
 

@@ -42,7 +42,7 @@ namespace item
     namespace armor
     {
 
-        std::unique_ptr<ArmorFactory> ArmorFactory::instanceUPtr_{ nullptr };
+        std::unique_ptr<ArmorFactory> ArmorFactory::instanceUPtr_;
 
         ArmorFactory::ArmorFactory() { M_HP_LOG_DBG("Singleton Construction: ArmorFactory"); }
 

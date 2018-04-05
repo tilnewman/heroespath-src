@@ -64,7 +64,7 @@ namespace sfml_util
     const unsigned int FontManager::SIZE_TINY_MAX_(56);
     //
     std::string FontManager::fontsDirectoryPath_;
-    std::unique_ptr<FontManager> FontManager::instanceUPtr_{ nullptr };
+    std::unique_ptr<FontManager> FontManager::instanceUPtr_;
     FontUVec_t FontManager::fontUVec_;
 
     FontManager::FontManager() { M_HP_LOG_DBG("Singleton Construction: FontManager"); }

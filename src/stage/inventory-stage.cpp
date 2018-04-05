@@ -1060,7 +1060,7 @@ namespace stage
 
         detailsPosLeft_ = detailsTextRect.left;
 
-        if (detailsTextRegionUPtr_.get() == nullptr)
+        if (!detailsTextRegionUPtr_)
         {
             detailsTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "InventoryStage'sDetails", DETAILS_TEXT_INFO, detailsTextRect);
@@ -1107,7 +1107,7 @@ namespace stage
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Left);
 
-        if (statsTextRegionUPtr_.get() == nullptr)
+        if (!statsTextRegionUPtr_)
         {
             const sf::FloatRect STATS_TEXT_RECT(
                 STATS_POS_LEFT_, mainMenuTitle_.Bottom(false) + 20.0f, 0.0f, 0.0f);
@@ -1338,7 +1338,7 @@ namespace stage
             }
         }
 
-        if (descBoxUPtr_.get() == nullptr)
+        if (!descBoxUPtr_)
         {
             descBoxUPtr_ = std::make_unique<sfml_util::gui::box::Box>(
                 "InventoryStage'sDesc", LISTBOX_BOX_INFO);
@@ -1555,7 +1555,7 @@ namespace stage
 
         const sf::FloatRect LISTBOX_TEXT_RECT(FIRST_LISTBOX_POS_LEFT_, 0.0f, LISTBOX_WIDTH_, 0.0f);
 
-        if (eqTitleTextRegionUPtr_.get() == nullptr)
+        if (!eqTitleTextRegionUPtr_)
         {
             eqTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "InventoryStage'sEquippedListBoxTitle", LISTBOX_TEXT_INFO, LISTBOX_TEXT_RECT);
@@ -1585,7 +1585,7 @@ namespace stage
 
         const sf::FloatRect DESC_TEXT_RECT(SECOND_LISTBOX_POS_LEFT_, 0.0f, LISTBOX_WIDTH_, 0.0f);
 
-        if (unEqTitleTextRegionUPtr_.get() == nullptr)
+        if (!unEqTitleTextRegionUPtr_)
         {
             unEqTitleTextRegionUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "InventoryStage'sUnequippedListBoxTitle", DESC_TEXT_INFO, DESC_TEXT_RECT);
@@ -2770,7 +2770,7 @@ namespace stage
             return false;
         }
 
-        if ((listBoxItemToGiveSPtr_.get() == nullptr) || (!listBoxItemToGiveSPtr_->ITEM_PTR_OPT))
+        if ((!listBoxItemToGiveSPtr_) || (!listBoxItemToGiveSPtr_->ITEM_PTR_OPT))
         {
             return true;
         }

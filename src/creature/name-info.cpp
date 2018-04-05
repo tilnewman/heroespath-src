@@ -42,7 +42,7 @@ namespace heroespath
 namespace creature
 {
 
-    std::unique_ptr<NameInfo> NameInfo::instanceUPtr_{ nullptr };
+    std::unique_ptr<NameInfo> NameInfo::instanceUPtr_;
 
     NameInfo::NameInfo()
         : sizeMap_()

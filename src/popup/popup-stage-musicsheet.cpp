@@ -449,7 +449,7 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
 
-        if (titleTextRegionUPtr_.get() == nullptr)
+        if (!titleTextRegionUPtr_)
         {
             const sf::FloatRect SONG_TITLE_TEXTRECT{
                 pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
@@ -519,7 +519,7 @@ namespace popup
                                                    SONGDETAILS_TEXTRECT_WIDTH,
                                                    SONGDETAILS_TEXTRECT_HEIGHT };
 
-        if (detailsTextUPtr_.get() == nullptr)
+        if (!detailsTextUPtr_)
         {
             detailsTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "MusicsheetPopupWindowSongDetails", SONG_DETAILS_TEXTINFO, SONG_DETAILS_TEXTRECT);
@@ -630,7 +630,7 @@ namespace popup
                                                 SONG_DESC_TEXTRECT_WIDTH,
                                                 SONG_DESC_TEXTRECT_HEIGHT };
 
-        if (descTextUPtr_.get() == nullptr)
+        if (!descTextUPtr_)
         {
             descTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SongnbookPopupWindowSongDescription", SONG_DESC_TEXTINFO, SONG_DESC_TEXTRECT);

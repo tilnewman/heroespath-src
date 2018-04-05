@@ -40,7 +40,7 @@ namespace sfml_util
     namespace gui
     {
 
-        std::unique_ptr<TitleImageManager> TitleImageManager::instanceUPtr_{ nullptr };
+        std::unique_ptr<TitleImageManager> TitleImageManager::instanceUPtr_;
 
         TitleImageManager::TitleImageManager()
         {

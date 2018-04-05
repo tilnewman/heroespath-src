@@ -40,7 +40,7 @@ namespace heroespath
 namespace item
 {
 
-    std::unique_ptr<ArmorRatings> ArmorRatings::instanceUPtr_{ nullptr };
+    std::unique_ptr<ArmorRatings> ArmorRatings::instanceUPtr_;
 
     ArmorRatings::ArmorRatings()
         : clothesCloth_(0_armor)

@@ -48,7 +48,7 @@ namespace heroespath
 namespace game
 {
 
-    std::unique_ptr<LoopManager> LoopManager::instanceUPtr_{ nullptr };
+    std::unique_ptr<LoopManager> LoopManager::instanceUPtr_;
 
     std::string LoopManager::startupStageName_{ sfml_util::LoopState::ToString(
         sfml_util::LoopState::Intro) };

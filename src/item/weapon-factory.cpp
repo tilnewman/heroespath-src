@@ -48,7 +48,7 @@ namespace item
     namespace weapon
     {
 
-        std::unique_ptr<WeaponFactory> WeaponFactory::instanceUPtr_{ nullptr };
+        std::unique_ptr<WeaponFactory> WeaponFactory::instanceUPtr_;
 
         WeaponFactory::WeaponFactory() { M_HP_LOG_DBG("Singleton Construction: WeaponFactory"); }
 

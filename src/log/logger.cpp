@@ -37,7 +37,7 @@ namespace heroespath
 namespace log
 {
 
-    std::unique_ptr<Logger> Logger::instanceUPtr_{ nullptr };
+    std::unique_ptr<Logger> Logger::instanceUPtr_;
 
     Logger::Logger()
         : LogBase(LogBase::FILE_NAME_DEFAULT, LogBase::FILE_NAME_EXT_DEFAULT, "")

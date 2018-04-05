@@ -41,7 +41,7 @@ namespace heroespath
 namespace combat
 {
 
-    std::unique_ptr<PartyFactory> PartyFactory::instanceUPtr_{ nullptr };
+    std::unique_ptr<PartyFactory> PartyFactory::instanceUPtr_;
 
     PartyFactory::PartyFactory() { M_HP_LOG_DBG("Singleton Construction: PartyFactory"); }
 

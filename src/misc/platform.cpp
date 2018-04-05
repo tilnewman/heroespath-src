@@ -75,7 +75,7 @@ namespace misc
         }
     }
 
-    std::unique_ptr<Platform> Platform::instanceUPtr_{ nullptr };
+    std::unique_ptr<Platform> Platform::instanceUPtr_;
 
     Platform::Platform()
         : platform_(platform_type::Unknown)

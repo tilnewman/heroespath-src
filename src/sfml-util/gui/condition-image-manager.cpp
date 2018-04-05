@@ -40,7 +40,7 @@ namespace sfml_util
     namespace gui
     {
 
-        std::unique_ptr<ConditionImageManager> ConditionImageManager::instanceUPtr_{ nullptr };
+        std::unique_ptr<ConditionImageManager> ConditionImageManager::instanceUPtr_;
 
         ConditionImageManager::ConditionImageManager()
         {

@@ -343,7 +343,7 @@ namespace combat
     {
         if (IS_FLYING)
         {
-            if (wingTextureUPtr_.get() == nullptr)
+            if (!wingTextureUPtr_)
             {
                 wingTextureUPtr_ = std::make_unique<sf::Texture>();
                 sfml_util::gui::CombatImageManager::Instance()->Get(
@@ -560,7 +560,7 @@ namespace combat
 
     void CombatNode::SetupSkullAndCrossBones()
     {
-        if (crossBonesTextureUPtr_.get() == nullptr)
+        if (!crossBonesTextureUPtr_)
         {
             crossBonesTextureUPtr_ = std::make_unique<sf::Texture>();
 

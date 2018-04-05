@@ -37,7 +37,7 @@ namespace heroespath
 namespace creature
 {
 
-    std::unique_ptr<EnchantmentWarehouse> EnchantmentWarehouse::instanceUPtr_{ nullptr };
+    std::unique_ptr<EnchantmentWarehouse> EnchantmentWarehouse::instanceUPtr_;
 
     EnchantmentWarehouse::EnchantmentWarehouse()
         : warehouse_()

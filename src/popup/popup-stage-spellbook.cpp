@@ -458,7 +458,7 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
 
-        if (spellTitleTextRegionUPtr_.get() == nullptr)
+        if (!spellTitleTextRegionUPtr_)
         {
             const sf::FloatRect SPELL_TITLE_TEXTRECT{
                 pageRectRight_.left, pageRectRight_.top, pageRectRight_.width, 0.0f
@@ -514,7 +514,7 @@ namespace popup
             sfml_util::FontManager::Color_GrayDarker(),
             sfml_util::Justified::Center);
 
-        if (spellDetailsTextUPtr_.get() == nullptr)
+        if (!spellDetailsTextUPtr_)
         {
             auto const SPELLDETAILS_TEXTRECT_LEFT{ pageRectRight_.left };
 
@@ -642,7 +642,7 @@ namespace popup
                                                  SPELL_DESC_TEXTRECT_WIDTH,
                                                  SPELL_DESC_TEXTRECT_HEIGHT };
 
-        if (spellDescTextUPtr_.get() == nullptr)
+        if (!spellDescTextUPtr_)
         {
             spellDescTextUPtr_ = std::make_unique<sfml_util::gui::TextRegion>(
                 "SpellnbookPopupWindowSpellDescription", SPELL_DESC_TEXTINFO, SPELL_DESC_TEXTRECT);

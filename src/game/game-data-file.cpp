@@ -40,7 +40,7 @@ namespace heroespath
 {
 namespace game
 {
-    std::unique_ptr<GameDataFile> GameDataFile::instanceUPtr_{ nullptr };
+    std::unique_ptr<GameDataFile> GameDataFile::instanceUPtr_;
 
     GameDataFile::GameDataFile()
         : ConfigBase("game-data.txt", "=", "#")

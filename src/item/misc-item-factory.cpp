@@ -50,7 +50,7 @@ namespace heroespath
 namespace item
 {
 
-    std::unique_ptr<MiscItemFactory> MiscItemFactory::instanceUPtr_{ nullptr };
+    std::unique_ptr<MiscItemFactory> MiscItemFactory::instanceUPtr_;
 
     MiscItemFactory::MiscItemFactory() { M_HP_LOG_DBG("Singleton Construction: MiscItemFactory"); }
 

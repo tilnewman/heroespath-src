@@ -392,31 +392,31 @@ namespace stage
 
     bool TreasureDisplayStage::IsShowingHeldItems() const
     {
-        if (nullptr == stageMoverUPtr_.get())
+        if (stageMoverUPtr_)
         {
-            return false;
+            return stageMoverUPtr_->Source() == stage::treasure::Type::Held;
         }
         else
         {
-            return stageMoverUPtr_->Source() == stage::treasure::Type::Held;
+            return false;
         }
     }
 
     std::size_t TreasureDisplayStage::CharacterIndexShowingInventory() const
     {
-        if (nullptr == stageMoverUPtr_.get())
+        if (stageMoverUPtr_)
         {
-            return 0;
+            return stageMoverUPtr_->InventoryCharacterIndex();
         }
         else
         {
-            return stageMoverUPtr_->InventoryCharacterIndex();
+            return 0;
         }
     }
 
     bool TreasureDisplayStage::IsAnythingAnimating() const
     {
-        return ((nullptr != stageMoverUPtr_.get()) && stageMoverUPtr_->IsEitherMoving());
+        return (stageMoverUPtr_ && stageMoverUPtr_->IsEitherMoving());
     }
 
     bool TreasureDisplayStage::CanTreasureChange() const
@@ -441,7 +441,7 @@ namespace stage
 
     std::size_t TreasureDisplayStage::CharacterIndex() const
     {
-        if (stageMoverUPtr_.get() == nullptr)
+        if (!stageMoverUPtr_)
         {
             return 0;
         }
@@ -467,7 +467,7 @@ namespace stage
 
     std::size_t TreasureDisplayStage::WhichCharacterInventoryIsDisplayedIndex()
     {
-        if (stageMoverUPtr_.get() == nullptr)
+        if (!stageMoverUPtr_)
         {
             auto const NUM_CHARACTERS{
                 game::Game::Instance()->State().Party().Characters().size()
@@ -1214,7 +1214,7 @@ namespace stage
 
     stage::treasure::Type TreasureDisplayStage::TreasureSource() const
     {
-        if (stageMoverUPtr_.get() == nullptr)
+        if (!stageMoverUPtr_)
         {
             return (
                 ((treasureAvailable_ == item::TreasureAvailable::HeldAndLockbox)

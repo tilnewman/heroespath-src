@@ -42,7 +42,7 @@ namespace heroespath
 namespace config
 {
 
-    std::unique_ptr<SettingsFile> SettingsFile::instanceUPtr_{ nullptr };
+    std::unique_ptr<SettingsFile> SettingsFile::instanceUPtr_;
     const std::string SettingsFile::KEY_THEMEMUSIC_VOL_("volume_music");
     const std::string SettingsFile::KEY_SOUNDEFFECTS_VOL_("volume_sound_effects");
     const std::string SettingsFile::KEY_RESOLUTION_WIDTH_("display_width");

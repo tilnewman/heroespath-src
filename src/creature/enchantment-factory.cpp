@@ -42,7 +42,7 @@ namespace heroespath
 namespace creature
 {
 
-    std::unique_ptr<EnchantmentFactory> EnchantmentFactory::instanceUPtr_{ nullptr };
+    std::unique_ptr<EnchantmentFactory> EnchantmentFactory::instanceUPtr_;
 
     EnchantmentFactory::EnchantmentFactory()
     {

@@ -49,7 +49,7 @@ namespace non_player
     namespace ownership
     {
 
-        std::unique_ptr<InventoryFactory> InventoryFactory::instanceUPtr_{ nullptr };
+        std::unique_ptr<InventoryFactory> InventoryFactory::instanceUPtr_;
 
         InventoryFactory::InventoryFactory()
         {

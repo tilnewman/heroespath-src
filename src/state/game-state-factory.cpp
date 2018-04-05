@@ -52,7 +52,7 @@ namespace heroespath
 namespace state
 {
 
-    std::unique_ptr<GameStateFactory> GameStateFactory::instanceUPtr_{ nullptr };
+    std::unique_ptr<GameStateFactory> GameStateFactory::instanceUPtr_;
     //
     const std::string GameStateFactory::SAVED_HEROESPATH_DIR_NAME_("saved_games");
     const std::string GameStateFactory::SAVED_HEROESPATH_FILE_NAME_("game");

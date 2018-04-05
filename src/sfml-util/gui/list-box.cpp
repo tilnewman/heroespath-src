@@ -141,7 +141,7 @@ namespace sfml_util
             lineColor_ = LINE_COLOR;
             callbackPtrOpt_ = CALLBACK_PTR_OPT;
 
-            if (stagePtrOpt_ && (boxUPtr_.get() == nullptr))
+            if (stagePtrOpt_ && (!boxUPtr_))
             {
                 boxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("ListBox's", BOX_INFO);
                 stagePtrOpt_->Obj().EntityAdd(boxUPtr_.get());
@@ -153,7 +153,7 @@ namespace sfml_util
 
             boxUPtr_->SetWillAcceptFocus(false);
 
-            if (stagePtrOpt_ && (sliderbarUPtr_.get() == nullptr))
+            if (stagePtrOpt_ && (!sliderbarUPtr_))
             {
                 sliderbarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
                     "ListBox's",
@@ -518,7 +518,7 @@ namespace sfml_util
         {
             auto const ITEM_SPTR{ AtPos(MOUSE_POS_V) };
 
-            if (ITEM_SPTR.get() == nullptr)
+            if (!ITEM_SPTR)
             {
                 return ERROR_RECT_;
             }

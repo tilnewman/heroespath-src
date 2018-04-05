@@ -57,7 +57,7 @@ namespace heroespath
 namespace combat
 {
 
-    std::unique_ptr<Encounter> Encounter::instanceUPtr_{ nullptr };
+    std::unique_ptr<Encounter> Encounter::instanceUPtr_;
 
     Encounter::Encounter()
         : nonPlayerPartyUPtr_()

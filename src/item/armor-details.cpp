@@ -45,7 +45,7 @@ namespace item
     namespace armor
     {
 
-        std::unique_ptr<ArmorDetailLoader> ArmorDetailLoader::instanceUPtr_{ nullptr };
+        std::unique_ptr<ArmorDetailLoader> ArmorDetailLoader::instanceUPtr_;
 
         ArmorDetailLoader::ArmorDetailLoader()
             : armorDetailsMap_()

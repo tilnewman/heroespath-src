@@ -50,7 +50,7 @@ namespace heroespath
 namespace item
 {
 
-    std::unique_ptr<ItemFactory> ItemFactory::instanceUPtr_{ nullptr };
+    std::unique_ptr<ItemFactory> ItemFactory::instanceUPtr_;
 
     ItemFactory::ItemFactory() { M_HP_LOG_DBG("Singleton Construction: ItemFactory"); }
 

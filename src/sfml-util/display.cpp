@@ -75,7 +75,7 @@ namespace sfml_util
         }
     }
 
-    std::unique_ptr<Display> Display::instanceUPtr_{ nullptr };
+    std::unique_ptr<Display> Display::instanceUPtr_;
 
     Display::Display()
         : winUPtr_()
@@ -712,7 +712,7 @@ namespace sfml_util
         const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (winUPtr_.get() == nullptr), "sfml_util::Display::OpenRenderWindow() called twice.");
+            (!winUPtr_), "sfml_util::Display::OpenRenderWindow() called twice.");
 
         const sf::VideoMode VIDEO_MODE(EstablishVideoMode());
 

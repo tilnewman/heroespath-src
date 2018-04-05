@@ -40,7 +40,7 @@ namespace sfml_util
     namespace gui
     {
 
-        std::unique_ptr<SongImageManager> SongImageManager::instanceUPtr_{ nullptr };
+        std::unique_ptr<SongImageManager> SongImageManager::instanceUPtr_;
 
         SongImageManager::SongImageManager()
         {

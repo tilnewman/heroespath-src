@@ -37,7 +37,7 @@ namespace heroespath
 namespace non_player
 {
 
-    std::unique_ptr<CharacterWarehouse> CharacterWarehouse::instanceUPtr_{ nullptr };
+    std::unique_ptr<CharacterWarehouse> CharacterWarehouse::instanceUPtr_;
 
     CharacterWarehouse::CharacterWarehouse()
         : warehouse_()

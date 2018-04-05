@@ -46,7 +46,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    std::unique_ptr<TextureCache> TextureCache::instanceUPtr_{ nullptr };
+    std::unique_ptr<TextureCache> TextureCache::instanceUPtr_;
 
     TextureCache::TextureCache()
         : cacheUVec_()

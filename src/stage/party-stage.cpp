@@ -638,7 +638,7 @@ namespace stage
         {
             auto itemSPtr{ characterListBoxUPtr_->AtPos(mouseOverPosV_) };
 
-            if (itemSPtr.get() == nullptr)
+            if (!itemSPtr)
             {
                 itemSPtr = partyListBoxUPtr_->AtPos(mouseOverPosV_);
             }

@@ -52,7 +52,7 @@ namespace sfml_util
     {
 
         std::string CreatureImageManager::imagesDirectoryPath_;
-        std::unique_ptr<CreatureImageManager> CreatureImageManager::instanceUPtr_{ nullptr };
+        std::unique_ptr<CreatureImageManager> CreatureImageManager::instanceUPtr_;
 
         CreatureImageManager::CreatureImageManager()
         {

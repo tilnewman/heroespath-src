@@ -53,7 +53,7 @@ namespace sfml_util
 
     std::string SoundManager::soundsDirectoryPath_("");
     std::string SoundManager::musicDirectoryPath_("");
-    std::unique_ptr<SoundManager> SoundManager::instanceUPtr_{ nullptr };
+    std::unique_ptr<SoundManager> SoundManager::instanceUPtr_;
 
     SoundManager::SoundManager()
         : musicVolume_(0.0f)

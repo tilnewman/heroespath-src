@@ -220,7 +220,7 @@ namespace popup
 
     int PopupStageNumberSelect::GetSelectNumber() const
     {
-        if (textEntryBoxUPtr_.get() == nullptr)
+        if (!textEntryBoxUPtr_)
         {
             return NUMBER_SELECT_INVALID_;
         }

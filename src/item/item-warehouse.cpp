@@ -37,7 +37,7 @@ namespace heroespath
 namespace item
 {
 
-    std::unique_ptr<ItemWarehouse> ItemWarehouse::instanceUPtr_{ nullptr };
+    std::unique_ptr<ItemWarehouse> ItemWarehouse::instanceUPtr_;
 
     ItemWarehouse::ItemWarehouse()
         : warehouse_()
