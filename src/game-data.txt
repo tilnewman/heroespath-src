@@ -1,7 +1,7 @@
 system-revision=alpha 0.1
 
 #graphics settings
-system-window-sync=true
+system-window-sync=false
 system-window-frame-rate-limit=0
 
 heroespath-stats-reduce-ratio=               0.4

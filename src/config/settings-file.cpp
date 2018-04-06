@@ -110,7 +110,9 @@ namespace config
 
             SetBool(KEY_VERTICAL_SYNC_, sfml_util::Display::Instance()->GetVerticalSync());
 
-            SetInt(KEY_FRAMERATE_LIMIT_, sfml_util::Display::Instance()->GetFrameRateLimit());
+            SetInt(
+                KEY_FRAMERATE_LIMIT_,
+                static_cast<int>(sfml_util::Display::Instance()->GetFrameRateLimit()));
 
             SetInt(
                 KEY_ANTIALIAS_LEVEL_,
@@ -203,7 +205,8 @@ namespace config
                     "SettingsFile::LoadAndRestore() setting display frame rate limit to "
                     << SAVED_FRAME_RATE_LIMIT);
 
-                sfml_util::Display::Instance()->SetFrameRateLimit(SAVED_FRAME_RATE_LIMIT);
+                sfml_util::Display::Instance()->SetFrameRateLimit(
+                    static_cast<unsigned>(SAVED_FRAME_RATE_LIMIT));
             }
 
             const bool SAVED_VERTICAL_SYNC(GetWithDefaultBool(KEY_VERTICAL_SYNC_, true));

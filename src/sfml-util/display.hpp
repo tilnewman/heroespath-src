@@ -106,14 +106,19 @@ namespace sfml_util
                 0, 0, static_cast<int>(GetWinWidth()), static_cast<int>(GetWinHeight()));
         }
 
-        void SetFrameRateLimit(const int LIMIT)
+        void SetFrameRateLimit(const unsigned LIMIT)
         {
-            winUPtr_->setFramerateLimit(static_cast<unsigned>(LIMIT));
+            frameRateLimit_ = LIMIT;
+            winUPtr_->setFramerateLimit(LIMIT);
         }
 
-        int GetFrameRateLimit() const { return frameRateLimit_; }
+        unsigned GetFrameRateLimit() const { return frameRateLimit_; }
 
-        void SetVerticalSync(const bool WILL_SYNC) { winUPtr_->setVerticalSyncEnabled(WILL_SYNC); }
+        void SetVerticalSync(const bool WILL_SYNC)
+        {
+            willVerticalSync_ = WILL_SYNC;
+            winUPtr_->setVerticalSyncEnabled(WILL_SYNC);
+        }
         bool GetVerticalSync() const { return willVerticalSync_; }
 
         void ConsumeEvents();
@@ -197,7 +202,7 @@ namespace sfml_util
 
         std::string winTitle_;
         sf::Uint32 winStyle_;
-        int frameRateLimit_;
+        unsigned frameRateLimit_;
         bool willVerticalSync_;
         WinUPtr_t winUPtr_;
     };

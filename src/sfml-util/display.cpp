@@ -82,6 +82,8 @@ namespace sfml_util
         const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL)
         : winTitle_(TITLE)
         , winStyle_(STYLE)
+        , frameRateLimit_(0)
+        , willVerticalSync_(false)
         , winUPtr_(std::make_unique<sf::RenderWindow>(
               EstablishVideoMode(), TITLE, STYLE, sf::ContextSettings(0, 0, ANTIALIAS_LEVEL)))
     {

@@ -335,8 +335,8 @@ namespace game
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
         sfml_util::Display::Acquire(APPLICATION_NAME, sf::Style::Fullscreen, 0);
 
-        sfml_util::Display::Instance()->SetFrameRateLimit(
-            game::GameDataFile::Instance()->GetCopyInt("system-window-frame-rate-limit"));
+        sfml_util::Display::Instance()->SetFrameRateLimit(static_cast<unsigned>(
+            game::GameDataFile::Instance()->GetCopyInt("system-window-frame-rate-limit")));
 
         sfml_util::Display::Instance()->SetVerticalSync(
             game::GameDataFile::Instance()->GetCopyBool("system-window-sync"));
