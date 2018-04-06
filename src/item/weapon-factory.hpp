@@ -67,7 +67,7 @@ namespace item
             WeaponFactory();
             virtual ~WeaponFactory();
 
-            static WeaponFactory * Instance();
+            static misc::NotNull<WeaponFactory *> Instance();
             static void Acquire();
             static void Release();
 

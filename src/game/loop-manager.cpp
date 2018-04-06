@@ -69,7 +69,7 @@ namespace game
 
     LoopManager::~LoopManager() { M_HP_LOG_DBG("Singleton Destruction: LoopManager"); }
 
-    LoopManager * game::LoopManager::Instance()
+    misc::NotNull<LoopManager *> LoopManager::Instance()
     {
         if (!instanceUPtr_)
         {

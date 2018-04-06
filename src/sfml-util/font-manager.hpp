@@ -28,6 +28,7 @@
 // font-manager.hpp
 //  Font specific gui code.
 //
+#include "misc/not-null.hpp"
 #include "popup/popup-enums.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
@@ -66,7 +67,7 @@ namespace sfml_util
         FontManager();
         ~FontManager();
 
-        static FontManager * Instance();
+        static misc::NotNull<FontManager *> Instance();
         static void Acquire();
         static void Release();
         static void Fill();

@@ -54,7 +54,7 @@ namespace item
 
         WeaponFactory::~WeaponFactory() { M_HP_LOG_DBG("Singleton Destruction: WeaponFactory"); }
 
-        WeaponFactory * WeaponFactory::Instance()
+        misc::NotNull<WeaponFactory *> WeaponFactory::Instance()
         {
             if (!instanceUPtr_)
             {

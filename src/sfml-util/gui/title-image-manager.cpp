@@ -30,7 +30,6 @@
 #include "title-image-manager.hpp"
 
 #include "log/log-macros.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 
 namespace heroespath
@@ -52,7 +51,7 @@ namespace sfml_util
             M_HP_LOG_DBG("Singleton Destruction: TitleImageManager");
         }
 
-        TitleImageManager * TitleImageManager::Instance()
+        misc::NotNull<TitleImageManager *> TitleImageManager::Instance()
         {
             if (!instanceUPtr_)
             {

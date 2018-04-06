@@ -28,6 +28,7 @@
 // armor-details.hpp
 //  Code that loads detailed armor data from the GameDataFile.
 //
+#include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "non-player/ownership-profile.hpp"
 #include "stats/trait.hpp"
@@ -77,7 +78,7 @@ namespace item
             ArmorDetailLoader();
             ~ArmorDetailLoader();
 
-            static ArmorDetailLoader * Instance();
+            static misc::NotNull<ArmorDetailLoader *> Instance();
             static void Acquire();
             static void Release();
 

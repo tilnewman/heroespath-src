@@ -54,7 +54,7 @@ namespace creature
         M_HP_LOG_DBG("Singleton Destruction: EnchantmentFactory");
     }
 
-    EnchantmentFactory * EnchantmentFactory::Instance()
+    misc::NotNull<EnchantmentFactory *> EnchantmentFactory::Instance()
     {
         if (!instanceUPtr_)
         {

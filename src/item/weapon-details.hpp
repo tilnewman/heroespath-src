@@ -28,8 +28,10 @@
 // weapons-details.hpp
 //  Code that loads detailed weapon data from the GameDataFile.
 //
+#include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "non-player/ownership-profile.hpp"
+
 #include <memory>
 #include <string>
 
@@ -79,7 +81,7 @@ namespace item
             WeaponDetailLoader();
             ~WeaponDetailLoader();
 
-            static WeaponDetailLoader * Instance();
+            static misc::NotNull<WeaponDetailLoader *> Instance();
             static void Acquire();
             static void Release();
 

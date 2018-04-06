@@ -63,7 +63,7 @@ namespace item
             M_HP_LOG_DBG("Singleton Destruction: WeaponDetailLoader");
         }
 
-        WeaponDetailLoader * WeaponDetailLoader::Instance()
+        misc::NotNull<WeaponDetailLoader *> WeaponDetailLoader::Instance()
         {
             if (!instanceUPtr_)
             {

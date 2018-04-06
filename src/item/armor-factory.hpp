@@ -59,7 +59,7 @@ namespace item
             ArmorFactory();
             virtual ~ArmorFactory();
 
-            static ArmorFactory * Instance();
+            static misc::NotNull<ArmorFactory *> Instance();
             static void Acquire();
             static void Release();
 

@@ -74,7 +74,7 @@ namespace non_player
             InventoryFactory();
             ~InventoryFactory();
 
-            static InventoryFactory * Instance();
+            static misc::NotNull<InventoryFactory *> Instance();
             static void Acquire();
             static void Release();
 

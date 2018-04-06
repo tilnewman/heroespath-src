@@ -86,7 +86,7 @@ namespace non_player
 
         ChanceFactory::~ChanceFactory() { M_HP_LOG_DBG("Singleton Destruction: ChanceFactory"); }
 
-        ChanceFactory * ChanceFactory::Instance()
+        misc::NotNull<ChanceFactory *> ChanceFactory::Instance()
         {
             if (!instanceUPtr_)
             {

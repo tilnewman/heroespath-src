@@ -50,7 +50,7 @@ namespace creature
         M_HP_LOG_DBG("Singleton Destruction: EnchantmentWarehouse");
     }
 
-    EnchantmentWarehouse * EnchantmentWarehouse::Instance()
+    misc::NotNull<EnchantmentWarehouse *> EnchantmentWarehouse::Instance()
     {
         if (!instanceUPtr_)
         {

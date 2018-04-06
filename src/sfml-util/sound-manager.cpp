@@ -71,7 +71,7 @@ namespace sfml_util
 
     SoundManager::~SoundManager() { M_HP_LOG_DBG("Singleton Destruction: SoundManager"); }
 
-    SoundManager * SoundManager::Instance()
+    misc::NotNull<SoundManager *> SoundManager::Instance()
     {
         if (!instanceUPtr_)
         {

@@ -70,7 +70,7 @@ namespace combat
         Encounter();
         ~Encounter();
 
-        static Encounter * Instance();
+        static misc::NotNull<Encounter *> Instance();
         static void Acquire();
         static void Release();
 

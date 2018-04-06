@@ -48,7 +48,7 @@ namespace item
 
         ArmorFactory::~ArmorFactory() { M_HP_LOG_DBG("Singleton Destruction: ArmorFactory"); }
 
-        ArmorFactory * ArmorFactory::Instance()
+        misc::NotNull<ArmorFactory *> ArmorFactory::Instance()
         {
             if (!instanceUPtr_)
             {

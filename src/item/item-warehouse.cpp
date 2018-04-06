@@ -47,7 +47,7 @@ namespace item
 
     ItemWarehouse::~ItemWarehouse() { M_HP_LOG_DBG("Singleton Destruction: ItemWarehouse"); }
 
-    ItemWarehouse * ItemWarehouse::Instance()
+    misc::NotNull<ItemWarehouse *> ItemWarehouse::Instance()
     {
         if (!instanceUPtr_)
         {

@@ -59,7 +59,7 @@ namespace item
         MiscItemFactory();
         virtual ~MiscItemFactory();
 
-        static MiscItemFactory * Instance();
+        static misc::NotNull<MiscItemFactory *> Instance();
         static void Acquire();
         static void Release();
 

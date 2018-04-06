@@ -54,7 +54,7 @@ namespace game
 
     Game::~Game() { M_HP_LOG_DBG("Singleton Destruction: Game"); }
 
-    Game * game::Game::Instance()
+    misc::NotNull<Game *> Game::Instance()
     {
         if (!instanceUPtr_)
         {

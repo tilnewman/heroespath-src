@@ -115,7 +115,7 @@ namespace sfml_util
         }
     }
 
-    Display * Display::Instance()
+    misc::NotNull<Display *> Display::Instance()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_), "sfml_util::Display::Instance() found instanceUPtr that was null.");

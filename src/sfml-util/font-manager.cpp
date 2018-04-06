@@ -71,7 +71,7 @@ namespace sfml_util
 
     FontManager::~FontManager() { M_HP_LOG_DBG("Singleton Destruction: FontManager"); }
 
-    FontManager * FontManager::Instance()
+    misc::NotNull<FontManager *> FontManager::Instance()
     {
         if (!instanceUPtr_)
         {

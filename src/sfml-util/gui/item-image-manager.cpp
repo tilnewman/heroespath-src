@@ -72,7 +72,7 @@ namespace sfml_util
             M_HP_LOG_DBG("Singleton Construction: ItemImageManager");
         }
 
-        ItemImageManager * ItemImageManager::Instance()
+        misc::NotNull<ItemImageManager *> ItemImageManager::Instance()
         {
             if (!instanceUPtr_)
             {

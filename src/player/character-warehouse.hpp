@@ -42,7 +42,7 @@ namespace creature
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
     using CreatureUPtr_t = std::unique_ptr<Creature>;
     using CreatureUVec_t = std::vector<CreatureUPtr_t>;
-}
+} // namespace creature
 namespace player
 {
 
@@ -59,7 +59,7 @@ namespace player
         CharacterWarehouse();
         ~CharacterWarehouse();
 
-        static CharacterWarehouse * Instance();
+        static misc::NotNull<CharacterWarehouse *> Instance();
         static void Acquire();
         static void Release();
 

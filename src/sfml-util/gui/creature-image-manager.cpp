@@ -64,7 +64,7 @@ namespace sfml_util
             M_HP_LOG_DBG("Singleton Destruction: CreatureImageManager");
         }
 
-        CreatureImageManager * CreatureImageManager::Instance()
+        misc::NotNull<CreatureImageManager *> CreatureImageManager::Instance()
         {
             if (!instanceUPtr_)
             {

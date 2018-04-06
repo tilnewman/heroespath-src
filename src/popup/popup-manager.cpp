@@ -76,7 +76,7 @@ namespace popup
 
     PopupManager::~PopupManager() { M_HP_LOG_DBG("Singleton Destruction: PopupManager"); }
 
-    PopupManager * PopupManager::Instance()
+    misc::NotNull<PopupManager *> PopupManager::Instance()
     {
         if (!instanceUPtr_)
         {

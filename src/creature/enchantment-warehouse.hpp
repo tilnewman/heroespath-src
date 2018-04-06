@@ -58,7 +58,7 @@ namespace creature
         EnchantmentWarehouse();
         ~EnchantmentWarehouse();
 
-        static EnchantmentWarehouse * Instance();
+        static misc::NotNull<EnchantmentWarehouse *> Instance();
         static void Acquire();
         static void Release();
 

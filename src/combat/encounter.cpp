@@ -89,7 +89,7 @@ namespace combat
         FreeThenResetRunawayNonPlayerParty();
     }
 
-    Encounter * Encounter::Instance()
+    misc::NotNull<Encounter *> Encounter::Instance()
     {
         if (!instanceUPtr_)
         {

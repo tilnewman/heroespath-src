@@ -28,6 +28,8 @@
 // platform.hpp
 //  Code that detects the platform and stores it.
 //
+#include "misc/not-null.hpp"
+
 #include <memory>
 #include <string>
 
@@ -90,7 +92,7 @@ namespace misc
 
         Platform();
 
-        static Platform * Instance();
+        static misc::NotNull<Platform *> Instance();
         static void Acquire();
         static void Release();
 

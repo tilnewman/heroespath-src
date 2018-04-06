@@ -62,7 +62,7 @@ namespace game
         Game();
         ~Game();
 
-        static Game * Instance();
+        static misc::NotNull<Game *> Instance();
         static void Acquire();
         static void Release();
 

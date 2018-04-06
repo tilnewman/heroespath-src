@@ -58,7 +58,7 @@ namespace item
 
     ArmorRatings::~ArmorRatings() { M_HP_LOG_DBG("Singleton Destruction: ArmorRatings"); }
 
-    ArmorRatings * ArmorRatings::Instance()
+    misc::NotNull<ArmorRatings *> ArmorRatings::Instance()
     {
         if (!instanceUPtr_)
         {

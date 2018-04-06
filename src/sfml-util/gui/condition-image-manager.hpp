@@ -27,9 +27,9 @@
 //
 // condition-image-manager.hpp
 //
-#include "sfml-util/gui/image-manager-base.hpp"
-
 #include "creature/condition-enum.hpp"
+#include "misc/not-null.hpp"
+#include "sfml-util/gui/image-manager-base.hpp"
 
 #include <memory>
 
@@ -53,13 +53,14 @@ namespace sfml_util
             ConditionImageManager();
             virtual ~ConditionImageManager();
 
-            static ConditionImageManager * Instance();
+            static misc::NotNull<ConditionImageManager *> Instance();
             static void Acquire();
             static void Release();
 
         private:
             static std::unique_ptr<ConditionImageManager> instanceUPtr_;
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

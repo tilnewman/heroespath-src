@@ -29,6 +29,7 @@
 //  Code that manages the display.
 //  For example, the window size and color depth, etc.
 //
+#include "misc/not-null.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/resolution.hpp"
 #include "sfml-util/sfml-graphics.hpp"
@@ -80,7 +81,7 @@ namespace sfml_util
         Display(const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);
         ~Display();
 
-        static Display * Instance();
+        static misc::NotNull<Display *> Instance();
 
         static void Acquire(
             const std::string & TITLE, const sf::Uint32 STYLE, const unsigned ANTIALIAS_LEVEL);

@@ -48,7 +48,7 @@ namespace game
         M_HP_LOG_DBG("Singleton Construction: GameDataFile");
     }
 
-    GameDataFile * game::GameDataFile::Instance()
+    misc::NotNull<GameDataFile *> game::GameDataFile::Instance()
     {
         if (!instanceUPtr_)
         {
@@ -122,5 +122,6 @@ namespace game
 
         return MEDIA_BASE_PATH_STR;
     }
+
 } // namespace game
 } // namespace heroespath

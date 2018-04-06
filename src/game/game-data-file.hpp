@@ -30,6 +30,7 @@
 //
 #include "config/configbase.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/not-null.hpp"
 
 #include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
@@ -52,7 +53,7 @@ namespace game
 
         GameDataFile();
         virtual ~GameDataFile() = default;
-        static GameDataFile * Instance();
+        static misc::NotNull<GameDataFile *> Instance();
         static void Acquire();
         static void Release();
         static void Initialize();
@@ -64,6 +65,7 @@ namespace game
     private:
         static std::unique_ptr<GameDataFile> instanceUPtr_;
     };
+
 } // namespace game
 } // namespace heroespath
 

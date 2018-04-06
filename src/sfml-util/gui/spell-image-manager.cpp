@@ -52,7 +52,7 @@ namespace sfml_util
             M_HP_LOG_DBG("Singleton Destruction: SpellImageManager");
         }
 
-        SpellImageManager * SpellImageManager::Instance()
+        misc::NotNull<SpellImageManager *> SpellImageManager::Instance()
         {
             if (!instanceUPtr_)
             {

@@ -27,6 +27,7 @@
 //
 // gui-elements.hpp
 //
+#include "misc/not-null.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
 #include <string>
@@ -52,7 +53,7 @@ namespace sfml_util
             GuiElements();
             ~GuiElements();
 
-            static GuiElements * Instance();
+            static misc::NotNull<GuiElements *> Instance();
             static void Acquire();
             static void Release();
 

@@ -65,7 +65,7 @@ namespace sfml_util
 
     TextureCache::~TextureCache() { M_HP_LOG_DBG("Singleton Construction: TextureCache"); }
 
-    TextureCache * TextureCache::Instance()
+    misc::NotNull<TextureCache *> TextureCache::Instance()
     {
         if (!instanceUPtr_)
         {

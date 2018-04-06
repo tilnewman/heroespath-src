@@ -52,7 +52,7 @@ namespace sfml_util
             M_HP_LOG_DBG("Singleton Destruction: SongImageManager");
         }
 
-        SongImageManager * SongImageManager::Instance()
+        misc::NotNull<SongImageManager *> SongImageManager::Instance()
         {
             if (!instanceUPtr_)
             {

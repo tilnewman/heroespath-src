@@ -28,6 +28,7 @@
 // sound-manager.hpp
 //  Aound managing class that handles both sf::Sound and sf::Music instances.
 //
+#include "misc/not-null.hpp"
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/music-operator.hpp"
 #include "sfml-util/music-set.hpp"
@@ -65,7 +66,7 @@ namespace sfml_util
         SoundManager();
         ~SoundManager();
 
-        static SoundManager * Instance();
+        static misc::NotNull<SoundManager *> Instance();
         static void Acquire();
         static void Release();
         static void Initialize();

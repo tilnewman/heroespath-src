@@ -73,7 +73,7 @@ namespace state
         GameStateFactory();
         ~GameStateFactory();
 
-        static GameStateFactory * Instance();
+        static misc::NotNull<GameStateFactory *> Instance();
         static void Acquire();
         static void Release();
 

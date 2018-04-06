@@ -59,7 +59,7 @@ namespace item
         ItemWarehouse();
         ~ItemWarehouse();
 
-        static ItemWarehouse * Instance();
+        static misc::NotNull<ItemWarehouse *> Instance();
         static void Acquire();
         static void Release();
 

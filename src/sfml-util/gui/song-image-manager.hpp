@@ -27,8 +27,8 @@
 //
 // song-image-manager.hpp
 //
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/image-manager-base.hpp"
-
 #include "song/song-enum.hpp"
 
 #include <memory>
@@ -53,13 +53,14 @@ namespace sfml_util
             SongImageManager();
             virtual ~SongImageManager();
 
-            static SongImageManager * Instance();
+            static misc::NotNull<SongImageManager *> Instance();
             static void Acquire();
             static void Release();
 
         private:
             static std::unique_ptr<SongImageManager> instanceUPtr_;
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

@@ -55,7 +55,7 @@ namespace item
         ArmorRatings();
         ~ArmorRatings();
 
-        static ArmorRatings * Instance();
+        static misc::NotNull<ArmorRatings *> Instance();
         static void Acquire();
         static void Release();
 

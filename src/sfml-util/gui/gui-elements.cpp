@@ -135,7 +135,7 @@ namespace sfml_util
 
         GuiElements::~GuiElements() { M_HP_LOG_DBG("Singleton Destruction: GuiElements"); }
 
-        GuiElements * GuiElements::Instance()
+        misc::NotNull<GuiElements *> GuiElements::Instance()
         {
             if (!instanceUPtr_)
             {

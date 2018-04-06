@@ -48,7 +48,7 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
-}
+} // namespace creature
 namespace non_player
 {
     class Party;
@@ -70,7 +70,7 @@ namespace combat
         PartyFactory();
         ~PartyFactory();
 
-        static PartyFactory * Instance();
+        static misc::NotNull<PartyFactory *> Instance();
         static void Acquire();
         static void Release();
 

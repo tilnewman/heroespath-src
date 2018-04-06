@@ -28,6 +28,7 @@
 // item-profile-warehouse.hpp
 //
 #include "item/item-profile.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "stats/traits-set.hpp"
 
@@ -56,7 +57,7 @@ namespace item
         ItemProfileWarehouse();
         ~ItemProfileWarehouse();
 
-        static ItemProfileWarehouse * Instance();
+        static misc::NotNull<ItemProfileWarehouse *> Instance();
         static void Acquire();
         static void Release();
 

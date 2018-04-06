@@ -29,6 +29,7 @@
 //  A singleton config file class that saves game settings. (i.e. volume, resolution, etc.)
 //
 #include "config/configbase.hpp"
+#include "misc/not-null.hpp"
 
 #include <memory>
 #include <string>
@@ -50,7 +51,7 @@ namespace config
     public:
         SettingsFile();
         virtual ~SettingsFile();
-        static SettingsFile * Instance();
+        static misc::NotNull<SettingsFile *> Instance();
         static void Acquire();
         static void Release();
 

@@ -71,7 +71,7 @@ namespace state
         M_HP_LOG_DBG("Singleton Destruction: GameStateFactory");
     }
 
-    GameStateFactory * GameStateFactory::Instance()
+    misc::NotNull<GameStateFactory *> GameStateFactory::Instance()
     {
         if (!instanceUPtr_)
         {

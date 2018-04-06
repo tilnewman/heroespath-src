@@ -52,7 +52,7 @@ namespace creature
 
     NameInfo::~NameInfo() { M_HP_LOG_DBG("Singleton Destruction: NameInfo"); }
 
-    NameInfo * NameInfo::Instance()
+    misc::NotNull<NameInfo *> NameInfo::Instance()
     {
         if (!instanceUPtr_)
         {

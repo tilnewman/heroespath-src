@@ -52,7 +52,7 @@ namespace sfml_util
             M_HP_LOG_DBG("Singleton Destruction: CombatImageManager");
         }
 
-        CombatImageManager * CombatImageManager::Instance()
+        misc::NotNull<CombatImageManager *> CombatImageManager::Instance()
         {
             if (!instanceUPtr_)
             {

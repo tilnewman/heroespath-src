@@ -47,7 +47,7 @@ namespace combat
 
     PartyFactory::~PartyFactory() { M_HP_LOG_DBG("Singleton Destruction: PartyFactory"); }
 
-    PartyFactory * PartyFactory::Instance()
+    misc::NotNull<PartyFactory *> PartyFactory::Instance()
     {
         if (!instanceUPtr_)
         {

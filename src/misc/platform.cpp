@@ -83,7 +83,7 @@ namespace misc
         M_HP_LOG_DBG("Singleton Construction: Platform");
     }
 
-    Platform * Platform::Instance()
+    misc::NotNull<Platform *> Platform::Instance()
     {
         if (!instanceUPtr_)
         {

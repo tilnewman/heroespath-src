@@ -60,7 +60,7 @@ namespace config
 
     SettingsFile::~SettingsFile() { M_HP_LOG_DBG("Singleton Destruction: SettingsFile"); }
 
-    SettingsFile * SettingsFile::Instance()
+    misc::NotNull<SettingsFile *> SettingsFile::Instance()
     {
         if (!instanceUPtr_)
         {

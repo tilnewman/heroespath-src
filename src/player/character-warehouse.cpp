@@ -50,7 +50,7 @@ namespace player
         M_HP_LOG_DBG("Singleton Destruction: Player CharacterWarehouse");
     }
 
-    CharacterWarehouse * CharacterWarehouse::Instance()
+    misc::NotNull<CharacterWarehouse *> CharacterWarehouse::Instance()
     {
         if (!instanceUPtr_)
         {

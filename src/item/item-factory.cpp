@@ -56,7 +56,7 @@ namespace item
 
     ItemFactory::~ItemFactory() { M_HP_LOG_DBG("Singleton Destruction: ItemFactory"); }
 
-    ItemFactory * ItemFactory::Instance()
+    misc::NotNull<ItemFactory *> ItemFactory::Instance()
     {
         if (!instanceUPtr_)
         {

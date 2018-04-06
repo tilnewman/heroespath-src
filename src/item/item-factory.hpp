@@ -56,7 +56,7 @@ namespace item
         ItemFactory();
         ~ItemFactory();
 
-        static ItemFactory * Instance();
+        static misc::NotNull<ItemFactory *> Instance();
         static void Acquire();
         static void Release();
         static bool Test();

@@ -61,7 +61,7 @@ namespace non_player
             M_HP_LOG_DBG("Singleton Destruction: InventoryFactory");
         }
 
-        InventoryFactory * InventoryFactory::Instance()
+        misc::NotNull<InventoryFactory *> InventoryFactory::Instance()
         {
             if (!instanceUPtr_)
             {

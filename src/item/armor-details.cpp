@@ -59,7 +59,7 @@ namespace item
             M_HP_LOG_DBG("Singleton Destruction: ArmorDetailLoader");
         }
 
-        ArmorDetailLoader * ArmorDetailLoader::Instance()
+        misc::NotNull<ArmorDetailLoader *> ArmorDetailLoader::Instance()
         {
             if (!instanceUPtr_)
             {

@@ -33,6 +33,7 @@
 #include "creature/role-enum.hpp"
 #include "game/game-data-file.hpp"
 #include "item/weapon-info.hpp"
+#include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
 #include "non-player/ownership-chance-types.hpp"
@@ -123,7 +124,7 @@ namespace non_player
             ChanceFactory();
             ~ChanceFactory();
 
-            static ChanceFactory * Instance();
+            static misc::NotNull<ChanceFactory *> Instance();
             static void Acquire();
             static void Release();
             static void Initialize();

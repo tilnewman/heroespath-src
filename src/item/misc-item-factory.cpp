@@ -56,7 +56,7 @@ namespace item
 
     MiscItemFactory::~MiscItemFactory() { M_HP_LOG_DBG("Singleton Destruction: MiscItemFactory"); }
 
-    MiscItemFactory * MiscItemFactory::Instance()
+    misc::NotNull<MiscItemFactory *> MiscItemFactory::Instance()
     {
         if (!instanceUPtr_)
         {

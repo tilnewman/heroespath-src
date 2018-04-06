@@ -67,7 +67,7 @@ namespace sfml_util
             ItemImageManager();
             ~ItemImageManager();
 
-            static ItemImageManager * Instance();
+            static misc::NotNull<ItemImageManager *> Instance();
             static void Acquire();
             static void Release();
 

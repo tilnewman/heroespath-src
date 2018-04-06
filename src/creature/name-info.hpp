@@ -57,7 +57,7 @@ namespace creature
         NameInfo();
         ~NameInfo();
 
-        static NameInfo * Instance();
+        static misc::NotNull<NameInfo *> Instance();
         static void Acquire();
         static void Release();
 

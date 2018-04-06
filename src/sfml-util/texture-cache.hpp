@@ -28,6 +28,7 @@
 // texture-cache.hpp
 //
 #include "misc/handy-types.hpp"
+#include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
@@ -54,7 +55,7 @@ namespace sfml_util
         TextureCache();
         ~TextureCache();
 
-        static TextureCache * Instance();
+        static misc::NotNull<TextureCache *> Instance();
         static void Acquire();
         static void Release();
 

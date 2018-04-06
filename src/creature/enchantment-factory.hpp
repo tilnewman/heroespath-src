@@ -64,7 +64,7 @@ namespace creature
         EnchantmentFactory();
         ~EnchantmentFactory();
 
-        static EnchantmentFactory * Instance();
+        static misc::NotNull<EnchantmentFactory *> Instance();
         static void Acquire();
         static void Release();
 

@@ -52,7 +52,7 @@ namespace sfml_util
             M_HP_LOG_DBG("Singleton Destruction: ConditionImageManager");
         }
 
-        ConditionImageManager * ConditionImageManager::Instance()
+        misc::NotNull<ConditionImageManager *> ConditionImageManager::Instance()
         {
             if (!instanceUPtr_)
             {

@@ -28,9 +28,9 @@
 // title-image-manager.hpp
 //  Code that manages loading and lifetime of title images.
 //
-#include "sfml-util/gui/image-manager-base.hpp"
-
 #include "creature/title-enum.hpp"
+#include "misc/not-null.hpp"
+#include "sfml-util/gui/image-manager-base.hpp"
 
 #include <memory>
 
@@ -54,13 +54,14 @@ namespace sfml_util
             TitleImageManager();
             virtual ~TitleImageManager();
 
-            static TitleImageManager * Instance();
+            static misc::NotNull<TitleImageManager *> Instance();
             static void Acquire();
             static void Release();
 
         private:
             static std::unique_ptr<TitleImageManager> instanceUPtr_;
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

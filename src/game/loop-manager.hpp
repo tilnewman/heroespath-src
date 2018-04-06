@@ -70,7 +70,7 @@ namespace game
         LoopManager();
         ~LoopManager();
 
-        static LoopManager * Instance();
+        static misc::NotNull<LoopManager *> Instance();
         static void Acquire();
         static void Release();
         static void Initialize();

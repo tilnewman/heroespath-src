@@ -27,6 +27,7 @@
 //
 // combat-image-manager.hpp
 //
+#include "misc/not-null.hpp"
 #include "sfml-util/gui/combat-image-enum.hpp"
 #include "sfml-util/gui/image-manager-base.hpp"
 
@@ -56,7 +57,7 @@ namespace sfml_util
             CombatImageManager();
             virtual ~CombatImageManager();
 
-            static CombatImageManager * Instance();
+            static misc::NotNull<CombatImageManager *> Instance();
             static void Acquire();
             static void Release();
 

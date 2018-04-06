@@ -81,7 +81,7 @@ namespace popup
         PopupManager();
         ~PopupManager();
 
-        static PopupManager * Instance();
+        static misc::NotNull<PopupManager *> Instance();
         static void Acquire();
         static void Release();
 

@@ -28,13 +28,13 @@
 // creature-image-manager.hpp
 //  Code that manages loading and lifetime of creature images.
 //
-#include "sfml-util/sfml-graphics.hpp"
-
 #include "creature/dragon-class-enum.hpp"
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "creature/sex-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
+#include "misc/not-null.hpp"
+#include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
 #include <string>
@@ -61,7 +61,7 @@ namespace sfml_util
             CreatureImageManager();
             virtual ~CreatureImageManager();
 
-            static CreatureImageManager * Instance();
+            static misc::NotNull<CreatureImageManager *> Instance();
             static void Acquire();
             static void Release();
             static void SetCreatureImageDirectory(const std::string & PATH);
