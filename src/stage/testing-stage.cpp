@@ -217,42 +217,44 @@ namespace stage
         Stage::UpdateTime(ELAPSED_TIME_SECONDS);
     }
 
-    bool TestingStage::KeyPress(const sf::Event::KeyEvent & KE)
+    bool TestingStage::KeyPress(const sf::Event::KeyEvent &)
     {
-        if (false == willImageCheck_)
+        /*
+if (false == willImageCheck_)
+{
+    if (KE.code == sf::Keyboard::F1)
+    {
+        sleepMilliseconds_ = 0;
+    }
+    else
+    {
+        auto const SPEED1{ 0 };
+        auto const SPEED2{ 500 };
+        auto const SPEED3{ 1000 };
+        auto const SPEED4{ 3000 };
+        if (sleepMilliseconds_ == SPEED1)
         {
-            if (KE.code == sf::Keyboard::F1)
-            {
-                sleepMilliseconds_ = 0;
-            }
-            else
-            {
-                auto const SPEED1{ 0 };
-                auto const SPEED2{ 500 };
-                auto const SPEED3{ 1000 };
-                auto const SPEED4{ 3000 };
-                if (sleepMilliseconds_ == SPEED1)
-                {
-                    sleepMilliseconds_ = SPEED2;
-                    game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 2");
-                }
-                else if (sleepMilliseconds_ == SPEED2)
-                {
-                    sleepMilliseconds_ = SPEED3;
-                    game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 3");
-                }
-                else if (sleepMilliseconds_ == SPEED3)
-                {
-                    sleepMilliseconds_ = SPEED4;
-                    game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 4");
-                }
-                else
-                {
-                    sleepMilliseconds_ = SPEED1;
-                    game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 1");
-                }
-            }
+            sleepMilliseconds_ = SPEED2;
+            game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 2");
         }
+        else if (sleepMilliseconds_ == SPEED2)
+        {
+            sleepMilliseconds_ = SPEED3;
+            game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 3");
+        }
+        else if (sleepMilliseconds_ == SPEED3)
+        {
+            sleepMilliseconds_ = SPEED4;
+            game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 4");
+        }
+        else
+        {
+            sleepMilliseconds_ = SPEED1;
+            game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 1");
+        }
+    }
+}
+        */
 
         return true;
     }
