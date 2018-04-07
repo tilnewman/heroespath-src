@@ -41,6 +41,7 @@ namespace state
         , doorLockMap_()
         , specificNpcs_()
         , randomNpcs_()
+        , randomNPCPlaceholders_()
     {}
 
     bool Level::IsDoorLocked(const map::Level::Enum LEVEL) const
@@ -69,7 +70,7 @@ namespace state
     {
         randomNpcs_.clear();
 
-        for (auto const & NPC_PLACEHOLDER : placeholderNpcs_)
+        for (auto const & NPC_PLACEHOLDER : randomNPCPlaceholders_)
         {
             auto const NPCS{ NpcFactory::Make(NPC_PLACEHOLDER) };
             std::copy(std::begin(NPCS), std::end(NPCS), std::back_inserter(randomNpcs_));

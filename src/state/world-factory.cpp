@@ -48,7 +48,7 @@ namespace state
         if ((level.Which() == map::Level::Thornberry_GuardPostWest)
             || (level.Which() == map::Level::Thornberry_GuardPostEast))
         {
-            level.AddNpcPlaceholder(NpcPlaceholder(
+            level.AddRandomNpcPlaceholder(NpcPlaceholder(
                 1,
                 1,
                 { avatar::Avatar::NameEnum::Private,

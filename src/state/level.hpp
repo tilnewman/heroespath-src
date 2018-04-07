@@ -65,9 +65,9 @@ namespace state
 
         void ResetRandomNPCs();
 
-        void AddNpcPlaceholder(const NpcPlaceholder & NPC_PLACEHOLDER)
+        void AddRandomNpcPlaceholder(const NpcPlaceholder & NPC_PLACEHOLDER)
         {
-            placeholderNpcs_.emplace_back(NPC_PLACEHOLDER);
+            randomNPCPlaceholders_.emplace_back(NPC_PLACEHOLDER);
         }
 
         const NpcVec_t SpecificNPCs() const { return specificNpcs_; }
@@ -79,7 +79,7 @@ namespace state
         misc::VectorMap<map::Level::Enum, bool> doorLockMap_;
         NpcVec_t specificNpcs_;
         NpcVec_t randomNpcs_;
-        NpcPlaceholderVec_t placeholderNpcs_;
+        NpcPlaceholderVec_t randomNPCPlaceholders_;
 
     private:
         friend class boost::serialization::access;
@@ -90,7 +90,7 @@ namespace state
             ar & doorLockMap_;
             ar & specificNpcs_;
             ar & randomNpcs_;
-            ar & placeholderNpcs_;
+            ar & randomNPCPlaceholders_;
         }
     };
 } // namespace state

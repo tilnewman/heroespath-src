@@ -51,9 +51,11 @@ namespace avatar
     const float Model::TIME_BETWEEN_WALK_MIN_SEC_{ 1.0f };
     const float Model::TIME_BETWEEN_WALK_MAX_SEC_{ 2.0f };
     const float Model::WALK_TARGET_CLOSE_ENOUGH_{ 5.0f };
+
     const std::size_t Model::WALKING_INTO_INDEX_INVALID_{
         0
     }; // TODO fix by using something other than a size_t
+
     const float Model::WALKING_INTO_DURATION_SEC_{ 1.5f };
 
     Model::Model(IViewUPtr_t viewUPtr, const std::vector<sf::FloatRect> & WALK_RECTS)
