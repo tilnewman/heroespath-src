@@ -216,7 +216,7 @@ namespace player
         charactersPVec_.clear();
         for (auto const & CREATURE_RAW_PTR : charactersToSerializePVec_)
         {
-            charactersPVec_.emplace_back(CREATURE_RAW_PTR);
+            charactersPVec_.emplace_back(CharacterWarehouse::Instance()->Store(CREATURE_RAW_PTR));
         }
         charactersToSerializePVec_.clear();
     }
