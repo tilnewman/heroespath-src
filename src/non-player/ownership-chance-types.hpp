@@ -96,6 +96,19 @@ namespace non_player
                     }
                 }
 
+                // it is rare but possible to get here if RAND == chanceSubTotal
+                if (misc::IsRealClose(RAND, chanceSubTotal))
+                {
+                    // in these rare cases just pick the first non-zero chance
+                    for (auto const & NEXT_MAP_PAIR : MAP)
+                    {
+                        if (NEXT_MAP_PAIR.second > 0.0f)
+                        {
+                            return NEXT_MAP_PAIR.first;
+                        }
+                    }
+                }
+
                 // if we get here something is wrong, so log everything
 
                 std::ostringstream ss;
