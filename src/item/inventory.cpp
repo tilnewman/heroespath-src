@@ -360,7 +360,7 @@ namespace item
             ITEM_PTR->BeforeSerialize();
             itemsPVecToSerialize_.emplace_back(ITEM_PTR.Ptr());
         }
-        // everything in itemsPVec is free'd in Inventory::~Inventory()
+        // everything in itemsPVec is free'd in the destructor
 
         equippedItemsPVecToSerialize_.clear();
         for (auto const & ITEM_PTR : equippedItemsPVec_)
@@ -368,15 +368,15 @@ namespace item
             ITEM_PTR->BeforeSerialize();
             equippedItemsPVecToSerialize_.emplace_back(ITEM_PTR.Ptr());
         }
-        // everything in equippedItemsPVec_ is free'd in Inventory::~Inventory()
+        // everything in equippedItemsPVec_ is free'd in the destructor
     }
 
-    void Inventory::AfterSerialize()
+    void Inventory::AfterDeserialize()
     {
         itemsPVec_.clear();
         for (auto const ITEM_RAW_PTR : itemsPVecToSerialize_)
         {
-            ITEM_RAW_PTR->AfterSerialize();
+            ITEM_RAW_PTR->AfterDeserialize();
             itemsPVec_.emplace_back(ItemWarehouse::Instance()->Store(ITEM_RAW_PTR));
         }
         itemsPVecToSerialize_.clear();
@@ -384,7 +384,7 @@ namespace item
         equippedItemsPVec_.clear();
         for (auto const ITEM_RAW_PTR : equippedItemsPVecToSerialize_)
         {
-            ITEM_RAW_PTR->AfterSerialize();
+            ITEM_RAW_PTR->AfterDeserialize();
             equippedItemsPVec_.emplace_back(ItemWarehouse::Instance()->Store(ITEM_RAW_PTR));
         }
         equippedItemsPVecToSerialize_.clear();

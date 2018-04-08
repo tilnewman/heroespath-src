@@ -41,5 +41,9 @@ namespace state
 
     void World::HandleLevelLoad(const map::Level::Enum LEVEL) { maps_.HandleLevelLoad(LEVEL); }
 
+    void World::BeforeSerialize() { maps_.BeforeSerialize(); }
+
+    void World::AfterDeserialize() { maps_.AfterDeserialize(); }
+
 } // namespace state
 } // namespace heroespath

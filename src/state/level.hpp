@@ -61,7 +61,7 @@ namespace state
 
         void HandleLevelLoad();
 
-        void AddSpecificNPC(const Npc & NPC) { specificNpcs_.emplace_back(NPC); }
+        void AddSpecificNPC(const NpcPtr_t);
 
         void ResetRandomNPCs();
 
@@ -70,16 +70,27 @@ namespace state
             randomNPCPlaceholders_.emplace_back(NPC_PLACEHOLDER);
         }
 
-        const NpcVec_t SpecificNPCs() const { return specificNpcs_; }
+        const NpcPVec_t SpecificNPCs() const { return specificNpcs_; }
 
-        const NpcVec_t RandomNPCs() const { return randomNpcs_; }
+        const NpcPVec_t RandomNPCs() const { return randomNpcs_; }
+
+        void BeforeSerialize();
+        void AfterDeserialize();
 
     private:
+        void AddRandomNpc(const NpcPtr_t);
+
         map::Level::Enum level_;
         misc::VectorMap<map::Level::Enum, bool> doorLockMap_;
-        NpcVec_t specificNpcs_;
-        NpcVec_t randomNpcs_;
         NpcPlaceholderVec_t randomNPCPlaceholders_;
+
+        // these are misc::NotNull pointers that cannot be serialized...
+        NpcPVec_t specificNpcs_;
+        NpcPVec_t randomNpcs_;
+
+        // ...so these vectors are required.
+        std::vector<Npc *> specificNpcsToSerialize_;
+        std::vector<Npc *> randomNpcsToSerialize_;
 
     private:
         friend class boost::serialization::access;
@@ -88,9 +99,9 @@ namespace state
         {
             ar & level_;
             ar & doorLockMap_;
-            ar & specificNpcs_;
-            ar & randomNpcs_;
             ar & randomNPCPlaceholders_;
+            ar & specificNpcsToSerialize_;
+            ar & randomNpcsToSerialize_;
         }
     };
 } // namespace state

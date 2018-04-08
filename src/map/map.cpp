@@ -558,30 +558,33 @@ namespace map
     {
         nonPlayers_.clear();
 
-        for (auto const & NPC :
+        for (auto const & NPC_PTR :
              game::Game::Instance()->State().GetWorld().GetMaps().Current().SpecificNPCs())
         {
-            AddNonPlayerAvatar(NPC);
+            AddNonPlayerAvatar(NPC_PTR);
         }
 
-        for (auto const & NPC :
+        for (auto const & NPC_PTR :
              game::Game::Instance()->State().GetWorld().GetMaps().Current().RandomNPCs())
         {
-            AddNonPlayerAvatar(NPC);
+            AddNonPlayerAvatar(NPC_PTR);
         }
     }
 
-    void Map::AddNonPlayerAvatar(const state::Npc & NPC)
+    void Map::AddNonPlayerAvatar(const state::NpcPtr_t NPC_PTR)
     {
+        auto const WALK_BOUNDS_INDEX{ NPC_PTR->WalkBoundsIndex() };
+        auto const AVATAR_IMAGE_ENUM{ NPC_PTR->AvatarImage() };
+
         std::vector<sf::FloatRect> walkRects;
-        auto const WAS_FOUND{ walkRectVecMap_.Find(NPC.WalkBoundsIndex(), walkRects) };
+        auto const WAS_FOUND{ walkRectVecMap_.Find(WALK_BOUNDS_INDEX, walkRects) };
 
         if (WAS_FOUND == false)
         {
             std::ostringstream ss;
             ss << "map::Map::AddNonPlayerAvatar(avatar="
-               << avatar::Avatar::ToString(NPC.AvatarImage())
-               << ", walkBoundsIndex=" << NPC.WalkBoundsIndex()
+               << avatar::Avatar::ToString(AVATAR_IMAGE_ENUM)
+               << ", walkBoundsIndex=" << WALK_BOUNDS_INDEX
                << ") but that walkBoundsIndex was not found in all the walk bounds loaded from the "
                   "map file.  Valid indexes are: [";
 
@@ -598,14 +601,14 @@ namespace map
         M_ASSERT_OR_LOGANDTHROW_SS(
             (walkRects.empty() == false),
             "map::Map::AddNonPlayerAvatar(avatar="
-                << avatar::Avatar::ToString(NPC.AvatarImage())
-                << ", walkBoundsIndex=" << NPC.WalkBoundsIndex()
+                << avatar::Avatar::ToString(AVATAR_IMAGE_ENUM)
+                << ", walkBoundsIndex=" << WALK_BOUNDS_INDEX
                 << ") but that walkBoundsIndex, while valid, was "
                    "not associated with any actual walk bounds.  "
                    "The vector was empty.");
 
         nonPlayers_.emplace_back(
-            avatar::Model(std::make_unique<avatar::LPCView>(NPC.AvatarImage()), walkRects));
+            avatar::Model(std::make_unique<avatar::LPCView>(AVATAR_IMAGE_ENUM), walkRects));
     }
-}
-}
+} // namespace map
+} // namespace heroespath

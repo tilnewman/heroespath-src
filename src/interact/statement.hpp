@@ -62,6 +62,8 @@ namespace interact
             Guard
         };
 
+        const std::string CategoryToString(const Category);
+
         using CategoryVec_t = std::vector<Category>;
 
         namespace compose

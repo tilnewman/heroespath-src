@@ -32,6 +32,9 @@
 #include "interact/conversation.hpp"
 #include "interact/statement.hpp"
 #include "misc/boost-serialize-includes.hpp"
+#include "misc/not-null.hpp"
+
+#include <string>
 #include <vector>
 
 namespace heroespath
@@ -64,6 +67,8 @@ namespace state
 
         void HandleLevelLoad();
 
+        const std::string ToString() const;
+
     private:
         const interact::Conversation MakeNewConversation();
 
@@ -87,7 +92,8 @@ namespace state
         }
     };
 
-    using NpcVec_t = std::vector<Npc>;
+    using NpcPtr_t = misc::NotNull<Npc *>;
+    using NpcPVec_t = std::vector<NpcPtr_t>;
 
 } // namespace state
 } // namespace heroespath

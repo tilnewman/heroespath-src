@@ -38,7 +38,7 @@ namespace state
     // Responsible for making random NPCs.
     struct NpcFactory
     {
-        static const NpcVec_t Make(const NpcPlaceholder &);
+        static const NpcPVec_t Make(const NpcPlaceholder &);
     };
 
 } // namespace state

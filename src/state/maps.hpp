@@ -48,8 +48,10 @@ namespace state
         Level & Current() { return levels_.at(static_cast<std::size_t>(level_)); }
 
         void SetupForNewGame();
-
         void HandleLevelLoad(const map::Level::Enum);
+
+        void BeforeSerialize();
+        void AfterDeserialize();
 
     private:
         map::Level::Enum level_;

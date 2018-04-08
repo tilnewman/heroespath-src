@@ -283,7 +283,7 @@ namespace item
         // everything in enchantmentsPVec_ is free'd in the Item::~Item()
     }
 
-    void Item::AfterSerialize()
+    void Item::AfterDeserialize()
     {
         enchantmentsPVec_.clear();
         for (auto const ENCHANTMENT_RAW_PTR : enchantmentsToSerializePVec_)

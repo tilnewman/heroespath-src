@@ -27,15 +27,15 @@
 //
 // map.hpp
 //
-#include "sfml-util/direction-enum.hpp"
-
 #include "avatar/model.hpp"
 #include "interact/interaction-manager.hpp"
 #include "map/level-enum.hpp"
 #include "map/parser.hpp"
 #include "map/transition.hpp"
 #include "map/walk-sfx.hpp"
+#include "misc/not-null.hpp"
 #include "misc/timer.hpp"
+#include "sfml-util/direction-enum.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Rect.hpp>
@@ -49,7 +49,8 @@ namespace heroespath
 namespace state
 {
     class Npc;
-}
+    using NpcPtr_t = misc::NotNull<Npc *>;
+} // namespace state
 namespace map
 {
 
@@ -118,7 +119,7 @@ namespace map
 
         void ResetNonPlayers();
 
-        void AddNonPlayerAvatar(const state::Npc &);
+        void AddNonPlayerAvatar(const state::NpcPtr_t);
 
     private:
         static const float PLAYER_MOVE_DISTANCE_;
@@ -142,7 +143,8 @@ namespace map
     };
 
     using MapUPtr_t = std::unique_ptr<Map>;
-}
-}
+
+} // namespace map
+} // namespace heroespath
 
 #endif // HEROESPATH_MAP_MAP_HPP_INCLUDED

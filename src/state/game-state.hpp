@@ -76,7 +76,7 @@ namespace state
         void DateTimeOfLastSaveSet(const sfml_util::DateTime & DT) { dateTimeLastSave_ = DT; }
 
         void BeforeSerialize();
-        void AfterSerialize();
+        void AfterDeserialize();
 
         friend bool operator<(const GameState & L, const GameState & R);
         friend bool operator==(const GameState & L, const GameState & R);

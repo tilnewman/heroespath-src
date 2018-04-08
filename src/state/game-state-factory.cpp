@@ -151,7 +151,7 @@ namespace state
                 std::ifstream ifs(NEXT_PATH_OBJ.string());
                 boost::archive::text_iarchive ia(ifs);
                 ia >> *nextGameStatePtr;
-                nextGameStatePtr->AfterSerialize();
+                nextGameStatePtr->AfterDeserialize();
                 gameStatePVec.emplace_back(nextGameStatePtr);
             }
             catch (const std::exception & E)
@@ -227,7 +227,7 @@ namespace state
                 std::ifstream ifs(pathVec[i].string());
                 boost::archive::text_iarchive ia(ifs);
                 ia >> *nextCharacterPtr;
-                nextCharacterPtr->AfterSerialize();
+                nextCharacterPtr->AfterDeserialize();
                 characterPVec.emplace_back(nextCharacterPtr);
             }
             catch (const std::exception & E)
@@ -302,7 +302,7 @@ namespace state
                     std::ifstream ifs(NEXT_PATH.string());
                     boost::archive::text_iarchive ia(ifs);
                     ia >> *creatureUPtr;
-                    creatureUPtr->AfterSerialize();
+                    creatureUPtr->AfterDeserialize();
                 }
 
                 if ((*creatureUPtr) == (*CHAR_TO_DELETE_PTR))

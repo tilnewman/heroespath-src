@@ -58,5 +58,21 @@ namespace state
         Current().HandleLevelLoad();
     }
 
+    void Maps::BeforeSerialize()
+    {
+        for (auto & level : levels_)
+        {
+            level.BeforeSerialize();
+        }
+    }
+
+    void Maps::AfterDeserialize()
+    {
+        for (auto & level : levels_)
+        {
+            level.AfterDeserialize();
+        }
+    }
+
 } // namespace state
 } // namespace heroespath

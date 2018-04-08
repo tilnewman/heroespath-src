@@ -41,9 +41,9 @@ namespace heroespath
 namespace state
 {
 
-    const NpcVec_t NpcFactory::Make(const NpcPlaceholder & PLACEHOLDER)
+    const NpcPVec_t NpcFactory::Make(const NpcPlaceholder & PLACEHOLDER)
     {
-        NpcVec_t npcs;
+        NpcPVec_t npcPtrs;
 
         auto const COUNT{ misc::random::SizeT(PLACEHOLDER.CountMin(), PLACEHOLDER.CountMax()) };
 
@@ -73,10 +73,11 @@ namespace state
             auto const MOOD{ (
                 (misc::random::Bool()) ? interact::talk::Mood::Kind : interact::talk::Mood::Mean) };
 
-            npcs.emplace_back(Npc(AVATAR, talkCategories, MOOD, PLACEHOLDER.WalkBoundsIndex()));
+            npcPtrs.emplace_back(
+                new Npc(AVATAR, talkCategories, MOOD, PLACEHOLDER.WalkBoundsIndex()));
         }
 
-        return npcs;
+        return npcPtrs;
     }
 
 } // namespace state

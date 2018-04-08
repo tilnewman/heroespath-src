@@ -95,7 +95,7 @@ namespace player
         avatar::Avatar::Enum Avatar() const { return avatar_; }
 
         void BeforeSerialize();
-        void AfterSerialize();
+        void AfterDeserialize();
 
     public:
         static const std::size_t MAX_CHARACTER_COUNT_;

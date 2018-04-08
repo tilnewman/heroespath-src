@@ -29,6 +29,8 @@
 //
 #include "level.hpp"
 #include "state/npc-factory.hpp"
+#include "state/npc-warehouse.hpp"
+
 #include <algorithm>
 
 namespace heroespath
@@ -39,9 +41,11 @@ namespace state
     Level::Level(const map::Level::Enum LEVEL)
         : level_(LEVEL)
         , doorLockMap_()
+        , randomNPCPlaceholders_()
         , specificNpcs_()
         , randomNpcs_()
-        , randomNPCPlaceholders_()
+        , specificNpcsToSerialize_()
+        , randomNpcsToSerialize_()
     {}
 
     bool Level::IsDoorLocked(const map::Level::Enum LEVEL) const
@@ -53,17 +57,22 @@ namespace state
 
     void Level::HandleLevelLoad()
     {
-        for (auto & npc : specificNpcs_)
+        for (auto & npcPtr : specificNpcs_)
         {
-            npc.HandleLevelLoad();
+            npcPtr->HandleLevelLoad();
         }
 
         ResetRandomNPCs();
 
-        for (auto & npc : randomNpcs_)
+        for (auto & npcPtr : randomNpcs_)
         {
-            npc.HandleLevelLoad();
+            npcPtr->HandleLevelLoad();
         }
+    }
+
+    void Level::AddSpecificNPC(const NpcPtr_t NPC_PTR)
+    {
+        specificNpcs_.emplace_back(NpcWarehouse::Instance()->Store(NPC_PTR));
     }
 
     void Level::ResetRandomNPCs()
@@ -72,9 +81,50 @@ namespace state
 
         for (auto const & NPC_PLACEHOLDER : randomNPCPlaceholders_)
         {
-            auto const NPCS{ NpcFactory::Make(NPC_PLACEHOLDER) };
-            std::copy(std::begin(NPCS), std::end(NPCS), std::back_inserter(randomNpcs_));
+            for (auto const & NPC_PTR : NpcFactory::Make(NPC_PLACEHOLDER))
+            {
+                AddRandomNpc(NPC_PTR);
+            }
         }
+    }
+
+    void Level::BeforeSerialize()
+    {
+        specificNpcsToSerialize_.clear();
+        for (auto const & NPC_PTR : specificNpcs_)
+        {
+            specificNpcsToSerialize_.emplace_back(NPC_PTR.Ptr());
+        }
+        // everything in specificNpcs_ is free'd in the destructor
+
+        randomNpcsToSerialize_.clear();
+        for (auto const & NPC_PTR : randomNpcs_)
+        {
+            randomNpcsToSerialize_.emplace_back(NPC_PTR.Ptr());
+        }
+        // everything in specificNpcs_ is free'd in the destructor
+    }
+
+    void Level::AfterDeserialize()
+    {
+        specificNpcs_.clear();
+        for (auto const & NPC_PTR : specificNpcsToSerialize_)
+        {
+            AddSpecificNPC(NPC_PTR);
+        }
+        specificNpcsToSerialize_.clear();
+
+        randomNpcs_.clear();
+        for (auto const & NPC_PTR : randomNpcsToSerialize_)
+        {
+            AddRandomNpc(NPC_PTR);
+        }
+        randomNpcsToSerialize_.clear();
+    }
+
+    void Level::AddRandomNpc(const NpcPtr_t NPC_PTR)
+    {
+        randomNpcs_.emplace_back(NpcWarehouse::Instance()->Store(NPC_PTR));
     }
 
 } // namespace state

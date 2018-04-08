@@ -77,6 +77,7 @@
 #include "song/song-warehouse.hpp"
 #include "spell/spell-warehouse.hpp"
 #include "state/game-state-factory.hpp"
+#include "state/npc-warehouse.hpp"
 
 #include <cstdlib>
 #include <exception>
@@ -399,6 +400,7 @@ namespace game
 
     void StartupShutdown::SingletonsAcquire()
     {
+        state::NpcWarehouse::Acquire();
         sfml_util::TextureCache::Acquire();
         creature::EnchantmentWarehouse::Acquire();
         creature::EnchantmentFactory::Acquire();
@@ -486,6 +488,7 @@ namespace game
         sfml_util::Display::Release();
         misc::Platform::Release();
         sfml_util::TextureCache::Release();
+        state::NpcWarehouse::Release();
         GameDataFile::Release();
     }
 } // namespace game

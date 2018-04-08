@@ -187,7 +187,7 @@ namespace item
         const std::string ToString() const;
 
         void BeforeSerialize();
-        void AfterSerialize();
+        void AfterDeserialize();
 
         friend bool operator<(const Item & L, const Item & R);
         friend bool operator==(const Item & L, const Item & R);

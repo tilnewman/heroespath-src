@@ -30,6 +30,8 @@
 #include "npc.hpp"
 #include "interact/conversation-factory.hpp"
 
+#include <sstream>
+
 namespace heroespath
 {
 namespace state
@@ -80,5 +82,23 @@ namespace state
             conversation_ = MakeNewConversation();
         }
     }
-}
-}
+
+    const std::string Npc::ToString() const
+    {
+        std::ostringstream ss;
+
+        ss << "state::Npc={avatar=" << avatar::Avatar::ToString(avatar_) << ", conv_mood="
+           << ((conversationMood_ == interact::talk::Mood::Kind) ? "kind" : "mean")
+           << ", walk_bounds_index=" << walkBoundsIndex_ << ", conv_categories=";
+
+        for (auto const CONV_CAT : conversationCategories_)
+        {
+            ss << interact::talk::CategoryToString(CONV_CAT) << ", ";
+        }
+
+        ss << "}";
+
+        return ss.str();
+    }
+} // namespace state
+} // namespace heroespath

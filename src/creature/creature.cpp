@@ -1546,9 +1546,9 @@ namespace creature
 
     void Creature::BeforeSerialize() { inventory_.BeforeSerialize(); }
 
-    void Creature::AfterSerialize()
+    void Creature::AfterDeserialize()
     {
-        inventory_.AfterSerialize();
+        inventory_.AfterDeserialize();
         SetHeldWeaponsToBest();
     }
 

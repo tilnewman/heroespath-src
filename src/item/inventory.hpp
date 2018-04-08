@@ -110,7 +110,7 @@ namespace item
         const std::string ToString() const;
 
         void BeforeSerialize();
-        void AfterSerialize();
+        void AfterDeserialize();
 
         friend bool operator==(const Inventory & L, const Inventory & R);
 

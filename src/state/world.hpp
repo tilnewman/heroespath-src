@@ -56,6 +56,9 @@ namespace state
         void EncounterCountInc() { ++encounterCount_; }
         void HandleLevelLoad(const map::Level::Enum);
 
+        void BeforeSerialize();
+        void AfterDeserialize();
+
     private:
         // TODO quests
         // TODO events
@@ -72,6 +75,7 @@ namespace state
     };
 
     using WorldUPtr_t = std::unique_ptr<World>;
+
 } // namespace state
 } // namespace heroespath
 

@@ -39,6 +39,39 @@ namespace interact
 {
     namespace talk
     {
+
+        const std::string CategoryToString(const Category CATEGORY)
+        {
+            switch (CATEGORY)
+            {
+                case Category::Common:
+                {
+                    return "Common";
+                }
+                case Category::Town:
+                {
+                    return "Town";
+                }
+                case Category::Child:
+                {
+                    return "Child";
+                }
+                case Category::Monk:
+                {
+                    return "Monk";
+                }
+                case Category::Drunk:
+                {
+                    return "Drunk";
+                }
+                case Category::Guard:
+                default:
+                {
+                    return "Guard";
+                }
+            }
+        }
+
         namespace compose
         {
 

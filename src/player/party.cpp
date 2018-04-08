@@ -211,7 +211,7 @@ namespace player
         // everything in charactersPVec_ is free'd in Party::~Party()
     }
 
-    void Party::AfterSerialize()
+    void Party::AfterDeserialize()
     {
         charactersPVec_.clear();
         for (auto const & CREATURE_RAW_PTR : charactersToSerializePVec_)
