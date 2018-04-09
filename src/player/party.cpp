@@ -211,6 +211,11 @@ namespace player
         // everything in charactersPVec_ is free'd in Party::~Party()
     }
 
+    void Party::AfterSerialize()
+    {
+        // TODO
+    }
+
     void Party::AfterDeserialize()
     {
         charactersPVec_.clear();

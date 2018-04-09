@@ -1546,6 +1546,8 @@ namespace creature
 
     void Creature::BeforeSerialize() { inventory_.BeforeSerialize(); }
 
+    void Creature::AfterSerialize() { inventory_.AfterSerialize(); }
+
     void Creature::AfterDeserialize()
     {
         inventory_.AfterDeserialize();

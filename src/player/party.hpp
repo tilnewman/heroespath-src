@@ -95,6 +95,7 @@ namespace player
         avatar::Avatar::Enum Avatar() const { return avatar_; }
 
         void BeforeSerialize();
+        void AfterSerialize();
         void AfterDeserialize();
 
     public:

@@ -66,28 +66,29 @@ namespace state
 
     void GameState::BeforeSerialize()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (partyUPtr_),
-            "state::GameState::BeforeSerialize() called when the partyUptr_ was null.");
-
         for (auto creaturePtr : partyUPtr_->Characters())
         {
             creaturePtr->BeforeSerialize();
         }
 
         partyUPtr_->BeforeSerialize();
-
         worldUPtr_->BeforeSerialize();
+    }
+
+    void GameState::AfterSerialize()
+    {
+        for (auto creaturePtr : partyUPtr_->Characters())
+        {
+            creaturePtr->AfterSerialize();
+        }
+
+        partyUPtr_->AfterSerialize();
+        worldUPtr_->AfterSerialize();
     }
 
     void GameState::AfterDeserialize()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (partyUPtr_),
-            "state::GameState::AfterDeserialize() called when the partyUptr_ was null.");
-
         worldUPtr_->AfterDeserialize();
-
         partyUPtr_->AfterDeserialize();
 
         for (auto creaturePtr : partyUPtr_->Characters())

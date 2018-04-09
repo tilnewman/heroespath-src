@@ -105,6 +105,11 @@ namespace state
         // everything in specificNpcs_ is free'd in the destructor
     }
 
+    void Level::AfterSerialize()
+    {
+        // TOOD
+    }
+
     void Level::AfterDeserialize()
     {
         specificNpcs_.clear();

@@ -57,6 +57,7 @@ namespace state
         void HandleLevelLoad(const map::Level::Enum);
 
         void BeforeSerialize();
+        void AfterSerialize();
         void AfterDeserialize();
 
     private:

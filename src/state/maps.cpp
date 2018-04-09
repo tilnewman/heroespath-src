@@ -66,6 +66,14 @@ namespace state
         }
     }
 
+    void Maps::AfterSerialize()
+    {
+        for (auto & level : levels_)
+        {
+            level.AfterSerialize();
+        }
+    }
+
     void Maps::AfterDeserialize()
     {
         for (auto & level : levels_)

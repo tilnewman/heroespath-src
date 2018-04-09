@@ -29,8 +29,9 @@
 //
 #include "item.hpp"
 
-#include "creature/enchantment-warehouse.hpp"
+#include "creature/enchantment-factory.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
 
 #include <exception>
@@ -105,7 +106,7 @@ namespace item
         }
     }
 
-    Item::~Item() { creature::EnchantmentWarehouse::Instance()->Free(enchantmentsPVec_); }
+    Item::~Item() { creature::EnchantmentFactory::Instance()->Warehouse().Free(enchantmentsPVec_); }
 
     void Item::EnchantmentAdd(const creature::EnchantmentPtr_t ENCHANTMENT_PTR)
     {
@@ -274,23 +275,21 @@ namespace item
 
     void Item::BeforeSerialize()
     {
-        enchantmentsToSerializePVec_.clear();
-        for (auto const & ENCHANTMENT_PTR : enchantmentsPVec_)
-        {
-            enchantmentsToSerializePVec_.emplace_back(ENCHANTMENT_PTR.Ptr());
-        }
+        misc::SerializeHelp::BeforeSerialize(enchantmentsPVec_, enchantmentsToSerializePVec_);
+    }
 
-        // everything in enchantmentsPVec_ is free'd in the Item::~Item()
+    void Item::AfterSerialize()
+    {
+        misc::SerializeHelp::AfterSerialize(
+            enchantmentsToSerializePVec_, creature::EnchantmentFactory::Instance()->Warehouse());
     }
 
     void Item::AfterDeserialize()
     {
-        enchantmentsPVec_.clear();
-        for (auto const ENCHANTMENT_RAW_PTR : enchantmentsToSerializePVec_)
-        {
-            enchantmentsPVec_.emplace_back(ENCHANTMENT_RAW_PTR);
-        }
-        enchantmentsToSerializePVec_.clear();
+        misc::SerializeHelp::AfterDeserialize(
+            enchantmentsPVec_,
+            enchantmentsToSerializePVec_,
+            creature::EnchantmentFactory::Instance()->Warehouse());
     }
 
     bool operator<(const Item & L, const Item & R)
@@ -408,5 +407,6 @@ namespace item
             return misc::Vector::OrderlessCompareEqual(L.enchantmentsPVec_, R.enchantmentsPVec_);
         }
     }
+
 } // namespace item
 } // namespace heroespath

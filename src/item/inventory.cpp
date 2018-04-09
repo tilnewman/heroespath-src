@@ -32,6 +32,7 @@
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
 
 #include <sstream>
@@ -354,21 +355,25 @@ namespace item
 
     void Inventory::BeforeSerialize()
     {
-        itemsPVecToSerialize_.clear();
         for (auto const & ITEM_PTR : itemsPVec_)
         {
             ITEM_PTR->BeforeSerialize();
-            itemsPVecToSerialize_.emplace_back(ITEM_PTR.Ptr());
         }
-        // everything in itemsPVec is free'd in the destructor
 
-        equippedItemsPVecToSerialize_.clear();
+        misc::SerializeHelp::BeforeSerialize(itemsPVec_, itemsPVecToSerialize_);
+
         for (auto const & ITEM_PTR : equippedItemsPVec_)
         {
             ITEM_PTR->BeforeSerialize();
-            equippedItemsPVecToSerialize_.emplace_back(ITEM_PTR.Ptr());
         }
-        // everything in equippedItemsPVec_ is free'd in the destructor
+
+        misc::SerializeHelp::BeforeSerialize(equippedItemsPVec_, equippedItemsPVecToSerialize_);
+    }
+
+    void Inventory::AfterSerialize()
+    {
+        // TODO
+        // misc::SerializeHelp::AfterSerialize(itemsPVecToSerialize_, *item::Item);
     }
 
     void Inventory::AfterDeserialize()

@@ -32,6 +32,7 @@
 #include "creature/enchantment-type.hpp"
 #include "creature/enchantment.hpp"
 #include "item/item-type-enum.hpp"
+#include "misc/not-null-warehouse.hpp"
 #include "misc/not-null.hpp"
 #include "stats/trait.hpp"
 #include "stats/traits-set.hpp"
@@ -50,8 +51,7 @@ namespace item
 namespace creature
 {
 
-    // Responsible for making all Enchantment objects, and automatically
-    // storing them in the EnchantmentWarehouse for safe keeping.
+    // Responsible for making and storing all Enchantment objects.
     class EnchantmentFactory
     {
     public:
@@ -96,9 +96,15 @@ namespace creature
         Score_t TreasureScore(
             const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
 
+        misc::NotNullWarehouse<Enchantment> & Warehouse() { return warehouse_; }
+
     private:
-        const item::ItemPtr_t
-            StoreAttachReturn(const item::ItemPtr_t, const EnchantmentPtr_t) const;
+        const EnchantmentPtr_t Make(
+            const EnchantmentType::Enum TYPE,
+            const stats::TraitSet & TRAIT_SET,
+            const UseInfo & USE_INFO) const;
+
+        const EnchantmentPtr_t Make(const Enchantment &) const;
 
         const std::vector<Enchantment>
             MakeFromUniqueType(const item::unique_type::Enum, const item::material::Enum) const;
@@ -142,6 +148,7 @@ namespace creature
 
     private:
         static std::unique_ptr<EnchantmentFactory> instanceUPtr_;
+        mutable misc::NotNullWarehouse<Enchantment> warehouse_;
     };
 
 } // namespace creature

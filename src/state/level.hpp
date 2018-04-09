@@ -75,6 +75,7 @@ namespace state
         const NpcPVec_t RandomNPCs() const { return randomNpcs_; }
 
         void BeforeSerialize();
+        void AfterSerialize();
         void AfterDeserialize();
 
     private:

@@ -43,6 +43,8 @@ namespace state
 
     void World::BeforeSerialize() { maps_.BeforeSerialize(); }
 
+    void World::AfterSerialize() { maps_.AfterSerialize(); }
+
     void World::AfterDeserialize() { maps_.AfterDeserialize(); }
 
 } // namespace state

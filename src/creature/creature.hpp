@@ -420,6 +420,7 @@ namespace creature
         void StatTraitsModify(const stats::StatSet &);
 
         void BeforeSerialize();
+        void AfterSerialize();
         void AfterDeserialize();
 
         friend bool operator==(const Creature & L, const Creature & R);

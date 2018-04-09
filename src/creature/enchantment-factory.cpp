@@ -29,7 +29,6 @@
 //
 #include "enchantment-factory.hpp"
 
-#include "creature/enchantment-warehouse.hpp"
 #include "creature/enchantment.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
@@ -92,10 +91,8 @@ namespace creature
         if ((ITEM_PTR->IsArmor() || ITEM_PTR->IsWeapon())
             && (ITEM_PTR->ElementType() != item::element_type::None))
         {
-            StoreAttachReturn(
-                ITEM_PTR,
-                NewFromElementType(
-                    ITEM_PTR->ElementType(), ITEM_PTR->IsWeapon(), ITEM_PTR->MaterialPrimary()));
+            ITEM_PTR->EnchantmentAdd(NewFromElementType(
+                ITEM_PTR->ElementType(), ITEM_PTR->IsWeapon(), ITEM_PTR->MaterialPrimary()));
         }
 
         if ((ITEM_PTR->UniqueType() != item::unique_type::NotUnique)
@@ -104,7 +101,7 @@ namespace creature
             for (auto const & NEXT_ENCHANTMENT_PTR :
                  NewFromUniqueType(ITEM_PTR->UniqueType(), ITEM_PTR->MaterialPrimary()))
             {
-                StoreAttachReturn(ITEM_PTR, NEXT_ENCHANTMENT_PTR);
+                ITEM_PTR->EnchantmentAdd(NEXT_ENCHANTMENT_PTR);
             }
 
             return ITEM_PTR;
@@ -113,18 +110,19 @@ namespace creature
         if ((ITEM_PTR->NamedType() != item::named_type::NotNamed)
             && (ITEM_PTR->NamedType() != item::named_type::Count))
         {
-            return StoreAttachReturn(
-                ITEM_PTR,
-                NewFromNamedType(
-                    ITEM_PTR->NamedType(),
-                    ITEM_PTR->MaterialPrimary(),
-                    (ITEM_PTR->Category() & item::category::Armor),
-                    (ITEM_PTR->Category() & item::category::Weapon)));
+            ITEM_PTR->EnchantmentAdd(NewFromNamedType(
+                ITEM_PTR->NamedType(),
+                ITEM_PTR->MaterialPrimary(),
+                (ITEM_PTR->Category() & item::category::Armor),
+                (ITEM_PTR->Category() & item::category::Weapon)));
+
+            return ITEM_PTR;
         }
 
         if (ITEM_PTR->SetType() != item::set_type::NotASet)
         {
-            return StoreAttachReturn(ITEM_PTR, NewFromSetType(ITEM_PTR->SetType()));
+            ITEM_PTR->EnchantmentAdd(NewFromSetType(ITEM_PTR->SetType()));
+            return ITEM_PTR;
         }
 
         if (ITEM_PTR->MiscType() != item::misc_type::NotMisc)
@@ -134,7 +132,8 @@ namespace creature
 
             if (ENCHANTMENT_PTR_OPT)
             {
-                return StoreAttachReturn(ITEM_PTR, ENCHANTMENT_PTR_OPT.value());
+                ITEM_PTR->EnchantmentAdd(ENCHANTMENT_PTR_OPT.value());
+                return ITEM_PTR;
             }
         }
 
@@ -147,7 +146,8 @@ namespace creature
         const stats::TraitSet & TRAIT_SET,
         const UseInfo & USE_INFO) const
     {
-        return StoreAttachReturn(ITEM_PTR, new Enchantment(TYPE, TRAIT_SET, USE_INFO));
+        ITEM_PTR->EnchantmentAdd(Make(TYPE, TRAIT_SET, USE_INFO));
+        return ITEM_PTR;
     }
 
     Score_t EnchantmentFactory::TreasureScore(
@@ -224,11 +224,17 @@ namespace creature
         return MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY).TreasureScore() + 750_score;
     }
 
-    const item::ItemPtr_t EnchantmentFactory::StoreAttachReturn(
-        const item::ItemPtr_t ITEM_PTR, const EnchantmentPtr_t ENCHANTMENT_PTR) const
+    const EnchantmentPtr_t EnchantmentFactory::Make(
+        const EnchantmentType::Enum TYPE,
+        const stats::TraitSet & TRAIT_SET,
+        const UseInfo & USE_INFO) const
     {
-        ITEM_PTR->EnchantmentAdd(EnchantmentWarehouse::Instance()->Store(ENCHANTMENT_PTR));
-        return ITEM_PTR;
+        return Make(Enchantment(TYPE, TRAIT_SET, USE_INFO));
+    }
+
+    const EnchantmentPtr_t EnchantmentFactory::Make(const Enchantment & ENCHANTMENT) const
+    {
+        return warehouse_.Store(std::make_unique<Enchantment>(ENCHANTMENT));
     }
 
     const EnchantmentPVec_t EnchantmentFactory::NewFromUniqueType(
@@ -238,7 +244,7 @@ namespace creature
         EnchantmentPVec_t enchantmentPtrs;
         for (auto const & ENCHANTMENT : MakeFromUniqueType(UNIQUE_ENUM, MATERIAL_PRIMARY))
         {
-            enchantmentPtrs.emplace_back(new Enchantment(ENCHANTMENT));
+            enchantmentPtrs.emplace_back(Make(ENCHANTMENT));
         }
 
         return enchantmentPtrs;
@@ -1569,7 +1575,7 @@ namespace creature
         }
         else
         {
-            return EnchantmentPtrOpt_t(new Enchantment(ENCHANTMENT));
+            return EnchantmentPtrOpt_t(Make(ENCHANTMENT));
         }
     }
 
@@ -1851,7 +1857,7 @@ namespace creature
 
     const EnchantmentPtr_t EnchantmentFactory::NewFromSetType(const item::set_type::Enum E) const
     {
-        return new Enchantment(MakeFromSetType(E));
+        return Make(MakeFromSetType(E));
     }
 
     const Enchantment EnchantmentFactory::MakeFromSetType(const item::set_type::Enum E) const
@@ -2266,7 +2272,7 @@ namespace creature
     const EnchantmentPtr_t
         EnchantmentFactory::NewFromSetCompleteType(const item::set_type::Enum E) const
     {
-        return new Enchantment(MakeFromSetCompleteType(E));
+        return Make(MakeFromSetCompleteType(E));
     }
 
     const Enchantment
@@ -2710,7 +2716,7 @@ namespace creature
         const bool IS_WEAPON,
         const item::material::Enum MATERIAL_PRIMARY) const
     {
-        return new Enchantment(MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY));
+        return Make(MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY));
     }
 
     const Enchantment EnchantmentFactory::MakeFromElementType(
@@ -2852,7 +2858,7 @@ namespace creature
         const bool IS_WEAPON,
         const bool IS_ARMOR) const
     {
-        return new Enchantment(MakeFromNamedType(NAMED_ENUM, MATERIAL_ENUM, IS_WEAPON, IS_ARMOR));
+        return Make(MakeFromNamedType(NAMED_ENUM, MATERIAL_ENUM, IS_WEAPON, IS_ARMOR));
     }
 
     const Enchantment EnchantmentFactory::MakeFromNamedType(

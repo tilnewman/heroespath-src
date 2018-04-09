@@ -37,7 +37,6 @@
 #include "config/settings-file.hpp"
 #include "creature/condition-warehouse.hpp"
 #include "creature/enchantment-factory.hpp"
-#include "creature/enchantment-warehouse.hpp"
 #include "creature/name-info.hpp"
 #include "creature/title-warehouse.hpp"
 #include "game/game-data-file.hpp"
@@ -402,7 +401,6 @@ namespace game
     {
         state::NpcWarehouse::Acquire();
         sfml_util::TextureCache::Acquire();
-        creature::EnchantmentWarehouse::Acquire();
         creature::EnchantmentFactory::Acquire();
         item::ItemWarehouse::Acquire();
         player::CharacterWarehouse::Acquire();
@@ -483,7 +481,6 @@ namespace game
         non_player::CharacterWarehouse::Release();
         item::ItemWarehouse::Release();
         creature::EnchantmentFactory::Release();
-        creature::EnchantmentWarehouse::Release();
         non_player::ownership::ChanceFactory::Release();
         sfml_util::Display::Release();
         misc::Platform::Release();
@@ -491,5 +488,6 @@ namespace game
         state::NpcWarehouse::Release();
         GameDataFile::Release();
     }
+
 } // namespace game
 } // namespace heroespath
