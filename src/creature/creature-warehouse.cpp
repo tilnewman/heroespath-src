@@ -25,78 +25,62 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// character-warehouse.cpp (player)
+// creature-warehouse.cpp
 //
-#include "character-warehouse.hpp"
+#include "creature-warehouse.hpp"
 
 #include "creature/creature.hpp"
 #include "log/log-macros.hpp"
 
 namespace heroespath
 {
-namespace player
+namespace creature
 {
 
-    std::unique_ptr<CharacterWarehouse> CharacterWarehouse::instanceUPtr_;
+    std::unique_ptr<CreatureWarehouse> CreatureWarehouse::instanceUPtr_;
 
-    CharacterWarehouse::CharacterWarehouse()
+    CreatureWarehouse::CreatureWarehouse()
         : warehouse_()
     {
-        M_HP_LOG_DBG("Singleton Construction: Player CharacterWarehouse");
+        M_HP_LOG_DBG("Singleton Construction: Non-Player CreatureWarehouse");
     }
 
-    CharacterWarehouse::~CharacterWarehouse()
+    CreatureWarehouse::~CreatureWarehouse()
     {
-        M_HP_LOG_DBG("Singleton Destruction: Player CharacterWarehouse");
+        M_HP_LOG_DBG("Singleton Destruction: Non-Player CreatureWarehouse");
     }
 
-    misc::NotNull<CharacterWarehouse *> CharacterWarehouse::Instance()
+    misc::NotNull<CreatureWarehouse *> CreatureWarehouse::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): Player CharacterWarehouse");
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): Non-Player CreatureWarehouse");
             Acquire();
         }
 
         return instanceUPtr_.get();
     }
 
-    void CharacterWarehouse::Acquire()
+    void CreatureWarehouse::Acquire()
     {
         if (!instanceUPtr_)
         {
-            instanceUPtr_ = std::make_unique<CharacterWarehouse>();
+            instanceUPtr_ = std::make_unique<CreatureWarehouse>();
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: Player CharacterWarehouse");
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: Non-Player CreatureWarehouse");
         }
     }
 
-    void CharacterWarehouse::Release()
+    void CreatureWarehouse::Release()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_),
-            "player::CharacterWarehouse::Release() found instanceUPtr that was null.");
+            "non_player::CreatureWarehouse::Release() found instanceUPtr that was null.");
 
         instanceUPtr_.reset();
     }
 
-    const creature::CreaturePtr_t
-        CharacterWarehouse::Store(const creature::CreaturePtr_t CHARACTER_PTR)
-    {
-        return warehouse_.Store(CHARACTER_PTR);
-    }
-
-    void CharacterWarehouse::Free(const creature::CreaturePtr_t CHARACTER_PTR)
-    {
-        warehouse_.Free(CHARACTER_PTR);
-    }
-
-    void CharacterWarehouse::Free(creature::CreaturePVec_t & creaturePVec)
-    {
-        warehouse_.Free(creaturePVec);
-    }
-
-} // namespace player
+} // namespace creature
 } // namespace heroespath

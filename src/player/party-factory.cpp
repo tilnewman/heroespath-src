@@ -29,6 +29,7 @@
 //
 #include "party-factory.hpp"
 
+#include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
 #include "creature/name-info.hpp"
 #include "misc/boost-string-includes.hpp"
@@ -53,8 +54,7 @@ namespace player
 
     PartyUPtr_t PartyFactory::MakeFakeForTesting()
     {
-        std::string errMsgIgnored{ "" };
-        auto partyUPtr{ std::make_unique<player::Party>() };
+        creature::CreaturePVec_t creaturesPVec;
 
         const int STAT_BASE_HIGH{ 18 };
         const int STAT_BASE_MED{ 9 };
@@ -75,17 +75,17 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "K") );
 
-            auto knightPtr{ new creature::Creature(
-                true,
+            auto knightPtr{
+        creature::CreatureWarehouse::Access().Store(std::make_unique<creature::Creature>( true,
                 KNIGHT_NAME,
                 creature::sex::Male,
                 creature::BodyType::Make_Humanoid(),
                 creature::Race(creature::race::Human),
                 creature::Role(creature::role::Knight),
-                KNIGHT_STATS) };
+                KNIGHT_STATS)) };
 
             player::Initial::Setup(knightPtr);
-            partyUPtr->Add(knightPtr, errMsgIgnored);
+            creaturesPVec.emplace_back(knightPtr);
         }
         */
         {
@@ -102,17 +102,18 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "F"));
 
-            auto firebrandPtr{ new creature::Creature(
-                true,
-                FIREBRAND_NAME,
-                creature::sex::Male,
-                creature::BodyType::Make_Dragon(),
-                creature::race::Dragon,
-                creature::role::Firebrand,
-                FIREBRAND_STATS) };
+            auto firebrandPtr{ creature::CreatureWarehouse::Access().Store(
+                std::make_unique<creature::Creature>(
+                    true,
+                    FIREBRAND_NAME,
+                    creature::sex::Male,
+                    creature::BodyType::Make_Dragon(),
+                    creature::race::Dragon,
+                    creature::role::Firebrand,
+                    FIREBRAND_STATS)) };
 
             player::Initial::Setup(firebrandPtr);
-            partyUPtr->Add(firebrandPtr, errMsgIgnored);
+            creaturesPVec.emplace_back(firebrandPtr);
         }
         /*
         {
@@ -129,17 +130,17 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "A"));
 
-            auto archerPtr{ new creature::Creature(
-                true,
+            auto archerPtr{
+        creature::CreatureWarehouse::Access().Store(std::make_unique<creature::Creature>( true,
                 ARCHER_NAME,
                 creature::sex::Female,
                 creature::BodyType::Make_Humanoid(),
                 creature::Race(creature::race::Human),
                 creature::Role(creature::role::Archer),
-                ARCHER_STATS) };
+                ARCHER_STATS)) };
 
             player::Initial::Setup(archerPtr);
-            partyUPtr->Add(archerPtr, errMsgIgnored);
+            creaturesPVec.emplace_back(archerPtr);
         }
 
         {
@@ -156,17 +157,17 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "W"));
 
-            auto wolfenPtr{ new creature::Creature(
-                true,
+            auto wolfenPtr{
+        creature::CreatureWarehouse::Access().Store(std::make_unique<creature::Creature>( true,
                 WOLFEN_NAME,
                 creature::sex::Female,
                 creature::BodyType::Make_Wolfen(),
                 creature::Race(creature::race::Wolfen),
                 creature::Role(creature::role::Wolfen),
-                WOLFEN_STATS) };
+                WOLFEN_STATS)) };
 
             player::Initial::Setup(wolfenPtr);
-            partyUPtr->Add(wolfenPtr, errMsgIgnored);
+            creaturesPVec.emplace_back(wolfenPtr);
         }
         */
         {
@@ -183,17 +184,18 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "B"));
 
-            auto bardPtr{ new creature::Creature(
-                true,
-                BARD_NAME,
-                creature::sex::Male,
-                creature::BodyType::Make_Humanoid(),
-                creature::race::Human,
-                creature::role::Bard,
-                BARD_STATS) };
+            auto bardPtr{ creature::CreatureWarehouse::Access().Store(
+                std::make_unique<creature::Creature>(
+                    true,
+                    BARD_NAME,
+                    creature::sex::Male,
+                    creature::BodyType::Make_Humanoid(),
+                    creature::race::Human,
+                    creature::role::Bard,
+                    BARD_STATS)) };
 
             player::Initial::Setup(bardPtr);
-            partyUPtr->Add(bardPtr, errMsgIgnored);
+            creaturesPVec.emplace_back(bardPtr);
         }
 
         {
@@ -210,17 +212,18 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "G"));
 
-            auto bmPtr{ new creature::Creature(
-                true,
-                BEASTMASTER_NAME,
-                creature::sex::Male,
-                creature::BodyType::Make_Humanoid(),
-                creature::race::Human,
-                creature::role::Beastmaster,
-                BEASTMASTER_STATS) };
+            auto bmPtr{ creature::CreatureWarehouse::Access().Store(
+                std::make_unique<creature::Creature>(
+                    true,
+                    BEASTMASTER_NAME,
+                    creature::sex::Male,
+                    creature::BodyType::Make_Humanoid(),
+                    creature::race::Human,
+                    creature::role::Beastmaster,
+                    BEASTMASTER_STATS)) };
 
             player::Initial::Setup(bmPtr);
-            partyUPtr->Add(bmPtr, errMsgIgnored);
+            creaturesPVec.emplace_back(bmPtr);
         }
 
         {
@@ -237,17 +240,18 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "T"));
 
-            auto thiefPtr{ new creature::Creature(
-                true,
-                THEIF_NAME,
-                creature::sex::Male,
-                creature::BodyType::Make_Humanoid(),
-                creature::race::Gnome,
-                creature::role::Thief,
-                THEIF_STATS) };
+            auto thiefPtr{ creature::CreatureWarehouse::Access().Store(
+                std::make_unique<creature::Creature>(
+                    true,
+                    THEIF_NAME,
+                    creature::sex::Male,
+                    creature::BodyType::Make_Humanoid(),
+                    creature::race::Gnome,
+                    creature::role::Thief,
+                    THEIF_STATS)) };
 
             player::Initial::Setup(thiefPtr);
-            partyUPtr->Add(thiefPtr, errMsgIgnored);
+            creaturesPVec.emplace_back(thiefPtr);
         }
 
         {
@@ -264,17 +268,18 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "C"));
 
-            auto clericPtr{ new creature::Creature(
-                true,
-                CLERIC_NAME,
-                creature::sex::Female,
-                creature::BodyType::Make_Pixie(),
-                creature::race::Pixie,
-                creature::role::Cleric,
-                CLERIC_STATS) };
+            auto clericPtr{ creature::CreatureWarehouse::Access().Store(
+                std::make_unique<creature::Creature>(
+                    true,
+                    CLERIC_NAME,
+                    creature::sex::Female,
+                    creature::BodyType::Make_Pixie(),
+                    creature::race::Pixie,
+                    creature::role::Cleric,
+                    CLERIC_STATS)) };
 
             player::Initial::Setup(clericPtr);
-            partyUPtr->Add(clericPtr, errMsgIgnored);
+            creaturesPVec.emplace_back(clericPtr);
         }
         /*
         {
@@ -291,17 +296,17 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "S"));
 
-            auto sorcererPtr{ new creature::Creature(
-                true,
+            auto sorcererPtr{
+        creature::CreatureWarehouse::Access().Store(std::make_unique<creature::Creature>( true,
                 SORCERER_NAME,
                 creature::sex::Male,
                 creature::BodyType::Make_Pixie(),
                 creature::Race(creature::race::Pixie),
                 creature::Role(creature::role::Sorcerer),
-                SORCERER_STATS) };
+                SORCERER_STATS)) };
 
             player::Initial::Setup(sorcererPtr);
-            partyUPtr->Add(sorcererPtr, errMsgIgnored);
+            creaturesPVec.emplace_back(sorcererPtr);
         }
         */
         {
@@ -318,20 +323,21 @@ namespace player
                 creature::NameInfo::Instance()->LargestLetterString(),
                 "S"));
 
-            auto sylavinPtr{ new creature::Creature(
-                true,
-                SYLAVIN_NAME,
-                creature::sex::Male,
-                creature::BodyType::Make_Dragon(),
-                creature::race::Dragon,
-                creature::role::Sylavin,
-                SYLAVIN_STATS) };
+            auto sylavinPtr{ creature::CreatureWarehouse::Access().Store(
+                std::make_unique<creature::Creature>(
+                    true,
+                    SYLAVIN_NAME,
+                    creature::sex::Male,
+                    creature::BodyType::Make_Dragon(),
+                    creature::race::Dragon,
+                    creature::role::Sylavin,
+                    SYLAVIN_STATS)) };
 
             player::Initial::Setup(sylavinPtr);
-            partyUPtr->Add(sylavinPtr, errMsgIgnored);
+            creaturesPVec.emplace_back(sylavinPtr);
         }
 
-        return partyUPtr;
+        return std::make_unique<player::Party>(avatar::Avatar::Puck_Male_Light, creaturesPVec);
     }
 
 } // namespace player

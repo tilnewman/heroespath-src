@@ -45,7 +45,6 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
-#include "non-player/party.hpp"
 #include "player/party.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-char-select.hpp"

@@ -32,7 +32,6 @@
 #include "combat/encounter.hpp"
 #include "creature/creature.hpp"
 #include "game/game.hpp"
-#include "non-player/party.hpp"
 #include "player/party.hpp"
 #include "state/game-state.hpp"
 
@@ -67,9 +66,8 @@ namespace creature
 
         if (((OPTIONS & PlayerOpt::Runaway) == false) && (pVec_OutParam.empty() == false))
         {
-            auto const & RUNAWAY_PLAYERS_PVEC{ combat::Encounter::Instance()->RunawayPlayersVec() };
-
-            for (auto const & NEXT_RUNAWAY_PLAYER_PTR : RUNAWAY_PLAYERS_PVEC)
+            for (auto const & NEXT_RUNAWAY_PLAYER_PTR :
+                 combat::Encounter::Instance()->RunawayPlayers())
             {
                 pVec_OutParam.erase(
                     std::remove(
@@ -90,12 +88,8 @@ namespace creature
 
     std::size_t Algorithms::NonPlayers(CreaturePVec_t & pVec_OutParam, const PlayerOpt OPTIONS)
     {
-        auto const NONPLAYERS_PVEC{
-            combat::Encounter::Instance()->LivingNonPlayerParty().Characters()
-        };
-
         std::size_t count{ 0 };
-        for (auto const & NEXT_NONPLAYER_PTR : NONPLAYERS_PVEC)
+        for (auto const & NEXT_NONPLAYER_PTR : combat::Encounter::Instance()->LivingNonPlayers())
         {
             if (((OPTIONS & PlayerOpt::Living) == false) || NEXT_NONPLAYER_PTR->IsAlive())
             {
@@ -106,10 +100,8 @@ namespace creature
 
         if ((OPTIONS & PlayerOpt::Living) == false)
         {
-            auto const & DEAD_NONPLAYERS_PVEC(
-                combat::Encounter::Instance()->DeadNonPlayerParty().Characters());
-
-            for (auto const & NEXT_DEAD_NONPLAYER_PTR : DEAD_NONPLAYERS_PVEC)
+            for (auto const & NEXT_DEAD_NONPLAYER_PTR :
+                 combat::Encounter::Instance()->DeadNonPlayers())
             {
                 pVec_OutParam.emplace_back(NEXT_DEAD_NONPLAYER_PTR);
                 ++count;
@@ -118,11 +110,8 @@ namespace creature
 
         if (((OPTIONS & PlayerOpt::Runaway) == false) && (pVec_OutParam.empty() == false))
         {
-            auto const RUNAWAY_NONPLAYERS_PVEC{
-                combat::Encounter::Instance()->RunawayNonPlayerParty().Characters()
-            };
-
-            for (auto const & NEXT_RUNAWAY_NONPLAYER_PTR : RUNAWAY_NONPLAYERS_PVEC)
+            for (auto const & NEXT_RUNAWAY_NONPLAYER_PTR :
+                 combat::Encounter::Instance()->RunawayNonPlayers())
             {
                 pVec_OutParam.erase(
                     std::remove(

@@ -2860,7 +2860,7 @@ namespace stage
         sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(
             characterImageFilenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM);
 
-        auto newCharacterUPtr = std::make_unique<creature::Creature>(
+        creature::Creature newCharacter(
             true,
             NAME,
             SEX_ENUM,
@@ -2877,8 +2877,9 @@ namespace stage
             sfml_util::DateTime::CurrentDateTime(),
             characterImageFilenamesVec[selectedImageIndex_]);
 
-        player::Initial::Setup(newCharacterUPtr.get());
-        state::GameStateFactory::Instance()->SaveCharacter(newCharacterUPtr.get());
+        const creature::CreaturePtr_t CREATURE_PTR{ &newCharacter };
+        player::Initial::Setup(CREATURE_PTR);
+        state::GameStateFactory::Instance()->SaveCharacter(CREATURE_PTR);
         ResetForNewCharacterCreation();
         return false;
     }

@@ -22,13 +22,13 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_NONPLAYER_CHARACTERWAREHOUSE_HPP_INCLUDED
-#define HEROESPATH_NONPLAYER_CHARACTERWAREHOUSE_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_CREATURE_WAREHOUSE_HPP_INCLUDED
+#define HEROESPATH_CREATURE_CREATURE_WAREHOUSE_HPP_INCLUDED
 //
-// character-warehouse.hpp (non-player)
+// creature-warehouse.hpp
 //
+#include "misc/not-null-warehouse.hpp"
 #include "misc/not-null.hpp"
-#include "misc/warehouse.hpp"
 
 #include <memory>
 #include <vector>
@@ -42,38 +42,38 @@ namespace creature
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
     using CreatureUPtr_t = std::unique_ptr<Creature>;
     using CreatureUVec_t = std::vector<CreatureUPtr_t>;
-} // namespace creature
-namespace non_player
-{
 
     // Singleton responsible for the lifetimes of player::Character objects.
-    // This class does not new the objects, but it does delete them.
-    class CharacterWarehouse
+    // This class does not new the objects, but it is the one and only place where they are deleted.
+    class CreatureWarehouse
     {
     public:
-        CharacterWarehouse(const CharacterWarehouse &) = delete;
-        CharacterWarehouse(CharacterWarehouse &&) = delete;
-        CharacterWarehouse & operator=(const CharacterWarehouse &) = delete;
-        CharacterWarehouse & operator=(CharacterWarehouse &&) = delete;
+        CreatureWarehouse(const CreatureWarehouse &) = delete;
+        CreatureWarehouse(CreatureWarehouse &&) = delete;
+        CreatureWarehouse & operator=(const CreatureWarehouse &) = delete;
+        CreatureWarehouse & operator=(CreatureWarehouse &&) = delete;
 
     public:
-        CharacterWarehouse();
-        ~CharacterWarehouse();
+        CreatureWarehouse();
+        ~CreatureWarehouse();
 
-        static misc::NotNull<CharacterWarehouse *> Instance();
+        static misc::NotNull<CreatureWarehouse *> Instance();
         static void Acquire();
         static void Release();
 
-        const creature::CreaturePtr_t Store(const creature::CreaturePtr_t);
-        void Free(const creature::CreaturePtr_t);
-        void Free(creature::CreaturePVec_t &);
+        static misc::NotNullWarehouse<creature::Creature> & Access()
+        {
+            return Instance()->Warehouse();
+        }
+
+        misc::NotNullWarehouse<creature::Creature> & Warehouse() { return warehouse_; }
 
     private:
-        static std::unique_ptr<CharacterWarehouse> instanceUPtr_;
-        misc::Warehouse<creature::Creature> warehouse_;
+        static std::unique_ptr<CreatureWarehouse> instanceUPtr_;
+        misc::NotNullWarehouse<creature::Creature> warehouse_;
     };
 
-} // namespace non_player
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_NONPLAYER_CHARACTERWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_CREATURE_WAREHOUSE_HPP_INCLUDED

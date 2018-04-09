@@ -22,13 +22,20 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_NONPLAYER_PARTY_HPP_INCLUDED
-#define HEROESPATH_NONPLAYER_PARTY_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_CREATURE_FACTORY_HPP_INCLUDED
+#define HEROESPATH_CREATURE_CREATURE_FACTORY_HPP_INCLUDED
 //
-// party.hpp (non-player)
-//  A collection of characters NOT under control of the user.
+// creature-factory.hpp
 //
+#include "creature/dragon-class-enum.hpp"
+#include "creature/race-enum.hpp"
+#include "creature/role-enum.hpp"
+#include "creature/sex-enum.hpp"
+#include "creature/wolfen-class-enum.hpp"
 #include "misc/not-null.hpp"
+#include "misc/types.hpp"
+#include "stats/stat-set.hpp"
+#include "stats/trait.hpp"
 
 #include <memory>
 #include <string>
@@ -41,39 +48,38 @@ namespace creature
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-} // namespace creature
-namespace non_player
-{
 
-    // encapsulates a set of Characters under control of the user
-    class Party
+    // Creates sets of creatures that are enemies, not player characters.
+    class CreatureFactory
     {
     public:
-        Party(const Party &) = delete;
-        Party(Party &&) = delete;
-        Party & operator=(const Party &) = delete;
-        Party & operator=(Party &&) = delete;
+        CreatureFactory(const CreatureFactory &) = delete;
+        CreatureFactory(CreatureFactory &&) = delete;
+        CreatureFactory & operator=(const CreatureFactory &) = delete;
+        CreatureFactory & operator=(CreatureFactory &&) = delete;
 
     public:
-        explicit Party(
-            const creature::CreaturePVec_t & CHARACTER_PVEC = creature::CreaturePVec_t());
+        CreatureFactory() = default;
 
-        ~Party();
-
-        const creature::CreaturePVec_t Characters() const { return charactersPVec_; }
-        void Add(const creature::CreaturePtr_t, const bool WILL_STORE = true);
-        bool Remove(const creature::CreaturePtr_t, const bool WILL_FREE = true);
-        void Clear() { charactersPVec_.clear(); }
-        const std::string Summary() const;
-        bool Contains(const creature::CreaturePtr_t) const;
+        const CreaturePVec_t Make_FirstEncounter() const;
 
     private:
-        creature::CreaturePVec_t charactersPVec_;
+        const CreaturePtr_t Make_GoblinGrunt() const;
+        const CreaturePtr_t Make_Boar() const;
+
+        const CreaturePtr_t Make(
+            const stats::StatSet & STATS,
+            const Health_t & HEALTH_MIN,
+            const Health_t & HEALTH_MAX,
+            const sex::Enum SEX,
+            const race::Enum RACE,
+            const role::Enum ROLE,
+            const Rank_t & RANK = 1_rank,
+            const Experience_t & EXPERIENCE = 0_exp,
+            const Mana_t & MANA = 0_mana) const;
     };
 
-    using PartyUPtr_t = std::unique_ptr<Party>;
-
-} // namespace non_player
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_NONPLAYER_PARTY_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_CREATURE_FACTORY_HPP_INCLUDED

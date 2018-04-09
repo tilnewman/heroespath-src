@@ -35,7 +35,6 @@
 #include "game/game.hpp"
 #include "item/item.hpp"
 #include "misc/vectors.hpp"
-#include "non-player/party.hpp"
 #include "player/party.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -612,9 +611,7 @@ namespace stage
 
     const std::string TreasureDisplayStage::CorpseImageKeyFromEnemyParty() const
     {
-        auto const DEAD_ENEMY_CHARACTERS_PVEC{
-            combat::Encounter::Instance()->DeadNonPlayerParty().Characters()
-        };
+        auto const DEAD_ENEMY_CHARACTERS_PVEC{ combat::Encounter::Instance()->DeadNonPlayers() };
 
         misc::StrVec_t corpseKeyStrVec;
         for (auto const & NEXT_ENEMY_CHARACTER_PTR : DEAD_ENEMY_CHARACTERS_PVEC)

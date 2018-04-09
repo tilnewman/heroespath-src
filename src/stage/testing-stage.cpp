@@ -107,8 +107,6 @@ namespace stage
 
         animBGSprite_.setTexture(animBGTexture_);
         animBGSprite_.setPosition(0.0f, 0.0f);
-
-        state::GameStateFactory::Instance()->NewGame(player::PartyFactory::MakeFakeForTesting());
     }
 
     void TestingStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)

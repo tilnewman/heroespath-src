@@ -31,6 +31,7 @@
 //
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-info.hpp"
+#include "creature/creature-factory.hpp"
 #include "item/item-cache.hpp"
 #include "item/treasure-image-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
@@ -48,12 +49,6 @@ namespace creature
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
 } // namespace creature
-namespace non_player
-{
-    class Party;
-    using PartyUPtr_t = std::unique_ptr<Party>;
-} // namespace non_player
-
 namespace combat
 {
 
@@ -74,12 +69,20 @@ namespace combat
         static void Acquire();
         static void Release();
 
-        // the player party is kept by the State object
-        non_player::Party & LivingNonPlayerParty();
-        non_player::Party & DeadNonPlayerParty();
-        non_player::Party & RunawayNonPlayerParty();
+        // the player party CreaturePtr_ts are kept by the state::GameState object, but all of the
+        // non-player CreaturePtr_ts are kept here in these vectors
+        const creature::CreaturePVec_t & LivingNonPlayers() const { return nonPlayerPartyPVec_; }
+        const creature::CreaturePVec_t & DeadNonPlayers() const { return deadNonPlayerPartyPVec_; }
+        const creature::CreaturePVec_t & RunawayNonPlayers() const
+        {
+            return runawayNonPlayerPartyPVec_;
+        }
+        const creature::CreaturePVec_t & RunawayPlayers() const { return runawayPlayersVec_; }
 
-        const creature::CreaturePVec_t & RunawayPlayersVec() const { return runawayPlayersVec_; }
+        const std::string LivingNonPlayersSummary() const
+        {
+            return CreaturesSummary(nonPlayerPartyPVec_);
+        }
 
         bool IsRunaway(const creature::CreaturePtr_t) const;
         void Runaway(const creature::CreaturePtr_t);
@@ -144,22 +147,22 @@ namespace combat
         void PopulateTurnInfoMap();
         void SortAndSetTurnCreature();
 
-        // These functions are where all non-player charater pointers are free'd
-        void FreeThenResetLivingNonPlayerParty();
-        void FreeThenResetDeadNonPlayerParty();
-        void FreeThenResetRunawayNonPlayerParty();
-        void FreeThenReset(non_player::PartyUPtr_t &);
+        const std::string CreaturesSummary(const creature::CreaturePVec_t &) const;
+
+        void RemoveCreatureFromPVec(const creature::CreaturePtr_t, creature::CreaturePVec_t &);
 
     private:
         static std::unique_ptr<Encounter> instanceUPtr_;
 
-        // Non-player character pointers are owned by these party objects.
-        // Each non-player character pointer must only ever be in one of these vecs.
-        non_player::PartyUPtr_t nonPlayerPartyUPtr_;
-        non_player::PartyUPtr_t deadNonPlayerPartyUPtr_;
-        non_player::PartyUPtr_t runawayNonPlayerPartyUPtr_;
+        creature::CreatureFactory creatureFactory_;
 
-        // copies of player character pointers are store temporarily in this vector
+        // Non-player character pointers are owned by these vectors.
+        // Each non-player character pointer must only ever be in one of these vectors at a time.
+        creature::CreaturePVec_t nonPlayerPartyPVec_;
+        creature::CreaturePVec_t deadNonPlayerPartyPVec_;
+        creature::CreaturePVec_t runawayNonPlayerPartyPVec_;
+
+        // copies of player character pointers are stored temporarily in this vector
         creature::CreaturePVec_t runawayPlayersVec_;
 
         std::size_t roundCounter_;

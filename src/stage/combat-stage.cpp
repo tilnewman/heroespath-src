@@ -58,8 +58,6 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
-#include "non-player/party.hpp"
-#include "player/character-warehouse.hpp"
 #include "player/initial.hpp"
 #include "player/party-factory.hpp"
 #include "player/party.hpp"
@@ -1843,7 +1841,7 @@ namespace stage
     {
         std::ostringstream ss;
         ss << combat::Text::InitialCombatStatusMessagePrefix() << " "
-           << combat::Encounter::Instance()->LivingNonPlayerParty().Summary() << "!";
+           << combat::Encounter::Instance()->LivingNonPlayersSummary() << "!";
 
         statusBoxTextInfo_.text = ss.str();
 

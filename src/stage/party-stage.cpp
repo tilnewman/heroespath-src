@@ -30,6 +30,7 @@
 #include "party-stage.hpp"
 
 #include "avatar/portrait-factory.hpp"
+#include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
 #include "creature/name-info.hpp"
 #include "game/game-data-file.hpp"
@@ -37,7 +38,6 @@
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
 #include "misc/real.hpp"
-#include "player/character-warehouse.hpp"
 #include "player/party-factory.hpp"
 #include "player/party.hpp"
 #include "popup/popup-manager.hpp"
@@ -144,13 +144,7 @@ namespace stage
     PartyStage::~PartyStage()
     {
         Stage::ClearAllEntities();
-
-        for (auto const & CHARACTER_PTR : unplayedCharactersPVec_)
-        {
-            delete CHARACTER_PTR.Ptr();
-        }
-
-        unplayedCharactersPVec_.clear();
+        creature::CreatureWarehouse::Access().Free(unplayedCharactersPVec_);
     }
 
     bool PartyStage::HandleCallback(const sfml_util::gui::callback::ListBoxEventPackage & PACKAGE)

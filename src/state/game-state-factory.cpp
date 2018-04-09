@@ -33,6 +33,7 @@
 // and it needs to stay that way.  zTn 2017-3-30
 #include "player/party-serialize-includes.hpp"
 
+#include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
 #include "game/game.hpp"
 #include "log/log-macros.hpp"
@@ -220,15 +221,16 @@ namespace state
         const std::size_t NUM_FILES(pathVec.size());
         for (std::size_t i(0); i < NUM_FILES; ++i)
         {
-            auto nextCharacterPtr{ new creature::Creature() };
+            auto const CREATURE_PTR{ creature::CreatureWarehouse::Access().Store(
+                std::make_unique<creature::Creature>()) };
 
             try
             {
                 std::ifstream ifs(pathVec[i].string());
                 boost::archive::text_iarchive ia(ifs);
-                ia >> *nextCharacterPtr;
-                nextCharacterPtr->AfterDeserialize();
-                characterPVec.emplace_back(nextCharacterPtr);
+                ia >> *CREATURE_PTR;
+                CREATURE_PTR->AfterDeserialize();
+                characterPVec.emplace_back(CREATURE_PTR);
             }
             catch (const std::exception & E)
             {
@@ -296,16 +298,16 @@ namespace state
         {
             try
             {
-                auto creatureUPtr{ std::make_unique<creature::Creature>() };
+                creature::Creature creature;
 
                 {
                     std::ifstream ifs(NEXT_PATH.string());
                     boost::archive::text_iarchive ia(ifs);
-                    ia >> *creatureUPtr;
-                    creatureUPtr->AfterDeserialize();
+                    ia >> creature;
+                    creature.AfterDeserialize();
                 }
 
-                if ((*creatureUPtr) == (*CHAR_TO_DELETE_PTR))
+                if (creature == (*CHAR_TO_DELETE_PTR))
                 {
                     boost::system::error_code errorCode;
                     if (bfs::remove(NEXT_PATH, errorCode))

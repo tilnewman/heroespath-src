@@ -40,7 +40,6 @@
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
-#include "non-player/party.hpp"
 #include "player/party.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/gui/box.hpp"

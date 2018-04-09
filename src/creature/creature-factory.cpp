@@ -25,72 +25,37 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// PartyFactory.cpp
+// creature-factory.cpp
 //
-#include "party-factory.hpp"
+#include "creature-factory.hpp"
 
+#include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
 #include "misc/random.hpp"
 #include "non-player/inventory-factory.hpp"
-#include "non-player/party.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "stats/stat-set.hpp"
 
+#include <memory>
+
 namespace heroespath
 {
-namespace combat
+namespace creature
 {
 
-    std::unique_ptr<PartyFactory> PartyFactory::instanceUPtr_;
-
-    PartyFactory::PartyFactory() { M_HP_LOG_DBG("Singleton Construction: PartyFactory"); }
-
-    PartyFactory::~PartyFactory() { M_HP_LOG_DBG("Singleton Destruction: PartyFactory"); }
-
-    misc::NotNull<PartyFactory *> PartyFactory::Instance()
+    const CreaturePVec_t CreatureFactory::Make_FirstEncounter() const
     {
-        if (!instanceUPtr_)
-        {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): PartyFactory");
-            Acquire();
-        }
-
-        return instanceUPtr_.get();
-    }
-
-    void PartyFactory::Acquire()
-    {
-        if (!instanceUPtr_)
-        {
-            instanceUPtr_ = std::make_unique<PartyFactory>();
-        }
-        else
-        {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: PartyFactory");
-        }
-    }
-
-    void PartyFactory::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_), "PartyFactory::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
-    non_player::PartyUPtr_t PartyFactory::MakeParty_FirstEncounter() const
-    {
-        auto partyUPtr{ std::make_unique<non_player::Party>() };
+        CreaturePVec_t creaturesPVec;
 
         for (std::size_t i(0); i < 10; ++i)
         {
-            partyUPtr->Add(MakeCharacter_GoblinGrunt());
+            creaturesPVec.emplace_back(Make_GoblinGrunt());
         }
 
-        return partyUPtr;
+        return creaturesPVec;
     }
 
-    const creature::CreaturePtr_t PartyFactory::MakeCharacter_GoblinGrunt() const
+    const CreaturePtr_t CreatureFactory::Make_GoblinGrunt() const
     {
         const stats::StatSet STATS(
             Strength_t(13 + misc::random::Int(5)),
@@ -100,20 +65,20 @@ namespace combat
             Speed_t(13 + misc::random::Int(5)),
             Intell_t(3 + misc::random::Int(5)));
 
-        auto const CHARACTER_PTR{ MakeCharacter(
+        auto const CHARACTER_PTR{ Make(
             STATS,
             10_health,
             20_health,
-            ((misc::random::Int(100) < 75) ? creature::sex::Male : creature::sex::Female),
-            creature::race::Goblin,
-            creature::role::Grunt) };
+            ((misc::random::Int(100) < 75) ? sex::Male : sex::Female),
+            race::Goblin,
+            role::Grunt) };
 
         non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(CHARACTER_PTR);
 
         return CHARACTER_PTR;
     }
 
-    const creature::CreaturePtr_t PartyFactory::MakeCharacter_Boar() const
+    const CreaturePtr_t CreatureFactory::Make_Boar() const
     {
         const stats::StatSet STATS(
             Strength_t(13 + misc::random::Int(3)),
@@ -123,44 +88,44 @@ namespace combat
             Speed_t(13 + misc::random::Int(5)),
             Intell_t(1));
 
-        return MakeCharacter(
+        return Make(
             STATS,
             13_health,
             18_health,
-            ((misc::random::Bool()) ? creature::sex::Male : creature::sex::Female),
-            creature::race::Boar,
-            creature::role::Boar);
+            ((misc::random::Bool()) ? sex::Male : sex::Female),
+            race::Boar,
+            role::Boar);
     }
 
-    const creature::CreaturePtr_t PartyFactory::MakeCharacter(
+    const CreaturePtr_t CreatureFactory::Make(
         const stats::StatSet & STATS,
         const Health_t & HEALTH_MIN,
         const Health_t & HEALTH_MAX,
-        const creature::sex::Enum SEX,
-        const creature::race::Enum RACE,
-        const creature::role::Enum ROLE,
+        const sex::Enum SEX,
+        const race::Enum RACE,
+        const role::Enum ROLE,
         const Rank_t & RANK,
         const Experience_t & EXPERIENCE,
         const Mana_t & MANA) const
     {
-        const creature::CreaturePtr_t CHARACTER_PTR{ new creature::Creature(
+        auto const CHARACTER_PTR{ CreatureWarehouse::Access().Store(std::make_unique<Creature>(
             false,
-            creature::race::Name(RACE),
+            race::Name(RACE),
             SEX,
-            creature::BodyType::Make_FromRaceAndRole(RACE, ROLE),
+            BodyType::Make_FromRaceAndRole(RACE, ROLE),
             RACE,
             ROLE,
             STATS,
             Health_t(misc::random::Int(HEALTH_MIN.As<int>(), HEALTH_MAX.As<int>())),
             RANK,
             EXPERIENCE,
-            creature::CondEnumVec_t(),
-            creature::TitleEnumVec_t(),
+            CondEnumVec_t(),
+            TitleEnumVec_t(),
             item::Inventory(),
             sfml_util::DateTime(),
             "",
             spell::SpellEnumVec_t(),
-            MANA) };
+            MANA)) };
 
         CHARACTER_PTR->ImageFilename(sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
             RACE, ROLE, SEX, true, CHARACTER_PTR->WolfenClass(), CHARACTER_PTR->DragonClass()));
@@ -168,5 +133,5 @@ namespace combat
         return CHARACTER_PTR;
     }
 
-} // namespace combat
+} // namespace creature
 } // namespace heroespath

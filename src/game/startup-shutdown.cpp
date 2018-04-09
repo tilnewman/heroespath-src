@@ -30,12 +30,12 @@
 #include "startup-shutdown.hpp"
 
 #include "combat/encounter.hpp"
-#include "combat/party-factory.hpp"
 #include "combat/strategy-details.hpp"
 #include "combat/trap-warehouse.hpp"
 #include "config/configbase.hpp"
 #include "config/settings-file.hpp"
 #include "creature/condition-warehouse.hpp"
+#include "creature/creature-warehouse.hpp"
 #include "creature/enchantment-factory.hpp"
 #include "creature/name-info.hpp"
 #include "creature/title-warehouse.hpp"
@@ -56,9 +56,7 @@
 #include "misc/platform.hpp"
 #include "misc/random.hpp"
 #include "non-player/chance-factory.hpp"
-#include "non-player/character-warehouse.hpp"
 #include "non-player/inventory-factory.hpp"
-#include "player/character-warehouse.hpp"
 #include "popup/popup-manager.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/font-manager.hpp"
@@ -403,8 +401,7 @@ namespace game
         sfml_util::TextureCache::Acquire();
         creature::EnchantmentFactory::Acquire();
         item::ItemWarehouse::Acquire();
-        player::CharacterWarehouse::Acquire();
-        non_player::CharacterWarehouse::Acquire();
+        creature::CreatureWarehouse::Acquire();
         item::weapon::WeaponFactory::Acquire();
         item::MiscItemFactory::Acquire();
         sfml_util::SoundManager::Acquire();
@@ -420,7 +417,6 @@ namespace game
         sfml_util::gui::SongImageManager::Acquire();
         Game::Acquire();
         state::GameStateFactory::Acquire();
-        combat::PartyFactory::Acquire();
         creature::NameInfo::Acquire();
         item::armor::ArmorDetailLoader::Acquire();
         item::armor::ArmorFactory::Acquire();
@@ -461,7 +457,6 @@ namespace game
         item::armor::ArmorFactory::Release();
         item::armor::ArmorDetailLoader::Release();
         creature::NameInfo::Release();
-        combat::PartyFactory::Release();
         state::GameStateFactory::Release();
         Game::Release();
         sfml_util::gui::SongImageManager::Release();
@@ -477,8 +472,7 @@ namespace game
         sfml_util::SoundManager::Release();
         item::MiscItemFactory::Release();
         item::weapon::WeaponFactory::Release();
-        player::CharacterWarehouse::Release();
-        non_player::CharacterWarehouse::Release();
+        creature::CreatureWarehouse::Release();
         item::ItemWarehouse::Release();
         creature::EnchantmentFactory::Release();
         non_player::ownership::ChanceFactory::Release();

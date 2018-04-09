@@ -65,15 +65,6 @@ namespace player
 
         const creature::CreaturePVec_t Characters() const { return charactersPVec_; }
 
-        // Sets error_msg to a message describing why upon failure,
-        // otherwise error_msg is not changed.
-        bool Add(const creature::CreaturePtr_t CHARACTER_PTR, std::string & error_msg);
-
-        bool IsAddAllowed(const creature::CreaturePtr_t CHARACTER_PTR, std::string & error_msg);
-
-        // returns true if the character existed in the charactersSVec_ and was removed.
-        bool Remove(const creature::CreaturePtr_t);
-
         const creature::CreaturePtr_t GetNextInOrderAfter(const creature::CreaturePtr_t C_PTR)
         {
             return GetNextInOrder(C_PTR, true);

@@ -41,7 +41,6 @@
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/real.hpp"
-#include "non-player/party.hpp"
 #include "player/party.hpp"
 #include "popup/popup-stage-char-select.hpp"
 #include "popup/popup-stage-inventory-prompt.hpp"

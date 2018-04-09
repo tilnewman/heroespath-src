@@ -29,10 +29,11 @@
 //
 #include "party.hpp"
 
+#include "creature/creature-warehouse.hpp"
 #include "creature/creature.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "player/character-warehouse.hpp"
+#include "misc/serialize-helpers.hpp"
 
 #include <exception>
 #include <sstream>
@@ -47,62 +48,10 @@ namespace player
     Party::Party(
         const avatar::Avatar::Enum PARTY_AVATAR, const creature::CreaturePVec_t & CHARACTERS_PVEC)
         : avatar_(PARTY_AVATAR)
-        , charactersPVec_()
-    {
-        for (auto const & NEXT_CHARACTER_PTR : CHARACTERS_PVEC)
-        {
-            charactersPVec_.emplace_back(CharacterWarehouse::Instance()->Store(NEXT_CHARACTER_PTR));
-        }
-    }
+        , charactersPVec_(CHARACTERS_PVEC)
+    {}
 
-    Party::~Party() { CharacterWarehouse::Instance()->Free(charactersPVec_); }
-
-    bool Party::Add(const creature::CreaturePtr_t CHARACTER_PTR, std::string & error_msg)
-    {
-        if (IsAddAllowed(CHARACTER_PTR, error_msg))
-        {
-            charactersPVec_.emplace_back(CharacterWarehouse::Instance()->Store(CHARACTER_PTR));
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    bool Party::IsAddAllowed(const creature::CreaturePtr_t, std::string & error_msg)
-    {
-        if (charactersPVec_.size() < MAX_CHARACTER_COUNT_)
-        {
-            return true;
-        }
-        else
-        {
-            error_msg = "too many characters in the party";
-            return false;
-        }
-    }
-
-    bool Party::Remove(const creature::CreaturePtr_t CHARACTER_PTR)
-    {
-        auto const FOUND_ITER{ std::find(
-            charactersPVec_.begin(), charactersPVec_.end(), CHARACTER_PTR) };
-
-        if (FOUND_ITER == charactersPVec_.end())
-        {
-            M_HP_LOG_ERR(
-                "player::Party::Remove((creature={" << CHARACTER_PTR->ToString()
-                                                    << "}) was not found in the party.");
-
-            return false;
-        }
-        else
-        {
-            CharacterWarehouse::Instance()->Free(CHARACTER_PTR);
-            charactersPVec_.erase(FOUND_ITER);
-            return true;
-        }
-    }
+    Party::~Party() { creature::CreatureWarehouse::Access().Free(charactersPVec_); }
 
     const creature::CreaturePtr_t Party::GetNextInOrder(
         const creature::CreaturePtr_t CREATURE_PTR, const bool WILL_CHOOSE_AFTER)
@@ -203,27 +152,19 @@ namespace player
 
     void Party::BeforeSerialize()
     {
-        charactersToSerializePVec_.clear();
-        for (auto const & CREATURE_PTR : charactersPVec_)
-        {
-            charactersToSerializePVec_.emplace_back(CREATURE_PTR.Ptr());
-        }
-        // everything in charactersPVec_ is free'd in Party::~Party()
+        misc::SerializeHelp::BeforeSerialize(charactersPVec_, charactersToSerializePVec_);
     }
 
     void Party::AfterSerialize()
     {
-        // TODO
+        misc::SerializeHelp::AfterSerialize(
+            charactersToSerializePVec_, creature::CreatureWarehouse::Access());
     }
 
     void Party::AfterDeserialize()
     {
-        charactersPVec_.clear();
-        for (auto const & CREATURE_RAW_PTR : charactersToSerializePVec_)
-        {
-            charactersPVec_.emplace_back(CharacterWarehouse::Instance()->Store(CREATURE_RAW_PTR));
-        }
-        charactersToSerializePVec_.clear();
+        misc::SerializeHelp::AfterDeserialize(
+            charactersPVec_, charactersToSerializePVec_, creature::CreatureWarehouse::Access());
     }
 
 } // namespace player
