@@ -29,6 +29,9 @@
 //
 #include "credits-stage.hpp"
 
+#include "game/game-data-file.hpp"
+#include "game/loop-manager.hpp"
+#include "misc/real.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-region.hpp"
@@ -36,11 +39,6 @@
 #include "sfml-util/music-enum.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "game/game-data-file.hpp"
-#include "game/loop-manager.hpp"
-
-#include "misc/real.hpp"
 
 namespace heroespath
 {
@@ -187,6 +185,8 @@ namespace stage
 
         creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect, "Rune Symbols and Other Designs", "Angela Diegel"));
+
+        creditSVec_.emplace_back(std::make_shared<Credit>(trackingRect, "Art", "Nel Carlson"));
 
         creditSVec_.emplace_back(std::make_shared<Credit>(
             trackingRect,
