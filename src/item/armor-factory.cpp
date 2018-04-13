@@ -29,7 +29,7 @@
 //
 #include "armor-factory.hpp"
 
-#include "item/armor-details.hpp"
+#include "item/item-profile.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "item/weapon-info.hpp"
@@ -43,6 +43,7 @@ namespace item
     {
 
         std::unique_ptr<ArmorFactory> ArmorFactory::instanceUPtr_;
+        std::unique_ptr<ArmorDetailLoader> ArmorFactory::armorDetailsUPtr_;
 
         ArmorFactory::ArmorFactory() { M_HP_LOG_DBG("Singleton Construction: ArmorFactory"); }
 
@@ -63,6 +64,7 @@ namespace item
         {
             if (!instanceUPtr_)
             {
+                armorDetailsUPtr_ = std::make_unique<ArmorDetailLoader>();
                 instanceUPtr_ = std::make_unique<ArmorFactory>();
             }
             else
@@ -80,7 +82,17 @@ namespace item
             instanceUPtr_.reset();
         }
 
+        const ItemPtr_t ArmorFactory::Make_Shield(const ItemProfile & PROFILE)
+        {
+            return Make_Shield(
+                TypeWrapper(PROFILE),
+                PROFILE.ShieldType(),
+                PROFILE.MaterialPrimary(),
+                PROFILE.MaterialSecondary());
+        }
+
         const ItemPtr_t ArmorFactory::Make_Shield(
+            const TypeWrapper & TYPE_WRAPPER,
             const shield_type::Enum SHIELD_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -95,7 +107,7 @@ namespace item
                 exclusiveRole = creature::role::Knight;
             }
 
-            auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+            auto const DETAILS{ armorDetailsUPtr_->LookupArmorDetails(
                 item::armor::shield_type::ToString(SHIELD_TYPE)) };
 
             Coin_t price{ DETAILS.price };
@@ -162,34 +174,39 @@ namespace item
             }
             ssDesc << ".";
 
-            auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 ssName.str(),
                 ssDesc.str(),
                 static_cast<category::Enum>(
                     category::Armor | category::Equippable | category::Wearable
                     | category::OneHanded),
-                misc_type::NotMisc,
                 weapon_type::NotAWeapon,
                 armor_type::Sheild,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
-                "",
                 price,
                 weight,
                 0_health,
                 0_health,
                 armorRating,
-                exclusiveRole,
+                TYPE_WRAPPER,
                 weapon::WeaponInfo(),
-                armorInfo)) };
+                armorInfo,
+                false,
+                exclusiveRole));
+        }
 
-            itemPtr->ImageFilename(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-            return itemPtr;
+        const ItemPtr_t ArmorFactory::Make_Helm(const ItemProfile & PROFILE)
+        {
+            return Make_Helm(
+                TypeWrapper(PROFILE),
+                PROFILE.HelmType(),
+                PROFILE.MaterialPrimary(),
+                PROFILE.MaterialSecondary());
         }
 
         const ItemPtr_t ArmorFactory::Make_Helm(
+            const TypeWrapper & TYPE_WRAPPER,
             const helm_type::Enum HELM_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -197,24 +214,16 @@ namespace item
             ArmorInfo armorInfo{ armor_type::Helm };
             armorInfo.helm = HELM_TYPE;
 
-            auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+            auto const DETAILS{ armorDetailsUPtr_->LookupArmorDetails(
                 item::armor::helm_type::ToString(HELM_TYPE)) };
 
             Coin_t price{ DETAILS.price };
             Weight_t weight{ DETAILS.weight };
             Armor_t armorRating{ DETAILS.armor_rating };
 
-            auto materialPri{ MATERIAL_PRI };
-            auto materialSec{ MATERIAL_SEC };
-            if (HELM_TYPE == helm_type::Leather)
-            {
-                materialPri = material::HardLeather;
-                materialSec = material::Nothing;
-            }
-
-            AdjustPrice(price, materialPri, materialSec);
-            AdjustWeight(weight, materialPri, materialSec);
-            AdjustArmorRating(armorRating, materialPri, materialSec);
+            AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
+            AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
+            AdjustArmorRating(armorRating, MATERIAL_PRI, MATERIAL_SEC);
 
             auto exclusiveRole{ creature::role::Count };
             if (HELM_TYPE == helm_type::Great)
@@ -222,33 +231,39 @@ namespace item
                 exclusiveRole = creature::role::Knight;
             }
 
-            auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
-                Make_Name(DETAILS.name, materialPri, materialSec),
-                Make_Desc(DETAILS.description, materialPri, materialSec),
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
+                Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
+                Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
                 static_cast<category::Enum>(
                     category::Armor | category::Equippable | category::Wearable),
-                misc_type::NotMisc,
                 weapon_type::NotAWeapon,
                 armor_type::Helm,
-                materialPri,
-                materialSec,
-                "",
+                MATERIAL_PRI,
+                MATERIAL_SEC,
                 price,
                 weight,
                 0_health,
                 0_health,
                 armorRating,
-                exclusiveRole,
+                TYPE_WRAPPER,
                 weapon::WeaponInfo(),
-                armorInfo)) };
+                armorInfo,
+                false,
+                exclusiveRole));
+        }
 
-            itemPtr->ImageFilename(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-            return itemPtr;
+        const ItemPtr_t ArmorFactory::Make_Gauntlets(const ItemProfile & PROFILE)
+        {
+            return Make_Gauntlets(
+                TypeWrapper(PROFILE),
+                PROFILE.BaseType(),
+                PROFILE.MaterialPrimary(),
+                PROFILE.MaterialSecondary(),
+                PROFILE.IsPixie());
         }
 
         const ItemPtr_t ArmorFactory::Make_Gauntlets(
+            const TypeWrapper & TYPE_WRAPPER,
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -258,7 +273,7 @@ namespace item
             armorInfo.is_gauntlets = true;
             armorInfo.base = TYPE;
 
-            auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails([TYPE]() {
+            auto const DETAILS{ armorDetailsUPtr_->LookupArmorDetails([TYPE]() {
                 if (TYPE != item::armor::base_type::Plain)
                 {
                     return item::armor::base_type::ToString(TYPE) + "Gauntlets";
@@ -283,34 +298,39 @@ namespace item
                 exclusiveRole = creature::role::Knight;
             }
 
-            auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
                 Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
                 static_cast<category::Enum>(
                     category::Armor | category::Equippable | category::Wearable),
-                misc_type::NotMisc,
                 weapon_type::NotAWeapon,
                 armor_type::Gauntlets,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
-                "",
                 price,
                 weight,
                 0_health,
                 0_health,
                 armorRating,
-                exclusiveRole,
+                TYPE_WRAPPER,
                 weapon::WeaponInfo(),
                 armorInfo,
-                IS_PIXIE_ITEM)) };
+                IS_PIXIE_ITEM,
+                exclusiveRole));
+        }
 
-            itemPtr->ImageFilename(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-            return itemPtr;
+        const ItemPtr_t ArmorFactory::Make_Pants(const ItemProfile & PROFILE)
+        {
+            return Make_Pants(
+                TypeWrapper(PROFILE),
+                PROFILE.BaseType(),
+                PROFILE.MaterialPrimary(),
+                PROFILE.MaterialSecondary(),
+                PROFILE.IsPixie());
         }
 
         const ItemPtr_t ArmorFactory::Make_Pants(
+            const TypeWrapper & TYPE_WRAPPER,
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -320,7 +340,7 @@ namespace item
             armorInfo.is_pants = true;
             armorInfo.base = TYPE;
 
-            auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+            auto const DETAILS{ armorDetailsUPtr_->LookupArmorDetails(
                 item::armor::base_type::ToString(TYPE) + "Pants") };
 
             Coin_t price{ DETAILS.price };
@@ -340,34 +360,39 @@ namespace item
                 exclusiveRole = creature::role::Knight;
             }
 
-            auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
                 Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
                 static_cast<category::Enum>(
                     category::Armor | category::Equippable | category::Wearable),
-                misc_type::NotMisc,
                 weapon_type::NotAWeapon,
                 armor_type::Pants,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
-                "",
                 price,
                 weight,
                 0_health,
                 0_health,
                 armorRating,
-                exclusiveRole,
+                TYPE_WRAPPER,
                 weapon::WeaponInfo(),
                 armorInfo,
-                IS_PIXIE_ITEM)) };
+                IS_PIXIE_ITEM,
+                exclusiveRole));
+        }
 
-            itemPtr->ImageFilename(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-            return itemPtr;
+        const ItemPtr_t ArmorFactory::Make_Boots(const ItemProfile & PROFILE)
+        {
+            return Make_Boots(
+                TypeWrapper(PROFILE),
+                PROFILE.BaseType(),
+                PROFILE.MaterialPrimary(),
+                PROFILE.MaterialSecondary(),
+                PROFILE.IsPixie());
         }
 
         const ItemPtr_t ArmorFactory::Make_Boots(
+            const TypeWrapper & TYPE_WRAPPER,
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -379,8 +404,7 @@ namespace item
 
             auto const TYPE_NAME_STR{ item::armor::base_type::ToString(TYPE) };
 
-            auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
-                TYPE_NAME_STR + "Boots") };
+            auto const DETAILS{ armorDetailsUPtr_->LookupArmorDetails(TYPE_NAME_STR + "Boots") };
 
             Coin_t price{ DETAILS.price };
             Weight_t weight{ DETAILS.weight };
@@ -396,34 +420,39 @@ namespace item
                 exclusiveRole = creature::role::Knight;
             }
 
-            auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
                 Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
                 static_cast<category::Enum>(
                     category::Armor | category::Equippable | category::Wearable),
-                misc_type::NotMisc,
                 weapon_type::NotAWeapon,
                 armor_type::Boots,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
-                "",
                 price,
                 weight,
                 0_health,
                 0_health,
                 armorRating,
-                exclusiveRole,
+                TYPE_WRAPPER,
                 weapon::WeaponInfo(),
                 armorInfo,
-                IS_PIXIE_ITEM)) };
+                IS_PIXIE_ITEM,
+                exclusiveRole));
+        }
 
-            itemPtr->ImageFilename(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-            return itemPtr;
+        const ItemPtr_t ArmorFactory::Make_Shirt(const ItemProfile & PROFILE)
+        {
+            return Make_Shirt(
+                TypeWrapper(PROFILE),
+                PROFILE.BaseType(),
+                PROFILE.MaterialPrimary(),
+                PROFILE.MaterialSecondary(),
+                PROFILE.IsPixie());
         }
 
         const ItemPtr_t ArmorFactory::Make_Shirt(
+            const TypeWrapper & TYPE_WRAPPER,
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -435,8 +464,7 @@ namespace item
 
             auto const TYPE_NAME_STR{ item::armor::base_type::ToString(TYPE) };
 
-            auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
-                TYPE_NAME_STR + "Shirt") };
+            auto const DETAILS{ armorDetailsUPtr_->LookupArmorDetails(TYPE_NAME_STR + "Shirt") };
 
             Coin_t price{ DETAILS.price };
             Weight_t weight{ DETAILS.weight };
@@ -455,34 +483,39 @@ namespace item
                 exclusiveRole = creature::role::Knight;
             }
 
-            auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
                 Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
                 static_cast<category::Enum>(
                     category::Armor | category::Equippable | category::Wearable),
-                misc_type::NotMisc,
                 weapon_type::NotAWeapon,
                 armor_type::Shirt,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
-                "",
                 price,
                 weight,
                 0_health,
                 0_health,
                 armorRating,
-                exclusiveRole,
+                TYPE_WRAPPER,
                 weapon::WeaponInfo(),
                 armorInfo,
-                IS_PIXIE_ITEM)) };
+                IS_PIXIE_ITEM,
+                exclusiveRole));
+        }
 
-            itemPtr->ImageFilename(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-            return itemPtr;
+        const ItemPtr_t ArmorFactory::Make_Bracer(const ItemProfile & PROFILE)
+        {
+            return Make_Bracer(
+                TypeWrapper(PROFILE),
+                PROFILE.BaseType(),
+                PROFILE.MaterialPrimary(),
+                PROFILE.MaterialSecondary(),
+                PROFILE.IsPixie());
         }
 
         const ItemPtr_t ArmorFactory::Make_Bracer(
+            const TypeWrapper & TYPE_WRAPPER,
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -492,7 +525,7 @@ namespace item
             armorInfo.is_bracer = true;
             armorInfo.base = TYPE;
 
-            auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+            auto const DETAILS{ armorDetailsUPtr_->LookupArmorDetails(
                 item::armor::base_type::ToString(TYPE) + "Bracers") };
 
             Coin_t price{ DETAILS.price };
@@ -509,34 +542,38 @@ namespace item
                 exclusiveRole = creature::role::Knight;
             }
 
-            auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
                 Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
                 static_cast<category::Enum>(
                     category::Armor | category::Equippable | category::Wearable),
-                misc_type::NotMisc,
                 weapon_type::NotAWeapon,
                 armor_type::Bracer,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
-                "",
                 price,
                 weight,
                 0_health,
                 0_health,
                 armorRating,
-                exclusiveRole,
+                TYPE_WRAPPER,
                 weapon::WeaponInfo(),
                 armorInfo,
-                IS_PIXIE_ITEM)) };
+                IS_PIXIE_ITEM,
+                exclusiveRole));
+        }
 
-            itemPtr->ImageFilename(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-            return itemPtr;
+        const ItemPtr_t ArmorFactory::Make_Aventail(const ItemProfile & PROFILE)
+        {
+            return Make_Aventail(
+                TypeWrapper(PROFILE),
+                PROFILE.BaseType(),
+                PROFILE.MaterialPrimary(),
+                PROFILE.MaterialSecondary());
         }
 
         const ItemPtr_t ArmorFactory::Make_Aventail(
+            const TypeWrapper & TYPE_WRAPPER,
             const base_type::Enum TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC)
@@ -545,7 +582,7 @@ namespace item
             armorInfo.is_aventail = true;
             armorInfo.base = TYPE;
 
-            auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+            auto const DETAILS{ armorDetailsUPtr_->LookupArmorDetails(
                 item::armor::base_type::ToString(TYPE) + "Aventail") };
 
             Coin_t price{ DETAILS.price };
@@ -565,33 +602,38 @@ namespace item
                 exclusiveRole = creature::role::Knight;
             }
 
-            auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
                 Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
                 static_cast<category::Enum>(
                     category::Armor | category::Equippable | category::Wearable),
-                misc_type::NotMisc,
                 weapon_type::NotAWeapon,
                 armor_type::Aventail,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
-                "",
                 price,
                 weight,
                 0_health,
                 0_health,
                 armorRating,
-                exclusiveRole,
+                TYPE_WRAPPER,
                 weapon::WeaponInfo(),
-                armorInfo)) };
+                armorInfo,
+                exclusiveRole));
+        }
 
-            itemPtr->ImageFilename(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-            return itemPtr;
+        const ItemPtr_t ArmorFactory::Make_Cover(const ItemProfile & PROFILE)
+        {
+            return Make_Cover(
+                TypeWrapper(PROFILE),
+                PROFILE.CoverType(),
+                PROFILE.MaterialPrimary(),
+                PROFILE.MaterialSecondary(),
+                PROFILE.IsPixie());
         }
 
         const ItemPtr_t ArmorFactory::Make_Cover(
+            const TypeWrapper & TYPE_WRAPPER,
             const cover_type::Enum COVER_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -600,7 +642,7 @@ namespace item
             ArmorInfo armorInfo{ armor_type::Covering };
             armorInfo.cover = COVER_TYPE;
 
-            auto const DETAILS{ ArmorDetailLoader::Instance()->LookupArmorDetails(
+            auto const DETAILS{ armorDetailsUPtr_->LookupArmorDetails(
                 item::armor::cover_type::ToString(COVER_TYPE)) };
 
             Coin_t price{ DETAILS.price };
@@ -614,31 +656,82 @@ namespace item
             // since it is only the material of the clasp.
             AdjustArmorRating(armorRating, MATERIAL_PRI, material::Nothing);
 
-            auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
                 Make_Desc_Clasped(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
                 static_cast<category::Enum>(
                     category::Armor | category::Equippable | category::Wearable),
-                misc_type::NotMisc,
                 weapon_type::NotAWeapon,
                 armor_type::Covering,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
-                "",
                 price,
                 weight,
                 0_health,
                 0_health,
                 armorRating,
-                creature::role::Count,
+                TYPE_WRAPPER,
                 weapon::WeaponInfo(),
                 armorInfo,
-                IS_PIXIE_ITEM)) };
+                IS_PIXIE_ITEM));
+        }
 
-            itemPtr->ImageFilename(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
+        const ItemPtr_t ArmorFactory::Make_Cape_AsMiscItem(const ItemProfile & PROFILE)
+        {
+            Coin_t price{ TreasureScoreToCoins(PROFILE.TreasureScore()) };
 
-            return itemPtr;
+            AdjustPrice(
+                price, PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary(), PROFILE.IsPixie());
+
+            Weight_t weight{ 111_weight };
+            AdjustWeight(weight, PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary());
+
+            auto const BASE_NAME{ [PROFILE]() {
+                if ((PROFILE.UniqueType() == unique_type::Count)
+                    || (PROFILE.UniqueType() == unique_type::NotUnique))
+                {
+                    return misc_type::Name(PROFILE.MiscType());
+                }
+                else
+                {
+                    return unique_type::Name(PROFILE.UniqueType());
+                }
+            }() };
+
+            auto const DESC_PREFIX{ "A " + boost::to_lower_copy(BASE_NAME) + " " };
+
+            armor::ArmorInfo armorInfo(armor_type::Covering);
+            armorInfo.cover = armor::cover_type::Cape;
+
+            auto const DETAILS{ armorDetailsUPtr_->LookupArmorDetails(
+                armor::cover_type::ToString(armor::cover_type::Cape)) };
+
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
+                Make_Name(
+                    BASE_NAME,
+                    PROFILE.MaterialPrimary(),
+                    PROFILE.MaterialSecondary(),
+                    PROFILE.IsPixie()),
+                Make_Desc(
+                    DESC_PREFIX,
+                    PROFILE.MaterialPrimary(),
+                    PROFILE.MaterialSecondary(),
+                    "",
+                    PROFILE.IsPixie()),
+                PROFILE.Category(),
+                weapon_type::NotAWeapon,
+                PROFILE.ArmorType(),
+                PROFILE.MaterialPrimary(),
+                PROFILE.MaterialSecondary(),
+                price,
+                weight,
+                0_health,
+                0_health,
+                DETAILS.armor_rating,
+                TypeWrapper(PROFILE),
+                weapon::WeaponInfo(),
+                armorInfo,
+                PROFILE.IsPixie()));
         }
 
         const ItemPtr_t ArmorFactory::Make_Skin(
@@ -664,33 +757,27 @@ namespace item
 
             details.description = ss.str();
 
-            auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+            return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 details.name,
                 details.description,
                 static_cast<category::Enum>(
                     category::Armor | category::Equippable | category::Wearable
                     | category::BodyPart),
-                misc_type::NotMisc,
                 weapon_type::NotAWeapon,
                 armor_type::Skin,
                 MATERIAL,
                 material::Nothing,
-                "",
                 details.price,
                 details.weight,
                 0_health,
                 0_health,
                 details.armor_rating,
-                creature::role::Count,
+                TypeWrapper(),
                 weapon::WeaponInfo(),
                 armorInfo,
-                IS_PIXIE_ITEM)) };
-
-            itemPtr->ImageFilename(
-                sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-            return itemPtr;
+                IS_PIXIE_ITEM));
         }
+
     } // namespace armor
 } // namespace item
 } // namespace heroespath

@@ -42,14 +42,10 @@
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
-#include "item/armor-details.hpp"
 #include "item/armor-factory.hpp"
-#include "item/armor-ratings.hpp"
-#include "item/item-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/misc-item-factory.hpp"
-#include "item/weapon-details.hpp"
 #include "item/weapon-factory.hpp"
 #include "log/logger.hpp"
 #include "log/macros.hpp"
@@ -418,14 +414,10 @@ namespace game
         Game::Acquire();
         state::GameStateFactory::Acquire();
         creature::NameInfo::Acquire();
-        item::armor::ArmorDetailLoader::Acquire();
         item::armor::ArmorFactory::Acquire();
-        item::weapon::WeaponDetailLoader::Acquire();
         non_player::ownership::InventoryFactory::Acquire();
         combat::Encounter::Acquire();
-        item::ArmorRatings::Acquire();
         item::ItemProfileWarehouse::Acquire();
-        item::ItemFactory::Acquire();
         non_player::ownership::ChanceFactory::Acquire();
         config::SettingsFile::Acquire();
         LoopManager::Acquire();
@@ -440,7 +432,6 @@ namespace game
         sfml_util::SoundManager::Instance()->Initialize();
         combat::strategy::ChanceFactory::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
-        item::ArmorRatings::Instance()->Setup();
         non_player::ownership::ChanceFactory::Instance()->Initialize();
     }
 
@@ -448,14 +439,12 @@ namespace game
     {
         LoopManager::Release();
         config::SettingsFile::Release();
-        item::ItemFactory::Release();
-        item::ItemProfileWarehouse::Release();
-        item::ArmorRatings::Release();
-        combat::Encounter::Release();
+
+        // TODO re-order so that all factories are released here
         non_player::ownership::InventoryFactory::Release();
-        item::weapon::WeaponDetailLoader::Release();
         item::armor::ArmorFactory::Release();
-        item::armor::ArmorDetailLoader::Release();
+
+        combat::Encounter::Release();
         creature::NameInfo::Release();
         state::GameStateFactory::Release();
         Game::Release();
@@ -472,15 +461,19 @@ namespace game
         sfml_util::SoundManager::Release();
         item::MiscItemFactory::Release();
         item::weapon::WeaponFactory::Release();
-        creature::CreatureWarehouse::Release();
-        item::ItemWarehouse::Release();
-        creature::EnchantmentFactory::Release();
         non_player::ownership::ChanceFactory::Release();
         sfml_util::Display::Release();
-        misc::Platform::Release();
         sfml_util::TextureCache::Release();
         state::NpcWarehouse::Release();
+        creature::CreatureWarehouse::Release();
+        item::ItemProfileWarehouse::Release();
+        item::ItemWarehouse::Release();
+
+        // this factory holds the EnchantmentWarehouse so release it last
+        creature::EnchantmentFactory::Release();
+
         GameDataFile::Release();
+        misc::Platform::Release();
     }
 
 } // namespace game

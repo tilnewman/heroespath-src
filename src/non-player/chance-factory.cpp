@@ -30,16 +30,13 @@
 #include "chance-factory.hpp"
 
 #include "creature/creature.hpp"
-#include "item/armor-details.hpp"
+#include "item/armor-factory.hpp"
 #include "item/item.hpp"
-#include "item/weapon-details.hpp"
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
-#include "stats/trait.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-
+#include "stats/trait.hpp"
 #include "stringutil/stringhelp.hpp"
 
 #include <boost/lexical_cast.hpp>
@@ -778,8 +775,20 @@ namespace non_player
                 }
 
                 {
-                    chance::MaterialChanceMap_t typicalWhipPrimaryMaterials;
-                    typicalWhipPrimaryMaterials[material::Steel] = 1.0f;
+                    auto whipMaterialChanceMapMaker{ [](const weapon::whip_type::Enum WHIP_TYPE) {
+                        chance::MaterialChanceMap_t typicalWhipPrimaryMaterials;
+
+                        if (WHIP_TYPE == weapon::whip_type::Bullwhip)
+                        {
+                            typicalWhipPrimaryMaterials[material::HardLeather] = 1.0f;
+                        }
+                        else
+                        {
+                            typicalWhipPrimaryMaterials[material::Steel] = 1.0f;
+                        }
+
+                        return typicalWhipPrimaryMaterials;
+                    } };
 
                     if (NEXT_WEAPONINFO_CHANCE_PAIR.first.whip != weapon::whip_type::Count)
                     {
@@ -789,26 +798,26 @@ namespace non_player
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
                             PROFILE,
                             CHARACTER_PTR,
-                            typicalWhipPrimaryMaterials,
+                            whipMaterialChanceMapMaker(NEXT_WEAPONINFO_CHANCE_PAIR.first.whip),
                             weaponChances.whip_map);
                     }
                     else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::Whip)
                     {
-                        const float CHANCE_PER_WEAPON(
-                            NEXT_WEAPONINFO_CHANCE_PAIR.second
-                            / static_cast<float>(weapon::whip_type::Count));
+                        auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
+                                                      / static_cast<float>(
+                                                            weapon::whip_type::Count) };
 
                         for (int i(0); i < weapon::whip_type::Count; ++i)
                         {
-                            auto const TYPE(static_cast<weapon::whip_type::Enum>(i));
+                            auto const WHIP_TYPE(static_cast<weapon::whip_type::Enum>(i));
 
                             SetWeaponChances<weapon::whip_type::Enum>(
-                                weapon::whip_type::ToString(TYPE),
-                                TYPE,
+                                weapon::whip_type::ToString(WHIP_TYPE),
+                                WHIP_TYPE,
                                 CHANCE_PER_WEAPON,
                                 PROFILE,
                                 CHARACTER_PTR,
-                                typicalWhipPrimaryMaterials,
+                                whipMaterialChanceMapMaker(WHIP_TYPE),
                                 weaponChances.whip_map);
                         }
                     }
@@ -942,10 +951,8 @@ namespace non_player
                         ROLE_ARMOR_CHANCE.chance,
                         PROFILE,
                         CHARACTER_PTR,
-
-                        // materials will be forced to make sense by
-                        // ArmorFactory::Make_Helm()
-                        false);
+                        false,
+                        item::material::HardLeather);
                 }
 
                 if (ROLE_ARMOR_CHANCE.name_short == "MailCoif")
@@ -1407,7 +1414,7 @@ namespace non_player
                 chancePrecious,
                 chanceMapPrecious);
 
-            // final determination of which material will be secondary
+            // final determination of which material will be primary
             auto const SUBTOTAL{ chanceCool + chanceMetal + chancePrecious };
             auto const RAND{ misc::random::Float(0.0f, std::max(1.0f, SUBTOTAL)) };
 
@@ -1777,9 +1784,8 @@ namespace non_player
             chance::MaterialChanceMap_t & materialsMapPri,
             chance::MaterialChanceMap_t & materialsMapSec)
         {
-            auto const WEAPON_DETAILS{
-                item::weapon::WeaponDetailLoader::Instance()->LookupWeaponDetails(WEAPON_NAME)
-            };
+            auto const WEAPON_DETAILS{ item::weapon::WeaponFactory::Instance()->LookupWeaponDetails(
+                WEAPON_NAME) };
 
             PopulatMaterials(
                 TYPICAL_PRI_MATERIALS,
@@ -1796,10 +1802,19 @@ namespace non_player
             const creature::CreaturePtr_t CREATURE_PTR,
             chance::MaterialChanceMap_t & materialsMapPri,
             chance::MaterialChanceMap_t & materialsMapSec,
-            const Weight_t & WEIGHT)
+            const Weight_t & WEIGHT,
+            const item::material::Enum FORCED_PRIMARY_MATERIAL)
         {
-            Make_MaterialChancesPrimary(
-                PROFILE, CREATURE_PTR, TYPICAL_PRI_MATERIALS, WEIGHT, materialsMapPri);
+            if (FORCED_PRIMARY_MATERIAL == item::material::Nothing)
+            {
+                Make_MaterialChancesPrimary(
+                    PROFILE, CREATURE_PTR, TYPICAL_PRI_MATERIALS, WEIGHT, materialsMapPri);
+            }
+            else
+            {
+                materialsMapPri.Clear();
+                materialsMapPri[FORCED_PRIMARY_MATERIAL] = 1.0f;
+            }
 
             Make_MaterialChancesSecondary(PROFILE, CREATURE_PTR, materialsMapSec);
         }
@@ -1847,9 +1862,8 @@ namespace non_player
         bool ChanceFactory::IsWeaponPossibleConsideringComplexity(
             const std::string & WEAPON_NAME, const complexity_type::Enum CREATURE_COMPLEXITY)
         {
-            auto const WEAPON_DETAILS{
-                item::weapon::WeaponDetailLoader::Instance()->LookupWeaponDetails(WEAPON_NAME)
-            };
+            auto const WEAPON_DETAILS{ item::weapon::WeaponFactory::Instance()->LookupWeaponDetails(
+                WEAPON_NAME) };
 
             return (WEAPON_DETAILS.complexity <= CREATURE_COMPLEXITY);
         }
@@ -1891,7 +1905,7 @@ namespace non_player
             const creature::CreaturePtr_t CREATURE_PTR,
             const bool WILL_MATERIALS_INCLUDED_WOOD)
         {
-            auto const DETAILS{ item::armor::ArmorDetailLoader::Instance()->LookupArmorDetails(
+            auto const DETAILS{ item::armor::ArmorFactory::Instance()->LookupArmorDetails(
                 COMPLETE_NAME) };
 
             if (PROFILE.complexityType < DETAILS.complexity)
@@ -1920,9 +1934,10 @@ namespace non_player
             const float CHANCE,
             const Profile & PROFILE,
             const creature::CreaturePtr_t CHARACTER_PTR,
-            const bool WILL_MATERIALS_INCLUDED_WOOD)
+            const bool WILL_MATERIALS_INCLUDED_WOOD,
+            const item::material::Enum FORCED_PRIMARY_MATERIAL)
         {
-            auto const DETAILS{ item::armor::ArmorDetailLoader::Instance()->LookupArmorDetails(
+            auto const DETAILS{ item::armor::ArmorFactory::Instance()->LookupArmorDetails(
                 COMPLETE_NAME) };
 
             if (PROFILE.complexityType < DETAILS.complexity)
@@ -1932,13 +1947,15 @@ namespace non_player
             else
             {
                 itemChances.SetCountChanceIncrementAndEquip(CHANCE);
+
                 PopulatMaterials(
                     MakeTypicalArmorMaterials(PROFILE, CHARACTER_PTR, WILL_MATERIALS_INCLUDED_WOOD),
                     PROFILE,
                     CHARACTER_PTR,
                     itemChances.mat_map_pri,
                     itemChances.mat_map_sec,
-                    DETAILS.weight);
+                    DETAILS.weight,
+                    FORCED_PRIMARY_MATERIAL);
             }
         }
 

@@ -40,7 +40,6 @@
 #include "creature/stats.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
-#include "item/armor-ratings.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
@@ -58,6 +57,8 @@ namespace heroespath
 {
 namespace combat
 {
+
+    item::ArmorRatings FightClub::armorRatings_;
 
     stats::Trait_t FightClub::IsValuetHigherThanRatioOfStat(
         const stats::Trait_t STAT_VALUE, const stats::Trait_t STAT_MAX, const float RATIO)
@@ -1236,8 +1237,7 @@ namespace combat
         Health_t extraDamage{ 0_health };
         if (WEAPON_PTR->WeaponType() & item::weapon_type::Fists)
         {
-            auto const EQUIPPED_ITEMS_PVEC{ CREATURE_ATTACKING_PTR->Inventory().ItemsEquipped() };
-            for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
+            for (auto const & NEXT_ITEM_PTR : CREATURE_ATTACKING_PTR->Inventory().ItemsEquipped())
             {
                 if ((NEXT_ITEM_PTR->ArmorType() & item::armor_type::Gauntlets)
                     && (NEXT_ITEM_PTR->Armor_Info().base != item::armor::base_type::Plain))
@@ -1353,12 +1353,14 @@ namespace combat
 
         auto const DAMAGE_AFTER_SPECIALS{ damageFinal };
 
+        armorRatings_.EnsureSetup();
+
         // reduce damage based on the defending creature's armor
         auto armorRatingToUse{ CREATURE_DEFENDING_PTR->ArmorRating() };
         if (CREATURE_DEFENDING_PTR->HasCondition(creature::Conditions::Tripped))
         {
-            armorRatingToUse -= (item::ArmorRatings::Instance()->ArmoredLesserSteel()
-                                 + item::ArmorRatings::Instance()->ArmoredGreaterSteel())
+            armorRatingToUse
+                -= (armorRatings_.ArmoredLesserSteel() + armorRatings_.ArmoredGreaterSteel())
                 / 4_armor;
 
             if (armorRatingToUse < 0_armor)
@@ -1369,8 +1371,7 @@ namespace combat
 
         damageFinal -= Health_t(static_cast<Health_t::type>(
             damageFinal.As<float>()
-            * (armorRatingToUse.As<float>()
-               / item::ArmorRatings::Instance()->ArmoredGreaterDiamond().As<float>())));
+            * (armorRatingToUse.As<float>() / armorRatings_.ArmoredGreaterDiamond().As<float>())));
 
         // check if armor absorbed all the damage
         if ((DAMAGE_AFTER_SPECIALS > 0_health) && (damageFinal <= 0_health))

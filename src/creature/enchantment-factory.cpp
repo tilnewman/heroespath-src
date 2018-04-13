@@ -85,69 +85,60 @@ namespace creature
         instanceUPtr_.reset();
     }
 
-    const item::ItemPtr_t
-        EnchantmentFactory::MakeStoreAttachReturn(const item::ItemPtr_t ITEM_PTR) const
+    const EnchantmentPVec_t EnchantmentFactory::MakeAndStore(
+        const item::TypeWrapper & TYPE_WRAPPER,
+        const bool IS_WEAPON,
+        const bool IS_ARMOR,
+        const item::material::Enum MATERIAL_PRIMARY,
+        const item::material::Enum MATERIAL_SECONDARY) const
     {
-        if ((ITEM_PTR->IsArmor() || ITEM_PTR->IsWeapon())
-            && (ITEM_PTR->ElementType() != item::element_type::None))
+        EnchantmentPVec_t enchantmentsPVec;
+        if ((IS_ARMOR || IS_WEAPON) && (TYPE_WRAPPER.element != item::element_type::None))
         {
-            ITEM_PTR->EnchantmentAdd(NewFromElementType(
-                ITEM_PTR->ElementType(), ITEM_PTR->IsWeapon(), ITEM_PTR->MaterialPrimary()));
+            enchantmentsPVec.emplace_back(
+                NewFromElementType(TYPE_WRAPPER.element, IS_WEAPON, MATERIAL_PRIMARY));
         }
 
-        if ((ITEM_PTR->UniqueType() != item::unique_type::NotUnique)
-            && (ITEM_PTR->UniqueType() != item::unique_type::Count))
+        if ((TYPE_WRAPPER.unique != item::unique_type::NotUnique)
+            && (TYPE_WRAPPER.unique != item::unique_type::Count))
         {
-            for (auto const & NEXT_ENCHANTMENT_PTR :
-                 NewFromUniqueType(ITEM_PTR->UniqueType(), ITEM_PTR->MaterialPrimary()))
+            for (auto const & ENCHANTMENT_PTR :
+                 NewFromUniqueType(TYPE_WRAPPER.unique, MATERIAL_PRIMARY))
             {
-                ITEM_PTR->EnchantmentAdd(NEXT_ENCHANTMENT_PTR);
+                enchantmentsPVec.emplace_back(ENCHANTMENT_PTR);
             }
 
-            return ITEM_PTR;
+            return enchantmentsPVec;
         }
 
-        if ((ITEM_PTR->NamedType() != item::named_type::NotNamed)
-            && (ITEM_PTR->NamedType() != item::named_type::Count))
+        if ((TYPE_WRAPPER.name != item::named_type::NotNamed)
+            && (TYPE_WRAPPER.name != item::named_type::Count))
         {
-            ITEM_PTR->EnchantmentAdd(NewFromNamedType(
-                ITEM_PTR->NamedType(),
-                ITEM_PTR->MaterialPrimary(),
-                (ITEM_PTR->Category() & item::category::Armor),
-                (ITEM_PTR->Category() & item::category::Weapon)));
+            enchantmentsPVec.emplace_back(
+                NewFromNamedType(TYPE_WRAPPER.name, MATERIAL_PRIMARY, IS_ARMOR, IS_WEAPON));
 
-            return ITEM_PTR;
+            return enchantmentsPVec;
         }
 
-        if (ITEM_PTR->SetType() != item::set_type::NotASet)
+        if (TYPE_WRAPPER.set != item::set_type::NotASet)
         {
-            ITEM_PTR->EnchantmentAdd(NewFromSetType(ITEM_PTR->SetType()));
-            return ITEM_PTR;
+            enchantmentsPVec.emplace_back(NewFromSetType(TYPE_WRAPPER.set));
+            return enchantmentsPVec;
         }
 
-        if (ITEM_PTR->MiscType() != item::misc_type::NotMisc)
+        if (TYPE_WRAPPER.misc != item::misc_type::NotMisc)
         {
             auto const ENCHANTMENT_PTR_OPT{ NewFromMiscType(
-                ITEM_PTR->MiscType(), ITEM_PTR->MaterialPrimary(), ITEM_PTR->MaterialSecondary()) };
+                TYPE_WRAPPER.misc, MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
             if (ENCHANTMENT_PTR_OPT)
             {
-                ITEM_PTR->EnchantmentAdd(ENCHANTMENT_PTR_OPT.value());
-                return ITEM_PTR;
+                enchantmentsPVec.emplace_back(ENCHANTMENT_PTR_OPT.value());
+                return enchantmentsPVec;
             }
         }
 
-        return ITEM_PTR;
-    }
-
-    const item::ItemPtr_t EnchantmentFactory::MakeStoreAttachReturn(
-        const item::ItemPtr_t ITEM_PTR,
-        const EnchantmentType::Enum TYPE,
-        const stats::TraitSet & TRAIT_SET,
-        const UseInfo & USE_INFO) const
-    {
-        ITEM_PTR->EnchantmentAdd(Make(TYPE, TRAIT_SET, USE_INFO));
-        return ITEM_PTR;
+        return enchantmentsPVec;
     }
 
     Score_t EnchantmentFactory::TreasureScore(

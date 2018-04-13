@@ -65,6 +65,11 @@ namespace item
 
         static const ItemPtr_t Make(const ItemProfile &);
 
+        // to support the items made for player characters in player::initial::SetupInventory
+        static const ItemPtr_t Make_Wand(const material::Enum, const material::Enum);
+        static const ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM);
+
+    private:
         static const ItemPtr_t Make_Amulet(const ItemProfile &);
         static const ItemPtr_t Make_Armband(const ItemProfile &);
         static const ItemPtr_t Make_BalmPot(const ItemProfile &);
@@ -102,12 +107,6 @@ namespace item
 
         static const ItemPtr_t Make_MiscBlessedOrCursed(const ItemProfile &);
 
-        // to support the older InventoryFactory
-        static const ItemPtr_t Make_Ring(const material::Enum, const material::Enum);
-        static const ItemPtr_t Make_Wand(const material::Enum, const material::Enum);
-        static const ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM);
-
-    private:
         static const ItemPtr_t Make_Helper(
             const ItemProfile & PROFILE,
             const Coin_t & BASE_PRICE,

@@ -25,11 +25,10 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// item-factory.hpp
+// item-factory.cpp
 //
 #include "item-factory.hpp"
 
-#include "creature/enchantment-factory.hpp"
 #include "game/loop-manager.hpp"
 #include "item/armor-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
@@ -49,43 +48,6 @@ namespace heroespath
 {
 namespace item
 {
-
-    std::unique_ptr<ItemFactory> ItemFactory::instanceUPtr_;
-
-    ItemFactory::ItemFactory() { M_HP_LOG_DBG("Singleton Construction: ItemFactory"); }
-
-    ItemFactory::~ItemFactory() { M_HP_LOG_DBG("Singleton Destruction: ItemFactory"); }
-
-    misc::NotNull<ItemFactory *> ItemFactory::Instance()
-    {
-        if (!instanceUPtr_)
-        {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): ItemFactory");
-            Acquire();
-        }
-
-        return instanceUPtr_.get();
-    }
-
-    void ItemFactory::Acquire()
-    {
-        if (!instanceUPtr_)
-        {
-            instanceUPtr_ = std::make_unique<ItemFactory>();
-        }
-        else
-        {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: ItemFactory");
-        }
-    }
-
-    void ItemFactory::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_), "creature::ItemFactory::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
 
     bool ItemFactory::Test()
     {
@@ -188,9 +150,9 @@ namespace item
 
             for (auto iter{ allItemProfilesVec.begin() }; iter != NAMED_TYPE_END_ITER; ++iter)
             {
-                auto itemPtrOpt{ Instance()->Make(*iter) };
-                TestItem("named_type", itemPtrOpt, *iter);
-                ItemWarehouse::Instance()->Free(itemPtrOpt);
+                auto itemPtr{ Make(*iter) };
+                TestItem("named_type", itemPtr, *iter);
+                ItemWarehouse::Access().Free(itemPtr);
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
@@ -218,9 +180,9 @@ namespace item
 
             for (auto iter{ allItemProfilesVec.begin() }; iter != UNIQUE_TYPE_END_ITER; ++iter)
             {
-                auto itemPtrOpt{ Instance()->Make(*iter) };
-                TestItem("unique_type", itemPtrOpt, *iter);
-                ItemWarehouse::Instance()->Free(itemPtrOpt);
+                auto itemPtr{ Make(*iter) };
+                TestItem("unique_type", itemPtr, *iter);
+                ItemWarehouse::Access().Free(itemPtr);
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
@@ -248,9 +210,9 @@ namespace item
 
             for (auto iter{ allItemProfilesVec.begin() }; iter != SET_TYPE_END_ITER; ++iter)
             {
-                auto itemPtrOpt{ Instance()->Make(*iter) };
-                TestItem("set_type", itemPtrOpt, *iter);
-                ItemWarehouse::Instance()->Free(itemPtrOpt);
+                auto itemPtr{ Make(*iter) };
+                TestItem("set_type", itemPtr, *iter);
+                ItemWarehouse::Access().Free(itemPtr);
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
@@ -278,9 +240,9 @@ namespace item
 
             for (auto iter{ allItemProfilesVec.begin() }; iter != MISC_TYPE_END_ITER; ++iter)
             {
-                auto itemPtrOpt{ Instance()->Make(*iter) };
-                TestItem("misc_type", itemPtrOpt, *iter);
-                ItemWarehouse::Instance()->Free(itemPtrOpt);
+                auto itemPtr{ Make(*iter) };
+                TestItem("misc_type", itemPtr, *iter);
+                ItemWarehouse::Access().Free(itemPtr);
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
@@ -306,17 +268,17 @@ namespace item
 
             for (auto iter{ allItemProfilesVec.begin() }; iter != ELEMENT_TYPE_END_ITER; ++iter)
             {
-                auto itemPtrOpt{ Instance()->Make(*iter) };
+                auto itemPtr{ Make(*iter) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (itemPtrOpt->IsWeapon() || itemPtrOpt->IsArmor()),
+                    (itemPtr->IsWeapon() || itemPtr->IsArmor()),
                     "item::ItemFactory::Test() found an element_type that was not equipment:"
-                        << " Item=\"" << itemPtrOpt->Name() << "\", ItemProfile=["
+                        << " Item={" << itemPtr->ToString() << "}, ItemProfile=["
                         << iter->ToString()
-                        << "], element_type=" << element_type::ToString(itemPtrOpt->ElementType()));
+                        << "], element_type=" << element_type::ToString(itemPtr->ElementType()));
 
-                TestItem("elemet_type", itemPtrOpt, *iter);
-                ItemWarehouse::Instance()->Free(itemPtrOpt);
+                TestItem("elemet_type", itemPtr, *iter);
+                ItemWarehouse::Access().Free(itemPtr);
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
@@ -333,31 +295,31 @@ namespace item
         {
             for (auto iter{ allItemProfilesVec.begin() }; iter != allItemProfilesVec.end(); ++iter)
             {
-                auto itemPtrOpt{ Instance()->Make(*iter) };
+                auto itemPtr{ Make(*iter) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (itemPtrOpt->IsWeapon() || itemPtrOpt->IsArmor()),
+                    (itemPtr->IsWeapon() || itemPtr->IsArmor()),
                     "item::ItemFactory::Test() found standard equipment that was "
                         << "not weapon or armor:"
-                        << " Item=\"" << itemPtrOpt->Name() << "\", ItemProfile=["
+                        << " Item={" << itemPtr->ToString() << "}, ItemProfile=["
                         << iter->ToString()
-                        << "], item_category=" << category::ToString(itemPtrOpt->Category(), true));
+                        << "], item_category=" << category::ToString(itemPtr->Category(), true));
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
-                    (((itemPtrOpt->SetType() == set_type::Count)
-                      || (itemPtrOpt->SetType() == set_type::NotASet))
-                     && ((itemPtrOpt->UniqueType() == unique_type::Count)
-                         || (itemPtrOpt->UniqueType() == unique_type::NotUnique))
-                     && ((itemPtrOpt->NamedType() == named_type::Count)
-                         || (itemPtrOpt->NamedType() == named_type::NotNamed))
-                     && (itemPtrOpt->ElementType() == element_type::None)),
+                    (((itemPtr->SetType() == set_type::Count)
+                      || (itemPtr->SetType() == set_type::NotASet))
+                     && ((itemPtr->UniqueType() == unique_type::Count)
+                         || (itemPtr->UniqueType() == unique_type::NotUnique))
+                     && ((itemPtr->NamedType() == named_type::Count)
+                         || (itemPtr->NamedType() == named_type::NotNamed))
+                     && (itemPtr->ElementType() == element_type::None)),
                     "item::ItemFactory::Test() found standard equipment that was "
                         << "not standard:"
-                        << " Item=\"" << itemPtrOpt->Name() << "\", ItemProfile=["
+                        << " Item={" << itemPtr->ToString() << "}, ItemProfile=["
                         << iter->ToString());
 
-                TestItem("standard_equipment", itemPtrOpt, *iter);
-                ItemWarehouse::Instance()->Free(itemPtrOpt);
+                TestItem("standard_equipment", itemPtr, *iter);
+                ItemWarehouse::Access().Free(itemPtr);
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
@@ -395,21 +357,89 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PROFILE.IsValid()),
             "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item=\"" << ITEM_PTR->Name() << "\", profile="
-                << ITEM_PROFILE.ToString() << ") tried to make an item with an invalid profile: \""
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile={"
+                << ITEM_PROFILE.ToString() << "}) tried to make an item with an invalid profile: \""
                 << ITEM_PROFILE.ToMemberStrings().InvalidString() << "\"");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->MaterialPrimary() != ITEM_PTR->MaterialSecondary()),
             "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item=\"" << ITEM_PTR->Name() << "\", profile="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
                 << ITEM_PROFILE.ToString() << ") made an item with duplicate materials.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->Category() == ITEM_PROFILE.Category()),
+            "item::ItemFactory::TestItem(which_test="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
+                << ITEM_PROFILE.ToString() << ") made an item where the categories did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->MiscType() == ITEM_PROFILE.MiscType()),
+            "item::ItemFactory::TestItem(which_test="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
+                << ITEM_PROFILE.ToString() << ") made an item where the misc_types did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->SetType() == ITEM_PROFILE.SetType()),
+            "item::ItemFactory::TestItem(which_test="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
+                << ITEM_PROFILE.ToString() << ") made an item where the set_types did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->ElementType() == ITEM_PROFILE.ElementType()),
+            "item::ItemFactory::TestItem(which_test="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
+                << "}, profile=" << ITEM_PROFILE.ToString()
+                << ") made an item where the element_types did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->NamedType() == ITEM_PROFILE.NamedType()),
+            "item::ItemFactory::TestItem(which_test="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
+                << "}, profile=" << ITEM_PROFILE.ToString()
+                << ") made an item where the named_types did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->UniqueType() == ITEM_PROFILE.UniqueType()),
+            "item::ItemFactory::TestItem(which_test="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
+                << "}, profile=" << ITEM_PROFILE.ToString()
+                << ") made an item where the unique_types did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->MaterialPrimary() == ITEM_PROFILE.MaterialPrimary()),
+            "item::ItemFactory::TestItem(which_test="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
+                << "}, profile=" << ITEM_PROFILE.ToString()
+                << ") made an item where the primary materials did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            ((ITEM_PTR->MaterialPrimary() != material::Count)
+             && (ITEM_PTR->MaterialPrimary() != material::Nothing)),
+            "item::ItemFactory::TestItem(which_test="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
+                << "}, profile=" << ITEM_PROFILE.ToString()
+                << ") made an item where the primary material was either Count or Nothing.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->MaterialSecondary() == ITEM_PROFILE.MaterialSecondary()),
+            "item::ItemFactory::TestItem(which_test="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
+                << "}, profile=" << ITEM_PROFILE.ToString()
+                << ") made an item where the secondary materials did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->MaterialSecondary() != material::Count),
+            "item::ItemFactory::TestItem(which_test="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
+                << "}, profile=" << ITEM_PROFILE.ToString()
+                << ") made an item where the secondary material was Count instead of Nothing.");
 
         if ((ITEM_PTR->IsWeapon()) && (ITEM_PTR->IsArmor()))
         {
             std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item=\""
-               << ITEM_PTR->Name() << "\", profile=" << ITEM_PROFILE.ToString()
+            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
+               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
                << ") item was both weapon and armor";
 
             throw std::runtime_error(ss.str());
@@ -418,8 +448,8 @@ namespace item
         if ((ITEM_PTR->IsWeapon()) && (ITEM_PTR->WeaponType() == weapon_type::NotAWeapon))
         {
             std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item=\""
-               << ITEM_PTR->Name() << "\", profile=" << ITEM_PROFILE.ToString()
+            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST
+               << ", item=" << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
                << ") item's category was weapon but weapon_type was NotAWeapon.";
 
             throw std::runtime_error(ss.str());
@@ -428,8 +458,8 @@ namespace item
         if ((ITEM_PTR->IsWeapon()) && (ITEM_PTR->WeaponType() & weapon_type::Breath))
         {
             std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item=\""
-               << ITEM_PTR->Name() << "\", profile=" << ITEM_PROFILE.ToString()
+            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
+               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
                << ") item's weapon_type was Breath.";
 
             throw std::runtime_error(ss.str());
@@ -438,8 +468,8 @@ namespace item
         if ((ITEM_PTR->IsArmor()) && (ITEM_PTR->ArmorType() == armor_type::NotArmor))
         {
             std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item=\""
-               << ITEM_PTR->Name() << "\", profile=" << ITEM_PROFILE.ToString()
+            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
+               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
                << ") item's category was armor but armor_type was NotArmor.";
 
             throw std::runtime_error(ss.str());
@@ -448,28 +478,28 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->IsBodypart() == false),
             "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
-                << "\", profile=" << ITEM_PROFILE.ToString()
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
+                << "}, profile=" << ITEM_PROFILE.ToString()
                 << ") created a bodypart item but there should be no bodypart items.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->IsBroken() == false),
             "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item=\"" << ITEM_PTR->Name()
-                << "\", profile=" << ITEM_PROFILE.ToString() << ") created a broken item.");
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
+                << "}, profile=" << ITEM_PROFILE.ToString() << ") created a broken item.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->Category() != category::None),
             "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item=\"" << ITEM_PTR->Name() << "\", profile="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
                 << ITEM_PROFILE.ToString() << ") created an item with no/empty category.");
 
         if (((ITEM_PTR->SetType() != set_type::Count) && (ITEM_PTR->SetType() != set_type::NotASet))
             && (ITEM_PTR->ElementType() != element_type::None))
         {
             std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item=\""
-               << ITEM_PTR->Name() << "\", profile=" << ITEM_PROFILE.ToString()
+            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
+               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
                << ") item is a set_type but also an element_type.";
 
             throw std::runtime_error(ss.str());
@@ -478,322 +508,133 @@ namespace item
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->ImageFilename().empty() == false),
             "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item=\"" << ITEM_PTR->Name() << "\", profile="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
                 << ITEM_PROFILE.ToString() << ") created an item with no/empty image filename.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (element_type::IsValid(ITEM_PTR->ElementType())),
             "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item=\"" << ITEM_PTR->Name() << "\", profile="
+                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
                 << ITEM_PROFILE.ToString() << ") created an item with an invalid element_type.");
+
+        if ((ITEM_PTR->Armor_Info().helm == armor::helm_type::Leather)
+            && (ITEM_PTR->MaterialPrimary() != material::HardLeather))
+        {
+            std::ostringstream ss;
+            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
+               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
+               << ") created a leather helm with a primary material that was not hard leather.";
+
+            throw std::runtime_error(ss.str());
+        }
+
+        if ((ITEM_PTR->Weapon_Info().whip == weapon::whip_type::Bullwhip)
+            && (ITEM_PTR->MaterialPrimary() != material::HardLeather))
+        {
+            std::ostringstream ss;
+            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
+               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
+               << ") created a bull whip with a primary material that was not hard leather.";
+
+            throw std::runtime_error(ss.str());
+        }
     }
 
-    const ItemPtr_t ItemFactory::Make(const ItemProfile & PROFILE) const
+    const ItemPtr_t ItemFactory::Make(const ItemProfile & PROFILE)
     {
-        ItemPtrOpt_t itemPtrOpt{ boost::none };
-
-        if (PROFILE.IsAventail())
+        if ((PROFILE.MiscType() != misc_type::Count) && (PROFILE.MiscType() != misc_type::NotMisc))
         {
-            itemPtrOpt
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    armor::ArmorFactory::Instance()->Make_Aventail(
-                        PROFILE.BaseType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary())));
+            return item::MiscItemFactory::Make(PROFILE);
         }
-
-        if (PROFILE.IsBoots())
+        else if (PROFILE.Category() & item::category::Armor)
         {
-            itemPtrOpt
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    armor::ArmorFactory::Instance()->Make_Boots(
-                        PROFILE.BaseType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary(),
-                        PROFILE.IsPixie())));
-        }
-
-        if (PROFILE.IsBracer())
-        {
-            itemPtrOpt
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    armor::ArmorFactory::Instance()->Make_Bracer(
-                        PROFILE.BaseType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary(),
-                        PROFILE.IsPixie())));
-        }
-
-        if (PROFILE.IsGauntlets())
-        {
-            itemPtrOpt
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    armor::ArmorFactory::Instance()->Make_Gauntlets(
-                        PROFILE.BaseType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary(),
-                        PROFILE.IsPixie())));
-        }
-
-        if (PROFILE.IsPants())
-        {
-            itemPtrOpt
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    armor::ArmorFactory::Instance()->Make_Pants(
-                        PROFILE.BaseType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary(),
-                        PROFILE.IsPixie())));
-        }
-
-        if (PROFILE.IsShirt())
-        {
-            itemPtrOpt
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    armor::ArmorFactory::Instance()->Make_Shirt(
-                        PROFILE.BaseType(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary(),
-                        PROFILE.IsPixie())));
-        }
-
-        if (PROFILE.Category() & item::category::Armor)
-        {
-            if (PROFILE.ShieldType() != armor::shield_type::Count)
+            if (PROFILE.IsBoots())
             {
-                itemPtrOpt = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
-                    SetTypesAndReturn(
-                        PROFILE,
-                        armor::ArmorFactory::Instance()->Make_Shield(
-                            PROFILE.ShieldType(),
-                            PROFILE.MaterialPrimary(),
-                            PROFILE.MaterialSecondary())));
+                return armor::ArmorFactory::Instance()->Make_Boots(PROFILE);
             }
-
-            if (PROFILE.CoverType() != armor::cover_type::Count)
+            else if (PROFILE.IsBracer())
             {
-                itemPtrOpt = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
-                    SetTypesAndReturn(
-                        PROFILE,
-                        armor::ArmorFactory::Instance()->Make_Cover(
-                            PROFILE.CoverType(),
-                            PROFILE.MaterialPrimary(),
-                            PROFILE.MaterialSecondary())));
+                return armor::ArmorFactory::Instance()->Make_Bracer(PROFILE);
             }
-
-            if (PROFILE.HelmType() != armor::helm_type::Count)
+            else if (PROFILE.IsPants())
             {
-                itemPtrOpt = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
-                    SetTypesAndReturn(
-                        PROFILE,
-                        armor::ArmorFactory::Instance()->Make_Helm(
-                            PROFILE.HelmType(),
-                            PROFILE.MaterialPrimary(),
-                            PROFILE.MaterialSecondary())));
+                return armor::ArmorFactory::Instance()->Make_Pants(PROFILE);
+            }
+            else if (PROFILE.IsShirt())
+            {
+                return armor::ArmorFactory::Instance()->Make_Shirt(PROFILE);
+            }
+            else if (PROFILE.IsGauntlets())
+            {
+                return armor::ArmorFactory::Instance()->Make_Gauntlets(PROFILE);
+            }
+            else if (PROFILE.IsAventail())
+            {
+                return armor::ArmorFactory::Instance()->Make_Aventail(PROFILE);
+            }
+            else if (PROFILE.ShieldType() != armor::shield_type::Count)
+            {
+                return armor::ArmorFactory::Instance()->Make_Shield(PROFILE);
+            }
+            else if (PROFILE.CoverType() != armor::cover_type::Count)
+            {
+                return armor::ArmorFactory::Instance()->Make_Cover(PROFILE);
+            }
+            else if (PROFILE.HelmType() != armor::helm_type::Count)
+            {
+                return armor::ArmorFactory::Instance()->Make_Helm(PROFILE);
             }
         }
-
-        if (PROFILE.Category() & item::category::Weapon)
+        else if (PROFILE.Category() & item::category::Weapon)
         {
             if (PROFILE.SwordType() != weapon::sword_type::Count)
             {
-                itemPtrOpt = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
-                    SetTypesAndReturn(
-                        PROFILE,
-                        weapon::WeaponFactory::Instance()->Make_Sword(
-                            PROFILE.SwordType(),
-                            PROFILE.MaterialPrimary(),
-                            PROFILE.MaterialSecondary())));
+                return weapon::WeaponFactory::Instance()->Make_Sword(PROFILE);
             }
-
-            if (PROFILE.AxeType() != weapon::axe_type::Count)
+            else if (PROFILE.AxeType() != weapon::axe_type::Count)
             {
-                itemPtrOpt = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
-                    SetTypesAndReturn(
-                        PROFILE,
-                        weapon::WeaponFactory::Instance()->Make_Axe(
-                            PROFILE.AxeType(),
-                            PROFILE.MaterialPrimary(),
-                            PROFILE.MaterialSecondary())));
+                return weapon::WeaponFactory::Instance()->Make_Axe(PROFILE);
             }
-
-            if (PROFILE.ClubType() != weapon::club_type::Count)
+            else if (PROFILE.ClubType() != weapon::club_type::Count)
             {
-                itemPtrOpt = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
-                    SetTypesAndReturn(
-                        PROFILE,
-                        weapon::WeaponFactory::Instance()->Make_Club(
-                            PROFILE.ClubType(),
-                            PROFILE.MaterialPrimary(),
-                            PROFILE.MaterialSecondary())));
+                return weapon::WeaponFactory::Instance()->Make_Club(PROFILE);
             }
-
-            if (PROFILE.WhipType() != weapon::whip_type::Count)
+            else if (PROFILE.WhipType() != weapon::whip_type::Count)
             {
-                itemPtrOpt = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
-                    SetTypesAndReturn(
-                        PROFILE,
-                        weapon::WeaponFactory::Instance()->Make_Whip(
-                            PROFILE.WhipType(),
-                            PROFILE.MaterialPrimary(),
-                            PROFILE.MaterialSecondary())));
+                return weapon::WeaponFactory::Instance()->Make_Whip(PROFILE);
             }
-
-            if (PROFILE.ProjectileType() != weapon::projectile_type::Count)
+            else if (PROFILE.ProjectileType() != weapon::projectile_type::Count)
             {
-                itemPtrOpt = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
-                    SetTypesAndReturn(
-                        PROFILE,
-                        weapon::WeaponFactory::Instance()->Make_Projectile(
-                            PROFILE.ProjectileType(),
-                            PROFILE.MaterialPrimary(),
-                            PROFILE.MaterialSecondary())));
+                return weapon::WeaponFactory::Instance()->Make_Projectile(PROFILE);
             }
-
-            if (PROFILE.BladedStaffType() != weapon::bladedstaff_type::Count)
+            else if (PROFILE.BladedStaffType() != weapon::bladedstaff_type::Count)
             {
-                itemPtrOpt = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
-                    SetTypesAndReturn(
-                        PROFILE,
-                        weapon::WeaponFactory::Instance()->Make_BladedStaff(
-                            PROFILE.BladedStaffType(),
-                            PROFILE.MaterialPrimary(),
-                            PROFILE.MaterialSecondary())));
+                return weapon::WeaponFactory::Instance()->Make_BladedStaff(PROFILE);
+            }
+            else if (PROFILE.IsKnife())
+            {
+                return weapon::WeaponFactory::Instance()->Make_Knife(PROFILE);
+            }
+            else if (PROFILE.IsDagger())
+            {
+                return weapon::WeaponFactory::Instance()->Make_Knife(PROFILE);
+            }
+            else if (PROFILE.IsStaff())
+            {
+                return weapon::WeaponFactory::Instance()->Make_Staff(PROFILE);
+            }
+            else if (PROFILE.IsQuarterStaff())
+            {
+                return weapon::WeaponFactory::Instance()->Make_Staff(PROFILE);
             }
         }
 
-        if (PROFILE.IsKnife())
-        {
-            itemPtrOpt
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    weapon::WeaponFactory::Instance()->Make_Knife(
-                        false,
-                        PROFILE.Size(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary(),
-                        PROFILE.IsPixie())));
-        }
+        std::ostringstream ss;
 
-        if (PROFILE.IsDagger())
-        {
-            itemPtrOpt
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    weapon::WeaponFactory::Instance()->Make_Knife(
-                        true,
-                        PROFILE.Size(),
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary(),
-                        PROFILE.IsPixie())));
-        }
+        ss << "item::ItemFactory::Make(profile=" << PROFILE.ToString()
+           << ") failed to create an item based on that profile.";
 
-        if (PROFILE.IsStaff())
-        {
-            itemPtrOpt
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    weapon::WeaponFactory::Instance()->Make_Staff(
-                        false,
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary(),
-                        PROFILE.IsPixie())));
-        }
-
-        if (PROFILE.IsQuarterStaff())
-        {
-            itemPtrOpt
-                = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(SetTypesAndReturn(
-                    PROFILE,
-                    weapon::WeaponFactory::Instance()->Make_Staff(
-                        true,
-                        PROFILE.MaterialPrimary(),
-                        PROFILE.MaterialSecondary(),
-                        PROFILE.IsPixie())));
-        }
-
-        if ((PROFILE.MiscType() != misc_type::Count) && (PROFILE.MiscType() != misc_type::NotMisc))
-        {
-            itemPtrOpt = creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(
-                SetTypesAndReturn(PROFILE, item::MiscItemFactory::Instance()->Make(PROFILE)));
-        }
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (!!itemPtrOpt),
-            "item::ItemFactory::Make(profile="
-                << PROFILE.ToString() << ") failed to create an item based on that profile.");
-
-        auto const ITEM_PTR{ itemPtrOpt.value() };
-
-        if (PROFILE.UniqueType() == unique_type::MagnifyingGlass)
-        {
-            ITEM_PTR->AddCategory(category::ShowsEnemyInfo);
-        }
-
-        if (item::unique_type::IsUseable(PROFILE.UniqueType()))
-        {
-            ITEM_PTR->AddCategory(category::Useable);
-        }
-
-        ITEM_PTR->SetSummonInfo(PROFILE.Summoning());
-
-        AppendElementTypeToName(ITEM_PTR, PROFILE);
-
-        return ITEM_PTR;
-    }
-
-    const ItemPtr_t ItemFactory::SetTypesAndReturn(
-        const ItemProfile & PROFILE, const ItemPtr_t & ITEM_PTR) const
-    {
-        if (PROFILE.ElementType() != element_type::None)
-        {
-            ITEM_PTR->SetElementType(PROFILE.ElementType());
-        }
-
-        if ((PROFILE.UniqueType() != unique_type::Count)
-            && (PROFILE.UniqueType() != unique_type::NotUnique))
-        {
-            ITEM_PTR->SetUniqueType(PROFILE.UniqueType());
-        }
-
-        if ((PROFILE.NamedType() != named_type::Count)
-            && (PROFILE.NamedType() != named_type::NotNamed))
-        {
-            ITEM_PTR->SetNamedType(PROFILE.NamedType());
-        }
-
-        if ((PROFILE.SetType() != set_type::Count) && (PROFILE.SetType() != set_type::NotASet))
-        {
-            ITEM_PTR->SetSetType(PROFILE.SetType());
-        }
-
-        if ((PROFILE.MiscType() != misc_type::Count) && (PROFILE.MiscType() != misc_type::NotMisc))
-        {
-            ITEM_PTR->SetMiscType(PROFILE.MiscType());
-        }
-
-        if ((PROFILE.Role() != creature::role::Count)
-            && (PROFILE.Role() != creature::role::PlayerRoleCount))
-        {
-            ITEM_PTR->SetRestrictedRole(PROFILE.Role());
-        }
-
-        return ITEM_PTR;
-    }
-
-    void ItemFactory::AppendElementTypeToName(
-        const ItemPtr_t & ITEM_PTR, const ItemProfile & PROFILE) const
-    {
-        if (PROFILE.ElementType() != element_type::None)
-        {
-            ITEM_PTR->SetName(ITEM_PTR->Name() + " " + element_type::Name(PROFILE.ElementType()));
-        }
+        throw std::runtime_error(ss.str());
     }
 
 } // namespace item

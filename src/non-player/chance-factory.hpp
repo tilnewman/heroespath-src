@@ -214,7 +214,8 @@ namespace non_player
                 const creature::CreaturePtr_t CHARACTER_PTR,
                 chance::MaterialChanceMap_t & materialsMapPri,
                 chance::MaterialChanceMap_t & materialsMapSec,
-                const Weight_t & WEIGHT);
+                const Weight_t & WEIGHT,
+                const item::material::Enum FORCED_PRIMARY_MATERIAL = item::material::Nothing);
 
             template <typename T>
             static bool SetWeaponChances(
@@ -287,7 +288,8 @@ namespace non_player
                 const float CHANCE,
                 const Profile & PROFILE,
                 const creature::CreaturePtr_t CHARACTER_PTR,
-                const bool WILL_MATERIALS_INCLUDED_WOOD);
+                const bool WILL_MATERIALS_INCLUDED_WOOD,
+                const item::material::Enum FORCED_PRIMARY_MATERIAL = item::material::Nothing);
 
             static void RestrictMaterialsByComplexity(
                 const complexity_type::Enum COMPLEXITY,

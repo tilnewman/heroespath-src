@@ -475,16 +475,16 @@ namespace game
 
             cmdSPtr->Execute();
 
-            const sfml_util::LoopState::Enum CURRENT_STATE(loop_.GetState());
+            auto const CURRENT_STATE{ loop_.GetState() };
             if (CURRENT_STATE != state_)
             {
                 prevState_ = state_;
                 state_ = CURRENT_STATE;
 
                 M_HP_LOG(
-                    "LoopManager changed from \""
-                    << sfml_util::LoopState::ToString(prevState_) << "\" to \""
-                    << sfml_util::LoopState::ToString(state_) << "\"");
+                    "LoopManager changed state from " << sfml_util::LoopState::ToString(prevState_)
+                                                      << " to "
+                                                      << sfml_util::LoopState::ToString(state_));
             }
         }
 

@@ -29,13 +29,15 @@
 //  A collection of types that define chances to items that might be
 //  owned/carried/worn by non-player characters.
 //
-#include "item/armor-factory.hpp"
-#include "item/misc-item-factory.hpp"
-#include "item/weapon-factory.hpp"
+#include "item/armor-types.hpp"
+#include "item/item-type-enum.hpp"
+#include "item/weapon-types.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
+#include "misc/types.hpp"
 #include "misc/vector-map.hpp"
+#include "sfml-util/size-enum.hpp"
 #include "stats/trait.hpp"
 
 #include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()

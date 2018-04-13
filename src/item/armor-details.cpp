@@ -30,10 +30,8 @@
 #include "armor-details.hpp"
 
 #include "game/game-data-file.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-
 #include "stringutil/stringhelp.hpp"
 
 #include <vector>
@@ -45,49 +43,10 @@ namespace item
     namespace armor
     {
 
-        std::unique_ptr<ArmorDetailLoader> ArmorDetailLoader::instanceUPtr_;
-
         ArmorDetailLoader::ArmorDetailLoader()
             : armorDetailsMap_()
         {
-            M_HP_LOG_DBG("Singleton Construction: ArmorDetailLoader");
             LoadArmorDeatilsFromGameDataFile();
-        }
-
-        ArmorDetailLoader::~ArmorDetailLoader()
-        {
-            M_HP_LOG_DBG("Singleton Destruction: ArmorDetailLoader");
-        }
-
-        misc::NotNull<ArmorDetailLoader *> ArmorDetailLoader::Instance()
-        {
-            if (!instanceUPtr_)
-            {
-                M_HP_LOG_ERR("Singleton Instance() before Acquire(): ArmorDetailLoader");
-                Acquire();
-            }
-
-            return instanceUPtr_.get();
-        }
-
-        void ArmorDetailLoader::Acquire()
-        {
-            if (!instanceUPtr_)
-            {
-                instanceUPtr_ = std::make_unique<ArmorDetailLoader>();
-            }
-            else
-            {
-                M_HP_LOG_ERR("Singleton Acquire() after Construction: ArmorDetailLoader");
-            }
-        }
-
-        void ArmorDetailLoader::Release()
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_),
-                "item::armor::ArmorDetailLoader::Release() found instanceUPtr that was null.");
-            instanceUPtr_.reset();
         }
 
         const ArmorDetails ArmorDetailLoader::LookupArmorDetails(const std::string & NAME)
@@ -209,10 +168,15 @@ namespace item
             using namespace boost::algorithm;
 
             if (WILL_LOWERCASE)
+            {
                 return to_lower_copy(trim_copy(erase_all_copy(FIELD_STR, "\"")));
+            }
             else
+            {
                 return trim_copy(erase_all_copy(FIELD_STR, "\""));
+            }
         }
+
     } // namespace armor
 } // namespace item
 } // namespace heroespath

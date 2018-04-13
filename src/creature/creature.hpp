@@ -453,7 +453,10 @@ namespace creature
         sfml_util::DateTime dateTimeCreated_;
         spell::SpellEnumVec_t spellsVec_;
         Achievements achievements_;
+
+        // these are copies of pointers in the inventory_ and are not serialized
         item::ItemPVec_t heldWeaponsPVec_;
+
         std::size_t lastSpellCastNum_;
         song::SongEnumVec_t songsVec_;
         std::size_t lastSongPlayedNum_;

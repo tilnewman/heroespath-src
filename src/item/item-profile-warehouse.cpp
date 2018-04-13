@@ -32,12 +32,10 @@
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "log/log-macros.hpp"
-#include "stats/traits-set.hpp"
-
-#include "sfml-util/sfml-util.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
+#include "sfml-util/sfml-util.hpp"
+#include "stats/traits-set.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -1635,7 +1633,7 @@ namespace item
 
         if (E == whip_type::Bullwhip)
         {
-            return MaterialVecPair_t({ material::SoftLeather }, material::CoreSecondary());
+            return MaterialVecPair_t({ material::HardLeather }, material::CoreSecondary());
         }
         else
         {

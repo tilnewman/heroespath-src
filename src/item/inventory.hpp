@@ -74,7 +74,12 @@ namespace item
         const ItemPVec_t Items() const { return itemsPVec_; }
         const ItemPVec_t ItemsEquipped() const { return equippedItemsPVec_; }
 
+        // the caller is responsible for having already called ItemWarehouse::Store(), but this
+        // class is now responsible for calling ItemWarehouse::Free().
         void ItemAdd(const ItemPtr_t);
+
+        // the caller is responsible for eventually calling ItemWarehouse::Free() on this removed
+        // pointer
         void ItemRemove(const ItemPtr_t);
 
         // moves the item from itemsSVec_ to equippedItemsSVec_
@@ -115,13 +120,15 @@ namespace item
 
         friend bool operator==(const Inventory & L, const Inventory & R);
 
-    protected:
-        void FreeAllItemsFromWarehouse();
-
     private:
         Coin_t coins_;
         MeteorShard_t meteorShards_;
         Gem_t gems_;
+
+        // the observer pointers in these two vectors need to be tracked and eventually free'd by
+        // the ItemWarehouse.  The ItemFactories are responsible for the calls to
+        // ItemWarehouse::Store(), and see the destructor of this class for the
+        // ItemWarehouse::Free() calls.
         ItemPVec_t itemsPVec_;
         ItemPVec_t equippedItemsPVec_;
 

@@ -56,7 +56,11 @@ namespace item
         , equippedItemsPVec_(EQUIPPED_ITEMS_SVEC)
     {}
 
-    Inventory::~Inventory() { FreeAllItemsFromWarehouse(); }
+    Inventory::~Inventory()
+    {
+        ItemWarehouse::Access().Free(itemsPVec_);
+        ItemWarehouse::Access().Free(equippedItemsPVec_);
+    }
 
     bool Inventory::CoinsAdj(const Coin_t & COINS)
     {
@@ -334,7 +338,7 @@ namespace item
         std::ostringstream ss;
 
         ss << "[coins=" << coins_ << ", shards=" << meteorShards_ << ", gems=" << gems_
-           << ", itms_held=";
+           << ", items_held=";
 
         for (auto const & NEXT_ITEM_PTR : itemsPVec_)
         {
@@ -372,33 +376,38 @@ namespace item
 
     void Inventory::AfterSerialize()
     {
-        // TODO
-        // misc::SerializeHelp::AfterSerialize(itemsPVecToSerialize_, *item::Item);
+        for (auto const & ITEM_PTR : itemsPVec_)
+        {
+            ITEM_PTR->AfterSerialize();
+        }
+
+        misc::SerializeHelp::AfterSerialize(itemsPVecToSerialize_, ItemWarehouse::Access());
+
+        for (auto const & ITEM_PTR : equippedItemsPVec_)
+        {
+            ITEM_PTR->AfterSerialize();
+        }
+
+        misc::SerializeHelp::AfterSerialize(equippedItemsPVecToSerialize_, ItemWarehouse::Access());
     }
 
     void Inventory::AfterDeserialize()
     {
-        itemsPVec_.clear();
         for (auto const ITEM_RAW_PTR : itemsPVecToSerialize_)
         {
             ITEM_RAW_PTR->AfterDeserialize();
-            itemsPVec_.emplace_back(ItemWarehouse::Instance()->Store(ITEM_RAW_PTR));
         }
-        itemsPVecToSerialize_.clear();
 
-        equippedItemsPVec_.clear();
+        misc::SerializeHelp::AfterDeserialize(
+            itemsPVec_, itemsPVecToSerialize_, ItemWarehouse::Access());
+
         for (auto const ITEM_RAW_PTR : equippedItemsPVecToSerialize_)
         {
             ITEM_RAW_PTR->AfterDeserialize();
-            equippedItemsPVec_.emplace_back(ItemWarehouse::Instance()->Store(ITEM_RAW_PTR));
         }
-        equippedItemsPVecToSerialize_.clear();
-    }
 
-    void Inventory::FreeAllItemsFromWarehouse()
-    {
-        ItemWarehouse::Instance()->Free(itemsPVec_);
-        ItemWarehouse::Instance()->Free(equippedItemsPVec_);
+        misc::SerializeHelp::AfterDeserialize(
+            equippedItemsPVec_, equippedItemsPVecToSerialize_, ItemWarehouse::Access());
     }
 
     bool operator==(const Inventory & L, const Inventory & R)

@@ -39,7 +39,12 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
-}
+} // namespace creature
+namespace item
+{
+    class Item;
+    using ItemPtr_t = misc::NotNull<Item *>;
+} // namespace item
 namespace player
 {
 
@@ -57,6 +62,9 @@ namespace player
         static void SetStartingHealth(const creature::CreaturePtr_t);
         static void SetStartingMana(const creature::CreaturePtr_t);
         static item::material::Enum HardOrSoftLeatherRand();
+
+        static void
+            EnsureItemAddedAndEquipped(const creature::CreaturePtr_t, const item::ItemPtr_t);
     };
 
 } // namespace player

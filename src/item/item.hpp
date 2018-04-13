@@ -35,6 +35,7 @@
 #include "item/armor-info.hpp"
 #include "item/item-profile.hpp"
 #include "item/item-type-enum.hpp"
+#include "item/item-type-wrapper.hpp"
 #include "item/weapon-info.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
@@ -63,26 +64,20 @@ namespace item
             const std::string & NAME = "no_name_error",
             const std::string & DESC = "no-desc_error",
             const category::Enum CATEGORY = category::Broken,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc,
             const weapon_type::Enum WEAPON_TYPE = weapon_type::NotAWeapon,
             const armor_type::Enum ARMOR_TYPE = armor_type::NotArmor,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
-            const std::string & IMAGE_FILENAME = "",
             const Coin_t & PRICE = 0_coin,
             const Weight_t & WEIGHT = 0_weight,
             const Health_t & DAMAGE_MIN = 0_health,
             const Health_t & DAMAGE_MAX = 0_health,
             const Armor_t & ARMOR_RATING = 0_armor,
-            const creature::role::Enum EXCLUSIVE_TO_ROLE = creature::role::Count,
+            const TypeWrapper & TYPE_WRAPPER = TypeWrapper(),
             const weapon::WeaponInfo & WEAPON_INFO = weapon::WeaponInfo(),
             const armor::ArmorInfo & ARMOR_INFO = armor::ArmorInfo(),
             const bool IS_PIXIE_ITEM = false,
-            const unique_type::Enum UNIQUE_TYPE = unique_type::NotUnique,
-            const set_type::Enum SET_TYPE = set_type::NotASet,
-            const named_type::Enum NAMED_TYPE = named_type::NotNamed,
-            const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const creature::SummonInfo & SUMMON_INFO = creature::SummonInfo());
+            const creature::role::Enum EXCLUSIVE_ROLE_BASED_ON_ITEM_TYPE = creature::role::Count);
 
         ~Item();
 
@@ -90,7 +85,6 @@ namespace item
         const std::string Desc() const { return desc_; }
 
         const std::string ImageFilename() const { return imageFilename_; }
-        void ImageFilename(const std::string & S) { imageFilename_ = S; }
 
         const weapon::WeaponInfo Weapon_Info() const { return weaponInfo_; }
         const armor::ArmorInfo Armor_Info() const { return armorInfo_; }
@@ -165,19 +159,8 @@ namespace item
             category_ = static_cast<category::Enum>(category_ | E);
         }
 
-        void EnchantmentAdd(const creature::EnchantmentPtr_t ENCHANTMENT_PTR);
-
         const std::string BaseName() const;
 
-        void SetName(const std::string & NEW_NAME) { name_ = NEW_NAME; }
-        void SetElementType(const element_type::Enum E) { elementType_ = E; }
-        void SetUniqueType(const unique_type::Enum E) { uniqueType_ = E; }
-        void SetSetType(const set_type::Enum E) { setType_ = E; }
-        void SetNamedType(const named_type::Enum E) { namedType_ = E; }
-        void SetMiscType(const misc_type::Enum E) { miscType_ = E; }
-        void SetRestrictedRole(const creature::role::Enum R) { exclusiveToRole_ = R; }
-
-        void SetSummonInfo(const creature::SummonInfo & SI) { summonInfo_ = SI; }
         const creature::SummonInfo & GetSummonInfo() const { return summonInfo_; }
 
         bool IsSummoning() const { return summonInfo_.WillSummon(); }
@@ -208,7 +191,6 @@ namespace item
         misc_type::Enum miscType_;
         material::Enum materialPri_;
         material::Enum materialSec_;
-        std::string imageFilename_;
         weapon::WeaponInfo weaponInfo_;
         armor::ArmorInfo armorInfo_;
         bool isPixie_;
@@ -223,6 +205,8 @@ namespace item
         // a separate vector of raw pointers is needed.
         creature::EnchantmentPVec_t enchantmentsPVec_;
         std::vector<creature::Enchantment *> enchantmentsToSerializePVec_;
+
+        std::string imageFilename_;
 
     private:
         friend class boost::serialization::access;

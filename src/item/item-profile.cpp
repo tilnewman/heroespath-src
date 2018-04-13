@@ -31,7 +31,6 @@
 
 #include "creature/enchantment-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
-
 #include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
 
@@ -169,7 +168,6 @@ namespace item
         , size_(sfml_util::Size::Medium)
         , matPri_(material::Nothing)
         , matSec_(material::Nothing)
-        , role_(creature::role::Count)
         , summonInfo_()
         , baseName_("")
     {}
@@ -193,6 +191,20 @@ namespace item
         misc_ = MISC;
         set_ = SET;
         named_ = NAMED;
+    }
+
+    creature::role::Enum ItemProfile::RoleRestrictionBasedOnMiscAndSetType() const
+    {
+        if ((misc_ == misc_type::DrumLute) || (misc_ == misc_type::Lyre)
+            || (misc_ == misc_type::Hurdy_Gurdy) || (misc_ == misc_type::Pipe_And_Tabor)
+            || (misc_ == misc_type::Viol) || (misc_ == misc_type::Recorder))
+        {
+            return creature::role::Bard;
+        }
+        else
+        {
+            return set_type::Role(set_);
+        }
     }
 
     void ItemProfile::SetSummoningAndAdjustScore(const creature::SummonInfo & SUMMON_INFO)
@@ -411,11 +423,6 @@ namespace item
             normalStrings.emplace_back(ss.str());
         }
 
-        if (role_ != creature::role::Count)
-        {
-            normalStrings.emplace_back("role_restriction=" + creature::role::ToString(role_));
-        }
-
         if (score_.IsNonZero())
         {
             std::ostringstream ss;
@@ -583,7 +590,6 @@ namespace item
                 category_ = static_cast<category::Enum>(category_ | category::QuestItem);
             }
 
-            role_ = creature::role::Bard;
             score_ += 100_score;
         }
         else if (
@@ -1194,7 +1200,6 @@ namespace item
         set_ = SET_ENUM;
         element_ = ELEMENT_TYPE;
         SetFlag(IS_PIXIE, profile::IsSet::Pixie);
-        role_ = set_type::Role(SET_ENUM);
     }
 
     Score_t ItemProfile::ScoreHelper(

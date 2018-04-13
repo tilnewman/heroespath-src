@@ -524,9 +524,9 @@ namespace creature
         else
         {
             M_HP_LOG_ERR(
-                "creature::ItemAdd(creature_name=\""
-                << Name() << "\", item_name=\"" << ITEM_PTR->Name() << "\") item add failed:  \""
-                << IS_ALLOWED_STR << "\".");
+                "creature::ItemAdd(creature={" << ToString() << "}, item={" << ITEM_PTR->ToString()
+                                               << "}) item add failed.  Reason=" << IS_ALLOWED_STR
+                                               << ".");
         }
 
         return IS_ALLOWED_STR;
@@ -550,10 +550,10 @@ namespace creature
         }
 
         // verify armor vs race
-        if (ITEM_PTR->IsArmor() && ((race_ == race::Dragon) || (race_ == race::Wolfen)))
+        if (ITEM_PTR->IsArmor() && IsBeast())
         {
             std::ostringstream ss;
-            ss << race::Name(race_) << "s cannot be given armor";
+            ss << race::Name(race_) << "s (or any beast) cannot be given armor";
             return ss.str();
         }
 
@@ -573,8 +573,16 @@ namespace creature
         {
             EnchantmentsApplyOrRemoveByType(
                 ITEM_PTR->Enchantments(), EnchantmentType::WhenEquipped, true);
+
             inventory_.ItemEquip(ITEM_PTR);
             SetHeldWeaponsToBest();
+        }
+        else
+        {
+            M_HP_LOG_ERR(
+                "creature::ItemEquip(creature={"
+                << ToString() << "}, item={" << ITEM_PTR->ToString()
+                << "}) item equip failed.  Reason=" << IS_ALLOWED_STR << ".");
         }
 
         return IS_ALLOWED_STR;
@@ -713,49 +721,66 @@ namespace creature
 
             std::size_t armorEquipLimit{ 1 };
 
+            std::ostringstream extraInfoSS;
+
             if ((ARMOR_TYPE & item::armor_type::Bracer)
                 || (ARMOR_TYPE & item::armor_type::Gauntlets))
             {
                 armorEquipLimit = Body().NumArms() / 2;
+                extraInfoSS << "(Bracers and gauntlets are pairs of items.  You can only equip one "
+                               "set per two arms.  "
+                            << Name() << " has " << Body().NumArms() << " arms.)";
             }
-
-            if (ARMOR_TYPE & item::armor_type::Sheild)
+            else if (ARMOR_TYPE & item::armor_type::Sheild)
             {
                 armorEquipLimit = Body().NumArms();
+                extraInfoSS << "(Can only equip one shield per arm.  " << Name() << " has "
+                            << Body().NumArms() << " arms.)";
             }
-
-            if ((ARMOR_TYPE & item::armor_type::Boots) || (ARMOR_TYPE & item::armor_type::Pants))
+            else if (
+                (ARMOR_TYPE & item::armor_type::Boots) || (ARMOR_TYPE & item::armor_type::Pants))
             {
                 armorEquipLimit = Body().NumLegs() / 2;
+                extraInfoSS << "(Can only equip one boots or pants per two legs.  " << Name()
+                            << " has " << Body().NumLegs() << " legs.)";
             }
-
-            if (ARMOR_TYPE & item::armor_type::Helm)
+            else if (ARMOR_TYPE & item::armor_type::Helm)
             {
                 armorEquipLimit = Body().NumHeads();
+                extraInfoSS << "(Can only equip one helm per head.  " << Name() << " has "
+                            << Body().NumHeads() << " heads.)";
             }
-
-            if (ARMOR_TYPE & item::armor_type::Shirt)
-            {
-                armorEquipLimit = 1;
-            }
-
-            if (ARMOR_TYPE & item::armor_type::Aventail)
+            else if (ARMOR_TYPE & item::armor_type::Aventail)
             {
                 armorEquipLimit = inventory_.CountItemOfArmorTypeEquipped(item::armor_type::Helm);
+                extraInfoSS << "(Can only equip one aventail per helm.  " << Name() << " has "
+                            << armorEquipLimit << " helms.)";
             }
 
-            if (inventory_.CountItemOfArmorTypeEquipped(ARMOR_TYPE) >= armorEquipLimit)
+            auto const ALREADY_EQUIPPED_COUNT{ inventory_.CountItemOfArmorTypeEquipped(
+                ARMOR_TYPE) };
+            if (ALREADY_EQUIPPED_COUNT >= armorEquipLimit)
             {
-                const std::string ARMOR_TYPE_STR(item::armor_type::ToString(ARMOR_TYPE, false));
+                auto const ARMOR_TYPE_STR{ item::armor_type::ToString(ARMOR_TYPE, false) };
 
                 std::ostringstream ss;
-                ss << "Can't equip more than " << armorEquipLimit;
-                if (boost::algorithm::iends_with(ARMOR_TYPE_STR, "s"))
+                if (0 == armorEquipLimit)
                 {
-                    ss << " pairs";
+                    ss << "Can't equip any " << ARMOR_TYPE_STR << ".";
+                }
+                else
+                {
+                    ss << "Already equipped " << ALREADY_EQUIPPED_COUNT << " " << ARMOR_TYPE_STR
+                       << ", which is the limit.";
                 }
 
-                ss << " of " << ARMOR_TYPE_STR << "." << SEP;
+                auto const EXTRA_INFO_STR{ extraInfoSS.str() };
+                if (EXTRA_INFO_STR.empty() == false)
+                {
+                    ss << "  " << EXTRA_INFO_STR;
+                }
+
+                ss << SEP;
 
                 // make an exception for cover_type::Vest, which can be equipped along with the
                 // other cover_types: cape, robe, and cloak -which are otherwise mutually exclusive
@@ -1036,25 +1061,22 @@ namespace creature
     {
         auto EQUIPPED_ITEMS_PVEC{ Inventory().ItemsEquipped() };
 
-        // determine if the currrent weapon set is valid
-        bool isValid(true);
-        for (auto const & NEXT_ITEM_PTR : heldWeaponsPVec_)
+        // determine if the currrent weapon set is valid (equipped)
+        for (auto const & HELD_ITEM_PTR : heldWeaponsPVec_)
         {
-            auto const FOUND_CITER{ std::find_if(
-                EQUIPPED_ITEMS_PVEC.begin(),
-                EQUIPPED_ITEMS_PVEC.end(),
-                [NEXT_ITEM_PTR](const item::ItemPtr_t P) { return NEXT_ITEM_PTR == P; }) };
+            auto const IS_HELD_ITEM_EQUIPPED{ std::find_if(
+                                                  EQUIPPED_ITEMS_PVEC.begin(),
+                                                  EQUIPPED_ITEMS_PVEC.end(),
+                                                  [HELD_ITEM_PTR](auto const EQUIPPED_ITEM_PTR) {
+                                                      return HELD_ITEM_PTR == EQUIPPED_ITEM_PTR;
+                                                  })
+                                              != EQUIPPED_ITEMS_PVEC.end() };
 
-            if (FOUND_CITER == EQUIPPED_ITEMS_PVEC.end())
+            if (IS_HELD_ITEM_EQUIPPED == false)
             {
-                isValid = false;
+                SetHeldWeaponsToBest();
                 break;
             }
-        }
-
-        if (false == isValid)
-        {
-            SetHeldWeaponsToBest();
         }
     }
 
@@ -1115,9 +1137,7 @@ namespace creature
     const std::string Creature::ArmorString() const
     {
         item::ItemPVec_t armorItemsPVec;
-        auto const EQUIPPED_ITEMS_PVEC{ Inventory().ItemsEquipped() };
-
-        for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
+        for (auto const & NEXT_ITEM_PTR : Inventory().ItemsEquipped())
         {
             if (NEXT_ITEM_PTR->Category() & item::category::Armor)
             {
@@ -1131,8 +1151,8 @@ namespace creature
             std::sort(
                 armorItemsPVec.begin(),
                 armorItemsPVec.end(),
-                [](const item::ItemPtr_t A, const item::ItemPtr_t B) {
-                    return A->ArmorRating() > B->ArmorRating();
+                [](auto const ITEM_PTR_A, auto const ITEM_PTR_B) {
+                    return ITEM_PTR_A->ArmorRating() > ITEM_PTR_B->ArmorRating();
                 });
         }
 

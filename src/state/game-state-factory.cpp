@@ -105,7 +105,7 @@ namespace state
 
     void GameStateFactory::NewGame(player::PartyUPtr_t PARTY_UPTR) const
     {
-        SaveGame(game::Game::Instance()->MakeNewGame(std::move(PARTY_UPTR)));
+        game::Game::Instance()->MakeNewGame(std::move(PARTY_UPTR));
     }
 
     const GameStatePVec_t GameStateFactory::LoadAllGames() const
@@ -404,11 +404,15 @@ namespace state
             // save either, not both
             if (GAMESTATE_PTR_OPT)
             {
+                GAMESTATE_PTR_OPT->Obj().BeforeSerialize();
                 oa << *GAMESTATE_PTR_OPT.value();
+                GAMESTATE_PTR_OPT->Obj().AfterSerialize();
             }
             else
             {
+                CHARACTER_PTR_OPT->Obj().BeforeSerialize();
                 oa << CHARACTER_PTR_OPT->Obj();
+                CHARACTER_PTR_OPT->Obj().AfterSerialize();
             }
         }
         catch (const std::exception & E)

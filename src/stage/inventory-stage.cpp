@@ -266,7 +266,7 @@ namespace stage
         , contentType_(ContentType::Count)
         , listBoxItemToGiveSPtr_()
         , creatureToGiveToPtrOpt_(boost::none)
-        , itemToDropPtrOpt_(boost::none)
+        , itemToDropSPtr_()
         , isDetailViewFadingIn_(false)
         , isDetailViewFadingOut_(false)
         , isDetailViewDoneFading_(false)
@@ -2884,15 +2884,14 @@ namespace stage
                     return false;
                 }
 
-                auto const ITEM_PTR{ LISTBOX_ITEM_SPTR->ITEM_PTR_OPT.value() };
-
-                itemToDropPtrOpt_ = ITEM_PTR;
+                itemToDropSPtr_ = LISTBOX_ITEM_SPTR;
 
                 actionType_ = ActionType::Drop;
 
                 auto const POPUP_INFO{ popup::PopupManager::Instance()->CreatePopupInfo(
                     POPUP_NAME_DROPCONFIRM_,
-                    "\nAre you sure you want to drop the " + ITEM_PTR->Name() + "?",
+                    "\nAre you sure you want to drop the "
+                        + LISTBOX_ITEM_SPTR->ITEM_PTR_OPT->Obj().Name() + "?",
                     popup::PopupButtons::YesNo,
                     popup::PopupImage::Regular,
                     sfml_util::Justified::Center,
@@ -2924,8 +2923,11 @@ namespace stage
                 ->Getsound_effect_set(sfml_util::sound_effect_set::ItemDrop)
                 .PlayRandom();
 
-            creaturePtr_->ItemRemove(itemToDropPtrOpt_.value());
-            item::ItemWarehouse::Instance()->Free(itemToDropPtrOpt_.value());
+            unEquipListBoxUPtr_->Remove(itemToDropSPtr_);
+            auto const ITEM_PTR{ itemToDropSPtr_->ITEM_PTR_OPT.value() };
+            itemToDropSPtr_.reset();
+            creaturePtr_->ItemRemove(ITEM_PTR);
+            item::ItemWarehouse::Access().Free(ITEM_PTR);
             EndOfGiveShareGatherTasks();
             Setup_DescBox(false);
             return true;
@@ -3576,7 +3578,7 @@ namespace stage
     {
         listBoxItemToGiveSPtr_.reset();
         creatureToGiveToPtrOpt_ = boost::none;
-        itemToDropPtrOpt_ = boost::none;
+        itemToDropSPtr_.reset();
         contentType_ = ContentType::Count;
         actionType_ = ActionType::Count;
         Setup_CreatureDetails(false);

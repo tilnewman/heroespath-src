@@ -95,8 +95,13 @@ namespace player
     private:
         avatar::Avatar::Enum avatar_;
 
-        // misc::NotNulls cannot be serialized so the vector of raw pointers is required
+        // this class is NOT responsible for calling CreatureWarehouse::Store() on these observer
+        // pointers but it IS responsible for calling CreatureWarehouse::Free() on them.  See the
+        // destructor.
         creature::CreaturePVec_t charactersPVec_;
+
+        // the misc::NotNulls in charactersPVec_ cannot be serialized so the vector of raw pointers
+        // is required
         std::vector<creature::Creature *> charactersToSerializePVec_;
 
     private:

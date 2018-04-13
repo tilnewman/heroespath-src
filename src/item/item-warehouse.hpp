@@ -27,8 +27,8 @@
 //
 // item-warehouse.hpp
 //
+#include "misc/not-null-warehouse.hpp"
 #include "misc/not-null.hpp"
-#include "misc/warehouse.hpp"
 
 #include <memory>
 #include <vector>
@@ -38,7 +38,6 @@ namespace heroespath
 namespace item
 {
 
-    // forward declarations
     class Item;
     using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPVec_t = std::vector<ItemPtr_t>;
@@ -63,15 +62,12 @@ namespace item
         static void Acquire();
         static void Release();
 
-        const ItemPtr_t Store(const ItemPtr_t ITEM_PTR);
-
-        void Free(const ItemPtr_t ITEM_PTR);
-
-        void Free(ItemPVec_t & itemPtrVec);
+        static misc::NotNullWarehouse<Item> & Access() { return Instance()->Warehouse(); }
+        misc::NotNullWarehouse<Item> & Warehouse() { return warehouse_; }
 
     private:
         static std::unique_ptr<ItemWarehouse> instanceUPtr_;
-        misc::Warehouse<Item> warehouse_;
+        misc::NotNullWarehouse<Item> warehouse_;
     };
 
 } // namespace item

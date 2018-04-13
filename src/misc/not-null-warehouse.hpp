@@ -63,22 +63,39 @@ namespace misc
 
         ~NotNullWarehouse()
         {
-            for (auto & uPtr : uPtrVec_)
+            auto const SIZE{ Size() };
+
+            std::ostringstream ss;
+            ss << "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
+               << "> destructing, ";
+
+            if (SIZE != 0)
             {
-                if (uPtr)
-                {
-                    M_HP_LOG_ERR(
-                        "misc::NotNullWarehouse<"
-                        << boost::typeindex::type_id<T>().pretty_name()
-                        << ">::Destructor found an object that was not free'd: "
-                        << uPtr->ToString());
-                }
+                ss << "with " << SIZE << " objects NOT free'd, ";
             }
 
-            M_HP_LOG_DBG(
-                "misc::NotNullWarehouse<" << boost::typeindex::type_id<T>().pretty_name()
-                                          << "> held at most " << uPtrVec_.size()
-                                          << " objects at once.");
+            ss << "at most " << uPtrVec_.size() << " were held at once.";
+
+            if (SIZE == 0)
+            {
+                M_HP_LOG_DBG(ss.str());
+            }
+            else
+            {
+                M_HP_LOG_WRN(ss.str());
+
+                for (auto & uPtr : uPtrVec_)
+                {
+                    if (uPtr)
+                    {
+                        M_HP_LOG_ERR(
+                            "misc::NotNullWarehouse<"
+                            << boost::typeindex::type_id<T>().pretty_name()
+                            << ">::Destructor found an object that was not free'd: "
+                            << uPtr->ToString());
+                    }
+                }
+            }
         }
 
         std::size_t Size() const
@@ -93,6 +110,11 @@ namespace misc
             }
 
             return count;
+        }
+
+        const misc::NotNull<T *> Store(const misc::NotNull<T *> NOT_NULL_PTR)
+        {
+            return Store(NOT_NULL_PTR.Ptr());
         }
 
         const misc::NotNull<T *> Store(std::unique_ptr<T> uPtrToStore)
@@ -163,6 +185,8 @@ namespace misc
 
             ptrVec.clear();
         }
+
+        void Free(const NotNull<T *> NOT_NULL_PTR) { Free(NOT_NULL_PTR.Ptr()); }
 
         void Free(T * const ptrToFree)
         {

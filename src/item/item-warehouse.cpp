@@ -78,14 +78,5 @@ namespace item
         instanceUPtr_.reset();
     }
 
-    const ItemPtr_t ItemWarehouse::Store(const ItemPtr_t ITEM_PTR)
-    {
-        return warehouse_.Store(ITEM_PTR);
-    }
-
-    void ItemWarehouse::Free(const ItemPtr_t ITEM_PTR) { warehouse_.Free(ITEM_PTR); }
-
-    void ItemWarehouse::Free(ItemPVec_t & itemPtrVec) { warehouse_.Free(itemPtrVec); }
-
 } // namespace item
 } // namespace heroespath

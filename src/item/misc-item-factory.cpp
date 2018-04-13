@@ -29,12 +29,12 @@
 //
 #include "misc-item-factory.hpp"
 
-#include "creature/enchantment-factory.hpp"
-#include "item/armor-details.hpp"
+#include "item/armor-factory.hpp"
 #include "item/item-profile.hpp"
+#include "item/item-type-wrapper.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/item.hpp"
-#include "item/weapon-details.hpp"
+#include "item/weapon-factory.hpp"
 #include "item/weapon-info.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -262,72 +262,7 @@ namespace item
 
     const ItemPtr_t MiscItemFactory::Make_Cape(const ItemProfile & PROFILE)
     {
-        Coin_t price{ TreasureScoreToCoins(PROFILE.TreasureScore()) };
-        AdjustPrice(
-            price, PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary(), PROFILE.IsPixie());
-
-        Weight_t weight{ 111_weight };
-        AdjustWeight(weight, PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary());
-
-        auto const BASE_NAME{ [PROFILE]() {
-            if ((PROFILE.UniqueType() == unique_type::Count)
-                || (PROFILE.UniqueType() == unique_type::NotUnique))
-            {
-                return misc_type::Name(PROFILE.MiscType());
-            }
-            else
-            {
-                return unique_type::Name(PROFILE.UniqueType());
-            }
-        }() };
-
-        auto const DESC_PREFIX{ "A " + boost::to_lower_copy(BASE_NAME) + " " };
-
-        armor::ArmorInfo armorInfo(armor_type::Covering);
-        armorInfo.cover = armor::cover_type::Cape;
-
-        auto const DETAILS{ armor::ArmorDetailLoader::Instance()->LookupArmorDetails(
-            armor::cover_type::ToString(armor::cover_type::Cape)) };
-
-        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
-            Make_Name(
-                BASE_NAME,
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                PROFILE.IsPixie()),
-            Make_Desc(
-                DESC_PREFIX,
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                "",
-                PROFILE.IsPixie()),
-            PROFILE.Category(),
-            PROFILE.MiscType(),
-            weapon_type::NotAWeapon,
-            PROFILE.ArmorType(),
-            PROFILE.MaterialPrimary(),
-            PROFILE.MaterialSecondary(),
-            "",
-            price,
-            weight,
-            0_health,
-            0_health,
-            DETAILS.armor_rating,
-            creature::role::Count,
-            weapon::WeaponInfo(),
-            armorInfo,
-            PROFILE.IsPixie(),
-            PROFILE.UniqueType(),
-            PROFILE.SetType(),
-            PROFILE.NamedType(),
-            PROFILE.ElementType())) };
-
-        itemPtr->ImageFilename(
-            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-        creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
-
-        return itemPtr;
+        return armor::ArmorFactory::Instance()->Make_Cape_AsMiscItem(PROFILE);
     }
 
     const ItemPtr_t MiscItemFactory::Make_DevilHorn(const ItemProfile & PROFILE)
@@ -451,61 +386,7 @@ namespace item
 
     const ItemPtr_t MiscItemFactory::Make_Staff(const ItemProfile & PROFILE)
     {
-        Coin_t price{ TreasureScoreToCoins(PROFILE.TreasureScore()) };
-        AdjustPrice(
-            price, PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary(), PROFILE.IsPixie());
-
-        Weight_t weight{ 47_weight };
-        AdjustWeight(weight, PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary());
-
-        auto const BASE_NAME{ item::misc_type::Name(PROFILE.MiscType()) };
-
-        auto const DESC_PREFIX{ "A " + boost::to_lower_copy(BASE_NAME) + " " };
-
-        weapon::WeaponInfo weaponInfo(weapon_type::Staff);
-        weaponInfo.is_staff = true;
-        weaponInfo.is_quarterstaff = false;
-        auto const DETAILS{ weapon::WeaponDetailLoader::Instance()->LookupWeaponDetails("Staff") };
-
-        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
-            Make_Name(
-                BASE_NAME,
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                PROFILE.IsPixie()),
-            Make_Desc(
-                DESC_PREFIX,
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                "",
-                PROFILE.IsPixie()),
-            PROFILE.Category(),
-            PROFILE.MiscType(),
-            PROFILE.WeaponType(),
-            armor_type::NotArmor,
-            PROFILE.MaterialPrimary(),
-            PROFILE.MaterialSecondary(),
-            "",
-            price,
-            weight,
-            DETAILS.damage_min,
-            DETAILS.damage_max,
-            0_armor,
-            creature::role::Count,
-            weaponInfo,
-            armor::ArmorInfo(),
-            PROFILE.IsPixie(),
-            PROFILE.UniqueType(),
-            PROFILE.SetType(),
-            PROFILE.NamedType(),
-            PROFILE.ElementType())) };
-
-        itemPtr->ImageFilename(
-            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-        creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
-
-        return itemPtr;
+        return weapon::WeaponFactory::Instance()->Make_Staff_AsMisc(PROFILE);
     }
 
     const ItemPtr_t MiscItemFactory::Make_SummoningStatue(const ItemProfile & PROFILE)
@@ -599,51 +480,20 @@ namespace item
 
         ssDesc << ".";
 
-        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+        return ItemWarehouse::Access().Store(std::make_unique<Item>(
             ssName.str(),
             ssDesc.str(),
-            static_cast<category::Enum>(category::Equippable | category::Wearable),
-            misc_type::Ring,
+            PROFILE.Category(),
             weapon_type::NotAWeapon,
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            "",
             price,
-            weight)) };
-
-        itemPtr->ImageFilename(
-            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-        return itemPtr;
-    }
-
-    const ItemPtr_t MiscItemFactory::Make_Ring(
-        const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC)
-    {
-        auto price{ 5_coin };
-        AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
-
-        auto weight{ 20_weight };
-        AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
-
-        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
-            Make_Name("Ring", MATERIAL_PRI, MATERIAL_SEC),
-            Make_Desc("A ring", MATERIAL_PRI, MATERIAL_SEC, ""),
-            static_cast<category::Enum>(category::Equippable | category::Wearable),
-            misc_type::Ring,
-            weapon_type::NotAWeapon,
-            armor_type::NotArmor,
-            MATERIAL_PRI,
-            MATERIAL_SEC,
-            "",
-            price,
-            weight)) };
-
-        itemPtr->ImageFilename(
-            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-        return itemPtr;
+            weight,
+            0_health,
+            0_health,
+            0_armor,
+            TypeWrapper(PROFILE)));
     }
 
     const ItemPtr_t MiscItemFactory::Make_Wand(
@@ -655,23 +505,23 @@ namespace item
         auto weight{ 40_weight };
         AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
-        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+        TypeWrapper typeWrapper;
+        typeWrapper.misc = misc_type::Wand;
+
+        return ItemWarehouse::Access().Store(std::make_unique<Item>(
             Make_Name("Wand", MATERIAL_PRI, MATERIAL_SEC),
             Make_Desc("A wand", MATERIAL_PRI, MATERIAL_SEC),
             static_cast<category::Enum>(category::Equippable | category::AllowsCasting),
-            misc_type::Wand,
             weapon_type::NotAWeapon,
             armor_type::NotArmor,
             MATERIAL_PRI,
             MATERIAL_SEC,
-            "",
             price,
-            weight)) };
-
-        itemPtr->ImageFilename(
-            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-        return itemPtr;
+            weight,
+            0_health,
+            0_health,
+            0_armor,
+            typeWrapper));
     }
 
     const ItemPtr_t MiscItemFactory::Make_DrumLute(const bool IS_PIXIE_ITEM)
@@ -683,33 +533,28 @@ namespace item
         AdjustPrice(price, material::Wood, material::Rope, IS_PIXIE_ITEM);
         AdjustWeight(weight, material::Wood, material::Rope);
 
-        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+        TypeWrapper typeWrapper;
+        typeWrapper.misc = misc_type::DrumLute;
+
+        return ItemWarehouse::Access().Store(std::make_unique<Item>(
             Make_Name("DrumLute", material::Wood, material::Rope, IS_PIXIE_ITEM),
             Make_Desc(desc, material::Wood, material::Rope, "", IS_PIXIE_ITEM),
             static_cast<category::Enum>(
                 category::Equippable | category::Useable | category::TwoHanded),
-            misc_type::DrumLute,
             weapon_type::NotAWeapon,
             armor_type::NotArmor,
             material::Wood,
             material::Rope,
-            "",
             price,
             weight,
             0_health,
             0_health,
             0_armor,
-            creature::role::Bard,
+            typeWrapper,
             weapon::WeaponInfo(),
             armor::ArmorInfo(),
-            IS_PIXIE_ITEM)) };
-
-        itemPtr->ImageFilename(
-            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-        creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
-
-        return itemPtr;
+            IS_PIXIE_ITEM,
+            creature::role::Bard));
     }
 
     const ItemPtr_t MiscItemFactory::Make_Helper(
@@ -719,6 +564,7 @@ namespace item
         const std::string & BASE_DESC)
     {
         auto price{ BASE_PRICE };
+
         AdjustPrice(
             price, PROFILE.MaterialPrimary(), PROFILE.MaterialSecondary(), PROFILE.IsPixie());
 
@@ -740,7 +586,7 @@ namespace item
         auto const DESC_PREFIX{ (
             (BASE_DESC.empty()) ? ("A " + boost::to_lower_copy(BASE_NAME) + " ") : BASE_DESC) };
 
-        auto itemPtr{ ItemWarehouse::Instance()->Store(new Item(
+        return ItemWarehouse::Access().Store(std::make_unique<Item>(
             Make_Name(
                 BASE_NAME,
                 PROFILE.MaterialPrimary(),
@@ -753,32 +599,19 @@ namespace item
                 "",
                 PROFILE.IsPixie()),
             PROFILE.Category(),
-            PROFILE.MiscType(),
             weapon_type::NotAWeapon,
             armor_type::NotArmor,
             PROFILE.MaterialPrimary(),
             PROFILE.MaterialSecondary(),
-            "",
             price,
             weight,
             0_health,
             0_health,
             0_armor,
-            PROFILE.Role(),
+            TypeWrapper(PROFILE),
             weapon::WeaponInfo(),
             armor::ArmorInfo(),
-            PROFILE.IsPixie(),
-            PROFILE.UniqueType(),
-            PROFILE.SetType(),
-            PROFILE.NamedType(),
-            PROFILE.ElementType())) };
-
-        itemPtr->ImageFilename(
-            sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(itemPtr));
-
-        creature::EnchantmentFactory::Instance()->MakeStoreAttachReturn(itemPtr);
-
-        return itemPtr;
+            PROFILE.IsPixie()));
     }
 
 } // namespace item

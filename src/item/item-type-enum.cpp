@@ -147,16 +147,25 @@ namespace item
         }
         else
         {
-            ss << "of ";
-
             if (E & element_type::Fire)
-                ss << "Fire";
+            {
+                ss << " of Fire";
+            }
+
             if (E & element_type::Frost)
-                ss << ((ss.str().empty()) ? "" : "and ") << "Frost";
+            {
+                ss << ((ss.str().empty()) ? " of " : " and ") << "Frost";
+            }
+
             if (E & element_type::Honor)
-                ss << ((ss.str().empty()) ? "" : "and ") << "Honor";
+            {
+                ss << ((ss.str().empty()) ? " of " : " and ") << "Honor";
+            }
+
             if (E & element_type::Shadow)
-                ss << ((ss.str().empty()) ? "" : "and ") << "Shadow";
+            {
+                ss << ((ss.str().empty()) ? " of " : " and ") << "Shadow";
+            }
         }
 
         if (ss.str().empty())

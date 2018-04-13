@@ -283,8 +283,7 @@ namespace item
 
         for (auto const PROFILE_INDEX : selectedIndexVec)
         {
-            itemCache_OutParam.items_pvec.emplace_back(
-                ItemFactory::Instance()->Make(PROFILES[PROFILE_INDEX]));
+            itemCache_OutParam.items_pvec.emplace_back(ItemFactory::Make(PROFILES[PROFILE_INDEX]));
         }
 
         return selectedIndexVec.size();
@@ -297,8 +296,7 @@ namespace item
             PopulateFallbackItemProfiles();
         }
 
-        auto const ITEM_PTR{ ItemFactory::Instance()->Make(
-            misc::Vector::SelectRandom(fallbackItemProfiles_)) };
+        auto const ITEM_PTR{ ItemFactory::Make(misc::Vector::SelectRandom(fallbackItemProfiles_)) };
 
         itemCache_OutParam.items_pvec.emplace_back(ITEM_PTR);
     }

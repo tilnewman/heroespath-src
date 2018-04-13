@@ -30,7 +30,10 @@
 #include "inventory-factory.hpp"
 
 #include "creature/creature.hpp"
+#include "item/armor-factory.hpp"
+#include "item/item-type-wrapper.hpp"
 #include "item/item.hpp"
+#include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
@@ -112,6 +115,8 @@ namespace non_player
                         << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \""
                         << NEXT_ITEM_PTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT
                         << "\".  Proceeding...");
+
+                    item::ItemWarehouse::Access().Free(NEXT_ITEM_PTR);
                 }
                 else
                 {
@@ -127,6 +132,9 @@ namespace non_player
                                 << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc()
                                 << "\"with reported error \"" << ITEM_EQUIP_RESULT
                                 << "\".  Proceeding...");
+
+                            CREATURE_PTR->ItemRemove(NEXT_ITEM_PTR);
+                            item::ItemWarehouse::Access().Free(NEXT_ITEM_PTR);
                         }
                     }
                 }
@@ -143,6 +151,8 @@ namespace non_player
                         << CREATURE_PTR->ToString() << "\") unable to add the item \""
                         << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc()
                         << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
+
+                    item::ItemWarehouse::Access().Free(NEXT_ITEM_PTR);
                 }
             }
 
@@ -154,17 +164,19 @@ namespace non_player
         {
             IItemPVecPair_t itemsPtrVecPair;
 
-            auto const CLOTHING_ITEMS_PVEC_PAIR(MakeItemSet_Clothing(CHANCES.clothes));
+            {
+                auto const CLOTHING_ITEMS_PVEC_PAIR(MakeItemSet_Clothing(CHANCES.clothes));
 
-            std::copy(
-                CLOTHING_ITEMS_PVEC_PAIR.first.begin(),
-                CLOTHING_ITEMS_PVEC_PAIR.first.end(),
-                back_inserter(itemsPtrVecPair.first));
+                std::copy(
+                    CLOTHING_ITEMS_PVEC_PAIR.first.begin(),
+                    CLOTHING_ITEMS_PVEC_PAIR.first.end(),
+                    back_inserter(itemsPtrVecPair.first));
 
-            std::copy(
-                CLOTHING_ITEMS_PVEC_PAIR.second.begin(),
-                CLOTHING_ITEMS_PVEC_PAIR.second.end(),
-                back_inserter(itemsPtrVecPair.second));
+                std::copy(
+                    CLOTHING_ITEMS_PVEC_PAIR.second.begin(),
+                    CLOTHING_ITEMS_PVEC_PAIR.second.end(),
+                    back_inserter(itemsPtrVecPair.second));
+            }
 
             auto const WEAPON_ITEMS_PVEC_PAIR(MakeItemSet_Weapons(CHANCES.weapon, CHARACTER_PTR));
 
@@ -197,19 +209,20 @@ namespace non_player
             {
                 if (NEXT_ITEM_PTR->ArmorType() == item::armor_type::Boots)
                 {
-                    RemoveArmorTypeFromVec(item::armor_type::Boots, itemsPtrVecPair.first);
+                    RemoveArmorTypeFromVecAndFree(item::armor_type::Boots, itemsPtrVecPair.first);
                 }
                 else if (NEXT_ITEM_PTR->ArmorType() == item::armor_type::Pants)
                 {
-                    RemoveArmorTypeFromVec(item::armor_type::Pants, itemsPtrVecPair.first);
+                    RemoveArmorTypeFromVecAndFree(item::armor_type::Pants, itemsPtrVecPair.first);
                 }
                 else if (NEXT_ITEM_PTR->ArmorType() == item::armor_type::Shirt)
                 {
-                    RemoveArmorTypeFromVec(item::armor_type::Shirt, itemsPtrVecPair.first);
+                    RemoveArmorTypeFromVecAndFree(item::armor_type::Shirt, itemsPtrVecPair.first);
                 }
                 else if (NEXT_ITEM_PTR->ArmorType() == item::armor_type::Gauntlets)
                 {
-                    RemoveArmorTypeFromVec(item::armor_type::Gauntlets, itemsPtrVecPair.first);
+                    RemoveArmorTypeFromVecAndFree(
+                        item::armor_type::Gauntlets, itemsPtrVecPair.first);
                 }
             }
 
@@ -234,81 +247,63 @@ namespace non_player
 
             if (WILL_ADD_AVENTAIL && (CONTAINS_HELM == false))
             {
-                RemoveArmorTypeFromVec(item::armor_type::Aventail, armorItemsPVecPair.first);
+                RemoveArmorTypeFromVecAndFree(item::armor_type::Aventail, armorItemsPVecPair.first);
             }
 
-            // vests on beasts
-            itemsPtrVecPair.first.erase(
-                std::remove_if(
-                    itemsPtrVecPair.first.begin(),
-                    itemsPtrVecPair.first.end(),
-                    [&](const item::ItemPtr_t PTR) {
-                        return (
-                            (PTR->Armor_Info().cover == item::armor::cover_type::Vest)
-                            && ((CHARACTER_PTR->Race() == creature::race::Dragon)
-                                || (CHARACTER_PTR->Race() == creature::race::Wolfen)));
-                    }),
-                itemsPtrVecPair.first.end());
+            // no vests on beasts
+            auto isVestOnBeast{ [CHARACTER_PTR](auto const ITEM_PTR) {
+                return (
+                    (ITEM_PTR->Armor_Info().cover == item::armor::cover_type::Vest)
+                    && ((CHARACTER_PTR->Race() == creature::race::Dragon)
+                        || (CHARACTER_PTR->Race() == creature::race::Wolfen)));
+            } };
 
-            // gauntlets without fingers
-            armorItemsPVecPair.first.erase(
-                std::remove_if(
-                    armorItemsPVecPair.first.begin(),
-                    armorItemsPVecPair.first.end(),
-                    [&](const item::ItemPtr_t PTR) {
-                        return (
-                            (PTR->ArmorType() == item::armor_type::Gauntlets)
-                            && (CHARACTER_PTR->Body().HasFingers() == false));
-                    }),
-                armorItemsPVecPair.first.end());
+            RemoveItemsAndFree(armorItemsPVecPair.first, isVestOnBeast);
 
-            // shields without fingers
-            armorItemsPVecPair.first.erase(
-                std::remove_if(
-                    armorItemsPVecPair.first.begin(),
-                    armorItemsPVecPair.first.end(),
-                    [&](const item::ItemPtr_t PTR) {
-                        return (
-                            (PTR->ArmorType() == item::armor_type::Sheild)
-                            && (CHARACTER_PTR->Body().HasFingers() == false));
-                    }),
-                armorItemsPVecPair.first.end());
+            // no gauntlets without fingers
+            auto isGauntletWithoutFingers{ [CHARACTER_PTR](auto const ITEM_PTR) {
+                return (
+                    (ITEM_PTR->ArmorType() == item::armor_type::Gauntlets)
+                    && (CHARACTER_PTR->Body().HasFingers() == false));
+            } };
 
-            // helms with horns
-            armorItemsPVecPair.first.erase(
-                std::remove_if(
-                    armorItemsPVecPair.first.begin(),
-                    armorItemsPVecPair.first.end(),
-                    [&](const item::ItemPtr_t PTR) {
-                        return (
-                            (PTR->ArmorType() == item::armor_type::Helm)
-                            && CHARACTER_PTR->Body().HasHorns());
-                    }),
-                armorItemsPVecPair.first.end());
+            RemoveItemsAndFree(armorItemsPVecPair.first, isGauntletWithoutFingers);
 
-            // pants without legs
-            armorItemsPVecPair.first.erase(
-                std::remove_if(
-                    armorItemsPVecPair.first.begin(),
-                    armorItemsPVecPair.first.end(),
-                    [&](const item::ItemPtr_t PTR) {
-                        return (
-                            (PTR->ArmorType() == item::armor_type::Pants)
-                            && (CHARACTER_PTR->Body().HasLegs() == false));
-                    }),
-                armorItemsPVecPair.first.end());
+            // no shields without fingers
+            auto isShieldWithoutFingers{ [CHARACTER_PTR](auto const ITEM_PTR) {
+                return (
+                    (ITEM_PTR->ArmorType() == item::armor_type::Sheild)
+                    && (CHARACTER_PTR->Body().HasFingers() == false));
+            } };
 
-            // boots without feet
-            armorItemsPVecPair.first.erase(
-                std::remove_if(
-                    armorItemsPVecPair.first.begin(),
-                    armorItemsPVecPair.first.end(),
-                    [&](const item::ItemPtr_t PTR) {
-                        return (
-                            (PTR->ArmorType() == item::armor_type::Boots)
-                            && (CHARACTER_PTR->Body().HasLegs() == false));
-                    }),
-                armorItemsPVecPair.first.end());
+            RemoveItemsAndFree(armorItemsPVecPair.first, isShieldWithoutFingers);
+
+            // no helms with horns
+            auto isHeldWithHorns{ [CHARACTER_PTR](auto const ITEM_PTR) {
+                return (
+                    (ITEM_PTR->ArmorType() == item::armor_type::Helm)
+                    && CHARACTER_PTR->Body().HasHorns());
+            } };
+
+            RemoveItemsAndFree(armorItemsPVecPair.first, isHeldWithHorns);
+
+            // no pants without legs
+            auto isPantsWithoutLegs{ [CHARACTER_PTR](auto const ITEM_PTR) {
+                return (
+                    (ITEM_PTR->ArmorType() == item::armor_type::Pants)
+                    && (CHARACTER_PTR->Body().HasLegs() == false));
+            } };
+
+            RemoveItemsAndFree(armorItemsPVecPair.first, isPantsWithoutLegs);
+
+            // no boots without feet
+            auto isBootsWithoutFeet{ [CHARACTER_PTR](auto const ITEM_PTR) {
+                return (
+                    (ITEM_PTR->ArmorType() == item::armor_type::Boots)
+                    && (CHARACTER_PTR->Body().HasLegs() == false));
+            } };
+
+            RemoveItemsAndFree(armorItemsPVecPair.first, isBootsWithoutFeet);
 
             // finally, add the armor items
             std::copy(
@@ -320,6 +315,14 @@ namespace non_player
                 armorItemsPVecPair.second.begin(),
                 armorItemsPVecPair.second.end(),
                 back_inserter(itemsPtrVecPair.second));
+
+            // one last check to remove armor from beast inventories
+            auto isArmorOnBeast{ [CHARACTER_PTR](auto const ITEM_PTR) {
+                return (ITEM_PTR->IsArmor() && CHARACTER_PTR->IsBeast());
+            } };
+
+            RemoveItemsAndFree(itemsPtrVecPair.first, isArmorOnBeast);
+            RemoveItemsAndFree(itemsPtrVecPair.second, isArmorOnBeast);
 
             return itemsPtrVecPair;
         }
@@ -336,6 +339,7 @@ namespace non_player
             if (CHANCES.boots.IsOwned())
             {
                 itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Boots(
+                    item::TypeWrapper(),
                     item::armor::base_type::Plain,
                     CHANCES.boots.RandomMaterialPri(),
                     CHANCES.boots.RandomMaterialSec()));
@@ -344,6 +348,7 @@ namespace non_player
             if (CHANCES.gloves.IsOwned())
             {
                 itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Gauntlets(
+                    item::TypeWrapper(),
                     item::armor::base_type::Plain,
                     CHANCES.gloves.RandomMaterialPri(),
                     CHANCES.gloves.RandomMaterialSec()));
@@ -352,28 +357,33 @@ namespace non_player
             if (CHANCES.pants.IsOwned())
             {
                 itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Pants(
-                    item::armor::base_type::Plain, CHANCES.pants.RandomMaterialPri()));
+                    item::TypeWrapper(),
+                    item::armor::base_type::Plain,
+                    CHANCES.pants.RandomMaterialPri()));
             }
 
             if (CHANCES.shirt.IsOwned())
             {
                 itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Shirt(
-                    item::armor::base_type::Plain, CHANCES.shirt.RandomMaterialPri()));
+                    item::TypeWrapper(),
+                    item::armor::base_type::Plain,
+                    CHANCES.shirt.RandomMaterialPri()));
             }
 
             if (CHANCES.vest.IsOwned())
             {
                 itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Cover(
+                    item::TypeWrapper(),
                     item::armor::cover_type::Vest,
                     CHANCES.vest.RandomMaterialPri(),
                     CHANCES.vest.RandomMaterialSec()));
             }
 
-            const item::armor::cover_type::Enum COVER_TYPE(CHANCES.RandomCoverType());
+            auto const COVER_TYPE{ CHANCES.RandomCoverType() };
             if (COVER_TYPE != item::armor::cover_type::Count)
             {
                 non_player::ownership::chance::ItemChances itemChances;
-                auto WAS_FOUND{ CHANCES.cover_map.Find(COVER_TYPE, itemChances) };
+                auto const WAS_FOUND{ CHANCES.cover_map.Find(COVER_TYPE, itemChances) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     WAS_FOUND,
@@ -381,7 +391,10 @@ namespace non_player
                         << " find \"" << COVER_TYPE << "\".");
 
                 itemsPtrVecPair.first.emplace_back(item::armor::ArmorFactory::Make_Cover(
-                    COVER_TYPE, itemChances.RandomMaterialPri(), itemChances.RandomMaterialSec()));
+                    item::TypeWrapper(),
+                    COVER_TYPE,
+                    itemChances.RandomMaterialPri(),
+                    itemChances.RandomMaterialSec()));
             }
 
             return itemsPtrVecPair;
@@ -547,6 +560,7 @@ namespace non_player
 
                     itemsPtrVecPair.first.emplace_back(
                         item::weapon::WeaponFactory::Instance()->Make_Knife(
+                            item::TypeWrapper(),
                             IS_DAGGER,
                             knifeSize,
                             WEAPON_CHANCES.knife.RandomMaterialPri(),
@@ -581,7 +595,8 @@ namespace non_player
                             << "\") randomly selected weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\"" << item::weapon::axe_type::ToString(AXE_TYPE)
-                            << "\" -but that weapon was not found in the original WEAPON_CHANCES "
+                            << "\" -but that weapon was not found in the original "
+                               "WEAPON_CHANCES "
                                "object.");
 
                     // if the primary material is wood, make sure there is a valid secondary
@@ -618,7 +633,8 @@ namespace non_player
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\""
                             << item::weapon::bladedstaff_type::ToString(BLADEDSTAFF_TYPE)
-                            << "\" -but that weapon was not found in the original WEAPON_CHANCES "
+                            << "\" -but that weapon was not found in the original "
+                               "WEAPON_CHANCES "
                                "object.");
 
                     // if the primary material is wood, make sure there is a valid secondary
@@ -655,7 +671,8 @@ namespace non_player
                             << "\") randomly selected weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\"" << item::weapon::club_type::ToString(CLUB_TYPE)
-                            << "\" -but that weapon was not found in the original WEAPON_CHANCES "
+                            << "\" -but that weapon was not found in the original "
+                               "WEAPON_CHANCES "
                                "object.");
 
                     // if the primary material is wood, make sure there is a valid secondary
@@ -693,7 +710,8 @@ namespace non_player
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\""
                             << item::weapon::projectile_type::ToString(PROJECTILE_TYPE)
-                            << "\" -but that weapon was not found in the original WEAPON_CHANCES "
+                            << "\" -but that weapon was not found in the original "
+                               "WEAPON_CHANCES "
                                "object.");
 
                     itemsPtrVecPair.first.emplace_back(
@@ -721,7 +739,8 @@ namespace non_player
                             << "\") randomly selected weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\"" << item::weapon::sword_type::ToString(SWORD_TYPE)
-                            << "\" -but that weapon was not found in the original WEAPON_CHANCES "
+                            << "\" -but that weapon was not found in the original "
+                               "WEAPON_CHANCES "
                                "object.");
 
                     itemsPtrVecPair.first.emplace_back(
@@ -749,7 +768,8 @@ namespace non_player
                             << "\") randomly selected weapon type=\""
                             << item::weapon_type::ToString(randomSelectedWeaponType, false)
                             << "\" and kind=\"" << item::weapon::whip_type::ToString(WHIP_TYPE)
-                            << "\" -but that weapon was not found in the original WEAPON_CHANCES "
+                            << "\" -but that weapon was not found in the original "
+                               "WEAPON_CHANCES "
                                "object.");
 
                     itemsPtrVecPair.first.emplace_back(
@@ -798,11 +818,18 @@ namespace non_player
 
             IItemPVecPair_t itemsPtrVecPair;
 
+            // beast cannot even be given armor, let alone equip it
+            if (CHARACTER_PTR->IsBeast())
+            {
+                return itemsPtrVecPair;
+            }
+
             try
             {
                 if (CHANCES.aventail.IsOwned())
                 {
                     itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Aventail(
+                        item::TypeWrapper(),
                         CHANCES.aventail.RandomArmorBaseType(),
                         CHANCES.aventail.RandomMaterialPri(),
                         CHANCES.aventail.RandomMaterialSec()));
@@ -823,6 +850,7 @@ namespace non_player
                 if (CHANCES.boots.IsOwned())
                 {
                     itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Boots(
+                        item::TypeWrapper(),
                         CHANCES.boots.RandomArmorBaseType(),
                         CHANCES.boots.RandomMaterialPri(),
                         CHANCES.boots.RandomMaterialSec()));
@@ -843,6 +871,7 @@ namespace non_player
                 if (CHANCES.bracers.IsOwned())
                 {
                     itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Bracer(
+                        item::TypeWrapper(),
                         CHANCES.bracers.RandomArmorBaseType(),
                         CHANCES.bracers.RandomMaterialPri(),
                         CHANCES.bracers.RandomMaterialSec()));
@@ -863,6 +892,7 @@ namespace non_player
                 if (CHANCES.gauntlets.IsOwned())
                 {
                     itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Gauntlets(
+                        item::TypeWrapper(),
                         CHANCES.gauntlets.RandomArmorBaseType(),
                         CHANCES.gauntlets.RandomMaterialPri(),
                         CHANCES.gauntlets.RandomMaterialSec()));
@@ -883,7 +913,9 @@ namespace non_player
                 if (CHANCES.pants.IsOwned())
                 {
                     itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Pants(
-                        CHANCES.pants.RandomArmorBaseType(), CHANCES.pants.RandomMaterialSec()));
+                        item::TypeWrapper(),
+                        CHANCES.pants.RandomArmorBaseType(),
+                        CHANCES.pants.RandomMaterialSec()));
                 }
             }
             catch (...)
@@ -901,7 +933,9 @@ namespace non_player
                 if (CHANCES.shirt.IsOwned())
                 {
                     itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Shirt(
-                        CHANCES.shirt.RandomArmorBaseType(), CHANCES.shirt.RandomMaterialSec()));
+                        item::TypeWrapper(),
+                        CHANCES.shirt.RandomArmorBaseType(),
+                        CHANCES.shirt.RandomMaterialSec()));
                 }
             }
             catch (...)
@@ -931,9 +965,11 @@ namespace non_player
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomCover() returned \""
                             << cover_type::ToString(COVER_PAIR.first)
-                            << "\", but that item was not found in the ARMOR_CHANCES.cover_map.");
+                            << "\", but that item was not found in the "
+                               "ARMOR_CHANCES.cover_map.");
 
                     itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Cover(
+                        item::TypeWrapper(),
                         COVER_PAIR.first,
                         coverChances.RandomMaterialPri(),
                         coverChances.RandomMaterialSec()));
@@ -966,9 +1002,11 @@ namespace non_player
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomHelm() returned \""
                             << helm_type::ToString(HELM_PAIR.first)
-                            << "\", but that item was not found in the ARMOR_CHANCES.helm_map.");
+                            << "\", but that item was not found in the "
+                               "ARMOR_CHANCES.helm_map.");
 
                     itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Helm(
+                        item::TypeWrapper(),
                         HELM_PAIR.first,
                         helmChances.RandomMaterialPri(),
                         helmChances.RandomMaterialSec()));
@@ -1001,11 +1039,13 @@ namespace non_player
                             << CHARACTER_PTR->ToString()
                             << "\") ARMOR_CHANCES.RandomShield() returned \""
                             << shield_type::ToString(SHIELD_PAIR.first)
-                            << "\", but that item was not found in the ARMOR_CHANCES.shield_map.");
+                            << "\", but that item was not found in the "
+                               "ARMOR_CHANCES.shield_map.");
 
                     if (HAS_TWO_HANDED_WEAPON)
                     {
                         itemsPtrVecPair.second.emplace_back(ArmorFactory::Instance()->Make_Shield(
+                            item::TypeWrapper(),
                             SHIELD_PAIR.first,
                             shieldChances.RandomMaterialPri(),
                             shieldChances.RandomMaterialSec()));
@@ -1013,6 +1053,7 @@ namespace non_player
                     else
                     {
                         itemsPtrVecPair.first.emplace_back(ArmorFactory::Instance()->Make_Shield(
+                            item::TypeWrapper(),
                             SHIELD_PAIR.first,
                             shieldChances.RandomMaterialPri(),
                             shieldChances.RandomMaterialSec()));
@@ -1090,15 +1131,24 @@ namespace non_player
             return false;
         }
 
-        void InventoryFactory::RemoveArmorTypeFromVec(
+        void InventoryFactory::RemoveArmorTypeFromVecAndFree(
             const item::armor_type::Enum ENUM, item::ItemPVec_t & vec)
         {
-            vec.erase(
-                std::remove_if(
-                    vec.begin(),
-                    vec.end(),
-                    [&](const item::ItemPtr_t PTR) { return (PTR->ArmorType() == ENUM); }),
-                vec.end());
+            item::ItemPVec_t itemsToRemovePVec;
+
+            auto ArmorTypeMatchLambda{ [ENUM](auto const ITEM_PTR) {
+                return (ITEM_PTR->ArmorType() == ENUM);
+            } };
+
+            std::copy_if(
+                vec.begin(),
+                vec.end(),
+                std::back_inserter(itemsToRemovePVec),
+                ArmorTypeMatchLambda);
+
+            vec.erase(std::remove_if(vec.begin(), vec.end(), ArmorTypeMatchLambda), vec.end());
+
+            item::ItemWarehouse::Access().Free(itemsToRemovePVec);
         }
 
     } // namespace ownership

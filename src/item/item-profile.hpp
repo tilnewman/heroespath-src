@@ -32,11 +32,9 @@
 #include "item/item-type-enum.hpp"
 #include "item/weapon-types.hpp"
 #include "log/log-macros.hpp"
-
-#include "sfml-util/size-enum.hpp"
-
 #include "misc/handy-types.hpp"
 #include "misc/types.hpp"
+#include "sfml-util/size-enum.hpp"
 
 #include <string>
 #include <tuple>
@@ -160,7 +158,7 @@ namespace item
                 QStaff = 1 << 10,
             };
         };
-    }
+    } // namespace profile
 
     // A collection of details about an item that uniquely idenify an item.
     // A "Thin" Profile is an incomplete profile used as a placeholder for a
@@ -184,6 +182,8 @@ namespace item
             const misc_type::Enum MISC,
             const set_type::Enum SET,
             const named_type::Enum NAMED);
+
+        creature::role::Enum RoleRestrictionBasedOnMiscAndSetType() const;
 
         const std::string BaseName() const { return baseName_; }
         category::Enum Category() const { return category_; }
@@ -264,8 +264,6 @@ namespace item
 
         material::Enum MaterialPrimary() const { return matPri_; }
         material::Enum MaterialSecondary() const { return matSec_; }
-
-        creature::role::Enum Role() const { return role_; }
 
         Score_t TreasureScore() const { return score_; }
 
@@ -503,8 +501,6 @@ namespace item
             settings_.armor.restriction = E;
         }
 
-        void Role(const creature::role::Enum E) { role_ = E; }
-
         friend bool operator==(const ItemProfile & L, const ItemProfile & R);
         friend bool operator<(const ItemProfile & L, const ItemProfile & R);
 
@@ -572,8 +568,6 @@ namespace item
         material::Enum matPri_;
         material::Enum matSec_;
 
-        creature::role::Enum role_;
-
         creature::SummonInfo summonInfo_;
 
         std::string baseName_;
@@ -602,7 +596,6 @@ namespace item
                    L.size_,
                    L.matPri_,
                    L.matSec_,
-                   L.role_,
                    L.baseName_,
                    L.summonInfo_,
                    L.religious_)
@@ -620,7 +613,6 @@ namespace item
                    R.size_,
                    R.matPri_,
                    R.matSec_,
-                   R.role_,
                    R.baseName_,
                    R.summonInfo_,
                    R.religious_);
@@ -649,7 +641,6 @@ namespace item
                    L.size_,
                    L.matPri_,
                    L.matSec_,
-                   L.role_,
                    L.baseName_,
                    L.summonInfo_,
                    L.religious_)
@@ -667,7 +658,6 @@ namespace item
                    R.size_,
                    R.matPri_,
                    R.matSec_,
-                   R.role_,
                    R.baseName_,
                    R.summonInfo_,
                    R.religious_);

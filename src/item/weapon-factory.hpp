@@ -29,6 +29,8 @@
 //  Code responsible for creating weapon objects.
 //
 #include "item/item-factory-base.hpp"
+#include "item/item-type-wrapper.hpp"
+#include "item/weapon-details.hpp"
 #include "item/weapon-types.hpp"
 #include "misc/not-null.hpp"
 #include "sfml-util/size-enum.hpp"
@@ -39,8 +41,6 @@
 
 namespace heroespath
 {
-
-// forward declarations
 namespace creature
 {
     class Creature;
@@ -50,6 +50,8 @@ namespace item
 {
     class Item;
     using ItemPtr_t = misc::NotNull<Item *>;
+
+    class ItemProfile;
 
     namespace weapon
     {
@@ -71,61 +73,97 @@ namespace item
             static void Acquire();
             static void Release();
 
-            static const ItemPtr_t Make_Fists();
+            static const WeaponDetails LookupWeaponDetails(const std::string & NAME)
+            {
+                return weaponDetailsUPtr_->LookupWeaponDetails(NAME);
+            }
 
-            static const ItemPtr_t Make_Claws(const creature::CreaturePtr_t);
+            static const ItemPtr_t Make_Fists(const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
 
-            static const ItemPtr_t Make_Tendrils(const creature::CreaturePtr_t);
+            static const ItemPtr_t Make_Claws(
+                const creature::CreaturePtr_t, const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
 
-            static const ItemPtr_t Make_Bite(const creature::CreaturePtr_t);
+            static const ItemPtr_t Make_Tendrils(
+                const creature::CreaturePtr_t, const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
 
-            static const ItemPtr_t Make_Breath(const creature::CreaturePtr_t);
+            static const ItemPtr_t Make_Bite(
+                const creature::CreaturePtr_t, const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
+
+            static const ItemPtr_t Make_Breath(
+                const creature::CreaturePtr_t, const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
+
+            static const ItemPtr_t Make_Knife(const ItemProfile &);
 
             static const ItemPtr_t Make_Knife(
+                const TypeWrapper & TYPE_WRAPPER = TypeWrapper(),
                 const bool IS_DAGGER = false,
                 const sfml_util::Size::Enum SIZE = sfml_util::Size::Medium,
                 const material::Enum MATERIAL_PRI = material::Steel,
                 const material::Enum MATERIAL_SEC = material::Nothing,
                 const bool IS_PIXIE_ITEM = false);
 
+            static const ItemPtr_t Make_Sword(const ItemProfile &);
+
             static const ItemPtr_t Make_Sword(
                 const sword_type::Enum SWORD_TYPE,
                 const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC);
+                const material::Enum MATERIAL_SEC,
+                const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
+
+            static const ItemPtr_t Make_Axe(const ItemProfile &);
 
             static const ItemPtr_t Make_Axe(
                 const axe_type::Enum AXE_TYPE,
                 const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC);
+                const material::Enum MATERIAL_SEC,
+                const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
+
+            static const ItemPtr_t Make_Club(const ItemProfile &);
 
             static const ItemPtr_t Make_Club(
                 const club_type::Enum CLUB_TYPE,
                 const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC);
+                const material::Enum MATERIAL_SEC,
+                const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
+
+            static const ItemPtr_t Make_Whip(const ItemProfile &);
 
             static const ItemPtr_t Make_Whip(
                 const whip_type::Enum WHIP_TYPE,
                 const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC);
+                const material::Enum MATERIAL_SEC,
+                const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
+
+            static const ItemPtr_t Make_Projectile(const ItemProfile &);
 
             static const ItemPtr_t Make_Projectile(
                 const projectile_type::Enum PROJ_TYPE,
                 const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC);
+                const material::Enum MATERIAL_SEC,
+                const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
+
+            static const ItemPtr_t Make_Staff(const ItemProfile &);
 
             static const ItemPtr_t Make_Staff(
                 const bool IS_QUARTERSTAFF,
                 const material::Enum MATERIAL_PRI,
                 const material::Enum MATERIAL_SEC,
-                const bool IS_PIXIE_ITEM = false);
+                const bool IS_PIXIE_ITEM = false,
+                const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
+
+            static const ItemPtr_t Make_Staff_AsMisc(const ItemProfile &);
+
+            static const ItemPtr_t Make_BladedStaff(const ItemProfile &);
 
             static const ItemPtr_t Make_BladedStaff(
                 const bladedstaff_type::Enum STAFF_TYPE,
                 const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC);
+                const material::Enum MATERIAL_SEC,
+                const TypeWrapper & TYPE_WRAPPER = TypeWrapper());
 
         private:
             static std::unique_ptr<WeaponFactory> instanceUPtr_;
+            static std::unique_ptr<WeaponDetailLoader> weaponDetailsUPtr_;
         };
 
     } // namespace weapon

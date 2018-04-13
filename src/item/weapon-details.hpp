@@ -25,7 +25,7 @@
 #ifndef HEROESPATH_ITEM_WEAPONFDETAILS_HPP_INCLUDED
 #define HEROESPATH_ITEM_WEAPONFDETAILS_HPP_INCLUDED
 //
-// weapons-details.hpp
+// weapon-details.hpp
 //  Code that loads detailed weapon data from the GameDataFile.
 //
 #include "misc/not-null.hpp"
@@ -79,11 +79,6 @@ namespace item
             WeaponDetailLoader & operator=(WeaponDetailLoader &&) = delete;
 
             WeaponDetailLoader();
-            ~WeaponDetailLoader();
-
-            static misc::NotNull<WeaponDetailLoader *> Instance();
-            static void Acquire();
-            static void Release();
 
             const WeaponDetails LookupWeaponDetails(const std::string & NAME);
 
@@ -95,7 +90,6 @@ namespace item
                 CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
 
         private:
-            static std::unique_ptr<WeaponDetailLoader> instanceUPtr_;
             WeaponDetailMap_t weaponDetailsMap_;
         };
     } // namespace weapon

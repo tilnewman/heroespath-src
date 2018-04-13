@@ -30,10 +30,8 @@
 #include "weapon-details.hpp"
 
 #include "game/game-data-file.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
-
 #include "stringutil/stringhelp.hpp"
 
 #include <boost/lexical_cast.hpp>
@@ -49,50 +47,10 @@ namespace item
     namespace weapon
     {
 
-        std::unique_ptr<WeaponDetailLoader> WeaponDetailLoader::instanceUPtr_;
-
         WeaponDetailLoader::WeaponDetailLoader()
             : weaponDetailsMap_()
         {
-            M_HP_LOG_DBG("Singleton Construction: WeaponDetailLoader");
             LoadWeaponDeatilsFromGameDataFile();
-        }
-
-        WeaponDetailLoader::~WeaponDetailLoader()
-        {
-            M_HP_LOG_DBG("Singleton Destruction: WeaponDetailLoader");
-        }
-
-        misc::NotNull<WeaponDetailLoader *> WeaponDetailLoader::Instance()
-        {
-            if (!instanceUPtr_)
-            {
-                M_HP_LOG_ERR("Singleton Instance() before Acquire(): WeaponDetailLoader");
-                Acquire();
-            }
-
-            return instanceUPtr_.get();
-        }
-
-        void WeaponDetailLoader::Acquire()
-        {
-            if (!instanceUPtr_)
-            {
-                instanceUPtr_ = std::make_unique<WeaponDetailLoader>();
-            }
-            else
-            {
-                M_HP_LOG_ERR("Singleton Acquire() after Construction: WeaponDetailLoader");
-            }
-        }
-
-        void WeaponDetailLoader::Release()
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_),
-                "item::weapon::WeaponDetailLoader::Release() found instanceUPtr that was null.");
-
-            instanceUPtr_.reset();
         }
 
         const WeaponDetails WeaponDetailLoader::LookupWeaponDetails(const std::string & NAME)
@@ -235,6 +193,7 @@ namespace item
                 return trim_copy(erase_all_copy(FIELD_STR, "\""));
             }
         }
+
     } // namespace weapon
 } // namespace item
 } // namespace heroespath

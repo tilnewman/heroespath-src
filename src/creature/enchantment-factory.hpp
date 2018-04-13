@@ -32,6 +32,7 @@
 #include "creature/enchantment-type.hpp"
 #include "creature/enchantment.hpp"
 #include "item/item-type-enum.hpp"
+#include "item/item-type-wrapper.hpp"
 #include "misc/not-null-warehouse.hpp"
 #include "misc/not-null.hpp"
 #include "stats/trait.hpp"
@@ -69,14 +70,12 @@ namespace creature
         static void Release();
 
         // use to make/store/attach/return enchantments base on item type
-        const item::ItemPtr_t MakeStoreAttachReturn(const item::ItemPtr_t) const;
-
-        // use to make/store/attach/return custom enchantments
-        const item::ItemPtr_t MakeStoreAttachReturn(
-            const item::ItemPtr_t ITEM_PTR,
-            const EnchantmentType::Enum TYPE,
-            const stats::TraitSet & TRAIT_SET,
-            const UseInfo & USE_INFO = UseInfo()) const;
+        const EnchantmentPVec_t MakeAndStore(
+            const item::TypeWrapper &,
+            const bool IS_WEAPON,
+            const bool IS_ARMOR,
+            const item::material::Enum MATERIAL_PRIMARY,
+            const item::material::Enum MATERIAL_SECONDARY) const;
 
         Score_t TreasureScore(const item::unique_type::Enum, const item::material::Enum) const;
 

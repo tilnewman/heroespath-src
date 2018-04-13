@@ -467,7 +467,7 @@ namespace stage
         ContentType contentType_;
         sfml_util::gui::ListBoxItemSPtr_t listBoxItemToGiveSPtr_;
         creature::CreaturePtrOpt_t creatureToGiveToPtrOpt_;
-        item::ItemPtrOpt_t itemToDropPtrOpt_;
+        sfml_util::gui::ListBoxItemSPtr_t itemToDropSPtr_;
 
         // members that manage the item detail view
         bool isDetailViewFadingIn_;

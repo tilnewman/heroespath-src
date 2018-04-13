@@ -41,6 +41,7 @@
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
 #include "item/item-profile-warehouse.hpp"
+#include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
@@ -123,7 +124,12 @@ namespace stage
         , lockPicking_()
     {}
 
-    TreasureStage::~TreasureStage() { Stage::ClearAllEntities(); }
+    TreasureStage::~TreasureStage()
+    {
+        item::ItemWarehouse::Access().Free(itemCacheHeld_.items_pvec);
+        item::ItemWarehouse::Access().Free(itemCacheLockbox_.items_pvec);
+        Stage::ClearAllEntities();
+    }
 
     bool TreasureStage::HandleCallback(const popup::PopupResponse & POPUP_RESPONSE)
     {
@@ -1069,7 +1075,8 @@ namespace stage
     void TreasureStage::TransitionToAdventureStage()
     {
         combat::Encounter::Instance()->EndTreasureStageTasks(itemCacheHeld_, itemCacheLockbox_);
-
+        itemCacheHeld_.Reset();
+        itemCacheLockbox_.Reset();
         game::LoopManager::Instance()->TransitionTo_Adventure();
     }
 

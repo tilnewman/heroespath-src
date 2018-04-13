@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,58 +22,38 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_ITEM_ITEM_TYPE_WRAPPER_HPP_INCLUDED
+#define HEROESPATH_ITEM_ITEM_TYPE_WRAPPER_HPP_INCLUDED
 //
-// logger.cpp
+// item-type-wrapper.hpp
 //
-#include "logger.hpp"
-
-#include "log/log-macros.hpp"
-#include "misc/assertlogandthrow.hpp"
+#include "creature/race-enum.hpp"
+#include "creature/role-enum.hpp"
+#include "item/item-type-enum.hpp"
 
 namespace heroespath
 {
-namespace log
+namespace item
 {
+    class ItemProfile;
 
-    std::unique_ptr<Logger> Logger::instanceUPtr_;
-
-    Logger::Logger()
-        : LogBase(
-              LogBase::FILE_NAME_DEFAULT,
-              LogBase::FILE_NAME_EXT_DEFAULT,
-              "",
-              LogBase::FILE_NUM_MIN,
-              LogBase::FILE_SIZE_LIMIT_DEFAULT,
-              LogPri::Warning)
-    {}
-
-    Logger::~Logger() = default;
-
-    Logger * Logger::Instance()
+    // Responsible for wrapping all the "types" information about an item.
+    struct TypeWrapper
     {
-        if (!instanceUPtr_)
-        {
-            Acquire();
-        }
+        TypeWrapper();
 
-        return instanceUPtr_.get();
-    }
+        explicit TypeWrapper(const ItemProfile &);
 
-    void Logger::Acquire()
-    {
-        if (!instanceUPtr_)
-        {
-            instanceUPtr_ = std::make_unique<Logger>();
-        }
-    }
+        element_type::Enum element;
+        unique_type::Enum unique;
+        named_type::Enum name;
+        set_type::Enum set;
+        misc_type::Enum misc;
+        creature::role::Enum roleRestrictionBasedOnMiscAndSetType;
+        creature::SummonInfo summon;
+    };
 
-    void Logger::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_), "log::Logger::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
-} // namespace log
+} // namespace item
 } // namespace heroespath
+
+#endif // HEROESPATH_ITEM_ITEM_TYPE_WRAPPER_HPP_INCLUDED

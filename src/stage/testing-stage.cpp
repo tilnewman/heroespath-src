@@ -330,17 +330,24 @@ if (false == willImageCheck_)
             game::LoopManager::Instance()->TestingStrAppend("System Tests Starting...");
         }
 
+        // See below (function ReSaveWithBlackBorder) for a comment explaining why
+        // this code is commented out.
+        // ReSaveWithBlackBorder("media-images-creaturess-dir");
+        // ReSaveWithBlackBorder("media-images-items-dir");
+
+        static auto hasTestingCompleted_ItemFactory{ false };
+        if (false == hasTestingCompleted_ItemFactory)
+        {
+            hasTestingCompleted_ItemFactory = item::ItemFactory::Test();
+            return;
+        }
+
         static auto hasTestingCompleted_InventoryFactory{ false };
         if (false == hasTestingCompleted_InventoryFactory)
         {
             hasTestingCompleted_InventoryFactory = TestInventoryFactory();
             return;
         }
-
-        // See below (function ReSaveWithBlackBorder) for a comment explaining why
-        // this code is commented out.
-        // ReSaveWithBlackBorder("media-images-creaturess-dir");
-        // ReSaveWithBlackBorder("media-images-items-dir");
 
         static auto hasTestingCompleted_GameDataFile{ false };
         if (false == hasTestingCompleted_GameDataFile)
@@ -467,13 +474,6 @@ if (false == willImageCheck_)
             return;
         }
 
-        static auto hasTestingCompleted_ItemFactory{ false };
-        if (false == hasTestingCompleted_ItemFactory)
-        {
-            hasTestingCompleted_ItemFactory = item::ItemFactory::Test();
-            return;
-        }
-
         static auto hasTestingCompleted_CreatureImageManager{ false };
         if (false == hasTestingCompleted_CreatureImageManager)
         {
@@ -502,6 +502,8 @@ if (false == willImageCheck_)
             hasFinalPrompt = true;
             game::LoopManager::Instance()->TestingStrAppend("ALL SYSTEM TESTS PASSED");
         }
+
+        game::LoopManager::Instance()->TransitionTo_Exit();
     }
 
     void TestingStage::PerformStatsTests()
@@ -1209,6 +1211,9 @@ if (false == willImageCheck_)
 
         game::LoopManager::Instance()->TestingStrAppend(
             "stage::TestingStage::TestInventoryFactory()  ALL TESTS PASSED.");
+
+        raceIndex = 0;
+        roleIndex = 0;
 
         return true;
     }

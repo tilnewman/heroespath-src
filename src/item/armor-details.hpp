@@ -76,11 +76,6 @@ namespace item
             ArmorDetailLoader(ArmorDetailLoader &&) = delete;
 
             ArmorDetailLoader();
-            ~ArmorDetailLoader();
-
-            static misc::NotNull<ArmorDetailLoader *> Instance();
-            static void Acquire();
-            static void Release();
 
             const ArmorDetails LookupArmorDetails(const std::string & NAME);
 
@@ -93,9 +88,9 @@ namespace item
                 CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
 
         private:
-            static std::unique_ptr<ArmorDetailLoader> instanceUPtr_;
             ArmorDetailMap_t armorDetailsMap_;
         };
+
     } // namespace armor
 } // namespace item
 } // namespace heroespath

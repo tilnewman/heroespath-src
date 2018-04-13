@@ -33,6 +33,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
+#include "sfml-util/gui/item-image-manager.hpp"
 
 #include <exception>
 #include <iomanip>
@@ -48,26 +49,20 @@ namespace item
         const std::string & NAME,
         const std::string & DESC,
         const category::Enum CATEGORY,
-        const misc_type::Enum MISC_TYPE,
         const weapon_type::Enum WEAPON_TYPE,
         const armor_type::Enum ARMOR_TYPE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
-        const std::string & IMAGE_FILENAME,
         const Coin_t & PRICE,
         const Weight_t & WEIGHT,
         const Health_t & DAMAGE_MIN,
         const Health_t & DAMAGE_MAX,
         const Armor_t & ARMOR_RATING,
-        const creature::role::Enum EXCLUSIVE_TO_ROLE,
+        const TypeWrapper & TYPE_WRAPPER,
         const weapon::WeaponInfo & WEAPON_INFO,
         const armor::ArmorInfo & ARMOR_INFO,
         const bool IS_PIXIE_ITEM,
-        const unique_type::Enum UNIQUE_TYPE,
-        const set_type::Enum SET_TYPE,
-        const named_type::Enum NAMED_TYPE,
-        const element_type::Enum ELEMENT_TYPE,
-        const creature::SummonInfo & SUMMON_INFO)
+        const creature::role::Enum EXCLUSIVE_ROLE_BASED_ON_ITEM_TYPE)
         : name_(NAME)
         , desc_(DESC)
         , price_(PRICE)
@@ -75,25 +70,57 @@ namespace item
         , damageMin_(DAMAGE_MIN)
         , damageMax_(DAMAGE_MAX)
         , armorRating_(ARMOR_RATING)
-        , exclusiveToRole_(EXCLUSIVE_TO_ROLE)
+        // if valid the role restriction based on Misc or Set type is used, otherwise the role
+        // restriction based on item type is used.
+        , exclusiveToRole_(
+              ((TYPE_WRAPPER.roleRestrictionBasedOnMiscAndSetType != creature::role::Count)
+                   ? TYPE_WRAPPER.roleRestrictionBasedOnMiscAndSetType
+                   : EXCLUSIVE_ROLE_BASED_ON_ITEM_TYPE))
         , armorType_(ARMOR_TYPE)
         , weaponType_(WEAPON_TYPE)
         , category_(CATEGORY)
-        , miscType_(MISC_TYPE)
+        , miscType_(TYPE_WRAPPER.misc)
         , materialPri_(MATERIAL_PRIMARY)
         , materialSec_(MATERIAL_SECONDARY)
-        , imageFilename_(IMAGE_FILENAME)
         , weaponInfo_(WEAPON_INFO)
         , armorInfo_(ARMOR_INFO)
         , isPixie_(IS_PIXIE_ITEM)
-        , // see constructor body
-        uniqueType_(UNIQUE_TYPE)
-        , setType_(SET_TYPE)
-        , namedType_(NAMED_TYPE)
-        , elementType_(ELEMENT_TYPE)
-        , summonInfo_(SUMMON_INFO)
-        , enchantmentsPVec_()
+        , uniqueType_(TYPE_WRAPPER.unique)
+        , setType_(TYPE_WRAPPER.set)
+        , namedType_(TYPE_WRAPPER.name)
+        , elementType_(TYPE_WRAPPER.element)
+        , summonInfo_(TYPE_WRAPPER.summon)
+        , enchantmentsPVec_(creature::EnchantmentFactory::Instance()->MakeAndStore(
+              TYPE_WRAPPER, IsWeapon(), IsArmor(), MATERIAL_PRIMARY, MATERIAL_SECONDARY))
+        , imageFilename_(sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(
+              NAME,
+              CATEGORY,
+              IsJeweled(),
+              IsWeapon(),
+              WEAPON_INFO,
+              ARMOR_INFO,
+              TYPE_WRAPPER.misc,
+              TYPE_WRAPPER.summon.Race(),
+              TYPE_WRAPPER.summon.Role(),
+              MATERIAL_PRIMARY,
+              MATERIAL_SECONDARY,
+              true))
     {
+        if (unique_type::MagnifyingGlass == uniqueType_)
+        {
+            AddCategory(category::ShowsEnemyInfo);
+        }
+
+        if (item::unique_type::IsUseable(uniqueType_))
+        {
+            AddCategory(category::Useable);
+        }
+
+        if (element_type::None != elementType_)
+        {
+            name_ += element_type::Name(elementType_);
+        }
+
         // adjust the weight for pixie items
         if (isPixie_)
         {
@@ -107,11 +134,6 @@ namespace item
     }
 
     Item::~Item() { creature::EnchantmentFactory::Instance()->Warehouse().Free(enchantmentsPVec_); }
-
-    void Item::EnchantmentAdd(const creature::EnchantmentPtr_t ENCHANTMENT_PTR)
-    {
-        enchantmentsPVec_.emplace_back(ENCHANTMENT_PTR);
-    }
 
     const std::string Item::BaseName() const
     {

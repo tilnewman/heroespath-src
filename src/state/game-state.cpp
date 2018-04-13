@@ -66,22 +66,12 @@ namespace state
 
     void GameState::BeforeSerialize()
     {
-        for (auto creaturePtr : partyUPtr_->Characters())
-        {
-            creaturePtr->BeforeSerialize();
-        }
-
         partyUPtr_->BeforeSerialize();
         worldUPtr_->BeforeSerialize();
     }
 
     void GameState::AfterSerialize()
     {
-        for (auto creaturePtr : partyUPtr_->Characters())
-        {
-            creaturePtr->AfterSerialize();
-        }
-
         partyUPtr_->AfterSerialize();
         worldUPtr_->AfterSerialize();
     }
@@ -90,11 +80,6 @@ namespace state
     {
         worldUPtr_->AfterDeserialize();
         partyUPtr_->AfterDeserialize();
-
-        for (auto creaturePtr : partyUPtr_->Characters())
-        {
-            creaturePtr->AfterDeserialize();
-        }
     }
 
     bool operator<(const GameState & L, const GameState & R)

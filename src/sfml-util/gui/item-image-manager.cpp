@@ -29,21 +29,17 @@
 //
 #include "item-image-manager.hpp"
 
-#include "sfml-util/loaders.hpp"
-
 #include "creature/dragon-class-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
 #include "game/loop-manager.hpp"
-#include "item/armor-details.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
-#include "non-player/ownership-profile.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "misc/random.hpp"
-
+#include "non-player/ownership-profile.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
+#include "sfml-util/loaders.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -656,43 +652,78 @@ namespace sfml_util
         const std::string ItemImageManager::GetImageFilename(
             const item::ItemPtr_t ITEM_PTR, const bool WILL_RANDOMIZE) const
         {
+            return GetImageFilename(
+                ITEM_PTR->Name(),
+                ITEM_PTR->Category(),
+                ITEM_PTR->IsJeweled(),
+                ITEM_PTR->IsWeapon(),
+                ITEM_PTR->Weapon_Info(),
+                ITEM_PTR->Armor_Info(),
+                ITEM_PTR->MiscType(),
+                ITEM_PTR->GetSummonInfo().Race(),
+                ITEM_PTR->GetSummonInfo().Role(),
+                ITEM_PTR->MaterialPrimary(),
+                ITEM_PTR->MaterialSecondary(),
+                WILL_RANDOMIZE);
+        }
+
+        const std::string ItemImageManager::GetImageFilename(
+            const std::string & NAME,
+            const item::category::Enum CATEGORY,
+            const bool IS_JEWELED,
+            const bool IS_WEAPON,
+            const item::weapon::WeaponInfo & WEAPON_INFO,
+            const item::armor::ArmorInfo & ARMOR_INFO,
+            const item::misc_type::Enum MISC_TYPE,
+            const creature::race::Enum SUMMON_RACE,
+            const creature::role::Enum SUMMON_ROLE,
+            const item::material::Enum PRIMARY_MATERIAL,
+            const item::material::Enum SECONDARY_MATERIAL,
+            const bool WILL_RANDOMIZE) const
+        {
             using namespace item;
 
-            if (ITEM_PTR->IsWeapon() && (ITEM_PTR->Weapon_Info().type != weapon_type::NotAWeapon))
+            if (IS_WEAPON && (WEAPON_INFO.type != weapon_type::NotAWeapon))
             {
-                return GetImageFilename(ITEM_PTR->Weapon_Info(), ITEM_PTR->IsJeweled());
+                return GetImageFilename(WEAPON_INFO, IS_JEWELED);
             }
-            else if (ITEM_PTR->Armor_Info().type == armor_type::Skin)
+            else if (ARMOR_INFO.type == armor_type::Skin)
             {
-                return GetSkinImageFilename(ITEM_PTR);
+                return GetSkinImageFilename(PRIMARY_MATERIAL);
             }
-            else if (ITEM_PTR->Armor_Info().type != armor_type::NotArmor)
+            else if (ARMOR_INFO.type != armor_type::NotArmor)
             {
-                return GetImageFilename(ITEM_PTR->Armor_Info());
+                return GetImageFilename(ARMOR_INFO);
             }
-            else if (ITEM_PTR->MiscType() != misc_type::NotMisc)
+            else if (MISC_TYPE != misc_type::NotMisc)
             {
                 return GetImageFilename(
-                    ITEM_PTR->MiscType(),
-                    ITEM_PTR->IsJeweled(),
-                    (ITEM_PTR->MaterialPrimary() == item::material::Bone),
+                    MISC_TYPE,
+                    IS_JEWELED,
+                    (PRIMARY_MATERIAL == item::material::Bone),
                     WILL_RANDOMIZE,
-                    ITEM_PTR->GetSummonInfo().Race(),
-                    ITEM_PTR->GetSummonInfo().Role());
+                    SUMMON_RACE,
+                    SUMMON_ROLE);
             }
             else
             {
                 std::ostringstream ss;
-                ss << "sfml_util::gui::ItemImageManager::GetImageFilename(item->Name()="
-                   << ITEM_PTR->Name()
-                   << ", item->Category=" << category::ToString(ITEM_PTR->Category(), false)
-                   << ", desc=\"" << ITEM_PTR->Desc()
-                   << "\") failed to be categorized.  (IsWeapon=" << std::boolalpha
-                   << ITEM_PTR->IsWeapon() << ", WeaponInfo.type="
-                   << weapon_type::ToString(ITEM_PTR->Weapon_Info().type, false)
-                   << ", IsArmor=" << std::boolalpha << ITEM_PTR->IsArmor() << ", ArmorInfo.type="
-                   << armor_type::ToString(ITEM_PTR->Armor_Info().type, false)
-                   << ", MiscType()=" << ITEM_PTR->MiscType() << ")";
+                ss << "sfml_util::gui::ItemImageManager::GetImageFilename(name=" << NAME
+                   << ", category=" << category::ToString(CATEGORY, false) << ", is_jeweled=\""
+                   << IS_JEWELED << ", is_weapon=" << std::boolalpha << IS_WEAPON
+                   << ", weapon_info_type=" << weapon_type::ToString(WEAPON_INFO.type, false)
+                   << ", armor_info_type=" << armor_type::ToString(ARMOR_INFO.type, false)
+                   << ", misc_type=" << item::misc_type::ToString(MISC_TYPE) << ", summon_race="
+                   << ((SUMMON_RACE == creature::race::Count)
+                           ? "(count)"
+                           : creature::race::ToString(SUMMON_RACE))
+                   << ", summon_role="
+                   << ((SUMMON_ROLE == creature::role::Count)
+                           ? "(count)"
+                           : creature::role::ToString(SUMMON_ROLE))
+                   << ", material_pri=" << material::ToString(PRIMARY_MATERIAL)
+                   << ", material_sec=" << material::ToString(SECONDARY_MATERIAL)
+                   << ", random=" << WILL_RANDOMIZE << ") failed to be categorized.";
 
                 throw std::runtime_error(ss.str());
             }
@@ -861,30 +892,34 @@ namespace sfml_util
         const std::string
             ItemImageManager::GetSkinImageFilename(const item::ItemPtr_t ITEM_PTR) const
         {
+            return GetSkinImageFilename(ITEM_PTR->MaterialPrimary());
+        }
+
+        const std::string ItemImageManager::GetSkinImageFilename(
+            const item::material::Enum PRIMARY_MATERIAL) const
+        {
             using namespace item;
 
-            auto const PRI_MATERIAL{ ITEM_PTR->MaterialPrimary() };
-
-            if (PRI_MATERIAL == material::Plant)
+            if (PRIMARY_MATERIAL == material::Plant)
             {
                 return "plant" + FILE_EXT_STR_;
             }
-            else if (PRI_MATERIAL == material::Flesh)
+            else if (PRIMARY_MATERIAL == material::Flesh)
             {
                 return "flesh" + FILE_EXT_STR_;
             }
-            else if (PRI_MATERIAL == material::Scale)
+            else if (PRIMARY_MATERIAL == material::Scale)
             {
                 return "scale" + FILE_EXT_STR_;
             }
-            else if ((PRI_MATERIAL == material::Fur) || (PRI_MATERIAL == material::Hide))
+            else if ((PRIMARY_MATERIAL == material::Fur) || (PRIMARY_MATERIAL == material::Hide))
             {
                 return "hide" + FILE_EXT_STR_;
             }
 
             std::ostringstream ss;
             ss << "sfml_util::gui::ItemImageManager::GetSkinImageFilename(PRI_MATERIAL="
-               << material::ToString(PRI_MATERIAL)
+               << material::ToString(PRIMARY_MATERIAL)
                << ") failed to resolve a filename for that material.";
 
             throw std::runtime_error(ss.str());

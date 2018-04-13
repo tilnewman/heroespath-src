@@ -69,8 +69,8 @@ namespace combat
         static void Acquire();
         static void Release();
 
-        // the player party CreaturePtr_ts are kept by the state::GameState object, but all of the
-        // non-player CreaturePtr_ts are kept here in these vectors
+        // the player party CreaturePtr_ts are kept by the state::GameState in a player::Party
+        // object, but all of the non-player CreaturePtr_ts are kept here in these vectors
         const creature::CreaturePVec_t & LivingNonPlayers() const { return nonPlayerPartyPVec_; }
         const creature::CreaturePVec_t & DeadNonPlayers() const { return deadNonPlayerPartyPVec_; }
         const creature::CreaturePVec_t & RunawayNonPlayers() const
@@ -89,8 +89,6 @@ namespace combat
 
         std::size_t GetRoundCount() { return roundCounter_; }
         bool HasStarted() const { return hasStarted_; }
-
-        void Setup_First();
 
         const creature::CreaturePtrOpt_t CurrentTurnCreaturePtrOpt() const
         {
@@ -125,8 +123,8 @@ namespace combat
         void EndTreasureStageTasks(
             const item::ItemCache & ITEM_CACHE_WORN, const item::ItemCache & ITEM_CACHE_OWNED);
 
-        item::ItemCache TakeDeadNonPlayerItemsHeldCache();
-        item::ItemCache TakeDeadNonPlayerItemsLockboxCache();
+        const item::ItemCache TakeDeadNonPlayerItemsHeldCache();
+        const item::ItemCache TakeDeadNonPlayerItemsLockboxCache();
 
         bool DidAllEnemiesRunAway() const;
 
@@ -143,21 +141,22 @@ namespace combat
         float DefeatedPartyTreasureRatioPer() const;
 
     private:
-        void GenerateFirstEncounter();
         void PopulateTurnInfoMap();
         void SortAndSetTurnCreature();
-
         const std::string CreaturesSummary(const creature::CreaturePVec_t &) const;
-
-        void RemoveCreatureFromPVec(const creature::CreaturePtr_t, creature::CreaturePVec_t &);
 
     private:
         static std::unique_ptr<Encounter> instanceUPtr_;
 
         creature::CreatureFactory creatureFactory_;
 
-        // Non-player character pointers are owned by these vectors.
-        // Each non-player character pointer must only ever be in one of these vectors at a time.
+        // Non-player creature pointers are owned by these vectors.
+        // Each non-player creature pointer must only ever be in one of these vectors at a time.
+        //
+        // The destructor calls Warehouse::Free() for each of these, but that is only in case
+        // the application exits abnormally.  Normally, the correct sequence of functions is called
+        // (BeginCombatTasks(), EndCombatTasks(), BeginTreasureStageTasks(),
+        // EndTreasureStageTasks()) which will leave these vectors empty.
         creature::CreaturePVec_t nonPlayerPartyPVec_;
         creature::CreaturePVec_t deadNonPlayerPartyPVec_;
         creature::CreaturePVec_t runawayNonPlayerPartyPVec_;
@@ -173,6 +172,13 @@ namespace combat
 
         // this member always stores a copy, and is never responsible for lifetime
         creature::CreaturePtrOpt_t turnCreaturePtrOpt_;
+
+        // the pointers in these two item caches are observer pointers but this class is responsible
+        // for their lifetime, meaning this class is responsible for calling ItemWarehouse::Free()
+        // on each.  Normally, the correct sequence of functions is called (BeginCombatTasks(),
+        // EndCombatTasks(), BeginTreasureStageTasks(), EndTreasureStageTasks()) which frees and
+        // empties these vectors.  If the application exits abnormally, then the destructor will
+        // will ensure these are free'd.
 
         // contains all items the dead enemies were wearing or holding when killed
         item::ItemCache deadNonPlayerItemsHeld_;

@@ -81,9 +81,55 @@ namespace combat
     Encounter::~Encounter()
     {
         M_HP_LOG_DBG("Singleton Destruction: Encounter");
-        creature::CreatureWarehouse::Access().Free(nonPlayerPartyPVec_);
-        creature::CreatureWarehouse::Access().Free(deadNonPlayerPartyPVec_);
-        creature::CreatureWarehouse::Access().Free(runawayNonPlayerPartyPVec_);
+
+        if (nonPlayerPartyPVec_.empty() == false)
+        {
+            M_HP_LOG_WRN(
+                "combat::Encounter::~Encounter() found nonPlayerPartyPVec_ was not empty.  Size="
+                << nonPlayerPartyPVec_.size());
+
+            creature::CreatureWarehouse::Access().Free(nonPlayerPartyPVec_);
+        }
+
+        if (deadNonPlayerPartyPVec_.empty() == false)
+        {
+            M_HP_LOG_WRN(
+                "combat::Encounter::~Encounter() found deadNonPlayerPartyPVec_ was not empty.  "
+                "Size="
+                << deadNonPlayerPartyPVec_.size());
+
+            creature::CreatureWarehouse::Access().Free(deadNonPlayerPartyPVec_);
+        }
+
+        if (runawayNonPlayerPartyPVec_.empty() == false)
+        {
+            M_HP_LOG_WRN(
+                "combat::Encounter::~Encounter() found runawayNonPlayerPartyPVec_ was not empty.  "
+                "Size="
+                << runawayNonPlayerPartyPVec_.size());
+
+            creature::CreatureWarehouse::Access().Free(runawayNonPlayerPartyPVec_);
+        }
+
+        if (deadNonPlayerItemsHeld_.items_pvec.empty() == false)
+        {
+            M_HP_LOG_WRN(
+                "combat::Encounter::~Encounter() found deadNonPlayerItemsHeld_.items_pvec was not "
+                "empty.  Size="
+                << deadNonPlayerItemsHeld_.items_pvec.size());
+
+            item::ItemWarehouse::Access().Free(deadNonPlayerItemsHeld_.items_pvec);
+        }
+
+        if (deadNonPlayerItemsLockbox_.items_pvec.empty() == false)
+        {
+            M_HP_LOG_WRN(
+                "combat::Encounter::~Encounter() found deadNonPlayerItemsLockbox_.items_pvec was "
+                "not empty.  Size="
+                << deadNonPlayerItemsLockbox_.items_pvec.size());
+
+            item::ItemWarehouse::Access().Free(deadNonPlayerItemsHeld_.items_pvec);
+        }
     }
 
     misc::NotNull<Encounter *> Encounter::Instance()
@@ -145,18 +191,13 @@ namespace combat
         }
         else
         {
-            RemoveCreatureFromPVec(CREATURE_PTR, nonPlayerPartyPVec_);
+            nonPlayerPartyPVec_.erase(
+                std::remove(
+                    std::begin(nonPlayerPartyPVec_), std::end(nonPlayerPartyPVec_), CREATURE_PTR),
+                std::end(nonPlayerPartyPVec_));
+
             runawayNonPlayerPartyPVec_.emplace_back(CREATURE_PTR);
         }
-    }
-
-    void Encounter::Setup_First()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (nonPlayerPartyPVec_.empty()),
-            "combat::Encounter::Setup_First() called when nonPlayerPartyPVec_ was NOT empty.");
-
-        nonPlayerPartyPVec_ = creatureFactory_.Make_FirstEncounter();
     }
 
     const TurnInfo Encounter::GetTurnInfoCopy(const creature::CreaturePtr_t CREATURE_PTR) const
@@ -186,7 +227,11 @@ namespace combat
         // move from the enemyParty to the deadNonPlayerParty for later use by the Treasure Stage
         if (CREATURE_PTR->IsPlayerCharacter() == false)
         {
-            RemoveCreatureFromPVec(CREATURE_PTR, nonPlayerPartyPVec_);
+            nonPlayerPartyPVec_.erase(
+                std::remove(
+                    std::begin(nonPlayerPartyPVec_), std::end(nonPlayerPartyPVec_), CREATURE_PTR),
+                std::end(nonPlayerPartyPVec_));
+
             deadNonPlayerPartyPVec_.emplace_back(CREATURE_PTR);
         }
     }
@@ -207,14 +252,14 @@ namespace combat
 
     void Encounter::BeginCombatTasks()
     {
-        // nonPlayerPartyPvec_ must be left alone because it will have already been populated
+        // nonPlayerPartyPvec_ must be left alone because it will have already been populated.
         // Okay, wait, that is the responsibility of the Adventure Stage, and it hasn't been
         // implemented yet... SO TODO This will need to be triggered by the Adventure stage and
         // moved to it's own object responsible for creating random sets of creatures for each
         // fight.
         if (game::Game::Instance()->State().IsNewGame())
         {
-            GenerateFirstEncounter();
+            nonPlayerPartyPVec_ = creatureFactory_.Make_FirstEncounter();
         }
 
         // TODO move this to the Adventure Stage as well
@@ -242,23 +287,26 @@ namespace combat
         // At the end of this function:
         //  - All turn info is cleared/reset: turnCreaturePtrOpt_, turnOverPVec_, turnInfoMap_
         //  - runawayPlayersVec_ should be empty
-        //  - nonPlayerPartyUPtr_ should be emptied into deadNonPlayerPartyUPtr_
-        //  - deadNonPlayerPartyUPtr_ retains all enemy CreaturePtr_ts for looting in Treasure Stage
-        //  - runawayNonPlayerPartyUPtr_ should be empty, having all it's pointers
-        //    free'd because they will not contribute to looting during Treasure Stage and are no
-        //    longer needed.
-        //  - So all should be empty except deadNonPlayerPartyUPtr_ unless all enemies ran away.
+        //  - nonPlayerPartyPVec_ should be emptied into deadNonPlayerPartyPVec_
+        //  - deadNonPlayerPartyPVec_ retains all enemy CreaturePtr_ts for looting in Treasure Stage
+        //  - runawayNonPlayerPartyPVec_ should be empty, having all it's pointers
+        //    free'd by the CreatureWarehouse because they will not contribute to looting during
+        //    Treasure Stage and are no longer needed.
+        //  - So all ...PVecs should be empty except deadNonPlayerPartyPVec_ unless all enemies ran
+        //  away.
 
-        // Move all remaining enemy creatures (stoned, incapacitated, etc) in the party to
-        // deadNonPlayerPartyUPtr_ so that they are all available for looting in Treasure Stage.
-        for (auto const & CREATURE_PTR : nonPlayerPartyPVec_)
-        {
-            RemoveCreatureFromPVec(CREATURE_PTR, nonPlayerPartyPVec_);
-            deadNonPlayerPartyPVec_.emplace_back(CREATURE_PTR);
-        }
+        // Move all remaining enemy creatures (stoned, incapacitated, etc) to
+        // deadNonPlayerPartyPVec_ so that they are available for looting in Treasure Stage.
+        std::copy(
+            std::begin(nonPlayerPartyPVec_),
+            std::end(nonPlayerPartyPVec_),
+            std::back_inserter(deadNonPlayerPartyPVec_));
 
-        // Free runaway non-player character pointers so they will NOT
-        // contribute to looting in Treasure Stage.
+        nonPlayerPartyPVec_.clear();
+
+        // Free runaway enemy creature pointers so they will NOT
+        // contribute to looting in Treasure Stage.  Note that this Free() call also clears the
+        // vector.
         creature::CreatureWarehouse::Access().Free(runawayNonPlayerPartyPVec_);
 
         // get rid of runaway player character pointer copies
@@ -321,25 +369,23 @@ namespace combat
         //    zero'd.
         //  - deadNonPlayerPartyPVec_ will be empty and all it's held pointers free'd.
         //
-        item::ItemWarehouse::Instance()->Free(deadNonPlayerItemsHeld_.items_pvec);
-        deadNonPlayerItemsHeld_.coins = 0_coin;
-        deadNonPlayerItemsHeld_.gems = 0_gem;
+        item::ItemWarehouse::Access().Free(deadNonPlayerItemsHeld_.items_pvec);
+        deadNonPlayerItemsHeld_.Reset();
 
-        item::ItemWarehouse::Instance()->Free(deadNonPlayerItemsLockbox_.items_pvec);
-        deadNonPlayerItemsLockbox_.coins = 0_coin;
-        deadNonPlayerItemsLockbox_.gems = 0_gem;
+        item::ItemWarehouse::Access().Free(deadNonPlayerItemsLockbox_.items_pvec);
+        deadNonPlayerItemsLockbox_.Reset();
 
         creature::CreatureWarehouse::Access().Free(deadNonPlayerPartyPVec_);
     }
 
-    item::ItemCache Encounter::TakeDeadNonPlayerItemsHeldCache()
+    const item::ItemCache Encounter::TakeDeadNonPlayerItemsHeldCache()
     {
         item::ItemCache copy{ deadNonPlayerItemsHeld_ };
         deadNonPlayerItemsHeld_.Reset();
         return copy;
     }
 
-    item::ItemCache Encounter::TakeDeadNonPlayerItemsLockboxCache()
+    const item::ItemCache Encounter::TakeDeadNonPlayerItemsLockboxCache()
     {
         item::ItemCache copy{ deadNonPlayerItemsLockbox_ };
         deadNonPlayerItemsLockbox_.Reset();
@@ -355,8 +401,6 @@ namespace combat
     {
         return item::TreasureFactory::TreasureRatioPer(deadNonPlayerPartyPVec_);
     }
-
-    void Encounter::GenerateFirstEncounter() { combat::Encounter::Instance()->Setup_First(); }
 
     void Encounter::PopulateTurnInfoMap()
     {
@@ -451,14 +495,6 @@ namespace combat
         }
 
         return ss.str();
-    }
-
-    void Encounter::RemoveCreatureFromPVec(
-        const creature::CreaturePtr_t CREATURE_PTR, creature::CreaturePVec_t & creaturePVec)
-    {
-        creaturePVec.erase(
-            std::remove(std::begin(creaturePVec), std::end(creaturePVec), CREATURE_PTR),
-            std::end(creaturePVec));
     }
 
 } // namespace combat

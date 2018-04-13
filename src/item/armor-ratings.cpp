@@ -30,20 +30,21 @@
 #include "armor-ratings.hpp"
 
 #include "item/armor-factory.hpp"
+#include "item/item-warehouse.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
-
 #include "misc/assertlogandthrow.hpp"
+
+#include <numeric>
 
 namespace heroespath
 {
 namespace item
 {
 
-    std::unique_ptr<ArmorRatings> ArmorRatings::instanceUPtr_;
-
     ArmorRatings::ArmorRatings()
-        : clothesCloth_(0_armor)
+        : isSetup_(false)
+        , clothesCloth_(0_armor)
         , clothesSoftLeather_(0_armor)
         , clothesHardLeather_(0_armor)
         , armoredLesserSoftLeather_(0_armor)
@@ -52,152 +53,151 @@ namespace item
         , armoredGreaterSoftLeather_(0_armor)
         , armoredGreaterSteel_(0_armor)
         , armoredGreaterDiamond_(0_armor)
+    {}
+
+    void ArmorRatings::EnsureSetup()
     {
-        M_HP_LOG_DBG("Singleton Construction: ArmorRatings");
-    }
-
-    ArmorRatings::~ArmorRatings() { M_HP_LOG_DBG("Singleton Destruction: ArmorRatings"); }
-
-    misc::NotNull<ArmorRatings *> ArmorRatings::Instance()
-    {
-        if (!instanceUPtr_)
+        if (false == isSetup_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): ArmorRatings");
-            Acquire();
-        }
+            clothesCloth_ = ClothesSetRating(item::material::Cloth);
+            clothesSoftLeather_ = ClothesSetRating(item::material::SoftLeather);
+            clothesHardLeather_ = ClothesSetRating(item::material::HardLeather);
 
-        return instanceUPtr_.get();
-    }
+            armoredLesserSoftLeather_ = LesserArmorSetRating(item::material::SoftLeather);
+            armoredLesserSteel_ = LesserArmorSetRating(item::material::Steel);
+            armoredLesserDiamond_ = LesserArmorSetRating(item::material::Diamond);
 
-    void ArmorRatings::Acquire()
-    {
-        if (!instanceUPtr_)
-        {
-            instanceUPtr_ = std::make_unique<ArmorRatings>();
-        }
-        else
-        {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: ArmorRatings");
+            armoredGreaterSoftLeather_ = GreaterArmorSetRating(item::material::SoftLeather);
+            armoredGreaterSteel_ = GreaterArmorSetRating(item::material::Steel);
+            armoredGreaterDiamond_ = GreaterArmorSetRating(item::material::Diamond);
+
+            isSetup_ = true;
         }
     }
 
-    void ArmorRatings::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_),
-            "sfml_util::ArmorRatings::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
-    void ArmorRatings::Setup()
-    {
-        clothesCloth_ = ClothesSetRating(item::material::Cloth);
-        clothesSoftLeather_ = ClothesSetRating(item::material::SoftLeather);
-        clothesHardLeather_ = ClothesSetRating(item::material::HardLeather);
-
-        armoredLesserSoftLeather_ = LesserArmorSetRating(item::material::SoftLeather);
-        armoredLesserSteel_ = LesserArmorSetRating(item::material::Steel);
-        armoredLesserDiamond_ = LesserArmorSetRating(item::material::Diamond);
-
-        armoredGreaterSoftLeather_ = GreaterArmorSetRating(item::material::SoftLeather);
-        armoredGreaterSteel_ = GreaterArmorSetRating(item::material::Steel);
-        armoredGreaterDiamond_ = GreaterArmorSetRating(item::material::Diamond);
-    }
-
-    Armor_t ArmorRatings::ClothesSetRating(const item::material::Enum MATERIAL_ENUM) const
+    Armor_t ArmorRatings::ClothesSetRating(const item::material::Enum PRIMARY_MATERIAL) const
     {
         using namespace item::armor;
 
-        auto const SKIN_PTR{ ArmorFactory::Make_Skin(material::Flesh, 1_rank, false) };
-        auto const SHIRT_PTR{ ArmorFactory::Make_Shirt(base_type::Plain) };
-        auto const PANTS_PTR{ ArmorFactory::Make_Pants(base_type::Plain, material::Cloth) };
-        auto const BOOTS_PTR{ ArmorFactory::Make_Boots(base_type::Plain, MATERIAL_ENUM) };
-        auto const VEST_PTR{ ArmorFactory::Make_Cover(cover_type::Vest, MATERIAL_ENUM) };
-        auto const CLOAK_PTR{ ArmorFactory::Make_Cover(cover_type::Cloak, MATERIAL_ENUM) };
-        auto const GLOVES_PTR{ ArmorFactory::Make_Gauntlets(base_type::Plain, MATERIAL_ENUM) };
+        ItemPVec_t itemPVec;
 
-        return GetTotalArmorRating(ItemPVec_t{
-            SKIN_PTR, SHIRT_PTR, PANTS_PTR, BOOTS_PTR, VEST_PTR, CLOAK_PTR, GLOVES_PTR });
+        itemPVec.emplace_back(ArmorFactory::Make_Skin(material::Flesh, 1_rank, false));
+
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Boots(TypeWrapper(), base_type::Plain, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(ArmorFactory::Make_Shirt(TypeWrapper(), base_type::Plain));
+
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Pants(TypeWrapper(), base_type::Plain, material::Cloth));
+
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Cover(TypeWrapper(), cover_type::Vest, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Cover(TypeWrapper(), cover_type::Cloak, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Gauntlets(TypeWrapper(), base_type::Plain, PRIMARY_MATERIAL));
+
+        return GetTotalArmorRatingAndFree(itemPVec);
     }
 
-    Armor_t ArmorRatings::LesserArmorSetRating(const item::material::Enum E) const
+    Armor_t ArmorRatings::LesserArmorSetRating(const item::material::Enum PRIMARY_MATERIAL) const
     {
         using namespace item::armor;
 
-        auto const SHIELD_PTR{ ArmorFactory::Make_Shield(
-            shield_type::Buckler, ((E == material::SoftLeather) ? material::Wood : E)) };
+        ItemPVec_t itemPVec;
 
-        auto const HELM_PTR{ ArmorFactory::Make_Helm(
-            ((E == material::SoftLeather) ? helm_type::Leather : helm_type::Kettle), E) };
+        itemPVec.emplace_back(ArmorFactory::Make_Shield(
+            TypeWrapper(),
+            shield_type::Buckler,
+            ((PRIMARY_MATERIAL == material::SoftLeather) ? material::Wood : PRIMARY_MATERIAL)));
 
-        auto const BASE_TYPE{ ((E == material::SoftLeather) ? base_type::Plain : base_type::Mail) };
-
-        auto const GAUNTLETS_PTR{ ArmorFactory::Make_Gauntlets(BASE_TYPE, E) };
-        auto const PANTS_PTR{ ArmorFactory::Make_Pants(BASE_TYPE, E) };
-        auto const BOOTS_PTR{ ArmorFactory::Make_Boots(BASE_TYPE, E) };
-        auto const SHIRT_PTR{ ArmorFactory::Make_Shirt(BASE_TYPE) };
-        auto const BRACER_PTR{ ArmorFactory::Make_Bracer(BASE_TYPE, E) };
-        auto const AVENTAIL_PTR{ ArmorFactory::Make_Aventail(BASE_TYPE, E) };
-        auto const COVER_PTR{ ArmorFactory::Make_Cover(cover_type::Cloak, material::SoftLeather) };
-        auto const SKIN_PTR{ ArmorFactory::Make_Skin(material::Flesh, 1_rank, false) };
-
-        return GetTotalArmorRating(ItemPVec_t{ SHIELD_PTR,
-                                               HELM_PTR,
-                                               GAUNTLETS_PTR,
-                                               PANTS_PTR,
-                                               BOOTS_PTR,
-                                               SHIRT_PTR,
-                                               BRACER_PTR,
-                                               AVENTAIL_PTR,
-                                               COVER_PTR,
-                                               SKIN_PTR });
-    }
-
-    Armor_t ArmorRatings::GreaterArmorSetRating(const item::material::Enum E) const
-    {
-        using namespace item::armor;
-
-        auto const SHIELD_PTR{ ArmorFactory::Make_Shield(
-            shield_type::Pavis, ((E == material::SoftLeather) ? material::Wood : E)) };
-
-        auto const HELM_PTR{ ArmorFactory::Make_Helm(
-            ((E == material::SoftLeather) ? helm_type::Leather : helm_type::Great), E) };
+        itemPVec.emplace_back(ArmorFactory::Make_Helm(
+            TypeWrapper(),
+            ((PRIMARY_MATERIAL == material::SoftLeather) ? helm_type::Leather : helm_type::Kettle),
+            PRIMARY_MATERIAL));
 
         auto const BASE_TYPE{ (
-            (E == material::SoftLeather) ? base_type::Plain : base_type::Plate) };
+            (PRIMARY_MATERIAL == material::SoftLeather) ? base_type::Plain : base_type::Mail) };
 
-        auto const GAUNTLETS_PTR{ ArmorFactory::Make_Gauntlets(BASE_TYPE, E, E) };
-        auto const PANTS_PTR{ ArmorFactory::Make_Pants(BASE_TYPE, E) };
-        auto const BOOTS_PTR{ ArmorFactory::Make_Boots(BASE_TYPE, E, E) };
-        auto const SHIRT_PTR{ ArmorFactory::Make_Shirt(BASE_TYPE, E) };
-        auto const BRACER_PTR{ ArmorFactory::Make_Bracer(BASE_TYPE, E, E) };
-        auto const AVENTAIL_PTR{ ArmorFactory::Make_Aventail(BASE_TYPE, E, E) };
-        auto const COVER_PTR{ ArmorFactory::Make_Cover(cover_type::Cloak, material::HardLeather) };
-        auto const SKIN_PTR{ ArmorFactory::Make_Skin(material::Flesh, 1_rank, false) };
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Gauntlets(TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL));
 
-        return GetTotalArmorRating(ItemPVec_t{ SHIELD_PTR,
-                                               HELM_PTR,
-                                               GAUNTLETS_PTR,
-                                               PANTS_PTR,
-                                               BOOTS_PTR,
-                                               SHIRT_PTR,
-                                               BRACER_PTR,
-                                               AVENTAIL_PTR,
-                                               COVER_PTR,
-                                               SKIN_PTR });
+        itemPVec.emplace_back(ArmorFactory::Make_Pants(TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL));
+        itemPVec.emplace_back(ArmorFactory::Make_Boots(TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL));
+        itemPVec.emplace_back(ArmorFactory::Make_Shirt(TypeWrapper(), BASE_TYPE));
+
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Bracer(TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Aventail(TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Cover(TypeWrapper(), cover_type::Cloak, material::SoftLeather));
+
+        itemPVec.emplace_back(ArmorFactory::Make_Skin(material::Flesh, 1_rank, false));
+
+        return GetTotalArmorRatingAndFree(itemPVec);
     }
 
-    Armor_t ArmorRatings::GetTotalArmorRating(const ItemPVec_t & ITEM_PVEC) const
+    Armor_t ArmorRatings::GreaterArmorSetRating(const item::material::Enum PRIMARY_MATERIAL) const
     {
-        auto totalArmorRating{ 0_armor };
+        using namespace item::armor;
 
-        for (auto const & NEXT_ITEM_PTR : ITEM_PVEC)
-        {
-            totalArmorRating += NEXT_ITEM_PTR->ArmorRating();
-        }
+        ItemPVec_t itemPVec;
 
-        return totalArmorRating;
+        itemPVec.emplace_back(ArmorFactory::Make_Shield(
+            TypeWrapper(),
+            shield_type::Pavis,
+            ((PRIMARY_MATERIAL == material::SoftLeather) ? material::Wood : PRIMARY_MATERIAL)));
+
+        itemPVec.emplace_back(ArmorFactory::Make_Helm(
+            TypeWrapper(),
+            ((PRIMARY_MATERIAL == material::SoftLeather) ? helm_type::Leather : helm_type::Great),
+            PRIMARY_MATERIAL));
+
+        auto const BASE_TYPE{ (
+            (PRIMARY_MATERIAL == material::SoftLeather) ? base_type::Plain : base_type::Plate) };
+
+        itemPVec.emplace_back(ArmorFactory::Make_Gauntlets(
+            TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(ArmorFactory::Make_Pants(TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Boots(TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(ArmorFactory::Make_Shirt(TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(ArmorFactory::Make_Bracer(
+            TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(ArmorFactory::Make_Aventail(
+            TypeWrapper(), BASE_TYPE, PRIMARY_MATERIAL, PRIMARY_MATERIAL));
+
+        itemPVec.emplace_back(
+            ArmorFactory::Make_Cover(TypeWrapper(), cover_type::Cloak, material::HardLeather));
+
+        itemPVec.emplace_back(ArmorFactory::Make_Skin(material::Flesh, 1_rank, false));
+
+        return GetTotalArmorRatingAndFree(itemPVec);
+    }
+
+    Armor_t ArmorRatings::GetTotalArmorRatingAndFree(ItemPVec_t & itemPVec) const
+    {
+        auto const TOTAL_ARMOR_RATING{ std::accumulate(
+            std::begin(itemPVec),
+            std::end(itemPVec),
+            0_armor,
+            [](auto const SUBTOTAL, auto const ITEM_PTR) {
+                return SUBTOTAL + ITEM_PTR->ArmorRating();
+            }) };
+
+        ItemWarehouse::Access().Free(itemPVec);
+        return TOTAL_ARMOR_RATING;
     }
 
 } // namespace item

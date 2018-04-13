@@ -53,13 +53,8 @@ namespace item
 
     public:
         ArmorRatings();
-        ~ArmorRatings();
 
-        static misc::NotNull<ArmorRatings *> Instance();
-        static void Acquire();
-        static void Release();
-
-        void Setup();
+        void EnsureSetup();
 
         Armor_t FullyClothedCloth() const { return clothesCloth_; }
 
@@ -83,11 +78,10 @@ namespace item
         Armor_t ClothesSetRating(const item::material::Enum) const;
         Armor_t LesserArmorSetRating(const item::material::Enum) const;
         Armor_t GreaterArmorSetRating(const item::material::Enum) const;
-        Armor_t GetTotalArmorRating(const ItemPVec_t &) const;
+        Armor_t GetTotalArmorRatingAndFree(ItemPVec_t &) const;
 
     private:
-        static std::unique_ptr<ArmorRatings> instanceUPtr_;
-        //
+        bool isSetup_;
         Armor_t clothesCloth_;
         Armor_t clothesSoftLeather_;
         Armor_t clothesHardLeather_;

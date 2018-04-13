@@ -92,11 +92,27 @@ namespace sfml_util
                 const item::ItemPtr_t ITEM_PTR, const bool WILL_RANDOMIZE = true) const;
 
             const std::string GetImageFilename(
+                const std::string & NAME,
+                const item::category::Enum CATEGORY,
+                const bool IS_JEWELED,
+                const bool IS_WEAPON,
+                const item::weapon::WeaponInfo & WEAPON_INFO,
+                const item::armor::ArmorInfo & ARMOR_INFO,
+                const item::misc_type::Enum MISC_TYPE,
+                const creature::race::Enum SUMMON_RACE,
+                const creature::role::Enum SUMMON_ROLE,
+                const item::material::Enum PRIMARY_MATERIAL,
+                const item::material::Enum SECONDARY_MATERIAL,
+                const bool WILL_RANDOMIZE = true) const;
+
+            const std::string GetImageFilename(
                 const item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED = false) const;
 
             const std::string GetImageFilename(const item::armor::ArmorInfo & ARMOR_INFO) const;
 
             const std::string GetSkinImageFilename(const item::ItemPtr_t ITEM_PTR) const;
+
+            const std::string GetSkinImageFilename(const item::material::Enum) const;
 
             const std::string GetImageFilename(
                 const item::misc_type::Enum ITEM_ENUM,

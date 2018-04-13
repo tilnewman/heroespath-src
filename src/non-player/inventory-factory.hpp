@@ -29,6 +29,7 @@
 //  Code responsible for creating non-player-characters items. (clothes/weapons/armor/jewelry/etc)
 //
 #include "item/item-type-enum.hpp"
+#include "item/item-warehouse.hpp"
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
 #include "non-player/ownership-chance-types.hpp"
@@ -162,8 +163,26 @@ namespace non_player
                 return std::make_pair(highestChanceItem, highestChance);
             }
 
-            static void
-                RemoveArmorTypeFromVec(const item::armor_type::Enum ENUM, item::ItemPVec_t & vec);
+            static void RemoveArmorTypeFromVecAndFree(
+                const item::armor_type::Enum ENUM, item::ItemPVec_t & vec);
+
+            template <typename T>
+            static void RemoveItemsAndFree(item::ItemPVec_t & pVec, T & matchingLambda)
+            {
+                item::ItemPVec_t itemsToFreePVec;
+
+                std::copy_if(
+                    std::begin(pVec),
+                    std::end(pVec),
+                    std::back_inserter(itemsToFreePVec),
+                    matchingLambda);
+
+                pVec.erase(
+                    std::remove_if(std::begin(pVec), std::end(pVec), matchingLambda),
+                    std::end(pVec));
+
+                item::ItemWarehouse::Access().Free(itemsToFreePVec);
+            }
 
         private:
             static std::unique_ptr<InventoryFactory> instanceUPtr_;

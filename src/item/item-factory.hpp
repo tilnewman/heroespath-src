@@ -51,29 +51,17 @@ namespace item
         ItemFactory(ItemFactory &&) = delete;
         ItemFactory & operator=(const ItemFactory &) = delete;
         ItemFactory & operator=(ItemFactory &&) = delete;
+        ItemFactory() = delete;
 
-    public:
-        ItemFactory();
-        ~ItemFactory();
-
-        static misc::NotNull<ItemFactory *> Instance();
-        static void Acquire();
-        static void Release();
         static bool Test();
 
+        static const ItemPtr_t Make(const ItemProfile &);
+
+    private:
         static void TestItem(
             const std::string & WHICH_TEST,
             const ItemPtr_t & ITEM_PTR,
             const ItemProfile & ITEM_PROFILE);
-
-        const ItemPtr_t Make(const ItemProfile &) const;
-
-    private:
-        const ItemPtr_t SetTypesAndReturn(const ItemProfile &, const ItemPtr_t &) const;
-        void AppendElementTypeToName(const ItemPtr_t &, const ItemProfile &) const;
-
-    private:
-        static std::unique_ptr<ItemFactory> instanceUPtr_;
     };
 
 } // namespace item

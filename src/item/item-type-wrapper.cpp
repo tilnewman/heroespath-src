@@ -25,57 +25,36 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// logger.cpp
+// item-type-wrapper.cpp
 //
-#include "logger.hpp"
+#include "item-type-wrapper.hpp"
 
-#include "log/log-macros.hpp"
-#include "misc/assertlogandthrow.hpp"
+#include "item/item-profile.hpp"
 
 namespace heroespath
 {
-namespace log
+namespace item
 {
 
-    std::unique_ptr<Logger> Logger::instanceUPtr_;
-
-    Logger::Logger()
-        : LogBase(
-              LogBase::FILE_NAME_DEFAULT,
-              LogBase::FILE_NAME_EXT_DEFAULT,
-              "",
-              LogBase::FILE_NUM_MIN,
-              LogBase::FILE_SIZE_LIMIT_DEFAULT,
-              LogPri::Warning)
+    TypeWrapper::TypeWrapper()
+        : element(element_type::None)
+        , unique(unique_type::NotUnique)
+        , name(named_type::NotNamed)
+        , set(set_type::NotASet)
+        , misc(misc_type::NotMisc)
+        , roleRestrictionBasedOnMiscAndSetType(creature::role::Count)
+        , summon()
     {}
 
-    Logger::~Logger() = default;
+    TypeWrapper::TypeWrapper(const ItemProfile & ITEM_PROFILE)
+        : element(ITEM_PROFILE.ElementType())
+        , unique(ITEM_PROFILE.UniqueType())
+        , name(ITEM_PROFILE.NamedType())
+        , set(ITEM_PROFILE.SetType())
+        , misc(ITEM_PROFILE.MiscType())
+        , roleRestrictionBasedOnMiscAndSetType(ITEM_PROFILE.RoleRestrictionBasedOnMiscAndSetType())
+        , summon(ITEM_PROFILE.Summoning())
+    {}
 
-    Logger * Logger::Instance()
-    {
-        if (!instanceUPtr_)
-        {
-            Acquire();
-        }
-
-        return instanceUPtr_.get();
-    }
-
-    void Logger::Acquire()
-    {
-        if (!instanceUPtr_)
-        {
-            instanceUPtr_ = std::make_unique<Logger>();
-        }
-    }
-
-    void Logger::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_), "log::Logger::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
-} // namespace log
+} // namespace item
 } // namespace heroespath

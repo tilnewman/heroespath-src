@@ -244,7 +244,15 @@ namespace stage
 
                 characterListBoxUPtr_->Remove(selectedItemSPtr);
                 partyListBoxUPtr_->Remove(selectedItemSPtr);
-                // actual Character object will be free'd when the PartyStage object is destroyed
+
+                unplayedCharactersPVec_.erase(
+                    std::remove(
+                        std::begin(unplayedCharactersPVec_),
+                        std::end(unplayedCharactersPVec_),
+                        CHARACTER_PTR),
+                    std::end(unplayedCharactersPVec_));
+
+                creature::CreatureWarehouse::Access().Free(CHARACTER_PTR);
             }
         }
         else if (
