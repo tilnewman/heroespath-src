@@ -31,15 +31,15 @@
 
 #include "combat/encounter.hpp"
 #include "combat/strategy-details.hpp"
-#include "combat/trap-warehouse.hpp"
+#include "combat/trap-holder.hpp"
 #include "config/configbase.hpp"
 #include "config/settings-file.hpp"
-#include "creature/condition-warehouse.hpp"
+#include "creature/condition-holder.hpp"
 #include "creature/creature-warehouse.hpp"
 #include "creature/enchantment-factory.hpp"
 #include "creature/enchantment-warehouse.hpp"
 #include "creature/name-info.hpp"
-#include "creature/title-warehouse.hpp"
+#include "creature/title-holder.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
@@ -69,8 +69,8 @@
 #include "sfml-util/loop.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/texture-cache.hpp"
-#include "song/song-warehouse.hpp"
-#include "spell/spell-warehouse.hpp"
+#include "song/song-holder.hpp"
+#include "spell/spell-holder.hpp"
 #include "state/game-state-factory.hpp"
 #include "state/npc-factory.hpp"
 #include "state/npc-warehouse.hpp"
@@ -91,26 +91,24 @@ namespace game
             // initialize the log first so that all Setup() actions can be logged
             log::Logger::Acquire();
 
-            DetectLogAndCheckPlatform();
-
-            srand(static_cast<unsigned>(time(nullptr)));
-            misc::random::MersenneTwister::Seed();
+            Setup_DetectLogAndCheckPlatform();
+            Setup_SeedRandomNumberGenerator();
 
             // this only creates vectors of enums
             item::material::Setup();
 
-            ParseCommandLineArguments(ARGC, argv);
+            Setup_ParseCommandLineArguments(ARGC, argv);
 
             // GameDataFile is used everywhere so Acquire and Initialize it before everything else
             game::GameDataFile::Acquire();
             game::GameDataFile::Instance()->Initialize();
 
             // this order is critical
-            SetupDisplay(APPLICATION_NAME);
-            SetManagerClassResourcePaths();
-            SingletonsAcquire();
-            SingletonsInitialize();
-            WarehousesFill();
+            Setup_Display(APPLICATION_NAME);
+            Setup_ManagerClassResourcePaths();
+            Setup_SingletonsAcquire();
+            Setup_SingletonsInitialize();
+            Setup_HoldersFill();
 
             // this causes the initial stage transition/creation so it must occur last
             LoopManager::Instance()->Initialize();
@@ -121,13 +119,13 @@ namespace game
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
-                "Appication Setup Framework threw std::exception \"" << E.what() << "\"");
+                "StartupShutdown::Setup() threw std::exception \"" << E.what() << "\"");
         }
         catch (...)
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
-                "Appication Setup Framework threw unknown (non-std) exception.");
+                "StartupShutdown::Setup() threw unknown (non-std) exception.");
         }
 
         return false;
@@ -146,12 +144,13 @@ namespace game
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
-                "Application threw std::exception \"" << E.what() << "\"");
+                "StartupShutdown::Run() threw std::exception \"" << E.what() << "\"");
         }
         catch (...)
         {
             M_LOG_FAT(
-                *log::Logger::Instance(), "Application threw an unknown (non-std) exception.");
+                *log::Logger::Instance(),
+                "StartupShutdown::Run() threw an unknown (non-std) exception.");
         }
 
         return EXIT_FAILURE;
@@ -163,8 +162,8 @@ namespace game
 
         Teardown_SettingsFile(exitCode);
         Teardown_CloseDisplay(exitCode);
-        Teardown_EmptyWarehouses(exitCode);
         Teardown_ReleaseSingletons(exitCode);
+        Teardown_EmptyHolders(exitCode);
         Teardown_Logger(exitCode);
 
         return exitCode;
@@ -180,8 +179,8 @@ namespace game
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
-                "SettingsFile::Teardown_SettingsFile() threw std::exception \"" << E.what()
-                                                                                << "\"");
+                "StartupShutdown::Teardown_SettingsFile() threw std::exception \"" << E.what()
+                                                                                   << "\"");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
@@ -189,7 +188,7 @@ namespace game
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
-                "SettingsFile::Teardown_SettingsFile() threw an unknown (non-std) exception.");
+                "StartupShutdown::Teardown_SettingsFile() threw an unknown (non-std) exception.");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
@@ -223,18 +222,22 @@ namespace game
         }
     }
 
-    void StartupShutdown::Teardown_EmptyWarehouses(int & exitCode_OutParam)
+    void StartupShutdown::Teardown_EmptyHolders(int & exitCode_OutParam)
     {
         try
         {
-            WarehousesEmpty();
+            combat::trap::Holder::Empty();
+            song::Holder::Empty();
+            spell::Holder::Empty();
+            creature::condition::Holder::Empty();
+            creature::title::Holder::Empty();
         }
         catch (const std::exception & E)
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
-                "StartupShutdown::Teardown_EmptyWarehouses() threw std::exception \"" << E.what()
-                                                                                      << "\"");
+                "StartupShutdown::Teardown_EmptyHolders() threw std::exception \"" << E.what()
+                                                                                   << "\"");
 
             exitCode_OutParam = EXIT_FAILURE;
         }
@@ -242,7 +245,7 @@ namespace game
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
-                "StartupShutdown::Teardown_EmptyWarehouses() "
+                "StartupShutdown::Teardown_EmptyHolders() "
                     << "threw an unknown (non-std) exception.");
 
             exitCode_OutParam = EXIT_FAILURE;
@@ -253,7 +256,68 @@ namespace game
     {
         try
         {
-            SingletonsRelease();
+            // this order is critical - be careful here...
+
+            // release the SettingsFile first so that it saves the settings file even if a problem
+            // happens during shutdown
+            config::SettingsFile::Release();
+
+            // image managers should not be needed during shutdown, so release them early
+            sfml_util::gui::SongImageManager::Release();
+            sfml_util::gui::CombatImageManager::Release();
+            sfml_util::gui::ConditionImageManager::Release();
+            sfml_util::gui::SpellImageManager::Release();
+            sfml_util::gui::TitleImageManager::Release();
+            sfml_util::gui::CreatureImageManager::Release();
+            sfml_util::gui::ItemImageManager::Release();
+            sfml_util::gui::GuiElements::Release();
+
+            // factories should not be needed during shutdown, so release them early
+            non_player::ownership::InventoryFactory::Release();
+            item::armor::ArmorFactory::Release();
+            state::NpcFactory::Release();
+            creature::EnchantmentFactory::Release();
+            state::GameStateFactory::Release();
+            item::MiscItemFactory::Release();
+            item::weapon::WeaponFactory::Release();
+            non_player::ownership::ChanceFactory::Release();
+
+            // release LoopManager early because it frees all the stages and their resources
+            LoopManager::Release();
+
+            // these must occur after all the stages have been released
+            creature::NameInfo::Release();
+            sfml_util::FontManager::Release(); // after NameInfo::Release()
+            popup::PopupManager::Release();
+            sfml_util::SoundManager::Release();
+            sfml_util::TextureCache::Release();
+
+            // this will cause all party creatures/items/enchantments/etc to be Warehouses::Free()'d
+            Game::Release();
+
+            // must occur after Game::Release() because state::GameState needs it
+            state::NpcWarehouse::Release();
+
+            // if this is an abnormal shutdown then the Encounter object will have some
+            // Warehouse::Free() calls to make, so this must occur after Game::Release() but before
+            // creature/item/enchantment/etc warehouses are released.
+            combat::Encounter::Release();
+
+            // there are dependancies between these Warehouses so this release order is critical
+            creature::CreatureWarehouse::Release();
+            item::ItemProfileWarehouse::Release();
+            item::ItemWarehouse::Release();
+            creature::EnchantmentWarehouse::Release();
+
+            // the only constraint here is that it must occur after all the stages have been
+            // released, so there is no reason for this to be one of the last things to be released,
+            // but for some reason I liked the idea of the screen staying black while the
+            // application shuts down
+            sfml_util::Display::Release();
+
+            // these two are needed almost everywhere so release them last
+            GameDataFile::Release();
+            misc::Platform::Release();
         }
         catch (const std::exception & E)
         {
@@ -299,7 +363,7 @@ namespace game
         }
     }
 
-    void StartupShutdown::ParseCommandLineArguments(const int ARGC, char * argv[])
+    void StartupShutdown::Setup_ParseCommandLineArguments(const int ARGC, char * argv[])
     {
         if (ARGC >= 2)
         {
@@ -317,7 +381,13 @@ namespace game
         }
     }
 
-    void StartupShutdown::DetectLogAndCheckPlatform()
+    void StartupShutdown::Setup_SeedRandomNumberGenerator()
+    {
+        srand(static_cast<unsigned>(time(nullptr)));
+        misc::random::MersenneTwister::Seed();
+    }
+
+    void StartupShutdown::Setup_DetectLogAndCheckPlatform()
     {
         misc::Platform::Acquire();
         misc::Platform::Instance()->DetectAndLog();
@@ -325,11 +395,12 @@ namespace game
         if (misc::Platform::Instance()->IsSupported() == false)
         {
             throw std::runtime_error(
-                "This system (platform) is not supported.  See log for details.");
+                "StartupShutdown::Setup_DetectLogAndCheckPlatform() is throwing this exception "
+                "because this system (platform) is not supported.  See log for details.");
         }
     }
 
-    void StartupShutdown::SetupDisplay(const std::string & APPLICATION_NAME)
+    void StartupShutdown::Setup_Display(const std::string & APPLICATION_NAME)
     {
         sfml_util::Display::LogAllFullScreenVideoModes();
         sfml_util::Display::LogAllSupportedFullScreenVideoModes();
@@ -342,7 +413,7 @@ namespace game
             game::GameDataFile::Instance()->GetCopyBool("system-window-sync"));
     }
 
-    void StartupShutdown::SetManagerClassResourcePaths()
+    void StartupShutdown::Setup_ManagerClassResourcePaths()
     {
         sfml_util::FontManager::SetFontsDirectory(
             game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir"));
@@ -377,25 +448,16 @@ namespace game
             game::GameDataFile::Instance()->GetMediaPath("media-images-combat-dir"));
     }
 
-    void StartupShutdown::WarehousesFill()
+    void StartupShutdown::Setup_HoldersFill()
     {
-        creature::title::Warehouse::Fill();
-        creature::condition::Warehouse::Fill();
-        spell::Warehouse::Fill();
-        song::Warehouse::Fill();
-        combat::trap::Warehouse::Fill();
+        creature::title::Holder::Fill();
+        creature::condition::Holder::Fill();
+        spell::Holder::Fill();
+        song::Holder::Fill();
+        combat::trap::Holder::Fill();
     }
 
-    void StartupShutdown::WarehousesEmpty()
-    {
-        combat::trap::Warehouse::Empty();
-        song::Warehouse::Empty();
-        spell::Warehouse::Empty();
-        creature::condition::Warehouse::Empty();
-        creature::title::Warehouse::Empty();
-    }
-
-    void StartupShutdown::SingletonsAcquire()
+    void StartupShutdown::Setup_SingletonsAcquire()
     {
         state::NpcWarehouse::Acquire();
         state::NpcFactory::Acquire();
@@ -429,7 +491,7 @@ namespace game
         LoopManager::Acquire();
     }
 
-    void StartupShutdown::SingletonsInitialize()
+    void StartupShutdown::Setup_SingletonsInitialize()
     {
         // SettingsFile::LoadAndRestore() must happen before initialization so that subsystems can
         // use the settings saved from the last run of the game.
@@ -439,71 +501,6 @@ namespace game
         combat::strategy::ChanceFactory::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
         non_player::ownership::ChanceFactory::Instance()->Initialize();
-    }
-
-    void StartupShutdown::SingletonsRelease()
-    {
-        // this order is critical - be careful here...
-
-        // release the SettingsFile first so that it saves the settings file even if a problem
-        // happens during shutdown
-        config::SettingsFile::Release();
-
-        // image managers should not be needed during shutdown, so release them early
-        sfml_util::gui::SongImageManager::Release();
-        sfml_util::gui::CombatImageManager::Release();
-        sfml_util::gui::ConditionImageManager::Release();
-        sfml_util::gui::SpellImageManager::Release();
-        sfml_util::gui::TitleImageManager::Release();
-        sfml_util::gui::CreatureImageManager::Release();
-        sfml_util::gui::ItemImageManager::Release();
-        sfml_util::gui::GuiElements::Release();
-
-        // factories should not be needed during shutdown, so release them early
-        non_player::ownership::InventoryFactory::Release();
-        item::armor::ArmorFactory::Release();
-        state::NpcFactory::Release();
-        creature::EnchantmentFactory::Release();
-        state::GameStateFactory::Release();
-        item::MiscItemFactory::Release();
-        item::weapon::WeaponFactory::Release();
-        non_player::ownership::ChanceFactory::Release();
-
-        // release LoopManager early because it frees all the stages and their resources
-        LoopManager::Release();
-
-        // these must occur after all the stages have been released
-        creature::NameInfo::Release();
-        sfml_util::FontManager::Release(); // after NameInfo::Release()
-        popup::PopupManager::Release();
-        sfml_util::SoundManager::Release();
-        sfml_util::TextureCache::Release();
-
-        // this will cause all party creatures/items/enchantments/etc to be Warehouses::Free()'d
-        Game::Release();
-
-        // must occur after Game::Release() because state::GameState needs it
-        state::NpcWarehouse::Release();
-
-        // if this is an abnormal shutdown then the Encounter object will have some
-        // Warehouse::Free() calls to make, so this must occur after Game::Release() but before
-        // creature/item/enchantment/etc warehouses are released.
-        combat::Encounter::Release();
-
-        // there are dependancies between these Warehouses so this release order is critical
-        creature::CreatureWarehouse::Release();
-        item::ItemProfileWarehouse::Release();
-        item::ItemWarehouse::Release();
-        creature::EnchantmentWarehouse::Release();
-
-        // the only constraint here is that it must occur after all the stages have been released,
-        // so there is no reason for this to be one of the last things to be released, but for some
-        // reason I liked the idea of the screen staying black while the application shuts down
-        sfml_util::Display::Release();
-
-        // these two are needed almost everywhere so release them last
-        GameDataFile::Release();
-        misc::Platform::Release();
     }
 
 } // namespace game

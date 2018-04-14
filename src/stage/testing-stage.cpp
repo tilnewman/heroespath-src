@@ -31,10 +31,10 @@
 
 #include "avatar/avatar-enum.hpp"
 #include "avatar/i-view.hpp"
-#include "creature/condition-warehouse.hpp"
+#include "creature/condition-holder.hpp"
 #include "creature/condition.hpp"
 #include "creature/creature.hpp"
-#include "creature/title-warehouse.hpp"
+#include "creature/title-holder.hpp"
 #include "game/game-data-file.hpp"
 #include "interact/interaction-manager.hpp"
 #include "item/item-factory.hpp"
@@ -60,8 +60,8 @@
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
-#include "song/song-warehouse.hpp"
-#include "spell/spell-warehouse.hpp"
+#include "song/song-holder.hpp"
+#include "spell/spell-holder.hpp"
 #include "state/game-state-factory.hpp"
 #include "state/game-state.hpp"
 
@@ -388,7 +388,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_Spells{ false };
         if (false == hasTestingCompleted_Spells)
         {
-            hasTestingCompleted_Spells = spell::Warehouse::Test();
+            hasTestingCompleted_Spells = spell::Holder::Test();
             return;
         }
 
@@ -404,7 +404,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_Songs{ false };
         if (false == hasTestingCompleted_Songs)
         {
-            hasTestingCompleted_Songs = song::Warehouse::Test();
+            hasTestingCompleted_Songs = song::Holder::Test();
             return;
         }
 
@@ -420,7 +420,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_Condition{ false };
         if (false == hasTestingCompleted_Condition)
         {
-            hasTestingCompleted_Condition = creature::condition::Warehouse::Test();
+            hasTestingCompleted_Condition = creature::condition::Holder::Test();
             return;
         }
 
@@ -436,7 +436,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_Title{ false };
         if (false == hasTestingCompleted_Title)
         {
-            hasTestingCompleted_Title = creature::title::Warehouse::Test();
+            hasTestingCompleted_Title = creature::title::Holder::Test();
             return;
         }
 

@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// spell-warehouse.cpp
+// spell-holder.cpp
 //
-#include "spell-warehouse.hpp"
+#include "spell-holder.hpp"
 
 #include "combat/effect-type-enum.hpp"
 #include "combat/target-enum.hpp"
@@ -40,12 +40,12 @@ namespace heroespath
 namespace spell
 {
 
-    SpellUVec_t Warehouse::spellsUVec_;
+    SpellUVec_t Holder::spellsUVec_;
 
-    void Warehouse::Fill()
+    void Holder::Fill()
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (spellsUVec_.empty()), "spell::Warehouse::Setup() was called twice.");
+            (spellsUVec_.empty()), "spell::Holder::Setup() was called twice.");
 
         // Note::Keep order in sync with spell::Spells::Enum
         spellsUVec_.emplace_back(std::make_unique<Spell>(
@@ -174,16 +174,16 @@ namespace spell
             "poisoned"));
     }
 
-    void Warehouse::Empty() { spellsUVec_.clear(); }
+    void Holder::Empty() { spellsUVec_.clear(); }
 
-    bool Warehouse::Test()
+    bool Holder::Test()
     {
         static auto hasInitialPrompt{ false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
             game::LoopManager::Instance()->TestingStrAppend(
-                "spell::Warehouse::Test() Starting Tests...");
+                "spell::Holder::Test() Starting Tests...");
         }
 
         static auto spellIndex{ 0 };
@@ -194,33 +194,33 @@ namespace spell
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SPELL_PTR->Name().empty() == false),
-                "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                                            << "\") resulted in an empty Name().");
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") resulted in an empty Name().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SPELL_PTR->Desc().empty() == false),
-                "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                                            << "\") resulted in an empty Desc().");
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") resulted in an empty Desc().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SPELL_PTR->DescExtra().empty() == false),
-                "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                                            << "\") resulted in an empty DescExtra().");
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") resulted in an empty DescExtra().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SPELL_PTR->ManaCost().IsNonZero()),
-                "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                                            << "\") resulted in a zero Mana cost.");
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") resulted in a zero Mana cost.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SPELL_PTR->Rank().IsNonZero()),
-                "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                                            << "\") resulted in a zero Rank.");
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") resulted in a zero Rank.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SPELL_PTR->Name() == Spells::Name(NEXT_ENUM)),
-                "spell::Warehouse::Test(\"" << Spells::ToString(NEXT_ENUM)
-                                            << "\") Spell is out of order.");
+                "spell::Holder::Test(\"" << Spells::ToString(NEXT_ENUM)
+                                         << "\") Spell is out of order.");
 
             ++spellIndex;
 
@@ -230,24 +230,23 @@ namespace spell
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "spell::Warehouse::Test()  ALL TESTS PASSED.");
+        game::LoopManager::Instance()->TestingStrAppend("spell::Holder::Test()  ALL TESTS PASSED.");
 
         return true;
     }
 
-    const SpellPtr_t Warehouse::Get(const Spells::Enum SPELL_ENUM)
+    const SpellPtr_t Holder::Get(const Spells::Enum SPELL_ENUM)
     {
         auto const SPELL_INDEX{ static_cast<std::size_t>(SPELL_ENUM) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (spellsUVec_.empty() == false),
-            "spell::Warehouse::Get(spell_enum=" << SPELL_ENUM
-                                                << ") was called when the warehouse was empty.");
+            "spell::Holder::Get(spell_enum=" << SPELL_ENUM
+                                             << ") was called when the holder was empty.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (SPELL_INDEX < spellsUVec_.size()),
-            "spell::Warehouse::Get(spell_enum="
+            "spell::Holder::Get(spell_enum="
                 << SPELL_ENUM << ", spell_index=" << SPELL_INDEX
                 << ") that index was NOT less than the spellsUVec_.size()=" << spellsUVec_.size()
                 << ".");

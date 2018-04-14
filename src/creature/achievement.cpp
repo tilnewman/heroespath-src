@@ -30,8 +30,7 @@
 #include "achievement.hpp"
 
 #include "creature/creature.hpp"
-#include "creature/title-warehouse.hpp"
-
+#include "creature/title-holder.hpp"
 #include "misc/assertlogandthrow.hpp"
 
 #include <limits>
@@ -57,11 +56,11 @@ namespace creature
 
         if (titleCountMap_.Empty() == false)
         {
-            titlePtrOpt = title::Warehouse::Get(titleCountMap_.begin()->second);
+            titlePtrOpt = title::Holder::Get(titleCountMap_.begin()->second);
 
             for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
             {
-                auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_COUNTTITLE_PAIR.second) };
+                auto const NEXT_TITLE_PTR{ title::Holder::Get(NEXT_COUNTTITLE_PAIR.second) };
 
                 if ((NEXT_TITLE_PTR->AchievementCount() < count_)
                     && (NEXT_TITLE_PTR->AchievementCount()
@@ -88,11 +87,11 @@ namespace creature
 
         if (titleCountMap_.Empty() == false)
         {
-            titlePtrOpt = title::Warehouse::Get(titleCountMap_.begin()->second);
+            titlePtrOpt = title::Holder::Get(titleCountMap_.begin()->second);
 
             for (auto const & NEXT_COUNTTITLE_PAIR : titleCountMap_)
             {
-                auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_COUNTTITLE_PAIR.second) };
+                auto const NEXT_TITLE_PTR{ title::Holder::Get(NEXT_COUNTTITLE_PAIR.second) };
 
                 if ((NEXT_TITLE_PTR->AchievementCount() > count_)
                     && (NEXT_TITLE_PTR->AchievementCount()
@@ -124,7 +123,7 @@ namespace creature
 
     bool Achievement::IsRoleInList(const role::Enum E) const
     {
-        return title::Warehouse::Get(titleCountMap_.begin()->second)->IsRoleInList(E);
+        return title::Holder::Get(titleCountMap_.begin()->second)->IsRoleInList(E);
     }
 
     TitlePtrOpt_t Achievement::Increment(const creature::role::Enum ROLE_ENUM)
@@ -141,7 +140,7 @@ namespace creature
 
         for (auto const & NEXT_TITLE_COUNT_PAIR : titleCountMap_)
         {
-            auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_TITLE_COUNT_PAIR.second) };
+            auto const NEXT_TITLE_PTR{ title::Holder::Get(NEXT_TITLE_COUNT_PAIR.second) };
 
             if ((NEXT_TITLE_PTR->AchievementCount() == count_)
                 && (NEXT_TITLE_PTR->IsRoleInList(ROLE_ENUM)))

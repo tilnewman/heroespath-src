@@ -22,10 +22,10 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_CREATURE_CONDITIONWAREHOUSE_HPP_INCLUDED
-#define HEROESPATH_CREATURE_CONDITIONWAREHOUSE_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_CONDITION_HOLDER_HPP_INCLUDED
+#define HEROESPATH_CREATURE_CONDITION_HOLDER_HPP_INCLUDED
 //
-// condition-warehouse.hpp
+// condition-holder.hpp
 //
 #include "creature/condition-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
@@ -46,7 +46,8 @@ namespace creature
     namespace condition
     {
 
-        struct Warehouse
+        // Responsible for the lifetime of all Conditions in the game.
+        struct Holder
         {
             static void Fill();
             static void Empty();
@@ -61,4 +62,4 @@ namespace creature
 } // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_CREATURE_CONDITIONWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_CONDITION_HOLDER_HPP_INCLUDED

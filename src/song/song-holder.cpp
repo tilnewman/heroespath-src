@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// song-warehouse.cpp
+// song-holder.cpp
 //
-#include "song-warehouse.hpp"
+#include "song-holder.hpp"
 
 #include "game/loop-manager.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -40,12 +40,11 @@ namespace heroespath
 namespace song
 {
 
-    SongUVec_t Warehouse::songsUVec_;
+    SongUVec_t Holder::songsUVec_;
 
-    void Warehouse::Fill()
+    void Holder::Fill()
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (songsUVec_.empty()), "song::Warehouse::Setup() was called twice.");
+        M_ASSERT_OR_LOGANDTHROW_SS((songsUVec_.empty()), "song::Holder::Setup() was called twice.");
 
         // Note::Keep order in sync with song::Songs::Enum
         songsUVec_.emplace_back(std::make_unique<Song>(
@@ -115,16 +114,16 @@ namespace song
             "slept"));
     }
 
-    void Warehouse::Empty() { songsUVec_.clear(); }
+    void Holder::Empty() { songsUVec_.clear(); }
 
-    bool Warehouse::Test()
+    bool Holder::Test()
     {
         static auto hasInitialPrompt{ false };
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
             game::LoopManager::Instance()->TestingStrAppend(
-                "song::Warehouse::Test() Starting Tests...");
+                "song::Holder::Test() Starting Tests...");
         }
 
         static auto songIndex{ 0 };
@@ -135,33 +134,33 @@ namespace song
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SONG_PTR->Name().empty() == false),
-                "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                                           << "\") resulted in an empty Name().");
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") resulted in an empty Name().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SONG_PTR->Desc().empty() == false),
-                "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                                           << "\") resulted in an empty Desc().");
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") resulted in an empty Desc().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SONG_PTR->DescExtra().empty() == false),
-                "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                                           << "\") resulted in an empty DescExtra().");
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") resulted in an empty DescExtra().");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SONG_PTR->ManaCost().IsNonZero()),
-                "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                                           << "\") resulted in a zero Mana cost.");
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") resulted in a zero Mana cost.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SONG_PTR->Rank().IsNonZero()),
-                "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                                           << "\") resulted in a zero Rank.");
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") resulted in a zero Rank.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SONG_PTR->Name() == Songs::Name(NEXT_ENUM)),
-                "song::Warehouse::Test(\"" << Songs::ToString(NEXT_ENUM)
-                                           << "\") Song is out of order.");
+                "song::Holder::Test(\"" << Songs::ToString(NEXT_ENUM)
+                                        << "\") Song is out of order.");
 
             ++songIndex;
             game::LoopManager::Instance()->TestingStrIncrement(
@@ -170,22 +169,21 @@ namespace song
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "song::Warehouse::Test()  ALL TESTS PASSED.");
+        game::LoopManager::Instance()->TestingStrAppend("song::Holder::Test()  ALL TESTS PASSED.");
 
         return true;
     }
 
-    const SongPtr_t Warehouse::Get(const Songs::Enum E)
+    const SongPtr_t Holder::Get(const Songs::Enum E)
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (songsUVec_.empty() == false),
-            "song::Warehouse::Get(" << Songs::ToString(E)
-                                    << ") was called when the warehouse was empty.");
+            "song::Holder::Get(" << Songs::ToString(E)
+                                 << ") was called when the holder was empty.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (static_cast<std::size_t>(E) < songsUVec_.size()),
-            "song::Warehouse::Get("
+            "song::Holder::Get("
                 << Songs::ToString(E)
                 << ") found insuff sized songsUVec_, probably from a bug in Setup().");
 

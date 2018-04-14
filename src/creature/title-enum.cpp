@@ -29,7 +29,7 @@
 //
 #include "title-enum.hpp"
 
-#include "creature/title-warehouse.hpp"
+#include "creature/title-holder.hpp"
 #include "creature/title.hpp"
 #include "game/game-data-file.hpp"
 
@@ -1358,7 +1358,7 @@ namespace creature
 
     const std::string Titles::ImageFilename(const Titles::Enum E)
     {
-        return title::Warehouse::Get(E)->ImageFilename();
+        return title::Holder::Get(E)->ImageFilename();
     }
 } // namespace creature
 } // namespace heroespath

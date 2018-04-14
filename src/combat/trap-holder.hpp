@@ -22,10 +22,10 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_COMBAT_TRAP_TRAPWAREHOUSE_HPP_INCLUDED
-#define HEROESPATH_COMBAT_TRAP_TRAPWAREHOUSE_HPP_INCLUDED
+#ifndef HEROESPATH_COMBAT_TRAP_TRAP_HOLDER_HPP_INCLUDED
+#define HEROESPATH_COMBAT_TRAP_TRAP_HOLDER_HPP_INCLUDED
 //
-// trap-warehouse.hpp
+// trap-holder.hpp
 //
 #include "combat/trap.hpp"
 
@@ -39,13 +39,12 @@ namespace combat
     namespace trap
     {
 
-        // Responsible for storing Trap instances and for presenting Trap access functions.
-        struct Warehouse
+        // Responsible for the lifetimes of all Traps in the game.
+        struct Holder
         {
             static void Fill();
             static void Empty();
 
-            static const TrapVec_t Get();
             static int GetMinSeverity();
             static int GetMaxSeverity();
 
@@ -57,8 +56,9 @@ namespace combat
         private:
             static TrapVec_t traps_;
         };
+
     } // namespace trap
 } // namespace combat
 } // namespace heroespath
 
-#endif // HEROESPATH_COMBAT_TRAP_TRAPWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_COMBAT_TRAP_TRAP_HOLDER_HPP_INCLUDED

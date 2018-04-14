@@ -32,7 +32,7 @@
 #include "combat/combat-text.hpp"
 #include "combat/encounter.hpp"
 #include "combat/fight.hpp"
-#include "combat/trap-warehouse.hpp"
+#include "combat/trap-holder.hpp"
 #include "creature/algorithms.hpp"
 #include "creature/creature.hpp"
 #include "creature/stats.hpp"
@@ -678,7 +678,7 @@ namespace stage
 
     void TreasureStage::LockPickFailure()
     {
-        trap_ = combat::trap::Warehouse::SelectRandomWithSeverityRatioNear(
+        trap_ = combat::trap::Holder::SelectRandomWithSeverityRatioNear(
             combat::Encounter::Instance()->DefeatedPartyTreasureRatioPer());
 
         auto const LOCK_PICKING_CREATURE_PTR_OPT{

@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// trap-warehouse.cpp
+// trap-holder.cpp
 //
-#include "trap-warehouse.hpp"
+#include "trap-holder.hpp"
 
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -43,9 +43,9 @@ namespace combat
     namespace trap
     {
 
-        TrapVec_t combat::trap::Warehouse::traps_{};
+        TrapVec_t combat::trap::Holder::traps_{};
 
-        void Warehouse::Fill()
+        void Holder::Fill()
         {
             Empty();
 
@@ -264,43 +264,34 @@ namespace combat
             });
         }
 
-        void Warehouse::Empty() { traps_.clear(); }
+        void Holder::Empty() { traps_.clear(); }
 
-        const TrapVec_t Warehouse::Get()
+        int Holder::GetMinSeverity()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (traps_.empty() == false),
-                "combat::trap::Warehouse::Get() called when the warehouse was empty.");
-
-            return traps_;
-        }
-
-        int Warehouse::GetMinSeverity()
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (traps_.empty() == false),
-                "combat::trap::Warehouse::GetWithMinSeverity() called when the warehouse was "
+                "combat::trap::Holder::GetWithMinSeverity() called when the holder was "
                 "empty.");
 
             return traps_[0].Severity();
         }
 
-        int Warehouse::GetMaxSeverity()
+        int Holder::GetMaxSeverity()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (traps_.empty() == false),
-                "combat::trap::Warehouse::GetWithMinSeverity() called when the warehouse was "
+                "combat::trap::Holder::GetWithMinSeverity() called when the holder was "
                 "empty.");
 
             return traps_[traps_.size() - 1].Severity();
         }
 
         const TrapVec_t
-            Warehouse::GetWithSeverityRatioBetween(const float THE_MIN, const float THE_MAX)
+            Holder::GetWithSeverityRatioBetween(const float THE_MIN, const float THE_MAX)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (traps_.empty() == false),
-                "combat::trap::Warehouse::GetWithSeverityRatio() called when the warehouse was "
+                "combat::trap::Holder::GetWithSeverityRatio() called when the holder was "
                 "empty.");
 
             auto const SEVERITY_MAX_F{ static_cast<float>(GetMaxSeverity()) };
@@ -322,7 +313,7 @@ namespace combat
             if (trapsWithSeverityWithinRange.empty())
             {
                 M_HP_LOG_ERR(
-                    "combat::trap::Warehouse::GetWithSeverityRatioBetween(min="
+                    "combat::trap::Holder::GetWithSeverityRatioBetween(min="
                     << THE_MIN << ", max=" << THE_MAX << ") "
                     << "resulted in no traps, so the default weakest trap is being used.");
 
@@ -332,7 +323,7 @@ namespace combat
             return trapsWithSeverityWithinRange;
         }
 
-        const Trap Warehouse::SelectRandomWithSeverityRatioNear(const float SEVERITY_RATIO)
+        const Trap Holder::SelectRandomWithSeverityRatioNear(const float SEVERITY_RATIO)
         {
             auto severityRatioMin{ SEVERITY_RATIO - 0.333f };
             if (severityRatioMin < 0.0f)

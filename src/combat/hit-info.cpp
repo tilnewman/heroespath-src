@@ -29,7 +29,7 @@
 //
 #include "hit-info.hpp"
 
-#include "creature/condition-warehouse.hpp"
+#include "creature/condition-holder.hpp"
 #include "creature/condition.hpp"
 #include "item/item.hpp"
 #include "misc/vectors.hpp"
@@ -197,7 +197,7 @@ namespace combat
         , actionPhraseCNP_(ACTION_PHRASE_CNP)
         , songPtrOpt_(boost::none)
         , didArmorAbsorb_(false)
-        , conditionPtrOpt_(creature::condition::Warehouse::Get(COND_ENUM))
+        , conditionPtrOpt_(creature::condition::Holder::Get(COND_ENUM))
     {}
 
     HitInfo::HitInfo(

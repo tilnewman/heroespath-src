@@ -45,7 +45,6 @@
 #include "creature/creature.hpp"
 #include "creature/name-info.hpp"
 #include "creature/stats.hpp"
-#include "creature/title-warehouse.hpp"
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"

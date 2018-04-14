@@ -22,10 +22,10 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED
-#define HEROESPATH_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_TITLE_HOLDER_HPP_INCLUDED
+#define HEROESPATH_CREATURE_TITLE_HOLDER_HPP_INCLUDED
 //
-// title-warehouse.hpp
+// title-holder.hpp
 //
 #include "creature/role-enum.hpp"
 #include "creature/title-enum.hpp"
@@ -45,7 +45,8 @@ namespace creature
     namespace title
     {
 
-        class Warehouse
+        // Responsible for the lifetime of all Titles in the game.
+        class Holder
         {
         public:
             static void Fill();
@@ -61,4 +62,4 @@ namespace creature
 } // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_CREATURE_TITLEWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_TITLE_HOLDER_HPP_INCLUDED

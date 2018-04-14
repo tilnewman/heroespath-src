@@ -44,19 +44,20 @@ namespace game
     private:
         static void Teardown_SettingsFile(int & exitCode_OutParam);
         static void Teardown_CloseDisplay(int & exitCode_OutParam);
-        static void Teardown_EmptyWarehouses(int & exitCode_OutParam);
+        static void Teardown_EmptyHolders(int & exitCode_OutParam);
         static void Teardown_ReleaseSingletons(int & exitCode_OutParam);
         static void Teardown_Logger(int & exitCode_OutParam);
-        static void ParseCommandLineArguments(const int ARGC, char * argv[]);
-        static void DetectLogAndCheckPlatform();
-        static void SetupDisplay(const std::string & APPLICATION_NAME);
-        static void SetManagerClassResourcePaths();
-        static void WarehousesFill();
-        static void WarehousesEmpty();
-        static void SingletonsAcquire();
-        static void SingletonsInitialize();
-        static void SingletonsRelease();
+
+        static void Setup_ParseCommandLineArguments(const int ARGC, char * argv[]);
+        static void Setup_DetectLogAndCheckPlatform();
+        static void Setup_SeedRandomNumberGenerator();
+        static void Setup_Display(const std::string & APPLICATION_NAME);
+        static void Setup_ManagerClassResourcePaths();
+        static void Setup_HoldersFill();
+        static void Setup_SingletonsAcquire();
+        static void Setup_SingletonsInitialize();
     };
+
 } // namespace game
 } // namespace heroespath
 

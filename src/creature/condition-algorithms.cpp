@@ -29,7 +29,6 @@
 //
 #include "condition-algorithms.hpp"
 
-#include "creature/condition-warehouse.hpp"
 #include "creature/condition.hpp"
 #include "log/log-macros.hpp"
 

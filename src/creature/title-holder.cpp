@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// title-warehouse.cpp
+// title-holder.cpp
 //
-#include "title-warehouse.hpp"
+#include "title-holder.hpp"
 
 #include "creature/role-enum.hpp"
 #include "creature/title.hpp"
@@ -46,9 +46,9 @@ namespace creature
     namespace title
     {
 
-        TitleUVec_t Warehouse::titleUVec_;
+        TitleUVec_t Holder::titleUVec_;
 
-        void Warehouse::Fill()
+        void Holder::Fill()
         {
             // Note:  Keep order in sync with creature::Titles::Enum
 
@@ -1749,22 +1749,22 @@ namespace creature
                 2_health));
         }
 
-        void Warehouse::Empty() { titleUVec_.clear(); }
+        void Holder::Empty() { titleUVec_.clear(); }
 
-        TitlePtr_t Warehouse::Get(const Titles::Enum E)
+        TitlePtr_t Holder::Get(const Titles::Enum E)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (titleUVec_.empty() == false),
-                "creature::Titles::Warehouse::Get(\""
-                    << Titles::ToString(E) << "\") called when the warehouse was empty.");
+                "creature::Titles::Holder::Get(\"" << Titles::ToString(E)
+                                                   << "\") called when the Holder was empty.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 ((E >= 0) && (E < Titles::Count)),
-                "creature::Titles::Warehouse::Get(enum=" << E << ")_InvalidValueError.");
+                "creature::Titles::Holder::Get(enum=" << E << ")_InvalidValueError.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (static_cast<std::size_t>(E) < titleUVec_.size()),
-                "creature::Titles::Warehouse::Get(\""
+                "creature::Titles::Holder::Get(\""
                     << Titles::ToString(E) << "\") enum given was " << E
                     << " but that was greater than (or equal to) "
                     << "the vec size of " << titleUVec_.size() << ".");
@@ -1772,14 +1772,14 @@ namespace creature
             return TitlePtr_t{ titleUVec_[static_cast<std::size_t>(E)].get() };
         }
 
-        bool Warehouse::Test()
+        bool Holder::Test()
         {
             static auto hasInitialPrompt{ false };
             if (false == hasInitialPrompt)
             {
                 hasInitialPrompt = true;
                 game::LoopManager::Instance()->TestingStrAppend(
-                    "creature::Titles::Warehouse::Test() Starting Tests...");
+                    "creature::Titles::Holder::Test() Starting Tests...");
             }
 
             static auto titleIndex{ 0 };
@@ -1790,36 +1790,36 @@ namespace creature
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (TITLE_PTR->Desc().empty() == false),
-                    "creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM)
-                                                           << "\") resulted in an empty Desc().");
+                    "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
+                                                        << "\") resulted in an empty Desc().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (TITLE_PTR->LongDesc().empty() == false),
-                    "creature::Titles::Warehouse::Test(\""
-                        << Titles::ToString(NEXT_ENUM) << "\") resulted in an empty LongDesc().");
+                    "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
+                                                        << "\") resulted in an empty LongDesc().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (TITLE_PTR->ImageFilename().empty() == false),
-                    "creature::Titles::Warehouse::Test(\""
+                    "creature::Titles::Holder::Test(\""
                         << Titles::ToString(NEXT_ENUM)
                         << "\") resulted in an empty ImageFilename().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (TITLE_PTR->RolesCopy().empty() == false),
-                    "creature::Titles::Warehouse::Test(\""
-                        << Titles::ToString(NEXT_ENUM) << "\") resulted in an empty RolesVec().");
+                    "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
+                                                        << "\") resulted in an empty RolesVec().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (TITLE_PTR->Which() == NEXT_ENUM),
-                    "creature::Titles::Warehouse::Test(\""
+                    "creature::Titles::Holder::Test(\""
                         << Titles::ToString(NEXT_ENUM)
                         << "\") resulted in a Title with a different tile::Enum (\""
                         << Titles::ToString(TITLE_PTR->Which()) << "\")");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (TITLE_PTR->Name() == Titles::Name(NEXT_ENUM)),
-                    "creature::Titles::Warehouse::Test(\"" << Titles::ToString(NEXT_ENUM)
-                                                           << "\") Title is out of order.");
+                    "creature::Titles::Holder::Test(\"" << Titles::ToString(NEXT_ENUM)
+                                                        << "\") Title is out of order.");
 
                 sf::Texture texture;
                 sfml_util::gui::TitleImageManager::Instance()->Get(texture, NEXT_ENUM);
@@ -1830,7 +1830,7 @@ namespace creature
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
-                "creature::Titles::Warehouse::Test()  ALL TESTS PASSED.");
+                "creature::Titles::Holder::Test()  ALL TESTS PASSED.");
 
             return true;
         }

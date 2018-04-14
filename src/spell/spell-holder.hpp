@@ -22,10 +22,10 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_SPELL_SPELLWAREHOUSE_HPP_INCLUDED
-#define HEROESPATH_SPELL_SPELLWAREHOUSE_HPP_INCLUDED
+#ifndef HEROESPATH_SPELL_SPELL_HOLDER_HPP_INCLUDED
+#define HEROESPATH_SPELL_SPELL_HOLDER_HPP_INCLUDED
 //
-// spell-warehouse.hpp
+// spell-holder.hpp
 //
 #include "misc/not-null.hpp"
 #include "spell/spell-enum.hpp"
@@ -44,9 +44,8 @@ namespace spell
     using SpellUPtr_t = std::unique_ptr<Spell>;
     using SpellUVec_t = std::vector<SpellUPtr_t>;
 
-    // Responsible for pre-game-start creation and testing of all spells, and
-    // then providing access to them.
-    struct Warehouse
+    // Responsible for the lifetimes of all Spells in the game.
+    struct Holder
     {
         static void Fill();
         static void Empty();
@@ -60,4 +59,4 @@ namespace spell
 } // namespace spell
 } // namespace heroespath
 
-#endif // HEROESPATH_SPELL_SPELLWAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_SPELL_SPELL_HOLDER_HPP_INCLUDED

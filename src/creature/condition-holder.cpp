@@ -25,9 +25,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// condition-warehouse.cpp
+// condition-holder.cpp
 //
-#include "condition-warehouse.hpp"
+#include "condition-holder.hpp"
 
 #include "creature/condition.hpp"
 #include "game/loop-manager.hpp"
@@ -40,13 +40,13 @@ namespace creature
     namespace condition
     {
 
-        ConditionUVec_t Warehouse::conditionsUVec_;
+        ConditionUVec_t Holder::conditionsUVec_;
 
-        void Warehouse::Fill()
+        void Holder::Fill()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (conditionsUVec_.empty()),
-                "creature::condition::Warehouse::Setup() was called twice.");
+                "creature::condition::Holder::Setup() was called twice.");
 
             // Note:  Keep order in sync with creature::Conditions::Enum
             conditionsUVec_.emplace_back(std::make_unique<Condition>());
@@ -161,16 +161,16 @@ namespace creature
                                   std::make_pair(stats::Traits::Intelligence, -9999) })));
         }
 
-        void Warehouse::Empty() { conditionsUVec_.clear(); }
+        void Holder::Empty() { conditionsUVec_.clear(); }
 
-        bool Warehouse::Test()
+        bool Holder::Test()
         {
             static auto hasInitialPrompt{ false };
             if (false == hasInitialPrompt)
             {
                 hasInitialPrompt = true;
                 game::LoopManager::Instance()->TestingStrAppend(
-                    "creature::condition::Warehouse::Test() Starting Tests...");
+                    "creature::condition::Holder::Test() Starting Tests...");
             }
 
             static auto condIndex{ 0 };
@@ -181,29 +181,29 @@ namespace creature
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (CONDITION_PTR->Desc().empty() == false),
-                    "creature::condition::Warehouse::Test(\""
-                        << Conditions::ToString(NEXT_ENUM) << "\") resulted in an empty Desc().");
+                    "creature::condition::Holder::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                                                           << "\") resulted in an empty Desc().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (CONDITION_PTR->LongDesc().empty() == false),
-                    "creature::condition::Warehouse::Test(\""
+                    "creature::condition::Holder::Test(\""
                         << Conditions::ToString(NEXT_ENUM)
                         << "\") resulted in an empty LongDesc().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (CONDITION_PTR->ToString().empty() == false),
-                    "creature::condition::Warehouse::Test(\""
+                    "creature::condition::Holder::Test(\""
                         << Conditions::ToString(NEXT_ENUM)
                         << "\") resulted in an empty ImageFilename().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (CONDITION_PTR->Name().empty() == false),
-                    "creature::condition::Warehouse::Test(\""
-                        << Conditions::ToString(NEXT_ENUM) << "\") resulted in an empty Name().");
+                    "creature::condition::Holder::Test(\"" << Conditions::ToString(NEXT_ENUM)
+                                                           << "\") resulted in an empty Name().");
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (CONDITION_PTR->Name() == Conditions::Name(NEXT_ENUM)),
-                    "creature::condition::Warehouse::Test(ptr=\""
+                    "creature::condition::Holder::Test(ptr=\""
                         << CONDITION_PTR->Name() << "\", enum=\"" << Conditions::ToString(NEXT_ENUM)
                         << "\") Condition is out of order.");
 
@@ -216,21 +216,21 @@ namespace creature
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
-                "creature::title::Warehouse::Test()  ALL TESTS PASSED.");
+                "creature::title::Holder::Test()  ALL TESTS PASSED.");
 
             return true;
         }
 
-        const ConditionPtr_t Warehouse::Get(const Conditions::Enum E)
+        const ConditionPtr_t Holder::Get(const Conditions::Enum E)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (conditionsUVec_.empty() == false),
-                "creature::condition::Warehouse::Get(" << Conditions::ToString(E)
-                                                       << ") was called when warehouse was empty.");
+                "creature::condition::Holder::Get(" << Conditions::ToString(E)
+                                                    << ") was called when Holder was empty.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (static_cast<std::size_t>(E) < conditionsUVec_.size()),
-                "creature::condition::Warehouse::Get("
+                "creature::condition::Holder::Get("
                     << Conditions::ToString(E)
                     << ") found insuff sized conditionsUVec_, probably from a bug in Fill().");
 

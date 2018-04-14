@@ -30,9 +30,9 @@
 #include "creature.hpp"
 
 #include "creature/condition-algorithms.hpp"
-#include "creature/condition-warehouse.hpp"
+#include "creature/condition-holder.hpp"
 #include "creature/condition.hpp"
-#include "creature/title-warehouse.hpp"
+#include "creature/title-holder.hpp"
 #include "game/game-data-file.hpp"
 #include "item/algorithms.hpp"
 #include "item/item.hpp"
@@ -42,9 +42,9 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
-#include "song/song-warehouse.hpp"
+#include "song/song-holder.hpp"
 #include "song/song.hpp"
-#include "spell/spell-warehouse.hpp"
+#include "spell/spell-holder.hpp"
 #include "spell/spell.hpp"
 
 #include <algorithm>
@@ -238,7 +238,7 @@ namespace creature
     {
         if (ALLOW_CHANGES)
         {
-            title::Warehouse::Get(E)->Change(this);
+            title::Holder::Get(E)->Change(this);
         }
 
         titlesVec_.emplace_back(E);
@@ -249,7 +249,7 @@ namespace creature
         TitlePVec_t titlePVec;
 
         for (auto const NEXT_TITLE_ENUM : titlesVec_)
-            titlePVec.emplace_back(title::Warehouse::Get(NEXT_TITLE_ENUM));
+            titlePVec.emplace_back(title::Holder::Get(NEXT_TITLE_ENUM));
 
         return titlePVec;
     }
@@ -316,7 +316,7 @@ namespace creature
             // make the change to the creature
             if (ALLOW_CHANGES)
             {
-                condition::Warehouse::Get(E)->InitialChange(this);
+                condition::Holder::Get(E)->InitialChange(this);
                 ReCalculateTraitBonuses();
             }
 
@@ -341,7 +341,7 @@ namespace creature
         for (auto const NEXT_CONDITION_TO_REMOVE_ENUM : conditionsToRemoveVec)
         {
             wasAnyConditionRemoved = true;
-            condition::Warehouse::Get(NEXT_CONDITION_TO_REMOVE_ENUM)->FinalChange(this);
+            condition::Holder::Get(NEXT_CONDITION_TO_REMOVE_ENUM)->FinalChange(this);
 
             auto const FOUND_ITER{ std::find(
                 conditionsVec_.begin(), conditionsVec_.end(), NEXT_CONDITION_TO_REMOVE_ENUM) };
@@ -372,7 +372,7 @@ namespace creature
         // undo the changes made by the conditions that will be removed
         for (auto const NEXT_COND_ENUM : conditionsVec_)
         {
-            condition::Warehouse::Get(NEXT_COND_ENUM)->FinalChange(this);
+            condition::Holder::Get(NEXT_COND_ENUM)->FinalChange(this);
         }
 
         conditionsVec_.clear();
@@ -387,7 +387,7 @@ namespace creature
 
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
         {
-            conditionPVec.emplace_back(condition::Warehouse::Get(NEXT_CONDITION_ENUM));
+            conditionPVec.emplace_back(condition::Holder::Get(NEXT_CONDITION_ENUM));
         }
 
         return conditionPVec;
@@ -449,7 +449,7 @@ namespace creature
     {
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
         {
-            if (condition::Warehouse::Get(NEXT_CONDITION_ENUM)->IsMagical())
+            if (condition::Holder::Get(NEXT_CONDITION_ENUM)->IsMagical())
             {
                 return true;
             }
@@ -1215,7 +1215,7 @@ namespace creature
     {
         for (auto const NEXT_SPELL_ENUM : spellsVec_)
         {
-            auto const NEXT_EFFECT_TYPE_SOURCE{ spell::Warehouse::Get(NEXT_SPELL_ENUM)->Effect() };
+            auto const NEXT_EFFECT_TYPE_SOURCE{ spell::Holder::Get(NEXT_SPELL_ENUM)->Effect() };
 
             for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
             {
@@ -1235,7 +1235,7 @@ namespace creature
 
         for (auto const NEXT_SPELL_TYPE : spellsVec_)
         {
-            spellsPVec.emplace_back(spell::Warehouse::Get(NEXT_SPELL_TYPE));
+            spellsPVec.emplace_back(spell::Holder::Get(NEXT_SPELL_TYPE));
         }
 
         return spellsPVec;
@@ -1311,7 +1311,7 @@ namespace creature
     {
         for (auto const NEXT_SONG_ENUM : songsVec_)
         {
-            auto const NEXT_EFFECT_TYPE_SOURCE{ song::Warehouse::Get(NEXT_SONG_ENUM)->Effect() };
+            auto const NEXT_EFFECT_TYPE_SOURCE{ song::Holder::Get(NEXT_SONG_ENUM)->Effect() };
 
             for (auto const NEXT_EFFECT_TYPE_TEST : EFFECT_TYPE_VEC)
             {
@@ -1331,7 +1331,7 @@ namespace creature
 
         for (auto const NEXT_SONG_ENUM : songsVec_)
         {
-            songsPVec.emplace_back(song::Warehouse::Get(NEXT_SONG_ENUM));
+            songsPVec.emplace_back(song::Holder::Get(NEXT_SONG_ENUM));
         }
 
         return songsPVec;
@@ -1379,13 +1379,13 @@ namespace creature
         ss << ", conds=";
         for (auto const NEXT_CONDITION_ENUM : conditionsVec_)
         {
-            ss << condition::Warehouse::Get(NEXT_CONDITION_ENUM)->Name() << ",";
+            ss << condition::Holder::Get(NEXT_CONDITION_ENUM)->Name() << ",";
         }
 
         ss << ", titles=";
         for (auto const NEXT_TITLE_ENUM : titlesVec_)
         {
-            ss << title::Warehouse::Get(NEXT_TITLE_ENUM)->Name() << ",";
+            ss << title::Holder::Get(NEXT_TITLE_ENUM)->Name() << ",";
         }
 
         ss << ", inventory=" << inventory_.ToString();
@@ -1468,7 +1468,7 @@ namespace creature
 
             for (auto const NEXT_COND_ENUM : conditionsVec_)
             {
-                traitPercent += condition::Warehouse::Get(NEXT_COND_ENUM)
+                traitPercent += condition::Holder::Get(NEXT_COND_ENUM)
                                     ->Traits()
                                     .GetCopy(NEXT_TRAIT_ENUM)
                                     .Current();

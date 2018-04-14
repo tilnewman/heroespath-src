@@ -30,7 +30,7 @@
 #include "achievements.hpp"
 
 #include "creature/creature.hpp"
-#include "creature/title-warehouse.hpp"
+#include "creature/title-holder.hpp"
 #include "misc/assertlogandthrow.hpp"
 
 #include <exception>
@@ -176,7 +176,7 @@ namespace creature
         for (int t(TITLE_FIRST); t <= TITLE_LAST; ++t)
         {
             auto const NEXT_ENUM{ static_cast<Titles::Enum>(t) };
-            auto const NEXT_TITLE_PTR{ title::Warehouse::Get(NEXT_ENUM) };
+            auto const NEXT_TITLE_PTR{ title::Holder::Get(NEXT_ENUM) };
             titleCountMap[NEXT_TITLE_PTR->AchievementCount()] = NEXT_ENUM;
         }
 
