@@ -41,6 +41,8 @@ namespace state
 
     void World::HandleLevelLoad(const map::Level::Enum LEVEL) { maps_.HandleLevelLoad(LEVEL); }
 
+    void World::HandleLevelUnload(const map::Level::Enum LEVEL) { maps_.HandleLevelUnload(LEVEL); }
+
     void World::BeforeSerialize() { maps_.BeforeSerialize(); }
 
     void World::AfterSerialize() { maps_.AfterSerialize(); }

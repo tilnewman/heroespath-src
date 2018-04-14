@@ -75,7 +75,7 @@ namespace state
         return interact::ConversationFactory::Make(conversationMood_, conversationCategories_);
     }
 
-    void Npc::HandleLevelLoad()
+    void Npc::ResetConversation()
     {
         if (conversationCategories_.empty() == false)
         {
@@ -100,5 +100,6 @@ namespace state
 
         return ss.str();
     }
+
 } // namespace state
 } // namespace heroespath

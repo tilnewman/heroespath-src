@@ -71,6 +71,7 @@
 #include "song/song-warehouse.hpp"
 #include "spell/spell-warehouse.hpp"
 #include "state/game-state-factory.hpp"
+#include "state/npc-factory.hpp"
 #include "state/npc-warehouse.hpp"
 
 #include <cstdlib>
@@ -398,6 +399,7 @@ namespace game
     void StartupShutdown::SingletonsAcquire()
     {
         state::NpcWarehouse::Acquire();
+        state::NpcFactory::Acquire();
         sfml_util::TextureCache::Acquire();
         creature::EnchantmentFactory::Acquire();
         item::ItemWarehouse::Acquire();
@@ -441,12 +443,15 @@ namespace game
 
     void StartupShutdown::SingletonsRelease()
     {
+        // this order is critical - be careful here...
+
         LoopManager::Release();
         config::SettingsFile::Release();
 
         // TODO re-order so that all factories are released here
         non_player::ownership::InventoryFactory::Release();
         item::armor::ArmorFactory::Release();
+        state::NpcFactory::Release();
 
         combat::Encounter::Release();
         creature::NameInfo::Release();
@@ -468,7 +473,10 @@ namespace game
         non_player::ownership::ChanceFactory::Release();
         sfml_util::Display::Release();
         sfml_util::TextureCache::Release();
+
+        // must occur after Game::Release();
         state::NpcWarehouse::Release();
+
         creature::CreatureWarehouse::Release();
         item::ItemProfileWarehouse::Release();
         item::ItemWarehouse::Release();

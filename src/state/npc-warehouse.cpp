@@ -78,11 +78,5 @@ namespace state
         instanceUPtr_.reset();
     }
 
-    const NpcPtr_t NpcWarehouse::Store(const NpcPtr_t NPC_PTR) { return warehouse_.Store(NPC_PTR); }
-
-    void NpcWarehouse::Free(const NpcPtr_t NPC_PTR) { warehouse_.Free(NPC_PTR); }
-
-    void NpcWarehouse::Free(NpcPVec_t & npcPVec) { warehouse_.Free(npcPVec); }
-
 } // namespace state
 } // namespace heroespath

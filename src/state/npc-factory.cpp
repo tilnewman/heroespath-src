@@ -25,15 +25,18 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 //
-// world-factory.cpp
+// npc-factory.cpp
 //
 #include "npc-factory.hpp"
+
 #include "game/game.hpp"
 #include "map/level-enum.hpp"
 #include "misc/random.hpp"
 #include "misc/vectors.hpp"
 #include "state/game-state.hpp"
 #include "state/maps.hpp"
+#include "state/npc-warehouse.hpp"
+#include "state/npc.hpp"
 #include "state/world.hpp"
 
 namespace heroespath
@@ -41,7 +44,44 @@ namespace heroespath
 namespace state
 {
 
-    const NpcPVec_t NpcFactory::Make(const NpcPlaceholder & PLACEHOLDER)
+    std::unique_ptr<NpcFactory> NpcFactory::instanceUPtr_;
+
+    NpcFactory::NpcFactory() { M_HP_LOG_DBG("Singleton Construction: NpcFactory"); }
+
+    NpcFactory::~NpcFactory() { M_HP_LOG_DBG("Singleton Destruction: NpcFactory"); }
+
+    misc::NotNull<NpcFactory *> NpcFactory::Instance()
+    {
+        if (!instanceUPtr_)
+        {
+            M_HP_LOG_ERR("Singleton Instance() before Acquire(): NpcFactory");
+            Acquire();
+        }
+
+        return instanceUPtr_.get();
+    }
+
+    void NpcFactory::Acquire()
+    {
+        if (!instanceUPtr_)
+        {
+            instanceUPtr_ = std::make_unique<NpcFactory>();
+        }
+        else
+        {
+            M_HP_LOG_ERR("Singleton Acquire() after Construction: NpcFactory");
+        }
+    }
+
+    void NpcFactory::Release()
+    {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (instanceUPtr_), "creature::NpcFactory::Release() found instanceUPtr that was null.");
+
+        instanceUPtr_.reset();
+    }
+
+    const NpcPVec_t NpcFactory::Make(const NpcPlaceholder & PLACEHOLDER) const
     {
         NpcPVec_t npcPtrs;
 
@@ -73,8 +113,8 @@ namespace state
             auto const MOOD{ (
                 (misc::random::Bool()) ? interact::talk::Mood::Kind : interact::talk::Mood::Mean) };
 
-            npcPtrs.emplace_back(
-                new Npc(AVATAR, talkCategories, MOOD, PLACEHOLDER.WalkBoundsIndex()));
+            npcPtrs.emplace_back(NpcWarehouse::Access().Store(std::make_unique<Npc>(
+                AVATAR, talkCategories, MOOD, PLACEHOLDER.WalkBoundsIndex())));
         }
 
         return npcPtrs;

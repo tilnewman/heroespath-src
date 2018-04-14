@@ -65,7 +65,7 @@ namespace state
 
         std::size_t WalkBoundsIndex() const { return walkBoundsIndex_; }
 
-        void HandleLevelLoad();
+        void ResetConversation();
 
         const std::string ToString() const;
 

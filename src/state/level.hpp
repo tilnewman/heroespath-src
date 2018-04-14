@@ -48,6 +48,8 @@ namespace state
     public:
         explicit Level(const map::Level::Enum = map::Level::Enum::Count);
 
+        ~Level();
+
         map::Level::Enum Which() const { return level_; }
 
         const std::string Name() const { return map::Level::ToString(level_); }
@@ -60,10 +62,11 @@ namespace state
         }
 
         void HandleLevelLoad();
+        void HandleLevelUnload();
 
-        void AddSpecificNPC(const NpcPtr_t);
+        void AddSpecificNPC(const NpcPtr_t NPC_PTR) { specificNpcs_.emplace_back(NPC_PTR); }
 
-        void ResetRandomNPCs();
+        void AddRandomNpc(const NpcPtr_t NPC_PTR) { randomNpcs_.emplace_back(NPC_PTR); }
 
         void AddRandomNpcPlaceholder(const NpcPlaceholder & NPC_PLACEHOLDER)
         {
@@ -79,17 +82,19 @@ namespace state
         void AfterDeserialize();
 
     private:
-        void AddRandomNpc(const NpcPtr_t);
+        void CreateRandomNPCs();
 
+    private:
         map::Level::Enum level_;
         misc::VectorMap<map::Level::Enum, bool> doorLockMap_;
         NpcPlaceholderVec_t randomNPCPlaceholders_;
 
-        // these are misc::NotNull pointers that cannot be serialized...
+        // these are observer pointers but they are needed to NpcWarehouse::Free(), see destructor
+        //
+        // these are misc::NotNull pointers that cannot be serialized, so the ...ToSerialize vectors
+        // below are used
         NpcPVec_t specificNpcs_;
         NpcPVec_t randomNpcs_;
-
-        // ...so these vectors are required.
         std::vector<Npc *> specificNpcsToSerialize_;
         std::vector<Npc *> randomNpcsToSerialize_;
 
@@ -105,6 +110,7 @@ namespace state
             ar & randomNpcsToSerialize_;
         }
     };
+
 } // namespace state
 } // namespace heroespath
 

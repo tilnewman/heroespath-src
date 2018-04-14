@@ -28,8 +28,8 @@
 // enchantment-warehouse.hpp
 //  Responsible for managing the lifetime of all enchantment objects.
 //
+#include "misc/not-null-warehouse.hpp"
 #include "misc/not-null.hpp"
-#include "misc/warehouse.hpp"
 
 #include <memory>
 #include <vector>
@@ -61,13 +61,12 @@ namespace state
         static void Acquire();
         static void Release();
 
-        const NpcPtr_t Store(const NpcPtr_t);
-        void Free(const NpcPtr_t);
-        void Free(NpcPVec_t &);
+        static misc::NotNullWarehouse<Npc> & Access() { return Instance()->Warehouse(); }
+        misc::NotNullWarehouse<Npc> & Warehouse() { return warehouse_; }
 
     private:
         static std::unique_ptr<NpcWarehouse> instanceUPtr_;
-        misc::Warehouse<Npc> warehouse_;
+        misc::NotNullWarehouse<Npc> warehouse_;
     };
 
 } // namespace state

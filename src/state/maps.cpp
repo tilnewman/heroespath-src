@@ -54,8 +54,19 @@ namespace state
 
     void Maps::HandleLevelLoad(const map::Level::Enum LEVEL)
     {
-        level_ = LEVEL;
-        Current().HandleLevelLoad();
+        if (LEVEL != map::Level::Count)
+        {
+            level_ = LEVEL;
+            Current().HandleLevelLoad();
+        }
+    }
+
+    void Maps::HandleLevelUnload(const map::Level::Enum LEVEL)
+    {
+        if (LEVEL != map::Level::Count)
+        {
+            levels_.at(static_cast<std::size_t>(LEVEL)).HandleLevelUnload();
+        }
     }
 
     void Maps::BeforeSerialize()

@@ -4291,6 +4291,7 @@ namespace stage
             if (NEXT_LIVING_PTR->HasConditionNotAThreatPerm(creature::UnconOpt::Include) == false)
             {
                 areAllIncapacitated = false;
+                break;
             }
         }
 

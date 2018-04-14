@@ -110,15 +110,16 @@ namespace map
 
         level_ = LEVEL_TO_LOAD;
 
+        // the order of these three is critical
+        game::Game::Instance()->State().GetWorld().HandleLevelUnload(LEVEL_FROM);
         game::Game::Instance()->State().GetWorld().HandleLevelLoad(LEVEL_TO_LOAD);
+        ResetNonPlayers();
 
         if (IS_TEST_LOAD == false)
         {
             mapDisplayUPtr_->Load(
                 FindStartPos(transitionVec_, LEVEL_TO_LOAD, LEVEL_FROM), animInfoVec);
         }
-
-        ResetNonPlayers();
     }
 
     bool Map::MovePlayer(const sfml_util::Direction::Enum DIRECTION)
@@ -402,9 +403,9 @@ namespace map
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             ((startPos.x > 0.0f) && (startPos.y > 0.0f)),
-            "map::Map::Load(to_load=" << Level::ToString(LEVEL_TO_LOAD)
-                                      << ", from=" << Level::ToString(LEVEL_FROM)
-                                      << ") unable to find an entry transition.");
+            "map::Map::FindStartPos(level_to_load="
+                << Level::ToString(LEVEL_TO_LOAD) << ", level_from=" << Level::ToString(LEVEL_FROM)
+                << ") unable to find an entry transition.");
 
         return startPos;
     }
@@ -610,5 +611,6 @@ namespace map
         nonPlayers_.emplace_back(
             avatar::Model(std::make_unique<avatar::LPCView>(AVATAR_IMAGE_ENUM), walkRects));
     }
+
 } // namespace map
 } // namespace heroespath

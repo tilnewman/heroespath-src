@@ -27,18 +27,40 @@
 //
 // npc-factory.hpp
 //
+#include "misc/not-null-warehouse.hpp"
 #include "state/npc-placeholder.hpp"
-#include "state/npc.hpp"
+
+#include <memory>
 
 namespace heroespath
 {
 namespace state
 {
 
+    class Npc;
+    using NpcPtr_t = misc::NotNull<Npc *>;
+    using NpcPVec_t = std::vector<NpcPtr_t>;
+
     // Responsible for making random NPCs.
-    struct NpcFactory
+    class NpcFactory
     {
-        static const NpcPVec_t Make(const NpcPlaceholder &);
+    public:
+        NpcFactory(const NpcFactory &) = delete;
+        NpcFactory(NpcFactory &&) = delete;
+        NpcFactory & operator=(const NpcFactory &) = delete;
+        NpcFactory & operator=(NpcFactory &&) = delete;
+
+        NpcFactory();
+        ~NpcFactory();
+
+        static misc::NotNull<NpcFactory *> Instance();
+        static void Acquire();
+        static void Release();
+
+        const NpcPVec_t Make(const NpcPlaceholder &) const;
+
+    private:
+        static std::unique_ptr<NpcFactory> instanceUPtr_;
     };
 
 } // namespace state

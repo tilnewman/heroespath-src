@@ -55,6 +55,7 @@ namespace state
         std::size_t EncounterCount() const { return encounterCount_; }
         void EncounterCountInc() { ++encounterCount_; }
         void HandleLevelLoad(const map::Level::Enum);
+        void HandleLevelUnload(const map::Level::Enum);
 
         void BeforeSerialize();
         void AfterSerialize();

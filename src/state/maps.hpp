@@ -49,6 +49,7 @@ namespace state
 
         void SetupForNewGame();
         void HandleLevelLoad(const map::Level::Enum);
+        void HandleLevelUnload(const map::Level::Enum);
 
         void BeforeSerialize();
         void AfterSerialize();
