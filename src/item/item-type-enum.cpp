@@ -5781,7 +5781,56 @@ namespace item
         }
     }
 
-    const std::vector<material::Enum> material::CoreMetal(const bool WILL_INCLUDE_NOTHING)
+    std::vector<material::Enum> material::coreMetalEVec_;
+    std::vector<material::Enum> material::coreMetalWithNothingEVec_;
+    std::vector<material::Enum> material::coreJewelEVec_;
+    std::vector<material::Enum> material::coreJewelWithNothingEVec_;
+    std::vector<material::Enum> material::coreMiscEVec_;
+    std::vector<material::Enum> material::coreMiscWithNothingEVec_;
+    std::vector<material::Enum> material::corePrimaryEVec_;
+    std::vector<material::Enum> material::corePrimaryNoPearlEVec_;
+    std::vector<material::Enum> material::coreSecondaryEVec_;
+    std::vector<material::Enum> material::coreSecondaryWithNothingEVec_;
+
+    std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        material::corePrimaryAndSecondaryEVecPair_;
+
+    std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        material::corePrimaryAndNoSecondaryEVecPair_;
+
+    std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        material::coreMetalAndCoreSecondaryEVecPair_;
+
+    std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        material::coreJewelAndCoreSecondaryEVecPair_;
+
+    std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        material::coreMetalJewelAndCoreSecondaryEVecPair_;
+
+    std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+        material::corePrimaryNoPearlAndSecondaryEVecPair_;
+
+    void material::Setup()
+    {
+        coreMetalEVec_ = MakeCoreMetal(false);
+        coreMetalWithNothingEVec_ = MakeCoreMetal(true);
+        coreJewelEVec_ = MakeCoreJewel(false);
+        coreJewelWithNothingEVec_ = MakeCoreJewel(true);
+        coreMiscEVec_ = MakeCoreMisc(false);
+        coreMiscWithNothingEVec_ = MakeCoreMisc(true);
+        corePrimaryEVec_ = MakeCorePrimary();
+        corePrimaryNoPearlEVec_ = MakeCorePrimaryNoPearl();
+        coreSecondaryEVec_ = MakeCoreSecondary(false);
+        coreSecondaryWithNothingEVec_ = MakeCoreSecondary(true);
+        corePrimaryAndSecondaryEVecPair_ = MakeCorePrimaryAndSecondary();
+        corePrimaryAndNoSecondaryEVecPair_ = MakeCorePrimaryAndNoSecondary();
+        coreMetalAndCoreSecondaryEVecPair_ = MakeCoreMetalAndCoreSecondary();
+        coreJewelAndCoreSecondaryEVecPair_ = MakeCoreJewelAndCoreSecondary();
+        coreMetalJewelAndCoreSecondaryEVecPair_ = MakeCoreMetalJewelAndCoreSecondary();
+        corePrimaryNoPearlAndSecondaryEVecPair_ = MakeCorePrimaryNoPearlAndSecondary();
+    }
+
+    const std::vector<material::Enum> material::MakeCoreMetal(const bool WILL_INCLUDE_NOTHING)
     {
         std::vector<material::Enum> materials{ material::Tin,     material::Bronze, material::Iron,
                                                material::Steel,   material::Silver, material::Gold,
@@ -5795,7 +5844,7 @@ namespace item
         return materials;
     }
 
-    const std::vector<material::Enum> material::CoreJewel(const bool WILL_INCLUDE_NOTHING)
+    const std::vector<material::Enum> material::MakeCoreJewel(const bool WILL_INCLUDE_NOTHING)
     {
         std::vector<material::Enum> materials{ material::Jade,    material::Amethyst,
                                                material::Emerald, material::Ruby,
@@ -5810,7 +5859,7 @@ namespace item
         return materials;
     }
 
-    const std::vector<material::Enum> material::CoreMisc(const bool WILL_INCLUDE_NOTHING)
+    const std::vector<material::Enum> material::MakeCoreMisc(const bool WILL_INCLUDE_NOTHING)
     {
         std::vector<material::Enum> materials{
             material::Bone, material::Stone, material::Obsidian, material::Pearl
@@ -5824,7 +5873,7 @@ namespace item
         return materials;
     }
 
-    const std::vector<material::Enum> material::CorePrimary()
+    const std::vector<material::Enum> material::MakeCorePrimary()
     {
         auto const CORE_METAL_VEC{ CoreMetal() };
         auto const CORE_JEWEL_VEC{ CoreJewel() };
@@ -5840,7 +5889,7 @@ namespace item
         return v;
     }
 
-    const std::vector<material::Enum> material::CorePrimaryNoPearl()
+    const std::vector<material::Enum> material::MakeCorePrimaryNoPearl()
     {
         auto const CORE_METAL_VEC{ CoreMetal() };
         auto const CORE_JEWEL_VEC{ CoreJewel() };
@@ -5858,7 +5907,7 @@ namespace item
         return v;
     }
 
-    const std::vector<material::Enum> material::CoreSecondary(const bool WILL_INCLUDE_NOTHING)
+    const std::vector<material::Enum> material::MakeCoreSecondary(const bool WILL_INCLUDE_NOTHING)
     {
         auto const CORE_JEWEL_VEC{ CoreJewel() };
 

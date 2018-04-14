@@ -122,28 +122,134 @@ namespace item
 
         static const std::string ToString(const material::Enum);
         static const std::string ToReadableString(const material::Enum);
+
+        static void Setup();
+
         static Armor_t
             ArmorRatingBonus(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
+
         static Armor_t ArmorRatingBonusPri(const material::Enum MATERIAL_PRI);
         static Armor_t ArmorRatingBonusSec(const material::Enum MATERIAL_SEC);
+
         static Coin_t
             PriceAdj(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
+
         static Coin_t PriceAdjPri(const material::Enum MATERIAL_PRI);
         static Coin_t PriceAdjSec(const material::Enum MATERIAL_SEC);
+
         static float
             WeightMult(const material::Enum MATEIAL_PRI, const material::Enum MATERIAL_SEC);
+
         static float WeightMultPri(const material::Enum MATERIAL_PRI);
         static float WeightMultSec(const material::Enum MATERIAL_SEC);
 
         static int Bonus(const material::Enum);
 
-        static const std::vector<material::Enum> CoreMetal(const bool WILL_INCLUDE_NOTHING = false);
-        static const std::vector<material::Enum> CoreJewel(const bool WILL_INCLUDE_NOTHING = false);
-        static const std::vector<material::Enum> CoreMisc(const bool WILL_INCLUDE_NOTHING = false);
-        static const std::vector<material::Enum> CorePrimary();
-        static const std::vector<material::Enum> CorePrimaryNoPearl();
+        static const std::vector<material::Enum> CoreMetal(const bool WILL_INCLUDE_NOTHING = false)
+        {
+            return ((WILL_INCLUDE_NOTHING) ? coreMetalWithNothingEVec_ : coreMetalEVec_);
+        }
+
+        static const std::vector<material::Enum> CoreJewel(const bool WILL_INCLUDE_NOTHING = false)
+        {
+            return ((WILL_INCLUDE_NOTHING) ? coreJewelWithNothingEVec_ : coreJewelEVec_);
+        }
+
+        static const std::vector<material::Enum> CoreMisc(const bool WILL_INCLUDE_NOTHING = false)
+        {
+            return ((WILL_INCLUDE_NOTHING) ? coreMiscWithNothingEVec_ : coreMiscEVec_);
+        }
+
+        static const std::vector<material::Enum> CorePrimary() { return corePrimaryEVec_; }
+
+        static const std::vector<material::Enum> CorePrimaryNoPearl()
+        {
+            return corePrimaryNoPearlEVec_;
+        }
+
         static const std::vector<material::Enum>
-            CoreSecondary(const bool WILL_INCLUDE_NOTHING = true);
+            CoreSecondary(const bool WILL_INCLUDE_NOTHING = true)
+        {
+            return ((WILL_INCLUDE_NOTHING) ? coreSecondaryWithNothingEVec_ : coreSecondaryEVec_);
+        }
+
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            CorePrimaryAndSecondary()
+        {
+            return corePrimaryAndSecondaryEVecPair_;
+        }
+
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            CorePrimaryAndNoSecondary()
+        {
+            return corePrimaryAndNoSecondaryEVecPair_;
+        }
+
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            CoreMetalAndCoreSecondary()
+        {
+            return coreMetalAndCoreSecondaryEVecPair_;
+        }
+
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            CoreJewelAndCoreSecondary()
+        {
+            return coreJewelAndCoreSecondaryEVecPair_;
+        }
+
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            CoreMetalJewelAndCoreSecondary()
+        {
+            return coreMetalJewelAndCoreSecondaryEVecPair_;
+        }
+
+        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            CorePrimaryNoPearlAndSecondary()
+        {
+            return corePrimaryNoPearlAndSecondaryEVecPair_;
+        }
+
+        static bool
+            IsMagical(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+
+        static bool IsLiquid(const material::Enum MATERIAL);
+        static bool IsSolid(const material::Enum MATERIAL);
+        static bool IsBendy(const material::Enum MATERIAL);
+        static bool IsRigid(const material::Enum MATERIAL);
+
+        static bool
+            ContainsSpirit(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+
+        static bool
+            IsBloody(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+
+        static bool
+            ContainsFlesh(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+
+        static float
+            FireDamageRatio(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+
+        static bool IsMetal(const material::Enum MATERIAL);
+        static bool ContainsMetal(const material::Enum PRI, const material::Enum SEC);
+        static bool IsStone(const material::Enum PRI);
+        static bool IsPrecious(const material::Enum MATERIAL);
+
+        static bool ContiansPrecious(
+            const material::Enum PRI, const material::Enum SEC = material::Nothing);
+
+        static bool IsJewel(const material::Enum MATERIAL);
+
+        static bool
+            ContainsJewel(const material::Enum PRI, const material::Enum SEC = material::Nothing);
+
+        bool static IsLeather(const material::Enum M)
+        {
+            return ((M == material::SoftLeather) || (M == material::HardLeather));
+        }
+        bool static IsClothOrLeather(const material::Enum M)
+        {
+            return ((M == material::Cloth) || IsLeather(M));
+        }
 
         static void AppendCoreMetal(std::vector<material::Enum> &);
         static void AppendCoreJewel(std::vector<material::Enum> &);
@@ -152,32 +258,77 @@ namespace item
         static void AppendCorePrimaryNoPearl(std::vector<material::Enum> &);
         static void AppendCoreSecondary(std::vector<material::Enum> &);
 
+    private:
+        static std::vector<material::Enum> coreMetalEVec_;
+        static std::vector<material::Enum> coreMetalWithNothingEVec_;
+        static std::vector<material::Enum> coreJewelEVec_;
+        static std::vector<material::Enum> coreJewelWithNothingEVec_;
+        static std::vector<material::Enum> coreMiscEVec_;
+        static std::vector<material::Enum> coreMiscWithNothingEVec_;
+        static std::vector<material::Enum> corePrimaryEVec_;
+        static std::vector<material::Enum> corePrimaryNoPearlEVec_;
+        static std::vector<material::Enum> coreSecondaryEVec_;
+        static std::vector<material::Enum> coreSecondaryWithNothingEVec_;
+
+        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            corePrimaryAndSecondaryEVecPair_;
+
+        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            corePrimaryAndNoSecondaryEVecPair_;
+
+        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            coreMetalAndCoreSecondaryEVecPair_;
+
+        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            coreJewelAndCoreSecondaryEVecPair_;
+
+        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            coreMetalJewelAndCoreSecondaryEVecPair_;
+
+        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
+            corePrimaryNoPearlAndSecondaryEVecPair_;
+
+        static const std::vector<material::Enum>
+            MakeCoreMetal(const bool WILL_INCLUDE_NOTHING = false);
+
+        static const std::vector<material::Enum>
+            MakeCoreJewel(const bool WILL_INCLUDE_NOTHING = false);
+
+        static const std::vector<material::Enum>
+            MakeCoreMisc(const bool WILL_INCLUDE_NOTHING = false);
+
+        static const std::vector<material::Enum> MakeCorePrimary();
+        static const std::vector<material::Enum> MakeCorePrimaryNoPearl();
+
+        static const std::vector<material::Enum>
+            MakeCoreSecondary(const bool WILL_INCLUDE_NOTHING = true);
+
         static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CorePrimaryAndSecondary()
+            MakeCorePrimaryAndSecondary()
         {
             return std::make_pair(CorePrimary(), CoreSecondary());
         }
 
         static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CorePrimaryAndNoSecondary()
+            MakeCorePrimaryAndNoSecondary()
         {
             return std::make_pair(CorePrimary(), std::vector<material::Enum>());
         }
 
         static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CoreMetalAndCoreSecondary()
+            MakeCoreMetalAndCoreSecondary()
         {
             return std::make_pair(CoreMetal(), CoreSecondary());
         }
 
         static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CoreJewelAndCoreSecondary()
+            MakeCoreJewelAndCoreSecondary()
         {
             return std::make_pair(CoreJewel(), CoreSecondary());
         }
 
         static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CoreMetalJewelAndCoreSecondary()
+            MakeCoreMetalJewelAndCoreSecondary()
         {
             std::vector<material::Enum> v;
             AppendCoreMetal(v);
@@ -186,41 +337,9 @@ namespace item
         }
 
         static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CorePrimaryNoPearlAndSecondary()
+            MakeCorePrimaryNoPearlAndSecondary()
         {
             return std::make_pair(CorePrimaryNoPearl(), CoreSecondary());
-        }
-
-        static bool
-            IsMagical(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        static bool IsLiquid(const material::Enum MATERIAL);
-        static bool IsSolid(const material::Enum MATERIAL);
-        static bool IsBendy(const material::Enum MATERIAL);
-        static bool IsRigid(const material::Enum MATERIAL);
-        static bool
-            ContainsSpirit(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        static bool
-            IsBloody(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        static bool
-            ContainsFlesh(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        static float
-            FireDamageRatio(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        static bool IsMetal(const material::Enum MATERIAL);
-        static bool ContainsMetal(const material::Enum PRI, const material::Enum SEC);
-        static bool IsStone(const material::Enum PRI);
-        static bool IsPrecious(const material::Enum MATERIAL);
-        static bool ContiansPrecious(
-            const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        static bool IsJewel(const material::Enum MATERIAL);
-        static bool
-            ContainsJewel(const material::Enum PRI, const material::Enum SEC = material::Nothing);
-        bool static IsLeather(const material::Enum M)
-        {
-            return ((M == material::SoftLeather) || (M == material::HardLeather));
-        }
-        bool static IsClothOrLeather(const material::Enum M)
-        {
-            return ((M == material::Cloth) || IsLeather(M));
         }
     };
 

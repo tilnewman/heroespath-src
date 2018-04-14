@@ -44,6 +44,7 @@
 #include "game/loop-manager.hpp"
 #include "item/armor-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
+#include "item/item-type-enum.hpp"
 #include "item/item-warehouse.hpp"
 #include "item/misc-item-factory.hpp"
 #include "item/weapon-factory.hpp"
@@ -92,6 +93,9 @@ namespace game
 
             srand(static_cast<unsigned>(time(nullptr)));
             misc::random::MersenneTwister::Seed();
+
+            // this only creates vectors of enums
+            item::material::Setup();
 
             ParseCommandLineArguments(ARGC, argv);
 

@@ -1600,6 +1600,7 @@ namespace item
             {
                 return MaterialVecPair_t({ material::Rope }, material::CoreSecondary());
             }
+            case projectile_type::Crossbow:
             case projectile_type::Shortbow:
             case projectile_type::Longbow:
             {
@@ -1608,10 +1609,6 @@ namespace item
             case projectile_type::CompositeBow:
             {
                 return MaterialVecPair_t({ material::Horn }, material::CoreSecondary());
-            }
-            case projectile_type::Crossbow:
-            {
-                return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
             }
             case projectile_type::Count:
             default:
@@ -1732,7 +1729,7 @@ namespace item
             case base_type::Mail:
             case base_type::Plate:
             {
-                return { material::CoreMetal() };
+                return material::CoreMetal();
             }
             case base_type::Plain:
             {

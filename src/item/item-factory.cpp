@@ -59,11 +59,11 @@ namespace item
             game::LoopManager::Instance()->TestingStrAppend(
                 "item::ItemFactory::Test() Starting Tests...");
 
-            game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Starting Named Equipment Tests.  Please wait...");
-
             return false;
         }
+
+        game::LoopManager::Instance()->TestingStrAppend(
+            "item::ItemFactory::Test() Starting ItemProfile creation.  Please wait...");
 
         static auto allItemProfilesVec{ ItemProfileWarehouse::Instance()->GetNormalProfiles() };
 
@@ -75,6 +75,9 @@ namespace item
                 allItemProfilesVec.emplace_back(PROFILE);
             }
         }
+
+        game::LoopManager::Instance()->TestingStrAppend(
+            "item::ItemFactory::Test() Finished ItemProfile creation.");
 
         static auto hasTestedForDuplicates{ false };
         if (false == hasTestedForDuplicates)
