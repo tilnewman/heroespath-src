@@ -323,11 +323,12 @@ namespace sfml_util
     template <typename T>
     inline T MapByRes(const T OUT_MIN, const T OUT_MAX)
     {
-        float minResArea(0.0f);
-        float maxResArea(0.0f);
-        float currentResArea(0.0f);
+        auto minResArea{ 0.0f };
+        auto maxResArea{ 0.0f };
+        auto currentResArea{ 0.0f };
         GetResolutionAreas(currentResArea, minResArea, maxResArea);
-        const float ACTUAL_MAX((currentResArea > maxResArea) ? currentResArea : maxResArea);
+        auto const ACTUAL_MAX{ (currentResArea > maxResArea) ? currentResArea : maxResArea };
+
         return static_cast<T>(
             Map(currentResArea,
                 minResArea,

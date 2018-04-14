@@ -33,7 +33,6 @@
 #include "creature/enchantment.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/item-type-wrapper.hpp"
-#include "misc/not-null-warehouse.hpp"
 #include "misc/not-null.hpp"
 #include "stats/trait.hpp"
 #include "stats/traits-set.hpp"
@@ -95,8 +94,6 @@ namespace creature
         Score_t TreasureScore(
             const item::element_type::Enum, const bool IS_WEAPON, const item::material::Enum) const;
 
-        misc::NotNullWarehouse<Enchantment> & Warehouse() { return warehouse_; }
-
     private:
         const EnchantmentPtr_t Make(
             const EnchantmentType::Enum TYPE,
@@ -147,7 +144,6 @@ namespace creature
 
     private:
         static std::unique_ptr<EnchantmentFactory> instanceUPtr_;
-        mutable misc::NotNullWarehouse<Enchantment> warehouse_;
     };
 
 } // namespace creature

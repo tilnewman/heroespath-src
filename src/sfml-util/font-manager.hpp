@@ -70,8 +70,6 @@ namespace sfml_util
         static misc::NotNull<FontManager *> Instance();
         static void Acquire();
         static void Release();
-        static void Fill();
-        static void Empty();
         static void SetFontsDirectory(const std::string & PATH);
 
         // colors
@@ -193,7 +191,7 @@ namespace sfml_util
     private:
         static std::string fontsDirectoryPath_;
         static std::unique_ptr<FontManager> instanceUPtr_;
-        static FontUVec_t fontUVec_;
+        FontUVec_t fontUVec_;
     };
 
 } // namespace sfml_util

@@ -241,10 +241,16 @@ namespace spell
         auto const SPELL_INDEX{ static_cast<std::size_t>(SPELL_ENUM) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
+            (spellsUVec_.empty() == false),
+            "spell::Warehouse::Get(spell_enum=" << SPELL_ENUM
+                                                << ") was called when the warehouse was empty.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
             (SPELL_INDEX < spellsUVec_.size()),
             "spell::Warehouse::Get(spell_enum="
-                << SPELL_ENUM << ") that enum val was NOT less than the spellsUVec_.size()="
-                << spellsUVec_.size() << ".");
+                << SPELL_ENUM << ", spell_index=" << SPELL_INDEX
+                << ") that index was NOT less than the spellsUVec_.size()=" << spellsUVec_.size()
+                << ".");
 
         return spellsUVec_[SPELL_INDEX].get();
     }

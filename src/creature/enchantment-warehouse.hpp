@@ -22,11 +22,11 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef HEROESPATH_STATE_NPC_WAREHOUSE_HPP_INCLUDED
-#define HEROESPATH_STATE_NPC_WAREHOUSE_HPP_INCLUDED
+#ifndef HEROESPATH_CREATURE_ENCHANTMENT_WAREHOUSE_HPP_INCLUDED
+#define HEROESPATH_CREATURE_ENCHANTMENT_WAREHOUSE_HPP_INCLUDED
 //
-// npc-warehouse.hpp
-//  Responsible for managing the lifetime of all Npc objects.
+// enchantment-warehouse.hpp
+//  Responsible for managing the lifetime of all enchantment objects.
 //
 #include "misc/not-null-warehouse.hpp"
 #include "misc/not-null.hpp"
@@ -36,40 +36,40 @@
 
 namespace heroespath
 {
-namespace state
+namespace creature
 {
 
-    class Npc;
-    using NpcPtr_t = misc::NotNull<Npc *>;
-    using NpcPVec_t = std::vector<NpcPtr_t>;
+    class Enchantment;
+    using EnchantmentPtr_t = misc::NotNull<Enchantment *>;
+    using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
 
-    // Singleton responsible for the lifetimes of Npc objects.
+    // Singleton responsible for the lifetimes of Enchantment objects.
     // This class does not new the objects, but it does delete them.
-    class NpcWarehouse
+    class EnchantmentWarehouse
     {
     public:
-        NpcWarehouse(const NpcWarehouse &) = delete;
-        NpcWarehouse(NpcWarehouse &&) = delete;
-        NpcWarehouse & operator=(const NpcWarehouse &) = delete;
-        NpcWarehouse & operator=(NpcWarehouse &&) = delete;
+        EnchantmentWarehouse(const EnchantmentWarehouse &) = delete;
+        EnchantmentWarehouse(EnchantmentWarehouse &&) = delete;
+        EnchantmentWarehouse & operator=(const EnchantmentWarehouse &) = delete;
+        EnchantmentWarehouse & operator=(EnchantmentWarehouse &&) = delete;
 
     public:
-        NpcWarehouse();
-        ~NpcWarehouse();
+        EnchantmentWarehouse();
+        ~EnchantmentWarehouse();
 
-        static misc::NotNull<NpcWarehouse *> Instance();
+        static misc::NotNull<EnchantmentWarehouse *> Instance();
         static void Acquire();
         static void Release();
 
-        static misc::NotNullWarehouse<Npc> & Access() { return Instance()->Warehouse(); }
-        misc::NotNullWarehouse<Npc> & Warehouse() { return warehouse_; }
+        static misc::NotNullWarehouse<Enchantment> & Access() { return Instance()->Warehouse(); }
+        misc::NotNullWarehouse<Enchantment> & Warehouse() { return warehouse_; }
 
     private:
-        static std::unique_ptr<NpcWarehouse> instanceUPtr_;
-        misc::NotNullWarehouse<Npc> warehouse_;
+        static std::unique_ptr<EnchantmentWarehouse> instanceUPtr_;
+        misc::NotNullWarehouse<Enchantment> warehouse_;
     };
 
-} // namespace state
+} // namespace creature
 } // namespace heroespath
 
-#endif // HEROESPATH_STATE_NPC_WAREHOUSE_HPP_INCLUDED
+#endif // HEROESPATH_CREATURE_ENCHANTMENT_WAREHOUSE_HPP_INCLUDED

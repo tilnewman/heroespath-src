@@ -226,7 +226,7 @@ namespace creature
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (conditionsUVec_.empty() == false),
                 "creature::condition::Warehouse::Get(" << Conditions::ToString(E)
-                                                       << ") was called before Fill().");
+                                                       << ") was called when warehouse was empty.");
 
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (static_cast<std::size_t>(E) < conditionsUVec_.size()),

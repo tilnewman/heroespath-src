@@ -29,6 +29,7 @@
 //
 #include "enchantment-factory.hpp"
 
+#include "creature/enchantment-warehouse.hpp"
 #include "creature/enchantment.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
@@ -225,7 +226,7 @@ namespace creature
 
     const EnchantmentPtr_t EnchantmentFactory::Make(const Enchantment & ENCHANTMENT) const
     {
-        return warehouse_.Store(std::make_unique<Enchantment>(ENCHANTMENT));
+        return EnchantmentWarehouse::Access().Store(std::make_unique<Enchantment>(ENCHANTMENT));
     }
 
     const EnchantmentPVec_t EnchantmentFactory::NewFromUniqueType(

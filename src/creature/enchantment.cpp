@@ -187,6 +187,15 @@ namespace creature
         }
     }
 
+    const std::string Enchantment::ToString() const
+    {
+        std::ostringstream ss;
+        ss << "Echantment(name=" << creature::EnchantmentType::ToString(type_) << ", "
+           << EffectStr() << ")";
+
+        return ss.str();
+    }
+
     Score_t Enchantment::CalcTreasureScore() const
     {
         auto score{ item::ItemProfileWarehouse::Score(traitSet_) };

@@ -65,9 +65,32 @@ namespace sfml_util
     //
     std::string FontManager::fontsDirectoryPath_;
     std::unique_ptr<FontManager> FontManager::instanceUPtr_;
-    FontUVec_t FontManager::fontUVec_;
 
-    FontManager::FontManager() { M_HP_LOG_DBG("Singleton Construction: FontManager"); }
+    FontManager::FontManager()
+        : fontUVec_()
+    {
+        M_HP_LOG_DBG("Singleton Construction: FontManager");
+
+        // Note:  Keep order in sync with enum FontManager::Fonts
+        fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/euler/euler.otf")));
+
+        fontUVec_.emplace_back(
+            std::make_unique<sf::Font>(LoadFont("/gentium-plus/gentium-plus.ttf")));
+
+        fontUVec_.emplace_back(
+            std::make_unique<sf::Font>(LoadFont("/goudy-bookletter/goudy-bookletter.otf")));
+
+        fontUVec_.emplace_back(
+            std::make_unique<sf::Font>(LoadFont("/modern-antiqua/modern-antiqua.ttf")));
+
+        fontUVec_.emplace_back(
+            std::make_unique<sf::Font>(LoadFont("/queen-country/queen-country.ttf")));
+
+        fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/quill-sword/quillsword.ttf")));
+
+        fontUVec_.emplace_back(
+            std::make_unique<sf::Font>(LoadFont("/valley-forge/valleyforge.ttf")));
+    }
 
     FontManager::~FontManager() { M_HP_LOG_DBG("Singleton Destruction: FontManager"); }
 
@@ -137,31 +160,6 @@ namespace sfml_util
             return sf::Color(255, 255, 255, 200);
         }
     }
-
-    void FontManager::Fill()
-    {
-        // Note:  Keep order in sync with enum FontManager::Fonts
-        fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/euler/euler.otf")));
-
-        fontUVec_.emplace_back(
-            std::make_unique<sf::Font>(LoadFont("/gentium-plus/gentium-plus.ttf")));
-
-        fontUVec_.emplace_back(
-            std::make_unique<sf::Font>(LoadFont("/goudy-bookletter/goudy-bookletter.otf")));
-
-        fontUVec_.emplace_back(
-            std::make_unique<sf::Font>(LoadFont("/modern-antiqua/modern-antiqua.ttf")));
-
-        fontUVec_.emplace_back(
-            std::make_unique<sf::Font>(LoadFont("/queen-country/queen-country.ttf")));
-
-        fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/quill-sword/quillsword.ttf")));
-
-        fontUVec_.emplace_back(
-            std::make_unique<sf::Font>(LoadFont("/valley-forge/valleyforge.ttf")));
-    }
-
-    void FontManager::Empty() { fontUVec_.clear(); }
 
     void FontManager::SetFontsDirectory(const std::string & PATH) { fontsDirectoryPath_ = PATH; }
 

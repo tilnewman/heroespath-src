@@ -343,18 +343,18 @@ namespace sfml_util
             TextSnippetVec_t textSnippetVec;
 
             // if not specified use the screen width for maximum line length
-            const float INVALID_WIDTH(Display::Instance()->GetWinWidth());
+            auto const INVALID_WIDTH{ Display::Instance()->GetWinWidth() };
 
-            const float WIDTH_LIMIT_TO_USE(
-                (misc::IsRealClose(0.0f, WIDTH_LIMIT_ORIG)) ? INVALID_WIDTH : WIDTH_LIMIT_ORIG);
+            auto const WIDTH_LIMIT_TO_USE{ (
+                (misc::IsRealClose(0.0f, WIDTH_LIMIT_ORIG)) ? INVALID_WIDTH : WIDTH_LIMIT_ORIG) };
 
-            const std::size_t STR_LEN(TEXT_INFO_SET.text.size());
+            auto const STR_LEN{ TEXT_INFO_SET.text.size() };
 
             while ((strIndex < STR_LEN) && (textPos.x <= WIDTH_LIMIT_TO_USE))
             {
                 char termChar(0);
-                const std::size_t ORIG_STR_INDEX(strIndex);
-                const float ORIG_POS_X(textPos.x);
+                auto const ORIG_STR_INDEX{ strIndex };
+                auto const ORIG_POS_X{ textPos.x };
 
                 TextSnippetVec_t nextTextSnippetVec(
                     RenderWord(TEXT_INFO_SET, textPos, heightTracker, strIndex, termChar));
@@ -417,12 +417,11 @@ namespace sfml_util
             }
 
             // adjust for...okay, I don't know why this adjustment is needed.  zTn 2016-11-20
-            const std::size_t NUM_SNIPPETS(textSnippetVec.size());
+            auto const NUM_SNIPPETS{ textSnippetVec.size() };
             if (NUM_SNIPPETS > 1)
             {
-                const float ADJ(
-                    textSnippetVec[1].sf_text.getPosition().x
-                    - textSnippetVec[0].sf_text.getLocalBounds().width);
+                auto const ADJ{ textSnippetVec[1].sf_text.getPosition().x
+                                - textSnippetVec[0].sf_text.getLocalBounds().width };
 
                 for (std::size_t i(1); i < NUM_SNIPPETS; ++i)
                 {

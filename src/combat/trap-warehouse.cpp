@@ -29,12 +29,10 @@
 //
 #include "trap-warehouse.hpp"
 
-#include "sfml-util/sound-effects-enum.hpp"
-
 #include "log/log-macros.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/vectors.hpp"
+#include "sfml-util/sound-effects-enum.hpp"
 
 #include <algorithm>
 
@@ -272,7 +270,7 @@ namespace combat
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (traps_.empty() == false),
-                "combat::trap::Warehouse::Get() called before warehouse was Fill()ed.");
+                "combat::trap::Warehouse::Get() called when the warehouse was empty.");
 
             return traps_;
         }
@@ -281,8 +279,8 @@ namespace combat
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (traps_.empty() == false),
-                "combat::trap::Warehouse::GetWithMinSeverity() called before warehouse was "
-                "Fill()ed.");
+                "combat::trap::Warehouse::GetWithMinSeverity() called when the warehouse was "
+                "empty.");
 
             return traps_[0].Severity();
         }
@@ -291,8 +289,8 @@ namespace combat
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (traps_.empty() == false),
-                "combat::trap::Warehouse::GetWithMinSeverity() called before warehouse was "
-                "Fill()ed.");
+                "combat::trap::Warehouse::GetWithMinSeverity() called when the warehouse was "
+                "empty.");
 
             return traps_[traps_.size() - 1].Severity();
         }
@@ -302,8 +300,8 @@ namespace combat
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (traps_.empty() == false),
-                "combat::trap::Warehouse::GetWithSeverityRatio() called before "
-                    << "warehouse was Fill()ed.");
+                "combat::trap::Warehouse::GetWithSeverityRatio() called when the warehouse was "
+                "empty.");
 
             auto const SEVERITY_MAX_F{ static_cast<float>(GetMaxSeverity()) };
 
@@ -351,6 +349,7 @@ namespace combat
             return misc::Vector::SelectRandom(
                 GetWithSeverityRatioBetween(severityRatioMin, severityRatioMax));
         }
+
     } // namespace trap
 } // namespace combat
 } // namespace heroespath

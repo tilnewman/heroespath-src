@@ -37,6 +37,7 @@
 #include "creature/condition-warehouse.hpp"
 #include "creature/creature-warehouse.hpp"
 #include "creature/enchantment-factory.hpp"
+#include "creature/enchantment-warehouse.hpp"
 #include "creature/name-info.hpp"
 #include "creature/title-warehouse.hpp"
 #include "game/game-data-file.hpp"
@@ -378,7 +379,6 @@ namespace game
 
     void StartupShutdown::WarehousesFill()
     {
-        sfml_util::FontManager::Fill();
         creature::title::Warehouse::Fill();
         creature::condition::Warehouse::Fill();
         spell::Warehouse::Fill();
@@ -393,7 +393,6 @@ namespace game
         spell::Warehouse::Empty();
         creature::condition::Warehouse::Empty();
         creature::title::Warehouse::Empty();
-        sfml_util::FontManager::Empty();
     }
 
     void StartupShutdown::SingletonsAcquire()
@@ -401,6 +400,7 @@ namespace game
         state::NpcWarehouse::Acquire();
         state::NpcFactory::Acquire();
         sfml_util::TextureCache::Acquire();
+        creature::EnchantmentWarehouse::Acquire();
         creature::EnchantmentFactory::Acquire();
         item::ItemWarehouse::Acquire();
         creature::CreatureWarehouse::Acquire();
@@ -445,18 +445,11 @@ namespace game
     {
         // this order is critical - be careful here...
 
-        LoopManager::Release();
+        // release the SettingsFile first so that it saves the settings file even if a problem
+        // happens during shutdown
         config::SettingsFile::Release();
 
-        // TODO re-order so that all factories are released here
-        non_player::ownership::InventoryFactory::Release();
-        item::armor::ArmorFactory::Release();
-        state::NpcFactory::Release();
-
-        combat::Encounter::Release();
-        creature::NameInfo::Release();
-        state::GameStateFactory::Release();
-        Game::Release();
+        // image managers should not be needed during shutdown, so release them early
         sfml_util::gui::SongImageManager::Release();
         sfml_util::gui::CombatImageManager::Release();
         sfml_util::gui::ConditionImageManager::Release();
@@ -465,25 +458,50 @@ namespace game
         sfml_util::gui::CreatureImageManager::Release();
         sfml_util::gui::ItemImageManager::Release();
         sfml_util::gui::GuiElements::Release();
-        sfml_util::FontManager::Release();
-        popup::PopupManager::Release();
-        sfml_util::SoundManager::Release();
+
+        // factories should not be needed during shutdown, so release them early
+        non_player::ownership::InventoryFactory::Release();
+        item::armor::ArmorFactory::Release();
+        state::NpcFactory::Release();
+        creature::EnchantmentFactory::Release();
+        state::GameStateFactory::Release();
         item::MiscItemFactory::Release();
         item::weapon::WeaponFactory::Release();
         non_player::ownership::ChanceFactory::Release();
-        sfml_util::Display::Release();
+
+        // release LoopManager early because it frees all the stages and their resources
+        LoopManager::Release();
+
+        // these must occur after all the stages have been released
+        creature::NameInfo::Release();
+        sfml_util::FontManager::Release(); // after NameInfo::Release()
+        popup::PopupManager::Release();
+        sfml_util::SoundManager::Release();
         sfml_util::TextureCache::Release();
 
-        // must occur after Game::Release();
+        // this will cause all party creatures/items/enchantments/etc to be Warehouses::Free()'d
+        Game::Release();
+
+        // must occur after Game::Release() because state::GameState needs it
         state::NpcWarehouse::Release();
 
+        // if this is an abnormal shutdown then the Encounter object will have some
+        // Warehouse::Free() calls to make, so this must occur after Game::Release() but before
+        // creature/item/enchantment/etc warehouses are released.
+        combat::Encounter::Release();
+
+        // there are dependancies between these Warehouses so this release order is critical
         creature::CreatureWarehouse::Release();
         item::ItemProfileWarehouse::Release();
         item::ItemWarehouse::Release();
+        creature::EnchantmentWarehouse::Release();
 
-        // this factory holds the EnchantmentWarehouse so release it last
-        creature::EnchantmentFactory::Release();
+        // the only constraint here is that it must occur after all the stages have been released,
+        // so there is no reason for this to be one of the last things to be released, but for some
+        // reason I liked the idea of the screen staying black while the application shuts down
+        sfml_util::Display::Release();
 
+        // these two are needed almost everywhere so release them last
         GameDataFile::Release();
         misc::Platform::Release();
     }

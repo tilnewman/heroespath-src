@@ -27,12 +27,10 @@
 //
 // trap.hpp
 //
-#include "misc/types.hpp"
-#include "stats/trait.hpp"
-
-#include "sfml-util/sound-effects-enum.hpp"
-
 #include "misc/range.hpp"
+#include "misc/types.hpp"
+#include "sfml-util/sound-effects-enum.hpp"
+#include "stats/trait.hpp"
 
 #include <string>
 #include <vector>
@@ -96,6 +94,7 @@ namespace combat
     };
 
     using TrapVec_t = std::vector<Trap>;
+
 } // namespace combat
 } // namespace heroespath
 

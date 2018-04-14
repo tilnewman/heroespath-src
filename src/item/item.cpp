@@ -30,6 +30,7 @@
 #include "item.hpp"
 
 #include "creature/enchantment-factory.hpp"
+#include "creature/enchantment-warehouse.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
@@ -133,7 +134,7 @@ namespace item
         }
     }
 
-    Item::~Item() { creature::EnchantmentFactory::Instance()->Warehouse().Free(enchantmentsPVec_); }
+    Item::~Item() { creature::EnchantmentWarehouse::Access().Free(enchantmentsPVec_); }
 
     const std::string Item::BaseName() const
     {
@@ -303,7 +304,7 @@ namespace item
     void Item::AfterSerialize()
     {
         misc::SerializeHelp::AfterSerialize(
-            enchantmentsToSerializePVec_, creature::EnchantmentFactory::Instance()->Warehouse());
+            enchantmentsToSerializePVec_, creature::EnchantmentWarehouse::Access());
     }
 
     void Item::AfterDeserialize()
@@ -311,7 +312,7 @@ namespace item
         misc::SerializeHelp::AfterDeserialize(
             enchantmentsPVec_,
             enchantmentsToSerializePVec_,
-            creature::EnchantmentFactory::Instance()->Warehouse());
+            creature::EnchantmentWarehouse::Access());
     }
 
     bool operator<(const Item & L, const Item & R)

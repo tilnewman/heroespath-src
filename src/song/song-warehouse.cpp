@@ -180,7 +180,8 @@ namespace song
     {
         M_ASSERT_OR_LOGANDTHROW_SS(
             (songsUVec_.empty() == false),
-            "song::Warehouse::Get(" << Songs::ToString(E) << ") was called before Setup().");
+            "song::Warehouse::Get(" << Songs::ToString(E)
+                                    << ") was called when the warehouse was empty.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (static_cast<std::size_t>(E) < songsUVec_.size()),

@@ -158,7 +158,7 @@ namespace creature
 
         Score_t TreasureScore() const { return score_; }
 
-        const std::string ToString() const { return EffectStr(); }
+        const std::string ToString() const;
 
         friend bool operator==(const Enchantment & L, const Enchantment & R);
 

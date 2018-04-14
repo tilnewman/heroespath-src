@@ -29,13 +29,11 @@
 //
 #include "title-warehouse.hpp"
 
-#include "sfml-util/gui/title-image-manager.hpp"
-
 #include "creature/role-enum.hpp"
 #include "creature/title.hpp"
 #include "game/loop-manager.hpp"
-
 #include "misc/assertlogandthrow.hpp"
+#include "sfml-util/gui/title-image-manager.hpp"
 
 #include <exception>
 #include <memory>
@@ -1756,6 +1754,11 @@ namespace creature
         TitlePtr_t Warehouse::Get(const Titles::Enum E)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
+                (titleUVec_.empty() == false),
+                "creature::Titles::Warehouse::Get(\""
+                    << Titles::ToString(E) << "\") called when the warehouse was empty.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
                 ((E >= 0) && (E < Titles::Count)),
                 "creature::Titles::Warehouse::Get(enum=" << E << ")_InvalidValueError.");
 
@@ -1765,11 +1768,6 @@ namespace creature
                     << Titles::ToString(E) << "\") enum given was " << E
                     << " but that was greater than (or equal to) "
                     << "the vec size of " << titleUVec_.size() << ".");
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (titleUVec_.empty() == false),
-                "creature::Titles::Warehouse::Get(\""
-                    << Titles::ToString(E) << "\") called before vec was populated by Setup().");
 
             return TitlePtr_t{ titleUVec_[static_cast<std::size_t>(E)].get() };
         }
@@ -1836,6 +1834,7 @@ namespace creature
 
             return true;
         }
+
     } // namespace title
 } // namespace creature
 } // namespace heroespath
