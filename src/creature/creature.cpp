@@ -42,6 +42,7 @@
 #include "misc/random.hpp"
 #include "misc/real.hpp"
 #include "misc/vectors.hpp"
+#include "sfml-util/gui/creature-image-manager.hpp"
 #include "song/song-holder.hpp"
 #include "song/song.hpp"
 #include "spell/spell-holder.hpp"
@@ -100,6 +101,19 @@ namespace creature
         , bonusSet_()
         , enchantmentsPVec_()
     {
+        // TODO move to CreatureFactory once it is the only place creatures are created
+        // verify valid RACE and ROLE combination
+        auto const ROLE_VEC{ race::Roles(race_) };
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (std::find(ROLE_VEC.begin(), ROLE_VEC.end(), role_) != ROLE_VEC.end()),
+            "creature::Creature::Constructor(race=" << RaceName() << ", role=" << RoleName()
+                                                    << ") invalid race/role combination.");
+
+        if (imageFilename_.empty())
+        {
+            imageFilename_ = sfml_util::gui::CreatureImageManager::GetRandomFilename(this);
+        }
+
         actualSet_.Get(stats::Traits::Mana).CurrAndNormSet(MANA.As<int>());
         actualSet_.Get(stats::Traits::Strength).CurrAndNormSet(STATS.Str().As<int>());
         actualSet_.Get(stats::Traits::Accuracy).CurrAndNormSet(STATS.Acc().As<int>());
@@ -107,13 +121,6 @@ namespace creature
         actualSet_.Get(stats::Traits::Luck).CurrAndNormSet(STATS.Lck().As<int>());
         actualSet_.Get(stats::Traits::Speed).CurrAndNormSet(STATS.Spd().As<int>());
         actualSet_.Get(stats::Traits::Intelligence).CurrAndNormSet(STATS.Int().As<int>());
-
-        // verify valid RACE and ROLE combination
-        auto const ROLE_VEC{ race::Roles(race_) };
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (std::find(ROLE_VEC.begin(), ROLE_VEC.end(), role_) != ROLE_VEC.end()),
-            "creature::Creature::Constructor(race=" << RaceName() << ", role=" << RoleName()
-                                                    << ") invalid race/role combination.");
 
         // set the default condition if not already there
         if (conditionsVec_.empty())

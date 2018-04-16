@@ -646,8 +646,7 @@ namespace stage
 
             auto & imagePair{ charImages_[CHARACTER_PTR] };
 
-            sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-                imagePair.first, CHARACTER_PTR->ImageFilename(), true);
+            sfml_util::gui::CreatureImageManager::GetImage(imagePair.first, CHARACTER_PTR);
 
             sfml_util::Invert(imagePair.first);
             sfml_util::Mask(imagePair.first, sf::Color::White);

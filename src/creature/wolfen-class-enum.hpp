@@ -55,6 +55,7 @@ namespace creature
         static const std::string ToString(const wolfen_class::Enum E) { return Name(E); }
         static wolfen_class::Enum ClassFromRank(const Rank_t &);
     };
+
 } // namespace creature
 } // namespace heroespath
 

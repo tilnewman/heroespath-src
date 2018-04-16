@@ -56,17 +56,6 @@ namespace player
         CREATURE_PTR->SetHeldWeaponsToBest();
         SetStartingHealth(CREATURE_PTR);
         SetStartingMana(CREATURE_PTR);
-        EnsureValidImageFilename(CREATURE_PTR);
-    }
-
-    void Initial::EnsureValidImageFilename(const creature::CreaturePtr_t CREATURE_PTR)
-    {
-        if (CREATURE_PTR->ImageFilename().empty())
-        {
-            CREATURE_PTR->ImageFilename(
-                sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
-                    CREATURE_PTR->Race(), CREATURE_PTR->Role(), CREATURE_PTR->Sex(), true));
-        }
     }
 
     void Initial::SetupInventory(const creature::CreaturePtr_t CREATURE_PTR)

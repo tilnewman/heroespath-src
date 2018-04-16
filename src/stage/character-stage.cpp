@@ -218,6 +218,7 @@ namespace stage
         , nInsTextSlider_(150, 255, 4.0f)
         , bottomSymbol_()
         , selectedImageIndex_(0)
+        , characterImageFilenamesVec_()
     {}
 
     CharacterStage::~CharacterStage() { Stage::ClearAllEntities(); }
@@ -1391,16 +1392,15 @@ namespace stage
                 ? creature::role::Wolfen
                 : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())) };
 
-        std::vector<std::string> characterImageFilenamesVec;
-        sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(
-            characterImageFilenamesVec, RACE, ROLE, SEX);
+        characterImageFilenamesVec_
+            = sfml_util::gui::CreatureImageManager::GetFilenames(RACE, ROLE, SEX);
 
         sfml_util::TextureVec_t characterTextureVec;
-        for (auto const & NEXT_FILENAME_STR : characterImageFilenamesVec)
+        for (auto const & NEXT_FILENAME_STR : characterImageFilenamesVec_)
         {
             sf::Texture texture;
 
-            sfml_util::gui::CreatureImageManager::Instance()->GetImage(
+            sfml_util::gui::CreatureImageManager::GetImageFromFilename(
                 texture, NEXT_FILENAME_STR, true);
 
             characterTextureVec.emplace_back(texture);
@@ -2841,6 +2841,12 @@ namespace stage
 
     bool CharacterStage::CreateCharacter()
     {
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (selectedImageIndex_ < characterImageFilenamesVec_.size()),
+            "stage::CharacterStage::CreateCharacter() called when selectedImageIndex_="
+                << selectedImageIndex_ << " but characterImageFilenamesVec_.size()="
+                << characterImageFilenamesVec_.size() << ".");
+
         auto const NAME{ boost::algorithm::trim_copy(nameTextEntryBoxUPtr_->GetText()) };
 
         auto const SEX_ENUM{ static_cast<creature::sex::Enum>(
@@ -2855,10 +2861,6 @@ namespace stage
                 : static_cast<creature::role::Enum>(roleRadioButtonSPtr_->GetSelectedNumber())) };
 
         stats::StatSet statSetFinal(statSetBase_);
-
-        std::vector<std::string> characterImageFilenamesVec;
-        sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(
-            characterImageFilenamesVec, RACE_ENUM, ROLE_ENUM, SEX_ENUM);
 
         creature::Creature newCharacter(
             true,
@@ -2875,12 +2877,13 @@ namespace stage
             creature::TitleEnumVec_t(),
             item::Inventory(),
             sfml_util::DateTime::CurrentDateTime(),
-            characterImageFilenamesVec[selectedImageIndex_]);
+            characterImageFilenamesVec_.at(selectedImageIndex_));
 
         const creature::CreaturePtr_t CREATURE_PTR{ &newCharacter };
         player::Initial::Setup(CREATURE_PTR);
         state::GameStateFactory::Instance()->SaveCharacter(CREATURE_PTR);
         ResetForNewCharacterCreation();
+        characterImageFilenamesVec_.empty();
         return false;
     }
 

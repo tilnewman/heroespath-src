@@ -133,8 +133,7 @@ namespace combat
 
         HealthChangeTasks();
 
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-            texture_, CREATURE_PTR->ImageFilename(), isPlayer_);
+        sfml_util::gui::CreatureImageManager::GetImage(texture_, CREATURE_PTR);
 
         sprite_.setTexture(texture_);
 

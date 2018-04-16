@@ -652,8 +652,8 @@ namespace stage
 
                 mouseOverSlider_.Reset(MOUSE_OVER_SLIDER_SPEED_);
 
-                sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-                    mouseOverTexture_, itemSPtr->CHARACTER_PTR_OPT->Obj().ImageFilename());
+                sfml_util::gui::CreatureImageManager::GetImage(
+                    mouseOverTexture_, itemSPtr->CHARACTER_PTR_OPT.value());
 
                 isMouseOverTexture_ = true;
                 mouseOverSprite_.setTexture(mouseOverTexture_);
@@ -667,7 +667,7 @@ namespace stage
                 mouseOverSprite_.setScale(0.0f, 0.0f);
 
                 mouseOverBoxWidth_ = MOUSE_OVER_IMAGE_PAD_
-                    + sfml_util::gui::CreatureImageManager::Instance()->Dimmension()
+                    + sfml_util::gui::CreatureImageManager::Dimmension()
                     + creature::NameInfo::Instance()->Length() + sfml_util::MapByRes(50.0f, 150.0f);
 
                 mouseOverBoxHeight_ = mouseOverSprite_.getLocalBounds().height

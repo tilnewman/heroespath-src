@@ -291,8 +291,8 @@ namespace popup
 
     void PopupStageSpellbook::SetupPlayerImage()
     {
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-            playerTexture_, popupInfo_.CreaturePtrOpt()->Obj().ImageFilename(), true);
+        sfml_util::gui::CreatureImageManager::GetImage(
+            playerTexture_, popupInfo_.CreaturePtrOpt().value());
 
         sfml_util::Invert(playerTexture_);
         sfml_util::Mask(playerTexture_, sf::Color::White);

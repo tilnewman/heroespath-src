@@ -997,9 +997,7 @@ namespace stage
 
     void InventoryStage::Setup_CreatureImage()
     {
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-            creatureTexture_, creaturePtr_->ImageFilename(), true);
-
+        sfml_util::gui::CreatureImageManager::GetImage(creatureTexture_, creaturePtr_);
         sfml_util::Invert(creatureTexture_);
         sfml_util::Mask(creatureTexture_, sf::Color::White);
         creatureSprite_.setTexture(creatureTexture_, true);
@@ -3589,9 +3587,7 @@ namespace stage
     float InventoryStage::UpdateImageDetailsPosition()
     {
         sf::Texture texture;
-
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-            texture, creaturePtr_->ImageFilename());
+        sfml_util::gui::CreatureImageManager::GetImage(texture, creaturePtr_);
 
         sf::Sprite sprite(texture);
         sprite.setScale(CREATURE_IMAGE_SCALE_, CREATURE_IMAGE_SCALE_);
@@ -3729,8 +3725,7 @@ namespace stage
 
         auto const CREATURE_PTR{ CREATURE_PTR_OPT.value() };
 
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-            detailViewTexture_, CREATURE_PTR->ImageFilename(), true);
+        sfml_util::gui::CreatureImageManager::GetImage(detailViewTexture_, CREATURE_PTR);
 
         detailViewSprite_.setTexture(detailViewTexture_);
 

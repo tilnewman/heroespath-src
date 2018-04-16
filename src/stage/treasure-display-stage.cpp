@@ -1040,9 +1040,7 @@ namespace stage
     {
         auto const CREATURE_PTR{ WhichCharacterInventoryIsDisplayed() };
 
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-            characterTexture_, CREATURE_PTR->ImageFilename(), true);
-
+        sfml_util::gui::CreatureImageManager::GetImage(characterTexture_, CREATURE_PTR);
         sfml_util::Invert(characterTexture_);
         sfml_util::Mask(characterTexture_, sf::Color::White);
 
@@ -1056,7 +1054,7 @@ namespace stage
         sprite.setPosition(
             MEASUREMENTS.characterImageLeft,
             inventoryListboxUPtr_->GetEntityPos().y
-                - (sfml_util::gui::CreatureImageManager::Instance()->Dimmension()
+                - (sfml_util::gui::CreatureImageManager::Dimmension()
                    * MEASUREMENTS.characterImageScale));
 
         sprite.setColor(sf::Color(255, 255, 255, 127));
@@ -1282,7 +1280,7 @@ namespace stage
     float TreasureDisplayStage::CalculateInventoryTextPosLeft() const
     {
         return characterImageUPtr_->GetEntityPos().x
-            + (sfml_util::gui::CreatureImageManager::Instance()->Dimmension()
+            + (sfml_util::gui::CreatureImageManager::Dimmension()
                * CreateDisplayMeasurements().characterImageScale);
     }
 

@@ -261,7 +261,6 @@ namespace game
             config::SettingsFile::Release();
 
             // image managers should not be needed during shutdown, so release them early
-            sfml_util::gui::CreatureImageManager::Release();
             sfml_util::gui::ItemImageManager::Release();
             sfml_util::gui::GuiElements::Release();
 
@@ -419,9 +418,6 @@ namespace game
         sfml_util::gui::ItemImageManager::SetItemImageDirectory(
             game::GameDataFile::Instance()->GetMediaPath("media-images-items-dir"));
 
-        sfml_util::gui::CreatureImageManager::SetCreatureImageDirectory(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-creatures-dir"));
-
         sfml_util::gui::TitleImageManager::SetImageDirectoryPath(
             game::GameDataFile::Instance()->GetMediaPath("media-images-titles-dir"));
 
@@ -461,7 +457,6 @@ namespace game
         popup::PopupManager::Acquire();
         sfml_util::gui::GuiElements::Acquire();
         sfml_util::gui::ItemImageManager::Acquire();
-        sfml_util::gui::CreatureImageManager::Acquire();
         Game::Acquire();
         state::GameStateFactory::Acquire();
         creature::NameInfo::Acquire();

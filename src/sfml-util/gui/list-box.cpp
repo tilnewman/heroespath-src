@@ -705,10 +705,8 @@ namespace sfml_util
                     }
                     else if (listBoxItemSPtr->CHARACTER_PTR_OPT)
                     {
-                        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-                            *imagePair.first,
-                            listBoxItemSPtr->CHARACTER_PTR_OPT->Obj().ImageFilename(),
-                            true);
+                        sfml_util::gui::CreatureImageManager::GetImage(
+                            *imagePair.first, listBoxItemSPtr->CHARACTER_PTR_OPT.value());
                     }
                     else if (listBoxItemSPtr->SPELL_PTR_OPT)
                     {

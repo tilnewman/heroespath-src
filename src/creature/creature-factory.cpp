@@ -108,7 +108,7 @@ namespace creature
         const Experience_t & EXPERIENCE,
         const Mana_t & MANA) const
     {
-        auto const CHARACTER_PTR{ CreatureWarehouse::Access().Store(std::make_unique<Creature>(
+        return CreatureWarehouse::Access().Store(std::make_unique<Creature>(
             false,
             race::Name(RACE),
             SEX,
@@ -125,12 +125,7 @@ namespace creature
             sfml_util::DateTime(),
             "",
             spell::SpellEnumVec_t(),
-            MANA)) };
-
-        CHARACTER_PTR->ImageFilename(sfml_util::gui::CreatureImageManager::Instance()->GetFilename(
-            RACE, ROLE, SEX, true, CHARACTER_PTR->WolfenClass(), CHARACTER_PTR->DragonClass()));
-
-        return CHARACTER_PTR;
+            MANA));
     }
 
 } // namespace creature

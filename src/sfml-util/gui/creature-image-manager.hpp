@@ -43,6 +43,11 @@
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+} // namespace creature
 namespace sfml_util
 {
     namespace gui
@@ -56,64 +61,34 @@ namespace sfml_util
             CreatureImageManager(CreatureImageManager &&) = delete;
             CreatureImageManager & operator=(const CreatureImageManager &) = delete;
             CreatureImageManager & operator=(CreatureImageManager &&) = delete;
-
-        public:
-            CreatureImageManager();
-            virtual ~CreatureImageManager();
-
-            static misc::NotNull<CreatureImageManager *> Instance();
-            static void Acquire();
-            static void Release();
-            static void SetCreatureImageDirectory(const std::string & PATH);
+            CreatureImageManager() = delete;
 
             static bool Test();
 
             static float Dimmension() { return 256.0f; }
 
-            const std::string GetFilename(
-                const creature::race::Enum RACE,
-                const creature::role::Enum ROLE,
-                const creature::sex::Enum SEX,
-                const bool WILL_PICK_RANDOM = true,
-                const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
-                const creature::dragon_class::Enum DRAGON_CLASS
-                = creature::dragon_class::Hatchling) const;
+            static void GetImage(sf::Texture & texture, const creature::CreaturePtr_t);
 
-            void GetImage(
-                sf::Texture & texture,
-                const creature::race::Enum RACE,
-                const creature::role::Enum ROLE,
-                const creature::sex::Enum SEX = creature::sex::Male,
-                const bool WILL_PICK_RANDOM = true,
-                const bool WILL_FACE_RIGHT = false,
-                const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
-                const creature::dragon_class::Enum DRAGON_CLASS
-                = creature::dragon_class::Hatchling) const;
+            static void GetImageFromFilename(
+                sf::Texture & texture, const std::string & FILENAME, const bool WILL_FACE_RIGHT);
 
-            void GetImage(
-                sf::Texture & texture,
-                const std::string & FILENAME,
-                const bool WILL_FACE_RIGHT = false) const;
+            static const std::string GetRandomFilename(const creature::CreaturePtr_t);
 
-            void GetFilenames(
-                std::vector<std::string> & outputVec,
+            static const std::vector<std::string> GetFilenames(
                 const creature::race::Enum RACE,
                 const creature::role::Enum ROLE,
                 const creature::sex::Enum SEX,
                 const creature::wolfen_class::Enum WOLFEN_CLASS = creature::wolfen_class::Pup,
                 const creature::dragon_class::Enum DRAGON_CLASS
-                = creature::dragon_class::Hatchling) const;
+                = creature::dragon_class::Hatchling);
 
         private:
-            void LoadImage(
+            static void LoadImage(
                 sf::Texture & texture,
                 const std::string & IMAGE_FILE_NAME,
-                const bool WILL_FACE_RIGHT = false) const;
-
-        private:
-            static std::string imagesDirectoryPath_;
-            static std::unique_ptr<CreatureImageManager> instanceUPtr_;
+                const bool WILL_FACE_RIGHT = false);
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

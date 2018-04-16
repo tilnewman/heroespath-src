@@ -394,6 +394,8 @@ namespace stage
         sfml_util::BottomSymbol bottomSymbol_;
         //
         std::size_t selectedImageIndex_;
+
+        std::vector<std::string> characterImageFilenamesVec_;
     };
 
 } // namespace stage

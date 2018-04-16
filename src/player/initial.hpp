@@ -54,7 +54,6 @@ namespace player
         static void Setup(const creature::CreaturePtr_t);
 
     private:
-        static void EnsureValidImageFilename(const creature::CreaturePtr_t);
         static void SetupInventory(const creature::CreaturePtr_t);
         static void SetupSpellsAndSongs(const creature::CreaturePtr_t);
         static void EquipBodyParts(const creature::CreaturePtr_t);

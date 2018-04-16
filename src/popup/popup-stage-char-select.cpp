@@ -234,8 +234,7 @@ namespace popup
         auto const CREATURE_PTR{ game::Game::Instance()->State().Party().GetAtOrderPos(
             IMAGE_INDEX) };
 
-        sfml_util::gui::CreatureImageManager::Instance()->GetImage(
-            textureCurr_, CREATURE_PTR->ImageFilename(), true);
+        sfml_util::gui::CreatureImageManager::GetImage(textureCurr_, CREATURE_PTR);
     }
 } // namespace popup
 } // namespace heroespath

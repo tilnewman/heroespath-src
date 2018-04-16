@@ -1315,8 +1315,7 @@ namespace sfml_util
                     }
                     else
                     {
-                        sfml_util::gui::CreatureImageManager::Instance()->GetFilenames(
-                            filenames,
+                        filenames = sfml_util::gui::CreatureImageManager::GetFilenames(
                             RACE_ENUM,
                             ROLE_ENUM,
                             ((misc::random::Bool()) ? creature::sex::Male : creature::sex::Female),

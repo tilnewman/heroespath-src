@@ -469,8 +469,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_CreatureImageManager{ false };
         if (false == hasTestingCompleted_CreatureImageManager)
         {
-            hasTestingCompleted_CreatureImageManager
-                = sfml_util::gui::CreatureImageManager::Instance()->Test();
+            hasTestingCompleted_CreatureImageManager = sfml_util::gui::CreatureImageManager::Test();
 
             return;
         }
@@ -1171,7 +1170,7 @@ if (false == willImageCheck_)
                     std::ostringstream nameSS;
                     nameSS << "Name_" << RACE_STR << "_" << ROLE_STR << "_" << rankIndex;
 
-                    auto characterUPtr = std::make_unique<creature::Creature>(
+                    creature::Creature character(
                         false,
                         nameSS.str(),
                         creature::sex::Male,
@@ -1183,8 +1182,15 @@ if (false == willImageCheck_)
                         Rank_t(rankIndex),
                         Experience_t(rankIndex * 10000));
 
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (character.ImageFilename().empty() == false),
+                        "stage::TestingStage::TestInventoryFactory() creature created for "
+                        "inventory test was found to be invalid before inventory test could run.  "
+                        "The image filename was empty.  creature={"
+                            << character.ToString() << "}");
+
                     non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(
-                        characterUPtr.get());
+                        &character);
                 }
 
                 std::ostringstream ss;

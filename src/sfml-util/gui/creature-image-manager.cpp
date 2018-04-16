@@ -29,15 +29,15 @@
 //
 #include "creature-image-manager.hpp"
 
-#include "sfml-util/loaders.hpp"
-#include "sfml-util/sfml-util.hpp"
-
 #include "creature/body-type.hpp"
+#include "creature/creature.hpp"
+#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "log/log-macros.hpp"
-
 #include "misc/assertlogandthrow.hpp"
 #include "misc/random.hpp"
+#include "sfml-util/loaders.hpp"
+#include "sfml-util/sfml-util.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -51,57 +51,6 @@ namespace sfml_util
     namespace gui
     {
 
-        std::string CreatureImageManager::imagesDirectoryPath_;
-        std::unique_ptr<CreatureImageManager> CreatureImageManager::instanceUPtr_;
-
-        CreatureImageManager::CreatureImageManager()
-        {
-            M_HP_LOG_DBG("Subsystem Construction: CreatureImageManager");
-        }
-
-        CreatureImageManager::~CreatureImageManager()
-        {
-            M_HP_LOG_DBG("Subsystem Destruction: CreatureImageManager");
-        }
-
-        misc::NotNull<CreatureImageManager *> CreatureImageManager::Instance()
-        {
-            if (!instanceUPtr_)
-            {
-                M_HP_LOG_ERR("Subsystem Instance() before Acquire(): CreatureImageManager");
-                Acquire();
-            }
-
-            return instanceUPtr_.get();
-        }
-
-        void CreatureImageManager::Acquire()
-        {
-            if (!instanceUPtr_)
-            {
-                instanceUPtr_ = std::make_unique<CreatureImageManager>();
-            }
-            else
-            {
-                M_HP_LOG_ERR("Subsystem Acquire() after Construction: CreatureImageManager");
-            }
-        }
-
-        void CreatureImageManager::Release()
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_),
-                "sfml_util::gui::CreatureImageManager::Release() found instanceUPtr that was "
-                "null.");
-
-            instanceUPtr_.reset();
-        }
-
-        void CreatureImageManager::SetCreatureImageDirectory(const std::string & PATH)
-        {
-            imagesDirectoryPath_ = PATH;
-        }
-
         bool CreatureImageManager::Test()
         {
             static auto didPostInitial{ false };
@@ -111,8 +60,6 @@ namespace sfml_util
                 game::LoopManager::Instance()->TestingStrAppend(
                     "sfml_util::gui::CreatureImageManager::Test() Starting Tests...");
             }
-
-            auto cimSPtr{ CreatureImageManager::Instance() };
 
             static auto raceIndex{ 0 };
             static auto roleIndex{ 0 };
@@ -146,42 +93,42 @@ namespace sfml_util
                             {
                                 auto const CLASS_ENUM{ static_cast<creature::wolfen_class::Enum>(
                                     classIndex) };
+
                                 auto const CLASS_STR{ creature::wolfen_class::ToString(
                                     CLASS_ENUM) };
 
-                                std::vector<std::string> filenamesVec;
-                                cimSPtr->GetFilenames(
-                                    filenamesVec,
+                                auto const FILENAMES{ GetFilenames(
                                     RACE_ENUM,
                                     ROLE_ENUM,
                                     SEX_ENUM,
                                     CLASS_ENUM,
-                                    creature::dragon_class::Count);
+                                    creature::dragon_class::Count) };
 
                                 M_ASSERT_OR_LOGANDTHROW_SS(
-                                    (filenamesVec.empty() == false),
+                                    (FILENAMES.empty() == false),
                                     "sfml_util::gui::CreatureImageManager() (wolfen_classes) race="
                                         << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
                                         << ", wolfen_class=" << CLASS_STR
                                         << ", GetFilenames() failed to return anything.");
 
-                                if (fileIndex < filenamesVec.size())
+                                if (fileIndex < FILENAMES.size())
                                 {
                                     sf::Texture texture;
-                                    cimSPtr->GetImage(texture, filenamesVec.at(fileIndex));
+                                    GetImageFromFilename(texture, FILENAMES.at(fileIndex), false);
 
                                     game::LoopManager::Instance()->TestingImageSet(
                                         texture,
                                         true,
                                         "Creature",
                                         "(no type)",
-                                        filenamesVec.at(fileIndex));
+                                        FILENAMES.at(fileIndex));
 
                                     std::ostringstream ss;
                                     ss << " CreatureImageManager Tested race=" << RACE_STR
                                        << " role=" << ROLE_STR << " sex=" << SEX_STR
                                        << " wolfen_class=" << CLASS_STR
-                                       << " filename=" << filenamesVec.at(fileIndex);
+                                       << " filename=" << FILENAMES.at(fileIndex);
+
                                     game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
                                     ++fileIndex;
@@ -199,42 +146,42 @@ namespace sfml_util
                             {
                                 auto const CLASS_ENUM{ static_cast<creature::dragon_class::Enum>(
                                     classIndex) };
+
                                 auto const CLASS_STR{ creature::dragon_class::ToString(
                                     CLASS_ENUM) };
 
-                                std::vector<std::string> filenamesVec;
-                                cimSPtr->GetFilenames(
-                                    filenamesVec,
+                                auto const FILENAMES{ GetFilenames(
                                     RACE_ENUM,
                                     ROLE_ENUM,
                                     SEX_ENUM,
                                     creature::wolfen_class::Count,
-                                    CLASS_ENUM);
+                                    CLASS_ENUM) };
 
                                 M_ASSERT_OR_LOGANDTHROW_SS(
-                                    (filenamesVec.empty() == false),
+                                    (FILENAMES.empty() == false),
                                     "sfml_util::gui::CreatureImageManager() (dragon_classes) race="
                                         << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
                                         << ", dragon_class=" << CLASS_STR
                                         << ", GetFilenames() failed to return anything.");
 
-                                if (fileIndex < filenamesVec.size())
+                                if (fileIndex < FILENAMES.size())
                                 {
                                     sf::Texture texture;
-                                    cimSPtr->GetImage(texture, filenamesVec.at(fileIndex));
+                                    GetImageFromFilename(texture, FILENAMES.at(fileIndex), false);
 
                                     game::LoopManager::Instance()->TestingImageSet(
                                         texture,
                                         true,
                                         "Creature",
                                         "(no type)",
-                                        filenamesVec.at(fileIndex));
+                                        FILENAMES.at(fileIndex));
 
                                     std::ostringstream ss;
                                     ss << " CreatureImageManager Tested race=" << RACE_STR
                                        << " role=" << ROLE_STR << " sex=" << SEX_STR
                                        << " dragon_class=" << CLASS_STR
-                                       << " filename=" << filenamesVec.at(fileIndex);
+                                       << " filename=" << FILENAMES.at(fileIndex);
+
                                     game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
                                     ++fileIndex;
@@ -248,37 +195,36 @@ namespace sfml_util
                         }
                         else
                         {
-                            std::vector<std::string> filenamesVec;
-                            cimSPtr->GetFilenames(
-                                filenamesVec,
+                            auto const FILENAMES{ GetFilenames(
                                 RACE_ENUM,
                                 ROLE_ENUM,
                                 SEX_ENUM,
                                 creature::wolfen_class::Count,
-                                creature::dragon_class::Count);
+                                creature::dragon_class::Count) };
 
                             M_ASSERT_OR_LOGANDTHROW_SS(
-                                (filenamesVec.empty() == false),
+                                (FILENAMES.empty() == false),
                                 "sfml_util::gui::CreatureImageManager() race="
                                     << RACE_STR << ", role=" << ROLE_STR << ", sex=" << SEX_STR
                                     << ", GetFilenames() failed to return anything.");
 
-                            if (fileIndex < filenamesVec.size())
+                            if (fileIndex < FILENAMES.size())
                             {
                                 sf::Texture texture;
-                                cimSPtr->GetImage(texture, filenamesVec.at(fileIndex));
+                                GetImageFromFilename(texture, FILENAMES.at(fileIndex), false);
 
                                 game::LoopManager::Instance()->TestingImageSet(
                                     texture,
                                     true,
                                     "Creature",
                                     "(no type)",
-                                    filenamesVec.at(fileIndex));
+                                    FILENAMES.at(fileIndex));
 
                                 std::ostringstream ss;
                                 ss << " CreatureImageManager Tested race=" << RACE_STR
                                    << " role=" << ROLE_STR << " sex=" << SEX_STR
-                                   << " filename=" << filenamesVec.at(fileIndex);
+                                   << " filename=" << FILENAMES.at(fileIndex);
+
                                 game::LoopManager::Instance()->TestingStrAppend(ss.str());
 
                                 ++fileIndex;
@@ -305,45 +251,52 @@ namespace sfml_util
 
             game::LoopManager::Instance()->TestingStrAppend(
                 "sfml_util::gui::CreatureImageManager::Test()  ALL TESTS PASSED.");
+
             return true;
         }
 
         void CreatureImageManager::GetImage(
-            sf::Texture & texture, const std::string & FILENAME, const bool WILL_FACE_RIGHT) const
+            sf::Texture & texture, const creature::CreaturePtr_t CREATURE_PTR)
+        {
+            return GetImageFromFilename(
+                texture, CREATURE_PTR->ImageFilename(), CREATURE_PTR->IsPlayerCharacter());
+        }
+
+        void CreatureImageManager::GetImageFromFilename(
+            sf::Texture & texture, const std::string & FILENAME, const bool WILL_FACE_RIGHT)
         {
             return LoadImage(texture, FILENAME, WILL_FACE_RIGHT);
         }
 
-        void CreatureImageManager::GetImage(
-            sf::Texture & texture,
-            const creature::race::Enum RACE,
-            const creature::role::Enum ROLE,
-            const creature::sex::Enum SEX,
-            const bool WILL_PICK_RANDOM,
-            const bool WILL_FACE_RIGHT,
-            const creature::wolfen_class::Enum WOLFEN_CLASS,
-            const creature::dragon_class::Enum DRAGON_CLASS) const
+        const std::string
+            CreatureImageManager::GetRandomFilename(const creature::CreaturePtr_t CREATURE_PTR)
         {
-            const std::string FILENAME(
-                GetFilename(RACE, ROLE, SEX, WILL_PICK_RANDOM, WOLFEN_CLASS, DRAGON_CLASS));
+            auto const FILENAMES{ GetFilenames(
+                CREATURE_PTR->Race(),
+                CREATURE_PTR->Role(),
+                CREATURE_PTR->Sex(),
+                CREATURE_PTR->WolfenClass(),
+                CREATURE_PTR->DragonClass()) };
+
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (FILENAME.empty() == false),
-                "sfml_util::gui::CreatureImageManager::GetImage()  GetFilename() call return no "
-                "filename.  (race="
-                    << creature::race::ToString(RACE) << ", role=" << creature::role::ToString(ROLE)
-                    << ", sex=" << creature::sex::ToString(SEX) << ", wolfen_class=" << WOLFEN_CLASS
-                    << ", dragon_class=" << DRAGON_CLASS << ")");
-            return LoadImage(texture, FILENAME, WILL_FACE_RIGHT);
+                (FILENAMES.empty() == false),
+                "sfml_util::gui::CreatureImageManager::GetRandomFilename(creature={"
+                    << CREATURE_PTR->ToString()
+                    << "}) (which actually calls GetFilenames()) returned no filenames.");
+
+            return misc::Vector::SelectRandom(FILENAMES);
         }
 
         void CreatureImageManager::LoadImage(
-            sf::Texture & texture,
-            const std::string & IMAGE_FILE_NAME,
-            const bool WILL_FACE_RIGHT) const
+            sf::Texture & texture, const std::string & IMAGE_FILE_NAME, const bool WILL_FACE_RIGHT)
         {
             namespace bfs = boost::filesystem;
+
+            auto const IMAGES_DIR{ game::GameDataFile::Instance()->GetMediaPath(
+                "media-images-creatures-dir") };
+
             const bfs::path PATH_OBJ(
-                bfs::system_complete(bfs::path(imagesDirectoryPath_) / bfs::path(IMAGE_FILE_NAME)));
+                bfs::system_complete(bfs::path(IMAGES_DIR) / bfs::path(IMAGE_FILE_NAME)));
 
             sfml_util::LoadTexture(texture, PATH_OBJ.string());
 
@@ -353,45 +306,12 @@ namespace sfml_util
             }
         }
 
-        const std::string CreatureImageManager::GetFilename(
-            const creature::race::Enum RACE,
-            const creature::role::Enum ROLE,
-            const creature::sex::Enum SEX,
-            const bool WILL_PICK_RANDOM,
-            const creature::wolfen_class::Enum WOLFEN_CLASS,
-            const creature::dragon_class::Enum DRAGON_CLASS) const
-        {
-            using namespace creature;
-
-            std::vector<std::string> filenameVec;
-            GetFilenames(filenameVec, RACE, ROLE, SEX, WOLFEN_CLASS, DRAGON_CLASS);
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (filenameVec.empty() == false),
-                "sfml_util::gui::CreatureImageManager::GetFilename()  GetFilenames() call return "
-                "no filenames.  (race="
-                    << creature::race::ToString(RACE) << ", role=" << creature::role::ToString(ROLE)
-                    << ", sex=" << creature::sex::ToString(SEX) << ", wolfen_class=" << WOLFEN_CLASS
-                    << ", dragon_class=" << DRAGON_CLASS << ")");
-
-            if (WILL_PICK_RANDOM && (filenameVec.size() > 1))
-            {
-                return filenameVec[static_cast<std::size_t>(
-                    misc::random::Int(0, static_cast<int>(filenameVec.size()) - 1))];
-            }
-            else
-            {
-                return filenameVec[0];
-            }
-        }
-
-        void CreatureImageManager::GetFilenames(
-            std::vector<std::string> & outputVec,
+        const std::vector<std::string> CreatureImageManager::GetFilenames(
             const creature::race::Enum RACE,
             const creature::role::Enum ROLE,
             const creature::sex::Enum SEX,
             const creature::wolfen_class::Enum WOLFEN_CLASS,
-            const creature::dragon_class::Enum DRAGON_CLASS) const
+            const creature::dragon_class::Enum DRAGON_CLASS)
         {
             using namespace creature;
 
@@ -399,62 +319,52 @@ namespace sfml_util
             {
                 if (ROLE == role::Berserker)
                 {
-                    outputVec.emplace_back("troll-berserker.png");
-                    return;
+                    return { "troll-berserker.png" };
                 }
 
                 if (ROLE == role::Brute)
                 {
-                    outputVec.emplace_back("troll-brute.png");
-                    return;
+                    return { "troll-brute.png" };
                 }
 
                 if (ROLE == role::Chieftain)
                 {
-                    outputVec.emplace_back("troll-chieftain.png");
-                    return;
+                    return { "troll-chieftain.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("troll-grunt-1.png");
-                    return;
+                    return { "troll-grunt-1.png" };
                 }
 
                 if (ROLE == role::Mountain)
                 {
-                    outputVec.emplace_back("troll-mountain.png");
-                    return;
+                    return { "troll-mountain.png" };
                 }
 
                 if (ROLE == role::Shaman)
                 {
-                    outputVec.emplace_back("troll-shaman.png");
-                    return;
+                    return { "troll-shaman.png" };
                 }
 
                 if (ROLE == role::Smasher)
                 {
-                    outputVec.emplace_back("troll-smasher.png");
-                    return;
+                    return { "troll-smasher.png" };
                 }
 
                 if (ROLE == role::Strangler)
                 {
-                    outputVec.emplace_back("troll-strangler.png");
-                    return;
+                    return { "troll-strangler.png" };
                 }
 
                 if (ROLE == role::Warlord)
                 {
-                    outputVec.emplace_back("troll-warlord.png");
-                    return;
+                    return { "troll-warlord.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("troll-1.png");
-                    return;
+                    return { "troll-1.png" };
                 }
             }
 
@@ -462,80 +372,70 @@ namespace sfml_util
             {
                 if (ROLE == role::Berserker)
                 {
-                    outputVec.emplace_back("orc-berserker.png");
-                    return;
+                    return { "orc-berserker.png" };
                 }
 
                 if (ROLE == role::Chieftain)
                 {
-                    outputVec.emplace_back("orc-chieftain.png");
-                    return;
+                    return { "orc-chieftain.png" };
                 }
 
                 if (ROLE == role::Elder)
                 {
-                    outputVec.emplace_back("orc-elder.png");
-                    return;
+                    return { "orc-elder.png" };
                 }
 
                 if (ROLE == role::FourArmed)
                 {
-                    outputVec.emplace_back("orc-four-armed.png");
-                    return;
+                    return { "orc-four-armed.png" };
                 }
 
                 if (ROLE == role::Captain)
                 {
-                    outputVec.emplace_back("orc-captain.png");
-                    return;
+                    return { "orc-captain.png" };
                 }
 
                 if (ROLE == role::Mountain)
                 {
-                    outputVec.emplace_back("orc-mountain.png");
-                    return;
+                    return { "orc-mountain.png" };
                 }
 
                 if (ROLE == role::Spike)
                 {
-                    outputVec.emplace_back("orc-spike.png");
-                    return;
+                    return { "orc-spike.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
+                    std::vector<std::string> filenames;
                     for (std::size_t i(1); i <= 13; ++i)
                     {
                         std::ostringstream ss;
                         ss << "orc-grunt-" << i << ".png";
-                        outputVec.emplace_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Shaman)
                 {
-                    outputVec.emplace_back("orc-shaman.png");
-                    return;
+                    return { "orc-shaman.png" };
                 }
 
                 if (ROLE == role::Smasher)
                 {
-                    outputVec.emplace_back("orc-smasher.png");
-                    return;
+                    return { "orc-smasher.png" };
                 }
 
                 if (ROLE == role::Warlord)
                 {
-                    outputVec.emplace_back("orc-warlord.png");
-                    return;
+                    return { "orc-warlord.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("orc-grunt-1.png");
-                    return;
+                    return { "orc-grunt-1.png" };
                 }
             }
 
@@ -543,194 +443,168 @@ namespace sfml_util
             {
                 if (ROLE == role::Chieftain)
                 {
-                    outputVec.emplace_back("newt-chieftain.png");
-                    return;
+                    return { "newt-chieftain.png" };
                 }
 
                 if (ROLE == role::Cleric)
                 {
-                    outputVec.emplace_back("newt-cleric.png");
-                    return;
+                    return { "newt-cleric.png" };
                 }
 
                 if (ROLE == role::Elder)
                 {
-                    outputVec.emplace_back("newt-elder.png");
-                    return;
+                    return { "newt-elder.png" };
                 }
 
                 if (ROLE == role::Sorcerer)
                 {
-                    outputVec.emplace_back("newt-sorcerer.png");
-                    return;
+                    return { "newt-sorcerer.png" };
                 }
 
                 if (ROLE == role::Trader)
                 {
-                    outputVec.emplace_back("newt-trader.png");
-                    return;
+                    return { "newt-trader.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
+                    std::vector<std::string> filenames;
                     for (std::size_t i(1); i <= 6; ++i)
                     {
                         std::ostringstream ss;
                         ss << "newt-" << i << ".png";
-                        outputVec.emplace_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
-                    return;
+                    return filenames;
                 }
             }
 
             if ((RACE == race::Spider) && (ROLE == role::Spider))
             {
+                std::vector<std::string> filenames;
                 for (std::size_t i(1); i <= 9; ++i)
                 {
                     std::ostringstream ss;
                     ss << "spider-giant-" << i << ".png";
-                    outputVec.emplace_back(ss.str());
+                    filenames.emplace_back(ss.str());
                 }
-                return;
+                return filenames;
             }
 
             if (RACE == race::Bog)
             {
                 if (ROLE == role::Chieftain)
                 {
-                    outputVec.emplace_back("bog-chieftain.png");
-                    return;
+                    return { "bog-chieftain.png" };
                 }
 
                 if (ROLE == role::Smasher)
                 {
-                    outputVec.emplace_back("bog-smasher.png");
-                    return;
+                    return { "bog-smasher.png" };
                 }
 
                 if (ROLE == role::Sorcerer)
                 {
-                    outputVec.emplace_back("bog-sorcerer.png");
-                    return;
+                    return { "bog-sorcerer.png" };
                 }
 
                 if (ROLE == role::Shaman)
                 {
-                    outputVec.emplace_back("bog-shaman.png");
-                    return;
+                    return { "bog-shaman.png" };
                 }
 
                 if (ROLE == role::Spike)
                 {
-                    outputVec.emplace_back("bog-spike.png");
-                    return;
+                    return { "bog-spike.png" };
                 }
 
                 if (ROLE == role::Tendrilus)
                 {
-                    outputVec.emplace_back("bog-tendrilus.png");
-                    return;
+                    return { "bog-tendrilus.png" };
                 }
 
                 if (ROLE == role::Wing)
                 {
-                    outputVec.emplace_back("bog-wing.png");
-                    return;
+                    return { "bog-wing.png" };
                 }
 
                 if (ROLE == role::Whelp)
                 {
-                    outputVec.emplace_back("bog-whelp.png");
-                    return;
+                    return { "bog-whelp.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("bog-grunt-1.png");
-                    outputVec.emplace_back("bog-grunt-2.png");
-                    outputVec.emplace_back("bog-grunt-3.png");
-                    return;
+                    return { "bog-grunt-1.png", "bog-grunt-2.png", "bog-grunt-3.png" };
                 }
             }
 
             if ((RACE == race::CaveCrawler) && (ROLE == role::Mountain))
             {
-                outputVec.emplace_back("cave-crawler-1.png");
-                outputVec.emplace_back("cave-crawler-2.png");
-                outputVec.emplace_back("cave-crawler-3.png");
-                return;
+                return { "cave-crawler-1.png", "cave-crawler-2.png", "cave-crawler-3.png" };
             }
 
             if ((RACE == race::Hydra) && (ROLE == role::Wing))
             {
-                outputVec.emplace_back("hydra-1.png");
-                return;
+                return { "hydra-1.png" };
             }
 
             if (RACE == race::LizardWalker)
             {
                 if (ROLE == role::Whelp)
                 {
-                    outputVec.emplace_back("lizard-walker-whelp-1.png");
-                    outputVec.emplace_back("lizard-walker-whelp-2.png");
-                    return;
+                    return { "lizard-walker-whelp-1.png", "lizard-walker-whelp-2.png" };
                 }
 
                 if (ROLE == role::Sorcerer)
                 {
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("lizard-walker-sorcerer-female.png");
-                        return;
+                        return { "lizard-walker-sorcerer-female.png" };
                     }
                     else
                     {
-                        outputVec.emplace_back("lizard-walker-sorcerer-male.png");
-                        return;
+                        return { "lizard-walker-sorcerer-male.png" };
                     }
                 }
 
                 if (ROLE == role::Captain)
                 {
-                    outputVec.emplace_back("lizard-walker-captain.png");
-                    return;
+                    return { "lizard-walker-captain.png" };
                 }
 
                 if (ROLE == role::Chieftain)
                 {
-                    outputVec.emplace_back("lizard-walker-chieftain.png");
-                    return;
+                    return { "lizard-walker-chieftain.png" };
                 }
 
                 if (ROLE == role::Spike)
                 {
-                    outputVec.emplace_back("lizard-walker-spike.png");
-                    return;
+                    return { "lizard-walker-spike.png" };
                 }
 
                 if (ROLE == role::Shaman)
                 {
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("lizard-walker-shaman-female.png");
-                        return;
+                        return { "lizard-walker-shaman-female.png" };
                     }
                     else
                     {
-                        outputVec.emplace_back("lizard-walker-shaman-male.png");
-                        return;
+                        return { "lizard-walker-shaman-male.png" };
                     }
                 }
 
                 if (ROLE == role::Grunt)
                 {
+                    std::vector<std::string> filenames;
                     for (std::size_t i(1); i <= 12; ++i)
                     {
                         std::ostringstream ss;
                         ss << "lizard-walker-" << i << ".png";
-                        outputVec.emplace_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
-                    return;
+                    return filenames;
                 }
             }
 
@@ -738,47 +612,39 @@ namespace sfml_util
             {
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("minotaur-grunt-1.png");
-                    outputVec.emplace_back("minotaur-grunt-2.png");
-                    outputVec.emplace_back("minotaur-grunt-3.png");
-                    return;
+                    return {
+                        "minotaur-grunt-1.png", "minotaur-grunt-2.png", "minotaur-grunt-3.png"
+                    };
                 }
 
                 if (ROLE == role::Brute)
                 {
-                    outputVec.emplace_back("minotaur-brute.png");
-                    return;
+                    return { "minotaur-brute.png" };
                 }
 
                 if (ROLE == role::FourArmed)
                 {
-                    outputVec.emplace_back("minotaur-fourarmed.png");
-                    return;
+                    return { "minotaur-fourarmed.png" };
                 }
 
                 if (ROLE == role::Mountain)
                 {
-                    outputVec.emplace_back("minotaur-mountain.png");
-                    return;
+                    return { "minotaur-mountain.png" };
                 }
 
                 if (ROLE == role::Shaman)
                 {
-                    outputVec.emplace_back("minotaur-shaman.png");
-                    return;
+                    return { "minotaur-shaman.png" };
                 }
 
                 if (ROLE == role::Warlord)
                 {
-                    outputVec.emplace_back("minotaur-warlord.png");
-                    return;
+                    return { "minotaur-warlord.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("minotaur-1.png");
-                    outputVec.emplace_back("minotaur-2.png");
-                    return;
+                    return { "minotaur-1.png", "minotaur-2.png" };
                 }
             }
 
@@ -786,77 +652,62 @@ namespace sfml_util
             {
                 if (ROLE == role::Berserker)
                 {
-                    outputVec.emplace_back("ogre-berserker.png");
-                    return;
+                    return { "ogre-berserker.png" };
                 }
 
                 if (ROLE == role::Brute)
                 {
-                    outputVec.emplace_back("ogre-brute.png");
-                    return;
+                    return { "ogre-brute.png" };
                 }
 
                 if (ROLE == role::Elder)
                 {
-                    outputVec.emplace_back("ogre-elder.png");
-                    return;
+                    return { "ogre-elder.png" };
                 }
 
                 if (ROLE == role::FourArmed)
                 {
-                    outputVec.emplace_back("ogre-four-armed.png");
-                    return;
+                    return { "ogre-four-armed.png" };
                 }
 
                 if (ROLE == role::Giant)
                 {
-                    outputVec.emplace_back("ogre-giant.png");
-                    return;
+                    return { "ogre-giant.png" };
                 }
 
                 if (ROLE == role::Mountain)
                 {
-                    outputVec.emplace_back("ogre-mountain.png");
-                    return;
+                    return { "ogre-mountain.png" };
                 }
 
                 if (ROLE == role::Warlord)
                 {
-                    outputVec.emplace_back("ogre-warlord.png");
-                    return;
+                    return { "ogre-warlord.png" };
                 }
 
                 if (ROLE == role::Captain)
                 {
-                    outputVec.emplace_back("ogre-captain.png");
-                    return;
+                    return { "ogre-captain.png" };
                 }
 
                 if (ROLE == role::Chieftain)
                 {
-                    outputVec.emplace_back("ogre-chieftain.png");
-                    return;
+                    return { "ogre-chieftain.png" };
                 }
 
                 if (ROLE == role::Shaman)
                 {
-                    outputVec.emplace_back("ogre-shaman.png");
-                    return;
+                    return { "ogre-shaman.png" };
                 }
 
                 if (ROLE == role::Spike)
                 {
-                    outputVec.emplace_back("ogre-spike.png");
-                    return;
+                    return { "ogre-spike.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("ogre-1.png");
-                    outputVec.emplace_back("ogre-2.png");
-                    outputVec.emplace_back("ogre-3.png");
-                    outputVec.emplace_back("ogre-4.png");
-                    return;
+                    return { "ogre-1.png", "ogre-2.png", "ogre-3.png", "ogre-4.png" };
                 }
             }
 
@@ -864,28 +715,22 @@ namespace sfml_util
             {
                 if (ROLE == role::Smasher)
                 {
-                    outputVec.emplace_back("plant-smasher.png");
-                    return;
+                    return { "plant-smasher.png" };
                 }
 
                 if (ROLE == role::Strangler)
                 {
-                    outputVec.emplace_back("plant-strangler.png");
-                    return;
+                    return { "plant-strangler.png" };
                 }
 
                 if (ROLE == role::Tendrilus)
                 {
-                    outputVec.emplace_back("plant-tendrilus-1.png");
-                    outputVec.emplace_back("plant-tendrilus-2.png");
-                    return;
+                    return { "plant-tendrilus-1.png", "plant-tendrilus-2.png" };
                 }
 
                 if (ROLE == role::Pod)
                 {
-                    outputVec.emplace_back("plant-pod-1.png");
-                    outputVec.emplace_back("plant-pod-2.png");
-                    return;
+                    return { "plant-pod-1.png", "plant-pod-2.png" };
                 }
             }
 
@@ -893,31 +738,29 @@ namespace sfml_util
             {
                 if (ROLE == role::Chieftain)
                 {
-                    outputVec.emplace_back("skeleton-chieftain.png");
-                    return;
+                    return { "skeleton-chieftain.png" };
                 }
 
                 if (ROLE == role::FourArmed)
                 {
-                    outputVec.emplace_back("skeleton-four-armed.png");
-                    return;
+                    return { "skeleton-four-armed.png" };
                 }
 
                 if (ROLE == role::Mountain)
                 {
-                    outputVec.emplace_back("skeleton-mountain.png");
-                    return;
+                    return { "skeleton-mountain.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
+                    std::vector<std::string> filenames;
                     for (std::size_t i(1); i <= 8; ++i)
                     {
                         std::ostringstream ss;
                         ss << "skeleton-" << i << ".png";
-                        outputVec.emplace_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
-                    return;
+                    return filenames;
                 }
             }
 
@@ -925,83 +768,74 @@ namespace sfml_util
             {
                 if (ROLE == role::Elder)
                 {
-                    outputVec.emplace_back("werebear-elder.png");
-                    return;
+                    return { "werebear-elder.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("werebear-grunt-1.png");
-                    outputVec.emplace_back("werebear-grunt-2.png");
-                    return;
+                    return { "werebear-grunt-1.png", "werebear-grunt-2.png" };
                 }
 
                 if (ROLE == role::Mountain)
                 {
-                    outputVec.emplace_back("werebear-mountain.png");
-                    return;
+                    return { "werebear-mountain.png" };
                 }
             }
 
             if ((RACE == race::Beetle) && (ROLE == role::Beetle))
             {
-                outputVec.emplace_back("beetle-giant.png");
-                return;
+                return { "beetle-giant.png" };
             }
 
             if ((RACE == race::Boar) && (ROLE == role::Boar))
             {
-                outputVec.emplace_back("boar-1.png");
-                return;
+                return { "boar-1.png" };
             }
 
             if (RACE == race::Demon)
             {
                 if (ROLE == role::Skeleton)
                 {
-                    outputVec.emplace_back("demon-skeleton.png");
-                    return;
+                    return { "demon-skeleton.png" };
                 }
 
                 if (ROLE == role::Spike)
                 {
-                    outputVec.emplace_back("demon-spike.png");
-                    return;
+                    return { "demon-spike.png" };
                 }
 
                 if (ROLE == role::Strangler)
                 {
-                    outputVec.emplace_back("demon-strangler.png");
-                    return;
+                    return { "demon-strangler.png" };
                 }
 
                 if (ROLE == role::Whelp)
                 {
+                    std::vector<std::string> filenames;
                     for (std::size_t i(1); i <= 4; ++i)
                     {
                         std::ostringstream ss;
                         ss << "demon-whelp-" << i << ".png";
-                        outputVec.emplace_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Wing)
                 {
-                    outputVec.emplace_back("demon-wing-1.png");
-                    outputVec.emplace_back("demon-wing-2.png");
-                    return;
+                    return { "demon-wing-1.png", "demon-wing-2.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
+                    std::vector<std::string> filenames;
                     for (std::size_t i(1); i <= 9; ++i)
                     {
                         std::ostringstream ss;
                         ss << "demon-" << i << ".png";
-                        outputVec.emplace_back(ss.str());
+                        filenames.emplace_back(ss.str());
                     }
-                    return;
+                    return filenames;
                 }
             }
 
@@ -1009,27 +843,22 @@ namespace sfml_util
             {
                 if (ROLE == role::Strangler)
                 {
-                    outputVec.emplace_back("ghoul-strangler.png");
-                    return;
+                    return { "ghoul-strangler.png" };
                 }
 
                 if (ROLE == role::Spike)
                 {
-                    outputVec.emplace_back("ghoul-spike.png");
-                    return;
+                    return { "ghoul-spike.png" };
                 }
 
                 if (ROLE == role::Mountain)
                 {
-                    outputVec.emplace_back("ghoul-mountain.png");
-                    return;
+                    return { "ghoul-mountain.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("ghoul-1.png");
-                    outputVec.emplace_back("ghoul-2.png");
-                    return;
+                    return { "ghoul-1.png", "ghoul-2.png" };
                 }
             }
 
@@ -1037,14 +866,12 @@ namespace sfml_util
             {
                 if (ROLE == role::Whelp)
                 {
-                    outputVec.emplace_back("griffin-whelp.png");
-                    return;
+                    return { "griffin-whelp.png" };
                 }
 
                 if (ROLE == role::Wing)
                 {
-                    outputVec.emplace_back("griffin-1.png");
-                    return;
+                    return { "griffin-1.png" };
                 }
             }
 
@@ -1052,40 +879,32 @@ namespace sfml_util
             {
                 if (ROLE == role::Smasher)
                 {
-                    outputVec.emplace_back("giant-smasher.png");
-                    return;
+                    return { "giant-smasher.png" };
                 }
 
                 if (ROLE == role::Strangler)
                 {
-                    outputVec.emplace_back("giant-strangler.png");
-                    return;
+                    return { "giant-strangler.png" };
                 }
 
                 if (ROLE == role::Warlord)
                 {
-                    outputVec.emplace_back("giant-warlord.png");
-                    return;
+                    return { "giant-warlord.png" };
                 }
 
                 if (ROLE == role::Mountain)
                 {
-                    outputVec.emplace_back("giant-mountain.png");
-                    return;
+                    return { "giant-mountain.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("giant-grunt-1.png");
-                    outputVec.emplace_back("giant-grunt-2.png");
-                    outputVec.emplace_back("giant-grunt-3.png");
-                    return;
+                    return { "giant-grunt-1.png", "giant-grunt-2.png", "giant-grunt-3.png" };
                 }
 
                 if (ROLE == role::Brute)
                 {
-                    outputVec.emplace_back("giant-brute.png");
-                    return;
+                    return { "giant-brute.png" };
                 }
             }
 
@@ -1093,59 +912,48 @@ namespace sfml_util
             {
                 if (ROLE == role::Thief)
                 {
-                    outputVec.emplace_back("goblin-thief.png");
-                    return;
+                    return { "goblin-thief.png" };
                 }
 
                 if (ROLE == role::Sorcerer)
                 {
-                    outputVec.emplace_back("goblin-sorcerer.png");
-                    return;
+                    return { "goblin-sorcerer.png" };
                 }
 
                 if (ROLE == role::Brute)
                 {
-                    outputVec.emplace_back("goblin-brute.png");
-                    return;
+                    return { "goblin-brute.png" };
                 }
 
                 if (ROLE == role::Archer)
                 {
-                    outputVec.emplace_back("goblin-archer.png");
-                    return;
+                    return { "goblin-archer.png" };
                 }
 
                 if (ROLE == role::Captain)
                 {
-                    outputVec.emplace_back("goblin-captain.png");
-                    return;
+                    return { "goblin-captain.png" };
                 }
 
                 if (ROLE == role::Chieftain)
                 {
-                    outputVec.emplace_back("goblin-chieftain.png");
-                    return;
+                    return { "goblin-chieftain.png" };
                 }
 
                 if (ROLE == role::Shaman)
                 {
-                    outputVec.emplace_back("goblin-shaman.png");
-                    return;
+                    return { "goblin-shaman.png" };
                 }
 
                 if (ROLE == role::Trader)
                 {
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("goblin-trader-female-1.png");
-                        outputVec.emplace_back("goblin-trader-female-2.png");
-                        return;
+                        return { "goblin-trader-female-1.png", "goblin-trader-female-2.png" };
                     }
                     else
                     {
-                        outputVec.emplace_back("goblin-trader-male-1.png");
-                        outputVec.emplace_back("goblin-trader-male-2.png");
-                        return;
+                        return { "goblin-trader-male-1.png", "goblin-trader-male-2.png" };
                     }
                 }
 
@@ -1153,30 +961,24 @@ namespace sfml_util
                 {
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("goblin-female-1.png");
-                        outputVec.emplace_back("goblin-female-2.png");
-                        outputVec.emplace_back("goblin-female-3.png");
-                        outputVec.emplace_back("goblin-female-4.png");
-                        outputVec.emplace_back("goblin-grunt-2.png");
-                        outputVec.emplace_back("goblin-grunt-4.png");
-                        outputVec.emplace_back("goblin-grunt-5.png");
-                        outputVec.emplace_back("goblin-grunt-6.png");
-                        outputVec.emplace_back("goblin-grunt-7.png");
-                        outputVec.emplace_back("goblin-grunt-8.png");
-                        outputVec.emplace_back("goblin-grunt-9.png");
-                        outputVec.emplace_back("goblin-grunt-10.png");
-                        outputVec.emplace_back("goblin-grunt-12.png");
-                        return;
+                        return { "goblin-female-1.png", "goblin-female-2.png",
+                                 "goblin-female-3.png", "goblin-female-4.png",
+                                 "goblin-grunt-2.png",  "goblin-grunt-4.png",
+                                 "goblin-grunt-5.png",  "goblin-grunt-6.png",
+                                 "goblin-grunt-7.png",  "goblin-grunt-8.png",
+                                 "goblin-grunt-9.png",  "goblin-grunt-10.png",
+                                 "goblin-grunt-12.png" };
                     }
                     else
                     {
+                        std::vector<std::string> filenames;
                         for (std::size_t i(1); i <= 13; ++i)
                         {
                             std::ostringstream ss;
                             ss << "goblin-grunt-" << i << ".png";
-                            outputVec.emplace_back(ss.str());
+                            filenames.emplace_back(ss.str());
                         }
-                        return;
+                        return filenames;
                     }
                 }
             }
@@ -1189,43 +991,35 @@ namespace sfml_util
                     {
                         case creature::dragon_class::Hatchling:
                         {
-                            outputVec.emplace_back("dragon-fb-hatchling.png");
-                            return;
+                            return { "dragon-fb-hatchling.png" };
                         }
                         case creature::dragon_class::Whelp:
                         {
-                            outputVec.emplace_back("dragon-fb-whelp.png");
-                            return;
+                            return { "dragon-fb-whelp.png" };
                         }
                         case creature::dragon_class::Fledgling:
                         {
-                            outputVec.emplace_back("dragon-fb-fledgling.png");
-                            return;
+                            return { "dragon-fb-fledgling.png" };
                         }
                         case creature::dragon_class::Juvenile:
                         {
-                            outputVec.emplace_back("dragon-fb-juvenile.png");
-                            return;
+                            return { "dragon-fb-juvenile.png" };
                         }
                         case creature::dragon_class::Adult:
                         {
-                            outputVec.emplace_back("dragon-fb-adult.png");
-                            return;
+                            return { "dragon-fb-adult.png" };
                         }
                         case creature::dragon_class::Wyrm:
                         {
-                            outputVec.emplace_back("dragon-fb-wyrm.png");
-                            return;
+                            return { "dragon-fb-wyrm.png" };
                         }
                         case creature::dragon_class::Skycaster:
                         {
-                            outputVec.emplace_back("dragon-fb-skycaster.png");
-                            return;
+                            return { "dragon-fb-skycaster.png" };
                         }
                         case creature::dragon_class::Elder:
                         {
-                            outputVec.emplace_back("dragon-fb-elder.png");
-                            return;
+                            return { "dragon-fb-elder.png" };
                         }
                         case creature::dragon_class::Count:
                         default:
@@ -1241,43 +1035,35 @@ namespace sfml_util
                     {
                         case creature::dragon_class::Hatchling:
                         {
-                            outputVec.emplace_back("dragon-syl-hatchling.png");
-                            return;
+                            return { "dragon-syl-hatchling.png" };
                         }
                         case creature::dragon_class::Whelp:
                         {
-                            outputVec.emplace_back("dragon-syl-whelp.png");
-                            return;
+                            return { "dragon-syl-whelp.png" };
                         }
                         case creature::dragon_class::Fledgling:
                         {
-                            outputVec.emplace_back("dragon-syl-fledgling.png");
-                            return;
+                            return { "dragon-syl-fledgling.png" };
                         }
                         case creature::dragon_class::Juvenile:
                         {
-                            outputVec.emplace_back("dragon-syl-juvenile.png");
-                            return;
+                            return { "dragon-syl-juvenile.png" };
                         }
                         case creature::dragon_class::Adult:
                         {
-                            outputVec.emplace_back("dragon-syl-adult.png");
-                            return;
+                            return { "dragon-syl-adult.png" };
                         }
                         case creature::dragon_class::Wyrm:
                         {
-                            outputVec.emplace_back("dragon-syl-wyrm.png");
-                            return;
+                            return { "dragon-syl-wyrm.png" };
                         }
                         case creature::dragon_class::Skycaster:
                         {
-                            outputVec.emplace_back("dragon-syl-skycaster.png");
-                            return;
+                            return { "dragon-syl-skycaster.png" };
                         }
                         case creature::dragon_class::Elder:
                         {
-                            outputVec.emplace_back("dragon-syl-elder.png");
-                            return;
+                            return { "dragon-syl-elder.png" };
                         }
                         case creature::dragon_class::Count:
                         default:
@@ -1292,106 +1078,98 @@ namespace sfml_util
             {
                 if (ROLE == role::Bard)
                 {
+                    std::vector<std::string> filenames;
+
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("bard-gnome-female-1.png");
-                        outputVec.emplace_back("bard-female-1.png");
+                        filenames.emplace_back("bard-gnome-female-1.png");
+                        filenames.emplace_back("bard-female-1.png");
                     }
 
-                    outputVec.emplace_back("bard-gnome-1.png");
-                    outputVec.emplace_back("gnome-female-1.png");
-                    outputVec.emplace_back("gnome-2.png");
-                    outputVec.emplace_back("gnome-3.png");
-                    outputVec.emplace_back("gnome-4.png");
-                    outputVec.emplace_back("gnome-7.png");
+                    filenames.emplace_back("bard-gnome-1.png");
+                    filenames.emplace_back("gnome-female-1.png");
+                    filenames.emplace_back("gnome-2.png");
+                    filenames.emplace_back("gnome-3.png");
+                    filenames.emplace_back("gnome-4.png");
+                    filenames.emplace_back("gnome-7.png");
 
                     if (SEX == sex::Male)
                     {
-                        outputVec.emplace_back("gnome-male-1.png");
-                        outputVec.emplace_back("gnome-male-2.png");
+                        filenames.emplace_back("gnome-male-1.png");
+                        filenames.emplace_back("gnome-male-2.png");
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Cleric)
                 {
-                    outputVec.emplace_back("gnome-4.png");
-                    outputVec.emplace_back("gnome-8.png");
-                    return;
+                    return { "gnome-4.png", "gnome-8.png" };
                 }
 
                 if (ROLE == role::Sorcerer)
                 {
-                    outputVec.emplace_back("gnome-5.png");
-                    outputVec.emplace_back("gnome-8.png");
-                    return;
+                    return { "gnome-5.png", "gnome-8.png" };
                 }
 
                 if (ROLE == role::Knight)
                 {
-                    outputVec.emplace_back("knight-gnome-1.png");
-                    outputVec.emplace_back("knight-gnome-2.png");
+                    std::vector<std::string> filenames{ "knight-gnome-1.png",
+                                                        "knight-gnome-2.png" };
 
                     if (SEX == sex::Male)
                     {
-                        outputVec.emplace_back("knight-gnome-male-1.png");
-                        outputVec.emplace_back("gnome-male-1.png");
-                        outputVec.emplace_back("gnome-male-2.png");
+                        filenames.emplace_back("knight-gnome-male-1.png");
+                        filenames.emplace_back("gnome-male-1.png");
+                        filenames.emplace_back("gnome-male-2.png");
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Beastmaster)
                 {
-                    outputVec.emplace_back("gnome-2.png");
-                    outputVec.emplace_back("gnome-3.png");
-                    outputVec.emplace_back("gnome-4.png");
-                    outputVec.emplace_back("gnome-6.png");
-                    outputVec.emplace_back("gnome-7.png");
+                    std::vector<std::string> filenames{
+                        "gnome-2.png", "gnome-3.png", "gnome-4.png", "gnome-6.png", "gnome-7.png"
+                    };
 
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("gnome-female-1.png");
+                        filenames.emplace_back("gnome-female-1.png");
                     }
                     else if (SEX == sex::Male)
                     {
-                        outputVec.emplace_back("gnome-male-1.png");
-                        outputVec.emplace_back("gnome-male-2.png");
+                        filenames.emplace_back("gnome-male-1.png");
+                        filenames.emplace_back("gnome-male-2.png");
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Archer)
                 {
-                    outputVec.emplace_back("archer-gnome-1.png");
-                    outputVec.emplace_back("gnome-2.png");
-                    outputVec.emplace_back("gnome-female-1.png");
-                    return;
+                    return { "archer-gnome-1.png", "gnome-2.png", "gnome-female-1.png" };
                 }
 
                 if (ROLE == role::Thief)
                 {
-                    outputVec.emplace_back("gnome-grunt.png");
-                    outputVec.emplace_back("gnome-2.png");
-                    outputVec.emplace_back("gnome-3.png");
-                    outputVec.emplace_back("gnome-6.png");
-                    outputVec.emplace_back("gnome-7.png");
+                    std::vector<std::string> filenames{ "gnome-grunt.png",
+                                                        "gnome-2.png",
+                                                        "gnome-3.png",
+                                                        "gnome-6.png",
+                                                        "gnome-7.png" };
 
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("gnome-female-1.png");
+                        filenames.emplace_back("gnome-female-1.png");
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("gnome-grunt.png");
-                    return;
+                    return { "gnome-grunt.png" };
                 }
             }
 
@@ -1399,180 +1177,172 @@ namespace sfml_util
             {
                 if (ROLE == role::Knight)
                 {
-                    outputVec.emplace_back("knight-human-1.png");
-                    outputVec.emplace_back("knight-human-2.png");
+                    std::vector<std::string> filenames{ "knight-human-1.png",
+                                                        "knight-human-2.png" };
 
                     if (SEX == sex::Male)
                     {
-                        outputVec.emplace_back("knight-human-male-1.png");
-                        outputVec.emplace_back("knight-human-male-2.png");
+                        filenames.emplace_back("knight-human-male-1.png");
+                        filenames.emplace_back("knight-human-male-2.png");
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Archer)
                 {
-                    outputVec.emplace_back("archer-1.png");
-                    outputVec.emplace_back("archer-2.png");
+                    std::vector<std::string> filenames{ "archer-1.png", "archer-2.png" };
 
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("archer-female-1.png");
-                        outputVec.emplace_back("archer-female-2.png");
-                        outputVec.emplace_back("archer-female-3.png");
-                        outputVec.emplace_back("archer-female-4.png");
-                        outputVec.emplace_back("archer-female-5.png");
+                        filenames.emplace_back("archer-female-1.png");
+                        filenames.emplace_back("archer-female-2.png");
+                        filenames.emplace_back("archer-female-3.png");
+                        filenames.emplace_back("archer-female-4.png");
+                        filenames.emplace_back("archer-female-5.png");
                     }
                     else
                     {
-                        outputVec.emplace_back("archer-male-1.png");
-                        outputVec.emplace_back("archer-male-2.png");
-                        outputVec.emplace_back("archer-male-3.png");
-                        outputVec.emplace_back("archer-male-4.png");
+                        filenames.emplace_back("archer-male-1.png");
+                        filenames.emplace_back("archer-male-2.png");
+                        filenames.emplace_back("archer-male-3.png");
+                        filenames.emplace_back("archer-male-4.png");
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Bard)
                 {
+                    std::vector<std::string> filenames;
+
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("bard-human-female-1.png");
-                        outputVec.emplace_back("bard-human-female-2.png");
-                        outputVec.emplace_back("bard-human-female-3.png");
-                        outputVec.emplace_back("bard-female-1.png");
+                        filenames.emplace_back("bard-human-female-1.png");
+                        filenames.emplace_back("bard-human-female-2.png");
+                        filenames.emplace_back("bard-human-female-3.png");
+                        filenames.emplace_back("bard-female-1.png");
                     }
                     else
                     {
-                        outputVec.emplace_back("bard-human-male-1.png");
-                        outputVec.emplace_back("bard-human-male-2.png");
-                        outputVec.emplace_back("bard-human-male-3.png");
-                        outputVec.emplace_back("bard-human-male-4.png");
+                        filenames.emplace_back("bard-human-male-1.png");
+                        filenames.emplace_back("bard-human-male-2.png");
+                        filenames.emplace_back("bard-human-male-3.png");
+                        filenames.emplace_back("bard-human-male-4.png");
                     }
 
-                    outputVec.emplace_back("bard-1.png");
-                    outputVec.emplace_back("bard-2.png");
-                    outputVec.emplace_back("bard-human-1.png");
-                    outputVec.emplace_back("bard-human-2.png");
-
-                    return;
+                    filenames.emplace_back("bard-1.png");
+                    filenames.emplace_back("bard-2.png");
+                    filenames.emplace_back("bard-human-1.png");
+                    filenames.emplace_back("bard-human-2.png");
+                    return filenames;
                 }
 
                 if (ROLE == role::Beastmaster)
                 {
+                    std::vector<std::string> filenames;
+
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("beastmaster-human-female-1.png");
+                        filenames.emplace_back("beastmaster-human-female-1.png");
                     }
                     else
                     {
-                        outputVec.emplace_back("beastmaster-human-male-1.png");
-                        outputVec.emplace_back("beastmaster-human-male-2.png");
-                        outputVec.emplace_back("beastmaster-human-male-3.png");
+                        filenames.emplace_back("beastmaster-human-male-1.png");
+                        filenames.emplace_back("beastmaster-human-male-2.png");
+                        filenames.emplace_back("beastmaster-human-male-3.png");
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Cleric)
                 {
-                    outputVec.emplace_back("cleric-human-1.png");
-                    outputVec.emplace_back("cleric-human-2.png");
+                    std::vector<std::string> filenames{ "cleric-human-1.png",
+                                                        "cleric-human-2.png" };
 
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("cleric-human-female-1.png");
+                        filenames.emplace_back("cleric-human-female-1.png");
                     }
                     else
                     {
-                        outputVec.emplace_back("cleric-human-male-1.png");
-                        outputVec.emplace_back("cleric-human-male-2.png");
-                        outputVec.emplace_back("cleric-human-male-3.png");
+                        filenames.emplace_back("cleric-human-male-1.png");
+                        filenames.emplace_back("cleric-human-male-2.png");
+                        filenames.emplace_back("cleric-human-male-3.png");
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Knight)
                 {
-                    outputVec.emplace_back("knight-human-1.png");
-                    outputVec.emplace_back("knight-human-2.png");
+                    std::vector<std::string> filenames{ "knight-human-1.png",
+                                                        "knight-human-2.png" };
 
                     if (SEX == sex::Male)
                     {
-                        outputVec.emplace_back("knight-human-male-1.png");
-                        outputVec.emplace_back("knight-human-male-2.png");
+                        filenames.emplace_back("knight-human-male-1.png");
+                        filenames.emplace_back("knight-human-male-2.png");
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Thief)
                 {
-                    outputVec.emplace_back("thief-human-1.png");
-                    outputVec.emplace_back("thief-human-2.png");
-                    outputVec.emplace_back("thief-human-3.png");
-                    outputVec.emplace_back("thief-human-4.png");
-                    outputVec.emplace_back("thief-human-5.png");
+                    std::vector<std::string> filenames{ "thief-human-1.png",
+                                                        "thief-human-2.png",
+                                                        "thief-human-3.png",
+                                                        "thief-human-4.png",
+                                                        "thief-human-5.png" };
 
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("thief-human-female-1.png");
-                        outputVec.emplace_back("thief-human-female-2.png");
+                        filenames.emplace_back("thief-human-female-1.png");
+                        filenames.emplace_back("thief-human-female-2.png");
                     }
                     else
                     {
-                        outputVec.emplace_back("thief-human-male-1.png");
-                        outputVec.emplace_back("thief-human-male-2.png");
+                        filenames.emplace_back("thief-human-male-1.png");
+                        filenames.emplace_back("thief-human-male-2.png");
                     }
 
-                    return;
+                    return filenames;
                 }
 
                 if (ROLE == role::Sorcerer)
                 {
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("sorcerer-human-female-1.png");
-                        outputVec.emplace_back("sorcerer-human-female-2.png");
-                        outputVec.emplace_back("sorcerer-human-female-2b.png");
-                        outputVec.emplace_back("sorcerer-human-female-3.png");
-                        outputVec.emplace_back("sorcerer-human-female-4.png");
-                        outputVec.emplace_back("sorcerer-human-female-5.png");
-                        outputVec.emplace_back("sorcerer-human-female-6.png");
+                        return { "sorcerer-human-female-1.png",  "sorcerer-human-female-2.png",
+                                 "sorcerer-human-female-2b.png", "sorcerer-human-female-3.png",
+                                 "sorcerer-human-female-4.png",  "sorcerer-human-female-5.png",
+                                 "sorcerer-human-female-6.png" };
                     }
                     else
                     {
-                        outputVec.emplace_back("sorcerer-human-male-1.png");
-                        outputVec.emplace_back("sorcerer-human-male-2.png");
-                        outputVec.emplace_back("sorcerer-human-male-2b.png");
-                        outputVec.emplace_back("sorcerer-human-male-3.png");
-                        outputVec.emplace_back("sorcerer-human-male-4.png");
+                        return { "sorcerer-human-male-1.png",
+                                 "sorcerer-human-male-2.png",
+                                 "sorcerer-human-male-2b.png",
+                                 "sorcerer-human-male-3.png",
+                                 "sorcerer-human-male-4.png" };
                     }
-
-                    return;
                 }
 
                 if (ROLE == role::Ranger)
                 {
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("ranger-human-female-1.png");
-                        outputVec.emplace_back("ranger-human-female-2.png");
-                        outputVec.emplace_back("ranger-human-female-3.png");
-                        return;
+                        return { "ranger-human-female-1.png",
+                                 "ranger-human-female-2.png",
+                                 "ranger-human-female-3.png" };
                     }
                     else
                     {
-                        outputVec.emplace_back("ranger-human-male-1.png");
-                        outputVec.emplace_back("ranger-human-male-2.png");
-                        outputVec.emplace_back("ranger-human-male-3.png");
-                        outputVec.emplace_back("ranger-human-male-4.png");
-                        outputVec.emplace_back("ranger-human-male-5.png");
-                        outputVec.emplace_back("ranger-human-male-6.png");
-                        return;
+                        return { "ranger-human-male-1.png", "ranger-human-male-2.png",
+                                 "ranger-human-male-3.png", "ranger-human-male-4.png",
+                                 "ranger-human-male-5.png", "ranger-human-male-6.png" };
                     }
                 }
 
@@ -1580,141 +1350,85 @@ namespace sfml_util
                 {
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("trader-human-1.png");
-                        outputVec.emplace_back("trader-human-2.png");
-                        outputVec.emplace_back("trader-human-3.png");
-                        return;
+                        return { "trader-human-1.png", "trader-human-2.png", "trader-human-3.png" };
                     }
                     else
                     {
-                        outputVec.emplace_back("trader-human-1.png");
-                        outputVec.emplace_back("trader-human-2.png");
-                        outputVec.emplace_back("trader-human-3.png");
-                        outputVec.emplace_back("trader-human-4.png");
-                        return;
+                        return { "trader-human-1.png",
+                                 "trader-human-2.png",
+                                 "trader-human-3.png",
+                                 "trader-human-4.png" };
                     }
                 }
 
                 if (ROLE == role::Drunk)
                 {
-                    outputVec.emplace_back("drunk-1.png");
-                    return;
+                    return { "drunk-1.png" };
                 }
 
                 if (ROLE == role::Brute)
                 {
-                    outputVec.emplace_back("soldier-brute.png");
-                    return;
+                    return { "soldier-brute.png" };
                 }
 
                 if (ROLE == role::Smasher)
                 {
-                    outputVec.emplace_back("soldier-smasher-1.png");
-                    outputVec.emplace_back("soldier-smasher-2.png");
-                    return;
+                    return { "soldier-smasher-1.png", "soldier-smasher-2.png" };
                 }
 
                 if (ROLE == role::Soldier)
                 {
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("soldier-2.png");
-                        outputVec.emplace_back("soldier-6.png");
-                        outputVec.emplace_back("soldier-7.png");
-                        outputVec.emplace_back("soldier-11.png");
-                        outputVec.emplace_back("soldier-13.png");
-                        outputVec.emplace_back("soldier-14.png");
-                        outputVec.emplace_back("soldier-female-1.png");
-                        outputVec.emplace_back("soldier-swordsman.png");
-                        return;
+                        return { "soldier-2.png",        "soldier-6.png",        "soldier-7.png",
+                                 "soldier-11.png",       "soldier-13.png",       "soldier-14.png",
+                                 "soldier-female-1.png", "soldier-swordsman.png" };
                     }
                     else
                     {
-                        outputVec.emplace_back("soldier-1.png");
-                        outputVec.emplace_back("soldier-2.png");
-                        outputVec.emplace_back("soldier-3.png");
-                        outputVec.emplace_back("soldier-4.png");
-                        outputVec.emplace_back("soldier-5.png");
-                        outputVec.emplace_back("soldier-6.png");
-                        outputVec.emplace_back("soldier-7.png");
-                        outputVec.emplace_back("soldier-8.png");
-                        outputVec.emplace_back("soldier-9.png");
-                        outputVec.emplace_back("soldier-10.png");
-                        outputVec.emplace_back("soldier-11.png");
-                        outputVec.emplace_back("soldier-12.png");
-                        outputVec.emplace_back("soldier-axeman.png");
-                        outputVec.emplace_back("soldier-swordsman.png");
-                        return;
+                        return { "soldier-1.png",      "soldier-2.png",        "soldier-3.png",
+                                 "soldier-4.png",      "soldier-5.png",        "soldier-6.png",
+                                 "soldier-7.png",      "soldier-8.png",        "soldier-9.png",
+                                 "soldier-10.png",     "soldier-11.png",       "soldier-12.png",
+                                 "soldier-axeman.png", "soldier-swordsman.png" };
                     }
                 }
 
                 if (ROLE == role::Blacksmith)
                 {
-                    outputVec.emplace_back("human-blacksmith-male-1.png");
-                    outputVec.emplace_back("human-blacksmith-male-2.png");
-                    return;
+                    return { "human-blacksmith-male-1.png", "human-blacksmith-male-2.png" };
                 }
 
                 if (ROLE == role::Shaman)
                 {
-                    outputVec.emplace_back("human-shaman.png");
-                    return;
+                    return { "human-shaman.png" };
                 }
 
                 if (ROLE == role::Grunt)
                 {
                     if (SEX == sex::Female)
                     {
-                        outputVec.emplace_back("human-1.png");
-                        outputVec.emplace_back("human-2.png");
-                        outputVec.emplace_back("human-3.png");
-                        outputVec.emplace_back("human-4.png");
-                        outputVec.emplace_back("human-5.png");
-                        outputVec.emplace_back("human-6.png");
-                        outputVec.emplace_back("human-8.png");
-                        outputVec.emplace_back("human-9.png");
-                        outputVec.emplace_back("human-10.png");
-                        outputVec.emplace_back("human-12.png");
-                        outputVec.emplace_back("human-13.png");
-                        outputVec.emplace_back("human-female-1.png");
-                        outputVec.emplace_back("human-female-2.png");
-                        outputVec.emplace_back("human-female-3.png");
-                        outputVec.emplace_back("human-female-4.png");
-                        outputVec.emplace_back("human-female-5.png");
-                        outputVec.emplace_back("human-female-6.png");
-                        outputVec.emplace_back("human-female-7.png");
-                        outputVec.emplace_back("human-female-8.png");
-                        outputVec.emplace_back("human-female-9.png");
-                        outputVec.emplace_back("human-female-10.png");
-                        outputVec.emplace_back("human-female-11.png");
-                        outputVec.emplace_back("human-female-12.png");
-                        outputVec.emplace_back("human-female-13.png");
-                        outputVec.emplace_back("human-female-14.png");
-                        return;
+                        return {
+                            "human-1.png",         "human-2.png",         "human-3.png",
+                            "human-4.png",         "human-5.png",         "human-6.png",
+                            "human-8.png",         "human-9.png",         "human-10.png",
+                            "human-12.png",        "human-13.png",        "human-female-1.png",
+                            "human-female-2.png",  "human-female-3.png",  "human-female-4.png",
+                            "human-female-5.png",  "human-female-6.png",  "human-female-7.png",
+                            "human-female-8.png",  "human-female-9.png",  "human-female-10.png",
+                            "human-female-11.png", "human-female-12.png", "human-female-13.png",
+                            "human-female-14.png"
+                        };
                     }
                     else
                     {
-                        outputVec.emplace_back("human-1.png");
-                        outputVec.emplace_back("human-2.png");
-                        outputVec.emplace_back("human-3.png");
-                        outputVec.emplace_back("human-4.png");
-                        outputVec.emplace_back("human-5.png");
-                        outputVec.emplace_back("human-6.png");
-                        outputVec.emplace_back("human-7.png");
-                        outputVec.emplace_back("human-8.png");
-                        outputVec.emplace_back("human-9.png");
-                        outputVec.emplace_back("human-10.png");
-                        outputVec.emplace_back("human-11.png");
-                        outputVec.emplace_back("human-12.png");
-                        outputVec.emplace_back("human-13.png");
-                        outputVec.emplace_back("human-male-1.png");
-                        outputVec.emplace_back("human-male-2.png");
-                        outputVec.emplace_back("human-male-3.png");
-                        outputVec.emplace_back("human-male-4.png");
-                        outputVec.emplace_back("human-male-5.png");
-                        outputVec.emplace_back("human-male-6.png");
-                        outputVec.emplace_back("human-male-7.png");
-                        return;
+                        return { "human-1.png",      "human-2.png",      "human-3.png",
+                                 "human-4.png",      "human-5.png",      "human-6.png",
+                                 "human-7.png",      "human-8.png",      "human-9.png",
+                                 "human-10.png",     "human-11.png",     "human-12.png",
+                                 "human-13.png",     "human-male-1.png", "human-male-2.png",
+                                 "human-male-3.png", "human-male-4.png", "human-male-5.png",
+                                 "human-male-6.png", "human-male-7.png" };
                     }
                 }
             }
@@ -1725,50 +1439,37 @@ namespace sfml_util
                 {
                     if (ROLE == role::Beastmaster)
                     {
-                        outputVec.emplace_back("pixie-beastmaster-female.png");
-                        return;
+                        return { "pixie-beastmaster-female.png" };
                     }
                     else if (ROLE == role::Sorcerer)
                     {
-                        outputVec.emplace_back("pixie-female-3.png");
-                        return;
+                        return { "pixie-female-3.png" };
                     }
                     else if (ROLE == role::Cleric)
                     {
-                        outputVec.emplace_back("pixie-female-5.png");
-                        return;
+                        return { "pixie-female-5.png" };
                     }
                     else if (ROLE == role::Bard)
                     {
-                        outputVec.emplace_back("pixie-female-4.png");
-                        return;
+                        return { "pixie-female-4.png" };
                     }
                     else
                     {
-                        outputVec.emplace_back("pixie-1.png");
-                        outputVec.emplace_back("pixie-2.png");
-                        outputVec.emplace_back("pixie-female-1.png");
-                        outputVec.emplace_back("pixie-female-2.png");
-                        outputVec.emplace_back("pixie-female-3.png");
-                        outputVec.emplace_back("pixie-female-4.png");
-                        outputVec.emplace_back("pixie-female-5.png");
-                        return;
+                        return { "pixie-1.png",        "pixie-2.png",        "pixie-female-1.png",
+                                 "pixie-female-2.png", "pixie-female-3.png", "pixie-female-4.png",
+                                 "pixie-female-5.png" };
                     }
                 }
                 else
                 {
                     if (ROLE == role::Beastmaster)
                     {
-                        outputVec.emplace_back("pixie-beastmaster-male.png");
-                        return;
+                        return { "pixie-beastmaster-male.png" };
                     }
                     else if (
                         (ROLE == role::Sorcerer) || (ROLE == role::Cleric) || (ROLE == role::Bard))
                     {
-                        outputVec.emplace_back("pixie-1.png");
-                        outputVec.emplace_back("pixie-2.png");
-                        outputVec.emplace_back("pixie-male-1.png");
-                        return;
+                        return { "pixie-1.png", "pixie-2.png", "pixie-male-1.png" };
                     }
                 }
             }
@@ -1779,16 +1480,12 @@ namespace sfml_util
                 {
                     if (ROLE == role::TwoHeaded)
                     {
-                        outputVec.emplace_back("wolfen-twoheaded.png");
-                        return;
+                        return { "wolfen-twoheaded.png" };
                     }
 
                     if (ROLE == role::Wolfen)
                     {
-                        outputVec.emplace_back("wolfen-1.png");
-                        outputVec.emplace_back("wolfen-2.png");
-                        outputVec.emplace_back("wolfen-3.png");
-                        return;
+                        return { "wolfen-1.png", "wolfen-2.png", "wolfen-3.png" };
                     }
                 }
                 else
@@ -1797,33 +1494,27 @@ namespace sfml_util
                     {
                         case creature::wolfen_class::Pup:
                         {
-                            outputVec.emplace_back("wolfen-pup.png");
-                            return;
+                            return { "wolfen-pup.png" };
                         }
                         case creature::wolfen_class::Juvenile:
                         {
-                            outputVec.emplace_back("wolfen-juvenile.png");
-                            return;
+                            return { "wolfen-juvenile.png" };
                         }
                         case creature::wolfen_class::Adult:
                         {
-                            outputVec.emplace_back("wolfen-adult.png");
-                            return;
+                            return { "wolfen-adult.png" };
                         }
                         case creature::wolfen_class::Noble:
                         {
-                            outputVec.emplace_back("wolfen-noble.png");
-                            return;
+                            return { "wolfen-noble.png" };
                         }
                         case creature::wolfen_class::Highborn:
                         {
-                            outputVec.emplace_back("wolfen-highborn.png");
-                            return;
+                            return { "wolfen-highborn.png" };
                         }
                         case creature::wolfen_class::Elder:
                         {
-                            outputVec.emplace_back("wolfen-elder.png");
-                            return;
+                            return { "wolfen-elder.png" };
                         }
                         case creature::wolfen_class::Count:
                         default:
@@ -1838,194 +1529,158 @@ namespace sfml_util
             {
                 if (ROLE == role::Shaman)
                 {
-                    outputVec.emplace_back("halfling-shaman.png");
-                    return;
+                    return { "halfling-shaman.png" };
                 }
                 else if (ROLE == role::Chieftain)
                 {
-                    outputVec.emplace_back("halfling-chieftain.png");
-                    return;
+                    return { "halfling-chieftain.png" };
                 }
                 else if (ROLE == role::Captain)
                 {
-                    outputVec.emplace_back("halfling-captain.png");
-                    return;
+                    return { "halfling-captain.png" };
                 }
                 else if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("halfling-1.png");
-                    return;
+                    return { "halfling-1.png" };
                 }
             }
 
             if ((RACE == race::Lion) && (ROLE == role::Lion))
             {
-                outputVec.emplace_back("lion.png");
-                return;
+                return { "lion.png" };
             }
 
             if ((RACE == race::LionBoar) && (ROLE == role::Lion))
             {
-                outputVec.emplace_back("lion-boar.png");
-                return;
+                return { "lion-boar.png" };
             }
 
             if ((RACE == race::Naga) && (ROLE == role::Grunt))
             {
-                outputVec.emplace_back("naga.png");
-                return;
+                return { "naga.png" };
             }
 
             if (RACE == race::Pug)
             {
                 if (ROLE == role::Archer)
                 {
-                    outputVec.emplace_back("pug-archer.png");
-                    return;
+                    return { "pug-archer.png" };
                 }
                 else if (ROLE == role::Cleric)
                 {
-                    outputVec.emplace_back("pug-cleric.png");
-                    return;
+                    return { "pug-cleric.png" };
                 }
                 else if (ROLE == role::Grunt)
                 {
-                    outputVec.emplace_back("pug-grunt.png");
-                    return;
+                    return { "pug-grunt.png" };
                 }
             }
 
             if ((RACE == race::Ramonaut) && (ROLE == role::Ramonaut))
             {
-                outputVec.emplace_back("ramonaut.png");
-                return;
+                return { "ramonaut.png" };
             }
 
             if (RACE == race::Serpent)
             {
                 if (ROLE == role::Water)
                 {
-                    outputVec.emplace_back("serpent-water.png");
-                    return;
+                    return { "serpent-water.png" };
                 }
                 else if (ROLE == role::Serpent)
                 {
-                    outputVec.emplace_back("serpent-desert.png");
-                    return;
+                    return { "serpent-desert.png" };
                 }
             }
 
             if ((RACE == race::Shade) && (ROLE == role::Ghost))
             {
-                outputVec.emplace_back("shade-1.png");
-                outputVec.emplace_back("shade-2.png");
-                return;
+                return { "shade-1.png", "shade-2.png" };
             }
 
             if ((RACE == race::Cobra) && (ROLE == role::Serpent))
             {
-                outputVec.emplace_back("cobra-1.png");
-                outputVec.emplace_back("cobra-2.png");
-                return;
+                return { "cobra-1.png", "cobra-2.png" };
             }
 
             if ((RACE == race::Werebat) && (ROLE == role::Bat))
             {
-                outputVec.emplace_back("werebat-1.png");
-                outputVec.emplace_back("werebat-2.png");
-                return;
+                return { "werebat-1.png", "werebat-2.png" };
             }
 
             if ((RACE == race::Bat) && (ROLE == role::Bat))
             {
-                outputVec.emplace_back("bat-1.png");
-                outputVec.emplace_back("bat-2.png");
-                outputVec.emplace_back("bat-3.png");
-                return;
+                return { "bat-1.png", "bat-2.png", "bat-3.png" };
             }
 
             if (RACE == race::Witch)
             {
                 if (ROLE == role::Elder)
                 {
-                    outputVec.emplace_back("witch-elder.png");
-                    return;
+                    return { "witch-elder.png" };
                 }
                 else if (ROLE == role::Ghost)
                 {
-                    outputVec.emplace_back("witch-ghost.png");
-                    return;
+                    return { "witch-ghost.png" };
                 }
                 else if (ROLE == role::Strangler)
                 {
-                    outputVec.emplace_back("witch-strangler.png");
-                    return;
+                    return { "witch-strangler.png" };
                 }
                 else if (ROLE == role::Mountain)
                 {
-                    outputVec.emplace_back("witch-mountain.png");
-                    return;
+                    return { "witch-mountain.png" };
                 }
                 else if (ROLE == role::Sorcerer)
                 {
-                    outputVec.emplace_back("witch-1.png");
-                    return;
+                    return { "witch-1.png" };
                 }
             }
 
             if ((RACE == race::Golem) && (ROLE == role::Brute))
             {
-                outputVec.emplace_back("golem.png");
-                return;
+                return { "golem.png" };
             }
 
             if ((RACE == race::Harpy) && (ROLE == role::Wing))
             {
-                outputVec.emplace_back("harpy.png");
-                return;
+                return { "harpy.png" };
             }
 
             if ((RACE == race::ThreeHeadedHound) && (ROLE == role::Mountain))
             {
-                outputVec.emplace_back("hound-three-headed.png");
-                return;
+                return { "hound-three-headed.png" };
             }
 
             if ((RACE == race::Wereboar) && (ROLE == role::Boar))
             {
-                outputVec.emplace_back("wereboar.png");
-                return;
+                return { "wereboar.png" };
             }
 
             if ((RACE == race::Werecat) && (ROLE == role::Cat))
             {
-                outputVec.emplace_back("werecat.png");
-                return;
+                return { "werecat.png" };
             }
 
             if ((RACE == race::Werewolf) && (ROLE == role::Wolf))
             {
-                outputVec.emplace_back("werewolf.png");
-                return;
+                return { "werewolf.png" };
             }
 
             if (RACE == race::Wyvern)
             {
                 if (ROLE == role::Whelp)
                 {
-                    outputVec.emplace_back("wyvern-whelp.png");
-                    return;
+                    return { "wyvern-whelp.png" };
                 }
                 else if (ROLE == role::Wing)
                 {
-                    outputVec.emplace_back("wyvern-1.png");
-                    outputVec.emplace_back("wyvern-2.png");
-                    return;
+                    return { "wyvern-1.png", "wyvern-2.png" };
                 }
             }
 
             std::ostringstream ss;
-            ss << "CreatureImageManager::GetCharacterFilenames(race="
+            ss << "sfml_util::gui::CreatureImageManager::GetFilenames(race="
                << ((RACE == creature::race::Count) ? "(count)" : creature::race::ToString(RACE))
                << ", role="
                << ((ROLE == creature::role::Count) ? "(count)" : creature::role::ToString(ROLE))
@@ -2036,6 +1691,7 @@ namespace sfml_util
 
             throw std::runtime_error(ss.str());
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
