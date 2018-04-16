@@ -5,13 +5,13 @@
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
 // Copyright (C) 2017 Ziesche Til Newman (tilnewman@gmail.com)
 //
-// This software is provided 'as-is', without any express or implied warranty.
-// In no event will the authors be held liable for any damages arising from
+// This software is provided 'as-is', weaponInfothout any express or implied warranty.
+// In no event weaponInfoll the authors be held liable for any damages arising from
 // the use of this software.
 //
 // Permission is granted to anyone to use this software for any purpose,
 // including commercial applications, and to alter it and redistribute it
-// freely, subject to the following restrictions:
+// freely, subject to the followeaponInfong restrictions:
 //
 //  1. The origin of this software must not be misrepresented; you must not
 //     claim that you wrote the original software.  If you use this software
@@ -31,6 +31,7 @@
 
 #include "creature/dragon-class-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
+#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
 #include "item/item.hpp"
 #include "log/log-macros.hpp"
@@ -54,50 +55,7 @@ namespace sfml_util
     namespace gui
     {
 
-        std::unique_ptr<ItemImageManager> ItemImageManager::instanceUPtr_;
-        std::string ItemImageManager::imagesDirectoryPath_{ "" };
         const std::string ItemImageManager::FILE_EXT_STR_{ ".png" };
-
-        ItemImageManager::ItemImageManager()
-        {
-            M_HP_LOG_DBG("Subsystem Construction: ItemImageManager");
-        }
-
-        ItemImageManager::~ItemImageManager()
-        {
-            M_HP_LOG_DBG("Subsystem Construction: ItemImageManager");
-        }
-
-        misc::NotNull<ItemImageManager *> ItemImageManager::Instance()
-        {
-            if (!instanceUPtr_)
-            {
-                M_HP_LOG_ERR("Subsystem Instance() before Acquire(): ItemImageManager");
-                Acquire();
-            }
-
-            return instanceUPtr_.get();
-        }
-
-        void ItemImageManager::Acquire()
-        {
-            if (!instanceUPtr_)
-            {
-                instanceUPtr_ = std::make_unique<ItemImageManager>();
-            }
-            else
-            {
-                M_HP_LOG_ERR("Subsystem Acquire() after Construction: ItemImageManager");
-            }
-        }
-
-        void ItemImageManager::Release()
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_),
-                "sfml_util::gui::ItemImageManager::Release() found instanceUPtr that was null.");
-            instanceUPtr_.reset();
-        }
 
         bool ItemImageManager::Test()
         {
@@ -108,8 +66,6 @@ namespace sfml_util
                 game::LoopManager::Instance()->TestingStrAppend(
                     "sfml_util::gui::ItemImageManager::Test()  Starting tests...");
             }
-
-            auto iimPtr{ ItemImageManager::Instance() };
 
             const std::string TEST_PRE_STR{ "ItemImageManager Test #" };
 
@@ -122,10 +78,10 @@ namespace sfml_util
                 auto const STR{ boost::algorithm::to_lower_copy(
                     item::weapon::axe_type::ToString(ENUM)) };
 
-                item::weapon::WeaponInfo wi(item::weapon_type::Axe, STR);
-                wi.axe = ENUM;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Axe, STR);
+                weaponInfo.axe = ENUM;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", STR);
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++axeIndex;
@@ -135,10 +91,10 @@ namespace sfml_util
             static auto hasTestedBite{ false };
             if (false == hasTestedBite)
             {
-                item::weapon::WeaponInfo wi(item::weapon_type::Bite, "bite");
-                wi.is_bite = true;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Bite, "bite");
+                weaponInfo.is_bite = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "bite");
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 hasTestedBite = true;
@@ -154,10 +110,10 @@ namespace sfml_util
                 auto const STR{ boost::algorithm::to_lower_copy(
                     item::weapon::bladedstaff_type::ToString(ENUM)) };
 
-                item::weapon::WeaponInfo wi(item::weapon_type::BladedStaff, STR);
-                wi.bladedstaff = ENUM;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::BladedStaff, STR);
+                weaponInfo.bladedstaff = ENUM;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", STR);
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++bladedStaffIndex;
@@ -167,10 +123,10 @@ namespace sfml_util
             static auto hasTestedBreath{ false };
             if (false == hasTestedBreath)
             {
-                item::weapon::WeaponInfo wi(item::weapon_type::Breath, "breath");
-                wi.is_breath = true;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Breath, "breath");
+                weaponInfo.is_breath = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "breath");
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 hasTestedBreath = true;
@@ -180,10 +136,10 @@ namespace sfml_util
             static auto hasTestedClaws{ false };
             if (false == hasTestedClaws)
             {
-                item::weapon::WeaponInfo wi(item::weapon_type::Claws, "claws");
-                wi.is_claws = true;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Claws, "claws");
+                weaponInfo.is_claws = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "claws");
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 hasTestedClaws = true;
@@ -198,10 +154,10 @@ namespace sfml_util
                 auto const STR{ boost::algorithm::to_lower_copy(
                     item::weapon::club_type::ToString(ENUM)) };
 
-                item::weapon::WeaponInfo wi(item::weapon_type::Club, STR);
-                wi.club = ENUM;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Club, STR);
+                weaponInfo.club = ENUM;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", STR);
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++clubIndex;
@@ -211,10 +167,10 @@ namespace sfml_util
             static auto hasTestedFists{ false };
             if (false == hasTestedFists)
             {
-                item::weapon::WeaponInfo wi(item::weapon_type::Fists, "fists");
-                wi.is_fists = true;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Fists, "fists");
+                weaponInfo.is_fists = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "fists");
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 hasTestedFists = true;
@@ -224,10 +180,10 @@ namespace sfml_util
             static auto hasTestedKnife{ false };
             if (false == hasTestedKnife)
             {
-                item::weapon::WeaponInfo wi(item::weapon_type::Knife, "knife");
-                wi.is_knife = true;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Knife, "knife");
+                weaponInfo.is_knife = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "knife");
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 hasTestedKnife = true;
@@ -237,10 +193,10 @@ namespace sfml_util
             static auto hasTestedDagger{ false };
             if (false == hasTestedDagger)
             {
-                item::weapon::WeaponInfo wi(item::weapon_type::Knife, "dagger");
-                wi.is_dagger = true;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Knife, "dagger");
+                weaponInfo.is_dagger = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "dagger");
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 hasTestedDagger = true;
@@ -255,10 +211,10 @@ namespace sfml_util
                 auto const STR{ boost::algorithm::to_lower_copy(
                     item::weapon::projectile_type::ToString(ENUM)) };
 
-                item::weapon::WeaponInfo wi(item::weapon_type::Projectile, STR);
-                wi.projectile = ENUM;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Projectile, STR);
+                weaponInfo.projectile = ENUM;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", STR);
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++projIndex;
@@ -268,10 +224,10 @@ namespace sfml_util
             static auto hasTestedStaff{ false };
             if (false == hasTestedStaff)
             {
-                item::weapon::WeaponInfo wi(item::weapon_type::Staff, "staff");
-                wi.is_staff = true;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Staff, "staff");
+                weaponInfo.is_staff = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "staff");
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 hasTestedStaff = true;
@@ -281,10 +237,10 @@ namespace sfml_util
             static auto hasTestedQStaff{ false };
             if (false == hasTestedQStaff)
             {
-                item::weapon::WeaponInfo wi(item::weapon_type::Staff, "quarterstaff");
-                wi.is_quarterstaff = true;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Staff, "quarterstaff");
+                weaponInfo.is_quarterstaff = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(
                     texture, true, "item", "quarterstaff");
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
@@ -300,10 +256,10 @@ namespace sfml_util
                 auto const STR{ boost::algorithm::to_lower_copy(
                     item::weapon::sword_type::ToString(ENUM)) };
 
-                item::weapon::WeaponInfo wi(item::weapon_type::Sword, STR);
-                wi.sword = ENUM;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Sword, STR);
+                weaponInfo.sword = ENUM;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", STR);
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++swordIndex;
@@ -313,10 +269,10 @@ namespace sfml_util
             static auto hasTestedTendrils{ false };
             if (false == hasTestedTendrils)
             {
-                item::weapon::WeaponInfo wi(item::weapon_type::Tendrils, "tendrils");
-                wi.is_tendrils = true;
+                item::weapon::WeaponInfo weaponInfo(item::weapon_type::Tendrils, "tendrils");
+                weaponInfo.is_tendrils = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(wi, false));
+                Load(texture, GetImageFilename(weaponInfo, false));
                 game::LoopManager::Instance()->TestingImageSet(texture, true, "item", "tendrils");
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 hasTestedTendrils = true;
@@ -327,13 +283,17 @@ namespace sfml_util
             static auto aventailIndex{ 0 };
             if (aventailIndex < static_cast<int>(item::armor::base_type::Count))
             {
-                item::armor::ArmorInfo ai(item::armor_type::Aventail);
-                ai.base = static_cast<item::armor::base_type::Enum>(aventailIndex);
-                ai.is_aventail = true;
+                item::armor::ArmorInfo armorInfo(item::armor_type::Aventail);
+                armorInfo.base = static_cast<item::armor::base_type::Enum>(aventailIndex);
+                armorInfo.is_aventail = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
+                Load(texture, GetImageFilename(armorInfo));
                 game::LoopManager::Instance()->TestingImageSet(
-                    texture, true, "item", "aventail", item::armor::base_type::ToString(ai.base));
+                    texture,
+                    true,
+                    "item",
+                    "aventail",
+                    item::armor::base_type::ToString(armorInfo.base));
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++aventailIndex;
                 return false;
@@ -342,13 +302,17 @@ namespace sfml_util
             static auto bootsIndex{ 0 };
             if (bootsIndex < static_cast<int>(item::armor::base_type::Count))
             {
-                item::armor::ArmorInfo ai(item::armor_type::Boots);
-                ai.base = static_cast<item::armor::base_type::Enum>(bootsIndex);
-                ai.is_boots = true;
+                item::armor::ArmorInfo armorInfo(item::armor_type::Boots);
+                armorInfo.base = static_cast<item::armor::base_type::Enum>(bootsIndex);
+                armorInfo.is_boots = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
+                Load(texture, GetImageFilename(armorInfo));
                 game::LoopManager::Instance()->TestingImageSet(
-                    texture, true, "item", "boots", item::armor::base_type::ToString(ai.base));
+                    texture,
+                    true,
+                    "item",
+                    "boots",
+                    item::armor::base_type::ToString(armorInfo.base));
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++bootsIndex;
                 return false;
@@ -357,13 +321,17 @@ namespace sfml_util
             static auto bracerIndex{ 0 };
             if (bracerIndex < static_cast<int>(item::armor::base_type::Count))
             {
-                item::armor::ArmorInfo ai(item::armor_type::Bracer);
-                ai.base = static_cast<item::armor::base_type::Enum>(bracerIndex);
-                ai.is_bracer = true;
+                item::armor::ArmorInfo armorInfo(item::armor_type::Bracer);
+                armorInfo.base = static_cast<item::armor::base_type::Enum>(bracerIndex);
+                armorInfo.is_bracer = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
+                Load(texture, GetImageFilename(armorInfo));
                 game::LoopManager::Instance()->TestingImageSet(
-                    texture, true, "item", "bracer", item::armor::base_type::ToString(ai.base));
+                    texture,
+                    true,
+                    "item",
+                    "bracer",
+                    item::armor::base_type::ToString(armorInfo.base));
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++bracerIndex;
                 return false;
@@ -372,12 +340,16 @@ namespace sfml_util
             static auto coverIndex{ 0 };
             if (coverIndex < static_cast<int>(item::armor::cover_type::Count))
             {
-                item::armor::ArmorInfo ai(item::armor_type::Covering);
-                ai.cover = static_cast<item::armor::cover_type::Enum>(coverIndex);
+                item::armor::ArmorInfo armorInfo(item::armor_type::Covering);
+                armorInfo.cover = static_cast<item::armor::cover_type::Enum>(coverIndex);
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
+                Load(texture, GetImageFilename(armorInfo));
                 game::LoopManager::Instance()->TestingImageSet(
-                    texture, true, "item", "cover", item::armor::cover_type::ToString(ai.cover));
+                    texture,
+                    true,
+                    "item",
+                    "cover",
+                    item::armor::cover_type::ToString(armorInfo.cover));
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++coverIndex;
                 return false;
@@ -386,12 +358,16 @@ namespace sfml_util
             static auto helmIndex{ 0 };
             if (helmIndex < static_cast<int>(item::armor::helm_type::Count))
             {
-                item::armor::ArmorInfo ai(item::armor_type::Helm);
-                ai.helm = static_cast<item::armor::helm_type::Enum>(helmIndex);
+                item::armor::ArmorInfo armorInfo(item::armor_type::Helm);
+                armorInfo.helm = static_cast<item::armor::helm_type::Enum>(helmIndex);
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
+                Load(texture, GetImageFilename(armorInfo));
                 game::LoopManager::Instance()->TestingImageSet(
-                    texture, true, "item", "helm", item::armor::helm_type::ToString(ai.helm));
+                    texture,
+                    true,
+                    "item",
+                    "helm",
+                    item::armor::helm_type::ToString(armorInfo.helm));
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++helmIndex;
                 return false;
@@ -400,13 +376,17 @@ namespace sfml_util
             static auto pantIndex{ 0 };
             if (pantIndex < static_cast<int>(item::armor::base_type::Count))
             {
-                item::armor::ArmorInfo ai(item::armor_type::Pants);
-                ai.base = static_cast<item::armor::base_type::Enum>(pantIndex);
-                ai.is_pants = true;
+                item::armor::ArmorInfo armorInfo(item::armor_type::Pants);
+                armorInfo.base = static_cast<item::armor::base_type::Enum>(pantIndex);
+                armorInfo.is_pants = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
+                Load(texture, GetImageFilename(armorInfo));
                 game::LoopManager::Instance()->TestingImageSet(
-                    texture, true, "item", "pants", item::armor::base_type::ToString(ai.base));
+                    texture,
+                    true,
+                    "item",
+                    "pants",
+                    item::armor::base_type::ToString(armorInfo.base));
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++pantIndex;
                 return false;
@@ -415,12 +395,16 @@ namespace sfml_util
             static auto shieldIndex{ 0 };
             if (shieldIndex < static_cast<int>(item::armor::shield_type::Count))
             {
-                item::armor::ArmorInfo ai(item::armor_type::Sheild);
-                ai.shield = static_cast<item::armor::shield_type::Enum>(shieldIndex);
+                item::armor::ArmorInfo armorInfo(item::armor_type::Sheild);
+                armorInfo.shield = static_cast<item::armor::shield_type::Enum>(shieldIndex);
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
+                Load(texture, GetImageFilename(armorInfo));
                 game::LoopManager::Instance()->TestingImageSet(
-                    texture, true, "item", "shield", item::armor::shield_type::ToString(ai.shield));
+                    texture,
+                    true,
+                    "item",
+                    "shield",
+                    item::armor::shield_type::ToString(armorInfo.shield));
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++shieldIndex;
                 return false;
@@ -429,13 +413,17 @@ namespace sfml_util
             static auto shirtIndex{ 0 };
             if (shirtIndex < static_cast<int>(item::armor::base_type::Count))
             {
-                item::armor::ArmorInfo ai(item::armor_type::Shirt);
-                ai.base = static_cast<item::armor::base_type::Enum>(shirtIndex);
-                ai.is_shirt = true;
+                item::armor::ArmorInfo armorInfo(item::armor_type::Shirt);
+                armorInfo.base = static_cast<item::armor::base_type::Enum>(shirtIndex);
+                armorInfo.is_shirt = true;
                 sf::Texture texture;
-                iimPtr->Load(texture, iimPtr->GetImageFilename(ai));
+                Load(texture, GetImageFilename(armorInfo));
                 game::LoopManager::Instance()->TestingImageSet(
-                    texture, true, "item", "shirt", item::armor::base_type::ToString(ai.base));
+                    texture,
+                    true,
+                    "item",
+                    "shirt",
+                    item::armor::base_type::ToString(armorInfo.base));
                 game::LoopManager::Instance()->TestingStrIncrement(TEST_PRE_STR);
                 ++shirtIndex;
                 return false;
@@ -449,7 +437,7 @@ namespace sfml_util
             {
                 auto const ENUM{ static_cast<item::misc_type::Enum>(miscIndex) };
                 auto const ENUM_STR{ item::misc_type::ToString(ENUM) };
-                auto const FILENAMES_VEC = iimPtr->GetImageFilenames(ENUM, isJeweled, isBone);
+                auto const FILENAMES_VEC = GetImageFilenames(ENUM, isJeweled, isBone);
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (FILENAMES_VEC.empty() == false),
@@ -476,7 +464,7 @@ namespace sfml_util
                     game::LoopManager::Instance()->TestingStrIncrement(ss.str());
 
                     sf::Texture texture;
-                    iimPtr->Load(texture, NEXT_FILENAME);
+                    Load(texture, NEXT_FILENAME);
                     game::LoopManager::Instance()->TestingImageSet(
                         texture, true, "items/misc", ENUM_STR, NEXT_FILENAME);
 
@@ -589,68 +577,13 @@ namespace sfml_util
             return true;
         }
 
-        void ItemImageManager::SetItemImageDirectory(const std::string & PATH)
-        {
-            imagesDirectoryPath_ = PATH;
-        }
-
-        void
-            ItemImageManager::Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME) const
-        {
-            namespace bfs = boost::filesystem;
-            const bfs::path PATH_OBJ(
-                bfs::system_complete(bfs::path(imagesDirectoryPath_) / bfs::path(IMAGE_FILE_NAME)));
-
-            sfml_util::LoadTexture(texture, PATH_OBJ.string());
-        }
-
-        void ItemImageManager::Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR) const
+        void ItemImageManager::Load(sf::Texture & texture, const item::ItemPtr_t ITEM_PTR)
         {
             return Load(texture, ITEM_PTR->ImageFilename());
         }
 
-        void ItemImageManager::Load(
-            sf::Texture & texture,
-            const item::misc_type::Enum ITEM_ENUM,
-            const bool IS_JEWELED,
-            const bool IS_BONE,
-            const bool WILL_RANDOMIZE) const
-        {
-            Load(texture, GetImageFilename(ITEM_ENUM, IS_JEWELED, IS_BONE, WILL_RANDOMIZE));
-        }
-
         const std::string ItemImageManager::GetImageFilename(
-            const item::misc_type::Enum ITEM_ENUM,
-            const bool IS_JEWELED,
-            const bool IS_BONE,
-            const bool WILL_RANDOMIZE,
-            const creature::race::Enum RACE_ENUM,
-            const creature::role::Enum ROLE_ENUM) const
-        {
-            auto const FILENAMES_VEC(
-                GetImageFilenames(ITEM_ENUM, IS_JEWELED, IS_BONE, RACE_ENUM, ROLE_ENUM));
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (FILENAMES_VEC.empty() == false),
-                "sfml_util::gui::ItemImageManager::GetImageFilename(misc, \""
-                    << item::misc_type::ToString(ITEM_ENUM) << "\", is_jeweled=" << std::boolalpha
-                    << IS_JEWELED << ", will_rand=" << WILL_RANDOMIZE << ", race=" << RACE_ENUM
-                    << ", role=" << ROLE_ENUM
-                    << ") unable to get any filenames for those settings.");
-
-            if (WILL_RANDOMIZE)
-            {
-                return FILENAMES_VEC[static_cast<std::size_t>(
-                    misc::random::Int(0, static_cast<int>(FILENAMES_VEC.size()) - 1))];
-            }
-            else
-            {
-                return FILENAMES_VEC[0];
-            }
-        }
-
-        const std::string ItemImageManager::GetImageFilename(
-            const item::ItemPtr_t ITEM_PTR, const bool WILL_RANDOMIZE) const
+            const item::ItemPtr_t ITEM_PTR, const bool WILL_RANDOMIZE)
         {
             return GetImageFilename(
                 ITEM_PTR->Name(),
@@ -667,270 +600,12 @@ namespace sfml_util
                 WILL_RANDOMIZE);
         }
 
-        const std::string ItemImageManager::GetImageFilename(
-            const std::string & NAME,
-            const item::category::Enum CATEGORY,
-            const bool IS_JEWELED,
-            const bool IS_WEAPON,
-            const item::weapon::WeaponInfo & WEAPON_INFO,
-            const item::armor::ArmorInfo & ARMOR_INFO,
-            const item::misc_type::Enum MISC_TYPE,
-            const creature::race::Enum SUMMON_RACE,
-            const creature::role::Enum SUMMON_ROLE,
-            const item::material::Enum PRIMARY_MATERIAL,
-            const item::material::Enum SECONDARY_MATERIAL,
-            const bool WILL_RANDOMIZE) const
-        {
-            using namespace item;
-
-            if (IS_WEAPON && (WEAPON_INFO.type != weapon_type::NotAWeapon))
-            {
-                return GetImageFilename(WEAPON_INFO, IS_JEWELED);
-            }
-            else if (ARMOR_INFO.type == armor_type::Skin)
-            {
-                return GetSkinImageFilename(PRIMARY_MATERIAL);
-            }
-            else if (ARMOR_INFO.type != armor_type::NotArmor)
-            {
-                return GetImageFilename(ARMOR_INFO);
-            }
-            else if (MISC_TYPE != misc_type::NotMisc)
-            {
-                return GetImageFilename(
-                    MISC_TYPE,
-                    IS_JEWELED,
-                    (PRIMARY_MATERIAL == item::material::Bone),
-                    WILL_RANDOMIZE,
-                    SUMMON_RACE,
-                    SUMMON_ROLE);
-            }
-            else
-            {
-                std::ostringstream ss;
-                ss << "sfml_util::gui::ItemImageManager::GetImageFilename(name=" << NAME
-                   << ", category=" << category::ToString(CATEGORY, false) << ", is_jeweled=\""
-                   << IS_JEWELED << ", is_weapon=" << std::boolalpha << IS_WEAPON
-                   << ", weapon_info_type=" << weapon_type::ToString(WEAPON_INFO.type, false)
-                   << ", armor_info_type=" << armor_type::ToString(ARMOR_INFO.type, false)
-                   << ", misc_type=" << item::misc_type::ToString(MISC_TYPE) << ", summon_race="
-                   << ((SUMMON_RACE == creature::race::Count)
-                           ? "(count)"
-                           : creature::race::ToString(SUMMON_RACE))
-                   << ", summon_role="
-                   << ((SUMMON_ROLE == creature::role::Count)
-                           ? "(count)"
-                           : creature::role::ToString(SUMMON_ROLE))
-                   << ", material_pri=" << material::ToString(PRIMARY_MATERIAL)
-                   << ", material_sec=" << material::ToString(SECONDARY_MATERIAL)
-                   << ", random=" << WILL_RANDOMIZE << ") failed to be categorized.";
-
-                throw std::runtime_error(ss.str());
-            }
-        }
-
-        const std::string ItemImageManager::GetImageFilename(
-            const item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED) const
-        {
-            using namespace item;
-
-            if (WEAPON_INFO.type & weapon_type::Sword)
-            {
-                return weapon::sword_type::ToString(WEAPON_INFO.sword) + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.type & weapon_type::Axe)
-            {
-                return weapon::axe_type::ToString(WEAPON_INFO.axe) + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.type & weapon_type::Club)
-            {
-                return weapon::club_type::ToString(WEAPON_INFO.club) + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.type & weapon_type::Whip)
-            {
-                return weapon::whip_type::ToString(WEAPON_INFO.whip) + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.type & weapon_type::Projectile)
-            {
-                return weapon::projectile_type::ToString(WEAPON_INFO.projectile) + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.type & weapon_type::BladedStaff)
-            {
-                return weapon::bladedstaff_type::ToString(WEAPON_INFO.bladedstaff) + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.is_bite)
-            {
-                return "bite" + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.is_breath)
-            {
-                return "breath" + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.is_claws)
-            {
-                return "claws" + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.is_dagger)
-            {
-                return "dagger" + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.is_fists)
-            {
-                return "fists" + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.is_knife)
-            {
-                return "knife" + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.is_quarterstaff)
-            {
-                return "quarter-staff" + FILE_EXT_STR_;
-            }
-
-            if (WEAPON_INFO.is_staff)
-            {
-                if (IS_JEWELED)
-                {
-                    return "staff-2" + FILE_EXT_STR_;
-                }
-                else
-                {
-                    return "staff-plain" + FILE_EXT_STR_;
-                }
-            }
-
-            if (WEAPON_INFO.is_tendrils)
-            {
-                return "tendrils" + FILE_EXT_STR_;
-            }
-
-            std::ostringstream ss;
-            ss << "sfml_util::gui::ItemImageManager::GetImageFilename(WEAPON_INFO.type="
-               << weapon_type::ToString(WEAPON_INFO.type, false)
-               << ") failed to resolve a filename for weapon.";
-            throw std::runtime_error(ss.str());
-        }
-
-        const std::string
-            ItemImageManager::GetImageFilename(const item::armor::ArmorInfo & ARMOR_INFO) const
-        {
-            using namespace item;
-
-            if (ARMOR_INFO.type & armor_type::Aventail)
-            {
-                return "aventail" + FILE_EXT_STR_;
-            }
-
-            if (ARMOR_INFO.type & armor_type::Boots)
-            {
-                return "Boots-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
-            }
-
-            if ((ARMOR_INFO.type & armor_type::Bracer) || (ARMOR_INFO.is_bracer))
-            {
-                return "bracer" + FILE_EXT_STR_;
-            }
-
-            if (ARMOR_INFO.type & armor_type::Covering)
-            {
-                return armor::cover_type::ToString(ARMOR_INFO.cover) + FILE_EXT_STR_;
-            }
-
-            if ((ARMOR_INFO.type & armor_type::Gauntlets) || (ARMOR_INFO.is_gauntlets))
-            {
-                if (ARMOR_INFO.base == armor::base_type::Plain)
-                {
-                    return "gloves" + FILE_EXT_STR_;
-                }
-                else
-                {
-                    return "Gauntlets-" + armor::base_type::ToString(ARMOR_INFO.base)
-                        + FILE_EXT_STR_;
-                }
-            }
-
-            if (ARMOR_INFO.type & armor_type::Helm)
-            {
-                return armor::helm_type::ToString(ARMOR_INFO.helm) + "-Helm" + FILE_EXT_STR_;
-            }
-
-            if ((ARMOR_INFO.type & armor_type::Pants) || (ARMOR_INFO.is_pants))
-            {
-                return "pants" + FILE_EXT_STR_;
-            }
-
-            if (ARMOR_INFO.type & armor_type::Sheild)
-            {
-                return armor::shield_type::ToString(ARMOR_INFO.shield) + "-Shield" + FILE_EXT_STR_;
-            }
-
-            if ((ARMOR_INFO.type & armor_type::Shirt) || (ARMOR_INFO.is_shirt))
-            {
-                return "Shirt-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
-            }
-
-            std::ostringstream ss;
-            ss << "sfml_util::gui::ItemImageManager::GetImageFilename(ARMOR_INFO.type="
-               << armor_type::ToString(ARMOR_INFO.type, false)
-               << ") failed to resolve a filename for armor.";
-
-            throw std::runtime_error(ss.str());
-        }
-
-        const std::string
-            ItemImageManager::GetSkinImageFilename(const item::ItemPtr_t ITEM_PTR) const
-        {
-            return GetSkinImageFilename(ITEM_PTR->MaterialPrimary());
-        }
-
-        const std::string ItemImageManager::GetSkinImageFilename(
-            const item::material::Enum PRIMARY_MATERIAL) const
-        {
-            using namespace item;
-
-            if (PRIMARY_MATERIAL == material::Plant)
-            {
-                return "plant" + FILE_EXT_STR_;
-            }
-            else if (PRIMARY_MATERIAL == material::Flesh)
-            {
-                return "flesh" + FILE_EXT_STR_;
-            }
-            else if (PRIMARY_MATERIAL == material::Scale)
-            {
-                return "scale" + FILE_EXT_STR_;
-            }
-            else if ((PRIMARY_MATERIAL == material::Fur) || (PRIMARY_MATERIAL == material::Hide))
-            {
-                return "hide" + FILE_EXT_STR_;
-            }
-
-            std::ostringstream ss;
-            ss << "sfml_util::gui::ItemImageManager::GetSkinImageFilename(PRI_MATERIAL="
-               << material::ToString(PRIMARY_MATERIAL)
-               << ") failed to resolve a filename for that material.";
-
-            throw std::runtime_error(ss.str());
-        }
-
         const std::vector<std::string> ItemImageManager::GetImageFilenames(
             const item::misc_type::Enum ITEM_ENUM,
             const bool IS_JEWELED,
             const bool IS_BONE,
             const creature::race::Enum RACE_ENUM,
-            const creature::role::Enum ROLE_ENUM) const
+            const creature::role::Enum ROLE_ENUM)
         {
             using namespace item;
 
@@ -1453,13 +1128,309 @@ namespace sfml_util
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "sfml_util::gui::ItemImageManager::GetImageFilename(misc_type::Enum="
+                    ss << "sfml_util::gui::ItemImageManager::GetImageFilenames(misc_type::Enum="
                        << ITEM_ENUM << ")_UnknownOrInvalidValueError.";
 
                     throw std::range_error(ss.str());
                 }
             }
         }
+
+        const std::string ItemImageManager::GetImageFilename(
+            const item::misc_type::Enum ITEM_ENUM,
+            const bool IS_JEWELED,
+            const bool IS_BONE,
+            const bool WILL_RANDOMIZE,
+            const creature::race::Enum RACE_ENUM,
+            const creature::role::Enum ROLE_ENUM)
+        {
+            auto const FILENAMES_VEC(
+                GetImageFilenames(ITEM_ENUM, IS_JEWELED, IS_BONE, RACE_ENUM, ROLE_ENUM));
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (FILENAMES_VEC.empty() == false),
+                "sfml_util::gui::ItemImageManager::GetImageFilename(misc, \""
+                    << item::misc_type::ToString(ITEM_ENUM) << "\", is_jeweled=" << std::boolalpha
+                    << IS_JEWELED << ", will_rand=" << WILL_RANDOMIZE << ", race=" << RACE_ENUM
+                    << ", role=" << ROLE_ENUM
+                    << ") unable to get any filenames for those settings.");
+
+            if (WILL_RANDOMIZE)
+            {
+                return FILENAMES_VEC[static_cast<std::size_t>(
+                    misc::random::Int(0, static_cast<int>(FILENAMES_VEC.size()) - 1))];
+            }
+            else
+            {
+                return FILENAMES_VEC[0];
+            }
+        }
+
+        const std::string
+            ItemImageManager::GetSkinImageFilename(const item::material::Enum PRIMARY_MATERIAL)
+        {
+            using namespace item;
+
+            if (PRIMARY_MATERIAL == material::Plant)
+            {
+                return "plant" + FILE_EXT_STR_;
+            }
+            else if (PRIMARY_MATERIAL == material::Flesh)
+            {
+                return "flesh" + FILE_EXT_STR_;
+            }
+            else if (PRIMARY_MATERIAL == material::Scale)
+            {
+                return "scale" + FILE_EXT_STR_;
+            }
+            else if ((PRIMARY_MATERIAL == material::Fur) || (PRIMARY_MATERIAL == material::Hide))
+            {
+                return "hide" + FILE_EXT_STR_;
+            }
+
+            std::ostringstream ss;
+            ss << "sfml_util::gui::ItemImageManager::GetSkinImageFilename(PRI_MATERIAL="
+               << material::ToString(PRIMARY_MATERIAL)
+               << ") failed to resolve a filename for that material.";
+
+            throw std::runtime_error(ss.str());
+        }
+
+        const std::string ItemImageManager::GetImageFilename(
+            const std::string & NAME,
+            const item::category::Enum CATEGORY,
+            const bool IS_JEWELED,
+            const bool IS_WEAPON,
+            const item::weapon::WeaponInfo & WEAPON_INFO,
+            const item::armor::ArmorInfo & ARMOR_INFO,
+            const item::misc_type::Enum MISC_TYPE,
+            const creature::race::Enum SUMMON_RACE,
+            const creature::role::Enum SUMMON_ROLE,
+            const item::material::Enum PRIMARY_MATERIAL,
+            const item::material::Enum SECONDARY_MATERIAL,
+            const bool WILL_RANDOMIZE)
+        {
+            using namespace item;
+
+            if (IS_WEAPON && (WEAPON_INFO.type != weapon_type::NotAWeapon))
+            {
+                return GetImageFilename(WEAPON_INFO, IS_JEWELED);
+            }
+            else if (ARMOR_INFO.type == armor_type::Skin)
+            {
+                return GetSkinImageFilename(PRIMARY_MATERIAL);
+            }
+            else if (ARMOR_INFO.type != armor_type::NotArmor)
+            {
+                return GetImageFilename(ARMOR_INFO);
+            }
+            else if (MISC_TYPE != misc_type::NotMisc)
+            {
+                return GetImageFilename(
+                    MISC_TYPE,
+                    IS_JEWELED,
+                    (PRIMARY_MATERIAL == item::material::Bone),
+                    WILL_RANDOMIZE,
+                    SUMMON_RACE,
+                    SUMMON_ROLE);
+            }
+            else
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::gui::ItemImageManager::GetImageFilename(name=" << NAME
+                   << ", category=" << category::ToString(CATEGORY, false) << ", is_jeweled=\""
+                   << IS_JEWELED << ", is_weapon=" << std::boolalpha << IS_WEAPON
+                   << ", weapon_info_type=" << weapon_type::ToString(WEAPON_INFO.type, false)
+                   << ", armor_info_type=" << armor_type::ToString(ARMOR_INFO.type, false)
+                   << ", misc_type=" << item::misc_type::ToString(MISC_TYPE) << ", summon_race="
+                   << ((SUMMON_RACE == creature::race::Count)
+                           ? "(count)"
+                           : creature::race::ToString(SUMMON_RACE))
+                   << ", summon_role="
+                   << ((SUMMON_ROLE == creature::role::Count)
+                           ? "(count)"
+                           : creature::role::ToString(SUMMON_ROLE))
+                   << ", material_pri=" << material::ToString(PRIMARY_MATERIAL)
+                   << ", material_sec=" << material::ToString(SECONDARY_MATERIAL)
+                   << ", random=" << WILL_RANDOMIZE << ") failed to be categorized.";
+
+                throw std::runtime_error(ss.str());
+            }
+        }
+
+        const std::string ItemImageManager::GetImageFilename(
+            const item::weapon::WeaponInfo & WEAPON_INFO, const bool IS_JEWELED)
+        {
+            using namespace item;
+
+            if (WEAPON_INFO.type & weapon_type::Sword)
+            {
+                return weapon::sword_type::ToString(WEAPON_INFO.sword) + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.type & weapon_type::Axe)
+            {
+                return weapon::axe_type::ToString(WEAPON_INFO.axe) + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.type & weapon_type::Club)
+            {
+                return weapon::club_type::ToString(WEAPON_INFO.club) + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.type & weapon_type::Whip)
+            {
+                return weapon::whip_type::ToString(WEAPON_INFO.whip) + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.type & weapon_type::Projectile)
+            {
+                return weapon::projectile_type::ToString(WEAPON_INFO.projectile) + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.type & weapon_type::BladedStaff)
+            {
+                return weapon::bladedstaff_type::ToString(WEAPON_INFO.bladedstaff) + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.is_bite)
+            {
+                return "bite" + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.is_breath)
+            {
+                return "breath" + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.is_claws)
+            {
+                return "claws" + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.is_dagger)
+            {
+                return "dagger" + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.is_fists)
+            {
+                return "fists" + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.is_knife)
+            {
+                return "knife" + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.is_quarterstaff)
+            {
+                return "quarter-staff" + FILE_EXT_STR_;
+            }
+
+            if (WEAPON_INFO.is_staff)
+            {
+                if (IS_JEWELED)
+                {
+                    return "staff-2" + FILE_EXT_STR_;
+                }
+                else
+                {
+                    return "staff-plain" + FILE_EXT_STR_;
+                }
+            }
+
+            if (WEAPON_INFO.is_tendrils)
+            {
+                return "tendrils" + FILE_EXT_STR_;
+            }
+
+            std::ostringstream ss;
+            ss << "sfml_util::gui::ItemImageManager::GetImageFilename(WEAPON_INFO.type="
+               << weapon_type::ToString(WEAPON_INFO.type, false)
+               << ") failed to resolve a filename for weapon.";
+            throw std::runtime_error(ss.str());
+        }
+
+        const std::string
+            ItemImageManager::GetImageFilename(const item::armor::ArmorInfo & ARMOR_INFO)
+        {
+            using namespace item;
+
+            if (ARMOR_INFO.type & armor_type::Aventail)
+            {
+                return "aventail" + FILE_EXT_STR_;
+            }
+
+            if (ARMOR_INFO.type & armor_type::Boots)
+            {
+                return "Boots-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
+            }
+
+            if ((ARMOR_INFO.type & armor_type::Bracer) || (ARMOR_INFO.is_bracer))
+            {
+                return "bracer" + FILE_EXT_STR_;
+            }
+
+            if (ARMOR_INFO.type & armor_type::Covering)
+            {
+                return armor::cover_type::ToString(ARMOR_INFO.cover) + FILE_EXT_STR_;
+            }
+
+            if ((ARMOR_INFO.type & armor_type::Gauntlets) || (ARMOR_INFO.is_gauntlets))
+            {
+                if (ARMOR_INFO.base == armor::base_type::Plain)
+                {
+                    return "gloves" + FILE_EXT_STR_;
+                }
+                else
+                {
+                    return "Gauntlets-" + armor::base_type::ToString(ARMOR_INFO.base)
+                        + FILE_EXT_STR_;
+                }
+            }
+
+            if (ARMOR_INFO.type & armor_type::Helm)
+            {
+                return armor::helm_type::ToString(ARMOR_INFO.helm) + "-Helm" + FILE_EXT_STR_;
+            }
+
+            if ((ARMOR_INFO.type & armor_type::Pants) || (ARMOR_INFO.is_pants))
+            {
+                return "pants" + FILE_EXT_STR_;
+            }
+
+            if (ARMOR_INFO.type & armor_type::Sheild)
+            {
+                return armor::shield_type::ToString(ARMOR_INFO.shield) + "-Shield" + FILE_EXT_STR_;
+            }
+
+            if ((ARMOR_INFO.type & armor_type::Shirt) || (ARMOR_INFO.is_shirt))
+            {
+                return "Shirt-" + armor::base_type::ToString(ARMOR_INFO.base) + FILE_EXT_STR_;
+            }
+
+            std::ostringstream ss;
+            ss << "sfml_util::gui::ItemImageManager::GetImageFilename(ARMOR_INFO.type="
+               << armor_type::ToString(ARMOR_INFO.type, false)
+               << ") failed to resolve a filename for armor.";
+
+            throw std::runtime_error(ss.str());
+        }
+
+        void ItemImageManager::Load(sf::Texture & texture, const std::string & IMAGE_FILE_NAME)
+        {
+            namespace bfs = boost::filesystem;
+
+            auto const IMAGES_DIR{ game::GameDataFile::Instance()->GetMediaPath(
+                "media-images-items-dir") };
+
+            const bfs::path PATH_OBJ(
+                bfs::system_complete(bfs::path(IMAGES_DIR) / bfs::path(IMAGE_FILE_NAME)));
+
+            sfml_util::LoadTexture(texture, PATH_OBJ.string());
+        }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

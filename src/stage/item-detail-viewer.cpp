@@ -203,7 +203,7 @@ namespace stage
 
         willShowImage_ = true;
 
-        sfml_util::gui::ItemImageManager::Instance()->Load(texture_, ITEM_PTR_OPT.value());
+        sfml_util::gui::ItemImageManager::Load(texture_, ITEM_PTR_OPT.value());
 
         sprite_.setTexture(texture_, true);
 

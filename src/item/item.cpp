@@ -93,19 +93,7 @@ namespace item
         , summonInfo_(TYPE_WRAPPER.summon)
         , enchantmentsPVec_(creature::EnchantmentFactory::Instance()->MakeAndStore(
               TYPE_WRAPPER, IsWeapon(), IsArmor(), MATERIAL_PRIMARY, MATERIAL_SECONDARY))
-        , imageFilename_(sfml_util::gui::ItemImageManager::Instance()->GetImageFilename(
-              NAME,
-              CATEGORY,
-              IsJeweled(),
-              IsWeapon(),
-              WEAPON_INFO,
-              ARMOR_INFO,
-              TYPE_WRAPPER.misc,
-              TYPE_WRAPPER.summon.Race(),
-              TYPE_WRAPPER.summon.Role(),
-              MATERIAL_PRIMARY,
-              MATERIAL_SECONDARY,
-              true))
+        , imageFilename_("")
     {
         if (unique_type::MagnifyingGlass == uniqueType_)
         {
@@ -132,6 +120,8 @@ namespace item
                 weight_ = 1_weight;
             }
         }
+
+        imageFilename_ = sfml_util::gui::ItemImageManager::GetImageFilename(this, true);
     }
 
     Item::~Item() { creature::EnchantmentWarehouse::Access().Free(enchantmentsPVec_); }

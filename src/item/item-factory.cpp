@@ -40,6 +40,7 @@
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "sfml-util/gui/item-image-manager.hpp"
 
 #include <algorithm>
 #include <exception>

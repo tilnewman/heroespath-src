@@ -3649,7 +3649,7 @@ namespace stage
 
         auto const ITEM_PTR{ ITEM_PTR_OPT.value() };
 
-        sfml_util::gui::ItemImageManager::Instance()->Load(detailViewTexture_, ITEM_PTR);
+        sfml_util::gui::ItemImageManager::Load(detailViewTexture_, ITEM_PTR);
 
         detailViewSprite_.setTexture(detailViewTexture_, true);
 

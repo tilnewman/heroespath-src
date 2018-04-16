@@ -518,8 +518,7 @@ namespace combat
         float itemListHeightAtDefaultScale(0.0f);
         for (auto & nextItemText : itemWithTextVec_)
         {
-            sfml_util::gui::ItemImageManager::Instance()->Load(
-                nextItemText.texture, nextItemText.item_ptr);
+            sfml_util::gui::ItemImageManager::Load(nextItemText.texture, nextItemText.item_ptr);
 
             nextItemText.sprite = sf::Sprite(nextItemText.texture);
             nextItemText.sprite.setScale(ITEM_IMAGE_SCALE_DEFAULT, ITEM_IMAGE_SCALE_DEFAULT);

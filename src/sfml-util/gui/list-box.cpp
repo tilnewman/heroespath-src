@@ -695,7 +695,7 @@ namespace sfml_util
 
                     if (listBoxItemSPtr->ITEM_PTR_OPT)
                     {
-                        sfml_util::gui::ItemImageManager::Instance()->Load(
+                        sfml_util::gui::ItemImageManager::Load(
                             *imagePair.first, listBoxItemSPtr->ITEM_PTR_OPT.value());
                     }
                     else if (listBoxItemSPtr->TITLE_PTR_OPT)

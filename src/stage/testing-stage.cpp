@@ -460,9 +460,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_ItemImageManager{ false };
         if (false == hasTestingCompleted_ItemImageManager)
         {
-            hasTestingCompleted_ItemImageManager
-                = sfml_util::gui::ItemImageManager::Instance()->Test();
-
+            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Test();
             return;
         }
 
@@ -470,7 +468,6 @@ if (false == willImageCheck_)
         if (false == hasTestingCompleted_CreatureImageManager)
         {
             hasTestingCompleted_CreatureImageManager = sfml_util::gui::CreatureImageManager::Test();
-
             return;
         }
 
@@ -1182,11 +1179,14 @@ if (false == willImageCheck_)
                         Rank_t(rankIndex),
                         Experience_t(rankIndex * 10000));
 
+                    sf::Texture texture;
+                    sfml_util::gui::CreatureImageManager::GetImage(texture, &character);
+
                     M_ASSERT_OR_LOGANDTHROW_SS(
-                        (character.ImageFilename().empty() == false),
+                        ((texture.getSize().x > 0) && (texture.getSize().y > 0)),
                         "stage::TestingStage::TestInventoryFactory() creature created for "
                         "inventory test was found to be invalid before inventory test could run.  "
-                        "The image filename was empty.  creature={"
+                        "The image loaded for the creature had a side length of zero.  creature={"
                             << character.ToString() << "}");
 
                     non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(

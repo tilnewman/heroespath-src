@@ -261,7 +261,6 @@ namespace game
             config::SettingsFile::Release();
 
             // image managers should not be needed during shutdown, so release them early
-            sfml_util::gui::ItemImageManager::Release();
             sfml_util::gui::GuiElements::Release();
 
             // factories should not be needed during shutdown, so release them early
@@ -415,9 +414,6 @@ namespace game
             game::GameDataFile::Instance()->GetMediaPath("media-sounds-dir"),
             game::GameDataFile::Instance()->GetMediaPath("media-music-dir"));
 
-        sfml_util::gui::ItemImageManager::SetItemImageDirectory(
-            game::GameDataFile::Instance()->GetMediaPath("media-images-items-dir"));
-
         sfml_util::gui::TitleImageManager::SetImageDirectoryPath(
             game::GameDataFile::Instance()->GetMediaPath("media-images-titles-dir"));
 
@@ -456,7 +452,6 @@ namespace game
         sfml_util::FontManager::Acquire();
         popup::PopupManager::Acquire();
         sfml_util::gui::GuiElements::Acquire();
-        sfml_util::gui::ItemImageManager::Acquire();
         Game::Acquire();
         state::GameStateFactory::Acquire();
         creature::NameInfo::Acquire();
