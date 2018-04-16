@@ -57,7 +57,7 @@ namespace creature
 namespace game
 {
 
-    // Singleton class that keeps track of the game state
+    // Subsystem class that keeps track of the game state.
     class LoopManager
     {
     public:

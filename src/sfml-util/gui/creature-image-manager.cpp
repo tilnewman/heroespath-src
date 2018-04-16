@@ -56,19 +56,19 @@ namespace sfml_util
 
         CreatureImageManager::CreatureImageManager()
         {
-            M_HP_LOG_DBG("Singleton Construction: CreatureImageManager");
+            M_HP_LOG_DBG("Subsystem Construction: CreatureImageManager");
         }
 
         CreatureImageManager::~CreatureImageManager()
         {
-            M_HP_LOG_DBG("Singleton Destruction: CreatureImageManager");
+            M_HP_LOG_DBG("Subsystem Destruction: CreatureImageManager");
         }
 
         misc::NotNull<CreatureImageManager *> CreatureImageManager::Instance()
         {
             if (!instanceUPtr_)
             {
-                M_HP_LOG_ERR("Singleton Instance() before Acquire(): CreatureImageManager");
+                M_HP_LOG_ERR("Subsystem Instance() before Acquire(): CreatureImageManager");
                 Acquire();
             }
 
@@ -83,7 +83,7 @@ namespace sfml_util
             }
             else
             {
-                M_HP_LOG_ERR("Singleton Acquire() after Construction: CreatureImageManager");
+                M_HP_LOG_ERR("Subsystem Acquire() after Construction: CreatureImageManager");
             }
         }
 

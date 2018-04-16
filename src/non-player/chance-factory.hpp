@@ -74,7 +74,7 @@ namespace non_player
             }
         }
 
-        // A singleton class that is responsible for creating sets of items that will equip
+        // A Subsystem class that is responsible for creating sets of items that will equip
         // non-player characters.
         class ChanceFactory
         {

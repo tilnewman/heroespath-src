@@ -75,12 +75,12 @@ namespace combat
         , deadNonPlayerItemsLockbox_()
         , lockPickCreaturePtrOpt_(boost::none)
     {
-        M_HP_LOG_DBG("Singleton Construction: Encounter");
+        M_HP_LOG_DBG("Subsystem Construction: Encounter");
     }
 
     Encounter::~Encounter()
     {
-        M_HP_LOG_DBG("Singleton Destruction: Encounter");
+        M_HP_LOG_DBG("Subsystem Destruction: Encounter");
 
         if (nonPlayerPartyPVec_.empty() == false)
         {
@@ -136,7 +136,7 @@ namespace combat
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): Encounter");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): Encounter");
             Acquire();
         }
 
@@ -151,7 +151,7 @@ namespace combat
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: Encounter");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: Encounter");
         }
     }
 

@@ -68,7 +68,7 @@ namespace sfml_util
         static const std::string ToString(const DisplayChangeResult::Enum E);
     };
 
-    // A singleton that retains details pertaining to an sfml application.
+    // A Subsystem that retains details pertaining to an sfml application.
     class Display
     {
     public:

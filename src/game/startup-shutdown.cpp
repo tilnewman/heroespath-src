@@ -103,8 +103,8 @@ namespace game
             // this order is critical
             Setup_Display(APPLICATION_NAME);
             Setup_ManagerClassResourcePaths();
-            Setup_SingletonsAcquire();
-            Setup_SingletonsInitialize();
+            Setup_SubsystemsAcquire();
+            Setup_SubsystemsInitialize();
             Setup_HoldersFill();
             item::ArmorRatings::Setup();
 
@@ -160,7 +160,7 @@ namespace game
 
         Teardown_SettingsFile(exitCode);
         Teardown_CloseDisplay(exitCode);
-        Teardown_ReleaseSingletons(exitCode);
+        Teardown_ReleaseSubsystems(exitCode);
         Teardown_EmptyHolders(exitCode);
         Teardown_Logger(exitCode);
 
@@ -250,7 +250,7 @@ namespace game
         }
     }
 
-    void StartupShutdown::Teardown_ReleaseSingletons(int & exitCode_OutParam)
+    void StartupShutdown::Teardown_ReleaseSubsystems(int & exitCode_OutParam)
     {
         try
         {
@@ -313,7 +313,7 @@ namespace game
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
-                "StartupShutdown::Teardown_ReleaseSingletons() threw std::exception \"" << E.what()
+                "StartupShutdown::Teardown_ReleaseSubsystems() threw std::exception \"" << E.what()
                                                                                         << "\"");
 
             exitCode_OutParam = EXIT_FAILURE;
@@ -322,7 +322,7 @@ namespace game
         {
             M_LOG_FAT(
                 *log::Logger::Instance(),
-                "StartupShutdown::Teardown_ReleaseSingletons() "
+                "StartupShutdown::Teardown_ReleaseSubsystems() "
                     << "threw an unknown (non-std) exception.");
 
             exitCode_OutParam = EXIT_FAILURE;
@@ -447,7 +447,7 @@ namespace game
         combat::trap::Holder::Fill();
     }
 
-    void StartupShutdown::Setup_SingletonsAcquire()
+    void StartupShutdown::Setup_SubsystemsAcquire()
     {
         state::NpcWarehouse::Acquire();
         state::NpcFactory::Acquire();
@@ -473,7 +473,7 @@ namespace game
         LoopManager::Acquire();
     }
 
-    void StartupShutdown::Setup_SingletonsInitialize()
+    void StartupShutdown::Setup_SubsystemsInitialize()
     {
         // SettingsFile::LoadAndRestore() must happen before initialization so that subsystems can
         // use the settings saved from the last run of the game.

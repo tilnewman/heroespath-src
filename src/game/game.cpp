@@ -49,16 +49,16 @@ namespace game
     Game::Game()
         : stateUPtr_()
     {
-        M_HP_LOG_DBG("Singleton Construction: Game");
+        M_HP_LOG_DBG("Subsystem Construction: Game");
     }
 
-    Game::~Game() { M_HP_LOG_DBG("Singleton Destruction: Game"); }
+    Game::~Game() { M_HP_LOG_DBG("Subsystem Destruction: Game"); }
 
     misc::NotNull<Game *> Game::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): Game");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): Game");
             Acquire();
         }
 
@@ -73,7 +73,7 @@ namespace game
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: Game");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: Game");
         }
     }
 

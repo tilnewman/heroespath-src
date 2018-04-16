@@ -117,7 +117,7 @@ namespace sfml_util
             , lineSmallTBotSpriteRect_(sf::IntRect(114, 223, 26, 19))
             , lineSmallTRightSpriteRect_(sf::IntRect(141, 223, 19, 26))
         {
-            M_HP_LOG_DBG("Singleton Construction: GuiElements");
+            M_HP_LOG_DBG("Subsystem Construction: GuiElements");
 
             sfml_util::LoadTexture(
                 elementsTexture_,
@@ -133,13 +133,13 @@ namespace sfml_util
                     "media-images-backgrounds-tile-darkknot"));
         }
 
-        GuiElements::~GuiElements() { M_HP_LOG_DBG("Singleton Destruction: GuiElements"); }
+        GuiElements::~GuiElements() { M_HP_LOG_DBG("Subsystem Destruction: GuiElements"); }
 
         misc::NotNull<GuiElements *> GuiElements::Instance()
         {
             if (!instanceUPtr_)
             {
-                M_HP_LOG_ERR("Singleton Instance() before Acquire(): GuiElements");
+                M_HP_LOG_ERR("Subsystem Instance() before Acquire(): GuiElements");
                 Acquire();
             }
 
@@ -154,7 +154,7 @@ namespace sfml_util
             }
             else
             {
-                M_HP_LOG_ERR("Singleton Acquire() after Construction: GuiElements");
+                M_HP_LOG_ERR("Subsystem Acquire() after Construction: GuiElements");
             }
         }
 

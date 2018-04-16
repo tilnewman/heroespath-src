@@ -42,16 +42,16 @@ namespace state
     NpcWarehouse::NpcWarehouse()
         : warehouse_()
     {
-        M_HP_LOG_DBG("Singleton Construction: NpcWarehouse");
+        M_HP_LOG_DBG("Subsystem Construction: NpcWarehouse");
     }
 
-    NpcWarehouse::~NpcWarehouse() { M_HP_LOG_DBG("Singleton Destruction: NpcWarehouse"); }
+    NpcWarehouse::~NpcWarehouse() { M_HP_LOG_DBG("Subsystem Destruction: NpcWarehouse"); }
 
     misc::NotNull<NpcWarehouse *> NpcWarehouse::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): NpcWarehouse");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): NpcWarehouse");
             Acquire();
         }
 
@@ -66,7 +66,7 @@ namespace state
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: NpcWarehouse");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: NpcWarehouse");
         }
     }
 

@@ -81,7 +81,7 @@ namespace misc
         static const std::string ToString(const platform_type::Enum);
     };
 
-    // singleton responsible for detecting, logging, and storing the system platform
+    // Subsystem responsible for detecting, logging, and storing the system platform.
     class Platform
     {
     public:

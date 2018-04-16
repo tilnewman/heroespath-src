@@ -26,7 +26,7 @@
 #define HEROESPATH_CONFIG_SETTINGSFILE_HPP_INCLUDED
 //
 // settings-file.hpp
-//  A singleton config file class that saves game settings. (i.e. volume, resolution, etc.)
+//  A Subsystem config file class that saves game settings. (i.e. volume, resolution, etc.)
 //
 #include "config/configbase.hpp"
 #include "misc/not-null.hpp"
@@ -39,7 +39,7 @@ namespace heroespath
 namespace config
 {
 
-    // Singleton class that manages a simple configuration file
+    // Subsystem class that manages a simple configuration file
     class SettingsFile : public ConfigBase
     {
     public:

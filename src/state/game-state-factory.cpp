@@ -64,19 +64,19 @@ namespace state
 
     GameStateFactory::GameStateFactory()
     {
-        M_HP_LOG_DBG("Singleton Construction: GameStateFactory");
+        M_HP_LOG_DBG("Subsystem Construction: GameStateFactory");
     }
 
     GameStateFactory::~GameStateFactory()
     {
-        M_HP_LOG_DBG("Singleton Destruction: GameStateFactory");
+        M_HP_LOG_DBG("Subsystem Destruction: GameStateFactory");
     }
 
     misc::NotNull<GameStateFactory *> GameStateFactory::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): GameStateFactory");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): GameStateFactory");
             Acquire();
         }
 
@@ -91,7 +91,7 @@ namespace state
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: GameStateFactory");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: GameStateFactory");
         }
     }
 

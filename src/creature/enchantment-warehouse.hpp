@@ -43,7 +43,7 @@ namespace creature
     using EnchantmentPtr_t = misc::NotNull<Enchantment *>;
     using EnchantmentPVec_t = std::vector<EnchantmentPtr_t>;
 
-    // Singleton responsible for the lifetimes of Enchantment objects.
+    // Subsystem responsible for the lifetimes of Enchantment objects.
     // This class does not new the objects, but it does delete them.
     class EnchantmentWarehouse
     {

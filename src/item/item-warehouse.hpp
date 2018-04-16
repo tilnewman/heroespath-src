@@ -44,7 +44,7 @@ namespace item
     using ItemUPtr_t = std::unique_ptr<Item>;
     using ItemUVec_t = std::vector<ItemUPtr_t>;
 
-    // Singleton responsible for the lifetimes of item objects.
+    // Subsystem responsible for the lifetimes of item objects.
     // This class does not new the objects, but it does delete them.
     class ItemWarehouse
     {

@@ -43,7 +43,7 @@ namespace creature
     using CreatureUPtr_t = std::unique_ptr<Creature>;
     using CreatureUVec_t = std::vector<CreatureUPtr_t>;
 
-    // Singleton responsible for the lifetimes of player::Character objects.
+    // Subsystem responsible for the lifetimes of player::Character objects.
     // This class does not new the objects, but it is the one and only place where they are deleted.
     class CreatureWarehouse
     {

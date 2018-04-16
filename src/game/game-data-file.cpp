@@ -45,14 +45,14 @@ namespace game
     GameDataFile::GameDataFile()
         : ConfigBase("game-data.txt", "=", "#")
     {
-        M_HP_LOG_DBG("Singleton Construction: GameDataFile");
+        M_HP_LOG_DBG("Subsystem Construction: GameDataFile");
     }
 
     misc::NotNull<GameDataFile *> game::GameDataFile::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): GameDataFile");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): GameDataFile");
             Acquire();
         }
 
@@ -67,7 +67,7 @@ namespace game
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: GameDataFile");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: GameDataFile");
         }
     }
 

@@ -43,7 +43,7 @@ namespace state
     using NpcPtr_t = misc::NotNull<Npc *>;
     using NpcPVec_t = std::vector<NpcPtr_t>;
 
-    // Singleton responsible for the lifetimes of Npc objects.
+    // Subsystem responsible for the lifetimes of Npc objects.
     // This class does not new the objects, but it does delete them.
     class NpcWarehouse
     {

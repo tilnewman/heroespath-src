@@ -54,19 +54,19 @@ namespace item
         : profiles_()
         , religiousProfiles_()
     {
-        M_HP_LOG_DBG("Singleton Construction: ItemProfileWarehouse");
+        M_HP_LOG_DBG("Subsystem Construction: ItemProfileWarehouse");
     }
 
     ItemProfileWarehouse::~ItemProfileWarehouse()
     {
-        M_HP_LOG_DBG("Singleton Destruction: ItemProfileWarehouse");
+        M_HP_LOG_DBG("Subsystem Destruction: ItemProfileWarehouse");
     }
 
     misc::NotNull<ItemProfileWarehouse *> ItemProfileWarehouse::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): ItemProfileWarehouse");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): ItemProfileWarehouse");
             Acquire();
         }
 
@@ -81,7 +81,7 @@ namespace item
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: ItemProfileWarehouse");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: ItemProfileWarehouse");
         }
     }
 

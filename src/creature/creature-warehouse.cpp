@@ -42,19 +42,19 @@ namespace creature
     CreatureWarehouse::CreatureWarehouse()
         : warehouse_()
     {
-        M_HP_LOG_DBG("Singleton Construction: Non-Player CreatureWarehouse");
+        M_HP_LOG_DBG("Subsystem Construction: Non-Player CreatureWarehouse");
     }
 
     CreatureWarehouse::~CreatureWarehouse()
     {
-        M_HP_LOG_DBG("Singleton Destruction: Non-Player CreatureWarehouse");
+        M_HP_LOG_DBG("Subsystem Destruction: Non-Player CreatureWarehouse");
     }
 
     misc::NotNull<CreatureWarehouse *> CreatureWarehouse::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): Non-Player CreatureWarehouse");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): Non-Player CreatureWarehouse");
             Acquire();
         }
 
@@ -69,7 +69,7 @@ namespace creature
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: Non-Player CreatureWarehouse");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: Non-Player CreatureWarehouse");
         }
     }
 

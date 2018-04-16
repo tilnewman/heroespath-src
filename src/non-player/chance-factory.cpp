@@ -79,15 +79,15 @@ namespace non_player
         float ChanceFactory::materialSecondaryChanceMetal_{ 0.0f };
         float ChanceFactory::materialSecondaryChancePrecious_{ 0.0f };
 
-        ChanceFactory::ChanceFactory() { M_HP_LOG_DBG("Singleton Construction: ChanceFactory"); }
+        ChanceFactory::ChanceFactory() { M_HP_LOG_DBG("Subsystem Construction: ChanceFactory"); }
 
-        ChanceFactory::~ChanceFactory() { M_HP_LOG_DBG("Singleton Destruction: ChanceFactory"); }
+        ChanceFactory::~ChanceFactory() { M_HP_LOG_DBG("Subsystem Destruction: ChanceFactory"); }
 
         misc::NotNull<ChanceFactory *> ChanceFactory::Instance()
         {
             if (!instanceUPtr_)
             {
-                M_HP_LOG_ERR("Singleton Instance() before Acquire(): ChanceFactory");
+                M_HP_LOG_ERR("Subsystem Instance() before Acquire(): ChanceFactory");
                 Acquire();
             }
 
@@ -102,7 +102,7 @@ namespace non_player
             }
             else
             {
-                M_HP_LOG_ERR("Singleton Acquire() after Construction: ChanceFactory");
+                M_HP_LOG_ERR("Subsystem Acquire() after Construction: ChanceFactory");
             }
         }
 

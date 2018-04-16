@@ -62,7 +62,7 @@ namespace non_player
         // used by InventoryFactory
         using MaterialChanceMap_t = misc::VectorMap<item::material::Enum, float>;
 
-        // A singleton class that is responsible for creating sets of items
+        // A Subsystem class that is responsible for creating sets of items
         // that will equip non-player characters.
         class InventoryFactory
         {

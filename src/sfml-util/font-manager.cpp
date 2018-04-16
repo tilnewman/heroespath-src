@@ -69,7 +69,7 @@ namespace sfml_util
     FontManager::FontManager()
         : fontUVec_()
     {
-        M_HP_LOG_DBG("Singleton Construction: FontManager");
+        M_HP_LOG_DBG("Subsystem Construction: FontManager");
 
         // Note:  Keep order in sync with enum FontManager::Fonts
         fontUVec_.emplace_back(std::make_unique<sf::Font>(LoadFont("/euler/euler.otf")));
@@ -92,13 +92,13 @@ namespace sfml_util
             std::make_unique<sf::Font>(LoadFont("/valley-forge/valleyforge.ttf")));
     }
 
-    FontManager::~FontManager() { M_HP_LOG_DBG("Singleton Destruction: FontManager"); }
+    FontManager::~FontManager() { M_HP_LOG_DBG("Subsystem Destruction: FontManager"); }
 
     misc::NotNull<FontManager *> FontManager::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): FontManager");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): FontManager");
             Acquire();
         }
 
@@ -113,7 +113,7 @@ namespace sfml_util
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: FontManager");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: FontManager");
         }
     }
 

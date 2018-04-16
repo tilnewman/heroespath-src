@@ -45,7 +45,7 @@ namespace game
         static void Teardown_SettingsFile(int & exitCode_OutParam);
         static void Teardown_CloseDisplay(int & exitCode_OutParam);
         static void Teardown_EmptyHolders(int & exitCode_OutParam);
-        static void Teardown_ReleaseSingletons(int & exitCode_OutParam);
+        static void Teardown_ReleaseSubsystems(int & exitCode_OutParam);
         static void Teardown_Logger(int & exitCode_OutParam);
 
         static void Setup_ParseCommandLineArguments(const int ARGC, char * argv[]);
@@ -54,8 +54,8 @@ namespace game
         static void Setup_Display(const std::string & APPLICATION_NAME);
         static void Setup_ManagerClassResourcePaths();
         static void Setup_HoldersFill();
-        static void Setup_SingletonsAcquire();
-        static void Setup_SingletonsInitialize();
+        static void Setup_SubsystemsAcquire();
+        static void Setup_SubsystemsInitialize();
         static void Setup_GameDataFile();
     };
 

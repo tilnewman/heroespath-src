@@ -46,15 +46,15 @@ namespace state
 
     std::unique_ptr<NpcFactory> NpcFactory::instanceUPtr_;
 
-    NpcFactory::NpcFactory() { M_HP_LOG_DBG("Singleton Construction: NpcFactory"); }
+    NpcFactory::NpcFactory() { M_HP_LOG_DBG("Subsystem Construction: NpcFactory"); }
 
-    NpcFactory::~NpcFactory() { M_HP_LOG_DBG("Singleton Destruction: NpcFactory"); }
+    NpcFactory::~NpcFactory() { M_HP_LOG_DBG("Subsystem Destruction: NpcFactory"); }
 
     misc::NotNull<NpcFactory *> NpcFactory::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): NpcFactory");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): NpcFactory");
             Acquire();
         }
 
@@ -69,7 +69,7 @@ namespace state
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: NpcFactory");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: NpcFactory");
         }
     }
 

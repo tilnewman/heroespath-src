@@ -64,18 +64,18 @@ namespace sfml_util
         , sfxToPlayPairsVec_()
         , sfxWrapperVec_()
     {
-        M_HP_LOG_DBG("Singleton Construction: SoundManager");
+        M_HP_LOG_DBG("Subsystem Construction: SoundManager");
         sfxWrapperVec_.resize(static_cast<std::size_t>(sound_effect::Count));
         sfxSetVec_.resize(static_cast<std::size_t>(sound_effect_set::Count));
     }
 
-    SoundManager::~SoundManager() { M_HP_LOG_DBG("Singleton Destruction: SoundManager"); }
+    SoundManager::~SoundManager() { M_HP_LOG_DBG("Subsystem Destruction: SoundManager"); }
 
     misc::NotNull<SoundManager *> SoundManager::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): SoundManager");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): SoundManager");
             Acquire();
         }
 
@@ -90,7 +90,7 @@ namespace sfml_util
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: SoundManager");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: SoundManager");
         }
     }
 

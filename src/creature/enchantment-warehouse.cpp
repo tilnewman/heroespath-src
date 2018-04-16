@@ -42,19 +42,19 @@ namespace creature
     EnchantmentWarehouse::EnchantmentWarehouse()
         : warehouse_()
     {
-        M_HP_LOG_DBG("Singleton Construction: EnchantmentWarehouse");
+        M_HP_LOG_DBG("Subsystem Construction: EnchantmentWarehouse");
     }
 
     EnchantmentWarehouse::~EnchantmentWarehouse()
     {
-        M_HP_LOG_DBG("Singleton Destruction: EnchantmentWarehouse");
+        M_HP_LOG_DBG("Subsystem Destruction: EnchantmentWarehouse");
     }
 
     misc::NotNull<EnchantmentWarehouse *> EnchantmentWarehouse::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): EnchantmentWarehouse");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): EnchantmentWarehouse");
             Acquire();
         }
 
@@ -69,7 +69,7 @@ namespace creature
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: EnchantmentWarehouse");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: EnchantmentWarehouse");
         }
     }
 

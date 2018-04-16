@@ -52,7 +52,7 @@ namespace sfml_util
         : cacheUVec_()
         , strToVecMap_()
     {
-        M_HP_LOG_DBG("Singleton Construction: TextureCache");
+        M_HP_LOG_DBG("Subsystem Construction: TextureCache");
 
         // Any value greater than (about) a thousand will work here.
         // Even an aggressize stage should not exceed 500.
@@ -63,13 +63,13 @@ namespace sfml_util
         cacheUVec_.emplace_back(std::make_unique<sf::Texture>());
     }
 
-    TextureCache::~TextureCache() { M_HP_LOG_DBG("Singleton Construction: TextureCache"); }
+    TextureCache::~TextureCache() { M_HP_LOG_DBG("Subsystem Construction: TextureCache"); }
 
     misc::NotNull<TextureCache *> TextureCache::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): TextureCache");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): TextureCache");
             Acquire();
         }
 
@@ -84,7 +84,7 @@ namespace sfml_util
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: TextureCache");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: TextureCache");
         }
     }
 

@@ -26,7 +26,7 @@
 #define HEROESPATH_GAME_GAMEDATAFILE_HPP_INCLUDED
 //
 // game-data-file.hpp
-//  A singleton config file that contains game data
+//  A Subsystem config file that contains game data
 //
 #include "config/configbase.hpp"
 #include "misc/assertlogandthrow.hpp"
@@ -42,7 +42,7 @@ namespace heroespath
 namespace game
 {
 
-    // Singleton class that manages a simple configuration file
+    // Subsystem class that manages a simple configuration file
     class GameDataFile : public config::ConfigBase
     {
     public:

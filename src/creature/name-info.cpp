@@ -47,16 +47,16 @@ namespace creature
     NameInfo::NameInfo()
         : sizeMap_()
     {
-        M_HP_LOG_DBG("Singleton Construction: NameInfo");
+        M_HP_LOG_DBG("Subsystem Construction: NameInfo");
     }
 
-    NameInfo::~NameInfo() { M_HP_LOG_DBG("Singleton Destruction: NameInfo"); }
+    NameInfo::~NameInfo() { M_HP_LOG_DBG("Subsystem Destruction: NameInfo"); }
 
     misc::NotNull<NameInfo *> NameInfo::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): NameInfo");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): NameInfo");
             Acquire();
         }
 
@@ -71,7 +71,7 @@ namespace creature
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: NameInfo");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: NameInfo");
         }
     }
 

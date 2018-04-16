@@ -45,9 +45,8 @@ namespace item
 
     class ItemProfile;
 
-    // A singleton class responsible for making misc item objects.
+    // A Subsystem class responsible for making misc item objects.
     class MiscItemFactory : public FactoryBase
-
     {
     public:
         MiscItemFactory(const MiscItemFactory &) = delete;

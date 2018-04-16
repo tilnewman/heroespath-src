@@ -26,7 +26,6 @@
 #define HEROESPATH_LOG_LOGGER_HPP_INCLUDED
 //
 // logger.hpp
-//  A singleton logging class.
 //
 #include "log/logbase.hpp"
 
@@ -38,7 +37,7 @@ namespace heroespath
 namespace log
 {
 
-    // Singleton class that logs to a file and std out
+    // Subsystem class that logs to a file and std out.
     class Logger : public LogBase
     {
     public:

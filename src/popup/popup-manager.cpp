@@ -70,17 +70,17 @@ namespace popup
     PopupManager::PopupManager()
         : accentPathsVec_()
     {
-        M_HP_LOG_DBG("Singleton Construction: PopupManager");
+        M_HP_LOG_DBG("Subsystem Construction: PopupManager");
         fontColor_ = sfml_util::FontManager::Color_GrayDarker();
     }
 
-    PopupManager::~PopupManager() { M_HP_LOG_DBG("Singleton Destruction: PopupManager"); }
+    PopupManager::~PopupManager() { M_HP_LOG_DBG("Subsystem Destruction: PopupManager"); }
 
     misc::NotNull<PopupManager *> PopupManager::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): PopupManager");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): PopupManager");
             Acquire();
         }
 
@@ -95,7 +95,7 @@ namespace popup
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: PopupManager");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: PopupManager");
         }
     }
 

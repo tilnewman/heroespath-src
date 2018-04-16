@@ -60,19 +60,19 @@ namespace sfml_util
 
         ItemImageManager::ItemImageManager()
         {
-            M_HP_LOG_DBG("Singleton Construction: ItemImageManager");
+            M_HP_LOG_DBG("Subsystem Construction: ItemImageManager");
         }
 
         ItemImageManager::~ItemImageManager()
         {
-            M_HP_LOG_DBG("Singleton Construction: ItemImageManager");
+            M_HP_LOG_DBG("Subsystem Construction: ItemImageManager");
         }
 
         misc::NotNull<ItemImageManager *> ItemImageManager::Instance()
         {
             if (!instanceUPtr_)
             {
-                M_HP_LOG_ERR("Singleton Instance() before Acquire(): ItemImageManager");
+                M_HP_LOG_ERR("Subsystem Instance() before Acquire(): ItemImageManager");
                 Acquire();
             }
 
@@ -87,7 +87,7 @@ namespace sfml_util
             }
             else
             {
-                M_HP_LOG_ERR("Singleton Acquire() after Construction: ItemImageManager");
+                M_HP_LOG_ERR("Subsystem Acquire() after Construction: ItemImageManager");
             }
         }
 

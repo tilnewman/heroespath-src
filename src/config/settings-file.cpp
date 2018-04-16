@@ -55,16 +55,16 @@ namespace config
     SettingsFile::SettingsFile()
         : ConfigBase("settings.dat", "=", "#")
     {
-        M_HP_LOG_DBG("Singleton Construction: SettingsFile");
+        M_HP_LOG_DBG("Subsystem Construction: SettingsFile");
     }
 
-    SettingsFile::~SettingsFile() { M_HP_LOG_DBG("Singleton Destruction: SettingsFile"); }
+    SettingsFile::~SettingsFile() { M_HP_LOG_DBG("Subsystem Destruction: SettingsFile"); }
 
     misc::NotNull<SettingsFile *> SettingsFile::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): SettingsFile");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): SettingsFile");
             Acquire();
         }
 
@@ -79,7 +79,7 @@ namespace config
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: SettingsFile");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: SettingsFile");
         }
     }
 

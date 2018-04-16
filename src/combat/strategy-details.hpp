@@ -53,7 +53,7 @@ namespace combat
         using RaceRolePair_t = std::pair<creature::race::Enum, creature::role::Enum>;
         using RaceRoleChancesMap_t = misc::VectorMap<RaceRolePair_t, Chances>;
 
-        // forward declarations for the singleton implementation
+        // forward declarations for the Subsystem implementation
         class ChanceFactory;
         using DetailsSPtr_t = std::shared_ptr<ChanceFactory>;
 

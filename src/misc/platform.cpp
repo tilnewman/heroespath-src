@@ -80,14 +80,14 @@ namespace misc
     Platform::Platform()
         : platform_(platform_type::Unknown)
     {
-        M_HP_LOG_DBG("Singleton Construction: Platform");
+        M_HP_LOG_DBG("Subsystem Construction: Platform");
     }
 
     misc::NotNull<Platform *> Platform::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): Platform");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): Platform");
             Acquire();
         }
 
@@ -102,7 +102,7 @@ namespace misc
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Constructor: Platform");
+            M_HP_LOG_ERR("Subsystem Acquire() after Constructor: Platform");
         }
     }
 

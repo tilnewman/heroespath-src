@@ -64,16 +64,16 @@ namespace game
         , stateBeforeFade_(sfml_util::LoopState::None)
         , exitSuccess_(true)
     {
-        M_HP_LOG_DBG("Singleton Construction: LoopManager");
+        M_HP_LOG_DBG("Subsystem Construction: LoopManager");
     }
 
-    LoopManager::~LoopManager() { M_HP_LOG_DBG("Singleton Destruction: LoopManager"); }
+    LoopManager::~LoopManager() { M_HP_LOG_DBG("Subsystem Destruction: LoopManager"); }
 
     misc::NotNull<LoopManager *> LoopManager::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): LoopManager");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): LoopManager");
             Acquire();
         }
 
@@ -88,7 +88,7 @@ namespace game
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: LoopManager");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: LoopManager");
         }
     }
 

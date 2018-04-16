@@ -87,7 +87,7 @@ namespace sfml_util
         , winUPtr_(std::make_unique<sf::RenderWindow>(
               EstablishVideoMode(), TITLE, STYLE, sf::ContextSettings(0, 0, ANTIALIAS_LEVEL)))
     {
-        M_HP_LOG_DBG("Singleton Construction: Display");
+        M_HP_LOG_DBG("Subsystem Construction: Display");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             winUPtr_->isOpen(),
@@ -134,7 +134,7 @@ namespace sfml_util
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: Display");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: Display");
         }
     }
 

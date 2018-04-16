@@ -49,7 +49,7 @@ namespace state
 namespace game
 {
 
-    // Singleton class that provides access to all game information
+    // Subsystem class that provides access to all game information
     class Game
     {
     public:

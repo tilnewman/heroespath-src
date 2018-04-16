@@ -42,16 +42,16 @@ namespace item
     ItemWarehouse::ItemWarehouse()
         : warehouse_()
     {
-        M_HP_LOG_DBG("Singleton Construction: ItemWarehouse");
+        M_HP_LOG_DBG("Subsystem Construction: ItemWarehouse");
     }
 
-    ItemWarehouse::~ItemWarehouse() { M_HP_LOG_DBG("Singleton Destruction: ItemWarehouse"); }
+    ItemWarehouse::~ItemWarehouse() { M_HP_LOG_DBG("Subsystem Destruction: ItemWarehouse"); }
 
     misc::NotNull<ItemWarehouse *> ItemWarehouse::Instance()
     {
         if (!instanceUPtr_)
         {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): ItemWarehouse");
+            M_HP_LOG_ERR("Subsystem Instance() before Acquire(): ItemWarehouse");
             Acquire();
         }
 
@@ -66,7 +66,7 @@ namespace item
         }
         else
         {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: ItemWarehouse");
+            M_HP_LOG_ERR("Subsystem Acquire() after Construction: ItemWarehouse");
         }
     }
 

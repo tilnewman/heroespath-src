@@ -54,19 +54,19 @@ namespace non_player
 
         InventoryFactory::InventoryFactory()
         {
-            M_HP_LOG_DBG("Singleton Construction: InventoryFactory");
+            M_HP_LOG_DBG("Subsystem Construction: InventoryFactory");
         }
 
         InventoryFactory::~InventoryFactory()
         {
-            M_HP_LOG_DBG("Singleton Destruction: InventoryFactory");
+            M_HP_LOG_DBG("Subsystem Destruction: InventoryFactory");
         }
 
         misc::NotNull<InventoryFactory *> InventoryFactory::Instance()
         {
             if (!instanceUPtr_)
             {
-                M_HP_LOG_ERR("Singleton Instance() before Acquire(): InventoryFactory");
+                M_HP_LOG_ERR("Subsystem Instance() before Acquire(): InventoryFactory");
                 Acquire();
             }
 
@@ -81,7 +81,7 @@ namespace non_player
             }
             else
             {
-                M_HP_LOG_ERR("Singleton Acquire() after Construction: InventoryFactory");
+                M_HP_LOG_ERR("Subsystem Acquire() after Construction: InventoryFactory");
             }
         }
 
