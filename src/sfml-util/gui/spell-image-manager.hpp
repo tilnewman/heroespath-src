@@ -27,11 +27,8 @@
 //
 // spell-image-manager.hpp
 //
-#include "misc/not-null.hpp"
 #include "sfml-util/gui/image-manager-base.hpp"
 #include "spell/spell-enum.hpp"
-
-#include <memory>
 
 namespace heroespath
 {
@@ -40,7 +37,7 @@ namespace sfml_util
     namespace gui
     {
 
-        // Loads images and delivers sf::Textures to them on demand.
+        // Responsible for loading spell images.
         class SpellImageManager : public ImageManagerBase<spell::Spells>
         {
         public:
@@ -48,17 +45,7 @@ namespace sfml_util
             SpellImageManager(SpellImageManager &&) = delete;
             SpellImageManager & operator=(const SpellImageManager &) = delete;
             SpellImageManager & operator=(SpellImageManager &&) = delete;
-
-        public:
-            SpellImageManager();
-            virtual ~SpellImageManager();
-
-            static misc::NotNull<SpellImageManager *> Instance();
-            static void Acquire();
-            static void Release();
-
-        private:
-            static std::unique_ptr<SpellImageManager> instanceUPtr_;
+            SpellImageManager() = delete;
         };
 
     } // namespace gui

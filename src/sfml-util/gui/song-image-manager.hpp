@@ -27,11 +27,8 @@
 //
 // song-image-manager.hpp
 //
-#include "misc/not-null.hpp"
 #include "sfml-util/gui/image-manager-base.hpp"
 #include "song/song-enum.hpp"
-
-#include <memory>
 
 namespace heroespath
 {
@@ -40,7 +37,7 @@ namespace sfml_util
     namespace gui
     {
 
-        // Loads images and delivers sf::Textures to them on demand.
+        // Responsible for loading song images.
         class SongImageManager : public ImageManagerBase<song::Songs>
         {
         public:
@@ -48,17 +45,7 @@ namespace sfml_util
             SongImageManager(SongImageManager &&) = delete;
             SongImageManager & operator=(const SongImageManager &) = delete;
             SongImageManager & operator=(SongImageManager &&) = delete;
-
-        public:
-            SongImageManager();
-            virtual ~SongImageManager();
-
-            static misc::NotNull<SongImageManager *> Instance();
-            static void Acquire();
-            static void Release();
-
-        private:
-            static std::unique_ptr<SongImageManager> instanceUPtr_;
+            SongImageManager() = delete;
         };
 
     } // namespace gui

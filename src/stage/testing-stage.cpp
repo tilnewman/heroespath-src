@@ -395,9 +395,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_SpellsImageManager{ false };
         if (false == hasTestingCompleted_SpellsImageManager)
         {
-            hasTestingCompleted_SpellsImageManager
-                = TestImageManager<sfml_util::gui::SpellImageManager, spell::Spells>();
-
+            hasTestingCompleted_SpellsImageManager = sfml_util::gui::SpellImageManager::Test();
             return;
         }
 
@@ -411,9 +409,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_SongsImageManager{ false };
         if (false == hasTestingCompleted_SongsImageManager)
         {
-            hasTestingCompleted_SongsImageManager
-                = TestImageManager<sfml_util::gui::SongImageManager, song::Songs>();
-
+            hasTestingCompleted_SongsImageManager = sfml_util::gui::SongImageManager::Test();
             return;
         }
 
@@ -428,7 +424,7 @@ if (false == willImageCheck_)
         if (false == hasTestingCompleted_ConditionImageManager)
         {
             hasTestingCompleted_ConditionImageManager
-                = TestImageManager<sfml_util::gui::ConditionImageManager, creature::Conditions>();
+                = sfml_util::gui::ConditionImageManager::Test();
 
             return;
         }
@@ -443,9 +439,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_TitleImageManager{ false };
         if (false == hasTestingCompleted_TitleImageManager)
         {
-            hasTestingCompleted_TitleImageManager
-                = TestImageManager<sfml_util::gui::TitleImageManager, creature::Titles>();
-
+            hasTestingCompleted_TitleImageManager = sfml_util::gui::TitleImageManager::Test();
             return;
         }
 
@@ -459,10 +453,7 @@ if (false == willImageCheck_)
         static auto hasTestingCompleted_CombatImageManager{ false };
         if (false == hasTestingCompleted_CombatImageManager)
         {
-            hasTestingCompleted_CombatImageManager = TestImageManager<
-                sfml_util::gui::CombatImageManager,
-                sfml_util::gui::CombatImageType>();
-
+            hasTestingCompleted_CombatImageManager = sfml_util::gui::CombatImageManager::Test();
             return;
         }
 
@@ -471,6 +462,7 @@ if (false == willImageCheck_)
         {
             hasTestingCompleted_ItemImageManager
                 = sfml_util::gui::ItemImageManager::Instance()->Test();
+
             return;
         }
 
@@ -479,6 +471,7 @@ if (false == willImageCheck_)
         {
             hasTestingCompleted_CreatureImageManager
                 = sfml_util::gui::CreatureImageManager::Instance()->Test();
+
             return;
         }
 

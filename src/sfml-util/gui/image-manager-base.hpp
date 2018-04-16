@@ -25,14 +25,13 @@
 #ifndef HEROESPATH_SFMLUTIL_GUI_IMAGEMANAGERBASE_HPP_INCLUDED
 #define HEROESPATH_SFMLUTIL_GUI_IMAGEMANAGERBASE_HPP_INCLUDED
 //
-// song-image-manager.hpp
+// image-manager-base.hpp
 //
+#include "game/game-data-file.hpp"
+#include "game/loop-manager.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "game/game-data-file.hpp"
-#include "game/loop-manager.hpp"
 
 #include <boost/type_index.hpp> //for boost::typeindex::type_id<T>().pretty_name()
 
@@ -45,7 +44,8 @@ namespace sfml_util
     namespace gui
     {
 
-        // Responsible for implementing common operations of all image managers.
+        // Responsible for implementing common operations of all image managers that work on a
+        // simple single enum.
         template <typename T>
         class ImageManagerBase
         {
@@ -54,65 +54,132 @@ namespace sfml_util
             ImageManagerBase(ImageManagerBase &&) = delete;
             ImageManagerBase & operator=(const ImageManagerBase &) = delete;
             ImageManagerBase & operator=(ImageManagerBase &&) = delete;
+            ImageManagerBase() = delete;
 
-        public:
-            ImageManagerBase()
-                : pathToPlaceholderImage_(
-                      game::GameDataFile::Instance()->GetMediaPath("media-images-placeholder"))
-            {}
+            static void SetImageDirectoryPath(const std::string & DIR_PATH)
+            {
+                pathToImagesDir_ = DIR_PATH;
 
-            virtual ~ImageManagerBase() = default;
-
-            static const std::string PathToImages() { return pathToImages_; }
-
-            static void PathToImages(const std::string & PATH) { pathToImages_ = PATH; }
+                pathToPlaceholderImage_
+                    = game::GameDataFile::Instance()->GetMediaPath("media-images-placeholder");
+            }
 
             // all images are square with this as the side length
-            float Dimmension() const { return 256.0f; }
+            static float Dimmension() { return 256.0f; }
 
             // returns false if the placeholder was loaded instead of the desired image
-            bool
+            static bool
                 Get(sf::Texture & texture,
                     const typename T::Enum ENUM_OF_IMAGE,
                     const bool WILL_FLIP_HORIZ = false)
             {
                 namespace bfs = boost::filesystem;
 
-                auto path{ bfs::system_complete(
-                    bfs::path(pathToImages_) / bfs::path(T::ImageFilename(ENUM_OF_IMAGE))) };
+                auto const IMAGE_FILE_PATH{ bfs::system_complete(
+                    bfs::path(pathToImagesDir_) / bfs::path(T::ImageFilename(ENUM_OF_IMAGE))) };
 
-                auto const WILL_USE_PLACEHOLDER{ (bfs::exists(path) == false)
-                                                 || (bfs::is_regular_file(path) == false) };
+                auto const WILL_USE_PLACEHOLDER{ (bfs::exists(IMAGE_FILE_PATH) == false)
+                                                 || (bfs::is_regular_file(IMAGE_FILE_PATH)
+                                                     == false) };
 
                 if (WILL_USE_PLACEHOLDER)
                 {
                     M_HP_LOG_ERR(
                         "sfml_util::gui::ImageManagerBase<"
-                        << boost::typeindex::type_id<T>().pretty_name()
-                        << ">::Get(enum=" << ENUM_OF_IMAGE << ", path=\"" << path.string()
+                        << boost::typeindex::type_id<T>().pretty_name() << ">::Get(enum="
+                        << ENUM_OF_IMAGE << ", path=\"" << IMAGE_FILE_PATH.string()
                         << "\", will_flip=" << std::boolalpha << WILL_FLIP_HORIZ
-                        << ") that path does not exist or is not a regular file.");
+                        << ") that path does not exist or is not a regular file.  Will use the "
+                           "placeholder image instead.");
 
-                    path = bfs::system_complete(bfs::path(pathToPlaceholderImage_));
+                    sfml_util::LoadTexture(
+                        texture, bfs::system_complete(bfs::path(pathToPlaceholderImage_)).string());
                 }
-
-                sfml_util::LoadTexture(texture, path.string());
-
-                if (WILL_FLIP_HORIZ && (WILL_USE_PLACEHOLDER == false))
+                else
                 {
-                    sfml_util::FlipHoriz(texture);
+                    sfml_util::LoadTexture(texture, IMAGE_FILE_PATH.string());
+
+                    if (WILL_FLIP_HORIZ && (WILL_USE_PLACEHOLDER == false))
+                    {
+                        sfml_util::FlipHoriz(texture);
+                    }
                 }
 
                 return !WILL_USE_PLACEHOLDER;
             }
 
+            static bool Test()
+            {
+                static const std::string CLASS_NAME{ "sfml_util::gui::ImageManagerBase<"
+                                                     + boost::typeindex::type_id<T>().pretty_name()
+                                                     + ">" };
+
+                static auto hasInitialPrompt{ false };
+                if (false == hasInitialPrompt)
+                {
+                    hasInitialPrompt = true;
+
+                    game::LoopManager::Instance()->TestingStrAppend(
+                        CLASS_NAME + "  Starting Tests...");
+                }
+
+                static auto willFlip{ false };
+                static auto imageIndex{ 0 };
+                if (imageIndex < T::Count)
+                {
+                    auto const ENUM{ static_cast<typename T::Enum>(imageIndex) };
+
+                    sf::Texture texture;
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (Get(texture, ENUM, willFlip)),
+                        "sfml_util::gui::"
+                            << CLASS_NAME << "::Test() The call to Get(image_enum="
+                            << T::ToString(ENUM) << ", will_flip=" << std::boolalpha << willFlip
+                            << ") returned false, meaning the placeholder image was used.");
+
+                    auto const DIMMENSION_U{ static_cast<unsigned>(Dimmension()) };
+
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        ((texture.getSize().x == DIMMENSION_U)
+                         || (texture.getSize().y == DIMMENSION_U)),
+                        "sfml_util::gui::"
+                            << CLASS_NAME << "::Test() The call to Get(image_enum="
+                            << T::ToString(ENUM) << ", will_flip=" << std::boolalpha << willFlip
+                            << ") returned an image that was not of size=" << DIMMENSION_U << "x"
+                            << DIMMENSION_U << ".  The actual size=" << texture.getSize().x << "x"
+                            << texture.getSize().y << ".");
+
+                    game::LoopManager::Instance()->TestingImageSet(texture);
+
+                    game::LoopManager::Instance()->TestingStrAppend(
+                        CLASS_NAME + " Tested " + T::ImageFilename(ENUM)
+                        + ((willFlip) ? "HORIZ_FLIPPED" : ""));
+
+                    if (willFlip)
+                    {
+                        ++imageIndex;
+                    }
+
+                    willFlip = !willFlip;
+                    return false;
+                }
+
+                game::LoopManager::Instance()->TestingStrAppend(CLASS_NAME + "  All Test Passed");
+
+                return true;
+            }
+
         private:
-            static std::string pathToImages_;
-            std::string pathToPlaceholderImage_;
+            static std::string pathToImagesDir_;
+            static std::string pathToPlaceholderImage_;
         };
 
         template <typename T>
-        std::string ImageManagerBase<T>::pathToImages_{ "" };
+        std::string ImageManagerBase<T>::pathToImagesDir_{ "" };
+
+        template <typename T>
+        std::string ImageManagerBase<T>::pathToPlaceholderImage_{ "" };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

@@ -261,11 +261,6 @@ namespace game
             config::SettingsFile::Release();
 
             // image managers should not be needed during shutdown, so release them early
-            sfml_util::gui::SongImageManager::Release();
-            sfml_util::gui::CombatImageManager::Release();
-            sfml_util::gui::ConditionImageManager::Release();
-            sfml_util::gui::SpellImageManager::Release();
-            sfml_util::gui::TitleImageManager::Release();
             sfml_util::gui::CreatureImageManager::Release();
             sfml_util::gui::ItemImageManager::Release();
             sfml_util::gui::GuiElements::Release();
@@ -427,19 +422,19 @@ namespace game
         sfml_util::gui::CreatureImageManager::SetCreatureImageDirectory(
             game::GameDataFile::Instance()->GetMediaPath("media-images-creatures-dir"));
 
-        sfml_util::gui::TitleImageManager::PathToImages(
+        sfml_util::gui::TitleImageManager::SetImageDirectoryPath(
             game::GameDataFile::Instance()->GetMediaPath("media-images-titles-dir"));
 
-        sfml_util::gui::SpellImageManager::PathToImages(
+        sfml_util::gui::SpellImageManager::SetImageDirectoryPath(
             game::GameDataFile::Instance()->GetMediaPath("media-images-spells-dir"));
 
-        sfml_util::gui::SongImageManager::PathToImages(
+        sfml_util::gui::SongImageManager::SetImageDirectoryPath(
             game::GameDataFile::Instance()->GetMediaPath("media-images-songs-dir"));
 
-        sfml_util::gui::ConditionImageManager::PathToImages(
+        sfml_util::gui::ConditionImageManager::SetImageDirectoryPath(
             game::GameDataFile::Instance()->GetMediaPath("media-images-conditions-dir"));
 
-        sfml_util::gui::CombatImageManager::PathToImages(
+        sfml_util::gui::CombatImageManager::SetImageDirectoryPath(
             game::GameDataFile::Instance()->GetMediaPath("media-images-combat-dir"));
     }
 
@@ -467,11 +462,6 @@ namespace game
         sfml_util::gui::GuiElements::Acquire();
         sfml_util::gui::ItemImageManager::Acquire();
         sfml_util::gui::CreatureImageManager::Acquire();
-        sfml_util::gui::TitleImageManager::Acquire();
-        sfml_util::gui::SpellImageManager::Acquire();
-        sfml_util::gui::ConditionImageManager::Acquire();
-        sfml_util::gui::CombatImageManager::Acquire();
-        sfml_util::gui::SongImageManager::Acquire();
         Game::Acquire();
         state::GameStateFactory::Acquire();
         creature::NameInfo::Acquire();

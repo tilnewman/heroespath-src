@@ -700,7 +700,7 @@ namespace sfml_util
                     }
                     else if (listBoxItemSPtr->TITLE_PTR_OPT)
                     {
-                        sfml_util::gui::TitleImageManager::Instance()->Get(
+                        sfml_util::gui::TitleImageManager::Get(
                             *imagePair.first, listBoxItemSPtr->TITLE_PTR_OPT->Obj().Which());
                     }
                     else if (listBoxItemSPtr->CHARACTER_PTR_OPT)
@@ -712,17 +712,17 @@ namespace sfml_util
                     }
                     else if (listBoxItemSPtr->SPELL_PTR_OPT)
                     {
-                        sfml_util::gui::SpellImageManager::Instance()->Get(
+                        sfml_util::gui::SpellImageManager::Get(
                             *imagePair.first, listBoxItemSPtr->SPELL_PTR_OPT->Obj().Which());
                     }
                     else if (listBoxItemSPtr->COND_PTR_OPT)
                     {
-                        sfml_util::gui::ConditionImageManager::Instance()->Get(
+                        sfml_util::gui::ConditionImageManager::Get(
                             *imagePair.first, listBoxItemSPtr->COND_PTR_OPT->Obj().Which());
                     }
                     else if (listBoxItemSPtr->SONG_PTR_OPT)
                     {
-                        sfml_util::gui::SongImageManager::Instance()->Get(
+                        sfml_util::gui::SongImageManager::Get(
                             *imagePair.first, listBoxItemSPtr->SONG_PTR_OPT->Obj().Which());
                     }
                 }

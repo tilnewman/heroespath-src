@@ -137,7 +137,7 @@ namespace stage
         , CREATURE_IMAGE_POS_LEFT_(INNER_RECT_.left + sfml_util::MapByRes(35.0f, 100.0f))
         , CREATURE_IMAGE_SCALE_(sfml_util::MapByRes(0.75f, 3.25f))
         , CREATURE_IMAGE_HEIGHT_MAX_(
-              sfml_util::gui::CreatureImageManager::DimmensionMax() * CREATURE_IMAGE_SCALE_)
+              sfml_util::gui::CreatureImageManager::Dimmension() * CREATURE_IMAGE_SCALE_)
         , LISTBOX_HEIGHT_REDUCTION_(sfml_util::MapByRes(100.0f, 400.0f))
         , LISTBOX_SCREEN_EDGE_MARGIN_(sfml_util::MapByRes(35.0f, 100.0f))
         , LISTBOX_BETWEEN_SPACER_(sfml_util::MapByRes(65.0f, 200.0f))

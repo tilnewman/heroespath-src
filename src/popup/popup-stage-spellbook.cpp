@@ -473,7 +473,7 @@ namespace popup
         }
 
         // setup spell image
-        sfml_util::gui::SpellImageManager::Instance()->Get(spellTexture_, SPELL_PTR->Which());
+        sfml_util::gui::SpellImageManager::Get(spellTexture_, SPELL_PTR->Which());
 
         spellSprite_.setTexture(spellTexture_);
         auto const SPELL_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };

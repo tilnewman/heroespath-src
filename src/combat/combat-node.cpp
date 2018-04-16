@@ -346,7 +346,7 @@ namespace combat
             if (!wingTextureUPtr_)
             {
                 wingTextureUPtr_ = std::make_unique<sf::Texture>();
-                sfml_util::gui::CombatImageManager::Instance()->Get(
+                sfml_util::gui::CombatImageManager::Get(
                     *wingTextureUPtr_, sfml_util::gui::CombatImageType::Wing, !isPlayer_);
             }
 

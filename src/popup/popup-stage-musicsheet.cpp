@@ -464,7 +464,7 @@ namespace popup
         }
 
         // setup song image
-        sfml_util::gui::SongImageManager::Instance()->Get(songTexture_, SONG_PTR->Which());
+        sfml_util::gui::SongImageManager::Get(songTexture_, SONG_PTR->Which());
 
         songSprite_.setTexture(songTexture_);
         auto const SONG_IMAGE_SCALE{ sfml_util::MapByRes(0.75f, 4.0f) };

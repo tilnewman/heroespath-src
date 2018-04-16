@@ -97,52 +97,6 @@ namespace stage
         bool PerformGameDataFileTests();
         bool TestAnimations();
         bool TestInventoryFactory();
-
-        template <typename ManagerType_t, typename EnumType_t>
-        bool TestImageManager()
-        {
-            std::ostringstream managerTypeNameSS;
-            managerTypeNameSS << boost::typeindex::type_id<ManagerType_t>().pretty_name() << "<"
-                              << boost::typeindex::type_id<EnumType_t>().pretty_name() << ">";
-
-            static auto hasInitialPrompt{ false };
-            if (false == hasInitialPrompt)
-            {
-                hasInitialPrompt = true;
-
-                game::LoopManager::Instance()->TestingStrAppend(
-                    managerTypeNameSS.str() + "  Starting Tests...");
-            }
-
-            static auto willFlip{ false };
-            static auto imageIndex{ 0 };
-            if (imageIndex < EnumType_t::Count)
-            {
-                auto const ENUM{ static_cast<typename EnumType_t::Enum>(imageIndex) };
-                sf::Texture texture;
-                ManagerType_t::Instance()->Get(texture, ENUM, willFlip);
-
-                game::LoopManager::Instance()->TestingImageSet(texture);
-
-                game::LoopManager::Instance()->TestingStrAppend(
-                    managerTypeNameSS.str() + " Tested " + EnumType_t::ImageFilename(ENUM)
-                    + ((willFlip) ? "HORIZ_FLIPPED" : ""));
-
-                if (willFlip)
-                {
-                    ++imageIndex;
-                }
-
-                willFlip = !willFlip;
-                return false;
-            }
-
-            game::LoopManager::Instance()->TestingStrAppend(
-                managerTypeNameSS.str() + "  All Test Passed");
-
-            return true;
-        }
-
         bool DoesImageHaveOutline(const sf::Texture & TEXTURE) const;
 
         // see comment in .cpp file
@@ -169,6 +123,7 @@ namespace stage
         int imageCount_;
         bool willImageCheck_;
     };
+
 } // namespace stage
 } // namespace heroespath
 

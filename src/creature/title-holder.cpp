@@ -1822,7 +1822,7 @@ namespace creature
                                                         << "\") Title is out of order.");
 
                 sf::Texture texture;
-                sfml_util::gui::TitleImageManager::Instance()->Get(texture, NEXT_ENUM);
+                sfml_util::gui::TitleImageManager::Get(texture, NEXT_ENUM);
                 game::LoopManager::Instance()->TestingImageSet(texture);
                 game::LoopManager::Instance()->TestingStrIncrement("Title Test #");
                 ++titleIndex;

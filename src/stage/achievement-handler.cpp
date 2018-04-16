@@ -75,13 +75,13 @@ namespace stage
         {
             fromTextureOpt = sf::Texture();
 
-            sfml_util::gui::TitleImageManager::Instance()->Get(
+            sfml_util::gui::TitleImageManager::Get(
                 fromTextureOpt.get(), FROM_TITLE_PTR_OPT->Obj().Which());
         }
 
         sf::Texture toTexture;
 
-        sfml_util::gui::TitleImageManager::Instance()->Get(toTexture, TO_TITLE_PTR->Which());
+        sfml_util::gui::TitleImageManager::Get(toTexture, TO_TITLE_PTR->Which());
 
         auto const POPUP_INFO{ popup::PopupManager::Instance()->CreateTitleFadePopupInfo(
             POPUP_NAME,

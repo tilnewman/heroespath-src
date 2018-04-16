@@ -29,10 +29,7 @@
 //  Code that manages loading and lifetime of title images.
 //
 #include "creature/title-enum.hpp"
-#include "misc/not-null.hpp"
 #include "sfml-util/gui/image-manager-base.hpp"
-
-#include <memory>
 
 namespace heroespath
 {
@@ -41,7 +38,7 @@ namespace sfml_util
     namespace gui
     {
 
-        // A class that loads, stores, and distributes creature images.
+        // A class that loads title images.
         class TitleImageManager : public ImageManagerBase<creature::Titles>
         {
         public:
@@ -49,17 +46,7 @@ namespace sfml_util
             TitleImageManager(TitleImageManager &&) = delete;
             TitleImageManager & operator=(const TitleImageManager &) = delete;
             TitleImageManager & operator=(TitleImageManager &&) = delete;
-
-        public:
-            TitleImageManager();
-            virtual ~TitleImageManager();
-
-            static misc::NotNull<TitleImageManager *> Instance();
-            static void Acquire();
-            static void Release();
-
-        private:
-            static std::unique_ptr<TitleImageManager> instanceUPtr_;
+            TitleImageManager() = delete;
         };
 
     } // namespace gui

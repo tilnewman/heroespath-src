@@ -27,16 +27,8 @@
 //
 // combat-image-manager.hpp
 //
-#include "misc/not-null.hpp"
 #include "sfml-util/gui/combat-image-enum.hpp"
 #include "sfml-util/gui/image-manager-base.hpp"
-
-#include <memory>
-
-namespace sf
-{
-class Texture;
-}
 
 namespace heroespath
 {
@@ -45,7 +37,7 @@ namespace sfml_util
     namespace gui
     {
 
-        // singleton responsible for loading and dispensing combat image sf::Textures
+        // Responsible for loading and dispensing combat images.
         class CombatImageManager : public ImageManagerBase<CombatImageType>
         {
         public:
@@ -53,17 +45,9 @@ namespace sfml_util
             CombatImageManager & operator=(CombatImageManager &&) = delete;
             CombatImageManager(const CombatImageManager &) = delete;
             CombatImageManager(CombatImageManager &&) = delete;
-
-            CombatImageManager();
-            virtual ~CombatImageManager();
-
-            static misc::NotNull<CombatImageManager *> Instance();
-            static void Acquire();
-            static void Release();
-
-        private:
-            static std::unique_ptr<CombatImageManager> instanceUPtr_;
+            CombatImageManager() = delete;
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath
