@@ -56,6 +56,7 @@ namespace game
         static void Setup_HoldersFill();
         static void Setup_SingletonsAcquire();
         static void Setup_SingletonsInitialize();
+        static void Setup_GameDataFile();
     };
 
 } // namespace game

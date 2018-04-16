@@ -50,7 +50,6 @@
 #include "game/loop-manager.hpp"
 #include "game/phase-enum.hpp"
 #include "item/algorithms.hpp"
-#include "item/armor-factory.hpp"
 #include "item/item.hpp"
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"

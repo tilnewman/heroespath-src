@@ -28,6 +28,7 @@
 // item-type-enum.hpp
 //  Enumerations for all of an Item's various types.
 //
+#include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "misc/types.hpp"
 #include "stats/trait.hpp"
@@ -124,6 +125,8 @@ namespace item
         static const std::string ToReadableString(const material::Enum);
 
         static void Setup();
+
+        static material::Enum SkinMaterial(const creature::race::Enum);
 
         static Armor_t
             ArmorRatingBonus(const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC);
@@ -854,8 +857,25 @@ namespace item
             Skin = 1 << 9 // hide or scales for beast creatures
         };
 
-        static const std::string ToString(const armor_type::Enum E, const bool WILL_WRAP);
+        static const std::string ToString(const armor_type::Enum, const bool WILL_WRAP);
     };
+
+    struct body_part
+    {
+        enum Enum
+        {
+            Fists,
+            Claws,
+            Tendrils,
+            Bite,
+            Breath,
+            Skin,
+            Count
+        };
+
+        static const std::string ToString(const body_part::Enum);
+    };
+
 } // namespace item
 } // namespace heroespath
 

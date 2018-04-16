@@ -50,43 +50,6 @@ namespace heroespath
 namespace item
 {
 
-    std::unique_ptr<MiscItemFactory> MiscItemFactory::instanceUPtr_;
-
-    MiscItemFactory::MiscItemFactory() { M_HP_LOG_DBG("Singleton Construction: MiscItemFactory"); }
-
-    MiscItemFactory::~MiscItemFactory() { M_HP_LOG_DBG("Singleton Destruction: MiscItemFactory"); }
-
-    misc::NotNull<MiscItemFactory *> MiscItemFactory::Instance()
-    {
-        if (!instanceUPtr_)
-        {
-            M_HP_LOG_ERR("Singleton Instance() before Acquire(): MiscItemFactory");
-            Acquire();
-        }
-
-        return instanceUPtr_.get();
-    }
-
-    void MiscItemFactory::Acquire()
-    {
-        if (!instanceUPtr_)
-        {
-            instanceUPtr_ = std::make_unique<MiscItemFactory>();
-        }
-        else
-        {
-            M_HP_LOG_ERR("Singleton Acquire() after Construction: MiscItemFactory");
-        }
-    }
-
-    void MiscItemFactory::Release()
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (instanceUPtr_), "item::MiscItemFactory::Release() found instanceUPtr that was null.");
-
-        instanceUPtr_.reset();
-    }
-
     const ItemPtr_t MiscItemFactory::Make(const ItemProfile & PROFILE)
     {
         auto const MISC_ENUM{ PROFILE.MiscType() };
@@ -262,7 +225,7 @@ namespace item
 
     const ItemPtr_t MiscItemFactory::Make_Cape(const ItemProfile & PROFILE)
     {
-        return armor::ArmorFactory::Instance()->Make_Cape_AsMiscItem(PROFILE);
+        return armor::ArmorFactory::Make(PROFILE);
     }
 
     const ItemPtr_t MiscItemFactory::Make_DevilHorn(const ItemProfile & PROFILE)
@@ -386,7 +349,7 @@ namespace item
 
     const ItemPtr_t MiscItemFactory::Make_Staff(const ItemProfile & PROFILE)
     {
-        return weapon::WeaponFactory::Instance()->Make_Staff_AsMisc(PROFILE);
+        return weapon::WeaponFactory::Make(PROFILE);
     }
 
     const ItemPtr_t MiscItemFactory::Make_SummoningStatue(const ItemProfile & PROFILE)
@@ -494,67 +457,6 @@ namespace item
             0_health,
             0_armor,
             TypeWrapper(PROFILE)));
-    }
-
-    const ItemPtr_t MiscItemFactory::Make_Wand(
-        const material::Enum MATERIAL_PRI, const material::Enum MATERIAL_SEC)
-    {
-        auto price{ 437_coin };
-        AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
-
-        auto weight{ 40_weight };
-        AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
-
-        TypeWrapper typeWrapper;
-        typeWrapper.misc = misc_type::Wand;
-
-        return ItemWarehouse::Access().Store(std::make_unique<Item>(
-            Make_Name("Wand", MATERIAL_PRI, MATERIAL_SEC),
-            Make_Desc("A wand", MATERIAL_PRI, MATERIAL_SEC),
-            static_cast<category::Enum>(category::Equippable | category::AllowsCasting),
-            weapon_type::NotAWeapon,
-            armor_type::NotArmor,
-            MATERIAL_PRI,
-            MATERIAL_SEC,
-            price,
-            weight,
-            0_health,
-            0_health,
-            0_armor,
-            typeWrapper));
-    }
-
-    const ItemPtr_t MiscItemFactory::Make_DrumLute(const bool IS_PIXIE_ITEM)
-    {
-        auto price{ 1000_coin };
-        auto weight{ 350_weight };
-        std::string desc("An acoustic guitar with a round hollow body that can be drummed.");
-
-        AdjustPrice(price, material::Wood, material::Rope, IS_PIXIE_ITEM);
-        AdjustWeight(weight, material::Wood, material::Rope);
-
-        TypeWrapper typeWrapper;
-        typeWrapper.misc = misc_type::DrumLute;
-
-        return ItemWarehouse::Access().Store(std::make_unique<Item>(
-            Make_Name("DrumLute", material::Wood, material::Rope, IS_PIXIE_ITEM),
-            Make_Desc(desc, material::Wood, material::Rope, "", IS_PIXIE_ITEM),
-            static_cast<category::Enum>(
-                category::Equippable | category::Useable | category::TwoHanded),
-            weapon_type::NotAWeapon,
-            armor_type::NotArmor,
-            material::Wood,
-            material::Rope,
-            price,
-            weight,
-            0_health,
-            0_health,
-            0_armor,
-            typeWrapper,
-            weapon::WeaponInfo(),
-            armor::ArmorInfo(),
-            IS_PIXIE_ITEM,
-            creature::role::Bard));
     }
 
     const ItemPtr_t MiscItemFactory::Make_Helper(

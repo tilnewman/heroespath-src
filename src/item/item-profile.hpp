@@ -30,6 +30,7 @@
 #include "creature/race-enum.hpp"
 #include "item/armor-types.hpp"
 #include "item/item-type-enum.hpp"
+#include "item/weapon-details.hpp"
 #include "item/weapon-types.hpp"
 #include "log/log-macros.hpp"
 #include "misc/handy-types.hpp"
@@ -72,12 +73,17 @@ namespace item
     {
         struct ArmorSettings
         {
-            ArmorSettings()
-                : shield(armor::shield_type::Count)
-                , helm(armor::helm_type::Count)
-                , base(armor::base_type::Count)
-                , cover(armor::cover_type::Count)
-                , restriction(armor::base_type::Count)
+            explicit ArmorSettings(
+                const armor::base_type::Enum BASE = armor::base_type::Count,
+                const armor::shield_type::Enum SHIELD = armor::shield_type::Count,
+                const armor::helm_type::Enum HELM = armor::helm_type::Count,
+                const armor::cover_type::Enum COVER = armor::cover_type::Count,
+                const armor::base_type::Enum RESTRICTION = armor::base_type::Count)
+                : shield(SHIELD)
+                , helm(HELM)
+                , base(BASE)
+                , cover(COVER)
+                , restriction(RESTRICTION)
             {}
 
             armor::shield_type::Enum shield;
@@ -106,13 +112,19 @@ namespace item
 
         struct WeaponSettings
         {
-            WeaponSettings()
-                : sword(weapon::sword_type::Count)
-                , axe(weapon::axe_type::Count)
-                , club(weapon::club_type::Count)
-                , whip(weapon::whip_type::Count)
-                , proj(weapon::projectile_type::Count)
-                , bstaff(weapon::bladedstaff_type::Count)
+            explicit WeaponSettings(
+                const weapon::sword_type::Enum SWORD = weapon::sword_type::Count,
+                const weapon::axe_type::Enum AXE = weapon::axe_type::Count,
+                const weapon::club_type::Enum CLUB = weapon::club_type::Count,
+                const weapon::whip_type::Enum WHIP = weapon::whip_type::Count,
+                const weapon::projectile_type::Enum PROJ = weapon::projectile_type::Count,
+                const weapon::bladedstaff_type::Enum BSTAFF = weapon::bladedstaff_type::Count)
+                : sword(SWORD)
+                , axe(AXE)
+                , club(CLUB)
+                , whip(WHIP)
+                , proj(PROJ)
+                , bstaff(BSTAFF)
             {}
 
             weapon::sword_type::Enum sword;
@@ -155,7 +167,7 @@ namespace item
                 Knife = 1 << 7,
                 Dagger = 1 << 8,
                 Staff = 1 << 9,
-                QStaff = 1 << 10,
+                QStaff = 1 << 10
             };
         };
     } // namespace profile
@@ -171,17 +183,6 @@ namespace item
     public:
         // use this constructor with the Set() functions for creating specific ItemProfiles
         ItemProfile();
-
-        // use this constructor to create a unique profile for an item
-        ItemProfile(
-            const std::string & BASE_NAME,
-            const category::Enum CATEGORY,
-            const armor_type::Enum ARMOR,
-            const weapon_type::Enum WEAPON,
-            const unique_type::Enum UNIQUE,
-            const misc_type::Enum MISC,
-            const set_type::Enum SET,
-            const named_type::Enum NAMED);
 
         creature::role::Enum RoleRestrictionBasedOnMiscAndSetType() const;
 
@@ -200,14 +201,17 @@ namespace item
             return (
                 (category_ & category::Armor) ? settings_.armor.shield : armor::shield_type::Count);
         }
+
         armor::helm_type::Enum HelmType() const
         {
             return ((category_ & category::Armor) ? settings_.armor.helm : armor::helm_type::Count);
         }
+
         armor::base_type::Enum BaseType() const
         {
             return ((category_ & category::Armor) ? settings_.armor.base : armor::base_type::Count);
         }
+
         armor::cover_type::Enum CoverType() const
         {
             return (
@@ -232,27 +236,32 @@ namespace item
                 (category_ & category::Weapon) ? settings_.weapon.sword
                                                : weapon::sword_type::Count);
         }
+
         weapon::axe_type::Enum AxeType() const
         {
             return (
                 (category_ & category::Weapon) ? settings_.weapon.axe : weapon::axe_type::Count);
         }
+
         weapon::club_type::Enum ClubType() const
         {
             return (
                 (category_ & category::Weapon) ? settings_.weapon.club : weapon::club_type::Count);
         }
+
         weapon::whip_type::Enum WhipType() const
         {
             return (
                 (category_ & category::Weapon) ? settings_.weapon.whip : weapon::whip_type::Count);
         }
+
         weapon::projectile_type::Enum ProjectileType() const
         {
             return (
                 (category_ & category::Weapon) ? settings_.weapon.proj
                                                : weapon::projectile_type::Count);
         }
+
         weapon::bladedstaff_type::Enum BladedStaffType() const
         {
             return (
@@ -283,9 +292,9 @@ namespace item
         float Religious() const { return religious_; }
         void Religious(const float F) { religious_ = F; }
 
-        bool IsWeapon() const { return (weapon_ != weapon_type::NotAWeapon); }
+        bool IsWeapon() const { return (category_ & item::category::Weapon); }
 
-        bool IsArmor() const { return (armor_ != armor_type::NotArmor); }
+        bool IsArmor() const { return (category_ & item::category::Armor); }
 
         bool IsEquipment() const { return (IsWeapon() || IsArmor()); }
 
@@ -501,6 +510,33 @@ namespace item
             settings_.armor.restriction = E;
         }
 
+        static category::Enum CategoryWeaponBodypart(const body_part::Enum);
+
+        static category::Enum CategoryWeaponStaff(const bool IS_QUARTERSTAFF)
+        {
+            auto const DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
+                ((IS_QUARTERSTAFF) ? "Quarterstaff" : "Staff")) };
+
+            return static_cast<category::Enum>(
+                category::Weapon | category::Equippable | DETAILS.handedness);
+        }
+
+        template <typename T>
+        static category::Enum CategoryWeapon(const typename T::Enum TYPE)
+        {
+            auto const DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
+                T::ToString(TYPE)) };
+
+            return static_cast<category::Enum>(
+                category::Weapon | category::Equippable | DETAILS.handedness);
+        }
+
+        static category::Enum CategoryArmor()
+        {
+            return static_cast<category::Enum>(
+                category::Armor | category::Equippable | category::Wearable);
+        }
+
         friend bool operator==(const ItemProfile & L, const ItemProfile & R);
         friend bool operator<(const ItemProfile & L, const ItemProfile & R);
 
@@ -517,7 +553,6 @@ namespace item
             }
         }
 
-    private:
         void SetHelper(
             const material::Enum,
             const material::Enum,
@@ -533,8 +568,6 @@ namespace item
             const item::set_type::Enum SET_TYPE,
             const item::element_type::Enum ELEMENT_TYPE,
             const bool IS_WEAPON) const;
-
-        void EquippableHelper(const int SCORE_BONUS);
 
     private:
         Score_t score_;

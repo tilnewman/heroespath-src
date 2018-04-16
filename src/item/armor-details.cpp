@@ -43,11 +43,7 @@ namespace item
     namespace armor
     {
 
-        ArmorDetailLoader::ArmorDetailLoader()
-            : armorDetailsMap_()
-        {
-            LoadArmorDeatilsFromGameDataFile();
-        }
+        ArmorDetailMap_t ArmorDetailLoader::armorDetailsMap_;
 
         const ArmorDetails ArmorDetailLoader::LookupArmorDetails(const std::string & NAME)
         {
@@ -62,7 +58,7 @@ namespace item
             return details;
         }
 
-        void ArmorDetailLoader::LoadArmorDeatilsFromGameDataFile()
+        void ArmorDetailLoader::LoadFromGameDataFile()
         {
             LoadDetailsForKey("Buckler");
             LoadDetailsForKey("Kite");

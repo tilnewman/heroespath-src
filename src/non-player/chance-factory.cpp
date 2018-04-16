@@ -30,9 +30,9 @@
 #include "chance-factory.hpp"
 
 #include "creature/creature.hpp"
-#include "item/armor-factory.hpp"
+#include "item/armor-details.hpp"
 #include "item/item.hpp"
-#include "item/weapon-factory.hpp"
+#include "item/weapon-details.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
@@ -1784,7 +1784,7 @@ namespace non_player
             chance::MaterialChanceMap_t & materialsMapPri,
             chance::MaterialChanceMap_t & materialsMapSec)
         {
-            auto const WEAPON_DETAILS{ item::weapon::WeaponFactory::Instance()->LookupWeaponDetails(
+            auto const WEAPON_DETAILS{ item::weapon::WeaponDetailLoader::LookupWeaponDetails(
                 WEAPON_NAME) };
 
             PopulatMaterials(
@@ -1862,7 +1862,7 @@ namespace non_player
         bool ChanceFactory::IsWeaponPossibleConsideringComplexity(
             const std::string & WEAPON_NAME, const complexity_type::Enum CREATURE_COMPLEXITY)
         {
-            auto const WEAPON_DETAILS{ item::weapon::WeaponFactory::Instance()->LookupWeaponDetails(
+            auto const WEAPON_DETAILS{ item::weapon::WeaponDetailLoader::LookupWeaponDetails(
                 WEAPON_NAME) };
 
             return (WEAPON_DETAILS.complexity <= CREATURE_COMPLEXITY);
@@ -1905,8 +1905,7 @@ namespace non_player
             const creature::CreaturePtr_t CREATURE_PTR,
             const bool WILL_MATERIALS_INCLUDED_WOOD)
         {
-            auto const DETAILS{ item::armor::ArmorFactory::Instance()->LookupArmorDetails(
-                COMPLETE_NAME) };
+            auto const DETAILS{ item::armor::ArmorDetailLoader::LookupArmorDetails(COMPLETE_NAME) };
 
             if (PROFILE.complexityType < DETAILS.complexity)
             {
@@ -1937,8 +1936,7 @@ namespace non_player
             const bool WILL_MATERIALS_INCLUDED_WOOD,
             const item::material::Enum FORCED_PRIMARY_MATERIAL)
         {
-            auto const DETAILS{ item::armor::ArmorFactory::Instance()->LookupArmorDetails(
-                COMPLETE_NAME) };
+            auto const DETAILS{ item::armor::ArmorDetailLoader::LookupArmorDetails(COMPLETE_NAME) };
 
             if (PROFILE.complexityType < DETAILS.complexity)
             {

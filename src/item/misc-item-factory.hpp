@@ -54,20 +54,9 @@ namespace item
         MiscItemFactory(MiscItemFactory &&) = delete;
         MiscItemFactory & operator=(const MiscItemFactory &) = delete;
         MiscItemFactory & operator=(MiscItemFactory &&) = delete;
-
-    public:
-        MiscItemFactory();
-        virtual ~MiscItemFactory();
-
-        static misc::NotNull<MiscItemFactory *> Instance();
-        static void Acquire();
-        static void Release();
+        MiscItemFactory() = delete;
 
         static const ItemPtr_t Make(const ItemProfile &);
-
-        // to support the items made for player characters in player::initial::SetupInventory
-        static const ItemPtr_t Make_Wand(const material::Enum, const material::Enum);
-        static const ItemPtr_t Make_DrumLute(const bool IS_PIXIE_ITEM);
 
     private:
         static const ItemPtr_t Make_Amulet(const ItemProfile &);
@@ -104,7 +93,6 @@ namespace item
         static const ItemPtr_t Make_Veil(const ItemProfile &);
         static const ItemPtr_t Make_Viol(const ItemProfile &);
         static const ItemPtr_t Make_Wand(const ItemProfile &);
-
         static const ItemPtr_t Make_MiscBlessedOrCursed(const ItemProfile &);
 
         static const ItemPtr_t Make_Helper(
@@ -112,9 +100,6 @@ namespace item
             const Coin_t & BASE_PRICE,
             const Weight_t & BASE_WEIGHT,
             const std::string & BASE_DESC = "");
-
-    private:
-        static std::unique_ptr<MiscItemFactory> instanceUPtr_;
     };
 
 } // namespace item

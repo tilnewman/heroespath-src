@@ -30,7 +30,9 @@
 #include "item-profile.hpp"
 
 #include "creature/enchantment-factory.hpp"
+#include "item/armor-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
+#include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/boost-string-includes.hpp"
 
@@ -172,27 +174,6 @@ namespace item
         , baseName_("")
     {}
 
-    ItemProfile::ItemProfile(
-        const std::string & BASE_NAME,
-        const category::Enum CATEGORY,
-        const armor_type::Enum ARMOR,
-        const weapon_type::Enum WEAPON,
-        const unique_type::Enum UNIQUE,
-        const misc_type::Enum MISC,
-        const set_type::Enum SET,
-        const named_type::Enum NAMED)
-        : ItemProfile()
-    {
-        baseName_ = BASE_NAME;
-        category_ = CATEGORY;
-        armor_ = ARMOR;
-        weapon_ = WEAPON;
-        unique_ = UNIQUE;
-        misc_ = MISC;
-        set_ = SET;
-        named_ = NAMED;
-    }
-
     creature::role::Enum ItemProfile::RoleRestrictionBasedOnMiscAndSetType() const
     {
         if ((misc_ == misc_type::DrumLute) || (misc_ == misc_type::Lyre)
@@ -280,13 +261,13 @@ namespace item
             normalStrings.emplace_back("element_type=" + element_type::ToString(element_));
         }
 
-        if (IsPixie())
+        if (IsArmor())
         {
-            normalStrings.emplace_back("(Pixie)");
-        }
+            if (IsPixie())
+            {
+                normalStrings.emplace_back("(Pixie)");
+            }
 
-        if (category_ & item::category::Armor)
-        {
             if (settings_.armor.shield != armor::shield_type::Count)
             {
                 armorStrings.emplace_back(
@@ -349,7 +330,7 @@ namespace item
             armorStrings.emplace_back("(Gauntlets)");
         }
 
-        if (category_ & item::category::Weapon)
+        if (IsWeapon())
         {
             if (settings_.weapon.sword != weapon::sword_type::Count)
             {
@@ -506,8 +487,7 @@ namespace item
 
         if (E == misc_type::Cape)
         {
-            category_
-                = static_cast<category::Enum>(category_ | category::Armor | category::Equippable);
+            category_ = CategoryArmor();
             armor_ = armor_type::Covering;
             settings_.armor = profile::ArmorSettings();
             settings_.armor.cover = armor::cover_type::Cape;
@@ -515,8 +495,7 @@ namespace item
         }
         else if (E == misc_type::Cloak)
         {
-            category_ = static_cast<category::Enum>(
-                category_ | category::Armor | category::Equippable | category::Wearable);
+            category_ = CategoryArmor();
             armor_ = armor_type::Covering;
             settings_.armor = profile::ArmorSettings();
             settings_.armor.cover = armor::cover_type::Cloak;
@@ -524,7 +503,8 @@ namespace item
         }
         else if (E == misc_type::LockPicks)
         {
-            EquippableHelper(200);
+            category_ = static_cast<category::Enum>(category_ | category::Equippable);
+            score_ += Score_t(200);
         }
         else if (
             (E == misc_type::Fingerclaw) || (E == misc_type::Amulet) || (E == misc_type::Armband)
@@ -535,7 +515,7 @@ namespace item
                 category_ = static_cast<category::Enum>(category_ | category::QuestItem);
             }
 
-            EquippableHelper(0);
+            category_ = static_cast<category::Enum>(category_ | category::Equippable);
         }
         else if (E == misc_type::Spider_Eggs)
         {
@@ -569,10 +549,7 @@ namespace item
             if (E == misc_type::Staff)
             {
                 SetFlag(true, profile::IsSet::Staff);
-
-                category_ = static_cast<category::Enum>(
-                    category_ | category::Weapon | category::Equippable | category::TwoHanded);
-
+                category_ = CategoryWeaponStaff(false);
                 weapon_ = static_cast<weapon_type::Enum>(weapon_type::Staff | weapon_type::Melee);
             }
         }
@@ -598,6 +575,7 @@ namespace item
         {
             category_ = static_cast<category::Enum>(category_ | category::Blessed);
             score_ += 50_score;
+
             score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
                 E, MATERIAL_PRIMARY, MATERIAL_SECONDARY);
         }
@@ -607,6 +585,7 @@ namespace item
         {
             category_ = static_cast<category::Enum>(category_ | category::Cursed);
             score_ += 50_score;
+
             score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
                 E, MATERIAL_PRIMARY, MATERIAL_SECONDARY);
         }
@@ -621,6 +600,7 @@ namespace item
         {
             category_ = static_cast<category::Enum>(
                 category_ | category::Equippable | category::Wearable);
+
             score_ += 20_score;
         }
     }
@@ -636,8 +616,7 @@ namespace item
         settings_.armor = profile::ArmorSettings();
         settings_.armor.shield = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Armor | category::Equippable | category::Wearable | category::OneHanded);
+        category_ = static_cast<category::Enum>(CategoryArmor() | category::OneHanded);
 
         armor_ = armor_type::Sheild;
 
@@ -660,8 +639,7 @@ namespace item
         settings_.armor = profile::ArmorSettings();
         settings_.armor.helm = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Armor | category::Equippable | category::Wearable);
+        category_ = CategoryArmor();
 
         armor_ = armor_type::Helm;
 
@@ -685,8 +663,7 @@ namespace item
         settings_.armor = profile::ArmorSettings();
         settings_.armor.cover = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Armor | category::Equippable | category::Wearable);
+        category_ = CategoryArmor();
 
         armor_ = armor_type::Covering;
 
@@ -711,8 +688,7 @@ namespace item
         settings_.armor = profile::ArmorSettings();
         settings_.armor.base = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Armor | category::Equippable | category::Wearable);
+        category_ = CategoryArmor();
 
         armor_ = armor_type::Aventail;
 
@@ -737,8 +713,7 @@ namespace item
         settings_.armor = profile::ArmorSettings();
         settings_.armor.base = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Armor | category::Equippable | category::Wearable);
+        category_ = CategoryArmor();
 
         armor_ = armor_type::Bracer;
 
@@ -764,8 +739,7 @@ namespace item
         settings_.armor = profile::ArmorSettings();
         settings_.armor.base = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Armor | category::Equippable | category::Wearable);
+        category_ = CategoryArmor();
 
         armor_ = armor_type::Shirt;
 
@@ -791,8 +765,7 @@ namespace item
         settings_.armor = profile::ArmorSettings();
         settings_.armor.base = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Armor | category::Equippable | category::Wearable);
+        category_ = CategoryArmor();
 
         armor_ = armor_type::Boots;
 
@@ -818,8 +791,7 @@ namespace item
         settings_.armor = profile::ArmorSettings();
         settings_.armor.base = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Armor | category::Equippable | category::Wearable);
+        category_ = CategoryArmor();
 
         armor_ = armor_type::Pants;
 
@@ -845,8 +817,7 @@ namespace item
         settings_.armor = profile::ArmorSettings();
         settings_.armor.base = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Armor | category::Equippable | category::Wearable);
+        category_ = CategoryArmor();
 
         armor_ = armor_type::Gauntlets;
 
@@ -873,19 +844,7 @@ namespace item
         settings_.weapon = profile::WeaponSettings();
         settings_.weapon.sword = E;
 
-        auto const HANDED{ [E]() {
-            if ((E == sword_type::Claymore) || (E == sword_type::Longsword)
-                || (E == sword_type::Knightlysword))
-            {
-                return category::TwoHanded;
-            }
-            else
-            {
-                return category::OneHanded;
-            }
-        }() };
-
-        category_ = static_cast<category::Enum>(category::Weapon | category::Equippable | HANDED);
+        category_ = CategoryWeapon<weapon::sword_type>(E);
 
         weapon_ = static_cast<weapon_type::Enum>(
             weapon_type::Melee | weapon_type::Sword | weapon_type::Bladed | weapon_type::Pointed);
@@ -911,18 +870,7 @@ namespace item
         settings_.weapon = profile::WeaponSettings();
         settings_.weapon.axe = E;
 
-        auto const HANDED{ [E]() {
-            if ((E == axe_type::Battleaxe) || (E == axe_type::Waraxe))
-            {
-                return category::TwoHanded;
-            }
-            else
-            {
-                return category::OneHanded;
-            }
-        }() };
-
-        category_ = static_cast<category::Enum>(category::Weapon | category::Equippable | HANDED);
+        category_ = CategoryWeapon<weapon::axe_type>(E);
 
         weapon_ = static_cast<weapon_type::Enum>(
             weapon_type::Bladed | weapon_type::Axe | weapon_type::Melee);
@@ -948,18 +896,7 @@ namespace item
         settings_.weapon = profile::WeaponSettings();
         settings_.weapon.club = E;
 
-        auto const HANDED{ [E]() {
-            if ((E == club_type::Spiked))
-            {
-                return category::OneHanded;
-            }
-            else
-            {
-                return category::TwoHanded;
-            }
-        }() };
-
-        category_ = static_cast<category::Enum>(category::Weapon | category::Equippable | HANDED);
+        category_ = CategoryWeapon<weapon::club_type>(E);
 
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Club);
 
@@ -984,18 +921,7 @@ namespace item
         settings_.weapon = profile::WeaponSettings();
         settings_.weapon.whip = E;
 
-        auto const HANDED{ [E]() {
-            if ((E == whip_type::Flail))
-            {
-                return category::TwoHanded;
-            }
-            else
-            {
-                return category::OneHanded;
-            }
-        }() };
-
-        category_ = static_cast<category::Enum>(category::Weapon | category::Equippable | HANDED);
+        category_ = CategoryWeapon<weapon::whip_type>(E);
 
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Whip);
 
@@ -1021,23 +947,25 @@ namespace item
         settings_.weapon = profile::WeaponSettings();
         settings_.weapon.proj = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Weapon | category::Equippable | category::TwoHanded);
+        category_ = CategoryWeapon<weapon::projectile_type>(E);
 
         auto const WEAPON_TYPE{ [E]() {
             if (E == projectile_type::Blowpipe)
             {
                 return weapon_type::Blowpipe;
             }
-            if (E == projectile_type::Sling)
+            else if (E == projectile_type::Sling)
             {
                 return weapon_type::Sling;
             }
-            if (E == projectile_type::Crossbow)
+            else if (E == projectile_type::Crossbow)
             {
                 return weapon_type::Crossbow;
             }
-            return weapon_type::Bow;
+            else
+            {
+                return weapon_type::Bow;
+            }
         }() };
 
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Projectile | WEAPON_TYPE);
@@ -1064,21 +992,18 @@ namespace item
         settings_.weapon = profile::WeaponSettings();
         settings_.weapon.bstaff = E;
 
-        category_ = static_cast<category::Enum>(
-            category::Weapon | category::Equippable | category::TwoHanded);
-
-        auto const BLADDED_TYPE{ (
-            (E == bladedstaff_type::Spear) ? weapon_type::NotAWeapon : weapon_type::Bladed) };
+        category_ = CategoryWeapon<weapon::bladedstaff_type>(E);
 
         auto const POINTED_TYPE{ (
             (E == bladedstaff_type::Scythe) ? weapon_type::NotAWeapon : weapon_type::Pointed) };
 
         auto const SPEAR_TYPE{ (
-            (E == bladedstaff_type::Spear) ? weapon_type::Spear : weapon_type::NotAWeapon) };
+            ((E == bladedstaff_type::Spear) || (E == bladedstaff_type::ShortSpear))
+                ? weapon_type::Spear
+                : weapon_type::NotAWeapon) };
 
         weapon_ = static_cast<weapon_type::Enum>(
-            BLADDED_TYPE | weapon_type::BladedStaff | weapon_type::Melee | POINTED_TYPE
-            | SPEAR_TYPE);
+            weapon_type::BladedStaff | weapon_type::Melee | POINTED_TYPE | SPEAR_TYPE);
 
         SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
 
@@ -1151,8 +1076,7 @@ namespace item
     {
         SetFlag(true, profile::IsSet::Staff);
 
-        category_ = static_cast<category::Enum>(
-            category::Weapon | category::Equippable | category::TwoHanded);
+        category_ = CategoryWeaponStaff(false);
 
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Staff | weapon_type::Melee);
 
@@ -1173,8 +1097,7 @@ namespace item
     {
         SetFlag(true, profile::IsSet::QStaff);
 
-        category_ = static_cast<category::Enum>(
-            category::Weapon | category::Equippable | category::TwoHanded);
+        category_ = CategoryWeaponStaff(true);
 
         weapon_ = static_cast<weapon_type::Enum>(weapon_type::Staff | weapon_type::Melee);
 
@@ -1184,6 +1107,20 @@ namespace item
 
         score_ += ScoreHelper(
             MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+    }
+
+    category::Enum ItemProfile::CategoryWeaponBodypart(const body_part::Enum BODY_PART)
+    {
+        if ((BODY_PART == body_part::Bite) || (BODY_PART == body_part::Breath))
+        {
+            return static_cast<category::Enum>(
+                category::Weapon | category::Equippable | category::BodyPart);
+        }
+        else
+        {
+            return static_cast<category::Enum>(
+                category::Weapon | category::Equippable | category::TwoHanded | category::BodyPart);
+        }
     }
 
     void ItemProfile::SetHelper(
@@ -1224,12 +1161,6 @@ namespace item
                 + creature::EnchantmentFactory::Instance()->TreasureScore(
                       ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRI));
         }
-    }
-
-    void ItemProfile::EquippableHelper(const int SCORE_BONUS)
-    {
-        category_ = static_cast<category::Enum>(category_ | category::Equippable);
-        score_ += Score_t(SCORE_BONUS);
     }
 
 } // namespace item

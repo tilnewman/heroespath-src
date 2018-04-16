@@ -31,9 +31,8 @@
 
 #include "creature/creature.hpp"
 #include "game/game-data-file.hpp"
-#include "item/armor-factory.hpp"
+#include "item/item-factory.hpp"
 #include "item/item.hpp"
-#include "item/misc-item-factory.hpp"
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
@@ -80,303 +79,163 @@ namespace player
 
         if (ROLE_ENUM == creature::role::Knight)
         {
-            ItemPtr_t weaponPtr = [&]() {
+            ItemPtr_t weaponPtr{ [&]() {
+                ItemProfile profile;
                 switch (misc::random::Int(2))
                 {
                     case 1:
                     {
-                        return weapon::WeaponFactory::Make_Sword(
+                        profile.SetSword(
                             weapon::sword_type::Shortsword, material::Steel, material::Wood);
+
+                        return item::ItemFactory::Make(profile);
                     }
                     case 2:
                     {
-                        return weapon::WeaponFactory::Make_Sword(
+                        profile.SetSword(
                             weapon::sword_type::Cutlass, material::Steel, material::Wood);
+
+                        return item::ItemFactory::Make(profile);
                     }
                     default:
                     {
-                        return weapon::WeaponFactory::Make_Axe(
-                            weapon::axe_type::Sickle, material::Steel, material::Wood);
+                        profile.SetAxe(weapon::axe_type::Sickle, material::Steel, material::Wood);
+                        return item::ItemFactory::Make(profile);
                     }
                 }
-            }();
+            }() };
 
             EnsureItemAddedAndEquipped(CREATURE_PTR, weaponPtr);
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainBoots(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainShirt(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainPants(CREATURE_PTR->IsPixie()));
 
-            auto bootsPtr{ armor::ArmorFactory::Make_Boots(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Nothing) };
+            {
+                ItemProfile helmProfile;
 
-            EnsureItemAddedAndEquipped(CREATURE_PTR, bootsPtr);
+                helmProfile.SetHelm(
+                    armor::helm_type::Great, HardOrSoftLeatherRand(), material::Nothing);
 
-            auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
-                TypeWrapper(), armor::base_type::Plain, HardOrSoftLeatherRand()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, shirtPtr);
-
-            auto pantsPtr{ armor::ArmorFactory::Make_Pants(
-                TypeWrapper(), armor::base_type::Plain, HardOrSoftLeatherRand()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, pantsPtr);
-
-            auto helmPtr{ armor::ArmorFactory::Make_Helm(
-                TypeWrapper(),
-                armor::helm_type::Great,
-                HardOrSoftLeatherRand(),
-                material::Nothing) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, helmPtr);
+                EnsureItemAddedAndEquipped(CREATURE_PTR, item::ItemFactory::Make(helmProfile));
+            }
 
             return;
         }
-
-        if (ROLE_ENUM == creature::role::Beastmaster)
+        else if (ROLE_ENUM == creature::role::Beastmaster)
         {
-            ItemPtr_t weaponPtr = [&]() {
+            ItemPtr_t weaponPtr{ [&]() {
+                ItemProfile profile;
                 switch (misc::random::Int(2))
                 {
                     case 1:
                     {
-                        return weapon::WeaponFactory::Make_Sword(
+                        profile.SetSword(
                             weapon::sword_type::Shortsword, material::Steel, material::Wood);
+
+                        return item::ItemFactory::Make(profile);
                     }
                     case 2:
                     {
-                        return weapon::WeaponFactory::Make_Sword(
+                        profile.SetSword(
                             weapon::sword_type::Cutlass, material::Steel, material::Wood);
+
+                        return item::ItemFactory::Make(profile);
                     }
                     default:
                     {
-                        return weapon::WeaponFactory::Make_Axe(
-                            weapon::axe_type::Sickle, material::Steel, material::Wood);
+                        profile.SetAxe(weapon::axe_type::Sickle, material::Steel, material::Wood);
+                        return item::ItemFactory::Make(profile);
                     }
                 }
-            }();
+            }() };
 
             EnsureItemAddedAndEquipped(CREATURE_PTR, weaponPtr);
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainBoots(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainShirt(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainPants(CREATURE_PTR->IsPixie()));
 
-            auto bootsPtr{ armor::ArmorFactory::Make_Boots(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Nothing) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, bootsPtr);
-
-            auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
-                TypeWrapper(), armor::base_type::Plain, HardOrSoftLeatherRand()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, shirtPtr);
-
-            auto pantsPtr{ armor::ArmorFactory::Make_Pants(
-                TypeWrapper(), armor::base_type::Plain, HardOrSoftLeatherRand()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, pantsPtr);
-
-            auto wandPtr{ item::MiscItemFactory::Make_Wand(material::Wood, material::Nothing) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, wandPtr);
+            {
+                ItemProfile wandProfile;
+                wandProfile.SetMisc(misc_type::Wand, CREATURE_PTR->IsPixie(), material::Wood);
+                EnsureItemAddedAndEquipped(CREATURE_PTR, item::ItemFactory::Make(wandProfile));
+            }
 
             return;
         }
-
-        if (ROLE_ENUM == creature::role::Archer)
+        else if (ROLE_ENUM == creature::role::Archer)
         {
-            auto shortbowPtr{ weapon::WeaponFactory::Make_Projectile(
-                weapon::projectile_type::Shortbow, material::Wood, material::Nothing) };
+            {
+                ItemProfile bowProfile;
+                bowProfile.SetProjectile(weapon::projectile_type::Shortbow, material::Wood);
+                EnsureItemAddedAndEquipped(CREATURE_PTR, item::ItemFactory::Make(bowProfile));
+            }
 
-            EnsureItemAddedAndEquipped(CREATURE_PTR, shortbowPtr);
-
-            auto bootsPtr{ armor::ArmorFactory::Make_Boots(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Nothing) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, bootsPtr);
-
-            auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
-                TypeWrapper(), armor::base_type::Plain, HardOrSoftLeatherRand()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, shirtPtr);
-
-            auto pantsPtr{ armor::ArmorFactory::Make_Pants(
-                TypeWrapper(), armor::base_type::Plain, HardOrSoftLeatherRand()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, pantsPtr);
-
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainBoots(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainShirt(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainPants(CREATURE_PTR->IsPixie()));
             return;
         }
-
-        if (ROLE_ENUM == creature::role::Bard)
+        else if (ROLE_ENUM == creature::role::Bard)
         {
-            auto bootsPtr{ armor::ArmorFactory::Make_Boots(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Nothing,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, bootsPtr);
-
-            auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                material::Cloth,
-                material::Nothing,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, shirtPtr);
-
-            auto pantsPtr{ armor::ArmorFactory::Make_Pants(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Tin,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, pantsPtr);
-
-            auto drumLutePtr{ item::MiscItemFactory::Make_DrumLute(CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, drumLutePtr);
-
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainBoots(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainShirt(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainPants(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainWand(CREATURE_PTR->IsPixie()));
             return;
         }
-
-        if (ROLE_ENUM == creature::role::Thief)
+        else if (ROLE_ENUM == creature::role::Thief)
         {
-            auto daggerPtr{ weapon::WeaponFactory::Make_Knife(
-                TypeWrapper(),
-                true,
-                sfml_util::Size::Small,
-                material::Steel,
-                material::Wood,
-                CREATURE_PTR->IsPixie()) };
+            {
+                ItemProfile daggerProfile;
 
-            EnsureItemAddedAndEquipped(CREATURE_PTR, daggerPtr);
+                daggerProfile.SetKnife(
+                    sfml_util::Size::Small,
+                    material::Steel,
+                    material::Wood,
+                    named_type::NotNamed,
+                    set_type::NotASet,
+                    element_type::None,
+                    CREATURE_PTR->IsPixie());
 
-            auto bootsPtr{ armor::ArmorFactory::Make_Boots(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Nothing,
-                CREATURE_PTR->IsPixie()) };
+                EnsureItemAddedAndEquipped(CREATURE_PTR, item::ItemFactory::Make(daggerProfile));
+            }
 
-            EnsureItemAddedAndEquipped(CREATURE_PTR, bootsPtr);
-
-            auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                material::Cloth,
-                material::Nothing,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, shirtPtr);
-
-            auto pantsPtr{ armor::ArmorFactory::Make_Pants(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Tin,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, pantsPtr);
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainBoots(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainShirt(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainPants(CREATURE_PTR->IsPixie()));
 
             // use to test achievements
             /*
-for (int i(0); i < 9; ++i)
-{
-    CREATURE_PTR->GetAchievements().Increment(creature::AchievementType::LocksPicked);
-}
+            for (int i(0); i < 9; ++i)
+            {
+                CREATURE_PTR->GetAchievements().Increment(creature::AchievementType::LocksPicked);
+            }
             */
 
             return;
         }
-
-        if (ROLE_ENUM == creature::role::Cleric)
+        else if (ROLE_ENUM == creature::role::Cleric)
         {
-            auto bootsPtr{ armor::ArmorFactory::Make_Boots(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Nothing,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, bootsPtr);
-
-            auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                material::Cloth,
-                material::Nothing,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, shirtPtr);
-
-            auto pantsPtr{ armor::ArmorFactory::Make_Pants(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Tin,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, pantsPtr);
-
-            auto wandPtr{ item::MiscItemFactory::Make_Wand(material::Glass, material::Nothing) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, wandPtr);
-
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainBoots(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainShirt(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainPants(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainWand(CREATURE_PTR->IsPixie()));
             return;
         }
-
-        if (ROLE_ENUM == creature::role::Sorcerer)
+        else if (ROLE_ENUM == creature::role::Sorcerer)
         {
-            auto bootsPtr{ armor::ArmorFactory::Make_Boots(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Nothing,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, bootsPtr);
-
-            auto shirtPtr{ armor::ArmorFactory::Make_Shirt(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                material::Cloth,
-                material::Nothing,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, shirtPtr);
-
-            auto pantsPtr{ armor::ArmorFactory::Make_Pants(
-                TypeWrapper(),
-                armor::base_type::Plain,
-                HardOrSoftLeatherRand(),
-                material::Tin,
-                CREATURE_PTR->IsPixie()) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, pantsPtr);
-
-            auto wandPtr{ item::MiscItemFactory::Make_Wand(material::Wood, material::Nothing) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, wandPtr);
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainBoots(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainShirt(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainPants(CREATURE_PTR->IsPixie()));
+            EnsureItemAddedAndEquipped(CREATURE_PTR, MakePlainWand(CREATURE_PTR->IsPixie()));
             return;
         }
-
-        if ((ROLE_ENUM == creature::role::Wolfen) || (ROLE_ENUM == creature::role::Sylavin)
+        else if (
+            (ROLE_ENUM == creature::role::Wolfen) || (ROLE_ENUM == creature::role::Sylavin)
             || (ROLE_ENUM == creature::role::Firebrand))
         {
-            auto const SKIN_ITEM_PTR{ item::armor::ArmorFactory::Instance()->Make_Skin(
-                ((ROLE_ENUM == creature::role::Wolfen) ? item::material::Hide
-                                                       : item::material::Scale),
-                1_rank,
-                false) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, SKIN_ITEM_PTR);
+            EnsureItemAddedAndEquipped(
+                CREATURE_PTR, ItemFactory::Make(body_part::Skin, CREATURE_PTR));
             return;
         }
 
@@ -424,39 +283,32 @@ for (int i(0); i < 9; ++i)
 
     void Initial::EquipBodyParts(const creature::CreaturePtr_t CREATURE_PTR)
     {
-        auto const & BODY{ CREATURE_PTR->Body() };
+        using namespace item;
+
+        auto const BODY{ CREATURE_PTR->Body() };
 
         if (BODY.HasBreath())
         {
-            auto const BREATH_WEAPON_ITEM_PTR{ item::weapon::WeaponFactory::Instance()->Make_Breath(
-                CREATURE_PTR) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, BREATH_WEAPON_ITEM_PTR);
+            EnsureItemAddedAndEquipped(
+                CREATURE_PTR, ItemFactory::Make(body_part::Breath, CREATURE_PTR));
         }
 
         if (BODY.HasClaws())
         {
-            auto const CLAWS_WEAPON_ITEM_PTR{ item::weapon::WeaponFactory::Instance()->Make_Claws(
-                CREATURE_PTR) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, CLAWS_WEAPON_ITEM_PTR);
+            EnsureItemAddedAndEquipped(
+                CREATURE_PTR, ItemFactory::Make(body_part::Claws, CREATURE_PTR));
         }
 
         if (BODY.HasBite())
         {
-            auto const BITE_WEAPON_ITEM_PTR{ item::weapon::WeaponFactory::Instance()->Make_Bite(
-                CREATURE_PTR) };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, BITE_WEAPON_ITEM_PTR);
+            EnsureItemAddedAndEquipped(
+                CREATURE_PTR, ItemFactory::Make(body_part::Bite, CREATURE_PTR));
         }
 
         if ((BODY.IsHumanoid()) && (CREATURE_PTR->IsPixie() == false))
         {
-            auto const FISTS_WEAPON_ITEM_PTR{
-                item::weapon::WeaponFactory::Instance()->Make_Fists()
-            };
-
-            EnsureItemAddedAndEquipped(CREATURE_PTR, FISTS_WEAPON_ITEM_PTR);
+            EnsureItemAddedAndEquipped(
+                CREATURE_PTR, ItemFactory::Make(body_part::Fists, CREATURE_PTR));
         }
     }
 
@@ -533,6 +385,69 @@ for (int i(0); i < 9; ++i)
             "player::Initial::EnsureItemAddedAndEquipped() was unable to EQUIP item={"
                 << ITEM_PTR->ToString() << "} to character={" << CREATURE_PTR->ToString()
                 << "} for reason=" << ITEM_EQUIP_STR << ".");
+    }
+
+    const item::ItemPtr_t Initial::MakePlainBoots(const bool IS_PIXIE)
+    {
+        using namespace item;
+
+        ItemProfile profile;
+
+        profile.SetBoots(
+            armor::base_type::Plain,
+            HardOrSoftLeatherRand(),
+            material::Nothing,
+            named_type::NotNamed,
+            set_type::NotASet,
+            element_type::None,
+            IS_PIXIE);
+
+        return ItemFactory::Make(profile);
+    }
+
+    const item::ItemPtr_t Initial::MakePlainShirt(const bool IS_PIXIE)
+    {
+        using namespace item;
+
+        ItemProfile profile;
+
+        profile.SetShirt(
+            armor::base_type::Plain,
+            HardOrSoftLeatherRand(),
+            material::Nothing,
+            named_type::NotNamed,
+            set_type::NotASet,
+            element_type::None,
+            IS_PIXIE);
+
+        return ItemFactory::Make(profile);
+    }
+
+    const item::ItemPtr_t Initial::MakePlainPants(const bool IS_PIXIE)
+    {
+        using namespace item;
+
+        ItemProfile profile;
+
+        profile.SetPants(
+            armor::base_type::Plain,
+            HardOrSoftLeatherRand(),
+            material::Nothing,
+            named_type::NotNamed,
+            set_type::NotASet,
+            element_type::None,
+            IS_PIXIE);
+
+        return ItemFactory::Make(profile);
+    }
+
+    const item::ItemPtr_t Initial::MakePlainWand(const bool IS_PIXIE)
+    {
+        using namespace item;
+
+        ItemProfile profile;
+        profile.SetMisc(misc_type::Wand, IS_PIXIE, material::Wood);
+        return ItemFactory::Make(profile);
     }
 
 } // namespace player

@@ -582,7 +582,6 @@ namespace item
 
         if (THIN_PROFILE.Category() & item::category::Armor)
         {
-
             if (THIN_PROFILE.ShieldType() != armor::shield_type::Count)
             {
                 ItemProfile fatProfile;

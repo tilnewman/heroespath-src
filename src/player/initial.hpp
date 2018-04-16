@@ -65,6 +65,11 @@ namespace player
 
         static void
             EnsureItemAddedAndEquipped(const creature::CreaturePtr_t, const item::ItemPtr_t);
+
+        static const item::ItemPtr_t MakePlainBoots(const bool IS_PIXIE);
+        static const item::ItemPtr_t MakePlainShirt(const bool IS_PIXIE);
+        static const item::ItemPtr_t MakePlainPants(const bool IS_PIXIE);
+        static const item::ItemPtr_t MakePlainWand(const bool IS_PIXIE);
     };
 
 } // namespace player

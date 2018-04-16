@@ -43,12 +43,12 @@
 #include "game/game-data-file.hpp"
 #include "game/game.hpp"
 #include "game/loop-manager.hpp"
-#include "item/armor-factory.hpp"
+#include "item/armor-details.hpp"
+#include "item/armor-ratings.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/item-warehouse.hpp"
-#include "item/misc-item-factory.hpp"
-#include "item/weapon-factory.hpp"
+#include "item/weapon-details.hpp"
 #include "log/logger.hpp"
 #include "log/macros.hpp"
 #include "misc/platform.hpp"
@@ -98,10 +98,7 @@ namespace game
             item::material::Setup();
 
             Setup_ParseCommandLineArguments(ARGC, argv);
-
-            // GameDataFile is used everywhere so Acquire and Initialize it before everything else
-            game::GameDataFile::Acquire();
-            game::GameDataFile::Instance()->Initialize();
+            Setup_GameDataFile();
 
             // this order is critical
             Setup_Display(APPLICATION_NAME);
@@ -109,6 +106,7 @@ namespace game
             Setup_SingletonsAcquire();
             Setup_SingletonsInitialize();
             Setup_HoldersFill();
+            item::ArmorRatings::Setup();
 
             // this causes the initial stage transition/creation so it must occur last
             LoopManager::Instance()->Initialize();
@@ -274,12 +272,9 @@ namespace game
 
             // factories should not be needed during shutdown, so release them early
             non_player::ownership::InventoryFactory::Release();
-            item::armor::ArmorFactory::Release();
             state::NpcFactory::Release();
             creature::EnchantmentFactory::Release();
             state::GameStateFactory::Release();
-            item::MiscItemFactory::Release();
-            item::weapon::WeaponFactory::Release();
             non_player::ownership::ChanceFactory::Release();
 
             // release LoopManager early because it frees all the stages and their resources
@@ -466,8 +461,6 @@ namespace game
         creature::EnchantmentFactory::Acquire();
         item::ItemWarehouse::Acquire();
         creature::CreatureWarehouse::Acquire();
-        item::weapon::WeaponFactory::Acquire();
-        item::MiscItemFactory::Acquire();
         sfml_util::SoundManager::Acquire();
         sfml_util::FontManager::Acquire();
         popup::PopupManager::Acquire();
@@ -482,7 +475,6 @@ namespace game
         Game::Acquire();
         state::GameStateFactory::Acquire();
         creature::NameInfo::Acquire();
-        item::armor::ArmorFactory::Acquire();
         non_player::ownership::InventoryFactory::Acquire();
         combat::Encounter::Acquire();
         item::ItemProfileWarehouse::Acquire();
@@ -501,6 +493,14 @@ namespace game
         combat::strategy::ChanceFactory::Instance()->Initialize();
         popup::PopupManager::Instance()->LoadAccentImagePaths();
         non_player::ownership::ChanceFactory::Instance()->Initialize();
+    }
+
+    void StartupShutdown::Setup_GameDataFile()
+    {
+        game::GameDataFile::Acquire();
+        game::GameDataFile::Instance()->Initialize();
+        item::armor::ArmorDetailLoader::LoadFromGameDataFile();
+        item::weapon::WeaponDetailLoader::LoadFromGameDataFile();
     }
 
 } // namespace game

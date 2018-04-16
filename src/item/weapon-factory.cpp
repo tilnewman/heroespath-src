@@ -48,59 +48,158 @@ namespace item
     namespace weapon
     {
 
-        std::unique_ptr<WeaponFactory> WeaponFactory::instanceUPtr_;
-        std::unique_ptr<WeaponDetailLoader> WeaponFactory::weaponDetailsUPtr_;
-
-        WeaponFactory::WeaponFactory() { M_HP_LOG_DBG("Singleton Construction: WeaponFactory"); }
-
-        WeaponFactory::~WeaponFactory() { M_HP_LOG_DBG("Singleton Destruction: WeaponFactory"); }
-
-        misc::NotNull<WeaponFactory *> WeaponFactory::Instance()
+        const ItemPtr_t WeaponFactory::Make(const ItemProfile & PROFILE)
         {
-            if (!instanceUPtr_)
+            if (PROFILE.SwordType() != weapon::sword_type::Count)
             {
-                M_HP_LOG_ERR("Singleton Instance() before Acquire(): WeaponFactory");
-                Acquire();
+                return Make_Sword(
+                    PROFILE.Category(),
+                    PROFILE.WeaponType(),
+                    PROFILE.SwordType(),
+                    PROFILE.MaterialPrimary(),
+                    PROFILE.MaterialSecondary(),
+                    TypeWrapper(PROFILE));
+            }
+            else if (PROFILE.AxeType() != weapon::axe_type::Count)
+            {
+                return Make_Axe(
+                    PROFILE.Category(),
+                    PROFILE.WeaponType(),
+                    PROFILE.AxeType(),
+                    PROFILE.MaterialPrimary(),
+                    PROFILE.MaterialSecondary(),
+                    TypeWrapper(PROFILE));
+            }
+            else if (PROFILE.ClubType() != weapon::club_type::Count)
+            {
+                return Make_Club(
+                    PROFILE.Category(),
+                    PROFILE.WeaponType(),
+                    PROFILE.ClubType(),
+                    PROFILE.MaterialPrimary(),
+                    PROFILE.MaterialSecondary(),
+                    TypeWrapper(PROFILE));
+            }
+            else if (PROFILE.WhipType() != weapon::whip_type::Count)
+            {
+                return Make_Whip(
+                    PROFILE.Category(),
+                    PROFILE.WeaponType(),
+                    PROFILE.WhipType(),
+                    PROFILE.MaterialPrimary(),
+                    PROFILE.MaterialSecondary(),
+                    TypeWrapper(PROFILE));
+            }
+            else if (PROFILE.ProjectileType() != weapon::projectile_type::Count)
+            {
+                return Make_Projectile(
+                    PROFILE.Category(),
+                    PROFILE.WeaponType(),
+                    PROFILE.ProjectileType(),
+                    PROFILE.MaterialPrimary(),
+                    PROFILE.MaterialSecondary(),
+                    TypeWrapper(PROFILE));
+            }
+            else if (PROFILE.BladedStaffType() != weapon::bladedstaff_type::Count)
+            {
+                return Make_BladedStaff(
+                    PROFILE.Category(),
+                    PROFILE.WeaponType(),
+                    PROFILE.BladedStaffType(),
+                    PROFILE.MaterialPrimary(),
+                    PROFILE.MaterialSecondary(),
+                    TypeWrapper(PROFILE));
+            }
+            else if (PROFILE.IsKnife() || PROFILE.IsDagger())
+            {
+                return Make_Knife(
+                    PROFILE.Category(),
+                    PROFILE.WeaponType(),
+                    TypeWrapper(PROFILE),
+                    PROFILE.IsDagger(),
+                    PROFILE.Size(),
+                    PROFILE.MaterialPrimary(),
+                    PROFILE.MaterialSecondary(),
+                    PROFILE.IsPixie());
+            }
+            else if (PROFILE.IsStaff() || PROFILE.IsQuarterStaff())
+            {
+                if ((PROFILE.MiscType() != misc_type::Count)
+                    && (PROFILE.MiscType() != misc_type::NotMisc) && (PROFILE.IsStaff()))
+                {
+                    return Make_Staff_AsMisc(PROFILE);
+                }
+                else
+                {
+                    return Make_Staff(
+                        PROFILE.Category(),
+                        PROFILE.WeaponType(),
+                        PROFILE.IsQuarterStaff(),
+                        PROFILE.MaterialPrimary(),
+                        PROFILE.MaterialSecondary(),
+                        PROFILE.IsPixie(),
+                        TypeWrapper(PROFILE));
+                }
             }
 
-            return instanceUPtr_.get();
+            std::ostringstream ss;
+
+            ss << "item::weapon::WeaponFactory::Make(profile=" << PROFILE.ToString()
+               << ") failed to create an item based on that profile.";
+
+            throw std::runtime_error(ss.str());
         }
 
-        void WeaponFactory::Acquire()
+        const ItemPtr_t WeaponFactory::Make(
+            const body_part::Enum BODY_PART, const creature::CreaturePtr_t CREATURE_PTR)
         {
-            if (!instanceUPtr_)
+            switch (BODY_PART)
             {
-                weaponDetailsUPtr_ = std::make_unique<WeaponDetailLoader>();
-                instanceUPtr_ = std::make_unique<WeaponFactory>();
-            }
-            else
-            {
-                M_HP_LOG_ERR("Singleton Acquire() after Construction: WeaponFactory");
+                case body_part::Fists:
+                {
+                    return Make_Fists();
+                }
+                case body_part::Claws:
+                {
+                    return Make_Claws(CREATURE_PTR);
+                }
+                case body_part::Tendrils:
+                {
+                    return Make_Tendrils(CREATURE_PTR);
+                }
+                case body_part::Bite:
+                {
+                    return Make_Bite(CREATURE_PTR);
+                }
+                case body_part::Breath:
+                {
+                    return Make_Breath(CREATURE_PTR);
+                }
+                case body_part::Skin:
+                case body_part::Count:
+                default:
+                {
+                    std::ostringstream ss;
+                    ss << "item::weapon::WeaponFactory::MakeBodypart(body_part_enum=" << BODY_PART
+                       << ", creature={" << CREATURE_PTR->ToString()
+                       << "}) but that body_part_enum was invalid.";
+
+                    throw std::range_error(ss.str());
+                }
             }
         }
 
-        void WeaponFactory::Release()
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_),
-                "item::WeaponFactory::Release() found instanceUPtr that was null.");
-
-            instanceUPtr_.reset();
-        }
-
-        const ItemPtr_t WeaponFactory::Make_Fists(const TypeWrapper & TYPE_WRAPPER)
+        const ItemPtr_t WeaponFactory::Make_Fists()
         {
             WeaponInfo weaponInfo{ weapon_type::Fists };
             weaponInfo.is_fists = true;
 
-            const WeaponDetails FISTS_DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails("Fists") };
+            const WeaponDetails FISTS_DETAILS{ WeaponDetailLoader::LookupWeaponDetails("Fists") };
 
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 FISTS_DETAILS.name,
                 FISTS_DETAILS.description,
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | category::TwoHanded
-                    | category::BodyPart),
+                ItemProfile::CategoryWeaponBodypart(body_part::Fists),
                 static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Fists),
                 armor_type::NotArmor,
                 material::Bone,
@@ -110,17 +209,16 @@ namespace item
                 FISTS_DETAILS.damage_min,
                 FISTS_DETAILS.damage_max,
                 0_armor,
-                TYPE_WRAPPER,
+                TypeWrapper(),
                 weaponInfo));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Claws(
-            const creature::CreaturePtr_t CREATURE_PTR, const TypeWrapper & TYPE_WRAPPER)
+        const ItemPtr_t WeaponFactory::Make_Claws(const creature::CreaturePtr_t CREATURE_PTR)
         {
             WeaponInfo weaponInfo{ weapon_type::Claws };
             weaponInfo.is_claws = true;
 
-            const WeaponDetails CLAWS_DETAILS(weaponDetailsUPtr_->LookupWeaponDetails("Claws"));
+            const WeaponDetails CLAWS_DETAILS(WeaponDetailLoader::LookupWeaponDetails("Claws"));
 
             std::ostringstream ssName;
             ssName << CLAWS_DETAILS.name;
@@ -131,9 +229,7 @@ namespace item
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 ssName.str(),
                 ssDesc.str(),
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | category::TwoHanded
-                    | category::BodyPart),
+                ItemProfile::CategoryWeaponBodypart(body_part::Claws),
                 static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Claws),
                 armor_type::NotArmor,
                 material::Claw,
@@ -143,18 +239,17 @@ namespace item
                 CLAWS_DETAILS.damage_min,
                 CLAWS_DETAILS.damage_max,
                 0_armor,
-                TYPE_WRAPPER,
+                TypeWrapper(),
                 weaponInfo));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Tendrils(
-            const creature::CreaturePtr_t CREATURE_PTR, const TypeWrapper & TYPE_WRAPPER)
+        const ItemPtr_t WeaponFactory::Make_Tendrils(const creature::CreaturePtr_t CREATURE_PTR)
         {
             WeaponInfo weaponInfo{ weapon_type::Tendrils };
             weaponInfo.is_tendrils = true;
 
             const WeaponDetails TENDRIL_DETAILS(
-                weaponDetailsUPtr_->LookupWeaponDetails("Tendrils"));
+                WeaponDetailLoader::LookupWeaponDetails("Tendrils"));
 
             std::ostringstream ssName;
             ssName << TENDRIL_DETAILS.name;
@@ -165,9 +260,7 @@ namespace item
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 ssName.str(),
                 ssDesc.str(),
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | category::TwoHanded
-                    | category::BodyPart),
+                ItemProfile::CategoryWeaponBodypart(body_part::Tendrils),
                 static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Tendrils),
                 armor_type::NotArmor,
                 material::Flesh,
@@ -177,17 +270,16 @@ namespace item
                 TENDRIL_DETAILS.damage_min,
                 TENDRIL_DETAILS.damage_max,
                 0_armor,
-                TYPE_WRAPPER,
+                TypeWrapper(),
                 weaponInfo));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Bite(
-            const creature::CreaturePtr_t CREATURE_PTR, const TypeWrapper & TYPE_WRAPPER)
+        const ItemPtr_t WeaponFactory::Make_Bite(const creature::CreaturePtr_t CREATURE_PTR)
         {
             WeaponInfo weaponInfo{ weapon_type::Bite };
             weaponInfo.is_bite = true;
 
-            const WeaponDetails BITE_DETAILS(weaponDetailsUPtr_->LookupWeaponDetails("Bite"));
+            const WeaponDetails BITE_DETAILS(WeaponDetailLoader::LookupWeaponDetails("Bite"));
 
             std::ostringstream ssName;
             ssName << BITE_DETAILS.name;
@@ -198,8 +290,7 @@ namespace item
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 ssName.str(),
                 ssDesc.str(),
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | category::BodyPart),
+                ItemProfile::CategoryWeaponBodypart(body_part::Bite),
                 static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Bite),
                 armor_type::NotArmor,
                 material::Tooth,
@@ -209,12 +300,11 @@ namespace item
                 BITE_DETAILS.damage_min,
                 BITE_DETAILS.damage_max,
                 0_armor,
-                TYPE_WRAPPER,
+                TypeWrapper(),
                 weaponInfo));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Breath(
-            const creature::CreaturePtr_t CREATURE_PTR, const TypeWrapper & TYPE_WRAPPER)
+        const ItemPtr_t WeaponFactory::Make_Breath(const creature::CreaturePtr_t CREATURE_PTR)
         {
             WeaponInfo weaponInfo{ weapon_type::Breath };
             weaponInfo.is_breath = true;
@@ -224,7 +314,7 @@ namespace item
                 (CREATURE_PTR->Role() == creature::role::Sylavin) ? "BreathSylavin"
                                                                   : "BreathFirebrand") };
 
-            auto const BREATH_DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails(
+            auto const BREATH_DETAILS{ WeaponDetailLoader::LookupWeaponDetails(
                 BREATH_DETAILS_TITLE) };
 
             std::ostringstream ssName;
@@ -245,8 +335,7 @@ namespace item
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 ssName.str(),
                 ssDesc.str(),
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | category::BodyPart),
+                ItemProfile::CategoryWeaponBodypart(body_part::Breath),
                 static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Breath),
                 armor_type::NotArmor,
                 material::Gas,
@@ -256,22 +345,13 @@ namespace item
                 BREATH_DETAILS.damage_min,
                 BREATH_DETAILS.damage_max,
                 0_armor,
-                TYPE_WRAPPER,
+                TypeWrapper(),
                 weaponInfo));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Knife(const ItemProfile & PROFILE)
-        {
-            return Make_Knife(
-                TypeWrapper(PROFILE),
-                PROFILE.IsDagger(),
-                PROFILE.Size(),
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                PROFILE.IsPixie());
-        }
-
         const ItemPtr_t WeaponFactory::Make_Knife(
+            const category::Enum CATEGORY,
+            const weapon_type::Enum WEAPON_TYPE,
             const TypeWrapper & TYPE_WRAPPER,
             const bool IS_DAGGER,
             const sfml_util::Size::Enum SIZE,
@@ -284,7 +364,7 @@ namespace item
             weaponInfo.is_knife = !IS_DAGGER;
             weaponInfo.knife_size = SIZE;
 
-            const WeaponDetails KNIFE_DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails("Knife") };
+            const WeaponDetails KNIFE_DETAILS{ WeaponDetailLoader::LookupWeaponDetails("Knife") };
 
             auto price{ KNIFE_DETAILS.price + material::PriceAdj(MATERIAL_PRI, MATERIAL_SEC) };
 
@@ -343,11 +423,8 @@ namespace item
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(ssName.str(), MATERIAL_PRI, MATERIAL_SEC, IS_PIXIE_ITEM),
                 Make_Desc(ssDesc.str(), MATERIAL_PRI, MATERIAL_SEC, "", IS_PIXIE_ITEM),
-                static_cast<category::Enum>(
-                    category::Equippable | category::Weapon | category::OneHanded),
-                static_cast<weapon_type::Enum>(
-                    weapon_type::Bladed | weapon_type::Knife | weapon_type::Melee
-                    | weapon_type::Pointed),
+                CATEGORY,
+                WEAPON_TYPE,
                 armor_type::NotArmor,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
@@ -362,16 +439,9 @@ namespace item
                 IS_PIXIE_ITEM));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Sword(const ItemProfile & PROFILE)
-        {
-            return Make_Sword(
-                PROFILE.SwordType(),
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                TypeWrapper(PROFILE));
-        }
-
         const ItemPtr_t WeaponFactory::Make_Sword(
+            const category::Enum CATEGORY,
+            const weapon_type::Enum WEAPON_TYPE,
             const sword_type::Enum SWORD_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -386,7 +456,7 @@ namespace item
                 exclusiveRole = creature::role::Knight;
             }
 
-            auto const DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails(
+            auto const DETAILS{ WeaponDetailLoader::LookupWeaponDetails(
                 sword_type::ToString(SWORD_TYPE)) };
 
             auto price{ DETAILS.price };
@@ -398,11 +468,8 @@ namespace item
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
                 Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | DETAILS.handedness),
-                static_cast<weapon_type::Enum>(
-                    weapon_type::Melee | weapon_type::Bladed | weapon_type::Pointed
-                    | weapon_type::Sword),
+                CATEGORY,
+                WEAPON_TYPE,
                 armor_type::NotArmor,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
@@ -418,16 +485,9 @@ namespace item
                 exclusiveRole));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Axe(const ItemProfile & PROFILE)
-        {
-            return Make_Axe(
-                PROFILE.AxeType(),
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                TypeWrapper(PROFILE));
-        }
-
         const ItemPtr_t WeaponFactory::Make_Axe(
+            const category::Enum CATEGORY,
+            const weapon_type::Enum WEAPON_TYPE,
             const axe_type::Enum AXE_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -436,7 +496,7 @@ namespace item
             WeaponInfo weaponInfo{ weapon_type::Axe };
             weaponInfo.axe = AXE_TYPE;
 
-            auto const DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails(
+            auto const DETAILS{ WeaponDetailLoader::LookupWeaponDetails(
                 axe_type::ToString(AXE_TYPE)) };
 
             auto price{ DETAILS.price };
@@ -448,10 +508,8 @@ namespace item
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
                 Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | DETAILS.handedness),
-                static_cast<weapon_type::Enum>(
-                    weapon_type::Melee | weapon_type::Bladed | weapon_type::Axe),
+                CATEGORY,
+                WEAPON_TYPE,
                 armor_type::NotArmor,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
@@ -464,16 +522,9 @@ namespace item
                 weaponInfo));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Club(const ItemProfile & PROFILE)
-        {
-            return Make_Club(
-                PROFILE.ClubType(),
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                TypeWrapper(PROFILE));
-        }
-
         const ItemPtr_t WeaponFactory::Make_Club(
+            const category::Enum CATEGORY,
+            const weapon_type::Enum WEAPON_TYPE,
             const club_type::Enum CLUB_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -482,7 +533,7 @@ namespace item
             WeaponInfo weaponInfo{ weapon_type::Club };
             weaponInfo.club = CLUB_TYPE;
 
-            auto const DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails(
+            auto const DETAILS{ WeaponDetailLoader::LookupWeaponDetails(
                 club_type::ToString(CLUB_TYPE)) };
 
             auto price{ DETAILS.price };
@@ -494,9 +545,8 @@ namespace item
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
                 Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC),
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | DETAILS.handedness),
-                static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Club),
+                CATEGORY,
+                WEAPON_TYPE,
                 armor_type::NotArmor,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
@@ -509,16 +559,9 @@ namespace item
                 weaponInfo));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Whip(const ItemProfile & PROFILE)
-        {
-            return Make_Whip(
-                PROFILE.WhipType(),
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                TypeWrapper(PROFILE));
-        }
-
         const ItemPtr_t WeaponFactory::Make_Whip(
+            const category::Enum CATEGORY,
+            const weapon_type::Enum WEAPON_TYPE,
             const whip_type::Enum WHIP_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -527,7 +570,7 @@ namespace item
             WeaponInfo weaponInfo{ weapon_type::Whip };
             weaponInfo.whip = WHIP_TYPE;
 
-            auto const DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails(
+            auto const DETAILS{ WeaponDetailLoader::LookupWeaponDetails(
                 whip_type::ToString(WHIP_TYPE)) };
 
             auto price{ DETAILS.price };
@@ -539,9 +582,8 @@ namespace item
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
                 Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "handle"),
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | DETAILS.handedness),
-                static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Whip),
+                CATEGORY,
+                WEAPON_TYPE,
                 armor_type::NotArmor,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
@@ -554,16 +596,9 @@ namespace item
                 weaponInfo));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Projectile(const ItemProfile & PROFILE)
-        {
-            return Make_Projectile(
-                PROFILE.ProjectileType(),
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                TypeWrapper(PROFILE));
-        }
-
         const ItemPtr_t WeaponFactory::Make_Projectile(
+            const category::Enum CATEGORY,
+            const weapon_type::Enum WEAPON_TYPE,
             const projectile_type::Enum PROJ_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -572,51 +607,11 @@ namespace item
             WeaponInfo weaponInfo{ weapon_type::Projectile };
             weaponInfo.projectile = PROJ_TYPE;
 
-            auto const DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails(
+            auto const DETAILS{ WeaponDetailLoader::LookupWeaponDetails(
                 projectile_type::ToString(PROJ_TYPE)) };
 
             auto price{ DETAILS.price };
             auto weight{ DETAILS.weight };
-
-            auto weaponType{ weapon_type::NotAWeapon };
-
-            switch (PROJ_TYPE)
-            {
-                case projectile_type::Blowpipe:
-                {
-                    weaponType = weapon_type::Blowpipe;
-                    break;
-                }
-                case projectile_type::Sling:
-                {
-                    weaponType = weapon_type::Sling;
-                    break;
-                }
-                case projectile_type::Shortbow:
-                case projectile_type::Longbow:
-                {
-                    weaponType = weapon_type::Bow;
-                    break;
-                }
-                case projectile_type::CompositeBow:
-                {
-                    weaponType = weapon_type::Bow;
-                    break;
-                }
-                case projectile_type::Crossbow:
-                {
-                    weaponType = weapon_type::Crossbow;
-                    break;
-                }
-                case projectile_type::Count:
-                default:
-                {
-                    std::ostringstream ss;
-                    ss << "herospath::item::WeaponFactory::Make_Projectile(projectile_type="
-                       << PROJ_TYPE << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
-                }
-            }
 
             AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
             AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
@@ -624,10 +619,8 @@ namespace item
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
                 Make_Desc(DETAILS.description, MATERIAL_PRI, MATERIAL_SEC, "grip"),
-                static_cast<category::Enum>(
-                    category::Weapon | category::TwoHanded | category::Equippable
-                    | DETAILS.handedness),
-                static_cast<weapon_type::Enum>(weapon_type::Projectile | weaponType),
+                CATEGORY,
+                WEAPON_TYPE,
                 armor_type::NotArmor,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
@@ -640,17 +633,9 @@ namespace item
                 weaponInfo));
         }
 
-        const ItemPtr_t WeaponFactory::Make_Staff(const ItemProfile & PROFILE)
-        {
-            return Make_Staff(
-                PROFILE.IsQuarterStaff(),
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                PROFILE.IsPixie(),
-                TypeWrapper(PROFILE));
-        }
-
         const ItemPtr_t WeaponFactory::Make_Staff(
+            const category::Enum CATEGORY,
+            const weapon_type::Enum WEAPON_TYPE,
             const bool IS_QUARTERSTAFF,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -661,7 +646,7 @@ namespace item
             weaponInfo.is_staff = !IS_QUARTERSTAFF;
             weaponInfo.is_quarterstaff = IS_QUARTERSTAFF;
 
-            auto const DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails(
+            auto const DETAILS{ WeaponDetailLoader::LookupWeaponDetails(
                 ((IS_QUARTERSTAFF) ? "Quarterstaff" : "Staff")) };
 
             auto price{ DETAILS.price };
@@ -678,9 +663,8 @@ namespace item
                     MATERIAL_SEC,
                     "",
                     IS_PIXIE_ITEM),
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | DETAILS.handedness),
-                static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Staff),
+                CATEGORY,
+                WEAPON_TYPE,
                 armor_type::NotArmor,
                 MATERIAL_PRI,
                 MATERIAL_SEC,
@@ -712,7 +696,7 @@ namespace item
             weapon::WeaponInfo weaponInfo(weapon_type::Staff);
             weaponInfo.is_staff = true;
             weaponInfo.is_quarterstaff = false;
-            auto const DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails("Staff") };
+            auto const DETAILS{ WeaponDetailLoader::LookupWeaponDetails("Staff") };
 
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(
@@ -742,16 +726,9 @@ namespace item
                 PROFILE.IsPixie()));
         }
 
-        const ItemPtr_t WeaponFactory::Make_BladedStaff(const ItemProfile & PROFILE)
-        {
-            return Make_BladedStaff(
-                PROFILE.BladedStaffType(),
-                PROFILE.MaterialPrimary(),
-                PROFILE.MaterialSecondary(),
-                TypeWrapper(PROFILE));
-        }
-
         const ItemPtr_t WeaponFactory::Make_BladedStaff(
+            const category::Enum CATEGORY,
+            const weapon_type::Enum WEAPON_TYPE,
             const bladedstaff_type::Enum STAFF_TYPE,
             const material::Enum MATERIAL_PRI,
             const material::Enum MATERIAL_SEC,
@@ -760,7 +737,7 @@ namespace item
             WeaponInfo weaponInfo{ weapon_type::BladedStaff };
             weaponInfo.bladedstaff = STAFF_TYPE;
 
-            auto const DETAILS{ weaponDetailsUPtr_->LookupWeaponDetails(
+            auto const DETAILS{ WeaponDetailLoader::LookupWeaponDetails(
                 bladedstaff_type::ToString(STAFF_TYPE)) };
 
             auto price{ DETAILS.price };
@@ -769,24 +746,12 @@ namespace item
             AdjustPrice(price, MATERIAL_PRI, MATERIAL_SEC);
             AdjustWeight(weight, MATERIAL_PRI, MATERIAL_SEC);
 
-            auto spearWeapon{ weapon_type::BladedStaff };
-
-            auto const IS_SPEAR{ (
-                (STAFF_TYPE == bladedstaff_type::Spear)
-                || (STAFF_TYPE == bladedstaff_type::ShortSpear)) };
-
-            if (IS_SPEAR)
-            {
-                spearWeapon = weapon_type::Spear;
-            }
-
             return ItemWarehouse::Access().Store(std::make_unique<Item>(
                 Make_Name(DETAILS.name, MATERIAL_PRI, MATERIAL_SEC),
-                Make_Desc_BladdedStaff(DETAILS.name, IS_SPEAR, MATERIAL_PRI, MATERIAL_SEC),
-                static_cast<category::Enum>(
-                    category::Weapon | category::Equippable | DETAILS.handedness),
-                static_cast<weapon_type::Enum>(
-                    weapon_type::Melee | weapon_type::BladedStaff | spearWeapon),
+                Make_Desc_BladdedStaff(
+                    DETAILS.name, (WEAPON_TYPE & weapon_type::Spear), MATERIAL_PRI, MATERIAL_SEC),
+                CATEGORY,
+                WEAPON_TYPE,
                 armor_type::NotArmor,
                 MATERIAL_PRI,
                 MATERIAL_SEC,

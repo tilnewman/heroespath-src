@@ -29,6 +29,7 @@
 //
 #include "item-factory.hpp"
 
+#include "creature/creature.hpp"
 #include "game/loop-manager.hpp"
 #include "item/armor-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
@@ -549,87 +550,13 @@ namespace item
         {
             return item::MiscItemFactory::Make(PROFILE);
         }
-        else if (PROFILE.Category() & item::category::Armor)
+        else if (PROFILE.IsArmor())
         {
-            if (PROFILE.IsBoots())
-            {
-                return armor::ArmorFactory::Instance()->Make_Boots(PROFILE);
-            }
-            else if (PROFILE.IsBracer())
-            {
-                return armor::ArmorFactory::Instance()->Make_Bracer(PROFILE);
-            }
-            else if (PROFILE.IsPants())
-            {
-                return armor::ArmorFactory::Instance()->Make_Pants(PROFILE);
-            }
-            else if (PROFILE.IsShirt())
-            {
-                return armor::ArmorFactory::Instance()->Make_Shirt(PROFILE);
-            }
-            else if (PROFILE.IsGauntlets())
-            {
-                return armor::ArmorFactory::Instance()->Make_Gauntlets(PROFILE);
-            }
-            else if (PROFILE.IsAventail())
-            {
-                return armor::ArmorFactory::Instance()->Make_Aventail(PROFILE);
-            }
-            else if (PROFILE.ShieldType() != armor::shield_type::Count)
-            {
-                return armor::ArmorFactory::Instance()->Make_Shield(PROFILE);
-            }
-            else if (PROFILE.CoverType() != armor::cover_type::Count)
-            {
-                return armor::ArmorFactory::Instance()->Make_Cover(PROFILE);
-            }
-            else if (PROFILE.HelmType() != armor::helm_type::Count)
-            {
-                return armor::ArmorFactory::Instance()->Make_Helm(PROFILE);
-            }
+            return armor::ArmorFactory::Make(PROFILE);
         }
-        else if (PROFILE.Category() & item::category::Weapon)
+        else if (PROFILE.IsWeapon())
         {
-            if (PROFILE.SwordType() != weapon::sword_type::Count)
-            {
-                return weapon::WeaponFactory::Instance()->Make_Sword(PROFILE);
-            }
-            else if (PROFILE.AxeType() != weapon::axe_type::Count)
-            {
-                return weapon::WeaponFactory::Instance()->Make_Axe(PROFILE);
-            }
-            else if (PROFILE.ClubType() != weapon::club_type::Count)
-            {
-                return weapon::WeaponFactory::Instance()->Make_Club(PROFILE);
-            }
-            else if (PROFILE.WhipType() != weapon::whip_type::Count)
-            {
-                return weapon::WeaponFactory::Instance()->Make_Whip(PROFILE);
-            }
-            else if (PROFILE.ProjectileType() != weapon::projectile_type::Count)
-            {
-                return weapon::WeaponFactory::Instance()->Make_Projectile(PROFILE);
-            }
-            else if (PROFILE.BladedStaffType() != weapon::bladedstaff_type::Count)
-            {
-                return weapon::WeaponFactory::Instance()->Make_BladedStaff(PROFILE);
-            }
-            else if (PROFILE.IsKnife())
-            {
-                return weapon::WeaponFactory::Instance()->Make_Knife(PROFILE);
-            }
-            else if (PROFILE.IsDagger())
-            {
-                return weapon::WeaponFactory::Instance()->Make_Knife(PROFILE);
-            }
-            else if (PROFILE.IsStaff())
-            {
-                return weapon::WeaponFactory::Instance()->Make_Staff(PROFILE);
-            }
-            else if (PROFILE.IsQuarterStaff())
-            {
-                return weapon::WeaponFactory::Instance()->Make_Staff(PROFILE);
-            }
+            return weapon::WeaponFactory::Make(PROFILE);
         }
 
         std::ostringstream ss;
@@ -638,6 +565,19 @@ namespace item
            << ") failed to create an item based on that profile.";
 
         throw std::runtime_error(ss.str());
+    }
+
+    const ItemPtr_t ItemFactory::Make(
+        const body_part::Enum BODY_PART, const creature::CreaturePtr_t CREATURE_PTR)
+    {
+        if (BODY_PART == body_part::Skin)
+        {
+            return armor::ArmorFactory::Make(BODY_PART, CREATURE_PTR);
+        }
+        else
+        {
+            return weapon::WeaponFactory::Make(BODY_PART, CREATURE_PTR);
+        }
     }
 
 } // namespace item

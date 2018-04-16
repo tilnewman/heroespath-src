@@ -5830,6 +5830,37 @@ namespace item
         corePrimaryNoPearlAndSecondaryEVecPair_ = MakeCorePrimaryNoPearlAndSecondary();
     }
 
+    material::Enum material::SkinMaterial(const creature::race::Enum RACE)
+    {
+        // keep in sync with ItemImageManager::GetSkinImageFilename()
+
+        if ((RACE == creature::race::Wolfen) || (RACE == creature::race::ThreeHeadedHound)
+            || (RACE == creature::race::Troll) || (RACE == creature::race::Minotaur)
+            || (RACE == creature::race::Boar) || (RACE == creature::race::Lion)
+            || (RACE == creature::race::LionBoar) || (RACE == creature::race::Ramonaut)
+            || (RACE == creature::race::Werebear) || (RACE == creature::race::Wereboar)
+            || (RACE == creature::race::Werewolf))
+        {
+            return material::Hide;
+        }
+        else if (
+            (RACE == creature::race::Dragon) || (RACE == creature::race::Hydra)
+            || (RACE == creature::race::LizardWalker) || (RACE == creature::race::Naga)
+            || (RACE == creature::race::Serpent) || (RACE == creature::race::Cobra)
+            || (RACE == creature::race::Wyvern))
+        {
+            return material::Scale;
+        }
+        else if (RACE == creature::race::Plant)
+        {
+            return material::Plant;
+        }
+        else
+        {
+            return material::Nothing;
+        }
+    }
+
     const std::vector<material::Enum> material::MakeCoreMetal(const bool WILL_INCLUDE_NOTHING)
     {
         std::vector<material::Enum> materials{ material::Tin,     material::Bronze, material::Iron,
@@ -6691,5 +6722,44 @@ namespace item
             return ss.str();
         }
     }
+
+    const std::string body_part::ToString(const body_part::Enum BODY_PART)
+    {
+        switch (BODY_PART)
+        {
+            case Fists:
+            {
+                return "Fists";
+            }
+            case Claws:
+            {
+                return "Claws";
+            }
+            case Tendrils:
+            {
+                return "Tendrils";
+            }
+            case Bite:
+            {
+                return "Bite";
+            }
+            case Breath:
+            {
+                return "Breath";
+            }
+            case Skin:
+            {
+                return "Skin";
+            }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "item::body_part::ToString(" << BODY_PART << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
+        }
+    }
+
 } // namespace item
 } // namespace heroespath

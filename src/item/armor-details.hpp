@@ -66,7 +66,7 @@ namespace item
         // name to details mapping
         using ArmorDetailMap_t = misc::VectorMap<std::string, ArmorDetails>;
 
-        // A singleton class that loads detailed armor info from the GameDataFile.
+        // Loads and holds detailed armor info from the GameDataFile.
         class ArmorDetailLoader
         {
         public:
@@ -74,21 +74,23 @@ namespace item
             ArmorDetailLoader & operator=(ArmorDetailLoader &&) = delete;
             ArmorDetailLoader(const ArmorDetailLoader &) = delete;
             ArmorDetailLoader(ArmorDetailLoader &&) = delete;
+            ArmorDetailLoader() = delete;
 
-            ArmorDetailLoader();
+            static const ArmorDetails LookupArmorDetails(const std::string & NAME);
 
-            const ArmorDetails LookupArmorDetails(const std::string & NAME);
+            static void LoadFromGameDataFile();
 
         private:
-            void LoadArmorDeatilsFromGameDataFile();
-            void LoadDetailsForKey(const std::string & ARMOR_NAME);
-            int StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR);
+            static void LoadDetailsForKey(const std::string & ARMOR_NAME);
 
-            const std::string
+            static int
+                StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR);
+
+            static const std::string
                 CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
 
         private:
-            ArmorDetailMap_t armorDetailsMap_;
+            static ArmorDetailMap_t armorDetailsMap_;
         };
 
     } // namespace armor

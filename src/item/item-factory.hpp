@@ -27,6 +27,7 @@
 //
 // item-factory.hpp
 //
+#include "item/item-type-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 
@@ -35,6 +36,11 @@
 
 namespace heroespath
 {
+namespace creature
+{
+    class Creature;
+    using CreaturePtr_t = misc::NotNull<Creature *>;
+} // namespace creature
 namespace item
 {
     class ItemProfile;
@@ -43,7 +49,7 @@ namespace item
     using ItemPtr_t = misc::NotNull<Item *>;
     using ItemPtrOpt_t = boost::optional<ItemPtr_t>;
 
-    // Responsible for making new (and properly stored) item objects from fat ItemProfiles.
+    // Responsible for making new (and properly warehousing) item objects from (fat) ItemProfiles.
     class ItemFactory
     {
     public:
@@ -56,6 +62,7 @@ namespace item
         static bool Test();
 
         static const ItemPtr_t Make(const ItemProfile &);
+        static const ItemPtr_t Make(const body_part::Enum, const creature::CreaturePtr_t);
 
     private:
         static void TestItem(

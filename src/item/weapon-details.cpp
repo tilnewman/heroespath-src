@@ -47,11 +47,7 @@ namespace item
     namespace weapon
     {
 
-        WeaponDetailLoader::WeaponDetailLoader()
-            : weaponDetailsMap_()
-        {
-            LoadWeaponDeatilsFromGameDataFile();
-        }
+        WeaponDetailMap_t WeaponDetailLoader::weaponDetailsMap_;
 
         const WeaponDetails WeaponDetailLoader::LookupWeaponDetails(const std::string & NAME)
         {
@@ -66,7 +62,7 @@ namespace item
             return details;
         }
 
-        void WeaponDetailLoader::LoadWeaponDeatilsFromGameDataFile()
+        void WeaponDetailLoader::LoadFromGameDataFile()
         {
             LoadDetailsForKey("Claymore");
             LoadDetailsForKey("Longsword");

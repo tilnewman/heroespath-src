@@ -50,47 +50,35 @@ namespace item
         ArmorRatings(ArmorRatings &&) = delete;
         ArmorRatings & operator=(const ArmorRatings &) = delete;
         ArmorRatings & operator=(ArmorRatings &&) = delete;
+        ArmorRatings() = delete;
 
-    public:
-        ArmorRatings();
+        static void Setup();
 
-        void EnsureSetup();
-
-        Armor_t FullyClothedCloth() const { return clothesCloth_; }
-
-        Armor_t FullyClothedSoftLeather() const { return clothesSoftLeather_; }
-
-        Armor_t FullyClothedHardLeather() const { return clothesHardLeather_; }
-
-        Armor_t ArmoredLesserSoftLeather() const { return armoredLesserSoftLeather_; }
-
-        Armor_t ArmoredLesserSteel() const { return armoredLesserSteel_; }
-
-        Armor_t ArmoredLesserDiamond() const { return armoredLesserDiamond_; }
-
-        Armor_t ArmoredGreaterSoftLeather() const { return armoredGreaterSoftLeather_; }
-
-        Armor_t ArmoredGreaterSteel() const { return armoredGreaterSteel_; }
-
-        Armor_t ArmoredGreaterDiamond() const { return armoredGreaterDiamond_; }
+        static Armor_t FullyClothedCloth() { return clothesCloth_; }
+        static Armor_t FullyClothedSoftLeather() { return clothesSoftLeather_; }
+        static Armor_t FullyClothedHardLeather() { return clothesHardLeather_; }
+        static Armor_t ArmoredLesserSoftLeather() { return armoredLesserSoftLeather_; }
+        static Armor_t ArmoredLesserSteel() { return armoredLesserSteel_; }
+        static Armor_t ArmoredLesserDiamond() { return armoredLesserDiamond_; }
+        static Armor_t ArmoredGreaterSoftLeather() { return armoredGreaterSoftLeather_; }
+        static Armor_t ArmoredGreaterSteel() { return armoredGreaterSteel_; }
+        static Armor_t ArmoredGreaterDiamond() { return armoredGreaterDiamond_; }
 
     private:
-        Armor_t ClothesSetRating(const item::material::Enum) const;
-        Armor_t LesserArmorSetRating(const item::material::Enum) const;
-        Armor_t GreaterArmorSetRating(const item::material::Enum) const;
-        Armor_t GetTotalArmorRatingAndFree(ItemPVec_t &) const;
+        static Armor_t ClothesSetRating(const item::material::Enum);
+        static Armor_t LesserArmorSetRating(const item::material::Enum);
+        static Armor_t GreaterArmorSetRating(const item::material::Enum);
+        static Armor_t GetTotalArmorRatingAndFree(ItemPVec_t &);
 
-    private:
-        bool isSetup_;
-        Armor_t clothesCloth_;
-        Armor_t clothesSoftLeather_;
-        Armor_t clothesHardLeather_;
-        Armor_t armoredLesserSoftLeather_;
-        Armor_t armoredLesserSteel_;
-        Armor_t armoredLesserDiamond_;
-        Armor_t armoredGreaterSoftLeather_;
-        Armor_t armoredGreaterSteel_;
-        Armor_t armoredGreaterDiamond_;
+        static Armor_t clothesCloth_;
+        static Armor_t clothesSoftLeather_;
+        static Armor_t clothesHardLeather_;
+        static Armor_t armoredLesserSoftLeather_;
+        static Armor_t armoredLesserSteel_;
+        static Armor_t armoredLesserDiamond_;
+        static Armor_t armoredGreaterSoftLeather_;
+        static Armor_t armoredGreaterSteel_;
+        static Armor_t armoredGreaterDiamond_;
     };
 
 } // namespace item

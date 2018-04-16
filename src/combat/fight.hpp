@@ -28,7 +28,6 @@
 // fight.hpp
 //
 #include "combat/fight-results.hpp"
-#include "item/armor-ratings.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 
@@ -161,9 +160,6 @@ namespace combat
             const creature::CondEnumVec_t & CONDS_VEC,
             const creature::CreaturePtr_t CREATURE_PTR,
             const HitInfoVec_t & HIT_INFO_VEC);
-
-    private:
-        static item::ArmorRatings armorRatings_;
     };
 
 } // namespace combat

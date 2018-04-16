@@ -38,7 +38,8 @@ namespace heroespath
 namespace item
 {
 
-    // A base class for all item factories.
+    // A base class for all item factories, which are all static so no need for constructors or
+    // destructors.
     class FactoryBase
     {
     public:
@@ -46,9 +47,7 @@ namespace item
         FactoryBase(FactoryBase &&) = delete;
         FactoryBase & operator=(const FactoryBase &) = delete;
         FactoryBase & operator=(FactoryBase &&) = delete;
-
-        FactoryBase() = default;
-        virtual ~FactoryBase() = default;
+        FactoryBase() = delete;
 
     protected:
         static const std::string Make_Name(
@@ -106,6 +105,7 @@ namespace item
 
         static const std::string RandomClaspNoun();
     };
+
 } // namespace item
 } // namespace heroespath
 

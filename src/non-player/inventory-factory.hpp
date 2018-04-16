@@ -87,7 +87,7 @@ namespace non_player
 
         private:
             static const IItemPVecPair_t
-                MakeItemSet_Clothing(const chance::ClothingChances & CHANCES);
+                MakeItemSet_Clothing(const chance::ClothingChances & CHANCES, const bool IS_PIXIE);
 
             static const IItemPVecPair_t MakeItemSet_Weapons(
                 const chance::WeaponChances & CHANCES, const creature::CreaturePtr_t CHARACTER_PTR);

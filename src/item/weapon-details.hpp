@@ -26,7 +26,6 @@
 #define HEROESPATH_ITEM_WEAPONFDETAILS_HPP_INCLUDED
 //
 // weapon-details.hpp
-//  Code that loads detailed weapon data from the GameDataFile.
 //
 #include "misc/not-null.hpp"
 #include "misc/vector-map.hpp"
@@ -69,7 +68,7 @@ namespace item
         // name to details mapping
         using WeaponDetailMap_t = misc::VectorMap<std::string, WeaponDetails>;
 
-        // A singleton class that loads detailed weapon info from the GameDataFile.
+        // Responsible for loading detailed weapon info from the GameDataFile.
         class WeaponDetailLoader
         {
         public:
@@ -77,21 +76,24 @@ namespace item
             WeaponDetailLoader(WeaponDetailLoader &&) = delete;
             WeaponDetailLoader & operator=(const WeaponDetailLoader &) = delete;
             WeaponDetailLoader & operator=(WeaponDetailLoader &&) = delete;
+            WeaponDetailLoader() = delete;
 
-            WeaponDetailLoader();
+            static const WeaponDetails LookupWeaponDetails(const std::string & NAME);
 
-            const WeaponDetails LookupWeaponDetails(const std::string & NAME);
+            static void LoadFromGameDataFile();
 
         private:
-            void LoadWeaponDeatilsFromGameDataFile();
-            void LoadDetailsForKey(const std::string & WEAPON_NAME);
-            int StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR);
-            const std::string
+            static void LoadDetailsForKey(const std::string & WEAPON_NAME);
+            static int
+                StringFieldToInt(const std::string & FIELD_NAME, const std::string & NUM_STR);
+
+            static const std::string
                 CleanStringField(const std::string & FIELD_STR, const bool WILL_LOWERCASE);
 
         private:
-            WeaponDetailMap_t weaponDetailsMap_;
+            static WeaponDetailMap_t weaponDetailsMap_;
         };
+
     } // namespace weapon
 } // namespace item
 } // namespace heroespath
