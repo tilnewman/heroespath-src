@@ -177,24 +177,22 @@ namespace sfml_util
 
         void SliderBar::Setup()
         {
-            auto const GE_PTR{ GuiElements::Instance() };
-
             if (STYLE_.isLineLarge)
             {
-                barImage_.GetUpSprite()
-                    = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_HorizontalLineLarge());
+                barImage_.GetUpSprite() = sf::Sprite(
+                    GuiElements::GetTexture(), GuiElements::GetRect_HorizontalLineLarge());
             }
             else
             {
-                barImage_.GetUpSprite()
-                    = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_HorizontalLineSmall());
+                barImage_.GetUpSprite() = sf::Sprite(
+                    GuiElements::GetTexture(), GuiElements::GetRect_HorizontalLineSmall());
             }
 
             if (STYLE_.orientation == Orientation::Horiz)
             {
                 // pick the pad sprite
-                padImage_.GetUpSprite()
-                    = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_PadHorizontalLarge());
+                padImage_.GetUpSprite() = sf::Sprite(
+                    GuiElements::GetTexture(), GuiElements::GetRect_PadHorizontalLarge());
 
                 switch (STYLE_.brightness)
                 {
@@ -203,18 +201,20 @@ namespace sfml_util
                         if (STYLE_.willLabelArrows)
                         {
                             botOrLeftImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusLeftMed());
+                                GuiElements::GetTexture(),
+                                GuiElements::GetRect_ArrowMinusLeftMed());
 
                             topOrRightImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusRightMed());
+                                GuiElements::GetTexture(),
+                                GuiElements::GetRect_ArrowPlusRightMed());
                         }
                         else
                         {
-                            botOrLeftImage_.GetUpSprite()
-                                = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowLeftMed());
+                            botOrLeftImage_.GetUpSprite() = sf::Sprite(
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowLeftMed());
 
-                            topOrRightImage_.GetUpSprite()
-                                = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowRightMed());
+                            topOrRightImage_.GetUpSprite() = sf::Sprite(
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowRightMed());
                         }
 
                         break;
@@ -224,18 +224,20 @@ namespace sfml_util
                         if (STYLE_.willLabelArrows)
                         {
                             botOrLeftImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusLeftDark());
+                                GuiElements::GetTexture(),
+                                GuiElements::GetRect_ArrowMinusLeftDark());
 
                             topOrRightImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusRightDark());
+                                GuiElements::GetTexture(),
+                                GuiElements::GetRect_ArrowPlusRightDark());
                         }
                         else
                         {
-                            botOrLeftImage_.GetUpSprite()
-                                = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowLeftDark());
+                            botOrLeftImage_.GetUpSprite() = sf::Sprite(
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowLeftDark());
 
                             topOrRightImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowRightDark());
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowRightDark());
                         }
 
                         break;
@@ -248,18 +250,20 @@ namespace sfml_util
                         if (STYLE_.willLabelArrows)
                         {
                             botOrLeftImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusLeftBright());
+                                GuiElements::GetTexture(),
+                                GuiElements::GetRect_ArrowMinusLeftBright());
 
                             topOrRightImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusRightBright());
+                                GuiElements::GetTexture(),
+                                GuiElements::GetRect_ArrowPlusRightBright());
                         }
                         else
                         {
                             botOrLeftImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowLeftBright());
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowLeftBright());
 
                             topOrRightImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowRightBright());
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowRightBright());
                         }
 
                         break;
@@ -287,8 +291,8 @@ namespace sfml_util
             else
             {
                 // pick the pad sprite to use
-                padImage_.GetUpSprite()
-                    = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_PadVerticalLarge());
+                padImage_.GetUpSprite() = sf::Sprite(
+                    GuiElements::GetTexture(), GuiElements::GetRect_PadVerticalLarge());
 
                 // bar sprites are only horizontal so rotate if orientation is vertical
                 barImage_.GetUpSprite().rotate(270.0f);
@@ -300,18 +304,19 @@ namespace sfml_util
                         if (STYLE_.willLabelArrows)
                         {
                             botOrLeftImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusDownMed());
+                                GuiElements::GetTexture(),
+                                GuiElements::GetRect_ArrowMinusDownMed());
 
                             topOrRightImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusUpMed());
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowPlusUpMed());
                         }
                         else
                         {
-                            botOrLeftImage_.GetUpSprite()
-                                = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowDownMed());
+                            botOrLeftImage_.GetUpSprite() = sf::Sprite(
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowDownMed());
 
-                            topOrRightImage_.GetUpSprite()
-                                = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowUpMed());
+                            topOrRightImage_.GetUpSprite() = sf::Sprite(
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowUpMed());
                         }
 
                         break;
@@ -321,18 +326,19 @@ namespace sfml_util
                         if (STYLE_.willLabelArrows)
                         {
                             botOrLeftImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusDownDark());
+                                GuiElements::GetTexture(),
+                                GuiElements::GetRect_ArrowMinusDownDark());
 
                             topOrRightImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusUpDark());
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowPlusUpDark());
                         }
                         else
                         {
-                            botOrLeftImage_.GetUpSprite()
-                                = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowDownDark());
+                            botOrLeftImage_.GetUpSprite() = sf::Sprite(
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowDownDark());
 
-                            topOrRightImage_.GetUpSprite()
-                                = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowUpDark());
+                            topOrRightImage_.GetUpSprite() = sf::Sprite(
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowUpDark());
                         }
 
                         break;
@@ -345,18 +351,20 @@ namespace sfml_util
                         if (STYLE_.willLabelArrows)
                         {
                             botOrLeftImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowMinusDownBright());
+                                GuiElements::GetTexture(),
+                                GuiElements::GetRect_ArrowMinusDownBright());
 
                             topOrRightImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowPlusUpBright());
+                                GuiElements::GetTexture(),
+                                GuiElements::GetRect_ArrowPlusUpBright());
                         }
                         else
                         {
                             botOrLeftImage_.GetUpSprite() = sf::Sprite(
-                                GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowDownBright());
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowDownBright());
 
-                            topOrRightImage_.GetUpSprite()
-                                = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_ArrowUpBright());
+                            topOrRightImage_.GetUpSprite() = sf::Sprite(
+                                GuiElements::GetTexture(), GuiElements::GetRect_ArrowUpBright());
                         }
 
                         break;
@@ -639,6 +647,7 @@ namespace sfml_util
             GuiEntity::MoveEntityPos(HORIZ, VERT);
             SetupAllPositions();
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

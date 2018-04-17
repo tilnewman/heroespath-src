@@ -125,6 +125,7 @@ namespace stage
         sfml_util::gui::TextRegionUPtr_t musicInfoLabelTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t musicInfoDetailsTextRegionUPtr_;
         sfml_util::gui::TextRegionUPtr_t revLabelTextRegionUPtr_;
+        sf::Texture woodTexture_;
     };
 } // namespace stage
 } // namespace heroespath

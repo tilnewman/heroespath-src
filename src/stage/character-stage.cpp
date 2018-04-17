@@ -218,6 +218,7 @@ namespace stage
         , bottomSymbol_()
         , selectedImageIndex_(0)
         , characterImageFilenamesVec_()
+        , woodTexture_()
     {}
 
     CharacterStage::~CharacterStage() { Stage::ClearAllEntities(); }
@@ -318,6 +319,10 @@ namespace stage
 
     void CharacterStage::Setup()
     {
+        sfml_util::LoadTexture(
+            woodTexture_,
+            game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+
         EntityAdd(ouroborosUPtr_.get());
 
         auto const MID_SCREEN_HORIZ{ SCREEN_WIDTH_ * 0.5f };
@@ -646,8 +651,7 @@ namespace stage
         const sf::FloatRect REGION(
             sfml_util::MapByRes(40.0f, 1525.0f), mainMenuTitle_.Bottom(), 0.0f, 0.0f);
 
-        const sfml_util::gui::BackgroundInfo BG_INFO(
-            sfml_util::gui::GuiElements::Instance()->GetTextureWood(), REGION);
+        const sfml_util::gui::BackgroundInfo BG_INFO(woodTexture_, REGION);
 
         const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
@@ -693,8 +697,7 @@ namespace stage
 
         const sf::FloatRect REGION(sfml_util::MapByRes(15.0f, 1300.0f), POS_TOP, 0.0f, 0.0f);
 
-        const sfml_util::gui::BackgroundInfo BG_INFO(
-            sfml_util::gui::GuiElements::Instance()->GetTextureWood(), REGION);
+        const sfml_util::gui::BackgroundInfo BG_INFO(woodTexture_, REGION);
 
         const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
@@ -832,8 +835,7 @@ namespace stage
             WIDTH,
             55.0f);
 
-        const sfml_util::gui::BackgroundInfo BG_INFO(
-            sfml_util::gui::GuiElements::Instance()->GetTextureWood(), REGION);
+        const sfml_util::gui::BackgroundInfo BG_INFO(woodTexture_, REGION);
 
         const sfml_util::gui::box::Info BOX_INFO(true, REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
 
@@ -863,8 +865,7 @@ namespace stage
 
         const sf::FloatRect TEMP_EMPTY_REGION(0.0f, 0.0f, 0.0f, 0.0f);
 
-        const sfml_util::gui::BackgroundInfo BG_INFO(
-            sfml_util::gui::GuiElements::Instance()->GetTextureWood(), TEMP_EMPTY_REGION);
+        const sfml_util::gui::BackgroundInfo BG_INFO(woodTexture_, TEMP_EMPTY_REGION);
 
         const sfml_util::gui::box::Info BOX_INFO(
             true, TEMP_EMPTY_REGION, GUI_DEFAULT_COLORSET_, BG_INFO);
@@ -926,8 +927,7 @@ namespace stage
         const sf::FloatRect RECT(
             STATBOX_POS_LEFT_, STATBOX_POS_TOP, STATBOX_WIDTH_, STATBOX_HEIGHT_);
 
-        const sfml_util::gui::BackgroundInfo BG_INFO(
-            sfml_util::gui::GuiElements::Instance()->GetTextureWood(), RECT);
+        const sfml_util::gui::BackgroundInfo BG_INFO(woodTexture_, RECT);
 
         sfml_util::gui::box::Info boxInfo(
             true,

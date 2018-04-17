@@ -29,16 +29,13 @@
 //
 #include "popup-stage-num-select.hpp"
 
+#include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
-
-#include "popup/popup-manager.hpp"
-
-#include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/sound-manager.hpp"
-
 #include "misc/boost-string-includes.hpp"
-
-#include <string>
+#include "popup/popup-manager.hpp"
+#include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/loaders.hpp"
+#include "sfml-util/sound-manager.hpp"
 
 namespace heroespath
 {
@@ -53,6 +50,7 @@ namespace popup
         , textEntryBoxUPtr_()
         , willSliderbarUpdate_(true)
         , willTextBoxUpdate_(true)
+        , woodTexture_()
     {}
 
     PopupStageNumberSelect::~PopupStageNumberSelect() = default;
@@ -98,6 +96,10 @@ namespace popup
     {
         PopupStageBase::Setup();
 
+        sfml_util::LoadTexture(
+            woodTexture_,
+            game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+
         const sfml_util::gui::TextInfo MSG_TEXT_INFO{
             " ",
             sfml_util::FontManager::Instance()->Font_Default1(),
@@ -139,9 +141,7 @@ namespace popup
             sf::Color::White,
             sfml_util::Justified::Left);
 
-        const sfml_util::gui::BackgroundInfo TEXTENTRY_BG_INFO{
-            sfml_util::gui::GuiElements::Instance()->GetTextureWood(), TEXTENTRY_REGION
-        };
+        const sfml_util::gui::BackgroundInfo TEXTENTRY_BG_INFO{ woodTexture_, TEXTENTRY_REGION };
 
         const sfml_util::gui::box::Info TEXTENTRY_BOX_INFO(
             true, TEXTENTRY_REGION, sfml_util::gui::ColorSet(sf::Color::White), TEXTENTRY_BG_INFO);

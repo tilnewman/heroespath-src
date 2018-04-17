@@ -97,6 +97,7 @@ namespace sfml_util
                 (guiImage_.GetUpSprite().getTexture() != nullptr),
                 entityName_ << "'s TwoStateEntity::PostSpriteSetup() was given a "
                                "guiImage_.GetUpSprite() with a nullptr texture.");
+
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (guiImage_.GetDownSprite().getTexture() != nullptr),
                 entityName_ << "'s TwoStateEntity::PostSpriteSetup() was given a "

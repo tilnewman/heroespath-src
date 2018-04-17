@@ -101,6 +101,7 @@ namespace game
             Setup_GameDataFile();
 
             // this order is critical
+            sfml_util::gui::GuiElements::LoadTexture();
             Setup_Display(APPLICATION_NAME);
             Setup_ManagerClassResourcePaths();
             Setup_SubsystemsAcquire();
@@ -259,9 +260,6 @@ namespace game
             // release the SettingsFile first so that it saves the settings file even if a problem
             // happens during shutdown
             config::SettingsFile::Release();
-
-            // image managers should not be needed during shutdown, so release them early
-            sfml_util::gui::GuiElements::Release();
 
             // factories should not be needed during shutdown, so release them early
             non_player::ownership::InventoryFactory::Release();
@@ -448,7 +446,6 @@ namespace game
         sfml_util::SoundManager::Acquire();
         sfml_util::FontManager::Acquire();
         popup::PopupManager::Acquire();
-        sfml_util::gui::GuiElements::Acquire();
         Game::Acquire();
         state::GameStateFactory::Acquire();
         creature::NameInfo::Acquire();

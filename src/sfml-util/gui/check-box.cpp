@@ -29,11 +29,10 @@
 //
 #include "check-box.hpp"
 
+#include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui/color-set.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/sound-manager.hpp"
-
-#include "misc/assertlogandthrow.hpp"
 
 #include <sstream>
 
@@ -142,31 +141,31 @@ namespace sfml_util
 
         void CheckBox::SetupSprites(const Brightness::Enum BRIGHTNESS)
         {
-            auto const GE_PTR{ GuiElements::Instance() };
-
-            guiImage_.GetUpSprite().setTexture(GE_PTR->GetTexture());
-            guiImage_.GetDownSprite().setTexture(GE_PTR->GetTexture());
+            guiImage_.GetUpSprite().setTexture(GuiElements::GetTexture());
+            guiImage_.GetDownSprite().setTexture(GuiElements::GetTexture());
 
             switch (BRIGHTNESS)
             {
                 case Brightness::Dark:
                 {
-                    guiImage_.GetUpSprite().setTextureRect(GE_PTR->GetRect_CheckBoxDarkOff());
-                    guiImage_.GetDownSprite().setTextureRect(GE_PTR->GetRect_CheckBoxDarkOn());
+                    guiImage_.GetUpSprite().setTextureRect(GuiElements::GetRect_CheckBoxDarkOff());
+                    guiImage_.GetDownSprite().setTextureRect(GuiElements::GetRect_CheckBoxDarkOn());
                     break;
                 }
                 case Brightness::Medium:
                 {
-                    guiImage_.GetUpSprite().setTextureRect(GE_PTR->GetRect_CheckBoxMedOff());
-                    guiImage_.GetDownSprite().setTextureRect(GE_PTR->GetRect_CheckBoxMedOn());
+                    guiImage_.GetUpSprite().setTextureRect(GuiElements::GetRect_CheckBoxMedOff());
+                    guiImage_.GetDownSprite().setTextureRect(GuiElements::GetRect_CheckBoxMedOn());
                     break;
                 }
                 case Brightness::Bright:
                 case Brightness::Count:
                 default:
                 {
-                    guiImage_.GetUpSprite().setTextureRect(GE_PTR->GetRect_CheckBoxBrightOff());
-                    guiImage_.GetDownSprite().setTextureRect(GE_PTR->GetRect_CheckBoxBrightOn());
+                    guiImage_.GetUpSprite().setTextureRect(
+                        GuiElements::GetRect_CheckBoxBrightOff());
+                    guiImage_.GetDownSprite().setTextureRect(
+                        GuiElements::GetRect_CheckBoxBrightOn());
                     break;
                 }
             }

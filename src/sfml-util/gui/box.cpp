@@ -29,11 +29,10 @@
 //
 #include "box.hpp"
 
-#include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/sfml-util.hpp"
-
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "sfml-util/gui/gui-elements.hpp"
+#include "sfml-util/sfml-util.hpp"
 
 namespace heroespath
 {
@@ -46,25 +45,29 @@ namespace sfml_util
 
             float GetMinWidth_Box(const bool WILL_GROW_TO_FIT)
             {
-                float width(static_cast<float>(
-                    GuiElements::Instance()->GetRect_LineSmallCornerTopLeft().width * 2));
+                auto width{ static_cast<float>(
+                    GuiElements::GetRect_LineSmallCornerTopLeft().width * 2) };
 
                 if (WILL_GROW_TO_FIT)
-                    width += GuiElements::Instance()->GetLineSmallBoxPadLeft()
-                        + GuiElements::Instance()->GetLineSmallBoxPadRight();
+                {
+                    width += GuiElements::GetLineSmallBoxPadLeft()
+                        + GuiElements::GetLineSmallBoxPadRight();
+                }
 
                 return width;
             }
 
             float GetMinHeight_Box(const bool WILL_GROW_TO_FIT)
             {
-                float height(static_cast<float>(
-                    GuiElements::Instance()->GetRect_LineSmallCornerTopLeft().height * 2));
+                auto height{ static_cast<float>(
+                    GuiElements::GetRect_LineSmallCornerTopLeft().height * 2) };
 
                 if (WILL_GROW_TO_FIT)
+                {
                     height
-                        += (GuiElements::Instance()->GetLineSmallBoxPadTop()
-                            + GuiElements::Instance()->GetLineSmallBoxPadBot());
+                        += (GuiElements::GetLineSmallBoxPadTop()
+                            + GuiElements::GetLineSmallBoxPadBot());
+                }
 
                 return height;
             }
@@ -93,17 +96,13 @@ namespace sfml_util
                       Side::Left,
                       false)
                 , cTopLeftSprite_(
-                      GuiElements::Instance()->GetTexture(),
-                      GuiElements::Instance()->GetRect_LineSmallCornerTopLeft())
+                      GuiElements::GetTexture(), GuiElements::GetRect_LineSmallCornerTopLeft())
                 , cTopRightSprite_(
-                      GuiElements::Instance()->GetTexture(),
-                      GuiElements::Instance()->GetRect_LineSmallCornerTopRight())
+                      GuiElements::GetTexture(), GuiElements::GetRect_LineSmallCornerTopRight())
                 , cBotLeftSprite_(
-                      GuiElements::Instance()->GetTexture(),
-                      GuiElements::Instance()->GetRect_LineSmallCornerBotLeft())
+                      GuiElements::GetTexture(), GuiElements::GetRect_LineSmallCornerBotLeft())
                 , cBotRightSprite_(
-                      GuiElements::Instance()->GetTexture(),
-                      GuiElements::Instance()->GetRect_LineSmallCornerBotRight())
+                      GuiElements::GetTexture(), GuiElements::GetRect_LineSmallCornerBotRight())
                 , backgroundImage_()
             {
                 SetupBox(BOX_INFO);
@@ -125,60 +124,70 @@ namespace sfml_util
 
                 // skip sprite setup if not drawing (region is invalid)
                 if (BOX_INFO.IsValid() == false)
+                {
                     return;
+                }
 
                 // skip if not drawing with sprites
                 if (BOX_INFO.gold_bars == false)
+                {
                     return;
+                }
 
                 // setup gold bar sprites
-                auto const GE_PTR{ GuiElements::Instance() };
 
                 // check the minimum width and height
                 const float MIN_WIDTH(GetMinWidth_Box(BOX_INFO.will_grow));
+
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (BOX_INFO.region.width >= MIN_WIDTH),
                     entityName_ << "'s width of " << BOX_INFO.region.width
                                 << " was smaller than the minimum of " << MIN_WIDTH
                                 << ".  (will_grow=" << std::boolalpha << BOX_INFO.will_grow << ")");
+
                 const float HORIZ_MID_LEN(
                     BOX_INFO.region.width - MIN_WIDTH
-                    + ((BOX_INFO.will_grow)
-                           ? ((GE_PTR->GetLineSmallBoxPadLeft() + GE_PTR->GetLineSmallBoxPadLeft())
-                              * 2.0f)
-                           : (0.0f)));
+                    + ((BOX_INFO.will_grow) ? ((GuiElements::GetLineSmallBoxPadLeft()
+                                                + GuiElements::GetLineSmallBoxPadLeft())
+                                               * 2.0f)
+                                            : (0.0f)));
 
                 const float MIN_HEIGHT(GetMinHeight_Box(BOX_INFO.will_grow));
+
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (BOX_INFO.region.height >= MIN_HEIGHT),
                     entityName_ << "'s height of " << BOX_INFO.region.height
                                 << " was smaller than the minimum of " << MIN_HEIGHT
                                 << ".   (will_grow=" << std::boolalpha << BOX_INFO.will_grow
                                 << ")");
+
                 const float VERT_MID_LEN(
                     BOX_INFO.region.height - MIN_HEIGHT
-                    + ((BOX_INFO.will_grow)
-                           ? ((GE_PTR->GetLineSmallBoxPadTop() + GE_PTR->GetLineSmallBoxPadBot())
-                              * 2.0f)
-                           : (0.0f)));
+                    + ((BOX_INFO.will_grow) ? ((GuiElements::GetLineSmallBoxPadTop()
+                                                + GuiElements::GetLineSmallBoxPadBot())
+                                               * 2.0f)
+                                            : (0.0f)));
 
                 // establish position and size
                 const float LEFT_TO_USE(
                     GetEntityPos().x
-                    - ((BOX_INFO.will_grow) ? (GE_PTR->GetLineSmallBoxPadLeft()) : (0.0f)));
+                    - ((BOX_INFO.will_grow) ? (GuiElements::GetLineSmallBoxPadLeft()) : (0.0f)));
+
                 const float TOP_TO_USE(
                     GetEntityPos().y
-                    - ((BOX_INFO.will_grow) ? (GE_PTR->GetLineSmallBoxPadTop()) : (0.0f)));
+                    - ((BOX_INFO.will_grow) ? (GuiElements::GetLineSmallBoxPadTop()) : (0.0f)));
+
                 const float WIDTH_TO_USE(
                     BOX_INFO.region.width
-                    + ((BOX_INFO.will_grow)
-                           ? (GE_PTR->GetLineSmallBoxPadLeft() + GE_PTR->GetLineSmallBoxPadRight())
-                           : (0.0f)));
+                    + ((BOX_INFO.will_grow) ? (GuiElements::GetLineSmallBoxPadLeft()
+                                               + GuiElements::GetLineSmallBoxPadRight())
+                                            : (0.0f)));
+
                 const float HEIGHT_TO_USE(
                     BOX_INFO.region.height
-                    + ((BOX_INFO.will_grow)
-                           ? (GE_PTR->GetLineSmallBoxPadTop() + GE_PTR->GetLineSmallBoxPadBot())
-                           : (0.0f)));
+                    + ((BOX_INFO.will_grow) ? (GuiElements::GetLineSmallBoxPadTop()
+                                               + GuiElements::GetLineSmallBoxPadBot())
+                                            : (0.0f)));
 
                 SetEntityRegion(
                     sf::FloatRect(LEFT_TO_USE, TOP_TO_USE, WIDTH_TO_USE, HEIGHT_TO_USE));
@@ -194,13 +203,15 @@ namespace sfml_util
 
                 const float RIGHT(
                     LEFT_TO_USE + cTopLeftSprite_.getLocalBounds().width + HORIZ_MID_LEN);
+
                 cTopRightSprite_.setPosition(RIGHT, TOP_TO_USE);
 
                 if (VERT_MID_LEN > 0)
                 {
                     rightLine_.Setup(
                         (RIGHT + cTopRightSprite_.getLocalBounds().width)
-                            - static_cast<float>(GE_PTR->GetRect_LineSmallVerticalRight().width),
+                            - static_cast<float>(
+                                  GuiElements::GetRect_LineSmallVerticalRight().width),
                         TOP_TO_USE + cTopRightSprite_.getLocalBounds().height,
                         static_cast<std::size_t>(VERT_MID_LEN));
                 }
@@ -214,7 +225,8 @@ namespace sfml_util
                     botLine_.Setup(
                         LEFT_TO_USE + cBotLeftSprite_.getLocalBounds().width,
                         (BOTTOM + cBotRightSprite_.getLocalBounds().height)
-                            - static_cast<float>(GE_PTR->GetRect_LineSmallHorizontalBot().height),
+                            - static_cast<float>(
+                                  GuiElements::GetRect_LineSmallHorizontalBot().height),
                         static_cast<std::size_t>(HORIZ_MID_LEN));
                 }
 
@@ -239,12 +251,15 @@ namespace sfml_util
                 topLine_.MoveEntityPos(
                     sfml_util::RelativeOffset(topLine_.GetEntityPos().x, POS_LEFT),
                     sfml_util::RelativeOffset(topLine_.GetEntityPos().y, POS_TOP));
+
                 rightLine_.MoveEntityPos(
                     sfml_util::RelativeOffset(rightLine_.GetEntityPos().x, POS_LEFT),
                     sfml_util::RelativeOffset(rightLine_.GetEntityPos().y, POS_TOP));
+
                 botLine_.MoveEntityPos(
                     sfml_util::RelativeOffset(botLine_.GetEntityPos().x, POS_LEFT),
                     sfml_util::RelativeOffset(botLine_.GetEntityPos().y, POS_TOP));
+
                 leftLine_.MoveEntityPos(
                     sfml_util::RelativeOffset(leftLine_.GetEntityPos().x, POS_LEFT),
                     sfml_util::RelativeOffset(leftLine_.GetEntityPos().y, POS_TOP));
@@ -252,12 +267,15 @@ namespace sfml_util
                 cTopLeftSprite_.move(
                     sfml_util::RelativeOffset(cTopLeftSprite_.getPosition().x, POS_LEFT),
                     sfml_util::RelativeOffset(cTopLeftSprite_.getPosition().y, POS_TOP));
+
                 cTopRightSprite_.move(
                     sfml_util::RelativeOffset(cTopRightSprite_.getPosition().x, POS_LEFT),
                     sfml_util::RelativeOffset(cTopRightSprite_.getPosition().y, POS_TOP));
+
                 cBotLeftSprite_.move(
                     sfml_util::RelativeOffset(cBotLeftSprite_.getPosition().x, POS_LEFT),
                     sfml_util::RelativeOffset(cBotLeftSprite_.getPosition().y, POS_TOP));
+
                 cBotRightSprite_.move(
                     sfml_util::RelativeOffset(cBotRightSprite_.getPosition().x, POS_LEFT),
                     sfml_util::RelativeOffset(cBotRightSprite_.getPosition().y, POS_TOP));
@@ -372,6 +390,7 @@ namespace sfml_util
 
                 return DID_FOCUS_CHANGE;
             }
+
         } // namespace box
     } // namespace gui
 } // namespace sfml_util

@@ -142,31 +142,35 @@ namespace sfml_util
 
         void RadioButton::SetupSprites(const Brightness::Enum BRIGHTNESS)
         {
-            auto const GE_PTR{ GuiElements::Instance() };
-
-            guiImage_.GetUpSprite().setTexture(GE_PTR->GetTexture());
-            guiImage_.GetDownSprite().setTexture(GE_PTR->GetTexture());
+            guiImage_.GetUpSprite().setTexture(GuiElements::GetTexture());
+            guiImage_.GetDownSprite().setTexture(GuiElements::GetTexture());
 
             switch (BRIGHTNESS)
             {
                 case Brightness::Dark:
                 {
-                    guiImage_.GetUpSprite().setTextureRect(GE_PTR->GetRect_RadioButtonDarkOff());
-                    guiImage_.GetDownSprite().setTextureRect(GE_PTR->GetRect_RadioButtonDarkOn());
+                    guiImage_.GetUpSprite().setTextureRect(
+                        GuiElements::GetRect_RadioButtonDarkOff());
+                    guiImage_.GetDownSprite().setTextureRect(
+                        GuiElements::GetRect_RadioButtonDarkOn());
                     break;
                 }
                 case Brightness::Medium:
                 {
-                    guiImage_.GetUpSprite().setTextureRect(GE_PTR->GetRect_RadioButtonMedOff());
-                    guiImage_.GetDownSprite().setTextureRect(GE_PTR->GetRect_RadioButtonMedOn());
+                    guiImage_.GetUpSprite().setTextureRect(
+                        GuiElements::GetRect_RadioButtonMedOff());
+                    guiImage_.GetDownSprite().setTextureRect(
+                        GuiElements::GetRect_RadioButtonMedOn());
                     break;
                 }
                 case Brightness::Bright:
                 case Brightness::Count:
                 default:
                 {
-                    guiImage_.GetUpSprite().setTextureRect(GE_PTR->GetRect_RadioButtonBrightOff());
-                    guiImage_.GetDownSprite().setTextureRect(GE_PTR->GetRect_RadioButtonBrightOn());
+                    guiImage_.GetUpSprite().setTextureRect(
+                        GuiElements::GetRect_RadioButtonBrightOff());
+                    guiImage_.GetDownSprite().setTextureRect(
+                        GuiElements::GetRect_RadioButtonBrightOn());
                     break;
                 }
             }

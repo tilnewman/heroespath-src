@@ -75,6 +75,7 @@ namespace stage
         , musicInfoLabelTextRegionUPtr_()
         , musicInfoDetailsTextRegionUPtr_()
         , revLabelTextRegionUPtr_()
+        , woodTexture_()
     {}
 
     SettingsStage::~SettingsStage() { Stage::ClearAllEntities(); }
@@ -277,9 +278,11 @@ namespace stage
             BG_BOX_WIDTH - (BG_BOX_INNER_PAD * 2.0f),
             BG_BOX_HEIGHT - (BG_BOX_INNER_PAD * 2.0f));
 
-        sfml_util::gui::BackgroundInfo bgBoxbgInfo{
-            sfml_util::gui::GuiElements::Instance()->GetTextureWood(), BG_BOX_RECT
-        };
+        sfml_util::LoadTexture(
+            woodTexture_,
+            game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-tile-wood"));
+
+        sfml_util::gui::BackgroundInfo bgBoxbgInfo{ woodTexture_, BG_BOX_RECT };
 
         bgBox_.SetupBox(sfml_util::gui::box::Info(
             true, BG_BOX_RECT, sfml_util::gui::ColorSet(sf::Color::White), bgBoxbgInfo));

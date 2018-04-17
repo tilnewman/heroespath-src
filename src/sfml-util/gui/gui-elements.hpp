@@ -27,7 +27,6 @@
 //
 // gui-elements.hpp
 //
-#include "misc/not-null.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
 #include <string>
@@ -40,7 +39,8 @@ namespace sfml_util
     namespace gui
     {
 
-        // Manages a set of sprites relating to gui drawing elements.
+        // Stores the GUI Elements image and provides access to various rects that define sub-images
+        // within it.
         class GuiElements
         {
         public:
@@ -48,279 +48,265 @@ namespace sfml_util
             GuiElements(GuiElements &&) = delete;
             GuiElements & operator=(const GuiElements &) = delete;
             GuiElements & operator=(GuiElements &&) = delete;
+            GuiElements() = delete;
 
-        public:
-            GuiElements();
-            ~GuiElements();
-
-            static misc::NotNull<GuiElements *> Instance();
-            static void Acquire();
-            static void Release();
+            static void LoadTexture();
 
             // Managed textures
             // these textures are used so often that it saves resources to keep a single instance of
             // them in memory
-            const sf::Texture & GetTexture() const { return elementsTexture_; }
-            const sf::Texture & GetTextureWood() const { return woodBgTexture_; }
-            const sf::Texture & GetTextureKnot() const { return darkKnotBgTexture_; }
+            static const sf::Texture & GetTexture() { return elementsTexture_; }
 
             // If the small line box is going to grow to fit inner contents, then these values
             // specity how to grow or shrink each side.
-            float GetLineSmallBoxPadLeft() const { return 8.0f; } // subtract this amount from left
-            float GetLineSmallBoxPadRight() const
-            {
-                return 9.0f;
-            } // add this amount to
-              // right
-            float GetLineSmallBoxPadTop() const { return 8.0f; } // subtract this amount from top
-            float GetLineSmallBoxPadBot() const { return 9.0f; } // add this amount to bottom
+            static float GetLineSmallBoxPadLeft() { return 8.0f; } // subtract this amount from left
+            static float GetLineSmallBoxPadRight() { return 9.0f; } // add this amount to right
+            static float GetLineSmallBoxPadTop() { return 8.0f; } // subtract this amount from top
+            static float GetLineSmallBoxPadBot() { return 9.0f; } // add this amount to bottom
 
-            // Get'ers for rects that define each gui element
-            const sf::IntRect GetRect_RadioButtonBrightOff() const
+            static const sf::IntRect GetRect_RadioButtonBrightOff()
             {
-                return radioButtonBrightOffSpriteRect_;
+                return sf::IntRect(0, 0, 20, 20);
             }
-            const sf::IntRect GetRect_RadioButtonBrightOn() const
+            static const sf::IntRect GetRect_RadioButtonBrightOn()
             {
-                return radioButtonBrightOnSpriteRect_;
+                return sf::IntRect(20, 0, 20, 20);
             }
-            const sf::IntRect GetRect_RadioButtonMedOff() const
+            static const sf::IntRect GetRect_RadioButtonMedOff()
             {
-                return radioButtonMedOffSpriteRect_;
+                return sf::IntRect(40, 0, 20, 20);
             }
-            const sf::IntRect GetRect_RadioButtonMedOn() const
+            static const sf::IntRect GetRect_RadioButtonMedOn()
             {
-                return radioButtonMedOnSpriteRect_;
+                return sf::IntRect(60, 0, 20, 20);
             }
-            const sf::IntRect GetRect_RadioButtonDarkOff() const
+            static const sf::IntRect GetRect_RadioButtonDarkOff()
             {
-                return radioButtonDarkOffSpriteRect_;
+                return sf::IntRect(80, 0, 20, 20);
             }
-            const sf::IntRect GetRect_RadioButtonDarkOn() const
+            static const sf::IntRect GetRect_RadioButtonDarkOn()
             {
-                return radioButtonDarkOnSpriteRect_;
+                return sf::IntRect(100, 0, 20, 20);
             }
-            const sf::IntRect GetRect_CheckBoxMedOff() const { return checkBoxMedOffSpriteRect_; }
-            const sf::IntRect GetRect_CheckBoxMedOn() const { return checkBoxMedOnSpriteRect_; }
-            const sf::IntRect GetRect_CheckBoxBrightOff() const
+            static const sf::IntRect GetRect_CheckBoxMedOff()
             {
-                return checkBoxBrightOffSpriteRect_;
+                return sf::IntRect(120, 0, 26, 23);
             }
-            const sf::IntRect GetRect_CheckBoxBrightOn() const
+            static const sf::IntRect GetRect_CheckBoxMedOn() { return sf::IntRect(146, 0, 26, 23); }
+            static const sf::IntRect GetRect_CheckBoxBrightOff()
             {
-                return checkBoxBrightOnSpriteRect_;
+                return sf::IntRect(172, 0, 26, 23);
             }
-            const sf::IntRect GetRect_CheckBoxDarkOff() const { return checkBoxDarkOffSpriteRect_; }
-            const sf::IntRect GetRect_CheckBoxDarkOn() const { return checkBoxDarkOnSpriteRect_; }
-            const sf::IntRect GetRect_ArrowMinusLeftMed() const
+            static const sf::IntRect GetRect_CheckBoxBrightOn()
             {
-                return arrowMinusLeftMedSpriteRect_;
+                return sf::IntRect(198, 0, 26, 23);
             }
-            const sf::IntRect GetRect_ArrowPlusRightMed() const
+            static const sf::IntRect GetRect_CheckBoxDarkOff()
             {
-                return arrowPlusRightMedSpriteRect_;
+                return sf::IntRect(224, 0, 26, 23);
             }
-            const sf::IntRect GetRect_ArrowMinusLeftBright() const
+            static const sf::IntRect GetRect_CheckBoxDarkOn() { return sf::IntRect(0, 23, 26, 23); }
+            static const sf::IntRect GetRect_ArrowMinusLeftMed()
             {
-                return arrowMinusLeftBrightSpriteRect_;
+                return sf::IntRect(26, 23, 27, 28);
             }
-            const sf::IntRect GetRect_ArrowPlusRightBright() const
+            static const sf::IntRect GetRect_ArrowPlusRightMed()
             {
-                return arrowPlusRightBrightSpriteRect_;
+                return sf::IntRect(53, 23, 27, 28);
             }
-            const sf::IntRect GetRect_ArrowMinusLeftDark() const
+            static const sf::IntRect GetRect_ArrowMinusLeftBright()
             {
-                return arrowMinusLeftDarkSpriteRect_;
+                return sf::IntRect(80, 23, 27, 28);
             }
-            const sf::IntRect GetRect_ArrowPlusRightDark() const
+            static const sf::IntRect GetRect_ArrowPlusRightBright()
             {
-                return arrowPlusRightDarkSpriteRect_;
+                return sf::IntRect(107, 23, 27, 28);
             }
-            const sf::IntRect GetRect_ArrowMinusDownBright() const
+            static const sf::IntRect GetRect_ArrowMinusLeftDark()
             {
-                return arrowMinusDownBrightSpriteRect_;
+                return sf::IntRect(134, 23, 27, 28);
             }
-            const sf::IntRect GetRect_ArrowPlusUpBright() const
+            static const sf::IntRect GetRect_ArrowPlusRightDark()
             {
-                return arrowPlusUpBrightSpriteRect_;
+                return sf::IntRect(161, 23, 27, 28);
             }
-            const sf::IntRect GetRect_ArrowMinusDownMed() const
+            static const sf::IntRect GetRect_ArrowMinusDownBright()
             {
-                return arrowMinusDownMedSpriteRect_;
+                return sf::IntRect(188, 23, 27, 27);
             }
-            const sf::IntRect GetRect_ArrowPlusUpMed() const { return arrowPlusUpMedSpriteRect_; }
-            const sf::IntRect GetRect_ArrowMinusDownDark() const
+            static const sf::IntRect GetRect_ArrowPlusUpBright()
             {
-                return arrowMinusDownDarkSpriteRect_;
+                return sf::IntRect(215, 23, 27, 27);
             }
-            const sf::IntRect GetRect_ArrowPlusUpDark() const { return arrowPlusUpDarkSpriteRect_; }
-            const sf::IntRect GetRect_ArrowLeftMed() const { return arrowLeftMedSpriteRect_; }
-            const sf::IntRect GetRect_ArrowRightMed() const { return arrowRightMedSpriteRect_; }
-            const sf::IntRect GetRect_ArrowDownMed() const { return arrowDownMedSpriteRect_; }
-            const sf::IntRect GetRect_ArrowUpMed() const { return arrowUpMedSpriteRect_; }
-            const sf::IntRect GetRect_ArrowLeftBright() const { return arrowLeftBrightSpriteRect_; }
-            const sf::IntRect GetRect_ArrowRightBright() const
+            static const sf::IntRect GetRect_ArrowMinusDownMed()
             {
-                return arrowRightBrightSpriteRect_;
+                return sf::IntRect(0, 51, 27, 27);
             }
-            const sf::IntRect GetRect_ArrowDownBright() const { return arrowDownBrightSpriteRect_; }
-            const sf::IntRect GetRect_ArrowUpBright() const { return arrowUpBrightSpriteRect_; }
-            const sf::IntRect GetRect_ArrowLeftDark() const { return arrowLeftDarkSpriteRect_; }
-            const sf::IntRect GetRect_ArrowRightDark() const { return arrowRightDarkSpriteRect_; }
-            const sf::IntRect GetRect_ArrowDownDark() const { return arrowDownDarkSpriteRect_; }
-            const sf::IntRect GetRect_ArrowUpDark() const { return arrowUpDarkSpriteRect_; }
-            const sf::IntRect GetRect_ArrowLargeLeft() const { return arrowLargeLeftSpriteRect_; }
-            const sf::IntRect GetRect_ArrowLargeUp() const { return arrowLargeUpSpriteRect_; }
-            const sf::IntRect GetRect_ArrowLargeRight() const { return arrowLargeRightSpriteRect_; }
-            const sf::IntRect GetRect_ArrowLargeDown() const { return arrowLargeDownSpriteRect_; }
-            const sf::IntRect GetRect_ArrowSmallLeft() const { return arrowSmallLeftSpriteRect_; }
-            const sf::IntRect GetRect_ArrowSmallUp() const { return arrowSmallUpSpriteRect_; }
-            const sf::IntRect GetRect_ArrowSmallRight() const { return arrowSmallRightSpriteRect_; }
-            const sf::IntRect GetRect_ArrowSmallDown() const { return arrowSmallDownSpriteRect_; }
-            const sf::IntRect GetRect_BoxSmall() const { return boxSmallSpriteRect_; }
-            const sf::IntRect GetRect_PadVerticalSmall() const
+            static const sf::IntRect GetRect_ArrowPlusUpMed()
             {
-                return padVerticalSmallSpriteRect_;
+                return sf::IntRect(27, 51, 27, 27);
             }
-            const sf::IntRect GetRect_PadVerticalLarge() const
+            static const sf::IntRect GetRect_ArrowMinusDownDark()
             {
-                return padVerticalLargeSpriteRect_;
+                return sf::IntRect(54, 51, 27, 27);
             }
-            const sf::IntRect GetRect_PadHorizontalLarge() const
+            static const sf::IntRect GetRect_ArrowPlusUpDark()
             {
-                return padHorizontalLargeSpriteRect_;
+                return sf::IntRect(81, 51, 27, 27);
             }
-            const sf::IntRect GetRect_HorizontalLineLarge() const
+            static const sf::IntRect GetRect_ArrowLeftMed() { return sf::IntRect(108, 51, 27, 27); }
+            static const sf::IntRect GetRect_ArrowRightMed()
             {
-                return horizontalLineLargeSpriteRect_;
+                return sf::IntRect(135, 51, 27, 27);
             }
-            const sf::IntRect GetRect_HorizontalLineSmall() const
+            static const sf::IntRect GetRect_ArrowDownMed() { return sf::IntRect(162, 51, 27, 27); }
+            static const sf::IntRect GetRect_ArrowUpMed() { return sf::IntRect(189, 51, 27, 27); }
+            static const sf::IntRect GetRect_ArrowLeftBright()
             {
-                return horizontalLineSmallSpriteRect_;
+                return sf::IntRect(216, 51, 27, 27);
             }
-            const sf::IntRect GetRect_LineSmallVerticalLeft() const
+            static const sf::IntRect GetRect_ArrowRightBright()
             {
-                return lineSmallVerticalLeftSpriteRect_;
+                return sf::IntRect(0, 78, 27, 27);
             }
-            const sf::IntRect GetRect_LineSmallVerticalRight() const
+            static const sf::IntRect GetRect_ArrowDownBright()
             {
-                return lineSmallVerticalRightSpriteRect_;
+                return sf::IntRect(27, 78, 27, 27);
             }
-            const sf::IntRect GetRect_LineSmallEndLeft() const
+            static const sf::IntRect GetRect_ArrowUpBright() { return sf::IntRect(54, 78, 27, 27); }
+            static const sf::IntRect GetRect_ArrowLeftDark() { return sf::IntRect(81, 78, 27, 27); }
+            static const sf::IntRect GetRect_ArrowRightDark()
             {
-                return lineSmallEndLeftSpriteRect_;
+                return sf::IntRect(108, 78, 27, 27);
             }
-            const sf::IntRect GetRect_LineSmallEndRight() const
+            static const sf::IntRect GetRect_ArrowDownDark()
             {
-                return lineSmallEndRightSpriteRect_;
+                return sf::IntRect(135, 78, 27, 27);
             }
-            const sf::IntRect GetRect_LineSmallEndTop() const { return lineSmallEndTopSpriteRect_; }
-            const sf::IntRect GetRect_LineSmallEndBot() const { return lineSmallEndBotSpriteRect_; }
-            const sf::IntRect GetRect_LineSmallCornerTopLeft() const
+            static const sf::IntRect GetRect_ArrowUpDark() { return sf::IntRect(162, 78, 27, 27); }
+            static const sf::IntRect GetRect_ArrowLargeLeft()
             {
-                return lineSmallCornerTopLeftSpriteRect_;
+                return sf::IntRect(189, 78, 36, 36);
             }
-            const sf::IntRect GetRect_LineSmallCornerTopRight() const
+            static const sf::IntRect GetRect_ArrowLargeUp() { return sf::IntRect(0, 114, 36, 36); }
+            static const sf::IntRect GetRect_ArrowLargeRight()
             {
-                return lineSmallCornerTopRightSpriteRect_;
+                return sf::IntRect(36, 114, 36, 36);
             }
-            const sf::IntRect GetRect_LineSmallCornerBotLeft() const
+            static const sf::IntRect GetRect_ArrowLargeDown()
             {
-                return lineSmallCornerBotLeftSpriteRect_;
+                return sf::IntRect(72, 114, 36, 36);
             }
-            const sf::IntRect GetRect_LineSmallCornerBotRight() const
+            static const sf::IntRect GetRect_ArrowSmallLeft()
             {
-                return lineSmallCornerBotRightSpriteRect_;
+                return sf::IntRect(108, 114, 28, 28);
             }
-            const sf::IntRect GetRect_LineSmallHorizontalTop() const
+            static const sf::IntRect GetRect_ArrowSmallUp()
             {
-                return lineSmallHorizontalTopSpriteRect_;
+                return sf::IntRect(136, 114, 28, 28);
             }
-            const sf::IntRect GetRect_LineSmallHorizontalBot() const
+            static const sf::IntRect GetRect_ArrowSmallRight()
             {
-                return lineSmallHorizontalBotSpriteRect_;
+                return sf::IntRect(164, 114, 28, 28);
             }
-            const sf::IntRect GetRect_LineSmallCross() const { return lineSmallCrossSpriteRect_; }
-            const sf::IntRect GetRect_LineSmallTTop() const { return lineSmallTTopSpriteRect_; }
-            const sf::IntRect GetRect_LineSmallTLeft() const { return lineSmallTLeftSpriteRect_; }
-            const sf::IntRect GetRect_LineSmallTBot() const { return lineSmallTBotSpriteRect_; }
-            const sf::IntRect GetRect_LineSmallTRight() const { return lineSmallTRightSpriteRect_; }
+            static const sf::IntRect GetRect_ArrowSmallDown()
+            {
+                return sf::IntRect(192, 114, 28, 28);
+            }
+            static const sf::IntRect GetRect_BoxSmall() { return sf::IntRect(0, 150, 42, 42); }
+            static const sf::IntRect GetRect_PadVerticalSmall()
+            {
+                return sf::IntRect(42, 150, 17, 28);
+            }
+            static const sf::IntRect GetRect_PadVerticalLarge()
+            {
+                return sf::IntRect(59, 150, 22, 39);
+            }
+            static const sf::IntRect GetRect_PadHorizontalLarge()
+            {
+                return sf::IntRect(81, 150, 40, 21);
+            }
+            static const sf::IntRect GetRect_HorizontalLineLarge()
+            {
+                return sf::IntRect(0, 192, 204, 15);
+            }
+            static const sf::IntRect GetRect_HorizontalLineSmall()
+            {
+                return sf::IntRect(0, 207, 201, 9);
+            }
+            static const sf::IntRect GetRect_LineSmallVerticalLeft()
+            {
+                return sf::IntRect(228, 81, 12, 59);
+            }
+            static const sf::IntRect GetRect_LineSmallVerticalRight()
+            {
+                return sf::IntRect(242, 81, 12, 59);
+            }
+            static const sf::IntRect GetRect_LineSmallEndLeft()
+            {
+                return sf::IntRect(83, 174, 14, 12);
+            }
+            static const sf::IntRect GetRect_LineSmallEndRight()
+            {
+                return sf::IntRect(98, 174, 14, 12);
+            }
+            static const sf::IntRect GetRect_LineSmallEndTop()
+            {
+                return sf::IntRect(243, 50, 12, 14);
+            }
+            static const sf::IntRect GetRect_LineSmallEndBot()
+            {
+                return sf::IntRect(243, 65, 12, 14);
+            }
+            static const sf::IntRect GetRect_LineSmallCornerTopLeft()
+            {
+                return sf::IntRect(0, 217, 19, 19);
+            }
+            static const sf::IntRect GetRect_LineSmallCornerTopRight()
+            {
+                return sf::IntRect(20, 217, 19, 19);
+            }
+            static const sf::IntRect GetRect_LineSmallCornerBotLeft()
+            {
+                return sf::IntRect(0, 237, 19, 19);
+            }
+            static const sf::IntRect GetRect_LineSmallCornerBotRight()
+            {
+                return sf::IntRect(20, 237, 19, 19);
+            }
+            static const sf::IntRect GetRect_LineSmallHorizontalTop()
+            {
+                return sf::IntRect(122, 144, 74, 12);
+            }
+            static const sf::IntRect GetRect_LineSmallHorizontalBot()
+            {
+                return sf::IntRect(122, 156, 74, 12);
+            }
+            static const sf::IntRect GetRect_LineSmallCross()
+            {
+                return sf::IntRect(60, 223, 26, 26);
+            }
+            static const sf::IntRect GetRect_LineSmallTTop()
+            {
+                return sf::IntRect(87, 230, 26, 19);
+            }
+            static const sf::IntRect GetRect_LineSmallTLeft()
+            {
+                return sf::IntRect(40, 223, 19, 26);
+            }
+            static const sf::IntRect GetRect_LineSmallTBot()
+            {
+                return sf::IntRect(114, 223, 26, 19);
+            }
+            static const sf::IntRect GetRect_LineSmallTRight()
+            {
+                return sf::IntRect(141, 223, 19, 26);
+            }
 
         private:
-            static std::unique_ptr<GuiElements> instanceUPtr_;
-            //
-            sf::Texture elementsTexture_;
-            sf::Texture woodBgTexture_;
-            sf::Texture darkKnotBgTexture_;
-            //
-            const sf::IntRect radioButtonBrightOffSpriteRect_;
-            const sf::IntRect radioButtonBrightOnSpriteRect_;
-            const sf::IntRect radioButtonMedOffSpriteRect_;
-            const sf::IntRect radioButtonMedOnSpriteRect_;
-            const sf::IntRect radioButtonDarkOffSpriteRect_;
-            const sf::IntRect radioButtonDarkOnSpriteRect_;
-            const sf::IntRect checkBoxMedOffSpriteRect_;
-            const sf::IntRect checkBoxMedOnSpriteRect_;
-            const sf::IntRect checkBoxBrightOffSpriteRect_;
-            const sf::IntRect checkBoxBrightOnSpriteRect_;
-            const sf::IntRect checkBoxDarkOffSpriteRect_;
-            const sf::IntRect checkBoxDarkOnSpriteRect_;
-            const sf::IntRect arrowMinusLeftMedSpriteRect_;
-            const sf::IntRect arrowPlusRightMedSpriteRect_;
-            const sf::IntRect arrowMinusLeftBrightSpriteRect_;
-            const sf::IntRect arrowPlusRightBrightSpriteRect_;
-            const sf::IntRect arrowMinusLeftDarkSpriteRect_;
-            const sf::IntRect arrowPlusRightDarkSpriteRect_;
-            const sf::IntRect arrowMinusDownBrightSpriteRect_;
-            const sf::IntRect arrowPlusUpBrightSpriteRect_;
-            const sf::IntRect arrowMinusDownMedSpriteRect_;
-            const sf::IntRect arrowPlusUpMedSpriteRect_;
-            const sf::IntRect arrowMinusDownDarkSpriteRect_;
-            const sf::IntRect arrowPlusUpDarkSpriteRect_;
-            const sf::IntRect arrowLeftMedSpriteRect_;
-            const sf::IntRect arrowRightMedSpriteRect_;
-            const sf::IntRect arrowDownMedSpriteRect_;
-            const sf::IntRect arrowUpMedSpriteRect_;
-            const sf::IntRect arrowLeftBrightSpriteRect_;
-            const sf::IntRect arrowRightBrightSpriteRect_;
-            const sf::IntRect arrowDownBrightSpriteRect_;
-            const sf::IntRect arrowUpBrightSpriteRect_;
-            const sf::IntRect arrowLeftDarkSpriteRect_;
-            const sf::IntRect arrowRightDarkSpriteRect_;
-            const sf::IntRect arrowDownDarkSpriteRect_;
-            const sf::IntRect arrowUpDarkSpriteRect_;
-            const sf::IntRect arrowLargeLeftSpriteRect_;
-            const sf::IntRect arrowLargeUpSpriteRect_;
-            const sf::IntRect arrowLargeRightSpriteRect_;
-            const sf::IntRect arrowLargeDownSpriteRect_;
-            const sf::IntRect arrowSmallLeftSpriteRect_;
-            const sf::IntRect arrowSmallUpSpriteRect_;
-            const sf::IntRect arrowSmallRightSpriteRect_;
-            const sf::IntRect arrowSmallDownSpriteRect_;
-            const sf::IntRect boxSmallSpriteRect_;
-            const sf::IntRect padVerticalSmallSpriteRect_;
-            const sf::IntRect padVerticalLargeSpriteRect_;
-            const sf::IntRect padHorizontalLargeSpriteRect_;
-            const sf::IntRect horizontalLineLargeSpriteRect_;
-            const sf::IntRect horizontalLineSmallSpriteRect_;
-            const sf::IntRect lineSmallVerticalLeftSpriteRect_;
-            const sf::IntRect lineSmallVerticalRightSpriteRect_;
-            const sf::IntRect lineSmallEndLeftSpriteRect_;
-            const sf::IntRect lineSmallEndRightSpriteRect_;
-            const sf::IntRect lineSmallEndTopSpriteRect_;
-            const sf::IntRect lineSmallEndBotSpriteRect_;
-            const sf::IntRect lineSmallCornerTopLeftSpriteRect_;
-            const sf::IntRect lineSmallCornerTopRightSpriteRect_;
-            const sf::IntRect lineSmallCornerBotLeftSpriteRect_;
-            const sf::IntRect lineSmallCornerBotRightSpriteRect_;
-            const sf::IntRect lineSmallHorizontalTopSpriteRect_;
-            const sf::IntRect lineSmallHorizontalBotSpriteRect_;
-            const sf::IntRect lineSmallCrossSpriteRect_;
-            const sf::IntRect lineSmallTTopSpriteRect_;
-            const sf::IntRect lineSmallTLeftSpriteRect_;
-            const sf::IntRect lineSmallTBotSpriteRect_;
-            const sf::IntRect lineSmallTRightSpriteRect_;
+            static sf::Texture elementsTexture_;
         };
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

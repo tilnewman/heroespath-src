@@ -396,6 +396,8 @@ namespace stage
         std::size_t selectedImageIndex_;
 
         std::vector<std::string> characterImageFilenamesVec_;
+
+        sf::Texture woodTexture_;
     };
 
 } // namespace stage

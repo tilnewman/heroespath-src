@@ -44,28 +44,31 @@ namespace sfml_util
 
             float GetMinWidth_CrossBox(const bool WILL_GROW_TO_FIT)
             {
-                auto const GE_PTR{ GuiElements::Instance() };
-
                 float width(
-                    static_cast<float>(GE_PTR->GetRect_LineSmallCornerTopLeft().width * 2)
-                    + static_cast<float>(GE_PTR->GetRect_LineSmallCross().width));
+                    static_cast<float>(GuiElements::GetRect_LineSmallCornerTopLeft().width * 2)
+                    + static_cast<float>(GuiElements::GetRect_LineSmallCross().width));
 
                 if (WILL_GROW_TO_FIT)
-                    width += GE_PTR->GetLineSmallBoxPadLeft() + GE_PTR->GetLineSmallBoxPadRight();
+                {
+                    width += GuiElements::GetLineSmallBoxPadLeft()
+                        + GuiElements::GetLineSmallBoxPadRight();
+                }
 
                 return width;
             }
 
             float GetMinHeight_CrossBox(const bool WILL_GROW_TO_FIT)
             {
-                auto const GE_PTR{ GuiElements::Instance() };
-
                 float height(
-                    static_cast<float>(GE_PTR->GetRect_LineSmallCornerTopLeft().height * 2)
-                    + static_cast<float>(GE_PTR->GetRect_LineSmallCross().height));
+                    static_cast<float>(GuiElements::GetRect_LineSmallCornerTopLeft().height * 2)
+                    + static_cast<float>(GuiElements::GetRect_LineSmallCross().height));
 
                 if (WILL_GROW_TO_FIT)
-                    height += (GE_PTR->GetLineSmallBoxPadTop() + GE_PTR->GetLineSmallBoxPadBot());
+                {
+                    height
+                        += (GuiElements::GetLineSmallBoxPadTop()
+                            + GuiElements::GetLineSmallBoxPadBot());
+                }
 
                 return height;
             }
@@ -121,21 +124,13 @@ namespace sfml_util
                       Orientation::Vert,
                       Side::Right,
                       false)
-                , crossSprite_(
-                      GuiElements::Instance()->GetTexture(),
-                      GuiElements::Instance()->GetRect_LineSmallCross())
+                , crossSprite_(GuiElements::GetTexture(), GuiElements::GetRect_LineSmallCross())
                 , tJointLeftSprite_(
-                      GuiElements::Instance()->GetTexture(),
-                      GuiElements::Instance()->GetRect_LineSmallTLeft())
+                      GuiElements::GetTexture(), GuiElements::GetRect_LineSmallTLeft())
                 , tJointRightSprite_(
-                      GuiElements::Instance()->GetTexture(),
-                      GuiElements::Instance()->GetRect_LineSmallTRight())
-                , tJointTopSprite_(
-                      GuiElements::Instance()->GetTexture(),
-                      GuiElements::Instance()->GetRect_LineSmallTTop())
-                , tJointBotSprite_(
-                      GuiElements::Instance()->GetTexture(),
-                      GuiElements::Instance()->GetRect_LineSmallTBot())
+                      GuiElements::GetTexture(), GuiElements::GetRect_LineSmallTRight())
+                , tJointTopSprite_(GuiElements::GetTexture(), GuiElements::GetRect_LineSmallTTop())
+                , tJointBotSprite_(GuiElements::GetTexture(), GuiElements::GetRect_LineSmallTBot())
             {
                 SetupCrossBox(
                     SCREEN_POS_LEFT,
@@ -213,8 +208,6 @@ namespace sfml_util
                 const bool WILL_GROW_TO_FIT,
                 const BackgroundInfo & BACKGROUND_INFO)
             {
-                auto const GE_PTR{ GuiElements::Instance() };
-
                 SetEntityRegion(sf::FloatRect(
                     POS_LEFT,
                     POS_TOP,
@@ -224,12 +217,15 @@ namespace sfml_util
                 // setup background within the initial region before it grows to fit
                 BackgroundInfo bgInfo(BACKGROUND_INFO);
                 bgInfo.region = GetEntityRegion();
-                bgInfo.region.left += GE_PTR->GetLineSmallBoxPadLeft();
-                bgInfo.region.top += GE_PTR->GetLineSmallBoxPadTop();
-                bgInfo.region.width
-                    -= GE_PTR->GetLineSmallBoxPadLeft() + GE_PTR->GetLineSmallBoxPadRight();
+                bgInfo.region.left += GuiElements::GetLineSmallBoxPadLeft();
+                bgInfo.region.top += GuiElements::GetLineSmallBoxPadTop();
+
+                bgInfo.region.width -= GuiElements::GetLineSmallBoxPadLeft()
+                    + GuiElements::GetLineSmallBoxPadRight();
+
                 bgInfo.region.height
-                    -= GE_PTR->GetLineSmallBoxPadBot() + GE_PTR->GetLineSmallBoxPadTop();
+                    -= GuiElements::GetLineSmallBoxPadBot() + GuiElements::GetLineSmallBoxPadTop();
+
                 backgroundImage_.Setup(bgInfo);
 
                 const float INTENDED_WIDTH(INTENDED_FIRST_WIDTH + INTENDED_SECOND_WIDTH);
@@ -238,23 +234,26 @@ namespace sfml_util
                 // check the minimum width and height
 
                 const float MIN_WIDTH(GetMinWidth_CrossBox(WILL_GROW_TO_FIT));
+
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (INTENDED_WIDTH >= MIN_WIDTH),
                     entityName_ << "'s width of " << INTENDED_WIDTH
                                 << " was smaller than the minimum of " << MIN_WIDTH
                                 << ".  (will_grow=" << std::boolalpha << WILL_GROW_TO_FIT << ")");
+
                 // const float HORIZ_MID_LEN(INTENDED_WIDTH - MIN_WIDTH + ((WILL_GROW_TO_FIT) ?
-                // ((GE_PTR->GetLineSmallBoxPadLeft() + GE_PTR->GetLineSmallBoxPadLeft()) * 2.0f) :
-                // (0.0f)));
+                // ((GuiElements::GetLineSmallBoxPadLeft() + GuiElements::GetLineSmallBoxPadLeft())
+                // * 2.0f) : (0.0f)));
 
                 const float FIRST_HORIZ_LEN(
                     INTENDED_FIRST_WIDTH
-                    - static_cast<float>(GE_PTR->GetRect_LineSmallCornerTopLeft().width)
-                    - static_cast<float>(GE_PTR->GetRect_LineSmallCross().width / 2));
+                    - static_cast<float>(GuiElements::GetRect_LineSmallCornerTopLeft().width)
+                    - static_cast<float>(GuiElements::GetRect_LineSmallCross().width / 2));
+
                 const float SECOND_HORIZ_LEN(
                     INTENDED_SECOND_WIDTH
-                    - static_cast<float>(GE_PTR->GetRect_LineSmallCornerTopRight().width)
-                    - static_cast<float>(GE_PTR->GetRect_LineSmallCross().width / 2));
+                    - static_cast<float>(GuiElements::GetRect_LineSmallCornerTopRight().width)
+                    - static_cast<float>(GuiElements::GetRect_LineSmallCross().width / 2));
 
                 // std::cout << entityName_ << "'s first_int_wid=" << INTENDED_FIRST_WIDTH << ",
                 // second_int_wid=" << INTENDED_SECOND_WIDTH << ", min_wid=" << MIN_WIDTH << ",
@@ -265,23 +264,26 @@ namespace sfml_util
                 // HORIZ_MID_LEN);
 
                 const float MIN_HEIGHT(GetMinHeight_CrossBox(WILL_GROW_TO_FIT));
+
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (INTENDED_HEIGHT >= MIN_HEIGHT),
                     entityName_ << "'s height of " << INTENDED_HEIGHT
                                 << " was smaller than the minimum of " << MIN_HEIGHT
                                 << ".   (will_grow=" << std::boolalpha << WILL_GROW_TO_FIT << ")");
+
                 // const float VERT_MID_LEN(INTENDED_HEIGHT - MIN_HEIGHT + ((WILL_GROW_TO_FIT) ?
-                // ((GE_PTR->GetLineSmallBoxPadTop() + GE_PTR->GetLineSmallBoxPadBot()) * 2.0f) :
-                // (0.0f)));
+                // ((GuiElements::GetLineSmallBoxPadTop() + GuiElements::GetLineSmallBoxPadBot())
+                // * 2.0f) : (0.0f)));
 
                 const float FIRST_VERT_LEN(
                     INTENDED_FIRST_HEIGHT
-                    - static_cast<float>(GE_PTR->GetRect_LineSmallCornerTopLeft().height)
-                    - static_cast<float>(GE_PTR->GetRect_LineSmallCross().height / 2));
+                    - static_cast<float>(GuiElements::GetRect_LineSmallCornerTopLeft().height)
+                    - static_cast<float>(GuiElements::GetRect_LineSmallCross().height / 2));
+
                 const float SECOND_VERT_LEN(
                     INTENDED_SECOND_HEIGHT
-                    - static_cast<float>(GE_PTR->GetRect_LineSmallCornerBotLeft().height)
-                    - static_cast<float>(GE_PTR->GetRect_LineSmallCross().height / 2));
+                    - static_cast<float>(GuiElements::GetRect_LineSmallCornerBotLeft().height)
+                    - static_cast<float>(GuiElements::GetRect_LineSmallCross().height / 2));
 
                 // std::cout << entityName_ << "'s first_int_hgt=" << INTENDED_FIRST_HEIGHT << ",
                 // second_int_hgt=" << INTENDED_SECOND_HEIGHT << ", min_hgt=" << MIN_HEIGHT << ",
@@ -290,20 +292,23 @@ namespace sfml_util
                 // establish overall position and size
                 const float LEFT_TO_USE(
                     GetEntityPos().x
-                    - ((WILL_GROW_TO_FIT) ? (GE_PTR->GetLineSmallBoxPadLeft()) : (0.0f)));
+                    - ((WILL_GROW_TO_FIT) ? (GuiElements::GetLineSmallBoxPadLeft()) : (0.0f)));
+
                 const float TOP_TO_USE(
                     GetEntityPos().y
-                    - ((WILL_GROW_TO_FIT) ? (GE_PTR->GetLineSmallBoxPadTop()) : (0.0f)));
+                    - ((WILL_GROW_TO_FIT) ? (GuiElements::GetLineSmallBoxPadTop()) : (0.0f)));
+
                 const float WIDTH_TO_USE(
                     INTENDED_WIDTH
-                    + ((WILL_GROW_TO_FIT)
-                           ? (GE_PTR->GetLineSmallBoxPadLeft() + GE_PTR->GetLineSmallBoxPadRight())
-                           : (0.0f)));
+                    + ((WILL_GROW_TO_FIT) ? (GuiElements::GetLineSmallBoxPadLeft()
+                                             + GuiElements::GetLineSmallBoxPadRight())
+                                          : (0.0f)));
+
                 const float HEIGHT_TO_USE(
                     INTENDED_HEIGHT
-                    + ((WILL_GROW_TO_FIT)
-                           ? (GE_PTR->GetLineSmallBoxPadTop() + GE_PTR->GetLineSmallBoxPadBot())
-                           : (0.0f)));
+                    + ((WILL_GROW_TO_FIT) ? (GuiElements::GetLineSmallBoxPadTop()
+                                             + GuiElements::GetLineSmallBoxPadBot())
+                                          : (0.0f)));
 
                 SetEntityRegion(
                     sf::FloatRect(LEFT_TO_USE, TOP_TO_USE, WIDTH_TO_USE, HEIGHT_TO_USE));
@@ -316,7 +321,10 @@ namespace sfml_util
                 x += cTopLeftSprite_.getLocalBounds().width;
 
                 if (FIRST_HORIZ_LEN > 0)
+                {
                     topLine_.Setup(x, y, static_cast<std::size_t>(FIRST_HORIZ_LEN));
+                }
+
                 x += FIRST_HORIZ_LEN;
 
                 tJointTopSprite_.setPosition(x, y);
@@ -325,51 +333,64 @@ namespace sfml_util
                 const float SECOND_TOP_AND_BOT_X(x);
 
                 if (SECOND_HORIZ_LEN > 0)
+                {
                     topLine2_.Setup(x, y, static_cast<std::size_t>(SECOND_HORIZ_LEN));
+                }
+
                 x += SECOND_HORIZ_LEN;
 
                 cTopRightSprite_.setPosition(x, y);
+
                 x
                     += (cTopRightSprite_.getLocalBounds().width
-                        - static_cast<float>(GE_PTR->GetRect_LineSmallVerticalRight().width));
+                        - static_cast<float>(GuiElements::GetRect_LineSmallVerticalRight().width));
+
                 y += cTopRightSprite_.getLocalBounds().height;
 
                 if (FIRST_VERT_LEN > 0)
+                {
                     rightLine_.Setup(x, y, static_cast<std::size_t>(FIRST_VERT_LEN));
+                }
+
                 y += FIRST_VERT_LEN;
                 x
                     -= (tJointRightSprite_.getLocalBounds().width
-                        - static_cast<float>(GE_PTR->GetRect_LineSmallVerticalRight().width));
+                        - static_cast<float>(GuiElements::GetRect_LineSmallVerticalRight().width));
 
                 tJointRightSprite_.setPosition(x, y);
                 y += tJointRightSprite_.getLocalBounds().height;
+
                 x
                     += (tJointRightSprite_.getLocalBounds().width
-                        - static_cast<float>(GE_PTR->GetRect_LineSmallVerticalRight().width));
+                        - static_cast<float>(GuiElements::GetRect_LineSmallVerticalRight().width));
 
                 if (misc::IsRealClose(SECOND_VERT_LEN, 0.0f))
+                {
                     rightLine2_.Setup(x, y, static_cast<std::size_t>(SECOND_VERT_LEN));
+                }
 
                 y += SECOND_VERT_LEN;
                 x
-                    += (static_cast<float>(GE_PTR->GetRect_LineSmallVerticalRight().width)
+                    += (static_cast<float>(GuiElements::GetRect_LineSmallVerticalRight().width)
                         - cBotRightSprite_.getLocalBounds().width);
 
                 cBotRightSprite_.setPosition(x, y);
                 x = SECOND_TOP_AND_BOT_X;
                 y
                     += (cBotRightSprite_.getLocalBounds().height
-                        - static_cast<float>(GE_PTR->GetRect_LineSmallHorizontalBot().height));
+                        - static_cast<float>(GuiElements::GetRect_LineSmallHorizontalBot().height));
 
                 const float BOTTOM_LINE_Y(y);
 
                 if (misc::IsRealClose(SECOND_HORIZ_LEN, 0.0f))
+                {
                     botLine_.Setup(x, y, static_cast<std::size_t>(SECOND_HORIZ_LEN));
+                }
 
                 // x -= (SECOND_HORIZ_LEN + tJointBotSprite_.getLocalBounds().width);
                 y
                     -= (tJointBotSprite_.getLocalBounds().height
-                        - static_cast<float>(GE_PTR->GetRect_LineSmallHorizontalBot().height));
+                        - static_cast<float>(GuiElements::GetRect_LineSmallHorizontalBot().height));
 
                 x = (LEFT_TO_USE + cBotLeftSprite_.getLocalBounds().width + FIRST_HORIZ_LEN);
                 tJointBotSprite_.setPosition(x, y);
@@ -382,19 +403,25 @@ namespace sfml_util
                 x = (LEFT_TO_USE + cBotLeftSprite_.getLocalBounds().width);
 
                 if (misc::IsRealClose(FIRST_HORIZ_LEN, 0.0f))
+                {
                     botLine2_.Setup(x, y, static_cast<std::size_t>(FIRST_HORIZ_LEN));
+                }
 
                 x = LEFT_TO_USE;
                 y
                     -= (cBotLeftSprite_.getLocalBounds().height
-                        - static_cast<float>(GE_PTR->GetRect_LineSmallHorizontalBot().height));
+                        - static_cast<float>(GuiElements::GetRect_LineSmallHorizontalBot().height));
+
                 cBotLeftSprite_.setPosition(x, y);
 
                 y
                     = (TOP_TO_USE + cTopLeftSprite_.getLocalBounds().height + FIRST_VERT_LEN
                        + tJointLeftSprite_.getLocalBounds().height);
+
                 if (SECOND_VERT_LEN > 0)
+                {
                     leftLine_.Setup(x, y, static_cast<std::size_t>(SECOND_VERT_LEN));
+                }
 
                 y = TOP_TO_USE + cTopLeftSprite_.getLocalBounds().height + FIRST_VERT_LEN;
                 x = LEFT_TO_USE;
@@ -403,7 +430,9 @@ namespace sfml_util
                 y = (TOP_TO_USE + cTopLeftSprite_.getLocalBounds().height);
 
                 if (FIRST_VERT_LEN > 0)
+                {
                     leftLine2_.Setup(x, y, static_cast<std::size_t>(FIRST_VERT_LEN));
+                }
 
                 if (FIRST_HORIZ_LEN > 0)
                 {
@@ -411,7 +440,8 @@ namespace sfml_util
                         (LEFT_TO_USE + tJointLeftSprite_.getLocalBounds().width),
                         (TOP_TO_USE + cTopLeftSprite_.getLocalBounds().height + FIRST_VERT_LEN
                          + (tJointLeftSprite_.getLocalBounds().height * 0.5f)
-                         - static_cast<float>(GE_PTR->GetRect_LineSmallHorizontalBot().height / 2)),
+                         - static_cast<float>(
+                               GuiElements::GetRect_LineSmallHorizontalBot().height / 2)),
                         static_cast<std::size_t>(FIRST_HORIZ_LEN));
                 }
 
@@ -422,7 +452,8 @@ namespace sfml_util
                          + crossSprite_.getLocalBounds().width),
                         (TOP_TO_USE + cTopLeftSprite_.getLocalBounds().height + FIRST_VERT_LEN
                          + (tJointLeftSprite_.getLocalBounds().height / 2.0f)
-                         - static_cast<float>(GE_PTR->GetRect_LineSmallHorizontalBot().height / 2)),
+                         - static_cast<float>(
+                               GuiElements::GetRect_LineSmallHorizontalBot().height / 2)),
                         static_cast<std::size_t>(SECOND_HORIZ_LEN));
                 }
 
@@ -431,7 +462,8 @@ namespace sfml_util
                     centerTopLine_.Setup(
                         (LEFT_TO_USE + cTopLeftSprite_.getLocalBounds().width + FIRST_HORIZ_LEN
                          + (tJointTopSprite_.getLocalBounds().width * 0.5f)
-                         - static_cast<float>(GE_PTR->GetRect_LineSmallVerticalRight().width / 2)),
+                         - static_cast<float>(
+                               GuiElements::GetRect_LineSmallVerticalRight().width / 2)),
                         (TOP_TO_USE + tJointTopSprite_.getLocalBounds().height),
                         static_cast<std::size_t>(FIRST_VERT_LEN));
                 }
@@ -441,12 +473,14 @@ namespace sfml_util
                     centerBotLine_.Setup(
                         (LEFT_TO_USE + cTopLeftSprite_.getLocalBounds().width + FIRST_HORIZ_LEN
                          + (tJointTopSprite_.getLocalBounds().width * 0.5f)
-                         - static_cast<float>(GE_PTR->GetRect_LineSmallVerticalRight().width / 2)),
+                         - static_cast<float>(
+                               GuiElements::GetRect_LineSmallVerticalRight().width / 2)),
                         (TOP_TO_USE + tJointTopSprite_.getLocalBounds().height + FIRST_VERT_LEN
                          + crossSprite_.getLocalBounds().height),
                         static_cast<std::size_t>(SECOND_VERT_LEN));
                 }
             }
+
         } // namespace box
     } // namespace gui
 } // namespace sfml_util

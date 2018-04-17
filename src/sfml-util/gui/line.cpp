@@ -29,10 +29,9 @@
 //
 #include "line.hpp"
 
+#include "misc/assertlogandthrow.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "misc/assertlogandthrow.hpp"
 
 namespace heroespath
 {
@@ -105,44 +104,44 @@ namespace sfml_util
 
         void Line::SetupBaseSprites()
         {
-            auto const GE_PTR{ GuiElements::Instance() };
-
             // which spirtes to use, and the length calculations
             if (ORIENTATION_ == Orientation::Horiz)
             {
                 if (SIDE_ == Side::Top)
                 {
                     middleSprite_ = sf::Sprite(
-                        GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallHorizontalTop());
+                        GuiElements::GetTexture(), GuiElements::GetRect_LineSmallHorizontalTop());
                 }
                 else
                 {
                     middleSprite_ = sf::Sprite(
-                        GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallHorizontalBot());
+                        GuiElements::GetTexture(), GuiElements::GetRect_LineSmallHorizontalBot());
                 }
 
-                endTopOrLeftSprite_
-                    = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallEndLeft());
-                endBotOrRightSprite_
-                    = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallEndRight());
+                endTopOrLeftSprite_ = sf::Sprite(
+                    GuiElements::GetTexture(), GuiElements::GetRect_LineSmallEndLeft());
+
+                endBotOrRightSprite_ = sf::Sprite(
+                    GuiElements::GetTexture(), GuiElements::GetRect_LineSmallEndRight());
             }
             else
             {
                 if (SIDE_ == Side::Left)
                 {
-                    middleSprite_
-                        = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallVerticalLeft());
+                    middleSprite_ = sf::Sprite(
+                        GuiElements::GetTexture(), GuiElements::GetRect_LineSmallVerticalLeft());
                 }
                 else
                 {
                     middleSprite_ = sf::Sprite(
-                        GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallVerticalRight());
+                        GuiElements::GetTexture(), GuiElements::GetRect_LineSmallVerticalRight());
                 }
 
                 endTopOrLeftSprite_
-                    = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallEndTop());
+                    = sf::Sprite(GuiElements::GetTexture(), GuiElements::GetRect_LineSmallEndTop());
+
                 endBotOrRightSprite_
-                    = sf::Sprite(GE_PTR->GetTexture(), GE_PTR->GetRect_LineSmallEndBot());
+                    = sf::Sprite(GuiElements::GetTexture(), GuiElements::GetRect_LineSmallEndBot());
             }
         }
 
@@ -155,6 +154,7 @@ namespace sfml_util
                                            endTopOrLeftSprite_.getLocalBounds().width
                                            + endBotOrRightSprite_.getLocalBounds().width)
                                      : 0);
+
                 if (length_ <= END_CAPS_WIDTH)
                 {
                     // if less than the minimum, then the length will be END_CAPS_WIDTH
@@ -164,8 +164,10 @@ namespace sfml_util
                 else
                 {
                     const std::size_t LENGTH_BETWEEN_ENDS(length_ - END_CAPS_WIDTH);
+
                     const std::size_t MIDDLE_SPRITE_WIDTH(
                         static_cast<std::size_t>(middleSprite_.getLocalBounds().width));
+
                     if (LENGTH_BETWEEN_ENDS < MIDDLE_SPRITE_WIDTH)
                     {
                         middleCount_ = 0;
@@ -185,6 +187,7 @@ namespace sfml_util
                                            endTopOrLeftSprite_.getLocalBounds().height
                                            + endBotOrRightSprite_.getLocalBounds().height)
                                      : 0);
+
                 if (length_ <= END_CAPS_HEIGHT)
                 {
                     // if less than the minimum, then the length will be END_CAPS_HEIGHT
@@ -194,8 +197,10 @@ namespace sfml_util
                 else
                 {
                     const std::size_t LENGTH_BETWEEN_ENDS(length_ - END_CAPS_HEIGHT);
+
                     const std::size_t MIDDLE_SPRITE_HEIGHT(
                         static_cast<std::size_t>(middleSprite_.getLocalBounds().height));
+
                     if (LENGTH_BETWEEN_ENDS < MIDDLE_SPRITE_HEIGHT)
                     {
                         middleCount_ = 0;
@@ -248,6 +253,7 @@ namespace sfml_util
                         INITIAL_POS_X
                             + (static_cast<float>(i) * middleSprite_.getLocalBounds().width),
                         0.0f);
+
                     offScreenTexture_.draw(middleSprite_);
                     posX += middleSprite_.getLocalBounds().width;
                 }
@@ -257,11 +263,13 @@ namespace sfml_util
                 if (pixelsOfMiddleToUse_ > 0)
                 {
                     const sf::IntRect ORIG_RECT(middleSprite_.getTextureRect());
+
                     middleSprite_.setTextureRect(sf::IntRect(
                         ORIG_RECT.left,
                         ORIG_RECT.top,
                         static_cast<int>(pixelsOfMiddleToUse_),
                         ORIG_RECT.height));
+
                     middleSprite_.setPosition(posX, 0.0f);
                     offScreenTexture_.draw(middleSprite_);
                     posX += static_cast<float>(pixelsOfMiddleToUse_);
@@ -314,6 +322,7 @@ namespace sfml_util
                         0.0f,
                         INITIAL_POS_Y
                             + (static_cast<float>(i) * middleSprite_.getLocalBounds().height));
+
                     offScreenTexture_.draw(middleSprite_);
                     posY += middleSprite_.getLocalBounds().height;
                 }
@@ -322,11 +331,13 @@ namespace sfml_util
                 if (pixelsOfMiddleToUse_ > 0)
                 {
                     const sf::IntRect ORIG_RECT(middleSprite_.getTextureRect());
+
                     middleSprite_.setTextureRect(sf::IntRect(
                         ORIG_RECT.left,
                         ORIG_RECT.top,
                         ORIG_RECT.width,
                         static_cast<int>(pixelsOfMiddleToUse_)));
+
                     middleSprite_.setPosition(0.0f, posY);
                     offScreenTexture_.draw(middleSprite_);
                     posY += static_cast<float>(pixelsOfMiddleToUse_);
@@ -349,8 +360,10 @@ namespace sfml_util
             // finalize the off-screen texture and setup the final sprite used in the draw() calls
             offScreenTexture_.display();
             finalSprite_.setTexture(offScreenTexture_.getTexture());
+
             finalSprite_.setTextureRect(
                 sf::IntRect(0, 0, static_cast<int>(width), static_cast<int>(height)));
+
             finalSprite_.setPosition(GetEntityPos());
         }
 
@@ -372,6 +385,7 @@ namespace sfml_util
             GuiEntity::MoveEntityPos(HORIZ, VERT);
             finalSprite_.move(HORIZ, VERT);
         }
+
     } // namespace gui
 } // namespace sfml_util
 } // namespace heroespath

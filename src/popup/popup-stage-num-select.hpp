@@ -80,7 +80,9 @@ namespace popup
         sfml_util::gui::TextEntryBoxUPtr_t textEntryBoxUPtr_;
         bool willSliderbarUpdate_;
         bool willTextBoxUpdate_;
+        sf::Texture woodTexture_;
     };
+
 } // namespace popup
 } // namespace heroespath
 
