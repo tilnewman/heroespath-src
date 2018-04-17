@@ -1162,19 +1162,17 @@ if (false == willImageCheck_)
 
                     M_HP_LOG_DBG(ss.str());
 
-                    const stats::StatSet STATS(10_str, 10_acc, 10_cha, 10_lck, 10_spd, 10_int);
-
                     std::ostringstream nameSS;
                     nameSS << "Name_" << RACE_STR << "_" << ROLE_STR << "_" << rankIndex;
 
                     creature::Creature character(
                         false,
                         nameSS.str(),
-                        creature::sex::Male,
-                        creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM),
+                        ((misc::random::Bool()) ? creature::sex::Female : creature::sex::Male),
                         RACE_ENUM,
                         ROLE_ENUM,
-                        STATS,
+                        stats::StatSet(10_str, 10_acc, 10_cha, 10_lck, 10_spd, 10_int),
+                        "",
                         10_health,
                         Rank_t(rankIndex),
                         Experience_t(rankIndex * 10000));

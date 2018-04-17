@@ -57,26 +57,46 @@ namespace creature
         CreatureFactory(CreatureFactory &&) = delete;
         CreatureFactory & operator=(const CreatureFactory &) = delete;
         CreatureFactory & operator=(CreatureFactory &&) = delete;
+        CreatureFactory() = delete;
 
-    public:
-        CreatureFactory() = default;
+        static const CreaturePtr_t MakeDefaultForDeserialization();
 
-        const CreaturePVec_t Make_FirstEncounter() const;
-
-    private:
-        const CreaturePtr_t Make_GoblinGrunt() const;
-        const CreaturePtr_t Make_Boar() const;
-
-        const CreaturePtr_t Make(
+        static void MakeEquipSaveAndFreePlayer(
+            const std::string & NAME,
+            const sex::Enum SEX,
+            const race::Enum & RACE,
+            const role::Enum & ROLE,
             const stats::StatSet & STATS,
-            const Health_t & HEALTH_MIN,
-            const Health_t & HEALTH_MAX,
+            const std::string & IMAGE_FILENAME);
+
+        static const CreaturePtr_t MakeAndEquipPlayerForTesting(
+            const std::string & NAME,
+            const race::Enum & RACE,
+            const role::Enum & ROLE,
+            const stats::StatSet & STATS);
+
+        static const CreaturePtr_t MakeAndEquipEnemy(
             const sex::Enum SEX,
             const race::Enum RACE,
             const role::Enum ROLE,
+            const stats::StatSet & STATS,
+            const Health_t & HEALTH,
             const Rank_t & RANK = 1_rank,
             const Experience_t & EXPERIENCE = 0_exp,
-            const Mana_t & MANA = 0_mana) const;
+            const Mana_t & MANA = 0_mana);
+
+        static const CreaturePVec_t MakeFirstEncounterEnemies();
+
+    private:
+        static const CreaturePtr_t MakePlayerAndEquip(
+            const std::string & NAME,
+            const sex::Enum SEX,
+            const race::Enum & RACE,
+            const role::Enum & ROLE,
+            const stats::StatSet & STATS,
+            const std::string & IMAGE_FILENAME);
+
+        static const CreaturePtr_t MakeGoblinGrunt();
     };
 
 } // namespace creature

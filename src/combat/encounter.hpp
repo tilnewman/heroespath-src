@@ -31,7 +31,6 @@
 //
 #include "combat/turn-action-enum.hpp"
 #include "combat/turn-info.hpp"
-#include "creature/creature-factory.hpp"
 #include "item/item-cache.hpp"
 #include "item/treasure-image-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
@@ -147,8 +146,6 @@ namespace combat
 
     private:
         static std::unique_ptr<Encounter> instanceUPtr_;
-
-        creature::CreatureFactory creatureFactory_;
 
         // Non-player creature pointers are owned by these vectors.
         // Each non-player creature pointer must only ever be in one of these vectors at a time.

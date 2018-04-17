@@ -31,6 +31,7 @@
 
 #include "creature/body-type.hpp"
 #include "creature/condition.hpp"
+#include "creature/creature-factory.hpp"
 #include "creature/creature.hpp"
 #include "creature/name-info.hpp"
 #include "creature/race-enum.hpp"
@@ -45,7 +46,6 @@
 #include "log/log-macros.hpp"
 #include "misc/random.hpp"
 #include "misc/real.hpp"
-#include "player/initial.hpp"
 #include "player/party.hpp"
 #include "popup/popup-manager.hpp"
 #include "popup/popup-stage-image-select.hpp"
@@ -65,7 +65,6 @@
 #include "sfml-util/sfml-util.hpp"
 #include "sfml-util/sound-manager.hpp"
 #include "sfml-util/tile.hpp"
-#include "state/game-state-factory.hpp"
 
 #include <memory>
 #include <sstream>
@@ -2862,26 +2861,14 @@ namespace stage
 
         stats::StatSet statSetFinal(statSetBase_);
 
-        creature::Creature newCharacter(
-            true,
+        creature::CreatureFactory::MakeEquipSaveAndFreePlayer(
             NAME,
             SEX_ENUM,
-            creature::BodyType::Make_FromRaceAndRole(RACE_ENUM, ROLE_ENUM),
             RACE_ENUM,
             ROLE_ENUM,
             statSetFinal,
-            0_health,
-            1_rank,
-            0_exp,
-            creature::CondEnumVec_t(),
-            creature::TitleEnumVec_t(),
-            item::Inventory(),
-            sfml_util::DateTime::CurrentDateTime(),
             characterImageFilenamesVec_.at(selectedImageIndex_));
 
-        const creature::CreaturePtr_t CREATURE_PTR{ &newCharacter };
-        player::Initial::Setup(CREATURE_PTR);
-        state::GameStateFactory::Instance()->SaveCharacter(CREATURE_PTR);
         ResetForNewCharacterCreation();
         characterImageFilenamesVec_.empty();
         return false;

@@ -232,16 +232,7 @@ namespace stage
             if ((selectedItemSPtr) && selectedItemSPtr->CHARACTER_PTR_OPT)
             {
                 auto const CHARACTER_PTR{ selectedItemSPtr->CHARACTER_PTR_OPT.value() };
-
-                if (state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR)
-                    == false)
-                {
-                    M_HP_LOG_ERR(
-                        "stage::PartyStage::HandleCallback(delete confirm popup)"
-                        << " unable to delete character \"" << CHARACTER_PTR->ToString()
-                        << "\" file.");
-                }
-
+                state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR);
                 characterListBoxUPtr_->Remove(selectedItemSPtr);
                 partyListBoxUPtr_->Remove(selectedItemSPtr);
 
@@ -793,14 +784,7 @@ namespace stage
                     CHARACTER_PTR),
                 std::end(unplayedCharactersPVec_));
 
-            if (state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR)
-                == false)
-            {
-                M_HP_LOG_ERR(
-                    "PartyStage::HandleCallback_StartButton() while trying to state::"
-                    << "GameStateFactory::DeleteUnplayedCharacterFile(\""
-                    << CHARACTER_PTR->ToString() << "\") failed.");
-            }
+            state::GameStateFactory::Instance()->DeleteUnplayedCharacterFile(CHARACTER_PTR);
         }
 
         // create a new GameState with the given party and then save it

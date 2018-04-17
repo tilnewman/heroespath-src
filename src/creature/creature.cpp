@@ -61,37 +61,30 @@ namespace creature
         const bool IS_PLAYER,
         const std::string & NAME,
         const sex::Enum SEX,
-        const BodyType & BODY_TYPE,
         const race::Enum & RACE,
         const role::Enum & ROLE,
         const stats::StatSet & STATS,
+        const std::string & IMAGE_FILENAME,
         const Health_t & HEALTH,
         const Rank_t & RANK,
         const Experience_t & EXPERIENCE,
-        const CondEnumVec_t & CONDITIONS_VEC,
-        const TitleEnumVec_t & TITLE_VEC,
-        const item::Inventory & INVENTORY,
-        const sfml_util::DateTime & DATE_TIME,
-        const std::string & IMAGE_FILENAME,
-        const spell::SpellEnumVec_t & SPELL_VEC,
-        const Mana_t & MANA,
-        const song::SongEnumVec_t & SONG_VEC)
+        const Mana_t & MANA)
         : isPlayer_(IS_PLAYER)
         , name_(NAME)
         , imageFilename_(IMAGE_FILENAME)
         , sex_(SEX)
-        , bodyType_(BODY_TYPE)
+        , bodyType_(BodyType::Make_FromRaceAndRole(RACE, ROLE))
         , race_(RACE)
         , role_(ROLE)
-        , conditionsVec_(CONDITIONS_VEC)
-        , titlesVec_(TITLE_VEC)
-        , inventory_(INVENTORY)
-        , dateTimeCreated_(DATE_TIME)
-        , spellsVec_(SPELL_VEC)
+        , conditionsVec_({ Conditions::Good })
+        , titlesVec_()
+        , inventory_()
+        , dateTimeCreated_(sfml_util::DateTime::CurrentDateTime())
+        , spellsVec_()
         , achievements_(NAME, ROLE)
         , heldWeaponsPVec_()
         , lastSpellCastNum_(0)
-        , songsVec_(SONG_VEC)
+        , songsVec_()
         , lastSongPlayedNum_(0)
         , healthCurrent_(HEALTH)
         , healthNormal_(HEALTH)
@@ -101,13 +94,6 @@ namespace creature
         , bonusSet_()
         , enchantmentsPVec_()
     {
-        // TODO move to CreatureFactory once it is the only place creatures are created
-        // verify valid RACE and ROLE combination
-        auto const ROLE_VEC{ race::Roles(race_) };
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (std::find(ROLE_VEC.begin(), ROLE_VEC.end(), role_) != ROLE_VEC.end()),
-            "creature::Creature::Constructor(race=" << RaceName() << ", role=" << RoleName()
-                                                    << ") invalid race/role combination.");
 
         if (imageFilename_.empty())
         {
@@ -122,13 +108,15 @@ namespace creature
         actualSet_.Get(stats::Traits::Speed).CurrAndNormSet(STATS.Spd().As<int>());
         actualSet_.Get(stats::Traits::Intelligence).CurrAndNormSet(STATS.Int().As<int>());
 
-        // set the default condition if not already there
-        if (conditionsVec_.empty())
-        {
-            ConditionAdd(Conditions::Good);
-        }
-
         ReCalculateTraitBonuses();
+
+        auto const VALID_ROLES{ race::Roles(RACE) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (std::find(std::begin(VALID_ROLES), std::end(VALID_ROLES), ROLE)
+             != std::end(VALID_ROLES)),
+            "creature::Creature::Creature(creature={"
+                << ToString() << "}) had a race/role combination is invalid.");
     }
 
     const std::string Creature::NameOrRaceAndRole(const bool IS_FIRST_LETTER_CAPS) const
@@ -1656,6 +1644,12 @@ namespace creature
 
     bool operator==(const Creature & L, const Creature & R)
     {
+        // short-circuit on the most likely member to differ
+        if (L.dateTimeCreated_ != R.dateTimeCreated_)
+        {
+            return false;
+        }
+
         if (std::tie(
                 L.name_,
                 L.imageFilename_,
@@ -1663,7 +1657,6 @@ namespace creature
                 L.bodyType_,
                 L.race_,
                 L.role_,
-                L.dateTimeCreated_,
                 L.achievements_,
                 L.lastSpellCastNum_,
                 L.lastSongPlayedNum_,
@@ -1680,7 +1673,6 @@ namespace creature
                    R.bodyType_,
                    R.race_,
                    R.role_,
-                   R.dateTimeCreated_,
                    R.achievements_,
                    R.lastSpellCastNum_,
                    R.lastSongPlayedNum_,
@@ -1719,40 +1711,47 @@ namespace creature
 
     bool operator<(const Creature & L, const Creature & R)
     {
+        // this function's compare is intentionally ordered to control the way creatures are sorted
+        // in lists, so don't re-order these compares
+
+        // short-circuit compare by name_ and dateTimeCreated_ first
+        if (L.name_ != R.name_)
+        {
+            return L.name_ < R.name_;
+        }
+
         if (std::tie(
-                L.name_,
-                L.dateTimeCreated_,
-                L.imageFilename_,
                 L.sex_,
-                L.bodyType_,
                 L.race_,
                 L.role_,
+                L.rank_,
+                L.experience_,
                 L.achievements_,
                 L.lastSpellCastNum_,
                 L.lastSongPlayedNum_,
                 L.healthCurrent_,
                 L.healthNormal_,
-                L.rank_,
-                L.experience_,
                 L.actualSet_,
-                L.bonusSet_)
+                L.bonusSet_,
+                L.bodyType_,
+                L.imageFilename_,
+                L.dateTimeCreated_)
             < std::tie(
-                  R.name_,
-                  R.dateTimeCreated_,
-                  R.imageFilename_,
                   R.sex_,
-                  R.bodyType_,
                   R.race_,
                   R.role_,
+                  R.rank_,
+                  R.experience_,
                   R.achievements_,
                   R.lastSpellCastNum_,
                   R.lastSongPlayedNum_,
                   R.healthCurrent_,
                   R.healthNormal_,
-                  R.rank_,
-                  R.experience_,
                   R.actualSet_,
-                  R.bonusSet_))
+                  R.bonusSet_,
+                  R.bodyType_,
+                  R.imageFilename_,
+                  R.dateTimeCreated_))
         {
             return true;
         }

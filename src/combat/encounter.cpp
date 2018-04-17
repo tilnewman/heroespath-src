@@ -60,8 +60,7 @@ namespace combat
     std::unique_ptr<Encounter> Encounter::instanceUPtr_;
 
     Encounter::Encounter()
-        : creatureFactory_()
-        , nonPlayerPartyPVec_()
+        : nonPlayerPartyPVec_()
         , deadNonPlayerPartyPVec_()
         , runawayNonPlayerPartyPVec_()
         , runawayPlayersVec_()
@@ -259,7 +258,7 @@ namespace combat
         // fight.
         if (game::Game::Instance()->State().IsNewGame())
         {
-            nonPlayerPartyPVec_ = creatureFactory_.Make_FirstEncounter();
+            nonPlayerPartyPVec_ = creature::CreatureFactory::MakeFirstEncounterEnemies();
         }
 
         // TODO move this to the Adventure Stage as well

@@ -114,21 +114,14 @@ namespace creature
             const bool IS_PLAYER = false,
             const std::string & NAME = "no_name_error",
             const sex::Enum SEX = creature::sex::Unknown,
-            const BodyType & BODY_TYPE = BodyType(),
-            const race::Enum & RAE = race::Human,
+            const race::Enum & RACE = race::Human,
             const role::Enum & ROLE = role::Archer,
             const stats::StatSet & STATS = stats::StatSet(),
+            const std::string & IMAGE_FILENAME = "",
             const Health_t & HEALTH = 0_health,
             const Rank_t & RANK = 1_rank,
             const Experience_t & EXPERIENCE = 0_exp,
-            const CondEnumVec_t & CONDITIONS_VEC = CondEnumVec_t(),
-            const TitleEnumVec_t & TITLES_VEC = TitleEnumVec_t(),
-            const item::Inventory & INVENTORY = item::Inventory(),
-            const sfml_util::DateTime & DATE_TIME = sfml_util::DateTime(),
-            const std::string & IMAGE_FILENAME = "",
-            const spell::SpellEnumVec_t & SPELL_VEC = spell::SpellEnumVec_t(),
-            const Mana_t & MANA = 0_mana,
-            const song::SongEnumVec_t & SONG_VEC = song::SongEnumVec_t());
+            const Mana_t & MANA = 0_mana);
 
         const BodyType Body() const { return bodyType_; }
 
@@ -425,6 +418,8 @@ namespace creature
 
         friend bool operator==(const Creature & L, const Creature & R);
         friend bool operator<(const Creature & L, const Creature & R);
+
+        bool ShallowCompare(const Creature &);
 
     protected:
         const item::ItemPVecVec_t ComposeWeaponsList() const;

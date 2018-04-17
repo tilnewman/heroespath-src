@@ -29,7 +29,9 @@
 //
 #include "avatar/avatar-enum.hpp"
 #include "misc/not-null.hpp"
+
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace heroespath
@@ -39,7 +41,7 @@ namespace creature
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
     using CreaturePVec_t = std::vector<CreaturePtr_t>;
-}
+} // namespace creature
 namespace player
 {
 
@@ -50,6 +52,9 @@ namespace player
     {
         static PartyUPtr_t Make(const avatar::Avatar::Enum, const creature::CreaturePVec_t &);
         static PartyUPtr_t MakeFakeForTesting();
+
+    private:
+        static const std::string MakeCharacterNameForTesting(const std::string & POSTFIX);
     };
 
 } // namespace player

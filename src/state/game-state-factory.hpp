@@ -32,6 +32,8 @@
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/not-null.hpp"
 
+#include <boost/filesystem.hpp>
+
 #include <memory>
 #include <sstream>
 #include <string>
@@ -84,12 +86,14 @@ namespace state
 
         void SaveGame(const GameStatePtr_t) const;
 
-        // Loaded Characters are not stored in player::CharacterWarehouse,
-        // so the caller is responsible for the lifetime of the returned objects.
+        // Loaded Characters are created by CreatureFactory and are therefore already stored in
+        // player::CreatureWarehouse, so the caller is responsible for calling
+        // CreatureWarehouse::Free().
         const creature::CreaturePVec_t LoadAllUnplayedCharacters() const;
 
         void SaveCharacter(const creature::CreaturePtr_t) const;
-        bool DeleteUnplayedCharacterFile(const creature::CreaturePtr_t) const;
+
+        void DeleteUnplayedCharacterFile(const creature::CreaturePtr_t) const;
 
     private:
         // hack'ish function that saves either the game or the character
@@ -101,6 +105,16 @@ namespace state
             const std::string & DIR_STR,
             const std::string & FILE_STR,
             const std::string & EXT_STR) const;
+
+        const boost::filesystem::path
+            CreateDirectoryPathFromCurrent(const std::string & SUBDIRECTORY_NAME) const;
+
+        bool DoesDirectoryExist(const boost::filesystem::path & DIR_PATH) const;
+
+        const std::vector<boost::filesystem::path> CreateVectorOfMatchingFilePathsInDir(
+            const boost::filesystem::path & DIR_PATH,
+            const std::string & FILENAME_PREFIX,
+            const std::string & FILENAME_EXTENSION) const;
 
         static const std::string SAVED_HEROESPATH_DIR_NAME_;
         static const std::string SAVED_HEROESPATH_FILE_NAME_;
