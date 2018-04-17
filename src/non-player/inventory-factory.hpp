@@ -62,8 +62,7 @@ namespace non_player
         // used by InventoryFactory
         using MaterialChanceMap_t = misc::VectorMap<item::material::Enum, float>;
 
-        // A Subsystem class that is responsible for creating sets of items
-        // that will equip non-player characters.
+        // Responsible for creating sets of items that will equip non-player characters.
         class InventoryFactory
         {
         public:
@@ -71,13 +70,7 @@ namespace non_player
             InventoryFactory(InventoryFactory &&) = delete;
             InventoryFactory & operator=(const InventoryFactory &) = delete;
             InventoryFactory & operator=(InventoryFactory &&) = delete;
-
-            InventoryFactory();
-            ~InventoryFactory();
-
-            static misc::NotNull<InventoryFactory *> Instance();
-            static void Acquire();
-            static void Release();
+            InventoryFactory() = delete;
 
             static void SetupCreatureInventory(const creature::CreaturePtr_t);
 
@@ -183,9 +176,6 @@ namespace non_player
 
                 item::ItemWarehouse::Access().Free(itemsToFreePVec);
             }
-
-        private:
-            static std::unique_ptr<InventoryFactory> instanceUPtr_;
         };
 
     } // namespace ownership

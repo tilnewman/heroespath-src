@@ -262,7 +262,6 @@ namespace game
             config::SettingsFile::Release();
 
             // factories should not be needed during shutdown, so release them early
-            non_player::ownership::InventoryFactory::Release();
             state::NpcFactory::Release();
             creature::EnchantmentFactory::Release();
             state::GameStateFactory::Release();
@@ -449,7 +448,6 @@ namespace game
         Game::Acquire();
         state::GameStateFactory::Acquire();
         creature::NameInfo::Acquire();
-        non_player::ownership::InventoryFactory::Acquire();
         combat::Encounter::Acquire();
         item::ItemProfileWarehouse::Acquire();
         non_player::ownership::ChanceFactory::Acquire();

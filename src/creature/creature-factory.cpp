@@ -104,7 +104,7 @@ namespace creature
         auto const CREATURE_PTR{ CreatureWarehouse::Access().Store(std::make_unique<Creature>(
             false, race::Name(RACE), SEX, RACE, ROLE, STATS, "", HEALTH, RANK, EXPERIENCE, MANA)) };
 
-        non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(CREATURE_PTR);
+        non_player::ownership::InventoryFactory::SetupCreatureInventory(CREATURE_PTR);
         return CREATURE_PTR;
     }
 

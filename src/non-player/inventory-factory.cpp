@@ -50,51 +50,6 @@ namespace non_player
     namespace ownership
     {
 
-        std::unique_ptr<InventoryFactory> InventoryFactory::instanceUPtr_;
-
-        InventoryFactory::InventoryFactory()
-        {
-            M_HP_LOG_DBG("Subsystem Construction: InventoryFactory");
-        }
-
-        InventoryFactory::~InventoryFactory()
-        {
-            M_HP_LOG_DBG("Subsystem Destruction: InventoryFactory");
-        }
-
-        misc::NotNull<InventoryFactory *> InventoryFactory::Instance()
-        {
-            if (!instanceUPtr_)
-            {
-                M_HP_LOG_ERR("Subsystem Instance() before Acquire(): InventoryFactory");
-                Acquire();
-            }
-
-            return instanceUPtr_.get();
-        }
-
-        void InventoryFactory::Acquire()
-        {
-            if (!instanceUPtr_)
-            {
-                instanceUPtr_ = std::make_unique<InventoryFactory>();
-            }
-            else
-            {
-                M_HP_LOG_ERR("Subsystem Acquire() after Construction: InventoryFactory");
-            }
-        }
-
-        void InventoryFactory::Release()
-        {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (instanceUPtr_),
-                "non_player::ownership::InventoryFactory::Release() found "
-                    << "instanceUPtr that was null.");
-
-            instanceUPtr_.reset();
-        }
-
         void InventoryFactory::SetupCreatureInventory(const creature::CreaturePtr_t CREATURE_PTR)
         {
             auto const INVENTORY_CHANCES{ ChanceFactory::Make(CREATURE_PTR) };

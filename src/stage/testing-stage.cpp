@@ -1187,8 +1187,7 @@ if (false == willImageCheck_)
                         "The image loaded for the creature had a side length of zero.  creature={"
                             << character.ToString() << "}");
 
-                    non_player::ownership::InventoryFactory::Instance()->SetupCreatureInventory(
-                        &character);
+                    non_player::ownership::InventoryFactory::SetupCreatureInventory(&character);
                 }
 
                 std::ostringstream ss;
