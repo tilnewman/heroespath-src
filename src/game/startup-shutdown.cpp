@@ -403,9 +403,6 @@ namespace game
 
     void StartupShutdown::Setup_ManagerClassResourcePaths()
     {
-        sfml_util::FontManager::SetFontsDirectory(
-            game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir"));
-
         popup::PopupManager::SetTexturesDirectoryPaths(
             game::GameDataFile::Instance()->GetMediaPath("media-images-backgrounds-popup-dir"),
             game::GameDataFile::Instance()->GetMediaPath("media-images-accents-dir"));

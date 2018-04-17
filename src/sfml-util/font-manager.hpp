@@ -70,7 +70,6 @@ namespace sfml_util
         static misc::NotNull<FontManager *> Instance();
         static void Acquire();
         static void Release();
-        static void SetFontsDirectory(const std::string & PATH);
 
         // colors
         static const sf::Color Color_GrayLight() { return sf::Color(200, 200, 200); }
@@ -172,7 +171,6 @@ namespace sfml_util
     private:
         static const sf::Font LoadFont(const std::string & FONT_FILE_NAME);
 
-    public:
         static const unsigned int SIZE_LARGER_MAX_;
         static const unsigned int SIZE_LARGER_MIN_;
         static const unsigned int SIZE_LARGE_MAX_;
@@ -188,7 +186,6 @@ namespace sfml_util
         static const unsigned int SIZE_TINY_MIN_;
         static const unsigned int SIZE_TINY_MAX_;
 
-    private:
         static std::string fontsDirectoryPath_;
         static std::unique_ptr<FontManager> instanceUPtr_;
         FontUVec_t fontUVec_;

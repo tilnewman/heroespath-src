@@ -29,14 +29,13 @@
 //
 #include "font-manager.hpp"
 
+#include "game/game-data-file.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
 
 #include <boost/filesystem.hpp>
-
-#include <memory>
 
 namespace heroespath
 {
@@ -63,7 +62,6 @@ namespace sfml_util
     const unsigned int FontManager::SIZE_TINY_MIN_(14);
     const unsigned int FontManager::SIZE_TINY_MAX_(56);
     //
-    std::string FontManager::fontsDirectoryPath_;
     std::unique_ptr<FontManager> FontManager::instanceUPtr_;
 
     FontManager::FontManager()
@@ -161,8 +159,6 @@ namespace sfml_util
         }
     }
 
-    void FontManager::SetFontsDirectory(const std::string & PATH) { fontsDirectoryPath_ = PATH; }
-
     unsigned int FontManager::Size_Larger() const
     {
         return sfml_util::MapByRes(SIZE_LARGER_MIN_, SIZE_LARGER_MAX_);
@@ -202,12 +198,13 @@ namespace sfml_util
     {
         namespace bfs = boost::filesystem;
 
+        auto const FONTS_DIR{ game::GameDataFile::Instance()->GetMediaPath("media-fonts-dir") };
+
         const bfs::path PATH_OBJ(
-            bfs::system_complete(bfs::path(fontsDirectoryPath_) / bfs::path(FONT_FILE_NAME)));
+            bfs::system_complete(bfs::path(FONTS_DIR) / bfs::path(FONT_FILE_NAME)));
 
         sf::Font font;
         sfml_util::LoadFont(font, PATH_OBJ.string());
-
         return font;
     }
 

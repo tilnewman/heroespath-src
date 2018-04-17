@@ -697,23 +697,24 @@ namespace stage
 
     const sf::Color AdventureCharacterList::FadedDarkColor_Line() const
     {
-        auto darkColor{ sfml_util::FontManager::Instance()->Color_GrayDarker() };
+        auto darkColor{ sfml_util::FontManager::Color_GrayDarker() };
         darkColor.a = ALPHA_FOR_LINES_;
         return darkColor;
     }
 
     const sf::Color AdventureCharacterList::FadedDarkColor_Text() const
     {
-        auto darkColor{ sfml_util::FontManager::Instance()->Color_GrayDarker() };
+        auto darkColor{ sfml_util::FontManager::Color_GrayDarker() };
         darkColor.a = ALPHA_FOR_TEXT_;
         return darkColor;
     }
 
     const sf::Color AdventureCharacterList::FadedDarkColor_CharacterImages() const
     {
-        auto darkColor{ sfml_util::FontManager::Instance()->Color_GrayDarker() };
+        auto darkColor{ sfml_util::FontManager::Color_GrayDarker() };
         darkColor.a = ALPHA_FOR_CHAR_IMAGES_;
         return darkColor;
     }
+
 } // namespace stage
 } // namespace heroespath

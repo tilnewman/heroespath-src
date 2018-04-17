@@ -854,7 +854,7 @@ namespace stage
         const std::string & TEXT,
         const float VERT_POS)
     {
-        auto const COLOR_UP{ sfml_util::FontManager::Instance()->Color_GrayDarker() };
+        auto const COLOR_UP{ sfml_util::FontManager::Color_GrayDarker() };
         auto const COLOR_OVER{ COLOR_UP - sf::Color(0, 0, 0, 127) };
         auto const COLOR_DOWN{ sf::Color::Black };
 

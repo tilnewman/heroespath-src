@@ -86,7 +86,7 @@ namespace interact
             TEXT,
             Text::Font(TYPE),
             sfml_util::FontManager::Instance()->Size_Large(),
-            sfml_util::FontManager::Instance()->Color_GrayDark(),
+            sfml_util::FontManager::Color_GrayDark(),
             sfml_util::Justified::Left);
     }
 
