@@ -28,6 +28,7 @@
 // armor-factory.hpp
 //  Code that is responsible for making armor objects.
 //
+#include "item/armor-type-wrapper.hpp"
 #include "item/armor-types.hpp"
 #include "item/item-factory-base.hpp"
 #include "item/item-type-wrapper.hpp"
@@ -55,7 +56,7 @@ namespace item
     {
 
         // Responsible for creating armor items.
-        class ArmorFactory : public FactoryBase
+        class ArmorFactory : public ItemFactoryBase
         {
         public:
             ArmorFactory(const ArmorFactory &) = delete;
@@ -66,86 +67,6 @@ namespace item
 
             static const ItemPtr_t Make(const ItemProfile &);
             static const ItemPtr_t Make(const body_part::Enum, const creature::CreaturePtr_t);
-
-        private:
-            static const ItemPtr_t Make_Cape_AsMiscItem(const ItemProfile &);
-
-            // primary material can be wood, secondary material can be Nothing
-            static const ItemPtr_t Make_Shield(
-                const category::Enum CATEGORY,
-                const TypeWrapper & TYPE_WRAPPER,
-                const shield_type::Enum TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC);
-
-            static const ItemPtr_t Make_Helm(
-                const category::Enum CATEGORY,
-                const TypeWrapper & TYPE_WRAPPER,
-                const helm_type::Enum TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC);
-
-            static const ItemPtr_t Make_Gauntlets(
-                const category::Enum CATEGORY,
-                const TypeWrapper & TYPE_WRAPPER,
-                const base_type::Enum TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const bool IS_PIXIE_ITEM);
-
-            static const ItemPtr_t Make_Pants(
-                const category::Enum CATEGORY,
-                const TypeWrapper & TYPE_WRAPPER,
-                const base_type::Enum TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const bool IS_PIXIE_ITEM);
-
-            static const ItemPtr_t Make_Boots(
-                const category::Enum CATEGORY,
-                const TypeWrapper & TYPE_WRAPPER,
-                const base_type::Enum TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const bool IS_PIXIE_ITEM);
-
-            static const ItemPtr_t Make_Shirt(
-                const category::Enum CATEGORY,
-                const TypeWrapper & TYPE_WRAPPER,
-                const base_type::Enum TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const bool IS_PIXIE_ITEM);
-
-            static const ItemPtr_t Make_Bracer(
-                const category::Enum CATEGORY,
-                const TypeWrapper & TYPE_WRAPPER,
-                const base_type::Enum TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const bool IS_PIXIE_ITEM);
-
-            static const ItemPtr_t Make_Aventail(
-                const category::Enum CATEGORY,
-                const TypeWrapper & TYPE_WRAPPER,
-                const base_type::Enum TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC);
-
-            // primary material should always be either cloth/softleather/hardleather
-            static const ItemPtr_t Make_Cover(
-                const category::Enum CATEGORY,
-                const TypeWrapper & TYPE_WRAPPER,
-                const cover_type::Enum TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const bool IS_PIXIE_ITEM);
-
-            // material must be plant, flesh, scale, hide, fur, or featers
-            static const ItemPtr_t Make_Skin(
-                const material::Enum MATERIAL,
-                const Rank_t & CREATURE_RANK,
-                const bool IS_PIXIE_ITEM);
         };
 
     } // namespace armor

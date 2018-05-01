@@ -113,7 +113,8 @@ namespace sfml_util
                 if (willContinue_)
                 {
                     age_ += ADJUSTMENT * spd_;
-                    const T NEW_VAL(static_cast<T>(0.5f + (sin(std::fmod(age_, TWO_PI_)) * 0.5f)));
+                    auto const NEW_VAL{ static_cast<T>(0.5)
+                                        + (sin(std::fmod(age_, TWO_PI_)) * static_cast<T>(0.5)) };
 
                     if ((val_ < NEW_VAL) || (misc::IsRealClose(val_, NEW_VAL)))
                     {
@@ -442,12 +443,14 @@ namespace sfml_util
         private:
             Value_t RandRange() const
             {
-                return static_cast<Value_t>(misc::random::Double(min_, max_));
+                return static_cast<Value_t>(
+                    misc::random::Double(static_cast<double>(min_), static_cast<double>(max_)));
             }
 
             Speed_t RandSpeed() const
             {
-                return static_cast<Speed_t>(misc::random::Double(spdMin_, spdMax_));
+                return static_cast<Speed_t>(misc::random::Double(
+                    static_cast<double>(spdMin_), static_cast<double>(spdMax_)));
             }
 
         private:
@@ -458,6 +461,7 @@ namespace sfml_util
             bool isIncreasing_;
             SliderOnce<Value_t, Speed_t> slider_;
         };
+
     } // namespace sliders
 } // namespace sfml_util
 } // namespace heroespath

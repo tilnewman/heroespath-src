@@ -56,7 +56,7 @@ namespace item
     {
 
         // Responsible for creating weapon items.
-        class WeaponFactory : public FactoryBase
+        class WeaponFactory : public ItemFactoryBase
         {
         public:
             WeaponFactory(const WeaponFactory &) = delete;
@@ -67,82 +67,6 @@ namespace item
 
             static const ItemPtr_t Make(const ItemProfile &);
             static const ItemPtr_t Make(const body_part::Enum, const creature::CreaturePtr_t);
-
-        private:
-            static const ItemPtr_t Make_Fists();
-            static const ItemPtr_t Make_Claws(const creature::CreaturePtr_t);
-            static const ItemPtr_t Make_Tendrils(const creature::CreaturePtr_t);
-            static const ItemPtr_t Make_Bite(const creature::CreaturePtr_t);
-            static const ItemPtr_t Make_Breath(const creature::CreaturePtr_t);
-
-            static const ItemPtr_t Make_Knife(
-                const category::Enum CATEGORY,
-                const weapon_type::Enum WEAPON_TYPE,
-                const TypeWrapper & TYPE_WRAPPER,
-                const bool IS_DAGGER,
-                const sfml_util::Size::Enum SIZE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const bool IS_PIXIE_ITEM);
-
-            static const ItemPtr_t Make_Sword(
-                const category::Enum CATEGORY,
-                const weapon_type::Enum WEAPON_TYPE,
-                const sword_type::Enum SWORD_TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const TypeWrapper & TYPE_WRAPPER);
-
-            static const ItemPtr_t Make_Axe(
-                const category::Enum CATEGORY,
-                const weapon_type::Enum WEAPON_TYPE,
-                const axe_type::Enum AXE_TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const TypeWrapper & TYPE_WRAPPER);
-
-            static const ItemPtr_t Make_Club(
-                const category::Enum CATEGORY,
-                const weapon_type::Enum WEAPON_TYPE,
-                const club_type::Enum CLUB_TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const TypeWrapper & TYPE_WRAPPER);
-
-            static const ItemPtr_t Make_Whip(
-                const category::Enum CATEGORY,
-                const weapon_type::Enum WEAPON_TYPE,
-                const whip_type::Enum WHIP_TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const TypeWrapper & TYPE_WRAPPER);
-
-            static const ItemPtr_t Make_Projectile(
-                const category::Enum CATEGORY,
-                const weapon_type::Enum WEAPON_TYPE,
-                const projectile_type::Enum PROJ_TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const TypeWrapper & TYPE_WRAPPER);
-
-            static const ItemPtr_t Make_Staff(
-                const category::Enum CATEGORY,
-                const weapon_type::Enum WEAPON_TYPE,
-                const bool IS_QUARTERSTAFF,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const bool IS_PIXIE_ITEM,
-                const TypeWrapper & TYPE_WRAPPER);
-
-            static const ItemPtr_t Make_Staff_AsMisc(const ItemProfile &);
-
-            static const ItemPtr_t Make_BladedStaff(
-                const category::Enum CATEGORY,
-                const weapon_type::Enum WEAPON_TYPE,
-                const bladedstaff_type::Enum STAFF_TYPE,
-                const material::Enum MATERIAL_PRI,
-                const material::Enum MATERIAL_SEC,
-                const TypeWrapper & TYPE_WRAPPER);
         };
 
     } // namespace weapon

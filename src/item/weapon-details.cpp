@@ -30,6 +30,7 @@
 #include "weapon-details.hpp"
 
 #include "game/game-data-file.hpp"
+#include "item/weapon-type-wrapper.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "stringutil/stringhelp.hpp"
@@ -64,49 +65,23 @@ namespace item
 
         void WeaponDetailLoader::LoadFromGameDataFile()
         {
-            LoadDetailsForKey("Claymore");
-            LoadDetailsForKey("Longsword");
-            LoadDetailsForKey("Flamberg");
-            LoadDetailsForKey("KnightlySword");
-            LoadDetailsForKey("Broadsword");
-            LoadDetailsForKey("Falcata");
-            LoadDetailsForKey("Saber");
-            LoadDetailsForKey("Cutlass");
-            LoadDetailsForKey("Rapier");
-            LoadDetailsForKey("Gladius");
-            LoadDetailsForKey("Shortsword");
-            LoadDetailsForKey("Handaxe");
-            LoadDetailsForKey("Sickle");
-            LoadDetailsForKey("Battleaxe");
-            LoadDetailsForKey("Waraxe");
-            LoadDetailsForKey("Spiked");
-            LoadDetailsForKey("Maul");
-            LoadDetailsForKey("Mace");
-            LoadDetailsForKey("Warhammer");
-            LoadDetailsForKey("Bullwhip");
-            LoadDetailsForKey("Flail");
-            LoadDetailsForKey("MaceAndChain");
-            LoadDetailsForKey("Blowpipe");
-            LoadDetailsForKey("Sling");
-            LoadDetailsForKey("Shortbow");
-            LoadDetailsForKey("Longbow");
-            LoadDetailsForKey("CompositeBow");
-            LoadDetailsForKey("Crossbow");
-            LoadDetailsForKey("Spear");
-            LoadDetailsForKey("ShortSpear");
-            LoadDetailsForKey("Scythe");
-            LoadDetailsForKey("Pike");
-            LoadDetailsForKey("Partisan");
-            LoadDetailsForKey("Halberd");
-            LoadDetailsForKey("Staff");
-            LoadDetailsForKey("Quarterstaff");
-            LoadDetailsForKey("Bite");
-            LoadDetailsForKey("Claws");
-            LoadDetailsForKey("Fists");
-            LoadDetailsForKey("Tendrils");
-            LoadDetailsForKey("Knife");
-            LoadDetailsForKey("BreathFirebrand");
-            LoadDetailsForKey("BreathSylavin");
+            for (auto const & WEAPON_TYPE_WRAPPER : WeaponTypeWrapper::MakeCompleteSet())
+            {
+                if (WEAPON_TYPE_WRAPPER.IsBreath())
+                {
+                    LoadDetailsForKey(
+                        WEAPON_TYPE_WRAPPER.DetailsKeyName()
+                        + creature::role::ToString(creature::role::Firebrand));
+
+                    LoadDetailsForKey(
+                        WEAPON_TYPE_WRAPPER.DetailsKeyName()
+                        + creature::role::ToString(creature::role::Sylavin));
+                }
+                else
+                {
+                    LoadDetailsForKey(WEAPON_TYPE_WRAPPER.DetailsKeyName());
+                }
+            }
         }
 
         void WeaponDetailLoader::LoadDetailsForKey(const std::string & WEAPON_NAME)

@@ -34,7 +34,7 @@ namespace heroespath
 namespace sfml_util
 {
 
-    namespace Size
+    struct Size
     {
         enum Enum
         {
@@ -44,8 +44,9 @@ namespace sfml_util
             Count
         };
 
-        const std::string ToString(const Size::Enum);
-    } // namespace Size
+        static const std::string ToString(const Size::Enum);
+    };
+
 } // namespace sfml_util
 } // namespace heroespath
 

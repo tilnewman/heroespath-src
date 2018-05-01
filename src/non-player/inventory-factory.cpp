@@ -64,10 +64,9 @@ namespace non_player
                 {
                     M_HP_LOG_ERR(
                         "non-player::ownership::InventoryFactory::SetupCreatureInventory"
-                        << "[to equip - add step](creature=\"" << CREATURE_PTR->ToString()
-                        << "\") unable to add the item \"" << NEXT_ITEM_PTR->Name() << "\" \""
-                        << NEXT_ITEM_PTR->Desc() << "\" with reported error \"" << ITEM_ADD_RESULT
-                        << "\".  Proceeding...");
+                        << "[to equip - add step](creature=\n{" << CREATURE_PTR->ToString()
+                        << "}) unable to add the item=\n{" << NEXT_ITEM_PTR->ToString()
+                        << "} with reported error=\n\"" << ITEM_ADD_RESULT << "\".  Proceeding...");
 
                     item::ItemWarehouse::Access().Free(NEXT_ITEM_PTR);
                 }
@@ -80,11 +79,10 @@ namespace non_player
                         {
                             M_HP_LOG_ERR(
                                 "non-player::ownership::InventoryFactory::"
-                                << "SetupCreatureInventory[to equip - equip step](creature=\""
-                                << CREATURE_PTR->ToString() << "\") unable to add the item \""
-                                << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc()
-                                << "\"with reported error \"" << ITEM_EQUIP_RESULT
-                                << "\".  Proceeding...");
+                                << "SetupCreatureInventory[to equip - equip step](creature=\n{"
+                                << CREATURE_PTR->ToString() << "}) unable to add the item=\n{"
+                                << NEXT_ITEM_PTR->ToString() << "} with reported error=\n\""
+                                << ITEM_EQUIP_RESULT << "\".  Proceeding...");
 
                             CREATURE_PTR->ItemRemove(NEXT_ITEM_PTR);
                             item::ItemWarehouse::Access().Free(NEXT_ITEM_PTR);
@@ -100,10 +98,10 @@ namespace non_player
                 {
                     M_HP_LOG_ERR(
                         "non-player::ownership::InventoryFactory::"
-                        << "SetupCreatureInventory[not to equip](creature=\""
-                        << CREATURE_PTR->ToString() << "\") unable to add the item \""
-                        << NEXT_ITEM_PTR->Name() << "\" \"" << NEXT_ITEM_PTR->Desc()
-                        << "\" with reported error \"" << ITEM_ADD_RESULT << "\".  Proceeding...");
+                        << "SetupCreatureInventory[not to equip]\n(creature={"
+                        << CREATURE_PTR->ToString() << "})\nunable to add the item=\n{"
+                        << NEXT_ITEM_PTR->ToString() << "} with reported error=\n\""
+                        << ITEM_ADD_RESULT << "\".  Proceeding...");
 
                     item::ItemWarehouse::Access().Free(NEXT_ITEM_PTR);
                 }
@@ -117,9 +115,7 @@ namespace non_player
         {
             IItemPVecPair_t itemsPtrVecPair;
 
-            auto const SKIN_MATERIAL{ item::material::SkinMaterial(CHARACTER_PTR->Race()) };
-            if ((SKIN_MATERIAL != item::material::Count)
-                && (SKIN_MATERIAL != item::material::Nothing))
+            if (item::ItemFactory::DoesCreatureRequireSkinArmor(CHARACTER_PTR))
             {
                 itemsPtrVecPair.first.emplace_back(
                     item::ItemFactory::Make(item::body_part::Skin, CHARACTER_PTR));
@@ -188,34 +184,10 @@ namespace non_player
                 }
             }
 
-            // prevent adding an aventail if there is no helm
-            auto const WILL_ADD_AVENTAIL{
-                std::find_if(
-                    armorItemsPVecPair.first.begin(),
-                    armorItemsPVecPair.first.end(),
-                    [](const item::ItemPtr_t PTR) {
-                        return (PTR->ArmorType() == item::armor_type::Aventail);
-                    })
-                != armorItemsPVecPair.first.end()
-            };
-
-            auto const CONTAINS_HELM{ std::find_if(
-                                          itemsPtrVecPair.first.begin(),
-                                          itemsPtrVecPair.first.end(),
-                                          [](const item::ItemPtr_t PTR) {
-                                              return (PTR->ArmorType() == item::armor_type::Helm);
-                                          })
-                                      != itemsPtrVecPair.first.end() };
-
-            if (WILL_ADD_AVENTAIL && (CONTAINS_HELM == false))
-            {
-                RemoveArmorTypeFromVecAndFree(item::armor_type::Aventail, armorItemsPVecPair.first);
-            }
-
             // no vests on beasts
             auto isVestOnBeast{ [CHARACTER_PTR](auto const ITEM_PTR) {
                 return (
-                    (ITEM_PTR->Armor_Info().cover == item::armor::cover_type::Vest)
+                    (ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Vest)
                     && ((CHARACTER_PTR->Race() == creature::race::Dragon)
                         || (CHARACTER_PTR->Race() == creature::race::Wolfen)));
             } };
@@ -234,7 +206,7 @@ namespace non_player
             // no shields without fingers
             auto isShieldWithoutFingers{ [CHARACTER_PTR](auto const ITEM_PTR) {
                 return (
-                    (ITEM_PTR->ArmorType() == item::armor_type::Sheild)
+                    (ITEM_PTR->ArmorType() == item::armor_type::Shield)
                     && (CHARACTER_PTR->Body().HasFingers() == false));
             } };
 
@@ -285,6 +257,43 @@ namespace non_player
 
             RemoveItemsAndFree(itemsPtrVecPair.first, isArmorOnBeast);
             RemoveItemsAndFree(itemsPtrVecPair.second, isArmorOnBeast);
+
+            // prevent adding an aventail if there is no helm
+            auto const CONTAINS_HELM{ std::find_if(
+                                          itemsPtrVecPair.first.begin(),
+                                          itemsPtrVecPair.first.end(),
+                                          [](const item::ItemPtr_t PTR) {
+                                              return (PTR->ArmorType() == item::armor_type::Helm);
+                                          })
+                                      != itemsPtrVecPair.first.end() };
+
+            if (CONTAINS_HELM == false)
+            {
+                auto const WILL_ADD_AVENTAIL{
+                    std::find_if(
+                        itemsPtrVecPair.first.begin(),
+                        itemsPtrVecPair.first.end(),
+                        [](const item::ItemPtr_t PTR) {
+                            return (PTR->ArmorType() == item::armor_type::Aventail);
+                        })
+                    != itemsPtrVecPair.first.end()
+                };
+
+                if (WILL_ADD_AVENTAIL)
+                {
+                    RemoveArmorTypeFromVecAndFree(
+                        item::armor_type::Aventail, itemsPtrVecPair.first);
+                }
+            }
+
+            // sort equipped items so that helms appear first, so that we don't get errors trying to
+            // add an aventail without a helm...
+            std::sort(
+                std::begin(itemsPtrVecPair.first),
+                std::end(itemsPtrVecPair.first),
+                [](auto const & ITEM_A_PTR, auto const &) {
+                    return ITEM_A_PTR->ArmorInfo().IsHelm();
+                });
 
             return itemsPtrVecPair;
         }
@@ -1196,7 +1205,9 @@ namespace non_player
                     item::ItemFactory::Make(item::body_part::Tendrils, CHARACTER_PTR));
             }
 
-            if (CHANCES.has_breath)
+            if (CHANCES.has_breath
+                && ((CHARACTER_PTR->Role() == creature::role::Sylavin)
+                    || (CHARACTER_PTR->Role() == creature::role::Firebrand)))
             {
                 bodyWeaponsSVec.emplace_back(
                     item::ItemFactory::Make(item::body_part::Breath, CHARACTER_PTR));

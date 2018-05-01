@@ -51,7 +51,17 @@ namespace item
 namespace creature
 {
 
-    // Responsible for making and storing all Enchantment objects.
+    // Responsible for making all Enchantment objects and for calculating the treasure scores for
+    // combinations of Enchantments.  Only the ItemProfieFactory querries the treasure scores, and
+    // only the Item constructor calls MakeAndStore().
+    //
+    // Item types such as set_type, named_type, unique_type, and elemental_type are all distinct
+    // item magical enchantments.  The only valid combination is that named_types often are
+    // element_types, and yes there are a very few unique_types that are also armor (cape's) that
+    // also have element types.  Only weapons and armor can be named_types and elemental_types.
+    // Unique_types cannot be weapons or armor, they must be misc_types.  If an item is unique_type
+    // then it will have Enchantments specifically for that unique_type and no Enchantments from the
+    // misc_type will be applied.
     class EnchantmentFactory
     {
     public:
@@ -68,13 +78,16 @@ namespace creature
         static void Acquire();
         static void Release();
 
-        // use to make/store/attach/return enchantments base on item type
+        // If part of a set, then only the set enchantments will apply.
+        // If unique, then only the unique_type enchantments will be applied.
+        // All unique_types are also misc_types but their enchantments are mutually exclusive.
+        // Enchantments from element_types, named_types, and misc_types can combine.
         const EnchantmentPVec_t MakeAndStore(
             const item::TypeWrapper &,
-            const bool IS_WEAPON,
-            const bool IS_ARMOR,
             const item::material::Enum MATERIAL_PRIMARY,
-            const item::material::Enum MATERIAL_SECONDARY) const;
+            const item::material::Enum MATERIAL_SECONDARY,
+            const bool IS_WEAPON,
+            const bool IS_ARMOR) const;
 
         Score_t TreasureScore(const item::unique_type::Enum, const item::material::Enum) const;
 

@@ -388,7 +388,7 @@ namespace item
                 break;
             }
 
-            if (PROFILE.Category() & item::category::QuestItem)
+            if (PROFILE.IsQuestItem())
             {
                 continue;
             }

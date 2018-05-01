@@ -100,9 +100,9 @@ namespace combat
         , POSITIONING_BETWEEN_SPACER_HORIZ_(sfml_util::MapByRes(5.0f, 200.0f))
         , POSITIONING_BETWEEN_SPACER_VERT_(sfml_util::MapByRes(25.0f, 200.0f))
         , CELL_HEIGHT_(sfml_util::MapByRes(
-              sfml_util::gui::CreatureImageManager::Dimmension()
+              sfml_util::gui::CreatureImageManager::MaxDimmension()
                   * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
-              sfml_util::gui::CreatureImageManager::Dimmension()
+              sfml_util::gui::CreatureImageManager::MaxDimmension()
                   * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_))
         , NAME_CHAR_SIZE_ORIG_(sfml_util::FontManager::Instance()->Size_CombatCreatureLabels())
         , SCREEN_WIDTH_(sfml_util::Display::Instance()->GetWinWidth())
@@ -1299,9 +1299,9 @@ namespace combat
         }
 
         const float CELL_WIDTH_MIN(sfml_util::MapByRes(
-            sfml_util::gui::CreatureImageManager::Dimmension()
+            sfml_util::gui::CreatureImageManager::MaxDimmension()
                 * POSITIONING_CELL_SIZE_RATIO_MIN_VERT_,
-            sfml_util::gui::CreatureImageManager::Dimmension()
+            sfml_util::gui::CreatureImageManager::MaxDimmension()
                 * POSITIONING_CELL_SIZE_RATIO_MAX_VERT_));
 
         const float CELL_WIDTH_ORIG(std::max(maxNameWidth, CELL_WIDTH_MIN));
@@ -1411,7 +1411,7 @@ namespace combat
         {
             CreatureToneDown(1.0f - summaryViewUPtr_->GetTransitionStatus());
 
-            if (summaryViewUPtr_->GetTransitionStatus() > 0.98)
+            if (summaryViewUPtr_->GetTransitionStatus() > 0.98f)
             {
                 SetIsSummaryViewInProgress(false);
 

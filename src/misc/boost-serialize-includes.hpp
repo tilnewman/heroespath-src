@@ -40,6 +40,7 @@
 #include <boost/serialization/set.hpp>
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/unique_ptr.hpp>
+#include <boost/serialization/variant.hpp>
 #include <boost/serialization/vector.hpp>
 
 #ifdef HEROESPATH_PLATFORM_DETECTED_IS_APPLE

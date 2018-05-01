@@ -363,7 +363,7 @@ namespace stage
         {
             auto isSkyPounce(false);
 
-            if ((TurnPhase::NotATurn != turnPhase_) && turnCreaturePtrOpt_)
+            if (turnCreaturePtrOpt_)
             {
                 isSkyPounce = combat::Encounter::Instance()
                                   ->GetTurnInfoCopy(turnCreaturePtrOpt_.value())
@@ -1212,7 +1212,7 @@ namespace stage
                 goldTextColorShaker_.Update(ELAPSED_TIME_SEC));
         }
 
-        if (IsNonPlayerCharacterTurnValid()
+        if (IsNonPlayerCharacterTurnValid() && enemyActionTBoxRegionUPtr_
             && ((TurnPhase::CenterAndZoomOut == turnPhase_)
                 || (TurnPhase::PostCenterAndZoomOutPause == turnPhase_)))
         {

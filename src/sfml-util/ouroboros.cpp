@@ -29,12 +29,11 @@
 //
 #include "ouroboros.hpp"
 
+#include "game/game-data-file.hpp"
+#include "log/log-macros.hpp"
 #include "sfml-util/display.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-util.hpp"
-
-#include "game/game-data-file.hpp"
-#include "log/log-macros.hpp"
 
 namespace heroespath
 {
@@ -51,12 +50,12 @@ namespace sfml_util
         , sizeDrifter_(
               sfml_util::MapByRes(0.45f, 2.25f) - 0.1f,
               sfml_util::MapByRes(0.45f, 2.25f) + 0.1f,
-              0.1f,
-              0.35f,
+              0.1,
+              0.35,
               sfml_util::MapByRes(0.45f, 2.25f) - 0.1f,
               sfml_util::MapByRes(0.45f, 2.25f) + 0.1f)
-        , shadeDrifter_(5.0f, 25.0f, 0.1f, 0.75f)
-        , rotSpeedDrifter_(1.0f, 10.0f, 0.25f, 0.75f)
+        , shadeDrifter_(5.0f, 25.0f, 0.1, 0.75)
+        , rotSpeedDrifter_(1.0f, 10.0f, 0.25, 0.75)
     {
         sfml_util::LoadTexture(
             texture_,

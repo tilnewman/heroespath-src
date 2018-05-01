@@ -127,7 +127,7 @@ namespace combat
                 "not empty.  Size="
                 << deadNonPlayerItemsLockbox_.items_pvec.size());
 
-            item::ItemWarehouse::Access().Free(deadNonPlayerItemsHeld_.items_pvec);
+            item::ItemWarehouse::Access().Free(deadNonPlayerItemsLockbox_.items_pvec);
         }
     }
 

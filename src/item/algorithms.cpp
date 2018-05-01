@@ -62,7 +62,7 @@ namespace item
                 ITEM_PVEC.end(),
                 back_inserter(resultSVec),
                 [CATEGORY_TYPE, MATCH_OPTION](auto const & ITEM_PTR) {
-                    return ITEM_PTR->IsCategoryType(CATEGORY_TYPE)
+                    return ((ITEM_PTR->Category() & CATEGORY_TYPE) != 0)
                         == (MATCH_OPTION == MatchOpt::Equal);
                 });
         }
@@ -85,7 +85,8 @@ namespace item
                 back_inserter(resultSVec),
                 [WEAPON_TYPE, MATCH_OPTION](auto const & ITEM_PTR) {
                     return (
-                        ITEM_PTR->IsWeaponType(WEAPON_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
+                        ((ITEM_PTR->WeaponType() & WEAPON_TYPE) != 0)
+                        == (MATCH_OPTION == MatchOpt::Equal));
                 });
         }
 
@@ -106,7 +107,8 @@ namespace item
                 ITEM_PVEC.end(),
                 back_inserter(resultSVec),
                 [ARMOR_TYPE, MATCH_OPTION](auto const & ITEM_PTR) {
-                    return (ITEM_PTR->IsArmorType(ARMOR_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
+                    return (
+                        (ITEM_PTR->ArmorType() == ARMOR_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
                 });
         }
 
@@ -125,7 +127,8 @@ namespace item
                 ITEM_PVEC.end(),
                 back_inserter(resultSVec),
                 [MISC_TYPE, MATCH_OPTION](auto const & ITEM_PTR) {
-                    return (ITEM_PTR->IsMiscType(MISC_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
+                    return (
+                        (ITEM_PTR->MiscType() == MISC_TYPE) == (MATCH_OPTION == MatchOpt::Equal));
                 });
         }
 

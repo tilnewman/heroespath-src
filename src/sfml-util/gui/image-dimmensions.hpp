@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Heroes' Path - Open-source, non-commercial, simple, game in the RPG style.
@@ -24,31 +22,23 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 ///////////////////////////////////////////////////////////////////////////////
+#ifndef HEROESPATH_SFMLUTIL_GUI_IMAGE_DIMMENSIONS_HPP_INCLUDED
+#define HEROESPATH_SFMLUTIL_GUI_IMAGE_DIMMENSIONS_HPP_INCLUDED
 //
-// armor-info.cpp
+// image-dimmensions.hpp
 //
-#include "armor-info.hpp"
-
 namespace heroespath
 {
-namespace item
+namespace sfml_util
 {
-    namespace armor
+    namespace gui
     {
-
-        ArmorInfo::ArmorInfo(const armor_type::Enum TYPE)
-            : type(TYPE)
-            , is_aventail(false)
-            , is_bracer(false)
-            , is_shirt(false)
-            , is_boots(false)
-            , is_pants(false)
-            , is_gauntlets(false)
-            , base(base_type::Count)
-            , cover(cover_type::Count)
-            , helm(helm_type::Count)
-            , shield(shield_type::Count)
-        {}
-    } // namespace armor
-} // namespace item
+        struct ImageDimmensions
+        {
+            static float ResourceStandardMax() { return 256.0f; }
+        };
+    } // namespace gui
+} // namespace sfml_util
 } // namespace heroespath
+
+#endif // HEROESPATH_SFMLUTIL_GUI_IMAGE_DIMMENSIONS_HPP_INCLUDED

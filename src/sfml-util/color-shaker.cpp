@@ -39,7 +39,7 @@ namespace sfml_util
         const sf::Color & COLOR_ALT,
         const float SPEED,
         const bool WILL_START)
-        : slider_(0.0f, 1.0f, SPEED)
+        : slider_(0.0f, 1.0f, static_cast<double>(SPEED))
         , colorOrig_(COLOR_ORIG)
         , colorAlt_(COLOR_ALT)
         , colorCurr_(COLOR_ORIG)

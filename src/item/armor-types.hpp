@@ -49,10 +49,6 @@ namespace item
             };
 
             static const std::string ToString(const shield_type::Enum);
-            static const std::string ToStringFull(const shield_type::Enum E)
-            {
-                return ToString(E) + " Shield";
-            }
             static shield_type::Enum FromString(const std::string &);
         };
 
@@ -70,10 +66,7 @@ namespace item
             };
 
             static const std::string ToString(const helm_type::Enum);
-            static const std::string ToStringFull(const helm_type::Enum E)
-            {
-                return ToString(E) + " Helm";
-            }
+            static const std::string Name(const helm_type::Enum E);
             static helm_type::Enum FromString(const std::string &);
         };
 
@@ -106,6 +99,7 @@ namespace item
             static const std::string ToString(const cover_type::Enum);
             static cover_type::Enum FromString(const std::string &);
         };
+
     } // namespace armor
 } // namespace item
 } // namespace heroespath

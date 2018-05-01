@@ -31,11 +31,21 @@
 //
 #include <fstream>
 
+#include "misc/boost-serialize-includes.hpp"
+
+// prevent a troubling (but in the end ignorable) warning in boost during msvc builds
+#if defined(WIN32) || defined(_WIN32) || defined(__WINDOWS__)
+#pragma warning(push)
+#pragma warning(disable : 4308)
+#endif
+
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
-
-#include "misc/boost-serialize-includes.hpp"
 #include <boost/serialization/export.hpp>
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WINDOWS__)
+#pragma warning(pop)
+#endif
 
 #include "item/item.hpp"
 BOOST_CLASS_EXPORT(heroespath::item::Item)

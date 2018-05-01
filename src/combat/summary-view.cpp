@@ -35,7 +35,7 @@
 #include "log/log-macros.hpp"
 #include "misc/real.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
+#include "sfml-util/gui/item-image-machine.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-region.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -506,6 +506,7 @@ namespace combat
         const float ITEM_IMAGE_HORIZ_MARGIN(sfml_util::MapByRes(45.0f, 150.0f));
         const float ITEM_IMAGE_POS_LEFT(IMAGE_POS_LEFT + ITEM_IMAGE_HORIZ_MARGIN);
         const float ITEM_IMAGE_POS_TOP_START_MARGIN(sfml_util::MapByRes(25.0f, 50.0f));
+
         const float ITEM_IMAGE_POS_TOP_START(
             IMAGE_POS_TOP + IMAGE_HEIGHT + ITEM_IMAGE_POS_TOP_START_MARGIN);
 
@@ -515,13 +516,14 @@ namespace combat
         const float ITEM_IMAGE_SCALE_DEFAULT(sfml_util::MapByRes(ITEM_IMAGE_SCALE_MIN, 1.0f));
 
         // find total item list height with default scale per item image
+        sfml_util::gui::ItemImageMachine itemImageMachine;
         float itemListHeightAtDefaultScale(0.0f);
         for (auto & nextItemText : itemWithTextVec_)
         {
-            sfml_util::gui::ItemImageManager::Load(nextItemText.texture, nextItemText.item_ptr);
-
+            itemImageMachine.Load(nextItemText.texture, nextItemText.item_ptr);
             nextItemText.sprite = sf::Sprite(nextItemText.texture);
             nextItemText.sprite.setScale(ITEM_IMAGE_SCALE_DEFAULT, ITEM_IMAGE_SCALE_DEFAULT);
+
             itemListHeightAtDefaultScale
                 += nextItemText.sprite.getGlobalBounds().height + IMAGE_BETWEEN_PAD_;
         }
@@ -616,7 +618,7 @@ namespace combat
 
             std::ostringstream infoSS;
 
-            if (nextItemText.item_ptr->Category() & item::category::QuestItem)
+            if (nextItemText.item_ptr->IsQuestItem())
             {
                 infoSS << ((infoSS.str().empty()) ? "" : ", ") << "(Quest Item)";
             }

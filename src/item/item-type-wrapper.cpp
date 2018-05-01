@@ -42,7 +42,7 @@ namespace item
         , name(named_type::NotNamed)
         , set(set_type::NotASet)
         , misc(misc_type::NotMisc)
-        , roleRestrictionBasedOnMiscAndSetType(creature::role::Count)
+        , roleRestriction(creature::role::Count)
         , summon()
     {}
 
@@ -52,8 +52,8 @@ namespace item
         , name(ITEM_PROFILE.NamedType())
         , set(ITEM_PROFILE.SetType())
         , misc(ITEM_PROFILE.MiscType())
-        , roleRestrictionBasedOnMiscAndSetType(ITEM_PROFILE.RoleRestrictionBasedOnMiscAndSetType())
-        , summon(ITEM_PROFILE.Summoning())
+        , roleRestriction(ITEM_PROFILE.RoleRestriction())
+        , summon(ITEM_PROFILE.SummonInfo())
     {}
 
 } // namespace item

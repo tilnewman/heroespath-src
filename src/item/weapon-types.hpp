@@ -56,6 +56,7 @@ namespace item
             };
 
             static const std::string ToString(const sword_type::Enum);
+            static const std::string Name(const sword_type::Enum);
         };
 
         struct axe_type
@@ -70,6 +71,7 @@ namespace item
             };
 
             static const std::string ToString(const axe_type::Enum);
+            static const std::string Name(const axe_type::Enum);
         };
 
         struct club_type
@@ -84,6 +86,7 @@ namespace item
             };
 
             static const std::string ToString(const club_type::Enum);
+            static const std::string Name(const club_type::Enum);
         };
 
         struct whip_type
@@ -97,6 +100,7 @@ namespace item
             };
 
             static const std::string ToString(const whip_type::Enum);
+            static const std::string Name(const whip_type::Enum);
         };
 
         struct projectile_type
@@ -113,6 +117,7 @@ namespace item
             };
 
             static const std::string ToString(const projectile_type::Enum);
+            static const std::string Name(const projectile_type::Enum);
         };
 
         struct bladedstaff_type
@@ -129,7 +134,9 @@ namespace item
             };
 
             static const std::string ToString(const bladedstaff_type::Enum);
+            static const std::string Name(const bladedstaff_type::Enum);
         };
+
     } // namespace weapon
 } // namespace item
 } // namespace heroespath

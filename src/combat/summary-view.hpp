@@ -26,8 +26,7 @@
 #define HEROESPATH_COMBAT_SUMMARY_VIEW_HPP_INCLUDED
 //
 // summary-view.hpp
-//  A collection of classes that are responsible for displaying creature details on the Combat
-//  Display
+//  Classes responsible for displaying creature details on the Combat Stage
 //
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"

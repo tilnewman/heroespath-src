@@ -34,6 +34,7 @@
 #include "creature/sex-enum.hpp"
 #include "creature/wolfen-class-enum.hpp"
 #include "misc/not-null.hpp"
+#include "sfml-util/gui/image-dimmensions.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 
 #include <memory>
@@ -65,7 +66,7 @@ namespace sfml_util
 
             static bool Test();
 
-            static float Dimmension() { return 256.0f; }
+            static float MaxDimmension() { return ImageDimmensions::ResourceStandardMax(); }
 
             static void GetImage(sf::Texture & texture, const creature::CreaturePtr_t);
 
@@ -82,11 +83,15 @@ namespace sfml_util
                 const creature::dragon_class::Enum DRAGON_CLASS
                 = creature::dragon_class::Hatchling);
 
+            static void EnsureFileExists(const std::string & FILENAME);
+
         private:
             static void LoadImage(
                 sf::Texture & texture,
                 const std::string & IMAGE_FILE_NAME,
                 const bool WILL_FACE_RIGHT = false);
+
+            static const std::string MakeFullPathFromFilename(const std::string & FILENAME);
         };
 
     } // namespace gui

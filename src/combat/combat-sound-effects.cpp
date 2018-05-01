@@ -195,7 +195,7 @@ namespace combat
                             .Play(sfml_util::sound_effect::MaterialHitFlesh);
                     }
 
-                    case item::material::Scale:
+                    case item::material::Scales:
                     {
                         return sfml_util::SoundManager::Instance()
                             ->Getsound_effect_set(sfml_util::sound_effect_set::MaterialHitMisc)
@@ -498,8 +498,7 @@ namespace combat
                 }
                 case creature::wolfen_class::Count:
                 default:
-                {
-                }
+                {}
             }
         }
         else if (ROLE == creature::role::Firebrand)
@@ -556,8 +555,7 @@ namespace combat
                 }
                 case creature::dragon_class::Count:
                 default:
-                {
-                }
+                {}
             }
         }
         else if (ROLE == creature::role::Sylavin)
@@ -614,8 +612,7 @@ namespace combat
                 }
                 case creature::dragon_class::Count:
                 default:
-                {
-                }
+                {}
             }
 
             M_HP_LOG_ERR(
@@ -897,8 +894,7 @@ namespace combat
             }
             case creature::race::Count:
             default:
-            {
-            }
+            {}
         }
     }
 

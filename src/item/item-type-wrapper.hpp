@@ -29,6 +29,7 @@
 //
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
+#include "creature/summon-info.hpp"
 #include "item/item-type-enum.hpp"
 
 namespace heroespath
@@ -49,7 +50,7 @@ namespace item
         named_type::Enum name;
         set_type::Enum set;
         misc_type::Enum misc;
-        creature::role::Enum roleRestrictionBasedOnMiscAndSetType;
+        creature::role::Enum roleRestriction;
         creature::SummonInfo summon;
     };
 

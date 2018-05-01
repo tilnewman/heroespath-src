@@ -308,6 +308,7 @@ namespace non_player
                 , projectile_map(PROJECTILE_MAP)
                 , bladedstaff_map(BLADEDSTAFF_MAP)
             {}
+
         } // namespace chance
     } // namespace ownership
 } // namespace non_player

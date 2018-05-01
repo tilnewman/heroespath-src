@@ -125,7 +125,7 @@ namespace sfml_util
 
         void DrawFader(const Fade &) const;
 
-        void DrawStage(const IStagePtr_t);
+        void DrawStage(const IStagePtr_t &);
 
         bool PollEvent(sf::Event & e) { return winUPtr_->pollEvent(e); }
 

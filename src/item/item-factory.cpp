@@ -30,6 +30,7 @@
 #include "item-factory.hpp"
 
 #include "creature/creature.hpp"
+#include "creature/summon-info.hpp"
 #include "game/loop-manager.hpp"
 #include "item/armor-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
@@ -40,7 +41,7 @@
 #include "item/weapon-factory.hpp"
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
+#include "sfml-util/gui/item-image-machine.hpp"
 
 #include <algorithm>
 #include <exception>
@@ -64,281 +65,191 @@ namespace item
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "item::ItemFactory::Test() Starting ItemProfile creation.  Please wait...");
-
-        static auto allItemProfilesVec{ ItemProfileWarehouse::Instance()->GetNormalProfiles() };
-
-        if (allItemProfilesVec.size()
-            == ItemProfileWarehouse::Instance()->GetNormalProfiles().size())
-        {
-            for (auto const & PROFILE : ItemProfileWarehouse::Instance()->GetReligiousProfiles())
-            {
-                allItemProfilesVec.emplace_back(PROFILE);
-            }
-        }
-
-        game::LoopManager::Instance()->TestingStrAppend(
-            "item::ItemFactory::Test() Finished ItemProfile creation.");
-
-        static auto hasTestedForDuplicates{ false };
-        if (false == hasTestedForDuplicates)
+        static auto didPostItemProfileCreationStart{ false };
+        if (false == didPostItemProfileCreationStart)
         {
             game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Starting Duplicate Test.  Please wait...");
+                "item::ItemFactory::Test() Starting ItemProfile creation.  Please wait...");
 
-            std::sort(std::begin(allItemProfilesVec), std::end(allItemProfilesVec));
+            didPostItemProfileCreationStart = true;
+        }
 
-            auto const UNIQUE_ITER{ std::unique(
-                std::begin(allItemProfilesVec), std::end(allItemProfilesVec)) };
+        static auto const & NORMAL_PROFILES{
+            ItemProfileWarehouse::Instance()->GetNormalProfiles()
+        };
 
-            if (UNIQUE_ITER != std::end(allItemProfilesVec))
+        static auto const & RELIGIOUS_PROFILES{
+            ItemProfileWarehouse::Instance()->GetNormalProfiles()
+        };
+
+        static auto didLogTotalItemProfileCount{ false };
+        if (false == didLogTotalItemProfileCount)
+        {
+            didLogTotalItemProfileCount = true;
+
+            std::ostringstream totalCountReportSS;
+
+            totalCountReportSS
+                << "item::ItemFactory::Test() ItemProfile creation finished.  Created "
+                << NORMAL_PROFILES.size() + RELIGIOUS_PROFILES.size() << " profiles.";
+
+            game::LoopManager::Instance()->TestingStrAppend(totalCountReportSS.str());
+        }
+
+        static auto hasTestedForDuplicatesNormal{ false };
+        if (false == hasTestedForDuplicatesNormal)
+        {
+            game::LoopManager::Instance()->TestingStrAppend(
+                "item::ItemFactory::Test() Starting Normal Duplicate Test.  Please wait...");
+
+            for (auto iter(std::begin(NORMAL_PROFILES)); iter != std::end(NORMAL_PROFILES); ++iter)
             {
-                std::ostringstream ss;
-                ss << "item::ItemFactory::Test() failed duplicate item profiles test:  Duplicate "
-                      "item profiles:  ";
-
-                for (auto iter(UNIQUE_ITER); iter != std::end(allItemProfilesVec); ++iter)
+                auto const NEXT_ITER{ std::next(iter, 1) };
+                if (NEXT_ITER == std::end(NORMAL_PROFILES))
                 {
-                    ss << "{" << iter->ToString() << "}   ";
+                    break;
                 }
-                throw std::runtime_error(ss.str());
-            }
-
-            hasTestedForDuplicates = true;
-            return false;
-        }
-
-        static auto hasTestedForInvalid{ false };
-        if (false == hasTestedForInvalid)
-        {
-            game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Starting Invalid Test.  Please wait...");
-
-            ItemProfileVec_t invalidProfiles;
-            for (auto const & PROFILE : allItemProfilesVec)
-            {
-                if (PROFILE.IsValid() == false)
+                else
                 {
-                    invalidProfiles.emplace_back(PROFILE);
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        ((*iter) != (*NEXT_ITER)),
+                        "item::ItemFactory::Test() Normal Duplicate Test failed for profile1={"
+                            << iter->ToString() << "} and profile2=" << NEXT_ITER->ToString()
+                            << "}.");
                 }
             }
 
-            if (invalidProfiles.empty() == false)
+            game::LoopManager::Instance()->TestingStrAppend(
+                "item::ItemFactory::Test() Normal Duplicate Test finished.");
+
+            hasTestedForDuplicatesNormal = true;
+            return false;
+        }
+
+        static auto hasTestedForDuplicatesReligious{ false };
+        if (false == hasTestedForDuplicatesReligious)
+        {
+            game::LoopManager::Instance()->TestingStrAppend(
+                "item::ItemFactory::Test() Starting Religious Duplicate Test.  Please wait...");
+
+            for (auto iter(std::begin(RELIGIOUS_PROFILES)); iter != std::end(RELIGIOUS_PROFILES);
+                 ++iter)
             {
-                std::ostringstream ss;
-                ss << "item::ItemFactory::Test() failed the invalid test.  Invalid Profiles:  ";
-                for (auto const & PROFILE : invalidProfiles)
+                auto const NEXT_ITER{ std::next(iter, 1) };
+                if (NEXT_ITER == std::end(RELIGIOUS_PROFILES))
                 {
-                    ss << "{" << PROFILE.ToString() << "}   ";
+                    break;
                 }
-                throw std::runtime_error(ss.str());
-            }
-
-            hasTestedForInvalid = true;
-            return false;
-        }
-
-        static auto hasTestedMakingItems_NamedEquipment{ false };
-        if (false == hasTestedMakingItems_NamedEquipment)
-        {
-            auto NAMED_TYPE_END_ITER{ std::partition(
-                allItemProfilesVec.begin(), allItemProfilesVec.end(), [](const ItemProfile & P) {
-                    return (
-                        (P.NamedType() != item::named_type::Count)
-                        && (P.NamedType() != item::named_type::NotNamed));
-                }) };
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (NAMED_TYPE_END_ITER != allItemProfilesVec.begin()),
-                "item::ItemFactory::Test() found no named_type ItemProfiles.");
-
-            for (auto iter{ allItemProfilesVec.begin() }; iter != NAMED_TYPE_END_ITER; ++iter)
-            {
-                auto itemPtr{ Make(*iter) };
-                TestItem("named_type", itemPtr, *iter);
-                ItemWarehouse::Access().Free(itemPtr);
+                else
+                {
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        ((*iter) != (*NEXT_ITER)),
+                        "item::ItemFactory::Test() Religious Duplicate Test failed for profile1={"
+                            << iter->ToString() << "} and profile2=" << NEXT_ITER->ToString()
+                            << "}.");
+                }
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
-                std::string("item::ItemFactory::Test() All named_type tests PASSED.")
-                + "  Starting Unique Item Tests.  Please wait...");
+                "item::ItemFactory::Test() Religious Duplicate Test finished.");
 
-            allItemProfilesVec.erase(allItemProfilesVec.begin(), NAMED_TYPE_END_ITER);
-            hasTestedMakingItems_NamedEquipment = true;
+            hasTestedForDuplicatesReligious = true;
             return false;
         }
 
-        static auto hasTestedMakingItems_Unique{ false };
-        if (false == hasTestedMakingItems_Unique)
+        static const std::size_t REPORT_STATUS_EVERY{ 10000 };
+        static std::size_t testIndex{ 0 };
+
+        static auto didTestNormal{ false };
+        if (false == didTestNormal)
         {
-            auto UNIQUE_TYPE_END_ITER{ std::partition(
-                allItemProfilesVec.begin(), allItemProfilesVec.end(), [](const ItemProfile & P) {
-                    return (
-                        (P.UniqueType() != item::unique_type::Count)
-                        && (P.UniqueType() != item::unique_type::NotUnique));
-                }) };
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (UNIQUE_TYPE_END_ITER != allItemProfilesVec.begin()),
-                "item::ItemFactory::Test() found no unique_type ItemProfiles.");
-
-            for (auto iter{ allItemProfilesVec.begin() }; iter != UNIQUE_TYPE_END_ITER; ++iter)
+            for (; testIndex < NORMAL_PROFILES.size();)
             {
-                auto itemPtr{ Make(*iter) };
-                TestItem("unique_type", itemPtr, *iter);
+                auto const & PROFILE{ NORMAL_PROFILES[testIndex] };
+
+                auto itemPtr{ Make(PROFILE) };
+                TestItem(itemPtr, PROFILE);
+                ItemWarehouse::Access().Free(itemPtr);
+
+                if ((++testIndex % REPORT_STATUS_EVERY) == 0)
+                {
+                    std::ostringstream statusReportSS;
+                    statusReportSS
+                        << "item::ItemFactory::Test() Making and Testing each normal item.  "
+                        << std::setprecision(2)
+                        << 100.0
+                            * (static_cast<double>(testIndex)
+                               / static_cast<double>(NORMAL_PROFILES.size()))
+                        << "%.  Please wait...";
+
+                    game::LoopManager::Instance()->TestingStrAppend(statusReportSS.str());
+
+                    return false;
+                }
+            }
+
+            testIndex = 0;
+            didTestNormal = true;
+            return false;
+        }
+
+        static auto didTestReligious{ false };
+        if (false == didTestReligious)
+        {
+            for (; testIndex < RELIGIOUS_PROFILES.size();)
+            {
+                auto const & PROFILE{ RELIGIOUS_PROFILES[testIndex] };
+
+                auto itemPtr{ Make(PROFILE) };
+                TestItem(itemPtr, PROFILE);
+                ItemWarehouse::Access().Free(itemPtr);
+
+                if ((++testIndex % REPORT_STATUS_EVERY) == 0)
+                {
+                    std::ostringstream statusReportSS;
+                    statusReportSS
+                        << "item::ItemFactory::Test() Making and Testing each religious item.  "
+                        << std::setprecision(2)
+                        << 100.0
+                            * (static_cast<double>(testIndex)
+                               / static_cast<double>(RELIGIOUS_PROFILES.size()))
+                        << "%.  Please wait...";
+
+                    game::LoopManager::Instance()->TestingStrAppend(statusReportSS.str());
+                    return false;
+                }
+            }
+
+            didTestReligious = true;
+            return false;
+        }
+
+        static auto didLogRandomItemsForNameAndDescriptionCheck{ false };
+        if (false == didLogRandomItemsForNameAndDescriptionCheck)
+        {
+            didLogRandomItemsForNameAndDescriptionCheck = true;
+
+            std::ostringstream randNameAndDescSS;
+            randNameAndDescSS << "\n\n~~~~~~~~~~~~~~~~~~~~ Random Item Names and Descriptions To "
+                                 "Verify ~~~~~~~~~~~~~~~~~~~~";
+
+            auto const COUNT{ 10 };
+            for (int i(0); i < COUNT; ++i)
+            {
+                auto const & PROFILE{ misc::Vector::SelectRandom(NORMAL_PROFILES) };
+                auto itemPtr{ Make(PROFILE) };
+
+                randNameAndDescSS << "\n\n\tName=\"" << itemPtr->Name() << "\"\n\tDesc=\""
+                                  << itemPtr->Desc() << "\"\n\tItem={" << itemPtr->ToString()
+                                  << "}";
+
                 ItemWarehouse::Access().Free(itemPtr);
             }
 
-            game::LoopManager::Instance()->TestingStrAppend(
-                std::string("item::ItemFactory::Test() All unique_type tests PASSED.")
-                + "  Starting Set Item Tests.  Please wait...");
+            randNameAndDescSS << "\n\n~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~\n\n";
 
-            allItemProfilesVec.erase(allItemProfilesVec.begin(), UNIQUE_TYPE_END_ITER);
-            hasTestedMakingItems_Unique = true;
-            return false;
+            M_HP_LOG_DBG(randNameAndDescSS.str());
         }
-
-        static auto hasTestedMakingItems_Set{ false };
-        if (false == hasTestedMakingItems_Set)
-        {
-            auto SET_TYPE_END_ITER{ std::partition(
-                allItemProfilesVec.begin(), allItemProfilesVec.end(), [](const ItemProfile & P) {
-                    return (
-                        (P.SetType() != item::set_type::Count)
-                        && (P.SetType() != item::set_type::NotASet));
-                }) };
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (SET_TYPE_END_ITER != allItemProfilesVec.begin()),
-                "item::ItemFactory::Test() found no unique_type ItemProfiles.");
-
-            for (auto iter{ allItemProfilesVec.begin() }; iter != SET_TYPE_END_ITER; ++iter)
-            {
-                auto itemPtr{ Make(*iter) };
-                TestItem("set_type", itemPtr, *iter);
-                ItemWarehouse::Access().Free(itemPtr);
-            }
-
-            game::LoopManager::Instance()->TestingStrAppend(
-                std::string("item::ItemFactory::Test() All set_type tests PASSED.")
-                + "  Starting Misc Item Tests.  Please wait...");
-
-            allItemProfilesVec.erase(allItemProfilesVec.begin(), SET_TYPE_END_ITER);
-            hasTestedMakingItems_Set = true;
-            return false;
-        }
-
-        static auto hasTestedMakingItems_Misc{ false };
-        if (false == hasTestedMakingItems_Misc)
-        {
-            auto MISC_TYPE_END_ITER{ std::partition(
-                allItemProfilesVec.begin(), allItemProfilesVec.end(), [](const ItemProfile & P) {
-                    return (
-                        (P.MiscType() != item::misc_type::Count)
-                        && (P.MiscType() != item::misc_type::NotMisc));
-                }) };
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (MISC_TYPE_END_ITER != allItemProfilesVec.begin()),
-                "item::ItemFactory::Test() found no misc_type ItemProfiles.");
-
-            for (auto iter{ allItemProfilesVec.begin() }; iter != MISC_TYPE_END_ITER; ++iter)
-            {
-                auto itemPtr{ Make(*iter) };
-                TestItem("misc_type", itemPtr, *iter);
-                ItemWarehouse::Access().Free(itemPtr);
-            }
-
-            game::LoopManager::Instance()->TestingStrAppend(
-                std::string("item::ItemFactory::Test() All stand-alone misc_type ")
-                + "tests PASSED.  Starting Equipment with Element Type Tests. Please wait...");
-
-            allItemProfilesVec.erase(allItemProfilesVec.begin(), MISC_TYPE_END_ITER);
-            hasTestedMakingItems_Misc = true;
-            return false;
-        }
-
-        static auto hasTestedMakingItems_ElementEquipment{ false };
-        if (false == hasTestedMakingItems_ElementEquipment)
-        {
-            auto ELEMENT_TYPE_END_ITER{ std::partition(
-                allItemProfilesVec.begin(), allItemProfilesVec.end(), [](const ItemProfile & P) {
-                    return (P.ElementType() != item::element_type::None);
-                }) };
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (allItemProfilesVec.begin() != ELEMENT_TYPE_END_ITER),
-                "item::ItemFactory::Test() found no element_type ItemProfiles.");
-
-            for (auto iter{ allItemProfilesVec.begin() }; iter != ELEMENT_TYPE_END_ITER; ++iter)
-            {
-                auto itemPtr{ Make(*iter) };
-
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (itemPtr->IsWeapon() || itemPtr->IsArmor()),
-                    "item::ItemFactory::Test() found an element_type that was not equipment:"
-                        << " Item={" << itemPtr->ToString() << "}, ItemProfile=["
-                        << iter->ToString()
-                        << "], element_type=" << element_type::ToString(itemPtr->ElementType()));
-
-                TestItem("elemet_type", itemPtr, *iter);
-                ItemWarehouse::Access().Free(itemPtr);
-            }
-
-            game::LoopManager::Instance()->TestingStrAppend(
-                std::string("item::ItemFactory::Test() All remaining element_type ")
-                + "equipment tests PASSED.  Starting Standard Equipment Tests.  Please wait...");
-
-            allItemProfilesVec.erase(allItemProfilesVec.begin(), ELEMENT_TYPE_END_ITER);
-            hasTestedMakingItems_ElementEquipment = true;
-            return false;
-        }
-
-        static auto hasTestedMakingItems_StandardEquipment{ false };
-        if (false == hasTestedMakingItems_StandardEquipment)
-        {
-            for (auto iter{ allItemProfilesVec.begin() }; iter != allItemProfilesVec.end(); ++iter)
-            {
-                auto itemPtr{ Make(*iter) };
-
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (itemPtr->IsWeapon() || itemPtr->IsArmor()),
-                    "item::ItemFactory::Test() found standard equipment that was "
-                        << "not weapon or armor:"
-                        << " Item={" << itemPtr->ToString() << "}, ItemProfile=["
-                        << iter->ToString()
-                        << "], item_category=" << category::ToString(itemPtr->Category(), true));
-
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (((itemPtr->SetType() == set_type::Count)
-                      || (itemPtr->SetType() == set_type::NotASet))
-                     && ((itemPtr->UniqueType() == unique_type::Count)
-                         || (itemPtr->UniqueType() == unique_type::NotUnique))
-                     && ((itemPtr->NamedType() == named_type::Count)
-                         || (itemPtr->NamedType() == named_type::NotNamed))
-                     && (itemPtr->ElementType() == element_type::None)),
-                    "item::ItemFactory::Test() found standard equipment that was "
-                        << "not standard:"
-                        << " Item={" << itemPtr->ToString() << "}, ItemProfile=["
-                        << iter->ToString());
-
-                TestItem("standard_equipment", itemPtr, *iter);
-                ItemWarehouse::Access().Free(itemPtr);
-            }
-
-            game::LoopManager::Instance()->TestingStrAppend(
-                std::string("item::ItemFactory::Test() All Standard Equipment ")
-                + " (All Remaining Profiles) Tests PASSED.");
-
-            allItemProfilesVec.clear();
-            hasTestedMakingItems_StandardEquipment = true;
-            return false;
-        }
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (allItemProfilesVec.empty()),
-            "item::ItemFactory::Test() failed to extract all from allItemProfilesVec.");
 
         static auto didPostFinal{ false };
         if (false == didPostFinal)
@@ -354,218 +265,340 @@ namespace item
         return true;
     }
 
-    void ItemFactory::TestItem(
-        const std::string & WHICH_TEST,
-        const ItemPtr_t & ITEM_PTR,
-        const ItemProfile & ITEM_PROFILE)
+    void ItemFactory::TestItem(const ItemPtr_t & ITEM_PTR, const ItemProfile & ITEM_PROFILE)
     {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PROFILE.IsValid()),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile={"
-                << ITEM_PROFILE.ToString() << "}) tried to make an item with an invalid profile: \""
-                << ITEM_PROFILE.ToMemberStrings().InvalidString() << "\"");
+        std::ostringstream ss;
+        ss << std::boolalpha << "item::ItemFactory::TestItem(\nitem={" << ITEM_PTR->ToString()
+           << "}\nprofile={" << ITEM_PROFILE.ToString() << "})\n *** ERROR: ";
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->MaterialPrimary() != ITEM_PTR->MaterialSecondary()),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
-                << ITEM_PROFILE.ToString() << ") made an item with duplicate materials.");
+            ss.str() << "made an item with duplicate materials.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->Category() == ITEM_PROFILE.Category()),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
-                << ITEM_PROFILE.ToString() << ") made an item where the categories did not match.");
+            ss.str() << "categories did not match.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->MiscType() == ITEM_PROFILE.MiscType()),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
-                << ITEM_PROFILE.ToString() << ") made an item where the misc_types did not match.");
+            ss.str() << "misc_types did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->MiscType() != misc_type::Count), ss.str() << "misc_type was Count.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->SetType() == ITEM_PROFILE.SetType()),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
-                << ITEM_PROFILE.ToString() << ") made an item where the set_types did not match.");
+            ss.str() << "set_types did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->SetType() != set_type::Count), ss.str() << "set_type was Count.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->ElementType() == ITEM_PROFILE.ElementType()),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
-                << "}, profile=" << ITEM_PROFILE.ToString()
-                << ") made an item where the element_types did not match.");
+            ss.str() << "element_types did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (element_type::IsValid(ITEM_PTR->ElementType())), ss.str() << "invalid element_type.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->NamedType() == ITEM_PROFILE.NamedType()),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
-                << "}, profile=" << ITEM_PROFILE.ToString()
-                << ") made an item where the named_types did not match.");
+            ss.str() << "named_types did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->NamedType() != named_type::Count), ss.str() << "named_type was Count.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->UniqueType() == ITEM_PROFILE.UniqueType()),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
-                << "}, profile=" << ITEM_PROFILE.ToString()
-                << ") made an item where the unique_types did not match.");
+            ss.str() << "unique_types did not match.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->UniqueType() != unique_type::Count), ss.str() << "unique_type was Count.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->MaterialPrimary() == ITEM_PROFILE.MaterialPrimary()),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
-                << "}, profile=" << ITEM_PROFILE.ToString()
-                << ") made an item where the primary materials did not match.");
+            ss.str() << "primary materials did not match.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             ((ITEM_PTR->MaterialPrimary() != material::Count)
              && (ITEM_PTR->MaterialPrimary() != material::Nothing)),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
-                << "}, profile=" << ITEM_PROFILE.ToString()
-                << ") made an item where the primary material was either Count or Nothing.");
+            ss.str() << "primary material was either Count or Nothing.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->MaterialSecondary() == ITEM_PROFILE.MaterialSecondary()),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
-                << "}, profile=" << ITEM_PROFILE.ToString()
-                << ") made an item where the secondary materials did not match.");
+            ss.str() << "secondary materials did not match.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->MaterialSecondary() != material::Count),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
-                << "}, profile=" << ITEM_PROFILE.ToString()
-                << ") made an item where the secondary material was Count instead of Nothing.");
+            ss.str() << "secondary material was Count instead of Nothing.");
 
-        if ((ITEM_PTR->IsWeapon()) && (ITEM_PTR->IsArmor()))
+        if (ITEM_PTR->IsWeapon() || ITEM_PTR->IsArmor())
         {
-            std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
-               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
-               << ") item was both weapon and armor";
-
-            throw std::runtime_error(ss.str());
-        }
-
-        if ((ITEM_PTR->IsWeapon()) && (ITEM_PTR->WeaponType() == weapon_type::NotAWeapon))
-        {
-            std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST
-               << ", item=" << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
-               << ") item's category was weapon but weapon_type was NotAWeapon.";
-
-            throw std::runtime_error(ss.str());
-        }
-
-        if ((ITEM_PTR->IsWeapon()) && (ITEM_PTR->WeaponType() & weapon_type::Breath))
-        {
-            std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
-               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
-               << ") item's weapon_type was Breath.";
-
-            throw std::runtime_error(ss.str());
-        }
-
-        if ((ITEM_PTR->IsArmor()) && (ITEM_PTR->ArmorType() == armor_type::NotArmor))
-        {
-            std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
-               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
-               << ") item's category was armor but armor_type was NotArmor.";
-
-            throw std::runtime_error(ss.str());
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((ITEM_PTR->IsWeapon()) != (ITEM_PTR->IsArmor())),
+                ss.str() << "both weapon and armor at the same time.");
         }
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (ITEM_PTR->IsBodypart() == false),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
-                << "}, profile=" << ITEM_PROFILE.ToString()
-                << ") created a bodypart item but there should be no bodypart items.");
+            ss.str() << "bodypart, but the ItemProfileWarehouse should not create any bodypart "
+                        "items since they cannot be found in treasure chests.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS((ITEM_PTR->IsBroken() == false), ss.str() << "broken.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR->IsBroken() == false),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString()
-                << "}, profile=" << ITEM_PROFILE.ToString() << ") created a broken item.");
+            (ITEM_PTR->ImageFilename().empty() == false), ss.str() << "no/empty image filename.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR->Category() != category::None),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
-                << ITEM_PROFILE.ToString() << ") created an item with no/empty category.");
+        sfml_util::gui::ItemImageMachine itemImageMachine;
+        itemImageMachine.EnsureFileExists(ITEM_PTR);
 
-        if (((ITEM_PTR->SetType() != set_type::Count) && (ITEM_PTR->SetType() != set_type::NotASet))
-            && (ITEM_PTR->ElementType() != element_type::None))
+        if (ITEM_PTR->ArmorInfo().HelmType() == armor::helm_type::Leather)
         {
-            std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
-               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
-               << ") item is a set_type but also an element_type.";
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->MaterialPrimary() == material::HardLeather),
+                ss.str() << "Leather Helm had a primary material that was not hard leather.");
+        }
 
-            throw std::runtime_error(ss.str());
+        if (ITEM_PTR->WeaponInfo().WhipType() == weapon::whip_type::Bullwhip)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->MaterialPrimary() == material::HardLeather),
+                ss.str() << "bull whip with a primary material that was not hard leather.");
+        }
+
+        // every unique_type is also a misc_type
+        if (ITEM_PTR->IsUnique())
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->IsMisc()),
+                ss.str() << "unique but not misc.  That should never happen.  "
+                            "Every unique_type should also be a misc_type.");
+        }
+
+        // unique_types cannot be set
+        if (ITEM_PTR->IsUnique())
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->IsSet() == false),
+                ss.str() << "unique_type but also either element_type or set_type.");
+        }
+
+        // set_types cannot be elemental
+        if (ITEM_PTR->IsSet())
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->IsElemental() == false),
+                ss.str() << "set_type but also either element_type or unique_type.");
+        }
+
+        // named_types must be weapons or armor, and cannot be misc
+        if (ITEM_PTR->IsNamed())
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((ITEM_PTR->IsWeapon() || ITEM_PTR->IsArmor()) && (ITEM_PTR->IsMisc() == false)),
+                ss.str() << "named_type but either not weapon(" << ITEM_PTR->IsWeapon()
+                         << ")/armor(" << ITEM_PTR->IsArmor() << ") or misc_type("
+                         << ITEM_PTR->IsMisc() << ").");
+        }
+
+        auto const SUMMON_INFO{ ITEM_PTR->SummonInfo() };
+
+        // all summoning items are also misc items
+        if (SUMMON_INFO.CanSummon())
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->IsMisc()),
+                ss.str() << "CanSummon() but not misc_type, which should never "
+                            "happen.  All summoning items are also misc_type items.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (misc_type::IsSummoning(ITEM_PTR->MiscType())),
+                ss.str() << "CanSummon() but not misc_type::IsSummoning().");
+        }
+
+        // invalid summoning info
+        if (SUMMON_INFO.IsDefaultAndCompletelyInvalid() == false)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (SUMMON_INFO.CanSummon()), ss.str() << "summoning but summoning_info was invalid.");
+        }
+
+        // if summoning type then must be able to summon, and vice versa
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (item::misc_type::IsSummoning(ITEM_PTR->MiscType()) == SUMMON_INFO.CanSummon()),
+            ss.str() << "misc_type=summoning_type but it is not able to summon.");
+
+        // enforce armor base_type restriction
+        auto const ARMOR_BASE_TYPE_RESTRICTION{ ITEM_PROFILE.ArmorTypeRestriction() };
+        if (ARMOR_BASE_TYPE_RESTRICTION != armor::base_type::Count)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->IsArmor()),
+                ss.str() << "the profile specified an armor base_type restriction of "
+                         << armor::base_type::ToString(ARMOR_BASE_TYPE_RESTRICTION)
+                         << ", but the item created as not armor.");
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->ArmorInfo().BaseType() == ARMOR_BASE_TYPE_RESTRICTION),
+                ss.str() << "the profile specified an armor base_type restriction of "
+                         << armor::base_type::ToString(ARMOR_BASE_TYPE_RESTRICTION)
+                         << ", but the item created had an armor base_type of "
+                         << ((ITEM_PTR->ArmorInfo().BaseType() == armor::base_type::Count)
+                                 ? "Count"
+                                 : armor::base_type::ToString(ITEM_PTR->ArmorInfo().BaseType()))
+                         << ".");
+        }
+
+        // all items must be weapon, armor, or misc
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->IsWeapon() || ITEM_PTR->IsArmor()
+             || (ITEM_PTR->MiscType() != misc_type::NotMisc)),
+            ss.str() << "the item was not a weapon, armor, or misc_type.  All items must be one of "
+                        "these three.");
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (ITEM_PTR->BaseName().empty() == false),
+            ss.str() << "BaseName (\"" << ITEM_PTR->BaseName() << "\") was empty or invalid.");
+
+        if (ITEM_PTR->IsWeapon())
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->WeaponInfo().IsValid()),
+                ss.str() << "IsWeapon() but WeaponInfo().IsValid()==false.");
+        }
+
+        if (ITEM_PTR->IsArmor())
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->ArmorInfo().IsValid()),
+                ss.str() << "IsArmor() but ArmorInfo().IsValid()==false.");
+        }
+
+        if (ITEM_PTR->ArmorType() == armor_type::Gauntlets)
+        {
+            if ((ITEM_PTR->MaterialPrimary() == material::Cloth)
+                || (ITEM_PTR->MaterialPrimary() == material::SoftLeather)
+                || (ITEM_PTR->MaterialPrimary() == material::HardLeather))
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (ITEM_PTR->ArmorInfo().SpecificName() == armor::ArmorTypeWrapper::GLOVES_NAME_),
+                    ss.str() << "gauntles with primary material " << ITEM_PTR->MaterialPrimary()
+                             << " which means gloves but all the names did not equal \""
+                             << armor::ArmorTypeWrapper::GLOVES_NAME_
+                             << "\".  ArmorTypeWrapper::SpecificName()=\""
+                             << ITEM_PTR->ArmorInfo().SpecificName() << "\".");
+
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (ITEM_PTR->ArmorInfo().SpecificName() == armor::ArmorTypeWrapper::GLOVES_NAME_),
+                    ss.str() << "gauntles with primary material " << ITEM_PTR->MaterialPrimary()
+                             << " which means gloves but all the names did not equal \""
+                             << armor::ArmorTypeWrapper::GLOVES_NAME_
+                             << "\".  ArmorTypeWrapper::SpecificName()=\""
+                             << ITEM_PTR->ArmorInfo().SpecificName() << "\".");
+            }
+            else
+            {
+                M_ASSERT_OR_LOGANDTHROW_SS(
+                    (ITEM_PTR->ArmorInfo().SpecificName() != armor::ArmorTypeWrapper::GLOVES_NAME_),
+                    ss.str() << "gauntles with primary material " << ITEM_PTR->MaterialPrimary()
+                             << " which means gauntlets and NOT gloves but the "
+                                "ArmorTypeWrapper::SpecificName()=\""
+                             << ITEM_PTR->ArmorInfo().SpecificName() << "\".");
+            }
         }
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (ITEM_PTR->ImageFilename().empty() == false),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
-                << ITEM_PROFILE.ToString() << ") created an item with no/empty image filename.");
+            (ITEM_PTR->Weight() >= 1_weight),
+            ss.str() << "weight (" << ITEM_PTR->Weight() << ") was less than one.");
 
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (element_type::IsValid(ITEM_PTR->ElementType())),
-            "item::ItemFactory::TestItem(which_test="
-                << WHICH_TEST << ", item={" << ITEM_PTR->ToString() << "}, profile="
-                << ITEM_PROFILE.ToString() << ") created an item with an invalid element_type.");
-
-        if ((ITEM_PTR->Armor_Info().helm == armor::helm_type::Leather)
-            && (ITEM_PTR->MaterialPrimary() != material::HardLeather))
+        if (ITEM_PTR->WeaponType() != weapon_type::NotAWeapon)
         {
-            std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
-               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
-               << ") created a leather helm with a primary material that was not hard leather.";
-
-            throw std::runtime_error(ss.str());
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (ITEM_PTR->WeaponInfo().SingleType() & ITEM_PTR->WeaponType()),
+                ss.str() << " WeaponType()=" << weapon_type::ToString(ITEM_PTR->WeaponType(), true)
+                         << " but ITEM_PTR->WeaponInfo().Type()="
+                         << weapon_type::ToString(ITEM_PTR->WeaponInfo().SingleType(), true)
+                         << " is not included in that.");
         }
 
-        if ((ITEM_PTR->Weapon_Info().whip == weapon::whip_type::Bullwhip)
-            && (ITEM_PTR->MaterialPrimary() != material::HardLeather))
+        if (ITEM_PTR->IsMisc())
         {
-            std::ostringstream ss;
-            ss << "item::ItemFactory::TestItem(which_test=" << WHICH_TEST << ", item={"
-               << ITEM_PTR->ToString() << "}, profile=" << ITEM_PROFILE.ToString()
-               << ") created a bull whip with a primary material that was not hard leather.";
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (misc_type::IsWeapon(ITEM_PTR->MiscType()) == ITEM_PTR->IsWeapon()),
+                ss.str() << "misc_type::IsWeapon()=" << misc_type::IsWeapon(ITEM_PTR->MiscType())
+                         << " but ITEM_PTR->IsWeapon()=" << ITEM_PTR->IsWeapon() << ".");
 
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (misc_type::IsArmor(ITEM_PTR->MiscType()) == ITEM_PTR->IsArmor()),
+                ss.str() << "misc_type::IsArmor()=" << misc_type::IsArmor(ITEM_PTR->MiscType())
+                         << " but ITEM_PTR->IsArmor()=" << ITEM_PTR->IsArmor()
+                         << " -these should match.");
+
+            const bool IS_ITEM_EQUIPPABLE{ (ITEM_PTR->Category() & category::Equippable) != 0 };
+            const bool IS_TYPE_EQUIPPABLE{ misc_type::IsEquippable(ITEM_PTR->MiscType()) };
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (IS_TYPE_EQUIPPABLE == IS_ITEM_EQUIPPABLE),
+                ss.str() << "misc_type::IsEquippable(" << misc_type::ToString(ITEM_PTR->MiscType())
+                         << ")=" << IS_TYPE_EQUIPPABLE
+                         << " != (ITEM_PTR->Category() & category::Equippable)="
+                         << IS_ITEM_EQUIPPABLE << ".");
+        }
+
+        auto const IS_MISC{ ITEM_PTR->IsMisc() };
+        auto const IS_NONMISC_WEAPON{ ITEM_PTR->IsWeapon() && (ITEM_PTR->IsMisc() == false) };
+        auto const IS_NONMISC_ARMOR{ ITEM_PTR->IsArmor() && (ITEM_PTR->IsMisc() == false) };
+
+        ss << "(misc=" << IS_MISC << ", nonmisc_weapon=" << IS_NONMISC_WEAPON
+           << ", nonmisc_armor=" << IS_NONMISC_ARMOR << ") is an invalid combination.";
+
+        if (IS_MISC)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((IS_NONMISC_WEAPON == false) && (IS_NONMISC_ARMOR == false)), ss.str());
+        }
+        else if (IS_NONMISC_WEAPON)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((IS_MISC == false) && (IS_NONMISC_ARMOR == false)), ss.str());
+        }
+        else if (IS_NONMISC_ARMOR)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                ((IS_MISC == false) && (IS_NONMISC_WEAPON == false)), ss.str());
+        }
+        else
+        {
             throw std::runtime_error(ss.str());
         }
     }
 
     const ItemPtr_t ItemFactory::Make(const ItemProfile & PROFILE)
     {
-        if ((PROFILE.MiscType() != misc_type::Count) && (PROFILE.MiscType() != misc_type::NotMisc))
-        {
-            return item::MiscItemFactory::Make(PROFILE);
-        }
-        else if (PROFILE.IsArmor())
+        // Note that some misc_type items are also weapons or armor.  In these cases item
+        // construction is handled by WeaponFactory or ArmorFactory.
+        if (PROFILE.ArmorInfo().IsValid())
         {
             return armor::ArmorFactory::Make(PROFILE);
         }
-        else if (PROFILE.IsWeapon())
+        else if (PROFILE.WeaponInfo().IsValid())
         {
             return weapon::WeaponFactory::Make(PROFILE);
         }
+        else if (PROFILE.IsMisc())
+        {
+            return item::MiscItemFactory::Make(PROFILE);
+        }
+        else
+        {
+            std::ostringstream ss;
 
-        std::ostringstream ss;
+            ss << "item::ItemFactory::Make(profile=" << PROFILE.ToString()
+               << ") failed to create an item based on that profile because it was not misc, "
+                  "weapon, "
+                  "or armor.";
 
-        ss << "item::ItemFactory::Make(profile=" << PROFILE.ToString()
-           << ") failed to create an item based on that profile.";
-
-        throw std::runtime_error(ss.str());
+            throw std::runtime_error(ss.str());
+        }
     }
 
     const ItemPtr_t ItemFactory::Make(

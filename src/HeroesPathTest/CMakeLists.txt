@@ -2,27 +2,22 @@ project("HeroesPathTest")
 
 set(TARGET_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
-if(WIN32)
-    set(TARGET_BINARY_DIR ${TARGET_BINARY_DIR}/Release)
+if(MSVC)
+    set(TARGET_BINARY_DIR_RELEASE ${TARGET_BINARY_DIR}/Release)
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../game-data.txt DESTINATION ${TARGET_BINARY_DIR_RELEASE})
 
-    set(SFML_BIN_DIR ${SFML_PATH}/bin)
-    set(SFML_INCLUDE_DIR ${SFML_PATH}/include)
-    set(SFML_LIBRARY_DIRS ${SFML_PATH}/lib)
-    set(SFML_LIBRARIES sfml-system.lib sfml-window.lib sfml-graphics.lib sfml-audio.lib)
-    set(Boost_COMPILER -vc90)
-    include_directories(${include_directories} . ${SFML_INCLUDE_DIR})
+    set(TARGET_BINARY_DIR_DEBUG ${TARGET_BINARY_DIR}/Debug)
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../game-data.txt DESTINATION ${TARGET_BINARY_DIR_DEBUG})
 
     file(GLOB files ${SFML_BIN_DIR}/*)
+    
     foreach(file ${files})
-        file(COPY ${file} DESTINATION ${TARGET_BINARY_DIR})
+        file(COPY ${file} DESTINATION ${TARGET_BINARY_DIR_RELEASE})
+        file(COPY ${file} DESTINATION ${TARGET_BINARY_DIR_DEBUG})
     endforeach()
 else()
-    set(SFML_INCLUDE_DIR "-I/usr/include/SFML")
-    set(SFML_LIBRARY_DIRS "/usr/lib")
-    set(SFML_LIBRARIES sfml-system sfml-window sfml-graphics sfml-audio)
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../game-data.txt DESTINATION ${TARGET_BINARY_DIR})
 endif()
-
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../game-data.txt DESTINATION ${TARGET_BINARY_DIR})
 
 include_directories(${include_directories}
                     ${SFML_INCLUDE_DIR})
@@ -55,9 +50,9 @@ foreach(testSrc ${impl_files})
                         	Combat
 				            Popup
 				            Avatar
-                        	${Boost_LIBRARIES}
-                        	${SFML_LIBRARIES})
-
+                            ${SFML_LIBRARIES}
+                        	${Boost_LIBRARIES})
+                            
         add_test(NAME ${testName}
                  WORKING_DIRECTORY ${TARGET_BINARY_DIR}
                  COMMAND ${testName} )

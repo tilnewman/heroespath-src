@@ -32,7 +32,8 @@
 #include "creature/race-enum.hpp"
 #include "creature/role-enum.hpp"
 #include "game/game-data-file.hpp"
-#include "item/weapon-info.hpp"
+#include "item/armor-type-wrapper.hpp"
+#include "item/weapon-type-wrapper.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "misc/vector-map.hpp"
@@ -88,7 +89,7 @@ namespace non_player
                 {}
 
                 std::size_t count;
-                misc::VectorMap<item::weapon::WeaponInfo, float> chanceMap;
+                misc::VectorMap<item::weapon::WeaponTypeWrapper, float> chanceMap;
             };
 
             using WeaponSetVec_t = std::vector<WeaponSet>;
@@ -97,20 +98,14 @@ namespace non_player
             struct RoleArmorChance
             {
                 RoleArmorChance(
-                    const std::string & NAME_SHORT = "",
-                    const std::string & NAME_COMPLETE = "",
-                    const float CHANCE = 0.0f,
-                    item::armor::base_type::Enum BASE_TYPE = item::armor::base_type::Count)
-                    : name_short(NAME_SHORT)
-                    , name_complete(NAME_COMPLETE)
+                    const item::armor::ArmorTypeWrapper & ARMOR_TYPE_WRAPPER,
+                    const float CHANCE = 0.0f)
+                    : type_wrapper(ARMOR_TYPE_WRAPPER)
                     , chance(CHANCE)
-                    , base_type(BASE_TYPE)
                 {}
 
-                std::string name_short;
-                std::string name_complete;
+                item::armor::ArmorTypeWrapper type_wrapper;
                 float chance;
-                item::armor::base_type::Enum base_type;
             };
 
             using RoleArmorChanceVec_t = std::vector<RoleArmorChance>;
@@ -227,6 +222,7 @@ namespace non_player
                 const chance::MaterialChanceMap_t & MATERIALS_TYPICAL,
                 misc::VectorMap<T, chance::ItemChances> & weaponChanceMap)
             {
+                /*
                 if (IsWeaponPossibleConsideringComplexity(WEAPON_NAME, PROFILE.complexityType)
                     == false)
                 {
@@ -235,6 +231,7 @@ namespace non_player
                     // weaponChanceMap[WEAPON_ENUM].SetCountChanceSingleNoChance();
                     // return false;
                 }
+                */
 
                 auto const WEAPON_NUM_FLOAT{ static_cast<float>(WEAPON_ENUM) };
                 auto const WEAPON_COUNT_FLOAT{ static_cast<float>(T::Count) };
@@ -275,17 +272,14 @@ namespace non_player
 
             static void SetArmorChancesGeneral(
                 chance::ArmorItemChances & armorItemChances,
-                const std::string & COMPLETE_NAME,
-                const item::armor::base_type::Enum TYPE,
-                const float CHANCE,
+                const RoleArmorChance & ROLE_ARMOR_CHANCE,
                 const Profile & PROFILE,
                 const creature::CreaturePtr_t CHARACTER_PTR,
                 const bool WILL_MATERIALS_INCLUDED_WOOD);
 
             static void SetArmorChancesSpecific(
                 chance::ItemChances & itemChances,
-                const std::string & COMPLETE_NAME,
-                const float CHANCE,
+                const RoleArmorChance & ROLE_ARMOR_CHANCE,
                 const Profile & PROFILE,
                 const creature::CreaturePtr_t CHARACTER_PTR,
                 const bool WILL_MATERIALS_INCLUDED_WOOD,
@@ -332,7 +326,8 @@ namespace non_player
             }
 
             static void CacheRoleArmorChances();
-
+            static void CacheRoleWeaponChances();
+            static const WeaponSetVec_t GetRoleWeaponChances(const creature::role::Enum ROLE);
             static void CacheGameDataFileFloats();
 
         private:
@@ -348,6 +343,7 @@ namespace non_player
             static chance::MaterialChanceMap_t materialChanceMapPrecious_;
 
             static misc::VectorMap<creature::role::Enum, RoleArmorChanceVec_t> roleArmorChanceMap_;
+            static misc::VectorMap<creature::role::Enum, WeaponSetVec_t> roleWeaponChanceMap_;
 
             // cache some floats from the GameDataFile that never change and are often used
             static float masterRankMax_;

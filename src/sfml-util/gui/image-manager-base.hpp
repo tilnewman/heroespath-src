@@ -29,6 +29,7 @@
 //
 #include "game/game-data-file.hpp"
 #include "game/loop-manager.hpp"
+#include "sfml-util/gui/image-dimmensions.hpp"
 #include "sfml-util/loaders.hpp"
 #include "sfml-util/sfml-graphics.hpp"
 #include "sfml-util/sfml-util.hpp"
@@ -64,8 +65,7 @@ namespace sfml_util
                     = game::GameDataFile::Instance()->GetMediaPath("media-images-placeholder");
             }
 
-            // all images are square with this as the side length
-            static float Dimmension() { return 256.0f; }
+            static float MaxDimmension() { return ImageDimmensions::ResourceStandardMax(); }
 
             // returns false if the placeholder was loaded instead of the desired image
             static bool
@@ -99,7 +99,7 @@ namespace sfml_util
                 {
                     sfml_util::LoadTexture(texture, IMAGE_FILE_PATH.string());
 
-                    if (WILL_FLIP_HORIZ && (WILL_USE_PLACEHOLDER == false))
+                    if (WILL_FLIP_HORIZ)
                     {
                         sfml_util::FlipHoriz(texture);
                     }
@@ -137,7 +137,7 @@ namespace sfml_util
                             << T::ToString(ENUM) << ", will_flip=" << std::boolalpha << willFlip
                             << ") returned false, meaning the placeholder image was used.");
 
-                    auto const DIMMENSION_U{ static_cast<unsigned>(Dimmension()) };
+                    auto const DIMMENSION_U{ static_cast<unsigned>(MaxDimmension()) };
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         ((texture.getSize().x == DIMMENSION_U)
@@ -153,7 +153,7 @@ namespace sfml_util
 
                     game::LoopManager::Instance()->TestingStrAppend(
                         CLASS_NAME + " Tested " + T::ImageFilename(ENUM)
-                        + ((willFlip) ? "HORIZ_FLIPPED" : ""));
+                        + ((willFlip) ? " HORIZ_FLIPPED" : ""));
 
                     if (willFlip)
                     {

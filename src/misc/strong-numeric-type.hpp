@@ -39,14 +39,20 @@ namespace misc
 {
 
     // Responsible for wrapping StrongType with functions useful for numeric types.
-    template <typename T, typename Parameter>
-    struct StrongNumericType : public StrongType<T, Parameter>
+    template <typename T, typename Parameter_t>
+    struct StrongNumericType : public StrongType<T, Parameter_t>
     {
         explicit StrongNumericType(const T & VALUE = T(0))
-            : StrongType<T, Parameter>(VALUE)
+            : StrongType<T, Parameter_t>(VALUE)
         {}
 
         virtual ~StrongNumericType() = default;
+
+        template <typename FromType_t>
+        static StrongNumericType<T, Parameter_t> Make(const FromType_t FROM_VALUE)
+        {
+            return StrongNumericType<T, Parameter_t>(static_cast<T>(FROM_VALUE));
+        }
 
         template <typename AsType_t>
         constexpr AsType_t As() const
@@ -60,7 +66,7 @@ namespace misc
 
         const StrongNumericType Abs() const
         {
-            return StrongNumericType<T, Parameter>(std::abs(this->m_value));
+            return StrongNumericType<T, Parameter_t>(std::abs(this->m_value));
         }
 
         StrongNumericType & operator=(const StrongNumericType & RHS)
@@ -170,33 +176,33 @@ namespace misc
         }
     };
 
-    template <typename T, typename Parameter>
-    std::ostream & operator<<(std::ostream & os, const StrongNumericType<T, Parameter> & RHS)
+    template <typename T, typename Parameter_t>
+    std::ostream & operator<<(std::ostream & os, const StrongNumericType<T, Parameter_t> & RHS)
     {
         os << RHS.Get();
         return os;
     }
 
-    template <typename T, typename Parameter>
-    inline bool operator==(const int LEFT_INT, const StrongNumericType<T, Parameter> & RIGHT_SNT)
+    template <typename T, typename Parameter_t>
+    inline bool operator==(const int LEFT_INT, const StrongNumericType<T, Parameter_t> & RIGHT_SNT)
     {
         return (LEFT_INT == RIGHT_SNT.template As<int>());
     }
 
-    template <typename T, typename Parameter>
-    inline bool operator==(const StrongNumericType<T, Parameter> & LEFT_SNT, const int RIGHT_INT)
+    template <typename T, typename Parameter_t>
+    inline bool operator==(const StrongNumericType<T, Parameter_t> & LEFT_SNT, const int RIGHT_INT)
     {
         return (LEFT_SNT.template As<int>() == RIGHT_INT);
     }
 
-    template <typename T, typename Parameter>
-    inline bool operator!=(const int LEFT_INT, const StrongNumericType<T, Parameter> & RIGHT_SNT)
+    template <typename T, typename Parameter_t>
+    inline bool operator!=(const int LEFT_INT, const StrongNumericType<T, Parameter_t> & RIGHT_SNT)
     {
         return (LEFT_INT != RIGHT_SNT.template As<int>());
     }
 
-    template <typename T, typename Parameter>
-    inline bool operator!=(const StrongNumericType<T, Parameter> & LEFT_SNT, const int RIGHT_INT)
+    template <typename T, typename Parameter_t>
+    inline bool operator!=(const StrongNumericType<T, Parameter_t> & LEFT_SNT, const int RIGHT_INT)
     {
         return (LEFT_SNT.template As<int>() != RIGHT_INT);
     }

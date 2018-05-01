@@ -59,7 +59,7 @@ namespace combat
     const float ShakeAnimInfo::SHAKE_DURATION_SEC{ 0.65f };
 
     ShakeAnimInfo::ShakeAnimInfo()
-        : slider(0.0f, 1.0f, 50.0f)
+        : slider(0.0f, 1.0f, 50.0)
         ,
 
         // anything larger than PAUSE_DURATION_SEC will work here
@@ -74,7 +74,8 @@ namespace combat
     {
         auto const SHAKE_DISTANCE{ CombatAnimation::ShakeAnimDistance(WILL_DOUBLE_SHAKE_DISTANCE) };
 
-        slider.Reset(0.0f, SHAKE_DISTANCE, SLIDER_SPEED, (SHAKE_DISTANCE * 0.5f));
+        slider.Reset(
+            0.0f, SHAKE_DISTANCE, static_cast<double>(SLIDER_SPEED), (SHAKE_DISTANCE * 0.5f));
 
         // anything larger than PAUSE_DURATION_SEC will work here
         pause_duration_timer_sec = ShakeAnimInfo::PAUSE_DURATION_SEC + 1.0f;

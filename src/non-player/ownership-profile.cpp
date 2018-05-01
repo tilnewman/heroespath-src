@@ -170,13 +170,24 @@ namespace non_player
             else
             {
                 if (E & Minimalist)
+                {
                     ss << "Minimalist";
+                }
+
                 if (E & Practical)
+                {
                     ss << ((ss.str().empty()) ? "" : "/") << "Practical";
+                }
+
                 if (E & Collector)
+                {
                     ss << ((ss.str().empty()) ? "" : "/") << "Collector";
+                }
+
                 if (E & Hoarder)
+                {
                     ss << ((ss.str().empty()) ? "" : "/") << "Hoarder";
+                }
             }
 
             if (ss.str().empty())
@@ -501,15 +512,25 @@ namespace non_player
         complexity_type::Enum complexity_type::FromString(const std::string & NAME)
         {
             if (NAME == ToString(Animal))
+            {
                 return Animal;
+            }
             else if (NAME == ToString(Simple))
+            {
                 return Simple;
+            }
             else if (NAME == ToString(Moderate))
+            {
                 return Moderate;
+            }
             else if (NAME == ToString(Complex))
+            {
                 return Complex;
+            }
             else
+            {
                 return Count;
+            }
         }
 
         complexity_type::Enum

@@ -1054,7 +1054,7 @@ namespace stage
         sprite.setPosition(
             MEASUREMENTS.characterImageLeft,
             inventoryListboxUPtr_->GetEntityPos().y
-                - (sfml_util::gui::CreatureImageManager::Dimmension()
+                - (sfml_util::gui::CreatureImageManager::MaxDimmension()
                    * MEASUREMENTS.characterImageScale));
 
         sprite.setColor(sf::Color(255, 255, 255, 127));
@@ -1280,7 +1280,7 @@ namespace stage
     float TreasureDisplayStage::CalculateInventoryTextPosLeft() const
     {
         return characterImageUPtr_->GetEntityPos().x
-            + (sfml_util::gui::CreatureImageManager::Dimmension()
+            + (sfml_util::gui::CreatureImageManager::MaxDimmension()
                * CreateDisplayMeasurements().characterImageScale);
     }
 

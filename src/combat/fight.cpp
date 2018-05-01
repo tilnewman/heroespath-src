@@ -1238,8 +1238,8 @@ namespace combat
         {
             for (auto const & NEXT_ITEM_PTR : CREATURE_ATTACKING_PTR->Inventory().ItemsEquipped())
             {
-                if ((NEXT_ITEM_PTR->ArmorType() & item::armor_type::Gauntlets)
-                    && (NEXT_ITEM_PTR->Armor_Info().base != item::armor::base_type::Plain))
+                if ((NEXT_ITEM_PTR->ArmorInfo().IsGauntlets())
+                    && (NEXT_ITEM_PTR->ArmorInfo().BaseType() != item::armor::base_type::Plain))
                 {
                     extraDamage = 2_health * DAMAGE_FROM_WEAPON_RAW;
                     break;

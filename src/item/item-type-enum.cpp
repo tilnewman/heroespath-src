@@ -40,53 +40,43 @@ namespace heroespath
 namespace item
 {
 
-    const std::string category::ToString(const item::category::Enum E, const bool WILL_WRAP)
+    const std::string
+        category::ToString(const item::category::Enum CATEGORY_TYPE, const bool WILL_WRAP)
     {
-        std::ostringstream ss;
-
-        if (E == category::None)
+        if (CATEGORY_TYPE == category::None)
         {
             return "";
         }
-        else
-        {
-            if (E & category::Broken)
-                ss << "broken/useless";
-            else if (E & category::Useable)
-                ss << "useable";
 
-            if (E & category::Weapon)
-                ss << ((ss.str().empty()) ? "" : ", ") << "weapon";
-            if (E & category::Armor)
-                ss << ((ss.str().empty()) ? "" : ", ") << "armor";
-            if (E & category::Equippable)
-                ss << ((ss.str().empty()) ? "" : ", ") << "equippable";
-            if (E & category::BodyPart)
-                ss << ((ss.str().empty()) ? "" : ", ") << "bodypart";
-            if (E & category::Wearable)
-                ss << ((ss.str().empty()) ? "" : ", ") << "wearable";
-            if (E & category::OneHanded)
-                ss << ((ss.str().empty()) ? "" : ", ") << "one-handed";
-            if (E & category::TwoHanded)
-                ss << ((ss.str().empty()) ? "" : ", ") << "two-handed";
-            if (E & category::QuestItem)
-                ss << ((ss.str().empty()) ? "" : ", ") << "quest item";
-            if (E & category::Blessed)
-                ss << ((ss.str().empty()) ? "" : ", ") << "blessed";
-            if (E & category::Cursed)
-                ss << ((ss.str().empty()) ? "" : ", ") << "cursed";
-            if (E & category::AllowsCasting)
-                ss << ((ss.str().empty()) ? "" : ", ") << "allows casting";
-            if (E & category::ConsumedOnUse)
-                ss << ((ss.str().empty()) ? "" : ", ") << "consumed upon use";
-            if (E & category::ShowsEnemyInfo)
-                ss << ((ss.str().empty()) ? "" : ", ") << "shows enemy info";
-        }
+        std::ostringstream ss;
+
+        auto appendNameIfCategoryBitIsSet{ [&](const category::Enum CATEGORY_BIT,
+                                               const std::string & NAME) {
+            if (CATEGORY_TYPE & CATEGORY_BIT)
+            {
+                if (ss.str().empty() == false)
+                {
+                    ss << ", ";
+                }
+
+                ss << NAME;
+            }
+        } };
+
+        appendNameIfCategoryBitIsSet(category::Broken, "broken");
+        appendNameIfCategoryBitIsSet(category::Useable, "useable");
+        appendNameIfCategoryBitIsSet(category::BodyPart, "bodypart");
+        appendNameIfCategoryBitIsSet(category::Equippable, "equippable");
+        appendNameIfCategoryBitIsSet(category::Wearable, "wearable");
+        appendNameIfCategoryBitIsSet(category::OneHanded, "one-handed");
+        appendNameIfCategoryBitIsSet(category::TwoHanded, "two-handed");
+        appendNameIfCategoryBitIsSet(category::ConsumedOnUse, "consumed upon use");
+        appendNameIfCategoryBitIsSet(category::ShowsEnemyInfo, "shows enemy info");
 
         if (ss.str().empty())
         {
             std::ostringstream ssErr;
-            ssErr << "item::category::ToString(" << E << ")_InvalidValueError";
+            ssErr << "item::category::ToString(" << CATEGORY_TYPE << ")_InvalidValueError";
             throw std::range_error(ssErr.str());
         }
 
@@ -100,30 +90,38 @@ namespace item
         }
     }
 
-    const std::string element_type::ToString(const element_type::Enum E, const bool WILL_WRAP)
+    const std::string
+        element_type::ToString(const element_type::Enum ELEMENT_TYPE, const bool WILL_WRAP)
     {
-        std::ostringstream ss;
-
-        if (E == element_type::None)
+        if (ELEMENT_TYPE == element_type::None)
         {
             return "";
         }
-        else
-        {
-            if (E & element_type::Fire)
-                ss << "Fire";
-            if (E & element_type::Frost)
-                ss << ((ss.str().empty()) ? "" : ", ") << "Frost";
-            if (E & element_type::Honor)
-                ss << ((ss.str().empty()) ? "" : ", ") << "Honor";
-            if (E & element_type::Shadow)
-                ss << ((ss.str().empty()) ? "" : ", ") << "Shadow";
-        }
+
+        std::ostringstream ss;
+
+        auto appendNameIfElementBitIsSet{ [&](const element_type::Enum ELEMENT_BIT,
+                                              const std::string & NAME) {
+            if (ELEMENT_TYPE & ELEMENT_BIT)
+            {
+                if (ss.str().empty() == false)
+                {
+                    ss << ", ";
+                }
+
+                ss << NAME;
+            }
+        } };
+
+        appendNameIfElementBitIsSet(element_type::Fire, "Fire");
+        appendNameIfElementBitIsSet(element_type::Frost, "Frost");
+        appendNameIfElementBitIsSet(element_type::Honor, "Honor");
+        appendNameIfElementBitIsSet(element_type::Shadow, "Shadow");
 
         if (ss.str().empty())
         {
             std::ostringstream ssErr;
-            ssErr << "item::element_type::ToString(" << E << ")_InvalidValueError";
+            ssErr << "item::element_type::ToString(" << ELEMENT_TYPE << ")_InvalidValueError";
             throw std::range_error(ssErr.str());
         }
 
@@ -137,41 +135,41 @@ namespace item
         }
     }
 
-    const std::string element_type::Name(const element_type::Enum E, const bool WILL_WRAP)
+    const std::string
+        element_type::Name(const element_type::Enum ELEMENT_TYPE, const bool WILL_WRAP)
     {
-        std::ostringstream ss;
-
-        if (E == element_type::None)
+        if (ELEMENT_TYPE == element_type::None)
         {
             return "";
         }
-        else
-        {
-            if (E & element_type::Fire)
-            {
-                ss << " of Fire";
-            }
 
-            if (E & element_type::Frost)
-            {
-                ss << ((ss.str().empty()) ? " of " : " and ") << "Frost";
-            }
+        std::ostringstream ss;
 
-            if (E & element_type::Honor)
+        auto appendNameIfElementBitIsSet{ [&](const element_type::Enum ELEMENT_BIT) {
+            if (ELEMENT_TYPE & ELEMENT_BIT)
             {
-                ss << ((ss.str().empty()) ? " of " : " and ") << "Honor";
-            }
+                if (ss.str().empty())
+                {
+                    ss << "of ";
+                }
+                else
+                {
+                    ss << ", ";
+                }
 
-            if (E & element_type::Shadow)
-            {
-                ss << ((ss.str().empty()) ? " of " : " and ") << "Shadow";
+                ss << element_type::ToString(ELEMENT_BIT, false);
             }
-        }
+        } };
+
+        appendNameIfElementBitIsSet(element_type::Fire);
+        appendNameIfElementBitIsSet(element_type::Frost);
+        appendNameIfElementBitIsSet(element_type::Honor);
+        appendNameIfElementBitIsSet(element_type::Shadow);
 
         if (ss.str().empty())
         {
             std::ostringstream ssErr;
-            ssErr << "item::element_type::Name(" << E << ")_InvalidValueError";
+            ssErr << "item::element_type::Name(" << ELEMENT_TYPE << ")_InvalidValueError";
             throw std::range_error(ssErr.str());
         }
 
@@ -185,52 +183,57 @@ namespace item
         }
     }
 
-    const std::vector<element_type::Enum> element_type::Combinations(const element_type::Enum E)
+    const std::vector<element_type::Enum> element_type::Combinations(
+        const element_type::Enum ELEMENT_TYPE, const bool WILL_INCLUDE_NOTHING)
     {
-        std::vector<element_type::Enum> v;
+        std::vector<Enum> enums;
 
-        if (E & element_type::Fire)
+        if (WILL_INCLUDE_NOTHING)
         {
-            v.emplace_back(element_type::Fire);
-        }
-        if (E & element_type::Frost)
-        {
-            v.emplace_back(element_type::Frost);
-        }
-        if (E & element_type::Honor)
-        {
-            v.emplace_back(element_type::Honor);
-        }
-        if (E & element_type::Shadow)
-        {
-            v.emplace_back(element_type::Shadow);
+            enums.emplace_back(None);
         }
 
-        if ((E & element_type::Fire) && (E & element_type::Honor))
+        if (ELEMENT_TYPE & Fire)
         {
-            v.emplace_back(
-                static_cast<element_type::Enum>(element_type::Fire | element_type::Honor));
+            enums.emplace_back(Fire);
         }
 
-        if ((E & element_type::Fire) && (E & element_type::Shadow))
+        if (ELEMENT_TYPE & Frost)
         {
-            v.emplace_back(
-                static_cast<element_type::Enum>(element_type::Fire | element_type::Shadow));
+            enums.emplace_back(Frost);
         }
 
-        if ((E & element_type::Frost) && (E & element_type::Honor))
+        if (ELEMENT_TYPE & Honor)
         {
-            v.emplace_back(
-                static_cast<element_type::Enum>(element_type::Frost | element_type::Honor));
+            enums.emplace_back(Honor);
         }
 
-        if ((E & element_type::Frost) && (E & element_type::Shadow))
+        if (ELEMENT_TYPE & Shadow)
         {
-            v.emplace_back(
-                static_cast<element_type::Enum>(element_type::Frost | element_type::Shadow));
+            enums.emplace_back(Shadow);
         }
 
-        return v;
+        if ((ELEMENT_TYPE & Fire) && (ELEMENT_TYPE & Honor))
+        {
+            enums.emplace_back(static_cast<Enum>(Fire | Honor));
+        }
+
+        if ((ELEMENT_TYPE & Fire) && (ELEMENT_TYPE & Shadow))
+        {
+            enums.emplace_back(static_cast<Enum>(Fire | Shadow));
+        }
+
+        if ((ELEMENT_TYPE & Frost) && (ELEMENT_TYPE & Honor))
+        {
+            enums.emplace_back(static_cast<Enum>(Frost | Honor));
+        }
+
+        if ((ELEMENT_TYPE & Frost) && (ELEMENT_TYPE & Shadow))
+        {
+            enums.emplace_back(static_cast<Enum>(Frost | Shadow));
+        }
+
+        return enums;
     }
 
     bool element_type::IsValid(const element_type::Enum E)
@@ -269,10 +272,6 @@ namespace item
             case Bag:
             {
                 return "Bag";
-            }
-            case Balm_Pot:
-            {
-                return "Balm_Pot";
             }
             case Beard:
             {
@@ -322,9 +321,9 @@ namespace item
             {
                 return "Bracelet_Mask";
             }
-            case Braid:
+            case Angel_Braid:
             {
-                return "Braid";
+                return "Angel_Braid";
             }
             case Brooch_Crown:
             {
@@ -394,10 +393,6 @@ namespace item
             {
                 return "Charm_Mask";
             }
-            case Chest:
-            {
-                return "Chest";
-            }
             case Chimes:
             {
                 return "Chimes";
@@ -409,10 +404,6 @@ namespace item
             case Conch:
             {
                 return "Conch";
-            }
-            case Crown:
-            {
-                return "Crown";
             }
             case Crumhorn:
             {
@@ -437,10 +428,6 @@ namespace item
             case Dried_Head:
             {
                 return "Dried_Head";
-            }
-            case Drink:
-            {
-                return "Drink";
             }
             case DrumLute:
             {
@@ -470,9 +457,9 @@ namespace item
             {
                 return "Figurine_Cursed";
             }
-            case Finger:
+            case Golem_Finger:
             {
-                return "Finger";
+                return "Golem_Finger";
             }
             case Fingerclaw:
             {
@@ -518,10 +505,6 @@ namespace item
             {
                 return "Hanky";
             }
-            case Herbs:
-            {
-                return "Herbs";
-            }
             case Headdress:
             {
                 return "Headdress";
@@ -529,10 +512,6 @@ namespace item
             case Hide:
             {
                 return "Hide";
-            }
-            case Hourglass:
-            {
-                return "Hourglass";
             }
             case Horn:
             {
@@ -562,10 +541,6 @@ namespace item
             {
                 return "Key";
             }
-            case Lantern:
-            {
-                return "Lantern";
-            }
             case Leaf:
             {
                 return "Leaf";
@@ -582,10 +557,6 @@ namespace item
             {
                 return "Lizard";
             }
-            case Lockbox:
-            {
-                return "Lockbox";
-            }
             case LockPicks:
             {
                 return "LockPicks";
@@ -601,10 +572,6 @@ namespace item
             case Mask:
             {
                 return "Mask";
-            }
-            case Medallion:
-            {
-                return "Medallion";
             }
             case Mirror:
             {
@@ -718,13 +685,9 @@ namespace item
             {
                 return "Salamander";
             }
-            case Salve:
+            case Scales:
             {
-                return "Salve";
-            }
-            case Scale:
-            {
-                return "Scale";
+                return "Scales";
             }
             case Scepter:
             {
@@ -782,10 +745,6 @@ namespace item
             {
                 return "Skink";
             }
-            case Skull:
-            {
-                return "Skull";
-            }
             case Spider_Eggs:
             {
                 return "Spider_Eggs";
@@ -821,10 +780,6 @@ namespace item
             case Tooth_Necklace:
             {
                 return "Tooth_Necklace";
-            }
-            case Torch:
-            {
-                return "Torch";
             }
             case Troll_Figure:
             {
@@ -885,13 +840,13 @@ namespace item
         switch (E)
         {
             case NotMisc:
+            case Angel_Braid:
+            {
+                return "Angel Braid";
+            }
             case Ankh_Necklace:
             {
                 return "Ankh Necklace";
-            }
-            case Balm_Pot:
-            {
-                return "Pot of Balm";
             }
             case Bird_Claw:
             {
@@ -903,51 +858,51 @@ namespace item
             }
             case Bracelet_Crown:
             {
-                return "Crown Bracelet";
+                return "Crown Emblem Bracelet";
             }
             case Bracelet_Feather:
             {
-                return "Feather Bracelet";
+                return "Feather Emblem Bracelet";
             }
             case Bracelet_Fist:
             {
-                return "Fist Bracelet";
+                return "Fist Emblem Bracelet";
             }
             case Bracelet_Hourglass:
             {
-                return "Hourglass Bracelet";
+                return "Hourglass Emblem Bracelet";
             }
             case Bracelet_Key:
             {
-                return "Key Bracelet";
+                return "Key Emblem Bracelet";
             }
             case Bracelet_Mask:
             {
-                return "Mask Bracelet";
+                return "Mask Emblem Bracelet";
             }
             case Brooch_Crown:
             {
-                return "Crown Brooch";
+                return "Crown Emblem Brooch";
             }
             case Brooch_Feather:
             {
-                return "Feather Brooch";
+                return "Feather Emblem Brooch";
             }
             case Brooch_Fist:
             {
-                return "Fist Brooch";
+                return "Fist Emblem Brooch";
             }
             case Brooch_Hourglass:
             {
-                return "Hourglass Brooch";
+                return "Hourglass Emblem Brooch";
             }
             case Brooch_Key:
             {
-                return "Key Brooch";
+                return "Key Emblem Brooch";
             }
             case Brooch_Mask:
             {
-                return "Mask Brooch";
+                return "Mask Emblem Brooch";
             }
             case Charm_Crown:
             {
@@ -1001,6 +956,10 @@ namespace item
             {
                 return "Ghost Sheet";
             }
+            case Golem_Finger:
+            {
+                return "Golem Finger";
+            }
             case Grave_Ornament:
             {
                 return "Grave Ornament";
@@ -1027,27 +986,27 @@ namespace item
             }
             case Pin_Crown:
             {
-                return "Crown Pin";
+                return "Crown Emblem Pin";
             }
             case Pin_Feather:
             {
-                return "Feather Pin";
+                return "Feather Emblem Pin";
             }
             case Pin_Fist:
             {
-                return "Fist Pin";
+                return "Fist Emblem Pin";
             }
             case Pin_Hourglass:
             {
-                return "Hourglass Pin";
+                return "Hourglass Emblem Pin";
             }
             case Pin_Key:
             {
-                return "Key Pin";
+                return "Key Emblem Pin";
             }
             case Pin_Mask:
             {
-                return "Mask Pin";
+                return "Mask Emblem Pin";
             }
             case Pipe_And_Tabor:
             {
@@ -1055,11 +1014,11 @@ namespace item
             }
             case Puppet_Blessed:
             {
-                return "Puppet Blessed";
+                return "Puppet";
             }
             case Puppet_Cursed:
             {
-                return "Puppet Cursed";
+                return "Puppet";
             }
             case Rabbit_Foot:
             {
@@ -1148,26 +1107,21 @@ namespace item
             case Bell:
             case Bone:
             case Book:
-            case Braid:
             case Bust:
             case Cameo:
             case Cape:
             case Cat:
             case Chains:
-            case Chest:
             case Chimes:
             case Cloak:
             case Conch:
-            case Crown:
             case Crumhorn:
             case Doll:
-            case Drink:
             case DrumLute:
             case Embryo:
             case Egg:
             case Eye:
             case Feather:
-            case Finger:
             case Fingerclaw:
             case Flag:
             case Frog:
@@ -1178,23 +1132,18 @@ namespace item
             case Handbag:
             case Hanky:
             case Headdress:
-            case Herbs:
             case Hide:
             case Horn:
             case Horseshoe:
-            case Hourglass:
             case Icicle:
             case Iguana:
             case Key:
-            case Lantern:
             case Leaf:
             case Legtie:
             case Lizard:
-            case Lockbox:
             case LockPicks:
             case Lyre:
             case Mask:
-            case Medallion:
             case Mirror:
             case Mummy_Hand:
             case Necklace:
@@ -1210,20 +1159,17 @@ namespace item
             case Ring:
             case Robe:
             case Salamander:
-            case Salve:
-            case Scale:
+            case Scales:
             case Scepter:
             case Scroll:
             case Scythe:
             case Seeds:
             case Skink:
-            case Skull:
             case Shard:
             case Shroud:
             case Spyglass:
             case Staff:
             case Talisman:
-            case Torch:
             case Tome:
             case Tongue:
             case Tooth:
@@ -1244,137 +1190,146 @@ namespace item
         }
     }
 
-    bool misc_type::IsMusicalInstrument(const misc_type::Enum E)
+    bool misc_type::IsMusicalInstrument(const Enum E)
     {
         return (
             (E == DrumLute) || (E == Crumhorn) || (E == Hurdy_Gurdy) || (E == Lyre)
             || (E == Pipe_And_Tabor) || (E == Recorder) || (E == Viol));
     }
 
-    const MaterialVecPair_t misc_type::Materials(const misc_type::Enum E)
+    const MaterialVecPair_t misc_type::Materials(const Enum E)
     {
-        if (E == misc_type::LockPicks)
+        if (E == LockPicks)
         {
             MaterialVec_t v{ material::CoreMetal() };
+            v.reserve(12);
             material::AppendCoreJewel(v);
             v.emplace_back(material::Bone);
             v.emplace_back(material::Obsidian);
             return MaterialVecPair_t(v, {});
         }
         else if (
-            (E == misc_type::Spider_Eggs) || (E == misc_type::Litch_Hand) || (E == misc_type::Egg)
-            || (E == misc_type::Embryo) || (E == misc_type::Petrified_Snake))
+            (E == Spider_Eggs) || (E == Litch_Hand) || (E == Egg) || (E == Embryo)
+            || (E == Petrified_Snake))
         {
             return MaterialVecPair_t({ material::Flesh }, {});
         }
-        else if ((E == misc_type::Wand) || (E == misc_type::Staff))
+        else if ((E == Wand) || (E == Staff))
         {
             MaterialVec_t v{ material::Wood, material::Glass };
             material::AppendCorePrimaryNoPearl(v);
             return MaterialVecPair_t(v, material::CoreSecondary());
         }
-        else if (E == misc_type::Braid)
+        else if (E == Angel_Braid)
         {
             return MaterialVecPair_t({ material::Hair }, {});
         }
-        else if (E == misc_type::DrumLute)
+        else if (E == DrumLute)
         {
             return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
         }
-        else if (E == misc_type::Figurine_Blessed)
+        else if (E == Figurine_Blessed)
         {
             return MaterialVecPair_t(
                 { material::Wood, material::Glass }, material::CoreSecondary(false));
         }
-        else if (E == misc_type::Figurine_Cursed)
+        else if (E == Figurine_Cursed)
         {
             return MaterialVecPair_t(
                 { material::Stone, material::Bone, material::Obsidian },
                 material::CoreSecondary(false));
         }
-        else if (E == misc_type::Doll_Blessed)
+        else if (E == Doll_Blessed)
         {
             return MaterialVecPair_t({ material::Wood }, material::CoreSecondary(false));
         }
-        else if (E == misc_type::Doll_Cursed)
+        else if (E == Doll_Cursed)
         {
             return MaterialVecPair_t({ material::Bone }, material::CoreSecondary(false));
         }
-        else if (E == misc_type::Bust)
+        else if (E == Bust)
         {
             return MaterialVecPair_t({ material::Stone }, material::CoreSecondary(false));
         }
-        else if (E == misc_type::Puppet_Blessed)
+        else if (E == Puppet_Blessed)
         {
             return MaterialVecPair_t({ material::Wood }, material::CoreSecondary(false));
         }
-        else if (E == misc_type::Puppet_Cursed)
+        else if (E == Puppet_Cursed)
         {
             return MaterialVecPair_t({ material::Bone }, material::CoreSecondary(false));
         }
-        else if (E == misc_type::Dried_Head)
+        else if (E == Dried_Head)
         {
             return MaterialVecPair_t({ material::Flesh }, material::CoreSecondary(false));
         }
-        else if (E == misc_type::Goblet)
+        else if (E == Goblet)
         {
             return MaterialVecPair_t(
                 { material::Tin, material::Bronze, material::Silver, material::Gold },
                 material::CoreSecondary());
         }
-        else if (E == misc_type::Balm_Pot)
-        {
-            return MaterialVecPair_t({ material::Bronze, material::Silver, material::Gold }, {});
-        }
-        else if (E == misc_type::Seeds)
+        else if (E == Seeds)
         {
             return MaterialVecPair_t({ material::Plant }, {});
         }
-        else if (E == misc_type::Mummy_Hand)
+        else if (E == Mummy_Hand)
         {
             return MaterialVecPair_t({ material::Flesh }, { material::Cloth });
         }
-        else if (E == misc_type::Shard)
+        else if (E == Shard)
         {
             return MaterialVecPair_t(material::CoreJewel(), {});
         }
-        else if (E == misc_type::Orb)
+        else if (E == Orb)
         {
             return MaterialVecPair_t(material::CoreJewel(), { material::Wood });
         }
-        else if (E == misc_type::Scepter)
+        else if (E == Scepter)
         {
             return MaterialVecPair_t(material::CorePrimaryNoPearl(), material::CoreSecondary());
         }
-        else if (E == misc_type::Icicle)
+        else if (E == Icicle)
         {
             return MaterialVecPair_t({ material::Glass }, {});
         }
-        else if (E == misc_type::Finger)
+        else if (E == Golem_Finger)
         {
             return MaterialVecPair_t({ material::Stone }, {});
         }
-        else if (E == misc_type::Unicorn_Horn)
+        else if (E == Unicorn_Horn)
         {
             return MaterialVecPair_t({ material::Horn }, {});
         }
-        else if (E == misc_type::Devil_Horn)
+        else if (E == Devil_Horn)
         {
             return MaterialVecPair_t({ material::Horn }, {});
         }
         else if (
-            (E == misc_type::Recorder) || (E == misc_type::Viol) || (E == misc_type::Pipe_And_Tabor)
-            || (E == misc_type::Lyre) || (E == misc_type::Hurdy_Gurdy))
+            (E == Recorder) || (E == Viol) || (E == Pipe_And_Tabor) || (E == Lyre)
+            || (E == Hurdy_Gurdy))
         {
             return MaterialVecPair_t({ material::Wood }, material::CoreSecondary());
         }
-        else if (E == misc_type::Ring)
+        else if (E == Ring)
         {
             return MaterialVecPair_t(material::CorePrimary(), material::CoreSecondary());
         }
-        else if (E == misc_type::Summoning_Statue)
+        else if (E == Summoning_Statue)
         {
-            return MaterialVecPair_t(material::CorePrimaryNoPearl(), material::CoreSecondary());
+            return MaterialVecPair_t(material::CorePrimaryNoPearl(), {});
+        }
+        else if ((E == Pendant) || (E == Mirror) || (E == Key))
+        {
+            MaterialVec_t primaryMaterials{ material::CoreMetal() };
+            material::AppendCoreMisc(primaryMaterials);
+            return MaterialVecPair_t(primaryMaterials, material::CoreSecondary());
+        }
+        else if (E == Doll)
+        {
+            MaterialVec_t secondaryMaterials{ material::CoreMisc(true) };
+            secondaryMaterials.emplace_back(material::Wood);
+            return MaterialVecPair_t({ material::Cloth }, secondaryMaterials);
         }
         else
         {
@@ -1382,80 +1337,801 @@ namespace item
         }
     }
 
-    bool misc_type::IsStandaloneItem(const misc_type::Enum E)
-    {
-        // Note:  Keep in sync with:
-        //          MiscItemFactory::Make()
-        //          misc_type::Materials()
-        //          ItemProfile::SetMisc()
-        return (
-            (E == misc_type::LockPicks) || (E == misc_type::Spider_Eggs) || (E == misc_type::Wand)
-            || (E == misc_type::DrumLute) || (E == misc_type::Figurine_Blessed)
-            || (E == misc_type::Figurine_Cursed) || (E == misc_type::Doll_Blessed)
-            || (E == misc_type::Doll_Cursed) || (E == misc_type::Bust)
-            || (E == misc_type::Puppet_Blessed) || (E == misc_type::Puppet_Cursed)
-            || (E == misc_type::Dried_Head) || (E == misc_type::Goblet)
-            || (E == misc_type::Balm_Pot) || (E == misc_type::Egg) || (E == misc_type::Embryo)
-            || (E == misc_type::Seeds) || (E == misc_type::Petrified_Snake)
-            || (E == misc_type::Mummy_Hand) || (E == misc_type::Shard) || (E == misc_type::Orb)
-            || (E == misc_type::Scepter) || (E == misc_type::Icicle) || (E == misc_type::Finger)
-            || (E == misc_type::Unicorn_Horn) || (E == misc_type::Devil_Horn)
-            || (E == misc_type::Recorder) || (E == misc_type::Viol)
-            || (E == misc_type::Pipe_And_Tabor) || (E == misc_type::Hurdy_Gurdy)
-            || (E == misc_type::Lyre) || (E == misc_type::Staff) || (E == misc_type::Ring));
-    }
-
-    bool misc_type::HasPixieVersion(const misc_type::Enum E)
+    bool misc_type::IsSummoning(const Enum MISC_TYPE)
     {
         return (
-            (E == misc_type::Bell) || (E == misc_type::Cape) || (E == misc_type::Cloak)
-            || (E == misc_type::Crown) || (E == misc_type::Crumhorn) || (E == misc_type::DrumLute)
-            || (E == misc_type::LockPicks) || (E == misc_type::Lyre)
-            || (E == misc_type::Pipe_And_Tabor) || (E == misc_type::Recorder)
-            || (E == misc_type::Robe) || (E == misc_type::Viol));
+            (MISC_TYPE == Egg) || (MISC_TYPE == Embryo) || (MISC_TYPE == Seeds)
+            || (MISC_TYPE == Summoning_Statue) || ((MISC_TYPE == Spider_Eggs)));
     }
 
-    float misc_type::ReligiousRatio(const misc_type::Enum E)
+    bool misc_type::IsStandalone(const misc_type::Enum MISC_TYPE)
     {
-        if (E == misc_type::Figurine_Blessed)
+        // keep in sync with misc_type::Materials() and ItemProfile::SetMisc()
+        return (
+            IsSummoning(MISC_TYPE) || IsBlessed(MISC_TYPE) || IsCursed(MISC_TYPE)
+            || IsOrdinary(MISC_TYPE));
+    }
+
+    bool misc_type::IsOrdinary(const Enum MISC_TYPE)
+    {
+        // keep in sync with misc_type::Materials() and ItemProfile::SetMisc()
+        return (
+            (MISC_TYPE == Bust) || (MISC_TYPE == Doll) || (MISC_TYPE == DrumLute)
+            || (MISC_TYPE == Goblet) || (MISC_TYPE == Key) || (MISC_TYPE == LockPicks)
+            || (MISC_TYPE == Mirror) || (MISC_TYPE == Orb) || (MISC_TYPE == Pendant)
+            || (MISC_TYPE == Ring) || (MISC_TYPE == Scepter) || (MISC_TYPE == Shard)
+            || (MISC_TYPE == Wand));
+    }
+
+    bool misc_type::HasPixieVersion(const Enum MISC_TYPE)
+    {
+        return ((MISC_TYPE == Bell) || IsMusicalInstrument(MISC_TYPE));
+    }
+
+    bool misc_type::HasOnlyPixieVersion(const misc_type::Enum MISC_TYPE)
+    {
+        return (MISC_TYPE == Bell);
+    }
+
+    float misc_type::ReligiousRatio(const misc_type::Enum MISC_TYPE)
+    {
+        if (MISC_TYPE == Figurine_Blessed)
         {
             return 0.9f;
         }
-        if (E == misc_type::Figurine_Cursed)
+        else if (MISC_TYPE == Figurine_Cursed)
         {
             return 0.9f;
         }
-        if (E == misc_type::Doll_Blessed)
+        else if (MISC_TYPE == Doll_Blessed)
         {
             return 0.9f;
         }
-        if (E == misc_type::Doll_Cursed)
+        else if (MISC_TYPE == Doll_Cursed)
         {
             return 0.9f;
         }
-        if (E == misc_type::Bust)
+        else if (MISC_TYPE == Bust)
         {
             return 0.6f;
         }
-        if (E == misc_type::Dried_Head)
+        else if (MISC_TYPE == Dried_Head)
         {
             return 0.75f;
         }
-        return 0.0f;
+        else
+        {
+            return 0.0f;
+        }
+    }
+
+    bool misc_type::HasNonFleshEyes(const misc_type::Enum MISC_TYPE)
+    {
+        return (
+            (MISC_TYPE == Bust) || (MISC_TYPE == Doll) || (MISC_TYPE == Doll_Blessed)
+            || (MISC_TYPE == Doll_Cursed) || (MISC_TYPE == Figurine_Blessed)
+            || (MISC_TYPE == Figurine_Cursed) || (MISC_TYPE == Puppet_Blessed)
+            || (MISC_TYPE == Puppet_Cursed) || (MISC_TYPE == Rat_Juju)
+            || (MISC_TYPE == Summoning_Statue) || (MISC_TYPE == Talisman)
+            || (MISC_TYPE == Troll_Figure) || (MISC_TYPE == Weasel_Totem)
+            || (MISC_TYPE == Dried_Head)); // yeah it's flesh but what the hell having special
+                                           // eyes is cool (oh and it's not edible so it's okay)
     }
 
     bool misc_type::IsBlessed(const misc_type::Enum E)
     {
         return (
-            (E == misc_type::Doll_Blessed) || (E == misc_type::Figurine_Blessed)
-            || (E == misc_type::Puppet_Blessed) || (E == misc_type::Bust));
+            (E == Doll_Blessed) || (E == Figurine_Blessed) || (E == Puppet_Blessed) || (E == Bust));
     }
 
     bool misc_type::IsCursed(const misc_type::Enum E)
     {
         return (
-            (E == misc_type::Doll_Cursed) || (E == misc_type::Figurine_Cursed)
-            || (E == misc_type::Puppet_Cursed) || (E == misc_type::Dried_Head));
+            (E == Doll_Cursed) || (E == Figurine_Cursed) || (E == Puppet_Cursed)
+            || (E == Dried_Head));
+    }
+
+    Weight_t misc_type::Weight(const misc_type::Enum MISC_TYPE)
+    {
+        // keep in sync with misc_type::IsStandalone()
+
+        switch (MISC_TYPE)
+        {
+            case Amulet:
+            {
+                return 30_weight;
+            }
+            case Ankh_Necklace:
+            {
+                return 24_weight;
+            }
+            case Armband:
+            {
+                return 40_weight;
+            }
+            case Bag:
+            {
+                return 20_weight;
+            }
+            case Beard:
+            {
+                return 7_weight;
+            }
+            case Bell:
+            {
+                return 35_weight;
+            }
+            case Bird_Claw:
+            {
+                return 4_weight;
+            }
+            case Bone:
+            {
+                return 32_weight;
+            }
+            case Bone_Whistle:
+            {
+                return 8_weight;
+            }
+            case Book:
+            {
+                return 60_weight;
+            }
+            case Bracelet_Crown:
+            case Bracelet_Feather:
+            case Bracelet_Fist:
+            case Bracelet_Hourglass:
+            case Bracelet_Key:
+            case Bracelet_Mask:
+            {
+                return 33_weight;
+            }
+            case Angel_Braid:
+            {
+                return 8_weight;
+            }
+            case Brooch_Crown:
+            case Brooch_Feather:
+            case Brooch_Fist:
+            case Brooch_Hourglass:
+            case Brooch_Key:
+            case Brooch_Mask:
+            {
+                return 29_weight;
+            }
+            case Bust:
+            {
+                return 200_weight;
+            }
+            case Cameo:
+            {
+                return 44_weight;
+            }
+            case Cape:
+            {
+                return 57_weight;
+            }
+            case Cat:
+            {
+                return 236_weight;
+            }
+            case Chains:
+            {
+                return 300_weight;
+            }
+            case Charm_Crown:
+            case Charm_Feather:
+            case Charm_Fist:
+            case Charm_Hourglass:
+            case Charm_Key:
+            case Charm_Mask:
+            {
+                return 31_weight;
+            }
+            case Chimes:
+            {
+                return 58_weight;
+            }
+            case Cloak:
+            {
+                return 111_weight;
+            }
+            case Conch:
+            {
+                return 49_weight;
+            }
+            case Crumhorn:
+            {
+                return 47_weight;
+            }
+            case Devil_Horn:
+            {
+                return 85_weight;
+            }
+            case Doll:
+            case Doll_Blessed:
+            case Doll_Cursed:
+            {
+                return 28_weight;
+            }
+            case Dried_Head:
+            {
+                return 65_weight;
+            }
+            case DrumLute:
+            {
+                return 364_weight;
+            }
+            case Egg:
+            {
+                return 153_weight;
+            }
+            case Embryo:
+            {
+                return 41_weight;
+            }
+            case Eye:
+            {
+                return 31_weight;
+            }
+            case Feather:
+            {
+                return 1_weight;
+            }
+            case Figurine_Blessed:
+            case Figurine_Cursed:
+            {
+                return 38_weight;
+            }
+            case Golem_Finger:
+            {
+                return 51_weight;
+            }
+            case Fingerclaw:
+            {
+                return 19_weight;
+            }
+            case Flag:
+            {
+                return 56_weight;
+            }
+            case Frog:
+            {
+                return 47_weight;
+            }
+            case Gecko:
+            {
+                return 46_weight;
+            }
+            case Ghost_Sheet:
+            {
+                return 56_weight;
+            }
+            case Gizzard:
+            {
+                return 53_weight;
+            }
+            case Goblet:
+            {
+                return 50_weight;
+            }
+            case Gong:
+            {
+                return 255_weight;
+            }
+            case Grave_Ornament:
+            {
+                return 77_weight;
+            }
+            case Handbag:
+            {
+                return 27_weight;
+            }
+            case Hanky:
+            {
+                return 13_weight;
+            }
+            case Headdress:
+            {
+                return 68_weight;
+            }
+            case Hide:
+            {
+                return 101_weight;
+            }
+            case Horn:
+            {
+                return 48_weight;
+            }
+            case Horseshoe:
+            {
+                return 47_weight;
+            }
+            case Hurdy_Gurdy:
+            {
+                return 446_weight;
+            }
+            case Icicle:
+            {
+                return 26_weight;
+            }
+            case Iguana:
+            {
+                return 44_weight;
+            }
+            case Imp_Tail:
+            {
+                return 52_weight;
+            }
+            case Key:
+            {
+                return 36_weight;
+            }
+            case Leaf:
+            {
+                return 1_weight;
+            }
+            case Legtie:
+            {
+                return 11_weight;
+            }
+            case Litch_Hand:
+            {
+                return 37_weight;
+            }
+            case Lizard:
+            {
+                return 43_weight;
+            }
+            case LockPicks:
+            {
+                return 33_weight;
+            }
+            case Lyre:
+            {
+                return 54_weight;
+            }
+            case Magnifying_Glass:
+            {
+                return 48_weight;
+            }
+            case Mask:
+            {
+                return 57_weight;
+            }
+            case Mirror:
+            {
+                return 47_weight;
+            }
+            case Mummy_Hand:
+            {
+                return 38_weight;
+            }
+            case Necklace:
+            {
+                return 21_weight;
+            }
+            case Noose:
+            {
+                return 29_weight;
+            }
+            case Nose:
+            {
+                return 13_weight;
+            }
+            case Orb:
+            {
+                return 87_weight;
+            }
+            case Paw:
+            {
+                return 10_weight;
+            }
+            case Pendant:
+            {
+                return 26_weight;
+            }
+            case Petrified_Snake:
+            {
+                return 32_weight;
+            }
+            case Pin_Crown:
+            case Pin_Feather:
+            case Pin_Fist:
+            case Pin_Hourglass:
+            case Pin_Key:
+            case Pin_Mask:
+            {
+                return 16_weight;
+            }
+            case Pipe_And_Tabor:
+            {
+                return 127_weight;
+            }
+            case Potion:
+            {
+                return 95_weight;
+            }
+            case Puppet_Blessed:
+            case Puppet_Cursed:
+            {
+                return 38_weight;
+            }
+            case Rabbit_Foot:
+            {
+                return 22_weight;
+            }
+            case Rainmaker:
+            {
+                return 43_weight;
+            }
+            case Rat_Juju:
+            {
+                return 25_weight;
+            }
+            case Rattlesnake_Tail:
+            {
+                return 11_weight;
+            }
+            case Recorder:
+            {
+                return 36_weight;
+            }
+            case Relic:
+            {
+                return 57_weight;
+            }
+            case Ring:
+            {
+                return 12_weight;
+            }
+            case Robe:
+            {
+                return 159_weight;
+            }
+            case Salamander:
+            {
+                return 48_weight;
+            }
+            case Scales:
+            {
+                return 122_weight;
+            }
+            case Scepter:
+            {
+                return 48_weight;
+            }
+            case Scroll:
+            {
+                return 33_weight;
+            }
+            case Scythe:
+            {
+                return 413_weight;
+            }
+            case Seeds:
+            {
+                return 12_weight;
+            }
+            case Shard:
+            {
+                return 49_weight;
+            }
+            case Shark_Tooth_Necklace:
+            {
+                return 22_weight;
+            }
+            case Shroud:
+            {
+                return 166_weight;
+            }
+            case Signet_Crown:
+            case Signet_Feather:
+            case Signet_Fist:
+            case Signet_Hourglass:
+            case Signet_Key:
+            case Signet_Mask:
+            {
+                return 35_weight;
+            }
+            case Skink:
+            {
+                return 45_weight;
+            }
+            case Spider_Eggs:
+            {
+                return 12_weight;
+            }
+            case Spyglass:
+            {
+                return 62_weight;
+            }
+            case Staff:
+            {
+                return 277_weight;
+            }
+            case Summoning_Statue:
+            {
+                return 38_weight;
+            }
+            case Talisman:
+            {
+                return 32_weight;
+            }
+            case Tome:
+            {
+                return 70_weight;
+            }
+            case Tongue:
+            {
+                return 34_weight;
+            }
+            case Tooth:
+            {
+                return 5_weight;
+            }
+            case Tooth_Necklace:
+            {
+                return 22_weight;
+            }
+            case Troll_Figure:
+            {
+                return 39_weight;
+            }
+            case Trophy:
+            {
+                return 137_weight;
+            }
+            case Tuning_Fork:
+            {
+                return 18_weight;
+            }
+            case Turtle_Shell:
+            {
+                return 59_weight;
+            }
+            case Unicorn_Horn:
+            {
+                return 28_weight;
+            }
+            case Veil:
+            {
+                return 39_weight;
+            }
+            case Viol:
+            {
+                return 233_weight;
+            }
+            case Wand:
+            {
+                return 15_weight;
+            }
+            case Warhorse_Marionette:
+            {
+                return 433_weight;
+            }
+            case Weasel_Totem:
+            {
+                return 43_weight;
+            }
+            case Wolfen_Fur:
+            {
+                return 91_weight;
+            }
+            case NotMisc:
+            case Count:
+            default:
+            {
+                return 0_weight;
+            }
+        }
+    }
+
+    bool misc_type::IsUseable(const misc_type::Enum MISC_TYPE)
+    {
+        return (
+            IsSummoning(MISC_TYPE) || (MISC_TYPE == Bell) || (MISC_TYPE == Bone_Whistle)
+            || (MISC_TYPE == Chimes) || (MISC_TYPE == Gong) || (MISC_TYPE == Key)
+            || (MISC_TYPE == Magnifying_Glass) || (MISC_TYPE == Potion) || (MISC_TYPE == Rainmaker)
+            || (MISC_TYPE == Chains));
+    }
+
+    bool misc_type::IsEquippable(const Enum MISC_TYPE)
+    {
+        if (IsUseable(MISC_TYPE))
+        {
+            return false;
+        }
+
+        switch (MISC_TYPE)
+        {
+            case Amulet:
+            case Ankh_Necklace:
+            case Armband:
+            case Bracelet_Crown:
+            case Bracelet_Feather:
+            case Bracelet_Fist:
+            case Bracelet_Hourglass:
+            case Bracelet_Key:
+            case Bracelet_Mask:
+            case Angel_Braid:
+            case Brooch_Crown:
+            case Brooch_Feather:
+            case Brooch_Fist:
+            case Brooch_Hourglass:
+            case Brooch_Key:
+            case Brooch_Mask:
+            case Cape:
+            case Charm_Crown:
+            case Charm_Feather:
+            case Charm_Fist:
+            case Charm_Hourglass:
+            case Charm_Key:
+            case Charm_Mask:
+            case Cloak:
+            case Conch:
+            case Crumhorn:
+            case Devil_Horn:
+            case DrumLute:
+            case Golem_Finger:
+            case Fingerclaw:
+            case Ghost_Sheet:
+            case Headdress:
+            case Hide:
+            case Hurdy_Gurdy:
+            case Icicle:
+            case Legtie:
+            case Litch_Hand:
+            case LockPicks:
+            case Lyre:
+            case Mask:
+            case Mummy_Hand:
+            case Necklace:
+            case Pendant:
+            case Pin_Crown:
+            case Pin_Feather:
+            case Pin_Fist:
+            case Pin_Hourglass:
+            case Pin_Key:
+            case Pin_Mask:
+            case Pipe_And_Tabor:
+            case Rabbit_Foot:
+            case Recorder:
+            case Ring:
+            case Robe:
+            case Scepter:
+            case Scythe:
+            case Shard:
+            case Shark_Tooth_Necklace:
+            case Shroud:
+            case Signet_Crown:
+            case Signet_Feather:
+            case Signet_Fist:
+            case Signet_Hourglass:
+            case Signet_Key:
+            case Signet_Mask:
+            case Staff:
+            case Tooth_Necklace:
+            case Troll_Figure:
+            case Unicorn_Horn:
+            case Veil:
+            case Viol:
+            case Wand:
+            case Wolfen_Fur:
+            {
+                return true;
+            }
+            case NotMisc:
+            case Bag:
+            case Beard:
+            case Bell:
+            case Bird_Claw:
+            case Bone:
+            case Bone_Whistle:
+            case Book:
+            case Bust:
+            case Cameo:
+            case Cat:
+            case Chains:
+            case Chimes:
+            case Doll:
+            case Doll_Blessed:
+            case Doll_Cursed:
+            case Dried_Head:
+            case Embryo:
+            case Egg:
+            case Eye:
+            case Feather:
+            case Figurine_Blessed:
+            case Figurine_Cursed:
+            case Flag:
+            case Frog:
+            case Gecko:
+            case Gizzard:
+            case Goblet:
+            case Gong:
+            case Grave_Ornament:
+            case Handbag:
+            case Hanky:
+            case Horn:
+            case Horseshoe:
+            case Iguana:
+            case Imp_Tail:
+            case Key:
+            case Leaf:
+            case Lizard:
+            case Magnifying_Glass:
+            case Mirror:
+            case Noose:
+            case Nose:
+            case Orb:
+            case Paw:
+            case Petrified_Snake:
+            case Potion:
+            case Puppet_Blessed:
+            case Puppet_Cursed:
+            case Rainmaker:
+            case Rat_Juju:
+            case Rattlesnake_Tail:
+            case Relic:
+            case Salamander:
+            case Scales:
+            case Scroll:
+            case Seeds:
+            case Skink:
+            case Spider_Eggs:
+            case Spyglass:
+            case Summoning_Statue:
+            case Talisman:
+            case Tome:
+            case Tongue:
+            case Tooth:
+            case Trophy:
+            case Tuning_Fork:
+            case Turtle_Shell:
+            case Warhorse_Marionette:
+            case Weasel_Totem:
+            case Count:
+            default:
+            {
+                return false;
+            }
+        }
+    }
+
+    bool misc_type::IsQuestItem(const Enum MISC_TYPE)
+    {
+        if (IsMusicalInstrument(MISC_TYPE) && (MISC_TYPE != DrumLute))
+        {
+            return true;
+        }
+        else
+        {
+            return (
+                (MISC_TYPE == Petrified_Snake) || (MISC_TYPE == Mummy_Hand) || (MISC_TYPE == Icicle)
+                || (MISC_TYPE == Unicorn_Horn) || (MISC_TYPE == Devil_Horn)
+                || (MISC_TYPE == Angel_Braid));
+        }
+    }
+
+    bool misc_type::AllowsCasting(const Enum MISC_TYPE)
+    {
+        return (
+            IsBlessed(MISC_TYPE) || IsCursed(MISC_TYPE) || (MISC_TYPE == Petrified_Snake)
+            || (MISC_TYPE == Mummy_Hand) || (MISC_TYPE == Wand) || (MISC_TYPE == Shard)
+            || (MISC_TYPE == Icicle) || (MISC_TYPE == Devil_Horn) || (MISC_TYPE == Orb)
+            || (MISC_TYPE == Scepter) || (MISC_TYPE == Unicorn_Horn) || (MISC_TYPE == Litch_Hand));
+    }
+
+    bool misc_type::IsWeapon(const Enum MISC_TYPE)
+    {
+        return (MISC_TYPE == Scythe) || (MISC_TYPE == Staff);
+    }
+
+    bool misc_type::IsArmor(const Enum MISC_TYPE)
+    {
+        return (MISC_TYPE == Cape) || (MISC_TYPE == Cloak) || (MISC_TYPE == Ghost_Sheet)
+            || (MISC_TYPE == Robe) || (MISC_TYPE == Shroud);
     }
 
     const std::string set_type::ToString(const set_type::Enum E)
@@ -2377,51 +3053,51 @@ namespace item
             }
             case BraceletCrown:
             {
-                return "Crown Bracelet";
+                return "Crown Emblem Bracelet";
             }
             case BraceletFeather:
             {
-                return "Feather Bracelet Feather";
+                return "Feather Emblem Bracelet";
             }
             case BraceletFist:
             {
-                return "Fist Bracelet";
+                return "Fist Emblem Bracelet";
             }
             case BraceletHourglass:
             {
-                return "Hourglass Bracelet";
+                return "Hourglass Emblem Bracelet";
             }
             case BraceletKey:
             {
-                return "Key Bracelet";
+                return "Key Emblem Bracelet";
             }
             case BraceletMask:
             {
-                return "Mask Bracelet";
+                return "Mask Emblem Bracelet";
             }
             case BroochCrown:
             {
-                return "Brooch Crown";
+                return "Crown Emblem Brooch";
             }
             case BroochFeather:
             {
-                return "Brooch Feather";
+                return "Feather Emblem Brooch";
             }
             case BroochFist:
             {
-                return "Brooch Fist";
+                return "Fist Emblem Brooch";
             }
             case BroochHourglass:
             {
-                return "Brooch Hourglass";
+                return "Hourglass Emblem Brooch";
             }
             case BroochKey:
             {
-                return "Brooch Key";
+                return "Key Emblem Brooch";
             }
             case BroochMask:
             {
-                return "Brooch Mask";
+                return "Mask Emblem Brooch";
             }
             case BurialShroud:
             {
@@ -2665,27 +3341,27 @@ namespace item
             }
             case PinCrown:
             {
-                return "Crown Pin";
+                return "Crown Emblem Pin";
             }
             case PinFeather:
             {
-                return "Feather Pin";
+                return "Feather Emblem Pin";
             }
             case PinFist:
             {
-                return "Fist Pin";
+                return "Fist Emblem Pin";
             }
             case PinHourglass:
             {
-                return "Hourglass Pin";
+                return "Hourglass Emblem Pin";
             }
             case PinKey:
             {
-                return "Key Pin";
+                return "Key Emblem Pin";
             }
             case PinMask:
             {
-                return "Mask Pin";
+                return "Mask Emblem Pin";
             }
             case PixieBell:
             {
@@ -2891,7 +3567,7 @@ namespace item
             }
             case BloodyDragonScale:
             {
-                return misc_type::Scale;
+                return misc_type::Scales;
             }
             case BottleOfBansheeScreams:
             {
@@ -3119,7 +3795,7 @@ namespace item
             }
             case JeweledAnkhNecklace:
             {
-                return misc_type::Amulet;
+                return misc_type::Ankh_Necklace;
             }
             case JeweledArmband:
             {
@@ -3389,28 +4065,15 @@ namespace item
 
     element_type::Enum unique_type::ElementTypes(const unique_type::Enum E)
     {
-        auto elementType{ element_type::None };
-
-        if ((E == unique_type::RazorFingerclaw) || (E == unique_type::ViperFangFingerclaw)
-            || (E == unique_type::ScorpionStingerFingerclaw))
-        {
-            elementType = static_cast<element_type::Enum>(
-                element_type::Fire | element_type::Frost | element_type::Shadow);
-        }
-        else if (
-            (E == unique_type::CommandersCape) || (E == unique_type::GeneralsCape)
+        if ((E == unique_type::CommandersCape) || (E == unique_type::GeneralsCape)
             || (E == unique_type::KingsCape) || (E == unique_type::JeweledPrincessVeil))
         {
-            elementType = element_type::Honor;
+            return element_type::Honor;
         }
-        else if ((E == unique_type::JeweledArmband) || (E == unique_type::ManaAmulet))
+        else
         {
-            elementType = static_cast<element_type::Enum>(
-                element_type::Fire | element_type::Frost | element_type::Honor
-                | element_type::Shadow);
+            return element_type::None;
         }
-
-        return elementType;
     }
 
     const MaterialVecPair_t unique_type::Materials(const unique_type::Enum E)
@@ -3435,7 +4098,7 @@ namespace item
             }
             case BloodyDragonScale:
             {
-                return MaterialVecPair_t({ material::Scale }, { material::Blood });
+                return MaterialVecPair_t({ material::Scales }, { material::Blood });
             }
             case BottleOfBansheeScreams:
             {
@@ -4980,9 +5643,9 @@ namespace item
             {
                 return "Hair";
             }
-            case Scale:
+            case Scales:
             {
-                return "Scale";
+                return "Scales";
             }
             case Obsidian:
             {
@@ -5098,19 +5761,19 @@ namespace item
         }
     }
 
-    const std::string material::ToReadableString(const item::material::Enum E)
+    const std::string material::Name(const item::material::Enum MATERIAL_TYPE)
     {
-        if (E == material::SoftLeather)
+        if (MATERIAL_TYPE == material::SoftLeather)
         {
             return "Soft-Leather";
         }
-        else if (E == material::HardLeather)
+        else if (MATERIAL_TYPE == material::HardLeather)
         {
             return "Hard-Leather";
         }
         else
         {
-            return ToString(E);
+            return ToString(MATERIAL_TYPE);
         }
     }
 
@@ -5168,7 +5831,7 @@ namespace item
             {
                 return 12_armor;
             }
-            case Scale:
+            case Scales:
             {
                 return 13_armor;
             }
@@ -5366,7 +6029,7 @@ namespace item
             {
                 return 4_coin;
             }
-            case Scale:
+            case Scales:
             {
                 return 1000_coin;
             }
@@ -5561,7 +6224,7 @@ namespace item
             {
                 return 0.5f;
             }
-            case Scale:
+            case Scales:
             {
                 return 0.9f;
             }
@@ -5666,42 +6329,9 @@ namespace item
     {
         switch (E)
         {
-            case Nothing:
-            case Spirit:
-            case Gas:
-            case Blood:
-            case Water:
-            case Dirt:
-            case Acid:
-            case Paper:
-            case Glass:
-            case Feather:
-            case Fur:
-            case Hair:
-            case Flesh:
-            case Rope:
-            case Cloth:
-            case Hide:
-            case SoftLeather:
-            case HardLeather:
-            case Plant:
-            case Claw:
-            case Scale:
-            case Horn:
-            {
-                return 0;
-            }
             case Bone:
             {
                 return 1;
-            }
-            case Tooth:
-            {
-                return 0;
-            }
-            case Wood:
-            {
-                return 0;
             }
             case Stone:
             {
@@ -5771,12 +6401,34 @@ namespace item
             {
                 return 18;
             }
+            case Nothing:
+            case Spirit:
+            case Gas:
+            case Blood:
+            case Water:
+            case Dirt:
+            case Acid:
+            case Paper:
+            case Glass:
+            case Feather:
+            case Fur:
+            case Hair:
+            case Flesh:
+            case Rope:
+            case Cloth:
+            case Hide:
+            case SoftLeather:
+            case HardLeather:
+            case Plant:
+            case Claw:
+            case Scales:
+            case Horn:
+            case Tooth:
+            case Wood:
             case Count:
             default:
             {
-                std::ostringstream ss;
-                ss << "item::material::Bonus(" << E << ")_InvalidValueError.";
-                throw std::range_error(ss.str());
+                return 0;
             }
         }
     }
@@ -5832,7 +6484,7 @@ namespace item
 
     material::Enum material::SkinMaterial(const creature::race::Enum RACE)
     {
-        // keep in sync with ItemImageManager::GetSkinImageFilename()
+        // keep in sync with ItemImageMachine::GetSkinImageFilename()
 
         if ((RACE == creature::race::Wolfen) || (RACE == creature::race::ThreeHeadedHound)
             || (RACE == creature::race::Troll) || (RACE == creature::race::Minotaur)
@@ -5849,7 +6501,7 @@ namespace item
             || (RACE == creature::race::Serpent) || (RACE == creature::race::Cobra)
             || (RACE == creature::race::Wyvern))
         {
-            return material::Scale;
+            return material::Scales;
         }
         else if (RACE == creature::race::Plant)
         {
@@ -6006,6 +6658,13 @@ namespace item
         return ContainsSpirit(PRI, SEC);
     }
 
+    bool material::IsSolid(const material::Enum MATERIAL)
+    {
+        return (
+            (IsLiquid(MATERIAL) == false) && (IsGas(MATERIAL) == false)
+            && (IsSpirit(MATERIAL) == false));
+    }
+
     bool material::IsLiquid(const material::Enum MATERIAL)
     {
         return (
@@ -6013,17 +6672,17 @@ namespace item
             || (MATERIAL == material::Water));
     }
 
-    bool material::IsSolid(const material::Enum MATERIAL)
+    bool material::IsGas(const material::Enum MATERIAL) { return (MATERIAL == material::Gas); }
+
+    bool material::IsSpirit(const material::Enum MATERIAL)
     {
-        return (
-            (IsLiquid(MATERIAL) == false) && (MATERIAL != material::Gas)
-            && (MATERIAL != material::Spirit));
+        return (MATERIAL == material::Spirit);
     }
 
     bool material::IsBendy(const material::Enum MATERIAL)
     {
         return (
-            (IsSolid(MATERIAL) == false) || (MATERIAL == material::SoftLeather)
+            (MATERIAL == material::SoftLeather) || (MATERIAL == material::HardLeather)
             || (MATERIAL == material::Dirt) || (MATERIAL == material::Plant)
             || (MATERIAL == material::Flesh) || (MATERIAL == material::Hide)
             || (MATERIAL == material::Feather) || (MATERIAL == material::Fur)
@@ -6031,7 +6690,10 @@ namespace item
             || (MATERIAL == material::Rope) || (MATERIAL == material::Cloth));
     }
 
-    bool material::IsRigid(const material::Enum MATERIAL) { return !IsBendy(MATERIAL); }
+    bool material::IsRigid(const material::Enum MATERIAL)
+    {
+        return (IsSolid(MATERIAL) && (IsBendy(MATERIAL) == false));
+    }
 
     bool material::ContainsSpirit(const material::Enum PRI, const material::Enum SEC)
     {
@@ -6127,7 +6789,7 @@ namespace item
                 fireDamageRatio = 2.0f;
                 break;
             }
-            case material::Scale:
+            case material::Scales:
             {
                 fireDamageRatio = 0.1f;
                 break;
@@ -6348,7 +7010,7 @@ namespace item
                 fireDamageRatio += 0.5f;
                 break;
             }
-            case material::Scale:
+            case material::Scales:
             {
                 fireDamageRatio -= 0.75f;
                 break;
@@ -6553,64 +7215,111 @@ namespace item
         return IsJewel(PRI) || IsJewel(SEC);
     }
 
-    const std::string weapon_type::ToString(const item::weapon_type::Enum E, const bool WILL_WRAP)
+    const std::string weapon_type::ToString(
+        const item::weapon_type::Enum WEAPON_TYPE, const bool WILL_WRAP, const bool IS_READBLE)
     {
         std::ostringstream ss;
 
-        if (E == weapon_type::NotAWeapon)
+        if (WEAPON_TYPE == weapon_type::NotAWeapon)
         {
-            ss << "not a weapon";
+            ss << "NotAWeapon";
         }
         else
         {
-            if (E & weapon_type::Bladed)
-                ss << "bladed";
-            if (E & weapon_type::Melee)
-                ss << ((ss.str().empty()) ? "" : "/") << "melee";
-            if (E & weapon_type::Projectile)
-                ss << ((ss.str().empty()) ? "" : "/") << "projectile";
-            if (E & weapon_type::Pointed)
-                ss << ((ss.str().empty()) ? "" : "/") << "pointed";
-            if (E & weapon_type::Claws)
-                ss << ((ss.str().empty()) ? "" : "/") << "claws";
-            if (E & weapon_type::Bite)
-                ss << ((ss.str().empty()) ? "" : "/") << "bite";
-            if (E & weapon_type::Sword)
-                ss << ((ss.str().empty()) ? "" : "/") << "sword";
-            if (E & weapon_type::Axe)
-                ss << ((ss.str().empty()) ? "" : "/") << "axe";
-            if (E & weapon_type::Whip)
-                ss << ((ss.str().empty()) ? "" : "/") << "whip";
-            if (E & weapon_type::Blowpipe)
-                ss << ((ss.str().empty()) ? "" : "/") << "blowpipe";
-            if (E & weapon_type::Bow)
-                ss << ((ss.str().empty()) ? "" : "/") << "bow";
-            if (E & weapon_type::Crossbow)
-                ss << ((ss.str().empty()) ? "" : "/") << "crossbow";
-            if (E & weapon_type::Spear)
-                ss << ((ss.str().empty()) ? "" : "/") << "spear";
-            if (E & weapon_type::Knife)
-                ss << ((ss.str().empty()) ? "" : "/") << "knife";
-            if (E & weapon_type::Club)
-                ss << ((ss.str().empty()) ? "" : "/") << "club";
-            if (E & weapon_type::Staff)
-                ss << ((ss.str().empty()) ? "" : "/") << "staff";
-            if (E & weapon_type::Sling)
-                ss << ((ss.str().empty()) ? "" : "/") << "sling";
-            if (E & weapon_type::BladedStaff)
-                ss << ((ss.str().empty()) ? "" : "/") << "bladed staff";
-            if (E & weapon_type::Fists)
-                ss << ((ss.str().empty()) ? "" : "/") << "fists";
-            if (E & weapon_type::Tendrils)
-                ss << ((ss.str().empty()) ? "" : "/") << "tendrils";
-            if (E & weapon_type::Breath)
-                ss << ((ss.str().empty()) ? "" : "/") << "breath";
+            if (WEAPON_TYPE & weapon_type::Bladed)
+            {
+                ss << "Bladed";
+            }
+            if (WEAPON_TYPE & weapon_type::Melee)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Melee";
+            }
+            if (WEAPON_TYPE & weapon_type::Projectile)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Projectile";
+            }
+            if (WEAPON_TYPE & weapon_type::Pointed)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Pointed";
+            }
+            if (WEAPON_TYPE & weapon_type::Claws)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Claws";
+            }
+            if (WEAPON_TYPE & weapon_type::Bite)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << ((IS_READBLE) ? "Jaws" : "Bite");
+            }
+            if (WEAPON_TYPE & weapon_type::Sword)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Sword";
+            }
+            if (WEAPON_TYPE & weapon_type::Axe)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Axe";
+            }
+            if (WEAPON_TYPE & weapon_type::Whip)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Whip";
+            }
+            if (WEAPON_TYPE & weapon_type::Blowpipe)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Blowpipe";
+            }
+            if (WEAPON_TYPE & weapon_type::Bow)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Bow";
+            }
+            if (WEAPON_TYPE & weapon_type::Crossbow)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Crossbow";
+            }
+            if (WEAPON_TYPE & weapon_type::Spear)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Spear";
+            }
+            if (WEAPON_TYPE & weapon_type::Knife)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Knife";
+            }
+            if (WEAPON_TYPE & weapon_type::Club)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Club";
+            }
+            if (WEAPON_TYPE & weapon_type::Staff)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Staff";
+            }
+            if (WEAPON_TYPE & weapon_type::Sling)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Sling";
+            }
+            if (WEAPON_TYPE & weapon_type::BladedStaff)
+            {
+                ss << ((ss.str().empty()) ? "" : "/")
+                   << ((IS_READBLE) ? "Bladed Staff" : "BladedStaff");
+            }
+            if (WEAPON_TYPE & weapon_type::Fists)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Fists";
+            }
+            if (WEAPON_TYPE & weapon_type::Tendrils)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Tendrils";
+            }
+            if (WEAPON_TYPE & weapon_type::Breath)
+            {
+                ss << ((ss.str().empty()) ? "" : "/") << "Breath";
+            }
         }
 
-        if ((ss.str().empty()) || (ss.str() == "("))
+        if (ss.str().empty())
         {
             std::ostringstream ssErr;
-            ssErr << "item::weapon_type::ToString(" << E << ")_InvalidValueError";
+            ssErr << "item::weapon_type::ToString(" << WEAPON_TYPE
+                  << ", will_wrap=" << std::boolalpha << WILL_WRAP << ", is_readable=" << IS_READBLE
+                  << ")_InvalidValueError";
+
             throw std::range_error(ssErr.str());
         }
 
@@ -6622,104 +7331,115 @@ namespace item
         {
             return ss.str();
         }
+    }
+
+    const std::string weapon_type::Name(const weapon_type::Enum WEAPON_TYPE)
+    {
+        return weapon_type::ToString(WEAPON_TYPE, false, true);
     }
 
     weapon_type::Enum weapon_type::FromString(const std::string & S)
     {
-        if (S == "Melee")
-            return Melee;
-        else if (S == "Projectile")
-            return Projectile;
-        else if (S == "Bladed")
-            return Bladed;
-        else if (S == "Pointed")
-            return Pointed;
-        else if (S == "Claws")
-            return Claws;
-        else if (S == "Bite")
-            return Bite;
-        else if (S == "Sword")
-            return Sword;
-        else if (S == "Axe")
-            return Axe;
-        else if (S == "Whip")
-            return Whip;
-        else if (S == "Blowpipe")
-            return Blowpipe;
-        else if (S == "Bow")
-            return Bow;
-        else if (S == "Crossbow")
-            return Crossbow;
-        else if (S == "Spear")
-            return Spear;
-        else if (S == "Knife")
-            return Knife;
-        else if (S == "Club")
-            return Club;
-        else if (S == "Staff")
-            return Staff;
-        else if (S == "Sling")
-            return Sling;
-        else if (S == "BladedStaff")
-            return BladedStaff;
-        else if (S == "Fists")
-            return Fists;
-        else if (S == "Tendrils")
-            return Tendrils;
-        else if (S == "Breath")
-            return Breath;
-        else
+        weapon_type::Enum type{ NotAWeapon };
+
+        unsigned flag{ 1 };
+
+        while (flag != Last)
         {
-            return NotAWeapon;
+            auto const WEAPON_TYPE_ENUM{ static_cast<weapon_type::Enum>(flag) };
+
+            if (boost::algorithm::icontains(S, weapon_type::ToString(WEAPON_TYPE_ENUM)))
+            {
+                type = static_cast<weapon_type::Enum>(type | flag);
+            }
+
+            flag <<= 1;
+        }
+
+        return type;
+    }
+
+    const std::string armor_type::ToString(const item::armor_type::Enum ARMOR_TYPE)
+    {
+        switch (ARMOR_TYPE)
+        {
+            case NotArmor:
+            {
+                return "NotArmor";
+            }
+            case Shield:
+            {
+                return "Shield";
+            }
+            case Helm:
+            {
+                return "Helm";
+            }
+            case Gauntlets:
+            {
+                return "Gauntlets";
+            }
+            case Pants:
+            {
+                return "Pants";
+            }
+            case Boots:
+            {
+                return "Boots";
+            }
+            case Shirt:
+            {
+                return "Shirt";
+            }
+            case Bracers:
+            {
+                return "Bracers";
+            }
+            case Aventail:
+            {
+                return "Aventail";
+            }
+            case Covering:
+            {
+                return "Covering";
+            }
+            case Skin:
+            {
+                return "Skin";
+            }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "item::armor_type::ToString(" << ARMOR_TYPE << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
+            }
         }
     }
 
-    const std::string armor_type::ToString(const item::armor_type::Enum E, const bool WILL_WRAP)
+    bool armor_type::DoesRequireBaseType(const armor_type::Enum ARMOR_TYPE)
     {
-        std::ostringstream ss;
-
-        if (E == armor_type::NotArmor)
+        switch (ARMOR_TYPE)
         {
-            ss << "not armor";
-        }
-        else
-        {
-            if (E & armor_type::Sheild)
-                ss << "sheild";
-            if (E & armor_type::Helm)
-                ss << ((ss.str().empty()) ? "" : "/") << "helm";
-            if (E & armor_type::Gauntlets)
-                ss << ((ss.str().empty()) ? "" : "/") << "gauntlets";
-            if (E & armor_type::Pants)
-                ss << ((ss.str().empty()) ? "" : "/") << "pants";
-            if (E & armor_type::Boots)
-                ss << ((ss.str().empty()) ? "" : "/") << "boots";
-            if (E & armor_type::Shirt)
-                ss << ((ss.str().empty()) ? "" : "/") << "shirt";
-            if (E & armor_type::Bracer)
-                ss << ((ss.str().empty()) ? "" : "/") << "bracer";
-            if (E & armor_type::Aventail)
-                ss << ((ss.str().empty()) ? "" : "/") << "aventail";
-            if (E & armor_type::Skin)
-                ss << ((ss.str().empty()) ? "" : "/") << "skin";
-            if (E & armor_type::Covering)
-                ss << ((ss.str().empty()) ? "" : "/") << "covering";
-        }
-
-        if ((ss.str().empty()) || (ss.str() == "("))
-        {
-            std::ostringstream ssErr;
-            ssErr << "item::armor_type::ToString(" << E << ")_InvalidValueError";
-            throw std::range_error(ssErr.str());
-        }
-
-        if (WILL_WRAP)
-        {
-            return "(" + ss.str() + ")";
-        }
-        else
-        {
-            return ss.str();
+            case Gauntlets:
+            case Pants:
+            case Boots:
+            case Shirt:
+            case Bracers:
+            case Aventail:
+            {
+                return true;
+            }
+            case NotArmor:
+            case Shield:
+            case Helm:
+            case Covering:
+            case Skin:
+            case Count:
+            default:
+            {
+                return false;
+            }
         }
     }
 
@@ -6757,6 +7477,39 @@ namespace item
                 std::ostringstream ss;
                 ss << "item::body_part::ToString(" << BODY_PART << ")_InvalidValueError.";
                 throw std::range_error(ss.str());
+            }
+        }
+    }
+
+    weapon_type::Enum body_part::WeaponType(const body_part::Enum BODY_PART)
+    {
+        switch (BODY_PART)
+        {
+            case Fists:
+            {
+                return weapon_type::Fists;
+            }
+            case Claws:
+            {
+                return weapon_type::Claws;
+            }
+            case Tendrils:
+            {
+                return weapon_type::Tendrils;
+            }
+            case Bite:
+            {
+                return weapon_type::Bite;
+            }
+            case Breath:
+            {
+                return weapon_type::Breath;
+            }
+            case Skin:
+            case Count:
+            default:
+            {
+                return weapon_type::NotAWeapon;
             }
         }
     }

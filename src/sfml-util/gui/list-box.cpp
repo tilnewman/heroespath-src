@@ -37,7 +37,7 @@
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/condition-image-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
+#include "sfml-util/gui/item-image-machine.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/song-image-manager.hpp"
 #include "sfml-util/gui/spell-image-manager.hpp"
@@ -141,19 +141,20 @@ namespace sfml_util
             lineColor_ = LINE_COLOR;
             callbackPtrOpt_ = CALLBACK_PTR_OPT;
 
-            if (stagePtrOpt_ && (!boxUPtr_))
+            if (!boxUPtr_)
             {
                 boxUPtr_ = std::make_unique<sfml_util::gui::box::Box>("ListBox's", BOX_INFO);
-                stagePtrOpt_->Obj().EntityAdd(boxUPtr_.get());
-            }
-            else
-            {
-                boxUPtr_->SetupBox(BOX_INFO);
+
+                if (stagePtrOpt_)
+                {
+                    stagePtrOpt_->Obj().EntityAdd(boxUPtr_.get());
+                }
             }
 
+            boxUPtr_->SetupBox(BOX_INFO);
             boxUPtr_->SetWillAcceptFocus(false);
 
-            if (stagePtrOpt_ && (!sliderbarUPtr_))
+            if (!sliderbarUPtr_)
             {
                 sliderbarUPtr_ = std::make_unique<sfml_util::gui::SliderBar>(
                     "ListBox's",
@@ -163,19 +164,17 @@ namespace sfml_util
                     sfml_util::gui::SliderStyle(),
                     sfml_util::gui::callback::ISliderBarCallbackHandlerPtr_t(this));
 
-                stagePtrOpt_->Obj().EntityAdd(sliderbarUPtr_.get());
-            }
-            else
-            {
-                sliderbarUPtr_->SetCurrentValue(0.0f);
+                if (stagePtrOpt_)
+                {
+                    stagePtrOpt_->Obj().EntityAdd(sliderbarUPtr_.get());
+                }
             }
 
+            sliderbarUPtr_->SetCurrentValue(0.0f);
             displayIndex_ = 0;
             selectionDisplayIndex_ = 0;
             selectionOffsetIndex_ = 0;
-
             visibleCount_ = CalcVisibleItems();
-
             SetupForDraw();
         }
 
@@ -695,7 +694,9 @@ namespace sfml_util
 
                     if (listBoxItemSPtr->ITEM_PTR_OPT)
                     {
-                        sfml_util::gui::ItemImageManager::Load(
+                        sfml_util::gui::ItemImageMachine itemImageMachine;
+
+                        itemImageMachine.Load(
                             *imagePair.first, listBoxItemSPtr->ITEM_PTR_OPT.value());
                     }
                     else if (listBoxItemSPtr->TITLE_PTR_OPT)

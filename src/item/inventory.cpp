@@ -136,7 +136,7 @@ namespace item
         std::size_t count(0);
         for (auto const & NEXT_ITEM_PTR : itemsPVec_)
         {
-            if (NEXT_ITEM_PTR->ArmorType() & ARMOR_TYPE)
+            if (NEXT_ITEM_PTR->ArmorType() == ARMOR_TYPE)
             {
                 ++count;
             }
@@ -151,7 +151,7 @@ namespace item
         std::size_t count(0);
         for (auto const & NEXT_ITEM_PTR : equippedItemsPVec_)
         {
-            if (NEXT_ITEM_PTR->ArmorType() & ARMOR_TYPE)
+            if (NEXT_ITEM_PTR->ArmorType() == ARMOR_TYPE)
             {
                 ++count;
             }
@@ -240,7 +240,7 @@ namespace item
         std::size_t count(0);
         for (auto const & NEXT_ITEM_PTR : itemsPVec_)
         {
-            if (NEXT_ITEM_PTR->MiscType() & MISC_TYPE)
+            if (NEXT_ITEM_PTR->MiscType() == MISC_TYPE)
             {
                 ++count;
             }
@@ -254,13 +254,37 @@ namespace item
         std::size_t count(0);
         for (auto const & NEXT_ITEM_PTR : equippedItemsPVec_)
         {
-            if (NEXT_ITEM_PTR->MiscType() & MISC_TYPE)
+            if (NEXT_ITEM_PTR->MiscType() == MISC_TYPE)
             {
                 ++count;
             }
         }
 
         return count;
+    }
+
+    bool Inventory::HasMusicalInstrumentEquipped() const
+    {
+        return (
+            std::find_if(
+                std::begin(equippedItemsPVec_),
+                std::end(equippedItemsPVec_),
+                [](auto const & ITEM_PTR) {
+                    return misc_type::IsMusicalInstrument(ITEM_PTR->MiscType());
+                })
+            != std::end(equippedItemsPVec_));
+    }
+
+    bool Inventory::HasCastingItemEquipped() const
+    {
+        return (
+            std::find_if(
+                std::begin(equippedItemsPVec_),
+                std::end(equippedItemsPVec_),
+                [](auto const & ITEM_PTR) {
+                    return misc_type::AllowsCasting(ITEM_PTR->MiscType());
+                })
+            != std::end(equippedItemsPVec_));
     }
 
     void Inventory::ItemAdd(const ItemPtr_t ITEM_PTR) { itemsPVec_.emplace_back(ITEM_PTR); }

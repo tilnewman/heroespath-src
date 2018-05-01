@@ -28,14 +28,16 @@
 // item-profile.hpp
 //
 #include "creature/race-enum.hpp"
-#include "item/armor-types.hpp"
+#include "creature/summon-info.hpp"
+#include "item/armor-details.hpp"
+#include "item/item-profile-thin.hpp"
+#include "item/item-score-helper.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/weapon-details.hpp"
 #include "item/weapon-types.hpp"
 #include "log/log-macros.hpp"
 #include "misc/handy-types.hpp"
 #include "misc/types.hpp"
-#include "sfml-util/size-enum.hpp"
 
 #include <string>
 #include <tuple>
@@ -46,230 +48,40 @@ namespace heroespath
 namespace item
 {
 
-    struct MemberStrings
-    {
-        MemberStrings(
-            const misc::StrVec_t & NORMAL_STRINGS,
-            const misc::StrVec_t & WEAPON_STRINGS,
-            const misc::StrVec_t & ARMOR_STRINGS)
-            : normalStrings(NORMAL_STRINGS)
-            , weaponStrings(WEAPON_STRINGS)
-            , armorStrings(ARMOR_STRINGS)
-        {}
-
-        const std::string InvalidString() const;
-
-        bool IsValid() const { return InvalidString().empty(); }
-
-        const std::string ToString() const;
-
-    private:
-        misc::StrVec_t normalStrings;
-        misc::StrVec_t weaponStrings;
-        misc::StrVec_t armorStrings;
-    };
-
-    namespace profile
-    {
-        struct ArmorSettings
-        {
-            explicit ArmorSettings(
-                const armor::base_type::Enum BASE = armor::base_type::Count,
-                const armor::shield_type::Enum SHIELD = armor::shield_type::Count,
-                const armor::helm_type::Enum HELM = armor::helm_type::Count,
-                const armor::cover_type::Enum COVER = armor::cover_type::Count,
-                const armor::base_type::Enum RESTRICTION = armor::base_type::Count)
-                : shield(SHIELD)
-                , helm(HELM)
-                , base(BASE)
-                , cover(COVER)
-                , restriction(RESTRICTION)
-            {}
-
-            armor::shield_type::Enum shield;
-            armor::helm_type::Enum helm;
-            armor::base_type::Enum base;
-            armor::cover_type::Enum cover;
-            armor::base_type::Enum restriction;
-        };
-
-        inline bool operator==(const ArmorSettings & L, const ArmorSettings & R)
-        {
-            return std::tie(L.shield, L.helm, L.base, L.cover, L.restriction)
-                == std::tie(R.shield, R.helm, R.base, R.cover, R.restriction);
-        }
-
-        inline bool operator!=(const ArmorSettings & L, const ArmorSettings & R)
-        {
-            return !(L == R);
-        }
-
-        inline bool operator<(const ArmorSettings & L, const ArmorSettings & R)
-        {
-            return std::tie(L.shield, L.helm, L.base, L.cover, L.restriction)
-                < std::tie(R.shield, R.helm, R.base, R.cover, R.restriction);
-        }
-
-        struct WeaponSettings
-        {
-            explicit WeaponSettings(
-                const weapon::sword_type::Enum SWORD = weapon::sword_type::Count,
-                const weapon::axe_type::Enum AXE = weapon::axe_type::Count,
-                const weapon::club_type::Enum CLUB = weapon::club_type::Count,
-                const weapon::whip_type::Enum WHIP = weapon::whip_type::Count,
-                const weapon::projectile_type::Enum PROJ = weapon::projectile_type::Count,
-                const weapon::bladedstaff_type::Enum BSTAFF = weapon::bladedstaff_type::Count)
-                : sword(SWORD)
-                , axe(AXE)
-                , club(CLUB)
-                , whip(WHIP)
-                , proj(PROJ)
-                , bstaff(BSTAFF)
-            {}
-
-            weapon::sword_type::Enum sword;
-            weapon::axe_type::Enum axe;
-            weapon::club_type::Enum club;
-            weapon::whip_type::Enum whip;
-            weapon::projectile_type::Enum proj;
-            weapon::bladedstaff_type::Enum bstaff;
-        };
-
-        inline bool operator==(const WeaponSettings & L, const WeaponSettings & R)
-        {
-            return std::tie(L.sword, L.axe, L.club, L.whip, L.proj, L.bstaff)
-                == std::tie(R.sword, R.axe, R.club, R.whip, R.proj, R.bstaff);
-        }
-
-        inline bool operator!=(const WeaponSettings & L, const WeaponSettings & R)
-        {
-            return !(L == R);
-        }
-
-        inline bool operator<(const WeaponSettings & L, const WeaponSettings & R)
-        {
-            return std::tie(L.sword, L.axe, L.club, L.whip, L.proj, L.bstaff)
-                < std::tie(R.sword, R.axe, R.club, R.whip, R.proj, R.bstaff);
-        }
-
-        struct IsSet
-        {
-            enum Enum : unsigned
-            {
-                None = 0,
-                Pixie = 1 << 0,
-                Aventail = 1 << 1,
-                Bracer = 1 << 2,
-                Shirt = 1 << 3,
-                Boots = 1 << 4,
-                Pants = 1 << 5,
-                Gauntlets = 1 << 6,
-                Knife = 1 << 7,
-                Dagger = 1 << 8,
-                Staff = 1 << 9,
-                QStaff = 1 << 10
-            };
-        };
-    } // namespace profile
-
-    // A collection of details about an item that uniquely idenify an item.
-    // A "Thin" Profile is an incomplete profile used as a placeholder for a
-    //"Fat" Profile.  A "Fat" Profile is a complete profile that is used as
-    // a placeholder for an actual Item.  See ItemProfileWarehouse.  That is
-    // the only place where thin profiles are used, and where the complete vec
-    // of Fat Profiles are permanently stored as placeholders for actual items.
+    // Responsible for wrapping information required to create an Item object.  An ItemProfile is
+    // also responsible for storing the treasure score for the Item object it represents.  All
+    // ItemProfiles include an ItemProfileThin member.
+    //
+    // To make weapon and armor items, the ItemFactory will need more than just one of these
+    // ItemProfiles, it will also need to load details from the GameDataFile, such as min/max
+    // damage, price, description, etc.  Actual Item instances also have a collection of Enchantment
+    // objects, which ItemProfiles do not, although they do store treasure score information
+    // regarding these enchantments.
+    //
     class ItemProfile
     {
     public:
-        // use this constructor with the Set() functions for creating specific ItemProfiles
         ItemProfile();
 
-        creature::role::Enum RoleRestrictionBasedOnMiscAndSetType() const;
+        const std::string ReadableName() const { return thinProfile_.ReadableName(); }
+        const std::string SystemName() const { return thinProfile_.SystemName(); }
 
-        const std::string BaseName() const { return baseName_; }
+        creature::role::Enum RoleRestriction() const;
+
         category::Enum Category() const { return category_; }
-        armor_type::Enum ArmorType() const { return armor_; }
-        weapon_type::Enum WeaponType() const { return weapon_; }
+        armor_type::Enum ArmorType() const { return thinProfile_.ArmorInfo().Type(); }
+        weapon_type::Enum WeaponType() const { return weaponType_; }
         unique_type::Enum UniqueType() const { return unique_; }
-        misc_type::Enum MiscType() const { return misc_; }
+        misc_type::Enum MiscType() const { return thinProfile_.MiscType(); }
         set_type::Enum SetType() const { return set_; }
         named_type::Enum NamedType() const { return named_; }
         element_type::Enum ElementType() const { return element_; }
 
-        armor::shield_type::Enum ShieldType() const
-        {
-            return (
-                (category_ & category::Armor) ? settings_.armor.shield : armor::shield_type::Count);
-        }
+        bool IsPixie() const { return isPixie_; }
 
-        armor::helm_type::Enum HelmType() const
-        {
-            return ((category_ & category::Armor) ? settings_.armor.helm : armor::helm_type::Count);
-        }
+        bool IsQuestItem() const { return misc_type::IsQuestItem(thinProfile_.MiscType()); }
 
-        armor::base_type::Enum BaseType() const
-        {
-            return ((category_ & category::Armor) ? settings_.armor.base : armor::base_type::Count);
-        }
-
-        armor::cover_type::Enum CoverType() const
-        {
-            return (
-                (category_ & category::Armor) ? settings_.armor.cover : armor::cover_type::Count);
-        }
-
-        bool IsAventail() const { return (isSet_ & profile::IsSet::Aventail); }
-        bool IsBracer() const { return (isSet_ & profile::IsSet::Bracer); }
-        bool IsShirt() const { return (isSet_ & profile::IsSet::Shirt); }
-        bool IsBoots() const { return (isSet_ & profile::IsSet::Boots); }
-        bool IsPants() const { return (isSet_ & profile::IsSet::Pants); }
-        bool IsGauntlets() const { return (isSet_ & profile::IsSet::Gauntlets); }
-        bool IsKnife() const { return (isSet_ & profile::IsSet::Knife); }
-        bool IsDagger() const { return (isSet_ & profile::IsSet::Dagger); }
-        bool IsStaff() const { return (isSet_ & profile::IsSet::Staff); }
-        bool IsQuarterStaff() const { return (isSet_ & profile::IsSet::QStaff); }
-        bool IsPixie() const { return (isSet_ & profile::IsSet::Pixie); }
-
-        weapon::sword_type::Enum SwordType() const
-        {
-            return (
-                (category_ & category::Weapon) ? settings_.weapon.sword
-                                               : weapon::sword_type::Count);
-        }
-
-        weapon::axe_type::Enum AxeType() const
-        {
-            return (
-                (category_ & category::Weapon) ? settings_.weapon.axe : weapon::axe_type::Count);
-        }
-
-        weapon::club_type::Enum ClubType() const
-        {
-            return (
-                (category_ & category::Weapon) ? settings_.weapon.club : weapon::club_type::Count);
-        }
-
-        weapon::whip_type::Enum WhipType() const
-        {
-            return (
-                (category_ & category::Weapon) ? settings_.weapon.whip : weapon::whip_type::Count);
-        }
-
-        weapon::projectile_type::Enum ProjectileType() const
-        {
-            return (
-                (category_ & category::Weapon) ? settings_.weapon.proj
-                                               : weapon::projectile_type::Count);
-        }
-
-        weapon::bladedstaff_type::Enum BladedStaffType() const
-        {
-            return (
-                (category_ & category::Weapon) ? settings_.weapon.bstaff
-                                               : weapon::bladedstaff_type::Count);
-        }
-
-        sfml_util::Size::Enum Size() const { return size_; }
+        sfml_util::Size::Enum Size() const { return thinProfile_.WeaponInfo().Size(); }
 
         material::Enum MaterialPrimary() const { return matPri_; }
         material::Enum MaterialSecondary() const { return matSec_; }
@@ -278,29 +90,32 @@ namespace item
 
         Score_t ReligiousScore() const
         {
-            return Score_t(static_cast<Score_t::type>(score_.As<float>() * religious_));
+            return Score_t(static_cast<Score_t::type>(score_.As<float>() * religiousRatio_));
         }
 
-        bool IsReligious() const { return (religious_ > 0.0f); }
+        bool IsReligious() const { return (religiousRatio_ > 0.0f); }
 
-        const creature::SummonInfo Summoning() const { return summonInfo_; }
+        const creature::SummonInfo SummonInfo() const { return summonInfo_; }
 
-        bool WillSummon() const { return summonInfo_.WillSummon(); }
+        void SetSummonInfoAndAdjustScore(const creature::SummonInfo &);
 
-        void SetSummoningAndAdjustScore(const creature::SummonInfo &);
+        bool IsWeapon() const { return thinProfile_.WeaponInfo().IsValid(); }
 
-        float Religious() const { return religious_; }
-        void Religious(const float F) { religious_ = F; }
+        bool IsArmor() const { return thinProfile_.ArmorInfo().IsValid(); }
 
-        bool IsWeapon() const { return (category_ & item::category::Weapon); }
+        bool IsNonMagicalWeaponOrArmor() const
+        {
+            return (IsWeapon() || IsArmor()) && (IsMagical() == false) && (IsMisc() == false);
+        }
 
-        bool IsArmor() const { return (category_ & item::category::Armor); }
-
-        bool IsEquipment() const { return (IsWeapon() || IsArmor()); }
+        bool IsMagical() const
+        {
+            return (summonInfo_.CanSummon() || IsElemental() || IsSet() || IsNamed() || IsUnique());
+        }
 
         bool IsMisc() const
         {
-            return ((misc_ != misc_type::Count) && (misc_ != misc_type::NotMisc));
+            return ((MiscType() != misc_type::Count) && (MiscType() != misc_type::NotMisc));
         }
 
         bool IsUnique() const
@@ -308,29 +123,20 @@ namespace item
             return ((unique_ != unique_type::Count) && (unique_ != unique_type::NotUnique));
         }
 
-        bool IsSet() const { return ((set_ != set_type::Count) && (set_ != set_type::NotASet)); }
-
         bool IsNamed() const
         {
             return ((named_ != named_type::Count) && (named_ != named_type::NotNamed));
         }
 
+        bool IsSet() const { return ((set_ != set_type::Count) && (set_ != set_type::NotASet)); }
+
         bool IsElemental() const { return (element_ != element_type::None); }
 
-        bool IsStandard() const
-        {
-            return (
-                (IsUnique() == false) && (IsSet() == false) && (IsNamed() == false)
-                && (IsElemental() == false));
-        }
+        const weapon::WeaponTypeWrapper & WeaponInfo() const { return thinProfile_.WeaponInfo(); }
 
-        bool IsStandardEquipment() const { return (IsStandard() && IsEquipment()); }
+        const armor::ArmorTypeWrapper & ArmorInfo() const { return thinProfile_.ArmorInfo(); }
 
-        const MemberStrings ToMemberStrings() const;
-
-        const std::string ToString() const { return ToMemberStrings().ToString(); }
-
-        bool IsValid() const { return ToMemberStrings().IsValid(); }
+        const std::string ToString() const;
 
         void SetUnique(
             const unique_type::Enum,
@@ -340,52 +146,109 @@ namespace item
 
         void SetMisc(
             const misc_type::Enum,
-            const bool IS_PIXIE = false,
+            const bool IS_PIXIE,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
-            const set_type::Enum SET_TYPE = set_type::NotASet);
+            const set_type::Enum SET_TYPE = set_type::NotASet,
+            const element_type::Enum ELEMENT_TYPE = element_type::None);
 
         void SetShield(
-            const armor::shield_type::Enum,
+            const armor::shield_type::Enum SHIELD_TYPE,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None);
+            const element_type::Enum ELEMENT_TYPE = element_type::None)
+        {
+            SetArmorHelperSpecific(
+                SHIELD_TYPE,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                NAMED_TYPE,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                false,
+                category::OneHanded);
+        }
 
         void SetHelm(
-            const armor::helm_type::Enum,
+            const armor::helm_type::Enum HELM_TYPE,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None);
+            const element_type::Enum ELEMENT_TYPE = element_type::None)
+        {
+            SetArmorHelperSpecific(
+                HELM_TYPE,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                NAMED_TYPE,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                false);
+        }
 
         void SetCover(
-            const armor::cover_type::Enum,
+            const armor::cover_type::Enum COVER_TYPE,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false);
+            const bool IS_PIXIE = false,
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
+        {
+            SetArmorHelperSpecific(
+                COVER_TYPE,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                NAMED_TYPE,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                IS_PIXIE,
+                category::None,
+                MISC_TYPE);
+        }
 
         void SetAventail(
-            const armor::base_type::Enum BASE_TYPE = armor::base_type::Plain,
-            const material::Enum MATERIAL_PRIMARY = material::Nothing,
+            const armor::base_type::Enum BASE_TYPE,
+            const material::Enum MATERIAL_PRIMARY,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None);
+            const element_type::Enum ELEMENT_TYPE = element_type::None)
+        {
+            SetArmorWithBaseTypeHelper(
+                armor_type::Aventail,
+                BASE_TYPE,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                NAMED_TYPE,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                false);
+        }
 
         void SetBracer(
-            const armor::base_type::Enum BASE_TYPE = armor::base_type::Plain,
-            const material::Enum MATERIAL_PRIMARY = material::Nothing,
+            const armor::base_type::Enum BASE_TYPE,
+            const material::Enum MATERIAL_PRIMARY,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false);
+            const bool IS_PIXIE = false)
+        {
+            SetArmorWithBaseTypeHelper(
+                armor_type::Bracers,
+                BASE_TYPE,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                NAMED_TYPE,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                IS_PIXIE);
+        }
 
         void SetShirt(
             const armor::base_type::Enum BASE_TYPE = armor::base_type::Plain,
@@ -394,16 +257,38 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false);
+            const bool IS_PIXIE = false)
+        {
+            SetArmorWithBaseTypeHelper(
+                armor_type::Shirt,
+                BASE_TYPE,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                NAMED_TYPE,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                IS_PIXIE);
+        }
 
         void SetBoots(
-            const armor::base_type::Enum BASE_TYPE = armor::base_type::Plain,
-            const material::Enum MATERIAL_PRIMARY = material::Nothing,
+            const armor::base_type::Enum BASE_TYPE,
+            const material::Enum MATERIAL_PRIMARY,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false);
+            const bool IS_PIXIE = false)
+        {
+            SetArmorWithBaseTypeHelper(
+                armor_type::Boots,
+                BASE_TYPE,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                NAMED_TYPE,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                IS_PIXIE);
+        }
 
         void SetPants(
             const armor::base_type::Enum BASE_TYPE = armor::base_type::Plain,
@@ -412,7 +297,18 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false);
+            const bool IS_PIXIE = false)
+        {
+            SetArmorWithBaseTypeHelper(
+                armor_type::Pants,
+                BASE_TYPE,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                NAMED_TYPE,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                IS_PIXIE);
+        }
 
         void SetGauntlets(
             const armor::base_type::Enum BASE_TYPE = armor::base_type::Plain,
@@ -421,7 +317,18 @@ namespace item
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None,
-            const bool IS_PIXIE = false);
+            const bool IS_PIXIE = false)
+        {
+            SetArmorWithBaseTypeHelper(
+                armor_type::Gauntlets,
+                BASE_TYPE,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                NAMED_TYPE,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                IS_PIXIE);
+        }
 
         void SetSword(
             const weapon::sword_type::Enum,
@@ -469,7 +376,8 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None);
+            const element_type::Enum ELEMENT_TYPE = element_type::None,
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
         void SetKnife(
             const sfml_util::Size::Enum SIZE = sfml_util::Size::Medium,
@@ -494,7 +402,8 @@ namespace item
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const named_type::Enum NAMED_TYPE = named_type::NotNamed,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None);
+            const element_type::Enum ELEMENT_TYPE = element_type::None,
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
         void SetQuarterStaff(
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
@@ -503,57 +412,85 @@ namespace item
             const set_type::Enum SET_TYPE = set_type::NotASet,
             const element_type::Enum ELEMENT_TYPE = element_type::None);
 
-        armor::base_type::Enum ArmorTypeRestriction() const { return settings_.armor.restriction; }
-
-        void SetArmorTypeRestriction(const armor::base_type::Enum E)
+        armor::base_type::Enum ArmorTypeRestriction() const
         {
-            settings_.armor.restriction = E;
+            return thinProfile_.ArmorBaseTypeRestriction();
         }
 
         static category::Enum CategoryWeaponBodypart(const body_part::Enum);
 
-        static category::Enum CategoryWeaponStaff(const bool IS_QUARTERSTAFF)
-        {
-            auto const DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
-                ((IS_QUARTERSTAFF) ? "Quarterstaff" : "Staff")) };
-
-            return static_cast<category::Enum>(
-                category::Weapon | category::Equippable | DETAILS.handedness);
-        }
-
-        template <typename T>
-        static category::Enum CategoryWeapon(const typename T::Enum TYPE)
-        {
-            auto const DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
-                T::ToString(TYPE)) };
-
-            return static_cast<category::Enum>(
-                category::Weapon | category::Equippable | DETAILS.handedness);
-        }
-
         static category::Enum CategoryArmor()
         {
-            return static_cast<category::Enum>(
-                category::Armor | category::Equippable | category::Wearable);
+            return static_cast<category::Enum>(category::Equippable);
         }
+
+    private:
+        void SetArmorWithBaseTypeHelper(
+            const armor_type::Enum ARMOR_TYPE,
+            const armor::base_type::Enum BASE_TYPE,
+            const material::Enum MATERIAL_PRIMARY,
+            const material::Enum MATERIAL_SECONDARY,
+            const named_type::Enum NAMED_TYPE,
+            const set_type::Enum SET_TYPE,
+            const element_type::Enum ELEMENT_TYPE,
+            const bool IS_PIXIE);
+
+        template <typename ArmorEnum_t>
+        void SetArmorHelperSpecific(
+            const ArmorEnum_t SPECIFIC_ARMOR_TYPE,
+            const material::Enum MATERIAL_PRIMARY,
+            const material::Enum MATERIAL_SECONDARY,
+            const named_type::Enum NAMED_TYPE,
+            const set_type::Enum SET_TYPE,
+            const element_type::Enum ELEMENT_TYPE,
+            const bool IS_PIXIE,
+            const category::Enum CATEGORY_TO_APPEND = category::None,
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
+        {
+            category_
+                = static_cast<category::Enum>(category_ | CategoryArmor() | CATEGORY_TO_APPEND);
+
+            thinProfile_ = ItemProfileThin::MakeArmorSpecific(SPECIFIC_ARMOR_TYPE, MISC_TYPE);
+
+            if ((MISC_TYPE == misc_type::NotMisc) || (MISC_TYPE == misc_type::Count))
+            {
+                SetHelperForWeaponsAndArmor(
+                    MATERIAL_PRIMARY,
+                    MATERIAL_SECONDARY,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    IS_PIXIE);
+
+                score_ += ScoreHelper::Score(SPECIFIC_ARMOR_TYPE);
+
+                score_ += ScoreHelper(
+                    MATERIAL_PRIMARY,
+                    MATERIAL_SECONDARY,
+                    NAMED_TYPE,
+                    SET_TYPE,
+                    ELEMENT_TYPE,
+                    false);
+            }
+        }
+
+        void SetWeaponHelper(
+            const weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER,
+            const weapon_type::Enum WEAPON_TYPE_TO_APPEND,
+            const Score_t BASE_SCORE,
+            const material::Enum MATERIAL_PRIMARY,
+            const material::Enum MATERIAL_SECONDARY,
+            const named_type::Enum NAMED_TYPE,
+            const set_type::Enum SET_TYPE,
+            const element_type::Enum ELEMENT_TYPE,
+            const bool IS_PIXIE,
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
         friend bool operator==(const ItemProfile & L, const ItemProfile & R);
         friend bool operator<(const ItemProfile & L, const ItemProfile & R);
 
     private:
-        void SetFlag(const bool WILL_SET, const profile::IsSet::Enum WHICH_BIT)
-        {
-            if (WILL_SET)
-            {
-                isSet_ = static_cast<profile::IsSet::Enum>(isSet_ | WHICH_BIT);
-            }
-            else
-            {
-                isSet_ = static_cast<profile::IsSet::Enum>(isSet_ & ~WHICH_BIT);
-            }
-        }
-
-        void SetHelper(
+        void SetHelperForWeaponsAndArmor(
             const material::Enum,
             const material::Enum,
             const named_type::Enum,
@@ -572,44 +509,32 @@ namespace item
     private:
         Score_t score_;
 
-        // this is a ratio of how religious the item is.
-        float religious_;
+        // this is a ratio of how religious the item is
+        float religiousRatio_;
 
         category::Enum category_;
-        armor_type::Enum armor_;
-        weapon_type::Enum weapon_;
+        ItemProfileThin thinProfile_;
+
+        // there is already a weapon_type in thinProfile_.weaponInfo_.Type() but that is a "thin" or
+        // "single" weapon_type that only ever has one bit set, and so it does not contain all the
+        // other required bits to fully describe a weapon item.
+        weapon_type::Enum weaponType_;
+
         unique_type::Enum unique_;
-        misc_type::Enum misc_;
         set_type::Enum set_;
         named_type::Enum named_;
         element_type::Enum element_;
-
-        profile::IsSet::Enum isSet_;
-
-        union Settings
-        {
-            Settings()
-                : weapon()
-            {}
-
-            profile::WeaponSettings weapon;
-            profile::ArmorSettings armor;
-        } settings_;
-
-        sfml_util::Size::Enum size_;
-
         material::Enum matPri_;
         material::Enum matSec_;
-
         creature::SummonInfo summonInfo_;
-
-        std::string baseName_;
+        bool isPixie_;
     };
 
     using ItemProfileVec_t = std::vector<ItemProfile>;
 
     inline bool operator==(const ItemProfile & L, const ItemProfile & R)
     {
+        // shortcut to member that most often varies
         if (L.score_ != R.score_)
         {
             return false;
@@ -617,83 +542,68 @@ namespace item
 
         return std::tie(
                    L.category_,
-                   L.armor_,
-                   L.weapon_,
+                   L.thinProfile_,
+                   L.weaponType_,
                    L.unique_,
-                   L.misc_,
                    L.set_,
                    L.named_,
                    L.element_,
-                   L.isSet_,
-                   L.settings_.weapon,
-                   L.size_,
                    L.matPri_,
                    L.matSec_,
-                   L.baseName_,
                    L.summonInfo_,
-                   L.religious_)
+                   L.isPixie_,
+                   L.religiousRatio_)
             == std::tie(
                    R.category_,
-                   R.armor_,
-                   R.weapon_,
+                   R.thinProfile_,
+                   R.weaponType_,
                    R.unique_,
-                   R.misc_,
                    R.set_,
                    R.named_,
                    R.element_,
-                   R.isSet_,
-                   R.settings_.weapon,
-                   R.size_,
                    R.matPri_,
                    R.matSec_,
-                   R.baseName_,
                    R.summonInfo_,
-                   R.religious_);
+                   R.isPixie_,
+                   R.religiousRatio_);
     }
 
     inline bool operator!=(const ItemProfile & L, const ItemProfile & R) { return !(L == R); }
 
     inline bool operator<(const ItemProfile & L, const ItemProfile & R)
     {
+        // shortcut to member that most often varies
         if (L.score_ != R.score_)
         {
-            return L.score_ < R.score_;
+            return (L.score_ < R.score_);
         }
 
         return std::tie(
+                   L.thinProfile_,
+                   L.weaponType_,
                    L.category_,
-                   L.armor_,
-                   L.weapon_,
                    L.unique_,
-                   L.misc_,
                    L.set_,
                    L.named_,
                    L.element_,
-                   L.isSet_,
-                   L.settings_.weapon,
-                   L.size_,
+                   L.isPixie_,
                    L.matPri_,
                    L.matSec_,
-                   L.baseName_,
                    L.summonInfo_,
-                   L.religious_)
+                   L.religiousRatio_)
             < std::tie(
+                   R.thinProfile_,
+                   R.weaponType_,
                    R.category_,
-                   R.armor_,
-                   R.weapon_,
                    R.unique_,
-                   R.misc_,
                    R.set_,
                    R.named_,
                    R.element_,
-                   R.isSet_,
-                   R.settings_.weapon,
-                   R.size_,
+                   R.isPixie_,
                    R.matPri_,
                    R.matSec_,
-                   R.baseName_,
                    R.summonInfo_,
-                   R.religious_);
+                   R.religiousRatio_);
     }
 
 } // namespace item

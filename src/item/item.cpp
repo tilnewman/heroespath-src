@@ -34,7 +34,7 @@
 #include "misc/assertlogandthrow.hpp"
 #include "misc/serialize-helpers.hpp"
 #include "misc/vectors.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
+#include "sfml-util/gui/item-image-machine.hpp"
 
 #include <exception>
 #include <iomanip>
@@ -51,7 +51,6 @@ namespace item
         const std::string & DESC,
         const category::Enum CATEGORY,
         const weapon_type::Enum WEAPON_TYPE,
-        const armor_type::Enum ARMOR_TYPE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const Coin_t & PRICE,
@@ -60,8 +59,8 @@ namespace item
         const Health_t & DAMAGE_MAX,
         const Armor_t & ARMOR_RATING,
         const TypeWrapper & TYPE_WRAPPER,
-        const weapon::WeaponInfo & WEAPON_INFO,
-        const armor::ArmorInfo & ARMOR_INFO,
+        const weapon::WeaponTypeWrapper & WEAPON_INFO,
+        const armor::ArmorTypeWrapper & ARMOR_INFO,
         const bool IS_PIXIE_ITEM,
         const creature::role::Enum EXCLUSIVE_ROLE_BASED_ON_ITEM_TYPE)
         : name_(NAME)
@@ -74,10 +73,9 @@ namespace item
         // if valid the role restriction based on Misc or Set type is used, otherwise the role
         // restriction based on item type is used.
         , exclusiveToRole_(
-              ((TYPE_WRAPPER.roleRestrictionBasedOnMiscAndSetType != creature::role::Count)
-                   ? TYPE_WRAPPER.roleRestrictionBasedOnMiscAndSetType
+              ((TYPE_WRAPPER.roleRestriction != creature::role::Count)
+                   ? TYPE_WRAPPER.roleRestriction
                    : EXCLUSIVE_ROLE_BASED_ON_ITEM_TYPE))
-        , armorType_(ARMOR_TYPE)
         , weaponType_(WEAPON_TYPE)
         , category_(CATEGORY)
         , miscType_(TYPE_WRAPPER.misc)
@@ -92,197 +90,151 @@ namespace item
         , elementType_(TYPE_WRAPPER.element)
         , summonInfo_(TYPE_WRAPPER.summon)
         , enchantmentsPVec_(creature::EnchantmentFactory::Instance()->MakeAndStore(
-              TYPE_WRAPPER, IsWeapon(), IsArmor(), MATERIAL_PRIMARY, MATERIAL_SECONDARY))
+              TYPE_WRAPPER,
+              MATERIAL_PRIMARY,
+              MATERIAL_SECONDARY,
+              WEAPON_INFO.IsValid(),
+              ARMOR_INFO.IsValid()))
         , imageFilename_("")
     {
-        if (unique_type::MagnifyingGlass == uniqueType_)
-        {
-            AddCategory(category::ShowsEnemyInfo);
-        }
-
-        if (item::unique_type::IsUseable(uniqueType_))
-        {
-            AddCategory(category::Useable);
-        }
-
-        if (element_type::None != elementType_)
-        {
-            name_ += element_type::Name(elementType_);
-        }
-
-        // adjust the weight for pixie items
-        if (isPixie_)
-        {
-            weight_ /= 250_weight;
-
-            if (weight_ < 1_weight)
-            {
-                weight_ = 1_weight;
-            }
-        }
-
-        imageFilename_ = sfml_util::gui::ItemImageManager::GetImageFilename(this, true);
+        sfml_util::gui::ItemImageMachine itemImageMachine;
+        imageFilename_ = itemImageMachine.Filename(this, true);
     }
 
     Item::~Item() { creature::EnchantmentWarehouse::Access().Free(enchantmentsPVec_); }
 
-    const std::string Item::BaseName() const
+    const std::string Item::Name() const { return ComposeName(name_); }
+
+    const std::string Item::Desc() const
     {
-        if ((uniqueType_ != unique_type::NotUnique) && (uniqueType_ != unique_type::Count))
+        std::ostringstream ss;
+
+        ss << "A ";
+
+        if (IsMagical())
         {
-            return unique_type::Name(uniqueType_);
+            ss << "magical ";
+        }
+        else if (IsBroken())
+        {
+            ss << "broken ";
         }
 
-        if ((miscType_ != misc_type::NotMisc) && (miscType_ != misc_type::Count))
-        {
-            return misc_type::Name(miscType_);
-        }
-
-        if (weaponType_ != weapon_type::NotAWeapon)
-        {
-            if (weaponType_ & weapon_type::Axe)
-            {
-                return "Axe";
-            }
-            if (weaponType_ & weapon_type::Bite)
-            {
-                return "Bite";
-            }
-            if (weaponType_ & weapon_type::BladedStaff)
-            {
-                return "Bladdedstaff";
-            }
-            if (weaponType_ & weapon_type::Blowpipe)
-            {
-                return "Blowpipe";
-            }
-            if (weaponType_ & weapon_type::Breath)
-            {
-                return "Breath";
-            }
-            if (weaponType_ & weapon_type::Bow)
-            {
-                return "Bow";
-            }
-            if (weaponType_ & weapon_type::Claws)
-            {
-                return "Claws";
-            }
-            if (weaponType_ & weapon_type::Club)
-            {
-                return "Club";
-            }
-            if (weaponType_ & weapon_type::Crossbow)
-            {
-                return "Crossbow";
-            }
-            if (weaponType_ & weapon_type::Fists)
-            {
-                return "Fists";
-            }
-            if (weaponType_ & weapon_type::Knife)
-            {
-                return "Knife";
-            }
-            if (weaponType_ & weapon_type::Sling)
-            {
-                return "Sling";
-            }
-            if (weaponType_ & weapon_type::Spear)
-            {
-                return "Spear";
-            }
-            if (weaponType_ & weapon_type::Staff)
-            {
-                return "Staff";
-            }
-            if (weaponType_ & weapon_type::Sword)
-            {
-                return "Sword";
-            }
-            if (weaponType_ & weapon_type::Tendrils)
-            {
-                return "Tendrils";
-            }
-            if (weaponType_ & weapon_type::Whip)
-            {
-                return "Whip";
-            }
-        }
-
-        if (armorType_ != armor_type::NotArmor)
-        {
-            if (armorType_ & armor_type::Aventail)
-            {
-                return "Aventail";
-            }
-            if (armorType_ & armor_type::Boots)
-            {
-                return "Boots";
-            }
-            if (armorType_ & armor_type::Bracer)
-            {
-                return "Bracer";
-            }
-            if (armorType_ & armor_type::Covering)
-            {
-                return "Cover";
-            }
-            if (armorType_ & armor_type::Gauntlets)
-            {
-                return "Gauntlets";
-            }
-            if (armorType_ & armor_type::Helm)
-            {
-                return "Helm";
-            }
-            if (armorType_ & armor_type::Pants)
-            {
-                return "Pants";
-            }
-            if (armorType_ & armor_type::Sheild)
-            {
-                return "Shield";
-            }
-            if (armorType_ & armor_type::Shirt)
-            {
-                return "Shirt";
-            }
-            if (armorType_ & armor_type::Skin)
-            {
-                return "Skin";
-            }
-        }
-
-        std::ostringstream ssErr;
-        ssErr << "item::Item::BaseName(\"" << Name() << "\") found no base name.";
-        throw std::runtime_error(ssErr.str());
+        ss << desc_ << ".";
+        return ss.str();
     }
+
+    const std::string Item::ShortName() const
+    {
+        if (IsUnique())
+        {
+            return ComposeName(unique_type::Name(UniqueType()));
+        }
+        else if (IsSet())
+        {
+            return ComposeName(set_type::Name(SetType()) + " " + ReadableName());
+        }
+        else if (IsNamed())
+        {
+            return ComposeName(named_type::Name(NamedType()) + " " + ReadableName());
+        }
+        else
+        {
+            return BaseName();
+        }
+    }
+
+    const std::string Item::BaseName() const { return ComposeName(ReadableName()); }
 
     const std::string Item::ToString() const
     {
         std::ostringstream ss;
 
-        ss << "name=" << std::quoted(name_) << ", desc=" << std::quoted(desc_)
-           << ", base_name=" << std::quoted(BaseName())
-           << ", category=" << category::ToString(category_, true)
-           << ", mat_pri=" << material::ToString(materialPri_)
-           << ", mat_sec=" << material::ToString(materialSec_)
-           << ", armor_type=" << armor_type::ToString(armorType_, true)
-           << ", weapon_type=" << weapon_type::ToString(weaponType_, true)
-           << ", misc_type=" << misc_type::ToString(miscType_)
-           << ", unique_type=" << unique_type::ToString(uniqueType_)
-           << ", set_type=" << set_type::ToString(setType_)
-           << ", named_type=" << named_type::ToString(namedType_)
-           << ", element_type=" << element_type::ToString(elementType_)
-           << ", is_pixie=" << std::boolalpha << isPixie_ << ", enchantments={";
+        ss << "name=" << std::quoted(Name()) << ", desc=" << std::quoted(Desc());
 
-        for (auto const & ENCHANTMENT_PTR : enchantmentsPVec_)
+        if (category::None != category_)
         {
-            ss << ENCHANTMENT_PTR->ToString() << " | ";
+            ss << ", category=" << category::ToString(category_, true);
         }
 
-        ss << "}";
+        if (armor::ArmorTypeWrapper() != armorInfo_)
+        {
+            ss << ", armor_info=" << armorInfo_.ToString();
+        }
+
+        if (weapon_type::NotAWeapon != weaponType_)
+        {
+            ss << ", weapon_type=" << weapon_type::ToString(weaponType_, true);
+        }
+
+        if (weapon::WeaponTypeWrapper() != weaponInfo_)
+        {
+            ss << ", weapon_info=" << weaponInfo_.ToString();
+        }
+
+        if (misc_type::NotMisc != miscType_)
+        {
+            ss << ", misc_type="
+               << ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_));
+        }
+
+        if (isPixie_)
+        {
+            ss << ", is_pixie=" << std::boolalpha << isPixie_;
+        }
+
+        ss << ", mat_pri=" << material::ToString(materialPri_);
+
+        if (material::Nothing != materialSec_)
+        {
+            ss << ", mat_sec=" << material::ToString(materialSec_);
+        }
+
+        if (unique_type::NotUnique != uniqueType_)
+        {
+            ss << ", unique_type="
+               << ((unique_type::Count == uniqueType_) ? "Count"
+                                                       : unique_type::ToString(uniqueType_));
+        }
+
+        if (set_type::NotASet != setType_)
+        {
+            ss << ", set_type="
+               << ((set_type::Count == setType_) ? "Count" : set_type::ToString(setType_));
+        }
+
+        if (named_type::NotNamed != namedType_)
+        {
+            ss << ", named_type="
+               << ((named_type::Count == namedType_) ? "Count" : named_type::ToString(namedType_));
+        }
+
+        if (element_type::None != elementType_)
+        {
+            ss << ", element_type=" << element_type::ToString(elementType_, true);
+        }
+
+        if (summonInfo_.CanSummon())
+        {
+            ss << ", summonInfo=" << summonInfo_.ToString();
+        }
+        else if (summonInfo_.IsDefaultAndCompletelyInvalid() == false)
+        {
+            ss << ", summonInfo=" << summonInfo_.ToString() << "(but CanSummon()=false?)";
+        }
+
+        if (enchantmentsPVec_.empty() == false)
+        {
+            ss << ", enchantments={";
+
+            for (auto const & ENCHANTMENT_PTR : enchantmentsPVec_)
+            {
+                ss << ENCHANTMENT_PTR->ToString() << " | ";
+            }
+
+            ss << "}";
+        }
+
         return ss.str();
     }
 
@@ -305,6 +257,45 @@ namespace item
             creature::EnchantmentWarehouse::Access());
     }
 
+    const std::string Item::ReadableName() const
+    {
+        if (IsWeapon())
+        {
+            return weaponInfo_.ReadableName();
+        }
+        else if (IsArmor())
+        {
+            return armorInfo_.ReadableName();
+        }
+        else if (IsMisc())
+        {
+            return misc_type::Name(miscType_);
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    const std::string Item::ComposeName(const std::string ROOT_NAME) const
+    {
+        std::ostringstream ss;
+
+        if (IsBroken())
+        {
+            ss << "broken ";
+        }
+
+        ss << ROOT_NAME;
+
+        if (IsMagical())
+        {
+            ss << "*";
+        }
+
+        return ss.str();
+    }
+
     bool operator<(const Item & L, const Item & R)
     {
         if (std::tie(
@@ -316,7 +307,6 @@ namespace item
                 L.damageMax_,
                 L.armorRating_,
                 L.exclusiveToRole_,
-                L.armorType_,
                 L.weaponType_,
                 L.category_,
                 L.miscType_,
@@ -340,7 +330,6 @@ namespace item
                   R.damageMax_,
                   R.armorRating_,
                   R.exclusiveToRole_,
-                  R.armorType_,
                   R.weaponType_,
                   R.category_,
                   R.miscType_,
@@ -373,7 +362,6 @@ namespace item
                 L.damageMax_,
                 L.armorRating_,
                 L.exclusiveToRole_,
-                L.armorType_,
                 L.weaponType_,
                 L.category_,
                 L.miscType_,
@@ -397,7 +385,6 @@ namespace item
                    R.damageMax_,
                    R.armorRating_,
                    R.exclusiveToRole_,
-                   R.armorType_,
                    R.weaponType_,
                    R.category_,
                    R.miscType_,

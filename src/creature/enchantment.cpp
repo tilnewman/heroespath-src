@@ -31,7 +31,7 @@
 
 #include "creature/condition-algorithms.hpp"
 #include "creature/creature.hpp"
-#include "item/item-profile-warehouse.hpp"
+#include "item/item-score-helper.hpp"
 
 #include <sstream>
 
@@ -198,7 +198,7 @@ namespace creature
 
     Score_t Enchantment::CalcTreasureScore() const
     {
-        auto score{ item::ItemProfileWarehouse::Score(traitSet_) };
+        auto score{ item::ScoreHelper::Score(traitSet_) };
 
         if (type_ & EnchantmentType::WhenHeld)
         {

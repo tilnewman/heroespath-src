@@ -32,6 +32,7 @@
 #include "misc/random.hpp"
 
 #include <algorithm>
+#include <numeric>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -58,12 +59,32 @@ namespace misc
             std::vector<T> & b_vec,
             const SortOpt SORT_OPTION = SortOpt::None)
         {
-            std::copy(A_VEC.begin(), A_VEC.end(), back_inserter(b_vec));
+            b_vec.insert(std::end(b_vec), std::begin(A_VEC), std::end(A_VEC));
 
             if (SORT_OPTION == SortOpt::SortAndUnique)
             {
                 std::sort(b_vec.begin(), b_vec.end());
                 b_vec.erase(std::unique(b_vec.begin(), b_vec.end()), b_vec.end());
+            }
+        }
+
+        // appends A into B using move so that the source is left in an undefined but safe to
+        // destruct state, stable unless WILL_UNIQUE
+        template <typename T>
+        static void AppendMove(
+            const std::vector<T> & SOURCE,
+            std::vector<T> & dest,
+            const SortOpt SORT_OPTION = SortOpt::None)
+        {
+            dest.insert(
+                std::end(dest),
+                std::make_move_iterator(std::begin(SOURCE)),
+                std::make_move_iterator(std::end(SOURCE)));
+
+            if (SORT_OPTION == SortOpt::SortAndUnique)
+            {
+                std::sort(dest.begin(), dest.end());
+                dest.erase(std::unique(dest.begin(), dest.end()), dest.end());
             }
         }
 
@@ -119,12 +140,23 @@ namespace misc
         }
 
         template <typename T>
-        static T SelectRandom(const std::vector<T> & V)
+        static T & SelectRandom(std::vector<T> & vector)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (V.empty() == false), "misc::Vector::SelectRandom() was given an empty vector.");
+                (vector.empty() == false),
+                "misc::Vector::SelectRandom(non-const) was given an empty vector.");
 
-            return V[misc::random::SizeT(V.size() - 1)];
+            return vector[misc::random::SizeT(vector.size() - 1)];
+        }
+
+        template <typename T>
+        static const T & SelectRandom(const std::vector<T> & VECTOR)
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (VECTOR.empty() == false),
+                "misc::Vector::SelectRandom(const) was given an empty vector.");
+
+            return VECTOR[misc::random::SizeT(VECTOR.size() - 1)];
         }
 
         enum JoinOpt : unsigned
@@ -207,38 +239,54 @@ namespace misc
         }
 
         template <typename T>
-        static T Average(const std::vector<T> & V)
+        static T SumVec(const std::vector<T> & VALUES)
         {
-            if (V.empty())
-            {
-                return static_cast<T>(0);
-            }
-
-            T sum{ 0 };
-            for (auto const NEXT_VALUE : V)
-            {
-                sum += NEXT_VALUE;
-            }
-
-            return sum / static_cast<T>(V.size());
+            return std::accumulate(
+                std::begin(VALUES),
+                std::end(VALUES),
+                T(0),
+                [](auto const SUBTOTAL, auto const VALUE) { return SUBTOTAL + VALUE; });
         }
 
-        // skip the first value because that is an invalid framerate value
         template <typename T>
-        static T
-            StandardDeviation(const std::vector<T> & V, const std::size_t COUNT, const T AVERAGE)
+        static T Average(const std::vector<T> & VALUES)
         {
-            if ((COUNT <= 1) || ((COUNT - 1) > V.size()))
+            if (VALUES.empty())
             {
                 return static_cast<T>(0);
             }
+
+            return static_cast<T>(
+                static_cast<double>(SumVec(VALUES)) / static_cast<double>(VALUES.size()));
+        }
+
+        template <typename T>
+        static T StandardDeviation(const std::vector<T> & VALUES)
+        {
+            return StandardDeviation(VALUES, VALUES.size(), Average(VALUES));
+        }
+
+        template <typename T>
+        static T StandardDeviation(
+            const std::vector<T> & VALUES,
+            const std::size_t COUNT,
+            const T AVERAGE_ORIG,
+            const bool WILL_IGNORE_FIRST_VALUE = false)
+        {
+            if ((COUNT <= 1) || ((COUNT - 1) > VALUES.size()))
+            {
+                return 0;
+            }
+
+            auto const AVERAGE_DOUBLE{ static_cast<double>(AVERAGE_ORIG) };
 
             double deviationSum{ 0.0 };
 
-            for (std::size_t i(1); i < (COUNT - 1); ++i)
+            std::size_t i{ ((WILL_IGNORE_FIRST_VALUE) ? 1U : 0U) };
+            for (; i < (COUNT - 1); ++i)
             {
-                auto const NEXT_VALUE{ V[i] };
-                deviationSum += std::pow(static_cast<double>(NEXT_VALUE - AVERAGE), 2);
+                auto const NEXT_VALUE{ static_cast<double>(VALUES[i]) };
+                deviationSum += std::pow((NEXT_VALUE - AVERAGE_DOUBLE), 2);
             }
 
             return static_cast<T>(std::sqrt(deviationSum / static_cast<double>(COUNT - 1)));
@@ -274,6 +322,53 @@ namespace misc
 
             return a < b;
         }
+
+        template <typename T>
+        struct MinMaxAvgSum
+        {
+            MinMaxAvgSum(const T MIN, const T MAX, const T AVG, const T SUM)
+                : min(MIN)
+                , max(MAX)
+                , avg(AVG)
+                , sum(SUM)
+            {}
+
+            MinMaxAvgSum(const std::vector<T> & VALUES)
+                : min(0)
+                , max(0)
+                , avg(0)
+                , sum(0)
+            {
+                if (VALUES.empty() == false)
+                {
+                    min = VALUES.front();
+                    max = min;
+
+                    for (auto const VALUE : VALUES)
+                    {
+                        if (VALUE < min)
+                        {
+                            min = VALUE;
+                        }
+
+                        if (VALUE > max)
+                        {
+                            max = VALUE;
+                        }
+
+                        sum += VALUE;
+                    }
+
+                    avg = static_cast<T>(
+                        static_cast<double>(sum) / static_cast<double>(VALUES.size()));
+                }
+            }
+
+            T min;
+            T max;
+            T avg;
+            T sum;
+        };
     };
 } // namespace misc
 } // namespace heroespath

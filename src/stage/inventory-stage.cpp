@@ -51,7 +51,7 @@
 #include "sfml-util/font-manager.hpp"
 #include "sfml-util/gui/box.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
+#include "sfml-util/gui/item-image-machine.hpp"
 #include "sfml-util/gui/list-box-item.hpp"
 #include "sfml-util/gui/text-info.hpp"
 #include "sfml-util/gui/text-region.hpp"
@@ -137,7 +137,7 @@ namespace stage
         , CREATURE_IMAGE_POS_LEFT_(INNER_RECT_.left + sfml_util::MapByRes(35.0f, 100.0f))
         , CREATURE_IMAGE_SCALE_(sfml_util::MapByRes(0.75f, 3.25f))
         , CREATURE_IMAGE_HEIGHT_MAX_(
-              sfml_util::gui::CreatureImageManager::Dimmension() * CREATURE_IMAGE_SCALE_)
+              sfml_util::gui::CreatureImageManager::MaxDimmension() * CREATURE_IMAGE_SCALE_)
         , LISTBOX_HEIGHT_REDUCTION_(sfml_util::MapByRes(100.0f, 400.0f))
         , LISTBOX_SCREEN_EDGE_MARGIN_(sfml_util::MapByRes(35.0f, 100.0f))
         , LISTBOX_BETWEEN_SPACER_(sfml_util::MapByRes(65.0f, 200.0f))
@@ -3649,7 +3649,8 @@ namespace stage
 
         auto const ITEM_PTR{ ITEM_PTR_OPT.value() };
 
-        sfml_util::gui::ItemImageManager::Load(detailViewTexture_, ITEM_PTR);
+        sfml_util::gui::ItemImageMachine itemImageMachine;
+        itemImageMachine.Load(detailViewTexture_, ITEM_PTR);
 
         detailViewSprite_.setTexture(detailViewTexture_, true);
 

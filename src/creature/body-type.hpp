@@ -42,13 +42,10 @@ namespace heroespath
 namespace creature
 {
 
-    // defines basic body composition
+    // Responsible for wrapping all the information about a creature's body.
     class BodyType
     {
-    public:
         explicit BodyType(
-            const item::material::Enum SKIN_MATERIAL_INNER = item::material::Flesh,
-            const item::material::Enum SKIN_MATERIAL_OUTER = item::material::Nothing,
             const std::size_t NUM_HEADS = 1,
             const std::size_t NUM_ARMS = 2,
             const std::size_t NUM_LEGS = 2,
@@ -56,13 +53,14 @@ namespace creature
             const bool HAS_FANGS = false,
             const bool HAS_CLAWS = false,
             const bool HAS_WINGS = false,
-            const bool HAS_FINGERS = true,
+            const bool HAS_FINGERS = false,
             const bool HAS_TAIL = false,
             const bool HAS_SPIKES = false,
             const bool HAS_HORNS = false,
             const std::size_t NUM_TENDRILS = 0,
             const bool HAS_BREATH = false);
 
+    public:
         auto NumHeads() const { return num_heads_; }
         auto NumArms() const { return num_arms_; }
         auto NumLegs() const { return num_legs_; }
@@ -97,9 +95,6 @@ namespace creature
             return ((false == HasArms()) && (false == HasLegs()) && HasTail());
         }
 
-        auto SkinMaterialInner() const { return skinMaterialInner_; }
-        auto SKinMaterialOuter() const { return skinMaterialOuter_; }
-
         const std::string ToString() const;
 
         static const BodyType Make_Humanoid(
@@ -109,7 +104,7 @@ namespace creature
             const bool HAS_HORNS = false);
 
         static const BodyType Make_Wolfen(const role::Enum ROLE_ENUM = role::Wolfen);
-        static const BodyType Make_Dragon();
+        static const BodyType Make_Dragon(const bool HAS_BREATH);
         static const BodyType Make_Pixie();
 
         static const BodyType
@@ -132,8 +127,6 @@ namespace creature
         std::size_t num_heads_;
         std::size_t num_eyes_;
         std::size_t num_tendrils_;
-        item::material::Enum skinMaterialInner_;
-        item::material::Enum skinMaterialOuter_;
 
     private:
         friend class boost::serialization::access;
@@ -152,8 +145,6 @@ namespace creature
             ar & num_heads_;
             ar & num_eyes_;
             ar & num_tendrils_;
-            ar & skinMaterialInner_;
-            ar & skinMaterialOuter_;
         }
     };
 

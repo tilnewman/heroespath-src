@@ -36,35 +36,30 @@ namespace heroespath
 {
 namespace sfml_util
 {
-
-    namespace Size
+    const std::string Size::ToString(const Size::Enum SIZE_ENUM)
     {
-
-        const std::string ToString(const Size::Enum E)
+        switch (SIZE_ENUM)
         {
-            switch (E)
+            case Small:
             {
-                case Small:
-                {
-                    return "Small";
-                }
-                case Medium:
-                {
-                    return "Medium";
-                }
-                case Large:
-                {
-                    return "Large";
-                }
-                case Count:
-                default:
-                {
-                    std::ostringstream ss;
-                    ss << "sfml_util::Size::ToString(" << E << ")_InvalidValueError.";
-                    throw std::range_error(ss.str());
-                }
+                return "Small";
+            }
+            case Medium:
+            {
+                return "Medium";
+            }
+            case Large:
+            {
+                return "Large";
+            }
+            case Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "sfml_util::Size::ToString(" << SIZE_ENUM << ")_InvalidValueError.";
+                throw std::range_error(ss.str());
             }
         }
-    } // namespace Size
+    }
 } // namespace sfml_util
 } // namespace heroespath

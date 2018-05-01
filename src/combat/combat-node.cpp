@@ -81,7 +81,7 @@ namespace combat
     const sf::Uint8 CombatNode::DECAL_IMAGE_ALPHA_(46);
     const float CombatNode::WING_IMAGE_SCALE_(0.65f);
     const float CombatNode::WING_IMAGE_HORIZ_OFFSET_(0.333f);
-    const float CombatNode::WING_IMAGE_ANIM_SPEED_(8.0f);
+    const double CombatNode::WING_IMAGE_ANIM_SPEED_(8.0);
     const float CombatNode::WING_IMAGE_ROTATION_MAX_(90.0f);
     const std::size_t CombatNode::HEALTH_LINE_COUNT_{ 10 };
 

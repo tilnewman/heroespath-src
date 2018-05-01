@@ -480,11 +480,10 @@ namespace creature
         {
             case Human:
             {
-                return { role::Knight,  role::Archer,  role::Bard,       role::Beastmaster,
-                         role::Cleric,  role::Knight,  role::Thief,      role::Sorcerer,
-                         role::Ranger,  role::Trader,  role::Drunk,      role::Brute,
-                         role::Smasher, role::Soldier, role::Blacksmith, role::Shaman,
-                         role::Grunt };
+                return { role::Knight,  role::Archer,     role::Bard,     role::Beastmaster,
+                         role::Cleric,  role::Thief,      role::Sorcerer, role::Ranger,
+                         role::Trader,  role::Drunk,      role::Brute,    role::Smasher,
+                         role::Soldier, role::Blacksmith, role::Shaman,   role::Grunt };
             }
             case Gnome:
             {
@@ -688,7 +687,18 @@ namespace creature
 
     const OriginTypeVec_t race::OriginTypes(const race::Enum RACE, const role::Enum ROLE)
     {
-        OriginTypeVec_t v(1, origin_type::Statue);
+        OriginTypeVec_t types;
+
+        if ((RACE == race::Count) && (ROLE == role::Count))
+        {
+            return types;
+        }
+
+        types.reserve(6);
+        if (RACE != race::Spider)
+        {
+            types.emplace_back(origin_type::Statue);
+        }
 
         switch (RACE)
         {
@@ -705,7 +715,7 @@ namespace creature
             case race::Ramonaut:
             case race::Boar:
             {
-                v.emplace_back(origin_type::Embryo);
+                types.emplace_back(origin_type::Embryo);
                 break;
             }
             case race::Demon:
@@ -714,7 +724,7 @@ namespace creature
             case race::Bog:
             case race::Plant:
             {
-                v.emplace_back(origin_type::Seeds);
+                types.emplace_back(origin_type::Seeds);
                 break;
             }
             case race::Pixie:
@@ -722,8 +732,8 @@ namespace creature
             case race::Troll:
             case race::Hydra:
             {
-                v.emplace_back(origin_type::Egg);
-                v.emplace_back(origin_type::Seeds);
+                types.emplace_back(origin_type::Egg);
+                types.emplace_back(origin_type::Seeds);
                 break;
             }
             case race::LizardWalker:
@@ -734,8 +744,9 @@ namespace creature
             case race::Serpent:
             case race::Cobra:
             case race::Wyvern:
+            case race::Spider:
             {
-                v.emplace_back(origin_type::Egg);
+                types.emplace_back(origin_type::Egg);
                 break;
             }
             case race::Shade:
@@ -743,7 +754,6 @@ namespace creature
             case race::Witch:
             case race::Golem:
             case race::Ghoul:
-            case race::Spider:
             case race::CaveCrawler:
             case race::Werebear:
             case race::Wereboar:
@@ -762,16 +772,16 @@ namespace creature
 
         if (ROLE == role::Tendrilus)
         {
-            v.emplace_back(origin_type::Seeds);
+            types.emplace_back(origin_type::Seeds);
         }
         else if ((ROLE == role::Wing) || (ROLE == role::Whelp) || (ROLE == role::Tendrilus))
         {
-            v.emplace_back(origin_type::Egg);
+            types.emplace_back(origin_type::Egg);
         }
 
-        std::sort(v.begin(), v.end());
-        v.erase(std::unique(v.begin(), v.end()), v.end());
-        return v;
+        std::sort(std::begin(types), std::end(types));
+        types.erase(std::unique(std::begin(types), std::end(types)), std::end(types));
+        return types;
     }
 
     const item::TreasureScores

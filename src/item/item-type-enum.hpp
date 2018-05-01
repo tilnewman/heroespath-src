@@ -47,30 +47,33 @@ namespace item
         enum Enum : unsigned int
         {
             None = 0,
-            Broken = 1 << 0, // useless, unable to do or be used for anything
-            Weapon = 1 << 1,
-            Armor = 1 << 2,
-            Useable = 1 << 3,
-            Equippable = 1 << 4,
-            BodyPart = 1 << 5,
-            Wearable = 1 << 6, // if not wearable then it must be one or two-handed
-            OneHanded = 1 << 7,
-            TwoHanded = 1 << 8,
-            QuestItem = 1 << 9,
-            Blessed = 1 << 10,
-            Cursed = 1 << 11,
-            AllowsCasting = 1 << 12,
-            ConsumedOnUse = 1 << 13,
-            ShowsEnemyInfo = 1 << 14
+
+            // useless, can't do anything or be used, all magic/enchantments fail
+            Broken = 1 << 0,
+
+            Useable = 1 << 1,
+            BodyPart = 1 << 2,
+            Equippable = 1 << 3,
+            Wearable = 1 << 4,
+            OneHanded = 1 << 5,
+            TwoHanded = 1 << 6,
+            ConsumedOnUse = 1 << 7,
+            ShowsEnemyInfo = 1 << 8,
+            Last = ShowsEnemyInfo
         };
 
-        static const std::string ToString(const category::Enum E, const bool WILL_WRAP);
+        static const std::string ToString(const category::Enum E, const bool WILL_WRAP = false);
     };
 
     struct material
     {
         enum Enum
         {
+            // every material must be only one of IsSolid(), IsLiquid(), IsGas(), or IsSpirit()
+
+            // IsBendy() is mutually exclusive with IsRigid() and niether will be true if
+            // IsSolid()==false
+
             // Use Nothing as default instead of Error so that an Item's
             // materialSec_ can be Nothing.
             Nothing = 0,
@@ -96,7 +99,7 @@ namespace item
             HardLeather,
             Plant,
             Claw,
-            Scale,
+            Scales,
             Horn,
             Bone,
             Tooth,
@@ -122,7 +125,7 @@ namespace item
         };
 
         static const std::string ToString(const material::Enum);
-        static const std::string ToReadableString(const material::Enum);
+        static const std::string Name(const material::Enum);
 
         static void Setup();
 
@@ -215,8 +218,10 @@ namespace item
         static bool
             IsMagical(const material::Enum PRI, const material::Enum SEC = material::Nothing);
 
-        static bool IsLiquid(const material::Enum MATERIAL);
         static bool IsSolid(const material::Enum MATERIAL);
+        static bool IsLiquid(const material::Enum MATERIAL);
+        static bool IsGas(const material::Enum MATERIAL);
+        static bool IsSpirit(const material::Enum MATERIAL);
         static bool IsBendy(const material::Enum MATERIAL);
         static bool IsRigid(const material::Enum MATERIAL);
 
@@ -357,18 +362,23 @@ namespace item
             Fire = 1 << 0,
             Frost = 1 << 1,
             Honor = 1 << 2,
-            Shadow = 1 << 3
+            Shadow = 1 << 3,
+            Last = Shadow
         };
 
         static const std::string ToString(const Enum, const bool WILL_WRAP = false);
         static const std::string Name(const Enum, const bool WILL_WRAP = false);
-        static const std::vector<element_type::Enum> Combinations(const Enum);
+
+        static const std::vector<element_type::Enum>
+            Combinations(const Enum, const bool WILL_INCLUDE_NOTHING = false);
+
         static const std::vector<element_type::Enum> AllCombinations()
         {
             return Combinations(static_cast<element_type::Enum>(
                 element_type::Fire | element_type::Frost | element_type::Honor
                 | element_type::Shadow));
         }
+
         static bool IsValid(const Enum);
     };
 
@@ -379,160 +389,158 @@ namespace item
         enum Enum
         {
             NotMisc = 0,
-            Amulet,
-            Ankh_Necklace,
-            Armband,
-            Bag,
-            Balm_Pot,
-            Beard,
-            Bell,
-            Bird_Claw,
-            Bone,
-            Bone_Whistle,
-            Book,
+
+            // quest items (all musical instruments except for the DrumLute are quest items)
+            Angel_Braid,
+            Crumhorn,
+            Devil_Horn,
+            Golem_Finger,
+            Hurdy_Gurdy,
+            Icicle,
+            Litch_Hand,
+            Lyre,
+            Mummy_Hand,
+            Petrified_Snake,
+            Pipe_And_Tabor,
+            Recorder,
+            Unicorn_Horn,
+            Viol,
+
+            // exclusively unique items
+            Amulet, // ManaAmulet
+            Ankh_Necklace, // JeweledAnkhNeclace
+            Armband, // JeweledArmband
+            Bag, // ScoundrelSack, SwindlersBag, TricksterPouch
+            Beard, // BerserkersBeard
+            Bell, // PixieBell
+            Bird_Claw, // RavenClaw
+            Bone, // ChimeraBone
+            Bone_Whistle, // DragonToothWhistle
+            Book, // FriarsChronicle, HolyEpic, MacabreManuscript, RequiemRegister, SaintsJournal
             Bracelet_Crown,
             Bracelet_Feather,
             Bracelet_Fist,
             Bracelet_Hourglass,
             Bracelet_Key,
             Bracelet_Mask,
-            Braid,
             Brooch_Crown,
             Brooch_Feather,
             Brooch_Fist,
             Brooch_Hourglass,
             Brooch_Key,
             Brooch_Mask,
-            Bust,
-            Cameo,
-            Cape,
-            Cat,
-            Chains,
             Charm_Crown,
             Charm_Feather,
             Charm_Fist,
             Charm_Hourglass,
             Charm_Key,
             Charm_Mask,
-            Chest,
-            Chimes,
-            Cloak,
-            Conch,
-            Crown,
-            Crumhorn,
-            Devil_Horn,
-            Doll,
-            Doll_Blessed,
-            Doll_Cursed,
-            Dried_Head,
-            Drink,
-            DrumLute,
-            Embryo,
-            Egg,
-            Eye,
-            Feather,
-            Figurine_Blessed,
-            Figurine_Cursed,
-            Finger,
-            Fingerclaw,
-            Flag,
-            Frog,
-            Gecko,
+            Cameo, // SaintCameoPin
+            Cape, // GeneralsCape, KingsCape, CommandersCape
+            Cat, // CrystalCat
+            Chains, // SpecterChains
+            Chimes, // CrystalChimes
+            Cloak, // ShadeCloak
+            Conch, // SirenConch
+            Eye, // CyclopsEye, GiantOwlEye, HawkEye
+            Feather, // GriffinFeather
+            Flag, // FanaticsFlag, RegalCaptainsFlag, TribalFlag
+            Frog, // DriedFrog, DriedToad
+            Gecko, // DriedGecko
             Ghost_Sheet,
-            Gizzard,
-            Goblet,
-            Gong,
-            Grave_Ornament,
-            Handbag,
-            Hanky,
-            Headdress,
-            Herbs,
-            Hide,
-            Horn,
-            Horseshoe,
-            Hourglass,
-            Hurdy_Gurdy,
-            Icicle,
-            Iguana,
+            Gizzard, // VultureGizzard
+            Gong, // ExoticGoldenGong
+            Grave_Ornament, // SepultureDecoration, MortuaryOrnament
+            Handbag, // JeweledHandbag
+            Hanky, // BishopsHanky
+            Headdress, // IslanderHeaddress
+            Hide, // MinotaurHide  ***this is NOT used for skin materials
+            Horn, // HornOfTheHorde, WarTrumpet
+            Horseshoe, // MagicHorseshoe
+            Iguana, // DriedIguana
             Imp_Tail,
-            Key,
-            Lantern,
-            Leaf,
-            Legtie,
-            Litch_Hand,
-            Lizard,
-            Lockbox,
-            LockPicks,
-            Lyre,
+            Leaf, // DruidLeaf
+            Legtie, // SprintersLegtie
+            Lizard, // DriedLizard
             Magnifying_Glass,
-            Mask,
-            Medallion,
-            Mirror,
-            Mummy_Hand,
-            Necklace,
-            Noose,
-            Nose,
-            Orb,
-            Paw,
-            Pendant,
-            Petrified_Snake,
+            Mask, // RascalMask, MournersMask
+            Necklace, // JeweledAnkhNecklace, SharkToothNecklace, VampiresToothNecklace
+            Noose, // HangmansNoose  *** TODO make this effect when worn not held...sweet...
+            Nose, // HobgoblinNose
+            Paw, // PantherPaw
             Pin_Crown,
             Pin_Feather,
             Pin_Fist,
             Pin_Hourglass,
             Pin_Key,
             Pin_Mask,
-            Pipe_And_Tabor,
-            Potion,
-            Puppet_Blessed,
-            Puppet_Cursed,
-            Rabbit_Foot,
-            Rainmaker,
-            Rat_Juju,
+            Potion, // DoveBloodVial, BottleOfBansheeScreams
+            Rabbit_Foot, // EvilRabbitsFoot
+            Rainmaker, // ShamanRainmaker
+            Rat_Juju, // MadRatJuju
             Rattlesnake_Tail,
-            Recorder,
-            Relic,
-            Ring,
-            Robe,
-            Salamander,
-            Salve,
-            Scale,
-            Scepter,
-            Scroll,
-            Scythe,
-            Seeds,
-            Shard,
-            Shark_Tooth_Necklace,
-            Shroud,
+            Relic, // SanguineRelic
+            Ring, // HoboRing, MendicantRing, MonkRing, PriestRing
+            Robe, // SpecterRobe
+            Salamander, // DriedSalamander
+            Scales, // BloodyDragonScale
+            Scroll, // FuneralRecord, LastRitesScroll
+            Scythe, // ReaperScythe
+            Shroud, // BurialShroud
             Signet_Crown,
             Signet_Feather,
             Signet_Fist,
             Signet_Hourglass,
             Signet_Key,
             Signet_Mask,
-            Skink,
-            Skull,
-            Spider_Eggs,
-            Spyglass,
-            Staff,
-            Summoning_Statue,
-            Talisman,
-            Tome,
-            Tongue,
-            Tooth,
-            Tooth_Necklace,
-            Torch,
-            Troll_Figure,
-            Trophy,
+            Skink, // DriedSkink
+            Shark_Tooth_Necklace, // SharkToothNecklace
+            Spyglass, // RoyalScoutSpyglass
+            Talisman, // WraithTalisman
+            Tome, // DemonDiary
+            Tongue, // BasiliskTonge
+            Tooth, // CobraTooth
+            Tooth_Necklace, // SharkToothNecklace, VampiresToothNecklace
+            Troll_Figure, // CopperTroll
+            Trophy, // BleedingTrophy,
             Tuning_Fork,
             Turtle_Shell,
-            Unicorn_Horn,
-            Veil,
-            Viol,
-            Wand,
+            Veil, // JeweledPrincessVeil
             Warhorse_Marionette,
             Weasel_Totem,
             Wolfen_Fur,
+
+            // standalone items
+            Bust,
+            Doll,
+            Doll_Blessed,
+            Doll_Cursed,
+            Dried_Head,
+            DrumLute, // the only musical instrument that is not a quest item
+            Embryo,
+            Egg,
+            Figurine_Blessed,
+            Figurine_Cursed,
+            Goblet,
+            Key,
+            LockPicks,
+            Mirror,
+            Orb,
+            Pendant,
+            Puppet_Blessed,
+            Puppet_Cursed,
+            // Ring  -both a standalone item and a unique item, see Ring above
+            Scepter,
+            Seeds,
+            Shard,
+            Spider_Eggs,
+            Staff,
+            Summoning_Statue,
+            Wand,
+
+            // TODO these need to be implemented as weapon_type
+            Fingerclaw,
+
             Count
         };
 
@@ -540,11 +548,25 @@ namespace item
         static const std::string Name(const Enum);
         static bool IsMusicalInstrument(const Enum);
         static const MaterialVecPair_t Materials(const Enum);
-        static bool IsStandaloneItem(const Enum);
+
+        // summoning works by using the item
+        static bool IsSummoning(const Enum);
+
+        static bool IsStandalone(const Enum);
+        static bool IsOrdinary(const Enum);
         static bool HasPixieVersion(const Enum);
+        static bool HasOnlyPixieVersion(const Enum);
         static float ReligiousRatio(const Enum);
+        static bool HasNonFleshEyes(const Enum);
         static bool IsBlessed(const Enum);
         static bool IsCursed(const Enum);
+        static Weight_t Weight(const Enum);
+        static bool IsUseable(const Enum);
+        static bool IsEquippable(const Enum);
+        static bool IsQuestItem(const Enum);
+        static bool AllowsCasting(const Enum);
+        static bool IsWeapon(const Enum);
+        static bool IsArmor(const Enum);
     };
 
     struct set_type
@@ -833,38 +855,53 @@ namespace item
             BladedStaff = 1 << 17,
             Fists = 1 << 18,
             Tendrils = 1 << 19,
-            Breath = 1 << 20
+            Breath = 1 << 20,
+            Last = Breath
         };
 
-        static const std::string ToString(const weapon_type::Enum E, const bool WILL_WRAP);
+        static const std::string ToString(
+            const weapon_type::Enum, const bool WILL_WRAP = false, const bool IS_READBLE = false);
+
+        static const std::string Name(const weapon_type::Enum);
         static weapon_type::Enum FromString(const std::string &);
     };
 
     struct armor_type
     {
-        enum Enum : unsigned int
+        enum Enum
         {
-            NotArmor = 0,
-            Sheild = 1 << 0,
-            Helm = 1 << 1,
-            Gauntlets = 1 << 2,
-            Pants = 1 << 3,
-            Boots = 1 << 4,
-            Shirt = 1 << 5, // includes torso coverings, i.e. plate/mail/scale/etc.
-            Bracer = 1 << 6, // forearm covering
-            Aventail = 1 << 7, // neck covering attached to the bottom of a helm
-            Covering = 1 << 8, // vest/robe/cloak
-            Skin = 1 << 9 // hide or scales for beast creatures
+            NotArmor,
+            Shield,
+            Helm,
+            Gauntlets,
+            Pants,
+            Boots,
+
+            // this type includes all torso coverings, i.e. plate/mail/scale armor
+            Shirt,
+
+            Bracers,
+            Aventail,
+
+            // either vest, robe, or cloak
+            Covering,
+
+            // only used by creatures with skin that is significant to their armor rating, such as
+            // dragons with scales but not for human flesh
+            Skin,
+
+            Count
         };
 
-        static const std::string ToString(const armor_type::Enum, const bool WILL_WRAP);
+        static const std::string ToString(const armor_type::Enum);
+        static bool DoesRequireBaseType(const armor_type::Enum);
     };
 
     struct body_part
     {
         enum Enum
         {
-            Fists,
+            Fists = 0,
             Claws,
             Tendrils,
             Bite,
@@ -874,6 +911,7 @@ namespace item
         };
 
         static const std::string ToString(const body_part::Enum);
+        static weapon_type::Enum WeaponType(const body_part::Enum);
     };
 
 } // namespace item

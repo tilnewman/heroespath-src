@@ -30,6 +30,7 @@
 #include "item-profile.hpp"
 
 #include "creature/enchantment-factory.hpp"
+#include "creature/race-enum.hpp"
 #include "item/armor-factory.hpp"
 #include "item/item-profile-warehouse.hpp"
 #include "item/weapon-factory.hpp"
@@ -43,142 +44,43 @@ namespace heroespath
 namespace item
 {
 
-    const std::string MemberStrings::InvalidString() const
-    {
-        if (normalStrings.empty())
-        {
-            return "no normal info";
-        }
-
-        auto const MATERIAL_STRING_ITER{ std::find_if(
-            normalStrings.begin(), normalStrings.end(), [](const auto & S) {
-                return boost::algorithm::contains(S, "mat=");
-            }) };
-
-        if (MATERIAL_STRING_ITER == normalStrings.end())
-        {
-            return "missing materials";
-        }
-
-        auto const MATERIAL_STRINGS{ boost::algorithm::erase_all_copy(
-            *MATERIAL_STRING_ITER, "mat=") };
-
-        auto const COMMA_POS{ MATERIAL_STRINGS.find(',') };
-
-        auto const MATERIAL_STRING_PRI{ MATERIAL_STRINGS.substr(0, COMMA_POS) };
-
-        if ((MATERIAL_STRING_PRI == "Nothing") || (MATERIAL_STRING_PRI == "(count)"))
-        {
-            return "primary material is Nothing or Count";
-        }
-
-        auto const MATERIAL_STRING_SEC{ MATERIAL_STRINGS.substr(COMMA_POS + 1) };
-
-        if (MATERIAL_STRING_PRI == MATERIAL_STRING_SEC)
-        {
-            return "primary and secondary materials are the same";
-        }
-
-        if (weaponStrings.size() > 1)
-        {
-            return "multiple base weapon types";
-        }
-
-        if (armorStrings.size() > 1)
-        {
-            return "multiple base armor types";
-        }
-
-        if (std::find_if(
-                normalStrings.begin(),
-                normalStrings.end(),
-                [](const auto & S) { return boost::algorithm::contains(S, "category"); })
-            == normalStrings.end())
-        {
-            return "no category";
-        }
-
-        auto const HAS_WEAPONTYPE{ (
-            std::find_if(
-                normalStrings.begin(),
-                normalStrings.end(),
-                [](const auto & S) { return boost::algorithm::contains(S, "weapon_type"); })
-            != normalStrings.end()) };
-
-        auto const HAS_ARMORTYPE{ (
-            std::find_if(
-                normalStrings.begin(),
-                normalStrings.end(),
-                [](const auto & S) { return boost::algorithm::contains(S, "armor_type"); })
-            != normalStrings.end()) };
-
-        if (HAS_WEAPONTYPE && HAS_ARMORTYPE)
-        {
-            return "is both weapon and armor";
-        }
-
-        if (HAS_WEAPONTYPE && weaponStrings.empty())
-        {
-            return "weapon type with no specific weapon set";
-        }
-
-        if (HAS_ARMORTYPE && armorStrings.empty())
-        {
-            return "armor type with no specific armor set";
-        }
-
-        if (HAS_WEAPONTYPE && (armorStrings.empty() == false))
-        {
-            return "weapon type with specific armor set";
-        }
-
-        if (HAS_ARMORTYPE && (weaponStrings.empty() == false))
-        {
-            return "armor type with specifc weapon set";
-        }
-
-        return "";
-    }
-
-    const std::string MemberStrings::ToString() const
-    {
-        std::ostringstream ss;
-
-        auto streamToSS
-            = [&ss](const auto & ARG) { ss << ((ss.str().empty()) ? "" : ", ") << ARG; };
-
-        std::for_each(normalStrings.begin(), normalStrings.end(), streamToSS);
-        std::for_each(weaponStrings.begin(), weaponStrings.end(), streamToSS);
-        std::for_each(armorStrings.begin(), armorStrings.end(), streamToSS);
-
-        return "[" + ss.str() + "]";
-    }
-
     ItemProfile::ItemProfile()
         : score_(0)
-        , religious_(0.0f)
+        , religiousRatio_(0.0f)
         , category_(category::None)
-        , armor_(armor_type::NotArmor)
-        , weapon_(weapon_type::NotAWeapon)
+        , thinProfile_()
+        , weaponType_(weapon_type::NotAWeapon)
         , unique_(unique_type::NotUnique)
-        , misc_(misc_type::NotMisc)
         , set_(set_type::NotASet)
         , named_(named_type::NotNamed)
         , element_(element_type::None)
-        , isSet_(profile::IsSet::None)
-        , settings_()
-        , size_(sfml_util::Size::Medium)
         , matPri_(material::Nothing)
         , matSec_(material::Nothing)
         , summonInfo_()
-        , baseName_("")
+        , isPixie_(false)
     {}
 
-    creature::role::Enum ItemProfile::RoleRestrictionBasedOnMiscAndSetType() const
+    creature::role::Enum ItemProfile::RoleRestriction() const
     {
-        if ((misc_ == misc_type::DrumLute) || (misc_ == misc_type::Lyre)
-            || (misc_ == misc_type::Hurdy_Gurdy) || (misc_ == misc_type::Pipe_And_Tabor)
-            || (misc_ == misc_type::Viol) || (misc_ == misc_type::Recorder))
+        if ((WeaponInfo().SwordType() == weapon::sword_type::Knightlysword)
+            || (WeaponInfo().SwordType() == weapon::sword_type::Claymore))
+        {
+            return creature::role::Knight;
+        }
+        else if (
+            (ArmorInfo().ShieldType() == armor::shield_type::Pavis)
+            || (ArmorInfo().HelmType() == armor::helm_type::Great))
+        {
+            return creature::role::Knight;
+        }
+        else if (
+            (ArmorInfo().BaseType() == armor::base_type::Plate)
+            && (ArmorInfo().IsGauntlets() || ArmorInfo().IsPants() || ArmorInfo().IsBoots()
+                || ArmorInfo().IsShirt() || ArmorInfo().IsBracers() || ArmorInfo().IsAventail()))
+        {
+            return creature::role::Knight;
+        }
+        else if (misc_type::IsMusicalInstrument(thinProfile_.MiscType()))
         {
             return creature::role::Bard;
         }
@@ -188,7 +90,7 @@ namespace item
         }
     }
 
-    void ItemProfile::SetSummoningAndAdjustScore(const creature::SummonInfo & SUMMON_INFO)
+    void ItemProfile::SetSummonInfoAndAdjustScore(const creature::SummonInfo & SUMMON_INFO)
     {
         summonInfo_ = SUMMON_INFO;
 
@@ -201,764 +103,378 @@ namespace item
         auto const SUMMON_COUNT_D{ static_cast<double>(SUMMON_INFO.Count()) };
 
         auto const CREATURE_RANK_AVG{
-            (CREATURE_RANK_RANGE.A().As<double>() + CREATURE_RANK_RANGE.B().As<double>()) * 0.5f
+            (CREATURE_RANK_RANGE.A().As<double>() + CREATURE_RANK_RANGE.B().As<double>()) * 0.5
         };
 
-        auto const SUMMON_SCORE{ static_cast<int>(
-            std::sqrt((CREATURE_RANK_AVG * SUMMON_COUNT_D) * 150.0)) };
-
-        score_ += Score_t(SUMMON_SCORE);
+        score_ += Score_t(
+            static_cast<Score_t::type>(std::sqrt((CREATURE_RANK_AVG * SUMMON_COUNT_D) * 150.0)));
     }
 
-    const MemberStrings ItemProfile::ToMemberStrings() const
+    const std::string ItemProfile::ToString() const
     {
-        misc::StrVec_t normalStrings;
-        misc::StrVec_t weaponStrings;
-        misc::StrVec_t armorStrings;
+        std::ostringstream ss;
 
-        if (baseName_.empty() == false)
+        if (category::None != category_)
         {
-            normalStrings.emplace_back("base_name=" + baseName_);
+            ss << ", category=" << category::ToString(category_, true);
         }
 
-        if (category_ != 0)
+        if (armor::ArmorTypeWrapper() != thinProfile_.ArmorInfo())
         {
-            normalStrings.emplace_back("category=" + category::ToString(category_, true));
+            ss << ", armor_info=" << thinProfile_.ArmorInfo().ToString();
         }
 
-        if (armor_ != 0)
+        auto const ARMOR_TYPE_RESTRICTION{ thinProfile_.ArmorBaseTypeRestriction() };
+
+        if (ARMOR_TYPE_RESTRICTION != armor::base_type::Count)
         {
-            normalStrings.emplace_back("armor_type=" + armor_type::ToString(armor_, true));
+            ss << ", armor_base_type_restriction="
+               << armor::base_type::ToString(ARMOR_TYPE_RESTRICTION);
         }
 
-        if (weapon_ != 0)
+        if (weapon_type::NotAWeapon != weaponType_)
         {
-            normalStrings.emplace_back("weapon_type=" + weapon_type::ToString(weapon_, true));
+            ss << ", weapon_type=" << weapon_type::ToString(weaponType_, true);
         }
 
-        if ((unique_ != unique_type::NotUnique) && (unique_ != unique_type::Count))
+        if (weapon::WeaponTypeWrapper() != thinProfile_.WeaponInfo())
         {
-            normalStrings.emplace_back("unique_type=" + unique_type::ToString(unique_));
+            ss << ", weapon_info=" << thinProfile_.WeaponInfo().ToString();
         }
 
-        if ((misc_ != misc_type::NotMisc) && (misc_ != misc_type::Count))
+        if (misc_type::NotMisc != thinProfile_.MiscType())
         {
-            normalStrings.emplace_back("misc_type=" + misc_type::ToString(misc_));
+            ss << ", misc_type="
+               << ((misc_type::Count == thinProfile_.MiscType())
+                       ? "Count"
+                       : misc_type::ToString(thinProfile_.MiscType()));
         }
 
-        if ((set_ != set_type::NotASet) && (set_ != set_type::Count))
+        if (isPixie_)
         {
-            normalStrings.emplace_back("set_type=" + set_type::ToString(set_));
+            ss << ", is_pixie=" << std::boolalpha << isPixie_;
         }
 
-        if ((named_ != named_type::NotNamed) && (named_ != named_type::Count))
+        auto const ROLE_RESTRICTION{ RoleRestriction() };
+
+        if (ROLE_RESTRICTION != creature::role::Count)
         {
-            normalStrings.emplace_back("named_type=" + named_type::ToString(named_));
+            ss << creature::role::ToString(ROLE_RESTRICTION);
         }
 
-        if (element_ != element_type::None)
+        ss << ", mat_pri=" << material::ToString(matPri_);
+
+        if (material::Nothing != matSec_)
         {
-            normalStrings.emplace_back("element_type=" + element_type::ToString(element_));
+            ss << ", mat_sec=" << material::ToString(matSec_);
         }
 
-        if (IsArmor())
+        if (unique_type::NotUnique != unique_)
         {
-            if (IsPixie())
-            {
-                normalStrings.emplace_back("(Pixie)");
-            }
-
-            if (settings_.armor.shield != armor::shield_type::Count)
-            {
-                armorStrings.emplace_back(
-                    "shield_type=" + armor::shield_type::ToString(settings_.armor.shield));
-            }
-
-            if (settings_.armor.helm != armor::helm_type::Count)
-            {
-                armorStrings.emplace_back(
-                    "helm_type=" + armor::helm_type::ToString(settings_.armor.helm));
-            }
-
-            if (settings_.armor.base != armor::base_type::Count)
-            {
-                normalStrings.emplace_back(
-                    "base_type=" + armor::base_type::ToString(settings_.armor.base));
-            }
-
-            if (settings_.armor.cover != armor::cover_type::Count)
-            {
-                armorStrings.emplace_back(
-                    "cover_type=" + armor::cover_type::ToString(settings_.armor.cover));
-            }
-
-            if (settings_.armor.restriction != armor::base_type::Count)
-            {
-                normalStrings.emplace_back(
-                    "armor_type_restriction="
-                    + armor::base_type::ToString(settings_.armor.restriction));
-            }
+            ss << ", unique_type="
+               << ((unique_type::Count == unique_) ? "Count" : unique_type::ToString(unique_));
         }
 
-        if (IsAventail())
+        if (set_type::NotASet != set_)
         {
-            armorStrings.emplace_back("(Aventail)");
+            ss << ", set_type=" << ((set_type::Count == set_) ? "Count" : set_type::ToString(set_));
         }
 
-        if (IsBracer())
+        if (named_type::NotNamed != named_)
         {
-            armorStrings.emplace_back("(Bracer)");
+            ss << ", named_type="
+               << ((named_type::Count == named_) ? "Count" : named_type::ToString(named_));
         }
 
-        if (IsShirt())
+        if (element_type::None != element_)
         {
-            armorStrings.emplace_back("(Shirt)");
+            ss << ", element_type=" << element_type::ToString(element_, true);
         }
 
-        if (IsBoots())
+        if (summonInfo_.CanSummon())
         {
-            armorStrings.emplace_back("(Boots)");
+            ss << ", summonInfo=" << summonInfo_.ToString();
+        }
+        else if (summonInfo_.IsValid() == false)
+        {
+            ss << ", summonInfo=INVALID_ERROR";
         }
 
-        if (IsPants())
-        {
-            armorStrings.emplace_back("(Pants)");
-        }
-
-        if (IsGauntlets())
-        {
-            armorStrings.emplace_back("(Gauntlets)");
-        }
-
-        if (IsWeapon())
-        {
-            if (settings_.weapon.sword != weapon::sword_type::Count)
-            {
-                weaponStrings.emplace_back(
-                    "sword_type=" + weapon::sword_type::ToString(settings_.weapon.sword));
-            }
-
-            if (settings_.weapon.axe != weapon::axe_type::Count)
-            {
-                weaponStrings.emplace_back(
-                    "axe_type=" + weapon::axe_type::ToString(settings_.weapon.axe));
-            }
-
-            if (settings_.weapon.club != weapon::club_type::Count)
-            {
-                weaponStrings.emplace_back(
-                    "club_type=" + weapon::club_type::ToString(settings_.weapon.club));
-            }
-
-            if (settings_.weapon.whip != weapon::whip_type::Count)
-            {
-                weaponStrings.emplace_back(
-                    "whip_type=" + weapon::whip_type::ToString(settings_.weapon.whip));
-            }
-
-            if (settings_.weapon.proj != weapon::projectile_type::Count)
-            {
-                weaponStrings.emplace_back(
-                    "proj_type=" + weapon::projectile_type::ToString(settings_.weapon.proj));
-            }
-
-            if (settings_.weapon.bstaff != weapon::bladedstaff_type::Count)
-            {
-                weaponStrings.emplace_back(
-                    "bstaff_type=" + weapon::bladedstaff_type::ToString(settings_.weapon.bstaff));
-            }
-        }
-
-        if (IsKnife())
-        {
-            weaponStrings.emplace_back("(Knife)");
-        }
-
-        if (IsDagger())
-        {
-            weaponStrings.emplace_back("(Dagger)");
-        }
-
-        if (IsStaff())
-        {
-            weaponStrings.emplace_back("(Staff)");
-        }
-
-        if (IsQuarterStaff())
-        {
-            weaponStrings.emplace_back("(QuarterStaff)");
-        }
-
-        if (size_ != sfml_util::Size::Medium)
-        {
-            normalStrings.emplace_back("size=" + sfml_util::Size::ToString(size_));
-        }
-
-        {
-            std::ostringstream ss;
-
-            ss << ((ss.str().empty()) ? "" : ", ")
-               << "mat=" << ((matPri_ == material::Count) ? "(count)" : material::ToString(matPri_))
-               << "," << ((matSec_ == material::Count) ? "(count)" : material::ToString(matSec_));
-
-            normalStrings.emplace_back(ss.str());
-        }
-
-        if (score_.IsNonZero())
-        {
-            std::ostringstream ss;
-            ss << "score=" << score_;
-            normalStrings.emplace_back(ss.str());
-        }
-
-        if (summonInfo_.OriginType() != creature::origin_type::Count)
-        {
-            std::ostringstream ss;
-
-            ss << ((ss.str().empty()) ? "" : ", ")
-               << creature::origin_type::ToString(summonInfo_.OriginType()) << " summoning a "
-               << creature::race::RaceRoleName(summonInfo_.Race(), summonInfo_.Role());
-
-            normalStrings.emplace_back(ss.str());
-        }
-
-        if (religious_ > 0.0f)
-        {
-            std::ostringstream ss;
-            ss << ((ss.str().empty()) ? "" : ", ") << "religious_ratio=" << religious_;
-            normalStrings.emplace_back(ss.str());
-        }
-
-        return MemberStrings(normalStrings, weaponStrings, armorStrings);
+        return ss.str();
     }
 
     void ItemProfile::SetUnique(
-        const unique_type::Enum E,
+        const unique_type::Enum UNIQUE_TYPE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const element_type::Enum ELEMENT_TYPE)
     {
-        unique_ = E;
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            ((UNIQUE_TYPE != unique_type::Count) && (UNIQUE_TYPE != unique_type::NotUnique)),
+            "item::ItemProfile::SetUnique(unique_type=Count/NotMisc, mat_pri="
+                << material::ToString(MATERIAL_PRIMARY)
+                << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY)
+                << ", element_type=" << element_type::ToString(ELEMENT_TYPE, true)
+                << ") the unique_type was not valid.");
+
+        unique_ = UNIQUE_TYPE;
         matPri_ = MATERIAL_PRIMARY;
         matSec_ = MATERIAL_SECONDARY;
-        misc_ = unique_type::MiscType(E);
-        SetFlag(false, profile::IsSet::Pixie);
-        religious_ = unique_type::ReligiousRatio(E);
+
+        // there are no pixie unique items
+        isPixie_ = false;
+
+        religiousRatio_ = unique_type::ReligiousRatio(UNIQUE_TYPE);
         element_ = ELEMENT_TYPE;
 
-        auto const IS_WEAPON{ (
-            (E == unique_type::ViperFangFingerclaw) || (E == unique_type::ScorpionStingerFingerclaw)
-            || (E == unique_type::RazorFingerclaw)) };
+        if (UNIQUE_TYPE == unique_type::MagnifyingGlass)
+        {
+            category_ = static_cast<category::Enum>(category_ | category::ShowsEnemyInfo);
+        }
 
-        score_
-            = (ItemProfileWarehouse::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY)
-               + creature::EnchantmentFactory::Instance()->TreasureScore(E, MATERIAL_PRIMARY)
-               + creature::EnchantmentFactory::Instance()->TreasureScore(
-                     ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRIMARY));
+        if (unique_type::IsUseable(UNIQUE_TYPE))
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Useable);
+        }
+
+        // TODO these items are not really made into weapons yet
+        auto const IS_WEAPON{ (
+            (UNIQUE_TYPE == unique_type::ViperFangFingerclaw)
+            || (UNIQUE_TYPE == unique_type::ScorpionStingerFingerclaw)
+            || (UNIQUE_TYPE == unique_type::RazorFingerclaw)) };
+
+        // score based on material is not added here because all unique items are also misc items
+        // and SetMisc() will add to the score based on materials.
+        score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
+            UNIQUE_TYPE, MATERIAL_PRIMARY);
+
+        score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
+            ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRIMARY);
 
         score_ += 750_score;
     }
 
     void ItemProfile::SetMisc(
-        const misc_type::Enum E,
+        const misc_type::Enum MISC_TYPE,
         const bool IS_PIXIE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
-        const set_type::Enum SET_TYPE)
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE)
     {
         using namespace item;
 
-        misc_ = E;
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            ((MISC_TYPE != misc_type::Count) && (MISC_TYPE != misc_type::NotMisc)),
+            "item::ItemProfile::SetMisc(misc_type=Count/NotMisc, is_pixie="
+                << std::boolalpha << IS_PIXIE
+                << ", mat_pri=" << material::ToString(MATERIAL_PRIMARY)
+                << ", mat_sec=" << material::ToString(MATERIAL_SECONDARY) << ", set_type="
+                << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
+                << ") the misc_type was not valid.");
+
+        if (misc_type::IsUseable(MISC_TYPE))
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Useable);
+        }
+
+        if (misc_type::IsEquippable(MISC_TYPE))
+        {
+            category_ = static_cast<category::Enum>(category_ | category::Equippable);
+        }
+
+        thinProfile_ = ItemProfileThin::MakeMisc(MISC_TYPE);
         matPri_ = MATERIAL_PRIMARY;
         matSec_ = MATERIAL_SECONDARY;
-        SetFlag(IS_PIXIE, profile::IsSet::Pixie);
+        isPixie_ = IS_PIXIE;
 
-        if (misc::IsRealZero(religious_))
+        if (misc::IsRealZero(religiousRatio_))
         {
-            religious_ = misc_type::ReligiousRatio(E);
+            religiousRatio_ = misc_type::ReligiousRatio(MISC_TYPE);
         }
 
-        if (0_score == score_)
-        {
-            score_ += ItemProfileWarehouse::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY);
-        }
-
+        score_ += ScoreHelper::Score(MATERIAL_PRIMARY, MATERIAL_SECONDARY);
         score_ += creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE);
 
-        if (E == misc_type::Cape)
+        score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
+            MISC_TYPE, MATERIAL_PRIMARY, MATERIAL_SECONDARY);
+
+        if (MISC_TYPE == misc_type::Cape)
         {
-            category_ = CategoryArmor();
-            armor_ = armor_type::Covering;
-            settings_.armor = profile::ArmorSettings();
-            settings_.armor.cover = armor::cover_type::Cape;
-            score_ += ItemProfileWarehouse::Score(armor::cover_type::Cape);
-        }
-        else if (E == misc_type::Cloak)
-        {
-            category_ = CategoryArmor();
-            armor_ = armor_type::Covering;
-            settings_.armor = profile::ArmorSettings();
-            settings_.armor.cover = armor::cover_type::Cloak;
-            score_ += ItemProfileWarehouse::Score(armor::cover_type::Cloak);
-        }
-        else if (E == misc_type::LockPicks)
-        {
-            category_ = static_cast<category::Enum>(category_ | category::Equippable);
-            score_ += Score_t(200);
-        }
-        else if (
-            (E == misc_type::Fingerclaw) || (E == misc_type::Amulet) || (E == misc_type::Armband)
-            || (E == misc_type::Veil) || (E == misc_type::Litch_Hand) || (E == misc_type::Braid))
-        {
-            if ((E == misc_type::Litch_Hand) || (E == misc_type::Braid))
+            SetCover(
+                armor::cover_type::Cape,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                named_type::NotNamed,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                IS_PIXIE,
+                MISC_TYPE);
+
+            if (ELEMENT_TYPE != element_type::None)
             {
-                category_ = static_cast<category::Enum>(category_ | category::QuestItem);
-            }
-
-            category_ = static_cast<category::Enum>(category_ | category::Equippable);
-        }
-        else if (E == misc_type::Spider_Eggs)
-        {
-            category_ = static_cast<category::Enum>(category_ | category::Useable);
-            score_ += 500_score;
-        }
-        else if (E == misc_type::Summoning_Statue)
-        {
-            category_ = static_cast<category::Enum>(category_ | category::Useable);
-            score_ += 100_score;
-        }
-        else if (
-            (E == misc_type::Wand) || (E == misc_type::Petrified_Snake)
-            || (E == misc_type::Mummy_Hand) || (E == misc_type::Shard) || (E == misc_type::Orb)
-            || (E == misc_type::Scepter) || (E == misc_type::Icicle) || (E == misc_type::Finger)
-            || (E == misc_type::Unicorn_Horn) || (E == misc_type::Devil_Horn)
-            || (E == misc_type::Staff))
-        {
-            category_ = static_cast<category::Enum>(
-                category_ | category::AllowsCasting | category::Equippable);
-
-            if ((E == misc_type::Petrified_Snake) || (E == misc_type::Mummy_Hand)
-                || (E == misc_type::Finger) || (E == misc_type::Unicorn_Horn)
-                || (E == misc_type::Devil_Horn) || (E == misc_type::Icicle))
-            {
-                category_ = static_cast<category::Enum>(category_ | category::QuestItem);
-            }
-
-            score_ += 100_score;
-
-            if (E == misc_type::Staff)
-            {
-                SetFlag(true, profile::IsSet::Staff);
-                category_ = CategoryWeaponStaff(false);
-                weapon_ = static_cast<weapon_type::Enum>(weapon_type::Staff | weapon_type::Melee);
+                score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
+                    ELEMENT_TYPE, false, MATERIAL_PRIMARY);
             }
         }
         else if (
-            (E == misc_type::DrumLute) || (E == misc_type::Lyre) || (E == misc_type::Hurdy_Gurdy)
-            || (E == misc_type::Pipe_And_Tabor) || (E == misc_type::Viol)
-            || (E == misc_type::Recorder))
+            (MISC_TYPE == misc_type::Cloak) || (MISC_TYPE == misc_type::Ghost_Sheet)
+            || (MISC_TYPE == misc_type::Robe) || (MISC_TYPE == misc_type::Shroud))
         {
-            category_ = static_cast<category::Enum>(category_ | category::Equippable);
+            SetCover(
+                armor::cover_type::Cloak,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                named_type::NotNamed,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                IS_PIXIE,
+                MISC_TYPE);
 
-            if ((E == misc_type::Lyre) || (E == misc_type::Hurdy_Gurdy)
-                || (E == misc_type::Pipe_And_Tabor) || (E == misc_type::Viol)
-                || (E == misc_type::Recorder))
+            if (ELEMENT_TYPE != element_type::None)
             {
-                category_ = static_cast<category::Enum>(category_ | category::QuestItem);
+                score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
+                    ELEMENT_TYPE, false, MATERIAL_PRIMARY);
             }
-
-            score_ += 100_score;
         }
-        else if (
-            (E == misc_type::Bust) || (E == misc_type::Figurine_Blessed)
-            || (E == misc_type::Doll_Blessed) || (E == misc_type::Puppet_Blessed))
+        else if (MISC_TYPE == misc_type::Staff)
         {
-            category_ = static_cast<category::Enum>(category_ | category::Blessed);
-            score_ += 50_score;
+            SetStaff(
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                named_type::NotNamed,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                MISC_TYPE);
 
-            score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
-                E, MATERIAL_PRIMARY, MATERIAL_SECONDARY);
+            if (ELEMENT_TYPE != element_type::None)
+            {
+                score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
+                    ELEMENT_TYPE, true, MATERIAL_PRIMARY);
+            }
         }
-        else if (
-            (E == misc_type::Dried_Head) || (E == misc_type::Figurine_Cursed)
-            || (E == misc_type::Doll_Cursed) || (E == misc_type::Puppet_Cursed))
+        else if (MISC_TYPE == misc_type::Scythe)
         {
-            category_ = static_cast<category::Enum>(category_ | category::Cursed);
-            score_ += 50_score;
+            SetBladedStaff(
+                weapon::bladedstaff_type::Scythe,
+                MATERIAL_PRIMARY,
+                MATERIAL_SECONDARY,
+                named_type::NotNamed,
+                SET_TYPE,
+                ELEMENT_TYPE,
+                MISC_TYPE);
 
-            score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
-                E, MATERIAL_PRIMARY, MATERIAL_SECONDARY);
+            if (ELEMENT_TYPE != element_type::None)
+            {
+                score_ += creature::EnchantmentFactory::Instance()->TreasureScore(
+                    ELEMENT_TYPE, true, MATERIAL_PRIMARY);
+            }
         }
-        else if (
-            (E == misc_type::Goblet) || (E == misc_type::Balm_Pot) || (E == misc_type::Egg)
-            || (E == misc_type::Embryo) || (E == misc_type::Seeds))
-        {
-            category_ = static_cast<category::Enum>(category_ | category::Useable);
-            score_ += 150_score;
-        }
-        else if (E == misc_type::Ring)
-        {
-            category_ = static_cast<category::Enum>(
-                category_ | category::Equippable | category::Wearable);
-
-            score_ += 20_score;
-        }
-    }
-
-    void ItemProfile::SetShield(
-        const armor::shield_type::Enum E,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const named_type::Enum NAMED_TYPE,
-        const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE)
-    {
-        settings_.armor = profile::ArmorSettings();
-        settings_.armor.shield = E;
-
-        category_ = static_cast<category::Enum>(CategoryArmor() | category::OneHanded);
-
-        armor_ = armor_type::Sheild;
-
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-    }
-
-    void ItemProfile::SetHelm(
-        const armor::helm_type::Enum E,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const named_type::Enum NAMED_TYPE,
-        const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE)
-    {
-        settings_.armor = profile::ArmorSettings();
-        settings_.armor.helm = E;
-
-        category_ = CategoryArmor();
-
-        armor_ = armor_type::Helm;
-
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-    }
-
-    void ItemProfile::SetCover(
-        const armor::cover_type::Enum E,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const named_type::Enum NAMED_TYPE,
-        const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE,
-        const bool IS_PIXIE)
-    {
-        settings_.armor = profile::ArmorSettings();
-        settings_.armor.cover = E;
-
-        category_ = CategoryArmor();
-
-        armor_ = armor_type::Covering;
-
-        SetHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-    }
-
-    void ItemProfile::SetAventail(
-        const armor::base_type::Enum E,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const named_type::Enum NAMED_TYPE,
-        const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE)
-    {
-        SetFlag(true, profile::IsSet::Aventail);
-        settings_.armor = profile::ArmorSettings();
-        settings_.armor.base = E;
-
-        category_ = CategoryArmor();
-
-        armor_ = armor_type::Aventail;
-
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-    }
-
-    void ItemProfile::SetBracer(
-        const armor::base_type::Enum E,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const named_type::Enum NAMED_TYPE,
-        const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE,
-        const bool IS_PIXIE)
-    {
-        SetFlag(true, profile::IsSet::Bracer);
-        settings_.armor = profile::ArmorSettings();
-        settings_.armor.base = E;
-
-        category_ = CategoryArmor();
-
-        armor_ = armor_type::Bracer;
-
-        SetHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-    }
-
-    void ItemProfile::SetShirt(
-        const armor::base_type::Enum E,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const named_type::Enum NAMED_TYPE,
-        const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE,
-        const bool IS_PIXIE)
-    {
-        SetFlag(true, profile::IsSet::Shirt);
-        settings_.armor = profile::ArmorSettings();
-        settings_.armor.base = E;
-
-        category_ = CategoryArmor();
-
-        armor_ = armor_type::Shirt;
-
-        SetHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-    }
-
-    void ItemProfile::SetBoots(
-        const armor::base_type::Enum E,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const named_type::Enum NAMED_TYPE,
-        const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE,
-        const bool IS_PIXIE)
-    {
-        SetFlag(true, profile::IsSet::Boots);
-        settings_.armor = profile::ArmorSettings();
-        settings_.armor.base = E;
-
-        category_ = CategoryArmor();
-
-        armor_ = armor_type::Boots;
-
-        SetHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-    }
-
-    void ItemProfile::SetPants(
-        const armor::base_type::Enum E,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const named_type::Enum NAMED_TYPE,
-        const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE,
-        const bool IS_PIXIE)
-    {
-        SetFlag(true, profile::IsSet::Pants);
-        settings_.armor = profile::ArmorSettings();
-        settings_.armor.base = E;
-
-        category_ = CategoryArmor();
-
-        armor_ = armor_type::Pants;
-
-        SetHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
-    }
-
-    void ItemProfile::SetGauntlets(
-        const armor::base_type::Enum E,
-        const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const named_type::Enum NAMED_TYPE,
-        const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE,
-        const bool IS_PIXIE)
-    {
-        SetFlag(true, profile::IsSet::Gauntlets);
-        settings_.armor = profile::ArmorSettings();
-        settings_.armor.base = E;
-
-        category_ = CategoryArmor();
-
-        armor_ = armor_type::Gauntlets;
-
-        SetHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
     }
 
     void ItemProfile::SetSword(
-        const weapon::sword_type::Enum E,
+        const weapon::sword_type::Enum SWORD_TYPE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        using namespace item;
-        using namespace weapon;
-
-        settings_.weapon = profile::WeaponSettings();
-        settings_.weapon.sword = E;
-
-        category_ = CategoryWeapon<weapon::sword_type>(E);
-
-        weapon_ = static_cast<weapon_type::Enum>(
-            weapon_type::Melee | weapon_type::Sword | weapon_type::Bladed | weapon_type::Pointed);
-
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+        SetWeaponHelper(
+            weapon::WeaponTypeWrapper(SWORD_TYPE),
+            static_cast<weapon_type::Enum>(
+                weapon_type::Melee | weapon_type::Sword | weapon_type::Bladed
+                | weapon_type::Pointed),
+            ScoreHelper::Score(SWORD_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            false);
     }
 
     void ItemProfile::SetAxe(
-        const weapon::axe_type::Enum E,
+        const weapon::axe_type::Enum AXE_TYPE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        using namespace weapon;
-
-        settings_.weapon = profile::WeaponSettings();
-        settings_.weapon.axe = E;
-
-        category_ = CategoryWeapon<weapon::axe_type>(E);
-
-        weapon_ = static_cast<weapon_type::Enum>(
-            weapon_type::Bladed | weapon_type::Axe | weapon_type::Melee);
-
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+        SetWeaponHelper(
+            weapon::WeaponTypeWrapper(AXE_TYPE),
+            static_cast<weapon_type::Enum>(
+                weapon_type::Bladed | weapon_type::Axe | weapon_type::Melee),
+            ScoreHelper::Score(AXE_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            false);
     }
 
     void ItemProfile::SetClub(
-        const weapon::club_type::Enum E,
+        const weapon::club_type::Enum CLUB_TYPE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        using namespace weapon;
-
-        settings_.weapon = profile::WeaponSettings();
-        settings_.weapon.club = E;
-
-        category_ = CategoryWeapon<weapon::club_type>(E);
-
-        weapon_ = static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Club);
-
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+        SetWeaponHelper(
+            weapon::WeaponTypeWrapper(CLUB_TYPE),
+            static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Club),
+            ScoreHelper::Score(CLUB_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            false);
     }
 
     void ItemProfile::SetWhip(
-        const weapon::whip_type::Enum E,
+        const weapon::whip_type::Enum WHIP_TYPE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        using namespace weapon;
-
-        settings_.weapon = profile::WeaponSettings();
-        settings_.weapon.whip = E;
-
-        category_ = CategoryWeapon<weapon::whip_type>(E);
-
-        weapon_ = static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Whip);
-
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+        SetWeaponHelper(
+            weapon::WeaponTypeWrapper(WHIP_TYPE),
+            static_cast<weapon_type::Enum>(weapon_type::Melee | weapon_type::Whip),
+            ScoreHelper::Score(WHIP_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            false);
     }
 
     void ItemProfile::SetProjectile(
-        const weapon::projectile_type::Enum E,
+        const weapon::projectile_type::Enum PROJECTILE_TYPE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        using namespace item;
         using namespace weapon;
 
-        settings_.weapon = profile::WeaponSettings();
-        settings_.weapon.proj = E;
-
-        category_ = CategoryWeapon<weapon::projectile_type>(E);
-
-        auto const WEAPON_TYPE{ [E]() {
-            if (E == projectile_type::Blowpipe)
+        auto const WEAPON_TYPE{ [PROJECTILE_TYPE]() {
+            if (PROJECTILE_TYPE == projectile_type::Blowpipe)
             {
                 return weapon_type::Blowpipe;
             }
-            else if (E == projectile_type::Sling)
+            else if (PROJECTILE_TYPE == projectile_type::Sling)
             {
                 return weapon_type::Sling;
             }
-            else if (E == projectile_type::Crossbow)
+            else if (PROJECTILE_TYPE == projectile_type::Crossbow)
             {
                 return weapon_type::Crossbow;
             }
@@ -968,53 +484,55 @@ namespace item
             }
         }() };
 
-        weapon_ = static_cast<weapon_type::Enum>(weapon_type::Projectile | WEAPON_TYPE);
-
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+        SetWeaponHelper(
+            WeaponTypeWrapper(PROJECTILE_TYPE),
+            static_cast<weapon_type::Enum>(weapon_type::Projectile | WEAPON_TYPE),
+            ScoreHelper::Score(PROJECTILE_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            false);
     }
 
     void ItemProfile::SetBladedStaff(
-        const weapon::bladedstaff_type::Enum E,
+        const weapon::bladedstaff_type::Enum BLADEDSTAFF_TYPE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE)
+        const element_type::Enum ELEMENT_TYPE,
+        const misc_type::Enum MISC_TYPE)
     {
-        using namespace item;
         using namespace weapon;
 
-        settings_.weapon = profile::WeaponSettings();
-        settings_.weapon.bstaff = E;
-
-        category_ = CategoryWeapon<weapon::bladedstaff_type>(E);
-
         auto const POINTED_TYPE{ (
-            (E == bladedstaff_type::Scythe) ? weapon_type::NotAWeapon : weapon_type::Pointed) };
+            (BLADEDSTAFF_TYPE == bladedstaff_type::Scythe) ? weapon_type::NotAWeapon
+                                                           : weapon_type::Pointed) };
 
         auto const SPEAR_TYPE{ (
-            ((E == bladedstaff_type::Spear) || (E == bladedstaff_type::ShortSpear))
+            ((BLADEDSTAFF_TYPE == bladedstaff_type::Spear)
+             || (BLADEDSTAFF_TYPE == bladedstaff_type::ShortSpear))
                 ? weapon_type::Spear
                 : weapon_type::NotAWeapon) };
 
-        weapon_ = static_cast<weapon_type::Enum>(
-            weapon_type::BladedStaff | weapon_type::Melee | POINTED_TYPE | SPEAR_TYPE);
-
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::Score(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+        SetWeaponHelper(
+            WeaponTypeWrapper(BLADEDSTAFF_TYPE),
+            static_cast<weapon_type::Enum>(
+                weapon_type::BladedStaff | weapon_type::Melee | POINTED_TYPE | SPEAR_TYPE),
+            ScoreHelper::Score(BLADEDSTAFF_TYPE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            false,
+            MISC_TYPE);
     }
 
     void ItemProfile::SetKnife(
-        const sfml_util::Size::Enum E,
+        const sfml_util::Size::Enum SIZE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
@@ -1022,26 +540,22 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        SetFlag(true, profile::IsSet::Knife);
-        size_ = E;
-
-        category_ = static_cast<category::Enum>(
-            category::Weapon | category::Equippable | category::OneHanded);
-
-        weapon_ = static_cast<weapon_type::Enum>(
-            weapon_type::Bladed | weapon_type::Knife | weapon_type::Melee | weapon_type::Pointed);
-
-        SetHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
-
-        score_ = ItemProfileWarehouse::ScoreKnife(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+        SetWeaponHelper(
+            weapon::WeaponTypeWrapper(false, SIZE),
+            static_cast<weapon_type::Enum>(
+                weapon_type::Bladed | weapon_type::Knife | weapon_type::Melee
+                | weapon_type::Pointed),
+            ScoreHelper::ScoreKnife(SIZE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            IS_PIXIE);
     }
 
     void ItemProfile::SetDagger(
-        const sfml_util::Size::Enum E,
+        const sfml_util::Size::Enum SIZE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
@@ -1049,22 +563,18 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_PIXIE)
     {
-        SetFlag(true, profile::IsSet::Dagger);
-        size_ = E;
-
-        category_ = static_cast<category::Enum>(
-            category::Weapon | category::Equippable | category::OneHanded);
-
-        weapon_ = static_cast<weapon_type::Enum>(
-            weapon_type::Bladed | weapon_type::Knife | weapon_type::Melee | weapon_type::Pointed);
-
-        SetHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
-
-        score_ = ItemProfileWarehouse::ScoreDagger(E);
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+        SetWeaponHelper(
+            weapon::WeaponTypeWrapper(true, SIZE),
+            static_cast<weapon_type::Enum>(
+                weapon_type::Bladed | weapon_type::Knife | weapon_type::Melee
+                | weapon_type::Pointed),
+            ScoreHelper::ScoreDagger(SIZE),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            IS_PIXIE);
     }
 
     void ItemProfile::SetStaff(
@@ -1072,20 +582,20 @@ namespace item
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE,
-        const element_type::Enum ELEMENT_TYPE)
+        const element_type::Enum ELEMENT_TYPE,
+        const misc_type::Enum MISC_TYPE)
     {
-        SetFlag(true, profile::IsSet::Staff);
-
-        category_ = CategoryWeaponStaff(false);
-
-        weapon_ = static_cast<weapon_type::Enum>(weapon_type::Staff | weapon_type::Melee);
-
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::ScoreStaff();
-
-        score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+        SetWeaponHelper(
+            weapon::WeaponTypeWrapper(false),
+            static_cast<weapon_type::Enum>(weapon_type::Staff | weapon_type::Melee),
+            ScoreHelper::ScoreStaff(),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            false,
+            MISC_TYPE);
     }
 
     void ItemProfile::SetQuarterStaff(
@@ -1095,35 +605,92 @@ namespace item
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE)
     {
-        SetFlag(true, profile::IsSet::QStaff);
+        SetWeaponHelper(
+            weapon::WeaponTypeWrapper(true),
+            static_cast<weapon_type::Enum>(weapon_type::Staff | weapon_type::Melee),
+            ScoreHelper::ScoreQuarterStaff(),
+            MATERIAL_PRIMARY,
+            MATERIAL_SECONDARY,
+            NAMED_TYPE,
+            SET_TYPE,
+            ELEMENT_TYPE,
+            false);
+    }
 
-        category_ = CategoryWeaponStaff(true);
+    void ItemProfile::SetArmorWithBaseTypeHelper(
+        const armor_type::Enum ARMOR_TYPE,
+        const armor::base_type::Enum BASE_TYPE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool IS_PIXIE)
+    {
+        category_ = static_cast<category::Enum>(category_ | CategoryArmor());
+        thinProfile_ = ItemProfileThin::MakeArmor(ARMOR_TYPE, BASE_TYPE);
 
-        weapon_ = static_cast<weapon_type::Enum>(weapon_type::Staff | weapon_type::Melee);
+        SetHelperForWeaponsAndArmor(
+            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
 
-        SetHelper(MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE);
-
-        score_ = ItemProfileWarehouse::ScoreQuarterStaff();
+        score_ += ScoreHelper::Score(ARMOR_TYPE, BASE_TYPE);
 
         score_ += ScoreHelper(
-            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, true);
+            MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, false);
+    }
+
+    void ItemProfile::SetWeaponHelper(
+        const weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER,
+        const weapon_type::Enum WEAPON_TYPE_TO_APPEND,
+        const Score_t BASE_SCORE,
+        const material::Enum MATERIAL_PRIMARY,
+        const material::Enum MATERIAL_SECONDARY,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE,
+        const element_type::Enum ELEMENT_TYPE,
+        const bool IS_PIXIE,
+        const misc_type::Enum MISC_TYPE)
+    {
+        auto const DETAILS{ weapon::WeaponDetailLoader::LookupWeaponDetails(
+            WEAPON_TYPE_WRAPPER.DetailsKeyName()) };
+
+        category_
+            = static_cast<category::Enum>(category_ | category::Equippable | DETAILS.handedness);
+
+        thinProfile_ = ItemProfileThin::MakeWeapon(WEAPON_TYPE_WRAPPER, MISC_TYPE);
+
+        weaponType_ = static_cast<weapon_type::Enum>(weaponType_ | WEAPON_TYPE_TO_APPEND);
+
+        if ((MISC_TYPE == misc_type::NotMisc) || (MISC_TYPE == misc_type::Count))
+        {
+            SetHelperForWeaponsAndArmor(
+                MATERIAL_PRIMARY, MATERIAL_SECONDARY, NAMED_TYPE, SET_TYPE, ELEMENT_TYPE, IS_PIXIE);
+
+            score_ += BASE_SCORE
+                + ScoreHelper(
+                          MATERIAL_PRIMARY,
+                          MATERIAL_SECONDARY,
+                          NAMED_TYPE,
+                          SET_TYPE,
+                          ELEMENT_TYPE,
+                          true);
+        }
     }
 
     category::Enum ItemProfile::CategoryWeaponBodypart(const body_part::Enum BODY_PART)
     {
         if ((BODY_PART == body_part::Bite) || (BODY_PART == body_part::Breath))
         {
-            return static_cast<category::Enum>(
-                category::Weapon | category::Equippable | category::BodyPart);
+            return static_cast<category::Enum>(category::Equippable | category::BodyPart);
         }
         else
         {
             return static_cast<category::Enum>(
-                category::Weapon | category::Equippable | category::TwoHanded | category::BodyPart);
+                category::Equippable | category::TwoHanded | category::BodyPart);
         }
     }
 
-    void ItemProfile::SetHelper(
+    void ItemProfile::SetHelperForWeaponsAndArmor(
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const named_type::Enum NAMED_ENUM,
@@ -1136,7 +703,7 @@ namespace item
         named_ = NAMED_ENUM;
         set_ = SET_ENUM;
         element_ = ELEMENT_TYPE;
-        SetFlag(IS_PIXIE, profile::IsSet::Pixie);
+        isPixie_ = IS_PIXIE;
     }
 
     Score_t ItemProfile::ScoreHelper(
@@ -1147,6 +714,9 @@ namespace item
         const element_type::Enum ELEMENT_TYPE,
         const bool IS_WEAPON) const
     {
+        // This check for an invalid primary material is really a check if this call is based on a
+        // thin profile. If this is for a thin profile then the score is ignored and the time
+        // consuming calls to EnchantmentFactory can be skipped.
         if ((MATERIAL_PRI == material::Nothing) || (MATERIAL_PRI == material::Count))
         {
             return 0_score;
@@ -1154,7 +724,7 @@ namespace item
         else
         {
             return (
-                ItemProfileWarehouse::Score(MATERIAL_PRI, MATERIAL_SEC)
+                ScoreHelper::Score(MATERIAL_PRI, MATERIAL_SEC)
                 + creature::EnchantmentFactory::Instance()->TreasureScore(
                       NAMED_TYPE, MATERIAL_PRI, IS_WEAPON, !IS_WEAPON)
                 + creature::EnchantmentFactory::Instance()->TreasureScore(SET_TYPE)

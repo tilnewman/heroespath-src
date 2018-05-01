@@ -120,6 +120,18 @@ namespace item
             };
         }
 
+        const std::string helm_type::Name(const helm_type::Enum HELM_TYPE)
+        {
+            if (HELM_TYPE == MailCoif)
+            {
+                return "Mail Coif";
+            }
+            else
+            {
+                return ToString(HELM_TYPE);
+            }
+        }
+
         helm_type::Enum helm_type::FromString(const std::string & HELM_NAME)
         {
             if (HELM_NAME == ToString(Leather))

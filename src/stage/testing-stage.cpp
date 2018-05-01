@@ -38,6 +38,7 @@
 #include "game/game-data-file.hpp"
 #include "interact/interaction-manager.hpp"
 #include "item/item-factory.hpp"
+#include "item/item-profiles-reporter.hpp"
 #include "log/log-macros.hpp"
 #include "map/level-enum.hpp"
 #include "map/map-display.hpp"
@@ -53,7 +54,7 @@
 #include "sfml-util/gui/combat-image-manager.hpp"
 #include "sfml-util/gui/condition-image-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
+#include "sfml-util/gui/item-image-machine.hpp"
 #include "sfml-util/gui/song-image-manager.hpp"
 #include "sfml-util/gui/spell-image-manager.hpp"
 #include "sfml-util/gui/title-image-manager.hpp"
@@ -111,6 +112,7 @@ namespace stage
 
     void TestingStage::Draw(sf::RenderTarget & target, const sf::RenderStates & STATES)
     {
+        sfml_util::Display::Instance()->ClearToBlack();
         Stage::Draw(target, STATES);
 
         if (animUPtr_)
@@ -233,22 +235,22 @@ if (false == willImageCheck_)
         if (sleepMilliseconds_ == SPEED1)
         {
             sleepMilliseconds_ = SPEED2;
-            game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 2");
+            TestingStrAppend("System Tests Speed = 2");
         }
         else if (sleepMilliseconds_ == SPEED2)
         {
             sleepMilliseconds_ = SPEED3;
-            game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 3");
+            TestingStrAppend("System Tests Speed = 3");
         }
         else if (sleepMilliseconds_ == SPEED3)
         {
             sleepMilliseconds_ = SPEED4;
-            game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 4");
+            TestingStrAppend("System Tests Speed = 4");
         }
         else
         {
             sleepMilliseconds_ = SPEED1;
-            game::LoopManager::Instance()->TestingStrAppend("System Tests Speed = 1");
+            TestingStrAppend("System Tests Speed = 1");
         }
     }
 }
@@ -269,6 +271,18 @@ if (false == willImageCheck_)
         {
             testingBlurbsVec_.erase(testingBlurbsVec_.begin());
         }
+
+#ifndef HEROESPATH_PLATFORM_DETECTED_IS_WINDOWS
+        // hack to get status messages on the screen BEFORE a test is finished
+        sfml_util::Display::Instance()->ClearToBlack();
+
+        // okay, wow, if we pass "this" to Display::DrawStage(this) then the windows build seems to
+        // slice the this pointer itself and crash hard, no real understanding here...
+        auto const THIS_STAGE_PTR{ this };
+
+        sfml_util::Display::Instance()->DrawStage(THIS_STAGE_PTR);
+        sfml_util::Display::Instance()->DisplayFrameBuffer();
+#endif
     }
 
     void TestingStage::TestingStrIncrement(const std::string & S)
@@ -281,7 +295,7 @@ if (false == willImageCheck_)
                 ++nextStrCountPair.second;
                 foundMatch = true;
 
-                M_HP_LOG(nextStrCountPair.first << " " << nextStrCountPair.second);
+                M_HP_LOG(nextStrCountPair.first << " " << nextStrCountPair.second + 1);
             }
         }
 
@@ -327,27 +341,14 @@ if (false == willImageCheck_)
         if (false == hasPromptStart)
         {
             hasPromptStart = true;
-            game::LoopManager::Instance()->TestingStrAppend("System Tests Starting...");
+            TestingStrAppend("System Tests Starting...");
+            return;
         }
 
         // See below (function ReSaveWithBlackBorder) for a comment explaining why
         // this code is commented out.
         // ReSaveWithBlackBorder("media-images-creaturess-dir");
         // ReSaveWithBlackBorder("media-images-items-dir");
-
-        static auto hasTestingCompleted_ItemFactory{ false };
-        if (false == hasTestingCompleted_ItemFactory)
-        {
-            hasTestingCompleted_ItemFactory = item::ItemFactory::Test();
-            return;
-        }
-
-        static auto hasTestingCompleted_InventoryFactory{ false };
-        if (false == hasTestingCompleted_InventoryFactory)
-        {
-            hasTestingCompleted_InventoryFactory = TestInventoryFactory();
-            return;
-        }
 
         static auto hasTestingCompleted_GameDataFile{ false };
         if (false == hasTestingCompleted_GameDataFile)
@@ -361,6 +362,30 @@ if (false == willImageCheck_)
         {
             PerformStatsTests();
             hasTestingCompleted_Stats = true;
+            return;
+        }
+
+        static auto hasTestingCompleted_ItemFactory{ false };
+        if (false == hasTestingCompleted_ItemFactory)
+        {
+            hasTestingCompleted_ItemFactory = item::ItemFactory::Test();
+            return;
+        }
+
+        static auto hasTestingCompleted_ItemProfileReport{ false };
+        if (false == hasTestingCompleted_ItemProfileReport)
+        {
+            TestingStrAppend("Item Profile Report - Starting...");
+            item::ItemProfilesReporter::LogReport();
+            TestingStrAppend("Item Profile Report - Complete.");
+            hasTestingCompleted_ItemProfileReport = true;
+            return;
+        }
+
+        static auto hasTestingCompleted_InventoryFactory{ false };
+        if (false == hasTestingCompleted_InventoryFactory)
+        {
+            hasTestingCompleted_InventoryFactory = TestInventoryFactory();
             return;
         }
 
@@ -457,10 +482,10 @@ if (false == willImageCheck_)
             return;
         }
 
-        static auto hasTestingCompleted_ItemImageManager{ false };
-        if (false == hasTestingCompleted_ItemImageManager)
+        static auto hasTestingCompleted_ItemImageMachine{ false };
+        if (false == hasTestingCompleted_ItemImageMachine)
         {
-            hasTestingCompleted_ItemImageManager = sfml_util::gui::ItemImageManager::Test();
+            hasTestingCompleted_ItemImageMachine = sfml_util::gui::ItemImageMachine::Test();
             return;
         }
 
@@ -489,7 +514,8 @@ if (false == willImageCheck_)
         if (false == hasFinalPrompt)
         {
             hasFinalPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend("ALL SYSTEM TESTS PASSED");
+            TestingStrAppend("ALL SYSTEM TESTS PASSED");
+            return;
         }
 
         game::LoopManager::Instance()->TransitionTo_Exit();
@@ -498,7 +524,7 @@ if (false == willImageCheck_)
     void TestingStage::PerformStatsTests()
     {
         /*
-        game::LoopManager::Instance()->TestingStrAppend(
+        TestingStrAppend(
             "stage::TestingStage::PerformStatsTests() Starting Tests...");
 
         const stats::StatSet STAT_SET_ZEROS(0, 0, 0, 0, 0, 0);
@@ -633,7 +659,7 @@ if (false == willImageCheck_)
                                      playerSPtr->Stats(),
                                      expectedSet);
 
-        game::LoopManager::Instance()->TestingStrAppend(
+        TestingStrAppend(
             "stage::TestingStage::PerformStatsTests()  All Tests PASSED.");
             */
     }
@@ -687,7 +713,7 @@ if (false == willImageCheck_)
         else
         {
             ss << "PASS";
-            game::LoopManager::Instance()->TestingStrAppend(ss.str());
+            TestingStrAppend(ss.str());
         }
         */
     }
@@ -698,8 +724,8 @@ if (false == willImageCheck_)
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "stage::TestingStage::TestImageSet() Starting Tests...");
+            TestingStrAppend("stage::TestingStage::TestImageSet() Starting Tests...");
+            return false;
         }
 
         static std::vector<std::string> imagePathKeyVec = {
@@ -805,7 +831,7 @@ if (false == willImageCheck_)
         {
             std::ostringstream ss;
             ss << "TestImageSet() \"" << imagePathKeyVec[imageIndex] << "\"";
-            game::LoopManager::Instance()->TestingStrAppend(ss.str());
+            TestingStrAppend(ss.str());
 
             sf::Texture texture;
             sfml_util::LoadTexture(
@@ -817,8 +843,7 @@ if (false == willImageCheck_)
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "stage::TestingStage::TestImageSet() ALL Tests Passed.");
+        TestingStrAppend("stage::TestingStage::TestImageSet() ALL Tests Passed.");
 
         return true;
     }
@@ -829,8 +854,8 @@ if (false == willImageCheck_)
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "stage::TestingStage::TestCharacterImageSet() Starting Tests...");
+            TestingStrAppend("stage::TestingStage::TestCharacterImageSet() Starting Tests...");
+            return false;
         }
 
         static auto imageIndex{ 0 };
@@ -840,7 +865,7 @@ if (false == willImageCheck_)
 
             std::ostringstream ss;
             ss << "TestCharacterImageSet() \"" << avatar::Avatar::ToString(WHICH_AVATAR) << "\"";
-            game::LoopManager::Instance()->TestingStrAppend(ss.str());
+            TestingStrAppend(ss.str());
 
             sf::Texture texture;
             sfml_util::LoadTexture(texture, avatar::Avatar::ImagePath(WHICH_AVATAR));
@@ -850,9 +875,7 @@ if (false == willImageCheck_)
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "stage::TestingStage::TestCharacterImageSet() ALL Tests Passed.");
-
+        TestingStrAppend("stage::TestingStage::TestCharacterImageSet() ALL Tests Passed.");
         return true;
     }
 
@@ -864,8 +887,8 @@ if (false == willImageCheck_)
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "stage::TestingStage::TestMaps() Starting Tests.  Please wait...");
+            TestingStrAppend("stage::TestingStage::TestMaps() Starting Tests.  Please wait...");
+            return false;
         }
 
         using MapLevelVec_t = std::vector<map::Level::Enum>;
@@ -922,7 +945,7 @@ if (false == willImageCheck_)
                 std::ostringstream ss;
                 ss << "TestMaps() Testing \"" << map::Level::ToString(WHICH_LEVEL)
                    << "\" Map in First Pass Loading";
-                game::LoopManager::Instance()->TestingStrAppend(ss.str());
+                TestingStrAppend(ss.str());
 
                 transitions[WHICH_LEVEL] = ParseMap(WHICH_LEVEL, "initial parse");
 
@@ -952,7 +975,7 @@ if (false == willImageCheck_)
                 ss << "TestMaps() Testing \"" << map::Level::ToString(CURRENT_LEVEL)
                    << "\" Map's transitions";
 
-                game::LoopManager::Instance()->TestingStrAppend(ss.str());
+                TestingStrAppend(ss.str());
 
                 for (auto const ENTRY_LEVEL : transitionIter->second.entry_levels)
                 {
@@ -998,8 +1021,7 @@ if (false == willImageCheck_)
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "stage::TestingStage::TestMaps() ALL Tests Passed.");
+        TestingStrAppend("stage::TestingStage::TestMaps() ALL Tests Passed.");
 
         return true;
     }
@@ -1010,8 +1032,8 @@ if (false == willImageCheck_)
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "stage::TestingStage::PerformGameDataFileTests() Starting Tests...");
+            TestingStrAppend("stage::TestingStage::PerformGameDataFileTests() Starting Tests...");
+            return false;
         }
 
         static std::vector<std::string> keyVec
@@ -1048,13 +1070,12 @@ if (false == willImageCheck_)
             ss << "Testing GameDataFile Key() \"" << keyVec[keyIndex]
                << "\"=" << game::GameDataFile::Instance()->GetCopyFloat(keyVec[keyIndex]);
 
-            game::LoopManager::Instance()->TestingStrAppend(ss.str());
+            TestingStrAppend(ss.str());
             ++keyIndex;
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "stage::TestingStage::PerformGameDataFileTests() ALL Tests Passed.");
+        TestingStrAppend("stage::TestingStage::PerformGameDataFileTests() ALL Tests Passed.");
 
         return true;
     }
@@ -1065,8 +1086,8 @@ if (false == willImageCheck_)
         if (false == hasInitialPrompt)
         {
             hasInitialPrompt = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "stage::TestingStage::TestAnimations() Starting Tests...");
+            TestingStrAppend("stage::TestingStage::TestAnimations() Starting Tests...");
+            return false;
         }
 
         const long ANIM_FRAME_SLEEP_MS{ 0 };
@@ -1081,7 +1102,7 @@ if (false == willImageCheck_)
 
                 std::ostringstream ss;
                 ss << "TestAnimations() \"" << sfml_util::Animations::ToString(ENUM) << "\"";
-                game::LoopManager::Instance()->TestingStrAppend(ss.str());
+                TestingStrAppend(ss.str());
 
                 animUPtr_ = sfml_util::AnimationFactory::Make(
                     static_cast<sfml_util::Animations::Enum>(animIndex),
@@ -1102,8 +1123,7 @@ if (false == willImageCheck_)
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "stage::TestingStage::TestAnimations() ALL Tests Passed.");
+        TestingStrAppend("stage::TestingStage::TestAnimations() ALL Tests Passed.");
 
         return true;
     }
@@ -1114,8 +1134,8 @@ if (false == willImageCheck_)
         if (false == didPostInitial)
         {
             didPostInitial = true;
-            game::LoopManager::Instance()->TestingStrAppend(
-                "stage::TestingStage::TestInventoryFactory() Starting Tests...");
+            TestingStrAppend("stage::TestingStage::TestInventoryFactory() Starting Tests...");
+            return false;
         }
 
         static auto raceIndex{ 0 };
@@ -1194,7 +1214,7 @@ if (false == willImageCheck_)
                 ss << "InventoryFactory Tested " << RANK_MAX << " ranks with race=" << RACE_STR
                    << " role=" << ROLE_STR;
 
-                game::LoopManager::Instance()->TestingStrAppend(ss.str());
+                TestingStrAppend(ss.str());
 
                 ++roleIndex;
                 return false;
@@ -1205,8 +1225,7 @@ if (false == willImageCheck_)
             return false;
         }
 
-        game::LoopManager::Instance()->TestingStrAppend(
-            "stage::TestingStage::TestInventoryFactory()  ALL TESTS PASSED.");
+        TestingStrAppend("stage::TestingStage::TestInventoryFactory()  ALL TESTS PASSED.");
 
         raceIndex = 0;
         roleIndex = 0;

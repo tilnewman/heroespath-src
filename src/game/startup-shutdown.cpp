@@ -62,7 +62,6 @@
 #include "sfml-util/gui/condition-image-manager.hpp"
 #include "sfml-util/gui/creature-image-manager.hpp"
 #include "sfml-util/gui/gui-elements.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
 #include "sfml-util/gui/song-image-manager.hpp"
 #include "sfml-util/gui/spell-image-manager.hpp"
 #include "sfml-util/gui/title-image-manager.hpp"

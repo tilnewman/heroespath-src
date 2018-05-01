@@ -72,6 +72,18 @@ namespace config
             // verify the file exists
             if (false == bfs::exists(PATH))
             {
+                std::ostringstream ss;
+                ss << "Config file could not be found: \"" << PATH.string() << "\"";
+                HandleLoadSaveError(ss.str());
+                return false;
+            }
+
+            // verify the file is actually a file
+            if (false == bfs::is_regular_file(PATH))
+            {
+                std::ostringstream ss;
+                ss << "Config file was found but not a regular file: \"" << PATH.string() << "\"";
+                HandleLoadSaveError(ss.str());
                 return false;
             }
 

@@ -171,7 +171,7 @@ namespace sfml_util
 
     void Display::DrawFader(const Fade & fader) const { winUPtr_->draw(fader); }
 
-    void Display::DrawStage(const IStagePtr_t ISTAGE_PTR)
+    void Display::DrawStage(const IStagePtr_t & ISTAGE_PTR)
     {
         ISTAGE_PTR->Draw(*winUPtr_, sf::RenderStates());
     }

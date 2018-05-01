@@ -2870,7 +2870,7 @@ namespace stage
             characterImageFilenamesVec_.at(selectedImageIndex_));
 
         ResetForNewCharacterCreation();
-        characterImageFilenamesVec_.empty();
+        characterImageFilenamesVec_.clear();
         return false;
     }
 

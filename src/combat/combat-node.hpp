@@ -159,7 +159,7 @@ namespace combat
         static const sf::Uint8 DECAL_IMAGE_ALPHA_;
         static const float WING_IMAGE_SCALE_;
         static const float WING_IMAGE_HORIZ_OFFSET_;
-        static const float WING_IMAGE_ANIM_SPEED_;
+        static const double WING_IMAGE_ANIM_SPEED_;
         static const float WING_IMAGE_ROTATION_MAX_;
         static const std::size_t HEALTH_LINE_COUNT_;
         //

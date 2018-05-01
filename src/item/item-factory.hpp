@@ -27,6 +27,7 @@
 //
 // item-factory.hpp
 //
+#include "item/item-factory-base.hpp"
 #include "item/item-type-enum.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
@@ -50,7 +51,7 @@ namespace item
     using ItemPtrOpt_t = boost::optional<ItemPtr_t>;
 
     // Responsible for making new (and properly warehousing) item objects from (fat) ItemProfiles.
-    class ItemFactory
+    class ItemFactory : public ItemFactoryBase
     {
     public:
         ItemFactory(const ItemFactory &) = delete;
@@ -65,10 +66,7 @@ namespace item
         static const ItemPtr_t Make(const body_part::Enum, const creature::CreaturePtr_t);
 
     private:
-        static void TestItem(
-            const std::string & WHICH_TEST,
-            const ItemPtr_t & ITEM_PTR,
-            const ItemProfile & ITEM_PROFILE);
+        static void TestItem(const ItemPtr_t & ITEM_PTR, const ItemProfile & ITEM_PROFILE);
     };
 
 } // namespace item

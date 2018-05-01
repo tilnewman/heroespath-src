@@ -114,7 +114,7 @@ namespace stage
             color_.a = static_cast<sf::Uint8>(COLOR_VALF + ((255.0f - COLOR_VALF) * SLIDERX_RATIO));
             sfml_util::SetTextColor(textObj_, color_);
 
-            isDoneMoving_ = (SLIDERX_RATIO >= 0.99);
+            isDoneMoving_ = (SLIDERX_RATIO >= 0.99f);
             return false;
         }
         else

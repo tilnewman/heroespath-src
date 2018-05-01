@@ -590,24 +590,23 @@ namespace creature
             return ITEM_ACTION_SUCCESS_STR_;
         }
 
-        const item::category::Enum CATEGORY(ITEM_PTR->Category());
         const item::misc_type::Enum MISC_TYPE(ITEM_PTR->MiscType());
 
-        if (CATEGORY == item::category::Broken)
+        if (ITEM_PTR->HasCategoryType(item::category::Broken))
         {
             return "Can't equip the " + ITEM_PTR->Name() + " because it is broken.";
         }
-        else if ((CATEGORY & item::category::Equippable) == 0)
+        else if (ITEM_PTR->HasCategoryType(item::category::Equippable) == false)
         {
             std::ostringstream ss;
             ss << "Not an equippable item.";
 
-            if (CATEGORY & item::category::Useable)
+            if (ITEM_PTR->HasCategoryType(item::category::Useable))
             {
                 ss << "  (Try using it instead)";
             }
 
-            if (CATEGORY & item::category::QuestItem)
+            if (ITEM_PTR->IsQuestItem())
             {
                 ss << "  (have patience, this item will prove useful in time)";
             }
@@ -630,13 +629,13 @@ namespace creature
         }
 
         // verify invalid duplicates
-        if ((CATEGORY & item::category::OneHanded)
+        if (ITEM_PTR->HasCategoryType(item::category::OneHanded)
             && (inventory_.CountItemOfCategoryEquipped(item::category::OneHanded) > 2))
         {
             resultSS << "Can't equip three one-handed items." << SEP;
         }
 
-        if (CATEGORY & item::category::TwoHanded)
+        if (ITEM_PTR->HasCategoryType(item::category::TwoHanded))
         {
             auto const NONBODYPART_TWOHANDED_WEAPONS_SVEC{ item::Algorithms::FindByCategory(
                 item::Algorithms::FindByCategory(
@@ -678,35 +677,35 @@ namespace creature
 
         const item::armor_type::Enum ARMOR_TYPE(ITEM_PTR->ArmorType());
 
-        if ((CATEGORY & item::category::Armor) || (ARMOR_TYPE == item::armor_type::Boots)
+        if (ITEM_PTR->IsArmor() || (ARMOR_TYPE == item::armor_type::Boots)
             || (ARMOR_TYPE == item::armor_type::Pants) || (ARMOR_TYPE == item::armor_type::Shirt))
         {
-            if ((ARMOR_TYPE & item::armor_type::Bracer) && (Body().HasArms() == false))
+            if ((ARMOR_TYPE == item::armor_type::Bracers) && (Body().HasArms() == false))
             {
                 resultSS << "Can't wear bracers without arms." << SEP;
             }
 
-            if ((ARMOR_TYPE & item::armor_type::Gauntlets) && (Body().HasFingers() == false))
+            if ((ARMOR_TYPE == item::armor_type::Gauntlets) && (Body().HasFingers() == false))
             {
                 resultSS << "Can't wear guantlets without fingers." << SEP;
             }
 
-            if ((ARMOR_TYPE & item::armor_type::Gauntlets) && (Body().HasArms() == false))
+            if ((ARMOR_TYPE == item::armor_type::Gauntlets) && (Body().HasArms() == false))
             {
                 resultSS << "Can't wear guantlets without arms." << SEP;
             }
 
-            if (((ARMOR_TYPE & item::armor_type::Helm) > 0) && (Body().HasHead() == false))
+            if ((ARMOR_TYPE == item::armor_type::Helm) && (Body().HasHead() == false))
             {
                 resultSS << RaceName() << "'s can't wear helms because they have no head." << SEP;
             }
 
-            if (((ARMOR_TYPE & item::armor_type::Helm) > 0) && (Body().HasHorns() == true))
+            if ((ARMOR_TYPE == item::armor_type::Helm) && (Body().HasHorns() == true))
             {
                 resultSS << RaceName() << "'s can't wear helms becaus they have horns." << SEP;
             }
 
-            if ((ARMOR_TYPE & item::armor_type::Aventail)
+            if ((ARMOR_TYPE == item::armor_type::Aventail)
                 && (item::Algorithms::FindByArmorType(
                         inventory_.ItemsEquipped(), item::armor_type::Helm)
                         .empty()))
@@ -718,34 +717,34 @@ namespace creature
 
             std::ostringstream extraInfoSS;
 
-            if ((ARMOR_TYPE & item::armor_type::Bracer)
-                || (ARMOR_TYPE & item::armor_type::Gauntlets))
+            if ((ARMOR_TYPE == item::armor_type::Bracers)
+                || (ARMOR_TYPE == item::armor_type::Gauntlets))
             {
                 armorEquipLimit = Body().NumArms() / 2;
                 extraInfoSS << "(Bracers and gauntlets are pairs of items.  You can only equip one "
                                "set per two arms.  "
                             << Name() << " has " << Body().NumArms() << " arms.)";
             }
-            else if (ARMOR_TYPE & item::armor_type::Sheild)
+            else if (ARMOR_TYPE == item::armor_type::Shield)
             {
                 armorEquipLimit = Body().NumArms();
                 extraInfoSS << "(Can only equip one shield per arm.  " << Name() << " has "
                             << Body().NumArms() << " arms.)";
             }
             else if (
-                (ARMOR_TYPE & item::armor_type::Boots) || (ARMOR_TYPE & item::armor_type::Pants))
+                (ARMOR_TYPE == item::armor_type::Boots) || (ARMOR_TYPE == item::armor_type::Pants))
             {
                 armorEquipLimit = Body().NumLegs() / 2;
                 extraInfoSS << "(Can only equip one boots or pants per two legs.  " << Name()
                             << " has " << Body().NumLegs() << " legs.)";
             }
-            else if (ARMOR_TYPE & item::armor_type::Helm)
+            else if (ARMOR_TYPE == item::armor_type::Helm)
             {
                 armorEquipLimit = Body().NumHeads();
                 extraInfoSS << "(Can only equip one helm per head.  " << Name() << " has "
                             << Body().NumHeads() << " heads.)";
             }
-            else if (ARMOR_TYPE & item::armor_type::Aventail)
+            else if (ARMOR_TYPE == item::armor_type::Aventail)
             {
                 armorEquipLimit = inventory_.CountItemOfArmorTypeEquipped(item::armor_type::Helm);
                 extraInfoSS << "(Can only equip one aventail per helm.  " << Name() << " has "
@@ -756,7 +755,7 @@ namespace creature
                 ARMOR_TYPE) };
             if (ALREADY_EQUIPPED_COUNT >= armorEquipLimit)
             {
-                auto const ARMOR_TYPE_STR{ item::armor_type::ToString(ARMOR_TYPE, false) };
+                auto const ARMOR_TYPE_STR{ item::armor_type::ToString(ARMOR_TYPE) };
 
                 std::ostringstream ss;
                 if (0 == armorEquipLimit)
@@ -779,12 +778,12 @@ namespace creature
 
                 // make an exception for cover_type::Vest, which can be equipped along with the
                 // other cover_types: cape, robe, and cloak -which are otherwise mutually exclusive
-                if (ITEM_PTR->Armor_Info().cover == item::armor::cover_type::Vest)
+                if (ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Vest)
                 {
                     bool alraedyHasVestEquipped(false);
                     for (auto const & NEXT_ITEM_PTR : inventory_.ItemsEquipped())
                     {
-                        if (NEXT_ITEM_PTR->Armor_Info().cover == item::armor::cover_type::Vest)
+                        if (NEXT_ITEM_PTR->ArmorInfo().CoverType() == item::armor::cover_type::Vest)
                         {
                             alraedyHasVestEquipped = true;
                         }
@@ -797,14 +796,15 @@ namespace creature
                     }
                 }
                 else if (
-                    (ITEM_PTR->Armor_Info().cover != item::armor::cover_type::Vest)
-                    && (ARMOR_TYPE & item::armor_type::Covering))
+                    (ITEM_PTR->ArmorInfo().CoverType() != item::armor::cover_type::Vest)
+                    && (ARMOR_TYPE == item::armor_type::Covering))
                 {
                     auto alreadyHasNonVestCovering{ false };
                     for (auto const & NEXT_ITEM_PTR : inventory_.ItemsEquipped())
                     {
-                        if ((NEXT_ITEM_PTR->ArmorType() & item::armor_type::Covering)
-                            && (NEXT_ITEM_PTR->Armor_Info().cover != item::armor::cover_type::Vest))
+                        if ((NEXT_ITEM_PTR->ArmorInfo().IsCover())
+                            && (NEXT_ITEM_PTR->ArmorInfo().CoverType()
+                                != item::armor::cover_type::Vest))
                         {
                             alreadyHasNonVestCovering = true;
                         }
@@ -834,35 +834,33 @@ namespace creature
 
     const std::string Creature::ItemIsEquipAllowedByRole(const item::ItemPtr_t ITEM_PTR) const
     {
+        // this const stack variable is just to protect the member
+        auto const ROLE{ role_ };
+
         auto const EXCLUSIVE_ROLE{ ITEM_PTR->ExclusiveRole() };
-        if ((EXCLUSIVE_ROLE != creature::role::Count) && (EXCLUSIVE_ROLE != role_))
+        if ((EXCLUSIVE_ROLE != creature::role::Count) && (EXCLUSIVE_ROLE != ROLE))
         {
             std::ostringstream ss;
             ss << "Only " << creature::role::ToString(EXCLUSIVE_ROLE) << "s may equip this item.";
             return ss.str();
         }
 
-        auto const CATEGORY{ ITEM_PTR->Category() };
-        auto const WEAPON_TYPE{ ITEM_PTR->WeaponType() };
-        auto const MATERIAL_PRI{ ITEM_PTR->MaterialPrimary() };
-        auto const MISC_TYPE{ ITEM_PTR->MiscType() };
-
-        if (((role_ != role::Knight) && (role_ != role::Warlord))
-            && ((WEAPON_TYPE & item::weapon_type::BladedStaff) > 0)
-            && ((WEAPON_TYPE & item::weapon_type::Spear) == 0))
+        if (((ROLE != role::Knight) && (ROLE != role::Warlord))
+            && (ITEM_PTR->HasWeaponType(item::weapon_type::BladedStaff)
+                && (ITEM_PTR->HasWeaponType(item::weapon_type::Spear) == false)))
         {
             return "Only knights and warlords may equip non-simple-spear bladed staff weapons.";
         }
 
         if ((role_ != role::Knight) && (ITEM_PTR->IsArmor())
-            && (ITEM_PTR->Armor_Info().base == item::armor::base_type::Plate))
+            && (ITEM_PTR->ArmorInfo().BaseType() == item::armor::base_type::Plate))
         {
             return "Only knights may equip plate armor.";
         }
 
-        if ((role_ != role::Knight) && (ITEM_PTR->IsArmor())
-            && ((ITEM_PTR->Armor_Info().shield == item::armor::shield_type::Heater)
-                || (ITEM_PTR->Armor_Info().shield == item::armor::shield_type::Pavis)))
+        if ((ROLE != role::Knight) && (ITEM_PTR->IsArmor())
+            && ((ITEM_PTR->ArmorInfo().ShieldType() == item::armor::shield_type::Heater)
+                || (ITEM_PTR->ArmorInfo().ShieldType() == item::armor::shield_type::Pavis)))
         {
             return "Only knights may equip Pavis or Heater shields.";
         }
@@ -880,23 +878,23 @@ namespace creature
             }
         }
 
-        if ((item::misc_type::IsMusicalInstrument(MISC_TYPE)) && (role_ != role::Bard))
+        if ((item::misc_type::IsMusicalInstrument(ITEM_PTR->MiscType())) && (ROLE != role::Bard))
         {
             return "Only Bards can equip musical instruments.";
         }
 
-        if ((role_ == role::Cleric) || (role_ == role::Sorcerer))
+        if ((ROLE == role::Cleric) || (ROLE == role::Sorcerer))
         {
             if (ITEM_PTR->IsWeapon())
             {
-                if (((WEAPON_TYPE & item::weapon_type::Blowpipe) == 0)
-                    && ((WEAPON_TYPE & item::weapon_type::Knife) == 0)
-                    && ((WEAPON_TYPE & item::weapon_type::Sling) == 0)
-                    && ((WEAPON_TYPE & item::weapon_type::Staff) == 0)
-                    && ((WEAPON_TYPE & item::weapon_type::Whip) == 0))
+                if ((ITEM_PTR->HasWeaponType(item::weapon_type::Blowpipe) == false)
+                    && (ITEM_PTR->HasWeaponType(item::weapon_type::Knife) == false)
+                    && (ITEM_PTR->HasWeaponType(item::weapon_type::Sling) == false)
+                    && (ITEM_PTR->HasWeaponType(item::weapon_type::Staff) == false)
+                    && (ITEM_PTR->HasWeaponType(item::weapon_type::Whip) == false))
                 {
                     std::ostringstream scSS;
-                    scSS << ((role_ == role::Cleric) ? "Clerics" : "Sorcerers")
+                    scSS << ((ROLE == role::Cleric) ? "Clerics" : "Sorcerers")
                          << " can only equip staffs, knives, daggers, whips, slings, "
                          << "and blowpipes.";
                     return scSS.str();
@@ -905,62 +903,67 @@ namespace creature
 
             if (ITEM_PTR->IsArmor())
             {
-                if (((MATERIAL_PRI & item::material::Cloth) == 0)
-                    && ((MATERIAL_PRI & item::material::SoftLeather) == 0)
-                    && ((MATERIAL_PRI & item::material::HardLeather) == 0))
+                auto const MATERIAL_PRIMARY{ ITEM_PTR->MaterialPrimary() };
+
+                if ((MATERIAL_PRIMARY != item::material::Cloth)
+                    && (MATERIAL_PRIMARY != item::material::SoftLeather)
+                    && (MATERIAL_PRIMARY != item::material::HardLeather))
                 {
                     std::ostringstream scSS;
-                    scSS << ((role_ == role::Cleric) ? "Clerics" : "Sorcerers")
+                    scSS << ((ROLE == role::Cleric) ? "Clerics" : "Sorcerers")
                          << " can only equip armor made from cloth or leather.";
+
                     return scSS.str();
                 }
             }
         }
 
-        if (role_ == role::Bard)
+        if (role::Bard == ROLE)
         {
-            if ((WEAPON_TYPE & item::weapon_type::Axe) || (WEAPON_TYPE & item::weapon_type::Club))
+            if (ITEM_PTR->HasWeaponType(item::weapon_type::Axe)
+                || ITEM_PTR->HasWeaponType(item::weapon_type::Club))
             {
                 return "Bards cannot equip axes or clubs made for war.";
             }
 
-            if ((WEAPON_TYPE & item::weapon_type::BladedStaff)
-                || (WEAPON_TYPE & item::weapon_type::Spear))
+            if (ITEM_PTR->HasWeaponType(item::weapon_type::BladedStaff)
+                || ITEM_PTR->HasWeaponType(item::weapon_type::Spear))
             {
                 return "Bards cannot equip bladed staffs.";
             }
         }
 
-        if (role_ == role::Archer)
+        if (role::Archer == ROLE)
         {
-            if ((WEAPON_TYPE & item::weapon_type::Axe) || (WEAPON_TYPE & item::weapon_type::Club))
+            if (ITEM_PTR->HasWeaponType(item::weapon_type::Axe)
+                || ITEM_PTR->HasWeaponType(item::weapon_type::Club))
             {
                 return "Archers cannot equip axes or clubs made for war.";
             }
 
-            if ((WEAPON_TYPE & item::weapon_type::BladedStaff)
-                || (WEAPON_TYPE & item::weapon_type::Spear))
+            if (ITEM_PTR->HasWeaponType(item::weapon_type::BladedStaff)
+                || ITEM_PTR->HasWeaponType(item::weapon_type::Spear))
             {
                 return "Archers cannot equip bladed staffs.";
             }
         }
 
-        if (role_ == role::Thief)
+        if (role::Thief == ROLE)
         {
-            if ((CATEGORY & item::category::TwoHanded) && (CATEGORY & item::category::Weapon)
-                && ((WEAPON_TYPE & item::weapon_type::Sling) == 0)
-                && ((WEAPON_TYPE & item::weapon_type::Blowpipe) == 0))
+            if (ITEM_PTR->HasCategoryType(item::category::TwoHanded) && ITEM_PTR->IsWeapon()
+                && (ITEM_PTR->HasWeaponType(item::weapon_type::Sling) == false)
+                && (ITEM_PTR->HasWeaponType(item::weapon_type::Blowpipe) == false))
             {
                 return "Thieves cannot equip two-handed weapons except for Slings and Blowpipes.";
             }
 
-            if (((WEAPON_TYPE & item::weapon_type::Axe) > 0)
-                || ((WEAPON_TYPE & item::weapon_type::Sword) > 0)
-                || ((WEAPON_TYPE & item::weapon_type::Club) > 0))
+            if (ITEM_PTR->HasWeaponType(item::weapon_type::Axe)
+                || ITEM_PTR->HasWeaponType(item::weapon_type::Sword)
+                || ITEM_PTR->HasWeaponType(item::weapon_type::Club))
             {
                 std::ostringstream ss;
-                ss << "Thieves cannot equip " << item::weapon_type::ToString(WEAPON_TYPE, false)
-                   << "s.";
+                ss << "Thieves cannot equip "
+                   << item::weapon_type::ToString(ITEM_PTR->WeaponType(), false) << "s.";
             }
         }
 
@@ -1082,7 +1085,7 @@ namespace creature
         // wands do not count as weapons
         for (auto const & NEXT_ITEM_PTR : heldWeaponsPVec_)
         {
-            if ((NEXT_ITEM_PTR->MiscType() & item::misc_type::Wand) == 0)
+            if (NEXT_ITEM_PTR->MiscType() != item::misc_type::Wand)
             {
                 ++count;
             }
@@ -1096,7 +1099,7 @@ namespace creature
         for (auto const & NEXT_ITEM_PTR : heldWeaponsPVec_)
         {
             if (NEXT_ITEM_PTR->IsWeapon()
-                && (NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Projectile))
+                && NEXT_ITEM_PTR->HasWeaponType(item::weapon_type::Projectile))
             {
                 return true;
             }
@@ -1134,7 +1137,7 @@ namespace creature
         item::ItemPVec_t armorItemsPVec;
         for (auto const & NEXT_ITEM_PTR : Inventory().ItemsEquipped())
         {
-            if (NEXT_ITEM_PTR->Category() & item::category::Armor)
+            if (NEXT_ITEM_PTR->IsArmor())
             {
                 armorItemsPVec.emplace_back(NEXT_ITEM_PTR);
             }
@@ -1192,7 +1195,7 @@ namespace creature
                 + RESPONSE_POSTFIX;
         }
 
-        if (inventory_.CountItemOfCategory(item::category::AllowsCasting) == 0)
+        if (inventory_.HasCastingItemEquipped() == false)
         {
             return RESPONSE_PREFIX + creature::sex::HeSheIt(sex_, false)
                 + " has no wand or other casting item" + RESPONSE_POSTFIX;
@@ -1268,6 +1271,7 @@ namespace creature
     {
         const std::string RESPONSE_PREFIX(
             (WILL_PREFIX_AND_POSTFIX) ? "Cannot play song because " : "");
+
         const std::string RESPONSE_POSTFIX((WILL_PREFIX_AND_POSTFIX) ? "." : "");
 
         if (role_ != role::Bard)
@@ -1292,6 +1296,12 @@ namespace creature
         {
             return RESPONSE_PREFIX + sex::HeSheIt(sex_, false) + " has no mana left"
                 + RESPONSE_POSTFIX;
+        }
+
+        if (inventory_.HasMusicalInstrumentEquipped() == false)
+        {
+            return RESPONSE_PREFIX + sex::HeSheIt(sex_, false)
+                + " has no musical instrument equipped" + RESPONSE_POSTFIX;
         }
 
         return "";
@@ -1609,9 +1619,9 @@ namespace creature
         item::ItemPVec_t ssBPNonBCWeaponsPVec;
         for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
-            if ((NEXT_ITEM_PTR->IsWeapon()) && NEXT_ITEM_PTR->IsBodypart()
-                && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Bite) == 0)
-                && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Claws) == 0))
+            if (NEXT_ITEM_PTR->IsWeapon() && NEXT_ITEM_PTR->IsBodypart()
+                && (NEXT_ITEM_PTR->HasWeaponType(item::weapon_type::Bite) == false)
+                && (NEXT_ITEM_PTR->HasWeaponType(item::weapon_type::Claws) == false))
             {
                 ssBPNonBCWeaponsPVec.emplace_back(NEXT_ITEM_PTR);
             }
@@ -1626,9 +1636,9 @@ namespace creature
         item::ItemPVec_t ssBPBCWeaponsPVec;
         for (auto const & NEXT_ITEM_PTR : EQUIPPED_ITEMS_PVEC)
         {
-            if ((NEXT_ITEM_PTR->IsWeapon()) && NEXT_ITEM_PTR->IsBodypart()
-                && ((NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Bite)
-                    || (NEXT_ITEM_PTR->WeaponType() & item::weapon_type::Claws)))
+            if (NEXT_ITEM_PTR->IsWeapon() && NEXT_ITEM_PTR->IsBodypart()
+                && (NEXT_ITEM_PTR->HasWeaponType(item::weapon_type::Bite)
+                    || NEXT_ITEM_PTR->HasWeaponType(item::weapon_type::Claws)))
             {
                 ssBPBCWeaponsPVec.emplace_back(NEXT_ITEM_PTR);
             }

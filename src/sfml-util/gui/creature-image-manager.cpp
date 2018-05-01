@@ -287,18 +287,27 @@ namespace sfml_util
             return misc::Vector::SelectRandom(FILENAMES);
         }
 
-        void CreatureImageManager::LoadImage(
-            sf::Texture & texture, const std::string & IMAGE_FILE_NAME, const bool WILL_FACE_RIGHT)
+        void CreatureImageManager::EnsureFileExists(const std::string & FILENAME)
         {
             namespace bfs = boost::filesystem;
 
-            auto const IMAGES_DIR{ game::GameDataFile::Instance()->GetMediaPath(
-                "media-images-creatures-dir") };
+            auto const FULL_PATH_STR{ MakeFullPathFromFilename(FILENAME) };
 
-            const bfs::path PATH_OBJ(
-                bfs::system_complete(bfs::path(IMAGES_DIR) / bfs::path(IMAGE_FILE_NAME)));
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (bfs::exists(bfs::path(FULL_PATH_STR))),
+                "sfml_util::gui::ItemImageMachine::EnsureFileExists(\""
+                    << FULL_PATH_STR << "\") but that file does not exist.");
 
-            sfml_util::LoadTexture(texture, PATH_OBJ.string());
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (bfs::is_regular_file(bfs::path(FULL_PATH_STR))),
+                "sfml_util::gui::ItemImageMachine::EnsureFileExists(\""
+                    << FULL_PATH_STR << "\") but that is not a regular file.");
+        }
+
+        void CreatureImageManager::LoadImage(
+            sf::Texture & texture, const std::string & IMAGE_FILE_NAME, const bool WILL_FACE_RIGHT)
+        {
+            sfml_util::LoadTexture(texture, MakeFullPathFromFilename(IMAGE_FILE_NAME));
 
             if (WILL_FACE_RIGHT)
             {
@@ -362,10 +371,7 @@ namespace sfml_util
                     return { "troll-warlord.png" };
                 }
 
-                if (ROLE == role::Grunt)
-                {
-                    return { "troll-1.png" };
-                }
+                return { "troll-1.png" };
             }
 
             if (RACE == race::Orc)
@@ -642,10 +648,7 @@ namespace sfml_util
                     return { "minotaur-warlord.png" };
                 }
 
-                if (ROLE == role::Grunt)
-                {
-                    return { "minotaur-1.png", "minotaur-2.png" };
-                }
+                return { "minotaur-1.png", "minotaur-2.png" };
             }
 
             if (RACE == race::Ogre)
@@ -1690,6 +1693,19 @@ namespace sfml_util
                << ") -No filenames found for that creature information.";
 
             throw std::runtime_error(ss.str());
+        }
+
+        const std::string
+            CreatureImageManager::MakeFullPathFromFilename(const std::string & FILENAME)
+        {
+            auto const IMAGES_DIR{ game::GameDataFile::Instance()->GetMediaPath(
+                "media-images-creatures-dir") };
+
+            namespace bfs = boost::filesystem;
+
+            return bfs::system_complete(bfs::path(IMAGES_DIR) / bfs::path(FILENAME))
+                .normalize()
+                .string();
         }
 
     } // namespace gui

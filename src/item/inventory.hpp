@@ -82,10 +82,10 @@ namespace item
         // pointer
         void ItemRemove(const ItemPtr_t);
 
-        // moves the item from itemsSVec_ to equippedItemsSVec_
+        // moves the item from itemsPVec_ to equippedItemsPVec_
         void ItemEquip(const ItemPtr_t);
 
-        // moves the item from equippedItemsSVec_ to itemsSVec_
+        // moves the item from equippedItemsPVec_ to itemsPVec_
         void ItemUnEquip(const ItemPtr_t);
 
         bool ContainsItem(const ItemPtr_t) const;
@@ -109,6 +109,10 @@ namespace item
         std::size_t CountItemOfMiscType(const item::misc_type::Enum) const;
         std::size_t CountItemOfMiscTypeHeld(const item::misc_type::Enum) const;
         std::size_t CountItemOfMiscTypeEquipped(const item::misc_type::Enum) const;
+
+        bool HasMusicalInstrumentEquipped() const;
+
+        bool HasCastingItemEquipped() const;
 
         Armor_t ArmorRating() const;
 

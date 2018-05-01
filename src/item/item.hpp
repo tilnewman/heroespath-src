@@ -32,11 +32,12 @@
 
 #include "creature/enchantment.hpp"
 #include "creature/role-enum.hpp"
-#include "item/armor-info.hpp"
+#include "creature/summon-info.hpp"
+#include "item/armor-type-wrapper.hpp"
 #include "item/item-profile.hpp"
 #include "item/item-type-enum.hpp"
 #include "item/item-type-wrapper.hpp"
-#include "item/weapon-info.hpp"
+#include "item/weapon-type-wrapper.hpp"
 #include "misc/boost-optional-that-throws.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
@@ -63,9 +64,8 @@ namespace item
         explicit Item(
             const std::string & NAME = "no_name_error",
             const std::string & DESC = "no-desc_error",
-            const category::Enum CATEGORY = category::Broken,
+            const category::Enum CATEGORY = category::None,
             const weapon_type::Enum WEAPON_TYPE = weapon_type::NotAWeapon,
-            const armor_type::Enum ARMOR_TYPE = armor_type::NotArmor,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const Coin_t & PRICE = 0_coin,
@@ -74,36 +74,38 @@ namespace item
             const Health_t & DAMAGE_MAX = 0_health,
             const Armor_t & ARMOR_RATING = 0_armor,
             const TypeWrapper & TYPE_WRAPPER = TypeWrapper(),
-            const weapon::WeaponInfo & WEAPON_INFO = weapon::WeaponInfo(),
-            const armor::ArmorInfo & ARMOR_INFO = armor::ArmorInfo(),
+            const weapon::WeaponTypeWrapper & WEAPON_INFO = weapon::WeaponTypeWrapper(),
+            const armor::ArmorTypeWrapper & ARMOR_INFO = armor::ArmorTypeWrapper(),
             const bool IS_PIXIE_ITEM = false,
             const creature::role::Enum EXCLUSIVE_ROLE_BASED_ON_ITEM_TYPE = creature::role::Count);
 
         ~Item();
 
-        const std::string Name() const { return name_; }
-        const std::string Desc() const { return desc_; }
+        const std::string Name() const;
+
+        // similar to Name() but without "Pixie" or materials.
+        const std::string ShortName() const;
+
+        // the shortest answer to "what is it", with no unique/set/named type names
+        const std::string BaseName() const;
+
+        const std::string Desc() const;
 
         const std::string ImageFilename() const { return imageFilename_; }
 
-        const weapon::WeaponInfo Weapon_Info() const { return weaponInfo_; }
-        const armor::ArmorInfo Armor_Info() const { return armorInfo_; }
+        const weapon::WeaponTypeWrapper WeaponInfo() const { return weaponInfo_; }
+        const armor::ArmorTypeWrapper ArmorInfo() const { return armorInfo_; }
 
         category::Enum Category() const { return category_; }
         material::Enum MaterialPrimary() const { return materialPri_; }
         material::Enum MaterialSecondary() const { return materialSec_; }
         weapon_type::Enum WeaponType() const { return weaponType_; }
-        armor_type::Enum ArmorType() const { return armorType_; }
+        armor_type::Enum ArmorType() const { return armorInfo_.Type(); }
         misc_type::Enum MiscType() const { return miscType_; }
         unique_type::Enum UniqueType() const { return uniqueType_; }
         set_type::Enum SetType() const { return setType_; }
         named_type::Enum NamedType() const { return namedType_; }
         element_type::Enum ElementType() const { return elementType_; }
-
-        bool IsCategoryType(const category::Enum E) const { return (category_ & E); }
-        bool IsWeaponType(const weapon_type::Enum E) const { return (weaponType_ & E); }
-        bool IsArmorType(const armor_type::Enum E) const { return (armorType_ & E); }
-        bool IsMiscType(const misc_type::Enum E) const { return (miscType_ & E); }
 
         Coin_t Price() const { return price_; }
         Weight_t Weight() const { return weight_; }
@@ -112,13 +114,46 @@ namespace item
         Health_t DamageMax() const { return damageMax_; }
         Armor_t ArmorRating() const { return armorRating_; }
 
-        bool IsBroken() const { return (category_ == category::Broken); }
-        bool IsArmor() const { return (category_ & category::Armor); }
-        bool IsWeapon() const { return (category_ & category::Weapon); }
+        bool HasCategoryType(const category::Enum CATEGORY) const
+        {
+            return ((category_ & CATEGORY) > 0);
+        }
+        bool HasWeaponType(const weapon_type::Enum WEAPON_TYPE) const
+        {
+            return ((weaponType_ & WEAPON_TYPE) > 0);
+        }
+
+        bool IsQuestItem() const { return misc_type::IsQuestItem(miscType_); }
+
+        bool IsBroken() const { return (category_ & category::Broken); }
+        bool IsArmor() const { return (armorInfo_.IsValid()); }
+        bool IsWeapon() const { return (weaponInfo_.IsValid()); }
         bool IsWearable() const { return (category_ & category::Wearable); }
         bool IsOneHanded() const { return (category_ & category::OneHanded); }
         bool IsTwoHanded() const { return (category_ & category::TwoHanded); }
         bool IsBodypart() const { return (category_ & category::BodyPart); }
+
+        bool IsSet() const
+        {
+            return (set_type::Count != setType_) && (set_type::NotASet != setType_);
+        }
+
+        bool IsNamed() const
+        {
+            return (named_type::Count != namedType_) && (named_type::NotNamed != namedType_);
+        }
+
+        bool IsMisc() const
+        {
+            return (misc_type::Count != miscType_) && (misc_type::NotMisc != miscType_);
+        }
+
+        bool IsUnique() const
+        {
+            return (uniqueType_ != unique_type::Count) && (uniqueType_ != unique_type::NotUnique);
+        }
+
+        bool IsElemental() const { return (elementType_ != element_type::None); }
 
         bool IsRigid() const { return material::IsRigid(materialPri_); }
 
@@ -159,13 +194,17 @@ namespace item
             category_ = static_cast<category::Enum>(category_ | E);
         }
 
-        const std::string BaseName() const;
+        const creature::SummonInfo & SummonInfo() const { return summonInfo_; }
 
-        const creature::SummonInfo & GetSummonInfo() const { return summonInfo_; }
+        bool HasEnchantments() const { return (enchantmentsPVec_.empty() == false); }
 
-        bool IsSummoning() const { return summonInfo_.WillSummon(); }
-
-        bool IsEnchanted() const { return ((enchantmentsPVec_.empty() == false) || IsSummoning()); }
+        bool IsMagical() const
+        {
+            return (
+                (IsBroken() == false)
+                && (HasEnchantments() || summonInfo_.CanSummon() || IsElemental() || IsSet()
+                    || IsNamed() || IsUnique()));
+        }
 
         const std::string ToString() const;
 
@@ -176,6 +215,10 @@ namespace item
         friend bool operator<(const Item & L, const Item & R);
         friend bool operator==(const Item & L, const Item & R);
 
+    private:
+        const std::string ReadableName() const;
+        const std::string ComposeName(const std::string ROOT_NAME) const;
+
     protected:
         std::string name_;
         std::string desc_;
@@ -185,14 +228,13 @@ namespace item
         Health_t damageMax_;
         Armor_t armorRating_;
         creature::role::Enum exclusiveToRole_;
-        armor_type::Enum armorType_;
         weapon_type::Enum weaponType_;
         category::Enum category_;
         misc_type::Enum miscType_;
         material::Enum materialPri_;
         material::Enum materialSec_;
-        weapon::WeaponInfo weaponInfo_;
-        armor::ArmorInfo armorInfo_;
+        weapon::WeaponTypeWrapper weaponInfo_;
+        armor::ArmorTypeWrapper armorInfo_;
         bool isPixie_;
         unique_type::Enum uniqueType_;
         set_type::Enum setType_;
@@ -221,7 +263,6 @@ namespace item
             ar & damageMax_;
             ar & armorRating_;
             ar & exclusiveToRole_;
-            ar & armorType_;
             ar & weaponType_;
             ar & category_;
             ar & miscType_;

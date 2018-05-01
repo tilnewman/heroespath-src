@@ -9,5 +9,4 @@ target_link_libraries(${PROJECT_NAME}
               StringUtil
               Misc
 		      Popup
-              ${SFML_LIBRARIES}
 		      ${Boost_LIBRARIES})

@@ -31,7 +31,7 @@
 
 #include "item/item.hpp"
 #include "sfml-util/display.hpp"
-#include "sfml-util/gui/item-image-manager.hpp"
+#include "sfml-util/gui/item-image-machine.hpp"
 #include "sfml-util/sound-manager.hpp"
 
 #include <sstream>
@@ -203,7 +203,8 @@ namespace stage
 
         willShowImage_ = true;
 
-        sfml_util::gui::ItemImageManager::Load(texture_, ITEM_PTR_OPT.value());
+        sfml_util::gui::ItemImageMachine itemImageMachine;
+        itemImageMachine.Load(texture_, ITEM_PTR_OPT.value());
 
         sprite_.setTexture(texture_, true);
 
@@ -227,9 +228,12 @@ namespace stage
         auto const ITEM_PTR{ ITEM_PTR_OPT.value() };
 
         std::ostringstream ss;
-        ss << ITEM_PTR->Name() << "\n"
-           << ITEM_PTR->Desc() << "\n\n"
-           << item::category::ToString(ITEM_PTR->Category(), true) << "\n";
+        ss << ITEM_PTR->Name() << "\n" << ITEM_PTR->Desc() << "\n\n";
+
+        if (ITEM_PTR->Category() != item::category::None)
+        {
+            ss << item::category::ToString(ITEM_PTR->Category(), true) << "\n";
+        }
 
         if (ITEM_PTR->ExclusiveRole() != creature::role::Count)
         {

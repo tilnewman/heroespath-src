@@ -88,21 +88,22 @@ namespace creature
 
     const EnchantmentPVec_t EnchantmentFactory::MakeAndStore(
         const item::TypeWrapper & TYPE_WRAPPER,
-        const bool IS_WEAPON,
-        const bool IS_ARMOR,
         const item::material::Enum MATERIAL_PRIMARY,
-        const item::material::Enum MATERIAL_SECONDARY) const
+        const item::material::Enum MATERIAL_SECONDARY,
+        const bool IS_WEAPON,
+        const bool IS_ARMOR) const
     {
-        EnchantmentPVec_t enchantmentsPVec;
-        if ((IS_ARMOR || IS_WEAPON) && (TYPE_WRAPPER.element != item::element_type::None))
+        if (TYPE_WRAPPER.set != item::set_type::NotASet)
         {
-            enchantmentsPVec.emplace_back(
-                NewFromElementType(TYPE_WRAPPER.element, IS_WEAPON, MATERIAL_PRIMARY));
+            // if part of a set, then only the set enchantments will apply
+            return { NewFromSetType(TYPE_WRAPPER.set) };
         }
-
-        if ((TYPE_WRAPPER.unique != item::unique_type::NotUnique)
+        else if (
+            (TYPE_WRAPPER.unique != item::unique_type::NotUnique)
             && (TYPE_WRAPPER.unique != item::unique_type::Count))
         {
+            EnchantmentPVec_t enchantmentsPVec;
+
             for (auto const & ENCHANTMENT_PTR :
                  NewFromUniqueType(TYPE_WRAPPER.unique, MATERIAL_PRIMARY))
             {
@@ -111,35 +112,36 @@ namespace creature
 
             return enchantmentsPVec;
         }
-
-        if ((TYPE_WRAPPER.name != item::named_type::NotNamed)
-            && (TYPE_WRAPPER.name != item::named_type::Count))
+        else
         {
-            enchantmentsPVec.emplace_back(
-                NewFromNamedType(TYPE_WRAPPER.name, MATERIAL_PRIMARY, IS_ARMOR, IS_WEAPON));
+            EnchantmentPVec_t enchantmentsPVec;
 
-            return enchantmentsPVec;
-        }
-
-        if (TYPE_WRAPPER.set != item::set_type::NotASet)
-        {
-            enchantmentsPVec.emplace_back(NewFromSetType(TYPE_WRAPPER.set));
-            return enchantmentsPVec;
-        }
-
-        if (TYPE_WRAPPER.misc != item::misc_type::NotMisc)
-        {
-            auto const ENCHANTMENT_PTR_OPT{ NewFromMiscType(
-                TYPE_WRAPPER.misc, MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
-
-            if (ENCHANTMENT_PTR_OPT)
+            if (TYPE_WRAPPER.element != item::element_type::None)
             {
-                enchantmentsPVec.emplace_back(ENCHANTMENT_PTR_OPT.value());
-                return enchantmentsPVec;
+                enchantmentsPVec.emplace_back(
+                    NewFromElementType(TYPE_WRAPPER.element, IS_WEAPON, MATERIAL_PRIMARY));
             }
-        }
 
-        return enchantmentsPVec;
+            if ((TYPE_WRAPPER.name != item::named_type::NotNamed)
+                && (TYPE_WRAPPER.name != item::named_type::Count))
+            {
+                enchantmentsPVec.emplace_back(
+                    NewFromNamedType(TYPE_WRAPPER.name, MATERIAL_PRIMARY, IS_ARMOR, IS_WEAPON));
+            }
+
+            if (TYPE_WRAPPER.misc != item::misc_type::NotMisc)
+            {
+                auto const ENCHANTMENT_PTR_OPT{ NewFromMiscType(
+                    TYPE_WRAPPER.misc, MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
+
+                if (ENCHANTMENT_PTR_OPT)
+                {
+                    enchantmentsPVec.emplace_back(ENCHANTMENT_PTR_OPT.value());
+                }
+            }
+
+            return enchantmentsPVec;
+        }
     }
 
     Score_t EnchantmentFactory::TreasureScore(
@@ -162,16 +164,66 @@ namespace creature
     }
 
     Score_t EnchantmentFactory::TreasureScore(
-        const item::misc_type::Enum E,
+        const item::misc_type::Enum MISC_TYPE,
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY) const
     {
-        if ((E == item::misc_type::NotMisc) || (E == item::misc_type::Count))
+        using namespace item;
+
+        Score_t score{ 0_score };
+
+        if ((MISC_TYPE == misc_type::NotMisc) || (MISC_TYPE == misc_type::Count))
         {
-            return 0_score;
+            return score;
         }
 
-        return MakeFromMiscType(E, MATERIAL_PRIMARY, MATERIAL_SECONDARY).TreasureScore();
+        // below are score bonuses needed because enchantments don't provide enough
+
+        if (misc_type::AllowsCasting(MISC_TYPE))
+        {
+            score += 150_score;
+        }
+
+        if ((misc_type::IsBlessed(MISC_TYPE)) || (misc_type::IsCursed(MISC_TYPE)))
+        {
+            score += 50_score;
+        }
+
+        if (misc_type::IsQuestItem(MISC_TYPE))
+        {
+            score += 250_score;
+        }
+
+        if (misc_type::IsSummoning(MISC_TYPE))
+        {
+            score += 100_score;
+        }
+
+        if (misc_type::IsUseable(MISC_TYPE))
+        {
+            score += 150_score;
+        }
+
+        if (MISC_TYPE == misc_type::Spider_Eggs)
+        {
+            score += 500_score;
+        }
+        else if (MISC_TYPE == misc_type::Ring)
+        {
+            score += 20_score;
+        }
+        else if (MISC_TYPE == misc_type::DrumLute)
+        {
+            score += 100_score;
+        }
+        else if (MISC_TYPE == misc_type::LockPicks)
+        {
+            score += 200_score;
+        }
+
+        score += MakeFromMiscType(MISC_TYPE, MATERIAL_PRIMARY, MATERIAL_SECONDARY).TreasureScore();
+
+        return score;
     }
 
     Score_t EnchantmentFactory::TreasureScore(const item::set_type::Enum E) const
@@ -203,17 +255,18 @@ namespace creature
     }
 
     Score_t EnchantmentFactory::TreasureScore(
-        const item::element_type::Enum E,
+        const item::element_type::Enum ELEMENT_TYPE,
         const bool IS_WEAPON,
         const item::material::Enum MATERIAL_PRIMARY) const
     {
-        if (E == item::element_type::None)
+        if (ELEMENT_TYPE == item::element_type::None)
         {
             return 0_score;
         }
 
         // the additional 750 is to raise the score of all elemental items
-        return MakeFromElementType(E, IS_WEAPON, MATERIAL_PRIMARY).TreasureScore() + 750_score;
+        return MakeFromElementType(ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRIMARY).TreasureScore()
+            + 750_score;
     }
 
     const EnchantmentPtr_t EnchantmentFactory::Make(
@@ -556,7 +609,8 @@ namespace creature
                         -1,
                         static_cast<game::Phase::Enum>(
                             game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)),
-                    "Adds 15% Mana and removes the conditions: Dazed, Asleep Natural, and Daunted.",
+                    "Adds 15% Mana and removes the conditions: Dazed, Asleep Natural, and "
+                    "Daunted.",
                     2000_score,
                     Enchantment::UseEffectType::CrystalChimes) };
             }
@@ -674,7 +728,8 @@ namespace creature
                         -1,
                         static_cast<game::Phase::Enum>(
                             game::Phase::Combat | game::Phase::Exploring | game::Phase::Inventory)),
-                    "Adds 20% Mana and removes the conditions: Dazed, Asleep Natural, Daunted, and "
+                    "Adds 20% Mana and removes the conditions: Dazed, Asleep Natural, Daunted, "
+                    "and "
                     "Panicked.",
                     2400_score,
                     Enchantment::UseEffectType::GoldenGong) };
@@ -1555,11 +1610,11 @@ namespace creature
     }
 
     const EnchantmentPtrOpt_t EnchantmentFactory::NewFromMiscType(
-        const item::misc_type::Enum E,
+        const item::misc_type::Enum MISC_TYPE,
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY) const
     {
-        auto const ENCHANTMENT{ MakeFromMiscType(E, MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
+        auto const ENCHANTMENT{ MakeFromMiscType(MISC_TYPE, MATERIAL_PRIMARY, MATERIAL_SECONDARY) };
 
         if (ENCHANTMENT == Enchantment())
         {
@@ -1572,20 +1627,26 @@ namespace creature
     }
 
     const Enchantment EnchantmentFactory::MakeFromMiscType(
-        const item::misc_type::Enum E,
+        const item::misc_type::Enum MISC_TYPE,
         const item::material::Enum MATERIAL_PRIMARY,
         const item::material::Enum MATERIAL_SECONDARY) const
     {
-        if (E == item::misc_type::Spider_Eggs)
+        auto const IS_PRIMARYY_MATERIAL_VALID{ (MATERIAL_PRIMARY != item::material::Count)
+                                               && (MATERIAL_PRIMARY != item::material::Nothing) };
+
+        auto const IS_SECONDARY_MATERIAL_VALID{ (MATERIAL_SECONDARY != item::material::Count)
+                                                && (MATERIAL_SECONDARY
+                                                    != item::material::Nothing) };
+
+        if (MISC_TYPE == item::misc_type::Spider_Eggs)
         {
             return Enchantment(
                 EnchantmentType::WhenUsed, stats::TraitSet(), UseInfo(10, game::Phase::Combat));
         }
-        else if (
-            (item::misc_type::IsBlessed(E)) && (MATERIAL_SECONDARY != item::material::Count)
-            && (MATERIAL_SECONDARY != item::material::Nothing))
+        else if (item::misc_type::IsBlessed(MISC_TYPE) && IS_SECONDARY_MATERIAL_VALID)
         {
             auto const USE_COUNT{ item::material::Bonus(MATERIAL_SECONDARY) };
+
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
                     EnchantmentType::BoundToItem | EnchantmentType::WhenHeld),
@@ -1599,11 +1660,10 @@ namespace creature
                 250_score,
                 Enchantment::UseEffectType::Blessed);
         }
-        else if (
-            (item::misc_type::IsCursed(E)) && (MATERIAL_SECONDARY != item::material::Count)
-            && (MATERIAL_SECONDARY != item::material::Nothing))
+        else if (item::misc_type::IsCursed(MISC_TYPE) && IS_SECONDARY_MATERIAL_VALID)
         {
             auto const USE_COUNT{ item::material::Bonus(MATERIAL_SECONDARY) };
+
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
                     EnchantmentType::BoundToItem | EnchantmentType::WhenHeld),
@@ -1617,9 +1677,7 @@ namespace creature
                 250_score,
                 Enchantment::UseEffectType::Cursed);
         }
-        else if (
-            (E == item::misc_type::LockPicks) && (MATERIAL_PRIMARY != item::material::Count)
-            && (MATERIAL_PRIMARY != item::material::Nothing))
+        else if ((MISC_TYPE == item::misc_type::LockPicks) && IS_PRIMARYY_MATERIAL_VALID)
         {
             auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
 
@@ -1630,9 +1688,7 @@ namespace creature
                                   std::make_pair(stats::Traits::Speed, 11 + (MAT_BONUS / 2)),
                                   std::make_pair(stats::Traits::Backstab, 1 + (MAT_BONUS / 2)) }));
         }
-        else if (
-            (E == item::misc_type::Wand) && (MATERIAL_PRIMARY != item::material::Count)
-            && (MATERIAL_PRIMARY != item::material::Nothing))
+        else if ((MISC_TYPE == item::misc_type::Wand) && IS_PRIMARYY_MATERIAL_VALID)
         {
             auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
 
@@ -1641,9 +1697,7 @@ namespace creature
                     EnchantmentType::WhenEquipped | EnchantmentType::BoundToItem),
                 stats::TraitSet({ std::make_pair(stats::Traits::Mana, 11 + (MAT_BONUS / 2)) }));
         }
-        else if (
-            (E == item::misc_type::Shard) && (MATERIAL_PRIMARY != item::material::Count)
-            && (MATERIAL_PRIMARY != item::material::Nothing))
+        else if ((MISC_TYPE == item::misc_type::Shard) && IS_PRIMARYY_MATERIAL_VALID)
         {
             auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
 
@@ -1653,9 +1707,7 @@ namespace creature
                 stats::TraitSet({ std::make_pair(stats::Traits::Mana, 11 + (MAT_BONUS / 2)),
                                   std::make_pair(stats::Traits::MagicEffect, (MAT_BONUS / 2)) }));
         }
-        else if (
-            (E == item::misc_type::Staff) && (MATERIAL_PRIMARY != item::material::Count)
-            && (MATERIAL_PRIMARY != item::material::Nothing))
+        else if ((MISC_TYPE == item::misc_type::Staff) && IS_PRIMARYY_MATERIAL_VALID)
         {
             auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
 
@@ -1666,9 +1718,7 @@ namespace creature
                                   std::make_pair(stats::Traits::MagicEffect, 11 + (MAT_BONUS / 2)),
                                   std::make_pair(stats::Traits::MagicCast, 5 + (MAT_BONUS / 4)) }));
         }
-        else if (
-            (E == item::misc_type::Orb) && (MATERIAL_PRIMARY != item::material::Count)
-            && (MATERIAL_PRIMARY != item::material::Nothing))
+        else if ((MISC_TYPE == item::misc_type::Orb) && IS_PRIMARYY_MATERIAL_VALID)
         {
             auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
 
@@ -1679,9 +1729,7 @@ namespace creature
                                   std::make_pair(stats::Traits::MagicEffect, MAT_BONUS),
                                   std::make_pair(stats::Traits::MagicCast, 1 + (MAT_BONUS / 2)) }));
         }
-        else if (
-            (E == item::misc_type::Scepter) && (MATERIAL_PRIMARY != item::material::Count)
-            && (MATERIAL_PRIMARY != item::material::Nothing))
+        else if ((MISC_TYPE == item::misc_type::Scepter) && IS_PRIMARYY_MATERIAL_VALID)
         {
             auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
 
@@ -1692,7 +1740,7 @@ namespace creature
                                   std::make_pair(stats::Traits::MagicEffect, (MAT_BONUS * 2)),
                                   std::make_pair(stats::Traits::MagicCast, MAT_BONUS) }));
         }
-        else if (E == item::misc_type::Petrified_Snake)
+        else if (MISC_TYPE == item::misc_type::Petrified_Snake)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1702,7 +1750,7 @@ namespace creature
                                   std::make_pair(stats::Traits::MagicResist, 16),
                                   std::make_pair(stats::Traits::PoisonOnAll, 33) }));
         }
-        else if (E == item::misc_type::Mummy_Hand)
+        else if (MISC_TYPE == item::misc_type::Mummy_Hand)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1714,7 +1762,7 @@ namespace creature
                                   std::make_pair(stats::Traits::CurseEffect, 33),
                                   std::make_pair(stats::Traits::CurseResist, 33) }));
         }
-        else if (E == item::misc_type::Icicle)
+        else if (MISC_TYPE == item::misc_type::Icicle)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1725,7 +1773,7 @@ namespace creature
                                   std::make_pair(stats::Traits::FrostDamage, 75),
                                   std::make_pair(stats::Traits::FrostResist, 75) }));
         }
-        else if (E == item::misc_type::Finger)
+        else if (MISC_TYPE == item::misc_type::Golem_Finger)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1738,7 +1786,7 @@ namespace creature
                                   std::make_pair(stats::Traits::HonorResist, 50),
                                   std::make_pair(stats::Traits::ShadowResist, 50) }));
         }
-        else if (E == item::misc_type::Unicorn_Horn)
+        else if (MISC_TYPE == item::misc_type::Unicorn_Horn)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1754,7 +1802,7 @@ namespace creature
                                   std::make_pair(stats::Traits::BlessEffect, 80),
                                   std::make_pair(stats::Traits::ShadowResist, 28) }));
         }
-        else if (E == item::misc_type::Devil_Horn)
+        else if (MISC_TYPE == item::misc_type::Devil_Horn)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1771,7 +1819,7 @@ namespace creature
                                   std::make_pair(stats::Traits::CurseEffect, 80),
                                   std::make_pair(stats::Traits::ShadowDamage, 28) }));
         }
-        else if (E == item::misc_type::Recorder)
+        else if (MISC_TYPE == item::misc_type::Recorder)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1787,7 +1835,7 @@ namespace creature
                                   std::make_pair(stats::Traits::CurseResist, 25),
                                   std::make_pair(stats::Traits::ShadowResist, 18) }));
         }
-        else if (E == item::misc_type::Viol)
+        else if (MISC_TYPE == item::misc_type::Viol)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1802,7 +1850,7 @@ namespace creature
                                   std::make_pair(stats::Traits::CurseEffect, 25),
                                   std::make_pair(stats::Traits::ShadowDamage, 18) }));
         }
-        else if (E == item::misc_type::Pipe_And_Tabor)
+        else if (MISC_TYPE == item::misc_type::Pipe_And_Tabor)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1816,7 +1864,7 @@ namespace creature
                                   std::make_pair(stats::Traits::BlessCast, 50),
                                   std::make_pair(stats::Traits::BlessEffect, 50) }));
         }
-        else if (E == item::misc_type::Hurdy_Gurdy)
+        else if (MISC_TYPE == item::misc_type::Hurdy_Gurdy)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1830,7 +1878,7 @@ namespace creature
                                   std::make_pair(stats::Traits::CurseCast, 50),
                                   std::make_pair(stats::Traits::CurseEffect, 50) }));
         }
-        else if (E == item::misc_type::Lyre)
+        else if (MISC_TYPE == item::misc_type::Lyre)
         {
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(

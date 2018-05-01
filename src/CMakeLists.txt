@@ -7,18 +7,23 @@ set(CUSTOM_BUILD_FLAGS "")
 set(CUSTOM_LINK_FLAGS "")
 
 option(VALGRIND_BUILD "Build flags customized for Valgrind" OFF)
-
 option(ADDRESS_SANITIZER "Using Clang's Address Sanitizer" OFF)
 
 if(MSVC)
-    set(SFML_PATH "C:/Program Files/SFML-2.4.1")
-    message(STATUS "${PROJECT_NAME} will look for SFML here: \"" ${SFML_PATH} "\"")
-
     file (READ ../build-flags/build-flags-msvc.txt CUSTOM_BUILD_FLAGS)
+
+    set(SFML_PATH "C:/Program Files/SFML-2.4.1")
+    set(SFML_BIN_DIR ${SFML_PATH}/bin)
+    message(STATUS "${PROJECT_NAME} will look for SFML here: \"" ${SFML_PATH} "\"")
+    set(SFML_INCLUDE_DIR ${SFML_PATH}/include)
+    set(SFML_LIBRARY_DIRS ${SFML_PATH}/lib)
+
+    set(SFML_LIBRARIES debug sfml-system-d.lib optimized sfml-system.lib debug sfml-window-d.lib optimized sfml-window.lib debug sfml-graphics-d.lib optimized sfml-graphics.lib debug sfml-audio-d.lib optimized sfml-audio.lib)
 
     set(BOOST_INCLUDEDIR "C:/local/boost_1_66_0")
     set(BOOST_LIBRARYDIR "C:/local/boost_1_66_0/lib32-msvc-14.1")
     set(BOOST_ROOT "C:/local/boost_1_66_0/boost")
+    set(Boost_COMPILER -vc90)
 
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/configbase.suppress)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/configbase.suppress DESTINATION ${CMAKE_BINARY_DIR}/configbase)
@@ -86,19 +91,12 @@ if(MSVC)
     if(EXISTS ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/interact.suppress)
         file(COPY ${CMAKE_SOURCE_DIR}/../pvs-studio-suppressions/interact.suppress DESTINATION ${CMAKE_BINARY_DIR}/interact)
     endif()
-endif()
-
-if(WIN32)
-	set(SFML_INCLUDE_DIR ${SFML_PATH}/include)
-	set(SFML_LIBRARY_DIRS ${SFML_PATH}/lib)
-	set(SFML_LIBRARIES sfml-system.lib sfml-window.lib sfml-graphics.lib sfml-audio.lib)
-	set(Boost_COMPILER -vc90)
-    	include_directories(${include_directories} . ${SFML_INCLUDE_DIR})
 else()
 	set(SFML_INCLUDE_DIR "-I/usr/include/SFML")
 	set(SFML_LIBRARY_DIRS "/usr/lib")
 	set(SFML_LIBRARIES sfml-system sfml-window sfml-graphics sfml-audio)
 endif()
+	
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
 
@@ -126,15 +124,20 @@ SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${CUSTOM_LINK_FLAGS}" )
 
 message(STATUS "Compiler Detected: ${CMAKE_CXX_COMPILER_ID} with compile flags: ${CUSTOM_BUILD_FLAGS} and linker flags: ${CMAKE_EXE_LINKER_FLAGS}")
 
-set(CUSTOM_PROJECT_BOOST_VER "1.62.0")
+if(MSVC)
+    set(CUSTOM_PROJECT_BOOST_VER "1.66.0")
+endif()
+
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON) #default is ON, but the consequences...
 set(Boost_ADDITIONAL_VERSIONS ${Boost_ADDITIONAL_VERSIONS} ${CUSTOM_PROJECT_BOOST_VER})
 FIND_PACKAGE(Boost ${CUSTOM_PROJECT_BOOST_VER} COMPONENTS system thread filesystem serialization unit_test_framework)
 message(STATUS "Using boost version: " ${Boost_VERSION})
 
-include_directories(${include_directories} . ${Boost_INCLUDE_DIRS} ${BOOST_INCLUDEDIR})
+include_directories(${include_directories} . ${Boost_INCLUDE_DIRS} ${BOOST_INCLUDEDIR} ${SFML_INCLUDE_DIR})
+
 link_directories(${link_directories} ${Boost_LIBRARY_DIRS} ${BOOST_LIBRARYDIR})
+
 add_subdirectory(misc)
 add_subdirectory(config)
 add_subdirectory(log)

@@ -202,7 +202,7 @@ namespace sfml_util
             auto const AVERAGE_FRAMERATE{ sum / static_cast<float>(frameRateSampleCount_) };
 
             const float STANDARD_DEVIATION{ misc::Vector::StandardDeviation(
-                frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE) };
+                frameRateVec_, frameRateSampleCount_, AVERAGE_FRAMERATE, true) };
 
             M_HP_LOG(
                 "Frame rate min=" << min << ", max=" << max << ", count="

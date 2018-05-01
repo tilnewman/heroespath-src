@@ -30,6 +30,7 @@
 #include "armor-details.hpp"
 
 #include "game/game-data-file.hpp"
+#include "item/armor-type-wrapper.hpp"
 #include "misc/assertlogandthrow.hpp"
 #include "misc/boost-string-includes.hpp"
 #include "stringutil/stringhelp.hpp"
@@ -60,44 +61,13 @@ namespace item
 
         void ArmorDetailLoader::LoadFromGameDataFile()
         {
-            LoadDetailsForKey("Buckler");
-            LoadDetailsForKey("Kite");
-            LoadDetailsForKey("Heater");
-            LoadDetailsForKey("Pavis");
-            LoadDetailsForKey("Leather");
-            LoadDetailsForKey("Kettle");
-            LoadDetailsForKey("MailCoif");
-            LoadDetailsForKey("Archers");
-            LoadDetailsForKey("Bascinet");
-            LoadDetailsForKey("Great");
-            LoadDetailsForKey("Gloves");
-            LoadDetailsForKey("MailGauntlets");
-            LoadDetailsForKey("ScaleGauntlets");
-            LoadDetailsForKey("PlateGauntlets");
-            LoadDetailsForKey("PlainPants");
-            LoadDetailsForKey("MailPants");
-            LoadDetailsForKey("ScalePants");
-            LoadDetailsForKey("PlatePants");
-            LoadDetailsForKey("PlainBoots");
-            LoadDetailsForKey("MailBoots");
-            LoadDetailsForKey("ScaleBoots");
-            LoadDetailsForKey("PlateBoots");
-            LoadDetailsForKey("PlainShirt");
-            LoadDetailsForKey("MailShirt");
-            LoadDetailsForKey("ScaleShirt");
-            LoadDetailsForKey("PlateShirt");
-            LoadDetailsForKey("PlainBracers");
-            LoadDetailsForKey("MailBracers");
-            LoadDetailsForKey("ScaleBracers");
-            LoadDetailsForKey("PlateBracers");
-            LoadDetailsForKey("PlainAventail");
-            LoadDetailsForKey("MailAventail");
-            LoadDetailsForKey("ScaleAventail");
-            LoadDetailsForKey("PlateAventail");
-            LoadDetailsForKey("Cape");
-            LoadDetailsForKey("Vest");
-            LoadDetailsForKey("Robe");
-            LoadDetailsForKey("Cloak");
+            for (auto const & ARMOR_TYPE_WRAPPER : ArmorTypeWrapper::MakeCompleteSet())
+            {
+                if (ARMOR_TYPE_WRAPPER.IsSkin() == false)
+                {
+                    LoadDetailsForKey(ARMOR_TYPE_WRAPPER.DetailsKeyName());
+                }
+            }
         }
 
         void ArmorDetailLoader::LoadDetailsForKey(const std::string & ARMOR_NAME)

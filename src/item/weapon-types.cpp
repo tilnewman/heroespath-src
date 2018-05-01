@@ -39,9 +39,9 @@ namespace item
     namespace weapon
     {
 
-        const std::string sword_type::ToString(const sword_type::Enum E)
+        const std::string sword_type::ToString(const sword_type::Enum SWORD_TYPE)
         {
-            switch (E)
+            switch (SWORD_TYPE)
             {
                 case Claymore:
                 {
@@ -91,15 +91,28 @@ namespace item
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "item::weapon::sword_type::ToString(" << E << ")_InvalidValueError.";
+                    ss << "item::weapon::sword_type::ToString(" << SWORD_TYPE
+                       << ")_InvalidValueError.";
                     throw std::range_error(ss.str());
                 }
             }
         }
 
-        const std::string axe_type::ToString(const axe_type::Enum E)
+        const std::string sword_type::Name(const sword_type::Enum SWORD_TYPE)
         {
-            switch (E)
+            if (SWORD_TYPE == sword_type::Knightlysword)
+            {
+                return "Knightly";
+            }
+            else
+            {
+                return sword_type::ToString(SWORD_TYPE);
+            }
+        }
+
+        const std::string axe_type::ToString(const axe_type::Enum AXE_TYPE)
+        {
+            switch (AXE_TYPE)
             {
                 case Handaxe:
                 {
@@ -121,15 +134,45 @@ namespace item
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "item::weapon::axe_type::ToString(" << E << ")_InvalidValueError.";
+                    ss << "item::weapon::axe_type::ToString(" << AXE_TYPE << ")_InvalidValueError.";
                     throw std::range_error(ss.str());
                 }
             }
         }
 
-        const std::string club_type::ToString(const club_type::Enum E)
+        const std::string axe_type::Name(const axe_type::Enum AXE_TYPE)
         {
-            switch (E)
+            switch (AXE_TYPE)
+            {
+                case Handaxe:
+                {
+                    return "Hand";
+                }
+                case Sickle:
+                {
+                    return "Sickle";
+                }
+                case Battleaxe:
+                {
+                    return "Battle";
+                }
+                case Waraxe:
+                {
+                    return "War";
+                }
+                case Count:
+                default:
+                {
+                    std::ostringstream ss;
+                    ss << "item::weapon::axe_type::Name(" << AXE_TYPE << ")_InvalidValueError.";
+                    throw std::range_error(ss.str());
+                }
+            }
+        }
+
+        const std::string club_type::ToString(const club_type::Enum CLUB_TYPE)
+        {
+            switch (CLUB_TYPE)
             {
                 case Spiked:
                 {
@@ -151,15 +194,16 @@ namespace item
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "item::weapon::club_type::ToString(" << E << ")_InvalidValueError.";
+                    ss << "item::weapon::club_type::ToString(" << CLUB_TYPE
+                       << ")_InvalidValueError.";
                     throw std::range_error(ss.str());
                 }
             }
         }
 
-        const std::string whip_type::ToString(const whip_type::Enum E)
+        const std::string whip_type::ToString(const whip_type::Enum WHIP_TYPE)
         {
-            switch (E)
+            switch (WHIP_TYPE)
             {
                 case Bullwhip:
                 {
@@ -177,15 +221,28 @@ namespace item
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "item::weapon::whip_type::ToString(" << E << ")_InvalidValueError.";
+                    ss << "item::weapon::whip_type::ToString(" << WHIP_TYPE
+                       << ")_InvalidValueError.";
                     throw std::range_error(ss.str());
                 }
             }
         }
 
-        const std::string projectile_type::ToString(const projectile_type::Enum E)
+        const std::string whip_type::Name(const whip_type::Enum WHIP_TYPE)
         {
-            switch (E)
+            if (WHIP_TYPE == whip_type::MaceAndChain)
+            {
+                return "Mace And Chain";
+            }
+            else
+            {
+                return whip_type::ToString(WHIP_TYPE);
+            }
+        }
+
+        const std::string projectile_type::ToString(const projectile_type::Enum PROJECTILE_TYPE)
+        {
+            switch (PROJECTILE_TYPE)
             {
                 case Blowpipe:
                 {
@@ -215,15 +272,28 @@ namespace item
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "item::weapon::projectile_type::ToString(" << E << ")_InvalidValueError.";
+                    ss << "item::weapon::projectile_type::ToString(" << PROJECTILE_TYPE
+                       << ")_InvalidValueError.";
                     throw std::range_error(ss.str());
                 }
             }
         }
 
-        const std::string bladedstaff_type::ToString(const bladedstaff_type::Enum E)
+        const std::string projectile_type::Name(const projectile_type::Enum PROJECTILE_TYPE)
         {
-            switch (E)
+            if (PROJECTILE_TYPE == projectile_type::CompositeBow)
+            {
+                return "Composite Bow";
+            }
+            else
+            {
+                return projectile_type::ToString(PROJECTILE_TYPE);
+            }
+        }
+
+        const std::string bladedstaff_type::ToString(const bladedstaff_type::Enum BSTAFF_TYPE)
+        {
+            switch (BSTAFF_TYPE)
             {
                 case Spear:
                 {
@@ -253,12 +323,26 @@ namespace item
                 default:
                 {
                     std::ostringstream ss;
-                    ss << "item::weapon::bladedstaff_type::ToString(" << E
+                    ss << "item::weapon::bladedstaff_type::ToString(" << BSTAFF_TYPE
                        << ")_InvalidValueError.";
+
                     throw std::range_error(ss.str());
                 }
             }
         }
+
+        const std::string bladedstaff_type::Name(const bladedstaff_type::Enum BSTAFF_TYPE)
+        {
+            if (BSTAFF_TYPE == bladedstaff_type::ShortSpear)
+            {
+                return "Short Spear";
+            }
+            else
+            {
+                return bladedstaff_type::ToString(BSTAFF_TYPE);
+            }
+        }
+
     } // namespace weapon
 } // namespace item
 } // namespace heroespath

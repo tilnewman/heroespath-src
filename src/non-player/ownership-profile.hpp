@@ -45,7 +45,7 @@ namespace creature
 {
     class Creature;
     using CreaturePtr_t = misc::NotNull<Creature *>;
-}
+} // namespace creature
 namespace non_player
 {
     namespace ownership
@@ -90,7 +90,9 @@ namespace non_player
                 Collector = 1 << 2,
 
                 // often carries duplicates, especially items that cannot be used
-                Hoarder = 1 << 3
+                Hoarder = 1 << 3,
+
+                Last = Hoarder
             };
 
             static const std::string ToString(const collector_type::Enum);

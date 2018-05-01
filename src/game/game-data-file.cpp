@@ -30,7 +30,6 @@
 #include "game-data-file.hpp"
 
 #include "log/log-macros.hpp"
-
 #include "misc/boost-string-includes.hpp"
 #include "misc/platform.hpp"
 
@@ -84,7 +83,11 @@ namespace game
         M_ASSERT_OR_LOGANDTHROW_SS(
             (instanceUPtr_), "GameDataFile::Initialize() found instanceUPtr that was null.");
 
-        instanceUPtr_->config::ConfigBase::Load();
+        auto const LOAD_SUCCESS{ instanceUPtr_->config::ConfigBase::Load() };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (LOAD_SUCCESS),
+            "game::GameDataFile::Initialize() config::ConfigBase::Load() returned false.");
     }
 
     const std::string GameDataFile::GetMediaPath(const std::string & KEY) const

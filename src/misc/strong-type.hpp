@@ -41,8 +41,8 @@ namespace heroespath
 namespace misc
 {
 
-    // Responsible for wrapping types with a phantom tag parameter to make them stronger.
-    template <typename T, typename Parameter>
+    // Responsible for wrapping types with a phantom tag Parameter_t to make them stronger.
+    template <typename T, typename Parameter_t>
     struct StrongType
     {
         explicit StrongType(const T & VALUE = T())
@@ -97,6 +97,12 @@ namespace misc
             return this->m_value >= RHS.m_value;
         }
 
+        template <typename FromType_t>
+        static StrongType<T, Parameter_t> Make(const FromType_t FROM_VALUE)
+        {
+            return StrongType<T, Parameter_t>(static_cast<T>(FROM_VALUE));
+        }
+
     protected:
         T m_value;
 
@@ -109,8 +115,8 @@ namespace misc
         }
     };
 
-    template <typename T, typename Parameter>
-    std::ostream & operator<<(std::ostream & os, const StrongType<T, Parameter> & RHS)
+    template <typename T, typename Parameter_t>
+    std::ostream & operator<<(std::ostream & os, const StrongType<T, Parameter_t> & RHS)
     {
         os << RHS.Get();
         return os;

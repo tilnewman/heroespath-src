@@ -31,11 +31,10 @@
 
 #include "creature/creature.hpp"
 #include "game/game.hpp"
-#include "player/party.hpp"
-#include "state/game-state.hpp"
-
 #include "misc/random.hpp"
 #include "misc/real.hpp"
+#include "player/party.hpp"
+#include "state/game-state.hpp"
 
 #include <cmath>
 
@@ -133,7 +132,7 @@ namespace combat
         auto const SQRT_AVG_PLAYER_COUNT{ std::sqrt(
             static_cast<double>(playerCountRange_.Mid()) * 10.0) };
 
-        auto const SQRT_AVG_DAMAGE{ std::sqrt(damageRange_.Mid().As<float>() * 10.0) };
+        auto const SQRT_AVG_DAMAGE{ std::sqrt(damageRange_.Mid().As<double>() * 10.0) };
 
         return static_cast<int>(SQRT_AVG_PLAYER_COUNT * SQRT_AVG_DAMAGE);
     }
@@ -155,5 +154,6 @@ namespace combat
 
         return rankSum / Rank_t(static_cast<int>(CHARACTER_PTRS.size()));
     }
+
 } // namespace combat
 } // namespace heroespath

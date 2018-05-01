@@ -61,8 +61,13 @@ namespace non_player
         chance::MaterialChanceMap_t ChanceFactory::materialChanceMapCool_;
         chance::MaterialChanceMap_t ChanceFactory::materialChanceMapMetal_;
         chance::MaterialChanceMap_t ChanceFactory::materialChanceMapPrecious_;
+
         misc::VectorMap<creature::role::Enum, ChanceFactory::RoleArmorChanceVec_t>
             ChanceFactory::roleArmorChanceMap_{};
+
+        misc::VectorMap<creature::role::Enum, ChanceFactory::WeaponSetVec_t>
+            ChanceFactory::roleWeaponChanceMap_{};
+
         float ChanceFactory::masterRankMax_{ 0.0f };
         float ChanceFactory::clothingChanceMin_{ 0.0f };
         float ChanceFactory::clothingChanceMax_{ 0.0f };
@@ -120,6 +125,7 @@ namespace non_player
         {
             CacheGameDataFileFloats();
             CacheRoleArmorChances();
+            CacheRoleWeaponChances();
         }
 
         const chance::InventoryChances
@@ -367,7 +373,10 @@ namespace non_player
             weaponChances.has_claws = BODY.HasClaws();
             weaponChances.has_fists = (BODY.HasArms() && BODY.HasFingers());
             weaponChances.has_tendrils = BODY.HasTendrils();
-            weaponChances.has_breath = BODY.HasBreath();
+
+            weaponChances.has_breath = BODY.HasBreath()
+                && ((CHARACTER_PTR->Role() == creature::role::Firebrand)
+                    || (CHARACTER_PTR->Role() == creature::role::Sylavin));
 
             // enforce body-type/PROFILE.wealthType/PROFILE.wealthType
             // -what restrictions would there be when the weapon sets are
@@ -487,45 +496,44 @@ namespace non_player
 
                 // At this point numberSelectedVec contians a value of false
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.is_bite)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsBite())
                 {
                     weaponChances.has_bite = true;
                 }
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.is_claws)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsClaws())
                 {
                     weaponChances.has_claws = true;
                 }
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.is_fists)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsFists())
                 {
                     weaponChances.has_fists = true;
                 }
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.is_tendrils)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsTendrils())
                 {
                     weaponChances.has_tendrils = true;
                 }
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.is_breath)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsBreath())
                 {
                     weaponChances.has_breath = true;
                 }
 
                 using namespace item;
 
-                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.is_knife
-                    || NEXT_WEAPONINFO_CHANCE_PAIR.first.is_dagger)
+                if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsKnife()
+                    || NEXT_WEAPONINFO_CHANCE_PAIR.first.IsDagger())
                 {
                     // no need to check complexity because knives/daggers are simple
 
-                    const std::string WEAPON_NAME("Knife");
                     weaponChances.knife.SetCountChanceIncrementAndEquip(
                         NEXT_WEAPONINFO_CHANCE_PAIR.second);
 
-                    weaponChances.knife.is_dagger = NEXT_WEAPONINFO_CHANCE_PAIR.first.is_dagger;
+                    weaponChances.knife.is_dagger = NEXT_WEAPONINFO_CHANCE_PAIR.first.IsDagger();
 
-                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.knife_size == sfml_util::Size::Count)
+                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Size() == sfml_util::Size::Count)
                     {
                         Make_KnifeOrDaggerSizeChances(
                             CHARACTER_PTR->RankClass(), weaponChances.knife.size_map);
@@ -551,7 +559,7 @@ namespace non_player
                     }
 
                     PopulateWeaponMaterials(
-                        WEAPON_NAME,
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
                         typicalKnifePrimaryMaterials,
                         PROFILE,
                         CHARACTER_PTR,
@@ -559,25 +567,22 @@ namespace non_player
                         weaponChances.knife.mat_map_sec);
                 }
 
-                if ((NEXT_WEAPONINFO_CHANCE_PAIR.first.is_staff)
-                    || (NEXT_WEAPONINFO_CHANCE_PAIR.first.is_quarterstaff))
+                if ((NEXT_WEAPONINFO_CHANCE_PAIR.first.IsStaff())
+                    || (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsQuarterstaff()))
                 {
                     // no need to check complexity because using a staff/quarterstaff is simple
-                    const std::string WEAPON_NAME(
-                        (NEXT_WEAPONINFO_CHANCE_PAIR.first.is_quarterstaff) ? "Quarterstaff"
-                                                                            : "Staff");
 
                     weaponChances.staff.SetCountChanceIncrementAndEquip(
                         NEXT_WEAPONINFO_CHANCE_PAIR.second);
 
                     weaponChances.staff.is_quarterstaff
-                        = NEXT_WEAPONINFO_CHANCE_PAIR.first.is_quarterstaff;
+                        = NEXT_WEAPONINFO_CHANCE_PAIR.first.IsQuarterstaff();
 
                     chance::MaterialChanceMap_t typicalStaffPrimaryMaterials;
                     typicalStaffPrimaryMaterials[material::Wood] = 1.0f;
 
                     PopulateWeaponMaterials(
-                        WEAPON_NAME,
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
                         typicalStaffPrimaryMaterials,
                         PROFILE,
                         CHARACTER_PTR,
@@ -589,30 +594,29 @@ namespace non_player
                     chance::MaterialChanceMap_t typicalAxePrimaryMaterials;
                     typicalAxePrimaryMaterials[material::Wood] = 1.0f;
 
-                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.axe != weapon::axe_type::Count)
+                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsAxe())
                     {
                         SetWeaponChances<weapon::axe_type::Enum>(
-                            weapon::axe_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.axe),
-                            NEXT_WEAPONINFO_CHANCE_PAIR.first.axe,
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.AxeType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
                             PROFILE,
                             CHARACTER_PTR,
                             typicalAxePrimaryMaterials,
                             weaponChances.axe_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::Axe)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::Axe)
                     {
-                        const float CHANCE_PER_WEAPON(
-                            NEXT_WEAPONINFO_CHANCE_PAIR.second
-                            / static_cast<float>(weapon::axe_type::Count));
+                        auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
+                                                      / static_cast<float>(
+                                                            weapon::axe_type::Count) };
 
-                        for (int i(0); i < weapon::axe_type::Count; ++i)
+                        for (auto const & WEAPON_TYPE_WRAPPER :
+                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::axe_type>())
                         {
-                            auto const TYPE(static_cast<weapon::axe_type::Enum>(i));
-
                             SetWeaponChances<weapon::axe_type::Enum>(
-                                weapon::axe_type::ToString(TYPE),
-                                TYPE,
+                                WEAPON_TYPE_WRAPPER.DetailsKeyName(),
+                                WEAPON_TYPE_WRAPPER.AxeType(),
                                 CHANCE_PER_WEAPON,
                                 PROFILE,
                                 CHARACTER_PTR,
@@ -626,32 +630,30 @@ namespace non_player
                     chance::MaterialChanceMap_t typicalBladedStaffPrimaryMaterials;
                     typicalBladedStaffPrimaryMaterials[material::Wood] = 1.0f;
 
-                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.bladedstaff
-                        != weapon::bladedstaff_type::Count)
+                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsBladedStaff())
                     {
                         SetWeaponChances<weapon::bladedstaff_type::Enum>(
-                            weapon::bladedstaff_type::ToString(
-                                NEXT_WEAPONINFO_CHANCE_PAIR.first.bladedstaff),
-                            NEXT_WEAPONINFO_CHANCE_PAIR.first.bladedstaff,
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.BladedStaffType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
                             PROFILE,
                             CHARACTER_PTR,
                             typicalBladedStaffPrimaryMaterials,
                             weaponChances.bladedstaff_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::BladedStaff)
+                    else if (
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::BladedStaff)
                     {
-                        const float CHANCE_PER_WEAPON(
-                            NEXT_WEAPONINFO_CHANCE_PAIR.second
-                            / static_cast<float>(weapon::bladedstaff_type::Count));
+                        auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
+                                                      / static_cast<float>(
+                                                            weapon::bladedstaff_type::Count) };
 
-                        for (int i(0); i < weapon::bladedstaff_type::Count; ++i)
+                        for (auto const & WEAPON_TYPE_WRAPPER :
+                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::bladedstaff_type>())
                         {
-                            auto const TYPE(static_cast<weapon::bladedstaff_type::Enum>(i));
-
                             SetWeaponChances<weapon::bladedstaff_type::Enum>(
-                                weapon::bladedstaff_type::ToString(TYPE),
-                                TYPE,
+                                WEAPON_TYPE_WRAPPER.DetailsKeyName(),
+                                WEAPON_TYPE_WRAPPER.BladedStaffType(),
                                 CHANCE_PER_WEAPON,
                                 PROFILE,
                                 CHARACTER_PTR,
@@ -665,30 +667,29 @@ namespace non_player
                     chance::MaterialChanceMap_t typicalClubPrimaryMaterials;
                     typicalClubPrimaryMaterials[material::Wood] = 1.0f;
 
-                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.club != weapon::club_type::Count)
+                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsClub())
                     {
                         SetWeaponChances<weapon::club_type::Enum>(
-                            weapon::club_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.club),
-                            NEXT_WEAPONINFO_CHANCE_PAIR.first.club,
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.ClubType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
                             PROFILE,
                             CHARACTER_PTR,
                             typicalClubPrimaryMaterials,
                             weaponChances.club_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::Club)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::Club)
                     {
-                        const float CHANCE_PER_WEAPON(
-                            NEXT_WEAPONINFO_CHANCE_PAIR.second
-                            / static_cast<float>(weapon::club_type::Count));
+                        auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
+                                                      / static_cast<float>(
+                                                            weapon::club_type::Count) };
 
-                        for (int i(0); i < weapon::club_type::Count; ++i)
+                        for (auto const & WEAPON_TYPE_WRAPPER :
+                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::club_type>())
                         {
-                            auto const TYPE(static_cast<weapon::club_type::Enum>(i));
-
                             SetWeaponChances<weapon::club_type::Enum>(
-                                weapon::club_type::ToString(TYPE),
-                                TYPE,
+                                WEAPON_TYPE_WRAPPER.DetailsKeyName(),
+                                WEAPON_TYPE_WRAPPER.ClubType(),
                                 CHANCE_PER_WEAPON,
                                 PROFILE,
                                 CHARACTER_PTR,
@@ -702,32 +703,30 @@ namespace non_player
                     chance::MaterialChanceMap_t typicalProjectilePrimaryMaterials;
                     typicalProjectilePrimaryMaterials[material::Wood] = 1.0f;
 
-                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.projectile
-                        != weapon::projectile_type::Count)
+                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsProjectile())
                     {
                         SetWeaponChances<weapon::projectile_type::Enum>(
-                            weapon::projectile_type::ToString(
-                                NEXT_WEAPONINFO_CHANCE_PAIR.first.projectile),
-                            NEXT_WEAPONINFO_CHANCE_PAIR.first.projectile,
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.ProjectileType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
                             PROFILE,
                             CHARACTER_PTR,
                             typicalProjectilePrimaryMaterials,
                             weaponChances.projectile_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::Projectile)
+                    else if (
+                        NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::Projectile)
                     {
-                        const float CHANCE_PER_WEAPON(
-                            NEXT_WEAPONINFO_CHANCE_PAIR.second
-                            / static_cast<float>(weapon::projectile_type::Count));
+                        auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
+                                                      / static_cast<float>(
+                                                            weapon::projectile_type::Count) };
 
-                        for (int i(0); i < weapon::projectile_type::Count; ++i)
+                        for (auto const & WEAPON_TYPE_WRAPPER :
+                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::projectile_type>())
                         {
-                            auto const TYPE{ static_cast<weapon::projectile_type::Enum>(i) };
-
                             SetWeaponChances<weapon::projectile_type::Enum>(
-                                weapon::projectile_type::ToString(TYPE),
-                                TYPE,
+                                WEAPON_TYPE_WRAPPER.DetailsKeyName(),
+                                WEAPON_TYPE_WRAPPER.ProjectileType(),
                                 CHANCE_PER_WEAPON,
                                 PROFILE,
                                 CHARACTER_PTR,
@@ -741,30 +740,29 @@ namespace non_player
                     chance::MaterialChanceMap_t typicalSwordPrimaryMaterials;
                     typicalSwordPrimaryMaterials[material::Steel] = 1.0f;
 
-                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.sword != weapon::sword_type::Count)
+                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsSword())
                     {
                         SetWeaponChances<weapon::sword_type::Enum>(
-                            weapon::sword_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.sword),
-                            NEXT_WEAPONINFO_CHANCE_PAIR.first.sword,
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.SwordType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
                             PROFILE,
                             CHARACTER_PTR,
                             typicalSwordPrimaryMaterials,
                             weaponChances.sword_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::Sword)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::Sword)
                     {
-                        const float CHANCE_PER_WEAPON(
-                            NEXT_WEAPONINFO_CHANCE_PAIR.second
-                            / static_cast<float>(weapon::sword_type::Count));
+                        auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
+                                                      / static_cast<float>(
+                                                            weapon::sword_type::Count) };
 
-                        for (int i(0); i < weapon::sword_type::Count; ++i)
+                        for (auto const & WEAPON_TYPE_WRAPPER :
+                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::sword_type>())
                         {
-                            auto const TYPE(static_cast<weapon::sword_type::Enum>(i));
-
                             SetWeaponChances<weapon::sword_type::Enum>(
-                                weapon::sword_type::ToString(TYPE),
-                                TYPE,
+                                WEAPON_TYPE_WRAPPER.DetailsKeyName(),
+                                WEAPON_TYPE_WRAPPER.SwordType(),
                                 CHANCE_PER_WEAPON,
                                 PROFILE,
                                 CHARACTER_PTR,
@@ -790,34 +788,34 @@ namespace non_player
                         return typicalWhipPrimaryMaterials;
                     } };
 
-                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.whip != weapon::whip_type::Count)
+                    if (NEXT_WEAPONINFO_CHANCE_PAIR.first.IsWhip())
                     {
                         SetWeaponChances<weapon::whip_type::Enum>(
-                            weapon::whip_type::ToString(NEXT_WEAPONINFO_CHANCE_PAIR.first.whip),
-                            NEXT_WEAPONINFO_CHANCE_PAIR.first.whip,
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.DetailsKeyName(),
+                            NEXT_WEAPONINFO_CHANCE_PAIR.first.WhipType(),
                             NEXT_WEAPONINFO_CHANCE_PAIR.second,
                             PROFILE,
                             CHARACTER_PTR,
-                            whipMaterialChanceMapMaker(NEXT_WEAPONINFO_CHANCE_PAIR.first.whip),
+                            whipMaterialChanceMapMaker(
+                                NEXT_WEAPONINFO_CHANCE_PAIR.first.WhipType()),
                             weaponChances.whip_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.type == weapon_type::Whip)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::Whip)
                     {
                         auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                       / static_cast<float>(
                                                             weapon::whip_type::Count) };
 
-                        for (int i(0); i < weapon::whip_type::Count; ++i)
+                        for (auto const & WEAPON_TYPE_WRAPPER :
+                             weapon::WeaponTypeWrapper::MakeSpecificSet<weapon::whip_type>())
                         {
-                            auto const WHIP_TYPE(static_cast<weapon::whip_type::Enum>(i));
-
                             SetWeaponChances<weapon::whip_type::Enum>(
-                                weapon::whip_type::ToString(WHIP_TYPE),
-                                WHIP_TYPE,
+                                WEAPON_TYPE_WRAPPER.DetailsKeyName(),
+                                WEAPON_TYPE_WRAPPER.WhipType(),
                                 CHANCE_PER_WEAPON,
                                 PROFILE,
                                 CHARACTER_PTR,
-                                whipMaterialChanceMapMaker(WHIP_TYPE),
+                                whipMaterialChanceMapMaker(WEAPON_TYPE_WRAPPER.WhipType()),
                                 weaponChances.whip_map);
                         }
                     }
@@ -837,177 +835,49 @@ namespace non_player
 
             for (auto const & ROLE_ARMOR_CHANCE : roleArmorChanceMap_[CHARACTER_PTR->Role()])
             {
-                if (ROLE_ARMOR_CHANCE.name_short == "Shirt")
+                if (ROLE_ARMOR_CHANCE.type_wrapper.IsShirt())
                 {
                     SetArmorChancesGeneral(
-                        armorChances.shirt,
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.base_type,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        false);
+                        armorChances.shirt, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
                 }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Pants")
+                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsPants())
                 {
                     SetArmorChancesGeneral(
-                        armorChances.pants,
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.base_type,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        false);
+                        armorChances.pants, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
                 }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Boots")
+                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsBoots())
                 {
                     SetArmorChancesGeneral(
-                        armorChances.boots,
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.base_type,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        false);
+                        armorChances.boots, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
                 }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Gauntlets")
+                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsGauntlets())
                 {
                     SetArmorChancesGeneral(
-                        armorChances.gauntlets,
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.base_type,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        false);
+                        armorChances.gauntlets, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
                 }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Aventail")
+                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsAventail())
                 {
                     SetArmorChancesGeneral(
-                        armorChances.aventail,
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.base_type,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        false);
+                        armorChances.aventail, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
                 }
-
-                // shields
-                if (ROLE_ARMOR_CHANCE.name_short == "Buckler")
+                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsShield())
                 {
                     SetArmorChancesSpecific(
-                        armorChances.shield_map[item::armor::shield_type::Buckler],
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.chance,
+                        armorChances.shield_map[ROLE_ARMOR_CHANCE.type_wrapper.ShieldType()],
+                        ROLE_ARMOR_CHANCE,
                         PROFILE,
                         CHARACTER_PTR,
                         true);
                 }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Kite")
+                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsHelm())
                 {
                     SetArmorChancesSpecific(
-                        armorChances.shield_map[item::armor::shield_type::Kite],
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        true);
-                }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Heater")
-                {
-                    SetArmorChancesSpecific(
-                        armorChances.shield_map[item::armor::shield_type::Heater],
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        true);
-                }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Pavis")
-                {
-                    SetArmorChancesSpecific(
-                        armorChances.shield_map[item::armor::shield_type::Pavis],
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        true);
-                }
-
-                // helms
-                if (ROLE_ARMOR_CHANCE.name_short == "Leather")
-                {
-                    SetArmorChancesSpecific(
-                        armorChances.helm_map[item::armor::helm_type::Leather],
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.chance,
+                        armorChances.helm_map[ROLE_ARMOR_CHANCE.type_wrapper.HelmType()],
+                        ROLE_ARMOR_CHANCE,
                         PROFILE,
                         CHARACTER_PTR,
                         false,
                         item::material::HardLeather);
-                }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "MailCoif")
-                {
-                    SetArmorChancesSpecific(
-                        armorChances.helm_map[item::armor::helm_type::MailCoif],
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        true);
-                }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Kettle")
-                {
-                    SetArmorChancesSpecific(
-                        armorChances.helm_map[item::armor::helm_type::Kettle],
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        true);
-                }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Archers")
-                {
-                    SetArmorChancesSpecific(
-                        armorChances.helm_map[item::armor::helm_type::Archers],
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        true);
-                }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Bascinet")
-                {
-                    SetArmorChancesSpecific(
-                        armorChances.helm_map[item::armor::helm_type::Bascinet],
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        true);
-                }
-
-                if (ROLE_ARMOR_CHANCE.name_short == "Great")
-                {
-                    SetArmorChancesSpecific(
-                        armorChances.helm_map[item::armor::helm_type::Great],
-                        ROLE_ARMOR_CHANCE.name_complete,
-                        ROLE_ARMOR_CHANCE.chance,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        true);
                 }
             }
         }
@@ -1015,130 +885,13 @@ namespace non_player
         void ChanceFactory::LookupPossibleWeaponsByRole(
             const creature::role::Enum ROLE, WeaponSetVec_t & weaponSetVec_OutParam)
         {
-            using namespace boost::algorithm;
+            auto const WAS_FOUND{ roleWeaponChanceMap_.Find(ROLE, weaponSetVec_OutParam) };
 
-            using StrVec_t = std::vector<std::string>;
-
-            auto const ROLE_STR{ creature::role::ToString(ROLE) };
-            const std::string KEY_STR("heroespath-nonplayer-weapon-chances-role-" + ROLE_STR);
-
-            auto const VALUE_STR_LOWER{ to_lower_copy(
-                game::GameDataFile::Instance()->GetCopyStr(KEY_STR)) };
-
-            StrVec_t weaponSetVec;
-            appbase::stringhelp::SplitByChars(VALUE_STR_LOWER, weaponSetVec, "{}", true, true);
-
-            // Loop over each weapon set, denoted by curly brackets {} in the GameDataFile.
-            for (auto const & NEXT_WEAPON_SET_STR : weaponSetVec)
-            {
-                WeaponSet nextWeaponSet;
-
-                StrVec_t instructionsVec;
-                appbase::stringhelp::SplitByChar(
-                    NEXT_WEAPON_SET_STR, instructionsVec, '|', true, true);
-
-                // Loop over each instruction, denoted by the pipe character in the GameDataFile.
-                // A collection of instructions composes a WeaponSet
-                for (auto const & NEXT_INSTRUCTION_STR : instructionsVec)
-                {
-                    if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, "["))
-                    {
-                        auto const PICK_CSTR{ "[pick-" };
-                        if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, PICK_CSTR))
-                        {
-                            // assume the instruction takes the form: [pick-<number>],
-                            // where <number> must be a positive integer greater than zero
-                            auto const COUNT_STR{ erase_first_copy(
-                                erase_first_copy(NEXT_INSTRUCTION_STR, PICK_CSTR), "]") };
-
-                            try
-                            {
-                                nextWeaponSet.count = boost::lexical_cast<std::size_t>(COUNT_STR);
-                            }
-                            catch (...)
-                            {
-                                nextWeaponSet.count = 0;
-                            }
-
-                            M_ASSERT_OR_LOGANDTHROW_SS(
-                                (nextWeaponSet.count > 0),
-                                "non_player::ownership::LookupPossibleWeaponsByRole(role="
-                                    << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
-                                    << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
-                                    << NEXT_INSTRUCTION_STR
-                                    << "\" and parsed pick count string to be \"" << COUNT_STR
-                                    << "\", but failed to convert it into a valid (> zero) "
-                                       "std::size_t.  "
-                                    << "It was converted into " << nextWeaponSet.count << ".");
-                        }
-                        else if (NEXT_INSTRUCTION_STR == "[body]")
-                        {
-                            nextWeaponSet.chanceMap.Clear();
-                        }
-                        else
-                        {
-                            M_HP_LOG(
-                                "non_player::ownership::LookupPossibleWeaponsByRole(role="
-                                << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
-                                << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
-                                << NEXT_INSTRUCTION_STR
-                                << "\" which was not recognized, and will be ignored.");
-                        }
-                    }
-                    else
-                    {
-                        // At this point, assume the instruction is in the form of:
-                        // <weapon name>,<chance float> or (<weapon name>),<chance float>
-                        //-so it must have two comma separated strings.
-                        StrVec_t partsVec;
-                        appbase::stringhelp::SplitByChar(
-                            NEXT_INSTRUCTION_STR, partsVec, ',', true, true);
-
-                        M_ASSERT_OR_LOGANDTHROW_SS(
-                            ((partsVec.size() > 1) && (partsVec.at(0).size() > 2)
-                             && (partsVec.at(1).size() > 2)),
-                            "non_player::ownership::LookupPossibleWeaponsByRole(role="
-                                << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
-                                << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
-                                << NEXT_INSTRUCTION_STR
-                                << "\" but was unable to parse as at least two strings separated "
-                                   "by "
-                                << "a comma.");
-
-                        auto const WEAPON_NAME{ partsVec[0] };
-                        auto const CHANCE_STR{ partsVec[1] };
-
-                        // parse weapon name and type
-                        const item::weapon::WeaponInfo WEAPON_INFO(
-                            item::weapon_type::NotAWeapon, WEAPON_NAME);
-
-                        // parse weapon chance
-                        float chance(0.0f);
-                        try
-                        {
-                            chance = boost::lexical_cast<float>(CHANCE_STR);
-                        }
-                        catch (...)
-                        {
-                            chance = -1.0f;
-                        }
-
-                        M_ASSERT_OR_LOGANDTHROW_SS(
-                            (chance > 0.0f),
-                            "non_player::ownership::LookupPossibleWeaponsByRole(role="
-                                << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
-                                << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
-                                << NEXT_INSTRUCTION_STR << "\", weapon name=\"" << WEAPON_NAME
-                                << "\", and chance str=\"" << CHANCE_STR
-                                << "\", but was unable to convert this into a valid "
-                                << "(> zero) float.  Converted instead to:" << chance << ".");
-
-                        nextWeaponSet.chanceMap[WEAPON_INFO] = chance;
-                    }
-                }
-
-                weaponSetVec_OutParam.emplace_back(nextWeaponSet);
-            }
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (WAS_FOUND),
+                "non_player::ownership::ChanceFactory::LookupPossibleWeaponsByRole(role="
+                    << creature::role::ToString(ROLE)
+                    << ") was unable to find that role in the map.");
         }
 
         float ChanceFactory::GetFloatFromGameDataFile(
@@ -1635,7 +1388,7 @@ namespace non_player
                 const chance::MaterialVec_t MATERIAL_VEC
                     = { item::material::Stone,    item::material::Bone,   item::material::Horn,
                         item::material::Tooth,    item::material::Bronze, item::material::Jade,
-                        item::material::Obsidian, item::material::Scale,  item::material::Lazuli,
+                        item::material::Obsidian, item::material::Scales, item::material::Lazuli,
                         item::material::Gold,     item::material::Pearl };
 
                 materialChanceMapCool_ = Make_MaterialChanceMap(
@@ -1832,10 +1585,9 @@ namespace non_player
             // enforce creature complexity type restrictions on which materials are possible
             if (COMPLEXITY == complexity_type::Simple)
             {
-                chanceMapCool[item::material::Scale] = 0.0f;
+                chanceMapCool[item::material::Scales] = 0.0f;
                 chanceMapCool[item::material::Gold] = 0.0f;
                 chanceMapCool[item::material::Pearl] = 0.0f;
-                chanceMapCool[item::material::Scale] = 0.0f;
                 NormalizeChanceMap<item::material::Enum>(chanceMapCool);
 
                 chanceMetal = 0.0f;
@@ -1846,7 +1598,7 @@ namespace non_player
             {
                 chanceMapCool[item::material::Gold] = 0.0f;
                 chanceMapCool[item::material::Pearl] = 0.0f;
-                chanceMapCool[item::material::Scale] = 0.0f;
+                chanceMapCool[item::material::Scales] = 0.0f;
                 NormalizeChanceMap<item::material::Enum>(chanceMapCool);
 
                 chanceMapMetal[item::material::Steel] = 0.0f;
@@ -1898,14 +1650,13 @@ namespace non_player
 
         void ChanceFactory::SetArmorChancesGeneral(
             chance::ArmorItemChances & armorItemChances,
-            const std::string & COMPLETE_NAME,
-            const item::armor::base_type::Enum TYPE,
-            const float CHANCE,
+            const RoleArmorChance & ROLE_ARMOR_CHANCE,
             const Profile & PROFILE,
             const creature::CreaturePtr_t CREATURE_PTR,
             const bool WILL_MATERIALS_INCLUDED_WOOD)
         {
-            auto const DETAILS{ item::armor::ArmorDetailLoader::LookupArmorDetails(COMPLETE_NAME) };
+            auto const DETAILS{ item::armor::ArmorDetailLoader::LookupArmorDetails(
+                ROLE_ARMOR_CHANCE.type_wrapper.DetailsKeyName()) };
 
             if (PROFILE.complexityType < DETAILS.complexity)
             {
@@ -1914,8 +1665,9 @@ namespace non_player
             }
             else
             {
-                armorItemChances.SetCountChanceIncrementAndEquip(CHANCE);
-                armorItemChances.type_map[TYPE] = CHANCE;
+                armorItemChances.SetCountChanceIncrementAndEquip(ROLE_ARMOR_CHANCE.chance);
+                armorItemChances.type_map[ROLE_ARMOR_CHANCE.type_wrapper.BaseType()]
+                    = ROLE_ARMOR_CHANCE.chance;
 
                 PopulatMaterials(
                     MakeTypicalArmorMaterials(PROFILE, CREATURE_PTR, WILL_MATERIALS_INCLUDED_WOOD),
@@ -1929,14 +1681,14 @@ namespace non_player
 
         void ChanceFactory::SetArmorChancesSpecific(
             chance::ItemChances & itemChances,
-            const std::string & COMPLETE_NAME,
-            const float CHANCE,
+            const RoleArmorChance & ROLE_ARMOR_CHANCE,
             const Profile & PROFILE,
             const creature::CreaturePtr_t CHARACTER_PTR,
             const bool WILL_MATERIALS_INCLUDED_WOOD,
             const item::material::Enum FORCED_PRIMARY_MATERIAL)
         {
-            auto const DETAILS{ item::armor::ArmorDetailLoader::LookupArmorDetails(COMPLETE_NAME) };
+            auto const DETAILS{ item::armor::ArmorDetailLoader::LookupArmorDetails(
+                ROLE_ARMOR_CHANCE.type_wrapper.DetailsKeyName()) };
 
             if (PROFILE.complexityType < DETAILS.complexity)
             {
@@ -1944,7 +1696,7 @@ namespace non_player
             }
             else
             {
-                itemChances.SetCountChanceIncrementAndEquip(CHANCE);
+                itemChances.SetCountChanceIncrementAndEquip(ROLE_ARMOR_CHANCE.chance);
 
                 PopulatMaterials(
                     MakeTypicalArmorMaterials(PROFILE, CHARACTER_PTR, WILL_MATERIALS_INCLUDED_WOOD),
@@ -1983,7 +1735,7 @@ namespace non_player
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (piecesVec.size() >= 2),
-                        "non_player::ownership::ChanceFactory::Initialize() role=\""
+                        "non_player::ownership::ChanceFactory::CacheRoleArmorChances() role=\""
                             << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                             << "\" which failed to be parsed into the required 2  or more comma "
                                "sep "
@@ -2005,7 +1757,7 @@ namespace non_player
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         (misc::IsRealClose(INVALID_CHANCE, armorChanceVal) == false),
-                        "non_player::ownership::ChanceFactory::Initialize() role=\""
+                        "non_player::ownership::ChanceFactory::CacheRoleArmorChances() role=\""
                             << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                             << "\" which had float str=\"" << ARMOR_CHANCE_STR
                             << "\" val=" << armorChanceVal
@@ -2021,15 +1773,15 @@ namespace non_player
 
                     using namespace item::armor;
 
-                    auto const HAS_TYPE_STR{ piecesVec.size() > 2 };
-                    auto const ARMOR_TYPE_STR{ piecesVec[1] };
-                    auto const ARMOR_TYPE{ base_type::FromString(ARMOR_TYPE_STR) };
+                    auto const HAS_BASE_TYPE_STR{ piecesVec.size() > 2 };
+                    auto const BASE_TYPE_STR{ piecesVec[1] };
+                    auto const BASE_TYPE_ENUM{ base_type::FromString(BASE_TYPE_STR) };
 
-                    if (HAS_TYPE_STR)
+                    if (HAS_BASE_TYPE_STR)
                     {
                         M_ASSERT_OR_LOGANDTHROW_SS(
-                            (ARMOR_TYPE != base_type::Count),
-                            "non_player::ownership::ChanceFactor::Initialize() role=\""
+                            (BASE_TYPE_ENUM != base_type::Count),
+                            "non_player::ownership::ChanceFactor::CacheRoleArmorChances() role=\""
                                 << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                                 << "\" which had more than two comma sep fields, but the second "
                                    "field "
@@ -2037,8 +1789,8 @@ namespace non_player
                                 << "to be parsed as a valid item::armor::base_type::Enum.");
 
                         M_ASSERT_OR_LOGANDTHROW_SS(
-                            (ARMOR_TYPE != base_type::Plain),
-                            "non_player::ownership::ChanceFactor::Initialize() role=\""
+                            (BASE_TYPE_ENUM != base_type::Plain),
+                            "non_player::ownership::ChanceFactor::CacheRoleArmorChances() role=\""
                                 << ROLE_STR << "\") found value-str=\"" << VALUE_STR
                                 << "\" which had more than two comma sep fields, but the second "
                                    "field "
@@ -2047,15 +1799,179 @@ namespace non_player
                                    "item::armor::base_type::Enum.");
                     }
 
-                    auto const ARMOR_NAME_COMPLETE_STR{ ((HAS_TYPE_STR) ? ARMOR_TYPE_STR : "")
-                                                        + ARMOR_NAME_STR };
+                    const item::armor::ArmorTypeWrapper ARMOR_TYPE_WRAPPER(
+                        ARMOR_NAME_STR, base_type::Count, true);
 
-                    roleArmorChanceVec.emplace_back(RoleArmorChance(
-                        ARMOR_NAME_STR, ARMOR_NAME_COMPLETE_STR, armorChanceVal, ARMOR_TYPE));
+                    M_ASSERT_OR_LOGANDTHROW_SS(
+                        (ARMOR_TYPE_WRAPPER.IsValid()),
+                        "non_player::ownership::ChanceFactor::CacheRoleArmorChances() role = \""
+                            << ROLE_STR << "\", NEXT_ARMOR_CHANCE_STR=\"" << NEXT_ARMOR_CHANCE_STR
+                            << "\", failed to create a valid ArmorTypeWrapper.");
+
+                    roleArmorChanceVec.emplace_back(
+                        RoleArmorChance(ARMOR_TYPE_WRAPPER, armorChanceVal));
                 }
 
                 roleArmorChanceMap_[ROLE] = roleArmorChanceVec;
             }
+        }
+
+        void ChanceFactory::CacheRoleWeaponChances()
+        {
+            roleWeaponChanceMap_.Clear();
+
+            for (int i(0); i < creature::role::Count; ++i)
+            {
+                auto const ROLE{ static_cast<creature::role::Enum>(i) };
+                roleWeaponChanceMap_[ROLE] = GetRoleWeaponChances(ROLE);
+            }
+        }
+
+        const ChanceFactory::WeaponSetVec_t
+            ChanceFactory::GetRoleWeaponChances(const creature::role::Enum ROLE)
+        {
+            ChanceFactory::WeaponSetVec_t weaponSets;
+
+            using namespace boost::algorithm;
+
+            using StrVec_t = std::vector<std::string>;
+
+            auto const ROLE_STR{ creature::role::ToString(ROLE) };
+            const std::string KEY_STR("heroespath-nonplayer-weapon-chances-role-" + ROLE_STR);
+
+            auto const VALUE_STR_LOWER{ to_lower_copy(
+                game::GameDataFile::Instance()->GetCopyStr(KEY_STR)) };
+
+            StrVec_t weaponSetVec;
+            appbase::stringhelp::SplitByChars(VALUE_STR_LOWER, weaponSetVec, "{}", true, true);
+
+            // Loop over each weapon set, denoted by curly brackets {} in the GameDataFile.
+            for (auto const & NEXT_WEAPON_SET_STR : weaponSetVec)
+            {
+                WeaponSet nextWeaponSet;
+
+                StrVec_t instructionsVec;
+                appbase::stringhelp::SplitByChar(
+                    NEXT_WEAPON_SET_STR, instructionsVec, '|', true, true);
+
+                // Loop over each instruction, denoted by the pipe character in the GameDataFile.
+                // A collection of instructions composes a WeaponSet
+                for (auto const & NEXT_INSTRUCTION_STR : instructionsVec)
+                {
+                    if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, "["))
+                    {
+                        auto const PICK_CSTR{ "[pick-" };
+                        if (boost::algorithm::starts_with(NEXT_INSTRUCTION_STR, PICK_CSTR))
+                        {
+                            // assume the instruction takes the form: [pick-<number>],
+                            // where <number> must be a positive integer greater than zero
+                            auto const COUNT_STR{ erase_first_copy(
+                                erase_first_copy(NEXT_INSTRUCTION_STR, PICK_CSTR), "]") };
+
+                            try
+                            {
+                                nextWeaponSet.count = boost::lexical_cast<std::size_t>(COUNT_STR);
+                            }
+                            catch (...)
+                            {
+                                nextWeaponSet.count = 0;
+                            }
+
+                            M_ASSERT_OR_LOGANDTHROW_SS(
+                                (nextWeaponSet.count > 0),
+                                "non_player::ownership::LookupPossibleWeaponsByRole(role="
+                                    << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
+                                    << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
+                                    << NEXT_INSTRUCTION_STR
+                                    << "\" and parsed pick count string to be \"" << COUNT_STR
+                                    << "\", but failed to convert it into a valid (> zero) "
+                                       "std::size_t.  "
+                                    << "It was converted into " << nextWeaponSet.count << ".");
+                        }
+                        else if (NEXT_INSTRUCTION_STR == "[body]")
+                        {
+                            nextWeaponSet.chanceMap.Clear();
+                        }
+                        else
+                        {
+                            M_HP_LOG(
+                                "non_player::ownership::LookupPossibleWeaponsByRole(role="
+                                << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
+                                << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
+                                << NEXT_INSTRUCTION_STR
+                                << "\" which was not recognized, and will be ignored.");
+                        }
+                    }
+                    else
+                    {
+                        // At this point, assume the instruction is in the form of:
+                        // <weapon name>,<chance float> or (<weapon name>),<chance float>
+                        //-so it must have two comma separated strings.
+                        StrVec_t partsVec;
+                        appbase::stringhelp::SplitByChar(
+                            NEXT_INSTRUCTION_STR, partsVec, ',', true, true);
+
+                        M_ASSERT_OR_LOGANDTHROW_SS(
+                            ((partsVec.size() > 1) && (partsVec.at(0).size() > 2)
+                             && (partsVec.at(1).size() > 2)),
+                            "non_player::ownership::LookupPossibleWeaponsByRole(role="
+                                << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
+                                << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
+                                << NEXT_INSTRUCTION_STR
+                                << "\" but was unable to parse as at least two strings separated "
+                                   "by "
+                                << "a comma.");
+
+                        auto const WEAPON_NAME{ partsVec[0] };
+                        auto const CHANCE_STR{ partsVec[1] };
+
+                        // parse weapon name and type, if knife or dagger then assume size is medium
+                        auto const IS_WEAPON_NAME_KNIFE{
+                            boost::algorithm::to_lower_copy(
+                                item::weapon_type::Name(item::weapon_type::Knife))
+                            == boost::algorithm::to_lower_copy(WEAPON_NAME)
+                        };
+                        auto const IS_WEAPON_NAME_DAGGER{
+                            boost::algorithm::to_lower_copy(
+                                item::weapon::WeaponTypeWrapper::DAGGER_NAME_)
+                            == boost::algorithm::to_lower_copy(WEAPON_NAME)
+                        };
+
+                        const item::weapon::WeaponTypeWrapper WEAPON_INFO(
+                            WEAPON_NAME,
+                            ((IS_WEAPON_NAME_KNIFE || IS_WEAPON_NAME_DAGGER)
+                                 ? sfml_util::Size::Medium
+                                 : sfml_util::Size::Count));
+
+                        // parse weapon chance
+                        float chance(0.0f);
+                        try
+                        {
+                            chance = boost::lexical_cast<float>(CHANCE_STR);
+                        }
+                        catch (...)
+                        {
+                            chance = -1.0f;
+                        }
+
+                        M_ASSERT_OR_LOGANDTHROW_SS(
+                            (chance > 0.0f),
+                            "non_player::ownership::LookupPossibleWeaponsByRole(role="
+                                << ROLE_STR << ") with KEY=\"" << KEY_STR << "\" and VALUE=\""
+                                << VALUE_STR_LOWER << "\" found INSTRUCTION=\""
+                                << NEXT_INSTRUCTION_STR << "\", weapon name=\"" << WEAPON_NAME
+                                << "\", and chance str=\"" << CHANCE_STR
+                                << "\", but was unable to convert this into a valid "
+                                << "(> zero) float.  Converted instead to:" << chance << ".");
+
+                        nextWeaponSet.chanceMap[WEAPON_INFO] = chance;
+                    }
+                }
+
+                weaponSets.emplace_back(nextWeaponSet);
+            }
+
+            return weaponSets;
         }
 
         void ChanceFactory::CacheGameDataFileFloats()

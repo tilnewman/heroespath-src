@@ -276,7 +276,9 @@ namespace player
 
         auto const BODY{ CREATURE_PTR->Body() };
 
-        if (BODY.HasBreath())
+        if (BODY.HasBreath()
+            && ((CREATURE_PTR->Role() == creature::role::Sylavin)
+                || (CREATURE_PTR->Role() == creature::role::Firebrand)))
         {
             EnsureItemAddedAndEquipped(
                 CREATURE_PTR, ItemFactory::Make(body_part::Breath, CREATURE_PTR));

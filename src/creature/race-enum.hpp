@@ -26,7 +26,6 @@
 #define HEROESPATH_CREATURE_RACEENUM_HPP_INCLUDED
 //
 // race-enum.hpp
-//  An enumeration of all Races.
 //
 #include "misc/boost-serialize-includes.hpp"
 
@@ -132,61 +131,6 @@ namespace creature
         static const misc::StrVec_t CorpseImageKeys(const race::Enum);
     };
 
-    class SummonInfo
-    {
-    public:
-        explicit SummonInfo(
-            const origin_type::Enum ORIGIN = origin_type::Count,
-            const race::Enum RACE = creature::race::Count,
-            const role::Enum ROLE = creature::role::Count)
-            : origin_(ORIGIN)
-            , race_(RACE)
-            , role_(ROLE)
-            , count_(origin_type::UseCount(ORIGIN))
-        {}
-
-        origin_type::Enum OriginType() const { return origin_; }
-        race::Enum Race() const { return race_; }
-        role::Enum Role() const { return role_; }
-        std::size_t Count() const { return count_; }
-        bool WillSummon() const { return count_ != 0; }
-
-        friend bool operator==(const SummonInfo & L, const SummonInfo & R);
-        friend bool operator<(const SummonInfo & L, const SummonInfo & R);
-
-    private:
-        origin_type::Enum origin_;
-        race::Enum race_;
-        role::Enum role_;
-        std::size_t count_;
-
-    private:
-        friend class boost::serialization::access;
-        template <typename Archive>
-        void serialize(Archive & ar, const unsigned int)
-        {
-            ar & origin_;
-            ar & race_;
-            ar & role_;
-            ar & count_;
-        }
-    };
-
-    inline bool operator==(const SummonInfo & L, const SummonInfo & R)
-    {
-        return (
-            std::tie(L.origin_, L.race_, L.role_, L.count_)
-            == std::tie(R.origin_, R.race_, R.role_, R.count_));
-    }
-
-    inline bool operator!=(const SummonInfo & L, const SummonInfo & R) { return !(L == R); }
-
-    inline bool operator<(const SummonInfo & L, const SummonInfo & R)
-    {
-        return (
-            std::tie(L.origin_, L.race_, L.role_, L.count_)
-            < std::tie(R.origin_, R.race_, R.role_, R.count_));
-    }
 } // namespace creature
 } // namespace heroespath
 
