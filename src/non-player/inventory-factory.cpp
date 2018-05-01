@@ -136,31 +136,37 @@ namespace non_player
                     back_inserter(itemsPtrVecPair.second));
             }
 
-            auto const WEAPON_ITEMS_PVEC_PAIR{ MakeItemSet_Weapons(CHANCES.weapon, CHARACTER_PTR) };
+            bool hasTwoHandedWeapons{ false };
 
-            std::copy(
-                WEAPON_ITEMS_PVEC_PAIR.first.begin(),
-                WEAPON_ITEMS_PVEC_PAIR.first.end(),
-                back_inserter(itemsPtrVecPair.first));
+            {
+                auto const WEAPON_ITEMS_PVEC_PAIR{ MakeItemSet_Weapons(
+                    CHANCES.weapon, CHARACTER_PTR) };
 
-            std::copy(
-                WEAPON_ITEMS_PVEC_PAIR.second.begin(),
-                WEAPON_ITEMS_PVEC_PAIR.second.end(),
-                back_inserter(itemsPtrVecPair.second));
+                std::copy(
+                    WEAPON_ITEMS_PVEC_PAIR.first.begin(),
+                    WEAPON_ITEMS_PVEC_PAIR.first.end(),
+                    back_inserter(itemsPtrVecPair.first));
 
-            auto const HAS_TWOHANDED_WEAPON_EQUIPPED{ ContainsTwoHandedWeapon(
-                WEAPON_ITEMS_PVEC_PAIR.first) };
+                std::copy(
+                    WEAPON_ITEMS_PVEC_PAIR.second.begin(),
+                    WEAPON_ITEMS_PVEC_PAIR.second.end(),
+                    back_inserter(itemsPtrVecPair.second));
 
-            auto const BODY_WEAPON_ITEMS_PVEC{ MakeItemSet_BodyWeapons(
-                CHANCES.weapon, CHARACTER_PTR, HAS_TWOHANDED_WEAPON_EQUIPPED) };
+                hasTwoHandedWeapons = ContainsTwoHandedWeapon(WEAPON_ITEMS_PVEC_PAIR.first);
+            }
 
-            std::copy(
-                BODY_WEAPON_ITEMS_PVEC.begin(),
-                BODY_WEAPON_ITEMS_PVEC.end(),
-                back_inserter(itemsPtrVecPair.first));
+            {
+                auto const BODY_WEAPON_ITEMS_PVEC{ MakeItemSet_BodyWeapons(
+                    CHANCES.weapon, CHARACTER_PTR, hasTwoHandedWeapons) };
+
+                std::copy(
+                    BODY_WEAPON_ITEMS_PVEC.begin(),
+                    BODY_WEAPON_ITEMS_PVEC.end(),
+                    back_inserter(itemsPtrVecPair.first));
+            }
 
             auto armorItemsPVecPair{ MakeItemSet_Armor(
-                CHANCES.armor, CHARACTER_PTR, HAS_TWOHANDED_WEAPON_EQUIPPED) };
+                CHANCES.armor, CHARACTER_PTR, hasTwoHandedWeapons) };
 
             // remove clothing items that might conflict with armor equipping
             for (auto const & NEXT_ITEM_PTR : armorItemsPVecPair.first)
@@ -296,7 +302,7 @@ namespace non_player
                 });
 
             return itemsPtrVecPair;
-        }
+        } // namespace ownership
 
         const IItemPVecPair_t InventoryFactory::MakeItemSet_Clothing(
             const chance::ClothingChances & CHANCES, const bool IS_PIXIE)

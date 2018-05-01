@@ -1174,14 +1174,17 @@ if (false == willImageCheck_)
                     }
                 }() };
 
-                for (int rankIndex(1); rankIndex <= RANK_MAX; ++rankIndex)
                 {
                     std::ostringstream ss;
-                    ss << " InventoryFactory Testing rank=" << rankIndex
-                       << " with race=" << RACE_STR << " and role=" << ROLE_STR;
 
-                    M_HP_LOG_DBG(ss.str());
+                    ss << "InventoryFactory Testing: race=" << RACE_STR << " and role=" << ROLE_STR
+                       << "...";
 
+                    TestingStrAppend(ss.str());
+                }
+
+                for (int rankIndex(1); rankIndex <= RANK_MAX; ++rankIndex)
+                {
                     std::ostringstream nameSS;
                     nameSS << "Name_" << RACE_STR << "_" << ROLE_STR << "_" << rankIndex;
 
@@ -1197,24 +1200,8 @@ if (false == willImageCheck_)
                         Rank_t(rankIndex),
                         Experience_t(rankIndex * 10000));
 
-                    sf::Texture texture;
-                    sfml_util::gui::CreatureImageManager::GetImage(texture, &character);
-
-                    M_ASSERT_OR_LOGANDTHROW_SS(
-                        ((texture.getSize().x > 0) && (texture.getSize().y > 0)),
-                        "stage::TestingStage::TestInventoryFactory() creature created for "
-                        "inventory test was found to be invalid before inventory test could run.  "
-                        "The image loaded for the creature had a side length of zero.  creature={"
-                            << character.ToString() << "}");
-
                     non_player::ownership::InventoryFactory::SetupCreatureInventory(&character);
                 }
-
-                std::ostringstream ss;
-                ss << "InventoryFactory Tested " << RANK_MAX << " ranks with race=" << RACE_STR
-                   << " role=" << ROLE_STR;
-
-                TestingStrAppend(ss.str());
 
                 ++roleIndex;
                 return false;

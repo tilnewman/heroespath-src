@@ -835,49 +835,99 @@ namespace non_player
 
             for (auto const & ROLE_ARMOR_CHANCE : roleArmorChanceMap_[CHARACTER_PTR->Role()])
             {
-                if (ROLE_ARMOR_CHANCE.type_wrapper.IsShirt())
+                switch (ROLE_ARMOR_CHANCE.type_wrapper.Type())
                 {
-                    SetArmorChancesGeneral(
-                        armorChances.shirt, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
-                }
-                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsPants())
-                {
-                    SetArmorChancesGeneral(
-                        armorChances.pants, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
-                }
-                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsBoots())
-                {
-                    SetArmorChancesGeneral(
-                        armorChances.boots, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
-                }
-                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsGauntlets())
-                {
-                    SetArmorChancesGeneral(
-                        armorChances.gauntlets, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
-                }
-                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsAventail())
-                {
-                    SetArmorChancesGeneral(
-                        armorChances.aventail, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
-                }
-                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsShield())
-                {
-                    SetArmorChancesSpecific(
-                        armorChances.shield_map[ROLE_ARMOR_CHANCE.type_wrapper.ShieldType()],
-                        ROLE_ARMOR_CHANCE,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        true);
-                }
-                else if (ROLE_ARMOR_CHANCE.type_wrapper.IsHelm())
-                {
-                    SetArmorChancesSpecific(
-                        armorChances.helm_map[ROLE_ARMOR_CHANCE.type_wrapper.HelmType()],
-                        ROLE_ARMOR_CHANCE,
-                        PROFILE,
-                        CHARACTER_PTR,
-                        false,
-                        item::material::HardLeather);
+                    case item::armor_type::Shield:
+                    {
+                        SetArmorChancesSpecific(
+                            armorChances.shield_map[ROLE_ARMOR_CHANCE.type_wrapper.ShieldType()],
+                            ROLE_ARMOR_CHANCE,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            true);
+
+                        break;
+                    }
+                    case item::armor_type::Helm:
+                    {
+                        SetArmorChancesSpecific(
+                            armorChances.helm_map[ROLE_ARMOR_CHANCE.type_wrapper.HelmType()],
+                            ROLE_ARMOR_CHANCE,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            false,
+                            item::material::HardLeather);
+
+                        break;
+                    }
+                    case item::armor_type::Gauntlets:
+                    {
+                        SetArmorChancesGeneral(
+                            armorChances.gauntlets,
+                            ROLE_ARMOR_CHANCE,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            false);
+
+                        break;
+                    }
+                    case item::armor_type::Pants:
+                    {
+                        SetArmorChancesGeneral(
+                            armorChances.pants, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
+
+                        break;
+                    }
+                    case item::armor_type::Boots:
+                    {
+                        SetArmorChancesGeneral(
+                            armorChances.boots, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
+
+                        break;
+                    }
+                    case item::armor_type::Shirt:
+                    {
+                        SetArmorChancesGeneral(
+                            armorChances.shirt, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
+
+                        break;
+                    }
+                    case item::armor_type::Bracers:
+                    {
+                        SetArmorChancesGeneral(
+                            armorChances.bracers, ROLE_ARMOR_CHANCE, PROFILE, CHARACTER_PTR, false);
+
+                        break;
+                    }
+                    case item::armor_type::Aventail:
+                    {
+                        SetArmorChancesGeneral(
+                            armorChances.aventail,
+                            ROLE_ARMOR_CHANCE,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            false);
+
+                        break;
+                    }
+                    case item::armor_type::Covering:
+                    {
+                        SetArmorChancesSpecific(
+                            armorChances.cover_map[ROLE_ARMOR_CHANCE.type_wrapper.CoverType()],
+                            ROLE_ARMOR_CHANCE,
+                            PROFILE,
+                            CHARACTER_PTR,
+                            false);
+
+                        break;
+                    }
+                    case item::armor_type::Skin:
+                    case item::armor_type::NotArmor:
+                    case item::armor_type::Count:
+                    default:
+                    {
+                        break;
+                    }
                 }
             }
         }
