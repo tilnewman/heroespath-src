@@ -79,7 +79,7 @@ namespace item
         };
 
         static auto const & RELIGIOUS_PROFILES{
-            ItemProfileWarehouse::Instance()->GetNormalProfiles()
+            ItemProfileWarehouse::Instance()->GetReligiousProfiles()
         };
 
         static auto didLogTotalItemProfileCount{ false };
@@ -96,11 +96,14 @@ namespace item
             game::LoopManager::Instance()->TestingStrAppend(totalCountReportSS.str());
         }
 
+        static item::ItemProfileVec_t duplicates;
+
         static auto hasTestedForDuplicatesNormal{ false };
         if (false == hasTestedForDuplicatesNormal)
         {
             game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Starting Normal Duplicate Test.  Please wait...");
+                "item::ItemFactory::Test() Starting Normal Profiles Duplicate Test.  Please "
+                "wait...");
 
             for (auto iter(std::begin(NORMAL_PROFILES)); iter != std::end(NORMAL_PROFILES); ++iter)
             {
@@ -111,16 +114,19 @@ namespace item
                 }
                 else
                 {
-                    M_ASSERT_OR_LOGANDTHROW_SS(
-                        ((*iter) != (*NEXT_ITER)),
-                        "item::ItemFactory::Test() Normal Duplicate Test failed for profile1={"
+                    if ((*iter) == (*NEXT_ITER))
+                    {
+                        M_HP_LOG_ERR(
+                            "item::ItemFactory::Test() Normal Profiles Duplicate Test failed for "
+                            "profile1={"
                             << iter->ToString() << "} and profile2=" << NEXT_ITER->ToString()
                             << "}.");
+                    }
                 }
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Normal Duplicate Test finished.");
+                "item::ItemFactory::Test() Normal Profiles Duplicate Test finished.");
 
             hasTestedForDuplicatesNormal = true;
             return false;
@@ -130,7 +136,8 @@ namespace item
         if (false == hasTestedForDuplicatesReligious)
         {
             game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Starting Religious Duplicate Test.  Please wait...");
+                "item::ItemFactory::Test() Starting Religious Profiles Duplicate Test.  Please "
+                "wait...");
 
             for (auto iter(std::begin(RELIGIOUS_PROFILES)); iter != std::end(RELIGIOUS_PROFILES);
                  ++iter)
@@ -144,14 +151,15 @@ namespace item
                 {
                     M_ASSERT_OR_LOGANDTHROW_SS(
                         ((*iter) != (*NEXT_ITER)),
-                        "item::ItemFactory::Test() Religious Duplicate Test failed for profile1={"
+                        "item::ItemFactory::Test() Religious Profiles Duplicate Test failed for "
+                        "profile1={"
                             << iter->ToString() << "} and profile2=" << NEXT_ITER->ToString()
                             << "}.");
                 }
             }
 
             game::LoopManager::Instance()->TestingStrAppend(
-                "item::ItemFactory::Test() Religious Duplicate Test finished.");
+                "item::ItemFactory::Test() Religious Profiles Duplicate Test finished.");
 
             hasTestedForDuplicatesReligious = true;
             return false;
@@ -462,14 +470,14 @@ namespace item
         if (ITEM_PTR->IsWeapon())
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (ITEM_PTR->WeaponInfo().IsValid()),
+                (ITEM_PTR->WeaponInfo().IsTypeValid()),
                 ss.str() << "IsWeapon() but WeaponInfo().IsValid()==false.");
         }
 
         if (ITEM_PTR->IsArmor())
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (ITEM_PTR->ArmorInfo().IsValid()),
+                (ITEM_PTR->ArmorInfo().IsTypeValid()),
                 ss.str() << "IsArmor() but ArmorInfo().IsValid()==false.");
         }
 
@@ -576,11 +584,11 @@ namespace item
     {
         // Note that some misc_type items are also weapons or armor.  In these cases item
         // construction is handled by WeaponFactory or ArmorFactory.
-        if (PROFILE.ArmorInfo().IsValid())
+        if (PROFILE.IsArmor())
         {
             return armor::ArmorFactory::Make(PROFILE);
         }
-        else if (PROFILE.WeaponInfo().IsValid())
+        else if (PROFILE.IsWeapon())
         {
             return weapon::WeaponFactory::Make(PROFILE);
         }

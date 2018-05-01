@@ -1741,7 +1741,10 @@ namespace non_player
                                "sep "
                                "fields.");
 
+                    // note that since we skipped empties in SplitByChar() call above, this string
+                    // will not be empty
                     auto const ARMOR_NAME_STR{ piecesVec[0] };
+
                     auto const ARMOR_CHANCE_STR{ piecesVec[piecesVec.size() - 1] };
 
                     auto const INVALID_CHANCE{ -1.0f };
@@ -1803,7 +1806,7 @@ namespace non_player
                         ARMOR_NAME_STR, base_type::Count, true);
 
                     M_ASSERT_OR_LOGANDTHROW_SS(
-                        (ARMOR_TYPE_WRAPPER.IsValid()),
+                        (ARMOR_TYPE_WRAPPER.IsTypeValid()),
                         "non_player::ownership::ChanceFactor::CacheRoleArmorChances() role = \""
                             << ROLE_STR << "\", NEXT_ARMOR_CHANCE_STR=\"" << NEXT_ARMOR_CHANCE_STR
                             << "\", failed to create a valid ArmorTypeWrapper.");

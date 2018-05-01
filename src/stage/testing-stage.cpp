@@ -371,7 +371,7 @@ if (false == willImageCheck_)
             hasTestingCompleted_ItemFactory = item::ItemFactory::Test();
             return;
         }
-
+        // exit(1);
         static auto hasTestingCompleted_ItemProfileReport{ false };
         if (false == hasTestingCompleted_ItemProfileReport)
         {

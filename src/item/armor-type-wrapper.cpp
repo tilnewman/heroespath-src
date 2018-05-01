@@ -29,6 +29,7 @@
 //
 #include "armor-type-wrapper.hpp"
 
+#include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
 
 #include <exception>
@@ -64,110 +65,69 @@ namespace item
                 return;
             }
 
-            // if (generalName_.empty()) //no need for the check before the first attempt to set it
+            if (false
+                == SetupWithSpecificTypeName<cover_type>(
+                       SYSTEM_NAME, armor_type::Covering, BASE_TYPE))
             {
-                SetupWithSpecificTypeName<cover_type>(SYSTEM_NAME, armor_type::Covering, BASE_TYPE);
-            }
-
-            if (generalName_.empty())
-            {
-                SetupWithSpecificTypeName<helm_type>(SYSTEM_NAME, armor_type::Helm, BASE_TYPE);
-            }
-
-            if (generalName_.empty())
-            {
-                SetupWithSpecificTypeName<shield_type>(SYSTEM_NAME, armor_type::Shield, BASE_TYPE);
-            }
-
-            for (int i(0); i <= armor_type::Skin; ++i)
-            {
-                auto const ARMOR_TYPE_ENUM{ static_cast<armor_type::Enum>(i) };
-                if (armor_type::ToString(ARMOR_TYPE_ENUM) == SYSTEM_NAME)
+                if (false
+                    == SetupWithSpecificTypeName<helm_type>(
+                           SYSTEM_NAME, armor_type::Helm, BASE_TYPE))
                 {
-                    if (WILL_FORCE_PLAIN_BASE_TYPE_IF_REQUIRED
-                        && armor_type::DoesRequireBaseType(ARMOR_TYPE_ENUM)
-                        && (base_type::Count == BASE_TYPE))
+                    if (false
+                        == SetupWithSpecificTypeName<shield_type>(
+                               SYSTEM_NAME, armor_type::Shield, BASE_TYPE))
                     {
-                        base_ = base_type::Plain;
-                    }
-                    else
-                    {
-                        base_ = BASE_TYPE;
-                    }
+                        if (SYSTEM_NAME == GLOVES_NAME_)
+                        {
+                            type_ = armor_type::Gauntlets;
+                            base_ = BASE_TYPE;
+                            SetNamesAndVerify("after 'name' constructor where name was gloves");
+                        }
+                        else
+                        {
+                            for (int i(0); i <= armor_type::Skin; ++i)
+                            {
+                                auto const ARMOR_TYPE_ENUM{ static_cast<armor_type::Enum>(i) };
+                                if (armor_type::ToString(ARMOR_TYPE_ENUM) == SYSTEM_NAME)
+                                {
+                                    if (WILL_FORCE_PLAIN_BASE_TYPE_IF_REQUIRED
+                                        && armor_type::DoesRequireBaseType(ARMOR_TYPE_ENUM)
+                                        && (base_type::Count == BASE_TYPE))
+                                    {
+                                        base_ = base_type::Plain;
+                                    }
+                                    else
+                                    {
+                                        base_ = BASE_TYPE;
+                                    }
 
-                    if ((ARMOR_TYPE_ENUM == armor_type::Gauntlets) && (base_type::Plain == base_))
-                    {
-                        generalName_ = GLOVES_NAME_;
-                    }
-                    else
-                    {
-                        generalName_ = SYSTEM_NAME;
-                    }
+                                    type_ = ARMOR_TYPE_ENUM;
 
-                    specificName_ = generalName_;
-                    systemName_ = generalName_;
-                    readableName_ = generalName_;
-                    type_ = ARMOR_TYPE_ENUM;
+                                    SetNamesAndVerify(
+                                        "after 'name' constructor where armor_type was used");
 
-                    break;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
-            std::ostringstream ss;
-            ss << "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(name=" << SYSTEM_NAME
-               << ", orig_base_type="
-               << ((BASE_TYPE == base_type::Count) ? "Count" : base_type::ToString(BASE_TYPE))
-               << ", final_base_type = "
-               << ((base_ == base_type::Count) ? "Count" : base_type::ToString(base_)) << ") ";
-
-            if (SYSTEM_NAME == GLOVES_NAME_)
-            {
-                generalName_ = SYSTEM_NAME;
-                specificName_ = SYSTEM_NAME;
-                systemName_ = SYSTEM_NAME;
-                readableName_ = SYSTEM_NAME;
-                type_ = armor_type::Gauntlets;
-
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (BASE_TYPE == base_type::Plain),
-                    ss.str() << "which matches \"gloves\" but the base_type specified was not "
-                                "base_type::plain.");
-
-                base_ = BASE_TYPE;
-            }
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (generalName_.empty() == false),
-                ss.str() << "but that name failed to be recognized by any armor category.");
-
-            ss << "and that set armor_type=" << armor_type::ToString(type_)
-               << ", and variant_.which()=" << variant_.which() << ", ";
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                ss.str() << "but and that name was recognized but resulted in IsValid()==false.  "
-                            "ToString()="
-                         << ToString());
-
-            auto const ORIG_GENERAL_NAME{ generalName_ };
-            auto const ORIG_SPECIFIC_NAME{ specificName_ };
-            auto const ORIG_SYSTEM_NAME{ systemName_ };
-            auto const ORIG_READABLE_NAME{ readableName_ };
-
-            SetNames();
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                ((ORIG_GENERAL_NAME == generalName_) && (ORIG_SPECIFIC_NAME == specificName_)
-                 && (ORIG_SYSTEM_NAME == systemName_) && (ORIG_READABLE_NAME == readableName_)),
-                ss.str() << "but the generated names did not match general=" << ORIG_GENERAL_NAME
-                         << "/" << generalName_ << ", specific=" << ORIG_SPECIFIC_NAME << "/"
-                         << specificName_ << ", system=" << ORIG_SYSTEM_NAME << "/" << systemName_
-                         << ", readable=\"" << ORIG_READABLE_NAME << "\" \"" << readableName_
-                         << "\".");
+                (IsValidCompleteCheck()),
+                "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(name="
+                    << SYSTEM_NAME << ", orig_base_type="
+                    << ((BASE_TYPE == base_type::Count) ? "Count" : base_type::ToString(BASE_TYPE))
+                    << ", final_base_type = "
+                    << ((base_ == base_type::Count) ? "Count" : base_type::ToString(base_))
+                    << ") but IsValidCompleteCheck()=false at first step check: " << ToString());
         }
 
         ArmorTypeWrapper::ArmorTypeWrapper(
-            const armor_type::Enum ARMOR_TYPE, const armor::base_type::Enum BASE_TYPE)
+            const armor_type::Enum ARMOR_TYPE,
+            const armor::base_type::Enum BASE_TYPE,
+            const bool WILL_MAKE_INVALID_IGNORING_BASE_TYPE)
             : generalName_("")
             , specificName_("")
             , systemName_("")
@@ -176,14 +136,10 @@ namespace item
             , base_(BASE_TYPE)
             , variant_()
         {
-            SetNames();
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(armor_type="
-                    << armor_type::ToString(ARMOR_TYPE) << ", base_type="
-                    << ((BASE_TYPE == base_type::Count) ? "Count" : base_type::ToString(BASE_TYPE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+            if (WILL_MAKE_INVALID_IGNORING_BASE_TYPE == false)
+            {
+                SetNamesAndVerify("after armor_type/base_type constructor");
+            }
         }
 
         ArmorTypeWrapper::ArmorTypeWrapper(const body_part::Enum BODY_PART)
@@ -195,13 +151,13 @@ namespace item
             , base_(base_type::Count)
             , variant_()
         {
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
+                (BODY_PART == body_part::Skin),
                 "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(body_part="
                     << ((BODY_PART == body_part::Count) ? "Count" : body_part::ToString(BODY_PART))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+                    << ") that body_part is not valid.");
+
+            SetNamesAndVerify("after body_part constructor");
         }
 
         ArmorTypeWrapper::ArmorTypeWrapper(const cover_type::Enum COVER_TYPE)
@@ -211,17 +167,14 @@ namespace item
             , readableName_("")
             , type_(armor_type::Covering)
             , base_(base_type::Count)
-            , variant_()
+            , variant_(COVER_TYPE)
         {
-            variant_ = COVER_TYPE;
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(body_part="
-                    << ((COVER_TYPE == cover_type::Count) ? "Count"
-                                                          : cover_type::ToString(COVER_TYPE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+                (COVER_TYPE != cover_type::Count),
+                "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(cover_type=Count) -Count is "
+                "invalid.");
+
+            SetNamesAndVerify("after cover_type constructor");
         }
 
         ArmorTypeWrapper::ArmorTypeWrapper(const helm_type::Enum HELM_TYPE)
@@ -231,16 +184,14 @@ namespace item
             , readableName_("")
             , type_(armor_type::Helm)
             , base_(base_type::Count)
-            , variant_()
+            , variant_(HELM_TYPE)
         {
-            variant_ = HELM_TYPE;
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(body_part="
-                    << ((HELM_TYPE == helm_type::Count) ? "Count" : helm_type::ToString(HELM_TYPE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+                (HELM_TYPE != helm_type::Count),
+                "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(helm_type=Count) -Count is "
+                "invalid.");
+
+            SetNamesAndVerify("after helm_type constructor");
         }
 
         ArmorTypeWrapper::ArmorTypeWrapper(const shield_type::Enum SHIELD_TYPE)
@@ -250,118 +201,14 @@ namespace item
             , readableName_("")
             , type_(armor_type::Shield)
             , base_(base_type::Count)
-            , variant_()
+            , variant_(SHIELD_TYPE)
         {
-            variant_ = SHIELD_TYPE;
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(shield_type="
-                    << ((SHIELD_TYPE == shield_type::Count) ? "Count"
-                                                            : shield_type::ToString(SHIELD_TYPE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
-        }
+                (SHIELD_TYPE != shield_type::Count),
+                "item::armor::ArmorTypeWrapper::ArmorTypeWrapper(shield_type=Count) -Count is "
+                "invalid.");
 
-        void ArmorTypeWrapper::SetNames()
-        {
-            if (IsSkin())
-            {
-                generalName_ = armor_type::ToString(type_);
-                specificName_ = generalName_;
-                systemName_ = generalName_;
-                readableName_ = generalName_;
-            }
-            if (IsShield())
-            {
-                auto const SHIELD_TYPE{ ShieldType() };
-                generalName_ = armor_type::ToString(type_);
-                specificName_ = shield_type::ToString(SHIELD_TYPE);
-                systemName_ = specificName_;
-                readableName_ = specificName_ + " " + generalName_;
-            }
-            else if (IsHelm())
-            {
-                auto const HELM_TYPE{ HelmType() };
-                generalName_ = armor_type::ToString(type_);
-                specificName_ = helm_type::Name(HELM_TYPE);
-                systemName_ = helm_type::ToString(HELM_TYPE);
-
-                if (HELM_TYPE == helm_type::MailCoif)
-                {
-                    readableName_ = specificName_;
-                }
-                else
-                {
-                    readableName_ = specificName_ + " " + generalName_;
-                }
-            }
-            else if (IsCover())
-            {
-                auto const COVER_TYPE{ CoverType() };
-                generalName_ = cover_type::ToString(COVER_TYPE);
-                specificName_ = generalName_;
-                systemName_ = generalName_;
-                readableName_ = generalName_;
-            }
-            else if (
-                IsGauntlets() || IsPants() || IsBoots() || IsShirt() || IsBracers() || IsAventail())
-            {
-                auto const IS_GLOVES{ IsGauntlets() && (base_type::Plain == base_) };
-
-                generalName_ = ((IS_GLOVES) ? GLOVES_NAME_ : armor_type::ToString(type_));
-                specificName_ = generalName_;
-                systemName_ = generalName_;
-
-                if ((base_type::Plain == base_) || (base_type::Count == base_))
-                {
-                    readableName_ = generalName_;
-                }
-                else
-                {
-                    readableName_ = base_type::ToString(base_) + " " + generalName_;
-                }
-            }
-        }
-
-        bool ArmorTypeWrapper::IsValid() const
-        {
-            if (armor_type::NotArmor == type_)
-            {
-                return false;
-            }
-            else if (
-                generalName_.empty() || specificName_.empty() || systemName_.empty()
-                || readableName_.empty())
-            {
-                return false;
-            }
-            else if (
-                (armor_type::Gauntlets == type_) && (base_type::Plain == base_)
-                && (GLOVES_NAME_ != specificName_))
-            {
-                return false;
-            }
-            if ((armor_type::DoesRequireBaseType(type_)) && (base_type::Count == base_))
-            {
-                return false;
-            }
-            else
-            {
-                const std::vector<bool> BOOLS{ IsShield(), IsHelm(),  IsGauntlets(), IsPants(),
-                                               IsBoots(),  IsShirt(), IsBracers(),   IsAventail(),
-                                               IsCover(),  IsSkin() };
-
-                const int COUNT{ std::accumulate(
-                    std::begin(BOOLS),
-                    std::end(BOOLS),
-                    0,
-                    [](auto const SUBTOTAL, auto const NEXT_BOOL) {
-                        return SUBTOTAL + ((NEXT_BOOL) ? 1 : 0);
-                    }) };
-
-                return (COUNT == 1);
-            }
+            SetNamesAndVerify("after shield_type constructor");
         }
 
         const std::string ArmorTypeWrapper::DetailsKeyName() const
@@ -469,6 +316,161 @@ namespace item
                         auto const BASE_ENUM{ static_cast<base_type::Enum>(b) };
                         wrappers.emplace_back(ArmorTypeWrapper(ARMOR_ENUM, BASE_ENUM));
                     }
+                }
+            }
+        }
+
+        void ArmorTypeWrapper::SetNamesAndVerify(const std::string & CALLER_CONTEXT_DESCRIPTION)
+        {
+            switch (type_)
+            {
+                case armor_type::Gauntlets:
+                case armor_type::Pants:
+                case armor_type::Boots:
+                case armor_type::Shirt:
+                case armor_type::Bracers:
+                case armor_type::Aventail:
+                {
+                    auto const IS_GLOVES{ IsGauntlets() && (base_type::Plain == base_) };
+
+                    generalName_ = ((IS_GLOVES) ? GLOVES_NAME_ : armor_type::ToString(type_));
+                    specificName_ = generalName_;
+                    systemName_ = generalName_;
+
+                    if ((base_type::Plain == base_) || (base_type::Count == base_))
+                    {
+                        readableName_ = generalName_;
+                    }
+                    else
+                    {
+                        readableName_ = base_type::ToString(base_) + " " + generalName_;
+                    }
+
+                    break;
+                }
+
+                case armor_type::Shield:
+                {
+                    auto const SHIELD_TYPE{ ShieldType() };
+                    generalName_ = armor_type::ToString(type_);
+                    specificName_ = shield_type::ToString(SHIELD_TYPE);
+                    systemName_ = specificName_;
+                    readableName_ = specificName_ + " " + generalName_;
+                    break;
+                }
+                case armor_type::Helm:
+                {
+                    auto const HELM_TYPE{ HelmType() };
+                    generalName_ = armor_type::ToString(type_);
+                    specificName_ = helm_type::Name(HELM_TYPE);
+                    systemName_ = helm_type::ToString(HELM_TYPE);
+
+                    if (HELM_TYPE == helm_type::MailCoif)
+                    {
+                        readableName_ = specificName_;
+                    }
+                    else
+                    {
+                        readableName_ = specificName_ + " " + generalName_;
+                    }
+
+                    break;
+                }
+                case armor_type::Covering:
+                {
+                    auto const COVER_TYPE{ CoverType() };
+                    generalName_ = cover_type::ToString(COVER_TYPE);
+                    specificName_ = generalName_;
+                    systemName_ = generalName_;
+                    readableName_ = generalName_;
+                    break;
+                }
+                case armor_type::Skin:
+                {
+                    generalName_ = armor_type::ToString(type_);
+                    specificName_ = generalName_;
+                    systemName_ = generalName_;
+                    readableName_ = generalName_;
+                    break;
+                }
+
+                case armor_type::NotArmor:
+                case armor_type::Count:
+                default:
+                {
+                    break;
+                }
+            }
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (IsValidCompleteCheck()),
+                "item::armor::ArmorTypeWrapper::SetNamesAndVerify("
+                    << CALLER_CONTEXT_DESCRIPTION
+                    << ") found the object was invalid when finished:  " << ToString());
+        }
+
+        bool ArmorTypeWrapper::IsValidCompleteCheck() const
+        {
+            if (generalName_.empty() || specificName_.empty() || systemName_.empty()
+                || readableName_.empty())
+            {
+                return false;
+            }
+
+            switch (type_)
+            {
+                case armor_type::Gauntlets:
+                {
+                    if (base_type::Plain == base_)
+                    {
+                        return (GLOVES_NAME_ == specificName_);
+                    }
+                    else
+                    {
+                        return (base_type::Count != base_);
+                    }
+                }
+
+                case armor_type::Aventail:
+                case armor_type::Bracers:
+                case armor_type::Shirt:
+                case armor_type::Boots:
+                case armor_type::Pants:
+                {
+                    return (base_type::Count != base_);
+                }
+
+                case armor_type::Shield:
+                {
+                    return (
+                        (variant_.which() == SHIELD_INDEX_)
+                        && (boost::get<shield_type::Enum>(variant_) != shield_type::Count));
+                }
+
+                case armor_type::Helm:
+                {
+                    return (
+                        (variant_.which() == HELM_INDEX_)
+                        && (boost::get<helm_type::Enum>(variant_) != helm_type::Count));
+                }
+
+                case armor_type::Covering:
+                {
+                    return (
+                        (variant_.which() == COVER_INDEX_)
+                        && (boost::get<cover_type::Enum>(variant_) != cover_type::Count));
+                }
+
+                case armor_type::Skin:
+                {
+                    return true;
+                }
+
+                case armor_type::NotArmor:
+                case armor_type::Count:
+                default:
+                {
+                    return false;
                 }
             }
         }

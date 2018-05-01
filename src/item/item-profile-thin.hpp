@@ -33,6 +33,10 @@
 #include "item/weapon-type-wrapper.hpp"
 #include "sfml-util/size-enum.hpp"
 
+#include <boost/type_index.hpp>
+
+#include <exception>
+#include <sstream>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -87,9 +91,9 @@ namespace item
             return ((misc_type::Count != miscType_) && (misc_type::NotMisc != miscType_));
         }
 
-        bool IsWeapon() const { return weaponInfo_.IsValid(); }
+        bool IsWeapon() const { return weaponInfo_.IsTypeValid(); }
 
-        bool IsArmor() const { return armorInfo_.IsValid(); }
+        bool IsArmor() const { return armorInfo_.IsTypeValid(); }
 
         const std::string ToString() const;
 
@@ -99,7 +103,17 @@ namespace item
         friend bool operator==(const ItemProfileThin & L, const ItemProfileThin & R);
         friend bool operator<(const ItemProfileThin & L, const ItemProfileThin & R);
 
-        static const ItemProfileThin MakeArmor(
+        static const ItemProfileThin MakeArmorNonSpecific(
+            const armor_type::Enum ARMOR_TYPE,
+            const armor::base_type::Enum BASE_TYPE = armor::base_type::Count,
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
+
+        static const ItemProfileThin MakeArmorNonSpecificWithBaseTypeRestriction(
+            const armor_type::Enum ARMOR_TYPE,
+            const armor::base_type::Enum BASE_TYPE_RESTRICTION,
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
+
+        static const ItemProfileThin MakeArmorNonSpecificInvalidWithoutBaseType(
             const armor_type::Enum ARMOR_TYPE,
             const armor::base_type::Enum BASE_TYPE_RESTRICTION = armor::base_type::Count,
             const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
@@ -128,9 +142,8 @@ namespace item
             return thinProfiles;
         }
 
-        static const ItemProfileThin MakeWeapon(
-            const weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
+        static const ItemProfileThin MakeArmorNonSpecificFromThinProfileThatWasMissingABaseType(
+            const ItemProfileThin & THIN_PROFILE, const armor::base_type::Enum BASE_TYPE);
 
         static const ItemProfileThin MakeWeaponStaffOrQuarterstaff(
             const bool IS_QUARTERSTAFF, const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
@@ -162,6 +175,11 @@ namespace item
         static const ItemProfileThinVec_t MakeWeaponKnifeOrDaggerAll(const bool IS_DAGGER);
 
         static const ItemProfileThin MakeMisc(const misc_type::Enum MISC_TYPE);
+
+    private:
+        static const ItemProfileThin MakeWeapon(
+            const weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER,
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
     private:
         weapon::WeaponTypeWrapper weaponInfo_;

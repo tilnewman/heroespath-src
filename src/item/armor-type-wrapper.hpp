@@ -57,7 +57,9 @@ namespace item
                 const bool WILL_FORCE_PLAIN_BASE_TYPE_IF_REQUIRED = false);
 
             explicit ArmorTypeWrapper(
-                const armor_type::Enum, const base_type::Enum BASE_TYPE = base_type::Count);
+                const armor_type::Enum,
+                const base_type::Enum BASE_TYPE = base_type::Count,
+                const bool WILL_MAKE_INVALID_IGNORING_BASE_TYPE = false);
 
             explicit ArmorTypeWrapper(const body_part::Enum);
 
@@ -67,10 +69,6 @@ namespace item
 
             explicit ArmorTypeWrapper(const shield_type::Enum SHIELD_TYPE);
 
-            void SetNames();
-
-            bool IsValid() const;
-
             const std::string GeneralName() const { return generalName_; }
             const std::string SpecificName() const { return specificName_; }
             const std::string SystemName() const { return systemName_; }
@@ -78,6 +76,8 @@ namespace item
             const std::string DetailsKeyName() const;
 
             const std::string ToString() const;
+
+            bool IsTypeValid() const { return (armor_type::NotArmor != type_); }
 
             armor_type::Enum Type() const { return type_; }
 
@@ -193,19 +193,33 @@ namespace item
                 for (int i(0); i < T::Count; ++i)
                 {
                     auto const SPECIFIC_TYPE_ENUM{ static_cast<typename T::Enum>(i) };
-                    if (boost::algorithm::to_lower_copy(T::ToString(SPECIFIC_TYPE_ENUM))
-                        == SYSTEM_NAME_LOWERCASE)
+
+                    auto const SPECIFIC_TYPE_STR_LOWERCASE{ boost::algorithm::to_lower_copy(
+                        T::ToString(SPECIFIC_TYPE_ENUM)) };
+
+                    if (SPECIFIC_TYPE_STR_LOWERCASE == SYSTEM_NAME_LOWERCASE)
                     {
                         type_ = ARMOR_TYPE;
                         base_ = BASE_TYPE;
                         variant_ = SPECIFIC_TYPE_ENUM;
-                        SetNames();
+
+                        std::ostringstream ss;
+                        ss << "after SetupWithSpecificTypeName<"
+                           << boost::typeindex::type_id<T>().pretty_name()
+                           << "::Enum>(system_name_lowercase=" << SYSTEM_NAME_LOWERCASE
+                           << ", armor_type_tostring_lowercase=" << SPECIFIC_TYPE_STR_LOWERCASE
+                           << ")";
+
+                        SetNamesAndVerify(ss.str());
                         return true;
                     }
                 }
 
                 return false;
             }
+
+            void SetNamesAndVerify(const std::string & CALLER_CONTEXT_DESCRIPTION);
+            bool IsValidCompleteCheck() const;
 
         public:
             static const std::string GLOVES_NAME_;

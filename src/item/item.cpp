@@ -93,8 +93,11 @@ namespace item
               TYPE_WRAPPER,
               MATERIAL_PRIMARY,
               MATERIAL_SECONDARY,
-              WEAPON_INFO.IsValid(),
-              ARMOR_INFO.IsValid()))
+
+              // same as IsWeapon()
+              ((weapon_type::NotAWeapon != weaponType_) && WEAPON_INFO.IsTypeValid()),
+
+              ARMOR_INFO.IsTypeValid()))
         , imageFilename_("")
     {
         sfml_util::gui::ItemImageMachine itemImageMachine;

@@ -29,11 +29,10 @@
 //
 #include "weapon-type-wrapper.hpp"
 
-#include "misc/assertlogandthrow.hpp"
+#include "log/log-macros.hpp"
 
 #include <exception>
 #include <numeric>
-#include <sstream>
 #include <vector>
 
 namespace heroespath
@@ -67,101 +66,67 @@ namespace item
 
             auto const SYSTEM_NAME_LOWERCASE{ boost::algorithm::to_lower_copy(SYSTEM_NAME) };
 
-            if (generalName_.empty())
-            {
-                SetupWithBodypartName(SYSTEM_NAME_LOWERCASE);
-            }
-
-            if (generalName_.empty())
-            {
-                SetupWithKnifeOrDaggerName(SYSTEM_NAME_LOWERCASE, KNIFE_OR_DAGGER_SIZE);
-            }
-
-            if (generalName_.empty())
-            {
-                SetupWithSpecificTypeName<sword_type>(SYSTEM_NAME_LOWERCASE, weapon_type::Sword);
-            }
-
-            if (generalName_.empty())
-            {
-                SetupWithSpecificTypeName<axe_type>(SYSTEM_NAME_LOWERCASE, weapon_type::Axe);
-            }
-
-            if (generalName_.empty())
-            {
-                SetupWithSpecificTypeName<club_type>(SYSTEM_NAME_LOWERCASE, weapon_type::Club);
-            }
-
-            if (generalName_.empty())
-            {
-                SetupWithSpecificTypeName<whip_type>(SYSTEM_NAME_LOWERCASE, weapon_type::Whip);
-            }
-
-            if (generalName_.empty())
-            {
-                SetupWithSpecificTypeName<projectile_type>(
-                    SYSTEM_NAME_LOWERCASE, weapon_type::Projectile);
-            }
-
-            if (generalName_.empty())
-            {
-                SetupWithSpecificTypeName<bladedstaff_type>(
-                    SYSTEM_NAME_LOWERCASE, weapon_type::BladedStaff);
-            }
-
-            if (generalName_.empty()
-                && (SYSTEM_NAME_LOWERCASE == boost::algorithm::to_lower_copy(QUARTERSTAFF_NAME_)))
+            if (SYSTEM_NAME_LOWERCASE == boost::algorithm::to_lower_copy(QUARTERSTAFF_NAME_))
             {
                 type_ = weapon_type::Staff;
                 variant_ = true;
-                SetNames();
+                SetNamesAndVerify("'name' constructor when name=Quarterstaff");
             }
-
-            if (generalName_.empty()
-                && (SYSTEM_NAME_LOWERCASE
-                    == boost::algorithm::to_lower_copy(weapon_type::Name(weapon_type::Staff))))
+            else if (
+                SYSTEM_NAME_LOWERCASE
+                == boost::algorithm::to_lower_copy(weapon_type::Name(weapon_type::Staff)))
             {
                 type_ = weapon_type::Staff;
                 variant_ = false;
-                SetNames();
+                SetNamesAndVerify("'name' constructor when name=Staff");
             }
-
-            std::ostringstream ss;
-            ss << "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(name=\"" << SYSTEM_NAME
-               << "\", size=\""
-               << ((KNIFE_OR_DAGGER_SIZE == sfml_util::Size::Count)
-                       ? "Count"
-                       : sfml_util::Size::ToString(KNIFE_OR_DAGGER_SIZE))
-               << "\") ";
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (generalName_.empty() == false),
-                ss.str() << "but that name failed to be recognized by any weapon category.");
-
-            ss << "and that set weapon_type=" << weapon_type::ToString(type_)
-               << " and isDagger_=" << std::boolalpha << isDagger_
-               << ", variant_.which()=" << variant_.which() << ", ";
-
-            if (IsValid() == false)
+            else if (
+                false == SetupWithKnifeOrDaggerName(SYSTEM_NAME_LOWERCASE, KNIFE_OR_DAGGER_SIZE))
             {
-                M_ASSERT_OR_LOGANDTHROW_SS((IsValid()), ss.str() << "but IsValid() return false.");
+                if (false
+                    == SetupWithSpecificTypeName<sword_type>(
+                           SYSTEM_NAME_LOWERCASE, weapon_type::Sword))
+                {
+                    if (false
+                        == SetupWithSpecificTypeName<axe_type>(
+                               SYSTEM_NAME_LOWERCASE, weapon_type::Axe))
+                    {
+                        if (false
+                            == SetupWithSpecificTypeName<club_type>(
+                                   SYSTEM_NAME_LOWERCASE, weapon_type::Club))
+                        {
+                            if (false
+                                == SetupWithSpecificTypeName<whip_type>(
+                                       SYSTEM_NAME_LOWERCASE, weapon_type::Whip))
+                            {
+                                if (false == SetupWithBodypartName(SYSTEM_NAME_LOWERCASE))
+                                {
+                                    if (false
+                                        == SetupWithSpecificTypeName<projectile_type>(
+                                               SYSTEM_NAME_LOWERCASE, weapon_type::Projectile))
+                                    {
+                                        SetupWithSpecificTypeName<bladedstaff_type>(
+                                            SYSTEM_NAME_LOWERCASE, weapon_type::BladedStaff);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
-            auto const ORIG_GENERAL_NAME{ generalName_ };
-            auto const ORIG_SPECIFIC_NAME{ specificName_ };
-            auto const ORIG_SYSTEM_NAME{ systemName_ };
-            auto const ORIG_READABLE_NAME{ readableName_ };
-
-            SetNames();
+            std::ostringstream errorSS;
+            errorSS << "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(name=\"" << SYSTEM_NAME
+                    << "\", size=\""
+                    << ((KNIFE_OR_DAGGER_SIZE == sfml_util::Size::Count)
+                            ? "Count"
+                            : sfml_util::Size::ToString(KNIFE_OR_DAGGER_SIZE))
+                    << "\") ";
 
             M_ASSERT_OR_LOGANDTHROW_SS(
-                ((ORIG_GENERAL_NAME == generalName_) && (ORIG_SPECIFIC_NAME == specificName_)
-                 && (ORIG_SYSTEM_NAME == systemName_) && (ORIG_READABLE_NAME == readableName_)),
-                ss.str() << "but the generated names did not match general=" << ORIG_GENERAL_NAME
-                         << "/" << generalName_ << ", specific=" << ORIG_SPECIFIC_NAME << "/"
-                         << specificName_ << ", system=" << ORIG_SYSTEM_NAME << "/" << systemName_
-                         << ", readable=\"" << ORIG_READABLE_NAME << "\" \"" << readableName_
-                         << "\".");
+                (IsValidCompleteCheck()),
+                errorSS.str() << " after this 'name' constructor the object was invalid: "
+                              << ToString());
         }
 
         WeaponTypeWrapper::WeaponTypeWrapper(const bool IS_DAGGER, const sfml_util::Size::Enum SIZE)
@@ -176,18 +141,9 @@ namespace item
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SIZE != sfml_util::Size::Count),
                 "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(is_dagger="
-                    << std::boolalpha << IS_DAGGER
-                    << ", size=Count) and that SIZE must be valid. (not Count)");
+                    << std::boolalpha << IS_DAGGER << ", size=Count) -size can't be Count");
 
-            SetNames();
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(is_dagger="
-                    << std::boolalpha << IS_DAGGER << ", size="
-                    << ((SIZE == sfml_util::Size::Count) ? "Count"
-                                                         : sfml_util::Size::ToString(SIZE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+            SetNamesAndVerify("after is_dagger constructor");
         }
 
         WeaponTypeWrapper::WeaponTypeWrapper(const bool IS_QUARTERSTAFF)
@@ -199,13 +155,7 @@ namespace item
             , isDagger_(false)
             , variant_(IS_QUARTERSTAFF)
         {
-            SetNames();
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(is_quarterstaff="
-                    << std::boolalpha << IS_QUARTERSTAFF
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+            SetNamesAndVerify("after is_quarterstaff constructor");
         }
 
         WeaponTypeWrapper::WeaponTypeWrapper(const item::body_part::Enum BODY_PART)
@@ -217,13 +167,13 @@ namespace item
             , isDagger_(false)
             , variant_(BODY_PART)
         {
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
+                ((BODY_PART != body_part::Count) && (BODY_PART != body_part::Skin)),
                 "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(body_part="
                     << ((body_part::Count == BODY_PART) ? "Count" : body_part::ToString(BODY_PART))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+                    << ") -that body_part is invalid.");
+
+            SetNamesAndVerify("after body_part constructor");
         }
 
         WeaponTypeWrapper::WeaponTypeWrapper(const sword_type::Enum SWORD_TYPE)
@@ -235,14 +185,12 @@ namespace item
             , isDagger_(false)
             , variant_(SWORD_TYPE)
         {
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(sword_type="
-                    << ((sword_type::Count == SWORD_TYPE) ? "Count"
-                                                          : sword_type::ToString(SWORD_TYPE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+                (SWORD_TYPE != sword_type::Count),
+                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(sword_type=Count) -Count is "
+                "invalid.");
+
+            SetNamesAndVerify("after sword_type constructor");
         }
 
         WeaponTypeWrapper::WeaponTypeWrapper(const axe_type::Enum AXE_TYPE)
@@ -254,13 +202,12 @@ namespace item
             , isDagger_(false)
             , variant_(AXE_TYPE)
         {
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(sword_type="
-                    << ((axe_type::Count == AXE_TYPE) ? "Count" : axe_type::ToString(AXE_TYPE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+                (AXE_TYPE != axe_type::Count),
+                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(axe_type=Count) -Count is "
+                "invalid.");
+
+            SetNamesAndVerify("after axe_type constructor");
         }
 
         WeaponTypeWrapper::WeaponTypeWrapper(const club_type::Enum CLUB_TYPE)
@@ -272,14 +219,12 @@ namespace item
             , isDagger_(false)
             , variant_(CLUB_TYPE)
         {
-            variant_ = CLUB_TYPE;
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(club_type="
-                    << ((club_type::Count == CLUB_TYPE) ? "Count" : club_type::ToString(CLUB_TYPE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+                (CLUB_TYPE != club_type::Count),
+                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(club_type=Count) -Count is "
+                "invalid.");
+
+            SetNamesAndVerify("after club_type constructor");
         }
 
         WeaponTypeWrapper::WeaponTypeWrapper(const whip_type::Enum WHIP_TYPE)
@@ -291,13 +236,12 @@ namespace item
             , isDagger_(false)
             , variant_(WHIP_TYPE)
         {
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(whip_type="
-                    << ((whip_type::Count == WHIP_TYPE) ? "Count" : whip_type::ToString(WHIP_TYPE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+                (WHIP_TYPE != whip_type::Count),
+                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(whip_type=Count) -Count is "
+                "invalid.");
+
+            SetNamesAndVerify("after whip_type constructor");
         }
 
         WeaponTypeWrapper::WeaponTypeWrapper(const projectile_type::Enum PROJ_TYPE)
@@ -309,15 +253,12 @@ namespace item
             , isDagger_(false)
             , variant_(PROJ_TYPE)
         {
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(projectile_type="
-                    << ((projectile_type::Count == PROJ_TYPE)
-                            ? "Count"
-                            : projectile_type::ToString(PROJ_TYPE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
+                (PROJ_TYPE != projectile_type::Count),
+                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(projectile_type=Count) -Count "
+                "is invalid.");
+
+            SetNamesAndVerify("after projectile_type constructor");
         }
 
         WeaponTypeWrapper::WeaponTypeWrapper(const bladedstaff_type::Enum BSTAFF_TYPE)
@@ -329,55 +270,12 @@ namespace item
             , isDagger_(false)
             , variant_(BSTAFF_TYPE)
         {
-            SetNames();
-
             M_ASSERT_OR_LOGANDTHROW_SS(
-                (IsValid()),
-                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(bladedstaff_type="
-                    << ((bladedstaff_type::Count == BSTAFF_TYPE)
-                            ? "Count"
-                            : bladedstaff_type::ToString(BSTAFF_TYPE))
-                    << ") but the resulting object was not valid.  ToString()=" << ToString());
-        }
+                (BSTAFF_TYPE != bladedstaff_type::Count),
+                "item::weapon::WeaponTypeWrapper::WeaponTypeWrapper(bladedstaff_type=Count) -Count "
+                "is invalid.");
 
-        bool WeaponTypeWrapper::IsValid() const
-        {
-            if (type_ == weapon_type::NotAWeapon)
-            {
-                return false;
-            }
-            else if (
-                generalName_.empty() || specificName_.empty() || systemName_.empty()
-                || readableName_.empty())
-            {
-                return false;
-            }
-            else if ((weapon_type::Knife != type_) && isDagger_)
-            {
-                return false;
-            }
-            else if ((weapon_type::Knife == type_) && (Size() == sfml_util::Size::Count))
-            {
-                return false;
-            }
-            else
-            {
-                const std::vector<bool> BOOLS{ IsQuarterstaff(), IsBite(),       IsClaws(),
-                                               IsFists(),        IsStaff(),      IsKnife(),
-                                               IsDagger(),       IsTendrils(),   IsBreath(),
-                                               IsSword(),        IsAxe(),        IsClub(),
-                                               IsWhip(),         IsProjectile(), IsBladedStaff() };
-
-                const int COUNT{ std::accumulate(
-                    std::begin(BOOLS),
-                    std::end(BOOLS),
-                    0,
-                    [](auto const SUBTOTAL, auto const NEXT_BOOL) {
-                        return SUBTOTAL + ((NEXT_BOOL) ? 1 : 0);
-                    }) };
-
-                return (COUNT == 1);
-            }
+            SetNamesAndVerify("after bladedstaff_type constructor");
         }
 
         const std::string WeaponTypeWrapper::DetailsKeyName() const
@@ -471,157 +369,6 @@ namespace item
             return wrappers;
         }
 
-        void WeaponTypeWrapper::SetNames()
-        {
-            if (IsBite() || IsClaws() || IsFists() || IsStaff() || IsTendrils() || IsBreath())
-            {
-                generalName_ = weapon_type::Name(type_);
-                specificName_ = generalName_;
-                systemName_ = weapon_type::ToString(type_, false, false);
-                readableName_ = generalName_;
-            }
-            else if (IsKnife())
-            {
-                generalName_ = weapon_type::Name(type_);
-                specificName_ = generalName_;
-                systemName_ = weapon_type::ToString(type_, false);
-
-                auto const SIZE{ Size() };
-                if ((SIZE != sfml_util::Size::Count) && (SIZE != sfml_util::Size::Medium))
-                {
-                    readableName_ = sfml_util::Size::ToString(SIZE) + " " + generalName_;
-                }
-                else
-                {
-                    readableName_ = generalName_;
-                }
-            }
-            else if (IsDagger())
-            {
-                generalName_ = DAGGER_NAME_;
-                specificName_ = DAGGER_NAME_;
-                systemName_ = DAGGER_NAME_;
-
-                auto const SIZE{ Size() };
-                if ((SIZE != sfml_util::Size::Count) && (SIZE != sfml_util::Size::Medium))
-                {
-                    readableName_ = sfml_util::Size::ToString(SIZE) + " " + generalName_;
-                }
-                else
-                {
-                    readableName_ = generalName_;
-                }
-            }
-            else if (IsQuarterstaff())
-            {
-                generalName_ = QUARTERSTAFF_NAME_;
-                specificName_ = QUARTERSTAFF_NAME_;
-                systemName_ = QUARTERSTAFF_NAME_;
-                readableName_ = QUARTERSTAFF_NAME_;
-            }
-            else if (IsSword())
-            {
-                auto const SWORD_TYPE{ SwordType() };
-
-                generalName_ = weapon_type::Name(type_);
-                specificName_ = sword_type::Name(SWORD_TYPE);
-                systemName_ = sword_type::ToString(SWORD_TYPE);
-
-                if ((SWORD_TYPE == sword_type::Broadsword) || (SWORD_TYPE == sword_type::Longsword)
-                    || (SWORD_TYPE == sword_type::Shortsword))
-                {
-                    readableName_ = specificName_;
-                }
-                else
-                {
-                    readableName_ = specificName_ + " " + generalName_;
-                }
-            }
-            else if (IsAxe())
-            {
-                auto const AXE_TYPE{ AxeType() };
-
-                generalName_ = weapon_type::Name(type_);
-
-                // you would think this should be axe_type::Name() called here, but the names are so
-                // distinct that we use ToString() instead, intentionally.
-                specificName_ = axe_type::ToString(AXE_TYPE);
-
-                systemName_ = axe_type::ToString(AXE_TYPE);
-
-                if (AXE_TYPE == axe_type::Sickle)
-                {
-                    readableName_ = specificName_;
-                }
-                else
-                {
-                    readableName_ = specificName_ + " " + generalName_;
-                }
-            }
-            else if (IsClub())
-            {
-                auto const CLUB_TYPE{ ClubType() };
-
-                generalName_ = weapon_type::Name(type_);
-                specificName_ = club_type::ToString(ClubType());
-                systemName_ = specificName_;
-
-                if (CLUB_TYPE == club_type::Spiked)
-                {
-                    readableName_ = specificName_ + " " + generalName_;
-                }
-                else
-                {
-                    readableName_ = specificName_;
-                }
-            }
-            else if (IsWhip())
-            {
-                auto const WHIP_TYPE{ WhipType() };
-
-                generalName_ = weapon_type::Name(type_);
-                specificName_ = whip_type::Name(WHIP_TYPE);
-                systemName_ = whip_type::ToString(WHIP_TYPE);
-                readableName_ = specificName_;
-            }
-            else if (IsProjectile())
-            {
-                auto const PROJECTILE_TYPE{ ProjectileType() };
-
-                if (PROJECTILE_TYPE == projectile_type::Blowpipe)
-                {
-                    generalName_ = projectile_type::Name(PROJECTILE_TYPE);
-                }
-                else if (PROJECTILE_TYPE == projectile_type::Sling)
-                {
-                    generalName_ = projectile_type::Name(PROJECTILE_TYPE);
-                }
-                else if (PROJECTILE_TYPE == projectile_type::Crossbow)
-                {
-                    generalName_ = projectile_type::Name(PROJECTILE_TYPE);
-                }
-                else
-                {
-                    generalName_ = BOW_GENERAL_NAME_;
-                }
-
-                specificName_ = projectile_type::Name(PROJECTILE_TYPE);
-                systemName_ = projectile_type::ToString(PROJECTILE_TYPE);
-                readableName_ = specificName_;
-            }
-            else if (IsBladedStaff())
-            {
-                auto const BLADEDSTAFF_TYPE{ BladedStaffType() };
-                generalName_ = weapon_type::Name(weapon_type::BladedStaff);
-                specificName_ = bladedstaff_type::Name(BLADEDSTAFF_TYPE);
-                systemName_ = bladedstaff_type::ToString(BLADEDSTAFF_TYPE);
-
-                // skip prepending the general name because most players will know these items by
-                // their specfificName_
-                readableName_ = specificName_;
-            }
-        }
-
         bool WeaponTypeWrapper::SetupWithBodypartName(const std::string & SYSTEM_NAME_LOWERCASE)
         {
             for (int i(0); i < body_part::Count; ++i)
@@ -676,6 +423,303 @@ namespace item
             else
             {
                 return false;
+            }
+        }
+
+        void WeaponTypeWrapper::SetNamesAndVerify(const std::string & CALLER_CONTEXT_DESCRIPTION)
+        {
+            switch (type_)
+            {
+                case weapon_type::Claws:
+                case weapon_type::Bite:
+                case weapon_type::Fists:
+                case weapon_type::Tendrils:
+                case weapon_type::Breath:
+                case weapon_type::Staff:
+                {
+                    if (variant_.which() == QUARTERSTAFF_INDEX)
+                    {
+                        generalName_ = QUARTERSTAFF_NAME_;
+                        specificName_ = QUARTERSTAFF_NAME_;
+                        systemName_ = QUARTERSTAFF_NAME_;
+                        readableName_ = QUARTERSTAFF_NAME_;
+                    }
+                    else
+                    {
+                        generalName_ = weapon_type::Name(type_);
+                        specificName_ = generalName_;
+                        systemName_ = weapon_type::ToString(type_, false, false);
+                        readableName_ = generalName_;
+                    }
+
+                    break;
+                }
+
+                case weapon_type::Sword:
+                {
+                    auto const SWORD_TYPE{ SwordType() };
+
+                    generalName_ = weapon_type::Name(type_);
+                    specificName_ = sword_type::Name(SWORD_TYPE);
+                    systemName_ = sword_type::ToString(SWORD_TYPE);
+
+                    if ((SWORD_TYPE == sword_type::Broadsword)
+                        || (SWORD_TYPE == sword_type::Longsword)
+                        || (SWORD_TYPE == sword_type::Shortsword))
+                    {
+                        readableName_ = specificName_;
+                    }
+                    else
+                    {
+                        readableName_ = specificName_ + " " + generalName_;
+                    }
+
+                    break;
+                }
+
+                case weapon_type::Axe:
+                {
+                    auto const AXE_TYPE{ AxeType() };
+
+                    generalName_ = weapon_type::Name(type_);
+
+                    // you would think this should be axe_type::Name() called here, but the names
+                    // are so distinct that we use ToString() instead, intentionally.
+                    specificName_ = axe_type::ToString(AXE_TYPE);
+
+                    systemName_ = axe_type::ToString(AXE_TYPE);
+
+                    if (AXE_TYPE == axe_type::Sickle)
+                    {
+                        readableName_ = specificName_;
+                    }
+                    else
+                    {
+                        readableName_ = specificName_ + " " + generalName_;
+                    }
+
+                    break;
+                }
+
+                case weapon_type::Whip:
+                {
+                    auto const WHIP_TYPE{ WhipType() };
+                    generalName_ = weapon_type::Name(type_);
+                    specificName_ = whip_type::Name(WHIP_TYPE);
+                    systemName_ = whip_type::ToString(WHIP_TYPE);
+                    readableName_ = specificName_;
+                    break;
+                }
+
+                case weapon_type::Club:
+                {
+                    auto const CLUB_TYPE{ ClubType() };
+
+                    generalName_ = weapon_type::Name(type_);
+                    specificName_ = club_type::ToString(ClubType());
+                    systemName_ = specificName_;
+
+                    if (CLUB_TYPE == club_type::Spiked)
+                    {
+                        readableName_ = specificName_ + " " + generalName_;
+                    }
+                    else
+                    {
+                        readableName_ = specificName_;
+                    }
+
+                    break;
+                }
+
+                case weapon_type::Projectile:
+                {
+                    auto const PROJECTILE_TYPE{ ProjectileType() };
+
+                    if (PROJECTILE_TYPE == projectile_type::Blowpipe)
+                    {
+                        generalName_ = projectile_type::Name(PROJECTILE_TYPE);
+                    }
+                    else if (PROJECTILE_TYPE == projectile_type::Sling)
+                    {
+                        generalName_ = projectile_type::Name(PROJECTILE_TYPE);
+                    }
+                    else if (PROJECTILE_TYPE == projectile_type::Crossbow)
+                    {
+                        generalName_ = projectile_type::Name(PROJECTILE_TYPE);
+                    }
+                    else
+                    {
+                        generalName_ = BOW_GENERAL_NAME_;
+                    }
+
+                    specificName_ = projectile_type::Name(PROJECTILE_TYPE);
+                    systemName_ = projectile_type::ToString(PROJECTILE_TYPE);
+                    readableName_ = specificName_;
+                    break;
+                }
+
+                case weapon_type::Knife:
+                {
+                    if (isDagger_)
+                    {
+                        generalName_ = DAGGER_NAME_;
+                        specificName_ = DAGGER_NAME_;
+                        systemName_ = DAGGER_NAME_;
+
+                        auto const SIZE{ Size() };
+                        if ((SIZE != sfml_util::Size::Count) && (SIZE != sfml_util::Size::Medium))
+                        {
+                            readableName_ = sfml_util::Size::ToString(SIZE) + " " + generalName_;
+                        }
+                        else
+                        {
+                            readableName_ = generalName_;
+                        }
+                    }
+                    else
+                    {
+                        generalName_ = weapon_type::Name(type_);
+                        specificName_ = generalName_;
+                        systemName_ = weapon_type::ToString(type_, false);
+
+                        auto const SIZE{ Size() };
+                        if ((SIZE != sfml_util::Size::Count) && (SIZE != sfml_util::Size::Medium))
+                        {
+                            readableName_ = sfml_util::Size::ToString(SIZE) + " " + generalName_;
+                        }
+                        else
+                        {
+                            readableName_ = generalName_;
+                        }
+                    }
+
+                    break;
+                }
+
+                case weapon_type::Spear:
+                case weapon_type::BladedStaff:
+                {
+                    auto const BLADEDSTAFF_TYPE{ BladedStaffType() };
+                    generalName_ = weapon_type::Name(weapon_type::BladedStaff);
+                    specificName_ = bladedstaff_type::Name(BLADEDSTAFF_TYPE);
+                    systemName_ = bladedstaff_type::ToString(BLADEDSTAFF_TYPE);
+
+                    // skip prepending the general name because most players will know these items
+                    // by their specfificName_
+                    readableName_ = specificName_;
+
+                    break;
+                }
+
+                case weapon_type::NotAWeapon:
+                case weapon_type::Melee:
+                case weapon_type::Bladed:
+                case weapon_type::Pointed:
+                case weapon_type::Blowpipe:
+                case weapon_type::Bow:
+                case weapon_type::Crossbow:
+                case weapon_type::Sling:
+                default:
+                {
+                    break;
+                }
+            }
+
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (IsValidCompleteCheck()),
+                "item::weapon::WeaponTypeWrapper::SetNamesAndVerify("
+                    << CALLER_CONTEXT_DESCRIPTION
+                    << ") found the object was invalid when finished:  " << ToString());
+        }
+
+        bool WeaponTypeWrapper::IsValidCompleteCheck() const
+        {
+            if (generalName_.empty() || specificName_.empty() || systemName_.empty()
+                || readableName_.empty())
+            {
+                return false;
+            }
+
+            switch (type_)
+            {
+                case weapon_type::Claws:
+                {
+                    return (variant_.which() == BODY_PART_INDEX)
+                        && (body_part::Claws == boost::get<body_part::Enum>(variant_));
+                }
+                case weapon_type::Bite:
+                {
+                    return (variant_.which() == BODY_PART_INDEX)
+                        && (body_part::Bite == boost::get<body_part::Enum>(variant_));
+                }
+                case weapon_type::Fists:
+                {
+                    return (variant_.which() == BODY_PART_INDEX)
+                        && (body_part::Fists == boost::get<body_part::Enum>(variant_));
+                }
+                case weapon_type::Tendrils:
+                {
+                    return (variant_.which() == BODY_PART_INDEX)
+                        && (body_part::Tendrils == boost::get<body_part::Enum>(variant_));
+                }
+                case weapon_type::Breath:
+                {
+                    return (variant_.which() == BODY_PART_INDEX)
+                        && (body_part::Breath == boost::get<body_part::Enum>(variant_));
+                }
+                case weapon_type::Sword:
+                {
+                    return (variant_.which() == SWORD_INDEX)
+                        && (sword_type::Count != boost::get<sword_type::Enum>(variant_));
+                }
+                case weapon_type::Axe:
+                {
+                    return (variant_.which() == AXE_INDEX)
+                        && (axe_type::Count != boost::get<axe_type::Enum>(variant_));
+                }
+                case weapon_type::Whip:
+                {
+                    return (variant_.which() == WHIP_INDEX)
+                        && (whip_type::Count != boost::get<whip_type::Enum>(variant_));
+                }
+                case weapon_type::Club:
+                {
+                    return (variant_.which() == CLUB_INDEX)
+                        && (club_type::Count != boost::get<club_type::Enum>(variant_));
+                }
+                case weapon_type::Projectile:
+                case weapon_type::Blowpipe:
+                case weapon_type::Bow:
+                case weapon_type::Crossbow:
+                case weapon_type::Sling:
+                {
+                    return (variant_.which() == PROJECTILE_INDEX)
+                        && (projectile_type::Count != boost::get<projectile_type::Enum>(variant_));
+                }
+                case weapon_type::BladedStaff:
+                case weapon_type::Spear:
+                {
+                    return (variant_.which() == BLADEDSTAFF_INDEX)
+                        && (bladedstaff_type::Count
+                            != boost::get<bladedstaff_type::Enum>(variant_));
+                }
+                case weapon_type::Knife:
+                {
+                    return (variant_.which() == SIZE_INDEX)
+                        && (sfml_util::Size::Count != boost::get<sfml_util::Size::Enum>(variant_));
+                }
+                case weapon_type::Staff:
+                {
+                    return (variant_.which() == QUARTERSTAFF_INDEX);
+                }
+                case weapon_type::NotAWeapon:
+                case weapon_type::Melee:
+                case weapon_type::Bladed:
+                case weapon_type::Pointed:
+                default:
+                {
+                    return false;
+                }
             }
         }
 

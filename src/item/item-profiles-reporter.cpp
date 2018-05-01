@@ -332,12 +332,12 @@ namespace item
     {
         if (WILL_ADD)
         {
-            if (isWeaponReport_ && PROFILE.WeaponInfo().IsValid())
+            if (isWeaponReport_ && PROFILE.IsWeapon())
             {
                 Report::Add(PROFILE, true);
                 reportMap_[PROFILE.WeaponInfo().GeneralName()].Add(PROFILE, true);
             }
-            else if (PROFILE.ArmorInfo().IsValid())
+            else if ((false == isWeaponReport_) && PROFILE.IsArmor())
             {
                 Report::Add(PROFILE, true);
                 reportMap_[PROFILE.ArmorInfo().GeneralName()].Add(PROFILE, true);

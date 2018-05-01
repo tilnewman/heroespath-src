@@ -126,12 +126,16 @@ namespace item
         bool IsQuestItem() const { return misc_type::IsQuestItem(miscType_); }
 
         bool IsBroken() const { return (category_ & category::Broken); }
-        bool IsArmor() const { return (armorInfo_.IsValid()); }
-        bool IsWeapon() const { return (weaponInfo_.IsValid()); }
         bool IsWearable() const { return (category_ & category::Wearable); }
         bool IsOneHanded() const { return (category_ & category::OneHanded); }
         bool IsTwoHanded() const { return (category_ & category::TwoHanded); }
         bool IsBodypart() const { return (category_ & category::BodyPart); }
+        bool IsArmor() const { return (armorInfo_.IsTypeValid()); }
+
+        bool IsWeapon() const
+        {
+            return ((weapon_type::NotAWeapon != weaponType_) && weaponInfo_.IsTypeValid());
+        }
 
         bool IsSet() const
         {
