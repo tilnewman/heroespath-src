@@ -76,7 +76,8 @@ namespace sfml_util
             const std::string
                 Filename(const item::ItemPtr_t ITEM_PTR, const bool WILL_RANDOMIZE = true) const;
 
-            void EnsureFileExists(const item::ItemPtr_t ITEM_PTR) const;
+            bool DoesFileExists(const item::ItemPtr_t ITEM_PTR) const;
+            bool DoesFileExists(const std::string & FILENAME) const;
 
         private:
             static const std::vector<std::string> Filenames(

@@ -100,7 +100,17 @@ namespace item
             ss << " " << element_type::Name(PROFILE.ElementType());
         }
 
-        return boost::algorithm::replace_all_copy(ss.str(), "  ", " ");
+        // there is a chance for doubled spaces in the logic above
+        auto result{ ss.str() };
+
+        namespace ba = boost::algorithm;
+
+        if (ba::contains(result, "  "))
+        {
+            ba::replace_all(result, "  ", " ");
+        }
+
+        return result;
     }
 
     const std::string ItemFactoryBase::MakeNonBodyPartDescription(
@@ -165,8 +175,21 @@ namespace item
         }
 
         // there is a chance for doubled "and"s and spaces in the logic above
-        return boost::algorithm::replace_all_copy(
-            boost::algorithm::replace_all_copy(ss.str(), "and and", "and"), "  ", " ");
+        auto result{ ss.str() };
+
+        namespace ba = boost::algorithm;
+
+        if (ba::contains(result, "and and"))
+        {
+            ba::replace_all(result, "and and", "and");
+        }
+
+        if (ba::contains(result, "  "))
+        {
+            ba::replace_all(result, "  ", " ");
+        }
+
+        return result;
     }
 
     Coin_t

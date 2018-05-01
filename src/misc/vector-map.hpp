@@ -29,6 +29,7 @@
 //
 #include "misc/boost-serialize-includes.hpp"
 #include "misc/vectors.hpp"
+
 #include <algorithm>
 #include <utility>
 #include <vector>
@@ -64,6 +65,25 @@ namespace misc
         VectorMap()
             : pairs_()
         {}
+
+        // it is up to the caller to ensure that no duplicates are added, if you care...
+        void Append(const Key_t & KEY, const Value_t & VALUE)
+        {
+            pairs_.push_back(std::make_pair(KEY, VALUE));
+        }
+
+        bool AppendIfKeyNotFound(const Key_t & KEY, const Value_t & VALUE)
+        {
+            if (Exists(KEY) == false)
+            {
+                pairs_.push_back(std::make_pair(KEY, VALUE));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         bool Exists(const Key_t & KEY) const
         {
@@ -150,11 +170,17 @@ namespace misc
 
         void Reserve(const std::size_t NEW_CAPACITY) { pairs_.reserve(NEW_CAPACITY); }
 
+        void Sort() { std::sort(std::begin(pairs_), std::end(pairs_)); }
+
         iterator begin() { return std::begin(pairs_); }
         iterator end() { return std::end(pairs_); }
+        iterator front() { return pairs_.front(); }
+        iterator back() { return pairs_.back(); }
 
         const const_iterator begin() const { return std::begin(pairs_); }
         const const_iterator end() const { return std::end(pairs_); }
+        const const_iterator front() const { return pairs_.front(); }
+        const const_iterator back() const { return pairs_.back(); }
 
         // clang-format off
         friend bool

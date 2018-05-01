@@ -278,21 +278,16 @@ namespace sfml_util
             throw std::runtime_error(ss.str());
         }
 
-        void ItemImageMachine::EnsureFileExists(const item::ItemPtr_t ITEM_PTR) const
+        bool ItemImageMachine::DoesFileExists(const item::ItemPtr_t ITEM_PTR) const
+        {
+            return DoesFileExists(ITEM_PTR->ImageFilename());
+        }
+
+        bool ItemImageMachine::DoesFileExists(const std::string & FILENAME) const
         {
             namespace bfs = boost::filesystem;
-
-            auto const PATH{ bfs::path(MakeFullPathFromFilename(ITEM_PTR->ImageFilename())) };
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (bfs::exists(PATH)),
-                "sfml_util::gui::ItemImageMachine::EnsureFileExists(\""
-                    << PATH.string() << "\") but that file does not exist.");
-
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (bfs::is_regular_file(PATH)),
-                "sfml_util::gui::ItemImageMachine::EnsureFileExists(\""
-                    << PATH.string() << "\") but that is not a regular file.");
+            auto const PATH{ bfs::path(MakeFullPathFromFilename(FILENAME)) };
+            return (bfs::exists(PATH) && bfs::is_regular_file(PATH));
         }
 
         const std::vector<std::string> ItemImageMachine::Filenames(
