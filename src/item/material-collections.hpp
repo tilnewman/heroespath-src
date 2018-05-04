@@ -125,6 +125,9 @@ namespace item
         static const MaterialVecPair_t MakeVectorPairSortedAndUnique(
             const MaterialVec_t & VECTOR1, const MaterialVec_t & VECTOR2);
 
+        static const MaterialVecPair_t
+            RemoveLameMaterialsForSpecialItems(const MaterialVecPair_t &);
+
     private:
         const MaterialVec_t MakeCoreMetal(const bool WILL_INCLUDE_NOTHING = false);
         const MaterialVec_t MakeCoreJewel(const bool WILL_INCLUDE_NOTHING = false);

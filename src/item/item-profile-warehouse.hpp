@@ -111,7 +111,9 @@ namespace item
             const armor::base_type::Enum MISSING_BASE_TYPE);
 
         const BaseMaterialVecPairVec_t GetMaterialsFromThinProfile(
-            const ItemProfileThin & THIN_PROFILE, const named_type::Enum NAMED_TYPE);
+            const ItemProfileThin & THIN_PROFILE,
+            const named_type::Enum NAMED_TYPE,
+            const set_type::Enum SET_TYPE);
 
         void MakeLoopOverMaterialsForMiscType(
             const misc_type::Enum,

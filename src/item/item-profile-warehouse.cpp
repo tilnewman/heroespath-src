@@ -198,7 +198,8 @@ namespace item
                 // this number found to be the max during test runs on 2018-4-28
                 matPairsAlreadyMade.reserve(50);
 
-                auto const MATERIALS{ matColl_.VectorPairByUniqueType(UNIQUE_ENUM) };
+                auto const MATERIALS{ matColl_.RemoveLameMaterialsForSpecialItems(
+                    matColl_.VectorPairByUniqueType(UNIQUE_ENUM)) };
 
                 M_ASSERT_OR_LOGANDTHROW_SS(
                     (MATERIALS.first.empty() == false),
@@ -488,7 +489,15 @@ namespace item
         const set_type::Enum SET_TYPE)
     {
         auto const BASEMATERIAL_VEC_PAIR_VEC{ GetMaterialsFromThinProfile(
-            THIN_PROFILE, NAMED_TYPE) };
+            THIN_PROFILE, NAMED_TYPE, SET_TYPE) };
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (BASEMATERIAL_VEC_PAIR_VEC.empty() == false),
+            "item::ItemProfileWarehouse::MakeLoopOverMaterialsForThinProfile(thin_profile="
+                << THIN_PROFILE.ToString() << ", named_type=" << named_type::ToString(NAMED_TYPE)
+                << ", set_type=" << set_type::ToString(SET_TYPE)
+                << ") BASEMATERIAL_VEC_PAIR_VEC (the result of GetMaterialsFromThinProfile()) was "
+                   "empty.");
 
         for (auto const & NEXT_BASEMATERIALVECPAIR : BASEMATERIAL_VEC_PAIR_VEC)
         {
@@ -1023,24 +1032,38 @@ namespace item
     }
 
     const BaseMaterialVecPairVec_t ItemProfileWarehouse::GetMaterialsFromThinProfile(
-        const ItemProfileThin & THIN_PROFILE, const named_type::Enum NAMED_TYPE)
+        const ItemProfileThin & THIN_PROFILE,
+        const named_type::Enum NAMED_TYPE,
+        const set_type::Enum SET_TYPE)
     {
+        auto const IS_MAGICAL_ITEM{
+            ((NAMED_TYPE != named_type::NotNamed) && (NAMED_TYPE != named_type::Count))
+            || ((SET_TYPE != set_type::Count) && (SET_TYPE != set_type::NotASet))
+        };
+
         if ((NAMED_TYPE != named_type::NotNamed) && (NAMED_TYPE != named_type::Count))
         {
-            auto const NAMED_MATERIALS_VEC_PAIR{ matColl_.VectorPairByNamedType(NAMED_TYPE) };
+            auto const NAMED_MATERIALS_VEC_PAIR{ matColl_.RemoveLameMaterialsForSpecialItems(
+                matColl_.VectorPairByNamedType(NAMED_TYPE)) };
 
+            // often there are no materials for a named_type and so we need to check and
+            // fall-through here
             if (NAMED_MATERIALS_VEC_PAIR.first.empty() == false)
             {
                 return { std::make_pair(armor::base_type::Count, NAMED_MATERIALS_VEC_PAIR) };
             }
-
-            // often there are no materials for a named_type and so we fall-through here
         }
 
         if (THIN_PROFILE.IsMisc())
         {
-            return { std::make_pair(
-                armor::base_type::Count, matColl_.VectorPairByMiscType(THIN_PROFILE.MiscType())) };
+            auto materials{ matColl_.VectorPairByMiscType(THIN_PROFILE.MiscType()) };
+
+            if (IS_MAGICAL_ITEM)
+            {
+                matColl_.RemoveLameMaterialsForSpecialItems(materials);
+            }
+
+            return { std::make_pair(armor::base_type::Count, materials) };
         }
         else if (THIN_PROFILE.IsArmor())
         {
@@ -1072,6 +1095,12 @@ namespace item
                     {
                         auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
 
+                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
+                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
+                        {
+                            continue;
+                        }
+
                         if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
                             || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
                         {
@@ -1087,6 +1116,13 @@ namespace item
                     for (int i(0); i < armor::base_type::Count; ++i)
                     {
                         auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
+
+                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
+                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
+                        {
+                            continue;
+                        }
+
                         if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
                             || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
                         {
@@ -1103,6 +1139,12 @@ namespace item
                     {
                         auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
 
+                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
+                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
+                        {
+                            continue;
+                        }
+
                         if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
                             || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
                         {
@@ -1118,6 +1160,13 @@ namespace item
                     for (int i(0); i < armor::base_type::Count; ++i)
                     {
                         auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
+
+                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
+                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
+                        {
+                            continue;
+                        }
+
                         if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
                             || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
                         {
@@ -1134,6 +1183,12 @@ namespace item
                     {
                         auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
 
+                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
+                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
+                        {
+                            continue;
+                        }
+
                         if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
                             || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
                         {
@@ -1149,6 +1204,12 @@ namespace item
                     for (int i(0); i < armor::base_type::Count; ++i)
                     {
                         auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
+
+                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
+                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
+                        {
+                            continue;
+                        }
 
                         if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
                             || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
@@ -1180,58 +1241,78 @@ namespace item
                 }
             }
 
+            if (IS_MAGICAL_ITEM)
+            {
+                for (auto & baseRestrictionMaterialVecsPair : baseTypeMaterialPairs)
+                {
+                    baseRestrictionMaterialVecsPair.second
+                        = matColl_.RemoveLameMaterialsForSpecialItems(
+                            baseRestrictionMaterialVecsPair.second);
+                }
+            }
+
+            baseTypeMaterialPairs.erase(
+                std::remove_if(
+                    std::begin(baseTypeMaterialPairs),
+                    std::end(baseTypeMaterialPairs),
+                    [](auto const & BASE_RESTRICTION_MATERIAL_VECS_PAIR) {
+                        return BASE_RESTRICTION_MATERIAL_VECS_PAIR.second.first.empty();
+                    }),
+                std::end(baseTypeMaterialPairs));
+
             return baseTypeMaterialPairs;
         }
         else if (THIN_PROFILE.IsWeapon())
         {
+            MaterialVecPair_t materialVecPair;
+
             if (THIN_PROFILE.WeaponInfo().IsSword())
             {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.WeaponInfo().SwordType())) };
+                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().SwordType());
             }
             else if (THIN_PROFILE.WeaponInfo().IsAxe())
             {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.WeaponInfo().AxeType())) };
+                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().AxeType());
             }
             else if (THIN_PROFILE.WeaponInfo().IsClub())
             {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.WeaponInfo().ClubType())) };
+                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().ClubType());
             }
             else if (THIN_PROFILE.WeaponInfo().IsWhip())
             {
-                return { std::make_pair(
-                    armor::base_type::Count, Materials(THIN_PROFILE.WeaponInfo().WhipType())) };
+                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().WhipType());
             }
             else if (THIN_PROFILE.WeaponInfo().IsProjectile())
             {
-                return { std::make_pair(
-                    armor::base_type::Count,
-                    Materials(THIN_PROFILE.WeaponInfo().ProjectileType())) };
+                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().ProjectileType());
             }
             else if (THIN_PROFILE.WeaponInfo().IsBladedStaff())
             {
-                return { std::make_pair(
-                    armor::base_type::Count,
-                    Materials(THIN_PROFILE.WeaponInfo().BladedStaffType())) };
+                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().BladedStaffType());
             }
             else if (THIN_PROFILE.WeaponInfo().IsKnife())
             {
-                return { std::make_pair(armor::base_type::Count, MaterialsKnife()) };
+                materialVecPair = MaterialsKnife();
             }
             else if (THIN_PROFILE.WeaponInfo().IsDagger())
             {
-                return { std::make_pair(armor::base_type::Count, MaterialsDagger()) };
+                materialVecPair = MaterialsDagger();
             }
             else if (THIN_PROFILE.WeaponInfo().IsStaff())
             {
-                return { std::make_pair(armor::base_type::Count, MaterialsStaff()) };
+                materialVecPair = MaterialsStaff();
             }
             else if (THIN_PROFILE.WeaponInfo().IsQuarterstaff())
             {
-                return { std::make_pair(armor::base_type::Count, MaterialsQuarterStaff()) };
+                materialVecPair = MaterialsQuarterStaff();
             }
+
+            if (IS_MAGICAL_ITEM)
+            {
+                matColl_.RemoveLameMaterialsForSpecialItems(materialVecPair);
+            }
+
+            return { std::make_pair(armor::base_type::Count, materialVecPair) };
         }
 
         std::ostringstream ss;

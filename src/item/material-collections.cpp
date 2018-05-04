@@ -194,6 +194,54 @@ namespace item
             MakeVectorSortedAndUnique(VECTOR1), MakeVectorSortedAndUnique(secondaryMaterials));
     }
 
+    const MaterialVecPair_t MaterialCollections::RemoveLameMaterialsForSpecialItems(
+        const MaterialVecPair_t & ORIG_MATERIALS_PAIR)
+    {
+        MaterialVecPair_t materialsPair{ ORIG_MATERIALS_PAIR };
+
+        if (materialsPair.first.size() != 1)
+        {
+            auto & primaryMaterials{ materialsPair.first };
+
+            const MaterialVec_t PRIMARY_MATERIALS_TO_REMOVE{
+                material::Nothing,  material::Cloth,  material::SoftLeather, material::Wood,
+                material::Tin,      material::Bronze, material::Iron,        material::Jade,
+                material::Amethyst, material::Emerald
+            };
+
+            for (auto const MATERIAL_TO_REMOVE : PRIMARY_MATERIALS_TO_REMOVE)
+            {
+                primaryMaterials.erase(
+                    std::remove(
+                        std::begin(primaryMaterials),
+                        std::end(primaryMaterials),
+                        MATERIAL_TO_REMOVE),
+                    std::end(primaryMaterials));
+            }
+        }
+
+        if (materialsPair.second.size() != 1)
+        {
+            auto & secondaryMaterials{ materialsPair.second };
+
+            const MaterialVec_t SECONDARY_MATERIALS_TO_REMOVE{
+                material::Wood, material::Tin, material::Bronze, material::Iron
+            };
+
+            for (auto const MATERIAL_TO_REMOVE : SECONDARY_MATERIALS_TO_REMOVE)
+            {
+                secondaryMaterials.erase(
+                    std::remove(
+                        std::begin(secondaryMaterials),
+                        std::end(secondaryMaterials),
+                        MATERIAL_TO_REMOVE),
+                    std::end(secondaryMaterials));
+            }
+        }
+
+        return materialsPair;
+    }
+
     const MaterialVecPair_t
         MaterialCollections::VectorPairByMiscType(const misc_type::Enum MISC_TYPE) const
     {
@@ -689,8 +737,7 @@ namespace item
             }
             case unique_type::SwindlersBag:
             {
-                return MakeVectorPairSortedAndUnique(
-                    { material::Cloth, material::SoftLeather }, {});
+                return MakeVectorPairSortedAndUnique({ material::SoftLeather }, {});
             }
             case unique_type::TribalFlag:
             {
