@@ -92,10 +92,6 @@ namespace game
 
             Setup_DetectLogAndCheckPlatform();
             Setup_SeedRandomNumberGenerator();
-
-            // this only creates vectors of enums
-            item::material::Setup();
-
             Setup_ParseCommandLineArguments(ARGC, argv);
             Setup_GameDataFile();
 

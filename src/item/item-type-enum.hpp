@@ -149,71 +149,8 @@ namespace item
         static float WeightMultPri(const material::Enum MATERIAL_PRI);
         static float WeightMultSec(const material::Enum MATERIAL_SEC);
 
-        static int Bonus(const material::Enum);
-
-        static const std::vector<material::Enum> CoreMetal(const bool WILL_INCLUDE_NOTHING = false)
-        {
-            return ((WILL_INCLUDE_NOTHING) ? coreMetalWithNothingEVec_ : coreMetalEVec_);
-        }
-
-        static const std::vector<material::Enum> CoreJewel(const bool WILL_INCLUDE_NOTHING = false)
-        {
-            return ((WILL_INCLUDE_NOTHING) ? coreJewelWithNothingEVec_ : coreJewelEVec_);
-        }
-
-        static const std::vector<material::Enum> CoreMisc(const bool WILL_INCLUDE_NOTHING = false)
-        {
-            return ((WILL_INCLUDE_NOTHING) ? coreMiscWithNothingEVec_ : coreMiscEVec_);
-        }
-
-        static const std::vector<material::Enum> CorePrimary() { return corePrimaryEVec_; }
-
-        static const std::vector<material::Enum> CorePrimaryNoPearl()
-        {
-            return corePrimaryNoPearlEVec_;
-        }
-
-        static const std::vector<material::Enum>
-            CoreSecondary(const bool WILL_INCLUDE_NOTHING = true)
-        {
-            return ((WILL_INCLUDE_NOTHING) ? coreSecondaryWithNothingEVec_ : coreSecondaryEVec_);
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CorePrimaryAndSecondary()
-        {
-            return corePrimaryAndSecondaryEVecPair_;
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CorePrimaryAndNoSecondary()
-        {
-            return corePrimaryAndNoSecondaryEVecPair_;
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CoreMetalAndCoreSecondary()
-        {
-            return coreMetalAndCoreSecondaryEVecPair_;
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CoreJewelAndCoreSecondary()
-        {
-            return coreJewelAndCoreSecondaryEVecPair_;
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CoreMetalJewelAndCoreSecondary()
-        {
-            return coreMetalJewelAndCoreSecondaryEVecPair_;
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            CorePrimaryNoPearlAndSecondary()
-        {
-            return corePrimaryNoPearlAndSecondaryEVecPair_;
-        }
+        static int EnchantmentBonus(const material::Enum);
+        static float EnchantmentBonusRatio(const material::Enum);
 
         static bool
             IsMagical(const material::Enum PRI, const material::Enum SEC = material::Nothing);
@@ -258,97 +195,6 @@ namespace item
         {
             return ((M == material::Cloth) || IsLeather(M));
         }
-
-        static void AppendCoreMetal(std::vector<material::Enum> &);
-        static void AppendCoreJewel(std::vector<material::Enum> &);
-        static void AppendCoreMisc(std::vector<material::Enum> &);
-        static void AppendCorePrimary(std::vector<material::Enum> &);
-        static void AppendCorePrimaryNoPearl(std::vector<material::Enum> &);
-        static void AppendCoreSecondary(std::vector<material::Enum> &);
-
-    private:
-        static std::vector<material::Enum> coreMetalEVec_;
-        static std::vector<material::Enum> coreMetalWithNothingEVec_;
-        static std::vector<material::Enum> coreJewelEVec_;
-        static std::vector<material::Enum> coreJewelWithNothingEVec_;
-        static std::vector<material::Enum> coreMiscEVec_;
-        static std::vector<material::Enum> coreMiscWithNothingEVec_;
-        static std::vector<material::Enum> corePrimaryEVec_;
-        static std::vector<material::Enum> corePrimaryNoPearlEVec_;
-        static std::vector<material::Enum> coreSecondaryEVec_;
-        static std::vector<material::Enum> coreSecondaryWithNothingEVec_;
-
-        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            corePrimaryAndSecondaryEVecPair_;
-
-        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            corePrimaryAndNoSecondaryEVecPair_;
-
-        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            coreMetalAndCoreSecondaryEVecPair_;
-
-        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            coreJewelAndCoreSecondaryEVecPair_;
-
-        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            coreMetalJewelAndCoreSecondaryEVecPair_;
-
-        static std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            corePrimaryNoPearlAndSecondaryEVecPair_;
-
-        static const std::vector<material::Enum>
-            MakeCoreMetal(const bool WILL_INCLUDE_NOTHING = false);
-
-        static const std::vector<material::Enum>
-            MakeCoreJewel(const bool WILL_INCLUDE_NOTHING = false);
-
-        static const std::vector<material::Enum>
-            MakeCoreMisc(const bool WILL_INCLUDE_NOTHING = false);
-
-        static const std::vector<material::Enum> MakeCorePrimary();
-        static const std::vector<material::Enum> MakeCorePrimaryNoPearl();
-
-        static const std::vector<material::Enum>
-            MakeCoreSecondary(const bool WILL_INCLUDE_NOTHING = true);
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            MakeCorePrimaryAndSecondary()
-        {
-            return std::make_pair(CorePrimary(), CoreSecondary());
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            MakeCorePrimaryAndNoSecondary()
-        {
-            return std::make_pair(CorePrimary(), std::vector<material::Enum>());
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            MakeCoreMetalAndCoreSecondary()
-        {
-            return std::make_pair(CoreMetal(), CoreSecondary());
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            MakeCoreJewelAndCoreSecondary()
-        {
-            return std::make_pair(CoreJewel(), CoreSecondary());
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            MakeCoreMetalJewelAndCoreSecondary()
-        {
-            std::vector<material::Enum> v;
-            AppendCoreMetal(v);
-            AppendCoreJewel(v);
-            return std::make_pair(v, CoreSecondary());
-        }
-
-        static const std::pair<std::vector<material::Enum>, std::vector<material::Enum>>
-            MakeCorePrimaryNoPearlAndSecondary()
-        {
-            return std::make_pair(CorePrimaryNoPearl(), CoreSecondary());
-        }
     };
 
     using MaterialVec_t = std::vector<material::Enum>;
@@ -366,23 +212,91 @@ namespace item
             Last = Shadow
         };
 
-        static const std::string ToString(const Enum, const bool WILL_WRAP = false);
+        static bool IsValid(const Enum);
+
+        static const std::string ToString(
+            const Enum, const bool WILL_WRAP = false, const std::string & SEPARATOR = ", ");
+
         static const std::string Name(const Enum, const bool WILL_WRAP = false);
 
+        template <typename T>
+        static element_type::Enum Make(const T VALUE)
+        {
+            return static_cast<element_type::Enum>(VALUE);
+        }
+
+        template <typename T>
         static const std::vector<element_type::Enum>
-            Combinations(const Enum, const bool WILL_INCLUDE_NOTHING = false);
+            AllCombinations(const T VALUE, const bool WILL_INCLUDE_NOTHING = false)
+        {
+            auto const ELEMENT_TYPE{ Make(VALUE) };
+
+            std::vector<Enum> enums;
+
+            if (WILL_INCLUDE_NOTHING)
+            {
+                enums.emplace_back(None);
+            }
+
+            if (ELEMENT_TYPE == element_type::None)
+            {
+                return enums;
+            }
+
+            if (ELEMENT_TYPE & Fire)
+            {
+                enums.emplace_back(Fire);
+            }
+
+            if (ELEMENT_TYPE & Frost)
+            {
+                enums.emplace_back(Frost);
+            }
+
+            if (ELEMENT_TYPE & Honor)
+            {
+                enums.emplace_back(Honor);
+            }
+
+            if (ELEMENT_TYPE & Shadow)
+            {
+                enums.emplace_back(Shadow);
+            }
+
+            if ((ELEMENT_TYPE & Fire) && (ELEMENT_TYPE & Honor))
+            {
+                enums.emplace_back(static_cast<Enum>(Fire | Honor));
+            }
+
+            if ((ELEMENT_TYPE & Fire) && (ELEMENT_TYPE & Shadow))
+            {
+                enums.emplace_back(static_cast<Enum>(Fire | Shadow));
+            }
+
+            if ((ELEMENT_TYPE & Frost) && (ELEMENT_TYPE & Honor))
+            {
+                enums.emplace_back(static_cast<Enum>(Frost | Honor));
+            }
+
+            if ((ELEMENT_TYPE & Frost) && (ELEMENT_TYPE & Shadow))
+            {
+                enums.emplace_back(static_cast<Enum>(Frost | Shadow));
+            }
+
+            return enums;
+        }
 
         static const std::vector<element_type::Enum> AllCombinations()
         {
-            return Combinations(static_cast<element_type::Enum>(
+            return AllCombinations(static_cast<element_type::Enum>(
                 element_type::Fire | element_type::Frost | element_type::Honor
                 | element_type::Shadow));
         }
 
-        static bool IsValid(const Enum);
+        static int ValidTypeCounter(const Enum);
     };
 
-    using ElementTypeVec_t = std::vector<element_type::Enum>;
+    using ElementEnumVec_t = std::vector<element_type::Enum>;
 
     struct misc_type
     {
@@ -435,7 +349,7 @@ namespace item
             Charm_Hourglass,
             Charm_Key,
             Charm_Mask,
-            Cameo, // SaintCameoPin
+            CameoPin, // SaintCameoPin
             Cape, // GeneralsCape, KingsCape, CommandersCape
             Cat, // CrystalCat
             Chains, // SpecterChains
@@ -547,9 +461,8 @@ namespace item
         static const std::string ToString(const Enum);
         static const std::string Name(const Enum);
         static bool IsMusicalInstrument(const Enum);
-        static const MaterialVecPair_t Materials(const Enum);
 
-        // summoning works by using the item
+        // summoning works by "using" the item
         static bool IsSummoning(const Enum);
 
         static bool IsStandalone(const Enum);
@@ -562,11 +475,19 @@ namespace item
         static bool IsCursed(const Enum);
         static Weight_t Weight(const Enum);
         static bool IsUseable(const Enum);
+
+        // these two are not mutually exclusive, all wearable are equippable because creature
+        // inventories only understand equipped vs held, wearable is just a way to display more
+        // natural language to the player, so all wearable are equippable but not all equippable are
+        // wearable.
+        static bool IsWearable(const Enum);
         static bool IsEquippable(const Enum);
+
         static bool IsQuestItem(const Enum);
         static bool AllowsCasting(const Enum);
         static bool IsWeapon(const Enum);
         static bool IsArmor(const Enum);
+        static const ElementEnumVec_t ElementTypes(const Enum, const bool WILL_INCLUDE_NONE);
     };
 
     struct set_type
@@ -751,8 +672,7 @@ namespace item
         static const std::string ToString(const Enum);
         static const std::string Name(const Enum);
         static misc_type::Enum MiscType(const Enum);
-        static element_type::Enum ElementTypes(const Enum);
-        static const MaterialVecPair_t Materials(const Enum);
+        static const ElementEnumVec_t ElementTypes(const Enum, const bool WILL_INCLUDE_NONE);
         static bool IsUseable(const Enum);
         static float ReligiousRatio(const Enum);
     };
@@ -826,8 +746,7 @@ namespace item
 
         static const std::string ToString(const Enum);
         static const std::string Name(const Enum);
-        static element_type::Enum ElementTypes(const Enum);
-        static const MaterialVecPair_t Materials(const Enum);
+        static const ElementEnumVec_t ElementTypes(const Enum, const bool WILL_INCLUDE_NONE);
     };
 
     struct weapon_type

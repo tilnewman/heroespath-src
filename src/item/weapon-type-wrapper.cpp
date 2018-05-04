@@ -30,6 +30,7 @@
 #include "weapon-type-wrapper.hpp"
 
 #include "log/log-macros.hpp"
+#include "misc/vector-map.hpp"
 
 #include <exception>
 #include <numeric>
@@ -55,6 +56,7 @@ namespace item
             , type_(weapon_type::NotAWeapon)
             , isDagger_(false)
             , variant_()
+            , elementTypes_()
         {
             // This is the default constructor and it needs to support construction with all default
             // parameters that leave the object in an invalid state, so this if/return allows for
@@ -137,6 +139,7 @@ namespace item
             , type_(weapon_type::Knife)
             , isDagger_(IS_DAGGER)
             , variant_(SIZE)
+            , elementTypes_()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SIZE != sfml_util::Size::Count),
@@ -154,6 +157,7 @@ namespace item
             , type_(weapon_type::Staff)
             , isDagger_(false)
             , variant_(IS_QUARTERSTAFF)
+            , elementTypes_()
         {
             SetNamesAndVerify("after is_quarterstaff constructor");
         }
@@ -166,6 +170,7 @@ namespace item
             , type_(body_part::WeaponType(BODY_PART))
             , isDagger_(false)
             , variant_(BODY_PART)
+            , elementTypes_()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 ((BODY_PART != body_part::Count) && (BODY_PART != body_part::Skin)),
@@ -184,6 +189,7 @@ namespace item
             , type_(weapon_type::Sword)
             , isDagger_(false)
             , variant_(SWORD_TYPE)
+            , elementTypes_()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SWORD_TYPE != sword_type::Count),
@@ -201,6 +207,7 @@ namespace item
             , type_(weapon_type::Axe)
             , isDagger_(false)
             , variant_(AXE_TYPE)
+            , elementTypes_()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (AXE_TYPE != axe_type::Count),
@@ -218,6 +225,7 @@ namespace item
             , type_(weapon_type::Club)
             , isDagger_(false)
             , variant_(CLUB_TYPE)
+            , elementTypes_()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (CLUB_TYPE != club_type::Count),
@@ -235,6 +243,7 @@ namespace item
             , type_(weapon_type::Whip)
             , isDagger_(false)
             , variant_(WHIP_TYPE)
+            , elementTypes_()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (WHIP_TYPE != whip_type::Count),
@@ -252,6 +261,7 @@ namespace item
             , type_(weapon_type::Projectile)
             , isDagger_(false)
             , variant_(PROJ_TYPE)
+            , elementTypes_()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (PROJ_TYPE != projectile_type::Count),
@@ -269,6 +279,7 @@ namespace item
             , type_(weapon_type::BladedStaff)
             , isDagger_(false)
             , variant_(BSTAFF_TYPE)
+            , elementTypes_()
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (BSTAFF_TYPE != bladedstaff_type::Count),
@@ -290,12 +301,20 @@ namespace item
                 return "(empty)";
             }
 
+            misc::VectorMap<std::string, std::string> namesMap;
+            namesMap[generalName_] += "generalName_\\";
+            namesMap[specificName_] += "specificName_\\";
+            namesMap[systemName_] += "systemName_\\";
+            namesMap[readableName_] += "readableName_\\";
+
             std::ostringstream ss;
-            ss << "generalName_=\"" << generalName_ << "\", specificName_=\"" << specificName_
-               << "\", systemName_=\"" << systemName_ << "\", readableName_=\"" << readableName_
-               << "\", type_=" << weapon_type::ToString(type_, true)
-               << ", is_dagger=" << std::boolalpha << isDagger_
-               << ", variant_.which()=" << variant_.which() << ","
+            for (auto const & VALUE_NAME_PAIR : namesMap)
+            {
+                ss << "\"" << VALUE_NAME_PAIR.first << "\"=" << VALUE_NAME_PAIR.second << ", ";
+            }
+
+            ss << "type_=" << weapon_type::ToString(type_, true) << ", is_dagger=" << std::boolalpha
+               << isDagger_ << ", variant_.which()=" << variant_.which() << ","
                << ((IsQuarterstaff()) ? QUARTERSTAFF_NAME_ : "") << ",type=("
                << ((IsBite()) ? "bite" : "") << "," << ((IsClaws()) ? "claws" : "") << ","
                << ((IsFists()) ? "fists" : "") << "," << ((IsStaff()) ? "staff" : "") << ","
@@ -306,7 +325,36 @@ namespace item
                << ((IsClub()) ? club_type::ToString(ClubType()) : "") << ","
                << ((IsWhip()) ? whip_type::ToString(WhipType()) : "") << ","
                << ((IsProjectile()) ? projectile_type::ToString(ProjectileType()) : "") << ","
-               << ((IsBladedStaff()) ? bladedstaff_type::ToString(BladedStaffType()) : "") << ")";
+               << ((IsBladedStaff()) ? bladedstaff_type::ToString(BladedStaffType()) : "")
+               << "), element_types={";
+
+            if (elementTypes_.empty())
+            {
+                ss << "empty/invalid";
+            }
+            else
+            {
+                for (std::size_t i(0); i < elementTypes_.size(); ++i)
+                {
+                    if (i > 0)
+                    {
+                        ss << ",";
+                    }
+
+                    auto const ELEMENT_TYPE{ elementTypes_.at(i) };
+
+                    if (ELEMENT_TYPE == element_type::None)
+                    {
+                        ss << "(None)";
+                    }
+                    else
+                    {
+                        ss << element_type::ToString(ELEMENT_TYPE, true, "&");
+                    }
+                }
+            }
+
+            ss << "}";
 
             return ss.str();
         }
@@ -378,12 +426,9 @@ namespace item
                 if (boost::algorithm::to_lower_copy(body_part::ToString(BODY_PART_ENUM))
                     == SYSTEM_NAME_LOWERCASE)
                 {
-                    generalName_ = body_part::ToString(BODY_PART_ENUM);
-                    specificName_ = generalName_;
-                    systemName_ = generalName_;
-                    readableName_ = generalName_;
                     type_ = body_part::WeaponType(BODY_PART_ENUM);
                     variant_ = BODY_PART_ENUM;
+                    SetNamesAndVerify("'name' constructor when name=BodyPart");
                     return true;
                 }
             }
@@ -409,15 +454,10 @@ namespace item
 
             if (IS_KNIFE || IS_DAGGER)
             {
-                auto const NAME_TO_USE{ ((IS_KNIFE) ? KNIFE_NAME : DAGGER_NAME_) };
-
-                generalName_ = NAME_TO_USE;
-                specificName_ = NAME_TO_USE;
-                systemName_ = NAME_TO_USE;
-                readableName_ = NAME_TO_USE;
                 type_ = weapon_type::Knife;
                 isDagger_ = IS_DAGGER;
                 variant_ = SIZE;
+                SetNamesAndVerify("'name' constructor when name=Knife/Dagger");
                 return true;
             }
             else
@@ -428,6 +468,8 @@ namespace item
 
         void WeaponTypeWrapper::SetNamesAndVerify(const std::string & CALLER_CONTEXT_DESCRIPTION)
         {
+            elementTypes_.clear();
+
             switch (type_)
             {
                 case weapon_type::Claws:
@@ -435,21 +477,31 @@ namespace item
                 case weapon_type::Fists:
                 case weapon_type::Tendrils:
                 case weapon_type::Breath:
+                {
+                    generalName_ = weapon_type::Name(type_);
+                    specificName_ = generalName_;
+                    systemName_ = weapon_type::ToString(type_, false, false);
+                    readableName_ = generalName_;
+                    break;
+                }
+
                 case weapon_type::Staff:
                 {
-                    if (variant_.which() == QUARTERSTAFF_INDEX)
+                    if (boost::get<bool>(variant_))
                     {
                         generalName_ = QUARTERSTAFF_NAME_;
                         specificName_ = QUARTERSTAFF_NAME_;
                         systemName_ = QUARTERSTAFF_NAME_;
                         readableName_ = QUARTERSTAFF_NAME_;
+                        elementTypes_ = { element_type::Frost, element_type::Honor };
                     }
                     else
                     {
-                        generalName_ = weapon_type::Name(type_);
+                        generalName_ = weapon_type::Name(weapon_type::Staff);
                         specificName_ = generalName_;
-                        systemName_ = weapon_type::ToString(type_, false, false);
+                        systemName_ = generalName_;
                         readableName_ = generalName_;
+                        elementTypes_ = { element_type::Shadow, element_type::Honor };
                     }
 
                     break;
@@ -472,6 +524,76 @@ namespace item
                     else
                     {
                         readableName_ = specificName_ + " " + generalName_;
+                    }
+
+                    switch (SWORD_TYPE)
+                    {
+                        case sword_type::Gladius:
+                        {
+                            elementTypes_ = { element_type::Honor };
+                            break;
+                        }
+                        case sword_type::Cutlass:
+                        {
+                            elementTypes_ = { element_type::Honor };
+                            break;
+                        }
+                        case sword_type::Falcata:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Fire | element_type::Shadow);
+
+                            break;
+                        }
+                        case sword_type::Rapier:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Frost | element_type::Fire | element_type::Shadow);
+
+                            break;
+                        }
+                        case sword_type::Saber:
+                        {
+                            elementTypes_ = { element_type::Shadow };
+                            break;
+                        }
+                        case sword_type::Broadsword:
+                        {
+                            elementTypes_ = { element_type::Honor };
+                            break;
+                        }
+                        case sword_type::Longsword:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Frost | element_type::Fire);
+
+                            break;
+                        }
+                        case sword_type::Knightlysword:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Frost | element_type::Honor);
+
+                            break;
+                        }
+                        case sword_type::Flamberg:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Fire | element_type::Shadow);
+
+                            break;
+                        }
+                        case sword_type::Claymore:
+                        {
+                            elementTypes_ = element_type::AllCombinations();
+                            break;
+                        }
+                        case sword_type::Shortsword:
+                        case sword_type::Count:
+                        default:
+                        {
+                            break;
+                        }
                     }
 
                     break;
@@ -498,6 +620,31 @@ namespace item
                         readableName_ = specificName_ + " " + generalName_;
                     }
 
+                    switch (AXE_TYPE)
+                    {
+                        case axe_type::Sickle:
+                        {
+                            elementTypes_ = { element_type::Shadow };
+                            break;
+                        }
+                        case axe_type::Battleaxe:
+                        {
+                            elementTypes_ = { element_type::Fire, element_type::Frost };
+                            break;
+                        }
+                        case axe_type::Waraxe:
+                        {
+                            elementTypes_ = { element_type::Honor, element_type::Shadow };
+                            break;
+                        }
+                        case axe_type::Handaxe:
+                        case axe_type::Count:
+                        default:
+                        {
+                            break;
+                        }
+                    }
+
                     break;
                 }
 
@@ -508,6 +655,27 @@ namespace item
                     specificName_ = whip_type::Name(WHIP_TYPE);
                     systemName_ = whip_type::ToString(WHIP_TYPE);
                     readableName_ = specificName_;
+
+                    switch (WHIP_TYPE)
+                    {
+                        case whip_type::Flail:
+                        {
+                            elementTypes_ = { element_type::Honor, element_type::Shadow };
+                            break;
+                        }
+                        case whip_type::MaceAndChain:
+                        {
+                            elementTypes_ = { element_type::Fire, element_type::Frost };
+                            break;
+                        }
+                        case whip_type::Bullwhip:
+                        case whip_type::Count:
+                        default:
+                        {
+                            break;
+                        }
+                    }
+
                     break;
                 }
 
@@ -528,6 +696,35 @@ namespace item
                         readableName_ = specificName_;
                     }
 
+                    switch (CLUB_TYPE)
+                    {
+                        case club_type::Spiked:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Fire | element_type::Shadow);
+
+                            break;
+                        }
+                        case club_type::Mace:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Frost | element_type::Honor);
+
+                            break;
+                        }
+                        case club_type::Warhammer:
+                        {
+                            elementTypes_ = element_type::AllCombinations();
+                            break;
+                        }
+                        case club_type::Maul:
+                        case club_type::Count:
+                        default:
+                        {
+                            break;
+                        }
+                    }
+
                     break;
                 }
 
@@ -535,21 +732,46 @@ namespace item
                 {
                     auto const PROJECTILE_TYPE{ ProjectileType() };
 
-                    if (PROJECTILE_TYPE == projectile_type::Blowpipe)
+                    switch (PROJECTILE_TYPE)
                     {
-                        generalName_ = projectile_type::Name(PROJECTILE_TYPE);
-                    }
-                    else if (PROJECTILE_TYPE == projectile_type::Sling)
-                    {
-                        generalName_ = projectile_type::Name(PROJECTILE_TYPE);
-                    }
-                    else if (PROJECTILE_TYPE == projectile_type::Crossbow)
-                    {
-                        generalName_ = projectile_type::Name(PROJECTILE_TYPE);
-                    }
-                    else
-                    {
-                        generalName_ = BOW_GENERAL_NAME_;
+                        case projectile_type::Blowpipe:
+                        {
+                            generalName_ = projectile_type::Name(PROJECTILE_TYPE);
+                            break;
+                        }
+                        case projectile_type::Sling:
+                        {
+                            generalName_ = projectile_type::Name(PROJECTILE_TYPE);
+                            break;
+                        }
+                        case projectile_type::Shortbow:
+                        {
+                            generalName_ = BOW_GENERAL_NAME_;
+                            break;
+                        }
+                        case projectile_type::Longbow:
+                        {
+                            generalName_ = BOW_GENERAL_NAME_;
+                            elementTypes_ = { element_type::Fire, element_type::Frost };
+                            break;
+                        }
+                        case projectile_type::Crossbow:
+                        {
+                            generalName_ = projectile_type::Name(PROJECTILE_TYPE);
+                            elementTypes_ = { element_type::Honor, element_type::Shadow };
+                            break;
+                        }
+                        case projectile_type::CompositeBow:
+                        {
+                            generalName_ = BOW_GENERAL_NAME_;
+                            elementTypes_ = element_type::AllCombinations();
+                            break;
+                        }
+                        case projectile_type::Count:
+                        default:
+                        {
+                            break;
+                        }
                     }
 
                     specificName_ = projectile_type::Name(PROJECTILE_TYPE);
@@ -575,6 +797,9 @@ namespace item
                         {
                             readableName_ = generalName_;
                         }
+
+                        elementTypes_ = element_type::AllCombinations(
+                            element_type::Fire | element_type::Frost | element_type::Honor);
                     }
                     else
                     {
@@ -591,6 +816,9 @@ namespace item
                         {
                             readableName_ = generalName_;
                         }
+
+                        elementTypes_ = element_type::AllCombinations(
+                            element_type::Fire | element_type::Frost | element_type::Shadow);
                     }
 
                     break;
@@ -607,6 +835,45 @@ namespace item
                     // skip prepending the general name because most players will know these items
                     // by their specfificName_
                     readableName_ = specificName_;
+
+                    switch (BLADEDSTAFF_TYPE)
+                    {
+                        case bladedstaff_type::Scythe:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Fire | element_type::Shadow);
+
+                            break;
+                        }
+                        case bladedstaff_type::Pike:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Frost | element_type::Honor);
+
+                            break;
+                        }
+                        case bladedstaff_type::Partisan:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Fire | element_type::Honor);
+
+                            break;
+                        }
+                        case bladedstaff_type::Halberd:
+                        {
+                            elementTypes_ = element_type::AllCombinations(
+                                element_type::Fire | element_type::Frost | element_type::Honor);
+
+                            break;
+                        }
+                        case bladedstaff_type::Spear:
+                        case bladedstaff_type::ShortSpear:
+                        case bladedstaff_type::Count:
+                        default:
+                        {
+                            break;
+                        }
+                    }
 
                     break;
                 }
@@ -625,6 +892,8 @@ namespace item
                 }
             }
 
+            elementTypes_.emplace_back(element_type::None);
+
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (IsValidCompleteCheck()),
                 "item::weapon::WeaponTypeWrapper::SetNamesAndVerify("
@@ -634,6 +903,11 @@ namespace item
 
         bool WeaponTypeWrapper::IsValidCompleteCheck() const
         {
+            if (elementTypes_.empty())
+            {
+                return false;
+            }
+
             if (generalName_.empty() || specificName_.empty() || systemName_.empty()
                 || readableName_.empty())
             {

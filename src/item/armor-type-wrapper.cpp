@@ -31,6 +31,7 @@
 
 #include "log/log-macros.hpp"
 #include "misc/assertlogandthrow.hpp"
+#include "misc/vector-map.hpp"
 
 #include <exception>
 #include <numeric>
@@ -56,6 +57,8 @@ namespace item
             , type_(armor_type::NotArmor)
             , base_(BASE_TYPE)
             , variant_()
+            , elementTypes_()
+            , intentionallyMadeInvalidWithoutBaseType_(false)
         {
             // This is the default constructor and it needs to support construction with all default
             // parameters that leave the object in an invalid state, so this if/return allows for
@@ -135,6 +138,8 @@ namespace item
             , type_(ARMOR_TYPE)
             , base_(BASE_TYPE)
             , variant_()
+            , elementTypes_()
+            , intentionallyMadeInvalidWithoutBaseType_(WILL_MAKE_INVALID_IGNORING_BASE_TYPE)
         {
             if (WILL_MAKE_INVALID_IGNORING_BASE_TYPE == false)
             {
@@ -150,6 +155,8 @@ namespace item
             , type_(armor_type::Skin)
             , base_(base_type::Count)
             , variant_()
+            , elementTypes_()
+            , intentionallyMadeInvalidWithoutBaseType_(false)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (BODY_PART == body_part::Skin),
@@ -168,6 +175,8 @@ namespace item
             , type_(armor_type::Covering)
             , base_(base_type::Count)
             , variant_(COVER_TYPE)
+            , elementTypes_()
+            , intentionallyMadeInvalidWithoutBaseType_(false)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (COVER_TYPE != cover_type::Count),
@@ -185,6 +194,8 @@ namespace item
             , type_(armor_type::Helm)
             , base_(base_type::Count)
             , variant_(HELM_TYPE)
+            , elementTypes_()
+            , intentionallyMadeInvalidWithoutBaseType_(false)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (HELM_TYPE != helm_type::Count),
@@ -202,6 +213,8 @@ namespace item
             , type_(armor_type::Shield)
             , base_(base_type::Count)
             , variant_(SHIELD_TYPE)
+            , elementTypes_()
+            , intentionallyMadeInvalidWithoutBaseType_(false)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SHIELD_TYPE != shield_type::Count),
@@ -233,10 +246,19 @@ namespace item
                 return "(empty)";
             }
 
+            misc::VectorMap<std::string, std::string> namesMap;
+            namesMap[generalName_] += "generalName_\\";
+            namesMap[specificName_] += "specificName_\\";
+            namesMap[systemName_] += "systemName_\\";
+            namesMap[readableName_] += "readableName_\\";
+
             std::ostringstream ss;
-            ss << "generalName_=\"" << generalName_ << "\", specificName_=\"" << specificName_
-               << "\", systemName_=\"" << systemName_ << "\", readableName_=\"" << readableName_
-               << "\", type=" << armor_type::ToString(type_)
+            for (auto const & VALUE_NAME_PAIR : namesMap)
+            {
+                ss << "\"" << VALUE_NAME_PAIR.first << "\"=" << VALUE_NAME_PAIR.second << ", ";
+            }
+
+            ss << "type=" << armor_type::ToString(type_)
                << ", base=" << ((base_type::Count == base_) ? "Count" : base_type::ToString(base_))
                << ", variant_.which()=" << variant_.which() << ", type=("
                << ((IsShield()) ? shield_type::ToString(ShieldType()) : "") << ","
@@ -245,7 +267,40 @@ namespace item
                << ((IsBoots()) ? "boots" : "") << "," << ((IsShirt()) ? "shirt" : "") << ","
                << ((IsBracers()) ? "bracers" : "") << "," << ((IsAventail()) ? "aventail" : "")
                << "," << ((IsCover()) ? cover_type::ToString(CoverType()) : "") << ","
-               << ((IsSkin()) ? "skin" : "") << ")";
+               << ((IsSkin()) ? "skin" : "") << ")"
+               << ")"
+               << ((intentionallyMadeInvalidWithoutBaseType_)
+                       ? ", INTENTIONALLY_MADE_INVALID_WITHOUT_BASE_TYPE"
+                       : "")
+               << ", element_types={";
+
+            if (elementTypes_.empty())
+            {
+                ss << "empty/invalid";
+            }
+            else
+            {
+                for (std::size_t i(0); i < elementTypes_.size(); ++i)
+                {
+                    if (i > 0)
+                    {
+                        ss << ",";
+                    }
+
+                    auto const ELEMENT_TYPE{ elementTypes_.at(i) };
+
+                    if (ELEMENT_TYPE == element_type::None)
+                    {
+                        ss << "(None)";
+                    }
+                    else
+                    {
+                        ss << element_type::ToString(ELEMENT_TYPE, true, "&");
+                    }
+                }
+            }
+
+            ss << "}";
 
             return ss.str();
         }
@@ -322,6 +377,8 @@ namespace item
 
         void ArmorTypeWrapper::SetNamesAndVerify(const std::string & CALLER_CONTEXT_DESCRIPTION)
         {
+            SetupElementTypes();
+
             switch (type_)
             {
                 case armor_type::Gauntlets:
@@ -411,6 +468,11 @@ namespace item
 
         bool ArmorTypeWrapper::IsValidCompleteCheck() const
         {
+            if (elementTypes_.empty())
+            {
+                return false;
+            }
+
             if (generalName_.empty() || specificName_.empty() || systemName_.empty()
                 || readableName_.empty())
             {
@@ -473,6 +535,145 @@ namespace item
                     return false;
                 }
             }
+        }
+
+        void ArmorTypeWrapper::SetupElementTypes()
+        {
+            elementTypes_ = MakeElementTypesWithGivenBaseType(base_);
+        }
+
+        const ElementEnumVec_t ArmorTypeWrapper::MakeElementTypesWithGivenBaseType(
+            const base_type::Enum BASE_TYPE) const
+        {
+            ElementEnumVec_t elementTypes;
+
+            switch (type_)
+            {
+                case armor_type::Bracers:
+                case armor_type::Boots:
+                case armor_type::Aventail:
+                {
+                    if ((base_type::Count != BASE_TYPE) && (base_type::Plain != BASE_TYPE))
+                    {
+                        elementTypes = { element_type::Fire, element_type::Frost };
+                    }
+
+                    break;
+                }
+                case armor_type::Gauntlets:
+                case armor_type::Pants:
+                case armor_type::Shirt:
+                {
+                    if ((base_type::Count != BASE_TYPE) && (base_type::Plain != BASE_TYPE))
+                    {
+                        elementTypes = { element_type::Honor, element_type::Shadow };
+                    }
+
+                    break;
+                }
+                case armor_type::Shield:
+                {
+                    switch (ShieldType())
+                    {
+                        case shield_type::Kite:
+                        {
+                            elementTypes = element_type::AllCombinations(
+                                element_type::Frost | element_type::Honor);
+
+                            break;
+                        }
+                        case shield_type::Heater:
+                        {
+                            elementTypes = element_type::AllCombinations(
+                                element_type::Fire | element_type::Shadow);
+
+                            break;
+                        }
+                        case shield_type::Pavis:
+                        {
+                            elementTypes = element_type::AllCombinations();
+                            break;
+                        }
+                        case shield_type::Buckler:
+                        case shield_type::Count:
+                        default:
+                        {
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+                case armor_type::Helm:
+                {
+                    switch (HelmType())
+                    {
+                        case helm_type::MailCoif:
+                        {
+                            elementTypes = { element_type::Frost };
+                            break;
+                        }
+                        case helm_type::Kettle:
+                        {
+                            elementTypes = { element_type::Shadow };
+                            break;
+                        }
+                        case helm_type::Archers:
+                        {
+                            elementTypes = { element_type::Honor };
+                            break;
+                        }
+                        case helm_type::Bascinet:
+                        {
+                            elementTypes = { element_type::Fire };
+                            break;
+                        }
+                        case helm_type::Great:
+                        {
+                            elementTypes = element_type::AllCombinations();
+                            break;
+                        }
+                        case helm_type::Leather:
+                        case helm_type::Count:
+                        default:
+                        {
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+                case armor_type::Covering:
+                {
+                    auto const COVER_TYPE{ CoverType() };
+
+                    if (cover_type::Cape == COVER_TYPE)
+                    {
+                        elementTypes = { element_type::Honor, element_type::Shadow };
+                    }
+                    else if (cover_type::Vest == COVER_TYPE)
+                    {
+                        elementTypes = { element_type::Fire, element_type::Frost };
+                    }
+                    else if (cover_type::Cloak == COVER_TYPE)
+                    {
+                        elementTypes = element_type::AllCombinations();
+                    }
+
+                    break;
+                }
+                case armor_type::Skin:
+                case armor_type::NotArmor:
+                case armor_type::Count:
+                default:
+                {
+                    break;
+                }
+            }
+
+            elementTypes.emplace_back(element_type::None);
+
+            return elementTypes;
         }
 
     } // namespace armor

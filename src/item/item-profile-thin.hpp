@@ -149,9 +149,11 @@ namespace item
             const bool IS_QUARTERSTAFF, const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
         template <typename SpecificWeapon_t>
-        static const ItemProfileThin MakeWeaponSpecific(const SpecificWeapon_t SPECIFIC_WEAPON_TYPE)
+        static const ItemProfileThin MakeWeaponSpecific(
+            const SpecificWeapon_t SPECIFIC_WEAPON_TYPE,
+            const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
         {
-            return MakeWeapon(weapon::WeaponTypeWrapper(SPECIFIC_WEAPON_TYPE));
+            return MakeWeapon(weapon::WeaponTypeWrapper(SPECIFIC_WEAPON_TYPE), MISC_TYPE);
         }
 
         template <typename SpecificWeaponEnum_t>

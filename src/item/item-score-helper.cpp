@@ -45,14 +45,26 @@ namespace item
             auto const NEXT_TRAIT_ENUM{ static_cast<Traits::Enum>(i) };
             auto const NEXT_TRAIT_VALUE{ TRAIT_SET.GetCopy(NEXT_TRAIT_ENUM).Current() };
 
+            if (NEXT_TRAIT_VALUE == 0)
+            {
+                continue;
+            }
+
             auto traitScore{ [NEXT_TRAIT_VALUE]() {
-                if (NEXT_TRAIT_VALUE >= 0)
+                auto const MULTIPLIER{ ((NEXT_TRAIT_VALUE >= 0) ? 10 : 5) };
+                auto const NEXT_TRAIT_VALUE_ABS{ std::abs(NEXT_TRAIT_VALUE) };
+
+                auto const MAX_VALUE_BEFORE_REDUCTION{ 100 };
+                if (NEXT_TRAIT_VALUE_ABS < MAX_VALUE_BEFORE_REDUCTION)
                 {
-                    return 10 * NEXT_TRAIT_VALUE;
+                    return NEXT_TRAIT_VALUE_ABS * MULTIPLIER;
                 }
                 else
                 {
-                    return 5 * std::abs(NEXT_TRAIT_VALUE);
+                    double traitReduced{ static_cast<double>(MAX_VALUE_BEFORE_REDUCTION) };
+                    traitReduced += std::sqrt(
+                        static_cast<double>(NEXT_TRAIT_VALUE_ABS - MAX_VALUE_BEFORE_REDUCTION));
+                    return static_cast<int>(traitReduced) * MULTIPLIER;
                 }
             }() };
 
@@ -87,8 +99,8 @@ namespace item
 
     Score_t ScoreHelper::Score(const material::Enum PRI, const material::Enum SEC)
     {
-        auto const BONUS_PRI{ material::Bonus(PRI) };
-        auto const BONUS_SEC{ material::Bonus(SEC) };
+        auto const BONUS_PRI{ material::EnchantmentBonus(PRI) };
+        auto const BONUS_SEC{ material::EnchantmentBonus(SEC) };
         return Score_t(50 + (BONUS_PRI * BONUS_PRI) + ((BONUS_SEC * BONUS_SEC) / 3));
     }
 

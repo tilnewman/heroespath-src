@@ -143,11 +143,13 @@ namespace item
 
         const std::string ToString() const;
 
-        void SetUnique(
-            const unique_type::Enum,
-            const material::Enum MATERIAL_PRIMARY = material::Nothing,
-            const material::Enum MATERIAL_SECONDARY = material::Nothing,
-            const element_type::Enum ELEMENT_TYPE = element_type::None);
+        void SetUniqueThenSetMisc(
+            const unique_type::Enum UNIQUE_TYPE,
+            const misc_type::Enum MISC_TYPE,
+            const material::Enum MATERIAL_PRIMARY,
+            const material::Enum MATERIAL_SECONDARY,
+            const element_type::Enum ELEMENT_TYPE,
+            const bool IS_PIXIE);
 
         void SetMisc(
             const misc_type::Enum MISC_TYPE,
@@ -155,7 +157,8 @@ namespace item
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None)
+            const element_type::Enum ELEMENT_TYPE = element_type::None,
+            const creature::SummonInfo & SUMMON_INFO = creature::SummonInfo())
         {
             SetMisc(
                 ItemProfileThin::MakeMisc(MISC_TYPE),
@@ -163,7 +166,8 @@ namespace item
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
                 SET_TYPE,
-                ELEMENT_TYPE);
+                ELEMENT_TYPE,
+                SUMMON_INFO);
         }
 
         void SetMisc(
@@ -172,7 +176,8 @@ namespace item
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const set_type::Enum SET_TYPE = set_type::NotASet,
-            const element_type::Enum ELEMENT_TYPE = element_type::None);
+            const element_type::Enum ELEMENT_TYPE = element_type::None,
+            const creature::SummonInfo & SUMMON_INFO = creature::SummonInfo());
 
         void SetShield(
             const armor::shield_type::Enum SHIELD_TYPE,
@@ -922,7 +927,7 @@ namespace item
             const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
         {
             SetBladedStaff(
-                ItemProfileThin::MakeWeaponSpecific(BLADEDSTAFF_TYPE),
+                ItemProfileThin::MakeWeaponSpecific(BLADEDSTAFF_TYPE, MISC_TYPE),
                 BLADEDSTAFF_TYPE,
                 MATERIAL_PRIMARY,
                 MATERIAL_SECONDARY,
@@ -1020,7 +1025,7 @@ namespace item
 
                 score_ += ScoreHelper::Score(SPECIFIC_ARMOR_TYPE);
 
-                score_ += ScoreHelper(
+                score_ += NonMiscScoreBasedOnMaterialsAndEnchantments(
                     MATERIAL_PRIMARY,
                     MATERIAL_SECONDARY,
                     NAMED_TYPE,
@@ -1054,7 +1059,7 @@ namespace item
             const element_type::Enum,
             const bool IS_PIXIE = false);
 
-        Score_t ScoreHelper(
+        Score_t NonMiscScoreBasedOnMaterialsAndEnchantments(
             const item::material::Enum MATERIAL_PRI,
             const item::material::Enum MATERIAL_SEC,
             const item::named_type::Enum NAMED_TYPE,

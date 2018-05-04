@@ -69,13 +69,25 @@ namespace item
     const std::string ItemProfileThin::ToString() const
     {
         std::ostringstream ss;
-        ss << "weapon_info=" << weaponInfo_.ToString() << ", armor_info=" << armorInfo_.ToString()
-           << ", misc_type="
-           << ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_))
-           << ", armor_base_type_restriction="
-           << ((armor::base_type::Count == armorBaseTypeRestriction_)
-                   ? "Count"
-                   : armor::base_type::ToString(armorBaseTypeRestriction_));
+
+        if (weapon::WeaponTypeWrapper() != weaponInfo_)
+        {
+            ss << "weapon_info=" << weaponInfo_.ToString() << ", ";
+        }
+
+        if (armor::ArmorTypeWrapper() != armorInfo_)
+        {
+            ss << "armor_info=" << armorInfo_.ToString();
+        }
+
+        ss << ", misc_type="
+           << ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_));
+
+        if (armor::base_type::Count != armorBaseTypeRestriction_)
+        {
+            ss << ", armor_base_type_restriction="
+               << armor::base_type::ToString(armorBaseTypeRestriction_);
+        }
 
         return ss.str();
     }

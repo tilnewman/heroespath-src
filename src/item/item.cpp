@@ -186,6 +186,11 @@ namespace item
             ss << ", is_pixie=" << std::boolalpha << isPixie_;
         }
 
+        if (creature::role::Count != exclusiveToRole_)
+        {
+            ss << ", role_restriction=" << creature::role::ToString(exclusiveToRole_);
+        }
+
         ss << ", mat_pri=" << material::ToString(materialPri_);
 
         if (material::Nothing != materialSec_)

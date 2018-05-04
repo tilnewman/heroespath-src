@@ -97,6 +97,8 @@ namespace item
             std::vector<std::size_t> scores_;
             std::vector<std::size_t> religiousScores_;
             std::size_t miscCount_{ 0 };
+            std::size_t elementalCount{ 0 };
+            mutable misc::VectorMap<element_type::Enum, std::vector<std::size_t>> elementScoreMap_;
         };
 
         class WeaponOrArmorReport : public Report

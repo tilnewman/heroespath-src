@@ -195,7 +195,64 @@ namespace item
            << summoningReport.ToString(SOURCE_PROFILES) << uniqueReport.ToString(SOURCE_PROFILES)
            << setReport.ToString(SOURCE_PROFILES) << namedReport.ToString(SOURCE_PROFILES)
            << elementReport.ToString(SOURCE_PROFILES) << religiousReport.ToString(SOURCE_PROFILES)
-           << pixieReport.ToString(SOURCE_PROFILES) << "\n*** Item Profile Report ***\n\n";
+           << pixieReport.ToString(SOURCE_PROFILES);
+
+        const std::size_t MIN_MAX_DISPLAY_COUNT{ 10 };
+        {
+            // min scores
+            {
+                ss << MIN_MAX_DISPLAY_COUNT << " Normal Items with the lowest scores:";
+                for (std::size_t i(0); i < MIN_MAX_DISPLAY_COUNT; ++i)
+                {
+                    ss << "\n\t" << NORMAL_PROFILES.at(i).TreasureScore() << " {"
+                       << NORMAL_PROFILES.at(i).ToString() << "}";
+                }
+            }
+
+            ss << "\n\n";
+
+            // max scores
+            {
+                ss << MIN_MAX_DISPLAY_COUNT << " Normal Items with the highest scores:";
+                for (std::size_t i(NORMAL_PROFILES.size() - (MIN_MAX_DISPLAY_COUNT + 1));
+                     i < NORMAL_PROFILES.size();
+                     ++i)
+                {
+                    ss << "\n\t" << NORMAL_PROFILES.at(i).TreasureScore() << " {"
+                       << NORMAL_PROFILES.at(i).ToString() << "}";
+                }
+            }
+        }
+
+        ss << "\n\n";
+
+        {
+            // min scores
+            {
+                ss << MIN_MAX_DISPLAY_COUNT << " Religious Items with the lowest scores:";
+                for (std::size_t i(0); i < MIN_MAX_DISPLAY_COUNT; ++i)
+                {
+                    ss << "\n\t" << RELIGIOUS_PROFILES.at(i).TreasureScore() << " {"
+                       << RELIGIOUS_PROFILES.at(i).ToString() << "}";
+                }
+            }
+
+            ss << "\n\n";
+
+            // max scores
+            {
+                ss << MIN_MAX_DISPLAY_COUNT << " Religious Items with the highest scores:";
+                for (std::size_t i(RELIGIOUS_PROFILES.size() - (MIN_MAX_DISPLAY_COUNT + 1));
+                     i < RELIGIOUS_PROFILES.size();
+                     ++i)
+                {
+                    ss << "\n\t" << RELIGIOUS_PROFILES.at(i).TreasureScore() << " {"
+                       << RELIGIOUS_PROFILES.at(i).ToString() << "}";
+                }
+            }
+        }
+
+        ss << "\n\n*** Item Profile Report ***\n\n";
 
         M_HP_LOG(ss.str());
     }
@@ -204,16 +261,25 @@ namespace item
     {
         if (WILL_ADD)
         {
-            scores_.emplace_back(PROFILE.TreasureScore().As<std::size_t>());
+            auto const NORMAL_SCORE{ PROFILE.TreasureScore().As<std::size_t>() };
+            auto const RELIGIOIUS_SCORE{ PROFILE.ReligiousScore().As<std::size_t>() };
+
+            scores_.emplace_back(NORMAL_SCORE);
 
             if (PROFILE.IsReligious())
             {
-                religiousScores_.emplace_back(PROFILE.ReligiousScore().As<std::size_t>());
+                religiousScores_.emplace_back(RELIGIOIUS_SCORE);
             }
 
             if (PROFILE.IsMisc())
             {
                 ++miscCount_;
+            }
+
+            if (PROFILE.ElementType() != element_type::None)
+            {
+                ++elementalCount;
+                elementScoreMap_[PROFILE.ElementType()].emplace_back(NORMAL_SCORE);
             }
         }
 
@@ -311,6 +377,26 @@ namespace item
             if (miscCount_ > 0)
             {
                 ss << '\n' << CountPhrase("misc", miscCount_, Count());
+            }
+
+            if (elementalCount > 0)
+            {
+                auto const SCORES_SUM{ misc::Vector::SumVec(scores_) };
+
+                ss << "\nElemental Items  count=" << elementalCount
+                   << PercentToString(elementalCount, scores_.size());
+
+                for (auto & elementTypeScoreVecPair : elementScoreMap_)
+                {
+                    std::sort(
+                        std::begin(elementTypeScoreVecPair.second),
+                        std::end(elementTypeScoreVecPair.second));
+
+                    ss << "\n\t" << element_type::ToString(elementTypeScoreVecPair.first, true, "/")
+                       << "\t\tcount=" << elementTypeScoreVecPair.second.size()
+                       << PercentToString(elementTypeScoreVecPair.second.size(), elementalCount)
+                       << SumPhrase("", elementTypeScoreVecPair.second, SCORES_SUM);
+                }
             }
         }
 

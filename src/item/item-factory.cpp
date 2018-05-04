@@ -441,7 +441,7 @@ namespace item
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (ITEM_PTR->IsSet() == false),
-                makeErrorReportPrefix() << "unique_type but also either element_type or set_type.");
+                makeErrorReportPrefix() << "unique_type but also set_type.");
         }
 
         // set_types cannot be elemental
@@ -449,7 +449,7 @@ namespace item
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (ITEM_PTR->IsElemental() == false),
-                makeErrorReportPrefix() << "set_type but also either element_type or unique_type.");
+                makeErrorReportPrefix() << "set_type but also element_type.");
         }
 
         // named_types must be weapons or armor, and cannot be misc

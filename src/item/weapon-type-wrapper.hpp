@@ -90,6 +90,8 @@ namespace item
 
             weapon_type::Enum SingleType() const { return type_; }
 
+            const ElementEnumVec_t ElementTypes() const { return elementTypes_; }
+
             bool IsStaff() const
             {
                 return (weapon_type::Staff == type_) && (variant_.which() == QUARTERSTAFF_INDEX)
@@ -347,6 +349,10 @@ namespace item
                 body_part::Enum>
                 variant_;
 
+            // these are the "standard" element enchantments that are allowed for this weapon if not
+            // also a set_type or named_type.
+            ElementEnumVec_t elementTypes_;
+
             static const int QUARTERSTAFF_INDEX = 0;
             static const int SIZE_INDEX = 1;
             static const int SWORD_INDEX = 2;
@@ -369,11 +375,14 @@ namespace item
                 ar & type_;
                 ar & isDagger_;
                 ar & variant_;
+                ar & elementTypes_;
             }
         };
 
         inline bool operator==(const WeaponTypeWrapper & L, const WeaponTypeWrapper & R)
         {
+            // elementTypes_ intentionally not considered
+
             return std::tie(
                        L.generalName_,
                        L.specificName_,
@@ -399,6 +408,8 @@ namespace item
 
         inline bool operator<(const WeaponTypeWrapper & L, const WeaponTypeWrapper & R)
         {
+            // elementTypes_ intentionally not considered
+
             return std::tie(
                        L.generalName_,
                        L.specificName_,

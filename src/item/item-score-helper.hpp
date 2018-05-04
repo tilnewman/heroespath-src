@@ -39,7 +39,9 @@ namespace heroespath
 namespace item
 {
 
-    // Responsible for calculating scores for various item properties.
+    // Responsible for calculating scores for items that are not based on enchantments.  See
+    // EnchantmentFactory for score calculations based on things like
+    // unique_type/set_type/misc_type/named_type/element_type.
     struct ScoreHelper
     {
         static Score_t Score(const stats::TraitSet &);

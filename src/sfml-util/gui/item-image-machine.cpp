@@ -455,7 +455,7 @@ namespace sfml_util
                 case misc_type::Brooch_Mask:
                 case misc_type::Angel_Braid:
                 case misc_type::Bust:
-                case misc_type::Cameo:
+                case misc_type::CameoPin:
                 case misc_type::Cat:
                 case misc_type::Chains:
                 case misc_type::Charm_Crown:

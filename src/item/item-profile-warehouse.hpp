@@ -29,6 +29,7 @@
 //
 #include "item/item-profile-thin.hpp"
 #include "item/item-profile.hpp"
+#include "item/material-collections.hpp"
 #include "misc/not-null.hpp"
 #include "misc/types.hpp"
 #include "stats/traits-set.hpp"
@@ -81,27 +82,41 @@ namespace item
         const ItemProfileVec_t & GetReligiousProfiles();
 
     private:
-        const ElementTypeVec_t ElementVecFromNamedAndSetTypes(
-            const named_type::Enum NAMED_TYPE, const set_type::Enum SET_TYPE);
+        const ElementEnumVec_t ElementTypesIncludingNone(
+            const ItemProfileThin & THIN_PROFILE,
+            const named_type::Enum NAMED_TYPE,
+            const set_type::Enum SET_TYPE,
+            const armor::base_type::Enum MISSING_BASE_TYPE = armor::base_type::Count);
 
-        void MakeLoopOverElementAndMaterialsForThinProfile(
+        void MakeLoopOverMaterialsForThinProfile(
             const ItemProfileThin & THIN_PROFILE,
             const named_type::Enum = named_type::NotNamed,
             const set_type::Enum = set_type::NotASet);
 
+        void MakeLoopOverElementTypesForThinProfile(
+            const ItemProfileThin & THIN_PROFILE,
+            const named_type::Enum NAMED_TYPE,
+            const set_type::Enum SET_TYPE,
+            const material::Enum MATERIAL_PRIMARY,
+            const material::Enum MATERIAL_SECONDARY,
+            const armor::base_type::Enum MISSING_BASE_TYPE);
+
         void MakeFromThinProfile(
             const ItemProfileThin & THIN_PROFILE,
-            const named_type::Enum,
-            const set_type::Enum,
-            const element_type::Enum,
-            const material::Enum,
-            const material::Enum,
-            const armor::base_type::Enum);
+            const named_type::Enum NAMED_TYPE,
+            const set_type::Enum SET_TYPE,
+            const element_type::Enum ELEMENT_TYPE,
+            const material::Enum MATERIAL_PRIMARY,
+            const material::Enum MATERIAL_SECONDARY,
+            const armor::base_type::Enum MISSING_BASE_TYPE);
 
         const BaseMaterialVecPairVec_t GetMaterialsFromThinProfile(
             const ItemProfileThin & THIN_PROFILE, const named_type::Enum NAMED_TYPE);
 
-        void SetupProfilesForMiscType(const misc_type::Enum);
+        void MakeLoopOverMaterialsForMiscType(
+            const misc_type::Enum,
+            const element_type::Enum ELEMENT_TYPE,
+            const creature::SummonInfo & SUMMON_INFO = creature::SummonInfo());
 
         static const MaterialVecPair_t Materials(const weapon::axe_type::Enum);
         static const MaterialVecPair_t Materials(const weapon::bladedstaff_type::Enum);
@@ -156,6 +171,8 @@ namespace item
 
     private:
         static std::unique_ptr<ItemProfileWarehouse> instanceUPtr_;
+
+        static MaterialCollections matColl_;
 
         // these are the fat profiles that are stored here for use by the Treasure Stage when
         // deciding which items to give the players after defeating creatures in combet.

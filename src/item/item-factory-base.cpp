@@ -54,6 +54,17 @@ namespace item
         AppendBlessedOrCursedIfNeeded(PROFILE, ss);
         AppendPixiePhraseIfNeeded(PROFILE, PhraseType::Name, ss);
 
+        auto const ELEMENT_TYPE_STR{ [&]() -> std::string {
+            if (PROFILE.IsElemental())
+            {
+                return " " + element_type::Name(PROFILE.ElementType());
+            }
+            else
+            {
+                return "";
+            }
+        }() };
+
         if (PROFILE.IsUnique())
         {
             ss << AppendSpaceIfNeededInline(ss) << unique_type::Name(PROFILE.UniqueType());
@@ -87,17 +98,13 @@ namespace item
                     ss << " and " << material::Name(PROFILE.MaterialSecondary());
                 }
 
-                ss << " " << NAME_TO_USE;
+                ss << " " << NAME_TO_USE << ELEMENT_TYPE_STR;
             }
             else
             {
-                ss << " " << NAME_TO_USE << " " << SECONDARY_MATERIAL_PHRASE_WHEN_AFTER;
+                ss << " " << NAME_TO_USE << ELEMENT_TYPE_STR << " "
+                   << SECONDARY_MATERIAL_PHRASE_WHEN_AFTER;
             }
-        }
-
-        if (PROFILE.IsElemental())
-        {
-            ss << " " << element_type::Name(PROFILE.ElementType());
         }
 
         // there is a chance for doubled spaces in the logic above

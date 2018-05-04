@@ -79,9 +79,22 @@ namespace item
 
             bool IsTypeValid() const { return (armor_type::NotArmor != type_); }
 
+            bool WasMadeInvalidWithoutBaseType() const
+            {
+                return intentionallyMadeInvalidWithoutBaseType_;
+            }
+
+            const ElementEnumVec_t
+                ElementTypesWithGivenBaseType(const base_type::Enum BASE_TYPE) const
+            {
+                return MakeElementTypesWithGivenBaseType(BASE_TYPE);
+            }
+
             armor_type::Enum Type() const { return type_; }
 
             base_type::Enum BaseType() const { return base_; }
+
+            const ElementEnumVec_t ElementTypes() const { return elementTypes_; }
 
             bool IsSkin() const { return (armor_type::Skin == type_); }
 
@@ -220,6 +233,10 @@ namespace item
 
             void SetNamesAndVerify(const std::string & CALLER_CONTEXT_DESCRIPTION);
             bool IsValidCompleteCheck() const;
+            void SetupElementTypes();
+
+            const ElementEnumVec_t MakeElementTypesWithGivenBaseType(
+                const base_type::Enum BASE_TYPE = base_type::Count) const;
 
         public:
             static const std::string GLOVES_NAME_;
@@ -250,6 +267,12 @@ namespace item
             base_type::Enum base_;
             boost::variant<cover_type::Enum, helm_type::Enum, shield_type::Enum> variant_;
 
+            // these are the "standard" element enchantments that are allowed for this weapon if not
+            // also a set_type or named_type.
+            ElementEnumVec_t elementTypes_;
+
+            bool intentionallyMadeInvalidWithoutBaseType_;
+
         private:
             friend class boost::serialization::access;
             template <typename Archive>
@@ -262,11 +285,15 @@ namespace item
                 ar & type_;
                 ar & base_;
                 ar & variant_;
+                ar & elementTypes_;
+                ar & intentionallyMadeInvalidWithoutBaseType_;
             }
         };
 
         inline bool operator==(const ArmorTypeWrapper & L, const ArmorTypeWrapper & R)
         {
+            // elementTypes_ intentionally not considered
+
             return std::tie(
                        L.generalName_,
                        L.specificName_,
@@ -274,7 +301,8 @@ namespace item
                        L.readableName_,
                        L.type_,
                        L.base_,
-                       L.variant_)
+                       L.variant_,
+                       L.intentionallyMadeInvalidWithoutBaseType_)
                 == std::tie(
                        R.generalName_,
                        R.specificName_,
@@ -282,7 +310,8 @@ namespace item
                        R.readableName_,
                        R.type_,
                        R.base_,
-                       R.variant_);
+                       R.variant_,
+                       R.intentionallyMadeInvalidWithoutBaseType_);
         }
 
         inline bool operator!=(const ArmorTypeWrapper & L, const ArmorTypeWrapper & R)
@@ -292,6 +321,8 @@ namespace item
 
         inline bool operator<(const ArmorTypeWrapper & L, const ArmorTypeWrapper & R)
         {
+            // elementTypes_ intentionally not considered
+
             return std::tie(
                        L.generalName_,
                        L.specificName_,
@@ -299,7 +330,8 @@ namespace item
                        L.readableName_,
                        L.type_,
                        L.base_,
-                       L.variant_)
+                       L.variant_,
+                       L.intentionallyMadeInvalidWithoutBaseType_)
                 < std::tie(
                        R.generalName_,
                        R.specificName_,
@@ -307,7 +339,8 @@ namespace item
                        R.readableName_,
                        R.type_,
                        R.base_,
-                       R.variant_);
+                       R.variant_,
+                       R.intentionallyMadeInvalidWithoutBaseType_);
         }
 
     } // namespace armor

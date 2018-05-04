@@ -266,7 +266,7 @@ namespace creature
 
         // the additional 750 is to raise the score of all elemental items
         return MakeFromElementType(ELEMENT_TYPE, IS_WEAPON, MATERIAL_PRIMARY).TreasureScore()
-            + 750_score;
+            + (750_score * Score_t(item::element_type::ValidTypeCounter(ELEMENT_TYPE)));
     }
 
     const EnchantmentPtr_t EnchantmentFactory::Make(
@@ -338,7 +338,7 @@ namespace creature
             }
             case item::unique_type::BleedingTrophy:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -371,7 +371,7 @@ namespace creature
             }
             case item::unique_type::BraceletCrown:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -381,7 +381,7 @@ namespace creature
             }
             case item::unique_type::BraceletFeather:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -391,7 +391,7 @@ namespace creature
             }
             case item::unique_type::BraceletFist:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -401,7 +401,7 @@ namespace creature
             }
             case item::unique_type::BraceletHourglass:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -410,7 +410,7 @@ namespace creature
             }
             case item::unique_type::BraceletKey:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -419,7 +419,7 @@ namespace creature
             }
             case item::unique_type::BraceletMask:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -428,7 +428,7 @@ namespace creature
             }
             case item::unique_type::BroochCrown:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -438,7 +438,7 @@ namespace creature
             }
             case item::unique_type::BroochFeather:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -448,7 +448,7 @@ namespace creature
             }
             case item::unique_type::BroochFist:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -458,7 +458,7 @@ namespace creature
             }
             case item::unique_type::BroochHourglass:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -467,7 +467,7 @@ namespace creature
             }
             case item::unique_type::BroochKey:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -476,7 +476,7 @@ namespace creature
             }
             case item::unique_type::BroochMask:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -499,7 +499,7 @@ namespace creature
             }
             case item::unique_type::CharmCrown:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -509,7 +509,7 @@ namespace creature
             }
             case item::unique_type::CharmFeather:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -519,7 +519,7 @@ namespace creature
             }
             case item::unique_type::CharmFist:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -529,7 +529,7 @@ namespace creature
             }
             case item::unique_type::CharmHourglass:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -538,7 +538,7 @@ namespace creature
             }
             case item::unique_type::CharmKey:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -547,7 +547,7 @@ namespace creature
             }
             case item::unique_type::CharmMask:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -616,7 +616,7 @@ namespace creature
             }
             case item::unique_type::CyclopsEye:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -687,7 +687,7 @@ namespace creature
             }
             case item::unique_type::DruidLeaf:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -846,7 +846,7 @@ namespace creature
             }
             case item::unique_type::HoboRing:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -905,7 +905,7 @@ namespace creature
             }
             case item::unique_type::JeweledAnkhNecklace:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -922,7 +922,7 @@ namespace creature
             }
             case item::unique_type::JeweledArmband:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -932,7 +932,7 @@ namespace creature
             }
             case item::unique_type::JeweledHandbag:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -944,7 +944,7 @@ namespace creature
             }
             case item::unique_type::JeweledPrincessVeil:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1016,7 +1016,7 @@ namespace creature
             }
             case item::unique_type::ManaAmulet:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1089,7 +1089,7 @@ namespace creature
             }
             case item::unique_type::PinCrown:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1098,7 +1098,7 @@ namespace creature
             }
             case item::unique_type::PinFeather:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1107,7 +1107,7 @@ namespace creature
             }
             case item::unique_type::PinFist:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1116,7 +1116,7 @@ namespace creature
             }
             case item::unique_type::PinHourglass:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1125,7 +1125,7 @@ namespace creature
             }
             case item::unique_type::PinKey:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1134,7 +1134,7 @@ namespace creature
             }
             case item::unique_type::PinMask:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1251,7 +1251,7 @@ namespace creature
             }
             case item::unique_type::SaintsJournal:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1265,7 +1265,7 @@ namespace creature
             }
             case item::unique_type::SanguineRelic:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1351,7 +1351,7 @@ namespace creature
             }
             case item::unique_type::SignetCrown:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1361,7 +1361,7 @@ namespace creature
             }
             case item::unique_type::SignetFeather:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1371,7 +1371,7 @@ namespace creature
             }
             case item::unique_type::SignetFist:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1381,7 +1381,7 @@ namespace creature
             }
             case item::unique_type::SignetHourglass:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1390,7 +1390,7 @@ namespace creature
             }
             case item::unique_type::SignetKey:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1399,7 +1399,7 @@ namespace creature
             }
             case item::unique_type::SignetMask:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1484,7 +1484,7 @@ namespace creature
             }
             case item::unique_type::TuningFork:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1494,7 +1494,7 @@ namespace creature
             }
             case item::unique_type::TurtleShell:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
                 return { Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -1645,7 +1645,7 @@ namespace creature
         }
         else if (item::misc_type::IsBlessed(MISC_TYPE) && IS_SECONDARY_MATERIAL_VALID)
         {
-            auto const USE_COUNT{ item::material::Bonus(MATERIAL_SECONDARY) };
+            auto const USE_COUNT{ item::material::EnchantmentBonus(MATERIAL_SECONDARY) };
 
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1662,7 +1662,7 @@ namespace creature
         }
         else if (item::misc_type::IsCursed(MISC_TYPE) && IS_SECONDARY_MATERIAL_VALID)
         {
-            auto const USE_COUNT{ item::material::Bonus(MATERIAL_SECONDARY) };
+            auto const USE_COUNT{ item::material::EnchantmentBonus(MATERIAL_SECONDARY) };
 
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1679,7 +1679,7 @@ namespace creature
         }
         else if ((MISC_TYPE == item::misc_type::LockPicks) && IS_PRIMARYY_MATERIAL_VALID)
         {
-            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+            auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1690,7 +1690,7 @@ namespace creature
         }
         else if ((MISC_TYPE == item::misc_type::Wand) && IS_PRIMARYY_MATERIAL_VALID)
         {
-            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+            auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1699,7 +1699,7 @@ namespace creature
         }
         else if ((MISC_TYPE == item::misc_type::Shard) && IS_PRIMARYY_MATERIAL_VALID)
         {
-            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+            auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1709,7 +1709,7 @@ namespace creature
         }
         else if ((MISC_TYPE == item::misc_type::Staff) && IS_PRIMARYY_MATERIAL_VALID)
         {
-            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+            auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1720,7 +1720,7 @@ namespace creature
         }
         else if ((MISC_TYPE == item::misc_type::Orb) && IS_PRIMARYY_MATERIAL_VALID)
         {
-            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+            auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -1731,7 +1731,7 @@ namespace creature
         }
         else if ((MISC_TYPE == item::misc_type::Scepter) && IS_PRIMARYY_MATERIAL_VALID)
         {
-            auto const MAT_BONUS{ item::material::Bonus(MATERIAL_PRIMARY) };
+            auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
             return Enchantment(
                 static_cast<EnchantmentType::Enum>(
@@ -2806,6 +2806,8 @@ namespace creature
             }
             else
             {
+                // if not IS_WEAPON then the item is assumed to be armor or wearable misc
+
                 auto const RESISTANCE{ 13 };
 
                 if (E & element_type::Fire)
@@ -2831,7 +2833,7 @@ namespace creature
         }
         else
         {
-            auto const MAT_BONUS{ material::Bonus(MATERIAL_PRIMARY) };
+            auto const MAT_BONUS{ material::EnchantmentBonus(MATERIAL_PRIMARY) };
 
             if (IS_WEAPON)
             {
@@ -3466,7 +3468,7 @@ namespace creature
             }
             case item::named_type::Robbers:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_ENUM) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_ENUM) };
 
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3475,7 +3477,7 @@ namespace creature
             }
             case item::named_type::Thugs:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_ENUM) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_ENUM) };
 
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3484,7 +3486,7 @@ namespace creature
             }
             case item::named_type::Knaves:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_ENUM) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_ENUM) };
 
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3493,7 +3495,7 @@ namespace creature
             }
             case item::named_type::Muggers:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_ENUM) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_ENUM) };
 
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3502,7 +3504,9 @@ namespace creature
             }
             case item::named_type::Thief:
             {
-                auto const MATERIAL_BASED_BONUS{ 5 + (item::material::Bonus(MATERIAL_ENUM) / 2) };
+                auto const MATERIAL_BASED_BONUS{
+                    5 + (item::material::EnchantmentBonus(MATERIAL_ENUM) / 2)
+                };
 
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
@@ -3513,7 +3517,7 @@ namespace creature
             }
             case item::named_type::Pirate:
             {
-                auto const MAT_BONUS{ item::material::Bonus(MATERIAL_ENUM) };
+                auto const MAT_BONUS{ item::material::EnchantmentBonus(MATERIAL_ENUM) };
 
                 return Enchantment(
                     static_cast<EnchantmentType::Enum>(
