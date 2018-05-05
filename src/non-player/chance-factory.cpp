@@ -605,7 +605,7 @@ namespace non_player
                             typicalAxePrimaryMaterials,
                             weaponChances.axe_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::Axe)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Axe)
                     {
                         auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                       / static_cast<float>(
@@ -641,8 +641,7 @@ namespace non_player
                             typicalBladedStaffPrimaryMaterials,
                             weaponChances.bladedstaff_map);
                     }
-                    else if (
-                        NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::BladedStaff)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::BladedStaff)
                     {
                         auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                       / static_cast<float>(
@@ -678,7 +677,7 @@ namespace non_player
                             typicalClubPrimaryMaterials,
                             weaponChances.club_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::Club)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Club)
                     {
                         auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                       / static_cast<float>(
@@ -714,8 +713,7 @@ namespace non_player
                             typicalProjectilePrimaryMaterials,
                             weaponChances.projectile_map);
                     }
-                    else if (
-                        NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::Projectile)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Projectile)
                     {
                         auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                       / static_cast<float>(
@@ -751,7 +749,7 @@ namespace non_player
                             typicalSwordPrimaryMaterials,
                             weaponChances.sword_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::Sword)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Sword)
                     {
                         auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                       / static_cast<float>(
@@ -800,7 +798,7 @@ namespace non_player
                                 NEXT_WEAPONINFO_CHANCE_PAIR.first.WhipType()),
                             weaponChances.whip_map);
                     }
-                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.SingleType() == weapon_type::Whip)
+                    else if (NEXT_WEAPONINFO_CHANCE_PAIR.first.Type() & weapon_type::Whip)
                     {
                         auto const CHANCE_PER_WEAPON{ NEXT_WEAPONINFO_CHANCE_PAIR.second
                                                       / static_cast<float>(

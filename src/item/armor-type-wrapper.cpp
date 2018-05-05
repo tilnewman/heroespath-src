@@ -58,7 +58,6 @@ namespace item
             , base_(BASE_TYPE)
             , variant_()
             , elementTypes_()
-            , intentionallyMadeInvalidWithoutBaseType_(false)
         {
             // This is the default constructor and it needs to support construction with all default
             // parameters that leave the object in an invalid state, so this if/return allows for
@@ -128,9 +127,7 @@ namespace item
         }
 
         ArmorTypeWrapper::ArmorTypeWrapper(
-            const armor_type::Enum ARMOR_TYPE,
-            const armor::base_type::Enum BASE_TYPE,
-            const bool WILL_MAKE_INVALID_IGNORING_BASE_TYPE)
+            const armor_type::Enum ARMOR_TYPE, const armor::base_type::Enum BASE_TYPE)
             : generalName_("")
             , specificName_("")
             , systemName_("")
@@ -139,12 +136,8 @@ namespace item
             , base_(BASE_TYPE)
             , variant_()
             , elementTypes_()
-            , intentionallyMadeInvalidWithoutBaseType_(WILL_MAKE_INVALID_IGNORING_BASE_TYPE)
         {
-            if (WILL_MAKE_INVALID_IGNORING_BASE_TYPE == false)
-            {
-                SetNamesAndVerify("after armor_type/base_type constructor");
-            }
+            SetNamesAndVerify("after armor_type/base_type constructor");
         }
 
         ArmorTypeWrapper::ArmorTypeWrapper(const body_part::Enum BODY_PART)
@@ -156,7 +149,6 @@ namespace item
             , base_(base_type::Count)
             , variant_()
             , elementTypes_()
-            , intentionallyMadeInvalidWithoutBaseType_(false)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (BODY_PART == body_part::Skin),
@@ -176,7 +168,6 @@ namespace item
             , base_(base_type::Count)
             , variant_(COVER_TYPE)
             , elementTypes_()
-            , intentionallyMadeInvalidWithoutBaseType_(false)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (COVER_TYPE != cover_type::Count),
@@ -195,7 +186,6 @@ namespace item
             , base_(base_type::Count)
             , variant_(HELM_TYPE)
             , elementTypes_()
-            , intentionallyMadeInvalidWithoutBaseType_(false)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (HELM_TYPE != helm_type::Count),
@@ -214,7 +204,6 @@ namespace item
             , base_(base_type::Count)
             , variant_(SHIELD_TYPE)
             , elementTypes_()
-            , intentionallyMadeInvalidWithoutBaseType_(false)
         {
             M_ASSERT_OR_LOGANDTHROW_SS(
                 (SHIELD_TYPE != shield_type::Count),
@@ -268,39 +257,40 @@ namespace item
                << ((IsBracers()) ? "bracers" : "") << "," << ((IsAventail()) ? "aventail" : "")
                << "," << ((IsCover()) ? cover_type::ToString(CoverType()) : "") << ","
                << ((IsSkin()) ? "skin" : "") << ")"
-               << ")"
-               << ((intentionallyMadeInvalidWithoutBaseType_)
-                       ? ", INTENTIONALLY_MADE_INVALID_WITHOUT_BASE_TYPE"
-                       : "")
-               << ", element_types={";
+               << ")";
 
-            if (elementTypes_.empty())
+            if ((elementTypes_.size() != 1) || (elementTypes_.at(0) != element_type::None))
             {
-                ss << "empty/invalid";
-            }
-            else
-            {
-                for (std::size_t i(0); i < elementTypes_.size(); ++i)
+                ss << ", element_types={";
+
+                if (elementTypes_.empty())
                 {
-                    if (i > 0)
+                    ss << "empty/invalid";
+                }
+                else
+                {
+                    for (std::size_t i(0); i < elementTypes_.size(); ++i)
                     {
-                        ss << ",";
-                    }
+                        if (i > 0)
+                        {
+                            ss << ",";
+                        }
 
-                    auto const ELEMENT_TYPE{ elementTypes_.at(i) };
+                        auto const ELEMENT_TYPE{ elementTypes_.at(i) };
 
-                    if (ELEMENT_TYPE == element_type::None)
-                    {
-                        ss << "(None)";
-                    }
-                    else
-                    {
-                        ss << element_type::ToString(ELEMENT_TYPE, true, "&");
+                        if (ELEMENT_TYPE == element_type::None)
+                        {
+                            ss << "(None)";
+                        }
+                        else
+                        {
+                            ss << element_type::ToString(ELEMENT_TYPE, true, "&");
+                        }
                     }
                 }
-            }
 
-            ss << "}";
+                ss << "}";
+            }
 
             return ss.str();
         }

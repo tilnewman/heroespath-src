@@ -422,11 +422,15 @@ namespace item
             {
                 Report::Add(PROFILE, true);
                 reportMap_[PROFILE.WeaponInfo().GeneralName()].Add(PROFILE, true);
+                specificScoreMap_[PROFILE.WeaponInfo().SpecificName()].emplace_back(
+                    PROFILE.TreasureScore().As<std::size_t>());
             }
             else if ((false == isWeaponReport_) && PROFILE.IsArmor())
             {
                 Report::Add(PROFILE, true);
                 reportMap_[PROFILE.ArmorInfo().GeneralName()].Add(PROFILE, true);
+                specificScoreMap_[PROFILE.ArmorInfo().SpecificName()].emplace_back(
+                    PROFILE.TreasureScore().As<std::size_t>());
             }
         }
 
@@ -449,6 +453,17 @@ namespace item
         {
             stringReportPair.second.SetDescription(stringReportPair.first);
             ss << '\n' << stringReportPair.second.Make(SUB_REPORT_SOURCES, true);
+        }
+
+        for (auto & specificNameScoresPair : specificScoreMap_)
+        {
+            std::sort(
+                std::begin(specificNameScoresPair.second), std::end(specificNameScoresPair.second));
+            ss << "\n\t" << specificNameScoresPair.first
+               << " count=" << specificNameScoresPair.second.size()
+               << PercentToString(
+                      specificNameScoresPair.second.size(), SUB_REPORT_SOURCES.normal_count)
+               << SumPhrase("", specificNameScoresPair.second, SUB_REPORT_SOURCES.normal_score_sum);
         }
 
         return ss.str();

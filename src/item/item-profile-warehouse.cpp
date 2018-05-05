@@ -97,8 +97,6 @@ namespace item
 
     void ItemProfileWarehouse::Setup()
     {
-        matColl_.Setup();
-
         profiles_.clear();
 
         // As of 2017-8-17 there were 849299 raw item profiles created before cleanup.
@@ -135,7 +133,7 @@ namespace item
             MakeLoopOverMaterialsForThinProfile(WEAPON_THIN_PROFILE);
         }
 
-        for (auto const & ARMOR_THIN_PROFILE : ThinProfilesArmor(true))
+        for (auto const & ARMOR_THIN_PROFILE : ThinProfilesArmor())
         {
             MakeLoopOverMaterialsForThinProfile(ARMOR_THIN_PROFILE);
         }
@@ -402,8 +400,7 @@ namespace item
     const ElementEnumVec_t ItemProfileWarehouse::ElementTypesIncludingNone(
         const ItemProfileThin & THIN_PROFILE,
         const named_type::Enum NAMED_TYPE,
-        const set_type::Enum SET_TYPE,
-        const armor::base_type::Enum MISSING_BASE_TYPE)
+        const set_type::Enum SET_TYPE)
     {
         // note that unique_type is not handled here, see Setup_UniqueItems()
 
@@ -423,33 +420,13 @@ namespace item
         {
             elementTypes = misc_type::ElementTypes(THIN_PROFILE.MiscType(), true);
         }
-        else
+        else if (THIN_PROFILE.IsArmor())
         {
-            if (THIN_PROFILE.ArmorInfo().WasMadeInvalidWithoutBaseType())
-            {
-                M_ASSERT_OR_LOGANDTHROW_SS(
-                    (MISSING_BASE_TYPE != armor::base_type::Count),
-                    "item::ItemProfileWarehouse::ElementTypesIncludingNone(thin_profile={"
-                        << THIN_PROFILE.ToString() << "}, named_type="
-                        << ((NAMED_TYPE == named_type::Count) ? "Count"
-                                                              : named_type::ToString(NAMED_TYPE))
-                        << ", set_type="
-                        << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
-                        << ", base_type=Count) found "
-                           "THIN_PROFILE.ArmorInfo().WasMadeInvalidWithoutBaseType() but the given "
-                           "base_type was invalid.");
-
-                elementTypes
-                    = THIN_PROFILE.ArmorInfo().ElementTypesWithGivenBaseType(MISSING_BASE_TYPE);
-            }
-            else if (THIN_PROFILE.IsArmor())
-            {
-                elementTypes = THIN_PROFILE.ArmorInfo().ElementTypes();
-            }
-            else if (THIN_PROFILE.IsWeapon())
-            {
-                elementTypes = THIN_PROFILE.WeaponInfo().ElementTypes();
-            }
+            elementTypes = THIN_PROFILE.ArmorInfo().ElementTypes();
+        }
+        else if (THIN_PROFILE.IsWeapon())
+        {
+            elementTypes = THIN_PROFILE.WeaponInfo().ElementTypes();
         }
 
         M_ASSERT_OR_LOGANDTHROW_SS(
@@ -459,10 +436,6 @@ namespace item
                 << ((NAMED_TYPE == named_type::Count) ? "Count" : named_type::ToString(NAMED_TYPE))
                 << ", set_type="
                 << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
-                << ", forced_base_type="
-                << ((MISSING_BASE_TYPE == armor::base_type::Count)
-                        ? "Count"
-                        : armor::base_type::ToString(MISSING_BASE_TYPE))
                 << ") resulted in an elementType vector that was empty.");
 
         M_ASSERT_OR_LOGANDTHROW_SS(
@@ -473,10 +446,6 @@ namespace item
                 << ((NAMED_TYPE == named_type::Count) ? "Count" : named_type::ToString(NAMED_TYPE))
                 << ", set_type="
                 << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
-                << ", forced_base_type="
-                << ((MISSING_BASE_TYPE == armor::base_type::Count)
-                        ? "Count"
-                        : armor::base_type::ToString(MISSING_BASE_TYPE))
                 << ") resulted in an elementType vector that did not contain "
                    "element_type::None.");
 
@@ -488,55 +457,32 @@ namespace item
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE)
     {
-        auto const BASEMATERIAL_VEC_PAIR_VEC{ GetMaterialsFromThinProfile(
-            THIN_PROFILE, NAMED_TYPE, SET_TYPE) };
+        auto const MATERIALS{ GetMaterialsFromThinProfile(THIN_PROFILE, NAMED_TYPE, SET_TYPE) };
 
         M_ASSERT_OR_LOGANDTHROW_SS(
-            (BASEMATERIAL_VEC_PAIR_VEC.empty() == false),
+            (MATERIALS.first.empty() == false),
             "item::ItemProfileWarehouse::MakeLoopOverMaterialsForThinProfile(thin_profile="
                 << THIN_PROFILE.ToString() << ", named_type=" << named_type::ToString(NAMED_TYPE)
                 << ", set_type=" << set_type::ToString(SET_TYPE)
-                << ") BASEMATERIAL_VEC_PAIR_VEC (the result of GetMaterialsFromThinProfile()) was "
-                   "empty.");
+                << ") GetMaterialsFromThinProfile() returned an empty primary materials vector, "
+                   "the secondary had "
+                << MATERIALS.second.size() << ".");
 
-        for (auto const & NEXT_BASEMATERIALVECPAIR : BASEMATERIAL_VEC_PAIR_VEC)
+        for (auto const MATERIAL_PRI : MATERIALS.first)
         {
-            M_ASSERT_OR_LOGANDTHROW_SS(
-                (NEXT_BASEMATERIALVECPAIR.second.first.empty() == false),
-                "item::ItemProfileWarehouse::MakeLoopOverMaterialsForThinProfile(thin_profile="
-                    << THIN_PROFILE.ToString()
-                    << ", named_type=" << named_type::ToString(NAMED_TYPE)
-                    << ", set_type=" << set_type::ToString(SET_TYPE)
-                    << ", BASEMATERIAL_VEC_PAIR_VEC.size()=" << BASEMATERIAL_VEC_PAIR_VEC.size()
-                    << ") was given an empty "
-                    << "NEXT_BASEMATERIALVECPAIR.second.first (primary material vec).");
-
-            for (auto const MATERIAL_PRI : NEXT_BASEMATERIALVECPAIR.second.first)
+            if (MATERIALS.second.empty())
             {
-                if (NEXT_BASEMATERIALVECPAIR.second.second.empty())
+                MakeLoopOverElementTypesForThinProfile(
+                    THIN_PROFILE, NAMED_TYPE, SET_TYPE, MATERIAL_PRI, material::Nothing);
+            }
+            else
+            {
+                for (auto const MATERIAL_SEC : MATERIALS.second)
                 {
-                    MakeLoopOverElementTypesForThinProfile(
-                        THIN_PROFILE,
-                        NAMED_TYPE,
-                        SET_TYPE,
-                        MATERIAL_PRI,
-                        material::Nothing,
-                        NEXT_BASEMATERIALVECPAIR.first);
-                }
-                else
-                {
-                    for (auto const MATERIAL_SEC : NEXT_BASEMATERIALVECPAIR.second.second)
+                    if (MATERIAL_SEC != item::material::Nothing)
                     {
-                        if (MATERIAL_SEC != item::material::Nothing)
-                        {
-                            MakeLoopOverElementTypesForThinProfile(
-                                THIN_PROFILE,
-                                NAMED_TYPE,
-                                SET_TYPE,
-                                MATERIAL_PRI,
-                                MATERIAL_SEC,
-                                NEXT_BASEMATERIALVECPAIR.first);
-                        }
+                        MakeLoopOverElementTypesForThinProfile(
+                            THIN_PROFILE, NAMED_TYPE, SET_TYPE, MATERIAL_PRI, MATERIAL_SEC);
                     }
                 }
             }
@@ -548,11 +494,10 @@ namespace item
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE,
         const material::Enum MATERIAL_PRIMARY,
-        const material::Enum MATERIAL_SECONDARY,
-        const armor::base_type::Enum MISSING_BASE_TYPE)
+        const material::Enum MATERIAL_SECONDARY)
     {
         for (auto const ELEMENT_TYPE :
-             ElementTypesIncludingNone(THIN_PROFILE, NAMED_TYPE, SET_TYPE, MISSING_BASE_TYPE))
+             ElementTypesIncludingNone(THIN_PROFILE, NAMED_TYPE, SET_TYPE))
         {
             MakeFromThinProfile(
                 THIN_PROFILE,
@@ -560,8 +505,7 @@ namespace item
                 SET_TYPE,
                 ELEMENT_TYPE,
                 MATERIAL_PRIMARY,
-                MATERIAL_SECONDARY,
-                MISSING_BASE_TYPE);
+                MATERIAL_SECONDARY);
         }
     }
 
@@ -571,8 +515,7 @@ namespace item
         const set_type::Enum SET_TYPE,
         const element_type::Enum ELEMENT_TYPE,
         const material::Enum MATERIAL_PRI,
-        const material::Enum MATERIAL_SEC,
-        const armor::base_type::Enum MISSING_BASE_TYPE)
+        const material::Enum MATERIAL_SEC)
     {
         if (MATERIAL_PRI == MATERIAL_SEC)
         {
@@ -643,7 +586,6 @@ namespace item
                 {
                     profile.SetGauntlets(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -653,7 +595,6 @@ namespace item
 
                     profilePixie.SetGauntlets(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -667,7 +608,6 @@ namespace item
                 {
                     profile.SetPants(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -677,7 +617,6 @@ namespace item
 
                     profilePixie.SetPants(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -691,7 +630,6 @@ namespace item
                 {
                     profile.SetBoots(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -701,7 +639,6 @@ namespace item
 
                     profilePixie.SetBoots(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -715,7 +652,6 @@ namespace item
                 {
                     profile.SetShirt(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -725,7 +661,6 @@ namespace item
 
                     profilePixie.SetShirt(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -739,7 +674,6 @@ namespace item
                 {
                     profile.SetBracer(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -749,7 +683,6 @@ namespace item
 
                     profilePixie.SetBracer(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -763,7 +696,6 @@ namespace item
                 {
                     profile.SetAventail(
                         THIN_PROFILE,
-                        MISSING_BASE_TYPE,
                         MATERIAL_PRI,
                         MATERIAL_SEC,
                         NAMED_TYPE,
@@ -815,10 +747,7 @@ namespace item
                     << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
                     << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
                     << ", mat_pri=" << material::ToString(MATERIAL_PRI)
-                    << ", mat_sec=" << material::ToString(MATERIAL_SEC) << ", missing_base_type="
-                    << ((MISSING_BASE_TYPE == armor::base_type::Count)
-                            ? "Count"
-                            : armor::base_type::ToString(MISSING_BASE_TYPE))
+                    << ", mat_sec=" << material::ToString(MATERIAL_SEC)
                     << ") was unable to find the type of the given armor.");
 
             AppendToEitherNormalOrReligiousVector(profile);
@@ -1022,25 +951,17 @@ namespace item
            << ((SET_TYPE == set_type::Count) ? "Count" : set_type::ToString(SET_TYPE))
            << ", element_type=" << element_type::ToString(ELEMENT_TYPE)
            << ", mat_pri=" << material::ToString(MATERIAL_PRI)
-           << ", mat_sec=" << material::ToString(MATERIAL_SEC) << ", armor_base_type="
-           << ((MISSING_BASE_TYPE == armor::base_type::Count)
-                   ? "Count"
-                   : armor::base_type::ToString(MISSING_BASE_TYPE))
+           << ", mat_sec=" << material::ToString(MATERIAL_SEC)
            << ") was unable to find the type of the given weapon or armor.";
 
         throw std::runtime_error(ss.str());
     }
 
-    const BaseMaterialVecPairVec_t ItemProfileWarehouse::GetMaterialsFromThinProfile(
+    const MaterialVecPair_t ItemProfileWarehouse::GetMaterialsFromThinProfile(
         const ItemProfileThin & THIN_PROFILE,
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE)
     {
-        auto const IS_MAGICAL_ITEM{
-            ((NAMED_TYPE != named_type::NotNamed) && (NAMED_TYPE != named_type::Count))
-            || ((SET_TYPE != set_type::Count) && (SET_TYPE != set_type::NotASet))
-        };
-
         if ((NAMED_TYPE != named_type::NotNamed) && (NAMED_TYPE != named_type::Count))
         {
             auto const NAMED_MATERIALS_VEC_PAIR{ matColl_.RemoveLameMaterialsForSpecialItems(
@@ -1050,277 +971,176 @@ namespace item
             // fall-through here
             if (NAMED_MATERIALS_VEC_PAIR.first.empty() == false)
             {
-                return { std::make_pair(armor::base_type::Count, NAMED_MATERIALS_VEC_PAIR) };
+                return NAMED_MATERIALS_VEC_PAIR;
             }
         }
+
+        auto const IS_MAGICAL_ITEM{
+            ((NAMED_TYPE != named_type::NotNamed) && (NAMED_TYPE != named_type::Count))
+            || ((SET_TYPE != set_type::Count) && (SET_TYPE != set_type::NotASet))
+        };
+
+        MaterialVecPair_t materials;
 
         if (THIN_PROFILE.IsMisc())
         {
-            auto materials{ matColl_.VectorPairByMiscType(THIN_PROFILE.MiscType()) };
-
-            if (IS_MAGICAL_ITEM)
-            {
-                matColl_.RemoveLameMaterialsForSpecialItems(materials);
-            }
-
-            return { std::make_pair(armor::base_type::Count, materials) };
+            materials = matColl_.VectorPairByMiscType(THIN_PROFILE.MiscType());
         }
         else if (THIN_PROFILE.IsArmor())
         {
-            BaseMaterialVecPairVec_t baseTypeMaterialPairs;
-
-            // can't use THIN_PROFILE.ArmorInfo().Is_() functions here because some thin profiles
-            // are missing their base_types, so use THIN_PROFILE.ArmorInfo().Type() instead which is
-            // always valid
-            switch (THIN_PROFILE.ArmorInfo().Type())
-            {
-                case armor_type::Shield:
-                {
-                    baseTypeMaterialPairs = { std::make_pair(
-                        armor::base_type::Count,
-                        Materials(THIN_PROFILE.ArmorInfo().ShieldType())) };
-
-                    break;
-                }
-                case armor_type::Helm:
-                {
-                    baseTypeMaterialPairs = { std::make_pair(
-                        armor::base_type::Count, Materials(THIN_PROFILE.ArmorInfo().HelmType())) };
-
-                    break;
-                }
-                case armor_type::Gauntlets:
-                {
-                    for (int i(0); i < armor::base_type::Count; ++i)
-                    {
-                        auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
-
-                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
-                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
-                        {
-                            continue;
-                        }
-
-                        if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
-                            || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
-                        {
-                            baseTypeMaterialPairs.emplace_back(
-                                std::make_pair(NEXT_BASE_ENUM, MaterialsGauntlets(NEXT_BASE_ENUM)));
-                        }
-                    }
-
-                    break;
-                }
-                case armor_type::Pants:
-                {
-                    for (int i(0); i < armor::base_type::Count; ++i)
-                    {
-                        auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
-
-                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
-                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
-                        {
-                            continue;
-                        }
-
-                        if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
-                            || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
-                        {
-                            baseTypeMaterialPairs.emplace_back(
-                                std::make_pair(NEXT_BASE_ENUM, MaterialsPants(NEXT_BASE_ENUM)));
-                        }
-                    }
-
-                    break;
-                }
-                case armor_type::Boots:
-                {
-                    for (int i(0); i < armor::base_type::Count; ++i)
-                    {
-                        auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
-
-                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
-                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
-                        {
-                            continue;
-                        }
-
-                        if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
-                            || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
-                        {
-                            baseTypeMaterialPairs.emplace_back(
-                                std::make_pair(NEXT_BASE_ENUM, MaterialsBoots(NEXT_BASE_ENUM)));
-                        }
-                    }
-
-                    break;
-                }
-                case armor_type::Shirt:
-                {
-                    for (int i(0); i < armor::base_type::Count; ++i)
-                    {
-                        auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
-
-                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
-                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
-                        {
-                            continue;
-                        }
-
-                        if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
-                            || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
-                        {
-                            baseTypeMaterialPairs.emplace_back(
-                                std::make_pair(NEXT_BASE_ENUM, MaterialsShirt(NEXT_BASE_ENUM)));
-                        }
-                    }
-
-                    break;
-                }
-                case armor_type::Bracers:
-                {
-                    for (int i(0); i < armor::base_type::Count; ++i)
-                    {
-                        auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
-
-                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
-                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
-                        {
-                            continue;
-                        }
-
-                        if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
-                            || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
-                        {
-                            baseTypeMaterialPairs.emplace_back(
-                                std::make_pair(NEXT_BASE_ENUM, MaterialsBracer(NEXT_BASE_ENUM)));
-                        }
-                    }
-
-                    break;
-                }
-                case armor_type::Aventail:
-                {
-                    for (int i(0); i < armor::base_type::Count; ++i)
-                    {
-                        auto const NEXT_BASE_ENUM{ static_cast<armor::base_type::Enum>(i) };
-
-                        if (IS_MAGICAL_ITEM && (NEXT_BASE_ENUM == armor::base_type::Plain)
-                            && (THIN_PROFILE.ArmorBaseTypeRestriction() != armor::base_type::Plain))
-                        {
-                            continue;
-                        }
-
-                        if ((THIN_PROFILE.ArmorBaseTypeRestriction() == NEXT_BASE_ENUM)
-                            || (THIN_PROFILE.ArmorBaseTypeRestriction() == armor::base_type::Count))
-                        {
-                            baseTypeMaterialPairs.emplace_back(
-                                std::make_pair(NEXT_BASE_ENUM, MaterialsAventail(NEXT_BASE_ENUM)));
-                        }
-                    }
-
-                    break;
-                }
-                case armor_type::Covering:
-                {
-                    baseTypeMaterialPairs = { std::make_pair(
-                        armor::base_type::Count, Materials(THIN_PROFILE.ArmorInfo().CoverType())) };
-
-                    break;
-                }
-                case armor_type::Skin:
-                case armor_type::NotArmor:
-                case armor_type::Count:
-                {
-                    std::ostringstream ss;
-                    ss << "ItemProfileWarehouse::GetMaterialsFromThinProfile(thin_profile="
-                       << THIN_PROFILE.ToString() << ") "
-                       << "-was armor but THIN_PROFILE.ArmorInfo().Type() was invalid.";
-
-                    throw std::runtime_error(ss.str());
-                }
-            }
-
-            if (IS_MAGICAL_ITEM)
-            {
-                for (auto & baseRestrictionMaterialVecsPair : baseTypeMaterialPairs)
-                {
-                    baseRestrictionMaterialVecsPair.second
-                        = matColl_.RemoveLameMaterialsForSpecialItems(
-                            baseRestrictionMaterialVecsPair.second);
-                }
-            }
-
-            baseTypeMaterialPairs.erase(
-                std::remove_if(
-                    std::begin(baseTypeMaterialPairs),
-                    std::end(baseTypeMaterialPairs),
-                    [](auto const & BASE_RESTRICTION_MATERIAL_VECS_PAIR) {
-                        return BASE_RESTRICTION_MATERIAL_VECS_PAIR.second.first.empty();
-                    }),
-                std::end(baseTypeMaterialPairs));
-
-            return baseTypeMaterialPairs;
+            materials = GetMaterialsFromThinProfileForArmor(THIN_PROFILE);
         }
         else if (THIN_PROFILE.IsWeapon())
         {
-            MaterialVecPair_t materialVecPair;
-
-            if (THIN_PROFILE.WeaponInfo().IsSword())
-            {
-                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().SwordType());
-            }
-            else if (THIN_PROFILE.WeaponInfo().IsAxe())
-            {
-                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().AxeType());
-            }
-            else if (THIN_PROFILE.WeaponInfo().IsClub())
-            {
-                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().ClubType());
-            }
-            else if (THIN_PROFILE.WeaponInfo().IsWhip())
-            {
-                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().WhipType());
-            }
-            else if (THIN_PROFILE.WeaponInfo().IsProjectile())
-            {
-                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().ProjectileType());
-            }
-            else if (THIN_PROFILE.WeaponInfo().IsBladedStaff())
-            {
-                materialVecPair = Materials(THIN_PROFILE.WeaponInfo().BladedStaffType());
-            }
-            else if (THIN_PROFILE.WeaponInfo().IsKnife())
-            {
-                materialVecPair = MaterialsKnife();
-            }
-            else if (THIN_PROFILE.WeaponInfo().IsDagger())
-            {
-                materialVecPair = MaterialsDagger();
-            }
-            else if (THIN_PROFILE.WeaponInfo().IsStaff())
-            {
-                materialVecPair = MaterialsStaff();
-            }
-            else if (THIN_PROFILE.WeaponInfo().IsQuarterstaff())
-            {
-                materialVecPair = MaterialsQuarterStaff();
-            }
-
-            if (IS_MAGICAL_ITEM)
-            {
-                matColl_.RemoveLameMaterialsForSpecialItems(materialVecPair);
-            }
-
-            return { std::make_pair(armor::base_type::Count, materialVecPair) };
+            materials = GetMaterialsFromThinProfileForWeapons(THIN_PROFILE);
         }
 
-        std::ostringstream ss;
-        ss << "ItemProfileWarehouse::GetMaterialsFromThinProfile(thin_profile="
-           << THIN_PROFILE.ToString() << ") "
-           << "-was unable to find the type of the given ThinProfile to make materials from.";
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (materials.first.empty() == false),
+            "item::ItemProfileWarehouse::GetMaterialsFromThinProfile(thin_profile = "
+                << THIN_PROFILE.ToString() << ") "
+                << "unable to create primary materials for that thin profile.  Secondary had "
+                << materials.second.size() << ".");
 
-        throw std::runtime_error(ss.str());
+        if (IS_MAGICAL_ITEM)
+        {
+            matColl_.RemoveLameMaterialsForSpecialItems(materials);
+        }
+
+        M_ASSERT_OR_LOGANDTHROW_SS(
+            (materials.first.empty() == false),
+            "item::ItemProfileWarehouse::GetMaterialsFromThinProfile(thin_profile = "
+                << THIN_PROFILE.ToString() << ") "
+                << "was to create primary materials for that thin profile, but it was magical and "
+                   "so lame materials were removed, after that, there were no more primary "
+                   "materials.  Secondary had "
+                << materials.second.size() << ".");
+
+        return materials;
+    }
+
+    const MaterialVecPair_t ItemProfileWarehouse::GetMaterialsFromThinProfileForArmor(
+        const ItemProfileThin & THIN_PROFILE)
+    {
+        if ((THIN_PROFILE.ArmorInfo().Type() != armor_type::Covering)
+            && (THIN_PROFILE.ArmorInfo().Type() != armor_type::Shield)
+            && (THIN_PROFILE.ArmorInfo().Type() != armor_type::Helm))
+        {
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (THIN_PROFILE.ArmorInfo().BaseType() != armor::base_type::Count),
+                "item::ItemProfileWarehouse::GetMaterialsFromThinProfileForArmor(thin_profile={"
+                    << THIN_PROFILE.ToString()
+                    << "}) -which is a 'non-specific' armor_type that requires a valid base_type "
+                       "but the base_type was Count.");
+        }
+
+        MaterialVecPair_t materials;
+
+        switch (THIN_PROFILE.ArmorInfo().Type())
+        {
+            case armor_type::Covering:
+            {
+                return Materials(THIN_PROFILE.ArmorInfo().CoverType());
+            }
+            case armor_type::Shield:
+            {
+                return Materials(THIN_PROFILE.ArmorInfo().ShieldType());
+            }
+            case armor_type::Helm:
+            {
+                return Materials(THIN_PROFILE.ArmorInfo().HelmType());
+            }
+            case armor_type::Gauntlets:
+            {
+                return MaterialsGauntlets(THIN_PROFILE.ArmorInfo().BaseType());
+            }
+            case armor_type::Pants:
+            {
+                return MaterialsPants(THIN_PROFILE.ArmorInfo().BaseType());
+            }
+            case armor_type::Boots:
+            {
+                return MaterialsBoots(THIN_PROFILE.ArmorInfo().BaseType());
+            }
+            case armor_type::Shirt:
+            {
+                return MaterialsShirt(THIN_PROFILE.ArmorInfo().BaseType());
+            }
+            case armor_type::Bracers:
+            {
+                return MaterialsBracer(THIN_PROFILE.ArmorInfo().BaseType());
+            }
+            case armor_type::Aventail:
+            {
+                return MaterialsAventail(THIN_PROFILE.ArmorInfo().BaseType());
+            }
+            case armor_type::Skin:
+            case armor_type::NotArmor:
+            case armor_type::Count:
+            default:
+            {
+                std::ostringstream ss;
+                ss << "ItemProfileWarehouse::GetMaterialsFromThinProfile(thin_profile="
+                   << THIN_PROFILE.ToString() << ") "
+                   << "-was armor but THIN_PROFILE.ArmorInfo().Type() was invalid.";
+
+                throw std::runtime_error(ss.str());
+            }
+        }
+    }
+
+    const MaterialVecPair_t ItemProfileWarehouse::GetMaterialsFromThinProfileForWeapons(
+        const ItemProfileThin & THIN_PROFILE)
+    {
+        if (THIN_PROFILE.WeaponInfo().IsSword())
+        {
+            return Materials(THIN_PROFILE.WeaponInfo().SwordType());
+        }
+        else if (THIN_PROFILE.WeaponInfo().IsAxe())
+        {
+            return Materials(THIN_PROFILE.WeaponInfo().AxeType());
+        }
+        else if (THIN_PROFILE.WeaponInfo().IsClub())
+        {
+            return Materials(THIN_PROFILE.WeaponInfo().ClubType());
+        }
+        else if (THIN_PROFILE.WeaponInfo().IsWhip())
+        {
+            return Materials(THIN_PROFILE.WeaponInfo().WhipType());
+        }
+        else if (THIN_PROFILE.WeaponInfo().IsProjectile())
+        {
+            return Materials(THIN_PROFILE.WeaponInfo().ProjectileType());
+        }
+        else if (THIN_PROFILE.WeaponInfo().IsBladedStaff())
+        {
+            return Materials(THIN_PROFILE.WeaponInfo().BladedStaffType());
+        }
+        else if (THIN_PROFILE.WeaponInfo().IsKnife())
+        {
+            return MaterialsKnife();
+        }
+        else if (THIN_PROFILE.WeaponInfo().IsDagger())
+        {
+            return MaterialsDagger();
+        }
+        else if (THIN_PROFILE.WeaponInfo().IsStaff())
+        {
+            return MaterialsStaff();
+        }
+        else if (THIN_PROFILE.WeaponInfo().IsQuarterstaff())
+        {
+            return MaterialsQuarterStaff();
+        }
+        else
+        {
+            std::ostringstream ss;
+            ss << "ItemProfileWarehouse::GetMaterialsFromThinProfileForWeapons(thin_profile="
+               << THIN_PROFILE.ToString() << ") "
+               << "-was armor but that WeaponTypeWrapper's type was not supported.";
+
+            throw std::runtime_error(ss.str());
+        }
     }
 
     void ItemProfileWarehouse::MakeLoopOverMaterialsForMiscType(
@@ -1516,11 +1336,23 @@ namespace item
         }
     }
 
-    const MaterialVecPair_t ItemProfileWarehouse::Materials(const armor::shield_type::Enum)
+    const MaterialVecPair_t
+        ItemProfileWarehouse::Materials(const armor::shield_type::Enum SHIELD_TYPE)
     {
-        return matColl_.MakeVectorPairSortedAndUnique(
-            matColl_.MakeVectorSortedAndUnique(matColl_.CoreMetal(), { material::Wood }),
-            matColl_.CoreSecondary());
+        // when it comes to the name a shield is either material::IsJewel()="jeweled" or
+        // material::IsRigid()="reinforced with"
+
+        const MaterialVec_t EXTRA_MATERIALS_FOR_BUCKLERS{ material::Obsidian, material::Bone,
+                                                          material::Tin,      material::Iron,
+                                                          material::Silver,   material::Gold,
+                                                          material::Platinum };
+
+        auto const PRIMARY_MATERIALS{ matColl_.MakeVectorSortedAndUnique(
+            { material::Wood, material::Scales, material::Bronze },
+            ((SHIELD_TYPE == armor::shield_type::Buckler) ? EXTRA_MATERIALS_FOR_BUCKLERS
+                                                          : MaterialVec_t())) };
+
+        return matColl_.MakeVectorPairSortedAndUnique(PRIMARY_MATERIALS, matColl_.CoreSecondary());
     }
 
     const MaterialVecPair_t
@@ -1640,16 +1472,12 @@ namespace item
         return thinProfiles;
     }
 
-    const ItemProfileThinVec_t ItemProfileWarehouse::ThinProfilesArmor(
-        const bool WILL_INCLUDE_COVERINGS, const armor::base_type::Enum BASE_TYPE_RESTRICTION)
+    const ItemProfileThinVec_t ItemProfileWarehouse::ThinProfilesArmor()
     {
         ItemProfileThinVec_t thinProfiles;
 
-        if (WILL_INCLUDE_COVERINGS)
-        {
-            misc::Vector::AppendMove(
-                ItemProfileThin::MakeArmorSpecificAll<armor::cover_type>(), thinProfiles);
-        }
+        misc::Vector::AppendMove(
+            ItemProfileThin::MakeArmorSpecificAll<armor::cover_type>(), thinProfiles);
 
         misc::Vector::AppendMove(
             ItemProfileThin::MakeArmorSpecificAll<armor::helm_type>(), thinProfiles);
@@ -1657,122 +1485,570 @@ namespace item
         misc::Vector::AppendMove(
             ItemProfileThin::MakeArmorSpecificAll<armor::shield_type>(), thinProfiles);
 
-        if (armor::base_type::Count == BASE_TYPE_RESTRICTION)
-        {
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificInvalidWithoutBaseType(
-                armor_type::Aventail, BASE_TYPE_RESTRICTION));
+        misc::Vector::AppendMove(
+            ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Aventail), thinProfiles);
 
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificInvalidWithoutBaseType(
-                armor_type::Boots, BASE_TYPE_RESTRICTION));
+        misc::Vector::AppendMove(
+            ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Boots), thinProfiles);
 
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificInvalidWithoutBaseType(
-                armor_type::Bracers, BASE_TYPE_RESTRICTION));
+        misc::Vector::AppendMove(
+            ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Bracers), thinProfiles);
 
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificInvalidWithoutBaseType(
-                armor_type::Gauntlets, BASE_TYPE_RESTRICTION));
+        misc::Vector::AppendMove(
+            ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Gauntlets), thinProfiles);
 
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificInvalidWithoutBaseType(
-                armor_type::Pants, BASE_TYPE_RESTRICTION));
+        misc::Vector::AppendMove(
+            ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Pants), thinProfiles);
 
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificInvalidWithoutBaseType(
-                armor_type::Shirt, BASE_TYPE_RESTRICTION));
-        }
-        else
-        {
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
-                armor_type::Aventail, BASE_TYPE_RESTRICTION));
-
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
-                armor_type::Boots, BASE_TYPE_RESTRICTION));
-
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
-                armor_type::Bracers, BASE_TYPE_RESTRICTION));
-
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
-                armor_type::Gauntlets, BASE_TYPE_RESTRICTION));
-
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
-                armor_type::Pants, BASE_TYPE_RESTRICTION));
-
-            thinProfiles.emplace_back(ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
-                armor_type::Shirt, BASE_TYPE_RESTRICTION));
-        }
+        misc::Vector::AppendMove(
+            ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Shirt), thinProfiles);
 
         return thinProfiles;
     }
 
     const ItemProfileThinVec_t ItemProfileWarehouse::ThinProfiles(const named_type::Enum NAMED_TYPE)
     {
-        auto removeByArmorType{ [](std::vector<ItemProfileThin> & thinProfiles,
-                                   const armor_type::Enum ARMOR_TYPE) {
+        using namespace armor;
+        using namespace weapon;
+
+        auto removeIf{ [](std::vector<ItemProfileThin> & thinProfiles, auto ifLambda) {
             thinProfiles.erase(
-                std::remove_if(
-                    std::begin(thinProfiles),
-                    std::end(thinProfiles),
-                    [ARMOR_TYPE](auto const & THIN_PROFILE) {
-                        return (THIN_PROFILE.ArmorInfo().Type() == ARMOR_TYPE);
-                    }),
+                std::remove_if(std::begin(thinProfiles), std::end(thinProfiles), ifLambda),
                 std::end(thinProfiles));
         } };
 
-        using namespace armor;
-        using namespace weapon;
+        auto removeIfArmorType{ [&](std::vector<ItemProfileThin> & thinProfiles,
+                                    const armor_type::Enum ARMOR_TYPE) {
+            removeIf(thinProfiles, [&](auto const & PROFILE) {
+                return (PROFILE.ArmorInfo().Type() == ARMOR_TYPE);
+            });
+        } };
 
         switch (NAMED_TYPE)
         {
             case named_type::Wicked:
+            {
+                return ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Pointed);
+            }
             case named_type::Fiendish:
+            {
+                return ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Bladed);
+            }
+
             case named_type::Infernal:
+            {
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Longbow),
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::CompositeBow)
+                };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Sword), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Sling), thinProfiles);
+
+                return thinProfiles;
+            }
+
             case named_type::Raging:
-            case named_type::Diabolic:
-            case named_type::Searing:
-            case named_type::Burning:
-            case named_type::Fiery:
+            {
+                return ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Club);
+            }
+
             case named_type::Icy:
             case named_type::Winter:
             case named_type::Frigid:
-            case named_type::Proud:
-            case named_type::Glory:
-            case named_type::Pure:
-            case named_type::Gloom:
-            case named_type::Twilight:
-            case named_type::Dusk:
-            case named_type::Dark:
-            case named_type::Betrayer:
+            case named_type::Diabolic:
             {
-                return ThinProfilesWeaponsAll();
+                return ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Melee);
             }
 
             case named_type::Dancing:
+            {
+                return ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Sword);
+            }
+
             case named_type::Marauder:
             {
-                return ThinProfilesWeaponsSwords();
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeWeaponOfTypeAll(
+                    weapon_type::Sword) };
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (
+                        (PROFILE.WeaponInfo().SwordType() == sword_type::Shortsword)
+                        || (PROFILE.WeaponInfo().SwordType() == sword_type::Falcata)
+                        || (PROFILE.WeaponInfo().SwordType() == sword_type::Gladius));
+                });
+
+                return thinProfiles;
+            }
+
+            case named_type::Wardens:
+            {
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeWeaponSpecific(
+                    sword_type::Shortsword) };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor::base_type::Plain),
+                    thinProfiles);
+
+                removeIfArmorType(thinProfiles, armor_type::Shield);
+                removeIfArmorType(thinProfiles, armor_type::Helm);
+
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(helm_type::Bascinet));
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(shield_type::Buckler));
+
+                return thinProfiles;
+            }
+
+            case named_type::Princes:
+            {
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeArmorNonSpecificAll(
+                    armor::base_type::Mail) };
+
+                removeIfArmorType(thinProfiles, armor_type::Shield);
+                removeIfArmorType(thinProfiles, armor_type::Helm);
+
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(helm_type::MailCoif));
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(shield_type::Kite));
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(cover_type::Cape));
+
+                thinProfiles.emplace_back(ItemProfileThin::MakeWeaponSpecific(sword_type::Rapier));
+
+                return thinProfiles;
+            }
+
+            case named_type::Ranger:
+            {
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeArmorNonSpecificAll(
+                    armor::base_type::Plain) };
+
+                removeIfArmorType(thinProfiles, armor_type::Shield);
+                removeIfArmorType(thinProfiles, armor_type::Helm);
+
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(cover_type::Cloak));
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(cover_type::Vest));
+
+                thinProfiles.emplace_back(
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Longbow));
+
+                thinProfiles.emplace_back(
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Shortbow));
+
+                thinProfiles.emplace_back(
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::CompositeBow));
+
+                thinProfiles.emplace_back(
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Sling));
+
+                return thinProfiles;
+            }
+
+            case named_type::Samurai:
+            {
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeArmorNonSpecificAll(
+                    armor::base_type::Scale) };
+
+                removeIfArmorType(thinProfiles, armor_type::Shield);
+                removeIfArmorType(thinProfiles, armor_type::Helm);
+
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(helm_type::Leather));
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(cover_type::Cape));
+
+                thinProfiles.emplace_back(
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Longsword));
+
+                return thinProfiles;
+            }
+
+            case named_type::Thors:
+            {
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeArmorNonSpecificAll(
+                    armor::base_type::Plate) };
+
+                removeIfArmorType(thinProfiles, armor_type::Shield);
+                removeIfArmorType(thinProfiles, armor_type::Helm);
+
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(helm_type::Great));
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(shield_type::Pavis));
+                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(cover_type::Cape));
+
+                thinProfiles.emplace_back(
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Claymore));
+
+                return thinProfiles;
+            }
+
+            case named_type::Nile:
+            {
+                return { ItemProfileThin::MakeWeaponSpecific(sword_type::Falcata),
+                         ItemProfileThin::MakeArmorSpecific(shield_type::Buckler),
+                         ItemProfileThin::MakeArmorSpecific(shield_type::Kite),
+                         ItemProfileThin::MakeArmorSpecific(helm_type::Leather),
+                         ItemProfileThin::MakeArmorNonSpecific(
+                             armor_type::Bracers, armor::base_type::Plain),
+                         ItemProfileThin::MakeArmorNonSpecific(
+                             armor_type::Shirt, armor::base_type::Plain),
+                         ItemProfileThin::MakeArmorSpecific(cover_type::Cloak) };
+            }
+
+            case named_type::Searing:
+            {
+                return ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Bladed);
+            }
+
+            case named_type::Burning:
+            {
+                ItemProfileThinVec_t thinProfiles;
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Sword), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Axe), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::BladedStaff), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Club), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Staff), thinProfiles);
+
+                return thinProfiles;
+            }
+
+            case named_type::Fiery:
+            {
+                ItemProfileThinVec_t thinProfiles;
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Bow), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Crossbow), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Whip), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::BladedStaff), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Sword), thinProfiles);
+
+                return thinProfiles;
+            }
+
+            case named_type::Soldiers:
+            {
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Shortbow),
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Longbow),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Broadsword),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Longsword),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Knightlysword),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Claymore),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Battleaxe),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Waraxe)
+                };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::BladedStaff), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorSpecificAll<shield_type>(), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorSpecificAll<helm_type>(), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Pants), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Boots), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Shirt), thinProfiles);
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (
+                        (PROFILE.ArmorInfo().BaseType() == base_type::Plate)
+                        || (PROFILE.ArmorInfo().ShieldType() == shield_type::Pavis));
+                });
+
+                return thinProfiles;
+            }
+
+            case named_type::Dark:
+            {
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Sling),
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Shortbow),
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Longbow),
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::CompositeBow),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Falcata),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Rapier),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Flamberg),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Sickle),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Battleaxe),
+                    ItemProfileThin::MakeWeaponSpecific(whip_type::Bullwhip),
+                    ItemProfileThin::MakeWeaponSpecific(whip_type::Flail),
+                    ItemProfileThin::MakeWeaponSpecific(whip_type::MaceAndChain),
+                    ItemProfileThin::MakeWeaponSpecific(club_type::Spiked),
+                    ItemProfileThin::MakeWeaponSpecific(club_type::Maul),
+                    ItemProfileThin::MakeWeaponSpecific(bladedstaff_type::Spear),
+                    ItemProfileThin::MakeWeaponSpecific(bladedstaff_type::Pike),
+                    ItemProfileThin::MakeWeaponSpecific(bladedstaff_type::Scythe)
+                };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponKnifeOrDaggerAll(false), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponKnifeOrDaggerAll(true), thinProfiles);
+
+                return thinProfiles;
+            }
+
+            case named_type::Betrayer:
+            {
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Longbow),
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::CompositeBow),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Falcata),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Flamberg),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Sickle),
+                    ItemProfileThin::MakeWeaponSpecific(whip_type::MaceAndChain),
+                    ItemProfileThin::MakeWeaponSpecific(club_type::Spiked),
+                    ItemProfileThin::MakeWeaponSpecific(bladedstaff_type::Scythe)
+                };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponKnifeOrDaggerAll(true), thinProfiles);
+
+                return thinProfiles;
+            }
+
+            case named_type::Robbers:
+            case named_type::Thugs:
+            case named_type::Knaves:
+            {
+                return { ItemProfileThin::MakeWeaponKnifeOrDagger(false, sfml_util::Size::Large) };
+            }
+
+            case named_type::Thief:
+            case named_type::Muggers:
+            case named_type::Pirate:
+            {
+                return { ItemProfileThin::MakeWeaponKnifeOrDagger(true, sfml_util::Size::Large) };
+            }
+
+            case named_type::Focus:
+            {
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeWeaponOfTypeAll(
+                    weapon_type::Projectile) };
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return PROFILE.WeaponInfo().ProjectileType() == projectile_type::Blowpipe;
+                });
+
+                return thinProfiles;
+            }
+
+            case named_type::Proud:
+            case named_type::Glory:
+            case named_type::Pure:
+            {
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Longbow),
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Crossbow),
+                    ItemProfileThin::MakeWeaponSpecific(projectile_type::CompositeBow),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Broadsword),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Longsword),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Knightlysword),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Claymore),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Battleaxe),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Waraxe),
+                    ItemProfileThin::MakeWeaponSpecific(whip_type::MaceAndChain),
+                    ItemProfileThin::MakeWeaponSpecific(club_type::Warhammer)
+                };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Staff), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::BladedStaff), thinProfiles);
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return PROFILE.WeaponInfo().Type() & weapon_type::Spear;
+                });
+
+                return thinProfiles;
+            }
+
+            case named_type::Gloom:
+            case named_type::Twilight:
+            case named_type::Dusk:
+            {
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeWeaponKnifeOrDagger(true, sfml_util::Size::Large),
+                    ItemProfileThin::MakeWeaponKnifeOrDagger(false, sfml_util::Size::Large),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Cutlass),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Falcata),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Rapier),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Saber),
+                    ItemProfileThin::MakeWeaponSpecific(sword_type::Flamberg),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Handaxe),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Sickle),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Battleaxe),
+                    ItemProfileThin::MakeWeaponSpecific(axe_type::Waraxe),
+                    ItemProfileThin::MakeWeaponSpecific(club_type::Spiked),
+                    ItemProfileThin::MakeWeaponSpecific(club_type::Maul),
+                    ItemProfileThin::MakeWeaponSpecific(bladedstaff_type::ShortSpear),
+                    ItemProfileThin::MakeWeaponSpecific(bladedstaff_type::Spear),
+                    ItemProfileThin::MakeWeaponSpecific(bladedstaff_type::Pike),
+                    ItemProfileThin::MakeWeaponSpecific(bladedstaff_type::Scythe)
+                };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Projectile), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeWeaponOfTypeAll(weapon_type::Whip), thinProfiles);
+
+                return thinProfiles;
             }
 
             case named_type::Honest:
-            case named_type::Noble:
-            case named_type::Daring:
-            case named_type::Elite:
-            case named_type::Valiant:
-            case named_type::Heros:
-            case named_type::Light:
-            case named_type::Dawn:
-            case named_type::Sun:
-            case named_type::Sorrow:
-            case named_type::Woe:
-            case named_type::Misery:
-            case named_type::Moon:
             {
-                return ThinProfilesArmor(true);
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeArmorNonSpecificAll() };
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (PROFILE.ArmorInfo().CoverType() == cover_type::Cloak)
+                        || (PROFILE.ArmorInfo().CoverType() == cover_type::Robe);
+                });
+
+                return thinProfiles;
+            }
+
+            case named_type::Noble:
+            {
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeArmorNonSpecificAll() };
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (PROFILE.ArmorInfo().CoverType() == cover_type::Cloak)
+                        || (PROFILE.ArmorInfo().CoverType() == cover_type::Robe)
+                        || (PROFILE.ArmorInfo().BaseType() == base_type::Plain);
+                });
+
+                return thinProfiles;
+            }
+
+            case named_type::Daring:
+            {
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeArmorNonSpecificAll() };
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (PROFILE.ArmorInfo().CoverType() == cover_type::Cloak)
+                        || (PROFILE.ArmorInfo().CoverType() == cover_type::Robe)
+                        || (PROFILE.ArmorInfo().BaseType() == base_type::Plain)
+                        || (PROFILE.ArmorInfo().ShieldType() == shield_type::Buckler)
+                        || (PROFILE.ArmorInfo().HelmType() == helm_type::Leather);
+                });
+
+                return thinProfiles;
+            }
+
+            case named_type::Elite:
+            {
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeArmorNonSpecificAll() };
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (PROFILE.ArmorInfo().CoverType() == cover_type::Cloak)
+                        || (PROFILE.ArmorInfo().CoverType() == cover_type::Robe)
+                        || (PROFILE.ArmorInfo().BaseType() == base_type::Plain)
+                        || (PROFILE.ArmorInfo().BaseType() == base_type::Scale)
+                        || (PROFILE.ArmorInfo().ShieldType() == shield_type::Buckler)
+                        || (PROFILE.ArmorInfo().HelmType() == helm_type::Leather)
+                        || (PROFILE.ArmorInfo().HelmType() == helm_type::MailCoif)
+                        || (PROFILE.ArmorInfo().HelmType() == helm_type::Kettle);
+                });
+
+                return thinProfiles;
+            }
+
+            case named_type::Valiant:
+            {
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeArmorSpecific(shield_type::Heater),
+                    ItemProfileThin::MakeArmorSpecific(shield_type::Pavis),
+                    ItemProfileThin::MakeArmorSpecific(helm_type::Bascinet),
+                    ItemProfileThin::MakeArmorSpecific(helm_type::Great),
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Cape),
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Vest)
+                };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(base_type::Plate), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(base_type::Mail), thinProfiles);
+
+                return thinProfiles;
+            }
+
+            case named_type::Heros:
+            {
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeArmorSpecific(shield_type::Pavis),
+                    ItemProfileThin::MakeArmorSpecific(helm_type::Great),
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Cape),
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Vest)
+                };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(base_type::Plate), thinProfiles);
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (
+                        (PROFILE.ArmorInfo().Type() == armor_type::Bracers)
+                        || (PROFILE.ArmorInfo().Type() == armor_type::Aventail));
+                });
+
+                return thinProfiles;
             }
 
             case named_type::Army:
-            case named_type::Charred:
-            case named_type::Chill:
-            case named_type::Frozen:
-            case named_type::Arctic:
             {
-                return ThinProfilesArmor(false);
+                ItemProfileThinVec_t thinProfiles{};
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorSpecificAll<shield_type>(), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorSpecificAll<helm_type>(), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Pants), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Boots), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Shirt), thinProfiles);
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (
+                        (PROFILE.ArmorInfo().BaseType() == base_type::Plate)
+                        || (PROFILE.ArmorInfo().HelmType() == helm_type::Leather)
+                        || (PROFILE.ArmorInfo().HelmType() == helm_type::MailCoif)
+                        || (PROFILE.ArmorInfo().ShieldType() == shield_type::Pavis));
+                });
+
+                return thinProfiles;
             }
 
             case named_type::Gladiator:
@@ -1783,110 +2059,72 @@ namespace item
                          ItemProfileThin::MakeArmorSpecific(helm_type::Bascinet),
                          ItemProfileThin::MakeArmorSpecific(helm_type::Kettle),
                          ItemProfileThin::MakeWeaponSpecific(axe_type::Handaxe),
+                         ItemProfileThin::MakeWeaponSpecific(bladedstaff_type::ShortSpear),
                          ItemProfileThin::MakeWeaponSpecific(bladedstaff_type::Spear),
                          ItemProfileThin::MakeWeaponSpecific(sword_type::Gladius),
                          ItemProfileThin::MakeWeaponSpecific(sword_type::Shortsword),
                          ItemProfileThin::MakeWeaponSpecific(sword_type::Broadsword) };
             }
 
-            case named_type::Soldiers:
+            case named_type::Charred:
             {
-                ItemProfileThinVec_t thinProfiles;
-                misc::Vector::AppendMove(ThinProfilesWeaponsAll(), thinProfiles);
-                misc::Vector::AppendMove(ThinProfilesArmor(false), thinProfiles);
-                return thinProfiles;
-            }
-
-            case named_type::Wardens:
-            {
-                ItemProfileThinVec_t thinProfiles;
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Vest),
+                };
 
                 misc::Vector::AppendMove(
-                    ThinProfilesArmor(false, armor::base_type::Plain), thinProfiles);
+                    ItemProfileThin::MakeArmorSpecificAll<shield_type>(), thinProfiles);
 
-                removeByArmorType(thinProfiles, armor_type::Shield);
-                removeByArmorType(thinProfiles, armor_type::Helm);
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorSpecificAll<helm_type>(), thinProfiles);
 
-                thinProfiles.emplace_back(
-                    ItemProfileThin::MakeWeaponSpecific(sword_type::Shortsword));
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Gauntlets), thinProfiles);
 
-                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(helm_type::Bascinet));
-                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(shield_type::Buckler));
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Shirt), thinProfiles);
 
-                return thinProfiles;
-            }
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Bracers), thinProfiles);
 
-            case named_type::Princes:
-            {
-                ItemProfileThinVec_t thinProfiles{ ThinProfilesArmor(
-                    false, armor::base_type::Mail) };
-
-                removeByArmorType(thinProfiles, armor_type::Shield);
-                removeByArmorType(thinProfiles, armor_type::Helm);
-
-                thinProfiles.emplace_back(ItemProfileThin::MakeWeaponSpecific(sword_type::Rapier));
-                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(helm_type::MailCoif));
-                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(shield_type::Kite));
-                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(cover_type::Cape));
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (PROFILE.ArmorInfo().BaseType() != base_type::Plain);
+                });
 
                 return thinProfiles;
             }
 
-            case named_type::Ranger:
+            case named_type::Moon:
             {
-                ItemProfileThinVec_t thinProfiles{ ThinProfilesArmor(
-                    false, armor::base_type::Plain) };
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Robe),
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Cloak),
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Vest)
+                };
 
-                removeByArmorType(thinProfiles, armor_type::Shield);
-                removeByArmorType(thinProfiles, armor_type::Helm);
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorSpecificAll<shield_type>(), thinProfiles);
 
-                thinProfiles.emplace_back(
-                    ItemProfileThin::MakeWeaponSpecific(projectile_type::Longbow));
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorSpecificAll<helm_type>(), thinProfiles);
 
-                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(cover_type::Cloak));
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Pants), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Shirt), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Boots), thinProfiles);
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (
+                        (PROFILE.ArmorInfo().BaseType() == base_type::Plain)
+                        || (PROFILE.ArmorInfo().HelmType() == helm_type::Kettle)
+                        || (PROFILE.ArmorInfo().HelmType() == helm_type::Leather));
+                });
 
                 return thinProfiles;
-            }
-
-            case named_type::Samurai:
-            {
-                ItemProfileThinVec_t thinProfiles{ ThinProfilesArmor(
-                    false, armor::base_type::Scale) };
-
-                removeByArmorType(thinProfiles, armor_type::Shield);
-                removeByArmorType(thinProfiles, armor_type::Helm);
-
-                thinProfiles.emplace_back(
-                    ItemProfileThin::MakeWeaponSpecific(sword_type::Longsword));
-
-                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(helm_type::Leather));
-                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(cover_type::Cape));
-
-                return thinProfiles;
-            }
-
-            case named_type::Thors:
-            {
-                ItemProfileThinVec_t thinProfiles{ ThinProfilesArmor(false) };
-
-                removeByArmorType(thinProfiles, armor_type::Shield);
-                removeByArmorType(thinProfiles, armor_type::Helm);
-
-                thinProfiles.emplace_back(
-                    ItemProfileThin::MakeWeaponSpecific(sword_type::Broadsword));
-
-                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(helm_type::Great));
-                thinProfiles.emplace_back(ItemProfileThin::MakeArmorSpecific(shield_type::Pavis));
-
-                return thinProfiles;
-            }
-            case named_type::Nile:
-            {
-                return { ItemProfileThin::MakeWeaponSpecific(sword_type::Falcata),
-                         ItemProfileThin::MakeArmorSpecific(shield_type::Buckler),
-                         ItemProfileThin::MakeArmorSpecific(helm_type::Leather),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
-                             armor_type::Bracers, armor::base_type::Plain) };
             }
 
             case named_type::Imposters:
@@ -1895,10 +2133,94 @@ namespace item
                 return { ItemProfileThin::MakeArmorSpecific(cover_type::Robe) };
             }
 
-            case named_type::Burglar:
-            case named_type::Mountebank:
+            case named_type::Chill:
+            case named_type::Frozen:
+            case named_type::Arctic:
             {
-                return { ItemProfileThin::MakeArmorSpecific(cover_type::Cloak) };
+                ItemProfileThinVec_t thinProfiles{ ItemProfileThin::MakeArmorNonSpecificAll() };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorSpecificAll<cover_type>(), thinProfiles);
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (
+                        (PROFILE.ArmorInfo().Type() == armor_type::Pants)
+                        || (PROFILE.ArmorInfo().Type() == armor_type::Boots)
+                        || (PROFILE.ArmorInfo().Type() == armor_type::Shirt)
+                        || (PROFILE.ArmorInfo().Type() == armor_type::Aventail)
+                        || (PROFILE.ArmorInfo().HelmType() == helm_type::MailCoif)
+                        || (PROFILE.ArmorInfo().HelmType() == helm_type::Leather)
+                        || (PROFILE.ArmorInfo().CoverType() == cover_type::Cape)
+                        || (PROFILE.ArmorInfo().ShieldType() == shield_type::Buckler));
+                });
+
+                return thinProfiles;
+            }
+
+            case named_type::Light:
+            case named_type::Dawn:
+            case named_type::Sun:
+            {
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Robe),
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Cape),
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Vest),
+                    ItemProfileThin::MakeArmorSpecific(shield_type::Kite),
+                    ItemProfileThin::MakeArmorSpecific(shield_type::Heater),
+                    ItemProfileThin::MakeArmorSpecific(shield_type::Pavis),
+                    ItemProfileThin::MakeArmorSpecific(helm_type::Archers),
+                    ItemProfileThin::MakeArmorSpecific(helm_type::Bascinet),
+                    ItemProfileThin::MakeArmorSpecific(helm_type::Great),
+                };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Gauntlets), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Pants), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Boots), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Shirt), thinProfiles);
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (
+                        (PROFILE.ArmorInfo().BaseType() == base_type::Plain)
+                        || (PROFILE.ArmorInfo().BaseType() == base_type::Scale));
+                });
+
+                return thinProfiles;
+            }
+
+            case named_type::Sorrow:
+            case named_type::Woe:
+            case named_type::Misery:
+            {
+                ItemProfileThinVec_t thinProfiles{
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Cloak),
+                    ItemProfileThin::MakeArmorSpecific(cover_type::Vest),
+                    ItemProfileThin::MakeArmorSpecific(shield_type::Buckler),
+                    ItemProfileThin::MakeArmorSpecific(shield_type::Kite),
+                    ItemProfileThin::MakeArmorSpecific(shield_type::Heater),
+                    ItemProfileThin::MakeArmorSpecific(helm_type::Leather),
+                    ItemProfileThin::MakeArmorSpecific(helm_type::MailCoif),
+                    ItemProfileThin::MakeArmorSpecific(helm_type::Archers),
+                    ItemProfileThin::MakeArmorSpecific(helm_type::Bascinet),
+                };
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Gauntlets), thinProfiles);
+
+                misc::Vector::AppendMove(
+                    ItemProfileThin::MakeArmorNonSpecificAll(armor_type::Bracers), thinProfiles);
+
+                removeIf(thinProfiles, [](auto const & PROFILE) {
+                    return (PROFILE.ArmorInfo().BaseType() == base_type::Plain);
+                });
+
+                return thinProfiles;
             }
 
             case named_type::Charlatans:
@@ -1906,23 +2228,10 @@ namespace item
                 return { ItemProfileThin::MakeArmorSpecific(cover_type::Vest) };
             }
 
-            case named_type::Robbers:
-            case named_type::Thugs:
-            case named_type::Knaves:
+            case named_type::Burglar:
+            case named_type::Mountebank:
             {
-                return { ItemProfileThin::MakeWeaponKnifeOrDagger(false) };
-            }
-
-            case named_type::Muggers:
-            case named_type::Thief:
-            case named_type::Pirate:
-            {
-                return { ItemProfileThin::MakeWeaponKnifeOrDagger(true) };
-            }
-
-            case named_type::Focus:
-            {
-                return ThinProfilesWeaponsProjectiles();
+                return { ItemProfileThin::MakeArmorSpecific(cover_type::Cloak) };
             }
 
             case named_type::NotNamed:
@@ -1942,13 +2251,13 @@ namespace item
             case set_type::TheTickler:
             case set_type::TheNeverwinter:
             {
-                return { ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                return { ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Boots, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Pants, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Shirt, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Gauntlets, armor::base_type::Plain),
                          ItemProfileThin::MakeArmorSpecific(armor::cover_type::Cloak),
                          ItemProfileThin::MakeWeaponKnifeOrDagger(true),
@@ -1959,13 +2268,13 @@ namespace item
             case set_type::TheNecromancers:
             case set_type::TheWarlocks:
             {
-                return { ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                return { ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Boots, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Pants, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Shirt, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Gauntlets, armor::base_type::Plain),
                          ItemProfileThin::MakeArmorSpecific(armor::cover_type::Robe),
                          ItemProfileThin::MakeMisc(misc_type::Wand) };
@@ -1973,13 +2282,13 @@ namespace item
 
             case set_type::TheLichKings:
             {
-                return { ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                return { ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Boots, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Pants, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Shirt, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Gauntlets, armor::base_type::Plain),
                          ItemProfileThin::MakeArmorSpecific(armor::cover_type::Robe),
                          ItemProfileThin::MakeMisc(misc_type::Litch_Hand) };
@@ -1989,13 +2298,13 @@ namespace item
             case set_type::TheShamans:
             case set_type::TheOracles:
             {
-                return { ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                return { ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Boots, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Pants, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Shirt, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Gauntlets, armor::base_type::Plain),
                          ItemProfileThin::MakeArmorSpecific(armor::cover_type::Robe),
                          ItemProfileThin::MakeMisc(misc_type::Wand) };
@@ -2003,13 +2312,13 @@ namespace item
 
             case set_type::TheAngelic:
             {
-                return { ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                return { ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Boots, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Pants, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Shirt, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Gauntlets, armor::base_type::Plain),
                          ItemProfileThin::MakeArmorSpecific(armor::cover_type::Robe),
                          ItemProfileThin::MakeMisc(misc_type::Angel_Braid) };
@@ -2019,13 +2328,13 @@ namespace item
             case set_type::TheTroubadours:
             case set_type::TheMuses:
             {
-                return { ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                return { ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Boots, armor::base_type::Mail),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Pants, armor::base_type::Mail),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Shirt, armor::base_type::Mail),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Gauntlets, armor::base_type::Plain),
                          ItemProfileThin::MakeArmorSpecific(armor::cover_type::Vest),
                          ItemProfileThin::MakeWeaponSpecific(weapon::sword_type::Longsword),
@@ -2040,20 +2349,20 @@ namespace item
             case set_type::TheDragonslayers:
             case set_type::TheEventideRider:
             {
-                return { ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                return { ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Boots, armor::base_type::Plate),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Pants, armor::base_type::Plate),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Shirt, armor::base_type::Plate),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Gauntlets, armor::base_type::Plate),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Bracers, armor::base_type::Plate),
                          ItemProfileThin::MakeArmorSpecific(armor::cover_type::Cape),
                          ItemProfileThin::MakeArmorSpecific(armor::shield_type::Pavis),
                          ItemProfileThin::MakeArmorSpecific(armor::helm_type::Great),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Aventail, armor::base_type::Plate) };
             }
 
@@ -2064,15 +2373,15 @@ namespace item
             case set_type::TheDuskRanger:
             case set_type::TheVenomBow:
             {
-                return { ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                return { ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Boots, armor::base_type::Mail),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Pants, armor::base_type::Mail),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Shirt, armor::base_type::Mail),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Gauntlets, armor::base_type::Plain),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Bracers, armor::base_type::Mail),
                          ItemProfileThin::MakeArmorSpecific(armor::cover_type::Vest),
                          ItemProfileThin::MakeArmorSpecific(armor::helm_type::Archers) };
@@ -2084,15 +2393,15 @@ namespace item
             case set_type::TheMonsterOverseers:
             case set_type::TheBeastRulers:
             {
-                return { ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                return { ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Boots, armor::base_type::Scale),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Pants, armor::base_type::Scale),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Shirt, armor::base_type::Scale),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Bracers, armor::base_type::Scale),
-                         ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
+                         ItemProfileThin::MakeArmorNonSpecific(
                              armor_type::Gauntlets, armor::base_type::Scale),
                          ItemProfileThin::MakeArmorSpecific(armor::shield_type::Kite),
                          ItemProfileThin::MakeArmorSpecific(armor::helm_type::Bascinet) };

@@ -39,6 +39,7 @@
 #include <sstream>
 #include <string>
 #include <tuple>
+#include <type_traits>
 #include <vector>
 
 namespace heroespath
@@ -67,7 +68,6 @@ namespace item
 
         explicit ItemProfileThin(
             const armor::ArmorTypeWrapper & ARMOR_TYPE_WRAPPER,
-            const armor::base_type::Enum BASE_TYPE_RESTRICTION = armor::base_type::Count,
             const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
         explicit ItemProfileThin(const misc_type::Enum MISC_TYPE);
@@ -78,11 +78,6 @@ namespace item
 
         const weapon::WeaponTypeWrapper & WeaponInfo() const { return weaponInfo_; }
         const armor::ArmorTypeWrapper & ArmorInfo() const { return armorInfo_; }
-
-        armor::base_type::Enum ArmorBaseTypeRestriction() const
-        {
-            return armorBaseTypeRestriction_;
-        }
 
         misc_type::Enum MiscType() const { return miscType_; }
 
@@ -108,23 +103,21 @@ namespace item
             const armor::base_type::Enum BASE_TYPE = armor::base_type::Count,
             const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
 
-        static const ItemProfileThin MakeArmorNonSpecificWithBaseTypeRestriction(
-            const armor_type::Enum ARMOR_TYPE,
-            const armor::base_type::Enum BASE_TYPE_RESTRICTION,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
-
-        static const ItemProfileThin MakeArmorNonSpecificInvalidWithoutBaseType(
-            const armor_type::Enum ARMOR_TYPE,
-            const armor::base_type::Enum BASE_TYPE_RESTRICTION = armor::base_type::Count,
-            const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
-
         template <typename SpecificArmor_t>
         static const ItemProfileThin MakeArmorSpecific(
             const SpecificArmor_t SPECIFIC_ARMOR_TYPE,
             const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
         {
-            return ItemProfileThin(
-                armor::ArmorTypeWrapper(SPECIFIC_ARMOR_TYPE), armor::base_type::Count, MISC_TYPE);
+            M_ASSERT_OR_LOGANDTHROW_SS(
+                (std::is_same<SpecificArmor_t, armor::shield_type::Enum>::value
+                 || std::is_same<SpecificArmor_t, armor::helm_type::Enum>::value
+                 || std::is_same<SpecificArmor_t, armor::cover_type::Enum>::value),
+                "item::ItemProfileThin::MakeArmorSpecificAll<"
+                    << boost::typeindex::type_id<SpecificArmor_t>().pretty_name()
+                    << ">() but that type is not one of the specific armor types. "
+                       "(shield/helm/cover)");
+
+            return ItemProfileThin(armor::ArmorTypeWrapper(SPECIFIC_ARMOR_TYPE), MISC_TYPE);
         }
 
         template <typename SpecificArmorEnum_t>
@@ -142,8 +135,48 @@ namespace item
             return thinProfiles;
         }
 
-        static const ItemProfileThin MakeArmorNonSpecificFromThinProfileThatWasMissingABaseType(
-            const ItemProfileThin & THIN_PROFILE, const armor::base_type::Enum BASE_TYPE);
+        static const ItemProfileThinVec_t MakeArmorNonSpecificAll(const armor_type::Enum ARMOR_TYPE)
+        {
+            ItemProfileThinVec_t thinProfiles;
+
+            for (int i(0); i < armor::base_type::Count; ++i)
+            {
+                auto const BASE_TYPE{ static_cast<armor::base_type::Enum>(i) };
+                thinProfiles.emplace_back(MakeArmorNonSpecific(ARMOR_TYPE, BASE_TYPE));
+            }
+
+            return thinProfiles;
+        }
+
+        static const ItemProfileThinVec_t
+            MakeArmorNonSpecificAll(const armor::base_type::Enum BASE_TYPE)
+        {
+            ItemProfileThinVec_t thinProfiles;
+            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Aventail, BASE_TYPE));
+            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Boots, BASE_TYPE));
+            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Bracers, BASE_TYPE));
+            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Gauntlets, BASE_TYPE));
+            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Pants, BASE_TYPE));
+            thinProfiles.emplace_back(MakeArmorNonSpecific(armor_type::Shirt, BASE_TYPE));
+            return thinProfiles;
+        }
+
+        static const ItemProfileThinVec_t MakeArmorNonSpecificAll()
+        {
+            ItemProfileThinVec_t thinProfiles;
+
+            for (int i(0); i < armor::base_type::Count; ++i)
+            {
+                auto const BASE_TYPE{ static_cast<armor::base_type::Enum>(i) };
+
+                for (auto const & THIN_PROFILE : MakeArmorNonSpecificAll(BASE_TYPE))
+                {
+                    thinProfiles.emplace_back(THIN_PROFILE);
+                }
+            }
+
+            return thinProfiles;
+        }
 
         static const ItemProfileThin MakeWeaponStaffOrQuarterstaff(
             const bool IS_QUARTERSTAFF, const misc_type::Enum MISC_TYPE = misc_type::NotMisc);
@@ -154,6 +187,21 @@ namespace item
             const misc_type::Enum MISC_TYPE = misc_type::NotMisc)
         {
             return MakeWeapon(weapon::WeaponTypeWrapper(SPECIFIC_WEAPON_TYPE), MISC_TYPE);
+        }
+
+        static const ItemProfileThinVec_t MakeWeaponOfTypeAll(const weapon_type::Enum WEAPON_TYPE)
+        {
+            ItemProfileThinVec_t thinProfiles;
+            for (auto const & WEAPON_TYPE_WRAPPER : weapon::WeaponTypeWrapper::MakeCompleteSet())
+            {
+                // skip body parts
+                if ((WEAPON_TYPE_WRAPPER.IsBodyPart() == false)
+                    && (WEAPON_TYPE_WRAPPER.Type() & WEAPON_TYPE))
+                {
+                    thinProfiles.emplace_back(ItemProfileThin::MakeWeapon(WEAPON_TYPE_WRAPPER));
+                }
+            }
+            return thinProfiles;
         }
 
         template <typename SpecificWeaponEnum_t>
@@ -186,14 +234,13 @@ namespace item
     private:
         weapon::WeaponTypeWrapper weaponInfo_;
         armor::ArmorTypeWrapper armorInfo_;
-        armor::base_type::Enum armorBaseTypeRestriction_;
         misc_type::Enum miscType_;
     };
 
     inline bool operator==(const ItemProfileThin & L, const ItemProfileThin & R)
     {
-        return std::tie(L.weaponInfo_, L.armorInfo_, L.armorBaseTypeRestriction_, L.miscType_)
-            == std::tie(R.weaponInfo_, R.armorInfo_, R.armorBaseTypeRestriction_, R.miscType_);
+        return std::tie(L.weaponInfo_, L.armorInfo_, L.miscType_)
+            == std::tie(R.weaponInfo_, R.armorInfo_, R.miscType_);
     }
 
     inline bool operator!=(const ItemProfileThin & L, const ItemProfileThin & R)
@@ -203,8 +250,8 @@ namespace item
 
     inline bool operator<(const ItemProfileThin & L, const ItemProfileThin & R)
     {
-        return std::tie(L.weaponInfo_, L.armorInfo_, L.armorBaseTypeRestriction_, L.miscType_)
-            < std::tie(R.weaponInfo_, R.armorInfo_, R.armorBaseTypeRestriction_, R.miscType_);
+        return std::tie(L.weaponInfo_, L.armorInfo_, L.miscType_)
+            < std::tie(R.weaponInfo_, R.armorInfo_, R.miscType_);
     }
 
 } // namespace item

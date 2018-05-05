@@ -38,31 +38,25 @@ namespace item
         const weapon::WeaponTypeWrapper & WEAPON_TYPE_WRAPPER, const misc_type::Enum MISC_TYPE)
         : weaponInfo_(WEAPON_TYPE_WRAPPER)
         , armorInfo_()
-        , armorBaseTypeRestriction_(armor::base_type::Count)
         , miscType_(MISC_TYPE)
     {}
 
     ItemProfileThin::ItemProfileThin(
-        const armor::ArmorTypeWrapper & ARMOR_TYPE_WRAPPER,
-        const armor::base_type::Enum BASE_TYPE_RESTRICTION,
-        const misc_type::Enum MISC_TYPE)
+        const armor::ArmorTypeWrapper & ARMOR_TYPE_WRAPPER, const misc_type::Enum MISC_TYPE)
         : weaponInfo_()
         , armorInfo_(ARMOR_TYPE_WRAPPER)
-        , armorBaseTypeRestriction_(BASE_TYPE_RESTRICTION)
         , miscType_(MISC_TYPE)
     {}
 
     ItemProfileThin::ItemProfileThin(const misc_type::Enum MISC_TYPE)
         : weaponInfo_()
         , armorInfo_()
-        , armorBaseTypeRestriction_(armor::base_type::Count)
         , miscType_(MISC_TYPE)
     {}
 
     ItemProfileThin::ItemProfileThin()
         : weaponInfo_()
         , armorInfo_()
-        , armorBaseTypeRestriction_(armor::base_type::Count)
         , miscType_(misc_type::NotMisc)
     {}
 
@@ -82,12 +76,6 @@ namespace item
 
         ss << ", misc_type="
            << ((misc_type::Count == miscType_) ? "Count" : misc_type::ToString(miscType_));
-
-        if (armor::base_type::Count != armorBaseTypeRestriction_)
-        {
-            ss << ", armor_base_type_restriction="
-               << armor::base_type::ToString(armorBaseTypeRestriction_);
-        }
 
         return ss.str();
     }
@@ -148,91 +136,7 @@ namespace item
                 << ((MISC_TYPE == misc_type::Count) ? "Count" : misc_type::ToString(MISC_TYPE))
                 << ") but the armor_type given IS a SPECIFIC type.");
 
-        return ItemProfileThin(
-            armor::ArmorTypeWrapper(ARMOR_TYPE, BASE_TYPE), armor::base_type::Count, MISC_TYPE);
-    }
-
-    const ItemProfileThin ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(
-        const armor_type::Enum ARMOR_TYPE,
-        const armor::base_type::Enum BASE_TYPE_RESTRICTION,
-        const misc_type::Enum MISC_TYPE)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            ((ARMOR_TYPE != armor_type::Shield) && (ARMOR_TYPE != armor_type::Covering)
-             && (ARMOR_TYPE != armor_type::Helm)),
-            "item::ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction(armor_type="
-                << armor_type::ToString(ARMOR_TYPE) << ", base_type_restriction="
-                << ((BASE_TYPE_RESTRICTION == armor::base_type::Count)
-                        ? "Count"
-                        : armor::base_type::ToString(BASE_TYPE_RESTRICTION))
-                << ", misc_type="
-                << ((MISC_TYPE == misc_type::Count) ? "Count" : misc_type::ToString(MISC_TYPE))
-                << ") but the armor_type given IS a SPECIFIC type.");
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            (BASE_TYPE_RESTRICTION != armor::base_type::Count),
-            "item::ItemProfileThin::MakeArmorNonSpecificWithBaseTypeRestriction("
-            "armor_type="
-                << armor_type::ToString(ARMOR_TYPE)
-                << ", base_type_restriction=Count) but the base_type_restriction given was Count "
-                   "(invalid).");
-
-        return ItemProfileThin(
-            armor::ArmorTypeWrapper(ARMOR_TYPE, BASE_TYPE_RESTRICTION),
-            BASE_TYPE_RESTRICTION,
-            MISC_TYPE);
-    }
-
-    const ItemProfileThin ItemProfileThin::MakeArmorNonSpecificInvalidWithoutBaseType(
-        const armor_type::Enum ARMOR_TYPE,
-        const armor::base_type::Enum BASE_TYPE_RESTRICTION,
-        const misc_type::Enum MISC_TYPE)
-    {
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            ((ARMOR_TYPE != armor_type::Shield) && (ARMOR_TYPE != armor_type::Covering)
-             && (ARMOR_TYPE != armor_type::Helm)),
-            "item::ItemProfileThin::MakeArmorNonSpecificInvalidWithoutBaseType(armor_type="
-                << armor_type::ToString(ARMOR_TYPE) << ", base_type_restriction="
-                << ((BASE_TYPE_RESTRICTION == armor::base_type::Count)
-                        ? "Count"
-                        : armor::base_type::ToString(BASE_TYPE_RESTRICTION))
-                << ", misc_type="
-                << ((MISC_TYPE == misc_type::Count) ? "Count" : misc_type::ToString(MISC_TYPE))
-                << ") but the armor_type given IS a SPECIFIC type.");
-
-        return ItemProfileThin(
-            armor::ArmorTypeWrapper(ARMOR_TYPE, armor::base_type::Count, true),
-            BASE_TYPE_RESTRICTION,
-            MISC_TYPE);
-    }
-
-    const ItemProfileThin
-        ItemProfileThin::MakeArmorNonSpecificFromThinProfileThatWasMissingABaseType(
-            const ItemProfileThin & THIN_PROFILE, const armor::base_type::Enum BASE_TYPE)
-    {
-        auto const ARMOR_TYPE{ THIN_PROFILE.ArmorInfo().Type() };
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            ((ARMOR_TYPE != armor_type::Shield) && (ARMOR_TYPE != armor_type::Covering)
-             && (ARMOR_TYPE != armor_type::Helm)),
-            "item::ItemProfileThin::MakeArmorNonSpecificFromThinProfileThatWasMissingABaseType("
-            "armor_type="
-                << armor_type::ToString(ARMOR_TYPE) << ", base_type="
-                << ((BASE_TYPE == armor::base_type::Count) ? "Count"
-                                                           : armor::base_type::ToString(BASE_TYPE))
-                << ") but the armor_type given IS a SPECIFIC type.");
-
-        M_ASSERT_OR_LOGANDTHROW_SS(
-            ((BASE_TYPE != armor::base_type::Count) && (ARMOR_TYPE != armor_type::Helm)),
-            "item::ItemProfileThin::MakeArmorNonSpecificFromThinProfileThatWasMissingABaseType("
-            "armor_type="
-                << armor_type::ToString(ARMOR_TYPE)
-                << ", base_type=Count) but the base_type given was Count (invalid).");
-
-        return ItemProfileThin(
-            armor::ArmorTypeWrapper(ARMOR_TYPE, BASE_TYPE),
-            THIN_PROFILE.ArmorBaseTypeRestriction(),
-            THIN_PROFILE.MiscType());
+        return ItemProfileThin(armor::ArmorTypeWrapper(ARMOR_TYPE, BASE_TYPE), MISC_TYPE);
     }
 
     const ItemProfileThin ItemProfileThin::MakeWeapon(

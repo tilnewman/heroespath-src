@@ -72,7 +72,6 @@ namespace item
                 MakeNonBodyPartName(PROFILE),
                 MakeNonBodyPartDescription(PROFILE, weaponDetails.description),
                 PROFILE.Category(),
-                PROFILE.WeaponType(),
                 PROFILE.MaterialPrimary(),
                 PROFILE.MaterialSecondary(),
                 CalculatePrice(PROFILE, weaponDetails.price),
@@ -139,8 +138,6 @@ namespace item
                 CREATURE_PTR->RaceName() + " " + WEAPON_TYPE_WRAPPER.ReadableName(),
                 WEAPON_DETAILS.description + " " + creature::race::Name(CREATURE_PTR->Race()),
                 ItemProfile::CategoryWeaponBodypart(BODY_PART),
-                static_cast<weapon_type::Enum>(
-                    weapon_type::Melee | body_part::WeaponType(BODY_PART)),
                 MATERIALS.first,
                 MATERIALS.second,
                 WEAPON_DETAILS.price,

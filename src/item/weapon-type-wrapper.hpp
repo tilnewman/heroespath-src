@@ -47,14 +47,10 @@ namespace item
     namespace weapon
     {
 
-        // Responsible generating all type and name information about a SINGLE weapon item.  Note
-        // that the weapon_type::Enum flag member "type_" is not fully formed, meaning that only one
-        // bit is ever set.  This type_ member cannot be used to construct an item.  The Item class
-        // keeps it's own weapon_type::Enum flag member that is fully composed.  This type_ flag is
-        // only to help identify a SINGLE weapon type. Instances of this class can be constructed
-        // from either the required enum and size, or from the unique name.  Unfortunately these
-        // classes are serialized so they require a default constructor that leaves
-        // the object in an invalid state.
+        // Responsible generating all type and name information about a SINGLE weapon item.
+        // Instances of this class can be constructed from either the required enum and size, or
+        // from the unique name.  Unfortunately these classes are serialized so they require a
+        // default constructor that leaves the object in an invalid state.
         class WeaponTypeWrapper
         {
         public:
@@ -88,20 +84,25 @@ namespace item
 
             bool IsTypeValid() const { return (type_ != weapon_type::NotAWeapon); }
 
-            weapon_type::Enum SingleType() const { return type_; }
+            weapon_type::Enum Type() const { return type_; }
 
             const ElementEnumVec_t ElementTypes() const { return elementTypes_; }
 
             bool IsStaff() const
             {
-                return (weapon_type::Staff == type_) && (variant_.which() == QUARTERSTAFF_INDEX)
+                return (weapon_type::Staff & type_) && (variant_.which() == QUARTERSTAFF_INDEX)
                     && (boost::get<bool>(variant_) == false);
             }
 
             bool IsQuarterstaff() const
             {
-                return (weapon_type::Staff == type_) && (variant_.which() == QUARTERSTAFF_INDEX)
+                return (weapon_type::Staff & type_) && (variant_.which() == QUARTERSTAFF_INDEX)
                     && boost::get<bool>(variant_);
+            }
+
+            bool IsBodyPart() const
+            {
+                return (IsBite() || IsClaws() || IsFists() || IsTendrils() || IsBreath());
             }
 
             bool IsBite() const
@@ -141,45 +142,45 @@ namespace item
 
             bool IsKnife() const
             {
-                return (weapon_type::Knife == type_) && (Size() != sfml_util::Size::Count)
+                return (weapon_type::Knife & type_) && (Size() != sfml_util::Size::Count)
                     && (isDagger_ == false);
             }
 
             bool IsDagger() const
             {
-                return (weapon_type::Knife == type_) && (Size() != sfml_util::Size::Count)
+                return (weapon_type::Knife & type_) && (Size() != sfml_util::Size::Count)
                     && isDagger_;
             }
 
             bool IsSword() const
             {
-                return (weapon_type::Sword == type_) && (SwordType() != sword_type::Count);
+                return (weapon_type::Sword & type_) && (SwordType() != sword_type::Count);
             }
 
             bool IsAxe() const
             {
-                return (weapon_type::Axe == type_) && (AxeType() != axe_type::Count);
+                return (weapon_type::Axe & type_) && (AxeType() != axe_type::Count);
             }
 
             bool IsClub() const
             {
-                return (weapon_type::Club == type_) && (ClubType() != club_type::Count);
+                return (weapon_type::Club & type_) && (ClubType() != club_type::Count);
             }
 
             bool IsWhip() const
             {
-                return (weapon_type::Whip == type_) && (WhipType() != whip_type::Count);
+                return (weapon_type::Whip & type_) && (WhipType() != whip_type::Count);
             }
 
             bool IsProjectile() const
             {
-                return (weapon_type::Projectile == type_)
+                return (weapon_type::Projectile & type_)
                     && (ProjectileType() != projectile_type::Count);
             }
 
             bool IsBladedStaff() const
             {
-                return (weapon_type::BladedStaff == type_)
+                return (weapon_type::BladedStaff & type_)
                     && (BladedStaffType() != bladedstaff_type::Count);
             }
 
@@ -258,7 +259,7 @@ namespace item
             typename T::Enum
                 GetSpecificTypeIfValid(const weapon_type::Enum WEAPON_TYPE, const int INDEX) const
             {
-                if ((WEAPON_TYPE == type_) && (variant_.which() == INDEX))
+                if ((WEAPON_TYPE & type_) && (variant_.which() == INDEX))
                 {
                     return boost::get<typename T::Enum>(variant_);
                 }
@@ -329,12 +330,10 @@ namespace item
             // i.e. "Knightly Sword" when systemName_="KnightlySword"
             std::string readableName_;
 
-            // if valid, then only one bit will be set, see Item::weaponType_ and
-            // ItemProfile::weaponType_ for the weapon_type::Enum that is fully populated
             item::weapon_type::Enum type_;
 
-            // since both knives and daggers will have type_=weapon_type::Knife this is how to tell
-            // the difference
+            // since both knives and daggers will have type_ & weapon_type::Knife this is how to
+            // tell the difference
             bool isDagger_;
 
             boost::variant<

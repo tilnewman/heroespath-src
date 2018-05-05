@@ -119,6 +119,7 @@ namespace item
         protected:
             bool isWeaponReport_;
             mutable misc::VectorMap<std::string, Report> reportMap_;
+            mutable misc::VectorMap<std::string, std::vector<std::size_t>> specificScoreMap_;
         };
 
         class StandardSetReport : public Report

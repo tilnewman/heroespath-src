@@ -57,9 +57,7 @@ namespace item
                 const bool WILL_FORCE_PLAIN_BASE_TYPE_IF_REQUIRED = false);
 
             explicit ArmorTypeWrapper(
-                const armor_type::Enum,
-                const base_type::Enum BASE_TYPE = base_type::Count,
-                const bool WILL_MAKE_INVALID_IGNORING_BASE_TYPE = false);
+                const armor_type::Enum, const base_type::Enum BASE_TYPE = base_type::Count);
 
             explicit ArmorTypeWrapper(const body_part::Enum);
 
@@ -78,11 +76,6 @@ namespace item
             const std::string ToString() const;
 
             bool IsTypeValid() const { return (armor_type::NotArmor != type_); }
-
-            bool WasMadeInvalidWithoutBaseType() const
-            {
-                return intentionallyMadeInvalidWithoutBaseType_;
-            }
 
             const ElementEnumVec_t
                 ElementTypesWithGivenBaseType(const base_type::Enum BASE_TYPE) const
@@ -271,8 +264,6 @@ namespace item
             // also a set_type or named_type.
             ElementEnumVec_t elementTypes_;
 
-            bool intentionallyMadeInvalidWithoutBaseType_;
-
         private:
             friend class boost::serialization::access;
             template <typename Archive>
@@ -286,7 +277,6 @@ namespace item
                 ar & base_;
                 ar & variant_;
                 ar & elementTypes_;
-                ar & intentionallyMadeInvalidWithoutBaseType_;
             }
         };
 
@@ -301,8 +291,7 @@ namespace item
                        L.readableName_,
                        L.type_,
                        L.base_,
-                       L.variant_,
-                       L.intentionallyMadeInvalidWithoutBaseType_)
+                       L.variant_)
                 == std::tie(
                        R.generalName_,
                        R.specificName_,
@@ -310,8 +299,7 @@ namespace item
                        R.readableName_,
                        R.type_,
                        R.base_,
-                       R.variant_,
-                       R.intentionallyMadeInvalidWithoutBaseType_);
+                       R.variant_);
         }
 
         inline bool operator!=(const ArmorTypeWrapper & L, const ArmorTypeWrapper & R)
@@ -330,8 +318,7 @@ namespace item
                        L.readableName_,
                        L.type_,
                        L.base_,
-                       L.variant_,
-                       L.intentionallyMadeInvalidWithoutBaseType_)
+                       L.variant_)
                 < std::tie(
                        R.generalName_,
                        R.specificName_,
@@ -339,8 +326,7 @@ namespace item
                        R.readableName_,
                        R.type_,
                        R.base_,
-                       R.variant_,
-                       R.intentionallyMadeInvalidWithoutBaseType_);
+                       R.variant_);
         }
 
     } // namespace armor

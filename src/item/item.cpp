@@ -50,7 +50,6 @@ namespace item
         const std::string & NAME,
         const std::string & DESC,
         const category::Enum CATEGORY,
-        const weapon_type::Enum WEAPON_TYPE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
         const Coin_t & PRICE,
@@ -76,7 +75,6 @@ namespace item
               ((TYPE_WRAPPER.roleRestriction != creature::role::Count)
                    ? TYPE_WRAPPER.roleRestriction
                    : EXCLUSIVE_ROLE_BASED_ON_ITEM_TYPE))
-        , weaponType_(WEAPON_TYPE)
         , category_(CATEGORY)
         , miscType_(TYPE_WRAPPER.misc)
         , materialPri_(MATERIAL_PRIMARY)
@@ -95,7 +93,7 @@ namespace item
               MATERIAL_SECONDARY,
 
               // same as IsWeapon()
-              ((weapon_type::NotAWeapon != weaponType_) && WEAPON_INFO.IsTypeValid()),
+              (WEAPON_INFO.IsTypeValid()),
 
               ARMOR_INFO.IsTypeValid()))
         , imageFilename_("")
@@ -163,11 +161,6 @@ namespace item
         if (armor::ArmorTypeWrapper() != armorInfo_)
         {
             ss << ", armor_info=" << armorInfo_.ToString();
-        }
-
-        if (weapon_type::NotAWeapon != weaponType_)
-        {
-            ss << ", weapon_type=" << weapon_type::ToString(weaponType_, true);
         }
 
         if (weapon::WeaponTypeWrapper() != weaponInfo_)
@@ -315,7 +308,6 @@ namespace item
                 L.damageMax_,
                 L.armorRating_,
                 L.exclusiveToRole_,
-                L.weaponType_,
                 L.category_,
                 L.miscType_,
                 L.materialPri_,
@@ -338,7 +330,6 @@ namespace item
                   R.damageMax_,
                   R.armorRating_,
                   R.exclusiveToRole_,
-                  R.weaponType_,
                   R.category_,
                   R.miscType_,
                   R.materialPri_,
@@ -370,7 +361,6 @@ namespace item
                 L.damageMax_,
                 L.armorRating_,
                 L.exclusiveToRole_,
-                L.weaponType_,
                 L.category_,
                 L.miscType_,
                 L.materialPri_,
@@ -393,7 +383,6 @@ namespace item
                    R.damageMax_,
                    R.armorRating_,
                    R.exclusiveToRole_,
-                   R.weaponType_,
                    R.category_,
                    R.miscType_,
                    R.materialPri_,

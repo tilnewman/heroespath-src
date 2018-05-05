@@ -43,9 +43,6 @@ namespace heroespath
 namespace item
 {
 
-    using BaseMaterialVecPair_t = std::pair<armor::base_type::Enum, MaterialVecPair_t>;
-    using BaseMaterialVecPairVec_t = std::vector<BaseMaterialVecPair_t>;
-
     // Responsible for creating and storing an ItemProfile for each item in the game that can be
     // found after comabt in the random assortment of things left behind by a group of enemy
     // creatures.
@@ -85,8 +82,7 @@ namespace item
         const ElementEnumVec_t ElementTypesIncludingNone(
             const ItemProfileThin & THIN_PROFILE,
             const named_type::Enum NAMED_TYPE,
-            const set_type::Enum SET_TYPE,
-            const armor::base_type::Enum MISSING_BASE_TYPE = armor::base_type::Count);
+            const set_type::Enum SET_TYPE);
 
         void MakeLoopOverMaterialsForThinProfile(
             const ItemProfileThin & THIN_PROFILE,
@@ -98,8 +94,7 @@ namespace item
             const named_type::Enum NAMED_TYPE,
             const set_type::Enum SET_TYPE,
             const material::Enum MATERIAL_PRIMARY,
-            const material::Enum MATERIAL_SECONDARY,
-            const armor::base_type::Enum MISSING_BASE_TYPE);
+            const material::Enum MATERIAL_SECONDARY);
 
         void MakeFromThinProfile(
             const ItemProfileThin & THIN_PROFILE,
@@ -107,13 +102,18 @@ namespace item
             const set_type::Enum SET_TYPE,
             const element_type::Enum ELEMENT_TYPE,
             const material::Enum MATERIAL_PRIMARY,
-            const material::Enum MATERIAL_SECONDARY,
-            const armor::base_type::Enum MISSING_BASE_TYPE);
+            const material::Enum MATERIAL_SECONDARY);
 
-        const BaseMaterialVecPairVec_t GetMaterialsFromThinProfile(
+        const MaterialVecPair_t GetMaterialsFromThinProfile(
             const ItemProfileThin & THIN_PROFILE,
             const named_type::Enum NAMED_TYPE,
             const set_type::Enum SET_TYPE);
+
+        const MaterialVecPair_t
+            GetMaterialsFromThinProfileForArmor(const ItemProfileThin & THIN_PROFILE);
+
+        const MaterialVecPair_t
+            GetMaterialsFromThinProfileForWeapons(const ItemProfileThin & THIN_PROFILE);
 
         void MakeLoopOverMaterialsForMiscType(
             const misc_type::Enum,
@@ -152,9 +152,7 @@ namespace item
         static const ItemProfileThinVec_t ThinProfilesWeaponsProjectiles();
         static const ItemProfileThinVec_t ThinProfilesWeaponsAll();
 
-        static const ItemProfileThinVec_t ThinProfilesArmor(
-            const bool WILL_INCLUDE_COVERINGS,
-            const armor::base_type::Enum BASE_TYPE_RESTRICTION = armor::base_type::Count);
+        static const ItemProfileThinVec_t ThinProfilesArmor();
 
         static const ItemProfileThinVec_t ThinProfiles(const named_type::Enum);
         static const ItemProfileThinVec_t ThinProfiles(const set_type::Enum);

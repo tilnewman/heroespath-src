@@ -29,6 +29,8 @@
 //
 #include "material-collections.hpp"
 
+#include "log/log-macros.hpp"
+
 #include <algorithm>
 
 namespace heroespath
@@ -56,7 +58,10 @@ namespace item
         , wandAndStaffMiscTypeEnumsPair_()
         , coreMetalAndMiscWithCoreSecondaryEnumsPair_()
         , namedDaggerEnumsPair_()
-    {}
+    {
+        // TODO just use the initializer list...
+        Setup();
+    }
 
     void MaterialCollections::Setup()
     {
@@ -79,6 +84,109 @@ namespace item
         wandAndStaffMiscTypeEnumsPair_ = MakeForWandAndStaffMiscTypes();
         coreMetalAndMiscWithCoreSecondaryEnumsPair_ = MakeCoreMetalAndMiscWithCoreSecondary();
         namedDaggerEnumsPair_ = MakeNamedDaggerMaterialsPair();
+    }
+
+    bool MaterialCollections::IsMaterialCombinationValid(
+        const ItemProfileThin & THIN_PROFILE,
+        const material::Enum PRIMARY,
+        const material::Enum SECONDARY) const
+    {
+        if (material::IsSolid(PRIMARY) == false)
+        {
+            M_HP_LOG_WRN(
+                "item::MaterialCollections::IsMaterialCombinationValid("
+                << material::ToString(PRIMARY) << ", " << material::ToString(SECONDARY)
+                << ") found non-solid primary.");
+
+            return false;
+        }
+        else if (PRIMARY == material::Pearl)
+        {
+            M_HP_LOG_WRN(
+                "item::MaterialCollections::IsMaterialCombinationValid("
+                << material::ToString(PRIMARY) << ", " << material::ToString(SECONDARY)
+                << ") found pearl primary.  Note the secondary and make sure we aren't doing "
+                   "anything stupid...");
+        }
+        else if (PRIMARY == material::Glass)
+        {
+            M_HP_LOG_WRN(
+                "item::MaterialCollections::IsMaterialCombinationValid("
+                << material::ToString(PRIMARY) << ", " << material::ToString(SECONDARY)
+                << ") found glass primary.  Note the secondary and make sure we aren't doing "
+                   "anything stupid...");
+        }
+
+        auto isSecondaryAnyOf{ [SECONDARY](const MaterialVec_t & MATERIALS) {
+            return (
+                std::find(std::begin(MATERIALS), std::end(MATERIALS), SECONDARY)
+                != std::end(MATERIALS));
+        } };
+
+        if (material::IsMetal(PRIMARY))
+        {
+            if (PRIMARY == material::Platinum)
+            {
+                if (isSecondaryAnyOf({ material::Silver,
+                                       material::Steel,
+                                       material::Iron,
+                                       material::Bronze,
+                                       material::Tin,
+                                       material::Obsidian,
+                                       material::Stone,
+                                       material::Wood }))
+                {
+                    return false;
+                }
+            }
+            else if (PRIMARY == material::Gold)
+            {
+                if (isSecondaryAnyOf({ material::Steel,
+                                       material::Iron,
+                                       material::Bronze,
+                                       material::Tin,
+                                       material::Stone,
+                                       material::Wood }))
+                {
+                    return false;
+                }
+            }
+            else if (PRIMARY == material::Silver)
+            {
+                if (isSecondaryAnyOf({ material::Platinum,
+                                       material::Steel,
+                                       material::Iron,
+                                       material::Bronze,
+                                       material::Tin,
+                                       material::Obsidian,
+                                       material::Stone,
+                                       material::Wood }))
+                {
+                    return false;
+                }
+            }
+            else if (PRIMARY == material::Steel)
+            {
+                if (isSecondaryAnyOf({ material::Platinum,
+                                       material::Silver,
+                                       material::Steel,
+                                       material::Iron,
+                                       material::Bronze,
+                                       material::Tin,
+                                       material::Obsidian,
+                                       material::Stone,
+                                       material::Wood }))
+                {
+                    return false;
+                }
+            }
+        }
+
+        if (THIN_PROFILE.IsWeapon())
+        {
+        }
+
+        return true;
     }
 
     const MaterialVec_t MaterialCollections::MakeCoreMetal(const bool WILL_INCLUDE_NOTHING)
@@ -176,26 +284,12 @@ namespace item
     const MaterialVecPair_t MaterialCollections::MakeVectorPairSortedAndUnique(
         const MaterialVec_t & VECTOR1, const MaterialVec_t & VECTOR2)
     {
-        MaterialVec_t secondaryMaterials;
-
-        if (VECTOR1.empty() == false)
-        {
-            for (auto const MATERIAL : VECTOR2)
-            {
-                if (std::find(std::begin(VECTOR1), std::end(VECTOR1), MATERIAL)
-                    == std::end(VECTOR1))
-                {
-                    secondaryMaterials.emplace_back(MATERIAL);
-                }
-            }
-        }
-
         return std::make_pair(
-            MakeVectorSortedAndUnique(VECTOR1), MakeVectorSortedAndUnique(secondaryMaterials));
+            MakeVectorSortedAndUnique(VECTOR1), MakeVectorSortedAndUnique(VECTOR2));
     }
 
     const MaterialVecPair_t MaterialCollections::RemoveLameMaterialsForSpecialItems(
-        const MaterialVecPair_t & ORIG_MATERIALS_PAIR)
+        const MaterialVecPair_t & ORIG_MATERIALS_PAIR) const
     {
         MaterialVecPair_t materialsPair{ ORIG_MATERIALS_PAIR };
 

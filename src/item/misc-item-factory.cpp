@@ -56,7 +56,6 @@ namespace item
             MakeNonBodyPartName(PROFILE),
             MakeNonBodyPartDescription(PROFILE, PROFILE.ReadableName()),
             PROFILE.Category(),
-            PROFILE.WeaponType(),
             PROFILE.MaterialPrimary(),
             PROFILE.MaterialSecondary(),
             // zero is okay in both places because there is special misc_type logic inside

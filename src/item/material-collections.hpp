@@ -25,8 +25,9 @@
 #ifndef HEROESPATH_ITEM_MATERIAL_COLLECTIONS_HPP_INCLUDED
 #define HEROESPATH_ITEM_MATERIAL_COLLECTIONS_HPP_INCLUDED
 //
-// material-colections.hpp
+// material-collections.hpp
 //
+#include "item/item-profile-thin.hpp"
 #include "item/item-type-enum.hpp"
 
 #include <vector>
@@ -44,6 +45,17 @@ namespace item
         MaterialCollections();
 
         void Setup();
+
+        const MaterialVecPair_t VectorPairByMiscType(const misc_type::Enum MISC_TYPE) const;
+        const MaterialVecPair_t VectorPairByUniqueType(const unique_type::Enum UNIQUE_TyPE) const;
+        const MaterialVecPair_t VectorPairByNamedType(const named_type::Enum NAMED_TYPE) const;
+
+        const MaterialVecPair_t RemoveLameMaterialsForSpecialItems(const MaterialVecPair_t &) const;
+
+        bool IsMaterialCombinationValid(
+            const ItemProfileThin & THIN_PROFILE,
+            const material::Enum PRIMARY,
+            const material::Enum SECONDARY) const;
 
         const MaterialVec_t CoreMetal(const bool WILL_INCLUDE_NOTHING = false) const
         {
@@ -113,10 +125,6 @@ namespace item
             return coreMetalAndMiscWithCoreSecondaryEnumsPair_;
         }
 
-        const MaterialVecPair_t VectorPairByMiscType(const misc_type::Enum MISC_TYPE) const;
-        const MaterialVecPair_t VectorPairByUniqueType(const unique_type::Enum UNIQUE_TyPE) const;
-        const MaterialVecPair_t VectorPairByNamedType(const named_type::Enum NAMED_TYPE) const;
-
         static const MaterialVec_t MakeVectorSortedAndUnique(
             const MaterialVec_t & VECTOR1,
             const MaterialVec_t & VECTOR2 = {},
@@ -125,10 +133,6 @@ namespace item
         static const MaterialVecPair_t MakeVectorPairSortedAndUnique(
             const MaterialVec_t & VECTOR1, const MaterialVec_t & VECTOR2);
 
-        static const MaterialVecPair_t
-            RemoveLameMaterialsForSpecialItems(const MaterialVecPair_t &);
-
-    private:
         const MaterialVec_t MakeCoreMetal(const bool WILL_INCLUDE_NOTHING = false);
         const MaterialVec_t MakeCoreJewel(const bool WILL_INCLUDE_NOTHING = false);
         const MaterialVec_t MakeCoreMisc(const bool WILL_INCLUDE_NOTHING = false);
@@ -185,7 +189,7 @@ namespace item
         {
             return MakeVectorPairSortedAndUnique(
                 MakeVectorSortedAndUnique(
-                    CoreMetal(), { material::Bone, material::Stone, material::Obsidian }),
+                    CoreMetal(), { material::Bone, material::Steel, material::Obsidian }),
                 {});
         }
 

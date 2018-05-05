@@ -65,7 +65,6 @@ namespace item
             const std::string & NAME = "no_name_error",
             const std::string & DESC = "no-desc_error",
             const category::Enum CATEGORY = category::None,
-            const weapon_type::Enum WEAPON_TYPE = weapon_type::NotAWeapon,
             const material::Enum MATERIAL_PRIMARY = material::Nothing,
             const material::Enum MATERIAL_SECONDARY = material::Nothing,
             const Coin_t & PRICE = 0_coin,
@@ -99,7 +98,7 @@ namespace item
         category::Enum Category() const { return category_; }
         material::Enum MaterialPrimary() const { return materialPri_; }
         material::Enum MaterialSecondary() const { return materialSec_; }
-        weapon_type::Enum WeaponType() const { return weaponType_; }
+        weapon_type::Enum WeaponType() const { return weaponInfo_.Type(); }
         armor_type::Enum ArmorType() const { return armorInfo_.Type(); }
         misc_type::Enum MiscType() const { return miscType_; }
         unique_type::Enum UniqueType() const { return uniqueType_; }
@@ -120,7 +119,7 @@ namespace item
         }
         bool HasWeaponType(const weapon_type::Enum WEAPON_TYPE) const
         {
-            return ((weaponType_ & WEAPON_TYPE) > 0);
+            return ((weaponInfo_.Type() & WEAPON_TYPE) > 0);
         }
 
         bool IsQuestItem() const { return misc_type::IsQuestItem(miscType_); }
@@ -132,10 +131,7 @@ namespace item
         bool IsBodypart() const { return (category_ & category::BodyPart); }
         bool IsArmor() const { return (armorInfo_.IsTypeValid()); }
 
-        bool IsWeapon() const
-        {
-            return ((weapon_type::NotAWeapon != weaponType_) && weaponInfo_.IsTypeValid());
-        }
+        bool IsWeapon() const { return weaponInfo_.IsTypeValid(); }
 
         bool IsSet() const
         {
@@ -232,7 +228,6 @@ namespace item
         Health_t damageMax_;
         Armor_t armorRating_;
         creature::role::Enum exclusiveToRole_;
-        weapon_type::Enum weaponType_;
         category::Enum category_;
         misc_type::Enum miscType_;
         material::Enum materialPri_;
@@ -267,7 +262,6 @@ namespace item
             ar & damageMax_;
             ar & armorRating_;
             ar & exclusiveToRole_;
-            ar & weaponType_;
             ar & category_;
             ar & miscType_;
             ar & materialPri_;

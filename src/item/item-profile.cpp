@@ -49,7 +49,6 @@ namespace item
         , religiousRatio_(0.0f)
         , category_(category::None)
         , thinProfile_()
-        , weaponType_(weapon_type::NotAWeapon)
         , unique_(unique_type::NotUnique)
         , set_(set_type::NotASet)
         , named_(named_type::NotNamed)
@@ -117,11 +116,6 @@ namespace item
         if (category::None != category_)
         {
             ss << "category=" << category::ToString(category_, true);
-        }
-
-        if (weapon_type::NotAWeapon != weaponType_)
-        {
-            ss << ", weapon_type=" << weapon_type::ToString(weaponType_, true);
         }
 
         if (ss.str().empty() == false)
@@ -394,7 +388,6 @@ namespace item
 
     void ItemProfile::SetWeaponHelper(
         const ItemProfileThin & THIN_PROFILE,
-        const weapon_type::Enum WEAPON_TYPE_TO_APPEND,
         const Score_t BASE_SCORE,
         const material::Enum MATERIAL_PRIMARY,
         const material::Enum MATERIAL_SECONDARY,
@@ -411,8 +404,6 @@ namespace item
             = static_cast<category::Enum>(category_ | category::Equippable | DETAILS.handedness);
 
         thinProfile_ = THIN_PROFILE;
-
-        weaponType_ = static_cast<weapon_type::Enum>(weaponType_ | WEAPON_TYPE_TO_APPEND);
 
         if ((MISC_TYPE == misc_type::NotMisc) || (MISC_TYPE == misc_type::Count))
         {

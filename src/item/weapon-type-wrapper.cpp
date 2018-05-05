@@ -325,36 +325,40 @@ namespace item
                << ((IsClub()) ? club_type::ToString(ClubType()) : "") << ","
                << ((IsWhip()) ? whip_type::ToString(WhipType()) : "") << ","
                << ((IsProjectile()) ? projectile_type::ToString(ProjectileType()) : "") << ","
-               << ((IsBladedStaff()) ? bladedstaff_type::ToString(BladedStaffType()) : "")
-               << "), element_types={";
+               << ((IsBladedStaff()) ? bladedstaff_type::ToString(BladedStaffType()) : "");
 
-            if (elementTypes_.empty())
+            if ((elementTypes_.size() != 1) || (elementTypes_.at(0) != element_type::None))
             {
-                ss << "empty/invalid";
-            }
-            else
-            {
-                for (std::size_t i(0); i < elementTypes_.size(); ++i)
+                ss << ", element_types={";
+
+                if (elementTypes_.empty())
                 {
-                    if (i > 0)
+                    ss << "empty/invalid";
+                }
+                else
+                {
+                    for (std::size_t i(0); i < elementTypes_.size(); ++i)
                     {
-                        ss << ",";
-                    }
+                        if (i > 0)
+                        {
+                            ss << ",";
+                        }
 
-                    auto const ELEMENT_TYPE{ elementTypes_.at(i) };
+                        auto const ELEMENT_TYPE{ elementTypes_.at(i) };
 
-                    if (ELEMENT_TYPE == element_type::None)
-                    {
-                        ss << "(None)";
-                    }
-                    else
-                    {
-                        ss << element_type::ToString(ELEMENT_TYPE, true, "&");
+                        if (ELEMENT_TYPE == element_type::None)
+                        {
+                            ss << "(None)";
+                        }
+                        else
+                        {
+                            ss << element_type::ToString(ELEMENT_TYPE, true, "&");
+                        }
                     }
                 }
-            }
 
-            ss << "}";
+                ss << "}";
+            }
 
             return ss.str();
         }
@@ -482,6 +486,8 @@ namespace item
                     specificName_ = generalName_;
                     systemName_ = weapon_type::ToString(type_, false, false);
                     readableName_ = generalName_;
+
+                    type_ = static_cast<weapon_type::Enum>(type_ | weapon_type::Melee);
                     break;
                 }
 
@@ -503,6 +509,9 @@ namespace item
                         readableName_ = generalName_;
                         elementTypes_ = { element_type::Shadow, element_type::Honor };
                     }
+
+                    type_ = static_cast<weapon_type::Enum>(
+                        type_ | weapon_type::Staff | weapon_type::Melee);
 
                     break;
                 }
@@ -596,6 +605,10 @@ namespace item
                         }
                     }
 
+                    type_ = static_cast<weapon_type::Enum>(
+                        type_ | weapon_type::Melee | weapon_type::Sword | weapon_type::Bladed
+                        | weapon_type::Pointed);
+
                     break;
                 }
 
@@ -645,6 +658,9 @@ namespace item
                         }
                     }
 
+                    type_ = static_cast<weapon_type::Enum>(
+                        type_ | weapon_type::Bladed | weapon_type::Axe | weapon_type::Melee);
+
                     break;
                 }
 
@@ -675,6 +691,9 @@ namespace item
                             break;
                         }
                     }
+
+                    type_ = static_cast<weapon_type::Enum>(
+                        type_ | weapon_type::Melee | weapon_type::Whip);
 
                     break;
                 }
@@ -724,6 +743,9 @@ namespace item
                             break;
                         }
                     }
+
+                    type_ = static_cast<weapon_type::Enum>(
+                        type_ | weapon_type::Melee | weapon_type::Club);
 
                     break;
                 }
@@ -777,6 +799,29 @@ namespace item
                     specificName_ = projectile_type::Name(PROJECTILE_TYPE);
                     systemName_ = projectile_type::ToString(PROJECTILE_TYPE);
                     readableName_ = specificName_;
+
+                    auto const WEAPON_TYPE_EXTRAS{ [PROJECTILE_TYPE]() {
+                        if (PROJECTILE_TYPE == projectile_type::Blowpipe)
+                        {
+                            return weapon_type::Blowpipe;
+                        }
+                        else if (PROJECTILE_TYPE == projectile_type::Sling)
+                        {
+                            return weapon_type::Sling;
+                        }
+                        else if (PROJECTILE_TYPE == projectile_type::Crossbow)
+                        {
+                            return weapon_type::Crossbow;
+                        }
+                        else
+                        {
+                            return weapon_type::Bow;
+                        }
+                    }() };
+
+                    type_ = static_cast<weapon_type::Enum>(
+                        type_ | weapon_type::Projectile | WEAPON_TYPE_EXTRAS);
+
                     break;
                 }
 
@@ -820,6 +865,10 @@ namespace item
                         elementTypes_ = element_type::AllCombinations(
                             element_type::Fire | element_type::Frost | element_type::Shadow);
                     }
+
+                    type_ = static_cast<weapon_type::Enum>(
+                        type_ | weapon_type::Bladed | weapon_type::Knife | weapon_type::Melee
+                        | weapon_type::Pointed);
 
                     break;
                 }
@@ -875,6 +924,20 @@ namespace item
                         }
                     }
 
+                    auto const POINTED_TYPE{ (
+                        (BLADEDSTAFF_TYPE == bladedstaff_type::Scythe) ? weapon_type::NotAWeapon
+                                                                       : weapon_type::Pointed) };
+
+                    auto const SPEAR_TYPE{ (
+                        ((BLADEDSTAFF_TYPE == bladedstaff_type::Spear)
+                         || (BLADEDSTAFF_TYPE == bladedstaff_type::ShortSpear))
+                            ? weapon_type::Spear
+                            : weapon_type::NotAWeapon) };
+
+                    type_ = static_cast<weapon_type::Enum>(
+                        type_ | weapon_type::BladedStaff | weapon_type::Melee | POINTED_TYPE
+                        | SPEAR_TYPE);
+
                     break;
                 }
 
@@ -914,86 +977,81 @@ namespace item
                 return false;
             }
 
-            switch (type_)
+            if (weapon_type::NotAWeapon == type_)
             {
-                case weapon_type::Claws:
-                {
-                    return (variant_.which() == BODY_PART_INDEX)
-                        && (body_part::Claws == boost::get<body_part::Enum>(variant_));
-                }
-                case weapon_type::Bite:
-                {
-                    return (variant_.which() == BODY_PART_INDEX)
-                        && (body_part::Bite == boost::get<body_part::Enum>(variant_));
-                }
-                case weapon_type::Fists:
-                {
-                    return (variant_.which() == BODY_PART_INDEX)
-                        && (body_part::Fists == boost::get<body_part::Enum>(variant_));
-                }
-                case weapon_type::Tendrils:
-                {
-                    return (variant_.which() == BODY_PART_INDEX)
-                        && (body_part::Tendrils == boost::get<body_part::Enum>(variant_));
-                }
-                case weapon_type::Breath:
-                {
-                    return (variant_.which() == BODY_PART_INDEX)
-                        && (body_part::Breath == boost::get<body_part::Enum>(variant_));
-                }
-                case weapon_type::Sword:
-                {
-                    return (variant_.which() == SWORD_INDEX)
-                        && (sword_type::Count != boost::get<sword_type::Enum>(variant_));
-                }
-                case weapon_type::Axe:
-                {
-                    return (variant_.which() == AXE_INDEX)
-                        && (axe_type::Count != boost::get<axe_type::Enum>(variant_));
-                }
-                case weapon_type::Whip:
-                {
-                    return (variant_.which() == WHIP_INDEX)
-                        && (whip_type::Count != boost::get<whip_type::Enum>(variant_));
-                }
-                case weapon_type::Club:
-                {
-                    return (variant_.which() == CLUB_INDEX)
-                        && (club_type::Count != boost::get<club_type::Enum>(variant_));
-                }
-                case weapon_type::Projectile:
-                case weapon_type::Blowpipe:
-                case weapon_type::Bow:
-                case weapon_type::Crossbow:
-                case weapon_type::Sling:
-                {
-                    return (variant_.which() == PROJECTILE_INDEX)
-                        && (projectile_type::Count != boost::get<projectile_type::Enum>(variant_));
-                }
-                case weapon_type::BladedStaff:
-                case weapon_type::Spear:
-                {
-                    return (variant_.which() == BLADEDSTAFF_INDEX)
-                        && (bladedstaff_type::Count
-                            != boost::get<bladedstaff_type::Enum>(variant_));
-                }
-                case weapon_type::Knife:
-                {
-                    return (variant_.which() == SIZE_INDEX)
-                        && (sfml_util::Size::Count != boost::get<sfml_util::Size::Enum>(variant_));
-                }
-                case weapon_type::Staff:
-                {
-                    return (variant_.which() == QUARTERSTAFF_INDEX);
-                }
-                case weapon_type::NotAWeapon:
-                case weapon_type::Melee:
-                case weapon_type::Bladed:
-                case weapon_type::Pointed:
-                default:
-                {
-                    return false;
-                }
+                return false;
+            }
+
+            if (type_ & weapon_type::Claws)
+            {
+                return (variant_.which() == BODY_PART_INDEX)
+                    && (body_part::Claws == boost::get<body_part::Enum>(variant_));
+            }
+            else if (type_ & weapon_type::Bite)
+            {
+                return (variant_.which() == BODY_PART_INDEX)
+                    && (body_part::Bite == boost::get<body_part::Enum>(variant_));
+            }
+            else if (type_ & weapon_type::Fists)
+            {
+                return (variant_.which() == BODY_PART_INDEX)
+                    && (body_part::Fists == boost::get<body_part::Enum>(variant_));
+            }
+            else if (type_ & weapon_type::Tendrils)
+            {
+                return (variant_.which() == BODY_PART_INDEX)
+                    && (body_part::Tendrils == boost::get<body_part::Enum>(variant_));
+            }
+            else if (type_ & weapon_type::Breath)
+            {
+                return (variant_.which() == BODY_PART_INDEX)
+                    && (body_part::Breath == boost::get<body_part::Enum>(variant_));
+            }
+            else if (type_ & weapon_type::Sword)
+            {
+                return (variant_.which() == SWORD_INDEX)
+                    && (sword_type::Count != boost::get<sword_type::Enum>(variant_));
+            }
+            else if (type_ & weapon_type::Axe)
+            {
+                return (variant_.which() == AXE_INDEX)
+                    && (axe_type::Count != boost::get<axe_type::Enum>(variant_));
+            }
+            else if (type_ & weapon_type::Whip)
+            {
+                return (variant_.which() == WHIP_INDEX)
+                    && (whip_type::Count != boost::get<whip_type::Enum>(variant_));
+            }
+            else if (type_ & weapon_type::Club)
+            {
+                return (variant_.which() == CLUB_INDEX)
+                    && (club_type::Count != boost::get<club_type::Enum>(variant_));
+            }
+            else if (
+                (type_ & weapon_type::Projectile) || (type_ & weapon_type::Blowpipe)
+                || (type_ & weapon_type::Bow) || (type_ & weapon_type::Crossbow)
+                || (type_ & weapon_type::Sling))
+            {
+                return (variant_.which() == PROJECTILE_INDEX)
+                    && (projectile_type::Count != boost::get<projectile_type::Enum>(variant_));
+            }
+            else if ((type_ & weapon_type::BladedStaff) || (type_ & weapon_type::Spear))
+            {
+                return (variant_.which() == BLADEDSTAFF_INDEX)
+                    && (bladedstaff_type::Count != boost::get<bladedstaff_type::Enum>(variant_));
+            }
+            else if (type_ & weapon_type::Knife)
+            {
+                return (variant_.which() == SIZE_INDEX)
+                    && (sfml_util::Size::Count != boost::get<sfml_util::Size::Enum>(variant_));
+            }
+            else if (type_ & weapon_type::Staff)
+            {
+                return (variant_.which() == QUARTERSTAFF_INDEX);
+            }
+            else
+            {
+                return false;
             }
         }
 

@@ -5058,7 +5058,9 @@ namespace item
             || (NAMED_TYPE == named_type::Twilight) || (NAMED_TYPE == named_type::Dusk)
             || (NAMED_TYPE == named_type::Sorrow) || (NAMED_TYPE == named_type::Woe)
             || (NAMED_TYPE == named_type::Misery) || (NAMED_TYPE == named_type::Moon)
-            || (NAMED_TYPE == named_type::Dark) || (NAMED_TYPE == named_type::Betrayer))
+            || (NAMED_TYPE == named_type::Dark) || (NAMED_TYPE == named_type::Betrayer)
+            || (NAMED_TYPE == named_type::Burglar) || (NAMED_TYPE == named_type::Mountebank)
+            || (NAMED_TYPE == named_type::Charlatans))
         {
             elementTypes = { element_type::Shadow };
         }

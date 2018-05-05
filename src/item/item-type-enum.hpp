@@ -123,6 +123,39 @@ namespace item
             Diamond,
             Count
         };
+        /*
+        Glass,
+        Cloth,
+        SoftLeather,
+        HardLeather,
+        Claw,
+        Scales,
+        Horn,
+        Bone,
+        Tooth,
+        Wood,
+
+        Stone,
+        Obsidian,
+
+        Pearl,
+
+        Jade,
+        Amethyst,
+        Emerald,
+        Ruby,
+        Lazuli,
+        Sapphire,
+        Diamond,
+
+        Tin, // 18 /  7.3 -modulus of rigidity / density
+        Bronze, // 45 /  7.5
+        Iron, // 41 /  7.8
+        Steel, // 77 /  8.0
+        Silver, // 48 / 10.5
+        Gold, // 27 / 19.3
+        Platinum, // 82 / 21.5
+        */
 
         static const std::string ToString(const material::Enum);
         static const std::string Name(const material::Enum);
