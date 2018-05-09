@@ -60,7 +60,10 @@ namespace item
         const MaterialPairVec_t MakeForArmor(const ItemProfileThin & THIN_PROFILE) const;
 
         // note that this function often returns nothin
-        const MaterialPairVec_t MakeForNamedType(const named_type::Enum NAMED_TYPE) const;
+        void LimitForNamedType(
+            const ItemProfileThin & THIN_PROFILE,
+            const named_type::Enum NAMED_TYPE,
+            MaterialPairVec_t &) const;
 
         const MaterialPairVec_t MakeForSetType(
             const ItemProfileThin & THIN_PROFILE, const set_type::Enum SET_TYPE) const;
@@ -76,11 +79,18 @@ namespace item
             const MaterialVec_t & VECTOR1,
             const MaterialVec_t & VECTOR2 = {},
             const MaterialVec_t & VECTOR3 = {},
-            const MaterialVec_t & VECTOR4 = {}) const;
+            const MaterialVec_t & VECTOR4 = {},
+            const MaterialVec_t & VECTOR5 = {}) const;
+
+        const MaterialVec_t AppendCopy(
+            const MaterialVec_t & ORIG_MATERIALS, const material::Enum MATERIAL_TO_ADD) const
+        {
+            return Combine(ORIG_MATERIALS, { MATERIAL_TO_ADD });
+        }
 
         const MaterialVec_t AppendNothingCopy(const MaterialVec_t & ORIG_MATERIALS) const
         {
-            return Combine(ORIG_MATERIALS, { material::Nothing });
+            return AppendCopy(ORIG_MATERIALS, material::Nothing);
         }
 
         const MaterialPairVec_t MakePairs(const MaterialVec_t & PRIMARIES) const;
@@ -90,22 +100,8 @@ namespace item
 
         const MaterialPairVec_t MakePairs(const material::Enum MATERIAL) const;
 
-        const MaterialPairVec_t CleanupMaterialPairVectorAndEnsureNotEmpty(
-            const MaterialPairVec_t & MATERIAL_PAIRS,
-            const ItemProfileThin & THIN_PROFILE,
-            const bool IS_MAGICAL,
-            const std::string & GENERATING_FUNCTION_NAME) const
-        {
-            return CleanupMaterialPairVectorAndEnsureNotEmpty(
-                MATERIAL_PAIRS,
-                IS_MAGICAL,
-                GENERATING_FUNCTION_NAME + " for profile={" + THIN_PROFILE.ToString() + "}");
-        }
-
-        const MaterialPairVec_t CleanupMaterialPairVectorAndEnsureNotEmpty(
-            const MaterialPairVec_t & MATERIAL_PAIRS,
-            const bool IS_MAGICAL,
-            const std::string & ERROR_MSG) const;
+        void CleanupMaterialPairVectorAndEnsureNotEmpty(
+            MaterialPairVec_t & materialPairs, const bool WILL_REMOVE_LAME_MATERIALS) const;
 
     private:
         MaterialVec_t metal_;

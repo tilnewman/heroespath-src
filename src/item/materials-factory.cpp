@@ -91,57 +91,48 @@ namespace item
         const named_type::Enum NAMED_TYPE,
         const set_type::Enum SET_TYPE)
     {
-        if ((NAMED_TYPE != named_type::NotNamed) && (NAMED_TYPE != named_type::Count))
-        {
-            auto const NAMED_MATERIALS{ MakeForNamedType(NAMED_TYPE) };
-
-            // often there are no materials specific to a named_type, if so then fall through to the
-            // logic below that will make the materials based on misc/equipment type
-            if (NAMED_MATERIALS.empty() == false)
-            {
-                return CleanupMaterialPairVectorAndEnsureNotEmpty(
-                    NAMED_MATERIALS, THIN_PROFILE, true, "MakeForEquipment(named_type)");
-            }
-        }
+        MaterialPairVec_t materialPairs;
 
         if ((SET_TYPE != set_type::Count) && (SET_TYPE != set_type::NotASet))
         {
-            return CleanupMaterialPairVectorAndEnsureNotEmpty(
-                MakeForSetType(THIN_PROFILE, SET_TYPE),
-                THIN_PROFILE,
-                true,
-                "MakeForEquipment(set_type)");
+            materialPairs = MakeForSetType(THIN_PROFILE, SET_TYPE);
         }
-        else
+        else if (THIN_PROFILE.IsArmor())
         {
-            auto const IS_MAGICAL{ (NAMED_TYPE != named_type::NotNamed)
-                                   && (NAMED_TYPE != named_type::Count) };
-
-            if (THIN_PROFILE.IsArmor())
-            {
-                return CleanupMaterialPairVectorAndEnsureNotEmpty(
-                    MakeForArmor(THIN_PROFILE),
-                    THIN_PROFILE,
-                    IS_MAGICAL,
-                    "MakeForEquipment(armor)");
-            }
-            else if (THIN_PROFILE.IsWeapon())
-            {
-                return CleanupMaterialPairVectorAndEnsureNotEmpty(
-                    MakeForWeapon(THIN_PROFILE),
-                    THIN_PROFILE,
-                    IS_MAGICAL,
-                    "MakeForEquipment(weapon)");
-            }
-            else
-            {
-                return CleanupMaterialPairVectorAndEnsureNotEmpty(
-                    MakeForMiscType(THIN_PROFILE.MiscType(), IS_MAGICAL),
-                    THIN_PROFILE,
-                    IS_MAGICAL,
-                    "MakeForEquipment(misc_type)");
-            }
+            materialPairs = MakeForArmor(THIN_PROFILE);
         }
+        else if (THIN_PROFILE.IsWeapon())
+        {
+            materialPairs = MakeForWeapon(THIN_PROFILE);
+        }
+        else if (THIN_PROFILE.IsMisc())
+        {
+            materialPairs = MakeForMiscType(THIN_PROFILE.MiscType(), false);
+        }
+
+        if ((NAMED_TYPE != named_type::NotNamed) && (NAMED_TYPE != named_type::Count))
+        {
+            LimitForNamedType(THIN_PROFILE, NAMED_TYPE, materialPairs);
+        }
+
+        try
+        {
+            // even though set_types and named_types are magical, they are very specific about their
+            // materials so there is no need to pass true=WILL_REMOVE_LAME_MATERIALS
+            CleanupMaterialPairVectorAndEnsureNotEmpty(materialPairs, false);
+        }
+        catch (const std::exception & EXCEPTION)
+        {
+            std::ostringstream ss;
+            ss << EXCEPTION.what()
+               << " --this was thrown during item::MaterialFactory::MakeForEquipment(thin_profile={"
+               << THIN_PROFILE.ToString() << "}, named_type=" << named_type::ToString(NAMED_TYPE)
+               << ", set_type=" << set_type::ToString(SET_TYPE) << ")";
+
+            throw std::runtime_error(ss.str());
+        }
+
+        return materialPairs;
     }
 
     const MaterialPairVec_t MaterialFactory::MakeForMiscType(
@@ -337,8 +328,22 @@ namespace item
                 fancyJewel_);
         }
 
-        return CleanupMaterialPairVectorAndEnsureNotEmpty(
-            materialPairs, IS_MAGICAL, "MakeForMiscType()");
+        try
+        {
+            CleanupMaterialPairVectorAndEnsureNotEmpty(materialPairs, IS_MAGICAL);
+        }
+        catch (const std::exception & EXCEPTION)
+        {
+            std::ostringstream ss;
+            ss << EXCEPTION.what()
+               << " --this was thrown during item::MaterialFactory::MakeForMiscType(misc_type="
+               << misc_type::ToString(MISC_TYPE) << ", is_magical=" << std::boolalpha << IS_MAGICAL
+               << ")";
+
+            throw std::runtime_error(ss.str());
+        }
+
+        return materialPairs;
     }
 
     const MaterialPairVec_t
@@ -900,8 +905,21 @@ namespace item
             {}
         }
 
-        return CleanupMaterialPairVectorAndEnsureNotEmpty(
-            materialPairs, true, "MakeForUniqueType()");
+        try
+        {
+            CleanupMaterialPairVectorAndEnsureNotEmpty(materialPairs, true);
+        }
+        catch (const std::exception & EXCEPTION)
+        {
+            std::ostringstream ss;
+            ss << EXCEPTION.what()
+               << " --this was thrown during item::MaterialFactory::MakeForUnique(unique_type="
+               << unique_type::ToString(UNIQUE_TYPE) << ")";
+
+            throw std::runtime_error(ss.str());
+        }
+
+        return materialPairs;
     }
 
     const MaterialPairVec_t
@@ -987,8 +1005,8 @@ namespace item
                 else if (
                     THIN_PROFILE.WeaponInfo().ProjectileType() == weapon::projectile_type::Sling)
                 {
-                    // pri=small_handle, sec=decoration
-                    materialPairs = MakePairs(smallWeaponHandle_, AppendNothingCopy(fancy_));
+                    // pri=very_small_handle, sec=decoration
+                    materialPairs = MakePairs(verySmallWeaponHandle_, AppendNothingCopy(fancy_));
                 }
                 else if (THIN_PROFILE.WeaponInfo().IsBow())
                 {
@@ -1005,7 +1023,7 @@ namespace item
             }
             else
             {
-                // at this point the weapon should be either SWORD/AXE/Knife/Dagger
+                // at this point the weapon should be either SWORD/CLUB/AXE/Knife/Dagger
                 // pri=bladed=blade, non-bladed=CLUBs=end, sec=small_handle
                 materialPairs = MakePairs(coreBlade_, smallWeaponHandle_);
             }
@@ -1186,16 +1204,14 @@ namespace item
             }
             else if (THIN_PROFILE.ArmorInfo().HelmType() == armor::helm_type::Bascinet)
             {
-                primaries = { material::Tin,
-                              material::Bronze,
-                              material::Iron,
-                              material::Steel,
-                              material::Silver };
+                primaries = { material::Tin,   material::Bronze, material::Iron,
+                              material::Steel, material::Silver, material::Platinum };
             }
             else if (THIN_PROFILE.ArmorInfo().HelmType() == armor::helm_type::Great)
             {
-                primaries = { material::Tin,   material::Bronze, material::Iron,
-                              material::Steel, material::Silver, material::Gold };
+                primaries
+                    = { material::Tin,    material::Bronze, material::Iron,    material::Steel,
+                        material::Silver, material::Gold,   material::Platinum };
             }
 
             return MakePairs(primaries, AppendNothingCopy(fancyReinforcedArmor_));
@@ -1224,9 +1240,7 @@ namespace item
                 // pri=plate, sec=reinforced_custom + Nothing (leave out Diamond for set_types)
                 return MakePairs(
                     metal_,
-                    Combine(
-                        fancyJewelWithoutDiamond_,
-                        { material::Gold, material::Pearl, material::Nothing }));
+                    Combine(fancyJewelWithoutDiamond_, { material::Pearl, material::Nothing }));
             }
         }
         else if (THIN_PROFILE.ArmorInfo().IsPants() || THIN_PROFILE.ArmorInfo().IsShirt())
@@ -1252,8 +1266,11 @@ namespace item
             }
             else if (THIN_PROFILE.ArmorInfo().BaseType() == armor::base_type::Plate)
             {
-                primaryMaterials
-                    = { material::Tin, material::Bronze, material::Iron, material::Steel };
+                primaryMaterials = { material::Tin,
+                                     material::Bronze,
+                                     material::Iron,
+                                     material::Steel,
+                                     material::Platinum };
             }
 
             return MakePairs(primaryMaterials, fancyClasp_);
@@ -1304,20 +1321,539 @@ namespace item
         throw std::runtime_error(ss.str());
     }
 
-    const MaterialPairVec_t
-        MaterialFactory::MakeForNamedType(const named_type::Enum NAMED_TYPE) const
+    void MaterialFactory::LimitForNamedType(
+        const ItemProfileThin & THIN_PROFILE,
+        const named_type::Enum NAMED_TYPE,
+        MaterialPairVec_t & materialPairs) const
     {
-        // TODO restrict materials for named types to make them special
-        if ((NAMED_TYPE == named_type::Robbers) || (NAMED_TYPE == named_type::Thugs)
-            || (NAMED_TYPE == named_type::Knaves) || (NAMED_TYPE == named_type::Muggers)
-            || (NAMED_TYPE == named_type::Thief) || (NAMED_TYPE == named_type::Pirate))
+        enum class WhichMaterial
         {
-            return MakePairs(
-                Combine(metal_, { material::Bone, material::Steel, material::Obsidian }));
-        }
-        else
+            Pri,
+            Sec
+        };
+
+        enum class MaterialOp
         {
-            return {};
+            KeepOnly,
+            ExcludeAnyOf
+        };
+
+        auto processByMaterials{ [&](const MaterialOp OPERATION,
+                                     const WhichMaterial WHICH,
+                                     const MaterialVec_t & MATERIALS_TO_KEEP) {
+            materialPairs.erase(
+                std::remove_if(
+                    std::begin(materialPairs),
+                    std::end(materialPairs),
+                    [&](auto const MATERIAL_PAIR) {
+                        return (
+                            (std::find(
+                                 std::begin(MATERIALS_TO_KEEP),
+                                 std::end(MATERIALS_TO_KEEP),
+                                 ((WHICH == WhichMaterial::Pri) ? MATERIAL_PAIR.first
+                                                                : MATERIAL_PAIR.second))
+                             == std::end(MATERIALS_TO_KEEP))
+                            == (OPERATION == MaterialOp::KeepOnly));
+                    }),
+                std::end(materialPairs));
+        } };
+
+        auto keepOnlyPrimary{ [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
+            processByMaterials(MaterialOp::KeepOnly, WhichMaterial::Pri, MATERIALS_TO_KEEP);
+        } };
+
+        auto keepOnlySecondary{ [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
+            processByMaterials(MaterialOp::KeepOnly, WhichMaterial::Sec, MATERIALS_TO_KEEP);
+        } };
+
+        auto keepOnlyPrimaryAndSecondary{ [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
+            processByMaterials(MaterialOp::KeepOnly, WhichMaterial::Pri, MATERIALS_TO_KEEP);
+            processByMaterials(MaterialOp::KeepOnly, WhichMaterial::Sec, MATERIALS_TO_KEEP);
+        } };
+
+        auto keepOnlySecondaryIncludingNothing{ [&](const MaterialVec_t & MATERIALS_TO_KEEP) {
+            processByMaterials(
+                MaterialOp::KeepOnly, WhichMaterial::Sec, AppendNothingCopy(MATERIALS_TO_KEEP));
+        } };
+
+        auto excludeAnyOfPrimary{ [&](const MaterialVec_t & MATERIALS_TO_EXCLUDE) {
+            processByMaterials(MaterialOp::ExcludeAnyOf, WhichMaterial::Pri, MATERIALS_TO_EXCLUDE);
+        } };
+
+        auto excludeAnyOfSecondary{ [&](const MaterialVec_t & MATERIALS_TO_EXCLUDE) {
+            processByMaterials(MaterialOp::ExcludeAnyOf, WhichMaterial::Sec, MATERIALS_TO_EXCLUDE);
+        } };
+
+        auto excludeAnyOfPrimaryAndSecondary{ [&](const MaterialVec_t & MATERIALS_TO_EXCLUDE) {
+            processByMaterials(MaterialOp::ExcludeAnyOf, WhichMaterial::Pri, MATERIALS_TO_EXCLUDE);
+            processByMaterials(MaterialOp::ExcludeAnyOf, WhichMaterial::Sec, MATERIALS_TO_EXCLUDE);
+        } };
+
+        switch (NAMED_TYPE)
+        {
+            case named_type::Betrayer:
+            {
+                excludeAnyOfPrimaryAndSecondary({ material::Pearl,
+                                                  material::Diamond,
+                                                  material::Gold,
+                                                  material::Jade,
+                                                  material::Lazuli,
+                                                  material::Tin,
+                                                  material::Platinum,
+                                                  material::Silver });
+
+                break;
+            }
+            case named_type::Dancing:
+            {
+                keepOnlyPrimary(
+                    { material::Diamond, material::Iron, material::Steel, material::Platinum });
+
+                keepOnlySecondary({ material::Wood, material::Pearl });
+
+                break;
+            }
+            case named_type::Dark:
+            {
+                excludeAnyOfPrimaryAndSecondary({ material::Pearl,
+                                                  material::Diamond,
+                                                  material::Gold,
+                                                  material::Jade,
+                                                  material::Lazuli,
+                                                  material::Tin,
+                                                  material::Platinum,
+                                                  material::Silver });
+
+                break;
+            }
+            case named_type::Diabolic:
+            {
+                keepOnlyPrimaryAndSecondary({ material::Diamond,
+                                              material::Wood,
+                                              material::Steel,
+                                              material::Obsidian,
+                                              material::Bronze,
+                                              material::Bone });
+
+                break;
+            }
+            case named_type::Fiendish:
+            {
+                keepOnlyPrimary(
+                    { material::Steel, material::Obsidian, material::Platinum, material::Diamond });
+
+                keepOnlySecondaryIncludingNothing(
+                    { material::Wood, material::Bone, material::Iron });
+
+                break;
+            }
+            case named_type::Focus:
+            {
+                keepOnlyPrimary({ material::Wood, material::Horn, material::Silver });
+
+                keepOnlySecondary({ material::Diamond,
+                                    material::Silver,
+                                    material::Gold,
+                                    material::Obsidian,
+                                    material::Claw });
+
+                break;
+            }
+            case named_type::Icy:
+            case named_type::Winter:
+            case named_type::Frigid:
+            case named_type::Arctic:
+            case named_type::Chill:
+            case named_type::Frozen:
+            {
+                excludeAnyOfSecondary(fancyTribal_);
+
+                keepOnlyPrimaryAndSecondary({ material::Wood,
+                                              material::Fur,
+                                              material::Hide,
+                                              material::Sapphire,
+                                              material::Diamond,
+                                              material::Silver,
+                                              material::Iron,
+                                              material::Steel,
+                                              material::Platinum,
+                                              material::Lazuli,
+                                              material::Scales,
+                                              material::Nothing });
+
+                break;
+            }
+            case named_type::Army:
+            {
+                excludeAnyOfSecondary(fancyTribal_);
+
+                excludeAnyOfPrimaryAndSecondary(Combine(
+                    fancyJewel_,
+                    fancyOpaque_,
+                    fancyMetal_,
+                    { material::Platinum, material::Silk, material::Bronze }));
+
+                break;
+            }
+            case named_type::Gladiator:
+            {
+                excludeAnyOfPrimaryAndSecondary(Combine(
+                    RemoveCopy(fancy_, material::Scales), { material::Silk, material::Fur }));
+
+                break;
+            }
+            case named_type::Soldiers:
+            {
+                excludeAnyOfPrimaryAndSecondary(
+                    AppendCopy(RemoveCopy(fancy_, material::Scales), material::Silk));
+
+                break;
+            }
+            case named_type::Light:
+            case named_type::Dawn:
+            case named_type::Sun:
+            case named_type::Proud:
+            case named_type::Pure:
+            case named_type::Glory:
+            {
+                excludeAnyOfSecondary({ material::Scales });
+                excludeAnyOfPrimaryAndSecondary(RemoveCopy(fancyTribal_, material::Scales));
+
+                keepOnlyPrimaryAndSecondary(Combine(
+                    { material::Silk, material::Cloth, material::Scales, material::Nothing },
+                    {
+                        material::Steel,
+                        material::Silver,
+                        material::Gold,
+                        material::Platinum,
+                    },
+                    { material::Diamond, material::Amethyst, material::Pearl, material::Wood }));
+
+                break;
+            }
+
+            case named_type::Daring:
+            {
+                excludeAnyOfPrimaryAndSecondary(RemoveCopy(fancyTribal_, material::Scales));
+
+                excludeAnyOfPrimaryAndSecondary(Combine(
+                    { material::Silk, material::Platinum },
+                    fancyMetal_,
+                    fancyOpaque_,
+                    RemoveCopy(fancyJewel_, material::Amethyst)));
+
+                break;
+            }
+            case named_type::Honest:
+            {
+                excludeAnyOfSecondary({ material::Scales });
+                excludeAnyOfPrimaryAndSecondary(RemoveCopy(fancyTribal_, material::Scales));
+
+                excludeAnyOfPrimaryAndSecondary(Combine(
+                    { material::Silk, material::Platinum },
+                    fancyMetal_,
+                    RemoveCopy(fancyOpaque_, material::Pearl),
+                    RemoveCopy(fancyJewel_, material::Amethyst)));
+
+                break;
+            }
+            case named_type::Elite:
+            case named_type::Noble:
+            case named_type::Valiant:
+            {
+                excludeAnyOfSecondary({ material::Scales });
+                excludeAnyOfPrimaryAndSecondary(RemoveCopy(fancyTribal_, material::Scales));
+
+                keepOnlyPrimaryAndSecondary(Combine(
+                    { material::Pearl,
+                      material::Silk,
+                      material::Platinum,
+                      material::Scales,
+                      material::Nothing },
+                    fancyMetal_,
+                    RemoveCopy(fancyJewel_, material::Amethyst)));
+
+                break;
+            }
+            case named_type::Heros:
+            {
+                excludeAnyOfSecondary({ material::Scales });
+                excludeAnyOfPrimaryAndSecondary(RemoveCopy(fancyTribal_, material::Scales));
+
+                keepOnlyPrimaryAndSecondary(Combine(
+                    { material::Diamond,
+                      material::Pearl,
+                      material::Silk,
+                      material::Platinum,
+                      material::Scales,
+                      material::Nothing },
+                    fancyMetal_));
+
+                break;
+            }
+            case named_type::Charlatans:
+            {
+                keepOnlyPrimaryAndSecondary(
+                    { material::Silk, material::Silver, material::Nothing });
+
+                break;
+            }
+            case named_type::Burglar:
+            {
+                keepOnlyPrimaryAndSecondary(
+                    { material::Leather, material::Steel, material::Nothing });
+
+                break;
+            }
+            case named_type::Mountebank:
+            {
+                keepOnlyPrimaryAndSecondary({ material::Fur, material::Steel, material::Nothing });
+                break;
+            }
+            case named_type::Pickpocket:
+            {
+                keepOnlyPrimaryAndSecondary(
+                    { material::Leather, material::Tin, material::Nothing });
+
+                break;
+            }
+            case named_type::Imposters:
+            {
+                keepOnlyPrimaryAndSecondary({ material::Cloth, material::Iron, material::Nothing });
+                break;
+            }
+            case named_type::Infernal:
+            {
+                if (THIN_PROFILE.WeaponInfo().IsSword())
+                {
+                    keepOnlyPrimary(
+                        { material::Diamond, material::Bronze, material::Steel, material::Gold });
+
+                    keepOnlySecondaryIncludingNothing({ material::Wood, material::Bone });
+                }
+                else if (
+                    THIN_PROFILE.WeaponInfo().ProjectileType() == weapon::projectile_type::Sling)
+                {
+                    keepOnlyPrimary({ material::Wood, material::Bone });
+
+                    excludeAnyOfSecondary({ material::Stone,
+                                            material::Horn,
+                                            material::Jade,
+                                            material::Amethyst,
+                                            material::Emerald,
+                                            material::Sapphire,
+                                            material::Silver });
+                }
+                else if (THIN_PROFILE.WeaponInfo().IsBow())
+                {
+                    excludeAnyOfPrimary({ material::Obsidian, material::Jade, material::Silver });
+
+                    excludeAnyOfSecondary({ material::Jade,
+                                            material::Amethyst,
+                                            material::Emerald,
+                                            material::Sapphire,
+                                            material::Silver });
+                }
+
+                break;
+            }
+            case named_type::Marauder:
+            {
+                keepOnlyPrimary({ material::Iron, material::Steel, material::Platinum });
+                keepOnlySecondary({ material::Wood });
+                break;
+            }
+            case named_type::Gloom:
+            case named_type::Twilight:
+            case named_type::Dusk:
+            case named_type::Sorrow:
+            case named_type::Woe:
+            case named_type::Misery:
+            {
+                excludeAnyOfPrimaryAndSecondary({ material::Pearl,
+                                                  material::Diamond,
+                                                  material::Gold,
+                                                  material::Jade,
+                                                  material::Lazuli,
+                                                  material::Silk,
+                                                  material::Fur,
+                                                  material::Tin });
+
+                break;
+            }
+            case named_type::Moon:
+            {
+                excludeAnyOfPrimaryAndSecondary({ material::Pearl,
+                                                  material::Diamond,
+                                                  material::Gold,
+                                                  material::Jade,
+                                                  material::Lazuli,
+                                                  material::Fur,
+                                                  material::Tin });
+
+                break;
+            }
+            case named_type::Nile:
+            {
+                keepOnlyPrimaryAndSecondary({ material::Cloth,
+                                              material::Leather,
+                                              material::Steel,
+                                              material::Bronze,
+                                              material::Iron,
+                                              material::Gold,
+                                              material::Lazuli,
+                                              material::Nothing });
+
+                break;
+            }
+            case named_type::Thief:
+            case named_type::Robbers:
+            {
+                keepOnlyPrimaryAndSecondary({ material::Stone,
+                                              material::Iron,
+                                              material::Steel,
+                                              material::Wood,
+                                              material::Nothing });
+
+                break;
+            }
+            case named_type::Muggers:
+            case named_type::Thugs:
+            {
+                keepOnlyPrimaryAndSecondary(
+                    { material::Iron, material::Steel, material::Wood, material::Nothing });
+
+                break;
+            }
+            case named_type::Knaves:
+            {
+                keepOnlyPrimaryAndSecondary({ material::Steel, material::Wood, material::Nothing });
+
+                break;
+            }
+            case named_type::Pirate:
+            {
+                keepOnlyPrimaryAndSecondary(
+                    { material::Obsidian, material::Silver, material::Bone, material::Nothing });
+
+                break;
+            }
+            case named_type::Princes:
+            {
+                keepOnlyPrimaryAndSecondary(Combine(
+                    { material::Pearl,
+                      material::Silk,
+                      material::Platinum,
+                      material::Steel,
+                      material::Nothing },
+                    fancyMetal_,
+                    fancyJewel_));
+
+                break;
+            }
+            case named_type::Raging:
+            {
+                keepOnlyPrimary(
+                    { material::Diamond, material::Iron, material::Steel, material::Platinum });
+
+                excludeAnyOfSecondary({ material::Pearl });
+                break;
+            }
+            case named_type::Ranger:
+            {
+                keepOnlyPrimaryAndSecondary({ material::Wood,
+                                              material::Steel,
+                                              material::Leather,
+                                              material::Emerald,
+                                              material::Scales,
+                                              material::Nothing });
+
+                break;
+            }
+            case named_type::Samurai:
+            {
+                keepOnlyPrimaryAndSecondary({ material::Silk,
+                                              material::Leather,
+                                              material::Wood,
+                                              material::Steel,
+                                              material::Scales,
+                                              material::Jade,
+                                              material::Nothing });
+
+                break;
+            }
+            case named_type::Charred:
+            case named_type::Burning:
+            case named_type::Fiery:
+            case named_type::Searing:
+            {
+                keepOnlyPrimaryAndSecondary({ material::Wood,
+                                              material::Leather,
+                                              material::Claw,
+                                              material::Scales,
+                                              material::Tooth,
+                                              material::Bone,
+                                              material::Steel,
+                                              material::Bronze,
+                                              material::Iron,
+                                              material::Platinum,
+                                              material::Ruby,
+                                              material::Diamond,
+                                              material::Nothing });
+
+                break;
+            }
+            case named_type::Thors:
+            {
+                keepOnlyPrimaryAndSecondary({ material::Steel,
+                                              material::Silk,
+                                              material::Pearl,
+                                              material::Platinum,
+                                              material::Gold,
+                                              material::Diamond,
+                                              material::Nothing });
+
+                break;
+            }
+            case named_type::Wardens:
+            {
+                excludeAnyOfPrimaryAndSecondary(
+                    Combine(fancy_, { material::Silk, material::Fur, material::Steel }));
+
+                break;
+            }
+            case named_type::Wicked:
+            {
+                if (THIN_PROFILE.WeaponInfo().IsSpear())
+                {
+                    excludeAnyOfPrimary({ material::Jade, material::Bronze });
+                    excludeAnyOfSecondary({ material::Stone,
+                                            material::Horn,
+                                            material::Jade,
+                                            material::Bronze,
+                                            material::Amethyst,
+                                            material::Emerald,
+                                            material::Sapphire,
+                                            material::Gold });
+                }
+                else
+                {
+                    keepOnlyPrimary({ material::Steel,
+                                      material::Obsidian,
+                                      material::Platinum,
+                                      material::Diamond });
+                    keepOnlySecondaryIncludingNothing(
+                        { material::Wood, material::Bone, material::Iron });
+                }
+
+                break;
+            }
+            case named_type::NotNamed:
+            case named_type::Count:
+            default:
+            {
+                break;
+            }
         }
     }
 
@@ -2007,12 +2543,14 @@ namespace item
         const MaterialVec_t & VECTOR1,
         const MaterialVec_t & VECTOR2,
         const MaterialVec_t & VECTOR3,
-        const MaterialVec_t & VECTOR4) const
+        const MaterialVec_t & VECTOR4,
+        const MaterialVec_t & VECTOR5) const
     {
         MaterialVec_t materials{ VECTOR1 };
         materials.insert(std::end(materials), std::begin(VECTOR2), std::end(VECTOR2));
         materials.insert(std::end(materials), std::begin(VECTOR3), std::end(VECTOR3));
         materials.insert(std::end(materials), std::begin(VECTOR4), std::end(VECTOR4));
+        materials.insert(std::end(materials), std::begin(VECTOR5), std::end(VECTOR5));
         return materials;
     }
 
@@ -2201,19 +2739,15 @@ namespace item
         return materials;
     }
 
-    const MaterialPairVec_t MaterialFactory::CleanupMaterialPairVectorAndEnsureNotEmpty(
-        const MaterialPairVec_t & MATERIAL_PAIRS,
-        const bool IS_MAGICAL,
-        const std::string & ERROR_MSG) const
+    void MaterialFactory::CleanupMaterialPairVectorAndEnsureNotEmpty(
+        MaterialPairVec_t & materialPairs, const bool WILL_REMOVE_LAME_MATERIALS) const
     {
-        MaterialPairVec_t materialPairs{ MATERIAL_PAIRS };
-
         std::remove_if(
             std::begin(materialPairs), std::end(materialPairs), [&](auto const & MATERIAL_PAIR) {
                 return (IsCombinationValid(MATERIAL_PAIR) == false);
             });
 
-        if (IS_MAGICAL)
+        if (WILL_REMOVE_LAME_MATERIALS)
         {
             RemoveLameMaterialsForSpecialItems(materialPairs);
         }
@@ -2226,12 +2760,9 @@ namespace item
 
         M_ASSERT_OR_LOGANDTHROW_SS(
             (materialPairs.empty() == false),
-            "item::MaterialFactory::CleanupMaterialPairVectorAndEnsureNotEmpty(is_magical="
-                << std::boolalpha << IS_MAGICAL
-                << ") ended up with an empty material pair vector.  error_msg=\"" << ERROR_MSG
-                << "\"");
-
-        return materialPairs;
+            "item::MaterialFactory::CleanupMaterialPairVectorAndEnsureNotEmpty(will_remove_lame="
+                << std::boolalpha << WILL_REMOVE_LAME_MATERIALS
+                << ") ended up with an empty material pair vector.");
     }
 
 } // namespace item
